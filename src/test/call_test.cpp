@@ -16,7 +16,7 @@ class CallTests: public QObject
 private slots:
    void testCallWithoutAccounts();
 private:
-   
+
 };
 
 ///When there is no accounts, no call should be created
@@ -25,7 +25,7 @@ void CallTests::testCallWithoutAccounts()
    for (int i=0;i<AccountList::getInstance()->size();i++) {
       (*AccountList::getInstance())[i]->setAccountEnabled(false);
    }
-   
+
     Call* call = m_pModel->addDialingCall("test call", AccountList::getCurrentAccount());
     QCOMPARE( call, (Call*)NULL );
 }
