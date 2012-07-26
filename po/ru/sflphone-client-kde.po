@@ -229,7 +229,8 @@ msgstr "Вы наверное должны это включить если вы
 
 #: ../sflphone-client-kde/src/AccountWizard.cpp:526
 msgid "Enable STUN"
-msgstr "Включить STUN"
+msgstr "Включить STUN"
+
 #: ../sflphone-client-kde/src/AccountWizard.cpp:527
 msgid "Stun Server"
 msgstr "сервер"
@@ -1232,4 +1233,3 @@ msgstr "Искать во входящих звонках"
 #: ../sflphone-client-gnome/src/contacts/searchbar.c:93
 msgid "Search by outgoing call"
 msgstr "Искать в выходящих звонках"
-

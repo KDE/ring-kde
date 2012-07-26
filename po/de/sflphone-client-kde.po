@@ -1231,3 +1231,4 @@ msgstr "Suche nach eingehenden Anruf "
 #: ../sflphone-client-gnome/src/contacts/searchbar.c:93
 msgid "Search by outgoing call"
 msgstr "Suche nach ausgehenden Anru"
+

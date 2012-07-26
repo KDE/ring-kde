@@ -1637,3 +1637,4 @@ msgstr "Emmanuel Lepage Vallée"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "emmanuel.lepage@savoirfairelinux.com"
+
