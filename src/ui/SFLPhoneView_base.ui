@@ -200,19 +200,19 @@
   <customwidget>
    <class>Dialpad</class>
    <extends>QWidget</extends>
-   <header>widgets/Dialpad.h</header>
+   <header>widgets/dialpad.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>CallView</class>
    <extends>QWidget</extends>
-   <header location="global">CallView.h</header>
+   <header location="global">callview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>IMManager</class>
    <extends>QTabWidget</extends>
-   <header>widgets/IMManager.h</header>
+   <header>widgets/immanager.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

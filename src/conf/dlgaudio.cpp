@@ -27,8 +27,8 @@
 
 //SFLPhone
 #include "lib/configurationmanager_interface_singleton.h"
-#include "klib/ConfigurationSkeleton.h"
-#include "conf/ConfigurationDialog.h"
+#include "klib/configurationskeleton.h"
+#include "conf/configurationdialog.h"
 #include "lib/sflphone_const.h"
 
 ///Constructor

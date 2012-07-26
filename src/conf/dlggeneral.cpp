@@ -23,8 +23,8 @@
 #include <QtGui/QAction>
 
 //SFLPhone
-#include "klib/ConfigurationSkeleton.h"
-#include "conf/ConfigurationDialog.h"
+#include "klib/configurationskeleton.h"
+#include "conf/configurationdialog.h"
 #include "lib/configurationmanager_interface_singleton.h"
 
 ///Constructor

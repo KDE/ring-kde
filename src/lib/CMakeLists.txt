@@ -26,20 +26,20 @@ INCLUDE_DIRECTORIES ( ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 
 #File to compile
 set( qtsflphone_LIB_SRCS
-  Call.cpp
-  Account.cpp
-  AccountList.cpp
-  CallModel.cpp
-  HistoryModel.cpp
-  Contact.cpp
-  ContactBackend.cpp
-  VideoCodecModel.cpp
-  VideoModel.cpp
-  VideoRenderer.cpp
-  VideoDevice.cpp
-  CredentialModel.cpp
-  AudioCodecModel.cpp
-  InstantMessagingModel.cpp
+  call.cpp
+  account.cpp
+  accountlist.cpp
+  callmodel.cpp
+  historymodel.cpp
+  contact.cpp
+  contactbackend.cpp
+  videocodecmodel.cpp
+  videomodel.cpp
+  videorenderer.cpp
+  videodevice.cpp
+  credentialmodel.cpp
+  audiocodecmodel.cpp
+  instantmessagingmodel.cpp
   configurationmanager_interface_singleton.cpp
   callmanager_interface_singleton.cpp
   instance_interface_singleton.cpp
@@ -120,25 +120,25 @@ set_target_properties( qtsflphone
 )
 
 set( qtsflphone_LIB_HDRS
-  Account.h
-  AccountList.h
-  Call.h
-  CallModel.h
-  HistoryModel.h
-  Contact.h
-  ContactBackend.h
-  VideoCodecModel.h
-  VideoModel.h
-  VideoDevice.h
-  VideoRenderer.h
-  CredentialModel.h
-  AudioCodecModel.h
+  account.h
+  accountlist.h
+  call.h
+  callmodel.h
+  historymodel.h
+  contact.h
+  contactbackend.h
+  videocodecmodel.h
+  videomodel.h
+  videodevice.h
+  videorenderer.h
+  credentialmodel.h
+  audiocodecmodel.h
   configurationmanager_interface_singleton.h
   callmanager_interface_singleton.h
   instance_interface_singleton.h
   video_interface_singleton.h
   sflphone_const.h
-  InstantMessagingModel.h
+  instantmessagingmodel.h
 )
 
 install( FILES ${qtsflphone_LIB_HDRS}

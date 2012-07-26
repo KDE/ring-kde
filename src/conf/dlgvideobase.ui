@@ -144,7 +144,7 @@
   <customwidget>
    <class>VideoWidget</class>
    <extends>QWidget</extends>
-   <header>widgets/VideoWidget.h</header>
+   <header>widgets/videowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

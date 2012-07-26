@@ -28,10 +28,10 @@ INCLUDE_DIRECTORIES ( ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 
 #File to compile
 set( ksflphone_LIB_SRCS
-   HelperFunctions.cpp
-   AkonadiBackend.cpp
-   SortableDockCommon.cpp
-   ConfigurationSkeleton.cpp
+   helperfunctions.cpp
+   akonadibackend.cpp
+   sortabledockcommon.cpp
+   configurationskeleton.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)
@@ -52,9 +52,9 @@ set_target_properties( ksflphone
 )
 
 set( ksflphone_LIB_HDRS
-  AkonadiBackend.h
-  HelperFunctions.h
-  SortableDockCommon.h
+  akonadibackend.h
+  helperfunctions.h
+  sortabledockcommon.h
 )
 
 INSTALL(FILES sflphone-client-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})

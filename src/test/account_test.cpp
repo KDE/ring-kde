@@ -23,8 +23,8 @@
 #include "../src/lib/callmanager_interface_singleton.h"
 #include "../src/lib/instance_interface_singleton.h"
 #include "../src/lib/typedefs.h"
-#include "../src/lib/Account.h"
-#include "../src/lib/AccountList.h"
+#include "../src/lib/account.h"
+#include "../src/lib/accountlist.h"
 #include "../src/lib/dbus/metatypes.h"
 
 class AccountTests: public QObject

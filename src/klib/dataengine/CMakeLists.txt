@@ -12,8 +12,8 @@ include_directories(
 
 
 set(sflphone_engine_SRCS
-     sflphonEngine.cpp
-     sflphoneService.cpp
+     sflphonengine.cpp
+     sflphoneservice.cpp
     )
 
 

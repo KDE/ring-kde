@@ -32,12 +32,12 @@
 #include <klocale.h>
 
 //SFLPhone
-#include "AccountWizard.h"
-#include "SFLPhoneapplication.h"
-#include "conf/ConfigurationDialog.h"
-#include "klib/ConfigurationSkeleton.h"
-#include "CallView.h"
-#include "SFLPhone.h"
+#include "accountwizard.h"
+#include "sflphoneapplication.h"
+#include "conf/configurationdialog.h"
+#include "klib/configurationskeleton.h"
+#include "callview.h"
+#include "sflphone.h"
 
 //SFLPhone library
 #include "lib/instance_interface_singleton.h"

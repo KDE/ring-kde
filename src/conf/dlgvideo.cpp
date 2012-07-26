@@ -21,9 +21,9 @@
 #include <KDebug>
 
 //SFLPhone
-#include "../lib/VideoDevice.h"
-#include "../lib/VideoCodecModel.h"
-#include "../lib/VideoModel.h"
+#include "../lib/videodevice.h"
+#include "../lib/videocodecmodel.h"
+#include "../lib/videomodel.h"
 
 ///Constructor
 DlgVideo::DlgVideo(QWidget *parent)

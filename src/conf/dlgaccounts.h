@@ -20,7 +20,7 @@
 #define DLGACCOUNTS_H
 
 #include "ui_dlgaccountsbase.h"
-#include "../lib/Account.h"
+#include "../lib/account.h"
 #include "../lib/callmanager_interface_singleton.h"
 
 //Qt

@@ -31,13 +31,13 @@
 #include <KStandardDirs>
 
 //SFLPhone
-#include "klib/ConfigurationSkeleton.h"
-#include "conf/ConfigurationDialog.h"
+#include "klib/configurationskeleton.h"
+#include "conf/configurationdialog.h"
 #include "lib/configurationmanager_interface_singleton.h"
-#include "SFLPhoneView.h"
+#include "sflphoneview.h"
 #include "lib/sflphone_const.h"
-#include "lib/CredentialModel.h"
-#include "lib/AudioCodecModel.h"
+#include "lib/credentialmodel.h"
+#include "lib/audiocodecmodel.h"
 
 ///Constructor
 DlgAccounts::DlgAccounts(KConfigDialog* parent)

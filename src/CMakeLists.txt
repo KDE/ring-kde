@@ -25,18 +25,18 @@ SET ( KDE4_KABC_LIBS  -lkabc )
 
 SET(
    sflphone_client_kde_SRCS
-   SFLPhoneView.cpp
-   SFLPhone.cpp
-   SFLPhoneapplication.cpp
-   KSpeechInterfaceSingleton.cpp
-   SFLPhoneAccessibility.cpp
-   widgets/SFLPhoneTray.cpp
    main.cpp
-   AccountWizard.cpp
-   widgets/CallTreeItem.cpp
-   widgets/HistoryTreeItem.cpp
-   ActionSetAccountFirst.cpp
-   conf/ConfigurationDialog.cpp
+   sflphoneview.cpp
+   sflphone.cpp
+   sflphoneapplication.cpp
+   kspeechinterfacesingleton.cpp
+   sflphoneaccessibility.cpp
+   widgets/sflphonetray.cpp
+   accountwizard.cpp
+   widgets/calltreeitem.cpp
+   widgets/historytreeitem.cpp
+   actionsetaccountfirst.cpp
+   conf/configurationdialog.cpp
    conf/dlggeneral.cpp
    conf/dlgdisplay.cpp
    conf/dlgaccounts.cpp
@@ -45,22 +45,22 @@ SET(
    conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgvideo.cpp
-   widgets/Dialpad.cpp
-   widgets/ContactItemWidget.cpp
-   widgets/ContactDock.cpp
-   widgets/HistoryDock.cpp
-   widgets/BookmarkDock.cpp
-   widgets/TranslucentButtons.cpp
-   widgets/CategoryDrawer.cpp
-   widgets/ConferenceBox.cpp
-   widgets/CategorizedTreeWidget.cpp
-   widgets/VideoDock.cpp
-   widgets/VideoWidget.cpp
-   widgets/IMManager.cpp
-   widgets/IMTab.cpp
-#    widgets/AcceleratedVideoWidget.cpp
-   Codec.cpp
-   CallView.cpp
+   widgets/dialpad.cpp
+   widgets/contactitemwidget.cpp
+   widgets/contactdock.cpp
+   widgets/historydock.cpp
+   widgets/bookmarkdock.cpp
+   widgets/translucentbuttons.cpp
+   widgets/categorydrawer.cpp
+   widgets/conferencebox.cpp
+   widgets/categorizedtreewidget.cpp
+   widgets/videodock.cpp
+   widgets/videowidget.cpp
+   widgets/immanager.cpp
+   widgets/imtab.cpp
+#    widgets/acceleratedvideowidget.cpp
+   codec.cpp
+   callview.cpp
 )
 
 

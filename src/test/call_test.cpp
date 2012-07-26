@@ -21,10 +21,10 @@
 #include "../src/lib/configurationmanager_interface_singleton.h"
 #include "../src/lib/callmanager_interface_singleton.h"
 #include "../src/lib/instance_interface_singleton.h"
-#include "../src/lib/AccountList.h"
-#include "../src/lib/CallModel.h"
+#include "../src/lib/accountlist.h"
+#include "../src/lib/callmodel.h"
 
-CallModel<>* m_pModel = new CallModel<>();
+callModel<>* m_pModel = new CallModel<>();
 
 class CallTests: public QObject
 {

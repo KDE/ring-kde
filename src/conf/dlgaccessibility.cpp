@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "dlgaccessibility.h"
-#include "klib/ConfigurationSkeleton.h"
+#include "klib/configurationskeleton.h"
 
 ///Constructor
 DlgAccessibility::DlgAccessibility(QWidget *parent)

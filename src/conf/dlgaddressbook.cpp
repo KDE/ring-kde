@@ -19,7 +19,7 @@
 
 #include "dlgaddressbook.h"
 
-#include "klib/ConfigurationSkeleton.h"
+#include "klib/configurationskeleton.h"
 
 ///Constructor
 DlgAddressBook::DlgAddressBook(QWidget *parent)
