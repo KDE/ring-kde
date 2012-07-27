@@ -1,1234 +1,1790 @@
-# German translation of SFLphone.
-# Copyright (C) 2008 The Free Software Foundation, Inc.
-# This file is distributed under the GNU General Public License Version 3.
-#
-# Sven Werlen <sven.werlen@savoirfairelinux.com>, 2009.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Knuth Posern <knuth.posern@savoirfairelinux.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: sflphone\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-15 15:25-0400\n"
-"PO-Revision-Date: 2009-01-08 10:46-0500\n"
-"Last-Translator: Sven Werlen <sven.werlen@savoirfairelinux.com>\n"
+"Report-Msgid-Bugs-To: https://projects.savoirfairelinux.com/projects/"
+"sflphone/\n"
+"POT-Creation-Date: 2012-07-27 13:35-0400\n"
+"PO-Revision-Date: 2009-07-23 10:14-0400\n"
+"Last-Translator: Knuth Posern <knuth.posern@savoirfairelinux.com>\n"
 "Language-Team: SavoirFaire Linux Inc <sflphoneteam@savoirfairelinux.com>\n"
+"Language: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.2\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../sflphone-client-kde/src/Account.cpp:34
-#: ../sflphone-client-gnome/src/accountlist.c:175
-msgctxt "account state"
-msgid "Registered"
-msgstr "Registriert"
+#: src/klib/dataengine/sflphonengine.cpp:282
+msgid "Current_account"
+msgstr "Aktuelles_Konto"
 
-#: ../sflphone-client-kde/src/Account.cpp:36
-#: ../sflphone-client-gnome/src/accountlist.c:178
-msgctxt "account state"
-msgid "Not Registered"
-msgstr "Nicht registriert"
+#: src/klib/helperfunctions.cpp:45
+msgid " numbers"
+msgstr " Nummern"
 
-#: ../sflphone-client-kde/src/Account.cpp:38
-#: ../sflphone-client-gnome/src/accountlist.c:181
-msgctxt "account state"
-msgid "Trying..."
-msgstr "Am versuchen..."
-
-#: ../sflphone-client-kde/src/Account.cpp:40
-#: ../sflphone-client-gnome/src/accountlist.c:184
-msgctxt "account state"
-msgid "Error"
-msgstr "Fehler"
-
-#: ../sflphone-client-kde/src/Account.cpp:42
-#: ../sflphone-client-gnome/src/accountlist.c:187
-msgctxt "account state"
-msgid "Bad authentification"
-msgstr "Falsche Authentifizierung"
-
-#: ../sflphone-client-kde/src/Account.cpp:44
-#: ../sflphone-client-gnome/src/accountlist.c:190
-msgctxt "account state"
-msgid "Network unreachable"
-msgstr "Kein netzwerk"
-
-#: ../sflphone-client-kde/src/Account.cpp:46
-#: ../sflphone-client-gnome/src/accountlist.c:193
-msgctxt "account state"
-msgid "Host unreachable"
-msgstr "Host unerreichbar"
-
-#: ../sflphone-client-kde/src/Account.cpp:48
-#: ../sflphone-client-gnome/src/accountlist.c:196
-msgctxt "account state"
-msgid "Stun configuration error"
-msgstr "Stun: Konfigurationsfehler"
-
-#: ../sflphone-client-kde/src/Account.cpp:50
-#: ../sflphone-client-gnome/src/accountlist.c:199
-msgctxt "account state"
-msgid "Stun server invalid"
-msgstr "Ungültiger Stun server"
-
-#: ../sflphone-client-kde/src/Account.cpp:51
-#: ../sflphone-client-gnome/src/accountlist.c:202
-msgctxt "account state"
-msgid "Invalid"
-msgstr "Ungültig"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:163
-#: ../sflphone-client-kde/src/AccountWizard.cpp:278
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:393
-msgid "Account creation wizard"
-msgstr "SFLphone Konto (Konfigurationsassistent)"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:199
-#: ../sflphone-client-kde/src/AccountWizard.cpp:217
-#: ../sflphone-client-kde/src/AccountWizard.cpp:561
-#: ../sflphone-client-gnome/src/assistant.c:68
-#, c-format
-msgid "This assistant is now finished."
-msgstr "Assistent beendet."
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:211
-msgid "Creation of account has failed for the reason"
-msgstr "Konfigurationsassistent mit Fehler beendet"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:255
-#: ../sflphone-client-kde/src/AccountWizard.cpp:440
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:363
-#: ../sflphone-client-gnome/src/assistant.c:72
-msgid "Alias"
-msgstr "Alias"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:256
-#: ../sflphone-client-kde/src/AccountWizard.cpp:441
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:370
-#: ../sflphone-client-gnome/src/assistant.c:75
-msgid "Server"
-msgstr "Server"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:257
-#: ../sflphone-client-kde/src/AccountWizard.cpp:442
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:371
-msgid "User"
-msgstr "Benutzername"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:258
-#: ../sflphone-client-kde/src/AccountWizard.cpp:443
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:372
-msgid "Password"
-msgstr "Passwort"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:259
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:364
-#: ../sflphone-client-gnome/src/config/configwindow.c:418
-msgid "Protocol"
-msgstr "Protokoll"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:260
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:373
-msgid "Mailbox"
-msgstr "Mailbox"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:279
-#: ../sflphone-client-gnome/src/assistant.c:216
-msgid "Welcome to the Account creation wizard of SFLphone!"
-msgstr "Wilkommen zu SFLphone!"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:281
-#: ../sflphone-client-gnome/src/assistant.c:217
-msgid "This installation wizard will help you configure an account."
-msgstr "The Installationsassistent wird Ihnen helfen, ein Konto zu konfigurieren."
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:309
-#: ../sflphone-client-gnome/src/assistant.c:249
-msgid "Account"
-msgstr "Konto"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:310
-#: ../sflphone-client-gnome/src/assistant.c:249
-msgid "Please select one of the following options"
-msgstr "Bitte eine Option auswählen"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:312
-#: ../sflphone-client-gnome/src/assistant.c:251
-msgid "Create a free SIP/IAX2 account on sflphone.org"
-msgstr "SIP/IAX2 Konto bei sflphone.org erstellen lassen"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:313
-#: ../sflphone-client-gnome/src/assistant.c:253
-msgid "Register an existing SIP or IAX2 account"
-msgstr "Existierendes SIP/IAX2 Konto registrieren"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:352
-#: ../sflphone-client-gnome/src/assistant.c:231
-msgid "VoIP Protocols"
-msgstr "VoIP Protokoll"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:353
-#: ../sflphone-client-gnome/src/assistant.c:231
-msgid "Select an account type"
-msgstr "Kontotyp auswählen"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:355
-#: ../sflphone-client-gnome/src/assistant.c:233
-msgid "SIP (Session Initiation Protocol)"
-msgstr "SIP (Session Initiation Protocol)"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:356
-#: ../sflphone-client-gnome/src/assistant.c:235
-msgid "IAX2 (InterAsterix Exchange)"
-msgstr "IAX2 (InterAsterisk Exchange)"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:395
-#: ../sflphone-client-gnome/src/assistant.c:339
-msgid "Optional email address"
-msgstr "Fakultative E-mail-Adresse"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:396
-#: ../sflphone-client-gnome/src/assistant.c:339
-msgid "This email address will be used to send your voicemail messages."
-msgstr "Diese E-mail-Adresse wird benutzt, um Ihnen voicemail Meldungen zu schicken."
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:398
-msgid "Email address"
-msgstr "E-mail-Adresse"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:432
-#: ../sflphone-client-gnome/src/assistant.c:266
-msgid "SIP account settings"
-msgstr "Konfiguration des SIP Konto"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:436
-#: ../sflphone-client-gnome/src/assistant.c:362
-msgid "IAX2 account settings"
-msgstr "Konfiguration des IAX2 Konto"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:438
-#: ../sflphone-client-gnome/src/assistant.c:266
-#: ../sflphone-client-gnome/src/assistant.c:362
-msgid "Please fill the following information"
-msgstr "Folgende Informationen bitte ausfühlen"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:444
-msgid "Voicemail number"
-msgstr "Voicemail Nummer"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:523
-#: ../sflphone-client-gnome/src/assistant.c:435
-#: ../sflphone-client-gnome/src/config/configwindow.c:856
-msgid "Network Address Translation (NAT)"
-msgstr "Network Address Translation (NAT)"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:524
-#: ../sflphone-client-gnome/src/assistant.c:435
-#: ../sflphone-client-gnome/src/config/configwindow.c:536
-msgid "You should probably enable this if you are behind a firewall."
-msgstr "Sie sollten dieses einschalten, falls Sie hinter einer Firewall sind."
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:526
-msgid "Enable STUN"
-msgstr "STUN einschalten"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:527
-msgid "Stun Server"
-msgstr "Stun Server"
-
-#: ../sflphone-client-kde/src/AccountWizard.cpp:562
-msgid ""
-"After checking the settings you chose, click \"Finish\" to create the "
-"account."
-msgstr "Einstellungen prüfen, dann \"Finish\" drücken."
-
-#: ../sflphone-client-kde/src/ActionSetAccountFirst.cpp:26
-msgid "Default account"
-msgstr "Default Konto"
-
-#: ../sflphone-client-kde/src/Call.cpp:116
-#: ../sflphone-client-gnome/src/contacts/calltree.c:322
-msgid "Transfer to : "
-msgstr "Weiterleiten zu : "
-
-#: ../sflphone-client-kde/src/CodecListModel.cpp:89
-#: ../sflphone-client-gnome/src/actions.c:816
-msgid "Codec"
-msgstr "Codec"
-
-#: ../sflphone-client-kde/src/CodecListModel.cpp:93
-#: ../sflphone-client-gnome/src/config/audioconf.c:581
-msgid "Frequency"
-msgstr "Frequenz"
-
-#: ../sflphone-client-kde/src/CodecListModel.cpp:97
-#: ../sflphone-client-gnome/src/config/audioconf.c:586
-msgid "Bitrate"
-msgstr "Bitrate"
-
-#: ../sflphone-client-kde/src/CodecListModel.cpp:101
-#: ../sflphone-client-gnome/src/config/audioconf.c:591
-msgid "Bandwidth"
-msgstr "Bandbreite"
-
-#: ../sflphone-client-kde/src/main.cpp:39
-msgid "SFLphone KDE Client"
-msgstr "SFLphone KDE Client"
-
-#: ../sflphone-client-kde/src/main.cpp:43
-msgid "(C) 2009 Savoir-faire Linux"
-msgstr "(C) 2009 Savoir-faire Linux"
-
-#: ../sflphone-client-kde/src/main.cpp:47
-msgid "Jérémy Quentin"
-msgstr "Jérémy Quentin"
-
-#: ../sflphone-client-kde/src/main.cpp:48
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "Ihre Namen"
-
-#: ../sflphone-client-kde/src/main.cpp:48
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "Ihre E-Mail-Adressen"
-
-#: ../sflphone-client-kde/src/SFLPhone.cpp:62
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1084
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1089
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1094
-#: ../sflphone-client-gnome/src/statusicon.c:126
-msgid "SFLphone"
-msgstr "SFLphone"
-
-#: ../sflphone-client-kde/src/SFLPhone.cpp:209
-msgid "Incoming call"
-msgstr "Eingehende Anrufe"
-
-#: ../sflphone-client-kde/src/SFLPhone.cpp:210
-msgid "You have an incoming call from"
-msgstr "Sie haben einen Anruf aus"
-
-#: ../sflphone-client-kde/src/SFLPhone.cpp:210
-msgid "Click to accept or refuse it."
-msgstr "Klicken, um zu akzeptieren oder abzulehnen."
-
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:716
-msgid "Address book loading..."
-msgstr "Adressbuch Laden..."
-
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:901
-#: ../sflphone-client-gnome/src/actions.c:89
+#: src/klib/helperfunctions.cpp:79
 msgid "No registered accounts"
-msgstr "Kein registriertes Konto"
+msgstr "Keine registrierten Konten"
 
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:905
-#: ../sflphone-client-gnome/src/actions.c:83
-#: ../sflphone-client-gnome/src/actions.c:813
-msgid "Using account"
-msgstr "Mit Konto"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../data/sflphone-client-kdeui.rc:5
+#. i18n: ectx: Menu (Actions)
+#: rc.cpp:3
+msgid "Actions"
+msgstr "Aktionen"
 
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1084
-msgid "Main screen"
-msgstr "Hauptbildschirm"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../data/sflphone-client-kdeui.rc:18
+#. i18n: ectx: Menu (View)
+#: rc.cpp:6
+msgid "View"
+msgstr "Ansicht"
 
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1089
-#: ../sflphone-client-kde/build/src/ui_dlggeneralbase.h:165
-msgid "Call history"
-msgstr "Liste der vorherigen Anrufen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../data/sflphone-client-kdeui.rc:28
+#. i18n: ectx: Menu (Settings)
+#: rc.cpp:9
+msgid "Settings"
+msgstr "Einstellungen"
 
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1094
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:394
-#: ../sflphone-client-gnome/src/toolbar.c:243
-#: ../sflphone-client-gnome/src/toolbar.c:245
-msgid "Address book"
-msgstr "Adressbuch"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccessibility.ui:14
+#. i18n: ectx: property (windowTitle), widget (QWidget, DlgAccessibility)
+#: rc.cpp:12
+#, fuzzy
+msgid "Accessibility settings"
+msgstr "Einstellungen der IAX2 Konten"
 
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1108
-#: ../sflphone-client-kde/src/sflphone_kdeview.cpp:1169
-msgid "Edit before call"
-msgstr "Vor Aufruf bearbeiten"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccessibility.ui:20
+#. i18n: ectx: property (title), widget (QGroupBox, m_pT2SBG)
+#: rc.cpp:15
+msgid "Text to speech"
+msgstr "Text zu Sprache"
 
-#: ../sflphone-client-kde/src/sflphone_const.h:56
-#: ../sflphone-client-gnome/src/toolbar.c:167
-#: ../sflphone-client-gnome/src/toolbar.c:169
-msgid "New call"
-msgstr "Neuer Anruf"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccessibility.ui:26
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableVoiceFeedback)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:197
+#. i18n: ectx: label, entry (enableVoiceFeedback), group (main)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:211
+#. i18n: ectx: label, entry (displayContactDock), group (main)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:215
+#. i18n: ectx: label, entry (displayHistoryDock), group (main)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:219
+#. i18n: ectx: label, entry (displayBookmarkDock), group (main)
+#: rc.cpp:18 rc.cpp:589 rc.cpp:598 rc.cpp:601 rc.cpp:604
+msgid "Enable audio feedback from common actions"
+msgstr "Audio Rückmeldung für regelmäßige Aktionen"
 
-#: ../sflphone-client-kde/src/sflphone_const.h:57
-#: ../sflphone-client-kde/src/sflphone_const.h:62
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:381
-#: ../sflphone-client-gnome/src/toolbar.c:186
-#: ../sflphone-client-gnome/src/toolbar.c:188
-msgid "Hang up"
-msgstr "Auflegen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccessibility.ui:33
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableReadLabel)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:201
+#. i18n: ectx: label, entry (enableReadLabel), group (main)
+#: rc.cpp:21 rc.cpp:592
+msgid "Automatically read label when an overlay is being displayed"
+msgstr "Automatisches Lesen des Textfeldes bei Anzeige eines internen Dialogfensters"
 
-#: ../sflphone-client-kde/src/sflphone_const.h:58
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:382
-#: ../sflphone-client-gnome/src/toolbar.c:207
-#: ../sflphone-client-gnome/src/toolbar.c:209
-msgid "Hold on"
-msgstr "In Warteschleife"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccessibility.ui:40
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableReadDetails)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:205
+#. i18n: ectx: label, entry (enableReadDetails), group (main)
+#: rc.cpp:24 rc.cpp:595
+msgid "Automattically read the call details when it is selected"
+msgstr "Automatisches Auslesen der Anrufdetails für ausgewählte Anrufe"
 
-#: ../sflphone-client-kde/src/sflphone_const.h:59
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:383
-#: ../sflphone-client-gnome/src/toolbar.c:220
-#: ../sflphone-client-gnome/src/toolbar.c:222
-msgid "Transfer"
-msgstr "Weiterleiten"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:77
+#. i18n: ectx: property (toolTip), widget (QToolButton, button_accountAdd)
+#: rc.cpp:27
+msgid "Add a new account"
+msgstr "Neues Konto hinzufügen"
 
-#: ../sflphone-client-kde/src/sflphone_const.h:60
-#: ../sflphone-client-gnome/src/toolbar.c:263
-msgid "Record"
-msgstr "Gespräch aufzeichnen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:80
+#. i18n: ectx: property (whatsThis), widget (QToolButton, button_accountAdd)
+#: rc.cpp:30
+msgid ""
+"This button enables you to initialize a new account. You will then be able "
+"to edit it using the form on the right."
+msgstr ""
+"Neues Konto hinzufügen. Anschließend können Sie die Details des neuen Kontos "
+"in dem Formular hier rechts angeben."
 
-#: ../sflphone-client-kde/src/sflphone_const.h:61
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:380
-#: ../sflphone-client-gnome/src/toolbar.c:176
-#: ../sflphone-client-gnome/src/toolbar.c:178
-msgid "Pick up"
-msgstr "Abnehmen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:83
+#. i18n: ectx: property (text), widget (QToolButton, button_accountAdd)
+#: rc.cpp:33
+#, fuzzy
+msgctxt "Add new account"
+msgid "Add"
+msgstr "Hinzufügen"
 
-#: ../sflphone-client-kde/src/sflphone_const.h:63
-#: ../sflphone-client-gnome/src/toolbar.c:196
-#: ../sflphone-client-gnome/src/toolbar.c:198
-msgid "Hold off"
-msgstr "Aus Warteschleife"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:93
+#. i18n: ectx: property (toolTip), widget (QToolButton, button_accountUp)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:589
+#. i18n: ectx: property (toolTip), widget (QToolButton, button_audiocodecUp)
+#: rc.cpp:36 rc.cpp:153
+msgid "Get this account up"
+msgstr "Konto in der Liste eine Position nach oben verschieben"
 
-#: ../sflphone-client-kde/src/sflphone_const.h:64
-msgid "Give up transfer"
-msgstr "Transfer aufgeben"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:96
+#. i18n: ectx: property (whatsThis), widget (QToolButton, button_accountUp)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:112
+#. i18n: ectx: property (whatsThis), widget (QToolButton, button_accountDown)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:592
+#. i18n: ectx: property (whatsThis), widget (QToolButton, button_audiocodecUp)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:645
+#. i18n: ectx: property (whatsThis), widget (QToolButton, button_audiocodecDown)
+#: rc.cpp:39 rc.cpp:48 rc.cpp:156 rc.cpp:174
+msgid ""
+"By default, when you place a call, sflphone will use the first account in "
+"this list which is \"registered\". Change the order of the accounts using "
+"the \"Up\" and \"Down\" arrows."
+msgstr ""
+"Standardmäßig SFLphone verwendet das erste Konto in dieser Liste mit dem "
+"Status \"registriert\" sobald ein Anruf getätigt wird. Verwenden Sie die "
+"Pfeile \"auf\" und \"ab\" um die Reihenfolge der Liste zu verändern."
 
-#: ../sflphone-client-kde/src/sflphone_const.h:65
-msgid "Call back"
-msgstr "Zurückrufen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:99
+#. i18n: ectx: property (text), widget (QToolButton, button_accountUp)
+#: rc.cpp:42
+#, fuzzy
+msgctxt "Move account up"
+msgid "Up"
+msgstr "Nach oben"
 
-#: ../sflphone-client-kde/src/conf/ConfigurationDialog.cpp:48
-#: ../sflphone-client-kde/build/src/ui_dlgrecordbase.h:91
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:306
-#: ../sflphone-client-gnome/src/config/configwindow.c:722
-#: ../sflphone-client-gnome/src/config/configwindow.c:791
-msgctxt "Config section"
-msgid "General"
-msgstr "Allgemein"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:109
+#. i18n: ectx: property (toolTip), widget (QToolButton, button_accountDown)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:642
+#. i18n: ectx: property (toolTip), widget (QToolButton, button_audiocodecDown)
+#: rc.cpp:45 rc.cpp:171
+msgid "Get this account down"
+msgstr "Konto in der Liste eine Position nach unten verschieben"
 
-#: ../sflphone-client-kde/src/conf/ConfigurationDialog.cpp:49
-msgctxt "Config section"
-msgid "Display"
-msgstr "Display"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:115
+#. i18n: ectx: property (text), widget (QToolButton, button_accountDown)
+#: rc.cpp:51
+#, fuzzy
+msgctxt "Move account down"
+msgid "Down"
+msgstr "Nach unten"
 
-#: ../sflphone-client-kde/src/conf/ConfigurationDialog.cpp:50
-#: ../sflphone-client-gnome/src/config/configwindow.c:833
-msgctxt "Config section"
-msgid "Accounts"
-msgstr "Konten"
-
-#: ../sflphone-client-kde/src/conf/ConfigurationDialog.cpp:51
-#: ../sflphone-client-gnome/src/config/configwindow.c:786
-msgctxt "Config section"
-msgid "Audio"
-msgstr "Audio"
-
-#: ../sflphone-client-kde/src/conf/ConfigurationDialog.cpp:52
-#: ../sflphone-client-gnome/src/config/configwindow.c:801
-msgctxt "Config section"
-msgid "Address Book"
-msgstr "Adressbuch"
-
-#: ../sflphone-client-kde/src/conf/ConfigurationDialog.cpp:53
-#: ../sflphone-client-gnome/src/config/configwindow.c:796
-msgctxt "Config section"
-msgid "Recordings"
-msgstr "Tonaufnahmen"
-
-#: ../sflphone-client-kde/src/conf/ConfigurationDialog.cpp:54
-#: ../sflphone-client-gnome/src/config/configwindow.c:806
-msgctxt "Config section"
-msgid "Hooks"
-msgstr "Hooks"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:328
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:143
+#. i18n: ectx: property (whatsThis), widget (QListView, listView_accountList)
+#: rc.cpp:54
 msgid ""
 "By default, when you place a call, sflphone will use the first account in "
 "this list which is \"registered\". Change the order of the accounts using "
 "the \"Up\" and \"Down\" arrows. Enable/disable them by checking/unchecking "
 "them on the left of the item. Add or remove some with \"Plus\" and \"Sub\" "
 "buttons. Edit the selected account with the form on the right."
-msgstr "Sflphone verwendet das erste \"registrierte\" Konto in der Liste, "
-"wenn Sie anrufen. Benutzen Sie die Pfeile, um die Anordnung der Kontos "
-"zu ändern. Mit \"Plus\" und \"Minus\" können Sie ein Konto anlegen bzgl. "
-"entfernen. Mit \"Editieren\" können Sie ein Konto bearbeiten. "
+msgstr ""
+"Standardmäßig SFLphone verwendet das erste Konto in dieser Liste mit dem "
+"Status \"registriert\" sobald ein Anruf getätigt wird. Verwenden Sie die "
+"Pfeile \"auf\" und \"ab\" um die Reihenfolge der Liste zu verändern. "
+"Verwenden sie die Checkbox um einzelne Konten zu (de)aktivieren. Durch den "
+"\"+\" Knopf können Sie neue Konten hinzufügen und durch \"-\" entfernen.Die "
+"details des ausgewählten Kontos werden auf der rechten Seite angezeigt und "
+"können dort auch direkt verändert werden."
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:332
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:159
+#. i18n: ectx: property (toolTip), widget (QToolButton, button_accountRemove)
+#: rc.cpp:57
 msgid "Remove the selected account"
-msgstr "Entfernen Sie das ausgewählte Konto"
+msgstr "Löscht das zur Zeit ausgewählte Konto."
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:335
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:162
+#. i18n: ectx: property (whatsThis), widget (QToolButton, button_accountRemove)
+#: rc.cpp:60
 msgid ""
 "This button will remove the selected account in the list below. Be sure you "
 "really don't need it anymore. If you think you might use it again later, "
 "just uncheck it."
 msgstr ""
-"Diese Aktion entfernt das ausgewählte Konto aus der Liste. Stellen Sie "
-"sicher, dass Sie es wirklich nicht mehr brauchen."
+"Entfernt das zur Zeit ausgewählte Konto von der untigen Liste. Bitte "
+"versichern Sie sich, das Sie das Konto wirklich nicht weiter benötigen. "
+"Falls doch, stellen Sie sicher, dass das Konto nicht mehr ausgewählt ist. "
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:340
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:168
+#. i18n: ectx: property (text), widget (QToolButton, button_accountRemove)
+#: rc.cpp:63
+#, fuzzy
+msgctxt "Remove selected account"
 msgid "Remove"
 msgstr "Entfernen"
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:342
-msgid "Add a new account"
-msgstr "Neues Konto anlegen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:210
+#. i18n: ectx: attribute (title), widget (QWidget, tab_basic)
+#: rc.cpp:66
+#, fuzzy
+msgctxt "Basic settings"
+msgid "Basic"
+msgstr "Einfach"
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:345
-msgid ""
-"This button enables you to initialize a new account. You will then be able "
-"to edit it using the form on the right."
-msgstr ""
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:219
+#. i18n: ectx: property (text), widget (QLabel, label1_alias)
+#: rc.cpp:69
+msgid "Alias"
+msgstr "Alias"
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:347
-msgid "Add"
-msgstr "Hinzufügen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:245
+#. i18n: ectx: property (text), widget (QLabel, label2_protocol)
+#: rc.cpp:72
+msgid "Protocol"
+msgstr "Protokoll"
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:349
-msgid "Get this account down"
-msgstr "Konto nach unten"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:352
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:359
-msgid ""
-"By default, when you place a call, sflphone will use the first account in "
-"this list which is \"registered\". Change the order of the accounts using "
-"the \"Up\" and \"Down\" arrows."
-msgstr "Sflphone verwendet das erste \"registrierte\" Konto in der Liste, "
-"wenn Sie anrufen. Benutzen Sie die Pfeile, um die Anordnung der Kontos "
-"zu ändern."
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:354
-msgid "Down"
-msgstr "Unten"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:356
-msgid "Get this account up"
-msgstr "Nach oben"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:361
-msgid "Up"
-msgstr "Oben"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:362
-msgid "Apply"
-msgstr "übernehmen"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:367
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:256
+#. i18n: ectx: property (text), item, widget (KComboBox, edit2_protocol)
+#: rc.cpp:75
 msgid "SIP"
 msgstr "SIP"
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:368
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:261
+#. i18n: ectx: property (text), item, widget (KComboBox, edit2_protocol)
+#: rc.cpp:78
 msgid "IAX"
 msgstr "IAX"
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:374
-#: ../sflphone-client-gnome/src/config/configwindow.c:425
-msgid "Status"
-msgstr "Status"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:269
+#. i18n: ectx: property (text), widget (QLabel, label3_server)
+#: rc.cpp:81
+#, fuzzy
+msgctxt "SIP server"
+msgid "Server"
+msgstr "Server"
 
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:377
-#: ../sflphone-client-gnome/src/config/configwindow.c:528
-msgid "Stun parameters will be applied on each SIP account created."
-msgstr "Alle SIP Kontos werden mit Stun Einstellungen angepasst."
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:378
-msgid "Enable Stun"
-msgstr "Stun aktivieren"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:380
-#: ../sflphone-client-gnome/src/config/configwindow.c:544
-msgid "Format : name.server:port"
-msgstr "Format: Name.Server:Port"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaccountsbase.h:382
-msgid "choose Stun server (example : stunserver.org)"
-msgstr "Stun Server auswählen (Bsp: stunserver.org)"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaddressbookbase.h:154
-msgid "Enable address book"
-msgstr "Aktivieren Adressbuch"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaddressbookbase.h:155
-msgid "Maximum results"
-msgstr "Maximale Anzahl Resultaten"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaddressbookbase.h:156
-msgid "Display photo if available"
-msgstr "Foto anzeigen"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaddressbookbase.h:157
-msgid "Display phone numbers of these types :"
-msgstr "Nummer anzeigen für Typen :"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaddressbookbase.h:158
-msgid "Work"
-msgstr "Arbeit"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaddressbookbase.h:159
-msgid "Mobile"
-msgstr "Handy"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaddressbookbase.h:160
-msgid "Home"
-msgstr "Heim"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:225
-msgid "Sound manager"
-msgstr "Sound Manager"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:228
-msgid "ALSA"
-msgstr "ALSA"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:229
-msgid "PulseAudio"
-msgstr "Pulseaudio"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:231
-msgid "Enable ringtones"
-msgstr "Klingeltöne aktivieren"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:232
-#: ../sflphone-client-gnome/src/config/audioconf.c:812
-msgid "Codecs"
-msgstr "Codecs"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:233
-#: ../sflphone-client-gnome/src/config/audioconf.c:795
-msgid "ALSA settings"
-msgstr "ALSA Konfiguration"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:234
-#: ../sflphone-client-gnome/src/config/audioconf.c:662
-msgid "ALSA plugin"
-msgstr "ALSA Plugin"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:235
-#: ../sflphone-client-gnome/src/config/audioconf.c:706
-msgid "Input"
-msgstr "Eingabe"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:236
-#: ../sflphone-client-gnome/src/config/audioconf.c:684
-msgid "Output"
-msgstr "Ausgabe"
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:237
-msgid "PulseAudio settings"
-msgstr "Pulseaudio Einstellungen "
-
-#: ../sflphone-client-kde/build/src/ui_dlgaudiobase.h:238
-msgid "Mute other applications during a call"
-msgstr "Während eines Anrufs andere Anwendungen stumm schalten"
-
-#: ../sflphone-client-kde/build/src/ui_dlgdisplaybase.h:121
-msgid "Enable notifications"
-msgstr "Benachrichtungungen einschalten"
-
-#: ../sflphone-client-kde/build/src/ui_dlgdisplaybase.h:122
-#: ../sflphone-client-kde/build/src/ui_dlgdisplaybase.h:126
-msgid "On incoming calls"
-msgstr "Auf eingehende Anrufe"
-
-#: ../sflphone-client-kde/build/src/ui_dlgdisplaybase.h:123
-msgid "On messages"
-msgstr "Auf Nachrichten"
-
-#: ../sflphone-client-kde/build/src/ui_dlgdisplaybase.h:124
-msgid "Show main window"
-msgstr "Hauptfenster anzeigen"
-
-#: ../sflphone-client-kde/build/src/ui_dlgdisplaybase.h:125
-msgid "On start"
-msgstr "Beim Start"
-
-#: ../sflphone-client-kde/build/src/ui_dlggeneralbase.h:166
-msgctxt "Beginning of 'Keep my history for at least n days.'"
-msgid "Keep my history for at least"
-msgstr "Vorherigen Anrufen behalten: mindestens "
-
-#: ../sflphone-client-kde/build/src/ui_dlggeneralbase.h:167
-#: ../sflphone-client-gnome/src/config/configwindow.c:643
-msgctxt "End of 'Keep my history for at least n days.'"
-msgid "days"
-msgstr "Tage"
-
-#: ../sflphone-client-kde/build/src/ui_dlggeneralbase.h:168
-msgid "Clear history"
-msgstr "Vorherigen Anrufen leeren"
-
-#: ../sflphone-client-kde/build/src/ui_dlggeneralbase.h:169
-msgid "Connection"
-msgstr "Anbindung"
-
-#: ../sflphone-client-kde/build/src/ui_dlggeneralbase.h:170
-#: ../sflphone-client-gnome/src/config/configwindow.c:664
-msgid "SIP Port"
-msgstr "SIP Port"
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:180
-#: ../sflphone-client-gnome/src/config/hooks-config.c:130
-msgid "URL Argument"
-msgstr "URL Argument"
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:181
-#: ../sflphone-client-gnome/src/config/hooks-config.c:135
-msgid "Custom commands on incoming calls with URL"
-msgstr "Spezielle Befehle bei eingehender Anrufen mit URL"
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:182
-msgid "Trigger on specific SIP header"
-msgstr "Bewirkung beim spezifischen SIP Header"
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:183
-msgid "Trigger on IAX2 URL"
-msgstr "Bewirkung bei IAX2 URL "
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:184
-msgid "Command to run"
-msgstr "Befehl auszuführen"
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:185
-#: ../sflphone-client-gnome/src/config/hooks-config.c:138
-#, c-format
-msgid "%s will be replaced with the passed URL."
-msgstr "%s wird mit gegebener URL ersetzt."
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:186
-#: ../sflphone-client-gnome/src/config/hooks-config.c:165
-msgid "Phone number rewriting"
-msgstr "Telefonnummer umformen"
-
-#: ../sflphone-client-kde/build/src/ui_dlghooksbase.h:187
-msgid "Prefix dialed numbers with"
-msgstr "Präfix vor Nummern einfügen"
-
-#: ../sflphone-client-kde/build/src/ui_dlgrecordbase.h:92
-#: ../sflphone-client-gnome/src/config/configwindow.c:726
-msgid "Destination folder"
-msgstr "Zielverzeichnis"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:384
-#: ../sflphone-client-gnome/src/toolbar.c:232
-#: ../sflphone-client-gnome/src/toolbar.c:234
-msgid "History"
-msgstr "Vorherige Anrufe"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:385
-#: ../sflphone-client-gnome/src/toolbar.c:52
-#: ../sflphone-client-gnome/src/toolbar.c:251
-#: ../sflphone-client-gnome/src/toolbar.c:255
-msgid "Voicemail"
-msgstr "Voicemail"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:386
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:388
-msgid "Configure SFLphone"
-msgstr "Konfigurieren SFLphone"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:390
-msgid "Display volume controls"
-msgstr "Lautstärke-Regler anzeigen"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:391
-msgid "Display dialpad"
-msgstr "Wählscheibe anzeigen"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:392
-msgctxt "Action record a call"
-msgid "Record"
-msgstr "Gespräch aufzeichnen"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:396
-msgid "Attention:number of results exceeds max displayed."
-msgstr "Warnung: Anzahl Resultate überschreit definiertes Maximum"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:398
-#: ../sflphone-client-gnome/src/sliders.c:163
-msgid "Mic volume"
-msgstr "Mikro Lautstärke"
-
-#: ../sflphone-client-kde/build/src/ui_sflphone_kdeview_base.h:402
-#: ../sflphone-client-gnome/src/sliders.c:161
-msgid "Speakers volume"
-msgstr "Lautsprecher Lautstärke"
-
-#: ../sflphone-client-gnome/src/actions.c:54
-#: ../sflphone-client-gnome/src/sflnotify.c:94
-msgid "%d voice mail"
-msgid_plural "%d voice mails"
-msgstr[0] "%d Voice Nachricht"
-msgstr[1] "%d Voice Nachricht"
-
-#: ../sflphone-client-gnome/src/actions.c:234
-msgid ""
-"Unable to connect to the SFLphone server.\n"
-"Make sure the daemon is running."
-msgstr ""
-"SFLphone Server kann nicht verbunden werden. Stellen Sie sicher, dass der "
-"Dämon läuft."
-
-#: ../sflphone-client-gnome/src/actions.c:809
-#, c-format
-msgid "IP call - %s"
-msgstr "IP Anruf - %s"
-
-#: ../sflphone-client-gnome/src/actions.c:908
-#, c-format
-msgid ""
-"<b>Error: No audio codecs found.\n"
-"\n"
-"</b> SFL audio codecs have to be placed in <i>%s</i> or in the <b>.sflphone</"
-"b> directory in your home( <i>%s</i> )"
-msgstr ""
-"<b>Fehler: Kein Audio-Codec gefunden.\n"
-"\n"
-"</b> SFL Audio-Codecs müssen in <i>%s</i> oder <b>.sflphone</b> Ihres HOME-"
-"Verzeichniss ( <i>%s</i> ) gespeichert werden."
-
-#: ../sflphone-client-gnome/src/assistant.c:70
-msgid ""
-"You can at any time check your registration state or modify your accounts "
-"parameters in the Options/Accounts window."
-msgstr "Sie können jederzeit Ihres Registrierungsstatus überprüfen oder Ihre"
-"Kontoparameter ändern (Optionen/Konten)."
-
-#: ../sflphone-client-gnome/src/assistant.c:78
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:292
+#. i18n: ectx: property (text), widget (QLabel, label4_user)
+#: rc.cpp:84
+#, fuzzy
+msgctxt "Account username"
 msgid "Username"
 msgstr "Benutzername"
 
-#: ../sflphone-client-gnome/src/assistant.c:190
-msgid "SFLphone account creation wizard"
-msgstr "SFLphone Konto (Konfigurationsassistent)"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:305
+#. i18n: ectx: property (text), widget (QLabel, label5_password)
+#: rc.cpp:87
+#, fuzzy
+msgctxt "Account password"
+msgid "Password"
+msgstr "Passwort"
 
-#: ../sflphone-client-gnome/src/assistant.c:274
-#: ../sflphone-client-gnome/src/assistant.c:370
-#: ../sflphone-client-gnome/src/config/accountwindow.c:153
-msgid "_Alias"
-msgstr "_Alias"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:322
+#. i18n: ectx: property (text), widget (QLabel, label6_mailbox)
+#: rc.cpp:90
+#, fuzzy
+msgctxt "Account voice mail address"
+msgid "Voicemail"
+msgstr "Anrufbeantworter (Voicemail)"
 
-#: ../sflphone-client-gnome/src/assistant.c:282
-#: ../sflphone-client-gnome/src/assistant.c:378
-#: ../sflphone-client-gnome/src/config/accountwindow.c:189
-msgid "_Host name"
-msgstr "_Hostname"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:335
+#. i18n: ectx: property (text), widget (QLabel, label7_state)
+#: rc.cpp:93
+msgid "Status"
+msgstr "Status"
 
-#: ../sflphone-client-gnome/src/assistant.c:290
-#: ../sflphone-client-gnome/src/assistant.c:386
-#: ../sflphone-client-gnome/src/config/accountwindow.c:197
-msgid "_User name"
-msgstr "_Benutzername"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:361
+#. i18n: ectx: property (text), widget (QCheckBox, m_pDefaultAccount)
+#: rc.cpp:96
+msgid "Default account for contact with only extensions as phone number"
+msgstr "Default Konto für Kontakte mit nur einer Durchwahl."
 
-#: ../sflphone-client-gnome/src/assistant.c:306
-#: ../sflphone-client-gnome/src/assistant.c:401
-#: ../sflphone-client-gnome/src/config/accountwindow.c:212
-msgid "_Password"
-msgstr "_Passwort"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:369
+#. i18n: ectx: attribute (title), widget (QWidget, tab_advanced)
+#: rc.cpp:99
+#, fuzzy
+msgctxt "Advanced settings"
+msgid "Advanced"
+msgstr "Fortgeschritten"
 
-#: ../sflphone-client-gnome/src/assistant.c:324
-#: ../sflphone-client-gnome/src/assistant.c:417
-#: ../sflphone-client-gnome/src/config/accountwindow.c:228
-msgid "_Voicemail number"
-msgstr "_Voicemail Nummer"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:375
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: rc.cpp:102
+msgid "Resgistration"
+msgstr "Registrierung"
 
-#: ../sflphone-client-gnome/src/assistant.c:347
-msgid "_Email address"
-msgstr "_Email"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:401
+#. i18n: ectx: property (text), widget (QLabel, label_regExpire)
+#: rc.cpp:105
+msgid "Registration expire"
+msgstr "Ablauf der Registrierung"
 
-#: ../sflphone-client-gnome/src/assistant.c:444
-#: ../sflphone-client-gnome/src/config/configwindow.c:532
-msgid "E_nable STUN"
-msgstr "STUN Ei_nschalten"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:414
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
+#: rc.cpp:108
+msgid "Network Interface"
+msgstr "Netzwerkkarte"
 
-#: ../sflphone-client-gnome/src/assistant.c:451
-msgid "_STUN server"
-msgstr "_STUN Server"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:420
+#. i18n: ectx: property (text), widget (QLabel, label_ni_local_address)
+#: rc.cpp:111
+msgid "Local address"
+msgstr "Lokale Adresse"
 
-#: ../sflphone-client-gnome/src/assistant.c:465
-msgid "Account Registration"
-msgstr "Konto Registrierung"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:430
+#. i18n: ectx: property (text), widget (QLabel, label_ni_local_port)
+#: rc.cpp:114
+msgid "Local port"
+msgstr "Lokaler Port"
 
-#: ../sflphone-client-gnome/src/assistant.c:465
-msgid "Congratulations!"
-msgstr "Gratulation!"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:460
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:480
+#. i18n: ectx: property (text), widget (QLabel, label_published_address)
+#: rc.cpp:117 rc.cpp:126
+msgid "Published address"
+msgstr "Veröffentlichte Adresse"
 
-#: ../sflphone-client-gnome/src/errors.c:29
-msgid ""
-"ALSA notification\n"
-"\n"
-"Error while opening playback device"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:466
+#. i18n: ectx: property (text), widget (QRadioButton, radioButton_pa_same_as_local)
+#: rc.cpp:120
+msgid "Same as local parameters"
+msgstr "Stimmt mit lokalen Parametern überein"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:473
+#. i18n: ectx: property (text), widget (QRadioButton, radioButton_pa_custom)
+#: rc.cpp:123
+msgid "Set published address and port"
+msgstr "Konfigurieren der Adresse und des Ports, die veröffentlicht werden"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:487
+#. i18n: ectx: property (text), widget (QLabel, label_pa_published_port)
+#: rc.cpp:129
+msgid "Published port"
+msgstr "Veröffentlichter Port"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:520
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
+#: rc.cpp:132
+msgid "Stun"
+msgstr "STUN"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:526
+#. i18n: ectx: property (text), widget (QLabel, label_commonSettings)
+#: rc.cpp:135
+msgid "Stun parameters will be applied on each SIP account created."
+msgstr "STUN Parameter werden für jedes VoIP SIP Konto gesetzt"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:536
+#. i18n: ectx: property (text), widget (QCheckBox, checkbox_stun)
+#: rc.cpp:138
+msgid "Enable Stun"
+msgstr "Aktiviert STUN"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:546
+#. i18n: ectx: property (clickMessage), widget (KLineEdit, line_stun)
+#: rc.cpp:141
+msgid "choose Stun server (example : stunserver.org)"
+msgstr "Bitte geben Sie den gewünschten STUN server an (z.B. stun-server.org)"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:570
+#. i18n: ectx: attribute (title), widget (QWidget, tab_codec)
+#: rc.cpp:144
+msgid "Codecs"
 msgstr ""
-"ALSA Benachrichtigung\n"
-"\n"
-"Fehler während Öffnen des \"playback device\""
 
-#: ../sflphone-client-gnome/src/errors.c:32
-msgid ""
-"ALSA notification\n"
-"\n"
-"Error while opening capture device"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:576
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_5)
+#: rc.cpp:147
+msgid "Audio codecs"
+msgstr "Audio Codecs"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:582
+#. i18n: ectx: property (text), widget (QLabel, label_frequency)
+#: rc.cpp:150
+msgid "Sample rate:"
+msgstr "Sample Rate"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:595
+#. i18n: ectx: property (text), widget (QToolButton, button_audiocodecUp)
+#: rc.cpp:159
+#, fuzzy
+msgctxt "Move audio codec up"
+msgid "Up"
+msgstr "Nach oben"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:605
+#. i18n: ectx: property (text), widget (QLabel, label_bitrate_value)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:625
+#. i18n: ectx: property (text), widget (QLabel, label_frequency_value)
+#: rc.cpp:162 rc.cpp:165
+msgid "-"
 msgstr ""
-"ALSA Benachrichtigung\n"
-"\n"
-"Fehler während Öffnen des \"capture device\""
 
-#: ../sflphone-client-gnome/src/errors.c:35
-msgid ""
-"Pulseaudio notification\n"
-"\n"
-"Pulseaudio is not running"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:635
+#. i18n: ectx: property (text), widget (QLabel, label_bitrate)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:693
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: rc.cpp:168 rc.cpp:183
+msgid "Bitrate:"
+msgstr "Durchsatz in bit/sec:"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:648
+#. i18n: ectx: property (text), widget (QToolButton, button_audiocodecDown)
+#: rc.cpp:177
+#, fuzzy
+msgctxt "Move audio codec down"
+msgid "Down"
+msgstr "Nach unten"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:661
+#. i18n: ectx: property (title), widget (QGroupBox, m_pVideoCodecGB)
+#: rc.cpp:180
+msgid "Video codecs"
+msgstr "Video Codecs"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:700
+#. i18n: ectx: property (text), widget (QToolButton, m_pVCodecDownPB)
+#: rc.cpp:186
+#, fuzzy
+msgctxt "Move video codec down"
+msgid "Down"
+msgstr "Nach unten"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:707
+#. i18n: ectx: property (text), widget (QToolButton, m_pVCodecUpPB)
+#: rc.cpp:189
+#, fuzzy
+msgctxt "Move video codec up"
+msgid "Up"
+msgstr "Nach oben"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:734
+#. i18n: ectx: attribute (title), widget (QWidget, tab)
+#: rc.cpp:192
+msgid "Credential"
+msgstr "Authentifizierungsinformationen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:759
+#. i18n: ectx: property (title), widget (QGroupBox, group_credential)
+#: rc.cpp:195
+msgid "Details"
 msgstr ""
-"Pulseaudio Benachrichtigung\n"
-"\n"
-"Pulseaudio nicht gestartet"
 
-#: ../sflphone-client-gnome/src/mainwindow.c:70
-msgid "There is one call in progress."
-msgstr "Laufender Anruf."
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:765
+#. i18n: ectx: property (text), widget (QLabel, label_credential_realm)
+#: rc.cpp:198
+msgid "Realm"
+msgstr "Gültigkeitsgebiet (realm)"
 
-#: ../sflphone-client-gnome/src/mainwindow.c:74
-msgid "There are calls in progress."
-msgstr "Laufende Anrufe."
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:772
+#. i18n: ectx: property (text), widget (QLabel, labe_credential_auth)
+#: rc.cpp:201
+msgid "Auth. name"
+msgstr "Auth. Name"
 
-#: ../sflphone-client-gnome/src/mainwindow.c:83
-msgid "Do you still want to quit?"
-msgstr "Bitte bestätigen, dass Sie die Anwendung beenden möchten"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:779
+#. i18n: ectx: property (text), widget (QLabel, label_credential_password)
+#: rc.cpp:204
+msgid "Password"
+msgstr "Passwort"
 
-#: ../sflphone-client-gnome/src/mainwindow.c:296
-msgid "SFLphone Error"
-msgstr "SFLphone Fehler"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:829
+#. i18n: ectx: property (text), widget (QToolButton, button_add_credential)
+#: rc.cpp:207
+#, fuzzy
+msgctxt "Add new credential"
+msgid "Add"
+msgstr "Hinzufügen"
 
-#: ../sflphone-client-gnome/src/menus.c:134
-msgid "SFLphone is a VoIP client compatible with SIP and IAX2 protocols."
-msgstr "SFLphone ist ein VoIP Client (kompatibel mit SIP und IAX2 Protokolle)"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:836
+#. i18n: ectx: property (text), widget (QToolButton, button_remove_credential)
+#: rc.cpp:210
+#, fuzzy
+msgctxt "Remove selected credential"
+msgid "Remove"
+msgstr "Entfernen"
 
-#: ../sflphone-client-gnome/src/menus.c:137
-msgid "About SFLphone"
-msgstr "Über SFLphone"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:854
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: rc.cpp:213
+msgid "Security"
+msgstr "Sicherheit"
 
-#: ../sflphone-client-gnome/src/menus.c:161
-msgid "_Help"
-msgstr "_Hilfe"
+# ???
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:881
+#. i18n: ectx: property (text), widget (QLabel, label_tls_info)
+#: rc.cpp:216
+msgid ""
+"TLS transport can be used along with UDP for those calls that would require "
+"secure sip transactions (aka SIPS). You can configure a different TLS "
+"transport for each account. However each of them will run on a dedicated "
+"port, different one from each other."
+msgstr ""
+"TLS Verschlüsselung kann zusammen mit UDP Transport verwendet werden, um "
+"gesicherte SIP Kommunikation (SIPS) zu ermöglichen. Die TLS Verschlüsselung "
+"(inklusive der gewünschten TLS Version) kann für jedes Konto getrennt "
+"konfiguriert werden. Jedes Konto verwendet allerdings seinen eigenen Port."
 
-#: ../sflphone-client-gnome/src/menus.c:296
-#: ../sflphone-client-gnome/src/menus.c:962
-msgid "_New call"
-msgstr "_Neuer Anruf"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:897
+#. i18n: ectx: property (title), widget (QGroupBox, group_security_tls)
+#: rc.cpp:219
+msgid "Enable TLS"
+msgstr "Aktiviert TLS Verschlüsselung"
 
-#: ../sflphone-client-gnome/src/menus.c:308
-#: ../sflphone-client-gnome/src/menus.c:794
-msgid "_Pick up"
-msgstr "_Abnehmen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:909
+#. i18n: ectx: property (text), widget (QLabel, label_tls_listener)
+#: rc.cpp:222
+msgid "Global TLS listener*"
+msgstr "Globaler TLS server"
 
-#: ../sflphone-client-gnome/src/menus.c:318
-#: ../sflphone-client-gnome/src/menus.c:806
-msgid "_Hang up"
-msgstr "A_uflegen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:936
+#. i18n: ectx: property (text), widget (QLabel, label_tls_authority)
+#: rc.cpp:225
+msgid "Authority certificate list"
+msgstr "Liste der authentifizierten Zertifikate"
 
-#: ../sflphone-client-gnome/src/menus.c:328
-#: ../sflphone-client-gnome/src/menus.c:818
-msgid "On _Hold"
-msgstr "in _Warteschleife"
+# ???
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:946
+#. i18n: ectx: property (text), widget (QLabel, label_tls_endpoint)
+#: rc.cpp:228
+msgid "Public endpoint certificate"
+msgstr "Öffentliches Endpunkt Zertifikat"
 
-#: ../sflphone-client-gnome/src/menus.c:340
-#: ../sflphone-client-gnome/src/menus.c:830
-msgid "_Record"
-msgstr "_Gespräch aufzeichnen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:956
+#. i18n: ectx: property (text), widget (QLabel, label_tls_private_key)
+#: rc.cpp:231
+msgid "Private key"
+msgstr "Privater Schlüssel"
 
-#: ../sflphone-client-gnome/src/menus.c:354
-msgid "_Account creation wizard"
-msgstr "SFLphone _Konto (Konfigurationsassistent)"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:966
+#. i18n: ectx: property (text), widget (QLabel, label_tls_private_key_password)
+#: rc.cpp:234
+msgid "Private key password"
+msgstr "Privates Passwort"
 
-#: ../sflphone-client-gnome/src/menus.c:384
-msgid "_Call"
-msgstr "_Anruf"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:976
+#. i18n: ectx: property (text), widget (QLabel, label_tls_method)
+#: rc.cpp:237
+msgid "TLS protocol method"
+msgstr "TLS Protokoll Version"
 
-#: ../sflphone-client-gnome/src/menus.c:552
-msgid "Clear _history"
-msgstr "Liste der vorherigen Anrufen _leeren"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:984
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_tls_method)
+#: rc.cpp:240
+#, fuzzy
+msgctxt "Default TLS method"
+msgid "Default"
+msgstr ""
 
-#: ../sflphone-client-gnome/src/menus.c:564
-msgid "_Accounts"
-msgstr "_Konten"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:989
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_tls_method)
+#: rc.cpp:243
+msgid "TLSv1"
+msgstr "TLS v1"
 
-#: ../sflphone-client-gnome/src/menus.c:579
-msgid "_Edit"
-msgstr "_Editieren"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:994
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_tls_method)
+#: rc.cpp:246
+msgid "SSLv2"
+msgstr "SSL v2"
 
-#: ../sflphone-client-gnome/src/menus.c:640
-msgid "_Dialpad"
-msgstr "_Wählscheibe"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:999
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_tls_method)
+#: rc.cpp:249
+msgid "SSLv3"
+msgstr "SSL v3"
 
-#: ../sflphone-client-gnome/src/menus.c:652
-msgid "_Volume controls"
-msgstr "Lautstärke Kontrollen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1004
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_tls_method)
+#: rc.cpp:252
+msgid "SSLv23"
+msgstr "SSL v23"
 
-#: ../sflphone-client-gnome/src/menus.c:670
-msgid "_View"
-msgstr "_Anzeigen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1025
+#. i18n: ectx: property (text), widget (QLabel, label_tls_cipher)
+#: rc.cpp:255
+msgid "TLS cipher list"
+msgstr "Liste der TLS Verschluesselungs-Codes"
 
-#: ../sflphone-client-gnome/src/menus.c:890
-msgid "_Call back"
-msgstr "_Zurückrufen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1035
+#. i18n: ectx: property (text), widget (QLabel, label_tls_outgoing)
+#: rc.cpp:258
+msgid "Outgoing TLS server name"
+msgstr "Ausgehender TLS server"
 
-#: ../sflphone-client-gnome/src/menus.c:1070
-msgid "Edit phone number"
-msgstr "Nummer editieren"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1045
+#. i18n: ectx: property (text), widget (QLabel, label_tls_timeout)
+#: rc.cpp:261
+msgid "Negotiation timeout (s:ms)"
+msgstr "Verhandlungstimeout (Sekunden:MilliSekunden)"
 
-#: ../sflphone-client-gnome/src/menus.c:1081
-msgid "Edit the phone number before making a call"
-msgstr "Nummer vor dem Anruf editieren"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1068
+#. i18n: ectx: property (text), widget (QCheckBox, check_tls_incoming)
+#: rc.cpp:264
+msgid "Verify incoming certificates (server side)"
+msgstr "Verifizieren der Zertifikate für eingehende Verbindungen (Server-seitig)"
 
-#: ../sflphone-client-gnome/src/sflnotify.c:71
-#: ../sflphone-client-gnome/src/sflnotify.c:91
-#, c-format
-msgid "%s account : %s"
-msgstr "Konto %s : %s"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1075
+#. i18n: ectx: property (text), widget (QCheckBox, check_tls_answer)
+#: rc.cpp:267
+msgid "Verify answer certificates (client side)"
+msgstr "Verifizieren der Antwort Zertifikate (Client-seitig)"
 
-#: ../sflphone-client-gnome/src/sflnotify.c:75
-#, c-format
-msgid "<i>From</i> %s"
-msgstr "<i>Von</i> %s"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1082
+#. i18n: ectx: property (text), widget (QCheckBox, check_tls_requier_cert)
+#: rc.cpp:270
+msgid "Require a certificate for incoming TLS connections"
+msgstr "Eingehende Verbindungen benötigen Zertifikate für TLS Verbindungen"
 
-#: ../sflphone-client-gnome/src/sflnotify.c:111
-#, c-format
-msgid "Calling with %s account <i>%s</i>"
-msgstr "Mit %s Konto <i>%s</i> anrufen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1089
+#. i18n: ectx: property (text), widget (QLabel, label_tls_details)
+#: rc.cpp:273
+msgid "*Apply to all accounts"
+msgstr "*Auf alle Konten anwenden"
 
-#: ../sflphone-client-gnome/src/sflnotify.c:115
-msgid "Current account"
-msgstr "Aktuelles Konto"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1156
+#. i18n: ectx: property (text), widget (QLabel, label_timeout2)
+#: rc.cpp:276
+msgid "<center>:</center>"
+msgstr "<center>:</center>"
 
-#: ../sflphone-client-gnome/src/sflnotify.c:130
-msgid "You have no accounts set up"
-msgstr "Sie haben noch kein Konto eingestellt"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1166
+#. i18n: ectx: property (title), widget (QGroupBox, groupbox_STRP_keyexchange)
+#: rc.cpp:279
+msgid "SRTP key exchange"
+msgstr "SRTP Schlüsselaustausch"
 
-#: ../sflphone-client-gnome/src/sflnotify.c:131
-#: ../sflphone-client-gnome/src/sflnotify.c:148
-msgid "Error"
-msgstr "Fehler"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1179
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_security_STRP)
+#: rc.cpp:282
+#, fuzzy
+msgctxt "Disabled security"
+msgid "Disabled"
+msgstr "Deaktiviert"
 
-#: ../sflphone-client-gnome/src/sflnotify.c:147
-msgid "You have no registered accounts"
-msgstr "Sie haben noch kein registriertes Konto"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1184
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_security_STRP)
+#: rc.cpp:285
+msgid "ZRTP"
+msgstr "ZRTP"
 
-#: ../sflphone-client-gnome/src/statusicon.c:91
-msgid "_Show main window"
-msgstr "_Hauptfenster anzeigen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1189
+#. i18n: ectx: property (text), item, widget (KComboBox, combo_security_STRP)
+#: rc.cpp:288
+msgid "SDES"
+msgstr "SDES"
 
-#: ../sflphone-client-gnome/src/statusicon.c:125
-#, c-format
-msgid "%s - %s"
-msgstr "%s - %s"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1197
+#. i18n: ectx: property (text), widget (QCheckBox, checkbox_ZTRP_send_hello)
+#: rc.cpp:291
+msgid "Send Hello Hash in SDP"
+msgstr "Übersende Hallo Hash in SDP"
 
-#: ../sflphone-client-gnome/src/statusicon.c:127
-#, c-format
-msgid "%i account configured"
-msgid_plural "%i accounts configured"
-msgstr[0] "%i Konto konfiguriert"
-msgstr[1] "%i Konten konfiguriert"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1204
+#. i18n: ectx: property (text), widget (QCheckBox, checkbox_ZRTP_warn_supported)
+#: rc.cpp:294
+msgid "Ask user to confirm SAS"
+msgstr "SAS bestätigen"
 
-#: ../sflphone-client-gnome/src/config/accountwindow.c:113
-msgid "Account settings"
-msgstr "Kontoeinstellungen"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1211
+#. i18n: ectx: property (text), widget (QCheckBox, checkbox_ZRTP_Ask_user)
+#: rc.cpp:297
+msgid "Warn if ZRTP is not supported"
+msgstr "Warnen falls ZRTP nicht unterstützt wird"
 
-#: ../sflphone-client-gnome/src/config/accountwindow.c:147
-msgid "_Enable this account"
-msgstr "_Einschalten"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1218
+#. i18n: ectx: property (text), widget (QCheckBox, checkbox_ZRTP_display_SAS)
+#: rc.cpp:300
+msgid "Display SAS once for hold events"
+msgstr "Zeige einmal das SAS für alle Verbindunen die pausiert (put-on-hold) werden"
 
-#: ../sflphone-client-gnome/src/config/accountwindow.c:161
-msgid "_Protocol"
-msgstr "_Protokoll"
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1225
+#. i18n: ectx: property (text), widget (QCheckBox, checkbox_SDES_fallback_rtp)
+#: rc.cpp:303
+msgid "Fallback on RTP on SDES failure"
+msgstr "Verwende RTP wenn SDES fehlschlägt"
 
-#: ../sflphone-client-gnome/src/config/accountwindow.c:179
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1240
+#. i18n: ectx: attribute (title), widget (QWidget, tab_3)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1246
+#. i18n: ectx: property (title), widget (QGroupBox, m_pEnableRingtoneGB)
+#: rc.cpp:306 rc.cpp:309
+msgid "Ringtone"
+msgstr "Klingelzeichen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaccountsbase.ui:1258
+#. i18n: ectx: property (text), widget (QCheckBox, m_pUseCustomFileCK)
+#: rc.cpp:312
+msgid "Use custom file"
+msgstr "Benutzerdefinierte Datei"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaddressbookbase.ui:20
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableAddressBook)
+#: rc.cpp:315
+msgid "Enable address book"
+msgstr "Aktiviere Adressblock"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaddressbookbase.ui:27
+#. i18n: ectx: property (text), widget (QLabel, m_pPhonetypeL)
+#: rc.cpp:318
+msgid "Use contact from the following phone number category:"
+msgstr "Verwende den Kontakt von dieser Telefonnummerkategorie:"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaddressbookbase.ui:47
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: rc.cpp:321
+msgid "Contact list details"
+msgstr "Kontaktliste anzeigen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaddressbookbase.ui:53
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_displayOrganisation)
+#: rc.cpp:324
+msgid "Display organisation"
+msgstr "Anzeigen der Organisation"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaddressbookbase.ui:60
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_displayEmail)
+#: rc.cpp:327
+msgid "Display e-mail address"
+msgstr "Anzeigen der Email-Adresse"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaddressbookbase.ui:67
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_alwaysShowPhoneNumber)
+#: rc.cpp:330
+#, fuzzy
+msgid "Always display phone number"
+msgstr "Telefonnummer auswählen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:32
+#. i18n: ectx: property (text), widget (QLabel, label_interface)
+#: rc.cpp:333
+msgid "Sound manager"
+msgstr "Audio Manager"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:43
+#. i18n: ectx: property (text), item, widget (KComboBox, kcfg_interface)
+#: rc.cpp:336
+msgid "ALSA"
+msgstr ""
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:48
+#. i18n: ectx: property (text), item, widget (KComboBox, kcfg_interface)
+#: rc.cpp:339
+msgid "PulseAudio"
+msgstr "PulseAudio"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:75
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_alsa)
+#: rc.cpp:342
+msgid "ALSA settings"
+msgstr "ALSA Einstellungen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:90
+#. i18n: ectx: property (text), widget (QLabel, label1_alsaPugin)
+#: rc.cpp:345
+msgid "ALSA plugin"
+msgstr "ALSA Plugin"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:107
+#. i18n: ectx: property (text), widget (QLabel, label2_in)
+#: rc.cpp:348
+msgid "Input"
+msgstr ""
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:124
+#. i18n: ectx: property (text), widget (QLabel, label3_out)
+#: rc.cpp:351
+msgid "Output"
+msgstr ""
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:154
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_pulseAudio)
+#: rc.cpp:354
+msgid "PulseAudio settings"
+msgstr "PulseAudio Einstellungen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:163
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_pulseAudioVolumeAlter)
+#: rc.cpp:357
+msgid "Mute other applications during a call"
+msgstr "Stumm schalten anderer Anwendungen während eines Anrufs"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:183
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox1_recordGeneral)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:110
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox2_connection_2)
+#: rc.cpp:360 rc.cpp:399
+msgid "Recording"
+msgstr "Aufnahme"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgaudiobase.ui:189
+#. i18n: ectx: property (text), widget (QLabel, label_destinationFolderd)
+#: rc.cpp:363
+msgid "Destination folder"
+msgstr "Zielordner"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgdisplaybase.ui:26
+#. i18n: ectx: property (text), widget (QLabel, label1_notifications)
+#: rc.cpp:366
+msgid "Enable notifications"
+msgstr "Benachrichtigungen aktivieren"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgdisplaybase.ui:45
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_notifOnCalls)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgdisplaybase.ui:100
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_displayOnCalls)
+#: rc.cpp:369 rc.cpp:381
+msgid "On incoming calls"
+msgstr "Für eingehende Anrufe"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgdisplaybase.ui:55
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_notifOnMessages)
+#: rc.cpp:372
+msgid "On messages"
+msgstr "Bei Empfang einer Nachricht"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgdisplaybase.ui:71
+#. i18n: ectx: property (text), widget (QLabel, label2_displayMainWindow)
+#: rc.cpp:375
+msgid "Show main window"
+msgstr "Zeige Hauptfenster"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgdisplaybase.ui:90
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_displayOnStart)
+#: rc.cpp:378
+msgid "On start"
+msgstr "Bei Programmstart"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:26
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox1_history_2)
+#: rc.cpp:384
+msgid "Call history"
+msgstr "Anrufhistorie"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:38
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableHistory)
+#: rc.cpp:387
+msgid "Keep my history for at least"
+msgstr "Behalte Anrufhistorie für"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:64
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: rc.cpp:390
+#, fuzzy
+msgctxt "Keep my history for at least *** days"
+msgid "days"
+msgstr "Tage"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:87
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_displayHistoryStatus)
+#: rc.cpp:393
+msgid "Display incoming, outgoing and missed for history items"
+msgstr "Zeige den Anruftyp (eingehend, ausgehend oder verpasst) per Icon in der Anrufhistorie"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:94
+#. i18n: ectx: property (text), widget (QToolButton, toolButton_historyClear)
+#: rc.cpp:396
+msgid "Clear history"
+msgstr "Anrufhistorie leeren"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:131
+#. i18n: ectx: property (text), widget (QCheckBox, m_pAlwaysRecordCK)
+#: rc.cpp:402
+msgid "Always record calls"
+msgstr "Anrufe immer aufzeichnen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:154
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox)
+#: rc.cpp:405
+msgid "Visible call details"
+msgstr "Sichtbare Anrufdetails"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlggeneralbase.ui:165
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_limitMinimumRowHeight)
+#: rc.cpp:408
+msgid "Minimum item height"
+msgstr "Minimale Höhe"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:20
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_urlArgument)
+#: rc.cpp:411
+msgid "URL Argument"
+msgstr "URL Argument"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:26
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: rc.cpp:414
+msgid "Custom commands on incoming calls with URL"
+msgstr "Benutzerdefinierte Befehle für eingehende Anrufe mit URL"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:63
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableHooksSIP)
+#: rc.cpp:417
+msgid "Trigger on specific SIP header"
+msgstr "Trigger für bestimmten SIP Protokoll Kopfzeilen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:83
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableHooksIAX)
+#: rc.cpp:420
+msgid "Trigger on IAX2 URL"
+msgstr "Trigger für Anrufe mit IAX2 URL"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:105
+#. i18n: ectx: property (text), widget (QLabel, label_command)
+#: rc.cpp:423
+msgid "Command to run"
+msgstr "Auszuführender Befehl"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:128
+#. i18n: ectx: property (text), widget (QLabel, label_2)
+#: rc.cpp:427
+#, no-c-format
+msgid "%s will be replaced with the passed URL."
+msgstr "%s wird mit der empfangenden URL ersetzt."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:138
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_phoneNumberFormatting)
+#: rc.cpp:430
+msgid "Phone number rewriting"
+msgstr "Überschreiben der Rufnummern"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlghooksbase.ui:159
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_addPrefix)
+#: rc.cpp:433
+msgid "Prefix dialed numbers with"
+msgstr "Prefix für zu wählende Rufnummern"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgvideobase.ui:14
+#. i18n: ectx: property (windowTitle), widget (QWidget, DlgVideoBase)
+#: rc.cpp:436
+#, fuzzy
+msgid "Video settings"
+msgstr "PulseAudio Einstellungen"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgvideobase.ui:28
+#. i18n: ectx: property (text), widget (QLabel, m_pDeviceL)
+#: rc.cpp:439
+msgid "Device:"
+msgstr "Gerät:"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgvideobase.ui:47
+#. i18n: ectx: property (title), widget (QGroupBox, m_pConfGB)
+#: rc.cpp:442
+msgid "Device configuration"
+msgstr "Gerätekonfiguration"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgvideobase.ui:58
+#. i18n: ectx: property (text), widget (QLabel, m_pChannelL)
+#: rc.cpp:445
+msgid "Channel"
+msgstr "Kanal"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgvideobase.ui:75
+#. i18n: ectx: property (text), widget (QLabel, m_pResolutionL)
+#: rc.cpp:448
+#, fuzzy
+msgid "Resolution"
+msgstr "Registrierung"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgvideobase.ui:92
+#. i18n: ectx: property (text), widget (QLabel, m_pRateL)
+#: rc.cpp:451
+msgid "Rate"
+msgstr "Frequenz"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/conf/dlgvideobase.ui:121
+#. i18n: ectx: property (text), widget (QPushButton, m_pPreviewPB)
+#: rc.cpp:454
+msgid "Start preview"
+msgstr "Teste Vorschau"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:12
+#. i18n: ectx: label, entry (enableHistory), group (main)
+#: rc.cpp:457
+msgid "Defines whether sflphone should keep a history of calls."
+msgstr "Entscheidet, ob SFLphone eine Historie aller Anrufe behält."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:15
+#. i18n: ectx: label, entry (historyMax), group (main)
+#: rc.cpp:460
+msgid "Defines the number of days the history has to be kept."
+msgstr "Waehlen Sie die maximale Anzahl an Eintraegen in der Anruf-Historie."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:21
+#. i18n: ectx: label, entry (displayCallIcon), group (main)
+#: rc.cpp:463
+msgid "Should CallIcon be visible by default for calls"
+msgstr "Zeige per Default den Anruftyp per Icon?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:25
+#. i18n: ectx: label, entry (displayCallPeer), group (main)
+#: rc.cpp:466
+msgid "Should CallPeer be visible by default for calls"
+msgstr "Zeige per Default den Namen des Gesprächspartners?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:29
+#. i18n: ectx: label, entry (displayCallNumber), group (main)
+#: rc.cpp:469
+msgid "Should CallNumber be visible by default for calls"
+msgstr "Zeige per Default die Rufnummer des Gesprächspartners?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:33
+#. i18n: ectx: label, entry (displayCallSecure), group (main)
+#: rc.cpp:472
+msgid "Should CallSecure be visible by default for calls"
+msgstr "Zeige per Default den Verschlüsselungsstatus des Anrufs?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:37
+#. i18n: ectx: label, entry (displayCallCodec), group (main)
+#: rc.cpp:475
+msgid "Should CallCodec be visible by default for calls"
+msgstr "Zeige per Default den verwendeten Audio Codec des Anrufs?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:41
+#. i18n: ectx: label, entry (displayCallOrganisation), group (main)
+#: rc.cpp:478
+msgid "If a contact is present, display the organisation"
+msgstr "Für vorhandene Kontakte, zeige auch die Organisataion?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:45
+#. i18n: ectx: label, entry (displayCallDepartment), group (main)
+#: rc.cpp:481
+msgid "If a contact is present, display the department"
+msgstr "Für vorhandene Kontakte, zeige die Abteilung?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:49
+#. i18n: ectx: label, entry (displayCallEmail), group (main)
+#: rc.cpp:484
+msgid "If a contact is present, display the e-mail"
+msgstr "Für vorhandene Kontakte, zeige die Email Adresse?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:53
+#. i18n: ectx: label, entry (limitMinimumRowHeight), group (main)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:57
+#. i18n: ectx: label, entry (minimumRowHeight), group (main)
+#: rc.cpp:487 rc.cpp:490
+msgid "The minimum number of pixel for a call item"
+msgstr "Die minimale Höhe der Einträge in der Liste aller aktiven Anrufe."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:61
+#. i18n: ectx: label, entry (displayHistoryStatus), group (main)
+#: rc.cpp:493
+msgid "Display incoming, outgoing or missed"
+msgstr "Zeige Anruftyp (eingehened, ausgehend oder verpasst)"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:68
+#. i18n: ectx: label, entry (notifOnCalls), group (main)
+#: rc.cpp:496
+msgid "Defines whether user should be notified when receiving a call."
+msgstr "Soll der Benutzer über eingehende Anrufe informiert wird?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:72
+#. i18n: ectx: label, entry (notifOnMessages), group (main)
+#: rc.cpp:499
+msgid "Defines whether user should be notified when receiving a message."
+msgstr "Soll der Benutzer über empfangene Nachrichten benachrichtigt werden?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:76
+#. i18n: ectx: label, entry (displayOnStart), group (main)
+#: rc.cpp:502
+msgid "Defines whether the main window should be displayed on start."
+msgstr "Soll das Anwendungsfenster beim Starten gezeigt werden oder nicht?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:80
+#. i18n: ectx: label, entry (displayOnCalls), group (main)
+#: rc.cpp:505
+msgid ""
+"Defines whether the main window should be displayed when receiving a message."
+msgstr ""
+"Soll das Anwendungsfenster beim Emfpang einer neuen Nachricht gezeigt werden?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:84
+#. i18n: ectx: label, entry (displayDialpad), group (main)
+#: rc.cpp:508
+msgid "Defines whether the dialpad is being shown by default"
+msgstr "Soll die Wähltastatur standardmäßig gezeigt werden?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:88
+#. i18n: ectx: label, entry (displayMessageBox), group (main)
+#: rc.cpp:511
+msgid "Defines whether the text message box is visible"
+msgstr "Entscheidet, ob das Textnachrichtenfeld angezeigt wird."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:92
+#. i18n: ectx: label, entry (displayVolume), group (main)
+#: rc.cpp:514
+msgid "Defines whether the volume widgets are visible by default"
+msgstr "Entscheidet, ob der Lautstärkenregler sichtbar ist."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:96
+#. i18n: ectx: label, entry (displayMenu), group (main)
+#: rc.cpp:517
+msgid ""
+"Defines whether the main menu is visible by default, it can be restored with "
+"\"Ctrl+m\""
+msgstr ""
+"Entscheidet, ob die Menüleiste angezeigt wird (kann mit Strg+m "
+"wiederhergestellt werden)."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:99
+#. i18n: ectx: label, entry (displayDataRange), group (main)
+#: rc.cpp:520
+msgid "Defines whether call history is restricted to a specific date range"
+msgstr "Wählen Sie, ob die Anrufhistorie auf ein bestimmtes Datumsintervall "
+"restriktiert sein soll."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:103
+#. i18n: ectx: label, entry (displayPopularAsBookmark), group (main)
+#: rc.cpp:523
+msgid ""
+"Defines whether or not to display the 10 most popular phone number as "
+"bookmark automagically"
+msgstr ""
+"Wählen Sie, ob die top 10 beliebtesten Rufnummern automatisch als "
+"Lesezeichen gespeichert werden."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:106
+#. i18n: ectx: label, entry (historySortMode), group (main)
+#: rc.cpp:526
+msgid "Define sorting order for history list"
+msgstr "Wählen Sie die Sortier-Reihenfolge der Anruf-Historie."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:109
+#. i18n: ectx: label, entry (contactSortMode), group (main)
+#: rc.cpp:529
+msgid "Define sorting order for contact list"
+msgstr "Wählen Sie die Sortier-Reihenfolge der Kontakt-Liste."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:112
+#. i18n: ectx: label, entry (displayContactCallHistory), group (main)
+#: rc.cpp:532
+msgid "Defines if the individual contact history list is visible"
+msgstr "Soll die Anrufhistorie per Kontakt angezeigt werden?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:119
+#. i18n: ectx: label, entry (interface), group (main)
+#: rc.cpp:535
+msgid "Defines the Stun server to use."
+msgstr "Wählen Sie den zu verwendenden Stun server."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:126
+#. i18n: ectx: label, entry (alsaPlugin), group (main)
+#: rc.cpp:538
+msgid "Defines which ALSA plugin to use."
+msgstr "Wählen Sie das zu verwendende ALSA plugin."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:129
+#. i18n: ectx: label, entry (alsaInputDevice), group (main)
+#: rc.cpp:541
+msgid "Defines which ALSA Input device to use."
+msgstr "Wählen Sie das zu verwendende Eingabegerät für ALSA."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:132
+#. i18n: ectx: label, entry (alsaOutputDevice), group (main)
+#: rc.cpp:544
+msgid "Defines which ALSA Output device to use."
+msgstr "Wählen Sie das zu verwendende Ausgabegerät für ALSA."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:135
+#. i18n: ectx: label, entry (pulseAudioVolumeAlter), group (main)
+#: rc.cpp:547
+msgid "Defines whether pulse audio can mute other applications during a call."
+msgstr ""
+"Entscheiden Sie, ob Pulseaudio andere Anwendungen für die Dauer aller Anrufe "
+"stummschaltet."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:141
+#. i18n: ectx: label, entry (enableAddressBook), group (main)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:145
+#. i18n: ectx: label, entry (phoneTypeList), group (main)
+#: rc.cpp:550 rc.cpp:553
+msgid "Defines whether the search in KDE Address Book is enabled"
+msgstr "Soll automatisch auch im KDE Adressbuch gesucht werden?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:150
+#. i18n: ectx: label, entry (displayOrganisation), group (main)
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:155
+#. i18n: ectx: label, entry (displayEmail), group (main)
+#: rc.cpp:556 rc.cpp:559
+msgid "Defines whether to display the organisation the the contact list item"
+msgstr "Soll die Organisataion für Einträge in der Kontaktliste angezeigt werden?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:160
+#. i18n: ectx: label, entry (alwaysShowPhoneNumber), group (main)
+#: rc.cpp:562
+msgid ""
+"Defines if the contact tree should be expanded by default to show all numbers"
+msgstr "Sollen per Default alle Rufnummern der Einträge in der Kontaktliste gezeigt werden?"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:165
+#. i18n: ectx: label, entry (defaultAccountId), group (main)
+#: rc.cpp:565
+msgid ""
+"Default account used for contact lookup if only partial (only extension) "
+"contacts info is available"
+msgstr "Default Kontakt für den Fall dass beim Versuch den zu einer Durchwahl passenden Kontakt zu finden, "
+"Kontakt Informationen gefunden wurden."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:171
+#. i18n: ectx: label, entry (bookmarkList), group (main)
+#: rc.cpp:568
+msgid "List of bookmarked clients"
+msgstr "Zeige die als Leseszeichen abgelegten Kontakte."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:177
+#. i18n: ectx: label, entry (enableHooksSIP), group (main)
+#: rc.cpp:571
+msgid "Defines whether to enable hooks for SIP accounts."
+msgstr "Wählen Sie, ob Sie Hooks für Ihre SIP Konten verwenden wollen."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:180
+#. i18n: ectx: label, entry (enableHooksIAX), group (main)
+#: rc.cpp:574
+msgid "Defines whether to enable hooks for IAX accounts."
+msgstr "Wählen Sie, ob Sie Hooks für Ihre IAX Konten verwenden wollen."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:183
+#. i18n: ectx: label, entry (hooksSIPHeader), group (main)
+#: rc.cpp:577
+msgid "Defines which header to catch for SIP accounts hooks."
+msgstr ""
+"Wählen Sie welche SIP Kopfzeilen für die Sip Account Hooks zur Verfügung "
+"gestellt werden sollen."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:186
+#. i18n: ectx: label, entry (hooksCommand), group (main)
+#: rc.cpp:580
+msgid "Defines which command to execute."
+msgstr "Wählen Sie den auszuführenden Befehl."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:189
+#. i18n: ectx: label, entry (addPrefix), group (main)
+#: rc.cpp:583
+msgid "Defines whether to add a prefix for outgoing calls."
+msgstr "Wählen Sie die vorzuwählende Nummer für alle ausgehenden Anrufe."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/klib/sflphone-client-kde.kcfg:192
+#. i18n: ectx: label, entry (prepend), group (main)
+#: rc.cpp:586
+msgid "Defines the prefix to add."
+msgstr "Wählen Sie die vorzuwählende Nummer."
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/ui/SFLPhoneView_base.ui:45
+#. i18n: ectx: property (placeholderText), widget (KLineEdit, m_pSendMessageLE)
+#: rc.cpp:607
+msgid "Send text message"
+msgstr "Text-Nachricht senden"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/ui/SFLPhoneView_base.ui:55
+#. i18n: ectx: property (text), widget (QToolButton, m_pSendMessagePB)
+#: rc.cpp:610
+msgid "Send"
+msgstr "Senden"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/ui/SFLPhoneView_base.ui:97
+#. i18n: ectx: property (toolTip), widget (QSlider, slider_recVol)
+#: rc.cpp:613
+msgid "Mic volume"
+msgstr "Mikrophon-Lautstärke"
+
+#. i18n: file: /home/lepagee/dev/sflphone-kde/po/../src/ui/SFLPhoneView_base.ui:147
+#. i18n: ectx: property (toolTip), widget (QSlider, slider_sndVol)
+#: rc.cpp:616
+msgid "Speakers volume"
+msgstr "Lautsprecher-Lautstärke"
+
+#: rc.cpp:617
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Knuth Posern"
+
+#: rc.cpp:618
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "knuth.posern@savoirfairelinux.com"
+
+msgid "Frequency: "
+msgstr "Häufigkeit: "
+
+msgid "Bandwidth: "
+msgstr "Bandbreite: "
+
+msgid "Enable ringtones"
+msgstr "Klingeltöne aktivieren"
+
+msgid "Connection"
+msgstr "Verbindung"
+
+msgid "SIP Port"
+msgstr "SIP Port"
+
+msgid "Account creation wizard"
+msgstr "Assistent für neues Konto"
+
+msgid "This assistant is now finished."
+msgstr "Dieser Assistent hat seine Aufgabe erledigt."
+
+msgid "Creation of account has failed for the reason"
+msgstr "Das Anlegen des neuen Kontos ist fehlgeschlagen, da"
+
+msgid "Voicemail number"
+msgstr "Nummer des Anrufbeantworters (Voicemail)"
+
+msgid "Welcome to the Account creation wizard of SFLphone!"
+msgstr ""
+"Herzlich Willkommen. Dies ist der SLFPhone Assistent für neue Konten!"
+
+msgid "This installation wizard will help you configure an account."
+msgstr "Cet assistant vous guidera dans la configuration d'un compte."
+
+msgid "Account"
+msgstr "Konto"
+
+msgid "Please select one of the following options"
+msgstr "Bitte wählen Sie eine der folgenden Optionen"
+
+msgid "Create a free SIP/IAX2 account on sflphone.org"
+msgstr "Kostenloses SIP/IAX2 Konto von sflphone.org anlegen"
+
+msgid "Register an existing SIP or IAX2 account"
+msgstr "Existierendes SIP oder IAX2 Konto anlegen"
+
+msgid "VoIP Protocols"
+msgstr "VoIP Protokolle"
+
+msgid "Select an account type"
+msgstr "Kontentyp auswählen"
+
+msgid "SIP (Session Initiation Protocol)"
+msgstr "SIP (Session Initiation Protocol)"
+
+msgid "IAX2 (InterAsterix Exchange)"
+msgstr "IAX2 (InterAsterix Exchange)"
+
+msgid "Optional email address"
+msgstr "Optionelle Email Adresse"
+
+#~ msgid "This email address will be used to send your voicemail messages."
+#~ msgstr ""
+#~ "An diese Email Adresse werden empfangene Anrufbeantwoter-Nachrichten "
+#~ "(Voicemail-Nachrichten) weitergeleitet."
+
+msgid "Email address"
+msgstr "Email Adresse"
+
+msgid "Secure with ZRTP"
+msgstr "Verbindung absichern durch ZRTP"
+
+msgid "SIP account settings"
+msgstr "Einstellungen der SIP Konten"
+
+msgid "Please fill the following information"
+msgstr "Bitte geben Sie die folgenden Informationen an"
+
+msgid "Network Address Translation (NAT)"
+msgstr "NAT (Network Address Translation)"
+
+msgid "You should probably enable this if you are behind a firewall."
+msgstr "Zu aktiveren, falls Sie hinter einer Firewall agieren."
+
+msgid "Enable STUN"
+msgstr "STUN aktivieren"
+
+msgid "Stun Server"
+msgstr "STUN Server"
+
+msgid ""
+"After checking the settings you chose, click \"Finish\" to create the "
+"account."
+msgstr ""
+"Bitte \"Fertig\" klicken um das neue Konto zu erstellen, wenn Sie alle "
+"Einstellungen verifiziert haben."
+
+msgid "Default account"
+msgstr "Default Konto"
+
+msgid "Transfer"
+msgstr "Übertragen an"
+
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:312
-msgid "_Use Evolution address books"
-msgstr "Addressbuch von Evolution verwenden"
+msgid "General"
+msgstr "Allgemein"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:319
-msgid "Download limit :"
-msgstr "Herunterladen Grenze :"
+msgid "Display"
+msgstr "Anzeige"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:327
-msgid "cards"
-msgstr "Karten"
+msgid "Accounts"
+msgstr "Konten"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:333
-msgid "_Display contact photo if available"
-msgstr "Wenn verfügbar, _Bild anzeigen"
+msgid "Audio"
+msgstr "Audio"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:341
-msgid "Fields from Evolution's address books"
-msgstr "Felder vom Evolution Adressbuch"
+msgid "Address Book"
+msgstr "Adressbuch"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:345
-msgid "_Work"
-msgstr "_Arbeit"
+msgid "Hooks"
+msgstr "Hooks"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:351
-msgid "_Home"
-msgstr "_Heim"
+msgid "New credential"
+msgstr "Neue Authentifizierungsinformatoinen"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:357
-msgid "_Mobile"
-msgstr "_Handy"
+msgid "Sonnerie (entrante)"
+msgstr "Klingelzeichen (eingehende Anrufe)"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:364
-msgid "Address Books"
-msgstr "Adressbücher"
+msgid "Sonnerie (sortante)"
+msgstr "Klingelzeichen (ausgehende Anrufe)"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:368
-msgid "Select which Evolution address books to use"
-msgstr "Adressbücher von Evolution zum verwenden auswählen"
+msgid "Talking"
+msgstr "Aktiv"
 
-#: ../sflphone-client-gnome/src/config/addressbook-config.c:404
-#: ../sflphone-client-gnome/src/config/audioconf.c:576
-msgid "Name"
+msgid "Dialing"
+msgstr "Wählend"
+
+msgid "Hold"
+msgstr "Warteposition"
+
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+msgid "Busy"
+msgstr "Besetzt"
+
+msgid "Transfer hold"
+msgstr "Pausiert für Transfer"
+
+msgid "Over"
+msgstr "Beendet"
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid "Ringing (in)"
+msgstr "Rufton (eingehend)"
+
+msgid "Ringing (out)"
+msgstr "Rufton (ausgehend)"
+
+msgid "Today"
+msgstr "Heute"
+
+msgid "Yesterday"
+msgstr "Gestern"
+
+msgid "Monday"
+msgstr "Montag"
+
+msgid "Tuesday"
+msgstr "Dienstag"
+
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+msgid "Thursday"
+msgstr "Donnerstag"
+
+msgid "Friday"
+msgstr "Freitag"
+
+msgid "Saterday"
+msgstr "Samstag"
+
+msgid "Sunday"
+msgstr "Sonntag"
+
+msgid "Last week"
+msgstr "Letzte Woche"
+
+msgid "Two weeks ago"
+msgstr "Vor zwei Wochen"
+
+msgid "Three weeks ago"
+msgstr "Vor drei Wochen"
+
+msgid "Last month"
+msgstr "Letzen Monat"
+
+msgid "Two months ago"
+msgstr "Vor zwei Monaten"
+
+msgid "Three months ago"
+msgstr "Vor drei Monaten"
+
+msgid "Four months ago"
+msgstr "Vor vier Monaten"
+
+msgid "Five months ago"
+msgstr "Vor fünf Monaten"
+
+msgid "Six months ago"
+msgstr "Vor sechs Monaten"
+
+msgid "Seven months ago"
+msgstr "Vor sieben Monaten"
+
+msgid "Eight months ago"
+msgstr "Vor acht Monaten"
+
+msgid "Nine months ago"
+msgstr "Vor neun Monaten"
+
+msgid "Ten months ago"
+msgstr "Vor zehn Monaten"
+
+msgid "Eleven months ago"
+msgstr "Vor elf Monaten"
+
+msgid "Twelve months ago"
+msgstr "Vor zwölf Monaten"
+
+msgid "Last year"
+msgstr "Letztes Jahr"
+
+msgid "Very long time ago"
+msgstr "Vor mehr als zwei Jahren"
+
+msgid "Never"
+msgstr "Niemals"
+
+msgid "New call"
+msgstr "Neuer Anruf"
+
+msgid "Hang up"
+msgstr "Auflegen"
+
+msgid "Hold on"
+msgstr "In Warteposition"
+
+msgid "Record"
+msgstr "Aufnehmen"
+
+msgid "Pick up"
+msgstr "Abheben"
+
+msgid "Hold off"
+msgstr "Aus Warteposition"
+
+msgid "Give up transfer"
+msgstr "Transfer abbrechen"
+
+msgid "Call back"
+msgstr "Rückruf"
+
+msgid "SFLphone KDE Client"
+msgstr "SFLphone KDE Client"
+
+msgid "(C) 2009-2012 Savoir-faire Linux"
+msgstr "(C) 2009-2012 Savoir-faire Linux"
+
+msgid "Jérémy Quentin"
+msgstr "Jérémy Quentin"
+
+msgid "Emmanuel Lepage Vallee"
+msgstr "Emmanuel Lepage Vallee"
+
+msgid "Call"
+msgstr "Anruf"
+
+msgid "SFLphone"
+msgstr "SFLphone"
+
+msgid "Configure SFLphone"
+msgstr "SFLphone konfigurieren"
+
+msgid "Display dialpad"
+msgstr "Nummernblock anzeigen"
+
+msgid "Display text message box"
+msgstr "Anzeigen des Text-Nachrichtenfeldes"
+
+msgid "Display volume controls"
+msgstr "Anzeigen der Lautstärkeneinstellungen"
+
+msgid "Configure Shortcut"
+msgstr "Tastaturkombinationen konfigureren"
+
+msgid "New incomming call"
+msgstr "Neuer eingehender Anruf"
+
+msgid "New call from: \n"
+msgstr "Neuer Anruf von: \n"
+
+msgid "Calls"
+msgstr "Anrufe"
+
+#~ msgid ""
+#~ "This contact have many phone number, please select the one you wish to "
+#~ "call"
+#~ msgstr ""
+#~ "Dieser Kontakt hat mehrere Telefonnummern, bitte spezifieren Sie die "
+#~ "gewünschte Rufnummer"
+
+msgid "Using account"
+msgstr "Verwendetes Konto"
+
+msgid "Edit before call"
+msgstr "Bearbeiten vor Anruf"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Show most called contacts"
+msgstr "Anzeigen der meistgewählten Rufnummern"
+
+msgid "Bookmark"
+msgstr "Lesezeichen"
+
+msgid "Popular"
+msgstr "Beliebt"
+
+msgid "Conference"
+msgstr "Konferenz"
+
+msgid "Transfer to : "
+msgstr "Transferieren zu : "
+
+msgid "<b>Unknown</b>"
+msgstr "<b>Unbekannt</b>"
+
+#~ msgid "Name"
+#~ msgstr "Name"
+
+#~ msgid "Organisation"
+#~ msgstr "Organisation"
+
+msgid "Recently used"
+msgstr "Kürzlich verwendet"
+
+msgid "Group"
+msgstr "Gruppe"
+
+#~ msgid "Department"
+#~ msgstr "Abteilung"
+
+msgid "Contacts"
+msgstr "Kontakte"
+
+msgid "Display history"
+msgstr "Historie anzeigen"
+
+msgid "Contact"
+msgstr "Kontakte"
+
+#~ msgid "TODO"
+#~ msgstr "TODO"
+
+msgid "Call Again"
+msgstr "Wieder anrufen"
+
+msgid "Edit contact"
+msgstr "Kontakt bearbeiten"
+
+msgid "Copy"
+msgstr "Kopieren"
+
+#~ msgid "Send Email"
+#~ msgstr "Email senden"
+
+msgid "Add Phone Number"
+msgstr "Telefonnummer hinzufügen"
+
+msgid "Sort by:"
+msgstr "Sortieren nach:"
+
+msgid "From:"
+msgstr "Von:"
+
+msgid "To:"
+msgstr "An:"
+
+msgid "Display all"
+msgstr "Alle anzeien"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Popularity"
+msgstr "Popularität"
+
+msgid "Length"
+msgstr "Länge"
+
+msgid "History"
+msgstr "Historie"
+
+msgid "Add Number to Contact"
+msgstr "Nummer zu Kontakt hinzufügen"
+
+msgid "Add Contact"
+msgstr "Kontakt hinzufügen"
+
+msgid "Are you sure you want to delete this recording?"
+msgstr "Diesen Eintag wirklich löschen?"
+
+msgid "Delete recording"
+msgstr "Aufnahme entfernen"
+
+msgid "Fatal Error"
+msgstr "Fataler Fehler"
+
+msgid "Error opening files"
+msgstr "Fehler beim Öffnen der Dateien"
+
+msgid "Defines the port that will be used for SIP communication."
+msgstr "Waehlen Sie den Port fuer die SIP Kommunikation."
+
+msgid "Defines whether ringtones are enabled."
+msgstr "Wählen Sie ob der Klingelzeichen zu hören sein soll."
+
+msgid "Defines which ringtone is used."
+msgstr "Wählen Sie das zu verwendende Klingelzeichen."
+
+msgid "You currently have %1 calls"
+msgstr "%1 Anrufe sinz zur Zeit aktiv."
+
+msgid "You currently have no call"
+msgstr "Es sind zur Zeit keine Anrufe aktiv."
+
+msgid "Call from %1, number %2"
+msgstr "Anruf von %1, von der Nummer %2"
+
+msgid "The current call is %1"
+msgstr "The aktuelle Anruf ist %1"
+
+msgid ",Your peer is %1"
+msgstr ", Ihr Gesprächrspartner ist %1"
+
+msgid ", the peer phone number is %1 "
+msgstr ", die Telefonnummer Ihres Gesprächspartners ist %1"
+
+msgid " and you have been talking since %1 seconds"
+msgstr " und Ihr Gespräch dauert %1 Sekunden."
+
+msgid ""
+"Please enter a transfer number and press enter, press escape to cancel"
+msgstr ""
+"Bitte geben Sie die Nummer zum Weiterleiten ein und beenden Sie mit ENTER "
+"oder ESC um abzubrechen."
+
+msgid "You call have been transferred to "
+msgstr "Ihr Anruf wurde weitergeleitet zu "
+
+msgid "Display bookmark"
+msgstr "Lesezeichen anzeigen"
+
+msgid "Display Contact"
+msgstr "Kontakt anzeigen"
+
+msgid "Display Icon"
+msgstr "Symbol/Icon anzeigen"
+
+msgid "Display Security"
+msgstr "Sicherheitsstatus anzeigen"
+
+msgid "Display Codec"
+msgstr "Verwendeten Codec anzeigen"
+
+msgid "Display Peer name"
+msgstr "Name der Gegenseite anzeigen"
+
+msgid "Sort by date"
+msgstr "Datum"
+
+msgid "Sort by Name"
 msgstr "Name"
 
-#: ../sflphone-client-gnome/src/config/audioconf.c:741
-msgid "_Voice Activity Detection"
-msgstr "\"Voice Activity\" Erkennung"
+msgid "Sort by Popularity"
+msgstr "Popularität"
 
-#: ../sflphone-client-gnome/src/config/audioconf.c:751
-msgid "_Noise Reduction (Narrow-Band Companding)"
-msgstr "_Geräuschreduzierung (Narrow-Band Companding)"
+msgid "Sort by date Length"
+msgstr "Länge"
 
-#: ../sflphone-client-gnome/src/config/audioconf.c:780
-msgid "Sound Manager"
-msgstr "Sound Manager"
-
-#: ../sflphone-client-gnome/src/config/audioconf.c:783
-msgid "_Pulseaudio"
-msgstr "Pulseaudio"
-
-#: ../sflphone-client-gnome/src/config/audioconf.c:788
-msgid "_ALSA"
-msgstr "ALSA"
-
-#: ../sflphone-client-gnome/src/config/audioconf.c:835
-msgid "Ringtones"
-msgstr "Klingeltöne"
-
-#: ../sflphone-client-gnome/src/config/audioconf.c:841
-msgid "_Enable ringtones"
-msgstr "Klingeltöne _einschalten"
-
-#: ../sflphone-client-gnome/src/config/audioconf.c:847
-msgid "Choose a ringtone"
-msgstr "Klingelton auswählen"
-
-#: ../sflphone-client-gnome/src/config/audioconf.c:853
-msgid "Audio Files"
-msgstr "Audio Dateien"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:589
-msgid "Desktop Notifications"
-msgstr "Desktopbenachrichtigungen"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:593
-msgid "_Enable notifications"
-msgstr "Benachrichtigungen _einschalten"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:599
-msgid "Enable voicemail _notifications"
-msgstr "_Benachrichtigung für Voice Nachrichten"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:611
-msgid "System Tray Icon"
-msgstr "Benachrichtigungsfeld (\"System Tray\") Icon"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:614
-msgid "_Popup main window on incoming call"
-msgstr "Hauptfenster anzeigen wenn eingehendes Gespräch"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:619
-msgid "Ne_ver popup main window"
-msgstr "_Hauptfenster nie anzeigen"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:623
-msgid "Hide SFLphone window on _startup"
-msgstr "_Unsichtbar beim Start"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:629
-msgid "Calls History"
-msgstr "Liste der vorherigen Anrufen"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:632
-msgctxt "Beginning of 'Keep my history for at least n days.'"
-msgid "_Keep my history for at least"
-msgstr "_Vorherigen Anrufen behalten: mindestens"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:647
-msgid "PulseAudio sound server"
-msgstr "PulseAudio Sound Server"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:650
-msgid "_Mute other applications during a call"
-msgstr "_Während eines Anrufs andere Anwendungen stumm schalten"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:677
-msgid "Port"
-msgstr "Port"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:732
-msgid "Select a folder"
-msgstr "Verzeichnis auswählen"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:766
-msgid "Preferences"
-msgstr "Einstellungen"
-
-#: ../sflphone-client-gnome/src/config/configwindow.c:845
-msgid "Configured Accounts"
-msgstr "Konfigurierten Konten"
-
-#: ../sflphone-client-gnome/src/config/hooks-config.c:141
-msgid "Trigger on specific _SIP header"
-msgstr "Bewirkung beim spezifischen _SIP Header"
-
-#: ../sflphone-client-gnome/src/config/hooks-config.c:150
-msgid "Trigger on _IAX2 URL"
-msgstr "Bewirkung bei _IAX2 URL"
-
-#: ../sflphone-client-gnome/src/config/hooks-config.c:155
-msgid "Command to _run"
-msgstr "Befehl _auszuführen"
-
-#: ../sflphone-client-gnome/src/config/hooks-config.c:169
-msgid "_Prefix dialed numbers with"
-msgstr "_Präfix vor Nummern einfügen"
-
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:56
-msgid "Search all"
-msgstr "Suche alle"
-
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:57
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:70
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:82
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:94
-msgid "Click here to change the search type"
-msgstr "Klicken Sie hier, um Suchtyp zu wechseln"
-
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:69
-msgid "Search by missed call"
-msgstr "Suche nach Anruf in Abwesenheit"
-
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:81
-msgid "Search by incoming call"
-msgstr "Suche nach eingehenden Anruf "
-
-#: ../sflphone-client-gnome/src/contacts/searchbar.c:93
-msgid "Search by outgoing call"
-msgstr "Suche nach ausgehenden Anru"
-
+msgid "Accessibility"
+msgstr "Zugänglichkeit"
