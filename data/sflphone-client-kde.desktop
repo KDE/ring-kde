@@ -4,8 +4,11 @@ X-DocPath=sflphone-client-kde/index.html
 Terminal=false
 
 Name=SFLphone VoIP KDE4 client
+Name[x-test]=xxSFLphone VoIP KDE4 clientxx
 GenericName=Telephone
+GenericName[x-test]=xxTelephonexx
 Comment=Call and receive calls with SIP or IAX protocols
+Comment[x-test]=xxCall and receive calls with SIP or IAX protocolsxx
 Exec=sflphone-client-kde
 Icon=sflphone
 StartupNotify=true

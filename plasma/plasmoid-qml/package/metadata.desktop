@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=SFLPhone plasmoid
+Name[x-test]=xxSFLPhone plasmoidxx
 Comment=Plasma client for SFLPhone daemon
+Comment[x-test]=xxPlasma client for SFLPhone daemonxx
 Icon=chronometer
 
 X-Plasma-API=declarativeappletscript

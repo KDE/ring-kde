@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=sflphone
+Name[x-test]=xxsflphonexx
 Comment=An SFLPhone IP soft-phone frontend
+Comment[x-test]=xxAn SFLPhone IP soft-phone frontendxx
 Type=Service
 
 X-KDE-ServiceTypes=Plasma/DataEngine
