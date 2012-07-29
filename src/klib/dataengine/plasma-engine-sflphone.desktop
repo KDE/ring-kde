@@ -1,7 +1,15 @@
 [Desktop Entry]
 Name=sflphone
+Name[nl]=sflphone
+Name[pt]=sflphone
+Name[pt_BR]=sflphone
+Name[sv]=SFL-telefon
 Name[x-test]=xxsflphonexx
 Comment=An SFLPhone IP soft-phone frontend
+Comment[nl]=Een SFLPhone IP soft-phone frontend
+Comment[pt]=Uma interface para o telefone IP por 'software' SFLPhone
+Comment[pt_BR]=Uma interface para o telefone por software do SFLPhone IP
+Comment[sv]=Ett SFL-telefongränssnitt för IP-programvarutelefon 
 Comment[x-test]=xxAn SFLPhone IP soft-phone frontendxx
 Type=Service
 
