@@ -106,8 +106,9 @@ Account* Account::buildExistingAccountFromId(const QString& _accountId)
 Account* Account::buildNewAccountFromAlias(const QString& alias)
 {
    qDebug() << "Building an account from alias: " << alias;
+   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
    Account* a           = new Account        ();
-   a->m_pAccountDetails = new MapStringString();
+   a->m_pAccountDetails = new MapStringString(configurationManager.getAccountTemplate());
    a->setAccountDetail(ACCOUNT_ALIAS,alias);
    return a;
 }
@@ -413,11 +414,19 @@ void Account::saveCredentials() {
       for (int i=0; i < m_pCredentials->rowCount();i++) {
          QModelIndex idx = m_pCredentials->index(i,0);
          MapStringString credentialData;
-         QString username = m_pCredentials->data(idx,CredentialModel::NAME_ROLE     ).toString();
-         username = (username.isEmpty())?getAccountUsername():username;
-         credentialData[ CONFIG_ACCOUNT_USERNAME] = m_pCredentials->data(idx,CredentialModel::NAME_ROLE     ).toString();
+         QString username = m_pCredentials->data(idx,CredentialModel::NAME_ROLE ).toString();
+         QString realm = m_pCredentials->data(idx,CredentialModel::REALM_ROLE    ).toString();
+         if (username.isEmpty()) {
+            username = getAccountUsername();
+            m_pCredentials->setData(idx,username,CredentialModel::NAME_ROLE );
+         }
+         if (realm.isEmpty()) {
+            realm = "*";
+            m_pCredentials->setData(idx,realm,CredentialModel::REALM_ROLE    );
+         }
+         credentialData[ CONFIG_ACCOUNT_USERNAME] = username;
          credentialData[ CONFIG_ACCOUNT_PASSWORD] = m_pCredentials->data(idx,CredentialModel::PASSWORD_ROLE ).toString();
-         credentialData[ CONFIG_ACCOUNT_REALM   ] = m_pCredentials->data(idx,CredentialModel::REALM_ROLE    ).toString();
+         credentialData[ CONFIG_ACCOUNT_REALM   ] = realm;
          toReturn << credentialData;
       }
       configurationManager.setCredentials(getAccountId(),toReturn);

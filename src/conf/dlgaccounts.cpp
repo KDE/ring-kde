@@ -406,7 +406,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    spinBox_ni_local_port->setValue(account->getLocalPort());
    comboBox_ni_local_address->setCurrentIndex(comboBox_ni_local_address->findText(account->getLocalInterface())); //TODO need to load the list first
 
-   if(protocolIndex == 0) { // if sip selected
+   if(protocolIndex == 0 || account->isNew()) { // if sip selected
       checkbox_stun->setChecked(account->isAccountSipStunEnabled());
       line_stun->setText( account->getAccountSipStunServer() );
       //checkbox_zrtp->setChecked(account->getAccountDetail(ACCOUNT_SRTP_ENABLED) == REGISTRATION_ENABLED_TRUE);

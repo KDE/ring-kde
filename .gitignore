@@ -36,3 +36,4 @@ src/kcfg_settings.h
 src/qrc_resources.cxx
 src/kde.shell
 man/sflphone.pod
+*~
