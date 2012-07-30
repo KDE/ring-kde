@@ -281,6 +281,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="placeholderText">
+             <string>Exemple: sip.sflphone.org or 192.168.0.2</string>
+            </property>
            </widget>
           </item>
           <item row="3" column="0">
@@ -297,7 +300,11 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="KLineEdit" name="edit4_user"/>
+           <widget class="KLineEdit" name="edit4_user">
+            <property name="placeholderText">
+             <string>Usually your extension number</string>
+            </property>
+           </widget>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label5_password">
@@ -314,6 +321,9 @@
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
             </property>
+            <property name="placeholderText">
+             <string>SIP password, ask your network administrator</string>
+            </property>
            </widget>
           </item>
           <item row="5" column="0">
@@ -327,7 +337,11 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="KLineEdit" name="edit6_mailbox"/>
+           <widget class="KLineEdit" name="edit6_mailbox">
+            <property name="placeholderText">
+             <string>Usually the same as the username</string>
+            </property>
+           </widget>
           </item>
           <item row="8" column="0">
            <widget class="QLabel" name="label7_state">

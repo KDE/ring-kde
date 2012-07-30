@@ -79,6 +79,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(button_accountAdd,                 SIGNAL(clicked())                      , this   , SLOT(otherAccountChanged())             );
    /**/connect(button_accountRemove,              SIGNAL(clicked())                      , this   , SLOT(otherAccountChanged())             );
    /**/connect(button_audiocodecDown,             SIGNAL(clicked())                      , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pDefaultAccount,                 SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(button_audiocodecUp,               SIGNAL(clicked())                      , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_tls_listener,              SIGNAL(editingFinished())              , this   , SLOT(changedAccountList())              );
@@ -264,8 +265,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    QModelIndex idx = account->getCredentialsModel()->index(0,0);
-   if (idx.isValid())
+   if (idx.isValid() && !account->getAccountId().isEmpty()) {
       edit5_password->setText(account->getCredentialsModel()->data(idx,CredentialModel::PASSWORD_ROLE).toString());
+   }
    else
       edit5_password->setText("");
 
@@ -328,7 +330,10 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/combo_security_STRP->setCurrentIndex     (  account->getTlsMethod                   ());
    /*                                                                                        */
 
+
+   disconnect(m_pDefaultAccount, SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
    m_pDefaultAccount->setChecked(account == AccountList::getInstance()->getDefaultAccount());
+   connect(m_pDefaultAccount,    SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
 
    account->getVideoCodecModel()->reload();
 
@@ -718,9 +723,9 @@ void DlgAccounts::selectCredential(QModelIndex item, QModelIndex previous)
    edit_credential_auth->setText        ( list_credential->model()->data(item,CredentialModel::NAME_ROLE)     .toString());
    edit_credential_password->setText    ( list_credential->model()->data(item,CredentialModel::PASSWORD_ROLE) .toString());
    
-   edit_credential_realm->setEnabled    ( true                          );
-   edit_credential_auth->setEnabled     ( true                          );
-   edit_credential_password->setEnabled ( true                          );
+   edit_credential_realm->setEnabled    ( true );
+   edit_credential_auth->setEnabled     ( true );
+   edit_credential_password->setEnabled ( true );
 //TODO
 } //selectCredential
 
