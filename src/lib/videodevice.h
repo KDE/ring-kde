@@ -31,28 +31,21 @@ typedef QString VideoChannel;
 typedef QString VideoRate;
 
 ///@struct Resolution Equivalent of "640x480"
-struct LIB_EXPORT Resolution {
+class LIB_EXPORT Resolution : public QSize {
+public:
    //Constructor
-   explicit Resolution(uint _width, uint _height):width(_width),height(_height){}
+   explicit Resolution(uint _width, uint _height):QSize(_width,_height){}
    Resolution(QString size) {
       if (size.split("x").size() == 2) {
-         width=size.split("x")[0].toInt();
-         height=size.split("x")[1].toInt();
+         setWidth(size.split("x")[0].toInt());
+         setHeight(size.split("x")[1].toInt());
       }
    }
-   Resolution(const Resolution& res):width(res.width),height(res.height){}
-   Resolution(const QSize& size):width(size.width()),height(size.height()){}
+   Resolution(const Resolution& res):QSize(res.width(),res.height()){}
+   Resolution(const QSize& size):QSize(size){}
    //Getter
-   const QString toString() const { return QString::number(width)+"x"+QString::number(height);}
+   const QString toString() const { return QString::number(width())+"x"+QString::number(height());}
 
-   //Attributes
-   uint width;
-   uint height;
-
-   //Operator
-   bool operator==(const Resolution& other) {
-      return (other.width == width && other.height == height);
-   }
 };
 
 ///VideoDevice: V4L devices used to record video for video call

@@ -46,9 +46,9 @@ VideoRenderer::VideoRenderer(QString shmPath, Resolution res): QObject(0),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
    m_isRendering(false),m_pTimer(nullptr),m_Res(res)
 {
-   m_ShmPath = shmPath    ;
-   m_Width   = res.width  ;
-   m_Height  = res.height ;
+   m_ShmPath = shmPath      ;
+   m_Width   = res.width()  ;
+   m_Height  = res.height() ;
 }
 
 ///Destructor

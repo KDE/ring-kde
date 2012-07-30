@@ -27,6 +27,7 @@
 ///Constructor
 VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
 {
+   setFloating(true);
    setWindowTitle(i18nc("Video conversation","Video"));
    QWidget* wdg = new QWidget(this);
    m_pVideoWidet = new VideoWidget(this);
