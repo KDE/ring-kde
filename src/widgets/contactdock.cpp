@@ -408,7 +408,7 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
    if(key == Qt::Key_Escape)
       m_pFilterLE->setText(QString());
    else if(key == Qt::Key_Return || key == Qt::Key_Enter) {
-      if (m_pContactView->selectedItems()[0] && m_pContactView->itemWidget(m_pContactView->selectedItems()[0],0)) {
+      if (m_pContactView->selectedItems().size() && m_pContactView->selectedItems()[0] && m_pContactView->itemWidget(m_pContactView->selectedItems()[0],0)) {
          QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(m_pContactView->selectedItems()[0]);
          if (item) {
             Call* call = nullptr;
