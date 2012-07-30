@@ -150,6 +150,7 @@ public:
    Contact*             getContact          ()      ;
    VideoRenderer*       getVideoRenderer    ()      ;
    const QString        getFormattedName    ()      ;
+   bool                 hasRecording        () const;
 
    //Automated function
    call_state stateChanged(const QString & newState);

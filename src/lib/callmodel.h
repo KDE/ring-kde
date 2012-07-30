@@ -66,6 +66,7 @@ private slots:
    void volumeChangedSlot     ( const QString& device    , double value           );
    void removeActiveCall      ( Call* call                                        );
    void addPrivateCall        ( Call* call                                        );
+   void newRecordingAvail     ( const QString& callId    , const QString& filePath);
    #ifdef ENABLE_VIDEO
    void startedDecoding       ( const QString& callId    , const QString& shmKey  );
    void stoppedDecoding       ( const QString& callId    , const QString& shmKey  );

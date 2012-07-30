@@ -43,6 +43,7 @@ CallModelBase::CallModelBase(QObject* parent) : QObject(parent)
       /**/connect(&callManager, SIGNAL(conferenceRemoved(QString))              , this , SLOT(conferenceRemovedSlot(QString))      );
       /**/connect(&callManager, SIGNAL(voiceMailNotify(QString,int))            , this , SLOT(voiceMailNotifySlot(QString,int))    );
       /**/connect(&callManager, SIGNAL(volumeChanged(QString,double))           , this , SLOT(volumeChangedSlot(QString,double))   );
+      /**/connect(&callManager, SIGNAL(recordPlaybackFilepath(QString,QString)) , this , SLOT(newRecordingAvail(QString,QString))  );
       #ifdef ENABLE_VIDEO
       /**/connect(&interface  , SIGNAL(startedDecoding(QString,QString,int,int)), this , SLOT(startedDecoding(QString,QString))    );
       /**/connect(&interface  , SIGNAL(stoppedDecoding(QString,QString))        , this , SLOT(stoppedDecoding(QString,QString))    );
@@ -179,6 +180,13 @@ void CallModelBase::removeActiveCall(Call* call)
    Q_UNUSED(call);
    //There is a race condition
    //m_sActiveCalls[call->getCallId()] = nullptr;
+}
+
+///Make the call aware it has a recording
+void CallModelBase::newRecordingAvail( const QString& callId, const QString& filePath)
+{
+   Call* call = getCall(callId);
+   call->setRecordingPath(filePath);
 }
 
 #ifdef ENABLE_VIDEO

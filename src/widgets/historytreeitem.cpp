@@ -337,6 +337,8 @@ void HistoryTreeItem::removeRecording()
    if (ret == KMessageBox::Yes) {
       kDebug() << "Deleting file";
       QFile::remove(m_pItemCall->getRecordingPath());
+      m_pPlay->setVisible(false);
+      m_pRemove->setVisible(false);
    }
 }
 
@@ -580,7 +582,7 @@ bool HistoryTreeItem::getContactInfo(QString phoneNumber)
       m_pPeerNameL->setText("<b>"+m_Name+"</b>");
    }
 
-   if (m_pItemCall && !m_pItemCall->getRecordingPath().isEmpty()) {
+   if (m_pItemCall && m_pItemCall->hasRecording()) {
       QPainter painter(&pxm);
       QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
       status=status.scaled(QSize(24,24));
@@ -592,7 +594,7 @@ bool HistoryTreeItem::getContactInfo(QString phoneNumber)
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
    }
-      m_pIconL->setPixmap(pxm);
+   m_pIconL->setPixmap(pxm);
 
    return m_pContact;
 } //getContactInfo

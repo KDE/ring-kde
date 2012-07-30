@@ -20,6 +20,9 @@
 //Parent
 #include "call.h"
 
+//Qt
+#include <QFile>
+
 //SFLPhone library
 #include "callmanager_interface_singleton.h"
 #include "configurationmanager_interface_singleton.h"
@@ -435,6 +438,12 @@ const QString Call::getFormattedName()
       return m_PeerPhoneNumber;
 }
 
+///If the call have a valid record
+bool Call::hasRecording()                   const
+{
+   return !getRecordingPath().isEmpty() && QFile::exists(getRecordingPath());
+}
+
 ///Get the current state
 call_state Call::getCurrentState()          const
 {
@@ -450,7 +459,7 @@ bool Call::getRecording()                   const
 }
 
 ///Get the call account id
-Account* Call::getAccount()           const
+Account* Call::getAccount()                 const
 {
    return AccountList::getInstance()->getAccountById(m_Account);
 }
