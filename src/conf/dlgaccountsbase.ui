@@ -799,8 +799,11 @@
                <property name="enabled">
                 <bool>false</bool>
                </property>
+               <property name="frame">
+                <bool>true</bool>
+               </property>
                <property name="echoMode">
-                <enum>QLineEdit::Normal</enum>
+                <enum>QLineEdit::Password</enum>
                </property>
               </widget>
              </item>

@@ -115,7 +115,7 @@ void ConfigurationDialog::cancelSettings()
 ///If the account changed
 bool ConfigurationDialog::hasChanged()
 {
-   bool res = dlgAudio->hasChanged() || dlgAccounts->hasChanged() || dlgGeneral->hasChanged();
+   bool res = dlgAudio->hasChanged() || dlgAccounts->hasChanged() || dlgGeneral->hasChanged() || dlgAddressBook->hasChanged();
    return res;
 }
 

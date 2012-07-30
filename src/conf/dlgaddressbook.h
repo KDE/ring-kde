@@ -26,6 +26,7 @@
 #include <QtGui/QListWidgetItem>
 
 #include "ui_dlgaddressbookbase.h"
+#include <kconfigdialog.h>
 
 /**
 	@author Jérémy Quentin <jeremy.quentin@gmail.com>
@@ -34,17 +35,27 @@ class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase
 {
 Q_OBJECT
 public:
-   DlgAddressBook(QWidget *parent = 0);
+   DlgAddressBook(KConfigDialog* parent = 0);
 
    ~DlgAddressBook();
+
+   bool hasChanged();
 
 private:
    //Attributes
    QHash<QString,QListWidgetItem*> m_mNumbertype;
+   bool m_HasChanged;
 
 public slots:
    void updateWidgets ();
    void updateSettings();
+
+private slots:
+   void changed();
+
+signals:
+   ///Emitted when the buttons need to be updated
+   void updateButtons();
 };
 
 #endif

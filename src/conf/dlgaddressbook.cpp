@@ -22,8 +22,8 @@
 #include "klib/configurationskeleton.h"
 
 ///Constructor
-DlgAddressBook::DlgAddressBook(QWidget *parent)
- : QWidget(parent)
+DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
+ : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
    
@@ -47,6 +47,8 @@ DlgAddressBook::DlgAddressBook(QWidget *parent)
       i->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
       i->setCheckState((list.indexOf(m_mNumbertype.key(i)) != -1)?Qt::Checked:Qt::Unchecked);
    }
+   connect(m_pPhoneTypeList, SIGNAL(itemChanged(QListWidgetItem*)), this   , SLOT(changed())      );
+   connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
 } //DlgAddressBook
 
 ///Destructor
@@ -69,4 +71,18 @@ void DlgAddressBook::updateSettings()
          list << m_mNumbertype.key(i);
    }
    ConfigurationSkeleton::setPhoneTypeList(list);
+   m_HasChanged = false;
+}
+
+///Tag this dialog as changed
+void DlgAddressBook::changed()
+{
+   m_HasChanged = true;
+   emit updateButtons();
+}
+
+///If the "Apply" button need to be enabled
+bool DlgAddressBook::hasChanged()
+{
+   return m_HasChanged;
 }
