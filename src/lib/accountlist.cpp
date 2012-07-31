@@ -430,8 +430,11 @@ void AccountList::removeAccount( QModelIndex index )
 }
 
 ///Set the previous account used
-void AccountList::setPriorAccountId(const QString& value) {
-   m_sPriorAccountId = value;
+void AccountList::setPriorAccount(Account* account) {
+   bool changed = (account && m_sPriorAccountId != account->getAccountId()) || (!account && !m_sPriorAccountId.isEmpty());
+   m_sPriorAccountId = account?account->getAccountId() : QString();
+   if (changed)
+      emit priorAccountChanged(getCurrentAccount());
 }
 
 ///Set model data

@@ -37,6 +37,7 @@
 #include <KActionCollection>
 #include <KNotification>
 #include <KShortcutsDialog>
+#include <KComboBox>
 
 //sflphone library
 #include "lib/sflphone_const.h"
@@ -221,6 +222,19 @@ bool SFLPhone::initialize()
    m_pIconChanged = false;
    m_pInitialized = true ;
 
+   KStatusBar* bar = statusBar();
+   
+   QLabel* curAccL = new QLabel(i18n("Current account: "));
+   bar->addPermanentWidget(curAccL);
+
+   m_pAccountStatus = new KComboBox(bar);
+   m_pAccountStatus->setModel(AccountList::getInstance());
+   m_pAccountStatus->setMinimumSize(100,0);
+   bar->addPermanentWidget(m_pAccountStatus);
+
+   connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
+   connect(AccountList::getInstance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
+   
    return true;
 }
 
@@ -515,6 +529,19 @@ void SFLPhone::on_m_pView_incomingCall(const Call* call)
       KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from: \n") + (call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
    }
    KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from: \n") + (call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()));
+}
+
+///Change current account
+void SFLPhone::currentAccountIndexChanged(int newIndex)
+{
+   Account* acc = AccountList::getInstance()->getAccountByModelIndex(AccountList::getInstance()->index(newIndex,0));
+   AccountList::getInstance()->setPriorAccount(acc);
+}
+
+///Update the combobox index
+void SFLPhone::currentPriorAccountChanged(Account* newPrior)
+{
+   m_pAccountStatus->setCurrentIndex(newPrior->getIndex().row());
 }
 
 #ifdef ENABLE_VIDEO

@@ -31,6 +31,7 @@ class QActionGroup;
 
 //KDE
 class KAction;
+class KComboBox;
 
 //SFLPhone
 class Call;
@@ -106,6 +107,7 @@ private:
    QDockWidget*   m_pCentralDW       ;
    HistoryDock*   m_pHistoryDW       ;
    BookmarkDock*  m_pBookmarkDW      ;
+   KComboBox*     m_pAccountStatus   ;
    #ifdef ENABLE_VIDEO
    VideoDock*     m_pVideoDW         ;
    #endif
@@ -140,18 +142,20 @@ public:
    BookmarkDock* bookmarkDock();
 
 private slots:
-   void on_m_pView_statusMessageChangeAsked      ( const QString& message        );
-   void on_m_pView_windowTitleChangeAsked        ( const QString& message        );
-   void on_m_pView_enabledActionsChangeAsked     ( const bool*    enabledActions );
-   void on_m_pView_actionIconsChangeAsked        ( const QString* actionIcons    );
-   void on_m_pView_actionTextsChangeAsked        ( const QString* actionTexts    );
-   void on_m_pView_transferCheckStateChangeAsked ( bool  transferCheckState      );
-   void on_m_pView_recordCheckStateChangeAsked   ( bool  recordCheckState        );
-   void on_m_pView_incomingCall                  ( const Call*    call           );
-   void showShortCutEditor                       (                               );
-   void quitButton                               (                               );
+   void on_m_pView_statusMessageChangeAsked      ( const QString& message               );
+   void on_m_pView_windowTitleChangeAsked        ( const QString& message               );
+   void on_m_pView_enabledActionsChangeAsked     ( const bool*    enabledActions        );
+   void on_m_pView_actionIconsChangeAsked        ( const QString* actionIcons           );
+   void on_m_pView_actionTextsChangeAsked        ( const QString* actionTexts           );
+   void on_m_pView_transferCheckStateChangeAsked ( bool  transferCheckState             );
+   void on_m_pView_recordCheckStateChangeAsked   ( bool  recordCheckState               );
+   void on_m_pView_incomingCall                  ( const Call*    call                  );
+   void currentAccountIndexChanged               ( int newIndex                         );
+   void currentPriorAccountChanged               ( Account* newPrior                    );
+   void showShortCutEditor                       (                                      );
+   void quitButton                               (                                      );
    #ifdef ENABLE_VIDEO
-   void displayVideoDock                         ( VideoRenderer* r              );
+   void displayVideoDock                         ( VideoRenderer* r                     );
    #endif
 };
 

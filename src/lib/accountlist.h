@@ -60,7 +60,7 @@ public:
    Qt::ItemFlags flags    ( const QModelIndex& index                             ) const;
 
    //Setters
-   static  void setPriorAccountId( const QString& value                                     );
+   void setPriorAccount          ( Account*                                                 );
    virtual bool setData          ( const QModelIndex& index, const QVariant &value, int role);
    void         setColorVisitor  ( AccountListColorVisitor* visitor                         );
    void         setDefaultAccount(Account* a);
@@ -108,6 +108,8 @@ signals:
    void accountEnabledChanged( Account* source                );
    ///Emitted when the default account change
    void defaultAccountChanged( Account* a                     );
+   ///Emitted when the default account change
+   void priorAccountChanged  ( Account* a                     );
 };
 
 ///SFLPhonelib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support

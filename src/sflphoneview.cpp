@@ -743,10 +743,10 @@ void SFLPhoneView::setAccountFirst(Account * account)
 {
    kDebug() << "setAccountFirst : " << (account ? account->getAlias() : QString()) << (account ? account->getAccountId() : QString());
    if(account) {
-      AccountList::setPriorAccountId(account->getAccountId());
+      AccountList::getInstance()->setPriorAccount(account);
    }
    else {
-      AccountList::setPriorAccountId(QString());
+      AccountList::getInstance()->setPriorAccount(nullptr);
    }
    kDebug() << "Current account id" << (AccountList::getCurrentAccount()?AccountList::getCurrentAccount()->getAccountId():"<no account>");
    updateStatusMessage();
