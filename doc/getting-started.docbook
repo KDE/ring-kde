@@ -66,7 +66,7 @@ If you already have a SIP or IAX account created with &sflphone; or by any other
 <sect1 id="gettingstarted-wizard-create">
 <title>Creating a new account</title>
 
-<para>If you choose to create an account on sflphone.org, the wizard will need very few informations to create the account, create it automatically and add the informations of the new account in &sflphone;. It creates a SIP account, so you will then be able to use this new account from any other system, with any software handling SIP accounts, using the informations of the new account that are displayed at the end of the process or reachable from the main window.</para>
+<para>If you choose to create an account on sflphone.org, the wizard will need very few information to create the account, create it automatically and add the information of the new account in &sflphone;. It creates a SIP account, so you will then be able to use this new account from any other system, with any software handling SIP accounts, using the information of the new account that are displayed at the end of the process or reachable from the main window.</para>
 
 <sect2 id="gettingstarted-wizard-create-email">
 <title>Email address</title>
@@ -92,7 +92,7 @@ If you already have a SIP or IAX account created with &sflphone; or by any other
 <sect1 id="gettingstarted-wizard-register">
 <title>Register an existing account</title>
 
-<para> If you have already created a SIP or IAX account with &sflphone; from another computer or with another software, or if you want to use an existing account, you can register it with this wizard to be able to use it with this instance of &sflphone;. The wizard will ask you for the basic informations of this account in order to find it back. These informations are described in this section.</para>
+<para> If you have already created a SIP or IAX account with &sflphone; from another computer or with another software, or if you want to use an existing account, you can register it with this wizard to be able to use it with this instance of &sflphone;. The wizard will ask you for the basic information of this account in order to find it back. These information are described in this section.</para>
 
 
 
@@ -110,7 +110,7 @@ If you already have a SIP or IAX account created with &sflphone; or by any other
 </mediaobject>
 </screenshot>
 
-<para> &sflphone; handles two protocols for calls, SIP and IAX2. The wizard will now ask you which of those is your account. If you already have an account created, just choose the right type. If you want to create one without &sflphone; and you wonder which type to choose, you can refer to <ulink url="http://www.voip-info.org/wiki/view/IAX+versus+SIP">this document</ulink> to know which one feets your needs best. </para>
+<para> &sflphone; handles two protocols for calls, SIP and IAX2. The wizard will now ask you which of those is your account. If you already have an account created, just choose the right type. If you want to create one without &sflphone; and you wonder which type to choose, you can refer to <ulink url="http://www.voip-info.org/wiki/view/IAX+versus+SIP">this document</ulink> to know which one fits your needs best. </para>
 
 </sect2>
 
@@ -128,7 +128,7 @@ If you already have a SIP or IAX account created with &sflphone; or by any other
 </mediaobject>
 </screenshot>
 
-<para> The wizard needs a few informations to find your account. The alias is for convenience only, you can choose anyone. It will be applied only on &sflphone; on this system, not in the account. Server is the one that hosts your account. User is the username of the account. Unlike the alias, it has to be the username chosen while creating the account. Password is also the one chosen for the account. Mailbox number will be used by the mailbox button to keep you from having to type that number too often. Usually it is 888.</para>
+<para> The wizard needs a few information to find your account. The alias is for convenience only, you can choose anyone. It will be applied only on &sflphone; on this system, not in the account. Server is the one that hosts your account. User is the username of the account. Unlike the alias, it has to be the username chosen while creating the account. Password is also the one chosen for the account. Mailbox number will be used by the mailbox button to keep you from having to type that number too often. Usually it is 888.</para>
 
 </sect2>
 
@@ -167,7 +167,7 @@ If you already have a SIP or IAX account created with &sflphone; or by any other
 </mediaobject>
 </screenshot>
 
-<para> The conclusion page resumes the informations you have sent during the wizard process. It has not done anything yet so you can still give up clicking <guibutton>Cancel</guibutton> button. If you click on <guibutton>Finish</guibutton>, it will send all the information and create the account if you chose to create it or register it if you were registering an existing account. As it has not sent the informations at this step, it cannot know if the registration will succeed. To check this, once you are in the main window, go to the account settings page to see the state of your accounts. </para>
+<para> The conclusion page resumes the information you have sent during the wizard process. It has not done anything yet so you can still give up clicking <guibutton>Cancel</guibutton> button. If you click on <guibutton>Finish</guibutton>, it will send all the information and create the account if you chose to create it or register it if you were registering an existing account. As it has not sent the information at this step, it cannot know if the registration will succeed. To check this, once you are in the main window, go to the account settings page to see the state of your accounts. </para>
 
 </sect1>
 

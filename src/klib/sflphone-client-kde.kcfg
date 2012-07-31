@@ -147,12 +147,12 @@
     </entry>
 
     <entry name="displayOrganisation" type="Bool">
-      <label>Defines whether to display the organisation the the contact list item</label>
+      <label>Defines whether to display the organisation of the contact list item</label>
       <default>true</default>
     </entry>
 
     <entry name="displayEmail" type="Bool">
-      <label>Defines whether to display the organisation the the contact list item</label>
+      <label>Defines whether to display the organisation of the contact list item</label>
       <default>false</default>
     </entry>
 

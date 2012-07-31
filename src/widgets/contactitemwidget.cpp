@@ -325,7 +325,7 @@ QString ContactItemWidget::showNumberSelector(bool& ok)
          map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
          list << number->getType()+" ("+number->getNumber()+')';
       }
-      QString result = QInputDialog::getItem (this, i18n("Select phone number"), i18n("This contact have many phone number, please select the one you wish to call"), list, 0, false, &ok);
+      QString result = QInputDialog::getItem (this, i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
 
       if (!ok) {
          kDebug() << "Operation cancelled";

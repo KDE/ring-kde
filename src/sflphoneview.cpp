@@ -350,7 +350,7 @@ bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
          map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
          list << number->getType()+" ("+number->getNumber()+')';
       }
-      QString result = QInputDialog::getItem (this, i18n("Select phone number"), i18n("This contact have many phone number, please select the one you wish to call"), list, 0, false, &ok);
+      QString result = QInputDialog::getItem (this, i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
       if (ok) {
          (*call2) = SFLPhone::model()->addDialingCall(contact->getFormattedName(), AccountList::getCurrentAccount());
          if (*call2)
@@ -859,7 +859,7 @@ void SFLPhoneView::mailBox()
    }
 }
 
-///Called the there is an error (dbus)
+///Called but there is an error (dbus)
 void SFLPhoneView::on1_error(MapStringString details)
 {
    kDebug() << "Signal : Daemon error : " << details;

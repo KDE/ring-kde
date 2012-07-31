@@ -45,7 +45,7 @@
 <sect2 id="common-use-current-record">
 <title>Recording a call</title>
 
-<para> If you want to record the current call, click on the record button, the button will become triggered and the light may come on. Since &sflphone; only records calls when they are current (ie : not on hold), the light will be on if the selected call is current and can be recorded, and off if it's not. But if the button is triggered, &sflphone; will record as soon as it's communicating.
+<para> If you want to record the current call, click on the record button, the button will become triggerred and the light may come on. Since &sflphone; only records calls when they are current (ie : not on hold), the light will be on if the selected call is current and can be recorded, and off if it's not. But if the button is triggerred, &sflphone; will record as soon as it's communicating.
 </para>
 
 </sect2>
@@ -71,7 +71,7 @@
 <sect2 id="common-use-address-kde">
 <title>Configuring KDE Address Book</title>
 
-<para> As it is fully designed for KDE, &sflphone-client-kde; looks for your contacts in KDE Address Book. So you first have to configure it. In the K Menu of your KDE, go to Applications,then Bureautique (??), then choose Address Book. You are now in the main window of the KDE address book. You can add contacts and handle them from here. Type F1 to see this application's help page if you have some problems with it.
+<para> As it is fully designed for KDE, &sflphone-client-kde; looks for your contacts in KDE Address Book. So you first have to configure it. In the K Menu of your KDE, go to Applications, then Office, then choose Address Book. You are now in the main window of the KDE address book. You can add contacts and handle them from here. Type F1 to see this application's help page if you have some problems with it.
 </para>
 
 <para> &sflphone-client-kde; looks into the standard address book, that means it will look into the contacts displayed in the contact list on the left of the window. The selected address books in the bottom left of the window will be searched. If you add some contacts, you may have to restart &sflphone-client-kde; before it can see them.
@@ -84,7 +84,7 @@
 <sect2 id="common-use-address-config">
 <title>Configuring &sflphone-client-kde;</title>
 
-<para> You can now go to the Configuration Dialog to choose how &sflphone; will handle your searches in the address book. This step is optionnal though, because the default settings enable you to use the feature without more setup.
+<para> You can now go to the Configuration Dialog to choose how &sflphone; will handle your searches in the address book. This step is optional though, because the default settings enable you to use the feature without more setup.
 </para>
 
 <para> The maximum results setting enables you to choose how many phone numbers can be displayed when you look for a contact. KDE address book can contain lots of contacts, especially if connected to LDAP directories, and you don't want to see thousands of contacts displayed as soon as you type a letter to search for.</para>
