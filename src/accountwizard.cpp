@@ -173,6 +173,7 @@ rest_account get_rest_account(QString host, QString email)
 AccountWizard::AccountWizard(QWidget * parent)
  : QWizard(parent)
 {
+   setModal(true);
    setPage(Page_Intro      , new WizardIntroPage               );
    setPage(Page_AutoMan    , new WizardAccountAutoManualPage   );
    setPage(Page_Type       , new WizardAccountTypePage         );
@@ -201,7 +202,7 @@ void AccountWizard::accept()
    ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
 
    QString ret;
-   MapStringString accountDetails;
+   MapStringString accountDetails = configurationManager.getAccountTemplate();
 
    QString& alias    = accountDetails[ QString( ACCOUNT_ALIAS    ) ];
    QString& enabled  = accountDetails[ QString( ACCOUNT_ENABLED  ) ];
@@ -313,8 +314,9 @@ void AccountWizard::accept()
 
       QStringList ifaceList = configurationManager.getAllIpInterface();
 
-      locale_interface  = ifaceList.at(0);
+//       locale_interface  = ifaceList.at(0);
       published_address = ifaceList.at(0);
+      locale_interface = "default";
 
       ret += i18n( "Alias"            ) + " : " + alias    + '\n';
       ret += i18n( "Server"           ) + " : " + server   + '\n';
@@ -517,6 +519,12 @@ WizardAccountSIPFormPage::WizardAccountSIPFormPage(QWidget *parent)
    lineEdit_password   = new KLineEdit;
    lineEdit_voicemail  = new KLineEdit;
    checkBox_enableZrtp = new QCheckBox;
+
+   lineEdit_alias->setPlaceholderText    ( i18n("Anything, used only locally")                 );
+   lineEdit_server->setPlaceholderText   ( i18n("Exemple: sip.sflphone.org or 192.168.0.2")    );
+   lineEdit_user->setPlaceholderText     ( i18n("Usually your extension number")               );
+   lineEdit_password->setPlaceholderText ( i18n("SIP password, ask your network administrator"));
+   lineEdit_voicemail->setPlaceholderText( i18n("Usually the same as the username")            );
 
    lineEdit_password->setEchoMode(KLineEdit::Password);
 
