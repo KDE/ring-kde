@@ -859,7 +859,7 @@ void SFLPhoneView::mailBox()
    }
 }
 
-///Called the there is an error (dbus)
+///Called but there is an error (dbus)
 void SFLPhoneView::on1_error(MapStringString details)
 {
    kDebug() << "Signal : Daemon error : " << details;
