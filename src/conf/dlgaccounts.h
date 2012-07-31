@@ -112,7 +112,7 @@ private:
    QList<StringHash>     codecList             ;
    bool                  accountListHasChanged ;
    QMap<QString,QString> m_hRingtonePath       ;
-   bool                  m_IsLoading           ;
+   int                   m_IsLoading           ;
 
 public slots:
    void loadAccountList ();

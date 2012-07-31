@@ -43,7 +43,7 @@
 DlgAccounts::DlgAccounts(KConfigDialog* parent)
  : QWidget(parent),m_IsLoading(false)
 {
-   m_IsLoading = true;
+   m_IsLoading++;
    setupUi(this);
    button_accountUp->setIcon         ( KIcon( "go-up"       ) );
    button_accountDown->setIcon       ( KIcon( "go-down"     ) );
@@ -133,7 +133,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
       listView_accountList->setCurrentIndex(AccountList::getInstance()->index(0,0));
       loadAccount(listView_accountList->currentIndex());
    }
-   m_IsLoading = false;
+   m_IsLoading--;
 } //DlgAccounts
 
 ///Destructor
@@ -163,8 +163,8 @@ void DlgAccounts::saveAccount(QModelIndex item)
       kDebug() << "Nothing to be saved";
       return;
    }
+   m_IsLoading++;
    
-   m_IsLoading = true;
    QString protocolsTab[] = ACCOUNT_TYPES_TAB;
    
    //ACCOUNT DETAILS
@@ -226,7 +226,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    if (m_pCodecsLW->currentIndex().isValid())
       m_pCodecsLW->model()->setData(m_pCodecsLW->currentIndex(),m_pBitrateSB->value(),VideoCodecModel::BITRATE_ROLE);
    saveCredential();
-   m_IsLoading = false;
+   m_IsLoading--;
 } //saveAccount
 
 void DlgAccounts::cancel()
@@ -242,9 +242,9 @@ void DlgAccounts::cancel()
    }
 }
 
+///Load an account, set all field to the right value
 void DlgAccounts::loadAccount(QModelIndex item)
 {
-   m_IsLoading = true;
    if(! item.isValid() ) {
       kDebug() << "Attempting to load details of an account from a NULL item (" << item.row() << ")";
       return;
@@ -255,6 +255,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
       kDebug() << "Attempting to load details of an unexisting account";
       return;
    }
+   m_IsLoading++;
 
    edit1_alias->setText( account->getAccountAlias());
 
@@ -270,11 +271,13 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    QModelIndex idx = account->getCredentialsModel()->index(0,0);
+   disconnect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
    if (idx.isValid() && !account->getAccountId().isEmpty()) {
       edit5_password->setText(account->getCredentialsModel()->data(idx,CredentialModel::PASSWORD_ROLE).toString());
    }
    else
       edit5_password->setText("");
+   connect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
 
 
    switch (account->getTlsMethod()) {
@@ -340,12 +343,11 @@ void DlgAccounts::loadAccount(QModelIndex item)
    m_pDefaultAccount->setChecked(account == AccountList::getInstance()->getDefaultAccount());
    connect(m_pDefaultAccount,    SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
 
-   account->getVideoCodecModel()->reload();
 
    disconnect(list_credential->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectCredential(QModelIndex,QModelIndex))     );
    list_credential->setModel(account->getCredentialsModel());
    connect(list_credential->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectCredential(QModelIndex,QModelIndex))     );
-   
+
    disconnect(list_audiocodec->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
    disconnect(list_audiocodec->model()         ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    list_audiocodec->setModel(account->getAudioCodecModel());
@@ -355,6 +357,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    #ifdef ENABLE_VIDEO
    disconnect(m_pCodecsLW->selectionModel()    ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
    disconnect(m_pCodecsLW->model()             ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
+   account->getVideoCodecModel()->reload();
    m_pCodecsLW->setModel(account->getVideoCodecModel());
    connect(m_pCodecsLW->model()                ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(m_pCodecsLW->selectionModel()       ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
@@ -436,7 +439,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    updateStatusLabel(account);
    enablePublished();
    frame2_editAccounts->setEnabled(true);
-   m_IsLoading = false;
+   m_IsLoading--;
    account->performAction(EDIT);
 } //loadAccount
 

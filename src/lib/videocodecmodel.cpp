@@ -53,13 +53,17 @@ bool VideoCodecModel::setData(const QModelIndex& index, const QVariant &value, i
 {
 
    if (index.column() == 0 && role == Qt::CheckStateRole) {
+      bool changed = m_lCodecs[index.row()]->getEnabled() != (value == Qt::Checked);
       m_lCodecs[index.row()]->setEnabled(value == Qt::Checked);
-      emit dataChanged(index, index);
+      if (changed)
+         emit dataChanged(index, index);
       return true;
    }
    else if (index.column() == 0 && role == VideoCodecModel::BITRATE_ROLE) {
+      bool changed = m_lCodecs[index.row()]->getBitrate() != value.toUInt();
       m_lCodecs[index.row()]->setBitrate(value.toInt());
-      emit dataChanged(index, index);
+      if (changed)
+         emit dataChanged(index, index);
       return true;
    }
    return false;

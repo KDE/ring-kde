@@ -22,6 +22,7 @@
 
 //Qt
 #include <QtCore/QString>
+#include <QtCore/QPointer>
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QPalette>
 #include <QtGui/QInputDialog>
@@ -755,14 +756,13 @@ void SFLPhoneView::setAccountFirst(Account * account)
 ///Show the configuration dialog
 void SFLPhoneView::configureSflPhone()
 {
-   ConfigurationDialog* configDialog = new ConfigurationDialog(this);
+   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(this);
    configDialog->setModal(true);
 
-   connect(configDialog, SIGNAL(changesApplied()),
-           this,         SLOT(loadWindow()));
-
-   //configDialog->reload();
-   configDialog->show();
+   connect(configDialog, SIGNAL(changesApplied()), this, SLOT(loadWindow()));
+   configDialog->exec();
+   disconnect(configDialog, SIGNAL(changesApplied()), this, SLOT(loadWindow()));
+   delete configDialog;
 }
 
 ///Show the account creation wizard

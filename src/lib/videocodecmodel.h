@@ -83,9 +83,9 @@ class LIB_EXPORT VideoCodec {
 
       //Attributes
       static CodecHash m_slCodecs;
-      QString m_Name;
-      uint m_Bitrate;
-      bool    m_Enabled;
+      QString     m_Name;
+      uint        m_Bitrate;
+      bool        m_Enabled;
       static bool m_sInit;
 };
 #endif
