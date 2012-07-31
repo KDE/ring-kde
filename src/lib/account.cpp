@@ -288,16 +288,21 @@ void Account::setAccountDetails(const MapStringString& m)
 ///Set a specific detail
 bool Account::setAccountDetail(const QString& param, const QString& val)
 {
+   bool changed = (*m_pAccountDetails)[param] != val;
    QString buf = (*m_pAccountDetails)[param];
    if (param == ACCOUNT_REGISTRATION_STATUS) {
       (*m_pAccountDetails)[param] = val;
-      emit detailChanged(this,param,val,buf);
+      if (changed) {
+         emit detailChanged(this,param,val,buf);
+      }
    }
    else {
       performAction(AccountEditAction::MODIFY);
       if (m_CurrentState == MODIFIED || m_CurrentState == NEW) {
          (*m_pAccountDetails)[param] = val;
-         emit detailChanged(this,param,val,buf);
+         if (changed) {
+            emit detailChanged(this,param,val,buf);
+         }
       }
    }
    return m_CurrentState == MODIFIED || m_CurrentState == NEW;

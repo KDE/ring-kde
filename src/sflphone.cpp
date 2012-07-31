@@ -234,6 +234,7 @@ bool SFLPhone::initialize()
 
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
    connect(AccountList::getInstance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
+   currentPriorAccountChanged(AccountList::getCurrentAccount());
    
    return true;
 }

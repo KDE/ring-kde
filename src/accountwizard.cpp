@@ -521,7 +521,7 @@ WizardAccountSIPFormPage::WizardAccountSIPFormPage(QWidget *parent)
    checkBox_enableZrtp = new QCheckBox;
 
    lineEdit_alias->setPlaceholderText    ( i18n("Anything, used only locally")                 );
-   lineEdit_server->setPlaceholderText   ( i18n("Exemple: sip.sflphone.org or 192.168.0.2")    );
+   lineEdit_server->setPlaceholderText   ( i18n("Example: sip.sflphone.org or 192.168.0.2")    );
    lineEdit_user->setPlaceholderText     ( i18n("Usually your extension number")               );
    lineEdit_password->setPlaceholderText ( i18n("SIP password, ask your network administrator"));
    lineEdit_voicemail->setPlaceholderText( i18n("Usually the same as the username")            );

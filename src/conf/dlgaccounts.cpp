@@ -231,9 +231,14 @@ void DlgAccounts::saveAccount(QModelIndex item)
 
 void DlgAccounts::cancel()
 {
-   Account* account = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
-   if (account) {
-      account->performAction(CANCEL);
+//    Account* account = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+//    if (account) {
+//       account->performAction(CANCEL);
+//    }
+   const QVector<Account*> accs = AccountList::getInstance()->getAccounts();
+   foreach (Account* a, accs) {
+      if (a->currentState() == MODIFIED || a->currentState() == OUTDATED)
+         a->performAction(CANCEL);
    }
 }
 
