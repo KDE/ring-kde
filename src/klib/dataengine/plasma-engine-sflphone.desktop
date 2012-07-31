@@ -1,15 +1,21 @@
 [Desktop Entry]
 Name=sflphone
+Name[et]=sflphone
 Name[nl]=sflphone
 Name[pt]=sflphone
 Name[pt_BR]=sflphone
+Name[sk]=sflphone
 Name[sv]=SFL-telefon
+Name[uk]=sflphone
 Name[x-test]=xxsflphonexx
 Comment=An SFLPhone IP soft-phone frontend
+Comment[et]=SFLphone IP-telefoni kasutajaliides
 Comment[nl]=Een SFLPhone IP soft-phone frontend
 Comment[pt]=Uma interface para o telefone IP por 'software' SFLPhone
 Comment[pt_BR]=Uma interface para o telefone por software do SFLPhone IP
+Comment[sk]=Frontend pre SFLPhone IP soft-phone
 Comment[sv]=Ett SFL-telefongränssnitt för IP-programvarutelefon 
+Comment[uk]=Графічна оболонка до програмного інтернет-телефону SFLPhone
 Comment[x-test]=xxAn SFLPhone IP soft-phone frontendxx
 Type=Service
 
