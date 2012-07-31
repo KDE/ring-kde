@@ -202,7 +202,7 @@
       <default> false </default>
     </entry>
     <entry name="enableReadDetails" type="Bool">
-      <label>Automattically read the call details when it is selected</label>
+      <label>Automatically read the call details when it is selected</label>
       <default> false </default>
     </entry>
 

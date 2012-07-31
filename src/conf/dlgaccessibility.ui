@@ -37,7 +37,7 @@
       <item>
        <widget class="QCheckBox" name="kcfg_enableReadDetails">
         <property name="text">
-         <string>Automattically read the call details when it is selected</string>
+         <string>Automatically read the call details when it is selected</string>
         </property>
        </widget>
       </item>

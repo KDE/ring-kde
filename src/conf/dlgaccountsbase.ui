@@ -282,7 +282,7 @@
              </size>
             </property>
             <property name="placeholderText">
-             <string>Exemple: sip.sflphone.org or 192.168.0.2</string>
+             <string>Example: sip.sflphone.org or 192.168.0.2</string>
             </property>
            </widget>
           </item>
@@ -386,7 +386,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox">
             <property name="title">
-             <string>Resgistration</string>
+             <string>Registration</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_8">
              <item row="0" column="2">
