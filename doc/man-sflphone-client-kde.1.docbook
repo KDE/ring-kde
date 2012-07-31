@@ -52,7 +52,7 @@ sflphone-client-kde is a KDE client for SFLphone; it communicates with the core 
 <title>See Also</title>
 <para>sflphoned(1)</para>
 <para>More detailed user documentation is available from <ulink
-url="help:/sflphone-client-kde">help:/kate</ulink>
+url="help:/sflphone-client-kde">help:/sflphone-client-kde</ulink>
 (either enter this <acronym>URL</acronym> into Konqueror, or run <userinput><command>khelpcenter</command> <parameter>help:/sflphone-client-kde</parameter></userinput>).</para>
 <para>There is also further information available at <ulink
 url="http://sflphone.org/">the SFLPhone website</ulink>.</para>
