@@ -25,16 +25,16 @@
 #include <QtCore/QPointer>
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QPalette>
-#include <QtGui/QInputDialog>
 #include <QtGui/QWidget>
 #include <QtGui/QClipboard>
-#include <QErrorMessage>
 
 //KDE
 #include <KLocale>
 #include <KAction>
 #include <KMenu>
+#include <KInputDialog>
 #include <kabc/addressbook.h>
+#include <KMessageBox>
 
 //sflphone
 #include "conf/configurationdialog.h"
@@ -113,7 +113,7 @@ private:
 
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
-   : QWidget(parent), wizard(0), errorWindow(0)
+   : QWidget(parent), wizard(0)
 {
    setupUi(this);
 
@@ -167,15 +167,6 @@ void SFLPhoneView::loadWindow()
  *                                  Getters                                  *
  *                                                                           *
  ****************************************************************************/
-
-
-///Return the error window
-QErrorMessage * SFLPhoneView::getErrorWindow()
-{
-   if (!errorWindow)
-      errorWindow = new QErrorMessage(this);
-   return errorWindow;
-}
 
 
 /*****************************************************************************
@@ -331,7 +322,7 @@ void SFLPhoneView::action(Call* call, call_action action)
          call->actionPerformed(action);
       }
       catch(const char * msg) {
-         getErrorWindow()->showMessage(QString(msg));
+         KMessageBox::error(this,i18n(msg));
       }
       updateWindowCallState();
    }
@@ -353,7 +344,7 @@ bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
          map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
          list << number->getType()+" ("+number->getNumber()+')';
       }
-      QString result = QInputDialog::getItem (this, i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
+      const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
       if (ok) {
          (*call2) = SFLPhone::model()->addDialingCall(contact->getFormattedName(), AccountList::getCurrentAccount());
          if (*call2)

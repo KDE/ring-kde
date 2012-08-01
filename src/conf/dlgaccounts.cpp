@@ -20,7 +20,6 @@
 
 //Qt
 #include <QtCore/QString>
-#include <QtGui/QInputDialog>
 #include <QtGui/QTableWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QWidget>
@@ -29,6 +28,7 @@
 #include <KConfigDialog>
 #include <KDebug>
 #include <KStandardDirs>
+#include <KInputDialog>
 
 //SFLPhone
 #include "klib/configurationskeleton.h"
@@ -511,9 +511,10 @@ void DlgAccounts::on_button_accountDown_clicked()
 ///Add new account
 void DlgAccounts::on_button_accountAdd_clicked()
 {
-   QString itemName = QInputDialog::getText(this, "New account", "Enter new account's alias");
+   bool ok;
+   QString itemName = KInputDialog::getText("New account", "Enter new account's alias",QString(),&ok,this);
    itemName = itemName.simplified();
-   if (!itemName.isEmpty()) {
+   if (ok && !itemName.isEmpty()) {
       AccountList::getInstance()->addAccount(itemName);
       int r = listView_accountList->model()->rowCount() - 1;
       listView_accountList->setCurrentIndex(listView_accountList->model()->index(r,0));

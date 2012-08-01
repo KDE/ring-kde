@@ -29,7 +29,6 @@
 #include <QtGui/QMenu>
 #include <QtGui/QLabel>
 #include <QtGui/QSpacerItem>
-#include <QtGui/QInputDialog>
 #include <QtGui/QBitmap>
 #include <QtGui/QPainter>
 
@@ -39,6 +38,7 @@
 #include <KDebug>
 #include <KAction>
 #include <KStandardDirs>
+#include <KInputDialog>
 
 //System
 #include <unistd.h>
@@ -325,7 +325,7 @@ QString ContactItemWidget::showNumberSelector(bool& ok)
          map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
          list << number->getType()+" ("+number->getNumber()+')';
       }
-      QString result = QInputDialog::getItem (this, i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
+      QString result = KInputDialog::getItem ( i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
 
       if (!ok) {
          kDebug() << "Operation cancelled";
@@ -432,7 +432,7 @@ void ContactItemWidget::addPhone()
 {
    kDebug() << "Adding to contact";
    bool ok;
-   QString text = QInputDialog::getText(this, i18n("Enter a new number"), i18n("New number:"), QLineEdit::Normal, QString(), &ok);
+   QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
       AkonadiBackend::getInstance()->addPhoneNumber(m_pContactKA,text,"work");
    }

@@ -20,7 +20,6 @@
 #include "callview.h"
 
 //Qt
-#include <QtGui/QInputDialog>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QPushButton>

@@ -30,6 +30,7 @@
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
+#include <kde_file.h>
 
 //SFLPhone
 #include "accountwizard.h"
@@ -89,8 +90,8 @@ int main(int argc, char **argv)
          return 1;
       };
 
-      signal(SIGINT  , quitOnSignal);
-      signal(SIGTERM , quitOnSignal);
+      KDE_signal(SIGINT  , quitOnSignal);
+      KDE_signal(SIGTERM , quitOnSignal);
 
       if (ConfigurationSkeleton::displayOnStart())
          sflphoneWindow_->show();

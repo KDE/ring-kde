@@ -26,7 +26,6 @@
 //Qt
 class QString;
 class QKeyEvent;
-class QErrorMessage;
 
 //SFLPhone
 class AccountWizard;
@@ -50,7 +49,6 @@ class SFLPhoneView : public QWidget, public Ui::SFLPhone_view
 
 private:
    AccountWizard* wizard     ;
-   QErrorMessage* errorWindow;
 
 protected:
 
@@ -74,8 +72,6 @@ public:
    SFLPhoneView(QWidget *parent);
    virtual ~SFLPhoneView();
 
-   //Getters
-   QErrorMessage * getErrorWindow();
 
 
    bool selectCallPhoneNumber(Call** call,Contact* contact);
