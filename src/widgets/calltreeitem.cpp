@@ -339,7 +339,7 @@ void CallTreeItem::updated()
          m_pPeerL->setVisible(true);
       }
       else if (m_pPeerL) {
-         m_pPeerL->setText(i18n(""));
+         m_pPeerL->setText(QString());
          m_pPeerL->setVisible(false);
       }
    }
