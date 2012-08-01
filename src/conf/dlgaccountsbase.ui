@@ -564,7 +564,7 @@
                 <bool>false</bool>
                </property>
                <property name="clickMessage">
-                <string>choose Stun server (example : stunserver.org)</string>
+                <string>Choose Stun server (example: stunserver.org)</string>
                </property>
               </widget>
              </item>

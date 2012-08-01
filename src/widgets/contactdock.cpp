@@ -126,7 +126,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent)
 
 
    QStringList sortType;
-   sortType << i18nc("Sort by name","Name") << i18nc("Sort by Organisation","Organisation") << i18nc("Sort by Recently used","Recently used") << i18nc("Sort by Group","Group") << i18nc("Sort by Department","Department");
+   sortType << i18nc("Sort by Name","Name") << i18nc("Sort by Organisation","Organisation") << i18nc("Sort by Recently used","Recently used") << i18nc("Sort by Group","Group") << i18nc("Sort by Department","Department");
 
    m_pSortByCBB->addItems(sortType);
 
