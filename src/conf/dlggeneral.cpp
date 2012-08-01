@@ -33,6 +33,7 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
 {
    setupUi(this);
    connect(toolButton_historyClear, SIGNAL(clicked()), this, SIGNAL(clearCallHistoryAsked()));
+   toolButton_historyClear->setIcon(KIcon("edit-clear-history"));
 
    kcfg_historyMax->setValue(ConfigurationSkeleton::historyMax());
    kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());

@@ -131,6 +131,9 @@
     <entry name="alsaOutputDevice" type="Int">
     	<label>Defines which ALSA Output device to use.</label>
     </entry>
+    <entry name="alsaRingtoneDevice" type="Int">
+      <label>Defines which ALSA Ringtone device to use.</label>
+    </entry>
     <entry name="pulseAudioVolumeAlter" type="Bool">
     	<label>Defines whether pulse audio can mute other applications during a call.</label>
     </entry>

@@ -372,6 +372,7 @@ void Account::save()
    }
    m_pVideoCodecs->save();
    saveAudioCodecs();
+   emit changed(this);
 }
 
 ///sync with the daemon, this need to be done manually to prevent reloading the account while it is being edited
@@ -392,6 +393,7 @@ void Account::reload()
       m_pAccountDetails = new MapStringString(aDetails);
    }
    m_CurrentState = READY;
+   emit changed(this);
 }
 
 ///Reload credentials from DBUS
