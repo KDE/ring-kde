@@ -26,6 +26,13 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <semaphore.h>
+#include <errno.h>
+// #include <linux/time.h>
+#include <time.h>
+
+#ifndef CLOCK_REALTIME
+#define CLOCK_REALTIME 0
+#endif
 
 #include <QtCore/QTimer>
 
