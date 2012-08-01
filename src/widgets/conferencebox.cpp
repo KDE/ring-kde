@@ -164,9 +164,9 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
          gradient.setColorAt(1, Qt::transparent);
          QSize rectSize;
          if (leftToRight) {
-               rectSize = QSize(newOptRect.width() - 3, 1);
+               rectSize = QSize(newOptRect.width() - 30, 1);
          } else {
-               rectSize = QSize(-newOptRect.width() + 3, 1);
+               rectSize = QSize(-newOptRect.width() + 30, 1);
          }
          painter->fillRect(QRect(start, rectSize), gradient);
       }
@@ -209,7 +209,8 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
          painter->drawArc(arc, 1440, 1440);
       } else {
          QPointF topRight(optRect.topRight());
-         topRight.rx() -= 4;
+         topRight.rx() -= 3;
+//          topRight.ry() += 1;
          arc = QRectF(topRight, QSizeF(4, 4));
          arc.translate(-0.5, 0.5);
          painter->drawArc(arc, 0, 1440);
@@ -272,9 +273,9 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
       gradient.setColorAt(1, outlineColor);
       QSize rectSize;
       if (leftToRight) {
-         rectSize = QSize(optRect.width() - 7, 1);
+         rectSize = QSize(optRect.width() - 6, 1);
       } else {
-         rectSize = QSize(-optRect.width() + 7, 1);
+         rectSize = QSize(-optRect.width() + 6, 1);
       }
       painter->fillRect(QRect(start, rectSize), gradient);
    }

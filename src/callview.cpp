@@ -56,22 +56,22 @@ CallTreeItemDelegate(CallView* widget)
       : QStyledItemDelegate(widget)
       , m_tree(widget)
       , m_ConferenceDrawer()
-    {
-    }
+   {
+   }
 
-    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
-      QSize sh = QStyledItemDelegate::sizeHint(option, index);
-      QTreeWidgetItem* item = (m_tree)->itemFromIndex(index);
-      if (item) {
-         CallTreeItem* widget = (CallTreeItem*)m_tree->itemWidget(item,0);
-         if (widget)
-            sh.rheight() = widget->sizeHint().height()+11; //Equal top and bottom padding
+   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+   QSize sh = QStyledItemDelegate::sizeHint(option, index);
+   QTreeWidgetItem* item = (m_tree)->itemFromIndex(index);
+   if (item) {
+      CallTreeItem* widget = (CallTreeItem*)m_tree->itemWidget(item,0);
+      if (widget)
+         sh.rheight() = widget->sizeHint().height()+11; //Equal top and bottom padding
 
-         if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())
-            sh.rheight() += 15;
-      }
-      return sh;
-    }
+      if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())
+         sh.rheight() += 15;
+   }
+   return sh;
+   }
 
    QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const {
       QModelIndex i(index),old(index);
@@ -118,8 +118,8 @@ CallTreeItemDelegate(CallView* widget)
       return r;
     }
 
-    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
-    {
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+   {
       Q_ASSERT(index.isValid());
 
       QStyleOptionViewItem opt(option);
@@ -181,7 +181,7 @@ CallTreeItemDelegate(CallView* widget)
       if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
          m_ConferenceDrawer.drawBoxBottom(index, 0, option, painter);
       }
-    }
+   }
 
 
 private:
