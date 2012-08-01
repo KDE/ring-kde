@@ -35,7 +35,7 @@
 </sect2>
 
 <sect2 id="common-use-current-transfer">
-<title>Transfering a call</title>
+<title>Transferring a call</title>
 
 <para> If you want to transfer the current call to another phone number, click on the transfer button, the item will change and enable you to type the number to which you want to transfer your peer. Once you've typed it, click on Valid transfer button or type Enter to effectively transfer the call. You can place the call on hold while typing the number (see hold).
 </para>
@@ -45,7 +45,7 @@
 <sect2 id="common-use-current-record">
 <title>Recording a call</title>
 
-<para> If you want to record the current call, click on the record button, the button will become triggerred and the light may come on. Since &sflphone; only records calls when they are current (ie : not on hold), the light will be on if the selected call is current and can be recorded, and off if it's not. But if the button is triggerred, &sflphone; will record as soon as it's communicating.
+<para> If you want to record the current call, click on the record button, the button will become triggered and the light may come on. Since &sflphone; only records calls when they are current (ie : not on hold), the light will be on if the selected call is current and can be recorded, and off if it's not. But if the button is triggered, &sflphone; will record as soon as it's communicating.
 </para>
 
 </sect2>

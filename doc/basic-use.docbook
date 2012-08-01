@@ -19,7 +19,7 @@ The &current-w; : it is the one you are by default, it shows the current, dialin
 The &history-w; : it shows the past calls and enables you to call someone you called earlier or from whom you missed a call.
 The &address-w; : it enables you to look in the address book of KDE and to call somebody if his number is available.
 
-To switch between those windows, click on the history and address book buttons. If none of these buttons is triggerred, you are currently in the &current-w;, if the history button is triggerred, you are in the &history-w;, and if the address book button is trigOCgerred, you are in the &address-w;.
+To switch between those windows, click on the history and address book buttons. If none of these buttons is triggered, you are currently in the &current-w;, if the history button is triggered, you are in the &history-w;, and if the address book button is triggered, you are in the &address-w;.
 
 </para>
 
@@ -35,7 +35,7 @@ To switch between those windows, click on the history and address book buttons. 
 
 <para> If you know the number of the people you want to call, you may just type it on the dialpad or on your keyboard while you are in the &current-w;, then click on the Accept button in the &actions-p;'s toolbar or in the "actions" menu, or type enter on your keyboard, or even double-click on the number to call once you have finished dialing it.</para>
 
-<para>Following behaviour, common part...</para>
+<para>Following behavior, common part...</para>
 
 </sect2>
 
@@ -49,7 +49,7 @@ To switch between those windows, click on the history and address book buttons. 
 
 <para> Note that you can also right click and select Edit before call to modify the number in the history before calling it.</para>
 
-<para>Following behaviour, common part...</para>
+<para>Following behavior, common part...</para>
 
 </sect2>
 
@@ -63,7 +63,7 @@ To switch between those windows, click on the history and address book buttons. 
 
 <para> Note that you can also right click and select Edit before call to modify the number in the address book before calling it.</para>
 
-<para>Following behaviour, common part...</para>
+<para>Following behavior, common part...</para>
 
 </sect2>
 
@@ -75,7 +75,7 @@ To switch between those windows, click on the history and address book buttons. 
 
 <para> When one of the account registered in &sflphone; receives an incoming call, it will be displayed as a new item in the &current-w; with the "incoming" icon. You can either accept or refuse it. To accept it, select the item and click on the Accept button which replaced the Call button in toolbar and Actions menu, or double click the item, or type Enter. To refuse it, select it and click on the refuse button that replaced the Hang up button in toolbar and Actions menu or type Escape.</para>
 
-<para>Following behaviour, common part...</para>
+<para>Following behavior, common part...</para>
 
 </sect1>
 
@@ -87,9 +87,9 @@ To switch between those windows, click on the history and address book buttons. 
 <para> Once you called a number, the call is normally in ringing state. It will then pass to Current or Busy state, according to the decision of the called peer to accept or refuse the call. If it's in Busy state, you can just hang it up with the Hang up button or typing Escape.
 </para>
 
-<para>If the number doesn't exist or if any other error occured (see the list of common errors here), it is in failure state, then you can Hang it up with the Hang up button or typing Escape. </para>
+<para>If the number doesn't exist or if any other error occurred (see the list of common errors here), it is in failure state, then you can Hang it up with the Hang up button or typing Escape. </para>
 
-<para>Following behaviour, common part...</para>
+<para>Following behavior, common part...</para>
 
 </sect1>
 
