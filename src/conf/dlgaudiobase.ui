@@ -192,24 +192,24 @@
      <property name="title">
       <string>Recording</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_destinationFolderd">
-        <property name="text">
-         <string>Destination folder</string>
-        </property>
-        <property name="buddy">
-         <cstring>KUrlRequester_destinationFolder</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="1">
        <widget class="KUrlRequester" name="KUrlRequester_destinationFolder">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="clickMessage">
+         <string>Destination folder</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="m_pAlwaysRecordCK">
+        <property name="text">
+         <string>Always record calls</string>
         </property>
        </widget>
       </item>

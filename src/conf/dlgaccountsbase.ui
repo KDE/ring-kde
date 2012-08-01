@@ -237,6 +237,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="placeholderText">
+             <string>Anything, used only to select the account</string>
+            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -510,7 +513,11 @@
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="KLineEdit" name="lineEdit_pa_published_address"/>
+              <widget class="KLineEdit" name="lineEdit_pa_published_address">
+               <property name="placeholderText">
+                <string>IP address or hostname</string>
+               </property>
+              </widget>
              </item>
              <item row="3" column="3">
               <spacer name="horizontalSpacer_9">

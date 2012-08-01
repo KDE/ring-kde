@@ -473,7 +473,9 @@ void DlgAccounts::changedAccountList()
 void DlgAccounts::otherAccountChanged()
 {
    accountListHasChanged = true;
-   emit updateButtons();
+   if (!m_IsLoading) {
+      emit updateButtons();
+   }
 }
 
 ///Callback when the account change

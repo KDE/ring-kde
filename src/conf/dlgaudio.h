@@ -38,6 +38,9 @@ public:
    //Destructor
    ~DlgAudio();
 
+private:
+   bool m_Changed;
+
 public slots:
    void updateWidgets ();
    void updateSettings();
@@ -54,6 +57,7 @@ public slots:
 
 private slots:
    //void codecTableChanged();
+   void changed();
 
 signals:
    ///Emitted when the buttons need to be updated in the parent dialog

@@ -141,7 +141,7 @@ QSize CallTreeItem::sizeHint () const
    }
 
    if (ConfigurationSkeleton::limitMinimumRowHeight() && height < (uint)ConfigurationSkeleton::minimumRowHeight() && !(m_pItemCall && m_pItemCall->isConference())) {
-      height = (uint)ConfigurationSkeleton::minimumRowHeight();
+      height = (uint)ConfigurationSkeleton::minimumRowHeight()-11;
    }
 
    if (height != m_Height) {

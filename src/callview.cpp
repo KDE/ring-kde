@@ -70,7 +70,6 @@ CallTreeItemDelegate(CallView* widget)
          if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())
             sh.rheight() += 15;
       }
-
       return sh;
     }
 
