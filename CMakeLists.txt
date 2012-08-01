@@ -41,7 +41,6 @@ add_subdirectory( data   )
 add_subdirectory( src    )
 add_subdirectory( doc    )
 add_subdirectory( man    )
-add_subdirectory( po     )
 add_subdirectory( plasma )
 
 set(PROJECT_VERSION "1.1.1")
