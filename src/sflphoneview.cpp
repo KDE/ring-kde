@@ -237,8 +237,11 @@ void SFLPhoneView::typeString(QString str)
    if(!currentCall && candidate) {
       candidate->appendText(str);
    }
-   if (!candidate)
-      HelperFunctions::displayNoAccountMessageBox(this);
+   if (!candidate) {
+      candidate = SFLPhone::model()->addDialingCall();
+      if (candidate)
+         candidate->appendText(str);
+   }
 } //typeString
 
 ///Called when a backspace is detected

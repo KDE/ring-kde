@@ -29,8 +29,8 @@
 ///Constructor
 ConferenceBox::ConferenceBox()
 {
-    setLeftMargin ( 7 );
-    setRightMargin( 7 );
+   setLeftMargin ( 7 );
+   setRightMargin( 7 );
 }
 
 ///Draw a conference box
