@@ -19,6 +19,7 @@
 
 //KDE
 #include <KDebug>
+#include <KConfigDialog>
 
 //SFLPhone
 #include "../lib/videodevice.h"
@@ -26,8 +27,8 @@
 #include "../lib/videomodel.h"
 
 ///Constructor
-DlgVideo::DlgVideo(QWidget *parent)
- : QWidget(parent),m_pDevice(nullptr)
+DlgVideo::DlgVideo(KConfigDialog* parent)
+ : QWidget(parent),m_pDevice(nullptr),m_IsChanged(false),m_IsLoading(true)
 {
    setupUi(this);
    
@@ -36,11 +37,12 @@ DlgVideo::DlgVideo(QWidget *parent)
       m_pDeviceCB->addItem(dev->getDeviceId());
    }
 
-   connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadDevice(QString))    );
-   connect(m_pChannelCB   ,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadResolution(QString)));
-   connect(m_pResolutionCB,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadRate(QString))      );
-   connect(m_pRateCB      ,SIGNAL(currentIndexChanged(QString)),this,SLOT(changeRate(QString))    );
-   connect(m_pPreviewPB   ,SIGNAL(clicked())                   ,this,SLOT(startStopPreview())     );
+   connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadDevice(QString))    );
+   connect(m_pChannelCB   ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadResolution(QString)));
+   connect(m_pResolutionCB,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadRate(QString))      );
+   connect(m_pRateCB      ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(changeRate(QString))    );
+   connect(m_pPreviewPB   ,SIGNAL(clicked())                   , this   , SLOT(startStopPreview())     );
+   connect( this          ,SIGNAL(updateButtons())             , parent , SLOT(updateButtons())        );
 
 
    m_pConfGB->setEnabled(devices.size());
@@ -51,6 +53,8 @@ DlgVideo::DlgVideo(QWidget *parent)
    if (VideoModel::getInstance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
    }
+   m_IsChanged = false;
+   m_IsLoading = false;
 }
 
 ///Destructor
@@ -59,8 +63,19 @@ DlgVideo::~DlgVideo()
    VideoModel::getInstance()->stopPreview();
 }
 
+///Has the dialog chnaged
+bool DlgVideo::hasChanged()
+{
+   return m_IsChanged;
+}
+
 ///Load the device list
-void DlgVideo::loadDevice(QString device) {
+void DlgVideo::loadDevice(QString device)
+{
+   if (!m_IsLoading) {
+      m_IsChanged = true;
+      emit updateButtons();
+   }
    m_pDevice = VideoDevice::getDevice(device);
    QString curChan = m_pDevice->getChannel();
    if (m_pDevice) {
@@ -76,6 +91,10 @@ void DlgVideo::loadDevice(QString device) {
 ///Load resolution
 void DlgVideo::loadResolution(QString channel)
 {
+   if (!m_IsLoading) {
+      m_IsChanged = true;
+      emit updateButtons();
+   }
    Resolution current = m_pDevice->getResolution();
    m_pResolutionCB->clear();
    foreach(const Resolution& res,m_pDevice->getResolutionList(channel)) {
@@ -90,6 +109,10 @@ void DlgVideo::loadResolution(QString channel)
 ///Load the rate
 void DlgVideo::loadRate(QString resolution)
 {
+   if (!m_IsLoading) {
+      m_IsChanged = true;
+      emit updateButtons();
+   }
    m_pRateCB->clear();
    QString rate = m_pDevice->getRate();
    foreach(const QString& r,m_pDevice->getRateList(m_pChannelCB->currentText(),resolution)) {
@@ -103,6 +126,10 @@ void DlgVideo::loadRate(QString resolution)
 ///Changes the rate
 void DlgVideo::changeRate(QString rate)
 {
+   if (!m_IsLoading) {
+      m_IsChanged = true;
+      emit updateButtons();
+   }
    m_pDevice->setRate(rate);
 }
 

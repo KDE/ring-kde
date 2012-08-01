@@ -23,6 +23,7 @@
 #include "ui_dlgvideobase.h"
 
 class VideoDevice;
+class KConfigDialog;
 
 ///DlgVideo: video preferences for sflphone
 class DlgVideo : public QWidget, public Ui_DlgVideoBase
@@ -30,10 +31,13 @@ class DlgVideo : public QWidget, public Ui_DlgVideoBase
 Q_OBJECT
 public:
    //Constructor
-   DlgVideo(QWidget *parent = 0);
+   DlgVideo(KConfigDialog* parent = nullptr);
 
    //Destructor
    ~DlgVideo();
+
+   //Getter
+   bool hasChanged();
 
 private slots:
    void loadDevice    ( QString device     );
@@ -45,6 +49,12 @@ private slots:
 private:
    //Attribute
    VideoDevice* m_pDevice;
+   bool m_IsChanged;
+   bool m_IsLoading;
+
+signals:
+   ///Emitted when the buttons need to be updated in the parent dialog
+   void updateButtons();
 };
 
 #endif
