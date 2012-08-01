@@ -211,7 +211,7 @@ void CallTreeItem::setCall(Call *call)
       return;
    }
 
-   m_pTransferPrefixL  = new QLabel(i18n("Transfer to : "));
+   m_pTransferPrefixL  = new QLabel(i18n("Transfer to:"));
    m_pTransferNumberL  = new QLabel(" ");
    m_pElapsedL         = new QLabel(" ");
    QSpacerItem* verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding);

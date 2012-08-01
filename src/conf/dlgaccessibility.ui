@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="m_pT2SBG">
      <property name="title">
-      <string>Text to speech</string>
+      <string>Text to Speech</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>

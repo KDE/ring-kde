@@ -30,7 +30,7 @@ SFLPhoneAccessibility::SFLPhoneAccessibility() : QObject(0),QList<KAction*>()
    KAction* action = new KAction(0);
    action->setObjectName ( "listCall"               );
    action->setShortcut   ( Qt::CTRL + Qt::Key_L     );
-   action->setText       ( "List all current calls" );
+   action->setText       ( i18n("List all current calls") );
    action->setIcon       ( KIcon("text-speak")      );
    *this << action;
    connect(action,SIGNAL(triggered(bool)),this,SLOT(listCall()));
@@ -38,7 +38,7 @@ SFLPhoneAccessibility::SFLPhoneAccessibility() : QObject(0),QList<KAction*>()
    action = new KAction(0);
    action->setObjectName ( "currentCallDetails"       );
    action->setShortcut   ( Qt::CTRL + Qt::Key_I       );
-   action->setText       ( "Get current call details" );
+   action->setText       ( i18n("Get current call details") );
    action->setIcon       ( KIcon("text-speak")        );
    *this << action;
    connect(action,SIGNAL(triggered(bool)),this,SLOT(currentCallDetails()));
@@ -57,7 +57,7 @@ SFLPhoneAccessibility* SFLPhoneAccessibility::getInstance()
 void SFLPhoneAccessibility::listCall()
 {
    if (SFLPhone::model()->getCallList().size()>0) {
-      KSpeechInterfaceSingleton::getInstance()->say(i18n("You currently have <numid>%1</numid> calls",SFLPhone::model()->getCallList().size()), KSpeech::soPlainText);
+      KSpeechInterfaceSingleton::getInstance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",SFLPhone::model()->getCallList().size()), KSpeech::soPlainText);
       foreach (Call* call,SFLPhone::model()->getCallList()) {
          KSpeechInterfaceSingleton::getInstance()->say(i18n("Call from %1, number %2",call->getPeerName(),numberToDigit((!call->getPeerPhoneNumber().isEmpty())?call->getPeerPhoneNumber():call->getCallNumber())), KSpeech::soPlainText);
       }

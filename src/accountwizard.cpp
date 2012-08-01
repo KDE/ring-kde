@@ -257,8 +257,7 @@ void AccountWizard::accept()
          is_using_sip      = true;
       }
       else {
-         ret += i18n("Creation of account has failed for the reason") + " :\n";
-         ret += acc.reason;
+         ret += i18n("Creation of account has failed for the reason:\n%1", acc.reason);
       }
    }
    else if(field(FIELD_SIP_ACCOUNT).toBool()) { //sip
@@ -318,12 +317,12 @@ void AccountWizard::accept()
       published_address = ifaceList.at(0);
       locale_interface = "default";
 
-      ret += i18n( "Alias"            ) + " : " + alias    + '\n';
-      ret += i18n( "Server"           ) + " : " + server   + '\n';
-      ret += i18n( "Password"         ) + " : " + password + '\n';
-      ret += i18n( "Protocol"         ) + " : " + protocol + '\n';
-      ret += i18n( "Voicemail number" ) + " : " + mailbox  + '\n';
-      ret += i18nc( "SIP Account username","Username" ) + " : " + user     + '\n';
+      ret += i18n( "Alias: %1",                            alias    ) + '\n';
+      ret += i18n( "Server: %1",                           server   ) + '\n';
+      ret += i18n( "Password: %1",                         password ) + '\n';
+      ret += i18n( "Protocol: %1",                         protocol ) + '\n';
+      ret += i18n( "Voicemail number: %1",                 mailbox  ) + '\n';
+      ret += i18nc( "SIP Account username","Username: %1", user     ) + '\n';
    }
 
    if(is_create_account) {
@@ -347,7 +346,7 @@ WizardIntroPage::WizardIntroPage(QWidget *parent)
      : QWizardPage(parent)
 {
    setTitle   (i18n( "Account creation wizard"                             ) );
-   setSubTitle(i18n( "Welcome to the Account creation wizard of SFLphone!" ) );
+   setSubTitle(i18n( "Welcome to the Account creation wizard of SFLphone"  ) );
 
    introLabel = new QLabel(i18n("This installation wizard will help you configure an account."));
    introLabel->setWordWrap(true);

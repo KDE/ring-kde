@@ -44,7 +44,7 @@
    <item>
     <widget class="QGroupBox" name="m_pConfGB">
      <property name="title">
-      <string>Device configuration</string>
+      <string>Device Configuration</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0" rowspan="2">

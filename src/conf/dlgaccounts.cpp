@@ -29,6 +29,7 @@
 #include <KDebug>
 #include <KStandardDirs>
 #include <KInputDialog>
+#include <KLocale>
 
 //SFLPhone
 #include "klib/configurationskeleton.h"
@@ -512,7 +513,7 @@ void DlgAccounts::on_button_accountDown_clicked()
 void DlgAccounts::on_button_accountAdd_clicked()
 {
    bool ok;
-   QString itemName = KInputDialog::getText("New account", "Enter new account's alias",QString(),&ok,this);
+   QString itemName = KInputDialog::getText(i18n("New account"), i18n("Enter new account's alias"),QString(),&ok,this);
    itemName = itemName.simplified();
    if (ok && !itemName.isEmpty()) {
       AccountList::getInstance()->addAccount(itemName);

@@ -600,9 +600,8 @@ void SFLPhoneView::updateStatusMessage()
       emit statusMessageChangeAsked(i18n("No registered accounts"));
    }
    else {
-      emit statusMessageChangeAsked(i18n("Using account")
-         + " \'" + account->getAlias()
-         + "\' (" + account->getAccountRegistrationStatus() + ')');
+      emit statusMessageChangeAsked(i18n("Using account \'%1\' (%2)",
+         account->getAlias(), account->getAccountRegistrationStatus());
    }
 }
 

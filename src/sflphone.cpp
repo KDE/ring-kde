@@ -224,7 +224,7 @@ bool SFLPhone::initialize()
 
    KStatusBar* bar = statusBar();
    
-   QLabel* curAccL = new QLabel(i18n("Current account: "));
+   QLabel* curAccL = new QLabel(i18n("Current account:"));
    bar->addPermanentWidget(curAccL);
 
    m_pAccountStatus = new KComboBox(bar);

@@ -42,7 +42,7 @@ ContactHash HelperFunctions::toHash(QList<Contact*> contacts) {
          conth["phoneType"  ] = cont->getPhoneNumbers()[0]->getType();
       }
       else {
-         conth["phoneNumber"] = QString::number(cont->getPhoneNumbers().size())+i18n(" numbers");
+         conth["phoneNumber"] = i18np("%1 number","%1 numbers",cont->getPhoneNumbers().size());
          conth["phoneType"  ].clear();
       }
       hash[contacts[i]->getUid()] = conth;

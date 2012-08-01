@@ -245,7 +245,7 @@ void ContactItemWidget::updated()
    if (getCallNumbers().count() == 1)
       m_pCallNumberL->setText(getCallNumbers()[0]->getNumber());
    else
-      m_pCallNumberL->setText(QString::number(getCallNumbers().count())+i18n(" numbers"));
+      m_pCallNumberL->setText(i18np("%1 number","%1 numbers",getCallNumbers().count()));
 
    if (!m_pContactKA->getPhoto()) {
 

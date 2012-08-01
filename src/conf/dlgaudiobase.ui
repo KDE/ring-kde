@@ -72,7 +72,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_alsa">
          <property name="title">
-          <string>ALSA settings</string>
+          <string>ALSA Settings</string>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
           <property name="fieldGrowthPolicy">
@@ -161,7 +161,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>PulseAudio settings</string>
+          <string>PulseAudio Settings</string>
          </property>
          <layout class="QFormLayout" name="formLayout_11">
           <property name="fieldGrowthPolicy">

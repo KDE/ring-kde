@@ -135,7 +135,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_phoneNumberFormatting">
      <property name="title">
-      <string>Phone number rewriting</string>
+      <string>Phone Number Rewriting</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_13">
       <item>

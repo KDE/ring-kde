@@ -218,7 +218,7 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    m_pTransferOverlay->setVisible(false);
    m_pTransferOverlay->resize(size());
    m_pTransferOverlay->setCornerWidget(lblImg);
-   m_pTransferOverlay->setAccessMessage(i18n("Please enter a transfer number and press enter, press escape to cancel"));
+   m_pTransferOverlay->setAccessMessage(i18n("Please enter a transfer number and press Enter, press Escape to cancel"));
 
    m_pTransferB->setText(i18n("Transfer"));
    m_pTransferB->setMaximumSize(70,9000);
@@ -556,7 +556,7 @@ void CallView::transfer()
    if (m_pCallPendingTransfer && !m_pTransferLE->text().isEmpty()) {
       SFLPhone::model()->transfer(m_pCallPendingTransfer,m_pTransferLE->text());
       if (ConfigurationSkeleton::enableVoiceFeedback()) {
-         SFLPhoneAccessibility::getInstance()->say(i18n("You call have been transferred to ")+m_pTransferLE->text());
+         SFLPhoneAccessibility::getInstance()->say(i18n("You call have been transferred to %1", m_pTransferLE->text()));
       }
    }
 
