@@ -160,7 +160,7 @@ CALLMODEL_TEMPLATE void SORTABLE_T::setHistoryCategory(QList<Call*>& calls,Histo
    switch (mode) {
       case HistorySortingMode::Date:
          calls.clear();
-         foreach (QString cat, m_slHistoryConst) {
+         foreach (const QString& cat, m_slHistoryConst) {
             foreach (Call* call, byDate[i18n(cat.toAscii())]) {
                calls << call;
             }
@@ -178,7 +178,7 @@ CALLMODEL_TEMPLATE void SORTABLE_T::setContactCategory(QList<Contact*> contacts,
    switch (mode) {
       case ContactSortingMode::Recently_used:
          recentlyUsed = getContactListByTime();
-         foreach (QString cat, m_slHistoryConst) {
+         foreach (const QString& cat, m_slHistoryConst) {
             //m_pContactView->addCategory(cat);
          }
          break;

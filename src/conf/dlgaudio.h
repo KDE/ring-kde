@@ -40,6 +40,7 @@ public:
 
 private:
    bool m_Changed;
+   bool m_IsLoading;
 
 public slots:
    void updateWidgets ();

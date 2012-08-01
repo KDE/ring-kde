@@ -33,7 +33,7 @@
 
 ///Constructor
 DlgAudio::DlgAudio(KConfigDialog *parent)
- : QWidget(parent),m_Changed(false)
+ : QWidget(parent),m_Changed(false),m_IsLoading(false)
 {
    setupUi(this);
 
@@ -48,6 +48,13 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( box_alsaPlugin, SIGNAL(activated(int)),  parent, SLOT(updateButtons()));
    connect( this,           SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
    connect(m_pAlwaysRecordCK, SIGNAL(clicked(bool)), this  , SLOT(changed())      );
+
+   connect( box_alsaPlugin                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( kcfg_alsaInputDevice            , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( kcfg_alsaOutputDevice           , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( kcfg_alsaRingtoneDevice         , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
 }
 
 ///Destructor
@@ -64,37 +71,43 @@ void DlgAudio::updateWidgets()
 ///Save the settings
 void DlgAudio::updateSettings()
 {
-   //alsaPlugin
-   ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
-   skeleton->setAlsaPlugin(box_alsaPlugin->currentText());
-   
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
-   configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
-   configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
+   if (m_Changed) {
+      m_IsLoading = true;
+      ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
+      skeleton->setAlsaPlugin(box_alsaPlugin->currentText());
 
-   configurationManager.setAudioOutputDevice   ( kcfg_alsaOutputDevice->currentIndex()   );
-   configurationManager.setAudioInputDevice    ( kcfg_alsaInputDevice->currentIndex()    );
-   configurationManager.setAudioRingtoneDevice ( kcfg_alsaRingtoneDevice->currentIndex() );
-   configurationManager.setIsAlwaysRecording   ( m_pAlwaysRecordCK->isChecked()          );
-   m_Changed = false;
+      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
+      configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
+
+      configurationManager.setAudioOutputDevice   ( kcfg_alsaOutputDevice->currentIndex()   );
+      configurationManager.setAudioInputDevice    ( kcfg_alsaInputDevice->currentIndex()    );
+      configurationManager.setAudioRingtoneDevice ( kcfg_alsaRingtoneDevice->currentIndex() );
+      configurationManager.setIsAlwaysRecording   ( m_pAlwaysRecordCK->isChecked()          );
+      m_Changed   = false;
+      m_IsLoading = false;
+   }
 }
 
 ///Have this dialog changed
 bool DlgAudio::hasChanged()
 {
-   ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
-   return (skeleton->interface() == ConfigurationSkeleton::EnumInterface::ALSA && skeleton->alsaPlugin() != box_alsaPlugin->currentText()) || m_Changed;
+   return m_Changed;
 }
 
+///Tag the dialog as needing saving
 void DlgAudio::changed()
 {
-   m_Changed = true;
-   emit updateButtons();
+   if (!m_IsLoading) {
+      m_Changed = true;
+      emit updateButtons();
+   }
 }
 
 ///Load alsa settings
 void DlgAudio::loadAlsaSettings()
 {
+   m_IsLoading = true;
    ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
    if(QString(configurationManager.getAudioManager()) == "alsa") {
 //       ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
@@ -128,4 +141,5 @@ void DlgAudio::loadAlsaSettings()
    else {
       groupBox_alsa->setEnabled(false);
    }
+   m_IsLoading = false;
 }

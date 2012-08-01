@@ -452,7 +452,7 @@ void Account::reloadAudioCodecs()
    QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(getAccountId());
    QStringList tmpNameList;
 
-   foreach (int aCodec, activeCodecList) {
+   foreach (const int aCodec, activeCodecList) {
       QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
       QModelIndex idx = m_pAudioCodecs->addAudioCodec();
       m_pAudioCodecs->setData(idx,codec[0]     ,AudioCodecModel::NAME_ROLE       );
@@ -464,7 +464,7 @@ void Account::reloadAudioCodecs()
          codecIdList.remove(codecIdList.indexOf(aCodec));
    }
 
-   foreach (int aCodec, codecIdList) {
+   foreach (const int aCodec, codecIdList) {
       QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
       QModelIndex idx = m_pAudioCodecs->addAudioCodec();
       m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::NAME_ROLE       );
