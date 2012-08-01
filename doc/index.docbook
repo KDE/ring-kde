@@ -3,15 +3,15 @@
   <!ENTITY sflphone-client-kde "SFLPhone KDE Client">
   <!ENTITY kappname "&sflphone-client-kde;">
   <!ENTITY sflphonerelease "1.1.0">
-  <!ENTITY current-w "Current calls window">
-  <!ENTITY history-w "Call history window">
-  <!ENTITY address-w "Address book window">
-  <!ENTITY actions-p "tool part">
-  <!ENTITY screen-p "screen">
-  <!ENTITY dialpad-p "dialpad">
-  <!ENTITY pt-home "home phone">
-  <!ENTITY pt-cell "cell phone">
-  <!ENTITY pt-work "work phone">
+  <!ENTITY i18n-current-w "Current calls window">
+  <!ENTITY i18n-history-w "Call history window">
+  <!ENTITY i18n-address-w "Address book window">
+  <!ENTITY i18n-actions-p "tool part">
+  <!ENTITY i18n-screen-p "screen">
+  <!ENTITY i18n-dialpad-p "dialpad">
+  <!ENTITY i18n-pt-home "home phone">
+  <!ENTITY i18n-pt-cell "cell phone">
+  <!ENTITY i18n-pt-work "work phone">
 
   <!ENTITY sflphone "SFLphone">
   <!ENTITY % addindex "IGNORE">

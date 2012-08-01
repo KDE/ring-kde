@@ -21,7 +21,7 @@
 <sect2 id="common-use-current-new">
 <title>Placing a new call</title>
 
-<para> You can have plenty of calls in parallel, even if only one is current (ie : you can talk through) and the others are on hold. To place a new call when you are on a current call, click on the Place new call button, it will create a new empty item and select it automatically, then type the phone number you want to call and click Call or type Enter to place the call. You can also go to the &history-w; or the &address-w; and valid a call, and it will be added ringing in the &current-w;. When a new call is placed, any other one is put on hold, so that you can't mix two calls. If you want to go back to one of the calls put on hold, just double-click on the corresponding item and it will go back to current state while the old one is put on hold.
+<para> You can have plenty of calls in parallel, even if only one is current (ie : you can talk through) and the others are on hold. To place a new call when you are on a current call, click on the Place new call button, it will create a new empty item and select it automatically, then type the phone number you want to call and click Call or type Enter to place the call. You can also go to the &i18n-history-w; or the &i18n-address-w; and valid a call, and it will be added ringing in the &i18n-current-w;. When a new call is placed, any other one is put on hold, so that you can't mix two calls. If you want to go back to one of the calls put on hold, just double-click on the corresponding item and it will go back to current state while the old one is put on hold.
 </para>
 
 </sect2>
@@ -98,7 +98,7 @@
 <sect2 id="common-use-address-use">
 <title>Search in Address Book</title>
 
-<para> Now that everything is set up, you can go to the &address-w;, then type some letters of the name you want to phone. You will see all the phone numbers that match your request and their type. When the resulting list's size is greater than the maximum chosen in configuration, it will only display the beginning of the list with the max size, and will display a warning message to let you know that your wanted number may be in the rest of the list and so not displayed. In that case you should type some more letters to improve precision of the search. Once you found the right number, double click on the item to call it.
+<para> Now that everything is set up, you can go to the &i18n-address-w;, then type some letters of the name you want to phone. You will see all the phone numbers that match your request and their type. When the resulting list's size is greater than the maximum chosen in configuration, it will only display the beginning of the list with the max size, and will display a warning message to let you know that your wanted number may be in the rest of the list and so not displayed. In that case you should type some more letters to improve precision of the search. Once you found the right number, double click on the item to call it.
 </para>
 
 </sect2>
