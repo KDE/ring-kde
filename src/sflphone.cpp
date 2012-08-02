@@ -38,6 +38,7 @@
 #include <KNotification>
 #include <KShortcutsDialog>
 #include <KComboBox>
+#include <KMessageBox>
 
 //sflphone library
 #include "lib/sflphone_const.h"
@@ -223,7 +224,7 @@ bool SFLPhone::initialize()
    m_pInitialized = true ;
 
    KStatusBar* bar = statusBar();
-   
+
    QLabel* curAccL = new QLabel(i18n("Current account:"));
    bar->addPermanentWidget(curAccL);
 
@@ -234,8 +235,13 @@ bool SFLPhone::initialize()
 
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
    connect(AccountList::getInstance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
+
+   if (!model()->isValid()) {
+      KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually"));
+      exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached
+   }
    currentPriorAccountChanged(AccountList::getCurrentAccount());
-   
+
    return true;
 }
 
@@ -244,12 +250,12 @@ void SFLPhone::setupActions()
 {
    kDebug() << "setupActions";
 
-   action_accept      = new KAction(this);
-   action_refuse      = new KAction(this);
-   action_hold        = new KAction(this);
-   action_transfer    = new KAction(this);
-   action_record      = new KAction(this);
-   action_mailBox     = new KAction(this);
+   action_accept   = new KAction(this);
+   action_refuse   = new KAction(this);
+   action_hold     = new KAction(this);
+   action_transfer = new KAction(this);
+   action_record   = new KAction(this);
+   action_mailBox  = new KAction(this);
 
    action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
    action_refuse->setShortcut      ( Qt::CTRL + Qt::Key_D );
