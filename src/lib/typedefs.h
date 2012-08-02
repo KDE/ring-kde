@@ -29,20 +29,8 @@ typedef QMap<QString, QString> MapStringString;
 typedef QVector< QMap<QString, QString> > VectorMapStringString;
 typedef QMap<QString, int> MapStringInt;
 
-//Mixe from LIB and GCC website
-#if __GNUC__ >= 4
-   #define LIB_NO_EXPORT __attribute__ ((visibility("hidden")))
-   #define LIB_EXPORT __attribute__ ((visibility("default")))
-   #define LIB_IMPORT __attribute__ ((visibility("default")))
-#elif defined(_WIN32) || defined(_WIN64)
-   #define LIB_NO_EXPORT
-   #define LIB_EXPORT __declspec(dllexport)
-   #define LIB_IMPORT __declspec(dllimport)
-#else
-   #define LIB_NO_EXPORT
-   #define LIB_EXPORT
-   #define LIB_IMPORT
-#endif
+#define LIB_EXPORT Q_DECL_EXPORT
+#define LIB_IMPORT Q_DECL_IMPORT
 
 #if __GNUC__ < 4 || \
               (__GNUC__ == 5 && (__GNUC_MINOR__ < 5 || \

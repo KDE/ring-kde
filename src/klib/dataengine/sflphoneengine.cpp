@@ -17,7 +17,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#include "sflphonengine.h"
+#include "sflphoneengine.h"
 
 //KDE
 #include <Plasma/DataContainer>

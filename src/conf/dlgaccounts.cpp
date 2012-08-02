@@ -517,20 +517,15 @@ void DlgAccounts::on_button_accountDown_clicked()
 ///Add new account
 void DlgAccounts::on_button_accountAdd_clicked()
 {
-//    bool ok;
-//    QString itemName = KInputDialog::getText(i18n("New account"), i18n("Enter new account's alias"),QString(),&ok,this);
-//    itemName = itemName.simplified();
-//    if (ok && !itemName.isEmpty()) {
-      AccountList::getInstance()->addAccount(i18n("New account"));
-      int r = listView_accountList->model()->rowCount() - 1;
-      QModelIndex index = listView_accountList->model()->index(r,0);
-//       listView_accountList->openPersistentEditor(index);
-      listView_accountList->setCurrentIndex(index);
-      
-      frame2_editAccounts->setEnabled(true);
-      edit1_alias->setSelection(0,edit1_alias->text().size());
-      edit1_alias->setFocus(Qt::OtherFocusReason);
-//    }
+   QString newAlias = i18n("New account%1",AccountList::getSimilarAliasIndex("New account"));
+   AccountList::getInstance()->addAccount(newAlias);
+   int r = listView_accountList->model()->rowCount() - 1;
+   QModelIndex index = listView_accountList->model()->index(r,0);
+   listView_accountList->setCurrentIndex(index);
+
+   frame2_editAccounts->setEnabled(true);
+   edit1_alias->setSelection(0,edit1_alias->text().size());
+   edit1_alias->setFocus(Qt::OtherFocusReason);
 } //on_button_accountAdd_clicked
 
 ///Remove selected account

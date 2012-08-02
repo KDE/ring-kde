@@ -18,7 +18,7 @@
 #ifndef SFLPHONE_SERVICE_H
 #define SFLPHONE_SERVICE_H
 
-#include "sflphonengine.h"
+#include "sflphoneengine.h"
 
 #include <Plasma/Service>
 #include <Plasma/ServiceJob>
