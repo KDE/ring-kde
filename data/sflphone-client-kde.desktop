@@ -34,6 +34,6 @@ Comment[sv]=Ring och ta emot samtal med SIP- eller IAX-protokoll
 Comment[uk]=Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP і IAX
 Comment[x-test]=xxCall and receive calls with SIP or IAX protocolsxx
 Exec=sflphone-client-kde
-Icon=sflphone
+Icon=sflphone-client-kde
 StartupNotify=true
 Categories=Network;Telephony;
