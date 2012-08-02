@@ -50,7 +50,7 @@
   <legalnotice>&FDLNotice;</legalnotice>
 
   <abstract>
-    <para>&sflphone-client-kde; is a KDE client for &sflphone;, a robust enterprise-class desktop phone. </para>
+    <para>&sflphone-client-kde; is a &kde; client for &sflphone;, a robust enterprise-class desktop phone.</para>
   </abstract>
 
   <keywordset>

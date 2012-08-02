@@ -37,7 +37,7 @@
 <title>Description</title>
 <para>SFLphone is meant to be a robust enterprise-class desktop phone. It provides functions like call transfer, call hold, multiple lines, multiple accounts support.
 SFLphone audio layer is build upon a native ALSA interface and and a native PulseAudio interface.
-sflphone-client-kde is a KDE client for SFLphone; it communicates with the core side through DBus.
+sflphone-client-kde is a KDE client for SFLphone; it communicates with the core side through D-Bus.
 </para>
 </refsect1>
 
@@ -61,13 +61,13 @@ url="http://sflphone.org/">the SFLPhone website</ulink>.</para>
 
 <refsect1>
 <title>Authors</title>
-<para>The maintainer of SFLPhone is Emmanuel Milou : emmanuel.milou@savoirfairelinux.com. The maintainer of SFLPhone KDE client is Jérémy Quentin : jeremy.quentin@savoirfairelinux.com. A comprehensive list of authors and contributors
+<para>The maintainer of SFLPhone is Emmanuel Milou: emmanuel.milou@savoirfairelinux.com. The maintainer of SFLPhone KDE client is Jérémy Quentin: jeremy.quentin@savoirfairelinux.com. A comprehensive list of authors and contributors
 is available in the complete user manual mentioned above.</para>
 </refsect1>
 
 
 <refsect1>
-<title>Licence</title>
+<title>License</title>
 <para>This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3 as published by the
 Free Software Foundation.</para>

@@ -14,10 +14,10 @@
 <sect1 id="basic-use-mainwindow">
 <title>Presentation of the main window</title>
 
-<para>The main window is composed of three main parts : the &i18n-actions-p;, the &i18n-screen-p; and the &i18n-dialpad-p; (although you can hide the two last ones in the Settings menu). The screen part has three positions.
-The &i18n-current-w; : it is the one you are by default, it shows the current, dialing and incoming calls.
-The &i18n-history-w; : it shows the past calls and enables you to call someone you called earlier or from whom you missed a call.
-The &i18n-address-w; : it enables you to look in the address book of KDE and to call somebody if his number is available.
+<para>The main window is composed of three main parts: the &i18n-actions-p;, the &i18n-screen-p; and the &i18n-dialpad-p; (although you can hide the two last ones in the <guimenu>Settings</guimenu> menu). The screen part has three positions.
+The &i18n-current-w;: it is the one you are by default, it shows the current, dialing and incoming calls.
+The &i18n-history-w;: it shows the past calls and enables you to call someone you called earlier or from whom you missed a call.
+The &i18n-address-w;: it enables you to look in the address book of &kde; and to call somebody if their number is available.
 
 To switch between those windows, click on the history and address book buttons. If none of these buttons is triggered, you are currently in the &i18n-current-w;, if the history button is triggered, you are in the &i18n-history-w;, and if the address book button is triggered, you are in the &i18n-address-w;.
 
@@ -33,7 +33,7 @@ To switch between those windows, click on the history and address book buttons. 
 <title>Dialing one's number</title>
 
 
-<para> If you know the number of the people you want to call, you may just type it on the dialpad or on your keyboard while you are in the &i18n-current-w;, then click on the Accept button in the &i18n-actions-p;'s toolbar or in the "actions" menu, or type enter on your keyboard, or even double-click on the number to call once you have finished dialing it.</para>
+<para>If you know the number of the people you want to call, you may just type it on the dialpad or on your keyboard while you are in the &i18n-current-w;, then click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or even double-click on the number to call once you have finished dialing it.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -43,11 +43,11 @@ To switch between those windows, click on the history and address book buttons. 
 <title>Calling from call history</title>
 
 
-<para> If you want to call somebody from whom you missed a call, or you already called earlier, you may go to the &i18n-history-w;. The detailed use of this window and its features (search...) is described in this section. Once you are in it, find the number or name of the person you want to call, then select it and click on the Accept button in the &i18n-actions-p;'s toolbar or in the "actions" menu, or type enter on your keyboard, or double-click on the number.</para>
+<para>If you want to call somebody from whom you missed a call, or you already called earlier, you may go to the &i18n-history-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the number or name of the person you want to call, then select it and click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or double-click on the number.</para>
 
 <para>The screen will come back to the &i18n-current-w; with a new ringing call with the number you chose in the &i18n-history-w;.</para>
 
-<para> Note that you can also right click and select Edit before call to modify the number in the history before calling it.</para>
+<para>Note that you can also click with the &RMB; and select <guimenuitem>Edit</guimenuitem> before call to modify the number in the history before calling it.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -57,11 +57,11 @@ To switch between those windows, click on the history and address book buttons. 
 <title>Calling from address book</title>
 
 
-<para> If you have your KAddressBook configured and filled with some phone numbers, you can go to the &i18n-address-w;. The detailed use of this window and its features (search...) is described in this section. Once you are in it, find the name of the person you want to call with the right phone number (&i18n-pt-home;, &i18n-pt-work; or &i18n-pt-cell;), then select it and click on the Accept button in the &i18n-actions-p;'s toolbar or in the "actions" menu, or type enter on your keyboard, or double-click on the number.</para>
+<para>If you have your KAddressBook configured and filled with some phone numbers, you can go to the &i18n-address-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the name of the person you want to call with the right phone number (&i18n-pt-home;, &i18n-pt-work; or &i18n-pt-cell;), then select it and click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or double-click on the number.</para>
 
 <para>The screen will come back to the &i18n-current-w; with a new ringing call with the number you chose in the &i18n-address-w;.</para>
 
-<para> Note that you can also right click and select Edit before call to modify the number in the address book before calling it.</para>
+<para>Note that you can also click with the &RMB; and select <guimenuitem>Edit</guimenuitem> before call to modify the number in the address book before calling it.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -73,7 +73,7 @@ To switch between those windows, click on the history and address book buttons. 
 <title>Receiving a call</title>
 
 
-<para> When one of the account registered in &sflphone; receives an incoming call, it will be displayed as a new item in the &i18n-current-w; with the "incoming" icon. You can either accept or refuse it. To accept it, select the item and click on the Accept button which replaced the Call button in toolbar and Actions menu, or double click the item, or type Enter. To refuse it, select it and click on the refuse button that replaced the Hang up button in toolbar and Actions menu or type Escape.</para>
+<para>When one of the account registered in &sflphone; receives an incoming call, it will be displayed as a new item in the &i18n-current-w; with the "incoming" icon. You can either accept or refuse it. To accept it, select the item and click on the <guibutton>Accept</guibutton> button which replaced the <guibutton>Call</guibutton> button in toolbar and <guimenu>Actions</guimenu> menu, or double click the item, or press &Enter;. To refuse it, select it and click on the refuse button that replaced the <guibutton>Hang up</guibutton> button in toolbar and Actions menu or press &Esc;.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -84,10 +84,10 @@ To switch between those windows, click on the history and address book buttons. 
 <title>The call is ringing</title>
 
 
-<para> Once you called a number, the call is normally in ringing state. It will then pass to Current or Busy state, according to the decision of the called peer to accept or refuse the call. If it's in Busy state, you can just hang it up with the Hang up button or typing Escape.
+<para>Once you called a number, the call is normally in ringing state. It will then pass to Current or Busy state, according to the decision of the called peer to accept or refuse the call. If it is in Busy state, you can just hang it up with the <guibutton>Hang up</guibutton> button or pressing &Esc;.
 </para>
 
-<para>If the number doesn't exist or if any other error occurred (see the list of common errors here), it is in failure state, then you can Hang it up with the Hang up button or typing Escape. </para>
+<para>If the number does not exist or if any other error occurred (see the list of common errors here), it is in failure state, then you can hang it up with the <guibutton>Hang up</guibutton> button or pressing &Esc;.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -97,7 +97,7 @@ To switch between those windows, click on the history and address book buttons. 
 <title>The call is current</title>
 
 
-<para> Once the call is in current state, you can now communicate with your peer. You have a bunch of useful features when in current state that are described in the common use chapter. To end the call, select it and click on Hang up button in toolbar or type Escape. </para>
+<para>Once the call is in current state, you can now communicate with your peer. You have a bunch of useful features when in current state that are described in the common use chapter. To end the call, select it and click on <guibutton>Hang up</guibutton> button in toolbar or pressing &Esc;.</para>
 
 </sect1>
 
@@ -106,9 +106,9 @@ To switch between those windows, click on the history and address book buttons. 
 <sect1 id="basic-use-config">
 <title>Configuration panel</title>
 
-<para>The configuration panel is built in accordance with KDE specifications. It is divided by options type. The panel at left shows the different option pages you can reach. Click on one of them to access to the corresponding page. The changes you make are not applied until you click OK or Apply. Clicking Cancel will cancel and forget every change you made since the last Apply or OK command. Be careful not to forget some changes you made in some other pages if you wanted to Cancel it. </para>
+<para>The configuration panel is built in accordance with &kde; specifications. It is divided by options type. The panel at left shows the different option pages you can reach. Click on one of them to access to the corresponding page. The changes you make are not applied until you click <guibutton>OK</guibutton> or <guibutton>Apply</guibutton>. Clicking <guibutton>Cancel</guibutton> will cancel and forget every change you made since the last <guibutton>Apply</guibutton> or <guibutton>OK</guibutton> command. Be careful not to forget some changes you made in some other pages if you wanted to cancel it.</para>
 
-<para>There is also a specific Apply button just for the account list which is useful to manage these accounts and valid your changes to see if the accounts are well registered. </para>
+<para>There is also a specific <guibutton>Apply</guibutton> button just for the account list which is useful to manage these accounts and valid your changes to see if the accounts are well registered.</para>
 
 </sect1>
 
