@@ -220,6 +220,12 @@ void CallModelBase::stoppedDecoding(const QString& callId, const QString& shmKey
 //    return m_spAccountList;
 // }
 
+bool CallModelBase::isValid()
+{
+   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   return (callManager.isValid());
+}
+
 
 /*****************************************************************************
  *                                                                           *

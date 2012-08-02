@@ -36,6 +36,27 @@ public:
    //Destructor
    ~DlgDisplay();
 
+   bool hasChanged();
+
+private:
+   QMap<QString,QString>          m_lCallDetails;
+   QMap<QString,QListWidgetItem*> m_lItemList   ;
+   bool m_HasChanged;
+
+public slots:
+   //Mutator
+   void updateWidgets();
+   void updateSettings();
+
+private slots:
+   void changed();
+
+signals:
+   ///Emitted when the history need to be cleared
+   void clearCallHistoryAsked();
+   ///Emitted when the buttons need to be updated
+   void updateButtons();
+
 };
 
 #endif

@@ -139,6 +139,7 @@ set( qtsflphone_LIB_HDRS
   video_interface_singleton.h
   sflphone_const.h
   instantmessagingmodel.h
+  typedefs.h
 )
 
 install( FILES ${qtsflphone_LIB_HDRS}

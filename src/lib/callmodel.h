@@ -55,6 +55,8 @@ public:
    virtual Call* addCall              ( Call* call           , Call* parent =0      );
    virtual Call* getCall              ( const QString& callId                       ) const = 0;
    Call*   addConferenceS             ( Call* conf                                  );
+
+   bool isValid();
    
 private slots:
    void callStateChanged      ( const QString& callID    , const QString &state   );

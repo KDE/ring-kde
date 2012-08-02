@@ -48,25 +48,24 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    dlgHooks         = new DlgHooks         (this);
    dlgAccessibility = new DlgAccessibility (this);
    dlgAccounts      = new DlgAccounts      (this);
-
    #ifdef ENABLE_VIDEO
    dlgVideo         = new DlgVideo         (this);
    #endif
-   
-   addPage( dlgGeneral       , i18nc("General settings","General") , "sflphone-client-kde"               );
-   addPage( dlgAccounts      , i18n("Accounts")                    , "user-identity"                     );
-   addPage( dlgAudio         , i18n("Audio")                       , "audio-headset"                     );
-   addPage( dlgAddressBook   , i18n("Address Book")                , "x-office-address-book"             );
-   addPage( dlgHooks         , i18n("Hooks")                       , "insert-link"                       );
-   addPage( dlgAccessibility , i18n("Accessibility")               , "preferences-desktop-accessibility" );
+
+   addPage( dlgAccounts      , i18n("Accounts")                     , "user-identity"                     );
+   addPage( dlgDisplay       , i18nc("User interterface settings"   ,"Display"), "applications-graphics"  );
+   addPage( dlgGeneral       , i18nc("History settings","History")  , "view-history"               );
+   addPage( dlgAudio         , i18n("Audio")                        , "audio-headset"                     );
+   addPage( dlgAddressBook   , i18n("Address Book")                 , "x-office-address-book"             );
+   addPage( dlgHooks         , i18n("Hooks")                        , "insert-link"                       );
+   addPage( dlgAccessibility , i18n("Accessibility")                , "preferences-desktop-accessibility" );
    #ifdef ENABLE_VIDEO
-   addPage( dlgVideo         , i18nc("Video conversation","Video") , "camera-web"                        );
+   addPage( dlgVideo         , i18nc("Video conversation","Video")  , "camera-web"                        );
    #endif
-   addPage( dlgDisplay       , i18nc("User interterface settings","Display"), "applications-graphics"    );
 
    connect(this, SIGNAL(applyClicked()) , this, SLOT(applyCustomSettings()));
    connect(this, SIGNAL(okClicked())    , this, SLOT(applyCustomSettings()));
-   connect(this, SIGNAL(cancelClicked()), this, SLOT(cancelSettings()     ));
+   connect(this, SIGNAL(cancelClicked()), this, SLOT(cancelSettings())     );
 
    connect(dlgGeneral, SIGNAL(clearCallHistoryAsked()), this, SIGNAL(clearCallHistoryAsked()));
 } //ConfigurationDialog

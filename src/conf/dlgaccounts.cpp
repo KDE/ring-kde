@@ -518,7 +518,9 @@ void DlgAccounts::on_button_accountAdd_clicked()
    if (ok && !itemName.isEmpty()) {
       AccountList::getInstance()->addAccount(itemName);
       int r = listView_accountList->model()->rowCount() - 1;
-      listView_accountList->setCurrentIndex(listView_accountList->model()->index(r,0));
+      QModelIndex index = listView_accountList->model()->index(r,0);
+//       listView_accountList->openPersistentEditor(index);
+      listView_accountList->setCurrentIndex(index);
       frame2_editAccounts->setEnabled(true);
    }
 } //on_button_accountAdd_clicked

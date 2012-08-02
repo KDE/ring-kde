@@ -356,7 +356,7 @@ QVariant AccountList::data ( const QModelIndex& index, int role) const
       return QVariant();
 
    const Account * account = (*m_pAccounts)[index.row()];
-   if(index.column() == 0 && role == Qt::DisplayRole)
+   if(index.column() == 0 && (role == Qt::DisplayRole || role == Qt::EditRole))
       return QVariant(account->getAlias());
    else if(index.column() == 0 && role == Qt::CheckStateRole)
       return QVariant(account->isEnabled() ? Qt::Checked : Qt::Unchecked);
@@ -376,7 +376,7 @@ QVariant AccountList::data ( const QModelIndex& index, int role) const
 Qt::ItemFlags AccountList::flags(const QModelIndex & index) const
 {
    if (index.column() == 0)
-      return QAbstractItemModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+      return QAbstractItemModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
    return QAbstractItemModel::flags(index);
 }
 
@@ -404,7 +404,7 @@ Account* AccountList::getDefaultAccount()
  ****************************************************************************/
 
 ///Add an account
-Account* AccountList::addAccount(QString & alias)
+Account* AccountList::addAccount(const QString& alias)
 {
    Account* a = Account::buildNewAccountFromAlias(alias);
    connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
@@ -447,6 +447,9 @@ bool AccountList::setData(const QModelIndex & index, const QVariant &value, int 
       if (prevEnabled != value.toBool())
          emit accountEnabledChanged((*m_pAccounts)[index.row()]);
       return true;
+   }
+   else if ( role == Qt::EditRole ) {
+      (*m_pAccounts)[index.row()]->setAccountAlias(value.toString());
    }
    emit dataChanged(index, index);
    return false;
