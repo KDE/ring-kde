@@ -755,7 +755,66 @@
           <string>Credential</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="2" column="0">
+          <item row="0" column="1" colspan="3">
+           <widget class="QLabel" name="m_pInfoL">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>This tab help manage accounts with multiple credentials. If you have multiple accounts. Do not use this feature, just create multiple accounts in SFLPhone. Nor use this dialog if you only have one set of credentials. In that case, the &quot;Basic&quot; tab will provide everything you need.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QToolButton" name="button_add_credential">
+            <property name="text">
+             <string comment="Add new credential">Add</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QToolButton" name="button_remove_credential">
+            <property name="text">
+             <string comment="Remove selected credential">Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="m_pInfoIconL">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>32</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="4">
+           <widget class="QListView" name="list_credential">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -768,7 +827,7 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="0" colspan="3">
+          <item row="3" column="0" colspan="4">
            <widget class="QGroupBox" name="group_credential">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -845,30 +904,6 @@
               </spacer>
              </item>
             </layout>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QToolButton" name="button_add_credential">
-            <property name="text">
-             <string comment="Add new credential">Add</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QToolButton" name="button_remove_credential">
-            <property name="text">
-             <string comment="Remove selected credential">Remove</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" rowspan="2" colspan="3">
-           <widget class="QListView" name="list_credential">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
            </widget>
           </item>
          </layout>

@@ -68,7 +68,7 @@ private slots:
    ///Play the ringtone file when the button is clicked
    void playRingtone() {
       CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-      callManager.startRecordedFilePlayback(m_Path);
+      Q_NOREPLY callManager.startRecordedFilePlayback(m_Path);
    }
 private:
    QString m_Path;

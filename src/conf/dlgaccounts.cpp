@@ -58,6 +58,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    button_audiocodecDown->setIcon    ( KIcon( "go-down"     ) );
    listView_accountList->setModel(AccountList::getInstance());
 
+   m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(32,32)));
+
    m_pRingTonePath->setMode(KFile::File | KFile::ExistingOnly);
    m_pRingTonePath->lineEdit()->setObjectName("m_pRingTonePath");
    m_pRingTonePath->lineEdit()->setReadOnly(true);
