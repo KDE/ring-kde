@@ -436,7 +436,7 @@ void Account::saveCredentials() {
             m_pCredentials->setData(idx,username,CredentialModel::NAME_ROLE );
          }
          if (realm.isEmpty()) {
-            realm = "*";
+            realm = '*';
             m_pCredentials->setData(idx,realm,CredentialModel::REALM_ROLE    );
          }
          credentialData[ CONFIG_ACCOUNT_USERNAME] = username;

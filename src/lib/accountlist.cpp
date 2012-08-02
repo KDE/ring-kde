@@ -396,6 +396,30 @@ Account* AccountList::getDefaultAccount()
    return m_pDefaultAccount;
 }
 
+///Generate an unique suffix to prevent multiple account from sharing alias
+QString AccountList::getSimilarAliasIndex(QString alias)
+{
+   int count = 0;
+   foreach (Account* a, getInstance()->getAccounts()) {
+      if (a->getAccountAlias().left(alias.size()) == alias)
+         count++;
+   }
+   bool found = true;
+   do {
+      found = false;
+      foreach (Account* a, getInstance()->getAccounts()) {
+         if (a->getAccountAlias() == alias+QString(" (%1)").arg(count)) {
+            count++;
+            found++;
+            break;
+         }
+      }
+   } while(found);
+   if (count)
+      return QString(" (%1)").arg(count);
+   return QString();
+}
+
 
 /*****************************************************************************
  *                                                                           *

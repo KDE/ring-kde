@@ -53,6 +53,7 @@ public:
    static Account*          getCurrentAccount      (                        );
    static QString           getPriorAccoundId      (                        );
    Account*                 getAccountByModelIndex ( QModelIndex item       ) const;
+   static QString           getSimilarAliasIndex   ( QString alias          );
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;
