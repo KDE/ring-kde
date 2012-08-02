@@ -601,7 +601,7 @@ void SFLPhoneView::updateStatusMessage()
    }
    else {
       emit statusMessageChangeAsked(i18n("Using account \'%1\' (%2)",
-         account->getAlias(), account->getAccountRegistrationStatus());
+         account->getAlias(), account->getAccountRegistrationStatus()));
    }
 }
 
