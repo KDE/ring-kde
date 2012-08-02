@@ -556,7 +556,7 @@ void CallView::transfer()
    if (m_pCallPendingTransfer && !m_pTransferLE->text().isEmpty()) {
       SFLPhone::model()->transfer(m_pCallPendingTransfer,m_pTransferLE->text());
       if (ConfigurationSkeleton::enableVoiceFeedback()) {
-         SFLPhoneAccessibility::getInstance()->say(i18n("You call have been transferred to %1", m_pTransferLE->text()));
+         SFLPhoneAccessibility::getInstance()->say(i18n("Your call have been transferred to %1", m_pTransferLE->text()));
       }
    }
 

@@ -654,7 +654,7 @@ WizardAccountStunPage::WizardAccountStunPage(QWidget *parent)
    setSubTitle(i18n( "You should probably enable this if you are behind a firewall.") );
 
    checkBox_enableStun = new QCheckBox( i18n("Enable STUN") );
-   label_StunServer    = new QLabel   ( i18n("Stun Server") );
+   label_StunServer    = new QLabel   ( i18n("STUN Server") );
    lineEdit_StunServer = new KLineEdit(                     );
    lineEdit_StunServer->setDisabled(true);
 

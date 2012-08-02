@@ -538,13 +538,13 @@
           <item>
            <widget class="QGroupBox" name="groupBox_4">
             <property name="title">
-             <string>Stun</string>
+             <string>STUN</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_11">
              <item row="0" column="0" colspan="2">
               <widget class="QLabel" name="label_commonSettings">
                <property name="text">
-                <string>Stun parameters will be applied on each SIP account created.</string>
+                <string>STUN parameters will be applied on each SIP account created.</string>
                </property>
                <property name="wordWrap">
                 <bool>true</bool>
@@ -554,7 +554,7 @@
              <item row="1" column="0">
               <widget class="QCheckBox" name="checkbox_stun">
                <property name="text">
-                <string>Enable Stun</string>
+                <string>Enable STUN</string>
                </property>
               </widget>
              </item>
@@ -564,7 +564,7 @@
                 <bool>false</bool>
                </property>
                <property name="clickMessage">
-                <string>Choose Stun server (example: stunserver.org)</string>
+                <string>Choose STUN server (example: stunserver.org)</string>
                </property>
               </widget>
              </item>

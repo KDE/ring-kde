@@ -116,7 +116,7 @@
     <!-- Audio Settings -->
 
     <entry name="interface" type="Enum">
-    	<label>Defines the Stun server to use.</label>
+    	<label>Defines the audio output to use.</label>
     	<choices>
     		<choice name="ALSA" />
     		<choice name="PulseAudio" />
