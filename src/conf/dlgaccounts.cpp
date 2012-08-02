@@ -70,6 +70,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    //SLOTS
    //                     SENDER                            SIGNAL                       RECEIVER              SLOT                          /
    /**/connect(edit1_alias,                       SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(edit1_alias,                       SIGNAL(textEdited(QString))            , this   , SLOT(changeAlias(QString))              );
    /**/connect(edit2_protocol,                    SIGNAL(activated(int))                 , this   , SLOT(changedAccountList())              );
    /**/connect(edit3_server,                      SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit4_user,                        SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
@@ -287,6 +288,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
       edit5_password->setText("");
    connect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
 
+   disconnect(this,SLOT(aliasChanged(QString)));
+   connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));
 
    switch (account->getTlsMethod()) {
       case 0: //KEY_EXCHANGE_NONE
@@ -514,17 +517,20 @@ void DlgAccounts::on_button_accountDown_clicked()
 ///Add new account
 void DlgAccounts::on_button_accountAdd_clicked()
 {
-   bool ok;
-   QString itemName = KInputDialog::getText(i18n("New account"), i18n("Enter new account's alias"),QString(),&ok,this);
-   itemName = itemName.simplified();
-   if (ok && !itemName.isEmpty()) {
-      AccountList::getInstance()->addAccount(itemName);
+//    bool ok;
+//    QString itemName = KInputDialog::getText(i18n("New account"), i18n("Enter new account's alias"),QString(),&ok,this);
+//    itemName = itemName.simplified();
+//    if (ok && !itemName.isEmpty()) {
+      AccountList::getInstance()->addAccount(i18n("New account"));
       int r = listView_accountList->model()->rowCount() - 1;
       QModelIndex index = listView_accountList->model()->index(r,0);
 //       listView_accountList->openPersistentEditor(index);
       listView_accountList->setCurrentIndex(index);
+      
       frame2_editAccounts->setEnabled(true);
-   }
+      edit1_alias->setSelection(0,edit1_alias->text().size());
+      edit1_alias->setFocus(Qt::OtherFocusReason);
+//    }
 } //on_button_accountAdd_clicked
 
 ///Remove selected account
@@ -752,7 +758,7 @@ void DlgAccounts::selectCredential(QModelIndex item, QModelIndex previous)
 
 ///Remove a credential
 void DlgAccounts::removeCredential() {
-   Account*    acc   = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+   Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
    acc->getCredentialsModel()->removeCredentials(list_credential->currentIndex());
    list_credential->setCurrentIndex(acc->getCredentialsModel()->index(0,0));
 }
@@ -762,6 +768,22 @@ void DlgAccounts::enablePublished()
 {
    lineEdit_pa_published_address->setDisabled(radioButton_pa_same_as_local->isChecked());
    spinBox_pa_published_port->setDisabled(radioButton_pa_same_as_local->isChecked());
+}
+
+///Force a new alias for the account
+void DlgAccounts::aliasChanged(QString newAlias)
+{
+   if (newAlias != edit1_alias->text())
+      edit1_alias->setText(newAlias);
+}
+
+///Force a new alias for the account
+void DlgAccounts::changeAlias(QString newAlias)
+{
+   Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+   if (acc && newAlias != acc->getAccountAlias())
+      AccountList::getInstance()->setData(listView_accountList->currentIndex(),newAlias,Qt::EditRole);
+//       acc->setAccountAlias(newAlias);
 }
 
 //#include <dlgaccount.moc>

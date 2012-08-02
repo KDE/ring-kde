@@ -179,7 +179,7 @@ class LIB_EXPORT Account : public QObject {
       QList<VideoCodec*> getActiveVideoCodecList();
       #endif
       ///Set the account alias
-      void setAccountAlias                  (QString detail){setAccountDetail(ACCOUNT_ALIAS                  ,detail);}
+      void setAccountAlias                  (QString detail);
       ///Set the account type, SIP or IAX
       void setAccountType                   (QString detail){setAccountDetail(ACCOUNT_TYPE                   ,detail);}
       ///The set account hostname, it can be an hostname or an IP address
@@ -294,5 +294,7 @@ class LIB_EXPORT Account : public QObject {
       void stateChanged(QString state);
       void detailChanged(Account* a,QString name,QString newVal, QString oldVal);
       void changed(Account* a);
+      ///The alias changed, take effect instantaneously
+      void aliasChanged(const QString&);
 };
 #endif

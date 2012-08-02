@@ -148,7 +148,8 @@ private slots:
    void updateStatusLabel          ( Account*   account                                      );
    void updateCombo                ( int            value                                    );
    void saveCredential             (                                                         );
-
+   void aliasChanged               (QString newAlias                                         );
+   void changeAlias                (QString newAlias                                         );
 
 signals:
    ///Update the Ok and Apply button style

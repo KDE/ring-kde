@@ -271,6 +271,14 @@ VideoCodecModel* Account::getVideoCodecModel()
    return m_pVideoCodecs;
 }
 
+void Account::setAccountAlias(QString detail)
+{
+   bool changed = detail != getAccountAlias();
+   setAccountDetail(ACCOUNT_ALIAS,detail);
+   if (changed)
+      emit aliasChanged(detail);
+}
+
 /*****************************************************************************
  *                                                                           *
  *                                  Setters                                  *

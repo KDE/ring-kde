@@ -438,7 +438,7 @@ void AccountList::setPriorAccount(Account* account) {
 }
 
 ///Set model data
-bool AccountList::setData(const QModelIndex & index, const QVariant &value, int role)
+bool AccountList::setData(const QModelIndex& index, const QVariant &value, int role)
 {
    if (index.isValid() && index.column() == 0 && role == Qt::CheckStateRole) {
       bool prevEnabled = (*m_pAccounts)[index.row()]->isEnabled();
@@ -446,12 +446,16 @@ bool AccountList::setData(const QModelIndex & index, const QVariant &value, int 
       emit dataChanged(index, index);
       if (prevEnabled != value.toBool())
          emit accountEnabledChanged((*m_pAccounts)[index.row()]);
+      emit dataChanged(index, index);
       return true;
    }
    else if ( role == Qt::EditRole ) {
-      (*m_pAccounts)[index.row()]->setAccountAlias(value.toString());
+      bool changed = value.toString() != data(index,Qt::EditRole);
+      if (changed) {
+         (*m_pAccounts)[index.row()]->setAccountAlias(value.toString());
+         emit dataChanged(index, index);
+      }
    }
-   emit dataChanged(index, index);
    return false;
 }
 
