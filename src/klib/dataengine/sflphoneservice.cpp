@@ -60,7 +60,7 @@ DTMFJob::DTMFJob(QObject* parent, const QString& operation, const QVariantMap& p
 void DTMFJob::start()
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.playDTMF(m_mStr);
+   Q_NOREPLY callManager.playDTMF(m_mStr);
 }
 
 

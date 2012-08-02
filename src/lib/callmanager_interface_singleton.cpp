@@ -29,5 +29,7 @@ CallManagerInterface & CallManagerInterfaceSingleton::getInstance(){
       interface = new CallManagerInterface( "org.sflphone.SFLphone", "/org/sflphone/SFLphone/CallManager", QDBusConnection::sessionBus());
    if(!interface->connection().isConnected())
       throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From call manager interface.";
+   if (!interface->isValid())
+      throw "SFLphone daemon not available, be sure it running";
    return *interface;
 }

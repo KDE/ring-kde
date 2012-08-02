@@ -933,7 +933,7 @@ void Call::playRecording()
 void Call::stopRecording()
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.stopRecordedFilePlayback(getRecordingPath());
+   Q_NOREPLY callManager.stopRecordedFilePlayback(getRecordingPath());
    emit playbackStopped(); //TODO remove this, it is a workaround for bug #11942
 }
 
@@ -941,7 +941,7 @@ void Call::stopRecording()
 void Call::seekRecording(double position)
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.recordPlaybackSeek(position);
+   Q_NOREPLY callManager.recordPlaybackSeek(position);
 }
 
 ///Daemon record playback stopped

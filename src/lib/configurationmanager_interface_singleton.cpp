@@ -29,5 +29,7 @@ ConfigurationManagerInterface& ConfigurationManagerInterfaceSingleton::getInstan
       qDebug() << "Error : sflphoned not connected. Service " << interface->service() << " not connected. From configuration manager interface.";
       throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From configuration manager interface.";
    }
+   if (!interface->isValid())
+      throw "SFLphone daemon not available, be sure it running";
    return *interface;
 }

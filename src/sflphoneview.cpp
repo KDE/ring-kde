@@ -203,7 +203,7 @@ void SFLPhoneView::typeString(QString str)
    CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
 
    Call* call = callView->getCurrentItem();
-   callManager.playDTMF(str);
+   Q_NOREPLY callManager.playDTMF(str);
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
 
@@ -651,7 +651,7 @@ void SFLPhoneView::on_slider_recVol_valueChanged(int value)
 {
    kDebug() << "on_slider_recVol_valueChanged(" << value << ")";
    CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.setVolume(RECORD_DEVICE, (double)value / 100.0);
+   Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)value / 100.0);
    updateRecordButton();
 }
 
@@ -660,7 +660,7 @@ void SFLPhoneView::on_slider_sndVol_valueChanged(int value)
 {
    kDebug() << "on_slider_sndVol_valueChanged(" << value << ")";
    CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.setVolume(SOUND_DEVICE, (double)value / 100.0);
+   Q_NOREPLY callManager.setVolume(SOUND_DEVICE, (double)value / 100.0);
    updateVolumeButton();
 }
 
@@ -672,12 +672,12 @@ void SFLPhoneView::on_toolButton_recVol_clicked(bool checked)
    if(!checked) {
       toolButton_recVol->setChecked(false);
       slider_recVol->setEnabled(true);
-      callManager.setVolume(RECORD_DEVICE, (double)slider_recVol->value() / 100.0);
+      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)slider_recVol->value() / 100.0);
    }
    else {
       toolButton_recVol->setChecked(true);
       slider_recVol->setEnabled(false);
-      callManager.setVolume(RECORD_DEVICE, 0.0);
+      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, 0.0);
    }
    updateRecordButton();
 }
@@ -690,12 +690,12 @@ void SFLPhoneView::on_toolButton_sndVol_clicked(bool checked)
    if(!checked) {
       toolButton_sndVol->setChecked(false);
       slider_sndVol->setEnabled(true);
-      callManager.setVolume(SOUND_DEVICE, (double)slider_sndVol->value() / 100.0);
+      Q_NOREPLY callManager.setVolume(SOUND_DEVICE, (double)slider_sndVol->value() / 100.0);
    }
    else {
       toolButton_sndVol->setChecked(true);
       slider_sndVol->setEnabled(false);
-      callManager.setVolume(SOUND_DEVICE, 0.0);
+      Q_NOREPLY callManager.setVolume(SOUND_DEVICE, 0.0);
    }
 
    updateVolumeButton();

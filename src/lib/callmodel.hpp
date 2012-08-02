@@ -259,7 +259,7 @@ CALLMODEL_TEMPLATE void CALLMODEL_T::removeCall(Call* call)
 CALLMODEL_TEMPLATE void CALLMODEL_T::attendedTransfer(Call* toTransfer, Call* target)
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.attendedTransfer(toTransfer->getCallId(),target->getCallId());
+   Q_NOREPLY callManager.attendedTransfer(toTransfer->getCallId(),target->getCallId());
 
    //TODO [Daemon] Implement this correctly
    toTransfer->changeCurrentState(CALL_STATE_OVER);
@@ -321,7 +321,7 @@ CALLMODEL_TEMPLATE bool CALLMODEL_T::createConferenceFromCall(Call* call1, Call*
 {
   qDebug() << "Joining call: " << call1->getCallId() << " and " << call2->getCallId();
   CallManagerInterface &callManager = CallManagerInterfaceSingleton::getInstance();
-  callManager.joinParticipant(call1->getCallId(),call2->getCallId());
+  Q_NOREPLY callManager.joinParticipant(call1->getCallId(),call2->getCallId());
   return true;
 } //createConferenceFromCall
 
@@ -330,7 +330,7 @@ CALLMODEL_TEMPLATE bool CALLMODEL_T::addParticipant(Call* call2, Call* conferenc
 {
    if (conference->isConference()) {
       CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-      callManager.addParticipant(call2->getCallId(), conference->getConfId());
+      Q_NOREPLY callManager.addParticipant(call2->getCallId(), conference->getConfId());
       return true;
    }
    else {
@@ -343,7 +343,7 @@ CALLMODEL_TEMPLATE bool CALLMODEL_T::addParticipant(Call* call2, Call* conferenc
 CALLMODEL_TEMPLATE bool CALLMODEL_T::detachParticipant(Call* call)
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.detachParticipant(call->getCallId());
+   Q_NOREPLY callManager.detachParticipant(call->getCallId());
    return true;
 }
 
@@ -351,7 +351,7 @@ CALLMODEL_TEMPLATE bool CALLMODEL_T::detachParticipant(Call* call)
 CALLMODEL_TEMPLATE bool CALLMODEL_T::mergeConferences(Call* conf1, Call* conf2)
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-   callManager.joinConference(conf1->getConfId(),conf2->getConfId());
+   Q_NOREPLY callManager.joinConference(conf1->getConfId(),conf2->getConfId());
    return true;
 }
 

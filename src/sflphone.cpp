@@ -240,7 +240,13 @@ bool SFLPhone::initialize()
       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually"));
       exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached
    }
-   currentPriorAccountChanged(AccountList::getCurrentAccount());
+   try {
+      currentPriorAccountChanged(AccountList::getCurrentAccount());
+   }
+   catch(const char * msg) {
+      KMessageBox::error(this,msg);
+      exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached
+   }
 
    return true;
 }
