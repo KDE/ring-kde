@@ -21,7 +21,7 @@
 <sect2 id="basic-use-call-page">
 <title>The call page</title>
 <para>
-To switch between those windows, click on the history, bookmark and address book tabs on the bottom of the screen. Each tab page can docked on the left or right of the call page and tabbed in various configurations.
+To switch between those windows, click on the <guilabel>History</guilabel>, <guilabel>Bookmark</guilabel> and <guilabel>Address Book</guilabel> tabs on the bottom of the screen. Each tab page can docked on the left or right of the call page and tabbed in various configurations.
 
 <screenshot>
 <mediaobject>
@@ -35,7 +35,7 @@ To switch between those windows, click on the history, bookmark and address book
 </screenshot>
 
 
-The current call list is composed on the list itself, hosting call and conferences. There is also an optional dialpad, instant message box and volume controls. They can be enabled or disabled from the "View" menu.
+The current call list is composed on the list itself, hosting call and conferences. There is also an optional dialpad, instant message box and volume controls. They can be enabled or disabled from the <guimenu>View</guimenu> menu.
 
 <screenshot>
 <mediaobject>
@@ -52,7 +52,7 @@ The current call list is composed on the list itself, hosting call and conferenc
 </sect2>
 
 <sect2 id="basic-use-history-page">
-<title>The history page</title>
+<title>The History page</title>
 <para>
 The history list host the previous calls. It is possible to sort it in multiple ways. By default, it ordered from the most recent to the most ancient call with "smart" categories. A filter text box is available for quick searches.
 
@@ -62,7 +62,7 @@ The history list host the previous calls. It is possible to sort it in multiple 
 <imagedata fileref="history.png" format="PNG"/>
 </imageobject>
 <caption>
-<para>The history tab</para>
+<para>The History tab</para>
 </caption>
 </mediaobject>
 </screenshot>
@@ -73,7 +73,7 @@ By default, each call display if the call is incoming, outgoing or missed as emb
 </sect2>
 
 <sect2 id="basic-use-contact-page">
-<title>The contact page</title>
+<title>The Contact page</title>
 <para>
 The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabethical order, but can also be diaplayed in various other order. A quick search text field is also provided. Contacts with multiple phone number are collapsed by default. It is possible to double click on them to display all numbers or active the option in the <guilabel>Display</guilabel> page of the configuration dialog. The informations being diaplayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
 
@@ -83,7 +83,7 @@ The contact list provide an easy access to KDE addressbook contacts. By default,
 <imagedata fileref="contact-list.png" format="PNG"/>
 </imageobject>
 <caption>
-<para>The contact tab</para>
+<para>The Contact tab</para>
 </caption>
 </mediaobject>
 </screenshot>
@@ -92,10 +92,10 @@ The contact list provide an easy access to KDE addressbook contacts. By default,
 </sect2>
 
 <sect2 id="basic-use-bookmark-page">
-<title>The bookmark page</title>
+<title>The Bookmark page</title>
 <para>
 
-The bookmark page allow to save some phone numbers to be more accessible. This is done by right-clicking on a contact or a history item and press the "Bookmark" option. It also display the 10 most used numbers.
+The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be more accessible. This is done by clicking with the &RMB; on a contact or a history item and pressing the <guimenuitem>Bookmark</guimenuitem> option. It also displays the 10 most used numbers.
 
 </para>
 </sect2>
