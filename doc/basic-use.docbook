@@ -2,8 +2,8 @@
 
 <chapterinfo>
 <authorgroup>
-   <author><firstname>J&eacute;r&eacute;my</firstname><surname>Quentin</surname></author>
-   <author> <firstname>Emmanuel</firstname> <surname>Lepage Vallee</surname> </author>
+<author><firstname>Jérémy</firstname><surname>Quentin</surname></author>
+<author> <firstname>Emmanuel</firstname> <surname>Lepage Vallee</surname> </author>
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
 </authorgroup>
 </chapterinfo>
@@ -15,14 +15,90 @@
 <sect1 id="basic-use-mainwindow">
 <title>Presentation of the main window</title>
 
-<para>The main window is composed of three main parts: the &i18n-actions-p;, the &i18n-screen-p; and the &i18n-dialpad-p; (although you can hide the two last ones in the <guimenu>Settings</guimenu> menu). The screen part has three positions.
-The &i18n-current-w;: it is the one you are by default, it shows the current, dialing and incoming calls.
-The &i18n-history-w;: it shows the past calls and enables you to call someone you called earlier or from whom you missed a call.
-The &i18n-address-w;: it enables you to look in the address book of &kde; and to call somebody if their number is available.
-
-To switch between those windows, click on the history and address book buttons. If none of these buttons is triggered, you are currently in the &i18n-current-w;, if the history button is triggered, you are in the &i18n-history-w;, and if the address book button is triggered, you are in the &i18n-address-w;.
+<para>The main window is composed of four main parts: the current call list, the history list, the bookmark list and the contact list. By default, they are stacked, but it is possible to separate them by using the drag and drop handle on top of each "tab" of the application. Note that this handle is disabled in the current call list.
 
 </para>
+<sect2 id="basic-use-call-page">
+<title>The call page</title>
+<para>
+To switch between those windows, click on the history, bookmark and address book tabs on the bottom of the screen. Each tab page can docked on the left or right of the call page and tabbed in various configurations.
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="call-list.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>The default call list</para>
+</caption>
+</mediaobject>
+</screenshot>
+
+
+The current call list is composed on the list itself, hosting call and conferences. There is also an optional dialpad, instant message box and volume controls. They can be enabled or disabled from the "View" menu.
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="menu-view.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>The view menu</para>
+</caption>
+</mediaobject>
+</screenshot>
+
+</para>
+</sect2>
+
+<sect2 id="basic-use-history-page">
+<title>The history page</title>
+<para>
+The history list host the previous calls. It is possible to sort it in multiple ways. By default, it ordered from the most recent to the most ancient call with "smart" categories. A filter text box is available for quick searches.
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="history.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>The history tab</para>
+</caption>
+</mediaobject>
+</screenshot>
+
+By default, each call display if the call is incoming, outgoing or missed as emblems in the bottom right of the widget. It also display the peer name using the contact information or the name provided by the phone server. If a call has a recording, the play and remove buttons will be displayed.
+
+</para>
+</sect2>
+
+<sect2 id="basic-use-contact-page">
+<title>The contact page</title>
+<para>
+The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabethical order, but can also be diaplayed in various other order. A quick search text field is also provided. Contacts with multiple phone number are collapsed by default. It is possible to double click on them to display all numbers or active the option in the <guilabel>Display</guilabel> page of the configuration dialog. The informations being diaplayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="contact-list.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>The contact tab</para>
+</caption>
+</mediaobject>
+</screenshot>
+
+</para>
+</sect2>
+
+<sect2 id="basic-use-bookmark-page">
+<title>The bookmark page</title>
+<para>
+
+The bookmark page allow to save some phone numbers to be more accessible. This is done by right-clicking on a contact or a history item and press the "Bookmark" option. It also display the 10 most used numbers.
+
+</para>
+</sect2>
 
 </sect1>
 
