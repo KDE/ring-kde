@@ -539,7 +539,7 @@ void SFLPhone::on_m_pView_incomingCall(const Call* call)
 {
    Contact* contact = AkonadiBackend::getInstance()->getContactByPhone(call->getPeerPhoneNumber());
    if (contact && call) {
-      KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:%1\n",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
+      KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
    }
    KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()));
 }
