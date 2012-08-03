@@ -13,7 +13,14 @@
     <address><email>jeremy.quentin@savoirfairelinux.com</email></address>
   </affiliation>
 </author>
-<date>May 25, 2009</date>
+<author>
+  <firstname>Emmanuel</firstname>
+  <surname>Lepage Vallee</surname>
+  <affiliation>
+    <address><email>emmanuel.lepage@savoirfairelinux.com</email></address>
+  </affiliation>
+</author>
+<date>August 3 2012</date>
 <productname>K Desktop Environment</productname>
 </refentryinfo>
 

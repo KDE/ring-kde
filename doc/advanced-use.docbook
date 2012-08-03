@@ -6,6 +6,10 @@
 				<firstname>J&eacute;r&eacute;my</firstname>
 				<surname>Quentin</surname>
 			</author>
+         <author>
+            <firstname>Emmanuel</firstname>
+            <surname>Lepage Vallee</surname>
+         </author>
 			<!-- TRANS:ROLES_OF_TRANSLATORS -->
 		</authorgroup>
 	</chapterinfo>

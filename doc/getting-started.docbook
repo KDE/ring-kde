@@ -2,16 +2,25 @@
 
 <chapterinfo>
 <authorgroup>
-<author><firstname>J&eacute;r&eacute;my</firstname><surname>Quentin</surname></author>
+   <author>
+      <firstname>J&eacute;r&eacute;my</firstname>
+      <surname>Quentin</surname>
+   </author>
+   <author>
+      <firstname>Emmanuel</firstname>
+      <surname>Lepage Vallee</surname>
+   </author>
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
 </authorgroup>
 </chapterinfo>
 
 <title>Getting Started with &sflphone-client-kde;</title>
 
-<para>When you start &sflphone-client-kde; for the first time, you get an account configuration wizard. This wizard will help you setting up an account for &sflphone; to use. You should complete the wizard before going to the main window of &sflphone-client-kde; for it will not work without at least one account set up.
-You can still change all the settings of the account from the main window after the wizard is complete. You can also start the wizard from the main window at any time.
-We will now describe the different options of this wizard.</para>
+<para>
+   When you start &sflphone-client-kde; for the first time, you get an account configuration wizard. This wizard will help you setting up an account for &sflphone; to use. You should complete the wizard before going to the main window of &sflphone-client-kde; for it will not work without at least one account set up.
+   You can still change all the settings of the account from the main window after the wizard is complete. You can also start the wizard from the main window at any time.
+   We will now describe the different options of this wizard.
+</para>
 
 <simplelist>
 <member><link linkend="gettingstarted-wizard-welcome">The wizard introduction page.</link></member>
