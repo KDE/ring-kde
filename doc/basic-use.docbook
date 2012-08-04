@@ -21,7 +21,8 @@
 <sect2 id="basic-use-call-page">
 <title>The call page</title>
 <para>
-To switch between those windows, click on the <guilabel>History</guilabel>, <guilabel>Bookmark</guilabel> and <guilabel>Address Book</guilabel> tabs on the bottom of the screen. Each tab page can docked on the left or right of the call page and tabbed in various configurations.
+To switch between those windows, click on the <guilabel>History</guilabel>, <guilabel>Bookmark</guilabel> and <guilabel>Address Book</guilabel> tabs on the bottom of the screen. Each tab page can be docked on the left or right of the call page and tabbed in various configurations.
+</para>
 
 <screenshot>
 <mediaobject>
@@ -35,7 +36,7 @@ To switch between those windows, click on the <guilabel>History</guilabel>, <gui
 </screenshot>
 
 
-The current call list is composed on the list itself, hosting call and conferences. There is also an optional dialpad, instant message box and volume controls. They can be enabled or disabled from the <guimenu>View</guimenu> menu.
+<para>The current call list is composed on the list itself, hosting call and conferences. There is also an optional dialpad, instant message box and volume controls. They can be enabled or disabled from the <guimenu>View</guimenu> menu.
 
 <screenshot>
 <mediaobject>
@@ -55,6 +56,7 @@ The current call list is composed on the list itself, hosting call and conferenc
 <title>The History page</title>
 <para>
 The history list host the previous calls. It is possible to sort it in multiple ways. By default, it ordered from the most recent to the most ancient call with "smart" categories. A filter text box is available for quick searches.
+</para>
 
 <screenshot>
 <mediaobject>
@@ -67,7 +69,7 @@ The history list host the previous calls. It is possible to sort it in multiple 
 </mediaobject>
 </screenshot>
 
-By default, each call display if the call is incoming, outgoing or missed as emblems in the bottom right of the widget. It also display the peer name using the contact information or the name provided by the phone server. If a call has a recording, the play and remove buttons will be displayed.
+<para>By default, each call display if the call is incoming, outgoing or missed as emblems in the bottom right of the widget. It also display the peer name using the contact information or the name provided by the phone server. If a call has a recording, the play and remove buttons will be displayed.
 
 </para>
 </sect2>
@@ -76,6 +78,7 @@ By default, each call display if the call is incoming, outgoing or missed as emb
 <title>The Contact page</title>
 <para>
 The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabetical order, but can also be displayed in various other order. A quick search text field is also provided. Contacts with multiple phone number are collapsed by default. It is possible to double click on them to display all numbers or active the option in the <guilabel>Display</guilabel> page of the configuration dialog. The information being displayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
+</para>
 
 <screenshot>
 <mediaobject>
@@ -88,7 +91,6 @@ The contact list provide an easy access to KDE addressbook contacts. By default,
 </mediaobject>
 </screenshot>
 
-</para>
 </sect2>
 
 <sect2 id="basic-use-bookmark-page">
