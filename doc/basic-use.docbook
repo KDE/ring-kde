@@ -75,7 +75,7 @@ By default, each call display if the call is incoming, outgoing or missed as emb
 <sect2 id="basic-use-contact-page">
 <title>The Contact page</title>
 <para>
-The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabethical order, but can also be diaplayed in various other order. A quick search text field is also provided. Contacts with multiple phone number are collapsed by default. It is possible to double click on them to display all numbers or active the option in the <guilabel>Display</guilabel> page of the configuration dialog. The informations being diaplayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
+The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabetical order, but can also be displayed in various other order. A quick search text field is also provided. Contacts with multiple phone number are collapsed by default. It is possible to double click on them to display all numbers or active the option in the <guilabel>Display</guilabel> page of the configuration dialog. The information being displayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
 
 <screenshot>
 <mediaobject>
