@@ -77,7 +77,7 @@ The history list host the previous calls. It is possible to sort it in multiple 
 <sect2 id="basic-use-contact-page">
 <title>The Contact page</title>
 <para>
-The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabetical order, but can also be displayed in various other order. A quick search text field is also provided. Contacts with multiple phone number are collapsed by default. It is possible to double click on them to display all numbers or active the option in the <guilabel>Display</guilabel> page of the configuration dialog. The information being displayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
+The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabetical order, but can also be displayed in various other orders. A quick search text field is also provided. Contacts with multiple phone numbers are collapsed by default. To display all numbers it is possible to double click on the collapsed item in the list or activate the option in the <guilabel>Display</guilabel> page of the configuration dialog. The information being displayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
 </para>
 
 <screenshot>
