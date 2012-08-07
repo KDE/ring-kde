@@ -378,7 +378,9 @@ void Account::save()
       updateState();
       m_CurrentState = READY;
    }
+   #ifdef ENABLE_VIDEO
    m_pVideoCodecs->save();
+   #endif
    saveAudioCodecs();
    emit changed(this);
 }

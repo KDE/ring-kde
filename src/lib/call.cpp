@@ -536,7 +536,11 @@ Contact* Call::getContact()
 ///Return the renderer associated with this call or nullptr
 VideoRenderer* Call::getVideoRenderer()
 {
+   #ifdef ENABLE_VIDEO
    return VideoModel::getInstance()->getRenderer(this);
+   #else
+   return nullptr;
+   #endif
 }
 
 
