@@ -50,9 +50,9 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect(m_pAlwaysRecordCK, SIGNAL(clicked(bool)), this  , SLOT(changed())      );
 
    connect( box_alsaPlugin                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( kcfg_alsaInputDevice            , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( kcfg_alsaOutputDevice           , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( kcfg_alsaRingtoneDevice         , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( alsaInputDevice            , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( alsaOutputDevice           , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( alsaRingtoneDevice         , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
 }
@@ -80,9 +80,9 @@ void DlgAudio::updateSettings()
       configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
       configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
 
-      configurationManager.setAudioOutputDevice   ( kcfg_alsaOutputDevice->currentIndex()   );
-      configurationManager.setAudioInputDevice    ( kcfg_alsaInputDevice->currentIndex()    );
-      configurationManager.setAudioRingtoneDevice ( kcfg_alsaRingtoneDevice->currentIndex() );
+      configurationManager.setAudioOutputDevice   ( alsaOutputDevice->currentIndex()   );
+      configurationManager.setAudioInputDevice    ( alsaInputDevice->currentIndex()    );
+      configurationManager.setAudioRingtoneDevice ( alsaRingtoneDevice->currentIndex() );
       configurationManager.setIsAlwaysRecording   ( m_pAlwaysRecordCK->isChecked()          );
       m_Changed   = false;
       m_IsLoading = false;
@@ -123,18 +123,18 @@ void DlgAudio::loadAlsaSettings()
       box_alsaPlugin->setCurrentIndex         ( index                        );
 
       const QStringList inputDeviceList  = configurationManager.getAudioInputDeviceList  ();
-      kcfg_alsaInputDevice->clear             (                              );
-      kcfg_alsaInputDevice->addItems          ( inputDeviceList              );
-      kcfg_alsaInputDevice->setCurrentIndex   ( currentDevices[1].toInt()    );
+      alsaInputDevice->clear             (                              );
+      alsaInputDevice->addItems          ( inputDeviceList              );
+      alsaInputDevice->setCurrentIndex   ( currentDevices[1].toInt()    );
 
       const QStringList outputDeviceList = configurationManager.getAudioOutputDeviceList ();
-      kcfg_alsaOutputDevice->clear            (                              );
-      kcfg_alsaOutputDevice->addItems         ( outputDeviceList             );
-      kcfg_alsaOutputDevice->setCurrentIndex  ( currentDevices[0].toInt()    );
+      alsaOutputDevice->clear            (                              );
+      alsaOutputDevice->addItems         ( outputDeviceList             );
+      alsaOutputDevice->setCurrentIndex  ( currentDevices[0].toInt()    );
 
-      kcfg_alsaRingtoneDevice->clear          (                              );
-      kcfg_alsaRingtoneDevice->addItems       ( outputDeviceList             );
-      kcfg_alsaRingtoneDevice->setCurrentIndex( currentDevices[2].toInt()    );
+      alsaRingtoneDevice->clear          (                              );
+      alsaRingtoneDevice->addItems       ( outputDeviceList             );
+      alsaRingtoneDevice->setCurrentIndex( currentDevices[2].toInt()    );
 
       groupBox_alsa->setEnabled(true);
    }
