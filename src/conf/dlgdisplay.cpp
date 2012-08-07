@@ -47,6 +47,7 @@ DlgDisplay::DlgDisplay(QWidget *parent)
       i->setCheckState ((checked)?Qt::Checked:Qt::Unchecked        );
       m_pDetailsList->addItem(m_lItemList[iter.value()] = i);
    }
+   kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());
    connect(m_pDetailsList   , SIGNAL(itemChanged(QListWidgetItem*))  , this  , SLOT(changed())      );
 }
 
