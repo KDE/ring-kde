@@ -37,7 +37,7 @@
 
 ///Constructor
 ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
- :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self())
+ :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(0)
 {
    this->setWindowIcon(QIcon(ICON_SFLPHONE));
 
@@ -114,7 +114,7 @@ void ConfigurationDialog::cancelSettings()
 ///If the account changed
 bool ConfigurationDialog::hasChanged()
 {
-   bool res = dlgAudio->hasChanged() || dlgAccounts->hasChanged() || dlgGeneral->hasChanged() || dlgAddressBook->hasChanged() || dlgVideo->hasChanged();
+   bool res = dlgAudio->hasChanged() || dlgAccounts->hasChanged() || dlgGeneral->hasChanged() || dlgAddressBook->hasChanged() || (dlgVideo && dlgVideo->hasChanged());
    return res;
 }
 
