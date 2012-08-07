@@ -42,7 +42,6 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
 
    KUrlRequester_destinationFolder->setMode(KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly);
    KUrlRequester_destinationFolder->setUrl(KUrl(configurationManager.getRecordPath()));
-   KUrlRequester_destinationFolder->lineEdit()->setObjectName("kcfg_destinationFolder");
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
    connect( box_alsaPlugin, SIGNAL(activated(int)),  parent, SLOT(updateButtons()));
