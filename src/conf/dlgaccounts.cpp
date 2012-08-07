@@ -74,6 +74,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit2_protocol,                    SIGNAL(activated(int))                 , this   , SLOT(changedAccountList())              );
    /**/connect(edit3_server,                      SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit4_user,                        SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(edit4_user,                        SIGNAL(textEdited(QString))            , this   , SLOT(updateFirstCredential(QString))    );
    /**/connect(edit5_password,                    SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit6_mailbox,                     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_regExpire,                 SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
@@ -572,6 +573,18 @@ void DlgAccounts::main_credential_password_changed()
 {
    if (list_credential->currentIndex().row() == 0) {
       edit5_password->setText(edit_credential_password->text());
+   }
+}
+
+///Update the first credential
+void DlgAccounts::updateFirstCredential(QString text)
+{
+   if (!m_IsLoading) {
+      Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+      acc->getCredentialsModel()->setData(acc->getCredentialsModel()->index(0,0),text, CredentialModel::NAME_ROLE);
+      if (acc->getCredentialsModel()->index(0,0) == list_credential->currentIndex()) {
+         edit_credential_auth->setText(text);
+      }
    }
 }
 

@@ -134,6 +134,7 @@ private slots:
    void updateAccountListCommands        ();
    void main_password_field_changed      ();
    void main_credential_password_changed ();
+   void updateFirstCredential(QString text);
 
    void moveAudioCodecUp                 ();
    void moveAudioCodecDown               ();
