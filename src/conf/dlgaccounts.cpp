@@ -348,6 +348,10 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/group_security_tls->setChecked           (  account->isTlsEnable                    ());
    /**/combo_security_STRP->setCurrentIndex     (  account->getTlsMethod                   ());
    /*                                                                                        */
+   
+   edit_credential_realm    -> setText(QString());
+   edit_credential_auth     -> setText(QString());
+   edit_credential_password -> setText(QString());
 
 
    disconnect(m_pDefaultAccount, SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
