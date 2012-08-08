@@ -110,6 +110,7 @@
     </entry>
    <entry name="displayContactCallHistory" type="Bool">
         <label>Defines if the individual contact history list is visible</label>
+        <default>false</default>
    </entry>
     
 
