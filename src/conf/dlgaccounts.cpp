@@ -433,7 +433,10 @@ void DlgAccounts::loadAccount(QModelIndex item)
    comboBox_ni_local_address->addItems(interfaceList);
 
    spinBox_ni_local_port->setValue(account->getLocalPort());
-   comboBox_ni_local_address->setCurrentIndex(comboBox_ni_local_address->findText(account->getLocalInterface())); //TODO need to load the list first
+   if (comboBox_ni_local_address->findText(account->getLocalInterface()) >=0)
+      comboBox_ni_local_address->setCurrentIndex(comboBox_ni_local_address->findText(account->getLocalInterface()));
+   else //Just to be sure
+      comboBox_ni_local_address->setCurrentIndex(0);
 
    if(protocolIndex == 0 || account->isNew()) { // if sip selected
       checkbox_stun->setChecked(account->isAccountSipStunEnabled());
