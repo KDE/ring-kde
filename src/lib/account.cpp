@@ -120,6 +120,7 @@ Account::~Account()
    delete m_pAccountId;
    if (m_pCredentials)    delete m_pCredentials   ;
    if (m_pAccountDetails) delete m_pAccountDetails;
+   if (m_pAudioCodecs)    delete m_pAudioCodecs   ;
 }
 
 
@@ -488,17 +489,18 @@ void Account::reloadAudioCodecs()
 
 ///Save audio codecs
 void Account::saveAudioCodecs() {
-   QStringList _codecList;
-   for (int i=0; i < m_pAudioCodecs->rowCount();i++) {
-      QModelIndex idx = m_pAudioCodecs->index(i,0);
-      if (m_pAudioCodecs->data(idx,Qt::CheckStateRole) == Qt::Checked) {
-         _codecList << m_pAudioCodecs->data(idx,AudioCodecModel::ID_ROLE).toString();
+   if (m_pAudioCodecs) {
+      QStringList _codecList;
+      for (int i=0; i < m_pAudioCodecs->rowCount();i++) {
+         QModelIndex idx = m_pAudioCodecs->index(i,0);
+         if (m_pAudioCodecs->data(idx,Qt::CheckStateRole) == Qt::Checked) {
+            _codecList << m_pAudioCodecs->data(idx,AudioCodecModel::ID_ROLE).toString();
+         }
       }
-   }
 
-   ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
-   configurationManager.setActiveAudioCodecList(_codecList, getAccountId());
-   qDebug() << "Account codec have been saved" << _codecList << getAccountId();
+      ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      configurationManager.setActiveAudioCodecList(_codecList, getAccountId());
+   }
 }
 
 /*****************************************************************************
