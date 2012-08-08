@@ -46,6 +46,7 @@
 #include "../lib/contact.h"
 #include "../lib/accountlist.h"
 #include "../lib/account.h"
+#include "configurationskeleton.h"
 
 ///Init static attributes
 AkonadiBackend*  AkonadiBackend::m_pInstance = nullptr;
@@ -88,11 +89,14 @@ ContactBackend* AkonadiBackend::getInstance()
 ///@param resolveDNS check if the DNS is used by an account, then assume contact with that phone number / extension is the same as the caller
 Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resolveDNS,Account* a)
 {
+   //Remove protocol dependant prefix and suffix
    QString number = phoneNumber;
    if (number.left(5) == "<sip:")
       number = number.remove(0,5);
    if (number.right(1) == ">")
       number = number.remove(number.size()-1,1);
+
+   //Try direct match
    Contact* c = m_ContactByPhone[number];
    if (c) {
       return c;
@@ -101,13 +105,27 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
       a = AccountList::getInstance()->getDefaultAccount();
    else if (number.indexOf('@') == -1 && a)
       return m_ContactByPhone[number+'@'+a->getAccountHostname()];
-   
-   if (resolveDNS &&  number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && m_ContactByPhone[getUserFromPhone(number)]) {
-      foreach (Account* a, AccountList::getInstance()->getAccounts()) {
-         if (a->getAccountHostname() == getHostNameFromPhone(number))
-            return m_ContactByPhone[getUserFromPhone(number)];
+
+   //Use default resolve account to trim hostname away from the number
+   Contact* userOnly = m_ContactByPhone[getUserFromPhone(number).trimmed()];
+   QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
+   if (resolveDNS && !defaultResolveAccount.isEmpty() && number.indexOf('@') != -1) {
+      Account* defResolveAcc = AccountList::getInstance()->getAccountById(defaultResolveAccount);
+      QString hostname = defResolveAcc?defResolveAcc->getAccountHostname():QString();
+      if (defResolveAcc && hostname == number.right(hostname.size())) {
+         return userOnly;
       }
    }
+
+   //Try to find something matching, but at this point it is not 100% sure it is the right one
+   if (resolveDNS && number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && userOnly) {
+      foreach (Account* a, AccountList::getInstance()->getAccounts()) {
+         if (a->getAccountHostname() == getHostNameFromPhone(number) && userOnly)
+            return userOnly;
+      }
+   }
+
+   //Give up
    return nullptr;
 } //getContactByPhone
 
