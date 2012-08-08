@@ -59,7 +59,6 @@ SET(
    widgets/immanager.cpp
    widgets/imtab.cpp
 #    widgets/acceleratedvideowidget.cpp
-   codec.cpp
    callview.cpp
 )
 
