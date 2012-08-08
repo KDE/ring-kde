@@ -124,6 +124,8 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 
   <para>If you want to call somebody from whom you missed a call, or you already called earlier, you may go to the &i18n-history-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the number or name of the person you want to call, then you can double click on the history call, drag and drop it on the current call list, pressing &Enter; or right clicking and press "Call again".</para>
 
+</sect2>
+
 <sect2 id="basic-use-call-contact">
 <title>Calling from address book</title>
 
@@ -156,6 +158,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 
 
 <sect1 id="basic-call-state">
+<title>Basic call actions</title>
 
 <para>
 <screenshot>
@@ -177,7 +180,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 
 <para>Following behaviour, common part...</para>
 
-</sect1>
+</sect2>
 
 
 <sect2 id="basic-use-ringing">
@@ -204,7 +207,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 <sect2 id="basic-use-recording">
 <title>The call is recording</title>
 
-<para>Recording a call will create a .wav file in the directory chosen in the &Audio; configuration dialog. Recording can be activated by pressing the <guibutton>Record</guibutton> button of the toolbar. The call emblem should turn to:</para>
+<para>Recording a call will create a .wav file in the directory chosen in the Audio configuration dialog. Recording can be activated by pressing the <guibutton>Record</guibutton> button of the toolbar. The call emblem should turn to:</para>
 
 <para>
 <screenshot>
@@ -487,14 +490,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 
 <para>The audio config allow you to select between pulseaudio and also. It also make it possible to select devices for various operation, like ringing.</para>
 
-</sect1>
-
-<sect1 id="basic-use-config">
-<title>Configuration dialog</title>
-
-<para>The configuration panel is built in accordance with &kde; specifications. It is divided by options type. The panel at left shows the different option pages you can reach. Click on one of them to access to the corresponding page. The changes you make are not applied until you click <guibutton>OK</guibutton> or <guibutton>Apply</guibutton>. Clicking <guibutton>Cancel</guibutton> will cancel and forget every change you made since the last <guibutton>Apply</guibutton> or <guibutton>OK</guibutton> command. Be careful not to forget some changes you made in some other pages if you wanted to cancel it.</para>
-
-<para>There is also a specific <guibutton>Apply</guibutton> button just for the account list which is useful to manage these accounts and valid your changes to see if the accounts are well registered.</para>
+</sect2>
 
 </sect1>
 
