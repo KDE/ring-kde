@@ -36,7 +36,7 @@ To switch between those windows, click on the <guilabel>History</guilabel>, <gui
 </screenshot>
 
 
-<para>The current call list is composed on the list itself, hosting call and conferences. There is also an optional dialpad, instant message box and volume controls. They can be enabled or disabled from the <guimenu>View</guimenu> menu.
+<para>The current call list is composed on the list itself, hosting call and conferences. There is also an optional dial pad, instant message box and volume controls. They can be enabled or disabled from the <guimenu>View</guimenu> menu.
 
 <screenshot>
 <mediaobject>
@@ -77,7 +77,7 @@ The history list host the previous calls. It is possible to sort it in multiple 
 <sect2 id="basic-use-contact-page">
 <title>The Contact page</title>
 <para>
-The contact list provide an easy access to KDE addressbook contacts. By default, it is sorted by alphabetical order, but can also be displayed in various other orders. A quick search text field is also provided. Contacts with multiple phone numbers are collapsed by default. To display all numbers it is possible to double click on the collapsed item in the list or activate the option in the <guilabel>Display</guilabel> page of the configuration dialog. The information being displayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
+The contact list provide an easy access to KDE address book contacts. By default, it is sorted by alphabetical order, but can also be displayed in various other orders. A quick search text field is also provided. Contacts with multiple phone numbers are collapsed by default. To display all numbers it is possible to double click on the collapsed item in the list or activate the option in the <guilabel>Display</guilabel> page of the configuration dialog. The information being displayed are also configurable from that same page. Users with many contacts might want to display minimal details to reduce the size of the contacts.
 </para>
 
 <screenshot>
@@ -112,7 +112,7 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 <title>Dialing one's number</title>
 
 
-<para>If you know the number of the people you want to call, you may just type it on the dialpad or on your keyboard while you are in the &i18n-current-w;, then click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or even double-click on the number to call once you have finished dialing it.</para>
+<para>If you know the number of the people you want to call, you may just type it on the dial pad or on your keyboard while you are in the &i18n-current-w;, then click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or double-click on the number to call once you have finished dialling it.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -122,44 +122,68 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 <title>Calling from call history</title>
 
 
-<para>If you want to call somebody from whom you missed a call, or you already called earlier, you may go to the &i18n-history-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the number or name of the person you want to call, then select it and click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or double-click on the number.</para>
-
-<para>The screen will come back to the &i18n-current-w; with a new ringing call with the number you chose in the &i18n-history-w;.</para>
-
-<para>Note that you can also click with the &RMB; and select <guimenuitem>Edit</guimenuitem> before call to modify the number in the history before calling it.</para>
-
-<para>Following behavior, common part...</para>
+  <para>If you want to call somebody from whom you missed a call, or you already called earlier, you may go to the &i18n-history-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the number or name of the person you want to call, then you can double click on the history call, drag and drop it on the current call list, pressing &Enter; or right clicking and press "Call again".</para>
 
 </sect2>
 
-<sect2 id="basic-use-call-address">
+<sect2 id="basic-use-call-contact">
 <title>Calling from address book</title>
 
 
-<para>If you have your KAddressBook configured and filled with some phone numbers, you can go to the &i18n-address-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the name of the person you want to call with the right phone number (&i18n-pt-home;, &i18n-pt-work; or &i18n-pt-cell;), then select it and click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or double-click on the number.</para>
+<para>If you have configured contacts in either KAddressBook or Akonadi, &sflphone-client-kde; should automatically import them. To call a contact, it is possible to double click on it, drag and drop it to the current call list, press enter or right click and select "Call".</para>
 
-<para>The screen will come back to the &i18n-current-w; with a new ringing call with the number you chose in the &i18n-address-w;.</para>
+<para>
+If the contact have multiple phone number. A dialog will be shown to select the right number.
+</para>
 
-<para>Note that you can also click with the &RMB; and select <guimenuitem>Edit</guimenuitem> before call to modify the number in the address book before calling it.</para>
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="multiple-number.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Multiple number popup</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
 
-<para>Following behavior, common part...</para>
+<para>If your addressbook contain incomplete phone numbers or only phone extensions, it is possible to set a "default account" in the "Basic" tab of the account configuration dialog. This account will be used to call these numbers. If you have incomplete phone number belonging to multiple accounts, it is advised to edit those contacts to ensure the number is complete or add @&lt;hostname&gt; at the end of the number (replace "hostname" with a valid server hostname.</para>
 
 </sect2>
 
 </sect1>
 
-<sect1 id="basic-use-becalled">
-<title>Receiving a call</title>
 
+
+<sect1 id="basic-call-state">
+<title>Basic call actions</title>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="call-action.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Call actions</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<sect2 id="basic-use-becalled">
+<title>Receiving a call</title>
 
 <para>When one of the account registered in &sflphone; receives an incoming call, it will be displayed as a new item in the &i18n-current-w; with the "incoming" icon. You can either accept or refuse it. To accept it, select the item and click on the <guibutton>Accept</guibutton> button which replaced the <guibutton>Call</guibutton> button in toolbar and <guimenu>Actions</guimenu> menu, or double click the item, or press &Enter;. To refuse it, select it and click on the refuse button that replaced the <guibutton>Hang up</guibutton> button in toolbar and Actions menu or press &Esc;.</para>
 
-<para>Following behavior, common part...</para>
+<para>Following behaviour, common part...</para>
 
-</sect1>
+</sect2>
 
 
-<sect1 id="basic-use-ringing">
+<sect2 id="basic-use-ringing">
 <title>The call is ringing</title>
 
 
@@ -168,26 +192,305 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 
 <para>If the number does not exist or if any other error occurred (see the list of common errors here), it is in failure state, then you can hang it up with the <guibutton>Hang up</guibutton> button or pressing &Esc;.</para>
 
-<para>Following behavior, common part...</para>
+<para>Following behaviour, common part...</para>
 
-</sect1>
+</sect2>
 
-<sect1 id="basic-use-current">
+<sect2 id="basic-use-current">
 <title>The call is current</title>
 
 
 <para>Once the call is in current state, you can now communicate with your peer. You have a bunch of useful features when in current state that are described in the common use chapter. To end the call, select it and click on <guibutton>Hang up</guibutton> button in toolbar or pressing &Esc;.</para>
 
+</sect2>
+
+<sect2 id="basic-use-recording">
+<title>The call is recording</title>
+
+<para>Recording a call will create a .wav file in the directory chosen in the Audio configuration dialog. Recording can be activated by pressing the <guibutton>Record</guibutton> button of the toolbar. The call emblem should turn to:</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="call-record.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>The record emblem</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>Once the call is over, you can play the recording from the history page be pressing the play button. This overlay should appear.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="call-play-record.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>The record overlay</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+</sect2>
+
+<sect2 id="basic-use-transfer">
+<title>The call is being transferred</title>
+
+
+<para>SFLPhone support two types of transfer, direct and attended. Attended will be discussed in the next section. Direct transfer is the action of transferring a call to another number. Once the call is transferred, it is considered over by SFLPhone. It should start ringing on the number you transferred to. To transfer a call, press on the "Transfer" button in the toolbar. This overlay should be presented:</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="call-transfer.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>The transfer overlay</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+</sect2>
+
+
 </sect1>
 
+<sect1 id="basic-managing-calls">
+<title>Managing calls</title>
 
+<para>SFLPhone support multiple calls at once. Managing multiple call offer many features, but it is also important to understand the relation between them. In theory, only 1 call or group of calls, referred here as conferences, can be active. Other calls are going to be on hold. A call on hold can not communicate, be it by instant message or voice unless it is activated again. Double click or press &Enter; to re-activate the call. Active call should have a green icon emblem are be more saturated than inactive calls.</para>
+
+<para>
+Conferences are a group of intercommunicating calls. Each participant of a conversation can ear all the other participants. However, it is important to note that if a conference have been created in SFLPhone, the other participants wont know it, so it is useful to actually tell them they are in a conference.
+</para>
+
+<para>Call management is mostly using drag and drop. Dragging a call on another call will result in this overlay being displayed.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="call-drop.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Call overlay</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>Dropping the call on "conference" will add the call being dropped to the conference of the call it is drop on to. If the later is not part of a conference, one will be created. Dropping the call on transfer will trigger an attended transfer. Attended transfers will give ownership of the call being dropped to the owner of the call it is being dropped onto. It is useful if you want to notice the person you are transferring the call to before actually transferring it. You put the person on hold, call the second one, then perform an attended transfer. The call will then be removed and considered over.</para>
+
+<para>Dropping a call on an history call will display this overlay:</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="history-drop.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>History overlay</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>It will trigger a direct transfer. The phone of the person you are transferring to should start ringing. The call will be removed and considered over. This feature is also available for contacts:</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="contact-transfer.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Contact overlay</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+</sect1>
 
 <sect1 id="basic-use-config">
-<title>Configuration panel</title>
+<title>Account configurations</title>
 
-<para>The configuration panel is built in accordance with &kde; specifications. It is divided by options type. The panel at left shows the different option pages you can reach. Click on one of them to access to the corresponding page. The changes you make are not applied until you click <guibutton>OK</guibutton> or <guibutton>Apply</guibutton>. Clicking <guibutton>Cancel</guibutton> will cancel and forget every change you made since the last <guibutton>Apply</guibutton> or <guibutton>OK</guibutton> command. Be careful not to forget some changes you made in some other pages if you wanted to cancel it.</para>
+<para>For the account setup wizard, please refer to the "getting-started" portion of this handbook.</para>
 
-<para>There is also a specific <guibutton>Apply</guibutton> button just for the account list which is useful to manage these accounts and valid your changes to see if the accounts are well registered.</para>
+<para>Advanced configuration of the accounts is available in the <guibutton>Account</guibutton> section of the configuration dialog. The page is divided in two sections, the accounts list and the configurations tabs. The account list</para>
+
+<sect2 id="account-list">
+<title>The account list</title>
+
+<para>The account list allow to enable or disable account by checking them, moving account priority use the <guibutton>up</guibutton> and <guibutton>down</guibutton> buttons, adding and removing them useing the <guibutton>add</guibutton> and <guibutton>remove</guibutton> buttons.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="account-list.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Account list</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>The tinted backgroud represent the account state. Normal represent a disabled account, red an invalid or inaccessible account, yellow an account in the process of registering itself and green a valid, registered account. The icons represent the current local status of the account. A little floppy represent a modified and unsaved account and the reload icon an account that have changed on the server or by another client, like the plasmoid and need to be reloaded.</para>
+
+</sect2>
+
+<sect2 id="basic-configuration">
+<title>Basic settings</title>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="account-basic.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Basic account dialog</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>This tab allow to configure the basic credentials of a SIP account. The <guilabel>default resolve account</guilabel> checkbox is used to know if that account have priority when performing contact information lookup.</para>
+
+<para>The settings in the basic tab are often present in other tab in more advanced details. The <guilabel>credential</guilabel> tab allow to configure chained credentials, this feature is rarely used and you should avoid using them unless you really need to.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="account-credentials.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Chained credentials</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>It is also possible to enable Secure SIP in the security dialog. Most account are used in an intranet or using a VPN, so they are not secured. But if your account is, the <guilabel>Security</guilabel> dialog is here for you.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="account-security.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Account security</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>The advanced dialog host some rarely used configuration such as the default network interface, alternative ports and STUN server.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="account-advanced.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Advanced settings</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>The ringtone dialog allow to select a ringtone from the default list or from a file on your disk.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="account-ringtone.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Ringtone settings</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>Finally, the codec tab allow to enable or disable codecs or change their priority. That way, it is possible to have higher quality call or save bandwidth. Some video codecs also have configuration parameter of their own.</para>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="audio-codecs.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Codec settings</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="other-config">
+<title>Other configurations</title>
+
+<para>SFLPhone KDE also have settings not related to SIP accounts. Those settings allow to configure how the application look and behave.</para>
+
+<sect2 id="display-config">
+<title>Display</title>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="display.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Display settings</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>The <guilabel>display</guilabel> page allow various configurations related to how the application look. The first subsection, <guilabel>Display Main Window</guilabel> configure when SFLPhone will pop-up the GUI when it is minimized in the system tray. The second, <guilabel>Notifications</guilabel>, configure when SFLPhone should display a notification pop-up. The third, <guilabel>Visible Call Details</guilabel> enable or disable various informations fields in the call item. It also allow to select a minimum size for call items, to make them easier to target with the mouse. The last section, <guilabel>Visible Contact Details</guilabel> do the same for the contact items.</para>
+
+</sect2>
+
+<sect2 id="audio-config">
+<title>Audio</title>
+
+<para>
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="audio.png" format="PNG"/>
+</imageobject>
+<caption>
+<para>Display settings</para>
+</caption>
+</mediaobject>
+</screenshot>
+</para>
+
+<para>The audio config allow you to select between pulseaudio and also. It also make it possible to select devices for various operation, like ringing.</para>
+
+</sect2>
 
 </sect1>
 
