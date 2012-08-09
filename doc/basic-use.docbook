@@ -133,7 +133,7 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 <para>If you have configured contacts in either KAddressBook or Akonadi, &sflphone-client-kde; should automatically import them. To call a contact, it is possible to double click on it, drag and drop it to the current call list, press &Enter; or right click and select <guimenuitem>Call</guimenuitem>.</para>
 
 <para>
-If the contact have multiple phone number. A dialog will be shown to select the right number.
+If the contact have multiple phone numbers, a dialog will be shown to select the right number.
 </para>
 
 <para>
@@ -269,7 +269,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 <para>SFLPhone support multiple calls at once. Managing multiple call offer many features, but it is also important to understand the relation between them. In theory, only 1 call or group of calls, referred here as conferences, can be active. Other calls are going to be on hold. A call on hold can not communicate, be it by instant message or voice unless it is activated again. Double click or press &Enter; to re-activate the call. Active call should have a green icon emblem are be more saturated than inactive calls.</para>
 
 <para>
-Conferences are a group of intercommunicating calls. Each participant of a conversation can ear all the other participants. However, it is important to note that if a conference have been created in SFLPhone, the other participants wont know it, so it is useful to actually tell them they are in a conference.
+Conferences are a group of intercommunicating calls. Each participant of a conversation can hear all the other participants. However, it is important to note that if a conference have been created in SFLPhone, the other participants would not know about it, so it is useful to actually tell them they are in a conference.
 </para>
 
 <para>Call management is mostly using drag and drop. Dragging a call on another call will result in this overlay being displayed.</para>
@@ -383,7 +383,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 </screenshot>
 </para>
 
-<para>It is also possible to enable Secure SIP in the security dialog. Most account are used in an intranet or using a VPN, so they are not secured. But if your account is, the <guilabel>Security</guilabel> dialog is here for you.</para>
+<para>It is also possible to enable Secure SIP in the security dialog. Most accounts are used in an intranet or using a VPN, so they are not secured. But if your account is, the <guilabel>Security</guilabel> dialog is here for you.</para>
 
 <para>
 <screenshot>
@@ -488,7 +488,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 </screenshot>
 </para>
 
-<para>The audio config allow you to select between pulseaudio and also. It also make it possible to select devices for various operation, like ringing.</para>
+<para>The audio config allow you to select between PulseAudio and ALSA. It also make it possible to select devices for various operation, like ringing.</para>
 
 </sect2>
 
