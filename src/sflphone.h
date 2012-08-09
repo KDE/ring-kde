@@ -119,8 +119,9 @@ private:
    void setObjectNames();
 
 protected:
-   virtual bool queryClose();
-   virtual void changeEvent(QEvent * event);
+   virtual bool  queryClose (                )      ;
+   virtual void  changeEvent( QEvent * event )      ;
+   virtual QSize sizeHint   (                ) const;
 
 
 public:

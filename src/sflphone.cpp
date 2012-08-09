@@ -483,6 +483,12 @@ bool SFLPhone::queryClose()
    return false;
 }
 
+///Be sure the default size is look like a phone
+QSize SFLPhone::sizeHint() const
+{
+   return QSize(340,700);
+}
+
 ///[Action] Quit action
 void SFLPhone::quitButton()
 {
