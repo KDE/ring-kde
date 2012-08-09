@@ -252,6 +252,7 @@ void CallTreeItem::setCall(Call *call)
 
    if(ConfigurationSkeleton::displayCallPeer()/*&& ! m_pItemCall->getPeerName().isEmpty()*/) {
       m_pPeerL = new QLabel(" ");
+      m_pPeerL->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
       m_pPeerL->setText(m_pItemCall->getPeerName());
       if (m_pItemCall->getPeerName().isEmpty()) {
          m_pPeerL->setVisible(true);
