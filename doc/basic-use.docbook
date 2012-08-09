@@ -112,7 +112,7 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 <title>Dialing one's number</title>
 
 
-<para>If you know the number of the people you want to call, you may just type it on the dial pad or on your keyboard while you are in the &i18n-current-w;, then click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or double-click on the number to call once you have finished dialling it.</para>
+<para>If you know the number of the people you want to call, you may just type it on the dial pad or on your keyboard while you are in the &i18n-current-w;, then click on the <guibutton>Accept</guibutton> button in the &i18n-actions-p;'s toolbar or in the <guimenu>Actions</guimenu> menu, or press &Enter; on your keyboard, or double-click on the number to call once you have finished dialing it.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -178,7 +178,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 
 <para>When one of the account registered in &sflphone; receives an incoming call, it will be displayed as a new item in the &i18n-current-w; with the "incoming" icon. You can either accept or refuse it. To accept it, select the item and click on the <guibutton>Accept</guibutton> button which replaced the <guibutton>Call</guibutton> button in toolbar and <guimenu>Actions</guimenu> menu, or double click the item, or press &Enter;. To refuse it, select it and click on the refuse button that replaced the <guibutton>Hang up</guibutton> button in toolbar and Actions menu or press &Esc;.</para>
 
-<para>Following behaviour, common part...</para>
+<para>Following behavior, common part...</para>
 
 </sect2>
 
@@ -192,7 +192,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 
 <para>If the number does not exist or if any other error occurred (see the list of common errors here), it is in failure state, then you can hang it up with the <guibutton>Hang up</guibutton> button or pressing &Esc;.</para>
 
-<para>Following behaviour, common part...</para>
+<para>Following behavior, common part...</para>
 
 </sect2>
 
@@ -331,7 +331,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 <sect2 id="account-list">
 <title>The account list</title>
 
-<para>The account list allow to enable or disable account by checking them, moving account priority use the <guibutton>up</guibutton> and <guibutton>down</guibutton> buttons, adding and removing them useing the <guibutton>add</guibutton> and <guibutton>remove</guibutton> buttons.</para>
+<para>The account list allow to enable or disable account by checking them, moving account priority use the <guibutton>up</guibutton> and <guibutton>down</guibutton> buttons, adding and removing them using the <guibutton>add</guibutton> and <guibutton>remove</guibutton> buttons.</para>
 
 <para>
 <screenshot>
@@ -346,7 +346,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 </screenshot>
 </para>
 
-<para>The tinted backgroud represent the account state. Normal represent a disabled account, red an invalid or inaccessible account, yellow an account in the process of registering itself and green a valid, registered account. The icons represent the current local status of the account. A little floppy represent a modified and unsaved account and the reload icon an account that have changed on the server or by another client, like the plasmoid and need to be reloaded.</para>
+<para>The tinted background represent the account state. Normal represent a disabled account, red an invalid or inaccessible account, yellow an account in the process of registering itself and green a valid, registered account. The icons represent the current local status of the account. A little floppy represent a modified and unsaved account and the reload icon an account that have changed on the server or by another client, like the plasmoid and need to be reloaded.</para>
 
 </sect2>
 
@@ -468,7 +468,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 </screenshot>
 </para>
 
-<para>The <guilabel>display</guilabel> page allow various configurations related to how the application look. The first subsection, <guilabel>Display Main Window</guilabel> configure when SFLPhone will pop-up the GUI when it is minimized in the system tray. The second, <guilabel>Notifications</guilabel>, configure when SFLPhone should display a notification pop-up. The third, <guilabel>Visible Call Details</guilabel> enable or disable various informations fields in the call item. It also allow to select a minimum size for call items, to make them easier to target with the mouse. The last section, <guilabel>Visible Contact Details</guilabel> do the same for the contact items.</para>
+<para>The <guilabel>display</guilabel> page allow various configurations related to how the application look. The first subsection, <guilabel>Display Main Window</guilabel> configure when SFLPhone will pop-up the GUI when it is minimized in the system tray. The second, <guilabel>Notifications</guilabel>, configure when SFLPhone should display a notification pop-up. The third, <guilabel>Visible Call Details</guilabel> enable or disable various information fields in the call item. It also allow to select a minimum size for call items, to make them easier to target with the mouse. The last section, <guilabel>Visible Contact Details</guilabel> do the same for the contact items.</para>
 
 </sect2>
 
