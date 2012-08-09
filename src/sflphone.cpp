@@ -136,14 +136,8 @@ bool SFLPhone::initialize()
    // accept dnd
    setAcceptDrops(true);
 
-   m_pContactCD = new ContactDock(this);
-   addDockWidget(Qt::TopDockWidgetArea,m_pContactCD);
-   m_pContactCD->show();
-   m_pContactCD->setVisible(ConfigurationSkeleton::displayContactDock());
-
    // tell the KXmlGuiWindow that this is indeed the main widget
    m_pCentralDW = new QDockWidget(this);
-   m_pCentralDW->setObjectName  ( "callDock"                                    );
    m_pCentralDW->setSizePolicy  ( QSizePolicy::Expanding,QSizePolicy::Expanding );
    m_pCentralDW->setWidget      ( m_pView                                       );
    m_pCentralDW->setWindowTitle ( i18n("Call")                                  );
@@ -163,7 +157,8 @@ bool SFLPhone::initialize()
    m_pCentralDW->setContentsMargins(0,0,0,0);
    m_pView->setContentsMargins     (0,0,0,0);
 
-   addDockWidget(Qt::TopDockWidgetArea,m_pCentralDW);
+
+   m_pContactCD = new ContactDock(this);
 
    m_pHistoryDW       = new HistoryDock  ( this                     );
    m_pBookmarkDW      = new BookmarkDock ( this                     );
@@ -180,16 +175,41 @@ bool SFLPhone::initialize()
    m_pTrayIcon->addSeparator();
    m_pTrayIcon->addAction( action_quit     );
 
+   addDockWidget( Qt::TopDockWidgetArea,m_pCentralDW  );
+   addDockWidget( Qt::TopDockWidgetArea,m_pContactCD  );
    addDockWidget( Qt::TopDockWidgetArea,m_pHistoryDW  );
    addDockWidget( Qt::TopDockWidgetArea,m_pBookmarkDW );
-   tabifyDockWidget(m_pBookmarkDW,m_pHistoryDW);
 
+   tabifyDockWidget(m_pCentralDW,m_pHistoryDW );
+   tabifyDockWidget(m_pCentralDW,m_pContactCD );
+   tabifyDockWidget(m_pCentralDW,m_pBookmarkDW);
 
-   m_pHistoryDW->show();
-   m_pHistoryDW->setVisible(ConfigurationSkeleton::displayHistoryDock());
-   m_pBookmarkDW->show();
+   m_pCentralDW->setObjectName( "callDock" );
+
+   connect(m_pContactCD ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
+   connect(m_pHistoryDW ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
+   connect(m_pBookmarkDW,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
+   connect(m_pCentralDW ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
+
+   m_pContactCD-> setVisible(ConfigurationSkeleton::displayContactDock() );
+   m_pHistoryDW-> setVisible(ConfigurationSkeleton::displayHistoryDock() );
    m_pBookmarkDW->setVisible(ConfigurationSkeleton::displayBookmarkDock());
 
+   m_pCentralDW->show();
+
+   QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
+   if(tabBars.count())
+   {
+      foreach(QTabBar* bar, tabBars) {
+         for (int i=0;i<bar->count();i++) {
+            QString text = bar->tabText(i);
+            if (text == i18n("Call")) {
+               bar->setCurrentIndex(i);
+               break;
+            }
+         }
+      }
+   }
 
    setWindowIcon (QIcon(ICON_SFLPHONE) );
    setWindowTitle(i18n("SFLphone")     );
@@ -555,6 +575,32 @@ void SFLPhone::currentAccountIndexChanged(int newIndex)
 void SFLPhone::currentPriorAccountChanged(Account* newPrior)
 {
    m_pAccountStatus->setCurrentIndex(newPrior->getIndex().row());
+}
+
+///Qt does not support dock icons by default, this is an hack around this
+void SFLPhone::updateTabIcons()
+{
+   QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
+   if(tabBars.count())
+   {
+      foreach(QTabBar* bar, tabBars) {
+         for (int i=0;i<bar->count();i++) {
+            QString text = bar->tabText(i);
+            if (text == i18n("Call")) {
+               bar->setTabIcon(i,KIcon("call-start"));
+            }
+            else if (text == i18n("Bookmark")) {
+               bar->setTabIcon(i,KIcon("bookmarks"));
+            }
+            else if (text == i18n("Contact")) {
+               bar->setTabIcon(i,KIcon("edit-find-user"));
+            }
+            else if (text == i18n("History")) {
+               bar->setTabIcon(i,KIcon("view-history"));
+            }
+         }
+      }
+   }
 }
 
 #ifdef ENABLE_VIDEO

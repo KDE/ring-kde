@@ -154,6 +154,7 @@ private slots:
    void currentPriorAccountChanged               ( Account* newPrior                    );
    void showShortCutEditor                       (                                      );
    void quitButton                               (                                      );
+   void updateTabIcons                           (                                      );
    #ifdef ENABLE_VIDEO
    void displayVideoDock                         ( VideoRenderer* r                     );
    #endif
