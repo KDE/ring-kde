@@ -500,7 +500,8 @@ void SFLPhone::changeEvent(QEvent* event)
 ///Change status message
 void SFLPhone::on_m_pView_statusMessageChangeAsked(const QString& message)
 {
-   m_pStatusBarWidget->setText(message);
+   Q_UNUSED(message)
+//    m_pStatusBarWidget->setText(message);
 }
 
 ///Change windowtitle
