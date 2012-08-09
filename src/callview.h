@@ -103,7 +103,7 @@ class CallView : public QTreeWidget {
       QTreeWidgetItem* extractItem ( QTreeWidgetItem* item                             );
       CallTreeItem* insertItem     ( QTreeWidgetItem* item, QTreeWidgetItem* parent=0  );
       CallTreeItem* insertItem     ( QTreeWidgetItem* item, Call* parent               );
-      void clearArtefact           ( QTreeWidgetItem* item                             );
+      void clearArtefact           (                                                   );
 
       //Attributes
       QPushButton*     m_pTransferB;

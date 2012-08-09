@@ -152,13 +152,25 @@ CallTreeItemDelegate(CallView* widget)
 
       //END: draw background of category for all other items
 
+      QTreeWidgetItem* item = m_tree->itemFromIndex(index);
+      CallTreeItem* itemWidget = nullptr;
+      if (item) {
+         itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
+      }
       int max = 9999;
       painter->setClipRect(option.rect);
       if (option.state & QStyle::State_Selected) {
          QStyleOptionViewItem opt2(option);
          opt2.rect.setWidth(opt2.rect.width()-15);
+         //Draw a copy of the widget when in drag and drop
+         if (itemWidget && itemWidget->isDragged()) {
+            QStyledItemDelegate::paint(painter,index.parent().isValid()?opt2:option,index);
+            QPixmap pixmap(itemWidget->size());
+            itemWidget->render(&pixmap);
+            painter->drawPixmap(0,0,pixmap);
+         }
          //Check if it is the last item
-         if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
+         else if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
             opt2.rect.setHeight(opt2.rect.height()-15);
             QStyledItemDelegate::paint(painter,opt2,index);
             max = opt2.rect.height();
@@ -168,12 +180,10 @@ CallTreeItemDelegate(CallView* widget)
          }
       }
 
-      QTreeWidgetItem* item = m_tree->itemFromIndex(index);
       if (item) {
-         QWidget* widget = m_tree->itemWidget(item,0);
-         if (widget) {
-            widget->setMinimumSize((m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin())-m_ConferenceDrawer.leftMargin(),10);
-            widget->setMaximumSize((m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin())-m_ConferenceDrawer.leftMargin(),max);
+         if (itemWidget) {
+            itemWidget->setMinimumSize((m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin())-m_ConferenceDrawer.leftMargin(),10);
+            itemWidget->setMaximumSize((m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin())-m_ConferenceDrawer.leftMargin(),max);
          }
       }
 
@@ -318,8 +328,8 @@ bool CallView::callToCall(QTreeWidgetItem *parent, int index, const QMimeData *d
    Q_UNUSED(action)
    QByteArray encodedCallId      = data->data( MIME_CALLID      );
    if (!QString(encodedCallId).isEmpty()) {
-      if (SFLPhone::model()->getIndex(encodedCallId) && dynamic_cast<Call*>(SFLPhone::model()->getCall(encodedCallId))) //Prevent a race
-        clearArtefact(SFLPhone::model()->getIndex(encodedCallId));
+//       if (SFLPhone::model()->getIndex(encodedCallId) && dynamic_cast<Call*>(SFLPhone::model()->getCall(encodedCallId))) //Prevent a race
+//         clearArtefact(SFLPhone::model()->getIndex(encodedCallId));
 
       if (!parent) {
          kDebug() << "Call dropped on empty space";
@@ -501,6 +511,7 @@ bool CallView::dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData 
       kDebug() << "Contact dropped"<< QString(encodedContact);
       contactToCall(parent, index, data, action);
    }
+   clearArtefact();
    return false;
 } //dropMimeData
 
@@ -525,8 +536,11 @@ QMimeData* CallView::mimeData( const QList<QTreeWidgetItem *> items) const
    //Plain text for other applications
    mimeData->setData(MIME_PLAIN_TEXT, QString(SFLPhone::model()->getCall(items[0])->getPeerName()+'\n'+SFLPhone::model()->getCall(items[0])->getPeerPhoneNumber()).toAscii());
 
-   //TODO Comment this line if you don't want to see ugly artefact, but the caller details will not be visible while dragged
-   items[0]->setText(0, SFLPhone::model()->getCall(items[0])->getPeerName() + '\n' + SFLPhone::model()->getCall(items[0])->getPeerPhoneNumber());
+   CallTreeItem* widget = dynamic_cast<CallTreeItem*>(itemWidget(items[0],0));
+   if (widget) {
+      widget->setDragged(true);
+   }
+
    return mimeData;
 } //mimeData
 
@@ -735,10 +749,24 @@ void CallView::destroyCall(Call* toDestroy)
 } //destroyCall
 
 /// @todo Remove the text partially covering the TreeView item widget when it is being dragged, a beter implementation is needed
-void CallView::clearArtefact(QTreeWidgetItem* item)
+void CallView::clearArtefact()
 {
-   if (item)
-      item->setText(0,"");
+   for (int i=0;i<topLevelItemCount();i++) {
+      QTreeWidgetItem* item = topLevelItem(i);
+      if (item) {
+         CallTreeItem* widget = dynamic_cast<CallTreeItem*>(itemWidget(item,0));
+         if (widget) {
+            widget->setDragged(false);
+         }
+         for(int j=0;j< item->childCount();j++) {
+            QTreeWidgetItem* item2 = item->child(j);
+            CallTreeItem* widget2 = dynamic_cast<CallTreeItem*>(itemWidget(item2,0));
+            if (widget2) {
+               widget2->setDragged(false);
+            }
+         }
+      }
+   }
 }
 
 

@@ -65,7 +65,7 @@ const char * CallTreeItem::callStateIcons[12] = {ICON_INCOMING, ICON_RINGING, IC
 ///Constructor
 CallTreeItem::CallTreeItem(QWidget *parent)
    : QWidget(parent), m_pItemCall(0), m_Init(false),m_pBtnConf(0), m_pBtnTrans(0),m_pTimer(0),m_pPeerL(0),m_pIconL(0),m_pCallNumberL(0),m_pSecureL(0),m_pCodecL(0),m_pHistoryPeerL(0)
-   , m_pTransferPrefixL(0),m_pTransferNumberL(0),m_pElapsedL(0),m_Height(0),m_pContact(0),m_pDepartment(0),m_pOrganisation(0),m_pEmail(0)
+   , m_pTransferPrefixL(0),m_pTransferNumberL(0),m_pElapsedL(0),m_Height(0),m_pContact(0),m_pDepartment(0),m_pOrganisation(0),m_pEmail(0),m_IsDragged(false)
 {
    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
    connect(AkonadiBackend::getInstance(),SIGNAL(collectionChanged()),this,SLOT(updated()));
@@ -86,6 +86,11 @@ CallTreeItem::~CallTreeItem()
     if (m_pTimer)           delete m_pTimer           ;
 }
 
+///Hack to render a proxy delegate of the widget when it is dragged
+void CallTreeItem::setDragged(bool drag)
+{
+   m_IsDragged = drag;
+}
 
 /*****************************************************************************
  *                                                                           *
@@ -154,6 +159,12 @@ QSize CallTreeItem::sizeHint () const
       }
    }
    return QSize(0,height);
+}
+
+///Hack to use a proxy painter when dragging
+bool CallTreeItem::isDragged()
+{
+   return m_IsDragged;
 }
 
 /*****************************************************************************

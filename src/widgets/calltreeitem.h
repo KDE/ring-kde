@@ -52,9 +52,11 @@ class CallTreeItem : public QWidget
     //Getters
     Call*         call()      const;
     virtual QSize sizeHint () const;
+    bool isDragged();
 
     //Setters
     void setCall(Call *call);
+    void setDragged(bool drag);
 
     //Const
     static const char* callStateIcons[12];
@@ -86,6 +88,8 @@ class CallTreeItem : public QWidget
 
     //Helper
     QPixmap& applyMask(QPixmap& pxm);
+
+    bool m_IsDragged;
 
   protected:
     //Reimplementation
