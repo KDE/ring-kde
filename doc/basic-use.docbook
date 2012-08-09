@@ -122,7 +122,7 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 <title>Calling from call history</title>
 
 
-  <para>If you want to call somebody from whom you missed a call, or you already called earlier, you may go to the &i18n-history-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the number or name of the person you want to call, then you can double click on the history call, drag and drop it on the current call list, pressing &Enter; or right clicking and press "Call again".</para>
+  <para>If you want to call somebody from whom you missed a call, or you already called earlier, you may go to the &i18n-history-w;. The detailed use of this window and its features (search, &etc;) is described in this section. Once you are in it, find the number or name of the person you want to call, then you can double click on the history call, drag and drop it on the current call list, pressing &Enter; or right clicking and press <guimenuitem>Call Again</guimenuitem>.</para>
 
 </sect2>
 
@@ -130,7 +130,7 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 <title>Calling from address book</title>
 
 
-<para>If you have configured contacts in either KAddressBook or Akonadi, &sflphone-client-kde; should automatically import them. To call a contact, it is possible to double click on it, drag and drop it to the current call list, press enter or right click and select "Call".</para>
+<para>If you have configured contacts in either KAddressBook or Akonadi, &sflphone-client-kde; should automatically import them. To call a contact, it is possible to double click on it, drag and drop it to the current call list, press &Enter; or right click and select <guimenuitem>Call</guimenuitem>.</para>
 
 <para>
 If the contact have multiple phone number. A dialog will be shown to select the right number.
@@ -149,7 +149,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 </screenshot>
 </para>
 
-<para>If your addressbook contain incomplete phone numbers or only phone extensions, it is possible to set a "default account" in the "Basic" tab of the account configuration dialog. This account will be used to call these numbers. If you have incomplete phone number belonging to multiple accounts, it is advised to edit those contacts to ensure the number is complete or add @&lt;hostname&gt; at the end of the number (replace "hostname" with a valid server hostname.</para>
+<para>If your addressbook contain incomplete phone numbers or only phone extensions, it is possible to set a "default account" in the "Basic" tab of the account configuration dialog. This account will be used to call these numbers. If you have incomplete phone number belonging to multiple accounts, it is advised to edit those contacts to ensure the number is complete or add @<replaceable>hostname</replaceable> at the end of the number (replace <replaceable>hostname</replaceable> with a valid server hostname).</para>
 
 </sect2>
 
@@ -207,7 +207,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 <sect2 id="basic-use-recording">
 <title>The call is recording</title>
 
-<para>Recording a call will create a .wav file in the directory chosen in the Audio configuration dialog. Recording can be activated by pressing the <guibutton>Record</guibutton> button of the toolbar. The call emblem should turn to:</para>
+<para>Recording a call will create a <filename>.wav</filename> file in the directory chosen in the Audio configuration dialog. Recording can be activated by pressing the <guibutton>Record</guibutton> button of the toolbar. The call emblem should turn to:</para>
 
 <para>
 <screenshot>
@@ -243,7 +243,7 @@ If the contact have multiple phone number. A dialog will be shown to select the 
 <title>The call is being transferred</title>
 
 
-<para>SFLPhone support two types of transfer, direct and attended. Attended will be discussed in the next section. Direct transfer is the action of transferring a call to another number. Once the call is transferred, it is considered over by SFLPhone. It should start ringing on the number you transferred to. To transfer a call, press on the "Transfer" button in the toolbar. This overlay should be presented:</para>
+<para>SFLPhone support two types of transfer, direct and attended. Attended will be discussed in the next section. Direct transfer is the action of transferring a call to another number. Once the call is transferred, it is considered over by SFLPhone. It should start ringing on the number you transferred to. To transfer a call, press on the <guibutton>Transfer</guibutton> button in the toolbar. This overlay should be presented:</para>
 
 <para>
 <screenshot>
@@ -324,9 +324,9 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 <sect1 id="basic-use-config">
 <title>Account configurations</title>
 
-<para>For the account setup wizard, please refer to the "getting-started" portion of this handbook.</para>
+<para>For the account setup wizard, please refer to the <link linkend="getting-started">Getting Started</link> chapter of this handbook.</para>
 
-<para>Advanced configuration of the accounts is available in the <guibutton>Account</guibutton> section of the configuration dialog. The page is divided in two sections, the accounts list and the configurations tabs. The account list</para>
+<para>Advanced configuration of the accounts is available in the <guibutton>Account</guibutton> section of the configuration dialog. The page is divided in two sections, the accounts list and the configurations tabs.</para>
 
 <sect2 id="account-list">
 <title>The account list</title>
