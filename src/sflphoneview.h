@@ -41,7 +41,7 @@ class AccountWizard;
  *
  * @short Main view
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
- * @version 1.1.0
+ * @version 1.2.0
  */
 class SFLPhoneView : public QWidget, public Ui::SFLPhone_view
 {
