@@ -31,7 +31,7 @@ AccountList* AccountList::m_spAccountList   = nullptr;
 QString      AccountList::m_sPriorAccountId = ""     ;
 
 ///Constructors
-AccountList::AccountList(QStringList & _accountIds) : m_pColorVisitor(nullptr)
+AccountList::AccountList(QStringList & _accountIds) : m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr)
 {
    m_pAccounts = new QVector<Account*>();
    for (int i = 0; i < _accountIds.size(); ++i) {
@@ -49,7 +49,7 @@ AccountList::AccountList(QStringList & _accountIds) : m_pColorVisitor(nullptr)
 
 ///Constructors
 ///@param fill Whether to fill the list with accounts from configurationManager or not.
-AccountList::AccountList(bool fill) : m_pColorVisitor(nullptr)
+AccountList::AccountList(bool fill) : m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr)
 {
    m_pAccounts = new QVector<Account *>();
    if(fill)
