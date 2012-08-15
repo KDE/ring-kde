@@ -572,6 +572,29 @@
            </widget>
           </item>
           <item>
+           <widget class="QGroupBox" name="groupBox_6">
+            <property name="title">
+             <string>DTMF</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QRadioButton" name="m_pDTMFOverRTP">
+               <property name="text">
+                <string>Over RTP</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="m_pDTMFOverSIP">
+               <property name="text">
+                <string>Over SIP</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer_3">
             <property name="orientation">
              <enum>Qt::Vertical</enum>

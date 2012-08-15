@@ -77,6 +77,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit4_user,                        SIGNAL(textEdited(QString))            , this   , SLOT(updateFirstCredential(QString))    );
    /**/connect(edit5_password,                    SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit6_mailbox,                     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pDTMFOverRTP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pDTMFOverSIP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_regExpire,                 SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(spinBox_pa_published_port,         SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(comboBox_ni_local_address,         SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
@@ -218,6 +220,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setLocalInterface              ( comboBox_ni_local_address->currentText()                                 );
    /**/account->setRingtoneEnabled             ( m_pEnableRingtoneGB->isChecked()                                         );
    /**/account->setRingtonePath                ( m_pRingTonePath->url().path()                                            );
+   /**/account->setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
    //                                                                                                                      /
 
    if (m_pDefaultAccount->isChecked()) {
@@ -349,7 +352,10 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/group_security_tls->setChecked           (  account->isTlsEnable                    ());
    /**/combo_security_STRP->setCurrentIndex     (  account->getTlsMethod                   ());
    /*                                                                                        */
-   
+
+   m_pDTMFOverRTP->setChecked(account->getDTMFType()==DtmfType::OverRtp);
+   m_pDTMFOverSIP->setChecked(account->getDTMFType()==DtmfType::OverSip);
+
    edit_credential_realm    -> setText(QString());
    edit_credential_auth     -> setText(QString());
    edit_credential_password -> setText(QString());

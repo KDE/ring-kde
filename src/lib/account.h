@@ -59,6 +59,12 @@ enum AccountEditAction {
    CANCEL  =6
 };
 
+///@enum DtmfType Different method to send the DTMF (key sound) to the peer
+enum DtmfType {
+   OverRtp,
+   OverSip
+};
+
 ///Account: a daemon account (SIP or AIX)
 class LIB_EXPORT Account : public QObject {
    Q_OBJECT
@@ -169,6 +175,11 @@ class LIB_EXPORT Account : public QObject {
       QString getAccountRegistrationStatus    () const { return getAccountDetail(ACCOUNT_REGISTRATION_STATUS)                     ;}
       ///Return the account type
       QString getAccountType                  () const { return getAccountDetail(ACCOUNT_TYPE)                                    ;}
+      ///Return the DTMF type
+      DtmfType getDTMFType                    () const {
+         QString type = getAccountDetail(ACCOUNT_DTMF_TYPE);
+         return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
+      }
    
       //Setters
       void setAccountId      (const QString& id                        );
@@ -243,6 +254,8 @@ class LIB_EXPORT Account : public QObject {
       void setPublishedSameAsLocal          (bool    detail){setAccountDetail(PUBLISHED_SAMEAS_LOCAL         ,detail?"true":"false");}
       ///Set if custom ringtone are enabled
       void setRingtoneEnabled               (bool    detail){setAccountDetail(CONFIG_RINGTONE_ENABLED        ,detail?"true":"false");}
+      ///Set the DTMF type
+      void setDTMFType                      (DtmfType type ){setAccountDetail(ACCOUNT_DTMF_TYPE,(type==OverRtp)?"overrtp":"oversip");}
    
       //Updates
       virtual bool updateState();
