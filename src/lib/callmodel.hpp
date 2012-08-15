@@ -211,7 +211,11 @@ CALLMODEL_TEMPLATE Call* CALLMODEL_T::addDialingCall(const QString& peerName, Ac
 CALLMODEL_TEMPLATE Call* CALLMODEL_T::addIncomingCall(const QString& callId)
 {
    Call* call = Call::buildIncomingCall(callId);
-   return addCallCommon(call);
+   Call* call2 = addCallCommon(call);
+   if (call2 && call2->getAccount()->isAutoAnswer()) {
+      call2->actionPerformed(CALL_ACTION_ACCEPT);
+   }
+   return call2;
 }
 
 ///Create a ringing call

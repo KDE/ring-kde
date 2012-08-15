@@ -107,6 +107,8 @@ class LIB_EXPORT Account : public QObject {
       QString getAccountHostname              () const { return getAccountDetail(ACCOUNT_HOSTNAME               )                 ;}
       ///Return if the account is enabled
       bool    isAccountEnabled                () const { return (getAccountDetail(ACCOUNT_ENABLED               )  == "true")?1:0 ;}
+      ///Return if the account should auto answer
+      bool    isAutoAnswer                    () const { return (getAccountDetail(ACCOUNT_AUTOANSWER            )  == "true")?1:0 ;}
       ///Return the account user name
       QString getAccountUsername              () const { return getAccountDetail(ACCOUNT_USERNAME               )                 ;}
       ///Return the account mailbox address
@@ -237,6 +239,8 @@ class LIB_EXPORT Account : public QObject {
       void setPublishedPort                 (unsigned short detail){setAccountDetail(PUBLISHED_PORT          ,QString::number(detail));}
       ///Set if the account is enabled or not
       void setAccountEnabled                (bool    detail){setAccountDetail(ACCOUNT_ENABLED                ,detail?"true":"false");}
+      ///Set if the account should auto answer
+      void setAutoAnswer                    (bool    detail){setAccountDetail(ACCOUNT_AUTOANSWER             ,detail?"true":"false");}
       ///Set the TLS verification server
       void setTlsVerifyServer               (bool    detail){setAccountDetail(TLS_VERIFY_SERVER              ,detail?"true":"false");}
       ///Set the TLS verification client

@@ -120,6 +120,7 @@
 #define ACCOUNT_SIP_STUN_SERVER            "STUN.server"
 #define ACCOUNT_SIP_STUN_ENABLED           "STUN.enable"
 #define ACCOUNT_DTMF_TYPE                  "Account.dtmfType"
+#define ACCOUNT_AUTOANSWER                 "Account.autoAnswer"
 #define ACCOUNT_HOSTNAME                   "Account.hostname"
 #define ACCOUNT_USERNAME                   "Account.username"
 #define ACCOUNT_ROUTE                      "Account.routeset"

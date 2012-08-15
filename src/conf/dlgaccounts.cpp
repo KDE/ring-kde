@@ -79,6 +79,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit6_mailbox,                     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverRTP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverSIP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pAutoAnswer,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_regExpire,                 SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(spinBox_pa_published_port,         SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(comboBox_ni_local_address,         SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
@@ -221,6 +222,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setRingtoneEnabled             ( m_pEnableRingtoneGB->isChecked()                                         );
    /**/account->setRingtonePath                ( m_pRingTonePath->url().path()                                            );
    /**/account->setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
+   /**/account->setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
    //                                                                                                                      /
 
    if (m_pDefaultAccount->isChecked()) {
@@ -351,6 +353,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/check_tls_requier_cert->setChecked       (  account->isTlsRequireClientCertificate  ());
    /**/group_security_tls->setChecked           (  account->isTlsEnable                    ());
    /**/combo_security_STRP->setCurrentIndex     (  account->getTlsMethod                   ());
+   /**/m_pAutoAnswer->setChecked                (  account->isAutoAnswer                   ());
    /*                                                                                        */
 
    m_pDTMFOverRTP->setChecked(account->getDTMFType()==DtmfType::OverRtp);
