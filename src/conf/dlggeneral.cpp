@@ -22,6 +22,9 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QAction>
 
+//KDE
+#include <KMessageBox>
+
 //SFLPhone
 #include "klib/configurationskeleton.h"
 #include "conf/configurationdialog.h"
@@ -73,4 +76,13 @@ void DlgGeneral::updateSettings()
    ConfigurationSkeleton::setHistoryMax(kcfg_historyMax->value());
 
    m_HasChanged = false;
+}
+
+void DlgGeneral::clearCallHistoryAsked()
+{
+   int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to clear history?"), i18n("Clear history"));
+   if (ret == KMessageBox::Yes) {
+      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      configurationManager.clearHistory();
+   }
 }
