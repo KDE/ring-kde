@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=sflphone
+Name[da]=sflphone
 Name[de]=sflphone
 Name[et]=sflphone
 Name[fr]=sflphone
@@ -14,6 +15,7 @@ Name[sv]=SFL-telefon
 Name[uk]=sflphone
 Name[x-test]=xxsflphonexx
 Comment=An SFLPhone IP soft-phone frontend
+Comment[da]=En brugerflade til SFLphone IP-softwaretelefon
 Comment[et]=SFLphone IP-telefoni kasutajaliides
 Comment[fr]=Une interface de téléphonie IP pour FLPhone
 Comment[hu]=Egy SFLPhone IP telefon előtétprogram
