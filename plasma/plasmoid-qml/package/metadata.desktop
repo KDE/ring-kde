@@ -14,6 +14,7 @@ Name[sv]=SFL-telefonplasmoid
 Name[uk]=Плазмоїд SFLPhone
 Name[x-test]=xxSFLPhone plasmoidxx
 Comment=Plasma client for SFLPhone daemon
+Comment[cs]=Klient plasma pro démona SFLPhone
 Comment[da]=Plasma-klient til SFLPhone-dæmonen
 Comment[et]=SFLphone deemoni Plasma klient
 Comment[fr]=Client Plasma pour le démon SFLPhone

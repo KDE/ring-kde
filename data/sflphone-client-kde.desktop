@@ -4,6 +4,7 @@ X-DocPath=sflphone-client-kde/index.html
 Terminal=false
 
 Name=SFLphone VoIP KDE4 client
+Name[cs]=SFLphone VoIP klient pro KDE4
 Name[da]=SFLphone VoIP-klient til KDE4
 Name[et]=KDE4 SFLphone VoIP klient
 Name[fr]=Client VoIP SFLphone pour KDE4

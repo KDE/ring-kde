@@ -1,5 +1,6 @@
 [Global]
 Name=sflphone-client-kde
+Name[cs]=sflphone-client-kde
 Name[da]=sflphone-client-kde
 Name[de]=sflphone-client-kde
 Name[et]=sflphone-client-kde
@@ -15,6 +16,7 @@ Name[uk]=sflphone-client-kde
 Name[x-test]=xxsflphone-client-kdexx
 IconName=sflphone-client-kde
 Comment=SFLphone VoIP KDE4 client
+Comment[cs]=SFLphone VoIP klient pro KDE4
 Comment[da]=SFLphone VoIP-klient til KDE4
 Comment[et]=KDE4 SFLphone VoIP klient
 Comment[fr]=Client VoIP SFLphone pour KDE4
