@@ -66,11 +66,17 @@ TreeWidgetCallModel* SFLPhone::m_pModel = nullptr;
 
 ///Constructor
 SFLPhone::SFLPhone(QWidget *parent)
-    : KXmlGuiWindow(parent), m_pInitialized(false), m_pView(new SFLPhoneView(this))
+    : KXmlGuiWindow(parent), m_pInitialized(false)
 #ifdef ENABLE_VIDEO
       ,m_pVideoDW(nullptr)
 #endif
 {
+    if (!InstanceInterfaceSingleton::getInstance().connection().isConnected() || !InstanceInterfaceSingleton::getInstance().isValid()) {
+       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually. \n\n\
+Check in your distribution repository if the sflphone daemon (sometime called \"sflphone-common\") is available.\n\
+Help for building SFLPhone daemon from source are present at https://projects.savoirfairelinux.com/projects/sflphone/wiki/How_to_build"));
+    }
+    m_pView = new SFLPhoneView(this);
     setupActions();
     m_sApp = this;
 }
@@ -213,7 +219,6 @@ bool SFLPhone::initialize()
 
    setWindowIcon (QIcon(ICON_SFLPHONE) );
    setWindowTitle(i18n("SFLphone")     );
-
    setupActions();
    connect(action_showContactDock, SIGNAL(toggled(bool)),m_pContactCD, SLOT(setVisible(bool)));
    connect(action_showHistoryDock, SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
