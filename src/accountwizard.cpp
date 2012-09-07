@@ -186,8 +186,9 @@ AccountWizard::AccountWizard(QWidget * parent)
    setStartId(Page_Intro);
    setWindowTitle(i18n("Account creation wizard"));
    setWindowIcon(QIcon(ICON_SFLPHONE));
-   setMinimumHeight ( 350 );
-   setMinimumWidth  ( 500 );
+   setMinimumSize(500,350);
+   setMaximumSize(50000,45000);
+   resize(500,350);
    setPixmap(QWizard::WatermarkPixmap, QPixmap(ICON_SFLPHONE));
 }
 
