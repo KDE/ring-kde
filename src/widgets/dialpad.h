@@ -32,6 +32,7 @@ class DialpadButton : public QPushButton
 public:
    ///Constructor
    DialpadButton(QWidget* parent, const QString& value): QPushButton(parent),m_Value(value) {
+      setContentsMargins(0,0,0,0);
       connect(this,SIGNAL(clicked()),this,SLOT(sltClicked()));
    }
 private slots:

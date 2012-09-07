@@ -57,6 +57,7 @@ class CallTreeItem : public QWidget
     //Setters
     void setCall(Call *call);
     void setDragged(bool drag);
+    void setTextColor(int style);
 
     //Const
     static const char* callStateIcons[12];

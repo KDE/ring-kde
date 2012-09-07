@@ -156,6 +156,7 @@ CallTreeItemDelegate(CallView* widget)
       CallTreeItem* itemWidget = nullptr;
       if (item) {
          itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
+         itemWidget->setTextColor(option.state);
       }
       int max = 9999;
       painter->setClipRect(option.rect);

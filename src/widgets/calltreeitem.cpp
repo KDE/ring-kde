@@ -67,6 +67,7 @@ CallTreeItem::CallTreeItem(QWidget *parent)
    : QWidget(parent), m_pItemCall(0), m_Init(false),m_pBtnConf(0), m_pBtnTrans(0),m_pTimer(0),m_pPeerL(0),m_pIconL(0),m_pCallNumberL(0),m_pSecureL(0),m_pCodecL(0),m_pHistoryPeerL(0)
    , m_pTransferPrefixL(0),m_pTransferNumberL(0),m_pElapsedL(0),m_Height(0),m_pContact(0),m_pDepartment(0),m_pOrganisation(0),m_pEmail(0),m_IsDragged(false)
 {
+   setContentsMargins(0,0,0,0);
    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
    connect(AkonadiBackend::getInstance(),SIGNAL(collectionChanged()),this,SLOT(updated()));
 }
@@ -90,6 +91,51 @@ CallTreeItem::~CallTreeItem()
 void CallTreeItem::setDragged(bool drag)
 {
    m_IsDragged = drag;
+}
+
+///Better support alternative color scheme
+void CallTreeItem::setTextColor(int style)
+{
+   QString color = palette().text().color().name();
+   if (style & QStyle::State_Selected) {
+      color = palette().highlightedText().color().name();
+   }
+   
+   if (m_pPeerL) {
+      m_pPeerL->setStyleSheet("color:"+color);
+   }
+
+
+   if (m_pCallNumberL) {
+      m_pCallNumberL->setStyleSheet("color:"+color);
+   }
+   if (m_pTransferPrefixL) {
+      m_pTransferPrefixL->setStyleSheet("color:"+color);
+   }
+   if (m_pTransferNumberL) {
+      m_pTransferNumberL->setStyleSheet("color:"+color);
+   }
+   if (m_pCodecL) {
+      m_pCodecL->setStyleSheet("color:"+color);
+   }
+   if (m_pSecureL) {
+      m_pSecureL->setStyleSheet("color:"+color);
+   }
+   if (m_pHistoryPeerL) {
+      m_pHistoryPeerL->setStyleSheet("color:"+color);
+   }
+   if (m_pElapsedL) {
+      m_pElapsedL->setStyleSheet("color:"+color);
+   }
+   if (m_pDepartment) {
+      m_pDepartment->setStyleSheet("color:"+color);
+   }
+   if (m_pOrganisation) {
+      m_pOrganisation->setStyleSheet("color:"+color);
+   }
+   if (m_pEmail) {
+      m_pEmail->setStyleSheet("color:"+color);
+   }
 }
 
 /*****************************************************************************
@@ -208,7 +254,10 @@ void CallTreeItem::setCall(Call *call)
          m_pHistoryPeerL         = new QLabel( i18n("<b>Conference</b>"),this );
          m_pIconL                = new QLabel( " ",this                       );
          QHBoxLayout* mainLayout = new QHBoxLayout();
+         mainLayout->setAlignment ( Qt::AlignLeft | Qt::AlignVCenter  );
          m_pHistoryPeerL->setStyleSheet("color:"+baseColor.name());
+         
+         m_pIconL->setAlignment ( Qt::AlignLeft | Qt::AlignVCenter  );
 
          mainLayout->addWidget( m_pIconL        );
          mainLayout->addWidget( m_pHistoryPeerL );
@@ -232,6 +281,7 @@ void CallTreeItem::setCall(Call *call)
 
    QHBoxLayout* mainLayout = new QHBoxLayout();
    mainLayout->setContentsMargins ( 3, 1, 2, 1);
+   mainLayout->setAlignment ( Qt::AlignLeft | Qt::AlignVCenter  );
 
    m_pBtnConf = new TranslucentButtons(this);
    m_pBtnConf->setVisible(false);
@@ -255,6 +305,8 @@ void CallTreeItem::setCall(Call *call)
    descr->setSpacing   (1);
    transfer->setMargin (0);
    transfer->setSpacing(0);
+   descr->setContentsMargins(0,0,0,0);
+   descr->setAlignment( Qt::AlignLeft | Qt::AlignVCenter  );
 
    if (ConfigurationSkeleton::displayCallIcon()) {
       m_pIconL = new QLabel(" ");
@@ -309,6 +361,9 @@ void CallTreeItem::setCall(Call *call)
    mainLayout->addWidget(m_pElapsedL);
 
    QVBoxLayout* mainLayout2 = new QVBoxLayout();
+   mainLayout2->setContentsMargins(0,0,0,0);
+   mainLayout2->setAlignment( Qt::AlignLeft | Qt::AlignVCenter  );
+   mainLayout2->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
    mainLayout2->addItem(mainLayout);
    mainLayout2->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
    setLayout(mainLayout2);

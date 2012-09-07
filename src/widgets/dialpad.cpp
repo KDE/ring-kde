@@ -43,6 +43,7 @@ Dialpad::Dialpad(QWidget *parent)
    for (uint i=0; i < 12;i++) {
       m_pButtons[i]       = new DialpadButton( this,m_pNumbers[i] );
       QHBoxLayout* layout = new QHBoxLayout  ( m_pButtons[i]      );
+      layout->setContentsMargins(0,0,0,0);
       QLabel* number      = new QLabel       ( m_pNumbers[i]      );
       QLabel* text        = new QLabel       ( m_pTexts[i]        );
       m_pButtons[i]->setMinimumHeight(30);
