@@ -301,6 +301,7 @@ void CallTreeItem::setCall(Call *call)
    mainLayout->setSpacing(4);
    QVBoxLayout* descr    = new QVBoxLayout();
    QHBoxLayout* transfer = new QHBoxLayout();
+   transfer->setContentsMargins(0,0,0,0);
    descr->setMargin    (1);
    descr->setSpacing   (1);
    transfer->setMargin (0);
