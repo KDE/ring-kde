@@ -27,7 +27,7 @@
 #include <QMimeData>
 
 ///Constructor
-TranslucentButtons::TranslucentButtons(QWidget* parent):QPushButton(parent),m_enabled(true),m_pTimer(0),m_CurrentState(0),m_pImg(0)
+TranslucentButtons::TranslucentButtons(QWidget* parent):QPushButton(parent),m_enabled(true),m_pTimer(0),m_CurrentState(-1),m_pImg(0)
 {
    setAcceptDrops(true);
    m_CurrentColor = "black";
@@ -88,14 +88,18 @@ void TranslucentButtons::setVisible(bool enabled)
 void TranslucentButtons::changeVisibility()
 {
    m_step++;
-   m_CurrentColor.setAlpha(0.1*m_step*m_step);
+   m_CurrentColor.setAlpha(0.5*m_step*m_step);
    repaint();
-   if (m_step >= 35)
+   if (m_step >= 35){
       m_pTimer->stop();
+      delete m_pTimer;
+      m_pTimer = nullptr;
+   }
 }
 
 void TranslucentButtons::dragEnterEvent ( QDragEnterEvent *e )
 {
+   m_CurrentState = -1;
    e->ignore();
 }
 

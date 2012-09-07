@@ -52,7 +52,7 @@ private:
    QTimer* m_pTimer      ;
    QColor  m_CurrentColor;
    QPen    m_Pen         ;
-   bool    m_CurrentState;
+   char    m_CurrentState;
    QImage* m_pImg        ;
 
 public slots:
