@@ -23,6 +23,9 @@
 #include <KApplication>
 #include <QDBusAbstractAdaptor>
 
+//Qt
+class QEvent;
+
 //SFLPhone
 class SFLPhone;
 
@@ -37,6 +40,9 @@ public:
 
    // Destructor
    virtual ~SFLPhoneApplication();
+
+   // Exit gracefully
+   virtual bool notify (QObject* receiver, QEvent* e);
 
 private:
    //Init

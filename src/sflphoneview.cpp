@@ -200,15 +200,29 @@ void SFLPhoneView::keyPressEvent(QKeyEvent *event)
 ///Called on keyboard
 void SFLPhoneView::typeString(QString str)
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   /* There is 5 cases
+    * 1) There is no call, then create one
+    * 2) There is one or more call and the active call is also selected, then send DTMF to the active call
+    * 3) There is multiple call, but the active one is not selected, then create a new call or add to existing dialing call
+    * 4) There is only inactive calls, then create a new one or add to existing dialing call
+    * 5) There is only FAILURE, BUSY or UNKNOWN calls, then create a new one or add to existing dialing call
+    * 
+    * When adding to dialing call, select it to give user feedback of where the tone went.
+    * 
+    * Any other comportment need to be documented here or treated as a bug
+    */
+   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
 
    Call* call = callView->getCurrentItem();
-   Q_NOREPLY callManager.playDTMF(str);
+   //Q_NOREPLY callManager.playDTMF(str);
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
 
+   //If the selected call is also the current one, then send DTMF and exit
    if(call && call->getState() == CALL_STATE_CURRENT) {
       currentCall = call;
+      Q_NOREPLY callManager.playDTMF(str);
+      return;
    }
 
    foreach (Call* call2, SFLPhone::model()->getCallList()) {
@@ -217,6 +231,7 @@ void SFLPhoneView::typeString(QString str)
       }
       else if(dynamic_cast<Call*>(call2) && call2->getState() == CALL_STATE_DIALING) {
          candidate = call2;
+         callView->setCurrentItem(SFLPhone::model()->getIndex(call2));
       }
    }
 
@@ -224,10 +239,12 @@ void SFLPhoneView::typeString(QString str)
       kDebug() << "Typing when no item is selected. Opening an item.";
       candidate = SFLPhone::model()->addDialingCall();
    }
+   Q_NOREPLY callManager.playDTMF(str);
 
    if(!currentCall && candidate) {
       candidate->appendText(str);
    }
+
    if (!candidate) {
       candidate = SFLPhone::model()->addDialingCall();
       if (candidate)

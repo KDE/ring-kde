@@ -579,14 +579,22 @@ void SFLPhone::on_m_pView_incomingCall(const Call* call)
 ///Change current account
 void SFLPhone::currentAccountIndexChanged(int newIndex)
 {
-   Account* acc = AccountList::getInstance()->getAccountByModelIndex(AccountList::getInstance()->index(newIndex,0));
-   AccountList::getInstance()->setPriorAccount(acc);
+   if (AccountList::getInstance()->size()) {
+      Account* acc = AccountList::getInstance()->getAccountByModelIndex(AccountList::getInstance()->index(newIndex,0));
+      if (acc)
+         AccountList::getInstance()->setPriorAccount(acc);
+   }
 }
 
 ///Update the combobox index
 void SFLPhone::currentPriorAccountChanged(Account* newPrior)
 {
-   m_pAccountStatus->setCurrentIndex(newPrior->getIndex().row());
+   if (InstanceInterfaceSingleton::getInstance().connection().isConnected() && newPrior) {
+      m_pAccountStatus->setCurrentIndex(newPrior->getIndex().row());
+   }
+   else {
+      kDebug() << "Daemon not responding";
+   }
 }
 
 ///Qt does not support dock icons by default, this is an hack around this

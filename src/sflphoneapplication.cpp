@@ -26,6 +26,8 @@
 #include <KNotification>
 #include <KSystemTrayIcon>
 #include <KMainWindow>
+#include <KDebug>
+#include <KMessageBox>
 
 //SFLPhone library
 #include "lib/instance_interface_singleton.h"
@@ -91,6 +93,19 @@ void SFLPhoneApplication::initializePaths()
   KGlobal::dirs()       -> addPrefix( QString(DATA_INSTALL_DIR) );
   KIconLoader::global() -> addAppDir( QString(DATA_INSTALL_DIR) + "/share" );
 
+}
+
+///Exit gracefully
+bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
+{
+   try {
+      return KApplication::notify(receiver,e);
+   }
+   catch (std::exception& e) {
+      kDebug() << "Error caught!!!";
+      KMessageBox::error(nullptr,i18n("An unknown error occured. SFLPhone KDE will now restart. If the problem persist, please report a bug."));
+   }
+   return false;
 }
 #include "sflphoneapplication.moc"
 
