@@ -629,9 +629,9 @@ void CallTreeItem::hide()
 ///Increment the current call elapsed time label
 void CallTreeItem::incrementTimer()
 {
-   int nsec = QDateTime::fromTime_t(m_pItemCall->getStartTimeStamp().toInt()).time().secsTo( QTime::currentTime() );
+   int nsec = QDateTime::fromTime_t(m_pItemCall->getStartTimeStamp().toInt()).secsTo( QDateTime::currentDateTime () );
    if (nsec/3600)
-      m_pElapsedL->setText(QString("%1").arg(nsec/3600).trimmed()+':'+QString("%1").arg((nsec%3600)/60,2,10,QChar('0')).trimmed()+':'+QString("%1").arg((nsec%3600)%60,2,10,QChar('0')).trimmed()+' ');
+      m_pElapsedL->setText(QString("%1:%2:%3 ").arg((nsec%(3600*24))/3600).arg(((nsec%(3600*24))%3600)/60,2,10,QChar('0')).arg(((nsec%(3600*24))%3600)%60,2,10,QChar('0')));
    else
-      m_pElapsedL->setText(QString("%1").arg((nsec)/60).trimmed()+':'+QString("%1").arg((nsec)%60,2,10,QChar('0')).trimmed()+' ');
+      m_pElapsedL->setText(QString("%1:%2 ").arg(nsec/60,2,10,QChar('0')).arg(nsec%60,2,10,QChar('0')));
 }
