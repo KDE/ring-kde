@@ -160,7 +160,6 @@ CallTreeItemDelegate(CallView* widget)
          itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
          itemWidget->setTextColor(option.state);
       }
-      int max = 9999;
       QStyleOptionViewItem opt2(option);
       if (index.parent().isValid())
          opt2.rect.setWidth(opt2.rect.width()-15);
@@ -180,21 +179,23 @@ CallTreeItemDelegate(CallView* widget)
                itemWidget->setGraphicsEffect(opacityEffect2);
             }
          }
-         //Check if it is the last item
-         else if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
-            opt2.rect.setHeight(opt2.rect.height()-15);
-            QStyledItemDelegate::paint(painter,opt2,index);
-            max = opt2.rect.height();
-         }
-         else {
+         //Check if it is not the last item
+         else if (!(index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())) {
             QStyledItemDelegate::paint(painter,index.parent().isValid()?opt2:option,index);
          }
+      }
+
+      //Check if it is the last item
+      if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
+         opt2.rect.setHeight(opt2.rect.height()-15);
+         QStyledItemDelegate::paint(painter,opt2,index);
       }
 
       if (item) {
          if (itemWidget) {
             itemWidget->setMinimumSize(opt2.rect.width(),10);
-            itemWidget->setMaximumSize(opt2.rect.width(),max);
+            itemWidget->setMaximumSize(opt2.rect.width(),opt2.rect.height());
+            itemWidget->resize(opt2.rect.width(),option.rect.height());
          }
       }
 
