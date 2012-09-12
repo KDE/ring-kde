@@ -26,6 +26,8 @@
 #include <QtGui/QSpacerItem>
 #include <QtGui/QGridLayout>
 #include <QtGui/QLabel>
+#include <QtGui/QGraphicsEffect>
+#include <QtGui/QGraphicsOpacityEffect>
 
 //KDE
 #include <KDebug>
@@ -165,10 +167,17 @@ CallTreeItemDelegate(CallView* widget)
          opt2.rect.setWidth(opt2.rect.width()-15);
          //Draw a copy of the widget when in drag and drop
          if (itemWidget && itemWidget->isDragged()) {
+            QGraphicsEffect* opacityEffect = itemWidget->graphicsEffect();
+            if (opacityEffect)
+               itemWidget->setGraphicsEffect(nullptr);
             QStyledItemDelegate::paint(painter,index.parent().isValid()?opt2:option,index);
             QPixmap pixmap(itemWidget->size());
             itemWidget->render(&pixmap);
             painter->drawPixmap(0,0,pixmap);
+            if (opacityEffect) {
+               QGraphicsOpacityEffect* opacityEffect2 = new QGraphicsOpacityEffect;
+               itemWidget->setGraphicsEffect(opacityEffect2);
+            }
          }
          //Check if it is the last item
          else if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
