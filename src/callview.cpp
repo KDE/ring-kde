@@ -161,10 +161,11 @@ CallTreeItemDelegate(CallView* widget)
          itemWidget->setTextColor(option.state);
       }
       int max = 9999;
+      QStyleOptionViewItem opt2(option);
+      if (index.parent().isValid())
+         opt2.rect.setWidth(opt2.rect.width()-15);
       painter->setClipRect(option.rect);
       if (option.state & QStyle::State_Selected) {
-         QStyleOptionViewItem opt2(option);
-         opt2.rect.setWidth(opt2.rect.width()-15);
          //Draw a copy of the widget when in drag and drop
          if (itemWidget && itemWidget->isDragged()) {
             QGraphicsEffect* opacityEffect = itemWidget->graphicsEffect();
@@ -192,8 +193,8 @@ CallTreeItemDelegate(CallView* widget)
 
       if (item) {
          if (itemWidget) {
-            itemWidget->setMinimumSize((m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin())-m_ConferenceDrawer.leftMargin(),10);
-            itemWidget->setMaximumSize((m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin())-m_ConferenceDrawer.leftMargin(),max);
+            itemWidget->setMinimumSize(opt2.rect.width(),10);
+            itemWidget->setMaximumSize(opt2.rect.width(),max);
          }
       }
 
