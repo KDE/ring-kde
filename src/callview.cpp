@@ -167,6 +167,22 @@ CallTreeItemDelegate(CallView* widget)
       if (option.state & QStyle::State_Selected) {
          //Draw a copy of the widget when in drag and drop
          if (itemWidget && itemWidget->isDragged()) {
+
+            //Check if it is the last item
+            if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
+               opt2.rect.setHeight(opt2.rect.height()-15);
+               QStyledItemDelegate::paint(painter,opt2,index);
+            }
+
+            //Necessary to render conversation participants
+            if (opt2.rect != option.rect) {
+               QPainter::CompositionMode mode = painter->compositionMode();
+               painter->setCompositionMode(QPainter::CompositionMode_Clear);
+               painter->fillRect(option.rect,Qt::transparent);
+               painter->setCompositionMode(mode);
+            }
+
+            //Remove opacity effect to prevent artefacts when there is no compositor
             QGraphicsEffect* opacityEffect = itemWidget->graphicsEffect();
             if (opacityEffect)
                itemWidget->setGraphicsEffect(nullptr);
@@ -178,6 +194,7 @@ CallTreeItemDelegate(CallView* widget)
                QGraphicsOpacityEffect* opacityEffect2 = new QGraphicsOpacityEffect;
                itemWidget->setGraphicsEffect(opacityEffect2);
             }
+            return;
          }
          //Check if it is not the last item
          else if (!(index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())) {
