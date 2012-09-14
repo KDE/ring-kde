@@ -124,12 +124,34 @@ CallTreeItemDelegate(CallView* widget)
       Q_ASSERT(index.isValid());
 
       QStyleOptionViewItem opt(option);
+      QTreeWidgetItem* item = m_tree->itemFromIndex(index);
+      CallTreeItem* itemWidget = nullptr;
+      if (item) {
+         itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
+      }
       //BEGIN: draw toplevel items
       if (!index.parent().isValid() && index.child(0,0).isValid()) {
          const QRegion cl = painter->clipRegion();
          painter->setClipRect(opt.rect);
          opt.rect = fullCategoryRect(option, index);
          m_ConferenceDrawer.drawCategory(index, 0, opt, painter);
+
+         //Drag bubble
+         if (itemWidget->isDragged()) {
+            QSize size  = itemWidget->size();
+            int i = 0;
+            while (index.child(i,0).isValid()) i++;
+            if (i) {
+               QTreeWidgetItem* firstChild = m_tree->itemFromIndex(index);
+               QWidget* childWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
+               if (childWidget) {
+                  size.setHeight(itemWidget->height()+(i*childWidget->height())+10);
+                  QPixmap pixmap(size);
+                  childWidget->render(&pixmap);
+                  painter->drawPixmap(10,2,pixmap);
+               }
+            }
+         }
          painter->setClipRegion(cl);
          return;
       }
@@ -154,19 +176,14 @@ CallTreeItemDelegate(CallView* widget)
 
       //END: draw background of category for all other items
 
-      QTreeWidgetItem* item = m_tree->itemFromIndex(index);
-      CallTreeItem* itemWidget = nullptr;
-      if (item) {
-         itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
-         itemWidget->setTextColor(option.state);
-      }
       QStyleOptionViewItem opt2(option);
       if (index.parent().isValid())
          opt2.rect.setWidth(opt2.rect.width()-15);
       painter->setClipRect(option.rect);
-      if (option.state & QStyle::State_Selected) {
+      if (option.state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
          //Draw a copy of the widget when in drag and drop
          if (itemWidget && itemWidget->isDragged()) {
+            itemWidget->setTextColor(option.state);
 
             //Check if it is the last item
             if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
@@ -208,12 +225,11 @@ CallTreeItemDelegate(CallView* widget)
          QStyledItemDelegate::paint(painter,opt2,index);
       }
 
-      if (item) {
-         if (itemWidget) {
-            itemWidget->setMinimumSize(opt2.rect.width(),10);
-            itemWidget->setMaximumSize(opt2.rect.width(),opt2.rect.height());
-            itemWidget->resize(opt2.rect.width(),option.rect.height());
-         }
+      if (item && itemWidget) {
+         itemWidget->setTextColor(option.state);
+         itemWidget->setMinimumSize(opt2.rect.width(),10);
+         itemWidget->setMaximumSize(opt2.rect.width(),opt2.rect.height());
+         itemWidget->resize(opt2.rect.width(),option.rect.height());
       }
 
       if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
