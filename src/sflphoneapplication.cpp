@@ -101,9 +101,10 @@ bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
    try {
       return KApplication::notify(receiver,e);
    }
-   catch (std::exception& e) {
+   catch (...) {
       kDebug() << "Error caught!!!";
-      KMessageBox::error(nullptr,i18n("An unknown error occurred. SFLPhone KDE will now restart. If the problem persist, please report a bug."));
+      KMessageBox::error(nullptr,i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug."));
+      exit(1);
    }
    return false;
 }
