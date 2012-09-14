@@ -20,6 +20,7 @@
 #define CATEGORIZEDTREEWIDGET_H
 
 #include <QtGui/QTreeWidget>
+#include <QtCore/QDebug>
 
 class KConfigGroup;
 class KateColorTreeItem;
@@ -65,7 +66,13 @@ template <class T> T* CategorizedTreeWidget::addItem(QString category,bool top)
   if (!categoryItem) {
     categoryItem =addCategory(category);
   }
-  setItemHidden(categoryItem,false);
+  if (isItemHidden(categoryItem) != false) {
+    setItemHidden(categoryItem,false);
+//BUG need to be uncommented, see bugs #15620
+//     if (indexFromItem(categoryItem).row() < topLevelItemCount()-1) {
+//
+//     }
+  }
 
   T* iwdg =  new T((top)?0:categoryItem);
   resizeColumnToContents(0);

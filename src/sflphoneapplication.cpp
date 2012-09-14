@@ -103,7 +103,9 @@ bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
    }
    catch (...) {
       kDebug() << "Error caught!!!";
-      KMessageBox::error(nullptr,i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug."));
+      KMessageBox::error(nullptr,i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n\
+      Caused known to cause this message include trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 second and\
+      trying again will solve the issue."));
       exit(1);
    }
    return false;

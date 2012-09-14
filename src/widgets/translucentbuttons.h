@@ -48,12 +48,14 @@ protected:
 private:
    //Attributes
    bool    m_enabled     ;
-   uint    m_step        ;
+   char    m_step        ;
    QTimer* m_pTimer      ;
    QColor  m_CurrentColor;
    QPen    m_Pen         ;
    char    m_CurrentState;
    QImage* m_pImg        ;
+   bool    m_Init        ;
+   char    m_Reverse     ;
 
 public slots:
    void setVisible(bool enabled);
