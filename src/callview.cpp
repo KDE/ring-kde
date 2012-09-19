@@ -28,6 +28,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QGraphicsEffect>
 #include <QtGui/QGraphicsOpacityEffect>
+#include <QtGui/QDockWidget>
 
 //KDE
 #include <KDebug>
@@ -142,7 +143,7 @@ CallTreeItemDelegate(CallView* widget)
             int i = 0;
             while (index.child(i,0).isValid()) i++;
             if (i) {
-               QTreeWidgetItem* firstChild = m_tree->itemFromIndex(index);
+//                QTreeWidgetItem* firstChild = m_tree->itemFromIndex(index);
                QWidget* childWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
                if (childWidget) {
                   size.setHeight(itemWidget->height()+(i*childWidget->height())+10);
@@ -606,6 +607,19 @@ Call* CallView::addCall(Call* call, Call* parent)
    setCurrentItem(callItem);
 
    connect(call, SIGNAL(isOver(Call*)), this, SLOT(destroyCall(Call*)));
+
+   //Hack to raise call dock if it is bellow current dock
+   QWidget* parW  = qobject_cast<QWidget*>(QWidget::parent());
+   if (parW) {
+      QWidget* parW2 = qobject_cast<QWidget*>(parW->parent());
+      if (parW2) {
+         QDockWidget* dock = qobject_cast<QDockWidget*>(parW2->parent());
+         if (dock) {
+            dock->raise();
+         }
+      }
+   }
+
    return call;
 }
 
