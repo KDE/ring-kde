@@ -339,6 +339,7 @@ void HistoryTreeItem::removeRecording()
       QFile::remove(m_pItemCall->getRecordingPath());
       m_pPlay->setVisible(false);
       m_pRemove->setVisible(false);
+      getContactInfo(m_PhoneNumber);
    }
 }
 

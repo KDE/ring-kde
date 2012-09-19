@@ -414,7 +414,7 @@ void CallTreeItem::updated()
 
    if(state != CALL_STATE_OVER) {
       if(m_pIconL && state == CALL_STATE_CURRENT && recording) {
-         if (m_pContact && !m_pItemCall->isConference()) {
+         if (m_pContact && !m_pItemCall->isConference() && m_pContact->getPhoto()) {
             QPixmap pxm = (*m_pContact->getPhoto()).scaled(QSize(m_Height,m_Height));
             applyMask(pxm);
             QPainter painter(&pxm);
