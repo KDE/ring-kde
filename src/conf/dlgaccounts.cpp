@@ -131,6 +131,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(m_pVCodecUpPB,                     SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecUp())                );
    /**/connect(m_pVCodecDownPB,                   SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecDown())              );
    /**/connect(AccountList::getInstance(),        SIGNAL(accountEnabledChanged(Account*)), this   , SLOT(otherAccountChanged())             );
+   /**/connect(AccountList::getInstance(),        SIGNAL(accountStateChanged(Account*,QString)), this   , SLOT(updateStatusLabel(Account*)) );
    /*                                                                                                                                       */
 
    connect(listView_accountList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(accountListChanged(QModelIndex,QModelIndex)) );
@@ -320,7 +321,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
          checkbox_ZTRP_send_hello->setVisible     ( false );
          break;
    }
-   
+
    //         WIDGET VALUE                                          VALUE                     /
    /**/edit2_protocol->setCurrentIndex          ( (protocolIndex < 0) ? 0 : protocolIndex    );
    /**/edit3_server->setText                    (  account->getAccountHostname             ());
@@ -388,7 +389,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    connect(m_pCodecsLW->selectionModel()       ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
    #endif
 
-   
+
    if (account->getAccountAlias() == "IP2IP") {
       frame2_editAccounts->setTabEnabled( 0, false );
       frame2_editAccounts->setTabEnabled( 1, false );
@@ -423,7 +424,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
       RingToneListItem* item_widget = new RingToneListItem(iter.key(),iter.value());
       m_pRingtoneListLW->addItem      ( item              );
       m_pRingtoneListLW->setItemWidget( item, item_widget );
-      
+
       if (KStandardDirs::realFilePath(iter.key()) == ringtonePath) {
          m_pUseCustomFileCK->setChecked( false );
          m_pRingTonePath->setDisabled  ( true  );
@@ -436,7 +437,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    #ifndef ENABLE_VIDEO
    m_pVideoCodecGB->setVisible(false);
    #endif
-   
+
    comboBox_ni_local_address->clear();
    QStringList interfaceList = configurationManager.getAllIpInterfaceByName();
    comboBox_ni_local_address->addItems(interfaceList);
@@ -499,6 +500,7 @@ void DlgAccounts::otherAccountChanged()
    if (!m_IsLoading) {
       emit updateButtons();
    }
+   updateStatusLabel(listView_accountList->currentIndex());
 }
 
 ///Callback when the account change
@@ -508,7 +510,6 @@ void DlgAccounts::accountListChanged(QModelIndex current, QModelIndex previous)
    Account* acc = AccountList::getInstance()->getAccountByModelIndex(previous);
    if (acc->currentState() == EDITING || acc->currentState() == OUTDATED)
       acc->performAction(CANCEL);
-   
    loadAccount(current);
    //updateAccountListCommands();
 }
@@ -664,7 +665,7 @@ void DlgAccounts::updateStatusLabel(QModelIndex item)
 ///Update the status label to current account state
 void DlgAccounts::updateStatusLabel(Account* account)
 {
-   if(!account)
+   if(!account || AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex()) != account)
       return;
    QString status = account->getAccountRegistrationStatus();
    edit7_state->setText( "<FONT COLOR=\"" + account->getStateColorName() + "\">" + status + "</FONT>" );
@@ -697,6 +698,7 @@ void DlgAccounts::updateWidgets()
 {
    loadAccountList();
    //toolButton_accountsApply->setEnabled(false);
+   updateStatusLabel(listView_accountList->currentIndex());
    accountListHasChanged = false;
 }
 

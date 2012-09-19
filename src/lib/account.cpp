@@ -134,6 +134,7 @@ Account::~Account()
 void Account::accountChanged(QString accountId,QString state,int)
 {
    if (m_pAccountId && accountId == *m_pAccountId) {
+      qDebug() << "Account" << m_pAccountId << "status changed";
       if (Account::updateState())
          emit stateChanged(getStateName(state));
    }
@@ -206,6 +207,8 @@ const QString& Account::getAlias() const
 ///Is this account enabled
 bool Account::isEnabled() const
 {
+   //getAccountRegistrationStatus() != ACCOUNT_STATE_UNREGISTERED should not happen, but it does, it is not managed because both client trying to 
+   //set the state would fight to the daeth to set the enabled boolean
    return (getAccountDetail(ACCOUNT_ENABLED) == REGISTRATION_ENABLED_TRUE);
 }
 

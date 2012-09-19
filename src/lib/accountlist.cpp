@@ -91,6 +91,7 @@ void AccountList::destroy()
 void AccountList::accountChanged(const QString& account,const QString& state, int code)
 {
    Q_UNUSED(code)
+   qDebug() << "Account status changed";
    Account* a = getAccountById(account);
    if (!a) {
       ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
@@ -358,8 +359,9 @@ QVariant AccountList::data ( const QModelIndex& index, int role) const
    const Account * account = (*m_pAccounts)[index.row()];
    if(index.column() == 0 && (role == Qt::DisplayRole || role == Qt::EditRole))
       return QVariant(account->getAlias());
-   else if(index.column() == 0 && role == Qt::CheckStateRole)
+   else if(index.column() == 0 && role == Qt::CheckStateRole) {
       return QVariant(account->isEnabled() ? Qt::Checked : Qt::Unchecked);
+   }
    else if (role == Qt::BackgroundRole) {
       if (m_pColorVisitor)
          return m_pColorVisitor->getColor(account);
