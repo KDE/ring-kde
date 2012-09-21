@@ -274,7 +274,6 @@ void HistoryDock::newHistoryCall(Call* call)
             m_LastNewCall = QDateTime::currentDateTime().toTime_t();
             reload();
          }
-         qDebug() << QDateTime::currentDateTime().toTime_t() - m_LastNewCall;
 
          QNumericTreeWidgetItem* item = m_pItemView->addItem<QNumericTreeWidgetItem>(category,true);
          item->weight = -callItem->call()->getStopTimeStamp().toUInt();

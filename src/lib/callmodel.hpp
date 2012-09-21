@@ -212,8 +212,15 @@ CALLMODEL_TEMPLATE Call* CALLMODEL_T::addIncomingCall(const QString& callId)
 {
    Call* call = Call::buildIncomingCall(callId);
    Call* call2 = addCallCommon(call);
-   if (call2 && call2->getAccount()->isAutoAnswer()) {
-      call2->actionPerformed(CALL_ACTION_ACCEPT);
+   //Call without account is not possible
+   if (dynamic_cast<Account*>(call2->getAccount())) {
+      if (call2 && call2->getAccount()->isAutoAnswer()) {
+         call2->actionPerformed(CALL_ACTION_ACCEPT);
+      }
+   }
+   else {
+      qDebug() << "Incoming call from an invalid account";
+      throw "Invalid account";
    }
    return call2;
 }
