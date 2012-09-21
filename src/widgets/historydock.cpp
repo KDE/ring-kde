@@ -83,7 +83,7 @@ bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
 }
 
 ///Constructor
-HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent)
+HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0)
 {
    setObjectName("historyDock");
    setMinimumSize(250,0);
@@ -265,6 +265,17 @@ void HistoryDock::newHistoryCall(Call* call)
    switch (CURRENT_SORTING_MODE) {
       case Date: {
          QString category = timeToHistoryCategory(QDateTime::fromTime_t(callItem->call()->getStartTimeStamp().toUInt()).date());
+
+         //Last resort to reload the history list
+         if (category == "Today" && !m_LastNewCall) {
+            m_LastNewCall = callItem->call()->getStartTimeStamp().toUInt();
+         }
+         else if (m_LastNewCall && QDateTime::currentDateTime().toTime_t() - m_LastNewCall > 3600*24) {
+            m_LastNewCall = QDateTime::currentDateTime().toTime_t();
+            reload();
+         }
+         qDebug() << QDateTime::currentDateTime().toTime_t() - m_LastNewCall;
+
          QNumericTreeWidgetItem* item = m_pItemView->addItem<QNumericTreeWidgetItem>(category,true);
          item->weight = -callItem->call()->getStopTimeStamp().toUInt();
          item->widget = callItem;

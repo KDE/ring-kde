@@ -79,6 +79,7 @@ private:
    QDate          m_CurrentToDate    ;
    KeyPressEater* m_pKeyPressEater   ;
    GroupHash      m_hGroup           ;
+   int            m_LastNewCall      ;
 
    //Mutator
    void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
