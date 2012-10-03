@@ -697,7 +697,7 @@ Call* CallView::getCurrentItem()
    if (currentItem() && SFLPhone::model()->getCall(QTreeWidget::currentItem()))
       return SFLPhone::model()->getCall(QTreeWidget::currentItem());
    else
-      return false;
+      return 0;
 }
 
 ///Remove a TreeView item and delete it
