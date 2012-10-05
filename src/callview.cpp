@@ -49,6 +49,7 @@
 #include "sflphone.h"
 #include "sflphoneaccessibility.h"
 #include "widgets/conferencebox.h"
+#include "widgets/callviewoverlaytoolbar.h"
 
 ///CallTreeItemDelegate: Delegates for CallTreeItem
 class CallTreeItemDelegate : public QStyledItemDelegate
@@ -249,7 +250,7 @@ private:
 
 
 ///Retrieve current and older calls from the daemon, fill history and the calls TreeView and enable drag n' drop
-CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_pCallPendingTransfer(0)
+CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_pCallPendingTransfer(0),m_pCanvasToolbar(0)
 {
    //Widget part
    setAcceptDrops      (true );
@@ -306,6 +307,10 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    /**/connect(m_pTransferLE     , SIGNAL(returnPressed())                                       , this, SLOT(transfer())                              );
    /*                                                                                                                                                  */
 
+   //TODO remove this section
+   //BEGIN On canvas toolbar
+   m_pCanvasToolbar = new CallViewOverlayToolbar(this);
+   //END on canvas toolbar
 } //CallView
 
 ///Destructor
@@ -683,6 +688,11 @@ void CallView::resizeEvent (QResizeEvent *e)
    if (m_pTransferOverlay)
       m_pTransferOverlay->resize(size());
    QTreeWidget::resizeEvent(e);
+
+   if (m_pCanvasToolbar) {
+      m_pCanvasToolbar->resize(width(),72);
+      m_pCanvasToolbar->move(0,height()-72);
+   }
 }
 
 ///Set the TreeView header text

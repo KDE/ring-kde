@@ -37,6 +37,7 @@ class KLineEdit;
 //SFLPhone
 class CallTreeItem;
 class CallTreeItemDelegate;
+class CallViewOverlayToolbar;
 
 //Typedef
 typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
@@ -106,11 +107,12 @@ class CallView : public QTreeWidget {
       void clearArtefact           (                                                   );
 
       //Attributes
-      QPushButton*     m_pTransferB;
-      KLineEdit*       m_pTransferLE;
-      CallViewOverlay* m_pTransferOverlay;
-      CallViewOverlay* m_pActiveOverlay;
-      Call*            m_pCallPendingTransfer;
+      QPushButton*            m_pTransferB          ;
+      KLineEdit*              m_pTransferLE         ;
+      CallViewOverlay*        m_pTransferOverlay    ;
+      CallViewOverlay*        m_pActiveOverlay      ;
+      Call*                   m_pCallPendingTransfer;
+      CallViewOverlayToolbar* m_pCanvasToolbar      ;
 
    protected:
       //Reimlementation
