@@ -39,6 +39,7 @@
 #include <KShortcutsDialog>
 #include <KComboBox>
 #include <KMessageBox>
+#include <KStandardDirs>
 
 //sflphone library
 #include "lib/sflphone_const.h"
@@ -60,6 +61,7 @@
 #include "klib/configurationskeleton.h"
 #include "sflphoneaccessibility.h"
 #include "lib/videomodel.h"
+#include "extendedaction.h"
 
 SFLPhone* SFLPhone::m_sApp              = nullptr;
 TreeWidgetCallModel* SFLPhone::m_pModel = nullptr;
@@ -76,9 +78,39 @@ SFLPhone::SFLPhone(QWidget *parent)
 Check in your distribution repository if the sflphone daemon (sometime called \"sflphone-common\") is available.\n\
 Help for building SFLPhone daemon from source are present at https://projects.savoirfairelinux.com/projects/sflphone/wiki/How_to_build"));
     }
+
+    //Belong to setupActions(), but is needed now
+   m_sApp = this;
+   action_accept   = new ExtendedAction(this);
+   action_refuse   = new ExtendedAction(this);
+   action_hold     = new ExtendedAction(this);
+   action_transfer = new ExtendedAction(this);
+   action_record   = new ExtendedAction(this);
+   action_mute     = new ExtendedAction(this);
+   action_hangup   = new ExtendedAction(this);
+   action_unhold   = new ExtendedAction(this);
+   action_pickup   = new ExtendedAction(this);
+
+   action_transfer->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/transfer_grayscale.png" ));
+   action_record  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/record_grayscale.png"   ));
+   action_hold    ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/hold_grayscale.png"     ));
+   action_refuse  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/refuse_grayscale.png"   ));
+   action_mute    ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/mutemic_grayscale.png"  ));
+   action_hangup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/hangup_grayscale.png"   ));
+   action_unhold  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/unhold_grayscale.png"   ));
+   action_pickup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/pickup_grayscale.png"   ));
+
+   action_transfer->setText ( i18n( "Transfer" ) );
+   action_record  ->setText ( i18n( "Record"   ) );
+   action_hold    ->setText ( i18n( "Hold"     ) );
+   action_refuse  ->setText ( i18n( "Refuse"   ) );
+   action_mute    ->setText ( i18n( "Mute"     ) );
+   action_hangup  ->setText ( i18n( "Hang up"  ) );
+   action_unhold  ->setText ( i18n( "Unhold"   ) );
+   action_pickup  ->setText ( i18n( "Pickup"   ) );
+
     m_pView = new SFLPhoneView(this);
     setupActions();
-    m_sApp = this;
 }
 
 ///Destructor
@@ -281,13 +313,7 @@ void SFLPhone::setupActions()
 {
    kDebug() << "setupActions";
 
-   action_accept   = new KAction(this);
-   action_refuse   = new KAction(this);
-   action_hold     = new KAction(this);
-   action_transfer = new KAction(this);
-   action_record   = new KAction(this);
    action_mailBox  = new KAction(this);
-
    action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
    action_refuse->setShortcut      ( Qt::CTRL + Qt::Key_D );
    action_hold->setShortcut        ( Qt::CTRL + Qt::Key_H );

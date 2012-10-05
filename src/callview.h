@@ -86,6 +86,7 @@ class CallView : public QTreeWidget {
       QWidget* getWidget          (                                                                                   );
       bool haveOverlay            (                                                                                   );
       virtual QMimeData* mimeData ( const QList<QTreeWidgetItem *> items                                              ) const;
+      CallViewOverlayToolbar*     overlayToolbar() { return m_pCanvasToolbar;                                         };
 
       //Setters
       void setTitle               ( const QString& title                                                              );

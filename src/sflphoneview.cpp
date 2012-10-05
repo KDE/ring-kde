@@ -42,6 +42,7 @@
 #include "accountwizard.h"
 #include "actionsetaccountfirst.h"
 #include "sflphone.h"
+#include "widgets/callviewoverlaytoolbar.h"
 
 //sflphone library
 #include "lib/typedefs.h"
@@ -158,7 +159,7 @@ void SFLPhoneView::loadWindow()
    updateVolumeBar       ();
    updateVolumeControls  ();
    updateDialpad         ();
-   updateStatusMessage   ();
+//    updateStatusMessage   ();
 }
 
 
@@ -408,6 +409,7 @@ void SFLPhoneView::updateWindowCallState()
       enabledActions[ SFLPhone::Transfer ] = false;
       enabledActions[ SFLPhone::Record   ] = false;
       m_pMessageBoxW->setVisible(false);
+      callView->overlayToolbar()->setVisible(false);
    }
    else if (call->isConference()) {
       //TODO Something to do?
@@ -415,6 +417,9 @@ void SFLPhoneView::updateWindowCallState()
    else {
       call_state state = call->getState();
       recordActivated = call->getRecording();
+
+      callView->overlayToolbar()->updateState(call->getState());
+      callView->overlayToolbar()->setVisible(true);
 
       kDebug() << "Reached  State" << state << "(" << call->toHumanStateName() << ") with call" << call->getCallId();
 
@@ -445,6 +450,7 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::Accept   ] = ACTION_LABEL_ACCEPT         ;
             buttonIconFiles [ SFLPhone::Accept   ] = ICON_ACCEPT                 ;
             m_pMessageBoxW->setVisible(false)                                    ;
+            callView->overlayToolbar()->setVisible(false);
             break;
 
          case CALL_STATE_HOLD:

@@ -26,13 +26,14 @@ SET ( KDE4_KABC_LIBS  -lkabc )
 SET(
    sflphone_client_kde_SRCS
    main.cpp
+   extendedaction.cpp
    sflphoneview.cpp
    sflphone.cpp
    sflphoneapplication.cpp
    kspeechinterfacesingleton.cpp
    sflphoneaccessibility.cpp
-   widgets/sflphonetray.cpp
    accountwizard.cpp
+   widgets/sflphonetray.cpp
    widgets/calltreeitem.cpp
    widgets/historytreeitem.cpp
    actionsetaccountfirst.cpp
@@ -121,3 +122,4 @@ INSTALL( FILES icons/transfer_grayscale.png    DESTINATION  ${DATA_INSTALL_DIR}/
 INSTALL( FILES icons/hold_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
 INSTALL( FILES icons/unhold_grayscale.png      DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
 INSTALL( FILES icons/refuse_grayscale.png      DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
+INSTALL( FILES icons/pickup_grayscale.png      DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )

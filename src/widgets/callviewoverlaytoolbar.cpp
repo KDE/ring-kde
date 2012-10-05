@@ -32,23 +32,55 @@
 #include <KIcon>
 
 //SFLPhone
-#include <sflphone.h>
+#include "sflphone.h"
+#include "extendedaction.h"
+
+const bool visibility[8][13] = {              /*ROW = BUTTONS   COLS=STATE*/
+            /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
+ /*PICKUP   */ { true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    },
+ /*HOLD     */ { false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    },
+ /*UNHOLD   */ { false  , false,  false,  false, true , false, false,   false,     false,    false, false,  false,      false    },
+ /*HANGUP   */ { false  , false,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     },
+ /*MUTE     */ { false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    },
+ /*TRANSFER */ { false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    },
+ /*RECORD   */ { false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     },
+ /*REFUSE   */ { true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }
+};
 
 ///Constructor
 CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender(0),m_pLeftRender(0)
 {
    m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_right_corner.svg") );
    m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_left_corner.svg" ) );
-   //setStyleSheet("background-color:red;");
 
    QHBoxLayout* layout = new QHBoxLayout(this);
 
-   layout->addWidget(createButton("Hang Up" ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/hangup_grayscale.png"))));
-   layout->addWidget(createButton("Transfer",KIcon(KStandardDirs::locate("data","sflphone-client-kde/transfer_grayscale.png"))));
-   layout->addWidget(createButton("Mute"    ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/mutemic_grayscale.png"))));
-   layout->addWidget(createButton("Record"  ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/record_grayscale.png"))));
-   layout->addWidget(createButton("Unhold"  ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/unhold_grayscale.png"))));
-   layout->addWidget(createButton("Refuse"  ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/refuse_grayscale.png"))));
+   m_pHold     = createButton( SFLPhone::app()->getHoldAction()     );
+   m_pUnhold   = createButton( SFLPhone::app()->getUnholdAction()   );
+   m_pMute     = createButton( SFLPhone::app()->getMuteAction()     );
+   m_pPickup   = createButton( SFLPhone::app()->getPickupAction()   );
+   m_pHangup   = createButton( SFLPhone::app()->getHangupAction()   );
+   m_pTransfer = createButton( SFLPhone::app()->getTransferAction() );
+   m_pRecord   = createButton( SFLPhone::app()->getRecordAction()   );
+   m_pRefuse   = createButton( SFLPhone::app()->getRefuseAction()   );
+
+   m_hButtons[ ActionButton::HOLD     ] = m_pHold    ;
+   m_hButtons[ ActionButton::UNHOLD   ] = m_pUnhold  ;
+   m_hButtons[ ActionButton::PICKUP   ] = m_pPickup  ;
+   m_hButtons[ ActionButton::HANGUP   ] = m_pHangup  ;
+   m_hButtons[ ActionButton::MUTE     ] = m_pMute    ;
+   m_hButtons[ ActionButton::TRANSFER ] = m_pTransfer;
+   m_hButtons[ ActionButton::RECORD   ] = m_pRecord  ;
+   m_hButtons[ ActionButton::REFUSE   ] = m_pRefuse  ;
+
+   layout->addWidget( m_pHangup   );
+   layout->addWidget( m_pTransfer );
+   layout->addWidget( m_pMute     );
+   layout->addWidget( m_pRecord   );
+   layout->addWidget( m_pUnhold   );
+   layout->addWidget( m_pHold     );
+   layout->addWidget( m_pPickup   );
+   layout->addWidget( m_pRefuse   );
 
    setMinimumSize(100,56);
 }
@@ -83,15 +115,87 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
 }
 
 ///Create a toolbar button
-QToolButton* CallViewOverlayToolbar::createButton(const QString& text,const KIcon& icon)
+QToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
 {
    QToolButton* b = new QToolButton(this);
    b->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
    b->setIconSize(QSize(28,28));
    b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-   b->setText(text);
-   b->setIcon(icon);
+   b->setText(action->text());
+   b->setIcon(action->altIcon());
    b->setShortcut(0);
-   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;background-color:transparent;color:white;padding-top:5px;");
+   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;background-color:transparent;color:#DDDDDD;padding-top:5px;");
+   connect(b,SIGNAL(clicked()),action,SLOT(trigger()));
    return b;
+}
+
+///Hide or show the toolbar and select visible actions
+void CallViewOverlayToolbar::updateState(call_state state)
+{
+   m_hButtons[ ActionButton::HOLD     ]->setVisible(visibility[ ActionButton::HOLD     ][state]);
+   m_hButtons[ ActionButton::UNHOLD   ]->setVisible(visibility[ ActionButton::UNHOLD   ][state]);
+   m_hButtons[ ActionButton::PICKUP   ]->setVisible(visibility[ ActionButton::PICKUP   ][state]);
+   m_hButtons[ ActionButton::HANGUP   ]->setVisible(visibility[ ActionButton::HANGUP   ][state]);
+   m_hButtons[ ActionButton::MUTE     ]->setVisible(visibility[ ActionButton::MUTE     ][state]);
+   m_hButtons[ ActionButton::TRANSFER ]->setVisible(visibility[ ActionButton::TRANSFER ][state]);
+   m_hButtons[ ActionButton::RECORD   ]->setVisible(visibility[ ActionButton::RECORD   ][state]);
+   m_hButtons[ ActionButton::REFUSE   ]->setVisible(visibility[ ActionButton::REFUSE   ][state]);
+   /*switch (state) {
+      case CALL_STATE_INCOMING:
+         
+         break;
+
+      case CALL_STATE_RINGING:
+         
+         break;
+
+      case CALL_STATE_CURRENT:
+         
+         break;
+
+      case CALL_STATE_DIALING:
+         
+         break;
+
+      case CALL_STATE_HOLD:
+         
+         break;
+
+      case CALL_STATE_FAILURE:
+         
+         break;
+
+      case CALL_STATE_BUSY:
+         
+         break;
+
+      case CALL_STATE_TRANSFERRED:
+         
+         break;
+
+      case CALL_STATE_TRANSF_HOLD:
+         
+         break;
+
+      case CALL_STATE_OVER:
+         
+         break;
+
+      case CALL_STATE_ERROR:
+         
+         break;
+
+      case CALL_STATE_CONFERENCE:
+         
+         break;
+
+      case CALL_STATE_CONFERENCE_HOLD:
+         
+         break;
+
+      default:
+         
+         break;
+
+   }*/
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2009-2012 by Savoir-Faire Linux                         *
- *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,66 +15,24 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef CALL_VIEW_OVERLAY_H
-#define CALL_VIEW_OVERLAY_H
-//Base
-#include <QtGui/QWidget>
-#include <QtCore/QHash>
-#include "lib/sflphone_const.h"
+#include "extendedaction.h"
 
-//Qt
-class QSvgRenderer;
-class QToolButton;
-
-//KDE
-class KIcon;
-
-//SFLPhone
-class ExtendedAction;
-
-enum ActionButton {
-   PICKUP   = 0,
-   HOLD     = 1,
-   UNHOLD   = 2,
-   HANGUP   = 3,
-   MUTE     = 4,
-   TRANSFER = 5,
-   RECORD   = 6,
-   REFUSE   = 7,
-};
-
-class CallViewOverlayToolbar : public QWidget
+ExtendedAction::ExtendedAction(QObject* parent) : KAction(parent),m_pIcon(nullptr)
 {
-public:
-   CallViewOverlayToolbar(QWidget* parent);
+   
+}
 
-private:
-   //Attributes
-   QSvgRenderer* m_pRightRender;
-   QSvgRenderer* m_pLeftRender ;
+ExtendedAction::~ExtendedAction()
+{
+   if (m_pIcon) delete m_pIcon;
+}
 
-   //Buttons
-   QToolButton* m_pHold;
-   QToolButton* m_pUnhold;
-   QToolButton* m_pMute;
-   QToolButton* m_pPickup;
-   QToolButton* m_pHangup;
-   QToolButton* m_pTransfer;
-   QToolButton* m_pRecord;
-   QToolButton* m_pRefuse;
+const KIcon& ExtendedAction::altIcon()
+{
+   return (const KIcon&) *m_pIcon;
+}
 
-   QHash<int,QToolButton*> m_hButtons;
-
-   //Helpers
-   QToolButton* createButton(ExtendedAction* action);
-
-public slots:
-   void updateState(call_state state);
-
-protected:
-   void resizeEvent(QResizeEvent* event);
-   void paintEvent(QPaintEvent* event);
-
-};
-
-#endif
+void ExtendedAction::setAltIcon(QString path)
+{
+   m_pIcon = new KIcon(path);
+}

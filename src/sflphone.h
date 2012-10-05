@@ -43,6 +43,7 @@ class SFLPhoneView;
 class HistoryDock;
 class CallTreeItem;
 class VideoRenderer;
+class ExtendedAction;
 
 typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
 
@@ -79,11 +80,15 @@ enum CallAction {
 private:
    //Attributes
    bool   m_pInitialized;
-   KAction* action_accept                ;
-   KAction* action_refuse                ;
-   KAction* action_hold                  ;
-   KAction* action_transfer              ;
-   KAction* action_record                ;
+   ExtendedAction* action_accept         ;
+   ExtendedAction* action_refuse         ;
+   ExtendedAction* action_hold           ;
+   ExtendedAction* action_transfer       ;
+   ExtendedAction* action_record         ;
+   ExtendedAction* action_mute           ;
+   ExtendedAction* action_hangup         ;
+   ExtendedAction* action_unhold         ;
+   ExtendedAction* action_pickup         ;
    KAction* action_mailBox               ;
    KAction* action_close                 ;
    KAction* action_quit                  ;
@@ -141,6 +146,15 @@ public:
    ContactDock*  contactDock ();
    HistoryDock*  historyDock ();
    BookmarkDock* bookmarkDock();
+
+   ExtendedAction* getHoldAction    () { return action_hold;     }
+   ExtendedAction* getRecordAction  () { return action_record;   }
+   ExtendedAction* getRefuseAction  () { return action_refuse;   }
+   ExtendedAction* getMuteAction    () { return action_mute;     }
+   ExtendedAction* getHangupAction  () { return action_hangup;   }
+   ExtendedAction* getUnholdAction  () { return action_unhold;   }
+   ExtendedAction* getTransferAction() { return action_transfer; }
+   ExtendedAction* getPickupAction  () { return action_pickup;   }
 
 private slots:
    void on_m_pView_statusMessageChangeAsked      ( const QString& message               );
