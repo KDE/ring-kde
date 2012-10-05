@@ -19,16 +19,17 @@
 
 #include "categorydrawer.h"
 
+//Qt
 #include <QtGui/QStyledItemDelegate>
 #include <QtGui/QPainter>
 #include <QtGui/QHeaderView>
-
-#include <klocale.h>
-#include <kdebug.h>
-
 #include <QDebug>
 #include <QEvent>
 #include <QKeyEvent>
+
+//KDE
+#include <klocale.h>
+#include <kdebug.h>
 
 //BEGIN KateColorTreeDelegate
 ///Code taken from Kate and adapted to render categorized lists

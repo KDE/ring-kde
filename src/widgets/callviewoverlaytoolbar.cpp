@@ -31,6 +31,9 @@
 #include <KStandardDirs>
 #include <KIcon>
 
+//SFLPhone
+#include <sflphone.h>
+
 ///Constructor
 CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender(0),m_pLeftRender(0)
 {
@@ -39,10 +42,13 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent
    //setStyleSheet("background-color:red;");
 
    QHBoxLayout* layout = new QHBoxLayout(this);
-   
-   layout->addWidget(createButton("Test",KIcon("list-add")));
-   layout->addWidget(createButton("Test",KIcon("list-add")));
-   layout->addWidget(createButton("Test",KIcon("list-add")));
+
+   layout->addWidget(createButton("Hang Up" ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/hangup_grayscale.png"))));
+   layout->addWidget(createButton("Transfer",KIcon(KStandardDirs::locate("data","sflphone-client-kde/transfer_grayscale.png"))));
+   layout->addWidget(createButton("Mute"    ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/mutemic_grayscale.png"))));
+   layout->addWidget(createButton("Record"  ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/record_grayscale.png"))));
+   layout->addWidget(createButton("Unhold"  ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/unhold_grayscale.png"))));
+   layout->addWidget(createButton("Refuse"  ,KIcon(KStandardDirs::locate("data","sflphone-client-kde/refuse_grayscale.png"))));
 
    setMinimumSize(100,56);
 }
@@ -59,21 +65,21 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
    Q_UNUSED(event);
    QPainter customPainter(this);
    customPainter.setRenderHint(QPainter::Antialiasing);
-   QBrush   b = customPainter.brush();
-   QPen     p = customPainter.pen();
+   QBrush b = customPainter.brush();
+   QPen   p = customPainter.pen();
 
    b.setColor("black");
    customPainter.setOpacity(0.5);
 
-   customPainter.setBrush(Qt::black);
-   customPainter.setPen(Qt::transparent);
-   customPainter.drawRect(QRect(3,10,width()-6,height()-16));
-   customPainter.drawPie(QRect(width()-8-3,height()-10,8,8),270*16,90*16);
-   customPainter.drawPie(QRect(3,height()-10,8,8),180*16,90*16);
-   customPainter.drawRect(QRect(5+2,height()-6,width()-8-6,3));
+   customPainter.setBrush (Qt::black);
+   customPainter.setPen   (Qt::transparent);
+   customPainter.drawRect (QRect(3,10,width()-6,height()-16)               );
+   customPainter.drawPie  (QRect(width()-8-3,height()-10,8,8),270*16,90*16 );
+   customPainter.drawPie  (QRect(3,height()-10,8,8),180*16,90*16           );
+   customPainter.drawRect (QRect(5+2,height()-6,width()-8-6,3)             );
 
-   m_pLeftRender->render (&customPainter,QRect(3,0,10,10));
-   m_pRightRender->render(&customPainter,QRect(width()-13,0,10,10));
+   m_pLeftRender->render (&customPainter,QRect( 3,0,10,10)                 );
+   m_pRightRender->render(&customPainter,QRect( width()-13,0,10,10)        );
 }
 
 ///Create a toolbar button
@@ -81,7 +87,7 @@ QToolButton* CallViewOverlayToolbar::createButton(const QString& text,const KIco
 {
    QToolButton* b = new QToolButton(this);
    b->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-   b->setIconSize(QSize(24,24));
+   b->setIconSize(QSize(28,28));
    b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    b->setText(text);
    b->setIcon(icon);
