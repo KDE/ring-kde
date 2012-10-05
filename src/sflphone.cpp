@@ -366,8 +366,10 @@ void SFLPhone::setupActions()
    action_configureShortcut = new KAction(KIcon(KIcon("configure-shortcuts")), i18n("Configure Shortcut"), this);
    //                    SENDER                        SIGNAL               RECEIVER                 SLOT               /
    /**/connect(action_accept,                SIGNAL(triggered()),           m_pView , SLOT(accept())                    );
+   /**/connect(action_hangup,                SIGNAL(triggered()),           m_pView , SLOT(hangup())                    );
    /**/connect(action_refuse,                SIGNAL(triggered()),           m_pView , SLOT(refuse())                    );
    /**/connect(action_hold,                  SIGNAL(triggered()),           m_pView , SLOT(hold())                      );
+   /**/connect(action_unhold,                SIGNAL(triggered()),           m_pView , SLOT(unhold())                    );
    /**/connect(action_transfer,              SIGNAL(triggered()),           m_pView , SLOT(transfer())                  );
    /**/connect(action_record,                SIGNAL(triggered()),           m_pView , SLOT(record())                    );
    /**/connect(action_mailBox,               SIGNAL(triggered()),           m_pView , SLOT(mailBox())                   );

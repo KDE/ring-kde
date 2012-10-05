@@ -801,8 +801,7 @@ void SFLPhoneView::accept()
    }
    else {
       int state = call->getState();
-      if (state == CALL_STATE_RINGING || state == CALL_STATE_CURRENT || state == CALL_STATE_HOLD || state == CALL_STATE_BUSY)
-      {
+      if (state == CALL_STATE_RINGING || state == CALL_STATE_CURRENT || state == CALL_STATE_HOLD || state == CALL_STATE_BUSY) {
          kDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
          SFLPhone::model()->addDialingCall();
       }
@@ -811,6 +810,16 @@ void SFLPhoneView::accept()
       }
    }
 } //accept
+
+///Call
+void SFLPhoneView::hangup()
+{
+   Call* call = callView->getCurrentItem();
+   int state = call->getState();
+   if (state == CALL_STATE_RINGING || state == CALL_STATE_CURRENT || state == CALL_STATE_HOLD || state == CALL_STATE_BUSY) {
+      action(call, CALL_ACTION_REFUSE);
+   }
+} //hangup
 
 ///Refuse call
 void SFLPhoneView::refuse()
@@ -830,6 +839,18 @@ void SFLPhoneView::hold()
    Call* call = callView->getCurrentItem();
    if(!call) {
       kDebug() << "Error : Holding when no item selected. Should not happen.";
+   }
+   else {
+      action(call, CALL_ACTION_HOLD);
+   }
+}
+
+///Remove call from hold
+void SFLPhoneView::unhold()
+{
+   Call* call = callView->getCurrentItem();
+   if(!call) {
+      kDebug() << "Error : Un-Holding when no item selected. Should not happen.";
    }
    else {
       action(call, CALL_ACTION_HOLD);
