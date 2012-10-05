@@ -63,13 +63,16 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
    QPen     p = customPainter.pen();
 
    b.setColor("black");
+   customPainter.setOpacity(0.5);
 
    customPainter.setBrush(Qt::black);
    customPainter.setPen(Qt::transparent);
-   customPainter.drawRect(QRect(5,10,width()-8,height()-25));
-   customPainter.drawRoundedRect(QRect(5,height()-17,width()-8,15),5,5);
+   customPainter.drawRect(QRect(3,10,width()-6,height()-16));
+   customPainter.drawPie(QRect(width()-8-3,height()-10,8,8),270*16,90*16);
+   customPainter.drawPie(QRect(3,height()-10,8,8),180*16,90*16);
+   customPainter.drawRect(QRect(5+2,height()-6,width()-8-6,3));
 
-   m_pLeftRender->render (&customPainter,QRect(5,0,10,10));
+   m_pLeftRender->render (&customPainter,QRect(3,0,10,10));
    m_pRightRender->render(&customPainter,QRect(width()-13,0,10,10));
 }
 
@@ -83,6 +86,6 @@ QToolButton* CallViewOverlayToolbar::createButton(const QString& text,const KIco
    b->setText(text);
    b->setIcon(icon);
    b->setShortcut(0);
-   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;background-color:transparent;");
+   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;background-color:transparent;color:white;padding-top:5px;");
    return b;
 }
