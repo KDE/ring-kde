@@ -19,14 +19,17 @@
 
 //Qt
 #include <QtGui/QPaintEvent>
+#include <QtGui/QToolButton>
 #include <QtGui/QPainter>
 #include <QtGui/QBrush>
 #include <QtGui/QPen>
 #include <QtSvg/QSvgRenderer>
+#include <QtGui/QHBoxLayout>
 #include <QDebug> //TODO remove
 
 //KDE
 #include <KStandardDirs>
+#include <KIcon>
 
 ///Constructor
 CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender(0),m_pLeftRender(0)
@@ -34,6 +37,13 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent
    m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_right_corner.svg") );
    m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_left_corner.svg" ) );
    //setStyleSheet("background-color:red;");
+
+   QHBoxLayout* layout = new QHBoxLayout(this);
+   
+   layout->addWidget(createButton("Test",KIcon("list-add")));
+   layout->addWidget(createButton("Test",KIcon("list-add")));
+   layout->addWidget(createButton("Test",KIcon("list-add")));
+
    setMinimumSize(100,56);
 }
 
@@ -61,4 +71,18 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
 
    m_pLeftRender->render (&customPainter,QRect(5,0,10,10));
    m_pRightRender->render(&customPainter,QRect(width()-13,0,10,10));
+}
+
+///Create a toolbar button
+QToolButton* CallViewOverlayToolbar::createButton(const QString& text,const KIcon& icon)
+{
+   QToolButton* b = new QToolButton(this);
+   b->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+   b->setIconSize(QSize(24,24));
+   b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+   b->setText(text);
+   b->setIcon(icon);
+   b->setShortcut(0);
+   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;background-color:transparent;");
+   return b;
 }

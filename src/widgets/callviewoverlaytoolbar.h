@@ -20,7 +20,12 @@
 //Base
 #include <QtGui/QWidget>
 
+//Qt
 class QSvgRenderer;
+class QToolButton;
+
+//KDE
+class KIcon;
 
 class CallViewOverlayToolbar : public QWidget
 {
@@ -28,8 +33,12 @@ public:
    CallViewOverlayToolbar(QWidget* parent);
 
 private:
+   //Attributes
    QSvgRenderer* m_pRightRender;
-   QSvgRenderer* m_pLeftRender;
+   QSvgRenderer* m_pLeftRender ;
+
+   //Helpers
+   QToolButton* createButton(const QString& text,const KIcon& icon);
 
 protected:
    void resizeEvent(QResizeEvent* event);
