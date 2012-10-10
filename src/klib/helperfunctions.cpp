@@ -22,6 +22,7 @@
 //Qt
 #include <QtCore/QString>
 #include <QtCore/QVariant>
+#include <QtGui/QFontMetrics>
 
 //KDE
 #include <KLocale>
@@ -77,4 +78,25 @@ QString HelperFunctions::escapeHtmlEntities(QString str)
 void HelperFunctions::displayNoAccountMessageBox(QWidget* parent)
 {
    KMessageBox::error(parent,i18n("No registered accounts"));
+}
+
+/**Take a long string and manually wrap it using a specific font. This is needed because SVG
+ * does not natively support wrapping and Qt does not implement the few hacks around this
+ * so it is better to create a <text> field for each line
+ */
+QStringList HelperFunctions::stringToLineArray(QFont font, QString text, int width )
+{
+   QFontMetrics metric(font);
+   int total;
+   QStringList result;
+   QStringList words = text.split(' ');
+
+   foreach(QString word, words) {
+      QString tmp;
+      while (total += metric.width(word+" ") < width)
+         tmp += word + " ";
+      result << tmp;
+   }
+
+   return result;
 }

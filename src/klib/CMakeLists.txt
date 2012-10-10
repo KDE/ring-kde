@@ -32,6 +32,7 @@ set( ksflphone_LIB_SRCS
    akonadibackend.cpp
    sortabledockcommon.cpp
    configurationskeleton.cpp
+   svgtiploader.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)

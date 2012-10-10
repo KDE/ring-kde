@@ -50,6 +50,7 @@
 #include "sflphoneaccessibility.h"
 #include "widgets/conferencebox.h"
 #include "widgets/callviewoverlaytoolbar.h"
+#include "klib/svgtiploader.h"
 
 ///CallTreeItemDelegate: Delegates for CallTreeItem
 class CallTreeItemDelegate : public QStyledItemDelegate
@@ -310,6 +311,13 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    //TODO remove this section
    //BEGIN On canvas toolbar
    m_pCanvasToolbar = new CallViewOverlayToolbar(this);
+   QPalette p = viewport()->palette();
+   m_pTip = new SvgTipLoader(this,KStandardDirs::locate("data","sflphone-client-kde/tips/dial_with_dialpad.svg"),"tralalalala",4);
+   p.setBrush(QPalette::Base, QBrush(m_pTip->getImage()));
+   viewport()->setPalette(p);
+   setPalette(p);
+   setAutoFillBackground(true);
+
    //END on canvas toolbar
 } //CallView
 
