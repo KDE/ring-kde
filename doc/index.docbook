@@ -27,7 +27,7 @@
 ]>
 
 <book id="sflphone-kde" lang="&language;">
-<book id="sflphone-kde"info>
+<bookinfo>
   <title>&sflphone-client-kde; User Manual</title>
   <date>2009-05-10</date>
   <releaseinfo>&sflphonerelease;</releaseinfo>
