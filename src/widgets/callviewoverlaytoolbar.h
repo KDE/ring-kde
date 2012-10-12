@@ -45,6 +45,7 @@ enum ActionButton {
 
 class CallViewOverlayToolbar : public QWidget
 {
+   Q_OBJECT
 public:
    CallViewOverlayToolbar(QWidget* parent);
 
@@ -74,6 +75,11 @@ public slots:
 protected:
    void resizeEvent(QResizeEvent* event);
    void paintEvent(QPaintEvent* event);
+   void hideEvent(QHideEvent* event);
+   void showEvent(QShowEvent* event);
+
+signals:
+   void visibilityChanged(bool);
 
 };
 

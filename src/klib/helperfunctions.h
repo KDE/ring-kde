@@ -41,6 +41,5 @@ public:
    static QString     normStrippped             (QString str              );
    static QString     escapeHtmlEntities        (QString str              );
    static void        displayNoAccountMessageBox(QWidget* parent = nullptr);
-   static QStringList stringToLineArray         (QFont font, QString text, int width );
 };
 #endif

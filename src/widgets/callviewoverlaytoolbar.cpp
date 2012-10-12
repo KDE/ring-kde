@@ -199,3 +199,13 @@ void CallViewOverlayToolbar::updateState(call_state state)
 
    }*/
 }
+
+void CallViewOverlayToolbar::hideEvent(QHideEvent *)
+{
+    emit visibilityChanged(false);
+}
+
+void CallViewOverlayToolbar::showEvent(QShowEvent *)
+{
+    emit visibilityChanged(true);
+}

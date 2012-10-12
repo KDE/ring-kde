@@ -274,6 +274,11 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    m_pTransferLE      = new KLineEdit       ( m_pTransferOverlay );
    QGridLayout* gl    = new QGridLayout     ( m_pTransferOverlay );
    QLabel* lblImg     = new QLabel          ( image              );
+   m_pCanvasToolbar   = new CallViewOverlayToolbar(this);
+   m_pTip             = new SvgTipLoader(this,
+                                 KStandardDirs::locate("data",
+                                          "sflphone-client-kde/tips/dial_with_dialpad.svg"),
+                                          i18n("Use the dialpad below or start typing a number. "),4);
 
    m_pTransferOverlay->setVisible(false);
    m_pTransferOverlay->resize(size());
@@ -297,6 +302,7 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
          addConference(active);
    }
 
+
    //User Interface even
    //              SENDER                                   SIGNAL                              RECEIVER                     SLOT                       /
    /**/connect(this              , SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int))               , this, SLOT(itemDoubleClicked(QTreeWidgetItem*,int)) );
@@ -308,13 +314,12 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    /**/connect(SFLPhone::model() , SIGNAL(callAdded(Call*,Call*))                                , this, SLOT(addCall(Call*,Call*))                    );
    /**/connect(m_pTransferB      , SIGNAL(clicked())                                             , this, SLOT(transfer())                              );
    /**/connect(m_pTransferLE     , SIGNAL(returnPressed())                                       , this, SLOT(transfer())                              );
+   /**/connect(m_pCanvasToolbar  , SIGNAL(visibilityChanged(bool))                               , this, SLOT(moveCanvasTip())                         );
    /*                                                                                                                                                  */
 
    //TODO remove this section
    //BEGIN On canvas toolbar
-   m_pCanvasToolbar = new CallViewOverlayToolbar(this);
    QPalette p = viewport()->palette();
-   m_pTip = new SvgTipLoader(this,KStandardDirs::locate("data","sflphone-client-kde/tips/dial_with_dialpad.svg"),"tralalalala",4);
    p.setBrush(QPalette::Base, QBrush(m_pTip->getImage()));
    viewport()->setPalette(p);
    setPalette(p);
@@ -635,6 +640,8 @@ Call* CallView::addCall(Call* call, Call* parent)
       }
    }
 
+   moveCanvasTip();
+
    return call;
 }
 
@@ -728,6 +735,7 @@ bool CallView::removeItem(Call* item)
       removeItemWidget(SFLPhone::model()->getIndex(item),0);
       if (parent->childCount() == 0) //TODO this have to be done in the daemon, not here, but oops still happen too often to ignore
          removeItemWidget(parent,0);
+      moveCanvasTip();
       return true;
    }
    else
@@ -825,6 +833,7 @@ void CallView::destroyCall(Call* toDestroy)
    }
    else
       kDebug() << "Call not found";
+   moveCanvasTip();
 } //destroyCall
 
 /// @todo Remove the text partially covering the TreeView item widget when it is being dragged, a beter implementation is needed
@@ -914,7 +923,8 @@ Call* CallView::addConference(Call* conf)
       kDebug() << "Adding " << callId << "to the conversation";
       insertItem(extractItem(SFLPhone::model()->getIndex(callId)),confItem);
    }
-   
+   moveCanvasTip();
+
    return newConf;
 } //addConference
 
@@ -996,6 +1006,24 @@ void CallView::moveSelectedItem( Qt::Key direction )
    }
 }
 
+///Proxy to modify the background tip position
+void CallView::moveCanvasTip()
+{
+   int topM(0),bottomM(0);
+   bottomM += m_pCanvasToolbar->isVisible()?m_pCanvasToolbar->height():0;
+   QModelIndex lastItem = model()->index(model()->rowCount()-1,0);
+   if (model()->rowCount(lastItem) > 0) {
+      lastItem = lastItem.child(model()->rowCount()-1,0);
+   }
+   if (lastItem != QModelIndex()) {
+      QRect r = visualRect(lastItem);
+      topM += r.y() + r.height();
+   }
+
+   m_pTip->setTopMargin(topM);
+   m_pTip->setBottomMargin(bottomM);
+}
+
 /*****************************************************************************
  *                                                                           *
  *                                 Overlay                                   *
@@ -1075,4 +1103,3 @@ void CallViewOverlay::setAccessMessage(QString message)
 {
    m_accessMessage = message;
 }
-

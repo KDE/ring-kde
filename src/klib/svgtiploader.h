@@ -50,6 +50,15 @@ class LIB_EXPORT SvgTipLoader : public QObject
 public:
    SvgTipLoader(QTreeView* parent, QString path, QString text, int maxLine);
    QImage getImage();
+
+   //Setters
+   void setTopMargin(int margin);
+   void setBottomMargin(int margin);
+
+   //Helper
+   static QStringList stringToLineArray         (const QFont& font, QString text, int width = -1 );
+   bool brightOrDarkBase();
+
 private:
    //Methods
    void reload();
@@ -63,6 +72,8 @@ private:
    QSize       m_CurrentSize    ;
    QImage      m_CurrentImage   ;
    QTreeView*  m_pParent        ;
+   int         m_TopMargin      ;
+   int         m_BottomMargin   ;
 };
 
 #endif

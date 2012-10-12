@@ -143,6 +143,7 @@ class CallView : public QTreeWidget {
       void transferDropEvent(Call* call,QMimeData* data);
       void conversationDropEvent(Call* call,QMimeData* data);
       void hideOverlay();
+      void moveCanvasTip();
 
    signals:
       ///Emitted when one of the call item change
