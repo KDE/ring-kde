@@ -324,8 +324,8 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    viewport()->setPalette(p);
    setPalette(p);
    setAutoFillBackground(true);
-
    //END on canvas toolbar
+   selectFirstItem();
 } //CallView
 
 ///Destructor
@@ -1003,6 +1003,18 @@ void CallView::moveSelectedItem( Qt::Key direction )
    }
    else if (direction == Qt::Key_Down) {
       setCurrentIndex(moveCursor(QAbstractItemView::MoveDown ,Qt::NoModifier));
+   }
+}
+
+///Select the first call, if any
+void CallView::selectFirstItem()
+{
+   if (model()->rowCount()) {
+      QModelIndex firstItem = model()->index(0,0);
+      if (model()->rowCount(firstItem) > 0) {
+         firstItem = firstItem.child(0,0);
+      }
+      setCurrentIndex(firstItem);
    }
 }
 
