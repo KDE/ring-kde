@@ -26,8 +26,8 @@
   <!ENTITY credits SYSTEM "credits.docbook">
 ]>
 
-<book lang="&language;">
-<bookinfo>
+<book id="sflphone-kde" lang="&language;">
+<book id="sflphone-kde"info>
   <title>&sflphone-client-kde; User Manual</title>
   <date>2009-05-10</date>
   <releaseinfo>&sflphonerelease;</releaseinfo>
