@@ -1013,7 +1013,7 @@ void CallView::moveCanvasTip()
    bottomM += m_pCanvasToolbar->isVisible()?m_pCanvasToolbar->height():0;
    QModelIndex lastItem = model()->index(model()->rowCount()-1,0);
    if (model()->rowCount(lastItem) > 0) {
-      lastItem = lastItem.child(model()->rowCount()-1,0);
+      lastItem = lastItem.child(model()->rowCount(lastItem)-1,0);
    }
    if (lastItem != QModelIndex()) {
       QRect r = visualRect(lastItem);

@@ -460,7 +460,7 @@ void SFLPhoneView::updateWindowCallState()
             break;
 
          case CALL_STATE_FAILURE:
-            enabledActions  [ SFLPhone::Accept   ] = false                       ;
+            //enabledActions  [ SFLPhone::Accept   ] = false                     ;
             enabledActions  [ SFLPhone::Hold     ] = false                       ;
             enabledActions  [ SFLPhone::Transfer ] = false                       ;
             enabledActions  [ SFLPhone::Record   ] = false                       ;
@@ -468,7 +468,7 @@ void SFLPhoneView::updateWindowCallState()
             break;
 
          case CALL_STATE_BUSY:
-            enabledActions  [ SFLPhone::Accept   ] = false                       ;
+            //enabledActions  [ SFLPhone::Accept   ] = false                     ;
             enabledActions  [ SFLPhone::Hold     ] = false                       ;
             enabledActions  [ SFLPhone::Transfer ] = false                       ;
             enabledActions  [ SFLPhone::Record   ] = false                       ;

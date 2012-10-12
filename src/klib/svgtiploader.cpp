@@ -93,7 +93,8 @@ void SvgTipLoader::reload()
       wy = (effectiveHeight - wheight) /2 + m_TopMargin;
    }
 
-   r->render(&p,QRect(wx,wy,wwidth,wheight));
+   if (effectiveHeight >= wheight)
+      r->render(&p,QRect(wx,wy,wwidth,wheight));
 
    QPalette p2 = m_pParent->viewport()->palette();
    p2.setBrush(QPalette::Base, QBrush(m_CurrentImage));
