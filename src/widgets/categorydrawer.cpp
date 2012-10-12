@@ -35,10 +35,11 @@ CategoryDrawer::CategoryDrawer()
 void CategoryDrawer::drawCategory(const QModelIndex& index   ,
                                  int                 sortRole,
                                  const QStyleOption& option  ,
-                                 QPainter*           painter ) const
+                                 QPainter*           painter ,
+                                 QPalette* pal) const
 {
    Q_UNUSED( sortRole )
-   
+   const QPalette* palette   = (pal)?pal:&option.palette  ;
    painter->setRenderHint(QPainter::Antialiasing);
 
    const QRect optRect = option.rect;
@@ -60,8 +61,8 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
       path.lineTo(optRect.bottomRight());
       path.lineTo(optRect.bottomLeft());
 
-      QColor window(option.palette.window().color());
-      const QColor base(option.palette.base().color());
+      QColor window(palette->window().color());
+      const QColor base(palette->base().color());
 
       window.setAlphaF(0.4);
 
@@ -104,7 +105,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
       //BEGIN: inner top left corner
       {
          painter->save();
-         painter->setPen(option.palette.base().color());
+         painter->setPen(palette->base().color());
          QRectF arc;
          if (leftToRight) {
                const QPointF topLeft(newOptRect.topLeft());
@@ -136,7 +137,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
          start.ry() += 3;
          verticalGradBottom.ry() += newOptRect.height() - 3;
          QLinearGradient gradient(start, verticalGradBottom);
-         gradient.setColorAt(0, option.palette.base().color());
+         gradient.setColorAt(0, palette->base().color());
          gradient.setColorAt(1, Qt::transparent);
          painter->fillRect(QRect(start, QSize(1, newOptRect.height() - 3)), gradient);
       }
@@ -158,7 +159,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
                horizontalGradTop.rx() -= newOptRect.width() - 3;
          }
          QLinearGradient gradient(start, horizontalGradTop);
-         gradient.setColorAt(0, option.palette.base().color());
+         gradient.setColorAt(0, palette->base().color());
          gradient.setColorAt(1, Qt::transparent);
          QSize rectSize;
          if (leftToRight) {
@@ -171,7 +172,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
       //END: inner horizontal line
    }
 
-    QColor outlineColor = option.palette.text().color();
+    QColor outlineColor = palette->text().color();
     outlineColor.setAlphaF(0.35);
 
    //BEGIN: top left corner
@@ -210,7 +211,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
       verticalGradBottom.ry() += optRect.height() - 3;
       QLinearGradient gradient(start, verticalGradBottom);
       gradient.setColorAt(0, outlineColor);
-      gradient.setColorAt(1, option.palette.base().color());
+      gradient.setColorAt(1, palette->base().color());
       painter->fillRect(QRect(start, QSize(1, optRect.height() - 3)), gradient);
    }
    //END: left vertical line
@@ -232,7 +233,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
       }
       QLinearGradient gradient(start, horizontalGradTop);
       gradient.setColorAt(0, outlineColor);
-      gradient.setColorAt(1, option.palette.base().color());
+      gradient.setColorAt(1, palette->base().color());
       QSize rectSize;
       if (leftToRight) {
          rectSize = QSize(optRect.width() - 3, 1);
@@ -251,7 +252,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
       textRect.setLeft(textRect.left() + 2 + 3 /* corner */ + 3 /* a bit of margin */);
       painter->save();
       painter->setFont(font);
-      QColor penColor(option.palette.text().color());
+      QColor penColor(palette->text().color());
       penColor.setAlphaF(0.6);
       painter->setPen(penColor);
       painter->drawText(textRect, Qt::AlignLeft | Qt::AlignTop, category);
@@ -261,7 +262,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
 }
 
 ///Return category height
-int CategoryDrawer::categoryHeight(const QModelIndex &index, const QStyleOption &option) const
+int CategoryDrawer::categoryHeight(const QModelIndex &index, const QStyleOption &option, QPalette* pal) const
 {
    Q_UNUSED( index );
    Q_UNUSED( option );

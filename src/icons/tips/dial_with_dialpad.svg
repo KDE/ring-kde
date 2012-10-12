@@ -70,17 +70,16 @@
        ><tspan
          x="278.7287"
          y="430.77933"
-         id="tspan15580">idxL1</tspan></text>
+         id="TLline1">idxL1</tspan></text>
     <text
        id="text15664"
        y="445.93161"
        x="278.7287"
        style="font-size:12px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:BASE_ROLE_COLOR;fill-opacity:1;stroke:none;font-family:Sans"
        xml:space="preserve"><tspan
-         id="tspan15670"
          y="445.93161"
          x="278.7287"
-         >idxL2</tspan></text>
+         id="TLline2">idxL2</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:BASE_ROLE_COLOR;fill-opacity:1;stroke:none;font-family:Sans"
@@ -89,16 +88,16 @@
        id="text15672"><tspan
          x="278.7287"
          y="461.08389"
-         id="tspan15700">idxL3</tspan></text>
+         id="TLline3">idxL3</tspan></text>
     <text
-       id="text2993"
+       id="TLline4"
        y="476.23618"
        x="278.7287"
        style="font-size:12px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:BASE_ROLE_COLOR;fill-opacity:1;stroke:none;font-family:Sans"
        xml:space="preserve"
        ><tspan
-         id="tspan2995"
          y="476.23618"
-         x="278.7287">idxL4</tspan></text>
+         x="278.7287"
+         id="tspan2995">idxL4</tspan></text>
   </g>
 </svg>

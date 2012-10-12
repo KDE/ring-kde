@@ -56,10 +56,11 @@
 class CallTreeItemDelegate : public QStyledItemDelegate
 {
 public:
-CallTreeItemDelegate(CallView* widget)
+CallTreeItemDelegate(CallView* widget,QPalette pal)
       : QStyledItemDelegate(widget)
       , m_tree(widget)
       , m_ConferenceDrawer()
+      , m_Pal(pal)
    {
    }
 
@@ -137,7 +138,7 @@ CallTreeItemDelegate(CallView* widget)
          const QRegion cl = painter->clipRegion();
          painter->setClipRect(opt.rect);
          opt.rect = fullCategoryRect(option, index);
-         m_ConferenceDrawer.drawCategory(index, 0, opt, painter);
+         m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
 
          //Drag bubble
          if (itemWidget->isDragged()) {
@@ -172,7 +173,7 @@ CallTreeItemDelegate(CallView* widget)
          }
          painter->setClipRect(cr);
          if (index.parent().isValid())
-            m_ConferenceDrawer.drawCategory(index, 0, opt, painter);
+            m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
          painter->setClipRegion(cl);
          painter->setRenderHint(QPainter::Antialiasing, false);
       }
@@ -242,11 +243,12 @@ CallTreeItemDelegate(CallView* widget)
 
 
 private:
-   CallView*      m_tree;
+   CallView*      m_tree            ;
    ConferenceBox  m_ConferenceDrawer;
-   QSize m_SH;
-   int m_LeftMargin;
-   int m_RightMargin;
+   QSize          m_SH              ;
+   int            m_LeftMargin      ;
+   int            m_RightMargin     ;
+   QPalette       m_Pal             ;
 };
 
 
@@ -261,7 +263,7 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    setRootIsDecorated  (false);
    setIndentation(15);
 
-   CallTreeItemDelegate *delegate = new CallTreeItemDelegate(this);
+   CallTreeItemDelegate *delegate = new CallTreeItemDelegate(this,palette());
    setItemDelegate(delegate);
    setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
 
