@@ -18,9 +18,7 @@
 #include "svgtiploader.h"
 
 //Qt
-#include <QtCore/QFile>
 #include <QtGui/QPainter>
-#include <QtSvg/QSvgRenderer>
 #include <QtCore/QEvent>
 
 //KDE
@@ -37,34 +35,12 @@ bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
 }
 
 ///Constructor
-SvgTipLoader::SvgTipLoader(QTreeView* parent, QString path, QString text, int maxLine):QObject(parent),m_OriginalText(text)
-   ,m_MaxLine(maxLine),m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0)
-   ,m_TipPosition(TipPosition::middle)
+SvgTipLoader::SvgTipLoader(QTreeView* parent, const QString& path, const QString& text, int maxLine):QObject(parent),
+m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),m_Tip(parent,path,text,maxLine)
 {
-   QFile file(path);
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      kDebug() << "The tip" << path << "failed to load: No such file";
-   }
-   else {
-      ResizeEventFilter* filter = new ResizeEventFilter(this);
-      parent->installEventFilter(filter);
-      m_OriginalFile = file.readAll();
-      m_OriginalFile.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
-      int lastIndexOf = -1;
-      QStringList lines = stringToLineArray(m_pParent->font(),text,250);
-      for (int i=(maxLine < lines.size())?maxLine:lines.size();i;i--) {
-         m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toAscii());
-         int idx = m_OriginalFile.lastIndexOf(QString("TLline" + QString::number(i)).toAscii(), lastIndexOf);
-         if (idx > 0) {
-            lastIndexOf = idx;
-            if (i==maxLine && maxLine < lines.size())
-               lines[i-1] += "...";
-            m_OriginalFile.insert(idx+9,lines[i-1].toAscii());
-         }
-      }
-      m_pR = new QSvgRenderer(m_OriginalFile);
-      reload();
-   }
+   ResizeEventFilter* filter = new ResizeEventFilter(this);
+   parent->installEventFilter(filter);
+   reload();
 }
 
 ///Get the current image
@@ -81,56 +57,37 @@ void SvgTipLoader::reload()
    m_CurrentImage = QImage(QSize(width,height),QImage::Format_RGB888);
    m_CurrentImage.fill( m_OriginalPalette.base().color() );
    QPainter p(&m_CurrentImage);
-   int wwidth(width-30),wheight((width-30)*0.539723102);
-   int wx(10);
    int wy = 0;
 
-   switch (m_TipPosition) {
-      case TipPosition::middle:
-         wy = ((effectiveHeight-wheight)/2 + m_TopMargin);
+   QSize size = m_Tip.reload(QRect(0,0,width-30,effectiveHeight));
+
+   int wx(10+((width-30)-size.width())/2);
+
+   switch (m_Tip.m_Position) {
+      case Tip::TipPosition::Middle:
+         wy = ((effectiveHeight-size.height())/2 + m_TopMargin);
          break;
-      case TipPosition::top:
+      case Tip::TipPosition::Top:
          wy = (5 + m_TopMargin);
          break;
-      case TipPosition::bottom:
-         wy = height - wheight - 40 - m_BottomMargin;
+      case Tip::TipPosition::Bottom:
+         wy = height - size.height() - 40 - m_BottomMargin;
          break;
       default:
-         wy = ((effectiveHeight-wheight)/2 + m_TopMargin);
+         wy = ((effectiveHeight-size.height())/2 + m_TopMargin);
          break;
    }
 
-   //Prevent supersize tips
-   if (wheight > 170) {
-      wheight = 170;
-      wwidth = wheight*1.85280192;
-      wx = (width - wwidth) /2;
-      switch (m_TipPosition) {
-         case TipPosition::middle:
-            wy = (effectiveHeight - wheight) /2 + m_TopMargin;
-            break;
-         case TipPosition::top:
-            wy = 5 + m_TopMargin;
-            break;
-         case TipPosition::bottom:
-            wy = height - wheight - 40 - m_BottomMargin;
-            break;
-         default:
-            wy = (effectiveHeight - wheight) /2 + m_TopMargin;
-            break;
-      }
+   if (effectiveHeight >= size.height()) {
+      p.setOpacity(0.1);
+      p.drawImage(wx,wy,m_Tip.m_CurrentImage);
    }
-
-   if (effectiveHeight >= wheight)
-      m_pR->render(&p,QRect(wx,wy,wwidth,wheight));
 
    QPalette p2 = m_pParent->viewport()->palette();
    p2.setBrush(QPalette::Base, QBrush(m_CurrentImage));
    m_pParent->viewport()->setPalette(p2);
    m_pParent->setPalette(p2);
 }
-
-
 
 /**
  * Take a long string and manually wrap it using a specific font. This is needed because SVG
@@ -146,28 +103,20 @@ QStringList SvgTipLoader::stringToLineArray(const QFont& font, QString text, int
 
    QString tmp;
    foreach(QString word, words) {
-      int mW = metric.width(word+" ");
+      int mW = metric.width(word+' ');
       if (mW + total > width){
          result << tmp;
-         tmp = "";
+         tmp = QString();
          total = 0;
       }
       total += mW;
-      tmp += word + " ";
+      tmp += word + ' ';
    }
    if (tmp.size()) {
       result << tmp;
    }
 
    return result;
-}
-
-///Check if the thene color scheme is darker than #888888
-///@return true = bright, false = dark
-bool SvgTipLoader::brightOrDarkBase()
-{
-   QColor color = m_OriginalPalette.base().color();
-   return (color.red() > 128 && color.green() > 128 && color.blue() > 128);
 }
 
 ///Set the top margin

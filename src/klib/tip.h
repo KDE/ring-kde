@@ -15,65 +15,58 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef SVG_TIP_LOADER
-#define SVG_TIP_LOADER
-
-//Qt
+#ifndef TIP_H
+#define TIP_H
+//Base
 #include <QtCore/QObject>
+
+//SFLPhone
 #include <QtCore/QStringList>
-#include <QtGui/QPalette>
-#include <QtGui/QTreeView>
+#include <QtCore/QSize>
 #include <QtGui/QImage>
+#include <QtGui/QPalette>
+#include <QtGui/QWidget>
+
 class QSvgRenderer;
 
 //SFLPhone
 #include "../lib/typedefs.h"
-#include "tip.h"
-class SvgTipLoader;
 
-//Classes
-class ResizeEventFilter : public QObject
+///A tip to be passed to the TipLoader
+class Tip : public QObject
 {
    Q_OBJECT
 public:
-   ResizeEventFilter(SvgTipLoader* parent) : QObject(0) {
-      m_pLoader =  parent;
-   }
+   friend class SvgTipLoader;
+   Tip(QWidget* parent = nullptr,const QString& path="", const QString& text="", int maxLine=4);
+   virtual ~Tip();
+
+   //Enum
+   enum TipPosition {
+      Top,
+      Middle,
+      Bottom
+   };
+   
+   //Mutator
+   QSize reload(const QRect& availableSize);
+
 protected:
-   bool eventFilter(QObject *obj, QEvent *event);
-private:
-   SvgTipLoader* m_pLoader;
-};
-
-///This class create a background brush for a QWidget with a tip window
-class LIB_EXPORT SvgTipLoader : public QObject
-{
-   friend class ResizeEventFilter;
-public:
-   //Constructor
-   SvgTipLoader(QTreeView* parent, const QString& path, const QString& text, int maxLine);
-
-   //Getter
-   QImage getImage();
-
-   //Setters
-   void setTopMargin(int margin);
-   void setBottomMargin(int margin);
-
-   //Helper
-   static QStringList stringToLineArray(const QFont& font, QString text, int width = -1);
-
-private:
-   //Methods
-   void reload();
-
    //Attributes
-   QPalette      m_OriginalPalette;
-   QTreeView*    m_pParent        ;
-   int           m_TopMargin      ;
-   int           m_BottomMargin   ;
+   TipPosition   m_Position       ;
+   QByteArray    m_OriginalFile   ;
+   QString       m_OriginalText   ;
+   QStringList   m_Lines          ;
+   int           m_MaxLine        ;
+   QSize         m_CurrentSize    ;
    QImage        m_CurrentImage   ;
-   Tip           m_Tip            ;
+   QRect         m_CurrentRect    ;
+   bool          m_IsMaxSize      ;
+   QSvgRenderer* m_pR             ;
+   QPalette      m_OriginalPalette;
+   
+   //Helper
+   bool brightOrDarkBase();
 };
 
 #endif
