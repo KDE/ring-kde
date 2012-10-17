@@ -24,6 +24,7 @@
 #include <QtGui/QPalette>
 #include <QtGui/QTreeView>
 #include <QtGui/QImage>
+class QSvgRenderer;
 
 //SFLPhone
 #include "../lib/typedefs.h"
@@ -73,17 +74,18 @@ private:
    void reload();
 
    //Attributes
-   QByteArray  m_OriginalFile   ;
-   QString     m_OriginalText   ;
-   QStringList m_Lines          ;
-   QPalette    m_OriginalPalette;
-   int         m_MaxLine        ;
-   QSize       m_CurrentSize    ;
-   QImage      m_CurrentImage   ;
-   QTreeView*  m_pParent        ;
-   int         m_TopMargin      ;
-   int         m_BottomMargin   ;
-   TipPosition m_TipPosition    ;
+   QByteArray    m_OriginalFile   ;
+   QString       m_OriginalText   ;
+   QStringList   m_Lines          ;
+   QPalette      m_OriginalPalette;
+   int           m_MaxLine        ;
+   QSize         m_CurrentSize    ;
+   QImage        m_CurrentImage   ;
+   QTreeView*    m_pParent        ;
+   int           m_TopMargin      ;
+   int           m_BottomMargin   ;
+   TipPosition   m_TipPosition    ;
+   QSvgRenderer* m_pR;
 };
 
 #endif

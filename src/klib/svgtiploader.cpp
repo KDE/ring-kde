@@ -36,7 +36,6 @@ bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
    return false;
 }
 
-QSvgRenderer* r;
 ///Constructor
 SvgTipLoader::SvgTipLoader(QTreeView* parent, QString path, QString text, int maxLine):QObject(parent),m_OriginalText(text)
    ,m_MaxLine(maxLine),m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0)
@@ -63,7 +62,7 @@ SvgTipLoader::SvgTipLoader(QTreeView* parent, QString path, QString text, int ma
             m_OriginalFile.insert(idx+9,lines[i-1].toAscii());
          }
       }
-      r = new QSvgRenderer(m_OriginalFile);
+      m_pR = new QSvgRenderer(m_OriginalFile);
       reload();
    }
 }
@@ -123,7 +122,7 @@ void SvgTipLoader::reload()
    }
 
    if (effectiveHeight >= wheight)
-      r->render(&p,QRect(wx,wy,wwidth,wheight));
+      m_pR->render(&p,QRect(wx,wy,wwidth,wheight));
 
    QPalette p2 = m_pParent->viewport()->palette();
    p2.setBrush(QPalette::Base, QBrush(m_CurrentImage));

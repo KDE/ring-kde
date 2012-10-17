@@ -65,7 +65,7 @@ const char * CallTreeItem::callStateIcons[12] = {ICON_INCOMING, ICON_RINGING, IC
 ///Constructor
 CallTreeItem::CallTreeItem(QWidget *parent)
    : QWidget(parent), m_pItemCall(0), m_Init(false),m_pBtnConf(0), m_pBtnTrans(0),m_pTimer(0),m_pPeerL(0),m_pIconL(0),m_pCallNumberL(0),m_pSecureL(0),m_pCodecL(0),m_pHistoryPeerL(0)
-   , m_pTransferPrefixL(0),m_pTransferNumberL(0),m_pElapsedL(0),m_Height(0),m_pContact(0),m_pDepartment(0),m_pOrganisation(0),m_pEmail(0),m_IsDragged(false)
+   , m_pTransferPrefixL(0),m_pTransferNumberL(0),m_pElapsedL(0),m_Height(0),m_pContact(0),m_pDepartment(0),m_pOrganisation(0),m_pEmail(0),m_IsDragged(false),m_CurrentStyle(-1)
 {
    setContentsMargins(0,0,0,0);
    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -96,45 +96,47 @@ void CallTreeItem::setDragged(bool drag)
 ///Better support alternative color scheme
 void CallTreeItem::setTextColor(int style)
 {
-   QString color = palette().text().color().name();
-   if (style & QStyle::State_Selected) {
-      color = palette().highlightedText().color().name();
-   }
-   
-   if (m_pPeerL) {
-      m_pPeerL->setStyleSheet("color:"+color);
-   }
+   if (m_CurrentStyle != style || m_CurrentStyle == -1) {
+      QString color = palette().text().color().name();
+      if (style & QStyle::State_Selected) {
+         color = palette().highlightedText().color().name();
+      }
 
+      if (m_pPeerL) {
+         m_pPeerL->setStyleSheet("color:"+color);
+      }
 
-   if (m_pCallNumberL) {
-      m_pCallNumberL->setStyleSheet("color:"+color);
-   }
-   if (m_pTransferPrefixL) {
-      m_pTransferPrefixL->setStyleSheet("color:"+color);
-   }
-   if (m_pTransferNumberL) {
-      m_pTransferNumberL->setStyleSheet("color:"+color);
-   }
-   if (m_pCodecL) {
-      m_pCodecL->setStyleSheet("color:"+color);
-   }
-   if (m_pSecureL) {
-      m_pSecureL->setStyleSheet("color:"+color);
-   }
-   if (m_pHistoryPeerL) {
-      m_pHistoryPeerL->setStyleSheet("color:"+color);
-   }
-   if (m_pElapsedL) {
-      m_pElapsedL->setStyleSheet("color:"+color);
-   }
-   if (m_pDepartment) {
-      m_pDepartment->setStyleSheet("color:"+color);
-   }
-   if (m_pOrganisation) {
-      m_pOrganisation->setStyleSheet("color:"+color);
-   }
-   if (m_pEmail) {
-      m_pEmail->setStyleSheet("color:"+color);
+      if (m_pCallNumberL) {
+         m_pCallNumberL->setStyleSheet("color:"+color);
+      }
+      if (m_pTransferPrefixL) {
+         m_pTransferPrefixL->setStyleSheet("color:"+color);
+      }
+      if (m_pTransferNumberL) {
+         m_pTransferNumberL->setStyleSheet("color:"+color);
+      }
+      if (m_pCodecL) {
+         m_pCodecL->setStyleSheet("color:"+color);
+      }
+      if (m_pSecureL) {
+         m_pSecureL->setStyleSheet("color:"+color);
+      }
+      if (m_pHistoryPeerL) {
+         m_pHistoryPeerL->setStyleSheet("color:"+color);
+      }
+      if (m_pElapsedL) {
+         m_pElapsedL->setStyleSheet("color:"+color);
+      }
+      if (m_pDepartment) {
+         m_pDepartment->setStyleSheet("color:"+color);
+      }
+      if (m_pOrganisation) {
+         m_pOrganisation->setStyleSheet("color:"+color);
+      }
+      if (m_pEmail) {
+         m_pEmail->setStyleSheet("color:"+color);
+      }
+      m_CurrentStyle = style;
    }
 }
 
