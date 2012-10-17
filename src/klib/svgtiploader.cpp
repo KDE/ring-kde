@@ -40,6 +40,7 @@ QSvgRenderer* r;
 ///Constructor
 SvgTipLoader::SvgTipLoader(QTreeView* parent, QString path, QString text, int maxLine):QObject(parent),m_OriginalText(text)
    ,m_MaxLine(maxLine),m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0)
+   ,m_TipPosition(TipPosition::middle)
 {
    QFile file(path);
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -82,15 +83,43 @@ void SvgTipLoader::reload()
    m_CurrentImage.fill( m_OriginalPalette.base().color() );
    QPainter p(&m_CurrentImage);
    int wwidth(width-30),wheight((width-30)*0.539723102);
-   int wx(10),wy((effectiveHeight-wheight)/2 + m_TopMargin);
+   int wx(10);
+   int wy = 0;
 
+   switch (m_TipPosition) {
+      case TipPosition::middle:
+         wy = ((effectiveHeight-wheight)/2 + m_TopMargin);
+         break;
+      case TipPosition::top:
+         wy = (5 + m_TopMargin);
+         break;
+      case TipPosition::bottom:
+         wy = height - wheight - 40 - m_BottomMargin;
+         break;
+      default:
+         wy = ((effectiveHeight-wheight)/2 + m_TopMargin);
+         break;
+   }
 
    //Prevent supersize tips
    if (wheight > 170) {
       wheight = 170;
       wwidth = wheight*1.85280192;
       wx = (width - wwidth) /2;
-      wy = (effectiveHeight - wheight) /2 + m_TopMargin;
+      switch (m_TipPosition) {
+         case TipPosition::middle:
+            wy = (effectiveHeight - wheight) /2 + m_TopMargin;
+            break;
+         case TipPosition::top:
+            wy = 5 + m_TopMargin;
+            break;
+         case TipPosition::bottom:
+            wy = height - wheight - 40 - m_BottomMargin;
+            break;
+         default:
+            wy = (effectiveHeight - wheight) /2 + m_TopMargin;
+            break;
+      }
    }
 
    if (effectiveHeight >= wheight)
@@ -104,7 +133,8 @@ void SvgTipLoader::reload()
 
 
 
-/**Take a long string and manually wrap it using a specific font. This is needed because SVG
+/**
+ * Take a long string and manually wrap it using a specific font. This is needed because SVG
  * does not natively support wrapping and Qt does not implement the few hacks around this
  * so it is better to create a <text> field for each line
  */

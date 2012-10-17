@@ -48,7 +48,10 @@ class LIB_EXPORT SvgTipLoader : public QObject
 {
    friend class ResizeEventFilter;
 public:
+   //Constructor
    SvgTipLoader(QTreeView* parent, QString path, QString text, int maxLine);
+
+   //Getter
    QImage getImage();
 
    //Setters
@@ -59,6 +62,12 @@ public:
    static QStringList stringToLineArray         (const QFont& font, QString text, int width = -1 );
    bool brightOrDarkBase();
 
+   //Enum
+   enum TipPosition {
+      top,
+      middle,
+      bottom
+   };
 private:
    //Methods
    void reload();
@@ -74,6 +83,7 @@ private:
    QTreeView*  m_pParent        ;
    int         m_TopMargin      ;
    int         m_BottomMargin   ;
+   TipPosition m_TipPosition    ;
 };
 
 #endif
