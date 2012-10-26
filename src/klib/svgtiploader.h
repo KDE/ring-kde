@@ -29,6 +29,7 @@ class QSvgRenderer;
 //SFLPhone
 #include "../lib/typedefs.h"
 #include "tip.h"
+#include "tipanimationwrapper.h"
 class SvgTipLoader;
 
 //Classes
@@ -48,6 +49,7 @@ private:
 ///This class create a background brush for a QWidget with a tip window
 class LIB_EXPORT SvgTipLoader : public QObject
 {
+   Q_OBJECT
    friend class ResizeEventFilter;
 public:
    //Constructor
@@ -59,6 +61,7 @@ public:
    //Setters
    void setTopMargin(int margin);
    void setBottomMargin(int margin);
+   void setCurrentTip(bool tip);
 
    //Helper
    static QStringList stringToLineArray(const QFont& font, QString text, int width = -1);
@@ -74,6 +77,17 @@ private:
    int           m_BottomMargin   ;
    QImage        m_CurrentImage   ;
    Tip           m_Tip            ;
+   bool m_pCurrentTip;
+   TipAnimationWrapper m_pAnim;
+   FrameDescription m_CurrentFrame;
+
+private slots:
+   void animationStep(FrameDescription desc);
+   void changeSize();
+
+signals:
+   void sizeChanged(QRect newRect);
+
 };
 
 #endif

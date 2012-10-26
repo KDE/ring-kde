@@ -20,27 +20,32 @@
 //Qt
 #include <QtGui/QPainter>
 #include <QtCore/QEvent>
+#include <QtCore/QDebug>
 
 //KDE
 #include <KDebug>
 #include <KStandardDirs>
 
+
 bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
 {
    Q_UNUSED(obj);
    if (event->type() == QEvent::Resize) {
-      m_pLoader->reload();
+      m_pLoader->changeSize();
    }
    return false;
 }
 
 ///Constructor
 SvgTipLoader::SvgTipLoader(QTreeView* parent, const QString& path, const QString& text, int maxLine):QObject(parent),
-m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),m_Tip(parent,path,text,maxLine)
+m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),m_Tip(parent,path,text,maxLine),
+m_pAnim(&m_Tip,this)
 {
    ResizeEventFilter* filter = new ResizeEventFilter(this);
    parent->installEventFilter(filter);
    reload();
+
+   connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
 }
 
 ///Get the current image
@@ -57,30 +62,10 @@ void SvgTipLoader::reload()
    m_CurrentImage = QImage(QSize(width,height),QImage::Format_RGB888);
    m_CurrentImage.fill( m_OriginalPalette.base().color() );
    QPainter p(&m_CurrentImage);
-   int wy = 0;
 
-   QSize size = m_Tip.reload(QRect(0,0,width-30,effectiveHeight));
-
-   int wx(10+((width-30)-size.width())/2);
-
-   switch (m_Tip.m_Position) {
-      case Tip::TipPosition::Middle:
-         wy = ((effectiveHeight-size.height())/2 + m_TopMargin);
-         break;
-      case Tip::TipPosition::Top:
-         wy = (5 + m_TopMargin);
-         break;
-      case Tip::TipPosition::Bottom:
-         wy = height - size.height() - 40 - m_BottomMargin;
-         break;
-      default:
-         wy = ((effectiveHeight-size.height())/2 + m_TopMargin);
-         break;
-   }
-
-   if (effectiveHeight >= size.height()) {
-      p.setOpacity(0.1);
-      p.drawImage(wx,wy,m_Tip.m_CurrentImage);
+   if (effectiveHeight >= m_pAnim.tipSize().height() && m_pCurrentTip) {
+      p.setOpacity(0.1*m_CurrentFrame.opacity);
+      p.drawImage(m_CurrentFrame.point.x(),m_CurrentFrame.point.y(),m_pAnim.currentImage());
    }
 
    QPalette p2 = m_pParent->viewport()->palette();
@@ -124,7 +109,7 @@ void SvgTipLoader::setTopMargin(int margin)
 {
    bool changed = !(m_TopMargin == margin);
    m_TopMargin = margin;
-   if (changed) reload();
+   if (changed) changeSize();
 }
 
 ///Set the bottom margin
@@ -132,5 +117,34 @@ void SvgTipLoader::setBottomMargin(int margin)
 {
    bool changed = !(m_BottomMargin == margin);
    m_BottomMargin = margin;
-   if (changed) reload();
+   if (changed) changeSize();
+}
+
+///Set the current tip, hide the previous one, if any
+void SvgTipLoader::setCurrentTip(bool tip)
+{
+   m_pCurrentTip =  tip;
+   if (tip) {
+      m_pAnim.start();
+   }
+   else {
+      m_CurrentFrame = {QPoint(0,0),QRect(0,0,0,0),0};
+   }
+   changeSize();
+}
+
+///Callback for new animation frame
+void SvgTipLoader::animationStep(FrameDescription desc)
+{
+   m_CurrentFrame = desc;
+   reload();
+}
+
+///Callback when size change
+void SvgTipLoader::changeSize()
+{
+   int width(m_pParent->width()),height(m_pParent->height());
+   int effectiveHeight = height-m_BottomMargin-m_TopMargin;
+   qDebug() << height << (height-effectiveHeight) << effectiveHeight << (width-30);
+   emit sizeChanged(QRect(15,m_TopMargin,width-30,effectiveHeight));
 }

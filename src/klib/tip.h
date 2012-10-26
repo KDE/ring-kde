@@ -38,6 +38,7 @@ class Tip : public QObject
    Q_OBJECT
 public:
    friend class SvgTipLoader;
+   friend class TipAnimationWrapper;
    Tip(QWidget* parent = nullptr,const QString& path="", const QString& text="", int maxLine=4);
    virtual ~Tip();
 
@@ -46,6 +47,13 @@ public:
       Top,
       Middle,
       Bottom
+   };
+   
+   enum TipAnimation {
+      Fade,
+      TranslationTop,
+      TranslationBottom,
+      None
    };
    
    //Mutator
@@ -64,7 +72,9 @@ protected:
    bool          m_IsMaxSize      ;
    QSvgRenderer* m_pR             ;
    QPalette      m_OriginalPalette;
-   
+   TipAnimation  m_AnimationIn    ;
+   TipAnimation  m_AnimationOut   ;
+
    //Helper
    bool brightOrDarkBase();
 };

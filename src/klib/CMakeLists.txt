@@ -34,6 +34,7 @@ set( ksflphone_LIB_SRCS
    configurationskeleton.cpp
    svgtiploader.cpp
    tip.cpp
+   tipanimationwrapper.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)

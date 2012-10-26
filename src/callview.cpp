@@ -998,10 +998,11 @@ void CallView::moveSelectedItem( Qt::Key direction )
       setCurrentIndex(moveCursor(QAbstractItemView::MoveRight,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Up) {
-      qDebug() << "Move up";
+      m_pTip->setCurrentTip(true);
       setCurrentIndex(moveCursor(QAbstractItemView::MoveUp   ,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Down) {
+      m_pTip->setCurrentTip(false);
       setCurrentIndex(moveCursor(QAbstractItemView::MoveDown ,Qt::NoModifier));
    }
 }
