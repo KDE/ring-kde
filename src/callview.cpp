@@ -50,7 +50,7 @@
 #include "sflphoneaccessibility.h"
 #include "widgets/conferencebox.h"
 #include "widgets/callviewoverlaytoolbar.h"
-#include "klib/svgtiploader.h"
+#include "klib/tipmanager.h"
 
 ///CallTreeItemDelegate: Delegates for CallTreeItem
 class CallTreeItemDelegate : public QStyledItemDelegate
@@ -275,10 +275,10 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    QGridLayout* gl    = new QGridLayout     ( m_pTransferOverlay );
    QLabel* lblImg     = new QLabel          ( image              );
    m_pCanvasToolbar   = new CallViewOverlayToolbar(this);
-   m_pTip             = new SvgTipLoader(this,
+   m_pTip             = new TipManager(this,
                                  KStandardDirs::locate("data",
-                                          "sflphone-client-kde/tips/dial_with_dialpad.svg"),
-                                          i18n("Use the dialpad below or start typing a number. "),4);
+                                          "sflphone-client-kde/tips/keyboard.svg"),
+                                          i18n("Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dsadasdialpad below or start typing a number. Use thasdasde dialpad below or sasdasdtart typing a number. "),4);
 
    m_pTransferOverlay->setVisible(false);
    m_pTransferOverlay->resize(size());

@@ -32,12 +32,15 @@ class QSvgRenderer;
 //SFLPhone
 #include "../lib/typedefs.h"
 
+//Qt
+class QPainter;
+
 ///A tip to be passed to the TipLoader
 class Tip : public QObject
 {
    Q_OBJECT
 public:
-   friend class SvgTipLoader;
+   friend class TipManager;
    friend class TipAnimationWrapper;
    Tip(QWidget* parent = nullptr,const QString& path="", const QString& text="", int maxLine=4);
    virtual ~Tip();
@@ -48,7 +51,7 @@ public:
       Middle,
       Bottom
    };
-   
+
    enum TipAnimation {
       Fade,
       TranslationTop,
@@ -57,7 +60,7 @@ public:
       TranslationRight,
       None
    };
-   
+
    //Mutator
    QSize reload(const QRect& availableSize);
 
@@ -76,9 +79,20 @@ protected:
    QPalette      m_OriginalPalette;
    TipAnimation  m_AnimationIn    ;
    TipAnimation  m_AnimationOut   ;
+   QFont*        m_pFont          ;
+
+   static const int PADDING = 15;
+   static const int MAX_WIDTH = 350;
 
    //Helper
    bool brightOrDarkBase();
+   QString loadSvg(const QString& path);
+
+   //To reimplement if needed
+   virtual QRect getTextRect(const QString& text);
+   virtual QRect getDecorationRect();
+   virtual void  paintDecorations(QPainter& p, const QRect& textRect);
+   virtual const QFont& font();
 };
 
 #endif

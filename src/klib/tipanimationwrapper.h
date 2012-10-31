@@ -27,7 +27,7 @@ class QTimer;
 
 //SFLPhone
 #include "tip.h"
-class SvgTipLoader;
+class TipManager;
 
 //Structs
 struct FrameDescription {
@@ -40,12 +40,12 @@ class TipAnimationWrapper : public QObject
 {
    Q_OBJECT
 public:
-   TipAnimationWrapper(Tip* aTip, SvgTipLoader* parent);
+   TipAnimationWrapper(Tip* aTip, TipManager* parent);
    virtual ~TipAnimationWrapper();
 
    //Mutator
    void start(bool show = true);
-   
+
    //Getter
    const QImage& currentImage();
    QSize tipSize();
@@ -68,7 +68,7 @@ protected:
 
 private slots:
    void step();
-   void sizeChanged(QRect rect);
+   void sizeChanged(QRect rect,bool ignoreAnim);
 
 signals:
    void animationStep(FrameDescription desc);

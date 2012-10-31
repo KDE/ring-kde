@@ -30,30 +30,30 @@ class QSvgRenderer;
 #include "../lib/typedefs.h"
 #include "tip.h"
 #include "tipanimationwrapper.h"
-class SvgTipLoader;
+class TipManager;
 
 //Classes
 class ResizeEventFilter : public QObject
 {
    Q_OBJECT
 public:
-   ResizeEventFilter(SvgTipLoader* parent) : QObject(0) {
+   ResizeEventFilter(TipManager* parent) : QObject(0) {
       m_pLoader =  parent;
    }
 protected:
    bool eventFilter(QObject *obj, QEvent *event);
 private:
-   SvgTipLoader* m_pLoader;
+   TipManager* m_pLoader;
 };
 
 ///This class create a background brush for a QWidget with a tip window
-class LIB_EXPORT SvgTipLoader : public QObject
+class LIB_EXPORT TipManager : public QObject
 {
    Q_OBJECT
    friend class ResizeEventFilter;
 public:
    //Constructor
-   SvgTipLoader(QTreeView* parent, const QString& path, const QString& text, int maxLine);
+   TipManager(QTreeView* parent, const QString& path, const QString& text, int maxLine);
 
    //Getter
    QImage getImage();
@@ -64,7 +64,7 @@ public:
    void setCurrentTip(bool tip);
 
    //Helper
-   static QStringList stringToLineArray(const QFont& font, QString text, int width = -1);
+//    static QStringList stringToLineArray(const QFont& font, QString text, int width = -1);
 
 private:
    //Methods
@@ -83,10 +83,10 @@ private:
 
 private slots:
    void animationStep(FrameDescription desc);
-   void changeSize();
+   void changeSize(bool ignoreAnim = false);
 
 signals:
-   void sizeChanged(QRect newRect);
+   void sizeChanged(QRect newRect,bool ignoreAnim);
 
 };
 

@@ -20,44 +20,26 @@
 //Qt
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QPainter>
+#include <QtGui/QFontMetrics>
 #include <QtCore/QFile>
 
 //KDE
 #include <KDebug>
 
 //SFLPhone
-#include "svgtiploader.h"
+#include "tipmanager.h"
 
 ///Constructor
 Tip::Tip(QWidget* parent,const QString& path, const QString& text, int maxLine) : QObject(parent),m_OriginalText(text),m_MaxLine(maxLine),m_Position(TipPosition::Bottom),m_IsMaxSize(false),m_pR(nullptr),
-m_OriginalPalette(parent->palette()),m_AnimationIn(TipAnimation::TranslationTop),m_AnimationOut(TipAnimation::TranslationTop)
+m_OriginalPalette(parent->palette()),m_AnimationIn(TipAnimation::TranslationTop),m_AnimationOut(TipAnimation::TranslationTop),m_pFont(nullptr)
 {
-   QFile file(path);
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      kDebug() << "The tip" << path << "failed to load: No such file";
-   }
-   else {
-      m_OriginalFile = file.readAll();
-      m_OriginalFile.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
-      int lastIndexOf = -1;
-      QStringList lines = SvgTipLoader::stringToLineArray(parent->font(),m_OriginalText,250);
-      for (int i=(maxLine < lines.size())?maxLine:lines.size();i;i--) {
-         m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toAscii());
-         int idx = m_OriginalFile.lastIndexOf(QString("TLline" + QString::number(i)).toAscii(), lastIndexOf);
-         if (idx > 0) {
-            lastIndexOf = idx;
-            if (i==maxLine && maxLine < lines.size())
-               lines[i-1] += "...";
-            m_OriginalFile.insert(idx+9,lines[i-1].toAscii());
-         }
-      }
-   }
+   loadSvg(path);
 }
 
 ///Destructor
 Tip::~Tip()
 {
-   
+   if (m_pFont) delete m_pFont;
 }
 
 /**
@@ -68,29 +50,49 @@ QSize Tip::reload(const QRect& availableSize)
 {
    if (m_CurrentRect != availableSize && !(m_IsMaxSize && m_CurrentSize.width()*1.25 < availableSize.width())) {
       m_CurrentRect = availableSize;
-      int wwidth(availableSize.width()),wheight((availableSize.width())*0.539723102);
+      m_CurrentRect.setHeight(PADDING);
 
-      if (wheight > 170) {
-         wheight = 170;
-         wwidth  = wheight*1.85280192;
-         m_IsMaxSize = true;
+      //One 1000px wide line is not so useful, this may change later (variable)
+      if (m_CurrentRect.width() > MAX_WIDTH) {
+         m_CurrentRect.setWidth( MAX_WIDTH );
       }
-      else {
-         m_IsMaxSize = false;
-      }
-      m_CurrentImage = QImage(QSize(wwidth,wheight),QImage::Format_RGB888);
+      m_CurrentRect.setWidth(m_CurrentRect.width());
+
+      //Get area required to display the text
+      QRect textRect = getTextRect(m_OriginalText);
+      m_CurrentRect.setHeight(m_CurrentRect.height() + textRect.height() + PADDING + getDecorationRect().height());
+
+      //Create the background image
+      m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_RGB888);
       m_CurrentImage.fill(m_OriginalPalette.base().color() );
       QPainter p(&m_CurrentImage);
+      p.setRenderHint(QPainter::Antialiasing, true);
+      p.setFont(font());
 
-      if (!m_pR)
-         m_pR = new QSvgRenderer(m_OriginalFile);
 
-      m_CurrentSize = QSize(wwidth,wheight);
+      //Draw the tip rectangle
+      p.setPen(QPen(m_OriginalPalette.base().color()));
+      p.setBrush(QBrush(brightOrDarkBase()?Qt::black:Qt::white));
+      p.drawRoundedRect(QRect(0,0,m_CurrentRect.width(),m_CurrentRect.height()),10,10);
 
-      if (availableSize.height() >= wheight)
-         m_pR->render(&p,QRect(0,0,wwidth,wheight));
+      //Draw the wrapped text in textRectS
+      p.drawText(textRect,Qt::TextWordWrap|Qt::AlignJustify,m_OriginalText);
+
+
+      //If the widget is subclassed, this would allow decorations to be added like images
+      paintDecorations(p,textRect);
+      
+      //Set the size from the RECT //TODO redundant
+      m_CurrentSize = QSize(m_CurrentRect.width(),m_CurrentRect.height());
    }
    return m_CurrentSize;
+}
+
+QRect Tip::getTextRect(const QString& text)
+{
+   QFontMetrics metric(font());
+   QRect rect = metric.boundingRect(QRect(PADDING,PADDING,m_CurrentRect.width()-2*PADDING,999999),Qt::AlignJustify|Qt::TextWordWrap,text);
+   return rect;
 }
 
 ///Check if the thene color scheme is darker than #888888
@@ -99,4 +101,40 @@ bool Tip::brightOrDarkBase()
 {
    QColor color = m_OriginalPalette.base().color();
    return (color.red() > 128 && color.green() > 128 && color.blue() > 128);
+}
+
+
+QRect Tip::getDecorationRect()
+{
+   return QRect(0,0,m_CurrentSize.width()-2*PADDING,60);
+}
+
+void Tip::paintDecorations(QPainter& p, const QRect& textRect)
+{
+   if (!m_pR)
+      m_pR = new QSvgRenderer(m_OriginalFile);
+   m_pR->render(&p,QRect(m_CurrentRect.width() - PADDING - 50*2.59143327842 - 10 ,textRect.y()+textRect.height() + 10,50*2.59143327842,50));
+}
+
+const QFont& Tip::font()
+{
+   if (!m_pFont) {
+      m_pFont = new QFont();
+      m_pFont->setBold(true);
+   }
+   return (const QFont&) *m_pFont;
+}
+
+QString Tip::loadSvg(const QString& path)
+{
+   QFile file(path);
+   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      kDebug() << "The tip" << path << "failed to load: No such file";
+   }
+   else {
+      m_OriginalFile = file.readAll();
+      m_OriginalFile.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
+      m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toAscii());
+   }
+   return m_OriginalFile;
 }

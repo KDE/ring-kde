@@ -32,7 +32,7 @@ set( ksflphone_LIB_SRCS
    akonadibackend.cpp
    sortabledockcommon.cpp
    configurationskeleton.cpp
-   svgtiploader.cpp
+   tipmanager.cpp
    tip.cpp
    tipanimationwrapper.cpp
 )

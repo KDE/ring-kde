@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "svgtiploader.h"
+#include "tipmanager.h"
 
 //Qt
 #include <QtGui/QPainter>
@@ -37,7 +37,7 @@ bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
 }
 
 ///Constructor
-SvgTipLoader::SvgTipLoader(QTreeView* parent, const QString& path, const QString& text, int maxLine):QObject(parent),
+TipManager::TipManager(QTreeView* parent, const QString& path, const QString& text, int maxLine):QObject(parent),
 m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),m_Tip(parent,path,text,maxLine),
 m_pAnim(&m_Tip,this)
 {
@@ -49,13 +49,13 @@ m_pAnim(&m_Tip,this)
 }
 
 ///Get the current image
-QImage SvgTipLoader::getImage()
+QImage TipManager::getImage()
 {
    return m_CurrentImage;
 }
 
 ///Reload the SVG with new size
-void SvgTipLoader::reload()
+void TipManager::reload()
 {
    int width(m_pParent->width()),height(m_pParent->height());
    int effectiveHeight = height-m_BottomMargin-m_TopMargin;
@@ -74,77 +74,44 @@ void SvgTipLoader::reload()
    m_pParent->setPalette(p2);
 }
 
-/**
- * Take a long string and manually wrap it using a specific font. This is needed because SVG
- * does not natively support wrapping and Qt does not implement the few hacks around this
- * so it is better to create a <text> field for each line
- */
-QStringList SvgTipLoader::stringToLineArray(const QFont& font, QString text, int width )
-{
-   QFontMetrics metric(font);
-   int total = 0;
-   QStringList result;
-   QStringList words = text.split(' ');
-
-   QString tmp;
-   foreach(QString word, words) {
-      int mW = metric.width(word+' ');
-      if (mW + total > width){
-         result << tmp;
-         tmp = QString();
-         total = 0;
-      }
-      total += mW;
-      tmp += word + ' ';
-   }
-   if (tmp.size()) {
-      result << tmp;
-   }
-
-   return result;
-}
-
 ///Set the top margin
-void SvgTipLoader::setTopMargin(int margin)
+void TipManager::setTopMargin(int margin)
 {
    bool changed = !(m_TopMargin == margin);
    m_TopMargin = margin;
-   if (changed) changeSize();
+   if (changed) changeSize(true);
 }
 
 ///Set the bottom margin
-void SvgTipLoader::setBottomMargin(int margin)
+void TipManager::setBottomMargin(int margin)
 {
    bool changed = !(m_BottomMargin == margin);
    m_BottomMargin = margin;
-   if (changed) changeSize();
+   if (changed) changeSize(true);
 }
 
 ///Set the current tip, hide the previous one, if any
-void SvgTipLoader::setCurrentTip(bool tip)
+void TipManager::setCurrentTip(bool tip)
 {
-   m_pCurrentTip =  tip;
-   /*if (tip) {
+   if (tip != m_pCurrentTip) {
+      m_pCurrentTip =  tip;
+      m_pAnim.start(tip);
+      changeSize(true);
    }
-   else {
-      //m_CurrentFrame = {QPoint(0,0),QRect(0,0,0,0),0};
-   }*/
-   m_pAnim.start(tip);
-   changeSize();
 }
 
 ///Callback for new animation frame
-void SvgTipLoader::animationStep(FrameDescription desc)
+void TipManager::animationStep(FrameDescription desc)
 {
    m_CurrentFrame = desc;
    reload();
 }
 
 ///Callback when size change
-void SvgTipLoader::changeSize()
+void TipManager::changeSize(bool ignoreAnim)
 {
    int width(m_pParent->width()),height(m_pParent->height());
    int effectiveHeight = height-m_BottomMargin-m_TopMargin;
-   qDebug() << height << (height-effectiveHeight) << effectiveHeight << (width-30);
-   emit sizeChanged(QRect(15,m_TopMargin,width-30,effectiveHeight));
+//    qDebug() << height << (height-effectiveHeight) << effectiveHeight << (width-30);
+   emit sizeChanged(QRect(15,m_TopMargin,width-30,effectiveHeight),ignoreAnim);
 }

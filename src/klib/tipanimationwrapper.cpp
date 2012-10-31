@@ -23,11 +23,11 @@
 
 //SFLPhone
 #include "tip.h"
-#include "svgtiploader.h"
+#include "tipmanager.h"
 
-TipAnimationWrapper::TipAnimationWrapper(Tip* aTip, SvgTipLoader* parent) : QObject(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_pTip(aTip),m_TipSize(QSize(0,0))
+TipAnimationWrapper::TipAnimationWrapper(Tip* aTip, TipManager* parent) : QObject(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_pTip(aTip),m_TipSize(QSize(0,0))
 {
-   connect(parent,SIGNAL(sizeChanged(QRect)),this,SLOT(sizeChanged(QRect)));
+   connect(parent,SIGNAL(sizeChanged(QRect,bool)),this,SLOT(sizeChanged(QRect,bool)));
 }
 
 TipAnimationWrapper::~TipAnimationWrapper()
@@ -35,13 +35,20 @@ TipAnimationWrapper::~TipAnimationWrapper()
    
 }
 
-void TipAnimationWrapper::sizeChanged(QRect rect)
+void TipAnimationWrapper::sizeChanged(QRect rect,bool ignoreAnim)
 {
    if (m_pTip) {
       m_TipSize = m_pTip->reload(QRect(0,0,rect.width(),rect.height()));
       m_CurrentImage = m_pTip->m_CurrentImage;
    }
    m_ParentRect = rect;
+   if (!ignoreAnim) {
+      Tip::TipAnimation anim = m_CurrentAnimation;
+      m_CurrentAnimation = Tip::None;
+      m_Step = 0;
+      step();
+      m_CurrentAnimation = anim;
+   }
 }
 
 const QImage& TipAnimationWrapper::currentImage()
@@ -79,9 +86,10 @@ void TipAnimationWrapper::start(bool show)
 void TipAnimationWrapper::step()
 {
    m_Step++;
-   if (m_Step > m_MaxStep && m_pTimer) {
+   if (m_Step > m_MaxStep) {
       m_Step = 0;
-      m_pTimer->stop();
+      if (m_pTimer)
+         m_pTimer->stop();
       emit animationEnded();
    }
    else {
