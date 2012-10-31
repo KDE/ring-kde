@@ -53,6 +53,8 @@ public:
       Fade,
       TranslationTop,
       TranslationBottom,
+      TranslationLeft,
+      TranslationRight,
       None
    };
    

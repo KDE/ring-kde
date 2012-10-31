@@ -54,13 +54,26 @@ QSize TipAnimationWrapper::tipSize()
    return m_TipSize;
 }
 
-void TipAnimationWrapper::start()
+/**
+ * Start the animation (if any)
+ * @param show start the 'in' or 'out' animation
+ */
+void TipAnimationWrapper::start(bool show)
 {
    if (!m_pTimer) {
       m_pTimer = new QTimer(this);
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(step()));
    }
-   m_pTimer->start(33);
+
+   m_Step = 0;
+   m_CurrentAnimation = show?m_pTip->m_AnimationIn:m_pTip->m_AnimationOut;
+   m_FadeDirection    = show;
+   if (m_CurrentAnimation != Tip::None)
+      m_pTimer->start(33);
+   else {
+      step();
+      emit animationEnded();
+   }
 }
 
 void TipAnimationWrapper::step()
@@ -69,6 +82,7 @@ void TipAnimationWrapper::step()
    if (m_Step > m_MaxStep && m_pTimer) {
       m_Step = 0;
       m_pTimer->stop();
+      emit animationEnded();
    }
    else {
       int wy = 0;
@@ -90,6 +104,61 @@ void TipAnimationWrapper::step()
             break;
       }
 
-      emit animationStep({QPoint(wx,wy),QRect(0,0,0,0),(float)m_Step/m_MaxStep});
+      //Set opacity
+      float opacity = (float)((m_FadeDirection)?0.0:1.0)-((float)m_Step/m_MaxStep);
+      opacity = (opacity<0)?-opacity:opacity;
+
+      //In animations
+      if (m_FadeDirection) {
+         switch (m_CurrentAnimation) {
+            case Tip::Fade:
+               break;
+            case Tip::TranslationTop:
+               wy += -m_MaxStep+m_Step;
+               break;
+            case Tip::TranslationBottom:
+               wy += m_MaxStep-m_Step;
+               break;
+            case Tip::TranslationLeft:
+               wx += -m_MaxStep+m_Step;
+               break;
+            case Tip::TranslationRight:
+               wx += m_MaxStep-m_Step;
+               break;
+            case Tip::None:
+               opacity = 1;
+               m_Step  = 0;
+               break;
+         }
+      }
+      //Out animations
+      else {switch (m_CurrentAnimation) {
+            case Tip::Fade:
+               break;
+            case Tip::TranslationTop:
+               wy += m_Step;
+               break;
+            case Tip::TranslationBottom:
+               wy += -m_Step;
+               break;
+            case Tip::TranslationLeft:
+               wx += m_Step;
+               break;
+            case Tip::TranslationRight:
+               wx += -m_Step;
+               break;
+            case Tip::None:
+               opacity = 0;
+               m_Step  = 0;
+               break;
+         }
+      }
+
+      emit animationStep({QPoint(wx,wy),QRect(0,0,0,0),opacity});
    }
+}
+
+bool TipAnimationWrapper::isRunning()
+{
+   return m_Step!=0;
 }

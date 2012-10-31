@@ -71,15 +71,15 @@ private:
    void reload();
 
    //Attributes
-   QPalette      m_OriginalPalette;
-   QTreeView*    m_pParent        ;
-   int           m_TopMargin      ;
-   int           m_BottomMargin   ;
-   QImage        m_CurrentImage   ;
-   Tip           m_Tip            ;
-   bool m_pCurrentTip;
-   TipAnimationWrapper m_pAnim;
-   FrameDescription m_CurrentFrame;
+   QPalette            m_OriginalPalette;
+   QTreeView*          m_pParent        ;
+   int                 m_TopMargin      ;
+   int                 m_BottomMargin   ;
+   QImage              m_CurrentImage   ;
+   Tip                 m_Tip            ;
+   bool                m_pCurrentTip    ;
+   TipAnimationWrapper m_pAnim          ;
+   FrameDescription    m_CurrentFrame   ;
 
 private slots:
    void animationStep(FrameDescription desc);

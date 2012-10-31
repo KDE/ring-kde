@@ -26,7 +26,7 @@
 class QTimer;
 
 //SFLPhone
-class Tip;
+#include "tip.h"
 class SvgTipLoader;
 
 //Structs
@@ -44,17 +44,20 @@ public:
    virtual ~TipAnimationWrapper();
 
    //Mutator
-   void start();
+   void start(bool show = true);
    
    //Getter
    const QImage& currentImage();
-   QSize  tipSize();
+   QSize tipSize();
+   bool  isRunning();
 
 private:
    //Attributes
-   QTimer* m_pTimer;
-   Tip*    m_pTip;
-   int     m_Step;
+   QTimer*           m_pTimer;
+   Tip*              m_pTip;
+   int               m_Step;
+   Tip::TipAnimation m_CurrentAnimation;
+   bool              m_FadeDirection;
 
    QRect   m_ParentRect;
    QSize   m_TipSize;
@@ -69,5 +72,6 @@ private slots:
 
 signals:
    void animationStep(FrameDescription desc);
+   void animationEnded();
 };
 #endif

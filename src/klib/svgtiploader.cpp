@@ -63,7 +63,7 @@ void SvgTipLoader::reload()
    m_CurrentImage.fill( m_OriginalPalette.base().color() );
    QPainter p(&m_CurrentImage);
 
-   if (effectiveHeight >= m_pAnim.tipSize().height() && m_pCurrentTip) {
+   if (effectiveHeight >= m_pAnim.tipSize().height() /*&& m_pCurrentTip*/) {
       p.setOpacity(0.1*m_CurrentFrame.opacity);
       p.drawImage(m_CurrentFrame.point.x(),m_CurrentFrame.point.y(),m_pAnim.currentImage());
    }
@@ -124,12 +124,12 @@ void SvgTipLoader::setBottomMargin(int margin)
 void SvgTipLoader::setCurrentTip(bool tip)
 {
    m_pCurrentTip =  tip;
-   if (tip) {
-      m_pAnim.start();
+   /*if (tip) {
    }
    else {
-      m_CurrentFrame = {QPoint(0,0),QRect(0,0,0,0),0};
-   }
+      //m_CurrentFrame = {QPoint(0,0),QRect(0,0,0,0),0};
+   }*/
+   m_pAnim.start(tip);
    changeSize();
 }
 

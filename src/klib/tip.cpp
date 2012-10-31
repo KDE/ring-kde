@@ -30,7 +30,7 @@
 
 ///Constructor
 Tip::Tip(QWidget* parent,const QString& path, const QString& text, int maxLine) : QObject(parent),m_OriginalText(text),m_MaxLine(maxLine),m_Position(TipPosition::Bottom),m_IsMaxSize(false),m_pR(nullptr),
-m_OriginalPalette(parent->palette()),m_AnimationIn(TipAnimation::TranslationTop),m_AnimationOut(TipAnimation::Fade)
+m_OriginalPalette(parent->palette()),m_AnimationIn(TipAnimation::TranslationTop),m_AnimationOut(TipAnimation::TranslationTop)
 {
    QFile file(path);
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
