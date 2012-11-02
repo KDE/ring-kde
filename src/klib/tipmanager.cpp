@@ -37,15 +37,16 @@ bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
 }
 
 ///Constructor
-TipManager::TipManager(QTreeView* parent, const QString& path, const QString& text, int maxLine):QObject(parent),
-m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),m_Tip(parent,path,text,maxLine),
-m_pAnim(&m_Tip,this)
+TipManager::TipManager(QTreeView* parent):QObject(parent),
+m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
+m_pAnim(this),m_pCurrentTip(nullptr)
 {
    ResizeEventFilter* filter = new ResizeEventFilter(this);
    parent->installEventFilter(filter);
    reload();
 
    connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
+   connect(&m_pAnim,SIGNAL(animationEnded()),this,SLOT(animationEnded()));
 }
 
 ///Get the current image
@@ -91,12 +92,35 @@ void TipManager::setBottomMargin(int margin)
 }
 
 ///Set the current tip, hide the previous one, if any
-void TipManager::setCurrentTip(bool tip)
+void TipManager::setCurrentTip(Tip* tip)
+{
+   if (!m_pCurrentTip && tip) {
+      setCurrentTip_private(tip);
+   }
+   else if (m_pCurrentTip) {
+      m_pAnim.start(false);
+      changeSize(true);
+      m_lTipQueue << tip;
+   }
+   else if (tip) {
+      m_lTipQueue << tip;
+   }
+}
+
+void TipManager::setCurrentTip_private(Tip* tip)
 {
    if (tip != m_pCurrentTip) {
+      m_pAnim.setTip(tip);
       m_pCurrentTip =  tip;
-      m_pAnim.start(tip);
+      m_pAnim.start(m_pCurrentTip != nullptr);
       changeSize(true);
+   }
+}
+
+void TipManager::animationEnded()
+{
+   if (m_lTipQueue.size()) {
+      setCurrentTip_private(m_lTipQueue.takeFirst());
    }
 }
 
@@ -110,8 +134,9 @@ void TipManager::animationStep(FrameDescription desc)
 ///Callback when size change
 void TipManager::changeSize(bool ignoreAnim)
 {
-   int width(m_pParent->width()),height(m_pParent->height());
-   int effectiveHeight = height-m_BottomMargin-m_TopMargin;
-//    qDebug() << height << (height-effectiveHeight) << effectiveHeight << (width-30);
-   emit sizeChanged(QRect(15,m_TopMargin,width-30,effectiveHeight),ignoreAnim);
+   if (m_pCurrentTip) {
+      int width(m_pParent->width()),height(m_pParent->height());
+      int effectiveHeight = height-m_BottomMargin-m_TopMargin;
+      emit sizeChanged(QRect(15,m_TopMargin,width-30,effectiveHeight),ignoreAnim);
+   }
 }

@@ -40,16 +40,20 @@ class TipAnimationWrapper : public QObject
 {
    Q_OBJECT
 public:
-   TipAnimationWrapper(Tip* aTip, TipManager* parent);
+   TipAnimationWrapper(TipManager* parent);
    virtual ~TipAnimationWrapper();
 
    //Mutator
    void start(bool show = true);
 
+   //Setter
+   void setTip(Tip* tip) {m_pTip = tip;}
+
    //Getter
    const QImage& currentImage();
    QSize tipSize();
    bool  isRunning();
+   Tip*  tip() {return m_pTip;}
 
 private:
    //Attributes

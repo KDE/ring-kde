@@ -53,7 +53,7 @@ class LIB_EXPORT TipManager : public QObject
    friend class ResizeEventFilter;
 public:
    //Constructor
-   TipManager(QTreeView* parent, const QString& path, const QString& text, int maxLine);
+   TipManager(QTreeView* parent);
 
    //Getter
    QImage getImage();
@@ -61,14 +61,12 @@ public:
    //Setters
    void setTopMargin(int margin);
    void setBottomMargin(int margin);
-   void setCurrentTip(bool tip);
-
-   //Helper
-//    static QStringList stringToLineArray(const QFont& font, QString text, int width = -1);
+   void setCurrentTip(Tip* tip);
 
 private:
    //Methods
    void reload();
+   void setCurrentTip_private(Tip* tip);
 
    //Attributes
    QPalette            m_OriginalPalette;
@@ -76,14 +74,15 @@ private:
    int                 m_TopMargin      ;
    int                 m_BottomMargin   ;
    QImage              m_CurrentImage   ;
-   Tip                 m_Tip            ;
-   bool                m_pCurrentTip    ;
+   Tip*                m_pCurrentTip    ;
    TipAnimationWrapper m_pAnim          ;
    FrameDescription    m_CurrentFrame   ;
+   QList<Tip*>         m_lTipQueue      ;
 
 private slots:
    void animationStep(FrameDescription desc);
    void changeSize(bool ignoreAnim = false);
+   void animationEnded();
 
 signals:
    void sizeChanged(QRect newRect,bool ignoreAnim);

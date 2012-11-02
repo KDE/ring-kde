@@ -30,10 +30,9 @@
 #include "tipmanager.h"
 
 ///Constructor
-Tip::Tip(QWidget* parent,const QString& path, const QString& text, int maxLine) : QObject(parent),m_OriginalText(text),m_MaxLine(maxLine),m_Position(TipPosition::Bottom),m_IsMaxSize(false),m_pR(nullptr),
+Tip::Tip(QWidget* parent,const QString& path, const QString& text) : QObject(parent),m_OriginalText(text),m_Position(TipPosition::Bottom),m_IsMaxSize(false),m_pR(nullptr),
 m_OriginalPalette(parent->palette()),m_AnimationIn(TipAnimation::TranslationTop),m_AnimationOut(TipAnimation::TranslationTop),m_pFont(nullptr)
 {
-   loadSvg(path);
 }
 
 ///Destructor
@@ -81,7 +80,7 @@ QSize Tip::reload(const QRect& availableSize)
 
       //If the widget is subclassed, this would allow decorations to be added like images
       paintDecorations(p,textRect);
-      
+
       //Set the size from the RECT //TODO redundant
       m_CurrentSize = QSize(m_CurrentRect.width(),m_CurrentRect.height());
    }
@@ -96,7 +95,7 @@ QRect Tip::getTextRect(const QString& text)
 }
 
 ///Check if the thene color scheme is darker than #888888
-///@return true = bright, false = dark
+///@return true = dark, false = bright
 bool Tip::brightOrDarkBase()
 {
    QColor color = m_OriginalPalette.base().color();
@@ -106,14 +105,13 @@ bool Tip::brightOrDarkBase()
 
 QRect Tip::getDecorationRect()
 {
-   return QRect(0,0,m_CurrentSize.width()-2*PADDING,60);
+   return QRect();
 }
 
 void Tip::paintDecorations(QPainter& p, const QRect& textRect)
 {
-   if (!m_pR)
-      m_pR = new QSvgRenderer(m_OriginalFile);
-   m_pR->render(&p,QRect(m_CurrentRect.width() - PADDING - 50*2.59143327842 - 10 ,textRect.y()+textRect.height() + 10,50*2.59143327842,50));
+   Q_UNUSED(p)
+   Q_UNUSED(textRect)
 }
 
 const QFont& Tip::font()

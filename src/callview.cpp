@@ -50,6 +50,7 @@
 #include "sflphoneaccessibility.h"
 #include "widgets/conferencebox.h"
 #include "widgets/callviewoverlaytoolbar.h"
+#include "widgets/tips/dialpadtip.h"
 #include "klib/tipmanager.h"
 
 ///CallTreeItemDelegate: Delegates for CallTreeItem
@@ -275,10 +276,9 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    QGridLayout* gl    = new QGridLayout     ( m_pTransferOverlay );
    QLabel* lblImg     = new QLabel          ( image              );
    m_pCanvasToolbar   = new CallViewOverlayToolbar(this);
-   m_pTip             = new TipManager(this,
-                                 KStandardDirs::locate("data",
-                                          "sflphone-client-kde/tips/keyboard.svg"),
-                                          i18n("Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dsadasdialpad below or start typing a number. Use thasdasde dialpad below or sasdasdtart typing a number. "),4);
+   m_pTip2            = new DialPadTip(this);
+   m_pTip             = new TipManager(this);
+
 
    m_pTransferOverlay->setVisible(false);
    m_pTransferOverlay->resize(size());
@@ -998,11 +998,11 @@ void CallView::moveSelectedItem( Qt::Key direction )
       setCurrentIndex(moveCursor(QAbstractItemView::MoveRight,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Up) {
-      m_pTip->setCurrentTip(true);
+      m_pTip->setCurrentTip(m_pTip2);
       setCurrentIndex(moveCursor(QAbstractItemView::MoveUp   ,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Down) {
-      m_pTip->setCurrentTip(false);
+      m_pTip->setCurrentTip(nullptr);
       setCurrentIndex(moveCursor(QAbstractItemView::MoveDown ,Qt::NoModifier));
    }
 }

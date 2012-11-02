@@ -39,6 +39,7 @@ class CallTreeItem;
 class CallTreeItemDelegate;
 class CallViewOverlayToolbar;
 class TipManager;
+class Tip;
 
 //Typedef
 typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
@@ -117,6 +118,7 @@ class CallView : public QTreeWidget {
       Call*                   m_pCallPendingTransfer;
       CallViewOverlayToolbar* m_pCanvasToolbar      ;
       TipManager*             m_pTip                ;
+      Tip*                    m_pTip2               ;
 
    protected:
       //Reimlementation

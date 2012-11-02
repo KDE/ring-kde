@@ -25,7 +25,8 @@
 #include "tip.h"
 #include "tipmanager.h"
 
-TipAnimationWrapper::TipAnimationWrapper(Tip* aTip, TipManager* parent) : QObject(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_pTip(aTip),m_TipSize(QSize(0,0))
+TipAnimationWrapper::TipAnimationWrapper(TipManager* parent) : QObject(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_TipSize(QSize(0,0)),
+m_pTip(nullptr)
 {
    connect(parent,SIGNAL(sizeChanged(QRect,bool)),this,SLOT(sizeChanged(QRect,bool)));
 }
@@ -53,7 +54,7 @@ void TipAnimationWrapper::sizeChanged(QRect rect,bool ignoreAnim)
 
 const QImage& TipAnimationWrapper::currentImage()
 {
-   return m_CurrentImage;
+   return (m_pTip)?m_pTip->m_CurrentImage:m_CurrentImage;
 }
 
 QSize TipAnimationWrapper::tipSize()
@@ -67,24 +68,27 @@ QSize TipAnimationWrapper::tipSize()
  */
 void TipAnimationWrapper::start(bool show)
 {
-   if (!m_pTimer) {
-      m_pTimer = new QTimer(this);
-      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(step()));
-   }
+   if (m_pTip) {
+      if (!m_pTimer) {
+         m_pTimer = new QTimer(this);
+         connect(m_pTimer,SIGNAL(timeout()),this,SLOT(step()));
+      }
 
-   m_Step = 0;
-   m_CurrentAnimation = show?m_pTip->m_AnimationIn:m_pTip->m_AnimationOut;
-   m_FadeDirection    = show;
-   if (m_CurrentAnimation != Tip::None)
-      m_pTimer->start(33);
-   else {
-      step();
-      emit animationEnded();
+      m_Step = 0;
+      m_CurrentAnimation = show?m_pTip->m_AnimationIn:m_pTip->m_AnimationOut;
+      m_FadeDirection    = show;
+      if (m_CurrentAnimation != Tip::None)
+         m_pTimer->start(33);
+      else {
+         step();
+         emit animationEnded();
+      }
    }
 }
 
 void TipAnimationWrapper::step()
 {
+   if (!m_pTip) return;
    m_Step++;
    if (m_Step > m_MaxStep) {
       m_Step = 0;

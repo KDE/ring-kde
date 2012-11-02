@@ -15,10 +15,10 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TIP_H
-#define TIP_H
+#ifndef TIP_DIALPAD_H
+#define TIP_DIALPAD_H
 //Base
-#include <QtCore/QObject>
+#include "../../klib/tip.h"
 
 //SFLPhone
 #include <QtCore/QStringList>
@@ -29,69 +29,20 @@
 
 class QSvgRenderer;
 
-//SFLPhone
-#include "../lib/typedefs.h"
-
 //Qt
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class LIB_EXPORT Tip : public QObject
+class DialPadTip : public Tip
 {
    Q_OBJECT
 public:
-   friend class TipAnimationWrapper;
-
-   Tip(QWidget* parent = nullptr,const QString& path="", const QString& text="");
-   virtual ~Tip();
-
-   //Enum
-   enum TipPosition {
-      Top,
-      Middle,
-      Bottom
-   };
-
-   enum TipAnimation {
-      Fade,
-      TranslationTop,
-      TranslationBottom,
-      TranslationLeft,
-      TranslationRight,
-      None
-   };
-
-   //Mutator
-   QSize reload(const QRect& availableSize);
+   DialPadTip(QWidget* parent = nullptr);
+   virtual ~DialPadTip();
 
 protected:
-   //Attributes
-   TipPosition   m_Position       ;
-   QByteArray    m_OriginalFile   ;
-   QString       m_OriginalText   ;
-   QStringList   m_Lines          ;
-   QSize         m_CurrentSize    ;
-   QImage        m_CurrentImage   ;
-   QRect         m_CurrentRect    ;
-   bool          m_IsMaxSize      ;
-   QSvgRenderer* m_pR             ;
-   QPalette      m_OriginalPalette;
-   TipAnimation  m_AnimationIn    ;
-   TipAnimation  m_AnimationOut   ;
-   QFont*        m_pFont          ;
-
-   static const int PADDING = 15;
-   static const int MAX_WIDTH = 350;
-
-   //Helper
-   bool brightOrDarkBase();
-   QString loadSvg(const QString& path);
-
-   //To reimplement if needed
-   virtual QRect getTextRect(const QString& text);
    virtual QRect getDecorationRect();
    virtual void  paintDecorations(QPainter& p, const QRect& textRect);
-   virtual const QFont& font();
 };
 
 #endif
