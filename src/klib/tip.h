@@ -42,7 +42,7 @@ class LIB_EXPORT Tip : public QObject
 public:
    friend class TipAnimationWrapper;
 
-   Tip(QWidget* parent = nullptr,const QString& text="");
+   Tip(const QString& text="",QWidget* parent = nullptr);
    virtual ~Tip();
 
    //Enum
@@ -71,6 +71,8 @@ public:
    //Setter
    void setVisible(bool visible) {m_IsVisible = visible;}
    void setTimeOut(int  timeOut) {m_TimeOut   = timeOut;}
+   void setAnimationIn(TipAnimation a) {m_AnimationIn = a;}
+   void setAnimationOut(TipAnimation a) {m_AnimationOut = a;}
 
 protected:
    //Attributes

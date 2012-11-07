@@ -51,6 +51,7 @@
 #include "widgets/conferencebox.h"
 #include "widgets/callviewoverlaytoolbar.h"
 #include "widgets/tips/dialpadtip.h"
+#include "widgets/tips/tipcollection.h"
 #include "klib/tipmanager.h"
 
 ///CallTreeItemDelegate: Delegates for CallTreeItem
@@ -276,10 +277,7 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    QGridLayout* gl    = new QGridLayout     ( m_pTransferOverlay );
    QLabel* lblImg     = new QLabel          ( image              );
    m_pCanvasToolbar   = new CallViewOverlayToolbar(this);
-   m_pTip2            = new DialPadTip(this);
-   m_pTip3            = new Tip(this,i18n("Call ended"));
-   m_pTip             = new TipManager(this);
-   m_pTip3->setTimeOut(5000);
+   TipCollection::setManager(new TipManager(this));
 
 
    m_pTransferOverlay->setVisible(false);
@@ -322,7 +320,7 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    //TODO remove this section
    //BEGIN On canvas toolbar
    QPalette p = viewport()->palette();
-   p.setBrush(QPalette::Base, QBrush(m_pTip->getImage()));
+   p.setBrush(QPalette::Base, QBrush(TipCollection::manager()->getImage()));
    viewport()->setPalette(p);
    setPalette(p);
    setAutoFillBackground(true);
@@ -836,6 +834,7 @@ void CallView::destroyCall(Call* toDestroy)
    else
       kDebug() << "Call not found";
    moveCanvasTip();
+   TipCollection::manager()->setCurrentTip(TipCollection::endCall());
 } //destroyCall
 
 /// @todo Remove the text partially covering the TreeView item widget when it is being dragged, a beter implementation is needed
@@ -1000,12 +999,9 @@ void CallView::moveSelectedItem( Qt::Key direction )
       setCurrentIndex(moveCursor(QAbstractItemView::MoveRight,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Up) {
-      m_pTip->setCurrentTip(m_pTip2);
       setCurrentIndex(moveCursor(QAbstractItemView::MoveUp   ,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Down) {
-      m_pTip->setCurrentTip(m_pTip3);
-//       m_pTip->setCurrentTip(nullptr);
       setCurrentIndex(moveCursor(QAbstractItemView::MoveDown ,Qt::NoModifier));
    }
 }
@@ -1036,8 +1032,8 @@ void CallView::moveCanvasTip()
       topM += r.y() + r.height();
    }
 
-   m_pTip->setTopMargin(topM);
-   m_pTip->setBottomMargin(bottomM);
+   TipCollection::manager()->setTopMargin(topM);
+   TipCollection::manager()->setBottomMargin(bottomM);
 }
 
 /*****************************************************************************

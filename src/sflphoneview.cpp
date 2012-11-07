@@ -43,6 +43,7 @@
 #include "actionsetaccountfirst.h"
 #include "sflphone.h"
 #include "widgets/callviewoverlaytoolbar.h"
+#include "widgets/tips/tipcollection.h"
 
 //sflphone library
 #include "lib/typedefs.h"
@@ -52,6 +53,7 @@
 #include "lib/sflphone_const.h"
 #include "lib/contact.h"
 #include "klib/helperfunctions.h"
+#include "klib/tipmanager.h"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
@@ -430,6 +432,8 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::Accept   ] = ACTION_LABEL_ACCEPT         ;
             actionTexts     [ SFLPhone::Refuse   ] = ACTION_LABEL_REFUSE         ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)   ;
+            if (TipCollection::manager())
+               TipCollection::manager()->setCurrentTip(TipCollection::rigging());
             break;
 
          case CALL_STATE_RINGING:

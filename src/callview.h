@@ -38,8 +38,6 @@ class KLineEdit;
 class CallTreeItem;
 class CallTreeItemDelegate;
 class CallViewOverlayToolbar;
-class TipManager;
-class Tip;
 
 //Typedef
 typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
@@ -117,9 +115,6 @@ class CallView : public QTreeWidget {
       CallViewOverlay*        m_pActiveOverlay      ;
       Call*                   m_pCallPendingTransfer;
       CallViewOverlayToolbar* m_pCanvasToolbar      ;
-      TipManager*             m_pTip                ;
-      Tip*                    m_pTip2               ;
-      Tip*                    m_pTip3               ;
 
    protected:
       //Reimlementation

@@ -61,6 +61,7 @@ SET(
    widgets/imtab.cpp
    widgets/callviewoverlaytoolbar.cpp
    widgets/tips/dialpadtip.cpp
+   widgets/tips/tipcollection.cpp
 #    widgets/acceleratedvideowidget.cpp
    callview.cpp
 )
