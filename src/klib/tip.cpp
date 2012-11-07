@@ -61,6 +61,8 @@ QSize Tip::reload(const QRect& availableSize)
       //Get area required to display the text
       QRect textRect = getTextRect(m_OriginalText);
       m_CurrentRect.setHeight(m_CurrentRect.height() + textRect.height() + PADDING + getDecorationRect().height());
+      if (m_CurrentRect.width() - textRect.width() > 20)
+         m_CurrentRect.setWidth(textRect.width()+2*PADDING);
 
       //Create the background image
       m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_RGB888);
