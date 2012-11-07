@@ -277,7 +277,9 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    QLabel* lblImg     = new QLabel          ( image              );
    m_pCanvasToolbar   = new CallViewOverlayToolbar(this);
    m_pTip2            = new DialPadTip(this);
+   m_pTip3            = new Tip(this,i18n("Call ended"));
    m_pTip             = new TipManager(this);
+   m_pTip3->setTimeOut(5000);
 
 
    m_pTransferOverlay->setVisible(false);
@@ -1002,7 +1004,8 @@ void CallView::moveSelectedItem( Qt::Key direction )
       setCurrentIndex(moveCursor(QAbstractItemView::MoveUp   ,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Down) {
-      m_pTip->setCurrentTip(nullptr);
+      m_pTip->setCurrentTip(m_pTip3);
+//       m_pTip->setCurrentTip(nullptr);
       setCurrentIndex(moveCursor(QAbstractItemView::MoveDown ,Qt::NoModifier));
    }
 }

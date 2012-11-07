@@ -119,6 +119,7 @@ class CallView : public QTreeWidget {
       CallViewOverlayToolbar* m_pCanvasToolbar      ;
       TipManager*             m_pTip                ;
       Tip*                    m_pTip2               ;
+      Tip*                    m_pTip3               ;
 
    protected:
       //Reimlementation

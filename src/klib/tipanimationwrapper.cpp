@@ -83,6 +83,7 @@ void TipAnimationWrapper::start(bool show)
          step();
          emit animationEnded();
       }
+      m_pTip->setVisible(show);
    }
 }
 

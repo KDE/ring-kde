@@ -19,6 +19,7 @@
 
 //Qt
 #include <QtGui/QPainter>
+#include <QtCore/QTimer>
 #include <QtCore/QEvent>
 #include <QtCore/QDebug>
 
@@ -39,7 +40,7 @@ bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
 ///Constructor
 TipManager::TipManager(QTreeView* parent):QObject(parent),
 m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
-m_pAnim(this),m_pCurrentTip(nullptr)
+m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(nullptr)
 {
    ResizeEventFilter* filter = new ResizeEventFilter(this);
    parent->installEventFilter(filter);
@@ -94,6 +95,9 @@ void TipManager::setBottomMargin(int margin)
 ///Set the current tip, hide the previous one, if any
 void TipManager::setCurrentTip(Tip* tip)
 {
+   if (tip == m_pCurrentTip) return;
+
+   //Set current tip
    if (!m_pCurrentTip && tip) {
       setCurrentTip_private(tip);
    }
@@ -102,26 +106,41 @@ void TipManager::setCurrentTip(Tip* tip)
       changeSize(true);
       m_lTipQueue << tip;
    }
-   else if (tip) {
-      m_lTipQueue << tip;
+   else {
+      setCurrentTip_private(tip);
    }
+}
+
+void TipManager::timeout()
+{
+   if (m_lTipQueue.size()) {
+      setCurrentTip(m_lTipQueue.takeFirst());
+   }
+   else
+      setCurrentTip(nullptr);
 }
 
 void TipManager::setCurrentTip_private(Tip* tip)
 {
-   if (tip != m_pCurrentTip) {
-      m_pAnim.setTip(tip);
-      m_pCurrentTip =  tip;
-      m_pAnim.start(m_pCurrentTip != nullptr);
-      changeSize(true);
-   }
+   m_pAnim.setTip(tip);
+   m_pCurrentTip =  (m_lTipQueue.size()&&(m_pCurrentTip&&!m_pCurrentTip->isVisible()))?m_lTipQueue.takeFirst():tip;
+   m_pAnim.start(m_pCurrentTip != nullptr);
+
+   //Start timer if necessary
+   if (m_pCurrentTip && m_pCurrentTip->timeOut())
+      QTimer::singleShot(tip->timeOut(), this, SLOT(timeout()));
+   changeSize(true);
 }
 
 void TipManager::animationEnded()
 {
-   if (m_lTipQueue.size()) {
-      setCurrentTip_private(m_lTipQueue.takeFirst());
+   //TODO stop timer
+   if (m_pCurrentTip && !m_pCurrentTip->isVisible()) {
+      m_pCurrentTip = nullptr;
    }
+
+   if (!m_pCurrentTip && m_lTipQueue.size())
+      setCurrentTip_private(m_lTipQueue.takeFirst());
 }
 
 ///Callback for new animation frame

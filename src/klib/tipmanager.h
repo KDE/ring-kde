@@ -25,6 +25,7 @@
 #include <QtGui/QTreeView>
 #include <QtGui/QImage>
 class QSvgRenderer;
+class QTimer;
 
 //SFLPhone
 #include "../lib/typedefs.h"
@@ -78,11 +79,13 @@ private:
    TipAnimationWrapper m_pAnim          ;
    FrameDescription    m_CurrentFrame   ;
    QList<Tip*>         m_lTipQueue      ;
+   QTimer*             m_pTimer         ;
 
 private slots:
    void animationStep(FrameDescription desc);
    void changeSize(bool ignoreAnim = false);
    void animationEnded();
+   void timeout(); //TODO delete
 
 signals:
    void sizeChanged(QRect newRect,bool ignoreAnim);
