@@ -66,6 +66,9 @@ private:
    QRect   m_ParentRect;
    QSize   m_TipSize;
    QImage  m_CurrentImage;
+   TipManager* m_pParent;
+   Tip*    m_pCurrentTip;
+   FrameDescription m_pCurrentDesc;
 
 protected:
    int     m_MaxStep;
@@ -73,6 +76,8 @@ protected:
 private slots:
    void step();
    void sizeChanged(QRect rect,bool ignoreAnim);
+   void currentChanged(Tip* newCurrent);
+   void tipChanged();
 
 signals:
    void animationStep(FrameDescription desc);

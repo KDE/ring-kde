@@ -25,10 +25,11 @@
 #include "tip.h"
 #include "tipmanager.h"
 
-TipAnimationWrapper::TipAnimationWrapper(TipManager* parent) : QObject(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_TipSize(QSize(0,0)),
-m_pTip(nullptr)
+TipAnimationWrapper::TipAnimationWrapper(TipManager* parent) : QObject(parent),m_pParent(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_TipSize(QSize(0,0)),
+m_pTip(nullptr),m_pCurrentTip(nullptr)
 {
-   connect(parent,SIGNAL(sizeChanged(QRect,bool)),this,SLOT(sizeChanged(QRect,bool)));
+   connect(parent, SIGNAL(sizeChanged(QRect,bool)) , this , SLOT(sizeChanged(QRect,bool)) );
+   connect(parent, SIGNAL(currentTipChanged(Tip*)) , this , SLOT(currentChanged(Tip*))    );
 }
 
 TipAnimationWrapper::~TipAnimationWrapper()
@@ -167,11 +168,28 @@ void TipAnimationWrapper::step()
          }
       }
 
-      emit animationStep({QPoint(wx,wy),QRect(0,0,0,0),opacity});
+      m_pCurrentDesc = {QPoint(wx,wy),QRect(0,0,0,0),opacity};
+      emit animationStep(m_pCurrentDesc);
    }
 }
 
 bool TipAnimationWrapper::isRunning()
 {
    return m_Step!=0;
+}
+
+void TipAnimationWrapper::currentChanged(Tip* newCurrent)
+{
+   if (m_pCurrentTip)
+      disconnect(m_pCurrentTip,SIGNAL(changed()),this,SLOT(tipChanged()));
+   m_pCurrentTip = newCurrent;
+   if (newCurrent)
+      connect(m_pCurrentTip,SIGNAL(changed()),this,SLOT(tipChanged()));
+}
+
+void TipAnimationWrapper::tipChanged()
+{
+   //Only request repaint now if none is scheduled for the next frame
+   if (m_pTimer && !m_pTimer->isActive())
+      emit animationStep(m_pCurrentDesc);
 }

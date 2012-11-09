@@ -62,7 +62,7 @@ public:
    };
 
    //Mutator
-   QSize reload(const QRect& availableSize);
+   QSize reload(const QRect& availableSize,bool force = false);
 
    //Getter
    bool isVisible     () { return m_IsVisible; }
@@ -71,7 +71,7 @@ public:
    bool hasBackground () { return m_HasBg;     }
 
    //Setter
-   void setVisible      ( bool visible   ) { m_IsVisible    = visible; }
+   void setVisible(bool visible);
    void setTimeOut      ( int  timeOut   ) { m_TimeOut      = timeOut; }
    void setAnimationIn  ( TipAnimation a ) { m_AnimationIn  = a;       }
    void setAnimationOut ( TipAnimation a ) { m_AnimationOut = a;       }
@@ -113,6 +113,9 @@ protected:
    virtual QRect getDecorationRect (                                    );
    virtual void  paintDecorations  ( QPainter& p, const QRect& textRect );
    virtual const QFont& font       (                                    );
+signals:
+   void visibilityChanged(bool);
+   void changed();
 };
 
 #endif

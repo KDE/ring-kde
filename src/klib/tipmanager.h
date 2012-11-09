@@ -86,10 +86,11 @@ private slots:
    void animationStep(FrameDescription desc);
    void changeSize(bool ignoreAnim = false);
    void animationEnded();
-   void timeout(); //TODO delete
+   void timeout();
 
 signals:
    void sizeChanged(QRect newRect,bool ignoreAnim);
+   void currentTipChanged(Tip*);
 
 };
 

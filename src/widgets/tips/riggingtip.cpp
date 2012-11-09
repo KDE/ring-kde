@@ -22,6 +22,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
 #include <QtCore/QFile>
+#include <QtCore/QTimer>
 
 //KDE
 #include <KDebug>
@@ -29,18 +30,20 @@
 #include <KStandardDirs>
 
 ///Constructor
-RiggingTip::RiggingTip(QWidget* parent) : Tip(QString(),parent)
+RiggingTip::RiggingTip(QWidget* parent) : Tip(QString(),parent),m_pTimer(nullptr),m_Counter(0)
 
 {
    setHasBackground(false);
    setHasText(false);
    m_Padding = 0;
    loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/rigging.svg"));
+   connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }
 
 ///Destructor
 RiggingTip::~RiggingTip()
 {
+   if (m_pTimer) delete m_pTimer;
 }
 
 QRect RiggingTip::getDecorationRect()
@@ -53,5 +56,26 @@ void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
    Q_UNUSED(textRect);
    if (!m_pR)
       m_pR = new QSvgRenderer(m_OriginalFile);
-   m_pR->render(&p,QRect(0 ,0,100*1.13549618321,100));
+   m_pR->render(&p,QRect(0 ,0,100*1.13549618321 - m_Counter,100));
+}
+
+void RiggingTip::startAnimation(bool visibility)
+{
+   if (!m_pTimer && visibility) {
+      m_pTimer = new QTimer(this);
+      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timeout()));
+   }
+
+   if (visibility)
+      m_pTimer->start(1000/30);
+   else if (m_pTimer) {
+      m_pTimer->stop();
+      m_Counter = 0;
+   }
+}
+
+void RiggingTip::timeout()
+{
+   m_Counter += 8;
+   reload(m_CurrentRect,true);
 }

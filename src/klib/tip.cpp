@@ -47,9 +47,9 @@ Tip::~Tip()
  * Reload the tip for new dimensions
  * @return The size required for the tip
  */
-QSize Tip::reload(const QRect& availableSize)
+QSize Tip::reload(const QRect& availableSize,bool force)
 {
-   if (m_CurrentRect != availableSize && !(m_IsMaxSize && m_CurrentSize.width()*1.25 < availableSize.width())) {
+   if ((m_CurrentRect != availableSize && !(m_IsMaxSize && m_CurrentSize.width()*1.25 < availableSize.width())) || force) {
       m_CurrentRect = availableSize;
       m_CurrentRect.setHeight(m_Padding);
 
@@ -91,6 +91,9 @@ QSize Tip::reload(const QRect& availableSize)
 
       //Set the size from the RECT //TODO redundant
       m_CurrentSize = QSize(m_CurrentRect.width(),m_CurrentRect.height());
+
+      //Notify observers that they need to reapaint
+      emit changed();
    }
    return m_CurrentSize;
 }
@@ -141,7 +144,13 @@ QString Tip::loadSvg(const QString& path)
       m_OriginalFile = file.readAll();
       m_OriginalFile.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
       m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toAscii());
-      qDebug() << m_OriginalFile;
    }
    return m_OriginalFile;
+}
+
+
+void Tip::setVisible(bool visible)
+{
+   m_IsVisible = visible;
+   emit visibilityChanged(m_IsVisible);
 }

@@ -124,6 +124,7 @@ void TipManager::setCurrentTip_private(Tip* tip)
 {
    m_pAnim.setTip(tip);
    m_pCurrentTip =  (m_lTipQueue.size()&&(m_pCurrentTip&&!m_pCurrentTip->isVisible()))?m_lTipQueue.takeFirst():tip;
+   emit currentTipChanged(tip);
    m_pAnim.start(m_pCurrentTip != nullptr);
 
    //Start timer if necessary
@@ -137,6 +138,7 @@ void TipManager::animationEnded()
    //TODO stop timer
    if (m_pCurrentTip && !m_pCurrentTip->isVisible()) {
       m_pCurrentTip = nullptr;
+      emit currentTipChanged(nullptr);
    }
 
    if (!m_pCurrentTip && m_lTipQueue.size())

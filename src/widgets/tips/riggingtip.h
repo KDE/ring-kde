@@ -23,6 +23,7 @@
 
 //Qt
 #include <QtGui/QWidget>
+#include <QtCore/QTimer>
 
 class QSvgRenderer;
 
@@ -39,7 +40,15 @@ public:
 
 protected:
    virtual QRect getDecorationRect();
-   virtual void  paintDecorations(QPainter& p, const QRect& textRect);
+   virtual void paintDecorations(QPainter& p, const QRect& textRect);
+
+private:
+   QTimer* m_pTimer;
+   uchar   m_Counter;
+
+private slots:
+   void startAnimation(bool visibility);
+   void timeout();
 };
 
 #endif
