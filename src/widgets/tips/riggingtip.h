@@ -15,39 +15,31 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "dialpadtip.h"
+#ifndef TIP_RIGGING_H
+#define TIP_RIGGING_H
+
+//Base
+#include "../../klib/tip.h"
 
 //Qt
-#include <QtSvg/QSvgRenderer>
-#include <QtGui/QPainter>
-#include <QtGui/QFontMetrics>
-#include <QtCore/QFile>
+#include <QtGui/QWidget>
 
-//KDE
-#include <KDebug>
-#include <KLocale>
-#include <KStandardDirs>
+class QSvgRenderer;
 
-///Constructor
-DialPadTip::DialPadTip(QWidget* parent) : Tip(i18n("Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dsadasdialpad below or start typing a number. Use thasdasde dialpad below or sasdasdtart typing a number. "),parent)
+//Qt
+class QPainter;
 
+///A tip to be passed to the TipLoader
+class RiggingTip : public Tip
 {
-   loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/keyboard.svg"));
-}
+   Q_OBJECT
+public:
+   RiggingTip(QWidget* parent = nullptr);
+   virtual ~RiggingTip();
 
-///Destructor
-DialPadTip::~DialPadTip()
-{
-}
+protected:
+   virtual QRect getDecorationRect();
+   virtual void  paintDecorations(QPainter& p, const QRect& textRect);
+};
 
-QRect DialPadTip::getDecorationRect()
-{
-   return QRect(0,0,m_CurrentSize.width()-2*m_Padding,60);
-}
-
-void DialPadTip::paintDecorations(QPainter& p, const QRect& textRect)
-{
-   if (!m_pR)
-      m_pR = new QSvgRenderer(m_OriginalFile);
-   m_pR->render(&p,QRect(m_CurrentRect.width() - m_Padding - 50*2.59143327842 - 10 ,textRect.y()+textRect.height() + 10,50*2.59143327842,50));
-}
+#endif

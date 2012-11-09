@@ -47,32 +47,38 @@ public:
 
    //Enum
    enum TipPosition {
-      Top,
+      Top   ,
       Middle,
-      Bottom
+      Bottom,
    };
 
    enum TipAnimation {
-      Fade,
-      TranslationTop,
+      Fade             ,
+      TranslationTop   ,
       TranslationBottom,
-      TranslationLeft,
-      TranslationRight,
-      None
+      TranslationLeft  ,
+      TranslationRight ,
+      None             ,
    };
 
    //Mutator
    QSize reload(const QRect& availableSize);
-   
+
    //Getter
-   bool isVisible() {return m_IsVisible; }
-   int  timeOut  () {return m_TimeOut;   }
-   
+   bool isVisible     () { return m_IsVisible; }
+   int  timeOut       () { return m_TimeOut;   }
+   bool hasText       () { return m_HasText;   }
+   bool hasBackground () { return m_HasBg;     }
+
    //Setter
-   void setVisible(bool visible) {m_IsVisible = visible;}
-   void setTimeOut(int  timeOut) {m_TimeOut   = timeOut;}
-   void setAnimationIn(TipAnimation a) {m_AnimationIn = a;}
-   void setAnimationOut(TipAnimation a) {m_AnimationOut = a;}
+   void setVisible      ( bool visible   ) { m_IsVisible    = visible; }
+   void setTimeOut      ( int  timeOut   ) { m_TimeOut      = timeOut; }
+   void setAnimationIn  ( TipAnimation a ) { m_AnimationIn  = a;       }
+   void setAnimationOut ( TipAnimation a ) { m_AnimationOut = a;       }
+
+private:
+   bool m_HasBg;
+   bool m_HasText;
 
 protected:
    //Attributes
@@ -91,19 +97,22 @@ protected:
    QFont*        m_pFont          ;
    bool          m_IsVisible      ;
    int           m_TimeOut        ;
-
-   static const int PADDING = 15;
+   int           m_Padding        ;
    static const int MAX_WIDTH = 350;
 
    //Helper
    bool brightOrDarkBase();
    QString loadSvg(const QString& path);
 
+   //Protected setters
+   void setHasText       (bool value) { m_HasText = value; }
+   void setHasBackground (bool value) { m_HasBg = value;   }
+
    //To reimplement if needed
-   virtual QRect getTextRect(const QString& text);
-   virtual QRect getDecorationRect();
-   virtual void  paintDecorations(QPainter& p, const QRect& textRect);
-   virtual const QFont& font();
+   virtual QRect getTextRect       ( const QString& text                );
+   virtual QRect getDecorationRect (                                    );
+   virtual void  paintDecorations  ( QPainter& p, const QRect& textRect );
+   virtual const QFont& font       (                                    );
 };
 
 #endif

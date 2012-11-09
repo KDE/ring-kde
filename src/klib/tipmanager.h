@@ -58,6 +58,7 @@ public:
 
    //Getter
    QImage getImage();
+   Tip* currentTip() {return m_pCurrentTip;}
 
    //Setters
    void setTopMargin(int margin);

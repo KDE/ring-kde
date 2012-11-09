@@ -33,7 +33,7 @@
 ///Constructor
 Tip::Tip(const QString& text, QWidget* parent) : QObject(parent),m_OriginalText(text),m_Position(TipPosition::Bottom),m_IsMaxSize(false),m_pR(nullptr),
 m_OriginalPalette(QApplication::palette()),m_AnimationIn(TipAnimation::TranslationTop),m_AnimationOut(TipAnimation::TranslationTop),m_pFont(nullptr),
-m_IsVisible(false),m_TimeOut(0)
+m_IsVisible(false),m_TimeOut(0),m_HasBg(true),m_HasText(true),m_Padding(15)
 {
 }
 
@@ -51,19 +51,21 @@ QSize Tip::reload(const QRect& availableSize)
 {
    if (m_CurrentRect != availableSize && !(m_IsMaxSize && m_CurrentSize.width()*1.25 < availableSize.width())) {
       m_CurrentRect = availableSize;
-      m_CurrentRect.setHeight(PADDING);
+      m_CurrentRect.setHeight(m_Padding);
 
       //One 1000px wide line is not so useful, this may change later (variable)
       if (m_CurrentRect.width() > MAX_WIDTH) {
          m_CurrentRect.setWidth( MAX_WIDTH );
       }
-      m_CurrentRect.setWidth(m_CurrentRect.width());
 
       //Get area required to display the text
-      QRect textRect = getTextRect(m_OriginalText);
-      m_CurrentRect.setHeight(m_CurrentRect.height() + textRect.height() + PADDING + getDecorationRect().height());
-      if (m_CurrentRect.width() - textRect.width() > 20)
-         m_CurrentRect.setWidth(textRect.width()+2*PADDING);
+      QRect textRect(getTextRect(m_OriginalText)),decoRect(getDecorationRect());
+      m_CurrentRect.setHeight(m_CurrentRect.height() + (hasText()?textRect.height():0) + m_Padding + decoRect.height());
+      if (m_CurrentRect.width() - textRect.width() > 20 && m_CurrentRect.width() > decoRect.width())
+         m_CurrentRect.setWidth(textRect.width()+2*m_Padding);
+
+      if (m_CurrentRect.width() < decoRect.x() + decoRect.width())
+         m_CurrentRect.setWidth(decoRect.x() + decoRect.width()+2*m_Padding);
 
       //Create the background image
       m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_RGB888);
@@ -74,9 +76,11 @@ QSize Tip::reload(const QRect& availableSize)
 
 
       //Draw the tip rectangle
-      p.setPen(QPen(m_OriginalPalette.base().color()));
-      p.setBrush(QBrush(brightOrDarkBase()?Qt::black:Qt::white));
-      p.drawRoundedRect(QRect(0,0,m_CurrentRect.width(),m_CurrentRect.height()),10,10);
+      if (hasBackground()) {
+         p.setPen(QPen(m_OriginalPalette.base().color()));
+         p.setBrush(QBrush(brightOrDarkBase()?Qt::black:Qt::white));
+         p.drawRoundedRect(QRect(0,0,m_CurrentRect.width(),m_CurrentRect.height()),10,10);
+      }
 
       //Draw the wrapped text in textRectS
       p.drawText(textRect,Qt::TextWordWrap|Qt::AlignJustify,m_OriginalText);
@@ -94,7 +98,7 @@ QSize Tip::reload(const QRect& availableSize)
 QRect Tip::getTextRect(const QString& text)
 {
    QFontMetrics metric(font());
-   QRect rect = metric.boundingRect(QRect(PADDING,PADDING,m_CurrentRect.width()-2*PADDING,999999),Qt::AlignJustify|Qt::TextWordWrap,text);
+   QRect rect = metric.boundingRect(QRect(m_Padding,m_Padding,m_CurrentRect.width()-2*m_Padding,999999),Qt::AlignJustify|Qt::TextWordWrap,text);
    return rect;
 }
 
@@ -137,6 +141,7 @@ QString Tip::loadSvg(const QString& path)
       m_OriginalFile = file.readAll();
       m_OriginalFile.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
       m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toAscii());
+      qDebug() << m_OriginalFile;
    }
    return m_OriginalFile;
 }

@@ -20,11 +20,7 @@
 //Base
 #include "../../klib/tip.h"
 
-//SFLPhone
-#include <QtCore/QStringList>
-#include <QtCore/QSize>
-#include <QtGui/QImage>
-#include <QtGui/QPalette>
+//Qt
 #include <QtGui/QWidget>
 
 class QSvgRenderer;

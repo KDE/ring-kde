@@ -324,6 +324,8 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    viewport()->setPalette(p);
    setPalette(p);
    setAutoFillBackground(true);
+   if (!SFLPhone::model()->getCallList().size())
+      TipCollection::manager()->setCurrentTip(TipCollection::dialPad());
    //END on canvas toolbar
    selectFirstItem();
 } //CallView
@@ -641,6 +643,8 @@ Call* CallView::addCall(Call* call, Call* parent)
    }
 
    moveCanvasTip();
+   if (TipCollection::manager()->currentTip()==TipCollection::dialPad())
+      TipCollection::manager()->setCurrentTip(nullptr);
 
    return call;
 }

@@ -20,6 +20,7 @@
 #include <KLocale>
 
 #include "dialpadtip.h"
+#include "riggingtip.h"
 #include "klib/tipmanager.h"
 
 //Tutorial mode
@@ -67,7 +68,7 @@ Tip* TipCollection::endCall()
 Tip* TipCollection::rigging()
 {
    if (!m_spRigging) {
-      m_spRigging = new Tip("Call rigging");
+      m_spRigging = new RiggingTip();
       m_spRigging->setTimeOut(3000);
       m_spRigging->setAnimationIn(Tip::TipAnimation::TranslationLeft);
       m_spRigging->setAnimationOut(Tip::TipAnimation::TranslationLeft);

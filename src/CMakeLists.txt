@@ -61,6 +61,7 @@ SET(
    widgets/imtab.cpp
    widgets/callviewoverlaytoolbar.cpp
    widgets/tips/dialpadtip.cpp
+   widgets/tips/riggingtip.cpp
    widgets/tips/tipcollection.cpp
 #    widgets/acceleratedvideowidget.cpp
    callview.cpp
@@ -126,3 +127,4 @@ INSTALL( FILES icons/unhold_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/refuse_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/pickup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/tips/keyboard.svg           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/rigging.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
