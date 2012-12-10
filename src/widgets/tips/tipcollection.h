@@ -30,6 +30,7 @@ public:
    
    //Call related
    static Tip*        endCall();
+   static Tip*        endBusy();
    static Tip*        rigging();
    
    //Account related
@@ -48,6 +49,7 @@ private:
    
    //Call related
    static Tip*        m_spEndCall;
+   static Tip*        m_spEndBusy;
    static Tip*        m_spRigging;
    
    //Account related

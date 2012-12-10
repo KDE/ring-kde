@@ -838,7 +838,10 @@ void CallView::destroyCall(Call* toDestroy)
    else
       kDebug() << "Call not found";
    moveCanvasTip();
-   TipCollection::manager()->setCurrentTip(TipCollection::endCall());
+   if (toDestroy->getState() == CALL_STATE_BUSY || toDestroy->getState() == CALL_STATE_FAILURE)
+      TipCollection::manager()->setCurrentTip(TipCollection::endBusy());
+   else
+      TipCollection::manager()->setCurrentTip(TipCollection::endCall());
 } //destroyCall
 
 /// @todo Remove the text partially covering the TreeView item widget when it is being dragged, a beter implementation is needed

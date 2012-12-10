@@ -56,6 +56,9 @@ public:
    //Constructor
    TipManager(QTreeView* parent);
 
+   //Mutator
+   void hideTip(Tip* tip);
+
    //Getter
    QImage getImage();
    Tip* currentTip() {return m_pCurrentTip;}
@@ -71,16 +74,17 @@ private:
    void setCurrentTip_private(Tip* tip);
 
    //Attributes
-   QPalette            m_OriginalPalette;
-   QTreeView*          m_pParent        ;
-   int                 m_TopMargin      ;
-   int                 m_BottomMargin   ;
-   QImage              m_CurrentImage   ;
-   Tip*                m_pCurrentTip    ;
-   TipAnimationWrapper m_pAnim          ;
-   FrameDescription    m_CurrentFrame   ;
-   QList<Tip*>         m_lTipQueue      ;
-   QTimer*             m_pTimer         ;
+   QPalette                m_OriginalPalette ;
+   QTreeView*              m_pParent         ;
+   int                     m_TopMargin       ;
+   int                     m_BottomMargin    ;
+   QImage                  m_CurrentImage    ;
+   Tip*                    m_pCurrentTip     ;
+   TipAnimationWrapper     m_pAnim           ;
+   FrameDescription        m_CurrentFrame    ;
+   QList<Tip*>             m_lTipQueue       ;
+   QList<Tip*>             m_lHidingTipQueue ;
+   QTimer*                 m_pTimer          ;
 
 private slots:
    void animationStep(FrameDescription desc);

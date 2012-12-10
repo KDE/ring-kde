@@ -432,14 +432,18 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::Accept   ] = ACTION_LABEL_ACCEPT         ;
             actionTexts     [ SFLPhone::Refuse   ] = ACTION_LABEL_REFUSE         ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)   ;
-            if (TipCollection::manager())
+            if (TipCollection::manager()) {
                TipCollection::manager()->setCurrentTip(TipCollection::rigging());
+            }
             break;
 
          case CALL_STATE_RINGING:
             enabledActions  [ SFLPhone::Hold     ] = false                       ;
             enabledActions  [ SFLPhone::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
+            if (TipCollection::manager()) {
+               TipCollection::manager()->setCurrentTip(TipCollection::rigging());
+            }
             break;
 
          case CALL_STATE_CURRENT:
@@ -477,6 +481,8 @@ void SFLPhoneView::updateWindowCallState()
             enabledActions  [ SFLPhone::Transfer ] = false                       ;
             enabledActions  [ SFLPhone::Record   ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
+            if (TipCollection::manager())
+               TipCollection::manager()->setCurrentTip(TipCollection::endBusy());
             break;
 
          case CALL_STATE_TRANSFERRED:
@@ -520,6 +526,19 @@ void SFLPhoneView::updateWindowCallState()
             kDebug() << "Error : Reached unexisting state for call "  << call->getCallId() << "(" << call->toHumanStateName() << "!";
             break;
 
+      }
+
+      //There is little way to be sure when to end the rigging animation, for now, brute force the check
+      if (TipCollection::rigging()->isVisible() || TipCollection::manager()->currentTip() == TipCollection::rigging()) {
+         bool displayRigging = false;
+         foreach (Call* call2, SFLPhone::model()->getCallList()) {
+            if(dynamic_cast<Call*>(call2) && (call2->getState() == CALL_STATE_INCOMING || call2->getState() == CALL_STATE_RINGING)) {
+               displayRigging = true;
+            }
+         }
+         if (!displayRigging) {
+            TipCollection::manager()->hideTip(TipCollection::rigging());
+         }
       }
    }
 

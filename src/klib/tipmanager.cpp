@@ -27,7 +27,6 @@
 #include <KDebug>
 #include <KStandardDirs>
 
-
 bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
 {
    Q_UNUSED(obj);
@@ -40,11 +39,13 @@ bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
 ///Constructor
 TipManager::TipManager(QTreeView* parent):QObject(parent),
 m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
-m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(nullptr)
+m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(new QTimer())
 {
    ResizeEventFilter* filter = new ResizeEventFilter(this);
    parent->installEventFilter(filter);
    reload();
+   
+   connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timeout()));
 
    connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
    connect(&m_pAnim,SIGNAL(animationEnded()),this,SLOT(animationEnded()));
@@ -113,6 +114,11 @@ void TipManager::setCurrentTip(Tip* tip)
 
 void TipManager::timeout()
 {
+   Tip* toHide = m_lHidingTipQueue.takeFirst();
+   if (toHide && toHide == m_pCurrentTip) {
+      m_lTipQueue.removeAll(toHide);
+      setCurrentTip(nullptr);
+   }
    if (m_lTipQueue.size()) {
       setCurrentTip(m_lTipQueue.takeFirst());
    }
@@ -128,8 +134,13 @@ void TipManager::setCurrentTip_private(Tip* tip)
    m_pAnim.start(m_pCurrentTip != nullptr);
 
    //Start timer if necessary
-   if (m_pCurrentTip && m_pCurrentTip->timeOut())
-      QTimer::singleShot(tip->timeOut(), this, SLOT(timeout()));
+   if (m_pCurrentTip && m_pCurrentTip->timeOut()) {
+      //QTimer::singleShot(tip->timeOut(), this, SLOT(timeout()));
+      m_pTimer->setSingleShot(true);
+      m_pTimer->setInterval(m_pCurrentTip->timeOut());
+      m_lHidingTipQueue << m_pCurrentTip;
+      m_pTimer->start();
+   }
    changeSize(true);
 }
 
@@ -137,6 +148,7 @@ void TipManager::animationEnded()
 {
    //TODO stop timer
    if (m_pCurrentTip && !m_pCurrentTip->isVisible()) {
+      m_lTipQueue.removeAll(m_pCurrentTip);
       m_pCurrentTip = nullptr;
       emit currentTipChanged(nullptr);
    }
@@ -159,5 +171,15 @@ void TipManager::changeSize(bool ignoreAnim)
       int width(m_pParent->width()),height(m_pParent->height());
       int effectiveHeight = height-m_BottomMargin-m_TopMargin;
       emit sizeChanged(QRect(15,m_TopMargin,width-30,effectiveHeight),ignoreAnim);
+   }
+}
+
+///Hide a tip, check if it is the current one or in the queue
+void TipManager::hideTip(Tip* tip)
+{
+   if (m_pCurrentTip == tip)
+      setCurrentTip(nullptr);
+   else {
+      m_lTipQueue.removeAll(tip);
    }
 }

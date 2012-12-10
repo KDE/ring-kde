@@ -29,6 +29,7 @@ Tip*        TipCollection::m_spConf           = nullptr;
 
 //Call related
 Tip*        TipCollection::m_spEndCall        = nullptr;
+Tip*        TipCollection::m_spEndBusy        = nullptr;
 Tip*        TipCollection::m_spRigging        = nullptr;
 
 //Account related
@@ -65,13 +66,21 @@ Tip* TipCollection::endCall()
    return m_spEndCall;
 }
 
+Tip* TipCollection::endBusy()
+{
+   if (!m_spEndBusy) {
+      m_spEndBusy = new Tip(i18n("Peer is busy"));
+      m_spEndBusy->setTimeOut(3000);
+   }
+   return m_spEndBusy;
+}
+
 Tip* TipCollection::rigging()
 {
    if (!m_spRigging) {
       m_spRigging = new RiggingTip();
-      m_spRigging->setTimeOut(3000);
-      m_spRigging->setAnimationIn(Tip::TipAnimation::TranslationLeft);
-      m_spRigging->setAnimationOut(Tip::TipAnimation::TranslationLeft);
+      m_spRigging->setAnimationIn(Tip::TipAnimation::Fade);
+      m_spRigging->setAnimationOut(Tip::TipAnimation::Fade);
    }
    return m_spRigging;
 }
