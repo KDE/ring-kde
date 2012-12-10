@@ -134,7 +134,7 @@ const QFont& Tip::font()
    return (const QFont&) *m_pFont;
 }
 
-QString Tip::loadSvg(const QString& path)
+QByteArray Tip::loadSvg(const QString& path)
 {
    QFile file(path);
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {

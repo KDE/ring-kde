@@ -43,8 +43,20 @@ protected:
    virtual void paintDecorations(QPainter& p, const QRect& textRect);
 
 private:
-   QTimer* m_pTimer;
-   uchar   m_Counter;
+   QTimer*       m_pTimer           ;
+   uchar         m_Counter          ;
+   QByteArray    m_phoneOriginalSVG ;
+   QByteArray    m_ring1OriginalSVG ;
+   QByteArray    m_ring2OriginalSVG ;
+   QByteArray    m_ring3OriginalSVG ;
+   QSvgRenderer* m_pPhoneR          ;
+   QSvgRenderer* m_pRing1R          ;
+   QSvgRenderer* m_pRing2R          ;
+   QSvgRenderer* m_pRing3R          ;
+   QPixmap*      m_pPhonePix        ;
+   QPixmap*      m_pRing1Pix        ;
+   QPixmap*      m_pRing2Pix        ;
+   QPixmap*      m_pRing3Pix        ;
 
 private slots:
    void startAnimation(bool visibility);

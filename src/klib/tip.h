@@ -102,7 +102,7 @@ protected:
 
    //Helper
    bool brightOrDarkBase();
-   QString loadSvg(const QString& path);
+   QByteArray loadSvg(const QString& path);
 
    //Protected setters
    void setHasText       (bool value) { m_HasText = value; }
