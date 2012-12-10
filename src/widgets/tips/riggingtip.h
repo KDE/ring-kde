@@ -38,6 +38,9 @@ public:
    RiggingTip(QWidget* parent = nullptr);
    virtual ~RiggingTip();
 
+   //It is not a notification, it doesn't need to be as visible
+   virtual float opacity() { return 0.5f; }
+
 protected:
    virtual QRect getDecorationRect();
    virtual void paintDecorations(QPainter& p, const QRect& textRect);

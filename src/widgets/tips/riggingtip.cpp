@@ -95,11 +95,11 @@ void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
 
       p.setOpacity(1);
       p.drawPixmap(0                   , 75 , *m_pPhonePix);
-      p.setOpacity(fabs((float)(char)(m_Counter-160)/256.0));
+      p.setOpacity((sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5) +  0.8));
       p.drawPixmap((135-19.319489*6)/2 , 0  , *m_pRing3Pix);
-      p.setOpacity(fabs((float)(char)(m_Counter-80)/256.0));
+      p.setOpacity(sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5 + (1.0472f)) +  0.8);
       p.drawPixmap((135-13.757887*6)/2 , 25 , *m_pRing2Pix);
-      p.setOpacity(fabs((float)(char)(m_Counter)/256.0));
+      p.setOpacity((sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5 + (2*1.0472f)) +  0.8));
       p.drawPixmap((135-9.3203869*6)/2 , 50 , *m_pRing1Pix);
 }
 
@@ -120,6 +120,8 @@ void RiggingTip::startAnimation(bool visibility)
 
 void RiggingTip::timeout()
 {
-   m_Counter += 8; //Animation speed
+   m_Counter += 1; //Animation speed
+   if (m_Counter > 35)
+      m_Counter = 0;
    reload(m_CurrentRect,true);
 }

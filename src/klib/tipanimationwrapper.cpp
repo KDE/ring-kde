@@ -119,7 +119,7 @@ void TipAnimationWrapper::step()
       }
 
       //Set opacity
-      float opacity = (float)((m_FadeDirection)?0.0:1.0)-((float)m_Step/m_MaxStep);
+      float opacity = ((float)((m_FadeDirection)?0.0f:1.0f)-((float)m_Step/m_MaxStep))*m_pTip->opacity();
       opacity = (opacity<0)?-opacity:opacity;
 
       //In animations
