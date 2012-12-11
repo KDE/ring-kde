@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TIP_RIGGING_H
-#define TIP_RIGGING_H
+#ifndef TIP_CON_LOST_H
+#define TIP_CON_LOST_H
 
 //Base
 #include "../../klib/tip.h"
@@ -31,16 +31,17 @@ class QSvgRenderer;
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class RiggingTip : public Tip
+class ConnectionLostTip : public Tip
 {
    Q_OBJECT
 public:
-   RiggingTip(QWidget* parent = nullptr);
-   virtual ~RiggingTip();
+   ConnectionLostTip(QWidget* parent = nullptr);
+   virtual ~ConnectionLostTip();
 
 protected:
    virtual QRect getDecorationRect();
    virtual void paintDecorations(QPainter& p, const QRect& textRect);
+   virtual QRect getTextRect(const QString& text);
 
 private:
    QTimer*   m_pTimer     ;

@@ -62,6 +62,7 @@ SET(
    widgets/callviewoverlaytoolbar.cpp
    widgets/tips/dialpadtip.cpp
    widgets/tips/riggingtip.cpp
+   widgets/tips/conlosttip.cpp
    widgets/tips/tipcollection.cpp
 #    widgets/acceleratedvideowidget.cpp
    callview.cpp

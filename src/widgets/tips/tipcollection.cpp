@@ -21,25 +21,26 @@
 
 #include "dialpadtip.h"
 #include "riggingtip.h"
+#include "conlosttip.h"
 #include "klib/tipmanager.h"
 
 //Tutorial mode
-DialPadTip* TipCollection::m_spDialPad        = nullptr;
-Tip*        TipCollection::m_spConf           = nullptr;
+DialPadTip*        TipCollection::m_spDialPad        = nullptr;
+Tip*               TipCollection::m_spConf           = nullptr;
 
 //Call related
-Tip*        TipCollection::m_spEndCall        = nullptr;
-Tip*        TipCollection::m_spEndBusy        = nullptr;
-Tip*        TipCollection::m_spRigging        = nullptr;
+Tip*               TipCollection::m_spEndCall        = nullptr;
+Tip*               TipCollection::m_spEndBusy        = nullptr;
+Tip*               TipCollection::m_spRigging        = nullptr;
 
 //Account related
-Tip*        TipCollection::m_spConnectionLost = nullptr;
+ConnectionLostTip* TipCollection::m_spConnectionLost = nullptr;
 
 //Network related
-Tip*        TipCollection::m_spNetworkLost    = nullptr;
+Tip*               TipCollection::m_spNetworkLost    = nullptr;
 
 //Global manager
-TipManager* TipCollection::m_spManager        = nullptr;
+TipManager*        TipCollection::m_spManager        = nullptr;
 
 
 //Tutorial mode
@@ -54,6 +55,16 @@ DialPadTip* TipCollection::dialPad()
 Tip* TipCollection::conference()
 {
    return m_spConf;
+}
+
+Tip* TipCollection::dragAndDrop()
+{
+   if (!m_spConnectionLost) {
+      m_spConnectionLost = new ConnectionLostTip();
+      m_spRigging->setAnimationIn(Tip::TipAnimation::Fade);
+      m_spRigging->setAnimationOut(Tip::TipAnimation::Fade);
+   }
+   return m_spConnectionLost;
 }
 
 //Call related
@@ -89,7 +100,9 @@ Tip* TipCollection::rigging()
 Tip* TipCollection::connectionLost()
 {
    if (!m_spConnectionLost) {
-      m_spConnectionLost = new Tip("Connection lost");
+      m_spConnectionLost = new ConnectionLostTip();
+      m_spRigging->setAnimationIn(Tip::TipAnimation::Fade);
+      m_spRigging->setAnimationOut(Tip::TipAnimation::Fade);
    }
    return m_spConnectionLost;
 }

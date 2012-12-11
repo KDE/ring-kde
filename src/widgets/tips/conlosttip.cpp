@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "riggingtip.h"
+#include "conlosttip.h"
 
 //Qt
 #include <QtSvg/QSvgRenderer>
@@ -30,7 +30,7 @@
 #include <KStandardDirs>
 
 ///Constructor
-RiggingTip::RiggingTip(QWidget* parent) : Tip(i18n("Account ****** has disconnected, trying to reconnect in 10 seconds"),parent),m_pTimer(nullptr),m_Counter(0),
+ConnectionLostTip::ConnectionLostTip(QWidget* parent) : Tip(i18n("Account ****** has disconnected, trying to reconnect in 10 seconds"),parent),m_pTimer(nullptr),m_Counter(0),
 m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 {
    loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/reload.svg"));
@@ -38,17 +38,17 @@ m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 }
 
 ///Destructor
-RiggingTip::~RiggingTip()
+ConnectionLostTip::~ConnectionLostTip()
 {
    if (m_pTimer) delete m_pTimer;
 }
 
-QRect RiggingTip::getDecorationRect()
+QRect ConnectionLostTip::getDecorationRect()
 {
    return QRect(0,0,100,100);
 }
 
-void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
+void ConnectionLostTip::paintDecorations(QPainter& p, const QRect& textRect)
 {
    Q_UNUSED(textRect);
    QSize size(100,100);
@@ -60,6 +60,7 @@ void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
       m_RenderCache.fill(0);
       QPainter p2;
       p2.begin(&m_RenderCache);
+      p.setRenderHint(QPainter::Antialiasing, true);
       m_pR->render(&p2,QRect(0,0,size.width(),size.height()));
    }
    p.translate(QPoint(m_CurrentRect.width()/2,50));
@@ -67,7 +68,7 @@ void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
    p.drawImage(QRect(-50,-50,size.width(),size.height()),m_RenderCache);
 }
 
-void RiggingTip::startAnimation(bool visibility)
+void ConnectionLostTip::startAnimation(bool visibility)
 {
    if (!m_pTimer && visibility) {
       m_pTimer = new QTimer(this);
@@ -82,8 +83,16 @@ void RiggingTip::startAnimation(bool visibility)
    }
 }
 
-void RiggingTip::timeout()
+void ConnectionLostTip::timeout()
 {
    m_Counter += 4;
    reload(m_CurrentRect,true);
+}
+
+QRect ConnectionLostTip::getTextRect(const QString& text)
+{
+   QRect r = Tip::getTextRect(text);
+   r.setY(getDecorationRect().height()+m_Padding);
+   r.setHeight(50);
+   return r;
 }

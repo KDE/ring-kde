@@ -21,12 +21,14 @@
 class DialPadTip;
 class Tip;
 class TipManager;
+class ConnectionLostTip;
 
 class TipCollection {
 public:
    //Tutorial mode
    static DialPadTip* dialPad();
    static Tip*        conference();
+   static Tip*        dragAndDrop();
    
    //Call related
    static Tip*        endCall();
@@ -53,7 +55,7 @@ private:
    static Tip*        m_spRigging;
    
    //Account related
-   static Tip*        m_spConnectionLost;
+   static ConnectionLostTip* m_spConnectionLost;
    
    //Network related
    static Tip*        m_spNetworkLost;

@@ -515,11 +515,17 @@ void SFLPhoneView::updateWindowCallState()
          case CALL_STATE_CONFERENCE:
             enabledActions  [ SFLPhone::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)                       ;
+            if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop() && TipCollection::dragAndDrop()) {
+               TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
+            }
             break;
 
          case CALL_STATE_CONFERENCE_HOLD:
             enabledActions  [ SFLPhone::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
+            if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop() && TipCollection::dragAndDrop()) {
+               TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
+            }
             break;
 
          default: 
@@ -528,9 +534,10 @@ void SFLPhoneView::updateWindowCallState()
 
       }
 
+      //Manage tips
       //There is little way to be sure when to end the rigging animation, for now, brute force the check
+      bool displayRigging = false;
       if (TipCollection::rigging()->isVisible() || TipCollection::manager()->currentTip() == TipCollection::rigging()) {
-         bool displayRigging = false;
          foreach (Call* call2, SFLPhone::model()->getCallList()) {
             if(dynamic_cast<Call*>(call2) && (call2->getState() == CALL_STATE_INCOMING || call2->getState() == CALL_STATE_RINGING)) {
                displayRigging = true;
@@ -538,6 +545,21 @@ void SFLPhoneView::updateWindowCallState()
          }
          if (!displayRigging) {
             TipCollection::manager()->hideTip(TipCollection::rigging());
+         }
+      }
+      if (TipCollection::dragAndDrop()) {
+         int activeCallCounter=0;
+         foreach (Call* call2, SFLPhone::model()->getCallList()) {
+            if (dynamic_cast<Call*>(call2)) {
+               activeCallCounter += (call2->getState() == CALL_STATE_CURRENT || call2->getState() == CALL_STATE_HOLD);
+               activeCallCounter -= (call2->getState() ==CALL_STATE_INCOMING || call2->getState() ==CALL_STATE_RINGING)*1000;
+            }
+         }
+         if (activeCallCounter >= 2 && !SFLPhone::model()->getConferenceList().size()) {
+            TipCollection::manager()->setCurrentTip(TipCollection::dragAndDrop());
+         }
+         else if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop()) {
+            TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
          }
       }
    }

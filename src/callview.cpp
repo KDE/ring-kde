@@ -932,6 +932,9 @@ Call* CallView::addConference(Call* conf)
       insertItem(extractItem(SFLPhone::model()->getIndex(callId)),confItem);
    }
    moveCanvasTip();
+   if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop()) {
+      TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
+   }
 
    return newConf;
 } //addConference
