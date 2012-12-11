@@ -49,15 +49,20 @@
 #include "sflphone.h"
 #include "sflphoneaccessibility.h"
 #include "widgets/conferencebox.h"
+#include "widgets/callviewoverlaytoolbar.h"
+#include "widgets/tips/dialpadtip.h"
+#include "widgets/tips/tipcollection.h"
+#include "klib/tipmanager.h"
 
 ///CallTreeItemDelegate: Delegates for CallTreeItem
 class CallTreeItemDelegate : public QStyledItemDelegate
 {
 public:
-CallTreeItemDelegate(CallView* widget)
+CallTreeItemDelegate(CallView* widget,QPalette pal)
       : QStyledItemDelegate(widget)
       , m_tree(widget)
       , m_ConferenceDrawer()
+      , m_Pal(pal)
    {
    }
 
@@ -135,7 +140,7 @@ CallTreeItemDelegate(CallView* widget)
          const QRegion cl = painter->clipRegion();
          painter->setClipRect(opt.rect);
          opt.rect = fullCategoryRect(option, index);
-         m_ConferenceDrawer.drawCategory(index, 0, opt, painter);
+         m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
 
          //Drag bubble
          if (itemWidget->isDragged()) {
@@ -170,7 +175,7 @@ CallTreeItemDelegate(CallView* widget)
          }
          painter->setClipRect(cr);
          if (index.parent().isValid())
-            m_ConferenceDrawer.drawCategory(index, 0, opt, painter);
+            m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
          painter->setClipRegion(cl);
          painter->setRenderHint(QPainter::Antialiasing, false);
       }
@@ -240,16 +245,17 @@ CallTreeItemDelegate(CallView* widget)
 
 
 private:
-   CallView*      m_tree;
+   CallView*      m_tree            ;
    ConferenceBox  m_ConferenceDrawer;
-   QSize m_SH;
-   int m_LeftMargin;
-   int m_RightMargin;
+   QSize          m_SH              ;
+   int            m_LeftMargin      ;
+   int            m_RightMargin     ;
+   QPalette       m_Pal             ;
 };
 
 
 ///Retrieve current and older calls from the daemon, fill history and the calls TreeView and enable drag n' drop
-CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_pCallPendingTransfer(0)
+CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_pCallPendingTransfer(0),m_pCanvasToolbar(0)
 {
    //Widget part
    setAcceptDrops      (true );
@@ -259,7 +265,7 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    setRootIsDecorated  (false);
    setIndentation(15);
 
-   CallTreeItemDelegate *delegate = new CallTreeItemDelegate(this);
+   CallTreeItemDelegate *delegate = new CallTreeItemDelegate(this,palette());
    setItemDelegate(delegate);
    setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
 
@@ -270,6 +276,9 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    m_pTransferLE      = new KLineEdit       ( m_pTransferOverlay );
    QGridLayout* gl    = new QGridLayout     ( m_pTransferOverlay );
    QLabel* lblImg     = new QLabel          ( image              );
+   m_pCanvasToolbar   = new CallViewOverlayToolbar(this);
+   TipCollection::setManager(new TipManager(this));
+
 
    m_pTransferOverlay->setVisible(false);
    m_pTransferOverlay->resize(size());
@@ -293,6 +302,7 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
          addConference(active);
    }
 
+
    //User Interface even
    //              SENDER                                   SIGNAL                              RECEIVER                     SLOT                       /
    /**/connect(this              , SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int))               , this, SLOT(itemDoubleClicked(QTreeWidgetItem*,int)) );
@@ -304,8 +314,20 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    /**/connect(SFLPhone::model() , SIGNAL(callAdded(Call*,Call*))                                , this, SLOT(addCall(Call*,Call*))                    );
    /**/connect(m_pTransferB      , SIGNAL(clicked())                                             , this, SLOT(transfer())                              );
    /**/connect(m_pTransferLE     , SIGNAL(returnPressed())                                       , this, SLOT(transfer())                              );
+   /**/connect(m_pCanvasToolbar  , SIGNAL(visibilityChanged(bool))                               , this, SLOT(moveCanvasTip())                         );
    /*                                                                                                                                                  */
 
+   //TODO remove this section
+   //BEGIN On canvas toolbar
+   QPalette p = viewport()->palette();
+   p.setBrush(QPalette::Base, QBrush(TipCollection::manager()->getImage()));
+   viewport()->setPalette(p);
+   setPalette(p);
+   setAutoFillBackground(true);
+   if (!SFLPhone::model()->getCallList().size())
+      TipCollection::manager()->setCurrentTip(TipCollection::dialPad());
+   //END on canvas toolbar
+   selectFirstItem();
 } //CallView
 
 ///Destructor
@@ -620,6 +642,10 @@ Call* CallView::addCall(Call* call, Call* parent)
       }
    }
 
+   moveCanvasTip();
+   if (TipCollection::manager()->currentTip()==TipCollection::dialPad())
+      TipCollection::manager()->setCurrentTip(nullptr);
+
    return call;
 }
 
@@ -683,6 +709,11 @@ void CallView::resizeEvent (QResizeEvent *e)
    if (m_pTransferOverlay)
       m_pTransferOverlay->resize(size());
    QTreeWidget::resizeEvent(e);
+
+   if (m_pCanvasToolbar) {
+      m_pCanvasToolbar->resize(width(),72);
+      m_pCanvasToolbar->move(0,height()-72);
+   }
 }
 
 ///Set the TreeView header text
@@ -708,6 +739,7 @@ bool CallView::removeItem(Call* item)
       removeItemWidget(SFLPhone::model()->getIndex(item),0);
       if (parent->childCount() == 0) //TODO this have to be done in the daemon, not here, but oops still happen too often to ignore
          removeItemWidget(parent,0);
+      moveCanvasTip();
       return true;
    }
    else
@@ -805,6 +837,11 @@ void CallView::destroyCall(Call* toDestroy)
    }
    else
       kDebug() << "Call not found";
+   moveCanvasTip();
+   if (toDestroy->getState() == CALL_STATE_BUSY || toDestroy->getState() == CALL_STATE_FAILURE)
+      TipCollection::manager()->setCurrentTip(TipCollection::endBusy());
+   else
+      TipCollection::manager()->setCurrentTip(TipCollection::endCall());
 } //destroyCall
 
 /// @todo Remove the text partially covering the TreeView item widget when it is being dragged, a beter implementation is needed
@@ -894,7 +931,11 @@ Call* CallView::addConference(Call* conf)
       kDebug() << "Adding " << callId << "to the conversation";
       insertItem(extractItem(SFLPhone::model()->getIndex(callId)),confItem);
    }
-   
+   moveCanvasTip();
+   if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop()) {
+      TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
+   }
+
    return newConf;
 } //addConference
 
@@ -968,12 +1009,41 @@ void CallView::moveSelectedItem( Qt::Key direction )
       setCurrentIndex(moveCursor(QAbstractItemView::MoveRight,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Up) {
-      qDebug() << "Move up";
       setCurrentIndex(moveCursor(QAbstractItemView::MoveUp   ,Qt::NoModifier));
    }
    else if (direction == Qt::Key_Down) {
       setCurrentIndex(moveCursor(QAbstractItemView::MoveDown ,Qt::NoModifier));
    }
+}
+
+///Select the first call, if any
+void CallView::selectFirstItem()
+{
+   if (model()->rowCount()) {
+      QModelIndex firstItem = model()->index(0,0);
+      if (model()->rowCount(firstItem) > 0) {
+         firstItem = firstItem.child(0,0);
+      }
+      setCurrentIndex(firstItem);
+   }
+}
+
+///Proxy to modify the background tip position
+void CallView::moveCanvasTip()
+{
+   int topM(0),bottomM(0);
+   bottomM += m_pCanvasToolbar->isVisible()?m_pCanvasToolbar->height():0;
+   QModelIndex lastItem = model()->index(model()->rowCount()-1,0);
+   if (model()->rowCount(lastItem) > 0) {
+      lastItem = lastItem.child(model()->rowCount(lastItem)-1,0);
+   }
+   if (lastItem != QModelIndex()) {
+      QRect r = visualRect(lastItem);
+      topM += r.y() + r.height();
+   }
+
+   TipCollection::manager()->setTopMargin(topM);
+   TipCollection::manager()->setBottomMargin(bottomM);
 }
 
 /*****************************************************************************
@@ -1055,4 +1125,3 @@ void CallViewOverlay::setAccessMessage(QString message)
 {
    m_accessMessage = message;
 }
-

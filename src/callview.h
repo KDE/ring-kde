@@ -37,6 +37,7 @@ class KLineEdit;
 //SFLPhone
 class CallTreeItem;
 class CallTreeItemDelegate;
+class CallViewOverlayToolbar;
 
 //Typedef
 typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
@@ -85,6 +86,7 @@ class CallView : public QTreeWidget {
       QWidget* getWidget          (                                                                                   );
       bool haveOverlay            (                                                                                   );
       virtual QMimeData* mimeData ( const QList<QTreeWidgetItem *> items                                              ) const;
+      CallViewOverlayToolbar*     overlayToolbar() { return m_pCanvasToolbar;                                         };
 
       //Setters
       void setTitle               ( const QString& title                                                              );
@@ -96,6 +98,7 @@ class CallView : public QTreeWidget {
       bool phoneNumberToCall      ( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action  );
       bool contactToCall          ( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action  );
       void moveSelectedItem       ( Qt::Key direction                                                                 );
+      void selectFirstItem        (                                                                                   );
 
    private:
       //Mutator
@@ -106,11 +109,12 @@ class CallView : public QTreeWidget {
       void clearArtefact           (                                                   );
 
       //Attributes
-      QPushButton*     m_pTransferB;
-      KLineEdit*       m_pTransferLE;
-      CallViewOverlay* m_pTransferOverlay;
-      CallViewOverlay* m_pActiveOverlay;
-      Call*            m_pCallPendingTransfer;
+      QPushButton*            m_pTransferB          ;
+      KLineEdit*              m_pTransferLE         ;
+      CallViewOverlay*        m_pTransferOverlay    ;
+      CallViewOverlay*        m_pActiveOverlay      ;
+      Call*                   m_pCallPendingTransfer;
+      CallViewOverlayToolbar* m_pCanvasToolbar      ;
 
    protected:
       //Reimlementation
@@ -138,6 +142,7 @@ class CallView : public QTreeWidget {
       void transferDropEvent(Call* call,QMimeData* data);
       void conversationDropEvent(Call* call,QMimeData* data);
       void hideOverlay();
+      void moveCanvasTip();
 
    signals:
       ///Emitted when one of the call item change

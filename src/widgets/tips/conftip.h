@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009 by Savoir-Faire Linux                               *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2012 by Savoir-Faire Linux                               *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -16,30 +15,36 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-
-#ifndef HELPER_FUNCTIONS
-#define HELPER_FUNCTIONS
+#ifndef TIP_CONF_TIP_H
+#define TIP_CONF_TIP_H
+//Base
+#include "../../klib/tip.h"
 
 //Qt
-#include <QtCore/QString>
-#include <QtCore/QVariant>
-#include <QtCore/QHash>
-#include <QtCore/QList>
-#include <QtGui/QFont>
+#include <QtGui/QWidget>
 
-//SFLPhone
-#include "../lib/contact.h"
+class QSvgRenderer;
 
-//Typedef
-typedef QHash<QString,QHash<QString,QVariant> > ContactHash;
+//Qt
+class QPainter;
 
-///HelperFunctions: little visitor not belonging to libqtsflphone
-///Ramdom mix of dynamic property and transtypping
-class LIB_EXPORT HelperFunctions {
+///A tip to be passed to the TipLoader
+class ConfTip : public Tip
+{
+   Q_OBJECT
 public:
-   static ContactHash toHash                    (QList<Contact*> contacts );
-   static QString     normStrippped             (QString str              );
-   static QString     escapeHtmlEntities        (QString str              );
-   static void        displayNoAccountMessageBox(QWidget* parent = nullptr);
+   ConfTip(QWidget* parent = nullptr);
+   virtual ~ConfTip();
+
+protected:
+   virtual QRect getDecorationRect();
+   virtual void  paintDecorations(QPainter& p, const QRect& textRect);
+   virtual QRect getTextRect(const QString& text);
+
+private:
+   QByteArray    m_DragAndDrop ;
+   QSvgRenderer* m_pDnDR       ;
+   QPixmap*      m_pDnDPix     ;
 };
+
 #endif

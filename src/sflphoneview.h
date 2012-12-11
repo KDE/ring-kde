@@ -165,8 +165,10 @@ public slots:
    void configureSflPhone     ();
    void accountCreationWizard ();
    void accept   ();
+   void hangup   ();
    void refuse   ();
    void hold     ();
+   void unhold   ();
    void transfer ();
    void record   ();
    void mailBox  ();

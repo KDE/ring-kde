@@ -37,11 +37,12 @@ ConferenceBox::ConferenceBox()
 void ConferenceBox::drawCategory(const QModelIndex&  index   ,
                                  int                 sortRole,
                                  const QStyleOption& option  ,
-                                 QPainter*           painter ) const
+                                 QPainter*           painter ,
+                                 const QPalette* pal) const
 {
    Q_UNUSED( sortRole )
    Q_UNUSED( index    )
-
+   const QPalette* palette   = (pal)?pal:&option.palette  ;
    painter->setRenderHint(QPainter::Antialiasing);
 
    const QRect optRect = option.rect;
@@ -59,13 +60,13 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
       path.lineTo(optRect.bottomRight());
       path.lineTo(optRect.bottomLeft());
 
-      QColor window(option.palette.window().color());
-      const QColor base(option.palette.base().color());
+      QColor window(palette->window().color());
+      const QColor base(palette->base().color());
 
-      window.setAlphaF(option.state & QStyle::State_Selected?0.9:0.7);
+      window.setAlphaF(option.state & QStyle::State_Selected?0.9:0.9);
 
       QColor window2(window);
-      window2.setAlphaF(option.state & QStyle::State_Selected?0.4:0.2);
+      window2.setAlphaF(option.state & QStyle::State_Selected?0.4:0.4);
 
       QLinearGradient decoGradient1;
       if (leftToRight) {
@@ -106,7 +107,7 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
       //BEGIN: inner top left corner
       {
          painter->save();
-         painter->setPen(option.palette.base().color());
+         painter->setPen(palette->base().color());
          QRectF arc;
          if (leftToRight) {
                const QPointF topLeft(newOptRect.topLeft());
@@ -138,7 +139,7 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
          start.ry() += 3;
          verticalGradBottom.ry() += newOptRect.height() - 3;
          QLinearGradient gradient(start, verticalGradBottom);
-         gradient.setColorAt(0, option.palette.base().color());
+         gradient.setColorAt(0, palette->base().color());
          gradient.setColorAt(1, Qt::transparent);
          painter->fillRect(QRect(start, QSize(1, newOptRect.height() - 3)), gradient);
       }
@@ -160,7 +161,7 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
                horizontalGradTop.rx() -= newOptRect.width() - 3;
          }
          QLinearGradient gradient(start, horizontalGradTop);
-         gradient.setColorAt(0, option.palette.base().color());
+         gradient.setColorAt(0, palette->base().color());
          gradient.setColorAt(1, Qt::transparent);
          QSize rectSize;
          if (leftToRight) {
@@ -173,7 +174,7 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
       //END: top inner horizontal line
    }
 
-   QColor outlineColor = option.palette.text().color();
+   QColor outlineColor = palette->text().color();
    outlineColor.setAlphaF(0.35);
 
    //BEGIN: top left corner
@@ -283,11 +284,12 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
 }
 
 ///Draw the bottom border of the box
-void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const {
+void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal) const {
    Q_UNUSED(index)
    Q_UNUSED(sortRole)
+   const QPalette* palette   = (pal)?pal:&option.palette  ;
    painter->setRenderHint(QPainter::Antialiasing);
-   QColor outlineColor = option.palette.text().color();
+   QColor outlineColor = palette->text().color();
    outlineColor.setAlphaF(0.35);
    painter->setPen(outlineColor);
 
@@ -315,7 +317,7 @@ void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const 
 }
 
 ///Return the height of the conference box
-int ConferenceBox::categoryHeight(const QModelIndex &index, const QStyleOption &option) const
+int ConferenceBox::categoryHeight(const QModelIndex &index, const QStyleOption &option,const QPalette* pal) const
 {
    Q_UNUSED( index );
    Q_UNUSED( option );

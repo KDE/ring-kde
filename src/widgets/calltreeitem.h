@@ -81,6 +81,7 @@ class CallTreeItem : public QWidget
     QLabel*  m_pEmail           ;
     QTimer*  m_pTimer           ;
     uint     m_Height           ;
+    int      m_CurrentStyle     ;
 
     Contact* m_pContact;
     

@@ -34,9 +34,9 @@ class ConferenceBox : public KCategoryDrawerV2
 public:
     ConferenceBox();
 
-    virtual void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
-    virtual int categoryHeight(const QModelIndex &index, const QStyleOption &option) const;
-    void drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
+    virtual void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal = nullptr) const;
+    virtual int categoryHeight(const QModelIndex &index, const QStyleOption &option,const QPalette* pal = nullptr) const;
+    void drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal = nullptr) const;
 };
 
 #endif

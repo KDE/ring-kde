@@ -26,13 +26,14 @@ SET ( KDE4_KABC_LIBS  -lkabc )
 SET(
    sflphone_client_kde_SRCS
    main.cpp
+   extendedaction.cpp
    sflphoneview.cpp
    sflphone.cpp
    sflphoneapplication.cpp
    kspeechinterfacesingleton.cpp
    sflphoneaccessibility.cpp
-   widgets/sflphonetray.cpp
    accountwizard.cpp
+   widgets/sflphonetray.cpp
    widgets/calltreeitem.cpp
    widgets/historytreeitem.cpp
    actionsetaccountfirst.cpp
@@ -58,6 +59,12 @@ SET(
    widgets/videowidget.cpp
    widgets/immanager.cpp
    widgets/imtab.cpp
+   widgets/callviewoverlaytoolbar.cpp
+   widgets/tips/conftip.cpp
+   widgets/tips/dialpadtip.cpp
+   widgets/tips/riggingtip.cpp
+   widgets/tips/conlosttip.cpp
+   widgets/tips/tipcollection.cpp
 #    widgets/acceleratedvideowidget.cpp
    callview.cpp
 )
@@ -100,10 +107,34 @@ TARGET_LINK_LIBRARIES(sflphone-client-kde ksflphone qtsflphone  ${KDE4_KDEUI_LIB
 
 ########### install files ###############
 
-INSTALL(TARGETS sflphone-client-kde      DESTINATION  ${BIN_INSTALL_DIR}                      )
-INSTALL( FILES icons/transferarraw.png   DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
-INSTALL( FILES icons/transfertarrow.svg  DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
-INSTALL( FILES icons/confBlackWhite.svg  DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
-INSTALL( FILES icons/confBlackWhite.png  DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
-INSTALL( FILES icons/voicemail.png       DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
-INSTALL( FILES icons/conf-small.png       DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde )
+INSTALL(TARGETS sflphone-client-kde              DESTINATION  ${BIN_INSTALL_DIR}                           )
+INSTALL( FILES icons/transferarraw.png           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/transfertarrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/confBlackWhite.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/overlay_right_corner.svg    DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/overlay_left_corner.svg     DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/confBlackWhite.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/voicemail.png               DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/conf-small.png              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/hangup_grayscale.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/mutemic_grayscale.svg       DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/record_grayscale.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/transfer_grayscale.svg      DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/hangup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/mutemic_grayscale.png       DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/record_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/transfer_grayscale.png      DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/hold_grayscale.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/unhold_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/refuse_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/pickup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/tips/keyboard.svg           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/upArrow.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/downArrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/dragAndDrop.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/rigging.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/reload.svg             DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/phoneDown.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/ring1.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/ring2.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/ring3.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )

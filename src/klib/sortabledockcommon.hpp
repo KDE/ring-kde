@@ -20,7 +20,6 @@
 //Qt
 #include <QtCore/QDateTime>
 #include <QtCore/QStringList>
-#include <QtCore/QTimer>
 #include <QtCore/QString>
 
 //KDE

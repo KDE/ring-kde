@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009 by Savoir-Faire Linux                               *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2012 by Savoir-Faire Linux                               *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -16,30 +15,39 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-
-#ifndef HELPER_FUNCTIONS
-#define HELPER_FUNCTIONS
+#include "dialpadtip.h"
 
 //Qt
-#include <QtCore/QString>
-#include <QtCore/QVariant>
-#include <QtCore/QHash>
-#include <QtCore/QList>
-#include <QtGui/QFont>
+#include <QtSvg/QSvgRenderer>
+#include <QtGui/QPainter>
+#include <QtGui/QFontMetrics>
+#include <QtCore/QFile>
 
-//SFLPhone
-#include "../lib/contact.h"
+//KDE
+#include <KDebug>
+#include <KLocale>
+#include <KStandardDirs>
 
-//Typedef
-typedef QHash<QString,QHash<QString,QVariant> > ContactHash;
+///Constructor
+DialPadTip::DialPadTip(QWidget* parent) : Tip(i18n("Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dsadasdialpad below or start typing a number. Use thasdasde dialpad below or sasdasdtart typing a number. "),parent)
 
-///HelperFunctions: little visitor not belonging to libqtsflphone
-///Ramdom mix of dynamic property and transtypping
-class LIB_EXPORT HelperFunctions {
-public:
-   static ContactHash toHash                    (QList<Contact*> contacts );
-   static QString     normStrippped             (QString str              );
-   static QString     escapeHtmlEntities        (QString str              );
-   static void        displayNoAccountMessageBox(QWidget* parent = nullptr);
-};
-#endif
+{
+   loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/keyboard.svg"));
+}
+
+///Destructor
+DialPadTip::~DialPadTip()
+{
+}
+
+QRect DialPadTip::getDecorationRect()
+{
+   return QRect(0,0,m_CurrentSize.width()-2*m_Padding,60);
+}
+
+void DialPadTip::paintDecorations(QPainter& p, const QRect& textRect)
+{
+   if (!m_pR)
+      m_pR = new QSvgRenderer(m_OriginalFile);
+   m_pR->render(&p,QRect(m_CurrentRect.width() - m_Padding - 50*2.59143327842 - 10 ,textRect.y()+textRect.height() + 10,50*2.59143327842,50));
+}

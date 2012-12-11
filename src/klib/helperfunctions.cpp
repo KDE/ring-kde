@@ -22,6 +22,7 @@
 //Qt
 #include <QtCore/QString>
 #include <QtCore/QVariant>
+#include <QtGui/QFontMetrics>
 
 //KDE
 #include <KLocale>
