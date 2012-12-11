@@ -109,7 +109,6 @@ class CallView : public QTreeWidget {
       void clearArtefact           (                                                   );
 
       //Attributes
-      QPushButton*            m_pTransferB          ;
       KLineEdit*              m_pTransferLE         ;
       CallViewOverlay*        m_pTransferOverlay    ;
       CallViewOverlay*        m_pActiveOverlay      ;

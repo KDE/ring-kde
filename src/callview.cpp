@@ -272,25 +272,24 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    QString image = "<img width=100 height=100  src='"+KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")+"' />";
 
    m_pTransferOverlay = new CallViewOverlay ( this               );
-   m_pTransferB       = new QPushButton     ( m_pTransferOverlay );
    m_pTransferLE      = new KLineEdit       ( m_pTransferOverlay );
    QGridLayout* gl    = new QGridLayout     ( m_pTransferOverlay );
    QLabel* lblImg     = new QLabel          ( image              );
    m_pCanvasToolbar   = new CallViewOverlayToolbar(this);
    TipCollection::setManager(new TipManager(this));
 
+   m_pTransferLE->setPlaceholderText(i18n("Enter transfer number"));
+   m_pTransferLE->setAlignment(Qt::AlignCenter);
+   m_pTransferLE->setStyleSheet("border-radius:4px;border:1px solid #bbbbbb;height:35px;font-size:large;text-align:center;background-color:transparent;\
+   color:#bbbbbb;margin-left:10px;margin-right:10px;");
 
    m_pTransferOverlay->setVisible(false);
    m_pTransferOverlay->resize(size());
    m_pTransferOverlay->setCornerWidget(lblImg);
    m_pTransferOverlay->setAccessMessage(i18n("Please enter a transfer number and press Enter, press Escape to cancel"));
 
-   m_pTransferB->setText(i18n("Transfer"));
-   m_pTransferB->setMaximumSize(70,9000);
-
    gl->addItem  (new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::Minimum), 0 , 0 , 1 , 3 );
-   gl->addWidget(m_pTransferLE                                                   , 1 , 1 , 1 , 2 );
-   gl->addWidget(m_pTransferB                                                    , 1 , 4 , 1 , 2 );
+   gl->addWidget(m_pTransferLE                                                   , 1 , 0 , 1 , 3 );
    gl->addItem  (new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::Minimum), 2 , 0 , 1 , 3 );
 
    foreach(Call* active, SFLPhone::model()->getCallList()) {
@@ -312,7 +311,6 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
    /**/connect(SFLPhone::model() , SIGNAL(conferenceChanged(Call*))                              , this, SLOT(conferenceChanged(Call*))                );
    /**/connect(SFLPhone::model() , SIGNAL(aboutToRemoveConference(Call*))                        , this, SLOT(conferenceRemoved(Call*))                );
    /**/connect(SFLPhone::model() , SIGNAL(callAdded(Call*,Call*))                                , this, SLOT(addCall(Call*,Call*))                    );
-   /**/connect(m_pTransferB      , SIGNAL(clicked())                                             , this, SLOT(transfer())                              );
    /**/connect(m_pTransferLE     , SIGNAL(returnPressed())                                       , this, SLOT(transfer())                              );
    /**/connect(m_pCanvasToolbar  , SIGNAL(visibilityChanged(bool))                               , this, SLOT(moveCanvasTip())                         );
    /*                                                                                                                                                  */
@@ -333,10 +331,8 @@ CallView::CallView(QWidget* parent) : QTreeWidget(parent),m_pActiveOverlay(0),m_
 ///Destructor
 CallView::~CallView()
 {
-   delete m_pTransferB;
    delete m_pTransferLE;
    if (m_pTransferOverlay) delete m_pTransferOverlay;
-   if (m_pActiveOverlay)   delete m_pActiveOverlay;
 }
 
 ///A tree is not a good representation, remove branch and skin everything
@@ -681,7 +677,7 @@ void CallView::showTransferOverlay(Call* call)
    m_pCallPendingTransfer = call;
    m_pActiveOverlay = m_pTransferOverlay;
    m_pTransferLE->setFocus();
-   connect(call,SIGNAL(changed()),this,SLOT(hideOverlay()));
+//    connect(call,SIGNAL(changed()),this,SLOT(hideOverlay()));
 }
 
 ///Is there an active overlay
@@ -1066,10 +1062,10 @@ CallViewOverlay::~CallViewOverlay()
 
 ///Add a widget (usually an icon) in the corner
 void CallViewOverlay::setCornerWidget(QWidget* wdg) {
-   wdg->setParent      ( this                       );
-   wdg->setMinimumSize ( 100         , 100          );
-   wdg->resize         ( 100         , 100          );
-   wdg->move           ( width()-100 , height()-100 );
+   wdg->setParent      ( this                        );
+   wdg->setMinimumSize ( 100         , 100           );
+   wdg->resize         ( 100         , 100           );
+   wdg->move           ( width()/2-50 , height()-175 );
    m_pIcon = wdg;
 }
 
@@ -1107,7 +1103,7 @@ void CallViewOverlay::resizeEvent(QResizeEvent *e) {
    Q_UNUSED(e)
    if (m_pIcon) {
       m_pIcon->setMinimumSize(100,100);
-      m_pIcon->move(width()-100,height()-100);
+      m_pIcon->move(width()/2-50,height()-175);
    }
 }
 
