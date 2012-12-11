@@ -60,6 +60,7 @@ SET(
    widgets/immanager.cpp
    widgets/imtab.cpp
    widgets/callviewoverlaytoolbar.cpp
+   widgets/tips/conftip.cpp
    widgets/tips/dialpadtip.cpp
    widgets/tips/riggingtip.cpp
    widgets/tips/conlosttip.cpp
@@ -128,6 +129,9 @@ INSTALL( FILES icons/unhold_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/refuse_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/pickup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/tips/keyboard.svg           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/upArrow.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/downArrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/dragAndDrop.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/rigging.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/reload.svg             DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/phoneDown.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )

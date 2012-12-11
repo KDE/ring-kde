@@ -22,6 +22,7 @@ class DialPadTip;
 class Tip;
 class TipManager;
 class ConnectionLostTip;
+class ConfTip;
 
 class TipCollection {
 public:
@@ -47,7 +48,7 @@ public:
 private:
    //Tutorial mode
    static DialPadTip* m_spDialPad;
-   static Tip*        m_spConf;
+   static ConfTip*    m_spConf;
    
    //Call related
    static Tip*        m_spEndCall;

@@ -62,7 +62,7 @@ QSize Tip::reload(const QRect& availableSize,bool force)
       QRect textRect(getTextRect(m_OriginalText)),decoRect(getDecorationRect());
       m_CurrentRect.setHeight(m_CurrentRect.height() + (hasText()?textRect.height():0) + m_Padding + decoRect.height());
       if (m_CurrentRect.width() - textRect.width() > 20 && m_CurrentRect.width() > decoRect.width())
-         m_CurrentRect.setWidth(textRect.width()+2*m_Padding);
+         m_CurrentRect.setWidth(textRect.width()+m_Padding+textRect.x());
 
       if (m_CurrentRect.width() < decoRect.x() + decoRect.width())
          m_CurrentRect.setWidth(decoRect.x() + decoRect.width()+2*m_Padding);

@@ -22,11 +22,12 @@
 #include "dialpadtip.h"
 #include "riggingtip.h"
 #include "conlosttip.h"
+#include "conftip.h"
 #include "klib/tipmanager.h"
 
 //Tutorial mode
 DialPadTip*        TipCollection::m_spDialPad        = nullptr;
-Tip*               TipCollection::m_spConf           = nullptr;
+ConfTip*           TipCollection::m_spConf           = nullptr;
 
 //Call related
 Tip*               TipCollection::m_spEndCall        = nullptr;
@@ -59,12 +60,10 @@ Tip* TipCollection::conference()
 
 Tip* TipCollection::dragAndDrop()
 {
-   if (!m_spConnectionLost) {
-      m_spConnectionLost = new ConnectionLostTip();
-      m_spRigging->setAnimationIn(Tip::TipAnimation::Fade);
-      m_spRigging->setAnimationOut(Tip::TipAnimation::Fade);
+   if (!m_spConf) {
+      m_spConf = new ConfTip();
    }
-   return m_spConnectionLost;
+   return m_spConf;
 }
 
 //Call related

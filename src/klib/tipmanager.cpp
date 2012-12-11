@@ -179,7 +179,5 @@ void TipManager::hideTip(Tip* tip)
 {
    if (m_pCurrentTip == tip)
       setCurrentTip(nullptr);
-   else {
-      m_lTipQueue.removeAll(tip);
-   }
+   m_lTipQueue.removeAll(tip);
 }
