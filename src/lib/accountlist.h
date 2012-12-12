@@ -122,4 +122,28 @@ public:
    virtual ~AccountListColorVisitor() {}
 };
 
+class LIB_EXPORT AccountListNoCheckProxyModel : public QAbstractListModel
+{
+public:
+   virtual QVariant data(const QModelIndex& index,int role = Qt::DisplayRole ) const
+   {
+      if (role == Qt::CheckStateRole) {
+         return QVariant();
+      }
+      return AccountList::getInstance()->data(index,role);
+   }
+   virtual bool setData( const QModelIndex& index, const QVariant &value, int role)
+   {
+      return AccountList::getInstance()->setData(index,value,role);
+   }
+   virtual Qt::ItemFlags flags (const QModelIndex& index) const
+   {
+      return AccountList::getInstance()->flags(index);
+   }
+   virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const
+   {
+      return AccountList::getInstance()->rowCount(parent);
+   }
+};
+
 #endif

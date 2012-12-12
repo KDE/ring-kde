@@ -286,7 +286,8 @@ bool SFLPhone::initialize()
    bar->addPermanentWidget(curAccL);
 
    m_pAccountStatus = new KComboBox(bar);
-   m_pAccountStatus->setModel(AccountList::getInstance());
+   AccountListNoCheckProxyModel* accountModel = new AccountListNoCheckProxyModel();
+   m_pAccountStatus->setModel(accountModel);
    /*QMargins margins2 = m_pAccountStatus->contentsMargins();
    margins2.setRight(1);
    m_pAccountStatus->setStyleSheet("spacing:0px");
