@@ -37,7 +37,8 @@
 
 ///Constructor
 ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
- :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(0)
+ :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(0),dlgGeneral(0),dlgDisplay(0)
+ ,dlgAudio(0),dlgAddressBook(0),dlgHooks(0),dlgAccessibility(0),dlgAccounts(0)
 {
    this->setWindowIcon(QIcon(ICON_SFLPHONE));
 
@@ -114,15 +115,22 @@ void ConfigurationDialog::cancelSettings()
 ///If the account changed
 bool ConfigurationDialog::hasChanged()
 {
-   bool res = dlgAudio->hasChanged() || dlgAccounts->hasChanged() || dlgGeneral->hasChanged() || dlgAddressBook->hasChanged() || (dlgVideo && dlgVideo->hasChanged());
+   bool res = (dlgAudio && dlgAudio->hasChanged()) || (dlgAccounts && dlgAccounts->hasChanged()) || (dlgGeneral && dlgGeneral->hasChanged()) || (dlgAddressBook && dlgAddressBook->hasChanged()) || (dlgVideo && dlgVideo->hasChanged());
    return res;
+}
+
+bool ConfigurationDialog::hasIncompleteRequiredFields()
+{
+   return dlgAccounts && dlgAccounts->hasIncompleteRequiredFields();
 }
 
 ///Update the buttons
 void ConfigurationDialog::updateButtons()
 {
-   bool changed = hasChanged();
-   enableButtonApply( changed );
+   bool changed      = hasChanged();
+   bool preventApply = hasIncompleteRequiredFields();
+   enableButtonApply( changed && (!preventApply) );
+   enableButtonOk   ( !preventApply              );
 }
 
 ///Apply settings

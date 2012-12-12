@@ -20,6 +20,7 @@
 
 //Qt
 #include <QtCore/QString>
+#include <qglobal.h>
 #include <QtGui/QTableWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QWidget>
@@ -40,6 +41,15 @@
 #include "lib/credentialmodel.h"
 #include "lib/audiocodecmodel.h"
 
+//OS
+#ifdef Q_WS_WIN // MS Windows version
+   #include <windows.h>
+#endif
+#ifdef Q_WS_X11
+   #include <X11/XKBlib.h>
+   #include <QX11Info>
+#endif
+
 ///Constructor
 DlgAccounts::DlgAccounts(KConfigDialog* parent)
  : QWidget(parent),m_IsLoading(false)
@@ -59,6 +69,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    listView_accountList->setModel(AccountList::getInstance());
 
    m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(32,32)));
+   label_message_icon->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
 
    m_pRingTonePath->setMode(KFile::File | KFile::ExistingOnly);
    m_pRingTonePath->lineEdit()->setObjectName("m_pRingTonePath");
@@ -363,6 +374,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
    edit_credential_realm    -> setText(QString());
    edit_credential_auth     -> setText(QString());
    edit_credential_password -> setText(QString());
+   edit_credential_realm    -> setEnabled(false);
+   edit_credential_auth     -> setEnabled(false);
+   edit_credential_password -> setEnabled(false);
 
 
    disconnect(m_pDefaultAccount, SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
@@ -470,6 +484,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    frame2_editAccounts->setEnabled(true);
    m_IsLoading--;
    account->performAction(EDIT);
+   emit updateButtons();
 } //loadAccount
 
 ///Load an account
@@ -579,6 +594,25 @@ void DlgAccounts::updateAccountListCommands()
 void DlgAccounts::main_password_field_changed()
 {
    list_credential->model()->setData(list_credential->model()->index(0,0),edit5_password->text(),CredentialModel::PASSWORD_ROLE);
+   #ifdef Q_WS_WIN // MS Windows version
+      if (GetKeyState(VK_CAPITAL) == 1) {
+   #endif
+   #ifdef Q_WS_X11 // X11 version
+      unsigned int n = 0;
+      Display *d = QX11Info::display();
+      XkbGetIndicatorState(d, XkbUseCoreKbd, &n);
+      if ((n & 0x01) == 1) {
+   #else
+      //# error Platform not supported
+      if (false) {
+   #endif
+      label_message->setText("<b>"+i18n("Warning, caps lock is turned on!")+"</b>");
+      label_message_icon->setPixmap(KIcon("dialog-warning").pixmap(QSize(32,32)));
+   }
+   else {
+      label_message->setText(i18n("Fields marked with \"*\" are compulsory and required"));
+      label_message_icon->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
+   }
 }
 
 ///Credential changed
@@ -677,18 +711,28 @@ bool DlgAccounts::hasChanged()
    return accountListHasChanged;
 }
 
+///Have all required fields completed?
+bool DlgAccounts::hasIncompleteRequiredFields()
+{
+   Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+   return acc && (acc->getAlias() != "IP2IP") && (edit1_alias->text().isEmpty() || edit3_server->text().isEmpty() || edit4_user->text().isEmpty() || edit5_password->text().isEmpty());
+}
+
 ///Save settings
 void DlgAccounts::updateSettings()
 {
    if(accountListHasChanged) {
       if(listView_accountList->currentIndex().isValid()) {
-         saveAccount(listView_accountList->currentIndex());
          Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+//          if (acc && acc->isNew()) { //Trying to save an account without ID work, but codecs and credential will be corrupted
+//             acc->performAction(AccountEditAction::SAVE);
+//          }
+         saveAccount(listView_accountList->currentIndex());
          if (acc->currentState() == EDITING || acc->currentState() == OUTDATED)
             acc->performAction(CANCEL);
       }
 
-   AccountList::getInstance()->save();
+      AccountList::getInstance()->save();
       accountListHasChanged = false;
    }
 }

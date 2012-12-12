@@ -99,6 +99,9 @@ public slots:
     */
    bool hasChanged();
 
+   ///Are there required fields left to complete
+   bool hasIncompleteRequiredFields();
+
    /**
     * reloads the information before showing it.
     */

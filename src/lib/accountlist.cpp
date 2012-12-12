@@ -105,13 +105,15 @@ void AccountList::accountChanged(const QString& account,const QString& state, in
          }
       }
       foreach (Account* a, *m_pAccounts) {
-         int idx =accountIds.indexOf(a->getAccountId());
-         if (idx == -1 && (a->currentState() == READY || a->currentState() == REMOVED)) {
-            m_pAccounts->remove(idx);
-            emit dataChanged(index(idx - 1, 0), index(m_pAccounts->size()-1, 0));
-         }
+//          if (!dynamic_cast<Account*>(a)) { //If an account is being created while updating it may crash or remove it
+            int idx =accountIds.indexOf(a->getAccountId());
+            if (idx == -1 && (a->currentState() == READY || a->currentState() == REMOVED)) {
+               m_pAccounts->remove(idx);
+               emit dataChanged(index(idx - 1, 0), index(m_pAccounts->size()-1, 0));
+            }
+            a = getAccountById(account);
+//          }
       }
-      a = getAccountById(account);
    }
    if (a)
       emit accountStateChanged(a,a->getStateName(state));

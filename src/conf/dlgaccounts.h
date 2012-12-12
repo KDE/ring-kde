@@ -115,10 +115,11 @@ private:
    int                   m_IsLoading           ;
 
 public slots:
-   void loadAccountList ();
-   bool hasChanged      ();
-   void updateSettings  ();
-   void updateWidgets   ();
+   void loadAccountList                  ();
+   bool hasChanged                       ();
+   void updateSettings                   ();
+   void updateWidgets                    ();
+   bool hasIncompleteRequiredFields      ();
 
 private slots:
    void changedAccountList               ();

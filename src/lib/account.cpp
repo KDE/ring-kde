@@ -107,7 +107,7 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
 {
    qDebug() << "Building an account from alias: " << alias;
    ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
-   Account* a           = new Account        ();
+   Account* a           = new Account();
    a->m_pAccountDetails = new MapStringString(configurationManager.getAccountTemplate());
    a->setAccountDetail(ACCOUNT_ALIAS,alias);
    return a;
@@ -156,8 +156,9 @@ bool Account::isNew() const
 ///Get this account ID
 const QString& Account::getAccountId() const
 {
-   if (isNew())
+   if (isNew()) {
       qDebug() << "Error : getting AccountId of a new account.";
+   }
    if (!m_pAccountId) {
       qDebug() << "Account not configured";
       return EMPTY_STRING; //WARNING May explode
@@ -189,6 +190,8 @@ const QString& Account::getAccountDetail(const QString& param) const
       return (*m_pAccountDetails)[param];
    }
    else if (m_pAccountDetails->count() > 0) {
+      if (param == "Account.enable") //If an account is invalid, at least does not try to register it
+         return "false";
       qDebug() << "Account parameter \"" << param << "\" not found";
       return EMPTY_STRING;
    }
@@ -364,7 +367,22 @@ void Account::save()
    if (isNew()) {
       MapStringString details = getAccountDetails();
       QString currentId = configurationManager.addAccount(details);
+
+      //Be sure there is audio codec enabled to avoid obscure error messages for the user
+      QVector<int> codecIdList = configurationManager.getAudioCodecList();
+      foreach (const int aCodec, codecIdList) {
+         QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
+         QModelIndex idx = m_pAudioCodecs->addAudioCodec();
+         m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::NAME_ROLE       );
+         m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::SAMPLERATE_ROLE );
+         m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::BITRATE_ROLE    );
+         m_pAudioCodecs->setData(idx,aCodec  ,AudioCodecModel::ID_ROLE         );
+         m_pAudioCodecs->setData(idx, Qt::Checked ,Qt::CheckStateRole);
+      }
+      saveAudioCodecs();
+
       setAccountId(currentId);
+      saveCredentials();
    }
    else {
       configurationManager.setAccountDetails(getAccountId(), getAccountDetails());
@@ -407,6 +425,7 @@ void Account::reload()
       m_pAccountDetails = new MapStringString(aDetails);
    }
    m_CurrentState = READY;
+   reloadCredentials();
    emit changed(this);
 }
 
@@ -416,14 +435,16 @@ void Account::reloadCredentials()
    if (!m_pCredentials) {
       m_pCredentials = new CredentialModel(this);
    }
-   m_pCredentials->clear();
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
-   VectorMapStringString credentials = configurationManager.getCredentials(getAccountId());
-   for (int i=0; i < credentials.size(); i++) {
-      QModelIndex idx = m_pCredentials->addCredentials();
-      m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_USERNAME  ],CredentialModel::NAME_ROLE    );
-      m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_PASSWORD  ],CredentialModel::PASSWORD_ROLE);
-      m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_REALM     ],CredentialModel::REALM_ROLE   );
+   if (!isNew()) {
+      m_pCredentials->clear();
+      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      VectorMapStringString credentials = configurationManager.getCredentials(getAccountId());
+      for (int i=0; i < credentials.size(); i++) {
+         QModelIndex idx = m_pCredentials->addCredentials();
+         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_USERNAME  ],CredentialModel::NAME_ROLE    );
+         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_PASSWORD  ],CredentialModel::PASSWORD_ROLE);
+         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_REALM     ],CredentialModel::REALM_ROLE   );
+      }
    }
 }
 
@@ -463,19 +484,21 @@ void Account::reloadAudioCodecs()
    m_pAudioCodecs->clear();
    ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
    QVector<int> codecIdList = configurationManager.getAudioCodecList();
-   QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(getAccountId());
-   QStringList tmpNameList;
+   if (!isNew()) {
+      QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(getAccountId());
+      QStringList tmpNameList;
 
-   foreach (const int aCodec, activeCodecList) {
-      QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
-      QModelIndex idx = m_pAudioCodecs->addAudioCodec();
-      m_pAudioCodecs->setData(idx,codec[0]     ,AudioCodecModel::NAME_ROLE       );
-      m_pAudioCodecs->setData(idx,codec[1]     ,AudioCodecModel::SAMPLERATE_ROLE );
-      m_pAudioCodecs->setData(idx,codec[2]     ,AudioCodecModel::BITRATE_ROLE    );
-      m_pAudioCodecs->setData(idx,aCodec       ,AudioCodecModel::ID_ROLE         );
-      m_pAudioCodecs->setData(idx, Qt::Checked ,Qt::CheckStateRole               );
-      if (codecIdList.indexOf(aCodec)!=-1)
-         codecIdList.remove(codecIdList.indexOf(aCodec));
+      foreach (const int aCodec, activeCodecList) {
+         QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
+         QModelIndex idx = m_pAudioCodecs->addAudioCodec();
+         m_pAudioCodecs->setData(idx,codec[0]     ,AudioCodecModel::NAME_ROLE       );
+         m_pAudioCodecs->setData(idx,codec[1]     ,AudioCodecModel::SAMPLERATE_ROLE );
+         m_pAudioCodecs->setData(idx,codec[2]     ,AudioCodecModel::BITRATE_ROLE    );
+         m_pAudioCodecs->setData(idx,aCodec       ,AudioCodecModel::ID_ROLE         );
+         m_pAudioCodecs->setData(idx, Qt::Checked ,Qt::CheckStateRole               );
+         if (codecIdList.indexOf(aCodec)!=-1)
+            codecIdList.remove(codecIdList.indexOf(aCodec));
+      }
    }
 
    foreach (const int aCodec, codecIdList) {

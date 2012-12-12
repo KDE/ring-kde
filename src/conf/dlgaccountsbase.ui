@@ -60,6 +60,22 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_13">
          <item row="1" column="2">
+          <widget class="QToolButton" name="button_accountDown">
+           <property name="toolTip">
+            <string>Get this account down</string>
+           </property>
+           <property name="whatsThis">
+            <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+           </property>
+           <property name="text">
+            <string comment="Move account down">Down</string>
+           </property>
+           <property name="shortcut">
+            <string notr="true">Down, PgDown</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
           <widget class="QToolButton" name="button_accountAdd">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -87,7 +103,32 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="1" column="4">
+          <widget class="QToolButton" name="button_accountRemove">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Remove the selected account</string>
+           </property>
+           <property name="whatsThis">
+            <string>This button will remove the selected account in the list below. Be sure you really don't need it anymore. If you think you might use it again later, just uncheck it.</string>
+           </property>
+           <property name="accessibleDescription">
+            <string/>
+           </property>
+           <property name="text">
+            <string comment="Remove selected account">Remove</string>
+           </property>
+           <property name="shortcut">
+            <string notr="true">-, Del, Backspace</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
           <widget class="QToolButton" name="button_accountUp">
            <property name="toolTip">
             <string>Get this account up</string>
@@ -103,21 +144,18 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QToolButton" name="button_accountDown">
-           <property name="toolTip">
-            <string>Get this account down</string>
+         <item row="1" column="0">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-           <property name="whatsThis">
-            <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>41</width>
+             <height>21</height>
+            </size>
            </property>
-           <property name="text">
-            <string comment="Move account down">Down</string>
-           </property>
-           <property name="shortcut">
-            <string notr="true">Down, PgDown</string>
-           </property>
-          </widget>
+          </spacer>
          </item>
          <item row="0" column="0" colspan="5">
           <widget class="QListView" name="listView_accountList">
@@ -147,44 +185,6 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
-          <widget class="QToolButton" name="button_accountRemove">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Remove the selected account</string>
-           </property>
-           <property name="whatsThis">
-            <string>This button will remove the selected account in the list below. Be sure you really don't need it anymore. If you think you might use it again later, just uncheck it.</string>
-           </property>
-           <property name="accessibleDescription">
-            <string/>
-           </property>
-           <property name="text">
-            <string comment="Remove selected account">Remove</string>
-           </property>
-           <property name="shortcut">
-            <string notr="true">-, Del, Backspace</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>41</width>
-             <height>21</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
        </widget>
       </item>
@@ -209,181 +209,227 @@
          <attribute name="title">
           <string comment="Basic settings">Basic</string>
          </attribute>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::ExpandingFieldsGrow</enum>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label1_alias">
-            <property name="text">
-             <string>Alias</string>
-            </property>
-            <property name="buddy">
-             <cstring>edit1_alias</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="KLineEdit" name="edit1_alias">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="placeholderText">
-             <string>Anything, used only to select the account</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label2_protocol">
-            <property name="text">
-             <string>Protocol</string>
-            </property>
-            <property name="buddy">
-             <cstring>edit2_protocol</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="KComboBox" name="edit2_protocol">
-            <item>
-             <property name="text">
-              <string>SIP</string>
-             </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label1_alias">
+              <property name="text">
+               <string>Alias*</string>
+              </property>
+              <property name="buddy">
+               <cstring>edit1_alias</cstring>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>IAX</string>
-             </property>
+            <item row="0" column="1">
+             <widget class="KLineEdit" name="edit1_alias">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>Anything, used only to select the account</string>
+              </property>
+             </widget>
             </item>
-           </widget>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label2_protocol">
+              <property name="text">
+               <string>Protocol</string>
+              </property>
+              <property name="buddy">
+               <cstring>edit2_protocol</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="KComboBox" name="edit2_protocol">
+              <item>
+               <property name="text">
+                <string>SIP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>IAX</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label3_server">
+              <property name="text">
+               <string comment="SIP server">Server*</string>
+              </property>
+              <property name="buddy">
+               <cstring>edit3_server</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="KLineEdit" name="edit3_server">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="placeholderText">
+               <string>Example: sip.sflphone.org or 192.168.0.2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label4_user">
+              <property name="accessibleDescription">
+               <string comment="Account username"/>
+              </property>
+              <property name="text">
+               <string comment="Account username">Username*</string>
+              </property>
+              <property name="buddy">
+               <cstring>edit4_user</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="KLineEdit" name="edit4_user">
+              <property name="placeholderText">
+               <string>Usually your extension number</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label5_password">
+              <property name="text">
+               <string comment="Account password">Password*</string>
+              </property>
+              <property name="buddy">
+               <cstring>edit5_password</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="KLineEdit" name="edit5_password">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+              <property name="placeholderText">
+               <string>SIP password, ask your network administrator</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label6_mailbox">
+              <property name="text">
+               <string comment="Account voice mail address">Voicemail</string>
+              </property>
+              <property name="buddy">
+               <cstring>edit6_mailbox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="KLineEdit" name="edit6_mailbox">
+              <property name="placeholderText">
+               <string>Usually the same as the username</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QCheckBox" name="m_pDefaultAccount">
+              <property name="text">
+               <string>Default account for contact with only extensions as phone number</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QCheckBox" name="m_pAutoAnswer">
+              <property name="text">
+               <string>Auto answer</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="label7_state">
+              <property name="text">
+               <string>Status</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QLabel" name="edit7_state">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label3_server">
-            <property name="text">
-             <string comment="SIP server">Server</string>
+          <item>
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
-            <property name="buddy">
-             <cstring>edit3_server</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="KLineEdit" name="edit3_server">
-            <property name="minimumSize">
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>0</width>
-              <height>0</height>
+              <width>20</width>
+              <height>40</height>
              </size>
             </property>
-            <property name="placeholderText">
-             <string>Example: sip.sflphone.org or 192.168.0.2</string>
-            </property>
-           </widget>
+           </spacer>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label4_user">
-            <property name="accessibleDescription">
-             <string comment="Account username"/>
-            </property>
-            <property name="text">
-             <string comment="Account username">Username</string>
-            </property>
-            <property name="buddy">
-             <cstring>edit4_user</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="KLineEdit" name="edit4_user">
-            <property name="placeholderText">
-             <string>Usually your extension number</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label5_password">
-            <property name="text">
-             <string comment="Account password">Password</string>
-            </property>
-            <property name="buddy">
-             <cstring>edit5_password</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="KLineEdit" name="edit5_password">
-            <property name="echoMode">
-             <enum>QLineEdit::Password</enum>
-            </property>
-            <property name="placeholderText">
-             <string>SIP password, ask your network administrator</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label6_mailbox">
-            <property name="text">
-             <string comment="Account voice mail address">Voicemail</string>
-            </property>
-            <property name="buddy">
-             <cstring>edit6_mailbox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="KLineEdit" name="edit6_mailbox">
-            <property name="placeholderText">
-             <string>Usually the same as the username</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="label7_state">
-            <property name="text">
-             <string>Status</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="1">
-           <widget class="QLabel" name="edit7_state">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <widget class="QCheckBox" name="m_pDefaultAccount">
-            <property name="text">
-             <string>Default account for contact with only extensions as phone number</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QCheckBox" name="m_pAutoAnswer">
-            <property name="text">
-             <string>Auto answer</string>
-            </property>
+          <item>
+           <widget class="QWidget" name="widget" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="label_message_icon">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_message">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Fields marked with &quot;*&quot; are compulsory and required</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -895,12 +941,18 @@
                <property name="enabled">
                 <bool>false</bool>
                </property>
+               <property name="placeholderText">
+                <string>Usually *</string>
+               </property>
               </widget>
              </item>
              <item row="1" column="1">
               <widget class="KLineEdit" name="edit_credential_auth">
                <property name="enabled">
                 <bool>false</bool>
+               </property>
+               <property name="placeholderText">
+                <string>Usually your extension number</string>
                </property>
               </widget>
              </item>
@@ -914,6 +966,9 @@
                </property>
                <property name="echoMode">
                 <enum>QLineEdit::Password</enum>
+               </property>
+               <property name="placeholderText">
+                <string>SIP password, ask your network administrator</string>
                </property>
               </widget>
              </item>
@@ -954,7 +1009,7 @@
                <x>0</x>
                <y>0</y>
                <width>539</width>
-               <height>660</height>
+               <height>666</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
