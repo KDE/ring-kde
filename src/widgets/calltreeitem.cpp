@@ -47,6 +47,7 @@
 #include <KDebug>
 #include <KIcon>
 #include <KStandardDirs>
+#include <KLineEdit>
 
 //SFLPhone library
 #include "lib/sflphone_const.h"
@@ -66,6 +67,7 @@ const char * CallTreeItem::callStateIcons[12] = {ICON_INCOMING, ICON_RINGING, IC
 CallTreeItem::CallTreeItem(QWidget *parent)
    : QWidget(parent), m_pItemCall(0), m_Init(false),m_pBtnConf(0), m_pBtnTrans(0),m_pTimer(0),m_pPeerL(0),m_pIconL(0),m_pCallNumberL(0),m_pSecureL(0),m_pCodecL(0),m_pHistoryPeerL(0)
    , m_pTransferPrefixL(0),m_pTransferNumberL(0),m_pElapsedL(0),m_Height(0),m_pContact(0),m_pDepartment(0),m_pOrganisation(0),m_pEmail(0),m_IsDragged(false),m_CurrentStyle(-1)
+   , m_pCallNumberLE(nullptr)
 {
    setContentsMargins(0,0,0,0);
    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -78,6 +80,7 @@ CallTreeItem::~CallTreeItem()
     if (m_pIconL)           delete m_pIconL           ;
     if (m_pPeerL)           delete m_pPeerL           ;
     if (m_pCallNumberL)     delete m_pCallNumberL     ;
+    if (m_pCallNumberLE)    delete m_pCallNumberLE    ;
     if (m_pTransferPrefixL) delete m_pTransferPrefixL ;
     if (m_pTransferNumberL) delete m_pTransferNumberL ;
     if (m_pCodecL)          delete m_pCodecL          ;
@@ -329,6 +332,14 @@ void CallTreeItem::setCall(Call *call)
    if (ConfigurationSkeleton::displayCallNumber()) {
       m_pCallNumberL = new QLabel(m_pItemCall->getPeerPhoneNumber());
       descr->addWidget(m_pCallNumberL);
+      m_pCallNumberLE = new KLineEdit(this);
+      m_pCallNumberLE->setStyleSheet("background-color:transparent;border:0px;");
+      m_pCallNumberLE->setVisible(false);
+      descr->addWidget(m_pCallNumberLE);
+      int pos = m_pCallNumberLE->cursorPosition();
+      m_pCallNumberLE->setText(m_pItemCall->getCallNumber());
+      m_pCallNumberLE->setCursorPosition(pos);
+      connect(m_pCallNumberLE,SIGNAL(textChanged(QString)),this,SLOT(numberChanged(QString)));
    }
 
    if (ConfigurationSkeleton::displayCallSecure()) {
@@ -462,10 +473,19 @@ void CallTreeItem::updated()
       if (m_pCallNumberL)
          m_pCallNumberL->setText(m_pItemCall->getPeerPhoneNumber());
 
-      if(m_pCallNumberL && state == CALL_STATE_DIALING) {
-         m_pCallNumberL->setText(m_pItemCall->getCallNumber());
+      if(m_pCallNumberLE && state == CALL_STATE_DIALING) {
+         int pos = m_pCallNumberLE->cursorPosition();
+         if (m_pCallNumberLE->text()!=m_pItemCall->getCallNumber())
+            m_pCallNumberLE->setText(m_pItemCall->getCallNumber());
+         m_pCallNumberLE->setCursorPosition(pos);
+         m_pCallNumberLE->setVisible(true);
+         m_pCallNumberL->setVisible(false);
       }
       else {
+         if (m_pCallNumberLE)
+            m_pCallNumberLE->setVisible(false);
+         if (m_pCallNumberL)
+            m_pCallNumberL->setVisible(true);
          if (m_pCodecL)
             m_pCodecL->setText("Codec: "+m_pItemCall->getCurrentCodecName());
          if (m_pSecureL && m_pItemCall->isSecure())
@@ -501,6 +521,14 @@ void CallTreeItem::updated()
       m_pTimer->stop();
    }
 } //updated
+
+///Support the user case where the user want to edit the number after entering it
+void CallTreeItem::numberChanged(QString number)
+{
+   if (m_pItemCall->getCallNumber() != number) {
+      m_pItemCall->setCallNumber(number);
+   }
+}
 
 
 /*****************************************************************************

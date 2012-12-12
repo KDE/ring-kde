@@ -34,6 +34,7 @@ class QPixmap;
 
 //KDE
 class KIcon;
+class KLineEdit;
 
 //SFLPhone
 class Call;
@@ -64,24 +65,25 @@ class CallTreeItem : public QWidget
 
  private:
     //Attributes
-    Call*    m_pItemCall        ;
-    bool     m_Init             ;
-    bool     m_isHover          ;
-    QLabel*  m_pIconL           ;
-    QLabel*  m_pPeerL           ;
-    QLabel*  m_pCallNumberL     ;
-    QLabel*  m_pTransferPrefixL ;
-    QLabel*  m_pTransferNumberL ;
-    QLabel*  m_pCodecL          ;
-    QLabel*  m_pSecureL         ;
-    QLabel*  m_pHistoryPeerL    ;
-    QLabel*  m_pElapsedL        ;
-    QLabel*  m_pDepartment      ;
-    QLabel*  m_pOrganisation    ;
-    QLabel*  m_pEmail           ;
-    QTimer*  m_pTimer           ;
-    uint     m_Height           ;
-    int      m_CurrentStyle     ;
+    Call*      m_pItemCall        ;
+    bool       m_Init             ;
+    bool       m_isHover          ;
+    QLabel*    m_pIconL           ;
+    QLabel*    m_pPeerL           ;
+    QLabel*    m_pCallNumberL     ;
+    KLineEdit* m_pCallNumberLE    ;
+    QLabel*    m_pTransferPrefixL ;
+    QLabel*    m_pTransferNumberL ;
+    QLabel*    m_pCodecL          ;
+    QLabel*    m_pSecureL         ;
+    QLabel*    m_pHistoryPeerL    ;
+    QLabel*    m_pElapsedL        ;
+    QLabel*    m_pDepartment      ;
+    QLabel*    m_pOrganisation    ;
+    QLabel*    m_pEmail           ;
+    QTimer*    m_pTimer           ;
+    uint       m_Height           ;
+    int        m_CurrentStyle     ;
 
     Contact* m_pContact;
     
@@ -103,11 +105,12 @@ class CallTreeItem : public QWidget
     virtual void mouseDoubleClickEvent ( QMouseEvent     *e );
 
 private slots:
-   void transferEvent    (QMimeData* data);
-   void conversationEvent(QMimeData* data);
-   void hide             (               );
-   void incrementTimer   (               );
-   void copy             (               );
+   void transferEvent    (QMimeData* data );
+   void conversationEvent(QMimeData* data );
+   void hide             (                );
+   void incrementTimer   (                );
+   void copy             (                );
+   void numberChanged    ( QString number );
 
 public slots:
    void updated();
