@@ -170,6 +170,7 @@ private slots:
    void showShortCutEditor                       (                                      );
    void quitButton                               (                                      );
    void updateTabIcons                           (                                      );
+   void timeout                                  (                                      );
    #ifdef ENABLE_VIDEO
    void displayVideoDock                         ( VideoRenderer* r                     );
    #endif
