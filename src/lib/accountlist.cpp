@@ -231,6 +231,13 @@ bool AccountList::accountDown( int index )
    return false;
 }
 
+///Try to register all enabled accounts
+void AccountList::registerAllAccounts()
+{
+   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   configurationManager.registerAllAccounts();
+}
+
 
 /*****************************************************************************
  *                                                                           *

@@ -191,7 +191,7 @@ const QString& Account::getAccountDetail(const QString& param) const
    }
    else if (m_pAccountDetails->count() > 0) {
       if (param == "Account.enable") //If an account is invalid, at least does not try to register it
-         return "false";
+         return REGISTRATION_ENABLED_FALSE;
       qDebug() << "Account parameter \"" << param << "\" not found";
       return EMPTY_STRING;
    }

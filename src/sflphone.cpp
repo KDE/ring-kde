@@ -287,8 +287,22 @@ bool SFLPhone::initialize()
 
    m_pAccountStatus = new KComboBox(bar);
    m_pAccountStatus->setModel(AccountList::getInstance());
+   /*QMargins margins2 = m_pAccountStatus->contentsMargins();
+   margins2.setRight(1);
+   m_pAccountStatus->setStyleSheet("spacing:0px");
+   m_pAccountStatus->setContentsMargins(margins2);*/
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
+   
+   QToolButton* m_pReloadButton = new QToolButton(this);
+   m_pReloadButton->setIcon(KIcon("view-refresh"));
+   /*QMargins margins = m_pReloadButton->contentsMargins();
+   margins.setLeft(0);
+   m_pReloadButton->setContentsMargins(margins);
+   m_pReloadButton->setStyleSheet("spacing:0px");*/
+   bar->addPermanentWidget(m_pReloadButton);
+   connect(m_pReloadButton,SIGNAL(clicked()),AccountList::getInstance(),SLOT(registerAllAccounts()));
+   
 
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
    connect(AccountList::getInstance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));

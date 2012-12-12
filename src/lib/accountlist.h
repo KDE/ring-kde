@@ -67,13 +67,13 @@ public:
    void         setDefaultAccount(Account* a);
 
    //Mutators
-   virtual Account*  addAccount        ( const QString & alias   )      ;
-   void              removeAccount     ( Account* account        )      ;
-   void              removeAccount     ( QModelIndex index       )      ;
-   QVector<Account*> registeredAccounts(                         ) const;
-   void              save              (                         )      ;
-   bool              accountUp         ( int index               )      ;
-   bool              accountDown       ( int index               )      ;
+   virtual Account*  addAccount          ( const QString & alias   )      ;
+   void              removeAccount       ( Account* account        )      ;
+   void              removeAccount       ( QModelIndex index       )      ;
+   QVector<Account*> registeredAccounts  (                         ) const;
+   void              save                (                         )      ;
+   bool              accountUp           ( int index               )      ;
+   bool              accountDown         ( int index               )      ;
 
    //Operators
    Account*       operator[] (int i)      ;
@@ -95,6 +95,7 @@ private:
 public slots:
    void update        ();
    void updateAccounts();
+   void registerAllAccounts();
 
 private slots:
    void accountChanged(const QString& account,const QString& state, int code);

@@ -183,8 +183,8 @@
 
 /** Maybe to remove **/
 #define REGISTRATION_EXPIRE_DEFAULT       600
-#define REGISTRATION_ENABLED_TRUE         "true"
-#define REGISTRATION_ENABLED_FALSE        "false"
+static const QString REGISTRATION_ENABLED_TRUE("true");
+static const QString REGISTRATION_ENABLED_FALSE("false");
 #define ACCOUNT_TYPE_SIP                  "SIP"
 #define ACCOUNT_TYPE_IAX                  "IAX"
 #define ACCOUNT_TYPES_TAB                 {QString(ACCOUNT_TYPE_SIP), QString(ACCOUNT_TYPE_IAX)}
