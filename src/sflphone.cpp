@@ -107,8 +107,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    action_unhold  ->setText ( i18n( "Unhold"   ) );
    action_pickup  ->setText ( i18n( "Pickup"   ) );
 
-    m_pView = new SFLPhoneView(this);
-    setupActions();
+   m_pView = new SFLPhoneView(this);
 }
 
 ///Destructor
@@ -202,19 +201,11 @@ bool SFLPhone::initialize()
 
    //System tray
    m_pTrayIcon        = new SFLPhoneTray ( this->windowIcon(), this );
-   m_pTrayIcon->addAction( action_accept   );
-   m_pTrayIcon->addAction( action_mailBox  );
-   m_pTrayIcon->addAction( action_refuse   );
-   m_pTrayIcon->addAction( action_hold     );
-   m_pTrayIcon->addAction( action_transfer );
-   m_pTrayIcon->addAction( action_record   );
-   m_pTrayIcon->addSeparator();
-   m_pTrayIcon->addAction( action_quit     );
 
-   addDockWidget( Qt::TopDockWidgetArea,m_pCentralDW  );
-   addDockWidget( Qt::TopDockWidgetArea,m_pContactCD  );
-   addDockWidget( Qt::TopDockWidgetArea,m_pHistoryDW  );
-   addDockWidget( Qt::TopDockWidgetArea,m_pBookmarkDW );
+   addDockWidget( Qt::TopDockWidgetArea, m_pCentralDW  );
+   addDockWidget( Qt::TopDockWidgetArea, m_pContactCD  );
+   addDockWidget( Qt::TopDockWidgetArea, m_pHistoryDW  );
+   addDockWidget( Qt::TopDockWidgetArea, m_pBookmarkDW );
 
    tabifyDockWidget(m_pCentralDW,m_pHistoryDW );
    tabifyDockWidget(m_pCentralDW,m_pContactCD );
@@ -250,6 +241,16 @@ bool SFLPhone::initialize()
    setWindowIcon (QIcon(ICON_SFLPHONE) );
    setWindowTitle(i18n("SFLphone")     );
    setupActions();
+
+   m_pTrayIcon->addAction( action_accept   );
+   m_pTrayIcon->addAction( action_mailBox  );
+   m_pTrayIcon->addAction( action_refuse   );
+   m_pTrayIcon->addAction( action_hold     );
+   m_pTrayIcon->addAction( action_transfer );
+   m_pTrayIcon->addAction( action_record   );
+   m_pTrayIcon->addSeparator();
+   m_pTrayIcon->addAction( action_quit     );
+
    connect(action_showContactDock, SIGNAL(toggled(bool)),m_pContactCD, SLOT(setVisible(bool)));
    connect(action_showHistoryDock, SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
    connect(action_showBookmarkDock,SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
