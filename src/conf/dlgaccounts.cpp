@@ -446,7 +446,14 @@ void DlgAccounts::loadAccount(QModelIndex item)
          found = true;
       }
    }
-   if (!found) m_pRingtoneListLW->setDisabled(true);
+   m_pRingtoneListLW->setEnabled(!m_pUseCustomFileCK->isChecked());
+   if (!found && !ringtonePath.isEmpty()) {
+      m_pRingtoneListLW->setDisabled(true);
+      m_pUseCustomFileCK->setChecked(true);
+      m_pRingTonePath->setEnabled(true);
+      
+      m_pRingTonePath->setUrl( ringtonePath );
+   }
 
    #ifndef ENABLE_VIDEO
    m_pVideoCodecGB->setVisible(false);
