@@ -677,7 +677,7 @@ void CallView::showTransferOverlay(Call* call)
    m_pCallPendingTransfer = call;
    m_pActiveOverlay = m_pTransferOverlay;
    m_pTransferLE->setFocus();
-//    connect(call,SIGNAL(changed()),this,SLOT(hideOverlay()));
+   connect(call,SIGNAL(isOver(Call*)),this,SLOT(hideOverlay()));
 }
 
 ///Is there an active overlay
@@ -690,6 +690,10 @@ bool CallView::haveOverlay()
 void CallView::hideOverlay()
 {
    if (m_pActiveOverlay){
+      if (m_pCallPendingTransfer->getState() != CALL_STATE_OVER) {
+         m_pCallPendingTransfer->changeCurrentState( CALL_STATE_CURRENT );
+         SFLPhone::app()->view()->updateWindowCallState(); //TODO hack
+      }
       disconnect(m_pCallPendingTransfer,SIGNAL(changed()),this,SLOT(hideOverlay()));
       m_pActiveOverlay->setVisible(false);
    }
