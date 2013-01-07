@@ -795,10 +795,12 @@ void Call::call()
 ///Trnasfer the call
 void Call::transfer()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
-   qDebug() << "Transferring call to number : " << m_TransferNumber << ". callId : " << m_CallId;
-   Q_NOREPLY callManager.transfer(m_CallId, m_TransferNumber);
-   setStopTime_private(new QDateTime(QDateTime::currentDateTime()));
+   if (!m_TransferNumber.isEmpty()) {
+      CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+      qDebug() << "Transferring call to number : " << m_TransferNumber << ". callId : " << m_CallId;
+      Q_NOREPLY callManager.transfer(m_CallId, m_TransferNumber);
+      setStopTime_private(new QDateTime(QDateTime::currentDateTime()));
+   }
 }
 
 ///Unhold the call

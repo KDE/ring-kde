@@ -281,9 +281,10 @@ CALLMODEL_TEMPLATE void CALLMODEL_T::attendedTransfer(Call* toTransfer, Call* ta
 CALLMODEL_TEMPLATE void CALLMODEL_T::transfer(Call* toTransfer, QString target)
 {
    qDebug() << "Transferring call " << toTransfer->getCallId() << "to" << target;
-   toTransfer->setTransferNumber ( target               );
-   toTransfer->actionPerformed   ( CALL_ACTION_TRANSFER );
-   toTransfer->changeCurrentState( CALL_STATE_OVER      );
+   toTransfer->setTransferNumber ( target                 );
+   toTransfer->changeCurrentState( CALL_STATE_TRANSFERRED );
+   toTransfer->actionPerformed   ( CALL_ACTION_TRANSFER   );
+   toTransfer->changeCurrentState( CALL_STATE_OVER        );
 } //transfer
 
 /*****************************************************************************
