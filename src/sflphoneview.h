@@ -173,6 +173,7 @@ public slots:
    void record   ();
    void mailBox  ();
    void paste    ();
+   void mute     ( bool value = true);
 
    void on_widget_dialpad_typed(QString text);
 

@@ -106,6 +106,8 @@ SFLPhone::SFLPhone(QWidget *parent)
    action_hangup  ->setText ( i18n( "Hang up"  ) );
    action_unhold  ->setText ( i18n( "Unhold"   ) );
    action_pickup  ->setText ( i18n( "Pickup"   ) );
+   
+   action_mute->setCheckable(true);
 
    m_pView = new SFLPhoneView(this);
 }
@@ -386,6 +388,7 @@ void SFLPhone::setupActions()
    /**/connect(action_unhold,                SIGNAL(triggered()),           m_pView , SLOT(unhold())                    );
    /**/connect(action_transfer,              SIGNAL(triggered()),           m_pView , SLOT(transfer())                  );
    /**/connect(action_record,                SIGNAL(triggered()),           m_pView , SLOT(record())                    );
+   /**/connect(action_mute,                  SIGNAL(toggled(bool)),         m_pView , SLOT(mute(bool))                  );
    /**/connect(action_mailBox,               SIGNAL(triggered()),           m_pView , SLOT(mailBox())                   );
    /**/connect(action_displayVolumeControls, SIGNAL(toggled(bool)),         m_pView , SLOT(displayVolumeControls(bool)) );
    /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         m_pView , SLOT(displayDialpad(bool))        );

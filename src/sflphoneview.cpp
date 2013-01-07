@@ -44,6 +44,7 @@
 #include "sflphone.h"
 #include "widgets/callviewoverlaytoolbar.h"
 #include "widgets/tips/tipcollection.h"
+#include "extendedaction.h"
 
 //sflphone library
 #include "lib/typedefs.h"
@@ -735,19 +736,7 @@ void SFLPhoneView::on_slider_sndVol_valueChanged(int value)
 ///The mute button have been clicked
 void SFLPhoneView::on_toolButton_recVol_clicked(bool checked)
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
-   kDebug() << "on_toolButton_recVol_clicked().";
-   if(!checked) {
-      toolButton_recVol->setChecked(false);
-      slider_recVol->setEnabled(true);
-      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)slider_recVol->value() / 100.0);
-   }
-   else {
-      toolButton_recVol->setChecked(true);
-      slider_recVol->setEnabled(false);
-      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, 0.0);
-   }
-   updateRecordButton();
+   mute(checked);
 }
 
 ///The mute button have been clicked
@@ -924,6 +913,26 @@ void SFLPhoneView::record()
    else {
       action(call, CALL_ACTION_RECORD);
    }
+}
+
+//Mute a call
+void SFLPhoneView::mute(bool value)
+{
+   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   kDebug() << "on_toolButton_recVol_clicked().";
+   if(!value) {
+      toolButton_recVol->setChecked(false);
+      slider_recVol->setEnabled(true);
+      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)slider_recVol->value() / 100.0);
+      SFLPhone::app()->getMuteAction()->setText(i18n("Mute"));
+   }
+   else {
+      toolButton_recVol->setChecked(true);
+      slider_recVol->setEnabled(false);
+      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, 0.0);
+      SFLPhone::app()->getMuteAction()->setText(i18n("Unmute"));
+   }
+   updateRecordButton();
 }
 
 ///Access the voice mail list

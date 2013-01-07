@@ -17,6 +17,10 @@
  **************************************************************************/
 #ifndef CALL_VIEW_OVERLAY_H
 #define CALL_VIEW_OVERLAY_H
+
+//Qt
+#include <QtGui/QToolButton>
+
 //Base
 #include <QtGui/QWidget>
 #include <QtCore/QHash>
@@ -31,6 +35,17 @@ class KIcon;
 
 //SFLPhone
 class ExtendedAction;
+
+class ObserverToolButton : public QToolButton
+{
+   Q_OBJECT
+public:
+   ObserverToolButton(QWidget* parent = nullptr) : QToolButton(parent){}
+public slots:
+   void setNewText(const QString& text) {
+      setText(text);
+   }
+};
 
 enum ActionButton {
    PICKUP   = 0,
@@ -55,19 +70,19 @@ private:
    QSvgRenderer* m_pLeftRender ;
 
    //Buttons
-   QToolButton* m_pHold;
-   QToolButton* m_pUnhold;
-   QToolButton* m_pMute;
-   QToolButton* m_pPickup;
-   QToolButton* m_pHangup;
-   QToolButton* m_pTransfer;
-   QToolButton* m_pRecord;
-   QToolButton* m_pRefuse;
+   ObserverToolButton* m_pHold;
+   ObserverToolButton* m_pUnhold;
+   ObserverToolButton* m_pMute;
+   ObserverToolButton* m_pPickup;
+   ObserverToolButton* m_pHangup;
+   ObserverToolButton* m_pTransfer;
+   ObserverToolButton* m_pRecord;
+   ObserverToolButton* m_pRefuse;
 
-   QHash<int,QToolButton*> m_hButtons;
+   QHash<int,ObserverToolButton*> m_hButtons;
 
    //Helpers
-   QToolButton* createButton(ExtendedAction* action);
+   ObserverToolButton* createButton(ExtendedAction* action);
 
 public slots:
    void updateState(call_state state);

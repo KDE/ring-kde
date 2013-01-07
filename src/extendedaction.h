@@ -24,6 +24,7 @@ class KIcon;
 
 class ExtendedAction : public KAction
 {
+   Q_OBJECT
 public:
    ExtendedAction(QObject* parent = nullptr);
    virtual ~ExtendedAction();
@@ -33,6 +34,13 @@ public:
 
 private:
    KIcon* m_pIcon;
+
+public slots:
+   void setText(const QString&);
+   void hasChanged();
+
+signals:
+   void textChanged(QString text);
 };
 
 // #endif //EXTENDED_ACTION_H

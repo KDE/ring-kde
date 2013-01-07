@@ -19,7 +19,7 @@
 
 ExtendedAction::ExtendedAction(QObject* parent) : KAction(parent),m_pIcon(nullptr)
 {
-   
+   connect(this,SIGNAL(changed()),this,SLOT(hasChanged()));
 }
 
 ExtendedAction::~ExtendedAction()
@@ -35,4 +35,15 @@ const KIcon& ExtendedAction::altIcon()
 void ExtendedAction::setAltIcon(QString path)
 {
    m_pIcon = new KIcon(path);
+}
+
+void ExtendedAction::setText(const QString& newText)
+{
+   QAction::setText(newText);
+   emit textChanged(newText);
+}
+
+void ExtendedAction::hasChanged()
+{
+   
 }

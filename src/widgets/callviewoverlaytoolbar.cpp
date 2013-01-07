@@ -19,7 +19,6 @@
 
 //Qt
 #include <QtGui/QPaintEvent>
-#include <QtGui/QToolButton>
 #include <QtGui/QPainter>
 #include <QtGui/QBrush>
 #include <QtGui/QPen>
@@ -115,16 +114,17 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
 }
 
 ///Create a toolbar button
-QToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
+ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
 {
-   QToolButton* b = new QToolButton(this);
+   ObserverToolButton* b = new ObserverToolButton(this);
    b->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
    b->setIconSize(QSize(28,28));
    b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    b->setText(action->text());
-   b->setIcon(action->altIcon());
    b->setShortcut(0);
    b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;background-color:transparent;color:#DDDDDD;padding-top:5px;");
+   b->setIcon(action->altIcon());
+   connect(action,SIGNAL(textChanged(QString)),b,SLOT(setNewText(QString)));
    connect(b,SIGNAL(clicked()),action,SLOT(trigger()));
    return b;
 }
