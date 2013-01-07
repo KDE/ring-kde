@@ -693,7 +693,7 @@ WizardAccountConclusionPage::WizardAccountConclusionPage(QWidget *parent)
      : QWizardPage(parent)
 {
    setTitle(   i18n( "This assistant is now finished."));
-   setSubTitle(i18n( "After checking the settings you chose, click \"Finish\" to create the account."));
+   setSubTitle(i18n( "After checking the settings you chose, click \"Finish\" to create the account. This may take a while to complete."));
 
    QVBoxLayout *layout = new QVBoxLayout;
    setLayout(layout);
