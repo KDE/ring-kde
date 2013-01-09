@@ -69,7 +69,7 @@ QSize Tip::reload(const QRect& availableSize,bool force)
 
       //Create the background image
       m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_RGB888);
-      m_CurrentImage.fill(m_OriginalPalette.base().color() );
+      m_CurrentImage.fill(m_OriginalPalette.base().color().rgb() );
       QPainter p(&m_CurrentImage);
       p.setRenderHint(QPainter::Antialiasing, true);
       p.setFont(font());

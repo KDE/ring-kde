@@ -63,7 +63,7 @@ void TipManager::reload()
    int width(m_pParent->width()),height(m_pParent->height());
    int effectiveHeight = height-m_BottomMargin-m_TopMargin;
    m_CurrentImage = QImage(QSize(width,height),QImage::Format_RGB888);
-   m_CurrentImage.fill( m_OriginalPalette.base().color() );
+   m_CurrentImage.fill( m_OriginalPalette.base().color().rgb() );
    QPainter p(&m_CurrentImage);
 
    if (effectiveHeight >= m_pAnim.tipSize().height() /*&& m_pCurrentTip*/) {
