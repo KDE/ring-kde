@@ -319,8 +319,9 @@ void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const 
 ///Return the height of the conference box
 int ConferenceBox::categoryHeight(const QModelIndex &index, const QStyleOption &option,const QPalette* pal) const
 {
-   Q_UNUSED( index );
+   Q_UNUSED( index  );
    Q_UNUSED( option );
+   Q_UNUSED( pal    );
    QFont font(QApplication::font());
    font.setBold(true);
    const QFontMetrics fontMetrics = QFontMetrics(font);

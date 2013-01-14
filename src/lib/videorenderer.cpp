@@ -168,7 +168,7 @@ void VideoRenderer::stopShm()
 ///Resize the shared memory
 bool VideoRenderer::resizeShm()
 {
-   while ((sizeof(SHMHeader) + m_pShmArea->m_BufferSize) > m_ShmAreaLen) {
+   while (( (unsigned int) sizeof(SHMHeader) + (unsigned int) m_pShmArea->m_BufferSize) > (unsigned int) m_ShmAreaLen) {
       const size_t new_size = sizeof(SHMHeader) + m_pShmArea->m_BufferSize;
 
       shmUnlock();
