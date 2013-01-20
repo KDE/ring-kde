@@ -43,7 +43,7 @@
 <refsect1>
 <title>Description</title>
 <para>SFLphone is meant to be a robust enterprise-class desktop phone. It provides functions like call transfer, call hold, multiple lines, multiple accounts support.
-SFLphone audio layer is build upon a native ALSA interface and and a native PulseAudio interface.
+SFLphone audio layer is built upon a native ALSA interface and and a native PulseAudio interface.
 sflphone-client-kde is a KDE client for SFLphone; it communicates with the core side through D-Bus.
 </para>
 </refsect1>
