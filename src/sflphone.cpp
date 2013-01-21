@@ -28,6 +28,7 @@
 #include <QtGui/QActionGroup>
 #include <QtGui/QLabel>
 #include <QtGui/QCursor>
+#include <QtCore/QPointer>
 
 //KDE
 #include <KDebug>
@@ -40,6 +41,7 @@
 #include <KComboBox>
 #include <KMessageBox>
 #include <KStandardDirs>
+#include <KEditToolBar>
 
 //sflphone library
 #include "lib/sflphone_const.h"
@@ -48,6 +50,7 @@
 #include "lib/contact.h"
 #include "lib/accountlist.h"
 #include "lib/instantmessagingmodel.h"
+#include "klib/macromodel.h"
 
 //sflphone
 #include "klib/akonadibackend.h"
@@ -139,6 +142,7 @@ SFLPhone::~SFLPhone()
    delete action_showContactDock       ;
    delete action_showHistoryDock       ;
    delete action_showBookmarkDock      ;
+   delete action_editToolBar           ;
 
    delete m_pView            ;
    delete m_pTrayIcon        ;
@@ -353,6 +357,7 @@ void SFLPhone::setupActions()
    action_showContactDock       = new KAction(KIcon("edit-find-user")   , i18n("Display Contact")                         , this);
    action_showHistoryDock       = new KAction(KIcon("view-history")     , i18n("Display history")                         , this);
    action_showBookmarkDock      = new KAction(KIcon("bookmark-new-list"), i18n("Display bookmark")                        , this);
+   action_editToolBar           = new KAction(KIcon("configure-toolbars"), i18n("Configure Toolbars")                     , this);
    action_accountCreationWizard = new KAction(i18n("Account creation wizard")                                             , this);
 
 
@@ -396,8 +401,15 @@ void SFLPhone::setupActions()
    /**/connect(action_accountCreationWizard, SIGNAL(triggered()),           m_pView , SLOT(accountCreationWizard())     );
    /**/connect(action_pastenumber,           SIGNAL(triggered()),           m_pView , SLOT(paste())                     );
    /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
+   /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
+   /**/connect(MacroModel::getInstance(),    SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
    /*                                                                                                                   */
 
+      Macro* test = new Macro();
+      test->name     = "sadasd";
+      test->sequence = "188\\n";
+      test->delay = 100;
+      MacroModel::getInstance()->addMacro(test);
 
    actionCollection()->addAction("action_accept"                , action_accept                );
    actionCollection()->addAction("action_refuse"                , action_refuse                );
@@ -417,6 +429,7 @@ void SFLPhone::setupActions()
    actionCollection()->addAction("action_showContactDock"       , action_showContactDock       );
    actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
    actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
+   actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
 
 
    QList<KAction*> acList = *SFLPhoneAccessibility::getInstance();
@@ -666,6 +679,22 @@ void SFLPhone::updateTabIcons()
          }
       }
    }
+}
+
+///Add a new dynamic action (macro)
+void SFLPhone::addMacro(KAction* newAction)
+{
+   actionCollection()->addAction("action_tmp" , newAction );
+}
+
+///Show the toolbar editor
+void SFLPhone::editToolBar()
+{
+   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(guiFactory());
+   toolbareditor->setModal(true);
+   toolbareditor->exec();
+   toolbareditor->setDefaultToolBar("mainToolBar");
+   delete toolbareditor;
 }
 
 #ifdef ENABLE_VIDEO

@@ -21,6 +21,7 @@
 #define SFLPHONEVIEW_H
 
 #include "ui_SFLPhoneView_base.h"
+#include "klib/macromodel.h"
 #include <QtGui/QWidget>
 
 //Qt
@@ -43,7 +44,7 @@ class AccountWizard;
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
  * @version 1.2.0
  */
-class SFLPhoneView : public QWidget, public Ui::SFLPhone_view
+class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListener
 {
    Q_OBJECT
 
@@ -75,6 +76,9 @@ public:
 
 
    bool selectCallPhoneNumber(Call** call,Contact* contact);
+
+   //Implement macro key listener
+   virtual void addDTMF(const QString& sequence);
 
 private slots:
    /**

@@ -20,11 +20,29 @@
 #include "dlgaccessibility.h"
 #include "klib/configurationskeleton.h"
 
+//KDE
+#include <KConfigDialog>
+#include <KLocale>
+
 ///Constructor
-DlgAccessibility::DlgAccessibility(QWidget *parent)
- : QWidget(parent)
+DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
+ : QWidget(parent),m_Changed(false)
 {
    setupUi(this);
+
+   m_pAddTB->setIcon    ( KIcon( "list-add"    ) );
+   m_pRemoveTB->setIcon ( KIcon( "list-remove" ) );
+   m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
+   m_pInfoL->setText(i18n("This page allow to create macros that can then be called using keybooard shortcuts or added to the toolbar. To create one, \
+   assign a name and a character sequence. The sequence can be numeric or any character than can be interpretted as one (ex: \"A\" would be interpretted as 2)"));
+
+   connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
+   connect(m_pCategoryCBB   , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
+   connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(changed()) );
+   connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
+   connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
+
+   connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
 }
 
 ///Destructor
@@ -43,4 +61,15 @@ void DlgAccessibility::updateSettings()
 void DlgAccessibility::updateWidgets()
 {
    
+}
+
+void DlgAccessibility::changed()
+{
+   m_Changed = true;
+   emit updateButtons();
+}
+
+bool DlgAccessibility::hasChanged()
+{
+   return m_Changed;
 }
