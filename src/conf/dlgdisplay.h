@@ -23,6 +23,8 @@
 
 #include "ui_dlgdisplaybase.h"
 
+class KConfigDialog;
+
 /**
 	@author Jérémy Quentin <jeremy.quentin@gmail.com>
 */
@@ -31,7 +33,7 @@ class DlgDisplay : public QWidget, public Ui_DlgDisplayBase
 Q_OBJECT
 public:
    //Constructor
-   DlgDisplay(QWidget *parent = 0);
+   DlgDisplay(KConfigDialog *parent = 0);
 
    //Destructor
    ~DlgDisplay();

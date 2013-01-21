@@ -20,8 +20,11 @@
 #include "dlgdisplay.h"
 #include "klib/configurationskeleton.h"
 
+//KDE
+#include <KConfigDialog>
+
 ///Constructor
-DlgDisplay::DlgDisplay(QWidget *parent)
+DlgDisplay::DlgDisplay(KConfigDialog *parent)
  : QWidget(parent)
 {
    setupUi(this);
@@ -49,6 +52,7 @@ DlgDisplay::DlgDisplay(QWidget *parent)
    }
    kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());
    connect(m_pDetailsList   , SIGNAL(itemChanged(QListWidgetItem*))  , this  , SLOT(changed())      );
+   connect(this,SIGNAL(updateButtons()), parent , SLOT(updateButtons()));
 }
 
 ///Destructor
