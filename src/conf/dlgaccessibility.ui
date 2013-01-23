@@ -46,12 +46,24 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Macro</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QFrame" name="frame">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -74,15 +86,18 @@
           </widget>
          </item>
          <item row="0" column="0" colspan="3">
-          <widget class="QListView" name="m_pMacroListLV"/>
+          <widget class="QTreeView" name="m_pMacroListTV"/>
          </item>
         </layout>
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame_2">
+       <widget class="QFrame" name="m_pMacroFrm">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>2</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -133,12 +148,15 @@
              <property name="placeholderText">
               <string>Identifier for this macro (toolbar text)</string>
              </property>
+             <property name="showClearButton" stdset="0">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="m_pCategoryL">
              <property name="text">
-              <string>Category</string>
+              <string>Category*</string>
              </property>
             </widget>
            </item>
@@ -160,6 +178,9 @@
             <widget class="KLineEdit" name="m_pSequenceLE">
              <property name="placeholderText">
               <string>The key sequence to be executed</string>
+             </property>
+             <property name="showClearButton" stdset="0">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -194,6 +215,9 @@
             <widget class="KLineEdit" name="m_pDescriptionLE">
              <property name="placeholderText">
               <string>A description for this macro</string>
+             </property>
+             <property name="showClearButton" stdset="0">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -233,19 +257,6 @@
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

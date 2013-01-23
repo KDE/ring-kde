@@ -405,12 +405,6 @@ void SFLPhone::setupActions()
    /**/connect(MacroModel::getInstance(),    SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
    /*                                                                                                                   */
 
-      Macro* test = new Macro();
-      test->name     = "sadasd";
-      test->sequence = "188\\n";
-      test->delay = 100;
-      MacroModel::getInstance()->addMacro(test);
-
    actionCollection()->addAction("action_accept"                , action_accept                );
    actionCollection()->addAction("action_refuse"                , action_refuse                );
    actionCollection()->addAction("action_hold"                  , action_hold                  );

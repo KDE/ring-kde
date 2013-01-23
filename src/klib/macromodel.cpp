@@ -23,6 +23,7 @@
 
 //KDE
 #include <KAction>
+#include <KLocale>
 
 //SFLPhone
 #include "../lib/callmanager_interface_singleton.h"
@@ -30,39 +31,45 @@
 ///Init static attributes
 MacroModel*  MacroModel::m_pInstance = nullptr;
 
-Macro::Macro(QObject* parent) : QObject(parent),position(0),delay(0)
+Macro::Macro(QObject* parent) : QObject(parent),m_Position(0),m_Delay(0),m_pCat(nullptr)
 {
    
 }
 
+Macro::Macro(const Macro* macro) : 
+QObject(0)                         , m_Position(macro->m_Position), m_Name(macro->m_Name)        ,
+m_Description(macro->m_Description), m_Sequence(macro->m_Sequence), m_Escaped(macro->m_Escaped)  ,
+m_Id(macro->m_Id)                  , m_Delay(macro->m_Delay)      , m_Category(macro->m_Category),
+m_Action(macro->m_Action) {}
+
 void Macro::execute() {
-   escaped = sequence;
-   while (escaped.indexOf("\\n") != -1) {
-      escaped = escaped.replace("\\n","\n");
+   m_Escaped = m_Sequence;
+   while (m_Escaped.indexOf("\\n") != -1) {
+      m_Escaped = m_Escaped.replace("\\n","\n");
    }
    nextStep();
 }
 
 void Macro::nextStep()
 {
-   if (position < escaped.size()) {
+   if (m_Position < m_Escaped.size()) {
       if (!MacroModel::getInstance()->m_lListeners.size())
-         Q_NOREPLY CallManagerInterfaceSingleton::getInstance().playDTMF(QString(escaped[position]));
+         Q_NOREPLY CallManagerInterfaceSingleton::getInstance().playDTMF(QString(m_Escaped[m_Position]));
       else {
          foreach(MacroListener* l,MacroModel::getInstance()->m_lListeners) {
-            l->addDTMF(QString(escaped[position]));
+            l->addDTMF(QString(m_Escaped[m_Position]));
          }
       }
-      position++;
-      QTimer::singleShot(delay?delay:100,this,SLOT(nextStep()));
+      m_Position++;
+      QTimer::singleShot(m_Delay?m_Delay:100,this,SLOT(nextStep()));
    }
    else {
-      position = 0;
+      m_Position = 0;
    }
 }
 
-MacroModel::MacroModel(QObject* parent) : QObject(parent) {
-   
+MacroModel::MacroModel(QObject* parent) : QAbstractItemModel(parent),m_pCurrentMacro(nullptr),m_pCurrentMacroMemento(nullptr)
+{
 }
 
 ///Singleton
@@ -74,17 +81,171 @@ MacroModel* MacroModel::getInstance()
    return m_pInstance;
 }
 
-void MacroModel::addMacro(Macro* macro)
-{
-   KAction* newAction = new KAction(this);
-   newAction->setText("MACRO");
-   newAction->setIcon(KIcon("view-form-action"));
-   connect(newAction, SIGNAL(triggered()), macro , SLOT(execute()) );
-   emit addAction(newAction);
-}
-
 void MacroModel::addListener(MacroListener* interface)
 {
    MacroModel* m = getInstance();
    m->m_lListeners << interface;
+}
+
+MacroModel::MacroCategory* MacroModel::createCategory(const QString& name)
+{
+   MacroCategory* cat = new MacroCategory;
+   cat->m_Name = name;
+   m_lCategories << cat;
+   emit dataChanged(index(m_lCategories.size()-2,0),index(m_lCategories.size()-1,0));
+   emit layoutChanged();
+   return cat;
+}
+
+void MacroModel::updateTreeModel(Macro* newMacro)
+{
+   QString catName = newMacro->m_Category.isEmpty()?i18n("Other"):newMacro->m_Category;
+   foreach (MacroCategory* cat, m_lCategories) {
+      if (cat->m_Name == catName) {
+         cat->m_lContent << newMacro;
+         newMacro->m_pCat = cat;
+         newMacro->m_Category = cat->m_Name;
+         return;
+      }
+   }
+   MacroCategory* cat = createCategory(catName);
+   cat->m_lContent << newMacro;
+   newMacro->m_pCat = cat;
+}
+
+//Add a new macro if the current one can be saved
+bool MacroModel::newMacro()
+{
+   m_pCurrentMacro = new Macro();
+   KAction* newAction = new KAction(this);
+   m_pCurrentMacro->m_Action = newAction;
+   m_pCurrentMacro->m_Id = QString::number(QDateTime::currentDateTime().toTime_t());
+   m_pCurrentMacro->m_Name = "New";
+   m_pCurrentMacro->m_Category = i18n("Other");
+   connect(m_pCurrentMacro,SIGNAL(changed(Macro*)),this,SLOT(changed(Macro*)));
+   while (m_hMacros[m_pCurrentMacro->m_Id]) {
+      m_pCurrentMacro->m_Id += "1";
+   }
+   m_hMacros[m_pCurrentMacro->m_Id] = m_pCurrentMacro;
+   updateTreeModel(m_pCurrentMacro);
+   emit dataChanged(index(0,0),index(m_lCategories.size()-1,0));
+   emit layoutChanged ();
+   emit selectMacro(m_pCurrentMacro);
+   newAction->setText(m_pCurrentMacro->m_Name);
+   newAction->setIcon(KIcon("view-form-action"));
+   connect(newAction, SIGNAL(triggered()), m_pCurrentMacro , SLOT(execute()) );
+   emit addAction(newAction);
+   return true;
+}
+
+//Remove the selected macro
+bool MacroModel::removeMacro(QModelIndex idx)
+{
+   Q_UNUSED(idx)
+   return true;
+}
+
+bool MacroModel::setData( const QModelIndex& index, const QVariant &value, int role)
+{
+   Q_UNUSED(index)
+   Q_UNUSED(value)
+   Q_UNUSED(role)
+   return false;
+}
+
+QVariant MacroModel::data( const QModelIndex& index, int role) const
+{
+   if (!index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+      return QVariant(m_lCategories[index.row()]->m_Name);
+   }
+   else if (index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+      return QVariant(m_lCategories[index.parent().row()]->m_lContent[index.row()]->m_Name);
+   }
+   return QVariant();
+}
+
+QVariant MacroModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+   Q_UNUSED(section)
+   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+      return QVariant(i18n("Macros"));
+   return QVariant();
+}
+
+int MacroModel::rowCount( const QModelIndex& parent ) const
+{
+   if (!parent.isValid()) {
+      return m_lCategories.size();
+   }
+   else if (!parent.parent().isValid() && parent.row() < m_lCategories.size()) {
+      return m_lCategories[parent.row()]->m_lContent.size();
+   }
+   return 0;
+}
+
+Qt::ItemFlags MacroModel::flags( const QModelIndex& index ) const
+{
+   return Qt::ItemIsEnabled | ((index.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
+}
+
+int MacroModel::columnCount ( const QModelIndex& parent) const
+{
+   Q_UNUSED(parent)
+   return 1;
+}
+
+QModelIndex MacroModel::parent( const QModelIndex& index) const
+{
+   IndexPointer* modelItem = (IndexPointer*)index.internalPointer();
+   if (modelItem && modelItem->type == IndexType::MacroIndex) {
+      int idx = m_lCategories.indexOf(((Macro*)modelItem->data)->m_pCat);
+      if (idx != -1) {
+         return createIndex(idx,0,new IndexPointer(IndexType::CategoryIndex,((Macro*)modelItem->data)->m_pCat));
+      }
+   }
+   return QModelIndex();
+}
+
+QModelIndex MacroModel::index( int row, int column, const QModelIndex& parent) const
+{
+   if (!parent.isValid()) {
+      return createIndex(row,column,new IndexPointer(IndexType::CategoryIndex,m_lCategories[row]));
+   }
+   else if (parent.isValid()) {
+      return createIndex(row,column,new IndexPointer(IndexType::MacroIndex,m_lCategories[parent.row()]->m_lContent[row]));
+   }
+   return QModelIndex();
+}
+
+void MacroModel::changed(Macro* macro)
+{
+   if (macro && macro->m_pCat) {
+      QModelIndex parent = index(m_lCategories.indexOf(macro->m_pCat),0);
+      emit dataChanged(index(0,0,parent),index(rowCount(parent),0,parent));
+      if (macro->m_pCat->m_Name != macro->m_Category) {
+         if (macro->m_pCat->m_lContent.size() == 1) { //Rename
+            int idx = m_lCategories.indexOf(macro->m_pCat);
+            macro->m_pCat->m_Name = macro->m_Category;
+            emit dataChanged(index(idx,0),index(idx,0));
+            return;
+         }
+         else {
+            macro->m_pCat->m_lContent.removeAll(macro);
+            macro->m_pCat = nullptr;
+         }
+         foreach (MacroCategory* cat, m_lCategories) {
+            if (cat->m_Name == macro->m_Category) {
+               cat->m_lContent << macro;
+               macro->m_pCat = cat;
+               macro->m_Category = cat->m_Name;
+               return;
+            }
+         }
+         MacroCategory* cat = createCategory(macro->m_Category);
+         cat->m_lContent << macro;
+         macro->m_pCat = cat;
+         macro->m_Category = cat->m_Name;
+         emit layoutChanged();
+      }
+   }
 }

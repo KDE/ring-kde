@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009 by Savoir-Faire Linux                               *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2012-2013 by Savoir-Faire Linux                          *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -24,6 +23,9 @@
 #include <KConfigDialog>
 #include <KLocale>
 
+//SFLPhone
+#include <klib/macromodel.h>
+
 ///Constructor
 DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
  : QWidget(parent),m_Changed(false)
@@ -36,13 +38,30 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    m_pInfoL->setText(i18n("This page allow to create macros that can then be called using keybooard shortcuts or added to the toolbar. To create one, \
    assign a name and a character sequence. The sequence can be numeric or any character than can be interpretted as one (ex: \"A\" would be interpretted as 2)"));
 
-   connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
-   connect(m_pCategoryCBB   , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
-   connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(changed()) );
-   connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
-   connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(changed()) );
+   connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
+   connect(m_pCategoryCBB   , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
+   connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(changed())     );
+   connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
+   connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
+   connect(m_pAddTB         , SIGNAL(clicked())            , this,SLOT(addMacro())    );
+   connect(m_pRemoveTB      , SIGNAL(clicked())            , this,SLOT(removeMacro()) );
+   
+   
+   
+   
+   
+   
+   connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(slotNameLE(QString))        );
+   connect(m_pCategoryCBB->lineEdit()   , SIGNAL(textChanged(QString)) , this,SLOT(slotCategoryCBB(QString))   );
+   connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(slotDelaySB(newValue))      );
+   connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(slotSequenceLE(QString))    );
+   connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(slotDescriptionLE(QString)) );
 
    connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
+   
+   connect(MacroModel::getInstance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
+   connect(MacroModel::getInstance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
+   m_pMacroListTV->setModel(MacroModel::getInstance());
 }
 
 ///Destructor
@@ -72,4 +91,72 @@ void DlgAccessibility::changed()
 bool DlgAccessibility::hasChanged()
 {
    return m_Changed;
+}
+
+void DlgAccessibility::addMacro()
+{
+   bool ret = MacroModel::getInstance()->newMacro();
+   if (ret) {
+      m_pMacroFrm->setEnabled(true);
+   }
+}
+
+void DlgAccessibility::removeMacro()
+{
+   
+}
+
+void DlgAccessibility::selectMacro(Macro* macro)
+{
+   if (macro) {
+      m_pMacroListTV->expandAll();
+      m_pNameLE->setText(macro->name());
+      m_pCategoryCBB->lineEdit()->setText(macro->category());
+      m_pDelaySB->setValue(macro->delay());
+      m_pSequenceLE->setText(macro->sequence());
+      m_pDescriptionLE->setText(macro->description());
+      m_pMacroFrm->setEnabled(true);
+      m_pNameLE->setFocus();
+   }
+}
+
+//Widget change
+void DlgAccessibility::slotNameLE(const QString& newText)
+{
+   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   if (current) {
+      current->setName(newText);
+   }
+}
+
+void DlgAccessibility::slotCategoryCBB(const QString& newText)
+{
+   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   if (current) {
+      current->setCategory(newText);
+   }
+}
+
+void DlgAccessibility::slotDelaySB(int newValue)
+{
+   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   if (current) {
+      current->setDelay(newValue);
+   }
+}
+
+void DlgAccessibility::slotSequenceLE(const QString& newText)
+{
+   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   if (current) {
+      current->setSequence(newText);
+   }
+}
+
+void DlgAccessibility::slotDescriptionLE(const QString& newText)
+{
+   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   if (current) {
+      current->setDescription(newText);
+   }
 }

@@ -19,36 +19,17 @@
 #ifndef MACRO_MODEL_H
 #define MACRO_MODEL_H
 
-#include <QtCore/QObject>
+#include <QtCore/QAbstractItemModel>
 #include <QtCore/QHash>
 #include "../lib/typedefs.h"
 
 //KDE
-class KAction;
+#include <KAction>
 
 //SFLPhone
 class Contact;
 
-
-#include <QDebug> //TODO remove
-class LIB_EXPORT Macro : public QObject {
-   Q_OBJECT
-public:
-   Macro(QObject* parent = nullptr);
-   QString name;
-   QString description;
-   QString sequence;
-   QString escaped;
-   int     delay;
-   QString category;
-   KAction* action;
-private:
-   int position;
-public slots:
-   void execute();
-private slots:
-   void nextStep();
-};
+class Macro;
 
 ///Interface to interpret DTMFs instead of using the daemon directly
 class LIB_EXPORT MacroListener {
@@ -58,9 +39,15 @@ public:
 };
 
 ///AkonadiBackend: Implement a backend for Akonadi
-class LIB_EXPORT MacroModel : public QObject {
+class LIB_EXPORT MacroModel : public QAbstractItemModel {
    Q_OBJECT
    friend class Macro;
+
+private:
+   struct MacroCategory {
+      QString m_Name;
+      QList<Macro*> m_lContent;
+   };
 public:
    static MacroModel* getInstance();
    static void addListener(MacroListener* interface);
@@ -73,7 +60,21 @@ public:
       Sequence    = 104
    };
 
-   void addMacro(Macro* macro);
+   //Getters
+   Macro* getCurrentMacro() { return m_pCurrentMacro; }
+
+   //Mutator
+   MacroModel::MacroCategory* createCategory(const QString& name);
+
+   //Model implementation
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
+   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
+   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
+   virtual int           columnCount ( const QModelIndex & parent = QModelIndex()                  ) const;
+   virtual QModelIndex   parent      ( const QModelIndex & index                                   ) const;
+   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
+   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
 private:
    //Singleton constructor
@@ -83,11 +84,79 @@ private:
    static MacroModel*         m_pInstance  ;
 
 private:
+   void updateTreeModel(Macro* newMacro);
+   
+   enum IndexType {
+      CategoryIndex,
+      MacroIndex
+   };
+   
+   struct IndexPointer {
+      IndexPointer(IndexType _type, void* _data) : type(_type),data(_data) {}
+      IndexType type;
+      void* data;
+   };
+
    QHash<QString,Macro*> m_hMacros;
+   QList<MacroCategory*> m_lCategories;
    QList<MacroListener*> m_lListeners;
+   Macro*                m_pCurrentMacro;
+   Macro*                m_pCurrentMacroMemento;
+
+public slots:
+   bool newMacro();
+   bool removeMacro(QModelIndex idx);
+
+private slots:
+   void changed(Macro* macro);
 
 signals:
    void addAction(KAction*);
+   void selectMacro(Macro* macro);
+};
+
+class LIB_EXPORT Macro : public QObject {
+   Q_OBJECT
+   friend class MacroModel; //Use factory method
+public:
+   Macro(const Macro* macro);
+   MacroModel::MacroCategory* m_pCat;
+   //Getters
+   QString  name()        { return m_Name;         }
+   QString  description() { return m_Description;  }
+   QString  sequence()    { return m_Sequence;     }
+   QString  escaped()     { return m_Escaped;      }
+   QString  id()          { return m_Id;           }
+   int      delay()       { return m_Delay;        }
+   QString  category()    { return m_Category;     }
+   KAction* action()      { return m_Action;       }
+   //Setters
+   void setName(QString value)          { m_Name        = value;emit changed(this);m_Action->setText(m_Name);}
+   void setDescription(QString value)   { m_Description = value;emit changed(this);}
+   void setSequence(QString value)      { m_Sequence    = value;emit changed(this);}
+   void setEscaped(QString value)       { m_Escaped     = value;emit changed(this);}
+   void setId(QString value)            { m_Id          = value;emit changed(this);}
+   void setDelay(int value)             { m_Delay       = value;emit changed(this);}
+   void setCategory(QString value)      { m_Category    = value;emit changed(this);}
+   
+private:
+   Macro(QObject* parent = nullptr);
+   int      m_Position;
+   QString  m_Name;
+   QString  m_Description;
+   QString  m_Sequence;
+   QString  m_Escaped;
+   QString  m_Id;
+   int      m_Delay;
+   QString  m_Category;
+   KAction* m_Action;
+public slots:
+   void execute();
+private slots:
+   void nextStep();
+
+signals:
+   void changed(Macro*);
 };
 
 #endif
