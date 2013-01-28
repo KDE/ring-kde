@@ -678,7 +678,7 @@ void SFLPhone::updateTabIcons()
 ///Add a new dynamic action (macro)
 void SFLPhone::addMacro(KAction* newAction)
 {
-   actionCollection()->addAction("action_tmp" , newAction );
+   actionCollection()->addAction("action_macro"+QString::number(rand()) , newAction );
 }
 
 ///Show the toolbar editor

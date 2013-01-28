@@ -44,9 +44,23 @@ class LIB_EXPORT MacroModel : public QAbstractItemModel {
    friend class Macro;
 
 private:
+   
+   enum IndexType {
+      CategoryIndex = 1,
+      MacroIndex = 2
+   };
+   
+   struct IndexPointer {
+      IndexPointer(IndexType _type, void* _data) : type(_type),data(_data) {}
+      IndexType type;
+      void* data;
+   };
+
    struct MacroCategory {
+      MacroCategory():m_pPointer(nullptr){}
       QString m_Name;
       QList<Macro*> m_lContent;
+      IndexPointer* m_pPointer;
    };
 public:
    static MacroModel* getInstance();
@@ -85,18 +99,6 @@ private:
 
 private:
    void updateTreeModel(Macro* newMacro);
-   
-   enum IndexType {
-      CategoryIndex,
-      MacroIndex
-   };
-   
-   struct IndexPointer {
-      IndexPointer(IndexType _type, void* _data) : type(_type),data(_data) {}
-      IndexType type;
-      void* data;
-   };
-
    QHash<QString,Macro*> m_hMacros;
    QList<MacroCategory*> m_lCategories;
    QList<MacroListener*> m_lListeners;
@@ -106,6 +108,7 @@ private:
 public slots:
    bool newMacro();
    bool removeMacro(QModelIndex idx);
+   void setCurrent(QModelIndex current,QModelIndex previous);
 
 private slots:
    void changed(Macro* macro);
@@ -130,6 +133,9 @@ public:
    int      delay()       { return m_Delay;        }
    QString  category()    { return m_Category;     }
    KAction* action()      { return m_Action;       }
+
+   QModelIndex index();
+
    //Setters
    void setName(QString value)          { m_Name        = value;emit changed(this);m_Action->setText(m_Name);}
    void setDescription(QString value)   { m_Description = value;emit changed(this);}
@@ -141,15 +147,17 @@ public:
    
 private:
    Macro(QObject* parent = nullptr);
-   int      m_Position;
-   QString  m_Name;
-   QString  m_Description;
-   QString  m_Sequence;
-   QString  m_Escaped;
-   QString  m_Id;
-   int      m_Delay;
-   QString  m_Category;
-   KAction* m_Action;
+   int         m_Position;
+   QString     m_Name;
+   QString     m_Description;
+   QString     m_Sequence;
+   QString     m_Escaped;
+   QString     m_Id;
+   int         m_Delay;
+   QString     m_Category;
+   KAction*    m_Action;
+   MacroModel* m_pModel;
+   MacroModel::IndexPointer* m_pPointer;
 public slots:
    void execute();
 private slots:

@@ -31,7 +31,7 @@
 ///Init static attributes
 MacroModel*  MacroModel::m_pInstance = nullptr;
 
-Macro::Macro(QObject* parent) : QObject(parent),m_Position(0),m_Delay(0),m_pCat(nullptr)
+Macro::Macro(QObject* parent) : QObject(parent),m_Position(0),m_Delay(0),m_pCat(nullptr),m_pPointer(nullptr)
 {
    
 }
@@ -68,6 +68,12 @@ void Macro::nextStep()
    }
 }
 
+QModelIndex Macro::index()
+{
+   QModelIndex parent = m_pModel->index(m_pModel->m_lCategories.indexOf(m_pCat),0,QModelIndex());
+   return  m_pModel->index(m_pCat->m_lContent.indexOf(this),0,parent);
+}
+
 MacroModel::MacroModel(QObject* parent) : QAbstractItemModel(parent),m_pCurrentMacro(nullptr),m_pCurrentMacroMemento(nullptr)
 {
 }
@@ -91,8 +97,10 @@ MacroModel::MacroCategory* MacroModel::createCategory(const QString& name)
 {
    MacroCategory* cat = new MacroCategory;
    cat->m_Name = name;
+   cat->m_pPointer = new IndexPointer(IndexType::CategoryIndex,cat);
    m_lCategories << cat;
-   emit dataChanged(index(m_lCategories.size()-2,0),index(m_lCategories.size()-1,0));
+   emit dataChanged(MacroModel::index((m_lCategories.size()-2 > 0)? m_lCategories.size()-2:0,0,QModelIndex()),
+                    MacroModel::index((m_lCategories.size()-1>0  )? m_lCategories.size()-1:0,0,QModelIndex()));
    emit layoutChanged();
    return cat;
 }
@@ -105,12 +113,14 @@ void MacroModel::updateTreeModel(Macro* newMacro)
          cat->m_lContent << newMacro;
          newMacro->m_pCat = cat;
          newMacro->m_Category = cat->m_Name;
+         newMacro->m_pPointer = new IndexPointer(IndexType::MacroIndex,newMacro);
          return;
       }
    }
    MacroCategory* cat = createCategory(catName);
    cat->m_lContent << newMacro;
    newMacro->m_pCat = cat;
+   newMacro->m_pPointer = new IndexPointer(IndexType::MacroIndex,newMacro);
 }
 
 //Add a new macro if the current one can be saved
@@ -120,14 +130,15 @@ bool MacroModel::newMacro()
    KAction* newAction = new KAction(this);
    m_pCurrentMacro->m_Action = newAction;
    m_pCurrentMacro->m_Id = QString::number(QDateTime::currentDateTime().toTime_t());
-   m_pCurrentMacro->m_Name = "New";
+   m_pCurrentMacro->m_Name = i18n("New");
    m_pCurrentMacro->m_Category = i18n("Other");
-   connect(m_pCurrentMacro,SIGNAL(changed(Macro*)),this,SLOT(changed(Macro*)));
+   m_pCurrentMacro->m_pModel = this;
    while (m_hMacros[m_pCurrentMacro->m_Id]) {
       m_pCurrentMacro->m_Id += "1";
    }
    m_hMacros[m_pCurrentMacro->m_Id] = m_pCurrentMacro;
    updateTreeModel(m_pCurrentMacro);
+   connect(m_pCurrentMacro,SIGNAL(changed(Macro*)),this,SLOT(changed(Macro*)));
    emit dataChanged(index(0,0),index(m_lCategories.size()-1,0));
    emit layoutChanged ();
    emit selectMacro(m_pCurrentMacro);
@@ -145,6 +156,18 @@ bool MacroModel::removeMacro(QModelIndex idx)
    return true;
 }
 
+void MacroModel::setCurrent(QModelIndex current,QModelIndex previous)
+{
+   if (!current.isValid())
+      return;
+   IndexPointer* modelItem = (IndexPointer*)current.internalPointer();
+   if (modelItem && modelItem->type == IndexType::MacroIndex) {
+      Macro* macro = (Macro*)modelItem->data;
+      m_pCurrentMacro = macro;
+      emit selectMacro(m_pCurrentMacro);
+   }
+}
+
 bool MacroModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
    Q_UNUSED(index)
@@ -155,6 +178,8 @@ bool MacroModel::setData( const QModelIndex& index, const QVariant &value, int r
 
 QVariant MacroModel::data( const QModelIndex& index, int role) const
 {
+   if (!index.isValid())
+      return QVariant();
    if (!index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
       return QVariant(m_lCategories[index.row()]->m_Name);
    }
@@ -185,6 +210,8 @@ int MacroModel::rowCount( const QModelIndex& parent ) const
 
 Qt::ItemFlags MacroModel::flags( const QModelIndex& index ) const
 {
+   if (!index.isValid())
+      return 0;
    return Qt::ItemIsEnabled | ((index.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
 }
 
@@ -196,11 +223,13 @@ int MacroModel::columnCount ( const QModelIndex& parent) const
 
 QModelIndex MacroModel::parent( const QModelIndex& index) const
 {
+   if (!index.isValid())
+      return QModelIndex();
    IndexPointer* modelItem = (IndexPointer*)index.internalPointer();
    if (modelItem && modelItem->type == IndexType::MacroIndex) {
       int idx = m_lCategories.indexOf(((Macro*)modelItem->data)->m_pCat);
       if (idx != -1) {
-         return createIndex(idx,0,new IndexPointer(IndexType::CategoryIndex,((Macro*)modelItem->data)->m_pCat));
+         return MacroModel::index(idx,0,QModelIndex());
       }
    }
    return QModelIndex();
@@ -208,11 +237,11 @@ QModelIndex MacroModel::parent( const QModelIndex& index) const
 
 QModelIndex MacroModel::index( int row, int column, const QModelIndex& parent) const
 {
-   if (!parent.isValid()) {
-      return createIndex(row,column,new IndexPointer(IndexType::CategoryIndex,m_lCategories[row]));
+   if (!parent.isValid() && m_lCategories.size() > row) {
+      return createIndex(row,column,m_lCategories[row]->m_pPointer);
    }
-   else if (parent.isValid()) {
-      return createIndex(row,column,new IndexPointer(IndexType::MacroIndex,m_lCategories[parent.row()]->m_lContent[row]));
+   else if (parent.isValid() && m_lCategories[parent.row()]->m_lContent.size() > row) {
+      return createIndex(row,column,m_lCategories[parent.row()]->m_lContent[row]->m_pPointer);
    }
    return QModelIndex();
 }

@@ -62,6 +62,8 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    connect(MacroModel::getInstance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
    connect(MacroModel::getInstance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
    m_pMacroListTV->setModel(MacroModel::getInstance());
+   m_pMacroListTV->expandAll();
+   connect(m_pMacroListTV->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),MacroModel::getInstance(),SLOT(setCurrent(QModelIndex,QModelIndex)));
 }
 
 ///Destructor
@@ -116,7 +118,12 @@ void DlgAccessibility::selectMacro(Macro* macro)
       m_pSequenceLE->setText(macro->sequence());
       m_pDescriptionLE->setText(macro->description());
       m_pMacroFrm->setEnabled(true);
+      m_pNameLE->selectAll();
       m_pNameLE->setFocus();
+      QModelIndex newIdx = macro->index();
+      if (newIdx != m_pMacroListTV->selectionModel()->currentIndex()) {
+         m_pMacroListTV->selectionModel()->setCurrentIndex(newIdx,QItemSelectionModel::ClearAndSelect);
+      }
    }
 }
 
