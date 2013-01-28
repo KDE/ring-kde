@@ -425,6 +425,8 @@ void SFLPhone::setupActions()
    actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
    actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
 
+   MacroModel::getInstance()->initMacros();
+
 
    QList<KAction*> acList = *SFLPhoneAccessibility::getInstance();
 
@@ -678,7 +680,7 @@ void SFLPhone::updateTabIcons()
 ///Add a new dynamic action (macro)
 void SFLPhone::addMacro(KAction* newAction)
 {
-   actionCollection()->addAction("action_macro"+QString::number(rand()) , newAction );
+   actionCollection()->addAction(newAction->objectName() , newAction );
 }
 
 ///Show the toolbar editor

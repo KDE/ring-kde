@@ -79,23 +79,7 @@ QModelIndex Macro::index()
 
 MacroModel::MacroModel(QObject* parent) : QAbstractItemModel(parent),m_pCurrentMacro(nullptr),m_pCurrentMacroMemento(nullptr)
 {
-   if (KStandardDirs::exists(KStandardDirs::locateLocal("appdata","")+"macros.txt")) {
-      QFile serialized(KStandardDirs::locate( "appdata", "macros.txt" ));
-      if (serialized.open(QIODevice::ReadOnly)) {
-         QDataStream in(&serialized);
-         QList< QMap<QString, QString> > unserialized;
-         in >> unserialized;
-         serialized.close();
-         foreach(MapStringString aMacro,unserialized) {
-            Macro* nMac = newMacro();
-            nMac->setName(aMacro["Name"]);
-            nMac->setSequence(aMacro["Seq"]);
-            nMac->setCategory(aMacro["Cat"]);
-            nMac->setDelay(aMacro[ "Delay" ].toInt());
-            nMac->setDescription(aMacro["Desc"]);
-         }
-      }
-    }
+   
 }
 
 ///Singleton
@@ -105,6 +89,27 @@ MacroModel* MacroModel::getInstance()
       m_pInstance = new MacroModel(0);
    }
    return m_pInstance;
+}
+
+void MacroModel::initMacros()
+{
+   if (KStandardDirs::exists(KStandardDirs::locateLocal("appdata","")+"macros.txt")) {
+      QFile serialized(KStandardDirs::locate( "appdata", "macros.txt" ));
+      if (serialized.open(QIODevice::ReadOnly)) {
+         QDataStream in(&serialized);
+         QList< QMap<QString, QString> > unserialized;
+         in >> unserialized;
+         serialized.close();
+         foreach(MapStringString aMacro,unserialized) {
+            Macro* nMac = newMacro(aMacro["ID"]);
+            nMac->setName(aMacro["Name"]);
+            nMac->setSequence(aMacro["Seq"]);
+            nMac->setCategory(aMacro["Cat"]);
+            nMac->setDelay(aMacro[ "Delay" ].toInt());
+            nMac->setDescription(aMacro["Desc"]);
+         }
+      }
+    }
 }
 
 void MacroModel::addListener(MacroListener* interface)
@@ -144,17 +149,19 @@ void MacroModel::updateTreeModel(Macro* newMacro)
 }
 
 //Add a new macro if the current one can be saved
-Macro* MacroModel::newMacro()
+Macro* MacroModel::newMacro(const QString& id)
 {
    m_pCurrentMacro = new Macro();
    KAction* newAction = new KAction(this);
    m_pCurrentMacro->m_Action = newAction;
-   m_pCurrentMacro->m_Id = QString::number(QDateTime::currentDateTime().toTime_t());
    m_pCurrentMacro->m_Name = i18n("New");
    m_pCurrentMacro->m_Category = i18n("Other");
    m_pCurrentMacro->m_pModel = this;
-   while (m_hMacros[m_pCurrentMacro->m_Id]) {
-      m_pCurrentMacro->m_Id += "1";
+   if (id.isEmpty()) {
+      m_pCurrentMacro->m_Id = QString::number(QDateTime::currentDateTime().toTime_t());
+      while (m_hMacros[m_pCurrentMacro->m_Id]) {
+         m_pCurrentMacro->m_Id += "1";
+      }
    }
    m_hMacros[m_pCurrentMacro->m_Id] = m_pCurrentMacro;
    updateTreeModel(m_pCurrentMacro);
@@ -164,6 +171,7 @@ Macro* MacroModel::newMacro()
    emit selectMacro(m_pCurrentMacro);
    newAction->setText(m_pCurrentMacro->m_Name);
    newAction->setIcon(KIcon("view-form-action"));
+   newAction->setObjectName("action_macro"+m_pCurrentMacro->m_Id);
    connect(newAction, SIGNAL(triggered()), m_pCurrentMacro , SLOT(execute()) );
    emit addAction(newAction);
    return m_pCurrentMacro;
@@ -203,6 +211,7 @@ void MacroModel::save()
             serializedMacro[ "Cat"   ] = macro->m_pCat->m_Name;
             serializedMacro[ "Delay" ] = QString::number(macro->m_Delay);
             serializedMacro[ "Desc"  ] = macro->m_Description;
+            serializedMacro[ "ID"    ] = macro->m_Id;
             serialized << serializedMacro;
          }
       }
