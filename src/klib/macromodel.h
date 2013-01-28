@@ -92,7 +92,7 @@ public:
 
 private:
    //Singleton constructor
-   MacroModel(QObject* parent);
+   explicit MacroModel(QObject* parent = nullptr);
 
    //Attributes
    static MacroModel*         m_pInstance  ;
@@ -106,9 +106,10 @@ private:
    Macro*                m_pCurrentMacroMemento;
 
 public slots:
-   bool newMacro();
+   Macro* newMacro();
    bool removeMacro(QModelIndex idx);
    void setCurrent(QModelIndex current,QModelIndex previous);
+   void save();
 
 private slots:
    void changed(Macro* macro);

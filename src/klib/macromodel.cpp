@@ -20,13 +20,16 @@
 
 //Qt
 #include <QtCore/QTimer>
+#include <QtCore/QFile>
 
 //KDE
 #include <KAction>
 #include <KLocale>
+#include <KStandardDirs>
 
 //SFLPhone
 #include "../lib/callmanager_interface_singleton.h"
+#include "configurationskeleton.h"
 
 ///Init static attributes
 MacroModel*  MacroModel::m_pInstance = nullptr;
@@ -76,6 +79,23 @@ QModelIndex Macro::index()
 
 MacroModel::MacroModel(QObject* parent) : QAbstractItemModel(parent),m_pCurrentMacro(nullptr),m_pCurrentMacroMemento(nullptr)
 {
+   if (KStandardDirs::exists(KStandardDirs::locateLocal("appdata","")+"macros.txt")) {
+      QFile serialized(KStandardDirs::locate( "appdata", "macros.txt" ));
+      if (serialized.open(QIODevice::ReadOnly)) {
+         QDataStream in(&serialized);
+         QList< QMap<QString, QString> > unserialized;
+         in >> unserialized;
+         serialized.close();
+         foreach(MapStringString aMacro,unserialized) {
+            Macro* nMac = newMacro();
+            nMac->setName(aMacro["Name"]);
+            nMac->setSequence(aMacro["Seq"]);
+            nMac->setCategory(aMacro["Cat"]);
+            nMac->setDelay(aMacro[ "Delay" ].toInt());
+            nMac->setDescription(aMacro["Desc"]);
+         }
+      }
+    }
 }
 
 ///Singleton
@@ -124,7 +144,7 @@ void MacroModel::updateTreeModel(Macro* newMacro)
 }
 
 //Add a new macro if the current one can be saved
-bool MacroModel::newMacro()
+Macro* MacroModel::newMacro()
 {
    m_pCurrentMacro = new Macro();
    KAction* newAction = new KAction(this);
@@ -146,7 +166,7 @@ bool MacroModel::newMacro()
    newAction->setIcon(KIcon("view-form-action"));
    connect(newAction, SIGNAL(triggered()), m_pCurrentMacro , SLOT(execute()) );
    emit addAction(newAction);
-   return true;
+   return m_pCurrentMacro;
 }
 
 //Remove the selected macro
@@ -158,6 +178,7 @@ bool MacroModel::removeMacro(QModelIndex idx)
 
 void MacroModel::setCurrent(QModelIndex current,QModelIndex previous)
 {
+   Q_UNUSED(previous)
    if (!current.isValid())
       return;
    IndexPointer* modelItem = (IndexPointer*)current.internalPointer();
@@ -165,6 +186,32 @@ void MacroModel::setCurrent(QModelIndex current,QModelIndex previous)
       Macro* macro = (Macro*)modelItem->data;
       m_pCurrentMacro = macro;
       emit selectMacro(m_pCurrentMacro);
+   }
+}
+
+void MacroModel::save()
+{
+   QFile macros(KStandardDirs::locateLocal("appdata","")+"macros.txt");
+   if (macros.open(QIODevice::WriteOnly)) {
+      QDataStream out(&macros);
+      QList< QMap<QString, QString> > serialized;
+      foreach (MacroCategory* cat, m_lCategories) {
+         QMap<QString, QString> serializedMacro;
+         foreach(Macro* macro,cat->m_lContent) {
+            serializedMacro[ "Name"  ] = macro->m_Name;
+            serializedMacro[ "Seq"   ] = macro->m_Sequence;
+            serializedMacro[ "Cat"   ] = macro->m_pCat->m_Name;
+            serializedMacro[ "Delay" ] = QString::number(macro->m_Delay);
+            serializedMacro[ "Desc"  ] = macro->m_Description;
+            serialized << serializedMacro;
+         }
+      }
+      out << serialized;
+      macros.close();
+      kDebug() << "Macros correctly saved";
+   }
+   else {
+      kDebug() << "Error saving macros";
    }
 }
 
@@ -252,7 +299,14 @@ void MacroModel::changed(Macro* macro)
       QModelIndex parent = index(m_lCategories.indexOf(macro->m_pCat),0);
       emit dataChanged(index(0,0,parent),index(rowCount(parent),0,parent));
       if (macro->m_pCat->m_Name != macro->m_Category) {
-         if (macro->m_pCat->m_lContent.size() == 1) { //Rename
+         MacroCategory* newIdx = nullptr;
+         foreach (MacroCategory* cat, m_lCategories) {
+            if (cat->m_Name == macro->m_Category) {
+               newIdx = cat;
+               break;
+            }
+         }
+         if (macro->m_pCat->m_lContent.size() == 1 && !newIdx) { //Rename
             int idx = m_lCategories.indexOf(macro->m_pCat);
             macro->m_pCat->m_Name = macro->m_Category;
             emit dataChanged(index(idx,0),index(idx,0));
@@ -260,15 +314,19 @@ void MacroModel::changed(Macro* macro)
          }
          else {
             macro->m_pCat->m_lContent.removeAll(macro);
+            if (!macro->m_pCat->m_lContent.size()) {
+               m_lCategories.removeAll(macro->m_pCat);
+               delete macro->m_pCat;
+               emit dataChanged(index(0,0),index(m_lCategories.size()-1,0));
+            }
             macro->m_pCat = nullptr;
          }
-         foreach (MacroCategory* cat, m_lCategories) {
-            if (cat->m_Name == macro->m_Category) {
-               cat->m_lContent << macro;
-               macro->m_pCat = cat;
-               macro->m_Category = cat->m_Name;
-               return;
-            }
+
+         if (newIdx) {
+            newIdx->m_lContent << macro;
+            macro->m_pCat = newIdx;
+            macro->m_Category = newIdx->m_Name;
+            return;
          }
          MacroCategory* cat = createCategory(macro->m_Category);
          cat->m_lContent << macro;

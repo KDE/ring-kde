@@ -46,14 +46,9 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    connect(m_pAddTB         , SIGNAL(clicked())            , this,SLOT(addMacro())    );
    connect(m_pRemoveTB      , SIGNAL(clicked())            , this,SLOT(removeMacro()) );
    
-   
-   
-   
-   
-   
+   connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(slotDelaySB(int))      );
    connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(slotNameLE(QString))        );
    connect(m_pCategoryCBB->lineEdit()   , SIGNAL(textChanged(QString)) , this,SLOT(slotCategoryCBB(QString))   );
-   connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(slotDelaySB(newValue))      );
    connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(slotSequenceLE(QString))    );
    connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(slotDescriptionLE(QString)) );
 
@@ -75,7 +70,7 @@ DlgAccessibility::~DlgAccessibility()
 ///Save
 void DlgAccessibility::updateSettings()
 {
-   
+   MacroModel::getInstance()->save();
 }
 
 ///Load
@@ -97,7 +92,7 @@ bool DlgAccessibility::hasChanged()
 
 void DlgAccessibility::addMacro()
 {
-   bool ret = MacroModel::getInstance()->newMacro();
+   Macro* ret = MacroModel::getInstance()->newMacro();
    if (ret) {
       m_pMacroFrm->setEnabled(true);
    }
