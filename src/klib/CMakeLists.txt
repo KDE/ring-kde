@@ -35,6 +35,7 @@ set( ksflphone_LIB_SRCS
    tipmanager.cpp
    tip.cpp
    tipanimationwrapper.cpp
+   macromodel.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)
@@ -58,6 +59,7 @@ set( ksflphone_LIB_HDRS
   akonadibackend.h
   helperfunctions.h
   sortabledockcommon.h
+  macromodel.h
 )
 
 INSTALL(FILES sflphone-client-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})

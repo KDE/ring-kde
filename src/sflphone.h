@@ -102,6 +102,7 @@ private:
    KAction* action_showContactDock       ;
    KAction* action_showHistoryDock       ;
    KAction* action_showBookmarkDock      ;
+   KAction* action_editToolBar           ;
    QActionGroup* action_screen           ;
 
    SFLPhoneView*  m_pView            ;
@@ -171,6 +172,8 @@ private slots:
    void quitButton                               (                                      );
    void updateTabIcons                           (                                      );
    void timeout                                  (                                      );
+   void addMacro                                 ( KAction* newAction                   );
+   void editToolBar                              (                                      );
    #ifdef ENABLE_VIDEO
    void displayVideoDock                         ( VideoRenderer* r                     );
    #endif

@@ -145,6 +145,9 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    /*                                                                                                                                                                     */
 
    AccountList::getInstance()->updateAccounts();
+
+   //Listen for macro
+   MacroModel::addListener(this);
 }
 
 ///Destructor
@@ -200,6 +203,14 @@ void SFLPhoneView::keyPressEvent(QKeyEvent *event)
       }
    }
 } //keyPressEvent
+
+void SFLPhoneView::addDTMF(const QString& sequence)
+{
+   if (sequence == "\n")
+      enter();
+   else
+      typeString(sequence);
+}
 
 ///Called on keyboard
 void SFLPhoneView::typeString(QString str)

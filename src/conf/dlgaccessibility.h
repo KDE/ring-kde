@@ -22,20 +22,45 @@
 
 #include "ui_dlgaccessibility.h"
 
+class KConfigDialog;
+class Macro;
+
 ///DlgAccessibility: Display option for the visually impaired
 class DlgAccessibility : public QWidget, public Ui_DlgAccessibility
 {
 Q_OBJECT
 public:
    //Constructor
-   DlgAccessibility(QWidget *parent = 0);
+   DlgAccessibility(KConfigDialog *parent = 0);
 
    //Destructor
    ~DlgAccessibility();
 
+   //Getters
+   bool hasChanged();
+
+private:
+   bool m_Changed;
+
 public slots:
    void updateSettings();
    void updateWidgets();
+
+private slots:
+   void changed();
+   void addMacro();
+   void removeMacro();
+   void selectMacro(Macro*);
+
+   //On widget change
+   void slotNameLE(const QString& newText);
+   void slotCategoryCBB(const QString& newText);
+   void slotDelaySB(int newValue);
+   void slotSequenceLE(const QString& newText);
+   void slotDescriptionLE(const QString& newText);
+
+signals:
+   void updateButtons();
 };
 
 #endif

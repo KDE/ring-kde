@@ -27,6 +27,7 @@
       <Menu name="Settings" >
          <text>Settings</text>
          <Action name="action_configureShortcut" />
+         <Action name="action_editToolBar" />
          <Action name="action_configureSflPhone" />
          <Separator />
          <Action name="action_accountCreationWizard" />
