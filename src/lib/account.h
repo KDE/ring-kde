@@ -113,6 +113,8 @@ class LIB_EXPORT Account : public QObject {
       QString getAccountUsername              () const { return getAccountDetail(ACCOUNT_USERNAME               )                 ;}
       ///Return the account mailbox address
       QString getAccountMailbox               () const { return getAccountDetail(ACCOUNT_MAILBOX                )                 ;}
+      ///Return the account mailbox address
+      QString getAccountProxy                 () const { return getAccountDetail(ACCOUNT_ROUTE                  )                 ;}
       ///
       bool    isAccountDisplaySasOnce         () const { return (getAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE      )  == "true")?1:0 ;}
       ///Return the account security fallback
@@ -201,6 +203,8 @@ class LIB_EXPORT Account : public QObject {
       void setAccountUsername               (QString detail){setAccountDetail(ACCOUNT_USERNAME               ,detail);}
       ///Set the account mailbox, usually a number, but can be anything
       void setAccountMailbox                (QString detail){setAccountDetail(ACCOUNT_MAILBOX                ,detail);}
+      ///Set the account mailbox, usually a number, but can be anything
+      void setAccountProxy                  (QString detail){setAccountDetail(ACCOUNT_ROUTE                  ,detail);}
       ///Set the main credential password
       void setAccountPassword               (QString detail){setAccountDetail(ACCOUNT_PASSWORD               ,detail);}
       ///Set the TLS (encryption) password

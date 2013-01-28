@@ -483,7 +483,10 @@
             <property name="title">
              <string>Network Interface</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout_9">
+            <layout class="QFormLayout" name="formLayout_2">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::ExpandingFieldsGrow</enum>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="label_ni_local_address">
                <property name="text">
@@ -508,18 +511,19 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
-              <spacer name="horizontalSpacer_8">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+             <item row="2" column="1">
+              <widget class="KLineEdit" name="m_pProxyLE">
+               <property name="placeholderText">
+                <string>SIP proxy server (if none, leave blanc)</string>
                </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="m_pProxyCK">
+               <property name="text">
+                <string>Proxy</string>
                </property>
-              </spacer>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -1461,12 +1465,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>390</x>
-     <y>400</y>
+     <x>395</x>
+     <y>427</y>
     </hint>
     <hint type="destinationlabel">
      <x>838</x>
-     <y>401</y>
+     <y>428</y>
     </hint>
    </hints>
   </connection>
@@ -1477,12 +1481,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>390</x>
-     <y>400</y>
+     <x>395</x>
+     <y>427</y>
     </hint>
     <hint type="destinationlabel">
-     <x>622</x>
-     <y>239</y>
+     <x>623</x>
+     <y>266</y>
     </hint>
    </hints>
   </connection>
@@ -1493,12 +1497,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>390</x>
-     <y>400</y>
+     <x>395</x>
+     <y>427</y>
     </hint>
     <hint type="destinationlabel">
-     <x>622</x>
-     <y>264</y>
+     <x>623</x>
+     <y>291</y>
     </hint>
    </hints>
   </connection>
@@ -1531,6 +1535,22 @@
     <hint type="destinationlabel">
      <x>365</x>
      <y>394</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pProxyCK</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_pProxyLE</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>362</x>
+     <y>191</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>403</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>

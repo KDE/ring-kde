@@ -88,6 +88,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit4_user,                        SIGNAL(textEdited(QString))            , this   , SLOT(updateFirstCredential(QString))    );
    /**/connect(edit5_password,                    SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit6_mailbox,                     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pProxyLE,                        SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pProxyCK,                        SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverRTP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverSIP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pAutoAnswer,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
@@ -190,6 +192,10 @@ void DlgAccounts::saveAccount(QModelIndex item)
    }
    m_IsLoading++;
    
+   if (!m_pProxyCK->isChecked()) {
+      m_pProxyLE->setText("");
+   }
+   
    QString protocolsTab[] = ACCOUNT_TYPES_TAB;
    
    //ACCOUNT DETAILS
@@ -200,6 +206,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setAccountUsername             ( edit4_user->text()                                                       );
    /**/account->setAccountPassword             ( edit5_password->text()                                                   );
    /**/account->setAccountMailbox              ( edit6_mailbox->text()                                                    );
+   /**/account->setAccountProxy                ( m_pProxyLE->text()                                                       );
    /**/account->setAccountEnabled              ( item.data(Qt::CheckStateRole).toBool()                                   );
    /**/account->setAccountRegistrationExpire   ( spinbox_regExpire->value()                                               );
    /**/                                                                                                                 /**/
@@ -236,6 +243,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
    /**/account->setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
    //                                                                                                                      /
+
 
    if (m_pDefaultAccount->isChecked()) {
       ConfigurationSkeleton::setDefaultAccountId(account->getAccountId());
@@ -338,6 +346,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/edit3_server->setText                    (  account->getAccountHostname             ());
    /**/edit4_user->setText                      (  account->getAccountUsername             ());
    /**/edit6_mailbox->setText                   (  account->getAccountMailbox              ());
+   /**/m_pProxyLE->setText                      (  account->getAccountProxy                ());
    /**/checkbox_ZRTP_Ask_user->setChecked       (  account->isAccountDisplaySasOnce        ());
    /**/checkbox_SDES_fallback_rtp->setChecked   (  account->isAccountSrtpRtpFallback       ());
    /**/checkbox_ZRTP_display_SAS->setChecked    (  account->isAccountZrtpDisplaySas        ());
@@ -377,6 +386,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
    edit_credential_realm    -> setEnabled(false);
    edit_credential_auth     -> setEnabled(false);
    edit_credential_password -> setEnabled(false);
+   m_pProxyCK               -> setChecked(m_pProxyLE->text().size());
+   m_pProxyLE               -> setEnabled(m_pProxyCK->isChecked());
 
 
    disconnect(m_pDefaultAccount, SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
