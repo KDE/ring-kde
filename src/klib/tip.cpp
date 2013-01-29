@@ -105,7 +105,7 @@ QRect Tip::getTextRect(const QString& text)
    return rect;
 }
 
-///Check if the thene color scheme is darker than #888888
+///Check if the theme color scheme is darker than #888888
 ///@return true = dark, false = bright
 bool Tip::brightOrDarkBase()
 {

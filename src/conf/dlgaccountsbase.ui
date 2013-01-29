@@ -514,7 +514,7 @@
              <item row="2" column="1">
               <widget class="KLineEdit" name="m_pProxyLE">
                <property name="placeholderText">
-                <string>SIP proxy server (if none, leave blanc)</string>
+                <string>SIP proxy server (if none, leave blank)</string>
                </property>
               </widget>
              </item>
