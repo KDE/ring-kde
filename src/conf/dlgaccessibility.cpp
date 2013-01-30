@@ -35,7 +35,7 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    m_pAddTB->setIcon    ( KIcon( "list-add"    ) );
    m_pRemoveTB->setIcon ( KIcon( "list-remove" ) );
    m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
-   m_pInfoL->setText(i18n("This page allow to create macros that can then be called using keyboard shortcuts or added to the toolbar. To create one, "
+   m_pInfoL->setText(i18n("This page allows to create macros that can then be called using keyboard shortcuts or added to the toolbar. To create one, "
    "assign a name and a character sequence. The sequence can be numeric or any character than can be interpreted as one (ex: \"A\" would be interpreted as 2)"));
 
    connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
