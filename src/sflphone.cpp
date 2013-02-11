@@ -65,6 +65,7 @@
 #include "sflphoneaccessibility.h"
 #include "lib/videomodel.h"
 #include "extendedaction.h"
+#include "errormessage.h"
 
 SFLPhone* SFLPhone::m_sApp              = nullptr;
 TreeWidgetCallModel* SFLPhone::m_pModel = nullptr;
@@ -711,9 +712,7 @@ void SFLPhone::displayVideoDock(VideoRenderer* r)
 void SFLPhone::timeout()
 {
    if (!InstanceInterfaceSingleton::getInstance().connection().isConnected() || !InstanceInterfaceSingleton::getInstance().isValid() || (!model()->isValid())) {
-       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually. \n\n\
-Check in your distribution repository if the sflphone daemon (sometime called \"sflphone-common\") is available.\n\
-Help for building SFLPhone daemon from source are present at https://projects.savoirfairelinux.com/projects/sflphone/wiki/How_to_build"));
-       exit(1);
+      KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
+      exit(1);
    }
 }

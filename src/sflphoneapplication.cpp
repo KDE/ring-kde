@@ -35,6 +35,7 @@
 
 //SFLPhone
 #include "sflphone.h"
+#include "errormessage.h"
 
 
 /**
@@ -131,12 +132,8 @@ bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
       return KApplication::notify(receiver,e);
    }
    catch (...) {
-      kDebug() << i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
-      "It is known that this message can be caused by trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 seconds and "
-      "trying again will solve the issue.");
-      KMessageBox::error(SFLPhone::app(),i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
-      "It is known that this message can be caused by trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 seconds and "
-      "trying again will solve the issue."));
+      kDebug() << ErrorMessage::GENERIC_ERROR;
+      KMessageBox::error(SFLPhone::app(),ErrorMessage::GENERIC_ERROR);
       QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
    }
    return false;
