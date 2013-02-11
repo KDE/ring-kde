@@ -1,7 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).     *
- *   All rights reserved.                                                  *
- *   Contact: Nokia Corporation (qt-info@nokia.com)                        *
+ *   Copyright (C) 2009-2013 Savoir-Faire Linux                            *
  *   Author : Mathieu Leduc-Hamel mathieu.leduc-hamel@savoirfairelinux.com *
  *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *

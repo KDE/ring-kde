@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2011-2012 by Savoir-Faire Linux                          *
+ *   Copyright (C) 2011-2013 by Savoir-Faire Linux                          *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *

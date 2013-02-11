@@ -1,4 +1,5 @@
 /***************************************************************************
+ *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
  *   Author : Mathieu Leduc-Hamel mathieu.leduc-hamel@savoirfairelinux.com *
  *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *

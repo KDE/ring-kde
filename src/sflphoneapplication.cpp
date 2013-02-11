@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2012 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -134,7 +134,7 @@ bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
       kDebug() << i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
       "It is known that this message can be caused by trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 seconds and "
       "trying again will solve the issue.");
-      KMessageBox::error(nullptr,i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
+      KMessageBox::error(SFLPhone::app(),i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
       "It is known that this message can be caused by trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 seconds and "
       "trying again will solve the issue."));
       QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
