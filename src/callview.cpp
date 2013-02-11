@@ -820,7 +820,7 @@ CallTreeItem* CallView::insertItem(QTreeWidgetItem* item, QTreeWidgetItem* paren
 void CallView::destroyCall(Call* toDestroy)
 {
    if (SFLPhone::model()->getIndex(toDestroy) == currentItem())
-      setCurrentItem(0);
+      setCurrentItem(nullptr);
 
    if (!SFLPhone::model()->getIndex(toDestroy))
        kDebug() << "Call not found";

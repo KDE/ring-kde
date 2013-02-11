@@ -31,6 +31,7 @@
 
 //SFLPhone library
 #include "lib/instance_interface_singleton.h"
+#include "klib/configurationskeleton.h"
 
 //SFLPhone
 #include "sflphone.h"
@@ -56,6 +57,7 @@ SFLPhoneApplication::SFLPhoneApplication()
  */
 SFLPhoneApplication::~SFLPhoneApplication()
 {
+   delete SFLPhone::app();
    // automatically destroyed
    disableSessionManagement();
    InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
@@ -68,9 +70,6 @@ SFLPhoneApplication::~SFLPhoneApplication()
  */
 void SFLPhoneApplication::initializeMainWindow()
 {
-  // Fetch the command line arguments
-  //KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
   // Enable KDE session restore.
 //   int restoredWindow = -1;
   if( kapp->isSessionRestored() ) {
@@ -95,6 +94,36 @@ void SFLPhoneApplication::initializePaths()
 
 }
 
+///Parse command line arguments
+int SFLPhoneApplication::newInstance()
+{
+   static bool init = true;
+   //Only call on the first instance
+   if (init) {
+      SFLPhone* sflphoneWindow_ = new SFLPhone();
+      if( ! sflphoneWindow_->initialize() ) {
+         return 1;
+      };
+
+      if (ConfigurationSkeleton::displayOnStart())
+         sflphoneWindow_->show();
+      else
+         sflphoneWindow_->hide();
+      init = false;
+   }
+
+   KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
+   KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+   if(args->isSet("place-call")) {
+      Call* call = SFLPhone::model()->addDialingCall();
+      call->appendText(args->getOption("place-call"));
+      call->actionPerformed(CALL_ACTION_ACCEPT);
+   }
+   args->clear();
+   KUniqueApplication::newInstance();
+   return 0;
+}
+
 ///Exit gracefully
 bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
 {
@@ -102,7 +131,9 @@ bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
       return KApplication::notify(receiver,e);
    }
    catch (...) {
-      kDebug() << "Error caught!!!";
+      kDebug() << i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
+      "It is known that this message can be caused by trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 seconds and "
+      "trying again will solve the issue.");
       KMessageBox::error(nullptr,i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
       "It is known that this message can be caused by trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 seconds and "
       "trying again will solve the issue."));

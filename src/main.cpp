@@ -38,7 +38,7 @@
 #include "conf/configurationdialog.h"
 #include "klib/configurationskeleton.h"
 #include "callview.h"
-#include "sflphone.h"
+#include "sflphonecmd.h"
 
 //SFLPhone library
 #include "lib/instance_interface_singleton.h"
@@ -68,45 +68,26 @@ int main(int argc, char **argv)
          version                                    ,
          ki18n(description)                         ,
          KAboutData::License_GPL_V3                 ,
-         ki18n("(C) 2009-2012 Savoir-faire Linux")  ,
+         ki18n("(C) 2009-2013 Savoir-faire Linux")  ,
          KLocalizedString()                         ,
          "http://www.sflphone.org."                 ,
          "sflphone@lists.savoirfairelinux.net"
       );
+      about.addAuthor( ki18n( "Emmanuel Lepage Vallée" ), KLocalizedString(), "emmanuel.lepage@savoirfairelinux.com" );
       about.addAuthor( ki18n( "Jérémy Quentin"         ), KLocalizedString(), "jeremy.quentin@savoirfairelinux.com"  );
-      about.addAuthor( ki18n( "Emmanuel Lepage Vallee" ), KLocalizedString(), "emmanuel.lepage@savoirfairelinux.com" );
-      KCmdLineArgs::init(argc, argv, &about);
-      KCmdLineOptions options;
-      KCmdLineArgs::addCmdLineOptions(options);
 
-      KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+      SFLPhoneCmd::parseCmd(argc,argv,about);
 
       app = new SFLPhoneApplication();
+
       //dbus configuration
       TreeWidgetCallModel::init();
-
-
-      SFLPhone* sflphoneWindow_ = new SFLPhone();
-      if( ! sflphoneWindow_->initialize() ) {
-         exit(1);
-         return 1;
-      };
 
       KDE_signal(SIGINT  , quitOnSignal);
       KDE_signal(SIGTERM , quitOnSignal);
 
-      if (ConfigurationSkeleton::displayOnStart())
-         sflphoneWindow_->show();
-      else
-         sflphoneWindow_->hide();
-
-      if(args->count()) {
-         sflphoneWindow_->test(args->arg(0));
-      }
-
       int retVal = app->exec();
 
-      delete sflphoneWindow_;
       ConfigurationSkeleton::self()->writeConfig();
 
       delete app;

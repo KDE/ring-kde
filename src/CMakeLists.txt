@@ -29,6 +29,7 @@ SET(
    extendedaction.cpp
    sflphoneview.cpp
    sflphone.cpp
+   sflphonecmd.cpp
    sflphoneapplication.cpp
    kspeechinterfacesingleton.cpp
    sflphoneaccessibility.cpp

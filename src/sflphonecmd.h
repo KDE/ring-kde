@@ -1,7 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2012 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,40 +16,14 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 
-#ifndef SFLPHONEAPPLICATION_H
-#define SFLPHONEAPPLICATION_H
+#ifndef SFLPHONECMD_H
+#define SFLPHONECMD_H
 
-#include <KUniqueApplication>
-#include <QDBusAbstractAdaptor>
+class KAboutData;
 
-//Qt
-class QEvent;
-
-//SFLPhone
-class SFLPhone;
-
-///SFLPhoneApplication: Main application
-class SFLPhoneApplication : public KUniqueApplication
-{
-  Q_OBJECT
-
+class SFLPhoneCmd {
 public:
-   // Constructor
-   SFLPhoneApplication();
-
-   // Destructor
-   virtual ~SFLPhoneApplication();
-
-   // Manage new instances
-   virtual int newInstance();
-
-   // Exit gracefully
-   virtual bool notify (QObject* receiver, QEvent* e);
-
-private:
-   //Init
-   void         initializeMainWindow();
-   void         initializePaths();
+   static void parseCmd(int argc, char **argv, KAboutData& about);
 };
 
-#endif // SFLPHONEAPPLICATION_H
+#endif

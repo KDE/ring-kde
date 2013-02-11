@@ -1,7 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2012 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,41 +15,19 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-
-#ifndef SFLPHONEAPPLICATION_H
-#define SFLPHONEAPPLICATION_H
-
+#include "sflphonecmd.h"
+#include <KCmdLineArgs>
 #include <KUniqueApplication>
-#include <QDBusAbstractAdaptor>
 
-//Qt
-class QEvent;
-
-//SFLPhone
-class SFLPhone;
-
-///SFLPhoneApplication: Main application
-class SFLPhoneApplication : public KUniqueApplication
+///Setup command line options before passing them to the KUniqueApplication
+void SFLPhoneCmd::parseCmd(int argc, char **argv, KAboutData& about)
 {
-  Q_OBJECT
+      KCmdLineArgs::init(argc, argv, &about);
+      KCmdLineOptions options;
+      options.add("place-call <number>", ki18n("Place a call to a given number"),"");
+      KCmdLineArgs::addCmdLineOptions(options);
 
-public:
-   // Constructor
-   SFLPhoneApplication();
+      KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-   // Destructor
-   virtual ~SFLPhoneApplication();
-
-   // Manage new instances
-   virtual int newInstance();
-
-   // Exit gracefully
-   virtual bool notify (QObject* receiver, QEvent* e);
-
-private:
-   //Init
-   void         initializeMainWindow();
-   void         initializePaths();
-};
-
-#endif // SFLPHONEAPPLICATION_H
+      KUniqueApplication::addCmdLineOptions();
+}
