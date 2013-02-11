@@ -714,5 +714,6 @@ void SFLPhone::timeout()
        KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually. \n\n\
 Check in your distribution repository if the sflphone daemon (sometime called \"sflphone-common\") is available.\n\
 Help for building SFLPhone daemon from source are present at https://projects.savoirfairelinux.com/projects/sflphone/wiki/How_to_build"));
+       exit(1);
    }
 }

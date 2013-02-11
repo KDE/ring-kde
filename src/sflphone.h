@@ -171,12 +171,14 @@ private slots:
    void showShortCutEditor                       (                                      );
    void quitButton                               (                                      );
    void updateTabIcons                           (                                      );
-   void timeout                                  (                                      );
    void addMacro                                 ( KAction* newAction                   );
    void editToolBar                              (                                      );
    #ifdef ENABLE_VIDEO
    void displayVideoDock                         ( VideoRenderer* r                     );
    #endif
+
+public slots:
+   void timeout                                  (                                      );
 };
 
 #endif
