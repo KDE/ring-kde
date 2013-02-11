@@ -20,16 +20,12 @@
 
 //Qt
 #include <QtGui/QTreeWidget>
-#include <QtGui/QPainter>
-#include <QtGui/QStyledItemDelegate>
-#include <QtCore/QTimer>
 
 //SFLPhone
 #include "lib/callmodel.h"
 
 //Qt
 class QTreeWidgetItem;
-class QPushButton;
 
 //KDE
 class KLineEdit;
@@ -38,39 +34,10 @@ class KLineEdit;
 class CallTreeItem;
 class CallTreeItemDelegate;
 class CallViewOverlayToolbar;
+class CallViewOverlay;
 
 //Typedef
 typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
-
-///CallViewOverlay: Display overlay on top of the call tree
-class CallViewOverlay : public QWidget {
-   Q_OBJECT
-
-public:
-   //Constructor
-   CallViewOverlay(QWidget* parent);
-   ~CallViewOverlay();
-
-   //Setters
-   void setCornerWidget(QWidget* wdg);
-   void setVisible(bool enabled);
-   void setAccessMessage(QString message);
-
-protected:
-   virtual void paintEvent  (QPaintEvent*  event );
-   virtual void resizeEvent (QResizeEvent* e     );
-
-private:
-   QWidget* m_pIcon        ;
-   uint     m_step         ;
-   QTimer*  m_pTimer       ;
-   bool     m_enabled      ;
-   QColor   m_black        ;
-   QString  m_accessMessage;
-
-private slots:
-   void changeVisibility();
-};
 
 ///CallView: Central tree widget managing active calls
 class CallView : public QTreeWidget {

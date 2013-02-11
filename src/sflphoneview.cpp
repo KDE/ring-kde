@@ -229,7 +229,6 @@ void SFLPhoneView::typeString(QString str)
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
 
    Call* call = callView->getCurrentItem();
-   //Q_NOREPLY callManager.playDTMF(str);
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
 
@@ -798,7 +797,7 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
       menu.addAction(action);
    }
    menu.exec(event->globalPos());
-}
+} //contextMenuEvent
 
 ///Pick the default account and load it
 void SFLPhoneView::setAccountFirst(Account * account)

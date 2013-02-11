@@ -31,6 +31,7 @@ SET(
    sflphone.cpp
    sflphonecmd.cpp
    sflphoneapplication.cpp
+   errormessage.cpp
    kspeechinterfacesingleton.cpp
    sflphoneaccessibility.cpp
    accountwizard.cpp
@@ -60,12 +61,14 @@ SET(
    widgets/videowidget.cpp
    widgets/immanager.cpp
    widgets/imtab.cpp
+   widgets/callviewoverlay.cpp
    widgets/callviewoverlaytoolbar.cpp
    widgets/tips/conftip.cpp
    widgets/tips/dialpadtip.cpp
    widgets/tips/riggingtip.cpp
    widgets/tips/conlosttip.cpp
    widgets/tips/tipcollection.cpp
+   widgets/calltreeitemdelegate.cpp
 #    widgets/acceleratedvideowidget.cpp
    callview.cpp
 )

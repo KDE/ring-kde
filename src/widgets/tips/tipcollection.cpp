@@ -53,11 +53,13 @@ DialPadTip* TipCollection::dialPad()
    return m_spDialPad;
 }
 
+///Return the conference tip
 Tip* TipCollection::conference()
 {
    return m_spConf;
 }
 
+///Return the drag and drop tip
 Tip* TipCollection::dragAndDrop()
 {
    if (!m_spConf) {
@@ -67,6 +69,7 @@ Tip* TipCollection::dragAndDrop()
 }
 
 //Call related
+///Return end call tip
 Tip* TipCollection::endCall()
 {
    if (!m_spEndCall) {
@@ -76,6 +79,7 @@ Tip* TipCollection::endCall()
    return m_spEndCall;
 }
 
+///Return endBusy tip
 Tip* TipCollection::endBusy()
 {
    if (!m_spEndBusy) {
@@ -85,6 +89,7 @@ Tip* TipCollection::endBusy()
    return m_spEndBusy;
 }
 
+///Return rigging tip
 Tip* TipCollection::rigging()
 {
    if (!m_spRigging) {
@@ -96,6 +101,7 @@ Tip* TipCollection::rigging()
 }
 
 //Account related
+///Return connectionLost tip
 Tip* TipCollection::connectionLost()
 {
    if (!m_spConnectionLost) {
@@ -107,6 +113,7 @@ Tip* TipCollection::connectionLost()
 }
 
 //Network related
+///Return networkLost tip
 Tip* TipCollection::networkLost()
 {
    if (!m_spNetworkLost) {
@@ -117,11 +124,13 @@ Tip* TipCollection::networkLost()
 
 
 //Global manager
+///Return the global tip manager
 TipManager* TipCollection::manager()
 {
    return m_spManager;
 }
 
+///Set the global tip manager
 void TipCollection::setManager(TipManager* manager)
 {
    m_spManager = manager;

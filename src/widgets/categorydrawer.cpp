@@ -258,7 +258,7 @@ void CategoryDrawer::drawCategory(const QModelIndex& index   ,
       painter->restore();
    }
    //END: draw text
-}
+} //drawCategory
 
 ///Return category height
 int CategoryDrawer::categoryHeight(const QModelIndex &index, const QStyleOption &option) const
@@ -271,4 +271,4 @@ int CategoryDrawer::categoryHeight(const QModelIndex &index, const QStyleOption 
    const QFontMetrics fontMetrics = QFontMetrics(font);
 
    return fontMetrics.height() + 2 + 12 /* vertical spacing */;
-}
+} //categoryHeight

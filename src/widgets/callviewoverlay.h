@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2013 by Savoir-Faire Linux                              *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,16 +15,39 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
+#ifndef CALL_VIEW_OVERLAY
+#define CALL_VIEW_OVERLAY
 
-#ifndef ERROR_MESSAGES_H
-#define ERROR_MESSAGES_H
+#include <QtGui/QWidget>
 
-#include <KLocale>
+///CallViewOverlay: Display overlay on top of the call tree
+class CallViewOverlay : public QWidget {
+   Q_OBJECT
 
-class ErrorMessage {
 public:
-   static const QString GENERIC_ERROR;
-   static const QString NO_DAEMON_ERROR;
+   //Constructor
+   CallViewOverlay(QWidget* parent);
+   ~CallViewOverlay();
+
+   //Setters
+   void setCornerWidget  ( QWidget* wdg     );
+   void setVisible       ( bool     enabled );
+   void setAccessMessage ( QString  message );
+
+protected:
+   virtual void paintEvent  (QPaintEvent*  event );
+   virtual void resizeEvent (QResizeEvent* e     );
+
+private:
+   QWidget* m_pIcon        ;
+   uint     m_step         ;
+   QTimer*  m_pTimer       ;
+   bool     m_enabled      ;
+   QColor   m_black        ;
+   QString  m_accessMessage;
+
+private slots:
+   void changeVisibility();
 };
 
 #endif

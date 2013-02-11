@@ -216,7 +216,7 @@ HistoryTreeItem::~HistoryTreeItem()
    if ( m_pTimeLeftL   ) delete m_pTimeLeftL   ;
    if ( m_pTimePlayedL ) delete m_pTimePlayedL ;
    if ( m_pPlayer      ) delete m_pPlayer      ;
-}
+} //~HistoryTreeItem
 
 
 /*****************************************************************************
@@ -331,6 +331,7 @@ void HistoryTreeItem::bookmark()
       SFLPhone::app()->bookmarkDock()->removeBookmark(m_PhoneNumber);
 }
 
+///Ask for confirmation then delete the recording file
 void HistoryTreeItem::removeRecording()
 {
    int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to delete this recording?"), i18n("Delete recording"));
@@ -341,7 +342,7 @@ void HistoryTreeItem::removeRecording()
       m_pRemove->setVisible(false);
       getContactInfo(m_PhoneNumber);
    }
-}
+} //removeRecording
 
 ///Hide or show the media player
 void HistoryTreeItem::showRecordPlayer()
@@ -394,8 +395,6 @@ void HistoryTreeItem::showRecordPlayer()
       l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
       m_pPlayer->setVisible(true);
 
-
-
       connect( m_pStop        , SIGNAL(clicked())                        , m_pItemCall, SLOT(stopRecording())      );
       connect( m_pItemCall    , SIGNAL(playbackStopped())                , this       , SLOT(stopPlayer())         );
       connect( m_pItemCall    , SIGNAL(playbackPositionChanged(int,int)) , this       , SLOT(updateSlider(int,int)));
@@ -444,7 +443,6 @@ void HistoryTreeItem::connectSlider()
    m_pItemCall->seekRecording(((double)m_pAudioSlider->value())/((double)m_pAudioSlider->maximum()) * 100);
    connect(m_pItemCall,SIGNAL(playbackPositionChanged(int,int)),this,SLOT(updateSlider(int,int)));
 }
-
 
 ///Add or edit the note associated with this call
 void HistoryTreeItem::editNote()

@@ -48,11 +48,11 @@ public:
    const GLushort *indices() const { return faces.constData(); }
    int count() const { return faces.count(); }
 private:
-   QVector<GLushort> faces;
-   QVector<QVector3D> vertices;
-   QVector<QVector3D> normals;
+   QVector<GLushort>  faces    ;
+   QVector<QVector3D> vertices ;
+   QVector<QVector3D> normals  ;
    QVector<QVector2D> texCoords;
-   QVector<QVector4D> colors;
+   QVector<QVector4D> colors   ;
    int append(const QVector3D &a, const QVector3D &n, const QVector2D &t);
    void addTri(const QVector3D &a, const QVector3D &b, const QVector3D &c, const QVector3D &n);
    friend class Tile;

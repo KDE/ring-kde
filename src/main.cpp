@@ -22,27 +22,19 @@
 #include <signal.h>
 
 //Qt
-#include <QApplication>
 #include <QtCore/QString>
 
 //KDE
 #include <KDebug>
-#include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <kde_file.h>
 
 //SFLPhone
-#include "accountwizard.h"
 #include "sflphoneapplication.h"
-#include "conf/configurationdialog.h"
 #include "klib/configurationskeleton.h"
 #include "callview.h"
 #include "sflphonecmd.h"
-
-//SFLPhone library
-#include "lib/instance_interface_singleton.h"
-#include "lib/sflphone_const.h"
 
 static const char description[] = "A KDE 4 Client for SFLphone";
 

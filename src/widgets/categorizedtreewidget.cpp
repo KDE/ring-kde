@@ -36,13 +36,13 @@
 class KateColorTreeDelegate : public QStyledItemDelegate
 {
   public:
-    KateColorTreeDelegate(CategorizedTreeWidget* widget)
-      : QStyledItemDelegate(widget)
-      , m_tree(widget)
-    {
-    }
+   KateColorTreeDelegate(CategorizedTreeWidget* widget)
+   : QStyledItemDelegate(widget)
+   , m_tree(widget)
+   {
+   }
 
-    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
       //Only do it for categories and objects deeper than 1 level, use precalculated values for others
       if (!index.parent().isValid() || index.parent().parent().isValid()) {
          QSize sh = QStyledItemDelegate::sizeHint(option, index);
@@ -51,9 +51,9 @@ class KateColorTreeDelegate : public QStyledItemDelegate
          return sh;
       }
       return m_SH;
-    }
+   }
 
-    QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+   QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const {
       QModelIndex i(index),old(index);
 
       //BEGIN real sizeHint()
@@ -62,15 +62,15 @@ class KateColorTreeDelegate : public QStyledItemDelegate
       ((KateColorTreeDelegate*)this)->m_LeftMargin  = m_categoryDrawer.leftMargin();
       ((KateColorTreeDelegate*)this)->m_RightMargin = m_categoryDrawer.rightMargin();
       if (!index.parent().isValid()) {
-        ((QSize)m_SH).rheight() += 2 * m_categoryDrawer.leftMargin();
+         ((QSize)m_SH).rheight() += 2 * m_categoryDrawer.leftMargin();
       } else {
-        ((QSize)m_SH).rheight() += m_categoryDrawer.leftMargin();
+         ((QSize)m_SH).rheight() += m_categoryDrawer.leftMargin();
       }
       ((QSize)m_SH).rwidth() += m_categoryDrawer.leftMargin();
       //END real sizeHint()
       
       if (i.parent().isValid()) {
-        i = i.parent();
+         i = i.parent();
       }
 
       //Avoid repainting the category over and over (optimization)
@@ -87,48 +87,48 @@ class KateColorTreeDelegate : public QStyledItemDelegate
 
       // adapt height
       if (item->isExpanded() && item->childCount() > 0) {
-        const int childCount = item->childCount();
-        const int h = sizeHint(option, index.child(0, 0)).height();
-        //There is a massive implact on CPU usage to have massive rect
-        r.setHeight((r.height() + childCount * h > 100)?100:(r.height() + childCount * h));
+         const int childCount = item->childCount();
+         const int h = sizeHint(option, index.child(0, 0)).height();
+         //There is a massive implact on CPU usage to have massive rect
+         r.setHeight((r.height() + childCount * h > 100)?100:(r.height() + childCount * h));
       }
 
       r.setTop(r.top() + m_categoryDrawer.leftMargin());
 
       return r;
-    }
+   } //fullCategoryRect
 
-    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
-    {
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+   {
       Q_ASSERT(index.isValid());
       
       //BEGIN: draw toplevel items
       if (!index.parent().isValid()) {
-        QStyleOptionViewItem opt(option);
-        const QRegion cl = painter->clipRegion();
-        painter->setClipRect(opt.rect);
-        opt.rect = fullCategoryRect(option, index);
-        m_categoryDrawer.drawCategory(index, 0, opt, painter);
-        painter->setClipRegion(cl);
-        return;
+         QStyleOptionViewItem opt(option);
+         const QRegion cl = painter->clipRegion();
+         painter->setClipRect(opt.rect);
+         opt.rect = fullCategoryRect(option, index);
+         m_categoryDrawer.drawCategory(index, 0, opt, painter);
+         painter->setClipRegion(cl);
+         return;
       }
       
       if (!index.parent().parent().isValid()) {
-        QStyleOptionViewItem opt(option);
-        opt.rect = fullCategoryRect(option, index);
-        const QRegion cl = painter->clipRegion();
-        QRect cr = option.rect;
-        if (index.column() == 0) {
-          if (m_tree->layoutDirection() == Qt::LeftToRight) {
+         QStyleOptionViewItem opt(option);
+         opt.rect = fullCategoryRect(option, index);
+         const QRegion cl = painter->clipRegion();
+         QRect cr = option.rect;
+         if (index.column() == 0) {
+            if (m_tree->layoutDirection() == Qt::LeftToRight) {
             cr.setLeft(5);
-          } else {
+            } else {
             cr.setRight(opt.rect.right());
-          }
-        }
-        painter->setClipRect(cr);
-        m_categoryDrawer.drawCategory(index, 0, opt, painter);
-        painter->setClipRegion(cl);
-        painter->setRenderHint(QPainter::Antialiasing, false);
+            }
+         }
+         painter->setClipRect(cr);
+         m_categoryDrawer.drawCategory(index, 0, opt, painter);
+         painter->setClipRegion(cl);
+         painter->setRenderHint(QPainter::Antialiasing, false);
       }
       //END: draw background of category for all other items
 
@@ -145,14 +145,14 @@ class KateColorTreeDelegate : public QStyledItemDelegate
             widget->setMaximumSize((m_tree->viewport()->width() - m_categoryDrawer.leftMargin() - m_categoryDrawer.rightMargin())-m_categoryDrawer.leftMargin(),99999);
          }
       }
-    }
+   } //paint
 
   private:
-    CategorizedTreeWidget* m_tree;
-    CategoryDrawer m_categoryDrawer;
-    QSize m_SH;
-    int m_LeftMargin;
-    int m_RightMargin;
+   CategorizedTreeWidget* m_tree;
+   CategoryDrawer m_categoryDrawer;
+   QSize m_SH;
+   int m_LeftMargin;
+   int m_RightMargin;
 };
 //END KateColorTreeDelegate
 
@@ -200,4 +200,4 @@ void CategorizedTreeWidget::removeItem(QTreeWidgetItem* item)
          }
       }
    }
-}
+} //removeItem

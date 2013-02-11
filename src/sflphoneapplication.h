@@ -49,8 +49,8 @@ public:
 
 private:
    //Init
-   void         initializeMainWindow();
-   void         initializePaths();
+   void initializeMainWindow();
+   void initializePaths();
 };
 
 #endif // SFLPHONEAPPLICATION_H

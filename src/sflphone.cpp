@@ -171,10 +171,6 @@ bool SFLPhone::initialize()
 
    ConfigurationSkeleton::self();
 
-   //Keep these template parameter or the static attribute wont be share between this and the call view, they need to be
-//    CallModel<CallTreeItem*,QTreeWidgetItem*>* histoModel = new CallModel<CallTreeItem*,QTreeWidgetItem*>(CallModel<CallTreeItem*,QTreeWidgetItem*>::History);
-//    histoModel->initHistory();
-
    // accept dnd
    setAcceptDrops(true);
 
@@ -294,19 +290,11 @@ bool SFLPhone::initialize()
    m_pAccountStatus = new KComboBox(bar);
    AccountListNoCheckProxyModel* accountModel = new AccountListNoCheckProxyModel();
    m_pAccountStatus->setModel(accountModel);
-   /*QMargins margins2 = m_pAccountStatus->contentsMargins();
-   margins2.setRight(1);
-   m_pAccountStatus->setStyleSheet("spacing:0px");
-   m_pAccountStatus->setContentsMargins(margins2);*/
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
    
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(KIcon("view-refresh"));
-   /*QMargins margins = m_pReloadButton->contentsMargins();
-   margins.setLeft(0);
-   m_pReloadButton->setContentsMargins(margins);
-   m_pReloadButton->setStyleSheet("spacing:0px");*/
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,SIGNAL(clicked()),AccountList::getInstance(),SLOT(registerAllAccounts()));
    
@@ -362,7 +350,6 @@ void SFLPhone::setupActions()
    action_showBookmarkDock      = new KAction(KIcon("bookmark-new-list"), i18n("Display bookmark")                        , this);
    action_editToolBar           = new KAction(KIcon("configure-toolbars"), i18n("Configure Toolbars")                     , this);
    action_accountCreationWizard = new KAction(i18n("Account creation wizard")                                             , this);
-
 
    action_displayDialpad->setCheckable( true );
    action_displayDialpad->setChecked  ( ConfigurationSkeleton::displayDialpad() );
@@ -678,7 +665,7 @@ void SFLPhone::updateTabIcons()
          }
       }
    }
-}
+} //updateTabIcons
 
 ///Add a new dynamic action (macro)
 void SFLPhone::addMacro(KAction* newAction)

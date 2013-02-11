@@ -22,7 +22,7 @@
 #include <KLocale>
 #include "sflphone.h"
 
-SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance=nullptr;
+SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance = nullptr;
 
 ///Constructor
 SFLPhoneAccessibility::SFLPhoneAccessibility() : QObject(0),QList<KAction*>()

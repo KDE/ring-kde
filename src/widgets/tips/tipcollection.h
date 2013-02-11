@@ -27,8 +27,8 @@ class ConfTip;
 class TipCollection {
 public:
    //Tutorial mode
-   static DialPadTip* dialPad();
-   static Tip*        conference();
+   static DialPadTip* dialPad    ();
+   static Tip*        conference ();
    static Tip*        dragAndDrop();
    
    //Call related
@@ -48,7 +48,7 @@ public:
 private:
    //Tutorial mode
    static DialPadTip* m_spDialPad;
-   static ConfTip*    m_spConf;
+   static ConfTip*    m_spConf   ;
    
    //Call related
    static Tip*        m_spEndCall;

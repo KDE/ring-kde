@@ -179,7 +179,7 @@ HistoryDock::~HistoryDock()
    delete m_pAllTimeCB    ;
    delete m_pLinkPB       ;
    delete m_pKeyPressEater;
-}
+} //~HistoryDock
 
 
 /*****************************************************************************

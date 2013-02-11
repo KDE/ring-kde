@@ -54,11 +54,13 @@ RiggingTip::~RiggingTip()
    if (m_pTimer) delete m_pTimer;
 }
 
+///Return the image rect
 QRect RiggingTip::getDecorationRect()
 {
    return QRect(0,0,135,120);
 }
 
+///Paint the image/decoration
 void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
 {
    Q_UNUSED(textRect);
@@ -101,8 +103,9 @@ void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
       p.drawPixmap((135-13.757887*6)/2 , 25 , *m_pRing2Pix);
       p.setOpacity((sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5 + (2*1.0472f)) +  0.8));
       p.drawPixmap((135-9.3203869*6)/2 , 50 , *m_pRing1Pix);
-}
+} //paintDecorations
 
+///Start tip animation, this one implement a few sinus curve to simmulate sound wave
 void RiggingTip::startAnimation(bool visibility)
 {
    if (!m_pTimer && visibility) {
@@ -116,8 +119,9 @@ void RiggingTip::startAnimation(bool visibility)
       m_pTimer->stop();
       m_Counter = 0;
    }
-}
+} //startAnimation
 
+///Next animation frame
 void RiggingTip::timeout()
 {
    m_Counter += 1; //Animation speed

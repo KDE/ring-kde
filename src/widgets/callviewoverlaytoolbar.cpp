@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2012-2013 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -82,7 +82,7 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent
    layout->addWidget( m_pRefuse   );
 
    setMinimumSize(100,56);
-}
+} //CallViewOverlayToolbar
 
 ///Resize event
 void CallViewOverlayToolbar::resizeEvent(QResizeEvent* event)
@@ -111,7 +111,7 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
 
    m_pLeftRender->render (&customPainter,QRect( 3,0,10,10)                 );
    m_pRightRender->render(&customPainter,QRect( width()-13,0,10,10)        );
-}
+} //paintEvent
 
 ///Create a toolbar button
 ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
@@ -127,7 +127,7 @@ ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
    connect(action,SIGNAL(textChanged(QString)),b,SLOT(setNewText(QString)));
    connect(b,SIGNAL(clicked()),action,SLOT(trigger()));
    return b;
-}
+} //createButton
 
 ///Hide or show the toolbar and select visible actions
 void CallViewOverlayToolbar::updateState(call_state state)
@@ -140,65 +140,7 @@ void CallViewOverlayToolbar::updateState(call_state state)
    m_hButtons[ ActionButton::TRANSFER ]->setVisible(visibility[ ActionButton::TRANSFER ][state]);
    m_hButtons[ ActionButton::RECORD   ]->setVisible(visibility[ ActionButton::RECORD   ][state]);
    m_hButtons[ ActionButton::REFUSE   ]->setVisible(visibility[ ActionButton::REFUSE   ][state]);
-   /*switch (state) {
-      case CALL_STATE_INCOMING:
-         
-         break;
-
-      case CALL_STATE_RINGING:
-         
-         break;
-
-      case CALL_STATE_CURRENT:
-         
-         break;
-
-      case CALL_STATE_DIALING:
-         
-         break;
-
-      case CALL_STATE_HOLD:
-         
-         break;
-
-      case CALL_STATE_FAILURE:
-         
-         break;
-
-      case CALL_STATE_BUSY:
-         
-         break;
-
-      case CALL_STATE_TRANSFERRED:
-         
-         break;
-
-      case CALL_STATE_TRANSF_HOLD:
-         
-         break;
-
-      case CALL_STATE_OVER:
-         
-         break;
-
-      case CALL_STATE_ERROR:
-         
-         break;
-
-      case CALL_STATE_CONFERENCE:
-         
-         break;
-
-      case CALL_STATE_CONFERENCE_HOLD:
-         
-         break;
-
-      default:
-         
-         break;
-
-   }*/
-}
+} //updateState
 
 void CallViewOverlayToolbar::hideEvent(QHideEvent *)
 {

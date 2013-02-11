@@ -15,7 +15,6 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-
 #ifndef IM_MANAGER_H
 #define IM_MANAGER_H
 
@@ -34,13 +33,12 @@ class IMManager : public KTabWidget
 {
    Q_OBJECT
 public:
+   //Constructor
    IMManager(QWidget* parent = nullptr);
-
 
 private:
    //Attrubutes
    QHash<Call*,IMTab*> m_lTabs;
-
 
 private slots:
    void newConversation(Call* call, InstantMessagingModel* model);

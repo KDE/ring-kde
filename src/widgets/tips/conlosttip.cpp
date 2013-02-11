@@ -43,11 +43,13 @@ ConnectionLostTip::~ConnectionLostTip()
    if (m_pTimer) delete m_pTimer;
 }
 
+///Return the decoration/image rect
 QRect ConnectionLostTip::getDecorationRect()
 {
    return QRect(0,0,100,100);
 }
 
+///The the decoration, a rotating arrow
 void ConnectionLostTip::paintDecorations(QPainter& p, const QRect& textRect)
 {
    Q_UNUSED(textRect);
@@ -66,8 +68,9 @@ void ConnectionLostTip::paintDecorations(QPainter& p, const QRect& textRect)
    p.translate(QPoint(m_CurrentRect.width()/2,50));
    p.rotate((m_Counter*360)/256);
    p.drawImage(QRect(-50,-50,size.width(),size.height()),m_RenderCache);
-}
+} //paintDecorations
 
+///Start tip animation
 void ConnectionLostTip::startAnimation(bool visibility)
 {
    if (!m_pTimer && visibility) {
@@ -81,14 +84,16 @@ void ConnectionLostTip::startAnimation(bool visibility)
       m_pTimer->stop();
       m_Counter = 0;
    }
-}
+} //startAnimation
 
+///Next frame
 void ConnectionLostTip::timeout()
 {
    m_Counter += 4;
    reload(m_CurrentRect,true);
 }
 
+///Return text allocated to this tip
 QRect ConnectionLostTip::getTextRect(const QString& text)
 {
    QRect r = Tip::getTextRect(text);

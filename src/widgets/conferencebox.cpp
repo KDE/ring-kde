@@ -281,7 +281,7 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
       painter->fillRect(QRect(start, rectSize), gradient);
    }
    //END: horizontal line
-}
+} //drawCategory
 
 ///Draw the bottom border of the box
 void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal) const {
@@ -314,7 +314,7 @@ void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const 
       painter->drawArc(arc, 4320, 1440);
    }
    //END: bottom right corner
-}
+} //drawBoxBottom
 
 ///Return the height of the conference box
 int ConferenceBox::categoryHeight(const QModelIndex &index, const QStyleOption &option,const QPalette* pal) const

@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-// #ifndef EXTENDED_ACTION_H
-// #define EXTENDED_ACTION_H
+#ifndef EXTENDED_ACTION_H
+#define EXTENDED_ACTION_H
 #include <KAction>
 
 //KDE
@@ -43,4 +43,4 @@ signals:
    void textChanged(QString text);
 };
 
-// #endif //EXTENDED_ACTION_H
+#endif //EXTENDED_ACTION_H

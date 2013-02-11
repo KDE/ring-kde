@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2012-2013 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -70,14 +70,14 @@ private:
    QSvgRenderer* m_pLeftRender ;
 
    //Buttons
-   ObserverToolButton* m_pHold;
-   ObserverToolButton* m_pUnhold;
-   ObserverToolButton* m_pMute;
-   ObserverToolButton* m_pPickup;
-   ObserverToolButton* m_pHangup;
+   ObserverToolButton* m_pHold    ;
+   ObserverToolButton* m_pUnhold  ;
+   ObserverToolButton* m_pMute    ;
+   ObserverToolButton* m_pPickup  ;
+   ObserverToolButton* m_pHangup  ;
    ObserverToolButton* m_pTransfer;
-   ObserverToolButton* m_pRecord;
-   ObserverToolButton* m_pRefuse;
+   ObserverToolButton* m_pRecord  ;
+   ObserverToolButton* m_pRefuse  ;
 
    QHash<int,ObserverToolButton*> m_hButtons;
 
@@ -88,10 +88,10 @@ public slots:
    void updateState(call_state state);
 
 protected:
-   void resizeEvent(QResizeEvent* event);
-   void paintEvent(QPaintEvent* event);
-   void hideEvent(QHideEvent* event);
-   void showEvent(QShowEvent* event);
+   void resizeEvent( QResizeEvent* event);
+   void paintEvent ( QPaintEvent*  event);
+   void hideEvent  ( QHideEvent*   event);
+   void showEvent  ( QShowEvent*   event);
 
 signals:
    void visibilityChanged(bool);

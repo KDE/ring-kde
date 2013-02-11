@@ -45,5 +45,5 @@ void ExtendedAction::setText(const QString& newText)
 
 void ExtendedAction::hasChanged()
 {
-   
+
 }

@@ -62,7 +62,7 @@ void TranslucentButtons::paintEvent(QPaintEvent* event)
    font.setBold(true);
    customPainter.setFont(font);
    customPainter.drawText (rect(), Qt::AlignVCenter|Qt::AlignHCenter, text().remove('&') );
-}
+}//paintEvent
 
 ///Override the visibility toggler
 void TranslucentButtons::setVisible(bool enabled)
@@ -84,7 +84,7 @@ void TranslucentButtons::setVisible(bool enabled)
    else if (enabled)
       QWidget::setVisible(enabled);
    m_Init = true;
-}
+}//setVisible
 
 ///Step by step animation
 void TranslucentButtons::changeVisibility()
@@ -101,17 +101,20 @@ void TranslucentButtons::changeVisibility()
    }
 }
 
+///Catch "dragEnter" QEvent
 void TranslucentButtons::dragEnterEvent ( QDragEnterEvent *e )
 {
    m_CurrentState = -1;
    e->ignore();
 }
 
+///Catch "dragMove" event
 void TranslucentButtons::dragMoveEvent  ( QDragMoveEvent  *e )
 {
    e->ignore();
 }
 
+///Catch "dragLeave" event
 void TranslucentButtons::dragLeaveEvent ( QDragLeaveEvent *e )
 {
    e->ignore();
@@ -145,7 +148,7 @@ void TranslucentButtons::setHoverState(bool hover)
       repaint();
       m_CurrentState = hover;
    }
-}
+}//setHoverState
 
 ///Set the button pixmap
 void TranslucentButtons::setPixmap(QImage* img)
