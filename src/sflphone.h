@@ -77,6 +77,8 @@ enum CallAction {
         NumberOfCallActions
 };
 
+void test(QString test) {}
+
 private:
    //Attributes
    bool   m_pInitialized;

@@ -79,8 +79,10 @@ int main(int argc, char **argv)
       KCmdLineOptions options;
       KCmdLineArgs::addCmdLineOptions(options);
 
+      KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
       app = new SFLPhoneApplication();
-      //configuration dbus
+      //dbus configuration
       TreeWidgetCallModel::init();
 
 
@@ -98,6 +100,9 @@ int main(int argc, char **argv)
       else
          sflphoneWindow_->hide();
 
+      if(args->count()) {
+         sflphoneWindow_->test(args->arg(0));
+      }
 
       int retVal = app->exec();
 

@@ -40,7 +40,7 @@
  * The application constructor
  */
 SFLPhoneApplication::SFLPhoneApplication()
-  : KApplication()
+  : KUniqueApplication()
 {
    InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
    instance.Register(getpid(), APP_NAME);

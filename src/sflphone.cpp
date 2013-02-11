@@ -315,14 +315,16 @@ bool SFLPhone::initialize()
 
    if (!model()->isValid()) {
       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually"));
-      exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached
+      QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
+      //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
    try {
       currentPriorAccountChanged(AccountList::getCurrentAccount());
    }
    catch(const char * msg) {
       KMessageBox::error(this,msg);
-      exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached
+      QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
+      //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
 
    return true;

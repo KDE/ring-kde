@@ -20,7 +20,7 @@
 #ifndef SFLPHONEAPPLICATION_H
 #define SFLPHONEAPPLICATION_H
 
-#include <KApplication>
+#include <KUniqueApplication>
 #include <QDBusAbstractAdaptor>
 
 //Qt
@@ -30,7 +30,7 @@ class QEvent;
 class SFLPhone;
 
 ///SFLPhoneApplication: Main application
-class SFLPhoneApplication : public KApplication
+class SFLPhoneApplication : public KUniqueApplication
 {
   Q_OBJECT
 
