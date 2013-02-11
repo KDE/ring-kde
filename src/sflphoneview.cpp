@@ -861,7 +861,8 @@ void SFLPhoneView::hangup()
 {
    Call* call = callView->getCurrentItem();
    int state = call->getState();
-   if (state == CALL_STATE_RINGING || state == CALL_STATE_CURRENT || state == CALL_STATE_HOLD || state == CALL_STATE_BUSY) {
+   if (state == CALL_STATE_RINGING || state == CALL_STATE_CURRENT || state == CALL_STATE_HOLD || state == CALL_STATE_BUSY 
+      || state == CALL_STATE_OVER || state == CALL_STATE_ERROR || state == CALL_STATE_FAILURE) {
       action(call, CALL_ACTION_REFUSE);
    }
 } //hangup

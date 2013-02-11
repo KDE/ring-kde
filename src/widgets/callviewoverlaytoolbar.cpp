@@ -39,7 +39,7 @@ const bool visibility[8][13] = {              /*ROW = BUTTONS   COLS=STATE*/
  /*PICKUP   */ { true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    },
  /*HOLD     */ { false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    },
  /*UNHOLD   */ { false  , false,  false,  false, true , false, false,   false,     false,    false, false,  false,      false    },
- /*HANGUP   */ { false  , false,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     },
+ /*HANGUP   */ { false  , true ,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     },
  /*MUTE     */ { false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    },
  /*TRANSFER */ { false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    },
  /*RECORD   */ { false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     },
