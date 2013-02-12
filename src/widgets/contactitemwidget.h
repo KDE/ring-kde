@@ -31,7 +31,6 @@ class QMimeData;
 
 //KDE
 class KAction;
-class KIcon;
 
 namespace KABC {
    class Addressee;

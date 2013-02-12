@@ -24,8 +24,6 @@
 #include "../lib/callmanager_interface_singleton.h"
 
 //Qt
-class QTableWidget;
-class QListWidgetItem;
 class QWidget;
 
 //KDE

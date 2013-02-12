@@ -27,13 +27,11 @@
 
 //Qt
 class QLabel;
-class QPushButton;
 class QMimeData;
 class QTimer;
 class QPixmap;
 
 //KDE
-class KIcon;
 class KLineEdit;
 
 //SFLPhone

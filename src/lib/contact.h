@@ -24,8 +24,6 @@
 #include <QtCore/QVariant>
 
 //Qt
-class QListWidgetItem;
-class QWidget;
 class QPixmap;
 
 //KDE

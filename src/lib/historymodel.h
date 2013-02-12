@@ -22,8 +22,6 @@
 #include <QtCore/QObject>
 
 //Qt
-class QSharedMemory;
-class QTimer;
 
 //SFLPhone
 class Call;

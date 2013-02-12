@@ -22,7 +22,6 @@
 #include <QtGui/QTreeWidget>
 #include <QtCore/QDebug>
 
-class KConfigGroup;
 class KateColorTreeItem;
 class QTreeWidgetItem;
 

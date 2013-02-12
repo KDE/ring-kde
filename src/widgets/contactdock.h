@@ -30,30 +30,22 @@ class QSplitter;
 class QListWidget;
 class QTreeWidgetItem;
 class QCheckBox;
-class QStringList;
-class DateTime;
 
 //KDE
 class KLineEdit;
 class KComboBox;
 
 namespace Akonadi {
-   class EntityTreeView;
-   class ItemView;
-   class CollectionCombobox;
    namespace Contact {
-      class ContactsTreeModel;
    }
 }
 
 namespace KABC {
-   class Addressee;
 }
 
 ///SFLPhone
 class ContactTree;
 class ContactItemWidget;
-class StaticEventHandler;
 class Contact;
 
 ///ContactDock: Dock to access contacts

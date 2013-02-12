@@ -27,16 +27,12 @@
 #include "typedefs.h"
 
 //Qt
-class QDragEnterEvent;
-class QDebug;
 class QModelIndex;
 
 //SFLPhone
 class Call;
 //class AccountList;
 class Account;
-class ContactBackend;
-class HistoryModel;
 
 //Typedef
 typedef QMap<QString, Call*>  CallMap;

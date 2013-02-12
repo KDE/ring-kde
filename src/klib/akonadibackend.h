@@ -31,12 +31,10 @@ class QObject;
 //KDE
 namespace KABC {
    class Addressee    ;
-   class AddresseeList;
 }
 
 namespace Akonadi {
    class Session        ;
-   class CollectionModel;
    class Collection     ;
    class Item           ;
 }

@@ -25,7 +25,6 @@
 #include <QtGui/QWidget>
 #include <QtCore/QTimer>
 
-class QSvgRenderer;
 
 //Qt
 class QPainter;

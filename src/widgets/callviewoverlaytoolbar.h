@@ -31,7 +31,6 @@ class QSvgRenderer;
 class QToolButton;
 
 //KDE
-class KIcon;
 
 //SFLPhone
 class ExtendedAction;

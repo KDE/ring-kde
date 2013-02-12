@@ -25,7 +25,6 @@
 class QStringList;
 
 //SFLPhone
-class Call;
 class Account;
 
 //Typedef

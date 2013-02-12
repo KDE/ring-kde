@@ -23,7 +23,6 @@
 //Qt
 #include <QtGui/QWidget>
 
-class QSvgRenderer;
 
 //Qt
 class QPainter;

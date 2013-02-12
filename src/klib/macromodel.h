@@ -27,7 +27,6 @@
 #include <KAction>
 
 //SFLPhone
-class Contact;
 
 class Macro;
 

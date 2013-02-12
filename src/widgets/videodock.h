@@ -21,7 +21,6 @@
 #include <QtGui/QDockWidget>
 
 //Qt
-class QSpacerItem;
 
 //SFLPhone
 class VideoWidget;

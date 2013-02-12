@@ -24,7 +24,6 @@
 #include <QtGui/QPalette>
 #include <QtGui/QTreeView>
 #include <QtGui/QImage>
-class QSvgRenderer;
 class QTimer;
 
 //SFLPhone

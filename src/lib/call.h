@@ -24,8 +24,6 @@
 //Qt
 class QString;
 class QDateTime;
-class QLabel;
-class QWidget;
 
 //SFLPhone
 #include "sflphone_const.h"

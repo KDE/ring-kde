@@ -21,17 +21,14 @@
 #include <QtGui/QDockWidget>
 
 //Qt
-class QTreeWidget;
 class QSplitter;
 class QCheckBox;
-class QTreeView;
 
 //KDE
 class KLineEdit;
 
 //SFLPhone
 class HistoryTreeItem;
-class CategoryDrawer;
 class CategorizedTreeWidget;
 
 //Typedef

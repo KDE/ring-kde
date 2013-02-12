@@ -33,7 +33,6 @@ class DlgDisplay;
 class DlgAccounts;
 class DlgAudio;
 class DlgAddressBook;
-class DlgRecord;
 class DlgHooks;
 class DlgAccessibility;
 class DlgVideo;
