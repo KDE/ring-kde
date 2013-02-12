@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  *****************************************************************************/
 #include <QtCore/QString>
-#include <QtTest/QtTest/QtTest>
+#include <QtTest/QtTest>
 //#include <QtCore>
 
 #include "../src/lib/configurationmanager_interface_singleton.h"
