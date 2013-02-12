@@ -35,7 +35,7 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
  : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
-   connect(toolButton_historyClear, SIGNAL(clicked()), this, SLOT(clearCallHistoryAsked()));
+   connect(toolButton_historyClear, SIGNAL(clicked()), this, SLOT(slotClearCallHistoryAsked()));
    toolButton_historyClear->setIcon(KIcon("edit-clear-history"));
 
    kcfg_historyMax->setValue(ConfigurationSkeleton::historyMax());
@@ -78,7 +78,7 @@ void DlgGeneral::updateSettings()
    m_HasChanged = false;
 }
 
-void DlgGeneral::clearCallHistoryAsked()
+void DlgGeneral::slotClearCallHistoryAsked()
 {
    int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to clear history?"), i18n("Clear history"));
    if (ret == KMessageBox::Yes) {

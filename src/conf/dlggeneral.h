@@ -45,7 +45,7 @@ public slots:
    //Mutator
    void updateWidgets();
    void updateSettings();
-   void clearCallHistoryAsked();
+   void slotClearCallHistoryAsked();
 
 private slots:
    void changed();
@@ -53,6 +53,7 @@ private slots:
 signals:
    ///Emitted when the buttons need to be updated
    void updateButtons();
+   void clearCallHistoryAsked();
 
 };
 
