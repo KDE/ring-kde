@@ -32,6 +32,7 @@
 //SFLPhone library
 #include "lib/instance_interface_singleton.h"
 #include "klib/configurationskeleton.h"
+#include "sflphonecmd.h"
 
 //SFLPhone
 #include "sflphone.h"
@@ -116,10 +117,19 @@ int SFLPhoneApplication::newInstance()
    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
    if(args->isSet("place-call")) {
-      Call* call = SFLPhone::model()->addDialingCall();
-      call->appendText(args->getOption("place-call"));
-      call->actionPerformed(CALL_ACTION_ACCEPT);
+      SFLPhoneCmd::placeCall(args->getOption("place-call"));
    }
+   if (args->isSet("send-text")) {
+      QString smsNumber  = args->getOption("send-text");
+      QString smsMessage = args->getOption("message");
+      if (!smsMessage.isEmpty() && !smsNumber.isEmpty()) {
+         SFLPhoneCmd::sendText(smsNumber,smsMessage);
+      }
+      else {
+         kDebug() << "Error: both --send-text and --message have to be set";
+      }
+   }
+
    args->clear();
    KUniqueApplication::newInstance();
    return 0;

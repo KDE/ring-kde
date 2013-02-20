@@ -270,6 +270,7 @@ private slots:
 signals:
    ///Emitted when a call change (state or details)
    void changed();
+   void changed(Call* self);
    ///Emitted when the call is over
    void isOver(Call*);
    void playbackPositionChanged(int,int);

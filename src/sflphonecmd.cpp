@@ -19,15 +19,65 @@
 #include <KCmdLineArgs>
 #include <KUniqueApplication>
 
+//SFLPhone
+#include <lib/call.h>
+#include <sflphone.h>
+
+//Static definition
+SFLPhoneCmd* SFLPhoneCmd::m_spSelf = nullptr;
+
+///(Private) constructor
+SFLPhoneCmd::SFLPhoneCmd(QObject* parent) : QObject(parent)
+{
+}
+
+///Signleton
+SFLPhoneCmd* SFLPhoneCmd::getInstance() {
+   if (!m_spSelf) {
+      m_spSelf = new SFLPhoneCmd();
+   }
+   return m_spSelf;
+}
+
 ///Setup command line options before passing them to the KUniqueApplication
 void SFLPhoneCmd::parseCmd(int argc, char **argv, KAboutData& about)
 {
       KCmdLineArgs::init(argc, argv, &about);
       KCmdLineOptions options;
-      options.add("place-call <number>", ki18n("Place a call to a given number"),"");
+      options.add("place-call <number>", ki18n("Place a call to a given number"                                        ),"");
+      options.add("send-text <number>" , ki18n("Send a text to <number>, une --message to set the content, then hangup"),"");
+      options.add("message <content>"  , ki18n("Used in comination with --send-text"                                   ),"");
       KCmdLineArgs::addCmdLineOptions(options);
 
-      KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+      KCmdLineArgs::parsedArgs();
 
       KUniqueApplication::addCmdLineOptions();
+}
+
+///Place a call (from the command line)
+void SFLPhoneCmd::placeCall(QString number)
+{
+   Call* call = SFLPhone::model()->addDialingCall();
+   call->appendText(number);
+   call->actionPerformed(CALL_ACTION_ACCEPT);
+}
+
+///Send a text ans hang up (from the command line)
+void SFLPhoneCmd::sendText(QString number, QString text)
+{
+   Call* call = SFLPhone::model()->addDialingCall();
+   call->appendText(number);
+   call->setProperty("message",text);
+   connect(call,SIGNAL(changed(Call*)),getInstance(),SLOT(textMessagePickup(Call*)));
+   call->actionPerformed(CALL_ACTION_ACCEPT);
+}
+
+///Send the message now that the call is ready
+void SFLPhoneCmd::textMessagePickup(Call* call)
+{
+   if (call->getState() == CALL_STATE_CURRENT) {
+      call->sendTextMessage(call->property("message").toString());
+      disconnect(call,SIGNAL(changed(Call*)),getInstance(),SLOT(textMessagePickup(Call*)));
+      call->actionPerformed(CALL_ACTION_REFUSE); //HangUp
+   }
 }

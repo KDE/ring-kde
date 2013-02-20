@@ -19,11 +19,35 @@
 #ifndef SFLPHONECMD_H
 #define SFLPHONECMD_H
 
+#include <QtCore/QObject>
+
+//KDE
 class KAboutData;
 
-class SFLPhoneCmd {
+//SFLPhone
+class Call;
+
+class SFLPhoneCmd : public QObject {
+   Q_OBJECT
+
 public:
+   virtual ~SFLPhoneCmd(){}
+
+   //Static mutators
    static void parseCmd(int argc, char **argv, KAboutData& about);
+   static void placeCall(QString number);
+   static void sendText(QString number, QString text);
+
+private:
+   //Private constructor
+   SFLPhoneCmd(QObject* parent=nullptr);
+   static SFLPhoneCmd* getInstance();
+
+   //Attributes
+   static SFLPhoneCmd* m_spSelf;
+
+private slots:
+   void textMessagePickup(Call* call);
 };
 
 #endif

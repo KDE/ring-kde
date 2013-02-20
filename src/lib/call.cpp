@@ -140,6 +140,7 @@ Call::Call(call_state startState, QString callId, QString peerName, QString peer
       connect(m_pContactBackend,SIGNAL(collectionChanged()),this,SLOT(contactBackendChanged()));
 
    emit changed();
+   emit changed(this);
 }
 
 ///Destructor
@@ -567,6 +568,7 @@ void Call::setCallNumber(const QString& number)
 {
    m_CallNumber = number;
    emit changed();
+   emit changed(this);
 }
 
 ///Set the conference ID
@@ -645,6 +647,7 @@ void Call::changeCurrentState(call_state newState)
    m_CurrentState = newState;
 
    emit changed();
+   emit changed(this);
 
    if (m_CurrentState == CALL_STATE_OVER)
       emit isOver(this);
@@ -822,8 +825,10 @@ void Call::setRecord()
    Q_NOREPLY callManager.setRecording((!m_isConference)?m_CallId:m_ConfId);
    bool oldRecStatus = m_Recording;
    m_Recording = !m_Recording;
-   if (oldRecStatus != m_Recording)
+   if (oldRecStatus != m_Recording) {
       emit changed();
+      emit changed(this);
+   }
 }
 
 ///Start the timer
@@ -889,6 +894,7 @@ void Call::appendText(const QString& str)
    editNumber->append(str);
 
    emit changed();
+   emit changed(this);
 }
 
 ///Remove the last character
@@ -913,6 +919,7 @@ void Call::backspaceItemText()
    if(textSize > 0) {
       *editNumber = text.remove(textSize-1, 1);
       emit changed();
+      emit changed(this);
    }
    else {
       changeCurrentState(CALL_STATE_OVER);
