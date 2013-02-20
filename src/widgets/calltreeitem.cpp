@@ -189,9 +189,9 @@ QSize CallTreeItem::sizeHint () const
          height += fm.height();
       }
    }
-   else if (m_pItemCall && m_pItemCall->isConference()) {
-      height = 32;
-   }
+//    else if (m_pItemCall && m_pItemCall->isConference()) {
+//       height = 32;
+//    }
    else {
       height = 32;
    }

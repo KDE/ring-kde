@@ -30,7 +30,7 @@
 
 ///Constructor
 ConfTip::ConfTip(QWidget* parent) : Tip(i18n("Do you know you can create conferences or transfer the call by drag and dropping one call on an other one?"),parent),
-m_pDnDR(nullptr)
+m_pDnDR(nullptr),m_pDnDPix(nullptr)
 {
    m_Position = TipPosition::Top;
    setAnimationIn(Tip::TipAnimation::TranslationBottom);

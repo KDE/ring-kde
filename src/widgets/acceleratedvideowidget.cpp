@@ -180,7 +180,7 @@ Tile *TileBuilder::newTile(const QVector3D &loc) const
 Cube::Cube(const QVector3D &loc)
    : Tile(loc)
    , rot(0.0f)
-   , r(0), a(0)
+   , r(0), a(0),rtn(0)
 {
 }
 

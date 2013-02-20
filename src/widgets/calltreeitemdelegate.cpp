@@ -31,7 +31,8 @@
 
 ///Constructor
 CallTreeItemDelegate::CallTreeItemDelegate(CallView* widget,QPalette pal)
-      : QStyledItemDelegate(widget) , m_tree(widget) , m_ConferenceDrawer() , m_Pal(pal)
+      : QStyledItemDelegate(widget) , m_tree(widget) , m_ConferenceDrawer() , m_Pal(pal),
+      m_LeftMargin(0),m_RightMargin(0)
 {
 }
 

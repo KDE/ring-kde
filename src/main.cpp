@@ -89,7 +89,7 @@ int main(int argc, char **argv)
    {
       kDebug() << msg;
    }
-   catch(QString msg)
+   catch(QString& msg)
    {
       kDebug() << msg;
    }

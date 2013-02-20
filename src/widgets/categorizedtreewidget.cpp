@@ -38,7 +38,7 @@ class KateColorTreeDelegate : public QStyledItemDelegate
   public:
    KateColorTreeDelegate(CategorizedTreeWidget* widget)
    : QStyledItemDelegate(widget)
-   , m_tree(widget)
+   , m_tree(widget),m_LeftMargin(0),m_RightMargin(0)
    {
    }
 

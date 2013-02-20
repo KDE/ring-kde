@@ -136,8 +136,6 @@ public:
    int nextId() const;
 
 private:
-   int type;
-
    QLabel* label_alias           ;
    QLabel* label_server          ;
    QLabel* label_user            ;
@@ -169,8 +167,6 @@ public:
    int nextId() const;
 
 private:
-   int type;
-
    QLabel* label_alias          ;
    QLabel* label_server         ;
    QLabel* label_user           ;

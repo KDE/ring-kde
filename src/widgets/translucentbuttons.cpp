@@ -28,7 +28,7 @@
 
 ///Constructor
 TranslucentButtons::TranslucentButtons(QWidget* parent):QPushButton(parent),m_enabled(true),
-m_pTimer(0),m_CurrentState(-1),m_pImg(0),m_Init(false),m_Reverse(1)
+m_pTimer(0),m_CurrentState(-1),m_pImg(0),m_Init(false),m_Reverse(1),m_step(0)
 {
    setAcceptDrops(true);
    m_CurrentColor = "black";

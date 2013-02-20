@@ -421,7 +421,7 @@ QString AccountList::getSimilarAliasIndex(QString alias)
       foreach (Account* a, getInstance()->getAccounts()) {
          if (a->getAccountAlias() == alias+QString(" (%1)").arg(count)) {
             count++;
-            found++;
+            found = false;
             break;
          }
       }
