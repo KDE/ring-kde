@@ -52,7 +52,7 @@ public:
    
 private:
    //Private constructor, can only be called by 'Account'
-   VideoCodecModel(Account* account);
+   explicit VideoCodecModel(Account* account);
 
    //Attrbutes
    QList<VideoCodec*> m_lCodecs;

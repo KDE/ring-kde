@@ -45,7 +45,7 @@ class CallView : public QTreeWidget {
    friend class CallTreeItemDelegate;
 
    public:
-      CallView                    ( QWidget* parent = 0                                                               );
+      explicit CallView           ( QWidget* parent = 0                                                               );
       ~CallView                   (                                                                                   );
 
       //Getters

@@ -30,6 +30,26 @@
 AccountList* AccountList::m_spAccountList   = nullptr;
 QString      AccountList::m_sPriorAccountId = ""     ;
 
+QVariant AccountListNoCheckProxyModel::data(const QModelIndex& index,int role ) const
+{
+   if (role == Qt::CheckStateRole) {
+      return QVariant();
+   }
+   return AccountList::getInstance()->data(index,role);
+}
+bool AccountListNoCheckProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
+{
+   return AccountList::getInstance()->setData(index,value,role);
+}
+Qt::ItemFlags AccountListNoCheckProxyModel::flags (const QModelIndex& index) const
+{
+   return AccountList::getInstance()->flags(index);
+}
+int AccountListNoCheckProxyModel::rowCount(const QModelIndex& parent ) const
+{
+   return AccountList::getInstance()->rowCount(parent);
+}
+
 ///Constructors
 AccountList::AccountList(QStringList & _accountIds) : m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr)
 {

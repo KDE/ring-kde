@@ -36,7 +36,7 @@ class SFLPhoneService : public Plasma::Service
    Q_OBJECT
 
 public:
-   SFLPhoneService(SFLPhoneEngine *engine);
+   explicit SFLPhoneService(SFLPhoneEngine *engine);
    ServiceJob *createJob(const QString &operation, QMap<QString, QVariant> &parameters);
 
 private:

@@ -26,7 +26,7 @@ class CallViewOverlay : public QWidget {
 
 public:
    //Constructor
-   CallViewOverlay(QWidget* parent);
+   explicit CallViewOverlay(QWidget* parent);
    ~CallViewOverlay();
 
    //Setters

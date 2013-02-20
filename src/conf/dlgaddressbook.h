@@ -35,9 +35,9 @@ class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase
 {
 Q_OBJECT
 public:
-   DlgAddressBook(KConfigDialog* parent = 0);
+   explicit DlgAddressBook(KConfigDialog* parent = nullptr);
 
-   ~DlgAddressBook();
+   virtual ~DlgAddressBook();
 
    bool hasChanged();
 

@@ -45,7 +45,7 @@ class LIB_EXPORT CallModelBase : public QObject
 {
    Q_OBJECT
 public:
-   CallModelBase(QObject* parent = 0);
+   explicit CallModelBase(QObject* parent = nullptr);
    ~CallModelBase();
    virtual Call* addCall              ( Call* call           , Call* parent =0      );
    virtual Call* getCall              ( const QString& callId                       ) const = 0;

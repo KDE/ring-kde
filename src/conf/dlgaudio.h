@@ -33,7 +33,7 @@ class DlgAudio : public QWidget, public Ui_DlgAudioBase
 Q_OBJECT
 public:
    //Constructor
-   DlgAudio(KConfigDialog* parent = 0);
+   explicit DlgAudio(KConfigDialog* parent = nullptr);
 
    //Destructor
    ~DlgAudio();

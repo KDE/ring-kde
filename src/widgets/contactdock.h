@@ -54,7 +54,7 @@ class ContactDock : public QDockWidget, public SortableDockCommon<CallTreeItem*,
    Q_OBJECT
 public:
    //Constructor
-   ContactDock(QWidget* parent);
+   explicit ContactDock(QWidget* parent = nullptr);
    virtual ~ContactDock();
 
 private:
@@ -83,7 +83,7 @@ class ContactTree : public CategorizedTreeWidget {
    Q_OBJECT
 public:
    ///Constructor
-   ContactTree(QWidget* parent) : CategorizedTreeWidget(parent) {setUniformRowHeights(false);}
+   explicit ContactTree(QWidget* parent) : CategorizedTreeWidget(parent) {setUniformRowHeights(false);}
    virtual QMimeData* mimeData( const QList<QTreeWidgetItem *> items) const;
    bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action);
 };
@@ -93,7 +93,7 @@ class KeyPressEaterC : public QObject
 {
    Q_OBJECT
 public:
-   KeyPressEaterC(ContactDock* parent) : QObject(parent) {
+   explicit KeyPressEaterC(ContactDock* parent) : QObject(parent) {
       m_pDock = parent;
    }
 

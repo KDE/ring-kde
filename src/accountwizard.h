@@ -37,7 +37,7 @@ Q_OBJECT
 
 public:
    enum { Page_Intro, Page_AutoMan, Page_Type, Page_Email, Page_SIPForm, Page_IAXForm, Page_Stun, Page_Conclusion };
-   AccountWizard(QWidget * parent = 0);
+   explicit AccountWizard(QWidget * parent = nullptr);
    ~AccountWizard();
    void accept();
 };
@@ -52,7 +52,7 @@ class WizardIntroPage : public QWizardPage
    Q_OBJECT
 
 public:
-   WizardIntroPage(QWidget *parent = 0);
+   explicit WizardIntroPage(QWidget *parent = nullptr);
    ~WizardIntroPage();
    int nextId() const;
 
@@ -71,7 +71,7 @@ class WizardAccountAutoManualPage : public QWizardPage
    Q_OBJECT
 
 public:
-   WizardAccountAutoManualPage(QWidget *parent = 0);
+   explicit WizardAccountAutoManualPage(QWidget *parent = nullptr);
    ~WizardAccountAutoManualPage();
    int nextId() const;
 
@@ -90,7 +90,7 @@ class WizardAccountTypePage : public QWizardPage
    Q_OBJECT
 
 public:
-   WizardAccountTypePage(QWidget *parent = 0);
+   explicit WizardAccountTypePage(QWidget *parent = nullptr);
    ~WizardAccountTypePage();
    int nextId() const;
 
@@ -109,7 +109,7 @@ class WizardAccountEmailAddressPage : public QWizardPage
    Q_OBJECT
 
 public:
-   WizardAccountEmailAddressPage(QWidget *parent = 0);
+   explicit WizardAccountEmailAddressPage(QWidget *parent = nullptr);
    ~WizardAccountEmailAddressPage();
    int nextId() const;
 
@@ -131,7 +131,7 @@ class WizardAccountSIPFormPage : public QWizardPage
 
 public:
 
-   WizardAccountSIPFormPage(QWidget *parent = 0);
+   explicit WizardAccountSIPFormPage(QWidget *parent = nullptr);
    ~WizardAccountSIPFormPage();
    int nextId() const;
 
@@ -162,7 +162,7 @@ class WizardAccountIAXFormPage : public QWizardPage
 
 public:
 
-   WizardAccountIAXFormPage(QWidget *parent = 0);
+   explicit WizardAccountIAXFormPage(QWidget *parent = nullptr);
    ~WizardAccountIAXFormPage();
    int nextId() const;
 
@@ -190,7 +190,7 @@ class WizardAccountStunPage : public QWizardPage
    Q_OBJECT
 
 public:
-   WizardAccountStunPage(QWidget *parent = 0);
+   explicit WizardAccountStunPage(QWidget *parent = nullptr);
    ~WizardAccountStunPage();
    int nextId() const;
 
@@ -210,7 +210,7 @@ class WizardAccountConclusionPage : public QWizardPage
    Q_OBJECT
 
 public:
-   WizardAccountConclusionPage(QWidget *parent = 0);
+   explicit WizardAccountConclusionPage(QWidget *parent = nullptr);
    ~WizardAccountConclusionPage();
    int nextId() const;
 

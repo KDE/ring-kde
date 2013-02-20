@@ -131,7 +131,7 @@ protected:
 
 
 public:
-   SFLPhone(QWidget *parent = 0);
+   explicit SFLPhone(QWidget *parent = 0);
    ~SFLPhone                       ();
    bool             initialize     ();
    void             setupActions   ();

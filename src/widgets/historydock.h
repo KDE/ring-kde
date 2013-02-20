@@ -59,7 +59,7 @@ public:
    friend class KeyPressEater;
 
    //Constructors
-   HistoryDock(QWidget* parent);
+   explicit HistoryDock(QWidget* parent = nullptr);
    virtual ~HistoryDock();
 
 private:
@@ -102,7 +102,7 @@ private slots:
 class HistoryTree : public CategorizedTreeWidget {
    Q_OBJECT
 public:
-   HistoryTree(QWidget* parent) : CategorizedTreeWidget(parent) {}
+   explicit HistoryTree(QWidget* parent) : CategorizedTreeWidget(parent) {}
    virtual QMimeData* mimeData( const QList<QTreeWidgetItem *> items) const;
    bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action);
 };

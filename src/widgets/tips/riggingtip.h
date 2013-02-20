@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TIP_RIGGING_H
-#define TIP_RIGGING_H
+#ifndef RIGGINGTIP_H
+#define RIGGINGTIP_H
 
 //Base
 #include "../../klib/tip.h"
@@ -35,7 +35,7 @@ class RiggingTip : public Tip
 {
    Q_OBJECT
 public:
-   RiggingTip(QWidget* parent = nullptr);
+   explicit RiggingTip(QWidget* parent = nullptr);
    virtual ~RiggingTip();
 
    //It is not a notification, it doesn't need to be as visible

@@ -33,7 +33,7 @@ class DlgDisplay : public QWidget, public Ui_DlgDisplayBase
 Q_OBJECT
 public:
    //Constructor
-   DlgDisplay(KConfigDialog *parent = 0);
+   explicit DlgDisplay(KConfigDialog *parent = nullptr);
 
    //Destructor
    ~DlgDisplay();

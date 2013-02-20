@@ -63,8 +63,8 @@ private:
    DlgVideo*         dlgVideo        ;
 
 public:
-   ConfigurationDialog(SFLPhoneView *parent = 0);
-   ~ConfigurationDialog();
+   explicit ConfigurationDialog(SFLPhoneView *parent = nullptr);
+   virtual ~ConfigurationDialog();
 
 
 public slots:

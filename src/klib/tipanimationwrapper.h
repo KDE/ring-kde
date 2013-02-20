@@ -40,7 +40,7 @@ class TipAnimationWrapper : public QObject
 {
    Q_OBJECT
 public:
-   TipAnimationWrapper(TipManager* parent);
+   explicit TipAnimationWrapper(TipManager* parent);
    virtual ~TipAnimationWrapper();
 
    //Mutator

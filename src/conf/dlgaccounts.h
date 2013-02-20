@@ -82,7 +82,7 @@ class DlgAccounts : public QWidget, public Ui_DlgAccountsBase
 {
 Q_OBJECT
 public:
-   DlgAccounts(KConfigDialog *parent = 0);
+   explicit DlgAccounts(KConfigDialog *parent = nullptr);
    ~DlgAccounts();
 
    void saveAccount(QModelIndex item);

@@ -21,6 +21,32 @@
 QHash<QString,VideoDevice*> VideoDevice::m_slDevices;
 bool VideoDevice::m_sInit = false;
 
+Resolution::Resolution(uint _width, uint _height):QSize(_width,_height)
+{
+}
+
+Resolution::Resolution(QString size)
+{
+   if (size.split("x").size() == 2) {
+      setWidth(size.split("x")[0].toInt());
+      setHeight(size.split("x")[1].toInt());
+   }
+}
+
+Resolution::Resolution(const Resolution& res):QSize(res.width(),res.height())
+{
+}
+
+Resolution::Resolution(const QSize& size):QSize(size)
+{
+}
+
+const QString Resolution::toString() const
+{
+   return QString::number(width())+"x"+QString::number(height());
+}
+
+
 ///Constructor
 VideoDevice::VideoDevice(QString id) : m_DeviceId(id)
 {

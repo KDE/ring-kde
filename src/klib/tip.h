@@ -42,7 +42,7 @@ class LIB_EXPORT Tip : public QObject
 public:
    friend class TipAnimationWrapper;
 
-   Tip(const QString& text="",QWidget* parent = nullptr);
+   explicit Tip(const QString& text="",QWidget* parent = nullptr);
    virtual ~Tip();
 
    //Enum

@@ -26,7 +26,7 @@ class ExtendedAction : public KAction
 {
    Q_OBJECT
 public:
-   ExtendedAction(QObject* parent = nullptr);
+   explicit ExtendedAction(QObject* parent = nullptr);
    virtual ~ExtendedAction();
 
    const KIcon& altIcon();

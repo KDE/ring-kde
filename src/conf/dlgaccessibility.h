@@ -31,7 +31,7 @@ class DlgAccessibility : public QWidget, public Ui_DlgAccessibility
 Q_OBJECT
 public:
    //Constructor
-   DlgAccessibility(KConfigDialog *parent = 0);
+   explicit DlgAccessibility(KConfigDialog *parent = nullptr);
 
    //Destructor
    ~DlgAccessibility();

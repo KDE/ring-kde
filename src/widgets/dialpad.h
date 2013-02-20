@@ -63,7 +63,7 @@ private:
    static const int   m_TextSize   = 8  ;
 
 public:
-    Dialpad(QWidget *parent = 0);
+    explicit Dialpad(QWidget *parent = nullptr);
     ~Dialpad();
 
 private slots:

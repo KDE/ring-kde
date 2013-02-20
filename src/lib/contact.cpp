@@ -208,3 +208,13 @@ QHash<QString,QVariant> Contact::toHash()
    aContact[ "department"     ] = getDepartment();
    return aContact;
 }
+
+///Return the number
+QString& Contact::PhoneNumber::getNumber() {
+   return m_Number ;
+}
+
+///Return the phone number type
+QString& Contact::PhoneNumber::getType() {
+   return m_Type   ;
+}

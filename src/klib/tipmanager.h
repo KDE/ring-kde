@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef SVG_TIP_LOADER
-#define SVG_TIP_LOADER
+#ifndef TIPMANAGER_H
+#define TIPMANAGER_H
 
 //Qt
 #include <QtCore/QObject>
@@ -53,7 +53,7 @@ class LIB_EXPORT TipManager : public QObject
    friend class ResizeEventFilter;
 public:
    //Constructor
-   TipManager(QTreeView* parent);
+   explicit TipManager(QTreeView* parent);
 
    //Mutator
    void hideTip(Tip* tip);

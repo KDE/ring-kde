@@ -27,14 +27,13 @@
 class LIB_EXPORT CredentialModel : public QAbstractListModel {
    Q_OBJECT
 public:
-   //friend class Account;
    //Roles
    static const int NAME_ROLE     = 100;
    static const int PASSWORD_ROLE = 101;
    static const int REALM_ROLE    = 102;
 
    //Constructor
-   CredentialModel(QObject* parent =nullptr);
+   explicit CredentialModel(QObject* parent = nullptr);
 
    //Abstract model member
    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;

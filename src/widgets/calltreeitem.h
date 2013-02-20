@@ -45,7 +45,7 @@ class CallTreeItem : public QWidget
    Q_OBJECT
  public:
     //Constructor
-    CallTreeItem(QWidget* parent =0);
+    explicit CallTreeItem(QWidget* parent = nullptr);
     ~CallTreeItem();
 
     //Getters

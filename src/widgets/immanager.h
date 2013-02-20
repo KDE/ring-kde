@@ -34,7 +34,7 @@ class IMManager : public KTabWidget
    Q_OBJECT
 public:
    //Constructor
-   IMManager(QWidget* parent = nullptr);
+   explicit IMManager(QWidget* parent = nullptr);
 
 private:
    //Attrubutes

@@ -39,7 +39,7 @@ typedef QList<Contact*> ContactList;
 class LIB_EXPORT ContactBackend : public QObject {
    Q_OBJECT
 public:
-   ContactBackend(QObject* parent);
+   explicit ContactBackend(QObject* parent);
    virtual ~ContactBackend();
 
    ///Get a contact using a phone number

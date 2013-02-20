@@ -33,7 +33,7 @@ class ConfTip : public Tip
 {
    Q_OBJECT
 public:
-   ConfTip(QWidget* parent = nullptr);
+   explicit ConfTip(QWidget* parent = nullptr);
    virtual ~ConfTip();
 
 protected:

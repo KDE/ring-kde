@@ -30,7 +30,7 @@ class VideoRenderer;
 class VideoDock : public QDockWidget {
    Q_OBJECT
 public:
-   VideoDock(QWidget* parent =0 );
+   explicit VideoDock(QWidget* parent = nullptr );
    void setRenderer(VideoRenderer* r);
 
 private:

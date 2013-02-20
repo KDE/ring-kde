@@ -34,17 +34,12 @@ typedef QString VideoRate;
 class LIB_EXPORT Resolution : public QSize {
 public:
    //Constructor
-   explicit Resolution(uint _width, uint _height):QSize(_width,_height){}
-   Resolution(QString size) {
-      if (size.split("x").size() == 2) {
-         setWidth(size.split("x")[0].toInt());
-         setHeight(size.split("x")[1].toInt());
-      }
-   }
-   Resolution(const Resolution& res):QSize(res.width(),res.height()){}
-   Resolution(const QSize& size):QSize(size){}
+   explicit Resolution(uint _width, uint _height);
+   Resolution(QString size);
+   Resolution(const Resolution& res);
+   Resolution(const QSize& size);
    //Getter
-   const QString toString() const { return QString::number(width())+"x"+QString::number(height());}
+   const QString toString() const;
 
 };
 
@@ -72,7 +67,7 @@ class LIB_EXPORT VideoDevice {
       void setChannel    ( VideoChannel channel  );
    private:
       //Constructor
-      VideoDevice(QString id);
+      explicit VideoDevice(QString id);
 
       //Attributes
       QString m_DeviceId;

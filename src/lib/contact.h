@@ -45,22 +45,18 @@ public:
       ///Constructor
       PhoneNumber(QString number, QString type)
       : m_Number(number),m_Type(type){}
-      ///return the phone number
-      QString& getNumber() {
-         return m_Number ;
-      }
-      ///Return the phone number type
-      QString& getType() {
-         return m_Type   ;
-      }
-      
+
+      //Getters
+      QString& getNumber();
+      QString& getType();
+
    private:
       QString m_Number   ;
       QString m_Type     ;
    };
-   
+
    typedef QList<Contact::PhoneNumber*> PhoneNumbers;
-   
+
 private:
    QString      m_FirstName      ;
    QString      m_SecondName     ;

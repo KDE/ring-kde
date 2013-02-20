@@ -33,7 +33,7 @@ class DlgGeneral : public QWidget, public Ui_DlgGeneralBase
 Q_OBJECT
 public:
    //Constructor
-   DlgGeneral(KConfigDialog *parent = 0);
+   explicit DlgGeneral(KConfigDialog *parent = nullptr);
 
    //Destructor
    ~DlgGeneral();

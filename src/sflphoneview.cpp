@@ -935,13 +935,13 @@ void SFLPhoneView::mute(bool value)
       toolButton_recVol->setChecked(false);
       slider_recVol->setEnabled(true);
       Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)slider_recVol->value() / 100.0);
-      SFLPhone::app()->getMuteAction()->setText(i18n("Mute"));
+      SFLPhone::app()->getMuteAction()->setText(i18nc("Mute the current audio device","Mute"));
    }
    else {
       toolButton_recVol->setChecked(true);
       slider_recVol->setEnabled(false);
       Q_NOREPLY callManager.setVolume(RECORD_DEVICE, 0.0);
-      SFLPhone::app()->getMuteAction()->setText(i18n("Unmute"));
+      SFLPhone::app()->getMuteAction()->setText(i18nc("Unmute the current audio device","Unmute"));
    }
    updateRecordButton();
 }

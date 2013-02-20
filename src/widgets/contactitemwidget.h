@@ -46,7 +46,7 @@ class ContactItemWidget : public QWidget
    Q_OBJECT
  public:
     //Constructor
-    ContactItemWidget(QWidget* parent =0);
+    explicit ContactItemWidget(QWidget* parent = nullptr);
     ~ContactItemWidget();
 
     //Getters

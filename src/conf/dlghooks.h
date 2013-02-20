@@ -32,7 +32,7 @@ class DlgHooks : public QWidget, public Ui_DlgHooksBase
 Q_OBJECT
 public:
    //Constructor
-   DlgHooks(QWidget *parent = 0);
+   explicit DlgHooks(QWidget *parent = nullptr);
 
    //Destructor
    ~DlgHooks();

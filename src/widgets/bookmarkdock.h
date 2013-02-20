@@ -39,7 +39,7 @@ class BookmarkDock : public QDockWidget {
    Q_OBJECT
 public:
    //Constructors
-   BookmarkDock(QWidget* parent);
+   explicit BookmarkDock(QWidget* parent = nullptr);
    virtual ~BookmarkDock();
 
    //Mutators

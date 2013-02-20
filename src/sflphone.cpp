@@ -106,10 +106,10 @@ SFLPhone::SFLPhone(QWidget *parent)
    action_record  ->setText ( i18n( "Record"   ) );
    action_hold    ->setText ( i18n( "Hold"     ) );
    action_refuse  ->setText ( i18n( "Refuse"   ) );
-   action_mute    ->setText ( i18n( "Mute"     ) );
    action_hangup  ->setText ( i18n( "Hang up"  ) );
    action_unhold  ->setText ( i18n( "Unhold"   ) );
    action_pickup  ->setText ( i18n( "Pickup"   ) );
+   action_mute    ->setText ( i18nc("Mute the current audio device", "Mute"     ) );
    
    action_mute->setCheckable(true);
 

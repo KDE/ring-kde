@@ -104,86 +104,45 @@ class LIB_EXPORT Account : public QObject {
       VideoCodecModel*        getVideoCodecModel();
 
       ///Return the account hostname
-      QString getAccountHostname              () const { return getAccountDetail(ACCOUNT_HOSTNAME               )                 ;}
-      ///Return if the account is enabled
-      bool    isAccountEnabled                () const { return (getAccountDetail(ACCOUNT_ENABLED               )  == "true")?1:0 ;}
-      ///Return if the account should auto answer
-      bool    isAutoAnswer                    () const { return (getAccountDetail(ACCOUNT_AUTOANSWER            )  == "true")?1:0 ;}
-      ///Return the account user name
-      QString getAccountUsername              () const { return getAccountDetail(ACCOUNT_USERNAME               )                 ;}
-      ///Return the account mailbox address
-      QString getAccountMailbox               () const { return getAccountDetail(ACCOUNT_MAILBOX                )                 ;}
-      ///Return the account mailbox address
-      QString getAccountProxy                 () const { return getAccountDetail(ACCOUNT_ROUTE                  )                 ;}
-      ///
-      bool    isAccountDisplaySasOnce         () const { return (getAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE      )  == "true")?1:0 ;}
-      ///Return the account security fallback
-      bool    isAccountSrtpRtpFallback        () const { return (getAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK     )  == "true")?1:0 ;}
-      ///
-      bool    isAccountZrtpDisplaySas         () const { return (getAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS      )  == "true")?1:0 ;}
-      ///Return if the other side support warning
-      bool    isAccountZrtpNotSuppWarning     () const { return (getAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING )  == "true")?1:0 ;}
-      ///
-      bool    isAccountZrtpHelloHash          () const { return (getAccountDetail(ACCOUNT_ZRTP_HELLO_HASH       )  == "true")?1:0 ;}
-      ///Return if the account is using a STUN server
-      bool    isAccountSipStunEnabled         () const { return (getAccountDetail(ACCOUNT_SIP_STUN_ENABLED      )  == "true")?1:0 ;}
-      ///Return the account STUN server
-      QString getAccountSipStunServer         () const { return getAccountDetail(ACCOUNT_SIP_STUN_SERVER        )                 ;}
-      ///Return when the account expire (require renewal)
-      int     getAccountRegistrationExpire    () const { return getAccountDetail(ACCOUNT_REGISTRATION_EXPIRE    ).toInt()         ;}
-      ///Return if the published address is the same as the local one
-      bool    isPublishedSameAsLocal          () const { return (getAccountDetail(PUBLISHED_SAMEAS_LOCAL        )  == "true")?1:0 ;}
-      ///Return the account published address
-      QString getPublishedAddress             () const { return getAccountDetail(PUBLISHED_ADDRESS              )                 ;}
-      ///Return the account published port
-      int     getPublishedPort                () const { return getAccountDetail(PUBLISHED_PORT                 ).toUInt()        ;}
-      ///Return the account tls password
-      QString getTlsPassword                  () const { return getAccountDetail(TLS_PASSWORD                   )                 ;}
-      ///Return the account TLS port
-      int     getTlsListenerPort              () const { return getAccountDetail(TLS_LISTENER_PORT              ).toInt()         ;}
-      ///Return the account TLS certificate authority list file
-      QString getTlsCaListFile                () const { return getAccountDetail(TLS_CA_LIST_FILE               )                 ;}
-      ///Return the account TLS certificate
-      QString getTlsCertificateFile           () const { return getAccountDetail(TLS_CERTIFICATE_FILE           )                 ;}
-      ///Return the account private key
-      QString getTlsPrivateKeyFile            () const { return getAccountDetail(TLS_PRIVATE_KEY_FILE           )                 ;}
-      ///Return the account cipher
-      QString getTlsCiphers                   () const { return getAccountDetail(TLS_CIPHERS                    )                 ;}
-      ///Return the account TLS server name
-      QString getTlsServerName                () const { return getAccountDetail(TLS_SERVER_NAME                )                 ;}
-      ///Return the account negotiation timeout in seconds
-      int     getTlsNegotiationTimeoutSec     () const { return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC    ).toInt()         ;}
-      ///Return the account negotiation timeout in milliseconds
-      int     getTlsNegotiationTimeoutMsec    () const { return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC   ).toInt()         ;}
-      ///Return the account TLS verify server
-      bool    isTlsVerifyServer               () const { return (getAccountDetail(TLS_VERIFY_SERVER             )  == "true")?1:0 ;}
-      ///Return the account TLS verify client
-      bool    isTlsVerifyClient               () const { return (getAccountDetail(TLS_VERIFY_CLIENT             )  == "true")?1:0 ;}
-      ///Return if it is required for the peer to have a certificate
-      bool    isTlsRequireClientCertificate   () const { return (getAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true")?1:0 ;}
-      ///Return the account TLS security is enabled
-      bool    isTlsEnable                     () const { return (getAccountDetail(TLS_ENABLE                    )  == "true")?1:0 ;}
-      ///Return the account the TLS encryption method
-      int     getTlsMethod                    () const { return getAccountDetail(TLS_METHOD                     ).toInt()         ;}
-      ///Return the account alias
-      QString getAccountAlias                 () const { return getAccountDetail(ACCOUNT_ALIAS                  )                 ;}
-      ///Return if the ringtone are enabled
-      bool    isRingtoneEnabled               () const { return (getAccountDetail(CONFIG_RINGTONE_ENABLED       )  == "true")?1:0 ;}
-      ///Return the account ringtone path
-      QString getRingtonePath                 () const { return getAccountDetail(CONFIG_RINGTONE_PATH           )                 ;}
-      ///Return the account local port
-      int     getLocalPort                    () const { return getAccountDetail(LOCAL_PORT).toInt()                              ;}
-      ///Return the account local interface
-      QString getLocalInterface               () const { return getAccountDetail(LOCAL_INTERFACE)                                 ;}
-      ///Return the account registration status
-      QString getAccountRegistrationStatus    () const { return getAccountDetail(ACCOUNT_REGISTRATION_STATUS)                     ;}
-      ///Return the account type
-      QString getAccountType                  () const { return getAccountDetail(ACCOUNT_TYPE)                                    ;}
-      ///Return the DTMF type
-      DtmfType getDTMFType                    () const {
-         QString type = getAccountDetail(ACCOUNT_DTMF_TYPE);
-         return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
-      }
+      QString getAccountHostname              () const;
+      bool    isAccountEnabled                () const;
+      bool    isAutoAnswer                    () const;
+      QString getAccountUsername              () const;
+      QString getAccountMailbox               () const;
+      QString getAccountProxy                 () const;
+      bool    isAccountDisplaySasOnce         () const;
+      bool    isAccountSrtpRtpFallback        () const;
+      bool    isAccountZrtpDisplaySas         () const;
+      bool    isAccountZrtpNotSuppWarning     () const;
+      bool    isAccountZrtpHelloHash          () const;
+      bool    isAccountSipStunEnabled         () const;
+      QString getAccountSipStunServer         () const;
+      int     getAccountRegistrationExpire    () const;
+      bool    isPublishedSameAsLocal          () const;
+      QString getPublishedAddress             () const;
+      int     getPublishedPort                () const;
+      QString getTlsPassword                  () const;
+      int     getTlsListenerPort              () const;
+      QString getTlsCaListFile                () const;
+      QString getTlsCertificateFile           () const;
+      QString getTlsPrivateKeyFile            () const;
+      QString getTlsCiphers                   () const;
+      QString getTlsServerName                () const;
+      int     getTlsNegotiationTimeoutSec     () const;
+      int     getTlsNegotiationTimeoutMsec    () const;
+      bool    isTlsVerifyServer               () const;
+      bool    isTlsVerifyClient               () const;
+      bool    isTlsRequireClientCertificate   () const;
+      bool    isTlsEnable                     () const;
+      int     getTlsMethod                    () const;
+      QString getAccountAlias                 () const;
+      bool    isRingtoneEnabled               () const;
+      QString getRingtonePath                 () const;
+      int     getLocalPort                    () const;
+      QString getLocalInterface               () const;
+      QString getAccountRegistrationStatus    () const;
+      QString getAccountType                  () const;
+      DtmfType getDTMFType                    () const;
    
       //Setters
       void setAccountId      (const QString& id                        );
@@ -193,77 +152,45 @@ class LIB_EXPORT Account : public QObject {
       void setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
       QList<VideoCodec*> getActiveVideoCodecList();
       #endif
-      ///Set the account alias
       void setAccountAlias                  (QString detail);
-      ///Set the account type, SIP or IAX
-      void setAccountType                   (QString detail){setAccountDetail(ACCOUNT_TYPE                   ,detail);}
-      ///The set account hostname, it can be an hostname or an IP address
-      void setAccountHostname               (QString detail){setAccountDetail(ACCOUNT_HOSTNAME               ,detail);}
-      ///Set the account username, everything is valid, some might be rejected by the PBX server
-      void setAccountUsername               (QString detail){setAccountDetail(ACCOUNT_USERNAME               ,detail);}
-      ///Set the account mailbox, usually a number, but can be anything
-      void setAccountMailbox                (QString detail){setAccountDetail(ACCOUNT_MAILBOX                ,detail);}
-      ///Set the account mailbox, usually a number, but can be anything
-      void setAccountProxy                  (QString detail){setAccountDetail(ACCOUNT_ROUTE                  ,detail);}
-      ///Set the main credential password
-      void setAccountPassword               (QString detail){setAccountDetail(ACCOUNT_PASSWORD               ,detail);}
-      ///Set the TLS (encryption) password
-      void setTlsPassword                   (QString detail){setAccountDetail(TLS_PASSWORD                   ,detail);}
-      ///Set the certificate authority list file
-      void setTlsCaListFile                 (QString detail){setAccountDetail(TLS_CA_LIST_FILE               ,detail);}
-      ///Set the certificate
-      void setTlsCertificateFile            (QString detail){setAccountDetail(TLS_CERTIFICATE_FILE           ,detail);}
-      ///Set the private key
-      void setTlsPrivateKeyFile             (QString detail){setAccountDetail(TLS_PRIVATE_KEY_FILE           ,detail);}
-      ///Set the TLS cipher
-      void setTlsCiphers                    (QString detail){setAccountDetail(TLS_CIPHERS                    ,detail);}
-      ///Set the TLS server
-      void setTlsServerName                 (QString detail){setAccountDetail(TLS_SERVER_NAME                ,detail);}
-      ///Set the stun server
-      void setAccountSipStunServer          (QString detail){setAccountDetail(ACCOUNT_SIP_STUN_SERVER        ,detail);}
-      ///Set the published address
-      void setPublishedAddress              (QString detail){setAccountDetail(PUBLISHED_ADDRESS              ,detail);}
-      ///Set the local interface
-      void setLocalInterface                (QString detail){setAccountDetail(LOCAL_INTERFACE                ,detail);}
-      ///Set the ringtone path, it have to be a valid absolute path
-      void setRingtonePath                  (QString detail){setAccountDetail(CONFIG_RINGTONE_PATH           ,detail);}
-      ///Set the Tls method
-      void setTlsMethod                     (int     detail){setAccountDetail(TLS_METHOD                     ,QString::number(detail));}
-      ///Set the account timeout, it will be renegotiated when that timeout occur
-      void setAccountRegistrationExpire     (int     detail){setAccountDetail(ACCOUNT_REGISTRATION_EXPIRE    ,QString::number(detail));}
-      ///Set TLS negotiation timeout in second
-      void setTlsNegotiationTimeoutSec      (int     detail){setAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC    ,QString::number(detail));}
-      ///Set the TLS negotiation timeout in milliseconds
-      void setTlsNegotiationTimeoutMsec     (int     detail){setAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC   ,QString::number(detail));}
-      ///Set the local port for SIP/IAX communications
-      void setLocalPort                     (unsigned short detail){setAccountDetail(LOCAL_PORT              ,QString::number(detail));}
-      ///Set the TLS listener port (0-2^16)
-      void setTlsListenerPort               (unsigned short detail){setAccountDetail(TLS_LISTENER_PORT       ,QString::number(detail));}
-      ///Set the published port (0-2^16)
-      void setPublishedPort                 (unsigned short detail){setAccountDetail(PUBLISHED_PORT          ,QString::number(detail));}
-      ///Set if the account is enabled or not
-      void setAccountEnabled                (bool    detail){setAccountDetail(ACCOUNT_ENABLED                ,detail?"true":"false");}
-      ///Set if the account should auto answer
-      void setAutoAnswer                    (bool    detail){setAccountDetail(ACCOUNT_AUTOANSWER             ,detail?"true":"false");}
-      ///Set the TLS verification server
-      void setTlsVerifyServer               (bool    detail){setAccountDetail(TLS_VERIFY_SERVER              ,detail?"true":"false");}
-      ///Set the TLS verification client
-      void setTlsVerifyClient               (bool    detail){setAccountDetail(TLS_VERIFY_CLIENT              ,detail?"true":"false");}
-      ///Set if the peer need to be providing a certificate
-      void setTlsRequireClientCertificate   (bool    detail){setAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE ,detail?"true":"false");}
-      ///Set if the security settings are enabled
-      void setTlsEnable                     (bool    detail){setAccountDetail(TLS_ENABLE                     ,detail?"true":"false");}
-      void setAccountDisplaySasOnce         (bool    detail){setAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE       ,detail?"true":"false");}
-      void setAccountSrtpRtpFallback        (bool    detail){setAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK      ,detail?"true":"false");}
-      void setAccountZrtpDisplaySas         (bool    detail){setAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS       ,detail?"true":"false");}
-      void setAccountZrtpNotSuppWarning     (bool    detail){setAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING  ,detail?"true":"false");}
-      void setAccountZrtpHelloHash          (bool    detail){setAccountDetail(ACCOUNT_ZRTP_HELLO_HASH        ,detail?"true":"false");}
-      void setAccountSipStunEnabled         (bool    detail){setAccountDetail(ACCOUNT_SIP_STUN_ENABLED       ,detail?"true":"false");}
-      void setPublishedSameAsLocal          (bool    detail){setAccountDetail(PUBLISHED_SAMEAS_LOCAL         ,detail?"true":"false");}
-      ///Set if custom ringtone are enabled
-      void setRingtoneEnabled               (bool    detail){setAccountDetail(CONFIG_RINGTONE_ENABLED        ,detail?"true":"false");}
-      ///Set the DTMF type
-      void setDTMFType                      (DtmfType type ){setAccountDetail(ACCOUNT_DTMF_TYPE,(type==OverRtp)?"overrtp":"oversip");}
+      void setAccountType                   (QString detail);
+      void setAccountHostname               (QString detail);
+      void setAccountUsername               (QString detail);
+      void setAccountMailbox                (QString detail);
+      void setAccountProxy                  (QString detail);
+      void setAccountPassword               (QString detail);
+      void setTlsPassword                   (QString detail);
+      void setTlsCaListFile                 (QString detail);
+      void setTlsCertificateFile            (QString detail);
+      void setTlsPrivateKeyFile             (QString detail);
+      void setTlsCiphers                    (QString detail);
+      void setTlsServerName                 (QString detail);
+      void setAccountSipStunServer          (QString detail);
+      void setPublishedAddress              (QString detail);
+      void setLocalInterface                (QString detail);
+      void setRingtonePath                  (QString detail);
+      void setTlsMethod                     (int     detail);
+      void setAccountRegistrationExpire     (int     detail);
+      void setTlsNegotiationTimeoutSec      (int     detail);
+      void setTlsNegotiationTimeoutMsec     (int     detail);
+      void setLocalPort                     (unsigned short detail);
+      void setTlsListenerPort               (unsigned short detail);
+      void setPublishedPort                 (unsigned short detail);
+      void setAccountEnabled                (bool    detail);
+      void setAutoAnswer                    (bool    detail);
+      void setTlsVerifyServer               (bool    detail);
+      void setTlsVerifyClient               (bool    detail);
+      void setTlsRequireClientCertificate   (bool    detail);
+      void setTlsEnable                     (bool    detail);
+      void setAccountDisplaySasOnce         (bool    detail);
+      void setAccountSrtpRtpFallback        (bool    detail);
+      void setAccountZrtpDisplaySas         (bool    detail);
+      void setAccountZrtpNotSuppWarning     (bool    detail);
+      void setAccountZrtpHelloHash          (bool    detail);
+      void setAccountSipStunEnabled         (bool    detail);
+      void setPublishedSameAsLocal          (bool    detail);
+      void setRingtoneEnabled               (bool    detail);
+      void setDTMFType                      (DtmfType type );
    
       //Updates
       virtual bool updateState();

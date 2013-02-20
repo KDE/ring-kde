@@ -34,7 +34,7 @@ public:
    static const int SAMPLERATE_ROLE = 102;
 
    //Constructor
-   AudioCodecModel(QObject* parent =nullptr);
+   explicit AudioCodecModel(QObject* parent =nullptr);
 
    //Abstract model member
    QVariant data        (const QModelIndex& index, int role = Qt::DisplayRole      ) const;

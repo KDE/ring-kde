@@ -39,7 +39,7 @@ class ObserverToolButton : public QToolButton
 {
    Q_OBJECT
 public:
-   ObserverToolButton(QWidget* parent = nullptr) : QToolButton(parent){}
+   explicit ObserverToolButton(QWidget* parent = nullptr) : QToolButton(parent){}
 public slots:
    void setNewText(const QString& text) {
       setText(text);
@@ -61,7 +61,7 @@ class CallViewOverlayToolbar : public QWidget
 {
    Q_OBJECT
 public:
-   CallViewOverlayToolbar(QWidget* parent);
+   explicit CallViewOverlayToolbar(QWidget* parent = nullptr);
 
 private:
    //Attributes

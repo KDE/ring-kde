@@ -30,7 +30,7 @@ class TranslucentButtons : public QPushButton
    Q_OBJECT
 public:
    //Constructor
-   TranslucentButtons(QWidget* parent);
+   explicit TranslucentButtons(QWidget* parent = nullptr);
    ~TranslucentButtons();
 
    //Setters

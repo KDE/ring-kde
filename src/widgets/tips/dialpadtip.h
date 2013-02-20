@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TIP_DIALPAD_H
-#define TIP_DIALPAD_H
+#ifndef DIALPADTIP_H
+#define DIALPADTIP_H
 //Base
 #include "../../klib/tip.h"
 
@@ -32,7 +32,7 @@ class DialPadTip : public Tip
 {
    Q_OBJECT
 public:
-   DialPadTip(QWidget* parent = nullptr);
+   explicit DialPadTip(QWidget* parent = nullptr);
    virtual ~DialPadTip();
 
 protected:

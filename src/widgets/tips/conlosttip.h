@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TIP_CON_LOST_H
-#define TIP_CON_LOST_H
+#ifndef CONNECTIONLOSTTIP_H
+#define CONNECTIONLOSTTIP_H
 
 //Base
 #include "../../klib/tip.h"
@@ -34,7 +34,7 @@ class ConnectionLostTip : public Tip
 {
    Q_OBJECT
 public:
-   ConnectionLostTip(QWidget* parent = nullptr);
+   explicit ConnectionLostTip(QWidget* parent = nullptr);
    virtual ~ConnectionLostTip();
 
 protected:

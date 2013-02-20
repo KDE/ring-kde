@@ -70,7 +70,7 @@ public:
     *   expected signals.
     * @param parent
     */
-   SFLPhoneView(QWidget *parent);
+   explicit SFLPhoneView(QWidget *parent);
    virtual ~SFLPhoneView();
 
 

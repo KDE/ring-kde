@@ -100,7 +100,7 @@ void MacroModel::initMacros()
          QList< QMap<QString, QString> > unserialized;
          in >> unserialized;
          serialized.close();
-         foreach(MapStringString aMacro,unserialized) {
+         foreach(const MapStringString& aMacro,unserialized) {
             Macro* nMac = newMacro(aMacro["ID"]);
             nMac->setName(aMacro["Name"]);
             nMac->setSequence(aMacro["Seq"]);
@@ -132,7 +132,7 @@ MacroModel::MacroCategory* MacroModel::createCategory(const QString& name)
 
 void MacroModel::updateTreeModel(Macro* newMacro)
 {
-   QString catName = newMacro->m_Category.isEmpty()?i18n("Other"):newMacro->m_Category;
+   QString catName = newMacro->m_Category.isEmpty()?i18nc("Other category","Other"):newMacro->m_Category;
    foreach (MacroCategory* cat, m_lCategories) {
       if (cat->m_Name == catName) {
          cat->m_lContent << newMacro;
@@ -154,13 +154,13 @@ Macro* MacroModel::newMacro(const QString& id)
    m_pCurrentMacro = new Macro();
    KAction* newAction = new KAction(this);
    m_pCurrentMacro->m_Action = newAction;
-   m_pCurrentMacro->m_Name = i18n("New");
-   m_pCurrentMacro->m_Category = i18n("Other");
+   m_pCurrentMacro->m_Name = i18nc("New macro","New");
+   m_pCurrentMacro->m_Category = i18nc("Other category","Other");
    m_pCurrentMacro->m_pModel = this;
    if (id.isEmpty()) {
       m_pCurrentMacro->m_Id = QString::number(QDateTime::currentDateTime().toTime_t());
       while (m_hMacros[m_pCurrentMacro->m_Id]) {
-         m_pCurrentMacro->m_Id += "1";
+         m_pCurrentMacro->m_Id += '1';
       }
    }
    m_hMacros[m_pCurrentMacro->m_Id] = m_pCurrentMacro;

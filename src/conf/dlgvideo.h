@@ -31,7 +31,7 @@ class DlgVideo : public QWidget, public Ui_DlgVideoBase
 Q_OBJECT
 public:
    //Constructor
-   DlgVideo(KConfigDialog* parent = nullptr);
+   explicit DlgVideo(KConfigDialog* parent = nullptr);
 
    //Destructor
    ~DlgVideo();
