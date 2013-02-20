@@ -7,8 +7,11 @@ SET(CMAKE_MODULE_PATH       "${LOCAL_CMAKE_MODULE_PATH}" )
 
 SET(QT_USE_QT*)
 
+if(POLICY CMP0017)
+   cmake_policy(SET CMP0017 NEW)
+endif(POLICY CMP0017)
+
 # --- custom targets: ---
-INCLUDE( ${LOCAL_CMAKE_MODULE_PATH}/TargetDistclean.cmake  REQUIRED)
 
 FIND_PACKAGE ( KdepimLibs REQUIRED            )
 FIND_PACKAGE ( KDE4       REQUIRED            )
