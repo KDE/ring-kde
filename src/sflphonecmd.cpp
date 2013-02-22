@@ -45,8 +45,8 @@ void SFLPhoneCmd::parseCmd(int argc, char **argv, KAboutData& about)
       KCmdLineArgs::init(argc, argv, &about);
       KCmdLineOptions options;
       options.add("place-call <number>", ki18n("Place a call to a given number"                                        ),"");
-      options.add("send-text <number>" , ki18n("Send a text to &lt;number&gt;, une --message to set the content, then hangup"),"");
-      options.add("message <content>"  , ki18n("Used in comination with --send-text"                                   ),"");
+      options.add("send-text <number>" , ki18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"),"");
+      options.add("message <content>"  , ki18n("Used in combination with --send-text"                                   ),"");
       KCmdLineArgs::addCmdLineOptions(options);
 
       KCmdLineArgs::parsedArgs();
