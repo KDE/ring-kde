@@ -49,7 +49,7 @@ QRect ConnectionLostTip::getDecorationRect()
    return QRect(0,0,100,100);
 }
 
-///The the decoration, a rotating arrow
+///The OCdecoration, a rotating arrow
 void ConnectionLostTip::paintDecorations(QPainter& p, const QRect& textRect)
 {
    Q_UNUSED(textRect);
