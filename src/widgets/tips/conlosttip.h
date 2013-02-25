@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef CONNECTIONLOSTTIP_H
-#define CONNECTIONLOSTTIP_H
+#ifndef CONNECTION_LOST_TIP_H
+#define CONNECTION_LOST_TIP_H
 
 //Base
 #include "../../klib/tip.h"

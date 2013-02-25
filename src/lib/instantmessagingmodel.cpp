@@ -24,6 +24,19 @@
 InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
 CallModelBase*                InstantMessagingModelManager::m_spCallModel = nullptr;
 
+///Signleton
+InstantMessagingModelManager* InstantMessagingModelManager::getInstance()
+{
+   if (!m_spInstance) {
+      m_spInstance = new InstantMessagingModelManager();
+   }
+   return m_spInstance;
+}
+
+void InstantMessagingModelManager::init(CallModelBase* model) {
+   m_spCallModel = model;
+   getInstance();
+}
 
 ///Constructor
 InstantMessagingModelManager::InstantMessagingModelManager() : QObject(0)

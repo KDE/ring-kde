@@ -197,6 +197,40 @@ void MacroModel::setCurrent(QModelIndex current,QModelIndex previous)
    }
 }
 
+void Macro::setName(QString value)
+{
+   m_Name = value;emit changed(this);m_Action->setText(m_Name);
+}
+
+void Macro::setDescription(QString value)
+{
+   m_Description = value;emit changed(this);
+}
+void Macro::setSequence(QString value)
+{
+   m_Sequence = value;emit changed(this);
+}
+
+void Macro::setEscaped(QString value)
+{
+   m_Escaped = value;emit changed(this);
+}
+
+void Macro::setId(QString value)
+{
+   m_Id = value;emit changed(this);
+}
+
+void Macro::setDelay(int value)
+{
+   m_Delay = value;emit changed(this);
+}
+
+void Macro::setCategory(QString value)
+{
+   m_Category = value;emit changed(this);
+}
+
 void MacroModel::save()
 {
    QFile macros(KStandardDirs::locateLocal("appdata","")+"macros.txt");
@@ -344,4 +378,41 @@ void MacroModel::changed(Macro* macro)
          emit layoutChanged();
       }
    }
+}
+
+QString Macro::name()
+{
+   return m_Name;
+}
+
+QString Macro::description()
+{
+   return m_Description;
+}
+
+QString Macro::sequence()
+{
+   return m_Sequence;
+}
+QString Macro::escaped()
+{
+   return m_Escaped;
+}
+QString Macro::id()
+{
+   return m_Id;
+}
+int Macro::delay()
+{
+   return m_Delay;
+}
+
+QString  Macro::category()
+{
+   return m_Category;
+}
+
+KAction* Macro::action()
+{
+   return m_Action;
 }

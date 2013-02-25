@@ -37,7 +37,7 @@ class ResizeEventFilter : public QObject
 {
    Q_OBJECT
 public:
-   ResizeEventFilter(TipManager* parent) : QObject(0) {
+   explicit ResizeEventFilter(TipManager* parent) : QObject(0) {
       m_pLoader =  parent;
    }
 protected:

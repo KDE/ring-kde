@@ -24,7 +24,7 @@
 #include "../lib/typedefs.h"
 
 //KDE
-#include <KAction>
+class KAction;
 
 //SFLPhone
 
@@ -127,28 +127,28 @@ public:
    Macro(const Macro* macro);
    MacroModel::MacroCategory* m_pCat;
    //Getters
-   QString  name()        { return m_Name;         }
-   QString  description() { return m_Description;  }
-   QString  sequence()    { return m_Sequence;     }
-   QString  escaped()     { return m_Escaped;      }
-   QString  id()          { return m_Id;           }
-   int      delay()       { return m_Delay;        }
-   QString  category()    { return m_Category;     }
-   KAction* action()      { return m_Action;       }
+   QString  name();
+   QString  description();
+   QString  sequence();
+   QString  escaped();
+   QString  id();
+   int      delay();
+   QString  category();
+   KAction* action();
 
    QModelIndex index();
 
    //Setters
-   void setName(QString value)          { m_Name        = value;emit changed(this);m_Action->setText(m_Name);}
-   void setDescription(QString value)   { m_Description = value;emit changed(this);}
-   void setSequence(QString value)      { m_Sequence    = value;emit changed(this);}
-   void setEscaped(QString value)       { m_Escaped     = value;emit changed(this);}
-   void setId(QString value)            { m_Id          = value;emit changed(this);}
-   void setDelay(int value)             { m_Delay       = value;emit changed(this);}
-   void setCategory(QString value)      { m_Category    = value;emit changed(this);}
+   void setName(QString value);
+   void setDescription(QString value);
+   void setSequence(QString value);
+   void setEscaped(QString value);
+   void setId(QString value);
+   void setDelay(int value);
+   void setCategory(QString value);
    
 private:
-   Macro(QObject* parent = nullptr);
+   explicit Macro(QObject* parent = nullptr);
    int         m_Position;
    QString     m_Name;
    QString     m_Description;

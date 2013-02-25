@@ -79,12 +79,8 @@ class LIB_EXPORT Account : public QObject {
        *Perform an action
        * @return If the state changed
        */
-      bool performAction(AccountEditAction action) {
-         AccountEditState curState = m_CurrentState;
-         (this->*(stateMachineActionsOnState[m_CurrentState][action]))();
-         return curState != m_CurrentState;
-      }
-      AccountEditState currentState() const {return m_CurrentState;};
+      bool performAction(AccountEditAction action);
+      AccountEditState currentState() const;
 
       //Getters
       bool                    isNew()                                const;

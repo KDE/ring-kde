@@ -81,7 +81,7 @@ public:
 
 private:
    //Constructors & Destructors
-   AccountList(QStringList& _accountIds);
+   explicit AccountList(QStringList& _accountIds);
    explicit AccountList(bool fill = true);
    ~AccountList();
    

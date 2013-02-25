@@ -59,7 +59,7 @@ public:
 
 private:
    //Singleton constructor
-   AkonadiBackend(QObject* parent);
+   explicit AkonadiBackend(QObject* parent);
 
    //Attributes
    static AkonadiBackend*         m_pInstance  ;
@@ -72,7 +72,7 @@ private:
 protected:
    ContactList update_slot();
 
-public slots:
+public Q_SLOTS:
    ContactList update(Akonadi::Collection collection);
    void collectionsReceived( const Akonadi::Collection::List& );
 };

@@ -34,8 +34,8 @@ typedef QString VideoRate;
 class LIB_EXPORT Resolution : public QSize {
 public:
    //Constructor
-   explicit Resolution(uint _width, uint _height);
-   Resolution(QString size);
+   Resolution(uint _width, uint _height);
+   Resolution(const QString& size);
    Resolution(const Resolution& res);
    Resolution(const QSize& size);
    //Getter

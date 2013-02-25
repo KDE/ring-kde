@@ -323,71 +323,200 @@ QString Account::getAccountProxy() const
 }
 
 ///
-bool    Account::isAccountDisplaySasOnce         () const { return (getAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE      )  == "true")?1:0 ;}
+bool Account::isAccountDisplaySasOnce() const
+{ 
+   return (getAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE)  == "true")?1:0 ;
+}
+
 ///Return the account security fallback
-bool    Account::isAccountSrtpRtpFallback        () const { return (getAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK     )  == "true")?1:0 ;}
+bool Account::isAccountSrtpRtpFallback() const
+{
+   return (getAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK)  == "true")?1:0 ;
+}
+
 ///
-bool    Account::isAccountZrtpDisplaySas         () const { return (getAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS      )  == "true")?1:0 ;}
+bool Account::isAccountZrtpDisplaySas         () const
+{
+   return (getAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS)  == "true")?1:0 ;
+}
+
 ///Return if the other side support warning
-bool    Account::isAccountZrtpNotSuppWarning     () const { return (getAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING )  == "true")?1:0 ;}
+bool Account::isAccountZrtpNotSuppWarning() const
+{
+   return (getAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING) == "true")?1:0 ;
+}
+
 ///
-bool    Account::isAccountZrtpHelloHash          () const { return (getAccountDetail(ACCOUNT_ZRTP_HELLO_HASH       )  == "true")?1:0 ;}
+bool Account::isAccountZrtpHelloHash() const
+{
+   return (getAccountDetail(ACCOUNT_ZRTP_HELLO_HASH)  == "true")?1:0 ;
+}
+
 ///Return if the account is using a STUN server
-bool    Account::isAccountSipStunEnabled         () const { return (getAccountDetail(ACCOUNT_SIP_STUN_ENABLED      )  == "true")?1:0 ;}
+bool Account::isAccountSipStunEnabled() const
+{
+   return (getAccountDetail(ACCOUNT_SIP_STUN_ENABLED)  == "true")?1:0 ;
+}
+
 ///Return the account STUN server
-QString Account::getAccountSipStunServer         () const { return getAccountDetail(ACCOUNT_SIP_STUN_SERVER        )                 ;}
+QString Account::getAccountSipStunServer() const
+{
+   return getAccountDetail(ACCOUNT_SIP_STUN_SERVER);
+}
+
 ///Return when the account expire (require renewal)
-int     Account::getAccountRegistrationExpire    () const { return getAccountDetail(ACCOUNT_REGISTRATION_EXPIRE    ).toInt()         ;}
+int Account::getAccountRegistrationExpire() const
+{
+   return getAccountDetail(ACCOUNT_REGISTRATION_EXPIRE).toInt();
+}
+
 ///Return if the published address is the same as the local one
-bool    Account::isPublishedSameAsLocal          () const { return (getAccountDetail(PUBLISHED_SAMEAS_LOCAL        )  == "true")?1:0 ;}
+bool Account::isPublishedSameAsLocal() const
+{
+   return (getAccountDetail(PUBLISHED_SAMEAS_LOCAL)  == "true")?1:0 ;
+}
+
 ///Return the account published address
-QString Account::getPublishedAddress             () const { return getAccountDetail(PUBLISHED_ADDRESS              )                 ;}
+QString Account::getPublishedAddress() const
+{
+   return getAccountDetail(PUBLISHED_ADDRESS);
+}
+
 ///Return the account published port
-int     Account::getPublishedPort                () const { return getAccountDetail(PUBLISHED_PORT                 ).toUInt()        ;}
+int Account::getPublishedPort() const
+{
+   return getAccountDetail(PUBLISHED_PORT).toUInt();
+}
+
 ///Return the account tls password
-QString Account::getTlsPassword                  () const { return getAccountDetail(TLS_PASSWORD                   )                 ;}
+QString Account::getTlsPassword() const
+{
+   return getAccountDetail(TLS_PASSWORD);
+}
+
 ///Return the account TLS port
-int     Account::getTlsListenerPort              () const { return getAccountDetail(TLS_LISTENER_PORT              ).toInt()         ;}
+int Account::getTlsListenerPort() const
+{
+   return getAccountDetail(TLS_LISTENER_PORT).toInt();
+}
+
 ///Return the account TLS certificate authority list file
-QString Account::getTlsCaListFile                () const { return getAccountDetail(TLS_CA_LIST_FILE               )                 ;}
+QString Account::getTlsCaListFile() const
+{
+   return getAccountDetail(TLS_CA_LIST_FILE);
+}
+
 ///Return the account TLS certificate
-QString Account::getTlsCertificateFile           () const { return getAccountDetail(TLS_CERTIFICATE_FILE           )                 ;}
+QString Account::getTlsCertificateFile() const
+{
+   return getAccountDetail(TLS_CERTIFICATE_FILE);
+}
+
 ///Return the account private key
-QString Account::getTlsPrivateKeyFile            () const { return getAccountDetail(TLS_PRIVATE_KEY_FILE           )                 ;}
+QString Account::getTlsPrivateKeyFile() const
+{
+   return getAccountDetail(TLS_PRIVATE_KEY_FILE);
+}
+
 ///Return the account cipher
-QString Account::getTlsCiphers                   () const { return getAccountDetail(TLS_CIPHERS                    )                 ;}
+QString Account::getTlsCiphers() const
+{
+   return getAccountDetail(TLS_CIPHERS);
+}
+
 ///Return the account TLS server name
-QString Account::getTlsServerName                () const { return getAccountDetail(TLS_SERVER_NAME                )                 ;}
+QString Account::getTlsServerName() const
+{
+   return getAccountDetail(TLS_SERVER_NAME);
+}
+
 ///Return the account negotiation timeout in seconds
-int     Account::getTlsNegotiationTimeoutSec     () const { return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC    ).toInt()         ;}
+int Account::getTlsNegotiationTimeoutSec() const
+{
+   return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC).toInt();
+}
+
 ///Return the account negotiation timeout in milliseconds
-int     Account::getTlsNegotiationTimeoutMsec    () const { return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC   ).toInt()         ;}
+int Account::getTlsNegotiationTimeoutMsec() const
+{
+   return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC).toInt();
+}
+
 ///Return the account TLS verify server
-bool    Account::isTlsVerifyServer               () const { return (getAccountDetail(TLS_VERIFY_SERVER             )  == "true")?1:0 ;}
+bool Account::isTlsVerifyServer() const
+{
+   return (getAccountDetail(TLS_VERIFY_SERVER)  == "true")?1:0;
+}
+
 ///Return the account TLS verify client
-bool    Account::isTlsVerifyClient               () const { return (getAccountDetail(TLS_VERIFY_CLIENT             )  == "true")?1:0 ;}
+bool Account::isTlsVerifyClient() const
+{
+   return (getAccountDetail(TLS_VERIFY_CLIENT)  == "true")?1:0;
+}
+
 ///Return if it is required for the peer to have a certificate
-bool    Account::isTlsRequireClientCertificate   () const { return (getAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true")?1:0 ;}
+bool Account::isTlsRequireClientCertificate() const
+{
+   return (getAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true")?1:0;
+}
+
 ///Return the account TLS security is enabled
-bool    Account::isTlsEnable                     () const { return (getAccountDetail(TLS_ENABLE                    )  == "true")?1:0 ;}
+bool Account::isTlsEnable() const
+{ 
+   return (getAccountDetail(TLS_ENABLE)  == "true")?1:0;
+}
+
 ///Return the account the TLS encryption method
-int     Account::getTlsMethod                    () const { return getAccountDetail(TLS_METHOD                     ).toInt()         ;}
+int Account::getTlsMethod() const
+{
+   return getAccountDetail(TLS_METHOD).toInt();
+}
+
 ///Return the account alias
-QString Account::getAccountAlias                 () const { return getAccountDetail(ACCOUNT_ALIAS                  )                 ;}
+QString Account::getAccountAlias() const
+{
+   return getAccountDetail(ACCOUNT_ALIAS);
+}
+
 ///Return if the ringtone are enabled
-bool    Account::isRingtoneEnabled               () const { return (getAccountDetail(CONFIG_RINGTONE_ENABLED       )  == "true")?1:0 ;}
+bool Account::isRingtoneEnabled() const
+{
+   return (getAccountDetail(CONFIG_RINGTONE_ENABLED)  == "true")?1:0;
+}
+
 ///Return the account ringtone path
-QString Account::getRingtonePath                 () const { return getAccountDetail(CONFIG_RINGTONE_PATH           )                 ;}
+QString Account::getRingtonePath() const
+{
+   return getAccountDetail(CONFIG_RINGTONE_PATH);
+}
+
 ///Return the account local port
-int     Account::getLocalPort                    () const { return getAccountDetail(LOCAL_PORT).toInt()                              ;}
+int Account::getLocalPort() const
+{
+   return getAccountDetail(LOCAL_PORT).toInt();
+}
+
 ///Return the account local interface
-QString Account::getLocalInterface               () const { return getAccountDetail(LOCAL_INTERFACE)                                 ;}
+QString Account::getLocalInterface() const
+{
+   return getAccountDetail(LOCAL_INTERFACE);
+}
+
 ///Return the account registration status
-QString Account::getAccountRegistrationStatus    () const { return getAccountDetail(ACCOUNT_REGISTRATION_STATUS)                     ;}
+QString Account::getAccountRegistrationStatus() const
+{
+   return getAccountDetail(ACCOUNT_REGISTRATION_STATUS);
+}
+
 ///Return the account type
-QString Account::getAccountType                  () const { return getAccountDetail(ACCOUNT_TYPE)                                    ;}
+QString Account::getAccountType() const
+{
+   return getAccountDetail(ACCOUNT_TYPE);
+}
+
 ///Return the DTMF type
-DtmfType Account::getDTMFType                    () const {
+DtmfType Account::getDTMFType() const
+{
    QString type = getAccountDetail(ACCOUNT_DTMF_TYPE);
    return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
 }
@@ -451,74 +580,225 @@ void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
 QList<VideoCodec*> getActiveVideoCodecList();
 #endif
 ///Set the account type, SIP or IAX
-void Account::setAccountType                   (QString detail){setAccountDetail(ACCOUNT_TYPE                   ,detail);}
+void Account::setAccountType(QString detail)
+{
+   setAccountDetail(ACCOUNT_TYPE ,detail);
+}
+
 ///The set account hostname, it can be an hostname or an IP address
-void Account::setAccountHostname               (QString detail){setAccountDetail(ACCOUNT_HOSTNAME               ,detail);}
+void Account::setAccountHostname(QString detail)
+{
+   setAccountDetail(ACCOUNT_HOSTNAME               ,detail);
+}
+
 ///Set the account username, everything is valid, some might be rejected by the PBX server
-void Account::setAccountUsername               (QString detail){setAccountDetail(ACCOUNT_USERNAME               ,detail);}
+void Account::setAccountUsername(QString detail)
+{
+   setAccountDetail(ACCOUNT_USERNAME               ,detail);
+}
+
 ///Set the account mailbox, usually a number, but can be anything
-void Account::setAccountMailbox                (QString detail){setAccountDetail(ACCOUNT_MAILBOX                ,detail);}
+void Account::setAccountMailbox(QString detail)
+{
+   setAccountDetail(ACCOUNT_MAILBOX                ,detail);
+}
+
 ///Set the account mailbox, usually a number, but can be anything
-void Account::setAccountProxy                  (QString detail){setAccountDetail(ACCOUNT_ROUTE                  ,detail);}
+void Account::setAccountProxy(QString detail)
+{
+   setAccountDetail(ACCOUNT_ROUTE                  ,detail);
+}
+
 ///Set the main credential password
-void Account::setAccountPassword               (QString detail){setAccountDetail(ACCOUNT_PASSWORD               ,detail);}
+void Account::setAccountPassword(QString detail)
+{
+   setAccountDetail(ACCOUNT_PASSWORD               ,detail);
+}
+
 ///Set the TLS (encryption) password
-void Account::setTlsPassword                   (QString detail){setAccountDetail(TLS_PASSWORD                   ,detail);}
+void Account::setTlsPassword(QString detail)
+{
+   setAccountDetail(TLS_PASSWORD                   ,detail);
+}
+
 ///Set the certificate authority list file
-void Account::setTlsCaListFile                 (QString detail){setAccountDetail(TLS_CA_LIST_FILE               ,detail);}
+void Account::setTlsCaListFile(QString detail)
+{
+   setAccountDetail(TLS_CA_LIST_FILE               ,detail);
+}
+
 ///Set the certificate
-void Account::setTlsCertificateFile            (QString detail){setAccountDetail(TLS_CERTIFICATE_FILE           ,detail);}
+void Account::setTlsCertificateFile(QString detail)
+{
+   setAccountDetail(TLS_CERTIFICATE_FILE           ,detail);
+}
+
 ///Set the private key
-void Account::setTlsPrivateKeyFile             (QString detail){setAccountDetail(TLS_PRIVATE_KEY_FILE           ,detail);}
+void Account::setTlsPrivateKeyFile(QString detail)
+{
+   setAccountDetail(TLS_PRIVATE_KEY_FILE           ,detail);
+}
+
 ///Set the TLS cipher
-void Account::setTlsCiphers                    (QString detail){setAccountDetail(TLS_CIPHERS                    ,detail);}
+void Account::setTlsCiphers(QString detail)
+{
+   setAccountDetail(TLS_CIPHERS                    ,detail);
+}
+
 ///Set the TLS server
-void Account::setTlsServerName                 (QString detail){setAccountDetail(TLS_SERVER_NAME                ,detail);}
+void Account::setTlsServerName(QString detail)
+{
+   setAccountDetail(TLS_SERVER_NAME                ,detail);
+}
+
 ///Set the stun server
-void Account::setAccountSipStunServer          (QString detail){setAccountDetail(ACCOUNT_SIP_STUN_SERVER        ,detail);}
+void Account::setAccountSipStunServer(QString detail)
+{
+   setAccountDetail(ACCOUNT_SIP_STUN_SERVER        ,detail);
+}
+
 ///Set the published address
-void Account::setPublishedAddress              (QString detail){setAccountDetail(PUBLISHED_ADDRESS              ,detail);}
+void Account::setPublishedAddress(QString detail)
+{
+   setAccountDetail(PUBLISHED_ADDRESS              ,detail);
+}
+
 ///Set the local interface
-void Account::setLocalInterface                (QString detail){setAccountDetail(LOCAL_INTERFACE                ,detail);}
+void Account::setLocalInterface(QString detail)
+{
+   setAccountDetail(LOCAL_INTERFACE                ,detail);
+}
+
 ///Set the ringtone path, it have to be a valid absolute path
-void Account::setRingtonePath                  (QString detail){setAccountDetail(CONFIG_RINGTONE_PATH           ,detail);}
+void Account::setRingtonePath(QString detail)
+{
+   setAccountDetail(CONFIG_RINGTONE_PATH           ,detail);
+}
+
 ///Set the Tls method
-void Account::setTlsMethod                     (int     detail){setAccountDetail(TLS_METHOD                     ,QString::number(detail));}
+void Account::setTlsMethod(int detail)
+{
+   setAccountDetail(TLS_METHOD ,QString::number(detail));
+}
+
 ///Set the account timeout, it will be renegotiated when that timeout occur
-void Account::setAccountRegistrationExpire     (int     detail){setAccountDetail(ACCOUNT_REGISTRATION_EXPIRE    ,QString::number(detail));}
+void Account::setAccountRegistrationExpire(int detail)
+{
+   setAccountDetail(ACCOUNT_REGISTRATION_EXPIRE    ,QString::number(detail));
+}
+
 ///Set TLS negotiation timeout in second
-void Account::setTlsNegotiationTimeoutSec      (int     detail){setAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC    ,QString::number(detail));}
+void Account::setTlsNegotiationTimeoutSec(int detail)
+{
+   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC    ,QString::number(detail));
+}
+
 ///Set the TLS negotiation timeout in milliseconds
-void Account::setTlsNegotiationTimeoutMsec     (int     detail){setAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC   ,QString::number(detail));}
+void Account::setTlsNegotiationTimeoutMsec(int detail)
+{
+   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC   ,QString::number(detail));
+}
+
 ///Set the local port for SIP/IAX communications
-void Account::setLocalPort                     (unsigned short detail){setAccountDetail(LOCAL_PORT              ,QString::number(detail));}
+void Account::setLocalPort(unsigned short detail)
+{
+   setAccountDetail(LOCAL_PORT              ,QString::number(detail));
+}
+
 ///Set the TLS listener port (0-2^16)
-void Account::setTlsListenerPort               (unsigned short detail){setAccountDetail(TLS_LISTENER_PORT       ,QString::number(detail));}
+void Account::setTlsListenerPort(unsigned short detail)
+{
+   setAccountDetail(TLS_LISTENER_PORT       ,QString::number(detail));
+}
+
 ///Set the published port (0-2^16)
-void Account::setPublishedPort                 (unsigned short detail){setAccountDetail(PUBLISHED_PORT          ,QString::number(detail));}
+void Account::setPublishedPort(unsigned short detail)
+{
+   setAccountDetail(PUBLISHED_PORT          ,QString::number(detail));
+}
+
 ///Set if the account is enabled or not
-void Account::setAccountEnabled                (bool    detail){setAccountDetail(ACCOUNT_ENABLED                ,detail?"true":"false");}
+void Account::setAccountEnabled(bool detail)
+{
+   setAccountDetail(ACCOUNT_ENABLED                ,detail?"true":"false");
+}
+
 ///Set if the account should auto answer
-void Account::setAutoAnswer                    (bool    detail){setAccountDetail(ACCOUNT_AUTOANSWER             ,detail?"true":"false");}
+void Account::setAutoAnswer(bool detail)
+{
+   setAccountDetail(ACCOUNT_AUTOANSWER             ,detail?"true":"false");
+}
+
 ///Set the TLS verification server
-void Account::setTlsVerifyServer               (bool    detail){setAccountDetail(TLS_VERIFY_SERVER              ,detail?"true":"false");}
+void Account::setTlsVerifyServer(bool detail)
+{
+   setAccountDetail(TLS_VERIFY_SERVER              ,detail?"true":"false");
+}
+
 ///Set the TLS verification client
-void Account::setTlsVerifyClient               (bool    detail){setAccountDetail(TLS_VERIFY_CLIENT              ,detail?"true":"false");}
+void Account::setTlsVerifyClient(bool detail)
+{
+   setAccountDetail(TLS_VERIFY_CLIENT              ,detail?"true":"false");
+}
+
 ///Set if the peer need to be providing a certificate
-void Account::setTlsRequireClientCertificate   (bool    detail){setAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE ,detail?"true":"false");}
+void Account::setTlsRequireClientCertificate(bool detail)
+{
+   setAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE ,detail?"true":"false");
+}
+
 ///Set if the security settings are enabled
-void Account::setTlsEnable                     (bool    detail){setAccountDetail(TLS_ENABLE                     ,detail?"true":"false");}
-void Account::setAccountDisplaySasOnce         (bool    detail){setAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE       ,detail?"true":"false");}
-void Account::setAccountSrtpRtpFallback        (bool    detail){setAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK      ,detail?"true":"false");}
-void Account::setAccountZrtpDisplaySas         (bool    detail){setAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS       ,detail?"true":"false");}
-void Account::setAccountZrtpNotSuppWarning     (bool    detail){setAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING  ,detail?"true":"false");}
-void Account::setAccountZrtpHelloHash          (bool    detail){setAccountDetail(ACCOUNT_ZRTP_HELLO_HASH        ,detail?"true":"false");}
-void Account::setAccountSipStunEnabled         (bool    detail){setAccountDetail(ACCOUNT_SIP_STUN_ENABLED       ,detail?"true":"false");}
-void Account::setPublishedSameAsLocal          (bool    detail){setAccountDetail(PUBLISHED_SAMEAS_LOCAL         ,detail?"true":"false");}
+void Account::setTlsEnable(bool detail)
+{
+   setAccountDetail(TLS_ENABLE ,detail?"true":"false");
+}
+
+void Account::setAccountDisplaySasOnce(bool detail)
+{
+   setAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE       ,detail?"true":"false");
+}
+
+void Account::setAccountSrtpRtpFallback(bool detail)
+{
+   setAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK      ,detail?"true":"false");
+}
+
+void Account::setAccountZrtpDisplaySas(bool detail)
+{
+   setAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS       ,detail?"true":"false");
+}
+
+void Account::setAccountZrtpNotSuppWarning(bool detail)
+{
+   setAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING  ,detail?"true":"false");
+}
+
+void Account::setAccountZrtpHelloHash(bool detail)
+{
+   setAccountDetail(ACCOUNT_ZRTP_HELLO_HASH        ,detail?"true":"false");
+}
+
+void Account::setAccountSipStunEnabled(bool detail)
+{
+   setAccountDetail(ACCOUNT_SIP_STUN_ENABLED       ,detail?"true":"false");
+}
+
+void Account::setPublishedSameAsLocal(bool detail)
+{
+   setAccountDetail(PUBLISHED_SAMEAS_LOCAL         ,detail?"true":"false");
+}
+
 ///Set if custom ringtone are enabled
-void Account::setRingtoneEnabled               (bool    detail){setAccountDetail(CONFIG_RINGTONE_ENABLED        ,detail?"true":"false");}
+void Account::setRingtoneEnabled(bool detail)
+{
+   setAccountDetail(CONFIG_RINGTONE_ENABLED        ,detail?"true":"false");
+}
+
 ///Set the DTMF type
-void Account::setDTMFType                      (DtmfType type ){setAccountDetail(ACCOUNT_DTMF_TYPE,(type==OverRtp)?"overrtp":"oversip");}
+void Account::setDTMFType(DtmfType type)
+{
+   setAccountDetail(ACCOUNT_DTMF_TYPE,(type==OverRtp)?"overrtp":"oversip");
+}
 
 
 /*****************************************************************************
@@ -526,6 +806,18 @@ void Account::setDTMFType                      (DtmfType type ){setAccountDetail
  *                                  Mutator                                  *
  *                                                                           *
  ****************************************************************************/
+
+bool Account::performAction(AccountEditAction action)
+{
+   AccountEditState curState = m_CurrentState;
+   (this->*(stateMachineActionsOnState[m_CurrentState][action]))();
+   return curState != m_CurrentState;
+}
+
+AccountEditState Account::currentState() const
+{
+   return m_CurrentState;
+};
 
 /**Update the account
  * @return if the state changed

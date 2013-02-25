@@ -25,11 +25,11 @@ Resolution::Resolution(uint _width, uint _height):QSize(_width,_height)
 {
 }
 
-Resolution::Resolution(QString size)
+Resolution::Resolution(const QString& size)
 {
-   if (size.split("x").size() == 2) {
-      setWidth(size.split("x")[0].toInt());
-      setHeight(size.split("x")[1].toInt());
+   if (size.split('x').size() == 2) {
+      setWidth(size.split('x')[0].toInt());
+      setHeight(size.split('x')[1].toInt());
    }
 }
 
@@ -43,7 +43,7 @@ Resolution::Resolution(const QSize& size):QSize(size)
 
 const QString Resolution::toString() const
 {
-   return QString::number(width())+"x"+QString::number(height());
+   return QString::number(width())+'x'+QString::number(height());
 }
 
 

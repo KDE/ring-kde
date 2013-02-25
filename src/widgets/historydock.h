@@ -112,7 +112,7 @@ class KeyPressEater : public QObject
 {
    Q_OBJECT
 public:
-   KeyPressEater(HistoryDock* parent) : QObject(parent) {
+   explicit KeyPressEater(HistoryDock* parent) : QObject(parent) {
       m_pDock =  parent;
    }
 protected:

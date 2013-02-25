@@ -95,12 +95,12 @@ ContactItemWidget::ContactItemWidget(QWidget *parent)
    m_pBookmark->setText        ( i18n("Bookmark")           );
    m_pBookmark->setIcon        ( KIcon("bookmarks")         );
 
-   connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain()  ));
+   connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
    connect(m_pEditContact  , SIGNAL(triggered()) , this,SLOT(editContact()));
-   connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy()       ));
-   connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail()  ));
-   connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone()   ));
-   connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark()   ));
+   connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy())       );
+   connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
+   connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone())   );
+   connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
 
    //Overlay
    m_pBtnTrans = new TranslucentButtons(this);
