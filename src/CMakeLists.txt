@@ -96,7 +96,7 @@ SET(
    conf/dlgvideobase.ui
 )
 
-add_subdirectory( test   )
+# add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
 
 IF(${ENABLE_VIDEO} MATCHES true)
    MESSAGE("VIDEO enabled")
