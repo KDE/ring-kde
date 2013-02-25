@@ -50,7 +50,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void changed();
 
-signals:
+Q_SIGNALS:
    ///Emitted when the buttons need to be updated
    void updateButtons();
    void clearCallHistoryAsked();

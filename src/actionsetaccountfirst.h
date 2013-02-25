@@ -39,7 +39,7 @@ public:
 private Q_SLOTS:
    void emitSetFirst();
 
-signals:
+Q_SIGNALS:
    ///Set the account to be the first one
    void setFirst(Account * account);
 

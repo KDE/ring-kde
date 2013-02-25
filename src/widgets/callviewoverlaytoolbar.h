@@ -92,7 +92,7 @@ protected:
    void hideEvent  ( QHideEvent*   event);
    void showEvent  ( QShowEvent*   event);
 
-signals:
+Q_SIGNALS:
    void visibilityChanged(bool);
 
 };

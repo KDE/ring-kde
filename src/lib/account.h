@@ -233,7 +233,7 @@ class LIB_EXPORT Account : public QObject {
       static const account_function stateMachineActionsOnState[6][7];
 
 
-   signals:
+   Q_SIGNALS:
       ///The account state (Invalif,Trying,Registered) changed
       void stateChanged(QString state);
       void detailChanged(Account* a,QString name,QString newVal, QString oldVal);

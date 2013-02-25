@@ -151,7 +151,7 @@ private Q_SLOTS:
    void aliasChanged               (QString newAlias                                         );
    void changeAlias                (QString newAlias                                         );
 
-signals:
+Q_SIGNALS:
    ///Update the Ok and Apply button style
    void updateButtons();
 };

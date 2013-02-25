@@ -39,7 +39,7 @@ public Q_SLOTS:
    void setText(const QString&);
    void hasChanged();
 
-signals:
+Q_SIGNALS:
    void textChanged(QString text);
 };
 

@@ -191,7 +191,7 @@ public Q_SLOTS:
    void on1_voiceMailNotify( const QString &accountID, int count );
    void on1_volumeChanged  ( const QString &device, double value );
 
-signals:
+Q_SIGNALS:
    ///The status need to be updated
    void statusMessageChangeAsked      ( const QString&  message            );
    ///The window title need to be updated

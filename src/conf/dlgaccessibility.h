@@ -59,7 +59,7 @@ private Q_SLOTS:
    void slotSequenceLE(const QString& newText);
    void slotDescriptionLE(const QString& newText);
 
-signals:
+Q_SIGNALS:
    void updateButtons();
 };
 

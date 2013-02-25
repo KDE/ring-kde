@@ -111,7 +111,7 @@ public:
    void removeBounce();
    void startAnimation();
    void setAnimationPaused(bool paused);
-signals:
+Q_SIGNALS:
    void changed();
 private:
    qreal rot;

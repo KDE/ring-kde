@@ -79,7 +79,7 @@ private Q_SLOTS:
    void currentChanged(Tip* newCurrent);
    void tipChanged();
 
-signals:
+Q_SIGNALS:
    void animationStep(FrameDescription desc);
    void animationEnded();
 };

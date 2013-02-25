@@ -91,7 +91,7 @@ private Q_SLOTS:
    void animationEnded();
    void timeout();
 
-signals:
+Q_SIGNALS:
    void sizeChanged(QRect newRect,bool ignoreAnim);
    void currentTipChanged(Tip*);
 

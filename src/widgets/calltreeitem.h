@@ -111,7 +111,7 @@ private Q_SLOTS:
 public Q_SLOTS:
    void updated();
 
-signals:
+Q_SIGNALS:
    ///Emitted when a call is over
    void over(Call*);
    ///Emitted when the item change

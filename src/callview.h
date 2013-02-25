@@ -110,7 +110,7 @@ class CallView : public QTreeWidget {
       void hideOverlay();
       void moveCanvasTip();
 
-   signals:
+   Q_SIGNALS:
       ///Emitted when one of the call item change
       void itemChanged(Call*);
 

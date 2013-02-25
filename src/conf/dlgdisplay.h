@@ -53,7 +53,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void changed();
 
-signals:
+Q_SIGNALS:
    ///Emitted when the history need to be cleared
    void clearCallHistoryAsked();
    ///Emitted when the buttons need to be updated

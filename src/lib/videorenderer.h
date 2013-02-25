@@ -83,7 +83,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
       void startRendering();
       void stopRendering ();
 
-   signals:
+   Q_SIGNALS:
       ///Emitted when a new frame is ready
       void frameUpdated();
 

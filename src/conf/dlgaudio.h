@@ -60,7 +60,7 @@ private Q_SLOTS:
    //void codecTableChanged();
    void changed();
 
-signals:
+Q_SIGNALS:
    ///Emitted when the buttons need to be updated in the parent dialog
    void updateButtons();
 };

@@ -267,7 +267,7 @@ private Q_SLOTS:
    void updatePlayback(int position,int size);
    void contactBackendChanged();
 
-signals:
+Q_SIGNALS:
    ///Emitted when a call change (state or details)
    void changed();
    void changed(Call* self);

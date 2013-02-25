@@ -71,7 +71,7 @@ private Q_SLOTS:
    void stoppedDecoding(QString id, QString shmPath);
    void deviceEvent();
 
-signals:
+Q_SIGNALS:
    ///Emitted when a new frame is ready
    void frameUpdated();
    ///Emmitted when the video is stopped, before the framebuffer become invalid

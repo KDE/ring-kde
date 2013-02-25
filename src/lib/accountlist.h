@@ -101,7 +101,7 @@ private Q_SLOTS:
    void accountChanged(const QString& account,const QString& state, int code);
    void accountChanged(Account* a);
    
-signals:
+Q_SIGNALS:
    ///The account list changed
    void accountListUpdated();
    ///Emitted when an account state change

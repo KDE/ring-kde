@@ -52,7 +52,7 @@ private:
    bool m_IsChanged;
    bool m_IsLoading;
 
-signals:
+Q_SIGNALS:
    ///Emitted when the buttons need to be updated in the parent dialog
    void updateButtons();
 };

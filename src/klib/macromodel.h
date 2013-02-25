@@ -76,7 +76,7 @@ public:
    void initMacros();
 
    //Getters
-   Macro* getCurrentMacro() { return m_pCurrentMacro; }
+   Macro* getCurrentMacro();
 
    //Mutator
    MacroModel::MacroCategory* createCategory(const QString& name);
@@ -115,7 +115,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void changed(Macro* macro);
 
-signals:
+Q_SIGNALS:
    void addAction(KAction*);
    void selectMacro(Macro* macro);
 };
@@ -165,7 +165,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void nextStep();
 
-signals:
+Q_SIGNALS:
    void changed(Macro*);
 };
 

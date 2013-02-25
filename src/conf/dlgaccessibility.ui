@@ -138,6 +138,9 @@
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
             <widget class="QLabel" name="m_pNameL">
+             <property name="accessibleDescription">
+              <string comment="Macro name"/>
+             </property>
              <property name="text">
               <string>Name*</string>
              </property>
@@ -155,6 +158,9 @@
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="m_pCategoryL">
+             <property name="accessibleDescription">
+              <string comment="Macro Category"/>
+             </property>
              <property name="text">
               <string>Category*</string>
              </property>
@@ -169,6 +175,9 @@
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="m_mSequenceL">
+             <property name="accessibleDescription">
+              <string comment="Macro sequence"/>
+             </property>
              <property name="text">
               <string>Sequence*</string>
              </property>
@@ -186,6 +195,9 @@
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="m_pDelayL">
+             <property name="accessibleDescription">
+              <string comment="macro delay"/>
+             </property>
              <property name="text">
               <string>Delay</string>
              </property>
@@ -206,6 +218,9 @@
            </item>
            <item row="4" column="0">
             <widget class="QLabel" name="m_pDescriptionL">
+             <property name="accessibleDescription">
+              <string comment="Macro deskcription"/>
+             </property>
              <property name="text">
               <string>Description</string>
              </property>

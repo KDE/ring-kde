@@ -62,7 +62,7 @@ private:
    static CallMap m_sHistoryCalls;
    bool m_HistoryInit;
 
-signals:
+Q_SIGNALS:
    ///Emitted when the history change (new items, cleared)
    void historyChanged          (            );
    ///Emitted when a new item is added to prevent full reload

@@ -114,7 +114,7 @@ protected:
    virtual QRect getDecorationRect (                                    );
    virtual void  paintDecorations  ( QPainter& p, const QRect& textRect );
    virtual const QFont& font       (                                    );
-signals:
+Q_SIGNALS:
    void visibilityChanged(bool);
    void changed();
 };

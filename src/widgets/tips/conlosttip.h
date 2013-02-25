@@ -19,7 +19,7 @@
 #define CONNECTION_LOST_TIP_H
 
 //Base
-#include "../../klib/tip.h"
+#include <klib/tip.h>
 
 //Qt
 #include <QtGui/QWidget>

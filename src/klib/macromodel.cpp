@@ -177,6 +177,11 @@ Macro* MacroModel::newMacro(const QString& id)
    return m_pCurrentMacro;
 }
 
+Macro* MacroModel::getCurrentMacro()
+{
+   return m_pCurrentMacro;
+}
+
 //Remove the selected macro
 bool MacroModel::removeMacro(QModelIndex idx)
 {

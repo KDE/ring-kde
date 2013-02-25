@@ -70,7 +70,7 @@ public Q_SLOTS:
    
 private Q_SLOTS:
    
-signals:
+Q_SIGNALS:
    void collectionChanged();
    
 };

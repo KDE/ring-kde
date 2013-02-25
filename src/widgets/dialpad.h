@@ -40,7 +40,7 @@ private Q_SLOTS:
    void sltClicked() { emit typed(m_Value); }
 private:
    QString m_Value;
-signals:
+Q_SIGNALS:
    ///Emitted to add a number/letter to the string
    void typed(QString&);
 };
@@ -69,7 +69,7 @@ public:
 private Q_SLOTS:
    void clicked(QString& text);
 
-signals:
+Q_SIGNALS:
    ///Emitted to add a number/letter to the string
    void typed(QString text);
 };

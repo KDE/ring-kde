@@ -61,7 +61,7 @@ public Q_SLOTS:
    void setVisible(bool enabled);
 private Q_SLOTS:
    void changeVisibility();
-signals:
+Q_SIGNALS:
    ///Emitted when data is dropped on the button
    void dataDropped(QMimeData*);
 };

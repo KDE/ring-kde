@@ -64,7 +64,7 @@ private Q_SLOTS:
    void newMessage(QString callId, QString from, QString message);
 
    
-signals:
+Q_SIGNALS:
    ///Emitted when a new message is available
    void newMessagingModel(Call*,InstantMessagingModel*);
 };

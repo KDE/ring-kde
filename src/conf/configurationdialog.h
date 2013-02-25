@@ -114,7 +114,7 @@ private Q_SLOTS:
    void applyCustomSettings();
 
 
-signals:
+Q_SIGNALS:
    ///Emitted when the history need to be cleaned
    void clearCallHistoryAsked();
    ///Emitted when changes are applied
