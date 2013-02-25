@@ -90,7 +90,7 @@ class CallView : public QTreeWidget {
       virtual void resizeEvent    ( QResizeEvent    *e );
       virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
 
-   public slots:
+   public Q_SLOTS:
       void destroyCall        ( Call* toDestroy);
       void itemDoubleClicked  ( QTreeWidgetItem* item, int column    );
       void itemClicked        ( QTreeWidgetItem* item, int column =0 );
@@ -101,7 +101,7 @@ class CallView : public QTreeWidget {
 
       virtual void keyPressEvent(QKeyEvent* event);
 
-   public slots:
+   public Q_SLOTS:
       void clearHistory();
       void showTransferOverlay(Call* call);
       void transfer();

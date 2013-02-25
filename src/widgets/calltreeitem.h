@@ -100,7 +100,7 @@ class CallTreeItem : public QWidget
     virtual void dropEvent             ( QDropEvent      *e );
     virtual void mouseDoubleClickEvent ( QMouseEvent     *e );
 
-private slots:
+private Q_SLOTS:
    void transferEvent    (QMimeData* data );
    void conversationEvent(QMimeData* data );
    void hide             (                );
@@ -108,7 +108,7 @@ private slots:
    void copy             (                );
    void numberChanged    ( QString number );
 
-public slots:
+public Q_SLOTS:
    void updated();
 
 signals:

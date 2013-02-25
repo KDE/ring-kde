@@ -157,7 +157,7 @@ public:
    ExtendedAction* getTransferAction() { return action_transfer; }
    ExtendedAction* getPickupAction  () { return action_pickup;   }
 
-private slots:
+private Q_SLOTS:
    void on_m_pView_statusMessageChangeAsked      ( const QString& message               );
    void on_m_pView_windowTitleChangeAsked        ( const QString& message               );
    void on_m_pView_enabledActionsChangeAsked     ( const bool*    enabledActions        );
@@ -177,7 +177,7 @@ private slots:
    void displayVideoDock                         ( VideoRenderer* r                     );
    #endif
 
-public slots:
+public Q_SLOTS:
    void timeout                                  (                                      );
 };
 

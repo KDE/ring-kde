@@ -55,7 +55,7 @@ private:
 
    //Mutators
    void addBookmark_internal(const QString& phone);
-private slots:
+private Q_SLOTS:
    void filter(QString text);
    void reload();
 };

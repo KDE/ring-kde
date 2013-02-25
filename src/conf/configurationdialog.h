@@ -67,7 +67,7 @@ public:
    virtual ~ConfigurationDialog();
 
 
-public slots:
+public Q_SLOTS:
    /**
     *   Reimplements KConfigDialog
     */
@@ -106,7 +106,7 @@ public slots:
     */
    void reload();
 
-private slots:
+private Q_SLOTS:
    /**
     *   Apply settings not managed by kconfig (accounts)
     *   Should be removed when accounts are managed by kconfig.

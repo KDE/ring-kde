@@ -67,10 +67,10 @@ private:
    QCheckBox*                   m_pShowHistoCK;
    QList<ContactItemWidget*>    m_Contacts    ;
 
-public slots:
+public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event);
 
-private slots:
+private Q_SLOTS:
    void reloadContact      (                       );
    void loadContactHistory ( QTreeWidgetItem* item );
    void filter             ( const QString& text   );

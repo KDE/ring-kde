@@ -61,7 +61,7 @@ private:
    QPixmap*      m_pRing2Pix        ;
    QPixmap*      m_pRing3Pix        ;
 
-private slots:
+private Q_SLOTS:
    void startAnimation(bool visibility);
    void timeout();
 };

@@ -42,11 +42,11 @@ public:
 private:
    bool m_Changed;
 
-public slots:
+public Q_SLOTS:
    void updateSettings();
    void updateWidgets();
 
-private slots:
+private Q_SLOTS:
    void changed();
    void addMacro();
    void removeMacro();

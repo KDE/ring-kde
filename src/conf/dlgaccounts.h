@@ -62,7 +62,7 @@ protected:
       Q_UNUSED(event)
       m_pPlayPB->setVisible(false);
    }
-private slots:
+private Q_SLOTS:
    ///Play the ringtone file when the button is clicked
    void playRingtone() {
       CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
@@ -112,14 +112,14 @@ private:
    QMap<QString,QString> m_hRingtonePath       ;
    int                   m_IsLoading           ;
 
-public slots:
+public Q_SLOTS:
    void loadAccountList                  ();
    bool hasChanged                       ();
    void updateSettings                   ();
    void updateWidgets                    ();
    bool hasIncompleteRequiredFields      ();
 
-private slots:
+private Q_SLOTS:
    void changedAccountList               ();
    void otherAccountChanged              ();
    void on_button_accountUp_clicked      ();

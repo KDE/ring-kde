@@ -257,12 +257,12 @@ private:
    QDateTime* setStartTime_private(QDateTime* time);
    QDateTime* setStopTime_private(QDateTime* time);
 
-public slots:
+public Q_SLOTS:
    void playRecording();
    void stopRecording();
    void seekRecording(double position);
 
-private slots:
+private Q_SLOTS:
    void stopPlayback(QString filePath);
    void updatePlayback(int position,int size);
    void contactBackendChanged();

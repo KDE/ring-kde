@@ -57,9 +57,9 @@ private:
    bool    m_Init        ;
    char    m_Reverse     ;
 
-public slots:
+public Q_SLOTS:
    void setVisible(bool enabled);
-private slots:
+private Q_SLOTS:
    void changeVisibility();
 signals:
    ///Emitted when data is dropped on the button

@@ -76,10 +76,10 @@ class LIB_EXPORT VideoRenderer : public QObject {
       bool     shmLock      ();
       void     shmUnlock    ();
 
-   private slots:
+   private Q_SLOTS:
       void timedEvents();
 
-   public slots:
+   public Q_SLOTS:
       void startRendering();
       void stopRendering ();
 

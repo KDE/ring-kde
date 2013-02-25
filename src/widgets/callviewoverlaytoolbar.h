@@ -40,7 +40,7 @@ class ObserverToolButton : public QToolButton
    Q_OBJECT
 public:
    explicit ObserverToolButton(QWidget* parent = nullptr) : QToolButton(parent){}
-public slots:
+public Q_SLOTS:
    void setNewText(const QString& text) {
       setText(text);
    }
@@ -83,7 +83,7 @@ private:
    //Helpers
    ObserverToolButton* createButton(ExtendedAction* action);
 
-public slots:
+public Q_SLOTS:
    void updateState(call_state state);
 
 protected:

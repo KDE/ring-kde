@@ -35,7 +35,7 @@ public:
 private:
    KIcon* m_pIcon;
 
-public slots:
+public Q_SLOTS:
    void setText(const QString&);
    void hasChanged();
 

@@ -39,7 +39,7 @@ public:
    //Getter
    bool hasChanged();
 
-private slots:
+private Q_SLOTS:
    void loadDevice    ( QString device     );
    void loadResolution( QString channel    );
    void loadRate      ( QString resolution );

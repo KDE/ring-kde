@@ -40,7 +40,7 @@ private:
    //Attrubutes
    QHash<Call*,IMTab*> m_lTabs;
 
-private slots:
+private Q_SLOTS:
    void newConversation(Call* call, InstantMessagingModel* model);
    void closeRequest(int index);
 };

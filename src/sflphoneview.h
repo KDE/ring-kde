@@ -80,7 +80,7 @@ public:
    //Implement macro key listener
    virtual void addDTMF(const QString& sequence);
 
-private slots:
+private Q_SLOTS:
    /**
     *   Performs the action action on the call call, then updates window.
     *   The call object will handle the action with its "actionPerformed" method.
@@ -144,7 +144,7 @@ private slots:
 
 
 
-public slots:
+public Q_SLOTS:
    /**
     * Updates all the display
     * according to the settings.

@@ -42,7 +42,7 @@ class IMTab : public QListView
    Q_OBJECT
 public:
    explicit IMTab(InstantMessagingModel* model,QWidget* parent = nullptr);
-private slots:
+private Q_SLOTS:
    void scrollBottom();
 };
 

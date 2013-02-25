@@ -99,10 +99,10 @@ protected:
     //Helper
     QString showNumberSelector(bool& ok);
 
-public slots:
+public Q_SLOTS:
    void updated();
 
-private slots:
+private Q_SLOTS:
    void showContext(const QPoint& pos);
    void sendEmail   ();
    void callAgain   ();

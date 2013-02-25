@@ -62,11 +62,11 @@ private:
    void*          m_pBuffer     ;
    QHash<QString,VideoRenderer*> m_lRenderers;
 
-public slots:
+public Q_SLOTS:
    void stopPreview ();
    void startPreview();
 
-private slots:
+private Q_SLOTS:
    void startedDecoding(QString id, QString shmPath, int width, int height);
    void stoppedDecoding(QString id, QString shmPath);
    void deviceEvent();

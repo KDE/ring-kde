@@ -208,10 +208,10 @@ class LIB_EXPORT Account : public QObject {
       QString*         m_pAccountId     ;
       MapStringString* m_pAccountDetails;
 
-   public slots:
+   public Q_SLOTS:
       void setEnabled(bool checked);
 
-   private slots:
+   private Q_SLOTS:
       void accountChanged(QString accountId,QString stateName, int state);
 
    private:

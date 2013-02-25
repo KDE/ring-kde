@@ -92,12 +92,12 @@ private:
    Account*                 m_pDefaultAccount;
    AccountListColorVisitor* m_pColorVisitor  ;
    
-public slots:
+public Q_SLOTS:
    void update        ();
    void updateAccounts();
    void registerAllAccounts();
 
-private slots:
+private Q_SLOTS:
    void accountChanged(const QString& account,const QString& state, int code);
    void accountChanged(Account* a);
    

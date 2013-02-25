@@ -84,11 +84,11 @@ private:
    //Mutator
    void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
 
-public slots:
+public Q_SLOTS:
    void enableDateRange(bool disable);
    virtual void keyPressEvent(QKeyEvent* event);
 
-private slots:
+private Q_SLOTS:
    void filter               ( QString text );
    void updateLinkedFromDate ( QDate   date );
    void updateLinkedToDate   ( QDate   date );

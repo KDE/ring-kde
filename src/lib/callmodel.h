@@ -53,7 +53,7 @@ public:
 
    bool isValid();
    
-private slots:
+private Q_SLOTS:
    void callStateChanged      ( const QString& callID    , const QString &state   );
    void incomingCall          ( const QString& accountID , const QString & callID );
    void incomingConference    ( const QString& confID                             );

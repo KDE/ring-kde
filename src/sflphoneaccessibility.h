@@ -36,7 +36,7 @@ private:
    //Static attributes
    static SFLPhoneAccessibility* m_pInstance;
 
-public slots:
+public Q_SLOTS:
    void listCall();
    void currentCallDetails();
    void say(QString message);

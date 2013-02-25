@@ -35,7 +35,7 @@ public:
       setContentsMargins(0,0,0,0);
       connect(this,SIGNAL(clicked()),this,SLOT(sltClicked()));
    }
-private slots:
+private Q_SLOTS:
    ///Called on button click
    void sltClicked() { emit typed(m_Value); }
 private:
@@ -66,7 +66,7 @@ public:
     explicit Dialpad(QWidget *parent = nullptr);
     ~Dialpad();
 
-private slots:
+private Q_SLOTS:
    void clicked(QString& text);
 
 signals:

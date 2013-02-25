@@ -84,7 +84,7 @@ class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
       void generateNumberList(QString name);
 
 
-   private slots:
+   private Q_SLOTS:
       //Slots
       void updateCollection        (                                                  );
       void callStateChangedSignal  ( Call* call                                       );

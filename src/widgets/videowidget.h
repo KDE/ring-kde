@@ -40,13 +40,13 @@ private:
    QImage*        m_Image;
    VideoRenderer* m_pRenderer;
 
-private slots:
+private Q_SLOTS:
    void update();
    void updateFrame();
    void stop();
 
 
-public slots:
+public Q_SLOTS:
    void setRenderer(VideoRenderer* renderer);
 
 };

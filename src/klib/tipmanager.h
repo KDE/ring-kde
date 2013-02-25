@@ -85,7 +85,7 @@ private:
    QList<Tip*>             m_lHidingTipQueue ;
    QTimer*                 m_pTimer          ;
 
-private slots:
+private Q_SLOTS:
    void animationStep(FrameDescription desc);
    void changeSize(bool ignoreAnim = false);
    void animationEnded();

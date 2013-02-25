@@ -47,7 +47,7 @@ private:
    //Attributes
    static SFLPhoneCmd* m_spSelf;
 
-private slots:
+private Q_SLOTS:
    void textMessagePickup(Call* call);
 };
 

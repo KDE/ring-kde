@@ -60,7 +60,7 @@ private:
    static CallModelBase* m_spCallModel;
 
    
-private slots:
+private Q_SLOTS:
    void newMessage(QString callId, QString from, QString message);
 
    

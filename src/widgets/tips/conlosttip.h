@@ -47,7 +47,7 @@ private:
    uchar     m_Counter    ;
    QImage    m_RenderCache;
 
-private slots:
+private Q_SLOTS:
    void startAnimation(bool visibility);
    void timeout();
 };

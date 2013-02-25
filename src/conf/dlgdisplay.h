@@ -45,12 +45,12 @@ private:
    QMap<QString,QListWidgetItem*> m_lItemList   ;
    bool m_HasChanged;
 
-public slots:
+public Q_SLOTS:
    //Mutator
    void updateWidgets();
    void updateSettings();
 
-private slots:
+private Q_SLOTS:
    void changed();
 
 signals:

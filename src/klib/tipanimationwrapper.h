@@ -73,7 +73,7 @@ private:
 protected:
    int     m_MaxStep;
 
-private slots:
+private Q_SLOTS:
    void step();
    void sizeChanged(QRect rect,bool ignoreAnim);
    void currentChanged(Tip* newCurrent);

@@ -36,7 +36,7 @@ public:
    explicit ActionSetAccountFirst(Account * account, QObject *parent = 0);
    ~ActionSetAccountFirst();
 
-private slots:
+private Q_SLOTS:
    void emitSetFirst();
 
 signals:

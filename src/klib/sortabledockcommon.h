@@ -117,7 +117,7 @@ class LIB_EXPORT StaticEventHandler : public QObject
    public:
       StaticEventHandler(QObject* parent, QStringList* list);
 
-   public slots:
+   public Q_SLOTS:
       void update();
    private:
       QStringList* m_pList;

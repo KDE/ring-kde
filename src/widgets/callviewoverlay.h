@@ -46,7 +46,7 @@ private:
    QColor   m_black        ;
    QString  m_accessMessage;
 
-private slots:
+private Q_SLOTS:
    void changeVisibility();
 };
 

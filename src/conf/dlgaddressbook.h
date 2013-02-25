@@ -46,11 +46,11 @@ private:
    QHash<QString,QListWidgetItem*> m_mNumbertype;
    bool m_HasChanged;
 
-public slots:
+public Q_SLOTS:
    void updateWidgets ();
    void updateSettings();
 
-private slots:
+private Q_SLOTS:
    void changed();
 
 signals:

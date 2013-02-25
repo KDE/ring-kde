@@ -120,11 +120,11 @@ protected:
    virtual void dragLeaveEvent ( QDragLeaveEvent *e );
    virtual void dropEvent      ( QDropEvent      *e );
 
-public slots:
+public Q_SLOTS:
    void updated();
    bool getContactInfo(QString phone);
 
-private slots:
+private Q_SLOTS:
    void sendEmail        ();
    void callAgain        ();
    void copy             ();

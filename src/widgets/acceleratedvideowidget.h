@@ -174,7 +174,7 @@ protected:
    void mousePressEvent(QMouseEvent *) { setAnimationPaused(true); }
    void mouseReleaseEvent(QMouseEvent *) { setAnimationPaused(false); }
 
-private slots:
+private Q_SLOTS:
    void newFrameEvent();
 };
 #endif

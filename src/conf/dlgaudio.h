@@ -42,7 +42,7 @@ private:
    bool m_Changed;
    bool m_IsLoading;
 
-public slots:
+public Q_SLOTS:
    void updateWidgets ();
    void updateSettings();
    bool hasChanged    ();
@@ -56,7 +56,7 @@ public slots:
     */
    void loadAlsaSettings();
 
-private slots:
+private Q_SLOTS:
    //void codecTableChanged();
    void changed();
 

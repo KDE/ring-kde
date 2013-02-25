@@ -106,13 +106,13 @@ private:
    Macro*                m_pCurrentMacro;
    Macro*                m_pCurrentMacroMemento;
 
-public slots:
+public Q_SLOTS:
    Macro* newMacro(const QString& id = "");
    bool removeMacro(QModelIndex idx);
    void setCurrent(QModelIndex current,QModelIndex previous);
    void save();
 
-private slots:
+private Q_SLOTS:
    void changed(Macro* macro);
 
 signals:
@@ -160,9 +160,9 @@ private:
    KAction*    m_Action;
    MacroModel* m_pModel;
    MacroModel::IndexPointer* m_pPointer;
-public slots:
+public Q_SLOTS:
    void execute();
-private slots:
+private Q_SLOTS:
    void nextStep();
 
 signals:

@@ -65,10 +65,10 @@ protected:
    //Attributes
    QHash<QString,Contact*>        m_ContactByPhone ;
    QHash<QString,Contact*>        m_ContactByUid   ;
-public slots:
+public Q_SLOTS:
    ContactList update();
    
-private slots:
+private Q_SLOTS:
    
 signals:
    void collectionChanged();
