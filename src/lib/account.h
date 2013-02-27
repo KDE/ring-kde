@@ -84,11 +84,11 @@ class LIB_EXPORT Account : public QObject {
 
       //Getters
       bool                    isNew()                                const;
-      const QString&          getAccountId()                         const;
+      const QString           getAccountId()                         const;
       const MapStringString&  getAccountDetails()                    const;
-      const QString&          getStateName(const QString& state)     const;
-      const QString&          getAccountDetail(const QString& param) const;
-      const QString&          getAlias()                             const;
+      const QString           getStateName(const QString& state)     const;
+      const QString           getAccountDetail(const QString& param) const;
+      const QString           getAlias()                             const;
       bool                    isEnabled()                            const;
       bool                    isRegistered()                         const;
       QModelIndex             getIndex()                                  ;

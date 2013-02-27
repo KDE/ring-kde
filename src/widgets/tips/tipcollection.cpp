@@ -21,7 +21,7 @@
 
 #include "dialpadtip.h"
 #include "riggingtip.h"
-#include "conlosttip.h"
+#include "connectionlosttip.h"
 #include "conftip.h"
 #include "klib/tipmanager.h"
 

@@ -397,31 +397,31 @@ QString Call::getStartTimeStamp()    const
 }
 
 ///Get the number where the call have been transferred
-const QString& Call::getTransferNumber()    const
+const QString Call::getTransferNumber()    const
 {
    return m_TransferNumber;
 }
 
 ///Get the call / peer number
-const QString& Call::getCallNumber()        const
+const QString Call::getCallNumber()        const
 {
    return m_CallNumber;
 }
 
 ///Return the call id
-const QString& Call::getCallId()            const
+const QString Call::getCallId()            const
 {
    return m_CallId;
 }
 
 ///Return the peer phone number
-const QString& Call::getPeerPhoneNumber()   const
+const QString Call::getPeerPhoneNumber()   const
 {
    return m_PeerPhoneNumber;
 }
 
 ///Get the peer name
-const QString& Call::getPeerName()          const
+const QString Call::getPeerName()          const
 {
    return m_PeerName;
 }
@@ -472,13 +472,13 @@ bool Call::isConference()                   const
 }
 
 ///Get the conference ID
-const QString& Call::getConfId()            const
+const QString Call::getConfId()            const
 {
    return m_ConfId;
 }
 
 ///Get the recording path
-const QString& Call::getRecordingPath()     const
+const QString Call::getRecordingPath()     const
 {
    return m_RecordingPath;
 }

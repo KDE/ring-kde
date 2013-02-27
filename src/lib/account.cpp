@@ -154,7 +154,7 @@ bool Account::isNew() const
 }
 
 ///Get this account ID
-const QString& Account::getAccountId() const
+const QString Account::getAccountId() const
 {
    if (isNew()) {
       qDebug() << "Error : getting AccountId of a new account.";
@@ -174,13 +174,13 @@ const MapStringString& Account::getAccountDetails() const
 }
 
 ///Get current state
-const QString& Account::getStateName(const QString& state) const
+const QString Account::getStateName(const QString& state) const
 {
    return (const QString&)account_state_name(state);
 }
 
 ///Get an account detail
-const QString& Account::getAccountDetail(const QString& param) const
+const QString Account::getAccountDetail(const QString& param) const
 {
    if (!m_pAccountDetails) {
       qDebug() << "The account list is not set";
@@ -202,7 +202,7 @@ const QString& Account::getAccountDetail(const QString& param) const
 } //getAccountDetail
 
 ///Get the alias
-const QString& Account::getAlias() const
+const QString Account::getAlias() const
 {
    return getAccountDetail(ACCOUNT_ALIAS);
 }

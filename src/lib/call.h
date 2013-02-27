@@ -126,9 +126,9 @@ public:
    
    //Getters
    call_state           getState            () const;
-   const QString&       getCallId           () const;
-   const QString&       getPeerPhoneNumber  () const;
-   const QString&       getPeerName         () const;
+   const QString        getCallId           () const;
+   const QString        getPeerPhoneNumber  () const;
+   const QString        getPeerName         () const;
    call_state           getCurrentState     () const;
    history_state        getHistoryState     () const;
    bool                 getRecording        () const;
@@ -140,10 +140,10 @@ public:
    bool                 isSecure            () const;
    bool                 isConference        () const;
    bool                 isSelected          () const;
-   const QString&       getConfId           () const;
-   const QString&       getTransferNumber   () const;
-   const QString&       getCallNumber       () const;
-   const QString&       getRecordingPath    () const;
+   const QString        getConfId           () const;
+   const QString        getTransferNumber   () const;
+   const QString        getCallNumber       () const;
+   const QString        getRecordingPath    () const;
    const QString        toHumanStateName    () const;
    Contact*             getContact          ()      ;
    VideoRenderer*       getVideoRenderer    ()      ;

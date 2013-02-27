@@ -149,4 +149,3 @@ bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
    return false;
 }
 #include "sflphoneapplication.moc"
-

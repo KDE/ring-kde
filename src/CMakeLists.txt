@@ -69,7 +69,7 @@ SET(
    widgets/tips/conftip.cpp
    widgets/tips/dialpadtip.cpp
    widgets/tips/riggingtip.cpp
-   widgets/tips/conlosttip.cpp
+   widgets/tips/connectionlosttip.cpp
    widgets/tips/tipcollection.cpp
    widgets/calltreeitemdelegate.cpp
 #    widgets/acceleratedvideowidget.cpp

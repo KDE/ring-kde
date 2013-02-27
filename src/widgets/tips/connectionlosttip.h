@@ -15,10 +15,9 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef CONNECTION_LOST_TIP_H
-#define CONNECTION_LOST_TIP_H
+#ifndef CONNECTIONLOSTTIP_H
+#define CONNECTIONLOSTTIP_H
 
-//Base
 #include <klib/tip.h>
 
 //Qt
