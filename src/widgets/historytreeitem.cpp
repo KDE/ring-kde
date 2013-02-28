@@ -310,7 +310,9 @@ void HistoryTreeItem::addContact()
 {
    kDebug() << "Adding contact";
    Contact* aContact = new Contact();
-   aContact->setPhoneNumbers(PhoneNumbers() << new Contact::PhoneNumber(m_PhoneNumber, "Home"));
+   Contact::PhoneNumbers numbers(aContact);
+   numbers << new Contact::PhoneNumber(m_PhoneNumber, "Home");
+   aContact->setPhoneNumbers(numbers);
    aContact->setFormattedName(m_Name);
    AkonadiBackend::getInstance()->addNewContact(aContact);
 }

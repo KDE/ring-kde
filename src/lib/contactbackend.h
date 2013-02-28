@@ -24,6 +24,7 @@
 #include <QHash>
 #include <QStringList>
 #include <QVariant>
+#include <QtCore/QAbstractItemModel>
 
 #include "typedefs.h"
 #include "contact.h"
@@ -36,10 +37,10 @@ class Account;
 typedef QList<Contact*> ContactList;
 
 ///ContactBackend: Allow different way to handle contact without poluting the library
-class LIB_EXPORT ContactBackend : public QObject {
+class LIB_EXPORT ContactBackend : public QAbstractItemModel {
    Q_OBJECT
 public:
-   explicit ContactBackend(QObject* parent);
+   explicit ContactBackend(QObject* parent = nullptr);
    virtual ~ContactBackend();
 
    ///Get a contact using a phone number
@@ -52,9 +53,21 @@ public:
    virtual void        editContact       ( Contact*       contact     ) = 0;
    ///Add a new contact to the backend
    virtual void        addNewContact     ( Contact*       contact     ) = 0;
+   
+   virtual const ContactList& getContactList() const = 0;
 
    ///Add a new phone number to an existing contact
    virtual void addPhoneNumber( Contact*       contact , QString  number, QString type )=0;
+
+   //Model implementation
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
+   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
+   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
+   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const;
+   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
+   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
+   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 protected:
    virtual ContactList update_slot       (                            ) = 0;
 

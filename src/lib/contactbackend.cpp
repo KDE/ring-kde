@@ -28,7 +28,7 @@
 #include <QtCore/QHash>
 
 ///Constructor
-ContactBackend::ContactBackend(QObject* parent) : QObject(parent)
+ContactBackend::ContactBackend(QObject* parent) : QAbstractItemModel(parent)
 {
 
 }
@@ -70,4 +70,90 @@ QString ContactBackend::getHostNameFromPhone(QString phoneNumber)
       return phoneNumber.split('@')[1].left(phoneNumber.split('@')[1].size()-1);
    }
    return "";
+}
+
+
+/*****************************************************************************
+ *                                                                           *
+ *                                   Model                                   *
+ *                                                                           *
+ ****************************************************************************/
+
+
+bool ContactBackend::setData( const QModelIndex& index, const QVariant &value, int role)
+{
+   Q_UNUSED(index)
+   Q_UNUSED(value)
+   Q_UNUSED(role)
+   return false;
+}
+
+QVariant ContactBackend::data( const QModelIndex& index, int role) const
+{
+   if (!index.isValid())
+      return QVariant();
+   if (!index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+      return QVariant(getContactList()[index.row()]->getFormattedName());
+   }
+   else if (index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+      return QVariant(getContactList()[index.parent().row()]->getPhoneNumbers()[index.row()]->getNumber());
+   }
+   return QVariant();
+}
+
+QVariant ContactBackend::headerData(int section, Qt::Orientation orientation, int role) const
+{
+   Q_UNUSED(section)
+   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+      return QVariant("Macros");
+   return QVariant();
+}
+
+int ContactBackend::rowCount( const QModelIndex& parent ) const
+{
+   if (!parent.isValid()) {
+      return getContactList().size();
+   }
+   else if (!parent.parent().isValid() && parent.row() < getContactList().size()) {
+      return getContactList()[parent.row()]->getPhoneNumbers().size();
+   }
+   return 0;
+}
+
+Qt::ItemFlags ContactBackend::flags( const QModelIndex& index ) const
+{
+   if (!index.isValid())
+      return 0;
+   return Qt::ItemIsEnabled | ((index.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
+}
+
+int ContactBackend::columnCount ( const QModelIndex& parent) const
+{
+   Q_UNUSED(parent)
+   return 1;
+}
+
+QModelIndex ContactBackend::parent( const QModelIndex& index) const
+{
+   if (!index.isValid())
+      return QModelIndex();
+   ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
+   if (modelItem && modelItem->type() == ContactTreeBackend::Type::NUMBER) {
+      int idx = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
+      if (idx != -1) {
+         return ContactBackend::index(idx,0,QModelIndex());
+      }
+   }
+   return QModelIndex();
+}
+
+QModelIndex ContactBackend::index( int row, int column, const QModelIndex& parent) const
+{
+   if (!parent.isValid() && m_ContactByPhone.size() > row) {
+      return createIndex(row,column,getContactList()[row]);
+   }
+   else if (parent.isValid() && getContactList()[parent.row()]->getPhoneNumbers().size() > row) {
+      return createIndex(row,column,(ContactTreeBackend*)(&(getContactList()[parent.row()]->getPhoneNumbers())));
+   }
+   return QModelIndex();
 }

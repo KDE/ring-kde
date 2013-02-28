@@ -240,7 +240,7 @@ void ContactItemWidget::updated()
       m_pEmailL->setVisible(false);
    }
 
-   PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
+   Contact::PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
 
    if (getCallNumbers().count() == 1)
       m_pCallNumberL->setText(getCallNumbers()[0]->getNumber());
@@ -280,7 +280,7 @@ const QString& ContactItemWidget::getContactName() const
 }
 
 ///Return call number
-PhoneNumbers ContactItemWidget::getCallNumbers() const
+Contact::PhoneNumbers ContactItemWidget::getCallNumbers() const
 {
    return m_pContactKA->getPhoneNumbers();
 }
@@ -366,7 +366,7 @@ void ContactItemWidget::showContext(const QPoint& pos)
       m_pMenu->addAction( m_pEmail       );
       m_pMenu->addAction( m_pBookmark    );
    }
-   PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
+   Contact::PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
    m_pBookmark->setEnabled(numbers.count() == 1);
    m_pMenu->exec(mapToGlobal(pos));
 } //showContext
@@ -441,7 +441,7 @@ void ContactItemWidget::addPhone()
 ///Add this contact to the bookmark list
 void ContactItemWidget::bookmark()
 {
-   PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
+   Contact::PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
    if (numbers.count() == 1)
       SFLPhone::app()->bookmarkDock()->addBookmark(numbers[0]->getNumber());
 }
@@ -523,7 +523,7 @@ void ContactItemWidget::dropEvent(QDropEvent *e)
 ///On double click
 void ContactItemWidget::mouseDoubleClickEvent(QMouseEvent *e )
 {
-   PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
+   Contact::PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
 
    if (getCallNumbers().count() == 1) {
       e->accept();

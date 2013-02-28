@@ -246,7 +246,7 @@ void ContactDock::reloadContact()
          aContact->setItem(item);
          aContact->setContact(cont);
 
-         PhoneNumbers numbers =  aContact->getContact()->getPhoneNumbers();
+         Contact::PhoneNumbers numbers =  aContact->getContact()->getPhoneNumbers();
          if (numbers.count() > 1) {
             foreach (Contact::PhoneNumber* number, numbers) {
                QNumericTreeWidgetItem_hist* item2 = new QNumericTreeWidgetItem_hist(item);

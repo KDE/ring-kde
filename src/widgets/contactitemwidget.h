@@ -50,15 +50,15 @@ class ContactItemWidget : public QWidget
     ~ContactItemWidget();
 
     //Getters
-    KABC::Addressee*  contact()         const;
-    const QString&    getContactName()  const;
-    PhoneNumbers      getCallNumbers()  const;
-    const QString&    getOrganization() const;
-    const QString&    getEmail()        const;
-    QPixmap*          getPicture()      const;
-    QTreeWidgetItem*  getItem()         const;
-    Contact*          getContact()      const;
-    virtual QSize     sizeHint ()       const;
+    KABC::Addressee*      contact()         const;
+    const QString&        getContactName()  const;
+    Contact::PhoneNumbers getCallNumbers()  const;
+    const QString&        getOrganization() const;
+    const QString&        getEmail()        const;
+    QPixmap*              getPicture()      const;
+    QTreeWidgetItem*      getItem()         const;
+    Contact*              getContact()      const;
+    virtual QSize         sizeHint ()       const;
 
     //Setters
     void setContact ( Contact*         contact );

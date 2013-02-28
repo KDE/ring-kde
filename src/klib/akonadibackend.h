@@ -57,6 +57,8 @@ public:
    virtual void     addNewContact ( Contact*   contact                                                 );
    virtual ~AkonadiBackend        (                                                                    );
 
+   virtual const ContactList& getContactList() const;
+
 private:
    //Singleton constructor
    explicit AkonadiBackend(QObject* parent);

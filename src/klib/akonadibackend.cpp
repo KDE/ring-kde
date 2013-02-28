@@ -135,6 +135,11 @@ Contact* AkonadiBackend::getContactByUid(const QString& uid)
    return m_ContactByUid[uid];
 }
 
+const ContactList& AkonadiBackend::getContactList() const
+{
+   return m_pContacts;
+}
+
 
 /*****************************************************************************
  *                                                                           *
@@ -194,7 +199,7 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
             Contact* aContact   = new Contact();
 
             const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
-            PhoneNumbers newNumbers;
+            Contact::PhoneNumbers newNumbers(aContact);
             foreach (const KABC::PhoneNumber& number, numbers) {
                newNumbers << new Contact::PhoneNumber(number.number(),number.typeLabel());
                QString number2 = number.number();

@@ -33,10 +33,22 @@ namespace KABC {
    class PhoneNumber ;
 }
 
+class ContactTreeBackend {
+public:
+    enum Type {
+        CONTACT,
+        NUMBER,
+    };
+    ContactTreeBackend(ContactTreeBackend::Type type) : m_Type(type) {}
+    ContactTreeBackend::Type type() const { return m_Type; }
+private:
+    ContactTreeBackend::Type m_Type;
+};
+
 #include "typedefs.h"
 
 ///Contact: Abstract version of a contact
-class LIB_EXPORT Contact : public QObject{
+class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
    Q_OBJECT
 public:
    ///PhoneNumber: represent a phone number
@@ -55,7 +67,15 @@ public:
       QString m_Type     ;
    };
 
-   typedef QList<Contact::PhoneNumber*> PhoneNumbers;
+   class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
+   public:
+      PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent) {}
+      PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list) : QList<Contact::PhoneNumber*>(list),
+      ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent) {}
+      Contact* contact() const { return m_pParent; }
+   private:
+      Contact* m_pParent;
+   };
 
 private:
    QString      m_FirstName      ;
@@ -79,7 +99,7 @@ public:
    virtual void initItem();
    
    //Getters
-   virtual PhoneNumbers   getPhoneNumbers()    const;
+   virtual const PhoneNumbers&   getPhoneNumbers() const;
    virtual const QString& getNickName()        const;
    virtual const QString& getFirstName()       const;
    virtual const QString& getSecondName()      const;
@@ -112,6 +132,5 @@ protected:
    virtual void initItemWidget();
 
 };
-typedef Contact::PhoneNumbers PhoneNumbers;
 
 #endif

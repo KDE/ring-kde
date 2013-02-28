@@ -27,7 +27,7 @@
 #include "sflphone_const.h"
 
 ///Constructor
-Contact::Contact():m_pPhoto(0)
+Contact::Contact():m_pPhoto(0),ContactTreeBackend(ContactTreeBackend::CONTACT),m_Numbers(this)
 {
    initItem();
 }
@@ -54,7 +54,7 @@ void Contact::initItemWidget()
 }
 
 ///Get the phone number list
-PhoneNumbers Contact::getPhoneNumbers() const
+const Contact::PhoneNumbers& Contact::getPhoneNumbers() const
 {
    return m_Numbers;
 }
