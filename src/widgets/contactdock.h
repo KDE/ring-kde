@@ -22,6 +22,7 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QTreeWidgetItem>
 #include "categorizedtreewidget.h"
+#include "categorizedtreeview.h"
 #include "../klib/sortabledockcommon.h"
 #include "../klib/contactproxymodel.h"
 #include "calltreeitem.h"

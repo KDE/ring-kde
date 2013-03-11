@@ -137,7 +137,6 @@ QModelIndex ContactByNameProxyModel::parent( const QModelIndex& index) const
    }
    else if (modelItem && modelItem->type3() == ContactTreeBackend::Type::NUMBER) {
       Contact* ct = (Contact*)modelItem->getSelf();
-      int idx = m_pModel->getContactList().indexOf(ct);
       QString val = ct->getFormattedName();
       if (val.size())
          val = val[0];

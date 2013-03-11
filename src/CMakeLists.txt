@@ -60,6 +60,7 @@ SET(
    widgets/categorydrawer.cpp
    widgets/conferencebox.cpp
    widgets/categorizedtreewidget.cpp
+   widgets/categorizedtreeview.cpp
    widgets/videodock.cpp
    widgets/videowidget.cpp
    widgets/immanager.cpp
