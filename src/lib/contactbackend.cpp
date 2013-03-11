@@ -26,11 +26,12 @@
 
 //Qt
 #include <QtCore/QHash>
+#include <QtCore/QDebug>
 
 ///Constructor
 ContactBackend::ContactBackend(QObject* parent) : QAbstractItemModel(parent)
 {
-
+   connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }
 
 ///Destructor
@@ -45,6 +46,13 @@ ContactBackend::~ContactBackend()
 ContactList ContactBackend::update()
 {
    return update_slot();
+}
+
+///Called when the new contacts are added
+void ContactBackend::slotReloadModel()
+{
+   emit layoutChanged();
+   emit dataChanged(index(0,0),index(rowCount(),0));
 }
 
 /*****************************************************************************
@@ -105,7 +113,7 @@ QVariant ContactBackend::headerData(int section, Qt::Orientation orientation, in
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant("Macros");
+      return QVariant("Contacts");
    return QVariant();
 }
 
@@ -138,7 +146,7 @@ QModelIndex ContactBackend::parent( const QModelIndex& index) const
    if (!index.isValid())
       return QModelIndex();
    ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
-   if (modelItem && modelItem->type() == ContactTreeBackend::Type::NUMBER) {
+   if (modelItem && modelItem->type3() == ContactTreeBackend::Type::NUMBER) {
       int idx = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
       if (idx != -1) {
          return ContactBackend::index(idx,0,QModelIndex());

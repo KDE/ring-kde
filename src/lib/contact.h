@@ -33,19 +33,23 @@ namespace KABC {
    class PhoneNumber ;
 }
 
-class ContactTreeBackend {
+#include "typedefs.h"
+
+class LIB_EXPORT ContactTreeBackend {
 public:
     enum Type {
-        CONTACT,
-        NUMBER,
+        CONTACT=0,
+        NUMBER=1,
+        TOP_LEVEL=2
     };
-    ContactTreeBackend(ContactTreeBackend::Type type) : m_Type(type) {}
-    ContactTreeBackend::Type type() const { return m_Type; }
+    ContactTreeBackend(ContactTreeBackend::Type _type);
+    virtual ~ContactTreeBackend(){}
+    ContactTreeBackend::Type type3() const;
+    virtual QObject* getSelf() = 0;
 private:
-    ContactTreeBackend::Type m_Type;
+    ContactTreeBackend::Type m_Type3;
 };
 
-#include "typedefs.h"
 
 ///Contact: Abstract version of a contact
 class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
@@ -66,9 +70,9 @@ public:
       QString m_Number   ;
       QString m_Type     ;
    };
-
    class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
    public:
+      virtual QObject* getSelf();
       PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent) {}
       PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list) : QList<Contact::PhoneNumber*>(list),
       ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent) {}
@@ -76,6 +80,8 @@ public:
    private:
       Contact* m_pParent;
    };
+
+   virtual QObject* getSelf();
 
 private:
    QString      m_FirstName      ;

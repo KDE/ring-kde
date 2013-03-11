@@ -26,8 +26,20 @@
 //SFLPhone library
 #include "sflphone_const.h"
 
+ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type3(_type)
+{
+   
+}
+
+ContactTreeBackend::Type ContactTreeBackend::type3() const
+{
+   return m_Type3;
+}
+
+QObject* Contact::getSelf() {return this;}
+
 ///Constructor
-Contact::Contact():m_pPhoto(0),ContactTreeBackend(ContactTreeBackend::CONTACT),m_Numbers(this)
+Contact::Contact():m_pPhoto(0),ContactTreeBackend(ContactTreeBackend::Type::CONTACT),m_Numbers(this)
 {
    initItem();
 }
@@ -217,4 +229,8 @@ QString& Contact::PhoneNumber::getNumber() {
 ///Return the phone number type
 QString& Contact::PhoneNumber::getType() {
    return m_Type   ;
+}
+
+QObject* Contact::PhoneNumbers::getSelf() {
+   return m_pParent;
 }

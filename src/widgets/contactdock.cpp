@@ -157,6 +157,11 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent)
    m_pSplitter->addWidget ( m_pContactView );
    m_pSplitter->addWidget ( m_pCallView    );
    mainLayout->addWidget  ( m_pFilterLE    );
+   
+   QTreeView* m_pView = new QTreeView(this);
+   ContactByNameProxyModel* model = new ContactByNameProxyModel(AkonadiBackend::getInstance());
+   m_pView->setModel(model);
+   mainLayout->addWidget(m_pView);
 
    m_pSplitter->setChildrenCollapsible(true);
    m_pSplitter->setStretchFactor(0,7);
