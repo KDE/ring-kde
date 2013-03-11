@@ -57,50 +57,11 @@
 
 ///Constructor
 ContactItemWidget::ContactItemWidget(QWidget *parent)
-   : QWidget(parent), m_pMenu(0),m_pOrganizationL(0),m_pEmailL(0),m_pContactKA(0), m_pIconL(0), m_pContactNameL(0),
+   : QWidget(parent),m_pOrganizationL(0),m_pEmailL(0),m_pContactKA(0), m_pIconL(0), m_pContactNameL(0),
    m_pCallNumberL(0)
 {
    setContextMenuPolicy(Qt::CustomContextMenu);
    setAcceptDrops(true);
-   
-   m_pCallAgain   = new KAction(this);
-   m_pCallAgain->setShortcut   ( Qt::CTRL + Qt::Key_Enter   );
-   m_pCallAgain->setText       ( i18n("Call Again")         );
-   m_pCallAgain->setIcon       ( KIcon("call-start")        );
-
-   m_pEditContact = new KAction(this);
-   m_pEditContact->setShortcut ( Qt::CTRL + Qt::Key_E       );
-   m_pEditContact->setText     ( i18n("Edit contact")       );
-   m_pEditContact->setIcon     ( KIcon("contact-new")       );
-
-   m_pCopy        = new KAction(this);
-   m_pCopy->setShortcut        ( Qt::CTRL + Qt::Key_C       );
-   m_pCopy->setText            ( i18n("Copy")               );
-   m_pCopy->setIcon            ( KIcon("edit-copy")         );
-
-   m_pEmail       = new KAction(this);
-   m_pEmail->setShortcut       ( Qt::CTRL + Qt::Key_M       );
-   m_pEmail->setText           ( i18n("Send Email")         );
-   m_pEmail->setIcon           ( KIcon("mail-message-new")  );
-   m_pEmail->setEnabled        ( false                      );
-
-   m_pAddPhone    = new KAction(this);
-   m_pAddPhone->setShortcut    ( Qt::CTRL + Qt::Key_N       );
-   m_pAddPhone->setText        ( i18n("Add Phone Number")   );
-   m_pAddPhone->setIcon        ( KIcon("list-resource-add") );
-   m_pEmail->setEnabled        ( false                      );
-
-   m_pBookmark    = new KAction(this);
-   m_pBookmark->setShortcut    ( Qt::CTRL + Qt::Key_D       );
-   m_pBookmark->setText        ( i18n("Bookmark")           );
-   m_pBookmark->setIcon        ( KIcon("bookmarks")         );
-
-   connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
-   connect(m_pEditContact  , SIGNAL(triggered()) , this,SLOT(editContact()));
-   connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy())       );
-   connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
-   connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone())   );
-   connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
 
    //Overlay
    m_pBtnTrans = new TranslucentButtons(this);
@@ -118,14 +79,6 @@ ContactItemWidget::~ContactItemWidget()
    if (m_pCallNumberL)   delete m_pCallNumberL  ;
    if (m_pOrganizationL) delete m_pOrganizationL;
    if (m_pEmailL)        delete m_pEmailL       ;
-   if (m_pMenu)          delete m_pMenu         ;
-
-   delete m_pCallAgain   ;
-   delete m_pEditContact ;
-   delete m_pCopy        ;
-   delete m_pEmail       ;
-   delete m_pAddPhone    ;
-   delete m_pBookmark    ;
 }
 
 
@@ -204,9 +157,7 @@ void ContactItemWidget::setContact(Contact* contact)
       height = 48;
    m_Size = QSize(0,height+8);
 
-   if (!m_pContactKA->getPreferredEmail().isEmpty()) {
-      m_pEmail->setEnabled(true);
-   }
+
 } //setContact
 
 ///Set the model index
@@ -315,32 +266,7 @@ Contact* ContactItemWidget::getContact() const
    return m_pContactKA;
 }
 
-///Select a number
-QString ContactItemWidget::showNumberSelector(bool& ok)
-{
-   if (m_pContactKA->getPhoneNumbers().size() > 1) {
-      QStringList list;
-      QHash<QString,QString> map;
-      foreach (Contact::PhoneNumber* number, m_pContactKA->getPhoneNumbers()) {
-         map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
-         list << number->getType()+" ("+number->getNumber()+')';
-      }
-      QString result = KInputDialog::getItem ( i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
 
-      if (!ok) {
-         kDebug() << "Operation cancelled";
-      }
-      return map[result];
-   }
-   else if (m_pContactKA->getPhoneNumbers().size() == 1) {
-      ok = true;
-      return m_pContactKA->getPhoneNumbers()[0]->getNumber();
-   }
-   else {
-      ok = false;
-      return "";
-   }
-}
 
 ///Return precalculated size hint, prevent it from being computed over and over
 QSize ContactItemWidget::sizeHint () const
@@ -354,97 +280,6 @@ QSize ContactItemWidget::sizeHint () const
  *                                                                           *
  ****************************************************************************/
 
-///Show the context menu
-void ContactItemWidget::showContext(const QPoint& pos)
-{
-   if (!m_pMenu) {
-      m_pMenu = new QMenu( this          );
-      m_pMenu->addAction( m_pCallAgain   );
-      m_pMenu->addAction( m_pEditContact );
-      m_pMenu->addAction( m_pAddPhone    );
-      m_pMenu->addAction( m_pCopy        );
-      m_pMenu->addAction( m_pEmail       );
-      m_pMenu->addAction( m_pBookmark    );
-   }
-   Contact::PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
-   m_pBookmark->setEnabled(numbers.count() == 1);
-   m_pMenu->exec(mapToGlobal(pos));
-} //showContext
-
-///Send an email
-//TODO
-void ContactItemWidget::sendEmail()
-{
-   kDebug() << "Sending email";
-   QProcess *myProcess = new QProcess(this);
-   QStringList arguments;
-   myProcess->start("xdg-email", (arguments << m_pContactKA->getPreferredEmail()));
-}
-
-///Call the same number again
-//TODO
-void ContactItemWidget::callAgain()
-{
-   kDebug() << "Calling ";
-   bool ok;
-   QString number = showNumberSelector(ok);
-   if (ok) {
-      Call* call = SFLPhone::model()->addDialingCall(m_pContactKA->getFormattedName(), AccountList::getCurrentAccount());
-      if (call) {
-         call->setCallNumber(number);
-         call->setPeerName(m_pContactKA->getFormattedName());
-         call->actionPerformed(CALL_ACTION_ACCEPT);
-      }
-      else {
-         HelperFunctions::displayNoAccountMessageBox(this);
-      }
-   }
-}
-
-///Copy contact to clipboard
-void ContactItemWidget::copy()
-{
-   kDebug() << "Copying contact";
-   QMimeData* mimeData = new QMimeData();
-   mimeData->setData(MIME_CONTACT, m_pContactKA->getUid().toUtf8());
-   QString numbers(m_pContactKA->getFormattedName()+": ");
-   QString numbersHtml("<b>"+m_pContactKA->getFormattedName()+"</b><br />");
-   foreach (Contact::PhoneNumber* number, m_pContactKA->getPhoneNumbers()) {
-      numbers     += number->getNumber()+" ("+number->getType()+")  ";
-      numbersHtml += number->getNumber()+" ("+number->getType()+")  <br />";
-   }
-   mimeData->setData("text/plain", numbers.toUtf8());
-   mimeData->setData("text/html", numbersHtml.toUtf8());
-   QClipboard* clipboard = QApplication::clipboard();
-   clipboard->setMimeData(mimeData);
-}
-
-///Edit this contact
-void ContactItemWidget::editContact()
-{
-   kDebug() << "Edit contact";
-   AkonadiBackend::getInstance()->editContact(m_pContactKA);
-}
-
-///Add a new phone number for this contact
-//TODO
-void ContactItemWidget::addPhone()
-{
-   kDebug() << "Adding to contact";
-   bool ok;
-   QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
-   if (ok && !text.isEmpty()) {
-      AkonadiBackend::getInstance()->addPhoneNumber(m_pContactKA,text,"work");
-   }
-}
-
-///Add this contact to the bookmark list
-void ContactItemWidget::bookmark()
-{
-   Contact::PhoneNumbers numbers = m_pContactKA->getPhoneNumbers();
-   if (numbers.count() == 1)
-      SFLPhone::app()->bookmarkDock()->addBookmark(numbers[0]->getNumber());
-}
 
 
 /*****************************************************************************
@@ -486,32 +321,12 @@ void ContactItemWidget::dragLeaveEvent ( QDragLeaveEvent *e )
    e->accept();
 }
 
-///Called when a call is dropped on transfer
-void ContactItemWidget::transferEvent(QMimeData* data)
-{
-   if (data->hasFormat( MIME_CALLID)) {
-      bool ok;
-      QString result = showNumberSelector(ok);
-      if (ok) {
-         Call* call = SFLPhone::model()->getCall(data->data(MIME_CALLID));
-         if (dynamic_cast<Call*>(call)) {
-            call->changeCurrentState(CALL_STATE_TRANSFERRED);
-            SFLPhone::model()->transfer(call, result);
-         }
-      }
-   }
-   else
-      kDebug() << "Invalid mime data";
-   m_pBtnTrans->setHoverState(false);
-   m_pBtnTrans->setVisible(false);
-}
-
 ///On data drop
 void ContactItemWidget::dropEvent(QDropEvent *e)
 {
    kDebug() << "Drop accepted";
    if (dynamic_cast<const QMimeData*>(e->mimeData()) && e->mimeData()->hasFormat( MIME_CALLID)) {
-      transferEvent((QMimeData*)e->mimeData());
+//       transferEvent((QMimeData*)e->mimeData());
       e->accept();
    }
    else {
@@ -527,7 +342,7 @@ void ContactItemWidget::mouseDoubleClickEvent(QMouseEvent *e )
 
    if (getCallNumbers().count() == 1) {
       e->accept();
-      callAgain();
+//       callAgain();
    }
    else {
       e->ignore();

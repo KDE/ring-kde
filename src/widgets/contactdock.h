@@ -32,10 +32,12 @@ class QSplitter;
 class QListWidget;
 class QTreeWidgetItem;
 class QCheckBox;
+class QMenu;
 
 //KDE
 class KLineEdit;
 class KComboBox;
+class KAction;
 
 namespace Akonadi {
    namespace Contact {
@@ -61,23 +63,47 @@ public:
 
 private:
    //Attributes
-   KLineEdit*                   m_pFilterLE   ;
-   QSplitter*                   m_pSplitter   ;
-   ContactTree*                 m_pContactView;
-   QListWidget*                 m_pCallView   ;
-   KComboBox*                   m_pSortByCBB  ;
-   QCheckBox*                   m_pShowHistoCK;
-   QList<ContactItemWidget*>    m_Contacts    ;
+   KLineEdit*                   m_pFilterLE      ;
+   QSplitter*                   m_pSplitter      ;
+   ContactTree*                 m_pContactView   ;
+   QListWidget*                 m_pCallView      ;
+   KComboBox*                   m_pSortByCBB     ;
+   QCheckBox*                   m_pShowHistoCK   ;
+   QList<ContactItemWidget*>    m_Contacts       ;
+   QMenu*                       m_pMenu          ;
+   Contact*                     m_pCurrentContact;
+
+   //Actions
+   KAction* m_pCallAgain   ;
+   KAction* m_pEditContact ;
+   KAction* m_pCopy        ;
+   KAction* m_pEmail       ;
+   KAction* m_pAddPhone    ;
+   KAction* m_pBookmark    ;
+
+   //Helper
+   QString showNumberSelector(bool& ok);
 
 public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event);
 
 private Q_SLOTS:
-   void reloadContact      (                       );
-   void loadContactHistory ( QTreeWidgetItem* item );
-   void filter             ( const QString& text   );
+//    void loadContactHistory ( QTreeWidgetItem* item );
+//    void filter             ( const QString& text   );
    void setHistoryVisible  ( bool visible          );
-   void reloadHistoryConst (                       );
+//    void reloadHistoryConst (                       );
+   void slotContextMenu    ( QModelIndex index     );
+
+private Q_SLOTS:
+   ///Menu actions
+   void showContext(const QModelIndex& index);
+   void sendEmail   ();
+   void callAgain   ();
+   void copy        ();
+   void editContact ();
+   void addPhone    ();
+   void bookmark    ();
+   void transferEvent( QMimeData* data   );
 };
 
 ///ContactTree: tree view with additinal drag and drop
@@ -86,8 +112,8 @@ class ContactTree : public CategorizedTreeWidget {
 public:
    ///Constructor
    explicit ContactTree(QWidget* parent) : CategorizedTreeWidget(parent) {setUniformRowHeights(false);}
-   virtual QMimeData* mimeData( const QList<QTreeWidgetItem *> items) const;
-   bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action);
+//    virtual QMimeData* mimeData( const QList<QTreeWidgetItem *> items) const;
+//    bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action);
 };
 
 ///KeyPressEaterC: keygrabber

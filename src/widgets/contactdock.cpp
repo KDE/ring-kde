@@ -24,12 +24,13 @@
 #include <QtCore/QMap>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QListWidget>
-#include <QtGui/QTreeWidget>
 #include <QtGui/QSpacerItem>
 #include <QtGui/QHeaderView>
 #include <QtGui/QCheckBox>
 #include <QtGui/QSplitter>
 #include <QtGui/QLabel>
+#include <QtGui/QMenu>
+#include <QtGui/QClipboard>
 
 //KDE
 #include <KDebug>
@@ -37,12 +38,15 @@
 #include <KLocalizedString>
 #include <KIcon>
 #include <KComboBox>
+#include <KInputDialog>
+#include <KAction>
 
 //SFLPhone
 #include "contactitemwidget.h"
 #include "sflphone.h"
 #include "callview.h"
 #include "sflphoneview.h"
+#include "bookmarkdock.h"
 
 //SFLPhone library
 #include "lib/historymodel.h"
@@ -52,54 +56,6 @@
 #include "klib/configurationskeleton.h"
 
 #define CURRENT_SORTING_MODE m_pSortByCBB->currentIndex()
-
-///QNumericTreeWidgetItem_hist: TreeWidget using different sorting criterias
-class QNumericTreeWidgetItem_hist : public QTreeWidgetItem {
-   public:
-      QNumericTreeWidgetItem_hist(QTreeWidget* parent):QTreeWidgetItem(parent),widget(0),weight(-1){}
-      QNumericTreeWidgetItem_hist(QTreeWidgetItem* parent=0):QTreeWidgetItem(parent),widget(0),weight(-1){}
-      ContactItemWidget* widget;
-      QString number;
-      int weight;
-   private:
-      bool operator<(const QTreeWidgetItem & other) const {
-         int column = treeWidget()->sortColumn();
-         return text(column) < other.text(column);
-      }
-};
-
-///A Phone number in contact with many of them (not used when 0 or 1 number)
-class PhoneNumberItem : public QWidget {
-public:
-   PhoneNumberItem(QString number, QString type,QString name, QWidget* parent = nullptr) : QWidget(parent),m_pNumber(number),m_pType(type),m_pName(name) {
-      QHBoxLayout* l   = new QHBoxLayout(this);
-      QLabel* numberL  = new QLabel(" <b>"+type+":</b>",this);
-      QLabel* number2L = new QLabel(number,this);
-      l->addWidget(numberL);
-      l->addWidget(number2L);
-      l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
-      numberL->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-   }
-protected:
-   virtual void mouseDoubleClickEvent(QMouseEvent *e )
-   {
-      e->accept();
-      Call* call = SFLPhone::model()->addDialingCall(m_pName, AccountList::getCurrentAccount());
-      if (call) {
-         call->setCallNumber(m_pNumber);
-         call->setPeerName(m_pName);
-         call->actionPerformed(CALL_ACTION_ACCEPT);
-      }
-      else {
-         HelperFunctions::displayNoAccountMessageBox(this);
-      }
-   }
-private:
-   QString m_pNumber;
-   QString m_pType;
-   QString m_pName;
-};
-
 
 ///Forward keypresses to the filter line edit
 bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
@@ -114,13 +70,12 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 } //eventFilter
 
 ///Constructor
-ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent)
+ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nullptr)
 {
    setObjectName("contactDock");
    m_pFilterLE     = new KLineEdit   (                   );
    m_pSplitter     = new QSplitter   ( Qt::Vertical,this );
    m_pSortByCBB    = new KComboBox   ( this              );
-   m_pContactView  = new ContactTree ( this              );
    m_pCallView     = new QListWidget ( this              );
    m_pShowHistoCK  = new QCheckBox   ( this              );
 
@@ -132,14 +87,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent)
 
    QWidget* mainWidget = new QWidget(this);
    setWidget(mainWidget);
-
-   m_pContactView->headerItem()->setText             ( 0,i18n("Contacts") );
-   m_pContactView->header()->setClickable            ( true               );
-   m_pContactView->header()->setSortIndicatorShown   ( true               );
-   m_pContactView->setAcceptDrops                    ( true               );
-   m_pContactView->setDragEnabled                    ( true               );
    KeyPressEaterC *keyPressEater = new KeyPressEaterC( this               );
-   m_pContactView->installEventFilter                ( keyPressEater      );
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
    m_pFilterLE->setClearButtonShown(true);
@@ -150,18 +98,20 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent)
    setHistoryVisible(ConfigurationSkeleton::displayContactCallHistory());
 
    QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
-
-   mainLayout->addWidget  ( m_pSortByCBB   );
-   mainLayout->addWidget  ( m_pShowHistoCK );
-   mainLayout->addWidget  ( m_pSplitter    );
-   m_pSplitter->addWidget ( m_pContactView );
-   m_pSplitter->addWidget ( m_pCallView    );
-   mainLayout->addWidget  ( m_pFilterLE    );
    
    QTreeView* m_pView = new CategorizedTreeView(this);
    ContactByNameProxyModel* model = new ContactByNameProxyModel(AkonadiBackend::getInstance());
    m_pView->setModel(model);
+   m_pView->installEventFilter( keyPressEater      );
    mainLayout->addWidget(m_pView);
+   connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex)),this,SLOT(slotContextMenu(QModelIndex)));
+
+   mainLayout->addWidget  ( m_pSortByCBB   );
+   mainLayout->addWidget  ( m_pShowHistoCK );
+   mainLayout->addWidget  ( m_pSplitter    );
+   m_pSplitter->addWidget ( m_pView        );
+   m_pSplitter->addWidget ( m_pCallView    );
+   mainLayout->addWidget  ( m_pFilterLE    );
 
    m_pSplitter->setChildrenCollapsible(true);
    m_pSplitter->setStretchFactor(0,7);
@@ -172,7 +122,6 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent)
 
    connect(AkonadiBackend::getInstance() ,SIGNAL(collectionChanged()),                                  this, SLOT(reloadContact())                     );
    connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(reloadContact())                     );
-   connect(m_pContactView,                SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),this, SLOT(loadContactHistory(QTreeWidgetItem*)));
    connect(m_pFilterLE,                   SIGNAL(textChanged(QString)),                                 this, SLOT(filter(QString))                     );
    connect(m_pShowHistoCK,                SIGNAL(toggled(bool)),                                        this, SLOT(setHistoryVisible(bool))             );
    connect(timer                         ,SIGNAL(timeout()),                                            this, SLOT(reloadHistoryConst())                );
@@ -194,6 +143,16 @@ ContactDock::~ContactDock()
    delete m_pCallView   ;
    delete m_pSortByCBB  ;
    delete m_pShowHistoCK;*/
+   
+   if (m_pMenu) {
+      delete m_pMenu        ;
+      delete m_pCallAgain   ;
+      delete m_pEditContact ;
+      delete m_pCopy        ;
+      delete m_pEmail       ;
+      delete m_pAddPhone    ;
+      delete m_pBookmark    ;
+   }
 }
 
 
@@ -203,140 +162,252 @@ ContactDock::~ContactDock()
  *                                                                           *
  ****************************************************************************/
 
-///Reload the contact
-void ContactDock::reloadContact()
+///Select a number
+QString ContactDock::showNumberSelector(bool& ok)
 {
-   ContactList list = AkonadiBackend::getInstance()->update();
-   if (!list.size())
-      return;
-   m_pContactView->clear();
-   m_Contacts.clear();
-
-   QHash<Contact*, QDateTime> recentlyUsed;
-   switch (CURRENT_SORTING_MODE) {
-      case Recently_used:
-         recentlyUsed = getContactListByTime();
-         foreach (const QString& cat, m_slHistoryConst) {
-            m_pContactView->addCategory(cat);
-         }
-         break;
-   }
-
-   foreach (Contact* cont, list) {
-      if (cont->getPhoneNumbers().count() && usableNumberCount(cont)) {
-         ContactItemWidget* aContact  = new ContactItemWidget(m_pContactView);
-         QString category;
-         switch (CURRENT_SORTING_MODE) {
-            case Name:
-               category = HelperFunctions::normStrippped(QString(cont->getFormattedName().trimmed()[0])).toUpper();
-               break;
-            case Organisation:
-               category = (cont->getOrganization().isEmpty())?i18nc("Unknown category","Unknown"):cont->getOrganization();
-               break;
-            case Recently_used:
-               if (recentlyUsed.find(cont) != recentlyUsed.end())
-                  category = timeToHistoryCategory(recentlyUsed[cont].date());
-               else
-                  category = m_slHistoryConst[Never];
-               break;
-            case Group:
-               category = i18n("TODO");
-               break;
-            case Department:
-               category = (cont->getDepartment().isEmpty())?i18nc("Unknown category","Unknown"):cont->getDepartment();;
-               break;
-         }
-         QNumericTreeWidgetItem_hist* item = m_pContactView->addItem<QNumericTreeWidgetItem_hist>(category);
-         item->widget = aContact;
-         aContact->setItem(item);
-         aContact->setContact(cont);
-
-         Contact::PhoneNumbers numbers =  aContact->getContact()->getPhoneNumbers();
-         if (numbers.count() > 1) {
-            foreach (Contact::PhoneNumber* number, numbers) {
-               QNumericTreeWidgetItem_hist* item2 = new QNumericTreeWidgetItem_hist(item);
-               item2->setFlags(item2->flags() | Qt::ItemIsDragEnabled);
-               item2->number = number->getNumber();
-               //Because of a Qt bug, we need to wrap the widget in an other widget, as drag and drop is broken for rich text (try dragging the bold part)
-               QWidget* wrapper = new PhoneNumberItem(number->getNumber(),number->getType(),aContact->getContact()->getFormattedName(),this);
-               m_pContactView->setItemWidget(item2,0,wrapper);
-            }
-         }
-         else if (numbers.count() == 1) {
-            item->number = numbers[0]->getNumber();
-         }
-
-         m_pContactView->setItemWidget(item,0,aContact);
-         m_Contacts << aContact;
+   if (m_pCurrentContact->getPhoneNumbers().size() > 1) {
+      QStringList list;
+      QHash<QString,QString> map;
+      foreach (Contact::PhoneNumber* number, m_pCurrentContact->getPhoneNumbers()) {
+         map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
+         list << number->getType()+" ("+number->getNumber()+')';
       }
-   }
-   switch (CURRENT_SORTING_MODE) {
-      case Recently_used:
-         break;
-      default:
-         m_pContactView->sortItems(0,Qt::AscendingOrder);
-   }
+      QString result = KInputDialog::getItem ( i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
 
-   ConfigurationSkeleton::setContactSortMode(m_pSortByCBB->currentIndex());
-
-   if (ConfigurationSkeleton::alwaysShowPhoneNumber()) {
-      m_pContactView->expandAll();
+      if (!ok) {
+         kDebug() << "Operation cancelled";
+      }
+      return map[result];
    }
-} //reloadContact
+   else if (m_pCurrentContact->getPhoneNumbers().size() == 1) {
+      ok = true;
+      return m_pCurrentContact->getPhoneNumbers()[0]->getNumber();
+   }
+   else {
+      ok = false;
+      return "";
+   }
+}
 
 ///Query the call history for all items related to this contact
-void ContactDock::loadContactHistory(QTreeWidgetItem* item)
+// void ContactDock::loadContactHistory(QTreeWidgetItem* item)
+// {
+//    if (m_pShowHistoCK->isChecked()) {
+//       m_pCallView->clear();
+//       if (dynamic_cast<QNumericTreeWidgetItem_hist*>(item) != nullptr) {
+//          QNumericTreeWidgetItem_hist* realItem = dynamic_cast<QNumericTreeWidgetItem_hist*>(item);
+//          foreach (Call* call, HistoryModel::getHistory()) {
+//             if (realItem->widget != 0) {
+//                foreach (Contact::PhoneNumber* number, realItem->widget->getContact()->getPhoneNumbers()) {
+//                   if (number->getNumber() == call->getPeerPhoneNumber()) {
+//                      m_pCallView->addItem(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString());
+//                   }
+//                }
+//             }
+//          }
+//       }
+//    }
+// } //loadContactHistory
+
+///Filter contact
+// void ContactDock::filter(const QString& text)
+// {
+//    foreach(ContactItemWidget* item, m_Contacts) {
+//       bool foundNumber = false;
+//       foreach (Contact::PhoneNumber* number, item->getContact()->getPhoneNumbers()) {
+//          foundNumber |= number->getNumber().toLower().indexOf(text.toLower()) != -1;
+//       }
+//       bool visible = (HelperFunctions::normStrippped(item->getContact()->getFormattedName  ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
+//                   || (HelperFunctions::normStrippped(item->getContact()->getOrganization   ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
+//                   || (HelperFunctions::normStrippped(item->getContact()->getPreferredEmail ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
+//                   || (HelperFunctions::normStrippped(item->getContact()->getDepartment     ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
+//                   || foundNumber;
+//       item->getItem()->setHidden(!visible);
+// 
+//    }
+// 
+//    for (int i=0;i< m_pContactView->topLevelItemCount();i++) {
+//       bool visible = false;
+//       QTreeWidgetItem* item = m_pContactView->topLevelItem(i);
+//       int count  = item->childCount();
+//       for (int j=0;j<count;j++) visible |= !item->child(j)->isHidden();
+//       m_pContactView->topLevelItem(i)->setHidden(!visible);
+//    }
+// } //filter
+
+// void ContactDock::reloadHistoryConst()
+// {
+//    switch (CURRENT_SORTING_MODE) {
+//       case Recently_used:
+//          reloadContact();
+//          break;
+//    }
+// }
+
+///Called when someone right click on the 'index'
+void ContactDock::slotContextMenu(QModelIndex index)
 {
-   if (m_pShowHistoCK->isChecked()) {
-      m_pCallView->clear();
-      if (dynamic_cast<QNumericTreeWidgetItem_hist*>(item) != nullptr) {
-         QNumericTreeWidgetItem_hist* realItem = dynamic_cast<QNumericTreeWidgetItem_hist*>(item);
-         foreach (Call* call, HistoryModel::getHistory()) {
-            if (realItem->widget != 0) {
-               foreach (Contact::PhoneNumber* number, realItem->widget->getContact()->getPhoneNumbers()) {
-                  if (number->getNumber() == call->getPeerPhoneNumber()) {
-                     m_pCallView->addItem(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString());
-                  }
-               }
-            }
+   qDebug() << "HERE" << index.parent().isValid() << index.parent().parent().isValid();
+   showContext(index);
+}
+
+
+///Show the context menu
+void ContactDock::showContext(const QModelIndex& index)
+{
+   if (!m_pCallAgain) {
+      m_pCallAgain   = new KAction(this);
+      m_pCallAgain->setShortcut   ( Qt::CTRL + Qt::Key_Enter   );
+      m_pCallAgain->setText       ( i18n("Call Again")         );
+      m_pCallAgain->setIcon       ( KIcon("call-start")        );
+
+      m_pEditContact = new KAction(this);
+      m_pEditContact->setShortcut ( Qt::CTRL + Qt::Key_E       );
+      m_pEditContact->setText     ( i18n("Edit contact")       );
+      m_pEditContact->setIcon     ( KIcon("contact-new")       );
+
+      m_pCopy        = new KAction(this);
+      m_pCopy->setShortcut        ( Qt::CTRL + Qt::Key_C       );
+      m_pCopy->setText            ( i18n("Copy")               );
+      m_pCopy->setIcon            ( KIcon("edit-copy")         );
+
+      m_pEmail       = new KAction(this);
+      m_pEmail->setShortcut       ( Qt::CTRL + Qt::Key_M       );
+      m_pEmail->setText           ( i18n("Send Email")         );
+      m_pEmail->setIcon           ( KIcon("mail-message-new")  );
+      m_pEmail->setEnabled        ( false                      );
+
+      m_pAddPhone    = new KAction(this);
+      m_pAddPhone->setShortcut    ( Qt::CTRL + Qt::Key_N       );
+      m_pAddPhone->setText        ( i18n("Add Phone Number")   );
+      m_pAddPhone->setIcon        ( KIcon("list-resource-add") );
+      m_pEmail->setEnabled        ( false                      );
+
+      m_pBookmark    = new KAction(this);
+      m_pBookmark->setShortcut    ( Qt::CTRL + Qt::Key_D       );
+      m_pBookmark->setText        ( i18n("Bookmark")           );
+      m_pBookmark->setIcon        ( KIcon("bookmarks")         );
+
+      connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
+      connect(m_pEditContact  , SIGNAL(triggered()) , this,SLOT(editContact()));
+      connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy())       );
+      connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
+      connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone())   );
+      connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
+   }
+   if (index.parent().isValid()  && !index.parent().parent().isValid()) {
+      Contact* ct = (Contact*)((ContactTreeBackend*)(index.internalPointer()))->getSelf();
+      m_pCurrentContact = ct;
+      if (!ct->getPreferredEmail().isEmpty()) {
+         m_pEmail->setEnabled(true);
+      }
+      Contact::PhoneNumbers numbers = ct->getPhoneNumbers();
+      m_pBookmark->setEnabled(numbers.count() == 1);
+   }
+   if (!m_pMenu) {
+      m_pMenu = new QMenu( this          );
+      m_pMenu->addAction( m_pCallAgain   );
+      m_pMenu->addAction( m_pEditContact );
+      m_pMenu->addAction( m_pAddPhone    );
+      m_pMenu->addAction( m_pCopy        );
+      m_pMenu->addAction( m_pEmail       );
+      m_pMenu->addAction( m_pBookmark    );
+   }
+qDebug() << "HERE";
+   m_pMenu->exec(QCursor::pos());
+} //showContext
+
+///Send an email
+void ContactDock::sendEmail()
+{
+   kDebug() << "Sending email";
+   QProcess *myProcess = new QProcess(this);
+   QStringList arguments;
+   myProcess->start("xdg-email", (arguments << m_pCurrentContact->getPreferredEmail()));
+}
+
+///Call the same number again
+void ContactDock::callAgain()
+{
+   kDebug() << "Calling ";
+   bool ok;
+   QString number = showNumberSelector(ok);
+   if (ok) {
+      Call* call = SFLPhone::model()->addDialingCall(m_pCurrentContact->getFormattedName(), AccountList::getCurrentAccount());
+      if (call) {
+         call->setCallNumber(number);
+         call->setPeerName(m_pCurrentContact->getFormattedName());
+         call->actionPerformed(CALL_ACTION_ACCEPT);
+      }
+      else {
+         HelperFunctions::displayNoAccountMessageBox(this);
+      }
+   }
+}
+
+///Copy contact to clipboard
+void ContactDock::copy()
+{
+   kDebug() << "Copying contact";
+   QMimeData* mimeData = new QMimeData();
+   mimeData->setData(MIME_CONTACT, m_pCurrentContact->getUid().toUtf8());
+   QString numbers(m_pCurrentContact->getFormattedName()+": ");
+   QString numbersHtml("<b>"+m_pCurrentContact->getFormattedName()+"</b><br />");
+   foreach (Contact::PhoneNumber* number, m_pCurrentContact->getPhoneNumbers()) {
+      numbers     += number->getNumber()+" ("+number->getType()+")  ";
+      numbersHtml += number->getNumber()+" ("+number->getType()+")  <br />";
+   }
+   mimeData->setData("text/plain", numbers.toUtf8());
+   mimeData->setData("text/html", numbersHtml.toUtf8());
+   QClipboard* clipboard = QApplication::clipboard();
+   clipboard->setMimeData(mimeData);
+}
+
+///Edit this contact
+void ContactDock::editContact()
+{
+   kDebug() << "Edit contact";
+   AkonadiBackend::getInstance()->editContact(m_pCurrentContact);
+}
+
+///Add a new phone number for this contact
+//TODO
+void ContactDock::addPhone()
+{
+   kDebug() << "Adding to contact";
+   bool ok;
+   QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
+   if (ok && !text.isEmpty()) {
+      AkonadiBackend::getInstance()->addPhoneNumber(m_pCurrentContact,text,"work");
+   }
+}
+
+///Add this contact to the bookmark list
+void ContactDock::bookmark()
+{
+   Contact::PhoneNumbers numbers = m_pCurrentContact->getPhoneNumbers();
+   if (numbers.count() == 1)
+      SFLPhone::app()->bookmarkDock()->addBookmark(numbers[0]->getNumber());
+}
+
+///Called when a call is dropped on transfer
+void ContactDock::transferEvent(QMimeData* data)
+{
+   if (data->hasFormat( MIME_CALLID)) {
+      bool ok;
+      QString result = showNumberSelector(ok);
+      if (ok) {
+         Call* call = SFLPhone::model()->getCall(data->data(MIME_CALLID));
+         if (dynamic_cast<Call*>(call)) {
+            call->changeCurrentState(CALL_STATE_TRANSFERRED);
+            SFLPhone::model()->transfer(call, result);
          }
       }
    }
-} //loadContactHistory
-
-///Filter contact
-void ContactDock::filter(const QString& text)
-{
-   foreach(ContactItemWidget* item, m_Contacts) {
-      bool foundNumber = false;
-      foreach (Contact::PhoneNumber* number, item->getContact()->getPhoneNumbers()) {
-         foundNumber |= number->getNumber().toLower().indexOf(text.toLower()) != -1;
-      }
-      bool visible = (HelperFunctions::normStrippped(item->getContact()->getFormattedName  ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-                  || (HelperFunctions::normStrippped(item->getContact()->getOrganization   ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-                  || (HelperFunctions::normStrippped(item->getContact()->getPreferredEmail ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-                  || (HelperFunctions::normStrippped(item->getContact()->getDepartment     ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-                  || foundNumber;
-      item->getItem()->setHidden(!visible);
-
-   }
-
-   for (int i=0;i< m_pContactView->topLevelItemCount();i++) {
-      bool visible = false;
-      QTreeWidgetItem* item = m_pContactView->topLevelItem(i);
-      int count  = item->childCount();
-      for (int j=0;j<count;j++) visible |= !item->child(j)->isHidden();
-      m_pContactView->topLevelItem(i)->setHidden(!visible);
-   }
-} //filter
-
-void ContactDock::reloadHistoryConst()
-{
-   switch (CURRENT_SORTING_MODE) {
-      case Recently_used:
-         reloadContact();
-         break;
-   }
+   else
+      kDebug() << "Invalid mime data";
+//    m_pBtnTrans->setHoverState(false);
+//    m_pBtnTrans->setVisible(false);
 }
 
 /*****************************************************************************
@@ -346,44 +417,44 @@ void ContactDock::reloadHistoryConst()
  ****************************************************************************/
 
 ///Serialize information to be used for drag and drop
-QMimeData* ContactTree::mimeData( const QList<QTreeWidgetItem *> items) const
-{
-   kDebug() << "An history call is being dragged";
-   if (items.size() < 1) {
-      return nullptr;
-   }
-
-   QMimeData *mimeData = new QMimeData();
-
-   //Contact
-   if (dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0])) {
-      QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0]);
-      if (item->widget != 0) {
-         mimeData->setData(MIME_CONTACT, item->widget->getContact()->getUid().toUtf8());
-      }
-      else if (!item->number.isEmpty()) {
-         mimeData->setData(MIME_PHONENUMBER, item->number.toUtf8());
-      }
-   }
-   else {
-      kDebug() << "the item is not a call";
-   }
-   return mimeData;
-} //mimeData
+// QMimeData* ContactTree::mimeData( const QList<QTreeWidgetItem *> items) const
+// {
+//    kDebug() << "An history call is being dragged";
+//    if (items.size() < 1) {
+//       return nullptr;
+//    }
+// 
+//    QMimeData *mimeData = new QMimeData();
+// 
+//    //Contact
+//    if (dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0])) {
+//       QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0]);
+//       if (item->widget != 0) {
+//          mimeData->setData(MIME_CONTACT, item->widget->getContact()->getUid().toUtf8());
+//       }
+//       else if (!item->number.isEmpty()) {
+//          mimeData->setData(MIME_PHONENUMBER, item->number.toUtf8());
+//       }
+//    }
+//    else {
+//       kDebug() << "the item is not a call";
+//    }
+//    return mimeData;
+// } //mimeData
 
 ///Handle data being dropped on the widget
-bool ContactTree::dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action)
-{
-   Q_UNUSED(index )
-   Q_UNUSED(action)
-   Q_UNUSED(parent)
-
-   QByteArray encodedData = data->data(MIME_CALLID);
-
-   kDebug() << "In history import"<< QString(encodedData);
-
-   return false;
-}
+// bool ContactTree::dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action)
+// {
+//    Q_UNUSED(index )
+//    Q_UNUSED(action)
+//    Q_UNUSED(parent)
+// 
+//    QByteArray encodedData = data->data(MIME_CALLID);
+// 
+//    kDebug() << "In history import"<< QString(encodedData);
+// 
+//    return false;
+// }
 
 
 /*****************************************************************************
@@ -413,13 +484,13 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
    if(key == Qt::Key_Escape)
       m_pFilterLE->setText(QString());
    else if(key == Qt::Key_Return || key == Qt::Key_Enter) {
-      if (m_pContactView->selectedItems().size() && m_pContactView->selectedItems()[0] && m_pContactView->itemWidget(m_pContactView->selectedItems()[0],0)) {
-         QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(m_pContactView->selectedItems()[0]);
-         if (item) {
-            Call* call = nullptr;
-            SFLPhone::app()->view()->selectCallPhoneNumber(&call,item->widget->getContact());
-         }
-      }
+//       if (m_pContactView->selectedItems().size() && m_pContactView->selectedItems()[0] && m_pContactView->itemWidget(m_pContactView->selectedItems()[0],0)) {
+//          QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(m_pContactView->selectedItems()[0]);
+//          if (item) {
+//             Call* call = nullptr;
+//             SFLPhone::app()->view()->selectCallPhoneNumber(&call,item->widget->getContact());
+//          }
+//       }
    }
    else if((key == Qt::Key_Backspace) && (m_pFilterLE->text().size()))
       m_pFilterLE->setText(m_pFilterLE->text().left( m_pFilterLE->text().size()-1 ));

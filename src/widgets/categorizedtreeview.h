@@ -32,9 +32,15 @@ class CategorizedTreeView : public QTreeView
 
   public:
     explicit CategorizedTreeView(QWidget *parent = 0);
+    
+  protected:
+    virtual void contextMenuEvent ( QContextMenuEvent * e );
 
   protected:
     void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
+    
+  Q_SIGNALS:
+     void contextMenuRequest(QModelIndex);
 };
 
 #endif

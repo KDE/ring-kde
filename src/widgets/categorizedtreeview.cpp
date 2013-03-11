@@ -57,3 +57,10 @@ void CategorizedTreeView::drawBranches(QPainter* painter, const QRect& rect, con
   Q_UNUSED( rect    )
   Q_UNUSED( index   )
 }
+
+
+void CategorizedTreeView::contextMenuEvent ( QContextMenuEvent * e ) {
+  QModelIndex index = indexAt(e->pos());
+  emit contextMenuRequest(index);
+  e->accept();
+}

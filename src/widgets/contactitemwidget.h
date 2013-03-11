@@ -84,33 +84,11 @@ protected:
     QLabel*  m_pEmailL       ;
     QTreeWidgetItem* m_pItem ;
     QSize    m_Size          ;
-
-    //Actions
-    KAction* m_pCallAgain   ;
-    KAction* m_pEditContact ;
-    KAction* m_pCopy        ;
-    KAction* m_pEmail       ;
-    KAction* m_pAddPhone    ;
-    KAction* m_pBookmark    ;
-    QMenu*   m_pMenu        ;
     
     TranslucentButtons* m_pBtnTrans;
 
-    //Helper
-    QString showNumberSelector(bool& ok);
-
 public Q_SLOTS:
    void updated();
-
-private Q_SLOTS:
-   void showContext(const QPoint& pos);
-   void sendEmail   ();
-   void callAgain   ();
-   void copy        ();
-   void editContact ();
-   void addPhone    ();
-   void bookmark    ();
-   void transferEvent( QMimeData* data   );
  };
 
 #endif // CONTACTITEMWIDGET_H
