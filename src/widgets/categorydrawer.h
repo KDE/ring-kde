@@ -30,13 +30,13 @@ class QModelIndex;
 class QStyleOption;
 
 ///CategoryDrawer: A better looking widget than the plain QListWidget
-class CategoryDrawer : public KCategoryDrawerV2
-{
-public:
-    CategoryDrawer();
-
-    virtual void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
-    virtual int categoryHeight(const QModelIndex &index, const QStyleOption &option) const;
-};
+// class CategoryDrawer
+// {
+// public:
+//     CategoryDrawer();
+// 
+//     virtual void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
+//     virtual int categoryHeight(const QModelIndex &index, const QStyleOption &option) const;
+// };
 
 #endif

@@ -23,7 +23,6 @@
 // 
 ContactByNameProxyModel::ContactByNameProxyModel(ContactBackend* parent) : QAbstractItemModel(parent),m_pModel(parent)
 {
-//    setSourceModel(m_pModel);
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
 }
 
@@ -82,7 +81,7 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
       return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getFormattedName());
    }
    else if (modelItem->type3() == ContactTreeBackend::Type::NUMBER && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(m_pModel->getContactList()[index.parent().row()]->getPhoneNumbers()[index.row()]->getNumber());
+      return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChilds[index.parent().row()]->getPhoneNumbers()[index.row()]->getNumber());
    }
    return QVariant();
 }

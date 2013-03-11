@@ -73,6 +73,8 @@ SET(
    widgets/tips/connectionlosttip.cpp
    widgets/tips/tipcollection.cpp
    widgets/calltreeitemdelegate.cpp
+   delegates/contactdelegate.cpp
+   delegates/categorizeddelegate.cpp
 #    widgets/acceleratedvideowidget.cpp
    callview.cpp
 )
