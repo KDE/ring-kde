@@ -25,7 +25,7 @@
 
 SortedTreeDelegate::SortedTreeDelegate(QTreeView* widget)
    : QStyledItemDelegate(widget)
-   , m_tree(widget),m_LeftMargin(0),m_RightMargin(0),m_pChildDelegate(nullptr)
+   , m_tree(widget),m_LeftMargin(0),m_RightMargin(0),m_pChildDelegate(nullptr),m_pChildChildDelegate(nullptr)
 {
 }
 
@@ -134,6 +134,9 @@ void SortedTreeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
    
    if (m_pChildDelegate && !index.parent().parent().isValid()) {
       m_pChildDelegate->paint(painter,option,index);
+   }
+   else if (m_pChildChildDelegate && index.parent().parent().isValid()) {
+      m_pChildChildDelegate->paint(painter,option,index);
    }
 } //paint
 
@@ -383,3 +386,9 @@ void SortedTreeDelegate::setChildDelegate(QStyledItemDelegate* childDelegate)
 {
    m_pChildDelegate = childDelegate;
 }
+
+void SortedTreeDelegate::setChildChildDelegate(QStyledItemDelegate* childDelegate)
+{
+   m_pChildChildDelegate = childDelegate;
+}
+

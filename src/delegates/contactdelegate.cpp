@@ -55,6 +55,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       QStyledItemDelegate::paint(painter,opt2,index);
    }
 
+   painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
    Contact* ct = (Contact*)((ContactTreeBackend*)(index.internalPointer()))->getSelf();
    if (ct->getPhoto()) {
       QPixmap pxm = *ct->getPhoto();

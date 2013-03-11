@@ -209,32 +209,6 @@ QString ContactDock::showNumberSelector(bool& ok)
 //    }
 // } //loadContactHistory
 
-///Filter contact
-// void ContactDock::filter(const QString& text)
-// {
-//    foreach(ContactItemWidget* item, m_Contacts) {
-//       bool foundNumber = false;
-//       foreach (Contact::PhoneNumber* number, item->getContact()->getPhoneNumbers()) {
-//          foundNumber |= number->getNumber().toLower().indexOf(text.toLower()) != -1;
-//       }
-//       bool visible = (HelperFunctions::normStrippped(item->getContact()->getFormattedName  ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-//                   || (HelperFunctions::normStrippped(item->getContact()->getOrganization   ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-//                   || (HelperFunctions::normStrippped(item->getContact()->getPreferredEmail ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-//                   || (HelperFunctions::normStrippped(item->getContact()->getDepartment     ()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-//                   || foundNumber;
-//       item->getItem()->setHidden(!visible);
-// 
-//    }
-// 
-//    for (int i=0;i< m_pContactView->topLevelItemCount();i++) {
-//       bool visible = false;
-//       QTreeWidgetItem* item = m_pContactView->topLevelItem(i);
-//       int count  = item->childCount();
-//       for (int j=0;j<count;j++) visible |= !item->child(j)->isHidden();
-//       m_pContactView->topLevelItem(i)->setHidden(!visible);
-//    }
-// } //filter
-
 // void ContactDock::reloadHistoryConst()
 // {
 //    switch (CURRENT_SORTING_MODE) {

@@ -15,15 +15,15 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef CONTACTDELEGATE_H
-#define CONTACTDELEGATE_H
+#ifndef PHONENUMBERDELEGATE_H
+#define PHONENUMBERDELEGATE_H
 
 #include <QtGui/QStyledItemDelegate>
 
-class ContactDelegate : public QStyledItemDelegate
+class PhoneNumberDelegate : public QStyledItemDelegate
 {
 public:
-   ContactDelegate(QObject* parent = nullptr);
+   PhoneNumberDelegate(QObject* parent = nullptr);
 
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 

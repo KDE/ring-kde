@@ -31,6 +31,7 @@ class SortedTreeDelegate : public QStyledItemDelegate
    QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
    void setChildDelegate(QStyledItemDelegate* childDelegate);
+   void setChildChildDelegate(QStyledItemDelegate* childDelegate);
 
   private:
     void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
@@ -41,6 +42,7 @@ class SortedTreeDelegate : public QStyledItemDelegate
    int m_LeftMargin;
    int m_RightMargin;
    QStyledItemDelegate* m_pChildDelegate;
+   QStyledItemDelegate* m_pChildChildDelegate;
 };
 
 #endif

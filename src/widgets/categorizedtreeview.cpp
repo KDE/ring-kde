@@ -34,6 +34,7 @@
 //SFLPhone
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/contactdelegate.h"
+#include "../delegates/phonenumberdelegate.h"
 
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
@@ -41,6 +42,7 @@ CategorizedTreeView::CategorizedTreeView(QWidget *parent)
 {
   SortedTreeDelegate* delegate = new SortedTreeDelegate(this);
   delegate->setChildDelegate(new ContactDelegate());
+  delegate->setChildChildDelegate(new PhoneNumberDelegate());
   setItemDelegate(delegate);
   setHeaderHidden(true);
   setRootIsDecorated(false);
