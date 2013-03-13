@@ -52,6 +52,7 @@
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
+#include "klib/helperfunctions.h"
 #include "klib/akonadibackend.h"
 #include "klib/configurationskeleton.h"
 
@@ -68,6 +69,8 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
    }
 } //eventFilter
+
+
 
 ///Constructor
 ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nullptr)
@@ -99,12 +102,17 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
    
-   QTreeView* m_pView = new CategorizedTreeView(this);
-   ContactByNameProxyModel* model = new ContactByNameProxyModel(AkonadiBackend::getInstance());
-   m_pView->setModel(model);
-   m_pView->installEventFilter( keyPressEater      );
+   m_pView = new CategorizedTreeView(this);
+   ContactByNameProxyModel* model = new ContactByNameProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
+   QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
+   proxyModel->setSourceModel(model);
+   m_pView->setModel(proxyModel);
+   m_pView->installEventFilter(keyPressEater);
    mainLayout->addWidget(m_pView);
-   connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex)),this,SLOT(slotContextMenu(QModelIndex)));
+   m_pView->setSortingEnabled(true);
+   m_pView->sortByColumn(0,Qt::AscendingOrder);
+   connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex))     , this , SLOT(slotContextMenu(QModelIndex)));
+   connect(proxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
 
    mainLayout->addWidget  ( m_pSortByCBB   );
    mainLayout->addWidget  ( m_pShowHistoCK );
@@ -165,7 +173,7 @@ ContactDock::~ContactDock()
 ///Select a number
 QString ContactDock::showNumberSelector(bool& ok)
 {
-   if (m_pCurrentContact->getPhoneNumbers().size() > 1) {
+   if (m_pCurrentContact && m_pCurrentContact->getPhoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
       QStringList list;
       QHash<QString,QString> map;
       foreach (Contact::PhoneNumber* number, m_pCurrentContact->getPhoneNumbers()) {
@@ -178,6 +186,10 @@ QString ContactDock::showNumberSelector(bool& ok)
          kDebug() << "Operation cancelled";
       }
       return map[result];
+   }
+   else if (!m_PreselectedNb.isEmpty()) {
+      ok = true;
+      return m_PreselectedNb;
    }
    else if (m_pCurrentContact->getPhoneNumbers().size() == 1) {
       ok = true;
@@ -270,13 +282,22 @@ void ContactDock::showContext(const QModelIndex& index)
       connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
    }
    if (index.parent().isValid()  && !index.parent().parent().isValid()) {
-      Contact* ct = (Contact*)((ContactTreeBackend*)(index.internalPointer()))->getSelf();
+      Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
       m_pCurrentContact = ct;
+      m_PreselectedNb.clear();
       if (!ct->getPreferredEmail().isEmpty()) {
          m_pEmail->setEnabled(true);
       }
       Contact::PhoneNumbers numbers = ct->getPhoneNumbers();
       m_pBookmark->setEnabled(numbers.count() == 1);
+   }
+   else if (index.parent().parent().isValid()) {
+      m_pCurrentContact = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+      m_PreselectedNb   = m_pCurrentContact->getPhoneNumbers()[index.row()]->getNumber();
+   }
+   else {
+      m_pCurrentContact = nullptr;
+      m_PreselectedNb.clear();
    }
    if (!m_pMenu) {
       m_pMenu = new QMenu( this          );
@@ -477,3 +498,9 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
  *                                  Helpers                                  *
  *                                                                           *
  ****************************************************************************/
+
+///Expand the tree according to the user preferences
+void ContactDock::expandTree()
+{
+   m_pView->expandToDepth( 0 + (ConfigurationSkeleton::alwaysShowPhoneNumber()==true));
+}

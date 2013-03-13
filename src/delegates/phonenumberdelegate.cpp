@@ -20,6 +20,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
+#include <QtGui/QSortFilterProxyModel>
 
 #include <QtCore/QDebug>
 
@@ -50,7 +51,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
       QStyledItemDelegate::paint(painter,opt2,index);
    }
 
-   Contact::PhoneNumber* nb = ((Contact*)((ContactTreeBackend*)(index.internalPointer()))->getSelf())->getPhoneNumbers()[index.row()];
+   Contact::PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf())->getPhoneNumbers()[index.row()];
    QFont font = painter->font();
    QFontMetrics fm(font);
    painter->setPen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));

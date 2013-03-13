@@ -23,7 +23,7 @@
 #include <QtGui/QTreeWidgetItem>
 #include "categorizedtreewidget.h"
 #include "categorizedtreeview.h"
-#include "../klib/sortabledockcommon.h"
+// #include "../klib/sortabledockcommon.h"
 #include "../klib/contactproxymodel.h"
 #include "calltreeitem.h"
 
@@ -33,6 +33,7 @@ class QListWidget;
 class QTreeWidgetItem;
 class QCheckBox;
 class QMenu;
+class QTreeView;
 
 //KDE
 class KLineEdit;
@@ -48,12 +49,11 @@ namespace KABC {
 }
 
 ///SFLPhone
-class ContactTree;
 class ContactItemWidget;
 class Contact;
 
 ///ContactDock: Dock to access contacts
-class ContactDock : public QDockWidget, public SortableDockCommon<CallTreeItem*,QTreeWidgetItem*>
+class ContactDock : public QDockWidget/*, public SortableDockCommon<CallTreeItem*,QTreeWidgetItem*>*/
 {
    Q_OBJECT
 public:
@@ -65,13 +65,14 @@ private:
    //Attributes
    KLineEdit*                   m_pFilterLE      ;
    QSplitter*                   m_pSplitter      ;
-   ContactTree*                 m_pContactView   ;
+   QTreeView*                   m_pView          ;
    QListWidget*                 m_pCallView      ;
    KComboBox*                   m_pSortByCBB     ;
    QCheckBox*                   m_pShowHistoCK   ;
    QList<ContactItemWidget*>    m_Contacts       ;
    QMenu*                       m_pMenu          ;
    Contact*                     m_pCurrentContact;
+   QString                      m_PreselectedNb  ;
 
    //Actions
    KAction* m_pCallAgain   ;
@@ -104,6 +105,7 @@ private Q_SLOTS:
    void addPhone    ();
    void bookmark    ();
    void transferEvent( QMimeData* data   );
+   void expandTree  ();
 };
 
 ///ContactTree: tree view with additinal drag and drop

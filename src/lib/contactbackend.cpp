@@ -51,6 +51,7 @@ ContactList ContactBackend::update()
 ///Called when the new contacts are added
 void ContactBackend::slotReloadModel()
 {
+   reset();
    emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount(),0));
 }

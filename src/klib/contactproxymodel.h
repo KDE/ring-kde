@@ -32,7 +32,7 @@ class LIB_EXPORT ContactByNameProxyModel :  public QAbstractItemModel
    Q_OBJECT
 public:
    friend class ContactBackend;
-   ContactByNameProxyModel(ContactBackend* parent);
+   ContactByNameProxyModel(ContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -60,14 +60,13 @@ private:
    ContactBackend* m_pModel;
    QList<TopLevelItem*> m_lCategoryCounter;
    QHash<QString,TopLevelItem*> m_hCategories;
+   int m_Role;
+   bool m_ShowAll;
    
    QModelIndex getContactIndex(Contact* ct) const;
 
 private Q_SLOTS:
    void reloadCategories();
-
-protected:
-//    virtual bool lessThan ( const QModelIndex & left, const QModelIndex & right ) const;
 };
 
 #endif

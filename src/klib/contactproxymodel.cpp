@@ -21,7 +21,8 @@
 
 #include "../lib/contactbackend.h"
 // 
-ContactByNameProxyModel::ContactByNameProxyModel(ContactBackend* parent) : QAbstractItemModel(parent),m_pModel(parent)
+ContactByNameProxyModel::ContactByNameProxyModel(ContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent),m_pModel(parent),
+m_Role(role),m_ShowAll(showAll)
 {
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
 }
@@ -33,14 +34,15 @@ ContactByNameProxyModel::~ContactByNameProxyModel()
 
 void ContactByNameProxyModel::reloadCategories()
 {
+   beginResetModel();
    m_hCategories.clear();
    m_lCategoryCounter.clear();
    foreach(Contact* cont, m_pModel->getContactList()) {
       QString val = cont->getFormattedName();
-      if (val.size())
-         val = val[0];
+      if (val.size() && !m_ShowAll)
+         val = val[0].toUpper();
       if (!m_hCategories[val]) {
-         TopLevelItem* item = new TopLevelItem(val.toUpper());
+         TopLevelItem* item = new TopLevelItem(val);
          m_hCategories[val] = item;
          m_lCategoryCounter << item;
          emit dataChanged(index(0,0),index(rowCount()-1,0));
@@ -49,12 +51,11 @@ void ContactByNameProxyModel::reloadCategories()
       if (item) {
          QModelIndex parent = index(m_lCategoryCounter.indexOf(item),0);
          item->m_lChilds << cont;
-//          emit dataChanged(index(item->m_lChilds.size()-1,0,parent),index(item->m_lChilds.size()-1,0,parent));
       }
       else
          qDebug() << "ERROR count";
    }
-   reset();
+   endResetModel();
    emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount()-1,0));
 }
@@ -74,13 +75,13 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
    
    ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
    if (modelItem->type3() == ContactTreeBackend::Type::TOP_LEVEL || !index.parent().isValid()) {
-      if (role == Qt::DisplayRole || role == Qt::EditRole)
+      if (role == m_Role)
          return ((TopLevelItem*)modelItem)->m_Name;
    }
-   if (modelItem->type3() == ContactTreeBackend::Type::CONTACT && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+   if (modelItem->type3() == ContactTreeBackend::Type::CONTACT && (role == m_Role)) {
       return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getFormattedName());
    }
-   else if (modelItem->type3() == ContactTreeBackend::Type::NUMBER && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+   else if (modelItem->type3() == ContactTreeBackend::Type::NUMBER && (role == m_Role)) {
       return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChilds[index.parent().row()]->getPhoneNumbers()[index.row()]->getNumber());
    }
    return QVariant();
@@ -96,7 +97,7 @@ QVariant ContactByNameProxyModel::headerData(int section, Qt::Orientation orient
 
 int ContactByNameProxyModel::rowCount( const QModelIndex& parent ) const
 {
-   if (!parent.isValid())
+   if (!parent.isValid() || !parent.internalPointer())
       return m_lCategoryCounter.size();
    else if (!parent.parent().isValid()) {
       return m_lCategoryCounter[parent.row()]->m_lChilds.size();
@@ -122,23 +123,23 @@ int ContactByNameProxyModel::columnCount ( const QModelIndex& parent) const
 
 QModelIndex ContactByNameProxyModel::parent( const QModelIndex& index) const
 {
-   if (!index.isValid()) {
+   if (!index.isValid() || !index.internalPointer()) {
       return QModelIndex();
    }
-   ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
-   if (modelItem && modelItem->type3() == ContactTreeBackend::Type::CONTACT) {
+   ContactTreeBackend* modelItem = static_cast<ContactTreeBackend*>(index.internalPointer());
+   if (modelItem && (long long)modelItem > 100 && modelItem->type3() == ContactTreeBackend::Type::CONTACT) {
       Contact* ct = (Contact*)((ContactTreeBackend*)(index.internalPointer()))->getSelf();
       QString val = ct->getFormattedName();
-      if (val.size())
-         val = val[0];
+      if (val.size() && !m_ShowAll)
+         val = val[0].toUpper();
       if (m_hCategories[val])
          return ContactByNameProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
    else if (modelItem && modelItem->type3() == ContactTreeBackend::Type::NUMBER) {
       Contact* ct = (Contact*)modelItem->getSelf();
       QString val = ct->getFormattedName();
-      if (val.size())
-         val = val[0];
+      if (val.size() && !m_ShowAll)
+         val = val[0].toUpper();
       if (m_hCategories[val]) {
          return ContactByNameProxyModel::index(
             (m_hCategories[val]->m_lChilds.indexOf(ct)),
