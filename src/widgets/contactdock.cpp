@@ -73,7 +73,7 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 
 
 ///Constructor
-ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nullptr)
+ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nullptr),m_pMenu(nullptr)
 {
    setObjectName("contactDock");
    m_pFilterLE     = new KLineEdit   (                   );
@@ -81,7 +81,6 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pSortByCBB    = new KComboBox   ( this              );
    m_pCallView     = new QListWidget ( this              );
    m_pShowHistoCK  = new QCheckBox   ( this              );
-
 
    QStringList sortType;
    sortType << i18nc("Sort by Name","Name") << i18nc("Sort by Organisation","Organisation") << i18nc("Sort by Recently used","Recently used") << i18nc("Sort by Group","Group") << i18nc("Sort by Department","Department");
@@ -103,16 +102,23 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
    
    m_pView = new CategorizedTreeView(this);
-   ContactByNameProxyModel* model = new ContactByNameProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
-   QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
-   proxyModel->setSourceModel(model);
-   m_pView->setModel(proxyModel);
+   m_pSourceModel = new ContactByNameProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
+   m_pProxyModel = new ContactSortFilterProxyModel(this);
+   m_pProxyModel->setSourceModel(m_pSourceModel);
+   m_pProxyModel->setSortRole(Qt::DisplayRole);
+   m_pProxyModel->setSortLocaleAware(true);
+   m_pProxyModel->setFilterRole(ContactBackend::Role::Filter);
+   m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+   m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+   m_pView->setModel(m_pProxyModel);
    m_pView->installEventFilter(keyPressEater);
    mainLayout->addWidget(m_pView);
    m_pView->setSortingEnabled(true);
    m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex))     , this , SLOT(slotContextMenu(QModelIndex)));
-   connect(proxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
+   connect(m_pProxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
+   connect(m_pFilterLE ,SIGNAL(textChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
+   connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
 
    mainLayout->addWidget  ( m_pSortByCBB   );
    mainLayout->addWidget  ( m_pShowHistoCK );
@@ -129,7 +135,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
    connect(AkonadiBackend::getInstance() ,SIGNAL(collectionChanged()),                                  this, SLOT(reloadContact())                     );
-   connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(reloadContact())                     );
+   connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(setCategory(int))                    );
    connect(m_pFilterLE,                   SIGNAL(textChanged(QString)),                                 this, SLOT(filter(QString))                     );
    connect(m_pShowHistoCK,                SIGNAL(toggled(bool)),                                        this, SLOT(setHistoryVisible(bool))             );
    connect(timer                         ,SIGNAL(timeout()),                                            this, SLOT(reloadHistoryConst())                );
@@ -464,6 +470,38 @@ void ContactDock::setHistoryVisible(bool visible)
    kDebug() << "Toggling history visibility";
    m_pCallView->setVisible(visible);
    ConfigurationSkeleton::setDisplayContactCallHistory(visible);
+}
+
+///Set sorting category
+void ContactDock::setCategory(int index)
+{
+   switch(index) {
+      case SortingCategory::Name:
+         m_pSourceModel->setRole(Qt::DisplayRole);
+         m_pSourceModel->setShowAll(false);
+         m_pProxyModel->setSortRole(Qt::DisplayRole);
+         break;
+      case SortingCategory::Organization:
+         m_pProxyModel->setSortRole(ContactBackend::Role::Organization);
+         m_pSourceModel->setRole(ContactBackend::Role::Organization);
+         m_pSourceModel->setShowAll(true);
+         break;
+      case SortingCategory::RecentlyUsed:
+         m_pSourceModel->setRole(ContactBackend::Role::FormattedLastUsed);
+         m_pSourceModel->setShowAll(true);
+         m_pProxyModel->setSortRole(ContactBackend::Role::IndexedLastUsed);
+         break;
+      case SortingCategory::Group:
+         m_pSourceModel->setRole(ContactBackend::Role::Group);
+         m_pSourceModel->setShowAll(true);
+         m_pProxyModel->setSortRole(ContactBackend::Role::Group);
+         break;
+      case SortingCategory::Department:
+         m_pSourceModel->setRole(ContactBackend::Role::Department);
+         m_pSourceModel->setShowAll(true);
+         m_pProxyModel->setSortRole(ContactBackend::Role::Department);
+         break;
+   };
 }
 
 

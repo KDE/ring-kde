@@ -89,28 +89,6 @@ CALLMODEL_TEMPLATE QString SORTABLE_T::timeToHistoryCategory(QDate date)
    return i18n(m_slHistoryConst[Very_long_time_ago].toAscii());
 }
 
-///Return the list of contact from history (in order, most recently used first)
-CALLMODEL_TEMPLATE QHash<Contact*, QDateTime> SORTABLE_T::getContactListByTime(/*ContactList list*/)
-{
-   const CallMap& history= HistoryModel::getHistory();
-   QHash<Contact*, QDateTime> toReturn;
-   QSet<QString> alreadyUsed;
-   QMapIterator<QString, Call*> i(history);
-   i.toBack();
-   while (i.hasPrevious()) { //Iterate from the end up
-      i.previous();
-      (alreadyUsed.find(i.value()->getPeerPhoneNumber()) == alreadyUsed.constEnd()); //Don't ask, leave it there Elv13(2012)
-      if (alreadyUsed.find(i.value()->getPeerPhoneNumber()) == alreadyUsed.constEnd()) {
-         Contact* contact = i.value()->getContact();
-         if (contact && toReturn.find(contact) == toReturn.end()) {
-            toReturn[contact] = QDateTime::fromTime_t(i.value()->getStartTimeStamp().toUInt());
-         }
-         alreadyUsed << i.value()->getPeerPhoneNumber();
-      }
-   }
-   return toReturn;
-} //getContactListByTime
-
 ///Set category
 CALLMODEL_TEMPLATE void SORTABLE_T::setHistoryCategory(QList<Call*>& calls,HistorySortingMode mode)
 {

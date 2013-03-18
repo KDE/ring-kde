@@ -52,6 +52,21 @@ namespace KABC {
 class ContactItemWidget;
 class Contact;
 
+class ContactSortFilterProxyModel : public QSortFilterProxyModel
+{
+   Q_OBJECT
+public:
+   ContactSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+protected:
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+   {
+      if (!source_parent.isValid() || source_parent.parent().isValid())
+         return true;
+
+      return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+   }
+};
+
 ///ContactDock: Dock to access contacts
 class ContactDock : public QDockWidget/*, public SortableDockCommon<CallTreeItem*,QTreeWidgetItem*>*/
 {
@@ -73,6 +88,8 @@ private:
    QMenu*                       m_pMenu          ;
    Contact*                     m_pCurrentContact;
    QString                      m_PreselectedNb  ;
+   QSortFilterProxyModel*       m_pProxyModel    ;
+   ContactByNameProxyModel*     m_pSourceModel   ;
 
    //Actions
    KAction* m_pCallAgain   ;
@@ -84,6 +101,14 @@ private:
 
    //Helper
    QString showNumberSelector(bool& ok);
+   
+   enum SortingCategory {
+      Name,
+      Organization,
+      RecentlyUsed,
+      Group,
+      Department
+   };
 
 public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event);
@@ -106,6 +131,7 @@ private Q_SLOTS:
    void bookmark    ();
    void transferEvent( QMimeData* data   );
    void expandTree  ();
+   void setCategory (int index);
 };
 
 ///ContactTree: tree view with additinal drag and drop

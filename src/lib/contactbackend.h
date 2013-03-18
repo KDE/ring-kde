@@ -40,6 +40,17 @@ typedef QList<Contact*> ContactList;
 class LIB_EXPORT ContactBackend : public QAbstractItemModel {
    Q_OBJECT
 public:
+   enum Role {
+      Organization      = 100,
+      Group             = 101,
+      Department        = 102,
+      PreferredEmail    = 103,
+      FormattedLastUsed = 104,
+      IndexedLastUsed   = 105,
+      DatedLastUsed     = 106,
+      Filter            = 200, //All roles, all at once
+   };
+   
    explicit ContactBackend(QObject* parent = nullptr);
    virtual ~ContactBackend();
 
