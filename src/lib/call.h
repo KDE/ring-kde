@@ -81,6 +81,20 @@ class Call;
 
 typedef  void (Call::*function)();
 
+class LIB_EXPORT HistoryTreeBackend {
+public:
+    enum Type {
+        CALL=0,
+        NUMBER=1,
+        TOP_LEVEL=2
+    };
+    HistoryTreeBackend(HistoryTreeBackend::Type _type);
+    virtual ~HistoryTreeBackend(){}
+    HistoryTreeBackend::Type type3() const;
+    virtual QObject* getSelf() = 0;
+private:
+    HistoryTreeBackend::Type m_Type3;
+};
 
 /**
  *  This class represents a call either actual (in the call list
@@ -106,7 +120,7 @@ typedef  void (Call::*function)();
  *  keeping the information gathered by the call and needed by the history
  *  call (history state, start time...).
 **/
-class  LIB_EXPORT Call : public QObject
+class  LIB_EXPORT Call : public QObject, public HistoryTreeBackend
 {
    Q_OBJECT
 public:
@@ -119,6 +133,7 @@ public:
    static Call* buildHistoryCall  (const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type );
    static Call* buildExistingCall (QString callId                                                                                                               );
    static void  setContactBackend (ContactBackend* be                                                                                                           );
+   static ContactBackend *getContactBackend () {return m_pContactBackend;};
 
    //Static getters
    static history_state getHistoryStateFromType            ( QString type                                    );
@@ -149,6 +164,7 @@ public:
    VideoRenderer*       getVideoRenderer    ()      ;
    const QString        getFormattedName    ()      ;
    bool                 hasRecording        () const;
+   QString              getLength           () const;
 
    //Automated function
    call_state stateChanged(const QString & newState);
@@ -168,6 +184,8 @@ public:
    void backspaceItemText();
    void changeCurrentState(call_state newState);
    void sendTextMessage(QString message);
+   
+   virtual QObject* getSelf() {return this;}
    
 private:
 

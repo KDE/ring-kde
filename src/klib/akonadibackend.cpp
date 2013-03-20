@@ -46,6 +46,7 @@
 #include "../lib/contact.h"
 #include "../lib/accountlist.h"
 #include "../lib/account.h"
+#include "../lib/call.h"
 #include "configurationskeleton.h"
 
 ///Init static attributes
@@ -67,6 +68,8 @@ AkonadiBackend::~AkonadiBackend()
 {
    CallModel<>::destroy();
    delete m_pSession;
+   if (Call::getContactBackend() == this)
+      Call::setContactBackend(nullptr);
 }
 
 

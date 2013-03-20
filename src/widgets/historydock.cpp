@@ -98,6 +98,9 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0)
    m_pToDW       = new KDateWidget (                        );
    m_pAllTimeCB  = new QCheckBox   ( i18n("Display all")    );
    m_pLinkPB     = new QPushButton ( this                   );
+   
+   QTreeView* m_pView = new QTreeView(this);
+   m_pView->setModel(HistoryModel::self());
 
    m_pAllTimeCB->setChecked(!ConfigurationSkeleton::displayDataRange());
    enableDateRange(!ConfigurationSkeleton::displayDataRange());
@@ -138,7 +141,8 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0)
    mainLayout->addWidget(m_pToL       ,4,0,1,2 );
    mainLayout->addWidget(m_pToDW      ,5,0,1,2 );
    mainLayout->addWidget(m_pItemView  ,6,0,1,3 );
-   mainLayout->addWidget(m_pFilterLE  ,7,0,1,3 );
+   mainLayout->addWidget(m_pView      ,7,0,1,3 );
+   mainLayout->addWidget(m_pFilterLE  ,8,0,1,3 );
 
    setWindowTitle(i18n("History"));
 

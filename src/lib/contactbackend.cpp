@@ -23,6 +23,7 @@
 
 //SFLPhone library
 #include "contact.h"
+#include "call.h"
 
 //Qt
 #include <QtCore/QHash>
@@ -37,6 +38,8 @@ ContactBackend::ContactBackend(QObject* parent) : QAbstractItemModel(parent)
 ///Destructor
 ContactBackend::~ContactBackend()
 {
+   if (Call::getContactBackend() == this)
+      Call::setContactBackend(nullptr);
    foreach (Contact* c,m_ContactByUid) {
       delete c;
    }

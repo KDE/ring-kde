@@ -120,7 +120,7 @@ void Call::setContactBackend(ContactBackend* be)
 
 ///Constructor
 Call::Call(call_state startState, QString callId, QString peerName, QString peerNumber, QString account)
-   : m_isConference(false),m_pStopTime(nullptr),m_pStartTime(nullptr),
+   :  HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTime(nullptr),m_pStartTime(nullptr),
    m_ContactChanged(false),m_pContact(nullptr),m_pImModel(nullptr)
 {
    this->m_CallId          = callId     ;
@@ -152,7 +152,7 @@ Call::~Call()
 }
 
 ///Constructor
-Call::Call(QString confId, QString account): m_isConference(false),m_pStopTime(nullptr),m_pStartTime(nullptr),
+Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTime(nullptr),m_pStartTime(nullptr),
    m_ContactChanged(false),m_pContact(nullptr),m_pImModel(nullptr)
 {
    m_isConference  = m_ConfId.isEmpty();
@@ -445,6 +445,16 @@ bool Call::hasRecording()                   const
    return !getRecordingPath().isEmpty() && QFile::exists(getRecordingPath());
 }
 
+
+QString Call::getLength() const
+{
+   int dur = getStopTimeStamp().toInt() - getStartTimeStamp().toInt();
+   if (dur/3600)
+      return QString("%1").arg(dur/3600).trimmed()+':'+QString("%1").arg((dur%3600)/60,2,10,QChar('0')).trimmed()+':'+QString("%1").arg((dur%3600)%60,2,10,QChar('0')).trimmed()+' ';
+   else
+      return QString("%1").arg((dur%3600)/60).trimmed()+':'+QString("%1").arg((dur%3600)%60,2,10,QChar('0')).trimmed()+' ';
+}
+
 ///Get the current state
 call_state Call::getCurrentState()          const
 {
@@ -528,7 +538,7 @@ bool Call::isSecure() const {
 
 Contact* Call::getContact()
 {
-   if (!m_pContact && m_ContactChanged) {
+   if (!m_pContact && m_ContactChanged && m_pContactBackend) {
       m_pContact = m_pContactBackend->getContactByPhone(m_PeerPhoneNumber,true,getAccount());
    }
    return m_pContact;

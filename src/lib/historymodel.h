@@ -20,23 +20,23 @@
 //Base
 #include "typedefs.h"
 #include <QtCore/QObject>
+#include <QtCore/QAbstractItemModel>
 
 //Qt
 
 //SFLPhone
-class Call;
+#include "call.h"
 
 //Typedef
 typedef QMap<QString, Call*>  CallMap;
 typedef QList<Call*>          CallList;
 
 ///HistoryModel: History call manager
-class LIB_EXPORT HistoryModel : public QObject {
+class LIB_EXPORT HistoryModel : public QAbstractItemModel {
    Q_OBJECT
 public:
    //Singleton
    static HistoryModel* self();
-   ~HistoryModel();
 
    //Getters
    static const CallMap&    getHistory             ();
@@ -46,14 +46,38 @@ public:
    //Setters
    static void add(Call* call);
 
+   //Model implementation
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
+   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
+   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
+   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const;
+   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
+   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
+   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   
+   enum Role {
+      Name      = 100,
+      Number    = 101,
+      Direction = 102,
+      Date      = 103,
+      Length    = 104
+   };
+
 private:
 
    //Constructor
    HistoryModel();
+   ~HistoryModel();
+
    bool initHistory ();
 
    //Mutator
    void addPriv(Call* call);
+
+   //Helpers
+   QString category(Call* call) const;
+   QVariant commonCallInfo(Call* call, int role) const;
 
    //Static attributes
    static HistoryModel* m_spInstance;
@@ -61,6 +85,30 @@ private:
    //Attributes
    static CallMap m_sHistoryCalls;
    bool m_HistoryInit;
+
+   //Model
+   class TopLevelItem : public HistoryTreeBackend,public QObject {
+   friend class HistoryModel;
+   public:
+      virtual QObject* getSelf() {return this;}
+   private:
+      TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
+      int counter;
+      int idx;
+      CallList m_lChilds;
+      QString m_Name;
+   };
+
+   //Model categories
+   QList<TopLevelItem*>         m_lCategoryCounter ;
+   QHash<QString,TopLevelItem*> m_hCategories      ;
+   bool                         m_isContactDateInit;
+   int                          m_Role             ;
+   bool                         m_ShowAll          ;
+   bool                         m_HaveContactModel ;
+
+private Q_SLOTS:
+   void reloadCategories();
 
 Q_SIGNALS:
    ///Emitted when the history change (new items, cleared)

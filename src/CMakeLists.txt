@@ -74,6 +74,7 @@ SET(
    widgets/tips/tipcollection.cpp
    widgets/calltreeitemdelegate.cpp
    delegates/contactdelegate.cpp
+   delegates/historydelegate.cpp
    delegates/categorizeddelegate.cpp
    delegates/phonenumberdelegate.cpp
 #    widgets/acceleratedvideowidget.cpp
