@@ -185,7 +185,6 @@ void HistoryModel::reloadCategories()
 {
    if (!m_HistoryInit)
       return;
-   qDebug() << "\n\nBEGIN LAOD MODEL";
    beginResetModel();
    m_hCategories.clear();
    foreach(TopLevelItem* item, m_lCategoryCounter) {
@@ -199,8 +198,6 @@ void HistoryModel::reloadCategories()
          TopLevelItem* item = new TopLevelItem(val);
          m_hCategories[val] = item;
          m_lCategoryCounter << item;
-
-         emit dataChanged(index(0,0),index(rowCount()-1,0));
       }
       TopLevelItem* item = m_hCategories[val];
       if (item) {
@@ -340,6 +337,15 @@ QVariant HistoryModel::commonCallInfo(Call* call, int role) const
          break;
       case Length:
          cat = call->getLength();
+         break;
+      case FormattedDate:
+         cat = QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
+         break;
+      case HasRecording:
+         cat = call->hasRecording();
+         break;
+      case HistoryState:
+         cat = call->getHistoryState();
          break;
    }
    return cat;

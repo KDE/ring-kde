@@ -1,7 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C) 2012-2013 by Savoir-Faire Linux                         *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,34 +15,33 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef CATEGORIZEDTREEVIEW_H
-#define CATEGORIZEDTREEVIEW_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
-#include <QtGui/QTreeWidget>
-#include <QtCore/QDebug>
+#include <QtGui/QWidget>
 
-class QTreeWidgetItem;
-class QStyledItemDelegate;
+#include "ui_player.h"
 
-///CategorizedTreeView: A better looking widget than the plain QListWidget
-class CategorizedTreeView : public QTreeView
+class Call;
+class PlayerOverlay;
+
+class Player : public QWidget, public Ui_Player
 {
-  Q_OBJECT
-  friend class KateColorTreeDelegate;
+   Q_OBJECT
+public:
+   explicit Player(QWidget* parent = nullptr);
 
-  public:
-    explicit CategorizedTreeView(QWidget *parent = nullptr);
-    void setDelegate(QStyledItemDelegate* delegate);
-    
-  protected:
-    virtual void contextMenuEvent ( QContextMenuEvent * e );
-    virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
-    
-  private:
-    QStyledItemDelegate* m_pDelegate;
-    
-  Q_SIGNALS:
-     void contextMenuRequest(QModelIndex);
+private:
+   PlayerOverlay* m_pParent;
+
+private Q_SLOTS:
+   void slotHide();
+   void slotDisconnectSlider();
+   void slotConnectSlider();
+   void slotUpdateSlider(int,int);
+
+Q_SIGNALS:
+   void sigHide(bool);
 };
 
 #endif

@@ -35,16 +35,19 @@ class QLabel;
 class QCheckBox;
 class QPushButton;
 class QDate;
+class QAction;
 
 //KDE
 class KLineEdit;
 class KDateWidget;
+class KAction;
 
 //SFLPhone
 class HistoryTreeItem;
 class HistoryTree;
 class KeyPressEater;
 class QNumericTreeWidgetItem;
+class CategorizedTreeView;
 
 //Typedef
 typedef QList<HistoryTreeItem*> HistoryList;
@@ -64,22 +67,33 @@ public:
 
 private:
    //Attributes
-   HistoryTree*   m_pItemView        ;
-   KLineEdit*     m_pFilterLE        ;
-   KComboBox*     m_pSortByCBB       ;
-   QLabel*        m_pSortByL         ;
-   QLabel*        m_pFromL           ;
-   QLabel*        m_pToL             ;
-   KDateWidget*   m_pFromDW          ;
-   KDateWidget*   m_pToDW            ;
-   QCheckBox*     m_pAllTimeCB       ;
-   QPushButton*   m_pLinkPB          ;
-   HistoryList    m_History          ;
-   QDate          m_CurrentFromDate  ;
-   QDate          m_CurrentToDate    ;
-   KeyPressEater* m_pKeyPressEater   ;
-   GroupHash      m_hGroup           ;
-   int            m_LastNewCall      ;
+   HistoryTree*         m_pItemView        ;
+   KLineEdit*           m_pFilterLE        ;
+   KComboBox*           m_pSortByCBB       ;
+   QLabel*              m_pSortByL         ;
+   QLabel*              m_pFromL           ;
+   QLabel*              m_pToL             ;
+   CategorizedTreeView* m_pView            ;
+   KDateWidget*         m_pFromDW          ;
+   KDateWidget*         m_pToDW            ;
+   QCheckBox*           m_pAllTimeCB       ;
+   QPushButton*         m_pLinkPB          ;
+   HistoryList          m_History          ;
+   QDate                m_CurrentFromDate  ;
+   QDate                m_CurrentToDate    ;
+   KeyPressEater*       m_pKeyPressEater   ;
+   GroupHash            m_hGroup           ;
+   int                  m_LastNewCall      ;
+   
+   //Menu
+    KAction*     m_pCallAgain     ;
+    KAction*     m_pAddContact    ;
+    KAction*     m_pAddToContact  ;
+    KAction*     m_pCopy          ;
+    KAction*     m_pEmail         ;
+    KAction*     m_pBookmark      ;
+    QMenu*       m_pMenu          ;
+    Call*        m_pCurrentCall   ;
 
    //Mutator
    void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
@@ -92,19 +106,16 @@ private Q_SLOTS:
    void filter               ( QString text );
    void updateLinkedFromDate ( QDate   date );
    void updateLinkedToDate   ( QDate   date );
-   void reload               (              );
-   void updateContactInfo    (              );
-   void newHistoryCall       ( Call*   call );
-};
-
-
-///HistoryTree: Simple tree view with additional keybpard filter
-class HistoryTree : public CategorizedTreeWidget {
-   Q_OBJECT
-public:
-   explicit HistoryTree(QWidget* parent) : CategorizedTreeWidget(parent) {}
-   virtual QMimeData* mimeData( const QList<QTreeWidgetItem *> items) const;
-   bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action);
+   void expandTree           (              );
+   
+   //Menu
+   void slotContextMenu(const QModelIndex& index);
+   void slotSendEmail        ();
+   void slotCallAgain        ();
+   void slotCopy             ();
+   void slotAaddContact      ();
+   void slotAddToContact     ();
+   void slotBookmark         ();
 };
 
 ///KeyPressEater: Intercept each keypress to manage it globally

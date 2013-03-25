@@ -80,7 +80,7 @@ private:
    //Attributes
    KLineEdit*                   m_pFilterLE      ;
    QSplitter*                   m_pSplitter      ;
-   QTreeView*                   m_pView          ;
+   CategorizedTreeView*         m_pView          ;
    QListWidget*                 m_pCallView      ;
    KComboBox*                   m_pSortByCBB     ;
    QCheckBox*                   m_pShowHistoCK   ;

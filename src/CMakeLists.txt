@@ -73,6 +73,8 @@ SET(
    widgets/tips/connectionlosttip.cpp
    widgets/tips/tipcollection.cpp
    widgets/calltreeitemdelegate.cpp
+   widgets/player.cpp
+   widgets/playeroverlay.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp
    delegates/categorizeddelegate.cpp
@@ -99,6 +101,8 @@ SET(
    conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
    conf/dlgvideobase.ui
+   widgets/ui/player.ui
+   widgets/ui/playeroverlay.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users

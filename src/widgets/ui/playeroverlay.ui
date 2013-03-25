@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PlayerOverlay</class>
+ <widget class="QWidget" name="PlayerOverlay">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>376</width>
+    <height>64</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="widget_2" native="true">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="2" column="0">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="3">
+         <spacer name="m_pSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="2">
+         <widget class="QToolButton" name="m_pDelete">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>106</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="1">
+         <widget class="QToolButton" name="m_pPlay">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>17</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Player" name="m_pPlayer" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Player</class>
+   <extends>QWidget</extends>
+   <header>widgets/player.h</header>
+   <container>1</container>
+   <slots>
+    <signal>sigHide(bool)</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_pPlay</sender>
+   <signal>clicked()</signal>
+   <receiver>PlayerOverlay</receiver>
+   <slot>slotShowPlayer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>43</x>
+     <y>31</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pPlay</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>m_pPlayer</receiver>
+   <slot>setHidden(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>232</x>
+     <y>71</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pDelete</sender>
+   <signal>clicked()</signal>
+   <receiver>PlayerOverlay</receiver>
+   <slot>slotDeleteRecording()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>306</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>341</x>
+     <y>82</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pPlay</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>267</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>113</x>
+     <y>28</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pPlayer</sender>
+   <signal>sigHide(bool)</signal>
+   <receiver>widget_2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>42</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>71</x>
+     <y>16</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotShowPlayer()</slot>
+  <slot>slotDeleteRecording()</slot>
+ </slots>
+</ui>

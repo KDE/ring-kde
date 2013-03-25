@@ -22,28 +22,16 @@
 //Qt
 #include <QtGui/QStyledItemDelegate>
 #include <QtGui/QPainter>
-#include <QtGui/QHeaderView>
-#include <QDebug>
 #include <QEvent>
-#include <QKeyEvent>
 
 //KDE
 #include <klocale.h>
 #include <kdebug.h>
 
-//SFLPhone
-#include "../delegates/categorizeddelegate.h"
-#include "../delegates/contactdelegate.h"
-#include "../delegates/phonenumberdelegate.h"
-
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
   : QTreeView(parent)
 {
-  SortedTreeDelegate* delegate = new SortedTreeDelegate(this);
-  delegate->setChildDelegate(new ContactDelegate());
-  delegate->setChildChildDelegate(new PhoneNumberDelegate());
-  setItemDelegate(delegate);
   setHeaderHidden(true);
   setRootIsDecorated(false);
   //setUniformRowHeights(false);
@@ -60,9 +48,13 @@ void CategorizedTreeView::drawBranches(QPainter* painter, const QRect& rect, con
   Q_UNUSED( index   )
 }
 
-
 void CategorizedTreeView::contextMenuEvent ( QContextMenuEvent * e ) {
   QModelIndex index = indexAt(e->pos());
   emit contextMenuRequest(index);
   e->accept();
+}
+
+void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)
+{
+   setItemDelegate(delegate);
 }

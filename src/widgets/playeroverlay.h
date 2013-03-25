@@ -1,7 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C) 2012-2013 by Savoir-Faire Linux                         *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,34 +15,25 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef CATEGORIZEDTREEVIEW_H
-#define CATEGORIZEDTREEVIEW_H
+#ifndef PLAYER_OVERLAY_H
+#define PLAYER_OVERLAY_H
 
-#include <QtGui/QTreeWidget>
-#include <QtCore/QDebug>
+#include <QtGui/QWidget>
+#include "ui_playeroverlay.h"
 
-class QTreeWidgetItem;
-class QStyledItemDelegate;
-
-///CategorizedTreeView: A better looking widget than the plain QListWidget
-class CategorizedTreeView : public QTreeView
+class PlayerOverlay : public QWidget, public Ui_PlayerOverlay
 {
-  Q_OBJECT
-  friend class KateColorTreeDelegate;
+   Q_OBJECT
+public:
+   friend class Player;
+   explicit PlayerOverlay(Call* call, QWidget* parent = nullptr);
+   void setCall(Call* call);
 
-  public:
-    explicit CategorizedTreeView(QWidget *parent = nullptr);
-    void setDelegate(QStyledItemDelegate* delegate);
-    
-  protected:
-    virtual void contextMenuEvent ( QContextMenuEvent * e );
-    virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
-    
-  private:
-    QStyledItemDelegate* m_pDelegate;
-    
-  Q_SIGNALS:
-     void contextMenuRequest(QModelIndex);
+private:
+   Call* m_pCall;
+
+private Q_SLOTS:
+   void slotDeleteRecording();
 };
 
 #endif

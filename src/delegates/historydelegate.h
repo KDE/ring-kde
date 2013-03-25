@@ -20,15 +20,18 @@
 
 #include <QtGui/QStyledItemDelegate>
 
+class QTreeView;
+
 class HistoryDelegate : public QStyledItemDelegate
 {
 public:
-   HistoryDelegate(QObject* parent = nullptr);
+   HistoryDelegate(QTreeView* parent = nullptr);
 
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 private:
+   QTreeView* m_pParent;
 };
 
 #endif

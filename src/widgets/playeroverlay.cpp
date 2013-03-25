@@ -1,7 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C) 2012-2013 by Savoir-Faire Linux                         *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,34 +15,35 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef CATEGORIZEDTREEVIEW_H
-#define CATEGORIZEDTREEVIEW_H
+#include "playeroverlay.h"
 
-#include <QtGui/QTreeWidget>
-#include <QtCore/QDebug>
+#include <QtCore/QFile>
 
-class QTreeWidgetItem;
-class QStyledItemDelegate;
+#include <KIcon>
+#include <KMessageBox>
+#include <KDebug>
 
-///CategorizedTreeView: A better looking widget than the plain QListWidget
-class CategorizedTreeView : public QTreeView
+#include "lib/call.h"
+
+PlayerOverlay::PlayerOverlay(Call* call, QWidget* parent) : QWidget(parent),m_pCall(call)
 {
-  Q_OBJECT
-  friend class KateColorTreeDelegate;
+   setupUi(this);
+   m_pPlayer->setVisible(false);
+   m_pDelete->setIcon( KIcon("edit-delete") );
+   m_pPlay->setIcon( KIcon( "media-playback-start" ));
+}
 
-  public:
-    explicit CategorizedTreeView(QWidget *parent = nullptr);
-    void setDelegate(QStyledItemDelegate* delegate);
-    
-  protected:
-    virtual void contextMenuEvent ( QContextMenuEvent * e );
-    virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
-    
-  private:
-    QStyledItemDelegate* m_pDelegate;
-    
-  Q_SIGNALS:
-     void contextMenuRequest(QModelIndex);
-};
+void PlayerOverlay::slotDeleteRecording()
+{
+   int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to delete this recording?"), i18n("Delete recording"));
+   if (ret == KMessageBox::Yes) {
+      kDebug() << "Deleting file";
+      QFile::remove(m_pCall->getRecordingPath());
+      setVisible(false);
+   }
+}
 
-#endif
+void PlayerOverlay::setCall(Call* call)
+{
+   m_pCall = call;
+}

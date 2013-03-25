@@ -57,11 +57,14 @@ public:
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
    
    enum Role {
-      Name      = 100,
-      Number    = 101,
-      Direction = 102,
-      Date      = 103,
-      Length    = 104
+      Name          = 100,
+      Number        = 101,
+      Direction     = 102,
+      Date          = 103,
+      Length        = 104,
+      FormattedDate = 105,
+      HasRecording  = 106,
+      HistoryState  = 107,
    };
 
 private:

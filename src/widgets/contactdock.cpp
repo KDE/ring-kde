@@ -49,12 +49,16 @@
 #include "bookmarkdock.h"
 
 //SFLPhone library
+#include "categorizedtreeview.h"
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
 #include "klib/helperfunctions.h"
 #include "klib/akonadibackend.h"
 #include "klib/configurationskeleton.h"
+#include "../delegates/categorizeddelegate.h"
+#include "../delegates/contactdelegate.h"
+#include "../delegates/phonenumberdelegate.h"
 
 #define CURRENT_SORTING_MODE m_pSortByCBB->currentIndex()
 
@@ -102,6 +106,11 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
    
    m_pView = new CategorizedTreeView(this);
+   SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
+   delegate->setChildDelegate(new ContactDelegate());
+   delegate->setChildChildDelegate(new PhoneNumberDelegate());
+   m_pView->setDelegate(delegate);
+
    m_pSourceModel = new ContactByNameProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
    m_pProxyModel = new ContactSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);

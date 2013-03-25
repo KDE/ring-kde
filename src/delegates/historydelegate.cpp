@@ -22,25 +22,35 @@
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
 #include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QTreeView>
 
 #include <QtCore/QDebug>
 
 #include <KLocale>
 #include <KIcon>
+#include <KStandardDirs>
 
+#include <lib/historymodel.h>
 #include <lib/contact.h>
+#include "klib/configurationskeleton.h"
+#include "widgets/playeroverlay.h"
 
-HistoryDelegate::HistoryDelegate(QObject* parent) : QStyledItemDelegate(parent)
+static const char* icnPath[4] = {
+/* INCOMING */ ICON_HISTORY_INCOMING,
+/* OUTGOING */ ICON_HISTORY_OUTGOING,
+/* MISSED   */ ICON_HISTORY_MISSED  ,
+/* NONE     */ ""                   ,
+};
+
+HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent)
 {
 }
 
 QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    QFontMetrics fm(QApplication::font());
-   Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
    int lineHeight = fm.height()+2;
-   int lines = ((!ct->getOrganization().isEmpty()) + (!ct->getPreferredEmail().isEmpty()))*lineHeight + 2*lineHeight;
-   return QSize(sh.rwidth(),lines<52?52:lines);
+   return QSize(sh.rwidth(),(3*lineHeight)<52?52:(3*lineHeight));
 }
 
 void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -57,9 +67,12 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   Contact* ct = (Contact*)((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
-   if (ct->getPhoto()) {
-      QPixmap pxm = *ct->getPhoto();
+//    Call* call = (Call*)((HistoryTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
+   Call* call = (Call*)static_cast<HistoryTreeBackend*>(index.internalPointer())->getSelf();
+   Contact* ct = call->getContact();
+   QPixmap pxm;
+   if (ct && ct->getPhoto()) {
+      pxm = (*ct->getPhoto());
       QRect pxRect = pxm.rect();
       QBitmap mask(pxRect.size());
       QPainter customPainter(&mask);
@@ -69,11 +82,29 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       customPainter.setBrush       (QColor("black")                );
       customPainter.drawRoundedRect(pxRect,5,5);
       pxm.setMask(mask);
-      painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-48)/2,pxm);
    }
    else {
-      painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-48)/2,QPixmap(KIcon("user-identity").pixmap(QSize(48,48))));
+      pxm = QPixmap(KIcon("user-identity").pixmap(QSize(48,48)));
    }
+   
+   if (index.data(HistoryModel::Role::HasRecording).toBool()) {
+      QPainter painter(&pxm);
+      QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
+      status=status.scaled(QSize(24,24));
+      painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+      if (m_pParent && m_pParent->indexWidget(index) == nullptr) {
+         auto button = new PlayerOverlay(call,nullptr);
+         button->setCall(call);
+         m_pParent->setIndexWidget(index,button);
+      }
+   }
+   else if (index.data(HistoryModel::Role::HistoryState).toInt() != history_state::NONE && ConfigurationSkeleton::displayHistoryStatus()) {
+      QPainter painter(&pxm);
+      QPixmap status(icnPath[index.data(HistoryModel::Role::HistoryState).toInt()]);
+      status=status.scaled(QSize(24,24));
+      painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+   }
+   painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-48)/2,pxm);
 
    QFont font = painter->font();
    QFontMetrics fm(font);
@@ -81,21 +112,11 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    font.setBold(true);
    painter->setFont(font);
    painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Qt::DisplayRole).toString());
-   currentHeight +=fm.height();
    font.setBold(false);
    painter->setFont(font);
-   if (!ct->getOrganization().isEmpty()) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->getOrganization());
-      currentHeight +=fm.height();
-   }
-   if (!ct->getPreferredEmail().isEmpty()) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->getPreferredEmail());
-      currentHeight +=fm.height();
-   }
-   if (ct->getPhoneNumbers().size() == 1) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->getPhoneNumbers()[0]->getNumber());
-   }
-   else {
-      painter->drawText(option.rect.x()+15+48,currentHeight,QString::number(ct->getPhoneNumbers().size()) + i18n(" phone numbers"));
-   }
+   currentHeight +=fm.height();
+   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(HistoryModel::Role::FormattedDate).toString());
+   currentHeight +=fm.height();
+   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(HistoryModel::Role::Number).toString());
+   currentHeight +=fm.height();
 }
