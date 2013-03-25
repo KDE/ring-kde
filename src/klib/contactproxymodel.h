@@ -71,39 +71,9 @@ private:
    
    QModelIndex getContactIndex(Contact* ct) const;
    
-   enum HistoryConst {
-         Today             = 0  ,
-         Yesterday         = 1  ,
-         Two_days_ago      = 2  ,
-         Three_days_ago    = 3  ,
-         Four_days_ago     = 4  ,
-         Five_days_ago     = 5  ,
-         Six_days_ago      = 6  ,
-         Last_week         = 7  ,
-         Two_weeks_ago     = 8  ,
-         Three_weeks_ago   = 9  ,
-         Last_month        = 10 ,
-         Two_months_ago    = 11 ,
-         Three_months_ago  = 12 ,
-         Four_months_ago   = 13 ,
-         Five_months_ago   = 14 ,
-         Six_months_ago    = 15 ,
-         Seven_months_ago  = 16 ,
-         Eight_months_ago  = 17 ,
-         Nine_months_ago   = 18 ,
-         Ten_months_ago    = 19 ,
-         Eleven_months_ago = 20 ,
-         Twelve_months_ago = 21 ,
-         Last_year         = 22 ,
-         Very_long_time_ago= 23 ,
-         Never             = 24
-      };
-   
    //Helpers
    QString category(Contact* ct) const;
-   QString timeToHistoryCategory(const QDate& date) const;
    QHash<Contact*, QDateTime> getContactListByTime() const;
-   HistoryConst timeToHistoryConst(const QDate& date) const;
 
 private Q_SLOTS:
    void reloadCategories();

@@ -21,6 +21,7 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>
+#include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QDate>
 #include "../klib/sortabledockcommon.h"
 #include "categorizedtreewidget.h"
@@ -67,23 +68,24 @@ public:
 
 private:
    //Attributes
-   HistoryTree*         m_pItemView        ;
-   KLineEdit*           m_pFilterLE        ;
-   KComboBox*           m_pSortByCBB       ;
-   QLabel*              m_pSortByL         ;
-   QLabel*              m_pFromL           ;
-   QLabel*              m_pToL             ;
-   CategorizedTreeView* m_pView            ;
-   KDateWidget*         m_pFromDW          ;
-   KDateWidget*         m_pToDW            ;
-   QCheckBox*           m_pAllTimeCB       ;
-   QPushButton*         m_pLinkPB          ;
-   HistoryList          m_History          ;
-   QDate                m_CurrentFromDate  ;
-   QDate                m_CurrentToDate    ;
-   KeyPressEater*       m_pKeyPressEater   ;
-   GroupHash            m_hGroup           ;
-   int                  m_LastNewCall      ;
+   HistoryTree*           m_pItemView        ;
+   KLineEdit*             m_pFilterLE        ;
+   KComboBox*             m_pSortByCBB       ;
+   QLabel*                m_pSortByL         ;
+   QLabel*                m_pFromL           ;
+   QLabel*                m_pToL             ;
+   CategorizedTreeView*   m_pView            ;
+   KDateWidget*           m_pFromDW          ;
+   KDateWidget*           m_pToDW            ;
+   QCheckBox*             m_pAllTimeCB       ;
+   QPushButton*           m_pLinkPB          ;
+   HistoryList            m_History          ;
+   QDate                  m_CurrentFromDate  ;
+   QDate                  m_CurrentToDate    ;
+   KeyPressEater*         m_pKeyPressEater   ;
+   GroupHash              m_hGroup           ;
+   int                    m_LastNewCall      ;
+   QSortFilterProxyModel* m_pProxyModel      ;
    
    //Menu
     KAction*     m_pCallAgain     ;
@@ -97,16 +99,23 @@ private:
 
    //Mutator
    void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
+   
+   enum Role {
+      Date =0,
+      Name,
+      Popularity,
+      Length
+   };
 
 public Q_SLOTS:
    void enableDateRange(bool disable);
    virtual void keyPressEvent(QKeyEvent* event);
 
 private Q_SLOTS:
-   void filter               ( QString text );
    void updateLinkedFromDate ( QDate   date );
    void updateLinkedToDate   ( QDate   date );
    void expandTree           (              );
+   void slotSetSortRole      ( int          );
    
    //Menu
    void slotContextMenu(const QModelIndex& index);
@@ -116,6 +125,26 @@ private Q_SLOTS:
    void slotAaddContact      ();
    void slotAddToContact     ();
    void slotBookmark         ();
+};
+
+///Tuned sorting model for the history model
+class HistorySortFilterProxyModel : public QSortFilterProxyModel
+{
+   Q_OBJECT
+public:
+   HistorySortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+protected:
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+   {
+      if (!source_parent.isValid() ) { //Is a category
+         for (int i=0;i<HistoryModel::self()->rowCount(HistoryModel::self()->index(source_row,0,source_parent));i++) {
+            if (filterAcceptsRow(i, HistoryModel::self()->index(source_row,0,source_parent)))
+               return true;
+         }
+      }
+
+      return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+   }
 };
 
 ///KeyPressEater: Intercept each keypress to manage it globally

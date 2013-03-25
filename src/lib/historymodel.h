@@ -35,6 +35,47 @@ typedef QList<Call*>          CallList;
 class LIB_EXPORT HistoryModel : public QAbstractItemModel {
    Q_OBJECT
 public:
+   enum HistoryConst {
+      Today             = 0  ,
+      Yesterday         = 1  ,
+      Two_days_ago      = 2  ,
+      Three_days_ago    = 3  ,
+      Four_days_ago     = 4  ,
+      Five_days_ago     = 5  ,
+      Six_days_ago      = 6  ,
+      Last_week         = 7  ,
+      Two_weeks_ago     = 8  ,
+      Three_weeks_ago   = 9  ,
+      Last_month        = 10 ,
+      Two_months_ago    = 11 ,
+      Three_months_ago  = 12 ,
+      Four_months_ago   = 13 ,
+      Five_months_ago   = 14 ,
+      Six_months_ago    = 15 ,
+      Seven_months_ago  = 16 ,
+      Eight_months_ago  = 17 ,
+      Nine_months_ago   = 18 ,
+      Ten_months_ago    = 19 ,
+      Eleven_months_ago = 20 ,
+      Twelve_months_ago = 21 ,
+      Last_year         = 22 ,
+      Very_long_time_ago= 23 ,
+      Never             = 24
+   };
+
+   enum Role {
+      Name          = 100,
+      Number        = 101,
+      Direction     = 102,
+      Date          = 103,
+      Length        = 104,
+      FormattedDate = 105,
+      HasRecording  = 106,
+      HistoryState  = 107,
+      Filter        = 108,
+      FuzzyDate     = 109,
+   };
+   
    //Singleton
    static HistoryModel* self();
 
@@ -45,6 +86,7 @@ public:
 
    //Setters
    static void add(Call* call);
+   void setCategoryRole(HistoryModel::Role role) {if (m_Role != role) { m_Role = role;reloadCategories();}}
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -56,16 +98,8 @@ public:
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
    
-   enum Role {
-      Name          = 100,
-      Number        = 101,
-      Direction     = 102,
-      Date          = 103,
-      Length        = 104,
-      FormattedDate = 105,
-      HasRecording  = 106,
-      HistoryState  = 107,
-   };
+   static HistoryConst timeToHistoryConst(const QDate& date);
+   static QString timeToHistoryCategory(const QDate& date);
 
 private:
 
@@ -109,6 +143,8 @@ private:
    int                          m_Role             ;
    bool                         m_ShowAll          ;
    bool                         m_HaveContactModel ;
+
+   static const char* m_slHistoryConstStr[25];
 
 private Q_SLOTS:
    void reloadCategories();

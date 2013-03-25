@@ -67,8 +67,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-//    Call* call = (Call*)((HistoryTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
-   Call* call = (Call*)static_cast<HistoryTreeBackend*>(index.internalPointer())->getSelf();
+   Call* call = (Call*)((HistoryTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
+//    Call* call = (Call*)static_cast<HistoryTreeBackend*>(index.internalPointer())->getSelf();
    Contact* ct = call->getContact();
    QPixmap pxm;
    if (ct && ct->getPhoto()) {

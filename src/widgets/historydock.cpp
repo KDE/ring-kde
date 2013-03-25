@@ -89,10 +89,20 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0)
    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
-   m_pView->setModel(HistoryModel::self());
+   m_pProxyModel = new HistorySortFilterProxyModel(this);
+   m_pProxyModel->setSourceModel(HistoryModel::self());
+   m_pProxyModel->setSortRole(HistoryModel::Role::Date);
+   m_pProxyModel->setSortLocaleAware(true);
+   m_pProxyModel->setFilterRole(HistoryModel::Role::Filter);
+   m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+   m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+   m_pView->setModel(m_pProxyModel);
    m_pKeyPressEater = new KeyPressEater(this);
    m_pView->installEventFilter(m_pKeyPressEater);
+   m_pView->setSortingEnabled(true);
+   m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex)), this, SLOT(slotContextMenu(QModelIndex)));
+   connect(m_pFilterLE ,SIGNAL(textChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
    connect(HistoryModel::self() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
    expandTree();
@@ -143,7 +153,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0)
    connect(m_pFilterLE,                    SIGNAL(textChanged(QString)),     this, SLOT(filter(QString))            );
    connect(m_pFromDW  ,                    SIGNAL(changed(QDate)),           this, SLOT(updateLinkedFromDate(QDate)));
    connect(m_pToDW    ,                    SIGNAL(changed(QDate)),           this, SLOT(updateLinkedToDate(QDate))  );
-   connect(m_pSortByCBB,                   SIGNAL(currentIndexChanged(int)), this, SLOT(reload())                   );
+   connect(m_pSortByCBB,                   SIGNAL(currentIndexChanged(int)), this, SLOT(slotSetSortRole(int))       );
    connect(AkonadiBackend::getInstance(),  SIGNAL(collectionChanged()),      this, SLOT(updateContactInfo())        );
    connect(HistoryModel::self()         ,  SIGNAL(newHistoryCall(Call*)),    this, SLOT(newHistoryCall(Call*))      );
 
@@ -195,20 +205,6 @@ void HistoryDock::enableDateRange(bool disable)
    ConfigurationSkeleton::setDisplayDataRange(!disable);
 }
 
-///Filter the history
-void HistoryDock::filter(QString text)
-{
-//    QString lower = text.toLower();
-//    foreach(HistoryTreeItem* item, m_History) {
-//       bool visible = ( HelperFunctions::normStrippped( item->getName()        ).indexOf( lower ) != -1)
-//                   || ( HelperFunctions::normStrippped( item->getPhoneNumber() ).indexOf( lower ) != -1);
-//       item->getItem()-> setHidden(!visible);
-//    }
-//    m_pItemView->expandAll();
-}
-
-///When the data range is linked, change the opposite value when editing the first
-
 ///The signals have to be disabled to prevent an ifinite loop
 void HistoryDock::updateLinkedFromDate(QDate date)
 {
@@ -225,6 +221,27 @@ void HistoryDock::updateLinkedToDate(QDate date)
 //    connect   (m_pFromDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedFromDate(QDate)));
 }
 
+void HistoryDock::slotSetSortRole(int role)
+{
+   switch (role) {
+      case HistoryDock::Role::Date:
+         HistoryModel::self()->setCategoryRole(HistoryModel::Role::FuzzyDate);
+         m_pProxyModel->setSortRole(HistoryModel::Role::Date);
+         break;
+      case HistoryDock::Role::Name:
+         HistoryModel::self()->setCategoryRole(HistoryModel::Role::Name);
+         m_pProxyModel->setSortRole(HistoryModel::Role::Name);
+         break;
+      case HistoryDock::Role::Popularity:
+         //          m_pProxyModel->setSortRole(HistoryModel::Role::Name);
+         //TODO
+         break;
+      case HistoryDock::Role::Length:
+         HistoryModel::self()->setCategoryRole(HistoryModel::Role::Length);
+         m_pProxyModel->setSortRole(HistoryModel::Role::Length);
+         break;
+   }
+}
 
 /*****************************************************************************
  *                                                                           *

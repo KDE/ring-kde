@@ -21,6 +21,34 @@
 #include "call.h"
 #include "contact.h"
 
+const char* HistoryModel::m_slHistoryConstStr[25] = {
+      "Today"                                                    ,//0
+      "Yesterday"                                                ,//1
+      QDate::currentDate().addDays(-2).toString("dddd").toAscii().constData(),//2
+      QDate::currentDate().addDays(-3).toString("dddd").toAscii().constData(),//3
+      QDate::currentDate().addDays(-4).toString("dddd").toAscii().constData(),//4
+      QDate::currentDate().addDays(-5).toString("dddd").toAscii().constData(),//5
+      QDate::currentDate().addDays(-6).toString("dddd").toAscii().constData(),//6
+      "Last week"                                                ,//7
+      "Two weeks ago"                                            ,//8
+      "Three weeks ago"                                          ,//9
+      "Last month"                                               ,//10
+      "Two months ago"                                           ,//11
+      "Three months ago"                                         ,//12
+      "Four months ago"                                          ,//13
+      "Five months ago"                                          ,//14
+      "Six months ago"                                           ,//15
+      "Seven months ago"                                         ,//16
+      "Eight months ago"                                         ,//17
+      "Nine months ago"                                          ,//18
+      "Ten months ago"                                           ,//19
+      "Eleven months ago"                                        ,//20
+      "Twelve months ago"                                        ,//21
+      "Last year"                                                ,//22
+      "Very long time ago"                                       ,//23
+      "Never"                                                     //24
+};
+
 
 /*****************************************************************************
  *                                                                           *
@@ -55,7 +83,7 @@ CallMap       HistoryModel::m_sHistoryCalls          ;
  ****************************************************************************/
 
 ///Constructor
-HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_Role(Qt::DisplayRole),m_HaveContactModel(false)
+HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_Role(FuzzyDate),m_HaveContactModel(false)
 {
    ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
@@ -347,6 +375,12 @@ QVariant HistoryModel::commonCallInfo(Call* call, int role) const
       case HistoryState:
          cat = call->getHistoryState();
          break;
+      case Filter:
+         cat = call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
+         break;
+      case FuzzyDate:
+         cat = timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
+         break;
    }
    return cat;
 }
@@ -367,4 +401,40 @@ HistoryTreeBackend::HistoryTreeBackend(HistoryTreeBackend::Type _type) : m_Type3
 HistoryTreeBackend::Type HistoryTreeBackend::type3() const
 {
    return m_Type3;
+}
+
+QString HistoryModel::timeToHistoryCategory(const QDate& date)
+{
+   return m_slHistoryConstStr[HistoryModel::timeToHistoryConst(date)];
+}
+
+HistoryModel::HistoryConst HistoryModel::timeToHistoryConst(const QDate& date)
+{ //TODO this is slow and it often used, it is possible to optimize this directly on the integer range
+   //m_spEvHandler->update();
+   if (QDate::currentDate()  == date || QDate::currentDate()  < date) //The future case would be a bug, but it have to be handled anyway or it will appear in "very long time ago"
+      return HistoryConst::Today;
+
+   //Check for last week
+   for (int i=1;i<7;i++) {
+      if (QDate::currentDate().addDays(-i)  == date)
+         return (HistoryModel::HistoryConst)i; //Yesterday to Six_days_ago
+   }
+
+   //Check for last month
+   for (int i=1;i<4;i++) {
+      if (QDate::currentDate().addDays(-(i*7))  >= date && QDate::currentDate().addDays(-(i*7) -7)  < date)
+         return (HistoryModel::HistoryConst)(i+Last_week-1); //Last_week to Three_weeks_ago
+   }
+
+   //Check for last year
+   for (int i=1;i<12;i++) {
+      if (QDate::currentDate().addMonths(-i)  >= date && QDate::currentDate().addMonths((-i) - 1)  < date)
+         return (HistoryModel::HistoryConst)(i+Last_month-1); //Last_month to Twelve_months ago
+   }
+
+   if (QDate::currentDate().addYears(-1)  >= date && QDate::currentDate().addYears(-2)  < date)
+      return HistoryConst::Last_year;
+
+   //Every other senario
+   return HistoryModel::HistoryConst::Very_long_time_ago;
 }

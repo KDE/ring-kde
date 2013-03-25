@@ -128,12 +128,12 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
          case ContactBackend::Role::FormattedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant(timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]].date()));
+            return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]].date()));
          }
          case ContactBackend::Role::IndexedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant(timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]].date()));
+            return QVariant(HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]].date()));
          }
          case ContactBackend::Role::DatedLastUsed: {
             if (!m_isContactDateInit)
@@ -239,42 +239,6 @@ QModelIndex ContactByNameProxyModel::index( int row, int column, const QModelInd
  *                                                                           *
  ****************************************************************************/
 
-ContactByNameProxyModel::HistoryConst ContactByNameProxyModel::timeToHistoryConst(const QDate& date) const
-{
-   //m_spEvHandler->update();
-   if (QDate::currentDate()  == date || QDate::currentDate()  < date) //The future case would be a bug, but it have to be handled anyway or it will appear in "very long time ago"
-      return HistoryConst::Today;
-
-   //Check for last week
-   for (int i=1;i<7;i++) {
-      if (QDate::currentDate().addDays(-i)  == date)
-         return (ContactByNameProxyModel::HistoryConst)i; //Yesterday to Six_days_ago
-   }
-
-   //Check for last month
-   for (int i=1;i<4;i++) {
-      if (QDate::currentDate().addDays(-(i*7))  >= date && QDate::currentDate().addDays(-(i*7) -7)  < date)
-         return (ContactByNameProxyModel::HistoryConst)(i+Last_week-1); //Last_week to Three_weeks_ago
-   }
-
-   //Check for last year
-   for (int i=1;i<12;i++) {
-      if (QDate::currentDate().addMonths(-i)  >= date && QDate::currentDate().addMonths((-i) - 1)  < date)
-         return (ContactByNameProxyModel::HistoryConst)(i+Last_month-1); //Last_month to Twelve_months ago
-   }
-
-   if (QDate::currentDate().addYears(-1)  >= date && QDate::currentDate().addYears(-2)  < date)
-      return HistoryConst::Last_year;
-
-   //Every other senario
-   return ContactByNameProxyModel::HistoryConst::Very_long_time_ago;
-}
-
-///Convert call end time stamp to human readable relative date
-QString ContactByNameProxyModel::timeToHistoryCategory(const QDate& date) const
-{
-   return i18n(m_slHistoryConstStr[timeToHistoryConst(date)]);
-}
 
 QString ContactByNameProxyModel::category(Contact* ct) const {
    QString cat;
@@ -294,13 +258,13 @@ QString ContactByNameProxyModel::category(Contact* ct) const {
       case ContactBackend::Role::FormattedLastUsed: {
          if (!m_isContactDateInit)
             ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-         cat = timeToHistoryCategory(m_hContactByDate[ct].date());
+         cat = HistoryModel::timeToHistoryCategory(m_hContactByDate[ct].date());
          break;
       }
       case ContactBackend::Role::IndexedLastUsed: {
          if (!m_isContactDateInit)
             ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-         cat = QString::number(timeToHistoryConst(m_hContactByDate[ct].date()));
+         cat = QString::number(HistoryModel::timeToHistoryConst(m_hContactByDate[ct].date()));
          break;
       }
       case ContactBackend::Role::DatedLastUsed: {
