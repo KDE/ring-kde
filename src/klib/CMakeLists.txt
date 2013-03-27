@@ -37,6 +37,7 @@ set( ksflphone_LIB_SRCS
    tipanimationwrapper.cpp
    macromodel.cpp
    contactproxymodel.cpp
+   bookmarkmodel.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)

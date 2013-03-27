@@ -208,6 +208,7 @@ void HistoryDock::enableDateRange(bool disable)
 ///The signals have to be disabled to prevent an ifinite loop
 void HistoryDock::updateLinkedFromDate(QDate date)
 {
+   Q_UNUSED(date)
 //    disconnect (m_pToDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedToDate(QDate)));
 //    updateLinkedDate(m_pToDW,m_CurrentFromDate,date);
 //    connect    (m_pToDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedToDate(QDate)));
@@ -216,6 +217,7 @@ void HistoryDock::updateLinkedFromDate(QDate date)
 ///The signals have to be disabled to prevent an ifinite loop
 void HistoryDock::updateLinkedToDate(QDate date)
 {
+   Q_UNUSED(date)
 //    disconnect(m_pFromDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedFromDate(QDate)));
 //    updateLinkedDate(m_pFromDW,m_CurrentToDate,date);
 //    connect   (m_pFromDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedFromDate(QDate)));

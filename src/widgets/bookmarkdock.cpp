@@ -40,7 +40,11 @@
 #include "widgets/categorizedtreewidget.h"
 #include "klib/akonadibackend.h"
 #include "klib/helperfunctions.h"
+#include "klib/bookmarkmodel.h"
 #include "lib/historymodel.h"
+#include "categorizedtreeview.h"
+#include "../delegates/categorizeddelegate.h"
+#include "../delegates/contactdelegate.h"
 
 ///QNumericTreeWidgetItem : Tree widget with different sorting criterias
 class QNumericTreeWidgetItem : public QTreeWidgetItem {
@@ -73,8 +77,11 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
    m_pSplitter             = new QSplitter            ( Qt::Vertical,this );
    m_pItemView             = new CategorizedTreeWidget( this              );
    m_pMostUsedCK           = new QCheckBox            ( this              );
+   m_pView                 = new CategorizedTreeView  ( this              );
    QWidget* mainWidget     = new QWidget              ( this              );
    QVBoxLayout* mainLayout = new QVBoxLayout          ( mainWidget        );
+
+   m_pView->setModel(BookmarkModel::getInstance());
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
 
@@ -88,6 +95,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
    mainLayout->addWidget ( m_pMostUsedCK );
    mainLayout->addWidget ( m_pSplitter   );
    m_pSplitter->addWidget( m_pItemView   );
+   m_pSplitter->addWidget( m_pView       );
    mainLayout->addWidget ( m_pFilterLE   );
 
    m_pSplitter->setChildrenCollapsible(true);

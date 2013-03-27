@@ -30,6 +30,7 @@ class KLineEdit;
 //SFLPhone
 class HistoryTreeItem;
 class CategorizedTreeWidget;
+class CategorizedTreeView;
 
 //Typedef
 typedef QList<HistoryTreeItem*> BookmarkList;
@@ -48,6 +49,7 @@ public:
 private:
    //Attributes
    CategorizedTreeWidget*  m_pItemView  ;
+   CategorizedTreeView*    m_pView      ;
    KLineEdit*              m_pFilterLE  ;
    QSplitter*              m_pSplitter  ;
    BookmarkList            m_pBookmark  ;

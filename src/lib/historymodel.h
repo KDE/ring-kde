@@ -130,8 +130,6 @@ private:
       virtual QObject* getSelf() {return this;}
    private:
       TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-      int counter;
-      int idx;
       CallList m_lChilds;
       QString m_Name;
    };
