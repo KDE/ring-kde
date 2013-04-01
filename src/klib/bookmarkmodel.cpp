@@ -94,7 +94,9 @@ QVariant BookmarkModel::data( const QModelIndex& index, int role) const
    if (!index.isValid())
       return QVariant();
 
-   HistoryTreeBackend* modelItem = (HistoryTreeBackend*)index.internalPointer();
+   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
+   if (!modelItem)
+      return QVariant();
    switch (modelItem->type3()) {
       case HistoryTreeBackend::Type::TOP_LEVEL:
          switch (role) {
@@ -181,7 +183,7 @@ QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) cons
          cat = number->m_Name;
          break;
       case HistoryModel::Role::Number:
-         cat = "N/A";//call->getPeerPhoneNumber();
+         cat = number->m_Name;//call->getPeerPhoneNumber();
          break;
       case HistoryModel::Role::Direction:
          cat = 4;//call->getHistoryState();
@@ -202,7 +204,7 @@ QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) cons
          cat = history_state::NONE;//call->getHistoryState();
          break;
       case HistoryModel::Role::Filter:
-         cat = "N/A";//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
+         cat = number->m_Name;//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
          break;
       case HistoryModel::Role::FuzzyDate:
          cat = "N/A";//timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());

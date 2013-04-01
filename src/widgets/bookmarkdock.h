@@ -28,12 +28,10 @@ class QCheckBox;
 class KLineEdit;
 
 //SFLPhone
+#include "klib/bookmarkmodel.h"
 class HistoryTreeItem;
 class CategorizedTreeWidget;
 class CategorizedTreeView;
-
-//Typedef
-typedef QList<HistoryTreeItem*> BookmarkList;
 
 ///BookmarkDock: Dock for managing favorite contacts
 class BookmarkDock : public QDockWidget {
@@ -52,15 +50,31 @@ private:
    CategorizedTreeView*    m_pView      ;
    KLineEdit*              m_pFilterLE  ;
    QSplitter*              m_pSplitter  ;
-   BookmarkList            m_pBookmark  ;
    QCheckBox*              m_pMostUsedCK;
 
-   //Mutators
-   void addBookmark_internal(const QString& phone);
 private Q_SLOTS:
    void filter(QString text);
    void reload();
    void expandTree();
+};
+
+class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
+{
+   Q_OBJECT
+public:
+   BookmarkSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+protected:
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+   {
+      if (!source_parent.isValid() ) { //Is a category
+         for (int i=0;i<BookmarkModel::getInstance()->rowCount(BookmarkModel::getInstance()->index(source_row,0,source_parent));i++) {
+            if (filterAcceptsRow(i, BookmarkModel::getInstance()->index(source_row,0,source_parent)))
+               return true;
+         }
+      }
+
+      return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+   }
 };
 
 #endif

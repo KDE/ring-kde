@@ -83,7 +83,7 @@ private:
    
    static BookmarkModel* m_pSelf;
 
-private Q_SLOTS:
+public Q_SLOTS:
    void reloadCategories();
 };
 
