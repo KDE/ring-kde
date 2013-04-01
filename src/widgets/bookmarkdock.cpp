@@ -34,10 +34,7 @@
 
 //SFLPhone
 #include "klib/configurationskeleton.h"
-#include "widgets/historytreeitem.h"
 #include "sflphone.h"
-#include "widgets/categorydrawer.h"
-#include "widgets/categorizedtreewidget.h"
 #include "klib/akonadibackend.h"
 #include "klib/helperfunctions.h"
 #include "klib/bookmarkmodel.h"
@@ -50,15 +47,14 @@
 BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 {
    setObjectName("bookmarkDock");
+   QWidget* mainWidget     = new QWidget              ( this              );
+   setupUi(mainWidget);
+   m_pBottomWidget->setHidden(true);
+   m_pSortByCBB->setHidden(true);
+   m_pSortByL->setHidden(true);
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    setMinimumSize(250,0);
-
-   m_pFilterLE             = new KLineEdit            ( this              );
-   m_pSplitter             = new QSplitter            ( Qt::Vertical,this );
    m_pMostUsedCK           = new QCheckBox            ( this              );
-   m_pView                 = new CategorizedTreeView  ( this              );
-   QWidget* mainWidget     = new QWidget              ( this              );
-   QVBoxLayout* mainLayout = new QVBoxLayout          ( mainWidget        );
 
    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
@@ -82,14 +78,9 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 
    m_pMostUsedCK->setText(i18n("Show most called contacts"));
 
+   m_pTopWidget->layout()->addWidget ( m_pMostUsedCK );
 
-   mainLayout->addWidget ( m_pMostUsedCK );
-   mainLayout->addWidget ( m_pSplitter   );
-   m_pSplitter->addWidget( m_pView       );
-   mainLayout->addWidget ( m_pFilterLE   );
-
-   m_pSplitter->setChildrenCollapsible(true);
-   m_pSplitter->setStretchFactor(0,7);
+   splitter->setStretchFactor(0,7);
 
    setWindowTitle(i18n("Bookmark"));
 
@@ -102,8 +93,6 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 ///Destructor
 BookmarkDock::~BookmarkDock()
 {
-   delete m_pFilterLE  ;
-   delete m_pSplitter  ;
    delete m_pMostUsedCK;
 }
 

@@ -22,27 +22,20 @@
 //Qt
 #include <QtCore/QDateTime>
 #include <QtCore/QMap>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QListWidget>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QHeaderView>
 #include <QtGui/QCheckBox>
-#include <QtGui/QSplitter>
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
 #include <QtGui/QClipboard>
+#include <QtGui/QListWidget>
 
 //KDE
 #include <KDebug>
-#include <KLineEdit>
 #include <KLocalizedString>
 #include <KIcon>
-#include <KComboBox>
 #include <KInputDialog>
 #include <KAction>
 
 //SFLPhone
-#include "contactitemwidget.h"
 #include "sflphone.h"
 #include "callview.h"
 #include "sflphoneview.h"
@@ -80,9 +73,9 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nullptr),m_pMenu(nullptr)
 {
    setObjectName("contactDock");
-   m_pFilterLE     = new KLineEdit   (                   );
-   m_pSplitter     = new QSplitter   ( Qt::Vertical,this );
-   m_pSortByCBB    = new KComboBox   ( this              );
+   QWidget* mainWidget = new QWidget(this);
+   setupUi(mainWidget);
+
    m_pCallView     = new QListWidget ( this              );
    m_pShowHistoCK  = new QCheckBox   ( this              );
 
@@ -91,7 +84,6 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    m_pSortByCBB->addItems(sortType);
 
-   QWidget* mainWidget = new QWidget(this);
    setWidget(mainWidget);
    KeyPressEaterC *keyPressEater = new KeyPressEaterC( this               );
 
@@ -100,12 +92,10 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    m_pShowHistoCK->setChecked(ConfigurationSkeleton::displayContactCallHistory());
    m_pShowHistoCK->setText(i18n("Display history"));
+   m_pTopWidget->layout()->addWidget(m_pShowHistoCK);
 
    setHistoryVisible(ConfigurationSkeleton::displayContactCallHistory());
 
-   QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
-   
-   m_pView = new CategorizedTreeView(this);
    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
    delegate->setChildDelegate(new ContactDelegate());
    delegate->setChildChildDelegate(new PhoneNumberDelegate());
@@ -121,23 +111,15 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
    m_pView->installEventFilter(keyPressEater);
-   mainLayout->addWidget(m_pView);
    m_pView->setSortingEnabled(true);
    m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex))     , this , SLOT(slotContextMenu(QModelIndex)));
    connect(m_pProxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
+   m_pBottomWidget->layout()->addWidget ( m_pCallView    );
 
-   mainLayout->addWidget  ( m_pSortByCBB   );
-   mainLayout->addWidget  ( m_pShowHistoCK );
-   mainLayout->addWidget  ( m_pSplitter    );
-   m_pSplitter->addWidget ( m_pView        );
-   m_pSplitter->addWidget ( m_pCallView    );
-   mainLayout->addWidget  ( m_pFilterLE    );
-
-   m_pSplitter->setChildrenCollapsible(true);
-   m_pSplitter->setStretchFactor(0,7);
+   splitter->setStretchFactor(0,7);
 
    QTimer* timer = new QTimer(this);
 
@@ -156,16 +138,8 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 ///Destructor
 ContactDock::~ContactDock()
 {
-   /*foreach (ContactItemWidget* w, m_Contacts) {
-      delete w;
-   }
-   
-   delete m_pFilterLE   ;
-   delete m_pSplitter   ;
-   delete m_pContactView;
    delete m_pCallView   ;
-   delete m_pSortByCBB  ;
-   delete m_pShowHistoCK;*/
+   delete m_pShowHistoCK;
    
    if (m_pMenu) {
       delete m_pMenu        ;
@@ -323,7 +297,6 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pMenu->addAction( m_pEmail       );
       m_pMenu->addAction( m_pBookmark    );
    }
-qDebug() << "HERE";
    m_pMenu->exec(QCursor::pos());
 } //showContext
 
@@ -477,7 +450,7 @@ void ContactDock::transferEvent(QMimeData* data)
 void ContactDock::setHistoryVisible(bool visible)
 {
    kDebug() << "Toggling history visibility";
-   m_pCallView->setVisible(visible);
+   m_pBottomWidget->setVisible(visible);
    ConfigurationSkeleton::setDisplayContactCallHistory(visible);
 }
 

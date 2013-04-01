@@ -40,7 +40,6 @@ SET(
    accountwizard.cpp
    widgets/sflphonetray.cpp
    widgets/calltreeitem.cpp
-   widgets/historytreeitem.cpp
    actionsetaccountfirst.cpp
    conf/configurationdialog.cpp
    conf/dlggeneral.cpp
@@ -52,14 +51,11 @@ SET(
    conf/dlgaccessibility.cpp
    conf/dlgvideo.cpp
    widgets/dialpad.cpp
-   widgets/contactitemwidget.cpp
    widgets/contactdock.cpp
    widgets/historydock.cpp
    widgets/bookmarkdock.cpp
    widgets/translucentbuttons.cpp
-   widgets/categorydrawer.cpp
    widgets/conferencebox.cpp
-   widgets/categorizedtreewidget.cpp
    widgets/categorizedtreeview.cpp
    widgets/videodock.cpp
    widgets/videowidget.cpp
@@ -103,6 +99,7 @@ SET(
    conf/dlgvideobase.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
+   widgets/ui/dockbase.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users

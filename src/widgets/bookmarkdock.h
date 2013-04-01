@@ -19,22 +19,16 @@
 #define BOOKMARK_DOCK_H
 
 #include <QtGui/QDockWidget>
+#include "ui_dockbase.h"
 
 //Qt
-class QSplitter;
 class QCheckBox;
-
-//KDE
-class KLineEdit;
 
 //SFLPhone
 #include "klib/bookmarkmodel.h"
-class HistoryTreeItem;
-class CategorizedTreeWidget;
-class CategorizedTreeView;
 
 ///BookmarkDock: Dock for managing favorite contacts
-class BookmarkDock : public QDockWidget {
+class BookmarkDock : public QDockWidget, public Ui_DockBase {
    Q_OBJECT
 public:
    //Constructors
@@ -46,10 +40,6 @@ public:
    void removeBookmark(const QString& phone);
 private:
    //Attributes
-   CategorizedTreeWidget*  m_pItemView  ;
-   CategorizedTreeView*    m_pView      ;
-   KLineEdit*              m_pFilterLE  ;
-   QSplitter*              m_pSplitter  ;
    QCheckBox*              m_pMostUsedCK;
 
 private Q_SLOTS:

@@ -17,11 +17,10 @@
 
 #include "categorizedtreeview.h"
 
-#include "categorydrawer.h"
-
 //Qt
 #include <QtGui/QStyledItemDelegate>
 #include <QtGui/QPainter>
+#include <QtGui/QContextMenuEvent>
 #include <QEvent>
 
 //KDE

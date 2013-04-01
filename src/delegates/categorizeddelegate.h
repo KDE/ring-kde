@@ -37,7 +37,6 @@ class SortedTreeDelegate : public QStyledItemDelegate
     void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
     int categoryHeight(const QModelIndex &index, const QStyleOption &option) const;
    QTreeView* m_tree;
-//    CategoryDrawer m_categoryDrawer;
    QSize m_SH;
    int m_LeftMargin;
    int m_RightMargin;

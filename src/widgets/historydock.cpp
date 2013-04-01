@@ -43,7 +43,6 @@
 //SFLPhone
 #include "sflphone.h"
 #include "widgets/categorizedtreeview.h"
-#include "widgets/historytreeitem.h"
 #include "widgets/bookmarkdock.h"
 #include "klib/akonadibackend.h"
 #include "klib/configurationskeleton.h"
@@ -52,6 +51,7 @@
 #include "../delegates/historydelegate.h"
 
 //SFLPhone library
+#include "klib/helperfunctions.h"
 #include "lib/sflphone_const.h"
 
 
@@ -70,22 +70,20 @@ bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
 }
 
 ///Constructor
-HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0),m_pMenu(nullptr)
+HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
 {
    setObjectName("historyDock");
+   QWidget* mainWidget = new QWidget(this);
+   setupUi(mainWidget);
    setMinimumSize(250,0);
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-   m_pFilterLE   = new KLineEdit   (                        );
-   m_pSortByCBB  = new KComboBox   (                        );
-   m_pSortByL    = new QLabel      ( i18n("Sort by:")       );
-   m_pFromL      = new QLabel      ( i18n("From:")          );
-   m_pToL        = new QLabel      ( i18nc("To date:","To:"));
-   m_pFromDW     = new KDateWidget (                        );
-   m_pToDW       = new KDateWidget (                        );
+   m_pFromL      = new QLabel      ( i18n("From:"), m_pBottomWidget );
+   m_pToL        = new QLabel      ( i18nc("To date:","To:"), m_pBottomWidget);
+   m_pFromDW     = new KDateWidget ( m_pBottomWidget        );
+   m_pToDW       = new KDateWidget ( m_pBottomWidget        );
    m_pAllTimeCB  = new QCheckBox   ( i18n("Display all")    );
-   m_pLinkPB     = new QPushButton ( this                   );
-   
-   m_pView = new CategorizedTreeView(this);
+   m_pLinkPB     = new QPushButton ( m_pBottomWidget        );
+
    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
@@ -123,21 +121,18 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0)
    sortBy << i18nc("Sort by date","Date") << i18nc("Sort by Name","Name") << i18nc("Sort by Popularity","Popularity") << i18nc("Sort by Length","Length");
    m_pSortByCBB->addItems(sortBy);
 
-   QWidget* mainWidget = new QWidget(this);
    setWidget(mainWidget);
+   m_pTopWidget->layout()->addWidget(m_pAllTimeCB);
 
-   QGridLayout* mainLayout = new QGridLayout(mainWidget);
-
-   mainLayout->addWidget(m_pSortByL   ,0,0     );
-   mainLayout->addWidget(m_pSortByCBB ,0,1,1,2 );
-   mainLayout->addWidget(m_pAllTimeCB ,1,0,1,3 );
-   mainLayout->addWidget(m_pLinkPB    ,3,2,3,1 );
-   mainLayout->addWidget(m_pFromL     ,2,0,1,2 );
-   mainLayout->addWidget(m_pFromDW    ,3,0,1,2 );
-   mainLayout->addWidget(m_pToL       ,4,0,1,2 );
-   mainLayout->addWidget(m_pToDW      ,5,0,1,2 );
-   mainLayout->addWidget(m_pView      ,6,0,1,3 );
-   mainLayout->addWidget(m_pFilterLE  ,8,0,1,3 );
+   QGridLayout* mainLayout = new QGridLayout();
+   mainLayout->addWidget(m_pLinkPB    ,1,2,3,1 );
+   mainLayout->addWidget(m_pFromL     ,0,0,1,2 );
+   mainLayout->addWidget(m_pFromDW    ,1,0,1,2 );
+   mainLayout->addWidget(m_pToL       ,2,0,1,2 );
+   mainLayout->addWidget(m_pToDW      ,3,0,1,2 );
+   splitter->setStretchFactor(0,99);
+   m_pBottomWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+   m_pBottomWidget->layout()->addItem(mainLayout);
 
    setWindowTitle(i18n("History"));
 
@@ -162,10 +157,6 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_LastNewCall(0)
 ///Destructor
 HistoryDock::~HistoryDock()
 {
-   foreach (HistoryTreeItem* w, m_History) {
-      delete w;
-   }
-   m_History.clear();
    delete m_pFilterLE     ;
    delete m_pSortByCBB    ;
    delete m_pSortByL      ;
@@ -196,12 +187,7 @@ HistoryDock::~HistoryDock()
 ///Enable the ability to set a date range like 1 month to limit history
 void HistoryDock::enableDateRange(bool disable)
 {
-   m_pFromL->setVisible (!disable);
-   m_pToL->setVisible   (!disable);
-   m_pFromDW->setVisible(!disable);
-   m_pToDW->setVisible  (!disable);
-   m_pLinkPB->setVisible(!disable);
-
+   m_pBottomWidget->setHidden(disable);
    ConfigurationSkeleton::setDisplayDataRange(!disable);
 }
 

@@ -18,19 +18,17 @@
 #ifndef HISTORY_DOCK_H
 #define HISTORY_DOCK_H
 
+#include "ui_dockbase.h"
 #include <QtGui/QDockWidget>
+
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QDate>
-#include "../klib/sortabledockcommon.h"
-#include "categorizedtreewidget.h"
 #include "calltreeitem.h"
 
 //Qt
-class QTreeWidgetItem;
 class QString;
-class QTreeWidget;
 class KComboBox;
 class QLabel;
 class QCheckBox;
@@ -44,18 +42,15 @@ class KDateWidget;
 class KAction;
 
 //SFLPhone
-class HistoryTreeItem;
-class HistoryTree;
+#include "../lib/historymodel.h"
 class KeyPressEater;
 class QNumericTreeWidgetItem;
 class CategorizedTreeView;
 
 //Typedef
-typedef QList<HistoryTreeItem*> HistoryList;
-typedef QHash<QString,QNumericTreeWidgetItem*> GroupHash;
 
 ///HistoryDock: Dock to see the previous SFLPhone calls
-class HistoryDock : public QDockWidget, public SortableDockCommon<CallTreeItem*,QTreeWidgetItem*> {
+class HistoryDock : public QDockWidget, public Ui_DockBase {
    Q_OBJECT
 
 public:
@@ -67,24 +62,15 @@ public:
    virtual ~HistoryDock();
 
 private:
-   //Attributes
-   HistoryTree*           m_pItemView        ;
-   KLineEdit*             m_pFilterLE        ;
-   KComboBox*             m_pSortByCBB       ;
-   QLabel*                m_pSortByL         ;
    QLabel*                m_pFromL           ;
    QLabel*                m_pToL             ;
-   CategorizedTreeView*   m_pView            ;
    KDateWidget*           m_pFromDW          ;
    KDateWidget*           m_pToDW            ;
    QCheckBox*             m_pAllTimeCB       ;
    QPushButton*           m_pLinkPB          ;
-   HistoryList            m_History          ;
    QDate                  m_CurrentFromDate  ;
    QDate                  m_CurrentToDate    ;
    KeyPressEater*         m_pKeyPressEater   ;
-   GroupHash              m_hGroup           ;
-   int                    m_LastNewCall      ;
    QSortFilterProxyModel* m_pProxyModel      ;
    
    //Menu

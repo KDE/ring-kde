@@ -18,12 +18,12 @@
 #ifndef CONTACT_DOCK_H
 #define CONTACT_DOCK_H
 
-#include <QtCore/QHash>
+#include "ui_dockbase.h"
 #include <QtGui/QDockWidget>
+
+#include <QtCore/QHash>
 #include <QtGui/QTreeWidgetItem>
-#include "categorizedtreewidget.h"
 #include "categorizedtreeview.h"
-// #include "../klib/sortabledockcommon.h"
 #include "../klib/contactproxymodel.h"
 #include "calltreeitem.h"
 
@@ -49,7 +49,6 @@ namespace KABC {
 }
 
 ///SFLPhone
-class ContactItemWidget;
 class Contact;
 
 class ContactSortFilterProxyModel : public QSortFilterProxyModel
@@ -68,7 +67,7 @@ protected:
 };
 
 ///ContactDock: Dock to access contacts
-class ContactDock : public QDockWidget/*, public SortableDockCommon<CallTreeItem*,QTreeWidgetItem*>*/
+class ContactDock : public QDockWidget, public Ui_DockBase
 {
    Q_OBJECT
 public:
@@ -78,13 +77,12 @@ public:
 
 private:
    //Attributes
-   KLineEdit*                   m_pFilterLE      ;
-   QSplitter*                   m_pSplitter      ;
-   CategorizedTreeView*         m_pView          ;
+//    KLineEdit*                   m_pFilterLE      ;
+//    QSplitter*                   m_pSplitter      ;
+//    CategorizedTreeView*         m_pView          ;
    QListWidget*                 m_pCallView      ;
-   KComboBox*                   m_pSortByCBB     ;
+//    KComboBox*                   m_pSortByCBB     ;
    QCheckBox*                   m_pShowHistoCK   ;
-   QList<ContactItemWidget*>    m_Contacts       ;
    QMenu*                       m_pMenu          ;
    Contact*                     m_pCurrentContact;
    QString                      m_PreselectedNb  ;
@@ -132,16 +130,6 @@ private Q_SLOTS:
    void transferEvent( QMimeData* data   );
    void expandTree  ();
    void setCategory (int index);
-};
-
-///ContactTree: tree view with additinal drag and drop
-class ContactTree : public CategorizedTreeWidget {
-   Q_OBJECT
-public:
-   ///Constructor
-   explicit ContactTree(QWidget* parent) : CategorizedTreeWidget(parent) {setUniformRowHeights(false);}
-//    virtual QMimeData* mimeData( const QList<QTreeWidgetItem *> items) const;
-//    bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action);
 };
 
 ///KeyPressEaterC: keygrabber
