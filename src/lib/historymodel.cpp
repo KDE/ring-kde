@@ -261,7 +261,12 @@ QVariant HistoryModel::data( const QModelIndex& index, int role) const
       }
       break;
    case HistoryTreeBackend::Type::CALL:
-      return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
+      if (m_lCategoryCounter.size() >= index.parent().row() && m_lCategoryCounter[index.parent().row()])
+         return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
+      break;
+   case HistoryTreeBackend::Type::NUMBER:
+   case HistoryTreeBackend::Type::BOOKMARK:
+      break;
    };
    return QVariant();
 }
@@ -351,35 +356,38 @@ QVariant HistoryModel::commonCallInfo(Call* call, int role) const
    Contact* ct = nullptr;//call->getContact();
    switch (role) {
       case Qt::DisplayRole:
-      case Name:
+      case HistoryModel::Role::Name:
          cat = ct?ct->getFormattedName():call->getPeerName();
          break;
-      case Number:
+      case HistoryModel::Role::Number:
          cat = call->getPeerPhoneNumber();
          break;
-      case Direction:
+      case HistoryModel::Role::Direction:
          cat = call->getHistoryState();
          break;
-      case Date:
+      case HistoryModel::Role::Date:
          cat = call->getStartTimeStamp();
          break;
-      case Length:
+      case HistoryModel::Role::Length:
          cat = call->getLength();
          break;
-      case FormattedDate:
+      case HistoryModel::Role::FormattedDate:
          cat = QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
          break;
-      case HasRecording:
+      case HistoryModel::Role::HasRecording:
          cat = call->hasRecording();
          break;
-      case HistoryState:
+      case HistoryModel::Role::HistoryState:
          cat = call->getHistoryState();
          break;
-      case Filter:
+      case HistoryModel::Role::Filter:
          cat = call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
          break;
-      case FuzzyDate:
+      case HistoryModel::Role::FuzzyDate:
          cat = timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
+         break;
+      case HistoryModel::Role::IsBookmark:
+         cat = false;
          break;
    }
    return cat;
@@ -405,7 +413,11 @@ HistoryTreeBackend::Type HistoryTreeBackend::type3() const
 
 QString HistoryModel::timeToHistoryCategory(const QDate& date)
 {
-   return m_slHistoryConstStr[HistoryModel::timeToHistoryConst(date)];
+   int period = HistoryModel::timeToHistoryConst(date);
+   if (period >= 0 && period <= 24)
+      return QString(m_slHistoryConstStr[HistoryModel::timeToHistoryConst(date)]);
+   else
+      return QString(m_slHistoryConstStr[24]);
 }
 
 HistoryModel::HistoryConst HistoryModel::timeToHistoryConst(const QDate& date)

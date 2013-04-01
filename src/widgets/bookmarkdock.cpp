@@ -44,7 +44,7 @@
 #include "lib/historymodel.h"
 #include "categorizedtreeview.h"
 #include "../delegates/categorizeddelegate.h"
-#include "../delegates/contactdelegate.h"
+#include "../delegates/historydelegate.h"
 
 ///QNumericTreeWidgetItem : Tree widget with different sorting criterias
 class QNumericTreeWidgetItem : public QTreeWidgetItem {
@@ -82,6 +82,13 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
    QVBoxLayout* mainLayout = new QVBoxLayout          ( mainWidget        );
 
    m_pView->setModel(BookmarkModel::getInstance());
+   SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
+   delegate->setChildDelegate(new HistoryDelegate(m_pView));
+   m_pView->setDelegate(delegate);
+   expandTree();
+
+   connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
+   connect(BookmarkModel::getInstance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
 
@@ -209,3 +216,9 @@ void BookmarkDock::reload()
    }
    ConfigurationSkeleton::setDisplayContactCallHistory(m_pMostUsedCK->isChecked());
 } //reload
+
+///Expand the tree according to the user preferences
+void BookmarkDock::expandTree()
+{
+   m_pView->expandToDepth(0);
+}

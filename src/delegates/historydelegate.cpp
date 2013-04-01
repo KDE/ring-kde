@@ -23,6 +23,7 @@
 #include <QtGui/QBitmap>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QTreeView>
+#include <QtCore/QFile>
 
 #include <QtCore/QDebug>
 
@@ -67,9 +68,16 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   Call* call = (Call*)((HistoryTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
-//    Call* call = (Call*)static_cast<HistoryTreeBackend*>(index.internalPointer())->getSelf();
-   Contact* ct = call->getContact();
+   Contact* ct = nullptr;
+   Call* call  = nullptr;
+   if (static_cast<HistoryTreeBackend*>(index.internalPointer())->type3() == HistoryTreeBackend::CALL) {
+      call = (Call*)((HistoryTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
+      ct   = call->getContact();
+      //TODO don't do that
+   }
+   else if (static_cast<HistoryTreeBackend*>(index.internalPointer())->type3() == HistoryTreeBackend::BOOKMARK) {
+      //TODO nothing?
+   }
    QPixmap pxm;
    if (ct && ct->getPhoto()) {
       pxm = (*ct->getPhoto());
@@ -87,7 +95,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       pxm = QPixmap(KIcon("user-identity").pixmap(QSize(48,48)));
    }
    
-   if (index.data(HistoryModel::Role::HasRecording).toBool()) {
+   if (index.data(HistoryModel::Role::HasRecording).toBool() && call && QFile::exists(call->getRecordingPath())) {
       QPainter painter(&pxm);
       QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
       status=status.scaled(QSize(24,24));

@@ -74,6 +74,7 @@ public:
       HistoryState  = 107,
       Filter        = 108,
       FuzzyDate     = 109,
+      IsBookmark    = 110
    };
    
    //Singleton

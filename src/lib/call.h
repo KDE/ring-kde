@@ -86,7 +86,8 @@ public:
     enum Type {
         CALL=0,
         NUMBER=1,
-        TOP_LEVEL=2
+        TOP_LEVEL=2,
+        BOOKMARK=3,
     };
     HistoryTreeBackend(HistoryTreeBackend::Type _type);
     virtual ~HistoryTreeBackend(){}

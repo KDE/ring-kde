@@ -19,24 +19,21 @@
 
 //SFLPhone
 #include "configurationskeleton.h"
+#include "../lib/historymodel.h"
 
 BookmarkModel* BookmarkModel::m_pSelf = nullptr;
 
-class NumberTreeBackend : public BookmarkTreeBackend, public QObject
+class NumberTreeBackend : public HistoryTreeBackend, public QObject
 {
    friend class BookmarkModel;
    public:
-      NumberTreeBackend(QString name): BookmarkTreeBackend(BookmarkTreeBackend::Type::NUMBER),m_Name(name){}
+      NumberTreeBackend(QString name): HistoryTreeBackend(HistoryTreeBackend::Type::BOOKMARK),m_Name(name),m_IsMostPopular(false){}
       virtual QObject* getSelf() { return this; }
 
    private:
       QString m_Name;
+      bool m_IsMostPopular;
 };
-
-BookmarkTreeBackend::Type BookmarkTreeBackend::type3() const
-{
-   return m_Type3;
-}
 
 void BookmarkModel::reloadCategories()
 {
@@ -50,6 +47,20 @@ void BookmarkModel::reloadCategories()
    }
    m_lCategoryCounter.clear();
    m_isContactDateInit = false;
+
+   //Load most used contacts
+   if (ConfigurationSkeleton::displayContactCallHistory()) {
+      TopLevelItem* item = new TopLevelItem("Most popular");
+      m_hCategories["mp"] = item;
+      m_lCategoryCounter << item;
+      QStringList cl = HistoryModel::getNumbersByPopularity();
+      for (int i=0;i<((cl.size()>=10)?10:cl.size());i++) {
+         NumberTreeBackend* bm = new NumberTreeBackend(cl[i]);
+         bm->m_IsMostPopular = true;
+         item->m_lChilds << bm;
+      }
+   }
+
    foreach(QString bookmark, ConfigurationSkeleton::bookmarkList()) {
       NumberTreeBackend* bm = new NumberTreeBackend(bookmark);
       QString val = category(bm);
@@ -83,17 +94,20 @@ QVariant BookmarkModel::data( const QModelIndex& index, int role) const
    if (!index.isValid())
       return QVariant();
 
-   BookmarkTreeBackend* modelItem = (BookmarkTreeBackend*)index.internalPointer();
+   HistoryTreeBackend* modelItem = (HistoryTreeBackend*)index.internalPointer();
    switch (modelItem->type3()) {
-      case BookmarkTreeBackend::Type::TOP_LEVEL:
+      case HistoryTreeBackend::Type::TOP_LEVEL:
          switch (role) {
             case Qt::DisplayRole:
                return ((TopLevelItem*)modelItem)->m_Name;
          }
          break;
-      case BookmarkTreeBackend::Type::NUMBER:
-         if (role == Qt::DisplayRole)
-            return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
+      case HistoryTreeBackend::Type::CALL:
+      case HistoryTreeBackend::Type::BOOKMARK:
+         return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
+         break;
+      case HistoryTreeBackend::Type::NUMBER:
+         break;
    };
    return QVariant();
 }
@@ -110,8 +124,9 @@ int BookmarkModel::rowCount( const QModelIndex& parent ) const
 {
    if (!parent.isValid() || !parent.internalPointer())
       return m_lCategoryCounter.size();
-   else
+   else if (!parent.parent().isValid()) {
       return m_lCategoryCounter[parent.row()]->m_lChilds.size();
+   }
    return 0;
 }
 
@@ -133,11 +148,14 @@ QModelIndex BookmarkModel::parent( const QModelIndex& index) const
    if (!index.isValid() || !index.internalPointer()) {
       return QModelIndex();
    }
-   BookmarkTreeBackend* modelItem = static_cast<BookmarkTreeBackend*>(index.internalPointer());
-   if (modelItem->type3() == BookmarkTreeBackend::Type::NUMBER) {
+   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
+   if (modelItem->type3() == HistoryTreeBackend::Type::BOOKMARK) {
       QString val = category(((NumberTreeBackend*)(index.internalPointer())));
-      if (m_hCategories[val])
+      if (((NumberTreeBackend*)modelItem)->m_IsMostPopular)
+         return BookmarkModel::index(0,0);
+      else if (m_hCategories[val])
          return BookmarkModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
+      else BookmarkModel::index(0,0);
    }
    return QModelIndex();
 }
@@ -152,14 +170,45 @@ QModelIndex BookmarkModel::index( int row, int column, const QModelIndex& parent
    return QModelIndex();
 }
 
-QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* call, int role) const
+QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) const
 {
-   if (!call)
+   if (!number)
       return QVariant();
-   QVariant cat = call->m_Name;
+   QVariant cat;
    switch (role) {
       case Qt::DisplayRole:
-         cat = call->m_Name;
+      case HistoryModel::Role::Name:
+         cat = number->m_Name;
+         break;
+      case HistoryModel::Role::Number:
+         cat = "N/A";//call->getPeerPhoneNumber();
+         break;
+      case HistoryModel::Role::Direction:
+         cat = 4;//call->getHistoryState();
+         break;
+      case HistoryModel::Role::Date:
+         cat = "N/A";//call->getStartTimeStamp();
+         break;
+      case HistoryModel::Role::Length:
+         cat = "N/A";//call->getLength();
+         break;
+      case HistoryModel::Role::FormattedDate:
+         cat = "N/A";//QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
+         break;
+      case HistoryModel::Role::HasRecording:
+         cat = false;//call->hasRecording();
+         break;
+      case HistoryModel::Role::HistoryState:
+         cat = history_state::NONE;//call->getHistoryState();
+         break;
+      case HistoryModel::Role::Filter:
+         cat = "N/A";//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
+         break;
+      case HistoryModel::Role::FuzzyDate:
+         cat = "N/A";//timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
+         break;
+      case HistoryModel::Role::IsBookmark:
+         cat = true;
          break;
    }
    return cat;

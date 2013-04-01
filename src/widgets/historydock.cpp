@@ -370,14 +370,14 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 
       m_pBookmark->setShortcut     ( Qt::CTRL + Qt::Key_D           );
       m_pBookmark->setText         ( i18n("Bookmark")               );
-//       if (!m_IsBookmark) {
+      if (!index.data(HistoryModel::Role::IsBookmark).toBool()) {
          m_pBookmark->setText      ( i18n("Bookmark")               );
          m_pBookmark->setIcon      ( KIcon("bookmarks")             );
-//       }
-//       else {
-//          m_pBookmark->setText      ( i18n("Remove bookmark")        );
-//          m_pBookmark->setIcon      ( KIcon("edit-delete")           );
-//       }
+      }
+      else {
+         m_pBookmark->setText      ( i18n("Remove bookmark")        );
+         m_pBookmark->setIcon      ( KIcon("edit-delete")           );
+      }
       
       m_pMenu = new QMenu(this);
       m_pMenu->addAction( m_pCallAgain    );

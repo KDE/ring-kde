@@ -24,22 +24,9 @@
 //SFLPhone
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
+#include "../lib/call.h"
 class ContactBackend;
 class NumberTreeBackend;
-
-class LIB_EXPORT BookmarkTreeBackend {
-public:
-    enum Type {
-        NUMBER=0,
-        TOP_LEVEL=1
-    };
-    BookmarkTreeBackend(BookmarkTreeBackend::Type _type) : m_Type3(_type){}
-    virtual ~BookmarkTreeBackend(){}
-    BookmarkTreeBackend::Type type3() const;
-    virtual QObject* getSelf() = 0;
-private:
-    BookmarkTreeBackend::Type m_Type3;
-};
 
 class LIB_EXPORT BookmarkModel :  public QAbstractItemModel
 {
@@ -66,15 +53,16 @@ public:
 
 private:
    BookmarkModel(QObject* parent) : QAbstractItemModel(parent){
+      setObjectName("BookmarkModel");
       reloadCategories();
    }
    virtual ~BookmarkModel() {}
-   class TopLevelItem : public BookmarkTreeBackend, public QObject {
+   class TopLevelItem : public HistoryTreeBackend, public QObject {
    friend class BookmarkModel;
    public:
       virtual QObject* getSelf() {return this;}
    private:
-      TopLevelItem(QString name) : BookmarkTreeBackend(BookmarkTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
+      TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
       QList<NumberTreeBackend*> m_lChilds;
       QString m_Name;
    };

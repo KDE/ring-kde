@@ -60,6 +60,7 @@ private:
 private Q_SLOTS:
    void filter(QString text);
    void reload();
+   void expandTree();
 };
 
 #endif
