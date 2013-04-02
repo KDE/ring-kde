@@ -2,6 +2,7 @@
 Name=SFLPhone plasmoid
 Name[cs]=Plasmoid SFLPhone
 Name[da]=SFLphone-plasmoid
+Name[es]=Plasmoide SFLPhone
 Name[et]=SFLPhone plasmoid
 Name[fr]=Composant graphique SFLPhone
 Name[hu]=SFLPhone plasmoid
@@ -18,6 +19,7 @@ Name[x-test]=xxSFLPhone plasmoidxx
 Comment=Plasma client for SFLPhone daemon
 Comment[cs]=Klient plasma pro démona SFLPhone
 Comment[da]=Plasma-klient til SFLPhone-dæmonen
+Comment[es]=Cliente Plasma para el demonio de SFLPhone
 Comment[et]=SFLphone deemoni Plasma klient
 Comment[fr]=Client Plasma pour le démon SFLPhone
 Comment[hu]=Plasma kliens az SFLPhone démonhoz
