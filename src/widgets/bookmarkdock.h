@@ -46,6 +46,7 @@ private Q_SLOTS:
    void filter(QString text);
    void reload();
    void expandTree();
+   void slotDoubleClick(const QModelIndex& index);
 };
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel

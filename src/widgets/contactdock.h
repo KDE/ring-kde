@@ -130,6 +130,7 @@ private Q_SLOTS:
    void transferEvent( QMimeData* data   );
    void expandTree  ();
    void setCategory (int index);
+   void slotDoubleClick(const QModelIndex& index);
 };
 
 ///KeyPressEaterC: keygrabber

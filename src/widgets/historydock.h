@@ -102,6 +102,7 @@ private Q_SLOTS:
    void updateLinkedToDate   ( QDate   date );
    void expandTree           (              );
    void slotSetSortRole      ( int          );
+   void slotDoubleClick(const QModelIndex& index);
    
    //Menu
    void slotContextMenu(const QModelIndex& index);

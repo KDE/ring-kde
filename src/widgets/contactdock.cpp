@@ -131,6 +131,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    connect(m_pShowHistoCK,                SIGNAL(toggled(bool)),                                        this, SLOT(setHistoryVisible(bool))             );
    connect(timer                         ,SIGNAL(timeout()),                                            this, SLOT(reloadHistoryConst())                );
    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadContact())                     );
+   connect(m_pView                       ,SIGNAL(doubleClicked(QModelIndex)),                           this, SLOT(slotDoubleClick(QModelIndex))        );
    timer->start(1800*1000); //30 minutes
    setWindowTitle(i18n("Contact"));
 } //ContactDock
@@ -224,6 +225,17 @@ void ContactDock::slotContextMenu(QModelIndex index)
 {
    qDebug() << "HERE" << index.parent().isValid() << index.parent().parent().isValid();
    showContext(index);
+}
+
+void ContactDock::slotDoubleClick(const QModelIndex& index)
+{
+   QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
+   if (!idx.isValid() || !idx.parent().isValid())
+      return;
+   if (((ContactTreeBackend*)idx.internalPointer())->type3() != ContactTreeBackend::Type::CONTACT)
+      return;
+   m_pCurrentContact = (Contact*)static_cast<ContactTreeBackend*>(idx.internalPointer())->getSelf();
+   callAgain();
 }
 
 

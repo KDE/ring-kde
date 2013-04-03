@@ -100,6 +100,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    m_pView->setSortingEnabled(true);
    m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex)), this, SLOT(slotContextMenu(QModelIndex)));
+   connect(m_pView,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotDoubleClick(QModelIndex)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
    connect(HistoryModel::self() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
@@ -286,14 +287,9 @@ void HistoryDock::keyPressEvent(QKeyEvent* event) {
    int key = event->key();
    if(key == Qt::Key_Escape)
       m_pFilterLE->setText(QString());
-//    else if ((key == Qt::Key_Return || key == Qt::Key_Enter) && m_pItemView->selectedItems().size() > 0) {
-//       if (m_pItemView->selectedItems()[0] && m_pItemView->itemWidget(m_pItemView->selectedItems()[0],0)) {
-//          QNumericTreeWidgetItem* item = dynamic_cast<QNumericTreeWidgetItem*>(m_pItemView->selectedItems()[0]);
-//          if (item) {
-//             SFLPhone::model()->addDialingCall(item->widget->getName(), AccountList::getCurrentAccount())->setCallNumber(item->widget->getPhoneNumber());
-//          }
-//       }
-//    }
+   else if (key == Qt::Key_Return || key == Qt::Key_Enter) {
+      slotDoubleClick(m_pView->selectionModel()->currentIndex());
+   }
    else if((key == Qt::Key_Backspace) && (m_pFilterLE->text().size()))
       m_pFilterLE->setText(m_pFilterLE->text().left( m_pFilterLE->text().size()-1 ));
    else if (!event->text().isEmpty() && !(key == Qt::Key_Backspace))
@@ -322,7 +318,8 @@ void HistoryDock::expandTree()
 
 void HistoryDock::slotContextMenu(const QModelIndex& index)
 {
-   if (static_cast<HistoryTreeBackend*>(index.internalPointer())->type3() != HistoryTreeBackend::Type::CALL)
+   QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
+   if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::CALL)
       return;
    if (!m_pMenu) {
       m_pCallAgain    = new KAction(this);
@@ -356,7 +353,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 
       m_pBookmark->setShortcut     ( Qt::CTRL + Qt::Key_D           );
       m_pBookmark->setText         ( i18n("Bookmark")               );
-      if (!index.data(HistoryModel::Role::IsBookmark).toBool()) {
+      if (!idx.data(HistoryModel::Role::IsBookmark).toBool()) {
          m_pBookmark->setText      ( i18n("Bookmark")               );
          m_pBookmark->setIcon      ( KIcon("bookmarks")             );
       }
@@ -379,7 +376,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       connect(m_pAddToContact , SIGNAL(triggered())                        , this , SLOT(slotAddToContact())     );
       connect(m_pBookmark     , SIGNAL(triggered())                        , this , SLOT(slotBookmark())         );
    }
-   m_pCurrentCall = (Call*)static_cast<HistoryTreeBackend*>(index.internalPointer())->getSelf();
+   m_pCurrentCall = (Call*)static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf();
    m_pMenu->exec(QCursor::pos());
 }
 
@@ -458,4 +455,15 @@ void HistoryDock::slotBookmark()
       SFLPhone::app()->bookmarkDock()->addBookmark(m_pCurrentCall->getPeerPhoneNumber());
 //    else
 //       SFLPhone::app()->bookmarkDock()->removeBookmark(m_PhoneNumber);
+}
+
+void HistoryDock::slotDoubleClick(const QModelIndex& index)
+{
+   QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
+   if (!idx.isValid() || !idx.parent().isValid())
+      return;
+   if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::CALL)
+      return;
+   m_pCurrentCall = (Call*)static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf();
+   slotCallAgain();
 }

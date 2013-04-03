@@ -84,9 +84,10 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 
    setWindowTitle(i18n("Bookmark"));
 
-   connect(m_pFilterLE                    , SIGNAL(textChanged(QString)), this , SLOT(filter(QString))  );
-   connect(m_pMostUsedCK                  , SIGNAL(toggled(bool)),        this , SLOT(reload())         );
-   connect(AkonadiBackend::getInstance()  , SIGNAL(collectionChanged()) , this , SLOT(reload())         );
+   connect(m_pFilterLE                    , SIGNAL(textChanged(QString)),       this , SLOT(filter(QString))             );
+   connect(m_pMostUsedCK                  , SIGNAL(toggled(bool)),              this , SLOT(reload())                    );
+   connect(AkonadiBackend::getInstance()  , SIGNAL(collectionChanged()) ,       this , SLOT(reload())                    );
+   connect(m_pView                        , SIGNAL(doubleClicked(QModelIndex)), this , SLOT(slotDoubleClick(QModelIndex)));
    reload();
 } //BookmarkDock
 
@@ -141,4 +142,16 @@ void BookmarkDock::reload()
 void BookmarkDock::expandTree()
 {
    m_pView->expandToDepth(0);
+}
+
+void BookmarkDock::slotDoubleClick(const QModelIndex& index)
+{
+   QModelIndex idx = (static_cast<const BookmarkSortFilterProxyModel*>(index.model()))->mapToSource(index);
+   if (!idx.isValid() || !idx.parent().isValid())
+      return;
+   if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::BOOKMARK)
+      return;
+   Call* call2 = SFLPhone::model()->addDialingCall(idx.model()->data(idx,HistoryModel::Role::Number).toString(), AccountList::getCurrentAccount());
+   call2->setCallNumber  ( idx.model()->data(idx,HistoryModel::Role::Number).toString() );
+   call2->actionPerformed( CALL_ACTION_ACCEPT   );
 }
