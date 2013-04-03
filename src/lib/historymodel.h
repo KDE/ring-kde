@@ -21,6 +21,7 @@
 #include "typedefs.h"
 #include <QtCore/QObject>
 #include <QtCore/QAbstractItemModel>
+#include <QtCore/QStringList>
 
 //Qt
 
@@ -98,6 +99,8 @@ public:
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual QStringList   mimeTypes   (                                                             ) const;
+   virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
    
    static HistoryConst timeToHistoryConst(const QDate& date);
    static QString timeToHistoryCategory(const QDate& date);
@@ -142,6 +145,7 @@ private:
    int                          m_Role             ;
    bool                         m_ShowAll          ;
    bool                         m_HaveContactModel ;
+   QStringList                  m_lMimes           ;
 
    static const char* m_slHistoryConstStr[25];
 

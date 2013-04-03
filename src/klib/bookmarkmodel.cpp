@@ -17,6 +17,9 @@
  ***************************************************************************/
 #include "bookmarkmodel.h"
 
+//Qt
+#include <QtCore/QMimeData>
+
 //SFLPhone
 #include "configurationskeleton.h"
 #include "../lib/historymodel.h"
@@ -136,7 +139,7 @@ Qt::ItemFlags BookmarkModel::flags( const QModelIndex& index ) const
 {
    if (!index.isValid())
       return 0;
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (index.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
 }
 
 int BookmarkModel::columnCount ( const QModelIndex& parent) const
@@ -170,6 +173,26 @@ QModelIndex BookmarkModel::index( int row, int column, const QModelIndex& parent
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
    return QModelIndex();
+}
+
+
+QStringList BookmarkModel::mimeTypes() const
+{
+   return m_lMimes;
+}
+
+QMimeData* BookmarkModel::mimeData(const QModelIndexList &indexes) const
+{
+   QMimeData *mimeData = new QMimeData();
+   foreach (const QModelIndex &index, indexes) {
+      if (index.isValid()) {
+         QString text = data(index, HistoryModel::Role::Number).toString();
+         mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
+         mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
+         return mimeData;
+      }
+   }
+   return mimeData;
 }
 
 QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) const

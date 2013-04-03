@@ -223,7 +223,6 @@ QString ContactDock::showNumberSelector(bool& ok)
 ///Called when someone right click on the 'index'
 void ContactDock::slotContextMenu(QModelIndex index)
 {
-   qDebug() << "HERE" << index.parent().isValid() << index.parent().parent().isValid();
    showContext(index);
 }
 
@@ -242,6 +241,8 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
 ///Show the context menu
 void ContactDock::showContext(const QModelIndex& index)
 {
+   if (!index.parent().isValid())
+      return;
    if (!m_pCallAgain) {
       m_pCallAgain   = new KAction(this);
       m_pCallAgain->setShortcut   ( Qt::CTRL + Qt::Key_Enter   );

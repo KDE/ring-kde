@@ -20,6 +20,7 @@
 
 #include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QHash>
+#include <QtCore/QStringList>
 
 //SFLPhone
 #include "../lib/typedefs.h"
@@ -46,6 +47,8 @@ public:
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual QStringList   mimeTypes   (                                                             ) const;
+   virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
 
 private:
    class TopLevelItem : public ContactTreeBackend,public QObject {
@@ -60,20 +63,23 @@ private:
       QString m_Name;
    };
    virtual ~ContactByNameProxyModel();
-   ContactBackend* m_pModel;
-   QList<TopLevelItem*> m_lCategoryCounter;
-   QHash<QString,TopLevelItem*> m_hCategories;
-   int m_Role;
-   bool m_ShowAll;
-   const static char* m_slHistoryConstStr[25];
-   bool m_isContactDateInit;
-   QHash<Contact*, QDateTime> m_hContactByDate;
    
    QModelIndex getContactIndex(Contact* ct) const;
    
    //Helpers
    QString category(Contact* ct) const;
    QHash<Contact*, QDateTime> getContactListByTime() const;
+
+   //Attributes
+   QHash<Contact*, QDateTime>   m_hContactByDate       ;
+   ContactBackend*              m_pModel               ;
+   QList<TopLevelItem*>         m_lCategoryCounter     ;
+   QHash<QString,TopLevelItem*> m_hCategories          ;
+   int                          m_Role                 ;
+   bool                         m_ShowAll              ;
+   const static char*           m_slHistoryConstStr[25];
+   bool                         m_isContactDateInit    ;
+   QStringList                  m_lMimes               ;
 
 private Q_SLOTS:
    void reloadCategories();

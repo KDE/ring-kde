@@ -106,6 +106,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_
    m_HistoryInit = true;
    m_spInstance = this;
    reloadCategories();
+   m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER << MIME_HISTORYID;
 } //initHistory
 
 ///Destructor
@@ -297,7 +298,7 @@ Qt::ItemFlags HistoryModel::flags( const QModelIndex& index ) const
 {
    if (!index.isValid())
       return 0;
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (index.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
 }
 
 int HistoryModel::columnCount ( const QModelIndex& parent) const
@@ -346,6 +347,26 @@ QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parent)
 //       return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->getPhoneNumbers());
 //    }
    return QModelIndex();
+}
+
+QStringList HistoryModel::mimeTypes() const
+{
+   return m_lMimes;
+}
+
+QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
+{
+   QMimeData *mimeData = new QMimeData();
+   foreach (const QModelIndex &index, indexes) {
+      if (index.isValid()) {
+         QString text = data(index, HistoryModel::Role::Number).toString();
+         mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
+         mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
+         mimeData->setData(MIME_HISTORYID  , ((Call*)index.internalPointer())->getCallId().toUtf8());
+         return mimeData;
+      }
+   }
+   return mimeData;
 }
 
 QVariant HistoryModel::commonCallInfo(Call* call, int role) const

@@ -57,6 +57,7 @@ const char* ContactByNameProxyModel::m_slHistoryConstStr[25] = {
 ContactByNameProxyModel::ContactByNameProxyModel(ContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent),
 m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
 {
+   m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
 }
 
@@ -182,7 +183,7 @@ Qt::ItemFlags ContactByNameProxyModel::flags( const QModelIndex& index ) const
 {
    if (!index.isValid())
       return 0;
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (index.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
 }
 
 int ContactByNameProxyModel::columnCount ( const QModelIndex& parent) const
@@ -227,10 +228,41 @@ QModelIndex ContactByNameProxyModel::index( int row, int column, const QModelInd
    else if (!parent.parent().isValid() && column < m_lCategoryCounter[parent.row()]->m_lChilds.size() ) {
       return createIndex(row,column,(void*)dynamic_cast<ContactTreeBackend*>(m_lCategoryCounter[parent.row()]->m_lChilds[row]));
    }
-   else if (parent.parent().isValid()) {
+   else if (parent.parent().isValid() && m_lCategoryCounter.size() > parent.parent().row() && m_lCategoryCounter[parent.parent().row()]->m_lChilds.size() > parent.row()) {
       return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->getPhoneNumbers());
    }
    return QModelIndex();
+}
+
+QStringList ContactByNameProxyModel::mimeTypes() const
+{
+   return m_lMimes;
+}
+
+QMimeData* ContactByNameProxyModel::mimeData(const QModelIndexList &indexes) const
+{
+   QMimeData *mimeData = new QMimeData();
+   foreach (const QModelIndex &index, indexes) {
+      if (index.isValid()) {
+         if (index.parent().parent().isValid()) {
+            //Phone number
+            QString text = data(index, Qt::DisplayRole).toString();
+            mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
+            mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
+            return mimeData;
+         }
+         else if (index.parent().isValid()) {
+            //Contact
+            Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
+            if (ct && ct->getPhoneNumbers().size() == 1) {
+               mimeData->setData(MIME_PHONENUMBER , ct->getPhoneNumbers()[0]->getNumber().toUtf8());
+            }
+            mimeData->setData(MIME_CONTACT , ct->getUid().toUtf8());
+            return mimeData;
+         }
+      }
+   }
+   return mimeData;
 }
 
 /*****************************************************************************

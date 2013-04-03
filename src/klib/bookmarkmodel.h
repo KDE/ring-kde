@@ -20,6 +20,7 @@
 
 #include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QHash>
+#include <QtCore/QStringList>
 
 //SFLPhone
 #include "../lib/typedefs.h"
@@ -50,11 +51,14 @@ public:
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual QStringList   mimeTypes   (                                                             ) const;
+   virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
 
 private:
    BookmarkModel(QObject* parent) : QAbstractItemModel(parent){
       setObjectName("BookmarkModel");
       reloadCategories();
+      m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    }
    virtual ~BookmarkModel() {}
    class TopLevelItem : public HistoryTreeBackend, public QObject {
@@ -72,6 +76,7 @@ private:
    const static char* m_slHistoryConstStr[25];
    bool m_isContactDateInit;
    QHash<Contact*, QDateTime> m_hContactByDate;
+   QStringList m_lMimes;
    
    QModelIndex getContactIndex(Contact* ct) const;
    

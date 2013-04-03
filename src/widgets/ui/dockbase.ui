@@ -47,7 +47,17 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="CategorizedTreeView" name="m_pView"/>
+     <widget class="CategorizedTreeView" name="m_pView">
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::DragDrop</enum>
+      </property>
+     </widget>
      <widget class="QWidget" name="m_pBottomWidget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
