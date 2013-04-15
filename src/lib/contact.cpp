@@ -26,7 +26,7 @@
 //SFLPhone library
 #include "sflphone_const.h"
 
-ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type3(_type)
+ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type3(_type),m_DropState(0)
 {
    
 }

@@ -1,7 +1,6 @@
 /****************************************************************************
  *   Copyright (C) 2009-2013 by Savoir-Faire Linux                          *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -35,6 +34,7 @@
 #include <lib/contact.h>
 #include "klib/configurationskeleton.h"
 #include "widgets/playeroverlay.h"
+#include "delegatedropoverlay.h"
 
 static const char* icnPath[4] = {
 /* INCOMING */ ICON_HISTORY_INCOMING,
@@ -43,7 +43,7 @@ static const char* icnPath[4] = {
 /* NONE     */ ""                   ,
 };
 
-HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent)
+HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr)
 {
 }
 
@@ -127,4 +127,13 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    currentHeight +=fm.height();
    painter->drawText(option.rect.x()+15+48,currentHeight,index.data(HistoryModel::Role::Number).toString());
    currentHeight +=fm.height();
+
+   //BEGIN overlay path
+   if (index.data(HistoryModel::Role::DropState).toInt() != 0) {
+      if (!m_pDelegatedropoverlay) {
+         ((HistoryDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
+      }
+      m_pDelegatedropoverlay->paintEvent(painter, option, index);
+   }
+   //END overlay path
 }

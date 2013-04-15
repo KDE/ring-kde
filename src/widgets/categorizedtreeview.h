@@ -37,10 +37,14 @@ class CategorizedTreeView : public QTreeView
     
   protected:
     virtual void contextMenuEvent ( QContextMenuEvent * e );
+    virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
+    virtual void dragEnterEvent   ( QDragEnterEvent   * e );
+    virtual void dragMoveEvent    ( QDragMoveEvent    * e );
     virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
     
   private:
     QStyledItemDelegate* m_pDelegate;
+    QModelIndex m_HoverIdx;
     
   Q_SIGNALS:
      void contextMenuRequest(QModelIndex);

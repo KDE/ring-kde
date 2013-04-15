@@ -49,6 +49,8 @@ public:
       IndexedLastUsed   = 105,
       DatedLastUsed     = 106,
       Filter            = 200, //All roles, all at once
+      DropState         = 300, //State for drag and drop
+      DropString        = 301, //String to be displayed on hover in drag and drop
    };
    
    explicit ContactBackend(QObject* parent = nullptr);

@@ -95,9 +95,17 @@ void ContactByNameProxyModel::reloadCategories()
 
 bool ContactByNameProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
-   Q_UNUSED(index)
-   Q_UNUSED(value)
-   Q_UNUSED(role)
+   if (index.isValid() && index.parent().isValid()) {
+      ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
+      if (role == ContactBackend::Role::DropState) {
+         modelItem->setDropState(value.toInt());
+         emit dataChanged(index, index);
+      }
+      else if (role == HistoryModel::Role::DropString) {
+         modelItem->setDropString(value.toString());
+         emit dataChanged(index, index);
+      }
+   }
    return false;
 }
 
@@ -126,6 +134,10 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getDepartment());
          case ContactBackend::Role::PreferredEmail:
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getPreferredEmail());
+         case ContactBackend::Role::DropState:
+            return QVariant(modelItem->dropState());
+         case ContactBackend::Role::DropString:
+            return QVariant(modelItem->dropString());
          case ContactBackend::Role::FormattedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();

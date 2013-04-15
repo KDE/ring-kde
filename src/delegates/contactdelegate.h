@@ -19,6 +19,10 @@
 #define CONTACTDELEGATE_H
 
 #include <QtGui/QStyledItemDelegate>
+#include <QtGui/QProxyStyle>
+#include <QtCore/QDebug>
+
+class DelegateDropOverlay;
 
 class ContactDelegate : public QStyledItemDelegate
 {
@@ -29,6 +33,17 @@ public:
 
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 private:
+   DelegateDropOverlay* m_pDelegatedropoverlay;
 };
+
+// class ContactDelegateStyle : public QProxyStyle
+// {
+// public:
+//    ContactDelegateStyle(QStyle *baseStyle = 0) : QProxyStyle(baseStyle) {}
+// 
+//    void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
+// private:
+//    QModelIndex m_CurrentIndex;
+// };
 
 #endif

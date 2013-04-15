@@ -21,6 +21,7 @@
 #include <QtGui/QStyledItemDelegate>
 
 class QTreeView;
+class DelegateDropOverlay;
 
 class HistoryDelegate : public QStyledItemDelegate
 {
@@ -32,6 +33,7 @@ public:
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 private:
    QTreeView* m_pParent;
+   DelegateDropOverlay* m_pDelegatedropoverlay;
 };
 
 #endif

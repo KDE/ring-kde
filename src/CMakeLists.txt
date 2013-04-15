@@ -75,6 +75,7 @@ SET(
    delegates/historydelegate.cpp
    delegates/categorizeddelegate.cpp
    delegates/phonenumberdelegate.cpp
+   delegates/delegatedropoverlay.cpp
 #    widgets/acceleratedvideowidget.cpp
    callview.cpp
 )

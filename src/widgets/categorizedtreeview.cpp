@@ -53,6 +53,43 @@ void CategorizedTreeView::contextMenuEvent ( QContextMenuEvent * e ) {
   e->accept();
 }
 
+
+void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
+{
+   if (m_HoverIdx.isValid()) {
+      ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
+      m_HoverIdx = QModelIndex();
+   }
+   QTreeView::dragLeaveEvent(e);
+}
+
+void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
+{
+   const QModelIndex& idxAt = indexAt(e->pos());
+
+   if (idxAt.isValid() && idxAt.parent().isValid()) {
+      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,i18n("Transfer to"),301);
+      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
+      m_HoverIdx = idxAt;
+   }
+
+   QTreeView::dragEnterEvent(e);
+}
+
+void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
+{
+   const QModelIndex& idxAt = indexAt(e->pos());
+   if (m_HoverIdx != idxAt && idxAt.isValid()) {
+      if (m_HoverIdx.isValid()) {
+         ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
+      }
+      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,i18n("Transfer to"),301);
+      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
+      m_HoverIdx = idxAt;
+   }
+   QTreeView::dragMoveEvent(e);
+}
+
 void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)
 {
    setItemDelegate(delegate);

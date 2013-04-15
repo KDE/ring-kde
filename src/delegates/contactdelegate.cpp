@@ -22,6 +22,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
 #include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QTreeView>
 
 #include <QtCore/QDebug>
 
@@ -29,8 +30,10 @@
 #include <KIcon>
 
 #include <lib/contact.h>
+#include <lib/contactbackend.h>
+#include "delegatedropoverlay.h"
 
-ContactDelegate::ContactDelegate(QObject* parent) : QStyledItemDelegate(parent)
+ContactDelegate::ContactDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pDelegatedropoverlay(nullptr)
 {
 }
 
@@ -98,4 +101,40 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    else {
       painter->drawText(option.rect.x()+15+48,currentHeight,QString::number(ct->getPhoneNumbers().size()) + i18n(" phone numbers"));
    }
+
+   //BEGIN overlay path
+   if (index.data(ContactBackend::Role::DropState).toInt() != 0) {
+      if (!m_pDelegatedropoverlay) {
+         ((ContactDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
+      }
+      m_pDelegatedropoverlay->paintEvent(painter, option, index);
+   }
+   //END overlay path
 }
+
+// This would be nice if it worked, but it doesn't work so well. The other code path for this is far from perfect, but is a little bit more reliable
+// void ContactDelegateStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const {
+//    if (widget) {
+//       QPoint point(option->rect.x(),option->rect.y());
+//       point.ry()+=1;
+//       QModelIndex index = static_cast<const QTreeView*>(widget)->indexAt(point);
+//       if (element != 31 && element == QStyle::PE_IndicatorItemViewItemDrop) {
+//          qDebug() << "\n\n\nCAST WORK" << index.isValid() << element << index.parent().isValid() << index.parent().parent().isValid() << index.data(Qt::DisplayRole) << point << QCursor::pos();
+//          qDebug() << index << m_CurrentIndex << index.data(ContactBackend::Role::DropState).toInt();
+//       }
+//       if ((element != 31) && index.isValid() && index.parent().isValid() && !index.parent().parent().isValid()) {
+//          int current = (element == 31)?0:index.data(ContactBackend::Role::DropState).toInt();//It crash on 0xFE, I don't know why
+//          if (m_CurrentIndex.isValid() && index != m_CurrentIndex) {
+//             qDebug() << "DROP LEAVE";
+//             ((QAbstractItemModel*)m_CurrentIndex.model())->setData(m_CurrentIndex,-1,ContactBackend::Role::DropState);
+// //             ((ContactDelegateStyle*)this)->m_CurrentIndex = QModelIndex();
+//          }
+//          if (element == QStyle::PE_IndicatorItemViewItemDrop && index != m_CurrentIndex) {
+//             ((QAbstractItemModel*)index.model())->setData(index,1,ContactBackend::Role::DropState);
+//             ((ContactDelegateStyle*)this)->m_CurrentIndex = index;
+//             qDebug() << "DROP" << current << index.data(ContactBackend::Role::DropState).toInt() << ((ContactDelegateStyle*)this)->m_CurrentIndex;
+//          }
+//       }
+//    }
+//    QProxyStyle::drawPrimitive(element, option, painter, widget);
+// }

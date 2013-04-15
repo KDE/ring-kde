@@ -100,6 +100,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    delegate->setChildDelegate(new ContactDelegate());
    delegate->setChildChildDelegate(new PhoneNumberDelegate());
    m_pView->setDelegate(delegate);
+//    m_pView->setStyle(new ContactDelegateStyle(m_pView->style()));
 
    m_pSourceModel = new ContactByNameProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
    m_pProxyModel = new ContactSortFilterProxyModel(this);

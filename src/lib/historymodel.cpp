@@ -242,9 +242,17 @@ void HistoryModel::reloadCategories()
 
 bool HistoryModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
-   Q_UNUSED(index)
-   Q_UNUSED(value)
-   Q_UNUSED(role)
+   if (index.isValid() && index.parent().isValid()) {
+      HistoryTreeBackend* modelItem = (HistoryTreeBackend*)index.internalPointer();
+      if (role == HistoryModel::Role::DropState) {
+         modelItem->setDropState(value.toInt());
+         emit dataChanged(index, index);
+      }
+      else if (role == HistoryModel::Role::DropString) {
+         modelItem->setDropString(value.toString());
+         emit dataChanged(index, index);
+      }
+   }
    return false;
 }
 
@@ -262,7 +270,11 @@ QVariant HistoryModel::data( const QModelIndex& index, int role) const
       }
       break;
    case HistoryTreeBackend::Type::CALL:
-      if (m_lCategoryCounter.size() >= index.parent().row() && m_lCategoryCounter[index.parent().row()])
+      if (role == HistoryModel::Role::DropState)
+         return QVariant(modelItem->dropState());
+      else if (role == HistoryModel::Role::DropString)
+         return QVariant(modelItem->dropString());
+      else if (m_lCategoryCounter.size() >= index.parent().row() && m_lCategoryCounter[index.parent().row()])
          return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
       break;
    case HistoryTreeBackend::Type::NUMBER:
@@ -369,6 +381,13 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
    return mimeData;
 }
 
+
+bool HistoryModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+   qDebug() << "DROPPED" << action;
+   return false;
+}
+
 QVariant HistoryModel::commonCallInfo(Call* call, int role) const
 {
    if (!call)
@@ -422,7 +441,7 @@ QString HistoryModel::category(Call* call) const
    return cat;
 }
 
-HistoryTreeBackend::HistoryTreeBackend(HistoryTreeBackend::Type _type) : m_Type3(_type)
+HistoryTreeBackend::HistoryTreeBackend(HistoryTreeBackend::Type _type) : m_Type3(_type),m_DropState(0)
 {
    
 }

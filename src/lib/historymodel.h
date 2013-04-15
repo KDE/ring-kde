@@ -75,9 +75,11 @@ public:
       HistoryState  = 107,
       Filter        = 108,
       FuzzyDate     = 109,
-      IsBookmark    = 110
+      IsBookmark    = 110,
+      DropState     = 300,
+      DropString    = 301,
    };
-   
+
    //Singleton
    static HistoryModel* self();
 
@@ -101,9 +103,10 @@ public:
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
    virtual QStringList   mimeTypes   (                                                             ) const;
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
-   
-   static HistoryConst timeToHistoryConst(const QDate& date);
-   static QString timeToHistoryCategory(const QDate& date);
+   virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
+
+   static HistoryConst timeToHistoryConst   (const QDate& date);
+   static QString      timeToHistoryCategory(const QDate& date);
 
 private:
 
