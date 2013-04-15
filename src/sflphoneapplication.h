@@ -45,7 +45,7 @@ public:
    virtual int newInstance();
 
    // Exit gracefully
-//    virtual bool notify (QObject* receiver, QEvent* e);
+   virtual bool notify (QObject* receiver, QEvent* e);
 
 private:
    //Init

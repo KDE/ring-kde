@@ -178,6 +178,13 @@ QVariant ContactByNameProxyModel::headerData(int section, Qt::Orientation orient
    return QVariant();
 }
 
+bool ContactByNameProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+   setData(parent,-1,HistoryModel::Role::DropState);
+   return false;
+}
+
+
 int ContactByNameProxyModel::rowCount( const QModelIndex& parent ) const
 {
    if (!parent.isValid() || !parent.internalPointer())

@@ -384,7 +384,29 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
 
 bool HistoryModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-   qDebug() << "DROPPED" << action;
+//    QModelIndex idx = index(row,column,parent);
+   qDebug() << "DROPPED" << action << parent.data(Qt::DisplayRole) << parent.isValid() << parent.data(Qt::DisplayRole);
+   setData(parent,-1,HistoryModel::Role::DropState);
+   QByteArray encodedCallId      = data->data( MIME_CALLID      );
+   QByteArray encodedPhoneNumber = data->data( MIME_PHONENUMBER );
+   QByteArray encodedContact     = data->data( MIME_CONTACT     );
+
+//    if (data->hasFormat( MIME_CALLID) && !QString(encodedCallId).isEmpty()) {
+//       qDebug() << "CallId dropped"<< QString(encodedCallId);
+//       Call* call = SFLPhone::model()->getCall(data->data(MIME_CALLID));
+//       if (dynamic_cast<Call*>(call)) {
+//          call->changeCurrentState(CALL_STATE_TRANSFERRED);
+//          SFLPhone::model()->transfer(call, m_pItemCall->getPeerPhoneNumber());
+//       }
+//    }
+//    else if (!QString(encodedPhoneNumber).isEmpty()) {
+//       qDebug() << "PhoneNumber dropped"<< QString(encodedPhoneNumber);
+//       phoneNumberToCall(parent, index, data, action);
+//    }
+//    else if (!QString(encodedContact).isEmpty()) {
+//       qDebug() << "Contact dropped"<< QString(encodedContact);
+//       contactToCall(parent, index, data, action);
+//    }
    return false;
 }
 

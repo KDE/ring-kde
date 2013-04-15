@@ -136,16 +136,16 @@ int SFLPhoneApplication::newInstance()
 }
 
 ///Exit gracefully
-// bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
-// {
-//    try {
-//       return KApplication::notify(receiver,e);
-//    }
-//    catch (...) {
-//       kDebug() << ErrorMessage::GENERIC_ERROR;
-//       KMessageBox::error(SFLPhone::app(),ErrorMessage::GENERIC_ERROR);
-//       QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
-//    }
-//    return false;
-// }
+bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
+{
+   try {
+      return KApplication::notify(receiver,e);
+   }
+   catch (...) {
+      kDebug() << ErrorMessage::GENERIC_ERROR;
+      KMessageBox::error(SFLPhone::app(),ErrorMessage::GENERIC_ERROR);
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
+   }
+   return false;
+}
 #include "sflphoneapplication.moc"

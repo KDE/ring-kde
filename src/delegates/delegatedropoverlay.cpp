@@ -48,13 +48,15 @@ DelegateDropOverlay::~DelegateDropOverlay()
 void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
    int step = index.data(ContactBackend::Role::DropState).toInt();
-   qDebug() << "IN PAint" << step;
    if ((step == 1 || step == -1) && m_lActiveIndexes.indexOf(index) == -1) {
       m_lActiveIndexes << index;
+      //Create tge timer
       if (!m_pTimer) {
          m_pTimer = new QTimer(this);
          connect(m_pTimer, SIGNAL(timeout()), this, SLOT(changeVisibility()));
       }
+
+      //Start it if it's nor already
       if (!m_pTimer->isActive()) {
          m_pTimer->start(10);
       }
@@ -83,31 +85,30 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
 ///Step by step animation
 void DelegateDropOverlay::changeVisibility()
 {
-   if (m_lActiveIndexes.size())
-      qDebug() << "ICI" <<  m_lActiveIndexes[0].data(ContactBackend::Role::DropState).toInt();
    foreach(QModelIndex idx, m_lActiveIndexes) {
       int step = idx.data(ContactBackend::Role::DropState).toInt();
+      //Remove items from the loop if there is no animation
       if (step >= 15 || step <= -15) {
          m_lActiveIndexes.removeAll(idx);
          if (step <= -15) //Hide the overlay
             ((QAbstractItemModel*)idx.model())->setData(idx,QVariant((int)0),ContactBackend::Role::DropState);
       }
       else {
+         //Update opacity
+         if (step == 1)
+            setHoverState(true);
+         else if (step == -1)
+            setHoverState(false);
          step+=(step>0)?1:-1;
          int tmpStep = (step>0)?step:15+step;
-         m_CurrentColor.setAlpha(0.5*tmpStep*tmpStep);
+         m_CurrentColor.setAlpha(0.5*tmpStep*tmpStep); //Parabolic opacity increase steps
          ((QAbstractItemModel*)idx.model())->setData(idx,QVariant((int)step),ContactBackend::Role::DropState);
-//          ((QAbstractItemModel*)idx.model())->dataChanged();
       }
    }
+   //Stop loop if no animations are running
    if (!m_lActiveIndexes.size()) {
       m_pTimer->stop();
    }
-}
-
-void DelegateDropOverlay::setIndex(const QModelIndex& index)
-{
-   m_Index = index;
 }
 
 ///Set the state when the user hover the widget
@@ -127,7 +128,6 @@ void DelegateDropOverlay::setHoverState(bool hover)
          m_CurrentColor.setAlpha(alpha);
          m_Pen.setColor("white");
       }
-//       repaint();//TODO port?
       m_CurrentState = hover;
    }
 }//setHoverState

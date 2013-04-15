@@ -1,7 +1,6 @@
 /****************************************************************************
  *   Copyright (C) 2009-2013 by Savoir-Faire Linux                          *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -27,6 +26,7 @@
 #include <QtCore/QDebug>
 
 #include <KLocale>
+#include <KStandardDirs>
 #include <KIcon>
 
 #include <lib/contact.h>
@@ -106,6 +106,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (index.data(ContactBackend::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          ((ContactDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
+         m_pDelegatedropoverlay->setPixmap(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
       }
       m_pDelegatedropoverlay->paintEvent(painter, option, index);
    }

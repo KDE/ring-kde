@@ -21,7 +21,6 @@
 #define AKONADI_BACKEND_H
 
 #include "../lib/contactbackend.h"
-#include "../lib/callmodel.h"
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
 

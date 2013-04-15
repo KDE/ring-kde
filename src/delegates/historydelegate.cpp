@@ -132,6 +132,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (index.data(HistoryModel::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          ((HistoryDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
+         ((HistoryDelegate*)this)->m_pDelegatedropoverlay->setPixmap(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
       }
       m_pDelegatedropoverlay->paintEvent(painter, option, index);
    }

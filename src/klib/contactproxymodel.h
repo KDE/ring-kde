@@ -49,6 +49,7 @@ public:
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
    virtual QStringList   mimeTypes   (                                                             ) const;
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
+   virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
 private:
    class TopLevelItem : public ContactTreeBackend,public QObject {

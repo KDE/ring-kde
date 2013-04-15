@@ -82,7 +82,7 @@ protected:
 
 private:
    static bool dbusInit;
-   
+
 Q_SIGNALS:
    ///Emitted when a call state change
    void callStateChanged        ( Call* call                              );
