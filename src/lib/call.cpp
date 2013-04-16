@@ -21,7 +21,9 @@
 #include "call.h"
 
 //Qt
-#include <QFile>
+#include <QtCore/QFile>
+#include <QtCore/QTimer>
+
 
 //SFLPhone library
 #include "callmanager_interface_singleton.h"
@@ -32,7 +34,6 @@
 #include "accountlist.h"
 #include "videomodel.h"
 #include "instantmessagingmodel.h"
-
 
 const call_state Call::actionPerformedStateMap [13][5] =
 {
@@ -121,8 +122,9 @@ void Call::setContactBackend(ContactBackend* be)
 ///Constructor
 Call::Call(call_state startState, QString callId, QString peerName, QString peerNumber, QString account)
    :  HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTime(nullptr),m_pStartTime(nullptr),
-   m_ContactChanged(false),m_pContact(nullptr),m_pImModel(nullptr)
+   m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr)
 {
+   qRegisterMetaType<Call*>();
    this->m_CallId          = callId     ;
    this->m_PeerPhoneNumber = peerNumber ;
    this->m_PeerName        = peerName   ;
@@ -132,7 +134,6 @@ Call::Call(call_state startState, QString callId, QString peerName, QString peer
    this->m_pStopTime       = nullptr    ;
    changeCurrentState(startState)       ;
 
-   m_ContactChanged = true;
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
    connect(&callManager,SIGNAL(recordPlaybackStopped(QString)), this, SLOT(stopPlayback(QString))  );
    connect(&callManager,SIGNAL(updatePlaybackScale(int,int))  , this, SLOT(updatePlayback(int,int)));
@@ -153,7 +154,7 @@ Call::~Call()
 
 ///Constructor
 Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTime(nullptr),m_pStartTime(nullptr),
-   m_ContactChanged(false),m_pContact(nullptr),m_pImModel(nullptr)
+   m_pContact(nullptr),m_pImModel(nullptr)
 {
    m_isConference  = m_ConfId.isEmpty();
    this->m_ConfId  = confId  ;
@@ -194,6 +195,11 @@ Call* Call::buildExistingCall(QString callId)
 
    call->m_Recording     = callManager.getIsRecording(callId)                                            ;
    call->m_HistoryState  = getHistoryStateFromType(details[STATE_KEY]);
+
+   call->m_pTimer = new QTimer();
+   call->m_pTimer->setInterval(1000);
+   connect(call->m_pTimer,SIGNAL(timeout()),call,SLOT(updated()));
+   call->m_pTimer->start();
 
    return call;
 } //buildExistingCall
@@ -538,7 +544,7 @@ bool Call::isSecure() const {
 
 Contact* Call::getContact()
 {
-   if (!m_pContact && m_ContactChanged && m_pContactBackend) {
+   if (!m_pContact && m_pContactBackend && m_LastContactCheck < m_pContactBackend->getUpdateCount()) {
       m_pContact = m_pContactBackend->getContactByPhone(m_PeerPhoneNumber,true,getAccount());
    }
    return m_pContact;
@@ -714,6 +720,12 @@ void Call::accept()
    Q_NOREPLY callManager.accept(m_CallId);
    setStartTime_private(new QDateTime(QDateTime::currentDateTime()));
    this->m_HistoryState = INCOMING;
+   if (!m_pTimer) {
+      m_pTimer = new QTimer();
+      m_pTimer->setInterval(1000);
+      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
+      m_pTimer->start();
+   }
 }
 
 ///Refuse the call
@@ -755,6 +767,8 @@ void Call::hangUp()
       Q_NOREPLY callManager.hangUp(m_CallId);
    else
       Q_NOREPLY callManager.hangUpConference(m_ConfId);
+   if (m_pTimer)
+      m_pTimer->stop();
 }
 
 ///Cancel this call
@@ -790,7 +804,6 @@ void Call::call()
       callManager.placeCall(m_Account, m_CallId, m_CallNumber);
       this->m_Account = m_Account;
       this->m_PeerPhoneNumber = m_CallNumber;
-      m_ContactChanged = true;
       if (m_pContactBackend) {
          if (getContact())
             m_PeerName = m_pContact->getFormattedName();
@@ -943,6 +956,12 @@ void Call::backspaceItemText()
  *                                                                           *
  ****************************************************************************/
 
+void Call::updated()
+{
+   emit changed();
+   emit changed(this);
+}
+
 ///Play the record, if any
 void Call::playRecording()
 {
@@ -981,22 +1000,17 @@ void Call::updatePlayback(int position,int size)
    emit playbackPositionChanged(position,size);
 }
 
-///Called to notice the call thatits contact might be outdated
-void Call::contactBackendChanged()
-{
-   m_ContactChanged = true;
-}
-
 ///Common source for model data roles
 QVariant Call::getRoleData(Call::Role role) const
 {
+   Contact* ct = ((Call*)this)->getContact();
    switch (role) {
       case Call::Role::Name:
       case Qt::DisplayRole:
          if (isConference())
             return "Conference";
          else if (m_PeerName.isEmpty())
-            return getPeerPhoneNumber();
+            return ct?ct->getFormattedName():getPeerPhoneNumber();
          else
             return getPeerName();
          break;
@@ -1010,7 +1024,13 @@ QVariant Call::getRoleData(Call::Role role) const
          return getStartTimeStamp();
          break;
       case Call::Role::Length:
-         return 0;
+         if (m_pStartTime ) {
+            int nsec = m_pStartTime->secsTo( QDateTime::currentDateTime () );
+            if (nsec/3600)
+               return QString("%1:%2:%3 ").arg((nsec%(3600*24))/3600).arg(((nsec%(3600*24))%3600)/60,2,10,QChar('0')).arg(((nsec%(3600*24))%3600)%60,2,10,QChar('0'));
+            else
+               return QString("%1:%2 ").arg(nsec/60,2,10,QChar('0')).arg(nsec%60,2,10,QChar('0'));
+         }
          break;
       case Call::Role::FormattedDate:
          return QVariant();
@@ -1047,6 +1067,12 @@ QVariant Call::getRoleData(Call::Role role) const
          break;
       case Call::Role::IsConference:
          return isConference();
+         break;
+      case Call::Role::Object:
+         return QVariant::fromValue(qobject_cast<Call*>((Call*)this));
+         break;
+      case Call::Role::PhotoPtr:
+         return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
          break;
       case Call::Role::DropState:
          return QVariant();

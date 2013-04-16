@@ -415,7 +415,7 @@ QVariant HistoryModel::commonCallInfo(Call* call, int role) const
    if (!call)
       return QVariant();
    QVariant cat;
-   Contact* ct = nullptr;//call->getContact();
+   Contact* ct = call->getContact();
    switch (role) {
       case Qt::DisplayRole:
       case Call::Role::Name:
@@ -451,6 +451,12 @@ QVariant HistoryModel::commonCallInfo(Call* call, int role) const
       case Call::Role::IsBookmark:
          cat = false;
          break;
+      case Call::Role::Object:
+         return QVariant::fromValue(call);
+         break;
+//       case Call::Role::PhotoPtr:
+//          return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
+//          break;
    }
    return cat;
 }

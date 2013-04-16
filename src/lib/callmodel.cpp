@@ -251,6 +251,19 @@ void CallModelBase::stoppedDecoding(const QString& callId, const QString& shmKey
 }
 #endif
 
+///Update model if the data change
+void CallModelBase::callChanged(Call* call)
+{
+   InternalStruct* callInt = m_sPrivateCallList_call[call];
+   if (callInt) {
+      int idxOf = m_lInternalModel.indexOf(callInt);
+      if (idxOf != -1) {
+         const QModelIndex idx = index(idxOf,0,QModelIndex());
+         emit dataChanged(idx,idx);
+      }
+   }
+}
+
 /*****************************************************************************
  *                                                                           *
  *                                  Getter                                   *
@@ -461,6 +474,7 @@ bool CallModel::initCall()
    CallModelBase::addCall(call,parent);
    const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
    emit dataChanged(idx, idx);
+   connect(call,SIGNAL(changed(Call*)),this,SLOT(callChanged(Call*)));
    return call;
 }
 
@@ -841,22 +855,22 @@ bool CallModel::changeConference(const QString& confId, const QString& state)
 }
 
 ///Get the index associated with this call
-QModelIndex CallModel::getIndex        ( const Call* call             ) const
-{
-   if (m_sPrivateCallList_call[(Call*)call]) {
-      return m_sPrivateCallList_call[(Call*)call]->index;
-   }
-   return QModelIndex();
-}
+// QModelIndex CallModel::getIndex        ( const Call* call             ) const
+// {
+//    if (m_sPrivateCallList_call[(Call*)call]) {
+//       return m_sPrivateCallList_call[(Call*)call]->index;
+//    }
+//    return QModelIndex();
+// }
 
 ///Get the index associated with this index (dummy implementation) 
-QModelIndex CallModel::getIndex        ( const QModelIndex& idx              ) const
-{
-   if (m_sPrivateCallList_index[idx]) {
-      return m_sPrivateCallList_index[idx]->index;
-   }
-   return QModelIndex();
-}
+// QModelIndex CallModel::getIndex        ( const QModelIndex& idx              ) const
+// {
+//    if (m_sPrivateCallList_index[idx]) {
+//       return m_sPrivateCallList_index[idx]->index;
+//    }
+//    return QModelIndex();
+// }
 
 ///Get the index associated with this call                         
 //  Index CallModel::getIndex        ( const CallWidget widget      ) const
@@ -868,13 +882,13 @@ QModelIndex CallModel::getIndex        ( const QModelIndex& idx              ) c
 // }
 
 ///Get the index associated with this ID                           
-QModelIndex CallModel::getIndex        ( const QString& callId        ) const
-{
-   if (m_sPrivateCallList_callId[callId]) {
-      return m_sPrivateCallList_callId[callId]->index;
-   }
-   return QModelIndex();
-}
+// QModelIndex CallModel::getIndex        ( const QString& callId        ) const
+// {
+//    if (m_sPrivateCallList_callId[callId]) {
+//       return m_sPrivateCallList_callId[callId]->index;
+//    }
+//    return QModelIndex();
+// }
 
 ///Get the widget associated with this call                        
 //  CallWidget CallModel::getWidget  ( const Call* call             ) const
@@ -969,14 +983,12 @@ QVariant CallModel::data( const QModelIndex& index, int role) const
    if (!index.isValid())
       return QVariant();
    Call* call = nullptr;
-   if (!index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+   if (!index.parent().isValid()) {
       call = m_lInternalModel[index.row()]->call_real;
    }
-   else if (index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+   else if (index.parent().isValid()) {
       call = m_lInternalModel[index.parent().row()]->m_lChildren[index.row()]->call_real;
    }
-   if (call)
-   qDebug() << call->getRoleData((Call::Role)Qt::DisplayRole) << m_sPrivateCallList_call[call]->m_lChildren.size();
    return call?call->getRoleData((Call::Role)role):QVariant();
 }
 
@@ -1032,7 +1044,6 @@ QModelIndex CallModel::index( int row, int column, const QModelIndex& parent) co
       return createIndex(row,column,m_lInternalModel[row]);
    }
    else if (parent.isValid() && m_lInternalModel[parent.row()]->m_lChildren.size() > row) {
-      qDebug() << "\n\n\nSALUT" << parent.row() << row << m_lInternalModel[parent.row()] << m_lInternalModel[parent.row()]->m_lChildren[row] << m_lInternalModel[parent.row()]->m_lChildren[row]->call_real->getPeerName();
       return createIndex(row,column,m_lInternalModel[parent.row()]->m_lChildren[row]);
    }
    return QModelIndex();

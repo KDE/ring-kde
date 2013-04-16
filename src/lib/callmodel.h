@@ -64,6 +64,7 @@ private Q_SLOTS:
    void removeActiveCall      ( Call* call                                        );
    void addPrivateCall        ( Call* call                                        );
    void newRecordingAvail     ( const QString& callId    , const QString& filePath);
+   void callChanged           ( Call* call                                        );
    #ifdef ENABLE_VIDEO
    void startedDecoding       ( const QString& callId    , const QString& shmKey  );
    void stoppedDecoding       ( const QString& callId    , const QString& shmKey  );
@@ -204,9 +205,9 @@ class LIB_EXPORT CallModel : public CallModelBase {
       Call* getCall         ( const QModelIndex& idx  ) const;
       Call* getCall         ( const Call* call        ) const;
 
-      QModelIndex getIndex  ( const Call* call        ) const;
-      QModelIndex getIndex  ( const QModelIndex& idx  ) const;
-      QModelIndex getIndex  ( const QString& callId   ) const;
+//       QModelIndex getIndex  ( const Call* call        ) const;
+//       QModelIndex getIndex  ( const QModelIndex& idx  ) const;
+//       QModelIndex getIndex  ( const QString& callId   ) const;
 
       bool updateIndex      ( Call* call, const QModelIndex& value      );
 

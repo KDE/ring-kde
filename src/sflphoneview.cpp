@@ -155,6 +155,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    m_pView->setModel(CallModel::instance());
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
+   m_pView->expandAll();
 //    m_pView->setItemDelegate();
 //    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
 //    delegate->setChildDelegate(new HistoryDelegate(m_pView));
@@ -259,7 +260,7 @@ void SFLPhoneView::typeString(QString str)
       }
       else if(dynamic_cast<Call*>(call2) && call2->getState() == CALL_STATE_DIALING) {
          candidate = call2;
-         SFLPhone::model()->setCurrentCall(SFLPhone::model()->getIndex(call2));
+//          SFLPhone::model()->setCurrentCall(SFLPhone::model()->getIndex(call2)); //TODO port
       }
    }
 

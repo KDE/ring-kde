@@ -69,18 +69,21 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
    Contact* ct = nullptr;
+   QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
+   QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
    Call* call  = nullptr;
-   if (static_cast<HistoryTreeBackend*>(index.internalPointer())->type3() == HistoryTreeBackend::CALL) {
-      call = (Call*)((HistoryTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
-      ct   = call->getContact();
+   if (obj)
+      call = qobject_cast<Call*>(obj);
+   if (call) {
+      ct = call->getContact();
       //TODO don't do that
    }
    else if (static_cast<HistoryTreeBackend*>(index.internalPointer())->type3() == HistoryTreeBackend::BOOKMARK) {
       //TODO nothing?
    }
    QPixmap pxm;
-   if (ct && ct->getPhoto()) {
-      pxm = (*ct->getPhoto());
+   if (pxmPtr) {
+      pxm = (*pxmPtr);
       QRect pxRect = pxm.rect();
       QBitmap mask(pxRect.size());
       QPainter customPainter(&mask);
@@ -94,7 +97,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    else {
       pxm = QPixmap(KIcon("user-identity").pixmap(QSize(48,48)));
    }
-   
+   if (pxmPtr)
    if (index.data(Call::Role::HasRecording).toBool() && call && QFile::exists(call->getRecordingPath())) {
       QPainter painter(&pxm);
       QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
@@ -127,6 +130,11 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    currentHeight +=fm.height();
    painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Call::Role::Number).toString());
    currentHeight +=fm.height();
+   
+   QString length = index.data(Call::Role::Length).toString();
+   if (!length.isEmpty()) {
+      painter->drawText(option.rect.x()+option.rect.width()-fm.width(length)-10,option.rect.y()+(option.rect.height()/2),length);
+   }
 
    //BEGIN overlay path
    if (index.data(Call::Role::DropState).toInt() != 0) {

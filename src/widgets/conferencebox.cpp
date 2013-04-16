@@ -46,7 +46,6 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
    painter->setRenderHint(QPainter::Antialiasing);
 
    const QRect optRect = option.rect;
-   const bool leftToRight = painter->layoutDirection() == Qt::LeftToRight;
 
    //BEGIN: decoration gradient
    {
@@ -69,24 +68,14 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
       window2.setAlphaF(option.state & QStyle::State_Selected?0.4:0.4);
 
       QLinearGradient decoGradient1;
-      if (leftToRight) {
-         decoGradient1.setStart(optRect.topLeft());
-         decoGradient1.setFinalStop(optRect.bottomLeft());
-      } else {
-         decoGradient1.setStart(optRect.topRight());
-         decoGradient1.setFinalStop(optRect.bottomRight());
-      }
+      decoGradient1.setStart(optRect.topLeft());
+      decoGradient1.setFinalStop(optRect.bottomLeft());
       decoGradient1.setColorAt(0, window);
       decoGradient1.setColorAt(1, Qt::transparent);
 
       QLinearGradient decoGradient2;
-      if (leftToRight) {
-         decoGradient2.setStart(optRect.topLeft());
-         decoGradient2.setFinalStop(optRect.topRight());
-      } else {
-         decoGradient2.setStart(optRect.topRight());
-         decoGradient2.setFinalStop(optRect.topLeft());
-      }
+      decoGradient2.setStart(optRect.topLeft());
+      decoGradient2.setFinalStop(optRect.topRight());
       decoGradient2.setColorAt(0, window2);
       decoGradient2.setColorAt(1, Qt::transparent);
 
@@ -98,44 +87,24 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
    {
       QRect newOptRect(optRect);
 
-      if (leftToRight) {
-         newOptRect.translate(1, 1);
-      } else {
-         newOptRect.translate(-1, 1);
-      }
+      newOptRect.translate(1, 1);
 
       //BEGIN: inner top left corner
       {
          painter->save();
          painter->setPen(palette->base().color());
-         QRectF arc;
-         if (leftToRight) {
-               const QPointF topLeft(newOptRect.topLeft());
-               arc = QRectF(topLeft, QSizeF(4, 4));
-               arc.translate(0.5, 0.5);
-               painter->drawArc(arc, 1440, 1440);
-         } else {
-               QPointF topRight(newOptRect.topRight());
-               topRight.rx() -= 4;
-               arc = QRectF(topRight, QSizeF(4, 4));
-               arc.translate(-0.5, 0.5);
-               painter->drawArc(arc, 0, 1440);
-         }
+         const QPointF topLeft(newOptRect.topLeft());
+         QRectF arc = QRectF(topLeft, QSizeF(4, 4));
+         arc.translate(0.5, 0.5);
+         painter->drawArc(arc, 1440, 1440);
          painter->restore();
       }
       //END: inner top left corner
 
       //BEGIN: inner left vertical line
       {
-         QPoint start;
-         QPoint verticalGradBottom;
-         if (leftToRight) {
-               start = newOptRect.topLeft();
-               verticalGradBottom = newOptRect.topLeft();
-         } else {
-               start = newOptRect.topRight();
-               verticalGradBottom = newOptRect.topRight();
-         }
+         QPoint start = newOptRect.topLeft();
+         QPoint verticalGradBottom = newOptRect.topLeft();
          start.ry() += 3;
          verticalGradBottom.ry() += newOptRect.height() - 3;
          QLinearGradient gradient(start, verticalGradBottom);
@@ -147,28 +116,14 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
 
       //BEGIN: top inner horizontal line
       {
-         QPoint start;
-         QPoint horizontalGradTop;
-         if (leftToRight) {
-               start = newOptRect.topLeft();
-               horizontalGradTop = newOptRect.topLeft();
-               start.rx() += 3;
-               horizontalGradTop.rx() += newOptRect.width() - 3;
-         } else {
-               start = newOptRect.topRight();
-               horizontalGradTop = newOptRect.topRight();
-               start.rx() -= 3;
-               horizontalGradTop.rx() -= newOptRect.width() - 3;
-         }
+         QPoint start = newOptRect.topLeft();
+         QPoint horizontalGradTop = newOptRect.topLeft();
+         start.rx() += 3;
+         horizontalGradTop.rx() += newOptRect.width() - 3;
          QLinearGradient gradient(start, horizontalGradTop);
          gradient.setColorAt(0, palette->base().color());
          gradient.setColorAt(1, Qt::transparent);
-         QSize rectSize;
-         if (leftToRight) {
-               rectSize = QSize(newOptRect.width() - 30, 1);
-         } else {
-               rectSize = QSize(-newOptRect.width() + 30, 1);
-         }
+         QSize rectSize = QSize(newOptRect.width() - 30, 1);
          painter->fillRect(QRect(start, rectSize), gradient);
       }
       //END: top inner horizontal line
@@ -182,18 +137,10 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
       painter->save();
       painter->setPen(outlineColor);
       QRectF arc;
-      if (leftToRight) {
-         const QPointF topLeft(optRect.topLeft());
-         arc = QRectF(topLeft, QSizeF(4, 4));
-         arc.translate(0.5, 0.5);
-         painter->drawArc(arc, 1440, 1440);
-      } else {
-         QPointF topRight(optRect.topRight());
-         topRight.rx() -= 4;
-         arc = QRectF(topRight, QSizeF(4, 4));
-         arc.translate(-0.5, 0.5);
-         painter->drawArc(arc, 0, 1440);
-      }
+      const QPointF topLeft(optRect.topLeft());
+      arc = QRectF(topLeft, QSizeF(4, 4));
+      arc.translate(0.5, 0.5);
+      painter->drawArc(arc, 1440, 1440);
       painter->restore();
    }
    //END: top left corner
@@ -202,35 +149,19 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
    {
       painter->save();
       painter->setPen(outlineColor);
-      QRectF arc;
-      if (!leftToRight) {
-         const QPointF topLeft(optRect.topLeft());
-         arc = QRectF(topLeft, QSizeF(4, 4));
-         arc.translate(0.5, 0.5);
-         painter->drawArc(arc, 1440, 1440);
-      } else {
-         QPointF topRight(optRect.topRight());
-         topRight.rx() -= 3;
-//          topRight.ry() += 1;
-         arc = QRectF(topRight, QSizeF(4, 4));
-         arc.translate(-0.5, 0.5);
-         painter->drawArc(arc, 0, 1440);
-      }
+      QPointF topRight(optRect.topRight());
+      topRight.rx() -= 3;
+      QRectF arc = QRectF(topRight, QSizeF(4, 4));
+      arc.translate(-0.5, 0.5);
+      painter->drawArc(arc, 0, 1440);
       painter->restore();
    }
    //END: top right corner
 
    //BEGIN: left vertical line
    {
-      QPoint start;
-      QPoint verticalGradBottom;
-      if (leftToRight) {
-         start = optRect.topLeft();
-         verticalGradBottom = optRect.topLeft();
-      } else {
-         start = optRect.topRight();
-         verticalGradBottom = optRect.topRight();
-      }
+      QPoint start = optRect.topLeft();
+      QPoint verticalGradBottom = optRect.topLeft();
       start.ry() += 3;
       verticalGradBottom.ry() += optRect.height() - 3 + 200;
       painter->fillRect(QRect(start, QSize(1, optRect.height() - 21)), outlineColor);
@@ -239,15 +170,8 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
 
    //BEGIN: right vertical line
    {
-      QPoint start;
-      QPoint verticalGradBottom;
-      if (!leftToRight) {
-         start = optRect.topLeft();
-         verticalGradBottom = optRect.topLeft();
-      } else {
-         start = optRect.topRight();
-         verticalGradBottom = optRect.topRight();
-      }
+      QPoint start = optRect.topRight();
+      QPoint verticalGradBottom = optRect.topRight();
       start.ry() += 3;
       verticalGradBottom.ry() += optRect.height() - 3 + 200;
       painter->fillRect(QRect(start, QSize(1, optRect.height() - 21)), outlineColor);
@@ -256,28 +180,14 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
 
    //BEGIN: horizontal line
    {
-      QPoint start;
-      QPoint horizontalGradTop;
-      if (leftToRight) {
-         start = optRect.topLeft();
-         horizontalGradTop = optRect.topLeft();
-         start.rx() += 3;
-         horizontalGradTop.rx() += optRect.width() - 3;
-      } else {
-         start = optRect.topRight();
-         horizontalGradTop = optRect.topRight();
-         start.rx() -= 3;
-         horizontalGradTop.rx() -= optRect.width() - 3;
-      }
+      QPoint start = optRect.topLeft();
+      QPoint horizontalGradTop = optRect.topLeft();
+      start.rx() += 3;
+      horizontalGradTop.rx() += optRect.width() - 3;
       QLinearGradient gradient(start, horizontalGradTop);
       gradient.setColorAt(0, outlineColor);
       gradient.setColorAt(1, outlineColor);
-      QSize rectSize;
-      if (leftToRight) {
-         rectSize = QSize(optRect.width() - 6, 1);
-      } else {
-         rectSize = QSize(-optRect.width() + 6, 1);
-      }
+      QSize rectSize = QSize(optRect.width() - 6, 1);
       painter->fillRect(QRect(start, rectSize), gradient);
    }
    //END: horizontal line
@@ -287,7 +197,7 @@ void ConferenceBox::drawCategory(const QModelIndex&  index   ,
 void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal) const {
    Q_UNUSED(index)
    Q_UNUSED(sortRole)
-   const QPalette* palette   = (pal)?pal:&option.palette  ;
+   const QPalette* palette = (pal)?pal:&option.palette  ;
    painter->setRenderHint(QPainter::Antialiasing);
    QColor outlineColor = palette->text().color();
    outlineColor.setAlphaF(0.35);
@@ -299,7 +209,7 @@ void ConferenceBox::drawBoxBottom(const QModelIndex &index, int sortRole, const 
    bl.setY(bl.y());
    bl.setX(0);
 
-   painter->fillRect(QRect(bl, QSize(option.rect.width()+4,1)), outlineColor);
+   painter->fillRect(QRect(bl, QSize(option.rect.width()+4+10,1)), outlineColor);
    }
    //END: bottom horizontal line
 
@@ -328,4 +238,3 @@ int ConferenceBox::categoryHeight(const QModelIndex &index, const QStyleOption &
 
    return fontMetrics.height() + 2 + 12 /* vertical spacing */;
 }
-

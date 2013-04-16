@@ -30,7 +30,7 @@
 #include <QtCore/QDebug>
 
 ///Constructor
-ContactBackend::ContactBackend(QObject* parent) : QAbstractItemModel(parent)
+ContactBackend::ContactBackend(QObject* parent) : QAbstractItemModel(parent),m_UpdatesCounter(0)
 {
    connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }

@@ -24,6 +24,7 @@
 //Qt
 class QString;
 class QDateTime;
+class QTimer;
 
 //SFLPhone
 #include "sflphone_const.h"
@@ -150,6 +151,8 @@ public:
       Organisation  = 114,
       Codec         = 115,
       IsConference  = 116,
+      Object        = 117,
+      PhotoPtr      = 118,
       DropState     = 300,
       DropString    = 301,
    };
@@ -237,9 +240,10 @@ private:
    call_state             m_CurrentState   ;
    bool                   m_Recording      ;
    static Call*           m_sSelectedCall  ;
-   bool                   m_ContactChanged ;
    Contact*               m_pContact       ;
    InstantMessagingModel* m_pImModel       ;
+   int                    m_LastContactCheck;
+   QTimer*                m_pTimer         ;
    
    //State machine
    /**
@@ -314,7 +318,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void stopPlayback(QString filePath);
    void updatePlayback(int position,int size);
-   void contactBackendChanged();
+   void updated();
 
 Q_SIGNALS:
    ///Emitted when a call change (state or details)
@@ -326,5 +330,7 @@ Q_SIGNALS:
    void playbackStopped();
    void playbackStarted();
 };
+
+Q_DECLARE_METATYPE(Call*);
 
 #endif

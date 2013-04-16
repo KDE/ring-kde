@@ -37,7 +37,7 @@ public:
    }
 
 private:
-   CategorizedTreeView*      m_tree            ;
+   CategorizedTreeView* m_tree      ;
    ConferenceBox  m_ConferenceDrawer;
    QSize          m_SH              ;
    int            m_LeftMargin      ;

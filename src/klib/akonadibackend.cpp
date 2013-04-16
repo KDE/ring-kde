@@ -180,6 +180,7 @@ KABC::PhoneNumber::Type nameToType(QString name)
 ///Update the contact list when a new Akonadi collection is added
 ContactList AkonadiBackend::update(Akonadi::Collection collection)
 {
+   m_UpdatesCounter++;
    Account* defaultAccount = AccountList::getInstance()->getDefaultAccount();
    m_Collection = collection;
    if ( !collection.isValid() ) {

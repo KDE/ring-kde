@@ -81,6 +81,8 @@ public:
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   
+   int getUpdateCount() {return m_UpdatesCounter;}
 protected:
    virtual ContactList update_slot       (                            ) = 0;
 
@@ -91,6 +93,7 @@ protected:
    //Attributes
    QHash<QString,Contact*>        m_ContactByPhone ;
    QHash<QString,Contact*>        m_ContactByUid   ;
+   int m_UpdatesCounter;
 public Q_SLOTS:
    ContactList update();
 

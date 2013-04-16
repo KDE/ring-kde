@@ -48,22 +48,19 @@ QSize CallTreeItemDelegate::sizeHint(const QStyleOptionViewItem& option, const Q
    else if (!index.child(0,0).isValid()) {
       sh = m_pCallDelegate->sizeHint(option,index);
    }
-//    QTreeWidgetItem* item = (m_tree)->itemFromIndex(index);
-//    if (item) {
-      Call* widget = SFLPhone::model()->getCall(index);
-      if (widget)
-         sh.rheight() = 100; //TODO
+   else {
+      sh.setHeight(m_ConferenceDrawer.categoryHeight(index,option,&m_Pal));
+   }
 
-      if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())
-         sh.rheight() += 15;
-//    }
+   //Bottom margin
+   if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())
+      sh.rheight() += 15;
    return sh;
 }
 
-///Draw the rectangle
+///Generate the rectangle
 QRect CallTreeItemDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const 
 {
-   QRect optRect = option.rect;
    QModelIndex i(index),old(index);
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
@@ -87,25 +84,21 @@ QRect CallTreeItemDelegate::fullCategoryRect(const QStyleOptionViewItem& option,
    if (i != old && old.row()>2)
       return QRect(0,0,0,0);
 
-//    QTreeWidgetItem* item = m_tree->itemFromIndex(i);
-//    QRect r = m_tree->visualItemRect(item);
+   QRect r = m_tree->visualRect(i);
 
    // adapt width
-   optRect.setLeft(m_ConferenceDrawer.leftMargin());
-   optRect.setWidth(m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin());
+   r.setLeft(m_ConferenceDrawer.leftMargin());
+   r.setWidth(m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin());
 
    // adapt height
-   if (m_tree->isExpanded(i) && m_tree->model()->rowCount(i) > 0) {
-      const int childCount = m_tree->model()->rowCount(i);
+   const int childCount = m_tree->model()->rowCount(i);
+   if (m_tree->isExpanded(i) && childCount > 0) {
       //There is a massive implact on CPU usage to have massive rect
-      for (int i =0;i < childCount;i++) {
-         optRect.setHeight(optRect.height() + sizeHint(option,index).height());
-      }
+      r.setHeight(r.height() + sizeHint(option,i.child(0,0)).height()*childCount+2*15); //2*15 = margins
    }
+   r.setTop(r.top() + m_ConferenceDrawer.leftMargin());
 
-   optRect.setTop(optRect.top() + m_ConferenceDrawer.leftMargin());
-
-   return optRect;
+   return r;
 } //fullCategoryRect
 
 ///Paint the delegate
@@ -158,8 +151,11 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
          }
       }
       painter->setClipRect(cr);
+
+      //Box background
       if (index.parent().isValid())
          m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
+
       painter->setClipRegion(cl);
       painter->setRenderHint(QPainter::Antialiasing, false);
    }
@@ -218,14 +214,10 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
       m_pCallDelegate->paint(painter,opt2,index);
    }
 
-//    if (item && itemWidget) {
-//       itemWidget->setTextColor(option.state);
-//       itemWidget->setMinimumSize(opt2.rect.width(),10);
-//       itemWidget->setMaximumSize(opt2.rect.width(),opt2.rect.height());
-//       itemWidget->resize(opt2.rect.width(),option.rect.height());
-//    }
-
    if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
+//       QStyleOptionViewItem opt5(option);
+//       opt5.rect.setLeft(m_ConferenceDrawer.leftMargin());
+//       opt5.rect.setWidth(m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin());
       m_ConferenceDrawer.drawBoxBottom(index, 0, option, painter);
    }
    
