@@ -19,6 +19,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QDate>
+#include <QtCore/QMimeData>
 
 #include <klocale.h>
 
@@ -101,7 +102,7 @@ bool ContactByNameProxyModel::setData( const QModelIndex& index, const QVariant 
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
       }
-      else if (role == HistoryModel::Role::DropString) {
+      else if (role == Call::Role::DropString) {
          modelItem->setDropString(value.toString());
          emit dataChanged(index, index);
       }
@@ -180,7 +181,7 @@ QVariant ContactByNameProxyModel::headerData(int section, Qt::Orientation orient
 
 bool ContactByNameProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-   setData(parent,-1,HistoryModel::Role::DropState);
+   setData(parent,-1,Call::Role::DropState);
    return false;
 }
 

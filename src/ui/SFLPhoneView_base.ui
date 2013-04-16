@@ -19,14 +19,7 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="CallView" name="callView" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>3</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
+     <widget class="CategorizedTreeView" name="m_pView"/>
      <widget class="IMManager" name="m_pMessageTabBox">
       <property name="currentIndex">
        <number>-1</number>
@@ -198,15 +191,14 @@
    <header>klineedit.h</header>
   </customwidget>
   <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header>widgets/categorizedtreeview.h</header>
+  </customwidget>
+  <customwidget>
    <class>Dialpad</class>
    <extends>QWidget</extends>
    <header>widgets/dialpad.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CallView</class>
-   <extends>QWidget</extends>
-   <header location="global">callview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

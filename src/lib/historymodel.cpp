@@ -83,7 +83,7 @@ CallMap       HistoryModel::m_sHistoryCalls          ;
  ****************************************************************************/
 
 ///Constructor
-HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_Role(FuzzyDate),m_HaveContactModel(false)
+HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate),m_HaveContactModel(false)
 {
    ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
@@ -244,11 +244,11 @@ bool HistoryModel::setData( const QModelIndex& index, const QVariant &value, int
 {
    if (index.isValid() && index.parent().isValid()) {
       HistoryTreeBackend* modelItem = (HistoryTreeBackend*)index.internalPointer();
-      if (role == HistoryModel::Role::DropState) {
+      if (role == Call::Role::DropState) {
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
       }
-      else if (role == HistoryModel::Role::DropString) {
+      else if (role == Call::Role::DropString) {
          modelItem->setDropString(value.toString());
          emit dataChanged(index, index);
       }
@@ -270,9 +270,9 @@ QVariant HistoryModel::data( const QModelIndex& index, int role) const
       }
       break;
    case HistoryTreeBackend::Type::CALL:
-      if (role == HistoryModel::Role::DropState)
+      if (role == Call::Role::DropState)
          return QVariant(modelItem->dropState());
-      else if (role == HistoryModel::Role::DropString)
+      else if (role == Call::Role::DropString)
          return QVariant(modelItem->dropString());
       else if (m_lCategoryCounter.size() >= index.parent().row() && m_lCategoryCounter[index.parent().row()])
          return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
@@ -371,7 +371,7 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
    QMimeData *mimeData = new QMimeData();
    foreach (const QModelIndex &index, indexes) {
       if (index.isValid()) {
-         QString text = data(index, HistoryModel::Role::Number).toString();
+         QString text = data(index, Call::Role::Number).toString();
          mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
          mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
          mimeData->setData(MIME_HISTORYID  , ((Call*)index.internalPointer())->getCallId().toUtf8());
@@ -386,7 +386,7 @@ bool HistoryModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 {
 //    QModelIndex idx = index(row,column,parent);
    qDebug() << "DROPPED" << action << parent.data(Qt::DisplayRole) << parent.isValid() << parent.data(Qt::DisplayRole);
-   setData(parent,-1,HistoryModel::Role::DropState);
+   setData(parent,-1,Call::Role::DropState);
    QByteArray encodedCallId      = data->data( MIME_CALLID      );
    QByteArray encodedPhoneNumber = data->data( MIME_PHONENUMBER );
    QByteArray encodedContact     = data->data( MIME_CONTACT     );
@@ -418,37 +418,37 @@ QVariant HistoryModel::commonCallInfo(Call* call, int role) const
    Contact* ct = nullptr;//call->getContact();
    switch (role) {
       case Qt::DisplayRole:
-      case HistoryModel::Role::Name:
+      case Call::Role::Name:
          cat = ct?ct->getFormattedName():call->getPeerName();
          break;
-      case HistoryModel::Role::Number:
+      case Call::Role::Number:
          cat = call->getPeerPhoneNumber();
          break;
-      case HistoryModel::Role::Direction:
+      case Call::Role::Direction:
          cat = call->getHistoryState();
          break;
-      case HistoryModel::Role::Date:
+      case Call::Role::Date:
          cat = call->getStartTimeStamp();
          break;
-      case HistoryModel::Role::Length:
+      case Call::Role::Length:
          cat = call->getLength();
          break;
-      case HistoryModel::Role::FormattedDate:
+      case Call::Role::FormattedDate:
          cat = QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
          break;
-      case HistoryModel::Role::HasRecording:
+      case Call::Role::HasRecording:
          cat = call->hasRecording();
          break;
-      case HistoryModel::Role::HistoryState:
+      case Call::Role::HistoryState:
          cat = call->getHistoryState();
          break;
-      case HistoryModel::Role::Filter:
-         cat = call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
+      case Call::Role::Filter:
+         cat = call->getHistoryState()+'\n'+commonCallInfo(call,Call::Role::Name).toString()+'\n'+commonCallInfo(call,Call::Role::Number).toString();
          break;
-      case HistoryModel::Role::FuzzyDate:
+      case Call::Role::FuzzyDate:
          cat = timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
          break;
-      case HistoryModel::Role::IsBookmark:
+      case Call::Role::IsBookmark:
          cat = false;
          break;
    }

@@ -40,6 +40,7 @@
 #include "lib/sflphone_const.h"
 #include "lib/credentialmodel.h"
 #include "lib/audiocodecmodel.h"
+#include "lib/accountlist.h"
 
 //OS
 #ifdef Q_WS_WIN // MS Windows version

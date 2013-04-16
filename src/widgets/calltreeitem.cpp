@@ -541,10 +541,10 @@ void CallTreeItem::numberChanged(QString number)
 void CallTreeItem::dragEnterEvent ( QDragEnterEvent *e )
 {
    kDebug() << "Drag enter";
-   if (SFLPhone::model()->getIndex(this) && SFLPhone::model()->getIndex(this)->parent() &&
-      SFLPhone::model()->getIndex(e->mimeData()->data( MIME_CALLID))->parent() &&
-      SFLPhone::model()->getIndex(this)->parent() == SFLPhone::model()->getIndex(e->mimeData()->data( MIME_CALLID))->parent() &&
-      e->mimeData()->data( MIME_CALLID) != SFLPhone::model()->getCall(this)->getCallId()) {
+   if (SFLPhone::model()->getIndex(call()).isValid() && SFLPhone::model()->getIndex(call()).parent().isValid() &&
+      SFLPhone::model()->getIndex(e->mimeData()->data( MIME_CALLID)).parent().isValid() &&
+      SFLPhone::model()->getIndex(call()).parent() == SFLPhone::model()->getIndex(e->mimeData()->data( MIME_CALLID)).parent() &&
+      e->mimeData()->data( MIME_CALLID) != SFLPhone::model()->getCall(call())->getCallId()) {
       m_pBtnTrans->setVisible(true);
       emit showChilds(this);
       m_isHover = true;

@@ -26,11 +26,13 @@
 #include <QtGui/QGraphicsOpacityEffect>
 
 //SFLPhone
-#include "../callview.h"
+#include "categorizedtreeview.h"
 #include "calltreeitem.h"
+#include "sflphone.h"
+#include "../lib/call.h"
 
 ///Constructor
-CallTreeItemDelegate::CallTreeItemDelegate(CallView* widget,QPalette pal)
+CallTreeItemDelegate::CallTreeItemDelegate(CategorizedTreeView* widget,QPalette pal)
       : QStyledItemDelegate(widget) , m_tree(widget) , m_ConferenceDrawer() , m_Pal(pal),
       m_LeftMargin(0),m_RightMargin(0)
 {
@@ -40,21 +42,28 @@ CallTreeItemDelegate::CallTreeItemDelegate(CallView* widget,QPalette pal)
 QSize CallTreeItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const 
 {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
-   QTreeWidgetItem* item = (m_tree)->itemFromIndex(index);
-   if (item) {
-      CallTreeItem* widget = (CallTreeItem*)m_tree->itemWidget(item,0);
+   if (index.parent().isValid()) {
+      sh = m_pCallDelegate->sizeHint(option,index);
+   }
+   else if (!index.child(0,0).isValid()) {
+      sh = m_pCallDelegate->sizeHint(option,index);
+   }
+//    QTreeWidgetItem* item = (m_tree)->itemFromIndex(index);
+//    if (item) {
+      Call* widget = SFLPhone::model()->getCall(index);
       if (widget)
-         sh.rheight() = widget->sizeHint().height()+11; //Equal top and bottom padding
+         sh.rheight() = 100; //TODO
 
       if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())
          sh.rheight() += 15;
-   }
+//    }
    return sh;
 }
 
 ///Draw the rectangle
 QRect CallTreeItemDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const 
 {
+   QRect optRect = option.rect;
    QModelIndex i(index),old(index);
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
@@ -78,25 +87,25 @@ QRect CallTreeItemDelegate::fullCategoryRect(const QStyleOptionViewItem& option,
    if (i != old && old.row()>2)
       return QRect(0,0,0,0);
 
-   QTreeWidgetItem* item = m_tree->itemFromIndex(i);
-   QRect r = m_tree->visualItemRect(item);
+//    QTreeWidgetItem* item = m_tree->itemFromIndex(i);
+//    QRect r = m_tree->visualItemRect(item);
 
    // adapt width
-   r.setLeft(m_ConferenceDrawer.leftMargin());
-   r.setWidth(m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin());
+   optRect.setLeft(m_ConferenceDrawer.leftMargin());
+   optRect.setWidth(m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin());
 
    // adapt height
-   if (item->isExpanded() && item->childCount() > 0) {
-      const int childCount = item->childCount();
+   if (m_tree->isExpanded(i) && m_tree->model()->rowCount(i) > 0) {
+      const int childCount = m_tree->model()->rowCount(i);
       //There is a massive implact on CPU usage to have massive rect
       for (int i =0;i < childCount;i++) {
-         r.setHeight(r.height() + sizeHint(option,index).height());
+         optRect.setHeight(optRect.height() + sizeHint(option,index).height());
       }
    }
 
-   r.setTop(r.top() + m_ConferenceDrawer.leftMargin());
+   optRect.setTop(optRect.top() + m_ConferenceDrawer.leftMargin());
 
-   return r;
+   return optRect;
 } //fullCategoryRect
 
 ///Paint the delegate
@@ -105,11 +114,11 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
    Q_ASSERT(index.isValid());
 
    QStyleOptionViewItem opt(option);
-   QTreeWidgetItem* item = m_tree->itemFromIndex(index);
-   CallTreeItem* itemWidget = nullptr;
-   if (item) {
-      itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
-   }
+//    QTreeWidgetItem* item = m_tree->itemFromIndex(index);
+//    CallTreeItem* itemWidget = nullptr;
+//    if (item) {
+//       itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
+//    }
    //BEGIN: draw toplevel items
    if (!index.parent().isValid() && index.child(0,0).isValid()) {
       const QRegion cl = painter->clipRegion();
@@ -118,21 +127,21 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
       m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
 
       //Drag bubble
-      if (itemWidget->isDragged()) {
-         QSize size  = itemWidget->size();
-         int i = 0;
-         while (index.child(i,0).isValid()) i++;
-         if (i) {
-//                QTreeWidgetItem* firstChild = m_tree->itemFromIndex(index);
-            QWidget* childWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
-            if (childWidget) {
-               size.setHeight(itemWidget->height()+(i*childWidget->height())+10);
-               QPixmap pixmap(size);
-               childWidget->render(&pixmap);
-               painter->drawPixmap(10,2,pixmap);
-            }
-         }
-      }
+//       if (itemWidget->isDragged()) {
+//          QSize size  = itemWidget->size();
+//          int i = 0;
+//          while (index.child(i,0).isValid()) i++;
+//          if (i) {
+// //                QTreeWidgetItem* firstChild = m_tree->itemFromIndex(index);
+//             QWidget* childWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
+//             if (childWidget) {
+//                size.setHeight(itemWidget->height()+(i*childWidget->height())+10);
+//                QPixmap pixmap(size);
+//                childWidget->render(&pixmap);
+//                painter->drawPixmap(10,2,pixmap);
+//             }
+//          }
+//       }
       painter->setClipRegion(cl);
       return;
    }
@@ -163,7 +172,7 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
    painter->setClipRect(option.rect);
    if (option.state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
       //Draw a copy of the widget when in drag and drop
-      if (itemWidget && itemWidget->isDragged()) {
+      /*if (itemWidget && itemWidget->isDragged()) {
          itemWidget->setTextColor(option.state);
 
          //Check if it is the last item
@@ -197,23 +206,28 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
       //Check if it is not the last item
       else if (!(index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())) {
          QStyledItemDelegate::paint(painter,index.parent().isValid()?opt2:option,index);
-      }
+      }*/
    }
 
    //Check if it is the last item
    if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
       opt2.rect.setHeight(opt2.rect.height()-15);
-      QStyledItemDelegate::paint(painter,opt2,index);
+      m_pCallDelegate->paint(painter,opt2,index);
+   }
+   else if (index.parent().isValid() || (!index.parent().isValid() && !index.child(0,0).isValid())) {
+      m_pCallDelegate->paint(painter,opt2,index);
    }
 
-   if (item && itemWidget) {
-      itemWidget->setTextColor(option.state);
-      itemWidget->setMinimumSize(opt2.rect.width(),10);
-      itemWidget->setMaximumSize(opt2.rect.width(),opt2.rect.height());
-      itemWidget->resize(opt2.rect.width(),option.rect.height());
-   }
+//    if (item && itemWidget) {
+//       itemWidget->setTextColor(option.state);
+//       itemWidget->setMinimumSize(opt2.rect.width(),10);
+//       itemWidget->setMaximumSize(opt2.rect.width(),opt2.rect.height());
+//       itemWidget->resize(opt2.rect.width(),option.rect.height());
+//    }
 
    if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
       m_ConferenceDrawer.drawBoxBottom(index, 0, option, painter);
    }
+   
+//       m_pCallDelegate->paint(painter,option,index);
 } //paint

@@ -22,11 +22,14 @@
 //Qt
 #include <QtCore/QDateTime>
 #include <QtCore/QMap>
+#include <QtCore/QTimer>
+#include <QtCore/QProcess>
 #include <QtGui/QCheckBox>
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
 #include <QtGui/QClipboard>
 #include <QtGui/QListWidget>
+#include <QtGui/QKeyEvent>
 
 //KDE
 #include <KDebug>
@@ -46,6 +49,7 @@
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
+#include "lib/accountlist.h"
 #include "klib/helperfunctions.h"
 #include "klib/akonadibackend.h"
 #include "klib/configurationskeleton.h"

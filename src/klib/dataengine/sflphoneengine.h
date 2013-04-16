@@ -51,7 +51,7 @@ class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
       //Getter
       Plasma::Service*    serviceForSource (const QString &source)       ;
       virtual QStringList sources          (                     ) const ;
-      static CallModel<>* getModel         (                     )       ;
+      static CallModel* getModel         (                     )       ;
 
       //Friends
       friend class SFLPhoneService;
@@ -65,7 +65,7 @@ class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
 
    private:
       //Attributes
-      static CallModel<>*  m_pModel   ;
+      static CallModel*  m_pModel   ;
       ContactHash          m_hContacts;
 
       //Getter

@@ -21,6 +21,7 @@
 #include <KDebug>
 #include <KLocale>
 #include "sflphone.h"
+#include "lib/call.h"
 
 SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance = nullptr;
 

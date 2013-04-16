@@ -131,6 +131,29 @@ class  LIB_EXPORT Call : public QObject, public HistoryTreeBackend
 {
    Q_OBJECT
 public:
+   //Enum
+   enum Role {
+      Name          = 100,
+      Number        = 101,
+      Direction     = 102,
+      Date          = 103,
+      Length        = 104,
+      FormattedDate = 105,
+      HasRecording  = 106,
+      HistoryState  = 107,
+      Filter        = 108,
+      FuzzyDate     = 109,
+      IsBookmark    = 110,
+      Security      = 111,
+      Department    = 112,
+      Email         = 113,
+      Organisation  = 114,
+      Codec         = 115,
+      IsConference  = 116,
+      DropState     = 300,
+      DropString    = 301,
+   };
+
    //Constructors & Destructors
    Call(QString confId, QString account);
    ~Call();
@@ -172,6 +195,7 @@ public:
    const QString        getFormattedName    ()      ;
    bool                 hasRecording        () const;
    QString              getLength           () const;
+   QVariant             getRoleData         (Call::Role role) const;
 
    //Automated function
    call_state stateChanged(const QString & newState);

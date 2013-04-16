@@ -53,8 +53,12 @@
 #include "lib/instance_interface_singleton.h"
 #include "lib/sflphone_const.h"
 #include "lib/contact.h"
+#include "lib/accountlist.h"
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
+#include "delegates/historydelegate.h"
+#include "delegates/categorizeddelegate.h"
+#include "widgets/calltreeitemdelegate.h"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
@@ -121,7 +125,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 {
    setupUi(this);
 
-   callView->setTitle(i18n("Calls"));
+//    callView->setTitle(i18n("Calls"));
 
    QPalette pal = QPalette(palette());
    pal.setColor(QPalette::AlternateBase, Qt::lightGray);
@@ -134,7 +138,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    //                SENDER                             SIGNAL                             RECEIVER                                 SLOT                                  /
    /**/connect(SFLPhone::model()          , SIGNAL(incomingCall(Call*))                   , this                       , SLOT(on1_incomingCall(Call*))                    );
    /**/connect(SFLPhone::model()          , SIGNAL(voiceMailNotify(QString,int))          , this                       , SLOT(on1_voiceMailNotify(QString,int))           );
-   /**/connect(callView                   , SIGNAL(itemChanged(Call*))                    , this                       , SLOT(updateWindowCallState())                    );
+//    /**/connect(callView                   , SIGNAL(itemChanged(Call*))                    , this                       , SLOT(updateWindowCallState())                    );
    /**///connect(SFLPhone::model()          , SIGNAL(volumeChanged(const QString &, double)), this                     , SLOT(on1_volumeChanged(const QString &, double) ));
    /**/connect(SFLPhone::model()          , SIGNAL(callStateChanged(Call*))               , this                       , SLOT(updateWindowCallState())                    );
    /**/connect(AccountList::getInstance() , SIGNAL(accountStateChanged(Account*,QString)) , this                       , SLOT(updateStatusMessage())                      );
@@ -148,6 +152,15 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    //Listen for macro
    MacroModel::addListener(this);
+
+   m_pView->setModel(CallModel::instance());
+   connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
+//    m_pView->setItemDelegate();
+//    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
+//    delegate->setChildDelegate(new HistoryDelegate(m_pView));
+   auto delegate = new CallTreeItemDelegate(m_pView,palette());
+   delegate->setCallDelegate(new HistoryDelegate(m_pView));
+   m_pView->setItemDelegate(delegate);
 }
 
 ///Destructor
@@ -192,8 +205,9 @@ void SFLPhoneView::keyPressEvent(QKeyEvent *event)
       enter();
    else if(key == Qt::Key_Backspace)
       backspace();
-   else if (key == Qt::Key_Left || key == Qt::Key_Right || key == Qt::Key_Up || key == Qt::Key_Down)
-      callView->moveSelectedItem((Qt::Key)key);
+   else if (key == Qt::Key_Left || key == Qt::Key_Right || key == Qt::Key_Up || key == Qt::Key_Down) {
+//       callView->moveSelectedItem((Qt::Key)key); //TODO port
+   }
    else
    {
       QString text = event->text();
@@ -228,7 +242,7 @@ void SFLPhoneView::typeString(QString str)
     */
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
 
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
 
@@ -245,7 +259,7 @@ void SFLPhoneView::typeString(QString str)
       }
       else if(dynamic_cast<Call*>(call2) && call2->getState() == CALL_STATE_DIALING) {
          candidate = call2;
-         callView->setCurrentItem(SFLPhone::model()->getIndex(call2));
+         SFLPhone::model()->setCurrentCall(SFLPhone::model()->getIndex(call2));
       }
    }
 
@@ -270,14 +284,14 @@ void SFLPhoneView::typeString(QString str)
 void SFLPhoneView::backspace()
 {
    kDebug() << "backspace";
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if(!call) {
       kDebug() << "Error : Backspace on unexisting call.";
    }
    else {
       call->backspaceItemText();
-      if(call->getState() == CALL_STATE_OVER && callView->getCurrentItem()) {
-         callView->removeItem(callView->getCurrentItem());
+      if(call->getState() == CALL_STATE_OVER && SFLPhone::model()->getCurrentCall()) { //TODO dead code
+//          callView->removeItem(callView->getCurrentItem());
       }
    }
 }
@@ -286,11 +300,11 @@ void SFLPhoneView::backspace()
 void SFLPhoneView::escape()
 {
    kDebug() << "escape";
-   Call* call = callView->getCurrentItem();
-   if (callView->haveOverlay()) {
-      callView->hideOverlay();
-   }
-   else if(!call) {
+   Call* call = SFLPhone::model()->getCurrentCall();
+//    if (callView->haveOverlay()) { //TODO port
+//       callView->hideOverlay();
+//    }
+   /*else */if(!call) {
       kDebug() << "Escape when no item is selected. Doing nothing.";
    }
    else {
@@ -307,7 +321,7 @@ void SFLPhoneView::escape()
 void SFLPhoneView::enter()
 {
    kDebug() << "enter";
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall(); //TODO use selectionmodel
    if(!call) {
       kDebug() << "Error : Enter on unexisting call.";
    }
@@ -414,7 +428,7 @@ void SFLPhoneView::updateWindowCallState()
 
    enabledActions[SFLPhone::Mailbox] = AccountList::getCurrentAccount() && ! AccountList::getCurrentAccount()->getAccountMailbox().isEmpty();
 
-   call = callView->getCurrentItem();
+   call = SFLPhone::model()->getCurrentCall();
    if (!call) {
       kDebug() << "No item selected.";
       enabledActions[ SFLPhone::Refuse   ] = false;
@@ -422,7 +436,7 @@ void SFLPhoneView::updateWindowCallState()
       enabledActions[ SFLPhone::Transfer ] = false;
       enabledActions[ SFLPhone::Record   ] = false;
       m_pMessageBoxW->setVisible(false);
-      callView->overlayToolbar()->setVisible(false);
+//       callView->overlayToolbar()->setVisible(false);
    }
    else if (call->isConference()) {
       //TODO Something to do?
@@ -431,8 +445,8 @@ void SFLPhoneView::updateWindowCallState()
       call_state state = call->getState();
       recordActivated = call->getRecording();
 
-      callView->overlayToolbar()->updateState(call->getState());
-      callView->overlayToolbar()->setVisible(true);
+//       callView->overlayToolbar()->updateState(call->getState());
+//       callView->overlayToolbar()->setVisible(true);
 
       kDebug() << "Reached  State" << state << "(" << call->toHumanStateName() << ") with call" << call->getCallId();
 
@@ -469,7 +483,7 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::Accept   ] = ACTION_LABEL_ACCEPT         ;
             buttonIconFiles [ SFLPhone::Accept   ] = ICON_ACCEPT                 ;
             m_pMessageBoxW->setVisible(false)                                    ;
-            callView->overlayToolbar()->setVisible(false);
+//             callView->overlayToolbar()->setVisible(false);
             break;
 
          case CALL_STATE_HOLD:
@@ -710,7 +724,7 @@ void SFLPhoneView::displayDialpad(bool checked)
 void SFLPhoneView::displayMessageBox(bool checked)
 {
    ConfigurationSkeleton::setDisplayMessageBox(checked);
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    m_pMessageBoxW->setVisible(checked
       && call
       && (call->getState()   == CALL_STATE_CURRENT
@@ -838,7 +852,7 @@ void SFLPhoneView::accountCreationWizard()
 ///Call
 void SFLPhoneView::accept()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if(!call) {
       kDebug() << "Calling when no item is selected. Opening an item.";
       SFLPhone::model()->addDialingCall();
@@ -858,7 +872,7 @@ void SFLPhoneView::accept()
 ///Call
 void SFLPhoneView::hangup()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    int state = call->getState();
    if (state == CALL_STATE_RINGING || state == CALL_STATE_CURRENT || state == CALL_STATE_HOLD || state == CALL_STATE_BUSY 
       || state == CALL_STATE_OVER || state == CALL_STATE_ERROR || state == CALL_STATE_FAILURE) {
@@ -869,7 +883,7 @@ void SFLPhoneView::hangup()
 ///Refuse call
 void SFLPhoneView::refuse()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if(!call) {
       kDebug() << "Error : Hanging up when no item selected. Should not happen.";
    }
@@ -881,7 +895,7 @@ void SFLPhoneView::refuse()
 ///Put call on hold
 void SFLPhoneView::hold()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if(!call) {
       kDebug() << "Error : Holding when no item selected. Should not happen.";
    }
@@ -893,7 +907,7 @@ void SFLPhoneView::hold()
 ///Remove call from hold
 void SFLPhoneView::unhold()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if(!call) {
       kDebug() << "Error : Un-Holding when no item selected. Should not happen.";
    }
@@ -905,7 +919,7 @@ void SFLPhoneView::unhold()
 ///Transfer a call
 void SFLPhoneView::transfer()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if(!call) {
       kDebug() << "Error : Transferring when no item selected. Should not happen.";
    }
@@ -917,7 +931,7 @@ void SFLPhoneView::transfer()
 ///Record a call
 void SFLPhoneView::record()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if(!call) {
       kDebug() << "Error : Recording when no item selected. Should not happen.";
    }
@@ -1000,7 +1014,7 @@ void SFLPhoneView::on1_volumeChanged(const QString & /*device*/, double value)
 ///Send a text message
 void SFLPhoneView::sendMessage()
 {
-   Call* call = callView->getCurrentItem();
+   Call* call = SFLPhone::model()->getCurrentCall();
    if (dynamic_cast<Call*>(call) && !m_pSendMessageLE->text().isEmpty()) {
       call->sendTextMessage(m_pSendMessageLE->text());
    }

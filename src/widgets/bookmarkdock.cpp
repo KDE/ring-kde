@@ -39,6 +39,7 @@
 #include "klib/helperfunctions.h"
 #include "klib/bookmarkmodel.h"
 #include "lib/historymodel.h"
+#include "lib/accountlist.h"
 #include "categorizedtreeview.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
@@ -61,7 +62,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
    m_pView->setDelegate(delegate);
    BookmarkSortFilterProxyModel* m_pProxyModel = new BookmarkSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(BookmarkModel::getInstance());
-   m_pProxyModel->setFilterRole(HistoryModel::Role::Filter);
+   m_pProxyModel->setFilterRole(Call::Role::Filter);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
    expandTree();
@@ -151,7 +152,7 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
       return;
    if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::BOOKMARK)
       return;
-   Call* call2 = SFLPhone::model()->addDialingCall(idx.model()->data(idx,HistoryModel::Role::Number).toString(), AccountList::getCurrentAccount());
-   call2->setCallNumber  ( idx.model()->data(idx,HistoryModel::Role::Number).toString() );
+   Call* call2 = SFLPhone::model()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountList::getCurrentAccount());
+   call2->setCallNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
    call2->actionPerformed( CALL_ACTION_ACCEPT   );
 }

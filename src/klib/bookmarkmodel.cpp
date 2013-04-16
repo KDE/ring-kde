@@ -186,7 +186,7 @@ QMimeData* BookmarkModel::mimeData(const QModelIndexList &indexes) const
    QMimeData *mimeData = new QMimeData();
    foreach (const QModelIndex &index, indexes) {
       if (index.isValid()) {
-         QString text = data(index, HistoryModel::Role::Number).toString();
+         QString text = data(index, Call::Role::Number).toString();
          mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
          mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
          return mimeData;
@@ -202,37 +202,37 @@ QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) cons
    QVariant cat;
    switch (role) {
       case Qt::DisplayRole:
-      case HistoryModel::Role::Name:
+      case Call::Role::Name:
          cat = number->m_Name;
          break;
-      case HistoryModel::Role::Number:
+      case Call::Role::Number:
          cat = number->m_Name;//call->getPeerPhoneNumber();
          break;
-      case HistoryModel::Role::Direction:
+      case Call::Role::Direction:
          cat = 4;//call->getHistoryState();
          break;
-      case HistoryModel::Role::Date:
+      case Call::Role::Date:
          cat = "N/A";//call->getStartTimeStamp();
          break;
-      case HistoryModel::Role::Length:
+      case Call::Role::Length:
          cat = "N/A";//call->getLength();
          break;
-      case HistoryModel::Role::FormattedDate:
+      case Call::Role::FormattedDate:
          cat = "N/A";//QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
          break;
-      case HistoryModel::Role::HasRecording:
+      case Call::Role::HasRecording:
          cat = false;//call->hasRecording();
          break;
-      case HistoryModel::Role::HistoryState:
+      case Call::Role::HistoryState:
          cat = history_state::NONE;//call->getHistoryState();
          break;
-      case HistoryModel::Role::Filter:
+      case Call::Role::Filter:
          cat = number->m_Name;//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
          break;
-      case HistoryModel::Role::FuzzyDate:
+      case Call::Role::FuzzyDate:
          cat = "N/A";//timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
          break;
-      case HistoryModel::Role::IsBookmark:
+      case Call::Role::IsBookmark:
          cat = true;
          break;
    }

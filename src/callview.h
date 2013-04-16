@@ -36,11 +36,8 @@ class CallTreeItemDelegate;
 class CallViewOverlayToolbar;
 class CallViewOverlay;
 
-//Typedef
-typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
-
 ///CallView: Central tree widget managing active calls
-class CallView : public QTreeWidget {
+class CallView : public QTreeView {
    Q_OBJECT
    friend class CallTreeItemDelegate;
 

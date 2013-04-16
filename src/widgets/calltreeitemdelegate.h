@@ -22,24 +22,28 @@
 
 //SFLPhone
 #include "conferencebox.h"
-class CallView;
+class CategorizedTreeView;
 
 ///CallTreeItemDelegate: Delegates for CallTreeItem
 class CallTreeItemDelegate : public QStyledItemDelegate
 {
 public:
-   CallTreeItemDelegate(CallView* widget,QPalette pal);
+   CallTreeItemDelegate(CategorizedTreeView* widget,QPalette pal);
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   void setCallDelegate(QStyledItemDelegate* delegate) {
+      m_pCallDelegate = delegate;
+   }
 
 private:
-   CallView*      m_tree            ;
+   CategorizedTreeView*      m_tree            ;
    ConferenceBox  m_ConferenceDrawer;
    QSize          m_SH              ;
    int            m_LeftMargin      ;
    int            m_RightMargin     ;
    QPalette       m_Pal             ;
+   QStyledItemDelegate* m_pCallDelegate;
 };
 
 #endif

@@ -77,7 +77,7 @@ SET(
    delegates/phonenumberdelegate.cpp
    delegates/delegatedropoverlay.cpp
 #    widgets/acceleratedvideowidget.cpp
-   callview.cpp
+#    callview.cpp
 )
 
 

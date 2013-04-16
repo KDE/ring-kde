@@ -16,8 +16,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef CALL_MODEL_H
-#define CALL_MODEL_H
+#ifndef CALL_MODEL2_H
+#define CALL_MODEL2_H
 
 #include <QObject>
 #include <QVector>
@@ -41,7 +41,7 @@ typedef QList<Call*>          CallList;
 ///CallModelBase: Base class for the central model/frontend
 ///This class need to exist because template classes can't have signals and
 ///slots because Qt MOC generator can't guess the type at precompilation   
-class LIB_EXPORT CallModelBase : public QObject
+class LIB_EXPORT CallModelBase : public QAbstractItemModel
 {
    Q_OBJECT
 public:
@@ -79,6 +79,32 @@ protected:
 
    //Attributes
    static CallMap m_sActiveCalls;
+   
+   //Struct
+   struct InternalStruct;
+   typedef QList<InternalStruct*> InternalCallList;
+   ///InternalStruct: internal representation of a call
+   struct InternalStruct {
+      InternalStruct() : m_pParent(nullptr){}
+      Call*            call_real  ;
+      QModelIndex            index      ;
+      InternalCallList m_lChildren   ;
+      bool             conference ;
+      InternalStruct* m_pParent;
+   };
+   typedef QHash< Call*      , InternalStruct* > InternalCall  ;
+   typedef QHash< QString    , InternalStruct* > InternalCallId;
+   typedef QHash< QModelIndex      , InternalStruct* > InternalIndex ;
+   
+   InternalCallList m_lInternalModel;
+
+   //Static attributes
+   static InternalCall   m_sPrivateCallList_call  ;
+   static InternalCallId m_sPrivateCallList_callId;
+   static InternalIndex  m_sPrivateCallList_index ;
+
+   static CallMap        m_lConfList;
+   static bool           m_sCallInit;
 
 private:
    static bool dbusInit;
@@ -111,8 +137,8 @@ Q_SIGNALS:
  * return. This frontend may not be cleaner from a design point of view, but it is from a code point of view
  */
 ///CallModel: Central model/frontend to deal with sflphoned
-template  <typename CallWidget = QWidget*, typename Index = QModelIndex*>
 class LIB_EXPORT CallModel : public CallModelBase {
+   Q_OBJECT
    public:
 
       //Constructors, initializer and destructors
@@ -140,41 +166,50 @@ class LIB_EXPORT CallModel : public CallModelBase {
       int size                                        ();
       CallList                 getCallList            ();
       CallList                 getConferenceList      ();
+      Call*                    getCurrentCall         (){return nullptr;}
+
+      //Setters
+      void                     setCurrentCall         (Call* current){}
+      void                     setCurrentCall         (const QModelIndex& current){}
+
+      //Model implementation
+      virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
+      virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
+      virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
+      virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
+      virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const;
+      virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
+      virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
+      virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
       //Connection related
       static bool init();
       
+      //Singleton
+      static CallModel* instance() {
+         return m_spInstance;
+      }
+
       //Magic dispatcher
       CallList getCalls     (                         );
-      CallList getCalls     ( const CallWidget widget ) const;
       CallList getCalls     ( const QString& callId   ) const;
       CallList getCalls     ( const Call* call        ) const;
-      CallList getCalls     ( const Index idx         ) const;
-      
+      CallList getCalls     ( const QModelIndex& idx  ) const;
+
       bool isConference     ( const Call* call        ) const;
       bool isConference     ( const QString& callId   ) const;
-      bool isConference     ( const Index idx         ) const;
-      bool isConference     ( const CallWidget widget ) const;
-      
+      bool isConference     ( const QModelIndex& idx  ) const;
+
       Call* getCall         ( const QString& callId   ) const;
-      Call* getCall         ( const Index idx         ) const;
+      Call* getCall         ( const QModelIndex& idx  ) const;
       Call* getCall         ( const Call* call        ) const;
-      Call* getCall         ( const CallWidget widget ) const;
-      
-      Index getIndex        ( const Call* call        ) const;
-      Index getIndex        ( const Index idx         ) const;
-      Index getIndex        ( const CallWidget widget ) const;
-      Index getIndex        ( const QString& callId   ) const;
-      
-      CallWidget getWidget  ( const Call* call        ) const;
-      CallWidget getWidget  ( const Index idx         ) const;
-      CallWidget getWidget  ( const CallWidget widget ) const;
-      CallWidget getWidget  ( const QString& getWidget) const;
-      
-      bool updateIndex      ( Call* call, Index value      );
-      bool updateWidget     ( Call* call, CallWidget value );
-      
-      
+
+      QModelIndex getIndex  ( const Call* call        ) const;
+      QModelIndex getIndex  ( const QModelIndex& idx  ) const;
+      QModelIndex getIndex  ( const QString& callId   ) const;
+
+      bool updateIndex      ( Call* call, const QModelIndex& value      );
+
    protected:
       virtual Call* findCallByCallId ( const QString& callId                       );
       virtual Call* addConference    ( const QString& confID                       );
@@ -182,39 +217,15 @@ class LIB_EXPORT CallModel : public CallModelBase {
       virtual void  removeConference ( const QString& confId                       );
       Call*         addIncomingCall  ( const QString& callId                       );
       Call*         addRingingCall   ( const QString& callId                       );
-      
-      //Struct
-      struct InternalStruct;
-      typedef QList<InternalStruct*> InternalCallList;
-      ///InternalStruct: internal representation of a call
-      struct InternalStruct {
-         CallWidget       call       ;
-         Call*            call_real  ;
-         Index            index      ;
-         InternalCallList children   ;
-         bool             conference ;
-      };
-      typedef QHash< Call*      , InternalStruct* > InternalCall  ;
-      typedef QHash< QString    , InternalStruct* > InternalCallId;
-      typedef QHash< CallWidget , InternalStruct* > InternalWidget;
-      typedef QHash< Index      , InternalStruct* > InternalIndex ;
-
-      //Static attributes
-      static InternalCall   m_sPrivateCallList_call  ;
-      static InternalCallId m_sPrivateCallList_callId;
-      static InternalWidget m_sPrivateCallList_widget;
-      static InternalIndex  m_sPrivateCallList_index ;
-
-      static CallMap        m_lConfList;
-      static bool           m_sCallInit;
 
    private:
       static bool m_sInstanceInit;
+      //Singleton
+      static CallModel* m_spInstance;
 
       //Helpers
       Call* addCallCommon(Call* call);
       bool  updateCommon (Call* call);
 };
-#include "callmodel.hpp"
 
 #endif

@@ -47,6 +47,7 @@
 #include "../lib/accountlist.h"
 #include "../lib/account.h"
 #include "../lib/call.h"
+#include "../lib/callmodel.h"
 #include "configurationskeleton.h"
 
 ///Init static attributes
@@ -66,7 +67,7 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : ContactBackend(parent)
 ///Destructor
 AkonadiBackend::~AkonadiBackend()
 {
-   CallModel<>::destroy();
+   CallModel::destroy();
    delete m_pSession;
    if (Call::getContactBackend() == this)
       Call::setContactBackend(nullptr);

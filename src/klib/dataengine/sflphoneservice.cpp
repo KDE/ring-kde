@@ -21,6 +21,8 @@
 
 #include "../../lib/call.h"
 #include "../../lib/account.h"
+#include "../../lib/callmanager_interface_singleton.h"
+
 
 /*****************************************************************************
  *                                                                           *

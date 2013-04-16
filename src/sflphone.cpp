@@ -68,7 +68,7 @@
 #include "errormessage.h"
 
 SFLPhone* SFLPhone::m_sApp              = nullptr;
-TreeWidgetCallModel* SFLPhone::m_pModel = nullptr;
+CallModel* SFLPhone::m_pModel = nullptr;
 
 ///Constructor
 SFLPhone::SFLPhone(QWidget *parent)
@@ -157,7 +157,7 @@ SFLPhone::~SFLPhone()
       delete m_pModel;
    }
    delete AkonadiBackend::getInstance();
-   TreeWidgetCallModel::destroy();
+   CallModel::destroy();
    //saveState();
 }
 
@@ -448,10 +448,10 @@ SFLPhoneView* SFLPhone::view()
 }
 
 ///Singleton
-TreeWidgetCallModel* SFLPhone::model()
+CallModel* SFLPhone::model()
 {
    if (!m_pModel) {
-      m_pModel = new TreeWidgetCallModel();
+      m_pModel = new CallModel();
       m_pModel->initCall();
       Call::setContactBackend(AkonadiBackend::getInstance());
       InstantMessagingModelManager::init(m_pModel);

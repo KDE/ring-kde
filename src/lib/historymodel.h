@@ -64,22 +64,6 @@ public:
       Never             = 24
    };
 
-   enum Role {
-      Name          = 100,
-      Number        = 101,
-      Direction     = 102,
-      Date          = 103,
-      Length        = 104,
-      FormattedDate = 105,
-      HasRecording  = 106,
-      HistoryState  = 107,
-      Filter        = 108,
-      FuzzyDate     = 109,
-      IsBookmark    = 110,
-      DropState     = 300,
-      DropString    = 301,
-   };
-
    //Singleton
    static HistoryModel* self();
 
@@ -90,7 +74,7 @@ public:
 
    //Setters
    static void add(Call* call);
-   void setCategoryRole(HistoryModel::Role role) {if (m_Role != role) { m_Role = role;reloadCategories();}}
+   void setCategoryRole(Call::Role role) {if (m_Role != role) { m_Role = role;reloadCategories();}}
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );

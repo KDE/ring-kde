@@ -95,7 +95,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       pxm = QPixmap(KIcon("user-identity").pixmap(QSize(48,48)));
    }
    
-   if (index.data(HistoryModel::Role::HasRecording).toBool() && call && QFile::exists(call->getRecordingPath())) {
+   if (index.data(Call::Role::HasRecording).toBool() && call && QFile::exists(call->getRecordingPath())) {
       QPainter painter(&pxm);
       QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
       status=status.scaled(QSize(24,24));
@@ -106,9 +106,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          m_pParent->setIndexWidget(index,button);
       }
    }
-   else if (index.data(HistoryModel::Role::HistoryState).toInt() != history_state::NONE && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if (index.data(Call::Role::HistoryState).toInt() != history_state::NONE && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
-      QPixmap status(icnPath[index.data(HistoryModel::Role::HistoryState).toInt()]);
+      QPixmap status(icnPath[index.data(Call::Role::HistoryState).toInt()]);
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
    }
@@ -123,13 +123,13 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    font.setBold(false);
    painter->setFont(font);
    currentHeight +=fm.height();
-   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(HistoryModel::Role::FormattedDate).toString());
+   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Call::Role::FormattedDate).toString());
    currentHeight +=fm.height();
-   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(HistoryModel::Role::Number).toString());
+   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Call::Role::Number).toString());
    currentHeight +=fm.height();
 
    //BEGIN overlay path
-   if (index.data(HistoryModel::Role::DropState).toInt() != 0) {
+   if (index.data(Call::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          ((HistoryDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          ((HistoryDelegate*)this)->m_pDelegatedropoverlay->setPixmap(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));

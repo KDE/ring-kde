@@ -41,7 +41,7 @@
 #include "sflphoneservice.h"
 
 //Static
-CallModel<>* SFLPhoneEngine::m_pModel = nullptr;
+CallModel* SFLPhoneEngine::m_pModel = nullptr;
 
 
 /*****************************************************************************
@@ -56,7 +56,7 @@ SFLPhoneEngine::SFLPhoneEngine(QObject* parent, const QVariantList& args)
 {
    Q_UNUSED(args)
    if (not m_pModel) {
-      m_pModel = new CallModel<>();
+      m_pModel = new CallModel();
       m_pModel->initCall();
       //m_pModel->initHistory();
    }
@@ -125,7 +125,7 @@ Plasma::Service* SFLPhoneEngine::serviceForSource(const QString &source)
  ****************************************************************************/
 
 ///Return the model
-CallModel<>* SFLPhoneEngine::getModel()
+CallModel* SFLPhoneEngine::getModel()
 {
    return m_pModel;
 }

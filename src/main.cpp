@@ -73,7 +73,7 @@ int main(int argc, char **argv)
       app = new SFLPhoneApplication();
 
       //dbus configuration
-      TreeWidgetCallModel::init();
+      CallModel::init();
 
       KDE_signal(SIGINT  , quitOnSignal);
       KDE_signal(SIGTERM , quitOnSignal);

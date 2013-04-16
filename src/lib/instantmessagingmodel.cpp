@@ -20,6 +20,7 @@
 #include "callmodel.h"
 #include "callmanager_interface_singleton.h"
 #include "call.h"
+#include "contact.h"
 
 InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
 CallModelBase*                InstantMessagingModelManager::m_spCallModel = nullptr;

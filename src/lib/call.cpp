@@ -986,3 +986,74 @@ void Call::contactBackendChanged()
 {
    m_ContactChanged = true;
 }
+
+///Common source for model data roles
+QVariant Call::getRoleData(Call::Role role) const
+{
+   switch (role) {
+      case Call::Role::Name:
+      case Qt::DisplayRole:
+         if (isConference())
+            return "Conference";
+         else if (m_PeerName.isEmpty())
+            return getPeerPhoneNumber();
+         else
+            return getPeerName();
+         break;
+      case Call::Role::Number:
+         return getPeerPhoneNumber();
+         break;
+      case Call::Role::Direction:
+         return getHistoryState();
+         break;
+      case Call::Role::Date:
+         return getStartTimeStamp();
+         break;
+      case Call::Role::Length:
+         return 0;
+         break;
+      case Call::Role::FormattedDate:
+         return QVariant();
+         break;
+      case Call::Role::HasRecording:
+         return hasRecording();
+         break;
+      case Call::Role::HistoryState:
+         return getHistoryState();
+         break;
+      case Call::Role::Filter:
+         return QVariant();
+         break;
+      case Call::Role::FuzzyDate:
+         return QVariant();
+         break;
+      case Call::Role::IsBookmark:
+         return false;
+         break;
+      case Call::Role::Security:
+         return isSecure();
+         break;
+      case Call::Role::Department:
+         return QVariant();
+         break;
+      case Call::Role::Email:
+         return QVariant();
+         break;
+      case Call::Role::Organisation:
+         return QVariant();
+         break;
+      case Call::Role::Codec:
+         return QVariant();
+         break;
+      case Call::Role::IsConference:
+         return isConference();
+         break;
+      case Call::Role::DropState:
+         return QVariant();
+         break;
+      case Call::Role::DropString:
+         return QVariant();
+         break;
+   };
+   return QVariant();
+}

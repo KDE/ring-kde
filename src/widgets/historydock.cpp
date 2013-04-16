@@ -23,6 +23,7 @@
 #include <QtCore/QString>
 #include <QtCore/QDate>
 #include <QtCore/QPoint>
+#include <QtCore/QProcess>
 #include <QtGui/QPushButton>
 #include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
@@ -31,6 +32,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
 
 //KDE
 #include <KDebug>
@@ -47,6 +49,7 @@
 #include "klib/akonadibackend.h"
 #include "klib/configurationskeleton.h"
 #include "lib/historymodel.h"
+#include "lib/accountlist.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
 
@@ -89,9 +92,9 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    m_pView->setDelegate(delegate);
    m_pProxyModel = new HistorySortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(HistoryModel::self());
-   m_pProxyModel->setSortRole(HistoryModel::Role::Date);
+   m_pProxyModel->setSortRole(Call::Role::Date);
    m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole(HistoryModel::Role::Filter);
+   m_pProxyModel->setFilterRole(Call::Role::Filter);
    m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
@@ -214,20 +217,20 @@ void HistoryDock::slotSetSortRole(int role)
 {
    switch (role) {
       case HistoryDock::Role::Date:
-         HistoryModel::self()->setCategoryRole(HistoryModel::Role::FuzzyDate);
-         m_pProxyModel->setSortRole(HistoryModel::Role::Date);
+         HistoryModel::self()->setCategoryRole(Call::Role::FuzzyDate);
+         m_pProxyModel->setSortRole(Call::Role::Date);
          break;
       case HistoryDock::Role::Name:
-         HistoryModel::self()->setCategoryRole(HistoryModel::Role::Name);
-         m_pProxyModel->setSortRole(HistoryModel::Role::Name);
+         HistoryModel::self()->setCategoryRole(Call::Role::Name);
+         m_pProxyModel->setSortRole(Call::Role::Name);
          break;
       case HistoryDock::Role::Popularity:
-         //          m_pProxyModel->setSortRole(HistoryModel::Role::Name);
+         //          m_pProxyModel->setSortRole(Call::Role::Name);
          //TODO
          break;
       case HistoryDock::Role::Length:
-         HistoryModel::self()->setCategoryRole(HistoryModel::Role::Length);
-         m_pProxyModel->setSortRole(HistoryModel::Role::Length);
+         HistoryModel::self()->setCategoryRole(Call::Role::Length);
+         m_pProxyModel->setSortRole(Call::Role::Length);
          break;
    }
 }
@@ -353,7 +356,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 
       m_pBookmark->setShortcut     ( Qt::CTRL + Qt::Key_D           );
       m_pBookmark->setText         ( i18n("Bookmark")               );
-      if (!idx.data(HistoryModel::Role::IsBookmark).toBool()) {
+      if (!idx.data(Call::Role::IsBookmark).toBool()) {
          m_pBookmark->setText      ( i18n("Bookmark")               );
          m_pBookmark->setIcon      ( KIcon("bookmarks")             );
       }

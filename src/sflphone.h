@@ -45,7 +45,6 @@ class CallTreeItem;
 class VideoRenderer;
 class ExtendedAction;
 
-typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
 
 /**
  * This class represents the SFLphone main window
@@ -119,7 +118,7 @@ private:
    #endif
 
    static SFLPhone*            m_sApp;
-   static TreeWidgetCallModel* m_pModel;
+   static CallModel* m_pModel;
 
    //Setters
    void setObjectNames();
@@ -141,7 +140,7 @@ public:
    friend class SFLPhoneView;
 
    static SFLPhone*            app   ();
-   static TreeWidgetCallModel* model ();
+   static CallModel* model ();
    SFLPhoneView*               view  ();
 
    ContactDock*  contactDock ();

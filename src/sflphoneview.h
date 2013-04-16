@@ -22,6 +22,8 @@
 
 #include "ui_SFLPhoneView_base.h"
 #include "klib/macromodel.h"
+#include "lib/call.h"
+#include "lib/callmodel.h"
 #include <QtGui/QWidget>
 
 //Qt
@@ -30,6 +32,7 @@ class QKeyEvent;
 
 //SFLPhone
 class AccountWizard;
+class Contact;
 
 
 /**

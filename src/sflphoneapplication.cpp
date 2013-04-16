@@ -37,6 +37,7 @@
 //SFLPhone
 #include "sflphone.h"
 #include "errormessage.h"
+#include "lib/sflphone_const.h"
 
 
 /**
