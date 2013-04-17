@@ -23,7 +23,7 @@
 #include "contact.h"
 
 InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
-CallModelBase*                InstantMessagingModelManager::m_spCallModel = nullptr;
+CallModel*                InstantMessagingModelManager::m_spCallModel = nullptr;
 
 ///Signleton
 InstantMessagingModelManager* InstantMessagingModelManager::getInstance()
@@ -34,7 +34,7 @@ InstantMessagingModelManager* InstantMessagingModelManager::getInstance()
    return m_spInstance;
 }
 
-void InstantMessagingModelManager::init(CallModelBase* model) {
+void InstantMessagingModelManager::init(CallModel* model) {
    m_spCallModel = model;
    getInstance();
 }

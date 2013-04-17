@@ -33,7 +33,7 @@ enum MessageRole {
 
 //SFLPhone
 class Call;
-class CallModelBase;
+class CallModel;
 class InstantMessagingModel;
 
 ///Manager for all IM conversations
@@ -44,7 +44,7 @@ public:
 
    //Singleton
    static InstantMessagingModelManager* getInstance();
-   static void init(CallModelBase* model);
+   static void init(CallModel* model);
 
    //Getter
    InstantMessagingModel* getModel(Call* call);
@@ -57,7 +57,7 @@ private:
 
    //Static attributes
    static InstantMessagingModelManager* m_spInstance;
-   static CallModelBase* m_spCallModel;
+   static CallModel* m_spCallModel;
 
    
 private Q_SLOTS:
