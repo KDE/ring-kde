@@ -73,7 +73,7 @@ int main(int argc, char **argv)
       app = new SFLPhoneApplication();
 
       //dbus configuration
-      CallModel::init();
+      CallModel::instance();
 
       KDE_signal(SIGINT  , quitOnSignal);
       KDE_signal(SIGTERM , quitOnSignal);

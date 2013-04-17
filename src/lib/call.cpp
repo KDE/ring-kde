@@ -138,8 +138,6 @@ Call::Call(call_state startState, QString callId, QString peerName, QString peer
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
    connect(&callManager,SIGNAL(recordPlaybackStopped(QString)), this, SLOT(stopPlayback(QString))  );
    connect(&callManager,SIGNAL(updatePlaybackScale(int,int))  , this, SLOT(updatePlayback(int,int)));
-   if (m_pContactBackend)
-      connect(m_pContactBackend,SIGNAL(collectionChanged()),this,SLOT(contactBackendChanged()));
 
    emit changed();
    emit changed(this);

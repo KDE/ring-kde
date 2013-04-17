@@ -56,8 +56,7 @@ SFLPhoneEngine::SFLPhoneEngine(QObject* parent, const QVariantList& args)
 {
    Q_UNUSED(args)
    if (not m_pModel) {
-      m_pModel = new CallModel();
-      m_pModel->initCall();
+      m_pModel = CallModel::instance();
       //m_pModel->initHistory();
    }
 
@@ -170,19 +169,19 @@ void SFLPhoneEngine::updateCallList()
    }
    setData("calls", "fake",fake );
    removeAllData("calls");
-   foreach (Call* call, m_pModel->getCalls()) {
-      if ((!m_pModel->isConference(call)) && (call->getState() != CALL_STATE_OVER)) {
-         HashStringString current;
-         /*               KEY                     VALUE              */
-         /**/current[ "peerName"      ] = call->getPeerName        ( );
-         /**/current[ "peerNumber"    ] = call->getPeerPhoneNumber ( );
-         /**/current[ "stateName"     ] = call->toHumanStateName   ( );
-         /**/current[ "state"         ] = call->getState           ( );
-         /**/current[ "id"            ] = call->getCallId          ( );
-         /*                                                          */
-         setData("calls", call->getCallId(), current);
-      }
-   }
+//    foreach (Call* call, m_pModel->getCalls()) {
+//       if ((!call->isConference()) && (call->getState() != CALL_STATE_OVER)) {
+//          HashStringString current;
+//          /*               KEY                     VALUE              */
+//          /**/current[ "peerName"      ] = call->getPeerName        ( );
+//          /**/current[ "peerNumber"    ] = call->getPeerPhoneNumber ( );
+//          /**/current[ "stateName"     ] = call->toHumanStateName   ( );
+//          /**/current[ "state"         ] = call->getState           ( );
+//          /**/current[ "id"            ] = call->getCallId          ( );
+//          /*                                                          */
+//          setData("calls", call->getCallId(), current);
+//       }
+//    }
 }
 
 ///Load/Update bookmark list

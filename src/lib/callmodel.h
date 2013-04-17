@@ -19,24 +19,20 @@
 #ifndef CALL_MODEL2_H
 #define CALL_MODEL2_H
 
-#include <QObject>
-#include <QVector>
-#include <QWidget>
-#include <QModelIndex>
+#include <QAbstractItemModel>
 #include <QMap>
 #include "typedefs.h"
 
-//Qt
-class QModelIndex;
-
 //SFLPhone
 class Call;
+
 //class AccountList;
 class Account;
 
 //Typedef
 typedef QMap<QString, Call*>  CallMap;
 typedef QList<Call*>          CallList;
+struct InternalStruct;
 
 ///CallModelBase: Base class for the central model/frontend
 ///This class need to exist because template classes can't have signals and
@@ -45,11 +41,8 @@ class LIB_EXPORT CallModelBase : public QAbstractItemModel
 {
    Q_OBJECT
 public:
-   explicit CallModelBase(QObject* parent = nullptr);
    ~CallModelBase();
-   virtual Call* addCall              ( Call* call           , Call* parent =0      );
    virtual Call* getCall              ( const QString& callId                       ) const = 0;
-   Call*   addConferenceS             ( Call* conf                                  );
 
    bool isValid();
    
@@ -61,7 +54,6 @@ private Q_SLOTS:
    void conferenceRemovedSlot ( const QString& confId                             );
    void voiceMailNotifySlot   ( const QString& accountID , int count              );
    void volumeChangedSlot     ( const QString& device    , double value           );
-   void removeActiveCall      ( Call* call                                        );
    void addPrivateCall        ( Call* call                                        );
    void newRecordingAvail     ( const QString& callId    , const QString& filePath);
    void callChanged           ( Call* call                                        );
@@ -71,44 +63,19 @@ private Q_SLOTS:
    #endif
 
 protected:
-   virtual Call* findCallByCallId ( const QString& callId                       ) = 0;
+   explicit CallModelBase(QObject* parent = nullptr);
+   virtual Call* addCall          ( Call* call    , Call* parent = nullptr      );
    virtual bool changeConference  ( const QString& confId, const QString &state ) = 0;
    virtual void removeConference  ( const QString& confId                       ) = 0;
    virtual Call* addConference    ( const QString& confID                       ) = 0;
    virtual Call* addRingingCall   ( const QString& callId                       ) = 0;
    virtual Call* addIncomingCall  ( const QString& callId                       ) = 0;
+   void          removeCall       ( Call* call                                 );
 
-   //Attributes
-   static CallMap m_sActiveCalls;
-   
    //Struct
-   struct InternalStruct;
-   typedef QList<InternalStruct*> InternalCallList;
-   ///InternalStruct: internal representation of a call
-   struct InternalStruct {
-      InternalStruct() : m_pParent(nullptr){}
-      Call*            call_real  ;
-      QModelIndex            index      ;
-      InternalCallList m_lChildren   ;
-      bool             conference ;
-      InternalStruct* m_pParent;
-   };
-   typedef QHash< Call*      , InternalStruct* > InternalCall  ;
-   typedef QHash< QString    , InternalStruct* > InternalCallId;
-   typedef QHash< QModelIndex      , InternalStruct* > InternalIndex ;
-   
-   InternalCallList m_lInternalModel;
-
-   //Static attributes
-   static InternalCall   m_sPrivateCallList_call  ;
-   static InternalCallId m_sPrivateCallList_callId;
-   static InternalIndex  m_sPrivateCallList_index ;
-
-   static CallMap        m_lConfList;
-   static bool           m_sCallInit;
-
-private:
-   static bool dbusInit;
+   QList<InternalStruct*> m_lInternalModel;
+   QHash< Call*       , InternalStruct* > m_sPrivateCallList_call   ;
+   QHash< QString     , InternalStruct* > m_sPrivateCallList_callId ;
 
 Q_SIGNALS:
    ///Emitted when a call state change
@@ -133,41 +100,29 @@ Q_SIGNALS:
    //void accountStateChanged     ( Account* account, QString state         );
 };
 
-/**
- * Using QAbstractModel resulted in a failure. Managing all corner case bloated the code to the point of no
- * return. This frontend may not be cleaner from a design point of view, but it is from a code point of view
- */
 ///CallModel: Central model/frontend to deal with sflphoned
 class LIB_EXPORT CallModel : public CallModelBase {
    Q_OBJECT
    public:
-
       //Constructors, initializer and destructors
-      CallModel                (                    );
-      virtual ~CallModel       (                    );
-      virtual bool initCall    (                    );
-      static  void destroy     (                    );
+      virtual ~CallModel( );
 
       //Call related
-      virtual Call*  addCall          ( Call* call                , Call* parent =0          );
-      Call*          addDialingCall   ( const QString& peerName="", Account* account=nullptr );
-      static QString generateCallId   (                                                      );
-      void           removeCall       ( Call* call                                           );
-      void           attendedTransfer ( Call* toTransfer          , Call* target             );
-      void           transfer         ( Call* toTransfer          , QString target           );
+      Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
+      void  attendedTransfer ( Call* toTransfer          , Call* target             );
+      void  transfer         ( Call* toTransfer          , QString target           );
 
       //Conference related
-      bool createConferenceFromCall  ( Call* call1, Call* call2                    );
-      bool mergeConferences          ( Call* conf1, Call* conf2                    );
-      bool addParticipant            ( Call* call2, Call* conference               );
-      bool detachParticipant         ( Call* call                                  );
-      void removeConference          ( Call* conf                                  );
+      bool createConferenceFromCall  ( Call* call1, Call* call2      );
+      bool mergeConferences          ( Call* conf1, Call* conf2      );
+      bool addParticipant            ( Call* call2, Call* conference );
+      bool detachParticipant         ( Call* call                    );
+      void removeConference          ( Call* conf                    );
 
       //Getters
-      int size                                        ();
-      CallList                 getCallList            ();
-      CallList                 getConferenceList      ();
-      Call*                    getCurrentCall         (){return nullptr;}
+      int size                   ();
+      CallList getCallList       ();
+      CallList getConferenceList ();
 
       //Model implementation
       virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -179,46 +134,29 @@ class LIB_EXPORT CallModel : public CallModelBase {
       virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
       virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-      //Connection related
-      static bool init();
-      
       //Singleton
       static CallModel* instance() {
+         if (!m_spInstance)
+            m_spInstance = new CallModel();
          return m_spInstance;
       }
 
-      //Magic dispatcher
-      CallList getCalls     (                         );
-      CallList getCalls     ( const QString& callId   ) const;
-      CallList getCalls     ( const Call* call        ) const;
-      CallList getCalls     ( const QModelIndex& idx  ) const;
-
-      bool isConference     ( const Call* call        ) const;
-      bool isConference     ( const QString& callId   ) const;
-      bool isConference     ( const QModelIndex& idx  ) const;
-
-      Call* getCall         ( const QString& callId   ) const;
-      Call* getCall         ( const QModelIndex& idx  ) const;
-      Call* getCall         ( const Call* call        ) const;
-
-      bool updateIndex      ( Call* call, const QModelIndex& value      );
+      Call* getCall ( const QString& callId  ) const;
+      Call* getCall ( const QModelIndex& idx ) const;
 
    protected:
-      virtual Call* findCallByCallId ( const QString& callId                       );
-      virtual Call* addConference    ( const QString& confID                       );
-      virtual bool  changeConference ( const QString& confId, const QString& state );
-      virtual void  removeConference ( const QString& confId                       );
-      Call*         addIncomingCall  ( const QString& callId                       );
-      Call*         addRingingCall   ( const QString& callId                       );
+      virtual Call*  addCall          ( Call* call                , Call* parent = nullptr );
+      virtual Call*  addConference    ( const QString& confID                              );
+      virtual bool   changeConference ( const QString& confId, const QString& state        );
+      virtual void   removeConference ( const QString& confId                              );
+      Call*          addIncomingCall  ( const QString& callId                              );
+      Call*          addRingingCall   ( const QString& callId                              );
 
    private:
-      static bool m_sInstanceInit;
+      explicit CallModel();
+
       //Singleton
       static CallModel* m_spInstance;
-
-      //Helpers
-      Call* addCallCommon(Call* call);
-      bool  updateCommon (Call* call);
 };
 
 #endif

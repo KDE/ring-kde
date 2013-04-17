@@ -181,6 +181,10 @@ QVariant ContactByNameProxyModel::headerData(int section, Qt::Orientation orient
 
 bool ContactByNameProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+   Q_UNUSED( data   )
+   Q_UNUSED( row    )
+   Q_UNUSED( column )
+   Q_UNUSED( action )
    setData(parent,-1,Call::Role::DropState);
    return false;
 }

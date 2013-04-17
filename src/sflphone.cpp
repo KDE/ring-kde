@@ -153,11 +153,8 @@ SFLPhone::~SFLPhone()
    delete m_pHistoryDW       ;
    delete m_pBookmarkDW      ;
 
-   if (m_pModel) {
-      delete m_pModel;
-   }
    delete AkonadiBackend::getInstance();
-   CallModel::destroy();
+   delete CallModel::instance();
    //saveState();
 }
 
@@ -451,8 +448,7 @@ SFLPhoneView* SFLPhone::view()
 CallModel* SFLPhone::model()
 {
    if (!m_pModel) {
-      m_pModel = new CallModel();
-      m_pModel->initCall();
+      m_pModel = CallModel::instance();
       Call::setContactBackend(AkonadiBackend::getInstance());
       InstantMessagingModelManager::init(m_pModel);
       AccountList::getInstance()->setDefaultAccount(AccountList::getInstance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
