@@ -91,6 +91,7 @@ protected:
    void paintEvent ( QPaintEvent*  event);
    void hideEvent  ( QHideEvent*   event);
    void showEvent  ( QShowEvent*   event);
+   bool eventFilter( QObject *obj, QEvent *event);
 
 Q_SIGNALS:
    void visibilityChanged(bool);

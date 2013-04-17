@@ -275,7 +275,7 @@ QVariant HistoryModel::data( const QModelIndex& index, int role) const
       else if (role == Call::Role::DropString)
          return QVariant(modelItem->dropString());
       else if (m_lCategoryCounter.size() >= index.parent().row() && m_lCategoryCounter[index.parent().row()])
-         return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
+         return m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getRoleData((Call::Role)role);
       break;
    case HistoryTreeBackend::Type::NUMBER:
    case HistoryTreeBackend::Type::BOOKMARK:
@@ -410,60 +410,60 @@ bool HistoryModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
    return false;
 }
 
-QVariant HistoryModel::commonCallInfo(Call* call, int role) const
-{
-   if (!call)
-      return QVariant();
-   QVariant cat;
-   Contact* ct = call->getContact();
-   switch (role) {
-      case Qt::DisplayRole:
-      case Call::Role::Name:
-         cat = ct?ct->getFormattedName():call->getPeerName();
-         break;
-      case Call::Role::Number:
-         cat = call->getPeerPhoneNumber();
-         break;
-      case Call::Role::Direction:
-         cat = call->getHistoryState();
-         break;
-      case Call::Role::Date:
-         cat = call->getStartTimeStamp();
-         break;
-      case Call::Role::Length:
-         cat = call->getLength();
-         break;
-      case Call::Role::FormattedDate:
-         cat = QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
-         break;
-      case Call::Role::HasRecording:
-         cat = call->hasRecording();
-         break;
-      case Call::Role::HistoryState:
-         cat = call->getHistoryState();
-         break;
-      case Call::Role::Filter:
-         cat = call->getHistoryState()+'\n'+commonCallInfo(call,Call::Role::Name).toString()+'\n'+commonCallInfo(call,Call::Role::Number).toString();
-         break;
-      case Call::Role::FuzzyDate:
-         cat = timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
-         break;
-      case Call::Role::IsBookmark:
-         cat = false;
-         break;
-      case Call::Role::Object:
-         return QVariant::fromValue(call);
-         break;
-//       case Call::Role::PhotoPtr:
-//          return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
+// QVariant HistoryModel::commonCallInfo(Call* call, int role) const
+// {
+//    if (!call)
+//       return QVariant();
+//    QVariant cat;
+//    Contact* ct = call->getContact();
+//    switch (role) {
+//       case Qt::DisplayRole:
+//       case Call::Role::Name:
+//          cat = ct?ct->getFormattedName():call->getPeerName();
 //          break;
-   }
-   return cat;
-}
+//       case Call::Role::Number:
+//          cat = call->getPeerPhoneNumber();
+//          break;
+//       case Call::Role::Direction:
+//          cat = call->getHistoryState();
+//          break;
+//       case Call::Role::Date:
+//          cat = call->getStartTimeStamp();
+//          break;
+//       case Call::Role::Length:
+//          cat = call->getLength();
+//          break;
+//       case Call::Role::FormattedDate:
+//          cat = QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
+//          break;
+//       case Call::Role::HasRecording:
+//          cat = call->hasRecording();
+//          break;
+//       case Call::Role::HistoryState:
+//          cat = call->getHistoryState();
+//          break;
+//       case Call::Role::Filter:
+//          cat = call->getHistoryState()+'\n'+commonCallInfo(call,Call::Role::Name).toString()+'\n'+commonCallInfo(call,Call::Role::Number).toString();
+//          break;
+//       case Call::Role::FuzzyDate:
+//          cat = timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
+//          break;
+//       case Call::Role::IsBookmark:
+//          cat = false;
+//          break;
+//       case Call::Role::Object:
+//          return QVariant::fromValue(call);
+//          break;
+// //       case Call::Role::PhotoPtr:
+// //          return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
+// //          break;
+//    }
+//    return cat;
+// }
 
 QString HistoryModel::category(Call* call) const
 {
-   QString cat = commonCallInfo(call,m_Role).toString();
+   QString cat = call->getRoleData((Call::Role)m_Role).toString();
 //    if (cat.size() && !m_ShowAll)
 //       cat = cat[0].toUpper();
    return cat;

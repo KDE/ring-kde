@@ -33,6 +33,7 @@
 #include "account.h"
 #include "accountlist.h"
 #include "videomodel.h"
+#include "historymodel.h"
 #include "instantmessagingmodel.h"
 
 const call_state Call::actionPerformedStateMap [13][5] =
@@ -161,6 +162,11 @@ Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBacke
    this->m_Account = account ;
 
    if (m_isConference) {
+      m_pStartTime = new QDateTime(QDateTime::currentDateTime());
+      m_pTimer = new QTimer();
+      m_pTimer->setInterval(1000);
+      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
+      m_pTimer->start();
       CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
       MapStringString        details    = callManager.getConferenceDetails(m_ConfId)  ;
       m_CurrentState = confStatetoCallState(details["CONF_STATE"]);
@@ -454,11 +460,17 @@ bool Call::hasRecording()                   const
 
 QString Call::getLength() const
 {
-   int dur = getStopTimeStamp().toInt() - getStartTimeStamp().toInt();
-   if (dur/3600)
-      return QString("%1").arg(dur/3600).trimmed()+':'+QString("%1").arg((dur%3600)/60,2,10,QChar('0')).trimmed()+':'+QString("%1").arg((dur%3600)%60,2,10,QChar('0')).trimmed()+' ';
+   if (!m_pStartTime) return QString(); //Invalid
+   int nsec =0;
+   if (m_pStopTime)
+      nsec = getStopTimeStamp().toInt() - getStartTimeStamp().toInt();//If the call is over
+   else //Time to now
+      nsec = m_pStartTime->secsTo( QDateTime::currentDateTime () );
+   if (nsec/3600)
+      return QString("%1:%2:%3 ").arg((nsec%(3600*24))/3600).arg(((nsec%(3600*24))%3600)/60,2,10,QChar('0')).arg(((nsec%(3600*24))%3600)%60,2,10,QChar('0'));
    else
-      return QString("%1").arg((dur%3600)/60).trimmed()+':'+QString("%1").arg((dur%3600)%60,2,10,QChar('0')).trimmed()+' ';
+      return QString("%1:%2 ").arg(nsec/60,2,10,QChar('0')).arg(nsec%60,2,10,QChar('0'));
+   
 }
 
 ///Get the current state
@@ -1024,16 +1036,10 @@ QVariant Call::getRoleData(Call::Role role) const
          return getStartTimeStamp();
          break;
       case Call::Role::Length:
-         if (m_pStartTime ) {
-            int nsec = m_pStartTime->secsTo( QDateTime::currentDateTime () );
-            if (nsec/3600)
-               return QString("%1:%2:%3 ").arg((nsec%(3600*24))/3600).arg(((nsec%(3600*24))%3600)/60,2,10,QChar('0')).arg(((nsec%(3600*24))%3600)%60,2,10,QChar('0'));
-            else
-               return QString("%1:%2 ").arg(nsec/60,2,10,QChar('0')).arg(nsec%60,2,10,QChar('0'));
-         }
+         return getLength();
          break;
       case Call::Role::FormattedDate:
-         return QVariant();
+         return QDateTime::fromTime_t(getStartTimeStamp().toUInt()).toString();
          break;
       case Call::Role::HasRecording:
          return hasRecording();
@@ -1042,10 +1048,10 @@ QVariant Call::getRoleData(Call::Role role) const
          return getHistoryState();
          break;
       case Call::Role::Filter:
-         return QVariant();
+         return getHistoryState()+'\n'+getRoleData(Call::Role::Name).toString()+'\n'+getRoleData(Call::Role::Number).toString();
          break;
       case Call::Role::FuzzyDate:
-         return QVariant();
+         return HistoryModel::timeToHistoryCategory(QDateTime::fromTime_t(getStartTimeStamp().toUInt()).date());
          break;
       case Call::Role::IsBookmark:
          return false;
@@ -1054,16 +1060,16 @@ QVariant Call::getRoleData(Call::Role role) const
          return isSecure();
          break;
       case Call::Role::Department:
-         return QVariant();
+         return ct?ct->getDepartment():QVariant();
          break;
       case Call::Role::Email:
-         return QVariant();
+         return ct?ct->getPreferredEmail():QVariant();
          break;
       case Call::Role::Organisation:
-         return QVariant();
+         return ct?ct->getOrganization():QVariant();
          break;
       case Call::Role::Codec:
-         return QVariant();
+         return getCurrentCodecName();
          break;
       case Call::Role::IsConference:
          return isConference();

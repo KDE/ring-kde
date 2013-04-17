@@ -169,10 +169,6 @@ class LIB_EXPORT CallModel : public CallModelBase {
       CallList                 getConferenceList      ();
       Call*                    getCurrentCall         (){return nullptr;}
 
-      //Setters
-      void                     setCurrentCall         (Call* current){}
-      void                     setCurrentCall         (const QModelIndex& current){}
-
       //Model implementation
       virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
       virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
@@ -204,10 +200,6 @@ class LIB_EXPORT CallModel : public CallModelBase {
       Call* getCall         ( const QString& callId   ) const;
       Call* getCall         ( const QModelIndex& idx  ) const;
       Call* getCall         ( const Call* call        ) const;
-
-//       QModelIndex getIndex  ( const Call* call        ) const;
-//       QModelIndex getIndex  ( const QModelIndex& idx  ) const;
-//       QModelIndex getIndex  ( const QString& callId   ) const;
 
       bool updateIndex      ( Call* call, const QModelIndex& value      );
 

@@ -33,7 +33,7 @@ class QKeyEvent;
 //SFLPhone
 class AccountWizard;
 class Contact;
-
+class CallViewOverlayToolbar;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -53,6 +53,7 @@ class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListe
 
 private:
    AccountWizard* wizard     ;
+   CallViewOverlayToolbar* m_pCanvasToolbar;
 
 protected:
 

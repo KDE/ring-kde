@@ -236,5 +236,5 @@ int ConferenceBox::categoryHeight(const QModelIndex &index, const QStyleOption &
    font.setBold(true);
    const QFontMetrics fontMetrics = QFontMetrics(font);
 
-   return fontMetrics.height() + 2 + 12 /* vertical spacing */;
+   return fontMetrics.height() + 2 + 16 /* vertical spacing */;
 }

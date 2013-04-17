@@ -24,6 +24,10 @@
 #include <QtGui/QTreeWidget>
 #include <QtGui/QGraphicsEffect>
 #include <QtGui/QGraphicsOpacityEffect>
+#include <QtGui/QApplication>
+
+//KDE
+#include <KStandardDirs>
 
 //SFLPhone
 #include "categorizedtreeview.h"
@@ -135,6 +139,32 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 //             }
 //          }
 //       }
+
+      //Draw the conference icon and infos
+      static const QPixmap* pxm = nullptr;
+      if (!pxm) //Static
+         pxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/conf-small.png"));
+      painter->drawPixmap ( opt.rect.x()+5, opt.rect.y()+2, 24, 24, *pxm);
+      QFont font = painter->font();
+      font.setBold(true);
+
+      static QColor baseColor = Qt::red;
+      /*static block*/if (baseColor == Qt::red) {
+         QColor textColor = QApplication::palette().text().color();
+         baseColor = QApplication::palette().base().color().name();
+         baseColor.setBlue (baseColor.blue() + (textColor.blue() -baseColor.blue()) *0.6);
+         baseColor.setRed  (baseColor.red()  + (textColor.red()  -baseColor.red())  *0.6);
+         baseColor.setGreen(baseColor.green()+ (textColor.green()-baseColor.green())*0.6);
+      }
+      painter->setPen(baseColor);
+      painter->setFont(font);
+      painter->drawText(opt.rect.x()+33,opt.rect.y()+font.pointSize()+8,"Conference");
+      font.setBold(false);
+      painter->setFont(font);
+      baseColor.setAlpha(150);
+      painter->setPen(baseColor);
+      baseColor.setAlpha(255);
+      painter->drawText(opt.rect.x()+opt.rect.width()-40,opt.rect.y()+font.pointSize()+8,index.data(Call::Role::Length).toString());
       painter->setClipRegion(cl);
       return;
    }

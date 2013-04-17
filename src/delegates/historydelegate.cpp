@@ -130,10 +130,12 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    currentHeight +=fm.height();
    painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Call::Role::Number).toString());
    currentHeight +=fm.height();
-   
-   QString length = index.data(Call::Role::Length).toString();
-   if (!length.isEmpty()) {
-      painter->drawText(option.rect.x()+option.rect.width()-fm.width(length)-10,option.rect.y()+(option.rect.height()/2),length);
+
+   if (!index.parent().isValid()){
+      QString length = index.data(Call::Role::Length).toString();
+      if (!length.isEmpty()) {
+         painter->drawText(option.rect.x()+option.rect.width()-fm.width(length)-4,option.rect.y()+(option.rect.height()/2),length);
+      }
    }
 
    //BEGIN overlay path

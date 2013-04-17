@@ -24,6 +24,7 @@
 #include <QtGui/QPen>
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QHBoxLayout>
+#include <QtGui/QStyle>
 #include <QDebug> //TODO remove
 
 //KDE
@@ -33,6 +34,7 @@
 //SFLPhone
 #include "sflphone.h"
 #include "extendedaction.h"
+#include <klib/tipmanager.h>
 
 const bool visibility[8][13] = {              /*ROW = BUTTONS   COLS=STATE*/
             /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
@@ -82,6 +84,8 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent
    layout->addWidget( m_pRefuse   );
 
    setMinimumSize(100,56);
+   if (parent)
+      parent->installEventFilter(this);
 } //CallViewOverlayToolbar
 
 ///Resize event
@@ -100,17 +104,18 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
    QPen   p = customPainter.pen();
 
    b.setColor("black");
+   //Use the current style pixel metrics to do as well as possible to guess the right shape
+   int margin = style()->pixelMetric(QStyle::PM_FocusFrameHMargin);
    customPainter.setOpacity(0.5);
-
    customPainter.setBrush (Qt::black);
    customPainter.setPen   (Qt::transparent);
-   customPainter.drawRect (QRect(3,10,width()-6,height()-16)               );
-   customPainter.drawPie  (QRect(width()-8-3,height()-10,8,8),270*16,90*16 );
-   customPainter.drawPie  (QRect(3,height()-10,8,8),180*16,90*16           );
-   customPainter.drawRect (QRect(5+2,height()-6,width()-8-6,3)             );
+   customPainter.drawRect (QRect(margin,10,width()-2*margin,height()-10-2*margin - margin)               );
+   customPainter.drawPie  (QRect(width()-8-margin,height()-10,8,8),270*16,90*16 );
+   customPainter.drawPie  (QRect(margin,height()-10,8,8),180*16,90*16           );
+   customPainter.drawRect (QRect(4+margin,height()-4-margin,width()-8-2*margin,4)             );
 
-   m_pLeftRender->render (&customPainter,QRect( 3,0,10,10)                 );
-   m_pRightRender->render(&customPainter,QRect( width()-13,0,10,10)        );
+   m_pLeftRender->render (&customPainter,QRect( margin,0,10,10)                 );
+   m_pRightRender->render(&customPainter,QRect( width()-10-margin,0,10,10)        );
 } //paintEvent
 
 ///Create a toolbar button
@@ -144,10 +149,28 @@ void CallViewOverlayToolbar::updateState(call_state state)
 
 void CallViewOverlayToolbar::hideEvent(QHideEvent *)
 {
-    emit visibilityChanged(false);
+   if (parentWidget()->property("tipManager").isValid()) {
+      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
+      manager->setBottomMargin(0);
+   }
+   emit visibilityChanged(false);
 }
 
 void CallViewOverlayToolbar::showEvent(QShowEvent *)
 {
+   if (parentWidget()->property("tipManager").isValid()) {
+      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
+      manager->setBottomMargin(60);
+   }
     emit visibilityChanged(true);
+}
+
+bool CallViewOverlayToolbar::eventFilter(QObject *obj, QEvent *event)
+{
+   if (event->type() == QEvent::Resize && parentWidget()) {
+      resize(parentWidget()->width(),72);
+      move(0,parentWidget()->height()-72);
+   }
+   // standard event processing
+   return QObject::eventFilter(obj, event);
 }

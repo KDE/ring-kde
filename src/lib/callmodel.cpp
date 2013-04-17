@@ -634,6 +634,7 @@ Call* CallModel::addConference(const QString & confID)
       }
       const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
       emit dataChanged(idx, idx);
+      connect(newConf,SIGNAL(changed(Call*)),this,SLOT(callChanged(Call*)));
    }
    
    return newConf;

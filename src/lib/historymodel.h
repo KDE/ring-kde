@@ -105,7 +105,7 @@ private:
 
    //Helpers
    QString category(Call* call) const;
-   QVariant commonCallInfo(Call* call, int role) const;
+//    QVariant commonCallInfo(Call* call, int role) const;
 
    //Static attributes
    static HistoryModel* m_spInstance;

@@ -43,8 +43,9 @@ m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(new QTimer())
 {
    ResizeEventFilter* filter = new ResizeEventFilter(this);
    parent->installEventFilter(filter);
+   parent->setProperty("tipManager",QVariant::fromValue(qobject_cast<TipManager*>(this)));
    reload();
-   
+
    connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timeout()));
 
    connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));

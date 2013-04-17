@@ -44,7 +44,13 @@
 #include "sflphone.h"
 #include "widgets/callviewoverlaytoolbar.h"
 #include "widgets/tips/tipcollection.h"
+#include "widgets/callviewoverlaytoolbar.h"
 #include "extendedaction.h"
+#include "widgets/calltreeitemdelegate.h"
+#include "delegates/historydelegate.h"
+#include "delegates/categorizeddelegate.h"
+#include "widgets/tips/dialpadtip.h"
+#include "widgets/tips/tipcollection.h"
 
 //sflphone library
 #include "lib/typedefs.h"
@@ -56,9 +62,6 @@
 #include "lib/accountlist.h"
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
-#include "delegates/historydelegate.h"
-#include "delegates/categorizeddelegate.h"
-#include "widgets/calltreeitemdelegate.h"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
@@ -156,12 +159,17 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    m_pView->setModel(CallModel::instance());
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
    m_pView->expandAll();
-//    m_pView->setItemDelegate();
-//    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
-//    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    auto delegate = new CallTreeItemDelegate(m_pView,palette());
    delegate->setCallDelegate(new HistoryDelegate(m_pView));
    m_pView->setItemDelegate(delegate);
+
+   //Enable on-canvas messages
+   TipCollection::setManager(new TipManager(m_pView));
+//    if (!SFLPhone::model()->getCallList().size())
+      TipCollection::manager()->setCurrentTip(TipCollection::dialPad());
+
+
+   m_pCanvasToolbar   = new CallViewOverlayToolbar(m_pView);
 }
 
 ///Destructor
