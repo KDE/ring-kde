@@ -248,10 +248,6 @@ bool HistoryModel::setData( const QModelIndex& index, const QVariant &value, int
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
       }
-      else if (role == Call::Role::DropString) {
-         modelItem->setDropString(value.toString());
-         emit dataChanged(index, index);
-      }
    }
    return false;
 }
@@ -272,8 +268,6 @@ QVariant HistoryModel::data( const QModelIndex& index, int role) const
    case HistoryTreeBackend::Type::CALL:
       if (role == Call::Role::DropState)
          return QVariant(modelItem->dropState());
-      else if (role == Call::Role::DropString)
-         return QVariant(modelItem->dropString());
       else if (m_lCategoryCounter.size() >= index.parent().row() 
          && m_lCategoryCounter[index.parent().row()] 
          && m_lCategoryCounter[index.parent().row()]->m_lChilds.size() >= index.row())

@@ -45,6 +45,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       void  attendedTransfer ( Call* toTransfer          , Call* target             );
       void  transfer         ( Call* toTransfer          , QString target           );
       void  removeCall       ( Call* call                                           );
+      QModelIndex getIndex   ( Call* call                                           );
 
       //Conference related
       bool createConferenceFromCall  ( Call* call1, Call* call2      );
@@ -68,6 +69,8 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
       virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
       virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+      virtual QStringList   mimeTypes   (                                                             ) const;
+      virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
 
       //Singleton
       static CallModel* instance() {

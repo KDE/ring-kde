@@ -74,6 +74,7 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
 void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
+   painter->save();
    int iconHeight = option.rect.height() -4;
    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
       QStyleOptionViewItem opt2 = option;
@@ -91,6 +92,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (obj)
       call = qobject_cast<Call*>(obj);
    call_state currentState = (call_state) index.data(Call::Role::State).toInt();
+   if (currentState == CALL_STATE_HOLD)
+      painter->setOpacity(0.70);
+
    QPixmap pxm;
    if (pxmPtr) {
       pxm = (*pxmPtr).scaledToWidth(iconHeight);
@@ -198,13 +202,21 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
 
+   static QMap<QString,QImage*> historyMap,callMap;
    //BEGIN overlay path
    if (index.data(Call::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          ((HistoryDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         ((HistoryDelegate*)this)->m_pDelegatedropoverlay->setPixmap(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
+         callMap.insert(i18n("Conference")   ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
+         callMap.insert(i18n("Transfer")     ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
+         historyMap.insert(i18n("Transfer")  ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
       }
+      if (currentState == CALL_STATE_OVER)
+         m_pDelegatedropoverlay->setButtons(&historyMap);
+      else
+         m_pDelegatedropoverlay->setButtons(&callMap);
       m_pDelegatedropoverlay->paintEvent(painter, option, index);
    }
    //END overlay path
+   painter->restore();
 }

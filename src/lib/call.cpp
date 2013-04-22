@@ -648,6 +648,12 @@ call_state Call::stateChanged(const QString& newStateName)
       //Until now, it does not worth using stateChangedStateMap, conferences are quite simple
       m_CurrentState = confStatetoCallState(newStateName);
    }
+   if ((m_CurrentState == CALL_STATE_HOLD || m_CurrentState == CALL_STATE_CURRENT) && !m_pTimer) {
+      m_pTimer = new QTimer();
+      m_pTimer->setInterval(1000);
+      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
+      m_pTimer->start();
+   }
    qDebug() << "Calling stateChanged " << newStateName << " -> " << toDaemonCallState(newStateName) << " on call with state " << previousState << ". Become " << m_CurrentState;
    return m_CurrentState;
 } //stateChanged
@@ -1084,10 +1090,7 @@ QVariant Call::getRoleData(Call::Role role) const
          return getCurrentState();
          break;
       case Call::Role::DropState:
-         return QVariant();
-         break;
-      case Call::Role::DropString:
-         return QVariant();
+         return property("dropState");
          break;
    };
    return QVariant();

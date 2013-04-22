@@ -31,7 +31,7 @@
 
 ///Constructor
 DelegateDropOverlay::DelegateDropOverlay(QObject* parent):QObject(parent),
-m_pTimer(0),m_CurrentState(-1),m_pImg(0),m_Init(false),m_Reverse(1)
+m_pTimer(0),m_CurrentState(-1),m_Init(false),m_Reverse(1)
 {
    m_CurrentColor = "black";
    m_CurrentColor.setAlpha(0);
@@ -41,7 +41,6 @@ m_pTimer(0),m_CurrentState(-1),m_pImg(0),m_Init(false),m_Reverse(1)
 DelegateDropOverlay::~DelegateDropOverlay()
 {
    if (m_pTimer) delete m_pTimer;
-   if (m_pImg)   delete m_pImg;
 }
 
 ///How to paint
@@ -61,24 +60,31 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
          m_pTimer->start(10);
       }
    }
-   if (step) {
-      painter->save();
-      painter->setRenderHint(QPainter::Antialiasing, true);
-      painter->setBackground(m_CurrentColor);
-      painter->setBrush(m_CurrentColor);
-      painter->setPen(Qt::NoPen);
-      painter->drawRoundedRect(option.rect, 10, 10);
-      painter->setPen(m_Pen);
+   int i =0;
+   QMapIterator<QString, QImage*> it(*m_lpButtons);
+   while (it.hasNext()) {
+      it.next();
+      if (step) {
+         painter->save();
+         painter->setRenderHint(QPainter::Antialiasing, true);
+         painter->setBackground(m_CurrentColor);
+         painter->setBrush(m_CurrentColor);
+         painter->setPen(Qt::NoPen);
+         QRect buttonRect = QRect(option.rect.x()+(option.rect.width()/m_lpButtons->size())*i,option.rect.y(),option.rect.width()/m_lpButtons->size() - 10,option.rect.height());
+         painter->drawRoundedRect(buttonRect, 10, 10);
+         painter->setPen(m_Pen);
 
-      if (m_pImg) {
-         painter->drawImage(QRect(QPoint(option.rect.x()+option.rect.width(),10),QSize(10,option.rect.height()-20)),*m_pImg, QRectF(m_pImg->rect()));
+         if (it.value()) {
+            painter->drawImage(QRect(buttonRect.x()+buttonRect.width()-(buttonRect.height()-10)-10/*padding*/,buttonRect.y()+5,(buttonRect.height()-10),(buttonRect.height()-10)),*it.value());
+         }
+
+         QFont font = painter->font();
+         font.setBold(true);
+         painter->setFont(font);
+         painter->drawText (buttonRect, Qt::AlignVCenter|Qt::AlignHCenter, QString(it.key()).remove('&') );
+         painter->restore();
+         i++;
       }
-
-      QFont font = painter->font();
-      font.setBold(true);
-      painter->setFont(font);
-      painter->drawText (option.rect, Qt::AlignVCenter|Qt::AlignHCenter, index.data(ContactBackend::Role::DropString).toString().remove('&') );
-      painter->restore();
    }
 }//paintEvent
 
@@ -131,9 +137,3 @@ void DelegateDropOverlay::setHoverState(bool hover)
       m_CurrentState = hover;
    }
 }//setHoverState
-
-///Set the button pixmap
-void DelegateDropOverlay::setPixmap(QImage* img)
-{
-   m_pImg = img;
-}

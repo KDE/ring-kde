@@ -55,7 +55,6 @@ SET(
    widgets/historydock.cpp
    widgets/bookmarkdock.cpp
    widgets/translucentbuttons.cpp
-   widgets/conferencebox.cpp
    widgets/categorizedtreeview.cpp
    widgets/videodock.cpp
    widgets/videowidget.cpp
@@ -68,9 +67,9 @@ SET(
    widgets/tips/riggingtip.cpp
    widgets/tips/connectionlosttip.cpp
    widgets/tips/tipcollection.cpp
-   widgets/calltreeitemdelegate.cpp
    widgets/player.cpp
    widgets/playeroverlay.cpp
+   delegates/conferencedelegate.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp
    delegates/categorizeddelegate.cpp

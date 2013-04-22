@@ -66,28 +66,29 @@ void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
 void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
 {
    const QModelIndex& idxAt = indexAt(e->pos());
-
+   e->acceptProposedAction();
+   e->accept();
    if (idxAt.isValid() && idxAt.parent().isValid()) {
-      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,i18n("Transfer to"),301);
       ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
       m_HoverIdx = idxAt;
    }
 
-   QTreeView::dragEnterEvent(e);
+//    QTreeView::dragEnterEvent(e);
 }
 
 void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
 {
    const QModelIndex& idxAt = indexAt(e->pos());
+   e->acceptProposedAction();
+   e->accept();
    if (m_HoverIdx != idxAt && idxAt.isValid()) {
       if (m_HoverIdx.isValid()) {
          ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
       }
-      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,i18n("Transfer to"),301);
       ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
       m_HoverIdx = idxAt;
    }
-   QTreeView::dragMoveEvent(e);
+//    QTreeView::dragMoveEvent(e);
 }
 
 void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)

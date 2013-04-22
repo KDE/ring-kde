@@ -286,6 +286,24 @@ void CallModel::removeCall(Call* call)
    emit layoutChanged();
 } //removeCall
 
+
+QModelIndex CallModel::getIndex(Call* call)
+{
+   InternalStruct* internal = m_sPrivateCallList_call[call];
+   int idx = m_lInternalModel.indexOf(internal);
+   if (idx != -1) {
+      return index(idx,0);
+   }
+   else {
+      foreach(InternalStruct* str,m_lInternalModel) {
+         idx = str->m_lChildren.indexOf(internal);
+         if (idx != -1)
+            return index(idx,0,index(m_lInternalModel.indexOf(str),0));
+      }
+   }
+   return QModelIndex();
+}
+
 ///Transfer "toTransfer" to "target" and wait to see it it succeeded
 void CallModel::attendedTransfer(Call* toTransfer, Call* target)
 {
@@ -447,12 +465,14 @@ void CallModel::removeConference(Call* call)
  *                                                                           *
  ****************************************************************************/
 
-///This model doesn't support direct write
+///This model doesn't support direct write, only the dragState hack
 bool CallModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
-   Q_UNUSED(index)
-   Q_UNUSED(value)
-   Q_UNUSED(role)
+   if (index.isValid()  && role == Call::Role::DropState) {
+      Call* call = getCall(index);
+      call->setProperty("dropState",value.toInt());
+      emit dataChanged(index,index);
+   }
    return false;
 }
 
@@ -495,7 +515,7 @@ Qt::ItemFlags CallModel::flags( const QModelIndex& index ) const
 {
    if (!index.isValid())
       return 0;
-   return Qt::ItemIsEnabled | ((!index.data(Call::Role::IsConference).toBool())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
+   return Qt::ItemIsEnabled | ((!index.data(Call::Role::IsConference).toBool())?(Qt::ItemIsSelectable|Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled):Qt::ItemIsEnabled);
 }
 
 ///There is always 1 column
@@ -530,6 +550,30 @@ QModelIndex CallModel::index( int row, int column, const QModelIndex& parent) co
       return createIndex(row,column,m_lInternalModel[parent.row()]->m_lChildren[row]);
    }
    return QModelIndex();
+}
+
+QStringList CallModel::mimeTypes() const
+{
+   static QStringList mimes;
+   if (!mimes.size()) {
+      mimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER << MIME_CALLID << "text/html";
+   }
+   return mimes;
+}
+
+QMimeData* CallModel::mimeData(const QModelIndexList &indexes) const
+{
+   QMimeData *mimeData = new QMimeData();
+   foreach (const QModelIndex &index, indexes) {
+      if (index.isValid()) {
+         QString text = data(index, Call::Role::Number).toString();
+         mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
+         mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
+         mimeData->setData(MIME_CALLID  , (qvariant_cast<Call*>(index.data(Call::Role::Object)))->getCallId().toUtf8());
+         return mimeData;
+      }
+   }
+   return mimeData;
 }
 
 

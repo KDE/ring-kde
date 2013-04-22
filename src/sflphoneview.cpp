@@ -46,7 +46,7 @@
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewoverlaytoolbar.h"
 #include "extendedaction.h"
-#include "widgets/calltreeitemdelegate.h"
+#include "delegates/conferencedelegate.h"
 #include "delegates/historydelegate.h"
 #include "delegates/categorizeddelegate.h"
 #include "widgets/tips/dialpadtip.h"
@@ -147,6 +147,26 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
          return true;
       }
    }
+   else if (event->type() == QEvent::Drop) {
+      QDropEvent* e = static_cast<QDropEvent*>(event);
+      const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
+      CallModel::instance()->setData(idxAt,-1,Call::Role::DropState);
+      e->accept();
+      if (!idxAt.isValid()) { //Dropped on empty space
+         if (e->mimeData()->hasFormat(MIME_CALLID)) {
+            QByteArray encodedCallId      = e->mimeData()->data( MIME_CALLID      );
+            kDebug() << "Call dropped on empty space";
+            Call* call =  CallModel::instance()->getCall(encodedCallId);
+            if (SFLPhone::model()->getIndex(call).parent().isValid()) {
+               kDebug() << "Detaching participant";
+               SFLPhone::model()->detachParticipant(SFLPhone::model()->getCall(encodedCallId));
+            }
+            else
+               kDebug() << "The call is not in a conversation (doing nothing)";
+         }
+         return true;
+      }
+   }
    // standard event processing
    return QObject::eventFilter(obj, event);
 } //eventFilter
@@ -161,10 +181,10 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    m_pView->setModel(CallModel::instance());
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
    m_pView->expandAll();
-   auto delegate = new CallTreeItemDelegate(m_pView,palette());
+   auto delegate = new ConferenceDelegate(m_pView,palette());
    delegate->setCallDelegate(new HistoryDelegate(m_pView));
    m_pView->setItemDelegate(delegate);
-   m_pView->installEventFilter(new CallViewEventFilter(this));
+   m_pView->viewport()->installEventFilter(new CallViewEventFilter(this));
 
    //Enable on-canvas messages
    TipCollection::setManager(new TipManager(m_pView));

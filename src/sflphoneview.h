@@ -50,6 +50,7 @@ class CallViewOverlayToolbar;
 class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListener
 {
    Q_OBJECT
+   friend class CallViewEventFilter;
 
 private:
    AccountWizard* wizard     ;

@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "calltreeitemdelegate.h"
+#include "conferencedelegate.h"
 
 //Qt
 #include <QtCore/QSize>
@@ -30,20 +30,19 @@
 #include <KStandardDirs>
 
 //SFLPhone
-#include "categorizedtreeview.h"
-#include "calltreeitem.h"
+#include "../widgets/categorizedtreeview.h"
 #include "sflphone.h"
 #include "../lib/call.h"
 
 ///Constructor
-CallTreeItemDelegate::CallTreeItemDelegate(CategorizedTreeView* widget,QPalette pal)
-      : QStyledItemDelegate(widget) , m_tree(widget) , m_ConferenceDrawer() , m_Pal(pal),
-      m_LeftMargin(0),m_RightMargin(0)
+ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget,QPalette pal)
+      : QStyledItemDelegate(widget) , m_tree(widget) , m_Pal(pal),
+      m_LeftMargin(7),m_RightMargin(7)
 {
 }
 
 ///Guess the size of the item
-QSize CallTreeItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const 
+QSize ConferenceDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const 
 {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    if (index.parent().isValid()) {
@@ -53,7 +52,7 @@ QSize CallTreeItemDelegate::sizeHint(const QStyleOptionViewItem& option, const Q
       sh = m_pCallDelegate->sizeHint(option,index);
    }
    else {
-      sh.setHeight(m_ConferenceDrawer.categoryHeight(index,option,&m_Pal));
+      sh.setHeight(categoryHeight(index,option,&m_Pal));
    }
 
    //Bottom margin
@@ -63,20 +62,18 @@ QSize CallTreeItemDelegate::sizeHint(const QStyleOptionViewItem& option, const Q
 }
 
 ///Generate the rectangle
-QRect CallTreeItemDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const 
+QRect ConferenceDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const 
 {
    QModelIndex i(index),old(index);
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
-   ((CallTreeItemDelegate*)this)->m_SH          = QStyledItemDelegate::sizeHint(option, index);
-   ((CallTreeItemDelegate*)this)->m_LeftMargin  = m_ConferenceDrawer.leftMargin();
-   ((CallTreeItemDelegate*)this)->m_RightMargin = m_ConferenceDrawer.rightMargin();
+   ((ConferenceDelegate*)this)->m_SH          = QStyledItemDelegate::sizeHint(option, index);
    if (!index.parent().isValid() && index.child(0,0).isValid()) {
-      ((QSize)m_SH).rheight() += 2 * m_ConferenceDrawer.leftMargin();
+      ((QSize)m_SH).rheight() += 2 * m_LeftMargin;
    } else {
-      ((QSize)m_SH).rheight() += m_ConferenceDrawer.leftMargin();
+      ((QSize)m_SH).rheight() += m_LeftMargin;
    }
-   ((QSize)m_SH).rwidth() += m_ConferenceDrawer.leftMargin();
+   ((QSize)m_SH).rwidth() += m_LeftMargin;
    //END real sizeHint()
 
    if (i.parent().isValid()) {
@@ -91,8 +88,8 @@ QRect CallTreeItemDelegate::fullCategoryRect(const QStyleOptionViewItem& option,
    QRect r = m_tree->visualRect(i);
 
    // adapt width
-   r.setLeft(m_ConferenceDrawer.leftMargin());
-   r.setWidth(m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin());
+   r.setLeft(m_LeftMargin);
+   r.setWidth(m_tree->viewport()->width() - m_LeftMargin - m_RightMargin);
 
    // adapt height
    const int childCount = m_tree->model()->rowCount(i);
@@ -100,13 +97,13 @@ QRect CallTreeItemDelegate::fullCategoryRect(const QStyleOptionViewItem& option,
       //There is a massive implact on CPU usage to have massive rect
       r.setHeight(r.height() + sizeHint(option,i.child(0,0)).height()*childCount+2*15); //2*15 = margins
    }
-   r.setTop(r.top() + m_ConferenceDrawer.leftMargin());
+   r.setTop(r.top() + m_LeftMargin);
 
    return r;
 } //fullCategoryRect
 
 ///Paint the delegate
-void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
 
@@ -121,7 +118,7 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
       const QRegion cl = painter->clipRegion();
       painter->setClipRect(opt.rect);
       opt.rect = fullCategoryRect(option, index);
-      m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
+      drawCategory(index, 0, opt, painter,&m_Pal);
 
       //Drag bubble
 //       if (itemWidget->isDragged()) {
@@ -184,7 +181,7 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 
       //Box background
       if (index.parent().isValid())
-         m_ConferenceDrawer.drawCategory(index, 0, opt, painter,&m_Pal);
+         drawCategory(index, 0, opt, painter,&m_Pal);
 
       painter->setClipRegion(cl);
       painter->setRenderHint(QPainter::Antialiasing, false);
@@ -246,10 +243,228 @@ void CallTreeItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 
    if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
 //       QStyleOptionViewItem opt5(option);
-//       opt5.rect.setLeft(m_ConferenceDrawer.leftMargin());
-//       opt5.rect.setWidth(m_tree->viewport()->width() - m_ConferenceDrawer.leftMargin() - m_ConferenceDrawer.rightMargin());
-      m_ConferenceDrawer.drawBoxBottom(index, 0, option, painter);
+//       opt5.rect.setLeft(leftMargin());
+//       opt5.rect.setWidth(m_tree->viewport()->width() - leftMargin() - rightMargin());
+      painter->setClipRect(opt.rect);
+      drawBoxBottom(index, 0, option, painter);
    }
    
 //       m_pCallDelegate->paint(painter,option,index);
 } //paint
+
+void ConferenceDelegate::drawCategory(const QModelIndex&  index   ,
+                                 int                 sortRole,
+                                 const QStyleOption& option  ,
+                                 QPainter*           painter ,
+                                 const QPalette* pal) const
+{
+   Q_UNUSED( sortRole )
+   Q_UNUSED( index    )
+   const QPalette* palette   = (pal)?pal:&option.palette  ;
+   painter->setRenderHint(QPainter::Antialiasing);
+
+   const QRect optRect = option.rect;
+
+   //BEGIN: decoration gradient
+   {
+      QPainterPath path(optRect.bottomLeft());
+
+      path.lineTo(QPoint(optRect.topLeft().x(), optRect.topLeft().y() - 3));
+      const QPointF topLeft(optRect.topLeft());
+      QRectF arc(topLeft, QSizeF(4, 4));
+      path.arcTo(arc, 180, -90);
+      path.lineTo(optRect.topRight());
+      path.lineTo(optRect.bottomRight());
+      path.lineTo(optRect.bottomLeft());
+
+      QColor window(palette->window().color());
+      const QColor base(palette->base().color());
+
+      window.setAlphaF(option.state & QStyle::State_Selected?0.9:0.9);
+
+      QColor window2(window);
+      window2.setAlphaF(option.state & QStyle::State_Selected?0.4:0.4);
+
+      QLinearGradient decoGradient1;
+      decoGradient1.setStart(optRect.topLeft());
+      decoGradient1.setFinalStop(optRect.bottomLeft());
+      decoGradient1.setColorAt(0, window);
+      decoGradient1.setColorAt(1, Qt::transparent);
+
+      QLinearGradient decoGradient2;
+      decoGradient2.setStart(optRect.topLeft());
+      decoGradient2.setFinalStop(optRect.topRight());
+      decoGradient2.setColorAt(0, window2);
+      decoGradient2.setColorAt(1, Qt::transparent);
+
+      painter->fillPath(path, decoGradient1);
+      painter->fillRect(optRect, decoGradient2);
+   }
+   //END: decoration gradient
+
+   {
+      QRect newOptRect(optRect);
+
+      newOptRect.translate(1, 1);
+
+      //BEGIN: inner top left corner
+      {
+         painter->save();
+         painter->setPen(palette->base().color());
+         const QPointF topLeft(newOptRect.topLeft());
+         QRectF arc = QRectF(topLeft, QSizeF(4, 4));
+         arc.translate(0.5, 0.5);
+         painter->drawArc(arc, 1440, 1440);
+         painter->restore();
+      }
+      //END: inner top left corner
+
+      //BEGIN: inner left vertical line
+      {
+         QPoint start = newOptRect.topLeft();
+         QPoint verticalGradBottom = newOptRect.topLeft();
+         start.ry() += 3;
+         verticalGradBottom.ry() += newOptRect.height() - 3;
+         QLinearGradient gradient(start, verticalGradBottom);
+         gradient.setColorAt(0, palette->base().color());
+         gradient.setColorAt(1, Qt::transparent);
+         painter->fillRect(QRect(start, QSize(1, newOptRect.height() - 3)), gradient);
+      }
+      //END: inner left vertical line
+
+      //BEGIN: top inner horizontal line
+      {
+         QPoint start = newOptRect.topLeft();
+         QPoint horizontalGradTop = newOptRect.topLeft();
+         start.rx() += 3;
+         horizontalGradTop.rx() += newOptRect.width() - 3;
+         QLinearGradient gradient(start, horizontalGradTop);
+         gradient.setColorAt(0, palette->base().color());
+         gradient.setColorAt(1, Qt::transparent);
+         QSize rectSize = QSize(newOptRect.width() - 30, 1);
+         painter->fillRect(QRect(start, rectSize), gradient);
+      }
+      //END: top inner horizontal line
+   }
+
+   QColor outlineColor = palette->text().color();
+   outlineColor.setAlphaF(0.35);
+
+   //BEGIN: top left corner
+   {
+      painter->save();
+      painter->setPen(outlineColor);
+      QRectF arc;
+      const QPointF topLeft(optRect.topLeft());
+      arc = QRectF(topLeft, QSizeF(4, 4));
+      arc.translate(0.5, 0.5);
+      painter->drawArc(arc, 1440, 1440);
+      painter->restore();
+   }
+   //END: top left corner
+
+   //BEGIN: top right corner
+   {
+      painter->save();
+      painter->setPen(outlineColor);
+      QPointF topRight(optRect.topRight());
+      topRight.rx() -= 3;
+      QRectF arc = QRectF(topRight, QSizeF(4, 4));
+      arc.translate(-0.5, 0.5);
+      painter->drawArc(arc, 0, 1440);
+      painter->restore();
+   }
+   //END: top right corner
+
+   //BEGIN: left vertical line
+   {
+      QPoint start = optRect.topLeft();
+      QPoint verticalGradBottom = optRect.topLeft();
+      start.ry() += 3;
+      verticalGradBottom.ry() += optRect.height() - 3 + 200;
+      painter->fillRect(QRect(start, QSize(1, optRect.height() - 21)), outlineColor);
+   }
+   //END: left vertical line
+
+   //BEGIN: right vertical line
+   {
+      QPoint start = optRect.topRight();
+      QPoint verticalGradBottom = optRect.topRight();
+      start.ry() += 3;
+      verticalGradBottom.ry() += optRect.height() - 3 + 200;
+      painter->fillRect(QRect(start, QSize(1, optRect.height() - 21)), outlineColor);
+   }
+   //END: right vertical line
+
+   //BEGIN: horizontal line
+   {
+      QPoint start = optRect.topLeft();
+      QPoint horizontalGradTop = optRect.topLeft();
+      start.rx() += 3;
+      horizontalGradTop.rx() += optRect.width() - 3;
+      QLinearGradient gradient(start, horizontalGradTop);
+      gradient.setColorAt(0, outlineColor);
+      gradient.setColorAt(1, outlineColor);
+      QSize rectSize = QSize(optRect.width() - 6, 1);
+      painter->fillRect(QRect(start, rectSize), gradient);
+   }
+   //END: horizontal line
+} //drawCategory
+
+///Draw the bottom border of the box
+void ConferenceDelegate::drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal) const {
+   Q_UNUSED(index)
+   Q_UNUSED(sortRole)
+   const QPalette* palette = (pal)?pal:&option.palette  ;
+   painter->setRenderHint(QPainter::Antialiasing);
+   QColor outlineColor = palette->text().color();
+   outlineColor.setAlphaF(0.35);
+   painter->setPen(outlineColor);
+
+   //BEGIN: bottom horizontal line
+   {
+   QPoint bl = option.rect.bottomLeft();
+   bl.setY(bl.y());
+   bl.setX(m_LeftMargin+3);
+
+   painter->fillRect(QRect(bl, QSize(option.rect.width()+4,1)), outlineColor);
+   }
+   //END: bottom horizontal line
+
+   //BEGIN: bottom right corner
+   {
+      QRectF arc;
+      QPointF br(option.rect.bottomRight());
+      br.setY(br.y()-4);
+      br.setX(br.x()-12);
+      arc = QRectF(br, QSizeF(4, 4));
+      arc.translate(0.5, 0.5);
+      painter->drawArc(arc, 4320, 1440);
+   }
+   //END: bottom right corner
+
+   //BEGIN: bottom left corner
+   {
+      QRectF arc;
+      QPointF br(option.rect.bottomRight());
+      br.setY(br.y()-4);
+      br.setX(m_LeftMargin);
+      arc = QRectF(br, QSizeF(4, 4));
+      arc.translate(0.5, 0.5);
+      painter->drawArc(arc, 1440*2, 1440);
+   }
+   //END: bottom left corner
+} //drawBoxBottom
+
+///Return the height of the conference box
+int ConferenceDelegate::categoryHeight(const QModelIndex &index, const QStyleOption &option,const QPalette* pal) const
+{
+   Q_UNUSED( index  );
+   Q_UNUSED( option );
+   Q_UNUSED( pal    );
+   QFont font(QApplication::font());
+   font.setBold(true);
+   const QFontMetrics fontMetrics = QFontMetrics(font);
+
+   return fontMetrics.height() + 2 + 16 /* vertical spacing */;
+}

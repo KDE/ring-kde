@@ -96,12 +96,9 @@ public:
     virtual QObject* getSelf() = 0;
     char dropState() {return m_DropState;}
     void setDropState(const char state) {m_DropState = state;}
-    QString dropString() {return m_DropString;}
-    void setDropString(const QString& state) {m_DropString = state;}
 private:
     HistoryTreeBackend::Type m_Type3;
     char m_DropState;
-    QString m_DropString;
 };
 
 /**
@@ -155,7 +152,6 @@ public:
       PhotoPtr      = 118,
       State         = 119,
       DropState     = 300,
-      DropString    = 301,
    };
 
    //Constructors & Destructors

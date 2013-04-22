@@ -102,10 +102,6 @@ bool ContactByNameProxyModel::setData( const QModelIndex& index, const QVariant 
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
       }
-      else if (role == Call::Role::DropString) {
-         modelItem->setDropString(value.toString());
-         emit dataChanged(index, index);
-      }
    }
    return false;
 }
@@ -137,8 +133,6 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getPreferredEmail());
          case ContactBackend::Role::DropState:
             return QVariant(modelItem->dropState());
-         case ContactBackend::Role::DropString:
-            return QVariant(modelItem->dropString());
          case ContactBackend::Role::FormattedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();

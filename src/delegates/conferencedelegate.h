@@ -21,14 +21,13 @@
 #include <QtGui/QStyledItemDelegate>
 
 //SFLPhone
-#include "conferencebox.h"
 class CategorizedTreeView;
 
-///CallTreeItemDelegate: Delegates for CallTreeItem
-class CallTreeItemDelegate : public QStyledItemDelegate
+///ConferenceDelegate: Delegates for CallTreeItem
+class ConferenceDelegate : public QStyledItemDelegate
 {
 public:
-   CallTreeItemDelegate(CategorizedTreeView* widget,QPalette pal);
+   ConferenceDelegate(CategorizedTreeView* widget,QPalette pal);
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
@@ -38,12 +37,15 @@ public:
 
 private:
    CategorizedTreeView* m_tree      ;
-   ConferenceBox  m_ConferenceDrawer;
    QSize          m_SH              ;
    int            m_LeftMargin      ;
    int            m_RightMargin     ;
    QPalette       m_Pal             ;
    QStyledItemDelegate* m_pCallDelegate;
+
+   void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal = nullptr) const;
+   int categoryHeight(const QModelIndex &index, const QStyleOption &option,const QPalette* pal = nullptr) const;
+   void drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal = nullptr) const;
 };
 
 #endif

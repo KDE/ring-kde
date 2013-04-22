@@ -37,7 +37,9 @@ public:
 
    //Setters
    void setHoverState(bool hover);
-   void setPixmap(QImage* img);
+   void setButtons(QMap<QString,QImage*>* buttons) {
+      m_lpButtons = buttons;
+   }
    virtual void paintEvent(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index);
 
 private:
@@ -46,10 +48,10 @@ private:
    QColor             m_CurrentColor  ;
    QPen               m_Pen           ;
    char               m_CurrentState  ;
-   QImage*            m_pImg          ;
    bool               m_Init          ;
    char               m_Reverse       ;
    QList<QModelIndex> m_lActiveIndexes;
+   QMap<QString,QImage*>* m_lpButtons;
 
 private Q_SLOTS:
    void changeVisibility();
