@@ -214,7 +214,7 @@ Call* CallModel::addCall(Call* call, Call* parent)
       emit callAdded(call,parent);
    const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
    emit dataChanged(idx, idx);
-   connect(call,SIGNAL(changed(Call*)),this,SLOT(callChanged(Call*)));
+   connect(call,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
    emit layoutChanged();
    return call;
 } //addCall
@@ -360,7 +360,7 @@ Call* CallModel::addConference(const QString & confID)
       const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
       emit dataChanged(idx, idx);
       emit layoutChanged();
-      connect(newConf,SIGNAL(changed(Call*)),this,SLOT(callChanged(Call*)));
+      connect(newConf,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
    }
 
    return newConf;
@@ -369,6 +369,7 @@ Call* CallModel::addConference(const QString & confID)
 ///Join two call to create a conference, the conference will be created later (see addConference)
 bool CallModel::createConferenceFromCall(Call* call1, Call* call2)
 {
+  if (!call1 || !call2) return false;
   qDebug() << "Joining call: " << call1->getCallId() << " and " << call2->getCallId();
   Q_NOREPLY CallManagerInterfaceSingleton::getInstance().joinParticipant(call1->getCallId(),call2->getCallId());
   return true;

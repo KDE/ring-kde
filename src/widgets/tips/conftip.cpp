@@ -56,7 +56,7 @@ void ConfTip::paintDecorations(QPainter& p, const QRect& textRect)
       m_pDnDR = new QSvgRenderer(m_DragAndDrop);
    }
    m_pR->render(&p,QRect(m_Padding, m_Padding ,75*0.694923911334,75));
-   m_pDnDR->render(&p,QRect(m_Padding, textRect.height()+textRect.y()+m_Padding ,m_CurrentSize.width()-2*m_Padding,75));
+   m_pDnDR->render(&p,QRect(m_Padding, textRect.height()+textRect.y()+m_Padding ,m_CurrentRect.width()-2*m_Padding,75));
 }
 
 //Show the text on the right side of the screen

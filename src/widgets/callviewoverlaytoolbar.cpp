@@ -35,8 +35,9 @@
 #include "sflphone.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
+#include <lib/call.h>
 
-const bool visibility[8][13] = {              /*ROW = BUTTONS   COLS=STATE*/
+const bool visibility[9][13] = {              /*ROW = BUTTONS   COLS=STATE*/
             /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
  /*PICKUP   */ { true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    },
  /*HOLD     */ { false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    },
@@ -45,11 +46,12 @@ const bool visibility[8][13] = {              /*ROW = BUTTONS   COLS=STATE*/
  /*MUTE     */ { false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    },
  /*TRANSFER */ { false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    },
  /*RECORD   */ { false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     },
- /*REFUSE   */ { true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }
+ /*REFUSE   */ { true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    },
+ /*ACCEPT   */ { false  , false,  false,  true , false, false, false,   false,     false,    false, false,  false,      false    },
 };
 
 ///Constructor
-CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender(0),m_pLeftRender(0)
+CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(parent),m_pRightRender(0),m_pLeftRender(0),m_pParent(parent)
 {
    m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_right_corner.svg") );
    m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_left_corner.svg" ) );
@@ -64,6 +66,7 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent
    m_pTransfer = createButton( SFLPhone::app()->getTransferAction() );
    m_pRecord   = createButton( SFLPhone::app()->getRecordAction()   );
    m_pRefuse   = createButton( SFLPhone::app()->getRefuseAction()   );
+   m_pAccept   = createButton( SFLPhone::app()->getAcceptAction()   );
 
    m_hButtons[ ActionButton::HOLD     ] = m_pHold    ;
    m_hButtons[ ActionButton::UNHOLD   ] = m_pUnhold  ;
@@ -73,6 +76,7 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent
    m_hButtons[ ActionButton::TRANSFER ] = m_pTransfer;
    m_hButtons[ ActionButton::RECORD   ] = m_pRecord  ;
    m_hButtons[ ActionButton::REFUSE   ] = m_pRefuse  ;
+   m_hButtons[ ActionButton::ACCEPT   ] = m_pAccept  ;
 
    layout->addWidget( m_pHangup   );
    layout->addWidget( m_pTransfer );
@@ -82,6 +86,7 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QWidget* parent) : QWidget(parent
    layout->addWidget( m_pHold     );
    layout->addWidget( m_pPickup   );
    layout->addWidget( m_pRefuse   );
+   layout->addWidget( m_pAccept   );
 
    setMinimumSize(100,56);
    if (parent)
@@ -135,16 +140,37 @@ ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
 } //createButton
 
 ///Hide or show the toolbar and select visible actions
-void CallViewOverlayToolbar::updateState(call_state state)
+void CallViewOverlayToolbar::updateState()
 {
-   m_hButtons[ ActionButton::HOLD     ]->setVisible(visibility[ ActionButton::HOLD     ][state]);
-   m_hButtons[ ActionButton::UNHOLD   ]->setVisible(visibility[ ActionButton::UNHOLD   ][state]);
-   m_hButtons[ ActionButton::PICKUP   ]->setVisible(visibility[ ActionButton::PICKUP   ][state]);
-   m_hButtons[ ActionButton::HANGUP   ]->setVisible(visibility[ ActionButton::HANGUP   ][state]);
-   m_hButtons[ ActionButton::MUTE     ]->setVisible(visibility[ ActionButton::MUTE     ][state]);
-   m_hButtons[ ActionButton::TRANSFER ]->setVisible(visibility[ ActionButton::TRANSFER ][state]);
-   m_hButtons[ ActionButton::RECORD   ]->setVisible(visibility[ ActionButton::RECORD   ][state]);
-   m_hButtons[ ActionButton::REFUSE   ]->setVisible(visibility[ ActionButton::REFUSE   ][state]);
+   const QModelIndex& index = m_pParent->selectionModel()->currentIndex();
+   if (index.isValid() && m_pParent->selectionModel()->hasSelection()) {
+      call_state state = (call_state) index.data(Call::Role::State).toInt();
+      setVisible(true);
+      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
+      manager->setBottomMargin(60);
+      m_hButtons[ ActionButton::HOLD     ]->setVisible(visibility[ ActionButton::HOLD     ][state]);
+      m_hButtons[ ActionButton::UNHOLD   ]->setVisible(visibility[ ActionButton::UNHOLD   ][state]);
+      m_hButtons[ ActionButton::PICKUP   ]->setVisible(visibility[ ActionButton::PICKUP   ][state]);
+      m_hButtons[ ActionButton::HANGUP   ]->setVisible(visibility[ ActionButton::HANGUP   ][state]);
+      m_hButtons[ ActionButton::MUTE     ]->setVisible(visibility[ ActionButton::MUTE     ][state]);
+      m_hButtons[ ActionButton::TRANSFER ]->setVisible(visibility[ ActionButton::TRANSFER ][state]);
+      m_hButtons[ ActionButton::RECORD   ]->setVisible(visibility[ ActionButton::RECORD   ][state]);
+      m_hButtons[ ActionButton::REFUSE   ]->setVisible(visibility[ ActionButton::REFUSE   ][state]);
+      m_hButtons[ ActionButton::ACCEPT   ]->setVisible(visibility[ ActionButton::ACCEPT   ][state]);
+   }
+   else {
+      setVisible(false);
+      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
+      manager->setBottomMargin(0);
+   }
+   //Now set the top margin, this doesn't really belong anywhere, so why not here
+   int rows = CallModel::instance()->rowCount(QModelIndex());
+   QModelIndex last = CallModel::instance()->index(rows-1,0);
+   if (CallModel::instance()->rowCount(last) > 0)
+      last = CallModel::instance()->index(CallModel::instance()->rowCount(last)-1,0,last);
+   QRect topMargin =  m_pParent->visualRect(last);
+   TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
+   manager->setTopMargin(topMargin.y()+topMargin.height());
 } //updateState
 
 void CallViewOverlayToolbar::hideEvent(QHideEvent *)

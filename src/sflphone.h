@@ -155,6 +155,7 @@ public:
    ExtendedAction* getUnholdAction  () { return action_unhold;   }
    ExtendedAction* getTransferAction() { return action_transfer; }
    ExtendedAction* getPickupAction  () { return action_pickup;   }
+   ExtendedAction* getAcceptAction  () { return action_accept;   }
 
 private Q_SLOTS:
    void on_m_pView_statusMessageChangeAsked      ( const QString& message               );

@@ -101,6 +101,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    action_hangup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/hangup_grayscale.png"   ));
    action_unhold  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/unhold_grayscale.png"   ));
    action_pickup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/pickup_grayscale.png"   ));
+   action_accept  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/pickup_grayscale.png"   ));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );
@@ -110,6 +111,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    action_unhold  ->setText ( i18n( "Unhold"   ) );
    action_pickup  ->setText ( i18n( "Pickup"   ) );
    action_mute    ->setText ( i18nc("Mute the current audio device", "Mute"     ) );
+   action_accept  ->setText ( i18n("Dial"      ) );
    
    action_mute->setCheckable(true);
 

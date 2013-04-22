@@ -274,7 +274,9 @@ QVariant HistoryModel::data( const QModelIndex& index, int role) const
          return QVariant(modelItem->dropState());
       else if (role == Call::Role::DropString)
          return QVariant(modelItem->dropString());
-      else if (m_lCategoryCounter.size() >= index.parent().row() && m_lCategoryCounter[index.parent().row()])
+      else if (m_lCategoryCounter.size() >= index.parent().row() 
+         && m_lCategoryCounter[index.parent().row()] 
+         && m_lCategoryCounter[index.parent().row()]->m_lChilds.size() >= index.row())
          return m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getRoleData((Call::Role)role);
       break;
    case HistoryTreeBackend::Type::NUMBER:

@@ -94,3 +94,10 @@ void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)
 {
    setItemDelegate(delegate);
 }
+
+
+void CategorizedTreeView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+   const QModelIndex& idxAt = indexAt(event->pos());
+   emit itemDoubleClicked(idxAt);
+}

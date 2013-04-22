@@ -43,6 +43,9 @@ static const char* icnPath[4] = {
 /* NONE     */ ""                   ,
 };
 
+///Constant
+const char * callStateIcons[12] = {ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE};
+
 HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr)
 {
 }
@@ -51,13 +54,27 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    QFontMetrics fm(QApplication::font());
    int lineHeight = fm.height()+2;
-   return QSize(sh.rwidth(),(3*lineHeight)<52?52:(3*lineHeight));
+   int rowCount = 0;
+   int currentState = index.data(Call::Role::State).toInt();
+   int minimumRowHeight = (currentState == CALL_STATE_OVER)?48:(ConfigurationSkeleton::limitMinimumRowHeight()?ConfigurationSkeleton::minimumRowHeight():0);
+   if (currentState == CALL_STATE_OVER)
+      rowCount = 3;
+   else {
+      rowCount = ConfigurationSkeleton::displayCallPeer()
+      + ConfigurationSkeleton::displayCallNumber       ()
+      + ConfigurationSkeleton::displayCallSecure       ()
+      + ConfigurationSkeleton::displayCallCodec        ()
+      + ConfigurationSkeleton::displayCallOrganisation ()
+      + ConfigurationSkeleton::displayCallDepartment   ()
+      + ConfigurationSkeleton::displayCallEmail        ();
+   }
+   return QSize(sh.rwidth(),((rowCount*lineHeight)<minimumRowHeight?minimumRowHeight:(rowCount*lineHeight)) + 4);
 }
 
 void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
-   
+   int iconHeight = option.rect.height() -4;
    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
       QStyleOptionViewItem opt2 = option;
       QPalette pal = option.palette;
@@ -68,22 +85,15 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   Contact* ct = nullptr;
    QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
    QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
    Call* call  = nullptr;
    if (obj)
       call = qobject_cast<Call*>(obj);
-   if (call) {
-      ct = call->getContact();
-      //TODO don't do that
-   }
-   else if (static_cast<HistoryTreeBackend*>(index.internalPointer())->type3() == HistoryTreeBackend::BOOKMARK) {
-      //TODO nothing?
-   }
+   call_state currentState = (call_state) index.data(Call::Role::State).toInt();
    QPixmap pxm;
    if (pxmPtr) {
-      pxm = (*pxmPtr);
+      pxm = (*pxmPtr).scaledToWidth(iconHeight);
       QRect pxRect = pxm.rect();
       QBitmap mask(pxRect.size());
       QPainter customPainter(&mask);
@@ -95,9 +105,12 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       pxm.setMask(mask);
    }
    else {
-      pxm = QPixmap(KIcon("user-identity").pixmap(QSize(48,48)));
+      if (currentState == CALL_STATE_OVER)
+         pxm = QPixmap(KIcon("user-identity").pixmap(QSize(iconHeight,iconHeight)));
+      else
+         pxm = QPixmap(callStateIcons[currentState]).scaledToWidth(iconHeight);
    }
-   if (pxmPtr)
+
    if (index.data(Call::Role::HasRecording).toBool() && call && QFile::exists(call->getRecordingPath())) {
       QPainter painter(&pxm);
       QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
@@ -111,25 +124,72 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    else if (index.data(Call::Role::HistoryState).toInt() != history_state::NONE && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
-      QPixmap status(icnPath[index.data(Call::Role::HistoryState).toInt()]);
+      QPixmap status((currentState==CALL_STATE_OVER)?icnPath[index.data(Call::Role::HistoryState).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
    }
-   painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-48)/2,pxm);
+   painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-iconHeight)/2,pxm);
 
    QFont font = painter->font();
    QFontMetrics fm(font);
    int currentHeight = option.rect.y()+fm.height()+2;
-   font.setBold(true);
-   painter->setFont(font);
-   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Qt::DisplayRole).toString());
-   font.setBold(false);
-   painter->setFont(font);
-   currentHeight +=fm.height();
-   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Call::Role::FormattedDate).toString());
-   currentHeight +=fm.height();
-   painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Call::Role::Number).toString());
-   currentHeight +=fm.height();
+   if (currentState == CALL_STATE_OVER) { //History/Bookmarks
+      font.setBold(true);
+      painter->setFont(font);
+      painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
+      font.setBold(false);
+      painter->setFont(font);
+      currentHeight +=fm.height();
+      painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::FormattedDate).toString());
+      currentHeight +=fm.height();
+      painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Number).toString());
+      currentHeight +=fm.height();
+   }
+   else { //Active calls
+      if (ConfigurationSkeleton::displayCallIcon()) {
+//          m_pIconL = new QLabel(" ");
+//          mainLayout->addWidget(m_pIconL);
+      }
+
+      if(ConfigurationSkeleton::displayCallPeer()) {
+         font.setBold(true);
+         painter->setFont(font);
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
+         font.setBold(false);
+         painter->setFont(font);
+         currentHeight +=fm.height();
+      }
+
+      if (ConfigurationSkeleton::displayCallNumber()) {
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Number).toString());
+         currentHeight +=fm.height();
+      }
+
+      if (ConfigurationSkeleton::displayCallSecure()) {
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Security).toString());
+         currentHeight +=fm.height();
+      }
+
+      if (ConfigurationSkeleton::displayCallCodec()) {
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Codec).toString());
+         currentHeight +=fm.height();
+      }
+
+      if (ConfigurationSkeleton::displayCallOrganisation()) {
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Organisation).toString());
+         currentHeight +=fm.height();
+      }
+
+      if (ConfigurationSkeleton::displayCallDepartment()) {
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Department).toString());
+         currentHeight +=fm.height();
+      }
+
+      if (ConfigurationSkeleton::displayCallEmail()) {
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Email).toString());
+         currentHeight +=fm.height();
+      }
+   }
 
    if (!index.parent().isValid()){
       QString length = index.data(Call::Role::Length).toString();

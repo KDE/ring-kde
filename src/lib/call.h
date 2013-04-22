@@ -153,6 +153,7 @@ public:
       IsConference  = 116,
       Object        = 117,
       PhotoPtr      = 118,
+      State         = 119,
       DropState     = 300,
       DropString    = 301,
    };

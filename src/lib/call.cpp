@@ -1019,6 +1019,8 @@ QVariant Call::getRoleData(Call::Role role) const
       case Qt::DisplayRole:
          if (isConference())
             return "Conference";
+         else if (getCurrentState() == CALL_STATE_DIALING)
+            return m_CallNumber;
          else if (m_PeerName.isEmpty())
             return ct?ct->getFormattedName():getPeerPhoneNumber();
          else
@@ -1077,6 +1079,9 @@ QVariant Call::getRoleData(Call::Role role) const
          break;
       case Call::Role::PhotoPtr:
          return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
+         break;
+      case Call::Role::State:
+         return getCurrentState();
          break;
       case Call::Role::DropState:
          return QVariant();

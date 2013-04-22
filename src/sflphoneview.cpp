@@ -95,7 +95,7 @@ public:
          m_Yellow.setRed( ((int)m_Yellow.red()   +20));
       }
    }
-   
+
    virtual QVariant getColor(const Account* a) {
       if(a->getAccountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED || !a->isEnabled())
          return m_Pal.color(QPalette::Base);
@@ -122,6 +122,35 @@ private:
    QColor   m_Red;
 };
 
+class CallViewEventFilter : public QObject
+{
+public:
+   explicit CallViewEventFilter(SFLPhoneView* parent) : QObject(parent) {
+      m_pParent = parent;
+   }
+
+protected:
+   bool eventFilter(QObject *obj, QEvent *event);
+
+private:
+   SFLPhoneView* m_pParent;
+
+};
+
+///Forward keypresses to the filter line edit
+bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
+{
+   if (event->type() == QEvent::KeyPress) {
+      int key = ((QKeyEvent*)(event))->key();
+      if (key != Qt::Key_Left && key != Qt::Key_Right && key != Qt::Key_Down && key != Qt::Key_Up) {
+         m_pParent->keyPressEvent((QKeyEvent*)event);
+         return true;
+      }
+   }
+   // standard event processing
+   return QObject::eventFilter(obj, event);
+} //eventFilter
+
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
    : QWidget(parent), wizard(0)
@@ -135,6 +164,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    auto delegate = new CallTreeItemDelegate(m_pView,palette());
    delegate->setCallDelegate(new HistoryDelegate(m_pView));
    m_pView->setItemDelegate(delegate);
+   m_pView->installEventFilter(new CallViewEventFilter(this));
 
    //Enable on-canvas messages
    TipCollection::setManager(new TipManager(m_pView));
@@ -150,18 +180,19 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    m_pMessageBoxW->setVisible(false);
 
-   //                SENDER                             SIGNAL                             RECEIVER                                 SLOT                                  /
-   /**/connect(SFLPhone::model()          , SIGNAL(incomingCall(Call*))                   , this                       , SLOT(on1_incomingCall(Call*))                    );
-   /**/connect(SFLPhone::model()          , SIGNAL(voiceMailNotify(QString,int))          , this                       , SLOT(on1_voiceMailNotify(QString,int))           );
-//    /**/connect(callView                   , SIGNAL(itemChanged(Call*))                    , this                       , SLOT(updateWindowCallState())                    );
-   /**///connect(SFLPhone::model()          , SIGNAL(volumeChanged(const QString &, double)), this                     , SLOT(on1_volumeChanged(const QString &, double) ));
-   /**/connect(SFLPhone::model()          , SIGNAL(callStateChanged(Call*))               , this                       , SLOT(updateWindowCallState())                    );
-   /**/connect(AccountList::getInstance() , SIGNAL(accountStateChanged(Account*,QString)) , this                       , SLOT(updateStatusMessage())                      );
-   /**/connect(AccountList::getInstance() , SIGNAL(accountListUpdated())                  , this                       , SLOT(updateStatusMessage())                      );
-   /**/connect(AccountList::getInstance() , SIGNAL(accountListUpdated())                  , this                       , SLOT(updateWindowCallState())                    );
-   /**/connect(m_pSendMessageLE           , SIGNAL(returnPressed())                       , this                       , SLOT(sendMessage())                              );
-   /**/connect(m_pSendMessagePB           , SIGNAL(clicked())                             , this                       , SLOT(sendMessage())                              );
-   /*                                                                                                                                                                     */
+   //                SENDER                             SIGNAL                             RECEIVER                SLOT                                  /
+   /**/connect(SFLPhone::model()          , SIGNAL(incomingCall(Call*))                   , this      , SLOT(on1_incomingCall(Call*))                    );
+   /**/connect(SFLPhone::model()          , SIGNAL(voiceMailNotify(QString,int))          , this      , SLOT(on1_voiceMailNotify(QString,int))           );
+//    /**/connect(callView                   , SIGNAL(itemChanged(Call*))                    , this      , SLOT(updateWindowCallState())                    );
+   /**///connect(SFLPhone::model()          , SIGNAL(volumeChanged(const QString &, double)), this    , SLOT(on1_volumeChanged(const QString &, double) ));
+   /**/connect(SFLPhone::model()          , SIGNAL(callStateChanged(Call*))               , this      , SLOT(updateWindowCallState())                    );
+   /**/connect(AccountList::getInstance() , SIGNAL(accountStateChanged(Account*,QString)) , this      , SLOT(updateStatusMessage())                      );
+   /**/connect(AccountList::getInstance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateStatusMessage())                      );
+   /**/connect(AccountList::getInstance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateWindowCallState())                    );
+   /**/connect(m_pSendMessageLE           , SIGNAL(returnPressed())                       , this      , SLOT(sendMessage())                              );
+   /**/connect(m_pSendMessagePB           , SIGNAL(clicked())                             , this      , SLOT(sendMessage())                              );
+   /**/connect(m_pView                    , SIGNAL(itemDoubleClicked(QModelIndex))        , this      , SLOT(enter())                                    );
+   /*                                                                                                                                                    */
 
    AccountList::getInstance()->updateAccounts();
 
@@ -169,7 +200,10 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    MacroModel::addListener(this);
 
 
-   m_pCanvasToolbar   = new CallViewOverlayToolbar(m_pView);
+   m_pCanvasToolbar = new CallViewOverlayToolbar(m_pView);
+   connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), m_pCanvasToolbar, SLOT(updateState()));
+   connect(SFLPhone::model(), SIGNAL(callStateChanged(Call*)), m_pCanvasToolbar, SLOT(updateState()));
+   connect(SFLPhone::model(), SIGNAL(layoutChanged()), m_pCanvasToolbar, SLOT(updateState()));
 }
 
 ///Destructor
@@ -281,7 +315,6 @@ void SFLPhoneView::typeString(QString str)
    if(!currentCall && candidate) {
       candidate->appendText(str);
    }
-
    if (!candidate) {
       candidate = SFLPhone::model()->addDialingCall();
       if (candidate)

@@ -41,6 +41,7 @@ class CategorizedTreeView : public QTreeView
     virtual void dragEnterEvent   ( QDragEnterEvent   * e );
     virtual void dragMoveEvent    ( QDragMoveEvent    * e );
     virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event);
     
   private:
     QStyledItemDelegate* m_pDelegate;
@@ -48,6 +49,7 @@ class CategorizedTreeView : public QTreeView
     
   Q_SIGNALS:
      void contextMenuRequest(QModelIndex);
+     void itemDoubleClicked(QModelIndex);
 };
 
 #endif

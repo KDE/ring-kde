@@ -20,6 +20,7 @@
 
 //Qt
 #include <QtGui/QToolButton>
+#include <QtGui/QItemSelectionModel>
 
 //Base
 #include <QtGui/QWidget>
@@ -29,6 +30,7 @@
 //Qt
 class QSvgRenderer;
 class QToolButton;
+class QTreeView;
 
 //KDE
 
@@ -55,16 +57,18 @@ enum ActionButton {
    TRANSFER = 5,
    RECORD   = 6,
    REFUSE   = 7,
+   ACCEPT   = 8,
 };
 
 class CallViewOverlayToolbar : public QWidget
 {
    Q_OBJECT
 public:
-   explicit CallViewOverlayToolbar(QWidget* parent = nullptr);
+   explicit CallViewOverlayToolbar(QTreeView* parent = nullptr);
 
 private:
    //Attributes
+   QTreeView*    m_pParent;
    QSvgRenderer* m_pRightRender;
    QSvgRenderer* m_pLeftRender ;
 
@@ -77,6 +81,7 @@ private:
    ObserverToolButton* m_pTransfer;
    ObserverToolButton* m_pRecord  ;
    ObserverToolButton* m_pRefuse  ;
+   ObserverToolButton* m_pAccept  ;
 
    QHash<int,ObserverToolButton*> m_hButtons;
 
@@ -84,7 +89,7 @@ private:
    ObserverToolButton* createButton(ExtendedAction* action);
 
 public Q_SLOTS:
-   void updateState(call_state state);
+   void updateState();
 
 protected:
    void resizeEvent( QResizeEvent* event);
