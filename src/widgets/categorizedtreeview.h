@@ -29,27 +29,36 @@ class QStyledItemDelegate;
 class CategorizedTreeView : public QTreeView
 {
   Q_OBJECT
-  friend class KateColorTreeDelegate;
 
   public:
-    explicit CategorizedTreeView(QWidget *parent = nullptr);
-    void setDelegate(QStyledItemDelegate* delegate);
+   enum ViewType {
+      Other,
+      Contact,
+      History,
+      BookMark,
+      Call
+   };
+   explicit CategorizedTreeView(QWidget *parent = nullptr);
+   void setDelegate(QStyledItemDelegate* delegate);
+   void setViewType(ViewType type) {m_Type = type;}
     
   protected:
-    virtual void contextMenuEvent ( QContextMenuEvent * e );
-    virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
-    virtual void dragEnterEvent   ( QDragEnterEvent   * e );
-    virtual void dragMoveEvent    ( QDragMoveEvent    * e );
-    virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
-    virtual void mouseDoubleClickEvent(QMouseEvent* event);
+   virtual void contextMenuEvent ( QContextMenuEvent * e );
+   virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
+   virtual void dragEnterEvent   ( QDragEnterEvent   * e );
+   virtual void dragMoveEvent    ( QDragMoveEvent    * e );
+   virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
+   virtual void mouseDoubleClickEvent(QMouseEvent* event);
+   virtual void startDrag ( Qt::DropActions supportedActions );
     
   private:
-    QStyledItemDelegate* m_pDelegate;
-    QModelIndex m_HoverIdx;
+   QStyledItemDelegate* m_pDelegate;
+   QModelIndex m_HoverIdx;
+   ViewType m_Type;
     
   Q_SIGNALS:
-     void contextMenuRequest(QModelIndex);
-     void itemDoubleClicked(QModelIndex);
+   void contextMenuRequest(QModelIndex);
+   void itemDoubleClicked(QModelIndex);
 };
 
 #endif

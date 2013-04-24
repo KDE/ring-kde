@@ -27,7 +27,7 @@ class ConfTip;
 class TipCollection {
 public:
    //Tutorial mode
-   static DialPadTip* dialPad    ();
+   static Tip* dialPad    ();
    static Tip*        conference ();
    static Tip*        dragAndDrop();
    
@@ -35,6 +35,7 @@ public:
    static Tip*        endCall();
    static Tip*        endBusy();
    static Tip*        rigging();
+   static Tip*        removeConference();
    
    //Account related
    static Tip*        connectionLost();
@@ -47,13 +48,14 @@ public:
    static void setManager(TipManager* manager);
 private:
    //Tutorial mode
-   static DialPadTip* m_spDialPad;
+   static Tip* m_spDialPad;
    static ConfTip*    m_spConf   ;
    
    //Call related
    static Tip*        m_spEndCall;
    static Tip*        m_spEndBusy;
    static Tip*        m_spRigging;
+   static Tip*        m_spRemoveConference;
    
    //Account related
    static ConnectionLostTip* m_spConnectionLost;

@@ -126,7 +126,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          m_pParent->setIndexWidget(index,button);
       }
    }
-   else if (index.data(Call::Role::HistoryState).toInt() != history_state::NONE && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if ((index.data(Call::Role::HistoryState).toInt() != history_state::NONE || currentState != CALL_STATE_OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
       QPixmap status((currentState==CALL_STATE_OVER)?icnPath[index.data(Call::Role::HistoryState).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));
@@ -205,12 +205,13 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    static QMap<QString,QImage*> historyMap,callMap;
    //BEGIN overlay path
    if (index.data(Call::Role::DropState).toInt() != 0) {
-      if (!m_pDelegatedropoverlay) {
+      /*static*/ if (!m_pDelegatedropoverlay) {
          ((HistoryDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         callMap.insert(i18n("Conference")   ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
+         callMap.insert(i18n("Conference")   ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/confBlackWhite.png")));
          callMap.insert(i18n("Transfer")     ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
          historyMap.insert(i18n("Transfer")  ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
       }
+
       if (currentState == CALL_STATE_OVER)
          m_pDelegatedropoverlay->setButtons(&historyMap);
       else

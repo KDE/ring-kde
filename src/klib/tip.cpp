@@ -82,8 +82,10 @@ QSize Tip::reload(const QRect& availableSize,bool force)
          p.drawRoundedRect(QRect(0,0,m_CurrentRect.width(),m_CurrentRect.height()),10,10);
       }
 
-      //Draw the wrapped text in textRectS
-      p.drawText(textRect,Qt::TextWordWrap|Qt::AlignJustify,m_OriginalText);
+      if (hasText()) {
+         //Draw the wrapped text in textRectS
+         p.drawText(textRect,Qt::TextWordWrap|Qt::AlignJustify,m_OriginalText);
+      }
 
 
       //If the widget is subclassed, this would allow decorations to be added like images

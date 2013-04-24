@@ -71,9 +71,9 @@ CallModel::CallModel() : QAbstractItemModel(nullptr)
       /**/connect(&callManager, SIGNAL(incomingCall(QString,QString,QString))   , this , SLOT(slotIncomingCall(QString,QString))       );
       /**/connect(&callManager, SIGNAL(conferenceCreated(QString))              , this , SLOT(slotIncomingConference(QString))         );
       /**/connect(&callManager, SIGNAL(conferenceChanged(QString,QString))      , this , SLOT(slotChangingConference(QString,QString)) );
-      /**/connect(&callManager, SIGNAL(conferenceRemoved(QString))              , this , SLOT(slotConferenceRemovedSlot(QString))      );
-      /**/connect(&callManager, SIGNAL(voiceMailNotify(QString,int))            , this , SLOT(slotVoiceMailNotifySlot(QString,int))    );
-      /**/connect(&callManager, SIGNAL(volumeChanged(QString,double))           , this , SLOT(slotVolumeChangedSlot(QString,double))   );
+      /**/connect(&callManager, SIGNAL(conferenceRemoved(QString))              , this , SLOT(slotConferenceRemoved(QString))          );
+      /**/connect(&callManager, SIGNAL(voiceMailNotify(QString,int))            , this , SLOT(slotVoiceMailNotify(QString,int))        );
+      /**/connect(&callManager, SIGNAL(volumeChanged(QString,double))           , this , SLOT(slotVolumeChanged(QString,double))       );
       /**/connect(&callManager, SIGNAL(recordPlaybackFilepath(QString,QString)) , this , SLOT(slotNewRecordingAvail(QString,QString))  );
       #ifdef ENABLE_VIDEO
       /**/connect(&interface  , SIGNAL(startedDecoding(QString,QString,int,int)), this , SLOT(slotStartedDecoding(QString,QString))    );
@@ -484,7 +484,7 @@ QVariant CallModel::data( const QModelIndex& index, int role) const
    Call* call = nullptr;
    if (!index.parent().isValid())
       call = m_lInternalModel[index.row()]->call_real;
-   else if (index.parent().isValid())
+   else if (index.parent().isValid() && m_lInternalModel.size() > index.parent().row() && m_lInternalModel[index.parent().row()]->m_lChildren.size() > index.row())
       call = m_lInternalModel[index.parent().row()]->m_lChildren[index.row()]->call_real;
    return call?call->getRoleData((Call::Role)role):QVariant();
 }
@@ -515,7 +515,7 @@ Qt::ItemFlags CallModel::flags( const QModelIndex& index ) const
 {
    if (!index.isValid())
       return 0;
-   return Qt::ItemIsEnabled | ((!index.data(Call::Role::IsConference).toBool())?(Qt::ItemIsSelectable|Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled):Qt::ItemIsEnabled);
+   return Qt::ItemIsEnabled|Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | ((!index.data(Call::Role::IsConference).toBool())?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled);
 }
 
 ///There is always 1 column
@@ -657,6 +657,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          callInt->m_pParent = confInt;
          confInt->m_lChildren << callInt;
       }
+
       //The daemon often fail to emit the right signal, cleanup manually
       foreach(InternalStruct* topLevel, m_lInternalModel) {
          if (topLevel->call_real->isConference() && !topLevel->m_lChildren.size())

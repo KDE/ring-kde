@@ -41,7 +41,7 @@ QSize PhoneNumberDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
 void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
-   
+
    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
       QStyleOptionViewItem opt2 = option;
       QPalette pal = option.palette;
@@ -55,7 +55,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    QFont font = painter->font();
    QFontMetrics fm(font);
    painter->setPen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-   painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->getNumber().trimmed()),option.rect.y()+fm.height()+3,nb->getType());
+   painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->getType().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->getType());
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
    painter->drawText(option.rect.x()+3,option.rect.y()+fm.height()+3,nb->getNumber());
 }

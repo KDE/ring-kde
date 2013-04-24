@@ -67,6 +67,7 @@ SET(
    widgets/tips/riggingtip.cpp
    widgets/tips/connectionlosttip.cpp
    widgets/tips/tipcollection.cpp
+   widgets/tips/removeconferencetip.cpp
    widgets/player.cpp
    widgets/playeroverlay.cpp
    delegates/conferencedelegate.cpp
@@ -151,3 +152,4 @@ INSTALL( FILES icons/tips/phoneDown.svg          DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/tips/ring1.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/ring2.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/ring3.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/removeconference.svg   DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )

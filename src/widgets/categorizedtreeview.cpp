@@ -21,15 +21,21 @@
 #include <QtGui/QStyledItemDelegate>
 #include <QtGui/QPainter>
 #include <QtGui/QContextMenuEvent>
+#include <QtGui/QBrush>
 #include <QEvent>
 
 //KDE
 #include <klocale.h>
 #include <kdebug.h>
 
+//SFLPhone
+#include <delegates/conferencedelegate.h>
+#include <klib/tipmanager.h>
+#include <widgets/tips/tipcollection.h>
+
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
-  : QTreeView(parent)
+  : QTreeView(parent),m_Type(CategorizedTreeView::ViewType::Other)
 {
   setHeaderHidden(true);
   setRootIsDecorated(false);
@@ -60,6 +66,9 @@ void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
       ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
       m_HoverIdx = QModelIndex();
    }
+   if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
+      TipCollection::manager()->setCurrentTip(nullptr);
+   }
    QTreeView::dragLeaveEvent(e);
 }
 
@@ -81,12 +90,22 @@ void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
    const QModelIndex& idxAt = indexAt(e->pos());
    e->acceptProposedAction();
    e->accept();
-   if (m_HoverIdx != idxAt && idxAt.isValid()) {
-      if (m_HoverIdx.isValid()) {
-         ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
+   if (idxAt.isValid()) {
+      if (m_HoverIdx != idxAt) {
+         if (m_HoverIdx.isValid()) {
+            ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
+         }
+         ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
+         m_HoverIdx = idxAt;
       }
-      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
-      m_HoverIdx = idxAt;
+      if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
+         TipCollection::manager()->setCurrentTip(nullptr);
+      }
+   }
+   else if (m_Type == CategorizedTreeView::ViewType::Call) {
+      if (TipCollection::removeConference() != TipCollection::manager()->currentTip() && idxAt.parent().isValid()) {
+         TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
+      }
    }
 //    QTreeView::dragMoveEvent(e);
 }
@@ -101,4 +120,31 @@ void CategorizedTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 {
    const QModelIndex& idxAt = indexAt(event->pos());
    emit itemDoubleClicked(idxAt);
+}
+
+///This function allow for custom rendering of the drag widget
+void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
+{
+   if (m_Type != CategorizedTreeView::ViewType::Call)
+      QAbstractItemView::startDrag(supportedActions);
+   else {
+//     Q_D(QAbstractItemView);
+      QModelIndex index = selectionModel()->currentIndex();
+      if (index.isValid()) {
+         QModelIndexList list;
+         list << index;
+         QMimeData *data = model()->mimeData(list);
+         if (!data)
+            return;
+         
+
+         //Execute the drag
+         QDrag *drag = new QDrag(this);
+         drag->setPixmap(ConferenceDelegate::getDragPixmap(this,index));
+         drag->setMimeData(data);
+         drag->setHotSpot(QCursor::pos() - QCursor::pos());
+         Qt::DropAction defaultDropAction = Qt::IgnoreAction;
+         drag->exec(supportedActions, defaultDropAction);
+      }
+   }
 }

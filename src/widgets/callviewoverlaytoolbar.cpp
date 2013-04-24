@@ -91,6 +91,8 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(pare
    setMinimumSize(100,56);
    if (parent)
       parent->installEventFilter(this);
+   setVisible(false);
+   hideEvent(nullptr);
 } //CallViewOverlayToolbar
 
 ///Resize event
@@ -143,20 +145,21 @@ ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
 void CallViewOverlayToolbar::updateState()
 {
    const QModelIndex& index = m_pParent->selectionModel()->currentIndex();
-   if (index.isValid() && m_pParent->selectionModel()->hasSelection()) {
+   if (index.isValid()) {
+      if (!m_pParent->selectionModel()->hasSelection()) {
+         m_pParent->selectionModel()->setCurrentIndex(index,QItemSelectionModel::SelectCurrent);
+      }
       call_state state = (call_state) index.data(Call::Role::State).toInt();
       setVisible(true);
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-      manager->setBottomMargin(60);
-      m_hButtons[ ActionButton::HOLD     ]->setVisible(visibility[ ActionButton::HOLD     ][state]);
-      m_hButtons[ ActionButton::UNHOLD   ]->setVisible(visibility[ ActionButton::UNHOLD   ][state]);
-      m_hButtons[ ActionButton::PICKUP   ]->setVisible(visibility[ ActionButton::PICKUP   ][state]);
-      m_hButtons[ ActionButton::HANGUP   ]->setVisible(visibility[ ActionButton::HANGUP   ][state]);
-      m_hButtons[ ActionButton::MUTE     ]->setVisible(visibility[ ActionButton::MUTE     ][state]);
-      m_hButtons[ ActionButton::TRANSFER ]->setVisible(visibility[ ActionButton::TRANSFER ][state]);
-      m_hButtons[ ActionButton::RECORD   ]->setVisible(visibility[ ActionButton::RECORD   ][state]);
-      m_hButtons[ ActionButton::REFUSE   ]->setVisible(visibility[ ActionButton::REFUSE   ][state]);
-      m_hButtons[ ActionButton::ACCEPT   ]->setVisible(visibility[ ActionButton::ACCEPT   ][state]);
+      manager->setBottomMargin(53);
+      char act_counter = 0;
+      for (int i = 0;i<9;i++) {
+         m_hButtons[ i ]->setVisible(visibility[ i ][state]);
+         act_counter += visibility[ i     ][state];
+      }
+      if (!act_counter)
+         setVisible(false);
    }
    else {
       setVisible(false);
@@ -186,7 +189,7 @@ void CallViewOverlayToolbar::showEvent(QShowEvent *)
 {
    if (parentWidget()->property("tipManager").isValid()) {
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-      manager->setBottomMargin(60);
+      manager->setBottomMargin(53);
    }
     emit visibilityChanged(true);
 }

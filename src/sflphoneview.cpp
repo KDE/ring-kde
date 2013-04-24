@@ -164,6 +164,19 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             else
                kDebug() << "The call is not in a conversation (doing nothing)";
          }
+         //Remove uneedded tip
+         if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
+            TipCollection::manager()->setCurrentTip(nullptr);
+         }
+
+         //Remove item overlays
+         for (int i = 0;i < m_pParent->m_pView->model()->rowCount();i++) {
+            const QModelIndex& idx = m_pParent->m_pView->model()->index(i,0);
+            m_pParent->m_pView->model()->setData(idx,-1,Call::Role::DropState);
+            for (int j = 0;j < m_pParent->m_pView->model()->rowCount(idx);j++) {
+               m_pParent->m_pView->model()->setData(m_pParent->m_pView->model()->index(j,0,idx),-1,Call::Role::DropState);
+            }
+         }
          return true;
       }
    }
@@ -185,6 +198,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    delegate->setCallDelegate(new HistoryDelegate(m_pView));
    m_pView->setItemDelegate(delegate);
    m_pView->viewport()->installEventFilter(new CallViewEventFilter(this));
+   m_pView->setViewType(CategorizedTreeView::ViewType::Call);
 
    //Enable on-canvas messages
    TipCollection::setManager(new TipManager(m_pView));

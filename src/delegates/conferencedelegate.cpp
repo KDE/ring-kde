@@ -85,8 +85,11 @@ QRect ConferenceDelegate::fullCategoryRect(const QStyleOptionViewItem& option, c
    if (i != old && old.row()>2)
       return QRect(0,0,0,0);
 
-   QRect r = m_tree->visualRect(i);
-
+   QRect r;
+   if (option.state & QStyle::State_Small) //Hack to know when this is a drag popup
+      r = option.rect;
+   else
+      r = m_tree->visualRect(i);
    // adapt width
    r.setLeft(m_LeftMargin);
    r.setWidth(m_tree->viewport()->width() - m_LeftMargin - m_RightMargin);
@@ -467,4 +470,39 @@ int ConferenceDelegate::categoryHeight(const QModelIndex &index, const QStyleOpt
    const QFontMetrics fontMetrics = QFontMetrics(font);
 
    return fontMetrics.height() + 2 + 16 /* vertical spacing */;
+}
+
+QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QModelIndex& index)
+{
+   QStyleOptionViewItemV4 option;
+   option.locale = parent->locale();
+   option.widget = parent;
+   option.state = QStyle::State_Selected | QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;
+   option.rect = QRect(0,0,parent->width(),parent->height());
+   QSize size = parent->itemDelegate()->sizeHint(option,index);
+   QSize itemSize = size;
+   for (int i=0;i<parent->model()->rowCount(index);i++) {
+      size.setHeight(size.height()+parent->itemDelegate()->sizeHint(option,index.child(i,0)).height());
+   }
+
+   //Setup the painter
+   QPixmap pixmap(parent->width(),size.height());
+   QPainter customPainter(&pixmap);
+   customPainter.eraseRect(option.rect);
+   customPainter.setCompositionMode(QPainter::CompositionMode_Clear);
+   customPainter.fillRect(option.rect,QBrush(Qt::red));
+   customPainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+   //Draw the parent
+   option.rect = QRect(0,0,parent->width(),itemSize.height());
+   parent->itemDelegate()->paint(&customPainter, option, index);
+
+   //Draw the children
+   for (int i=0;i<parent->model()->rowCount(index);i++) {
+      itemSize.setHeight(parent->itemDelegate()->sizeHint(option,index.child(i,0)).height());
+      option.rect = QRect(10,option.rect.y()+option.rect.height(),parent->width()-20,itemSize.height());
+      option.state = QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;
+      parent->itemDelegate()->paint(&customPainter, option, index.child(i,0));
+   }
+   return pixmap;
 }

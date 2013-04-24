@@ -34,6 +34,8 @@ public:
    void setCallDelegate(QStyledItemDelegate* delegate) {
       m_pCallDelegate = delegate;
    }
+   
+   static QPixmap getDragPixmap(CategorizedTreeView* parent, const QModelIndex& index);
 
 private:
    CategorizedTreeView* m_tree      ;
