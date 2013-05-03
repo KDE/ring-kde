@@ -40,7 +40,6 @@
 
 //SFLPhone
 #include "sflphone.h"
-#include "callview.h"
 #include "sflphoneview.h"
 #include "bookmarkdock.h"
 

@@ -223,7 +223,7 @@ Call* CallModel::addCall(Call* call, Call* parent)
 Call* CallModel::addDialingCall(const QString& peerName, Account* account)
 {
    Account* acc = (account)?account:AccountList::getCurrentAccount();
-   return (!acc)?nullptr:addCall(Call::buildDialingCall(QString(qrand()), peerName, acc->getAccountId()));
+   return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc->getAccountId()));
 }  //addDialingCall
 
 ///Create a new incoming call when the daemon is being called
@@ -470,7 +470,8 @@ bool CallModel::setData( const QModelIndex& index, const QVariant &value, int ro
 {
    if (index.isValid()  && role == Call::Role::DropState) {
       Call* call = getCall(index);
-      call->setProperty("dropState",value.toInt());
+      if (call)
+         call->setProperty("dropState",value.toInt());
       emit dataChanged(index,index);
    }
    return false;
@@ -482,7 +483,7 @@ QVariant CallModel::data( const QModelIndex& index, int role) const
    if (!index.isValid())
       return QVariant();
    Call* call = nullptr;
-   if (!index.parent().isValid())
+   if (!index.parent().isValid() && m_lInternalModel[index.row()])
       call = m_lInternalModel[index.row()]->call_real;
    else if (index.parent().isValid() && m_lInternalModel.size() > index.parent().row() && m_lInternalModel[index.parent().row()]->m_lChildren.size() > index.row())
       call = m_lInternalModel[index.parent().row()]->m_lChildren[index.row()]->call_real;
@@ -569,11 +570,95 @@ QMimeData* CallModel::mimeData(const QModelIndexList &indexes) const
          QString text = data(index, Call::Role::Number).toString();
          mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
          mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
-         mimeData->setData(MIME_CALLID  , (qvariant_cast<Call*>(index.data(Call::Role::Object)))->getCallId().toUtf8());
+         qDebug() << "Setting mime" << index.data(Call::Role::Id).toString();
+         mimeData->setData(MIME_CALLID  , index.data(Call::Role::Id).toString().toUtf8());
          return mimeData;
       }
    }
    return mimeData;
+}
+
+//TODO add to class
+bool isPartOf(const QModelIndex& confIdx, Call* call)
+{
+   if (!confIdx.isValid() || !call) return false;
+
+   for (int i=0;i<confIdx.model()->rowCount(confIdx);i++) { //TODO use model one directly
+      if (confIdx.child(i,0).data(Call::Role::Id) == call->getCallId()) {
+         return true;
+      }
+   }
+   return false;
+}
+
+bool CallModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
+{
+   Q_UNUSED(action)
+   if (data->hasFormat(MIME_CALLID)) {
+      QByteArray encodedCallId = data->data( MIME_CALLID );
+      const QModelIndex targetIdx = index   ( row,column,parent );
+      Call* call                  = getCall ( encodedCallId     );
+      //const QModelIndex sourceIdx = getIndex( call              );
+      Call* target                = getCall ( targetIdx         );
+      //Call* parentCall = getCall( parent        ); //Can be nullptr
+      
+      //Call or conference dropped on itself -> cannot transfer or merge, so exit now
+      if (target == call) {
+         qDebug() << "Call/Conf dropped on itself (doing nothing)";
+         return false;
+      }
+      
+      switch (data->property("dropAction").toInt()) {
+         case Call::DropAction::Conference:
+            //Call or conference dropped on part of itself -> cannot merge conference with itself
+            if (isPartOf(targetIdx,call) || isPartOf(targetIdx.parent(),call) || (call && targetIdx.parent().data(Call::Role::Id) == encodedCallId)) {
+               qDebug() << "Call/Conf dropped on its own conference (doing nothing)";
+               return false;
+            }
+            //Conference dropped on a conference -> merge both conferences
+            else if (call && target && call->isConference() && target->isConference()) {
+               qDebug() << "Merge conferences" << call->getConfId() << "and" << target->getConfId();
+               mergeConferences(call,target);
+               return true;
+            }
+            //Conference dropped on a call part of a conference -> merge both conferences
+            else if (call && call->isConference() && targetIdx.parent().isValid()) {
+               qDebug() << "Merge conferences" << call->getConfId() << "and" << targetIdx.parent().data(Call::Role::Id).toString();
+               mergeConferences(call,getCall(targetIdx.parent()));
+               return true;
+            }
+            //Drop a call on a conference -> add it to the conference
+            else if (targetIdx.parent().isValid() || target->isConference()) {
+               Call* conf = target->isConference()?target:qvariant_cast<Call*>(targetIdx.parent().data(Call::Role::Object));
+               if (conf) {
+                  qDebug() << "Adding call " << call->getCallId() << "to conference" << conf->getConfId();
+                  addParticipant(call,conf);
+               return true;
+               }
+            }
+            //Conference dropped on a call
+            else if (target && call && rowCount(getIndex(call))) {
+               qDebug() << "Conference dropped on a call: adding call to conference";
+               addParticipant(target,call);
+               return true;
+            }
+            //Call dropped on a call
+            else if (call && target && !targetIdx.parent().isValid()) {
+               qDebug() << "Call dropped on a call: creating a conference";
+               createConferenceFromCall(call,target);
+               return true;
+            }
+            break;
+         case Call::DropAction::Transfer:
+            qDebug() << "Performing an attended transfer";
+            attendedTransfer(call,target);
+            break;
+         default:
+            //TODO implement text and contact drop
+            break;
+      }
+   }
+   return false;
 }
 
 
@@ -636,6 +721,10 @@ void CallModel::slotIncomingConference(const QString& confID)
 void CallModel::slotChangingConference(const QString &confID, const QString& state)
 {
    InternalStruct* confInt = m_sPrivateCallList_callId[confID];
+   if (!confInt) {
+      qDebug() << "Error: conference not found";
+      return;
+   }
    Call* conf = confInt->call_real;
    qDebug() << "Changing conference state" << conf << confID;
    if (conf && dynamic_cast<Call*>(conf)) { //Prevent a race condition between call and conference
@@ -651,11 +740,16 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
       confInt->m_lChildren.clear();
       foreach(QString callId,participants) {
          InternalStruct* callInt = m_sPrivateCallList_callId[callId];
-         if (callInt->m_pParent && callInt->m_pParent != confInt)
-            callInt->m_pParent->m_lChildren.removeAll(callInt);
-         m_lInternalModel.removeAll(callInt);
-         callInt->m_pParent = confInt;
-         confInt->m_lChildren << callInt;
+         if (callInt) {
+            if (callInt->m_pParent && callInt->m_pParent != confInt)
+               callInt->m_pParent->m_lChildren.removeAll(callInt);
+            m_lInternalModel.removeAll(callInt);
+            callInt->m_pParent = confInt;
+            confInt->m_lChildren << callInt;
+         }
+         else {
+            qDebug() << "Participants not found";
+         }
       }
 
       //The daemon often fail to emit the right signal, cleanup manually

@@ -80,12 +80,12 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    setupUi(mainWidget);
    setMinimumSize(250,0);
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-   m_pFromL      = new QLabel      ( i18n("From:"), m_pBottomWidget );
-   m_pToL        = new QLabel      ( i18nc("To date:","To:"), m_pBottomWidget);
-   m_pFromDW     = new KDateWidget ( m_pBottomWidget        );
-   m_pToDW       = new KDateWidget ( m_pBottomWidget        );
-   m_pAllTimeCB  = new QCheckBox   ( i18n("Display all")    );
-   m_pLinkPB     = new QPushButton ( m_pBottomWidget        );
+   m_pFromL      = new QLabel      ( i18n("From:"), m_pBottomWidget           );
+   m_pToL        = new QLabel      ( i18nc("To date:","To:"), m_pBottomWidget );
+   m_pFromDW     = new KDateWidget ( m_pBottomWidget                          );
+   m_pToDW       = new KDateWidget ( m_pBottomWidget                          );
+   m_pAllTimeCB  = new QCheckBox   ( i18n("Display all")                      );
+   m_pLinkPB     = new QPushButton ( m_pBottomWidget                          );
 
    SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
@@ -145,7 +145,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
 
    m_CurrentFromDate = m_pFromDW->date();
    m_CurrentToDate   = m_pToDW->date();
-   
+
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::historySortMode());
 
    connect(m_pAllTimeCB,                   SIGNAL(toggled(bool)),            this, SLOT(enableDateRange(bool))      );
@@ -193,24 +193,6 @@ void HistoryDock::enableDateRange(bool disable)
 {
    m_pBottomWidget->setHidden(disable);
    ConfigurationSkeleton::setDisplayDataRange(!disable);
-}
-
-///The signals have to be disabled to prevent an ifinite loop
-void HistoryDock::updateLinkedFromDate(QDate date)
-{
-   Q_UNUSED(date)
-//    disconnect (m_pToDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedToDate(QDate)));
-//    updateLinkedDate(m_pToDW,m_CurrentFromDate,date);
-//    connect    (m_pToDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedToDate(QDate)));
-}
-
-///The signals have to be disabled to prevent an ifinite loop
-void HistoryDock::updateLinkedToDate(QDate date)
-{
-   Q_UNUSED(date)
-//    disconnect(m_pFromDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedFromDate(QDate)));
-//    updateLinkedDate(m_pFromDW,m_CurrentToDate,date);
-//    connect   (m_pFromDW  ,  SIGNAL(changed(QDate)),       this, SLOT(updateLinkedFromDate(QDate)));
 }
 
 void HistoryDock::slotSetSortRole(int role)

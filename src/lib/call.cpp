@@ -1017,7 +1017,7 @@ void Call::updatePlayback(int position,int size)
 }
 
 ///Common source for model data roles
-QVariant Call::getRoleData(Call::Role role) const
+QVariant Call::getRoleData(int role) const
 {
    Contact* ct = ((Call*)this)->getContact();
    switch (role) {
@@ -1088,6 +1088,9 @@ QVariant Call::getRoleData(Call::Role role) const
          break;
       case Call::Role::State:
          return getCurrentState();
+         break;
+      case Call::Role::Id:
+         return ((m_isConference)?getConfId():getCallId());
          break;
       case Call::Role::DropState:
          return property("dropState");

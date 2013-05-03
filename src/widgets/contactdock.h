@@ -25,7 +25,6 @@
 #include <QtGui/QTreeWidgetItem>
 #include "categorizedtreeview.h"
 #include "../klib/contactproxymodel.h"
-#include "calltreeitem.h"
 
 //Qt
 class QSplitter;

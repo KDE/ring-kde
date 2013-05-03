@@ -103,7 +103,7 @@ void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
       }
    }
    else if (m_Type == CategorizedTreeView::ViewType::Call) {
-      if (TipCollection::removeConference() != TipCollection::manager()->currentTip() && idxAt.parent().isValid()) {
+      if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
          TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
       }
    }

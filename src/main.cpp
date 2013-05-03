@@ -33,7 +33,7 @@
 //SFLPhone
 #include "sflphoneapplication.h"
 #include "klib/configurationskeleton.h"
-#include "callview.h"
+#include "lib/callmodel.h"
 #include "sflphonecmd.h"
 
 static const char description[] = "A KDE 4 Client for SFLphone";

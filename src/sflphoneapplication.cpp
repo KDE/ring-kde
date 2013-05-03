@@ -39,6 +39,9 @@
 #include "errormessage.h"
 #include "lib/sflphone_const.h"
 
+//Other
+#include <unistd.h>
+
 
 /**
  * The application constructor

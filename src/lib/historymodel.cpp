@@ -285,6 +285,8 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
       return QVariant("Contacts");
+   if (role == Qt::InitialSortOrderRole)
+      return QVariant(Qt::DescendingOrder);
    return QVariant();
 }
 

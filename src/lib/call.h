@@ -151,7 +151,13 @@ public:
       Object        = 117,
       PhotoPtr      = 118,
       State         = 119,
+      Id            = 120,
       DropState     = 300,
+   };
+
+   enum DropAction {
+      Conference = 100,
+      Transfer   = 101,
    };
 
    //Constructors & Destructors
@@ -195,7 +201,7 @@ public:
    const QString        getFormattedName    ()      ;
    bool                 hasRecording        () const;
    QString              getLength           () const;
-   QVariant             getRoleData         (Call::Role role) const;
+   QVariant             getRoleData         (int role) const;
 
    //Automated function
    call_state stateChanged(const QString & newState);

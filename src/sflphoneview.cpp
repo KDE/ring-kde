@@ -179,6 +179,17 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
          }
          return true;
       }
+      else {
+         //1) Get the right action
+         const QPoint position = e->pos();
+         const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
+         Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
+         QMimeData* data = (QMimeData*)e->mimeData(); //Drop the const
+         data->setProperty("dropAction",act);
+
+         //2) Send to the model for processing
+         m_pParent->m_pView->model()->dropMimeData(data,Qt::MoveAction,idxAt.row(),idxAt.column(),idxAt.parent());
+      }
    }
    // standard event processing
    return QObject::eventFilter(obj, event);
@@ -198,6 +209,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    delegate->setCallDelegate(new HistoryDelegate(m_pView));
    m_pView->setItemDelegate(delegate);
    m_pView->viewport()->installEventFilter(new CallViewEventFilter(this));
+   m_pView->installEventFilter(new CallViewEventFilter(this));
    m_pView->setViewType(CategorizedTreeView::ViewType::Call);
 
    //Enable on-canvas messages
@@ -700,7 +712,7 @@ void SFLPhoneView::updateRecordButton()
    }
 }
 
-///Update the colume button icon
+///Update the colunm button icon
 void SFLPhoneView::updateVolumeButton()
 {
    kDebug() << "updateVolumeButton";

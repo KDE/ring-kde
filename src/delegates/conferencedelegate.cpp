@@ -164,7 +164,13 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       baseColor.setAlpha(150);
       painter->setPen(baseColor);
       baseColor.setAlpha(255);
-      painter->drawText(opt.rect.x()+opt.rect.width()-40,opt.rect.y()+font.pointSize()+8,index.data(Call::Role::Length).toString());
+      //painter->drawText(opt.rect.x()+opt.rect.width()-40,opt.rect.y()+font.pointSize()+8,index.data(Call::Role::Length).toString());
+      static QFontMetrics* fm = nullptr;
+      if (!fm) {
+         fm = new QFontMetrics(painter->font());
+      }
+      const QString len = index.data(Call::Role::Length).toString();
+      painter->drawText(opt.rect.x()+opt.rect.width()-fm->width(len),opt.rect.y()+font.pointSize()+8,len);
       painter->setClipRegion(cl);
       return;
    }
@@ -196,44 +202,6 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
    if (index.parent().isValid())
       opt2.rect.setWidth(opt2.rect.width()-15);
    painter->setClipRect(option.rect);
-   if (option.state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
-      //Draw a copy of the widget when in drag and drop
-      /*if (itemWidget && itemWidget->isDragged()) {
-         itemWidget->setTextColor(option.state);
-
-         //Check if it is the last item
-         if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
-            opt2.rect.setHeight(opt2.rect.height()-15);
-            QStyledItemDelegate::paint(painter,opt2,index);
-         }
-
-         //Necessary to render conversation participants
-         if (opt2.rect != option.rect) {
-            QPainter::CompositionMode mode = painter->compositionMode();
-            painter->setCompositionMode(QPainter::CompositionMode_Clear);
-            painter->fillRect(option.rect,Qt::transparent);
-            painter->setCompositionMode(mode);
-         }
-
-         //Remove opacity effect to prevent artefacts when there is no compositor
-         QGraphicsEffect* opacityEffect = itemWidget->graphicsEffect();
-         if (opacityEffect)
-            itemWidget->setGraphicsEffect(nullptr);
-         QStyledItemDelegate::paint(painter,index.parent().isValid()?opt2:option,index);
-         QPixmap pixmap(itemWidget->size());
-         itemWidget->render(&pixmap);
-         painter->drawPixmap(0,0,pixmap);
-         if (opacityEffect) {
-            QGraphicsOpacityEffect* opacityEffect2 = new QGraphicsOpacityEffect;
-            itemWidget->setGraphicsEffect(opacityEffect2);
-         }
-         return;
-      }
-      //Check if it is not the last item
-      else if (!(index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid())) {
-         QStyledItemDelegate::paint(painter,index.parent().isValid()?opt2:option,index);
-      }*/
-   }
 
    //Check if it is the last item
    if (index.parent().isValid() && !index.parent().child(index.row()+1,0).isValid()) {
@@ -418,6 +386,7 @@ void ConferenceDelegate::drawCategory(const QModelIndex&  index   ,
 void ConferenceDelegate::drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal) const {
    Q_UNUSED(index)
    Q_UNUSED(sortRole)
+   painter->setClipping(false);
    const QPalette* palette = (pal)?pal:&option.palette  ;
    painter->setRenderHint(QPainter::Antialiasing);
    QColor outlineColor = palette->text().color();
@@ -457,6 +426,7 @@ void ConferenceDelegate::drawBoxBottom(const QModelIndex &index, int sortRole, c
       painter->drawArc(arc, 1440*2, 1440);
    }
    //END: bottom left corner
+   painter->setClipping(true);
 } //drawBoxBottom
 
 ///Return the height of the conference box

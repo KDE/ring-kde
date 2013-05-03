@@ -25,7 +25,6 @@
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QDate>
-#include "calltreeitem.h"
 
 //Qt
 class QString;
@@ -98,8 +97,6 @@ public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event);
 
 private Q_SLOTS:
-   void updateLinkedFromDate ( QDate   date );
-   void updateLinkedToDate   ( QDate   date );
    void expandTree           (              );
    void slotSetSortRole      ( int          );
    void slotDoubleClick(const QModelIndex& index);
