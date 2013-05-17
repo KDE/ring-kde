@@ -280,9 +280,9 @@ VideoCodecModel* Account::getVideoCodecModel()
 
 void Account::setAccountAlias(QString detail)
 {
-   bool changed = detail != getAccountAlias();
+   bool accChanged = detail != getAccountAlias();
    setAccountDetail(ACCOUNT_ALIAS,detail);
-   if (changed)
+   if (accChanged)
       emit aliasChanged(detail);
 }
 
@@ -539,11 +539,11 @@ void Account::setAccountDetails(const MapStringString& m)
 ///Set a specific detail
 bool Account::setAccountDetail(const QString& param, const QString& val)
 {
-   bool changed = (*m_pAccountDetails)[param] != val;
+   bool accChanged = (*m_pAccountDetails)[param] != val;
    QString buf = (*m_pAccountDetails)[param];
    if (param == ACCOUNT_REGISTRATION_STATUS) {
       (*m_pAccountDetails)[param] = val;
-      if (changed) {
+      if (accChanged) {
          emit detailChanged(this,param,val,buf);
       }
    }
@@ -551,7 +551,7 @@ bool Account::setAccountDetail(const QString& param, const QString& val)
       performAction(AccountEditAction::MODIFY);
       if (m_CurrentState == MODIFIED || m_CurrentState == NEW) {
          (*m_pAccountDetails)[param] = val;
-         if (changed) {
+         if (accChanged) {
             emit detailChanged(this,param,val,buf);
          }
       }
@@ -817,7 +817,7 @@ bool Account::performAction(AccountEditAction action)
 AccountEditState Account::currentState() const
 {
    return m_CurrentState;
-};
+}
 
 /**Update the account
  * @return if the state changed

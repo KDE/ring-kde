@@ -137,11 +137,11 @@ int CallModel::size()
  CallList CallModel::getCallList()
 {
    CallList callList;
-   foreach(InternalStruct* internal, m_lInternalModel) {
-      callList.push_back(internal->call_real);
-      if (internal->m_lChildren.size()) {
-         foreach(InternalStruct* child,internal->m_lChildren) {
-            callList.push_back(child->call_real);
+   foreach(InternalStruct* internalS, m_lInternalModel) {
+      callList.push_back(internalS->call_real);
+      if (internalS->m_lChildren.size()) {
+         foreach(InternalStruct* childInt,internalS->m_lChildren) {
+            callList.push_back(childInt->call_real);
          }
       }
    }
@@ -156,11 +156,11 @@ CallList CallModel::getConferenceList()
    //That way it can not be invalid
    const QStringList confListS = CallManagerInterfaceSingleton::getInstance().getConferenceList();
    foreach (const QString& confId, confListS) {
-      InternalStruct* internal = m_sPrivateCallList_callId[confId];
-      if (!internal)
+      InternalStruct* internalS = m_sPrivateCallList_callId[confId];
+      if (!internalS)
          confList << addConference(confId);
       else
-         confList << internal->call_real;
+         confList << internalS->call_real;
    }
    return confList;
 } //getConferenceList
@@ -195,9 +195,8 @@ Call* CallModel::getCall( const QModelIndex& idx              ) const
 }
 
 ///Add a call in the model structure, the call must exist before being added to the model
-Call* CallModel::addCall(Call* call, Call* parent)
+Call* CallModel::addCall(Call* call, Call* parentCall)
 {
-   Q_UNUSED(parent)
    if (!call)
       return new Call("",""); //Invalid, but better than managing NULL everywhere
 
@@ -211,7 +210,7 @@ Call* CallModel::addCall(Call* call, Call* parent)
    m_sPrivateCallList_callId[ call->getCallId() ] = aNewStruct;
 
    if (call->getCurrentState() != CALL_STATE_OVER)
-      emit callAdded(call,parent);
+      emit callAdded(call,parentCall);
    const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
    emit dataChanged(idx, idx);
    connect(call,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
@@ -466,27 +465,27 @@ void CallModel::removeConference(Call* call)
  ****************************************************************************/
 
 ///This model doesn't support direct write, only the dragState hack
-bool CallModel::setData( const QModelIndex& index, const QVariant &value, int role)
+bool CallModel::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
-   if (index.isValid()  && role == Call::Role::DropState) {
-      Call* call = getCall(index);
+   if (idx.isValid()  && role == Call::Role::DropState) {
+      Call* call = getCall(idx);
       if (call)
          call->setProperty("dropState",value.toInt());
-      emit dataChanged(index,index);
+      emit dataChanged(idx,idx);
    }
    return false;
 }
 
 ///Get informations relative to the index
-QVariant CallModel::data( const QModelIndex& index, int role) const
+QVariant CallModel::data( const QModelIndex& idx, int role) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return QVariant();
    Call* call = nullptr;
-   if (!index.parent().isValid() && m_lInternalModel[index.row()])
-      call = m_lInternalModel[index.row()]->call_real;
-   else if (index.parent().isValid() && m_lInternalModel.size() > index.parent().row() && m_lInternalModel[index.parent().row()]->m_lChildren.size() > index.row())
-      call = m_lInternalModel[index.parent().row()]->m_lChildren[index.row()]->call_real;
+   if (!idx.parent().isValid() && m_lInternalModel[idx.row()])
+      call = m_lInternalModel[idx.row()]->call_real;
+   else if (idx.parent().isValid() && m_lInternalModel.size() > idx.parent().row() && m_lInternalModel[idx.parent().row()]->m_lChildren.size() > idx.row())
+      call = m_lInternalModel[idx.parent().row()]->m_lChildren[idx.row()]->call_real;
    return call?call->getRoleData((Call::Role)role):QVariant();
 }
 
@@ -500,55 +499,55 @@ QVariant CallModel::headerData(int section, Qt::Orientation orientation, int rol
 }
 
 ///The number of conference and stand alone calls
-int CallModel::rowCount( const QModelIndex& parent ) const
+int CallModel::rowCount( const QModelIndex& parentIdx ) const
 {
-   if (!parent.isValid()) {
+   if (!parentIdx.isValid()) {
       return m_lInternalModel.size();
    }
-   else if (!parent.parent().isValid()) {
-      return m_lInternalModel[parent.row()]->m_lChildren.size();
+   else if (!parentIdx.parent().isValid()) {
+      return m_lInternalModel[parentIdx.row()]->m_lChildren.size();
    }
    return 0;
 }
 
 ///Make everything selectable and drag-able
-Qt::ItemFlags CallModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags CallModel::flags( const QModelIndex& idx ) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return 0;
-   return Qt::ItemIsEnabled|Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | ((!index.data(Call::Role::IsConference).toBool())?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled);
+   return Qt::ItemIsEnabled|Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | ((!idx.data(Call::Role::IsConference).toBool())?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled);
 }
 
 ///There is always 1 column
-int CallModel::columnCount ( const QModelIndex& parent) const
+int CallModel::columnCount ( const QModelIndex& parentIdx) const
 {
-   Q_UNUSED(parent)
+   Q_UNUSED(parentIdx)
    return 1;
 }
 
 ///Return the conference if 'index' is part of one
-QModelIndex CallModel::parent( const QModelIndex& index) const
+QModelIndex CallModel::parent( const QModelIndex& idx) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return QModelIndex();
-   const InternalStruct* modelItem = (InternalStruct*)index.internalPointer();
+   const InternalStruct* modelItem = (InternalStruct*)idx.internalPointer();
    if (modelItem && modelItem->m_pParent) {
-      int idx = m_lInternalModel.indexOf(modelItem->m_pParent);
-      if (idx != -1) {
-         return CallModel::index(idx,0,QModelIndex());
+      const int rowidx = m_lInternalModel.indexOf(modelItem->m_pParent);
+      if (rowidx != -1) {
+         return CallModel::index(rowidx,0,QModelIndex());
       }
    }
    return QModelIndex();
 }
 
 ///Get the call index at row,column (active call only)
-QModelIndex CallModel::index( int row, int column, const QModelIndex& parent) const
+QModelIndex CallModel::index( int row, int column, const QModelIndex& parentIdx) const
 {
-   if (!parent.isValid() && m_lInternalModel.size() > row) {
+   if (!parentIdx.isValid() && m_lInternalModel.size() > row) {
       return createIndex(row,column,m_lInternalModel[row]);
    }
-   else if (parent.isValid() && m_lInternalModel[parent.row()]->m_lChildren.size() > row) {
-      return createIndex(row,column,m_lInternalModel[parent.row()]->m_lChildren[row]);
+   else if (parentIdx.isValid() && m_lInternalModel[parentIdx.row()]->m_lChildren.size() > row) {
+      return createIndex(row,column,m_lInternalModel[parentIdx.row()]->m_lChildren[row]);
    }
    return QModelIndex();
 }
@@ -562,24 +561,23 @@ QStringList CallModel::mimeTypes() const
    return mimes;
 }
 
-QMimeData* CallModel::mimeData(const QModelIndexList &indexes) const
+QMimeData* CallModel::mimeData(const QModelIndexList& indexes) const
 {
-   QMimeData *mimeData = new QMimeData();
-   foreach (const QModelIndex &index, indexes) {
-      if (index.isValid()) {
-         QString text = data(index, Call::Role::Number).toString();
-         mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
-         mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
-         qDebug() << "Setting mime" << index.data(Call::Role::Id).toString();
-         mimeData->setData(MIME_CALLID  , index.data(Call::Role::Id).toString().toUtf8());
-         return mimeData;
+   QMimeData* mData = new QMimeData();
+   foreach (const QModelIndex &idx, indexes) {
+      if (idx.isValid()) {
+         QString text = data(idx, Call::Role::Number).toString();
+         mData->setData(MIME_PLAIN_TEXT , text.toUtf8());
+         mData->setData(MIME_PHONENUMBER, text.toUtf8());
+         qDebug() << "Setting mime" << idx.data(Call::Role::Id).toString();
+         mData->setData(MIME_CALLID  , idx.data(Call::Role::Id).toString().toUtf8());
+         return mData;
       }
    }
-   return mimeData;
+   return mData;
 }
 
-//TODO add to class
-bool isPartOf(const QModelIndex& confIdx, Call* call)
+bool CallModel::isPartOf(const QModelIndex& confIdx, Call* call)
 {
    if (!confIdx.isValid() || !call) return false;
 
@@ -591,16 +589,14 @@ bool isPartOf(const QModelIndex& confIdx, Call* call)
    return false;
 }
 
-bool CallModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
+bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, int row, int column, const QModelIndex& parentIdx )
 {
    Q_UNUSED(action)
-   if (data->hasFormat(MIME_CALLID)) {
-      QByteArray encodedCallId = data->data( MIME_CALLID );
-      const QModelIndex targetIdx = index   ( row,column,parent );
-      Call* call                  = getCall ( encodedCallId     );
-      //const QModelIndex sourceIdx = getIndex( call              );
-      Call* target                = getCall ( targetIdx         );
-      //Call* parentCall = getCall( parent        ); //Can be nullptr
+   if (mimedata->hasFormat(MIME_CALLID)) {
+      const QByteArray encodedCallId = mimedata->data( MIME_CALLID    );
+      const QModelIndex targetIdx    = index   ( row,column,parentIdx );
+      Call* call                     = getCall ( encodedCallId        );
+      Call* target                   = getCall ( targetIdx            );
       
       //Call or conference dropped on itself -> cannot transfer or merge, so exit now
       if (target == call) {
@@ -608,7 +604,7 @@ bool CallModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int r
          return false;
       }
       
-      switch (data->property("dropAction").toInt()) {
+      switch (mimedata->property("dropAction").toInt()) {
          case Call::DropAction::Conference:
             //Call or conference dropped on part of itself -> cannot merge conference with itself
             if (isPartOf(targetIdx,call) || isPartOf(targetIdx.parent(),call) || (call && targetIdx.parent().data(Call::Role::Id) == encodedCallId)) {

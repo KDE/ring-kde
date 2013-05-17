@@ -99,6 +99,9 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
 
       //Singleton
       static CallModel* m_spInstance;
+      
+      //Helpers
+      bool isPartOf(const QModelIndex& confIdx, Call* call);
 
    private Q_SLOTS:
       void slotCallStateChanged   ( const QString& callID    , const QString &state   );

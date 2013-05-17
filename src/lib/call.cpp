@@ -121,7 +121,7 @@ void Call::setContactBackend(ContactBackend* be)
 }
 
 ///Constructor
-Call::Call(call_state startState, QString callId, QString peerName, QString peerNumber, QString account)
+Call::Call(call_state startState, const QString& callId, QString peerName, QString peerNumber, QString account)
    :  HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTime(nullptr),m_pStartTime(nullptr),
    m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr)
 {
@@ -925,6 +925,16 @@ void Call::appendText(const QString& str)
    case CALL_STATE_DIALING     :
       editNumber = &m_CallNumber;
       break;
+   case CALL_STATE_INCOMING:
+   case CALL_STATE_RINGING:
+   case CALL_STATE_CURRENT:
+   case CALL_STATE_HOLD:
+   case CALL_STATE_FAILURE:
+   case CALL_STATE_BUSY:
+   case CALL_STATE_OVER:
+   case CALL_STATE_ERROR:
+   case CALL_STATE_CONFERENCE:
+   case CALL_STATE_CONFERENCE_HOLD:
    default                     :
       qDebug() << "Backspace on call not editable. Doing nothing.";
       return;
@@ -949,6 +959,16 @@ void Call::backspaceItemText()
       case CALL_STATE_DIALING          :
          editNumber = &m_CallNumber;
          break;
+      case CALL_STATE_INCOMING:
+      case CALL_STATE_RINGING:
+      case CALL_STATE_CURRENT:
+      case CALL_STATE_HOLD:
+      case CALL_STATE_FAILURE:
+      case CALL_STATE_BUSY:
+      case CALL_STATE_OVER:
+      case CALL_STATE_ERROR:
+      case CALL_STATE_CONFERENCE:
+      case CALL_STATE_CONFERENCE_HOLD:
       default                          :
          qDebug() << "Backspace on call not editable. Doing nothing.";
          return;
@@ -1094,6 +1114,8 @@ QVariant Call::getRoleData(int role) const
          break;
       case Call::Role::DropState:
          return property("dropState");
+         break;
+      default:
          break;
    };
    return QVariant();

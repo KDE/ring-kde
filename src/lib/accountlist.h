@@ -39,21 +39,21 @@ public:
    //Static getter and destructor
    static AccountList* getInstance();
    static void destroy();
-   
+
    //Getters
-   const QVector<Account*>& getAccounts            (                        );
-   QVector<Account*>        getAccountsByState     ( const QString& state   );
-   QString                  getOrderedList         (                        ) const;
-   Account*                 getAccountById         ( const QString& id      ) const;
-   Account*                 getAccountAt           ( int i                  );
-   const Account*           getAccountAt           ( int i                  ) const;
-   int                      size                   (                        ) const;
-   Account*                 firstRegisteredAccount (                        ) const;
-   Account*                 getDefaultAccount      (                        );
-   static Account*          getCurrentAccount      (                        );
-   static QString           getPriorAccoundId      (                        );
-   Account*                 getAccountByModelIndex ( QModelIndex item       ) const;
-   static QString           getSimilarAliasIndex   ( QString alias          );
+   const QVector<Account*>& getAccounts            (                         );
+   QVector<Account*>        getAccountsByState     ( const QString& state    );
+   QString                  getOrderedList         (                         ) const;
+   Account*                 getAccountById         ( const QString& id       ) const;
+   Account*                 getAccountAt           ( int i                   );
+   const Account*           getAccountAt           ( int i                   ) const;
+   int                      size                   (                         ) const;
+   Account*                 firstRegisteredAccount (                         ) const;
+   Account*                 getDefaultAccount      (                         ) const;
+   static Account*          getCurrentAccount      (                         );
+   static QString           getPriorAccoundId      (                         );
+   Account*                 getAccountByModelIndex ( const QModelIndex& item ) const;
+   static QString           getSimilarAliasIndex   ( const QString& alias    );
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -84,14 +84,14 @@ private:
    explicit AccountList(QStringList& _accountIds);
    explicit AccountList(bool fill = true);
    ~AccountList();
-   
+
    //Attributes
    QVector<Account*>*       m_pAccounts      ;
    static AccountList*      m_spAccountList  ;
    static QString           m_sPriorAccountId;
    Account*                 m_pDefaultAccount;
    AccountListColorVisitor* m_pColorVisitor  ;
-   
+
 public Q_SLOTS:
    void update        ();
    void updateAccounts();
@@ -100,7 +100,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void accountChanged(const QString& account,const QString& state, int code);
    void accountChanged(Account* a);
-   
+
 Q_SIGNALS:
    ///The account list changed
    void accountListUpdated();

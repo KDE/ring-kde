@@ -23,6 +23,9 @@
 //SFLPhone
 #include "sflphone_const.h"
 
+//Qt
+#include <QtCore/QObject>
+
 //SFLPhone library
 #include "configurationmanager_interface_singleton.h"
 #include "callmanager_interface_singleton.h"
@@ -30,24 +33,24 @@
 AccountList* AccountList::m_spAccountList   = nullptr;
 QString      AccountList::m_sPriorAccountId = ""     ;
 
-QVariant AccountListNoCheckProxyModel::data(const QModelIndex& index,int role ) const
+QVariant AccountListNoCheckProxyModel::data(const QModelIndex& idx,int role ) const
 {
    if (role == Qt::CheckStateRole) {
       return QVariant();
    }
-   return AccountList::getInstance()->data(index,role);
+   return AccountList::getInstance()->data(idx,role);
 }
-bool AccountListNoCheckProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
+bool AccountListNoCheckProxyModel::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
-   return AccountList::getInstance()->setData(index,value,role);
+   return AccountList::getInstance()->setData(idx,value,role);
 }
-Qt::ItemFlags AccountListNoCheckProxyModel::flags (const QModelIndex& index) const
+Qt::ItemFlags AccountListNoCheckProxyModel::flags (const QModelIndex& idx) const
 {
-   return AccountList::getInstance()->flags(index);
+   return AccountList::getInstance()->flags(idx);
 }
-int AccountListNoCheckProxyModel::rowCount(const QModelIndex& parent ) const
+int AccountListNoCheckProxyModel::rowCount(const QModelIndex& parentIdx ) const
 {
-   return AccountList::getInstance()->rowCount(parent);
+   return AccountList::getInstance()->rowCount(parentIdx);
 }
 
 ///Constructors
@@ -118,20 +121,20 @@ void AccountList::accountChanged(const QString& account,const QString& state, in
       QStringList accountIds = configurationManager.getAccountList().value();
       for (int i = 0; i < accountIds.size(); ++i) {
          if (!getAccountById(accountIds[i])) {
-            Account* a = Account::buildExistingAccountFromId(accountIds[i]);
-            m_pAccounts->insert(i, a);
-            connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
+            Account* acc = Account::buildExistingAccountFromId(accountIds[i]);
+            m_pAccounts->insert(i, acc);
+            connect(acc,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
             emit dataChanged(index(i,0),index(size()-1));
          }
       }
-      foreach (Account* a, *m_pAccounts) {
-//          if (!dynamic_cast<Account*>(a)) { //If an account is being created while updating it may crash or remove it
-            int idx =accountIds.indexOf(a->getAccountId());
-            if (idx == -1 && (a->currentState() == READY || a->currentState() == REMOVED)) {
+      foreach (Account* acc, *m_pAccounts) {
+//          if (!dynamic_cast<Account*>(acc)) { //If an account is being created while updating it may crash or remove it
+            int idx =accountIds.indexOf(acc->getAccountId());
+            if (idx == -1 && (acc->currentState() == READY || acc->currentState() == REMOVED)) {
                m_pAccounts->remove(idx);
                emit dataChanged(index(idx - 1, 0), index(m_pAccounts->size()-1, 0));
             }
-            a = getAccountById(account);
+            acc = getAccountById(account);
 //          }
       }
    }
@@ -226,26 +229,26 @@ void AccountList::save()
 }
 
 ///Move account up
-bool AccountList::accountUp( int index )
+bool AccountList::accountUp( int idx )
 {
-   if(index > 0 && index <= rowCount()) {
-      Account* account = getAccountAt(index);
-      m_pAccounts->remove(index);
-      m_pAccounts->insert(index - 1, account);
-      emit dataChanged(this->index(index - 1, 0, QModelIndex()), this->index(index, 0, QModelIndex()));
+   if(idx > 0 && idx <= rowCount()) {
+      Account* account = getAccountAt(idx);
+      m_pAccounts->remove(idx);
+      m_pAccounts->insert(idx - 1, account);
+      emit dataChanged(this->index(idx - 1, 0, QModelIndex()), this->index(idx, 0, QModelIndex()));
       return true;
    }
    return false;
 }
 
 ///Move account down
-bool AccountList::accountDown( int index )
+bool AccountList::accountDown( int idx )
 {
-   if(index >= 0 && index < rowCount()) {
-      Account* account = getAccountAt(index);
-      m_pAccounts->remove(index);
-      m_pAccounts->insert(index + 1, account);
-      emit dataChanged(this->index(index, 0, QModelIndex()), this->index(index + 1, 0, QModelIndex()));
+   if(idx >= 0 && idx < rowCount()) {
+      Account* account = getAccountAt(idx);
+      m_pAccounts->remove(idx);
+      m_pAccounts->insert(idx + 1, account);
+      emit dataChanged(this->index(idx, 0, QModelIndex()), this->index(idx + 1, 0, QModelIndex()));
       return true;
    }
    return false;
@@ -294,7 +297,7 @@ QString AccountList::getOrderedList() const
 }
 
 ///Get account using its ID
-Account* AccountList::getAccountById(const QString & id) const
+Account* AccountList::getAccountById(const QString& id) const
 {
    if(id.isEmpty())
           return nullptr;
@@ -320,16 +323,16 @@ QVector<Account*> AccountList::getAccountsByState(const QString& state)
 QVector<Account*> AccountList::registeredAccounts() const
 {
    qDebug() << "registeredAccounts";
-   QVector<Account*> registeredAccounts;
+   QVector<Account*> registeredAccountsVector;
    Account* current;
    for (int i = 0; i < m_pAccounts->count(); ++i) {
       current = (*m_pAccounts)[i];
       if(current->getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED) {
          qDebug() << current->getAlias() << " : " << current;
-         registeredAccounts.append(current);
+         registeredAccountsVector.append(current);
       }
    }
-   return registeredAccounts;
+   return registeredAccountsVector;
 }
 
 ///Get the first registerred account (default account)
@@ -380,15 +383,15 @@ QString AccountList::getPriorAccoundId()
 }
 
 ///Get data from the model
-QVariant AccountList::data ( const QModelIndex& index, int role) const
+QVariant AccountList::data ( const QModelIndex& idx, int role) const
 {
-   if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
+   if (!idx.isValid() || idx.row() < 0 || idx.row() >= rowCount())
       return QVariant();
 
-   const Account * account = (*m_pAccounts)[index.row()];
-   if(index.column() == 0 && (role == Qt::DisplayRole || role == Qt::EditRole))
+   const Account * account = (*m_pAccounts)[idx.row()];
+   if(idx.column() == 0 && (role == Qt::DisplayRole || role == Qt::EditRole))
       return QVariant(account->getAlias());
-   else if(index.column() == 0 && role == Qt::CheckStateRole) {
+   else if(idx.column() == 0 && role == Qt::CheckStateRole) {
       return QVariant(account->isEnabled() ? Qt::Checked : Qt::Unchecked);
    }
    else if (role == Qt::BackgroundRole) {
@@ -397,38 +400,40 @@ QVariant AccountList::data ( const QModelIndex& index, int role) const
       else
          return QVariant(account->getStateColor());
    }
-   else if(index.column() == 0 && role == Qt::DecorationRole && m_pColorVisitor) {
+   else if(idx.column() == 0 && role == Qt::DecorationRole && m_pColorVisitor) {
       return m_pColorVisitor->getIcon(account);
    }
    return QVariant();
 } //data
 
-///Flags for "index"
-Qt::ItemFlags AccountList::flags(const QModelIndex & index) const
+///Flags for "idx"
+Qt::ItemFlags AccountList::flags(const QModelIndex& idx) const
 {
-   if (index.column() == 0)
-      return QAbstractItemModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-   return QAbstractItemModel::flags(index);
+   if (idx.column() == 0)
+      return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+   return QAbstractItemModel::flags(idx);
 }
 
 ///Number of account
-int AccountList::rowCount(const QModelIndex & /*parent*/) const
+int AccountList::rowCount(const QModelIndex& parentIdx) const
 {
+   Q_UNUSED(parentIdx);
    return m_pAccounts->size();
 }
 
-Account* AccountList::getAccountByModelIndex(QModelIndex item) const {
+Account* AccountList::getAccountByModelIndex(const QModelIndex& item) const
+{
    return (*m_pAccounts)[item.row()];
 }
 
 ///Return the default account (used for contact lookup)
-Account* AccountList::getDefaultAccount()
+Account* AccountList::getDefaultAccount() const
 {
    return m_pDefaultAccount;
 }
 
 ///Generate an unique suffix to prevent multiple account from sharing alias
-QString AccountList::getSimilarAliasIndex(QString alias)
+QString AccountList::getSimilarAliasIndex(const QString& alias)
 {
    int count = 0;
    foreach (Account* a, getInstance()->getAccounts()) {
@@ -479,9 +484,9 @@ void AccountList::removeAccount(Account* account)
    emit dataChanged(index(aindex,0), index(m_pAccounts->size()-1,0));
 }
 
-void AccountList::removeAccount( QModelIndex index )
+void AccountList::removeAccount( QModelIndex idx )
 {
-   removeAccount(getAccountByModelIndex(index));
+   removeAccount(getAccountByModelIndex(idx));
 }
 
 ///Set the previous account used
@@ -493,22 +498,22 @@ void AccountList::setPriorAccount(Account* account) {
 }
 
 ///Set model data
-bool AccountList::setData(const QModelIndex& index, const QVariant &value, int role)
+bool AccountList::setData(const QModelIndex& idx, const QVariant& value, int role)
 {
-   if (index.isValid() && index.column() == 0 && role == Qt::CheckStateRole) {
-      bool prevEnabled = (*m_pAccounts)[index.row()]->isEnabled();
-      (*m_pAccounts)[index.row()]->setEnabled(value.toBool());
-      emit dataChanged(index, index);
+   if (idx.isValid() && idx.column() == 0 && role == Qt::CheckStateRole) {
+      bool prevEnabled = (*m_pAccounts)[idx.row()]->isEnabled();
+      (*m_pAccounts)[idx.row()]->setEnabled(value.toBool());
+      emit dataChanged(idx, idx);
       if (prevEnabled != value.toBool())
-         emit accountEnabledChanged((*m_pAccounts)[index.row()]);
-      emit dataChanged(index, index);
+         emit accountEnabledChanged((*m_pAccounts)[idx.row()]);
+      emit dataChanged(idx, idx);
       return true;
    }
    else if ( role == Qt::EditRole ) {
-      bool changed = value.toString() != data(index,Qt::EditRole);
+      bool changed = value.toString() != data(idx,Qt::EditRole);
       if (changed) {
-         (*m_pAccounts)[index.row()]->setAccountAlias(value.toString());
-         emit dataChanged(index, index);
+         (*m_pAccounts)[idx.row()]->setAccountAlias(value.toString());
+         emit dataChanged(idx, idx);
       }
    }
    return false;

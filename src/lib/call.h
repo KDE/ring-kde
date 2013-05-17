@@ -283,7 +283,7 @@ private:
    
    static const char * callStateIcons[11];
 
-   Call(call_state startState, QString callId, QString peerNumber = "", QString account = "", QString peerName = "");
+   Call(call_state startState, const QString& callId, QString peerNumber = "", QString account = "", QString peerName = "");
    
    static daemon_call_state toDaemonCallState   (const QString& stateName);
    static call_state        confStatetoCallState(const QString& stateName);
