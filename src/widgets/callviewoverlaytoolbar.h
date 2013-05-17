@@ -48,7 +48,7 @@ public Q_SLOTS:
    }
 };
 
-enum ActionButton {
+enum class ActionButton : unsigned int {
    PICKUP   = 0,
    HOLD     = 1,
    UNHOLD   = 2,
@@ -58,6 +58,7 @@ enum ActionButton {
    RECORD   = 6,
    REFUSE   = 7,
    ACCEPT   = 8,
+   COUNT
 };
 
 class CallViewOverlayToolbar : public QWidget

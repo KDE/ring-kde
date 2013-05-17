@@ -86,7 +86,7 @@ void SFLPhoneAccessibility::currentCallDetails()
 {
    foreach (Call* call,SFLPhone::model()->getCallList()) {
       if (call->isSelected()) {
-         QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName().toAscii() ));
+         QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->getState()).toAscii() ));
          if (!call->getPeerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->getPeerName()));
          if (!call->getPeerPhoneNumber().isEmpty())

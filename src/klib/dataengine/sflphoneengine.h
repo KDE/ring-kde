@@ -69,7 +69,7 @@ class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
       ContactHash          m_hContacts;
 
       //Getter
-      QString getCallStateName(call_state state);
+      QString getCallStateName(Call::State state);
 
       //Callback
       void updateHistory        ();

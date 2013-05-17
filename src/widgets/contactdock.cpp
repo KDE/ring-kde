@@ -337,7 +337,7 @@ void ContactDock::callAgain()
       if (call) {
          call->setCallNumber(number);
          call->setPeerName(m_pCurrentContact->getFormattedName());
-         call->actionPerformed(CALL_ACTION_ACCEPT);
+         call->actionPerformed(Call::Action::ACCEPT);
       }
       else {
          HelperFunctions::displayNoAccountMessageBox(this);
@@ -399,7 +399,7 @@ void ContactDock::transferEvent(QMimeData* data)
       if (ok) {
          Call* call = SFLPhone::model()->getCall(data->data(MIME_CALLID));
          if (dynamic_cast<Call*>(call)) {
-            call->changeCurrentState(CALL_STATE_TRANSFERRED);
+            call->changeCurrentState(Call::State::TRANSFERRED);
             SFLPhone::model()->transfer(call, result);
          }
       }

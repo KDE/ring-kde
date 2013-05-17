@@ -93,7 +93,7 @@ private Q_SLOTS:
     * @param call the call on which to perform the action
     * @param action the code of the action to perform
     */
-   void action(Call * call, call_action action);
+   void action(Call * call, Call::Action action);
 
    /**
     *   Sets the account account to be the prior account.

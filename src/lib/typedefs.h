@@ -29,6 +29,29 @@ typedef QMap<QString, QString> MapStringString;
 typedef QVector< QMap<QString, QString> > VectorMapStringString;
 typedef QMap<QString, int> MapStringInt;
 
+template<class T, class E, E max>
+struct TypedStateMachine
+{
+    // no ctor/dtor and one public member variable for easy initialization
+    T _data[size_t(max)];
+
+    T& operator[](E v) {
+        return _data[size_t(v)];
+    }
+
+    const T& operator[](E v) const {
+        return _data[size_t(v)];
+    }
+
+    T *begin() {
+        return _data;
+    }
+
+    T *end() {
+        return _data + size_t(max);
+    }
+};
+
 #define LIB_EXPORT Q_DECL_EXPORT
 #define LIB_IMPORT Q_DECL_IMPORT
 

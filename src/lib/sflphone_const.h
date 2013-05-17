@@ -270,27 +270,6 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 #define CONST_ALSA                        0
 #define CONST_PULSEAUDIO                  1
 
-typedef enum
-{
-   
-   CALL_STATE_INCOMING        = 0, /** Ringing incoming call */
-   CALL_STATE_RINGING         = 1, /** Ringing outgoing call */
-   CALL_STATE_CURRENT         = 2, /** Call to which the user can speak and hear */
-   CALL_STATE_DIALING         = 3, /** Call which numbers are being added by the user */
-   CALL_STATE_HOLD            = 4, /** Call is on hold */
-   CALL_STATE_FAILURE         = 5, /** Call has failed */
-   CALL_STATE_BUSY            = 6, /** Call is busy */
-   CALL_STATE_TRANSFERRED     = 7, /** Call is being transferred.  During this state, the user can enter the new number. */
-   CALL_STATE_TRANSF_HOLD     = 8, /** Call is on hold for transfer */
-   CALL_STATE_OVER            = 9, /** Call is over and should not be used */
-   CALL_STATE_ERROR           = 10,/** This state should never be reached */
-   CALL_STATE_CONFERENCE      = 11,/** This call is the current conference*/
-   CALL_STATE_CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
-} call_state;
-
-static const QString empty("");
-#define EMPTY_STRING empty
-
 /** MIME API */
 #define MIME_CALLID           "text/sflphone.call.id"
 #define MIME_CONTACT          "text/sflphone.contact"

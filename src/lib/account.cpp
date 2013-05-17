@@ -161,7 +161,7 @@ const QString Account::getAccountId() const
    }
    if (!m_pAccountId) {
       qDebug() << "Account not configured";
-      return EMPTY_STRING; //WARNING May explode
+      return QString(); //WARNING May explode
    }
    
    return *m_pAccountId;
@@ -184,7 +184,7 @@ const QString Account::getAccountDetail(const QString& param) const
 {
    if (!m_pAccountDetails) {
       qDebug() << "The account list is not set";
-      return EMPTY_STRING; //May crash, but better than crashing now
+      return QString(); //May crash, but better than crashing now
    }
    if (m_pAccountDetails->find(param) != m_pAccountDetails->end()) {
       return (*m_pAccountDetails)[param];
@@ -193,11 +193,11 @@ const QString Account::getAccountDetail(const QString& param) const
       if (param == "Account.enable") //If an account is invalid, at least does not try to register it
          return REGISTRATION_ENABLED_FALSE;
       qDebug() << "Account parameter \"" << param << "\" not found";
-      return EMPTY_STRING;
+      return QString();
    }
    else {
       qDebug() << "Account details not found, there is " << m_pAccountDetails->count() << " details available";
-      return EMPTY_STRING;
+      return QString();
    }
 } //getAccountDetail
 

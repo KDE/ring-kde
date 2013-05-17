@@ -384,7 +384,7 @@ void HistoryDock::slotCallAgain()
    if (call) {
       call->setCallNumber  ( m_pCurrentCall->getPeerPhoneNumber() );
       call->setPeerName    ( m_pCurrentCall->getPeerName() );
-      call->actionPerformed( CALL_ACTION_ACCEPT   );
+      call->actionPerformed( Call::Action::ACCEPT   );
    }
    else {
       HelperFunctions::displayNoAccountMessageBox(this);

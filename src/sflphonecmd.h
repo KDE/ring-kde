@@ -35,8 +35,8 @@ public:
 
    //Static mutators
    static void parseCmd(int argc, char **argv, KAboutData& about);
-   static void placeCall(QString number);
-   static void sendText(QString number, QString text);
+   static void placeCall(const QString& number);
+   static void sendText(const QString& number, const QString& text);
 
 private:
    //Private constructor

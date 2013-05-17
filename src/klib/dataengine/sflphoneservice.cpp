@@ -45,7 +45,7 @@ void CallJob::start()
    Call* call = SFLPhoneEngine::getModel()->addDialingCall(m_Number,m_pAccount);
    if (call) {
       call->setCallNumber(m_Number);
-      call->actionPerformed(CALL_ACTION_ACCEPT);
+      call->actionPerformed(Call::Action::ACCEPT);
    }
 }
 
@@ -78,8 +78,8 @@ HangUpJob::HangUpJob(QObject* parent, const QString& operation, const QVariantMa
 void HangUpJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->getCall(m_CallId);
-   call->actionPerformed(CALL_ACTION_REFUSE);
-   call->changeCurrentState(CALL_STATE_OVER);
+   call->actionPerformed(Call::Action::REFUSE);
+   call->changeCurrentState(Call::State::OVER);
 }
 
 
@@ -98,9 +98,9 @@ void TransferJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->getCall(m_CallId);
    call->setTransferNumber(m_transferNumber);
-   call->changeCurrentState( CALL_STATE_TRANSFERRED );
-   call->actionPerformed   ( CALL_ACTION_ACCEPT     );
-   call->changeCurrentState( CALL_STATE_OVER        );
+   call->changeCurrentState( Call::State::TRANSFERRED );
+   call->actionPerformed   ( Call::Action::ACCEPT                  );
+   call->changeCurrentState( Call::State::OVER        );
 }
 
 ///Constructor
@@ -114,7 +114,7 @@ HoldJob::HoldJob(QObject* parent, const QString& operation, const QVariantMap& p
 void HoldJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->getCall(m_CallId);
-   call->actionPerformed(CALL_ACTION_HOLD);
+   call->actionPerformed(Call::Action::HOLD);
 }
 
 ///Constructor
@@ -130,7 +130,7 @@ RecordJob::RecordJob(QObject* parent, const QString& operation, const QVariantMa
 void RecordJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->getCall(m_CallId);
-   call->actionPerformed(CALL_ACTION_RECORD);
+   call->actionPerformed(Call::Action::RECORD);
 }
 
 

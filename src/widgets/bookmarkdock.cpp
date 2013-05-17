@@ -154,5 +154,5 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
       return;
    Call* call2 = SFLPhone::model()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountList::getCurrentAccount());
    call2->setCallNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
-   call2->actionPerformed( CALL_ACTION_ACCEPT   );
+   call2->actionPerformed( Call::Action::ACCEPT   );
 }

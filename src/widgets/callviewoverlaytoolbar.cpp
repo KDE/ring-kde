@@ -37,18 +37,18 @@
 #include <klib/tipmanager.h>
 #include <lib/call.h>
 
-const bool visibility[9][13] = {              /*ROW = BUTTONS   COLS=STATE*/
+const TypedStateMachine< TypedStateMachine< bool , Call::State, Call::State::COUNT > , ActionButton, ActionButton::COUNT > visibility = {{              /*ROW = BUTTONS   COLS=STATE*/
             /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
- /*PICKUP   */ { true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    },
- /*HOLD     */ { false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    },
- /*UNHOLD   */ { false  , false,  false,  false, true , false, false,   false,     false,    false, false,  false,      false    },
- /*HANGUP   */ { false  , true ,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     },
- /*MUTE     */ { false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    },
- /*TRANSFER */ { false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    },
- /*RECORD   */ { false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     },
- /*REFUSE   */ { true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    },
- /*ACCEPT   */ { false  , false,  false,  true , false, false, false,   false,     false,    false, false,  false,      false    },
-};
+ /*PICKUP   */ {{ true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
+ /*HOLD     */ {{ false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    }},
+ /*UNHOLD   */ {{ false  , false,  false,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
+ /*HANGUP   */ {{ false  , true ,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     }},
+ /*MUTE     */ {{ false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
+ /*TRANSFER */ {{ false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
+ /*RECORD   */ {{ false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     }},
+ /*REFUSE   */ {{ true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
+ /*ACCEPT   */ {{ false  , false,  false,  true , false, false, false,   false,     false,    false, false,  false,      false    }},
+}};
 
 ///Constructor
 CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(parent),m_pRightRender(0),m_pLeftRender(0),m_pParent(parent)
@@ -68,15 +68,15 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(pare
    m_pRefuse   = createButton( SFLPhone::app()->getRefuseAction()   );
    m_pAccept   = createButton( SFLPhone::app()->getAcceptAction()   );
 
-   m_hButtons[ ActionButton::HOLD     ] = m_pHold    ;
-   m_hButtons[ ActionButton::UNHOLD   ] = m_pUnhold  ;
-   m_hButtons[ ActionButton::PICKUP   ] = m_pPickup  ;
-   m_hButtons[ ActionButton::HANGUP   ] = m_pHangup  ;
-   m_hButtons[ ActionButton::MUTE     ] = m_pMute    ;
-   m_hButtons[ ActionButton::TRANSFER ] = m_pTransfer;
-   m_hButtons[ ActionButton::RECORD   ] = m_pRecord  ;
-   m_hButtons[ ActionButton::REFUSE   ] = m_pRefuse  ;
-   m_hButtons[ ActionButton::ACCEPT   ] = m_pAccept  ;
+   m_hButtons[ static_cast<int>(ActionButton::HOLD)     ] = m_pHold    ;
+   m_hButtons[ static_cast<int>(ActionButton::UNHOLD)   ] = m_pUnhold  ;
+   m_hButtons[ static_cast<int>(ActionButton::PICKUP)   ] = m_pPickup  ;
+   m_hButtons[ static_cast<int>(ActionButton::HANGUP)   ] = m_pHangup  ;
+   m_hButtons[ static_cast<int>(ActionButton::MUTE)     ] = m_pMute    ;
+   m_hButtons[ static_cast<int>(ActionButton::TRANSFER) ] = m_pTransfer;
+   m_hButtons[ static_cast<int>(ActionButton::RECORD)   ] = m_pRecord  ;
+   m_hButtons[ static_cast<int>(ActionButton::REFUSE)   ] = m_pRefuse  ;
+   m_hButtons[ static_cast<int>(ActionButton::ACCEPT)   ] = m_pAccept  ;
 
    layout->addWidget( m_pHangup   );
    layout->addWidget( m_pTransfer );
@@ -149,14 +149,14 @@ void CallViewOverlayToolbar::updateState()
       if (!m_pParent->selectionModel()->hasSelection()) {
          m_pParent->selectionModel()->setCurrentIndex(index,QItemSelectionModel::SelectCurrent);
       }
-      call_state state = (call_state) index.data(Call::Role::State).toInt();
+      Call::State state = (Call::State) index.data(Call::Role::CallState).toInt();
       setVisible(true);
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
       manager->setBottomMargin(53);
       char act_counter = 0;
       for (int i = 0;i<9;i++) {
-         m_hButtons[ i ]->setVisible(visibility[ i ][state]);
-         act_counter += visibility[ i     ][state];
+         m_hButtons[ i ]->setVisible(visibility[ static_cast<ActionButton>(i) ][state]);
+         act_counter += visibility[ static_cast<ActionButton>(i) ][state];
       }
       if (!act_counter)
          setVisible(false);

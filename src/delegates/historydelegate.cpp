@@ -44,7 +44,7 @@ static const char* icnPath[4] = {
 };
 
 ///Constant
-const char * callStateIcons[12] = {ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE};
+TypedStateMachine< const char* , Call::State, Call::State::COUNT > callStateIcons = {ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE};
 
 HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr)
 {
@@ -55,9 +55,9 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    QFontMetrics fm(QApplication::font());
    int lineHeight = fm.height()+2;
    int rowCount = 0;
-   int currentState = index.data(Call::Role::State).toInt();
-   int minimumRowHeight = (currentState == CALL_STATE_OVER)?48:(ConfigurationSkeleton::limitMinimumRowHeight()?ConfigurationSkeleton::minimumRowHeight():0);
-   if (currentState == CALL_STATE_OVER)
+   Call::State currentState = static_cast<Call::State>(index.data(Call::Role::CallState).toInt());
+   int minimumRowHeight = (currentState == Call::State::OVER)?48:(ConfigurationSkeleton::limitMinimumRowHeight()?ConfigurationSkeleton::minimumRowHeight():0);
+   if (currentState == Call::State::OVER)
       rowCount = 3;
    else {
       rowCount = ConfigurationSkeleton::displayCallPeer()
@@ -91,8 +91,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    Call* call  = nullptr;
    if (obj)
       call = qobject_cast<Call*>(obj);
-   call_state currentState = (call_state) index.data(Call::Role::State).toInt();
-   if (currentState == CALL_STATE_HOLD)
+   Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
+   if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 
    QPixmap pxm;
@@ -109,7 +109,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       pxm.setMask(mask);
    }
    else {
-      if (currentState == CALL_STATE_OVER)
+      if (currentState == Call::State::OVER)
          pxm = QPixmap(KIcon("user-identity").pixmap(QSize(iconHeight,iconHeight)));
       else
          pxm = QPixmap(callStateIcons[currentState]).scaledToWidth(iconHeight);
@@ -126,9 +126,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          m_pParent->setIndexWidget(index,button);
       }
    }
-   else if ((index.data(Call::Role::HistoryState).toInt() != history_state::NONE || currentState != CALL_STATE_OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if ((index.data(Call::Role::HistoryState).toInt() != history_state::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
-      QPixmap status((currentState==CALL_STATE_OVER)?icnPath[index.data(Call::Role::HistoryState).toInt()]:callStateIcons[currentState]);
+      QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::HistoryState).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
    }
@@ -137,7 +137,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    QFont font = painter->font();
    QFontMetrics fm(font);
    int currentHeight = option.rect.y()+fm.height()+2;
-   if (currentState == CALL_STATE_OVER) { //History/Bookmarks
+   if (currentState == Call::State::OVER) { //History/Bookmarks
       font.setBold(true);
       painter->setFont(font);
       painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
@@ -212,7 +212,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          historyMap.insert(i18n("Transfer")  ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
       }
 
-      if (currentState == CALL_STATE_OVER)
+      if (currentState == Call::State::OVER)
          m_pDelegatedropoverlay->setButtons(&historyMap);
       else
          m_pDelegatedropoverlay->setButtons(&callMap);

@@ -205,11 +205,11 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    aNewStruct->conference = false;
 
    m_sPrivateCallList_call  [ call              ] = aNewStruct;
-   if (call->getCurrentState() != CALL_STATE_OVER)
+   if (call->getCurrentState() != Call::State::OVER)
       m_lInternalModel << aNewStruct;
    m_sPrivateCallList_callId[ call->getCallId() ] = aNewStruct;
 
-   if (call->getCurrentState() != CALL_STATE_OVER)
+   if (call->getCurrentState() != Call::State::OVER)
       emit callAdded(call,parentCall);
    const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
    emit dataChanged(idx, idx);
@@ -232,7 +232,7 @@ Call* CallModel::addIncomingCall(const QString& callId)
    //Call without account is not possible
    if (dynamic_cast<Account*>(call->getAccount())) {
       if (call && call->getAccount()->isAutoAnswer()) {
-         call->actionPerformed(CALL_ACTION_ACCEPT);
+         call->actionPerformed(Call::Action::ACCEPT);
       }
    }
    else {
@@ -272,7 +272,7 @@ void CallModel::removeCall(Call* call)
    //Restore calls to the main list if they are not rey over
    if (internal->m_lChildren.size()) {
       foreach(InternalStruct* child,internal->m_lChildren) {
-         if (child->call_real->getState() != CALL_STATE_OVER)
+         if (child->call_real->getState() != Call::State::OVER)
             m_lInternalModel << child;
       }
    }
@@ -309,8 +309,8 @@ void CallModel::attendedTransfer(Call* toTransfer, Call* target)
    Q_NOREPLY CallManagerInterfaceSingleton::getInstance().attendedTransfer(toTransfer->getCallId(),target->getCallId());
 
    //TODO [Daemon] Implement this correctly
-   toTransfer->changeCurrentState(CALL_STATE_OVER);
-   target->changeCurrentState(CALL_STATE_OVER);
+   toTransfer->changeCurrentState(Call::State::OVER);
+   target->changeCurrentState(Call::State::OVER);
 } //attendedTransfer
 
 ///Transfer this call to  "target" number
@@ -318,9 +318,9 @@ void CallModel::transfer(Call* toTransfer, QString target)
 {
    qDebug() << "Transferring call " << toTransfer->getCallId() << "to" << target;
    toTransfer->setTransferNumber ( target                 );
-   toTransfer->changeCurrentState( CALL_STATE_TRANSFERRED );
-   toTransfer->actionPerformed   ( CALL_ACTION_TRANSFER   );
-   toTransfer->changeCurrentState( CALL_STATE_OVER        );
+   toTransfer->changeCurrentState( Call::State::TRANSFERRED );
+   toTransfer->actionPerformed   ( Call::Action::TRANSFER   );
+   toTransfer->changeCurrentState( Call::State::OVER        );
 } //transfer
 
 /*****************************************************************************
@@ -330,7 +330,7 @@ void CallModel::transfer(Call* toTransfer, QString target)
  ****************************************************************************/
 
 ///Add a new conference, get the call list and update the interface as needed
-Call* CallModel::addConference(const QString & confID)
+Call* CallModel::addConference(const QString& confID)
 {
    qDebug() << "Notified of a new conference " << confID;
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
@@ -689,7 +689,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
          removeCall(call);
    }
 
-   if (call->getCurrentState() == CALL_STATE_OVER) {
+   if (call->getCurrentState() == Call::State::OVER) {
       HistoryModel::add(call);
    }
 
@@ -730,7 +730,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
       QStringList participants = callManager.getParticipantList(confID);
 
       foreach(InternalStruct* child,confInt->m_lChildren) {
-         if (participants.indexOf(child->call_real->getCallId()) == -1 && child->call_real->getCurrentState() != CALL_STATE_OVER)
+         if (participants.indexOf(child->call_real->getCallId()) == -1 && child->call_real->getCurrentState() != Call::State::OVER)
             m_lInternalModel << child;
       }
       confInt->m_lChildren.clear();
