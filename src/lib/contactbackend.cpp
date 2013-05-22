@@ -30,7 +30,7 @@
 #include <QtCore/QDebug>
 
 ///Constructor
-ContactBackend::ContactBackend(QObject* parent) : QAbstractItemModel(parent),m_UpdatesCounter(0)
+ContactBackend::ContactBackend(QObject* par) : QAbstractItemModel(par),m_UpdatesCounter(0)
 {
    connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }
@@ -92,23 +92,23 @@ QString ContactBackend::getHostNameFromPhone(QString phoneNumber)
  ****************************************************************************/
 
 
-bool ContactBackend::setData( const QModelIndex& index, const QVariant &value, int role)
+bool ContactBackend::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
-   Q_UNUSED(index)
+   Q_UNUSED(idx)
    Q_UNUSED(value)
    Q_UNUSED(role)
    return false;
 }
 
-QVariant ContactBackend::data( const QModelIndex& index, int role) const
+QVariant ContactBackend::data( const QModelIndex& idx, int role) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return QVariant();
-   if (!index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(getContactList()[index.row()]->getFormattedName());
+   if (!idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+      return QVariant(getContactList()[idx.row()]->getFormattedName());
    }
-   else if (index.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(getContactList()[index.parent().row()]->getPhoneNumbers()[index.row()]->getNumber());
+   else if (idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+      return QVariant(getContactList()[idx.parent().row()]->getPhoneNumbers()[idx.row()]->getNumber());
    }
    return QVariant();
 }
@@ -121,51 +121,51 @@ QVariant ContactBackend::headerData(int section, Qt::Orientation orientation, in
    return QVariant();
 }
 
-int ContactBackend::rowCount( const QModelIndex& parent ) const
+int ContactBackend::rowCount( const QModelIndex& par ) const
 {
-   if (!parent.isValid()) {
+   if (!par.isValid()) {
       return getContactList().size();
    }
-   else if (!parent.parent().isValid() && parent.row() < getContactList().size()) {
-      return getContactList()[parent.row()]->getPhoneNumbers().size();
+   else if (!par.parent().isValid() && par.row() < getContactList().size()) {
+      return getContactList()[par.row()]->getPhoneNumbers().size();
    }
    return 0;
 }
 
-Qt::ItemFlags ContactBackend::flags( const QModelIndex& index ) const
+Qt::ItemFlags ContactBackend::flags( const QModelIndex& idx ) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return 0;
-   return Qt::ItemIsEnabled | ((index.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
+   return Qt::ItemIsEnabled | ((idx.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
 }
 
-int ContactBackend::columnCount ( const QModelIndex& parent) const
+int ContactBackend::columnCount ( const QModelIndex& par) const
 {
-   Q_UNUSED(parent)
+   Q_UNUSED(par)
    return 1;
 }
 
-QModelIndex ContactBackend::parent( const QModelIndex& index) const
+QModelIndex ContactBackend::parent( const QModelIndex& idx) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return QModelIndex();
-   ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
+   ContactTreeBackend* modelItem = (ContactTreeBackend*)idx.internalPointer();
    if (modelItem && modelItem->type3() == ContactTreeBackend::Type::NUMBER) {
-      int idx = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
-      if (idx != -1) {
-         return ContactBackend::index(idx,0,QModelIndex());
+      int idx2 = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
+      if (idx2 != -1) {
+         return ContactBackend::index(idx2,0,QModelIndex());
       }
    }
    return QModelIndex();
 }
 
-QModelIndex ContactBackend::index( int row, int column, const QModelIndex& parent) const
+QModelIndex ContactBackend::index( int row, int column, const QModelIndex& par) const
 {
-   if (!parent.isValid() && m_ContactByPhone.size() > row) {
+   if (!par.isValid() && m_ContactByPhone.size() > row) {
       return createIndex(row,column,getContactList()[row]);
    }
-   else if (parent.isValid() && getContactList()[parent.row()]->getPhoneNumbers().size() > row) {
-      return createIndex(row,column,(ContactTreeBackend*)(&(getContactList()[parent.row()]->getPhoneNumbers())));
+   else if (par.isValid() && getContactList()[par.row()]->getPhoneNumbers().size() > row) {
+      return createIndex(row,column,(ContactTreeBackend*)(&(getContactList()[par.row()]->getPhoneNumbers())));
    }
    return QModelIndex();
 }

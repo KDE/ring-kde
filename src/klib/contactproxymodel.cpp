@@ -117,6 +117,8 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
       switch (role) {
          case Qt::DisplayRole:
             return ((TopLevelItem*)modelItem)->m_Name;
+         default:
+            break;
       }
       break;
    case ContactTreeBackend::Type::CONTACT: /* && (role == Qt::DisplayRole)) {*/
@@ -152,7 +154,8 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
             Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
             return ct->getFormattedName()+'\n'+ct->getOrganization()+'\n'+ct->getGroup()+'\n'+ct->getDepartment()+'\n'+ct->getPreferredEmail();
          }
-         break;
+         default:
+            break;
       }
       break;
    case ContactTreeBackend::Type::NUMBER: /* && (role == Qt::DisplayRole)) {*/
@@ -160,6 +163,8 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
          case Qt::DisplayRole:
             return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChilds[index.parent().row()]->getPhoneNumbers()[index.row()]->getNumber());
       }
+      break;
+   default:
       break;
    };
    return QVariant();

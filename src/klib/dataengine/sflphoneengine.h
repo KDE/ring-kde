@@ -20,7 +20,6 @@
 
 //Base
 #include <Plasma/DataEngine>
-#include "../sortabledockcommon.h"
 
 //Qt
 #include <QHash>
@@ -36,10 +35,10 @@ namespace Plasma {
 //Typedef
 typedef QHash<QString,QVariant>                 HashStringString;
 typedef QHash<QString,QHash<QString,QVariant> > ContactHash     ;
-class Call;
+#include "../../lib/call.h"
 
 ///SFLPhoneEngine: SFLPhone KDE plasma dataengine
-class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
+class SFLPhoneEngine : public Plasma::DataEngine
 {
    Q_OBJECT
 

@@ -140,7 +140,7 @@ CallModel* SFLPhoneEngine::getModel()
 void SFLPhoneEngine::updateHistory()
 {
    CallList list = HistoryModel::getHistory().values();
-   setHistoryCategory(list,HistorySortingMode::Date);
+//    setHistoryCategory(list,HistorySortingMode::Date);
 
    foreach (Call* oldCall, list) {
       HashStringString current;
@@ -357,4 +357,5 @@ void SFLPhoneEngine::voiceMailNotifySignal(const QString& accountId, int count)
    //TODO
 }
 
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
 K_EXPORT_PLASMA_DATAENGINE(sflphone, SFLPhoneEngine)

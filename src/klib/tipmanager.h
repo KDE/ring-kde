@@ -96,6 +96,6 @@ Q_SIGNALS:
    void currentTipChanged(Tip*);
 
 };
-Q_DECLARE_METATYPE(TipManager*);
+Q_DECLARE_METATYPE(TipManager*)
 
 #endif

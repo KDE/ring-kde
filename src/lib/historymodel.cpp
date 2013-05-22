@@ -240,41 +240,44 @@ void HistoryModel::reloadCategories()
    emit dataChanged(index(0,0),index(rowCount()-1,0));
 }
 
-bool HistoryModel::setData( const QModelIndex& index, const QVariant &value, int role)
+bool HistoryModel::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
-   if (index.isValid() && index.parent().isValid()) {
-      HistoryTreeBackend* modelItem = (HistoryTreeBackend*)index.internalPointer();
+   if (idx.isValid() && idx.parent().isValid()) {
+      HistoryTreeBackend* modelItem = (HistoryTreeBackend*)idx.internalPointer();
       if (role == Call::Role::DropState) {
          modelItem->setDropState(value.toInt());
-         emit dataChanged(index, index);
+         emit dataChanged(idx, idx);
       }
    }
    return false;
 }
 
-QVariant HistoryModel::data( const QModelIndex& index, int role) const
+QVariant HistoryModel::data( const QModelIndex& idx, int role) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return QVariant();
    
-   HistoryTreeBackend* modelItem = (HistoryTreeBackend*)index.internalPointer();
+   HistoryTreeBackend* modelItem = (HistoryTreeBackend*)idx.internalPointer();
    switch (modelItem->type3()) {
       case HistoryTreeBackend::Type::TOP_LEVEL:
       switch (role) {
          case Qt::DisplayRole:
             return ((TopLevelItem*)modelItem)->m_Name;
+         default:
+            break;
       }
       break;
    case HistoryTreeBackend::Type::CALL:
       if (role == Call::Role::DropState)
          return QVariant(modelItem->dropState());
-      else if (m_lCategoryCounter.size() >= index.parent().row() 
-         && m_lCategoryCounter[index.parent().row()] 
-         && m_lCategoryCounter[index.parent().row()]->m_lChilds.size() >= index.row())
-         return m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getRoleData((Call::Role)role);
+      else if (m_lCategoryCounter.size() >= idx.parent().row() 
+         && m_lCategoryCounter[idx.parent().row()] 
+         && m_lCategoryCounter[idx.parent().row()]->m_lChilds.size() >= idx.row())
+         return m_lCategoryCounter[idx.parent().row()]->m_lChilds[idx.row()]->getRoleData((Call::Role)role);
       break;
    case HistoryTreeBackend::Type::NUMBER:
    case HistoryTreeBackend::Type::BOOKMARK:
+   default:
       break;
    };
    return QVariant();
@@ -290,13 +293,13 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
    return QVariant();
 }
 
-int HistoryModel::rowCount( const QModelIndex& parent ) const
+int HistoryModel::rowCount( const QModelIndex& parentIdx ) const
 {
-   if (!parent.isValid() || !parent.internalPointer()) {
+   if (!parentIdx.isValid() || !parentIdx.internalPointer()) {
       return m_lCategoryCounter.size();
    }
-   else if (!parent.parent().isValid()) {
-      return m_lCategoryCounter[parent.row()]->m_lChilds.size();
+   else if (!parentIdx.parent().isValid()) {
+      return m_lCategoryCounter[parentIdx.row()]->m_lChilds.size();
    }
 //    else if (parent.parent().isValid() && !parent.parent().parent().isValid()) {
 //       return m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->getPhoneNumbers().size();
@@ -304,27 +307,27 @@ int HistoryModel::rowCount( const QModelIndex& parent ) const
    return 0;
 }
 
-Qt::ItemFlags HistoryModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags HistoryModel::flags( const QModelIndex& idx ) const
 {
-   if (!index.isValid())
+   if (!idx.isValid())
       return 0;
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (index.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
+   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (idx.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
 }
 
-int HistoryModel::columnCount ( const QModelIndex& parent) const
+int HistoryModel::columnCount ( const QModelIndex& parentIdx) const
 {
-   Q_UNUSED(parent)
+   Q_UNUSED(parentIdx)
    return 1;
 }
 
-QModelIndex HistoryModel::parent( const QModelIndex& index) const
+QModelIndex HistoryModel::parent( const QModelIndex& idx) const
 {
-   if (!index.isValid() || !index.internalPointer()) {
+   if (!idx.isValid() || !idx.internalPointer()) {
       return QModelIndex();
    }
-   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
+   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
    if (modelItem && (long long)modelItem > 100 && modelItem->type3() == HistoryTreeBackend::Type::CALL) {
-      Call* call = (Call*)((HistoryTreeBackend*)(index.internalPointer()))->getSelf();
+      Call* call = (Call*)((HistoryTreeBackend*)(idx.internalPointer()))->getSelf();
       QString val = category(call);
       if (m_hCategories[val])
          return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
@@ -345,13 +348,13 @@ QModelIndex HistoryModel::parent( const QModelIndex& index) const
    return QModelIndex();
 }
 
-QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parent) const
+QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentIdx) const
 {
-   if (!parent.isValid()) {
+   if (!parentIdx.isValid()) {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
-   else if (!parent.parent().isValid() && column < m_lCategoryCounter[parent.row()]->m_lChilds.size() ) {
-      return createIndex(row,column,(void*)dynamic_cast<HistoryTreeBackend*>(m_lCategoryCounter[parent.row()]->m_lChilds[row]));
+   else if (!parentIdx.parent().isValid() && column < m_lCategoryCounter[parentIdx.row()]->m_lChilds.size() ) {
+      return createIndex(row,column,(void*)dynamic_cast<HistoryTreeBackend*>(m_lCategoryCounter[parentIdx.row()]->m_lChilds[row]));
    }
 //    else if (parent.parent().isValid()) {
 //       return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->getPhoneNumbers());
@@ -366,28 +369,30 @@ QStringList HistoryModel::mimeTypes() const
 
 QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
 {
-   QMimeData *mimeData = new QMimeData();
-   foreach (const QModelIndex &index, indexes) {
-      if (index.isValid()) {
-         QString text = data(index, Call::Role::Number).toString();
-         mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
-         mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
-         mimeData->setData(MIME_HISTORYID  , ((Call*)index.internalPointer())->getCallId().toUtf8());
-         return mimeData;
+   QMimeData *mimeData2 = new QMimeData();
+   foreach (const QModelIndex &idx, indexes) {
+      if (idx.isValid()) {
+         QString text = data(idx, Call::Role::Number).toString();
+         mimeData2->setData(MIME_PLAIN_TEXT , text.toUtf8());
+         mimeData2->setData(MIME_PHONENUMBER, text.toUtf8());
+         mimeData2->setData(MIME_HISTORYID  , ((Call*)idx.internalPointer())->getCallId().toUtf8());
+         return mimeData2;
       }
    }
-   return mimeData;
+   return mimeData2;
 }
 
 
-bool HistoryModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, int row, int column, const QModelIndex &parentIdx)
 {
+   Q_UNUSED(row)
+   Q_UNUSED(column)
 //    QModelIndex idx = index(row,column,parent);
-   qDebug() << "DROPPED" << action << parent.data(Qt::DisplayRole) << parent.isValid() << parent.data(Qt::DisplayRole);
-   setData(parent,-1,Call::Role::DropState);
-   QByteArray encodedCallId      = data->data( MIME_CALLID      );
-   QByteArray encodedPhoneNumber = data->data( MIME_PHONENUMBER );
-   QByteArray encodedContact     = data->data( MIME_CONTACT     );
+   qDebug() << "DROPPED" << action << parentIdx.data(Qt::DisplayRole) << parentIdx.isValid() << parentIdx.data(Qt::DisplayRole);
+   setData(parentIdx,-1,Call::Role::DropState);
+   QByteArray encodedCallId      = mime->data( MIME_CALLID      );
+   QByteArray encodedPhoneNumber = mime->data( MIME_PHONENUMBER );
+   QByteArray encodedContact     = mime->data( MIME_CONTACT     );
 
 //    if (data->hasFormat( MIME_CALLID) && !QString(encodedCallId).isEmpty()) {
 //       qDebug() << "CallId dropped"<< QString(encodedCallId);
@@ -407,57 +412,6 @@ bool HistoryModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 //    }
    return false;
 }
-
-// QVariant HistoryModel::commonCallInfo(Call* call, int role) const
-// {
-//    if (!call)
-//       return QVariant();
-//    QVariant cat;
-//    Contact* ct = call->getContact();
-//    switch (role) {
-//       case Qt::DisplayRole:
-//       case Call::Role::Name:
-//          cat = ct?ct->getFormattedName():call->getPeerName();
-//          break;
-//       case Call::Role::Number:
-//          cat = call->getPeerPhoneNumber();
-//          break;
-//       case Call::Role::Direction:
-//          cat = call->getHistoryState();
-//          break;
-//       case Call::Role::Date:
-//          cat = call->getStartTimeStamp();
-//          break;
-//       case Call::Role::Length:
-//          cat = call->getLength();
-//          break;
-//       case Call::Role::FormattedDate:
-//          cat = QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
-//          break;
-//       case Call::Role::HasRecording:
-//          cat = call->hasRecording();
-//          break;
-//       case Call::Role::HistoryState:
-//          cat = call->getHistoryState();
-//          break;
-//       case Call::Role::Filter:
-//          cat = call->getHistoryState()+'\n'+commonCallInfo(call,Call::Role::Name).toString()+'\n'+commonCallInfo(call,Call::Role::Number).toString();
-//          break;
-//       case Call::Role::FuzzyDate:
-//          cat = timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
-//          break;
-//       case Call::Role::IsBookmark:
-//          cat = false;
-//          break;
-//       case Call::Role::Object:
-//          return QVariant::fromValue(call);
-//          break;
-// //       case Call::Role::PhotoPtr:
-// //          return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
-// //          break;
-//    }
-//    return cat;
-// }
 
 QString HistoryModel::category(Call* call) const
 {

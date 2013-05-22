@@ -404,6 +404,7 @@ const QString Call::toHumanStateName(const Call::State cur)
          break;
       case Call::State::CONFERENCE_HOLD:
          return ( "Conference (hold)" );
+      case Call::State::COUNT:
       default:
          return "";
    }
@@ -951,6 +952,7 @@ void Call::appendText(const QString& str)
    case Call::State::ERROR:
    case Call::State::CONFERENCE:
    case Call::State::CONFERENCE_HOLD:
+   case Call::State::COUNT:
    default                     :
       qDebug() << "Backspace on call not editable. Doing nothing.";
       return;
@@ -985,6 +987,7 @@ void Call::backspaceItemText()
       case Call::State::ERROR:
       case Call::State::CONFERENCE:
       case Call::State::CONFERENCE_HOLD:
+      case Call::State::COUNT:
       default                          :
          qDebug() << "Backspace on call not editable. Doing nothing.";
          return;

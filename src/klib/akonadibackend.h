@@ -30,7 +30,9 @@ class QObject;
 //KDE
 namespace KABC {
    class Addressee    ;
+   class PhoneNumber  ;
 }
+#include <kabc/phonenumber.h>
 
 namespace Akonadi {
    class Session        ;
@@ -69,6 +71,9 @@ private:
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
    ContactList                    m_pContacts  ;
+
+   //Helper
+   KABC::PhoneNumber::Type nameToType(const QString& name);
 
 protected:
    ContactList update_slot();

@@ -33,7 +33,7 @@ typedef QVector< QMap<QString, QString> > VectorMapStringString;
 Q_DECLARE_METATYPE(MapStringString)
 Q_DECLARE_METATYPE(MapStringInt)
 Q_DECLARE_METATYPE(VectorMapStringString)
-Q_DECLARE_METATYPE(VectorInt);
+Q_DECLARE_METATYPE(VectorInt)
 
 static bool dbus_metaTypeInit = false;
 inline void registerCommTypes() {

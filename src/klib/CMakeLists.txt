@@ -30,7 +30,7 @@ INCLUDE_DIRECTORIES ( ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 set( ksflphone_LIB_SRCS
    helperfunctions.cpp
    akonadibackend.cpp
-   sortabledockcommon.cpp
+#    sortabledockcommon.cpp
    configurationskeleton.cpp
    tipmanager.cpp
    tip.cpp
@@ -60,7 +60,7 @@ set_target_properties( ksflphone
 set( ksflphone_LIB_HDRS
   akonadibackend.h
   helperfunctions.h
-  sortabledockcommon.h
+#   sortabledockcommon.h
   macromodel.h
 )
 

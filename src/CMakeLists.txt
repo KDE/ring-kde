@@ -5,11 +5,29 @@ endif(POLICY CMP0017)
 ADD_DEFINITIONS(
    ${KDE4_DEFINITIONS}
    ${QT_DEFINITIONS}
-   -Wno-reorder
    -fexceptions
    -Wno-deprecated-declarations
    -DDATA_INSTALL_DIR="\\\"${DATA_INSTALL_DIR}\\\""
    -DSHARE_INSTALL_PREFIX="\\\"${SHARE_INSTALL_PREFIX}\\\""
+   -Werror 
+   -Wall
+   -Wextra 
+#    -Wmissing-declarations 
+   -Wmissing-noreturn 
+#    -Wshadow 
+   -Wpointer-arith 
+   -Wcast-align 
+   -Wwrite-strings 
+   -Wformat-nonliteral 
+   -Wformat-security 
+   -Wswitch-enum 
+#    -Wswitch-default 
+   -Winit-self 
+   -Wmissing-include-dirs 
+   -Wundef 
+   -Wmissing-format-attribute 
+   -pedantic
+   -Wno-reorder
 )
 
 ADD_DEFINITIONS("-std=c++0x")

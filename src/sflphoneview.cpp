@@ -662,7 +662,7 @@ void SFLPhoneView::updateWindowCallState()
                TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
             }
             break;
-
+         case Call::State::COUNT:
          default: 
             kDebug() << "Error : Reached unexisting state for call "  << call->getCallId() << "(" << call->getState() << "!";
             break;

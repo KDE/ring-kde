@@ -44,6 +44,7 @@ static const char* icnPath[4] = {
 };
 
 ///Constant
+#pragma GCC diagnostic ignored "-Wmissing-braces"
 TypedStateMachine< const char* , Call::State, Call::State::COUNT > callStateIcons = {ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE};
 
 HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr)

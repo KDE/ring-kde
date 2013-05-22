@@ -74,24 +74,24 @@ InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
 }
 
 ///Constructor
-InstantMessagingModel::InstantMessagingModel(Call* call, QObject* parent) : QAbstractListModel(parent),m_pCall(call)
+InstantMessagingModel::InstantMessagingModel(Call* call, QObject* par) : QAbstractListModel(par),m_pCall(call)
 {
    //QStringList callList = callManager.getCallList();
 }
 
 ///Get data from the model
-QVariant InstantMessagingModel::data( const QModelIndex& index, int role) const
+QVariant InstantMessagingModel::data( const QModelIndex& idx, int role) const
 {
-   if (index.column() == 0) {
+   if (idx.column() == 0) {
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lMessages[index.row()].message);
+            return QVariant(m_lMessages[idx.row()].message);
             break;
          case MESSAGE_TYPE_ROLE:
-            return QVariant(m_lMessages[index.row()].message);
+            return QVariant(m_lMessages[idx.row()].message);
             break;
          case MESSAGE_FROM_ROLE:
-            return QVariant(m_lMessages[index.row()].from);
+            return QVariant(m_lMessages[idx.row()].from);
             break;
          case MESSAGE_TEXT_ROLE:
             return INCOMMING_IM;
@@ -102,8 +102,8 @@ QVariant InstantMessagingModel::data( const QModelIndex& index, int role) const
             }
             break;
          case MESSAGE_IMAGE_ROLE: {
-            if (m_lImages.find(index) != m_lImages.end())
-               return m_lImages[index];
+            if (m_lImages.find(idx) != m_lImages.end())
+               return m_lImages[idx];
             Contact* c =m_pCall->getContact();
             if (c && c->getPhoto()) {
                return QVariant::fromValue<void*>((void*)c->getPhoto());
@@ -111,33 +111,35 @@ QVariant InstantMessagingModel::data( const QModelIndex& index, int role) const
             return QVariant();
             break;
          }
+         default:
+            break;
       }
    }
    return QVariant();
 }
 
 ///Number of row
-int InstantMessagingModel::rowCount(const QModelIndex& parent) const
+int InstantMessagingModel::rowCount(const QModelIndex& parentIdx) const
 {
-   Q_UNUSED(parent)
+   Q_UNUSED(parentIdx)
    return m_lMessages.size();
 }
 
 ///Model flags
-Qt::ItemFlags InstantMessagingModel::flags(const QModelIndex& index) const
+Qt::ItemFlags InstantMessagingModel::flags(const QModelIndex& idx) const
 {
-   Q_UNUSED(index)
+   Q_UNUSED(idx)
    return Qt::ItemIsEnabled;
 }
 
 ///Set model data
-bool InstantMessagingModel::setData(const QModelIndex& index, const QVariant &value, int role)
+bool InstantMessagingModel::setData(const QModelIndex& idx, const QVariant &value, int role)
 {
-   Q_UNUSED(index)
+   Q_UNUSED(idx)
    Q_UNUSED(value)
    Q_UNUSED(role)
-   if (index.column() == 0 && role == MESSAGE_IMAGE_ROLE   ) {
-      m_lImages[index] = value;
+   if (idx.column() == 0 && role == MESSAGE_IMAGE_ROLE   ) {
+      m_lImages[idx] = value;
    }
    return false;
 }

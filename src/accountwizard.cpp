@@ -71,15 +71,10 @@
  *                                                                         *
  **************************************************************************/
 
-typedef struct {
-   bool    success ;
-   QString reason  ;
-   QString user    ;
-   QString passwd  ;
-} rest_account;
+
 
 ///Validate if the connection can be done with the PBX
-int sendRequest(QString host, int port, QString req, QString & ret)
+int AccountWizard::sendRequest(const QString& host, int port, const QString& req, QString& ret)
 {
    int s;
    struct sockaddr_in servSockAddr;
@@ -105,7 +100,7 @@ int sendRequest(QString host, int port, QString req, QString & ret)
       return -1;
    }
 
-   if(connect(s, (const struct sockaddr *) &servSockAddr, (socklen_t) sizeof(servSockAddr)) < 0 ) {
+   if(::connect(s, (const struct sockaddr *) &servSockAddr, (socklen_t) sizeof(servSockAddr)) < 0 ) {
       perror(nullptr);
       ret = "connect";
       return -1;
@@ -139,14 +134,14 @@ int sendRequest(QString host, int port, QString req, QString & ret)
 
    fclose(f);
    shutdown(s, 2);
-   close(s);
+   ::close(s);
    return 0;
 }
 
 ///
-rest_account get_rest_account(QString host, QString email)
+rest_account AccountWizard::get_rest_account(const QString& host, const QString& email)
 {
-   QString req = "GET /rest/accountcreator?email=" + email;
+   const QString req = "GET /rest/accountcreator?email=" + email;
    QString ret;
    rest_account ra;
    kDebug() << "HOST: " << host;

@@ -40,7 +40,6 @@
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
-#include <kabc/phonenumber.h>
 
 //SFLPhone library
 #include "../lib/contact.h"
@@ -150,7 +149,7 @@ const ContactList& AkonadiBackend::getContactList() const
  *                                                                           *
  ****************************************************************************/
 
-KABC::PhoneNumber::Type nameToType(QString name)
+KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 {
    if      (name == "Home"   ) return KABC::PhoneNumber::Home ;
    else if (name == "Work"   ) return KABC::PhoneNumber::Work ;

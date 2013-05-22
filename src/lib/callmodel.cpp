@@ -137,9 +137,11 @@ int CallModel::size()
  CallList CallModel::getCallList()
 {
    CallList callList;
+   #pragma GCC diagnostic ignored "-Wshadow"
    foreach(InternalStruct* internalS, m_lInternalModel) {
       callList.push_back(internalS->call_real);
       if (internalS->m_lChildren.size()) {
+         #pragma GCC diagnostic ignored "-Wshadow"
          foreach(InternalStruct* childInt,internalS->m_lChildren) {
             callList.push_back(childInt->call_real);
          }

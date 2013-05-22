@@ -351,6 +351,10 @@ Q_SIGNALS:
    void playbackStarted();
 };
 
-Q_DECLARE_METATYPE(Call*);
+Q_DECLARE_METATYPE(Call*)
+
+QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::State& c       );
+QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::DaemonState& c );
+QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c      );
 
 #endif
