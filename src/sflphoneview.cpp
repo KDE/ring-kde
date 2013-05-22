@@ -377,6 +377,10 @@ void SFLPhoneView::typeString(QString str)
    if(!currentCall && !candidate) {
       kDebug() << "Typing when no item is selected. Opening an item.";
       candidate = SFLPhone::model()->addDialingCall();
+      const QModelIndex& newCallIdx = CallModel::instance()->getIndex(candidate);
+      if (newCallIdx.isValid()) {
+         m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
+      }
    }
    Q_NOREPLY callManager.playDTMF(str);
 
@@ -965,13 +969,21 @@ void SFLPhoneView::accept()
    Call* call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex());
    if(!call) {
       kDebug() << "Calling when no item is selected. Opening an item.";
-      SFLPhone::model()->addDialingCall();
+      Call* newCall = SFLPhone::model()->addDialingCall();
+      const QModelIndex& newCallIdx = CallModel::instance()->getIndex(newCall);
+      if (newCallIdx.isValid()) {
+         m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
+      }
    }
    else {
       const Call::State state = call->getState();
       if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD || state == Call::State::BUSY) {
          kDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
-         SFLPhone::model()->addDialingCall();
+         Call* newCall = SFLPhone::model()->addDialingCall();
+         const QModelIndex& newCallIdx = CallModel::instance()->getIndex(newCall);
+         if (newCallIdx.isValid()) {
+            m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
+         }
       }
       else {
          action(call, Call::Action::ACCEPT);
@@ -1101,6 +1113,11 @@ void SFLPhoneView::on1_incomingCall(Call* call)
    SFLPhone::app()->activateWindow  (      );
    SFLPhone::app()->raise           (      );
    SFLPhone::app()->setVisible      ( true );
+
+   const QModelIndex& idx = CallModel::instance()->getIndex(call);
+   if (idx.isValid() && (call->getState() == Call::State::RINGING || call->getState() == Call::State::INCOMING)) {
+      m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
+   }
 
    emit incomingCall(call);
 }
