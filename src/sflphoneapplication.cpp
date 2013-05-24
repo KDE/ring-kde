@@ -47,13 +47,21 @@
  * The application constructor
  */
 SFLPhoneApplication::SFLPhoneApplication()
+#ifdef DISABLE_UNIQUE_APPLICATION
+  : KApplication()
+#else
   : KUniqueApplication()
+#endif
 {
    InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
    instance.Register(getpid(), APP_NAME);
    // Start remaining initialisation
    initializePaths();
    initializeMainWindow();
+
+#ifdef DISABLE_UNIQUE_APPLICATION
+   newInstance();
+#endif
 }
 
 
@@ -135,7 +143,9 @@ int SFLPhoneApplication::newInstance()
    }
 
    args->clear();
+#ifndef DISABLE_UNIQUE_APPLICATION
    KUniqueApplication::newInstance();
+#endif
    return 0;
 }
 

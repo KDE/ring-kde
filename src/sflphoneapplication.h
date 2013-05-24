@@ -30,7 +30,12 @@ class QEvent;
 class SFLPhone;
 
 ///SFLPhoneApplication: Main application
-class SFLPhoneApplication : public KUniqueApplication
+class SFLPhoneApplication : 
+#ifdef DISABLE_UNIQUE_APPLICATION
+   public KApplication
+#else
+   public KUniqueApplication
+#endif
 {
   Q_OBJECT
 
