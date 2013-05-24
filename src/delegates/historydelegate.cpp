@@ -117,7 +117,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (currentState == Call::State::OVER)
          pxm = QPixmap(KIcon("user-identity").pixmap(QSize(iconHeight,iconHeight)));
       else
-         pxm = QPixmap(callStateIcons[currentState]).scaledToWidth(iconHeight);
+         pxm = QPixmap(callStateIcons[currentState]); //Do not scale
    }
 
    if (index.data(Call::Role::HasRecording).toBool() && call && QFile::exists(call->getRecordingPath())) {
@@ -131,13 +131,14 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          m_pParent->setIndexWidget(index,button);
       }
    }
-   else if ((index.data(Call::Role::HistoryState).toInt() != history_state::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if (pxmPtr && (index.data(Call::Role::HistoryState).toInt() != history_state::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::HistoryState).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
    }
-   painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-iconHeight)/2,pxm);
+   int x_offset((iconHeight-pxm.width())/2),y_offset((iconHeight-pxm.height())/2);
+   painter->drawPixmap(option.rect.x()+4+x_offset,option.rect.y()+y_offset+(option.rect.height()-iconHeight)/2,pxm);
 
    QFont font = painter->font();
    QFontMetrics fm(font);
