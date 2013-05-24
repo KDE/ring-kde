@@ -68,9 +68,11 @@ QSize Tip::reload(const QRect& availableSize,bool force)
          m_CurrentRect.setWidth(decoRect.x() + decoRect.width()+2*m_Padding);
 
       //Create the background image
-      m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_RGB888);
-      m_CurrentImage.fill(m_OriginalPalette.base().color().rgb() );
+      m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_ARGB32);
       QPainter p(&m_CurrentImage);
+      p.setCompositionMode(QPainter::CompositionMode_Clear);
+      p.fillRect(m_CurrentImage.rect(),QBrush(Qt::white));
+      p.setCompositionMode(QPainter::CompositionMode_SourceOver);
       p.setRenderHint(QPainter::Antialiasing, true);
       p.setFont(font());
 

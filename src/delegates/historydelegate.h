@@ -22,9 +22,12 @@
 
 class QTreeView;
 class DelegateDropOverlay;
+class TipAnimationWrapper;
+class Tip;
 
 class HistoryDelegate : public QStyledItemDelegate
 {
+   Q_OBJECT
 public:
    HistoryDelegate(QTreeView* parent = nullptr);
 
@@ -34,6 +37,10 @@ public:
 private:
    QTreeView* m_pParent;
    DelegateDropOverlay* m_pDelegatedropoverlay;
+   TipAnimationWrapper* m_AnimationWrapper;
+   Tip* m_pRingingTip;
+private slots:
+   void slotStopRingingAnimation();
 };
 
 #endif

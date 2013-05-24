@@ -32,9 +32,12 @@
 
 #include <lib/historymodel.h>
 #include <lib/contact.h>
+#include <lib/callmodel.h>
 #include "klib/configurationskeleton.h"
 #include "widgets/playeroverlay.h"
 #include "delegatedropoverlay.h"
+#include "../widgets/tips/riggingtip.h"
+#include "klib/tipanimationwrapper.h"
 
 static const char* icnPath[4] = {
 /* INCOMING */ ICON_HISTORY_INCOMING,
@@ -45,10 +48,11 @@ static const char* icnPath[4] = {
 
 ///Constant
 #pragma GCC diagnostic ignored "-Wmissing-braces"
-TypedStateMachine< const char* , Call::State, Call::State::COUNT > callStateIcons = {ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE};
+TypedStateMachine< const char* , Call::State, Call::State::COUNT > callStateIcons = {{ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE}};
 
-HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr)
+HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr),m_AnimationWrapper(nullptr),m_pRingingTip(nullptr)
 {
+   connect(CallModel::instance(),SIGNAL(callStateChanged(Call*)),this,SLOT(slotStopRingingAnimation()));
 }
 
 QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
@@ -196,11 +200,25 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
 
-   if (!index.parent().isValid()){
+   if (!index.parent().isValid() && currentState != Call::State::RINGING && currentState != Call::State::INCOMING){
       QString length = index.data(Call::Role::Length).toString();
       if (!length.isEmpty()) {
          painter->drawText(option.rect.x()+option.rect.width()-fm.width(length)-4,option.rect.y()+(option.rect.height()/2),length);
       }
+   }
+   else if ((currentState == Call::State::RINGING || currentState == Call::State::INCOMING) && index.model()->rowCount() > 1) {
+      if (!m_AnimationWrapper) {
+         ((HistoryDelegate*)this)->m_AnimationWrapper = new TipAnimationWrapper();
+         ((HistoryDelegate*)this)->m_pRingingTip = new RiggingTip();
+         m_AnimationWrapper->setTip(m_pRingingTip);
+      }
+      if (!m_pRingingTip->isVisible())
+         m_pRingingTip->setVisible(true);
+      painter->save();
+      painter->setRenderHint  (QPainter::Antialiasing, true   );
+      painter->setOpacity(0.066);
+      painter->drawImage(QRect(option.rect.x()+option.rect.width()-option.rect.height()-8,option.rect.y()+4,option.rect.height()-8,option.rect.height()-8),m_AnimationWrapper->currentImage());
+      painter->restore();
    }
 
    static QMap<QString,QImage*> historyMap,callMap;
@@ -221,4 +239,19 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    //END overlay path
    painter->restore();
+}
+
+void HistoryDelegate::slotStopRingingAnimation()
+{
+   if (m_pRingingTip && m_pRingingTip->isVisible()) {
+      bool found = false;
+      foreach(const Call* call,CallModel::instance()->getCallList()) {
+         found = (call->getState() == Call::State::RINGING || call->getState() == Call::State::INCOMING);
+         if (found)
+            break;
+      }
+
+      if (!found)
+         m_pRingingTip->setVisible(false);
+   }
 }

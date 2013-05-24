@@ -460,7 +460,7 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
    QPainter customPainter(&pixmap);
    customPainter.eraseRect(option.rect);
    customPainter.setCompositionMode(QPainter::CompositionMode_Clear);
-   customPainter.fillRect(option.rect,QBrush(Qt::red));
+   customPainter.fillRect(option.rect,QBrush(Qt::white));
    customPainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
    //Draw the parent

@@ -74,35 +74,42 @@ void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
       m_pRing3Pix = new QPixmap(19.319489*6 , 4.73458*7);
       m_pRing2Pix = new QPixmap(13.757887*6 , 3.7651761*7);
       m_pRing1Pix = new QPixmap(9.3203869*6 , 2.9834957*7);
-      
-      m_pPhonePix->fill(QApplication::palette().base().color() );
-      m_pRing1Pix->fill(QApplication::palette().base().color() );
-      m_pRing2Pix->fill(QApplication::palette().base().color() );
-      m_pRing3Pix->fill(QApplication::palette().base().color() );
-      
+
       QPainter p2;
       p2.begin(m_pRing3Pix);
+      p2.setCompositionMode(QPainter::CompositionMode_Clear);
+      p2.fillRect(QRect(0 , 0  , 19.319489*6 , 4.73458*7   ),QBrush(Qt::white));
+      p2.setCompositionMode(QPainter::CompositionMode_SourceOver);
       m_pRing3R->render(&p2,QRect(0 , 0  , 19.319489*6 , 4.73458*7   ));
       p2.end();
       p2.begin(m_pRing2Pix);
+      p2.setCompositionMode(QPainter::CompositionMode_Clear);
+      p2.fillRect(QRect(0 , 0  , 13.757887*6 , 3.7651761*7 ),QBrush(Qt::white));
+      p2.setCompositionMode(QPainter::CompositionMode_SourceOver);
       m_pRing2R->render(&p2,QRect(0 , 0  , 13.757887*6 , 3.7651761*7 ));
       p2.end();
       p2.begin(m_pRing1Pix);
+      p2.setCompositionMode(QPainter::CompositionMode_Clear);
+      p2.fillRect(QRect(0 , 0  , 9.3203869*6 , 2.9834957*7 ),QBrush(Qt::white));
+      p2.setCompositionMode(QPainter::CompositionMode_SourceOver);
       m_pRing1R->render(&p2,QRect(0 , 0  , 9.3203869*6 , 2.9834957*7 ));
       p2.end();
       p2.begin(m_pPhonePix);
+      p2.setCompositionMode(QPainter::CompositionMode_Clear);
+      p2.fillRect(QRect(0 , 0 , 135 , 135*0.346975929367 ),QBrush(Qt::white));
+      p2.setCompositionMode(QPainter::CompositionMode_SourceOver);
       m_pPhoneR->render(&p2,QRect(0 , 0 , 135 , 135*0.346975929367 ));
       p2.end();
    }
 
-      p.setOpacity(1);
-      p.drawPixmap(0                   , 75 , *m_pPhonePix);
-      p.setOpacity((sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5) +  0.8));
-      p.drawPixmap((135-19.319489*6)/2 , 0  , *m_pRing3Pix);
-      p.setOpacity(sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5 + (1.0472f)) +  0.8);
-      p.drawPixmap((135-13.757887*6)/2 , 25 , *m_pRing2Pix);
-      p.setOpacity((sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5 + (2*1.0472f)) +  0.8));
-      p.drawPixmap((135-9.3203869*6)/2 , 50 , *m_pRing1Pix);
+   p.setOpacity(1);
+   p.drawPixmap(0                   , 75 , *m_pPhonePix);
+   p.setOpacity((sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5) +  0.8));
+   p.drawPixmap((135-19.319489*6)/2 , 0  , *m_pRing3Pix);
+   p.setOpacity(sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5 + (1.0472f)) +  0.8);
+   p.drawPixmap((135-13.757887*6)/2 , 25 , *m_pRing2Pix);
+   p.setOpacity((sin((float)(m_Counter/35.0f)*2.0f*3.14159f + 5 + (2*1.0472f)) +  0.8));
+   p.drawPixmap((135-9.3203869*6)/2 , 50 , *m_pRing1Pix);
 } //paintDecorations
 
 ///Start tip animation, this one implement a few sinus curve to simmulate sound wave

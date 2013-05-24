@@ -52,7 +52,7 @@ public:
       Bottom,
    };
 
-   enum TipAnimation {
+   enum class TipAnimation {
       Fade             ,
       TranslationTop   ,
       TranslationBottom,
