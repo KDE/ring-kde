@@ -25,16 +25,22 @@
 #include <QDragMoveEvent>
 #include <QDragLeaveEvent>
 #include <QMimeData>
+#include <QtGui/QApplication>
+#include "lib/call.h"
 
 
 #include <lib/contactbackend.h>
 
 ///Constructor
 DelegateDropOverlay::DelegateDropOverlay(QObject* parent):QObject(parent),
-m_pTimer(0),m_CurrentState(-1),m_Init(false),m_Reverse(1)
+m_pTimer(0),m_Init(false),m_Reverse(1)
 {
-   m_CurrentColor = "black";
-   m_CurrentColor.setAlpha(0);
+   const QColor color = QApplication::palette().base().color();
+   const bool dark = (color.red() > 128 && color.green() > 128 && color.blue() > 128);
+   if (dark)
+      m_Pen.setColor(Qt::black);
+   else
+      m_Pen.setColor(Qt::white);
 }
 
 ///Destructor
@@ -67,10 +73,10 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
       if (step) {
          painter->save();
          painter->setRenderHint(QPainter::Antialiasing, true);
-         painter->setBackground(m_CurrentColor);
-         painter->setBrush(m_CurrentColor);
          painter->setPen(Qt::NoPen);
-         QRect buttonRect = QRect(option.rect.x()+(option.rect.width()/m_lpButtons->size())*i,option.rect.y(),option.rect.width()/m_lpButtons->size() - 10,option.rect.height());
+         const int tmpStep = (step>0)?step:15+step;
+         painter->setBrush(QColor(125,125,125,(0.5*tmpStep*tmpStep)));
+         const QRect buttonRect = QRect(option.rect.x()+(option.rect.width()/m_lpButtons->size())*i,option.rect.y(),option.rect.width()/m_lpButtons->size() - 10,option.rect.height());
          painter->drawRoundedRect(buttonRect, 10, 10);
          painter->setPen(m_Pen);
 
@@ -106,8 +112,6 @@ void DelegateDropOverlay::changeVisibility()
          else if (step == -1)
             setHoverState(false);
          step+=(step>0)?1:-1;
-         int tmpStep = (step>0)?step:15+step;
-         m_CurrentColor.setAlpha(0.5*tmpStep*tmpStep); //Parabolic opacity increase steps
          ((QAbstractItemModel*)idx.model())->setData(idx,QVariant((int)step),ContactBackend::Role::DropState);
       }
    }
@@ -121,19 +125,9 @@ void DelegateDropOverlay::changeVisibility()
 ///@note This is not called directly to avoid a Qt bug/limitation
 void DelegateDropOverlay::setHoverState(bool hover)
 {
-   if (hover != m_CurrentState) {
-      if (hover) {
-         int alpha = m_CurrentColor.alpha();
-         m_CurrentColor = "grey";
-         m_CurrentColor.setAlpha(alpha);
-         m_Pen.setColor("black");
-      }
-      else {
-         int alpha = m_CurrentColor.alpha();
-         m_CurrentColor = "black";
-         m_CurrentColor.setAlpha(alpha);
-         m_Pen.setColor("white");
-      }
-      m_CurrentState = hover;
-   }
+   Q_UNUSED(hover)
+//       if (hover)
+//          m_Pen.setColor("black");
+//       else
+//          m_Pen.setColor("white");
 }//setHoverState

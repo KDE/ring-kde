@@ -45,9 +45,7 @@ public:
 private:
    //Attributes
    QTimer*            m_pTimer        ;
-   QColor             m_CurrentColor  ;
    QPen               m_Pen           ;
-   char               m_CurrentState  ;
    bool               m_Init          ;
    char               m_Reverse       ;
    QList<QModelIndex> m_lActiveIndexes;
