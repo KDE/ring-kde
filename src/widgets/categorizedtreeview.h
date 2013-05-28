@@ -50,6 +50,7 @@ class CategorizedTreeView : public QTreeView
    virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
    virtual void mouseDoubleClickEvent(QMouseEvent* event);
    virtual void startDrag ( Qt::DropActions supportedActions );
+   virtual bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event);
     
   private:
    QStyledItemDelegate* m_pDelegate;

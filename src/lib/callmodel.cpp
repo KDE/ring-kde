@@ -469,11 +469,22 @@ void CallModel::removeConference(Call* call)
 ///This model doesn't support direct write, only the dragState hack
 bool CallModel::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
-   if (idx.isValid()  && role == Call::Role::DropState) {
-      Call* call = getCall(idx);
-      if (call)
-         call->setProperty("dropState",value.toInt());
-      emit dataChanged(idx,idx);
+   if (idx.isValid()) {
+      if (role == Call::Role::DropState) {
+         Call* call = getCall(idx);
+         if (call)
+            call->setProperty("dropState",value.toInt());
+         emit dataChanged(idx,idx);
+      }
+      else if (role == Qt::EditRole) {
+         const QString number = value.toString();
+         Call* call = getCall(idx);
+         if (call && number != call->getCallNumber()) {
+            call->setCallNumber(number);
+            emit dataChanged(idx,idx);
+            return true;
+         }
+      }
    }
    return false;
 }
@@ -517,7 +528,10 @@ Qt::ItemFlags CallModel::flags( const QModelIndex& idx ) const
 {
    if (!idx.isValid())
       return 0;
-   return Qt::ItemIsEnabled|Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | ((!idx.data(Call::Role::IsConference).toBool())?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled);
+   return Qt::ItemIsEnabled|Qt::ItemIsSelectable 
+      | Qt::ItemIsDragEnabled 
+      | ((!idx.data(Call::Role::IsConference).toBool())?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled)
+      | ((idx.data(Call::Role::CallState) == static_cast<int>(Call::State::DIALING))?Qt::ItemIsEditable:Qt::NoItemFlags);
 }
 
 ///There is always 1 column

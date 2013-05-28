@@ -25,6 +25,7 @@
 #include <QtGui/QGraphicsEffect>
 #include <QtGui/QGraphicsOpacityEffect>
 #include <QtGui/QApplication>
+#include <QtGui/QLineEdit>
 
 //KDE
 #include <KStandardDirs>
@@ -111,34 +112,12 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
    Q_ASSERT(index.isValid());
 
    QStyleOptionViewItem opt(option);
-//    QTreeWidgetItem* item = m_tree->itemFromIndex(index);
-//    CallTreeItem* itemWidget = nullptr;
-//    if (item) {
-//       itemWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
-//    }
    //BEGIN: draw toplevel items
    if (!index.parent().isValid() && index.child(0,0).isValid()) {
       const QRegion cl = painter->clipRegion();
       painter->setClipRect(opt.rect);
       opt.rect = fullCategoryRect(option, index);
       drawCategory(index, 0, opt, painter,&m_Pal);
-
-      //Drag bubble
-//       if (itemWidget->isDragged()) {
-//          QSize size  = itemWidget->size();
-//          int i = 0;
-//          while (index.child(i,0).isValid()) i++;
-//          if (i) {
-// //                QTreeWidgetItem* firstChild = m_tree->itemFromIndex(index);
-//             QWidget* childWidget = qobject_cast<CallTreeItem*>(m_tree->itemWidget(item,0));
-//             if (childWidget) {
-//                size.setHeight(itemWidget->height()+(i*childWidget->height())+10);
-//                QPixmap pixmap(size);
-//                childWidget->render(&pixmap);
-//                painter->drawPixmap(10,2,pixmap);
-//             }
-//          }
-//       }
 
       //Draw the conference icon and infos
       static const QPixmap* pxm = nullptr;
@@ -219,8 +198,6 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       painter->setClipRect(opt.rect);
       drawBoxBottom(index, 0, option, painter);
    }
-   
-//       m_pCallDelegate->paint(painter,option,index);
 } //paint
 
 void ConferenceDelegate::drawCategory(const QModelIndex&  index   ,
@@ -475,4 +452,61 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
       parent->itemDelegate()->paint(&customPainter, option, index.child(i,0));
    }
    return pixmap;
+}
+
+QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+   Q_UNUSED(option)
+   QLineEdit* ed = new QLineEdit(parent);
+   ed->setStyleSheet(QString("background-color:transparent;border:0px;color:white;font-weight:bold;padding-left:%1").arg(option.rect.height()));
+   ed->setAutoFillBackground(false);
+   ed->setProperty("call",index.data(Call::Role::Object));
+   connect(ed,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
+   ed->deselect();
+
+   return ed;
+}
+
+void ConferenceDelegate::setEditorData ( QWidget * editor, const QModelIndex & index ) const
+{
+   QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
+   if (ed) {
+      ed->setText(index.data(Qt::EditRole).toString());
+      ed->deselect();
+   }
+}
+
+void ConferenceDelegate::setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
+{
+   QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
+   if (ed)
+      model->setData(index,ed->text(),Qt::EditRole);
+}
+
+///Intercept QLineEdit show() call, to deselect the text (as it is selected automagically)
+bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
+{
+   Q_UNUSED(obj)
+   if (event->type() == QEvent::Show) {
+      QLineEdit* ed = qobject_cast<QLineEdit*>(obj);
+      if (ed)
+         ed->deselect();
+   }
+   return false;
+}
+
+///Update the model text as soon as 
+void ConferenceDelegate::slotTextChanged(const QString& text)
+{
+   QLineEdit* ed = qobject_cast<QLineEdit*>(QObject::sender());
+   if (ed) {
+      ed->deselect();
+      QObject* obj= qvariant_cast<Call*>(ed->property("call"));
+      Call* call  = nullptr;
+      if (obj)
+         call = qobject_cast<Call*>(obj);
+      if (call && call->getCallNumber() != text) {
+         call->setCallNumber(text);
+      }
+   }
 }

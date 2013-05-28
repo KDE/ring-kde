@@ -91,11 +91,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
    QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
-   Call* call  = nullptr;
-   if (obj)
-      call = qobject_cast<Call*>(obj);
    Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
@@ -120,15 +116,21 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          pxm = QPixmap(callStateIcons[currentState]); //Do not scale
    }
 
-   if (index.data(Call::Role::HasRecording).toBool() && call && QFile::exists(call->getRecordingPath())) {
-      QPainter painter(&pxm);
-      QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
-      status=status.scaled(QSize(24,24));
-      painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
-      if (m_pParent && m_pParent->indexWidget(index) == nullptr) {
-         auto button = new PlayerOverlay(call,nullptr);
-         button->setCall(call);
-         m_pParent->setIndexWidget(index,button);
+   if (index.data(Call::Role::HasRecording).toBool()) {
+      QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
+      Call* call  = nullptr;
+      if (obj)
+         call = qobject_cast<Call*>(obj);
+      if (call && QFile::exists(call->getRecordingPath())) {
+         QPainter painter(&pxm);
+         QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
+         status=status.scaled(QSize(24,24));
+         painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+         if (m_pParent && m_pParent->indexWidget(index) == nullptr) {
+            auto button = new PlayerOverlay(call,nullptr);
+            button->setCall(call);
+            m_pParent->setIndexWidget(index,button);
+         }
       }
    }
    else if (pxmPtr && (index.data(Call::Role::HistoryState).toInt() != history_state::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
@@ -161,7 +163,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 //          mainLayout->addWidget(m_pIconL);
       }
 
-      if(ConfigurationSkeleton::displayCallPeer()) {
+      if(ConfigurationSkeleton::displayCallPeer()&& currentState != Call::State::DIALING) {
          font.setBold(true);
          painter->setFont(font);
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
@@ -239,6 +241,12 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       m_pDelegatedropoverlay->paintEvent(painter, option, index);
    }
    //END overlay path
+
+   //BEGIN Item editor
+   if (currentState == Call::State::DIALING) {
+      m_pParent->edit(index);
+   }
+   //END item editor
    painter->restore();
 }
 

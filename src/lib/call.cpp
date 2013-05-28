@@ -1062,6 +1062,7 @@ QVariant Call::getRoleData(int role) const
    switch (role) {
       case Call::Role::Name:
       case Qt::DisplayRole:
+      case Qt::EditRole:
          if (isConference())
             return "Conference";
          else if (getCurrentState() == Call::State::DIALING)

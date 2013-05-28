@@ -148,3 +148,10 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
       }
    }
 }
+
+bool CategorizedTreeView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
+{
+   if (state() == QAbstractItemView::EditingState)
+      return true;
+   return QTreeView::edit(index,trigger,event);
+}
