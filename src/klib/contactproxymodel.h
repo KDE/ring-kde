@@ -69,10 +69,10 @@ private:
    
    //Helpers
    QString category(Contact* ct) const;
-   QHash<Contact*, QDateTime> getContactListByTime() const;
+   QHash<Contact*, time_t> getContactListByTime() const;
 
    //Attributes
-   QHash<Contact*, QDateTime>   m_hContactByDate       ;
+   QHash<Contact*, time_t>   m_hContactByDate       ;
    ContactBackend*              m_pModel               ;
    QList<TopLevelItem*>         m_lCategoryCounter     ;
    QHash<QString,TopLevelItem*> m_hCategories          ;

@@ -158,7 +158,9 @@ Macro* MacroModel::newMacro(const QString& id)
    m_pCurrentMacro->m_Category = i18nc("Other category","Other");
    m_pCurrentMacro->m_pModel = this;
    if (id.isEmpty()) {
-      m_pCurrentMacro->m_Id = QString::number(QDateTime::currentDateTime().toTime_t());
+      time_t curTime;
+      ::time(&curTime);
+      m_pCurrentMacro->m_Id = QString::number(curTime);
       while (m_hMacros[m_pCurrentMacro->m_Id]) {
          m_pCurrentMacro->m_Id += '1';
       }

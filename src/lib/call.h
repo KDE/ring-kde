@@ -24,7 +24,6 @@
 //Qt
 #include <QtCore/QDebug>
 class QString;
-// class QDateTime;
 class QTimer;
 
 //SFLPhone
@@ -123,6 +122,8 @@ public:
       PhotoPtr      = 118,
       CallState     = 119,
       Id            = 120,
+      StartTime     = 121,
+      StopTime      = 122,
       DropState     = 300,
    };
    
@@ -326,9 +327,6 @@ private:
    void stop         ();
    void startWeird   ();
    void warning      ();
-
-//    QDateTime* setStartTime_private(QDateTime* time);
-//    QDateTime* setStopTime_private(QDateTime* time);
 
 public Q_SLOTS:
    void playRecording();

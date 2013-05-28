@@ -138,17 +138,17 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
          case ContactBackend::Role::FormattedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]].date()));
+            return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
          }
          case ContactBackend::Role::IndexedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant(HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]].date()));
+            return QVariant(HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
          }
          case ContactBackend::Role::DatedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]].date());
+            return QVariant(QDateTime::fromTime_t( m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
          }
          case ContactBackend::Role::Filter: {
             Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
@@ -313,19 +313,19 @@ QString ContactByNameProxyModel::category(Contact* ct) const {
       case ContactBackend::Role::FormattedLastUsed: {
          if (!m_isContactDateInit)
             ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-         cat = HistoryModel::timeToHistoryCategory(m_hContactByDate[ct].date());
+         cat = HistoryModel::timeToHistoryCategory(m_hContactByDate[ct]);
          break;
       }
       case ContactBackend::Role::IndexedLastUsed: {
          if (!m_isContactDateInit)
             ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-         cat = QString::number(HistoryModel::timeToHistoryConst(m_hContactByDate[ct].date()));
+         cat = QString::number(HistoryModel::timeToHistoryConst(m_hContactByDate[ct]));
          break;
       }
       case ContactBackend::Role::DatedLastUsed: {
          if (!m_isContactDateInit)
             ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
-         cat = m_hContactByDate[ct].date().toString();
+         cat = QDateTime::fromTime_t(m_hContactByDate[ct]).toString();
          break;
       }
       break;
@@ -338,10 +338,10 @@ QString ContactByNameProxyModel::category(Contact* ct) const {
 }
 
 ///Return the list of contact from history (in order, most recently used first)
-QHash<Contact*, QDateTime> ContactByNameProxyModel::getContactListByTime() const
+QHash<Contact*, time_t> ContactByNameProxyModel::getContactListByTime() const
 {
    const CallMap& history= HistoryModel::getHistory();
-   QHash<Contact*, QDateTime> toReturn;
+   QHash<Contact*, time_t> toReturn;
    QSet<QString> alreadyUsed;
    QMapIterator<uint, Call*> i(history);
    i.toBack();
@@ -351,7 +351,7 @@ QHash<Contact*, QDateTime> ContactByNameProxyModel::getContactListByTime() const
       if (alreadyUsed.find(i.value()->getPeerPhoneNumber()) == alreadyUsed.constEnd()) {
          Contact* contact = i.value()->getContact();
          if (contact && toReturn.find(contact) == toReturn.end()) {
-            toReturn[contact] = QDateTime::fromTime_t(i.value()->getStartTimeStamp());
+            toReturn[contact] = i.value()->getStartTimeStamp();
          }
          alreadyUsed << i.value()->getPeerPhoneNumber();
       }

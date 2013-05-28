@@ -125,18 +125,18 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    splitter->setStretchFactor(0,7);
 
-   QTimer* timer = new QTimer(this);
+//    QTimer* timer = new QTimer(this);
 
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
 //    connect(AkonadiBackend::getInstance() ,SIGNAL(collectionChanged()),                                  this, SLOT(reloadContact())                     );
    connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(setCategory(int))                    );
-   connect(m_pFilterLE,                   SIGNAL(textChanged(QString)),                                 this, SLOT(filter(QString))                     );
+//    connect(m_pFilterLE,                   SIGNAL(textChanged(QString)),                                 this, SLOT(filter(QString))                     );
    connect(m_pShowHistoCK,                SIGNAL(toggled(bool)),                                        this, SLOT(setHistoryVisible(bool))             );
-   connect(timer                         ,SIGNAL(timeout()),                                            this, SLOT(reloadHistoryConst())                );
+//    connect(timer                         ,SIGNAL(timeout()),                                            this, SLOT(reloadHistoryConst())                );
 //    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadContact())                     );
    connect(m_pView                       ,SIGNAL(doubleClicked(QModelIndex)),                           this, SLOT(slotDoubleClick(QModelIndex))        );
-   timer->start(1800*1000); //30 minutes
+//    timer->start(1800*1000); //30 minutes
    setWindowTitle(i18n("Contact"));
 } //ContactDock
 

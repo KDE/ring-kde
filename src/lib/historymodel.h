@@ -89,8 +89,8 @@ public:
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
    virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
-   static HistoryConst timeToHistoryConst   (const QDate& date);
-   static QString      timeToHistoryCategory(const QDate& date);
+   static HistoryConst timeToHistoryConst   (const time_t time);
+   static QString      timeToHistoryCategory(const time_t time);
 
 private:
 
@@ -134,7 +134,7 @@ private:
    bool                         m_HaveContactModel ;
    QStringList                  m_lMimes           ;
 
-   static const char* m_slHistoryConstStr[25];
+   static const QString m_slHistoryConstStr[25];
 
 private Q_SLOTS:
    void reloadCategories();
