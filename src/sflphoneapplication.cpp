@@ -38,6 +38,7 @@
 #include "sflphone.h"
 #include "errormessage.h"
 #include "lib/sflphone_const.h"
+#include "lib/call.h"
 
 //Other
 #include <unistd.h>
@@ -158,6 +159,22 @@ bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
 #else
       return KUniqueApplication::notify(receiver,e);
 #endif
+   }
+   catch (Call::State state) {
+      kDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
+   }
+   catch (Call::Action state) {
+      kDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
+   }
+   catch (Call::DaemonState state) {
+      kDebug() << ErrorMessage::GENERIC_ERROR << "Call DaemonState" << state;
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
+   }
+   catch (const QString& errorMessage) {
+      KMessageBox::error(SFLPhone::app(),errorMessage);
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
    }
    catch (...) {
       kDebug() << ErrorMessage::GENERIC_ERROR;

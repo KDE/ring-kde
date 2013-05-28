@@ -497,8 +497,11 @@ QVariant CallModel::data( const QModelIndex& idx, int role) const
    Call* call = nullptr;
    if (!idx.parent().isValid() && m_lInternalModel[idx.row()])
       call = m_lInternalModel[idx.row()]->call_real;
-   else if (idx.parent().isValid() && m_lInternalModel.size() > idx.parent().row() && m_lInternalModel[idx.parent().row()]->m_lChildren.size() > idx.row())
-      call = m_lInternalModel[idx.parent().row()]->m_lChildren[idx.row()]->call_real;
+   else if (idx.parent().isValid() && m_lInternalModel.size() > idx.parent().row()) {
+      InternalStruct* intList = m_lInternalModel[idx.parent().row()];
+      if (intList->m_lChildren.size() > idx.row() && intList->m_lChildren[idx.row()])
+         call = intList->m_lChildren[idx.row()]->call_real;
+   }
    return call?call->getRoleData((Call::Role)role):QVariant();
 }
 

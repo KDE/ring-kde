@@ -108,7 +108,7 @@ const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Cal
 /*TRANSFERT      */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
 /*TRANSFERT_HOLD */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
 /*OVER           */  {{&Call::nothing    , &Call::warning   , &Call::warning        , &Call::warning      ,  &Call::stop         , &Call::warning }},/**/
-/*ERROR          */  {{&Call::nothing    , &Call::nothing   , &Call::nothing        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
+/*ERROR          */  {{&Call::error      , &Call::error     , &Call::error          , &Call::error        ,  &Call::stop         , &Call::error   }},/**/
 /*CONF           */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
 /*CONF_HOLD      */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
 }};//                                                                                                                                                   
@@ -146,7 +146,7 @@ void Call::setContactBackend(ContactBackend* be)
 Call::Call(Call::State startState, const QString& callId, QString peerName, QString peerNumber, QString account)
    :  HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),m_pStartTimeStamp(0),
    m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),m_Account(account),
-   m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),m_CallId(callId)
+   m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),m_CallId(callId),m_CurrentState(startState)
 {
    qRegisterMetaType<Call*>();
    changeCurrentState(startState);
@@ -162,18 +162,16 @@ Call::Call(Call::State startState, const QString& callId, QString peerName, QStr
 ///Destructor
 Call::~Call()
 {
-   //if (m_pStartTime) delete m_pStartTime ;
-   //if (m_pStopTime)  delete m_pStopTime  ;
+   if (m_pTimer) delete m_pTimer;
    this->disconnect();
 }
 
 ///Constructor
 Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),
-   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),m_Account(account)
+   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),m_Account(account),m_CurrentState(Call::State::CONFERENCE),
+   m_pTimer(nullptr)
 {
    m_isConference  = m_ConfId.isEmpty();
-//    this->m_ConfId  = confId  ;
-//    this->m_Account = account ;
 
    if (m_isConference) {
       time_t curTime;
@@ -401,8 +399,9 @@ const QString Call::toHumanStateName(const Call::State cur)
       case Call::State::CONFERENCE_HOLD:
          return ( "Conference (hold)" );
       case Call::State::COUNT:
+         return "ERROR";
       default:
-         return "";
+         return QString::number(static_cast<int>(cur));
    }
 }
 
@@ -654,17 +653,24 @@ Call::State Call::stateChanged(const QString& newStateName)
          qDebug() << "Error: Invalid state change";
          return Call::State::FAILURE;
       }
+
       try {
          changeCurrentState(stateChangedStateMap[m_CurrentState][dcs]);
       }
       catch(Call::State state) {
-         qDebug() << "State change failed" << state;
+         qDebug() << "State change failed (stateChangedStateMap)" << state;
          m_CurrentState = Call::State::ERROR;
          emit changed();
          return m_CurrentState;
       }
       catch(Call::DaemonState state) {
-         qDebug() << "State change failed" << state;
+         qDebug() << "State change failed (stateChangedStateMap)" << state;
+         m_CurrentState = Call::State::ERROR;
+         emit changed();
+         return m_CurrentState;
+      }
+      catch (...) {
+         qDebug() << "State change failed (stateChangedStateMap) other";;
          m_CurrentState = Call::State::ERROR;
          emit changed();
          return m_CurrentState;
@@ -675,7 +681,28 @@ Call::State Call::stateChanged(const QString& newStateName)
       if (details[CALL_PEER_NAME] != m_PeerName)
          m_PeerName = details[CALL_PEER_NAME];
 
-      (this->*(stateChangedFunctionMap[previousState][dcs]))();
+      try {
+         (this->*(stateChangedFunctionMap[previousState][dcs]))();
+      }
+      catch(Call::State state) {
+         qDebug() << "State change failed (stateChangedFunctionMap)" << state;
+         m_CurrentState = Call::State::ERROR;
+         emit changed();
+         return m_CurrentState;
+      }
+      catch(Call::DaemonState state) {
+         qDebug() << "State change failed (stateChangedFunctionMap)" << state;
+         m_CurrentState = Call::State::ERROR;
+         emit changed();
+         return m_CurrentState;
+      }
+      catch (...) {
+         qDebug() << "State change failed (stateChangedFunctionMap) other";;
+         m_CurrentState = Call::State::ERROR;
+         emit changed();
+         return m_CurrentState;
+      }
+      
    }
    else {
       //Until now, it does not worth using stateChangedStateMap, conferences are quite simple
@@ -700,26 +727,39 @@ Call::State Call::actionPerformed(Call::Action action)
       changeCurrentState(actionPerformedStateMap[previousState][action]);
    }
    catch(Call::State state) {
-      qDebug() << "State change failed" << state;
+      qDebug() << "State change failed (actionPerformedStateMap)" << state;
       m_CurrentState = Call::State::ERROR;
       emit changed();
-      return Call::State::FAILURE;
+      return Call::State::ERROR;
    }
+   catch (...) {
+      qDebug() << "State change failed (actionPerformedStateMap) other";;
+      m_CurrentState = Call::State::ERROR;
+      emit changed();
+      return m_CurrentState;
+   }
+
    //execute the action associated with this transition
    try {
       (this->*(actionPerformedFunctionMap[previousState][action]))();
    }
    catch(Call::State state) {
-      qDebug() << "State change failed" << state;
+      qDebug() << "State change failed (actionPerformedFunctionMap)" << state;
       m_CurrentState = Call::State::ERROR;
       emit changed();
-      return Call::State::FAILURE;
+      return Call::State::ERROR;
    }
    catch(Call::Action action) {
-      qDebug() << "State change failed" << action;
+      qDebug() << "State change failed (actionPerformedFunctionMap)" << action;
       m_CurrentState = Call::State::ERROR;
       emit changed();
-      return Call::State::FAILURE;
+      return Call::State::ERROR;
+   }
+   catch (...) {
+      qDebug() << "State change failed (actionPerformedFunctionMap) other";;
+      m_CurrentState = Call::State::ERROR;
+      emit changed();
+      return m_CurrentState;
    }
    qDebug() << "Calling action " << action << " on call with state " << previousState << ". Become " << m_CurrentState;
    return m_CurrentState;
@@ -728,6 +768,12 @@ Call::State Call::actionPerformed(Call::Action action)
 ///Change the state
 void Call::changeCurrentState(Call::State newState)
 {
+   if (newState == Call::State::COUNT) {
+      qDebug() << "Error: Call reach invalid state";
+      m_CurrentState = Call::State::ERROR;
+      throw newState;
+   }
+
    m_CurrentState = newState;
 
    emit changed();
@@ -760,6 +806,13 @@ void Call::sendTextMessage(QString message)
 void Call::nothing()
 {
    
+}
+
+void Call::error()
+{
+   throw QString("There was an error handling your call, please restart SFLPhone.Is you encounter this problem often, \
+   please open SFLPhone-KDE in a terminal and send this last 100 lines before this message in a bug report at \
+   https://projects.savoirfairelinux.com/projects/sflphone/issues");
 }
 
 ///Accept the call

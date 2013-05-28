@@ -258,7 +258,7 @@ private:
    QString                m_CallNumber     ;
    static ContactBackend* m_pContactBackend;
    bool                   m_isConference   ;
-   Call::State             m_CurrentState   ;
+   Call::State            m_CurrentState   ;
    bool                   m_Recording      ;
    static Call*           m_sSelectedCall  ;
    Contact*               m_pContact       ;
@@ -310,6 +310,7 @@ private:
    // See actionPerformedFunctionMap and stateChangedFunctionMap
    // to know when it is called.
    void nothing      ();
+   void error        () __attribute__ ((noreturn));
    void accept       ();
    void refuse       ();
    void acceptTransf ();

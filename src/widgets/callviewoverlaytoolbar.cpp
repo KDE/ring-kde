@@ -25,7 +25,7 @@
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QStyle>
-#include <QDebug> //TODO remove
+#include <KDebug> //TODO remove
 
 //KDE
 #include <KStandardDirs>
@@ -155,8 +155,19 @@ void CallViewOverlayToolbar::updateState()
       manager->setBottomMargin(53);
       char act_counter = 0;
       for (int i = 0;i<9;i++) {
-         m_hButtons[ i ]->setVisible(visibility[ static_cast<ActionButton>(i) ][state]);
-         act_counter += visibility[ static_cast<ActionButton>(i) ][state];
+         try {
+            m_hButtons[ i ]->setVisible(visibility[ static_cast<ActionButton>(i) ][state]);
+            act_counter += visibility[ static_cast<ActionButton>(i) ][state];
+         }
+         catch (Call::State state) {
+            qDebug() << "CallViewOverlayToolbar is out of bound (state)" << state;
+         }
+         catch (ActionButton btn) {
+            kDebug() << "CallViewOverlayToolbar is out of bound (Action)" << (int)btn;
+         }
+         catch (...) {
+            kDebug() << "CallViewOverlayToolbar is out of bound (Other)";
+         }
       }
       if (!act_counter)
          setVisible(false);

@@ -31,6 +31,7 @@
 //SFLPhone
 #include <delegates/conferencedelegate.h>
 #include <klib/tipmanager.h>
+#include <lib/call.h>
 #include <widgets/tips/tipcollection.h>
 
 ///Constructor
@@ -151,7 +152,10 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
 
 bool CategorizedTreeView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
 {
-   if (state() == QAbstractItemView::EditingState)
+   if (state() == QAbstractItemView::EditingState) {
+      if (index.data(Call::Role::CallState).toInt() != size_t(Call::State::DIALING))
+         return false;
       return true;
+   }
    return QTreeView::edit(index,trigger,event);
 }
