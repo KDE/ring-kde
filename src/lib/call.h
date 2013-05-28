@@ -156,7 +156,7 @@ public:
       /** Call is on hold */                           HOLD   ,
       /** Call is over  */                             HUNG_UP,
       /** Call has failed */                           FAILURE,
-      /** Call is recording+current  */                RECORD ,
+//       /** Call is recording+current  */                RECORD ,
       COUNT,
    };
 
@@ -272,14 +272,14 @@ private:
     *  Map of the states to go to when the action action is 
     *  performed on a call in state orig_state.
    **/
-   static const TypedStateMachine< TypedStateMachine< Call::State , Call::Action, Call::Action::COUNT > , Call::State, Call::State::COUNT > actionPerformedStateMap;
+   static const TypedStateMachine< TypedStateMachine< Call::State , Call::Action > , Call::State > actionPerformedStateMap;
    
    /**
     *  actionPerformedFunctionMap[orig_state][action]
     *  Map of the functions to call when the action action is 
     *  performed on a call in state orig_state.
    **/
-   static const TypedStateMachine< TypedStateMachine< function , Call::Action, Call::Action::COUNT > , Call::State, Call::State::COUNT > actionPerformedFunctionMap;
+   static const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::State > actionPerformedFunctionMap;
    
    /**
     *  stateChangedStateMap[orig_state][daemon_new_state]
@@ -287,7 +287,7 @@ private:
     *  callStateChanged with arg daemon_new_state
     *  on a call in state orig_state.
    **/
-   static const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState, Call::DaemonState::COUNT > , Call::State, Call::State::COUNT > stateChangedStateMap;
+   static const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState > , Call::State > stateChangedStateMap;
    
    /**
     *  stateChangedFunctionMap[orig_state][daemon_new_state]
@@ -295,7 +295,7 @@ private:
     *  callStateChanged with arg daemon_new_state
     *  on a call in state orig_state.
    **/
-   static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState, Call::DaemonState::COUNT > , Call::State, Call::State::COUNT > stateChangedFunctionMap;
+   static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
    
    static const char * historyIcons[3];
    

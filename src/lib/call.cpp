@@ -39,7 +39,7 @@
 #include "historymodel.h"
 #include "instantmessagingmodel.h"
 
-const TypedStateMachine< TypedStateMachine< Call::State , Call::Action, Call::Action::COUNT > , Call::State, Call::State::COUNT > Call::actionPerformedStateMap =
+const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
 //                      ACCEPT                  REFUSE                  TRANSFER                   HOLD                           RECORD            /**/
 /*INCOMING     */  {{Call::State::INCOMING   , Call::State::INCOMING    , Call::State::ERROR        , Call::State::INCOMING     ,  Call::State::INCOMING     }},/**/
@@ -58,7 +58,7 @@ const TypedStateMachine< TypedStateMachine< Call::State , Call::Action, Call::Ac
 }};//                                                                                                                                                    
 
 
-const TypedStateMachine< TypedStateMachine< function , Call::Action, Call::Action::COUNT > , Call::State, Call::State::COUNT > Call::actionPerformedFunctionMap =
+const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::State > Call::actionPerformedFunctionMap =
 {{ 
 //                      ACCEPT               REFUSE            TRANSFER                 HOLD                  RECORD             /**/
 /*INCOMING       */  {{&Call::accept     , &Call::refuse   , &Call::acceptTransf   , &Call::acceptHold  ,  &Call::setRecord     }},/**/
@@ -77,7 +77,7 @@ const TypedStateMachine< TypedStateMachine< function , Call::Action, Call::Actio
 }};//                                                                                                                                 
 
 
-const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState, Call::DaemonState::COUNT > , Call::State, Call::State::COUNT > Call::stateChangedStateMap =
+const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState> , Call::State> Call::stateChangedStateMap =
 {{
 //                        RINGING                   CURRENT                   BUSY                  HOLD                        HUNGUP                 FAILURE           /**/
 /*INCOMING     */ {{Call::State::INCOMING    , Call::State::CURRENT    , Call::State::BUSY   , Call::State::HOLD         ,  Call::State::OVER  ,  Call::State::FAILURE  }},/**/
@@ -95,7 +95,7 @@ const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState, Cal
 /*CONF_HOLD    */ {{Call::State::HOLD        , Call::State::CURRENT    , Call::State::BUSY   , Call::State::HOLD         ,  Call::State::OVER  ,  Call::State::FAILURE  }},/**/
 }};//                                                                                                                                                             
 
-const TypedStateMachine< TypedStateMachine< function , Call::DaemonState, Call::DaemonState::COUNT > , Call::State, Call::State::COUNT > Call::stateChangedFunctionMap =
+const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > Call::stateChangedFunctionMap =
 {{ 
 //                      RINGING                  CURRENT             BUSY              HOLD                    HUNGUP           FAILURE            /**/
 /*INCOMING       */  {{&Call::nothing    , &Call::start     , &Call::startWeird     , &Call::startWeird   ,  &Call::startStop    , &Call::start   }},/**/
@@ -650,7 +650,25 @@ Call::State Call::stateChanged(const QString& newStateName)
    Call::State previousState = m_CurrentState;
    if (!m_isConference) {
       Call::DaemonState dcs = toDaemonCallState(newStateName);
-      changeCurrentState(stateChangedStateMap[m_CurrentState][dcs]);
+      if (dcs == Call::DaemonState::COUNT || m_CurrentState == Call::State::COUNT) {
+         qDebug() << "Error: Invalid state change";
+         return Call::State::FAILURE;
+      }
+      try {
+         changeCurrentState(stateChangedStateMap[m_CurrentState][dcs]);
+      }
+      catch(Call::State state) {
+         qDebug() << "State change failed" << state;
+         m_CurrentState = Call::State::ERROR;
+         emit changed();
+         return m_CurrentState;
+      }
+      catch(Call::DaemonState state) {
+         qDebug() << "State change failed" << state;
+         m_CurrentState = Call::State::ERROR;
+         emit changed();
+         return m_CurrentState;
+      }
 
       CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
       MapStringString details = callManager.getCallDetails(m_CallId).value();
@@ -678,9 +696,31 @@ Call::State Call::actionPerformed(Call::Action action)
 {
    Call::State previousState = m_CurrentState;
    //update the state
-   changeCurrentState(actionPerformedStateMap[previousState][action]);
+   try {
+      changeCurrentState(actionPerformedStateMap[previousState][action]);
+   }
+   catch(Call::State state) {
+      qDebug() << "State change failed" << state;
+      m_CurrentState = Call::State::ERROR;
+      emit changed();
+      return Call::State::FAILURE;
+   }
    //execute the action associated with this transition
-   (this->*(actionPerformedFunctionMap[previousState][action]))();
+   try {
+      (this->*(actionPerformedFunctionMap[previousState][action]))();
+   }
+   catch(Call::State state) {
+      qDebug() << "State change failed" << state;
+      m_CurrentState = Call::State::ERROR;
+      emit changed();
+      return Call::State::FAILURE;
+   }
+   catch(Call::Action action) {
+      qDebug() << "State change failed" << action;
+      m_CurrentState = Call::State::ERROR;
+      emit changed();
+      return Call::State::FAILURE;
+   }
    qDebug() << "Calling action " << action << " on call with state " << previousState << ". Become " << m_CurrentState;
    return m_CurrentState;
 } //actionPerformed

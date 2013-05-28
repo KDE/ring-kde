@@ -619,6 +619,10 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
          qDebug() << "Call/Conf dropped on itself (doing nothing)";
          return false;
       }
+      else if (!call) {
+         qDebug() << "Call not found";
+         return false;
+      }
       
       switch (mimedata->property("dropAction").toInt()) {
          case Call::DropAction::Conference:
@@ -740,7 +744,10 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
    Call* conf = confInt->call_real;
    qDebug() << "Changing conference state" << conf << confID;
    if (conf && dynamic_cast<Call*>(conf)) { //Prevent a race condition between call and conference
-      changeConference(confID, state);
+      if (!changeConference(confID, state)) {
+         qDebug() << "Changing conference failed";
+         return;
+      }
       conf->stateChanged(state);
       CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
       QStringList participants = callManager.getParticipantList(confID);

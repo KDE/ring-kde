@@ -37,7 +37,7 @@
 #include <klib/tipmanager.h>
 #include <lib/call.h>
 
-const TypedStateMachine< TypedStateMachine< bool , Call::State, Call::State::COUNT > , ActionButton, ActionButton::COUNT > visibility = {{              /*ROW = BUTTONS   COLS=STATE*/
+const TypedStateMachine< TypedStateMachine< bool , Call::State > , ActionButton > visibility = {{              /*ROW = BUTTONS   COLS=STATE*/
             /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
  /*PICKUP   */ {{ true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
  /*HOLD     */ {{ false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    }},

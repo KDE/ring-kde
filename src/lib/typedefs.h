@@ -24,31 +24,40 @@
 #include <QtCore/QMap>
 #include <QVector>
 #include <QtCore/QString>
+#include <QtCore/QDebug>
 
 typedef QMap<QString, QString> MapStringString;
 typedef QVector< QMap<QString, QString> > VectorMapStringString;
 typedef QMap<QString, int> MapStringInt;
 
-template<class T, class E, E max>
+template<class T, class E>
 struct TypedStateMachine
 {
     // no ctor/dtor and one public member variable for easy initialization
-    T _data[size_t(max)];
+    T _data[size_t(E::COUNT)];
 
     T& operator[](E v) {
-        return _data[size_t(v)];
+      if (size_t(v) >= size_t(E::COUNT)) {
+         qDebug() << "State Machine Out of Bound";
+         throw v;
+      }
+      return _data[size_t(v)];
     }
 
     const T& operator[](E v) const {
-        return _data[size_t(v)];
+      if (size_t(v) >= size_t(E::COUNT)) {
+         qDebug() << "State Machine Out of Bound";
+         throw v;
+      }
+      return _data[size_t(v)];
     }
 
     T *begin() {
-        return _data;
+      return _data;
     }
 
     T *end() {
-        return _data + size_t(max);
+      return _data + size_t(E::COUNT);
     }
 };
 
