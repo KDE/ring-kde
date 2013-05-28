@@ -499,7 +499,7 @@ QVariant CallModel::data( const QModelIndex& idx, int role) const
       call = m_lInternalModel[idx.row()]->call_real;
    else if (idx.parent().isValid() && m_lInternalModel.size() > idx.parent().row()) {
       InternalStruct* intList = m_lInternalModel[idx.parent().row()];
-      if (intList->m_lChildren.size() > idx.row() && intList->m_lChildren[idx.row()])
+      if (intList->conference == true && intList->m_lChildren.size() > idx.row() && intList->m_lChildren[idx.row()])
          call = intList->m_lChildren[idx.row()]->call_real;
    }
    return call?call->getRoleData((Call::Role)role):QVariant();
@@ -760,7 +760,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
             m_lInternalModel << child;
       }
       confInt->m_lChildren.clear();
-      foreach(QString callId,participants) {
+      foreach(const QString& callId,participants) {
          InternalStruct* callInt = m_sPrivateCallList_callId[callId];
          if (callInt) {
             if (callInt->m_pParent && callInt->m_pParent != confInt)

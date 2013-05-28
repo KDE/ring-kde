@@ -714,6 +714,9 @@ Call::State Call::stateChanged(const QString& newStateName)
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
       m_pTimer->start();
    }
+   m_CallNumber = QString();
+   emit changed();
+   emit changed(this);
    qDebug() << "Calling stateChanged " << newStateName << " -> " << toDaemonCallState(newStateName) << " on call with state " << previousState << ". Become " << m_CurrentState;
    return m_CurrentState;
 } //stateChanged
@@ -973,6 +976,9 @@ void Call::start()
    qDebug() << "Starting call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    time_t curTime;
    ::time(&curTime);
+   emit changed();
+   emit changed(this);
+   m_CallNumber = QString();
    m_pStartTimeStamp = curTime;
 }
 
@@ -1150,7 +1156,6 @@ QVariant Call::getRoleData(int role) const
    switch (role) {
       case Call::Role::Name:
       case Qt::DisplayRole:
-      case Qt::EditRole:
          if (isConference())
             return "Conference";
          else if (getCurrentState() == Call::State::DIALING)
@@ -1160,6 +1165,8 @@ QVariant Call::getRoleData(int role) const
          else
             return getPeerName();
          break;
+      case Qt::EditRole:
+         return m_CallNumber;
       case Call::Role::Number:
          return getPeerPhoneNumber();
          break;

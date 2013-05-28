@@ -469,16 +469,20 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
 
 void ConferenceDelegate::setEditorData ( QWidget * editor, const QModelIndex & index ) const
 {
-   QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
+   QLineEdit* ed = dynamic_cast<QLineEdit*>(editor);
    if (ed) {
       ed->setText(index.data(Qt::EditRole).toString());
       ed->deselect();
    }
 }
 
-void ConferenceDelegate::setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
+void ConferenceDelegate::setModelData (QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
 {
    QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
+   if (index.data(Call::Role::CallState) != static_cast<int>(Call::State::DIALING)) {
+      emit ((ConferenceDelegate*)(this))->closeEditor(editor,NoHint);
+   }
+
    if (ed)
       model->setData(index,ed->text(),Qt::EditRole);
 }
@@ -505,8 +509,17 @@ void ConferenceDelegate::slotTextChanged(const QString& text)
       Call* call  = nullptr;
       if (obj)
          call = qobject_cast<Call*>(obj);
+      if (call && call->getState() != Call::State::DIALING) {
+         emit closeEditor(ed);
+      }
       if (call && call->getCallNumber() != text) {
          call->setCallNumber(text);
       }
+      else if (!call) {
+         emit closeEditor(ed);
+      }
+   }
+   else {
+      emit closeEditor(ed);
    }
 }
