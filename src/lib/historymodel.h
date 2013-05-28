@@ -29,7 +29,7 @@
 #include "call.h"
 
 //Typedef
-typedef QMap<QString, Call*>  CallMap;
+typedef QMap<uint, Call*>  CallMap;
 typedef QList<Call*>          CallList;
 
 ///HistoryModel: History call manager

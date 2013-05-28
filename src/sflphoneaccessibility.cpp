@@ -94,7 +94,7 @@ void SFLPhoneAccessibility::currentCallDetails()
          else if (!call->getCallNumber().isEmpty())
             toSay += i18n(", the phone number is %1 ",numberToDigit(call->getCallNumber()));
 
-         int nSec = QDateTime::fromTime_t(call->getStartTimeStamp().toInt()).time().secsTo( QTime::currentTime() );
+         int nSec = QDateTime::fromTime_t(call->getStartTimeStamp()).time().secsTo( QTime::currentTime() );
          if (nSec>0)
             toSay += i18n(" and you have been talking since %1 seconds",nSec );
 

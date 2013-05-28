@@ -29,8 +29,8 @@ class Account;
 struct InternalStruct;
 
 //Typedef
-typedef QMap<QString, Call*>  CallMap;
-typedef QList<Call*>          CallList;
+typedef QMap<uint, Call*>  CallMap;
+typedef QList<Call*>       CallList;
 
 ///CallModel: Central model/frontend to deal with sflphoned
 class LIB_EXPORT CallModel : public QAbstractItemModel

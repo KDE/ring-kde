@@ -153,7 +153,11 @@ int SFLPhoneApplication::newInstance()
 bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
 {
    try {
+#ifdef DISABLE_UNIQUE_APPLICATION
       return KApplication::notify(receiver,e);
+#else
+      return KUniqueApplication::notify(receiver,e);
+#endif
    }
    catch (...) {
       kDebug() << ErrorMessage::GENERIC_ERROR;

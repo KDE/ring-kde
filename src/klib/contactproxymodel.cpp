@@ -343,7 +343,7 @@ QHash<Contact*, QDateTime> ContactByNameProxyModel::getContactListByTime() const
    const CallMap& history= HistoryModel::getHistory();
    QHash<Contact*, QDateTime> toReturn;
    QSet<QString> alreadyUsed;
-   QMapIterator<QString, Call*> i(history);
+   QMapIterator<uint, Call*> i(history);
    i.toBack();
    while (i.hasPrevious()) { //Iterate from the end up
       i.previous();
@@ -351,7 +351,7 @@ QHash<Contact*, QDateTime> ContactByNameProxyModel::getContactListByTime() const
       if (alreadyUsed.find(i.value()->getPeerPhoneNumber()) == alreadyUsed.constEnd()) {
          Contact* contact = i.value()->getContact();
          if (contact && toReturn.find(contact) == toReturn.end()) {
-            toReturn[contact] = QDateTime::fromTime_t(i.value()->getStartTimeStamp().toUInt());
+            toReturn[contact] = QDateTime::fromTime_t(i.value()->getStartTimeStamp());
          }
          alreadyUsed << i.value()->getPeerPhoneNumber();
       }

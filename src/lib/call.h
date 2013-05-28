@@ -24,7 +24,7 @@
 //Qt
 #include <QtCore/QDebug>
 class QString;
-class QDateTime;
+// class QDateTime;
 class QTimer;
 
 //SFLPhone
@@ -202,8 +202,8 @@ public:
    bool                 getRecording        () const;
    Account*             getAccount          () const;
    bool                 isHistory           () const;
-   QString              getStopTimeStamp    () const;
-   QString              getStartTimeStamp   () const;
+   uint                 getStopTimeStamp    () const;
+   uint                 getStartTimeStamp   () const;
    QString              getCurrentCodecName () const;
    bool                 isSecure            () const;
    bool                 isConference        () const;
@@ -251,8 +251,8 @@ private:
    QString                m_PeerName       ;
    QString                m_RecordingPath  ;
    history_state          m_HistoryState   ;
-   QDateTime*             m_pStartTime     ;
-   QDateTime*             m_pStopTime      ;
+   uint                   m_pStartTimeStamp;
+   uint                   m_pStopTimeStamp ;
    QString                m_TransferNumber ;
    QString                m_CallNumber     ;
    static ContactBackend* m_pContactBackend;
@@ -327,8 +327,8 @@ private:
    void startWeird   ();
    void warning      ();
 
-   QDateTime* setStartTime_private(QDateTime* time);
-   QDateTime* setStopTime_private(QDateTime* time);
+//    QDateTime* setStartTime_private(QDateTime* time);
+//    QDateTime* setStopTime_private(QDateTime* time);
 
 public Q_SLOTS:
    void playRecording();

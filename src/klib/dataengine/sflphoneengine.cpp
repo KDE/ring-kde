@@ -144,13 +144,13 @@ void SFLPhoneEngine::updateHistory()
 
    foreach (Call* oldCall, list) {
       HashStringString current;
-      /*             KEY                   VALUE                                                               */
-      /**/current[ "peerName"   ] = oldCall->getPeerName       ()                                               ;
-      /**/current[ "peerNumber" ] = oldCall->getPeerPhoneNumber()                                               ;
-      /**/current[ "length"     ] = oldCall->getStopTimeStamp  ().toInt() - oldCall->getStartTimeStamp().toInt();
-      /**/current[ "date"       ] = oldCall->getStopTimeStamp  ()                                               ;
-      /**/current[ "id"         ] = oldCall->getCallId         ()                                               ;
-      /*                                                                                                       */
+      /*             KEY                   VALUE                                                */
+      /**/current[ "peerName"   ] = oldCall->getPeerName       ()                                ;
+      /**/current[ "peerNumber" ] = oldCall->getPeerPhoneNumber()                                ;
+      /**/current[ "length"     ] = oldCall->getStopTimeStamp  () - oldCall->getStartTimeStamp() ;
+      /**/current[ "date"       ] = oldCall->getStopTimeStamp  ()                                ;
+      /**/current[ "id"         ] = oldCall->getCallId         ()                                ;
+      /*                                                                                        */
       if (oldCall->property("section").isValid())
          current[ "section" ] = oldCall->property("section");
       setData("history", oldCall->getCallId() , current);
