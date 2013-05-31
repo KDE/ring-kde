@@ -171,7 +171,7 @@ Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBacke
    m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),m_Account(account),m_CurrentState(Call::State::CONFERENCE),
    m_pTimer(nullptr)
 {
-   m_isConference  = m_ConfId.isEmpty();
+   m_isConference  = !m_ConfId.isEmpty();
 
    if (m_isConference) {
       time_t curTime;

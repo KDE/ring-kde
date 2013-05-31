@@ -495,7 +495,7 @@ QVariant CallModel::data( const QModelIndex& idx, int role) const
    if (!idx.isValid())
       return QVariant();
    Call* call = nullptr;
-   if (!idx.parent().isValid() && m_lInternalModel[idx.row()])
+   if (!idx.parent().isValid() && m_lInternalModel.size() > idx.row() && m_lInternalModel[idx.row()])
       call = m_lInternalModel[idx.row()]->call_real;
    else if (idx.parent().isValid() && m_lInternalModel.size() > idx.parent().row()) {
       InternalStruct* intList = m_lInternalModel[idx.parent().row()];

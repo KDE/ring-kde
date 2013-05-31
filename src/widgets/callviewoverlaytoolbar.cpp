@@ -145,7 +145,7 @@ ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
 void CallViewOverlayToolbar::updateState()
 {
    const QModelIndex& index = m_pParent->selectionModel()->currentIndex();
-   if (index.isValid()) {
+   if (index.isValid() && CallModel::instance()->rowCount()) {
       if (!m_pParent->selectionModel()->hasSelection()) {
          m_pParent->selectionModel()->setCurrentIndex(index,QItemSelectionModel::SelectCurrent);
       }
