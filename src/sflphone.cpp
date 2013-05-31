@@ -154,6 +154,7 @@ SFLPhone::~SFLPhone()
    delete m_pCentralDW       ;
    delete m_pHistoryDW       ;
    delete m_pBookmarkDW      ;
+   delete m_pAccountModel    ;
 
    delete AkonadiBackend::getInstance();
    delete CallModel::instance();
@@ -287,8 +288,8 @@ bool SFLPhone::initialize()
    bar->addPermanentWidget(curAccL);
 
    m_pAccountStatus = new KComboBox(bar);
-   AccountListNoCheckProxyModel* accountModel = new AccountListNoCheckProxyModel();
-   m_pAccountStatus->setModel(accountModel);
+   m_pAccountModel = new AccountListNoCheckProxyModel();
+   m_pAccountStatus->setModel(m_pAccountModel);
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
    

@@ -26,6 +26,7 @@ class SortedTreeDelegate : public QStyledItemDelegate
 {
   public:
    SortedTreeDelegate(QTreeView* widget);
+   virtual ~SortedTreeDelegate();
 
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;

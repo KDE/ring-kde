@@ -44,6 +44,7 @@ class HistoryDock;
 class CallTreeItem;
 class VideoRenderer;
 class ExtendedAction;
+class AccountListNoCheckProxyModel;
 
 
 /**
@@ -119,6 +120,7 @@ private:
 
    static SFLPhone*            m_sApp;
    static CallModel* m_pModel;
+   AccountListNoCheckProxyModel* m_pAccountModel;
 
    //Setters
    void setObjectNames();

@@ -51,7 +51,7 @@ const TypedStateMachine< TypedStateMachine< bool , Call::State > , ActionButton 
 }};
 
 ///Constructor
-CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(parent),m_pRightRender(0),m_pLeftRender(0),m_pParent(parent)
+CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(parent),m_pRightRender(nullptr),m_pLeftRender(nullptr),m_pParent(parent)
 {
    m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_right_corner.svg") );
    m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_left_corner.svg" ) );
@@ -94,6 +94,12 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(pare
    setVisible(false);
    hideEvent(nullptr);
 } //CallViewOverlayToolbar
+
+CallViewOverlayToolbar::~CallViewOverlayToolbar()
+{
+   delete m_pRightRender;
+   delete m_pLeftRender;
+}
 
 ///Resize event
 void CallViewOverlayToolbar::resizeEvent(QResizeEvent* event)

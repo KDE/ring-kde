@@ -27,11 +27,11 @@
 #include <KDebug>
 #include <KStandardDirs>
 
-bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
+bool TipManager::eventFilter(QObject *obj, QEvent *event)
 {
    Q_UNUSED(obj);
    if (event->type() == QEvent::Resize) {
-      m_pLoader->changeSize();
+      changeSize();
    }
    return false;
 }
@@ -41,8 +41,7 @@ TipManager::TipManager(QTreeView* parent):QObject(parent),
 m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
 m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(new QTimer())
 {
-   ResizeEventFilter* filter = new ResizeEventFilter(this);
-   parent->installEventFilter(filter);
+   parent->installEventFilter(this);
    parent->setProperty("tipManager",QVariant::fromValue(qobject_cast<TipManager*>(this)));
    reload();
 
@@ -50,6 +49,11 @@ m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(new QTimer())
 
    connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
    connect(&m_pAnim,SIGNAL(animationEnded()),this,SLOT(animationEnded()));
+}
+
+TipManager::~TipManager()
+{
+   delete m_pTimer;
 }
 
 ///Get the current image

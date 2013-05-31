@@ -29,6 +29,12 @@ SortedTreeDelegate::SortedTreeDelegate(QTreeView* widget)
 {
 }
 
+SortedTreeDelegate::~SortedTreeDelegate()
+{
+   if (m_pChildDelegate) delete m_pChildDelegate;
+   if (m_pChildChildDelegate) delete m_pChildChildDelegate;
+}
+
 QSize SortedTreeDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    //Only do it for categories and objects deeper than 1 level, use precalculated values for others
    if (index.parent().isValid() && !index.parent().parent().isValid() && m_pChildDelegate) {

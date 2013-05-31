@@ -66,6 +66,7 @@ class CallViewOverlayToolbar : public QWidget
    Q_OBJECT
 public:
    explicit CallViewOverlayToolbar(QTreeView* parent = nullptr);
+   virtual ~CallViewOverlayToolbar();
 
 private:
    //Attributes
