@@ -37,7 +37,7 @@
 //Define
 ///InternalStruct: internal representation of a call
 struct InternalStruct {
-   InternalStruct() : m_pParent(nullptr){}
+   InternalStruct() : m_pParent(nullptr),call_real(nullptr),conference(false){}
    Call*                  call_real  ;
    QModelIndex            index      ;
    QList<InternalStruct*> m_lChildren;

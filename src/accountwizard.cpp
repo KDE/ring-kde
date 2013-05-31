@@ -133,6 +133,7 @@ int AccountWizard::sendRequest(const QString& host, int port, const QString& req
    }
 
    fclose(f);
+   delete f;
    shutdown(s, 2);
    ::close(s);
    return 0;

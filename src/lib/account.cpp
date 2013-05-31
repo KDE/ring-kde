@@ -533,7 +533,7 @@ void Account::setAccountDetails(const MapStringString& m)
 {
    if (m_pAccountDetails)
       delete m_pAccountDetails;
-   *m_pAccountDetails = m;
+   m_pAccountDetails = new MapStringString(m);
 }
 
 ///Set a specific detail

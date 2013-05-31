@@ -94,7 +94,7 @@ void ConfigurationSkeleton::readConfig()
 
    kDebug() << "configurationManager.getCurrentAudioOutputPlugin() = " << configurationManager.getCurrentAudioOutputPlugin();
    setAlsaPlugin(configurationManager.getCurrentAudioOutputPlugin());
-   bool ok;
+   bool ok = false;
    QStringList devices = configurationManager.getCurrentAudioDevicesIndex();
    int inputDevice =0;
    if (devices.size() > 1) {

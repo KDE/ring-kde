@@ -33,7 +33,7 @@
 
 ///Constructor
 DelegateDropOverlay::DelegateDropOverlay(QObject* parent):QObject(parent),
-m_pTimer(0),m_Init(false),m_Reverse(1)
+m_pTimer(0),m_Init(false),m_Reverse(1),m_lpButtons(nullptr)
 {
    const QColor color = QApplication::palette().base().color();
    const bool dark = (color.red() > 128 && color.green() > 128 && color.blue() > 128);
@@ -52,6 +52,8 @@ DelegateDropOverlay::~DelegateDropOverlay()
 ///How to paint
 void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
+   if (!m_lpButtons)
+      return;
    int step = index.data(ContactBackend::Role::DropState).toInt();
    if ((step == 1 || step == -1) && m_lActiveIndexes.indexOf(index) == -1) {
       m_lActiveIndexes << index;

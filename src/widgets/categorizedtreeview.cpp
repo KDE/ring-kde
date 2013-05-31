@@ -137,7 +137,6 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
          QMimeData *data = model()->mimeData(list);
          if (!data)
             return;
-         
 
          //Execute the drag
          QDrag *drag = new QDrag(this);
