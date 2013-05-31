@@ -249,7 +249,7 @@ Call* Call::buildIncomingCall(const QString & callId)
    return call;
 } //buildIncomingCall
 
-///Build a rigging call (from dbus)
+///Build a ringing call (from dbus)
 Call* Call::buildRingingCall(const QString & callId)
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();

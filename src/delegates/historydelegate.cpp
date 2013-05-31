@@ -36,7 +36,7 @@
 #include "klib/configurationskeleton.h"
 #include "widgets/playeroverlay.h"
 #include "delegatedropoverlay.h"
-#include "../widgets/tips/riggingtip.h"
+#include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
 
 static const char* icnPath[4] = {
@@ -212,7 +212,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    else if ((currentState == Call::State::RINGING || currentState == Call::State::INCOMING) && index.model()->rowCount() > 1) {
       if (!m_AnimationWrapper) {
          ((HistoryDelegate*)this)->m_AnimationWrapper = new TipAnimationWrapper();
-         ((HistoryDelegate*)this)->m_pRingingTip = new RiggingTip();
+         ((HistoryDelegate*)this)->m_pRingingTip = new RingingTip();
          m_AnimationWrapper->setTip(m_pRingingTip);
       }
       if (!m_pRingingTip->isVisible())

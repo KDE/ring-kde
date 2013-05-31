@@ -572,7 +572,7 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::Refuse   ] = ACTION_LABEL_REFUSE         ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)   ;
             if (TipCollection::manager()) {
-               TipCollection::manager()->setCurrentTip(TipCollection::rigging());
+               TipCollection::manager()->setCurrentTip(TipCollection::ringing());
             }
             break;
 
@@ -581,7 +581,7 @@ void SFLPhoneView::updateWindowCallState()
             enabledActions  [ SFLPhone::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
             if (TipCollection::manager()) {
-               TipCollection::manager()->setCurrentTip(TipCollection::rigging());
+               TipCollection::manager()->setCurrentTip(TipCollection::ringing());
             }
             break;
 
@@ -674,16 +674,16 @@ void SFLPhoneView::updateWindowCallState()
       }
 
       //Manage tips
-      //There is little way to be sure when to end the rigging animation, for now, brute force the check
-      bool displayRigging = false;
-      if (TipCollection::rigging()->isVisible() || TipCollection::manager()->currentTip() == TipCollection::rigging()) {
+      //There is little way to be sure when to end the ringing animation, for now, brute force the check
+      bool displayRinging = false;
+      if (TipCollection::ringing()->isVisible() || TipCollection::manager()->currentTip() == TipCollection::ringing()) {
          foreach (Call* call2, SFLPhone::model()->getCallList()) {
             if(dynamic_cast<Call*>(call2) && (call2->getState() == Call::State::INCOMING || call2->getState() == Call::State::RINGING)) {
-               displayRigging = true;
+               displayRinging = true;
             }
          }
-         if (!displayRigging) {
-            TipCollection::manager()->hideTip(TipCollection::rigging());
+         if (!displayRinging) {
+            TipCollection::manager()->hideTip(TipCollection::ringing());
          }
       }
       if (TipCollection::dragAndDrop()) {

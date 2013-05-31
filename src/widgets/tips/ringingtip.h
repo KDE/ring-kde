@@ -31,12 +31,12 @@ class QSvgRenderer;
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class RiggingTip : public Tip
+class RingingTip : public Tip
 {
    Q_OBJECT
 public:
-   explicit RiggingTip(QWidget* parent = nullptr);
-   virtual ~RiggingTip();
+   explicit RingingTip(QWidget* parent = nullptr);
+   virtual ~RingingTip();
 
    //It is not a notification, it doesn't need to be as visible
    virtual float opacity() { return 0.5f; }

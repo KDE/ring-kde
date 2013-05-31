@@ -34,7 +34,7 @@ public:
    //Call related
    static Tip*        endCall();
    static Tip*        endBusy();
-   static Tip*        rigging();
+   static Tip*        ringing();
    static Tip*        removeConference();
    
    //Account related
@@ -54,7 +54,7 @@ private:
    //Call related
    static Tip*        m_spEndCall;
    static Tip*        m_spEndBusy;
-   static Tip*        m_spRigging;
+   static Tip*        m_spRinging;
    static Tip*        m_spRemoveConference;
    
    //Account related

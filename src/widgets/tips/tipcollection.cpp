@@ -20,7 +20,7 @@
 #include <KLocale>
 
 #include "dialpadtip.h"
-#include "riggingtip.h"
+#include "ringingtip.h"
 #include "connectionlosttip.h"
 #include "conftip.h"
 #include "removeconferencetip.h"
@@ -33,7 +33,7 @@ ConfTip*           TipCollection::m_spConf             = nullptr;
 //Call related
 Tip*               TipCollection::m_spEndCall          = nullptr;
 Tip*               TipCollection::m_spEndBusy          = nullptr;
-Tip*               TipCollection::m_spRigging          = nullptr;
+Tip*               TipCollection::m_spRinging          = nullptr;
 Tip*               TipCollection::m_spRemoveConference = nullptr;
 
 //Account related
@@ -91,15 +91,15 @@ Tip* TipCollection::endBusy()
    return m_spEndBusy;
 }
 
-///Return rigging tip
-Tip* TipCollection::rigging()
+///Return ringing tip
+Tip* TipCollection::ringing()
 {
-   if (!m_spRigging) {
-      m_spRigging = new RiggingTip();
-      m_spRigging->setAnimationIn(Tip::TipAnimation::Fade);
-      m_spRigging->setAnimationOut(Tip::TipAnimation::Fade);
+   if (!m_spRinging) {
+      m_spRinging = new RingingTip();
+      m_spRinging->setAnimationIn(Tip::TipAnimation::Fade);
+      m_spRinging->setAnimationOut(Tip::TipAnimation::Fade);
    }
-   return m_spRigging;
+   return m_spRinging;
 }
 
 //Account related

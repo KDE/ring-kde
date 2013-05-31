@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "riggingtip.h"
+#include "ringingtip.h"
 
 //Qt
 #include <QtSvg/QSvgRenderer>
@@ -34,7 +34,7 @@
 #include <cmath>
 
 ///Constructor
-RiggingTip::RiggingTip(QWidget* parent) : Tip(QString(),parent),m_pTimer(nullptr),m_Counter(0)
+RingingTip::RingingTip(QWidget* parent) : Tip(QString(),parent),m_pTimer(nullptr),m_Counter(0)
 
 {
    setHasBackground(false);
@@ -49,19 +49,19 @@ RiggingTip::RiggingTip(QWidget* parent) : Tip(QString(),parent),m_pTimer(nullptr
 }
 
 ///Destructor
-RiggingTip::~RiggingTip()
+RingingTip::~RingingTip()
 {
    if (m_pTimer) delete m_pTimer;
 }
 
 ///Return the image rect
-QRect RiggingTip::getDecorationRect()
+QRect RingingTip::getDecorationRect()
 {
    return QRect(0,0,135,120);
 }
 
 ///Paint the image/decoration
-void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
+void RingingTip::paintDecorations(QPainter& p, const QRect& textRect)
 {
    Q_UNUSED(textRect);
    if (!m_pR) {
@@ -113,7 +113,7 @@ void RiggingTip::paintDecorations(QPainter& p, const QRect& textRect)
 } //paintDecorations
 
 ///Start tip animation, this one implement a few sinus curve to simmulate sound wave
-void RiggingTip::startAnimation(bool visibility)
+void RingingTip::startAnimation(bool visibility)
 {
    if (!m_pTimer && visibility) {
       m_pTimer = new QTimer(this);
@@ -129,7 +129,7 @@ void RiggingTip::startAnimation(bool visibility)
 } //startAnimation
 
 ///Next animation frame
-void RiggingTip::timeout()
+void RingingTip::timeout()
 {
    m_Counter += 1; //Animation speed
    if (m_Counter > 35)
