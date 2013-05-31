@@ -55,7 +55,9 @@ SFLPhoneApplication::SFLPhoneApplication()
 #endif
 {
    InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
-   instance.Register(getpid(), APP_NAME);
+   QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);
+   reply.waitForFinished();
+
    // Start remaining initialisation
    initializePaths();
    initializeMainWindow();
