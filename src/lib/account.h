@@ -85,7 +85,6 @@ class LIB_EXPORT Account : public QObject {
       //Getters
       bool                    isNew()                                const;
       const QString           getAccountId()                         const;
-      const MapStringString&  getAccountDetails()                    const;
       const QString           getStateName(const QString& state)     const;
       const QString           getAccountDetail(const QString& param) const;
       const QString           getAlias()                             const;
@@ -142,8 +141,6 @@ class LIB_EXPORT Account : public QObject {
    
       //Setters
       void setAccountId      (const QString& id                        );
-      void setAccountDetails (const MapStringString& m                 );
-      bool setAccountDetail  (const QString& param, const QString& val );
       #ifdef ENABLE_VIDEO
       void setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
       QList<VideoCodec*> getActiveVideoCodecList();
@@ -205,8 +202,9 @@ class LIB_EXPORT Account : public QObject {
       Account();
 
       //Attributes
-      QString*         m_pAccountId     ;
-      MapStringString* m_pAccountDetails;
+      QString*                m_pAccountId     ;
+      QHash<QString,QString>  m_hAccountDetails;
+      
 
    public Q_SLOTS:
       void setEnabled(bool checked);
@@ -215,6 +213,10 @@ class LIB_EXPORT Account : public QObject {
       void accountChanged(QString accountId,QString stateName, int state);
 
    private:
+      //Setters
+      void setAccountDetails (const QHash<QString,QString>& m          );
+      bool setAccountDetail  (const QString& param, const QString& val );
+
       //State actions
       void nothing() {};
       void edit()   {m_CurrentState = EDITING ;emit changed(this);};
@@ -231,6 +233,9 @@ class LIB_EXPORT Account : public QObject {
       VideoCodecModel* m_pVideoCodecs;
       AccountEditState m_CurrentState;
       static const account_function stateMachineActionsOnState[6][7];
+      
+      //Cached account details (as they are called too often for the hash)
+      QString m_HostName;
 
 
    Q_SIGNALS:

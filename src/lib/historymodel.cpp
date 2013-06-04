@@ -338,8 +338,8 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
    }
    HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
    if (modelItem && (long long)modelItem > 100 && modelItem->type3() == HistoryTreeBackend::Type::CALL) {
-      Call* call = (Call*)((HistoryTreeBackend*)(idx.internalPointer()))->getSelf();
-      QString val = category(call);
+      const Call* call = (Call*)((HistoryTreeBackend*)(idx.internalPointer()))->getSelf();
+      const QString val = category(call);
       if (m_hCategories[val])
          return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
@@ -424,7 +424,7 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
    return false;
 }
 
-QString HistoryModel::category(Call* call) const
+QString HistoryModel::category(const Call* call) const
 {
    QString cat = call->getRoleData((Call::Role)m_Role).toString();
 //    if (cat.size() && !m_ShowAll)

@@ -104,7 +104,7 @@ private:
    void addPriv(Call* call);
 
    //Helpers
-   QString category(Call* call) const;
+   QString category(const Call* call) const;
 
    //Static attributes
    static HistoryModel* m_spInstance;

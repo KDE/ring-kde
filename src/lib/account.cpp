@@ -83,7 +83,7 @@ const QString& account_state_name(const QString& s)
 } //account_state_name
 
 ///Constructors
-Account::Account():m_pAccountId(nullptr),m_pAccountDetails(nullptr),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
+Account::Account():m_pAccountId(nullptr),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
 m_pVideoCodecs(nullptr)
 {
    CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
@@ -107,8 +107,15 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
 {
    qDebug() << "Building an account from alias: " << alias;
    ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
-   Account* a           = new Account();
-   a->m_pAccountDetails = new MapStringString(configurationManager.getAccountTemplate());
+   Account* a = new Account();
+   a->m_hAccountDetails.clear();
+   MapStringString tmp = configurationManager.getAccountTemplate();
+   QMutableMapIterator<QString, QString> iter(tmp);
+   while (iter.hasNext()) {
+      iter.next();
+      a->m_hAccountDetails[iter.key()] = iter.value();
+   }
+   a->setAccountHostname(a->m_hAccountDetails[ACCOUNT_HOSTNAME]);
    a->setAccountDetail(ACCOUNT_ALIAS,alias);
    return a;
 }
@@ -118,9 +125,8 @@ Account::~Account()
 {
    disconnect();
    delete m_pAccountId;
-   if (m_pCredentials)    delete m_pCredentials   ;
-   if (m_pAccountDetails) delete m_pAccountDetails;
-   if (m_pAudioCodecs)    delete m_pAudioCodecs   ;
+   if (m_pCredentials) delete m_pCredentials ;
+   if (m_pAudioCodecs) delete m_pAudioCodecs ;
 }
 
 
@@ -167,12 +173,6 @@ const QString Account::getAccountId() const
    return *m_pAccountId;
 }
 
-///Get this account details
-const MapStringString& Account::getAccountDetails() const
-{
-   return *m_pAccountDetails;
-}
-
 ///Get current state
 const QString Account::getStateName(const QString& state) const
 {
@@ -182,21 +182,21 @@ const QString Account::getStateName(const QString& state) const
 ///Get an account detail
 const QString Account::getAccountDetail(const QString& param) const
 {
-   if (!m_pAccountDetails) {
+   if (!m_hAccountDetails.size()) {
       qDebug() << "The account list is not set";
       return QString(); //May crash, but better than crashing now
    }
-   if (m_pAccountDetails->find(param) != m_pAccountDetails->end()) {
-      return (*m_pAccountDetails)[param];
+   if (m_hAccountDetails.find(param) != m_hAccountDetails.end()) {
+      return m_hAccountDetails[param];
    }
-   else if (m_pAccountDetails->count() > 0) {
+   else if (m_hAccountDetails.count() > 0) {
       if (param == "Account.enable") //If an account is invalid, at least does not try to register it
          return REGISTRATION_ENABLED_FALSE;
       qDebug() << "Account parameter \"" << param << "\" not found";
       return QString();
    }
    else {
-      qDebug() << "Account details not found, there is " << m_pAccountDetails->count() << " details available";
+      qDebug() << "Account details not found, there is " << m_hAccountDetails.count() << " details available";
       return QString();
    }
 } //getAccountDetail
@@ -287,9 +287,9 @@ void Account::setAccountAlias(QString detail)
 }
 
 ///Return the account hostname
-QString Account::getAccountHostname              () const
+QString Account::getAccountHostname() const
 {
-   return getAccountDetail(ACCOUNT_HOSTNAME);
+   return m_HostName;
 }
 
 ///Return if the account is enabled
@@ -529,20 +529,20 @@ DtmfType Account::getDTMFType() const
  ****************************************************************************/
 
 ///Set account details
-void Account::setAccountDetails(const MapStringString& m)
+void Account::setAccountDetails(const QHash<QString,QString>& m)
 {
-   if (m_pAccountDetails)
-      delete m_pAccountDetails;
-   m_pAccountDetails = new MapStringString(m);
+   m_hAccountDetails.clear();
+   m_hAccountDetails = m;
+   m_HostName = m[ACCOUNT_HOSTNAME];
 }
 
 ///Set a specific detail
 bool Account::setAccountDetail(const QString& param, const QString& val)
 {
-   bool accChanged = (*m_pAccountDetails)[param] != val;
-   QString buf = (*m_pAccountDetails)[param];
+   const bool accChanged = m_hAccountDetails[param] != val;
+   const QString buf = m_hAccountDetails[param];
    if (param == ACCOUNT_REGISTRATION_STATUS) {
-      (*m_pAccountDetails)[param] = val;
+      m_hAccountDetails[param] = val;
       if (accChanged) {
          emit detailChanged(this,param,val,buf);
       }
@@ -550,7 +550,7 @@ bool Account::setAccountDetail(const QString& param, const QString& val)
    else {
       performAction(AccountEditAction::MODIFY);
       if (m_CurrentState == MODIFIED || m_CurrentState == NEW) {
-         (*m_pAccountDetails)[param] = val;
+         m_hAccountDetails[param] = val;
          if (accChanged) {
             emit detailChanged(this,param,val,buf);
          }
@@ -588,91 +588,92 @@ void Account::setAccountType(QString detail)
 ///The set account hostname, it can be an hostname or an IP address
 void Account::setAccountHostname(QString detail)
 {
-   setAccountDetail(ACCOUNT_HOSTNAME               ,detail);
+   m_HostName = detail;
+   setAccountDetail(ACCOUNT_HOSTNAME, detail);
 }
 
 ///Set the account username, everything is valid, some might be rejected by the PBX server
 void Account::setAccountUsername(QString detail)
 {
-   setAccountDetail(ACCOUNT_USERNAME               ,detail);
+   setAccountDetail(ACCOUNT_USERNAME, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
 void Account::setAccountMailbox(QString detail)
 {
-   setAccountDetail(ACCOUNT_MAILBOX                ,detail);
+   setAccountDetail(ACCOUNT_MAILBOX, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
 void Account::setAccountProxy(QString detail)
 {
-   setAccountDetail(ACCOUNT_ROUTE                  ,detail);
+   setAccountDetail(ACCOUNT_ROUTE, detail);
 }
 
 ///Set the main credential password
 void Account::setAccountPassword(QString detail)
 {
-   setAccountDetail(ACCOUNT_PASSWORD               ,detail);
+   setAccountDetail(ACCOUNT_PASSWORD, detail);
 }
 
 ///Set the TLS (encryption) password
 void Account::setTlsPassword(QString detail)
 {
-   setAccountDetail(TLS_PASSWORD                   ,detail);
+   setAccountDetail(TLS_PASSWORD, detail);
 }
 
 ///Set the certificate authority list file
 void Account::setTlsCaListFile(QString detail)
 {
-   setAccountDetail(TLS_CA_LIST_FILE               ,detail);
+   setAccountDetail(TLS_CA_LIST_FILE, detail);
 }
 
 ///Set the certificate
 void Account::setTlsCertificateFile(QString detail)
 {
-   setAccountDetail(TLS_CERTIFICATE_FILE           ,detail);
+   setAccountDetail(TLS_CERTIFICATE_FILE, detail);
 }
 
 ///Set the private key
 void Account::setTlsPrivateKeyFile(QString detail)
 {
-   setAccountDetail(TLS_PRIVATE_KEY_FILE           ,detail);
+   setAccountDetail(TLS_PRIVATE_KEY_FILE, detail);
 }
 
 ///Set the TLS cipher
 void Account::setTlsCiphers(QString detail)
 {
-   setAccountDetail(TLS_CIPHERS                    ,detail);
+   setAccountDetail(TLS_CIPHERS, detail);
 }
 
 ///Set the TLS server
 void Account::setTlsServerName(QString detail)
 {
-   setAccountDetail(TLS_SERVER_NAME                ,detail);
+   setAccountDetail(TLS_SERVER_NAME, detail);
 }
 
 ///Set the stun server
 void Account::setAccountSipStunServer(QString detail)
 {
-   setAccountDetail(ACCOUNT_SIP_STUN_SERVER        ,detail);
+   setAccountDetail(ACCOUNT_SIP_STUN_SERVER, detail);
 }
 
 ///Set the published address
 void Account::setPublishedAddress(QString detail)
 {
-   setAccountDetail(PUBLISHED_ADDRESS              ,detail);
+   setAccountDetail(PUBLISHED_ADDRESS, detail);
 }
 
 ///Set the local interface
 void Account::setLocalInterface(QString detail)
 {
-   setAccountDetail(LOCAL_INTERFACE                ,detail);
+   setAccountDetail(LOCAL_INTERFACE, detail);
 }
 
 ///Set the ringtone path, it have to be a valid absolute path
 void Account::setRingtonePath(QString detail)
 {
-   setAccountDetail(CONFIG_RINGTONE_PATH           ,detail);
+   setAccountDetail(CONFIG_RINGTONE_PATH, detail);
 }
 
 ///Set the Tls method
@@ -684,61 +685,61 @@ void Account::setTlsMethod(int detail)
 ///Set the account timeout, it will be renegotiated when that timeout occur
 void Account::setAccountRegistrationExpire(int detail)
 {
-   setAccountDetail(ACCOUNT_REGISTRATION_EXPIRE    ,QString::number(detail));
+   setAccountDetail(ACCOUNT_REGISTRATION_EXPIRE, QString::number(detail));
 }
 
 ///Set TLS negotiation timeout in second
 void Account::setTlsNegotiationTimeoutSec(int detail)
 {
-   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC    ,QString::number(detail));
+   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC, QString::number(detail));
 }
 
 ///Set the TLS negotiation timeout in milliseconds
 void Account::setTlsNegotiationTimeoutMsec(int detail)
 {
-   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC   ,QString::number(detail));
+   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC, QString::number(detail));
 }
 
 ///Set the local port for SIP/IAX communications
 void Account::setLocalPort(unsigned short detail)
 {
-   setAccountDetail(LOCAL_PORT              ,QString::number(detail));
+   setAccountDetail(LOCAL_PORT, QString::number(detail));
 }
 
 ///Set the TLS listener port (0-2^16)
 void Account::setTlsListenerPort(unsigned short detail)
 {
-   setAccountDetail(TLS_LISTENER_PORT       ,QString::number(detail));
+   setAccountDetail(TLS_LISTENER_PORT, QString::number(detail));
 }
 
 ///Set the published port (0-2^16)
 void Account::setPublishedPort(unsigned short detail)
 {
-   setAccountDetail(PUBLISHED_PORT          ,QString::number(detail));
+   setAccountDetail(PUBLISHED_PORT, QString::number(detail));
 }
 
 ///Set if the account is enabled or not
 void Account::setAccountEnabled(bool detail)
 {
-   setAccountDetail(ACCOUNT_ENABLED                ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_ENABLED, detail?"true":"false");
 }
 
 ///Set if the account should auto answer
 void Account::setAutoAnswer(bool detail)
 {
-   setAccountDetail(ACCOUNT_AUTOANSWER             ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_AUTOANSWER, detail?"true":"false");
 }
 
 ///Set the TLS verification server
 void Account::setTlsVerifyServer(bool detail)
 {
-   setAccountDetail(TLS_VERIFY_SERVER              ,detail?"true":"false");
+   setAccountDetail(TLS_VERIFY_SERVER, detail?"true":"false");
 }
 
 ///Set the TLS verification client
 void Account::setTlsVerifyClient(bool detail)
 {
-   setAccountDetail(TLS_VERIFY_CLIENT              ,detail?"true":"false");
+   setAccountDetail(TLS_VERIFY_CLIENT, detail?"true":"false");
 }
 
 ///Set if the peer need to be providing a certificate
@@ -755,43 +756,43 @@ void Account::setTlsEnable(bool detail)
 
 void Account::setAccountDisplaySasOnce(bool detail)
 {
-   setAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE       ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE, detail?"true":"false");
 }
 
 void Account::setAccountSrtpRtpFallback(bool detail)
 {
-   setAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK      ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK, detail?"true":"false");
 }
 
 void Account::setAccountZrtpDisplaySas(bool detail)
 {
-   setAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS       ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS, detail?"true":"false");
 }
 
 void Account::setAccountZrtpNotSuppWarning(bool detail)
 {
-   setAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING  ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING, detail?"true":"false");
 }
 
 void Account::setAccountZrtpHelloHash(bool detail)
 {
-   setAccountDetail(ACCOUNT_ZRTP_HELLO_HASH        ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_ZRTP_HELLO_HASH, detail?"true":"false");
 }
 
 void Account::setAccountSipStunEnabled(bool detail)
 {
-   setAccountDetail(ACCOUNT_SIP_STUN_ENABLED       ,detail?"true":"false");
+   setAccountDetail(ACCOUNT_SIP_STUN_ENABLED, detail?"true":"false");
 }
 
 void Account::setPublishedSameAsLocal(bool detail)
 {
-   setAccountDetail(PUBLISHED_SAMEAS_LOCAL         ,detail?"true":"false");
+   setAccountDetail(PUBLISHED_SAMEAS_LOCAL, detail?"true":"false");
 }
 
 ///Set if custom ringtone are enabled
 void Account::setRingtoneEnabled(bool detail)
 {
-   setAccountDetail(CONFIG_RINGTONE_ENABLED        ,detail?"true":"false");
+   setAccountDetail(CONFIG_RINGTONE_ENABLED, detail?"true":"false");
 }
 
 ///Set the DTMF type
@@ -826,9 +827,9 @@ bool Account::updateState()
 {
    if(! isNew()) {
       ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
-      MapStringString details       = configurationManager.getAccountDetails(getAccountId()).value();
-      QString         status        = details[ACCOUNT_REGISTRATION_STATUS];
-      QString         currentStatus = getAccountRegistrationStatus();
+      const MapStringString details       = configurationManager.getAccountDetails(getAccountId()).value();
+      const QString         status        = details[ACCOUNT_REGISTRATION_STATUS];
+      const QString         currentStatus = getAccountRegistrationStatus();
       setAccountDetail(ACCOUNT_REGISTRATION_STATUS, status); //Update -internal- object state
       return status == currentStatus;
    }
@@ -840,8 +841,15 @@ void Account::save()
 {
    ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
    if (isNew()) {
-      MapStringString details = getAccountDetails();
-      QString currentId = configurationManager.addAccount(details);
+      MapStringString details;
+      QMutableHashIterator<QString,QString> iter(m_hAccountDetails);
+
+      while (iter.hasNext()) {
+         iter.next();
+         details[iter.key()] = iter.value();
+      }
+
+      const QString currentId = configurationManager.addAccount(details);
 
       //Be sure there is audio codec enabled to avoid obscure error messages for the user
       QVector<int> codecIdList = configurationManager.getAudioCodecList();
@@ -860,7 +868,14 @@ void Account::save()
       saveCredentials();
    }
    else {
-      configurationManager.setAccountDetails(getAccountId(), getAccountDetails());
+      MapStringString tmp;
+      QMutableHashIterator<QString,QString> iter(m_hAccountDetails);
+
+      while (iter.hasNext()) {
+         iter.next();
+         tmp[iter.key()] = iter.value();
+      }
+      configurationManager.setAccountDetails(getAccountId(), tmp);
    }
 
    //QString id = configurationManager.getAccountDetail(getAccountId());
@@ -893,11 +908,13 @@ void Account::reload()
       qDebug() << "Account not found";
    }
    else {
-      if (m_pAccountDetails) {
-         delete m_pAccountDetails;
-         m_pAccountDetails = nullptr;
+      m_hAccountDetails.clear();
+      QMutableMapIterator<QString, QString> iter(aDetails);
+      while (iter.hasNext()) {
+         iter.next();
+         m_hAccountDetails[iter.key()] = iter.value();
       }
-      m_pAccountDetails = new MapStringString(aDetails);
+      setAccountHostname(m_hAccountDetails[ACCOUNT_HOSTNAME]);
    }
    m_CurrentState = READY;
    reloadCredentials();

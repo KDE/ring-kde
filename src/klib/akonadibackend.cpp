@@ -92,11 +92,12 @@ AbstractContactBackend* AkonadiBackend::getInstance()
 Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resolveDNS,Account* a)
 {
    //Remove protocol dependant prefix and suffix
-   QString number = phoneNumber;
-   if (number.left(5) == "<sip:")
-      number = number.remove(0,5);
-   if (number.right(1) == ">")
-      number = number.remove(number.size()-1,1);
+   int start(0),end(phoneNumber.size()-1); //Other type of comparaisons were too slow
+   if (phoneNumber[0] == '<' && phoneNumber[4] == ':')
+      start = 5;
+   if (phoneNumber.right(1) == ">")
+      end--;
+   const QString number = phoneNumber.mid(start,end);
 
    //Try direct match
    Contact* c = m_ContactByPhone[number];
@@ -111,10 +112,10 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
 
    //Use default resolve account to trim hostname away from the number
    Contact* userOnly = m_ContactByPhone[getUserFromPhone(number).trimmed()];
-   QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
+   const QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
    if (resolveDNS && !defaultResolveAccount.isEmpty() && number.indexOf('@') != -1) {
-      Account* defResolveAcc = AccountList::getInstance()->getAccountById(defaultResolveAccount);
-      QString hostname = defResolveAcc?defResolveAcc->getAccountHostname():QString();
+      const Account* defResolveAcc = AccountList::getInstance()->getAccountById(defaultResolveAccount);
+      const QString hostname = defResolveAcc?defResolveAcc->getAccountHostname():QString();
       if (defResolveAcc && hostname == number.right(hostname.size())) {
          return userOnly;
       }
@@ -122,7 +123,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
 
    //Try to find something matching, but at this point it is not 100% sure it is the right one
    if (resolveDNS && number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && userOnly) {
-      foreach (Account* a, AccountList::getInstance()->getAccounts()) {
+      foreach (const Account* a, AccountList::getInstance()->getAccounts()) {
          if (a->getAccountHostname() == getHostNameFromPhone(number) && userOnly)
             return userOnly;
       }

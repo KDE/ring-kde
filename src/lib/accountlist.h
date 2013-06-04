@@ -51,9 +51,9 @@ public:
    Account*                 firstRegisteredAccount (                         ) const;
    Account*                 getDefaultAccount      (                         ) const;
    static Account*          getCurrentAccount      (                         );
-   static QString           getPriorAccoundId      (                         );
    Account*                 getAccountByModelIndex ( const QModelIndex& item ) const;
    static QString           getSimilarAliasIndex   ( const QString& alias    );
+   static Account*          getPriorAccount        (                         );
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -88,7 +88,7 @@ private:
    //Attributes
    QVector<Account*>*       m_pAccounts      ;
    static AccountList*      m_spAccountList  ;
-   static QString           m_sPriorAccountId;
+   static Account*          m_spPriorAccount ;
    Account*                 m_pDefaultAccount;
    AccountListColorVisitor* m_pColorVisitor  ;
 

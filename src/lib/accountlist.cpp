@@ -31,7 +31,7 @@
 #include "callmanager_interface_singleton.h"
 
 AccountList* AccountList::m_spAccountList   = nullptr;
-QString      AccountList::m_sPriorAccountId = ""     ;
+Account*     AccountList::m_spPriorAccount   = nullptr     ;
 
 QVariant AccountListNoCheckProxyModel::data(const QModelIndex& idx,int role ) const
 {
@@ -360,24 +360,18 @@ int AccountList::size() const
 ///Return the current account
 Account* AccountList::getCurrentAccount()
 {
-   Account* priorAccount = getInstance()->getAccountById(m_sPriorAccountId);
-   if(priorAccount && priorAccount->getAccountDetail(ACCOUNT_REGISTRATION_STATUS) == ACCOUNT_STATE_REGISTERED && priorAccount->isAccountEnabled() ) {
+   Account* priorAccount = m_spPriorAccount;
+   if(priorAccount && priorAccount->getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED && priorAccount->isAccountEnabled() ) {
       return priorAccount;
    }
    else {
       Account* a = getInstance()->firstRegisteredAccount();
-      if (a)
-         return getInstance()->firstRegisteredAccount();
-      else
-         return getInstance()->getAccountById("IP2IP");
+      if (!a)
+         a = getInstance()->getAccountById("IP2IP");
+      getInstance()->setPriorAccount(a);
+      return a;
    }
 } //getCurrentAccount
-
-///Return the previously used account ID
-QString AccountList::getPriorAccoundId()
-{
-   return m_sPriorAccountId;
-}
 
 ///Get data from the model
 QVariant AccountList::data ( const QModelIndex& idx, int role) const
@@ -421,6 +415,12 @@ int AccountList::rowCount(const QModelIndex& parentIdx) const
 Account* AccountList::getAccountByModelIndex(const QModelIndex& item) const
 {
    return (*m_pAccounts)[item.row()];
+}
+
+//Return the prior account
+Account* AccountList::getPriorAccount()
+{
+   return m_spPriorAccount;
 }
 
 ///Return the default account (used for contact lookup)
@@ -488,8 +488,8 @@ void AccountList::removeAccount( QModelIndex idx )
 
 ///Set the previous account used
 void AccountList::setPriorAccount(const Account* account) {
-   bool changed = (account && m_sPriorAccountId != account->getAccountId()) || (!account && !m_sPriorAccountId.isEmpty());
-   m_sPriorAccountId = account?account->getAccountId() : QString();
+   bool changed = (account && m_spPriorAccount != account) || (!account && m_spPriorAccount);
+   m_spPriorAccount = (Account*)(account);
    if (changed)
       emit priorAccountChanged(getCurrentAccount());
 }

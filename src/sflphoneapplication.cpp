@@ -72,8 +72,6 @@ SFLPhoneApplication::SFLPhoneApplication()
 #endif
 }
 
-
-
 /**
  * Destructor
  */

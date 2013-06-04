@@ -79,10 +79,23 @@ int AbstractContactBackend::getUpdateCount()
 ///Return the extension/user of an URI (<sip:12345@exemple.com>)
 QString AbstractContactBackend::getUserFromPhone(QString phoneNumber)
 {
-   if (phoneNumber.indexOf('@') != -1) {
-      QString user = phoneNumber.split('@')[0];
-      return (user.indexOf(':') != -1)?user.split(':')[1]:user;
+   //Too slow
+//    if (phoneNumber.indexOf('@') != -1) {
+//       QString user = phoneNumber.split('@')[0];
+//       return (user.indexOf(':') != -1)?user.split(':')[1]:user;
+//    }
+   int start(0),stop(0);
+   for (int i=0;i<phoneNumber.size();i++) {
+      const char c = phoneNumber[i].cell(); //Because it is fast
+      if (c == ':')
+         start = i;
+      else if (c == '@') {
+         stop = i;
+         break;
+      }
    }
+   if (stop)
+      return phoneNumber.mid(start,stop);
    return phoneNumber;
 } //getUserFromPhone
 
