@@ -80,6 +80,10 @@ inline bool operator< (const SortableCallSource & s1, const SortableCallSource &
 HistoryModel* HistoryModel::m_spInstance    = nullptr;
 CallMap       HistoryModel::m_sHistoryCalls          ;
 
+HistoryModel::TopLevelItem::TopLevelItem(QString name) : 
+   HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) 
+{}
+
 
 /*****************************************************************************
  *                                                                           *
@@ -144,15 +148,17 @@ void HistoryModel::add(Call* call)
 ///Add to history
 void HistoryModel::addPriv(Call* call)
 {
-   if (call) {
-      m_sHistoryCalls[call->getStartTimeStamp()] = call;
-   }
+   if (!call)
+      return;
+
+   m_sHistoryCalls[call->getStartTimeStamp()] = call;
    if (!m_HaveContactModel && call->getContactBackend()) {
       connect(((QObject*)call->getContactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
       m_HaveContactModel = true;
    }
+
    emit newHistoryCall(call);
-   QString cat = category(call);
+   const QString cat = category(call);
    if (!m_hCategories[cat]) { 
       TopLevelItem* item = new TopLevelItem(cat);
       m_hCategories[cat] = item;
@@ -479,4 +485,11 @@ HistoryModel::HistoryConst HistoryModel::timeToHistoryConst(const time_t time)
 
    //Every other senario
    return HistoryModel::HistoryConst::Very_long_time_ago;
+}
+
+void HistoryModel::setCategoryRole(Call::Role role) 
+{
+   if (m_Role != role) {
+      m_Role = role;reloadCategories();
+   }
 }

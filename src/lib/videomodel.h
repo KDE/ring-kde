@@ -53,13 +53,10 @@ private:
    static VideoModel* m_spInstance;
    
    //Attributes
-   bool           m_Attached    ;
    bool           m_PreviewState;
    uint           m_BufferSize  ;
    uint           m_ShmKey      ;
    uint           m_SemKey      ;
-   int            m_SetSetId    ;
-   void*          m_pBuffer     ;
    QHash<QString,VideoRenderer*> m_lRenderers;
 
 public Q_SLOTS:

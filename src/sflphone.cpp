@@ -116,58 +116,6 @@ SFLPhone::SFLPhone(QWidget *parent)
    action_mute->setCheckable(true);
 
    m_pView = new SFLPhoneView(this);
-}
-
-///Destructor
-SFLPhone::~SFLPhone()
-{
-   if (!isHidden()) {
-      ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
-      ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
-      ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
-   }
-
-   delete action_accept                ;
-   delete action_refuse                ;
-   delete action_hold                  ;
-   delete action_transfer              ;
-   delete action_record                ;
-   delete action_mailBox               ;
-   delete action_close                 ;
-   delete action_quit                  ;
-   delete action_displayVolumeControls ;
-   delete action_displayDialpad        ;
-   delete action_displayMessageBox     ;
-   delete action_configureSflPhone     ;
-   delete action_configureShortcut     ;
-   delete action_accountCreationWizard ;
-   delete action_pastenumber           ;
-   delete action_showContactDock       ;
-   delete action_showHistoryDock       ;
-   delete action_showBookmarkDock      ;
-   delete action_editToolBar           ;
-
-   delete m_pView            ;
-   delete m_pTrayIcon        ;
-   delete m_pStatusBarWidget ;
-   delete m_pContactCD       ;
-   delete m_pCentralDW       ;
-   delete m_pHistoryDW       ;
-   delete m_pBookmarkDW      ;
-   delete m_pAccountModel    ;
-
-   delete AkonadiBackend::getInstance();
-   delete CallModel::instance();
-   //saveState();
-}
-
-///Init everything
-bool SFLPhone::initialize()
-{
-   if ( m_pInitialized ) {
-      kDebug() << "Already initialized.";
-      return false;
-   }
 
    ConfigurationSkeleton::self();
 
@@ -195,12 +143,10 @@ bool SFLPhone::initialize()
    m_pCentralDW->setContentsMargins(0,0,0,0);
    m_pView->setContentsMargins     (0,0,0,0);
 
-
-   m_pContactCD = new ContactDock(this);
-
-   m_pHistoryDW       = new HistoryDock  ( this                     );
-   m_pBookmarkDW      = new BookmarkDock ( this                     );
-   m_pStatusBarWidget = new QLabel       (                          );
+   m_pContactCD       = new ContactDock  ( this );
+   m_pHistoryDW       = new HistoryDock  ( this );
+   m_pBookmarkDW      = new BookmarkDock ( this );
+   m_pStatusBarWidget = new QLabel       ( this );
 
    //System tray
    m_pTrayIcon        = new SFLPhoneTray ( this->windowIcon(), this );
@@ -258,15 +204,13 @@ bool SFLPhone::initialize()
    connect(action_showHistoryDock, SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
    connect(action_showBookmarkDock,SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
-   #ifdef ENABLE_VIDEO
+#ifdef ENABLE_VIDEO
    connect(VideoModel::getInstance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(displayVideoDock(VideoRenderer*)));
-   #endif
+#endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
 
-
    m_pTrayIcon->show();
-
 
    setObjectNames();
    QMetaObject::connectSlotsByName(this);
@@ -275,9 +219,8 @@ bool SFLPhone::initialize()
    move(QCursor::pos().x() - geometry().width()/2, QCursor::pos().y() - geometry().height()/2);
    show();
 
-   if (AccountList::getInstance()->size() <= 1) {
+   if (AccountList::getInstance()->size() <= 1)
       (new AccountWizard())->show();
-   }
 
    m_pIconChanged = false;
    m_pInitialized = true ;
@@ -292,13 +235,11 @@ bool SFLPhone::initialize()
    m_pAccountStatus->setModel(m_pAccountModel);
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
-   
+
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(KIcon("view-refresh"));
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,SIGNAL(clicked()),AccountList::getInstance(),SLOT(registerAllAccounts()));
-   
-
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
    connect(AccountList::getInstance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
 
@@ -314,6 +255,58 @@ bool SFLPhone::initialize()
       KMessageBox::error(this,msg);
       QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
+   }
+} //SFLPhone
+
+///Destructor
+SFLPhone::~SFLPhone()
+{
+   if (!isHidden()) {
+      ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
+      ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
+      ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
+   }
+
+   delete action_accept                ;
+   delete action_refuse                ;
+   delete action_hold                  ;
+   delete action_transfer              ;
+   delete action_record                ;
+   delete action_mailBox               ;
+   delete action_close                 ;
+   delete action_quit                  ;
+   delete action_displayVolumeControls ;
+   delete action_displayDialpad        ;
+   delete action_displayMessageBox     ;
+   delete action_configureSflPhone     ;
+   delete action_configureShortcut     ;
+   delete action_accountCreationWizard ;
+   delete action_pastenumber           ;
+   delete action_showContactDock       ;
+   delete action_showHistoryDock       ;
+   delete action_showBookmarkDock      ;
+   delete action_editToolBar           ;
+
+   delete m_pView            ;
+   delete m_pTrayIcon        ;
+   delete m_pStatusBarWidget ;
+   delete m_pContactCD       ;
+   delete m_pCentralDW       ;
+   delete m_pHistoryDW       ;
+   delete m_pBookmarkDW      ;
+   delete m_pAccountModel    ;
+
+   delete AkonadiBackend::getInstance();
+   delete CallModel::instance();
+   //saveState();
+}
+
+///Init everything
+bool SFLPhone::initialize()
+{
+   if ( m_pInitialized ) {
+      kDebug() << "Already initialized.";
+      return false;
    }
 
    return true;
@@ -612,18 +605,20 @@ void SFLPhone::on_m_pView_recordCheckStateChangeAsked(bool recordCheckState)
 ///Called when a call is coming
 void SFLPhone::on_m_pView_incomingCall(const Call* call)
 {
-   Contact* contact = AkonadiBackend::getInstance()->getContactByPhone(call->getPeerPhoneNumber());
-   if (contact && call) {
-      KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
+   if (call) {
+      const Contact* contact = AkonadiBackend::getInstance()->getContactByPhone(call->getPeerPhoneNumber());
+      if (contact)
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
+      else
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()));
    }
-   KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()));
 }
 
 ///Change current account
 void SFLPhone::currentAccountIndexChanged(int newIndex)
 {
    if (AccountList::getInstance()->size()) {
-      Account* acc = AccountList::getInstance()->getAccountByModelIndex(AccountList::getInstance()->index(newIndex,0));
+      const Account* acc = AccountList::getInstance()->getAccountByModelIndex(AccountList::getInstance()->index(newIndex,0));
       if (acc)
          AccountList::getInstance()->setPriorAccount(acc);
    }

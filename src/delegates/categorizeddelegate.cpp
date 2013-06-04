@@ -23,18 +23,21 @@
 
 #include <QtCore/QDebug>
 
+///Construnctor
 SortedTreeDelegate::SortedTreeDelegate(QTreeView* widget)
    : QStyledItemDelegate(widget)
-   , m_tree(widget),m_LeftMargin(0),m_RightMargin(0),m_pChildDelegate(nullptr),m_pChildChildDelegate(nullptr)
+   , m_tree(widget),m_LeftMargin(7),m_RightMargin(7),m_pChildDelegate(nullptr),m_pChildChildDelegate(nullptr)
 {
 }
 
+///Destructor
 SortedTreeDelegate::~SortedTreeDelegate()
 {
    if (m_pChildDelegate) delete m_pChildDelegate;
    if (m_pChildChildDelegate) delete m_pChildChildDelegate;
 }
 
+///Report category height
 QSize SortedTreeDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    //Only do it for categories and objects deeper than 1 level, use precalculated values for others
    if (index.parent().isValid() && !index.parent().parent().isValid() && m_pChildDelegate) {
@@ -42,27 +45,27 @@ QSize SortedTreeDelegate::sizeHint(const QStyleOptionViewItem& option, const QMo
    }
    if (!index.parent().isValid() || index.parent().parent().isValid()) {
       QSize sh = QStyledItemDelegate::sizeHint(option, index);
-      sh.rheight() += 2 * 7/*left margin*/;
-      sh.rwidth() += 7/*left margin*/;
+      sh.rheight() += 2 * m_LeftMargin;
+      sh.rwidth() += m_LeftMargin;
       return sh;
    }
    return m_SH;
-}
+} //sizeHint
 
-QRect SortedTreeDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+///Generate a gradient rectangle for the categories and the first child
+QRect SortedTreeDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
    QModelIndex i(index),old(index);
 
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
    ((SortedTreeDelegate*)this)->m_SH          = QStyledItemDelegate::sizeHint(option, index);
-   ((SortedTreeDelegate*)this)->m_LeftMargin  = 7/*left margin*/;
-   ((SortedTreeDelegate*)this)->m_RightMargin = 7/*right margin*/;
    if (!index.parent().isValid()) {
-      ((QSize)m_SH).rheight() += 2 * 7/*left margin*/;
+      ((QSize)m_SH).rheight() += 2 * m_LeftMargin;
    } else {
-      ((QSize)m_SH).rheight() += 7/*left margin*/;
+      ((QSize)m_SH).rheight() += m_LeftMargin;
    }
-   ((QSize)m_SH).rwidth() += 7/*left margin*/;
+   ((QSize)m_SH).rwidth() += m_LeftMargin;
    //END real sizeHint()
    
    if (i.parent().isValid()) {
@@ -77,8 +80,8 @@ QRect SortedTreeDelegate::fullCategoryRect(const QStyleOptionViewItem& option, c
    QRect r = m_tree->visualRect(i);
 
    // adapt width
-   r.setLeft(7/*left margin*/);
-   r.setWidth(m_tree->viewport()->width() - 7/*left margin*/ - 7/*right margin*/);
+   r.setLeft(m_LeftMargin);
+   r.setWidth(m_tree->viewport()->width() - m_LeftMargin - m_RightMargin);
 
    // adapt height
    if (m_tree->isExpanded(i) && m_tree->model()->rowCount(i) > 0) {
@@ -88,11 +91,12 @@ QRect SortedTreeDelegate::fullCategoryRect(const QStyleOptionViewItem& option, c
       r.setHeight((r.height() + childCount * h > 100)?100:(r.height() + childCount * h));
    }
 
-   r.setTop(r.top() + 7/*left margin*/);
+   r.setTop(r.top() + m_LeftMargin);
 
    return r;
 } //fullCategoryRect
 
+///Draw the category (and the first child)
 void SortedTreeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
@@ -133,8 +137,8 @@ void SortedTreeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
    if (index.isValid()) {
       QWidget* widget = m_tree->indexWidget(index);
       if (widget) {
-         widget->setMinimumSize((m_tree->viewport()->width() - 7/*left margin*/ - 7/*right margin*/)-7/*left margin*/,10);
-         widget->setMaximumSize((m_tree->viewport()->width() - 7/*left margin*/ - 7/*right margin*/)-7/*left margin*/,99999);
+         widget->setMinimumSize((m_tree->viewport()->width() - m_LeftMargin - m_RightMargin)-m_LeftMargin,10);
+         widget->setMaximumSize((m_tree->viewport()->width() - m_LeftMargin - m_RightMargin)-m_LeftMargin,99999);
       }
    }
    
@@ -388,13 +392,14 @@ int SortedTreeDelegate::categoryHeight(const QModelIndex &index, const QStyleOpt
    return fontMetrics.height() + 2 + 12 /* vertical spacing */;
 } //categoryHeight
 
+///Set the delagate that are categorized
 void SortedTreeDelegate::setChildDelegate(QStyledItemDelegate* childDelegate)
 {
    m_pChildDelegate = childDelegate;
 }
 
+///Set the categorized delegate own childs
 void SortedTreeDelegate::setChildChildDelegate(QStyledItemDelegate* childDelegate)
 {
    m_pChildChildDelegate = childDelegate;
 }
-

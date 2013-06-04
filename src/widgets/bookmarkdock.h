@@ -53,7 +53,7 @@ class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   BookmarkSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+   explicit BookmarkSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
 protected:
    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
    {

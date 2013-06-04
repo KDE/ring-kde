@@ -52,6 +52,7 @@
 #include "klib/helperfunctions.h"
 #include "klib/akonadibackend.h"
 #include "klib/configurationskeleton.h"
+#include "../lib/contactproxymodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/contactdelegate.h"
 #include "../delegates/phonenumberdelegate.h"
@@ -103,14 +104,13 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    delegate->setChildDelegate(new ContactDelegate());
    delegate->setChildChildDelegate(new PhoneNumberDelegate());
    m_pView->setDelegate(delegate);
-//    m_pView->setStyle(new ContactDelegateStyle(m_pView->style()));
 
-   m_pSourceModel = new ContactByNameProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
+   m_pSourceModel = new ContactProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
    m_pProxyModel = new ContactSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
    m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole(ContactBackend::Role::Filter);
+   m_pProxyModel->setFilterRole(AbstractContactBackend::Role::Filter);
    m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
@@ -185,7 +185,7 @@ QString ContactDock::showNumberSelector(bool& ok)
       ok = true;
       return m_PreselectedNb;
    }
-   else if (m_pCurrentContact->getPhoneNumbers().size() == 1) {
+   else if (m_pCurrentContact&& m_pCurrentContact->getPhoneNumbers().size() == 1) {
       ok = true;
       return m_pCurrentContact->getPhoneNumbers()[0]->getNumber();
    }
@@ -481,24 +481,24 @@ void ContactDock::setCategory(int index)
          m_pProxyModel->setSortRole(Qt::DisplayRole);
          break;
       case SortingCategory::Organization:
-         m_pProxyModel->setSortRole(ContactBackend::Role::Organization);
-         m_pSourceModel->setRole(ContactBackend::Role::Organization);
+         m_pProxyModel->setSortRole(AbstractContactBackend::Role::Organization);
+         m_pSourceModel->setRole(AbstractContactBackend::Role::Organization);
          m_pSourceModel->setShowAll(true);
          break;
       case SortingCategory::RecentlyUsed:
-         m_pSourceModel->setRole(ContactBackend::Role::FormattedLastUsed);
+         m_pSourceModel->setRole(AbstractContactBackend::Role::FormattedLastUsed);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(ContactBackend::Role::IndexedLastUsed);
+         m_pProxyModel->setSortRole(AbstractContactBackend::Role::IndexedLastUsed);
          break;
       case SortingCategory::Group:
-         m_pSourceModel->setRole(ContactBackend::Role::Group);
+         m_pSourceModel->setRole(AbstractContactBackend::Role::Group);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(ContactBackend::Role::Group);
+         m_pProxyModel->setSortRole(AbstractContactBackend::Role::Group);
          break;
       case SortingCategory::Department:
-         m_pSourceModel->setRole(ContactBackend::Role::Department);
+         m_pSourceModel->setRole(AbstractContactBackend::Role::Department);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(ContactBackend::Role::Department);
+         m_pProxyModel->setSortRole(AbstractContactBackend::Role::Department);
          break;
    };
 }

@@ -74,7 +74,7 @@ public:
 
    //Setters
    static void add(Call* call);
-   void setCategoryRole(Call::Role role) {if (m_Role != role) { m_Role = role;reloadCategories();}}
+   void setCategoryRole(Call::Role role);
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -105,7 +105,6 @@ private:
 
    //Helpers
    QString category(Call* call) const;
-//    QVariant commonCallInfo(Call* call, int role) const;
 
    //Static attributes
    static HistoryModel* m_spInstance;
@@ -120,7 +119,7 @@ private:
    public:
       virtual QObject* getSelf() {return this;}
    private:
-      TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
+      TopLevelItem(QString name);
       CallList m_lChilds;
       QString m_Name;
    };

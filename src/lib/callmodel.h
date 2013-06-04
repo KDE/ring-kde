@@ -74,11 +74,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       virtual bool          dropMimeData ( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
 
       //Singleton
-      static CallModel* instance() {
-         if (!m_spInstance)
-            m_spInstance = new CallModel();
-         return m_spInstance;
-      }
+      static CallModel* instance();
 
       Call* getCall ( const QString& callId  ) const;
       Call* getCall ( const QModelIndex& idx ) const;

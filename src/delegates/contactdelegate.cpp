@@ -30,7 +30,7 @@
 #include <KIcon>
 
 #include <lib/contact.h>
-#include <lib/contactbackend.h>
+#include <lib/abstractcontactbackend.h>
 #include "delegatedropoverlay.h"
 
 ContactDelegate::ContactDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pDelegatedropoverlay(nullptr)
@@ -103,7 +103,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    //BEGIN overlay path
-   if (index.data(ContactBackend::Role::DropState).toInt() != 0) {
+   if (index.data(AbstractContactBackend::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          ((ContactDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,QImage*> contactMap;

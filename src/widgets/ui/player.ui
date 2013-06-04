@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Player</string>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>

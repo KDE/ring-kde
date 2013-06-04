@@ -31,7 +31,7 @@
 //SFLPhone library
 #include "callmanager_interface_singleton.h"
 #include "configurationmanager_interface_singleton.h"
-#include "contactbackend.h"
+#include "abstractcontactbackend.h"
 #include "contact.h"
 #include "account.h"
 #include "accountlist.h"
@@ -134,12 +134,32 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
    return dbg.space();
 }
 
-ContactBackend* Call::m_pContactBackend = nullptr;
-Call*           Call::m_sSelectedCall   = nullptr;
 
-void Call::setContactBackend(ContactBackend* be)
+HistoryTreeBackend::~HistoryTreeBackend()
+{
+}
+
+char HistoryTreeBackend::dropState()
+{
+   return m_DropState;
+}
+
+void HistoryTreeBackend::setDropState(const char state)
+{
+   m_DropState = state;
+}
+
+AbstractContactBackend* Call::m_pContactBackend = nullptr;
+Call*                   Call::m_sSelectedCall   = nullptr;
+
+void Call::setContactBackend(AbstractContactBackend* be)
 {
    m_pContactBackend = be;
+}
+
+AbstractContactBackend* Call::getContactBackend ()
+{
+   return m_pContactBackend;
 }
 
 ///Constructor
@@ -273,7 +293,7 @@ Call* Call::buildRingingCall(const QString & callId)
 ///Build a call that is already over
 Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type)
 {
-   if(name == "empty") name = "";
+   if(name == "empty") name = QString();
    Call* call            = new Call(Call::State::OVER, callId, name, number, account );
 
    call->m_pStopTimeStamp  = stopTimeStamp ;

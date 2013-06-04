@@ -25,10 +25,10 @@
 #include <QtGui/QGraphicsEffect>
 #include <QtGui/QGraphicsOpacityEffect>
 #include <QtGui/QApplication>
-#include <QtGui/QLineEdit>
 
 //KDE
 #include <KStandardDirs>
+#include <KLineEdit>
 
 //SFLPhone
 #include "../widgets/categorizedtreeview.h"
@@ -38,7 +38,7 @@
 ///Constructor
 ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget,QPalette pal)
       : QStyledItemDelegate(widget) , m_tree(widget) , m_Pal(pal),
-      m_LeftMargin(7),m_RightMargin(7)
+      m_LeftMargin(7),m_RightMargin(7),m_pCallDelegate(nullptr)
 {
 }
 
@@ -119,7 +119,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       opt.rect = fullCategoryRect(option, index);
       drawCategory(index, 0, opt, painter,&m_Pal);
 
-      //Draw the conference icon and infos
+      //Draw the conference icon and info
       static const QPixmap* pxm = nullptr;
       if (!pxm) //Static
          pxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/conf-small.png"));
@@ -143,7 +143,6 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       baseColor.setAlpha(150);
       painter->setPen(baseColor);
       baseColor.setAlpha(255);
-      //painter->drawText(opt.rect.x()+opt.rect.width()-40,opt.rect.y()+font.pointSize()+8,index.data(Call::Role::Length).toString());
       static QFontMetrics* fm = nullptr;
       if (!fm) {
          fm = new QFontMetrics(painter->font());
@@ -200,11 +199,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
    }
 } //paint
 
-void ConferenceDelegate::drawCategory(const QModelIndex&  index   ,
-                                 int                 sortRole,
-                                 const QStyleOption& option  ,
-                                 QPainter*           painter ,
-                                 const QPalette* pal) const
+void ConferenceDelegate::drawCategory(const QModelIndex& index, int sortRole, const QStyleOption& option, QPainter* painter, const QPalette* pal) const
 {
    Q_UNUSED( sortRole )
    Q_UNUSED( index    )
@@ -419,6 +414,7 @@ int ConferenceDelegate::categoryHeight(const QModelIndex &index, const QStyleOpt
    return fontMetrics.height() + 2 + 16 /* vertical spacing */;
 }
 
+///Draw the delegate when it is being dragged
 QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QModelIndex& index)
 {
    QStyleOptionViewItemV4 option;
@@ -454,10 +450,11 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
    return pixmap;
 }
 
+///Create an editor widget
 QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
    Q_UNUSED(option)
-   QLineEdit* ed = new QLineEdit(parent);
+   KLineEdit* ed = new KLineEdit(parent);
    ed->setStyleSheet(QString("background-color:transparent;border:0px;color:white;font-weight:bold;padding-left:%1").arg(option.rect.height()));
    ed->setAutoFillBackground(false);
    ed->setProperty("call",index.data(Call::Role::Object));
@@ -467,18 +464,20 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
    return ed;
 }
 
-void ConferenceDelegate::setEditorData ( QWidget * editor, const QModelIndex & index ) const
+///Update line edit text when in dialing mode
+void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & index ) const
 {
-   QLineEdit* ed = dynamic_cast<QLineEdit*>(editor);
+   KLineEdit* ed = dynamic_cast<KLineEdit*>(editor);
    if (ed) {
       ed->setText(index.data(Qt::EditRole).toString());
       ed->deselect();
    }
 }
 
-void ConferenceDelegate::setModelData (QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
+///Update call PhoneNumber when leaving edit mode
+void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
 {
-   QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
+   KLineEdit* ed = qobject_cast<KLineEdit*>(editor);
    if (index.data(Call::Role::CallState) != static_cast<int>(Call::State::DIALING)) {
       emit ((ConferenceDelegate*)(this))->closeEditor(editor,NoHint);
    }
@@ -487,12 +486,12 @@ void ConferenceDelegate::setModelData (QWidget * editor, QAbstractItemModel * mo
       model->setData(index,ed->text(),Qt::EditRole);
 }
 
-///Intercept QLineEdit show() call, to deselect the text (as it is selected automagically)
+///Intercept KLineEdit show() call, to deselect the text (as it is selected automagically)
 bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
 {
    Q_UNUSED(obj)
    if (event->type() == QEvent::Show) {
-      QLineEdit* ed = qobject_cast<QLineEdit*>(obj);
+      KLineEdit* ed = qobject_cast<KLineEdit*>(obj);
       if (ed)
          ed->deselect();
    }
@@ -502,7 +501,7 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
 ///Update the model text as soon as 
 void ConferenceDelegate::slotTextChanged(const QString& text)
 {
-   QLineEdit* ed = qobject_cast<QLineEdit*>(QObject::sender());
+   KLineEdit* ed = qobject_cast<KLineEdit*>(QObject::sender());
    if (ed) {
       ed->deselect();
       QObject* obj= qvariant_cast<Call*>(ed->property("call"));
@@ -522,4 +521,4 @@ void ConferenceDelegate::slotTextChanged(const QString& text)
    else {
       emit closeEditor(ed);
    }
-}
+} //slotTextChanged

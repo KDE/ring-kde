@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef CONTACTBYNAMEPROXYMODEL_H
-#define CONTACTBYNAMEPROXYMODEL_H
+#ifndef CONTACT_PROXY_MODEL_H
+#define CONTACT_PROXY_MODEL_H
 
 #include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QHash>
@@ -25,16 +25,16 @@
 //SFLPhone
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
-class ContactBackend;
+class AbstractContactBackend;
 
-
-class LIB_EXPORT ContactByNameProxyModel :  public QAbstractItemModel
+class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
 {
    Q_OBJECT
 public:
-   friend class ContactBackend;
-   ContactByNameProxyModel(ContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
-   
+   friend class AbstractContactBackend;
+   explicit ContactProxyModel(AbstractContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
+
+   //Setters
    void setRole(int role);
    void setShowAll(bool showAll);
 
@@ -53,27 +53,26 @@ public:
 
 private:
    class TopLevelItem : public ContactTreeBackend,public QObject {
-   friend class ContactByNameProxyModel;
+   friend class ContactProxyModel;
    public:
       virtual QObject* getSelf() {return this;}
    private:
-      TopLevelItem(QString name) : ContactTreeBackend(ContactTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-      int counter;
-      int idx;
+      explicit TopLevelItem(QString name) : ContactTreeBackend(ContactTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
       QList<Contact*> m_lChilds;
       QString m_Name;
    };
-   virtual ~ContactByNameProxyModel();
-   
+
+   virtual ~ContactProxyModel();
+
    QModelIndex getContactIndex(Contact* ct) const;
-   
+
    //Helpers
    QString category(Contact* ct) const;
    QHash<Contact*, time_t> getContactListByTime() const;
 
    //Attributes
-   QHash<Contact*, time_t>   m_hContactByDate       ;
-   ContactBackend*              m_pModel               ;
+   QHash<Contact*, time_t>      m_hContactByDate       ;
+   AbstractContactBackend*      m_pModel               ;
    QList<TopLevelItem*>         m_lCategoryCounter     ;
    QHash<QString,TopLevelItem*> m_hCategories          ;
    int                          m_Role                 ;

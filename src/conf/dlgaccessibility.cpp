@@ -25,6 +25,7 @@
 
 //SFLPhone
 #include <klib/macromodel.h>
+#include <klib/macro.h>
 
 ///Constructor
 DlgAccessibility::DlgAccessibility(KConfigDialog* parent)

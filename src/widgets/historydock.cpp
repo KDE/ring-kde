@@ -393,28 +393,33 @@ void HistoryDock::slotCallAgain()
 
 void HistoryDock::slotCopy()
 {
+   if (!m_pCurrentCall) {
+      kDebug() << "No call to copy";
+      return;
+   }
+
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   if (m_pCurrentCall)
-      mimeData->setData(MIME_CALLID, m_pCurrentCall->getCallId().toUtf8());
+   mimeData->setData(MIME_CALLID, m_pCurrentCall->getCallId().toUtf8());
 
    mimeData->setData(MIME_PHONENUMBER, m_pCurrentCall->getPeerPhoneNumber().toUtf8());
-   
-   QString numbers;
-   QString numbersHtml;
-   Contact* ct = m_pCurrentCall->getContact();
+
+   QString numbers,numbersHtml;
+   const Contact* ct = m_pCurrentCall->getContact();
+
    if (ct) {
       numbers     = ct->getFormattedName()+": "+m_pCurrentCall->getPeerPhoneNumber();
       numbersHtml = "<b>"+ct->getFormattedName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->getPeerPhoneNumber());
    }
-   else if (m_pCurrentCall) {
+   else {
       numbers     = m_pCurrentCall->getPeerName()+": "+m_pCurrentCall->getPeerPhoneNumber();
       numbersHtml = "<b>"+m_pCurrentCall->getPeerName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->getPeerPhoneNumber());
    }
+
    mimeData->setData("text/plain", numbers.toUtf8()    );
    mimeData->setData("text/html",  numbersHtml.toUtf8());
-   QClipboard* clipboard = QApplication::clipboard();
-   clipboard->setMimeData(mimeData);
+
+   QApplication::clipboard()->setMimeData(mimeData);
 }
 
 void HistoryDock::slotAaddContact()

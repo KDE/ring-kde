@@ -30,7 +30,7 @@
 #include "instance_interface_singleton.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
-#include "contactbackend.h"
+#include "abstractcontactbackend.h"
 #include "video_interface_singleton.h"
 #include "historymodel.h"
 
@@ -54,6 +54,13 @@ CallModel*   CallModel::m_spInstance = nullptr;
  *                               Constructor                                 *
  *                                                                           *
  ****************************************************************************/
+
+///Singleton
+CallModel* CallModel::instance() {
+   if (!m_spInstance)
+      m_spInstance = new CallModel();
+   return m_spInstance;
+}
 
 ///Retrieve current and older calls from the daemon, fill history, model and enable drag n' drop
 CallModel::CallModel() : QAbstractItemModel(nullptr)
@@ -233,7 +240,7 @@ Call* CallModel::addIncomingCall(const QString& callId)
    Call* call = addCall(Call::buildIncomingCall(callId));
    //Call without account is not possible
    if (dynamic_cast<Account*>(call->getAccount())) {
-      if (call && call->getAccount()->isAutoAnswer()) {
+      if (call->getAccount()->isAutoAnswer()) {
          call->actionPerformed(Call::Action::ACCEPT);
       }
    }
@@ -362,7 +369,7 @@ Call* CallModel::addConference(const QString& confID)
       m_sPrivateCallList_callId[confID] = aNewStruct;
       m_lInternalModel << aNewStruct;
 
-      foreach(QString callId,callList) {
+      foreach(const QString& callId,callList) {
          InternalStruct* callInt = m_sPrivateCallList_callId[callId];
          if (callInt) {
             if (callInt->m_pParent && callInt->m_pParent != aNewStruct)
@@ -489,7 +496,7 @@ bool CallModel::setData( const QModelIndex& idx, const QVariant &value, int role
    return false;
 }
 
-///Get informations relative to the index
+///Get information relative to the index
 QVariant CallModel::data( const QModelIndex& idx, int role) const
 {
    if (!idx.isValid())
@@ -647,7 +654,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
                return true;
             }
             //Drop a call on a conference -> add it to the conference
-            else if (targetIdx.parent().isValid() || target->isConference()) {
+            else if (target && (targetIdx.parent().isValid() || target->isConference())) {
                Call* conf = target->isConference()?target:qvariant_cast<Call*>(targetIdx.parent().data(Call::Role::Object));
                if (conf) {
                   qDebug() << "Adding call " << call->getCallId() << "to conference" << conf->getConfId();

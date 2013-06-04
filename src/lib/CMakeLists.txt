@@ -32,7 +32,7 @@ set( qtsflphone_LIB_SRCS
   callmodel.cpp
   historymodel.cpp
   contact.cpp
-  contactbackend.cpp
+  abstractcontactbackend.cpp
   videocodecmodel.cpp
   videomodel.cpp
   videorenderer.cpp
@@ -45,6 +45,7 @@ set( qtsflphone_LIB_SRCS
   instance_interface_singleton.cpp
   video_interface_singleton.cpp
   sflphone_const.h
+  contactproxymodel.cpp
 )
 
 # Build dbus interfaces
@@ -126,7 +127,7 @@ set( qtsflphone_LIB_HDRS
   callmodel.h
   historymodel.h
   contact.h
-  contactbackend.h
+  abstractcontactbackend.h
   videocodecmodel.h
   videomodel.h
   videodevice.h
@@ -140,6 +141,7 @@ set( qtsflphone_LIB_HDRS
   sflphone_const.h
   instantmessagingmodel.h
   typedefs.h
+  contactproxymodel.h
 )
 
 install( FILES ${qtsflphone_LIB_HDRS}

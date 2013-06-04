@@ -37,7 +37,7 @@
 RingingTip::RingingTip(QWidget* parent) : Tip(QString(),parent),m_pTimer(nullptr),m_Counter(0),
 m_phoneOriginalSVG(nullptr),m_ring1OriginalSVG(nullptr),m_ring2OriginalSVG(nullptr),m_ring3OriginalSVG(nullptr),
 m_pPhoneR(nullptr),m_pRing1R(nullptr),m_pRing2R(nullptr),m_pRing3R(nullptr),m_pPhonePix(nullptr),m_pRing1Pix(nullptr),
-m_pRing2Pix(nullptr)
+m_pRing2Pix(nullptr),m_pRing3Pix(nullptr)
 {
    setHasBackground(false);
    setHasText(false);

@@ -17,8 +17,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef CONTACT_BACKEND_H
-#define CONTACT_BACKEND_H
+#ifndef ABSTRACTION_CONTACT_BACKEND_H
+#define ABSTRACTION_CONTACT_BACKEND_H
 
 #include <QObject>
 #include <QHash>
@@ -36,8 +36,8 @@ class Account;
 //Typedef
 typedef QList<Contact*> ContactList;
 
-///ContactBackend: Allow different way to handle contact without poluting the library
-class LIB_EXPORT ContactBackend : public QAbstractItemModel {
+///AbstractContactBackend: Allow different way to handle contact without poluting the library
+class LIB_EXPORT AbstractContactBackend : public QAbstractItemModel {
    Q_OBJECT
 public:
    enum Role {
@@ -52,8 +52,8 @@ public:
       DropState         = 300, //State for drag and drop
    };
    
-   explicit ContactBackend(QObject* parent = nullptr);
-   virtual ~ContactBackend();
+   explicit AbstractContactBackend(QObject* parent = nullptr);
+   virtual ~AbstractContactBackend();
 
    ///Get a contact using a phone number
    ///@param resolveDNS interpret the number as is (false) or parse it to extract the domain and number (true)
@@ -80,10 +80,11 @@ public:
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-   
-   int getUpdateCount() {return m_UpdatesCounter;}
+
+   int getUpdateCount();
+
 protected:
-   virtual ContactList update_slot       (                            ) = 0;
+   virtual ContactList update_slot() = 0;
 
    //Helper
    QString getUserFromPhone    (QString phoneNumber);

@@ -54,4 +54,5 @@ private:
 private Q_SLOTS:
    void changeVisibility();
 };
+
 #endif

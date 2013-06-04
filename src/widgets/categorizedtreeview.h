@@ -41,7 +41,7 @@ class CategorizedTreeView : public QTreeView
    explicit CategorizedTreeView(QWidget *parent = nullptr);
    void setDelegate(QStyledItemDelegate* delegate);
    void setViewType(ViewType type) {m_Type = type;}
-    
+
   protected:
    virtual void contextMenuEvent ( QContextMenuEvent * e );
    virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
@@ -51,12 +51,11 @@ class CategorizedTreeView : public QTreeView
    virtual void mouseDoubleClickEvent(QMouseEvent* event);
    virtual void startDrag ( Qt::DropActions supportedActions );
    virtual bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event);
-    
+
   private:
-   QStyledItemDelegate* m_pDelegate;
    QModelIndex m_HoverIdx;
    ViewType m_Type;
-    
+
   Q_SIGNALS:
    void contextMenuRequest(QModelIndex);
    void itemDoubleClicked(QModelIndex);

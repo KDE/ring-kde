@@ -54,9 +54,14 @@ SFLPhoneApplication::SFLPhoneApplication()
   : KUniqueApplication()
 #endif
 {
-   InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
-   QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);
-   reply.waitForFinished();
+   try {
+      InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
+      QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);
+      reply.waitForFinished();
+   }
+   catch (...) {
+      KMessageBox::error(SFLPhone::app(),ErrorMessage::GENERIC_ERROR);
+   }
 
    // Start remaining initialisation
    initializePaths();

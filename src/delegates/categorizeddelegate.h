@@ -15,33 +15,41 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef SORTEDTREEDELEGATE_H
-#define SORTEDTREEDELEGATE_H
+#ifndef SORTED_TREE_DELEGATE_H
+#define SORTED_TREE_DELEGATE_H
 
 #include <QtGui/QStyledItemDelegate>
 
 class QTreeView;
 
+///SortedTreeDelegate: A categorized tree delegate
 class SortedTreeDelegate : public QStyledItemDelegate
 {
-  public:
-   SortedTreeDelegate(QTreeView* widget);
+public:
+   //Constructor
+   explicit SortedTreeDelegate(QTreeView* widget);
    virtual ~SortedTreeDelegate();
 
-   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
-   QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   //Reimplemented methods
+   virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+
+   //Setters
    void setChildDelegate(QStyledItemDelegate* childDelegate);
    void setChildChildDelegate(QStyledItemDelegate* childDelegate);
 
-  private:
-    void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
-    int categoryHeight(const QModelIndex &index, const QStyleOption &option) const;
-   QTreeView* m_tree;
-   QSize m_SH;
-   int m_LeftMargin;
-   int m_RightMargin;
-   QStyledItemDelegate* m_pChildDelegate;
+private:
+   //Helpers
+   QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
+   int categoryHeight(const QModelIndex &index, const QStyleOption &option) const;
+
+   //Attributes
+   QTreeView* m_tree       ;
+   QSize      m_SH         ;
+   const int  m_LeftMargin ;
+   const int  m_RightMargin;
+   QStyledItemDelegate* m_pChildDelegate     ;
    QStyledItemDelegate* m_pChildChildDelegate;
 };
 

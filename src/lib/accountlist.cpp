@@ -128,14 +128,11 @@ void AccountList::accountChanged(const QString& account,const QString& state, in
          }
       }
       foreach (Account* acc, *m_pAccounts) {
-//          if (!dynamic_cast<Account*>(acc)) { //If an account is being created while updating it may crash or remove it
-            int idx =accountIds.indexOf(acc->getAccountId());
-            if (idx == -1 && (acc->currentState() == READY || acc->currentState() == REMOVED)) {
-               m_pAccounts->remove(idx);
-               emit dataChanged(index(idx - 1, 0), index(m_pAccounts->size()-1, 0));
-            }
-            acc = getAccountById(account);
-//          }
+         int idx =accountIds.indexOf(acc->getAccountId());
+         if (idx == -1 && (acc->currentState() == READY || acc->currentState() == REMOVED)) {
+            m_pAccounts->remove(idx);
+            emit dataChanged(index(idx - 1, 0), index(m_pAccounts->size()-1, 0));
+         }
       }
    }
    if (a)
@@ -345,11 +342,11 @@ Account* AccountList::firstRegisteredAccount() const
          return current;
       else if (current && (current->getAccountRegistrationStatus() == ACCOUNT_STATE_READY) && m_pAccounts->count() == 1)
          return current;
-      else if (current && !(current->getAccountRegistrationStatus() == ACCOUNT_STATE_READY)) {
-         qDebug() << "Account " << ((current)?current->getAccountId():"") << " is not registered ("
-         << ((current)?current->getAccountRegistrationStatus():"") << ") State:"
-         << ((current)?current->getAccountRegistrationStatus():"");
-      }
+//       else if (current && !(current->getAccountRegistrationStatus() == ACCOUNT_STATE_READY)) {
+//          qDebug() << "Account " << ((current)?current->getAccountId():"") << " is not registered ("
+//          << ((current)?current->getAccountRegistrationStatus():"") << ") State:"
+//          << ((current)?current->getAccountRegistrationStatus():"");
+//       }
    }
    return nullptr;
 }
@@ -490,7 +487,7 @@ void AccountList::removeAccount( QModelIndex idx )
 }
 
 ///Set the previous account used
-void AccountList::setPriorAccount(Account* account) {
+void AccountList::setPriorAccount(const Account* account) {
    bool changed = (account && m_sPriorAccountId != account->getAccountId()) || (!account && !m_sPriorAccountId.isEmpty());
    m_sPriorAccountId = account?account->getAccountId() : QString();
    if (changed)

@@ -27,7 +27,7 @@ class DelegateDropOverlay;
 class ContactDelegate : public QStyledItemDelegate
 {
 public:
-   ContactDelegate(QObject* parent = nullptr);
+   explicit ContactDelegate(QObject* parent = nullptr);
 
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 

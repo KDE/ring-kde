@@ -23,11 +23,11 @@
 
 #include <klocale.h>
 
-#include "../lib/contactbackend.h"
+#include "../lib/abstractcontactbackend.h"
 #include "../lib/callmodel.h"
 #include "../lib/historymodel.h"
 
-const char* ContactByNameProxyModel::m_slHistoryConstStr[25] = {
+const char* ContactProxyModel::m_slHistoryConstStr[25] = {
       "Today"                                                    ,//0
       "Yesterday"                                                ,//1
       QDate::currentDate().addDays(-2).toString("dddd").toAscii().constData(),//2
@@ -55,19 +55,19 @@ const char* ContactByNameProxyModel::m_slHistoryConstStr[25] = {
       "Never"                                                     //24
 };
 // 
-ContactByNameProxyModel::ContactByNameProxyModel(ContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent),
+ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent),
 m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
 {
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
 }
 
-ContactByNameProxyModel::~ContactByNameProxyModel()
+ContactProxyModel::~ContactProxyModel()
 {
 
 }
 
-void ContactByNameProxyModel::reloadCategories()
+void ContactProxyModel::reloadCategories()
 {
    beginResetModel();
    m_hCategories.clear();
@@ -94,11 +94,11 @@ void ContactByNameProxyModel::reloadCategories()
    emit dataChanged(index(0,0),index(rowCount()-1,0));
 }
 
-bool ContactByNameProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
+bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
    if (index.isValid() && index.parent().isValid()) {
       ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
-      if (role == ContactBackend::Role::DropState) {
+      if (role == AbstractContactBackend::Role::DropState) {
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
       }
@@ -106,7 +106,7 @@ bool ContactByNameProxyModel::setData( const QModelIndex& index, const QVariant 
    return false;
 }
 
-QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) const
+QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
 {
    if (!index.isValid())
       return QVariant();
@@ -125,32 +125,32 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
       switch (role) {
          case Qt::DisplayRole:
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getFormattedName());
-         case ContactBackend::Role::Organization:
+         case AbstractContactBackend::Role::Organization:
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getOrganization());
-         case ContactBackend::Role::Group:
+         case AbstractContactBackend::Role::Group:
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getGroup());
-         case ContactBackend::Role::Department:
+         case AbstractContactBackend::Role::Department:
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getDepartment());
-         case ContactBackend::Role::PreferredEmail:
+         case AbstractContactBackend::Role::PreferredEmail:
             return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->getPreferredEmail());
-         case ContactBackend::Role::DropState:
+         case AbstractContactBackend::Role::DropState:
             return QVariant(modelItem->dropState());
-         case ContactBackend::Role::FormattedLastUsed: {
+         case AbstractContactBackend::Role::FormattedLastUsed: {
             if (!m_isContactDateInit)
-               ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
+               ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
             return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
          }
-         case ContactBackend::Role::IndexedLastUsed: {
+         case AbstractContactBackend::Role::IndexedLastUsed: {
             if (!m_isContactDateInit)
-               ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
+               ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
             return QVariant(HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
          }
-         case ContactBackend::Role::DatedLastUsed: {
+         case AbstractContactBackend::Role::DatedLastUsed: {
             if (!m_isContactDateInit)
-               ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
+               ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
             return QVariant(QDateTime::fromTime_t( m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
          }
-         case ContactBackend::Role::Filter: {
+         case AbstractContactBackend::Role::Filter: {
             Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
             return ct->getFormattedName()+'\n'+ct->getOrganization()+'\n'+ct->getGroup()+'\n'+ct->getDepartment()+'\n'+ct->getPreferredEmail();
          }
@@ -170,7 +170,7 @@ QVariant ContactByNameProxyModel::data( const QModelIndex& index, int role) cons
    return QVariant();
 }
 
-QVariant ContactByNameProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ContactProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -178,7 +178,7 @@ QVariant ContactByNameProxyModel::headerData(int section, Qt::Orientation orient
    return QVariant();
 }
 
-bool ContactByNameProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+bool ContactProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
    Q_UNUSED( data   )
    Q_UNUSED( row    )
@@ -189,7 +189,7 @@ bool ContactByNameProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction
 }
 
 
-int ContactByNameProxyModel::rowCount( const QModelIndex& parent ) const
+int ContactProxyModel::rowCount( const QModelIndex& parent ) const
 {
    if (!parent.isValid() || !parent.internalPointer())
       return m_lCategoryCounter.size();
@@ -202,20 +202,20 @@ int ContactByNameProxyModel::rowCount( const QModelIndex& parent ) const
    return 0;
 }
 
-Qt::ItemFlags ContactByNameProxyModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags ContactProxyModel::flags( const QModelIndex& index ) const
 {
    if (!index.isValid())
       return 0;
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (index.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
 }
 
-int ContactByNameProxyModel::columnCount ( const QModelIndex& parent) const
+int ContactProxyModel::columnCount ( const QModelIndex& parent) const
 {
    Q_UNUSED(parent)
    return 1;
 }
 
-QModelIndex ContactByNameProxyModel::parent( const QModelIndex& index) const
+QModelIndex ContactProxyModel::parent( const QModelIndex& index) const
 {
    if (!index.isValid() || !index.internalPointer()) {
       return QModelIndex();
@@ -225,16 +225,16 @@ QModelIndex ContactByNameProxyModel::parent( const QModelIndex& index) const
       Contact* ct = (Contact*)((ContactTreeBackend*)(index.internalPointer()))->getSelf();
       QString val = category(ct);
       if (m_hCategories[val])
-         return ContactByNameProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
+         return ContactProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
    else if (modelItem && modelItem->type3() == ContactTreeBackend::Type::NUMBER) {
       Contact* ct = (Contact*)modelItem->getSelf();
       QString val = category(ct);
       if (m_hCategories[val]) {
-         return ContactByNameProxyModel::index(
+         return ContactProxyModel::index(
             (m_hCategories[val]->m_lChilds.indexOf(ct)),
             0,
-            ContactByNameProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
+            ContactProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
       }
    }
    else if (modelItem && modelItem->type3() == ContactTreeBackend::Type::TOP_LEVEL) {
@@ -243,7 +243,7 @@ QModelIndex ContactByNameProxyModel::parent( const QModelIndex& index) const
    return QModelIndex();
 }
 
-QModelIndex ContactByNameProxyModel::index( int row, int column, const QModelIndex& parent) const
+QModelIndex ContactProxyModel::index( int row, int column, const QModelIndex& parent) const
 {
    if (!parent.isValid()) {
       return createIndex(row,column,m_lCategoryCounter[row]);
@@ -257,12 +257,12 @@ QModelIndex ContactByNameProxyModel::index( int row, int column, const QModelInd
    return QModelIndex();
 }
 
-QStringList ContactByNameProxyModel::mimeTypes() const
+QStringList ContactProxyModel::mimeTypes() const
 {
    return m_lMimes;
 }
 
-QMimeData* ContactByNameProxyModel::mimeData(const QModelIndexList &indexes) const
+QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
 {
    QMimeData *mimeData = new QMimeData();
    foreach (const QModelIndex &index, indexes) {
@@ -277,10 +277,12 @@ QMimeData* ContactByNameProxyModel::mimeData(const QModelIndexList &indexes) con
          else if (index.parent().isValid()) {
             //Contact
             Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
-            if (ct && ct->getPhoneNumbers().size() == 1) {
-               mimeData->setData(MIME_PHONENUMBER , ct->getPhoneNumbers()[0]->getNumber().toUtf8());
+            if (ct) {
+               if (ct->getPhoneNumbers().size() == 1) {
+                  mimeData->setData(MIME_PHONENUMBER , ct->getPhoneNumbers()[0]->getNumber().toUtf8());
+               }
+               mimeData->setData(MIME_CONTACT , ct->getUid().toUtf8());
             }
-            mimeData->setData(MIME_CONTACT , ct->getUid().toUtf8());
             return mimeData;
          }
       }
@@ -295,36 +297,36 @@ QMimeData* ContactByNameProxyModel::mimeData(const QModelIndexList &indexes) con
  ****************************************************************************/
 
 
-QString ContactByNameProxyModel::category(Contact* ct) const {
+QString ContactProxyModel::category(Contact* ct) const {
    QString cat;
    switch (m_Role) {
-      case ContactBackend::Role::Organization:
+      case AbstractContactBackend::Role::Organization:
          cat = ct->getOrganization();
          break;
-      case ContactBackend::Role::Group:
+      case AbstractContactBackend::Role::Group:
          cat = ct->getGroup();
          break;
-      case ContactBackend::Role::Department:
+      case AbstractContactBackend::Role::Department:
          cat = ct->getDepartment();
          break;
-      case ContactBackend::Role::PreferredEmail:
+      case AbstractContactBackend::Role::PreferredEmail:
          cat = ct->getPreferredEmail();
          break;
-      case ContactBackend::Role::FormattedLastUsed: {
+      case AbstractContactBackend::Role::FormattedLastUsed: {
          if (!m_isContactDateInit)
-            ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
+            ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
          cat = HistoryModel::timeToHistoryCategory(m_hContactByDate[ct]);
          break;
       }
-      case ContactBackend::Role::IndexedLastUsed: {
+      case AbstractContactBackend::Role::IndexedLastUsed: {
          if (!m_isContactDateInit)
-            ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
+            ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
          cat = QString::number(HistoryModel::timeToHistoryConst(m_hContactByDate[ct]));
          break;
       }
-      case ContactBackend::Role::DatedLastUsed: {
+      case AbstractContactBackend::Role::DatedLastUsed: {
          if (!m_isContactDateInit)
-            ((ContactByNameProxyModel*)this)->m_hContactByDate = getContactListByTime();
+            ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
          cat = QDateTime::fromTime_t(m_hContactByDate[ct]).toString();
          break;
       }
@@ -338,7 +340,7 @@ QString ContactByNameProxyModel::category(Contact* ct) const {
 }
 
 ///Return the list of contact from history (in order, most recently used first)
-QHash<Contact*, time_t> ContactByNameProxyModel::getContactListByTime() const
+QHash<Contact*, time_t> ContactProxyModel::getContactListByTime() const
 {
    const CallMap& history= HistoryModel::getHistory();
    QHash<Contact*, time_t> toReturn;
@@ -360,7 +362,7 @@ QHash<Contact*, time_t> ContactByNameProxyModel::getContactListByTime() const
 } //getContactListByTime
 
 
-void ContactByNameProxyModel::setRole(int role)
+void ContactProxyModel::setRole(int role)
 {
    if (role != m_Role) {
       m_Role = role;
@@ -368,7 +370,7 @@ void ContactByNameProxyModel::setRole(int role)
    }
 }
 
-void ContactByNameProxyModel::setShowAll(bool showAll)
+void ContactProxyModel::setShowAll(bool showAll)
 {
    if (showAll != m_ShowAll) {
       m_ShowAll = showAll;

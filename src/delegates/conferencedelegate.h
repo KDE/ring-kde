@@ -28,15 +28,18 @@ class ConferenceDelegate : public QStyledItemDelegate
 {
    Q_OBJECT
 public:
-   ConferenceDelegate(CategorizedTreeView* widget,QPalette pal);
-   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
-   QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
-   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   explicit ConferenceDelegate(CategorizedTreeView* widget,QPalette pal);
+
+   //Setters
    void setCallDelegate(QStyledItemDelegate* delegate) {
       m_pCallDelegate = delegate;
    }
 
    static QPixmap getDragPixmap(CategorizedTreeView* parent, const QModelIndex& index);
+
+   //Reimplemented methods
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual QWidget * createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const;
    virtual void setEditorData ( QWidget * editor, const QModelIndex & index ) const;
    virtual void setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const;
@@ -52,9 +55,11 @@ private:
    QPalette       m_Pal             ;
    QStyledItemDelegate* m_pCallDelegate;
 
+   //Helpers
    void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal = nullptr) const;
    int categoryHeight(const QModelIndex &index, const QStyleOption &option,const QPalette* pal = nullptr) const;
    void drawBoxBottom(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter,const QPalette* pal = nullptr) const;
+   QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
 private Q_SLOTS:
    void slotTextChanged(const QString& text);

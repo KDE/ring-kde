@@ -42,12 +42,12 @@ public:
         NUMBER=1,
         TOP_LEVEL=2
     };
-    ContactTreeBackend(ContactTreeBackend::Type _type);
-    virtual ~ContactTreeBackend(){}
+    explicit ContactTreeBackend(ContactTreeBackend::Type _type);
+    virtual ~ContactTreeBackend();
     ContactTreeBackend::Type type3() const;
     virtual QObject* getSelf() = 0;
-    char dropState() {return m_DropState;}
-    void setDropState(const char state) {m_DropState = state;}
+    char dropState();
+    void setDropState(const char state);
 private:
     ContactTreeBackend::Type m_Type3;
     char m_DropState;
@@ -62,8 +62,7 @@ public:
    class PhoneNumber {
    public:
       ///Constructor
-      PhoneNumber(QString number, QString type)
-      : m_Number(number),m_Type(type){}
+      PhoneNumber(const QString& number, const QString& type);
 
       //Getters
       QString& getNumber();
@@ -76,10 +75,9 @@ public:
    class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
    public:
       virtual QObject* getSelf();
-      PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent) {}
-      PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list) : QList<Contact::PhoneNumber*>(list),
-      ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent) {}
-      Contact* contact() const { return m_pParent; }
+      PhoneNumbers(Contact* parent);
+      PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
+      Contact* contact() const;
    private:
       Contact* m_pParent;
    };

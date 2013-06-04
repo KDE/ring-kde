@@ -42,7 +42,6 @@
 #include "accountwizard.h"
 #include "actionsetaccountfirst.h"
 #include "sflphone.h"
-#include "widgets/callviewoverlaytoolbar.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewoverlaytoolbar.h"
 #include "extendedaction.h"

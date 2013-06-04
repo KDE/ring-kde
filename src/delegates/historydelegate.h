@@ -29,7 +29,7 @@ class HistoryDelegate : public QStyledItemDelegate
 {
    Q_OBJECT
 public:
-   HistoryDelegate(QTreeView* parent = nullptr);
+   explicit HistoryDelegate(QTreeView* parent = nullptr);
 
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 

@@ -103,6 +103,7 @@ int AccountWizard::sendRequest(const QString& host, int port, const QString& req
    if(::connect(s, (const struct sockaddr *) &servSockAddr, (socklen_t) sizeof(servSockAddr)) < 0 ) {
       perror(nullptr);
       ret = "connect";
+      ::close(s);
       return -1;
    }
 
@@ -128,12 +129,12 @@ int AccountWizard::sendRequest(const QString& host, int port, const QString& req
 
    if (status != 200) {
       ret = "http error: " + status;
+      fclose(f);
 //       sprintf(ret, "http error: %ld", status);
       return -1;
    }
 
    fclose(f);
-   delete f;
    shutdown(s, 2);
    ::close(s);
    return 0;

@@ -26,6 +26,7 @@
 
 BookmarkModel* BookmarkModel::m_pSelf = nullptr;
 
+//Model item/index
 class NumberTreeBackend : public HistoryTreeBackend, public QObject
 {
    friend class BookmarkModel;
@@ -38,6 +39,20 @@ class NumberTreeBackend : public HistoryTreeBackend, public QObject
       bool m_IsMostPopular;
 };
 
+BookmarkModel::BookmarkModel(QObject* parent) : QAbstractItemModel(parent){
+      setObjectName("BookmarkModel");
+      reloadCategories();
+      m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
+   }
+
+BookmarkModel* BookmarkModel::getInstance()
+{
+   if (!m_pSelf)
+      m_pSelf = new BookmarkModel(nullptr);
+   return m_pSelf;
+}
+
+///Reload bookmark cateogries
 void BookmarkModel::reloadCategories()
 {
    beginResetModel();
@@ -64,7 +79,7 @@ void BookmarkModel::reloadCategories()
       }
    }
 
-   foreach(QString bookmark, ConfigurationSkeleton::bookmarkList()) {
+   foreach(const QString& bookmark, ConfigurationSkeleton::bookmarkList()) {
       NumberTreeBackend* bm = new NumberTreeBackend(bookmark);
       QString val = category(bm);
       if (!m_hCategories[val]) {
@@ -82,8 +97,9 @@ void BookmarkModel::reloadCategories()
    endResetModel();
    emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount()-1,0));
-}
+} //reloadCategories
 
+//Do nothing
 bool BookmarkModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
    Q_UNUSED(index)
@@ -92,6 +108,7 @@ bool BookmarkModel::setData( const QModelIndex& index, const QVariant &value, in
    return false;
 }
 
+///Get bookmark model data HistoryTreeBackend::Type and Call::Role
 QVariant BookmarkModel::data( const QModelIndex& index, int role) const
 {
    if (!index.isValid())
@@ -115,8 +132,9 @@ QVariant BookmarkModel::data( const QModelIndex& index, int role) const
          break;
    };
    return QVariant();
-}
+} //Data
 
+///Get header data
 QVariant BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
    Q_UNUSED(section)
@@ -125,6 +143,8 @@ QVariant BookmarkModel::headerData(int section, Qt::Orientation orientation, int
    return QVariant();
 }
 
+
+///Get the number of child of "parent"
 int BookmarkModel::rowCount( const QModelIndex& parent ) const
 {
    if (!parent.isValid() || !parent.internalPointer())
@@ -142,18 +162,20 @@ Qt::ItemFlags BookmarkModel::flags( const QModelIndex& index ) const
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (index.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
 }
 
+///There is only 1 column
 int BookmarkModel::columnCount ( const QModelIndex& parent) const
 {
    Q_UNUSED(parent)
    return 1;
 }
 
+///Get the bookmark parent
 QModelIndex BookmarkModel::parent( const QModelIndex& index) const
 {
    if (!index.isValid() || !index.internalPointer()) {
       return QModelIndex();
    }
-   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
+   const HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
    if (modelItem->type3() == HistoryTreeBackend::Type::BOOKMARK) {
       QString val = category(((NumberTreeBackend*)(index.internalPointer())));
       if (((NumberTreeBackend*)modelItem)->m_IsMostPopular)
@@ -163,24 +185,25 @@ QModelIndex BookmarkModel::parent( const QModelIndex& index) const
       else BookmarkModel::index(0,0);
    }
    return QModelIndex();
-}
+} //parent
 
-QModelIndex BookmarkModel::index( int row, int column, const QModelIndex& parent) const
+///Get the index
+QModelIndex BookmarkModel::index(int row, int column, const QModelIndex& parent) const
 {
    if (parent.isValid())
       return createIndex(row,column,m_lCategoryCounter[parent.row()]->m_lChilds[row]);
    else {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
-   return QModelIndex();
 }
 
-
+///Get bookmarks mime types
 QStringList BookmarkModel::mimeTypes() const
 {
    return m_lMimes;
 }
 
+///Generate mime data
 QMimeData* BookmarkModel::mimeData(const QModelIndexList &indexes) const
 {
    QMimeData *mimeData = new QMimeData();
@@ -193,8 +216,9 @@ QMimeData* BookmarkModel::mimeData(const QModelIndexList &indexes) const
       }
    }
    return mimeData;
-}
+} //mimeData
 
+///Get call info TODO use Call:: one
 QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) const
 {
    if (!number)
@@ -237,8 +261,9 @@ QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) cons
          break;
    }
    return cat;
-}
+} //commonCallInfo
 
+///Get category
 QString BookmarkModel::category(NumberTreeBackend* number) const
 {
    QString cat = commonCallInfo(number).toString();

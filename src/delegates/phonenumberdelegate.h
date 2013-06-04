@@ -23,10 +23,10 @@
 class PhoneNumberDelegate : public QStyledItemDelegate
 {
 public:
-   PhoneNumberDelegate(QObject* parent = nullptr);
+   explicit PhoneNumberDelegate(QObject* parent = nullptr);
 
-   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
-
+   //Reimplemented methods
+   virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 private:
 };

@@ -20,7 +20,7 @@
 #ifndef AKONADI_BACKEND_H
 #define AKONADI_BACKEND_H
 
-#include "../lib/contactbackend.h"
+#include "../lib/abstractcontactbackend.h"
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
 
@@ -44,16 +44,16 @@ namespace Akonadi {
 class Contact;
 
 ///AkonadiBackend: Implement a backend for Akonadi
-class LIB_EXPORT AkonadiBackend : public ContactBackend {
+class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
    Q_OBJECT
 public:
-   static   ContactBackend* getInstance();
+   static   AbstractContactBackend* getInstance();
    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
    Contact* getContactByUid   ( const QString& uid                                                     );
    void     editContact       ( Contact*       contact , QWidget* parent = 0                           );
    void     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
    virtual void addPhoneNumber( Contact*       contact , QString  number, QString type                 );
-   
+
    virtual void     editContact   ( Contact*   contact                                                 );
    virtual void     addNewContact ( Contact*   contact                                                 );
    virtual ~AkonadiBackend        (                                                                    );

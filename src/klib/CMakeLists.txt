@@ -30,14 +30,13 @@ INCLUDE_DIRECTORIES ( ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 set( ksflphone_LIB_SRCS
    helperfunctions.cpp
    akonadibackend.cpp
-#    sortabledockcommon.cpp
    configurationskeleton.cpp
    tipmanager.cpp
    tip.cpp
    tipanimationwrapper.cpp
    macromodel.cpp
-   contactproxymodel.cpp
    bookmarkmodel.cpp
+   macro.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)
@@ -62,6 +61,7 @@ set( ksflphone_LIB_HDRS
   helperfunctions.h
 #   sortabledockcommon.h
   macromodel.h
+  macro.h
 )
 
 INSTALL(FILES sflphone-client-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})

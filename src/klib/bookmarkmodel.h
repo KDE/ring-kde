@@ -33,12 +33,10 @@ class LIB_EXPORT BookmarkModel :  public QAbstractItemModel
 {
    Q_OBJECT
 public:
-   static BookmarkModel* getInstance() {
-      if (!m_pSelf)
-         m_pSelf = new BookmarkModel(nullptr);
-      return m_pSelf;
-   }
+   //Singleton
+   static BookmarkModel* getInstance();
 
+   //Setters
    void setRole(int role);
    void setShowAll(bool showAll);
 
@@ -55,37 +53,38 @@ public:
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
 
 private:
-   BookmarkModel(QObject* parent) : QAbstractItemModel(parent){
-      setObjectName("BookmarkModel");
-      reloadCategories();
-      m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
-   }
+   //Private constructor
+   explicit BookmarkModel(QObject* parent);
    virtual ~BookmarkModel() {}
+      
+   ///Top level bookmark item
    class TopLevelItem : public HistoryTreeBackend, public QObject {
-   friend class BookmarkModel;
-   public:
-      virtual QObject* getSelf() {return this;}
-   private:
-      TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-      QList<NumberTreeBackend*> m_lChilds;
-      QString m_Name;
+      friend class BookmarkModel;
+      public:
+         virtual QObject* getSelf() {return this;}
+      private:
+         explicit TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
+         QList<NumberTreeBackend*> m_lChilds;
+         QString m_Name;
    };
-   ContactBackend* m_pModel;
-   QList<TopLevelItem*> m_lCategoryCounter;
-   QHash<QString,TopLevelItem*> m_hCategories;
-   const static char* m_slHistoryConstStr[25];
-   bool m_isContactDateInit;
-   QHash<Contact*, QDateTime> m_hContactByDate;
-   QStringList m_lMimes;
-   
+
+   //Attributes
+   ContactBackend*              m_pModel               ;
+   QList<TopLevelItem*>         m_lCategoryCounter     ;
+   QHash<QString,TopLevelItem*> m_hCategories          ;
+   const static char*           m_slHistoryConstStr[25];
+   bool                         m_isContactDateInit    ;
+   QHash<Contact*, QDateTime>   m_hContactByDate       ;
+   QStringList                  m_lMimes               ;
+
+   //Getters
    QModelIndex getContactIndex(Contact* ct) const;
-   
+
    //Helpers
-//    QString category(Contact* ct) const;
-//    QHash<Contact*, QDateTime> /*getContactListByTime*/() const;
    QVariant commonCallInfo(NumberTreeBackend* call, int role = Qt::DisplayRole) const;
    QString category(NumberTreeBackend* number) const;
-   
+
+   //Singleton
    static BookmarkModel* m_pSelf;
 
 public Q_SLOTS:

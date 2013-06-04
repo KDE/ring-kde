@@ -53,7 +53,7 @@
 AkonadiBackend*  AkonadiBackend::m_pInstance = nullptr;
 
 ///Constructor
-AkonadiBackend::AkonadiBackend(QObject* parent) : ContactBackend(parent)
+AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
 {
    m_pSession = new Akonadi::Session( "SFLPhone::instance" );
 
@@ -79,7 +79,7 @@ AkonadiBackend::~AkonadiBackend()
  ****************************************************************************/
 
 ///Singleton
-ContactBackend* AkonadiBackend::getInstance()
+AbstractContactBackend* AkonadiBackend::getInstance()
 {
    if (m_pInstance == nullptr) {
       m_pInstance = new AkonadiBackend(0);
@@ -105,7 +105,8 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
    }
    if (!a)
       a = AccountList::getInstance()->getDefaultAccount();
-   else if (number.indexOf('@') == -1 && a)
+
+   if (number.indexOf('@') == -1 && a)
       return m_ContactByPhone[number+'@'+a->getAccountHostname()];
 
    //Use default resolve account to trim hostname away from the number
@@ -137,6 +138,7 @@ Contact* AkonadiBackend::getContactByUid(const QString& uid)
    return m_ContactByUid[uid];
 }
 
+///Return contact list
 const ContactList& AkonadiBackend::getContactList() const
 {
    return m_pContacts;
@@ -149,6 +151,7 @@ const ContactList& AkonadiBackend::getContactList() const
  *                                                                           *
  ****************************************************************************/
 
+///Convert string to akonadi KABC::PhoneNumber
 KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 {
    if      (name == "Home"   ) return KABC::PhoneNumber::Home ;

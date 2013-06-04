@@ -29,7 +29,7 @@ class QTimer;
 //SFLPhone
 #include "sflphone_const.h"
 #include "typedefs.h"
-class ContactBackend;
+class AbstractContactBackend;
 class Contact;
 class Account;
 class VideoRenderer;
@@ -60,12 +60,12 @@ public:
         TOP_LEVEL= 2,
         BOOKMARK = 3,
     };
-    HistoryTreeBackend(HistoryTreeBackend::Type _type);
-    virtual ~HistoryTreeBackend(){}
+    explicit HistoryTreeBackend(HistoryTreeBackend::Type _type);
+    virtual ~HistoryTreeBackend();
     HistoryTreeBackend::Type type3() const;
     virtual QObject* getSelf() = 0;
-    char dropState() {return m_DropState;}
-    void setDropState(const char state) {m_DropState = state;}
+    char dropState();
+    void setDropState(const char state);
 private:
     HistoryTreeBackend::Type m_Type3;
     char m_DropState;
@@ -186,8 +186,8 @@ public:
    static Call* buildRingingCall  (const QString & callId                                                                                                       );
    static Call* buildHistoryCall  (const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type );
    static Call* buildExistingCall (QString callId                                                                                                               );
-   static void  setContactBackend (ContactBackend* be                                                                                                           );
-   static ContactBackend* getContactBackend () {return m_pContactBackend;};
+   static void  setContactBackend (AbstractContactBackend* be                                                                                                           );
+   static AbstractContactBackend* getContactBackend ();
 
    //Static getters
    static history_state getHistoryStateFromType            ( QString type                                    );
@@ -239,9 +239,9 @@ public:
    void backspaceItemText();
    void changeCurrentState(Call::State newState);
    void sendTextMessage(QString message);
-   
+
    virtual QObject* getSelf() {return this;}
-   
+
 private:
 
    //Attributes
@@ -256,7 +256,6 @@ private:
    uint                   m_pStopTimeStamp ;
    QString                m_TransferNumber ;
    QString                m_CallNumber     ;
-   static ContactBackend* m_pContactBackend;
    bool                   m_isConference   ;
    Call::State            m_CurrentState   ;
    bool                   m_Recording      ;
@@ -265,6 +264,7 @@ private:
    InstantMessagingModel* m_pImModel       ;
    int                    m_LastContactCheck;
    QTimer*                m_pTimer         ;
+   static AbstractContactBackend* m_pContactBackend;
    
    //State machine
    /**

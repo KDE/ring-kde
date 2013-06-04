@@ -26,9 +26,42 @@
 //SFLPhone library
 #include "sflphone_const.h"
 
+
+Contact::PhoneNumber::PhoneNumber(const QString& number, const QString& type) : m_Number(number),m_Type(type)
+{
+}
+
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
+{
+}
+
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list)
+: QList<Contact::PhoneNumber*>(list),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
+{
+}
+
+Contact* Contact::PhoneNumbers::contact() const
+{
+   return m_pParent;
+}
+
 ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type3(_type),m_DropState(0)
 {
-   
+}
+
+ContactTreeBackend::~ContactTreeBackend()
+{
+}
+
+
+char ContactTreeBackend::dropState()
+{
+   return m_DropState;
+}
+
+void ContactTreeBackend::setDropState(const char state)
+{
+   m_DropState = state;
 }
 
 ContactTreeBackend::Type ContactTreeBackend::type3() const

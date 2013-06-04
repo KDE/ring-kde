@@ -61,7 +61,7 @@ public:
    Qt::ItemFlags flags    ( const QModelIndex& index                             ) const;
 
    //Setters
-   void setPriorAccount          ( Account*                                                 );
+   void setPriorAccount          ( const Account*                                           );
    virtual bool setData          ( const QModelIndex& index, const QVariant &value, int role);
    void         setColorVisitor  ( AccountListColorVisitor* visitor                         );
    void         setDefaultAccount(Account* a);

@@ -19,7 +19,7 @@
  ***********************************************************************************/
 
 //Parent
-#include "contactbackend.h"
+#include "abstractcontactbackend.h"
 
 //SFLPhone library
 #include "contact.h"
@@ -30,13 +30,13 @@
 #include <QtCore/QDebug>
 
 ///Constructor
-ContactBackend::ContactBackend(QObject* par) : QAbstractItemModel(par),m_UpdatesCounter(0)
+AbstractContactBackend::AbstractContactBackend(QObject* par) : QAbstractItemModel(par),m_UpdatesCounter(0)
 {
    connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }
 
 ///Destructor
-ContactBackend::~ContactBackend()
+AbstractContactBackend::~AbstractContactBackend()
 {
    if (Call::getContactBackend() == this)
       Call::setContactBackend(nullptr);
@@ -46,17 +46,28 @@ ContactBackend::~ContactBackend()
 }
 
 ///Update slot
-ContactList ContactBackend::update()
+ContactList AbstractContactBackend::update()
 {
    return update_slot();
 }
 
 ///Called when the new contacts are added
-void ContactBackend::slotReloadModel()
+void AbstractContactBackend::slotReloadModel()
 {
    reset();
    emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount(),0));
+}
+
+/*****************************************************************************
+ *                                                                           *
+ *                                  Getters                                  *
+ *                                                                           *
+ ****************************************************************************/
+
+int AbstractContactBackend::getUpdateCount()
+{
+   return m_UpdatesCounter;
 }
 
 /*****************************************************************************
@@ -66,7 +77,7 @@ void ContactBackend::slotReloadModel()
  ****************************************************************************/
 
 ///Return the extension/user of an URI (<sip:12345@exemple.com>)
-QString ContactBackend::getUserFromPhone(QString phoneNumber)
+QString AbstractContactBackend::getUserFromPhone(QString phoneNumber)
 {
    if (phoneNumber.indexOf('@') != -1) {
       QString user = phoneNumber.split('@')[0];
@@ -76,7 +87,7 @@ QString ContactBackend::getUserFromPhone(QString phoneNumber)
 } //getUserFromPhone
 
 ///Return the domaine of an URI (<sip:12345@exemple.com>)
-QString ContactBackend::getHostNameFromPhone(QString phoneNumber)
+QString AbstractContactBackend::getHostNameFromPhone(QString phoneNumber)
 {
    if (phoneNumber.indexOf('@') != -1) {
       return phoneNumber.split('@')[1].left(phoneNumber.split('@')[1].size()-1);
@@ -92,7 +103,7 @@ QString ContactBackend::getHostNameFromPhone(QString phoneNumber)
  ****************************************************************************/
 
 
-bool ContactBackend::setData( const QModelIndex& idx, const QVariant &value, int role)
+bool AbstractContactBackend::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
    Q_UNUSED(idx)
    Q_UNUSED(value)
@@ -100,7 +111,7 @@ bool ContactBackend::setData( const QModelIndex& idx, const QVariant &value, int
    return false;
 }
 
-QVariant ContactBackend::data( const QModelIndex& idx, int role) const
+QVariant AbstractContactBackend::data( const QModelIndex& idx, int role) const
 {
    if (!idx.isValid())
       return QVariant();
@@ -113,7 +124,7 @@ QVariant ContactBackend::data( const QModelIndex& idx, int role) const
    return QVariant();
 }
 
-QVariant ContactBackend::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant AbstractContactBackend::headerData(int section, Qt::Orientation orientation, int role) const
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -121,7 +132,7 @@ QVariant ContactBackend::headerData(int section, Qt::Orientation orientation, in
    return QVariant();
 }
 
-int ContactBackend::rowCount( const QModelIndex& par ) const
+int AbstractContactBackend::rowCount( const QModelIndex& par ) const
 {
    if (!par.isValid()) {
       return getContactList().size();
@@ -132,20 +143,20 @@ int ContactBackend::rowCount( const QModelIndex& par ) const
    return 0;
 }
 
-Qt::ItemFlags ContactBackend::flags( const QModelIndex& idx ) const
+Qt::ItemFlags AbstractContactBackend::flags( const QModelIndex& idx ) const
 {
    if (!idx.isValid())
       return 0;
    return Qt::ItemIsEnabled | ((idx.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
 }
 
-int ContactBackend::columnCount ( const QModelIndex& par) const
+int AbstractContactBackend::columnCount ( const QModelIndex& par) const
 {
    Q_UNUSED(par)
    return 1;
 }
 
-QModelIndex ContactBackend::parent( const QModelIndex& idx) const
+QModelIndex AbstractContactBackend::parent( const QModelIndex& idx) const
 {
    if (!idx.isValid())
       return QModelIndex();
@@ -153,13 +164,13 @@ QModelIndex ContactBackend::parent( const QModelIndex& idx) const
    if (modelItem && modelItem->type3() == ContactTreeBackend::Type::NUMBER) {
       int idx2 = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
       if (idx2 != -1) {
-         return ContactBackend::index(idx2,0,QModelIndex());
+         return AbstractContactBackend::index(idx2,0,QModelIndex());
       }
    }
    return QModelIndex();
 }
 
-QModelIndex ContactBackend::index( int row, int column, const QModelIndex& par) const
+QModelIndex AbstractContactBackend::index( int row, int column, const QModelIndex& par) const
 {
    if (!par.isValid() && m_ContactByPhone.size() > row) {
       return createIndex(row,column,getContactList()[row]);

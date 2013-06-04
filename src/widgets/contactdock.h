@@ -19,12 +19,15 @@
 #define CONTACT_DOCK_H
 
 #include "ui_dockbase.h"
-#include <QtGui/QDockWidget>
 
+//Qt
 #include <QtCore/QHash>
+#include <QtGui/QDockWidget>
+#include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QTreeWidgetItem>
+
+//SFLPhone
 #include "categorizedtreeview.h"
-#include "../klib/contactproxymodel.h"
 
 //Qt
 class QSplitter;
@@ -49,12 +52,13 @@ namespace KABC {
 
 ///SFLPhone
 class Contact;
+class ContactProxyModel;
 
 class ContactSortFilterProxyModel : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   ContactSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+   explicit ContactSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
 protected:
    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
    {
@@ -86,7 +90,7 @@ private:
    Contact*                     m_pCurrentContact;
    QString                      m_PreselectedNb  ;
    QSortFilterProxyModel*       m_pProxyModel    ;
-   ContactByNameProxyModel*     m_pSourceModel   ;
+   ContactProxyModel*           m_pSourceModel   ;
 
    //Actions
    KAction* m_pCallAgain   ;
