@@ -32,7 +32,7 @@ SFLPhoneCmd::SFLPhoneCmd(QObject* parent) : QObject(parent)
 }
 
 ///Signleton
-SFLPhoneCmd* SFLPhoneCmd::getInstance() {
+SFLPhoneCmd* SFLPhoneCmd::instance() {
    if (!m_spSelf) {
       m_spSelf = new SFLPhoneCmd();
    }
@@ -68,7 +68,7 @@ void SFLPhoneCmd::sendText(const QString& number, const QString& text)
    Call* call = SFLPhone::model()->addDialingCall();
    call->appendText(number);
    call->setProperty("message",text);
-   connect(call,SIGNAL(changed(Call*)),getInstance(),SLOT(textMessagePickup(Call*)));
+   connect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
    call->actionPerformed(Call::Action::ACCEPT);
 }
 
@@ -77,7 +77,7 @@ void SFLPhoneCmd::textMessagePickup(Call* call)
 {
    if (call->getState() == Call::State::CURRENT) {
       call->sendTextMessage(call->property("message").toString());
-      disconnect(call,SIGNAL(changed(Call*)),getInstance(),SLOT(textMessagePickup(Call*)));
+      disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
       call->actionPerformed(Call::Action::REFUSE); //HangUp
    }
 }

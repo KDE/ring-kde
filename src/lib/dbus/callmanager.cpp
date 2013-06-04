@@ -1,6 +1,7 @@
 /****************************************************************************
- *   Copyright (C) 2012-2013 by Savoir-Faire Linux                          *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2009-2013 by Savoir-Faire Linux                          *
+ *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
+ *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -15,24 +16,18 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef VIDEO_INTERFACE_SINGLETON_H
-#define VIDEO_INTERFACE_SINGLETON_H
 
-#include "src/lib/video_dbus_interface.h"
-#include "typedefs.h"
+#include "callmanager.h"
 
-/**
- * @author Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>
- */
-class LIB_EXPORT VideoInterfaceSingleton
-{
+CallManagerInterface * DBus::CallManager::interface = nullptr;
 
-private:
-   static VideoInterface* interface;
-
-public:
-   static VideoInterface& getInstance();
-
-};
-
-#endif
+CallManagerInterface & DBus::CallManager::instance(){
+   if (!dbus_metaTypeInit) registerCommTypes();
+   if (!interface)
+      interface = new CallManagerInterface( "org.sflphone.SFLphone", "/org/sflphone/SFLphone/CallManager", QDBusConnection::sessionBus());
+   if(!interface->connection().isConnected())
+      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From call manager interface.";
+   if (!interface->isValid())
+      throw "SFLphone daemon not available, be sure it running";
+   return *interface;
+}

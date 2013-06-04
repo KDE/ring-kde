@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                          *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2012-2013 by Savoir-Faire Linux                          *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -16,18 +15,28 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
- 
-#include "instance_interface_singleton.h"
+#ifndef VIDEO_INTERFACE_SINGLETON_H
+#define VIDEO_INTERFACE_SINGLETON_H
 
-InstanceInterface* InstanceInterfaceSingleton::interface = nullptr;
+#include "src/lib/video_dbus_interface.h"
+#include "typedefs.h"
 
-InstanceInterface& InstanceInterfaceSingleton::getInstance()
-{
-   if (!dbus_metaTypeInit) registerCommTypes();
-   if (!interface)
-      interface = new InstanceInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/Instance", QDBusConnection::sessionBus());
-   if(!interface->connection().isConnected()) {
-      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From instance interface.";
-   }
-   return *interface;
+namespace DBus {
+
+   /**
+   * @author Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>
+   */
+   class LIB_EXPORT VideoManager
+   {
+
+   private:
+      static VideoInterface* interface;
+
+   public:
+      static VideoInterface& instance();
+
+   };
+
 }
+
+#endif

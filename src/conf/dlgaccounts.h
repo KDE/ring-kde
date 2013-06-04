@@ -21,7 +21,7 @@
 
 #include "ui_dlgaccountsbase.h"
 #include "../lib/account.h"
-#include "../lib/callmanager_interface_singleton.h"
+#include "../lib/dbus/callmanager.h"
 
 //Qt
 class QWidget;
@@ -65,7 +65,7 @@ protected:
 private Q_SLOTS:
    ///Play the ringtone file when the button is clicked
    void playRingtone() {
-      CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+      CallManagerInterface& callManager = DBus::CallManager::instance();
       Q_NOREPLY callManager.startRecordedFilePlayback(m_Path);
    }
 private:

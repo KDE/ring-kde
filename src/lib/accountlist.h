@@ -37,7 +37,7 @@ class LIB_EXPORT AccountList : public QAbstractListModel {
 public:
    friend class Account;
    //Static getter and destructor
-   static AccountList* getInstance();
+   static AccountList* instance();
    static void destroy();
 
    //Getters

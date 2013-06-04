@@ -24,8 +24,8 @@ VideoWidget::VideoWidget(QWidget* parent ,VideoRenderer* renderer) : QWidget(par
    setMinimumSize(200,200);
    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
    connect(m_pRenderer,SIGNAL(frameUpdated()),this,SLOT(updateFrame()));
-   connect(VideoModel::getInstance(),SIGNAL(videoStopped()),this,SLOT(stop()));
-   connect(VideoModel::getInstance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(setRenderer(VideoRenderer*)));
+   connect(VideoModel::instance(),SIGNAL(videoStopped()),this,SLOT(stop()));
+   connect(VideoModel::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(setRenderer(VideoRenderer*)));
 }
 
 ///Set widget renderer
@@ -48,7 +48,7 @@ void VideoWidget::update() {
 void VideoWidget::paintEvent(QPaintEvent* event)
 {
    Q_UNUSED(event)
-   //if (VideoModel::getInstance()->isPreviewing()) {
+   //if (VideoModel::instance()->isPreviewing()) {
    update();
    //}
 }
@@ -61,12 +61,12 @@ void VideoWidget::updateFrame()
       setMinimumSize(size);
    if (m_Image)
       delete m_Image;
-   //if (!m_Image && VideoModel::getInstance()->isRendering())
+   //if (!m_Image && VideoModel::instance()->isRendering())
       m_Image = new QImage((uchar*)m_pRenderer->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
    //This is the right way to do it, but it does not work
 //    if (!m_Image || (m_Image && m_Image->size() != size))
-//       m_Image = new QImage((uchar*)VideoModel::getInstance()->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
-//    if (!m_Image->loadFromData(VideoModel::getInstance()->getCurrentFrame())) {
+//       m_Image = new QImage((uchar*)VideoModel::instance()->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
+//    if (!m_Image->loadFromData(VideoModel::instance()->getCurrentFrame())) {
 //       qDebug() << "Loading image failed";
 //    }
    repaint();

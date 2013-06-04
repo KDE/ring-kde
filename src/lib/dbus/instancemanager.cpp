@@ -16,23 +16,18 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
+ 
+#include "instancemanager.h"
 
-#ifndef INSTANCE_INTERFACE_SINGLETON_H
-#define INSTANCE_INTERFACE_SINGLETON_H
+InstanceInterface* DBus::InstanceManager::interface = nullptr;
 
-#include "src/lib/instance_dbus_interface.h"
-#include "typedefs.h"
-
-/**
- * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
- */
-class LIB_EXPORT InstanceInterfaceSingleton
+InstanceInterface& DBus::InstanceManager::instance()
 {
-public:
-   static InstanceInterface& getInstance();
-
-private:
-   static InstanceInterface* interface;
-};
-
-#endif
+   if (!dbus_metaTypeInit) registerCommTypes();
+   if (!interface)
+      interface = new InstanceInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/Instance", QDBusConnection::sessionBus());
+   if(!interface->connection().isConnected()) {
+      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From instance interface.";
+   }
+   return *interface;
+}

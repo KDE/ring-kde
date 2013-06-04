@@ -21,8 +21,8 @@
 #include <time.h>
 
 //SFLPhone lib
-#include "callmanager_interface_singleton.h"
-#include "configurationmanager_interface_singleton.h"
+#include "dbus/callmanager.h"
+#include "dbus/configurationmanager.h"
 #include "call.h"
 #include "contact.h"
 
@@ -94,7 +94,7 @@ HistoryModel::TopLevelItem::TopLevelItem(QString name) :
 ///Constructor
 HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate),m_HaveContactModel(false)
 {
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
    foreach (const MapStringString& hc, history) {
       Call* pastCall = Call::buildHistoryCall(

@@ -30,7 +30,7 @@
 #include <KMessageBox>
 
 //SFLPhone library
-#include "lib/instance_interface_singleton.h"
+#include "lib/dbus/instancemanager.h"
 #include "klib/configurationskeleton.h"
 #include "sflphonecmd.h"
 
@@ -55,7 +55,7 @@ SFLPhoneApplication::SFLPhoneApplication()
 #endif
 {
    try {
-      InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
+      InstanceInterface& instance = DBus::InstanceManager::instance();
       QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);
       reply.waitForFinished();
    }
@@ -80,7 +80,7 @@ SFLPhoneApplication::~SFLPhoneApplication()
    delete SFLPhone::app();
    // automatically destroyed
    disableSessionManagement();
-   InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
+   InstanceInterface& instance = DBus::InstanceManager::instance();
    Q_NOREPLY instance.Unregister(getpid());
    instance.connection().disconnectFromBus(instance.connection().baseService());
 }

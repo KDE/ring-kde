@@ -19,9 +19,9 @@
 #include <QtTest/QtTest>
 //#include <QtCore>
 
-#include "../src/lib/configurationmanager_interface_singleton.h"
-#include "../src/lib/callmanager_interface_singleton.h"
-#include "../src/lib/instance_interface_singleton.h"
+#include "../src/lib/dbus/configurationmanager.h"
+#include "../src/lib/dbus/callmanager.h"
+#include "../src/lib/dbus/instancemanager.h"
 #include "../src/lib/typedefs.h"
 #include "../src/lib/account.h"
 #include "../src/lib/accountlist.h"
@@ -103,13 +103,13 @@ private:
 //BEGIN Getting a valid account
 void AccountTests::testAccountList()
 {
-   AccountList* list = AccountList::getInstance();
+   AccountList* list = AccountList::instance();
    QCOMPARE( list != nullptr , true);
    QCOMPARE( list->size() >= 1, true);
 }
 
 void AccountTests::testIP2IP() {
-   Account* acc = AccountList::getInstance()->getAccountById("IP2IP");
+   Account* acc = AccountList::instance()->getAccountById("IP2IP");
    QCOMPARE( acc != nullptr, true);
    if (acc) {
       QCOMPARE( acc->getAlias(), QString("IP2IP"));
@@ -117,7 +117,7 @@ void AccountTests::testIP2IP() {
 }
 
 void AccountTests::testIP2IPAlias() {
-   Account* acc = AccountList::getInstance()->getAccountById("IP2IP");
+   Account* acc = AccountList::instance()->getAccountById("IP2IP");
    if (acc) {
       QCOMPARE( acc->getAlias(), QString("IP2IP"));
       QCOMPARE( acc->getAlias() != QString("qwerty"), true);
@@ -137,7 +137,7 @@ void AccountTests::testCreateAccount()
 
 void AccountTests::testGetNewAccount()
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    QCOMPARE( acc != nullptr, true);
 }
 //END creating a new account
@@ -156,7 +156,7 @@ void AccountTests::testAccountAlias_data()
 
 void AccountTests::testAccountAlias                  ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    //acc->setAccountAlias("unit_alias");
    //QCOMPARE( acc->getAccountAlias(), QString("unit_alias"));
 
@@ -169,7 +169,7 @@ void AccountTests::testAccountAlias                  ()/*QString detail*/
 
 void AccountTests::testAccountType                   ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountType("IAX");
    acc->save();
    QCOMPARE( acc->getAccountType(), QString("IAX") );
@@ -194,7 +194,7 @@ void AccountTests::testAccountHostname_data()
 //This test the various hostnames that should be allowed by the daemon
 void AccountTests::testAccountHostname               ()
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    QFETCH(QString, hostname);
    acc->setAccountHostname(hostname);
    acc->save();
@@ -217,7 +217,7 @@ void AccountTests::testAccountHostnameInvalid_data()
 void AccountTests::testAccountHostnameInvalid        ()
 {
    QFETCH(QString, hostname);
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountHostname(hostname);
    acc->save();
    QVERIFY(acc->getAccountHostname() != hostname);
@@ -225,7 +225,7 @@ void AccountTests::testAccountHostnameInvalid        ()
 
 void AccountTests::testAccountUsername               ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountHostname("1234567879");
    acc->save();
    QString username = acc->getAccountHostname();
@@ -244,7 +244,7 @@ void AccountTests::testAccountPassword_data()
 void AccountTests::testAccountPassword               ()/*QString detail*/
 {
    /*QFETCH(QString, password);
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountPassword(password);
    QString pwd = acc->getAccountPassword();
    QCOMPARE(pwd,password);*/
@@ -252,7 +252,7 @@ void AccountTests::testAccountPassword               ()/*QString detail*/
 
 void AccountTests::testAccountMailbox                ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountMailbox("1234567879");
    acc->save();
    QString mailbox = acc->getAccountMailbox();
@@ -262,7 +262,7 @@ void AccountTests::testAccountMailbox                ()/*QString detail*/
 
 void AccountTests::testTlsPassword                   ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setTlsPassword("1234567879");
    acc->save();
    QString tlspass = acc->getTlsPassword();
@@ -271,31 +271,31 @@ void AccountTests::testTlsPassword                   ()/*QString detail*/
 
 void AccountTests::testTlsCaListFile                 ()/*QString detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testTlsCertificateFile            ()/*QString detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testTlsPrivateKeyFile             ()/*QString detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testTlsCiphers                    ()/*QString detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testTlsServerName                 ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setTlsServerName("qwerty");
    acc->save();
    QString tlsserver = acc->getTlsServerName();
@@ -304,7 +304,7 @@ void AccountTests::testTlsServerName                 ()/*QString detail*/
 
 void AccountTests::testAccountSipStunServer          ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountSipStunServer("qwerty");
    acc->save();
    QString tlsserver = acc->getAccountSipStunServer();
@@ -313,20 +313,20 @@ void AccountTests::testAccountSipStunServer          ()/*QString detail*/
 
 void AccountTests::testPublishedAddress              ()/*QString detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testLocalInterface                ()/*QString detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testRingtonePath_data()
 {
    QTest::addColumn<QString>("path");
-   QMap<QString,QString> ringtonePaths = ConfigurationManagerInterfaceSingleton::getInstance().getRingtoneList();
+   QMap<QString,QString> ringtonePaths = DBus::ConfigurationManager::instance().getRingtoneList();
    QMutableMapIterator<QString, QString> iter(ringtonePaths);
    while (iter.hasNext()) {
       iter.next();
@@ -356,7 +356,7 @@ void AccountTests::testRingtonePath_data()
 
 void AccountTests::testRingtonePath                  ()/*QString detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    QFETCH(QString, path);
    acc->setRingtonePath(path);
    acc->save();
@@ -368,13 +368,13 @@ void AccountTests::testRingtonePath                  ()/*QString detail*/
 
 void AccountTests::testTlsMethod                     ()/*int     detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testAccountRegistrationExpire     ()/*int     detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountRegistrationExpire(10000);
    acc->save();
    QCOMPARE(acc->getAccountRegistrationExpire(),10000);
@@ -387,7 +387,7 @@ void AccountTests::testAccountRegistrationExpire     ()/*int     detail*/
 
 void AccountTests::testTlsNegotiationTimeoutSec      ()/*int     detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setTlsNegotiationTimeoutSec(10000);
    acc->save();
 
@@ -401,7 +401,7 @@ void AccountTests::testTlsNegotiationTimeoutSec      ()/*int     detail*/
 
 void AccountTests::testTlsNegotiationTimeoutMsec     ()/*int     detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
 
    acc->setTlsNegotiationTimeoutMsec(10000);
    acc->save();
@@ -427,7 +427,7 @@ void AccountTests::testLocalPort_data()
 
 void AccountTests::testLocalPort                     ()/*short   detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    QFETCH(int, port);
    acc->setLocalPort(port);
    acc->save();
@@ -451,7 +451,7 @@ void AccountTests::testTlsListenerPort_data()
 
 void AccountTests::testTlsListenerPort               ()/*short   detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    QFETCH(int, port);
    acc->setTlsListenerPort(port);
    acc->save();
@@ -475,7 +475,7 @@ void AccountTests::testPublishedPort_data()
 
 void AccountTests::testPublishedPort                 ()/*short   detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    QFETCH(int, port);
    acc->setPublishedPort(port);
    acc->save();
@@ -487,7 +487,7 @@ void AccountTests::testPublishedPort                 ()/*short   detail*/
 
 void AccountTests::testAccountEnabled                ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountEnabled(false);
    QCOMPARE(acc->isAccountEnabled(),false);
    acc->setAccountEnabled(true);
@@ -496,19 +496,19 @@ void AccountTests::testAccountEnabled                ()/*bool    detail*/
 
 void AccountTests::testTlsVerifyServer               ()/*bool    detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testTlsVerifyClient               ()/*bool    detail*/
 {
-   //Account* acc = AccountList::getInstance()->getAccountById(id);
+   //Account* acc = AccountList::instance()->getAccountById(id);
    QSKIP("TODO",SkipAll);
 }
 
 void AccountTests::testTlsRequireClientCertificate   ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setTlsRequireClientCertificate(true);
    acc->save();
    QCOMPARE(acc->isTlsRequireClientCertificate(),true);
@@ -519,7 +519,7 @@ void AccountTests::testTlsRequireClientCertificate   ()/*bool    detail*/
 
 void AccountTests::testTlsEnable                     ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setTlsEnable(true);
    acc->save();
    QCOMPARE(acc->isTlsEnable(),true);
@@ -530,7 +530,7 @@ void AccountTests::testTlsEnable                     ()/*bool    detail*/
 
 void AccountTests::testAccountDisplaySasOnce         ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountDisplaySasOnce(true);
    acc->save();
    QCOMPARE(acc->isAccountDisplaySasOnce(),true);
@@ -541,7 +541,7 @@ void AccountTests::testAccountDisplaySasOnce         ()/*bool    detail*/
 
 void AccountTests::testAccountSrtpRtpFallback        ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountSrtpRtpFallback(true);
    acc->save();
    QCOMPARE(acc->isAccountSrtpRtpFallback(),true);
@@ -552,7 +552,7 @@ void AccountTests::testAccountSrtpRtpFallback        ()/*bool    detail*/
 
 void AccountTests::testAccountZrtpDisplaySas         ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountSrtpRtpFallback(true);
    acc->save();
    QCOMPARE(acc->isAccountSrtpRtpFallback(),true);
@@ -563,7 +563,7 @@ void AccountTests::testAccountZrtpDisplaySas         ()/*bool    detail*/
 
 void AccountTests::testAccountZrtpNotSuppWarning     ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountZrtpNotSuppWarning(true);
    acc->save();
    QCOMPARE(acc->isAccountZrtpNotSuppWarning(),true);
@@ -574,7 +574,7 @@ void AccountTests::testAccountZrtpNotSuppWarning     ()/*bool    detail*/
 
 void AccountTests::testAccountZrtpHelloHash          ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountZrtpHelloHash(true);
    acc->save();
    QCOMPARE(acc->isAccountZrtpHelloHash(),true);
@@ -585,7 +585,7 @@ void AccountTests::testAccountZrtpHelloHash          ()/*bool    detail*/
 
 void AccountTests::testAccountSipStunEnabled         ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setAccountSipStunEnabled(true);
    acc->save();
    QCOMPARE(acc->isAccountSipStunEnabled(),true);
@@ -596,7 +596,7 @@ void AccountTests::testAccountSipStunEnabled         ()/*bool    detail*/
 
 void AccountTests::testPublishedSameAsLocal          ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setPublishedSameAsLocal(true);
    acc->save();
    QCOMPARE(acc->isPublishedSameAsLocal(),true);
@@ -607,7 +607,7 @@ void AccountTests::testPublishedSameAsLocal          ()/*bool    detail*/
 
 void AccountTests::testConfigRingtoneEnabled         ()/*bool    detail*/
 {
-   Account* acc = AccountList::getInstance()->getAccountById(id);
+   Account* acc = AccountList::instance()->getAccountById(id);
    acc->setRingtoneEnabled(true);
    acc->save();
    QCOMPARE(acc->isRingtoneEnabled(),true);
@@ -624,18 +624,18 @@ void AccountTests::testDisableAllAccounts()
 {
    QList<bool> saveState;
    //Disable all accounts
-   for (int i=0;i<AccountList::getInstance()->size();i++) {
-      saveState << (*AccountList::getInstance())[i]->isAccountEnabled();
-      (*AccountList::getInstance())[i]->setAccountEnabled(false);
-      (*AccountList::getInstance())[i]->save();
+   for (int i=0;i<AccountList::instance()->size();i++) {
+      saveState << (*AccountList::instance())[i]->isAccountEnabled();
+      (*AccountList::instance())[i]->setAccountEnabled(false);
+      (*AccountList::instance())[i]->save();
    }
 
    QCOMPARE(AccountList::getCurrentAccount(),(Account*)nullptr);
 
    //Restore state
-   for (int i=0;i<AccountList::getInstance()->size();i++) {
-      (*AccountList::getInstance())[i]->setAccountEnabled(saveState[i]);
-      (*AccountList::getInstance())[i]->save();
+   for (int i=0;i<AccountList::instance()->size();i++) {
+      (*AccountList::instance())[i]->setAccountEnabled(saveState[i]);
+      (*AccountList::instance())[i]->save();
    }
 }
 
@@ -643,8 +643,8 @@ void AccountTests::testDisableAllAccounts()
 
 //BEGIN cleanup
 void AccountTests::cleanupTestCase() {
-   AccountList::getInstance()->removeAccount(AccountList::getInstance()->getAccountById(id));
-   QCOMPARE( AccountList::getInstance()->getAccountById(id) == nullptr, true);
+   AccountList::instance()->removeAccount(AccountList::instance()->getAccountById(id));
+   QCOMPARE( AccountList::instance()->getAccountById(id) == nullptr, true);
 }
 //END cleanup
 

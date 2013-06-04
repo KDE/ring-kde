@@ -58,8 +58,8 @@ protected:
    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
    {
       if (!source_parent.isValid() ) { //Is a category
-         for (int i=0;i<BookmarkModel::getInstance()->rowCount(BookmarkModel::getInstance()->index(source_row,0,source_parent));i++) {
-            if (filterAcceptsRow(i, BookmarkModel::getInstance()->index(source_row,0,source_parent)))
+         for (int i=0;i<BookmarkModel::instance()->rowCount(BookmarkModel::instance()->index(source_row,0,source_parent));i++) {
+            if (filterAcceptsRow(i, BookmarkModel::instance()->index(source_row,0,source_parent)))
                return true;
          }
       }

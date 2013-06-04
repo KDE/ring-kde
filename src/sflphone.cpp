@@ -45,8 +45,8 @@
 
 //sflphone library
 #include "lib/sflphone_const.h"
-#include "lib/instance_interface_singleton.h"
-#include "lib/configurationmanager_interface_singleton.h"
+#include "lib/dbus/instancemanager.h"
+#include "lib/dbus/configurationmanager.h"
 #include "lib/contact.h"
 #include "lib/accountlist.h"
 #include "lib/instantmessagingmodel.h"
@@ -77,7 +77,7 @@ SFLPhone::SFLPhone(QWidget *parent)
       ,m_pVideoDW(nullptr)
 #endif
 {
-    if (!InstanceInterfaceSingleton::getInstance().connection().isConnected() || !InstanceInterfaceSingleton::getInstance().isValid()) {
+    if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid()) {
        QTimer::singleShot(5000,this,SLOT(timeout()));
     }
 
@@ -205,7 +205,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    connect(action_showBookmarkDock,SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
 #ifdef ENABLE_VIDEO
-   connect(VideoModel::getInstance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(displayVideoDock(VideoRenderer*)));
+   connect(VideoModel::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(displayVideoDock(VideoRenderer*)));
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
@@ -219,7 +219,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    move(QCursor::pos().x() - geometry().width()/2, QCursor::pos().y() - geometry().height()/2);
    show();
 
-   if (AccountList::getInstance()->size() <= 1)
+   if (AccountList::instance()->size() <= 1)
       (new AccountWizard())->show();
 
    m_pIconChanged = false;
@@ -239,9 +239,9 @@ SFLPhone::SFLPhone(QWidget *parent)
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(KIcon("view-refresh"));
    bar->addPermanentWidget(m_pReloadButton);
-   connect(m_pReloadButton,SIGNAL(clicked()),AccountList::getInstance(),SLOT(registerAllAccounts()));
+   connect(m_pReloadButton,SIGNAL(clicked()),AccountList::instance(),SLOT(registerAllAccounts()));
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
-   connect(AccountList::getInstance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
+   connect(AccountList::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
 
    if (!model()->isValid()) {
       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually"));
@@ -296,7 +296,7 @@ SFLPhone::~SFLPhone()
    delete m_pBookmarkDW      ;
    delete m_pAccountModel    ;
 
-   delete AkonadiBackend::getInstance();
+   delete AkonadiBackend::instance();
    delete CallModel::instance();
    //saveState();
 }
@@ -385,7 +385,7 @@ void SFLPhone::setupActions()
    /**/connect(action_pastenumber,           SIGNAL(triggered()),           m_pView , SLOT(paste())                     );
    /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
    /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
-   /**/connect(MacroModel::getInstance(),    SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
+   /**/connect(MacroModel::instance(),    SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
    /*                                                                                                                   */
 
    actionCollection()->addAction("action_accept"                , action_accept                );
@@ -408,10 +408,10 @@ void SFLPhone::setupActions()
    actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
    actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
 
-   MacroModel::getInstance()->initMacros();
+   MacroModel::instance()->initMacros();
 
 
-   QList<KAction*> acList = *SFLPhoneAccessibility::getInstance();
+   QList<KAction*> acList = *SFLPhoneAccessibility::instance();
 
    foreach(KAction* ac,acList) {
       actionCollection()->addAction(ac->objectName() , ac);
@@ -445,11 +445,11 @@ CallModel* SFLPhone::model()
 {
    if (!m_pModel) {
       m_pModel = CallModel::instance();
-      Call::setContactBackend(AkonadiBackend::getInstance());
+      Call::setContactBackend(AkonadiBackend::instance());
       InstantMessagingModelManager::init(m_pModel);
-      AccountList::getInstance()->setDefaultAccount(AccountList::getInstance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
+      AccountList::instance()->setDefaultAccount(AccountList::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
-      VideoModel::getInstance();
+      VideoModel::instance();
       #endif
     }
    return m_pModel;
@@ -606,7 +606,7 @@ void SFLPhone::on_m_pView_recordCheckStateChangeAsked(bool recordCheckState)
 void SFLPhone::on_m_pView_incomingCall(const Call* call)
 {
    if (call) {
-      const Contact* contact = AkonadiBackend::getInstance()->getContactByPhone(call->getPeerPhoneNumber());
+      const Contact* contact = AkonadiBackend::instance()->getContactByPhone(call->getPeerPhoneNumber());
       if (contact)
          KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
       else
@@ -617,17 +617,17 @@ void SFLPhone::on_m_pView_incomingCall(const Call* call)
 ///Change current account
 void SFLPhone::currentAccountIndexChanged(int newIndex)
 {
-   if (AccountList::getInstance()->size()) {
-      const Account* acc = AccountList::getInstance()->getAccountByModelIndex(AccountList::getInstance()->index(newIndex,0));
+   if (AccountList::instance()->size()) {
+      const Account* acc = AccountList::instance()->getAccountByModelIndex(AccountList::instance()->index(newIndex,0));
       if (acc)
-         AccountList::getInstance()->setPriorAccount(acc);
+         AccountList::instance()->setPriorAccount(acc);
    }
 }
 
 ///Update the combobox index
 void SFLPhone::currentPriorAccountChanged(Account* newPrior)
 {
-   if (InstanceInterfaceSingleton::getInstance().connection().isConnected() && newPrior) {
+   if (DBus::InstanceManager::instance().connection().isConnected() && newPrior) {
       m_pAccountStatus->setCurrentIndex(newPrior->getIndex().row());
    }
    else {
@@ -692,7 +692,7 @@ void SFLPhone::displayVideoDock(VideoRenderer* r)
 ///The daemon is not found
 void SFLPhone::timeout()
 {
-   if (!InstanceInterfaceSingleton::getInstance().connection().isConnected() || !InstanceInterfaceSingleton::getInstance().isValid() || (!model()->isValid())) {
+   if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid() || (!model()->isValid())) {
       KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }

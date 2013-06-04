@@ -21,7 +21,7 @@
 
 #include "../../lib/call.h"
 #include "../../lib/account.h"
-#include "../../lib/callmanager_interface_singleton.h"
+#include "../../lib/dbus/callmanager.h"
 
 
 /*****************************************************************************
@@ -61,7 +61,7 @@ DTMFJob::DTMFJob(QObject* parent, const QString& operation, const QVariantMap& p
 ///Play a DMTF tone
 void DTMFJob::start()
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.playDTMF(m_mStr);
 }
 

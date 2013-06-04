@@ -79,7 +79,7 @@ AkonadiBackend::~AkonadiBackend()
  ****************************************************************************/
 
 ///Singleton
-AbstractContactBackend* AkonadiBackend::getInstance()
+AbstractContactBackend* AkonadiBackend::instance()
 {
    if (m_pInstance == nullptr) {
       m_pInstance = new AkonadiBackend(0);
@@ -105,7 +105,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
       return c;
    }
    if (!a)
-      a = AccountList::getInstance()->getDefaultAccount();
+      a = AccountList::instance()->getDefaultAccount();
 
    if (number.indexOf('@') == -1 && a)
       return m_ContactByPhone[number+'@'+a->getAccountHostname()];
@@ -114,7 +114,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
    Contact* userOnly = m_ContactByPhone[getUserFromPhone(number).trimmed()];
    const QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
    if (resolveDNS && !defaultResolveAccount.isEmpty() && number.indexOf('@') != -1) {
-      const Account* defResolveAcc = AccountList::getInstance()->getAccountById(defaultResolveAccount);
+      const Account* defResolveAcc = AccountList::instance()->getAccountById(defaultResolveAccount);
       const QString hostname = defResolveAcc?defResolveAcc->getAccountHostname():QString();
       if (defResolveAcc && hostname == number.right(hostname.size())) {
          return userOnly;
@@ -123,7 +123,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
 
    //Try to find something matching, but at this point it is not 100% sure it is the right one
    if (resolveDNS && number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && userOnly) {
-      foreach (const Account* a, AccountList::getInstance()->getAccounts()) {
+      foreach (const Account* a, AccountList::instance()->getAccounts()) {
          if (a->getAccountHostname() == getHostNameFromPhone(number) && userOnly)
             return userOnly;
       }
@@ -183,7 +183,7 @@ KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 ContactList AkonadiBackend::update(Akonadi::Collection collection)
 {
    m_UpdatesCounter++;
-   Account* defaultAccount = AccountList::getInstance()->getDefaultAccount();
+   Account* defaultAccount = AccountList::instance()->getDefaultAccount();
    m_Collection = collection;
    if ( !collection.isValid() ) {
       kDebug() << "The current collection is not valid";

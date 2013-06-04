@@ -35,7 +35,7 @@
 //SFLPhone
 #include "klib/configurationskeleton.h"
 #include "conf/configurationdialog.h"
-#include "lib/configurationmanager_interface_singleton.h"
+#include "lib/dbus/configurationmanager.h"
 #include "sflphoneview.h"
 #include "lib/sflphone_const.h"
 #include "lib/credentialmodel.h"
@@ -67,7 +67,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    button_remove_credential->setIcon ( KIcon( "list-remove" ) );
    button_audiocodecUp->setIcon      ( KIcon( "go-up"       ) );
    button_audiocodecDown->setIcon    ( KIcon( "go-down"     ) );
-   listView_accountList->setModel(AccountList::getInstance());
+   listView_accountList->setModel(AccountList::instance());
 
    m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(32,32)));
    label_message_icon->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
@@ -144,8 +144,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(button_audiocodecDown,             SIGNAL(clicked())                      , this   , SLOT(moveAudioCodecDown())              );
    /**/connect(m_pVCodecUpPB,                     SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecUp())                );
    /**/connect(m_pVCodecDownPB,                   SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecDown())              );
-   /**/connect(AccountList::getInstance(),        SIGNAL(accountEnabledChanged(Account*)), this   , SLOT(otherAccountChanged())             );
-   /**/connect(AccountList::getInstance(),        SIGNAL(accountStateChanged(Account*,QString)), this   , SLOT(updateStatusLabel(Account*)) );
+   /**/connect(AccountList::instance(),        SIGNAL(accountEnabledChanged(Account*)), this   , SLOT(otherAccountChanged())             );
+   /**/connect(AccountList::instance(),        SIGNAL(accountStateChanged(Account*,QString)), this   , SLOT(updateStatusLabel(Account*)) );
    /*                                                                                                                                       */
 
    connect(listView_accountList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(accountListChanged(QModelIndex,QModelIndex)) );
@@ -157,8 +157,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    connect(radioButton_pa_custom,          SIGNAL(clicked(bool)) , this , SLOT(enablePublished()));
 
 
-   if (AccountList::getInstance()->index(0,0).isValid()) {
-      listView_accountList->setCurrentIndex(AccountList::getInstance()->index(0,0));
+   if (AccountList::instance()->index(0,0).isValid()) {
+      listView_accountList->setCurrentIndex(AccountList::instance()->index(0,0));
       loadAccount(listView_accountList->currentIndex());
    }
    m_IsLoading--;
@@ -174,7 +174,7 @@ DlgAccounts::~DlgAccounts()
 ///Save an account using the values from the widgets
 void DlgAccounts::saveAccount(QModelIndex item)
 {
-   Account* account = AccountList::getInstance()->getAccountByModelIndex(item);
+   Account* account = AccountList::instance()->getAccountByModelIndex(item);
 
    if(!item.isValid()) {
       kDebug() << "Attempting to save details of an account from a NULL item";
@@ -248,7 +248,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
 
    if (m_pDefaultAccount->isChecked()) {
       ConfigurationSkeleton::setDefaultAccountId(account->getAccountId());
-      AccountList::getInstance()->setDefaultAccount(account);
+      AccountList::instance()->setDefaultAccount(account);
    }
 
    if (m_pRingtoneListLW->selectedItems().size() == 1 && m_pRingtoneListLW->currentIndex().isValid() ) {
@@ -267,11 +267,11 @@ void DlgAccounts::saveAccount(QModelIndex item)
 
 void DlgAccounts::cancel()
 {
-//    Account* account = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+//    Account* account = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
 //    if (account) {
 //       account->performAction(CANCEL);
 //    }
-   const QVector<Account*> accs = AccountList::getInstance()->getAccounts();
+   const QVector<Account*> accs = AccountList::instance()->getAccounts();
    foreach (Account* a, accs) {
       if (a->currentState() == MODIFIED || a->currentState() == OUTDATED)
          a->performAction(CANCEL);
@@ -286,7 +286,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
       return;
    }
 
-   Account* account = AccountList::getInstance()->getAccountByModelIndex(item);
+   Account* account = AccountList::instance()->getAccountByModelIndex(item);
    if(! account ) {
       kDebug() << "Attempting to load details of an unexisting account";
       return;
@@ -392,7 +392,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    disconnect(m_pDefaultAccount, SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
-   m_pDefaultAccount->setChecked(account == AccountList::getInstance()->getDefaultAccount());
+   m_pDefaultAccount->setChecked(account == AccountList::instance()->getDefaultAccount());
    connect(m_pDefaultAccount,    SIGNAL(clicked(bool)) , this , SLOT(changedAccountList()) );
 
 
@@ -438,7 +438,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    combo_tls_method->setCurrentIndex( account->getTlsMethod() );
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    m_pRingtoneListLW->clear();
    m_hRingtonePath = configurationManager.getRingtoneList();
@@ -509,7 +509,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 ///Load an account
 void DlgAccounts::loadAccountList()
 {
-   AccountList::getInstance()->updateAccounts();
+   AccountList::instance()->updateAccounts();
    if (listView_accountList->model()->rowCount() > 0 && !listView_accountList->currentIndex().isValid())
       listView_accountList->setCurrentIndex(listView_accountList->model()->index(0,0));
    else
@@ -520,7 +520,7 @@ void DlgAccounts::loadAccountList()
 void DlgAccounts::changedAccountList()
 {
    if (!m_IsLoading) {
-      Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+      Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
       if (acc)
          acc->performAction(MODIFY);
       accountListHasChanged = true;
@@ -541,7 +541,7 @@ void DlgAccounts::otherAccountChanged()
 void DlgAccounts::accountListChanged(QModelIndex current, QModelIndex previous)
 {
    saveAccount(previous);
-   Account* acc = AccountList::getInstance()->getAccountByModelIndex(previous);
+   Account* acc = AccountList::instance()->getAccountByModelIndex(previous);
    if (acc->currentState() == EDITING || acc->currentState() == OUTDATED)
       acc->performAction(CANCEL);
    loadAccount(current);
@@ -552,8 +552,8 @@ void DlgAccounts::accountListChanged(QModelIndex current, QModelIndex previous)
 void DlgAccounts::on_button_accountUp_clicked()
 {
    QModelIndex index = listView_accountList->currentIndex();
-   Account* acc = AccountList::getInstance()->getAccountByModelIndex(index);
-   AccountList::getInstance()->accountUp(index.row());
+   Account* acc = AccountList::instance()->getAccountByModelIndex(index);
+   AccountList::instance()->accountUp(index.row());
    listView_accountList->setCurrentIndex(acc->getIndex());
 }
 
@@ -561,8 +561,8 @@ void DlgAccounts::on_button_accountUp_clicked()
 void DlgAccounts::on_button_accountDown_clicked()
 {
    QModelIndex index = listView_accountList->currentIndex();
-   Account* acc = AccountList::getInstance()->getAccountByModelIndex(index);
-   AccountList::getInstance()->accountDown(index.row());
+   Account* acc = AccountList::instance()->getAccountByModelIndex(index);
+   AccountList::instance()->accountDown(index.row());
    listView_accountList->setCurrentIndex(acc->getIndex());
 }
 
@@ -570,7 +570,7 @@ void DlgAccounts::on_button_accountDown_clicked()
 void DlgAccounts::on_button_accountAdd_clicked()
 {
    QString newAlias = i18n("New account%1",AccountList::getSimilarAliasIndex("New account"));
-   AccountList::getInstance()->addAccount(newAlias);
+   AccountList::instance()->addAccount(newAlias);
    int r = listView_accountList->model()->rowCount() - 1;
    QModelIndex index = listView_accountList->model()->index(r,0);
    listView_accountList->setCurrentIndex(index);
@@ -583,7 +583,7 @@ void DlgAccounts::on_button_accountAdd_clicked()
 ///Remove selected account
 void DlgAccounts::on_button_accountRemove_clicked()
 {
-   AccountList::getInstance()->removeAccount(listView_accountList->currentIndex());
+   AccountList::instance()->removeAccount(listView_accountList->currentIndex());
    listView_accountList->setCurrentIndex(listView_accountList->model()->index(0,0));
 }
 
@@ -646,7 +646,7 @@ void DlgAccounts::main_credential_password_changed()
 void DlgAccounts::updateFirstCredential(QString text)
 {
    if (!m_IsLoading) {
-      Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+      Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
       acc->getCredentialsModel()->setData(acc->getCredentialsModel()->index(0,0),text, CredentialModel::NAME_ROLE);
       if (acc->getCredentialsModel()->index(0,0) == list_credential->currentIndex()) {
          edit_credential_auth->setText(text);
@@ -697,8 +697,8 @@ void DlgAccounts::loadVidCodecDetails(const QModelIndex& current,const QModelInd
 void DlgAccounts::updateAccountStates()
 {
    kDebug() << "updateAccountStates";
-   for (int i = 0; i < AccountList::getInstance()->size(); i++) {
-      Account* current = AccountList::getInstance()->getAccountAt(i);
+   for (int i = 0; i < AccountList::instance()->size(); i++) {
+      Account* current = AccountList::instance()->getAccountAt(i);
       current->updateState();
    }
    updateStatusLabel(listView_accountList->currentIndex());
@@ -710,7 +710,7 @@ void DlgAccounts::updateStatusLabel(QModelIndex item)
    kDebug() << "MODEL index is" << item.row();
    if(!item.isValid())
       return;
-   Account* account = AccountList::getInstance()->getAccountByModelIndex(item);
+   Account* account = AccountList::instance()->getAccountByModelIndex(item);
    if (account)
       updateStatusLabel(account);
 }
@@ -718,7 +718,7 @@ void DlgAccounts::updateStatusLabel(QModelIndex item)
 ///Update the status label to current account state
 void DlgAccounts::updateStatusLabel(Account* account)
 {
-   if(!account || AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex()) != account)
+   if(!account || AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex()) != account)
       return;
    QString status = account->getAccountRegistrationStatus();
    edit7_state->setText( "<FONT COLOR=\"" + account->getStateColorName() + "\">" + status + "</FONT>" );
@@ -733,7 +733,7 @@ bool DlgAccounts::hasChanged()
 ///Have all required fields completed?
 bool DlgAccounts::hasIncompleteRequiredFields()
 {
-   Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+   Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
    return acc && (acc->getAlias() != "IP2IP") && (edit1_alias->text().isEmpty() || edit3_server->text().isEmpty() || edit4_user->text().isEmpty() || edit5_password->text().isEmpty());
 }
 
@@ -742,7 +742,7 @@ void DlgAccounts::updateSettings()
 {
    if(accountListHasChanged) {
       if(listView_accountList->currentIndex().isValid()) {
-         Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+         Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
 //          if (acc && acc->isNew()) { //Trying to save an account without ID work, but codecs and credential will be corrupted
 //             acc->performAction(AccountEditAction::SAVE);
 //          }
@@ -751,7 +751,7 @@ void DlgAccounts::updateSettings()
             acc->performAction(CANCEL);
       }
 
-      AccountList::getInstance()->save();
+      AccountList::instance()->save();
       accountListHasChanged = false;
    }
 }
@@ -806,7 +806,7 @@ void DlgAccounts::updateCombo(int value)
 void DlgAccounts::saveCredential()
 {
    QModelIndex index = listView_accountList->currentIndex();
-   Account*    acc   = AccountList::getInstance()->getAccountByModelIndex(index);
+   Account*    acc   = AccountList::instance()->getAccountByModelIndex(index);
    QModelIndex currentCredential = list_credential->currentIndex();
    if (currentCredential.isValid()) {
       acc->getCredentialsModel()->setData(currentCredential,edit_credential_auth->text()    , CredentialModel::NAME_ROLE     );
@@ -822,7 +822,7 @@ void DlgAccounts::saveCredential()
 void DlgAccounts::addCredential()
 {
    QModelIndex index = listView_accountList->currentIndex();
-   Account*    acc   = AccountList::getInstance()->getAccountByModelIndex(index);
+   Account*    acc   = AccountList::instance()->getAccountByModelIndex(index);
 
    QModelIndex idx = acc->getCredentialsModel()->addCredentials();
    list_credential->setCurrentIndex(idx);
@@ -847,7 +847,7 @@ void DlgAccounts::selectCredential(QModelIndex item, QModelIndex previous)
 
 ///Remove a credential
 void DlgAccounts::removeCredential() {
-   Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+   Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
    acc->getCredentialsModel()->removeCredentials(list_credential->currentIndex());
    list_credential->setCurrentIndex(acc->getCredentialsModel()->index(0,0));
 }
@@ -869,9 +869,9 @@ void DlgAccounts::aliasChanged(QString newAlias)
 ///Force a new alias for the account
 void DlgAccounts::changeAlias(QString newAlias)
 {
-   Account* acc = AccountList::getInstance()->getAccountByModelIndex(listView_accountList->currentIndex());
+   Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
    if (acc && newAlias != acc->getAccountAlias())
-      AccountList::getInstance()->setData(listView_accountList->currentIndex(),newAlias,Qt::EditRole);
+      AccountList::instance()->setData(listView_accountList->currentIndex(),newAlias,Qt::EditRole);
 //       acc->setAccountAlias(newAlias);
 }
 

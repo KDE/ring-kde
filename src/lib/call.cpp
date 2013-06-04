@@ -29,8 +29,8 @@
 
 
 //SFLPhone library
-#include "callmanager_interface_singleton.h"
-#include "configurationmanager_interface_singleton.h"
+#include "dbus/callmanager.h"
+#include "dbus/configurationmanager.h"
 #include "abstractcontactbackend.h"
 #include "contact.h"
 #include "account.h"
@@ -171,7 +171,7 @@ Call::Call(Call::State startState, const QString& callId, QString peerName, QStr
    qRegisterMetaType<Call*>();
    changeCurrentState(startState);
 
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    connect(&callManager,SIGNAL(recordPlaybackStopped(QString)), this, SLOT(stopPlayback(QString))  );
    connect(&callManager,SIGNAL(updatePlaybackScale(int,int))  , this, SLOT(updatePlayback(int,int)));
 
@@ -201,7 +201,7 @@ Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBacke
       m_pTimer->setInterval(1000);
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
       m_pTimer->start();
-      CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+      CallManagerInterface& callManager = DBus::CallManager::instance();
       MapStringString        details    = callManager.getConferenceDetails(m_ConfId)  ;
       m_CurrentState = confStatetoCallState(details["CONF_STATE"]);
    }
@@ -216,7 +216,7 @@ Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBacke
 ///Build a call from its ID
 Call* Call::buildExistingCall(QString callId)
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString       details     = callManager.getCallDetails(callId).value();
 
    qDebug() << "Constructing existing call with details : " << details;
@@ -257,7 +257,7 @@ Call* Call::buildDialingCall(QString callId, const QString & peerName, QString a
 ///Build a call from a dbus event
 Call* Call::buildIncomingCall(const QString & callId)
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
 
    QString from     = details[ CALL_PEER_NUMBER ];
@@ -272,7 +272,7 @@ Call* Call::buildIncomingCall(const QString & callId)
 ///Build a ringing call (from dbus)
 Call* Call::buildRingingCall(const QString & callId)
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
    
    QString from     = details[ CALL_PEER_NUMBER ];
@@ -514,7 +514,7 @@ Call::State Call::getCurrentState()          const
 ///Get the call recording
 bool Call::getRecording()                   const
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    ((Call*) this)->m_Recording        = callManager.getIsRecording(m_CallId);
    return m_Recording;
 }
@@ -522,7 +522,7 @@ bool Call::getRecording()                   const
 ///Get the call account id
 Account* Call::getAccount()                 const
 {
-   return AccountList::getInstance()->getAccountById(m_Account);
+   return AccountList::instance()->getAccountById(m_Account);
 }
 
 ///Is this call a conference
@@ -546,7 +546,7 @@ const QString Call::getRecordingPath()     const
 ///Get the current codec
 QString Call::getCurrentCodecName()         const
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    return callManager.getCurrentAudioCodecName(m_CallId);
 }
 
@@ -582,7 +582,7 @@ bool Call::isSecure() const {
       return false;
    }
 
-   Account* currentAccount = AccountList::getInstance()->getAccountById(m_Account);
+   Account* currentAccount = AccountList::instance()->getAccountById(m_Account);
    return currentAccount && ((currentAccount->isTlsEnable()) || (currentAccount->getTlsMethod()));
 } //isSecure
 
@@ -598,7 +598,7 @@ Contact* Call::getContact()
 VideoRenderer* Call::getVideoRenderer()
 {
    #ifdef ENABLE_VIDEO
-   return VideoModel::getInstance()->getRenderer(this);
+   return VideoModel::instance()->getRenderer(this);
    #else
    return nullptr;
    #endif
@@ -696,7 +696,7 @@ Call::State Call::stateChanged(const QString& newStateName)
          return m_CurrentState;
       }
 
-      CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+      CallManagerInterface & callManager = DBus::CallManager::instance();
       MapStringString details = callManager.getCallDetails(m_CallId).value();
       if (details[CALL_PEER_NAME] != m_PeerName)
          m_PeerName = details[CALL_PEER_NAME];
@@ -809,10 +809,10 @@ void Call::changeCurrentState(Call::State newState)
 ///Send a text message
 void Call::sendTextMessage(QString message)
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.sendTextMessage(isConference()?m_ConfId:m_CallId,message);
    if (!m_pImModel) {
-      m_pImModel = InstantMessagingModelManager::getInstance()->getModel(this);
+      m_pImModel = InstantMessagingModelManager::instance()->getModel(this);
    }
    m_pImModel->addOutgoingMessage(message);
 }
@@ -841,7 +841,7 @@ void Call::error()
 ///Accept the call
 void Call::accept()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Accepting call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    Q_NOREPLY callManager.accept(m_CallId);
    time_t curTime;
@@ -859,7 +859,7 @@ void Call::accept()
 ///Refuse the call
 void Call::refuse()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Refusing call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    Q_NOREPLY callManager.refuse(m_CallId);
    time_t curTime;
@@ -871,7 +871,7 @@ void Call::refuse()
 ///Accept the transfer
 void Call::acceptTransf()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Accepting call and transferring it to number : " << m_TransferNumber << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
    callManager.accept(m_CallId);
    Q_NOREPLY callManager.transfer(m_CallId, m_TransferNumber);
@@ -880,7 +880,7 @@ void Call::acceptTransf()
 ///Put the call on hold
 void Call::acceptHold()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Accepting call and holding it. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    callManager.accept(m_CallId);
    Q_NOREPLY callManager.hold(m_CallId);
@@ -890,7 +890,7 @@ void Call::acceptHold()
 ///Hang up
 void Call::hangUp()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    time_t curTime;
    ::time(&curTime);
    m_pStopTimeStamp = curTime;
@@ -906,7 +906,7 @@ void Call::hangUp()
 ///Cancel this call
 void Call::cancel()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Canceling call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    Q_NOREPLY callManager.hangUp(m_CallId);
 }
@@ -914,7 +914,7 @@ void Call::cancel()
 ///Put on hold
 void Call::hold()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Holding call. callId : " << m_CallId << "ConfId:" << m_ConfId;
    if (!isConference())
       Q_NOREPLY callManager.hold(m_CallId);
@@ -925,7 +925,7 @@ void Call::hold()
 ///Start the call
 void Call::call()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "account = " << m_Account;
    if(m_Account.isEmpty()) {
       qDebug() << "Account is not set, taking the first registered.";
@@ -956,7 +956,7 @@ void Call::call()
 void Call::transfer()
 {
    if (!m_TransferNumber.isEmpty()) {
-      CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+      CallManagerInterface & callManager = DBus::CallManager::instance();
       qDebug() << "Transferring call to number : " << m_TransferNumber << ". callId : " << m_CallId;
       Q_NOREPLY callManager.transfer(m_CallId, m_TransferNumber);
       time_t curTime;
@@ -968,7 +968,7 @@ void Call::transfer()
 ///Unhold the call
 void Call::unhold()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Unholding call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    if (!isConference())
       Q_NOREPLY callManager.unhold(m_CallId);
@@ -979,7 +979,7 @@ void Call::unhold()
 ///Record the call
 void Call::setRecord()
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Setting record " << !m_Recording << " for call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    Q_NOREPLY callManager.setRecording((!m_isConference)?m_CallId:m_ConfId);
    bool oldRecStatus = m_Recording;
@@ -1134,7 +1134,7 @@ void Call::updated()
 ///Play the record, if any
 void Call::playRecording()
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    bool retval = callManager.startRecordedFilePlayback(getRecordingPath());
    if (retval)
       emit playbackStarted();
@@ -1143,7 +1143,7 @@ void Call::playRecording()
 ///Stop the record, if any
 void Call::stopRecording()
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.stopRecordedFilePlayback(getRecordingPath());
    emit playbackStopped(); //TODO remove this, it is a workaround for bug #11942
 }
@@ -1151,7 +1151,7 @@ void Call::stopRecording()
 ///seek the record, if any
 void Call::seekRecording(double position)
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.recordPlaybackSeek(position);
 }
 

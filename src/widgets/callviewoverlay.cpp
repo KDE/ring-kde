@@ -71,7 +71,7 @@ void CallViewOverlay::setVisible(bool enabled) {
    m_enabled = enabled;
    QWidget::setVisible(enabled);
    if (!m_accessMessage.isEmpty() && enabled == true && ConfigurationSkeleton::enableReadLabel()) {
-      SFLPhoneAccessibility::getInstance()->say(m_accessMessage);
+      SFLPhoneAccessibility::instance()->say(m_accessMessage);
    }
 } //setVisible
 

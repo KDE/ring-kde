@@ -42,7 +42,7 @@ private:
    //Private constructor
    explicit SFLPhoneCmd(QObject* parent=nullptr);
 
-   static SFLPhoneCmd* getInstance();
+   static SFLPhoneCmd* instance();
 
    //Attributes
    static SFLPhoneCmd* m_spSelf;

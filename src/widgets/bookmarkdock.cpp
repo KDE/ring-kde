@@ -61,13 +61,13 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
    BookmarkSortFilterProxyModel* m_pProxyModel = new BookmarkSortFilterProxyModel(this);
-   m_pProxyModel->setSourceModel(BookmarkModel::getInstance());
+   m_pProxyModel->setSourceModel(BookmarkModel::instance());
    m_pProxyModel->setFilterRole(Call::Role::Filter);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
    expandTree();
 
-   connect(BookmarkModel::getInstance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
+   connect(BookmarkModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
 
@@ -87,7 +87,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 
    connect(m_pFilterLE                    , SIGNAL(textChanged(QString)),       this , SLOT(filter(QString))             );
    connect(m_pMostUsedCK                  , SIGNAL(toggled(bool)),              this , SLOT(reload())                    );
-   connect(AkonadiBackend::getInstance()  , SIGNAL(collectionChanged()) ,       this , SLOT(reload())                    );
+   connect(AkonadiBackend::instance()  , SIGNAL(collectionChanged()) ,       this , SLOT(reload())                    );
    connect(m_pView                        , SIGNAL(doubleClicked(QModelIndex)), this , SLOT(slotDoubleClick(QModelIndex)));
    reload();
 } //BookmarkDock
@@ -109,7 +109,7 @@ BookmarkDock::~BookmarkDock()
 void BookmarkDock::addBookmark(const QString& phone)
 {
    ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << phone);
-   BookmarkModel::getInstance()->reloadCategories();
+   BookmarkModel::instance()->reloadCategories();
 }
 
 ///Remove a bookmark
@@ -136,7 +136,7 @@ void BookmarkDock::filter(QString text)
 void BookmarkDock::reload()
 {
    ConfigurationSkeleton::setDisplayContactCallHistory(m_pMostUsedCK->isChecked());
-   BookmarkModel::getInstance()->reloadCategories();
+   BookmarkModel::instance()->reloadCategories();
 } //reload
 
 ///Expand the tree according to the user preferences

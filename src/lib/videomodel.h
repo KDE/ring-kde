@@ -35,7 +35,7 @@ class LIB_EXPORT VideoModel : public QObject {
    Q_OBJECT
 public:
    //Singleton
-   static VideoModel* getInstance();
+   static VideoModel* instance();
 
    //Getters
    bool       isPreviewing       ();

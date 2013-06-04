@@ -27,7 +27,7 @@ IMManager::IMManager(QWidget* parent) : KTabWidget(parent)
 {
    setVisible(false);
    setTabsClosable(true);
-   connect(InstantMessagingModelManager::getInstance(),SIGNAL(newMessagingModel(Call*,InstantMessagingModel*)),this,SLOT(newConversation(Call*,InstantMessagingModel*)));
+   connect(InstantMessagingModelManager::instance(),SIGNAL(newMessagingModel(Call*,InstantMessagingModel*)),this,SLOT(newConversation(Call*,InstantMessagingModel*)));
    connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeRequest(int)));
 }
 

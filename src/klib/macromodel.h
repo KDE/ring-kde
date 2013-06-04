@@ -63,7 +63,7 @@ private:
       IndexPointer* m_pPointer;
    };
 public:
-   static MacroModel* getInstance();
+   static MacroModel* instance();
    static void addListener(MacroListener* interface);
 
    enum MacroFields {

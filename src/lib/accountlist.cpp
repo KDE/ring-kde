@@ -27,8 +27,8 @@
 #include <QtCore/QObject>
 
 //SFLPhone library
-#include "configurationmanager_interface_singleton.h"
-#include "callmanager_interface_singleton.h"
+#include "dbus/configurationmanager.h"
+#include "dbus/callmanager.h"
 
 AccountList* AccountList::m_spAccountList   = nullptr;
 Account*     AccountList::m_spPriorAccount   = nullptr     ;
@@ -38,19 +38,19 @@ QVariant AccountListNoCheckProxyModel::data(const QModelIndex& idx,int role ) co
    if (role == Qt::CheckStateRole) {
       return QVariant();
    }
-   return AccountList::getInstance()->data(idx,role);
+   return AccountList::instance()->data(idx,role);
 }
 bool AccountListNoCheckProxyModel::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
-   return AccountList::getInstance()->setData(idx,value,role);
+   return AccountList::instance()->setData(idx,value,role);
 }
 Qt::ItemFlags AccountListNoCheckProxyModel::flags (const QModelIndex& idx) const
 {
-   return AccountList::getInstance()->flags(idx);
+   return AccountList::instance()->flags(idx);
 }
 int AccountListNoCheckProxyModel::rowCount(const QModelIndex& parentIdx ) const
 {
-   return AccountList::getInstance()->rowCount(parentIdx);
+   return AccountList::instance()->rowCount(parentIdx);
 }
 
 ///Constructors
@@ -63,8 +63,8 @@ AccountList::AccountList(QStringList & _accountIds) : m_pColorVisitor(nullptr),m
       emit dataChanged(index(size()-1,0),index(size()-1,0));
       connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
    }
-   CallManagerInterface&          callManager          = CallManagerInterfaceSingleton::getInstance();
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   CallManagerInterface&          callManager          = DBus::CallManager::instance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    connect(&callManager         , SIGNAL(registrationStateChanged(QString,QString,int)) ,this,SLOT(accountChanged(QString,QString,int)));
    connect(&configurationManager, SIGNAL(accountsChanged())                             ,this,SLOT(updateAccounts())                   );
@@ -77,8 +77,8 @@ AccountList::AccountList(bool fill) : m_pColorVisitor(nullptr),m_pDefaultAccount
    m_pAccounts = new QVector<Account *>();
    if(fill)
       updateAccounts();
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    connect(&callManager         , SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
    connect(&configurationManager, SIGNAL(accountsChanged())                            ,this,SLOT(updateAccounts())                   );
@@ -94,7 +94,7 @@ AccountList::~AccountList()
 }
 
 ///Singleton
-AccountList* AccountList::getInstance()
+AccountList* AccountList::instance()
 {
    if (not m_spAccountList) {
       m_spAccountList = new AccountList(true);
@@ -117,7 +117,7 @@ void AccountList::accountChanged(const QString& account,const QString& state, in
    qDebug() << "Account status changed";
    Account* a = getAccountById(account);
    if (!a) {
-      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       QStringList accountIds = configurationManager.getAccountList().value();
       for (int i = 0; i < accountIds.size(); ++i) {
          if (!getAccountById(accountIds[i])) {
@@ -160,7 +160,7 @@ void AccountList::accountChanged(Account* a)
 ///Update accounts
 void AccountList::update()
 {
-   ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
    Account* current;
    for (int i = 0; i < m_pAccounts->size(); i++) {
       current = (*m_pAccounts)[i];
@@ -181,7 +181,7 @@ void AccountList::update()
 void AccountList::updateAccounts()
 {
    qDebug() << "updateAccounts";
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QStringList accountIds = configurationManager.getAccountList().value();
    //m_pAccounts->clear();
    for (int i = 0; i < accountIds.size(); ++i) {
@@ -203,7 +203,7 @@ void AccountList::updateAccounts()
 ///Save accounts details and reload it
 void AccountList::save()
 {
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QStringList accountIds= QStringList(configurationManager.getAccountList().value());
 
    //create or update each account from accountList
@@ -254,7 +254,7 @@ bool AccountList::accountDown( int idx )
 ///Try to register all enabled accounts
 void AccountList::registerAllAccounts()
 {
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    configurationManager.registerAllAccounts();
 }
 
@@ -365,10 +365,10 @@ Account* AccountList::getCurrentAccount()
       return priorAccount;
    }
    else {
-      Account* a = getInstance()->firstRegisteredAccount();
+      Account* a = instance()->firstRegisteredAccount();
       if (!a)
-         a = getInstance()->getAccountById("IP2IP");
-      getInstance()->setPriorAccount(a);
+         a = instance()->getAccountById("IP2IP");
+      instance()->setPriorAccount(a);
       return a;
    }
 } //getCurrentAccount
@@ -433,14 +433,14 @@ Account* AccountList::getDefaultAccount() const
 QString AccountList::getSimilarAliasIndex(const QString& alias)
 {
    int count = 0;
-   foreach (Account* a, getInstance()->getAccounts()) {
+   foreach (Account* a, instance()->getAccounts()) {
       if (a->getAccountAlias().left(alias.size()) == alias)
          count++;
    }
    bool found = true;
    do {
       found = false;
-      foreach (Account* a, getInstance()->getAccounts()) {
+      foreach (Account* a, instance()->getAccounts()) {
          if (a->getAccountAlias() == alias+QString(" (%1)").arg(count)) {
             count++;
             found = false;

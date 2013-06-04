@@ -34,7 +34,7 @@ class LIB_EXPORT BookmarkModel :  public QAbstractItemModel
    Q_OBJECT
 public:
    //Singleton
-   static BookmarkModel* getInstance();
+   static BookmarkModel* instance();
 
    //Setters
    void setRole(int role);

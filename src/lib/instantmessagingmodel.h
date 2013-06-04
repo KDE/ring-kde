@@ -43,7 +43,7 @@ class LIB_EXPORT InstantMessagingModelManager : public QObject
 public:
 
    //Singleton
-   static InstantMessagingModelManager* getInstance();
+   static InstantMessagingModelManager* instance();
    static void init(CallModel* model);
 
    //Getter

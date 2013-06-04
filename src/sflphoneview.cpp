@@ -53,9 +53,9 @@
 
 //sflphone library
 #include "lib/typedefs.h"
-#include "lib/configurationmanager_interface_singleton.h"
-#include "lib/callmanager_interface_singleton.h"
-#include "lib/instance_interface_singleton.h"
+#include "lib/dbus/configurationmanager.h"
+#include "lib/dbus/callmanager.h"
+#include "lib/dbus/instancemanager.h"
 #include "lib/sflphone_const.h"
 #include "lib/contact.h"
 #include "lib/accountlist.h"
@@ -243,7 +243,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    pal.setColor(QPalette::AlternateBase, Qt::lightGray);
    setPalette(pal);
 
-   AccountList::getInstance()->setColorVisitor(new ColorVisitor(pal));
+   AccountList::instance()->setColorVisitor(new ColorVisitor(pal));
 
    m_pMessageBoxW->setVisible(false);
 
@@ -253,15 +253,15 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 //    /**/connect(callView                   , SIGNAL(itemChanged(Call*))                    , this      , SLOT(updateWindowCallState())                    );
    /**///connect(SFLPhone::model()          , SIGNAL(volumeChanged(const QString &, double)), this    , SLOT(on1_volumeChanged(const QString &, double) ));
    /**/connect(SFLPhone::model()          , SIGNAL(callStateChanged(Call*))               , this      , SLOT(updateWindowCallState())                    );
-   /**/connect(AccountList::getInstance() , SIGNAL(accountStateChanged(Account*,QString)) , this      , SLOT(updateStatusMessage())                      );
-   /**/connect(AccountList::getInstance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateStatusMessage())                      );
-   /**/connect(AccountList::getInstance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateWindowCallState())                    );
+   /**/connect(AccountList::instance() , SIGNAL(accountStateChanged(Account*,QString)) , this      , SLOT(updateStatusMessage())                      );
+   /**/connect(AccountList::instance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateStatusMessage())                      );
+   /**/connect(AccountList::instance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateWindowCallState())                    );
    /**/connect(m_pSendMessageLE           , SIGNAL(returnPressed())                       , this      , SLOT(sendMessage())                              );
    /**/connect(m_pSendMessagePB           , SIGNAL(clicked())                             , this      , SLOT(sendMessage())                              );
    /**/connect(m_pView                    , SIGNAL(itemDoubleClicked(QModelIndex))        , this      , SLOT(enter())                                    );
    /*                                                                                                                                                    */
 
-   AccountList::getInstance()->updateAccounts();
+   AccountList::instance()->updateAccounts();
 
    //Listen for macro
    MacroModel::addListener(this);
@@ -350,7 +350,7 @@ void SFLPhoneView::typeString(QString str)
     * 
     * Any other comportment need to be documented here or treated as a bug
     */
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
 
    Call* call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex());
    Call* currentCall = nullptr;
@@ -717,7 +717,7 @@ void SFLPhoneView::updateWindowCallState()
 void SFLPhoneView::updateRecordButton()
 {
    kDebug() << "updateRecordButton";
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    double recVol = callManager.getVolume(RECORD_DEVICE);
    if(recVol     == 0.00) {
       toolButton_recVol->setIcon(QIcon(ICON_REC_VOL_0));
@@ -741,7 +741,7 @@ void SFLPhoneView::updateRecordButton()
 void SFLPhoneView::updateVolumeButton()
 {
    kDebug() << "updateVolumeButton";
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    double sndVol = callManager.getVolume(SOUND_DEVICE);
 
    if(sndVol     == 0.00) {
@@ -765,7 +765,7 @@ void SFLPhoneView::updateVolumeButton()
 ///Update the record bar
 void SFLPhoneView::updateRecordBar(double _value)
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    double recVol = callManager.getVolume(RECORD_DEVICE);
    kDebug() << "updateRecordBar" << recVol;
    int value = (_value > 0)?_value:(int)(recVol * 100);
@@ -775,7 +775,7 @@ void SFLPhoneView::updateRecordBar(double _value)
 ///Update the volume bar
 void SFLPhoneView::updateVolumeBar(double _value)
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    double sndVol = callManager.getVolume(SOUND_DEVICE);
    kDebug() << "updateVolumeBar" << sndVol;
    int value = (_value > 0)?_value:(int)(sndVol * 100);
@@ -821,7 +821,7 @@ void SFLPhoneView::updateStatusMessage()
 ///Proxy to hide or show the volume control
 void SFLPhoneView::displayVolumeControls(bool checked)
 {
-   //ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   //ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
    ConfigurationSkeleton::setDisplayVolume(checked);
    updateVolumeControls();
 }
@@ -856,7 +856,7 @@ void SFLPhoneView::on_widget_dialpad_typed(QString text)
 void SFLPhoneView::on_slider_recVol_valueChanged(int value)
 {
    kDebug() << "on_slider_recVol_valueChanged(" << value << ")";
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)value / 100.0);
    updateRecordButton();
 }
@@ -865,7 +865,7 @@ void SFLPhoneView::on_slider_recVol_valueChanged(int value)
 void SFLPhoneView::on_slider_sndVol_valueChanged(int value)
 {
    kDebug() << "on_slider_sndVol_valueChanged(" << value << ")";
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.setVolume(SOUND_DEVICE, (double)value / 100.0);
    updateVolumeButton();
 }
@@ -879,7 +879,7 @@ void SFLPhoneView::on_toolButton_recVol_clicked(bool checked)
 ///The mute button have been clicked
 void SFLPhoneView::on_toolButton_sndVol_clicked(bool checked)
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    kDebug() << "on_toolButton_sndVol_clicked().";
    if(!checked) {
       toolButton_sndVol->setChecked(false);
@@ -915,7 +915,7 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
    connect(action,  SIGNAL(setFirst(Account*)), this  ,  SLOT(setAccountFirst(Account*)));
    menu.addAction(action);
 
-   QVector<Account *> accounts = AccountList::getInstance()->registeredAccounts();
+   QVector<Account *> accounts = AccountList::instance()->registeredAccounts();
    for (int i = 0 ; i < accounts.size() ; i++) {
       Account* account = accounts.at(i);
       QAction* action = new ActionSetAccountFirst(account, &menu);
@@ -931,10 +931,10 @@ void SFLPhoneView::setAccountFirst(Account * account)
 {
    kDebug() << "setAccountFirst : " << (account ? account->getAlias() : QString()) << (account ? account->getAccountId() : QString());
    if(account) {
-      AccountList::getInstance()->setPriorAccount(account);
+      AccountList::instance()->setPriorAccount(account);
    }
    else {
-      AccountList::getInstance()->setPriorAccount(nullptr);
+      AccountList::instance()->setPriorAccount(nullptr);
    }
    kDebug() << "Current account id" << (AccountList::getCurrentAccount()?AccountList::getCurrentAccount()->getAccountId():"<no account>");
    updateStatusMessage();
@@ -1064,7 +1064,7 @@ void SFLPhoneView::record()
 //Mute a call
 void SFLPhoneView::mute(bool value)
 {
-   CallManagerInterface & callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface & callManager = DBus::CallManager::instance();
    kDebug() << "on_toolButton_recVol_clicked().";
    if(!value) {
       toolButton_recVol->setChecked(false);

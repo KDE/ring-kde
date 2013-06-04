@@ -28,7 +28,7 @@
 #include <KStandardDirs>
 
 //SFLPhone
-#include "../lib/callmanager_interface_singleton.h"
+#include "../lib/dbus/callmanager.h"
 #include "configurationskeleton.h"
 #include "macro.h"
 
@@ -42,7 +42,7 @@ MacroModel::MacroModel(QObject* parent) : QAbstractItemModel(parent),m_pCurrentM
 }
 
 ///Singleton
-MacroModel* MacroModel::getInstance()
+MacroModel* MacroModel::instance()
 {
    if (m_pInstance == nullptr) {
       m_pInstance = new MacroModel(0);
@@ -73,7 +73,7 @@ void MacroModel::initMacros()
 
 void MacroModel::addListener(MacroListener* interface)
 {
-   MacroModel* m = getInstance();
+   MacroModel* m = instance();
    m->m_lListeners << interface;
 }
 

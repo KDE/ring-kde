@@ -37,7 +37,7 @@
 
 //SFLphone
 #include "lib/sflphone_const.h"
-#include "lib/configurationmanager_interface_singleton.h"
+#include "lib/dbus/configurationmanager.h"
 
 //Define
 #define FIELD_SFL_ACCOUNT        "SFL"
@@ -197,7 +197,7 @@ AccountWizard::~AccountWizard()
 ///The accept button have been pressed
 void AccountWizard::accept()
 {
-   ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
 
    QString ret;
    MapStringString accountDetails = configurationManager.getAccountTemplate();

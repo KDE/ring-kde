@@ -18,7 +18,7 @@
 #include "videocodecmodel.h"
 #include "call.h"
 #include "account.h"
-#include "video_interface_singleton.h"
+#include "dbus/videomanager.h"
 
 ///Get data from the model
 QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
@@ -79,7 +79,7 @@ VideoCodecModel::VideoCodecModel(Account* account) : QAbstractListModel(),m_pAcc
 void VideoCodecModel::reload()
 {
    m_lCodecs.clear();
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->getAccountId());
    foreach(const MapStringString& h,codecs) {
       VideoCodec* c = new VideoCodec(h["name"],h["bitrate"].toInt(),h["enabled"]=="true");
@@ -91,7 +91,7 @@ void VideoCodecModel::reload()
 ///Save the current model over dbus
 void VideoCodecModel::save()
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    VectorMapStringString toSave;
    foreach(VideoCodec* vc,m_lCodecs) {
       MapStringString details;

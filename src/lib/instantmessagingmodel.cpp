@@ -18,7 +18,7 @@
 #include "instantmessagingmodel.h"
 
 #include "callmodel.h"
-#include "callmanager_interface_singleton.h"
+#include "dbus/callmanager.h"
 #include "call.h"
 #include "contact.h"
 
@@ -26,7 +26,7 @@ InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = null
 CallModel*                InstantMessagingModelManager::m_spCallModel = nullptr;
 
 ///Signleton
-InstantMessagingModelManager* InstantMessagingModelManager::getInstance()
+InstantMessagingModelManager* InstantMessagingModelManager::instance()
 {
    if (!m_spInstance) {
       m_spInstance = new InstantMessagingModelManager();
@@ -36,13 +36,13 @@ InstantMessagingModelManager* InstantMessagingModelManager::getInstance()
 
 void InstantMessagingModelManager::init(CallModel* model) {
    m_spCallModel = model;
-   getInstance();
+   instance();
 }
 
 ///Constructor
 InstantMessagingModelManager::InstantMessagingModelManager() : QObject(0)
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), this, SLOT(newMessage(QString,QString,QString)));
 }
 

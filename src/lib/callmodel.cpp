@@ -25,13 +25,13 @@
 #include "call.h"
 #include "accountlist.h"
 #include "dbus/metatypes.h"
-#include "callmanager_interface_singleton.h"
-#include "configurationmanager_interface_singleton.h"
-#include "instance_interface_singleton.h"
+#include "dbus/callmanager.h"
+#include "dbus/configurationmanager.h"
+#include "dbus/instancemanager.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
 #include "abstractcontactbackend.h"
-#include "video_interface_singleton.h"
+#include "dbus/videomanager.h"
 #include "historymodel.h"
 
 //Define
@@ -67,9 +67,9 @@ CallModel::CallModel() : QAbstractItemModel(nullptr)
 {
    static bool dbusInit = false;
    if (!dbusInit) {
-      CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+      CallManagerInterface& callManager = DBus::CallManager::instance();
       #ifdef ENABLE_VIDEO
-      VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+      VideoInterface& interface = DBus::VideoManager::instance();
       #endif
 
       //SLOTS
@@ -101,7 +101,7 @@ CallModel::CallModel() : QAbstractItemModel(nullptr)
       registerCommTypes();
    m_sInstanceInit = true;
 
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    const QStringList callList = callManager.getCallList();
    foreach (const QString& callId, callList) {
       Call* tmpCall = Call::buildExistingCall(callId);
@@ -163,7 +163,7 @@ CallList CallModel::getConferenceList()
    CallList confList;
 
    //That way it can not be invalid
-   const QStringList confListS = CallManagerInterfaceSingleton::getInstance().getConferenceList();
+   const QStringList confListS = DBus::CallManager::instance().getConferenceList();
    foreach (const QString& confId, confListS) {
       InternalStruct* internalS = m_sPrivateCallList_callId[confId];
       if (!internalS)
@@ -176,7 +176,7 @@ CallList CallModel::getConferenceList()
 
 bool CallModel::isValid()
 {
-   return CallManagerInterfaceSingleton::getInstance().isValid();
+   return DBus::CallManager::instance().isValid();
 }
 
 
@@ -315,7 +315,7 @@ QModelIndex CallModel::getIndex(Call* call)
 ///Transfer "toTransfer" to "target" and wait to see it it succeeded
 void CallModel::attendedTransfer(Call* toTransfer, Call* target)
 {
-   Q_NOREPLY CallManagerInterfaceSingleton::getInstance().attendedTransfer(toTransfer->getCallId(),target->getCallId());
+   Q_NOREPLY DBus::CallManager::instance().attendedTransfer(toTransfer->getCallId(),target->getCallId());
 
    //TODO [Daemon] Implement this correctly
    toTransfer->changeCurrentState(Call::State::OVER);
@@ -342,7 +342,7 @@ void CallModel::transfer(Call* toTransfer, QString target)
 Call* CallModel::addConference(const QString& confID)
 {
    qDebug() << "Notified of a new conference " << confID;
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    const QStringList callList = callManager.getParticipantList(confID);
    qDebug() << "Paticiapants are:" << callList;
 
@@ -397,7 +397,7 @@ bool CallModel::createConferenceFromCall(Call* call1, Call* call2)
 {
   if (!call1 || !call2) return false;
   qDebug() << "Joining call: " << call1->getCallId() << " and " << call2->getCallId();
-  Q_NOREPLY CallManagerInterfaceSingleton::getInstance().joinParticipant(call1->getCallId(),call2->getCallId());
+  Q_NOREPLY DBus::CallManager::instance().joinParticipant(call1->getCallId(),call2->getCallId());
   return true;
 } //createConferenceFromCall
 
@@ -405,7 +405,7 @@ bool CallModel::createConferenceFromCall(Call* call1, Call* call2)
 bool CallModel::addParticipant(Call* call2, Call* conference)
 {
    if (conference->isConference()) {
-      Q_NOREPLY CallManagerInterfaceSingleton::getInstance().addParticipant(call2->getCallId(), conference->getConfId());
+      Q_NOREPLY DBus::CallManager::instance().addParticipant(call2->getCallId(), conference->getConfId());
       return true;
    }
    else {
@@ -417,14 +417,14 @@ bool CallModel::addParticipant(Call* call2, Call* conference)
 ///Remove a participant from a conference
 bool CallModel::detachParticipant(Call* call)
 {
-   Q_NOREPLY CallManagerInterfaceSingleton::getInstance().detachParticipant(call->getCallId());
+   Q_NOREPLY DBus::CallManager::instance().detachParticipant(call->getCallId());
    return true;
 }
 
 ///Merge two conferences
 bool CallModel::mergeConferences(Call* conf1, Call* conf2)
 {
-   Q_NOREPLY CallManagerInterfaceSingleton::getInstance().joinConference(conf1->getConfId(),conf2->getConfId());
+   Q_NOREPLY DBus::CallManager::instance().joinConference(conf1->getConfId(),conf2->getConfId());
    return true;
 }
 
@@ -759,7 +759,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          return;
       }
       conf->stateChanged(state);
-      CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+      CallManagerInterface& callManager = DBus::CallManager::instance();
       QStringList participants = callManager.getParticipantList(confID);
 
       foreach(InternalStruct* child,confInt->m_lChildren) {

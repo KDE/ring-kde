@@ -105,7 +105,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    delegate->setChildChildDelegate(new PhoneNumberDelegate());
    m_pView->setDelegate(delegate);
 
-   m_pSourceModel = new ContactProxyModel(AkonadiBackend::getInstance(),Qt::DisplayRole,false);
+   m_pSourceModel = new ContactProxyModel(AkonadiBackend::instance(),Qt::DisplayRole,false);
    m_pProxyModel = new ContactSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
@@ -129,7 +129,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
-//    connect(AkonadiBackend::getInstance() ,SIGNAL(collectionChanged()),                                  this, SLOT(reloadContact())                     );
+//    connect(AkonadiBackend::instance() ,SIGNAL(collectionChanged()),                                  this, SLOT(reloadContact())                     );
    connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(setCategory(int))                    );
 //    connect(m_pFilterLE,                   SIGNAL(textChanged(QString)),                                 this, SLOT(filter(QString))                     );
    connect(m_pShowHistoCK,                SIGNAL(toggled(bool)),                                        this, SLOT(setHistoryVisible(bool))             );
@@ -367,7 +367,7 @@ void ContactDock::copy()
 void ContactDock::editContact()
 {
    kDebug() << "Edit contact";
-   AkonadiBackend::getInstance()->editContact(m_pCurrentContact);
+   AkonadiBackend::instance()->editContact(m_pCurrentContact);
 }
 
 ///Add a new phone number for this contact
@@ -378,7 +378,7 @@ void ContactDock::addPhone()
    bool ok;
    QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
-      AkonadiBackend::getInstance()->addPhoneNumber(m_pCurrentContact,text,"work");
+      AkonadiBackend::instance()->addPhoneNumber(m_pCurrentContact,text,"work");
    }
 }
 

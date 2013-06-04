@@ -29,9 +29,9 @@
 #include "../../lib/accountlist.h"
 #include "../../lib/contact.h"
 #include "../../lib/dbus/metatypes.h"
-#include "../../lib/instance_interface_singleton.h"
-#include "../../lib/configurationmanager_interface_singleton.h"
-#include "../../lib/callmanager_interface_singleton.h"
+#include "../../lib/dbus/instancemanager.h"
+#include "../../lib/dbus/configurationmanager.h"
+#include "../../lib/dbus/callmanager.h"
 #include "../../lib/sflphone_const.h"
 #include "../../klib/akonadibackend.h"
 #include "../../klib/helperfunctions.h"
@@ -64,7 +64,7 @@ SFLPhoneEngine::SFLPhoneEngine(QObject* parent, const QVariantList& args)
    /**/connect(m_pModel                     , SIGNAL(callStateChanged(Call*))  , this , SLOT(callStateChangedSignal(Call*)) );
    /**/connect(m_pModel                     , SIGNAL(callAdded(Call*))         , this , SLOT(callStateChangedSignal(Call*)) );
    /**/connect(m_pModel                     , SIGNAL(callStateChanged(Call*))  , this , SLOT(callStateChangedSignal(Call*)) );
-   /**/connect(AkonadiBackend::getInstance(), SIGNAL(collectionChanged())      , this , SLOT(updateCollection())            );
+   /**/connect(AkonadiBackend::instance(), SIGNAL(collectionChanged())      , this , SLOT(updateCollection())            );
    /*                                                                                                                       */
 }
 
@@ -192,7 +192,7 @@ void SFLPhoneEngine::updateBookmarkList()
    QStringList cl = HistoryModel::getNumbersByPopularity();
    for (;i < ((cl.size() < 10)?cl.size():10);i++) {
       QHash<QString,QVariant> pop;
-      Contact* cont = AkonadiBackend::getInstance()->getContactByPhone(cl[i],true);
+      Contact* cont = AkonadiBackend::instance()->getContactByPhone(cl[i],true);
       /*           KEY                          VALUE                */
       /**/pop["peerName"     ] = (cont)?cont->getFormattedName():cl[i];
       /**/pop["peerNumber"   ] = cl[i]                                ;
@@ -225,7 +225,7 @@ void SFLPhoneEngine::updateConferenceList()
 {
    /*foreach (Call* call, m_pModel->getCalls()) {
       if (m_pModel->isConference(call)) {
-         CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+         CallManagerInterface& callManager = DBus::CallManager::instance();
          currentConferences[call->getConfId()] = callManager.getParticipantList(call->getConfId());
          setData("conferences", call->getConfId(), currentConferences[call->getConfId()]);
       }
@@ -237,7 +237,7 @@ void SFLPhoneEngine::updateCollection()
 {
    
    typedef QHash<QString,QVariant> SerializedContact;
-   ContactList list = AkonadiBackend::getInstance()->update();
+   ContactList list = AkonadiBackend::instance()->update();
    
    if (!list.size())
       return;
@@ -284,7 +284,7 @@ void SFLPhoneEngine::updateInfo()
 ///Load/Update account list
 void SFLPhoneEngine::updateAccounts()
 {
-   const QVector<Account*>& list = AccountList::getInstance()->getAccounts();
+   const QVector<Account*>& list = AccountList::instance()->getAccounts();
    foreach(Account* a,list) {
       if (dynamic_cast<Account*>(a)) {
          QHash<QString,QVariant> acc;
@@ -307,7 +307,7 @@ void SFLPhoneEngine::generateNumberList(QString name)
 {
    QString contactUid = name.right(name.size()-7);
    qDebug() << "LOOKING FOR " << contactUid;
-   Contact* cont = AkonadiBackend::getInstance()->getContactByUid(contactUid);
+   Contact* cont = AkonadiBackend::instance()->getContactByUid(contactUid);
    if (cont) {
       foreach(Contact::PhoneNumber* num,cont->getPhoneNumbers()) {
          QHash<QString,QVariant> hash;

@@ -40,10 +40,10 @@ set( qtsflphone_LIB_SRCS
   credentialmodel.cpp
   audiocodecmodel.cpp
   instantmessagingmodel.cpp
-  configurationmanager_interface_singleton.cpp
-  callmanager_interface_singleton.cpp
-  instance_interface_singleton.cpp
-  video_interface_singleton.cpp
+  dbus/configurationmanager.cpp
+  dbus/callmanager.cpp
+  dbus/instancemanager.cpp
+  dbus/videomanager.cpp
   sflphone_const.h
   contactproxymodel.cpp
 )
@@ -134,13 +134,8 @@ set( qtsflphone_LIB_HDRS
   videorenderer.h
   credentialmodel.h
   audiocodecmodel.h
-  configurationmanager_interface_singleton.h
-  callmanager_interface_singleton.h
-  instance_interface_singleton.h
-  video_interface_singleton.h
   sflphone_const.h
   instantmessagingmodel.h
-  typedefs.h
   contactproxymodel.h
 )
 

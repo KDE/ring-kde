@@ -19,7 +19,7 @@
 
 #include "configurationskeleton.h"
 
-#include "../lib/configurationmanager_interface_singleton.h"
+#include "../lib/dbus/configurationmanager.h"
 #include "../lib/sflphone_const.h"
 
 //KDE
@@ -55,7 +55,7 @@ void ConfigurationSkeleton::readConfig()
    //ConfigurationSkeleton::readConfig();
    kDebug() << "Reading config";
 
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    //General settings
 
@@ -141,7 +141,7 @@ void ConfigurationSkeleton::writeConfig()
 {
    //ConfigurationSkeleton::writeConfig();
    kDebug() << "Writing config";
-   ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
 
 
    //General settings

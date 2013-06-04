@@ -16,20 +16,25 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "configurationmanager_interface_singleton.h"
 
-ConfigurationManagerInterface* ConfigurationManagerInterfaceSingleton::interface = nullptr;
+#ifndef CALL_MANAGER_INTERFACE_SINGLETON_H
+#define CALL_MANAGER_INTERFACE_SINGLETON_H
 
-ConfigurationManagerInterface& ConfigurationManagerInterfaceSingleton::getInstance()
-{
-   if (!dbus_metaTypeInit) registerCommTypes();
-   if (!interface)
-      interface = new ConfigurationManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/ConfigurationManager", QDBusConnection::sessionBus());
-   if(!interface->connection().isConnected()) {
-      qDebug() << "Error : sflphoned not connected. Service " << interface->service() << " not connected. From configuration manager interface.";
-      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From configuration manager interface.";
-   }
-   if (!interface->isValid())
-      throw "SFLphone daemon not available, be sure it running";
-   return *interface;
+#include "src/lib/callmanager_dbus_interface.h"
+#include "../typedefs.h"
+
+namespace DBus {
+
+   ///Singleton to access dbus "CallManager" interface
+   class LIB_EXPORT CallManager
+   {
+   public:
+      static CallManagerInterface& instance();
+
+   private:
+      static CallManagerInterface* interface;
+   };
+
 }
+
+#endif

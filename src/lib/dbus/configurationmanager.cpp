@@ -16,20 +16,20 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef CONFIGURATION_MANAGER_INTERFACE_SINGLETON_H
-#define CONFIGURATION_MANAGER_INTERFACE_SINGLETON_H
+#include "configurationmanager.h"
 
-#include "src/lib/configurationmanager_dbus_interface.h"
-#include "typedefs.h"
+ConfigurationManagerInterface* DBus::ConfigurationManager::interface = nullptr;
 
-///Singleton to access the ConfigurationManager dbus interface
-class LIB_EXPORT ConfigurationManagerInterfaceSingleton
+ConfigurationManagerInterface& DBus::ConfigurationManager::instance()
 {
-public:
-   static ConfigurationManagerInterface& getInstance();
-
-private:
-   static ConfigurationManagerInterface* interface;
-};
-
-#endif
+   if (!dbus_metaTypeInit) registerCommTypes();
+   if (!interface)
+      interface = new ConfigurationManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/ConfigurationManager", QDBusConnection::sessionBus());
+   if(!interface->connection().isConnected()) {
+      qDebug() << "Error : sflphoned not connected. Service " << interface->service() << " not connected. From configuration manager interface.";
+      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From configuration manager interface.";
+   }
+   if (!interface->isValid())
+      throw "SFLphone daemon not available, be sure it running";
+   return *interface;
+}

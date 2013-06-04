@@ -50,7 +50,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    if (devices.size())
       loadDevice(devices[0]->getDeviceId());
 
-   if (VideoModel::getInstance()->isPreviewing()) {
+   if (VideoModel::instance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
    }
    m_IsChanged = false;
@@ -60,7 +60,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 ///Destructor
 DlgVideo::~DlgVideo()
 {
-   VideoModel::getInstance()->stopPreview();
+   VideoModel::instance()->stopPreview();
 }
 
 ///Has the dialog chnaged
@@ -137,12 +137,12 @@ void DlgVideo::changeRate(QString rate)
 void DlgVideo::startStopPreview()
 {
    //TODO check if the preview is already running
-   if (VideoModel::getInstance()->isPreviewing()) {
+   if (VideoModel::instance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Start preview"));
-      VideoModel::getInstance()->stopPreview();
+      VideoModel::instance()->stopPreview();
    }
    else {
       m_pPreviewPB->setText(i18n("Stop preview"));
-      VideoModel::getInstance()->startPreview();
+      VideoModel::instance()->startPreview();
    }
 }

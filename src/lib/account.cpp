@@ -28,9 +28,9 @@
 #include "sflphone_const.h"
 
 //SFLPhone lib
-#include "configurationmanager_interface_singleton.h"
-#include "callmanager_interface_singleton.h"
-#include "video_interface_singleton.h"
+#include "dbus/configurationmanager.h"
+#include "dbus/callmanager.h"
+#include "dbus/videomanager.h"
 #include "accountlist.h"
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
@@ -86,7 +86,7 @@ const QString& account_state_name(const QString& s)
 Account::Account():m_pAccountId(nullptr),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
 m_pVideoCodecs(nullptr)
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    connect(&callManager,SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
 }
 
@@ -106,7 +106,7 @@ Account* Account::buildExistingAccountFromId(const QString& _accountId)
 Account* Account::buildNewAccountFromAlias(const QString& alias)
 {
    qDebug() << "Building an account from alias: " << alias;
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    Account* a = new Account();
    a->m_hAccountDetails.clear();
    MapStringString tmp = configurationManager.getAccountTemplate();
@@ -224,9 +224,9 @@ bool Account::isRegistered() const
 ///Return the model index of this item
 QModelIndex Account::getIndex()
 {
-   for (int i=0;i < AccountList::getInstance()->m_pAccounts->size();i++) {
-      if (this == (*AccountList::getInstance()->m_pAccounts)[i]) {
-         return AccountList::getInstance()->index(i,0);
+   for (int i=0;i < AccountList::instance()->m_pAccounts->size();i++) {
+      if (this == (*AccountList::instance()->m_pAccounts)[i]) {
+         return AccountList::instance()->index(i,0);
       }
    }
    return QModelIndex();
@@ -826,7 +826,7 @@ AccountEditState Account::currentState() const
 bool Account::updateState()
 {
    if(! isNew()) {
-      ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
       const MapStringString details       = configurationManager.getAccountDetails(getAccountId()).value();
       const QString         status        = details[ACCOUNT_REGISTRATION_STATUS];
       const QString         currentStatus = getAccountRegistrationStatus();
@@ -839,7 +839,7 @@ bool Account::updateState()
 ///Save the current account to the daemon
 void Account::save()
 {
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    if (isNew()) {
       MapStringString details;
       QMutableHashIterator<QString,QString> iter(m_hAccountDetails);
@@ -880,10 +880,10 @@ void Account::save()
 
    //QString id = configurationManager.getAccountDetail(getAccountId());
    if (!getAccountId().isEmpty()) {
-      Account* acc =  AccountList::getInstance()->getAccountById(getAccountId());
+      Account* acc =  AccountList::instance()->getAccountById(getAccountId());
       qDebug() << "Adding the new account to the account list (" << getAccountId() << ")";
       if (acc != this) {
-         (*AccountList::getInstance()->m_pAccounts) << this;
+         (*AccountList::instance()->m_pAccounts) << this;
       }
 
       performAction(AccountEditAction::RELOAD);
@@ -901,7 +901,7 @@ void Account::save()
 void Account::reload()
 {
    qDebug() << "Reloading" << getAccountId();
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QMap<QString,QString> aDetails = configurationManager.getAccountDetails(getAccountId());
 
    if (!aDetails.count()) {
@@ -929,7 +929,7 @@ void Account::reloadCredentials()
    }
    if (!isNew()) {
       m_pCredentials->clear();
-      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       VectorMapStringString credentials = configurationManager.getCredentials(getAccountId());
       for (int i=0; i < credentials.size(); i++) {
          QModelIndex idx = m_pCredentials->addCredentials();
@@ -943,7 +943,7 @@ void Account::reloadCredentials()
 ///Save all credentials
 void Account::saveCredentials() {
    if (m_pCredentials) {
-      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       VectorMapStringString toReturn;
       for (int i=0; i < m_pCredentials->rowCount();i++) {
          QModelIndex idx = m_pCredentials->index(i,0);
@@ -974,7 +974,7 @@ void Account::reloadAudioCodecs()
       m_pAudioCodecs = new AudioCodecModel(this);
    }
    m_pAudioCodecs->clear();
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QVector<int> codecIdList = configurationManager.getAudioCodecList();
    if (!isNew()) {
       QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(getAccountId());
@@ -1016,7 +1016,7 @@ void Account::saveAudioCodecs() {
          }
       }
 
-      ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
       configurationManager.setActiveAudioCodecList(_codecList, getAccountId());
    }
 }
@@ -1043,7 +1043,7 @@ bool Account::operator==(const Account& a)const
 void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs)
 {
    QStringList codecs2;
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    foreach(VideoCodec* codec,codecs) {
       codecs2 << codecs->getName();
    }
@@ -1054,7 +1054,7 @@ void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs)
 QList<VideoCodec*> Account::getActiveVideoCodecList()
 {
    QList<VideoCodec*> codecs;
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    const QStringList activeCodecList = interface.getActiveCodecList(m_pAccountId);
    foreach (const QString& codec, activeCodecList) {
       codecs << VideoCodec::getCodec(codec);

@@ -153,7 +153,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
 //    connect(m_pFromDW  ,                    SIGNAL(changed(QDate)),           this, SLOT(updateLinkedFromDate(QDate)));
 //    connect(m_pToDW    ,                    SIGNAL(changed(QDate)),           this, SLOT(updateLinkedToDate(QDate))  );
    connect(m_pSortByCBB,                   SIGNAL(currentIndexChanged(int)), this, SLOT(slotSetSortRole(int))       );
-//    connect(AkonadiBackend::getInstance(),  SIGNAL(collectionChanged()),      this, SLOT(updateContactInfo())        );
+//    connect(AkonadiBackend::instance(),  SIGNAL(collectionChanged()),      this, SLOT(updateContactInfo())        );
 //    connect(HistoryModel::self()         ,  SIGNAL(newHistoryCall(Call*)),    this, SLOT(newHistoryCall(Call*))      );
 
 } //HistoryDock
@@ -430,7 +430,7 @@ void HistoryDock::slotAaddContact()
    numbers << new Contact::PhoneNumber(m_pCurrentCall->getPeerPhoneNumber(), "Home");
    aContact->setPhoneNumbers(numbers);
    aContact->setFormattedName(m_pCurrentCall->getPeerName());
-   AkonadiBackend::getInstance()->addNewContact(aContact);
+   AkonadiBackend::instance()->addNewContact(aContact);
 }
 
 void HistoryDock::slotAddToContact()

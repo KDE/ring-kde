@@ -45,7 +45,7 @@ BookmarkModel::BookmarkModel(QObject* parent) : QAbstractItemModel(parent){
       m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    }
 
-BookmarkModel* BookmarkModel::getInstance()
+BookmarkModel* BookmarkModel::instance()
 {
    if (!m_pSelf)
       m_pSelf = new BookmarkModel(nullptr);
