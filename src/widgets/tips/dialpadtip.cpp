@@ -29,7 +29,7 @@
 #include <KStandardDirs>
 
 ///Constructor
-DialPadTip::DialPadTip(QWidget* parent) : Tip(i18n("Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. "),parent)
+DialPadTip::DialPadTip(QWidget* parent) : Tip(i18n("Use the dialpad below or start typing a number. Press enter or double click on the call to launch the call. Press escape or \"Hang Up\" to end the call."),parent)
 
 {
    loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/keyboard.svg"));
