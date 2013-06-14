@@ -15,15 +15,16 @@ These are generic installation instructions.
 
 To install the appplication, type the following commands in a console, while in the root directory of this application:
 
-	.config.sh
+	mkdir -p build
 	cd build
-	make
+	cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr # Add -DENABLE_VIDEO=true if you want experimental video support
+	make -j3
 	sudo make install
+
+To generate a source tarball (sflphone-cliend-kde.tar.xz), just execute release.sh
 
 Explaination
 ==================
-
-	.config.sh
 
 This script will configure and prepare the compilation and installation of the program.
 
@@ -43,20 +44,3 @@ Then install it all using:
 You have to use "sudo" to be able to install the program in a protected directory (which is the case by default and most of the time).
 Therefore it will ask for your system password.
 If you don't have this password or for any reason you want to install the program in a non-protected directory, refer to the Options below.
-
-
-Options
-==================
-
-You can change the prefix of the installation using:
-
-	.config.sh --prefix="expected_prefix_directory"
-
-By default, it is set to /usr/local.
-
-******************************************************
-
-You can enable debug messages using:
-
-	.config.sh --with-debug
-

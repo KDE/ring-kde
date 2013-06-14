@@ -1,9 +1,15 @@
+
+### SFLPhone-KDE
+
 Welcome to SFLphone KDE Client!
 
+SFLPhone-KDE is a Qt based client for the [SFLPhone](www.sflphone.org) daemon.
+
+### Installation
 For install instructions, read the INSTALL file, in this directory.
 
 
-Copyright (c) Savoir-faire Linux, Inc 2004-2009
+Copyright (c) Savoir-faire Linux, Inc 2004-2013
   <sflphoneteam@savoirfairelinux.com>
 
 This program is free software; you can redistribute it and/or modify
