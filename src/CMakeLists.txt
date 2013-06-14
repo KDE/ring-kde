@@ -6,10 +6,28 @@ ADD_DEFINITIONS(
    ${KDE4_DEFINITIONS}
    ${QT_DEFINITIONS}
    -fexceptions
-   -Wno-reorder
    -Wno-deprecated-declarations
    -DDATA_INSTALL_DIR="\\\"${DATA_INSTALL_DIR}\\\""
    -DSHARE_INSTALL_PREFIX="\\\"${SHARE_INSTALL_PREFIX}\\\""
+   -Werror 
+   -Wall
+   -Wextra 
+#    -Wmissing-declarations 
+   -Wmissing-noreturn 
+#    -Wshadow 
+   -Wpointer-arith 
+   -Wcast-align 
+   -Wwrite-strings 
+   -Wformat-nonliteral 
+   -Wformat-security 
+   -Wswitch-enum 
+#    -Wswitch-default 
+   -Winit-self 
+   -Wmissing-include-dirs 
+   -Wundef 
+   -Wmissing-format-attribute 
+   -pedantic
+   -Wno-reorder
 )
 
 ADD_DEFINITIONS("-std=c++0x")
@@ -39,8 +57,7 @@ SET(
    sflphoneaccessibility.cpp
    accountwizard.cpp
    widgets/sflphonetray.cpp
-   widgets/calltreeitem.cpp
-   widgets/historytreeitem.cpp
+#    widgets/calltreeitem.cpp
    actionsetaccountfirst.cpp
    conf/configurationdialog.cpp
    conf/dlggeneral.cpp
@@ -52,14 +69,11 @@ SET(
    conf/dlgaccessibility.cpp
    conf/dlgvideo.cpp
    widgets/dialpad.cpp
-   widgets/contactitemwidget.cpp
    widgets/contactdock.cpp
    widgets/historydock.cpp
    widgets/bookmarkdock.cpp
    widgets/translucentbuttons.cpp
-   widgets/categorydrawer.cpp
-   widgets/conferencebox.cpp
-   widgets/categorizedtreewidget.cpp
+   widgets/categorizedtreeview.cpp
    widgets/videodock.cpp
    widgets/videowidget.cpp
    widgets/immanager.cpp
@@ -68,12 +82,20 @@ SET(
    widgets/callviewoverlaytoolbar.cpp
    widgets/tips/conftip.cpp
    widgets/tips/dialpadtip.cpp
-   widgets/tips/riggingtip.cpp
+   widgets/tips/ringingtip.cpp
    widgets/tips/connectionlosttip.cpp
    widgets/tips/tipcollection.cpp
-   widgets/calltreeitemdelegate.cpp
+   widgets/tips/removeconferencetip.cpp
+   widgets/player.cpp
+   widgets/playeroverlay.cpp
+   delegates/conferencedelegate.cpp
+   delegates/contactdelegate.cpp
+   delegates/historydelegate.cpp
+   delegates/categorizeddelegate.cpp
+   delegates/phonenumberdelegate.cpp
+   delegates/delegatedropoverlay.cpp
 #    widgets/acceleratedvideowidget.cpp
-   callview.cpp
+#    callview.cpp
 )
 
 
@@ -94,6 +116,9 @@ SET(
    conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
    conf/dlgvideobase.ui
+   widgets/ui/player.ui
+   widgets/ui/playeroverlay.ui
+   widgets/ui/dockbase.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
@@ -103,6 +128,12 @@ IF(${ENABLE_VIDEO} MATCHES true)
    SET(ENABLE_VIDEO 1 CACHE BOOLEAN "Enable video")
    add_definitions( -DENABLE_VIDEO=true )
 ENDIF(${ENABLE_VIDEO} MATCHES true)
+
+IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
+   MESSAGE("KUniqueApplication disabled")
+   SET(DISABLE_UNIQUE_APPLICATION 1 CACHE BOOLEAN "Disable KUniqueApplication")
+   add_definitions( -DDISABLE_UNIQUE_APPLICATION=true )
+ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 
 KDE4_ADD_UI_FILES(sflphone_client_kde_SRCS ui/SFLPhoneView_base.ui  ${config_ui_files}  )
 QT4_ADD_DBUS_INTERFACES(sflphone_client_kde_SRCS ${KDE4_DBUS_INTERFACES_DIR}/org.kde.KSpeech.xml)
@@ -139,9 +170,10 @@ INSTALL( FILES icons/tips/keyboard.svg           DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/tips/upArrow.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/downArrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/dragAndDrop.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/rigging.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/ringing.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/reload.svg             DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/phoneDown.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/ring1.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/ring2.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/ring3.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
+INSTALL( FILES icons/tips/removeconference.svg   DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )

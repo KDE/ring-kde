@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "videodevice.h"
-#include "video_interface_singleton.h"
+#include "dbus/videomanager.h"
 
 QHash<QString,VideoDevice*> VideoDevice::m_slDevices;
 bool VideoDevice::m_sInit = false;
@@ -56,7 +56,7 @@ VideoDevice::VideoDevice(QString id) : m_DeviceId(id)
 const QList<VideoDevice*> VideoDevice::getDeviceList()
 {
    QHash<QString,VideoDevice*> devices;
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceList();
    foreach(const QString& device,deviceList) {
       if (!m_slDevices[device])
@@ -82,56 +82,56 @@ VideoDevice* VideoDevice::getDevice(QString name)
 ///Get the valid rates for this device
 const QStringList VideoDevice::getRateList(VideoChannel channel, Resolution resolution)
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getDeviceRateList(m_DeviceId,channel,resolution.toString());
 }
 
 ///Get the valid channel list
 const QList<VideoChannel> VideoDevice::getChannelList()
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getDeviceChannelList(m_DeviceId);
 }
 
 ///Set the current device rate
 void VideoDevice::setRate(VideoRate rate)
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    interface.setActiveDeviceRate(rate);
 }
 
 ///Set the current resolution
 void VideoDevice::setResolution(Resolution resolution) //??? No device
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    interface.setActiveDeviceSize(resolution.toString());
 }
 
 ///Set the current device channel
 void VideoDevice::setChannel(VideoChannel channel) //??? No device
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    interface.setActiveDeviceChannel(channel);
 }
 
 ///Get the current resolution
 const Resolution VideoDevice::getResolution()
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    return Resolution(interface.getActiveDeviceSize());
 }
 
 ///Get the current channel
 const VideoChannel VideoDevice::getChannel() //??? No device
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceChannel();
 }
 
 ///Get the current rate
 const VideoRate VideoDevice::getRate()
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceRate();
 }
 
@@ -139,7 +139,7 @@ const VideoRate VideoDevice::getRate()
 const QList<Resolution> VideoDevice::getResolutionList(VideoChannel channel)
 {
    QList<Resolution> toReturn;
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    const QStringList list = interface.getDeviceSizeList(m_DeviceId,channel);
    foreach(const QString& res,list) {
       toReturn << Resolution(res);

@@ -18,9 +18,9 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
-#include "../src/lib/configurationmanager_interface_singleton.h"
-#include "../src/lib/callmanager_interface_singleton.h"
-#include "../src/lib/instance_interface_singleton.h"
+#include "../src/lib/dbus/configurationmanager.h"
+#include "../src/lib/dbus/callmanager.h"
+#include "../src/lib/dbus/instancemanager.h"
 
 class DBusTests: public QObject
 {
@@ -33,21 +33,21 @@ private slots:
 
 void DBusTests::testConfigurationManagerConnection()
 {
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QDBusReply<QStringList> audioPlugins = configurationManager.getAudioPluginList();
    QCOMPARE( audioPlugins.isValid(), true );
 }
 
 void DBusTests::testCallManagerConnection()
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    QDBusReply<QStringList> callList = callManager.getCallList();
    QCOMPARE( callList.isValid(), true );
 }
 
 void DBusTests::testInstanceManagerConnection()
 {
-   InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
+   InstanceInterface& instance = DBus::InstanceManager::instance();
    QDBusReply<void> ret = instance.Register(getpid(), "unitTest");
    instance.Unregister(getpid());
    QCOMPARE( ret.isValid(), true );

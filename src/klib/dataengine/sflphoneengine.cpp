@@ -29,9 +29,9 @@
 #include "../../lib/accountlist.h"
 #include "../../lib/contact.h"
 #include "../../lib/dbus/metatypes.h"
-#include "../../lib/instance_interface_singleton.h"
-#include "../../lib/configurationmanager_interface_singleton.h"
-#include "../../lib/callmanager_interface_singleton.h"
+#include "../../lib/dbus/instancemanager.h"
+#include "../../lib/dbus/configurationmanager.h"
+#include "../../lib/dbus/callmanager.h"
 #include "../../lib/sflphone_const.h"
 #include "../../klib/akonadibackend.h"
 #include "../../klib/helperfunctions.h"
@@ -41,7 +41,7 @@
 #include "sflphoneservice.h"
 
 //Static
-CallModel<>* SFLPhoneEngine::m_pModel = nullptr;
+CallModel* SFLPhoneEngine::m_pModel = nullptr;
 
 
 /*****************************************************************************
@@ -56,8 +56,7 @@ SFLPhoneEngine::SFLPhoneEngine(QObject* parent, const QVariantList& args)
 {
    Q_UNUSED(args)
    if (not m_pModel) {
-      m_pModel = new CallModel<>();
-      m_pModel->initCall();
+      m_pModel = CallModel::instance();
       //m_pModel->initHistory();
    }
 
@@ -65,7 +64,7 @@ SFLPhoneEngine::SFLPhoneEngine(QObject* parent, const QVariantList& args)
    /**/connect(m_pModel                     , SIGNAL(callStateChanged(Call*))  , this , SLOT(callStateChangedSignal(Call*)) );
    /**/connect(m_pModel                     , SIGNAL(callAdded(Call*))         , this , SLOT(callStateChangedSignal(Call*)) );
    /**/connect(m_pModel                     , SIGNAL(callStateChanged(Call*))  , this , SLOT(callStateChangedSignal(Call*)) );
-   /**/connect(AkonadiBackend::getInstance(), SIGNAL(collectionChanged())      , this , SLOT(updateCollection())            );
+   /**/connect(AkonadiBackend::instance(), SIGNAL(collectionChanged())      , this , SLOT(updateCollection())            );
    /*                                                                                                                       */
 }
 
@@ -125,7 +124,7 @@ Plasma::Service* SFLPhoneEngine::serviceForSource(const QString &source)
  ****************************************************************************/
 
 ///Return the model
-CallModel<>* SFLPhoneEngine::getModel()
+CallModel* SFLPhoneEngine::getModel()
 {
    return m_pModel;
 }
@@ -141,17 +140,17 @@ CallModel<>* SFLPhoneEngine::getModel()
 void SFLPhoneEngine::updateHistory()
 {
    CallList list = HistoryModel::getHistory().values();
-   setHistoryCategory(list,HistorySortingMode::Date);
+//    setHistoryCategory(list,HistorySortingMode::Date);
 
    foreach (Call* oldCall, list) {
       HashStringString current;
-      /*             KEY                   VALUE                                                               */
-      /**/current[ "peerName"   ] = oldCall->getPeerName       ()                                               ;
-      /**/current[ "peerNumber" ] = oldCall->getPeerPhoneNumber()                                               ;
-      /**/current[ "length"     ] = oldCall->getStopTimeStamp  ().toInt() - oldCall->getStartTimeStamp().toInt();
-      /**/current[ "date"       ] = oldCall->getStopTimeStamp  ()                                               ;
-      /**/current[ "id"         ] = oldCall->getCallId         ()                                               ;
-      /*                                                                                                       */
+      /*             KEY                   VALUE                                                */
+      /**/current[ "peerName"   ] = oldCall->getPeerName       ()                                ;
+      /**/current[ "peerNumber" ] = oldCall->getPeerPhoneNumber()                                ;
+      /**/current[ "length"     ] = oldCall->getStopTimeStamp  () - oldCall->getStartTimeStamp() ;
+      /**/current[ "date"       ] = oldCall->getStopTimeStamp  ()                                ;
+      /**/current[ "id"         ] = oldCall->getCallId         ()                                ;
+      /*                                                                                        */
       if (oldCall->property("section").isValid())
          current[ "section" ] = oldCall->property("section");
       setData("history", oldCall->getCallId() , current);
@@ -170,19 +169,19 @@ void SFLPhoneEngine::updateCallList()
    }
    setData("calls", "fake",fake );
    removeAllData("calls");
-   foreach (Call* call, m_pModel->getCalls()) {
-      if ((!m_pModel->isConference(call)) && (call->getState() != CALL_STATE_OVER)) {
-         HashStringString current;
-         /*               KEY                     VALUE              */
-         /**/current[ "peerName"      ] = call->getPeerName        ( );
-         /**/current[ "peerNumber"    ] = call->getPeerPhoneNumber ( );
-         /**/current[ "stateName"     ] = call->toHumanStateName   ( );
-         /**/current[ "state"         ] = call->getState           ( );
-         /**/current[ "id"            ] = call->getCallId          ( );
-         /*                                                          */
-         setData("calls", call->getCallId(), current);
-      }
-   }
+//    foreach (Call* call, m_pModel->getCalls()) {
+//       if ((!call->isConference()) && (call->getState() != CALL_STATE_OVER)) {
+//          HashStringString current;
+//          /*               KEY                     VALUE              */
+//          /**/current[ "peerName"      ] = call->getPeerName        ( );
+//          /**/current[ "peerNumber"    ] = call->getPeerPhoneNumber ( );
+//          /**/current[ "stateName"     ] = call->toHumanStateName   ( );
+//          /**/current[ "state"         ] = call->getState           ( );
+//          /**/current[ "id"            ] = call->getCallId          ( );
+//          /*                                                          */
+//          setData("calls", call->getCallId(), current);
+//       }
+//    }
 }
 
 ///Load/Update bookmark list
@@ -193,7 +192,7 @@ void SFLPhoneEngine::updateBookmarkList()
    QStringList cl = HistoryModel::getNumbersByPopularity();
    for (;i < ((cl.size() < 10)?cl.size():10);i++) {
       QHash<QString,QVariant> pop;
-      Contact* cont = AkonadiBackend::getInstance()->getContactByPhone(cl[i],true);
+      Contact* cont = AkonadiBackend::instance()->getContactByPhone(cl[i],true);
       /*           KEY                          VALUE                */
       /**/pop["peerName"     ] = (cont)?cont->getFormattedName():cl[i];
       /**/pop["peerNumber"   ] = cl[i]                                ;
@@ -226,7 +225,7 @@ void SFLPhoneEngine::updateConferenceList()
 {
    /*foreach (Call* call, m_pModel->getCalls()) {
       if (m_pModel->isConference(call)) {
-         CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+         CallManagerInterface& callManager = DBus::CallManager::instance();
          currentConferences[call->getConfId()] = callManager.getParticipantList(call->getConfId());
          setData("conferences", call->getConfId(), currentConferences[call->getConfId()]);
       }
@@ -238,7 +237,7 @@ void SFLPhoneEngine::updateCollection()
 {
    
    typedef QHash<QString,QVariant> SerializedContact;
-   ContactList list = AkonadiBackend::getInstance()->update();
+   ContactList list = AkonadiBackend::instance()->update();
    
    if (!list.size())
       return;
@@ -279,18 +278,18 @@ void SFLPhoneEngine::updateContacts()
 ///Update other information
 void SFLPhoneEngine::updateInfo()
 {
-   setData("info", I18N_NOOP("Current_account"), AccountList::getCurrentAccount()->getAccountId());
+   setData("info", I18N_NOOP("Current_account"), AccountList::currentAccount()->accountId());
 }
 
 ///Load/Update account list
 void SFLPhoneEngine::updateAccounts()
 {
-   const QVector<Account*>& list = AccountList::getInstance()->getAccounts();
+   const QVector<Account*>& list = AccountList::instance()->getAccounts();
    foreach(Account* a,list) {
       if (dynamic_cast<Account*>(a)) {
          QHash<QString,QVariant> acc;
-         acc[ "id"   ] = a->getAccountId()                 ;
-         acc[ "alias"] = a->getAccountDetail(ACCOUNT_ALIAS);
+         acc[ "id"   ] = a->accountId()                 ;
+         acc[ "alias"] = a->accountDetail(ACCOUNT_ALIAS);
          setData("accounts", QString::number(rand()) , acc);
       }
    }
@@ -308,7 +307,7 @@ void SFLPhoneEngine::generateNumberList(QString name)
 {
    QString contactUid = name.right(name.size()-7);
    qDebug() << "LOOKING FOR " << contactUid;
-   Contact* cont = AkonadiBackend::getInstance()->getContactByUid(contactUid);
+   Contact* cont = AkonadiBackend::instance()->getContactByUid(contactUid);
    if (cont) {
       foreach(Contact::PhoneNumber* num,cont->getPhoneNumbers()) {
          QHash<QString,QVariant> hash;
@@ -358,4 +357,5 @@ void SFLPhoneEngine::voiceMailNotifySignal(const QString& accountId, int count)
    //TODO
 }
 
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
 K_EXPORT_PLASMA_DATAENGINE(sflphone, SFLPhoneEngine)

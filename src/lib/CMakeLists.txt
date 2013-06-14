@@ -32,7 +32,7 @@ set( qtsflphone_LIB_SRCS
   callmodel.cpp
   historymodel.cpp
   contact.cpp
-  contactbackend.cpp
+  abstractcontactbackend.cpp
   videocodecmodel.cpp
   videomodel.cpp
   videorenderer.cpp
@@ -40,11 +40,12 @@ set( qtsflphone_LIB_SRCS
   credentialmodel.cpp
   audiocodecmodel.cpp
   instantmessagingmodel.cpp
-  configurationmanager_interface_singleton.cpp
-  callmanager_interface_singleton.cpp
-  instance_interface_singleton.cpp
-  video_interface_singleton.cpp
+  dbus/configurationmanager.cpp
+  dbus/callmanager.cpp
+  dbus/instancemanager.cpp
+  dbus/videomanager.cpp
   sflphone_const.h
+  contactproxymodel.cpp
 )
 
 # Build dbus interfaces
@@ -126,20 +127,16 @@ set( qtsflphone_LIB_HDRS
   callmodel.h
   historymodel.h
   contact.h
-  contactbackend.h
+  abstractcontactbackend.h
   videocodecmodel.h
   videomodel.h
   videodevice.h
   videorenderer.h
   credentialmodel.h
   audiocodecmodel.h
-  configurationmanager_interface_singleton.h
-  callmanager_interface_singleton.h
-  instance_interface_singleton.h
-  video_interface_singleton.h
   sflphone_const.h
   instantmessagingmodel.h
-  typedefs.h
+  contactproxymodel.h
 )
 
 install( FILES ${qtsflphone_LIB_HDRS}

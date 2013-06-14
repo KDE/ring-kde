@@ -18,52 +18,52 @@
 #include "videocodecmodel.h"
 #include "call.h"
 #include "account.h"
-#include "video_interface_singleton.h"
+#include "dbus/videomanager.h"
 
 ///Get data from the model
-QVariant VideoCodecModel::data( const QModelIndex& index, int role) const
+QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
 {
-   if(index.column() == 0 && role == Qt::DisplayRole)
-      return QVariant(m_lCodecs[index.row()]->getName());
-   else if(index.column() == 0 && role == Qt::CheckStateRole) {
-      return QVariant(m_lCodecs[index.row()]->getEnabled()?Qt::Checked:Qt::Unchecked);
+   if(idx.column() == 0 && role == Qt::DisplayRole)
+      return QVariant(m_lCodecs[idx.row()]->getName());
+   else if(idx.column() == 0 && role == Qt::CheckStateRole) {
+      return QVariant(m_lCodecs[idx.row()]->getEnabled()?Qt::Checked:Qt::Unchecked);
    }
-   else if (index.column() == 0 && role == VideoCodecModel::BITRATE_ROLE)
-      return QVariant(m_lCodecs[index.row()]->getBitrate());
+   else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE)
+      return QVariant(m_lCodecs[idx.row()]->getBitrate());
    return QVariant();
 }
 
 ///The number of codec
-int VideoCodecModel::rowCount( const QModelIndex& parent ) const
+int VideoCodecModel::rowCount( const QModelIndex& par ) const
 {
-   Q_UNUSED(parent)
+   Q_UNUSED(par)
    return m_lCodecs.size();
 }
 
 ///Items flag
-Qt::ItemFlags VideoCodecModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags VideoCodecModel::flags( const QModelIndex& idx ) const
 {
-   if (index.column() == 0)
-      return QAbstractItemModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-   return QAbstractItemModel::flags(index);
+   if (idx.column() == 0)
+      return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+   return QAbstractItemModel::flags(idx);
 }
 
 ///Set the codec data (codecs can't be added or removed that way)
-bool VideoCodecModel::setData(const QModelIndex& index, const QVariant &value, int role)
+bool VideoCodecModel::setData(const QModelIndex& idx, const QVariant &value, int role)
 {
 
-   if (index.column() == 0 && role == Qt::CheckStateRole) {
-      bool changed = m_lCodecs[index.row()]->getEnabled() != (value == Qt::Checked);
-      m_lCodecs[index.row()]->setEnabled(value == Qt::Checked);
+   if (idx.column() == 0 && role == Qt::CheckStateRole) {
+      bool changed = m_lCodecs[idx.row()]->getEnabled() != (value == Qt::Checked);
+      m_lCodecs[idx.row()]->setEnabled(value == Qt::Checked);
       if (changed)
-         emit dataChanged(index, index);
+         emit dataChanged(idx, idx);
       return true;
    }
-   else if (index.column() == 0 && role == VideoCodecModel::BITRATE_ROLE) {
-      bool changed = m_lCodecs[index.row()]->getBitrate() != value.toUInt();
-      m_lCodecs[index.row()]->setBitrate(value.toInt());
+   else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE) {
+      bool changed = m_lCodecs[idx.row()]->getBitrate() != value.toUInt();
+      m_lCodecs[idx.row()]->setBitrate(value.toInt());
       if (changed)
-         emit dataChanged(index, index);
+         emit dataChanged(idx, idx);
       return true;
    }
    return false;
@@ -79,8 +79,8 @@ VideoCodecModel::VideoCodecModel(Account* account) : QAbstractListModel(),m_pAcc
 void VideoCodecModel::reload()
 {
    m_lCodecs.clear();
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
-   const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->getAccountId());
+   VideoInterface& interface = DBus::VideoManager::instance();
+   const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->accountId());
    foreach(const MapStringString& h,codecs) {
       VideoCodec* c = new VideoCodec(h["name"],h["bitrate"].toInt(),h["enabled"]=="true");
       m_lCodecs << c;
@@ -91,7 +91,7 @@ void VideoCodecModel::reload()
 ///Save the current model over dbus
 void VideoCodecModel::save()
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    VectorMapStringString toSave;
    foreach(VideoCodec* vc,m_lCodecs) {
       MapStringString details;
@@ -100,16 +100,16 @@ void VideoCodecModel::save()
       details[ "enabled" ] = vc->getEnabled()?"true":"false";
       toSave << details;
    }
-   interface.setCodecs(m_pAccount->getAccountId(),toSave);
+   interface.setCodecs(m_pAccount->accountId(),toSave);
 }
 
 ///Increase codec priority
 bool VideoCodecModel::moveUp(QModelIndex idx)
 {
    if(idx.row() > 0 && idx.row() <= rowCount()) {
-      VideoCodec* data = m_lCodecs[idx.row()];
+      VideoCodec* data2 = m_lCodecs[idx.row()];
       m_lCodecs.removeAt(idx.row());
-      m_lCodecs.insert(idx.row() - 1, data);
+      m_lCodecs.insert(idx.row() - 1, data2);
       emit dataChanged(index(idx.row() - 1, 0, QModelIndex()), index(idx.row(), 0, QModelIndex()));
       return true;
    }
@@ -120,9 +120,9 @@ bool VideoCodecModel::moveUp(QModelIndex idx)
 bool VideoCodecModel::moveDown(QModelIndex idx)
 {
    if(idx.row() >= 0 && idx.row() < rowCount()) {
-      VideoCodec* data = m_lCodecs[idx.row()];
+      VideoCodec* data2 = m_lCodecs[idx.row()];
       m_lCodecs.removeAt(idx.row());
-      m_lCodecs.insert(idx.row() + 1, data);
+      m_lCodecs.insert(idx.row() + 1, data2);
       emit dataChanged(index(idx.row(), 0, QModelIndex()), index(idx.row() + 1, 0, QModelIndex()));
       return true;
    }

@@ -22,6 +22,8 @@
 
 #include "ui_SFLPhoneView_base.h"
 #include "klib/macromodel.h"
+#include "lib/call.h"
+#include "lib/callmodel.h"
 #include <QtGui/QWidget>
 
 //Qt
@@ -30,7 +32,8 @@ class QKeyEvent;
 
 //SFLPhone
 class AccountWizard;
-
+class Contact;
+class CallViewOverlayToolbar;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -47,9 +50,11 @@ class AccountWizard;
 class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListener
 {
    Q_OBJECT
+   friend class CallViewEventFilter;
 
 private:
    AccountWizard* wizard     ;
+   CallViewOverlayToolbar* m_pCanvasToolbar;
 
 protected:
 
@@ -88,7 +93,7 @@ private Q_SLOTS:
     * @param call the call on which to perform the action
     * @param action the code of the action to perform
     */
-   void action(Call * call, call_action action);
+   void action(Call * call, Call::Action action);
 
    /**
     *   Sets the account account to be the prior account.

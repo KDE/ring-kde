@@ -44,7 +44,7 @@ struct SHMHeader {
     unsigned m_BufferGen;
     int m_BufferSize;
 
-    char m_Data[0];
+    char *m_Data;
 };
 
 ///Constructor

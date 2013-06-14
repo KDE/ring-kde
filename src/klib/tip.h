@@ -52,7 +52,7 @@ public:
       Bottom,
    };
 
-   enum TipAnimation {
+   enum class TipAnimation {
       Fade             ,
       TranslationTop   ,
       TranslationBottom,
@@ -62,7 +62,7 @@ public:
    };
 
    //Mutator
-   QSize reload(const QRect& availableSize,bool force = false);
+   virtual QSize reload(const QRect& availableSize,bool force = false);
 
    //Getter
    bool isVisible        () { return m_IsVisible; }

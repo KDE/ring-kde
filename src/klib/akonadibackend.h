@@ -20,8 +20,7 @@
 #ifndef AKONADI_BACKEND_H
 #define AKONADI_BACKEND_H
 
-#include "../lib/contactbackend.h"
-#include "../lib/callmodel.h"
+#include "../lib/abstractcontactbackend.h"
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
 
@@ -31,7 +30,9 @@ class QObject;
 //KDE
 namespace KABC {
    class Addressee    ;
+   class PhoneNumber  ;
 }
+#include <kabc/phonenumber.h>
 
 namespace Akonadi {
    class Session        ;
@@ -43,19 +44,21 @@ namespace Akonadi {
 class Contact;
 
 ///AkonadiBackend: Implement a backend for Akonadi
-class LIB_EXPORT AkonadiBackend : public ContactBackend {
+class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
    Q_OBJECT
 public:
-   static   ContactBackend* getInstance();
+   static   AbstractContactBackend* instance();
    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
    Contact* getContactByUid   ( const QString& uid                                                     );
    void     editContact       ( Contact*       contact , QWidget* parent = 0                           );
    void     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
    virtual void addPhoneNumber( Contact*       contact , QString  number, QString type                 );
-   
+
    virtual void     editContact   ( Contact*   contact                                                 );
    virtual void     addNewContact ( Contact*   contact                                                 );
    virtual ~AkonadiBackend        (                                                                    );
+
+   virtual const ContactList& getContactList() const;
 
 private:
    //Singleton constructor
@@ -68,6 +71,9 @@ private:
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
    ContactList                    m_pContacts  ;
+
+   //Helper
+   KABC::PhoneNumber::Type nameToType(const QString& name);
 
 protected:
    ContactList update_slot();

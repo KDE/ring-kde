@@ -19,23 +19,16 @@
 #define BOOKMARK_DOCK_H
 
 #include <QtGui/QDockWidget>
+#include "ui_dockbase.h"
 
 //Qt
-class QSplitter;
 class QCheckBox;
 
-//KDE
-class KLineEdit;
-
 //SFLPhone
-class HistoryTreeItem;
-class CategorizedTreeWidget;
-
-//Typedef
-typedef QList<HistoryTreeItem*> BookmarkList;
+#include "klib/bookmarkmodel.h"
 
 ///BookmarkDock: Dock for managing favorite contacts
-class BookmarkDock : public QDockWidget {
+class BookmarkDock : public QDockWidget, public Ui_DockBase {
    Q_OBJECT
 public:
    //Constructors
@@ -47,17 +40,32 @@ public:
    void removeBookmark(const QString& phone);
 private:
    //Attributes
-   CategorizedTreeWidget*  m_pItemView  ;
-   KLineEdit*              m_pFilterLE  ;
-   QSplitter*              m_pSplitter  ;
-   BookmarkList            m_pBookmark  ;
    QCheckBox*              m_pMostUsedCK;
 
-   //Mutators
-   void addBookmark_internal(const QString& phone);
 private Q_SLOTS:
    void filter(QString text);
    void reload();
+   void expandTree();
+   void slotDoubleClick(const QModelIndex& index);
+};
+
+class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
+{
+   Q_OBJECT
+public:
+   explicit BookmarkSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+protected:
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+   {
+      if (!source_parent.isValid() ) { //Is a category
+         for (int i=0;i<BookmarkModel::instance()->rowCount(BookmarkModel::instance()->index(source_row,0,source_parent));i++) {
+            if (filterAcceptsRow(i, BookmarkModel::instance()->index(source_row,0,source_parent)))
+               return true;
+         }
+      }
+
+      return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+   }
 };
 
 #endif

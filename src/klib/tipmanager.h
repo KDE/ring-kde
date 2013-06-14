@@ -32,20 +32,6 @@ class QTimer;
 #include "tipanimationwrapper.h"
 class TipManager;
 
-//Classes
-class ResizeEventFilter : public QObject
-{
-   Q_OBJECT
-public:
-   explicit ResizeEventFilter(TipManager* parent) : QObject(0) {
-      m_pLoader =  parent;
-   }
-protected:
-   bool eventFilter(QObject *obj, QEvent *event);
-private:
-   TipManager* m_pLoader;
-};
-
 ///This class create a background brush for a QWidget with a tip window
 class LIB_EXPORT TipManager : public QObject
 {
@@ -54,6 +40,7 @@ class LIB_EXPORT TipManager : public QObject
 public:
    //Constructor
    explicit TipManager(QTreeView* parent);
+   virtual ~TipManager();
 
    //Mutator
    void hideTip(Tip* tip);
@@ -66,6 +53,9 @@ public:
    void setTopMargin(int margin);
    void setBottomMargin(int margin);
    void setCurrentTip(Tip* tip);
+
+protected:
+   bool eventFilter(QObject *obj, QEvent *event);
 
 private:
    //Methods
@@ -96,5 +86,6 @@ Q_SIGNALS:
    void currentTipChanged(Tip*);
 
 };
+Q_DECLARE_METATYPE(TipManager*)
 
 #endif

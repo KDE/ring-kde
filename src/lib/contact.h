@@ -35,16 +35,34 @@ namespace KABC {
 
 #include "typedefs.h"
 
+class LIB_EXPORT ContactTreeBackend {
+public:
+    enum Type {
+        CONTACT=0,
+        NUMBER=1,
+        TOP_LEVEL=2
+    };
+    explicit ContactTreeBackend(ContactTreeBackend::Type _type);
+    virtual ~ContactTreeBackend();
+    ContactTreeBackend::Type type3() const;
+    virtual QObject* getSelf() = 0;
+    char dropState();
+    void setDropState(const char state);
+private:
+    ContactTreeBackend::Type m_Type3;
+    char m_DropState;
+};
+
+
 ///Contact: Abstract version of a contact
-class LIB_EXPORT Contact : public QObject{
+class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
    Q_OBJECT
 public:
    ///PhoneNumber: represent a phone number
    class PhoneNumber {
    public:
       ///Constructor
-      PhoneNumber(QString number, QString type)
-      : m_Number(number),m_Type(type){}
+      PhoneNumber(const QString& number, const QString& type);
 
       //Getters
       QString& getNumber();
@@ -54,8 +72,17 @@ public:
       QString m_Number   ;
       QString m_Type     ;
    };
+   class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
+   public:
+      virtual QObject* getSelf();
+      PhoneNumbers(Contact* parent);
+      PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
+      Contact* contact() const;
+   private:
+      Contact* m_pParent;
+   };
 
-   typedef QList<Contact::PhoneNumber*> PhoneNumbers;
+   virtual QObject* getSelf();
 
 private:
    QString      m_FirstName      ;
@@ -79,7 +106,7 @@ public:
    virtual void initItem();
    
    //Getters
-   virtual PhoneNumbers   getPhoneNumbers()    const;
+   virtual const PhoneNumbers&   getPhoneNumbers() const;
    virtual const QString& getNickName()        const;
    virtual const QString& getFirstName()       const;
    virtual const QString& getSecondName()      const;
@@ -112,6 +139,5 @@ protected:
    virtual void initItemWidget();
 
 };
-typedef Contact::PhoneNumbers PhoneNumbers;
 
 #endif

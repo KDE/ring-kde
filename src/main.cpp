@@ -33,7 +33,7 @@
 //SFLPhone
 #include "sflphoneapplication.h"
 #include "klib/configurationskeleton.h"
-#include "callview.h"
+#include "lib/callmodel.h"
 #include "sflphonecmd.h"
 
 static const char description[] = "A KDE 4 Client for SFLphone";
@@ -41,6 +41,7 @@ static const char description[] = "A KDE 4 Client for SFLphone";
 static const char version[] = "1.2.3";
 
 SFLPhoneApplication* app;
+void quitOnSignal(int signal);
 void quitOnSignal(int signal)
 {
    Q_UNUSED(signal);
@@ -73,7 +74,7 @@ int main(int argc, char **argv)
       app = new SFLPhoneApplication();
 
       //dbus configuration
-      TreeWidgetCallModel::init();
+      CallModel::instance();
 
       KDE_signal(SIGINT  , quitOnSignal);
       KDE_signal(SIGTERM , quitOnSignal);

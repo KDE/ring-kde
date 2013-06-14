@@ -33,6 +33,7 @@ class Macro;
 ///Interface to interpret DTMFs instead of using the daemon directly
 class LIB_EXPORT MacroListener {
 public:
+   explicit MacroListener() {}
    virtual void addDTMF(const QString& sequence) = 0;
    virtual ~MacroListener() {}
 };
@@ -62,7 +63,7 @@ private:
       IndexPointer* m_pPointer;
    };
 public:
-   static MacroModel* getInstance();
+   static MacroModel* instance();
    static void addListener(MacroListener* interface);
 
    enum MacroFields {
@@ -118,55 +119,6 @@ private Q_SLOTS:
 Q_SIGNALS:
    void addAction(KAction*);
    void selectMacro(Macro* macro);
-};
-
-class LIB_EXPORT Macro : public QObject {
-   Q_OBJECT
-   friend class MacroModel; //Use factory method
-public:
-   Macro(const Macro* macro);
-   MacroModel::MacroCategory* m_pCat;
-   //Getters
-   QString  name();
-   QString  description();
-   QString  sequence();
-   QString  escaped();
-   QString  id();
-   int      delay();
-   QString  category();
-   KAction* action();
-
-   QModelIndex index();
-
-   //Setters
-   void setName(QString value);
-   void setDescription(QString value);
-   void setSequence(QString value);
-   void setEscaped(QString value);
-   void setId(QString value);
-   void setDelay(int value);
-   void setCategory(QString value);
-   
-private:
-   explicit Macro(QObject* parent = nullptr);
-   int         m_Position;
-   QString     m_Name;
-   QString     m_Description;
-   QString     m_Sequence;
-   QString     m_Escaped;
-   QString     m_Id;
-   int         m_Delay;
-   QString     m_Category;
-   KAction*    m_Action;
-   MacroModel* m_pModel;
-   MacroModel::IndexPointer* m_pPointer;
-public Q_SLOTS:
-   void execute();
-private Q_SLOTS:
-   void nextStep();
-
-Q_SIGNALS:
-   void changed(Macro*);
 };
 
 #endif

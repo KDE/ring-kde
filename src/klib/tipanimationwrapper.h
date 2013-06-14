@@ -27,7 +27,6 @@ class QTimer;
 
 //SFLPhone
 #include "tip.h"
-class TipManager;
 
 //Structs
 struct FrameDescription {
@@ -36,11 +35,11 @@ struct FrameDescription {
    float  opacity;
 };
 
-class TipAnimationWrapper : public QObject
+class LIB_EXPORT TipAnimationWrapper : public QObject
 {
    Q_OBJECT
 public:
-   explicit TipAnimationWrapper(TipManager* parent);
+   explicit TipAnimationWrapper(QObject* parent = nullptr);
    virtual ~TipAnimationWrapper();
 
    //Mutator
@@ -66,7 +65,6 @@ private:
    QRect   m_ParentRect;
    QSize   m_TipSize;
    QImage  m_CurrentImage;
-   TipManager* m_pParent;
    Tip*    m_pCurrentTip;
    FrameDescription m_pCurrentDesc;
 

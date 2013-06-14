@@ -28,6 +28,13 @@ class QRadioButton;
 class KLineEdit;
 class QCheckBox;
 
+typedef struct {
+   bool    success ;
+   QString reason  ;
+   QString user    ;
+   QString passwd  ;
+} rest_account;
+
 /**
    @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
 */
@@ -40,6 +47,10 @@ public:
    explicit AccountWizard(QWidget * parent = nullptr);
    ~AccountWizard();
    void accept();
+private:
+   //Helpers
+   rest_account get_rest_account(const QString& host, const QString& email);
+   int sendRequest(const QString& host, int port, const QString& req, QString& ret);
 };
 
 /***************************************************************************

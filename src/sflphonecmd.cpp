@@ -32,7 +32,7 @@ SFLPhoneCmd::SFLPhoneCmd(QObject* parent) : QObject(parent)
 }
 
 ///Signleton
-SFLPhoneCmd* SFLPhoneCmd::getInstance() {
+SFLPhoneCmd* SFLPhoneCmd::instance() {
    if (!m_spSelf) {
       m_spSelf = new SFLPhoneCmd();
    }
@@ -55,29 +55,29 @@ void SFLPhoneCmd::parseCmd(int argc, char **argv, KAboutData& about)
 }
 
 ///Place a call (from the command line)
-void SFLPhoneCmd::placeCall(QString number)
+void SFLPhoneCmd::placeCall(const QString& number)
 {
    Call* call = SFLPhone::model()->addDialingCall();
    call->appendText(number);
-   call->actionPerformed(CALL_ACTION_ACCEPT);
+   call->actionPerformed(Call::Action::ACCEPT);
 }
 
 ///Send a text ans hang up (from the command line)
-void SFLPhoneCmd::sendText(QString number, QString text)
+void SFLPhoneCmd::sendText(const QString& number, const QString& text)
 {
    Call* call = SFLPhone::model()->addDialingCall();
    call->appendText(number);
    call->setProperty("message",text);
-   connect(call,SIGNAL(changed(Call*)),getInstance(),SLOT(textMessagePickup(Call*)));
-   call->actionPerformed(CALL_ACTION_ACCEPT);
+   connect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
+   call->actionPerformed(Call::Action::ACCEPT);
 }
 
 ///Send the message now that the call is ready
 void SFLPhoneCmd::textMessagePickup(Call* call)
 {
-   if (call->getState() == CALL_STATE_CURRENT) {
+   if (call->getState() == Call::State::CURRENT) {
       call->sendTextMessage(call->property("message").toString());
-      disconnect(call,SIGNAL(changed(Call*)),getInstance(),SLOT(textMessagePickup(Call*)));
-      call->actionPerformed(CALL_ACTION_REFUSE); //HangUp
+      disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
+      call->actionPerformed(Call::Action::REFUSE); //HangUp
    }
 }

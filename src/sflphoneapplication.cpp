@@ -30,31 +30,47 @@
 #include <KMessageBox>
 
 //SFLPhone library
-#include "lib/instance_interface_singleton.h"
+#include "lib/dbus/instancemanager.h"
 #include "klib/configurationskeleton.h"
 #include "sflphonecmd.h"
 
 //SFLPhone
 #include "sflphone.h"
 #include "errormessage.h"
+#include "lib/sflphone_const.h"
+#include "lib/call.h"
+
+//Other
+#include <unistd.h>
 
 
 /**
  * The application constructor
  */
 SFLPhoneApplication::SFLPhoneApplication()
+#ifdef DISABLE_UNIQUE_APPLICATION
+  : KApplication()
+#else
   : KUniqueApplication()
+#endif
 {
-   InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
-   QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);
-   reply.waitForFinished();
+   try {
+      InstanceInterface& instance = DBus::InstanceManager::instance();
+      QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);
+      reply.waitForFinished();
+   }
+   catch (...) {
+      KMessageBox::error(SFLPhone::app(),ErrorMessage::GENERIC_ERROR);
+   }
 
    // Start remaining initialisation
    initializePaths();
    initializeMainWindow();
+
+#ifdef DISABLE_UNIQUE_APPLICATION
+   newInstance();
+#endif
 }
-
-
 
 /**
  * Destructor
@@ -64,7 +80,7 @@ SFLPhoneApplication::~SFLPhoneApplication()
    delete SFLPhone::app();
    // automatically destroyed
    disableSessionManagement();
-   InstanceInterface& instance = InstanceInterfaceSingleton::getInstance();
+   InstanceInterface& instance = DBus::InstanceManager::instance();
    Q_NOREPLY instance.Unregister(getpid());
    instance.connection().disconnectFromBus(instance.connection().baseService());
 }
@@ -133,7 +149,9 @@ int SFLPhoneApplication::newInstance()
    }
 
    args->clear();
+#ifndef DISABLE_UNIQUE_APPLICATION
    KUniqueApplication::newInstance();
+#endif
    return 0;
 }
 
@@ -141,7 +159,27 @@ int SFLPhoneApplication::newInstance()
 bool SFLPhoneApplication::notify (QObject* receiver, QEvent* e)
 {
    try {
+#ifdef DISABLE_UNIQUE_APPLICATION
       return KApplication::notify(receiver,e);
+#else
+      return KUniqueApplication::notify(receiver,e);
+#endif
+   }
+   catch (Call::State state) {
+      kDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
+   }
+   catch (Call::Action state) {
+      kDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
+   }
+   catch (Call::DaemonState state) {
+      kDebug() << ErrorMessage::GENERIC_ERROR << "Call DaemonState" << state;
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
+   }
+   catch (const QString& errorMessage) {
+      KMessageBox::error(SFLPhone::app(),errorMessage);
+      QTimer::singleShot(2500,SFLPhone::app(),SLOT(timeout()));
    }
    catch (...) {
       kDebug() << ErrorMessage::GENERIC_ERROR;
