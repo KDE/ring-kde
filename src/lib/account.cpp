@@ -589,8 +589,10 @@ void Account::setAccountType(QString detail)
 ///The set account hostname, it can be an hostname or an IP address
 void Account::setAccountHostname(QString detail)
 {
-   m_HostName = detail;
-   setAccountDetail(ACCOUNT_HOSTNAME, detail);
+   if (m_HostName != detail) {
+      m_HostName = detail;
+      setAccountDetail(ACCOUNT_HOSTNAME, detail);
+   }
 }
 
 ///Set the account username, everything is valid, some might be rejected by the PBX server

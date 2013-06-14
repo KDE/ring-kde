@@ -92,7 +92,7 @@ AbstractContactBackend* AkonadiBackend::instance()
 Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resolveDNS,Account* a)
 {
    //Remove protocol dependant prefix and suffix
-   int start(0),end(phoneNumber.size()-1); //Other type of comparaisons were too slow
+   int start(0),end(phoneNumber.size()); //Other type of comparaisons were too slow
    if (phoneNumber[0] == '<' && phoneNumber[4] == ':')
       start = 5;
    if (phoneNumber.right(1) == ">")
@@ -213,7 +213,7 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
                if (number2.left (5) == "<sip:")
                   number2 = number2.remove(0,5);
                if (number2.right(1) == ">"    )
-                  number2 = number2.remove(number2.size()-1,1);
+                  number2 = number2.remove(number2.size()-2,1);
 
                m_ContactByPhone[number2] = aContact;
 
