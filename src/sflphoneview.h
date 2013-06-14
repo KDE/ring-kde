@@ -42,7 +42,7 @@ class AccountWizard;
  *
  * @short Main view
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
- * @version 1.2.0
+ * @version 1.2.3
  */
 class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListener
 {

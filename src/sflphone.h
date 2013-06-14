@@ -60,7 +60,7 @@ typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
  * @short Main window
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
  * @author Emmanuel Lepage <emmanuel.lepage@savoirfairelinux.com>
- * @version 1.2.2
+ * @version 1.2.3
 **/
 class SFLPhone : public KXmlGuiWindow
 {

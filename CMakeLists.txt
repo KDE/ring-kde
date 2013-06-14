@@ -46,7 +46,7 @@ add_subdirectory( doc    )
 add_subdirectory( man    )
 add_subdirectory( plasma )
 
-set(PROJECT_VERSION "1.2.2")
+set(PROJECT_VERSION "1.2.3")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 
 add_custom_target(dist
