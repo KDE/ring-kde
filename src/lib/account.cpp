@@ -142,7 +142,7 @@ void Account::accountChanged(QString accountId,QString state,int)
    if (m_pAccountId && accountId == *m_pAccountId) {
       qDebug() << "Account" << m_pAccountId << "status changed";
       if (Account::updateState())
-         emit stateChanged(getStateName(state));
+         emit stateChanged(stateName(state));
    }
 }
 
@@ -160,7 +160,7 @@ bool Account::isNew() const
 }
 
 ///Get this account ID
-const QString Account::getAccountId() const
+const QString Account::accountId() const
 {
    if (isNew()) {
       qDebug() << "Error : getting AccountId of a new account.";
@@ -174,13 +174,13 @@ const QString Account::getAccountId() const
 }
 
 ///Get current state
-const QString Account::getStateName(const QString& state) const
+const QString Account::stateName(const QString& state) const
 {
    return (const QString&)account_state_name(state);
 }
 
 ///Get an account detail
-const QString Account::getAccountDetail(const QString& param) const
+const QString Account::accountDetail(const QString& param) const
 {
    if (!m_hAccountDetails.size()) {
       qDebug() << "The account list is not set";
@@ -199,12 +199,12 @@ const QString Account::getAccountDetail(const QString& param) const
       qDebug() << "Account details not found, there is " << m_hAccountDetails.count() << " details available";
       return QString();
    }
-} //getAccountDetail
+} //accountDetail
 
 ///Get the alias
-const QString Account::getAlias() const
+const QString Account::alias() const
 {
-   return getAccountDetail(ACCOUNT_ALIAS);
+   return accountDetail(ACCOUNT_ALIAS);
 }
 
 ///Is this account enabled
@@ -212,17 +212,17 @@ bool Account::isEnabled() const
 {
    //getAccountRegistrationStatus() != ACCOUNT_STATE_UNREGISTERED should not happen, but it does, it is not managed because both client trying to 
    //set the state would fight to the daeth to set the enabled boolean
-   return (getAccountDetail(ACCOUNT_ENABLED) == REGISTRATION_ENABLED_TRUE);
+   return (accountDetail(ACCOUNT_ENABLED) == REGISTRATION_ENABLED_TRUE);
 }
 
 ///Is this account registered
 bool Account::isRegistered() const
 {
-   return (getAccountDetail(ACCOUNT_REGISTRATION_STATUS) == ACCOUNT_STATE_REGISTERED);
+   return (accountDetail(ACCOUNT_REGISTRATION_STATUS) == ACCOUNT_STATE_REGISTERED);
 }
 
 ///Return the model index of this item
-QModelIndex Account::getIndex()
+QModelIndex Account::index()
 {
    for (int i=0;i < AccountList::instance()->m_pAccounts->size();i++) {
       if (this == (*AccountList::instance()->m_pAccounts)[i]) {
@@ -233,29 +233,30 @@ QModelIndex Account::getIndex()
 }
 
 ///Return status color name
-QString Account::getStateColorName() const
+QString Account::stateColorName() const
 {
-   if(getAccountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED)
+   if(accountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED)
       return "black";
-   if(getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED || getAccountRegistrationStatus() == ACCOUNT_STATE_READY)
+   if(accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED || accountRegistrationStatus() == ACCOUNT_STATE_READY)
       return "darkGreen";
    return "red";
 }
 
 ///Return status Qt color, QColor is not part of QtCore, use using the global variant
-Qt::GlobalColor Account::getStateColor() const
+Qt::GlobalColor Account::stateColor() const
 {
-   if(getAccountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED)
+   const QString resStat = accountRegistrationStatus();
+   if(resStat == ACCOUNT_STATE_UNREGISTERED)
       return Qt::darkGray  ;
-   if(getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED || getAccountRegistrationStatus() == ACCOUNT_STATE_READY)
+   if(resStat == ACCOUNT_STATE_REGISTERED || resStat == ACCOUNT_STATE_READY)
       return Qt::darkGreen ;
-   if(getAccountRegistrationStatus() == ACCOUNT_STATE_TRYING)
+   if(resStat == ACCOUNT_STATE_TRYING)
       return Qt::darkYellow;
    return Qt::darkRed;
 }
 
 ///Create and return the credential model
-CredentialModel* Account::getCredentialsModel()
+CredentialModel* Account::credentialsModel()
 {
    if (!m_pCredentials)
       reloadCredentials();
@@ -263,7 +264,7 @@ CredentialModel* Account::getCredentialsModel()
 }
 
 ///Create and return the audio codec model
-AudioCodecModel* Account::getAudioCodecModel()
+AudioCodecModel* Account::audioCodecModel()
 {
    if (!m_pAudioCodecs)
       reloadAudioCodecs();
@@ -271,7 +272,7 @@ AudioCodecModel* Account::getAudioCodecModel()
 }
 
 ///Create and return the video codec model
-VideoCodecModel* Account::getVideoCodecModel()
+VideoCodecModel* Account::videoCodecModel()
 {
    if (!m_pVideoCodecs)
       m_pVideoCodecs = new VideoCodecModel(this);
@@ -280,14 +281,14 @@ VideoCodecModel* Account::getVideoCodecModel()
 
 void Account::setAccountAlias(QString detail)
 {
-   bool accChanged = detail != getAccountAlias();
+   bool accChanged = detail != accountAlias();
    setAccountDetail(ACCOUNT_ALIAS,detail);
    if (accChanged)
       emit aliasChanged(detail);
 }
 
 ///Return the account hostname
-QString Account::getAccountHostname() const
+QString Account::accountHostname() const
 {
    return m_HostName;
 }
@@ -295,229 +296,229 @@ QString Account::getAccountHostname() const
 ///Return if the account is enabled
 bool Account::isAccountEnabled() const 
 {
-   return (getAccountDetail(ACCOUNT_ENABLED)  == "true")?1:0;
+   return (accountDetail(ACCOUNT_ENABLED)  == "true")?1:0;
 }
 
 ///Return if the account should auto answer
 bool Account::isAutoAnswer() const
 {
-   return (getAccountDetail(ACCOUNT_AUTOANSWER)  == "true")?1:0;
+   return (accountDetail(ACCOUNT_AUTOANSWER)  == "true")?1:0;
 }
 
 ///Return the account user name
-QString Account::getAccountUsername() const
+QString Account::accountUsername() const
 {
-   return getAccountDetail(ACCOUNT_USERNAME);
+   return accountDetail(ACCOUNT_USERNAME);
 }
 
 ///Return the account mailbox address
-QString Account::getAccountMailbox() const 
+QString Account::accountMailbox() const 
 {
-   return getAccountDetail(ACCOUNT_MAILBOX);
+   return accountDetail(ACCOUNT_MAILBOX);
 }
 
 ///Return the account mailbox address
-QString Account::getAccountProxy() const
+QString Account::accountProxy() const
 {
-   return getAccountDetail(ACCOUNT_ROUTE);
+   return accountDetail(ACCOUNT_ROUTE);
 }
 
 ///
 bool Account::isAccountDisplaySasOnce() const
 { 
-   return (getAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE)  == "true")?1:0 ;
+   return (accountDetail(ACCOUNT_DISPLAY_SAS_ONCE)  == "true")?1:0 ;
 }
 
 ///Return the account security fallback
 bool Account::isAccountSrtpRtpFallback() const
 {
-   return (getAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK)  == "true")?1:0 ;
+   return (accountDetail(ACCOUNT_SRTP_RTP_FALLBACK)  == "true")?1:0 ;
 }
 
 ///
 bool Account::isAccountZrtpDisplaySas         () const
 {
-   return (getAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS)  == "true")?1:0 ;
+   return (accountDetail(ACCOUNT_ZRTP_DISPLAY_SAS)  == "true")?1:0 ;
 }
 
 ///Return if the other side support warning
 bool Account::isAccountZrtpNotSuppWarning() const
 {
-   return (getAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING) == "true")?1:0 ;
+   return (accountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING) == "true")?1:0 ;
 }
 
 ///
 bool Account::isAccountZrtpHelloHash() const
 {
-   return (getAccountDetail(ACCOUNT_ZRTP_HELLO_HASH)  == "true")?1:0 ;
+   return (accountDetail(ACCOUNT_ZRTP_HELLO_HASH)  == "true")?1:0 ;
 }
 
 ///Return if the account is using a STUN server
 bool Account::isAccountSipStunEnabled() const
 {
-   return (getAccountDetail(ACCOUNT_SIP_STUN_ENABLED)  == "true")?1:0 ;
+   return (accountDetail(ACCOUNT_SIP_STUN_ENABLED)  == "true")?1:0 ;
 }
 
 ///Return the account STUN server
-QString Account::getAccountSipStunServer() const
+QString Account::accountSipStunServer() const
 {
-   return getAccountDetail(ACCOUNT_SIP_STUN_SERVER);
+   return accountDetail(ACCOUNT_SIP_STUN_SERVER);
 }
 
 ///Return when the account expire (require renewal)
-int Account::getAccountRegistrationExpire() const
+int Account::accountRegistrationExpire() const
 {
-   return getAccountDetail(ACCOUNT_REGISTRATION_EXPIRE).toInt();
+   return accountDetail(ACCOUNT_REGISTRATION_EXPIRE).toInt();
 }
 
 ///Return if the published address is the same as the local one
 bool Account::isPublishedSameAsLocal() const
 {
-   return (getAccountDetail(PUBLISHED_SAMEAS_LOCAL)  == "true")?1:0 ;
+   return (accountDetail(PUBLISHED_SAMEAS_LOCAL)  == "true")?1:0 ;
 }
 
 ///Return the account published address
-QString Account::getPublishedAddress() const
+QString Account::publishedAddress() const
 {
-   return getAccountDetail(PUBLISHED_ADDRESS);
+   return accountDetail(PUBLISHED_ADDRESS);
 }
 
 ///Return the account published port
-int Account::getPublishedPort() const
+int Account::publishedPort() const
 {
-   return getAccountDetail(PUBLISHED_PORT).toUInt();
+   return accountDetail(PUBLISHED_PORT).toUInt();
 }
 
 ///Return the account tls password
-QString Account::getTlsPassword() const
+QString Account::tlsPassword() const
 {
-   return getAccountDetail(TLS_PASSWORD);
+   return accountDetail(TLS_PASSWORD);
 }
 
 ///Return the account TLS port
-int Account::getTlsListenerPort() const
+int Account::tlsListenerPort() const
 {
-   return getAccountDetail(TLS_LISTENER_PORT).toInt();
+   return accountDetail(TLS_LISTENER_PORT).toInt();
 }
 
 ///Return the account TLS certificate authority list file
-QString Account::getTlsCaListFile() const
+QString Account::tlsCaListFile() const
 {
-   return getAccountDetail(TLS_CA_LIST_FILE);
+   return accountDetail(TLS_CA_LIST_FILE);
 }
 
 ///Return the account TLS certificate
-QString Account::getTlsCertificateFile() const
+QString Account::tlsCertificateFile() const
 {
-   return getAccountDetail(TLS_CERTIFICATE_FILE);
+   return accountDetail(TLS_CERTIFICATE_FILE);
 }
 
 ///Return the account private key
-QString Account::getTlsPrivateKeyFile() const
+QString Account::tlsPrivateKeyFile() const
 {
-   return getAccountDetail(TLS_PRIVATE_KEY_FILE);
+   return accountDetail(TLS_PRIVATE_KEY_FILE);
 }
 
 ///Return the account cipher
-QString Account::getTlsCiphers() const
+QString Account::tlsCiphers() const
 {
-   return getAccountDetail(TLS_CIPHERS);
+   return accountDetail(TLS_CIPHERS);
 }
 
 ///Return the account TLS server name
-QString Account::getTlsServerName() const
+QString Account::tlsServerName() const
 {
-   return getAccountDetail(TLS_SERVER_NAME);
+   return accountDetail(TLS_SERVER_NAME);
 }
 
 ///Return the account negotiation timeout in seconds
-int Account::getTlsNegotiationTimeoutSec() const
+int Account::tlsNegotiationTimeoutSec() const
 {
-   return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC).toInt();
+   return accountDetail(TLS_NEGOTIATION_TIMEOUT_SEC).toInt();
 }
 
 ///Return the account negotiation timeout in milliseconds
-int Account::getTlsNegotiationTimeoutMsec() const
+int Account::tlsNegotiationTimeoutMsec() const
 {
-   return getAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC).toInt();
+   return accountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC).toInt();
 }
 
 ///Return the account TLS verify server
 bool Account::isTlsVerifyServer() const
 {
-   return (getAccountDetail(TLS_VERIFY_SERVER)  == "true")?1:0;
+   return (accountDetail(TLS_VERIFY_SERVER)  == "true")?1:0;
 }
 
 ///Return the account TLS verify client
 bool Account::isTlsVerifyClient() const
 {
-   return (getAccountDetail(TLS_VERIFY_CLIENT)  == "true")?1:0;
+   return (accountDetail(TLS_VERIFY_CLIENT)  == "true")?1:0;
 }
 
 ///Return if it is required for the peer to have a certificate
 bool Account::isTlsRequireClientCertificate() const
 {
-   return (getAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true")?1:0;
+   return (accountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true")?1:0;
 }
 
 ///Return the account TLS security is enabled
 bool Account::isTlsEnable() const
 { 
-   return (getAccountDetail(TLS_ENABLE)  == "true")?1:0;
+   return (accountDetail(TLS_ENABLE)  == "true")?1:0;
 }
 
 ///Return the account the TLS encryption method
-int Account::getTlsMethod() const
+int Account::tlsMethod() const
 {
-   return getAccountDetail(TLS_METHOD).toInt();
+   return accountDetail(TLS_METHOD).toInt();
 }
 
 ///Return the account alias
-QString Account::getAccountAlias() const
+QString Account::accountAlias() const
 {
-   return getAccountDetail(ACCOUNT_ALIAS);
+   return accountDetail(ACCOUNT_ALIAS);
 }
 
 ///Return if the ringtone are enabled
 bool Account::isRingtoneEnabled() const
 {
-   return (getAccountDetail(CONFIG_RINGTONE_ENABLED)  == "true")?1:0;
+   return (accountDetail(CONFIG_RINGTONE_ENABLED)  == "true")?1:0;
 }
 
 ///Return the account ringtone path
-QString Account::getRingtonePath() const
+QString Account::ringtonePath() const
 {
-   return getAccountDetail(CONFIG_RINGTONE_PATH);
+   return accountDetail(CONFIG_RINGTONE_PATH);
 }
 
 ///Return the account local port
-int Account::getLocalPort() const
+int Account::localPort() const
 {
-   return getAccountDetail(LOCAL_PORT).toInt();
+   return accountDetail(LOCAL_PORT).toInt();
 }
 
 ///Return the account local interface
-QString Account::getLocalInterface() const
+QString Account::localInterface() const
 {
-   return getAccountDetail(LOCAL_INTERFACE);
+   return accountDetail(LOCAL_INTERFACE);
 }
 
 ///Return the account registration status
-QString Account::getAccountRegistrationStatus() const
+QString Account::accountRegistrationStatus() const
 {
-   return getAccountDetail(ACCOUNT_REGISTRATION_STATUS);
+   return accountDetail(ACCOUNT_REGISTRATION_STATUS);
 }
 
 ///Return the account type
-QString Account::getAccountType() const
+QString Account::accountType() const
 {
-   return getAccountDetail(ACCOUNT_TYPE);
+   return accountDetail(ACCOUNT_TYPE);
 }
 
 ///Return the DTMF type
-DtmfType Account::getDTMFType() const
+DtmfType Account::DTMFType() const
 {
-   QString type = getAccountDetail(ACCOUNT_DTMF_TYPE);
+   QString type = accountDetail(ACCOUNT_DTMF_TYPE);
    return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
 }
 
@@ -827,9 +828,9 @@ bool Account::updateState()
 {
    if(! isNew()) {
       ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
-      const MapStringString details       = configurationManager.getAccountDetails(getAccountId()).value();
+      const MapStringString details       = configurationManager.getAccountDetails(accountId()).value();
       const QString         status        = details[ACCOUNT_REGISTRATION_STATUS];
-      const QString         currentStatus = getAccountRegistrationStatus();
+      const QString         currentStatus = accountRegistrationStatus();
       setAccountDetail(ACCOUNT_REGISTRATION_STATUS, status); //Update -internal- object state
       return status == currentStatus;
    }
@@ -875,13 +876,13 @@ void Account::save()
          iter.next();
          tmp[iter.key()] = iter.value();
       }
-      configurationManager.setAccountDetails(getAccountId(), tmp);
+      configurationManager.setAccountDetails(accountId(), tmp);
    }
 
-   //QString id = configurationManager.getAccountDetail(getAccountId());
-   if (!getAccountId().isEmpty()) {
-      Account* acc =  AccountList::instance()->getAccountById(getAccountId());
-      qDebug() << "Adding the new account to the account list (" << getAccountId() << ")";
+   //QString id = configurationManager.getAccountDetail(accountId());
+   if (!accountId().isEmpty()) {
+      Account* acc =  AccountList::instance()->getAccountById(accountId());
+      qDebug() << "Adding the new account to the account list (" << accountId() << ")";
       if (acc != this) {
          (*AccountList::instance()->m_pAccounts) << this;
       }
@@ -900,9 +901,9 @@ void Account::save()
 ///sync with the daemon, this need to be done manually to prevent reloading the account while it is being edited
 void Account::reload()
 {
-   qDebug() << "Reloading" << getAccountId();
+   qDebug() << "Reloading" << accountId();
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   QMap<QString,QString> aDetails = configurationManager.getAccountDetails(getAccountId());
+   QMap<QString,QString> aDetails = configurationManager.getAccountDetails(accountId());
 
    if (!aDetails.count()) {
       qDebug() << "Account not found";
@@ -930,7 +931,7 @@ void Account::reloadCredentials()
    if (!isNew()) {
       m_pCredentials->clear();
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-      VectorMapStringString credentials = configurationManager.getCredentials(getAccountId());
+      VectorMapStringString credentials = configurationManager.getCredentials(accountId());
       for (int i=0; i < credentials.size(); i++) {
          QModelIndex idx = m_pCredentials->addCredentials();
          m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_USERNAME  ],CredentialModel::NAME_ROLE    );
@@ -951,7 +952,7 @@ void Account::saveCredentials() {
          QString username = m_pCredentials->data(idx,CredentialModel::NAME_ROLE ).toString();
          QString realm = m_pCredentials->data(idx,CredentialModel::REALM_ROLE    ).toString();
          if (username.isEmpty()) {
-            username = getAccountUsername();
+            username = accountUsername();
             m_pCredentials->setData(idx,username,CredentialModel::NAME_ROLE );
          }
          if (realm.isEmpty()) {
@@ -963,7 +964,7 @@ void Account::saveCredentials() {
          credentialData[ CONFIG_ACCOUNT_REALM   ] = realm;
          toReturn << credentialData;
       }
-      configurationManager.setCredentials(getAccountId(),toReturn);
+      configurationManager.setCredentials(accountId(),toReturn);
    }
 }
 
@@ -977,7 +978,7 @@ void Account::reloadAudioCodecs()
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QVector<int> codecIdList = configurationManager.getAudioCodecList();
    if (!isNew()) {
-      QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(getAccountId());
+      QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(accountId());
       QStringList tmpNameList;
 
       foreach (const int aCodec, activeCodecList) {
@@ -1017,7 +1018,7 @@ void Account::saveAudioCodecs() {
       }
 
       ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
-      configurationManager.setActiveAudioCodecList(_codecList, getAccountId());
+      configurationManager.setActiveAudioCodecList(_codecList, accountId());
    }
 }
 
@@ -1051,13 +1052,13 @@ void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs)
 }
 
 ///Return the list of active video dodecs
-QList<VideoCodec*> Account::getActiveVideoCodecList()
+QList<VideoCodec*> Account::ActiveVideoCodecList()
 {
    QList<VideoCodec*> codecs;
    VideoInterface& interface = DBus::VideoManager::instance();
    const QStringList activeCodecList = interface.getActiveCodecList(m_pAccountId);
    foreach (const QString& codec, activeCodecList) {
-      codecs << VideoCodec::getCodec(codec);
+      codecs << VideoCodec::Codec(codec);
    }
 }
 

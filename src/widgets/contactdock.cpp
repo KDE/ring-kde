@@ -333,7 +333,7 @@ void ContactDock::callAgain()
    bool ok;
    QString number = showNumberSelector(ok);
    if (ok) {
-      Call* call = SFLPhone::model()->addDialingCall(m_pCurrentContact->getFormattedName(), AccountList::getCurrentAccount());
+      Call* call = SFLPhone::model()->addDialingCall(m_pCurrentContact->getFormattedName(), AccountList::currentAccount());
       if (call) {
          call->setCallNumber(number);
          call->setPeerName(m_pCurrentContact->getFormattedName());

@@ -118,12 +118,12 @@ public:
    }
 
    virtual QVariant getColor(const Account* a) {
-      if(a->getAccountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED || !a->isEnabled())
+      if(a->accountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED || !a->isEnabled())
          return m_Pal.color(QPalette::Base);
-      if(a->getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED || a->getAccountRegistrationStatus() == ACCOUNT_STATE_READY) {
+      if(a->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED || a->accountRegistrationStatus() == ACCOUNT_STATE_READY) {
          return m_Green;
       }
-      if(a->getAccountRegistrationStatus() == ACCOUNT_STATE_TRYING)
+      if(a->accountRegistrationStatus() == ACCOUNT_STATE_TRYING)
          return m_Yellow;
       return m_Red;
    }
@@ -490,7 +490,7 @@ void SFLPhoneView::action(Call* call, Call::Action action)
 bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
 {
    if (contact->getPhoneNumbers().count() == 1) {
-      *call2 = SFLPhone::model()->addDialingCall(contact->getFormattedName(),AccountList::getCurrentAccount());
+      *call2 = SFLPhone::model()->addDialingCall(contact->getFormattedName(),AccountList::currentAccount());
       if (*call2)
          (*call2)->appendText(contact->getPhoneNumbers()[0]->getNumber());
    }
@@ -504,7 +504,7 @@ bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
       }
       const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
       if (ok) {
-         (*call2) = SFLPhone::model()->addDialingCall(contact->getFormattedName(), AccountList::getCurrentAccount());
+         (*call2) = SFLPhone::model()->addDialingCall(contact->getFormattedName(), AccountList::currentAccount());
          if (*call2)
             (*call2)->appendText(map[result]);
       }
@@ -539,7 +539,7 @@ void SFLPhoneView::updateWindowCallState()
 
    bool transfer(false),recordActivated(false);
 
-   enabledActions[SFLPhone::Mailbox] = AccountList::getCurrentAccount() && ! AccountList::getCurrentAccount()->getAccountMailbox().isEmpty();
+   enabledActions[SFLPhone::Mailbox] = AccountList::currentAccount() && ! AccountList::currentAccount()->accountMailbox().isEmpty();
 
    call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex());
    if (!call) {
@@ -800,14 +800,14 @@ void SFLPhoneView::updateDialpad()
 ///Change the statusbar message
 void SFLPhoneView::updateStatusMessage()
 {
-   Account * account = AccountList::getCurrentAccount();
+   Account * account = AccountList::currentAccount();
 
    if(!account) {
       emit statusMessageChangeAsked(i18n("No registered accounts"));
    }
    else {
       emit statusMessageChangeAsked(i18n("Using account \'%1\' (%2)",
-         account->getAlias(), account->getAccountRegistrationStatus()));
+         account->alias(), account->accountRegistrationStatus()));
    }
 }
 
@@ -929,14 +929,14 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
 ///Pick the default account and load it
 void SFLPhoneView::setAccountFirst(Account * account)
 {
-   kDebug() << "setAccountFirst : " << (account ? account->getAlias() : QString()) << (account ? account->getAccountId() : QString());
+   kDebug() << "setAccountFirst : " << (account ? account->alias() : QString()) << (account ? account->accountId() : QString());
    if(account) {
       AccountList::instance()->setPriorAccount(account);
    }
    else {
       AccountList::instance()->setPriorAccount(nullptr);
    }
-   kDebug() << "Current account id" << (AccountList::getCurrentAccount()?AccountList::getCurrentAccount()->getAccountId():"<no account>");
+   kDebug() << "Current account id" << (AccountList::currentAccount()?AccountList::currentAccount()->accountId():"<no account>");
    updateStatusMessage();
 }
 
@@ -1084,8 +1084,8 @@ void SFLPhoneView::mute(bool value)
 ///Access the voice mail list
 void SFLPhoneView::mailBox()
 {
-   Account* account = AccountList::getCurrentAccount();
-   QString mailBoxNumber = account->getAccountMailbox();
+   Account* account = AccountList::currentAccount();
+   QString mailBoxNumber = account->accountMailbox();
    Call* call = SFLPhone::model()->addDialingCall();
    if (call) {
       call->appendText(mailBoxNumber);

@@ -128,7 +128,7 @@ void AccountList::accountChanged(const QString& account,const QString& state, in
          }
       }
       foreach (Account* acc, *m_pAccounts) {
-         int idx =accountIds.indexOf(acc->getAccountId());
+         int idx =accountIds.indexOf(acc->accountId());
          if (idx == -1 && (acc->currentState() == READY || acc->currentState() == REMOVED)) {
             m_pAccounts->remove(idx);
             emit dataChanged(index(idx - 1, 0), index(m_pAccounts->size()-1, 0));
@@ -136,7 +136,7 @@ void AccountList::accountChanged(const QString& account,const QString& state, in
       }
    }
    if (a)
-      emit accountStateChanged(a,a->getStateName(state));
+      emit accountStateChanged(a,a->stateName(state));
    else
       qDebug() << "Account not found";
 }
@@ -204,15 +204,13 @@ void AccountList::updateAccounts()
 void AccountList::save()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   QStringList accountIds= QStringList(configurationManager.getAccountList().value());
+   const QStringList accountIds= QStringList(configurationManager.getAccountList().value());
 
    //create or update each account from accountList
    for (int i = 0; i < size(); i++) {
       Account* current = (*this)[i];
-      QString currentId;
       //current->save();
       current->performAction(AccountEditAction::SAVE);
-      currentId = QString(current->getAccountId());
    }
 
    //remove accounts that are in the configurationManager but not in the client
@@ -288,7 +286,7 @@ QString AccountList::getOrderedList() const
 {
    QString order;
    for( int i = 0 ; i < size() ; i++) {
-      order += getAccountAt(i)->getAccountId() + '/';
+      order += getAccountAt(i)->accountId() + '/';
    }
    return order;
 }
@@ -299,7 +297,7 @@ Account* AccountList::getAccountById(const QString& id) const
    if(id.isEmpty())
           return nullptr;
    for (int i = 0; i < m_pAccounts->size(); ++i) {
-      if (!(*m_pAccounts)[i]->isNew() && (*m_pAccounts)[i]->getAccountId() == id)
+      if (!(*m_pAccounts)[i]->isNew() && (*m_pAccounts)[i]->accountId() == id)
          return (*m_pAccounts)[i];
    }
    return nullptr;
@@ -310,7 +308,7 @@ QVector<Account*> AccountList::getAccountsByState(const QString& state)
 {
    QVector<Account *> v;
    for (int i = 0; i < m_pAccounts->size(); ++i) {
-      if ((*m_pAccounts)[i]->getAccountRegistrationStatus() == state)
+      if ((*m_pAccounts)[i]->accountRegistrationStatus() == state)
          v += (*m_pAccounts)[i];
    }
    return v;
@@ -324,8 +322,8 @@ QVector<Account*> AccountList::registeredAccounts() const
    Account* current;
    for (int i = 0; i < m_pAccounts->count(); ++i) {
       current = (*m_pAccounts)[i];
-      if(current->getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED) {
-         qDebug() << current->getAlias() << " : " << current;
+      if(current->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED) {
+         qDebug() << current->alias() << " : " << current;
          registeredAccountsVector.append(current);
       }
    }
@@ -338,14 +336,14 @@ Account* AccountList::firstRegisteredAccount() const
    Account* current;
    for (int i = 0; i < m_pAccounts->count(); ++i) {
       current = (*m_pAccounts)[i];
-      if(current && current->getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED && current->isAccountEnabled())
+      if(current && current->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED && current->isAccountEnabled())
          return current;
-      else if (current && (current->getAccountRegistrationStatus() == ACCOUNT_STATE_READY) && m_pAccounts->count() == 1)
+      else if (current && (current->accountRegistrationStatus() == ACCOUNT_STATE_READY) && m_pAccounts->count() == 1)
          return current;
-//       else if (current && !(current->getAccountRegistrationStatus() == ACCOUNT_STATE_READY)) {
-//          qDebug() << "Account " << ((current)?current->getAccountId():"") << " is not registered ("
-//          << ((current)?current->getAccountRegistrationStatus():"") << ") State:"
-//          << ((current)?current->getAccountRegistrationStatus():"");
+//       else if (current && !(current->accountRegistrationStatus()() == ACCOUNT_STATE_READY)) {
+//          qDebug() << "Account " << ((current)?current->accountId():"") << " is not registered ("
+//          << ((current)?current->accountRegistrationStatus()():"") << ") State:"
+//          << ((current)?current->accountRegistrationStatus()():"");
 //       }
    }
    return nullptr;
@@ -358,10 +356,10 @@ int AccountList::size() const
 }
 
 ///Return the current account
-Account* AccountList::getCurrentAccount()
+Account* AccountList::currentAccount()
 {
    Account* priorAccount = m_spPriorAccount;
-   if(priorAccount && priorAccount->getAccountRegistrationStatus() == ACCOUNT_STATE_REGISTERED && priorAccount->isAccountEnabled() ) {
+   if(priorAccount && priorAccount->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED && priorAccount->isAccountEnabled() ) {
       return priorAccount;
    }
    else {
@@ -381,7 +379,7 @@ QVariant AccountList::data ( const QModelIndex& idx, int role) const
 
    const Account * account = (*m_pAccounts)[idx.row()];
    if(idx.column() == 0 && (role == Qt::DisplayRole || role == Qt::EditRole))
-      return QVariant(account->getAlias());
+      return QVariant(account->alias());
    else if(idx.column() == 0 && role == Qt::CheckStateRole) {
       return QVariant(account->isEnabled() ? Qt::Checked : Qt::Unchecked);
    }
@@ -389,7 +387,7 @@ QVariant AccountList::data ( const QModelIndex& idx, int role) const
       if (m_pColorVisitor)
          return m_pColorVisitor->getColor(account);
       else
-         return QVariant(account->getStateColor());
+         return QVariant(account->stateColor());
    }
    else if(idx.column() == 0 && role == Qt::DecorationRole && m_pColorVisitor) {
       return m_pColorVisitor->getIcon(account);
@@ -434,14 +432,14 @@ QString AccountList::getSimilarAliasIndex(const QString& alias)
 {
    int count = 0;
    foreach (Account* a, instance()->getAccounts()) {
-      if (a->getAccountAlias().left(alias.size()) == alias)
+      if (a->accountAlias().left(alias.size()) == alias)
          count++;
    }
    bool found = true;
    do {
       found = false;
       foreach (Account* a, instance()->getAccounts()) {
-         if (a->getAccountAlias() == alias+QString(" (%1)").arg(count)) {
+         if (a->accountAlias() == alias+QString(" (%1)").arg(count)) {
             count++;
             found = false;
             break;
@@ -491,7 +489,7 @@ void AccountList::setPriorAccount(const Account* account) {
    bool changed = (account && m_spPriorAccount != account) || (!account && m_spPriorAccount);
    m_spPriorAccount = (Account*)(account);
    if (changed)
-      emit priorAccountChanged(getCurrentAccount());
+      emit priorAccountChanged(currentAccount());
 }
 
 ///Set model data

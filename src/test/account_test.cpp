@@ -131,7 +131,7 @@ void AccountTests::testCreateAccount()
 {
    Account* acc = Account::buildNewAccountFromAlias("unit_test_account");
    acc->save();
-   id = acc->getAccountId();
+   id = acc->accountId();
    QCOMPARE( acc != nullptr, true);
 }
 
@@ -630,7 +630,7 @@ void AccountTests::testDisableAllAccounts()
       (*AccountList::instance())[i]->save();
    }
 
-   QCOMPARE(AccountList::getCurrentAccount(),(Account*)nullptr);
+   QCOMPARE(AccountList::currentAccount(),(Account*)nullptr);
 
    //Restore state
    for (int i=0;i<AccountList::instance()->size();i++) {

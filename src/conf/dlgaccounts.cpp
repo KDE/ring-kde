@@ -247,7 +247,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
 
 
    if (m_pDefaultAccount->isChecked()) {
-      ConfigurationSkeleton::setDefaultAccountId(account->getAccountId());
+      ConfigurationSkeleton::setDefaultAccountId(account->accountId());
       AccountList::instance()->setDefaultAccount(account);
    }
 
@@ -293,7 +293,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    }
    m_IsLoading++;
 
-   edit1_alias->setText( account->getAccountAlias());
+   edit1_alias->setText( account->accountAlias());
 
    QString protocolsTab[] = ACCOUNT_TYPES_TAB;
    QList<QString> * protocolsList = new QList<QString>();
@@ -301,15 +301,15 @@ void DlgAccounts::loadAccount(QModelIndex item)
       protocolsList->append(protocolsTab[i]);
    }
 
-   QString accountName = account->getAccountType();
+   QString accountName = account->accountType();
    int protocolIndex = protocolsList->indexOf(accountName);
    delete protocolsList;
 
 
-   QModelIndex idx = account->getCredentialsModel()->index(0,0);
+   QModelIndex idx = account->credentialsModel()->index(0,0);
    disconnect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
-   if (idx.isValid() && !account->getAccountId().isEmpty()) {
-      edit5_password->setText(account->getCredentialsModel()->data(idx,CredentialModel::PASSWORD_ROLE).toString());
+   if (idx.isValid() && !account->accountId().isEmpty()) {
+      edit5_password->setText(account->credentialsModel()->data(idx,CredentialModel::PASSWORD_ROLE).toString());
    }
    else
       edit5_password->setText("");
@@ -318,7 +318,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    disconnect(this,SLOT(aliasChanged(QString)));
    connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));
 
-   switch (account->getTlsMethod()) {
+   switch (account->tlsMethod()) {
       case 0: //KEY_EXCHANGE_NONE
          checkbox_SDES_fallback_rtp->setVisible   ( false );
          checkbox_ZRTP_Ask_user->setVisible       ( false );
@@ -344,42 +344,42 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
    //         WIDGET VALUE                                          VALUE                     /
    /**/edit2_protocol->setCurrentIndex          ( (protocolIndex < 0) ? 0 : protocolIndex    );
-   /**/edit3_server->setText                    (  account->getAccountHostname             ());
-   /**/edit4_user->setText                      (  account->getAccountUsername             ());
-   /**/edit6_mailbox->setText                   (  account->getAccountMailbox              ());
-   /**/m_pProxyLE->setText                      (  account->getAccountProxy                ());
+   /**/edit3_server->setText                    (  account->accountHostname             ());
+   /**/edit4_user->setText                      (  account->accountUsername             ());
+   /**/edit6_mailbox->setText                   (  account->accountMailbox              ());
+   /**/m_pProxyLE->setText                      (  account->accountProxy                ());
    /**/checkbox_ZRTP_Ask_user->setChecked       (  account->isAccountDisplaySasOnce        ());
    /**/checkbox_SDES_fallback_rtp->setChecked   (  account->isAccountSrtpRtpFallback       ());
    /**/checkbox_ZRTP_display_SAS->setChecked    (  account->isAccountZrtpDisplaySas        ());
    /**/checkbox_ZRTP_warn_supported->setChecked (  account->isAccountZrtpNotSuppWarning    ());
    /**/checkbox_ZTRP_send_hello->setChecked     (  account->isAccountZrtpHelloHash         ());
    /**/checkbox_stun->setChecked                (  account->isAccountSipStunEnabled        ());
-   /**/line_stun->setText                       (  account->getAccountSipStunServer        ());
-   /**/spinbox_regExpire->setValue              (  account->getAccountRegistrationExpire   ());
+   /**/line_stun->setText                       (  account->accountSipStunServer        ());
+   /**/spinbox_regExpire->setValue              (  account->accountRegistrationExpire   ());
    /**/radioButton_pa_same_as_local->setChecked (  account->isPublishedSameAsLocal         ());
    /**/radioButton_pa_custom->setChecked        ( !account->isPublishedSameAsLocal         ());
-   /**/lineEdit_pa_published_address->setText   (  account->getPublishedAddress            ());
-   /**/spinBox_pa_published_port->setValue      (  account->getPublishedPort               ());
+   /**/lineEdit_pa_published_address->setText   (  account->publishedAddress            ());
+   /**/spinBox_pa_published_port->setValue      (  account->publishedPort               ());
    /*                                                  Security                             **/
-   /**/edit_tls_private_key_password->setText   (  account->getTlsPassword                 ());
-   /**/spinbox_tls_listener->setValue           (  account->getTlsListenerPort             ());
-   /**/file_tls_authority->setText              (  account->getTlsCaListFile               ());
-   /**/file_tls_endpoint->setText               (  account->getTlsCertificateFile          ());
-   /**/file_tls_private_key->setText            (  account->getTlsPrivateKeyFile           ());
-   /**/edit_tls_cipher->setText                 (  account->getTlsCiphers                  ());
-   /**/edit_tls_outgoing->setText               (  account->getTlsServerName               ());
-   /**/spinbox_tls_timeout_sec->setValue        (  account->getTlsNegotiationTimeoutSec    ());
-   /**/spinbox_tls_timeout_msec->setValue       (  account->getTlsNegotiationTimeoutMsec   ());
+   /**/edit_tls_private_key_password->setText   (  account->tlsPassword                 ());
+   /**/spinbox_tls_listener->setValue           (  account->tlsListenerPort             ());
+   /**/file_tls_authority->setText              (  account->tlsCaListFile               ());
+   /**/file_tls_endpoint->setText               (  account->tlsCertificateFile          ());
+   /**/file_tls_private_key->setText            (  account->tlsPrivateKeyFile           ());
+   /**/edit_tls_cipher->setText                 (  account->tlsCiphers                  ());
+   /**/edit_tls_outgoing->setText               (  account->tlsServerName               ());
+   /**/spinbox_tls_timeout_sec->setValue        (  account->tlsNegotiationTimeoutSec    ());
+   /**/spinbox_tls_timeout_msec->setValue       (  account->tlsNegotiationTimeoutMsec   ());
    /**/check_tls_incoming->setChecked           (  account->isTlsVerifyServer              ());
    /**/check_tls_answer->setChecked             (  account->isTlsVerifyClient              ());
    /**/check_tls_requier_cert->setChecked       (  account->isTlsRequireClientCertificate  ());
    /**/group_security_tls->setChecked           (  account->isTlsEnable                    ());
-   /**/combo_security_STRP->setCurrentIndex     (  account->getTlsMethod                   ());
+   /**/combo_security_STRP->setCurrentIndex     (  account->tlsMethod                   ());
    /**/m_pAutoAnswer->setChecked                (  account->isAutoAnswer                   ());
    /*                                                                                        */
 
-   m_pDTMFOverRTP->setChecked(account->getDTMFType()==DtmfType::OverRtp);
-   m_pDTMFOverSIP->setChecked(account->getDTMFType()==DtmfType::OverSip);
+   m_pDTMFOverRTP->setChecked(account->DTMFType()==DtmfType::OverRtp);
+   m_pDTMFOverSIP->setChecked(account->DTMFType()==DtmfType::OverSip);
 
    edit_credential_realm    -> setText(QString());
    edit_credential_auth     -> setText(QString());
@@ -397,26 +397,26 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    disconnect(list_credential->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectCredential(QModelIndex,QModelIndex))     );
-   list_credential->setModel(account->getCredentialsModel());
+   list_credential->setModel(account->credentialsModel());
    connect(list_credential->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectCredential(QModelIndex,QModelIndex))     );
 
    disconnect(list_audiocodec->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
    disconnect(list_audiocodec->model()         ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
-   list_audiocodec->setModel(account->getAudioCodecModel());
+   list_audiocodec->setModel(account->audioCodecModel());
    connect(list_audiocodec->model()            ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(list_audiocodec->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
 
    #ifdef ENABLE_VIDEO
    disconnect(m_pCodecsLW->selectionModel()    ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
    disconnect(m_pCodecsLW->model()             ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
-   account->getVideoCodecModel()->reload();
-   m_pCodecsLW->setModel(account->getVideoCodecModel());
+   account->videoCodecModel()->reload();
+   m_pCodecsLW->setModel(account->videoCodecModel());
    connect(m_pCodecsLW->model()                ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(m_pCodecsLW->selectionModel()       ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
    #endif
 
 
-   if (account->getAccountAlias() == "IP2IP") {
+   if (account->accountAlias() == "IP2IP") {
       frame2_editAccounts->setTabEnabled( 0, false );
       frame2_editAccounts->setTabEnabled( 1, false );
       frame2_editAccounts->setTabEnabled( 2, true  );
@@ -433,11 +433,11 @@ void DlgAccounts::loadAccount(QModelIndex item)
    }
 
    m_pEnableRingtoneGB->setChecked(account->isRingtoneEnabled());
-   QString ringtonePath = KStandardDirs::realFilePath(account->getRingtonePath());
+   const QString ringtonePath = KStandardDirs::realFilePath(account->ringtonePath());
    m_pRingTonePath->setUrl( ringtonePath );
 
 
-   combo_tls_method->setCurrentIndex( account->getTlsMethod() );
+   combo_tls_method->setCurrentIndex( account->tlsMethod() );
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    m_pRingtoneListLW->clear();
@@ -475,16 +475,16 @@ void DlgAccounts::loadAccount(QModelIndex item)
    QStringList interfaceList = configurationManager.getAllIpInterfaceByName();
    comboBox_ni_local_address->addItems(interfaceList);
 
-   spinBox_ni_local_port->setValue(account->getLocalPort());
-   if (comboBox_ni_local_address->findText(account->getLocalInterface()) >=0)
-      comboBox_ni_local_address->setCurrentIndex(comboBox_ni_local_address->findText(account->getLocalInterface()));
+   spinBox_ni_local_port->setValue(account->localPort());
+   if (comboBox_ni_local_address->findText(account->localInterface()) >=0)
+      comboBox_ni_local_address->setCurrentIndex(comboBox_ni_local_address->findText(account->localInterface()));
    else //Just to be sure
       comboBox_ni_local_address->setCurrentIndex(0);
 
    if(protocolIndex == 0 || account->isNew()) { // if sip selected
       checkbox_stun->setChecked(account->isAccountSipStunEnabled());
-      line_stun->setText( account->getAccountSipStunServer() );
-      //checkbox_zrtp->setChecked(account->getAccountDetail(ACCOUNT_SRTP_ENABLED) == REGISTRATION_ENABLED_TRUE);
+      line_stun->setText( account->accountSipStunServer() );
+      //checkbox_zrtp->setChecked(account->accountDetail(ACCOUNT_SRTP_ENABLED) == REGISTRATION_ENABLED_TRUE);
 
       tab_advanced->                setEnabled ( true                       );
       line_stun->                   setEnabled ( checkbox_stun->isChecked() );
@@ -494,7 +494,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    else {
       checkbox_stun->setChecked(false);
       tab_advanced->setEnabled (false);
-      line_stun->setText( account->getAccountSipStunServer() );
+      line_stun->setText( account->accountSipStunServer() );
       //checkbox_zrtp->setChecked(false);
    }
 
@@ -554,7 +554,7 @@ void DlgAccounts::on_button_accountUp_clicked()
    QModelIndex index = listView_accountList->currentIndex();
    Account* acc = AccountList::instance()->getAccountByModelIndex(index);
    AccountList::instance()->accountUp(index.row());
-   listView_accountList->setCurrentIndex(acc->getIndex());
+   listView_accountList->setCurrentIndex(acc->index());
 }
 
 ///Move account down
@@ -563,7 +563,7 @@ void DlgAccounts::on_button_accountDown_clicked()
    QModelIndex index = listView_accountList->currentIndex();
    Account* acc = AccountList::instance()->getAccountByModelIndex(index);
    AccountList::instance()->accountDown(index.row());
-   listView_accountList->setCurrentIndex(acc->getIndex());
+   listView_accountList->setCurrentIndex(acc->index());
 }
 
 ///Add new account
@@ -647,8 +647,8 @@ void DlgAccounts::updateFirstCredential(QString text)
 {
    if (!m_IsLoading) {
       Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
-      acc->getCredentialsModel()->setData(acc->getCredentialsModel()->index(0,0),text, CredentialModel::NAME_ROLE);
-      if (acc->getCredentialsModel()->index(0,0) == list_credential->currentIndex()) {
+      acc->credentialsModel()->setData(acc->credentialsModel()->index(0,0),text, CredentialModel::NAME_ROLE);
+      if (acc->credentialsModel()->index(0,0) == list_credential->currentIndex()) {
          edit_credential_auth->setText(text);
       }
    }
@@ -720,8 +720,8 @@ void DlgAccounts::updateStatusLabel(Account* account)
 {
    if(!account || AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex()) != account)
       return;
-   QString status = account->getAccountRegistrationStatus();
-   edit7_state->setText( "<FONT COLOR=\"" + account->getStateColorName() + "\">" + status + "</FONT>" );
+   const QString status = account->accountRegistrationStatus();
+   edit7_state->setText( "<FONT COLOR=\"" + account->stateColorName() + "\">" + status + "</FONT>" );
 }
 
 ///Have the account changed
@@ -734,7 +734,7 @@ bool DlgAccounts::hasChanged()
 bool DlgAccounts::hasIncompleteRequiredFields()
 {
    Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
-   return acc && (acc->getAlias() != "IP2IP") && (edit1_alias->text().isEmpty() || edit3_server->text().isEmpty() || edit4_user->text().isEmpty() || edit5_password->text().isEmpty());
+   return acc && (acc->alias() != "IP2IP") && (edit1_alias->text().isEmpty() || edit3_server->text().isEmpty() || edit4_user->text().isEmpty() || edit5_password->text().isEmpty());
 }
 
 ///Save settings
@@ -809,9 +809,9 @@ void DlgAccounts::saveCredential()
    Account*    acc   = AccountList::instance()->getAccountByModelIndex(index);
    QModelIndex currentCredential = list_credential->currentIndex();
    if (currentCredential.isValid()) {
-      acc->getCredentialsModel()->setData(currentCredential,edit_credential_auth->text()    , CredentialModel::NAME_ROLE     );
-      acc->getCredentialsModel()->setData(currentCredential,edit_credential_password->text(), CredentialModel::PASSWORD_ROLE );
-      acc->getCredentialsModel()->setData(currentCredential,edit_credential_realm->text()   , CredentialModel::REALM_ROLE    );
+      acc->credentialsModel()->setData(currentCredential,edit_credential_auth->text()    , CredentialModel::NAME_ROLE     );
+      acc->credentialsModel()->setData(currentCredential,edit_credential_password->text(), CredentialModel::PASSWORD_ROLE );
+      acc->credentialsModel()->setData(currentCredential,edit_credential_realm->text()   , CredentialModel::REALM_ROLE    );
    }
 
    if (acc)
@@ -824,7 +824,7 @@ void DlgAccounts::addCredential()
    QModelIndex index = listView_accountList->currentIndex();
    Account*    acc   = AccountList::instance()->getAccountByModelIndex(index);
 
-   QModelIndex idx = acc->getCredentialsModel()->addCredentials();
+   QModelIndex idx = acc->credentialsModel()->addCredentials();
    list_credential->setCurrentIndex(idx);
 } //addCredential
 
@@ -848,8 +848,8 @@ void DlgAccounts::selectCredential(QModelIndex item, QModelIndex previous)
 ///Remove a credential
 void DlgAccounts::removeCredential() {
    Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
-   acc->getCredentialsModel()->removeCredentials(list_credential->currentIndex());
-   list_credential->setCurrentIndex(acc->getCredentialsModel()->index(0,0));
+   acc->credentialsModel()->removeCredentials(list_credential->currentIndex());
+   list_credential->setCurrentIndex(acc->credentialsModel()->index(0,0));
 }
 
 ///Enable published
@@ -870,7 +870,7 @@ void DlgAccounts::aliasChanged(QString newAlias)
 void DlgAccounts::changeAlias(QString newAlias)
 {
    Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
-   if (acc && newAlias != acc->getAccountAlias())
+   if (acc && newAlias != acc->accountAlias())
       AccountList::instance()->setData(listView_accountList->currentIndex(),newAlias,Qt::EditRole);
 //       acc->setAccountAlias(newAlias);
 }

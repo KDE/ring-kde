@@ -50,7 +50,7 @@ public:
    int                      size                   (                         ) const;
    Account*                 firstRegisteredAccount (                         ) const;
    Account*                 getDefaultAccount      (                         ) const;
-   static Account*          getCurrentAccount      (                         );
+   static Account*          currentAccount         (                         );
    Account*                 getAccountByModelIndex ( const QModelIndex& item ) const;
    static QString           getSimilarAliasIndex   ( const QString& alias    );
    static Account*          getPriorAccount        (                         );

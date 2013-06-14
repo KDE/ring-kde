@@ -230,8 +230,8 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
 ///Create a new dialing call from peer name and the account ID
 Call* CallModel::addDialingCall(const QString& peerName, Account* account)
 {
-   Account* acc = (account)?account:AccountList::getCurrentAccount();
-   return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc->getAccountId()));
+   Account* acc = (account)?account:AccountList::currentAccount();
+   return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc->accountId()));
 }  //addDialingCall
 
 ///Create a new incoming call when the daemon is being called
@@ -358,7 +358,7 @@ Call* CallModel::addConference(const QString& confID)
 
    Call* newConf = nullptr;
    if (m_sPrivateCallList_callId[callList[0]]->call_real->getAccount())
-      newConf =  new Call(confID, m_sPrivateCallList_callId[callList[0]]->call_real->getAccount()->getAccountId());
+      newConf =  new Call(confID, m_sPrivateCallList_callId[callList[0]]->call_real->getAccount()->accountId());
 
    if (newConf) {
       InternalStruct* aNewStruct = new InternalStruct;

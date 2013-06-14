@@ -380,7 +380,7 @@ void HistoryDock::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
    kDebug() << "Calling "<< m_pCurrentCall->getPeerPhoneNumber();
-   Call* call = SFLPhone::model()->addDialingCall(m_pCurrentCall->getPeerName(), AccountList::getCurrentAccount());
+   Call* call = SFLPhone::model()->addDialingCall(m_pCurrentCall->getPeerName(), AccountList::currentAccount());
    if (call) {
       call->setCallNumber  ( m_pCurrentCall->getPeerPhoneNumber() );
       call->setPeerName    ( m_pCurrentCall->getPeerName() );

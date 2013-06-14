@@ -152,7 +152,7 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
       return;
    if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::BOOKMARK)
       return;
-   Call* call2 = SFLPhone::model()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountList::getCurrentAccount());
+   Call* call2 = SFLPhone::model()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountList::currentAccount());
    call2->setCallNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
    call2->actionPerformed( Call::Action::ACCEPT   );
 }

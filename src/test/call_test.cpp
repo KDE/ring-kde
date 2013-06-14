@@ -42,12 +42,12 @@ void CallTests::testCallWithoutAccounts()
    //Disable all accounts
    for (int i=0;i<AccountList::instance()->size();i++) {
       saveState[(*AccountList::instance())[i]] = (*AccountList::instance())[i]->isAccountEnabled();
-      qDebug() << "Disabling" << (*AccountList::instance())[i]->getAccountId();
+      qDebug() << "Disabling" << (*AccountList::instance())[i]->accountId();
       (*AccountList::instance())[i]->setAccountEnabled(false);
       (*AccountList::instance())[i]->save();
    }
 
-    Call* call = m_pModel->addDialingCall("test call", AccountList::getCurrentAccount());
+    Call* call = m_pModel->addDialingCall("test call", AccountList::currentAccount());
     QCOMPARE( call, (Call*)nullptr );
 
    //Restore state

@@ -42,10 +42,10 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
 
       //Call related
       Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
-      void  attendedTransfer ( Call* toTransfer          , Call* target             );
-      void  transfer         ( Call* toTransfer          , QString target           );
-      void  removeCall       ( Call* call                                           );
-      QModelIndex getIndex   ( Call* call                                           );
+      void  attendedTransfer ( Call* toTransfer          , Call* target   );
+      void  transfer         ( Call* toTransfer          , QString target );
+      void  removeCall       ( Call* call                                 );
+      QModelIndex getIndex   ( Call* call                                 );
 
       //Conference related
       bool createConferenceFromCall  ( Call* call1, Call* call2      );
