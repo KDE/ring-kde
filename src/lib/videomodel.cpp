@@ -49,7 +49,7 @@ VideoModel* VideoModel::instance()
 VideoRenderer* VideoModel::getRenderer(Call* call)
 {
    if (!call) return nullptr;
-   return m_lRenderers[call->getCallId()];
+   return m_lRenderers[call->callId()];
 }
 
 ///Get the video preview renderer

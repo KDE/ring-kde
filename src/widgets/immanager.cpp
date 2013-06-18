@@ -37,7 +37,7 @@ void IMManager::newConversation(Call* call, InstantMessagingModel* model)
    IMTab* newTab = new IMTab(model,this);
    m_lTabs[call] = newTab;
    setVisible(true);
-   QString name = call->getFormattedName();
+   QString name = call->formattedName();
    addTab(newTab,name);
 }
 

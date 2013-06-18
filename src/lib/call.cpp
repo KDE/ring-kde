@@ -157,7 +157,7 @@ void Call::setContactBackend(AbstractContactBackend* be)
    m_pContactBackend = be;
 }
 
-AbstractContactBackend* Call::getContactBackend ()
+AbstractContactBackend* Call::contactBackend ()
 {
    return m_pContactBackend;
 }
@@ -224,10 +224,10 @@ Call* Call::buildExistingCall(QString callId)
    QString    peerNumber  = details[ CALL_PEER_NUMBER ];
    QString    peerName    = details[ CALL_PEER_NAME   ];
    QString    account     = details[ CALL_ACCOUNTID   ];
-   Call::State startState = getStartStateFromDaemonCallState(details[CALL_STATE], details[CALL_TYPE]);
+   Call::State startState = startStateFromDaemonCallState(details[CALL_STATE], details[CALL_TYPE]);
    Call* call             = new Call(startState, callId, peerName, peerNumber, account);
    call->m_Recording      = callManager.getIsRecording(callId);
-   call->m_HistoryState   = getHistoryStateFromType(details[STATE_KEY]);
+   call->m_HistoryState   = historyStateFromType(details[STATE_KEY]);
 
    if (!details[ CALL_TIMESTAMP_START ].isEmpty())
       call->m_pStartTimeStamp =  details[ CALL_TIMESTAMP_START ].toInt() ;
@@ -299,13 +299,13 @@ Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint s
    call->m_pStopTimeStamp  = stopTimeStamp ;
    call->m_pStartTimeStamp = startTimeStamp;
 
-   call->m_HistoryState  = getHistoryStateFromType(type);
+   call->m_HistoryState  = historyStateFromType(type);
 
    return call;
 }
 
 ///Get the history state from the type (see Call.cpp header)
-history_state Call::getHistoryStateFromType(QString type)
+history_state Call::historyStateFromType(QString type)
 {
    if(type == MISSED_STRING        )
       return history_state::MISSED   ;
@@ -317,7 +317,7 @@ history_state Call::getHistoryStateFromType(QString type)
 }
 
 ///Get the start sate from the daemon state
-Call::State Call::getStartStateFromDaemonCallState(QString daemonCallState, QString daemonCallType)
+Call::State Call::startStateFromDaemonCallState(QString daemonCallState, QString daemonCallType)
 {
    if(daemonCallState      == DAEMON_CALL_STATE_INIT_CURRENT  )
       return Call::State::CURRENT  ;
@@ -426,55 +426,55 @@ const QString Call::toHumanStateName(const Call::State cur)
 }
 
 ///Get the time (second from 1 jan 1970) when the call ended
-uint Call::getStopTimeStamp() const
+uint Call::stopTimeStamp() const
 {
    return m_pStopTimeStamp;
 }
 
 ///Get the time (second from 1 jan 1970) when the call started
-uint Call::getStartTimeStamp() const
+uint Call::startTimeStamp() const
 {
    return m_pStartTimeStamp;
 }
 
 ///Get the number where the call have been transferred
-const QString Call::getTransferNumber() const
+const QString Call::transferNumber() const
 {
    return m_TransferNumber;
 }
 
 ///Get the call / peer number
-const QString Call::getCallNumber() const
+const QString Call::callNumber() const
 {
    return m_CallNumber;
 }
 
 ///Return the call id
-const QString Call::getCallId()            const
+const QString Call::callId()            const
 {
    return m_CallId;
 }
 
 ///Return the peer phone number
-const QString Call::getPeerPhoneNumber()   const
+const QString Call::peerPhoneNumber()   const
 {
    return m_PeerPhoneNumber;
 }
 
 ///Get the peer name
-const QString Call::getPeerName()          const
+const QString Call::peerName()          const
 {
    return m_PeerName;
 }
 
 ///Generate the best possible peer name
-const QString Call::getFormattedName()
+const QString Call::formattedName()
 {
    if (isConference())
       return "Conference";
    else if (m_pContact && !m_pContact->getFormattedName().isEmpty())
       return m_pContact->getFormattedName();
-   else if (!getPeerName().isEmpty())
+   else if (!peerName().isEmpty())
       return m_PeerName;
    else
       return m_PeerPhoneNumber;
@@ -483,16 +483,16 @@ const QString Call::getFormattedName()
 ///If the call have a valid record
 bool Call::hasRecording()                   const
 {
-   return !getRecordingPath().isEmpty() && QFile::exists(getRecordingPath());
+   return !recordingPath().isEmpty() && QFile::exists(recordingPath());
 }
 
 
-QString Call::getLength() const
+QString Call::length() const
 {
    if (m_pStartTimeStamp == m_pStopTimeStamp) return QString(); //Invalid
    int nsec =0;
    if (m_pStopTimeStamp)
-      nsec = getStopTimeStamp() - getStartTimeStamp();//If the call is over
+      nsec = stopTimeStamp() - startTimeStamp();//If the call is over
    else { //Time to now
       time_t curTime;
       ::time(&curTime);
@@ -506,13 +506,13 @@ QString Call::getLength() const
 }
 
 ///Get the current state
-Call::State Call::getCurrentState()          const
+Call::State Call::state()          const
 {
    return m_CurrentState;
 }
 
 ///Get the call recording
-bool Call::getRecording()                   const
+bool Call::recording()                   const
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    ((Call*) this)->m_Recording        = callManager.getIsRecording(m_CallId);
@@ -520,7 +520,7 @@ bool Call::getRecording()                   const
 }
 
 ///Get the call account id
-Account* Call::getAccount()                 const
+Account* Call::account()                 const
 {
    return AccountList::instance()->getAccountById(m_Account);
 }
@@ -532,32 +532,26 @@ bool Call::isConference()                   const
 }
 
 ///Get the conference ID
-const QString Call::getConfId()            const
+const QString Call::confId()            const
 {
    return m_ConfId;
 }
 
 ///Get the recording path
-const QString Call::getRecordingPath()     const
+const QString Call::recordingPath()     const
 {
    return m_RecordingPath;
 }
 
 ///Get the current codec
-QString Call::getCurrentCodecName()         const
+QString Call::currentCodecName()         const
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    return callManager.getCurrentAudioCodecName(m_CallId);
 }
 
-///Get the state
-Call::State Call::getState()                 const
-{
-   return m_CurrentState;
-}
-
 ///Get the history state
-history_state Call::getHistoryState()       const
+history_state Call::historyState()       const
 {
    return m_HistoryState;
 }
@@ -565,7 +559,7 @@ history_state Call::getHistoryState()       const
 ///Is this call over?
 bool Call::isHistory()                      const
 {
-   return (getState() == Call::State::OVER);
+   return (state() == Call::State::OVER);
 }
 
 ///Is this call selected (useful for GUIs)
@@ -586,16 +580,16 @@ bool Call::isSecure() const {
    return currentAccount && ((currentAccount->isTlsEnable()) || (currentAccount->tlsMethod()));
 } //isSecure
 
-Contact* Call::getContact()
+Contact* Call::contact()
 {
    if (!m_pContact && m_pContactBackend && m_LastContactCheck < m_pContactBackend->getUpdateCount()) {
-      m_pContact = m_pContactBackend->getContactByPhone(m_PeerPhoneNumber,true,getAccount());
+      m_pContact = m_pContactBackend->getContactByPhone(m_PeerPhoneNumber,true,account());
    }
    return m_pContact;
 }
 
 ///Return the renderer associated with this call or nullptr
-VideoRenderer* Call::getVideoRenderer()
+VideoRenderer* Call::videoRenderer()
 {
    #ifdef ENABLE_VIDEO
    return VideoModel::instance()->getRenderer(this);
@@ -937,7 +931,7 @@ void Call::call()
       this->m_Account = m_Account;
       this->m_PeerPhoneNumber = m_CallNumber;
       if (m_pContactBackend) {
-         if (getContact())
+         if (contact())
             m_PeerName = m_pContact->getFormattedName();
       }
       time_t curTime;
@@ -1135,7 +1129,7 @@ void Call::updated()
 void Call::playRecording()
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
-   bool retval = callManager.startRecordedFilePlayback(getRecordingPath());
+   const bool retval = callManager.startRecordedFilePlayback(recordingPath());
    if (retval)
       emit playbackStarted();
 }
@@ -1144,7 +1138,7 @@ void Call::playRecording()
 void Call::stopRecording()
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
-   Q_NOREPLY callManager.stopRecordedFilePlayback(getRecordingPath());
+   Q_NOREPLY callManager.stopRecordedFilePlayback(recordingPath());
    emit playbackStopped(); //TODO remove this, it is a workaround for bug #11942
 }
 
@@ -1158,7 +1152,7 @@ void Call::seekRecording(double position)
 ///Daemon record playback stopped
 void Call::stopPlayback(QString filePath)
 {
-   if (filePath == getRecordingPath()) {
+   if (filePath == recordingPath()) {
       emit playbackStopped();
    }
 }
@@ -1170,49 +1164,49 @@ void Call::updatePlayback(int position,int size)
 }
 
 ///Common source for model data roles
-QVariant Call::getRoleData(int role) const
+QVariant Call::roleData(int role) const
 {
-   Contact* ct = ((Call*)this)->getContact();
+   Contact* ct = ((Call*)this)->contact();
    switch (role) {
       case Call::Role::Name:
       case Qt::DisplayRole:
          if (isConference())
             return "Conference";
-         else if (getCurrentState() == Call::State::DIALING)
+         else if (state() == Call::State::DIALING)
             return m_CallNumber;
          else if (m_PeerName.isEmpty())
-            return ct?ct->getFormattedName():getPeerPhoneNumber();
+            return ct?ct->getFormattedName():peerPhoneNumber();
          else
-            return getPeerName();
+            return peerName();
          break;
       case Qt::EditRole:
          return m_CallNumber;
       case Call::Role::Number:
-         return getPeerPhoneNumber();
+         return peerPhoneNumber();
          break;
       case Call::Role::Direction:
-         return getHistoryState();
+         return historyState();
          break;
       case Call::Role::Date:
-         return getStartTimeStamp();
+         return startTimeStamp();
          break;
       case Call::Role::Length:
-         return getLength();
+         return length();
          break;
       case Call::Role::FormattedDate:
-         return QDateTime::fromTime_t(getStartTimeStamp()).toString();
+         return QDateTime::fromTime_t(startTimeStamp()).toString();
          break;
       case Call::Role::HasRecording:
          return hasRecording();
          break;
       case Call::Role::HistoryState:
-         return getHistoryState();
+         return historyState();
          break;
       case Call::Role::Filter:
-         return getHistoryState()+'\n'+getRoleData(Call::Role::Name).toString()+'\n'+getRoleData(Call::Role::Number).toString();
+         return historyState()+'\n'+roleData(Call::Role::Name).toString()+'\n'+roleData(Call::Role::Number).toString();
          break;
       case Call::Role::FuzzyDate:
-         return HistoryModel::timeToHistoryCategory(getStartTimeStamp());
+         return HistoryModel::timeToHistoryCategory(startTimeStamp());
          break;
       case Call::Role::IsBookmark:
          return false;
@@ -1230,7 +1224,7 @@ QVariant Call::getRoleData(int role) const
          return ct?ct->getOrganization():QVariant();
          break;
       case Call::Role::Codec:
-         return getCurrentCodecName();
+         return currentCodecName();
          break;
       case Call::Role::IsConference:
          return isConference();
@@ -1242,10 +1236,10 @@ QVariant Call::getRoleData(int role) const
          return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
          break;
       case Call::Role::CallState:
-         return static_cast<int>(getCurrentState());
+         return static_cast<int>(state());
          break;
       case Call::Role::Id:
-         return ((m_isConference)?getConfId():getCallId());
+         return ((m_isConference)?confId():callId());
          break;
       case Call::Role::StartTime:
          return m_pStartTimeStamp;

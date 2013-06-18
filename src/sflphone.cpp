@@ -606,11 +606,11 @@ void SFLPhone::on_m_pView_recordCheckStateChangeAsked(bool recordCheckState)
 void SFLPhone::on_m_pView_incomingCall(const Call* call)
 {
    if (call) {
-      const Contact* contact = AkonadiBackend::instance()->getContactByPhone(call->getPeerPhoneNumber());
+      const Contact* contact = AkonadiBackend::instance()->getContactByPhone(call->peerPhoneNumber());
       if (contact)
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber() : call->peerName()),((contact->getPhoto())?*contact->getPhoto():nullptr));
       else
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->getPeerName().isEmpty() ? call->getPeerPhoneNumber() : call->getPeerName()));
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber() : call->peerName()));
    }
 }
 

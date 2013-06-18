@@ -65,7 +65,7 @@ void InstantMessagingModelManager::newMessage(QString callId, QString from, QStr
 
 ///Singleton
 InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
-   QString key = call->isConference()?call->getConfId():call->getCallId();
+   const QString key = call->isConference()?call->confId():call->callId();
    if (!m_lModels[key]) {
       m_lModels[key] = new InstantMessagingModel(call);
       emit newMessagingModel(call,m_lModels[key]);
@@ -97,14 +97,14 @@ QVariant InstantMessagingModel::data( const QModelIndex& idx, int role) const
             return INCOMMING_IM;
             break;
          case MESSAGE_CONTACT_ROLE:
-            if (m_pCall->getContact()) {
+            if (m_pCall->contact()) {
                return QVariant();
             }
             break;
          case MESSAGE_IMAGE_ROLE: {
             if (m_lImages.find(idx) != m_lImages.end())
                return m_lImages[idx];
-            Contact* c =m_pCall->getContact();
+            const Contact* c = m_pCall->contact();
             if (c && c->getPhoto()) {
                return QVariant::fromValue<void*>((void*)c->getPhoto());
             }

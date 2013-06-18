@@ -349,13 +349,13 @@ QHash<Contact*, time_t> ContactProxyModel::getContactListByTime() const
    i.toBack();
    while (i.hasPrevious()) { //Iterate from the end up
       i.previous();
-      (alreadyUsed.find(i.value()->getPeerPhoneNumber()) == alreadyUsed.constEnd()); //Don't ask, leave it there Elv13(2012)
-      if (alreadyUsed.find(i.value()->getPeerPhoneNumber()) == alreadyUsed.constEnd()) {
-         Contact* contact = i.value()->getContact();
+      (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()); //Don't ask, leave it there Elv13(2012)
+      if (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()) {
+         Contact* contact = i.value()->contact();
          if (contact && toReturn.find(contact) == toReturn.end()) {
-            toReturn[contact] = i.value()->getStartTimeStamp();
+            toReturn[contact] = i.value()->startTimeStamp();
          }
-         alreadyUsed << i.value()->getPeerPhoneNumber();
+         alreadyUsed << i.value()->peerPhoneNumber();
       }
    }
    return toReturn;

@@ -67,7 +67,7 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
 AkonadiBackend::~AkonadiBackend()
 {
    delete m_pSession;
-   if (Call::getContactBackend() == this)
+   if (Call::contactBackend() == this)
       Call::setContactBackend(nullptr);
 }
 

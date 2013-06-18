@@ -106,7 +106,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_
                hc[ PEER_NUMBER_KEY     ]         ,
                hc[ STATE_KEY           ]
       );
-      if (pastCall->getPeerName().isEmpty()) {
+      if (pastCall->peerName().isEmpty()) {
          pastCall->setPeerName("Unknown");
       }
       pastCall->setRecordingPath(hc[ RECORDING_PATH_KEY ]);
@@ -151,9 +151,9 @@ void HistoryModel::addPriv(Call* call)
    if (!call)
       return;
 
-   m_sHistoryCalls[call->getStartTimeStamp()] = call;
-   if (!m_HaveContactModel && call->getContactBackend()) {
-      connect(((QObject*)call->getContactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
+   m_sHistoryCalls[call->startTimeStamp()] = call;
+   if (!m_HaveContactModel && call->contactBackend()) {
+      connect(((QObject*)call->contactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
       m_HaveContactModel = true;
    }
 
@@ -182,7 +182,7 @@ const QStringList HistoryModel::getHistoryCallId()
    self();
    QStringList toReturn;
    foreach(Call* call, m_sHistoryCalls) {
-      toReturn << call->getCallId();
+      toReturn << call->callId();
    }
    return toReturn;
 }
@@ -193,10 +193,10 @@ const QStringList HistoryModel::getNumbersByPopularity()
    self();
    QHash<QString,SortableCallSource*> hc;
    foreach (Call* call, getHistory()) {
-      if (!hc[call->getPeerPhoneNumber()]) {
-         hc[call->getPeerPhoneNumber()] = new SortableCallSource(call);
+      if (!hc[call->peerPhoneNumber()]) {
+         hc[call->peerPhoneNumber()] = new SortableCallSource(call);
       }
-      hc[call->getPeerPhoneNumber()]->count++;
+      hc[call->peerPhoneNumber()]->count++;
    }
    QList<SortableCallSource> userList;
    foreach (SortableCallSource* i,hc) {
@@ -205,7 +205,7 @@ const QStringList HistoryModel::getNumbersByPopularity()
    qSort(userList);
    QStringList cl;
    for (int i=userList.size()-1;i >=0 ;i--) {
-      cl << userList[i].callInfo->getPeerPhoneNumber();
+      cl << userList[i].callInfo->peerPhoneNumber();
    }
    foreach (SortableCallSource* i,hc) {
       delete i;
@@ -284,7 +284,7 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
       else if (m_lCategoryCounter.size() >= idx.parent().row() 
          && m_lCategoryCounter[idx.parent().row()] 
          && m_lCategoryCounter[idx.parent().row()]->m_lChilds.size() >= idx.row())
-         return m_lCategoryCounter[idx.parent().row()]->m_lChilds[idx.row()]->getRoleData((Call::Role)role);
+         return m_lCategoryCounter[idx.parent().row()]->m_lChilds[idx.row()]->roleData((Call::Role)role);
       break;
    case HistoryTreeBackend::Type::NUMBER:
    case HistoryTreeBackend::Type::BOOKMARK:
@@ -386,7 +386,7 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
          QString text = data(idx, Call::Role::Number).toString();
          mimeData2->setData(MIME_PLAIN_TEXT , text.toUtf8());
          mimeData2->setData(MIME_PHONENUMBER, text.toUtf8());
-         mimeData2->setData(MIME_HISTORYID  , ((Call*)idx.internalPointer())->getCallId().toUtf8());
+         mimeData2->setData(MIME_HISTORYID  , ((Call*)idx.internalPointer())->callId().toUtf8());
          return mimeData2;
       }
    }
@@ -426,7 +426,7 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
 
 QString HistoryModel::category(const Call* call) const
 {
-   QString cat = call->getRoleData((Call::Role)m_Role).toString();
+   QString cat = call->roleData((Call::Role)m_Role).toString();
 //    if (cat.size() && !m_ShowAll)
 //       cat = cat[0].toUpper();
    return cat;

@@ -38,7 +38,7 @@ AbstractContactBackend::AbstractContactBackend(QObject* par) : QAbstractItemMode
 ///Destructor
 AbstractContactBackend::~AbstractContactBackend()
 {
-   if (Call::getContactBackend() == this)
+   if (Call::contactBackend() == this)
       Call::setContactBackend(nullptr);
    foreach (Contact* c,m_ContactByUid) {
       delete c;

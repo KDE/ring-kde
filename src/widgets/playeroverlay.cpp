@@ -35,10 +35,10 @@ PlayerOverlay::PlayerOverlay(Call* call, QWidget* parent) : QWidget(parent),m_pC
 
 void PlayerOverlay::slotDeleteRecording()
 {
-   int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to delete this recording?"), i18n("Delete recording"));
+   const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to delete this recording?"), i18n("Delete recording"));
    if (ret == KMessageBox::Yes) {
       kDebug() << "Deleting file";
-      QFile::remove(m_pCall->getRecordingPath());
+      QFile::remove(m_pCall->recordingPath());
       setVisible(false);
    }
 }

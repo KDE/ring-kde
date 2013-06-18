@@ -508,11 +508,11 @@ void ConferenceDelegate::slotTextChanged(const QString& text)
       Call* call  = nullptr;
       if (obj)
          call = qobject_cast<Call*>(obj);
-      if (call && call->getState() != Call::State::DIALING) {
+      if (call && call->state() != Call::State::DIALING) {
          emit closeEditor(ed);
       }
-      if (call && call->getCallNumber() != text) {
-         if (text.left(text.size()-1) == call->getCallNumber()) {
+      if (call && call->callNumber() != text) {
+         if (text.left(text.size()-1) == call->callNumber()) {
             call->playDTMF(text.right(1));
          }
          call->setCallNumber(text);

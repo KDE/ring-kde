@@ -189,39 +189,38 @@ public:
    static Call* buildHistoryCall  (const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type );
    static Call* buildExistingCall (QString callId                                                                                                               );
    static void  setContactBackend (AbstractContactBackend* be                                                                                                           );
-   static AbstractContactBackend* getContactBackend ();
+   static AbstractContactBackend* contactBackend ();
 
    //Static getters
-   static history_state getHistoryStateFromType            ( QString type                                    );
-   static Call::State   getStartStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
+   static history_state historyStateFromType            ( QString type                                    );
+   static Call::State   startStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
    
    //Getters
-   Call::State          getState            () const;
-   const QString        getCallId           () const;
-   const QString        getPeerPhoneNumber  () const;
-   const QString        getPeerName         () const;
-   Call::State          getCurrentState     () const;
-   history_state        getHistoryState     () const;
-   bool                 getRecording        () const;
-   Account*             getAccount          () const;
-   bool                 isHistory           () const;
-   uint                 getStopTimeStamp    () const;
-   uint                 getStartTimeStamp   () const;
-   QString              getCurrentCodecName () const;
+   Call::State          state            () const;
+   const QString        callId           () const;
+   const QString        peerPhoneNumber  () const;
+   const QString        peerName         () const;
+   history_state        historyState     () const;
+   bool                 recording        () const;
+   Account*             account          () const;
+   bool                 isHistory        () const;
+   uint                 stopTimeStamp    () const;
+   uint                 startTimeStamp   () const;
+   QString              currentCodecName () const;
    bool                 isSecure            () const;
    bool                 isConference        () const;
    bool                 isSelected          () const;
-   const QString        getConfId           () const;
-   const QString        getTransferNumber   () const;
-   const QString        getCallNumber       () const;
-   const QString        getRecordingPath    () const;
+   const QString        confId           () const;
+   const QString        transferNumber   () const;
+   const QString        callNumber       () const;
+   const QString        recordingPath    () const;
    static const QString toHumanStateName    (const Call::State);
-   Contact*             getContact          ()      ;
-   VideoRenderer*       getVideoRenderer    ()      ;
-   const QString        getFormattedName    ()      ;
+   Contact*             contact          ()      ;
+   VideoRenderer*       videoRenderer    ()      ;
+   const QString        formattedName    ()      ;
    bool                 hasRecording        () const;
-   QString              getLength           () const;
-   QVariant             getRoleData         (int role) const;
+   QString              length           () const;
+   QVariant             roleData         (int role) const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);

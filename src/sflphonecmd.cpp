@@ -75,7 +75,7 @@ void SFLPhoneCmd::sendText(const QString& number, const QString& text)
 ///Send the message now that the call is ready
 void SFLPhoneCmd::textMessagePickup(Call* call)
 {
-   if (call->getState() == Call::State::CURRENT) {
+   if (call->state() == Call::State::CURRENT) {
       call->sendTextMessage(call->property("message").toString());
       disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
       call->actionPerformed(Call::Action::REFUSE); //HangUp

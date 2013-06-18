@@ -123,7 +123,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       Call* call  = nullptr;
       if (obj)
          call = qobject_cast<Call*>(obj);
-      if (call && QFile::exists(call->getRecordingPath())) {
+      if (call && QFile::exists(call->recordingPath())) {
          QPainter painter(&pxm);
          QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
          status=status.scaled(QSize(24,24));
@@ -264,7 +264,7 @@ void HistoryDelegate::slotStopRingingAnimation()
    if (m_pRingingTip && m_pRingingTip->isVisible()) {
       bool found = false;
       foreach(const Call* call,CallModel::instance()->getCallList()) {
-         found = (call->getState() == Call::State::RINGING || call->getState() == Call::State::INCOMING);
+         found = (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING);
          if (found)
             break;
       }
