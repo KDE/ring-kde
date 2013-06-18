@@ -512,6 +512,9 @@ void ConferenceDelegate::slotTextChanged(const QString& text)
          emit closeEditor(ed);
       }
       if (call && call->getCallNumber() != text) {
+         if (text.left(text.size()-1) == call->getCallNumber()) {
+            call->playDTMF(text.right(1));
+         }
          call->setCallNumber(text);
       }
       else if (!call) {

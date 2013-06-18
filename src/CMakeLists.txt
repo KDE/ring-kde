@@ -94,6 +94,7 @@ SET(
    delegates/categorizeddelegate.cpp
    delegates/phonenumberdelegate.cpp
    delegates/delegatedropoverlay.cpp
+   delegates/dialpaddelegate.cpp
 #    widgets/acceleratedvideowidget.cpp
 #    callview.cpp
 )

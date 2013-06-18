@@ -36,6 +36,7 @@
 #include "klib/configurationskeleton.h"
 #include "widgets/playeroverlay.h"
 #include "delegatedropoverlay.h"
+#include "dialpaddelegate.h"
 #include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
 
@@ -79,6 +80,7 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
 void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
+
    painter->save();
    int iconHeight = option.rect.height() -4;
    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
@@ -204,10 +206,12 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    if (!index.parent().isValid() && currentState != Call::State::RINGING && currentState != Call::State::INCOMING){
-      QString length = index.data(Call::Role::Length).toString();
+      const QString length = index.data(Call::Role::Length).toString();
+      const int lenLen = fm.width(length);
       if (!length.isEmpty()) {
-         painter->drawText(option.rect.x()+option.rect.width()-fm.width(length)-4,option.rect.y()+(option.rect.height()/2),length);
+         painter->drawText(option.rect.x()+option.rect.width()-lenLen-4,option.rect.y()+(option.rect.height()/2),length);
       }
+      DialpadDelegate::paint(painter,option,index,lenLen);
    }
    else if ((currentState == Call::State::RINGING || currentState == Call::State::INCOMING) && index.model()->rowCount() > 1) {
       if (!m_AnimationWrapper) {
@@ -223,6 +227,11 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       painter->drawImage(QRect(option.rect.x()+option.rect.width()-option.rect.height()-8,option.rect.y()+4,option.rect.height()-8,option.rect.height()-8),m_AnimationWrapper->currentImage());
       painter->restore();
    }
+   else {
+      //Display the dialpad if necesary
+      DialpadDelegate::paint(painter,option,index);
+   }
+   
 
    static QMap<QString,QImage*> historyMap,callMap;
    //BEGIN overlay path

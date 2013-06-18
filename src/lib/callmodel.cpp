@@ -223,6 +223,7 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
    emit dataChanged(idx, idx);
    connect(call,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
+   connect(call,SIGNAL(dtmfPlayed(QString)),this,SLOT(slotDTMFPlayed(QString)));
    emit layoutChanged();
    return call;
 } //addCall
@@ -488,6 +489,14 @@ bool CallModel::setData( const QModelIndex& idx, const QVariant &value, int role
          Call* call = getCall(idx);
          if (call && number != call->getCallNumber()) {
             call->setCallNumber(number);
+            emit dataChanged(idx,idx);
+            return true;
+         }
+      }
+      else if (role == Call::Role::DTMFAnimState) {
+         Call* call = getCall(idx);
+         if (call) {
+            call->setProperty("DTMFAnimState",value.toInt());
             emit dataChanged(idx,idx);
             return true;
          }
@@ -857,4 +866,24 @@ void CallModel::slotCallChanged(Call* call)
 ///Add call slot
 void CallModel::slotAddPrivateCall(Call* call) {
    addCall(call,0);
+}
+
+///Notice views that a dtmf have been played
+void CallModel::slotDTMFPlayed( const QString& str )
+{
+   Call* call = qobject_cast<Call*>(QObject::sender());
+   if (str.size()==1) {
+      int idx = 0;
+      char s = str.toLower().toAscii()[0];
+      if (s >= '1' && s <= '9'     ) idx = s - '1'     ;
+      else if (s >= 'a' && s <= 'v') idx = (s - 'a')/3 ;
+      else if (s >= 'w' && s <= 'z') idx = 8           ;
+      else if (s == '0'            ) idx = 10          ;
+      else if (s == '*'            ) idx = 9           ;
+      else if (s == '#'            ) idx = 11          ;
+      else                           idx = -1          ;
+      call->setProperty("latestDtmfIdx",idx);
+   }
+   const QModelIndex& idx = getIndex(call);
+   setData(idx,50, Call::Role::DTMFAnimState);
 }

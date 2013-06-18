@@ -350,7 +350,6 @@ void SFLPhoneView::typeString(QString str)
     * 
     * Any other comportment need to be documented here or treated as a bug
     */
-   CallManagerInterface& callManager = DBus::CallManager::instance();
 
    Call* call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex());
    Call* currentCall = nullptr;
@@ -359,7 +358,7 @@ void SFLPhoneView::typeString(QString str)
    //If the selected call is also the current one, then send DTMF and exit
    if(call && call->getState() == Call::State::CURRENT) {
       currentCall = call;
-      Q_NOREPLY callManager.playDTMF(str);
+      call->playDTMF(str);
       return;
    }
 
@@ -381,15 +380,17 @@ void SFLPhoneView::typeString(QString str)
          m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
       }
    }
-   Q_NOREPLY callManager.playDTMF(str);
 
    if(!currentCall && candidate) {
+      candidate->playDTMF(str);
       candidate->appendText(str);
    }
    if (!candidate) {
       candidate = SFLPhone::model()->addDialingCall();
-      if (candidate)
+      if (candidate) {
+         candidate->playDTMF(str);
          candidate->appendText(str);
+      }
    }
 } //typeString
 

@@ -125,6 +125,8 @@ public:
       StartTime     = 121,
       StopTime      = 122,
       DropState     = 300,
+      DTMFAnimState = 400,
+      LastDTMFidx   = 401,
    };
    
    enum class State : unsigned int{
@@ -333,6 +335,7 @@ public Q_SLOTS:
    void playRecording();
    void stopRecording();
    void seekRecording(double position);
+   void playDTMF(const QString& str);
 
 private Q_SLOTS:
    void stopPlayback(QString filePath);
@@ -348,6 +351,7 @@ Q_SIGNALS:
    void playbackPositionChanged(int,int);
    void playbackStopped();
    void playbackStarted();
+   void dtmfPlayed(const QString& str);
 };
 
 Q_DECLARE_METATYPE(Call*)

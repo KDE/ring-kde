@@ -1254,8 +1254,21 @@ QVariant Call::getRoleData(int role) const
       case Call::Role::DropState:
          return property("dropState");
          break;
+      case Call::Role::DTMFAnimState:
+         return property("DTMFAnimState");
+         break;
+      case Call::Role::LastDTMFidx:
+         return property("latestDtmfIdx");
+         break;
       default:
          break;
    };
    return QVariant();
+}
+
+
+void Call::playDTMF(const QString& str)
+{
+   Q_NOREPLY DBus::CallManager::instance().playDTMF(str);
+   emit dtmfPlayed(str);
 }

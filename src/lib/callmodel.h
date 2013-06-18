@@ -110,6 +110,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       void slotAddPrivateCall     ( Call* call                                        );
       void slotNewRecordingAvail  ( const QString& callId    , const QString& filePath);
       void slotCallChanged        ( Call* call                                        );
+      void slotDTMFPlayed         ( const QString& str                                );
       #ifdef ENABLE_VIDEO
       void slotStartedDecoding    ( const QString& callId    , const QString& shmKey  );
       void slotStoppedDecoding    ( const QString& callId    , const QString& shmKey  );
