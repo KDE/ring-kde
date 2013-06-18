@@ -51,11 +51,10 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
       QStyledItemDelegate::paint(painter,opt2,index);
    }
 
-   Contact::PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf())->getPhoneNumbers()[index.row()];
-   QFont font = painter->font();
-   QFontMetrics fm(font);
+   Contact::PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self())->phoneNumbers()[index.row()];
+   QFontMetrics fm(painter->font());
    painter->setPen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-   painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->getType().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->getType());
+   painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->type().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->type());
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   painter->drawText(option.rect.x()+3,option.rect.y()+fm.height()+3,nb->getNumber());
+   painter->drawText(option.rect.x()+3,option.rect.y()+fm.height()+3,nb->number());
 }

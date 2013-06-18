@@ -167,12 +167,12 @@ ContactDock::~ContactDock()
 ///Select a number
 QString ContactDock::showNumberSelector(bool& ok)
 {
-   if (m_pCurrentContact && m_pCurrentContact->getPhoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
+   if (m_pCurrentContact && m_pCurrentContact->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
       QStringList list;
       QHash<QString,QString> map;
-      foreach (Contact::PhoneNumber* number, m_pCurrentContact->getPhoneNumbers()) {
-         map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
-         list << number->getType()+" ("+number->getNumber()+')';
+      foreach (Contact::PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
+         map[number->type()+" ("+number->number()+')'] = number->number();
+         list << number->type()+" ("+number->number()+')';
       }
       QString result = KInputDialog::getItem ( i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
 
@@ -185,9 +185,9 @@ QString ContactDock::showNumberSelector(bool& ok)
       ok = true;
       return m_PreselectedNb;
    }
-   else if (m_pCurrentContact&& m_pCurrentContact->getPhoneNumbers().size() == 1) {
+   else if (m_pCurrentContact&& m_pCurrentContact->phoneNumbers().size() == 1) {
       ok = true;
-      return m_pCurrentContact->getPhoneNumbers()[0]->getNumber();
+      return m_pCurrentContact->phoneNumbers()[0]->number();
    }
    else {
       ok = false;
@@ -235,9 +235,9 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
    QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
-   if (((ContactTreeBackend*)idx.internalPointer())->type3() != ContactTreeBackend::Type::CONTACT)
+   if (((ContactTreeBackend*)idx.internalPointer())->type() != ContactTreeBackend::Type::CONTACT)
       return;
-   m_pCurrentContact = (Contact*)static_cast<ContactTreeBackend*>(idx.internalPointer())->getSelf();
+   m_pCurrentContact = (Contact*)static_cast<ContactTreeBackend*>(idx.internalPointer())->self();
    callAgain();
 }
 
@@ -288,18 +288,18 @@ void ContactDock::showContext(const QModelIndex& index)
       connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
    }
    if (index.parent().isValid()  && !index.parent().parent().isValid()) {
-      Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+      Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->self();
       m_pCurrentContact = ct;
       m_PreselectedNb.clear();
-      if (!ct->getPreferredEmail().isEmpty()) {
+      if (!ct->preferredEmail().isEmpty()) {
          m_pEmail->setEnabled(true);
       }
-      Contact::PhoneNumbers numbers = ct->getPhoneNumbers();
+      Contact::PhoneNumbers numbers = ct->phoneNumbers();
       m_pBookmark->setEnabled(numbers.count() == 1);
    }
    else if (index.parent().parent().isValid()) {
-      m_pCurrentContact = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
-      m_PreselectedNb   = m_pCurrentContact->getPhoneNumbers()[index.row()]->getNumber();
+      m_pCurrentContact = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->self();
+      m_PreselectedNb   = m_pCurrentContact->phoneNumbers()[index.row()]->number();
    }
    else {
       m_pCurrentContact = nullptr;
@@ -323,7 +323,7 @@ void ContactDock::sendEmail()
    kDebug() << "Sending email";
    QProcess *myProcess = new QProcess(this);
    QStringList arguments;
-   myProcess->start("xdg-email", (arguments << m_pCurrentContact->getPreferredEmail()));
+   myProcess->start("xdg-email", (arguments << m_pCurrentContact->preferredEmail()));
 }
 
 ///Call the same number again
@@ -333,10 +333,10 @@ void ContactDock::callAgain()
    bool ok;
    QString number = showNumberSelector(ok);
    if (ok) {
-      Call* call = SFLPhone::model()->addDialingCall(m_pCurrentContact->getFormattedName(), AccountList::currentAccount());
+      Call* call = SFLPhone::model()->addDialingCall(m_pCurrentContact->formattedName(), AccountList::currentAccount());
       if (call) {
          call->setCallNumber(number);
-         call->setPeerName(m_pCurrentContact->getFormattedName());
+         call->setPeerName(m_pCurrentContact->formattedName());
          call->actionPerformed(Call::Action::ACCEPT);
       }
       else {
@@ -350,12 +350,12 @@ void ContactDock::copy()
 {
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(MIME_CONTACT, m_pCurrentContact->getUid().toUtf8());
-   QString numbers(m_pCurrentContact->getFormattedName()+": ");
-   QString numbersHtml("<b>"+m_pCurrentContact->getFormattedName()+"</b><br />");
-   foreach (Contact::PhoneNumber* number, m_pCurrentContact->getPhoneNumbers()) {
-      numbers     += number->getNumber()+" ("+number->getType()+")  ";
-      numbersHtml += number->getNumber()+" ("+number->getType()+")  <br />";
+   mimeData->setData(MIME_CONTACT, m_pCurrentContact->uid().toUtf8());
+   QString numbers(m_pCurrentContact->formattedName()+": ");
+   QString numbersHtml("<b>"+m_pCurrentContact->formattedName()+"</b><br />");
+   foreach (Contact::PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
+      numbers     += number->number()+" ("+number->type()+")  ";
+      numbersHtml += number->number()+" ("+number->type()+")  <br />";
    }
    mimeData->setData("text/plain", numbers.toUtf8());
    mimeData->setData("text/html", numbersHtml.toUtf8());
@@ -376,7 +376,7 @@ void ContactDock::addPhone()
 {
    kDebug() << "Adding to contact";
    bool ok;
-   QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
+   const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
       AkonadiBackend::instance()->addPhoneNumber(m_pCurrentContact,text,"work");
    }
@@ -385,9 +385,9 @@ void ContactDock::addPhone()
 ///Add this contact to the bookmark list
 void ContactDock::bookmark()
 {
-   Contact::PhoneNumbers numbers = m_pCurrentContact->getPhoneNumbers();
+   const Contact::PhoneNumbers numbers = m_pCurrentContact->phoneNumbers();
    if (numbers.count() == 1)
-      SFLPhone::app()->bookmarkDock()->addBookmark(numbers[0]->getNumber());
+      SFLPhone::app()->bookmarkDock()->addBookmark(numbers[0]->number());
 }
 
 ///Called when a call is dropped on transfer
@@ -395,7 +395,7 @@ void ContactDock::transferEvent(QMimeData* data)
 {
    if (data->hasFormat( MIME_CALLID)) {
       bool ok;
-      QString result = showNumberSelector(ok);
+      const QString result = showNumberSelector(ok);
       if (ok) {
          Call* call = SFLPhone::model()->getCall(data->data(MIME_CALLID));
          if (dynamic_cast<Call*>(call)) {

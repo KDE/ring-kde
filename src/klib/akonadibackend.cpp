@@ -249,8 +249,8 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
 ///Edit backend value using an updated frontend contact
 void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
 {
-   Akonadi::Item item = m_ItemHash[contact->getUid()];
-   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->getUid())) {
+   Akonadi::Item item = m_ItemHash[contact->uid()];
+   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
       return;
    }
@@ -274,19 +274,19 @@ void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
 void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 {
    KABC::Addressee newContact;
-   newContact.setNickName       ( contact->getNickName()        );
-   newContact.setFormattedName  ( contact->getFormattedName()   );
-   newContact.setGivenName      ( contact->getFirstName()       );
-   newContact.setFamilyName     ( contact->getSecondName()      );
-   newContact.setOrganization   ( contact->getOrganization()    );
-   newContact.setDepartment     ( contact->getDepartment()      );
+   newContact.setNickName       ( contact->nickName()        );
+   newContact.setFormattedName  ( contact->formattedName()   );
+   newContact.setGivenName      ( contact->firstName()       );
+   newContact.setFamilyName     ( contact->secondName()      );
+   newContact.setOrganization   ( contact->organization()    );
+   newContact.setDepartment     ( contact->department()      );
    //newContact.setPreferredEmail ( contact->getPreferredEmail()  );//TODO
 
-   foreach (Contact::PhoneNumber* nb, contact->getPhoneNumbers()) {
+   foreach (Contact::PhoneNumber* nb, contact->phoneNumbers()) {
       KABC::PhoneNumber pn;
-      pn.setType(nameToType(nb->getType()));
+      pn.setType(nameToType(nb->type()));
 
-      pn.setNumber(nb->getNumber());
+      pn.setNumber(nb->number());
       newContact.insertPhoneNumber(pn);
    }
 
@@ -322,8 +322,8 @@ void AkonadiBackend::addNewContact(Contact* contact)
 ///Add a new phone number to an existing contact
 void AkonadiBackend::addPhoneNumber(Contact* contact, QString number, QString type)
 {
-   Akonadi::Item item = m_ItemHash[contact->getUid()];
-   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->getUid())) {
+   Akonadi::Item item = m_ItemHash[contact->uid()];
+   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
       return;
    }

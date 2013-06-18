@@ -40,9 +40,9 @@ ContactDelegate::ContactDelegate(QObject* parent) : QStyledItemDelegate(parent),
 QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    QFontMetrics fm(QApplication::font());
-   Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+   Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->self();
    int lineHeight = fm.height()+2;
-   int lines = ((!ct->getOrganization().isEmpty()) + (!ct->getPreferredEmail().isEmpty()))*lineHeight + 2*lineHeight;
+   int lines = ((!ct->organization().isEmpty()) + (!ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight;
    return QSize(sh.rwidth(),lines<52?52:lines);
 }
 
@@ -60,10 +60,10 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   Contact* ct = (Contact*)((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
-   if (ct->getPhoto()) {
-      QPixmap pxm = *ct->getPhoto();
-      QRect pxRect = pxm.rect();
+   Contact* ct = (Contact*)((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self();
+   if (ct->photo()) {
+      QPixmap pxm = *ct->photo();
+      const QRect pxRect = pxm.rect();
       QBitmap mask(pxRect.size());
       QPainter customPainter(&mask);
       customPainter.setRenderHint  (QPainter::Antialiasing, true   );
@@ -87,19 +87,19 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    currentHeight +=fm.height();
    font.setBold(false);
    painter->setFont(font);
-   if (!ct->getOrganization().isEmpty()) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->getOrganization());
+   if (!ct->organization().isEmpty()) {
+      painter->drawText(option.rect.x()+15+48,currentHeight,ct->organization());
       currentHeight +=fm.height();
    }
-   if (!ct->getPreferredEmail().isEmpty()) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->getPreferredEmail());
+   if (!ct->preferredEmail().isEmpty()) {
+      painter->drawText(option.rect.x()+15+48,currentHeight,ct->preferredEmail());
       currentHeight +=fm.height();
    }
-   if (ct->getPhoneNumbers().size() == 1) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->getPhoneNumbers()[0]->getNumber());
+   if (ct->phoneNumbers().size() == 1) {
+      painter->drawText(option.rect.x()+15+48,currentHeight,ct->phoneNumbers()[0]->number());
    }
    else {
-      painter->drawText(option.rect.x()+15+48,currentHeight,QString::number(ct->getPhoneNumbers().size()) + i18n(" phone numbers"));
+      painter->drawText(option.rect.x()+15+48,currentHeight,QString::number(ct->phoneNumbers().size()) + i18n(" phone numbers"));
    }
 
    //BEGIN overlay path

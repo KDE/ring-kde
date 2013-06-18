@@ -44,12 +44,12 @@ public:
     };
     explicit ContactTreeBackend(ContactTreeBackend::Type _type);
     virtual ~ContactTreeBackend();
-    ContactTreeBackend::Type type3() const;
-    virtual QObject* getSelf() = 0;
+    ContactTreeBackend::Type type() const;
+    virtual QObject* self() = 0;
     char dropState();
     void setDropState(const char state);
 private:
-    ContactTreeBackend::Type m_Type3;
+    ContactTreeBackend::Type m_Type;
     char m_DropState;
 };
 
@@ -65,8 +65,8 @@ public:
       PhoneNumber(const QString& number, const QString& type);
 
       //Getters
-      QString& getNumber();
-      QString& getType();
+      QString& number();
+      QString& type();
 
    private:
       QString m_Number   ;
@@ -74,7 +74,7 @@ public:
    };
    class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
    public:
-      virtual QObject* getSelf();
+      virtual QObject* self();
       PhoneNumbers(Contact* parent);
       PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
       Contact* contact() const;
@@ -82,7 +82,7 @@ public:
       Contact* m_pParent;
    };
 
-   virtual QObject* getSelf();
+   virtual QObject* self();
 
 private:
    QString      m_FirstName      ;
@@ -106,18 +106,18 @@ public:
    virtual void initItem();
    
    //Getters
-   virtual const PhoneNumbers&   getPhoneNumbers() const;
-   virtual const QString& getNickName()        const;
-   virtual const QString& getFirstName()       const;
-   virtual const QString& getSecondName()      const;
-   virtual const QString& getFormattedName()   const;
-   virtual const QString& getOrganization()    const;
-   virtual const QString& getUid()             const;
-   virtual const QString& getPreferredEmail()  const;
-   virtual const QPixmap* getPhoto()           const;
-   virtual const QString& getType()            const;
-   virtual const QString& getGroup()           const;
-   virtual const QString& getDepartment()      const;
+   virtual const PhoneNumbers&   phoneNumbers() const;
+   virtual const QString& nickName()        const;
+   virtual const QString& firstName()       const;
+   virtual const QString& secondName()      const;
+   virtual const QString& formattedName()   const;
+   virtual const QString& organization()    const;
+   virtual const QString& uid()             const;
+   virtual const QString& preferredEmail()  const;
+   virtual const QPixmap* photo()           const;
+   virtual const QString& type()            const;
+   virtual const QString& group()           const;
+   virtual const QString& department()      const;
 
    //Setters
    virtual void setPhoneNumbers   ( PhoneNumbers        );

@@ -490,22 +490,22 @@ void SFLPhoneView::action(Call* call, Call::Action action)
 ///Select a phone number when calling using a contact
 bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
 {
-   if (contact->getPhoneNumbers().count() == 1) {
-      *call2 = SFLPhone::model()->addDialingCall(contact->getFormattedName(),AccountList::currentAccount());
+   if (contact->phoneNumbers().count() == 1) {
+      *call2 = SFLPhone::model()->addDialingCall(contact->formattedName(),AccountList::currentAccount());
       if (*call2)
-         (*call2)->appendText(contact->getPhoneNumbers()[0]->getNumber());
+         (*call2)->appendText(contact->phoneNumbers()[0]->number());
    }
-   else if (contact->getPhoneNumbers().count() > 1) {
+   else if (contact->phoneNumbers().count() > 1) {
       bool                   ok = false;
       QHash<QString,QString> map       ;
       QStringList            list      ;
-      foreach (Contact::PhoneNumber* number, contact->getPhoneNumbers()) {
-         map[number->getType()+" ("+number->getNumber()+')'] = number->getNumber();
-         list << number->getType()+" ("+number->getNumber()+')';
+      foreach (Contact::PhoneNumber* number, contact->phoneNumbers()) {
+         map[number->type()+" ("+number->number()+')'] = number->number();
+         list << number->type()+" ("+number->number()+')';
       }
       const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
       if (ok) {
-         (*call2) = SFLPhone::model()->addDialingCall(contact->getFormattedName(), AccountList::currentAccount());
+         (*call2) = SFLPhone::model()->addDialingCall(contact->formattedName(), AccountList::currentAccount());
          if (*call2)
             (*call2)->appendText(map[result]);
       }

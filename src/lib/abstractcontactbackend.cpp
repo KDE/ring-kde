@@ -129,10 +129,10 @@ QVariant AbstractContactBackend::data( const QModelIndex& idx, int role) const
    if (!idx.isValid())
       return QVariant();
    if (!idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(getContactList()[idx.row()]->getFormattedName());
+      return QVariant(getContactList()[idx.row()]->formattedName());
    }
    else if (idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(getContactList()[idx.parent().row()]->getPhoneNumbers()[idx.row()]->getNumber());
+      return QVariant(getContactList()[idx.parent().row()]->phoneNumbers()[idx.row()]->number());
    }
    return QVariant();
 }
@@ -151,7 +151,7 @@ int AbstractContactBackend::rowCount( const QModelIndex& par ) const
       return getContactList().size();
    }
    else if (!par.parent().isValid() && par.row() < getContactList().size()) {
-      return getContactList()[par.row()]->getPhoneNumbers().size();
+      return getContactList()[par.row()]->phoneNumbers().size();
    }
    return 0;
 }
@@ -174,7 +174,7 @@ QModelIndex AbstractContactBackend::parent( const QModelIndex& idx) const
    if (!idx.isValid())
       return QModelIndex();
    ContactTreeBackend* modelItem = (ContactTreeBackend*)idx.internalPointer();
-   if (modelItem && modelItem->type3() == ContactTreeBackend::Type::NUMBER) {
+   if (modelItem && modelItem->type() == ContactTreeBackend::Type::NUMBER) {
       int idx2 = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
       if (idx2 != -1) {
          return AbstractContactBackend::index(idx2,0,QModelIndex());
@@ -188,8 +188,8 @@ QModelIndex AbstractContactBackend::index( int row, int column, const QModelInde
    if (!par.isValid() && m_ContactByPhone.size() > row) {
       return createIndex(row,column,getContactList()[row]);
    }
-   else if (par.isValid() && getContactList()[par.row()]->getPhoneNumbers().size() > row) {
-      return createIndex(row,column,(ContactTreeBackend*)(&(getContactList()[par.row()]->getPhoneNumbers())));
+   else if (par.isValid() && getContactList()[par.row()]->phoneNumbers().size() > row) {
+      return createIndex(row,column,(ContactTreeBackend*)(&(getContactList()[par.row()]->phoneNumbers())));
    }
    return QModelIndex();
 }

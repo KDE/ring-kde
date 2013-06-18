@@ -472,8 +472,8 @@ const QString Call::formattedName()
 {
    if (isConference())
       return "Conference";
-   else if (m_pContact && !m_pContact->getFormattedName().isEmpty())
-      return m_pContact->getFormattedName();
+   else if (m_pContact && !m_pContact->formattedName().isEmpty())
+      return m_pContact->formattedName();
    else if (!peerName().isEmpty())
       return m_PeerName;
    else
@@ -932,7 +932,7 @@ void Call::call()
       this->m_PeerPhoneNumber = m_CallNumber;
       if (m_pContactBackend) {
          if (contact())
-            m_PeerName = m_pContact->getFormattedName();
+            m_PeerName = m_pContact->formattedName();
       }
       time_t curTime;
       ::time(&curTime);
@@ -1175,7 +1175,7 @@ QVariant Call::roleData(int role) const
          else if (state() == Call::State::DIALING)
             return m_CallNumber;
          else if (m_PeerName.isEmpty())
-            return ct?ct->getFormattedName():peerPhoneNumber();
+            return ct?ct->formattedName():peerPhoneNumber();
          else
             return peerName();
          break;
@@ -1215,13 +1215,13 @@ QVariant Call::roleData(int role) const
          return isSecure();
          break;
       case Call::Role::Department:
-         return ct?ct->getDepartment():QVariant();
+         return ct?ct->department():QVariant();
          break;
       case Call::Role::Email:
-         return ct?ct->getPreferredEmail():QVariant();
+         return ct?ct->preferredEmail():QVariant();
          break;
       case Call::Role::Organisation:
-         return ct?ct->getOrganization():QVariant();
+         return ct?ct->organization():QVariant();
          break;
       case Call::Role::Codec:
          return currentCodecName();
@@ -1233,7 +1233,7 @@ QVariant Call::roleData(int role) const
          return QVariant::fromValue(qobject_cast<Call*>((Call*)this));
          break;
       case Call::Role::PhotoPtr:
-         return QVariant::fromValue((void*)(ct?ct->getPhoto():nullptr));
+         return QVariant::fromValue((void*)(ct?ct->photo():nullptr));
          break;
       case Call::Role::CallState:
          return static_cast<int>(state());

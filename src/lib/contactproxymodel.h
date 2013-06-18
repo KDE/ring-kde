@@ -55,7 +55,7 @@ private:
    class TopLevelItem : public ContactTreeBackend,public QObject {
    friend class ContactProxyModel;
    public:
-      virtual QObject* getSelf() {return this;}
+      virtual QObject* self() {return this;}
    private:
       explicit TopLevelItem(QString name) : ContactTreeBackend(ContactTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
       QList<Contact*> m_lChilds;

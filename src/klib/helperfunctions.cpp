@@ -37,16 +37,16 @@ ContactHash HelperFunctions::toHash(QList<Contact*> contacts) {
    for (int i=0;i<contacts.size();i++) {
       Contact* cont = contacts[i];
       QHash<QString,QVariant> conth = cont->toHash();
-      conth   ["phoneCount" ] = cont->getPhoneNumbers().size();
-      if (cont->getPhoneNumbers().size() == 1) {
-         conth["phoneNumber"] = cont->getPhoneNumbers()[0]->getNumber();
-         conth["phoneType"  ] = cont->getPhoneNumbers()[0]->getType();
+      conth   ["phoneCount" ] = cont->phoneNumbers().size();
+      if (cont->phoneNumbers().size() == 1) {
+         conth["phoneNumber"] = cont->phoneNumbers()[0]->number();
+         conth["phoneType"  ] = cont->phoneNumbers()[0]->type();
       }
       else {
-         conth["phoneNumber"] = i18np("%1 number","%1 numbers",cont->getPhoneNumbers().size());
+         conth["phoneNumber"] = i18np("%1 number","%1 numbers",cont->phoneNumbers().size());
          conth["phoneType"  ].clear();
       }
-      hash[contacts[i]->getUid()] = conth;
+      hash[contacts[i]->uid()] = conth;
    }
    return hash;
 }

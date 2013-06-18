@@ -194,7 +194,7 @@ void SFLPhoneEngine::updateBookmarkList()
       QHash<QString,QVariant> pop;
       Contact* cont = AkonadiBackend::instance()->getContactByPhone(cl[i],true);
       /*           KEY                          VALUE                */
-      /**/pop["peerName"     ] = (cont)?cont->getFormattedName():cl[i];
+      /**/pop["peerName"     ] = (cont)?cont->formattedName():cl[i]   ;
       /**/pop["peerNumber"   ] = cl[i]                                ;
       /**/pop["section"      ] = "Popular"                            ;
       /**/pop["listPriority" ] = 1000                                 ;
@@ -309,10 +309,10 @@ void SFLPhoneEngine::generateNumberList(QString name)
    qDebug() << "LOOKING FOR " << contactUid;
    Contact* cont = AkonadiBackend::instance()->getContactByUid(contactUid);
    if (cont) {
-      foreach(Contact::PhoneNumber* num,cont->getPhoneNumbers()) {
+      foreach(Contact::PhoneNumber* num,cont->phoneNumbers()) {
          QHash<QString,QVariant> hash;
-         hash[ "number" ] = num->getNumber() ;
-         hash[ "type"   ] = num->getType()   ;
+         hash[ "number" ] = num->number() ;
+         hash[ "type"   ] = num->type()   ;
          setData(name, QString::number(rand()) , hash);
       }
    }

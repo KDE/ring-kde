@@ -373,7 +373,7 @@ void HistoryDock::slotSendEmail()
    QStringList arguments;
    Contact* ct = m_pCurrentCall->contact();
    if (ct)
-      myProcess->start("xdg-email", (arguments << ct->getPreferredEmail()));
+      myProcess->start("xdg-email", (arguments << ct->preferredEmail()));
 }
 
 void HistoryDock::slotCallAgain()
@@ -408,8 +408,8 @@ void HistoryDock::slotCopy()
    const Contact* ct = m_pCurrentCall->contact();
 
    if (ct) {
-      numbers     = ct->getFormattedName()+": "+m_pCurrentCall->peerPhoneNumber();
-      numbersHtml = "<b>"+ct->getFormattedName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber());
+      numbers     = ct->formattedName()+": "+m_pCurrentCall->peerPhoneNumber();
+      numbersHtml = "<b>"+ct->formattedName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber());
    }
    else {
       numbers     = m_pCurrentCall->peerName()+": "+m_pCurrentCall->peerPhoneNumber();
