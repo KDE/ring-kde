@@ -85,7 +85,7 @@
     </widget>
    </item>
    <item row="3" column="0" colspan="2">
-    <widget class="KLineEdit" name="m_pFilterLE">
+    <widget class="FilterLineEdit" name="m_pFilterLE">
      <property name="placeholderText">
       <string>Filter</string>
      </property>
@@ -103,14 +103,14 @@
    <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>CategorizedTreeView</class>
    <extends>QTreeView</extends>
    <header>widgets/categorizedtreeview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>widgets/filterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

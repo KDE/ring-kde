@@ -1202,8 +1202,15 @@ QVariant Call::roleData(int role) const
       case Call::Role::HistoryState:
          return historyState();
          break;
-      case Call::Role::Filter:
-         return historyState()+'\n'+roleData(Call::Role::Name).toString()+'\n'+roleData(Call::Role::Number).toString();
+      case Call::Role::Filter: {
+         QString normStripppedC;
+         foreach(QChar char2,QString(historyState()+'\n'+roleData(Call::Role::Name).toString()+'\n'+
+            roleData(Call::Role::Number).toString()).toLower().normalized(QString::NormalizationForm_KD) ) {
+            if (!char2.combiningClass())
+               normStripppedC += char2;
+         }
+         return normStripppedC;
+         }
          break;
       case Call::Role::FuzzyDate:
          return static_cast<int>(HistoryModel::timeToHistoryConst(startTimeStamp()));

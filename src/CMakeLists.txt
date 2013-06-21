@@ -88,6 +88,7 @@ SET(
    widgets/tips/removeconferencetip.cpp
    widgets/player.cpp
    widgets/playeroverlay.cpp
+   widgets/filterlineedit.cpp
    delegates/conferencedelegate.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp

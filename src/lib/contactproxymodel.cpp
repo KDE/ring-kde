@@ -152,7 +152,13 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
          }
          case AbstractContactBackend::Role::Filter: {
             Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
-            return ct->formattedName()+'\n'+ct->organization()+'\n'+ct->group()+'\n'+ct->department()+'\n'+ct->preferredEmail();
+            QString normStripppedC;
+            foreach(QChar char2,QString(ct->formattedName()+'\n'+ct->organization()+'\n'+ct->group()+'\n'+
+               ct->department()+'\n'+ct->preferredEmail()).toLower().normalized(QString::NormalizationForm_KD) ) {
+               if (!char2.combiningClass())
+                  normStripppedC += char2;
+            }
+            return normStripppedC;
          }
          default:
             break;

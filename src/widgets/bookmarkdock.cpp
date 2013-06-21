@@ -68,7 +68,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
    expandTree();
 
    connect(BookmarkModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
-   connect(m_pFilterLE ,SIGNAL(textChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
+   connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
