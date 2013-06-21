@@ -121,8 +121,8 @@ protected:
    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
    {
       if (!source_parent.isValid() ) { //Is a category
-         for (int i=0;i<HistoryModel::self()->rowCount(HistoryModel::self()->index(source_row,0,source_parent));i++) {
-            if (filterAcceptsRow(i, HistoryModel::self()->index(source_row,0,source_parent)))
+         for (int i=0;i<HistoryModel::instance()->rowCount(HistoryModel::instance()->index(source_row,0,source_parent));i++) {
+            if (filterAcceptsRow(i, HistoryModel::instance()->index(source_row,0,source_parent)))
                return true;
          }
       }

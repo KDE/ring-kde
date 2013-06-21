@@ -434,18 +434,32 @@ void SFLPhoneView::escape()
 ///Called when enter is detected
 void SFLPhoneView::enter()
 {
-   kDebug() << "enter";
    Call* call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex()); //TODO use selectionmodel
    if(!call) {
       kDebug() << "Error : Enter on unexisting call.";
    }
    else {
-      const Call::State state = call->state();
-      if(state == Call::State::INCOMING || state == Call::State::DIALING || state == Call::State::TRANSFERRED || state == Call::State::TRANSF_HOLD) {
-         action(call, Call::Action::ACCEPT);
-      }
-      else {
-         kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
+      switch (call->state()) {
+         case Call::State::INCOMING:
+         case Call::State::DIALING:
+         case Call::State::TRANSFERRED:
+         case Call::State::TRANSF_HOLD:
+            action(call, Call::Action::ACCEPT);
+            break;
+         case Call::State::HOLD:
+            action(call, Call::Action::HOLD);
+            break;
+         case Call::State::RINGING:
+         case Call::State::CURRENT:
+         case Call::State::FAILURE:
+         case Call::State::BUSY:
+         case Call::State::OVER:
+         case Call::State::ERROR:
+         case Call::State::CONFERENCE:
+         case Call::State::CONFERENCE_HOLD:
+         case Call::State::COUNT:
+         default:
+            kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
       }
    }
 }

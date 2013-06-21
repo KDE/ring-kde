@@ -138,7 +138,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
          drag->setPixmap(ConferenceDelegate::getDragPixmap(this,index));
          drag->setMimeData(data);
          drag->setHotSpot(QCursor::pos() - QCursor::pos());
-         Qt::DropAction defaultDropAction = Qt::IgnoreAction;
+         const Qt::DropAction defaultDropAction = Qt::IgnoreAction;
          drag->exec(supportedActions, defaultDropAction);
       }
    }

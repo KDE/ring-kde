@@ -90,7 +90,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
    m_pProxyModel = new HistorySortFilterProxyModel(this);
-   m_pProxyModel->setSourceModel(HistoryModel::self());
+   m_pProxyModel->setSourceModel(HistoryModel::instance());
    m_pProxyModel->setSortRole(Call::Role::Date);
    m_pProxyModel->setSortLocaleAware(true);
    m_pProxyModel->setFilterRole(Call::Role::Filter);
@@ -100,12 +100,12 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    m_pKeyPressEater = new KeyPressEater(this);
    m_pView->installEventFilter(m_pKeyPressEater);
    m_pView->setSortingEnabled(true);
-   m_pView->sortByColumn(0,Qt::AscendingOrder);
+   m_pView->sortByColumn(0,Qt::DescendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex)), this, SLOT(slotContextMenu(QModelIndex)));
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotDoubleClick(QModelIndex)));
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
-   connect(HistoryModel::self() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
+   connect(HistoryModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
    expandTree();
 
    m_pAllTimeCB->setChecked(!ConfigurationSkeleton::displayDataRange());
@@ -198,11 +198,11 @@ void HistoryDock::slotSetSortRole(int role)
 {
    switch (role) {
       case HistoryDock::Role::Date:
-         HistoryModel::self()->setCategoryRole(Call::Role::FuzzyDate);
+         HistoryModel::instance()->setCategoryRole(Call::Role::FuzzyDate);
          m_pProxyModel->setSortRole(Call::Role::Date);
          break;
       case HistoryDock::Role::Name:
-         HistoryModel::self()->setCategoryRole(Call::Role::Name);
+         HistoryModel::instance()->setCategoryRole(Call::Role::Name);
          m_pProxyModel->setSortRole(Call::Role::Name);
          break;
       case HistoryDock::Role::Popularity:
@@ -210,7 +210,7 @@ void HistoryDock::slotSetSortRole(int role)
          //TODO
          break;
       case HistoryDock::Role::Length:
-         HistoryModel::self()->setCategoryRole(Call::Role::Length);
+         HistoryModel::instance()->setCategoryRole(Call::Role::Length);
          m_pProxyModel->setSortRole(Call::Role::Length);
          break;
    }
@@ -448,6 +448,7 @@ void HistoryDock::slotBookmark()
 
 void HistoryDock::slotDoubleClick(const QModelIndex& index)
 {
+   qDebug() << "DOUBLE CLICK";
    QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;

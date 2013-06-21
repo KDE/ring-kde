@@ -88,7 +88,7 @@ CallModel::CallModel() : QAbstractItemModel(nullptr)
       #endif
       /*                                                                                                                           */
 
-      connect(HistoryModel::self(),SIGNAL(newHistoryCall(Call*)),this,SLOT(slotAddPrivateCall(Call*)));
+      connect(HistoryModel::instance(),SIGNAL(newHistoryCall(Call*)),this,SLOT(slotAddPrivateCall(Call*)));
 
       dbusInit = true;
 
@@ -729,7 +729,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
    }
 
    if (call->state() == Call::State::OVER) {
-      HistoryModel::add(call);
+      HistoryModel::instance()->add(call);
    }
 
    emit callStateChanged(call);

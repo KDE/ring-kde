@@ -110,7 +110,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_
          pastCall->setPeerName("Unknown");
       }
       pastCall->setRecordingPath(hc[ RECORDING_PATH_KEY ]);
-      addPriv(pastCall);
+      add(pastCall);
    }
    m_HistoryInit = true;
    m_spInstance = this;
@@ -125,7 +125,7 @@ HistoryModel::~HistoryModel()
 }
 
 ///Singleton
-HistoryModel* HistoryModel::self()
+HistoryModel* HistoryModel::instance()
 {
    if (!m_spInstance)
       m_spInstance = new HistoryModel();
@@ -141,12 +141,6 @@ HistoryModel* HistoryModel::self()
 
 ///Add to history
 void HistoryModel::add(Call* call)
-{
-   self()->addPriv(call);
-}
-
-///Add to history
-void HistoryModel::addPriv(Call* call)
 {
    if (!call)
       return;
@@ -167,19 +161,20 @@ void HistoryModel::addPriv(Call* call)
    }
    m_hCategories[cat]->m_lChilds << call;
    emit historyChanged();
+//    emit layoutChanged();
 }
 
 ///Return the history list
 const CallMap& HistoryModel::getHistory()
 {
-   self();
+   instance();
    return m_sHistoryCalls;
 }
 
 ///Return a list of all previous calls
 const QStringList HistoryModel::getHistoryCallId()
 {
-   self();
+   instance();
    QStringList toReturn;
    foreach(Call* call, m_sHistoryCalls) {
       toReturn << call->callId();
@@ -190,7 +185,7 @@ const QStringList HistoryModel::getHistoryCallId()
 ///Sort all history call by popularity and return the result (most popular first)
 const QStringList HistoryModel::getNumbersByPopularity()
 {
-   self();
+   instance();
    QHash<QString,SortableCallSource*> hc;
    foreach (Call* call, getHistory()) {
       if (!hc[call->peerPhoneNumber()]) {
@@ -276,7 +271,7 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
             return ((TopLevelItem*)modelItem)->m_NameStr;
          case Call::Role::FuzzyDate:
          case Call::Role::Date:
-            return ((TopLevelItem*)modelItem)->m_Name;
+            return 999 - ((TopLevelItem*)modelItem)->m_Name;
          default:
             break;
       }
@@ -301,7 +296,7 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant("Contacts");
+      return QVariant("History");
    if (role == Qt::InitialSortOrderRole)
       return QVariant(Qt::DescendingOrder);
    return QVariant();

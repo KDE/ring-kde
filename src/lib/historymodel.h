@@ -66,7 +66,7 @@ public:
    Q_ENUMS(HistoryConst)
 
    //Singleton
-   static HistoryModel* self();
+   static HistoryModel* instance();
 
    //Getters
    static const CallMap&    getHistory             ();
@@ -74,8 +74,10 @@ public:
    static const QStringList getNumbersByPopularity ();
 
    //Setters
-   static void add(Call* call);
    void setCategoryRole(Call::Role role);
+
+   //Mutator
+   void add(Call* call);
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -100,9 +102,6 @@ private:
    ~HistoryModel();
 
    bool initHistory ();
-
-   //Mutator
-   void addPriv(Call* call);
 
    //Helpers
 //    QString category(const Call* call) const;
