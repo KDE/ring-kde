@@ -114,7 +114,7 @@ void AccountList::destroy()
 void AccountList::accountChanged(const QString& account,const QString& state, int code)
 {
    Q_UNUSED(code)
-   qDebug() << "Account status changed";
+   qDebug() << "Account" << account << "status changed to" << state;
    Account* a = getAccountById(account);
    if (!a) {
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();

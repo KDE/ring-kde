@@ -49,7 +49,7 @@ void CategorizedTreeView::drawBranches(QPainter* painter, const QRect& rect, con
 }
 
 void CategorizedTreeView::contextMenuEvent ( QContextMenuEvent * e ) {
-  QModelIndex index = indexAt(e->pos());
+  const QModelIndex index = indexAt(e->pos());
   emit contextMenuRequest(index);
   e->accept();
 }
@@ -115,6 +115,7 @@ void CategorizedTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 {
    const QModelIndex& idxAt = indexAt(event->pos());
    emit itemDoubleClicked(idxAt);
+   QTreeView::mouseDoubleClickEvent(event);
 }
 
 ///This function allow for custom rendering of the drag widget
@@ -124,7 +125,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
       QAbstractItemView::startDrag(supportedActions);
    else {
 //     Q_D(QAbstractItemView);
-      QModelIndex index = selectionModel()->currentIndex();
+      const QModelIndex& index = selectionModel()->currentIndex();
       if (index.isValid()) {
          QModelIndexList list;
          list << index;
@@ -145,10 +146,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
 
 bool CategorizedTreeView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
 {
-   if (state() == QAbstractItemView::EditingState) {
-      if (index.data(Call::Role::CallState).toInt() != size_t(Call::State::DIALING))
-         return false;
-      return true;
-   }
+   if (state() == QAbstractItemView::EditingState)
+      return !(index.data(Call::Role::CallState).toInt() != size_t(Call::State::DIALING));
    return QTreeView::edit(index,trigger,event);
 }
