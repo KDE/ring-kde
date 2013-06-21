@@ -36,7 +36,7 @@ typedef QList<Call*>          CallList;
 class LIB_EXPORT HistoryModel : public QAbstractItemModel {
    Q_OBJECT
 public:
-   enum HistoryConst {
+   enum class HistoryConst : int {
       Today             = 0  ,
       Yesterday         = 1  ,
       Two_days_ago      = 2  ,
@@ -63,6 +63,7 @@ public:
       Very_long_time_ago= 23 ,
       Never             = 24
    };
+   Q_ENUMS(HistoryConst)
 
    //Singleton
    static HistoryModel* self();
@@ -104,7 +105,7 @@ private:
    void addPriv(Call* call);
 
    //Helpers
-   QString category(const Call* call) const;
+//    QString category(const Call* call) const;
 
    //Static attributes
    static HistoryModel* m_spInstance;
@@ -119,14 +120,15 @@ private:
    public:
       virtual QObject* getSelf() {return this;}
    private:
-      TopLevelItem(QString name);
+      TopLevelItem(int name);
       CallList m_lChilds;
-      QString m_Name;
+      int m_Name; //HistoryConst
+      QString m_NameStr;
    };
 
    //Model categories
    QList<TopLevelItem*>         m_lCategoryCounter ;
-   QHash<QString,TopLevelItem*> m_hCategories      ;
+   QHash<int,TopLevelItem*> m_hCategories      ;
    bool                         m_isContactDateInit;
    int                          m_Role             ;
    bool                         m_ShowAll          ;

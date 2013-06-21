@@ -28,7 +28,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
 #include <QtGui/QGridLayout>
-#include <QtGui/QHeaderView>
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>

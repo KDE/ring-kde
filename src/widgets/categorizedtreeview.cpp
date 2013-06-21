@@ -38,12 +38,6 @@
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
   : QTreeView(parent),m_Type(CategorizedTreeView::ViewType::Other)
 {
-  setHeaderHidden(true);
-  setRootIsDecorated(false);
-  //setUniformRowHeights(false);
-  setIndentation(25);
-  setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-  setHorizontalScrollMode(QAbstractItemView::ScrollPerItem);
 }
 
 ///Do not draw branches

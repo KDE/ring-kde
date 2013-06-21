@@ -29,6 +29,21 @@
       <property name="dragDropMode">
        <enum>QAbstractItemView::DragDrop</enum>
       </property>
+      <property name="verticalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerItem</enum>
+      </property>
+      <property name="indentation">
+       <number>25</number>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
      </widget>
      <widget class="IMManager" name="m_pMessageTabBox">
       <property name="currentIndex">

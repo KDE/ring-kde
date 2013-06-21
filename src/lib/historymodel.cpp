@@ -80,8 +80,8 @@ inline bool operator< (const SortableCallSource & s1, const SortableCallSource &
 HistoryModel* HistoryModel::m_spInstance    = nullptr;
 CallMap       HistoryModel::m_sHistoryCalls          ;
 
-HistoryModel::TopLevelItem::TopLevelItem(QString name) : 
-   HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) 
+HistoryModel::TopLevelItem::TopLevelItem(int name) : 
+   HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name),m_NameStr(m_slHistoryConstStr[name])
 {}
 
 
@@ -158,7 +158,7 @@ void HistoryModel::addPriv(Call* call)
    }
 
    emit newHistoryCall(call);
-   const QString cat = category(call);
+   const int cat = call->roleData(Call::Role::FuzzyDate).toInt();
    if (!m_hCategories[cat]) { 
       TopLevelItem* item = new TopLevelItem(cat);
       m_hCategories[cat] = item;
@@ -233,7 +233,7 @@ void HistoryModel::reloadCategories()
    m_lCategoryCounter.clear();
    m_isContactDateInit = false;
    foreach(Call* call, getHistory()) {
-      QString val = category(call);
+      const int val = call->roleData(Call::Role::FuzzyDate).toInt();
       if (!m_hCategories[val]) {
          TopLevelItem* item = new TopLevelItem(val);
          m_hCategories[val] = item;
@@ -267,12 +267,15 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
 {
    if (!idx.isValid())
       return QVariant();
-   
-   HistoryTreeBackend* modelItem = (HistoryTreeBackend*)idx.internalPointer();
+
+   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
    switch (modelItem->type3()) {
       case HistoryTreeBackend::Type::TOP_LEVEL:
       switch (role) {
          case Qt::DisplayRole:
+            return ((TopLevelItem*)modelItem)->m_NameStr;
+         case Call::Role::FuzzyDate:
+         case Call::Role::Date:
             return ((TopLevelItem*)modelItem)->m_Name;
          default:
             break;
@@ -339,7 +342,7 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
    HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
    if (modelItem && (long long)modelItem > 100 && modelItem->type3() == HistoryTreeBackend::Type::CALL) {
       const Call* call = (Call*)((HistoryTreeBackend*)(idx.internalPointer()))->getSelf();
-      const QString val = category(call);
+      const int val = call->roleData(Call::Role::FuzzyDate).toInt();
       if (m_hCategories[val])
          return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
@@ -424,13 +427,13 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
    return false;
 }
 
-QString HistoryModel::category(const Call* call) const
-{
-   QString cat = call->roleData((Call::Role)m_Role).toString();
-//    if (cat.size() && !m_ShowAll)
-//       cat = cat[0].toUpper();
-   return cat;
-}
+// QString HistoryModel::category(const Call* call) const
+// {
+//    int cat = call->roleData((Call::Role)m_Role).toInt();
+// //    if (cat.size() && !m_ShowAll)
+// //       cat = cat[0].toUpper();
+//    return m_slHistoryConstStr[cat];
+// }
 
 HistoryTreeBackend::HistoryTreeBackend(HistoryTreeBackend::Type _type) : m_Type3(_type),m_DropState(0)
 {
@@ -444,7 +447,7 @@ HistoryTreeBackend::Type HistoryTreeBackend::type3() const
 
 QString HistoryModel::timeToHistoryCategory(const time_t time)
 {
-   int period = HistoryModel::timeToHistoryConst(time);
+   int period = (int)HistoryModel::timeToHistoryConst(time);
    if (period >= 0 && period <= 24)
       return m_slHistoryConstStr[period];
    else
@@ -469,14 +472,14 @@ HistoryModel::HistoryConst HistoryModel::timeToHistoryConst(const time_t time)
    if (currentTime - ((3)*7*24*3600) < time) {
       for (int i=1;i<4;i++) {
          if (currentTime - ((i)*7*24*3600) < time)
-            return (HistoryModel::HistoryConst)(i+Last_week-1); //Last_week to Three_weeks_ago
+            return (HistoryModel::HistoryConst)(i+((int)HistoryModel::HistoryConst::Last_week)-1); //Last_week to Three_weeks_ago
       }
    }
    //Check for last year
    if (currentTime-(12)*30.4f*24*3600 < time) {
       for (int i=1;i<12;i++) {
          if (currentTime-(i+1)*30.4f*24*3600 < time) //Not exact, but faster
-            return (HistoryModel::HistoryConst)(i+Last_month-1); //Last_month to Twelve_months ago
+            return (HistoryModel::HistoryConst)(i+((int)HistoryModel::HistoryConst::Last_month)-1); //Last_month to Twelve_months ago
       }
    }
    //if (QDate::currentDate().addYears(-1)  >= date && QDate::currentDate().addYears(-2)  < date)

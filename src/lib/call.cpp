@@ -1206,7 +1206,7 @@ QVariant Call::roleData(int role) const
          return historyState()+'\n'+roleData(Call::Role::Name).toString()+'\n'+roleData(Call::Role::Number).toString();
          break;
       case Call::Role::FuzzyDate:
-         return HistoryModel::timeToHistoryCategory(startTimeStamp());
+         return static_cast<int>(HistoryModel::timeToHistoryConst(startTimeStamp()));
          break;
       case Call::Role::IsBookmark:
          return false;

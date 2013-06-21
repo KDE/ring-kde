@@ -57,6 +57,21 @@
       <property name="dragDropMode">
        <enum>QAbstractItemView::DragDrop</enum>
       </property>
+      <property name="verticalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerItem</enum>
+      </property>
+      <property name="indentation">
+       <number>25</number>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <attribute name="headerVisible">
+       <bool>true</bool>
+      </attribute>
      </widget>
      <widget class="QWidget" name="m_pBottomWidget" native="true">
       <property name="sizePolicy">
