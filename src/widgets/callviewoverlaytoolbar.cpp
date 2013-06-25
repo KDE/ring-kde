@@ -189,7 +189,7 @@ void CallViewOverlayToolbar::updateState()
    QModelIndex last = CallModel::instance()->index(rows-1,0);
    if (CallModel::instance()->rowCount(last) > 0)
       last = CallModel::instance()->index(CallModel::instance()->rowCount(last)-1,0,last);
-   QRect topMargin =  m_pParent->visualRect(last);
+   const QRect topMargin =  m_pParent->visualRect(last);
    TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
    manager->setTopMargin(topMargin.y()+topMargin.height());
 } //updateState

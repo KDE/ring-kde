@@ -139,6 +139,7 @@ set( qtsflphone_LIB_HDRS
   sflphone_const.h
   instantmessagingmodel.h
   contactproxymodel.h
+  typedefs.h
   visitors/accountlistcolorvisitor.h
   visitors/phonenumberselector.h
 )

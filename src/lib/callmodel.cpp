@@ -68,6 +68,7 @@ CallModel::CallModel() : QAbstractItemModel(QCoreApplication::instance())
 {
    setObjectName("CallModel");
    static bool dbusInit = false;
+   initRoles();
    if (!dbusInit) {
       CallManagerInterface& callManager = DBus::CallManager::instance();
       #ifdef ENABLE_VIDEO
@@ -127,6 +128,38 @@ CallModel::~CallModel()
    m_sPrivateCallList_call.clear  ();
    m_sPrivateCallList_callId.clear();
    m_spInstance = nullptr;
+}
+
+void CallModel::initRoles()
+{
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(Call::Role::Name          ,QByteArray("name"));
+   roles.insert(Call::Role::Number        ,QByteArray("number"));
+   roles.insert(Call::Role::Direction     ,QByteArray("direction"));
+   roles.insert(Call::Role::Date          ,QByteArray("date"));
+   roles.insert(Call::Role::Length        ,QByteArray("length"));
+   roles.insert(Call::Role::FormattedDate ,QByteArray("formattedDate"));
+   roles.insert(Call::Role::HasRecording  ,QByteArray("hasRecording"));
+   roles.insert(Call::Role::HistoryState  ,QByteArray("historyState"));
+   roles.insert(Call::Role::Filter        ,QByteArray("filter"));
+   roles.insert(Call::Role::FuzzyDate     ,QByteArray("fuzzyDate"));
+   roles.insert(Call::Role::IsBookmark    ,QByteArray("isBookmark"));
+   roles.insert(Call::Role::Security      ,QByteArray("security"));
+   roles.insert(Call::Role::Department    ,QByteArray("department"));
+   roles.insert(Call::Role::Email         ,QByteArray("email"));
+   roles.insert(Call::Role::Organisation  ,QByteArray("organisation"));
+   roles.insert(Call::Role::Codec         ,QByteArray("codec"));
+   roles.insert(Call::Role::IsConference  ,QByteArray("isConference"));
+   roles.insert(Call::Role::Object        ,QByteArray("object"));
+   roles.insert(Call::Role::PhotoPtr      ,QByteArray("photoPtr"));
+   roles.insert(Call::Role::CallState     ,QByteArray("callState"));
+   roles.insert(Call::Role::Id            ,QByteArray("id"));
+   roles.insert(Call::Role::StartTime     ,QByteArray("startTime"));
+   roles.insert(Call::Role::StopTime      ,QByteArray("stopTime"));
+   roles.insert(Call::Role::DropState     ,QByteArray("dropState"));
+   roles.insert(Call::Role::DTMFAnimState ,QByteArray("dTMFAnimState"));
+   roles.insert(Call::Role::LastDTMFidx   ,QByteArray("lastDTMFidx"));
+   setRoleNames(roles);
 }
 
 

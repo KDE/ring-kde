@@ -98,6 +98,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       
       //Helpers
       bool isPartOf(const QModelIndex& confIdx, Call* call);
+      void initRoles();
 
    private Q_SLOTS:
       void slotCallStateChanged   ( const QString& callID    , const QString &state   );
