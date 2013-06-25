@@ -29,6 +29,7 @@
 //SFLPhone library
 #include "dbus/configurationmanager.h"
 #include "dbus/callmanager.h"
+#include "visitors/accountlistcolorvisitor.h"
 
 AccountList* AccountList::m_spAccountList   = nullptr;
 Account*     AccountList::m_spPriorAccount   = nullptr     ;

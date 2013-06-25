@@ -89,6 +89,7 @@ SET(
    widgets/player.cpp
    widgets/playeroverlay.cpp
    widgets/filterlineedit.cpp
+   widgets/kphonenumberselector.cpp
    delegates/conferencedelegate.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp

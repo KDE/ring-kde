@@ -46,6 +46,8 @@ set( qtsflphone_LIB_SRCS
   dbus/videomanager.cpp
   sflphone_const.h
   contactproxymodel.cpp
+  visitors/accountlistcolorvisitor.cpp
+  visitors/phonenumberselector.cpp
 )
 
 # Build dbus interfaces
@@ -137,6 +139,8 @@ set( qtsflphone_LIB_HDRS
   sflphone_const.h
   instantmessagingmodel.h
   contactproxymodel.h
+  visitors/accountlistcolorvisitor.h
+  visitors/phonenumberselector.h
 )
 
 install( FILES ${qtsflphone_LIB_HDRS}

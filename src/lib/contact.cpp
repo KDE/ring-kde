@@ -31,6 +31,11 @@ Contact::PhoneNumber::PhoneNumber(const QString& number, const QString& type) : 
 {
 }
 
+
+Contact::PhoneNumber::PhoneNumber(const PhoneNumber& number) : m_Number(number.m_Number),m_Type(number.m_Type)
+{
+}
+
 Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
 {
 }
@@ -255,12 +260,12 @@ QHash<QString,QVariant> Contact::toHash()
 }
 
 ///Return the number
-QString& Contact::PhoneNumber::number() {
+QString Contact::PhoneNumber::number() const {
    return m_Number ;
 }
 
 ///Return the phone number type
-QString& Contact::PhoneNumber::type() {
+QString Contact::PhoneNumber::type() const {
    return m_Type   ;
 }
 

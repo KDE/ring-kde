@@ -42,6 +42,7 @@
 #include "sflphone.h"
 #include "sflphoneview.h"
 #include "bookmarkdock.h"
+#include "kphonenumberselector.h"
 
 //SFLPhone library
 #include "categorizedtreeview.h"
@@ -168,18 +169,11 @@ ContactDock::~ContactDock()
 QString ContactDock::showNumberSelector(bool& ok)
 {
    if (m_pCurrentContact && m_pCurrentContact->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
-      QStringList list;
-      QHash<QString,QString> map;
-      foreach (Contact::PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
-         map[number->type()+" ("+number->number()+')'] = number->number();
-         list << number->type()+" ("+number->number()+')';
-      }
-      QString result = KInputDialog::getItem ( i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
-
-      if (!ok) {
+      const Contact::PhoneNumber number = KPhoneNumberSelector().getNumber(m_pCurrentContact->uid());
+      if (number.number().isEmpty()) {
          kDebug() << "Operation cancelled";
       }
-      return map[result];
+      return number.number();
    }
    else if (!m_PreselectedNb.isEmpty()) {
       ok = true;

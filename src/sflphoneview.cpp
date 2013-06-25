@@ -50,6 +50,7 @@
 #include "delegates/categorizeddelegate.h"
 #include "widgets/tips/dialpadtip.h"
 #include "widgets/tips/tipcollection.h"
+#include "widgets/kphonenumberselector.h"
 
 //sflphone library
 #include "lib/typedefs.h"
@@ -61,12 +62,9 @@
 #include "lib/accountlist.h"
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
+#include "lib/visitors/accountlistcolorvisitor.cpp"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
-
-//ConfigurationDialog* SFLPhoneView::configDialog;
-
-
 
 QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::State& c)
 {
@@ -195,6 +193,12 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
          else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
             const QByteArray encodedContact     = e->mimeData()->data( MIME_CONTACT     );
             kDebug() << "Contact dropped on empty space";
+            const Contact::PhoneNumber number = KPhoneNumberSelector().getNumber(encodedContact);
+            if (number.number().isEmpty()) {
+               Call* newCall = CallModel::instance()->addDialingCall();
+               newCall->setCallNumber(number.number());
+               newCall->actionPerformed(Call::Action::ACCEPT);
+            }
          }
          //Remove uneedded tip
          if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
@@ -535,18 +539,11 @@ bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
          (*call2)->appendText(contact->phoneNumbers()[0]->number());
    }
    else if (contact->phoneNumbers().count() > 1) {
-      bool                   ok = false;
-      QHash<QString,QString> map       ;
-      QStringList            list      ;
-      foreach (Contact::PhoneNumber* number, contact->phoneNumbers()) {
-         map[number->type()+" ("+number->number()+')'] = number->number();
-         list << number->type()+" ("+number->number()+')';
-      }
-      const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,this);
-      if (ok) {
+      const Contact::PhoneNumber number = KPhoneNumberSelector().getNumber(contact->uid());
+      if (!number.number().isEmpty()) {
          (*call2) = SFLPhone::model()->addDialingCall(contact->formattedName(), AccountList::currentAccount());
          if (*call2)
-            (*call2)->appendText(map[result]);
+            (*call2)->appendText(number.number());
       }
       else {
          kDebug() << "Operation cancelled";

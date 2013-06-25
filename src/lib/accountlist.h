@@ -114,14 +114,6 @@ Q_SIGNALS:
    void priorAccountChanged  ( Account* a                     );
 };
 
-///SFLPhonelib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
-class LIB_EXPORT AccountListColorVisitor {
-public:
-   virtual QVariant getColor(const Account* a) = 0;
-   virtual QVariant getIcon(const Account* a)  = 0;
-   virtual ~AccountListColorVisitor() {}
-};
-
 class LIB_EXPORT AccountListNoCheckProxyModel : public QAbstractListModel
 {
 public:

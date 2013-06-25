@@ -63,10 +63,11 @@ public:
    public:
       ///Constructor
       PhoneNumber(const QString& number, const QString& type);
+      PhoneNumber(const PhoneNumber& number);
 
       //Getters
-      QString& number();
-      QString& type();
+      QString number() const;
+      QString type() const;
 
    private:
       QString m_Number   ;
