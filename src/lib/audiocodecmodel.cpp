@@ -19,9 +19,10 @@
 
 //Qt
 #include <QtCore/QDebug>
+#include <QtCore/QCoreApplication>
 
 ///Constructor
-AudioCodecModel::AudioCodecModel(QObject* par) : QAbstractListModel(par) {
+AudioCodecModel::AudioCodecModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()) {
 
 }
 

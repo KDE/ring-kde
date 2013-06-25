@@ -39,6 +39,7 @@
 //sflphone
 #include "conf/configurationdialog.h"
 #include "klib/configurationskeleton.h"
+#include "klib/akonadibackend.h"
 #include "accountwizard.h"
 #include "actionsetaccountfirst.h"
 #include "sflphone.h"
@@ -198,6 +199,11 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
                newCall->actionPerformed(Call::Action::ACCEPT);
             }
          }
+         else if (e->mimeData()->hasFormat("text/plain")) {
+            Call* newCall = CallModel::instance()->addDialingCall();
+            newCall->setCallNumber(e->mimeData()->data( "text/plain" ));
+            newCall->actionPerformed(Call::Action::ACCEPT);
+         }
          //Remove uneedded tip
          if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
             TipCollection::manager()->setCurrentTip(nullptr);
@@ -223,6 +229,45 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
          //2) Send to the model for processing
          m_pParent->m_pView->model()->dropMimeData(data,Qt::MoveAction,idxAt.row(),idxAt.column(),idxAt.parent());
+      }
+   }
+   else if (event->type() == QEvent::DragMove) {
+      if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
+         QDragMoveEvent* e = static_cast<QDragMoveEvent*>(event);
+         if (e->mimeData()->hasFormat(MIME_CALLID)) {
+            TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
+         }
+         else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
+            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data(MIME_PHONENUMBER))));
+         }
+         else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
+            Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
+            if (c) {
+               TipCollection::removeConference()->setText(i18n("Call %1").arg(c->formattedName()));
+            }
+         }
+         else if (e->mimeData()->hasFormat("text/plain")) {
+            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data("text/plain"))));
+         }
+         TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
+      }
+      if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
+         QDragMoveEvent* e = static_cast<QDragMoveEvent*>(event);
+         if (e->mimeData()->hasFormat(MIME_CALLID)) {
+            TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
+         }
+         else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
+            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data(MIME_PHONENUMBER))));
+         }
+         else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
+            Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
+            if (c) {
+               TipCollection::removeConference()->setText(i18n("Call %1").arg(c->formattedName()));
+            }
+         }
+         else if (e->mimeData()->hasFormat("text/plain")) {
+            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data("text/plain"))));
+         }
       }
    }
    // standard event processing

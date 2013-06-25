@@ -18,9 +18,10 @@
 #include "credentialmodel.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QCoreApplication>
 
 ///Constructor
-CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par) {
+CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()) {
 
 }
 

@@ -26,7 +26,7 @@
 #include <KStandardDirs>
 
 ///Constructor
-RemoveConferenceTip::RemoveConferenceTip(QWidget* parent) : Tip(i18n("Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. Use the dialpad below or start typing a number. "),parent)
+RemoveConferenceTip::RemoveConferenceTip(QWidget* parent) : Tip(i18n("Remove the call from the conference, the call will be put on hold"),parent)
 
 {
    m_Position = TipPosition::Middle;
@@ -69,7 +69,7 @@ void RemoveConferenceTip::paintDecorations(QPainter& p, const QRect& textRect)
    }
    p.drawRoundedRect(QRect(4,4,m_DecoRect.width()-8,m_DecoRect.height()-8),10,10);
    m_pR->render(&p,QRect(margin ,30,width,width*.873));
-   p.drawText(QRect(30,m_DecoRect.height()-60,m_DecoRect.width()-60,60),Qt::AlignHCenter|Qt::TextWordWrap,i18n("Remove the call from the conference, the call will be put on hold"));
+   p.drawText(QRect(30,m_DecoRect.height()-60,m_DecoRect.width()-60,60),Qt::AlignHCenter|Qt::TextWordWrap,m_OriginalText);
 } //paintDecorations
 
 ///Necessary to get the maximum size allowed

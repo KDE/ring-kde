@@ -73,9 +73,16 @@ public:
 
    //Setter
    void setVisible(bool visible);
-   void setTimeOut      ( int  timeOut   ) { m_TimeOut      = timeOut; }
-   void setAnimationIn  ( TipAnimation a ) { m_AnimationIn  = a;       }
-   void setAnimationOut ( TipAnimation a ) { m_AnimationOut = a;       }
+   void setTimeOut      ( int  timeOut      ) { m_TimeOut      = timeOut; }
+   void setAnimationIn  ( TipAnimation a    ) { m_AnimationIn  = a;       }
+   void setAnimationOut ( TipAnimation a    ) { m_AnimationOut = a;       }
+   void setText         (const QString& text) {
+      if (text != m_OriginalText) {
+         m_OriginalText = text;
+         emit changed();
+         reload(m_CurrentRect,true);
+      }
+   }
 
 private:
    bool m_HasBg;

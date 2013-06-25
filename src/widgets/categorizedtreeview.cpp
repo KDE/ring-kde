@@ -97,11 +97,11 @@ void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
          TipCollection::manager()->setCurrentTip(nullptr);
       }
    }
-   else if (m_Type == CategorizedTreeView::ViewType::Call) {
-      if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
-         TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
-      }
-   }
+//    else if (m_Type == CategorizedTreeView::ViewType::Call) {
+//       if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
+//          TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
+//       }
+//    }
 //    QTreeView::dragMoveEvent(e);
 }
 
@@ -121,9 +121,7 @@ void CategorizedTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 ///This function allow for custom rendering of the drag widget
 void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
 {
-   if (m_Type != CategorizedTreeView::ViewType::Call)
-      QAbstractItemView::startDrag(supportedActions);
-   else {
+   if (m_Type == CategorizedTreeView::ViewType::Call) {
 //     Q_D(QAbstractItemView);
       const QModelIndex& index = selectionModel()->currentIndex();
       if (index.isValid()) {
@@ -141,6 +139,57 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
          const Qt::DropAction defaultDropAction = Qt::IgnoreAction;
          drag->exec(supportedActions, defaultDropAction);
       }
+   }
+   else {
+      const QModelIndex& index = selectionModel()->currentIndex();
+      if (index.isValid()) {
+         QModelIndexList list;
+         list << index;
+         QMimeData *data = model()->mimeData(list);
+         if (!data)
+            return;
+         
+         //Create the pixmap
+         QStyleOptionViewItemV4 option;
+         option.locale = locale();
+         option.widget = this;
+         option.state = QStyle::State_Selected | QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;
+         option.rect = QRect(0,0,width(),height());
+         QSize size = itemDelegate()->sizeHint(option,index);
+         QSize itemSize = size;
+         for (int i=0;i<model()->rowCount(index);i++) {
+            size.setHeight(size.height()+itemDelegate()->sizeHint(option,index.child(i,0)).height());
+         }
+
+         //Setup the painter
+         QPixmap pixmap(width(),size.height());
+         QPainter customPainter(&pixmap);
+         customPainter.eraseRect(option.rect);
+         customPainter.setCompositionMode(QPainter::CompositionMode_Clear);
+         customPainter.fillRect(option.rect,QBrush(Qt::white));
+         customPainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+         //Draw the parent
+         option.rect = QRect(0,0,width(),itemSize.height());
+         itemDelegate()->paint(&customPainter, option, index);
+
+         //Draw the children
+         for (int i=0;i<model()->rowCount(index);i++) {
+            itemSize.setHeight(itemDelegate()->sizeHint(option,index.child(i,0)).height());
+            option.rect = QRect(10,option.rect.y()+option.rect.height(),width()-20,itemSize.height());
+            option.state = QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;
+            itemDelegate()->paint(&customPainter, option, index.child(i,0));
+         }
+
+         //Execute the drag
+         QDrag *drag = new QDrag(this);
+         drag->setPixmap(pixmap);
+         drag->setMimeData(data);
+         drag->setHotSpot(QCursor::pos() - QCursor::pos());
+         const Qt::DropAction defaultDropAction = Qt::IgnoreAction;
+         drag->exec(supportedActions, defaultDropAction);
+      }
+//       QAbstractItemView::startDrag(supportedActions);
    }
 }
 

@@ -92,7 +92,7 @@ HistoryModel::TopLevelItem::TopLevelItem(int name) :
  ****************************************************************************/
 
 ///Constructor
-HistoryModel::HistoryModel():QAbstractItemModel(nullptr),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate),m_HaveContactModel(false)
+HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate),m_HaveContactModel(false)
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();

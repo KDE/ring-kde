@@ -28,9 +28,10 @@
 //Qt
 #include <QtCore/QHash>
 #include <QtCore/QDebug>
+#include <QtCore/QCoreApplication>
 
 ///Constructor
-AbstractContactBackend::AbstractContactBackend(QObject* par) : QAbstractItemModel(par),m_UpdatesCounter(0)
+AbstractContactBackend::AbstractContactBackend(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance()),m_UpdatesCounter(0)
 {
    connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }

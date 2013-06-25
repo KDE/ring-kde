@@ -20,6 +20,8 @@
 #include "account.h"
 #include "dbus/videomanager.h"
 
+#include <QtCore/QCoreApplication>
+
 ///Get data from the model
 QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
 {
@@ -70,7 +72,7 @@ bool VideoCodecModel::setData(const QModelIndex& idx, const QVariant &value, int
 }
 
 ///Constructor
-VideoCodecModel::VideoCodecModel(Account* account) : QAbstractListModel(),m_pAccount(account)
+VideoCodecModel::VideoCodecModel(Account* account) : QAbstractListModel(QCoreApplication::instance()),m_pAccount(account)
 {
    reload();
 }

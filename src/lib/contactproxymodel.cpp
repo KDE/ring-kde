@@ -20,6 +20,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QDate>
 #include <QtCore/QMimeData>
+#include <QtCore/QCoreApplication>
 
 #include <klocale.h>
 
@@ -55,7 +56,7 @@ const char* ContactProxyModel::m_slHistoryConstStr[25] = {
       "Never"                                                     //24
 };
 // 
-ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent),
+ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent?static_cast<QObject*>(parent):static_cast<QObject*>(QCoreApplication::instance())),
 m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
 {
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
