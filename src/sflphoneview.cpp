@@ -175,7 +175,7 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
       e->accept();
       if (!idxAt.isValid()) { //Dropped on empty space
          if (e->mimeData()->hasFormat(MIME_CALLID)) {
-            QByteArray encodedCallId      = e->mimeData()->data( MIME_CALLID      );
+            const QByteArray encodedCallId      = e->mimeData()->data( MIME_CALLID      );
             kDebug() << "Call dropped on empty space";
             Call* call =  CallModel::instance()->getCall(encodedCallId);
             if (SFLPhone::model()->getIndex(call).parent().isValid()) {
@@ -184,6 +184,17 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             }
             else
                kDebug() << "The call is not in a conversation (doing nothing)";
+         }
+         else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
+            const QByteArray encodedPhoneNumber = e->mimeData()->data( MIME_PHONENUMBER );
+            kDebug() << "Phone number dropped on empty space";
+            Call* newCall = CallModel::instance()->addDialingCall();
+            newCall->setCallNumber(encodedPhoneNumber);
+            newCall->actionPerformed(Call::Action::ACCEPT);
+         }
+         else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
+            const QByteArray encodedContact     = e->mimeData()->data( MIME_CONTACT     );
+            kDebug() << "Contact dropped on empty space";
          }
          //Remove uneedded tip
          if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
@@ -422,11 +433,25 @@ void SFLPhoneView::escape()
       kDebug() << "Escape when no item is selected. Doing nothing.";
    }
    else {
-      if(call->state() == Call::State::TRANSFERRED || call->state() == Call::State::TRANSF_HOLD) {
-         action(call, Call::Action::TRANSFER);
-      }
-      else {
-         action(call, Call::Action::REFUSE);
+      switch (call->state()) {
+         case Call::State::TRANSFERRED:
+         case Call::State::TRANSF_HOLD:
+            action(call, Call::Action::TRANSFER);
+            break;
+         case Call::State::INCOMING:
+         case Call::State::DIALING:
+         case Call::State::HOLD:
+         case Call::State::RINGING:
+         case Call::State::CURRENT:
+         case Call::State::FAILURE:
+         case Call::State::BUSY:
+         case Call::State::OVER:
+         case Call::State::ERROR:
+         case Call::State::CONFERENCE:
+         case Call::State::CONFERENCE_HOLD:
+         case Call::State::COUNT:
+         default:
+            action(call, Call::Action::REFUSE);
       }
    }
 } //escape
@@ -978,7 +1003,7 @@ void SFLPhoneView::accountCreationWizard()
 }
 
 ///Call
-void SFLPhoneView::accept()
+void SFLPhoneView::accept() //TODO dead code?
 {
    Call* call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex());
    if(!call) {
@@ -1009,9 +1034,7 @@ void SFLPhoneView::accept()
 void SFLPhoneView::hangup()
 {
    Call* call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex());
-   const Call::State state = call->state();
-   if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD || state == Call::State::BUSY 
-      || state == Call::State::OVER || state == Call::State::ERROR || state == Call::State::FAILURE) {
+   if (call) {
       action(call, Call::Action::REFUSE);
    }
 } //hangup
@@ -1111,12 +1134,6 @@ void SFLPhoneView::mailBox()
    }
 }
 
-///Called but there is an error (dbus)
-void SFLPhoneView::on1_error(MapStringString details)
-{
-   kDebug() << "Signal : Daemon error : " << details;
-}
-
 ///When a call is coming (dbus)
 void SFLPhoneView::on1_incomingCall(Call* call)
 {
@@ -1130,6 +1147,7 @@ void SFLPhoneView::on1_incomingCall(Call* call)
 
    const QModelIndex& idx = CallModel::instance()->getIndex(call);
    if (idx.isValid() && (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING)) {
+      m_pView->selectionModel()->clearSelection();
       m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
    }
 

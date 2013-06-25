@@ -191,7 +191,6 @@ public Q_SLOTS:
    void on_toolButton_recVol_clicked  ( bool checked );
    void on_toolButton_sndVol_clicked  ( bool checked );
 
-   void on1_error          ( MapStringString details             );
    void on1_incomingCall   ( Call* call                          );
    void on1_voiceMailNotify( const QString &accountID, int count );
    void on1_volumeChanged  ( const QString &device, double value );

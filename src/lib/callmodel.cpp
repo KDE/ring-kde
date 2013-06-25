@@ -232,7 +232,7 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
 Call* CallModel::addDialingCall(const QString& peerName, Account* account)
 {
    Account* acc = (account)?account:AccountList::currentAccount();
-   return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc->accountId()));
+   return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc));
 }  //addDialingCall
 
 ///Create a new incoming call when the daemon is being called
@@ -692,6 +692,20 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
             //TODO implement text and contact drop
             break;
       }
+   }
+   else if (mimedata->hasFormat(MIME_PHONENUMBER)) {
+      const QByteArray encodedPhoneNumber = mimedata->data( MIME_PHONENUMBER );
+      Call* target = getCall(index(row,column,parentIdx));
+      qDebug() << "Phone number" << encodedPhoneNumber << "on call" << target;
+      Call* newCall = addDialingCall(QString(),target->account());
+      newCall->setCallNumber(encodedPhoneNumber);
+      newCall->actionPerformed(Call::Action::ACCEPT);
+      createConferenceFromCall(newCall,target);
+   }
+   else if (mimedata->hasFormat(MIME_CONTACT)) {
+      const QByteArray encodedContact = mimedata->data(MIME_CONTACT);
+      Call* target = getCall(index(row,column,parentIdx));
+      qDebug() << "Contact" << encodedContact << "on call" << target;
    }
    return false;
 }
