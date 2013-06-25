@@ -212,7 +212,7 @@ Call* CallModel::getCall( const QModelIndex& idx              ) const
 ///Add a call in the model structure, the call must exist before being added to the model
 Call* CallModel::addCall(Call* call, Call* parentCall)
 {
-   if (!call)
+   if (!call || call->state() == Call::State::OVER || (parentCall && parentCall->state() == Call::State::OVER))
       return new Call("",""); //Invalid, but better than managing NULL everywhere
 
    InternalStruct* aNewStruct = new InternalStruct;
@@ -755,7 +755,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
    }
    else {
       call = internal->call_real;
-      qDebug() << "Call found" << call;
+      qDebug() << "Call found" << call << call->state();
       call->stateChanged(state);
       if (state == CALL_STATE_CHANGE_HUNG_UP)
          removeCall(call);

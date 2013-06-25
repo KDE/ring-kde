@@ -142,7 +142,7 @@ HistoryModel* HistoryModel::instance()
 ///Add to history
 void HistoryModel::add(Call* call)
 {
-   if (!call)
+   if (!call || call->state() != Call::State::OVER)
       return;
 
    m_sHistoryCalls[call->startTimeStamp()] = call;

@@ -164,8 +164,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 //          m_pIconL = new QLabel(" ");
 //          mainLayout->addWidget(m_pIconL);
       }
-
-      if(ConfigurationSkeleton::displayCallPeer()&& currentState != Call::State::DIALING) {
+      if(ConfigurationSkeleton::displayCallPeer() && !(currentState == Call::State::DIALING || (option.state & QStyle::State_Editing))) {
          font.setBold(true);
          painter->setFont(font);
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());

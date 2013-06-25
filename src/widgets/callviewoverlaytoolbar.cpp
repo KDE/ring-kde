@@ -150,11 +150,12 @@ ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
 ///Hide or show the toolbar and select visible actions
 void CallViewOverlayToolbar::updateState()
 {
-   const QModelIndex& index = m_pParent->selectionModel()->currentIndex();
+   QModelIndex index = m_pParent->selectionModel()->currentIndex();
+   if ((!m_pParent->selectionModel()->hasSelection() || !index.isValid()) && CallModel::instance()->rowCount()) {
+      m_pParent->selectionModel()->setCurrentIndex(CallModel::instance()->index(0,0),QItemSelectionModel::SelectCurrent);
+      index = m_pParent->selectionModel()->currentIndex();
+   }
    if (index.isValid() && CallModel::instance()->rowCount()) {
-      if (!m_pParent->selectionModel()->hasSelection()) {
-         m_pParent->selectionModel()->setCurrentIndex(index,QItemSelectionModel::SelectCurrent);
-      }
       Call::State state = (Call::State) index.data(Call::Role::CallState).toInt();
       setVisible(true);
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
