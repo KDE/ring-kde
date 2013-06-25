@@ -23,10 +23,15 @@
 #include "../contact.h"
 
 ///Common point visitor for UI specific contact dialog
-class PhoneNumberSelector {
+class LIB_EXPORT PhoneNumberSelector {
 public:
    virtual ~PhoneNumberSelector() {}
    virtual const Contact::PhoneNumber getNumber(const QString& contactId) = 0;
+   static PhoneNumberSelector* defaultVisitor();
+protected:
+   static void setDefaultVisitor(PhoneNumberSelector* v);
+private:
+   static PhoneNumberSelector* m_spDefaultVisitor;
 };
 
 #endif

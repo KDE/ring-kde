@@ -33,6 +33,7 @@
 #include "abstractcontactbackend.h"
 #include "dbus/videomanager.h"
 #include "historymodel.h"
+#include "visitors/phonenumberselector.h"
 
 //Define
 ///InternalStruct: internal representation of a call
@@ -63,8 +64,9 @@ CallModel* CallModel::instance() {
 }
 
 ///Retrieve current and older calls from the daemon, fill history, model and enable drag n' drop
-CallModel::CallModel() : QAbstractItemModel(nullptr)
+CallModel::CallModel() : QAbstractItemModel(QCoreApplication::instance())
 {
+   setObjectName("CallModel");
    static bool dbusInit = false;
    if (!dbusInit) {
       CallManagerInterface& callManager = DBus::CallManager::instance();
@@ -166,8 +168,12 @@ CallList CallModel::getConferenceList()
    const QStringList confListS = DBus::CallManager::instance().getConferenceList();
    foreach (const QString& confId, confListS) {
       InternalStruct* internalS = m_sPrivateCallList_callId[confId];
-      if (!internalS)
-         confList << addConference(confId);
+      if (!internalS) {
+         qDebug() << "Warning: Conference not found, creating it, this should not happen";
+         Call* conf = addConference(confId);
+         confList << conf;
+         emit conferenceCreated(conf);
+      }
       else
          confList << internalS->call_real;
    }
@@ -689,7 +695,6 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
             attendedTransfer(call,target);
             break;
          default:
-            //TODO implement text and contact drop
             break;
       }
    }
@@ -706,6 +711,20 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       const QByteArray encodedContact = mimedata->data(MIME_CONTACT);
       Call* target = getCall(index(row,column,parentIdx));
       qDebug() << "Contact" << encodedContact << "on call" << target;
+      if (PhoneNumberSelector::defaultVisitor()) {
+         const Contact::PhoneNumber number = PhoneNumberSelector::defaultVisitor()->getNumber(encodedContact);
+         if (!number.number().isEmpty()) {
+            Call* newCall = addDialingCall();
+            newCall->setCallNumber(number.number());
+            newCall->actionPerformed(Call::Action::ACCEPT);
+            createConferenceFromCall(newCall,target);
+         }
+         else {
+            qDebug() << "Contact not found";
+         }
+      }
+      else
+         qDebug() << "There is nothing to handle contact";
    }
    return false;
 }
@@ -761,9 +780,11 @@ void CallModel::slotIncomingCall(const QString& accountID, const QString& callID
 ///When a new conference is incoming
 void CallModel::slotIncomingConference(const QString& confID)
 {
-   Call* conf = addConference(confID);
-   qDebug() << "Adding conference" << conf << confID;
-   emit conferenceCreated(conf);
+   if (!getCall(confID)) {
+      Call* conf = addConference(confID);
+      qDebug() << "Adding conference" << conf << confID;
+      emit conferenceCreated(conf);
+   }
 }
 
 ///When a conference change

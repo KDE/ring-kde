@@ -27,6 +27,7 @@ class KPhoneNumberSelector : public PhoneNumberSelector
 public:
    virtual ~KPhoneNumberSelector(){}
    virtual const Contact::PhoneNumber getNumber(const QString& contactId);
+   static void init();
 };
 
 #endif

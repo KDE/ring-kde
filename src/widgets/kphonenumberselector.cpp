@@ -25,6 +25,13 @@
 #include "../klib/akonadibackend.h"
 #include "../sflphone.h"
 
+
+void KPhoneNumberSelector::init()
+{
+   static KPhoneNumberSelector* v = new KPhoneNumberSelector();
+   setDefaultVisitor(v);
+}
+
 const Contact::PhoneNumber KPhoneNumberSelector::getNumber(const QString& contactId)
 {
    const Contact* contact = AkonadiBackend::instance()->getContactByUid(contactId);

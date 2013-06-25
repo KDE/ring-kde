@@ -136,5 +136,6 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       ///Emitted when a call is added
       void callAdded               ( Call* call               , Call* parent );
 };
+Q_DECLARE_METATYPE(CallModel*)
 
 #endif

@@ -84,8 +84,6 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
    return dbg.space();
 }
 
-
-
 class ColorVisitor : public AccountListColorVisitor {
 public:
    ColorVisitor(QPalette pal) : m_Pal(pal) {
@@ -236,7 +234,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    : QWidget(parent), wizard(0)
 {
    setupUi(this);
-
+   KPhoneNumberSelector::init();
 
    m_pView->setModel(CallModel::instance());
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));

@@ -16,4 +16,16 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "phonenumberselector.h"
+
 //Interface only
+PhoneNumberSelector* PhoneNumberSelector::m_spDefaultVisitor = nullptr;
+
+void PhoneNumberSelector::setDefaultVisitor(PhoneNumberSelector* v)
+{
+   m_spDefaultVisitor = v;
+}
+
+PhoneNumberSelector* PhoneNumberSelector::defaultVisitor()
+{
+   return m_spDefaultVisitor;
+}
