@@ -23,7 +23,12 @@
 
 ///Constructor
 AudioCodecModel::AudioCodecModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()) {
-
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(AudioCodecModel::Role::ID        ,QByteArray("id"));
+   roles.insert(AudioCodecModel::Role::NAME      ,QByteArray("name"));
+   roles.insert(AudioCodecModel::Role::BITRATE   ,QByteArray("bitrate"));
+   roles.insert(AudioCodecModel::Role::SAMPLERATE,QByteArray("samplerate"));
+   setRoleNames(roles);
 }
 
 ///Model data
@@ -34,16 +39,16 @@ QVariant AudioCodecModel::data(const QModelIndex& idx, int role) const {
    else if(idx.column() == 0 && role == Qt::CheckStateRole                ) {
       return QVariant(m_lEnabledCodecs[m_lAudioCodecs[idx.row()]->id] ? Qt::Checked : Qt::Unchecked);
    }
-   else if (idx.column() == 0 && role == AudioCodecModel::NAME_ROLE       ) {
+   else if (idx.column() == 0 && role == AudioCodecModel::Role::NAME       ) {
       return m_lAudioCodecs[idx.row()]->name;
    }
-   else if (idx.column() == 0 && role == AudioCodecModel::BITRATE_ROLE    ) {
+   else if (idx.column() == 0 && role == AudioCodecModel::Role::BITRATE    ) {
       return m_lAudioCodecs[idx.row()]->bitrate;
    }
-   else if (idx.column() == 0 && role == AudioCodecModel::SAMPLERATE_ROLE ) {
+   else if (idx.column() == 0 && role == AudioCodecModel::Role::SAMPLERATE ) {
       return m_lAudioCodecs[idx.row()]->samplerate;
    }
-   else if (idx.column() == 0 && role == AudioCodecModel::ID_ROLE         ) {
+   else if (idx.column() == 0 && role == AudioCodecModel::Role::ID         ) {
       return m_lAudioCodecs[idx.row()]->id;
    }
    return QVariant();
@@ -64,12 +69,12 @@ Qt::ItemFlags AudioCodecModel::flags(const QModelIndex& idx) const {
 
 ///Set audio codec data
 bool AudioCodecModel::setData( const QModelIndex& idx, const QVariant &value, int role) {
-   if (idx.column() == 0 && role == AudioCodecModel::NAME_ROLE) {
+   if (idx.column() == 0 && role == AudioCodecModel::NAME) {
       m_lAudioCodecs[idx.row()]->name = value.toString();
       emit dataChanged(idx, idx);
       return true;
    }
-   else if (idx.column() == 0 && role == AudioCodecModel::BITRATE_ROLE) {
+   else if (idx.column() == 0 && role == AudioCodecModel::BITRATE) {
       m_lAudioCodecs[idx.row()]->bitrate = value.toString();
       emit dataChanged(idx, idx);
       return true;
@@ -79,12 +84,12 @@ bool AudioCodecModel::setData( const QModelIndex& idx, const QVariant &value, in
       emit dataChanged(idx, idx);
       return true;
    }
-   else if (idx.column() == 0 && role == AudioCodecModel::SAMPLERATE_ROLE) {
+   else if (idx.column() == 0 && role == AudioCodecModel::SAMPLERATE) {
       m_lAudioCodecs[idx.row()]->samplerate = value.toString();
       emit dataChanged(idx, idx);
       return true;
    }
-   else if (idx.column() == 0 && role == AudioCodecModel::ID_ROLE) {
+   else if (idx.column() == 0 && role == AudioCodecModel::ID) {
       m_lAudioCodecs[idx.row()]->id = value.toInt();
       emit dataChanged(idx, idx);
       return true;

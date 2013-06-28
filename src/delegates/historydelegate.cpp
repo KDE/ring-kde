@@ -213,8 +213,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    if (!index.parent().isValid() && currentState != Call::State::RINGING && currentState != Call::State::INCOMING){
       const QString length = index.data(Call::Role::Length).toString();
+      const int lenLen = fm.width(length);
       if (!length.isEmpty()) {
-         const int lenLen = fm.width(length);
          painter->drawText(option.rect.x()+option.rect.width()-lenLen-4,option.rect.y()+(option.rect.height()/2)+(fm.height()/4),length);
       }
       DialpadDelegate::paint(painter,option,index,lenLen);

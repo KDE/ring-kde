@@ -28,10 +28,12 @@ class LIB_EXPORT AudioCodecModel : public QAbstractListModel {
 public:
    //friend class Account;
    //Roles
-   static const int ID_ROLE         = 103;
-   static const int NAME_ROLE       = 100;
-   static const int BITRATE_ROLE    = 101;
-   static const int SAMPLERATE_ROLE = 102;
+   enum Role {
+      ID         = 103,
+      NAME       = 100,
+      BITRATE    = 101,
+      SAMPLERATE = 102,
+   };
 
    //Constructor
    explicit AudioCodecModel(QObject* parent =nullptr);

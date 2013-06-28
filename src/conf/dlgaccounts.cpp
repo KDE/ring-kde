@@ -769,8 +769,8 @@ void DlgAccounts::updateWidgets()
 void DlgAccounts::selectedCodecChanged(const QModelIndex& current,const QModelIndex& previous)
 {
    Q_UNUSED(previous)
-   label_bitrate_value->setText   ( list_audiocodec->model()->data(current,AudioCodecModel::BITRATE_ROLE)   .toString());
-   label_frequency_value->setText ( list_audiocodec->model()->data(current,AudioCodecModel::SAMPLERATE_ROLE).toString());
+   label_bitrate_value->setText   ( list_audiocodec->model()->data(current,AudioCodecModel::Role::BITRATE)   .toString());
+   label_frequency_value->setText ( list_audiocodec->model()->data(current,AudioCodecModel::Role::SAMPLERATE).toString());
 }
 
 ///Select available security options for various methods

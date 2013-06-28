@@ -889,10 +889,17 @@ void Call::hangUp()
    ::time(&curTime);
    m_pStopTimeStamp = curTime;
    qDebug() << "Hanging up call. callId : " << m_CallId << "ConfId:" << m_ConfId;
+   bool ret;
    if (!isConference())
-      Q_NOREPLY callManager.hangUp(m_CallId);
+      ret = callManager.hangUp(m_CallId);
    else
-      Q_NOREPLY callManager.hangUpConference(m_ConfId);
+      ret = callManager.hangUpConference(m_ConfId);
+   if (!ret) { //Can happen if the daemon crash and open again
+      qDebug() << "Error: Invalid call, the daemon may have crashed";
+      m_CurrentState = Call::State::OVER;
+      emit changed();
+      emit changed(this);
+   }
    if (m_pTimer)
       m_pTimer->stop();
 }

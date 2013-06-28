@@ -159,6 +159,7 @@ void CallModel::initRoles()
    roles.insert(Call::Role::DropState     ,QByteArray("dropState"));
    roles.insert(Call::Role::DTMFAnimState ,QByteArray("dTMFAnimState"));
    roles.insert(Call::Role::LastDTMFidx   ,QByteArray("lastDTMFidx"));
+   roles.insert(Call::Role::IsRecording   ,QByteArray("isRecording"));
    setRoleNames(roles);
 }
 

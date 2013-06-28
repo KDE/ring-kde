@@ -859,10 +859,10 @@ void Account::save()
       foreach (const int aCodec, codecIdList) {
          QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
          QModelIndex idx = m_pAudioCodecs->addAudioCodec();
-         m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::NAME_ROLE       );
-         m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::SAMPLERATE_ROLE );
-         m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::BITRATE_ROLE    );
-         m_pAudioCodecs->setData(idx,aCodec  ,AudioCodecModel::ID_ROLE         );
+         m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::Role::NAME       );
+         m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::Role::SAMPLERATE );
+         m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::Role::BITRATE    );
+         m_pAudioCodecs->setData(idx,aCodec  ,AudioCodecModel::Role::ID         );
          m_pAudioCodecs->setData(idx, Qt::Checked ,Qt::CheckStateRole);
       }
       saveAudioCodecs();
@@ -986,10 +986,10 @@ void Account::reloadAudioCodecs()
       foreach (const int aCodec, activeCodecList) {
          QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
          QModelIndex idx = m_pAudioCodecs->addAudioCodec();
-         m_pAudioCodecs->setData(idx,codec[0]     ,AudioCodecModel::NAME_ROLE       );
-         m_pAudioCodecs->setData(idx,codec[1]     ,AudioCodecModel::SAMPLERATE_ROLE );
-         m_pAudioCodecs->setData(idx,codec[2]     ,AudioCodecModel::BITRATE_ROLE    );
-         m_pAudioCodecs->setData(idx,aCodec       ,AudioCodecModel::ID_ROLE         );
+         m_pAudioCodecs->setData(idx,codec[0]     ,AudioCodecModel::Role::NAME       );
+         m_pAudioCodecs->setData(idx,codec[1]     ,AudioCodecModel::Role::SAMPLERATE );
+         m_pAudioCodecs->setData(idx,codec[2]     ,AudioCodecModel::Role::BITRATE    );
+         m_pAudioCodecs->setData(idx,aCodec       ,AudioCodecModel::Role::ID         );
          m_pAudioCodecs->setData(idx, Qt::Checked ,Qt::CheckStateRole               );
          if (codecIdList.indexOf(aCodec)!=-1)
             codecIdList.remove(codecIdList.indexOf(aCodec));
@@ -999,10 +999,10 @@ void Account::reloadAudioCodecs()
    foreach (const int aCodec, codecIdList) {
       QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
       QModelIndex idx = m_pAudioCodecs->addAudioCodec();
-      m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::NAME_ROLE       );
-      m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::SAMPLERATE_ROLE );
-      m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::BITRATE_ROLE    );
-      m_pAudioCodecs->setData(idx,aCodec  ,AudioCodecModel::ID_ROLE         );
+      m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::Role::NAME       );
+      m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::Role::SAMPLERATE );
+      m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::Role::BITRATE    );
+      m_pAudioCodecs->setData(idx,aCodec  ,AudioCodecModel::Role::ID         );
       
       m_pAudioCodecs->setData(idx, Qt::Unchecked ,Qt::CheckStateRole);
    }
@@ -1015,7 +1015,7 @@ void Account::saveAudioCodecs() {
       for (int i=0; i < m_pAudioCodecs->rowCount();i++) {
          QModelIndex idx = m_pAudioCodecs->index(i,0);
          if (m_pAudioCodecs->data(idx,Qt::CheckStateRole) == Qt::Checked) {
-            _codecList << m_pAudioCodecs->data(idx,AudioCodecModel::ID_ROLE).toString();
+            _codecList << m_pAudioCodecs->data(idx,AudioCodecModel::Role::ID).toString();
          }
       }
 
