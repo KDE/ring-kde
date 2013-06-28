@@ -28,9 +28,11 @@ class LIB_EXPORT CredentialModel : public QAbstractListModel {
    Q_OBJECT
 public:
    //Roles
-   static const int NAME_ROLE     = 100;
-   static const int PASSWORD_ROLE = 101;
-   static const int REALM_ROLE    = 102;
+   enum Role {
+      NAME     = 100,
+      PASSWORD = 101,
+      REALM    = 102,
+   };
 
    //Constructor
    explicit CredentialModel(QObject* parent = nullptr);

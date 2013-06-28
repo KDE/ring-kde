@@ -23,6 +23,11 @@
 ///Constructor
 CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()) {
 
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(CredentialModel::Role::NAME    ,QByteArray("name"));
+   roles.insert(CredentialModel::Role::PASSWORD,QByteArray("password"));
+   roles.insert(CredentialModel::Role::REALM   ,QByteArray("realm"));
+   setRoleNames(roles);
 }
 
 ///Model data
@@ -32,13 +37,13 @@ QVariant CredentialModel::data(const QModelIndex& idx, int role) const {
          case Qt::DisplayRole:
             return QVariant(m_lCredentials[idx.row()]->name);
             break;
-         case CredentialModel::NAME_ROLE:
+         case CredentialModel::Role::NAME:
             return m_lCredentials[idx.row()]->name;
             break;
-         case CredentialModel::PASSWORD_ROLE:
+         case CredentialModel::Role::PASSWORD:
             return m_lCredentials[idx.row()]->password;
             break;
-         case CredentialModel::REALM_ROLE:
+         case CredentialModel::Role::REALM:
             return m_lCredentials[idx.row()]->realm;
             break;
          default:
@@ -63,17 +68,17 @@ Qt::ItemFlags CredentialModel::flags(const QModelIndex& idx) const {
 
 ///Set credential data
 bool CredentialModel::setData( const QModelIndex& idx, const QVariant &value, int role) {
-   if (idx.column() == 0 && role == CredentialModel::NAME_ROLE) {
+   if (idx.column() == 0 && role == CredentialModel::Role::NAME) {
       m_lCredentials[idx.row()]->name = value.toString();
       emit dataChanged(idx, idx);
       return true;
    }
-   else if (idx.column() == 0 && role == CredentialModel::PASSWORD_ROLE) {
+   else if (idx.column() == 0 && role == CredentialModel::Role::PASSWORD) {
       m_lCredentials[idx.row()]->password = value.toString();
       emit dataChanged(idx, idx);
       return true;
    }
-   else if (idx.column() == 0 && role == CredentialModel::REALM_ROLE) {
+   else if (idx.column() == 0 && role == CredentialModel::Role::REALM) {
       m_lCredentials[idx.row()]->realm = value.toString();
       emit dataChanged(idx, idx);
       return true;

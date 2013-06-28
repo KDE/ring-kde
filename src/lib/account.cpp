@@ -936,9 +936,9 @@ void Account::reloadCredentials()
       VectorMapStringString credentials = configurationManager.getCredentials(accountId());
       for (int i=0; i < credentials.size(); i++) {
          QModelIndex idx = m_pCredentials->addCredentials();
-         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_USERNAME  ],CredentialModel::NAME_ROLE    );
-         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_PASSWORD  ],CredentialModel::PASSWORD_ROLE);
-         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_REALM     ],CredentialModel::REALM_ROLE   );
+         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_USERNAME  ],CredentialModel::Role::NAME    );
+         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_PASSWORD  ],CredentialModel::Role::PASSWORD);
+         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_REALM     ],CredentialModel::Role::REALM   );
       }
    }
 }
@@ -951,18 +951,18 @@ void Account::saveCredentials() {
       for (int i=0; i < m_pCredentials->rowCount();i++) {
          QModelIndex idx = m_pCredentials->index(i,0);
          MapStringString credentialData;
-         QString username = m_pCredentials->data(idx,CredentialModel::NAME_ROLE ).toString();
-         QString realm = m_pCredentials->data(idx,CredentialModel::REALM_ROLE    ).toString();
+         QString username = m_pCredentials->data(idx,CredentialModel::Role::NAME).toString();
+         QString realm = m_pCredentials->data(idx,CredentialModel::Role::REALM).toString();
          if (username.isEmpty()) {
             username = accountUsername();
-            m_pCredentials->setData(idx,username,CredentialModel::NAME_ROLE );
+            m_pCredentials->setData(idx,username,CredentialModel::Role::NAME);
          }
          if (realm.isEmpty()) {
             realm = '*';
-            m_pCredentials->setData(idx,realm,CredentialModel::REALM_ROLE    );
+            m_pCredentials->setData(idx,realm,CredentialModel::Role::REALM);
          }
          credentialData[ CONFIG_ACCOUNT_USERNAME] = username;
-         credentialData[ CONFIG_ACCOUNT_PASSWORD] = m_pCredentials->data(idx,CredentialModel::PASSWORD_ROLE ).toString();
+         credentialData[ CONFIG_ACCOUNT_PASSWORD] = m_pCredentials->data(idx,CredentialModel::Role::PASSWORD).toString();
          credentialData[ CONFIG_ACCOUNT_REALM   ] = realm;
          toReturn << credentialData;
       }

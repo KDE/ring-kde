@@ -309,7 +309,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    QModelIndex idx = account->credentialsModel()->index(0,0);
    disconnect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
    if (idx.isValid() && !account->accountId().isEmpty()) {
-      edit5_password->setText(account->credentialsModel()->data(idx,CredentialModel::PASSWORD_ROLE).toString());
+      edit5_password->setText(account->credentialsModel()->data(idx,CredentialModel::Role::PASSWORD).toString());
    }
    else
       edit5_password->setText("");
@@ -612,7 +612,7 @@ void DlgAccounts::updateAccountListCommands()
 ///Password changed
 void DlgAccounts::main_password_field_changed()
 {
-   list_credential->model()->setData(list_credential->model()->index(0,0),edit5_password->text(),CredentialModel::PASSWORD_ROLE);
+   list_credential->model()->setData(list_credential->model()->index(0,0),edit5_password->text(),CredentialModel::Role::PASSWORD);
    #ifdef Q_WS_WIN // MS Windows version
       if (GetKeyState(VK_CAPITAL) == 1) {
    #endif
@@ -647,7 +647,7 @@ void DlgAccounts::updateFirstCredential(QString text)
 {
    if (!m_IsLoading) {
       Account* acc = AccountList::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
-      acc->credentialsModel()->setData(acc->credentialsModel()->index(0,0),text, CredentialModel::NAME_ROLE);
+      acc->credentialsModel()->setData(acc->credentialsModel()->index(0,0),text, CredentialModel::Role::NAME);
       if (acc->credentialsModel()->index(0,0) == list_credential->currentIndex()) {
          edit_credential_auth->setText(text);
       }
@@ -805,13 +805,13 @@ void DlgAccounts::updateCombo(int value)
 ///Save the current credential
 void DlgAccounts::saveCredential()
 {
-   QModelIndex index = listView_accountList->currentIndex();
+   const QModelIndex index = listView_accountList->currentIndex();
    Account*    acc   = AccountList::instance()->getAccountByModelIndex(index);
-   QModelIndex currentCredential = list_credential->currentIndex();
+   const QModelIndex currentCredential = list_credential->currentIndex();
    if (currentCredential.isValid()) {
-      acc->credentialsModel()->setData(currentCredential,edit_credential_auth->text()    , CredentialModel::NAME_ROLE     );
-      acc->credentialsModel()->setData(currentCredential,edit_credential_password->text(), CredentialModel::PASSWORD_ROLE );
-      acc->credentialsModel()->setData(currentCredential,edit_credential_realm->text()   , CredentialModel::REALM_ROLE    );
+      acc->credentialsModel()->setData(currentCredential,edit_credential_auth->text()    , CredentialModel::Role::NAME     );
+      acc->credentialsModel()->setData(currentCredential,edit_credential_password->text(), CredentialModel::Role::PASSWORD );
+      acc->credentialsModel()->setData(currentCredential,edit_credential_realm->text()   , CredentialModel::Role::REALM    );
    }
 
    if (acc)
@@ -831,13 +831,13 @@ void DlgAccounts::addCredential()
 ///Save and load a credential
 void DlgAccounts::selectCredential(QModelIndex item, QModelIndex previous)
 {
-   list_credential->model()->setData(previous,edit_credential_auth->text()    , CredentialModel::NAME_ROLE     );
-   list_credential->model()->setData(previous,edit_credential_password->text(), CredentialModel::PASSWORD_ROLE );
-   list_credential->model()->setData(previous,edit_credential_realm->text()   , CredentialModel::REALM_ROLE    );
+   list_credential->model()->setData(previous,edit_credential_auth->text()    , CredentialModel::Role::NAME     );
+   list_credential->model()->setData(previous,edit_credential_password->text(), CredentialModel::Role::PASSWORD );
+   list_credential->model()->setData(previous,edit_credential_realm->text()   , CredentialModel::Role::REALM    );
    
-   edit_credential_realm->setText       ( list_credential->model()->data(item,CredentialModel::REALM_ROLE)    .toString());
-   edit_credential_auth->setText        ( list_credential->model()->data(item,CredentialModel::NAME_ROLE)     .toString());
-   edit_credential_password->setText    ( list_credential->model()->data(item,CredentialModel::PASSWORD_ROLE) .toString());
+   edit_credential_realm->setText       ( list_credential->model()->data(item,CredentialModel::Role::REALM)    .toString());
+   edit_credential_auth->setText        ( list_credential->model()->data(item,CredentialModel::Role::NAME)     .toString());
+   edit_credential_password->setText    ( list_credential->model()->data(item,CredentialModel::Role::PASSWORD) .toString());
    
    edit_credential_realm->setEnabled    ( true );
    edit_credential_auth->setEnabled     ( true );

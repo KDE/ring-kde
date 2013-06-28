@@ -62,15 +62,15 @@ m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
    QHash<int, QByteArray> roles = roleNames();
-   roles.insert(AbstractContactBackend::Role::Organization      ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::Group             ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::Department        ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::PreferredEmail    ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::FormattedLastUsed ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::IndexedLastUsed   ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::DatedLastUsed     ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::Filter            ,QByteArray(""));
-   roles.insert(AbstractContactBackend::Role::DropState         ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::Organization      ,QByteArray("organization"));
+   roles.insert(AbstractContactBackend::Role::Group             ,QByteArray("group"));
+   roles.insert(AbstractContactBackend::Role::Department        ,QByteArray("department"));
+   roles.insert(AbstractContactBackend::Role::PreferredEmail    ,QByteArray("preferredEmail"));
+   roles.insert(AbstractContactBackend::Role::FormattedLastUsed ,QByteArray("formattedLastUsed"));
+   roles.insert(AbstractContactBackend::Role::IndexedLastUsed   ,QByteArray("indexedLastUsed"));
+   roles.insert(AbstractContactBackend::Role::DatedLastUsed     ,QByteArray("datedLastUsed"));
+   roles.insert(AbstractContactBackend::Role::Filter            ,QByteArray("filter"));
+   roles.insert(AbstractContactBackend::Role::DropState         ,QByteArray("dropState"));
    setRoleNames(roles);
 }
 
