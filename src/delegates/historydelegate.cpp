@@ -118,7 +118,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          pxm = QPixmap(callStateIcons[currentState]); //Do not scale
    }
 
-   if (index.data(Call::Role::HasRecording).toBool()) {
+   if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
       QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
       Call* call  = nullptr;
       if (obj)
@@ -140,6 +140,13 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::HistoryState).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+   }
+   if (currentState != Call::State::OVER && index.data(Call::Role::IsRecording).toBool()) {
+      const static QPixmap record(KStandardDirs::locate("data","sflphone-client-kde/record.png"));
+      time_t curTime;
+      ::time(&curTime);
+      if (curTime%3)
+         painter->drawPixmap(option.rect.x()+option.rect.width()-record.width()-2,option.rect.y()+option.rect.height()-record.height()-2,record);
    }
    int x_offset((iconHeight-pxm.width())/2),y_offset((iconHeight-pxm.height())/2);
    painter->drawPixmap(option.rect.x()+4+x_offset,option.rect.y()+y_offset+(option.rect.height()-iconHeight)/2,pxm);
@@ -206,9 +213,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    if (!index.parent().isValid() && currentState != Call::State::RINGING && currentState != Call::State::INCOMING){
       const QString length = index.data(Call::Role::Length).toString();
-      const int lenLen = fm.width(length);
       if (!length.isEmpty()) {
-         painter->drawText(option.rect.x()+option.rect.width()-lenLen-4,option.rect.y()+(option.rect.height()/2),length);
+         const int lenLen = fm.width(length);
+         painter->drawText(option.rect.x()+option.rect.width()-lenLen-4,option.rect.y()+(option.rect.height()/2)+(fm.height()/4),length);
       }
       DialpadDelegate::paint(painter,option,index,lenLen);
    }

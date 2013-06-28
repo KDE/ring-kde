@@ -506,13 +506,13 @@ QString Call::length() const
 }
 
 ///Get the current state
-Call::State Call::state()          const
+Call::State Call::state() const
 {
    return m_CurrentState;
 }
 
 ///Get the call recording
-bool Call::recording()                   const
+bool Call::recording() const
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    ((Call*) this)->m_Recording        = callManager.getIsRecording(m_CallId);
@@ -520,13 +520,13 @@ bool Call::recording()                   const
 }
 
 ///Get the call account id
-Account* Call::account()                 const
+Account* Call::account() const
 {
    return AccountList::instance()->getAccountById(m_Account);
 }
 
 ///Is this call a conference
-bool Call::isConference()                   const
+bool Call::isConference() const
 {
    return m_isConference;
 }
@@ -975,9 +975,9 @@ void Call::setRecord()
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Setting record " << !m_Recording << " for call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
-   Q_NOREPLY callManager.setRecording((!m_isConference)?m_CallId:m_ConfId);
+   bool isRecording = callManager.toggleRecording((!m_isConference)?m_CallId:m_ConfId);
    bool oldRecStatus = m_Recording;
-   m_Recording = !m_Recording;
+   m_Recording = isRecording;
    if (oldRecStatus != m_Recording) {
       emit changed();
       emit changed(this);
@@ -1252,6 +1252,8 @@ QVariant Call::roleData(int role) const
          return m_pStartTimeStamp;
       case Call::Role::StopTime:
          return m_pStopTimeStamp;
+      case Call::Role::IsRecording:
+         return recording();
       case Call::Role::DropState:
          return property("dropState");
          break;

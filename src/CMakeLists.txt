@@ -169,6 +169,7 @@ INSTALL( FILES icons/hold_grayscale.png          DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/unhold_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/refuse_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/pickup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/record.png                  DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/tips/keyboard.svg           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/upArrow.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
 INSTALL( FILES icons/tips/downArrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )

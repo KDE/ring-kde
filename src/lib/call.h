@@ -124,6 +124,7 @@ public:
       Id            = 120,
       StartTime     = 121,
       StopTime      = 122,
+      IsRecording   = 123,
       DropState     = 300,
       DTMFAnimState = 400,
       LastDTMFidx   = 401,

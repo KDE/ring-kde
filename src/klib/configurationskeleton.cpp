@@ -67,7 +67,7 @@ void ConfigurationSkeleton::readConfig()
 
    //Notification settings
    //setNotifOnCalls(true);
-   setNotifOnMessages(configurationManager.getMailNotify());
+   //setNotifOnMessages(configurationManager.getMailNotify());
 
    //Window display settings
    //setDisplayOnStart(true);
@@ -116,8 +116,8 @@ void ConfigurationSkeleton::readConfig()
 
    //Address book settings
 
-   MapStringInt addressBookSettings = configurationManager.getAddressbookSettings().value();
-   setEnableAddressBook(addressBookSettings[ADDRESSBOOK_ENABLE]);
+   //MapStringInt addressBookSettings = configurationManager.getAddressbookSettings().value();
+   //setEnableAddressBook(addressBookSettings[ADDRESSBOOK_ENABLE]);
    //setMaxResults(addressBookSettings[ADDRESSBOOK_MAX_RESULTS]);
    //setDisplayPhoto(addressBookSettings[ADDRESSBOOK_DISPLAY_CONTACT_PHOTO]);
    //setBusiness(addressBookSettings[ADDRESSBOOK_DISPLAY_BUSINESS]);
@@ -221,7 +221,7 @@ void ConfigurationSkeleton::writeConfig()
    //    addressBookSettings[ADDRESSBOOK_DISPLAY_BUSINESS] = business();
    //    addressBookSettings[ADDRESSBOOK_DISPLAY_MOBILE] = mobile();
    //    addressBookSettings[ADDRESSBOOK_DISPLAY_HOME] = home();
-   configurationManager.setAddressbookSettings(addressBookSettings);
+   //configurationManager.setAddressbookSettings(addressBookSettings);
 
    //Hooks settings
 
