@@ -61,6 +61,17 @@ m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
 {
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(AbstractContactBackend::Role::Organization      ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::Group             ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::Department        ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::PreferredEmail    ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::FormattedLastUsed ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::IndexedLastUsed   ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::DatedLastUsed     ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::Filter            ,QByteArray(""));
+   roles.insert(AbstractContactBackend::Role::DropState         ,QByteArray(""));
+   setRoleNames(roles);
 }
 
 ContactProxyModel::~ContactProxyModel()
@@ -111,7 +122,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
 {
    if (!index.isValid())
       return QVariant();
-   
+
    ContactTreeBackend* modelItem = (ContactTreeBackend*)index.internalPointer();
    switch (modelItem->type()) {
       case ContactTreeBackend::Type::TOP_LEVEL: /*|| !index.parent().isValid()) {*/
