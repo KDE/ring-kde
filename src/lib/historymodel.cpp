@@ -451,34 +451,37 @@ QString HistoryModel::timeToHistoryCategory(const time_t time)
 
 HistoryModel::HistoryConst HistoryModel::timeToHistoryConst(const time_t time)
 {
+   time_t time2 = time;
    time_t currentTime;
    ::time(&currentTime);
    if (currentTime - time <= 3600*24) //The future case would be a bug, but it have to be handled anyway or it will appear in "very long time ago"
       return HistoryConst::Today;
 
+   time2 -= time%(3600*24); //Reset to midnight
+   currentTime -= currentTime%(3600*24); //Reset to midnight
    //Check for last week
-   if (currentTime-(6)*3600*24 < time) {
+   if (currentTime-(6)*3600*24 < time2) {
       for (int i=1;i<7;i++) {
-         if (currentTime-(i)*3600*24 < time)
-            return (HistoryModel::HistoryConst)i; //Yesterday to Six_days_ago
+         if (currentTime-((i)*3600*24) == time2)
+            return (HistoryModel::HistoryConst)(i); //Yesterday to Six_days_ago
       }
    }
    //Check for last month
-   if (currentTime - ((3)*7*24*3600) < time) {
+   else if (currentTime - ((4)*7*24*3600) < time2) {
       for (int i=1;i<4;i++) {
-         if (currentTime - ((i)*7*24*3600) < time)
+         if (currentTime - ((i+1)*7*24*3600) < time2)
             return (HistoryModel::HistoryConst)(i+((int)HistoryModel::HistoryConst::Last_week)-1); //Last_week to Three_weeks_ago
       }
    }
    //Check for last year
-   if (currentTime-(12)*30.4f*24*3600 < time) {
+   else if (currentTime-(12)*30.4f*24*3600 < time2) {
       for (int i=1;i<12;i++) {
-         if (currentTime-(i+1)*30.4f*24*3600 < time) //Not exact, but faster
+         if (currentTime-(i+1)*30.4f*24*3600 < time2) //Not exact, but faster
             return (HistoryModel::HistoryConst)(i+((int)HistoryModel::HistoryConst::Last_month)-1); //Last_month to Twelve_months ago
       }
    }
    //if (QDate::currentDate().addYears(-1)  >= date && QDate::currentDate().addYears(-2)  < date)
-   if (currentTime-365*24*3600 < time)
+   else if (currentTime-365*24*3600 < time2)
       return HistoryConst::Last_year;
 
    //Every other senario
