@@ -59,11 +59,11 @@ private:
    static InstantMessagingModelManager* m_spInstance;
    static CallModel* m_spCallModel;
 
-   
+
 private Q_SLOTS:
    void newMessage(QString callId, QString from, QString message);
 
-   
+
 Q_SIGNALS:
    ///Emitted when a new message is available
    void newMessagingModel(Call*,InstantMessagingModel*);
@@ -77,11 +77,13 @@ class LIB_EXPORT InstantMessagingModel : public QAbstractListModel
    friend class Call;
 public:
    //Role const
-   static const int MESSAGE_TYPE_ROLE    = 100;
-   static const int MESSAGE_FROM_ROLE    = 101;
-   static const int MESSAGE_TEXT_ROLE    = 102;
-   static const int MESSAGE_IMAGE_ROLE   = 103;
-   static const int MESSAGE_CONTACT_ROLE = 104;
+   enum Role {
+      TYPE    = 100,
+      FROM    = 101,
+      TEXT    = 102,
+      IMAGE   = 103,
+      CONTACT = 104,
+   };
 
    //Constructor
    explicit InstantMessagingModel(Call* call, QObject* parent = nullptr);

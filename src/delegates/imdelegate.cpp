@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "imtab.h"
+#include "imdelegate.h"
 
 #include "../lib/instantmessagingmodel.h"
 #include "../lib/call.h"
@@ -33,12 +33,12 @@ ImDelegates::ImDelegates(IMTab* parent) : QStyledItemDelegate(parent),m_pParent(
 ///Delegate size hint
 QSize ImDelegates::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    int height = 0;
-   QPixmap* icon = (QPixmap*)index.data(InstantMessagingModel::MESSAGE_IMAGE_ROLE).value<void*>();
+   const QPixmap* icon = (QPixmap*)index.data(InstantMessagingModel::Role::IMAGE).value<void*>();
    QFontMetrics metric( option.font);
-   QRect requiredRect = metric.boundingRect(0,0,m_pParent->width()-30 - 48 - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,index.data(InstantMessagingModel::MESSAGE_TYPE_ROLE).toString());
+   const QRect requiredRect = metric.boundingRect(0,0,m_pParent->width()-30 - 48 - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,index.data(InstantMessagingModel::Role::TYPE).toString());
    height+=requiredRect.height();
    height+=metric.height()+10;
-   if (icon && dynamic_cast<QPixmap*>(icon) && height < icon->height()) {
+   if (icon && dynamic_cast<const QPixmap*>(icon) && height < icon->height()) {
       height = icon->height();
    }
    return QSize(m_pParent->width()-30,height);
@@ -48,25 +48,25 @@ QSize ImDelegates::sizeHint(const QStyleOptionViewItem& option, const QModelInde
 void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
-   QPixmap* icon = (QPixmap*)index.data(InstantMessagingModel::MESSAGE_IMAGE_ROLE).value<void*>();
+   QPixmap* icon = (QPixmap*)index.data(InstantMessagingModel::Role::IMAGE).value<void*>();
    int icnWidth = 50;
    if (icon && dynamic_cast<QPixmap*>(icon)) {
       painter->drawPixmap(option.rect.x()+5,option.rect.y()+(option.rect.height()/2)-(icon->height()/2),*icon);
       icnWidth = icon->width();
    }
    else {
-      ((QAbstractListModel*) index.model())->setData(index,QPixmap(KIcon("user-identity").pixmap(QSize(48,48))),InstantMessagingModel::MESSAGE_IMAGE_ROLE);
+      ((QAbstractListModel*) index.model())->setData(index,QPixmap(KIcon("user-identity").pixmap(QSize(48,48))),InstantMessagingModel::Role::IMAGE);
    }
 
    QFontMetrics metric(painter->font());
-   QString text = index.data(InstantMessagingModel::MESSAGE_TYPE_ROLE).toString();
+   QString text = index.data(InstantMessagingModel::Role::TYPE).toString();
    QRect requiredRect = metric.boundingRect(option.rect.x()+icnWidth+10,option.rect.y()+metric.height()+5,option.rect.width() - icnWidth - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,text);
    painter->drawText(requiredRect,Qt::AlignLeft|Qt::TextWordWrap,text);
 
    QFont font = painter->font();
    font.setBold(true);
    painter->setFont(font);
-   painter->drawText(option.rect.x()+icnWidth+10,option.rect.y()+metric.height(),index.data(InstantMessagingModel::MESSAGE_FROM_ROLE).toString());
+   painter->drawText(option.rect.x()+icnWidth+10,option.rect.y()+metric.height(),index.data(InstantMessagingModel::Role::FROM).toString());
    font.setBold(false);
    painter->setFont(font);
 

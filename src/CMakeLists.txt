@@ -77,7 +77,6 @@ SET(
    widgets/videodock.cpp
    widgets/videowidget.cpp
    widgets/immanager.cpp
-   widgets/imtab.cpp
    widgets/callviewoverlay.cpp
    widgets/callviewoverlaytoolbar.cpp
    widgets/tips/conftip.cpp
@@ -97,6 +96,7 @@ SET(
    delegates/phonenumberdelegate.cpp
    delegates/delegatedropoverlay.cpp
    delegates/dialpaddelegate.cpp
+   delegates/imdelegate.cpp
 #    widgets/acceleratedvideowidget.cpp
 #    callview.cpp
 )

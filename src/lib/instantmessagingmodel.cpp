@@ -23,7 +23,7 @@
 #include "contact.h"
 
 InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
-CallModel*                InstantMessagingModelManager::m_spCallModel = nullptr;
+CallModel*                    InstantMessagingModelManager::m_spCallModel = nullptr;
 
 ///Signleton
 InstantMessagingModelManager* InstantMessagingModelManager::instance()
@@ -77,6 +77,13 @@ InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
 InstantMessagingModel::InstantMessagingModel(Call* call, QObject* par) : QAbstractListModel(par),m_pCall(call)
 {
    //QStringList callList = callManager.getCallList();
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(InstantMessagingModel::Role::TYPE    ,QByteArray("type"));
+   roles.insert(InstantMessagingModel::Role::FROM    ,QByteArray("from"));
+   roles.insert(InstantMessagingModel::Role::TEXT    ,QByteArray("text"));
+   roles.insert(InstantMessagingModel::Role::IMAGE   ,QByteArray("image"));
+   roles.insert(InstantMessagingModel::Role::CONTACT ,QByteArray("contact"));
+   setRoleNames(roles);
 }
 
 ///Get data from the model
@@ -87,21 +94,21 @@ QVariant InstantMessagingModel::data( const QModelIndex& idx, int role) const
          case Qt::DisplayRole:
             return QVariant(m_lMessages[idx.row()].message);
             break;
-         case MESSAGE_TYPE_ROLE:
+         case InstantMessagingModel::Role::TYPE:
             return QVariant(m_lMessages[idx.row()].message);
             break;
-         case MESSAGE_FROM_ROLE:
+         case InstantMessagingModel::Role::FROM:
             return QVariant(m_lMessages[idx.row()].from);
             break;
-         case MESSAGE_TEXT_ROLE:
+         case InstantMessagingModel::Role::TEXT:
             return INCOMMING_IM;
             break;
-         case MESSAGE_CONTACT_ROLE:
+         case InstantMessagingModel::Role::CONTACT:
             if (m_pCall->contact()) {
                return QVariant();
             }
             break;
-         case MESSAGE_IMAGE_ROLE: {
+         case InstantMessagingModel::Role::IMAGE: {
             if (m_lImages.find(idx) != m_lImages.end())
                return m_lImages[idx];
             const Contact* c = m_pCall->contact();
@@ -138,7 +145,7 @@ bool InstantMessagingModel::setData(const QModelIndex& idx, const QVariant &valu
    Q_UNUSED(idx)
    Q_UNUSED(value)
    Q_UNUSED(role)
-   if (idx.column() == 0 && role == MESSAGE_IMAGE_ROLE   ) {
+   if (idx.column() == 0 && role == InstantMessagingModel::Role::IMAGE   ) {
       m_lImages[idx] = value;
    }
    return false;

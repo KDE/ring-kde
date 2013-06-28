@@ -18,7 +18,7 @@
 #include "immanager.h"
 #include "../lib/instantmessagingmodel.h"
 #include "../lib/call.h"
-#include "imtab.h"
+#include "../delegates/imdelegate.h"
 #include <KDebug>
 #include <KLocale>
 
