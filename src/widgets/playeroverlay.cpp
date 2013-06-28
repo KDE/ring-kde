@@ -18,6 +18,7 @@
 #include "playeroverlay.h"
 
 #include <QtCore/QFile>
+#include <QtGui/QGraphicsOpacityEffect>
 
 #include <KIcon>
 #include <KMessageBox>
@@ -31,6 +32,12 @@ PlayerOverlay::PlayerOverlay(Call* call, QWidget* parent) : QWidget(parent),m_pC
    m_pPlayer->setVisible(false);
    m_pDelete->setIcon( KIcon("edit-delete") );
    m_pPlay->setIcon( KIcon( "media-playback-start" ));
+   QGraphicsOpacityEffect * effect = new QGraphicsOpacityEffect(m_pDelete);
+   effect->setOpacity(0.3);
+   m_pDelete->setGraphicsEffect(effect);
+   effect = new QGraphicsOpacityEffect(m_pPlay);
+   effect->setOpacity(0.3);
+   m_pPlay->setGraphicsEffect(effect);
 }
 
 void PlayerOverlay::slotDeleteRecording()
