@@ -19,6 +19,7 @@
 #define MACRO_H
 
 #include <QtCore/QObject>
+#include <QtCore/QDateTime>
 #include <QtCore/QModelIndex>
 #include "../lib/typedefs.h"
 

@@ -618,10 +618,10 @@ QModelIndex CallModel::parent( const QModelIndex& idx) const
 ///Get the call index at row,column (active call only)
 QModelIndex CallModel::index( int row, int column, const QModelIndex& parentIdx) const
 {
-   if (!parentIdx.isValid() && m_lInternalModel.size() > row) {
+   if (row >= 0 && !parentIdx.isValid() && m_lInternalModel.size() > row) {
       return createIndex(row,column,m_lInternalModel[row]);
    }
-   else if (parentIdx.isValid() && m_lInternalModel[parentIdx.row()]->m_lChildren.size() > row) {
+   else if (row >= 0 && parentIdx.isValid() && m_lInternalModel[parentIdx.row()]->m_lChildren.size() > row) {
       return createIndex(row,column,m_lInternalModel[parentIdx.row()]->m_lChildren[row]);
    }
    return QModelIndex();

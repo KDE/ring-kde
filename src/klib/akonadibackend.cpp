@@ -47,7 +47,7 @@
 #include "../lib/account.h"
 #include "../lib/call.h"
 #include "../lib/callmodel.h"
-#include "configurationskeleton.h"
+#include "kcfg_settings.h"
 
 ///Init static attributes
 AkonadiBackend*  AkonadiBackend::m_pInstance = nullptr;
@@ -93,9 +93,9 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
 {
    //Remove protocol dependant prefix and suffix
    int start(0),end(phoneNumber.size()); //Other type of comparaisons were too slow
-   if (phoneNumber[0] == '<' && phoneNumber[4] == ':')
+   if (phoneNumber.size() > 0 && phoneNumber[0] == '<' && phoneNumber[4] == ':')
       start = 5;
-   if (phoneNumber.right(1) == ">")
+   if (phoneNumber.size() > 0 && phoneNumber.right(1) == ">")
       end--;
    const QString number = phoneNumber.mid(start,end);
 

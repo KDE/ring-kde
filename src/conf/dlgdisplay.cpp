@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include "dlgdisplay.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 
 //KDE
 #include <KConfigDialog>

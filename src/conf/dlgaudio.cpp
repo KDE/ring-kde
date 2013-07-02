@@ -27,7 +27,7 @@
 
 //SFLPhone
 #include "lib/dbus/configurationmanager.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/sflphone_const.h"
 

@@ -33,7 +33,7 @@
 #include <KLineEdit>
 
 //SFLPhone
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "sflphone.h"
 #include "klib/akonadibackend.h"
 #include "klib/helperfunctions.h"

@@ -35,7 +35,7 @@
 #include "../../lib/sflphone_const.h"
 #include "../../klib/akonadibackend.h"
 #include "../../klib/helperfunctions.h"
-#include "../../klib/configurationskeleton.h"
+#include "../../klib/kcfg_settings.h"
 #include "../../lib/callmodel.h"
 #include "../../lib/historymodel.h"
 #include "sflphoneservice.h"

@@ -1,6 +1,6 @@
 
 File=sflphone-client-kde.kcfg
-ClassName=ConfigurationSkeletonBase
+ClassName=ConfigurationSkeleton
 Singleton=true
 Mutators=true
 Visibility=LIB_EXPORT

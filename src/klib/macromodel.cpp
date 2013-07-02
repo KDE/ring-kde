@@ -29,7 +29,7 @@
 
 //SFLPhone
 #include "../lib/dbus/callmanager.h"
-#include "configurationskeleton.h"
+#include "kcfg_settings.h"
 #include "macro.h"
 
 ///Init static attributes

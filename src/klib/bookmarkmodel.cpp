@@ -21,7 +21,7 @@
 #include <QtCore/QMimeData>
 
 //SFLPhone
-#include "configurationskeleton.h"
+#include "kcfg_settings.h"
 #include "../lib/historymodel.h"
 
 BookmarkModel* BookmarkModel::m_pSelf = nullptr;

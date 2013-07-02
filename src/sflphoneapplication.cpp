@@ -31,7 +31,7 @@
 
 //SFLPhone library
 #include "lib/dbus/instancemanager.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "sflphonecmd.h"
 
 //SFLPhone

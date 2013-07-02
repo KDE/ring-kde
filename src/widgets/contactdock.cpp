@@ -52,7 +52,7 @@
 #include "lib/accountlist.h"
 #include "klib/helperfunctions.h"
 #include "klib/akonadibackend.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "../lib/contactproxymodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/contactdelegate.h"

@@ -38,7 +38,7 @@
 
 //sflphone
 #include "conf/configurationdialog.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "klib/akonadibackend.h"
 #include "accountwizard.h"
 #include "actionsetaccountfirst.h"

@@ -32,7 +32,7 @@
 
 //SFLPhone
 #include "sflphoneapplication.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "lib/callmodel.h"
 #include "sflphonecmd.h"
 

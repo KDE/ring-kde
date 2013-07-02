@@ -30,7 +30,7 @@ INCLUDE_DIRECTORIES ( ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 set( ksflphone_LIB_SRCS
    helperfunctions.cpp
    akonadibackend.cpp
-   configurationskeleton.cpp
+#    configurationskeleton.cpp
    tipmanager.cpp
    tip.cpp
    tipanimationwrapper.cpp

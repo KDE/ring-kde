@@ -41,6 +41,7 @@ TipManager::TipManager(QTreeView* parent):QObject(parent),
 m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
 m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(new QTimer())
 {
+   m_CurrentFrame = {QPoint(0,0),QRect(),0};
    parent->installEventFilter(this);
    parent->setProperty("tipManager",QVariant::fromValue(qobject_cast<TipManager*>(this)));
    reload();

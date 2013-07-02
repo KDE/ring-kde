@@ -186,7 +186,7 @@ QModelIndex AbstractContactBackend::parent( const QModelIndex& idx) const
 
 QModelIndex AbstractContactBackend::index( int row, int column, const QModelIndex& par) const
 {
-   if (!par.isValid() && m_ContactByPhone.size() > row) {
+   if (!par.isValid() && getContactList().size() > row) {
       return createIndex(row,column,getContactList()[row]);
    }
    else if (par.isValid() && getContactList()[par.row()]->phoneNumbers().size() > row) {

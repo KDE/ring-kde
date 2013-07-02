@@ -22,7 +22,7 @@
 #include <KDebug>
 
 
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 
 #include "dlggeneral.h"
 #include "dlgdisplay.h"

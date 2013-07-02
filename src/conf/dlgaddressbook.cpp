@@ -19,7 +19,7 @@
 
 #include "dlgaddressbook.h"
 
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 
 ///Constructor
 DlgAddressBook::DlgAddressBook(KConfigDialog* parent)

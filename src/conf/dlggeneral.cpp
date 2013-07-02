@@ -26,7 +26,7 @@
 #include <KMessageBox>
 
 //SFLPhone
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/dbus/configurationmanager.h"
 

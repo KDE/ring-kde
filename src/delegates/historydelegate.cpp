@@ -33,7 +33,7 @@
 #include <lib/historymodel.h>
 #include <lib/contact.h>
 #include <lib/callmodel.h>
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "widgets/playeroverlay.h"
 #include "delegatedropoverlay.h"
 #include "dialpaddelegate.h"

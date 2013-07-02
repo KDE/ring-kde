@@ -61,7 +61,7 @@
 #include "widgets/historydock.h"
 #include "widgets/bookmarkdock.h"
 #include "widgets/videodock.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "sflphoneaccessibility.h"
 #include "lib/videomodel.h"
 #include "extendedaction.h"

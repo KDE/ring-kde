@@ -46,7 +46,7 @@
 #include "widgets/categorizedtreeview.h"
 #include "widgets/bookmarkdock.h"
 #include "klib/akonadibackend.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "lib/historymodel.h"
 #include "lib/accountlist.h"
 #include "../delegates/categorizeddelegate.h"
