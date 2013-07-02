@@ -29,6 +29,9 @@ set(GENERIC_LIB_VERSION "1.2.3")
 
 INCLUDE_DIRECTORIES ( ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 
+# Build dbus interfaces
+SET ( dbus_xml_introspecs_path ${CMAKE_CURRENT_SOURCE_DIR}/dbus/)
+
 #File to compile
 set( qtsflphone_LIB_SRCS
   call.cpp
@@ -55,8 +58,30 @@ set( qtsflphone_LIB_SRCS
   visitors/phonenumberselector.cpp
 )
 
-# Build dbus interfaces
-SET ( dbus_xml_introspecs_path ${CMAKE_CURRENT_SOURCE_DIR}/dbus/)
+set( qtsflphone_LIB_HDRS
+  account.h
+  accountlist.h
+  call.h
+  callmodel.h
+  historymodel.h
+  contact.h
+  abstractcontactbackend.h
+  videocodecmodel.h
+  videomodel.h
+  videorenderer.h
+  credentialmodel.h
+  audiocodecmodel.h
+  instantmessagingmodel.h
+  contactproxymodel.h
+)
+
+set( qtsflphone_extra_LIB_HDRS
+  videodevice.h
+  typedefs.h
+  sflphone_const.h
+  visitors/accountlistcolorvisitor.h
+  visitors/phonenumberselector.h
+)
 
 # configuration manager interface
 SET ( configurationmanager_xml  ${dbus_xml_introspecs_path}/configurationmanager-introspec.xml )
@@ -153,8 +178,13 @@ ELSE()
    )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
+IF(${ENABLE_QT5} MATCHES true)
+   QT5_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_LIB_HDRS})
+ELSE()
+   QT4_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_LIB_HDRS})
+ENDIF(${ENABLE_QT5} MATCHES true)
  
-add_library( qtsflphone  SHARED ${qtsflphone_LIB_SRCS} )
+add_library( qtsflphone  SHARED ${qtsflphone_LIB_SRCS} ${LIB_HEADER_MOC} )
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_USE_MODULES(qtsflphone Core DBus)
@@ -171,32 +201,10 @@ set_target_properties( qtsflphone
   PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_VERSION}
 )
 
-set( qtsflphone_LIB_HDRS
-  account.h
-  accountlist.h
-  call.h
-  callmodel.h
-  historymodel.h
-  contact.h
-  abstractcontactbackend.h
-  videocodecmodel.h
-  videomodel.h
-  videodevice.h
-  videorenderer.h
-  credentialmodel.h
-  audiocodecmodel.h
-  sflphone_const.h
-  instantmessagingmodel.h
-  contactproxymodel.h
-  typedefs.h
-  visitors/accountlistcolorvisitor.h
-  visitors/phonenumberselector.h
-)
-
 SET(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
 SET(INSTALL_TARGETS_DEFAULT_ARGS ${CMAKE_INSTALL_PREFIX}/lib)
 
-install( FILES ${qtsflphone_LIB_HDRS}
+install( FILES ${qtsflphone_LIB_HDRS} ${qtsflphone_extra_LIB_HDRS}
   DESTINATION ${INCLUDE_INSTALL_DIR}/qtsflphone
   COMPONENT Devel
 )
