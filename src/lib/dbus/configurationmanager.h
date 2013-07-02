@@ -19,7 +19,7 @@
 #ifndef CONFIGURATION_MANAGER_INTERFACE_SINGLETON_H
 #define CONFIGURATION_MANAGER_INTERFACE_SINGLETON_H
 
-#include "src/lib/configurationmanager_dbus_interface.h"
+#include "configurationmanager_dbus_interface.h"
 #include "../typedefs.h"
 
 namespace DBus {

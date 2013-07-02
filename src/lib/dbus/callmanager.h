@@ -20,7 +20,7 @@
 #ifndef CALL_MANAGER_INTERFACE_SINGLETON_H
 #define CALL_MANAGER_INTERFACE_SINGLETON_H
 
-#include "src/lib/callmanager_dbus_interface.h"
+#include "callmanager_dbus_interface.h"
 #include "../typedefs.h"
 
 namespace DBus {

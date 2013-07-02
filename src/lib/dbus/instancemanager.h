@@ -20,7 +20,7 @@
 #ifndef INSTANCE_INTERFACE_SINGLETON_H
 #define INSTANCE_INTERFACE_SINGLETON_H
 
-#include "src/lib/instance_dbus_interface.h"
+#include "instance_dbus_interface.h"
 #include "../typedefs.h"
 
 namespace DBus {

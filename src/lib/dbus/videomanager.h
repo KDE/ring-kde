@@ -18,8 +18,8 @@
 #ifndef VIDEO_INTERFACE_SINGLETON_H
 #define VIDEO_INTERFACE_SINGLETON_H
 
-#include "src/lib/video_dbus_interface.h"
-#include "typedefs.h"
+#include "video_dbus_interface.h"
+#include "../typedefs.h"
 
 namespace DBus {
 

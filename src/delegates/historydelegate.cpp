@@ -57,11 +57,13 @@ HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent
 }
 
 QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
-   QSize sh = QStyledItemDelegate::sizeHint(option, index);
-   QFontMetrics fm(QApplication::font());
+   if (!index.isValid())
+      return QSize(-1,-1);
+   const QSize sh = QStyledItemDelegate::sizeHint(option, index);
+   const QFontMetrics fm(QApplication::font());
    int lineHeight = fm.height()+2;
    int rowCount = 0;
-   Call::State currentState = static_cast<Call::State>(index.data(Call::Role::CallState).toInt());
+   const Call::State currentState = static_cast<Call::State>(index.data(Call::Role::CallState).toInt());
    int minimumRowHeight = (currentState == Call::State::OVER)?48:(ConfigurationSkeleton::limitMinimumRowHeight()?ConfigurationSkeleton::minimumRowHeight():0);
    if (currentState == Call::State::OVER)
       rowCount = 3;
@@ -74,7 +76,7 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
       + ConfigurationSkeleton::displayCallDepartment   ()
       + ConfigurationSkeleton::displayCallEmail        ();
    }
-   return QSize(sh.rwidth(),((rowCount*lineHeight)<minimumRowHeight?minimumRowHeight:(rowCount*lineHeight)) + 4);
+   return QSize(sh.width(),((rowCount*lineHeight)<minimumRowHeight?minimumRowHeight:(rowCount*lineHeight)) + 4);
 }
 
 void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -93,8 +95,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
-   Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
+   const QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
+   const Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 

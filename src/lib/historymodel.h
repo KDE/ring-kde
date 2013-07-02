@@ -118,6 +118,9 @@ private:
    friend class HistoryModel;
    public:
       virtual QObject* getSelf() {return this;}
+      virtual ~TopLevelItem() {
+         m_spInstance->m_lCategoryCounter.removeAll(this);
+      }
    private:
       TopLevelItem(int name);
       CallList m_lChilds;
