@@ -54,6 +54,7 @@ public:
    Account*                 getAccountByModelIndex ( const QModelIndex& item ) const;
    static QString           getSimilarAliasIndex   ( const QString& alias    );
    static Account*          getPriorAccount        (                         );
+   AccountListColorVisitor* colorVisitor           (                         );
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;

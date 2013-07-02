@@ -92,7 +92,7 @@ class LIB_EXPORT Account : public QObject {
       bool                    isRegistered()                      const;
       QModelIndex             index()                                  ;
       QString                 stateColorName()                    const;
-      Qt::GlobalColor         stateColor()                        const;
+      QVariant                stateColor()                        const;
 
       CredentialModel*        credentialsModel();
       AudioCodecModel*        audioCodecModel() ;

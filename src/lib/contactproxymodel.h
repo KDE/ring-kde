@@ -18,9 +18,9 @@
 #ifndef CONTACT_PROXY_MODEL_H
 #define CONTACT_PROXY_MODEL_H
 
-#include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QHash>
 #include <QtCore/QStringList>
+#include <QtCore/QAbstractItemModel>
 
 //SFLPhone
 #include "../lib/typedefs.h"

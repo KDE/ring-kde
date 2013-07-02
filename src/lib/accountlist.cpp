@@ -387,8 +387,10 @@ QVariant AccountList::data ( const QModelIndex& idx, int role) const
    else if (role == Qt::BackgroundRole) {
       if (m_pColorVisitor)
          return m_pColorVisitor->getColor(account);
-      else
-         return QVariant(account->stateColor());
+      else {
+         QVariant var = account->stateColor();
+         return account->stateColor();
+      }
    }
    else if(idx.column() == 0 && role == Qt::DecorationRole && m_pColorVisitor) {
       return m_pColorVisitor->getIcon(account);
@@ -416,10 +418,15 @@ Account* AccountList::getAccountByModelIndex(const QModelIndex& item) const
    return (*m_pAccounts)[item.row()];
 }
 
-//Return the prior account
+///Return the prior account
 Account* AccountList::getPriorAccount()
 {
    return m_spPriorAccount;
+}
+
+AccountListColorVisitor* AccountList::colorVisitor()
+{
+   return m_pColorVisitor;
 }
 
 ///Return the default account (used for contact lookup)

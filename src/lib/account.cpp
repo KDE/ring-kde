@@ -31,6 +31,7 @@
 #include "dbus/configurationmanager.h"
 #include "dbus/callmanager.h"
 #include "dbus/videomanager.h"
+#include "visitors/accountlistcolorvisitor.h"
 #include "accountlist.h"
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
@@ -243,16 +244,12 @@ QString Account::stateColorName() const
 }
 
 ///Return status Qt color, QColor is not part of QtCore, use using the global variant
-Qt::GlobalColor Account::stateColor() const
+QVariant Account::stateColor() const
 {
-   const QString resStat = accountRegistrationStatus();
-   if(resStat == ACCOUNT_STATE_UNREGISTERED)
-      return Qt::darkGray  ;
-   if(resStat == ACCOUNT_STATE_REGISTERED || resStat == ACCOUNT_STATE_READY)
-      return Qt::darkGreen ;
-   if(resStat == ACCOUNT_STATE_TRYING)
-      return Qt::darkYellow;
-   return Qt::darkRed;
+   if (AccountList::instance()->colorVisitor()) {
+      return AccountList::instance()->colorVisitor()->getColor(this);
+   }
+   return QVariant();
 }
 
 ///Create and return the credential model
