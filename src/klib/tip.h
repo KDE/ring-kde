@@ -38,7 +38,10 @@ class QPainter;
 ///A tip to be passed to the TipLoader
 class LIB_EXPORT Tip : public QObject
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    friend class TipAnimationWrapper;
 

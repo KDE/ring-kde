@@ -40,7 +40,10 @@ public:
 
 ///AkonadiBackend: Implement a backend for Akonadi
 class LIB_EXPORT MacroModel : public QAbstractItemModel {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
    friend class Macro;
 
 private:

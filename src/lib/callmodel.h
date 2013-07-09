@@ -35,7 +35,10 @@ typedef QList<Call*>       CallList;
 ///CallModel: Central model/frontend to deal with sflphoned
 class LIB_EXPORT CallModel : public QAbstractItemModel
 {
-   IGNORE_NULL(Q_OBJECT)
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
    public:
       //Constructors, initializer and destructors
       virtual ~CallModel( );

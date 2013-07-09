@@ -33,7 +33,10 @@ typedef QHash<QString,VideoCodec*> CodecHash;
 
 ///Abstract model for managing account video codec list
 class LIB_EXPORT VideoCodecModel : public QAbstractListModel {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
    friend class Account;
 public:
    //Roles

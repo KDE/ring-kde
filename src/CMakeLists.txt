@@ -39,8 +39,8 @@ ADD_DEFINITIONS(
 if (CMAKE_COMPILER_IS_GNUCC)
    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
    if (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)
-      ADD_DEFINITIONS("-Wzero-as-null-pointer-constant")
-      ADD_DEFINITIONS( -DENABLE_IGNORE_NULL=true )
+#       ADD_DEFINITIONS("-Wzero-as-null-pointer-constant")
+#       ADD_DEFINITIONS( -DENABLE_IGNORE_NULL=true )
    endif()
 endif()
 

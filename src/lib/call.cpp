@@ -168,7 +168,7 @@ Call::Call(Call::State startState, const QString& callId, QString peerName, QStr
    m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),m_Account(account),
    m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),m_CallId(callId),m_CurrentState(startState)
 {
-   qRegisterMetaType<Call*>();
+//    qRegisterMetaType<Call*>();
    changeCurrentState(startState);
 
    CallManagerInterface& callManager = DBus::CallManager::instance();

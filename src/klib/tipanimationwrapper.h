@@ -37,7 +37,10 @@ struct FrameDescription {
 
 class LIB_EXPORT TipAnimationWrapper : public QObject
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    explicit TipAnimationWrapper(QObject* parent = nullptr);
    virtual ~TipAnimationWrapper();

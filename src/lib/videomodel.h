@@ -32,7 +32,10 @@ struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
 class LIB_EXPORT VideoModel : public QObject {
-   IGNORE_NULL(Q_OBJECT)
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    //Singleton
    static VideoModel* instance();

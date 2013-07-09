@@ -38,7 +38,10 @@ typedef QList<Contact*> ContactList;
 
 ///AbstractContactBackend: Allow different way to handle contact without poluting the library
 class LIB_EXPORT AbstractContactBackend : public QAbstractItemModel {
-   IGNORE_NULL(Q_OBJECT)
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    enum Role {
       Organization      = 100,

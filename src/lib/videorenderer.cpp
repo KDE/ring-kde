@@ -48,7 +48,7 @@ struct SHMHeader {
 };
 
 ///Constructor
-VideoRenderer::VideoRenderer(QString shmPath, Resolution res): QObject(0),
+VideoRenderer::VideoRenderer(QString shmPath, Resolution res): QObject(nullptr),
    m_Width(0), m_Height(0), m_ShmPath(QString()), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
    m_isRendering(false),m_pTimer(nullptr),m_Res(res)
@@ -144,7 +144,10 @@ bool VideoRenderer::startShm()
       return false;
    }
    m_ShmAreaLen = sizeof(SHMHeader);
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    m_pShmArea = (SHMHeader*) mmap(NULL, m_ShmAreaLen, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+   #pragma GCC diagnostic pop
    if (m_pShmArea == MAP_FAILED) {
       qDebug() << "Could not map shm area, mmap failed";
       return false;
@@ -177,11 +180,14 @@ bool VideoRenderer::resizeShm()
             return false;
       }
 
+      #pragma GCC diagnostic push
+      #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
       m_pShmArea = (SHMHeader*) mmap(NULL, new_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+      #pragma GCC diagnostic pop
       m_ShmAreaLen = new_size;
 
       if (!m_pShmArea) {
-            m_pShmArea = 0;
+            m_pShmArea = nullptr;
             qDebug() << "Could not remap shared area";
             return false;
       }

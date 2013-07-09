@@ -39,7 +39,10 @@ class InstantMessagingModel;
 ///Manager for all IM conversations
 class LIB_EXPORT InstantMessagingModelManager : public QObject
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
 
    //Singleton
@@ -72,7 +75,10 @@ Q_SIGNALS:
 ///Qt model for the Instant Messaging (IM) features
 class LIB_EXPORT InstantMessagingModel : public QAbstractListModel
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
    friend class InstantMessagingModelManager;
    friend class Call;
 public:

@@ -96,7 +96,7 @@ CallModel::CallModel() : QAbstractItemModel(QCoreApplication::instance())
       dbusInit = true;
 
       foreach(Call* call,HistoryModel::getHistory()){
-         addCall(call,0);
+         addCall(call,nullptr);
       }
    }
    static bool m_sInstanceInit = false;
@@ -586,7 +586,7 @@ int CallModel::rowCount( const QModelIndex& parentIdx ) const
 Qt::ItemFlags CallModel::flags( const QModelIndex& idx ) const
 {
    if (!idx.isValid())
-      return 0;
+      return Qt::NoItemFlags;
    return Qt::ItemIsEnabled|Qt::ItemIsSelectable 
       | Qt::ItemIsDragEnabled 
       | ((!idx.data(Call::Role::IsConference).toBool())?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled)
@@ -934,7 +934,7 @@ void CallModel::slotCallChanged(Call* call)
 
 ///Add call slot
 void CallModel::slotAddPrivateCall(Call* call) {
-   addCall(call,0);
+   addCall(call,nullptr);
 }
 
 ///Notice views that a dtmf have been played

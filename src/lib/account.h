@@ -67,7 +67,10 @@ enum DtmfType {
 
 ///Account: a daemon account (SIP or AIX)
 class LIB_EXPORT Account : public QObject {
-   IGNORE_NULL(Q_OBJECT)
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
 
    public:
       ~Account();

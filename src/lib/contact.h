@@ -56,7 +56,10 @@ private:
 
 ///Contact: Abstract version of a contact
 class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
-   IGNORE_NULL(Q_OBJECT)
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    ///PhoneNumber: represent a phone number
    class PhoneNumber {

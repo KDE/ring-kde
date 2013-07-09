@@ -30,7 +30,10 @@ class KAction;
 #include "macromodel.h"
 
 class LIB_EXPORT Macro : public QObject {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
    friend class MacroModel; //Use factory method
 
 protected:

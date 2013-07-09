@@ -31,7 +31,10 @@ class NumberTreeBackend;
 
 class LIB_EXPORT BookmarkModel :  public QAbstractItemModel
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    //Singleton
    static BookmarkModel* instance();

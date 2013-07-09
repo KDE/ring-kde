@@ -40,7 +40,7 @@ void InstantMessagingModelManager::init(CallModel* model) {
 }
 
 ///Constructor
-InstantMessagingModelManager::InstantMessagingModelManager() : QObject(0)
+InstantMessagingModelManager::InstantMessagingModelManager() : QObject(nullptr)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), this, SLOT(newMessage(QString,QString,QString)));

@@ -32,7 +32,10 @@ class AccountListColorVisitor;
 
 ///AccountList: List of all daemon accounts
 class LIB_EXPORT AccountList : public QAbstractListModel {
-   IGNORE_NULL(Q_OBJECT)
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
 
 public:
    friend class Account;

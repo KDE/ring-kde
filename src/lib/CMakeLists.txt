@@ -179,6 +179,7 @@ ELSE()
    )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
+# ADD_DEFINITIONS("-w")
 IF(${ENABLE_QT5} MATCHES true)
    QT5_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_LIB_HDRS})
 ELSE()
@@ -186,6 +187,7 @@ ELSE()
 ENDIF(${ENABLE_QT5} MATCHES true)
  
 add_library( qtsflphone  SHARED ${qtsflphone_LIB_SRCS} ${LIB_HEADER_MOC} )
+# REMOVE_DEFINITIONS("-w")
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_USE_MODULES(qtsflphone Core DBus)

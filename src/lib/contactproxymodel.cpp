@@ -223,7 +223,7 @@ int ContactProxyModel::rowCount( const QModelIndex& parent ) const
 Qt::ItemFlags ContactProxyModel::flags( const QModelIndex& index ) const
 {
    if (!index.isValid())
-      return 0;
+      return Qt::NoItemFlags;
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (index.parent().isValid()?Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled:Qt::ItemIsEnabled);
 }
 

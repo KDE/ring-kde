@@ -97,7 +97,10 @@ private:
 **/
 class  LIB_EXPORT Call : public QObject, public HistoryTreeBackend
 {
-   IGNORE_NULL(Q_OBJECT)
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    //Enum
    enum Role {

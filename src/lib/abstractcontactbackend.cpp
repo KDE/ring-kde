@@ -160,7 +160,7 @@ int AbstractContactBackend::rowCount( const QModelIndex& par ) const
 Qt::ItemFlags AbstractContactBackend::flags( const QModelIndex& idx ) const
 {
    if (!idx.isValid())
-      return 0;
+      return Qt::NoItemFlags;
    return Qt::ItemIsEnabled | ((idx.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
 }
 
