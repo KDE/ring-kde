@@ -35,7 +35,7 @@ typedef QList<Call*>       CallList;
 ///CallModel: Central model/frontend to deal with sflphoned
 class LIB_EXPORT CallModel : public QAbstractItemModel
 {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
    public:
       //Constructors, initializer and destructors
       virtual ~CallModel( );
@@ -65,7 +65,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       virtual QVariant      data         ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
       virtual int           rowCount     ( const QModelIndex& parent = QModelIndex()                   ) const;
       virtual Qt::ItemFlags flags        ( const QModelIndex& index                                    ) const;
-      virtual int           columnCount  ( const QModelIndex& parent = QModelIndex()                   ) const;
+      virtual int           columnCount  ( const QModelIndex& parent = QModelIndex()                   ) const __attribute__ ((const));
       virtual QModelIndex   parent       ( const QModelIndex& index                                    ) const;
       virtual QModelIndex   index        ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
       virtual QVariant      headerData   ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;

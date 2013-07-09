@@ -56,7 +56,7 @@ private:
 
 ///Contact: Abstract version of a contact
 class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 public:
    ///PhoneNumber: represent a phone number
    class PhoneNumber {
@@ -75,7 +75,7 @@ public:
    };
    class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
    public:
-      virtual QObject* self();
+      virtual QObject* self() __attribute__ ((const));
       PhoneNumbers(Contact* parent);
       PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
       Contact* contact() const;

@@ -32,7 +32,7 @@ class AccountListColorVisitor;
 
 ///AccountList: List of all daemon accounts
 class LIB_EXPORT AccountList : public QAbstractListModel {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 
 public:
    friend class Account;

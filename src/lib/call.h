@@ -97,7 +97,7 @@ private:
 **/
 class  LIB_EXPORT Call : public QObject, public HistoryTreeBackend
 {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 public:
    //Enum
    enum Role {
@@ -217,7 +217,7 @@ public:
    const QString        recordingPath    () const;
    static const QString toHumanStateName    (const Call::State);
    Contact*             contact          ()      ;
-   VideoRenderer*       videoRenderer    ()      ;
+   VideoRenderer*       videoRenderer    () const;
    const QString        formattedName    ()      ;
    bool                 hasRecording        () const;
    QString              length           () const;
@@ -311,7 +311,7 @@ private:
    //Automate functions
    // See actionPerformedFunctionMap and stateChangedFunctionMap
    // to know when it is called.
-   void nothing      ();
+   void nothing      () __attribute__ ((const));
    void error        () __attribute__ ((noreturn));
    void accept       ();
    void refuse       ();

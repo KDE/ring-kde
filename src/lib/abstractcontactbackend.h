@@ -38,7 +38,7 @@ typedef QList<Contact*> ContactList;
 
 ///AbstractContactBackend: Allow different way to handle contact without poluting the library
 class LIB_EXPORT AbstractContactBackend : public QAbstractItemModel {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 public:
    enum Role {
       Organization      = 100,
@@ -72,7 +72,7 @@ public:
    virtual void addPhoneNumber( Contact*       contact , QString  number, QString type )=0;
 
    //Model implementation
-   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   )  __attribute__ ((const));
    virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
    virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
    virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;

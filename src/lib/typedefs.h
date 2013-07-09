@@ -70,5 +70,13 @@ struct TypedStateMachine
 #define nullptr 0
 #endif
 
-
+#ifdef ENABLE_IGNORE_NULL
+#define IGNORE_NULL(content) \
+_Pragma(STRINGIFY(GCC diagnostic push))\
+  _Pragma(STRINGIFY(GCC diagnostic ignored "-Wzero-as-null-pointer-constant")\
+   content\
+   _Pragma(STRINGIFY(GCC diagnostic pop)
+#else
+#define IGNORE_NULL(content) content
+#endif //ENABLE_IGNORE_NULL
 #endif

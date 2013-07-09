@@ -24,7 +24,7 @@
 
 ///AudioCodecModel: A model for account audio codec
 class LIB_EXPORT AudioCodecModel : public QAbstractListModel {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 public:
    //friend class Account;
    //Roles

@@ -77,7 +77,7 @@ ContactTreeBackend::Type ContactTreeBackend::type() const
 QObject* Contact::self() {return this;}
 
 ///Constructor
-Contact::Contact():m_pPhoto(0),ContactTreeBackend(ContactTreeBackend::Type::CONTACT),m_Numbers(this)
+Contact::Contact():m_pPhoto(nullptr),ContactTreeBackend(ContactTreeBackend::Type::CONTACT),m_Numbers(this)
 {
    initItem();
 }

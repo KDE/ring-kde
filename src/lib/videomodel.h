@@ -32,7 +32,7 @@ struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
 class LIB_EXPORT VideoModel : public QObject {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 public:
    //Singleton
    static VideoModel* instance();

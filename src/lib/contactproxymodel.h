@@ -29,7 +29,7 @@ class AbstractContactBackend;
 
 class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
 {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 public:
    friend class AbstractContactBackend;
    explicit ContactProxyModel(AbstractContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);

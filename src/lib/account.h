@@ -67,7 +67,7 @@ enum DtmfType {
 
 ///Account: a daemon account (SIP or AIX)
 class LIB_EXPORT Account : public QObject {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 
    public:
       ~Account();

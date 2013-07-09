@@ -34,7 +34,7 @@ typedef QList<Call*>          CallList;
 
 ///HistoryModel: History call manager
 class LIB_EXPORT HistoryModel : public QAbstractItemModel {
-   Q_OBJECT
+   IGNORE_NULL(Q_OBJECT)
 public:
    enum class HistoryConst : int {
       Today             = 0  ,
@@ -84,7 +84,7 @@ public:
    virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
    virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
    virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
-   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const;
+   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const __attribute__ ((const));
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;

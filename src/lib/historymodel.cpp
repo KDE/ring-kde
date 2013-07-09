@@ -64,7 +64,7 @@ const QString HistoryModel::m_slHistoryConstStr[25] = {
 ///SortableCallSource: helper class to make sorting possible
 class SortableCallSource {
 public:
-   SortableCallSource(Call* call=0) : count(0),callInfo(call) {}
+   SortableCallSource(Call* call= nullptr) : count(0),callInfo(call) {}
    uint count;
    Call* callInfo;
    bool operator<(SortableCallSource other) {
