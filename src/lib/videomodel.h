@@ -43,7 +43,7 @@ public:
    //Getters
    bool       isPreviewing       ();
    VideoRenderer* getRenderer(Call* call);
-   VideoRenderer* getPreviewRenderer();
+   VideoRenderer* previewRenderer();
    
    //Setters
    void       setBufferSize(uint size);

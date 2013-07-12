@@ -56,7 +56,7 @@ void VideoWidget::paintEvent(QPaintEvent* event)
 ///Called when a new frame is ready
 void VideoWidget::updateFrame()
 {
-   QSize size(m_pRenderer->getActiveResolution().width(), m_pRenderer->getActiveResolution().height());
+   const QSize size(m_pRenderer->activeResolution().width(), m_pRenderer->activeResolution().height());
    if (size != minimumSize())
       setMinimumSize(size);
    if (m_Image)

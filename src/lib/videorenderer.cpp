@@ -293,13 +293,13 @@ bool VideoRenderer::isRendering()
 }
 
 ///Return the current framerate
-QByteArray VideoRenderer::getCurrentFrame()
+QByteArray VideoRenderer::currentFrame()
 {
    return m_Frame;
 }
 
 ///Return the current resolution
-Resolution VideoRenderer::getActiveResolution()
+Resolution VideoRenderer::activeResolution()
 {
    return m_Res;
 }

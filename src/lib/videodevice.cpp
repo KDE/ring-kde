@@ -53,7 +53,7 @@ VideoDevice::VideoDevice(QString id) : m_DeviceId(id)
 }
 
 ///Get the video device list
-const QList<VideoDevice*> VideoDevice::getDeviceList()
+const QList<VideoDevice*> VideoDevice::deviceList()
 {
    QHash<QString,VideoDevice*> devices;
    VideoInterface& interface = DBus::VideoManager::instance();
@@ -75,19 +75,19 @@ const QList<VideoDevice*> VideoDevice::getDeviceList()
 ///Return the device
 VideoDevice* VideoDevice::getDevice(QString name)
 {
-   if (!m_sInit) getDeviceList();
+   if (!m_sInit) deviceList();
    return m_slDevices[name];
 }
 
 ///Get the valid rates for this device
-const QStringList VideoDevice::getRateList(VideoChannel channel, Resolution resolution)
+const QStringList VideoDevice::rateList(VideoChannel channel, Resolution resolution)
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getDeviceRateList(m_DeviceId,channel,resolution.toString());
 }
 
 ///Get the valid channel list
-const QList<VideoChannel> VideoDevice::getChannelList()
+const QList<VideoChannel> VideoDevice::channelList()
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getDeviceChannelList(m_DeviceId);
@@ -115,28 +115,28 @@ void VideoDevice::setChannel(VideoChannel channel) //??? No device
 }
 
 ///Get the current resolution
-const Resolution VideoDevice::getResolution()
+const Resolution VideoDevice::resolution()
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    return Resolution(interface.getActiveDeviceSize());
 }
 
 ///Get the current channel
-const VideoChannel VideoDevice::getChannel() //??? No device
+const VideoChannel VideoDevice::channel() //??? No device
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceChannel();
 }
 
 ///Get the current rate
-const VideoRate VideoDevice::getRate()
+const VideoRate VideoDevice::rate()
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceRate();
 }
 
 ///Get a list of valid resolution
-const QList<Resolution> VideoDevice::getResolutionList(VideoChannel channel)
+const QList<Resolution> VideoDevice::resolutionList(VideoChannel channel)
 {
    QList<Resolution> toReturn;
    VideoInterface& interface = DBus::VideoManager::instance();
@@ -148,7 +148,7 @@ const QList<Resolution> VideoDevice::getResolutionList(VideoChannel channel)
 }
 
 ///Get the device id
-const QString VideoDevice::getDeviceId() const
+const QString VideoDevice::deviceId() const
 {
    return m_DeviceId;
 }

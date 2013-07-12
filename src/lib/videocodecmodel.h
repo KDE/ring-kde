@@ -70,9 +70,9 @@ class LIB_EXPORT VideoCodec {
       static void setActiveCodecList(Account* account, QStringList codecs);
 
       //Getters
-      QString getName   () const;
-      uint    getBitrate() const;
-      bool    getEnabled() const;
+      QString name   () const;
+      uint    bitrate() const;
+      bool    enabled() const;
 
       //Setters
       void setBitrate(const uint bitrate);

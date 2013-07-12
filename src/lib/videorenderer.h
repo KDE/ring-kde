@@ -50,8 +50,8 @@ class LIB_EXPORT VideoRenderer : public QObject {
       QByteArray  renderToBitmap(QByteArray& data, bool& ok);
       const char* rawData            ();
       bool        isRendering        ();
-      QByteArray  getCurrentFrame    ();
-      Resolution  getActiveResolution();
+      QByteArray  currentFrame    ();
+      Resolution  activeResolution();
 
       //Setters
       void setResolution(QSize   size);

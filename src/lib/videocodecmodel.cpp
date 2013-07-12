@@ -26,12 +26,12 @@
 QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
 {
    if(idx.column() == 0 && role == Qt::DisplayRole)
-      return QVariant(m_lCodecs[idx.row()]->getName());
+      return QVariant(m_lCodecs[idx.row()]->name());
    else if(idx.column() == 0 && role == Qt::CheckStateRole) {
-      return QVariant(m_lCodecs[idx.row()]->getEnabled()?Qt::Checked:Qt::Unchecked);
+      return QVariant(m_lCodecs[idx.row()]->enabled()?Qt::Checked:Qt::Unchecked);
    }
    else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE)
-      return QVariant(m_lCodecs[idx.row()]->getBitrate());
+      return QVariant(m_lCodecs[idx.row()]->bitrate());
    return QVariant();
 }
 
@@ -55,14 +55,14 @@ bool VideoCodecModel::setData(const QModelIndex& idx, const QVariant &value, int
 {
 
    if (idx.column() == 0 && role == Qt::CheckStateRole) {
-      bool changed = m_lCodecs[idx.row()]->getEnabled() != (value == Qt::Checked);
+      bool changed = m_lCodecs[idx.row()]->enabled() != (value == Qt::Checked);
       m_lCodecs[idx.row()]->setEnabled(value == Qt::Checked);
       if (changed)
          emit dataChanged(idx, idx);
       return true;
    }
    else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE) {
-      bool changed = m_lCodecs[idx.row()]->getBitrate() != value.toUInt();
+      bool changed = m_lCodecs[idx.row()]->bitrate() != value.toUInt();
       m_lCodecs[idx.row()]->setBitrate(value.toInt());
       if (changed)
          emit dataChanged(idx, idx);
@@ -97,9 +97,9 @@ void VideoCodecModel::save()
    VectorMapStringString toSave;
    foreach(VideoCodec* vc,m_lCodecs) {
       MapStringString details;
-      details[ "name"    ] = vc->getName   ();
-      details[ "bitrate" ] = QString::number(vc->getBitrate());
-      details[ "enabled" ] = vc->getEnabled()?"true":"false";
+      details[ "name"    ] = vc->name   ();
+      details[ "bitrate" ] = QString::number(vc->bitrate());
+      details[ "enabled" ] = vc->enabled()?"true":"false";
       toSave << details;
    }
    interface.setCodecs(m_pAccount->accountId(),toSave);
@@ -143,19 +143,19 @@ m_Name(codecName),m_Bitrate(bitRate),m_Enabled(enabled)
 }
 
 ///Get the current codec name
-QString VideoCodec::getName() const
+QString VideoCodec::name() const
 {
    return m_Name;
 }
 
 ///Get the current codec id
-uint VideoCodec::getBitrate() const
+uint VideoCodec::bitrate() const
 {
    return m_Bitrate;
 }
 
 ///Get the current codec id
-bool VideoCodec::getEnabled() const
+bool VideoCodec::enabled() const
 {
    return m_Enabled;
 }

@@ -50,16 +50,16 @@ class LIB_EXPORT VideoDevice {
       static VideoDevice* getDevice(QString id);
 
       //Getter
-      const QStringList         getRateList(VideoChannel channel, Resolution resolution);
-      const QList<Resolution>   getResolutionList(VideoChannel channel);
-      const QList<VideoChannel> getChannelList ();
-      const Resolution          getResolution  ();
-      const VideoChannel        getChannel     ();
-      const VideoRate           getRate        ();
-      const QString             getDeviceId    () const;
+      const QStringList         rateList(VideoChannel channel, Resolution resolution);
+      const QList<Resolution>   resolutionList(VideoChannel channel);
+      const QList<VideoChannel> channelList ();
+      const Resolution          resolution  ();
+      const VideoChannel        channel     ();
+      const VideoRate           rate        ();
+      const QString             deviceId    () const;
       
       //Static getter
-      static const QList<VideoDevice*> getDeviceList();
+      static const QList<VideoDevice*> deviceList();
 
       //Setter
       void setRate       ( VideoRate rate        );

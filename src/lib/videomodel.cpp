@@ -53,7 +53,7 @@ VideoRenderer* VideoModel::getRenderer(Call* call)
 }
 
 ///Get the video preview renderer
-VideoRenderer* VideoModel::getPreviewRenderer()
+VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
       VideoInterface& interface = DBus::VideoManager::instance();

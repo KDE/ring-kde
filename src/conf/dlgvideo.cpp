@@ -32,9 +32,9 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 {
    setupUi(this);
    
-   const QList<VideoDevice*> devices =  VideoDevice::getDeviceList();
+   const QList<VideoDevice*> devices =  VideoDevice::deviceList();
    foreach(VideoDevice* dev,devices) {
-      m_pDeviceCB->addItem(dev->getDeviceId());
+      m_pDeviceCB->addItem(dev->deviceId());
    }
 
    connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadDevice(QString))    );
@@ -48,7 +48,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    m_pConfGB->setEnabled(devices.size());
 
    if (devices.size())
-      loadDevice(devices[0]->getDeviceId());
+      loadDevice(devices[0]->deviceId());
 
    if (VideoModel::instance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
@@ -77,10 +77,10 @@ void DlgVideo::loadDevice(QString device)
       emit updateButtons();
    }
    m_pDevice = VideoDevice::getDevice(device);
-   QString curChan = m_pDevice->getChannel();
+   const QString curChan = m_pDevice->channel();
    if (m_pDevice) {
       m_pChannelCB->clear();
-      foreach(const VideoChannel& channel,m_pDevice->getChannelList()) {
+      foreach(const VideoChannel& channel,m_pDevice->channelList()) {
          m_pChannelCB->addItem(channel);
          if (channel == curChan)
             m_pChannelCB->setCurrentIndex(m_pChannelCB->count()-1);
@@ -95,9 +95,9 @@ void DlgVideo::loadResolution(QString channel)
       m_IsChanged = true;
       emit updateButtons();
    }
-   Resolution current = m_pDevice->getResolution();
+   Resolution current = m_pDevice->resolution();
    m_pResolutionCB->clear();
-   foreach(const Resolution& res,m_pDevice->getResolutionList(channel)) {
+   foreach(const Resolution& res,m_pDevice->resolutionList(channel)) {
       m_pResolutionCB->addItem(res.toString());
       if (current == res) {
          m_pResolutionCB->setCurrentIndex(m_pResolutionCB->count()-1);
@@ -114,8 +114,8 @@ void DlgVideo::loadRate(QString resolution)
       emit updateButtons();
    }
    m_pRateCB->clear();
-   QString rate = m_pDevice->getRate();
-   foreach(const QString& r,m_pDevice->getRateList(m_pChannelCB->currentText(),resolution)) {
+   const QString rate = m_pDevice->rate();
+   foreach(const QString& r,m_pDevice->rateList(m_pChannelCB->currentText(),resolution)) {
       m_pRateCB->addItem(r);
       if (r == rate)
          m_pRateCB->setCurrentIndex(m_pRateCB->count()-1);

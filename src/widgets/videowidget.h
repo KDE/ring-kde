@@ -28,7 +28,7 @@ class VideoRenderer;
 class VideoWidget : public QWidget {
    Q_OBJECT
 public:
-   explicit VideoWidget(QWidget* parent =nullptr, VideoRenderer* renderer = VideoModel::instance()->getPreviewRenderer());
+   explicit VideoWidget(QWidget* parent =nullptr, VideoRenderer* renderer = VideoModel::instance()->previewRenderer());
 
 
 protected:
