@@ -194,6 +194,7 @@ void CallViewOverlay::slotAttendedTransfer()
    const QString callId = QObject::sender()->property("callId").toString();
    if (!callId.isEmpty()) {
       CallModel::instance()->attendedTransfer(m_pCurrentCall,CallModel::instance()->getCall(callId));
+      setVisible(false);
    }
 }
 
@@ -213,4 +214,5 @@ void CallViewOverlay::slotTransferClicked()
 {
    if (!m_pCurrentCall) return;
    CallModel::instance()->transfer(m_pCurrentCall,m_pNumberLE->text());
+   setVisible(false);
 }
