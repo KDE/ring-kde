@@ -356,6 +356,7 @@ QModelIndex CallModel::getIndex(Call* call)
 ///Transfer "toTransfer" to "target" and wait to see it it succeeded
 void CallModel::attendedTransfer(Call* toTransfer, Call* target)
 {
+   if ((!toTransfer) || (!target)) return;
    Q_NOREPLY DBus::CallManager::instance().attendedTransfer(toTransfer->callId(),target->callId());
 
    //TODO [Daemon] Implement this correctly

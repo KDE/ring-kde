@@ -474,9 +474,11 @@ void SFLPhoneView::escape()
 {
    kDebug() << "escape";
    Call* call = SFLPhone::model()->getCall(m_pView->selectionModel()->currentIndex());
-//    if (callView->haveOverlay()) { //TODO port
-//       callView->hideOverlay();
-//    }
+   if (m_pTransferOverlay && m_pTransferOverlay->isVisible()) {
+      m_pTransferOverlay->setVisible(false);
+      updateWindowCallState();
+      return;
+   }
    /*else */if(!call) {
       kDebug() << "Escape when no item is selected. Doing nothing.";
    }
@@ -711,8 +713,9 @@ void SFLPhoneView::updateWindowCallState()
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)                       ;
             if (!m_pTransferOverlay) {
                m_pTransferOverlay = new CallViewOverlay(m_pView);
-               m_pTransferOverlay->setVisible(true);
             }
+            m_pTransferOverlay->setCurrentCall(call);
+            m_pTransferOverlay->setVisible(true);
             transfer = true;
             break;
 

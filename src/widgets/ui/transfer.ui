@@ -35,7 +35,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>20</height>
+       <height>10</height>
       </size>
      </property>
     </spacer>
@@ -66,7 +66,7 @@
    }</string>
      </property>
      <property name="title">
-      <string>To:</string>
+      <string>Transfer to:</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0">
@@ -83,7 +83,7 @@
        </spacer>
       </item>
       <item row="1" column="1">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="m_pTransferB">
         <property name="styleSheet">
          <string notr="true">QPushButton {
       border-style:solid;
@@ -123,7 +123,10 @@
        </spacer>
       </item>
       <item row="0" column="0" colspan="3">
-       <widget class="KLineEdit" name="klineedit">
+       <widget class="KLineEdit" name="m_pNumberLE">
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
         <property name="placeholderText">
          <string>Enter a number</string>
         </property>
@@ -157,7 +160,7 @@
       <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
+      <enum>QSizePolicy::Preferred</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -193,7 +196,7 @@
    }</string>
      </property>
      <property name="title">
-      <string>Existing calls:</string>
+      <string>Transfer to existing calls:</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2"/>
     </widget>
@@ -206,7 +209,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>198</height>
+       <height>208</height>
       </size>
      </property>
     </spacer>
@@ -222,4 +225,7 @@
  </customwidgets>
  <resources/>
  <connections/>
+ <slots>
+  <slot>slotTransferClicked()</slot>
+ </slots>
 </ui>
