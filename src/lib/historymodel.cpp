@@ -188,7 +188,7 @@ void HistoryModel::add(Call* call)
       m_lCategoryCounter << item;
       emit dataChanged(index(rowCount()-1,0),index(rowCount()-1,0));
    }
-   m_hCategories[cat]->m_lChilds << call;
+   m_hCategories[cat]->m_lChildren << call;
    emit historyChanged();
 //    emit layoutChanged();
 }
@@ -265,7 +265,7 @@ void HistoryModel::reloadCategories()
       }
       TopLevelItem* item = m_hCategories[val];
       if (item) {
-         item->m_lChilds << call;
+         item->m_lChildren << call;
       }
       else
          qDebug() << "ERROR count";
@@ -310,8 +310,8 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
          return QVariant(modelItem->dropState());
       else if (m_lCategoryCounter.size() >= idx.parent().row() && idx.parent().row() >= 0
          && m_lCategoryCounter[idx.parent().row()]
-         && m_lCategoryCounter[idx.parent().row()]->m_lChilds.size() >= idx.row())
-         return m_lCategoryCounter[idx.parent().row()]->m_lChilds[idx.row()]->roleData((Call::Role)role);
+         && m_lCategoryCounter[idx.parent().row()]->m_lChildren.size() >= idx.row())
+         return m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->roleData((Call::Role)role);
       break;
    case HistoryTreeBackend::Type::NUMBER:
    case HistoryTreeBackend::Type::BOOKMARK:
@@ -337,10 +337,10 @@ int HistoryModel::rowCount( const QModelIndex& parentIdx ) const
       return m_lCategoryCounter.size();
    }
    else if (!parentIdx.parent().isValid()) {
-      return m_lCategoryCounter[parentIdx.row()]->m_lChilds.size();
+      return m_lCategoryCounter[parentIdx.row()]->m_lChildren.size();
    }
 //    else if (parent.parent().isValid() && !parent.parent().parent().isValid()) {
-//       return m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->getPhoneNumbers().size();
+//       return m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->getPhoneNumbers().size();
 //    }
    return 0;
 }
@@ -375,7 +375,7 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
 //       QString val = category(ct);
 //       if (m_hCategories[val]) {
 //          return HistoryModel::index(
-//             (m_hCategories[val]->m_lChilds.indexOf(ct)),
+//             (m_hCategories[val]->m_lChildren.indexOf(ct)),
 //             0,
 //             HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
 //       }
@@ -391,11 +391,11 @@ QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentI
    if (!parentIdx.isValid()) {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
-   else if (!parentIdx.parent().isValid() && column < m_lCategoryCounter[parentIdx.row()]->m_lChilds.size() ) {
-      return createIndex(row,column,(void*)dynamic_cast<HistoryTreeBackend*>(m_lCategoryCounter[parentIdx.row()]->m_lChilds[row]));
+   else if (!parentIdx.parent().isValid() && column < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
+      return createIndex(row,column,(void*)dynamic_cast<HistoryTreeBackend*>(m_lCategoryCounter[parentIdx.row()]->m_lChildren[row]));
    }
 //    else if (parent.parent().isValid()) {
-//       return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->getPhoneNumbers());
+//       return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->getPhoneNumbers());
 //    }
    return QModelIndex();
 }

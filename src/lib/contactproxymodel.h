@@ -61,7 +61,7 @@ private:
       virtual QObject* self() {return this;}
    private:
       explicit TopLevelItem(QString name) : ContactTreeBackend(ContactTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-      QList<Contact*> m_lChilds;
+      QList<Contact*> m_lChildren;
       QString m_Name;
    };
 

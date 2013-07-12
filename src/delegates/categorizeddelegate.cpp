@@ -398,7 +398,7 @@ void SortedTreeDelegate::setChildDelegate(QStyledItemDelegate* childDelegate)
    m_pChildDelegate = childDelegate;
 }
 
-///Set the categorized delegate own childs
+///Set the categorized delegate own children
 void SortedTreeDelegate::setChildChildDelegate(QStyledItemDelegate* childDelegate)
 {
    m_pChildChildDelegate = childDelegate;

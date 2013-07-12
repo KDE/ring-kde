@@ -96,7 +96,7 @@ void ContactProxyModel::reloadCategories()
       TopLevelItem* item = m_hCategories[val];
       if (item) {
          QModelIndex parent = index(m_lCategoryCounter.indexOf(item),0);
-         item->m_lChilds << cont;
+         item->m_lChildren << cont;
       }
       else
          qDebug() << "ERROR count";
@@ -136,34 +136,34 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
    case ContactTreeBackend::Type::CONTACT: /* && (role == Qt::DisplayRole)) {*/
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->formattedName());
+            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->formattedName());
          case AbstractContactBackend::Role::Organization:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->organization());
+            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->organization());
          case AbstractContactBackend::Role::Group:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->group());
+            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->group());
          case AbstractContactBackend::Role::Department:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->department());
+            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->department());
          case AbstractContactBackend::Role::PreferredEmail:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]->preferredEmail());
+            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->preferredEmail());
          case AbstractContactBackend::Role::DropState:
             return QVariant(modelItem->dropState());
          case AbstractContactBackend::Role::FormattedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
+            return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
          }
          case AbstractContactBackend::Role::IndexedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant((int)HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
+            return QVariant((int)HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
          }
          case AbstractContactBackend::Role::DatedLastUsed: {
             if (!m_isContactDateInit)
                ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
-            return QVariant(QDateTime::fromTime_t( m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()]]));
+            return QVariant(QDateTime::fromTime_t( m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
          }
          case AbstractContactBackend::Role::Filter: {
-            Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
+            Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()];
             QString normStripppedC;
             foreach(QChar char2,QString(ct->formattedName()+'\n'+ct->organization()+'\n'+ct->group()+'\n'+
                ct->department()+'\n'+ct->preferredEmail()).toLower().normalized(QString::NormalizationForm_KD) ) {
@@ -179,7 +179,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
    case ContactTreeBackend::Type::NUMBER: /* && (role == Qt::DisplayRole)) {*/
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChilds[index.parent().row()]->phoneNumbers()[index.row()]->number());
+            return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChildren[index.parent().row()]->phoneNumbers()[index.row()]->number());
       }
       break;
    default:
@@ -212,10 +212,10 @@ int ContactProxyModel::rowCount( const QModelIndex& parent ) const
    if (!parent.isValid() || !parent.internalPointer())
       return m_lCategoryCounter.size();
    else if (!parent.parent().isValid()) {
-      return m_lCategoryCounter[parent.row()]->m_lChilds.size();
+      return m_lCategoryCounter[parent.row()]->m_lChildren.size();
    }
    else if (parent.parent().isValid() && !parent.parent().parent().isValid()) {
-      return m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->phoneNumbers().size();
+      return m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->phoneNumbers().size();
    }
    return 0;
 }
@@ -250,7 +250,7 @@ QModelIndex ContactProxyModel::parent( const QModelIndex& index) const
       const QString val = category(ct);
       if (m_hCategories[val]) {
          return ContactProxyModel::index(
-            (m_hCategories[val]->m_lChilds.indexOf(ct)),
+            (m_hCategories[val]->m_lChildren.indexOf(ct)),
             0,
             ContactProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
       }
@@ -266,11 +266,11 @@ QModelIndex ContactProxyModel::index( int row, int column, const QModelIndex& pa
    if (!parent.isValid()) {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
-   else if (!parent.parent().isValid() && column < m_lCategoryCounter[parent.row()]->m_lChilds.size() ) {
-      return createIndex(row,column,(void*)dynamic_cast<ContactTreeBackend*>(m_lCategoryCounter[parent.row()]->m_lChilds[row]));
+   else if (!parent.parent().isValid() && column < m_lCategoryCounter[parent.row()]->m_lChildren.size() ) {
+      return createIndex(row,column,(void*)dynamic_cast<ContactTreeBackend*>(m_lCategoryCounter[parent.row()]->m_lChildren[row]));
    }
-   else if (parent.parent().isValid() && m_lCategoryCounter.size() > parent.parent().row() && m_lCategoryCounter[parent.parent().row()]->m_lChilds.size() > parent.row()) {
-      return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChilds[parent.row()]->phoneNumbers());
+   else if (parent.parent().isValid() && m_lCategoryCounter.size() > parent.parent().row() && m_lCategoryCounter[parent.parent().row()]->m_lChildren.size() > parent.row()) {
+      return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->phoneNumbers());
    }
    return QModelIndex();
 }
@@ -294,7 +294,7 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
          }
          else if (index.parent().isValid()) {
             //Contact
-            Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()];
+            Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()];
             if (ct) {
                if (ct->phoneNumbers().size() == 1) {
                   mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->number().toUtf8());

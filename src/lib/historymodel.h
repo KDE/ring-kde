@@ -126,7 +126,7 @@ private:
       }
    private:
       TopLevelItem(int name);
-      CallList m_lChilds;
+      CallList m_lChildren;
       int m_Name; //HistoryConst
       QString m_NameStr;
    };

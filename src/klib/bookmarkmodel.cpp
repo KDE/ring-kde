@@ -58,7 +58,7 @@ void BookmarkModel::reloadCategories()
    beginResetModel();
    m_hCategories.clear();
    foreach(TopLevelItem* item, m_lCategoryCounter) {
-      foreach (NumberTreeBackend* child, item->m_lChilds) {
+      foreach (NumberTreeBackend* child, item->m_lChildren) {
          delete child;
       }
       delete item;
@@ -75,7 +75,7 @@ void BookmarkModel::reloadCategories()
       for (int i=0;i<((cl.size()>=10)?10:cl.size());i++) {
          NumberTreeBackend* bm = new NumberTreeBackend(cl[i]);
          bm->m_IsMostPopular = true;
-         item->m_lChilds << bm;
+         item->m_lChildren << bm;
       }
    }
 
@@ -89,7 +89,7 @@ void BookmarkModel::reloadCategories()
       }
       TopLevelItem* item = m_hCategories[val];
       if (item) {
-         item->m_lChilds << bm;
+         item->m_lChildren << bm;
       }
       else
          qDebug() << "ERROR count";
@@ -126,7 +126,7 @@ QVariant BookmarkModel::data( const QModelIndex& index, int role) const
          break;
       case HistoryTreeBackend::Type::CALL:
       case HistoryTreeBackend::Type::BOOKMARK:
-         return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChilds[index.row()],role);
+         return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()],role);
          break;
       case HistoryTreeBackend::Type::NUMBER:
          break;
@@ -150,7 +150,7 @@ int BookmarkModel::rowCount( const QModelIndex& parent ) const
    if (!parent.isValid() || !parent.internalPointer())
       return m_lCategoryCounter.size();
    else if (!parent.parent().isValid()) {
-      return m_lCategoryCounter[parent.row()]->m_lChilds.size();
+      return m_lCategoryCounter[parent.row()]->m_lChildren.size();
    }
    return 0;
 }
@@ -191,7 +191,7 @@ QModelIndex BookmarkModel::parent( const QModelIndex& index) const
 QModelIndex BookmarkModel::index(int row, int column, const QModelIndex& parent) const
 {
    if (parent.isValid())
-      return createIndex(row,column,m_lCategoryCounter[parent.row()]->m_lChilds[row]);
+      return createIndex(row,column,m_lCategoryCounter[parent.row()]->m_lChildren[row]);
    else {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }

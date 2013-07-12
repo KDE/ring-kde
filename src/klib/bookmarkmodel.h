@@ -67,7 +67,7 @@ private:
          virtual QObject* getSelf() {return this;}
       private:
          explicit TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-         QList<NumberTreeBackend*> m_lChilds;
+         QList<NumberTreeBackend*> m_lChildren;
          QString m_Name;
    };
 
