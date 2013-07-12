@@ -143,6 +143,7 @@ SET(
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/dockbase.ui
+   widgets/ui/transfer.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users

@@ -14,41 +14,45 @@
    height="543.88452"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.2 r9819"
-   sodipodi:docname="transfertarrow.svg">
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="transfertarrow.svg"
+   inkscape:export-filename="/home/etudiant/dev/sflphone-kde/src/icons/transferarraw.png"
+   inkscape:export-xdpi="9.887331"
+   inkscape:export-ydpi="9.887331">
   <defs
      id="defs4">
     <linearGradient
        inkscape:collect="always"
-       id="linearGradient3013">
-      <stop
-         style="stop-color:#000000;stop-opacity:1;"
-         offset="0"
-         id="stop3015" />
-      <stop
-         style="stop-color:#000000;stop-opacity:0;"
-         offset="1"
-         id="stop3017" />
-    </linearGradient>
+       xlink:href="#linearGradient4419"
+       id="linearGradient4425"
+       x1="1347.2446"
+       y1="1931.6608"
+       x2="201.26465"
+       y2="1931.6608"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.67424954,0,0,0.67424954,434.66825,757.80102)" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3013"
-       id="linearGradient3019"
-       x1="521.41046"
-       y1="1700.8801"
-       x2="224.25386"
-       y2="1700.8801"
+       id="linearGradient4419">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop4421" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop4423" />
+    </linearGradient>
+    <linearGradient
+       y2="1931.6608"
+       x2="201.26465"
+       y1="1931.6608"
+       x1="1347.2446"
+       gradientTransform="matrix(0.67424954,0,0,0.67424954,434.66825,757.80102)"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-84.852814,185.86807)" />
-    <filter
-       inkscape:collect="always"
-       id="filter3817"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="12.671464"
-         id="feGaussianBlur3819" />
-    </filter>
+       id="linearGradient4488"
+       xlink:href="#linearGradient4419"
+       inkscape:collect="always" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -58,17 +62,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.24748737"
-     inkscape:cx="-83.497178"
+     inkscape:cx="-758.27909"
      inkscape:cy="-159.28411"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1918"
-     inkscape:window-height="1147"
+     inkscape:window-width="1596"
+     inkscape:window-height="846"
      inkscape:window-x="0"
-     inkscape:window-y="35"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -120,14 +124,20 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-111.26639,-1627.5049)">
-    <path
-       style="opacity:0.35205994;fill:url(#linearGradient3019);fill-opacity:1;stroke:none;filter:url(#filter3817)"
-       d="m 141.6779,1819.068 0,152.533 c 0,11.4516 9.20732,24.6643 24.99727,24.6643 l 836.40633,0 c 13.2009,0 21.4536,4.3878 21.4536,17.7621 l 0,114.1473 c 0,14.2454 7.7974,16.5115 20.1022,7.2566 l 293.8567,-221.0204 c 13.3512,-9.1629 11.9007,-18.8749 1.4521,-29.3235 l -302.8417,-225.1901 c -8.4642,-4.8868 -12.5693,-0.761 -12.5693,12.6986 l 0,104.0457 c 0,12.9665 -12.6903,22.4808 -26.50441,22.4808 l -833.37583,0 c -11.77182,0 -22.97696,8.2567 -22.97696,19.9456 z"
-       id="path3003"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccccccc"
-       inkscape:export-filename="/home/lepagee/sflphone/kde/src/icons/transferarraw.png"
-       inkscape:export-xdpi="17.615274"
-       inkscape:export-ydpi="17.615274" />
+    <g
+       transform="matrix(1.3973667,0,0,1.3973667,-559.58129,-925.5971)"
+       id="layer1-1"
+       inkscape:label="Layer 1"
+       style="opacity:1;fill:#ffffff">
+      <path
+         inkscape:export-ydpi="17.615274"
+         inkscape:export-xdpi="17.615274"
+         inkscape:export-filename="/home/lepagee/sflphone/kde/src/icons/transferarraw.png"
+         sodipodi:nodetypes="ccccccccccccccc"
+         inkscape:connector-curvature="0"
+         id="path3003-0"
+         d="m 547.57057,1962.5867 0,102.8453 c 0,7.7212 6.20803,16.6299 16.8544,16.6299 l 563.94653,0 c 8.9007,0 14.4651,2.9585 14.4651,11.9761 l 0,76.9637 c 0,9.605 5.2574,11.1329 13.5539,4.8928 l 198.1327,-149.0229 c 9.0021,-6.1781 8.0241,-12.7264 0.9791,-19.7714 l -204.1909,-151.8343 c -5.707,-3.2949 -8.4748,-0.5131 -8.4748,8.562 l 0,70.1528 c 0,8.7427 -8.5565,15.1577 -17.8706,15.1577 l -561.90322,0 c -7.93715,0 -15.49221,5.567 -15.49221,13.4483 z"
+         style="opacity:0.76635514999999998;fill:url(#linearGradient4488);fill-opacity:1;stroke:none" />
+    </g>
   </g>
 </svg>

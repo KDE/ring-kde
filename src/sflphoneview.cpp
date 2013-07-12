@@ -52,6 +52,7 @@
 #include "widgets/tips/dialpadtip.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/kphonenumberselector.h"
+#include "widgets/callviewoverlay.h"
 
 //sflphone library
 #include "lib/typedefs.h"
@@ -276,7 +277,7 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
-   : QWidget(parent), wizard(0)
+   : QWidget(parent), wizard(0),m_pTransferOverlay(nullptr)
 {
    setupUi(this);
    KPhoneNumberSelector::init();
@@ -708,6 +709,10 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::Transfer ] = ACTION_LABEL_GIVE_UP_TRANSF ;
             buttonIconFiles [ SFLPhone::Record   ] = ICON_REC_DEL_ON             ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)                       ;
+            if (!m_pTransferOverlay) {
+               m_pTransferOverlay = new CallViewOverlay(m_pView);
+               m_pTransferOverlay->setVisible(true);
+            }
             transfer = true;
             break;
 

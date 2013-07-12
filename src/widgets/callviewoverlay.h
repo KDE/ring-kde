@@ -19,15 +19,18 @@
 #define CALL_VIEW_OVERLAY
 
 #include <QtGui/QWidget>
+#include "ui_transfer.h"
+
+class QGroupBox;
 
 ///CallViewOverlay: Display overlay on top of the call tree
-class CallViewOverlay : public QWidget {
+class CallViewOverlay : public QWidget, public Ui_Transfer {
    Q_OBJECT
 
 public:
    //Constructor
    explicit CallViewOverlay(QWidget* parent);
-   ~CallViewOverlay();
+   virtual ~CallViewOverlay();
 
    //Setters
    void setCornerWidget  ( QWidget* wdg     );
@@ -45,6 +48,10 @@ private:
    bool     m_enabled      ;
    QColor   m_black        ;
    QString  m_accessMessage;
+   QWidget* m_pMainWidget  ;
+
+   //Event filter
+   bool eventFilter( QObject *obj, QEvent *event);
 
 private Q_SLOTS:
    void changeVisibility();

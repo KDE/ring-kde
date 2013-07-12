@@ -34,6 +34,7 @@ class QKeyEvent;
 class AccountWizard;
 class Contact;
 class CallViewOverlayToolbar;
+class CallViewOverlay;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -55,6 +56,7 @@ class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListe
 private:
    AccountWizard* wizard     ;
    CallViewOverlayToolbar* m_pCanvasToolbar;
+   CallViewOverlay* m_pTransferOverlay;
 
 protected:
 
