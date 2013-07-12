@@ -22,6 +22,7 @@
 #include <KLocale>
 #include "sflphone.h"
 #include "lib/call.h"
+#include <lib/callmodel.h>
 
 SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance = nullptr;
 
@@ -57,9 +58,9 @@ SFLPhoneAccessibility* SFLPhoneAccessibility::instance()
 ///Use the speech daemon to read details about the current calls
 void SFLPhoneAccessibility::listCall()
 {
-   if (SFLPhone::model()->getCallList().size()>0) {
-      KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",SFLPhone::model()->getCallList().size()), KSpeech::soPlainText);
-      foreach (Call* call,SFLPhone::model()->getCallList()) {
+   if (CallModel::instance()->getCallList().size()>0) {
+      KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance()->getCallList().size()), KSpeech::soPlainText);
+      foreach (Call* call,CallModel::instance()->getCallList()) {
          KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerPhoneNumber().isEmpty())?call->peerPhoneNumber():call->callNumber())), KSpeech::soPlainText);
       }
    }
@@ -84,7 +85,7 @@ QString SFLPhoneAccessibility::numberToDigit(QString number)
 ///Use the speech daemon to read the current call details
 void SFLPhoneAccessibility::currentCallDetails()
 {
-   foreach (Call* call,SFLPhone::model()->getCallList()) {
+   foreach (Call* call,CallModel::instance()->getCallList()) {
       if (call->isSelected()) {
          QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toAscii() ));
          if (!call->peerName().trimmed().isEmpty())

@@ -67,8 +67,7 @@
 #include "extendedaction.h"
 #include "errormessage.h"
 
-SFLPhone* SFLPhone::m_sApp              = nullptr;
-CallModel* SFLPhone::m_pModel = nullptr;
+SFLPhone* SFLPhone::m_sApp = nullptr;
 
 ///Constructor
 SFLPhone::SFLPhone(QWidget *parent)
@@ -79,6 +78,17 @@ SFLPhone::SFLPhone(QWidget *parent)
 {
     if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid()) {
        QTimer::singleShot(5000,this,SLOT(timeout()));
+    }
+
+   static bool init = false;
+   if (!init) {
+      Call::setContactBackend(AkonadiBackend::instance());
+      InstantMessagingModelManager::init();
+      AccountList::instance()->setDefaultAccount(AccountList::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
+      #ifdef ENABLE_VIDEO
+      VideoModel::instance();
+      #endif
+      init = true;
     }
 
     //Belong to setupActions(), but is needed now
@@ -243,7 +253,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
    connect(AccountList::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
 
-   if (!model()->isValid()) {
+   if (!CallModel::instance()->isValid()) {
       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually"));
       QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
@@ -438,21 +448,6 @@ SFLPhone* SFLPhone::app()
 SFLPhoneView* SFLPhone::view()
 {
    return m_pView;
-}
-
-///Singleton
-CallModel* SFLPhone::model()
-{
-   if (!m_pModel) {
-      m_pModel = CallModel::instance();
-      Call::setContactBackend(AkonadiBackend::instance());
-      InstantMessagingModelManager::init(m_pModel);
-      AccountList::instance()->setDefaultAccount(AccountList::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
-      #ifdef ENABLE_VIDEO
-      VideoModel::instance();
-      #endif
-    }
-   return m_pModel;
 }
 
 ///Return the contact dock
@@ -692,7 +687,7 @@ void SFLPhone::displayVideoDock(VideoRenderer* r)
 ///The daemon is not found
 void SFLPhone::timeout()
 {
-   if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid() || (!model()->isValid())) {
+   if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid() || (!CallModel::instance()->isValid())) {
       KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }

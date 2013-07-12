@@ -49,6 +49,7 @@
 #include "klib/kcfg_settings.h"
 #include "lib/historymodel.h"
 #include "lib/accountlist.h"
+#include "lib/callmodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
 
@@ -379,7 +380,7 @@ void HistoryDock::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
    kDebug() << "Calling "<< m_pCurrentCall->peerPhoneNumber();
-   Call* call = SFLPhone::model()->addDialingCall(m_pCurrentCall->peerName(), AccountList::currentAccount());
+   Call* call = CallModel::instance()->addDialingCall(m_pCurrentCall->peerName(), AccountList::currentAccount());
    if (call) {
       call->setCallNumber  ( m_pCurrentCall->peerPhoneNumber() );
       call->setPeerName    ( m_pCurrentCall->peerName() );

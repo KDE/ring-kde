@@ -23,7 +23,6 @@
 #include "contact.h"
 
 InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
-CallModel*                    InstantMessagingModelManager::m_spCallModel = nullptr;
 
 ///Signleton
 InstantMessagingModelManager* InstantMessagingModelManager::instance()
@@ -34,8 +33,7 @@ InstantMessagingModelManager* InstantMessagingModelManager::instance()
    return m_spInstance;
 }
 
-void InstantMessagingModelManager::init(CallModel* model) {
-   m_spCallModel = model;
+void InstantMessagingModelManager::init() {
    instance();
 }
 
@@ -49,8 +47,8 @@ InstantMessagingModelManager::InstantMessagingModelManager() : QObject(nullptr)
 ///Called when a new message is incoming
 void InstantMessagingModelManager::newMessage(QString callId, QString from, QString message)
 {
-   if (!m_lModels[callId] && m_spCallModel) {
-      Call* call = m_spCallModel->getCall(callId);
+   if (!m_lModels[callId] && CallModel::instance()) {
+      Call* call = CallModel::instance()->getCall(callId);
       if (call) {
          qDebug() << "Creating messaging model for call" << callId;
          m_lModels[callId] = new InstantMessagingModel(call);

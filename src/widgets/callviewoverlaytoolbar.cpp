@@ -36,6 +36,7 @@
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
 #include <lib/call.h>
+#include <lib/callmodel.h>
 
 const TypedStateMachine< TypedStateMachine< bool , Call::State > , ActionButton > visibility = {{              /*ROW = BUTTONS   COLS=STATE*/
             /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/

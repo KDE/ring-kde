@@ -21,7 +21,6 @@
 #define SFLPHONE_H
 
 #include <KXmlGuiWindow>
-#include <lib/callmodel.h>
 
 //Qt
 class QString;
@@ -45,6 +44,7 @@ class CallTreeItem;
 class VideoRenderer;
 class ExtendedAction;
 class AccountListNoCheckProxyModel;
+class Account;
 
 
 /**
@@ -119,7 +119,6 @@ private:
    #endif
 
    static SFLPhone*            m_sApp;
-   static CallModel* m_pModel;
    AccountListNoCheckProxyModel* m_pAccountModel;
 
    //Setters
@@ -142,7 +141,6 @@ public:
    friend class SFLPhoneView;
 
    static SFLPhone*            app   ();
-   static CallModel* model ();
    SFLPhoneView*               view  ();
 
    ContactDock*  contactDock ();

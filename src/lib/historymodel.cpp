@@ -434,10 +434,10 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
 
 //    if (data->hasFormat( MIME_CALLID) && !QString(encodedCallId).isEmpty()) {
 //       qDebug() << "CallId dropped"<< QString(encodedCallId);
-//       Call* call = SFLPhone::model()->getCall(data->data(MIME_CALLID));
+//       Call* call = CallModel::instance()->getCall(data->data(MIME_CALLID));
 //       if (dynamic_cast<Call*>(call)) {
 //          call->changeCurrentState(CALL_STATE_TRANSFERRED);
-//          SFLPhone::model()->transfer(call, m_pItemCall->getPeerPhoneNumber());
+//          CallModel::instance()->transfer(call, m_pItemCall->getPeerPhoneNumber());
 //       }
 //    }
 //    else if (!QString(encodedPhoneNumber).isEmpty()) {

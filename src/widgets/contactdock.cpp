@@ -327,7 +327,7 @@ void ContactDock::callAgain()
    bool ok;
    QString number = showNumberSelector(ok);
    if (ok) {
-      Call* call = SFLPhone::model()->addDialingCall(m_pCurrentContact->formattedName(), AccountList::currentAccount());
+      Call* call = CallModel::instance()->addDialingCall(m_pCurrentContact->formattedName(), AccountList::currentAccount());
       if (call) {
          call->setCallNumber(number);
          call->setPeerName(m_pCurrentContact->formattedName());
@@ -391,10 +391,10 @@ void ContactDock::transferEvent(QMimeData* data)
       bool ok;
       const QString result = showNumberSelector(ok);
       if (ok) {
-         Call* call = SFLPhone::model()->getCall(data->data(MIME_CALLID));
+         Call* call = CallModel::instance()->getCall(data->data(MIME_CALLID));
          if (dynamic_cast<Call*>(call)) {
             call->changeCurrentState(Call::State::TRANSFERRED);
-            SFLPhone::model()->transfer(call, result);
+            CallModel::instance()->transfer(call, result);
          }
       }
    }
