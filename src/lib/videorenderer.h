@@ -31,7 +31,10 @@ struct SHMHeader;
 
 ///Manage shared memory and convert it to QByteArray
 class LIB_EXPORT VideoRenderer : public QObject {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 
    public:
       //Constructor

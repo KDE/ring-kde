@@ -68,9 +68,11 @@ QSize Tip::reload(const QRect& availableSize,bool force)
          m_CurrentRect.setWidth(decoRect.x() + decoRect.width()+2*m_Padding);
 
       //Create the background image
-      m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_RGB888);
-      m_CurrentImage.fill(m_OriginalPalette.base().color().rgb() );
+      m_CurrentImage = QImage(QSize(m_CurrentRect.width(),m_CurrentRect.height()),QImage::Format_ARGB32);
       QPainter p(&m_CurrentImage);
+      p.setCompositionMode(QPainter::CompositionMode_Clear);
+      p.fillRect(m_CurrentImage.rect(),QBrush(Qt::white));
+      p.setCompositionMode(QPainter::CompositionMode_SourceOver);
       p.setRenderHint(QPainter::Antialiasing, true);
       p.setFont(font());
 
@@ -82,8 +84,10 @@ QSize Tip::reload(const QRect& availableSize,bool force)
          p.drawRoundedRect(QRect(0,0,m_CurrentRect.width(),m_CurrentRect.height()),10,10);
       }
 
-      //Draw the wrapped text in textRectS
-      p.drawText(textRect,Qt::TextWordWrap|Qt::AlignJustify,m_OriginalText);
+      if (hasText()) {
+         //Draw the wrapped text in textRectS
+         p.drawText(textRect,Qt::TextWordWrap|Qt::AlignJustify,m_OriginalText);
+      }
 
 
       //If the widget is subclassed, this would allow decorations to be added like images

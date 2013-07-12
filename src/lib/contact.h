@@ -35,27 +35,58 @@ namespace KABC {
 
 #include "typedefs.h"
 
+class LIB_EXPORT ContactTreeBackend {
+public:
+    enum Type {
+        CONTACT=0,
+        NUMBER=1,
+        TOP_LEVEL=2
+    };
+    explicit ContactTreeBackend(ContactTreeBackend::Type _type);
+    virtual ~ContactTreeBackend();
+    ContactTreeBackend::Type type() const;
+    virtual QObject* self() = 0;
+    char dropState();
+    void setDropState(const char state);
+private:
+    ContactTreeBackend::Type m_Type;
+    char m_DropState;
+};
+
+
 ///Contact: Abstract version of a contact
-class LIB_EXPORT Contact : public QObject{
+class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    ///PhoneNumber: represent a phone number
    class PhoneNumber {
    public:
       ///Constructor
-      PhoneNumber(QString number, QString type)
-      : m_Number(number),m_Type(type){}
+      PhoneNumber(const QString& number, const QString& type);
+      PhoneNumber(const PhoneNumber& number);
 
       //Getters
-      QString& getNumber();
-      QString& getType();
+      QString number() const;
+      QString type() const;
 
    private:
       QString m_Number   ;
       QString m_Type     ;
    };
+   class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
+   public:
+      virtual QObject* self() __attribute__ ((const));
+      PhoneNumbers(Contact* parent);
+      PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
+      Contact* contact() const;
+   private:
+      Contact* m_pParent;
+   };
 
-   typedef QList<Contact::PhoneNumber*> PhoneNumbers;
+   virtual QObject* self();
 
 private:
    QString      m_FirstName      ;
@@ -79,18 +110,18 @@ public:
    virtual void initItem();
    
    //Getters
-   virtual PhoneNumbers   getPhoneNumbers()    const;
-   virtual const QString& getNickName()        const;
-   virtual const QString& getFirstName()       const;
-   virtual const QString& getSecondName()      const;
-   virtual const QString& getFormattedName()   const;
-   virtual const QString& getOrganization()    const;
-   virtual const QString& getUid()             const;
-   virtual const QString& getPreferredEmail()  const;
-   virtual const QPixmap* getPhoto()           const;
-   virtual const QString& getType()            const;
-   virtual const QString& getGroup()           const;
-   virtual const QString& getDepartment()      const;
+   virtual const PhoneNumbers&   phoneNumbers() const;
+   virtual const QString& nickName()        const;
+   virtual const QString& firstName()       const;
+   virtual const QString& secondName()      const;
+   virtual const QString& formattedName()   const;
+   virtual const QString& organization()    const;
+   virtual const QString& uid()             const;
+   virtual const QString& preferredEmail()  const;
+   virtual const QPixmap* photo()           const;
+   virtual const QString& type()            const;
+   virtual const QString& group()           const;
+   virtual const QString& department()      const;
 
    //Setters
    virtual void setPhoneNumbers   ( PhoneNumbers        );
@@ -112,6 +143,5 @@ protected:
    virtual void initItemWidget();
 
 };
-typedef Contact::PhoneNumbers PhoneNumbers;
 
 #endif

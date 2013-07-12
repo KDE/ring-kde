@@ -20,6 +20,7 @@
 
 //Qt
 #include <QtGui/QToolButton>
+#include <QtGui/QItemSelectionModel>
 
 //Base
 #include <QtGui/QWidget>
@@ -29,6 +30,7 @@
 //Qt
 class QSvgRenderer;
 class QToolButton;
+class QTreeView;
 
 //KDE
 
@@ -46,7 +48,7 @@ public Q_SLOTS:
    }
 };
 
-enum ActionButton {
+enum class ActionButton : unsigned int {
    PICKUP   = 0,
    HOLD     = 1,
    UNHOLD   = 2,
@@ -55,16 +57,20 @@ enum ActionButton {
    TRANSFER = 5,
    RECORD   = 6,
    REFUSE   = 7,
+   ACCEPT   = 8,
+   COUNT
 };
 
 class CallViewOverlayToolbar : public QWidget
 {
    Q_OBJECT
 public:
-   explicit CallViewOverlayToolbar(QWidget* parent = nullptr);
+   explicit CallViewOverlayToolbar(QTreeView* parent = nullptr);
+   virtual ~CallViewOverlayToolbar();
 
 private:
    //Attributes
+   QTreeView*    m_pParent;
    QSvgRenderer* m_pRightRender;
    QSvgRenderer* m_pLeftRender ;
 
@@ -77,6 +83,7 @@ private:
    ObserverToolButton* m_pTransfer;
    ObserverToolButton* m_pRecord  ;
    ObserverToolButton* m_pRefuse  ;
+   ObserverToolButton* m_pAccept  ;
 
    QHash<int,ObserverToolButton*> m_hButtons;
 
@@ -84,13 +91,14 @@ private:
    ObserverToolButton* createButton(ExtendedAction* action);
 
 public Q_SLOTS:
-   void updateState(call_state state);
+   void updateState();
 
 protected:
    void resizeEvent( QResizeEvent* event);
    void paintEvent ( QPaintEvent*  event);
    void hideEvent  ( QHideEvent*   event);
    void showEvent  ( QShowEvent*   event);
+   bool eventFilter( QObject *obj, QEvent *event);
 
 Q_SIGNALS:
    void visibilityChanged(bool);

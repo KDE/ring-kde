@@ -23,7 +23,7 @@
 #include <kconfigdialog.h>
 
 #include "ui_dlgaudiobase.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 
 /**
    @author Jérémy Quentin <jeremy.quentin@gmail.com>

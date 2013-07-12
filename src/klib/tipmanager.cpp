@@ -27,11 +27,11 @@
 #include <KDebug>
 #include <KStandardDirs>
 
-bool ResizeEventFilter::eventFilter(QObject *obj, QEvent *event)
+bool TipManager::eventFilter(QObject *obj, QEvent *event)
 {
    Q_UNUSED(obj);
    if (event->type() == QEvent::Resize) {
-      m_pLoader->changeSize();
+      changeSize();
    }
    return false;
 }
@@ -41,14 +41,20 @@ TipManager::TipManager(QTreeView* parent):QObject(parent),
 m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
 m_pAnim(this),m_pCurrentTip(nullptr),m_pTimer(new QTimer())
 {
-   ResizeEventFilter* filter = new ResizeEventFilter(this);
-   parent->installEventFilter(filter);
+   m_CurrentFrame = {QPoint(0,0),QRect(),0};
+   parent->installEventFilter(this);
+   parent->setProperty("tipManager",QVariant::fromValue(qobject_cast<TipManager*>(this)));
    reload();
-   
+
    connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timeout()));
 
    connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
    connect(&m_pAnim,SIGNAL(animationEnded()),this,SLOT(animationEnded()));
+}
+
+TipManager::~TipManager()
+{
+   delete m_pTimer;
 }
 
 ///Get the current image
@@ -82,7 +88,10 @@ void TipManager::setTopMargin(int margin)
 {
    bool changed = !(m_TopMargin == margin);
    m_TopMargin = margin;
-   if (changed) changeSize(true);
+   if (changed) {
+      changeSize(true);
+      reload();
+   }
 }
 
 ///Set the bottom margin
@@ -90,7 +99,10 @@ void TipManager::setBottomMargin(int margin)
 {
    bool changed = !(m_BottomMargin == margin);
    m_BottomMargin = margin;
-   if (changed) changeSize(true);
+   if (changed) { 
+      changeSize(false);
+   }
+   reload();
 }
 
 ///Set the current tip, hide the previous one, if any

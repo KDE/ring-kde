@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 #include "dlgaccessibility.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 
 //KDE
 #include <KConfigDialog>
@@ -25,6 +25,7 @@
 
 //SFLPhone
 #include <klib/macromodel.h>
+#include <klib/macro.h>
 
 ///Constructor
 DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
@@ -54,11 +55,11 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
 
    connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
    
-   connect(MacroModel::getInstance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
-   connect(MacroModel::getInstance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
-   m_pMacroListTV->setModel(MacroModel::getInstance());
+   connect(MacroModel::instance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
+   connect(MacroModel::instance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
+   m_pMacroListTV->setModel(MacroModel::instance());
    m_pMacroListTV->expandAll();
-   connect(m_pMacroListTV->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),MacroModel::getInstance(),SLOT(setCurrent(QModelIndex,QModelIndex)));
+   connect(m_pMacroListTV->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),MacroModel::instance(),SLOT(setCurrent(QModelIndex,QModelIndex)));
 }
 
 ///Destructor
@@ -70,7 +71,7 @@ DlgAccessibility::~DlgAccessibility()
 ///Save
 void DlgAccessibility::updateSettings()
 {
-   MacroModel::getInstance()->save();
+   MacroModel::instance()->save();
 }
 
 ///Load
@@ -92,7 +93,7 @@ bool DlgAccessibility::hasChanged()
 
 void DlgAccessibility::addMacro()
 {
-   Macro* ret = MacroModel::getInstance()->newMacro();
+   Macro* ret = MacroModel::instance()->newMacro();
    if (ret) {
       m_pMacroFrm->setEnabled(true);
    }
@@ -125,7 +126,7 @@ void DlgAccessibility::selectMacro(Macro* macro)
 //Widget change
 void DlgAccessibility::slotNameLE(const QString& newText)
 {
-   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   Macro* current = MacroModel::instance()->getCurrentMacro();
    if (current) {
       current->setName(newText);
    }
@@ -133,7 +134,7 @@ void DlgAccessibility::slotNameLE(const QString& newText)
 
 void DlgAccessibility::slotCategoryCBB(const QString& newText)
 {
-   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   Macro* current = MacroModel::instance()->getCurrentMacro();
    if (current) {
       current->setCategory(newText);
    }
@@ -141,7 +142,7 @@ void DlgAccessibility::slotCategoryCBB(const QString& newText)
 
 void DlgAccessibility::slotDelaySB(int newValue)
 {
-   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   Macro* current = MacroModel::instance()->getCurrentMacro();
    if (current) {
       current->setDelay(newValue);
    }
@@ -149,7 +150,7 @@ void DlgAccessibility::slotDelaySB(int newValue)
 
 void DlgAccessibility::slotSequenceLE(const QString& newText)
 {
-   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   Macro* current = MacroModel::instance()->getCurrentMacro();
    if (current) {
       current->setSequence(newText);
    }
@@ -157,7 +158,7 @@ void DlgAccessibility::slotSequenceLE(const QString& newText)
 
 void DlgAccessibility::slotDescriptionLE(const QString& newText)
 {
-   Macro* current = MacroModel::getInstance()->getCurrentMacro();
+   Macro* current = MacroModel::instance()->getCurrentMacro();
    if (current) {
       current->setDescription(newText);
    }

@@ -20,32 +20,34 @@
 #include <KLocale>
 
 #include "dialpadtip.h"
-#include "riggingtip.h"
+#include "ringingtip.h"
 #include "connectionlosttip.h"
 #include "conftip.h"
+#include "removeconferencetip.h"
 #include "klib/tipmanager.h"
 
 //Tutorial mode
-DialPadTip*        TipCollection::m_spDialPad        = nullptr;
-ConfTip*           TipCollection::m_spConf           = nullptr;
+Tip*               TipCollection::m_spDialPad          = nullptr;
+ConfTip*           TipCollection::m_spConf             = nullptr;
 
 //Call related
-Tip*               TipCollection::m_spEndCall        = nullptr;
-Tip*               TipCollection::m_spEndBusy        = nullptr;
-Tip*               TipCollection::m_spRigging        = nullptr;
+Tip*               TipCollection::m_spEndCall          = nullptr;
+Tip*               TipCollection::m_spEndBusy          = nullptr;
+Tip*               TipCollection::m_spRinging          = nullptr;
+Tip*               TipCollection::m_spRemoveConference = nullptr;
 
 //Account related
-ConnectionLostTip* TipCollection::m_spConnectionLost = nullptr;
+ConnectionLostTip* TipCollection::m_spConnectionLost   = nullptr;
 
 //Network related
-Tip*               TipCollection::m_spNetworkLost    = nullptr;
+Tip*               TipCollection::m_spNetworkLost      = nullptr;
 
 //Global manager
-TipManager*        TipCollection::m_spManager        = nullptr;
+TipManager*        TipCollection::m_spManager          = nullptr;
 
 
 //Tutorial mode
-DialPadTip* TipCollection::dialPad()
+Tip* TipCollection::dialPad()
 {
    if (!m_spDialPad) {
       m_spDialPad = new DialPadTip();
@@ -89,15 +91,15 @@ Tip* TipCollection::endBusy()
    return m_spEndBusy;
 }
 
-///Return rigging tip
-Tip* TipCollection::rigging()
+///Return ringing tip
+Tip* TipCollection::ringing()
 {
-   if (!m_spRigging) {
-      m_spRigging = new RiggingTip();
-      m_spRigging->setAnimationIn(Tip::TipAnimation::Fade);
-      m_spRigging->setAnimationOut(Tip::TipAnimation::Fade);
+   if (!m_spRinging) {
+      m_spRinging = new RingingTip();
+      m_spRinging->setAnimationIn(Tip::TipAnimation::Fade);
+      m_spRinging->setAnimationOut(Tip::TipAnimation::Fade);
    }
-   return m_spRigging;
+   return m_spRinging;
 }
 
 //Account related
@@ -106,8 +108,8 @@ Tip* TipCollection::connectionLost()
 {
    if (!m_spConnectionLost) {
       m_spConnectionLost = new ConnectionLostTip();
-      m_spRigging->setAnimationIn(Tip::TipAnimation::Fade);
-      m_spRigging->setAnimationOut(Tip::TipAnimation::Fade);
+      m_spConnectionLost->setAnimationIn(Tip::TipAnimation::Fade);
+      m_spConnectionLost->setAnimationOut(Tip::TipAnimation::Fade);
    }
    return m_spConnectionLost;
 }
@@ -122,6 +124,16 @@ Tip* TipCollection::networkLost()
    return m_spNetworkLost;
 }
 
+///What happen if you drop a call from a conference on empty space
+Tip* TipCollection::removeConference()
+{
+   if (!m_spRemoveConference) {
+      m_spRemoveConference = new RemoveConferenceTip();
+      m_spRemoveConference->setAnimationIn(Tip::TipAnimation::Fade);
+      m_spRemoveConference->setAnimationOut(Tip::TipAnimation::Fade);
+   }
+   return m_spRemoveConference;
+}
 
 //Global manager
 ///Return the global tip manager

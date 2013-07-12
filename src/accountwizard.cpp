@@ -37,7 +37,7 @@
 
 //SFLphone
 #include "lib/sflphone_const.h"
-#include "lib/configurationmanager_interface_singleton.h"
+#include "lib/dbus/configurationmanager.h"
 
 //Define
 #define FIELD_SFL_ACCOUNT        "SFL"
@@ -71,15 +71,10 @@
  *                                                                         *
  **************************************************************************/
 
-typedef struct {
-   bool    success ;
-   QString reason  ;
-   QString user    ;
-   QString passwd  ;
-} rest_account;
+
 
 ///Validate if the connection can be done with the PBX
-int sendRequest(QString host, int port, QString req, QString & ret)
+int AccountWizard::sendRequest(const QString& host, int port, const QString& req, QString& ret)
 {
    int s;
    struct sockaddr_in servSockAddr;
@@ -105,9 +100,10 @@ int sendRequest(QString host, int port, QString req, QString & ret)
       return -1;
    }
 
-   if(connect(s, (const struct sockaddr *) &servSockAddr, (socklen_t) sizeof(servSockAddr)) < 0 ) {
+   if(::connect(s, (const struct sockaddr *) &servSockAddr, (socklen_t) sizeof(servSockAddr)) < 0 ) {
       perror(nullptr);
       ret = "connect";
+      ::close(s);
       return -1;
    }
 
@@ -133,20 +129,21 @@ int sendRequest(QString host, int port, QString req, QString & ret)
 
    if (status != 200) {
       ret = "http error: " + status;
+      fclose(f);
 //       sprintf(ret, "http error: %ld", status);
       return -1;
    }
 
    fclose(f);
    shutdown(s, 2);
-   close(s);
+   ::close(s);
    return 0;
 }
 
 ///
-rest_account get_rest_account(QString host, QString email)
+rest_account AccountWizard::get_rest_account(const QString& host, const QString& email)
 {
-   QString req = "GET /rest/accountcreator?email=" + email;
+   const QString req = "GET /rest/accountcreator?email=" + email;
    QString ret;
    rest_account ra;
    kDebug() << "HOST: " << host;
@@ -200,7 +197,7 @@ AccountWizard::~AccountWizard()
 ///The accept button have been pressed
 void AccountWizard::accept()
 {
-   ConfigurationManagerInterface & configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
 
    QString ret;
    MapStringString accountDetails = configurationManager.getAccountTemplate();

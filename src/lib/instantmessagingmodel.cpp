@@ -18,14 +18,15 @@
 #include "instantmessagingmodel.h"
 
 #include "callmodel.h"
-#include "callmanager_interface_singleton.h"
+#include "dbus/callmanager.h"
 #include "call.h"
+#include "contact.h"
 
 InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
-CallModelBase*                InstantMessagingModelManager::m_spCallModel = nullptr;
+CallModel*                    InstantMessagingModelManager::m_spCallModel = nullptr;
 
 ///Signleton
-InstantMessagingModelManager* InstantMessagingModelManager::getInstance()
+InstantMessagingModelManager* InstantMessagingModelManager::instance()
 {
    if (!m_spInstance) {
       m_spInstance = new InstantMessagingModelManager();
@@ -33,15 +34,15 @@ InstantMessagingModelManager* InstantMessagingModelManager::getInstance()
    return m_spInstance;
 }
 
-void InstantMessagingModelManager::init(CallModelBase* model) {
+void InstantMessagingModelManager::init(CallModel* model) {
    m_spCallModel = model;
-   getInstance();
+   instance();
 }
 
 ///Constructor
-InstantMessagingModelManager::InstantMessagingModelManager() : QObject(0)
+InstantMessagingModelManager::InstantMessagingModelManager() : QObject(nullptr)
 {
-   CallManagerInterface& callManager = CallManagerInterfaceSingleton::getInstance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), this, SLOT(newMessage(QString,QString,QString)));
 }
 
@@ -64,7 +65,7 @@ void InstantMessagingModelManager::newMessage(QString callId, QString from, QStr
 
 ///Singleton
 InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
-   QString key = call->isConference()?call->getConfId():call->getCallId();
+   const QString key = call->isConference()?call->confId():call->callId();
    if (!m_lModels[key]) {
       m_lModels[key] = new InstantMessagingModel(call);
       emit newMessagingModel(call,m_lModels[key]);
@@ -73,70 +74,79 @@ InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
 }
 
 ///Constructor
-InstantMessagingModel::InstantMessagingModel(Call* call, QObject* parent) : QAbstractListModel(parent),m_pCall(call)
+InstantMessagingModel::InstantMessagingModel(Call* call, QObject* par) : QAbstractListModel(par),m_pCall(call)
 {
    //QStringList callList = callManager.getCallList();
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(InstantMessagingModel::Role::TYPE    ,QByteArray("type"));
+   roles.insert(InstantMessagingModel::Role::FROM    ,QByteArray("from"));
+   roles.insert(InstantMessagingModel::Role::TEXT    ,QByteArray("text"));
+   roles.insert(InstantMessagingModel::Role::IMAGE   ,QByteArray("image"));
+   roles.insert(InstantMessagingModel::Role::CONTACT ,QByteArray("contact"));
+   setRoleNames(roles);
 }
 
 ///Get data from the model
-QVariant InstantMessagingModel::data( const QModelIndex& index, int role) const
+QVariant InstantMessagingModel::data( const QModelIndex& idx, int role) const
 {
-   if (index.column() == 0) {
+   if (idx.column() == 0) {
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lMessages[index.row()].message);
+            return QVariant(m_lMessages[idx.row()].message);
             break;
-         case MESSAGE_TYPE_ROLE:
-            return QVariant(m_lMessages[index.row()].message);
+         case InstantMessagingModel::Role::TYPE:
+            return QVariant(m_lMessages[idx.row()].message);
             break;
-         case MESSAGE_FROM_ROLE:
-            return QVariant(m_lMessages[index.row()].from);
+         case InstantMessagingModel::Role::FROM:
+            return QVariant(m_lMessages[idx.row()].from);
             break;
-         case MESSAGE_TEXT_ROLE:
+         case InstantMessagingModel::Role::TEXT:
             return INCOMMING_IM;
             break;
-         case MESSAGE_CONTACT_ROLE:
-            if (m_pCall->getContact()) {
+         case InstantMessagingModel::Role::CONTACT:
+            if (m_pCall->contact()) {
                return QVariant();
             }
             break;
-         case MESSAGE_IMAGE_ROLE: {
-            if (m_lImages.find(index) != m_lImages.end())
-               return m_lImages[index];
-            Contact* c =m_pCall->getContact();
-            if (c && c->getPhoto()) {
-               return QVariant::fromValue<void*>((void*)c->getPhoto());
+         case InstantMessagingModel::Role::IMAGE: {
+            if (m_lImages.find(idx) != m_lImages.end())
+               return m_lImages[idx];
+            const Contact* c = m_pCall->contact();
+            if (c && c->photo()) {
+               return QVariant::fromValue<void*>((void*)c->photo());
             }
             return QVariant();
             break;
          }
+         default:
+            break;
       }
    }
    return QVariant();
 }
 
 ///Number of row
-int InstantMessagingModel::rowCount(const QModelIndex& parent) const
+int InstantMessagingModel::rowCount(const QModelIndex& parentIdx) const
 {
-   Q_UNUSED(parent)
+   Q_UNUSED(parentIdx)
    return m_lMessages.size();
 }
 
 ///Model flags
-Qt::ItemFlags InstantMessagingModel::flags(const QModelIndex& index) const
+Qt::ItemFlags InstantMessagingModel::flags(const QModelIndex& idx) const
 {
-   Q_UNUSED(index)
+   Q_UNUSED(idx)
    return Qt::ItemIsEnabled;
 }
 
 ///Set model data
-bool InstantMessagingModel::setData(const QModelIndex& index, const QVariant &value, int role)
+bool InstantMessagingModel::setData(const QModelIndex& idx, const QVariant &value, int role)
 {
-   Q_UNUSED(index)
+   Q_UNUSED(idx)
    Q_UNUSED(value)
    Q_UNUSED(role)
-   if (index.column() == 0 && role == MESSAGE_IMAGE_ROLE   ) {
-      m_lImages[index] = value;
+   if (idx.column() == 0 && role == InstantMessagingModel::Role::IMAGE   ) {
+      m_lImages[idx] = value;
    }
    return false;
 }

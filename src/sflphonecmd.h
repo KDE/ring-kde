@@ -35,14 +35,14 @@ public:
 
    //Static mutators
    static void parseCmd(int argc, char **argv, KAboutData& about);
-   static void placeCall(QString number);
-   static void sendText(QString number, QString text);
+   static void placeCall(const QString& number);
+   static void sendText(const QString& number, const QString& text);
 
 private:
    //Private constructor
    explicit SFLPhoneCmd(QObject* parent=nullptr);
 
-   static SFLPhoneCmd* getInstance();
+   static SFLPhoneCmd* instance();
 
    //Attributes
    static SFLPhoneCmd* m_spSelf;

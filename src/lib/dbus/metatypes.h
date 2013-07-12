@@ -24,7 +24,8 @@
 #include <QVector>
 #include <QtCore/QString>
 #include <QtDBus/QtDBus>
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 typedef QMap<QString, QString> MapStringString;
 typedef QMap<QString, int> MapStringInt;
 typedef QVector<int> VectorInt;
@@ -33,7 +34,7 @@ typedef QVector< QMap<QString, QString> > VectorMapStringString;
 Q_DECLARE_METATYPE(MapStringString)
 Q_DECLARE_METATYPE(MapStringInt)
 Q_DECLARE_METATYPE(VectorMapStringString)
-Q_DECLARE_METATYPE(VectorInt);
+Q_DECLARE_METATYPE(VectorInt)
 
 static bool dbus_metaTypeInit = false;
 inline void registerCommTypes() {
@@ -43,5 +44,6 @@ inline void registerCommTypes() {
 	qDBusRegisterMetaType<VectorInt>();
    dbus_metaTypeInit = true;
 }
+#pragma GCC diagnostic pop
 
 #endif

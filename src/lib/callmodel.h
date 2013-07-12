@@ -16,205 +16,130 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef CALL_MODEL_H
-#define CALL_MODEL_H
+#ifndef CALL_MODEL2_H
+#define CALL_MODEL2_H
 
-#include <QObject>
-#include <QVector>
-#include <QWidget>
-#include <QModelIndex>
+#include <QAbstractItemModel>
 #include <QMap>
 #include "typedefs.h"
 
-//Qt
-class QModelIndex;
-
 //SFLPhone
 class Call;
-//class AccountList;
 class Account;
+struct InternalStruct;
 
 //Typedef
-typedef QMap<QString, Call*>  CallMap;
-typedef QList<Call*>          CallList;
+typedef QMap<uint, Call*>  CallMap;
+typedef QList<Call*>       CallList;
 
-///CallModelBase: Base class for the central model/frontend
-///This class need to exist because template classes can't have signals and
-///slots because Qt MOC generator can't guess the type at precompilation   
-class LIB_EXPORT CallModelBase : public QObject
-{
-   Q_OBJECT
-public:
-   explicit CallModelBase(QObject* parent = nullptr);
-   ~CallModelBase();
-   virtual Call* addCall              ( Call* call           , Call* parent =0      );
-   virtual Call* getCall              ( const QString& callId                       ) const = 0;
-   Call*   addConferenceS             ( Call* conf                                  );
-
-   bool isValid();
-   
-private Q_SLOTS:
-   void callStateChanged      ( const QString& callID    , const QString &state   );
-   void incomingCall          ( const QString& accountID , const QString & callID );
-   void incomingConference    ( const QString& confID                             );
-   void changingConference    ( const QString& confID    , const QString &state   );
-   void conferenceRemovedSlot ( const QString& confId                             );
-   void voiceMailNotifySlot   ( const QString& accountID , int count              );
-   void volumeChangedSlot     ( const QString& device    , double value           );
-   void removeActiveCall      ( Call* call                                        );
-   void addPrivateCall        ( Call* call                                        );
-   void newRecordingAvail     ( const QString& callId    , const QString& filePath);
-   #ifdef ENABLE_VIDEO
-   void startedDecoding       ( const QString& callId    , const QString& shmKey  );
-   void stoppedDecoding       ( const QString& callId    , const QString& shmKey  );
-   #endif
-
-protected:
-   virtual Call* findCallByCallId ( const QString& callId                       ) = 0;
-   virtual bool changeConference  ( const QString& confId, const QString &state ) = 0;
-   virtual void removeConference  ( const QString& confId                       ) = 0;
-   virtual Call* addConference    ( const QString& confID                       ) = 0;
-   virtual Call* addRingingCall   ( const QString& callId                       ) = 0;
-   virtual Call* addIncomingCall  ( const QString& callId                       ) = 0;
-
-   //Attributes
-   static CallMap m_sActiveCalls;
-
-private:
-   static bool dbusInit;
-   
-Q_SIGNALS:
-   ///Emitted when a call state change
-   void callStateChanged        ( Call* call                              );
-   ///Emitted when a new call is incoming
-   void incomingCall            ( Call* call                              );
-   ///Emitted when a conference is created
-   void conferenceCreated       ( Call* conf                              );
-   ///Emitted when a conference change state or participant
-   void conferenceChanged       ( Call* conf                              );
-   ///Emitted when a conference is removed
-   void conferenceRemoved       ( Call* conf                              );
-   ///Emitted just before a conference is removed
-   void aboutToRemoveConference ( Call* conf                              );
-   ///Emitted when a new voice mail is available
-   void voiceMailNotify         ( const QString& accountID , int    count );
-   ///Emitted when the volume change
-   void volumeChanged           ( const QString& device    , double value );
-   ///Emitted when a call is added
-   void callAdded               ( Call* call               , Call* parent );
-   ///Emitted when an account state change
-   //void accountStateChanged     ( Account* account, QString state         );
-};
-
-/**
- * Using QAbstractModel resulted in a failure. Managing all corner case bloated the code to the point of no
- * return. This frontend may not be cleaner from a design point of view, but it is from a code point of view
- */
 ///CallModel: Central model/frontend to deal with sflphoned
-template  <typename CallWidget = QWidget*, typename Index = QModelIndex*>
-class LIB_EXPORT CallModel : public CallModelBase {
+class LIB_EXPORT CallModel : public QAbstractItemModel
+{
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
    public:
-
       //Constructors, initializer and destructors
-      CallModel                (                    );
-      virtual ~CallModel       (                    );
-      virtual bool initCall    (                    );
-      static  void destroy     (                    );
+      virtual ~CallModel( );
 
       //Call related
-      virtual Call*  addCall          ( Call* call                , Call* parent =0          );
-      Call*          addDialingCall   ( const QString& peerName="", Account* account=nullptr );
-      static QString generateCallId   (                                                      );
-      void           removeCall       ( Call* call                                           );
-      void           attendedTransfer ( Call* toTransfer          , Call* target             );
-      void           transfer         ( Call* toTransfer          , QString target           );
+      Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
+      void  attendedTransfer ( Call* toTransfer          , Call* target   );
+      void  transfer         ( Call* toTransfer          , QString target );
+      void  removeCall       ( Call* call                                 );
+      QModelIndex getIndex   ( Call* call                                 );
 
       //Conference related
-      bool createConferenceFromCall  ( Call* call1, Call* call2                    );
-      bool mergeConferences          ( Call* conf1, Call* conf2                    );
-      bool addParticipant            ( Call* call2, Call* conference               );
-      bool detachParticipant         ( Call* call                                  );
-      void removeConference          ( Call* conf                                  );
+      bool createConferenceFromCall  ( Call* call1, Call* call2      );
+      bool mergeConferences          ( Call* conf1, Call* conf2      );
+      bool addParticipant            ( Call* call2, Call* conference );
+      bool detachParticipant         ( Call* call                    );
+      void removeConference          ( Call* conf                    );
 
       //Getters
-      int size                                        ();
-      CallList                 getCallList            ();
-      CallList                 getConferenceList      ();
+      bool isValid();
+      int size                   ();
+      CallList getCallList       ();
+      CallList getConferenceList ();
 
-      //Connection related
-      static bool init();
-      
-      //Magic dispatcher
-      CallList getCalls     (                         );
-      CallList getCalls     ( const CallWidget widget ) const;
-      CallList getCalls     ( const QString& callId   ) const;
-      CallList getCalls     ( const Call* call        ) const;
-      CallList getCalls     ( const Index idx         ) const;
-      
-      bool isConference     ( const Call* call        ) const;
-      bool isConference     ( const QString& callId   ) const;
-      bool isConference     ( const Index idx         ) const;
-      bool isConference     ( const CallWidget widget ) const;
-      
-      Call* getCall         ( const QString& callId   ) const;
-      Call* getCall         ( const Index idx         ) const;
-      Call* getCall         ( const Call* call        ) const;
-      Call* getCall         ( const CallWidget widget ) const;
-      
-      Index getIndex        ( const Call* call        ) const;
-      Index getIndex        ( const Index idx         ) const;
-      Index getIndex        ( const CallWidget widget ) const;
-      Index getIndex        ( const QString& callId   ) const;
-      
-      CallWidget getWidget  ( const Call* call        ) const;
-      CallWidget getWidget  ( const Index idx         ) const;
-      CallWidget getWidget  ( const CallWidget widget ) const;
-      CallWidget getWidget  ( const QString& getWidget) const;
-      
-      bool updateIndex      ( Call* call, Index value      );
-      bool updateWidget     ( Call* call, CallWidget value );
-      
-      
-   protected:
-      virtual Call* findCallByCallId ( const QString& callId                       );
-      virtual Call* addConference    ( const QString& confID                       );
-      virtual bool  changeConference ( const QString& confId, const QString& state );
-      virtual void  removeConference ( const QString& confId                       );
-      Call*         addIncomingCall  ( const QString& callId                       );
-      Call*         addRingingCall   ( const QString& callId                       );
-      
-      //Struct
-      struct InternalStruct;
-      typedef QList<InternalStruct*> InternalCallList;
-      ///InternalStruct: internal representation of a call
-      struct InternalStruct {
-         CallWidget       call       ;
-         Call*            call_real  ;
-         Index            index      ;
-         InternalCallList children   ;
-         bool             conference ;
-      };
-      typedef QHash< Call*      , InternalStruct* > InternalCall  ;
-      typedef QHash< QString    , InternalStruct* > InternalCallId;
-      typedef QHash< CallWidget , InternalStruct* > InternalWidget;
-      typedef QHash< Index      , InternalStruct* > InternalIndex ;
+      //Model implementation
+      virtual bool          setData      ( const QModelIndex& index, const QVariant &value, int role   );
+      virtual QVariant      data         ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
+      virtual int           rowCount     ( const QModelIndex& parent = QModelIndex()                   ) const;
+      virtual Qt::ItemFlags flags        ( const QModelIndex& index                                    ) const;
+      virtual int           columnCount  ( const QModelIndex& parent = QModelIndex()                   ) const __attribute__ ((const));
+      virtual QModelIndex   parent       ( const QModelIndex& index                                    ) const;
+      virtual QModelIndex   index        ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
+      virtual QVariant      headerData   ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+      virtual QStringList   mimeTypes    (                                                             ) const;
+      virtual QMimeData*    mimeData     ( const QModelIndexList &indexes                              ) const;
+      virtual bool          dropMimeData ( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
 
-      //Static attributes
-      static InternalCall   m_sPrivateCallList_call  ;
-      static InternalCallId m_sPrivateCallList_callId;
-      static InternalWidget m_sPrivateCallList_widget;
-      static InternalIndex  m_sPrivateCallList_index ;
+      //Singleton
+      static CallModel* instance();
 
-      static CallMap        m_lConfList;
-      static bool           m_sCallInit;
+      Call* getCall ( const QString& callId  ) const;
+      Call* getCall ( const QModelIndex& idx ) const;
 
    private:
-      static bool m_sInstanceInit;
+      explicit CallModel();
+      Call* addCall          ( Call* call                , Call* parent = nullptr );
+      Call* addConference    ( const QString& confID                              );
+      bool  changeConference ( const QString& confId, const QString& state        );
+      void  removeConference ( const QString& confId                              );
+      Call* addIncomingCall  ( const QString& callId                              );
+      Call* addRingingCall   ( const QString& callId                              );
 
+      //Attributes
+      QList<InternalStruct*> m_lInternalModel;
+      QHash< Call*       , InternalStruct* > m_sPrivateCallList_call   ;
+      QHash< QString     , InternalStruct* > m_sPrivateCallList_callId ;
+
+      //Singleton
+      static CallModel* m_spInstance;
+      
       //Helpers
-      Call* addCallCommon(Call* call);
-      bool  updateCommon (Call* call);
+      bool isPartOf(const QModelIndex& confIdx, Call* call);
+      void initRoles();
+
+   private Q_SLOTS:
+      void slotCallStateChanged   ( const QString& callID    , const QString &state   );
+      void slotIncomingCall       ( const QString& accountID , const QString & callID );
+      void slotIncomingConference ( const QString& confID                             );
+      void slotChangingConference ( const QString& confID    , const QString &state   );
+      void slotConferenceRemoved  ( const QString& confId                             );
+      void slotVoiceMailNotify    ( const QString& accountID , int count              );
+      void slotVolumeChanged      ( const QString& device    , double value           );
+      void slotAddPrivateCall     ( Call* call                                        );
+      void slotNewRecordingAvail  ( const QString& callId    , const QString& filePath);
+      void slotCallChanged        ( Call* call                                        );
+      void slotDTMFPlayed         ( const QString& str                                );
+      #ifdef ENABLE_VIDEO
+      void slotStartedDecoding    ( const QString& callId    , const QString& shmKey  );
+      void slotStoppedDecoding    ( const QString& callId    , const QString& shmKey  );
+      #endif
+
+   Q_SIGNALS:
+      ///Emitted when a call state change
+      void callStateChanged        ( Call* call                              );
+      ///Emitted when a new call is incoming
+      void incomingCall            ( Call* call                              );
+      ///Emitted when a conference is created
+      void conferenceCreated       ( Call* conf                              );
+      ///Emitted when a conference change state or participant
+      void conferenceChanged       ( Call* conf                              );
+      ///Emitted when a conference is removed
+      void conferenceRemoved       ( Call* conf                              );
+      ///Emitted just before a conference is removed
+      void aboutToRemoveConference ( Call* conf                              );
+      ///Emitted when a new voice mail is available
+      void voiceMailNotify         ( const QString& accountID , int    count );
+      ///Emitted when the volume change
+      void volumeChanged           ( const QString& device    , double value );
+      ///Emitted when a call is added
+      void callAdded               ( Call* call               , Call* parent );
 };
-#include "callmodel.hpp"
+Q_DECLARE_METATYPE(CallModel*)
 
 #endif

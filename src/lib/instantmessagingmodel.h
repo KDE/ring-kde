@@ -33,18 +33,21 @@ enum MessageRole {
 
 //SFLPhone
 class Call;
-class CallModelBase;
+class CallModel;
 class InstantMessagingModel;
 
 ///Manager for all IM conversations
 class LIB_EXPORT InstantMessagingModelManager : public QObject
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
 
    //Singleton
-   static InstantMessagingModelManager* getInstance();
-   static void init(CallModelBase* model);
+   static InstantMessagingModelManager* instance();
+   static void init(CallModel* model);
 
    //Getter
    InstantMessagingModel* getModel(Call* call);
@@ -57,13 +60,13 @@ private:
 
    //Static attributes
    static InstantMessagingModelManager* m_spInstance;
-   static CallModelBase* m_spCallModel;
+   static CallModel* m_spCallModel;
 
-   
+
 private Q_SLOTS:
    void newMessage(QString callId, QString from, QString message);
 
-   
+
 Q_SIGNALS:
    ///Emitted when a new message is available
    void newMessagingModel(Call*,InstantMessagingModel*);
@@ -72,16 +75,21 @@ Q_SIGNALS:
 ///Qt model for the Instant Messaging (IM) features
 class LIB_EXPORT InstantMessagingModel : public QAbstractListModel
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
    friend class InstantMessagingModelManager;
    friend class Call;
 public:
    //Role const
-   static const int MESSAGE_TYPE_ROLE    = 100;
-   static const int MESSAGE_FROM_ROLE    = 101;
-   static const int MESSAGE_TEXT_ROLE    = 102;
-   static const int MESSAGE_IMAGE_ROLE   = 103;
-   static const int MESSAGE_CONTACT_ROLE = 104;
+   enum Role {
+      TYPE    = 100,
+      FROM    = 101,
+      TEXT    = 102,
+      IMAGE   = 103,
+      CONTACT = 104,
+   };
 
    //Constructor
    explicit InstantMessagingModel(Call* call, QObject* parent = nullptr);

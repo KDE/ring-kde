@@ -40,19 +40,20 @@
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
-#include <kabc/phonenumber.h>
 
 //SFLPhone library
 #include "../lib/contact.h"
 #include "../lib/accountlist.h"
 #include "../lib/account.h"
-#include "configurationskeleton.h"
+#include "../lib/call.h"
+#include "../lib/callmodel.h"
+#include "kcfg_settings.h"
 
 ///Init static attributes
 AkonadiBackend*  AkonadiBackend::m_pInstance = nullptr;
 
 ///Constructor
-AkonadiBackend::AkonadiBackend(QObject* parent) : ContactBackend(parent)
+AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
 {
    m_pSession = new Akonadi::Session( "SFLPhone::instance" );
 
@@ -65,8 +66,9 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : ContactBackend(parent)
 ///Destructor
 AkonadiBackend::~AkonadiBackend()
 {
-   CallModel<>::destroy();
    delete m_pSession;
+   if (Call::contactBackend() == this)
+      Call::setContactBackend(nullptr);
 }
 
 
@@ -77,7 +79,7 @@ AkonadiBackend::~AkonadiBackend()
  ****************************************************************************/
 
 ///Singleton
-ContactBackend* AkonadiBackend::getInstance()
+AbstractContactBackend* AkonadiBackend::instance()
 {
    if (m_pInstance == nullptr) {
       m_pInstance = new AkonadiBackend(0);
@@ -90,11 +92,12 @@ ContactBackend* AkonadiBackend::getInstance()
 Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resolveDNS,Account* a)
 {
    //Remove protocol dependant prefix and suffix
-   QString number = phoneNumber;
-   if (number.left(5) == "<sip:")
-      number = number.remove(0,5);
-   if (number.right(1) == ">")
-      number = number.remove(number.size()-1,1);
+   int start(0),end(phoneNumber.size()); //Other type of comparaisons were too slow
+   if (phoneNumber.size() > 0 && phoneNumber[0] == '<' && phoneNumber[4] == ':')
+      start = 5;
+   if (phoneNumber.size() > 0 && phoneNumber.right(1) == ">")
+      end--;
+   const QString number = phoneNumber.mid(start,end);
 
    //Try direct match
    Contact* c = m_ContactByPhone[number];
@@ -102,16 +105,17 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
       return c;
    }
    if (!a)
-      a = AccountList::getInstance()->getDefaultAccount();
-   else if (number.indexOf('@') == -1 && a)
-      return m_ContactByPhone[number+'@'+a->getAccountHostname()];
+      a = AccountList::instance()->getDefaultAccount();
+
+   if (number.indexOf('@') == -1 && a)
+      return m_ContactByPhone[number+'@'+a->accountHostname()];
 
    //Use default resolve account to trim hostname away from the number
    Contact* userOnly = m_ContactByPhone[getUserFromPhone(number).trimmed()];
-   QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
+   const QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
    if (resolveDNS && !defaultResolveAccount.isEmpty() && number.indexOf('@') != -1) {
-      Account* defResolveAcc = AccountList::getInstance()->getAccountById(defaultResolveAccount);
-      QString hostname = defResolveAcc?defResolveAcc->getAccountHostname():QString();
+      const Account* defResolveAcc = AccountList::instance()->getAccountById(defaultResolveAccount);
+      const QString hostname = defResolveAcc?defResolveAcc->accountHostname():QString();
       if (defResolveAcc && hostname == number.right(hostname.size())) {
          return userOnly;
       }
@@ -119,8 +123,8 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
 
    //Try to find something matching, but at this point it is not 100% sure it is the right one
    if (resolveDNS && number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && userOnly) {
-      foreach (Account* a, AccountList::getInstance()->getAccounts()) {
-         if (a->getAccountHostname() == getHostNameFromPhone(number) && userOnly)
+      foreach (const Account* a, AccountList::instance()->getAccounts()) {
+         if (a->accountHostname() == getHostNameFromPhone(number) && userOnly)
             return userOnly;
       }
    }
@@ -135,6 +139,12 @@ Contact* AkonadiBackend::getContactByUid(const QString& uid)
    return m_ContactByUid[uid];
 }
 
+///Return contact list
+const ContactList& AkonadiBackend::getContactList() const
+{
+   return m_pContacts;
+}
+
 
 /*****************************************************************************
  *                                                                           *
@@ -142,7 +152,8 @@ Contact* AkonadiBackend::getContactByUid(const QString& uid)
  *                                                                           *
  ****************************************************************************/
 
-KABC::PhoneNumber::Type nameToType(QString name)
+///Convert string to akonadi KABC::PhoneNumber
+KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 {
    if      (name == "Home"   ) return KABC::PhoneNumber::Home ;
    else if (name == "Work"   ) return KABC::PhoneNumber::Work ;
@@ -171,7 +182,8 @@ KABC::PhoneNumber::Type nameToType(QString name)
 ///Update the contact list when a new Akonadi collection is added
 ContactList AkonadiBackend::update(Akonadi::Collection collection)
 {
-   Account* defaultAccount = AccountList::getInstance()->getDefaultAccount();
+   m_UpdatesCounter++;
+   Account* defaultAccount = AccountList::instance()->getDefaultAccount();
    m_Collection = collection;
    if ( !collection.isValid() ) {
       kDebug() << "The current collection is not valid";
@@ -194,19 +206,19 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
             Contact* aContact   = new Contact();
 
             const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
-            PhoneNumbers newNumbers;
+            Contact::PhoneNumbers newNumbers(aContact);
             foreach (const KABC::PhoneNumber& number, numbers) {
                newNumbers << new Contact::PhoneNumber(number.number(),number.typeLabel());
                QString number2 = number.number();
                if (number2.left (5) == "<sip:")
                   number2 = number2.remove(0,5);
                if (number2.right(1) == ">"    )
-                  number2 = number2.remove(number2.size()-1,1);
+                  number2 = number2.remove(number2.size()-2,1);
 
                m_ContactByPhone[number2] = aContact;
 
-               if (number2.size() <= 6 && defaultAccount && !defaultAccount->getAccountHostname().isEmpty())
-                  m_ContactByPhone[number2+'@'+defaultAccount->getAccountHostname()] = aContact;
+               if (number2.size() <= 6 && defaultAccount && !defaultAccount->accountHostname().isEmpty())
+                  m_ContactByPhone[number2+'@'+defaultAccount->accountHostname()] = aContact;
             }
             m_ContactByUid[tmp.uid()] = aContact;
 
@@ -237,8 +249,8 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
 ///Edit backend value using an updated frontend contact
 void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
 {
-   Akonadi::Item item = m_ItemHash[contact->getUid()];
-   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->getUid())) {
+   Akonadi::Item item = m_ItemHash[contact->uid()];
+   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
       return;
    }
@@ -262,19 +274,19 @@ void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
 void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 {
    KABC::Addressee newContact;
-   newContact.setNickName       ( contact->getNickName()        );
-   newContact.setFormattedName  ( contact->getFormattedName()   );
-   newContact.setGivenName      ( contact->getFirstName()       );
-   newContact.setFamilyName     ( contact->getSecondName()      );
-   newContact.setOrganization   ( contact->getOrganization()    );
-   newContact.setDepartment     ( contact->getDepartment()      );
+   newContact.setNickName       ( contact->nickName()        );
+   newContact.setFormattedName  ( contact->formattedName()   );
+   newContact.setGivenName      ( contact->firstName()       );
+   newContact.setFamilyName     ( contact->secondName()      );
+   newContact.setOrganization   ( contact->organization()    );
+   newContact.setDepartment     ( contact->department()      );
    //newContact.setPreferredEmail ( contact->getPreferredEmail()  );//TODO
 
-   foreach (Contact::PhoneNumber* nb, contact->getPhoneNumbers()) {
+   foreach (Contact::PhoneNumber* nb, contact->phoneNumbers()) {
       KABC::PhoneNumber pn;
-      pn.setType(nameToType(nb->getType()));
+      pn.setType(nameToType(nb->type()));
 
-      pn.setNumber(nb->getNumber());
+      pn.setNumber(nb->number());
       newContact.insertPhoneNumber(pn);
    }
 
@@ -310,8 +322,8 @@ void AkonadiBackend::addNewContact(Contact* contact)
 ///Add a new phone number to an existing contact
 void AkonadiBackend::addPhoneNumber(Contact* contact, QString number, QString type)
 {
-   Akonadi::Item item = m_ItemHash[contact->getUid()];
-   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->getUid())) {
+   Akonadi::Item item = m_ItemHash[contact->uid()];
+   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
       return;
    }

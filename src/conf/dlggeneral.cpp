@@ -26,9 +26,9 @@
 #include <KMessageBox>
 
 //SFLPhone
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
-#include "lib/configurationmanager_interface_singleton.h"
+#include "lib/dbus/configurationmanager.h"
 
 ///Constructor
 DlgGeneral::DlgGeneral(KConfigDialog *parent)
@@ -82,7 +82,7 @@ void DlgGeneral::slotClearCallHistoryAsked()
 {
    int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to clear history?"), i18n("Clear history"));
    if (ret == KMessageBox::Yes) {
-      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       configurationManager.clearHistory();
    }
 }

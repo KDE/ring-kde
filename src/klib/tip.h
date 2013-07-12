@@ -38,7 +38,10 @@ class QPainter;
 ///A tip to be passed to the TipLoader
 class LIB_EXPORT Tip : public QObject
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    friend class TipAnimationWrapper;
 
@@ -52,7 +55,7 @@ public:
       Bottom,
    };
 
-   enum TipAnimation {
+   enum class TipAnimation {
       Fade             ,
       TranslationTop   ,
       TranslationBottom,
@@ -62,7 +65,7 @@ public:
    };
 
    //Mutator
-   QSize reload(const QRect& availableSize,bool force = false);
+   virtual QSize reload(const QRect& availableSize,bool force = false);
 
    //Getter
    bool isVisible        () { return m_IsVisible; }
@@ -73,9 +76,16 @@ public:
 
    //Setter
    void setVisible(bool visible);
-   void setTimeOut      ( int  timeOut   ) { m_TimeOut      = timeOut; }
-   void setAnimationIn  ( TipAnimation a ) { m_AnimationIn  = a;       }
-   void setAnimationOut ( TipAnimation a ) { m_AnimationOut = a;       }
+   void setTimeOut      ( int  timeOut      ) { m_TimeOut      = timeOut; }
+   void setAnimationIn  ( TipAnimation a    ) { m_AnimationIn  = a;       }
+   void setAnimationOut ( TipAnimation a    ) { m_AnimationOut = a;       }
+   void setText         (const QString& text) {
+      if (text != m_OriginalText) {
+         m_OriginalText = text;
+         emit changed();
+         reload(m_CurrentRect,true);
+      }
+   }
 
 private:
    bool m_HasBg;

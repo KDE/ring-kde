@@ -25,8 +25,8 @@
 #include "tip.h"
 #include "tipmanager.h"
 
-TipAnimationWrapper::TipAnimationWrapper(TipManager* parent) : QObject(parent),m_pParent(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_TipSize(QSize(0,0)),
-m_pTip(nullptr),m_pCurrentTip(nullptr)
+TipAnimationWrapper::TipAnimationWrapper(QObject* parent) : QObject(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_TipSize(QSize(0,0)),
+m_pTip(nullptr),m_pCurrentTip(nullptr),m_CurrentAnimation(Tip::TipAnimation::None),m_FadeDirection(true)
 {
    connect(parent, SIGNAL(sizeChanged(QRect,bool)) , this , SLOT(sizeChanged(QRect,bool)) );
    connect(parent, SIGNAL(currentTipChanged(Tip*)) , this , SLOT(currentChanged(Tip*))    );
@@ -46,7 +46,7 @@ void TipAnimationWrapper::sizeChanged(QRect rect,bool ignoreAnim)
    m_ParentRect = rect;
    if (!ignoreAnim) {
       Tip::TipAnimation anim = m_CurrentAnimation;
-      m_CurrentAnimation = Tip::None;
+      m_CurrentAnimation = Tip::TipAnimation::None;
       m_Step = 0;
       step();
       m_CurrentAnimation = anim;
@@ -78,7 +78,7 @@ void TipAnimationWrapper::start(bool show)
       m_Step = 0;
       m_CurrentAnimation = show?m_pTip->m_AnimationIn:m_pTip->m_AnimationOut;
       m_FadeDirection    = show;
-      if (m_CurrentAnimation != Tip::None)
+      if (m_CurrentAnimation != Tip::TipAnimation::None)
          m_pTimer->start(33);
       else {
          step();
@@ -125,21 +125,21 @@ void TipAnimationWrapper::step()
       //In animations
       if (m_FadeDirection) {
          switch (m_CurrentAnimation) {
-            case Tip::Fade:
+            case Tip::TipAnimation::Fade:
                break;
-            case Tip::TranslationTop:
+            case Tip::TipAnimation::TranslationTop:
                wy += -m_MaxStep+m_Step;
                break;
-            case Tip::TranslationBottom:
+            case Tip::TipAnimation::TranslationBottom:
                wy += m_MaxStep-m_Step;
                break;
-            case Tip::TranslationLeft:
+            case Tip::TipAnimation::TranslationLeft:
                wx += -m_MaxStep+m_Step;
                break;
-            case Tip::TranslationRight:
+            case Tip::TipAnimation::TranslationRight:
                wx += m_MaxStep-m_Step;
                break;
-            case Tip::None:
+            case Tip::TipAnimation::None:
                opacity = 1;
                m_Step  = 0;
                break;
@@ -147,21 +147,21 @@ void TipAnimationWrapper::step()
       }
       //Out animations
       else {switch (m_CurrentAnimation) {
-            case Tip::Fade:
+            case Tip::TipAnimation::Fade:
                break;
-            case Tip::TranslationTop:
+            case Tip::TipAnimation::TranslationTop:
                wy += m_Step;
                break;
-            case Tip::TranslationBottom:
+            case Tip::TipAnimation::TranslationBottom:
                wy += -m_Step;
                break;
-            case Tip::TranslationLeft:
+            case Tip::TipAnimation::TranslationLeft:
                wx += m_Step;
                break;
-            case Tip::TranslationRight:
+            case Tip::TipAnimation::TranslationRight:
                wx += -m_Step;
                break;
-            case Tip::None:
+            case Tip::TipAnimation::None:
                opacity = 0;
                m_Step  = 0;
                break;

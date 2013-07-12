@@ -18,40 +18,38 @@
 #ifndef HISTORY_DOCK_H
 #define HISTORY_DOCK_H
 
+#include "ui_dockbase.h"
 #include <QtGui/QDockWidget>
+
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>
+#include <QtGui/QSortFilterProxyModel>
 #include <QtCore/QDate>
-#include "../klib/sortabledockcommon.h"
-#include "categorizedtreewidget.h"
-#include "calltreeitem.h"
 
 //Qt
-class QTreeWidgetItem;
 class QString;
-class QTreeWidget;
 class KComboBox;
 class QLabel;
 class QCheckBox;
 class QPushButton;
 class QDate;
+class QAction;
 
 //KDE
 class KLineEdit;
 class KDateWidget;
+class KAction;
 
 //SFLPhone
-class HistoryTreeItem;
-class HistoryTree;
+#include "../lib/historymodel.h"
 class KeyPressEater;
 class QNumericTreeWidgetItem;
+class CategorizedTreeView;
 
 //Typedef
-typedef QList<HistoryTreeItem*> HistoryList;
-typedef QHash<QString,QNumericTreeWidgetItem*> GroupHash;
 
 ///HistoryDock: Dock to see the previous SFLPhone calls
-class HistoryDock : public QDockWidget, public SortableDockCommon<CallTreeItem*,QTreeWidgetItem*> {
+class HistoryDock : public QDockWidget, public Ui_DockBase {
    Q_OBJECT
 
 public:
@@ -63,48 +61,74 @@ public:
    virtual ~HistoryDock();
 
 private:
-   //Attributes
-   HistoryTree*   m_pItemView        ;
-   KLineEdit*     m_pFilterLE        ;
-   KComboBox*     m_pSortByCBB       ;
-   QLabel*        m_pSortByL         ;
-   QLabel*        m_pFromL           ;
-   QLabel*        m_pToL             ;
-   KDateWidget*   m_pFromDW          ;
-   KDateWidget*   m_pToDW            ;
-   QCheckBox*     m_pAllTimeCB       ;
-   QPushButton*   m_pLinkPB          ;
-   HistoryList    m_History          ;
-   QDate          m_CurrentFromDate  ;
-   QDate          m_CurrentToDate    ;
-   KeyPressEater* m_pKeyPressEater   ;
-   GroupHash      m_hGroup           ;
-   int            m_LastNewCall      ;
+   QLabel*                m_pFromL           ;
+   QLabel*                m_pToL             ;
+   KDateWidget*           m_pFromDW          ;
+   KDateWidget*           m_pToDW            ;
+   QCheckBox*             m_pAllTimeCB       ;
+   QPushButton*           m_pLinkPB          ;
+   QDate                  m_CurrentFromDate  ;
+   QDate                  m_CurrentToDate    ;
+   KeyPressEater*         m_pKeyPressEater   ;
+   QSortFilterProxyModel* m_pProxyModel      ;
+   
+   //Menu
+    KAction*     m_pCallAgain     ;
+    KAction*     m_pAddContact    ;
+    KAction*     m_pAddToContact  ;
+    KAction*     m_pCopy          ;
+    KAction*     m_pEmail         ;
+    KAction*     m_pBookmark      ;
+    QMenu*       m_pMenu          ;
+    Call*        m_pCurrentCall   ;
 
    //Mutator
    void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
+   
+   enum Role {
+      Date =0,
+      Name,
+      Popularity,
+      Length
+   };
 
 public Q_SLOTS:
    void enableDateRange(bool disable);
    virtual void keyPressEvent(QKeyEvent* event);
 
 private Q_SLOTS:
-   void filter               ( QString text );
-   void updateLinkedFromDate ( QDate   date );
-   void updateLinkedToDate   ( QDate   date );
-   void reload               (              );
-   void updateContactInfo    (              );
-   void newHistoryCall       ( Call*   call );
+   void expandTree           (              );
+   void slotSetSortRole      ( int          );
+   void slotDoubleClick(const QModelIndex& index);
+   
+   //Menu
+   void slotContextMenu(const QModelIndex& index);
+   void slotSendEmail        ();
+   void slotCallAgain        ();
+   void slotCopy             ();
+   void slotAaddContact      ();
+   void slotAddToContact     ();
+   void slotBookmark         ();
 };
 
-
-///HistoryTree: Simple tree view with additional keybpard filter
-class HistoryTree : public CategorizedTreeWidget {
+///Tuned sorting model for the history model
+class HistorySortFilterProxyModel : public QSortFilterProxyModel
+{
    Q_OBJECT
 public:
-   explicit HistoryTree(QWidget* parent) : CategorizedTreeWidget(parent) {}
-   virtual QMimeData* mimeData( const QList<QTreeWidgetItem *> items) const;
-   bool dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action);
+   explicit HistorySortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+protected:
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+   {
+      if (!source_parent.isValid() ) { //Is a category
+         for (int i=0;i<HistoryModel::instance()->rowCount(HistoryModel::instance()->index(source_row,0,source_parent));i++) {
+            if (filterAcceptsRow(i, HistoryModel::instance()->index(source_row,0,source_parent)))
+               return true;
+         }
+      }
+
+      return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+   }
 };
 
 ///KeyPressEater: Intercept each keypress to manage it globally

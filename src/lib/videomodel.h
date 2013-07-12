@@ -32,10 +32,13 @@ struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
 class LIB_EXPORT VideoModel : public QObject {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    //Singleton
-   static VideoModel* getInstance();
+   static VideoModel* instance();
 
    //Getters
    bool       isPreviewing       ();
@@ -53,13 +56,10 @@ private:
    static VideoModel* m_spInstance;
    
    //Attributes
-   bool           m_Attached    ;
    bool           m_PreviewState;
    uint           m_BufferSize  ;
    uint           m_ShmKey      ;
    uint           m_SemKey      ;
-   int            m_SetSetId    ;
-   void*          m_pBuffer     ;
    QHash<QString,VideoRenderer*> m_lRenderers;
 
 public Q_SLOTS:

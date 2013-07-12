@@ -317,8 +317,8 @@ Cube *CubeBuilder::newCube(const QVector3D &loc) const
 void AcceleratedVideoWidget::newFrameEvent()
 {
    qDebug() << "New frame event";
-   QSize size(VideoModel::getInstance()->getRenderer()->getActiveResolution().width, VideoModel::getInstance()->getRenderer()->getActiveResolution().height);
-   m_Image = QImage((uchar*)VideoModel::getInstance()->getRenderer()->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
+   QSize size(VideoModel::instance()->getRenderer()->getActiveResolution().width, VideoModel::instance()->getRenderer()->getActiveResolution().height);
+   m_Image = QImage((uchar*)VideoModel::instance()->getRenderer()->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
    paintGL();
 }
 
@@ -340,7 +340,7 @@ static GLfloat colorArray[][4] = {
      pbuffer = new QGLPixelBuffer(QSize(512, 512), pbufferFormat, this);
      setWindowTitle(tr("OpenGL pbuffers"));
      initializeGeometry();
-     connect(VideoModel::getInstance(),SIGNAL(frameUpdated()),this,SLOT(newFrameEvent()));
+     connect(VideoModel::instance(),SIGNAL(frameUpdated()),this,SLOT(newFrameEvent()));
  }
 
  AcceleratedVideoWidget::~AcceleratedVideoWidget()
@@ -374,7 +374,7 @@ static GLfloat colorArray[][4] = {
 
  void AcceleratedVideoWidget::paintGL()
  {
-   QSize size(VideoModel::getInstance()->getRenderer()->getActiveResolution().width, VideoModel::getInstance()->getRenderer()->getActiveResolution().height);
+   QSize size(VideoModel::instance()->getRenderer()->getActiveResolution().width, VideoModel::instance()->getRenderer()->getActiveResolution().height);
    if (size != minimumSize())
       setMinimumSize(size);
    

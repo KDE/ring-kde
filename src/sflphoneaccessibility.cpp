@@ -21,6 +21,7 @@
 #include <KDebug>
 #include <KLocale>
 #include "sflphone.h"
+#include "lib/call.h"
 
 SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance = nullptr;
 
@@ -45,9 +46,9 @@ SFLPhoneAccessibility::SFLPhoneAccessibility() : QObject(0),QList<KAction*>()
 }
 
 ///Signleton
-SFLPhoneAccessibility* SFLPhoneAccessibility::getInstance()
+SFLPhoneAccessibility* SFLPhoneAccessibility::instance()
 {
-   if (not m_pInstance) {
+   if (! m_pInstance) {
       m_pInstance = new SFLPhoneAccessibility();
    }
    return m_pInstance;
@@ -57,13 +58,13 @@ SFLPhoneAccessibility* SFLPhoneAccessibility::getInstance()
 void SFLPhoneAccessibility::listCall()
 {
    if (SFLPhone::model()->getCallList().size()>0) {
-      KSpeechInterfaceSingleton::getInstance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",SFLPhone::model()->getCallList().size()), KSpeech::soPlainText);
+      KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",SFLPhone::model()->getCallList().size()), KSpeech::soPlainText);
       foreach (Call* call,SFLPhone::model()->getCallList()) {
-         KSpeechInterfaceSingleton::getInstance()->say(i18n("Call from %1, number %2",call->getPeerName(),numberToDigit((!call->getPeerPhoneNumber().isEmpty())?call->getPeerPhoneNumber():call->getCallNumber())), KSpeech::soPlainText);
+         KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerPhoneNumber().isEmpty())?call->peerPhoneNumber():call->callNumber())), KSpeech::soPlainText);
       }
    }
    else {
-      KSpeechInterfaceSingleton::getInstance()->say("You currently have no call", KSpeech::soPlainText);
+      KSpeechInterfaceSingleton::instance()->say("You currently have no call", KSpeech::soPlainText);
    }
 }
 
@@ -85,19 +86,19 @@ void SFLPhoneAccessibility::currentCallDetails()
 {
    foreach (Call* call,SFLPhone::model()->getCallList()) {
       if (call->isSelected()) {
-         QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName().toAscii() ));
-         if (!call->getPeerName().trimmed().isEmpty())
-            toSay += i18n(",Your peer is %1",numberToDigit(call->getPeerName()));
-         if (!call->getPeerPhoneNumber().isEmpty())
-            toSay += i18n(", the peer phone number is %1 ",numberToDigit(call->getPeerPhoneNumber())    );
-         else if (!call->getCallNumber().isEmpty())
-            toSay += i18n(", the phone number is %1 ",numberToDigit(call->getCallNumber()));
+         QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toAscii() ));
+         if (!call->peerName().trimmed().isEmpty())
+            toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));
+         if (!call->peerPhoneNumber().isEmpty())
+            toSay += i18n(", the peer phone number is %1 ",numberToDigit(call->peerPhoneNumber())    );
+         else if (!call->callNumber().isEmpty())
+            toSay += i18n(", the phone number is %1 ",numberToDigit(call->callNumber()));
 
-         int nSec = QDateTime::fromTime_t(call->getStartTimeStamp().toInt()).time().secsTo( QTime::currentTime() );
+         const int nSec = QDateTime::fromTime_t(call->startTimeStamp()).time().secsTo( QTime::currentTime() );
          if (nSec>0)
             toSay += i18n(" and you have been talking since %1 seconds",nSec );
 
-         KSpeechInterfaceSingleton::getInstance()->say(toSay, KSpeech::soPlainText);
+         KSpeechInterfaceSingleton::instance()->say(toSay, KSpeech::soPlainText);
       }
    }
 }
@@ -105,5 +106,5 @@ void SFLPhoneAccessibility::currentCallDetails()
 ///Helper function is make code shorter
 void SFLPhoneAccessibility::say(QString message)
 {
-   KSpeechInterfaceSingleton::getInstance()->say(message, KSpeech::soPlainText);
+   KSpeechInterfaceSingleton::instance()->say(message, KSpeech::soPlainText);
 }

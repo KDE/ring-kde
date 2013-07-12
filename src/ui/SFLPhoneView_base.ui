@@ -19,13 +19,31 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="CallView" name="callView" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>3</verstretch>
-       </sizepolicy>
+     <widget class="CategorizedTreeView" name="m_pView">
+      <property name="acceptDrops">
+       <bool>true</bool>
       </property>
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::DragDrop</enum>
+      </property>
+      <property name="verticalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerItem</enum>
+      </property>
+      <property name="indentation">
+       <number>25</number>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
      </widget>
      <widget class="IMManager" name="m_pMessageTabBox">
       <property name="currentIndex">
@@ -198,15 +216,14 @@
    <header>klineedit.h</header>
   </customwidget>
   <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header>widgets/categorizedtreeview.h</header>
+  </customwidget>
+  <customwidget>
    <class>Dialpad</class>
    <extends>QWidget</extends>
    <header>widgets/dialpad.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CallView</class>
-   <extends>QWidget</extends>
-   <header location="global">callview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

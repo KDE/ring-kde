@@ -18,7 +18,7 @@
 #include "videomodel.h"
 
 //SFLPhone
-#include "video_interface_singleton.h"
+#include "dbus/videomanager.h"
 #include "videodevice.h"
 #include "call.h"
 #include "callmodel.h"
@@ -30,14 +30,14 @@ VideoModel* VideoModel::m_spInstance = nullptr;
 ///Constructor
 VideoModel::VideoModel():m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false)
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
    connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int)), this, SLOT(startedDecoding(QString,QString,int,int)));
    connect( &interface , SIGNAL(stoppedDecoding(QString,QString))        , this, SLOT(stoppedDecoding(QString,QString))        );
 }
 
 ///Singleton
-VideoModel* VideoModel::getInstance()
+VideoModel* VideoModel::instance()
 {
    if (!m_spInstance) {
       m_spInstance = new VideoModel();
@@ -49,14 +49,14 @@ VideoModel* VideoModel::getInstance()
 VideoRenderer* VideoModel::getRenderer(Call* call)
 {
    if (!call) return nullptr;
-   return m_lRenderers[call->getCallId()];
+   return m_lRenderers[call->callId()];
 }
 
 ///Get the video preview renderer
 VideoRenderer* VideoModel::getPreviewRenderer()
 {
    if (!m_lRenderers["local"]) {
-      VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+      VideoInterface& interface = DBus::VideoManager::instance();
       m_lRenderers["local"] = new VideoRenderer("", Resolution(interface.getActiveDeviceSize()));
    }
    return m_lRenderers["local"];
@@ -65,7 +65,7 @@ VideoRenderer* VideoModel::getPreviewRenderer()
 ///Stop video preview
 void VideoModel::stopPreview()
 {
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    interface.stopPreview();
    m_PreviewState = false;
 }
@@ -74,7 +74,7 @@ void VideoModel::stopPreview()
 void VideoModel::startPreview()
 {
    if (m_PreviewState) return;
-   VideoInterface& interface = VideoInterfaceSingleton::getInstance();
+   VideoInterface& interface = DBus::VideoManager::instance();
    interface.startPreview();
    m_PreviewState = true;
 }

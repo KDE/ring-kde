@@ -20,7 +20,6 @@
 
 //Base
 #include <Plasma/DataEngine>
-#include "../sortabledockcommon.h"
 
 //Qt
 #include <QHash>
@@ -36,10 +35,10 @@ namespace Plasma {
 //Typedef
 typedef QHash<QString,QVariant>                 HashStringString;
 typedef QHash<QString,QHash<QString,QVariant> > ContactHash     ;
-class Call;
+#include "../../lib/call.h"
 
 ///SFLPhoneEngine: SFLPhone KDE plasma dataengine
-class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
+class SFLPhoneEngine : public Plasma::DataEngine
 {
    Q_OBJECT
 
@@ -51,7 +50,7 @@ class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
       //Getter
       Plasma::Service*    serviceForSource (const QString &source)       ;
       virtual QStringList sources          (                     ) const ;
-      static CallModel<>* getModel         (                     )       ;
+      static CallModel* getModel         (                     )       ;
 
       //Friends
       friend class SFLPhoneService;
@@ -65,11 +64,11 @@ class SFLPhoneEngine : public Plasma::DataEngine,public SortableDockCommon<>
 
    private:
       //Attributes
-      static CallModel<>*  m_pModel   ;
+      static CallModel*  m_pModel   ;
       ContactHash          m_hContacts;
 
       //Getter
-      QString getCallStateName(call_state state);
+      QString getCallStateName(Call::State state);
 
       //Callback
       void updateHistory        ();

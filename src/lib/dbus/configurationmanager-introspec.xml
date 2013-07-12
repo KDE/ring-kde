@@ -200,11 +200,8 @@
        <method name="sendRegister" tp:name-for-bindings="sendRegister">
            <tp:docstring>
                 Send account registration (REGISTER) to the registrar.
+                Register the account if enable=true, unregister if enable=false.
            </tp:docstring>
-           Register the account if enable=true, unregister if enable=false.
-
-           @param[in] input accountID
-           -->
            <arg type="s" name="accountID" direction="in">
                <tp:docstring>
                     The account ID
@@ -361,29 +358,9 @@
                </arg>
        </method>
 
-       <method name="setEchoCancelTailLength" tp:name-for-bindings="setEchoCancelTailLength">
-           <arg type="i" name="index" direction="in">
-           </arg>
-       </method>
-
-       <method name="getEchoCancelTailLength" tp:name-for-bindings="getEchoCancelTailLength">
-           <arg type="i" name="index" direction="out">
-           </arg>
-       </method>
-
-       <method name="setEchoCancelDelay" tp:name-for-bindings="setEchoCancelDelay">
-           <arg type="i" name="index" direction="in">
-           </arg>
-       </method>
-
-       <method name="getEchoCancelDelay" tp:name-for-bindings="getEchoCancelDelay">
-           <arg type="i" name="index" direction="out">
-           </arg>
-       </method>
-
        <!--    General Settings Panel         -->
 
-       <method name="getNoiseSuppressState" tp:name-for-bindings="getEchoCancelState">
+       <method name="getNoiseSuppressState" tp:name-for-bindings="getNoiseSuppressState">
            <arg type="s" name="state" direction="out">
            </arg>
        </method>
@@ -400,15 +377,6 @@
            </arg>
        </method>
 
-       <method name="setMailNotify" tp:name-for-bindings="setMailNotify">
-       </method>
-
-       <method name="getMailNotify" tp:name-for-bindings="getMailNotify">
-           <arg type="i" name="level" direction="out">
-           </arg>
-       </method>
-
-
        <method name="getHistoryLimit" tp:name-for-bindings="getHistoryLimit">
            <arg type="i" name="days" direction="out">
            </arg>
@@ -416,32 +384,6 @@
 
        <method name="setHistoryLimit" tp:name-for-bindings="setHistoryLimit">
            <arg type="i" name="days" direction="in">
-           </arg>
-       </method>
-
-       <!-- Addressbook configuration -->
-       <method name="getAddressbookSettings" tp:name-for-bindings="getAddressbookSettings">
-           <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="MapStringInt"/>
-           <arg type="a{si}" name="settings" direction="out">
-           </arg>
-       </method>
-
-       <method name="setAddressbookSettings" tp:name-for-bindings="setAddressbookSettings">
-           <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="MapStringInt"/>
-           <arg type="a{si}" name="settings" direction="in">
-           </arg>
-       </method>
-
-       <!-- Addressbook list -->
-       <method name="getAddressbookList" tp:name-for-bindings="getAddressbookList">
-           <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="VectorString"/>
-           <arg type="as" name="settings" direction="out">
-           </arg>
-       </method>
-
-       <method name="setAddressbookList" tp:name-for-bindings="setAddressbookList">
-           <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="VectorString"/>
-           <arg type="as" name="settings" direction="in">
            </arg>
        </method>
 

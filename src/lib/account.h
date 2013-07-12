@@ -67,7 +67,10 @@ enum DtmfType {
 
 ///Account: a daemon account (SIP or AIX)
 class LIB_EXPORT Account : public QObject {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 
    public:
       ~Account();
@@ -83,67 +86,64 @@ class LIB_EXPORT Account : public QObject {
       AccountEditState currentState() const;
 
       //Getters
-      bool                    isNew()                                const;
-      const QString           getAccountId()                         const;
-      const MapStringString&  getAccountDetails()                    const;
-      const QString           getStateName(const QString& state)     const;
-      const QString           getAccountDetail(const QString& param) const;
-      const QString           getAlias()                             const;
-      bool                    isEnabled()                            const;
-      bool                    isRegistered()                         const;
-      QModelIndex             getIndex()                                  ;
-      QString                 getStateColorName()                    const;
-      Qt::GlobalColor         getStateColor()                        const;
+      bool                    isNew()                             const;
+      const QString           accountId()                         const;
+      const QString           stateName(const QString& state)     const;
+      const QString           accountDetail(const QString& param) const;
+      const QString           alias()                             const;
+      bool                    isEnabled()                         const;
+      bool                    isRegistered()                      const;
+      QModelIndex             index()                                  ;
+      QString                 stateColorName()                    const;
+      QVariant                stateColor()                        const;
 
-      CredentialModel*        getCredentialsModel();
-      AudioCodecModel*        getAudioCodecModel();
-      VideoCodecModel*        getVideoCodecModel();
+      CredentialModel*        credentialsModel();
+      AudioCodecModel*        audioCodecModel() ;
+      VideoCodecModel*        videoCodecModel() ;
 
       ///Return the account hostname
-      QString getAccountHostname              () const;
-      bool    isAccountEnabled                () const;
-      bool    isAutoAnswer                    () const;
-      QString getAccountUsername              () const;
-      QString getAccountMailbox               () const;
-      QString getAccountProxy                 () const;
-      bool    isAccountDisplaySasOnce         () const;
-      bool    isAccountSrtpRtpFallback        () const;
-      bool    isAccountZrtpDisplaySas         () const;
-      bool    isAccountZrtpNotSuppWarning     () const;
-      bool    isAccountZrtpHelloHash          () const;
-      bool    isAccountSipStunEnabled         () const;
-      QString getAccountSipStunServer         () const;
-      int     getAccountRegistrationExpire    () const;
-      bool    isPublishedSameAsLocal          () const;
-      QString getPublishedAddress             () const;
-      int     getPublishedPort                () const;
-      QString getTlsPassword                  () const;
-      int     getTlsListenerPort              () const;
-      QString getTlsCaListFile                () const;
-      QString getTlsCertificateFile           () const;
-      QString getTlsPrivateKeyFile            () const;
-      QString getTlsCiphers                   () const;
-      QString getTlsServerName                () const;
-      int     getTlsNegotiationTimeoutSec     () const;
-      int     getTlsNegotiationTimeoutMsec    () const;
-      bool    isTlsVerifyServer               () const;
-      bool    isTlsVerifyClient               () const;
-      bool    isTlsRequireClientCertificate   () const;
-      bool    isTlsEnable                     () const;
-      int     getTlsMethod                    () const;
-      QString getAccountAlias                 () const;
-      bool    isRingtoneEnabled               () const;
-      QString getRingtonePath                 () const;
-      int     getLocalPort                    () const;
-      QString getLocalInterface               () const;
-      QString getAccountRegistrationStatus    () const;
-      QString getAccountType                  () const;
-      DtmfType getDTMFType                    () const;
+      QString accountHostname              () const;
+      bool    isAccountEnabled             () const;
+      bool    isAutoAnswer                 () const;
+      QString accountUsername              () const;
+      QString accountMailbox               () const;
+      QString accountProxy                 () const;
+      bool    isAccountDisplaySasOnce      () const;
+      bool    isAccountSrtpRtpFallback     () const;
+      bool    isAccountZrtpDisplaySas      () const;
+      bool    isAccountZrtpNotSuppWarning  () const;
+      bool    isAccountZrtpHelloHash       () const;
+      bool    isAccountSipStunEnabled      () const;
+      QString accountSipStunServer         () const;
+      int     accountRegistrationExpire    () const;
+      bool    isPublishedSameAsLocal       () const;
+      QString publishedAddress             () const;
+      int     publishedPort                () const;
+      QString tlsPassword                  () const;
+      int     tlsListenerPort              () const;
+      QString tlsCaListFile                () const;
+      QString tlsCertificateFile           () const;
+      QString tlsPrivateKeyFile            () const;
+      QString tlsCiphers                   () const;
+      QString tlsServerName                () const;
+      int     tlsNegotiationTimeoutSec     () const;
+      int     tlsNegotiationTimeoutMsec    () const;
+      bool    isTlsVerifyServer            () const;
+      bool    isTlsVerifyClient            () const;
+      bool    isTlsRequireClientCertificate() const;
+      bool    isTlsEnable                  () const;
+      int     tlsMethod                    () const;
+      QString accountAlias                 () const;
+      bool    isRingtoneEnabled            () const;
+      QString ringtonePath                 () const;
+      int     localPort                    () const;
+      QString localInterface               () const;
+      QString accountRegistrationStatus    () const;
+      QString accountType                  () const;
+      DtmfType DTMFType                    () const;
    
       //Setters
       void setAccountId      (const QString& id                        );
-      void setAccountDetails (const MapStringString& m                 );
-      bool setAccountDetail  (const QString& param, const QString& val );
       #ifdef ENABLE_VIDEO
       void setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
       QList<VideoCodec*> getActiveVideoCodecList();
@@ -205,8 +205,9 @@ class LIB_EXPORT Account : public QObject {
       Account();
 
       //Attributes
-      QString*         m_pAccountId     ;
-      MapStringString* m_pAccountDetails;
+      QString*                m_pAccountId     ;
+      QHash<QString,QString>  m_hAccountDetails;
+      
 
    public Q_SLOTS:
       void setEnabled(bool checked);
@@ -215,6 +216,10 @@ class LIB_EXPORT Account : public QObject {
       void accountChanged(QString accountId,QString stateName, int state);
 
    private:
+      //Setters
+      void setAccountDetails (const QHash<QString,QString>& m          );
+      bool setAccountDetail  (const QString& param, const QString& val );
+
       //State actions
       void nothing() {};
       void edit()   {m_CurrentState = EDITING ;emit changed(this);};
@@ -231,6 +236,9 @@ class LIB_EXPORT Account : public QObject {
       VideoCodecModel* m_pVideoCodecs;
       AccountEditState m_CurrentState;
       static const account_function stateMachineActionsOnState[6][7];
+      
+      //Cached account details (as they are called too often for the hash)
+      QString m_HostName;
 
 
    Q_SIGNALS:

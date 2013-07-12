@@ -33,48 +33,43 @@
 #include <KLineEdit>
 
 //SFLPhone
-#include "klib/configurationskeleton.h"
-#include "widgets/historytreeitem.h"
+#include "klib/kcfg_settings.h"
 #include "sflphone.h"
-#include "widgets/categorydrawer.h"
-#include "widgets/categorizedtreewidget.h"
 #include "klib/akonadibackend.h"
 #include "klib/helperfunctions.h"
+#include "klib/bookmarkmodel.h"
 #include "lib/historymodel.h"
-
-///QNumericTreeWidgetItem : Tree widget with different sorting criterias
-class QNumericTreeWidgetItem : public QTreeWidgetItem {
-   public:
-      QNumericTreeWidgetItem(QTreeWidget* parent):QTreeWidgetItem(parent),widget(0),weight(-1){}
-      QNumericTreeWidgetItem(QTreeWidgetItem* parent=0):QTreeWidgetItem(parent),widget(0),weight(-1){}
-      HistoryTreeItem* widget;
-      int weight;
-   private:
-      bool operator<(const QTreeWidgetItem & other) const {
-         int column = treeWidget()->sortColumn();
-         if (dynamic_cast<QNumericTreeWidgetItem*>((QTreeWidgetItem*)&other)) {
-            if (widget !=0 && dynamic_cast<QNumericTreeWidgetItem*>((QTreeWidgetItem*)&other)->widget != 0)
-               return widget->getTimeStamp() < dynamic_cast<QNumericTreeWidgetItem*>((QTreeWidgetItem*)&other)->widget->getTimeStamp();
-            else if (weight > 0 && dynamic_cast<QNumericTreeWidgetItem*>((QTreeWidgetItem*)&other)->weight > 0)
-               return weight > dynamic_cast<QNumericTreeWidgetItem*>((QTreeWidgetItem*)&other)->weight;
-         }
-         return text(column) < other.text(column);
-      }
-};
+#include "lib/accountlist.h"
+#include "categorizedtreeview.h"
+#include "../delegates/categorizeddelegate.h"
+#include "../delegates/historydelegate.h"
 
 ///Constructor
 BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 {
    setObjectName("bookmarkDock");
+   QWidget* mainWidget     = new QWidget              ( this              );
+   setupUi(mainWidget);
+   m_pBottomWidget->setHidden(true);
+   m_pSortByCBB->setHidden(true);
+   m_pSortByL->setHidden(true);
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    setMinimumSize(250,0);
-
-   m_pFilterLE             = new KLineEdit            ( this              );
-   m_pSplitter             = new QSplitter            ( Qt::Vertical,this );
-   m_pItemView             = new CategorizedTreeWidget( this              );
    m_pMostUsedCK           = new QCheckBox            ( this              );
-   QWidget* mainWidget     = new QWidget              ( this              );
-   QVBoxLayout* mainLayout = new QVBoxLayout          ( mainWidget        );
+
+   SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
+   delegate->setChildDelegate(new HistoryDelegate(m_pView));
+   m_pView->setDelegate(delegate);
+   BookmarkSortFilterProxyModel* m_pProxyModel = new BookmarkSortFilterProxyModel(this);
+   m_pProxyModel->setSourceModel(BookmarkModel::instance());
+   m_pProxyModel->setFilterRole(Call::Role::Filter);
+   m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+   m_pView->setModel(m_pProxyModel);
+   expandTree();
+
+   connect(BookmarkModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
+   connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
+   connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
 
@@ -84,33 +79,22 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 
    m_pMostUsedCK->setText(i18n("Show most called contacts"));
 
+   m_pTopWidget->layout()->addWidget ( m_pMostUsedCK );
 
-   mainLayout->addWidget ( m_pMostUsedCK );
-   mainLayout->addWidget ( m_pSplitter   );
-   m_pSplitter->addWidget( m_pItemView   );
-   mainLayout->addWidget ( m_pFilterLE   );
-
-   m_pSplitter->setChildrenCollapsible(true);
-   m_pSplitter->setStretchFactor(0,7);
+   splitter->setStretchFactor(0,7);
 
    setWindowTitle(i18n("Bookmark"));
-   m_pItemView->headerItem()->setText(0,i18n("Bookmark") );
 
-   connect(m_pFilterLE                    , SIGNAL(textChanged(QString)), this , SLOT(filter(QString))  );
-   connect(m_pMostUsedCK                  , SIGNAL(toggled(bool)),        this , SLOT(reload())         );
-   connect(AkonadiBackend::getInstance()  , SIGNAL(collectionChanged()) , this , SLOT(reload())         );
+   connect(m_pFilterLE                    , SIGNAL(textChanged(QString)),       this , SLOT(filter(QString))             );
+   connect(m_pMostUsedCK                  , SIGNAL(toggled(bool)),              this , SLOT(reload())                    );
+   connect(AkonadiBackend::instance()  , SIGNAL(collectionChanged()) ,       this , SLOT(reload())                    );
+   connect(m_pView                        , SIGNAL(doubleClicked(QModelIndex)), this , SLOT(slotDoubleClick(QModelIndex)));
    reload();
 } //BookmarkDock
 
 ///Destructor
 BookmarkDock::~BookmarkDock()
 {
-   foreach (HistoryTreeItem* hti,m_pBookmark) {
-      delete hti;
-   }
-   delete m_pItemView  ;
-   delete m_pFilterLE  ;
-   delete m_pSplitter  ;
    delete m_pMostUsedCK;
 }
 
@@ -121,83 +105,54 @@ BookmarkDock::~BookmarkDock()
  *                                                                           *
  ****************************************************************************/
 
-///Add a new bookmark
-void BookmarkDock::addBookmark_internal(const QString& phone)
-{
-   HistoryTreeItem* widget = new HistoryTreeItem(m_pItemView,phone,true);
-   QTreeWidgetItem* item   = nullptr;
-
-   if (widget->getName() == i18nc("Unknown peer","Unknown") || widget->getName().isEmpty()) {
-      item = m_pItemView->addItem<QNumericTreeWidgetItem>(i18nc("Unknown peer","Unknown"));
-   }
-   else {
-      item = m_pItemView->addItem<QNumericTreeWidgetItem>(QString(widget->getName()[0]));
-   }
-   
-   widget->setItem(item);
-   m_pItemView->addTopLevelItem(item);
-   m_pItemView->setItemWidget(item,0,widget);
-   m_pBookmark << widget;
-} //addBookmark_internal
-
 ///Proxy to add a new bookmark
 void BookmarkDock::addBookmark(const QString& phone)
 {
-   addBookmark_internal(phone);
    ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << phone);
+   BookmarkModel::instance()->reloadCategories();
 }
 
 ///Remove a bookmark
 void BookmarkDock::removeBookmark(const QString& phone)
 {
-   foreach (HistoryTreeItem* w,m_pBookmark) {
-      if (w->getPhoneNumber() == phone) {
-         QTreeWidgetItem* item = w->getItem();
-         m_pItemView->removeItem(item);
-         QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
-         if (bookmarks.indexOf(phone)!= -1) {
-            bookmarks.removeAt(bookmarks.indexOf(phone));
-            ConfigurationSkeleton::setBookmarkList(bookmarks);
-         }
-         if (m_pBookmark.indexOf(w)!=-1) {
-            m_pBookmark.removeAt(m_pBookmark.indexOf(w));
-         }
-      }
-   }
+   //TODO port
+   QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
+   bookmarks.removeAll(phone);
+   ConfigurationSkeleton::setBookmarkList(bookmarks);
 }
 
 ///Filter the list
 void BookmarkDock::filter(QString text)
 {
-   foreach(HistoryTreeItem* item, m_pBookmark) {
-      bool visible = (HelperFunctions::normStrippped(item->getName()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-         || (HelperFunctions::normStrippped(item->getPhoneNumber()).indexOf(HelperFunctions::normStrippped(text)) != -1);
-      item->getItem()->setHidden(!visible);
-   }
-   m_pItemView->expandAll();
+   Q_UNUSED(text)
+//    foreach(HistoryTreeItem* item, m_pBookmark) {
+//       bool visible = (HelperFunctions::normStrippped(item->getName()).indexOf(HelperFunctions::normStrippped(text)) != -1)
+//          || (HelperFunctions::normStrippped(item->getPhoneNumber()).indexOf(HelperFunctions::normStrippped(text)) != -1);
+//       item->getItem()->setHidden(!visible);
+//    }
 }
 
 ///Show the most popular items
 void BookmarkDock::reload()
 {
-   m_pItemView->clear();
-   m_pBookmark.clear();
-   m_pItemView->addCategory(i18n("Popular"));
-   for (int i=65;i<=90;i++) {
-      m_pItemView->addCategory(QString(i));
-   }
-   if (m_pMostUsedCK->isChecked()) {
-      QStringList cl = HistoryModel::getNumbersByPopularity();
-      for (int i=0;i < ((cl.size() < 10)?cl.size():10);i++) {
-         QNumericTreeWidgetItem* item = m_pItemView->addItem<QNumericTreeWidgetItem>(i18n("Popular"));
-         HistoryTreeItem* widget = new HistoryTreeItem(m_pItemView,cl[i],true);
-         widget->setItem(item);
-         m_pItemView->setItemWidget(item,0,widget);
-         m_pBookmark << widget;
-      }
-   }
-   foreach (const QString& nb, ConfigurationSkeleton::bookmarkList()) {
-      addBookmark_internal(nb);
-   }
    ConfigurationSkeleton::setDisplayContactCallHistory(m_pMostUsedCK->isChecked());
+   BookmarkModel::instance()->reloadCategories();
 } //reload
+
+///Expand the tree according to the user preferences
+void BookmarkDock::expandTree()
+{
+   m_pView->expandToDepth(0);
+}
+
+void BookmarkDock::slotDoubleClick(const QModelIndex& index)
+{
+   QModelIndex idx = (static_cast<const BookmarkSortFilterProxyModel*>(index.model()))->mapToSource(index);
+   if (!idx.isValid() || !idx.parent().isValid())
+      return;
+   if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::BOOKMARK)
+      return;
+   Call* call2 = SFLPhone::model()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountList::currentAccount());
+   call2->setCallNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
+   call2->actionPerformed( Call::Action::ACCEPT   );
+}

@@ -25,7 +25,7 @@
 
 ///Constrctor
 ActionSetAccountFirst::ActionSetAccountFirst(Account* account, QObject *parent)
- : QAction((account == nullptr) ? i18n("Default account") : account->getAlias(), parent)
+ : QAction((account == nullptr) ? i18n("Default account") : account->alias(), parent)
 {
    setCheckable(true);
    this->account = account;

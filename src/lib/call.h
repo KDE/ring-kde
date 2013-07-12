@@ -22,47 +22,18 @@
 #define CALL_H
 
 //Qt
+#include <QtCore/QDebug>
 class QString;
-class QDateTime;
+class QTimer;
 
 //SFLPhone
 #include "sflphone_const.h"
 #include "typedefs.h"
-class ContactBackend;
+class AbstractContactBackend;
 class Contact;
 class Account;
 class VideoRenderer;
 class InstantMessagingModel;
-
-
-/** @enum daemon_call_state_t 
-  * This enum have all the states a call can take for the daemon.
-  */
-typedef enum
-{ 
-   
-   /** Ringing outgoing or incoming call */         DAEMON_CALL_STATE_RINGING,
-   /** Call to which the user can speak and hear */ DAEMON_CALL_STATE_CURRENT,
-   /** Call is busy */                              DAEMON_CALL_STATE_BUSY   ,
-   /** Call is on hold */                           DAEMON_CALL_STATE_HOLD   ,
-   /** Call is over  */                             DAEMON_CALL_STATE_HUNG_UP,
-   /** Call has failed */                           DAEMON_CALL_STATE_FAILURE,
-   /** Call is recording+current  */                DAEMON_CALL_STATE_RECORD ,
-} daemon_call_state;
-
-/** @enum call_action
-  * This enum have all the actions you can make on a call.
-  */
-typedef enum
-{ 
-   
-   /** Accept, create or place call or place transfer */ CALL_ACTION_ACCEPT  ,
-   /** Red button, refuse or hang up */                  CALL_ACTION_REFUSE  ,
-   /** Put into or out of transfer mode*/                CALL_ACTION_TRANSFER,
-   /** Hold or unhold the call */                        CALL_ACTION_HOLD    ,
-   /** Enable or disable recording */                    CALL_ACTION_RECORD  ,
-   
-} call_action;
 
 /**
  * @enum history_state
@@ -81,6 +52,24 @@ class Call;
 
 typedef  void (Call::*function)();
 
+class LIB_EXPORT HistoryTreeBackend {
+public:
+    enum Type {
+        CALL     = 0,
+        NUMBER   = 1,
+        TOP_LEVEL= 2,
+        BOOKMARK = 3,
+    };
+    explicit HistoryTreeBackend(HistoryTreeBackend::Type _type);
+    virtual ~HistoryTreeBackend();
+    HistoryTreeBackend::Type type3() const;
+    virtual QObject* getSelf() = 0;
+    char dropState();
+    void setDropState(const char state);
+private:
+    HistoryTreeBackend::Type m_Type3;
+    char m_DropState;
+};
 
 /**
  *  This class represents a call either actual (in the call list
@@ -106,53 +95,140 @@ typedef  void (Call::*function)();
  *  keeping the information gathered by the call and needed by the history
  *  call (history state, start time...).
 **/
-class  LIB_EXPORT Call : public QObject
+class  LIB_EXPORT Call : public QObject, public HistoryTreeBackend
 {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
+   //Enum
+   enum Role {
+      Name          = 100,
+      Number        = 101,
+      Direction     = 102,
+      Date          = 103,
+      Length        = 104,
+      FormattedDate = 105,
+      HasRecording  = 106,
+      HistoryState  = 107,
+      Filter        = 108,
+      FuzzyDate     = 109,
+      IsBookmark    = 110,
+      Security      = 111,
+      Department    = 112,
+      Email         = 113,
+      Organisation  = 114,
+      Codec         = 115,
+      IsConference  = 116,
+      Object        = 117,
+      PhotoPtr      = 118,
+      CallState     = 119,
+      Id            = 120,
+      StartTime     = 121,
+      StopTime      = 122,
+      IsRecording   = 123,
+      DropState     = 300,
+      DTMFAnimState = 400,
+      LastDTMFidx   = 401,
+   };
+   
+   enum class State : unsigned int{
+      INCOMING        = 0, /** Ringing incoming call */
+      RINGING         = 1, /** Ringing outgoing call */
+      CURRENT         = 2, /** Call to which the user can speak and hear */
+      DIALING         = 3, /** Call which numbers are being added by the user */
+      HOLD            = 4, /** Call is on hold */
+      FAILURE         = 5, /** Call has failed */
+      BUSY            = 6, /** Call is busy */
+      TRANSFERRED     = 7, /** Call is being transferred.  During this state, the user can enter the new number. */
+      TRANSF_HOLD     = 8, /** Call is on hold for transfer */
+      OVER            = 9, /** Call is over and should not be used */
+      ERROR           = 10,/** This state should never be reached */
+      CONFERENCE      = 11,/** This call is the current conference*/
+      CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
+      COUNT,
+   };
+
+
+   /** @enum daemon_call_state_t 
+   * This enum have all the states a call can take for the daemon.
+   */
+   enum class DaemonState : unsigned int
+   {
+      /** Ringing outgoing or incoming call */         RINGING,
+      /** Call to which the user can speak and hear */ CURRENT,
+      /** Call is busy */                              BUSY   ,
+      /** Call is on hold */                           HOLD   ,
+      /** Call is over  */                             HUNG_UP,
+      /** Call has failed */                           FAILURE,
+//       /** Call is recording+current  */                RECORD ,
+      COUNT,
+   };
+
+   /** @enum call_action
+   * This enum have all the actions you can make on a call.
+   */
+   enum class Action : unsigned int
+   {
+      /** Accept, create or place call or place transfer */ ACCEPT  ,
+      /** Red button, refuse or hang up */                  REFUSE  ,
+      /** Put into or out of transfer mode*/                TRANSFER,
+      /** Hold or unhold the call */                        HOLD    ,
+      /** Enable or disable recording */                    RECORD  ,
+      COUNT,
+   };
+
+   enum DropAction {
+      Conference = 100,
+      Transfer   = 101,
+   };
+
    //Constructors & Destructors
    Call(QString confId, QString account);
    ~Call();
-   static Call* buildDialingCall  (QString callId, const QString & peerName, QString account = ""                                                               );
+   static Call* buildDialingCall  (QString callId, const QString & peerName, Account* account = nullptr                                                         );
    static Call* buildIncomingCall (const QString & callId                                                                                                       );
    static Call* buildRingingCall  (const QString & callId                                                                                                       );
    static Call* buildHistoryCall  (const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type );
    static Call* buildExistingCall (QString callId                                                                                                               );
-   static void  setContactBackend (ContactBackend* be                                                                                                           );
+   static void  setContactBackend (AbstractContactBackend* be                                                                                                   );
+   static AbstractContactBackend* contactBackend ();
 
    //Static getters
-   static history_state getHistoryStateFromType            ( QString type                                    );
-   static call_state    getStartStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
+   static history_state historyStateFromType            ( QString type                                    );
+   static Call::State   startStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
    
    //Getters
-   call_state           getState            () const;
-   const QString        getCallId           () const;
-   const QString        getPeerPhoneNumber  () const;
-   const QString        getPeerName         () const;
-   call_state           getCurrentState     () const;
-   history_state        getHistoryState     () const;
-   bool                 getRecording        () const;
-   Account*             getAccount          () const;
-   bool                 isHistory           () const;
-   QString              getStopTimeStamp    () const;
-   QString              getStartTimeStamp   () const;
-   QString              getCurrentCodecName () const;
+   Call::State          state            () const;
+   const QString        callId           () const;
+   const QString        peerPhoneNumber  () const;
+   const QString        peerName         () const;
+   history_state        historyState     () const;
+   bool                 recording        () const;
+   Account*             account          () const;
+   bool                 isHistory        () const;
+   uint                 stopTimeStamp    () const;
+   uint                 startTimeStamp   () const;
+   QString              currentCodecName () const;
    bool                 isSecure            () const;
    bool                 isConference        () const;
    bool                 isSelected          () const;
-   const QString        getConfId           () const;
-   const QString        getTransferNumber   () const;
-   const QString        getCallNumber       () const;
-   const QString        getRecordingPath    () const;
-   const QString        toHumanStateName    () const;
-   Contact*             getContact          ()      ;
-   VideoRenderer*       getVideoRenderer    ()      ;
-   const QString        getFormattedName    ()      ;
+   const QString        confId           () const;
+   const QString        transferNumber   () const;
+   const QString        callNumber       () const;
+   const QString        recordingPath    () const;
+   static const QString toHumanStateName    (const Call::State);
+   Contact*             contact          ()      ;
+   VideoRenderer*       videoRenderer    () const;
+   const QString        formattedName    ()      ;
    bool                 hasRecording        () const;
+   QString              length           () const;
+   QVariant             roleData         (int role) const;
 
    //Automated function
-   call_state stateChanged(const QString & newState);
-   call_state actionPerformed(call_action action);
+   Call::State stateChanged(const QString & newState);
+   Call::State actionPerformed(Call::Action action);
    
    //Setters
    void setConference     ( bool value            );
@@ -166,9 +242,11 @@ public:
    //Mutators
    void appendText(const QString& str);
    void backspaceItemText();
-   void changeCurrentState(call_state newState);
+   void changeCurrentState(Call::State newState);
    void sendTextMessage(QString message);
-   
+
+   virtual QObject* getSelf() {return this;}
+
 private:
 
    //Attributes
@@ -179,18 +257,19 @@ private:
    QString                m_PeerName       ;
    QString                m_RecordingPath  ;
    history_state          m_HistoryState   ;
-   QDateTime*             m_pStartTime     ;
-   QDateTime*             m_pStopTime      ;
+   uint                   m_pStartTimeStamp;
+   uint                   m_pStopTimeStamp ;
    QString                m_TransferNumber ;
    QString                m_CallNumber     ;
-   static ContactBackend* m_pContactBackend;
    bool                   m_isConference   ;
-   call_state             m_CurrentState   ;
+   Call::State            m_CurrentState   ;
    bool                   m_Recording      ;
    static Call*           m_sSelectedCall  ;
-   bool                   m_ContactChanged ;
    Contact*               m_pContact       ;
    InstantMessagingModel* m_pImModel       ;
+   int                    m_LastContactCheck;
+   QTimer*                m_pTimer         ;
+   static AbstractContactBackend* m_pContactBackend;
    
    //State machine
    /**
@@ -198,14 +277,14 @@ private:
     *  Map of the states to go to when the action action is 
     *  performed on a call in state orig_state.
    **/
-   static const call_state actionPerformedStateMap [13][5];
+   static const TypedStateMachine< TypedStateMachine< Call::State , Call::Action > , Call::State > actionPerformedStateMap;
    
    /**
     *  actionPerformedFunctionMap[orig_state][action]
     *  Map of the functions to call when the action action is 
     *  performed on a call in state orig_state.
    **/
-   static const function actionPerformedFunctionMap [13][5];
+   static const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::State > actionPerformedFunctionMap;
    
    /**
     *  stateChangedStateMap[orig_state][daemon_new_state]
@@ -213,7 +292,7 @@ private:
     *  callStateChanged with arg daemon_new_state
     *  on a call in state orig_state.
    **/
-   static const call_state stateChangedStateMap [13][6];
+   static const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState > , Call::State > stateChangedStateMap;
    
    /**
     *  stateChangedFunctionMap[orig_state][daemon_new_state]
@@ -221,21 +300,22 @@ private:
     *  callStateChanged with arg daemon_new_state
     *  on a call in state orig_state.
    **/
-   static const function stateChangedFunctionMap [13][6];
+   static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
    
    static const char * historyIcons[3];
    
    static const char * callStateIcons[11];
 
-   Call(call_state startState, QString callId, QString peerNumber = "", QString account = "", QString peerName = "");
+   Call(Call::State startState, const QString& callId, QString peerNumber = "", QString account = "", QString peerName = "");
    
-   static daemon_call_state toDaemonCallState   (const QString& stateName);
-   static call_state        confStatetoCallState(const QString& stateName);
+   static Call::DaemonState toDaemonCallState   (const QString& stateName);
+   static Call::State       confStatetoCallState(const QString& stateName);
    
    //Automate functions
    // See actionPerformedFunctionMap and stateChangedFunctionMap
    // to know when it is called.
-   void nothing      ();
+   void nothing      () __attribute__ ((const));
+   void error        () __attribute__ ((noreturn));
    void accept       ();
    void refuse       ();
    void acceptTransf ();
@@ -254,18 +334,16 @@ private:
    void startWeird   ();
    void warning      ();
 
-   QDateTime* setStartTime_private(QDateTime* time);
-   QDateTime* setStopTime_private(QDateTime* time);
-
 public Q_SLOTS:
    void playRecording();
    void stopRecording();
    void seekRecording(double position);
+   void playDTMF(const QString& str);
 
 private Q_SLOTS:
    void stopPlayback(QString filePath);
    void updatePlayback(int position,int size);
-   void contactBackendChanged();
+   void updated();
 
 Q_SIGNALS:
    ///Emitted when a call change (state or details)
@@ -276,6 +354,13 @@ Q_SIGNALS:
    void playbackPositionChanged(int,int);
    void playbackStopped();
    void playbackStarted();
+   void dtmfPlayed(const QString& str);
 };
+
+Q_DECLARE_METATYPE(Call*)
+
+QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::State& c       );
+QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::DaemonState& c );
+QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c      );
 
 #endif

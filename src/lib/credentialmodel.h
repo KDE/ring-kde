@@ -25,12 +25,17 @@
 
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT CredentialModel : public QAbstractListModel {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 public:
    //Roles
-   static const int NAME_ROLE     = 100;
-   static const int PASSWORD_ROLE = 101;
-   static const int REALM_ROLE    = 102;
+   enum Role {
+      NAME     = 100,
+      PASSWORD = 101,
+      REALM    = 102,
+   };
 
    //Constructor
    explicit CredentialModel(QObject* parent = nullptr);

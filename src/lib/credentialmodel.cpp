@@ -18,27 +18,35 @@
 #include "credentialmodel.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QCoreApplication>
 
 ///Constructor
-CredentialModel::CredentialModel(QObject* parent) : QAbstractListModel(parent) {
+CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()) {
 
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(CredentialModel::Role::NAME    ,QByteArray("name"));
+   roles.insert(CredentialModel::Role::PASSWORD,QByteArray("password"));
+   roles.insert(CredentialModel::Role::REALM   ,QByteArray("realm"));
+   setRoleNames(roles);
 }
 
 ///Model data
-QVariant CredentialModel::data(const QModelIndex& index, int role) const {
-   if (index.column() == 0) {
+QVariant CredentialModel::data(const QModelIndex& idx, int role) const {
+   if (idx.column() == 0) {
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lCredentials[index.row()]->name);
+            return QVariant(m_lCredentials[idx.row()]->name);
             break;
-         case CredentialModel::NAME_ROLE:
-            return m_lCredentials[index.row()]->name;
+         case CredentialModel::Role::NAME:
+            return m_lCredentials[idx.row()]->name;
             break;
-         case CredentialModel::PASSWORD_ROLE:
-            return m_lCredentials[index.row()]->password;
+         case CredentialModel::Role::PASSWORD:
+            return m_lCredentials[idx.row()]->password;
             break;
-         case CredentialModel::REALM_ROLE:
-            return m_lCredentials[index.row()]->realm;
+         case CredentialModel::Role::REALM:
+            return m_lCredentials[idx.row()]->realm;
+            break;
+         default:
             break;
       }
    }
@@ -46,33 +54,33 @@ QVariant CredentialModel::data(const QModelIndex& index, int role) const {
 }
 
 ///Number of credentials
-int CredentialModel::rowCount(const QModelIndex& parent) const {
-   Q_UNUSED(parent)
+int CredentialModel::rowCount(const QModelIndex& par) const {
+   Q_UNUSED(par)
    return m_lCredentials.size();
 }
 
 ///Model flags
-Qt::ItemFlags CredentialModel::flags(const QModelIndex& index) const {
-   if (index.column() == 0)
-      return QAbstractItemModel::flags(index) /*| Qt::ItemIsUserCheckable*/ | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-   return QAbstractItemModel::flags(index);
+Qt::ItemFlags CredentialModel::flags(const QModelIndex& idx) const {
+   if (idx.column() == 0)
+      return QAbstractItemModel::flags(idx) /*| Qt::ItemIsUserCheckable*/ | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+   return QAbstractItemModel::flags(idx);
 }
 
 ///Set credential data
-bool CredentialModel::setData( const QModelIndex& index, const QVariant &value, int role) {
-   if (index.column() == 0 && role == CredentialModel::NAME_ROLE) {
-      m_lCredentials[index.row()]->name = value.toString();
-      emit dataChanged(index, index);
+bool CredentialModel::setData( const QModelIndex& idx, const QVariant &value, int role) {
+   if (idx.column() == 0 && role == CredentialModel::Role::NAME) {
+      m_lCredentials[idx.row()]->name = value.toString();
+      emit dataChanged(idx, idx);
       return true;
    }
-   else if (index.column() == 0 && role == CredentialModel::PASSWORD_ROLE) {
-      m_lCredentials[index.row()]->password = value.toString();
-      emit dataChanged(index, index);
+   else if (idx.column() == 0 && role == CredentialModel::Role::PASSWORD) {
+      m_lCredentials[idx.row()]->password = value.toString();
+      emit dataChanged(idx, idx);
       return true;
    }
-   else if (index.column() == 0 && role == CredentialModel::REALM_ROLE) {
-      m_lCredentials[index.row()]->realm = value.toString();
-      emit dataChanged(index, index);
+   else if (idx.column() == 0 && role == CredentialModel::Role::REALM) {
+      m_lCredentials[idx.row()]->realm = value.toString();
+      emit dataChanged(idx, idx);
       return true;
    }
    return false;
@@ -101,8 +109,8 @@ void CredentialModel::removeCredentials(QModelIndex idx) {
 ///Remove everything
 void CredentialModel::clear()
 {
-   foreach(CredentialData2* data, m_lCredentials) {
-      delete data;
+   foreach(CredentialData2* data2, m_lCredentials) {
+      delete data2;
    }
    m_lCredentials.clear();
 }

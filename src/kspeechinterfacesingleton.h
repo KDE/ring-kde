@@ -22,7 +22,7 @@
 
 class KSpeechInterfaceSingleton {
 public:
-   static OrgKdeKSpeechInterface* getInstance();
+   static OrgKdeKSpeechInterface* instance();
 private:
    static OrgKdeKSpeechInterface* m_pInstance;
 };

@@ -32,28 +32,32 @@ class AccountListColorVisitor;
 
 ///AccountList: List of all daemon accounts
 class LIB_EXPORT AccountList : public QAbstractListModel {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
+   #pragma GCC diagnostic pop
 
 public:
    friend class Account;
    //Static getter and destructor
-   static AccountList* getInstance();
+   static AccountList* instance();
    static void destroy();
-   
+
    //Getters
-   const QVector<Account*>& getAccounts            (                        );
-   QVector<Account*>        getAccountsByState     ( const QString& state   );
-   QString                  getOrderedList         (                        ) const;
-   Account*                 getAccountById         ( const QString& id      ) const;
-   Account*                 getAccountAt           ( int i                  );
-   const Account*           getAccountAt           ( int i                  ) const;
-   int                      size                   (                        ) const;
-   Account*                 firstRegisteredAccount (                        ) const;
-   Account*                 getDefaultAccount      (                        );
-   static Account*          getCurrentAccount      (                        );
-   static QString           getPriorAccoundId      (                        );
-   Account*                 getAccountByModelIndex ( QModelIndex item       ) const;
-   static QString           getSimilarAliasIndex   ( QString alias          );
+   const QVector<Account*>& getAccounts            (                         );
+   QVector<Account*>        getAccountsByState     ( const QString& state    );
+   QString                  getOrderedList         (                         ) const;
+   Account*                 getAccountById         ( const QString& id       ) const;
+   Account*                 getAccountAt           ( int i                   );
+   const Account*           getAccountAt           ( int i                   ) const;
+   int                      size                   (                         ) const;
+   Account*                 firstRegisteredAccount (                         ) const;
+   Account*                 getDefaultAccount      (                         ) const;
+   static Account*          currentAccount         (                         );
+   Account*                 getAccountByModelIndex ( const QModelIndex& item ) const;
+   static QString           getSimilarAliasIndex   ( const QString& alias    );
+   static Account*          getPriorAccount        (                         );
+   AccountListColorVisitor* colorVisitor           (                         );
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -61,7 +65,7 @@ public:
    Qt::ItemFlags flags    ( const QModelIndex& index                             ) const;
 
    //Setters
-   void setPriorAccount          ( Account*                                                 );
+   void setPriorAccount          ( const Account*                                           );
    virtual bool setData          ( const QModelIndex& index, const QVariant &value, int role);
    void         setColorVisitor  ( AccountListColorVisitor* visitor                         );
    void         setDefaultAccount(Account* a);
@@ -84,14 +88,14 @@ private:
    explicit AccountList(QStringList& _accountIds);
    explicit AccountList(bool fill = true);
    ~AccountList();
-   
+
    //Attributes
    QVector<Account*>*       m_pAccounts      ;
    static AccountList*      m_spAccountList  ;
-   static QString           m_sPriorAccountId;
+   static Account*          m_spPriorAccount ;
    Account*                 m_pDefaultAccount;
    AccountListColorVisitor* m_pColorVisitor  ;
-   
+
 public Q_SLOTS:
    void update        ();
    void updateAccounts();
@@ -100,7 +104,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void accountChanged(const QString& account,const QString& state, int code);
    void accountChanged(Account* a);
-   
+
 Q_SIGNALS:
    ///The account list changed
    void accountListUpdated();
@@ -112,14 +116,6 @@ Q_SIGNALS:
    void defaultAccountChanged( Account* a                     );
    ///Emitted when the default account change
    void priorAccountChanged  ( Account* a                     );
-};
-
-///SFLPhonelib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
-class LIB_EXPORT AccountListColorVisitor {
-public:
-   virtual QVariant getColor(const Account* a) = 0;
-   virtual QVariant getIcon(const Account* a)  = 0;
-   virtual ~AccountListColorVisitor() {}
 };
 
 class LIB_EXPORT AccountListNoCheckProxyModel : public QAbstractListModel

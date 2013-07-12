@@ -20,7 +20,7 @@ FIND_PACKAGE ( Qt4        REQUIRED QtCore QtGui QtXml QtDBus QtTest QtSVG QtOpen
 if (CMAKE_COMPILER_IS_GNUCC)
    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
    if (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6)
-      message(STATUS "Found GCC version >= 4.6")
+      message(STATUS "Found GCC version >= 4.6: " ${GCC_VERSION})
    else()
       message(FATAL_ERROR "Your version of GCC is too old, please install GCC 4.6 or later")
    endif()

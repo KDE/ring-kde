@@ -26,8 +26,58 @@
 //SFLPhone library
 #include "sflphone_const.h"
 
+
+Contact::PhoneNumber::PhoneNumber(const QString& number, const QString& type) : m_Number(number),m_Type(type)
+{
+}
+
+
+Contact::PhoneNumber::PhoneNumber(const PhoneNumber& number) : m_Number(number.m_Number),m_Type(number.m_Type)
+{
+}
+
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
+{
+}
+
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list)
+: QList<Contact::PhoneNumber*>(list),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
+{
+}
+
+Contact* Contact::PhoneNumbers::contact() const
+{
+   return m_pParent;
+}
+
+ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type(_type),m_DropState(0)
+{
+}
+
+ContactTreeBackend::~ContactTreeBackend()
+{
+}
+
+
+char ContactTreeBackend::dropState()
+{
+   return m_DropState;
+}
+
+void ContactTreeBackend::setDropState(const char state)
+{
+   m_DropState = state;
+}
+
+ContactTreeBackend::Type ContactTreeBackend::type() const
+{
+   return m_Type;
+}
+
+QObject* Contact::self() {return this;}
+
 ///Constructor
-Contact::Contact():m_pPhoto(0)
+Contact::Contact():m_pPhoto(nullptr),ContactTreeBackend(ContactTreeBackend::Type::CONTACT),m_Numbers(this)
 {
    initItem();
 }
@@ -54,72 +104,72 @@ void Contact::initItemWidget()
 }
 
 ///Get the phone number list
-PhoneNumbers Contact::getPhoneNumbers() const
+const Contact::PhoneNumbers& Contact::phoneNumbers() const
 {
    return m_Numbers;
 }
 
 ///Get the nickname
-const QString& Contact::getNickName() const
+const QString& Contact::nickName() const
 {
    return m_NickName;
 }
 
 ///Get the firstname
-const QString& Contact::getFirstName() const
+const QString& Contact::firstName() const
 {
    return m_FirstName;
 }
 
 ///Get the second/family name
-const QString& Contact::getSecondName() const
+const QString& Contact::secondName() const
 {
    return m_SecondName;
 }
 
 ///Get the photo
-const QPixmap* Contact::getPhoto() const
+const QPixmap* Contact::photo() const
 {
    return m_pPhoto;
 }
 
 ///Get the formatted name
-const QString& Contact::getFormattedName() const
+const QString& Contact::formattedName() const
 {
    return m_FormattedName;
 }
 
 ///Get the organisation
-const QString& Contact::getOrganization()  const
+const QString& Contact::organization()  const
 {
    return m_Organization;
 }
 
 ///Get the preferred email
-const QString& Contact::getPreferredEmail()  const
+const QString& Contact::preferredEmail()  const
 {
    return m_PreferredEmail;
 }
 
 ///Get the unique identifier (used for drag and drop) 
-const QString& Contact::getUid() const
+const QString& Contact::uid() const
 {
    return m_Uid;
 }
 
 ///Get the group
-const QString& Contact::getGroup() const
+const QString& Contact::group() const
 {
    return m_Group;
 }
 
-const QString& Contact::getDepartment() const
+const QString& Contact::department() const
 {
    return m_Department;
 }
 
 ///Get the contact type
-const QString& Contact::getType() const
+const QString& Contact::type() const
 {
    return m_Type;
 }
@@ -195,26 +245,30 @@ QHash<QString,QVariant> Contact::toHash()
 {
    QHash<QString,QVariant> aContact;
    //aContact[""] = PhoneNumbers   getPhoneNumbers()    const;
-   aContact[ "nickName"       ] = getNickName();
-   aContact[ "firstName"      ] = getFirstName();
-   aContact[ "secondName"     ] = getSecondName();
-   aContact[ "formattedName"  ] = getFormattedName();
-   aContact[ "organization"   ] = getOrganization();
-   aContact[ "uid"            ] = getUid();
-   aContact[ "preferredEmail" ] = getPreferredEmail();
+   aContact[ "nickName"       ] = nickName();
+   aContact[ "firstName"      ] = firstName();
+   aContact[ "secondName"     ] = secondName();
+   aContact[ "formattedName"  ] = formattedName();
+   aContact[ "organization"   ] = organization();
+   aContact[ "uid"            ] = uid();
+   aContact[ "preferredEmail" ] = preferredEmail();
    //aContact[ "Photo"          ] = QVariant(*getPhoto());
-   aContact[ "type"           ] = getType();
-   aContact[ "group"          ] = getGroup();
-   aContact[ "department"     ] = getDepartment();
+   aContact[ "type"           ] = type();
+   aContact[ "group"          ] = group();
+   aContact[ "department"     ] = department();
    return aContact;
 }
 
 ///Return the number
-QString& Contact::PhoneNumber::getNumber() {
+QString Contact::PhoneNumber::number() const {
    return m_Number ;
 }
 
 ///Return the phone number type
-QString& Contact::PhoneNumber::getType() {
+QString Contact::PhoneNumber::type() const {
    return m_Type   ;
+}
+
+QObject* Contact::PhoneNumbers::self() {
+   return m_pParent;
 }

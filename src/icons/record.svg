@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,12 +14,14 @@
    height="24"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.48.4 r9939"
    version="1.0"
-   sodipodi:docbase="/home/plbeaudoin/SFLPhone/sflphone/sflphone-gtk/pixmaps"
-   sodipodi:docname="rec_call2.svg"
+   sodipodi:docname="record.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="true">
+   sodipodi:modified="true"
+   inkscape:export-filename="/home/etudiant/dev/sflphone-kde/src/icons/record.png"
+   inkscape:export-xdpi="60"
+   inkscape:export-ydpi="60">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -965,9 +968,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8"
-     inkscape:cx="22.991745"
-     inkscape:cy="-5.4508769"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="-4.4652546"
+     inkscape:cy="-13.699451"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="32px"
@@ -977,8 +980,9 @@
      inkscape:window-width="1014"
      inkscape:window-height="726"
      inkscape:window-x="513"
-     inkscape:window-y="291"
-     showgrid="false">
+     inkscape:window-y="120"
+     showgrid="false"
+     inkscape:window-maximized="0">
     <sodipodi:guide
        orientation="vertical"
        position="15.982143"
@@ -992,6 +996,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -999,20 +1004,11 @@
      inkscape:label="Calque 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <path
-       sodipodi:type="arc"
-       style="fill:url(#radialGradient4051);fill-opacity:1;stroke:none;stroke-width:5.69999981;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path3162"
-       sodipodi:cx="19.285715"
-       sodipodi:cy="9.8571424"
-       sodipodi:rx="8.0357141"
-       sodipodi:ry="8.0357141"
-       d="M 27.321429,9.8571424 A 8.0357141,8.0357141 0 1 1 11.250001,9.8571424 A 8.0357141,8.0357141 0 1 1 27.321429,9.8571424 z"
-       transform="matrix(0.723409,0,0,0.723409,6.772732,3.51761)" />
     <g
        id="g2856"
        inkscape:label="Calque 1"
-       transform="matrix(2.1932723,0,0,2.2300726,-70.331114,24.270266)">
+       transform="matrix(2.1932723,0,0,2.2300726,-70.331114,24.270266)"
+       style="opacity:0.30841121">
       <g
          transform="matrix(4.3630449e-2,-7.2802504e-2,7.8718613e-2,4.2209779e-2,17.455978,-1.2908081)"
          inkscape:label="Layer 1"
@@ -1038,7 +1034,7 @@
              sodipodi:cy="162.41779"
              sodipodi:cx="201.02036"
              id="path3201"
-             style="opacity:0.24886876;fill:url(#linearGradient3374);fill-opacity:1;stroke:none"
+             style="opacity:0.24886875999999999;fill:url(#linearGradient3374);fill-opacity:1;stroke:none"
              sodipodi:type="arc" />
           <path
              transform="matrix(-1.1122783,-0.2980341,0.2980341,-1.1122783,306.50437,364.59668)"
@@ -1048,7 +1044,7 @@
              sodipodi:cy="162.41779"
              sodipodi:cx="201.02036"
              id="path3295"
-             style="opacity:0.59728507;fill:url(#linearGradient2702);fill-opacity:1;stroke:none"
+             style="opacity:0.59728506999999997;fill:url(#linearGradient2702);fill-opacity:1;stroke:none"
              sodipodi:type="arc" />
         </g>
       </g>

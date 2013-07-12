@@ -18,7 +18,7 @@
 #include "immanager.h"
 #include "../lib/instantmessagingmodel.h"
 #include "../lib/call.h"
-#include "imtab.h"
+#include "../delegates/imdelegate.h"
 #include <KDebug>
 #include <KLocale>
 
@@ -27,7 +27,7 @@ IMManager::IMManager(QWidget* parent) : KTabWidget(parent)
 {
    setVisible(false);
    setTabsClosable(true);
-   connect(InstantMessagingModelManager::getInstance(),SIGNAL(newMessagingModel(Call*,InstantMessagingModel*)),this,SLOT(newConversation(Call*,InstantMessagingModel*)));
+   connect(InstantMessagingModelManager::instance(),SIGNAL(newMessagingModel(Call*,InstantMessagingModel*)),this,SLOT(newConversation(Call*,InstantMessagingModel*)));
    connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeRequest(int)));
 }
 
@@ -37,7 +37,7 @@ void IMManager::newConversation(Call* call, InstantMessagingModel* model)
    IMTab* newTab = new IMTab(model,this);
    m_lTabs[call] = newTab;
    setVisible(true);
-   QString name = call->getFormattedName();
+   QString name = call->formattedName();
    addTab(newTab,name);
 }
 

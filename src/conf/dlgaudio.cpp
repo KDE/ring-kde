@@ -26,8 +26,8 @@
 #include <KLineEdit>
 
 //SFLPhone
-#include "lib/configurationmanager_interface_singleton.h"
-#include "klib/configurationskeleton.h"
+#include "lib/dbus/configurationmanager.h"
+#include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/sflphone_const.h"
 
@@ -37,7 +37,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
 {
    setupUi(this);
 
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    m_pAlwaysRecordCK->setChecked(configurationManager.getIsAlwaysRecording());
 
    KUrlRequester_destinationFolder->setMode(KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly);
@@ -75,7 +75,7 @@ void DlgAudio::updateSettings()
       ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
       skeleton->setAlsaPlugin(box_alsaPlugin->currentText());
 
-      ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
       configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
 
@@ -107,7 +107,7 @@ void DlgAudio::changed()
 void DlgAudio::loadAlsaSettings()
 {
    m_IsLoading = true;
-   ConfigurationManagerInterface& configurationManager = ConfigurationManagerInterfaceSingleton::getInstance();
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    if(QString(configurationManager.getAudioManager()) == "alsa") {
 //       ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
 

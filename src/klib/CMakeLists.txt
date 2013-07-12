@@ -19,23 +19,26 @@ SET(CMAKE_MODULE_PATH "${LOCAL_CMAKE_MODULE_PATH}")
 
 FIND_PACKAGE ( KDE4 REQUIRED )
 FIND_PACKAGE ( Qt4 REQUIRED )
+FIND_PACKAGE ( KdepimLibs REQUIRED )
 
 INCLUDE ( KDE4Defaults )
 
 set(GENERIC_LIB_VERSION "1.2.3")
 
-INCLUDE_DIRECTORIES ( ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(SYSTEM  ${QT_INCLUDES}  ${KDE4_INCLUDES} )
+INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 
 #File to compile
 set( ksflphone_LIB_SRCS
    helperfunctions.cpp
    akonadibackend.cpp
-   sortabledockcommon.cpp
-   configurationskeleton.cpp
+#    configurationskeleton.cpp
    tipmanager.cpp
    tip.cpp
    tipanimationwrapper.cpp
    macromodel.cpp
+   bookmarkmodel.cpp
+   macro.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)
@@ -46,6 +49,7 @@ target_link_libraries( ksflphone
   qtsflphone
   ${QT_QTCORE_LIBRARY}
   ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
+  ${KDEPIMLIBS_KABC_LIBS}
   ${KDEPIMLIBS_AKONADI_LIBS}
   ${KDEPIMLIBS_AKONADI_CONTACT_LIBS}
   ${KDE4_KDEUI_LIBS}
@@ -58,8 +62,9 @@ set_target_properties( ksflphone
 set( ksflphone_LIB_HDRS
   akonadibackend.h
   helperfunctions.h
-  sortabledockcommon.h
+#   sortabledockcommon.h
   macromodel.h
+  macro.h
 )
 
 INSTALL(FILES sflphone-client-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})

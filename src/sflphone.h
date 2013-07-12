@@ -44,8 +44,8 @@ class HistoryDock;
 class CallTreeItem;
 class VideoRenderer;
 class ExtendedAction;
+class AccountListNoCheckProxyModel;
 
-typedef CallModel<CallTreeItem*,QTreeWidgetItem*> TreeWidgetCallModel;
 
 /**
  * This class represents the SFLphone main window
@@ -119,7 +119,8 @@ private:
    #endif
 
    static SFLPhone*            m_sApp;
-   static TreeWidgetCallModel* m_pModel;
+   static CallModel* m_pModel;
+   AccountListNoCheckProxyModel* m_pAccountModel;
 
    //Setters
    void setObjectNames();
@@ -141,7 +142,7 @@ public:
    friend class SFLPhoneView;
 
    static SFLPhone*            app   ();
-   static TreeWidgetCallModel* model ();
+   static CallModel* model ();
    SFLPhoneView*               view  ();
 
    ContactDock*  contactDock ();
@@ -156,6 +157,7 @@ public:
    ExtendedAction* getUnholdAction  () { return action_unhold;   }
    ExtendedAction* getTransferAction() { return action_transfer; }
    ExtendedAction* getPickupAction  () { return action_pickup;   }
+   ExtendedAction* getAcceptAction  () { return action_accept;   }
 
 private Q_SLOTS:
    void on_m_pView_statusMessageChangeAsked      ( const QString& message               );

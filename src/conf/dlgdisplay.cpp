@@ -18,14 +18,14 @@
  ***************************************************************************/
 
 #include "dlgdisplay.h"
-#include "klib/configurationskeleton.h"
+#include "klib/kcfg_settings.h"
 
 //KDE
 #include <KConfigDialog>
 
 ///Constructor
 DlgDisplay::DlgDisplay(KConfigDialog *parent)
- : QWidget(parent)
+ : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
    kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());
@@ -44,7 +44,7 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
    QMutableMapIterator<QString, QString> iter(m_lCallDetails);
    while (iter.hasNext()) {
       iter.next();
-      bool checked = ConfigurationSkeleton::self()->findItem(iter.value())->isEqual(true);
+      const bool checked = ConfigurationSkeleton::self()->findItem(iter.value())->isEqual(true);
       QListWidgetItem* i = new QListWidgetItem(i18n(iter.key().toAscii()));
       i->setFlags      (Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
       i->setCheckState ((checked)?Qt::Checked:Qt::Unchecked        );
