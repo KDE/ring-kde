@@ -10,9 +10,6 @@
     <height>61</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Player</string>
-  </property>
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>

@@ -99,7 +99,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       painter->drawText(option.rect.x()+15+48,currentHeight,ct->phoneNumbers()[0]->number());
    }
    else {
-      painter->drawText(option.rect.x()+15+48,currentHeight,QString::number(ct->phoneNumbers().size()) + i18n(" phone numbers"));
+      painter->drawText(option.rect.x()+15+48,currentHeight,i18np("%1 phone number", "%1 phone numbers", QString::number(ct->phoneNumbers().size())));
    }
 
    //BEGIN overlay path
