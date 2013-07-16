@@ -48,7 +48,7 @@
 #include "lib/dbus/instancemanager.h"
 #include "lib/dbus/configurationmanager.h"
 #include "lib/contact.h"
-#include "lib/accountlist.h"
+#include "lib/accountlistmodel.h"
 #include "lib/instantmessagingmodel.h"
 #include "klib/macromodel.h"
 
@@ -84,7 +84,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    if (!init) {
       Call::setContactBackend(AkonadiBackend::instance());
       InstantMessagingModelManager::init();
-      AccountList::instance()->setDefaultAccount(AccountList::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
+      AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
       VideoModel::instance();
       #endif
@@ -229,7 +229,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    move(QCursor::pos().x() - geometry().width()/2, QCursor::pos().y() - geometry().height()/2);
    show();
 
-   if (AccountList::instance()->size() <= 1)
+   if (AccountListModel::instance()->size() <= 1)
       (new AccountWizard())->show();
 
    m_pIconChanged = false;
@@ -249,9 +249,9 @@ SFLPhone::SFLPhone(QWidget *parent)
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(KIcon("view-refresh"));
    bar->addPermanentWidget(m_pReloadButton);
-   connect(m_pReloadButton,SIGNAL(clicked()),AccountList::instance(),SLOT(registerAllAccounts()));
+   connect(m_pReloadButton,SIGNAL(clicked()),AccountListModel::instance(),SLOT(registerAllAccounts()));
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
-   connect(AccountList::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
+   connect(AccountListModel::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
 
    if (!CallModel::instance()->isValid()) {
       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually"));
@@ -259,7 +259,7 @@ SFLPhone::SFLPhone(QWidget *parent)
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
    try {
-      currentPriorAccountChanged(AccountList::currentAccount());
+      currentPriorAccountChanged(AccountListModel::currentAccount());
    }
    catch(const char * msg) {
       KMessageBox::error(this,msg);
@@ -612,10 +612,10 @@ void SFLPhone::on_m_pView_incomingCall(const Call* call)
 ///Change current account
 void SFLPhone::currentAccountIndexChanged(int newIndex)
 {
-   if (AccountList::instance()->size()) {
-      const Account* acc = AccountList::instance()->getAccountByModelIndex(AccountList::instance()->index(newIndex,0));
+   if (AccountListModel::instance()->size()) {
+      const Account* acc = AccountListModel::instance()->getAccountByModelIndex(AccountListModel::instance()->index(newIndex,0));
       if (acc)
-         AccountList::instance()->setPriorAccount(acc);
+         AccountListModel::instance()->setPriorAccount(acc);
    }
 }
 

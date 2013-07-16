@@ -26,7 +26,7 @@
 //SFLPhone
 #include "../../lib/call.h"
 #include "../../lib/account.h"
-#include "../../lib/accountlist.h"
+#include "../../lib/accountlistmodel.h"
 #include "../../lib/contact.h"
 #include "../../lib/dbus/metatypes.h"
 #include "../../lib/dbus/instancemanager.h"
@@ -278,13 +278,13 @@ void SFLPhoneEngine::updateContacts()
 ///Update other information
 void SFLPhoneEngine::updateInfo()
 {
-   setData("info", I18N_NOOP("Current_account"), AccountList::currentAccount()->accountId());
+   setData("info", I18N_NOOP("Current_account"), AccountListModel::currentAccount()->accountId());
 }
 
 ///Load/Update account list
 void SFLPhoneEngine::updateAccounts()
 {
-   const QVector<Account*>& list = AccountList::instance()->getAccounts();
+   const QVector<Account*>& list = AccountListModel::instance()->getAccounts();
    foreach(Account* a,list) {
       if (dynamic_cast<Account*>(a)) {
          QHash<QString,QVariant> acc;

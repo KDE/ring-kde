@@ -21,7 +21,7 @@
 #include "../src/lib/dbus/configurationmanager.h"
 #include "../src/lib/dbus/callmanager.h"
 #include "../src/lib/dbus/instancemanager.h"
-#include "../src/lib/accountlist.h"
+#include "../src/lib/accountlistmodel.h"
 #include "../src/lib/callmodel.h"
 
 callModel<>* m_pModel = new CallModel<>();
@@ -40,20 +40,20 @@ void CallTests::testCallWithoutAccounts()
 {
    QMap<Account*,bool> saveState;
    //Disable all accounts
-   for (int i=0;i<AccountList::instance()->size();i++) {
-      saveState[(*AccountList::instance())[i]] = (*AccountList::instance())[i]->isAccountEnabled();
-      qDebug() << "Disabling" << (*AccountList::instance())[i]->accountId();
-      (*AccountList::instance())[i]->setAccountEnabled(false);
-      (*AccountList::instance())[i]->save();
+   for (int i=0;i<AccountListModel::instance()->size();i++) {
+      saveState[(*AccountListModel::instance())[i]] = (*AccountListModel::instance())[i]->isAccountEnabled();
+      qDebug() << "Disabling" << (*AccountListModel::instance())[i]->accountId();
+      (*AccountListModel::instance())[i]->setAccountEnabled(false);
+      (*AccountListModel::instance())[i]->save();
    }
 
-    Call* call = m_pModel->addDialingCall("test call", AccountList::currentAccount());
+    Call* call = m_pModel->addDialingCall("test call", AccountListModel::currentAccount());
     QCOMPARE( call, (Call*)nullptr );
 
    //Restore state
-   for (int i=0;i<AccountList::instance()->size();i++) {
-      (*AccountList::instance())[i]->setAccountEnabled(saveState[(*AccountList::instance())[i]]);
-      (*AccountList::instance())[i]->save();
+   for (int i=0;i<AccountListModel::instance()->size();i++) {
+      (*AccountListModel::instance())[i]->setAccountEnabled(saveState[(*AccountListModel::instance())[i]]);
+      (*AccountListModel::instance())[i]->save();
    }
 }
 

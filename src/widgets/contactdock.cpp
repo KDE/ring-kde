@@ -49,7 +49,7 @@
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
-#include "lib/accountlist.h"
+#include "lib/accountlistmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
@@ -327,7 +327,7 @@ void ContactDock::callAgain()
    bool ok;
    QString number = showNumberSelector(ok);
    if (ok) {
-      Call* call = CallModel::instance()->addDialingCall(m_pCurrentContact->formattedName(), AccountList::currentAccount());
+      Call* call = CallModel::instance()->addDialingCall(m_pCurrentContact->formattedName(), AccountListModel::currentAccount());
       if (call) {
          call->setCallNumber(number);
          call->setPeerName(m_pCurrentContact->formattedName());

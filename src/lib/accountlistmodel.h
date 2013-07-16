@@ -31,7 +31,7 @@
 class AccountListColorVisitor;
 
 ///AccountList: List of all daemon accounts
-class LIB_EXPORT AccountList : public QAbstractListModel {
+class LIB_EXPORT AccountListModel : public QAbstractListModel {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -40,7 +40,7 @@ class LIB_EXPORT AccountList : public QAbstractListModel {
 public:
    friend class Account;
    //Static getter and destructor
-   static AccountList* instance();
+   static AccountListModel* instance();
    static void destroy();
 
    //Getters
@@ -85,13 +85,13 @@ public:
 
 private:
    //Constructors & Destructors
-   explicit AccountList(QStringList& _accountIds);
-   explicit AccountList(bool fill = true);
-   ~AccountList();
+   explicit AccountListModel(QStringList& _accountIds);
+   explicit AccountListModel(bool fill = true);
+   ~AccountListModel();
 
    //Attributes
    QVector<Account*>*       m_pAccounts      ;
-   static AccountList*      m_spAccountList  ;
+   static AccountListModel*      m_spAccountList  ;
    static Account*          m_spPriorAccount ;
    Account*                 m_pDefaultAccount;
    AccountListColorVisitor* m_pColorVisitor  ;

@@ -37,7 +37,7 @@ SET ( dbus_xml_introspecs_path ${CMAKE_CURRENT_SOURCE_DIR}/dbus/)
 set( qtsflphone_LIB_SRCS
   call.cpp
   account.cpp
-  accountlist.cpp
+  accountlistmodel.cpp
   callmodel.cpp
   historymodel.cpp
   contact.cpp
@@ -61,7 +61,7 @@ set( qtsflphone_LIB_SRCS
 
 set( qtsflphone_LIB_HDRS
   account.h
-  accountlist.h
+  accountlistmodel.h
   call.h
   callmodel.h
   historymodel.h

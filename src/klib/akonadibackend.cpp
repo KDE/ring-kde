@@ -43,7 +43,7 @@
 
 //SFLPhone library
 #include "../lib/contact.h"
-#include "../lib/accountlist.h"
+#include "../lib/accountlistmodel.h"
 #include "../lib/account.h"
 #include "../lib/call.h"
 #include "../lib/callmodel.h"
@@ -105,7 +105,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
       return c;
    }
    if (!a)
-      a = AccountList::instance()->getDefaultAccount();
+      a = AccountListModel::instance()->getDefaultAccount();
 
    if (number.indexOf('@') == -1 && a)
       return m_ContactByPhone[number+'@'+a->accountHostname()];
@@ -114,7 +114,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
    Contact* userOnly = m_ContactByPhone[getUserFromPhone(number).trimmed()];
    const QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
    if (resolveDNS && !defaultResolveAccount.isEmpty() && number.indexOf('@') != -1) {
-      const Account* defResolveAcc = AccountList::instance()->getAccountById(defaultResolveAccount);
+      const Account* defResolveAcc = AccountListModel::instance()->getAccountById(defaultResolveAccount);
       const QString hostname = defResolveAcc?defResolveAcc->accountHostname():QString();
       if (defResolveAcc && hostname == number.right(hostname.size())) {
          return userOnly;
@@ -123,7 +123,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
 
    //Try to find something matching, but at this point it is not 100% sure it is the right one
    if (resolveDNS && number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && userOnly) {
-      foreach (const Account* a, AccountList::instance()->getAccounts()) {
+      foreach (const Account* a, AccountListModel::instance()->getAccounts()) {
          if (a->accountHostname() == getHostNameFromPhone(number) && userOnly)
             return userOnly;
       }
@@ -183,7 +183,7 @@ KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 ContactList AkonadiBackend::update(Akonadi::Collection collection)
 {
    m_UpdatesCounter++;
-   Account* defaultAccount = AccountList::instance()->getDefaultAccount();
+   Account* defaultAccount = AccountListModel::instance()->getDefaultAccount();
    m_Collection = collection;
    if ( !collection.isValid() ) {
       kDebug() << "The current collection is not valid";

@@ -23,7 +23,7 @@
 
 //SFLPhone library
 #include "call.h"
-#include "accountlist.h"
+#include "accountlistmodel.h"
 #include "dbus/metatypes.h"
 #include "dbus/callmanager.h"
 #include "dbus/configurationmanager.h"
@@ -271,7 +271,7 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
 ///Create a new dialing call from peer name and the account ID
 Call* CallModel::addDialingCall(const QString& peerName, Account* account)
 {
-   Account* acc = (account)?account:AccountList::currentAccount();
+   Account* acc = (account)?account:AccountListModel::currentAccount();
    return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc));
 }  //addDialingCall
 

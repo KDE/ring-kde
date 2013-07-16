@@ -32,7 +32,7 @@
 #include "dbus/callmanager.h"
 #include "dbus/videomanager.h"
 #include "visitors/accountlistcolorvisitor.h"
-#include "accountlist.h"
+#include "accountlistmodel.h"
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
 #include "videocodecmodel.h"
@@ -225,9 +225,9 @@ bool Account::isRegistered() const
 ///Return the model index of this item
 QModelIndex Account::index()
 {
-   for (int i=0;i < AccountList::instance()->m_pAccounts->size();i++) {
-      if (this == (*AccountList::instance()->m_pAccounts)[i]) {
-         return AccountList::instance()->index(i,0);
+   for (int i=0;i < AccountListModel::instance()->m_pAccounts->size();i++) {
+      if (this == (*AccountListModel::instance()->m_pAccounts)[i]) {
+         return AccountListModel::instance()->index(i,0);
       }
    }
    return QModelIndex();
@@ -246,8 +246,8 @@ QString Account::stateColorName() const
 ///Return status Qt color, QColor is not part of QtCore, use using the global variant
 QVariant Account::stateColor() const
 {
-   if (AccountList::instance()->colorVisitor()) {
-      return AccountList::instance()->colorVisitor()->getColor(this);
+   if (AccountListModel::instance()->colorVisitor()) {
+      return AccountListModel::instance()->colorVisitor()->getColor(this);
    }
    return QVariant();
 }
@@ -880,10 +880,10 @@ void Account::save()
 
    //QString id = configurationManager.getAccountDetail(accountId());
    if (!accountId().isEmpty()) {
-      Account* acc =  AccountList::instance()->getAccountById(accountId());
+      Account* acc =  AccountListModel::instance()->getAccountById(accountId());
       qDebug() << "Adding the new account to the account list (" << accountId() << ")";
       if (acc != this) {
-         (*AccountList::instance()->m_pAccounts) << this;
+         (*AccountListModel::instance()->m_pAccounts) << this;
       }
 
       performAction(AccountEditAction::RELOAD);

@@ -34,7 +34,7 @@
 #include "abstractcontactbackend.h"
 #include "contact.h"
 #include "account.h"
-#include "accountlist.h"
+#include "accountlistmodel.h"
 #include "videomodel.h"
 #include "historymodel.h"
 #include "instantmessagingmodel.h"
@@ -522,7 +522,7 @@ bool Call::recording() const
 ///Get the call account id
 Account* Call::account() const
 {
-   return AccountList::instance()->getAccountById(m_Account);
+   return AccountListModel::instance()->getAccountById(m_Account);
 }
 
 ///Is this call a conference
@@ -576,7 +576,7 @@ bool Call::isSecure() const {
       return false;
    }
 
-   Account* currentAccount = AccountList::instance()->getAccountById(m_Account);
+   Account* currentAccount = AccountListModel::instance()->getAccountById(m_Account);
    return currentAccount && ((currentAccount->isTlsEnable()) || (currentAccount->tlsMethod()));
 } //isSecure
 
@@ -930,7 +930,7 @@ void Call::call()
    qDebug() << "account = " << m_Account;
    if(m_Account.isEmpty()) {
       qDebug() << "Account is not set, taking the first registered.";
-      this->m_Account = AccountList::currentAccount()->accountId();
+      this->m_Account = AccountListModel::currentAccount()->accountId();
    }
    if(!m_Account.isEmpty()) {
       qDebug() << "Calling " << m_CallNumber << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
