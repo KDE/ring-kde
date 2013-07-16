@@ -31,12 +31,6 @@
 #define SIP                               0
 #define IAX                               1
 
-#define TOOLBAR_SIZE                      22
-
-#define CONTACT_ITEM_HEIGHT               40
-
-#define CONFIG_FILE_PATH                  "/.sflphone/sflphonedrc"
-
 #define ACTION_LABEL_CALL                 i18n("New call")
 #define ACTION_LABEL_HANG_UP              i18n("Hang up")
 #define ACTION_LABEL_HOLD                 i18n("Hold on")
@@ -46,17 +40,11 @@
 #define ACTION_LABEL_REFUSE               i18n("Hang up")
 #define ACTION_LABEL_UNHOLD               i18n("Hold off")
 #define ACTION_LABEL_GIVE_UP_TRANSF       i18n("Give up transfer")
-#define ACTION_LABEL_CALL_BACK            i18n("Call back")
 #define ACTION_LABEL_MAILBOX              i18n("Voicemail")
-
-#define SCREEN_MAIN                       0
-#define SCREEN_HISTORY                    1
-#define SCREEN_ADDRESS                    2
 
 #define ICON_INCOMING                     ":/images/icons/ring.svg"
 #define ICON_RINGING                      ":/images/icons/ring.svg"
 #define ICON_CURRENT                      ":/images/icons/current.svg"
-#define ICON_CURRENT_REC                  ":/images/icons/rec_call.svg"
 #define ICON_DIALING                      ":/images/icons/dial.svg"
 #define ICON_HOLD                         ":/images/icons/hold.svg"
 #define ICON_FAILURE                      ":/images/icons/fail.svg"
@@ -81,20 +69,12 @@
 #define ICON_SND_VOL_1                    ":/images/icons/speaker_25.svg"
 #define ICON_SND_VOL_2                    ":/images/icons/speaker_50.svg"
 #define ICON_SND_VOL_3                    ":/images/icons/speaker_75.svg"
-#define ICON_SCREEN_MAIN                  ":/images/icons/sflphone.svg"
-#define ICON_SCREEN_HISTORY               ":/images/icons/history2.svg"
-#define ICON_SCREEN_ADDRESS               ":/images/icons/x-office-address-book.png"
 #define ICON_DISPLAY_VOLUME_CONSTROLS     ":/images/icons/icon_volume_off.svg"
 #define ICON_DISPLAY_DIALPAD              ":/images/icons/icon_dialpad.svg"
 #define ICON_HISTORY_INCOMING             ":/images/icons/incoming.svg"
 #define ICON_HISTORY_OUTGOING             ":/images/icons/outgoing.svg"
 #define ICON_HISTORY_MISSED               ":/images/icons/missed.svg"
-#define ICON_ACCOUNT_LED_RED              ":/images/icons/led-red.svg"
-#define ICON_ACCOUNT_LED_GREEN            ":/images/icons/led-green.svg"
-#define ICON_ACCOUNT_LED_GRAY             ":/images/icons/led-gray.svg"
-#define ICON_QUIT                         ":/images/icons/application-exit.png"
 #define ICON_SFLPHONE                     ":/images/icons/sflphone.svg"
-#define ICON_TRAY_NOTIF                   ":/images/icons/sflphone_notif.svg"
 
 #define RECORD_DEVICE                     "mic"
 #define SOUND_DEVICE                      "speaker"
@@ -104,18 +84,13 @@
 
 /** TLS */
 
-#define IP2IP_PROFILE                      "IP2IP"
-
 #define ACCOUNT_ID                         "Account.id"
 #define ACCOUNT_TYPE                       "Account.type"
 #define ACCOUNT_ALIAS                      "Account.alias"
 #define ACCOUNT_ENABLED                    "Account.enable"
 #define ACCOUNT_MAILBOX                    "Account.mailbox"
-#define ACCOUNT_USERAGENT                  "Account.useragent"
 #define ACCOUNT_REGISTRATION_EXPIRE        "Account.registrationExpire"
 #define ACCOUNT_REGISTRATION_STATUS        "Account.registrationStatus"
-#define ACCOUNT_REGISTRATION_STATE_CODE    "Account.registrationCode"
-#define ACCOUNT_REGISTRATION_STATE_DESC    "Account.registrationDescription"
 
 #define ACCOUNT_SIP_STUN_SERVER            "STUN.server"
 #define ACCOUNT_SIP_STUN_ENABLED           "STUN.enable"
@@ -158,21 +133,10 @@
 #define TLS_NEGOTIATION_TIMEOUT_SEC        "TLS.negotiationTimeoutSec"
 #define TLS_NEGOTIATION_TIMEOUT_MSEC       "TLS.negotiationTimemoutMsec"
 
-/**Shortcut*/
-#define SHORTCUT_PICKUP                    "pickUp"
-#define SHORTCUT_HANGUP                    "hangUp"
-#define SHORTCUT_POPUP                     "popupWindow"
-#define SHORTCUT_TOGGLEPICKUPHANGUP        "togglePickupHangup"
-#define SHORTCUT_TOGGLEHOLD                "toggleHold"
 
-
-#define CONFIG_ACCOUNT_HOSTNAME            "Account.hostname"
 #define CONFIG_ACCOUNT_USERNAME            "Account.username"
-#define CONFIG_ACCOUNT_ROUTESET            "Account.routeset"
 #define CONFIG_ACCOUNT_PASSWORD            "Account.password"
 #define CONFIG_ACCOUNT_REALM               "Account.realm"
-#define CONFIG_ACCOUNT_DEFAULT_REALM       "*"
-#define CONFIG_ACCOUNT_USERAGENT           "Account.useragent"
 
 #define LOCAL_INTERFACE                    "Account.localInterface"
 #define PUBLISHED_SAMEAS_LOCAL             "Account.publishedSameAsLocal"
@@ -182,7 +146,6 @@
 
 
 /** Maybe to remove **/
-#define REGISTRATION_EXPIRE_DEFAULT       600
 static const QString REGISTRATION_ENABLED_TRUE("true");
 static const QString REGISTRATION_ENABLED_FALSE("false");
 #define ACCOUNT_TYPE_SIP                  "SIP"
@@ -191,7 +154,6 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 /*********************/
 
 /** Constant variables */
-#define ACCOUNT_MAILBOX_DEFAULT_VALUE     "888"
 
 /** Account States */
 #define ACCOUNT_STATE_REGISTERED          "REGISTERED"
@@ -222,7 +184,6 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 #define CALL_STATE_CHANGE_BUSY            "BUSY"
 #define CALL_STATE_CHANGE_FAILURE         "FAILURE"
 #define CALL_STATE_CHANGE_UNHOLD_CURRENT  "UNHOLD"
-#define CALL_STATE_CHANGE_UNKNOWN         "UNKNOWN"
 
 #define CONF_STATE_CHANGE_HOLD            "HOLD"
 #define CONF_STATE_CHANGE_ACTIVE          "ACTIVE_ATTACHED"
@@ -237,18 +198,6 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 #define DAEMON_CALL_TYPE_INCOMING         "0"
 #define DAEMON_CALL_TYPE_OUTGOING         "1"
 
-#define DAEMON_HISTORY_TYPE_MISSED        "0"
-#define DAEMON_HISTORY_TYPE_OUTGOING      "1"
-#define DAEMON_HISTORY_TYPE_INCOMING      "2"
-
-/** Address Book Settings */
-#define ADDRESSBOOK_MAX_RESULTS           "ADDRESSBOOK_MAX_RESULTS"
-#define ADDRESSBOOK_DISPLAY_CONTACT_PHOTO "ADDRESSBOOK_DISPLAY_CONTACT_PHOTO"
-#define ADDRESSBOOK_DISPLAY_BUSINESS      "ADDRESSBOOK_DISPLAY_PHONE_BUSINESS"
-#define ADDRESSBOOK_DISPLAY_HOME          "ADDRESSBOOK_DISPLAY_PHONE_HOME"
-#define ADDRESSBOOK_DISPLAY_MOBILE        "ADDRESSBOOK_DISPLAY_PHONE_MOBILE"
-#define ADDRESSBOOK_ENABLE                "ADDRESSBOOK_ENABLE"
-
 /** Hooks settings */
 #define HOOKS_ADD_PREFIX                  "PHONE_NUMBER_HOOK_ADD_PREFIX"
 #define HOOKS_ENABLED                     "PHONE_NUMBER_HOOK_ENABLED"
@@ -257,32 +206,17 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 #define HOOKS_SIP_ENABLED                 "URLHOOK_SIP_ENABLED"
 #define HOOKS_SIP_FIELD                   "URLHOOK_SIP_FIELD"
 
-/** Constant variables */
-#define MAX_HISTORY_CAPACITY              60
-
-/** Codecs details */
-#define CODEC_NAME                        0
-#define CODEC_SAMPLE_RATE                 1
-#define CODEC_BIT_RATE                    2
-#define CODEC_BANDWIDTH                   3
-
-/** Audio Managers */
-#define CONST_ALSA                        0
-#define CONST_PULSEAUDIO                  1
-
 /** MIME API */
 #define MIME_CALLID           "text/sflphone.call.id"
 #define MIME_CONTACT          "text/sflphone.contact"
 #define MIME_HISTORYID        "text/sflphone.history.id"
 #define MIME_PHONENUMBER      "text/sflphone.phone.number"
-#define MIME_CONTACT_PHONE    "text/sflphone.contact.phone"
 #define MIME_PLAIN_TEXT       "text/plain"
 #endif
 
 /** HISTORY SERIALIZATION */
 #define ACCOUNT_ID_KEY        "accountid"
 #define CALLID_KEY            "callid"
-#define CONFID_KEY            "confid"
 #define DISPLAY_NAME_KEY      "display_name"
 #define PEER_NUMBER_KEY       "peer_number"
 #define RECORDING_PATH_KEY    "recordfile"
