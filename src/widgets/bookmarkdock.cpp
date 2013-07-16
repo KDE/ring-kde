@@ -58,7 +58,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
    setMinimumSize(250,0);
    m_pMostUsedCK           = new QCheckBox            ( this              );
 
-   SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
+   CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
    BookmarkSortFilterProxyModel* m_pProxyModel = new BookmarkSortFilterProxyModel(this);

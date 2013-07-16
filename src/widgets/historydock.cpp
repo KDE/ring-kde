@@ -87,7 +87,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    m_pAllTimeCB  = new QCheckBox   ( i18n("Display all")                      );
    m_pLinkPB     = new QPushButton ( m_pBottomWidget                          );
 
-   SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
+   CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
    m_pProxyModel = new HistorySortFilterProxyModel(this);

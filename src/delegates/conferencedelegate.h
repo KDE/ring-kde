@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef CALL_TREE_ITEM_DELEGATE_H
-#define CALL_TREE_ITEM_DELEGATE_H
+#ifndef CONFERENCEDELEGATE_H
+#define CONFERENCEDELEGATE_H
 
 #include <QtGui/QStyledItemDelegate>
 

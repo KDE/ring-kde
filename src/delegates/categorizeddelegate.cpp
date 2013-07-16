@@ -24,21 +24,21 @@
 #include <QtCore/QDebug>
 
 ///Construnctor
-SortedTreeDelegate::SortedTreeDelegate(QTreeView* widget)
+CategorizedDelegate::CategorizedDelegate(QTreeView* widget)
    : QStyledItemDelegate(widget)
    , m_tree(widget),m_LeftMargin(7),m_RightMargin(7),m_pChildDelegate(nullptr),m_pChildChildDelegate(nullptr)
 {
 }
 
 ///Destructor
-SortedTreeDelegate::~SortedTreeDelegate()
+CategorizedDelegate::~CategorizedDelegate()
 {
    if (m_pChildDelegate) delete m_pChildDelegate;
    if (m_pChildChildDelegate) delete m_pChildChildDelegate;
 }
 
 ///Report category height
-QSize SortedTreeDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+QSize CategorizedDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    //Only do it for categories and objects deeper than 1 level, use precalculated values for others
    if (index.parent().isValid() && !index.parent().parent().isValid() && m_pChildDelegate) {
       return m_pChildDelegate->sizeHint(option,index);
@@ -53,13 +53,13 @@ QSize SortedTreeDelegate::sizeHint(const QStyleOptionViewItem& option, const QMo
 } //sizeHint
 
 ///Generate a gradient rectangle for the categories and the first child
-QRect SortedTreeDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const
+QRect CategorizedDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    QModelIndex i(index),old(index);
 
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
-   ((SortedTreeDelegate*)this)->m_SH          = QStyledItemDelegate::sizeHint(option, index);
+   ((CategorizedDelegate*)this)->m_SH          = QStyledItemDelegate::sizeHint(option, index);
    if (!index.parent().isValid()) {
       ((QSize)m_SH).rheight() += 2 * m_LeftMargin;
    } else {
@@ -97,7 +97,7 @@ QRect SortedTreeDelegate::fullCategoryRect(const QStyleOptionViewItem& option, c
 } //fullCategoryRect
 
 ///Draw the category (and the first child)
-void SortedTreeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void CategorizedDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
    
@@ -151,7 +151,7 @@ void SortedTreeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
 } //paint
 
 ///Draw a category style
-void SortedTreeDelegate::drawCategory(const QModelIndex& index,
+void CategorizedDelegate::drawCategory(const QModelIndex& index,
                                  int                 sortRole,
                                  const QStyleOption& option  ,
                                  QPainter*           painter ) const
@@ -380,7 +380,7 @@ void SortedTreeDelegate::drawCategory(const QModelIndex& index,
 } //drawCategory
 
 ///Return category height
-int SortedTreeDelegate::categoryHeight(const QModelIndex &index, const QStyleOption &option) const
+int CategorizedDelegate::categoryHeight(const QModelIndex &index, const QStyleOption &option) const
 {
    Q_UNUSED( index );
    Q_UNUSED( option );
@@ -393,13 +393,13 @@ int SortedTreeDelegate::categoryHeight(const QModelIndex &index, const QStyleOpt
 } //categoryHeight
 
 ///Set the delagate that are categorized
-void SortedTreeDelegate::setChildDelegate(QStyledItemDelegate* childDelegate)
+void CategorizedDelegate::setChildDelegate(QStyledItemDelegate* childDelegate)
 {
    m_pChildDelegate = childDelegate;
 }
 
 ///Set the categorized delegate own children
-void SortedTreeDelegate::setChildChildDelegate(QStyledItemDelegate* childDelegate)
+void CategorizedDelegate::setChildChildDelegate(QStyledItemDelegate* childDelegate)
 {
    m_pChildChildDelegate = childDelegate;
 }

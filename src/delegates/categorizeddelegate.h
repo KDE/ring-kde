@@ -15,20 +15,20 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef SORTED_TREE_DELEGATE_H
-#define SORTED_TREE_DELEGATE_H
+#ifndef CATEGORIZEDDELEGATE_H
+#define CATEGORIZEDDELEGATE_H
 
 #include <QtGui/QStyledItemDelegate>
 
 class QTreeView;
 
-///SortedTreeDelegate: A categorized tree delegate
-class SortedTreeDelegate : public QStyledItemDelegate
+///CategorizedDelegate: A categorized tree delegate
+class CategorizedDelegate : public QStyledItemDelegate
 {
 public:
    //Constructor
-   explicit SortedTreeDelegate(QTreeView* widget);
-   virtual ~SortedTreeDelegate();
+   explicit CategorizedDelegate(QTreeView* widget);
+   virtual ~CategorizedDelegate();
 
    //Reimplemented methods
    virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;

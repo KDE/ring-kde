@@ -84,6 +84,10 @@ HistoryModel::TopLevelItem::TopLevelItem(int name) :
    HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name),m_NameStr(m_slHistoryConstStr[name])
 {}
 
+HistoryModel::~TopLevelItem() {
+   m_spInstance->m_lCategoryCounter.removeAll(this);
+}
+
 
 /*****************************************************************************
  *                                                                           *

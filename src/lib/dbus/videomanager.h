@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef VIDEO_INTERFACE_SINGLETON_H
-#define VIDEO_INTERFACE_SINGLETON_H
+#ifndef VIDEOMANAGER_H
+#define VIDEOMANAGER_H
 
 #include "video_dbus_interface.h"
 #include "../typedefs.h"

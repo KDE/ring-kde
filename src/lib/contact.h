@@ -79,7 +79,7 @@ public:
    class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
    public:
       virtual QObject* self() __attribute__ ((const));
-      PhoneNumbers(Contact* parent);
+      explicit PhoneNumbers(Contact* parent);
       PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
       Contact* contact() const;
    private:

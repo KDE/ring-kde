@@ -293,7 +293,7 @@ Call* Call::buildRingingCall(const QString & callId)
 ///Build a call that is already over
 Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type)
 {
-   if(name == "empty") name = QString();
+   if(name == "empty") name.clear();
    Call* call            = new Call(Call::State::OVER, callId, name, number, account );
 
    call->m_pStopTimeStamp  = stopTimeStamp ;
@@ -728,7 +728,7 @@ Call::State Call::stateChanged(const QString& newStateName)
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
       m_pTimer->start();
    }
-   m_CallNumber = QString();
+   m_CallNumber.clear();
    emit changed();
    emit changed(this);
    qDebug() << "Calling stateChanged " << newStateName << " -> " << toDaemonCallState(newStateName) << " on call with state " << previousState << ". Become " << m_CurrentState;
@@ -999,7 +999,7 @@ void Call::start()
    ::time(&curTime);
    emit changed();
    emit changed(this);
-   m_CallNumber = QString();
+   m_CallNumber.clear();
    m_pStartTimeStamp = curTime;
 }
 

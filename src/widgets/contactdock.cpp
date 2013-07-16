@@ -101,7 +101,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    setHistoryVisible(ConfigurationSkeleton::displayContactCallHistory());
 
-   SortedTreeDelegate* delegate = new SortedTreeDelegate(m_pView);
+   CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
    delegate->setChildDelegate(new ContactDelegate());
    delegate->setChildChildDelegate(new PhoneNumberDelegate());
    m_pView->setDelegate(delegate);
