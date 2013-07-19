@@ -114,6 +114,20 @@ class LIB_EXPORT Account : public QObject {
          CANCEL  =6
       };
 
+      class State {
+      public:
+         constexpr static const char* REGISTERED       = "REGISTERED";
+         constexpr static const char* READY            = "READY";
+         constexpr static const char* UNREGISTERED     = "UNREGISTERED";
+         constexpr static const char* TRYING           = "TRYING";
+         constexpr static const char* ERROR            = "ERROR";
+         constexpr static const char* ERROR_AUTH       = "ERROR_AUTH";
+         constexpr static const char* ERROR_NETWORK    = "ERROR_NETWORK";
+         constexpr static const char* ERROR_HOST       = "ERROR_HOST";
+         constexpr static const char* ERROR_CONF_STUN  = "ERROR_CONF_STUN";
+         constexpr static const char* ERROR_EXIST_STUN = "ERROR_EXIST_STUN";
+      };
+
       ~Account();
       //Constructors
       static Account* buildExistingAccountFromId(const QString& _accountId);

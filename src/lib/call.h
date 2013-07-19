@@ -149,6 +149,27 @@ public:
       CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
       COUNT,
    };
+   
+   class StateChange {
+   public:
+      constexpr static const char* HUNG_UP         = "HUNGUP";
+      constexpr static const char* RINGING         = "RINGING";
+      constexpr static const char* CURRENT         = "CURRENT";
+      constexpr static const char* HOLD            = "HOLD";
+      constexpr static const char* BUSY            = "BUSY";
+      constexpr static const char* FAILURE         = "FAILURE";
+      constexpr static const char* UNHOLD_CURRENT  = "UNHOLD";
+   };
+
+   class DaemonStateInit {
+   public:
+      constexpr static const char* CURRENT    = "CURRENT";
+      constexpr static const char* HOLD       = "HOLD";
+      constexpr static const char* BUSY       = "BUSY";
+      constexpr static const char* INCOMING   = "INCOMING";
+      constexpr static const char* RINGING    = "RINGING";
+      constexpr static const char* INACTIVE   = "INACTIVE";
+   };
 
 
    /** @enum daemon_call_state_t 

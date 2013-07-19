@@ -116,12 +116,12 @@ public:
    }
 
    virtual QVariant getColor(const Account* a) {
-      if(a->accountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED || !a->isEnabled())
+      if(a->accountRegistrationStatus() == Account::State::UNREGISTERED || !a->isEnabled())
          return m_Pal.color(QPalette::Base);
-      if(a->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED || a->accountRegistrationStatus() == ACCOUNT_STATE_READY) {
+      if(a->accountRegistrationStatus() == Account::State::REGISTERED || a->accountRegistrationStatus() == Account::State::READY) {
          return m_Green;
       }
-      if(a->accountRegistrationStatus() == ACCOUNT_STATE_TRYING)
+      if(a->accountRegistrationStatus() == Account::State::TRYING)
          return m_Yellow;
       return m_Red;
    }

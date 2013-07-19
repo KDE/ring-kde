@@ -62,23 +62,23 @@ const QString& account_state_name(const QString& s)
    static const QString stunServerInvalid      = "Stun server invalid"      ;
    static const QString invalid                = "Invalid"                  ;
    
-   if(s == QString(ACCOUNT_STATE_REGISTERED)       )
+   if(s == Account::State::REGISTERED       )
       return registered             ;
-   if(s == QString(ACCOUNT_STATE_UNREGISTERED)     )
+   if(s == Account::State::UNREGISTERED     )
       return notRegistered          ;
-   if(s == QString(ACCOUNT_STATE_TRYING)           )
+   if(s == Account::State::TRYING           )
       return trying                 ;
-   if(s == QString(ACCOUNT_STATE_ERROR)            )
+   if(s == Account::State::ERROR            )
       return error                  ;
-   if(s == QString(ACCOUNT_STATE_ERROR_AUTH)       )
+   if(s == Account::State::ERROR_AUTH       )
       return authenticationFailed   ;
-   if(s == QString(ACCOUNT_STATE_ERROR_NETWORK)    )
+   if(s == Account::State::ERROR_NETWORK    )
       return networkUnreachable     ;
-   if(s == QString(ACCOUNT_STATE_ERROR_HOST)       )
+   if(s == Account::State::ERROR_HOST       )
       return hostUnreachable        ;
-   if(s == QString(ACCOUNT_STATE_ERROR_CONF_STUN)  )
+   if(s == Account::State::ERROR_CONF_STUN  )
       return stunConfigurationError ;
-   if(s == QString(ACCOUNT_STATE_ERROR_EXIST_STUN) )
+   if(s == Account::State::ERROR_EXIST_STUN )
       return stunServerInvalid      ;
    return invalid                   ;
 } //account_state_name
@@ -219,7 +219,7 @@ bool Account::isEnabled() const
 ///Is this account registered
 bool Account::isRegistered() const
 {
-   return (accountDetail(ACCOUNT_REGISTRATION_STATUS) == ACCOUNT_STATE_REGISTERED);
+   return (accountDetail(ACCOUNT_REGISTRATION_STATUS) == Account::State::REGISTERED);
 }
 
 ///Return the model index of this item
@@ -236,9 +236,9 @@ QModelIndex Account::index()
 ///Return status color name
 QString Account::stateColorName() const
 {
-   if(accountRegistrationStatus() == ACCOUNT_STATE_UNREGISTERED)
+   if(accountRegistrationStatus() == Account::State::UNREGISTERED)
       return "black";
-   if(accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED || accountRegistrationStatus() == ACCOUNT_STATE_READY)
+   if(accountRegistrationStatus() == Account::State::REGISTERED || accountRegistrationStatus() == Account::State::READY)
       return "darkGreen";
    return "red";
 }

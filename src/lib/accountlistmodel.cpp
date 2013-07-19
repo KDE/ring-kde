@@ -369,7 +369,7 @@ QVector<Account*> AccountListModel::registeredAccounts() const
    Account* current;
    for (int i = 0; i < m_pAccounts->count(); ++i) {
       current = (*m_pAccounts)[i];
-      if(current->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED) {
+      if(current->accountRegistrationStatus() == Account::State::REGISTERED) {
          qDebug() << current->alias() << " : " << current;
          registeredAccountsVector.append(current);
       }
@@ -383,9 +383,9 @@ Account* AccountListModel::firstRegisteredAccount() const
    Account* current;
    for (int i = 0; i < m_pAccounts->count(); ++i) {
       current = (*m_pAccounts)[i];
-      if(current && current->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED && current->isAccountEnabled())
+      if(current && current->accountRegistrationStatus() == Account::State::REGISTERED && current->isAccountEnabled())
          return current;
-      else if (current && (current->accountRegistrationStatus() == ACCOUNT_STATE_READY) && m_pAccounts->count() == 1)
+      else if (current && (current->accountRegistrationStatus() == Account::State::READY) && m_pAccounts->count() == 1)
          return current;
 //       else if (current && !(current->accountRegistrationStatus()() == ACCOUNT_STATE_READY)) {
 //          qDebug() << "Account " << ((current)?current->accountId():"") << " is not registered ("
@@ -406,7 +406,7 @@ int AccountListModel::size() const
 Account* AccountListModel::currentAccount()
 {
    Account* priorAccount = m_spPriorAccount;
-   if(priorAccount && priorAccount->accountRegistrationStatus() == ACCOUNT_STATE_REGISTERED && priorAccount->isAccountEnabled() ) {
+   if(priorAccount && priorAccount->accountRegistrationStatus() == Account::State::REGISTERED && priorAccount->isAccountEnabled() ) {
       return priorAccount;
    }
    else {
@@ -424,24 +424,17 @@ QVariant AccountListModel::data ( const QModelIndex& idx, int role) const
    if (!idx.isValid() || idx.row() < 0 || idx.row() >= rowCount())
       return QVariant();
 
-   const Account * account = (*m_pAccounts)[idx.row()];
+   const Account* account = (*m_pAccounts)[idx.row()];
    if(idx.column() == 0 && (role == Qt::DisplayRole || role == Qt::EditRole))
       return QVariant(account->alias());
-   else if(idx.column() == 0 && role == Qt::CheckStateRole) {
+   else if(idx.column() == 0 && role == Qt::CheckStateRole)
       return QVariant(account->isEnabled() ? Qt::Checked : Qt::Unchecked);
-   }
-   else if (role == Qt::BackgroundRole) {
-      if (m_pColorVisitor)
-         return m_pColorVisitor->getColor(account);
-      else {
-         QVariant var = account->stateColor();
-         return account->stateColor();
-      }
-   }
-   else if(idx.column() == 0 && role == Qt::DecorationRole && m_pColorVisitor) {
+   else if (role == Qt::BackgroundRole)
+      return (m_pColorVisitor)?m_pColorVisitor->getColor(account):account->stateColor();
+   else if(idx.column() == 0 && role == Qt::DecorationRole && m_pColorVisitor)
       return m_pColorVisitor->getIcon(account);
-   }
-   return QVariant();
+   else
+      return account->roleData(role);
 } //data
 
 ///Flags for "idx"
@@ -528,7 +521,7 @@ void AccountListModel::removeAccount(Account* account)
 {
    if (not account) return;
    qDebug() << "Removing" << m_pAccounts;
-   int aindex = m_pAccounts->indexOf(account);
+   const int aindex = m_pAccounts->indexOf(account);
    m_pAccounts->remove(aindex);
    emit dataChanged(index(aindex,0), index(m_pAccounts->size()-1,0));
 }
@@ -540,7 +533,7 @@ void AccountListModel::removeAccount( QModelIndex idx )
 
 ///Set the previous account used
 void AccountListModel::setPriorAccount(const Account* account) {
-   bool changed = (account && m_spPriorAccount != account) || (!account && m_spPriorAccount);
+   const bool changed = (account && m_spPriorAccount != account) || (!account && m_spPriorAccount);
    m_spPriorAccount = (Account*)(account);
    if (changed)
       emit priorAccountChanged(currentAccount());
@@ -550,7 +543,7 @@ void AccountListModel::setPriorAccount(const Account* account) {
 bool AccountListModel::setData(const QModelIndex& idx, const QVariant& value, int role)
 {
    if (idx.isValid() && idx.column() == 0 && role == Qt::CheckStateRole) {
-      bool prevEnabled = (*m_pAccounts)[idx.row()]->isEnabled();
+      const bool prevEnabled = (*m_pAccounts)[idx.row()]->isEnabled();
       (*m_pAccounts)[idx.row()]->setEnabled(value.toBool());
       emit dataChanged(idx, idx);
       if (prevEnabled != value.toBool())

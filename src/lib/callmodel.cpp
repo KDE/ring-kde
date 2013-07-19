@@ -780,7 +780,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
    Call* call = nullptr;
    if(!internal) {
       qDebug() << "Call not found";
-      if(state == CALL_STATE_CHANGE_RINGING) {
+      if(state == Call::StateChange::RINGING) {
          call = addRingingCall(callID);
       }
       else {
@@ -792,7 +792,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       call = internal->call_real;
       qDebug() << "Call found" << call << call->state();
       call->stateChanged(state);
-      if (state == CALL_STATE_CHANGE_HUNG_UP)
+      if (state == Call::StateChange::HUNG_UP)
          removeCall(call);
    }
 

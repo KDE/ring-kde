@@ -319,19 +319,19 @@ history_state Call::historyStateFromType(QString type)
 ///Get the start sate from the daemon state
 Call::State Call::startStateFromDaemonCallState(QString daemonCallState, QString daemonCallType)
 {
-   if(daemonCallState      == DAEMON_CALL_STATE_INIT_CURRENT  )
+   if(daemonCallState      == Call::DaemonStateInit::CURRENT  )
       return Call::State::CURRENT  ;
-   else if(daemonCallState == DAEMON_CALL_STATE_INIT_HOLD     )
+   else if(daemonCallState == Call::DaemonStateInit::HOLD     )
       return Call::State::HOLD     ;
-   else if(daemonCallState == DAEMON_CALL_STATE_INIT_BUSY     )
+   else if(daemonCallState == Call::DaemonStateInit::BUSY     )
       return Call::State::BUSY     ;
-   else if(daemonCallState == DAEMON_CALL_STATE_INIT_INACTIVE && daemonCallType == DAEMON_CALL_TYPE_INCOMING )
+   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == DAEMON_CALL_TYPE_INCOMING )
       return Call::State::INCOMING ;
-   else if(daemonCallState == DAEMON_CALL_STATE_INIT_INACTIVE && daemonCallType == DAEMON_CALL_TYPE_OUTGOING )
+   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == DAEMON_CALL_TYPE_OUTGOING )
       return Call::State::RINGING  ;
-   else if(daemonCallState == DAEMON_CALL_STATE_INIT_INCOMING )
+   else if(daemonCallState == Call::DaemonStateInit::INCOMING )
       return Call::State::INCOMING ;
-   else if(daemonCallState == DAEMON_CALL_STATE_INIT_RINGING  )
+   else if(daemonCallState == Call::DaemonStateInit::RINGING  )
       return Call::State::RINGING  ;
    else
       return Call::State::FAILURE  ;
@@ -346,21 +346,21 @@ Call::State Call::startStateFromDaemonCallState(QString daemonCallState, QString
 ///Transfer state from internal to daemon internal syntaz
 Call::DaemonState Call::toDaemonCallState(const QString& stateName)
 {
-   if(stateName == QString(CALL_STATE_CHANGE_HUNG_UP)        )
+   if(stateName == Call::StateChange::HUNG_UP        )
       return Call::DaemonState::HUNG_UP ;
-   if(stateName == QString(CALL_STATE_CHANGE_RINGING)        )
+   if(stateName == Call::StateChange::RINGING        )
       return Call::DaemonState::RINGING ;
-   if(stateName == QString(CALL_STATE_CHANGE_CURRENT)        )
+   if(stateName == Call::StateChange::CURRENT        )
       return Call::DaemonState::CURRENT ;
-   if(stateName == QString(CALL_STATE_CHANGE_UNHOLD_CURRENT) )
+   if(stateName == Call::StateChange::UNHOLD_CURRENT )
       return Call::DaemonState::CURRENT ;
-   if(stateName == QString(CALL_STATE_CHANGE_HOLD)           )
+   if(stateName == Call::StateChange::HOLD           )
       return Call::DaemonState::HOLD    ;
-   if(stateName == QString(CALL_STATE_CHANGE_BUSY)           )
+   if(stateName == Call::StateChange::BUSY           )
       return Call::DaemonState::BUSY    ;
-   if(stateName == QString(CALL_STATE_CHANGE_FAILURE)        )
+   if(stateName == Call::StateChange::FAILURE        )
       return Call::DaemonState::FAILURE ;
-   
+
    qDebug() << "stateChanged signal received with unknown state.";
    return Call::DaemonState::FAILURE    ;
 } //toDaemonCallState

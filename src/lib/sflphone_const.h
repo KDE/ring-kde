@@ -155,18 +155,6 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 
 /** Constant variables */
 
-/** Account States */
-#define ACCOUNT_STATE_REGISTERED          "REGISTERED"
-#define ACCOUNT_STATE_READY               "READY"
-#define ACCOUNT_STATE_UNREGISTERED        "UNREGISTERED"
-#define ACCOUNT_STATE_TRYING              "TRYING"
-#define ACCOUNT_STATE_ERROR               "ERROR"
-#define ACCOUNT_STATE_ERROR_AUTH          "ERROR_AUTH"
-#define ACCOUNT_STATE_ERROR_NETWORK       "ERROR_NETWORK"
-#define ACCOUNT_STATE_ERROR_HOST          "ERROR_HOST"
-#define ACCOUNT_STATE_ERROR_CONF_STUN     "ERROR_CONF_STUN"
-#define ACCOUNT_STATE_ERROR_EXIST_STUN    "ERROR_EXIST_STUN"
-
 /** Calls details */
 #define CALL_PEER_NAME                    "DISPLAY_NAME"
 //#define CALL_PEER_NAME                    "PEER_NAME"
@@ -176,24 +164,8 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 #define CALL_TYPE                         "CALL_TYPE"
 #define CALL_TIMESTAMP_START              "TIMESTAMP_START"
 
-/** Call States */
-#define CALL_STATE_CHANGE_HUNG_UP         "HUNGUP"
-#define CALL_STATE_CHANGE_RINGING         "RINGING"
-#define CALL_STATE_CHANGE_CURRENT         "CURRENT"
-#define CALL_STATE_CHANGE_HOLD            "HOLD"
-#define CALL_STATE_CHANGE_BUSY            "BUSY"
-#define CALL_STATE_CHANGE_FAILURE         "FAILURE"
-#define CALL_STATE_CHANGE_UNHOLD_CURRENT  "UNHOLD"
-
 #define CONF_STATE_CHANGE_HOLD            "HOLD"
 #define CONF_STATE_CHANGE_ACTIVE          "ACTIVE_ATTACHED"
-
-#define DAEMON_CALL_STATE_INIT_CURRENT    "CURRENT"
-#define DAEMON_CALL_STATE_INIT_HOLD       "HOLD"
-#define DAEMON_CALL_STATE_INIT_BUSY       "BUSY"
-#define DAEMON_CALL_STATE_INIT_INCOMING   "INCOMING"
-#define DAEMON_CALL_STATE_INIT_RINGING    "RINGING"
-#define DAEMON_CALL_STATE_INIT_INACTIVE   "INACTIVE"
 
 #define DAEMON_CALL_TYPE_INCOMING         "0"
 #define DAEMON_CALL_TYPE_OUTGOING         "1"
