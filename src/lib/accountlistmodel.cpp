@@ -69,6 +69,7 @@ AccountListModel::AccountListModel(QStringList & _accountIds) : QAbstractListMod
 
    connect(&callManager         , SIGNAL(registrationStateChanged(QString,QString,int)) ,this,SLOT(accountChanged(QString,QString,int)));
    connect(&configurationManager, SIGNAL(accountsChanged())                             ,this,SLOT(updateAccounts())                   );
+   setupRoleName();
 }
 
 ///Constructors
@@ -83,6 +84,7 @@ AccountListModel::AccountListModel(bool fill) : QAbstractListModel(QCoreApplicat
 
    connect(&callManager         , SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
    connect(&configurationManager, SIGNAL(accountsChanged())                            ,this,SLOT(updateAccounts())                   );
+   setupRoleName();
 }
 
 ///Destructor
@@ -92,6 +94,50 @@ AccountListModel::~AccountListModel()
       delete a;
    }
    delete m_pAccounts;
+}
+
+void AccountListModel::setupRoleName()
+{
+   QHash<int, QByteArray> roles = roleNames();
+   roles.insert(Account::Role::Alias                    ,QByteArray("alias"                         ));
+   roles.insert(Account::Role::Type                     ,QByteArray("type"                          ));
+   roles.insert(Account::Role::Hostname                 ,QByteArray("hostname"                      ));
+   roles.insert(Account::Role::Username                 ,QByteArray("username"                      ));
+   roles.insert(Account::Role::Mailbox                  ,QByteArray("mailbox"                       ));
+   roles.insert(Account::Role::Proxy                    ,QByteArray("proxy"                         ));
+   roles.insert(Account::Role::TlsPassword              ,QByteArray("tlsPassword"                   ));
+   roles.insert(Account::Role::TlsCaListFile            ,QByteArray("tlsCaListFile"                 ));
+   roles.insert(Account::Role::TlsCertificateFile       ,QByteArray("tlsCertificateFile"            ));
+   roles.insert(Account::Role::TlsPrivateKeyFile        ,QByteArray("tlsPrivateKeyFile"             ));
+   roles.insert(Account::Role::TlsCiphers               ,QByteArray("tlsCiphers"                    ));
+   roles.insert(Account::Role::TlsServerName            ,QByteArray("tlsServerName"                 ));
+   roles.insert(Account::Role::SipStunServer            ,QByteArray("sipStunServer"                 ));
+   roles.insert(Account::Role::PublishedAddress         ,QByteArray("publishedAddress"              ));
+   roles.insert(Account::Role::LocalInterface           ,QByteArray("localInterface"                ));
+   roles.insert(Account::Role::RingtonePath             ,QByteArray("ringtonePath"                  ));
+   roles.insert(Account::Role::TlsMethod                ,QByteArray("tlsMethod"                     ));
+   roles.insert(Account::Role::AccountRegistrationExpire,QByteArray("accountRegistrationExpire"     ));
+   roles.insert(Account::Role::TlsNegotiationTimeoutSec ,QByteArray("tlsNegotiationTimeoutSec"      ));
+   roles.insert(Account::Role::TlsNegotiationTimeoutMsec,QByteArray("tlsNegotiationTimeoutMsec"     ));
+   roles.insert(Account::Role::LocalPort                ,QByteArray("localPort"                     ));
+   roles.insert(Account::Role::TlsListenerPort          ,QByteArray("tlsListenerPort"               ));
+   roles.insert(Account::Role::PublishedPort            ,QByteArray("publishedPort"                 ));
+   roles.insert(Account::Role::Enabled                  ,QByteArray("enabled"                       ));
+   roles.insert(Account::Role::AutoAnswer               ,QByteArray("autoAnswer"                    ));
+   roles.insert(Account::Role::TlsVerifyServer          ,QByteArray("tlsVerifyServer"               ));
+   roles.insert(Account::Role::TlsVerifyClient          ,QByteArray("tlsVerifyClient"               ));
+   roles.insert(Account::Role::TlsRequireClientCertificate,QByteArray("tlsRequireClientCertificate" ));
+   roles.insert(Account::Role::TlsEnable                ,QByteArray("tlsEnable"                     ));
+   roles.insert(Account::Role::DisplaySasOnce           ,QByteArray("displaySasOnce"                ));
+   roles.insert(Account::Role::SrtpRtpFallback          ,QByteArray("srtpRtpFallback"               ));
+   roles.insert(Account::Role::ZrtpDisplaySas           ,QByteArray("zrtpDisplaySas"                ));
+   roles.insert(Account::Role::ZrtpNotSuppWarning       ,QByteArray("zrtpNotSuppWarning"            ));
+   roles.insert(Account::Role::ZrtpHelloHash            ,QByteArray("zrtpHelloHash"                 ));
+   roles.insert(Account::Role::SipStunEnabled           ,QByteArray("sipStunEnabled"                ));
+   roles.insert(Account::Role::PublishedSameAsLocal     ,QByteArray("publishedSameAsLocal"          ));
+   roles.insert(Account::Role::RingtoneEnabled          ,QByteArray("ringtoneEnabled"               ));
+   roles.insert(Account::Role::dTMFType                 ,QByteArray("dTMFType"                      ));
+   setRoleNames(roles);
 }
 
 ///Singleton
@@ -130,7 +176,7 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
       }
       foreach (Account* acc, *m_pAccounts) {
          int idx =accountIds.indexOf(acc->accountId());
-         if (idx == -1 && (acc->currentState() == READY || acc->currentState() == REMOVED)) {
+         if (idx == -1 && (acc->currentState() == Account::AccountEditState::READY || acc->currentState() == Account::AccountEditState::REMOVED)) {
             m_pAccounts->remove(idx);
             emit dataChanged(index(idx - 1, 0), index(m_pAccounts->size()-1, 0));
          }
@@ -165,7 +211,7 @@ void AccountListModel::update()
    Account* current;
    for (int i = 0; i < m_pAccounts->size(); i++) {
       current = (*m_pAccounts)[i];
-      if (!(*m_pAccounts)[i]->isNew() && (current->currentState() != NEW || current->currentState() != MODIFIED || current->currentState() != OUTDATED))
+      if (!(*m_pAccounts)[i]->isNew() && (current->currentState() != Account::AccountEditState::NEW || current->currentState() != Account::AccountEditState::MODIFIED || current->currentState() != Account::AccountEditState::OUTDATED))
          removeAccount(current);
    }
    //ask for the list of accounts ids to the configurationManager
@@ -195,7 +241,7 @@ void AccountListModel::updateAccounts()
          emit dataChanged(index(size()-1,0),index(size()-1,0));
       }
       else {
-         acc->performAction(RELOAD);
+         acc->performAction(Account::AccountEditAction::RELOAD);
       }
    }
    emit accountListUpdated();
@@ -211,7 +257,7 @@ void AccountListModel::save()
    for (int i = 0; i < size(); i++) {
       Account* current = (*this)[i];
       //current->save();
-      current->performAction(AccountEditAction::SAVE);
+      current->performAction(Account::AccountEditAction::SAVE);
    }
 
    //remove accounts that are in the configurationManager but not in the client

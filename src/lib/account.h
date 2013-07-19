@@ -38,32 +38,12 @@ const QString& account_state_name(const QString& s);
 
 typedef void (Account::*account_function)();
 
-///@enum AccountEditState: Manage how and when an account can be reloaded or change state
-enum AccountEditState {
-   READY    =0,
-   EDITING  =1,
-   OUTDATED =2,
-   NEW      =3,
-   MODIFIED =4,
-   REMOVED  =5
-};
-
-///@enum AccountEditAction Actions that can be performed on the Account state
-enum AccountEditAction {
-   NOTHING =0,
-   EDIT    =1,
-   RELOAD  =2,
-   SAVE    =3,
-   REMOVE  =4,
-   MODIFY  =5,
-   CANCEL  =6
-};
-
 ///@enum DtmfType Different method to send the DTMF (key sound) to the peer
 enum DtmfType {
    OverRtp,
    OverSip
 };
+Q_ENUMS(DtmfType)
 
 ///Account: a daemon account (SIP or AIX)
 class LIB_EXPORT Account : public QObject {
@@ -71,19 +51,121 @@ class LIB_EXPORT Account : public QObject {
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
+   
+
+   Q_PROPERTY(QString        alias                        READ accountAlias                  WRITE setAccountAlias                )
+   Q_PROPERTY(QString        type                         READ accountType                   WRITE setAccountType                 )
+   Q_PROPERTY(QString        hostname                     READ accountHostname               WRITE setAccountHostname             )
+   Q_PROPERTY(QString        username                     READ accountUsername               WRITE setAccountUsername             )
+   Q_PROPERTY(QString        mailbox                      READ accountMailbox                WRITE setAccountMailbox              )
+   Q_PROPERTY(QString        proxy                        READ accountProxy                  WRITE setAccountProxy                )
+   Q_PROPERTY(QString        tlsPassword                  READ tlsPassword                   WRITE setTlsPassword                 )
+   Q_PROPERTY(QString        tlsCaListFile                READ tlsCaListFile                 WRITE setTlsCaListFile               )
+   Q_PROPERTY(QString        tlsCertificateFile           READ tlsCertificateFile            WRITE setTlsCertificateFile          )
+   Q_PROPERTY(QString        tlsPrivateKeyFile            READ tlsPrivateKeyFile             WRITE setTlsPrivateKeyFile           )
+   Q_PROPERTY(QString        tlsCiphers                   READ tlsCiphers                    WRITE setTlsCiphers                  )
+   Q_PROPERTY(QString        tlsServerName                READ tlsServerName                 WRITE setTlsServerName               )
+   Q_PROPERTY(QString        sipStunServer                READ accountSipStunServer          WRITE setAccountSipStunServer        )
+   Q_PROPERTY(QString        publishedAddress             READ publishedAddress              WRITE setPublishedAddress            )
+   Q_PROPERTY(QString        localInterface               READ localInterface                WRITE setLocalInterface              )
+   Q_PROPERTY(QString        ringtonePath                 READ ringtonePath                  WRITE setRingtonePath                )
+   Q_PROPERTY(int            tlsMethod                    READ tlsMethod                     WRITE setTlsMethod                   )
+   Q_PROPERTY(int            accountRegistrationExpire    READ accountRegistrationExpire     WRITE setAccountRegistrationExpire   )
+   Q_PROPERTY(int            tlsNegotiationTimeoutSec     READ tlsNegotiationTimeoutSec      WRITE setTlsNegotiationTimeoutSec    )
+   Q_PROPERTY(int            tlsNegotiationTimeoutMsec    READ tlsNegotiationTimeoutMsec     WRITE setTlsNegotiationTimeoutMsec   )
+   Q_PROPERTY(unsigned short localPort                    READ localPort                     WRITE setLocalPort                   )
+   Q_PROPERTY(unsigned short tlsListenerPort              READ tlsListenerPort               WRITE setTlsListenerPort             )
+   Q_PROPERTY(unsigned short publishedPort                READ publishedPort                 WRITE setPublishedPort               )
+   Q_PROPERTY(bool           enabled                      READ isEnabled                     WRITE setEnabled                     )
+   Q_PROPERTY(bool           autoAnswer                   READ isAutoAnswer                  WRITE setAutoAnswer                  )
+   Q_PROPERTY(bool           tlsVerifyServer              READ isTlsVerifyServer             WRITE setTlsVerifyServer             )
+   Q_PROPERTY(bool           tlsVerifyClient              READ isTlsVerifyClient             WRITE setTlsVerifyClient             )
+   Q_PROPERTY(bool           tlsRequireClientCertificate  READ isTlsRequireClientCertificate WRITE setTlsRequireClientCertificate )
+   Q_PROPERTY(bool           tlsEnable                    READ isTlsEnable                   WRITE setTlsEnable                   )
+   Q_PROPERTY(bool           displaySasOnce               READ isAccountDisplaySasOnce       WRITE setAccountDisplaySasOnce       )
+   Q_PROPERTY(bool           srtpRtpFallback              READ isAccountSrtpRtpFallback      WRITE setAccountSrtpRtpFallback      )
+   Q_PROPERTY(bool           zrtpDisplaySas               READ isAccountZrtpDisplaySas       WRITE setAccountZrtpDisplaySas       )
+   Q_PROPERTY(bool           zrtpNotSuppWarning           READ isAccountZrtpNotSuppWarning   WRITE setAccountZrtpNotSuppWarning   )
+   Q_PROPERTY(bool           zrtpHelloHash                READ isAccountZrtpHelloHash        WRITE setAccountZrtpHelloHash        )
+   Q_PROPERTY(bool           sipStunEnabled               READ isAccountSipStunEnabled       WRITE setAccountSipStunEnabled       )
+   Q_PROPERTY(bool           publishedSameAsLocal         READ isPublishedSameAsLocal        WRITE setPublishedSameAsLocal        )
+   Q_PROPERTY(bool           ringtoneEnabled              READ isRingtoneEnabled             WRITE setRingtoneEnabled             )
+   Q_PROPERTY(DtmfType       dTMFType                     READ DTMFType                      WRITE setDTMFType                    )
 
    public:
+      ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
+      enum AccountEditState {
+         READY    =0,
+         EDITING  =1,
+         OUTDATED =2,
+         NEW      =3,
+         MODIFIED =4,
+         REMOVED  =5
+      };
+
+      ///@enum AccountEditAction Actions that can be performed on the Account state
+      enum AccountEditAction {
+         NOTHING =0,
+         EDIT    =1,
+         RELOAD  =2,
+         SAVE    =3,
+         REMOVE  =4,
+         MODIFY  =5,
+         CANCEL  =6
+      };
+
       ~Account();
       //Constructors
       static Account* buildExistingAccountFromId(const QString& _accountId);
       static Account* buildNewAccountFromAlias  (const QString& alias     );
+      
+      enum Role {
+         Alias                       = 100,
+         Type                        = 101,
+         Hostname                    = 102,
+         Username                    = 103,
+         Mailbox                     = 104,
+         Proxy                       = 105,
+         TlsPassword                 = 107,
+         TlsCaListFile               = 108,
+         TlsCertificateFile          = 109,
+         TlsPrivateKeyFile           = 110,
+         TlsCiphers                  = 111,
+         TlsServerName               = 112,
+         SipStunServer               = 113,
+         PublishedAddress            = 114,
+         LocalInterface              = 115,
+         RingtonePath                = 116,
+         TlsMethod                   = 117,
+         AccountRegistrationExpire   = 118,
+         TlsNegotiationTimeoutSec    = 119,
+         TlsNegotiationTimeoutMsec   = 120,
+         LocalPort                   = 121,
+         TlsListenerPort             = 122,
+         PublishedPort               = 123,
+         Enabled                     = 124,
+         AutoAnswer                  = 125,
+         TlsVerifyServer             = 126,
+         TlsVerifyClient             = 127,
+         TlsRequireClientCertificate = 128,
+         TlsEnable                   = 129,
+         DisplaySasOnce              = 130,
+         SrtpRtpFallback             = 131,
+         ZrtpDisplaySas              = 132,
+         ZrtpNotSuppWarning          = 133,
+         ZrtpHelloHash               = 134,
+         SipStunEnabled              = 135,
+         PublishedSameAsLocal        = 136,
+         RingtoneEnabled             = 137,
+         dTMFType                    = 138,
+      };
 
       /**
        *Perform an action
        * @return If the state changed
        */
-      bool performAction(AccountEditAction action);
-      AccountEditState currentState() const;
+      bool performAction(Account::AccountEditAction action);
+      Account::AccountEditState currentState() const;
 
       //Getters
       bool                    isNew()                             const;
@@ -141,30 +223,32 @@ class LIB_EXPORT Account : public QObject {
       QString accountRegistrationStatus    () const;
       QString accountType                  () const;
       DtmfType DTMFType                    () const;
+      
+      QVariant roleData                    (int role) const;
    
       //Setters
-      void setAccountId      (const QString& id                        );
+      void setAccountId      (const QString& id);
       #ifdef ENABLE_VIDEO
       void setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
       QList<VideoCodec*> getActiveVideoCodecList();
       #endif
-      void setAccountAlias                  (QString detail);
-      void setAccountType                   (QString detail);
-      void setAccountHostname               (QString detail);
-      void setAccountUsername               (QString detail);
-      void setAccountMailbox                (QString detail);
-      void setAccountProxy                  (QString detail);
-      void setAccountPassword               (QString detail);
-      void setTlsPassword                   (QString detail);
-      void setTlsCaListFile                 (QString detail);
-      void setTlsCertificateFile            (QString detail);
-      void setTlsPrivateKeyFile             (QString detail);
-      void setTlsCiphers                    (QString detail);
-      void setTlsServerName                 (QString detail);
-      void setAccountSipStunServer          (QString detail);
-      void setPublishedAddress              (QString detail);
-      void setLocalInterface                (QString detail);
-      void setRingtonePath                  (QString detail);
+      void setAccountAlias                  (const QString& detail);
+      void setAccountType                   (const QString& detail);
+      void setAccountHostname               (const QString& detail);
+      void setAccountUsername               (const QString& detail);
+      void setAccountMailbox                (const QString& detail);
+      void setAccountProxy                  (const QString& detail);
+      void setAccountPassword               (const QString& detail);
+      void setTlsPassword                   (const QString& detail);
+      void setTlsCaListFile                 (const QString& detail);
+      void setTlsCertificateFile            (const QString& detail);
+      void setTlsPrivateKeyFile             (const QString& detail);
+      void setTlsCiphers                    (const QString& detail);
+      void setTlsServerName                 (const QString& detail);
+      void setAccountSipStunServer          (const QString& detail);
+      void setPublishedAddress              (const QString& detail);
+      void setLocalInterface                (const QString& detail);
+      void setRingtonePath                  (const QString& detail);
       void setTlsMethod                     (int     detail);
       void setAccountRegistrationExpire     (int     detail);
       void setTlsNegotiationTimeoutSec      (int     detail);
@@ -187,10 +271,12 @@ class LIB_EXPORT Account : public QObject {
       void setPublishedSameAsLocal          (bool    detail);
       void setRingtoneEnabled               (bool    detail);
       void setDTMFType                      (DtmfType type );
-   
+
+      void setRoleData(int role, const QVariant& value);
+
       //Updates
       virtual bool updateState();
-   
+
       //Operators
       bool operator==(const Account&)const;
 
@@ -216,6 +302,7 @@ class LIB_EXPORT Account : public QObject {
       void accountChanged(QString accountId,QString stateName, int state);
 
    private:
+
       //Setters
       void setAccountDetails (const QHash<QString,QString>& m          );
       bool setAccountDetail  (const QString& param, const QString& val );

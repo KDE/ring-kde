@@ -127,9 +127,9 @@ public:
    }
 
    virtual QVariant getIcon(const Account* a) {
-      if (a->currentState() == MODIFIED)
+      if (a->currentState() == Account::AccountEditState::MODIFIED)
          return KIcon("document-save");
-      else if (a->currentState() == OUTDATED) {
+      else if (a->currentState() == Account::AccountEditState::OUTDATED) {
          return KIcon("view-refresh");
       }
       return QVariant();

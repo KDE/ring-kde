@@ -88,6 +88,7 @@ private:
    explicit AccountListModel(QStringList& _accountIds);
    explicit AccountListModel(bool fill = true);
    ~AccountListModel();
+   void setupRoleName();
 
    //Attributes
    QVector<Account*>*       m_pAccounts      ;

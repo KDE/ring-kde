@@ -187,7 +187,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    }
 
    //There is no point to save something that is unaltered, all it will cause is daemon corruption
-   if (account->currentState() != NEW and account->currentState() != MODIFIED) {
+   if (account->currentState() != Account::AccountEditState::NEW and account->currentState() != Account::AccountEditState::MODIFIED) {
       kDebug() << "Nothing to be saved";
       return;
    }
@@ -273,8 +273,8 @@ void DlgAccounts::cancel()
 //    }
    const QVector<Account*> accs = AccountListModel::instance()->getAccounts();
    foreach (Account* a, accs) {
-      if (a->currentState() == MODIFIED || a->currentState() == OUTDATED)
-         a->performAction(CANCEL);
+      if (a->currentState() == Account::AccountEditState::MODIFIED || a->currentState() == Account::AccountEditState::OUTDATED)
+         a->performAction(Account::AccountEditAction::CANCEL);
    }
 }
 
@@ -502,7 +502,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    enablePublished();
    frame2_editAccounts->setEnabled(true);
    m_IsLoading--;
-   account->performAction(EDIT);
+   account->performAction(Account::AccountEditAction::EDIT);
    emit updateButtons();
 } //loadAccount
 
@@ -522,7 +522,7 @@ void DlgAccounts::changedAccountList()
    if (!m_IsLoading) {
       Account* acc = AccountListModel::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
       if (acc)
-         acc->performAction(MODIFY);
+         acc->performAction(Account::AccountEditAction::MODIFY);
       accountListHasChanged = true;
       emit updateButtons();
    }
@@ -542,8 +542,8 @@ void DlgAccounts::accountListChanged(QModelIndex current, QModelIndex previous)
 {
    saveAccount(previous);
    Account* acc = AccountListModel::instance()->getAccountByModelIndex(previous);
-   if (acc->currentState() == EDITING || acc->currentState() == OUTDATED)
-      acc->performAction(CANCEL);
+   if (acc->currentState() == Account::AccountEditState::EDITING || acc->currentState() == Account::AccountEditState::OUTDATED)
+      acc->performAction(Account::AccountEditAction::CANCEL);
    loadAccount(current);
    //updateAccountListCommands();
 }
@@ -747,8 +747,8 @@ void DlgAccounts::updateSettings()
 //             acc->performAction(AccountEditAction::SAVE);
 //          }
          saveAccount(listView_accountList->currentIndex());
-         if (acc->currentState() == EDITING || acc->currentState() == OUTDATED)
-            acc->performAction(CANCEL);
+         if (acc->currentState() == Account::AccountEditState::EDITING || acc->currentState() == Account::AccountEditState::OUTDATED)
+            acc->performAction(Account::AccountEditAction::CANCEL);
       }
 
       AccountListModel::instance()->save();

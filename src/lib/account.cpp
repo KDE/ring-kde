@@ -276,7 +276,7 @@ VideoCodecModel* Account::videoCodecModel()
    return m_pVideoCodecs;
 }
 
-void Account::setAccountAlias(QString detail)
+void Account::setAccountAlias(const QString& detail)
 {
    bool accChanged = detail != accountAlias();
    setAccountDetail(ACCOUNT_ALIAS,detail);
@@ -519,6 +519,92 @@ DtmfType Account::DTMFType() const
    return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
 }
 
+QVariant Account::roleData(int role) const
+{
+   switch(role) {
+      case Alias:
+         return accountAlias();
+      case Type:
+         return accountType();
+      case Hostname:
+         return accountHostname();
+      case Username:
+         return accountUsername();
+      case Mailbox:
+         return accountMailbox();
+      case Proxy:
+         return accountProxy();
+//       case Password:
+//          return accountPassword();
+      case TlsPassword:
+         return tlsPassword();
+      case TlsCaListFile:
+         return tlsCaListFile();
+      case TlsCertificateFile:
+         return tlsCertificateFile();
+      case TlsPrivateKeyFile:
+         return tlsPrivateKeyFile();
+      case TlsCiphers:
+         return tlsCiphers();
+      case TlsServerName:
+         return tlsServerName();
+      case SipStunServer:
+         return accountSipStunServer();
+      case PublishedAddress:
+         return publishedAddress();
+      case LocalInterface:
+         return localInterface();
+      case RingtonePath:
+         return ringtonePath();
+      case TlsMethod:
+         return tlsMethod();
+      case AccountRegistrationExpire:
+         return accountRegistrationExpire();
+      case TlsNegotiationTimeoutSec:
+         return tlsNegotiationTimeoutSec();
+      case TlsNegotiationTimeoutMsec:
+         return tlsNegotiationTimeoutMsec();
+      case LocalPort:
+         return localPort();
+      case TlsListenerPort:
+         return tlsListenerPort();
+      case PublishedPort:
+         return publishedPort();
+      case Enabled:
+         return isAccountEnabled();
+      case AutoAnswer:
+         return isAutoAnswer();
+      case TlsVerifyServer:
+         return isTlsVerifyServer();
+      case TlsVerifyClient:
+         return isTlsVerifyClient();
+      case TlsRequireClientCertificate:
+         return isTlsRequireClientCertificate();
+      case TlsEnable:
+         return isTlsEnable();
+      case DisplaySasOnce:
+         return isAccountDisplaySasOnce();
+      case SrtpRtpFallback:
+         return isAccountSrtpRtpFallback();
+      case ZrtpDisplaySas:
+         return isAccountZrtpDisplaySas();
+      case ZrtpNotSuppWarning:
+         return isAccountZrtpNotSuppWarning();
+      case ZrtpHelloHash:
+         return isAccountZrtpHelloHash();
+      case SipStunEnabled:
+         return isAccountSipStunEnabled();
+      case PublishedSameAsLocal:
+         return isPublishedSameAsLocal();
+      case RingtoneEnabled:
+         return isRingtoneEnabled();
+      case dTMFType:
+         return DTMFType();
+      default:
+         return QVariant();
+   }
+}
+
 
 /*****************************************************************************
  *                                                                           *
@@ -578,13 +664,13 @@ void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
 QList<VideoCodec*> getActiveVideoCodecList();
 #endif
 ///Set the account type, SIP or IAX
-void Account::setAccountType(QString detail)
+void Account::setAccountType(const QString& detail)
 {
    setAccountDetail(ACCOUNT_TYPE ,detail);
 }
 
 ///The set account hostname, it can be an hostname or an IP address
-void Account::setAccountHostname(QString detail)
+void Account::setAccountHostname(const QString& detail)
 {
    if (m_HostName != detail) {
       m_HostName = detail;
@@ -593,85 +679,85 @@ void Account::setAccountHostname(QString detail)
 }
 
 ///Set the account username, everything is valid, some might be rejected by the PBX server
-void Account::setAccountUsername(QString detail)
+void Account::setAccountUsername(const QString& detail)
 {
    setAccountDetail(ACCOUNT_USERNAME, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
-void Account::setAccountMailbox(QString detail)
+void Account::setAccountMailbox(const QString& detail)
 {
    setAccountDetail(ACCOUNT_MAILBOX, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
-void Account::setAccountProxy(QString detail)
+void Account::setAccountProxy(const QString& detail)
 {
    setAccountDetail(ACCOUNT_ROUTE, detail);
 }
 
 ///Set the main credential password
-void Account::setAccountPassword(QString detail)
+void Account::setAccountPassword(const QString& detail)
 {
    setAccountDetail(ACCOUNT_PASSWORD, detail);
 }
 
 ///Set the TLS (encryption) password
-void Account::setTlsPassword(QString detail)
+void Account::setTlsPassword(const QString& detail)
 {
    setAccountDetail(TLS_PASSWORD, detail);
 }
 
 ///Set the certificate authority list file
-void Account::setTlsCaListFile(QString detail)
+void Account::setTlsCaListFile(const QString& detail)
 {
    setAccountDetail(TLS_CA_LIST_FILE, detail);
 }
 
 ///Set the certificate
-void Account::setTlsCertificateFile(QString detail)
+void Account::setTlsCertificateFile(const QString& detail)
 {
    setAccountDetail(TLS_CERTIFICATE_FILE, detail);
 }
 
 ///Set the private key
-void Account::setTlsPrivateKeyFile(QString detail)
+void Account::setTlsPrivateKeyFile(const QString& detail)
 {
    setAccountDetail(TLS_PRIVATE_KEY_FILE, detail);
 }
 
 ///Set the TLS cipher
-void Account::setTlsCiphers(QString detail)
+void Account::setTlsCiphers(const QString& detail)
 {
    setAccountDetail(TLS_CIPHERS, detail);
 }
 
 ///Set the TLS server
-void Account::setTlsServerName(QString detail)
+void Account::setTlsServerName(const QString& detail)
 {
    setAccountDetail(TLS_SERVER_NAME, detail);
 }
 
 ///Set the stun server
-void Account::setAccountSipStunServer(QString detail)
+void Account::setAccountSipStunServer(const QString& detail)
 {
    setAccountDetail(ACCOUNT_SIP_STUN_SERVER, detail);
 }
 
 ///Set the published address
-void Account::setPublishedAddress(QString detail)
+void Account::setPublishedAddress(const QString& detail)
 {
    setAccountDetail(PUBLISHED_ADDRESS, detail);
 }
 
 ///Set the local interface
-void Account::setLocalInterface(QString detail)
+void Account::setLocalInterface(const QString& detail)
 {
    setAccountDetail(LOCAL_INTERFACE, detail);
 }
 
 ///Set the ringtone path, it have to be a valid absolute path
-void Account::setRingtonePath(QString detail)
+void Account::setRingtonePath(const QString& detail)
 {
    setAccountDetail(CONFIG_RINGTONE_PATH, detail);
 }
@@ -801,6 +887,90 @@ void Account::setDTMFType(DtmfType type)
    setAccountDetail(ACCOUNT_DTMF_TYPE,(type==OverRtp)?"overrtp":"oversip");
 }
 
+void Account::setRoleData(int role, const QVariant& value)
+{
+   switch(role) {
+      case Alias:
+         setAccountAlias(value.toString());
+      case Type:
+         setAccountType(value.toString());
+      case Hostname:
+         setAccountHostname(value.toString());
+      case Username:
+         setAccountUsername(value.toString());
+      case Mailbox:
+         setAccountMailbox(value.toString());
+      case Proxy:
+         setAccountProxy(value.toString());
+//       case Password:
+//          accountPassword();
+      case TlsPassword:
+         setTlsPassword(value.toString());
+      case TlsCaListFile:
+         setTlsCaListFile(value.toString());
+      case TlsCertificateFile:
+         setTlsCertificateFile(value.toString());
+      case TlsPrivateKeyFile:
+         setTlsPrivateKeyFile(value.toString());
+      case TlsCiphers:
+         setTlsCiphers(value.toString());
+      case TlsServerName:
+         setTlsServerName(value.toString());
+      case SipStunServer:
+         setAccountSipStunServer(value.toString());
+      case PublishedAddress:
+         setPublishedAddress(value.toString());
+      case LocalInterface:
+         setLocalInterface(value.toString());
+      case RingtonePath:
+         setRingtonePath(value.toString());
+      case TlsMethod:
+         setTlsMethod(value.toInt());
+      case AccountRegistrationExpire:
+         setAccountRegistrationExpire(value.toInt());
+      case TlsNegotiationTimeoutSec:
+         setTlsNegotiationTimeoutSec(value.toInt());
+      case TlsNegotiationTimeoutMsec:
+         setTlsNegotiationTimeoutMsec(value.toInt());
+      case LocalPort:
+         setLocalPort(value.toInt());
+      case TlsListenerPort:
+         setTlsListenerPort(value.toInt());
+      case PublishedPort:
+         setPublishedPort(value.toInt());
+      case Enabled:
+         setAccountEnabled(value.toBool());
+      case AutoAnswer:
+         setAutoAnswer(value.toBool());
+      case TlsVerifyServer:
+         setTlsVerifyServer(value.toBool());
+      case TlsVerifyClient:
+         setTlsVerifyClient(value.toBool());
+      case TlsRequireClientCertificate:
+         setTlsRequireClientCertificate(value.toBool());
+      case TlsEnable:
+         setTlsEnable(value.toBool());
+      case DisplaySasOnce:
+         setAccountDisplaySasOnce(value.toBool());
+      case SrtpRtpFallback:
+         setAccountSrtpRtpFallback(value.toBool());
+      case ZrtpDisplaySas:
+         setAccountZrtpDisplaySas(value.toBool());
+      case ZrtpNotSuppWarning:
+         setAccountZrtpNotSuppWarning(value.toBool());
+      case ZrtpHelloHash:
+         setAccountZrtpHelloHash(value.toBool());
+      case SipStunEnabled:
+         setAccountSipStunEnabled(value.toBool());
+      case PublishedSameAsLocal:
+         setPublishedSameAsLocal(value.toBool());
+      case RingtoneEnabled:
+         setRingtoneEnabled(value.toBool());
+      case dTMFType:
+         setDTMFType((DtmfType)value.toInt());
+   }
+}
+
 
 /*****************************************************************************
  *                                                                           *
@@ -815,7 +985,7 @@ bool Account::performAction(AccountEditAction action)
    return curState != m_CurrentState;
 }
 
-AccountEditState Account::currentState() const
+Account::AccountEditState Account::currentState() const
 {
    return m_CurrentState;
 }
@@ -852,10 +1022,10 @@ void Account::save()
       const QString currentId = configurationManager.addAccount(details);
 
       //Be sure there is audio codec enabled to avoid obscure error messages for the user
-      QVector<int> codecIdList = configurationManager.getAudioCodecList();
+      const QVector<int> codecIdList = configurationManager.getAudioCodecList();
       foreach (const int aCodec, codecIdList) {
-         QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
-         QModelIndex idx = m_pAudioCodecs->addAudioCodec();
+         const QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
+         const QModelIndex idx = m_pAudioCodecs->addAudioCodec();
          m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::Role::NAME       );
          m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::Role::SAMPLERATE );
          m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::Role::BITRATE    );
