@@ -26,7 +26,7 @@
 
 #include "account.h"
 #include "typedefs.h"
-#include "dbus/metatypes.h"
+// #include "dbus/metatypes.h"
 
 class AccountListColorVisitor;
 
@@ -47,8 +47,8 @@ public:
    const QVector<Account*>& getAccounts            (                         );
    QVector<Account*>        getAccountsByState     ( const QString& state    );
    QString                  getOrderedList         (                         ) const;
-   Account*                 getAccountById         ( const QString& id       ) const;
-   Account*                 getAccountAt           ( int i                   );
+   Q_INVOKABLE Account*     getAccountById         ( const QString& id       ) const;
+   Q_INVOKABLE Account*     getAccountAt           ( int i                   );
    const Account*           getAccountAt           ( int i                   ) const;
    int                      size                   (                         ) const;
    Account*                 firstRegisteredAccount (                         ) const;
@@ -56,7 +56,6 @@ public:
    static Account*          currentAccount         (                         );
    Account*                 getAccountByModelIndex ( const QModelIndex& item ) const;
    static QString           getSimilarAliasIndex   ( const QString& alias    );
-   static Account*          getPriorAccount        (                         );
    AccountListColorVisitor* colorVisitor           (                         );
 
    //Abstract model accessors
@@ -71,13 +70,13 @@ public:
    void         setDefaultAccount(Account* a);
 
    //Mutators
-   virtual Account*  addAccount          ( const QString & alias   )      ;
-   void              removeAccount       ( Account* account        )      ;
-   void              removeAccount       ( QModelIndex index       )      ;
-   QVector<Account*> registeredAccounts  (                         ) const;
-   void              save                (                         )      ;
-   bool              accountUp           ( int index               )      ;
-   bool              accountDown         ( int index               )      ;
+   Q_INVOKABLE Account* addAccount          ( const QString & alias   )      ;
+   Q_INVOKABLE void     removeAccount       ( Account* account        )      ;
+   void                 removeAccount       ( QModelIndex index       )      ;
+   QVector<Account*>    registeredAccounts  (                         ) const;
+   void                 save                (                         )      ;
+   Q_INVOKABLE bool     accountUp           ( int index               )      ;
+   Q_INVOKABLE bool     accountDown         ( int index               )      ;
 
    //Operators
    Account*       operator[] (int i)      ;

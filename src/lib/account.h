@@ -29,7 +29,7 @@ class QString;
 #include "videocodecmodel.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
-#include "dbus/metatypes.h"
+// #include "dbus/metatypes.h"
 class CredentialModel;
 class AudioCodecModel;
 class VideoCodecModel;
@@ -91,6 +91,7 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           publishedSameAsLocal         READ isPublishedSameAsLocal        WRITE setPublishedSameAsLocal        )
    Q_PROPERTY(bool           ringtoneEnabled              READ isRingtoneEnabled             WRITE setRingtoneEnabled             )
    Q_PROPERTY(DtmfType       dTMFType                     READ DTMFType                      WRITE setDTMFType                    )
+   Q_PROPERTY(QString        typeName                     READ accountType                   WRITE setAccountType                 )
 
    public:
       ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
@@ -172,6 +173,9 @@ class LIB_EXPORT Account : public QObject {
          PublishedSameAsLocal        = 136,
          RingtoneEnabled             = 137,
          dTMFType                    = 138,
+         id                          = 139,
+         Object                      = 140,
+         TypeName                    = 141,
       };
 
       /**
@@ -193,9 +197,9 @@ class LIB_EXPORT Account : public QObject {
       QString                 stateColorName()                    const;
       QVariant                stateColor()                        const;
 
-      CredentialModel*        credentialsModel();
-      AudioCodecModel*        audioCodecModel() ;
-      VideoCodecModel*        videoCodecModel() ;
+      Q_INVOKABLE CredentialModel*        credentialsModel();
+      Q_INVOKABLE AudioCodecModel*        audioCodecModel() ;
+      Q_INVOKABLE VideoCodecModel*        videoCodecModel() ;
 
       ///Return the account hostname
       QString accountHostname              () const;
@@ -295,10 +299,10 @@ class LIB_EXPORT Account : public QObject {
       bool operator==(const Account&)const;
 
       //Mutator
-      void saveCredentials  ();
-      void saveAudioCodecs  ();
-      void reloadCredentials();
-      void reloadAudioCodecs();
+      Q_INVOKABLE void saveCredentials  ();
+      Q_INVOKABLE void saveAudioCodecs  ();
+      Q_INVOKABLE void reloadCredentials();
+      Q_INVOKABLE void reloadAudioCodecs();
 
    protected:
       //Constructors
@@ -350,4 +354,6 @@ class LIB_EXPORT Account : public QObject {
       ///The alias changed, take effect instantaneously
       void aliasChanged(const QString&);
 };
+// Q_DISABLE_COPY(Account)
+Q_DECLARE_METATYPE(Account*)
 #endif

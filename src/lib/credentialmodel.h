@@ -62,5 +62,6 @@ private:
    //Attributes
    QList<CredentialData2*> m_lCredentials;
 };
+Q_DECLARE_METATYPE(CredentialModel*)
 
 #endif

@@ -137,6 +137,9 @@ void AccountListModel::setupRoleName()
    roles.insert(Account::Role::PublishedSameAsLocal     ,QByteArray("publishedSameAsLocal"          ));
    roles.insert(Account::Role::RingtoneEnabled          ,QByteArray("ringtoneEnabled"               ));
    roles.insert(Account::Role::dTMFType                 ,QByteArray("dTMFType"                      ));
+   roles.insert(Account::Role::id                       ,QByteArray("id"                            ));
+   roles.insert(Account::Role::Object                   ,QByteArray("object"                        ));
+   roles.insert(Account::Role::TypeName                 ,QByteArray("typeName"                      ));
    setRoleNames(roles);
 }
 
@@ -455,12 +458,6 @@ int AccountListModel::rowCount(const QModelIndex& parentIdx) const
 Account* AccountListModel::getAccountByModelIndex(const QModelIndex& item) const
 {
    return (*m_pAccounts)[item.row()];
-}
-
-///Return the prior account
-Account* AccountListModel::getPriorAccount()
-{
-   return m_spPriorAccount;
 }
 
 AccountListColorVisitor* AccountListModel::colorVisitor()

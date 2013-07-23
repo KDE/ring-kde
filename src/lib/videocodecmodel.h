@@ -37,8 +37,11 @@ class LIB_EXPORT VideoCodecModel : public QAbstractListModel {
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
-   friend class Account;
+
 public:
+   //Private constructor, can only be called by 'Account'
+   explicit VideoCodecModel(Account* account = nullptr);
+
    //Roles
    static const int BITRATE_ROLE = 101;
 
@@ -54,13 +57,11 @@ public:
    bool moveDown(QModelIndex idx);
    
 private:
-   //Private constructor, can only be called by 'Account'
-   explicit VideoCodecModel(Account* account);
-
    //Attrbutes
    QList<VideoCodec*> m_lCodecs;
    Account*           m_pAccount;
 };
+Q_DECLARE_METATYPE(VideoCodecModel*)
 
 ///VideoCodec: Codecs used for video calls
 class LIB_EXPORT VideoCodec {

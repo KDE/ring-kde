@@ -49,10 +49,10 @@ public:
 
    //Mutator
    QModelIndex addAudioCodec();
-   void removeAudioCodec ( QModelIndex idx );
-   bool moveUp           ( QModelIndex idx );
-   bool moveDown         ( QModelIndex idx );
-   void clear            (                 );
+   Q_INVOKABLE void removeAudioCodec ( QModelIndex idx );
+   Q_INVOKABLE bool moveUp           ( QModelIndex idx );
+   Q_INVOKABLE bool moveDown         ( QModelIndex idx );
+   Q_INVOKABLE void clear            (                 );
 
 private:
    ///@struct AudioCodecData store audio codec information
@@ -67,5 +67,6 @@ private:
    QList<AudioCodecData*> m_lAudioCodecs  ;
    QMap<int,bool>         m_lEnabledCodecs;
 };
+Q_DECLARE_METATYPE(AudioCodecModel*)
 
 #endif

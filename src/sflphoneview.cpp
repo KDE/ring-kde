@@ -999,7 +999,7 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
    menu.addSeparator();
 
    QAction* action = new ActionSetAccountFirst(nullptr, &menu);
-   action->setChecked(AccountListModel::getPriorAccount() == nullptr);
+//    action->setChecked(AccountListModel::getPriorAccount() == nullptr);
    connect(action,  SIGNAL(setFirst(Account*)), this  ,  SLOT(setAccountFirst(Account*)));
    menu.addAction(action);
 
@@ -1007,7 +1007,7 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
    for (int i = 0 ; i < accounts.size() ; i++) {
       Account* account = accounts.at(i);
       QAction* action = new ActionSetAccountFirst(account, &menu);
-      action->setChecked(account == AccountListModel::getPriorAccount());
+//       action->setChecked(account == AccountListModel::getPriorAccount());
       connect(action, SIGNAL(setFirst(Account*)), this  , SLOT(setAccountFirst(Account*)));
       menu.addAction(action);
    }

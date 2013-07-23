@@ -522,84 +522,93 @@ DtmfType Account::DTMFType() const
 QVariant Account::roleData(int role) const
 {
    switch(role) {
-      case Alias:
+      case Account::Role::Alias:
          return accountAlias();
-      case Type:
+      case Account::Role::Type:
          return accountType();
-      case Hostname:
+      case Account::Role::Hostname:
          return accountHostname();
-      case Username:
+      case Account::Role::Username:
          return accountUsername();
-      case Mailbox:
+      case Account::Role::Mailbox:
          return accountMailbox();
-      case Proxy:
+      case Account::Role::Proxy:
          return accountProxy();
 //       case Password:
 //          return accountPassword();
-      case TlsPassword:
+      case Account::Role::TlsPassword:
          return tlsPassword();
-      case TlsCaListFile:
+      case Account::Role::TlsCaListFile:
          return tlsCaListFile();
-      case TlsCertificateFile:
+      case Account::Role::TlsCertificateFile:
          return tlsCertificateFile();
-      case TlsPrivateKeyFile:
+      case Account::Role::TlsPrivateKeyFile:
          return tlsPrivateKeyFile();
-      case TlsCiphers:
+      case Account::Role::TlsCiphers:
          return tlsCiphers();
-      case TlsServerName:
+      case Account::Role::TlsServerName:
          return tlsServerName();
-      case SipStunServer:
+      case Account::Role::SipStunServer:
          return accountSipStunServer();
-      case PublishedAddress:
+      case Account::Role::PublishedAddress:
          return publishedAddress();
-      case LocalInterface:
+      case Account::Role::LocalInterface:
          return localInterface();
-      case RingtonePath:
+      case Account::Role::RingtonePath:
          return ringtonePath();
-      case TlsMethod:
+      case Account::Role::TlsMethod:
          return tlsMethod();
-      case AccountRegistrationExpire:
+      case Account::Role::AccountRegistrationExpire:
          return accountRegistrationExpire();
-      case TlsNegotiationTimeoutSec:
+      case Account::Role::TlsNegotiationTimeoutSec:
          return tlsNegotiationTimeoutSec();
-      case TlsNegotiationTimeoutMsec:
+      case Account::Role::TlsNegotiationTimeoutMsec:
          return tlsNegotiationTimeoutMsec();
-      case LocalPort:
+      case Account::Role::LocalPort:
          return localPort();
-      case TlsListenerPort:
+      case Account::Role::TlsListenerPort:
          return tlsListenerPort();
-      case PublishedPort:
+      case Account::Role::PublishedPort:
          return publishedPort();
-      case Enabled:
+      case Account::Role::Enabled:
          return isAccountEnabled();
-      case AutoAnswer:
+      case Account::Role::AutoAnswer:
          return isAutoAnswer();
-      case TlsVerifyServer:
+      case Account::Role::TlsVerifyServer:
          return isTlsVerifyServer();
-      case TlsVerifyClient:
+      case Account::Role::TlsVerifyClient:
          return isTlsVerifyClient();
-      case TlsRequireClientCertificate:
+      case Account::Role::TlsRequireClientCertificate:
          return isTlsRequireClientCertificate();
-      case TlsEnable:
+      case Account::Role::TlsEnable:
          return isTlsEnable();
-      case DisplaySasOnce:
+      case Account::Role::DisplaySasOnce:
          return isAccountDisplaySasOnce();
-      case SrtpRtpFallback:
+      case Account::Role::SrtpRtpFallback:
          return isAccountSrtpRtpFallback();
-      case ZrtpDisplaySas:
+      case Account::Role::ZrtpDisplaySas:
          return isAccountZrtpDisplaySas();
-      case ZrtpNotSuppWarning:
+      case Account::Role::ZrtpNotSuppWarning:
          return isAccountZrtpNotSuppWarning();
-      case ZrtpHelloHash:
+      case Account::Role::ZrtpHelloHash:
          return isAccountZrtpHelloHash();
-      case SipStunEnabled:
+      case Account::Role::SipStunEnabled:
          return isAccountSipStunEnabled();
-      case PublishedSameAsLocal:
+      case Account::Role::PublishedSameAsLocal:
          return isPublishedSameAsLocal();
-      case RingtoneEnabled:
+      case Account::Role::RingtoneEnabled:
          return isRingtoneEnabled();
-      case dTMFType:
+      case Account::Role::dTMFType:
          return DTMFType();
+      case Account::Role::id:
+         return accountId();
+      case Account::Role::Object: {
+         QVariant var;
+         var.setValue((Account*)this);
+         return var;
+      }
+      case Account::Role::TypeName:
+         return accountType();
       default:
          return QVariant();
    }
@@ -890,84 +899,86 @@ void Account::setDTMFType(DtmfType type)
 void Account::setRoleData(int role, const QVariant& value)
 {
    switch(role) {
-      case Alias:
+      case Account::Role::Alias:
          setAccountAlias(value.toString());
-      case Type:
+      case Account::Role::Type:
          setAccountType(value.toString());
-      case Hostname:
+      case Account::Role::Hostname:
          setAccountHostname(value.toString());
-      case Username:
+      case Account::Role::Username:
          setAccountUsername(value.toString());
-      case Mailbox:
+      case Account::Role::Mailbox:
          setAccountMailbox(value.toString());
-      case Proxy:
+      case Account::Role::Proxy:
          setAccountProxy(value.toString());
 //       case Password:
 //          accountPassword();
-      case TlsPassword:
+      case Account::Role::TlsPassword:
          setTlsPassword(value.toString());
-      case TlsCaListFile:
+      case Account::Role::TlsCaListFile:
          setTlsCaListFile(value.toString());
-      case TlsCertificateFile:
+      case Account::Role::TlsCertificateFile:
          setTlsCertificateFile(value.toString());
-      case TlsPrivateKeyFile:
+      case Account::Role::TlsPrivateKeyFile:
          setTlsPrivateKeyFile(value.toString());
-      case TlsCiphers:
+      case Account::Role::TlsCiphers:
          setTlsCiphers(value.toString());
-      case TlsServerName:
+      case Account::Role::TlsServerName:
          setTlsServerName(value.toString());
-      case SipStunServer:
+      case Account::Role::SipStunServer:
          setAccountSipStunServer(value.toString());
-      case PublishedAddress:
+      case Account::Role::PublishedAddress:
          setPublishedAddress(value.toString());
-      case LocalInterface:
+      case Account::Role::LocalInterface:
          setLocalInterface(value.toString());
-      case RingtonePath:
+      case Account::Role::RingtonePath:
          setRingtonePath(value.toString());
-      case TlsMethod:
+      case Account::Role::TlsMethod:
          setTlsMethod(value.toInt());
-      case AccountRegistrationExpire:
+      case Account::Role::AccountRegistrationExpire:
          setAccountRegistrationExpire(value.toInt());
-      case TlsNegotiationTimeoutSec:
+      case Account::Role::TlsNegotiationTimeoutSec:
          setTlsNegotiationTimeoutSec(value.toInt());
-      case TlsNegotiationTimeoutMsec:
+      case Account::Role::TlsNegotiationTimeoutMsec:
          setTlsNegotiationTimeoutMsec(value.toInt());
-      case LocalPort:
+      case Account::Role::LocalPort:
          setLocalPort(value.toInt());
-      case TlsListenerPort:
+      case Account::Role::TlsListenerPort:
          setTlsListenerPort(value.toInt());
-      case PublishedPort:
+      case Account::Role::PublishedPort:
          setPublishedPort(value.toInt());
-      case Enabled:
+      case Account::Role::Enabled:
          setAccountEnabled(value.toBool());
-      case AutoAnswer:
+      case Account::Role::AutoAnswer:
          setAutoAnswer(value.toBool());
-      case TlsVerifyServer:
+      case Account::Role::TlsVerifyServer:
          setTlsVerifyServer(value.toBool());
-      case TlsVerifyClient:
+      case Account::Role::TlsVerifyClient:
          setTlsVerifyClient(value.toBool());
-      case TlsRequireClientCertificate:
+      case Account::Role::TlsRequireClientCertificate:
          setTlsRequireClientCertificate(value.toBool());
-      case TlsEnable:
+      case Account::Role::TlsEnable:
          setTlsEnable(value.toBool());
-      case DisplaySasOnce:
+      case Account::Role::DisplaySasOnce:
          setAccountDisplaySasOnce(value.toBool());
-      case SrtpRtpFallback:
+      case Account::Role::SrtpRtpFallback:
          setAccountSrtpRtpFallback(value.toBool());
-      case ZrtpDisplaySas:
+      case Account::Role::ZrtpDisplaySas:
          setAccountZrtpDisplaySas(value.toBool());
-      case ZrtpNotSuppWarning:
+      case Account::Role::ZrtpNotSuppWarning:
          setAccountZrtpNotSuppWarning(value.toBool());
-      case ZrtpHelloHash:
+      case Account::Role::ZrtpHelloHash:
          setAccountZrtpHelloHash(value.toBool());
-      case SipStunEnabled:
+      case Account::Role::SipStunEnabled:
          setAccountSipStunEnabled(value.toBool());
-      case PublishedSameAsLocal:
+      case Account::Role::PublishedSameAsLocal:
          setPublishedSameAsLocal(value.toBool());
-      case RingtoneEnabled:
+      case Account::Role::RingtoneEnabled:
          setRingtoneEnabled(value.toBool());
-      case dTMFType:
+      case Account::Role::dTMFType:
          setDTMFType((DtmfType)value.toInt());
+      case Account::Role::id:
+         setAccountId(value.toString());
    }
 }
 
