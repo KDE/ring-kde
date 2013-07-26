@@ -392,15 +392,12 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
 
 QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentIdx) const
 {
-   if (!parentIdx.isValid()) {
+   if (!parentIdx.isValid() && m_lCategoryCounter.size() > row) {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
-   else if (!parentIdx.parent().isValid() && column < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
+   else if (!parentIdx.parent().isValid() && m_lCategoryCounter.size() > parentIdx.row() && row < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
       return createIndex(row,column,(void*)dynamic_cast<HistoryTreeBackend*>(m_lCategoryCounter[parentIdx.row()]->m_lChildren[row]));
    }
-//    else if (parent.parent().isValid()) {
-//       return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->getPhoneNumbers());
-//    }
    return QModelIndex();
 }
 

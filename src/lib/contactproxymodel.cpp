@@ -22,8 +22,6 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QCoreApplication>
 
-#include <klocale.h>
-
 #include "../lib/abstractcontactbackend.h"
 #include "../lib/callmodel.h"
 #include "../lib/historymodel.h"
