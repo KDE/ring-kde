@@ -392,10 +392,10 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
 
 QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentIdx) const
 {
-   if (!parentIdx.isValid() && m_lCategoryCounter.size() > row) {
+   if (!parentIdx.isValid() && row >= 0 && m_lCategoryCounter.size() > row) {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
-   else if (!parentIdx.parent().isValid() && m_lCategoryCounter.size() > parentIdx.row() && row < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
+   else if (!parentIdx.parent().isValid() && row >= 0 && parentIdx.row() >= 0 && m_lCategoryCounter.size() > parentIdx.row() && row < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
       return createIndex(row,column,(void*)dynamic_cast<HistoryTreeBackend*>(m_lCategoryCounter[parentIdx.row()]->m_lChildren[row]));
    }
    return QModelIndex();
