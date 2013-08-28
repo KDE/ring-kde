@@ -108,15 +108,15 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
       a = AccountListModel::instance()->getDefaultAccount();
 
    if (number.indexOf('@') == -1 && a)
-      return m_ContactByPhone[number+'@'+a->accountHostname()];
+      return m_ContactByPhone[number+'@'+a->hostname()];
 
    //Use default resolve account to trim hostname away from the number
    Contact* userOnly = m_ContactByPhone[getUserFromPhone(number).trimmed()];
    const QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
    if (resolveDNS && !defaultResolveAccount.isEmpty() && number.indexOf('@') != -1) {
       const Account* defResolveAcc = AccountListModel::instance()->getAccountById(defaultResolveAccount);
-      const QString hostname = defResolveAcc?defResolveAcc->accountHostname():QString();
-      if (defResolveAcc && hostname == number.right(hostname.size())) {
+      const QString host = defResolveAcc?defResolveAcc->hostname():QString();
+      if (defResolveAcc && host == number.right(host.size())) {
          return userOnly;
       }
    }
@@ -124,7 +124,7 @@ Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resol
    //Try to find something matching, but at this point it is not 100% sure it is the right one
    if (resolveDNS && number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && userOnly) {
       foreach (const Account* a, AccountListModel::instance()->getAccounts()) {
-         if (a->accountHostname() == getHostNameFromPhone(number) && userOnly)
+         if (a->hostname() == getHostNameFromPhone(number) && userOnly)
             return userOnly;
       }
    }
@@ -217,8 +217,8 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
 
                m_ContactByPhone[number2] = aContact;
 
-               if (number2.size() <= 6 && defaultAccount && !defaultAccount->accountHostname().isEmpty())
-                  m_ContactByPhone[number2+'@'+defaultAccount->accountHostname()] = aContact;
+               if (number2.size() <= 6 && defaultAccount && !defaultAccount->hostname().isEmpty())
+                  m_ContactByPhone[number2+'@'+defaultAccount->hostname()] = aContact;
             }
             m_ContactByUid[tmp.uid()] = aContact;
 

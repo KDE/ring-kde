@@ -161,7 +161,7 @@ bool Account::isNew() const
 }
 
 ///Get this account ID
-const QString Account::accountId() const
+const QString Account::id() const
 {
    if (isNew()) {
       qDebug() << "Error : getting AccountId of a new account.";
@@ -208,14 +208,6 @@ const QString Account::alias() const
    return accountDetail(ACCOUNT_ALIAS);
 }
 
-///Is this account enabled
-bool Account::isEnabled() const
-{
-   //getAccountRegistrationStatus() != ACCOUNT_STATE_UNREGISTERED should not happen, but it does, it is not managed because both client trying to 
-   //set the state would fight to the daeth to set the enabled boolean
-   return (accountDetail(ACCOUNT_ENABLED) == REGISTRATION_ENABLED_TRUE);
-}
-
 ///Is this account registered
 bool Account::isRegistered() const
 {
@@ -225,8 +217,8 @@ bool Account::isRegistered() const
 ///Return the model index of this item
 QModelIndex Account::index()
 {
-   for (int i=0;i < AccountListModel::instance()->m_pAccounts->size();i++) {
-      if (this == (*AccountListModel::instance()->m_pAccounts)[i]) {
+   for (int i=0;i < AccountListModel::instance()->m_lAccounts.size();i++) {
+      if (this == (AccountListModel::instance()->m_lAccounts)[i]) {
          return AccountListModel::instance()->index(i,0);
       }
    }
@@ -278,20 +270,20 @@ VideoCodecModel* Account::videoCodecModel()
 
 void Account::setAccountAlias(const QString& detail)
 {
-   bool accChanged = detail != accountAlias();
+   bool accChanged = detail != alias();
    setAccountDetail(ACCOUNT_ALIAS,detail);
    if (accChanged)
       emit aliasChanged(detail);
 }
 
 ///Return the account hostname
-QString Account::accountHostname() const
+QString Account::hostname() const
 {
    return m_HostName;
 }
 
 ///Return if the account is enabled
-bool Account::isAccountEnabled() const 
+bool Account::isEnabled() const
 {
    return (accountDetail(ACCOUNT_ENABLED)  == "true")?1:0;
 }
@@ -303,19 +295,19 @@ bool Account::isAutoAnswer() const
 }
 
 ///Return the account user name
-QString Account::accountUsername() const
+QString Account::username() const
 {
    return accountDetail(ACCOUNT_USERNAME);
 }
 
 ///Return the account mailbox address
-QString Account::accountMailbox() const 
+QString Account::mailbox() const
 {
    return accountDetail(ACCOUNT_MAILBOX);
 }
 
 ///Return the account mailbox address
-QString Account::accountProxy() const
+QString Account::proxy() const
 {
    return accountDetail(ACCOUNT_ROUTE);
 }
@@ -470,12 +462,6 @@ int Account::tlsMethod() const
    return accountDetail(TLS_METHOD).toInt();
 }
 
-///Return the account alias
-QString Account::accountAlias() const
-{
-   return accountDetail(ACCOUNT_ALIAS);
-}
-
 ///Return if the ringtone are enabled
 bool Account::isRingtoneEnabled() const
 {
@@ -523,17 +509,17 @@ QVariant Account::roleData(int role) const
 {
    switch(role) {
       case Account::Role::Alias:
-         return accountAlias();
+         return alias();
       case Account::Role::Type:
          return accountType();
       case Account::Role::Hostname:
-         return accountHostname();
+         return hostname();
       case Account::Role::Username:
-         return accountUsername();
+         return username();
       case Account::Role::Mailbox:
-         return accountMailbox();
+         return mailbox();
       case Account::Role::Proxy:
-         return accountProxy();
+         return proxy();
 //       case Password:
 //          return accountPassword();
       case Account::Role::TlsPassword:
@@ -571,7 +557,7 @@ QVariant Account::roleData(int role) const
       case Account::Role::PublishedPort:
          return publishedPort();
       case Account::Role::Enabled:
-         return isAccountEnabled();
+         return isEnabled();
       case Account::Role::AutoAnswer:
          return isAutoAnswer();
       case Account::Role::TlsVerifyServer:
@@ -600,8 +586,8 @@ QVariant Account::roleData(int role) const
          return isRingtoneEnabled();
       case Account::Role::dTMFType:
          return DTMFType();
-      case Account::Role::id:
-         return accountId();
+      case Account::Role::Id:
+         return id();
       case Account::Role::Object: {
          QVariant var;
          var.setValue((Account*)this);
@@ -977,7 +963,7 @@ void Account::setRoleData(int role, const QVariant& value)
          setRingtoneEnabled(value.toBool());
       case Account::Role::dTMFType:
          setDTMFType((DtmfType)value.toInt());
-      case Account::Role::id:
+      case Account::Role::Id:
          setAccountId(value.toString());
    }
 }
@@ -1008,7 +994,7 @@ bool Account::updateState()
 {
    if(! isNew()) {
       ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
-      const MapStringString details       = configurationManager.getAccountDetails(accountId()).value();
+      const MapStringString details       = configurationManager.getAccountDetails(id()).value();
       const QString         status        = details[ACCOUNT_REGISTRATION_STATUS];
       const QString         currentStatus = accountRegistrationStatus();
       setAccountDetail(ACCOUNT_REGISTRATION_STATUS, status); //Update -internal- object state
@@ -1056,15 +1042,15 @@ void Account::save()
          iter.next();
          tmp[iter.key()] = iter.value();
       }
-      configurationManager.setAccountDetails(accountId(), tmp);
+      configurationManager.setAccountDetails(id(), tmp);
    }
 
-   //QString id = configurationManager.getAccountDetail(accountId());
-   if (!accountId().isEmpty()) {
-      Account* acc =  AccountListModel::instance()->getAccountById(accountId());
-      qDebug() << "Adding the new account to the account list (" << accountId() << ")";
+   //QString id = configurationManager.getAccountDetail(id());
+   if (!id().isEmpty()) {
+      Account* acc =  AccountListModel::instance()->getAccountById(id());
+      qDebug() << "Adding the new account to the account list (" << id() << ")";
       if (acc != this) {
-         (*AccountListModel::instance()->m_pAccounts) << this;
+         (AccountListModel::instance()->m_lAccounts) << this;
       }
 
       performAction(AccountEditAction::RELOAD);
@@ -1081,9 +1067,9 @@ void Account::save()
 ///sync with the daemon, this need to be done manually to prevent reloading the account while it is being edited
 void Account::reload()
 {
-   qDebug() << "Reloading" << accountId();
+   qDebug() << "Reloading" << id() << alias();
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   QMap<QString,QString> aDetails = configurationManager.getAccountDetails(accountId());
+   QMap<QString,QString> aDetails = configurationManager.getAccountDetails(id());
 
    if (!aDetails.count()) {
       qDebug() << "Account not found";
@@ -1111,7 +1097,7 @@ void Account::reloadCredentials()
    if (!isNew()) {
       m_pCredentials->clear();
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-      VectorMapStringString credentials = configurationManager.getCredentials(accountId());
+      VectorMapStringString credentials = configurationManager.getCredentials(id());
       for (int i=0; i < credentials.size(); i++) {
          QModelIndex idx = m_pCredentials->addCredentials();
          m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_USERNAME  ],CredentialModel::Role::NAME    );
@@ -1129,22 +1115,22 @@ void Account::saveCredentials() {
       for (int i=0; i < m_pCredentials->rowCount();i++) {
          QModelIndex idx = m_pCredentials->index(i,0);
          MapStringString credentialData;
-         QString username = m_pCredentials->data(idx,CredentialModel::Role::NAME).toString();
+         QString user = m_pCredentials->data(idx,CredentialModel::Role::NAME).toString();
          QString realm = m_pCredentials->data(idx,CredentialModel::Role::REALM).toString();
-         if (username.isEmpty()) {
-            username = accountUsername();
-            m_pCredentials->setData(idx,username,CredentialModel::Role::NAME);
+         if (user.isEmpty()) {
+            user = username();
+            m_pCredentials->setData(idx,user,CredentialModel::Role::NAME);
          }
          if (realm.isEmpty()) {
             realm = '*';
             m_pCredentials->setData(idx,realm,CredentialModel::Role::REALM);
          }
-         credentialData[ CONFIG_ACCOUNT_USERNAME] = username;
+         credentialData[ CONFIG_ACCOUNT_USERNAME] = user;
          credentialData[ CONFIG_ACCOUNT_PASSWORD] = m_pCredentials->data(idx,CredentialModel::Role::PASSWORD).toString();
          credentialData[ CONFIG_ACCOUNT_REALM   ] = realm;
          toReturn << credentialData;
       }
-      configurationManager.setCredentials(accountId(),toReturn);
+      configurationManager.setCredentials(id(),toReturn);
    }
 }
 
@@ -1158,7 +1144,7 @@ void Account::reloadAudioCodecs()
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QVector<int> codecIdList = configurationManager.getAudioCodecList();
    if (!isNew()) {
-      QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(accountId());
+      QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(id());
       QStringList tmpNameList;
 
       foreach (const int aCodec, activeCodecList) {
@@ -1198,7 +1184,7 @@ void Account::saveAudioCodecs() {
       }
 
       ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
-      configurationManager.setActiveAudioCodecList(_codecList, accountId());
+      configurationManager.setActiveAudioCodecList(_codecList, id());
    }
 }
 

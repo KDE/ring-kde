@@ -82,7 +82,7 @@ void VideoCodecModel::reload()
 {
    m_lCodecs.clear();
    VideoInterface& interface = DBus::VideoManager::instance();
-   const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->accountId());
+   const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->id());
    foreach(const MapStringString& h,codecs) {
       VideoCodec* c = new VideoCodec(h["name"],h["bitrate"].toInt(),h["enabled"]=="true");
       m_lCodecs << c;
@@ -102,7 +102,7 @@ void VideoCodecModel::save()
       details[ "enabled" ] = vc->enabled()?"true":"false";
       toSave << details;
    }
-   interface.setCodecs(m_pAccount->accountId(),toSave);
+   interface.setCodecs(m_pAccount->id(),toSave);
 }
 
 ///Increase codec priority

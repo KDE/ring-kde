@@ -278,7 +278,7 @@ void SFLPhoneEngine::updateContacts()
 ///Update other information
 void SFLPhoneEngine::updateInfo()
 {
-   setData("info", I18N_NOOP("Current_account"), AccountListModel::currentAccount()->accountId());
+   setData("info", I18N_NOOP("Current_account"), AccountListModel::currentAccount()->id());
 }
 
 ///Load/Update account list
@@ -288,7 +288,7 @@ void SFLPhoneEngine::updateAccounts()
    foreach(Account* a,list) {
       if (dynamic_cast<Account*>(a)) {
          QHash<QString,QVariant> acc;
-         acc[ "id"   ] = a->accountId()                 ;
+         acc[ "id"   ] = a->id()                 ;
          acc[ "alias"] = a->accountDetail(ACCOUNT_ALIAS);
          setData("accounts", QString::number(rand()) , acc);
       }

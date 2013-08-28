@@ -249,7 +249,7 @@ Call* Call::buildExistingCall(QString callId)
 ///Build a call from a dialing call (a call that is about to exist)
 Call* Call::buildDialingCall(QString callId, const QString & peerName, Account* account)
 {
-   Call* call = new Call(Call::State::DIALING, callId, peerName, "", account->accountId());
+   Call* call = new Call(Call::State::DIALING, callId, peerName, "", account->id());
    call->m_HistoryState = NONE;
    return call;
 }
@@ -930,7 +930,7 @@ void Call::call()
    qDebug() << "account = " << m_Account;
    if(m_Account.isEmpty()) {
       qDebug() << "Account is not set, taking the first registered.";
-      this->m_Account = AccountListModel::currentAccount()->accountId();
+      this->m_Account = AccountListModel::currentAccount()->id();
    }
    if(!m_Account.isEmpty()) {
       qDebug() << "Calling " << m_CallNumber << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;

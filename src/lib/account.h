@@ -53,12 +53,12 @@ class LIB_EXPORT Account : public QObject {
    #pragma GCC diagnostic pop
    
 
-   Q_PROPERTY(QString        alias                        READ accountAlias                  WRITE setAccountAlias                )
+   Q_PROPERTY(QString        alias                        READ alias                         WRITE setAccountAlias                )
    Q_PROPERTY(QString        type                         READ accountType                   WRITE setAccountType                 )
-   Q_PROPERTY(QString        hostname                     READ accountHostname               WRITE setAccountHostname             )
-   Q_PROPERTY(QString        username                     READ accountUsername               WRITE setAccountUsername             )
-   Q_PROPERTY(QString        mailbox                      READ accountMailbox                WRITE setAccountMailbox              )
-   Q_PROPERTY(QString        proxy                        READ accountProxy                  WRITE setAccountProxy                )
+   Q_PROPERTY(QString        hostname                     READ hostname                      WRITE setAccountHostname             )
+   Q_PROPERTY(QString        username                     READ username                      WRITE setAccountUsername             )
+   Q_PROPERTY(QString        mailbox                      READ mailbox                       WRITE setAccountMailbox              )
+   Q_PROPERTY(QString        proxy                        READ proxy                         WRITE setAccountProxy                )
    Q_PROPERTY(QString        tlsPassword                  READ tlsPassword                   WRITE setTlsPassword                 )
    Q_PROPERTY(QString        tlsCaListFile                READ tlsCaListFile                 WRITE setTlsCaListFile               )
    Q_PROPERTY(QString        tlsCertificateFile           READ tlsCertificateFile            WRITE setTlsCertificateFile          )
@@ -133,7 +133,7 @@ class LIB_EXPORT Account : public QObject {
       //Constructors
       static Account* buildExistingAccountFromId(const QString& _accountId);
       static Account* buildNewAccountFromAlias  (const QString& alias     );
-      
+
       enum Role {
          Alias                       = 100,
          Type                        = 101,
@@ -173,7 +173,7 @@ class LIB_EXPORT Account : public QObject {
          PublishedSameAsLocal        = 136,
          RingtoneEnabled             = 137,
          dTMFType                    = 138,
-         id                          = 139,
+         Id                          = 139,
          Object                      = 140,
          TypeName                    = 141,
       };
@@ -186,28 +186,27 @@ class LIB_EXPORT Account : public QObject {
       Account::AccountEditState currentState() const;
 
       //Getters
-      bool                    isNew()                             const;
-      const QString           accountId()                         const;
-      const QString           stateName(const QString& state)     const;
-      const QString           accountDetail(const QString& param) const;
-      const QString           alias()                             const;
-      bool                    isEnabled()                         const;
-      bool                    isRegistered()                      const;
-      QModelIndex             index()                                  ;
-      QString                 stateColorName()                    const;
-      QVariant                stateColor()                        const;
+      bool            isNew()                             const;
+      const QString   id()                                const;
+      const QString   stateName(const QString& state)     const;
+      const QString   accountDetail(const QString& param) const;
+      const QString   alias()                             const;
+      bool            isRegistered()                      const;
+      QModelIndex     index()                                  ;
+      QString         stateColorName()                    const;
+      QVariant        stateColor()                        const;
 
       Q_INVOKABLE CredentialModel*        credentialsModel();
       Q_INVOKABLE AudioCodecModel*        audioCodecModel() ;
       Q_INVOKABLE VideoCodecModel*        videoCodecModel() ;
 
       ///Return the account hostname
-      QString accountHostname              () const;
-      bool    isAccountEnabled             () const;
+      QString hostname                     () const;
+      bool    isEnabled                    () const;
       bool    isAutoAnswer                 () const;
-      QString accountUsername              () const;
-      QString accountMailbox               () const;
-      QString accountProxy                 () const;
+      QString username                     () const;
+      QString mailbox                      () const;
+      QString proxy                        () const;
       bool    isAccountDisplaySasOnce      () const;
       bool    isAccountSrtpRtpFallback     () const;
       bool    isAccountZrtpDisplaySas      () const;
@@ -233,7 +232,6 @@ class LIB_EXPORT Account : public QObject {
       bool    isTlsRequireClientCertificate() const;
       bool    isTlsEnable                  () const;
       int     tlsMethod                    () const;
-      QString accountAlias                 () const;
       bool    isRingtoneEnabled            () const;
       QString ringtonePath                 () const;
       int     localPort                    () const;
@@ -241,9 +239,9 @@ class LIB_EXPORT Account : public QObject {
       QString accountRegistrationStatus    () const;
       QString accountType                  () const;
       DtmfType DTMFType                    () const;
-      
+
       QVariant roleData                    (int role) const;
-   
+
       //Setters
       void setAccountId      (const QString& id);
       #ifdef ENABLE_VIDEO
@@ -327,11 +325,11 @@ class LIB_EXPORT Account : public QObject {
 
       //State actions
       void nothing() {};
-      void edit()   {m_CurrentState = EDITING ;emit changed(this);};
-      void modify() {m_CurrentState = MODIFIED;emit changed(this);};
-      void remove() {m_CurrentState = REMOVED ;emit changed(this);};
-      void cancel() {m_CurrentState = READY   ;emit changed(this);};
-      void outdate(){m_CurrentState = OUTDATED;emit changed(this);};
+      void edit()    {m_CurrentState = EDITING ;emit changed(this);};
+      void modify()  {m_CurrentState = MODIFIED;emit changed(this);};
+      void remove()  {m_CurrentState = REMOVED ;emit changed(this);};
+      void cancel()  {m_CurrentState = READY   ;emit changed(this);};
+      void outdate() {m_CurrentState = OUTDATED;emit changed(this);};
       void reload();
       void save();
       void reloadMod() {reload();modify();};

@@ -22,6 +22,7 @@
 
 
 #include <QtCore/QVector>
+#include <QtCore/QStringList>
 #include <QtCore/QAbstractListModel>
 
 #include "account.h"
@@ -46,10 +47,8 @@ public:
    //Getters
    const QVector<Account*>& getAccounts            (                         );
    QVector<Account*>        getAccountsByState     ( const QString& state    );
-   QString                  getOrderedList         (                         ) const;
    Q_INVOKABLE Account*     getAccountById         ( const QString& id       ) const;
-   Q_INVOKABLE Account*     getAccountAt           ( int i                   );
-   const Account*           getAccountAt           ( int i                   ) const;
+   Q_INVOKABLE Account*     getAccountAt           ( int i                   ) const;
    int                      size                   (                         ) const;
    Account*                 firstRegisteredAccount (                         ) const;
    Account*                 getDefaultAccount      (                         ) const;
@@ -77,24 +76,26 @@ public:
    void                 save                (                         )      ;
    Q_INVOKABLE bool     accountUp           ( int index               )      ;
    Q_INVOKABLE bool     accountDown         ( int index               )      ;
+   Q_INVOKABLE void     cancel              (                         )      ;
 
    //Operators
-   Account*       operator[] (int i)      ;
-   const Account* operator[] (int i) const;
+   Account*       operator[] (int            i)      ;
+   Account*       operator[] (const QString& i)      ;
+   const Account* operator[] (int            i) const;
 
 private:
    //Constructors & Destructors
-   explicit AccountListModel(QStringList& _accountIds);
    explicit AccountListModel(bool fill = true);
    ~AccountListModel();
    void setupRoleName();
 
    //Attributes
-   QVector<Account*>*       m_pAccounts      ;
-   static AccountListModel*      m_spAccountList  ;
-   static Account*          m_spPriorAccount ;
-   Account*                 m_pDefaultAccount;
-   AccountListColorVisitor* m_pColorVisitor  ;
+   QVector<Account*>        m_lAccounts       ;
+   static AccountListModel* m_spAccountList   ;
+   static Account*          m_spPriorAccount  ;
+   Account*                 m_pDefaultAccount ;
+   AccountListColorVisitor* m_pColorVisitor   ;
+   QStringList              m_lDeletedAccounts;
 
 public Q_SLOTS:
    void update        ();

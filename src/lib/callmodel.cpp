@@ -400,7 +400,7 @@ Call* CallModel::addConference(const QString& confID)
 
    Call* newConf = nullptr;
    if (m_sPrivateCallList_callId[callList[0]]->call_real->account())
-      newConf =  new Call(confID, m_sPrivateCallList_callId[callList[0]]->call_real->account()->accountId());
+      newConf =  new Call(confID, m_sPrivateCallList_callId[callList[0]]->call_real->account()->id());
 
    if (newConf) {
       InternalStruct* aNewStruct = new InternalStruct;

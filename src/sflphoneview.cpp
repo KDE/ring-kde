@@ -622,7 +622,7 @@ void SFLPhoneView::updateWindowCallState()
 
    bool transfer(false),recordActivated(false);
 
-   enabledActions[SFLPhone::Mailbox] = AccountListModel::currentAccount() && ! AccountListModel::currentAccount()->accountMailbox().isEmpty();
+   enabledActions[SFLPhone::Mailbox] = AccountListModel::currentAccount() && ! AccountListModel::currentAccount()->mailbox().isEmpty();
 
    call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
    if (!call) {
@@ -1017,14 +1017,14 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
 ///Pick the default account and load it
 void SFLPhoneView::setAccountFirst(Account * account)
 {
-   kDebug() << "setAccountFirst : " << (account ? account->alias() : QString()) << (account ? account->accountId() : QString());
+   kDebug() << "setAccountFirst : " << (account ? account->alias() : QString()) << (account ? account->id() : QString());
    if(account) {
       AccountListModel::instance()->setPriorAccount(account);
    }
    else {
       AccountListModel::instance()->setPriorAccount(nullptr);
    }
-   kDebug() << "Current account id" << (AccountListModel::currentAccount()?AccountListModel::currentAccount()->accountId():"<no account>");
+   kDebug() << "Current account id" << (AccountListModel::currentAccount()?AccountListModel::currentAccount()->id():"<no account>");
    updateStatusMessage();
 }
 
@@ -1171,7 +1171,7 @@ void SFLPhoneView::mute(bool value)
 void SFLPhoneView::mailBox()
 {
    Account* account = AccountListModel::currentAccount();
-   QString mailBoxNumber = account->accountMailbox();
+   const QString mailBoxNumber = account->mailbox();
    Call* call = CallModel::instance()->addDialingCall();
    if (call) {
       call->appendText(mailBoxNumber);

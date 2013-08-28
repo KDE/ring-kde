@@ -247,7 +247,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
 
 
    if (m_pDefaultAccount->isChecked()) {
-      ConfigurationSkeleton::setDefaultAccountId(account->accountId());
+      ConfigurationSkeleton::setDefaultAccountId(account->id());
       AccountListModel::instance()->setDefaultAccount(account);
    }
 
@@ -271,11 +271,7 @@ void DlgAccounts::cancel()
 //    if (account) {
 //       account->performAction(CANCEL);
 //    }
-   const QVector<Account*> accs = AccountListModel::instance()->getAccounts();
-   foreach (Account* a, accs) {
-      if (a->currentState() == Account::AccountEditState::MODIFIED || a->currentState() == Account::AccountEditState::OUTDATED)
-         a->performAction(Account::AccountEditAction::CANCEL);
-   }
+   AccountListModel::instance()->cancel();
 }
 
 ///Load an account, set all field to the right value
@@ -293,7 +289,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    }
    m_IsLoading++;
 
-   edit1_alias->setText( account->accountAlias());
+   edit1_alias->setText( account->alias());
 
    QString protocolsTab[] = ACCOUNT_TYPES_TAB;
    QList<QString> * protocolsList = new QList<QString>();
@@ -301,14 +297,14 @@ void DlgAccounts::loadAccount(QModelIndex item)
       protocolsList->append(protocolsTab[i]);
    }
 
-   QString accountName = account->accountType();
+   const QString accountName = account->accountType();
    int protocolIndex = protocolsList->indexOf(accountName);
    delete protocolsList;
 
 
-   QModelIndex idx = account->credentialsModel()->index(0,0);
+   const QModelIndex idx = account->credentialsModel()->index(0,0);
    disconnect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
-   if (idx.isValid() && !account->accountId().isEmpty()) {
+   if (idx.isValid() && !account->id().isEmpty()) {
       edit5_password->setText(account->credentialsModel()->data(idx,CredentialModel::Role::PASSWORD).toString());
    }
    else
@@ -344,37 +340,37 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
    //         WIDGET VALUE                                          VALUE                     /
    /**/edit2_protocol->setCurrentIndex          ( (protocolIndex < 0) ? 0 : protocolIndex    );
-   /**/edit3_server->setText                    (  account->accountHostname             ());
-   /**/edit4_user->setText                      (  account->accountUsername             ());
-   /**/edit6_mailbox->setText                   (  account->accountMailbox              ());
-   /**/m_pProxyLE->setText                      (  account->accountProxy                ());
+   /**/edit3_server->setText                    (  account->hostname                       ());
+   /**/edit4_user->setText                      (  account->username                       ());
+   /**/edit6_mailbox->setText                   (  account->mailbox                        ());
+   /**/m_pProxyLE->setText                      (  account->proxy                          ());
    /**/checkbox_ZRTP_Ask_user->setChecked       (  account->isAccountDisplaySasOnce        ());
    /**/checkbox_SDES_fallback_rtp->setChecked   (  account->isAccountSrtpRtpFallback       ());
    /**/checkbox_ZRTP_display_SAS->setChecked    (  account->isAccountZrtpDisplaySas        ());
    /**/checkbox_ZRTP_warn_supported->setChecked (  account->isAccountZrtpNotSuppWarning    ());
    /**/checkbox_ZTRP_send_hello->setChecked     (  account->isAccountZrtpHelloHash         ());
    /**/checkbox_stun->setChecked                (  account->isAccountSipStunEnabled        ());
-   /**/line_stun->setText                       (  account->accountSipStunServer        ());
-   /**/spinbox_regExpire->setValue              (  account->accountRegistrationExpire   ());
+   /**/line_stun->setText                       (  account->accountSipStunServer           ());
+   /**/spinbox_regExpire->setValue              (  account->accountRegistrationExpire      ());
    /**/radioButton_pa_same_as_local->setChecked (  account->isPublishedSameAsLocal         ());
    /**/radioButton_pa_custom->setChecked        ( !account->isPublishedSameAsLocal         ());
-   /**/lineEdit_pa_published_address->setText   (  account->publishedAddress            ());
-   /**/spinBox_pa_published_port->setValue      (  account->publishedPort               ());
+   /**/lineEdit_pa_published_address->setText   (  account->publishedAddress               ());
+   /**/spinBox_pa_published_port->setValue      (  account->publishedPort                  ());
    /*                                                  Security                             **/
-   /**/edit_tls_private_key_password->setText   (  account->tlsPassword                 ());
-   /**/spinbox_tls_listener->setValue           (  account->tlsListenerPort             ());
-   /**/file_tls_authority->setText              (  account->tlsCaListFile               ());
-   /**/file_tls_endpoint->setText               (  account->tlsCertificateFile          ());
-   /**/file_tls_private_key->setText            (  account->tlsPrivateKeyFile           ());
-   /**/edit_tls_cipher->setText                 (  account->tlsCiphers                  ());
-   /**/edit_tls_outgoing->setText               (  account->tlsServerName               ());
-   /**/spinbox_tls_timeout_sec->setValue        (  account->tlsNegotiationTimeoutSec    ());
-   /**/spinbox_tls_timeout_msec->setValue       (  account->tlsNegotiationTimeoutMsec   ());
+   /**/edit_tls_private_key_password->setText   (  account->tlsPassword                    ());
+   /**/spinbox_tls_listener->setValue           (  account->tlsListenerPort                ());
+   /**/file_tls_authority->setText              (  account->tlsCaListFile                  ());
+   /**/file_tls_endpoint->setText               (  account->tlsCertificateFile             ());
+   /**/file_tls_private_key->setText            (  account->tlsPrivateKeyFile              ());
+   /**/edit_tls_cipher->setText                 (  account->tlsCiphers                     ());
+   /**/edit_tls_outgoing->setText               (  account->tlsServerName                  ());
+   /**/spinbox_tls_timeout_sec->setValue        (  account->tlsNegotiationTimeoutSec       ());
+   /**/spinbox_tls_timeout_msec->setValue       (  account->tlsNegotiationTimeoutMsec      ());
    /**/check_tls_incoming->setChecked           (  account->isTlsVerifyServer              ());
    /**/check_tls_answer->setChecked             (  account->isTlsVerifyClient              ());
    /**/check_tls_requier_cert->setChecked       (  account->isTlsRequireClientCertificate  ());
    /**/group_security_tls->setChecked           (  account->isTlsEnable                    ());
-   /**/combo_security_STRP->setCurrentIndex     (  account->tlsMethod                   ());
+   /**/combo_security_STRP->setCurrentIndex     (  account->tlsMethod                      ());
    /**/m_pAutoAnswer->setChecked                (  account->isAutoAnswer                   ());
    /*                                                                                        */
 
@@ -416,7 +412,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    #endif
 
 
-   if (account->accountAlias() == "IP2IP") {
+   if (account->alias() == "IP2IP") {
       frame2_editAccounts->setTabEnabled( 0, false );
       frame2_editAccounts->setTabEnabled( 1, false );
       frame2_editAccounts->setTabEnabled( 2, true  );
@@ -569,10 +565,10 @@ void DlgAccounts::on_button_accountDown_clicked()
 ///Add new account
 void DlgAccounts::on_button_accountAdd_clicked()
 {
-   QString newAlias = i18n("New account%1",AccountListModel::getSimilarAliasIndex("New account"));
+   const QString newAlias = i18n("New account%1",AccountListModel::getSimilarAliasIndex("New account"));
    AccountListModel::instance()->addAccount(newAlias);
    int r = listView_accountList->model()->rowCount() - 1;
-   QModelIndex index = listView_accountList->model()->index(r,0);
+   const QModelIndex index = listView_accountList->model()->index(r,0);
    listView_accountList->setCurrentIndex(index);
 
    frame2_editAccounts->setEnabled(true);
@@ -870,7 +866,7 @@ void DlgAccounts::aliasChanged(QString newAlias)
 void DlgAccounts::changeAlias(QString newAlias)
 {
    Account* acc = AccountListModel::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
-   if (acc && newAlias != acc->accountAlias())
+   if (acc && newAlias != acc->alias())
       AccountListModel::instance()->setData(listView_accountList->currentIndex(),newAlias,Qt::EditRole);
 //       acc->setAccountAlias(newAlias);
 }
