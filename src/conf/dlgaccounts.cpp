@@ -201,14 +201,14 @@ void DlgAccounts::saveAccount(QModelIndex item)
    
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                     /
-   /**/account->setAccountAlias                ( edit1_alias->text()                                                      );
    /**/account->setAccountType                 ( protocolsTab[edit2_protocol->currentIndex()]                             );
-   /**/account->setAccountHostname             ( edit3_server->text()                                                     );
-   /**/account->setAccountUsername             ( edit4_user->text()                                                       );
+   /**/account->setAlias                       ( edit1_alias->text()                                                      );
+   /**/account->setHostname                    ( edit3_server->text()                                                     );
+   /**/account->setUsername                    ( edit4_user->text()                                                       );
    /**/account->setAccountPassword             ( edit5_password->text()                                                   );
-   /**/account->setAccountMailbox              ( edit6_mailbox->text()                                                    );
-   /**/account->setAccountProxy                ( m_pProxyLE->text()                                                       );
-   /**/account->setAccountEnabled              ( item.data(Qt::CheckStateRole).toBool()                                   );
+   /**/account->setMailbox                     ( edit6_mailbox->text()                                                    );
+   /**/account->setProxy                       ( m_pProxyLE->text()                                                       );
+   /**/account->setEnabled                     ( item.data(Qt::CheckStateRole).toBool()                                   );
    /**/account->setAccountRegistrationExpire   ( spinbox_regExpire->value()                                               );
    /**/                                                                                                                 /**/
    /*                                            Security                                                                 */
@@ -581,6 +581,7 @@ void DlgAccounts::on_button_accountRemove_clicked()
 {
    AccountListModel::instance()->removeAccount(listView_accountList->currentIndex());
    listView_accountList->setCurrentIndex(listView_accountList->model()->index(0,0));
+   loadAccount(listView_accountList->currentIndex());
 }
 
 ///Update account list

@@ -84,7 +84,7 @@ const QString& account_state_name(const QString& s)
 } //account_state_name
 
 ///Constructors
-Account::Account():m_pAccountId(nullptr),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
+Account::Account():m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
 m_pVideoCodecs(nullptr)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
@@ -96,7 +96,7 @@ Account* Account::buildExistingAccountFromId(const QString& _accountId)
 {
    qDebug() << "Building an account from id: " << _accountId;
    Account* a = new Account();
-   a->m_pAccountId = new QString(_accountId);
+   a->m_AccountId = _accountId;
 
    a->performAction(AccountEditAction::RELOAD);
 
@@ -116,7 +116,7 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
       iter.next();
       a->m_hAccountDetails[iter.key()] = iter.value();
    }
-   a->setAccountHostname(a->m_hAccountDetails[ACCOUNT_HOSTNAME]);
+   a->setHostname(a->m_hAccountDetails[ACCOUNT_HOSTNAME]);
    a->setAccountDetail(ACCOUNT_ALIAS,alias);
    return a;
 }
@@ -125,7 +125,6 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
 Account::~Account()
 {
    disconnect();
-   delete m_pAccountId;
    if (m_pCredentials) delete m_pCredentials ;
    if (m_pAudioCodecs) delete m_pAudioCodecs ;
 }
@@ -140,8 +139,8 @@ Account::~Account()
 ///Callback when the account state change
 void Account::accountChanged(QString accountId,QString state,int)
 {
-   if (m_pAccountId && accountId == *m_pAccountId) {
-      qDebug() << "Account" << m_pAccountId << "status changed";
+   if ((!m_AccountId.isEmpty()) && accountId == m_AccountId) {
+      qDebug() << "Account" << m_AccountId << "status changed to" << state;
       if (Account::updateState())
          emit stateChanged(stateName(state));
    }
@@ -157,7 +156,7 @@ void Account::accountChanged(QString accountId,QString state,int)
 ///IS this account new
 bool Account::isNew() const
 {
-   return (m_pAccountId == nullptr);
+   return (m_AccountId == nullptr) || m_AccountId.isEmpty();
 }
 
 ///Get this account ID
@@ -166,12 +165,12 @@ const QString Account::id() const
    if (isNew()) {
       qDebug() << "Error : getting AccountId of a new account.";
    }
-   if (!m_pAccountId) {
+   if (m_AccountId.isEmpty()) {
       qDebug() << "Account not configured";
       return QString(); //WARNING May explode
    }
    
-   return *m_pAccountId;
+   return m_AccountId;
 }
 
 ///Get current state
@@ -193,6 +192,8 @@ const QString Account::accountDetail(const QString& param) const
    else if (m_hAccountDetails.count() > 0) {
       if (param == "Account.enable") //If an account is invalid, at least does not try to register it
          return REGISTRATION_ENABLED_FALSE;
+      if (param == "Account.registrationStatus") //If an account is new, then it is unregistered
+         return Account::State::UNREGISTERED;
       qDebug() << "Account parameter \"" << param << "\" not found";
       return QString();
    }
@@ -268,7 +269,7 @@ VideoCodecModel* Account::videoCodecModel()
    return m_pVideoCodecs;
 }
 
-void Account::setAccountAlias(const QString& detail)
+void Account::setAlias(const QString& detail)
 {
    bool accChanged = detail != alias();
    setAccountDetail(ACCOUNT_ALIAS,detail);
@@ -639,20 +640,13 @@ bool Account::setAccountDetail(const QString& param, const QString& val)
 }
 
 ///Set the account id
-void Account::setAccountId(const QString& id)
+void Account::setId(const QString& id)
 {
-   qDebug() << "Setting accountId = " << m_pAccountId;
+   qDebug() << "Setting accountId = " << m_AccountId;
    if (! isNew())
       qDebug() << "Error : setting AccountId of an existing account.";
-   m_pAccountId = new QString(id);
+   m_AccountId = id;
 }
-
-///Set account enabled
-void Account::setEnabled(bool checked)
-{
-   setAccountEnabled(checked);
-}
-
 
 #ifdef ENABLE_VIDEO
 void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
@@ -665,7 +659,7 @@ void Account::setAccountType(const QString& detail)
 }
 
 ///The set account hostname, it can be an hostname or an IP address
-void Account::setAccountHostname(const QString& detail)
+void Account::setHostname(const QString& detail)
 {
    if (m_HostName != detail) {
       m_HostName = detail;
@@ -674,19 +668,19 @@ void Account::setAccountHostname(const QString& detail)
 }
 
 ///Set the account username, everything is valid, some might be rejected by the PBX server
-void Account::setAccountUsername(const QString& detail)
+void Account::setUsername(const QString& detail)
 {
    setAccountDetail(ACCOUNT_USERNAME, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
-void Account::setAccountMailbox(const QString& detail)
+void Account::setMailbox(const QString& detail)
 {
    setAccountDetail(ACCOUNT_MAILBOX, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
-void Account::setAccountProxy(const QString& detail)
+void Account::setProxy(const QString& detail)
 {
    setAccountDetail(ACCOUNT_ROUTE, detail);
 }
@@ -800,7 +794,7 @@ void Account::setPublishedPort(unsigned short detail)
 }
 
 ///Set if the account is enabled or not
-void Account::setAccountEnabled(bool detail)
+void Account::setEnabled(bool detail)
 {
    setAccountDetail(ACCOUNT_ENABLED, detail?"true":"false");
 }
@@ -886,17 +880,17 @@ void Account::setRoleData(int role, const QVariant& value)
 {
    switch(role) {
       case Account::Role::Alias:
-         setAccountAlias(value.toString());
+         setAlias(value.toString());
       case Account::Role::Type:
          setAccountType(value.toString());
       case Account::Role::Hostname:
-         setAccountHostname(value.toString());
+         setHostname(value.toString());
       case Account::Role::Username:
-         setAccountUsername(value.toString());
+         setUsername(value.toString());
       case Account::Role::Mailbox:
-         setAccountMailbox(value.toString());
+         setMailbox(value.toString());
       case Account::Role::Proxy:
-         setAccountProxy(value.toString());
+         setProxy(value.toString());
 //       case Password:
 //          accountPassword();
       case Account::Role::TlsPassword:
@@ -934,7 +928,7 @@ void Account::setRoleData(int role, const QVariant& value)
       case Account::Role::PublishedPort:
          setPublishedPort(value.toInt());
       case Account::Role::Enabled:
-         setAccountEnabled(value.toBool());
+         setEnabled(value.toBool());
       case Account::Role::AutoAnswer:
          setAutoAnswer(value.toBool());
       case Account::Role::TlsVerifyServer:
@@ -964,7 +958,7 @@ void Account::setRoleData(int role, const QVariant& value)
       case Account::Role::dTMFType:
          setDTMFType((DtmfType)value.toInt());
       case Account::Role::Id:
-         setAccountId(value.toString());
+         setId(value.toString());
    }
 }
 
@@ -1031,10 +1025,10 @@ void Account::save()
       }
       saveAudioCodecs();
 
-      setAccountId(currentId);
+      setId(currentId);
       saveCredentials();
-   }
-   else {
+   } //New account
+   else { //Existing account
       MapStringString tmp;
       QMutableHashIterator<QString,QString> iter(m_hAccountDetails);
 
@@ -1081,7 +1075,7 @@ void Account::reload()
          iter.next();
          m_hAccountDetails[iter.key()] = iter.value();
       }
-      setAccountHostname(m_hAccountDetails[ACCOUNT_HOSTNAME]);
+      setHostname(m_hAccountDetails[ACCOUNT_HOSTNAME]);
    }
    m_CurrentState = READY;
    reloadCredentials();
@@ -1197,7 +1191,7 @@ void Account::saveAudioCodecs() {
 ///Are both account the same
 bool Account::operator==(const Account& a)const
 {
-   return *m_pAccountId == *a.m_pAccountId;
+   return m_AccountId == a.m_AccountId;
 }
 
 /*****************************************************************************
@@ -1214,7 +1208,7 @@ void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs)
    foreach(VideoCodec* codec,codecs) {
       codecs2 << codecs->getName();
    }
-   interface.setActiveCodecList(codecs2,m_pAccountId);
+   interface.setActiveCodecList(codecs2,m_AccountId);
 }
 
 ///Return the list of active video dodecs
@@ -1222,7 +1216,7 @@ QList<VideoCodec*> Account::ActiveVideoCodecList()
 {
    QList<VideoCodec*> codecs;
    VideoInterface& interface = DBus::VideoManager::instance();
-   const QStringList activeCodecList = interface.getActiveCodecList(m_pAccountId);
+   const QStringList activeCodecList = interface.getActiveCodecList(m_AccountId);
    foreach (const QString& codec, activeCodecList) {
       codecs << VideoCodec::Codec(codec);
    }

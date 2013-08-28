@@ -197,9 +197,15 @@ void AccountListModel::update()
 {
    ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
    Account* current;
-   for (int i = 0; i < m_lAccounts.size(); i++) {
-      current = m_lAccounts[i];
-      if (!m_lAccounts[i]->isNew() && (current->currentState() != Account::AccountEditState::NEW || current->currentState() != Account::AccountEditState::MODIFIED || current->currentState() != Account::AccountEditState::OUTDATED))
+   QList<Account*> tmp;
+   for (int i = 0; i < m_lAccounts.size(); i++)
+      tmp << m_lAccounts[i];
+
+   for (int i = 0; i < tmp.size(); i++) {
+      current = tmp[i];
+      if (!current->isNew() && (current->currentState() != Account::AccountEditState::NEW 
+         && current->currentState() != Account::AccountEditState::MODIFIED
+         && current->currentState() != Account::AccountEditState::OUTDATED))
          removeAccount(current);
    }
    //ask for the list of accounts ids to the configurationManager
@@ -207,7 +213,6 @@ void AccountListModel::update()
    for (int i = 0; i < accountIds.size(); ++i) {
       if (m_lDeletedAccounts.indexOf(accountIds[i]) == -1) {
          Account* a = Account::buildExistingAccountFromId(accountIds[i]);
-         qDebug() << "\n\n\nINSERTING ACCOUNT AGAIN" << accountIds[i] << a->alias();
          m_lAccounts.insert(i, a);
          emit dataChanged(index(i,0),index(size()-1,0));
          connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
@@ -243,7 +248,7 @@ void AccountListModel::updateAccounts()
 void AccountListModel::save()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   const QStringList accountIds= QStringList(configurationManager.getAccountList().value());
+   const QStringList accountIds = QStringList(configurationManager.getAccountList().value());
 
    //create or update each account from accountList
    for (int i = 0; i < size(); i++) {
@@ -334,7 +339,7 @@ Account* AccountListModel::getAccountAt (int i) const
 Account* AccountListModel::getAccountById(const QString& id) const
 {
    if(id.isEmpty())
-          return nullptr;
+      return nullptr;
    for (int i = 0; i < m_lAccounts.size(); ++i) {
       if (!m_lAccounts[i]->isNew() && m_lAccounts[i]->id() == id)
          return m_lAccounts[i];
@@ -506,7 +511,7 @@ Account* AccountListModel::addAccount(const QString& alias)
 void AccountListModel::removeAccount(Account* account)
 {
    if (not account) return;
-   qDebug() << "Removing" << m_lAccounts;
+   qDebug() << "Removing" << account->alias() << account->id();
    const int aindex = m_lAccounts.indexOf(account);
    m_lAccounts.remove(aindex);
    m_lDeletedAccounts << account->id();
@@ -545,7 +550,7 @@ bool AccountListModel::setData(const QModelIndex& idx, const QVariant& value, in
    else if ( role == Qt::EditRole ) {
       bool changed = value.toString() != data(idx,Qt::EditRole);
       if (changed) {
-         m_lAccounts[idx.row()]->setAccountAlias(value.toString());
+         m_lAccounts[idx.row()]->setAlias(value.toString());
          emit dataChanged(idx, idx);
       }
    }

@@ -53,12 +53,12 @@ class LIB_EXPORT Account : public QObject {
    #pragma GCC diagnostic pop
    
 
-   Q_PROPERTY(QString        alias                        READ alias                         WRITE setAccountAlias                )
+   Q_PROPERTY(QString        alias                        READ alias                         WRITE setAlias                       )
    Q_PROPERTY(QString        type                         READ accountType                   WRITE setAccountType                 )
-   Q_PROPERTY(QString        hostname                     READ hostname                      WRITE setAccountHostname             )
-   Q_PROPERTY(QString        username                     READ username                      WRITE setAccountUsername             )
-   Q_PROPERTY(QString        mailbox                      READ mailbox                       WRITE setAccountMailbox              )
-   Q_PROPERTY(QString        proxy                        READ proxy                         WRITE setAccountProxy                )
+   Q_PROPERTY(QString        hostname                     READ hostname                      WRITE setHostname                    )
+   Q_PROPERTY(QString        username                     READ username                      WRITE setUsername                    )
+   Q_PROPERTY(QString        mailbox                      READ mailbox                       WRITE setMailbox                     )
+   Q_PROPERTY(QString        proxy                        READ proxy                         WRITE setProxy                       )
    Q_PROPERTY(QString        tlsPassword                  READ tlsPassword                   WRITE setTlsPassword                 )
    Q_PROPERTY(QString        tlsCaListFile                READ tlsCaListFile                 WRITE setTlsCaListFile               )
    Q_PROPERTY(QString        tlsCertificateFile           READ tlsCertificateFile            WRITE setTlsCertificateFile          )
@@ -243,17 +243,17 @@ class LIB_EXPORT Account : public QObject {
       QVariant roleData                    (int role) const;
 
       //Setters
-      void setAccountId      (const QString& id);
+      void setId      (const QString& id);
       #ifdef ENABLE_VIDEO
       void setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
       QList<VideoCodec*> getActiveVideoCodecList();
       #endif
-      void setAccountAlias                  (const QString& detail);
+      void setAlias                         (const QString& detail);
       void setAccountType                   (const QString& detail);
-      void setAccountHostname               (const QString& detail);
-      void setAccountUsername               (const QString& detail);
-      void setAccountMailbox                (const QString& detail);
-      void setAccountProxy                  (const QString& detail);
+      void setHostname                      (const QString& detail);
+      void setUsername                      (const QString& detail);
+      void setMailbox                       (const QString& detail);
+      void setProxy                         (const QString& detail);
       void setAccountPassword               (const QString& detail);
       void setTlsPassword                   (const QString& detail);
       void setTlsCaListFile                 (const QString& detail);
@@ -265,27 +265,26 @@ class LIB_EXPORT Account : public QObject {
       void setPublishedAddress              (const QString& detail);
       void setLocalInterface                (const QString& detail);
       void setRingtonePath                  (const QString& detail);
-      void setTlsMethod                     (int     detail);
-      void setAccountRegistrationExpire     (int     detail);
-      void setTlsNegotiationTimeoutSec      (int     detail);
-      void setTlsNegotiationTimeoutMsec     (int     detail);
+      void setTlsMethod                     (int  detail);
+      void setAccountRegistrationExpire     (int  detail);
+      void setTlsNegotiationTimeoutSec      (int  detail);
+      void setTlsNegotiationTimeoutMsec     (int  detail);
       void setLocalPort                     (unsigned short detail);
       void setTlsListenerPort               (unsigned short detail);
       void setPublishedPort                 (unsigned short detail);
-      void setAccountEnabled                (bool    detail);
-      void setAutoAnswer                    (bool    detail);
-      void setTlsVerifyServer               (bool    detail);
-      void setTlsVerifyClient               (bool    detail);
-      void setTlsRequireClientCertificate   (bool    detail);
-      void setTlsEnable                     (bool    detail);
-      void setAccountDisplaySasOnce         (bool    detail);
-      void setAccountSrtpRtpFallback        (bool    detail);
-      void setAccountZrtpDisplaySas         (bool    detail);
-      void setAccountZrtpNotSuppWarning     (bool    detail);
-      void setAccountZrtpHelloHash          (bool    detail);
-      void setAccountSipStunEnabled         (bool    detail);
-      void setPublishedSameAsLocal          (bool    detail);
-      void setRingtoneEnabled               (bool    detail);
+      void setAutoAnswer                    (bool detail);
+      void setTlsVerifyServer               (bool detail);
+      void setTlsVerifyClient               (bool detail);
+      void setTlsRequireClientCertificate   (bool detail);
+      void setTlsEnable                     (bool detail);
+      void setAccountDisplaySasOnce         (bool detail);
+      void setAccountSrtpRtpFallback        (bool detail);
+      void setAccountZrtpDisplaySas         (bool detail);
+      void setAccountZrtpNotSuppWarning     (bool detail);
+      void setAccountZrtpHelloHash          (bool detail);
+      void setAccountSipStunEnabled         (bool detail);
+      void setPublishedSameAsLocal          (bool detail);
+      void setRingtoneEnabled               (bool detail);
       void setDTMFType                      (DtmfType type );
 
       void setRoleData(int role, const QVariant& value);
@@ -307,7 +306,7 @@ class LIB_EXPORT Account : public QObject {
       Account();
 
       //Attributes
-      QString*                m_pAccountId     ;
+      QString                 m_AccountId     ;
       QHash<QString,QString>  m_hAccountDetails;
       
 
