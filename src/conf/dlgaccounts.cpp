@@ -150,6 +150,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 
    connect(listView_accountList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(accountListChanged(QModelIndex,QModelIndex)) );
    connect(listView_accountList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(updateAccountListCommands())                 );
+   connect(listView_accountList->model()         , SIGNAL(dataChanged(QModelIndex,QModelIndex))   , this, SLOT(updateStatusLabel())                         );
 
 
    //Disable control
@@ -719,6 +720,11 @@ void DlgAccounts::updateStatusLabel(Account* account)
       return;
    const QString status = account->accountRegistrationStatus();
    edit7_state->setText( "<FONT COLOR=\"" + account->stateColorName() + "\">" + status + "</FONT>" );
+}
+
+void DlgAccounts::updateStatusLabel()
+{
+   updateStatusLabel(listView_accountList->currentIndex());
 }
 
 ///Have the account changed
