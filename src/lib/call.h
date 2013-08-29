@@ -266,7 +266,7 @@ public:
    void changeCurrentState(Call::State newState);
    void sendTextMessage(QString message);
 
-   virtual QObject* getSelf() {return this;}
+   virtual QObject* getSelf();
 
 private:
 

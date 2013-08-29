@@ -53,7 +53,13 @@ const char* ContactProxyModel::m_slHistoryConstStr[25] = {
       "Very long time ago"                                       ,//23
       "Never"                                                     //24
 };
-// 
+
+QObject* ContactProxyModel::TopLevelItem::self() 
+{
+   return this;
+}
+
+//
 ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent?static_cast<QObject*>(parent):static_cast<QObject*>(QCoreApplication::instance())),
 m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
 {

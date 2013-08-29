@@ -120,10 +120,10 @@ private:
    class TopLevelItem : public HistoryTreeBackend,public QObject {
    friend class HistoryModel;
    public:
-      virtual QObject* getSelf() {return this;}
+      virtual QObject* getSelf();
       virtual ~TopLevelItem();
    private:
-      TopLevelItem(int name);
+      explicit TopLevelItem(int name);
       CallList m_lChildren;
       int m_Name; //HistoryConst
       QString m_NameStr;

@@ -115,7 +115,6 @@ const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Cal
 
 const char * Call::historyIcons[3] = {ICON_HISTORY_INCOMING, ICON_HISTORY_OUTGOING, ICON_HISTORY_MISSED};
 
-
 QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::State& c)
 {
    dbg.nospace() << QString(Call::toHumanStateName(c));
@@ -134,6 +133,7 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
    return dbg.space();
 }
 
+QObject* Call::getSelf() {return this;}
 
 HistoryTreeBackend::~HistoryTreeBackend()
 {

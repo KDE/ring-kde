@@ -548,8 +548,7 @@ bool AccountListModel::setData(const QModelIndex& idx, const QVariant& value, in
       return true;
    }
    else if ( role == Qt::EditRole ) {
-      bool changed = value.toString() != data(idx,Qt::EditRole);
-      if (changed) {
+      if (value.toString() != data(idx,Qt::EditRole)) {
          m_lAccounts[idx.row()]->setAlias(value.toString());
          emit dataChanged(idx, idx);
       }

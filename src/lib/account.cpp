@@ -110,6 +110,7 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    Account* a = new Account();
    a->m_hAccountDetails.clear();
+   a->m_hAccountDetails[ACCOUNT_ENABLED] = "false";
    MapStringString tmp = configurationManager.getAccountTemplate();
    QMutableMapIterator<QString, QString> iter(tmp);
    while (iter.hasNext()) {

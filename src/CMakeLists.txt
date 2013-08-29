@@ -37,8 +37,11 @@ ADD_DEFINITIONS(
 if (CMAKE_COMPILER_IS_GNUCC)
    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
    if (GCC_VERSION VERSION_LESS 4.6.9 OR GCC_VERSION VERSION_EQUAL 4.6)
+      #GCC 4.6 version of those warnings does detect valid C++0x/C++11 as invalid.
       ADD_DEFINITIONS(
          -Wno-error=pragmas
+         -Wno-error=edantic
+         -Wno-error
       )
    endif()
    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)

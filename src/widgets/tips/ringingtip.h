@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef RIGGINGTIP_H
-#define RIGGINGTIP_H
+#ifndef RINGINGTIP_H
+#define RINGINGTIP_H
 
 //Base
 #include "../../klib/tip.h"

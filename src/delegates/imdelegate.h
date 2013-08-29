@@ -16,8 +16,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 
-#ifndef IM_TAB_H
-#define IM_TAB_H
+#ifndef IMDELEGATES_H
+#define IMDELEGATES_H
 
 #include <QtGui/QListView>
 #include <QtGui/QStyledItemDelegate>

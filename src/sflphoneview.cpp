@@ -50,7 +50,6 @@
 #include "delegates/historydelegate.h"
 #include "delegates/categorizeddelegate.h"
 #include "widgets/tips/dialpadtip.h"
-#include "widgets/tips/tipcollection.h"
 #include "widgets/kphonenumberselector.h"
 #include "widgets/callviewoverlay.h"
 
@@ -239,16 +238,16 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
          }
          else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
-            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data(MIME_PHONENUMBER))));
+            TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data(MIME_PHONENUMBER))));
          }
          else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
             Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
             if (c) {
-               TipCollection::removeConference()->setText(i18n("Call %1").arg(c->formattedName()));
+               TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
             }
          }
          else if (e->mimeData()->hasFormat("text/plain")) {
-            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data("text/plain"))));
+            TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
          }
          TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
       }
@@ -258,16 +257,16 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
          }
          else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
-            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data(MIME_PHONENUMBER))));
+            TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data(MIME_PHONENUMBER))));
          }
          else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
             Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
             if (c) {
-               TipCollection::removeConference()->setText(i18n("Call %1").arg(c->formattedName()));
+               TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
             }
          }
          else if (e->mimeData()->hasFormat("text/plain")) {
-            TipCollection::removeConference()->setText(i18n("Call %1").arg(QString(e->mimeData()->data("text/plain"))));
+            TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
          }
       }
    }

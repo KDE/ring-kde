@@ -40,7 +40,7 @@ protected:
    MacroModel::MacroCategory* m_pCat;
 
 public:
-   Macro(const Macro* macro);
+   explicit Macro(const Macro* macro);
 
    //Getters
    QString  name();
