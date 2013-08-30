@@ -40,7 +40,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
       #GCC 4.6 version of those warnings does detect valid C++0x/C++11 as invalid.
       ADD_DEFINITIONS(
          -Wno-error=pragmas
-         -Wno-error=pedantic
          -Wno-error
       )
    endif()
