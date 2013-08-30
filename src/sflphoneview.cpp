@@ -766,6 +766,7 @@ void SFLPhoneView::updateWindowCallState()
          foreach (Call* call2, CallModel::instance()->getCallList()) {
             if(dynamic_cast<Call*>(call2) && (call2->state() == Call::State::INCOMING || call2->state() == Call::State::RINGING)) {
                displayRinging = true;
+               break;
             }
          }
          if (!displayRinging) {
@@ -807,16 +808,20 @@ void SFLPhoneView::updateRecordButton()
    CallManagerInterface & callManager = DBus::CallManager::instance();
    double recVol = callManager.getVolume(RECORD_DEVICE);
    if(recVol     == 0.00) {
-      toolButton_recVol->setIcon(QIcon(ICON_REC_VOL_0));
+      static const QIcon recVol0 = QIcon(ICON_REC_VOL_0);
+      toolButton_recVol->setIcon(recVol0);
    }
    else if(recVol < 0.33) {
-      toolButton_recVol->setIcon(QIcon(ICON_REC_VOL_1));
+      static const QIcon recVol1 = QIcon(ICON_REC_VOL_1);
+      toolButton_recVol->setIcon(recVol1);
    }
    else if(recVol < 0.67) {
-      toolButton_recVol->setIcon(QIcon(ICON_REC_VOL_2));
+      static const QIcon recVol2 = QIcon(ICON_REC_VOL_2);
+      toolButton_recVol->setIcon(recVol2);
    }
    else {
-      toolButton_recVol->setIcon(QIcon(ICON_REC_VOL_3));
+      static const QIcon recVol3 = QIcon(ICON_REC_VOL_3);
+      toolButton_recVol->setIcon(recVol3);
    }
 
    if(recVol > 0) {
@@ -828,8 +833,8 @@ void SFLPhoneView::updateRecordButton()
 void SFLPhoneView::updateVolumeButton()
 {
    kDebug() << "updateVolumeButton";
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   double sndVol = callManager.getVolume(SOUND_DEVICE);
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   const double sndVol = callManager.getVolume(SOUND_DEVICE);
 
    if(sndVol     == 0.00) {
       toolButton_sndVol->setIcon(QIcon(ICON_SND_VOL_0));
@@ -853,9 +858,9 @@ void SFLPhoneView::updateVolumeButton()
 void SFLPhoneView::updateRecordBar(double _value)
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
-   double recVol = callManager.getVolume(RECORD_DEVICE);
+   const double recVol = callManager.getVolume(RECORD_DEVICE);
    kDebug() << "updateRecordBar" << recVol;
-   int value = (_value > 0)?_value:(int)(recVol * 100);
+   const int value = (_value > 0)?_value:(int)(recVol * 100);
    slider_recVol->setValue(value);
 }
 
@@ -863,9 +868,9 @@ void SFLPhoneView::updateRecordBar(double _value)
 void SFLPhoneView::updateVolumeBar(double _value)
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
-   double sndVol = callManager.getVolume(SOUND_DEVICE);
+   const double sndVol = callManager.getVolume(SOUND_DEVICE);
    kDebug() << "updateVolumeBar" << sndVol;
-   int value = (_value > 0)?_value:(int)(sndVol * 100);
+   const int value = (_value > 0)?_value:(int)(sndVol * 100);
    slider_sndVol->setValue(value);
 }
 
@@ -1002,7 +1007,7 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
    connect(action,  SIGNAL(setFirst(Account*)), this  ,  SLOT(setAccountFirst(Account*)));
    menu.addAction(action);
 
-   QVector<Account *> accounts = AccountListModel::instance()->registeredAccounts();
+   const QVector<Account *> accounts = AccountListModel::instance()->registeredAccounts();
    for (int i = 0 ; i < accounts.size() ; i++) {
       Account* account = accounts.at(i);
       QAction* action = new ActionSetAccountFirst(account, &menu);

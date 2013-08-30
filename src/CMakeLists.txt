@@ -26,7 +26,6 @@ ADD_DEFINITIONS(
    -Wmissing-include-dirs
    -Wundef
    -Wmissing-format-attribute
-   -pedantic
    -Wno-reorder
    -Wunused
    -Wuninitialized
@@ -40,6 +39,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
       #GCC 4.6 version of those warnings does detect valid C++0x/C++11 as invalid.
       ADD_DEFINITIONS(
          -Wno-error=pragmas
+         -Wno-pragmas
          -Wno-error
       )
    endif()
@@ -47,6 +47,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
       ADD_DEFINITIONS(
          -Wmaybe-uninitialized
          -Wunused-local-typedefs
+         -pedantic
       )
    endif()
    if (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)

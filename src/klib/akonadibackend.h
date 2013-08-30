@@ -23,6 +23,7 @@
 #include "../lib/abstractcontactbackend.h"
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
+#include <kabc/phonenumber.h>
 
 //Qt
 class QObject;
@@ -32,7 +33,6 @@ namespace KABC {
    class Addressee    ;
    class PhoneNumber  ;
 }
-#include <kabc/phonenumber.h>
 
 namespace Akonadi {
    class Session        ;
