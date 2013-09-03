@@ -106,9 +106,6 @@ private:
 
    bool initHistory ();
 
-   //Helpers
-//    QString category(const Call* call) const;
-
    //Static attributes
    static HistoryModel* m_spInstance;
 

@@ -13,8 +13,8 @@ endif(POLICY CMP0017)
 
 # --- custom targets: ---
 
-FIND_PACKAGE ( KdepimLibs REQUIRED            )
-FIND_PACKAGE ( KDE4       REQUIRED            )
+FIND_PACKAGE ( KdepimLibs REQUIRED                                                            )
+FIND_PACKAGE ( KDE4       REQUIRED                                                            )
 FIND_PACKAGE ( Qt4        REQUIRED QtCore QtGui QtXml QtDBus QtTest QtSVG QtOpenGl QT_USE_QT* )
 
 if (CMAKE_COMPILER_IS_GNUCC)
@@ -39,12 +39,15 @@ INCLUDE_DIRECTORIES (${KDE4_INCLUDES} ${QT_INCLUDES} ${KDEPIMLIBS_INCLUDE_DIRS} 
 INCLUDE (  ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
 INCLUDE(   ${QT_USE_FILE}   )
 
-
-add_subdirectory( data   )
-add_subdirectory( src    )
-add_subdirectory( doc    )
-add_subdirectory( man    )
-add_subdirectory( plasma )
+IF(${ENABLE_QT5} MATCHES true)
+   add_subdirectory( src/lib )
+ELSE()
+   add_subdirectory( data    )
+   add_subdirectory( src     )
+   add_subdirectory( doc     )
+   add_subdirectory( man     )
+#    add_subdirectory( plasma  )
+ENDIF(${ENABLE_QT5} MATCHES true)
 
 set(PROJECT_VERSION "1.2.3")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})

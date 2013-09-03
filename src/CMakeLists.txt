@@ -90,7 +90,6 @@ SET(
    sflphoneaccessibility.cpp
    accountwizard.cpp
    widgets/sflphonetray.cpp
-#    widgets/calltreeitem.cpp
    actionsetaccountfirst.cpp
    conf/configurationdialog.cpp
    conf/dlggeneral.cpp
@@ -130,8 +129,6 @@ SET(
    delegates/delegatedropoverlay.cpp
    delegates/dialpaddelegate.cpp
    delegates/imdelegate.cpp
-#    widgets/acceleratedvideowidget.cpp
-#    callview.cpp
 )
 
 
