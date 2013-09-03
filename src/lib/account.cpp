@@ -592,7 +592,7 @@ QVariant Account::roleData(int role) const
          return id();
       case Account::Role::Object: {
          QVariant var;
-         var.setValue((Account*)this);
+         var.setValue(const_cast<Account*>(this));
          return var;
       }
       case Account::Role::TypeName:

@@ -231,7 +231,7 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
       return;
    if (((ContactTreeBackend*)idx.internalPointer())->type() != ContactTreeBackend::Type::CONTACT)
       return;
-   m_pCurrentContact = (Contact*)static_cast<ContactTreeBackend*>(idx.internalPointer())->self();
+   m_pCurrentContact = static_cast<Contact*>(static_cast<ContactTreeBackend*>(idx.internalPointer())->self());
    callAgain();
 }
 

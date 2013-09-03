@@ -132,7 +132,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
       case ContactTreeBackend::Type::TOP_LEVEL: /*|| !index.parent().isValid()) {*/
       switch (role) {
          case Qt::DisplayRole:
-            return ((TopLevelItem*)modelItem)->m_Name;
+            return static_cast<const TopLevelItem*>(modelItem)->m_Name;
          default:
             break;
       }
@@ -153,17 +153,17 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             return QVariant(modelItem->dropState());
          case AbstractContactBackend::Role::FormattedLastUsed: {
             if (!m_isContactDateInit)
-               ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
+               const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
             return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
          }
          case AbstractContactBackend::Role::IndexedLastUsed: {
             if (!m_isContactDateInit)
-               ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
+               const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
             return QVariant((int)HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
          }
          case AbstractContactBackend::Role::DatedLastUsed: {
             if (!m_isContactDateInit)
-               ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
+               const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
             return QVariant(QDateTime::fromTime_t( m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
          }
          case AbstractContactBackend::Role::Filter: {
@@ -336,19 +336,19 @@ QString ContactProxyModel::category(Contact* ct) const {
          break;
       case AbstractContactBackend::Role::FormattedLastUsed: {
          if (!m_isContactDateInit)
-            ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
+            const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
          cat = HistoryModel::timeToHistoryCategory(m_hContactByDate[ct]);
          break;
       }
       case AbstractContactBackend::Role::IndexedLastUsed: {
          if (!m_isContactDateInit)
-            ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
+            const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
          cat = QString::number((int)HistoryModel::timeToHistoryConst(m_hContactByDate[ct]));
          break;
       }
       case AbstractContactBackend::Role::DatedLastUsed: {
          if (!m_isContactDateInit)
-            ((ContactProxyModel*)this)->m_hContactByDate = getContactListByTime();
+            const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
          cat = QDateTime::fromTime_t(m_hContactByDate[ct]).toString();
          break;
       }

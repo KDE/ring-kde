@@ -530,7 +530,7 @@ void AccountListModel::removeAccount( QModelIndex idx )
 ///Set the previous account used
 void AccountListModel::setPriorAccount(const Account* account) {
    const bool changed = (account && m_spPriorAccount != account) || (!account && m_spPriorAccount);
-   m_spPriorAccount = (Account*)(account);
+   m_spPriorAccount = const_cast<Account*>(account);
    if (changed)
       emit priorAccountChanged(currentAccount());
 }

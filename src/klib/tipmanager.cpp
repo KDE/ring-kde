@@ -86,7 +86,7 @@ void TipManager::reload()
 ///Set the top margin
 void TipManager::setTopMargin(int margin)
 {
-   bool changed = !(m_TopMargin == margin);
+   const bool changed = !(m_TopMargin == margin);
    m_TopMargin = margin;
    if (changed) {
       changeSize(true);

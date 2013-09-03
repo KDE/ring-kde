@@ -306,10 +306,10 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
       case HistoryTreeBackend::Type::TOP_LEVEL:
       switch (role) {
          case Qt::DisplayRole:
-            return ((TopLevelItem*)modelItem)->m_NameStr;
+            return static_cast<TopLevelItem*>(modelItem)->m_NameStr;
          case Call::Role::FuzzyDate:
          case Call::Role::Date:
-            return 999 - ((TopLevelItem*)modelItem)->m_Name;
+            return 999 - static_cast<TopLevelItem*>(modelItem)->m_Name;
          default:
             break;
       }
@@ -419,7 +419,7 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
          QString text = data(idx, Call::Role::Number).toString();
          mimeData2->setData(MIME_PLAIN_TEXT , text.toUtf8());
          mimeData2->setData(MIME_PHONENUMBER, text.toUtf8());
-         mimeData2->setData(MIME_HISTORYID  , ((Call*)idx.internalPointer())->callId().toUtf8());
+         mimeData2->setData(MIME_HISTORYID  , static_cast<Call*>(idx.internalPointer())->callId().toUtf8());
          return mimeData2;
       }
    }

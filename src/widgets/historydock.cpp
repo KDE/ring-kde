@@ -361,7 +361,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       connect(m_pAddToContact , SIGNAL(triggered())                        , this , SLOT(slotAddToContact())     );
       connect(m_pBookmark     , SIGNAL(triggered())                        , this , SLOT(slotBookmark())         );
    }
-   m_pCurrentCall = (Call*)static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf();
+   m_pCurrentCall = static_cast<Call*>(static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf());
    m_pMenu->exec(QCursor::pos());
 }
 
@@ -455,6 +455,6 @@ void HistoryDock::slotDoubleClick(const QModelIndex& index)
       return;
    if (((HistoryTreeBackend*)idx.internalPointer())->type() != HistoryTreeBackend::Type::CALL)
       return;
-   m_pCurrentCall = (Call*)static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf();
+   m_pCurrentCall = static_cast<Call*>(static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf());
    slotCallAgain();
 }

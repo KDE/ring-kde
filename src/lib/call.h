@@ -154,7 +154,7 @@ public:
    };
 
    ///(End)user action, all possibility, not only state aware ones like "Action"
-   enum UserAction {
+   enum class UserAction {
       PICKUP   = 0,
       HOLD     = 1,
       UNHOLD   = 2,

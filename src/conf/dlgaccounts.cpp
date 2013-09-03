@@ -611,18 +611,18 @@ void DlgAccounts::updateAccountListCommands()
 void DlgAccounts::main_password_field_changed()
 {
    list_credential->model()->setData(list_credential->model()->index(0,0),edit5_password->text(),CredentialModel::Role::PASSWORD);
-   #ifdef Q_WS_WIN // MS Windows version
+#ifdef Q_WS_WIN // MS Windows version
       if (GetKeyState(VK_CAPITAL) == 1) {
-   #endif
-   #ifdef Q_WS_X11 // X11 version
-      unsigned int n = 0;
+#endif
+#ifdef Q_WS_X11 // X11 version
+      uint n = 0;
       Display *d = QX11Info::display();
       XkbGetIndicatorState(d, XkbUseCoreKbd, &n);
       if ((n & 0x01) == 1) {
-   #else
+#else
       //# error Platform not supported
       if (false) {
-   #endif
+#endif
       label_message->setText("<b>"+i18n("Warning, caps lock is turned on!")+"</b>");
       label_message_icon->setPixmap(KIcon("dialog-warning").pixmap(QSize(32,32)));
    }

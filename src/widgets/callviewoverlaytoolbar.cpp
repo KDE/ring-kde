@@ -154,10 +154,10 @@ void CallViewOverlayToolbar::updateState()
             m_hButtons[ i ]->setVisible(Call::isActionEnabled(static_cast<Call::UserAction>(i) ,state));
             act_counter += Call::isActionEnabled( static_cast<Call::UserAction>(i) , state);
          }
-         catch (Call::State state) {
+         catch (Call::State& state) {
             qDebug() << "CallViewOverlayToolbar is out of bound (state)" << state;
          }
-         catch (Call::UserAction btn) {
+         catch (Call::UserAction& btn) {
             kDebug() << "CallViewOverlayToolbar is out of bound (Action)" << (int)btn;
          }
          catch (...) {

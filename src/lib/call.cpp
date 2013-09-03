@@ -534,8 +534,8 @@ Call::State Call::state() const
 ///Get the call recording
 bool Call::recording() const
 {
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   ((Call*) this)->m_Recording        = callManager.getIsRecording(m_CallId);
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   const_cast<Call*>(this)->m_Recording = callManager.getIsRecording(m_CallId);
    return m_Recording;
 }
 
@@ -691,13 +691,13 @@ Call::State Call::stateChanged(const QString& newStateName)
       try {
          changeCurrentState(stateChangedStateMap[m_CurrentState][dcs]);
       }
-      catch(Call::State state) {
+      catch(Call::State& state) {
          qDebug() << "State change failed (stateChangedStateMap)" << state;
          m_CurrentState = Call::State::ERROR;
          emit changed();
          return m_CurrentState;
       }
-      catch(Call::DaemonState state) {
+      catch(Call::DaemonState& state) {
          qDebug() << "State change failed (stateChangedStateMap)" << state;
          m_CurrentState = Call::State::ERROR;
          emit changed();
@@ -718,13 +718,13 @@ Call::State Call::stateChanged(const QString& newStateName)
       try {
          (this->*(stateChangedFunctionMap[previousState][dcs]))();
       }
-      catch(Call::State state) {
+      catch(Call::State& state) {
          qDebug() << "State change failed (stateChangedFunctionMap)" << state;
          m_CurrentState = Call::State::ERROR;
          emit changed();
          return m_CurrentState;
       }
-      catch(Call::DaemonState state) {
+      catch(Call::DaemonState& state) {
          qDebug() << "State change failed (stateChangedFunctionMap)" << state;
          m_CurrentState = Call::State::ERROR;
          emit changed();
@@ -779,13 +779,13 @@ Call::State Call::actionPerformed(Call::Action action)
    try {
       (this->*(actionPerformedFunctionMap[previousState][action]))();
    }
-   catch(Call::State state) {
+   catch(Call::State& state) {
       qDebug() << "State change failed (actionPerformedFunctionMap)" << state;
       m_CurrentState = Call::State::ERROR;
       emit changed();
       return Call::State::ERROR;
    }
-   catch(Call::Action action) {
+   catch(Call::Action& action) {
       qDebug() << "State change failed (actionPerformedFunctionMap)" << action;
       m_CurrentState = Call::State::ERROR;
       emit changed();
@@ -1192,7 +1192,7 @@ void Call::updatePlayback(int position,int size)
 ///Common source for model data roles
 QVariant Call::roleData(int role) const
 {
-   Contact* ct = ((Call*)this)->contact();
+   Contact* ct = const_cast<Call*>(this)->contact();
    switch (role) {
       case Call::Role::Name:
       case Qt::DisplayRole:
@@ -1263,7 +1263,7 @@ QVariant Call::roleData(int role) const
          return isConference();
          break;
       case Call::Role::Object:
-         return QVariant::fromValue(qobject_cast<Call*>((Call*)this));
+         return QVariant::fromValue(const_cast<Call*>(this));
          break;
       case Call::Role::PhotoPtr:
          return QVariant::fromValue((void*)(ct?ct->photo():nullptr));

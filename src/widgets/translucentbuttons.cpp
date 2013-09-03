@@ -125,14 +125,14 @@ void TranslucentButtons::dragLeaveEvent ( QDragLeaveEvent *e )
 void TranslucentButtons::dropEvent(QDropEvent *e)
 {
    kDebug() << "Drop accepted";
-   emit dataDropped((QMimeData*)e->mimeData());
+   emit dataDropped(const_cast<QMimeData*>(e->mimeData()));
 }
 
 ///Set the state when the user hover the widget
 ///@note This is not called directly to avoid a Qt bug/limitation
 void TranslucentButtons::setHoverState(bool hover)
 {
-   if (hover != m_CurrentState) {
+   if (hover != reinterpret_cast<char>(m_CurrentState)) {
       if (hover) {
          int alpha = m_CurrentColor.alpha();
          m_CurrentColor = "grey";

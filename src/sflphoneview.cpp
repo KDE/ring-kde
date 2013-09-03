@@ -159,9 +159,9 @@ private:
 bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 {
    if (event->type() == QEvent::KeyPress) {
-      int key = ((QKeyEvent*)(event))->key();
+      const int key = static_cast<QKeyEvent*>(event)->key();
       if (key != Qt::Key_Left && key != Qt::Key_Right && key != Qt::Key_Down && key != Qt::Key_Up) {
-         m_pParent->keyPressEvent((QKeyEvent*)event);
+         m_pParent->keyPressEvent(static_cast<QKeyEvent*>(event));
          return true;
       }
    }
