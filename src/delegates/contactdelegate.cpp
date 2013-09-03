@@ -105,7 +105,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //BEGIN overlay path
    if (index.data(AbstractContactBackend::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
-         ((ContactDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
+         const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,QImage*> contactMap;
          contactMap.insert(i18n("Transfer")   ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
          m_pDelegatedropoverlay->setButtons(&contactMap);

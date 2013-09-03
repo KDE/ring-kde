@@ -62,12 +62,12 @@ public:
     };
     explicit HistoryTreeBackend(HistoryTreeBackend::Type _type);
     virtual ~HistoryTreeBackend();
-    HistoryTreeBackend::Type type3() const;
+    HistoryTreeBackend::Type type() const;
     virtual QObject* getSelf() = 0;
     char dropState();
     void setDropState(const char state);
 private:
-    HistoryTreeBackend::Type m_Type3;
+    HistoryTreeBackend::Type m_type;
     char m_DropState;
 };
 
@@ -103,6 +103,8 @@ class  LIB_EXPORT Call : public QObject, public HistoryTreeBackend
    #pragma GCC diagnostic pop
 public:
    //Enum
+
+   ///Model roles
    enum Role {
       Name          = 100,
       Number        = 101,
@@ -132,7 +134,8 @@ public:
       DTMFAnimState = 400,
       LastDTMFidx   = 401,
    };
-   
+
+   ///Possible call states
    enum class State : unsigned int{
       INCOMING        = 0, /** Ringing incoming call */
       RINGING         = 1, /** Ringing outgoing call */
@@ -149,26 +152,41 @@ public:
       CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
       COUNT,
    };
-   
+
+   ///(End)user action, all possibility, not only state aware ones like "Action"
+   enum UserAction {
+      PICKUP   = 0,
+      HOLD     = 1,
+      UNHOLD   = 2,
+      HANGUP   = 3,
+      MUTE     = 4,
+      TRANSFER = 5,
+      RECORD   = 6,
+      REFUSE   = 7,
+      ACCEPT   = 8,
+      COUNT,
+   };
+   Q_ENUMS(UserAction)
+
    class StateChange {
    public:
-      constexpr static const char* HUNG_UP         = "HUNGUP";
-      constexpr static const char* RINGING         = "RINGING";
-      constexpr static const char* CURRENT         = "CURRENT";
-      constexpr static const char* HOLD            = "HOLD";
-      constexpr static const char* BUSY            = "BUSY";
-      constexpr static const char* FAILURE         = "FAILURE";
-      constexpr static const char* UNHOLD_CURRENT  = "UNHOLD";
+      constexpr static const char* HUNG_UP        = "HUNGUP" ;
+      constexpr static const char* RINGING        = "RINGING";
+      constexpr static const char* CURRENT        = "CURRENT";
+      constexpr static const char* HOLD           = "HOLD"   ;
+      constexpr static const char* BUSY           = "BUSY"   ;
+      constexpr static const char* FAILURE        = "FAILURE";
+      constexpr static const char* UNHOLD_CURRENT = "UNHOLD" ;
    };
 
    class DaemonStateInit {
    public:
-      constexpr static const char* CURRENT    = "CURRENT";
-      constexpr static const char* HOLD       = "HOLD";
-      constexpr static const char* BUSY       = "BUSY";
-      constexpr static const char* INCOMING   = "INCOMING";
-      constexpr static const char* RINGING    = "RINGING";
-      constexpr static const char* INACTIVE   = "INACTIVE";
+      constexpr static const char* CURRENT  = "CURRENT"  ;
+      constexpr static const char* HOLD     = "HOLD"     ;
+      constexpr static const char* BUSY     = "BUSY"     ;
+      constexpr static const char* INCOMING = "INCOMING" ;
+      constexpr static const char* RINGING  = "RINGING"  ;
+      constexpr static const char* INACTIVE = "INACTIVE" ;
    };
 
 
@@ -177,13 +195,12 @@ public:
    */
    enum class DaemonState : unsigned int
    {
-      /** Ringing outgoing or incoming call */         RINGING,
-      /** Call to which the user can speak and hear */ CURRENT,
-      /** Call is busy */                              BUSY   ,
-      /** Call is on hold */                           HOLD   ,
-      /** Call is over  */                             HUNG_UP,
-      /** Call has failed */                           FAILURE,
-//       /** Call is recording+current  */                RECORD ,
+      RINGING = 0, /** Ringing outgoing or incoming call */
+      CURRENT = 1, /** Call to which the user can speak and hear */
+      BUSY    = 2, /** Call is busy */
+      HOLD    = 3, /** Call is on hold */
+      HUNG_UP = 4, /** Call is over  */
+      FAILURE = 5, /** Call has failed */
       COUNT,
    };
 
@@ -192,11 +209,11 @@ public:
    */
    enum class Action : unsigned int
    {
-      /** Accept, create or place call or place transfer */ ACCEPT  ,
-      /** Red button, refuse or hang up */                  REFUSE  ,
-      /** Put into or out of transfer mode*/                TRANSFER,
-      /** Hold or unhold the call */                        HOLD    ,
-      /** Enable or disable recording */                    RECORD  ,
+      ACCEPT   = 0, /** Accept, create or place call or place transfer */
+      REFUSE   = 1, /** Red button, refuse or hang up */
+      TRANSFER = 2, /** Put into or out of transfer mode*/
+      HOLD     = 3, /** Hold or unhold the call */
+      RECORD   = 4, /** Enable or disable recording */
       COUNT,
    };
 
@@ -219,7 +236,8 @@ public:
    //Static getters
    static history_state historyStateFromType            ( QString type                                    );
    static Call::State   startStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
-   
+   static bool          isActionEnabled                 ( Call::UserAction action, Call::State state      );
+
    //Getters
    Call::State          state            () const;
    const QString        callId           () const;
@@ -232,9 +250,9 @@ public:
    uint                 stopTimeStamp    () const;
    uint                 startTimeStamp   () const;
    QString              currentCodecName () const;
-   bool                 isSecure            () const;
-   bool                 isConference        () const;
-   bool                 isSelected          () const;
+   bool                 isSecure         () const;
+   bool                 isConference     () const;
+   bool                 isSelected       () const;
    const QString        confId           () const;
    const QString        transferNumber   () const;
    const QString        callNumber       () const;
@@ -250,7 +268,7 @@ public:
    //Automated function
    Call::State stateChanged(const QString & newState);
    Call::State actionPerformed(Call::Action action);
-   
+
    //Setters
    void setConference     ( bool value            );
    void setConfId         ( QString value         );
@@ -259,7 +277,7 @@ public:
    void setRecordingPath  ( const QString& path   );
    void setPeerName       ( const QString& name   );
    void setSelected       ( const bool     value  );
-   
+
    //Mutators
    void appendText(const QString& str);
    void backspaceItemText();
@@ -314,7 +332,7 @@ private:
     *  on a call in state orig_state.
    **/
    static const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState > , Call::State > stateChangedStateMap;
-   
+
    /**
     *  stateChangedFunctionMap[orig_state][daemon_new_state]
     *  Map of the functions to call when the daemon sends the signal 
@@ -322,16 +340,18 @@ private:
     *  on a call in state orig_state.
    **/
    static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
-   
+
+   static const TypedStateMachine< TypedStateMachine< bool , Call::State > , Call::UserAction > availableActionMap;
+
    static const char * historyIcons[3];
-   
+
    static const char * callStateIcons[11];
 
    Call(Call::State startState, const QString& callId, QString peerNumber = "", QString account = "", QString peerName = "");
-   
+
    static Call::DaemonState toDaemonCallState   (const QString& stateName);
    static Call::State       confStatetoCallState(const QString& stateName);
-   
+
    //Automate functions
    // See actionPerformedFunctionMap and stateChangedFunctionMap
    // to know when it is called.

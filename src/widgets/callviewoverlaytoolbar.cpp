@@ -38,19 +38,6 @@
 #include <lib/call.h>
 #include <lib/callmodel.h>
 
-const TypedStateMachine< TypedStateMachine< bool , Call::State > , ActionButton > visibility = {{              /*ROW = BUTTONS   COLS=STATE*/
-            /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
- /*PICKUP   */ {{ true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
- /*HOLD     */ {{ false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    }},
- /*UNHOLD   */ {{ false  , false,  false,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
- /*HANGUP   */ {{ false  , true ,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     }},
- /*MUTE     */ {{ false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
- /*TRANSFER */ {{ false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
- /*RECORD   */ {{ false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     }},
- /*REFUSE   */ {{ true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
- /*ACCEPT   */ {{ false  , false,  false,  true , false, false, false,   false,     false,    false, false,  false,      false    }},
-}};
-
 ///Constructor
 CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(parent),m_pRightRender(nullptr),m_pLeftRender(nullptr),m_pParent(parent)
 {
@@ -69,15 +56,15 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(pare
    m_pRefuse   = createButton( SFLPhone::app()->getRefuseAction()   );
    m_pAccept   = createButton( SFLPhone::app()->getAcceptAction()   );
 
-   m_hButtons[ static_cast<int>(ActionButton::HOLD)     ] = m_pHold    ;
-   m_hButtons[ static_cast<int>(ActionButton::UNHOLD)   ] = m_pUnhold  ;
-   m_hButtons[ static_cast<int>(ActionButton::PICKUP)   ] = m_pPickup  ;
-   m_hButtons[ static_cast<int>(ActionButton::HANGUP)   ] = m_pHangup  ;
-   m_hButtons[ static_cast<int>(ActionButton::MUTE)     ] = m_pMute    ;
-   m_hButtons[ static_cast<int>(ActionButton::TRANSFER) ] = m_pTransfer;
-   m_hButtons[ static_cast<int>(ActionButton::RECORD)   ] = m_pRecord  ;
-   m_hButtons[ static_cast<int>(ActionButton::REFUSE)   ] = m_pRefuse  ;
-   m_hButtons[ static_cast<int>(ActionButton::ACCEPT)   ] = m_pAccept  ;
+   m_hButtons[ static_cast<int>(Call::UserAction::HOLD)     ] = m_pHold    ;
+   m_hButtons[ static_cast<int>(Call::UserAction::UNHOLD)   ] = m_pUnhold  ;
+   m_hButtons[ static_cast<int>(Call::UserAction::PICKUP)   ] = m_pPickup  ;
+   m_hButtons[ static_cast<int>(Call::UserAction::HANGUP)   ] = m_pHangup  ;
+   m_hButtons[ static_cast<int>(Call::UserAction::MUTE)     ] = m_pMute    ;
+   m_hButtons[ static_cast<int>(Call::UserAction::TRANSFER) ] = m_pTransfer;
+   m_hButtons[ static_cast<int>(Call::UserAction::RECORD)   ] = m_pRecord  ;
+   m_hButtons[ static_cast<int>(Call::UserAction::REFUSE)   ] = m_pRefuse  ;
+   m_hButtons[ static_cast<int>(Call::UserAction::ACCEPT)   ] = m_pAccept  ;
 
    layout->addWidget( m_pHangup   );
    layout->addWidget( m_pTransfer );
@@ -164,13 +151,13 @@ void CallViewOverlayToolbar::updateState()
       char act_counter = 0;
       for (int i = 0;i<9;i++) {
          try {
-            m_hButtons[ i ]->setVisible(visibility[ static_cast<ActionButton>(i) ][state]);
-            act_counter += visibility[ static_cast<ActionButton>(i) ][state];
+            m_hButtons[ i ]->setVisible(Call::isActionEnabled(static_cast<Call::UserAction>(i) ,state));
+            act_counter += Call::isActionEnabled( static_cast<Call::UserAction>(i) , state);
          }
          catch (Call::State state) {
             qDebug() << "CallViewOverlayToolbar is out of bound (state)" << state;
          }
-         catch (ActionButton btn) {
+         catch (Call::UserAction btn) {
             kDebug() << "CallViewOverlayToolbar is out of bound (Action)" << (int)btn;
          }
          catch (...) {
@@ -186,7 +173,7 @@ void CallViewOverlayToolbar::updateState()
       manager->setBottomMargin(0);
    }
    //Now set the top margin, this doesn't really belong anywhere, so why not here
-   int rows = CallModel::instance()->rowCount(QModelIndex());
+   const int rows = CallModel::instance()->rowCount(QModelIndex());
    QModelIndex last = CallModel::instance()->index(rows-1,0);
    if (CallModel::instance()->rowCount(last) > 0)
       last = CallModel::instance()->index(CallModel::instance()->rowCount(last)-1,0,last);

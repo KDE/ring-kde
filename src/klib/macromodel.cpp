@@ -121,7 +121,7 @@ void MacroModel::setCurrent(QModelIndex current,QModelIndex previous)
       return;
    IndexPointer* modelItem = (IndexPointer*)current.internalPointer();
    if (modelItem && modelItem->type == IndexType::MacroIndex) {
-      Macro* macro = (Macro*)modelItem->data;
+      Macro* macro = static_cast<Macro*>(modelItem->data);
       m_pCurrentMacro = macro;
       emit selectMacro(m_pCurrentMacro);
    }
@@ -213,7 +213,7 @@ QModelIndex MacroModel::parent( const QModelIndex& index) const
       return QModelIndex();
    IndexPointer* modelItem = (IndexPointer*)index.internalPointer();
    if (modelItem && modelItem->type == IndexType::MacroIndex) {
-      int idx = m_lCategories.indexOf(((Macro*)modelItem->data)->m_pCat);
+      const int idx = m_lCategories.indexOf(static_cast<Macro*>(modelItem->data)->m_pCat);
       if (idx != -1) {
          return MacroModel::index(idx,0,QModelIndex());
       }

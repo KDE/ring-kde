@@ -223,8 +223,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    else if ((currentState == Call::State::RINGING || currentState == Call::State::INCOMING) && index.model()->rowCount() > 1) {
       if (!m_AnimationWrapper) {
-         ((HistoryDelegate*)this)->m_AnimationWrapper = new TipAnimationWrapper();
-         ((HistoryDelegate*)this)->m_pRingingTip = new RingingTip();
+         const_cast<HistoryDelegate*>(this)->m_AnimationWrapper = new TipAnimationWrapper();
+         const_cast<HistoryDelegate*>(this)->m_pRingingTip = new RingingTip();
          m_AnimationWrapper->setTip(m_pRingingTip);
       }
       if (!m_pRingingTip->isVisible())
@@ -245,7 +245,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //BEGIN overlay path
    if (index.data(Call::Role::DropState).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
-         ((HistoryDelegate*)this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
+         const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          callMap.insert(i18n("Conference")   ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/confBlackWhite.png")));
          callMap.insert(i18n("Transfer")     ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
          historyMap.insert(i18n("Transfer")  ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));

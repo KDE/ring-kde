@@ -304,7 +304,7 @@ void HistoryDock::expandTree()
 void HistoryDock::slotContextMenu(const QModelIndex& index)
 {
    QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
-   if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::CALL)
+   if (((HistoryTreeBackend*)idx.internalPointer())->type() != HistoryTreeBackend::Type::CALL)
       return;
    if (!m_pMenu) {
       m_pCallAgain    = new KAction(this);
@@ -453,7 +453,7 @@ void HistoryDock::slotDoubleClick(const QModelIndex& index)
    QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
-   if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::CALL)
+   if (((HistoryTreeBackend*)idx.internalPointer())->type() != HistoryTreeBackend::Type::CALL)
       return;
    m_pCurrentCall = (Call*)static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf();
    slotCallAgain();

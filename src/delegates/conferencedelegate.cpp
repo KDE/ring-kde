@@ -68,7 +68,7 @@ QRect ConferenceDelegate::fullCategoryRect(const QStyleOptionViewItem& option, c
    QModelIndex i(index),old(index);
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
-   ((ConferenceDelegate*)this)->m_SH          = QStyledItemDelegate::sizeHint(option, index);
+   const_cast<ConferenceDelegate*>(this)->m_SH = QStyledItemDelegate::sizeHint(option, index);
    if (!index.parent().isValid() && index.child(0,0).isValid()) {
       ((QSize)m_SH).rheight() += 2 * m_LeftMargin;
    } else {
@@ -467,7 +467,7 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
 ///Update line edit text when in dialing mode
 void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & index ) const
 {
-   KLineEdit* ed = dynamic_cast<KLineEdit*>(editor);
+   KLineEdit* ed = qobject_cast<KLineEdit*>(editor);
    if (ed) {
       ed->setText(index.data(Qt::EditRole).toString());
       ed->deselect();
@@ -479,7 +479,7 @@ void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * mod
 {
    KLineEdit* ed = qobject_cast<KLineEdit*>(editor);
    if (index.data(Call::Role::CallState) != static_cast<int>(Call::State::DIALING)) {
-      emit ((ConferenceDelegate*)(this))->closeEditor(editor,NoHint);
+      emit const_cast<ConferenceDelegate*>(this)->closeEditor(editor,NoHint);
    }
 
    if (ed)

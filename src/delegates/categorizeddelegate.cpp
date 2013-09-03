@@ -59,7 +59,7 @@ QRect CategorizedDelegate::fullCategoryRect(const QStyleOptionViewItem& option, 
 
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
-   ((CategorizedDelegate*)this)->m_SH          = QStyledItemDelegate::sizeHint(option, index);
+   const_cast<CategorizedDelegate*>(this)->m_SH = QStyledItemDelegate::sizeHint(option, index);
    if (!index.parent().isValid()) {
       ((QSize)m_SH).rheight() += 2 * m_LeftMargin;
    } else {

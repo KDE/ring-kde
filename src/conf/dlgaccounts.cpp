@@ -655,28 +655,28 @@ void DlgAccounts::updateFirstCredential(QString text)
 ///Move codec up
 void DlgAccounts::moveAudioCodecUp()
 {
-   if (((AudioCodecModel*) list_audiocodec->model())->moveUp(list_audiocodec->currentIndex()))
+   if (static_cast<AudioCodecModel*>(list_audiocodec->model())->moveUp(list_audiocodec->currentIndex()))
       list_audiocodec->setCurrentIndex(list_audiocodec->model()->index(list_audiocodec->currentIndex().row()-1,0));
 }
 
 ///Move codec down
 void DlgAccounts::moveAudioCodecDown()
 {
-   if (((AudioCodecModel*) list_audiocodec->model())->moveDown(list_audiocodec->currentIndex()))
+   if (static_cast<AudioCodecModel*>(list_audiocodec->model())->moveDown(list_audiocodec->currentIndex()))
       list_audiocodec->setCurrentIndex(list_audiocodec->model()->index(list_audiocodec->currentIndex().row()+1,0));
 }
 
 ///Move video codec up
 void DlgAccounts::moveVideoCodecUp()
 {
-   if (((VideoCodecModel*) m_pCodecsLW->model())->moveUp(m_pCodecsLW->currentIndex()))
+   if (static_cast<VideoCodecModel*>(m_pCodecsLW->model())->moveUp(m_pCodecsLW->currentIndex()))
       m_pCodecsLW->setCurrentIndex(m_pCodecsLW->model()->index(m_pCodecsLW->currentIndex().row()-1,0));
 }
 
 ///Move video codec down
 void DlgAccounts::moveVideoCodecDown()
 {
-   if (((VideoCodecModel*) m_pCodecsLW->model())->moveDown(m_pCodecsLW->currentIndex()))
+   if (static_cast<VideoCodecModel*>(m_pCodecsLW->model())->moveDown(m_pCodecsLW->currentIndex()))
       m_pCodecsLW->setCurrentIndex(m_pCodecsLW->model()->index(m_pCodecsLW->currentIndex().row()+1,0));
 }
 
@@ -686,8 +686,8 @@ void DlgAccounts::loadVidCodecDetails(const QModelIndex& current,const QModelInd
    if (previous != current && previous.isValid()) {
       m_pCodecsLW->model()->setData(previous,m_pBitrateSB->value(),VideoCodecModel::BITRATE_ROLE);
    }
-   
-   int bitrate = m_pCodecsLW->model()->data(current,VideoCodecModel::BITRATE_ROLE).toInt();
+
+   const int bitrate = m_pCodecsLW->model()->data(current,VideoCodecModel::BITRATE_ROLE).toInt();
    m_pBitrateSB->setValue(bitrate);
 }
 

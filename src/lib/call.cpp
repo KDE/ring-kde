@@ -113,6 +113,20 @@ const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Cal
 /*CONF_HOLD      */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
 }};//                                                                                                                                                   
 
+//Enabled actions
+const TypedStateMachine< TypedStateMachine< bool , Call::State > , Call::UserAction > Call::availableActionMap = {{
+            /* INCOMING  RINGING CURRENT DIALING  HOLD FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
+ /*PICKUP   */ {{ true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
+ /*HOLD     */ {{ false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    }},
+ /*UNHOLD   */ {{ false  , false,  false,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
+ /*HANGUP   */ {{ false  , true ,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     }},
+ /*MUTE     */ {{ false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
+ /*TRANSFER */ {{ false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
+ /*RECORD   */ {{ false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     }},
+ /*REFUSE   */ {{ true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
+ /*ACCEPT   */ {{ false  , false,  false,  true , false, false, false,   false,     false,    false, false,  false,      false    }},
+}};
+
 const char * Call::historyIcons[3] = {ICON_HISTORY_INCOMING, ICON_HISTORY_OUTGOING, ICON_HISTORY_MISSED};
 
 QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::State& c)
@@ -336,6 +350,12 @@ Call::State Call::startStateFromDaemonCallState(QString daemonCallState, QString
    else
       return Call::State::FAILURE  ;
 } //getStartStateFromDaemonCallState
+
+
+bool Call::isActionEnabled( Call::UserAction action, Call::State state      )
+{
+   return availableActionMap[action][state];
+}
 
 /*****************************************************************************
  *                                                                           *
@@ -716,7 +736,6 @@ Call::State Call::stateChanged(const QString& newStateName)
          emit changed();
          return m_CurrentState;
       }
-      
    }
    else {
       //Until now, it does not worth using stateChangedStateMap, conferences are quite simple
@@ -738,7 +757,7 @@ Call::State Call::stateChanged(const QString& newStateName)
 ///An account have been performed
 Call::State Call::actionPerformed(Call::Action action)
 {
-   Call::State previousState = m_CurrentState;
+   const Call::State previousState = m_CurrentState;
    //update the state
    try {
       changeCurrentState(actionPerformedStateMap[previousState][action]);

@@ -151,7 +151,7 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
    QModelIndex idx = (static_cast<const BookmarkSortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
-   if (((HistoryTreeBackend*)idx.internalPointer())->type3() != HistoryTreeBackend::Type::BOOKMARK)
+   if (((HistoryTreeBackend*)idx.internalPointer())->type() != HistoryTreeBackend::Type::BOOKMARK)
       return;
    Call* call2 = CallModel::instance()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountListModel::currentAccount());
    call2->setCallNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );

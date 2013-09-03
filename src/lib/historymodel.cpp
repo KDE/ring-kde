@@ -302,7 +302,7 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
       return QVariant();
 
    HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
-   switch (modelItem->type3()) {
+   switch (modelItem->type()) {
       case HistoryTreeBackend::Type::TOP_LEVEL:
       switch (role) {
          case Qt::DisplayRole:
@@ -373,13 +373,13 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
       return QModelIndex();
    }
    HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
-   if (modelItem && (long long)modelItem > 100 && modelItem->type3() == HistoryTreeBackend::Type::CALL) {
+   if (modelItem && modelItem->type() == HistoryTreeBackend::Type::CALL) {
       const Call* call = (Call*)((HistoryTreeBackend*)(idx.internalPointer()))->getSelf();
       const int val = call->roleData(Call::Role::FuzzyDate).toInt();
       if (m_hCategories[val])
          return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
-//    else if (modelItem && modelItem->type3() == HistoryTreeBackend::Type::NUMBER) {
+//    else if (modelItem && modelItem->type() == HistoryTreeBackend::Type::NUMBER) {
 //       Contact* ct = (Contact*)modelItem->getSelf();
 //       QString val = category(ct);
 //       if (m_hCategories[val]) {
@@ -389,7 +389,7 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
 //             HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
 //       }
 //    }
-   else if (modelItem && modelItem->type3() == HistoryTreeBackend::Type::TOP_LEVEL) {
+   else if (modelItem && modelItem->type() == HistoryTreeBackend::Type::TOP_LEVEL) {
       return QModelIndex();
    }
    return QModelIndex();
@@ -465,14 +465,14 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
 //    return m_slHistoryConstStr[cat];
 // }
 
-HistoryTreeBackend::HistoryTreeBackend(HistoryTreeBackend::Type _type) : m_Type3(_type),m_DropState(0)
+HistoryTreeBackend::HistoryTreeBackend(HistoryTreeBackend::Type _type) : m_type(_type),m_DropState(0)
 {
    
 }
 
-HistoryTreeBackend::Type HistoryTreeBackend::type3() const
+HistoryTreeBackend::Type HistoryTreeBackend::type() const
 {
-   return m_Type3;
+   return m_type;
 }
 
 QString HistoryModel::timeToHistoryCategory(const time_t time)

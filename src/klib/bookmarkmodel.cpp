@@ -117,11 +117,11 @@ QVariant BookmarkModel::data( const QModelIndex& index, int role) const
    HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
    if (!modelItem)
       return QVariant();
-   switch (modelItem->type3()) {
+   switch (modelItem->type()) {
       case HistoryTreeBackend::Type::TOP_LEVEL:
          switch (role) {
             case Qt::DisplayRole:
-               return ((TopLevelItem*)modelItem)->m_Name;
+               return static_cast<TopLevelItem*>(modelItem)->m_Name;
          }
          break;
       case HistoryTreeBackend::Type::CALL:
@@ -176,9 +176,9 @@ QModelIndex BookmarkModel::parent( const QModelIndex& index) const
       return QModelIndex();
    }
    const HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
-   if (modelItem->type3() == HistoryTreeBackend::Type::BOOKMARK) {
-      QString val = category(((NumberTreeBackend*)(index.internalPointer())));
-      if (((NumberTreeBackend*)modelItem)->m_IsMostPopular)
+   if (modelItem->type() == HistoryTreeBackend::Type::BOOKMARK) {
+      const QString val = category(static_cast<NumberTreeBackend*>(index.internalPointer()));
+      if (static_cast<const NumberTreeBackend*>(modelItem)->m_IsMostPopular)
          return BookmarkModel::index(0,0);
       else if (m_hCategories[val])
          return BookmarkModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);

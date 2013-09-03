@@ -48,18 +48,18 @@ public Q_SLOTS:
    }
 };
 
-enum class ActionButton : unsigned int {
-   PICKUP   = 0,
-   HOLD     = 1,
-   UNHOLD   = 2,
-   HANGUP   = 3,
-   MUTE     = 4,
-   TRANSFER = 5,
-   RECORD   = 6,
-   REFUSE   = 7,
-   ACCEPT   = 8,
-   COUNT
-};
+// enum class ActionButton : unsigned int {
+//    PICKUP   = 0,
+//    HOLD     = 1,
+//    UNHOLD   = 2,
+//    HANGUP   = 3,
+//    MUTE     = 4,
+//    TRANSFER = 5,
+//    RECORD   = 6,
+//    REFUSE   = 7,
+//    ACCEPT   = 8,
+//    COUNT
+// };
 
 class CallViewOverlayToolbar : public QWidget
 {
