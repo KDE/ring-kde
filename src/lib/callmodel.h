@@ -44,18 +44,18 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       virtual ~CallModel( );
 
       //Call related
-      Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
-      void  attendedTransfer ( Call* toTransfer          , Call* target   );
-      void  transfer         ( Call* toTransfer          , QString target );
-      void  removeCall       ( Call* call                                 );
-      QModelIndex getIndex   ( Call* call                                 );
+      Q_INVOKABLE Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
+      Q_INVOKABLE void  attendedTransfer ( Call* toTransfer          , Call* target   );
+      Q_INVOKABLE void  transfer         ( Call* toTransfer          , QString target );
+      Q_INVOKABLE void  removeCall       ( Call* call                                 );
+      QModelIndex getIndex               ( Call* call                                 );
 
       //Conference related
-      bool createConferenceFromCall  ( Call* call1, Call* call2      );
-      bool mergeConferences          ( Call* conf1, Call* conf2      );
-      bool addParticipant            ( Call* call2, Call* conference );
-      bool detachParticipant         ( Call* call                    );
-      void removeConference          ( Call* conf                    );
+      Q_INVOKABLE bool createConferenceFromCall ( Call* call1, Call* call2      );
+      Q_INVOKABLE bool mergeConferences         ( Call* conf1, Call* conf2      );
+      Q_INVOKABLE bool addParticipant           ( Call* call2, Call* conference );
+      Q_INVOKABLE bool detachParticipant        ( Call* call                    );
+      Q_INVOKABLE void removeConference         ( Call* conf                    );
 
       //Getters
       bool isValid();
@@ -79,8 +79,8 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       //Singleton
       static CallModel* instance();
 
-      Call* getCall ( const QString& callId  ) const;
-      Call* getCall ( const QModelIndex& idx ) const;
+      Q_INVOKABLE Call* getCall ( const QString& callId  ) const;
+      Q_INVOKABLE Call* getCall ( const QModelIndex& idx ) const;
 
    private:
       explicit CallModel();

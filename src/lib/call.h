@@ -152,6 +152,7 @@ public:
       CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
       COUNT,
    };
+   Q_ENUMS(State)
 
    ///(End)user action, all possibility, not only state aware ones like "Action"
    enum class UserAction {
