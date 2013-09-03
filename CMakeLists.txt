@@ -12,14 +12,13 @@ if(POLICY CMP0017)
 endif(POLICY CMP0017)
 
 # --- custom targets: ---
+IF(NOT (${ENABLE_QT5} MATCHES true))
+   FIND_PACKAGE ( KdepimLibs REQUIRED                                                            )
+   FIND_PACKAGE ( KDE4       REQUIRED                                                            )
+   FIND_PACKAGE ( Qt4        REQUIRED QtCore QtGui QtXml QtDBus QtTest QtSVG QtOpenGl QT_USE_QT* )
+ENDIF(NOT (${ENABLE_QT5} MATCHES true))
 
-IF(${ENABLE_QT5} MATCHES false)
-   FIND_PACKAGE ( KdepimLibs REQUIRED                                                         )
-   FIND_PACKAGE ( KDE4       REQUIRED                                                         )
-ENDIF(${ENABLE_QT5} MATCHES false)
-
-FIND_PACKAGE ( Qt4        REQUIRED QtCore QtGui QtXml QtDBus QtTest QtSVG QtOpenGl QT_USE_QT* )
-
+# GCC 4.5 is too old for C++11
 if (CMAKE_COMPILER_IS_GNUCC)
    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
    if (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6)
@@ -28,8 +27,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
       message(FATAL_ERROR "Your version of GCC is too old, please install GCC 4.6 or later")
    endif()
 endif()
-
-
 
 IF(${ENABLE_QT5} MATCHES true)
    add_subdirectory( src/lib )
