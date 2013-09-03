@@ -13,8 +13,11 @@ endif(POLICY CMP0017)
 
 # --- custom targets: ---
 
-FIND_PACKAGE ( KdepimLibs REQUIRED                                                            )
-FIND_PACKAGE ( KDE4       REQUIRED                                                            )
+IF(${ENABLE_QT5} MATCHES false)
+   FIND_PACKAGE ( KdepimLibs REQUIRED                                                         )
+   FIND_PACKAGE ( KDE4       REQUIRED                                                         )
+ENDIF(${ENABLE_QT5} MATCHES false)
+
 FIND_PACKAGE ( Qt4        REQUIRED QtCore QtGui QtXml QtDBus QtTest QtSVG QtOpenGl QT_USE_QT* )
 
 if (CMAKE_COMPILER_IS_GNUCC)
@@ -27,21 +30,21 @@ if (CMAKE_COMPILER_IS_GNUCC)
 endif()
 
 
-set(AKONADI_MIN_VERSION 1.0)
-find_package(Akonadi QUIET NO_MODULE ${AKONADI_MIN_VERSION})
-
-INCLUDE ( KDE4Defaults )
-
-MESSAGE("cmake install prefix is : ${CMAKE_INSTALL_PREFIX}")
-
-INCLUDE_DIRECTORIES (${KDE4_INCLUDES} ${QT_INCLUDES} ${KDEPIMLIBS_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-
-INCLUDE (  ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
-INCLUDE(   ${QT_USE_FILE}   )
 
 IF(${ENABLE_QT5} MATCHES true)
    add_subdirectory( src/lib )
 ELSE()
+   set(AKONADI_MIN_VERSION 1.0)
+   find_package(Akonadi QUIET NO_MODULE ${AKONADI_MIN_VERSION})
+
+   INCLUDE ( KDE4Defaults )
+
+   MESSAGE("cmake install prefix is : ${CMAKE_INSTALL_PREFIX}")
+
+   INCLUDE_DIRECTORIES (${KDE4_INCLUDES} ${QT_INCLUDES} ${KDEPIMLIBS_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+
+   INCLUDE (  ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
+   INCLUDE(   ${QT_USE_FILE}   )
    add_subdirectory( data    )
    add_subdirectory( src     )
    add_subdirectory( doc     )
