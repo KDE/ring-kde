@@ -132,7 +132,7 @@ void TranslucentButtons::dropEvent(QDropEvent *e)
 ///@note This is not called directly to avoid a Qt bug/limitation
 void TranslucentButtons::setHoverState(bool hover)
 {
-   if (hover != reinterpret_cast<char>(m_CurrentState)) {
+   if (hover != m_CurrentState) {
       if (hover) {
          int alpha = m_CurrentColor.alpha();
          m_CurrentColor = "grey";
