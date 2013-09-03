@@ -222,8 +222,35 @@ public:
       Transfer   = 101,
    };
 
+   //Read only properties
+   Q_PROPERTY( Call::State    state            READ state                                     )
+   Q_PROPERTY( history_state  historyState     READ historyState                              )
+   Q_PROPERTY( QString        id               READ callId                                    )
+   Q_PROPERTY( Account*       account          READ account                                   )
+   Q_PROPERTY( bool           isHistory        READ isHistory                                 )
+   Q_PROPERTY( uint           stopTimeStamp    READ stopTimeStamp                             )
+   Q_PROPERTY( uint           startTimeStamp   READ startTimeStamp                            )
+   Q_PROPERTY( QString        currentCodecName READ currentCodecName                          )
+   Q_PROPERTY( bool           isSecure         READ isSecure                                  )
+   Q_PROPERTY( bool           isConference     READ isConference                              )
+   Q_PROPERTY( QString        confId           READ confId                                    )
+   Q_PROPERTY( Contact*       contact          READ contact                                   )
+   Q_PROPERTY( VideoRenderer* videoRenderer    READ videoRenderer                             )
+   Q_PROPERTY( QString        formattedName    READ formattedName                             )
+   Q_PROPERTY( QString        length           READ length                                    )
+   Q_PROPERTY( bool           hasRecording     READ hasRecording                              )
+   Q_PROPERTY( bool           recording        READ recording                                 )
+
+   //Read/write properties
+   Q_PROPERTY( QString        peerPhoneNumber  READ peerPhoneNumber   WRITE setCallNumber     )
+   Q_PROPERTY( QString        peerName         READ peerName          WRITE setPeerName       )
+   Q_PROPERTY( bool           isSelected       READ isSelected        WRITE setSelected       )
+   Q_PROPERTY( QString        transferNumber   READ transferNumber    WRITE setTransferNumber )
+   Q_PROPERTY( QString        callNumber       READ callNumber        WRITE setCallNumber     )
+   Q_PROPERTY( QString        recordingPath    READ recordingPath     WRITE setRecordingPath  )
+
    //Constructors & Destructors
-   Call(QString confId, QString account);
+   explicit Call(QString confId, QString account);
    ~Call();
    static Call* buildDialingCall  (QString callId, const QString & peerName, Account* account = nullptr                                                         );
    static Call* buildIncomingCall (const QString & callId                                                                                                       );
@@ -234,9 +261,10 @@ public:
    static AbstractContactBackend* contactBackend ();
 
    //Static getters
-   static history_state historyStateFromType            ( QString type                                    );
-   static Call::State   startStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
-   static bool          isActionEnabled                 ( Call::UserAction action, Call::State state      );
+   static history_state    historyStateFromType            ( QString type                                    );
+   static Call::State      startStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
+   static const QString    toHumanStateName                ( const Call::State                               );
+   Q_INVOKABLE static bool isActionEnabled                 ( Call::UserAction action, Call::State state      );
 
    //Getters
    Call::State          state            () const;
@@ -257,7 +285,6 @@ public:
    const QString        transferNumber   () const;
    const QString        callNumber       () const;
    const QString        recordingPath    () const;
-   static const QString toHumanStateName    (const Call::State);
    Contact*             contact          ()      ;
    VideoRenderer*       videoRenderer    () const;
    const QString        formattedName    ()      ;

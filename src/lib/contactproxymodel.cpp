@@ -250,7 +250,7 @@ QModelIndex ContactProxyModel::parent( const QModelIndex& index) const
          return ContactProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
    else if (modelItem && modelItem->type() == ContactTreeBackend::Type::NUMBER) {
-      Contact* ct = (Contact*)modelItem->self();
+      Contact* ct = static_cast<Contact*>(modelItem->self());
       const QString val = category(ct);
       if (m_hCategories[val]) {
          return ContactProxyModel::index(
