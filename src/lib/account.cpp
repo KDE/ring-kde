@@ -110,15 +110,15 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    Account* a = new Account();
    a->m_hAccountDetails.clear();
-   a->m_hAccountDetails[ACCOUNT_ENABLED] = "false";
+   a->m_hAccountDetails[Account::MapField::ENABLED] = "false";
    MapStringString tmp = configurationManager.getAccountTemplate();
    QMutableMapIterator<QString, QString> iter(tmp);
    while (iter.hasNext()) {
       iter.next();
       a->m_hAccountDetails[iter.key()] = iter.value();
    }
-   a->setHostname(a->m_hAccountDetails[ACCOUNT_HOSTNAME]);
-   a->setAccountDetail(ACCOUNT_ALIAS,alias);
+   a->setHostname(a->m_hAccountDetails[Account::MapField::HOSTNAME]);
+   a->setAccountDetail(Account::MapField::ALIAS,alias);
    return a;
 }
 
@@ -207,13 +207,13 @@ const QString Account::accountDetail(const QString& param) const
 ///Get the alias
 const QString Account::alias() const
 {
-   return accountDetail(ACCOUNT_ALIAS);
+   return accountDetail(Account::MapField::ALIAS);
 }
 
 ///Is this account registered
 bool Account::isRegistered() const
 {
-   return (accountDetail(ACCOUNT_REGISTRATION_STATUS) == Account::State::REGISTERED);
+   return (accountDetail(Account::MapField::Registration::STATUS) == Account::State::REGISTERED);
 }
 
 ///Return the model index of this item
@@ -273,7 +273,7 @@ VideoCodecModel* Account::videoCodecModel()
 void Account::setAlias(const QString& detail)
 {
    bool accChanged = detail != alias();
-   setAccountDetail(ACCOUNT_ALIAS,detail);
+   setAccountDetail(Account::MapField::ALIAS,detail);
    if (accChanged)
       emit aliasChanged(detail);
 }
@@ -287,31 +287,31 @@ QString Account::hostname() const
 ///Return if the account is enabled
 bool Account::isEnabled() const
 {
-   return (accountDetail(ACCOUNT_ENABLED)  == "true")?1:0;
+   return (accountDetail(Account::MapField::ENABLED)  == "true")?1:0;
 }
 
 ///Return if the account should auto answer
 bool Account::isAutoAnswer() const
 {
-   return (accountDetail(ACCOUNT_AUTOANSWER)  == "true")?1:0;
+   return (accountDetail(Account::MapField::AUTOANSWER)  == "true")?1:0;
 }
 
 ///Return the account user name
 QString Account::username() const
 {
-   return accountDetail(ACCOUNT_USERNAME);
+   return accountDetail(Account::MapField::USERNAME);
 }
 
 ///Return the account mailbox address
 QString Account::mailbox() const
 {
-   return accountDetail(ACCOUNT_MAILBOX);
+   return accountDetail(Account::MapField::MAILBOX);
 }
 
 ///Return the account mailbox address
 QString Account::proxy() const
 {
-   return accountDetail(ACCOUNT_ROUTE);
+   return accountDetail(Account::MapField::ROUTE);
 }
 
 ///
@@ -359,25 +359,25 @@ QString Account::accountSipStunServer() const
 ///Return when the account expire (require renewal)
 int Account::accountRegistrationExpire() const
 {
-   return accountDetail(ACCOUNT_REGISTRATION_EXPIRE).toInt();
+   return accountDetail(Account::MapField::Registration::EXPIRE).toInt();
 }
 
 ///Return if the published address is the same as the local one
 bool Account::isPublishedSameAsLocal() const
 {
-   return (accountDetail(PUBLISHED_SAMEAS_LOCAL)  == "true")?1:0 ;
+   return (accountDetail(Account::MapField::PUBLISHED_SAMEAS_LOCAL)  == "true")?1:0 ;
 }
 
 ///Return the account published address
 QString Account::publishedAddress() const
 {
-   return accountDetail(PUBLISHED_ADDRESS);
+   return accountDetail(Account::MapField::PUBLISHED_ADDRESS);
 }
 
 ///Return the account published port
 int Account::publishedPort() const
 {
-   return accountDetail(PUBLISHED_PORT).toUInt();
+   return accountDetail(Account::MapField::PUBLISHED_PORT).toUInt();
 }
 
 ///Return the account tls password
@@ -467,43 +467,43 @@ int Account::tlsMethod() const
 ///Return if the ringtone are enabled
 bool Account::isRingtoneEnabled() const
 {
-   return (accountDetail(CONFIG_RINGTONE_ENABLED)  == "true")?1:0;
+   return (accountDetail(Account::MapField::Ringtone::ENABLED)  == "true")?1:0;
 }
 
 ///Return the account ringtone path
 QString Account::ringtonePath() const
 {
-   return accountDetail(CONFIG_RINGTONE_PATH);
+   return accountDetail(Account::MapField::Ringtone::PATH);
 }
 
 ///Return the account local port
 int Account::localPort() const
 {
-   return accountDetail(LOCAL_PORT).toInt();
+   return accountDetail(Account::MapField::LOCAL_PORT).toInt();
 }
 
 ///Return the account local interface
 QString Account::localInterface() const
 {
-   return accountDetail(LOCAL_INTERFACE);
+   return accountDetail(Account::MapField::LOCAL_INTERFACE);
 }
 
 ///Return the account registration status
 QString Account::accountRegistrationStatus() const
 {
-   return accountDetail(ACCOUNT_REGISTRATION_STATUS);
+   return accountDetail(Account::MapField::Registration::STATUS);
 }
 
 ///Return the account type
 QString Account::accountType() const
 {
-   return accountDetail(ACCOUNT_TYPE);
+   return accountDetail(Account::MapField::TYPE);
 }
 
 ///Return the DTMF type
 DtmfType Account::DTMFType() const
 {
-   QString type = accountDetail(ACCOUNT_DTMF_TYPE);
+   QString type = accountDetail(Account::MapField::DTMF_TYPE);
    return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
 }
 
@@ -614,7 +614,7 @@ void Account::setAccountDetails(const QHash<QString,QString>& m)
 {
    m_hAccountDetails.clear();
    m_hAccountDetails = m;
-   m_HostName = m[ACCOUNT_HOSTNAME];
+   m_HostName = m[Account::MapField::HOSTNAME];
 }
 
 ///Set a specific detail
@@ -622,7 +622,7 @@ bool Account::setAccountDetail(const QString& param, const QString& val)
 {
    const bool accChanged = m_hAccountDetails[param] != val;
    const QString buf = m_hAccountDetails[param];
-   if (param == ACCOUNT_REGISTRATION_STATUS) {
+   if (param == Account::MapField::Registration::STATUS) {
       m_hAccountDetails[param] = val;
       if (accChanged) {
          emit detailChanged(this,param,val,buf);
@@ -656,7 +656,7 @@ QList<VideoCodec*> getActiveVideoCodecList();
 ///Set the account type, SIP or IAX
 void Account::setAccountType(const QString& detail)
 {
-   setAccountDetail(ACCOUNT_TYPE ,detail);
+   setAccountDetail(Account::MapField::TYPE ,detail);
 }
 
 ///The set account hostname, it can be an hostname or an IP address
@@ -664,32 +664,32 @@ void Account::setHostname(const QString& detail)
 {
    if (m_HostName != detail) {
       m_HostName = detail;
-      setAccountDetail(ACCOUNT_HOSTNAME, detail);
+      setAccountDetail(Account::MapField::HOSTNAME, detail);
    }
 }
 
 ///Set the account username, everything is valid, some might be rejected by the PBX server
 void Account::setUsername(const QString& detail)
 {
-   setAccountDetail(ACCOUNT_USERNAME, detail);
+   setAccountDetail(Account::MapField::USERNAME, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
 void Account::setMailbox(const QString& detail)
 {
-   setAccountDetail(ACCOUNT_MAILBOX, detail);
+   setAccountDetail(Account::MapField::MAILBOX, detail);
 }
 
 ///Set the account mailbox, usually a number, but can be anything
 void Account::setProxy(const QString& detail)
 {
-   setAccountDetail(ACCOUNT_ROUTE, detail);
+   setAccountDetail(Account::MapField::ROUTE, detail);
 }
 
 ///Set the main credential password
 void Account::setAccountPassword(const QString& detail)
 {
-   setAccountDetail(ACCOUNT_PASSWORD, detail);
+   setAccountDetail(Account::MapField::PASSWORD, detail);
 }
 
 ///Set the TLS (encryption) password
@@ -737,19 +737,19 @@ void Account::setAccountSipStunServer(const QString& detail)
 ///Set the published address
 void Account::setPublishedAddress(const QString& detail)
 {
-   setAccountDetail(PUBLISHED_ADDRESS, detail);
+   setAccountDetail(Account::MapField::PUBLISHED_ADDRESS, detail);
 }
 
 ///Set the local interface
 void Account::setLocalInterface(const QString& detail)
 {
-   setAccountDetail(LOCAL_INTERFACE, detail);
+   setAccountDetail(Account::MapField::LOCAL_INTERFACE, detail);
 }
 
 ///Set the ringtone path, it have to be a valid absolute path
 void Account::setRingtonePath(const QString& detail)
 {
-   setAccountDetail(CONFIG_RINGTONE_PATH, detail);
+   setAccountDetail(Account::MapField::Ringtone::PATH, detail);
 }
 
 ///Set the Tls method
@@ -761,7 +761,7 @@ void Account::setTlsMethod(int detail)
 ///Set the account timeout, it will be renegotiated when that timeout occur
 void Account::setAccountRegistrationExpire(int detail)
 {
-   setAccountDetail(ACCOUNT_REGISTRATION_EXPIRE, QString::number(detail));
+   setAccountDetail(Account::MapField::Registration::EXPIRE, QString::number(detail));
 }
 
 ///Set TLS negotiation timeout in second
@@ -779,7 +779,7 @@ void Account::setTlsNegotiationTimeoutMsec(int detail)
 ///Set the local port for SIP/IAX communications
 void Account::setLocalPort(unsigned short detail)
 {
-   setAccountDetail(LOCAL_PORT, QString::number(detail));
+   setAccountDetail(Account::MapField::LOCAL_PORT, QString::number(detail));
 }
 
 ///Set the TLS listener port (0-2^16)
@@ -791,19 +791,19 @@ void Account::setTlsListenerPort(unsigned short detail)
 ///Set the published port (0-2^16)
 void Account::setPublishedPort(unsigned short detail)
 {
-   setAccountDetail(PUBLISHED_PORT, QString::number(detail));
+   setAccountDetail(Account::MapField::PUBLISHED_PORT, QString::number(detail));
 }
 
 ///Set if the account is enabled or not
 void Account::setEnabled(bool detail)
 {
-   setAccountDetail(ACCOUNT_ENABLED, detail?"true":"false");
+   setAccountDetail(Account::MapField::ENABLED, detail?"true":"false");
 }
 
 ///Set if the account should auto answer
 void Account::setAutoAnswer(bool detail)
 {
-   setAccountDetail(ACCOUNT_AUTOANSWER, detail?"true":"false");
+   setAccountDetail(Account::MapField::AUTOANSWER, detail?"true":"false");
 }
 
 ///Set the TLS verification server
@@ -862,19 +862,19 @@ void Account::setAccountSipStunEnabled(bool detail)
 
 void Account::setPublishedSameAsLocal(bool detail)
 {
-   setAccountDetail(PUBLISHED_SAMEAS_LOCAL, detail?"true":"false");
+   setAccountDetail(Account::MapField::PUBLISHED_SAMEAS_LOCAL, detail?"true":"false");
 }
 
 ///Set if custom ringtone are enabled
 void Account::setRingtoneEnabled(bool detail)
 {
-   setAccountDetail(CONFIG_RINGTONE_ENABLED, detail?"true":"false");
+   setAccountDetail(Account::MapField::Ringtone::ENABLED, detail?"true":"false");
 }
 
 ///Set the DTMF type
 void Account::setDTMFType(DtmfType type)
 {
-   setAccountDetail(ACCOUNT_DTMF_TYPE,(type==OverRtp)?"overrtp":"oversip");
+   setAccountDetail(Account::MapField::DTMF_TYPE,(type==OverRtp)?"overrtp":"oversip");
 }
 
 void Account::setRoleData(int role, const QVariant& value)
@@ -990,9 +990,9 @@ bool Account::updateState()
    if(! isNew()) {
       ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
       const MapStringString details       = configurationManager.getAccountDetails(id()).value();
-      const QString         status        = details[ACCOUNT_REGISTRATION_STATUS];
+      const QString         status        = details[Account::MapField::Registration::STATUS];
       const QString         currentStatus = accountRegistrationStatus();
-      setAccountDetail(ACCOUNT_REGISTRATION_STATUS, status); //Update -internal- object state
+      setAccountDetail(Account::MapField::Registration::STATUS, status); //Update -internal- object state
       return status == currentStatus;
    }
    return true;
@@ -1076,7 +1076,7 @@ void Account::reload()
          iter.next();
          m_hAccountDetails[iter.key()] = iter.value();
       }
-      setHostname(m_hAccountDetails[ACCOUNT_HOSTNAME]);
+      setHostname(m_hAccountDetails[Account::MapField::HOSTNAME]);
    }
    m_CurrentState = READY;
    reloadCredentials();
@@ -1095,9 +1095,9 @@ void Account::reloadCredentials()
       VectorMapStringString credentials = configurationManager.getCredentials(id());
       for (int i=0; i < credentials.size(); i++) {
          QModelIndex idx = m_pCredentials->addCredentials();
-         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_USERNAME  ],CredentialModel::Role::NAME    );
-         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_PASSWORD  ],CredentialModel::Role::PASSWORD);
-         m_pCredentials->setData(idx,credentials[i][ CONFIG_ACCOUNT_REALM     ],CredentialModel::Role::REALM   );
+         m_pCredentials->setData(idx,credentials[i][ Account::MapField::USERNAME ],CredentialModel::Role::NAME    );
+         m_pCredentials->setData(idx,credentials[i][ Account::MapField::PASSWORD ],CredentialModel::Role::PASSWORD);
+         m_pCredentials->setData(idx,credentials[i][ Account::MapField::REALM    ],CredentialModel::Role::REALM   );
       }
    }
 }
@@ -1120,9 +1120,9 @@ void Account::saveCredentials() {
             realm = '*';
             m_pCredentials->setData(idx,realm,CredentialModel::Role::REALM);
          }
-         credentialData[ CONFIG_ACCOUNT_USERNAME] = user;
-         credentialData[ CONFIG_ACCOUNT_PASSWORD] = m_pCredentials->data(idx,CredentialModel::Role::PASSWORD).toString();
-         credentialData[ CONFIG_ACCOUNT_REALM   ] = realm;
+         credentialData[ Account::MapField::USERNAME ] = user;
+         credentialData[ Account::MapField::PASSWORD ] = m_pCredentials->data(idx,CredentialModel::Role::PASSWORD).toString();
+         credentialData[ Account::MapField::REALM    ] = realm;
          toReturn << credentialData;
       }
       configurationManager.setCredentials(id(),toReturn);

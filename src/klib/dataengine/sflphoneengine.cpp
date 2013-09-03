@@ -289,7 +289,7 @@ void SFLPhoneEngine::updateAccounts()
       if (dynamic_cast<Account*>(a)) {
          QHash<QString,QVariant> acc;
          acc[ "id"   ] = a->id()                 ;
-         acc[ "alias"] = a->accountDetail(ACCOUNT_ALIAS);
+         acc[ "alias"] = a->accountDetail(Account::MapField::ALIAS);
          setData("accounts", QString::number(rand()) , acc);
       }
    }

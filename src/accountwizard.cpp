@@ -37,6 +37,7 @@
 
 //SFLphone
 #include "lib/sflphone_const.h"
+#include "lib/account.h"
 #include "lib/dbus/configurationmanager.h"
 
 //Define
@@ -202,13 +203,13 @@ void AccountWizard::accept()
    QString ret;
    MapStringString accountDetails = configurationManager.getAccountTemplate();
 
-   QString& alias    = accountDetails[ QString( ACCOUNT_ALIAS    ) ];
-   QString& enabled  = accountDetails[ QString( ACCOUNT_ENABLED  ) ];
-   QString& mailbox  = accountDetails[ QString( ACCOUNT_MAILBOX  ) ];
-   QString& protocol = accountDetails[ QString( ACCOUNT_TYPE     ) ];
-   QString& server   = accountDetails[ QString( ACCOUNT_HOSTNAME ) ];
-   QString& user     = accountDetails[ QString( ACCOUNT_USERNAME ) ];
-   QString& password = accountDetails[ QString( ACCOUNT_PASSWORD ) ];
+   QString& alias    = accountDetails[ QString( Account::MapField::ALIAS    ) ];
+   QString& enabled  = accountDetails[ QString( Account::MapField::ENABLED  ) ];
+   QString& mailbox  = accountDetails[ QString( Account::MapField::MAILBOX  ) ];
+   QString& protocol = accountDetails[ QString( Account::MapField::TYPE     ) ];
+   QString& server   = accountDetails[ QString( Account::MapField::HOSTNAME ) ];
+   QString& user     = accountDetails[ QString( Account::MapField::USERNAME ) ];
+   QString& password = accountDetails[ QString( Account::MapField::PASSWORD ) ];
 
    // sip only parameters
    QString& stun_enabled = accountDetails[ QString(ACCOUNT_SIP_STUN_ENABLED) ];
@@ -223,8 +224,8 @@ void AccountWizard::accept()
    QString& display_sas_once      = accountDetails[ QString( ACCOUNT_DISPLAY_SAS_ONCE      ) ];
 
    //  interface parameters
-   QString& locale_interface  = accountDetails[ QString(LOCAL_INTERFACE)   ];
-   QString& published_address = accountDetails[ QString(PUBLISHED_ADDRESS) ];
+   QString& locale_interface  = accountDetails[ QString(Account::MapField::LOCAL_INTERFACE)   ];
+   QString& published_address = accountDetails[ QString(Account::MapField::PUBLISHED_ADDRESS) ];
 
    bool is_using_sflphone_org = field(FIELD_SFL_ACCOUNT).toBool();
    bool is_using_sip          = false;
@@ -245,7 +246,7 @@ void AccountWizard::accept()
          field( FIELD_SIP_USER      ) = QString( acc.user                         );
          field( FIELD_SIP_VOICEMAIL ).clear();
 
-         protocol = QString( ACCOUNT_TYPE_SIP          );
+         protocol = QString( Account::Protocol::SIP    );
          server   = QString( SFL_ACCOUNT_HOST          );
          password = QString( acc.passwd                );
          user     = QString( acc.user                  );
@@ -264,7 +265,7 @@ void AccountWizard::accept()
       alias    = field   ( FIELD_SIP_ALIAS           ).toString();
       enabled  = QString ( REGISTRATION_ENABLED_TRUE )           ;
       mailbox  = field   ( FIELD_SIP_VOICEMAIL       ).toString();
-      protocol = QString ( ACCOUNT_TYPE_SIP          )           ;
+      protocol = QString ( Account::Protocol::SIP    )           ;
       server   = field   ( FIELD_SIP_SERVER          ).toString();
       password = field   ( FIELD_SIP_PASSWORD        ).toString();
       user     = field   ( FIELD_SIP_USER            ).toString();
@@ -279,7 +280,7 @@ void AccountWizard::accept()
       alias    = field   ( FIELD_IAX_ALIAS           ).toString();
       enabled  = QString ( REGISTRATION_ENABLED_TRUE )           ;
       mailbox  = field   ( FIELD_IAX_VOICEMAIL       ).toString();
-      protocol = QString ( ACCOUNT_TYPE_IAX          )           ;
+      protocol = QString ( Account::Protocol::IAX    )           ;
       server   = field   ( FIELD_IAX_SERVER          ).toString();
       password = field   ( FIELD_IAX_PASSWORD        ).toString();
       user     = field   ( FIELD_IAX_USER            ).toString();

@@ -28,9 +28,6 @@
 
 #define APP_NAME                          "SFLphone KDE Client"
 
-#define SIP                               0
-#define IAX                               1
-
 #define ACTION_LABEL_CALL                 i18n("New call")
 #define ACTION_LABEL_HANG_UP              i18n("Hang up")
 #define ACTION_LABEL_HOLD                 i18n("Hold on")
@@ -81,26 +78,8 @@
 
 
 /** Account details */
-
-/** TLS */
-
-#define ACCOUNT_ID                         "Account.id"
-#define ACCOUNT_TYPE                       "Account.type"
-#define ACCOUNT_ALIAS                      "Account.alias"
-#define ACCOUNT_ENABLED                    "Account.enable"
-#define ACCOUNT_MAILBOX                    "Account.mailbox"
-#define ACCOUNT_REGISTRATION_EXPIRE        "Account.registrationExpire"
-#define ACCOUNT_REGISTRATION_STATUS        "Account.registrationStatus"
-
 #define ACCOUNT_SIP_STUN_SERVER            "STUN.server"
 #define ACCOUNT_SIP_STUN_ENABLED           "STUN.enable"
-#define ACCOUNT_DTMF_TYPE                  "Account.dtmfType"
-#define ACCOUNT_AUTOANSWER                 "Account.autoAnswer"
-#define ACCOUNT_HOSTNAME                   "Account.hostname"
-#define ACCOUNT_USERNAME                   "Account.username"
-#define ACCOUNT_ROUTE                      "Account.routeset"
-#define ACCOUNT_PASSWORD                   "Account.password"
-#define ACCOUNT_REALM                      "Account.realm"
 #define ACCOUNT_KEY_EXCHANGE               "SRTP.keyExchange"
 #define ACCOUNT_SRTP_ENABLED               "SRTP.enable"
 #define ACCOUNT_SRTP_RTP_FALLBACK          "SRTP.rtpFallback"
@@ -112,8 +91,6 @@
 #define ZRTP                               "zrtp"
 #define SDES                               "sdes"
 
-#define CONFIG_RINGTONE_PATH               "Account.ringtonePath"
-#define CONFIG_RINGTONE_ENABLED            "Account.ringtoneEnabled"
 
 
 /**Security */
@@ -134,23 +111,12 @@
 #define TLS_NEGOTIATION_TIMEOUT_MSEC       "TLS.negotiationTimemoutMsec"
 
 
-#define CONFIG_ACCOUNT_USERNAME            "Account.username"
-#define CONFIG_ACCOUNT_PASSWORD            "Account.password"
-#define CONFIG_ACCOUNT_REALM               "Account.realm"
-
-#define LOCAL_INTERFACE                    "Account.localInterface"
-#define PUBLISHED_SAMEAS_LOCAL             "Account.publishedSameAsLocal"
-#define LOCAL_PORT                         "Account.localPort"
-#define PUBLISHED_PORT                     "Account.publishedPort"
-#define PUBLISHED_ADDRESS                  "Account.publishedAddress"
 
 
 /** Maybe to remove **/
 static const QString REGISTRATION_ENABLED_TRUE("true");
 static const QString REGISTRATION_ENABLED_FALSE("false");
-#define ACCOUNT_TYPE_SIP                  "SIP"
-#define ACCOUNT_TYPE_IAX                  "IAX"
-#define ACCOUNT_TYPES_TAB                 {QString(ACCOUNT_TYPE_SIP), QString(ACCOUNT_TYPE_IAX)}
+#define ACCOUNT_TYPES_TAB                 {QString(Account::Protocol::SIP), QString(Account::Protocol::IAX)}
 /*********************/
 
 /** Constant variables */
