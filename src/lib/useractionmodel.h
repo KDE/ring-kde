@@ -47,15 +47,15 @@ public:
       PICKUP   = 0,
       HOLD     = 1,
       UNHOLD   = 2,
-      HANGUP   = 3,
-      MUTE     = 4,
-      TRANSFER = 5,
-      RECORD   = 6,
-      REFUSE   = 7,
-      ACCEPT   = 8,
+      MUTE     = 3,
+      TRANSFER = 4,
+      RECORD   = 5,
+      REFUSE   = 6,
+      ACCEPT   = 7,
+      HANGUP   = 8,
       COUNT,
    };
-   Q_ENUMS(UserAction)
+   Q_ENUMS(Action)
 
    //Properties
    Q_PROPERTY( bool isPickupEnabled   READ isPickupEnabled   NOTIFY actionStateChanged )

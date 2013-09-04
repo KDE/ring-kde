@@ -243,14 +243,14 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    
 
-   static QMap<QString,QImage*> historyMap,callMap;
+   static QMap<QString,DelegateDropOverlay::OverlayButton> historyMap,callMap;
    //BEGIN overlay path
    if (index.data(Call::Role::DropState).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
          const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         callMap.insert(i18n("Conference")   ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/confBlackWhite.png")));
-         callMap.insert(i18n("Transfer")     ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
-         historyMap.insert(i18n("Transfer")  ,new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarraw.png")));
+         callMap.insert(i18n("Conference")   ,{new QImage(KStandardDirs::locate("data","sflphone-client-kde/confBlackWhite.png")),Call::DropAction::Conference});
+         callMap.insert(i18n("Transfer")     ,{new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer});
+         historyMap.insert(i18n("Transfer")  ,{new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer});
       }
 
       if (currentState == Call::State::OVER)

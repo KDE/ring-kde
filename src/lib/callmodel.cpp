@@ -542,6 +542,14 @@ bool CallModel::setData( const QModelIndex& idx, const QVariant &value, int role
             return true;
          }
       }
+      else if (role == Call::Role::DropPosition) {
+         Call* call = getCall(idx);
+         if (call) {
+            call->setProperty("dropPosition",value.toInt());
+            emit dataChanged(idx,idx);
+            return true;
+         }
+      }
    }
    return false;
 }

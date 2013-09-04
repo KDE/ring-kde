@@ -104,7 +104,6 @@ SET(
    widgets/contactdock.cpp
    widgets/historydock.cpp
    widgets/bookmarkdock.cpp
-   widgets/translucentbuttons.cpp
    widgets/categorizedtreeview.cpp
    widgets/videodock.cpp
    widgets/videowidget.cpp
@@ -180,7 +179,7 @@ TARGET_LINK_LIBRARIES(sflphone-client-kde ksflphone qtsflphone  ${KDE4_KDEUI_LIB
 ########### install files ###############
 
 INSTALL(TARGETS sflphone-client-kde              DESTINATION  ${BIN_INSTALL_DIR}                           )
-INSTALL( FILES icons/transferarraw.png           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/transferarrow.png           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/transfertarrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/confBlackWhite.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/overlay_right_corner.svg    DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )

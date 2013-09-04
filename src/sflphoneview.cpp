@@ -232,8 +232,8 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
       }
    }
    else if (event->type() == QEvent::DragMove) {
+      QDragMoveEvent* e = static_cast<QDragMoveEvent*>(event);
       if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
-         QDragMoveEvent* e = static_cast<QDragMoveEvent*>(event);
          if (e->mimeData()->hasFormat(MIME_CALLID)) {
             TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
          }
@@ -252,7 +252,6 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
          TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
       }
       if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-         QDragMoveEvent* e = static_cast<QDragMoveEvent*>(event);
          if (e->mimeData()->hasFormat(MIME_CALLID)) {
             TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
          }
@@ -269,6 +268,12 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
          }
       }
+      //Just as drop, compute the position
+      const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
+      const QPoint position = e->pos();
+      const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
+      Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
+      CallModel::instance()->setData(idxAt,act,Call::Role::DropPosition);
    }
    // standard event processing
    return QObject::eventFilter(obj, event);

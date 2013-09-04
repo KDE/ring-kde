@@ -1289,6 +1289,9 @@ QVariant Call::roleData(int role) const
       case Call::Role::LastDTMFidx:
          return property("latestDtmfIdx");
          break;
+      case Call::Role::DropPosition:
+         return property("dropPosition");
+         break;
       default:
          break;
    };

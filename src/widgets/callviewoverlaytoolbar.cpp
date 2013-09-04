@@ -60,12 +60,12 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(pare
    m_hButtons[ static_cast<int>(UserActionModel::Action::HOLD)     ] = m_pHold    ;
    m_hButtons[ static_cast<int>(UserActionModel::Action::UNHOLD)   ] = m_pUnhold  ;
    m_hButtons[ static_cast<int>(UserActionModel::Action::PICKUP)   ] = m_pPickup  ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::HANGUP)   ] = m_pHangup  ;
    m_hButtons[ static_cast<int>(UserActionModel::Action::MUTE)     ] = m_pMute    ;
    m_hButtons[ static_cast<int>(UserActionModel::Action::TRANSFER) ] = m_pTransfer;
    m_hButtons[ static_cast<int>(UserActionModel::Action::RECORD)   ] = m_pRecord  ;
    m_hButtons[ static_cast<int>(UserActionModel::Action::REFUSE)   ] = m_pRefuse  ;
    m_hButtons[ static_cast<int>(UserActionModel::Action::ACCEPT)   ] = m_pAccept  ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::HANGUP)   ] = m_pHangup  ;
 
    layout->addWidget( m_pHangup   );
    layout->addWidget( m_pTransfer );
@@ -150,7 +150,7 @@ void CallViewOverlayToolbar::updateState()
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
       manager->setBottomMargin(53);
       char act_counter = 0;
-      for (int i = 0;i<9;i++) {
+      for (int i = 0;i<static_cast<int>(UserActionModel::Action::COUNT);i++) {
          try {
             m_hButtons[ i ]->setVisible(call->userActionModel()->isActionEnabled(static_cast<UserActionModel::Action>(i)));
             act_counter += call->userActionModel()->isActionEnabled( static_cast<UserActionModel::Action>(i));

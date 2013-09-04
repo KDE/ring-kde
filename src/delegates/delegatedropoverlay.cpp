@@ -36,7 +36,7 @@ m_pTimer(0),m_Init(false),m_Reverse(1),m_lpButtons(nullptr)
    const QColor color = QApplication::palette().base().color();
    const bool dark = (color.red() > 128 && color.green() > 128 && color.blue() > 128);
    if (dark)
-      m_Pen.setColor(Qt::black);
+      m_Pen.setColor("#f3f3f3");
    else
       m_Pen.setColor(Qt::white);
 }
@@ -67,21 +67,37 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
       }
    }
    int i =0;
-   QMapIterator<QString, QImage*> it(*m_lpButtons);
+   QMapIterator<QString, OverlayButton> it(*m_lpButtons);
+   const int dropPosition = index.data(Call::Role::DropPosition).toInt();
    while (it.hasNext()) {
       it.next();
       if (step) {
-         painter->save();
-         painter->setRenderHint(QPainter::Antialiasing, true);
-         painter->setPen(Qt::NoPen);
+         const bool highlight = dropPosition == it.value().role;
          const int tmpStep = (step>0)?step:15+step;
-         painter->setBrush(QColor(125,125,125,(0.5*tmpStep*tmpStep)));
-         const QRect buttonRect = QRect(option.rect.x()+(option.rect.width()/m_lpButtons->size())*i,option.rect.y(),option.rect.width()/m_lpButtons->size() - 10,option.rect.height());
+         painter->save();
+         painter->setOpacity(1);
+         painter->setRenderHint(QPainter::Antialiasing, true);
+         QPen pen = highlight?QApplication::palette().color(QPalette::Highlight): QColor(235,235,235,235);
+         pen.setWidth(1.5);
+         painter->setPen(pen);
+         QLinearGradient linearGrad(QPointF(0, 0), QPointF(0, 100));
+         linearGrad.setColorAt(0, QColor(130,130,130,(0.7*tmpStep*tmpStep)));
+         linearGrad.setColorAt(1, QColor(0,0,0,(0.75*tmpStep*tmpStep)));
+         painter->setBrush(linearGrad);
+         const QRect buttonRect = QRect(
+            option.rect.x()+(option.rect.width()/m_lpButtons->size())*i+4,
+            option.rect.y()+2,
+            option.rect.width()/m_lpButtons->size() - 10,
+            option.rect.height()-4);
          painter->drawRoundedRect(buttonRect, 10, 10);
-         painter->setPen(m_Pen);
+         painter->setPen(highlight?QColor(Qt::white):m_Pen);
 
-         if (it.value()) {
-            painter->drawImage(QRect(buttonRect.x()+buttonRect.width()-(buttonRect.height()-10)-10/*padding*/,buttonRect.y()+5,(buttonRect.height()-10),(buttonRect.height()-10)),*it.value());
+         if (it.value().m_pImage) {
+            painter->drawImage(QRect(
+               buttonRect.x()+buttonRect.width()-(buttonRect.height()-10)-10/*padding*/,
+               buttonRect.y()+5,
+               (buttonRect.height()-10),
+               (buttonRect.height()-10)),*it.value().m_pImage);
          }
 
          QFont font = painter->font();
@@ -90,6 +106,18 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
          painter->drawText (buttonRect, Qt::AlignVCenter|Qt::AlignHCenter, QString(it.key()).remove('&') );
          painter->restore();
          i++;
+
+         if (highlight) {
+            QColor col = pen.color();
+            for(int i=1;i<=4;i++) {
+               painter->setBrush(Qt::NoBrush);
+               pen.setWidth(i);
+               col.setAlpha(205*(0.5/((float)i)));
+               pen.setColor(col);
+               painter->setPen(pen);
+               painter->drawRoundedRect(buttonRect, 10, 10);
+            }
+         }
       }
    }
 }//paintEvent

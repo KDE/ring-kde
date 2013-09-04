@@ -121,6 +121,7 @@ public:
       DropState     = 300,
       DTMFAnimState = 400,
       LastDTMFidx   = 401,
+      DropPosition  = 402,
    };
 
    enum DropAction {
@@ -226,7 +227,7 @@ public:
    Q_PROPERTY( QString            length           READ length                                    )
    Q_PROPERTY( bool               hasRecording     READ hasRecording                              )
    Q_PROPERTY( bool               recording        READ recording                                 )
-   Q_PROPERTY( UserActionModel*   userActionModel  READ userActionModel                           )
+   Q_PROPERTY( UserActionModel*   userActionModel  READ userActionModel   CONSTANT                )
 
    //Read/write properties
    Q_PROPERTY( QString            peerPhoneNumber  READ peerPhoneNumber   WRITE setCallNumber     )

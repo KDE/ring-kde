@@ -25,12 +25,12 @@ const TypedStateMachine< TypedStateMachine< bool , Call::State > , UserActionMod
  /*PICKUP   */ {{ true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
  /*HOLD     */ {{ false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    }},
  /*UNHOLD   */ {{ false  , false,  false,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
- /*HANGUP   */ {{ false  , true ,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     }},
  /*MUTE     */ {{ false  , true ,  true ,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
  /*TRANSFER */ {{ false  , false,  true ,  false, true , false, false,   false,     false,    false, false,  false,      false    }},
  /*RECORD   */ {{ false  , true ,  true ,  false, true , false, false,   true ,     true ,    false, false,  true ,      true     }},
  /*REFUSE   */ {{ true   , false,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
  /*ACCEPT   */ {{ false  , false,  false,  true , false, false, false,   false,     false,    false, false,  false,      false    }},
+ /*HANGUP   */ {{ false  , true ,  true ,  false, true , true , true ,   true ,     true ,    false, true ,  true ,      true     }},
 }};
 
 UserActionModel::UserActionModel(Call* parent) : QObject(parent),m_pCall(parent)
