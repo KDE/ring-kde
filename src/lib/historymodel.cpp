@@ -133,7 +133,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
    roles.insert(Call::Role::Length        ,QByteArray("length"));
    roles.insert(Call::Role::FormattedDate ,QByteArray("formattedDate"));
    roles.insert(Call::Role::HasRecording  ,QByteArray("hasRecording"));
-   roles.insert(Call::Role::HistoryState  ,QByteArray("historyState"));
+   roles.insert(Call::Role::Historystate  ,QByteArray("historyState"));
    roles.insert(Call::Role::Filter        ,QByteArray("filter"));
    roles.insert(Call::Role::FuzzyDate     ,QByteArray("fuzzyDate"));
    roles.insert(Call::Role::IsBookmark    ,QByteArray("isBookmark"));

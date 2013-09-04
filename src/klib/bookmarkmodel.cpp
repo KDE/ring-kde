@@ -247,8 +247,8 @@ QVariant BookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) cons
       case Call::Role::HasRecording:
          cat = false;//call->hasRecording();
          break;
-      case Call::Role::HistoryState:
-         cat = history_state::NONE;//call->getHistoryState();
+      case Call::Role::Historystate:
+         cat = Call::HistoryState::NONE;//call->getHistoryState();
          break;
       case Call::Role::Filter:
          cat = number->m_Name;//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();

@@ -17,19 +17,21 @@
  ***************************************************************************/
 #include "historydelegate.h"
 
+//Qt
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QTreeView>
 #include <QtCore/QFile>
-
 #include <QtCore/QDebug>
 
+//KDE
 #include <KLocale>
 #include <KIcon>
 #include <KStandardDirs>
 
+//SFLPhone
 #include <lib/historymodel.h>
 #include <lib/contact.h>
 #include <lib/callmodel.h>
@@ -137,9 +139,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          }
       }
    }
-   else if (pxmPtr && (index.data(Call::Role::HistoryState).toInt() != history_state::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if (pxmPtr && (index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
-      QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::HistoryState).toInt()]:callStateIcons[currentState]);
+      QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
    }

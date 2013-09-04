@@ -36,6 +36,7 @@
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
 #include <lib/call.h>
+#include <lib/useractionmodel.h>
 #include <lib/callmodel.h>
 
 ///Constructor
@@ -56,15 +57,15 @@ CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(pare
    m_pRefuse   = createButton( SFLPhone::app()->getRefuseAction()   );
    m_pAccept   = createButton( SFLPhone::app()->getAcceptAction()   );
 
-   m_hButtons[ static_cast<int>(Call::UserAction::HOLD)     ] = m_pHold    ;
-   m_hButtons[ static_cast<int>(Call::UserAction::UNHOLD)   ] = m_pUnhold  ;
-   m_hButtons[ static_cast<int>(Call::UserAction::PICKUP)   ] = m_pPickup  ;
-   m_hButtons[ static_cast<int>(Call::UserAction::HANGUP)   ] = m_pHangup  ;
-   m_hButtons[ static_cast<int>(Call::UserAction::MUTE)     ] = m_pMute    ;
-   m_hButtons[ static_cast<int>(Call::UserAction::TRANSFER) ] = m_pTransfer;
-   m_hButtons[ static_cast<int>(Call::UserAction::RECORD)   ] = m_pRecord  ;
-   m_hButtons[ static_cast<int>(Call::UserAction::REFUSE)   ] = m_pRefuse  ;
-   m_hButtons[ static_cast<int>(Call::UserAction::ACCEPT)   ] = m_pAccept  ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::HOLD)     ] = m_pHold    ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::UNHOLD)   ] = m_pUnhold  ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::PICKUP)   ] = m_pPickup  ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::HANGUP)   ] = m_pHangup  ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::MUTE)     ] = m_pMute    ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::TRANSFER) ] = m_pTransfer;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::RECORD)   ] = m_pRecord  ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::REFUSE)   ] = m_pRefuse  ;
+   m_hButtons[ static_cast<int>(UserActionModel::Action::ACCEPT)   ] = m_pAccept  ;
 
    layout->addWidget( m_pHangup   );
    layout->addWidget( m_pTransfer );
@@ -144,20 +145,20 @@ void CallViewOverlayToolbar::updateState()
       index = m_pParent->selectionModel()->currentIndex();
    }
    if (index.isValid() && CallModel::instance()->rowCount()) {
-      Call::State state = (Call::State) index.data(Call::Role::CallState).toInt();
+      Call* call = qvariant_cast<Call*>(index.data(Call::Role::Object));
       setVisible(true);
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
       manager->setBottomMargin(53);
       char act_counter = 0;
       for (int i = 0;i<9;i++) {
          try {
-            m_hButtons[ i ]->setVisible(Call::isActionEnabled(static_cast<Call::UserAction>(i) ,state));
-            act_counter += Call::isActionEnabled( static_cast<Call::UserAction>(i) , state);
+            m_hButtons[ i ]->setVisible(call->userActionModel()->isActionEnabled(static_cast<UserActionModel::Action>(i)));
+            act_counter += call->userActionModel()->isActionEnabled( static_cast<UserActionModel::Action>(i));
          }
          catch (Call::State& state) {
             qDebug() << "CallViewOverlayToolbar is out of bound (state)" << state;
          }
-         catch (Call::UserAction& btn) {
+         catch (UserActionModel::Action& btn) {
             kDebug() << "CallViewOverlayToolbar is out of bound (Action)" << (int)btn;
          }
          catch (...) {

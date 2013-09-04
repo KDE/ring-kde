@@ -49,6 +49,7 @@ set( qtsflphone_LIB_SRCS
   credentialmodel.cpp
   audiocodecmodel.cpp
   instantmessagingmodel.cpp
+  useractionmodel.cpp
   dbus/configurationmanager.cpp
   dbus/callmanager.cpp
   dbus/instancemanager.cpp
@@ -74,6 +75,7 @@ set( qtsflphone_LIB_HDRS
   audiocodecmodel.h
   instantmessagingmodel.h
   contactproxymodel.h
+  useractionmodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

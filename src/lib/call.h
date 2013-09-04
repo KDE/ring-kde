@@ -34,19 +34,7 @@ class Contact;
 class Account;
 class VideoRenderer;
 class InstantMessagingModel;
-
-/**
- * @enum history_state
- * This enum have all the state a call can take in the history
- */
-typedef enum
-{
-  INCOMING,
-  OUTGOING,
-  MISSED  ,
-  NONE
-} history_state;
-
+class UserActionModel;
 
 class Call;
 
@@ -113,7 +101,7 @@ public:
       Length        = 104,
       FormattedDate = 105,
       HasRecording  = 106,
-      HistoryState  = 107,
+      Historystate  = 107,
       Filter        = 108,
       FuzzyDate     = 109,
       IsBookmark    = 110,
@@ -135,6 +123,11 @@ public:
       LastDTMFidx   = 401,
    };
 
+   enum DropAction {
+      Conference = 100,
+      Transfer   = 101,
+   };
+
    ///Possible call states
    enum class State : unsigned int{
       INCOMING        = 0, /** Ringing incoming call */
@@ -154,20 +147,17 @@ public:
    };
    Q_ENUMS(State)
 
-   ///(End)user action, all possibility, not only state aware ones like "Action"
-   enum class UserAction {
-      PICKUP   = 0,
-      HOLD     = 1,
-      UNHOLD   = 2,
-      HANGUP   = 3,
-      MUTE     = 4,
-      TRANSFER = 5,
-      RECORD   = 6,
-      REFUSE   = 7,
-      ACCEPT   = 8,
-      COUNT,
+   /**
+   * @enum Call::HistoryState
+   * This enum have all the state a call can take in the history
+   */
+   enum HistoryState
+   {
+      INCOMING,
+      OUTGOING,
+      MISSED  ,
+      NONE
    };
-   Q_ENUMS(UserAction)
 
    class StateChange {
    public:
@@ -191,7 +181,7 @@ public:
    };
 
 
-   /** @enum daemon_call_state_t 
+   /** @enum Call::DaemonState 
    * This enum have all the states a call can take for the daemon.
    */
    enum class DaemonState : unsigned int
@@ -205,7 +195,7 @@ public:
       COUNT,
    };
 
-   /** @enum call_action
+   /** @enum Call::Action
    * This enum have all the actions you can make on a call.
    */
    enum class Action : unsigned int
@@ -218,37 +208,33 @@ public:
       COUNT,
    };
 
-   enum DropAction {
-      Conference = 100,
-      Transfer   = 101,
-   };
-
    //Read only properties
-   Q_PROPERTY( Call::State    state            READ state                                     )
-   Q_PROPERTY( history_state  historyState     READ historyState                              )
-   Q_PROPERTY( QString        id               READ callId                                    )
-   Q_PROPERTY( Account*       account          READ account                                   )
-   Q_PROPERTY( bool           isHistory        READ isHistory                                 )
-   Q_PROPERTY( uint           stopTimeStamp    READ stopTimeStamp                             )
-   Q_PROPERTY( uint           startTimeStamp   READ startTimeStamp                            )
-   Q_PROPERTY( QString        currentCodecName READ currentCodecName                          )
-   Q_PROPERTY( bool           isSecure         READ isSecure                                  )
-   Q_PROPERTY( bool           isConference     READ isConference                              )
-   Q_PROPERTY( QString        confId           READ confId                                    )
-   Q_PROPERTY( Contact*       contact          READ contact                                   )
-   Q_PROPERTY( VideoRenderer* videoRenderer    READ videoRenderer                             )
-   Q_PROPERTY( QString        formattedName    READ formattedName                             )
-   Q_PROPERTY( QString        length           READ length                                    )
-   Q_PROPERTY( bool           hasRecording     READ hasRecording                              )
-   Q_PROPERTY( bool           recording        READ recording                                 )
+   Q_PROPERTY( Call::State        state            READ state             NOTIFY stateChanged     )
+   Q_PROPERTY( Call::HistoryState historyState     READ historyState                              )
+   Q_PROPERTY( QString            id               READ callId                                    )
+   Q_PROPERTY( Account*           account          READ account                                   )
+   Q_PROPERTY( bool               isHistory        READ isHistory                                 )
+   Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
+   Q_PROPERTY( uint               startTimeStamp   READ startTimeStamp                            )
+   Q_PROPERTY( QString            currentCodecName READ currentCodecName                          )
+   Q_PROPERTY( bool               isSecure         READ isSecure                                  )
+   Q_PROPERTY( bool               isConference     READ isConference                              )
+   Q_PROPERTY( QString            confId           READ confId                                    )
+   Q_PROPERTY( Contact*           contact          READ contact                                   )
+   Q_PROPERTY( VideoRenderer*     videoRenderer    READ videoRenderer                             )
+   Q_PROPERTY( QString            formattedName    READ formattedName                             )
+   Q_PROPERTY( QString            length           READ length                                    )
+   Q_PROPERTY( bool               hasRecording     READ hasRecording                              )
+   Q_PROPERTY( bool               recording        READ recording                                 )
+   Q_PROPERTY( UserActionModel*   userActionModel  READ userActionModel                           )
 
    //Read/write properties
-   Q_PROPERTY( QString        peerPhoneNumber  READ peerPhoneNumber   WRITE setCallNumber     )
-   Q_PROPERTY( QString        peerName         READ peerName          WRITE setPeerName       )
-   Q_PROPERTY( bool           isSelected       READ isSelected        WRITE setSelected       )
-   Q_PROPERTY( QString        transferNumber   READ transferNumber    WRITE setTransferNumber )
-   Q_PROPERTY( QString        callNumber       READ callNumber        WRITE setCallNumber     )
-   Q_PROPERTY( QString        recordingPath    READ recordingPath     WRITE setRecordingPath  )
+   Q_PROPERTY( QString            peerPhoneNumber  READ peerPhoneNumber   WRITE setCallNumber     )
+   Q_PROPERTY( QString            peerName         READ peerName          WRITE setPeerName       )
+   Q_PROPERTY( bool               isSelected       READ isSelected        WRITE setSelected       )
+   Q_PROPERTY( QString            transferNumber   READ transferNumber    WRITE setTransferNumber )
+   Q_PROPERTY( QString            callNumber       READ callNumber        WRITE setCallNumber     )
+   Q_PROPERTY( QString            recordingPath    READ recordingPath     WRITE setRecordingPath  )
 
    //Constructors & Destructors
    explicit Call(QString confId, QString account);
@@ -262,17 +248,16 @@ public:
    static AbstractContactBackend* contactBackend ();
 
    //Static getters
-   static history_state    historyStateFromType            ( QString type                                    );
-   static Call::State      startStateFromDaemonCallState   ( QString daemonCallState, QString daemonCallType );
-   static const QString    toHumanStateName                ( const Call::State                               );
-   Q_INVOKABLE static bool isActionEnabled                 ( Call::UserAction action, Call::State state      );
+   static Call::HistoryState historyStateFromType          ( QString type                                    );
+   static Call::State        startStateFromDaemonCallState ( QString daemonCallState, QString daemonCallType );
+   static const QString      toHumanStateName              ( const Call::State                               );
 
    //Getters
    Call::State          state            () const;
    const QString        callId           () const;
    const QString        peerPhoneNumber  () const;
    const QString        peerName         () const;
-   history_state        historyState     () const;
+   Call::HistoryState   historyState     () const;
    bool                 recording        () const;
    Account*             account          () const;
    bool                 isHistory        () const;
@@ -289,9 +274,10 @@ public:
    Contact*             contact          ()      ;
    VideoRenderer*       videoRenderer    () const;
    const QString        formattedName    ()      ;
-   bool                 hasRecording        () const;
+   bool                 hasRecording     () const;
    QString              length           () const;
    QVariant             roleData         (int role) const;
+   UserActionModel*     userActionModel  () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);
@@ -317,27 +303,28 @@ public:
 private:
 
    //Attributes
-   QString                m_Account        ;
-   QString                m_CallId         ;
-   QString                m_ConfId         ;
-   QString                m_PeerPhoneNumber;
-   QString                m_PeerName       ;
-   QString                m_RecordingPath  ;
-   history_state          m_HistoryState   ;
-   uint                   m_pStartTimeStamp;
-   uint                   m_pStopTimeStamp ;
-   QString                m_TransferNumber ;
-   QString                m_CallNumber     ;
-   bool                   m_isConference   ;
-   Call::State            m_CurrentState   ;
-   bool                   m_Recording      ;
-   static Call*           m_sSelectedCall  ;
-   Contact*               m_pContact       ;
-   InstantMessagingModel* m_pImModel       ;
+   QString                m_Account         ;
+   QString                m_CallId          ;
+   QString                m_ConfId          ;
+   QString                m_PeerPhoneNumber ;
+   QString                m_PeerName        ;
+   QString                m_RecordingPath   ;
+   Call::HistoryState     m_HistoryState    ;
+   uint                   m_pStartTimeStamp ;
+   uint                   m_pStopTimeStamp  ;
+   QString                m_TransferNumber  ;
+   QString                m_CallNumber      ;
+   bool                   m_isConference    ;
+   Call::State            m_CurrentState    ;
+   bool                   m_Recording       ;
+   static Call*           m_sSelectedCall   ;
+   Contact*               m_pContact        ;
+   InstantMessagingModel* m_pImModel        ;
    int                    m_LastContactCheck;
-   QTimer*                m_pTimer         ;
+   QTimer*                m_pTimer          ;
+   UserActionModel*       m_pUserActionModel;
    static AbstractContactBackend* m_pContactBackend;
-   
+
    //State machine
    /**
     *  actionPerformedStateMap[orig_state][action]
@@ -345,14 +332,14 @@ private:
     *  performed on a call in state orig_state.
    **/
    static const TypedStateMachine< TypedStateMachine< Call::State , Call::Action > , Call::State > actionPerformedStateMap;
-   
+
    /**
     *  actionPerformedFunctionMap[orig_state][action]
     *  Map of the functions to call when the action action is 
     *  performed on a call in state orig_state.
    **/
    static const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::State > actionPerformedFunctionMap;
-   
+
    /**
     *  stateChangedStateMap[orig_state][daemon_new_state]
     *  Map of the states to go to when the daemon sends the signal 
@@ -368,12 +355,6 @@ private:
     *  on a call in state orig_state.
    **/
    static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
-
-   static const TypedStateMachine< TypedStateMachine< bool , Call::State > , Call::UserAction > availableActionMap;
-
-   static const char * historyIcons[3];
-
-   static const char * callStateIcons[11];
 
    Call(Call::State startState, const QString& callId, QString peerNumber = "", QString account = "", QString peerName = "");
 
@@ -423,7 +404,10 @@ Q_SIGNALS:
    void playbackPositionChanged(int,int);
    void playbackStopped();
    void playbackStarted();
+   ///Notify that a DTMF have been played
    void dtmfPlayed(const QString& str);
+   ///Notify of state change
+   void stateChanged();
 };
 
 Q_DECLARE_METATYPE(Call*)
