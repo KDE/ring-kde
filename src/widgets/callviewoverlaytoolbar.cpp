@@ -152,8 +152,10 @@ void CallViewOverlayToolbar::updateState()
       char act_counter = 0;
       for (int i = 0;i<static_cast<int>(UserActionModel::Action::COUNT);i++) {
          try {
-            m_hButtons[ i ]->setVisible(call->userActionModel()->isActionEnabled(static_cast<UserActionModel::Action>(i)));
-            act_counter += call->userActionModel()->isActionEnabled( static_cast<UserActionModel::Action>(i));
+            if (call && call->userActionModel()) {
+               m_hButtons[ i ]->setVisible(call->userActionModel()->isActionEnabled(static_cast<UserActionModel::Action>(i)));
+               act_counter += call->userActionModel()->isActionEnabled( static_cast<UserActionModel::Action>(i));
+            }
          }
          catch (Call::State& state) {
             qDebug() << "CallViewOverlayToolbar is out of bound (state)" << state;
@@ -198,7 +200,7 @@ void CallViewOverlayToolbar::showEvent(QShowEvent *)
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
       manager->setBottomMargin(53);
    }
-    emit visibilityChanged(true);
+   emit visibilityChanged(true);
 }
 
 bool CallViewOverlayToolbar::eventFilter(QObject *obj, QEvent *event)

@@ -310,19 +310,17 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    m_pMessageBoxW->setVisible(false);
 
-   //                SENDER                             SIGNAL                             RECEIVER                SLOT                                  /
-   /**/connect(CallModel::instance()          , SIGNAL(incomingCall(Call*))                   , this      , SLOT(on1_incomingCall(Call*))                    );
-   /**/connect(CallModel::instance()          , SIGNAL(voiceMailNotify(QString,int))          , this      , SLOT(on1_voiceMailNotify(QString,int))           );
-//    /**/connect(callView                   , SIGNAL(itemChanged(Call*))                    , this      , SLOT(updateWindowCallState())                    );
-   /**///connect(CallModel::instance()          , SIGNAL(volumeChanged(const QString &, double)), this    , SLOT(on1_volumeChanged(const QString &, double) ));
-   /**/connect(CallModel::instance()          , SIGNAL(callStateChanged(Call*))               , this      , SLOT(updateWindowCallState())                    );
-   /**/connect(AccountListModel::instance() , SIGNAL(accountStateChanged(Account*,QString)) , this      , SLOT(updateStatusMessage())                      );
-   /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateStatusMessage())                      );
-   /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this      , SLOT(updateWindowCallState())                    );
-   /**/connect(m_pSendMessageLE           , SIGNAL(returnPressed())                       , this      , SLOT(sendMessage())                              );
-   /**/connect(m_pSendMessagePB           , SIGNAL(clicked())                             , this      , SLOT(sendMessage())                              );
-   /**/connect(m_pView                    , SIGNAL(itemDoubleClicked(QModelIndex))        , this      , SLOT(enter())                                    );
-   /*                                                                                                                                                    */
+   //                SENDER                             SIGNAL                              RECEIVER                SLOT                      /
+   /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this  , SLOT(on1_incomingCall(Call*))          );
+   /**/connect(CallModel::instance()        , SIGNAL(voiceMailNotify(QString,int))          , this  , SLOT(on1_voiceMailNotify(QString,int)) );
+   /**/connect(CallModel::instance()        , SIGNAL(callStateChanged(Call*))               , this  , SLOT(updateWindowCallState())          );
+   /**/connect(AccountListModel::instance() , SIGNAL(accountStateChanged(Account*,QString)) , this  , SLOT(updateStatusMessage())            );
+   /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this  , SLOT(updateStatusMessage())            );
+   /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this  , SLOT(updateWindowCallState())          );
+   /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this  , SLOT(sendMessage())                    );
+   /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this  , SLOT(sendMessage())                    );
+   /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex))        , this  , SLOT(enter())                          );
+   /*                                                                                                                                        */
 
    AccountListModel::instance()->updateAccounts();
 
@@ -331,9 +329,9 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
 
    m_pCanvasToolbar = new CallViewOverlayToolbar(m_pView);
-   connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), m_pCanvasToolbar, SLOT(updateState()));
-   connect(CallModel::instance(), SIGNAL(callStateChanged(Call*)), m_pCanvasToolbar, SLOT(updateState()));
-   connect(CallModel::instance(), SIGNAL(layoutChanged()), m_pCanvasToolbar, SLOT(updateState()));
+   connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)) , m_pCanvasToolbar, SLOT(updateState()));
+   connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*))                 , m_pCanvasToolbar, SLOT(updateState()));
+   connect(CallModel::instance()    , SIGNAL(layoutChanged())                         , m_pCanvasToolbar, SLOT(updateState()));
 }
 
 ///Destructor
