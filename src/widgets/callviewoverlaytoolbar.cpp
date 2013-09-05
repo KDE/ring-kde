@@ -103,21 +103,20 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
    QPainter customPainter(this);
    customPainter.setRenderHint(QPainter::Antialiasing);
    QBrush b = customPainter.brush();
-   QPen   p = customPainter.pen();
 
    b.setColor("black");
    //Use the current style pixel metrics to do as well as possible to guess the right shape
    int margin = style()->pixelMetric(QStyle::PM_FocusFrameHMargin);
-   customPainter.setOpacity(0.5);
-   customPainter.setBrush (Qt::black);
-   customPainter.setPen   (Qt::transparent);
-   customPainter.drawRect (QRect(margin,10,width()-2*margin,height()-10-2*margin - margin)               );
-   customPainter.drawPie  (QRect(width()-8-margin,height()-10,8,8),270*16,90*16 );
-   customPainter.drawPie  (QRect(margin,height()-10,8,8),180*16,90*16           );
-   customPainter.drawRect (QRect(4+margin,height()-4-margin,width()-8-2*margin,4)             );
+   customPainter.setOpacity( 0.5                                                             );
+   customPainter.setBrush  ( Qt::black                                                       );
+   customPainter.setPen    ( Qt::transparent                                                 );
+   customPainter.drawRect  ( QRect(margin,10,width()-2*margin,height()-10-2*margin - margin) );
+   customPainter.drawPie   ( QRect(width()-8-margin,height()-10,8,8),270*16,90*16            );
+   customPainter.drawPie   ( QRect(margin,height()-10,8,8),180*16,90*16                      );
+   customPainter.drawRect  ( QRect(4+margin,height()-4-margin,width()-8-2*margin,4)          );
 
-   m_pLeftRender->render (&customPainter,QRect( margin,0,10,10)                 );
-   m_pRightRender->render(&customPainter,QRect( width()-10-margin,0,10,10)        );
+   m_pLeftRender->render   (&customPainter,QRect( margin,0,10,10)                            );
+   m_pRightRender->render  (&customPainter,QRect( width()-10-margin,0,10,10)                 );
 } //paintEvent
 
 ///Create a toolbar button
