@@ -517,9 +517,9 @@ void AccountListModel::removeAccount(Account* account)
    m_lDeletedAccounts << account->id();
    if (currentAccount() == account)
       setPriorAccount(getAccountById("IP2IP"));
-   delete account;
    emit dataChanged(index(aindex,0), index(m_lAccounts.size()-1,0));
    emit layoutChanged();
+   //delete account;
 }
 
 void AccountListModel::removeAccount( QModelIndex idx )

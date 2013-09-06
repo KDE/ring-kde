@@ -28,15 +28,18 @@
 
 
 Contact::PhoneNumber::PhoneNumber(const QString& number, const QString& type) : m_Number(number),m_Type(type)
+    ,m_Tracked(false),m_Present(false)
 {
 }
 
 
 Contact::PhoneNumber::PhoneNumber(const PhoneNumber& number) : m_Number(number.m_Number),m_Type(number.m_Type)
+    ,m_Tracked(false),m_Present(false)
 {
 }
 
-Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),
+    m_pParent(parent)
 {
 }
 
@@ -48,6 +51,15 @@ Contact::PhoneNumbers::PhoneNumbers(Contact* parent, const QList<Contact::PhoneN
 Contact* Contact::PhoneNumbers::contact() const
 {
    return m_pParent;
+}
+bool Contact::PhoneNumber::present() const
+{
+    return m_Tracked && m_Present;
+}
+
+QString Contact::PhoneNumber::presentMessage() const
+{
+    return m_PresentMessage;
 }
 
 ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type(_type),m_DropState(0)
@@ -79,7 +91,6 @@ QObject* Contact::self() {return this;}
 ///Constructor
 Contact::Contact():m_pPhoto(nullptr),ContactTreeBackend(ContactTreeBackend::Type::CONTACT),m_Numbers(this)
 {
-   initItem();
 }
 
 ///Destructor
@@ -89,18 +100,6 @@ Contact::~Contact()
    foreach (Contact::PhoneNumber* ph, m_Numbers) {
       delete ph;
    }
-}
-
-///May be used in extended classes
-void Contact::initItem()
-{
-   initItemWidget();
-}
-
-///May be used in extended classes
-void Contact::initItemWidget()
-{
-   
 }
 
 ///Get the phone number list

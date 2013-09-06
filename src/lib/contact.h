@@ -61,6 +61,7 @@ class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
+   friend class PresenceModel;
    ///PhoneNumber: represent a phone number
    class PhoneNumber {
    public:
@@ -69,12 +70,17 @@ public:
       PhoneNumber(const PhoneNumber& number);
 
       //Getters
-      QString number() const;
-      QString type() const;
+      QString number        () const;
+      QString type          () const;
+      bool    present       () const;
+      QString presentMessage() const;
 
    private:
-      QString m_Number   ;
-      QString m_Type     ;
+      QString m_Number        ;
+      QString m_Type          ;
+      bool    m_Present       ;
+      QString m_PresentMessage;
+      bool    m_Tracked       ;
    };
    class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
    public:
@@ -83,7 +89,7 @@ public:
       PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
       Contact* contact() const;
    private:
-      Contact* m_pParent;
+      Contact* m_pParent       ;
    };
 
    virtual QObject* self();
@@ -102,26 +108,25 @@ private:
    QString      m_Department     ;
    bool         m_DisplayPhoto   ;
    PhoneNumbers m_Numbers        ;
-   
+
 public:
    //Constructors & Destructors
    explicit Contact();
    virtual ~Contact();
-   virtual void initItem();
-   
+
    //Getters
-   virtual const PhoneNumbers&   phoneNumbers() const;
-   virtual const QString& nickName()        const;
-   virtual const QString& firstName()       const;
-   virtual const QString& secondName()      const;
-   virtual const QString& formattedName()   const;
-   virtual const QString& organization()    const;
-   virtual const QString& uid()             const;
-   virtual const QString& preferredEmail()  const;
-   virtual const QPixmap* photo()           const;
-   virtual const QString& type()            const;
-   virtual const QString& group()           const;
-   virtual const QString& department()      const;
+   virtual const PhoneNumbers& phoneNumbers() const;
+   virtual const QString& nickName         () const;
+   virtual const QString& firstName        () const;
+   virtual const QString& secondName       () const;
+   virtual const QString& formattedName    () const;
+   virtual const QString& organization     () const;
+   virtual const QString& uid              () const;
+   virtual const QString& preferredEmail   () const;
+   virtual const QPixmap* photo            () const;
+   virtual const QString& type             () const;
+   virtual const QString& group            () const;
+   virtual const QString& department       () const;
 
    //Setters
    virtual void setPhoneNumbers   ( PhoneNumbers        );
@@ -138,10 +143,15 @@ public:
 
    //Mutator
    QHash<QString,QVariant> toHash();
-   
-protected:
-   virtual void initItemWidget();
 
+Q_SIGNALS:
+    void presenceChanged(Contact::PhoneNumber);
+
+protected:
+    //Presence secret methods
+    void updatePresenceInformations(const QString& uri, bool status, const QString& message);
 };
+
+Q_DECLARE_METATYPE(Contact*)
 
 #endif

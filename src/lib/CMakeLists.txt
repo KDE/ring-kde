@@ -54,8 +54,10 @@ set( qtsflphone_LIB_SRCS
   dbus/callmanager.cpp
   dbus/instancemanager.cpp
   dbus/videomanager.cpp
+  dbus/presencemanager.cpp
   sflphone_const.h
   contactproxymodel.cpp
+  presencemodel.cpp
   visitors/accountlistcolorvisitor.cpp
   visitors/phonenumberselector.cpp
 )
@@ -76,6 +78,7 @@ set( qtsflphone_LIB_HDRS
   instantmessagingmodel.h
   contactproxymodel.h
   useractionmodel.h
+  presencemodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS
@@ -85,6 +88,30 @@ set( qtsflphone_extra_LIB_HDRS
   visitors/accountlistcolorvisitor.h
   visitors/phonenumberselector.h
 )
+
+# presence manager interface
+SET ( presencemanager_xml  ${dbus_xml_introspecs_path}/presencemanager-introspec.xml )
+
+SET_SOURCE_FILES_PROPERTIES(
+   ${presencemanager_xml}
+   PROPERTIES 
+   CLASSNAME PresenceManagerInterface
+   INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h")
+
+IF(${ENABLE_QT5} MATCHES true)
+   QT5_ADD_DBUS_INTERFACE(
+      qtsflphone_LIB_SRCS
+      ${presencemanager_xml}
+      presencemanager_dbus_interface
+   )
+ELSE()
+   QT4_ADD_DBUS_INTERFACE(
+      qtsflphone_LIB_SRCS
+      ${presencemanager_xml}
+      presencemanager_dbus_interface
+   )
+
+ENDIF(${ENABLE_QT5} MATCHES true)
 
 # configuration manager interface
 SET ( configurationmanager_xml  ${dbus_xml_introspecs_path}/configurationmanager-introspec.xml )
