@@ -34,6 +34,7 @@ public:
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 private:
    DelegateDropOverlay* m_pDelegatedropoverlay;
+   static QHash<QString, QPixmap> m_hIcons;
 };
 
 // class ContactDelegateStyle : public QProxyStyle

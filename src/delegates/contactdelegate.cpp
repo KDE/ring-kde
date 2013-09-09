@@ -33,8 +33,26 @@
 #include <lib/abstractcontactbackend.h>
 #include "delegatedropoverlay.h"
 
+QHash<QString,QPixmap> ContactDelegate::m_hIcons;
+
 ContactDelegate::ContactDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pDelegatedropoverlay(nullptr)
 {
+   if (!m_hIcons.size()) {
+      m_hIcons["Home"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/home.png"));
+      m_hIcons["Work"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/work.png"));
+      m_hIcons["Msg"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Pref"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/preferred.png"));
+      m_hIcons["Voice" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Fax"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Cell"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mobile.png"));
+      m_hIcons["Video" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/video.png"));
+      m_hIcons["Bbs"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Modem" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Car"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/cat.png"));
+      m_hIcons["Isdn"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Pcs"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Pager" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/pager.png"));
+   }
 }
 
 QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
@@ -70,9 +88,18 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       customPainter.fillRect       (pxRect                ,"white" );
       customPainter.setBackground  (QColor("black")                );
       customPainter.setBrush       (QColor("black")                );
-      customPainter.drawRoundedRect(pxRect,5,5);
+      customPainter.drawRoundedRect(pxRect,7,7);
       pxm.setMask(mask);
+      painter->save();
       painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-48)/2,pxm);
+      painter->setBrush(Qt::NoBrush);
+      QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
+      pen.setWidth(1);
+      painter->setPen(pen);
+      painter->setRenderHint  (QPainter::Antialiasing, true   );
+      painter->drawRoundedRect(option.rect.x()+4,option.rect.y()+(option.rect.height()-48)/2,pxRect.width(),pxRect.height(),7,7);
+      painter->restore();
+      
    }
    else {
       painter->drawPixmap(option.rect.x()+4,option.rect.y()+(option.rect.height()-48)/2,QPixmap(KIcon("user-identity").pixmap(QSize(48,48))));
@@ -86,17 +113,27 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Qt::DisplayRole).toString());
    currentHeight +=fm.height();
    font.setBold(false);
+   painter->setPen(QApplication::palette().color((option.state & QStyle::State_Selected)?QPalette::Active:QPalette::Disabled,QPalette::Text));
    painter->setFont(font);
    if (!ct->organization().isEmpty()) {
       painter->drawText(option.rect.x()+15+48,currentHeight,ct->organization());
       currentHeight +=fm.height();
    }
    if (!ct->preferredEmail().isEmpty()) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->preferredEmail());
-      currentHeight +=fm.height();
+      const int fmh = fm.height();
+      const static QPixmap* mail = nullptr;
+      if (!mail)
+         mail = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      painter->drawPixmap(option.rect.x()+15+48,currentHeight-12+(fmh-12),*mail);
+      painter->drawText(option.rect.x()+15+48+22,currentHeight,ct->preferredEmail());
+      currentHeight +=fmh;
    }
    if (ct->phoneNumbers().size() == 1) {
-      painter->drawText(option.rect.x()+15+48,currentHeight,ct->phoneNumbers()[0]->number());
+      if (m_hIcons.contains(ct->phoneNumbers()[0]->type() )) {
+         const int fmh = fm.height();
+         painter->drawPixmap(option.rect.x()+15+48,currentHeight-12+(fmh-12),m_hIcons[ct->phoneNumbers()[0]->type()]);
+      }
+      painter->drawText(option.rect.x()+15+48+22,currentHeight,ct->phoneNumbers()[0]->number());
    }
    else {
       painter->drawText(option.rect.x()+15+48,currentHeight,i18np("%1 phone number", "%1 phone numbers", QString::number(ct->phoneNumbers().size())));
