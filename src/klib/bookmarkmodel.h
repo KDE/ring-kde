@@ -18,18 +18,17 @@
 #ifndef BOOKMARKMODEL_H
 #define BOOKMARKMODEL_H
 
-#include <QtGui/QSortFilterProxyModel>
-#include <QtCore/QHash>
-#include <QtCore/QStringList>
 
 //SFLPhone
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
 #include "../lib/call.h"
+#include "../lib/abstractbookmarkmodel.h"
+
 class ContactBackend;
 class NumberTreeBackend;
 
-class LIB_EXPORT BookmarkModel :  public QAbstractItemModel
+class LIB_EXPORT BookmarkModel :  public AbstractBookmarkModel
 {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
@@ -39,59 +38,19 @@ public:
    //Singleton
    static BookmarkModel* instance();
 
-   //Setters
-   void setRole(int role);
-   void setShowAll(bool showAll);
+   //Management
+   virtual void addBookmark   ( const QString& uri, bool trackPresence = false);
+   virtual void removeBookmark( const QString& uri                            );
 
-   //Model implementation
-   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
-   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
-   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
-   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
-   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const;
-   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
-   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
-   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-   virtual QStringList   mimeTypes   (                                                             ) const;
-   virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
+protected:
+   virtual bool displayFrequentlyUsed () const;
+   virtual QStringList bookmarkList   () const;
+   virtual ~BookmarkModel() {}
+   BookmarkModel(QObject* parent);
 
 private:
-   //Private constructor
-   explicit BookmarkModel(QObject* parent);
-   virtual ~BookmarkModel() {}
-      
-   ///Top level bookmark item
-   class TopLevelItem : public HistoryTreeBackend, public QObject {
-      friend class BookmarkModel;
-      public:
-         virtual QObject* getSelf() {return this;}
-      private:
-         explicit TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-         QList<NumberTreeBackend*> m_lChildren;
-         QString m_Name;
-   };
-
-   //Attributes
-   ContactBackend*              m_pModel               ;
-   QList<TopLevelItem*>         m_lCategoryCounter     ;
-   QHash<QString,TopLevelItem*> m_hCategories          ;
-   const static char*           m_slHistoryConstStr[25];
-   bool                         m_isContactDateInit    ;
-   QHash<Contact*, QDateTime>   m_hContactByDate       ;
-   QStringList                  m_lMimes               ;
-
-   //Getters
-   QModelIndex getContactIndex(Contact* ct) const;
-
-   //Helpers
-   QVariant commonCallInfo(NumberTreeBackend* call, int role = Qt::DisplayRole) const;
-   QString category(NumberTreeBackend* number) const;
-
    //Singleton
    static BookmarkModel* m_pSelf;
-
-public Q_SLOTS:
-   void reloadCategories();
 };
 
 #endif

@@ -106,33 +106,6 @@ BookmarkDock::~BookmarkDock()
  *                                                                           *
  ****************************************************************************/
 
-///Proxy to add a new bookmark
-void BookmarkDock::addBookmark(const QString& phone)
-{
-   ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << phone);
-   BookmarkModel::instance()->reloadCategories();
-}
-
-///Remove a bookmark
-void BookmarkDock::removeBookmark(const QString& phone)
-{
-   //TODO port
-   QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
-   bookmarks.removeAll(phone);
-   ConfigurationSkeleton::setBookmarkList(bookmarks);
-}
-
-///Filter the list
-void BookmarkDock::filter(QString text)
-{
-   Q_UNUSED(text)
-//    foreach(HistoryTreeItem* item, m_pBookmark) {
-//       bool visible = (HelperFunctions::normStrippped(item->getName()).indexOf(HelperFunctions::normStrippped(text)) != -1)
-//          || (HelperFunctions::normStrippped(item->getPhoneNumber()).indexOf(HelperFunctions::normStrippped(text)) != -1);
-//       item->getItem()->setHidden(!visible);
-//    }
-}
-
 ///Show the most popular items
 void BookmarkDock::reload()
 {

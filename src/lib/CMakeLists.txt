@@ -35,31 +35,40 @@ SET ( dbus_xml_introspecs_path ${CMAKE_CURRENT_SOURCE_DIR}/dbus/)
 
 #File to compile
 set( qtsflphone_LIB_SRCS
+  #Data objects
   call.cpp
   account.cpp
+  contact.cpp
+  videorenderer.cpp
+  videodevice.cpp
+
+  #Models
   accountlistmodel.cpp
   callmodel.cpp
   historymodel.cpp
-  contact.cpp
   abstractcontactbackend.cpp
+  abstractbookmarkmodel.cpp
   videocodecmodel.cpp
   videomodel.cpp
-  videorenderer.cpp
-  videodevice.cpp
   credentialmodel.cpp
   audiocodecmodel.cpp
   instantmessagingmodel.cpp
+  contactproxymodel.cpp
   useractionmodel.cpp
+
+  #Communication
   dbus/configurationmanager.cpp
   dbus/callmanager.cpp
   dbus/instancemanager.cpp
   dbus/videomanager.cpp
   dbus/presencemanager.cpp
-  sflphone_const.h
-  contactproxymodel.cpp
-  presencemodel.cpp
+
+  #Visitors
   visitors/accountlistcolorvisitor.cpp
   visitors/phonenumberselector.cpp
+
+  #Other
+  sflphone_const.h
 )
 
 set( qtsflphone_LIB_HDRS
@@ -70,6 +79,7 @@ set( qtsflphone_LIB_HDRS
   historymodel.h
   contact.h
   abstractcontactbackend.h
+  abstractbookmarkmodel.h
   videocodecmodel.h
   videomodel.h
   videorenderer.h
@@ -78,7 +88,6 @@ set( qtsflphone_LIB_HDRS
   instantmessagingmodel.h
   contactproxymodel.h
   useractionmodel.h
-  presencemodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

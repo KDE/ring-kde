@@ -381,7 +381,7 @@ void ContactDock::bookmark()
 {
    const Contact::PhoneNumbers numbers = m_pCurrentContact->phoneNumbers();
    if (numbers.count() == 1)
-      SFLPhone::app()->bookmarkDock()->addBookmark(numbers[0]->number());
+      BookmarkModel::instance()->addBookmark(numbers[0]->number());
 }
 
 ///Called when a call is dropped on transfer

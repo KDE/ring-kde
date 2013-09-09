@@ -442,7 +442,7 @@ void HistoryDock::slotAddToContact()
 void HistoryDock::slotBookmark()
 {
 //    if (!m_IsBookmark)
-      SFLPhone::app()->bookmarkDock()->addBookmark(m_pCurrentCall->peerPhoneNumber());
+      BookmarkModel::instance()->addBookmark(m_pCurrentCall->peerPhoneNumber());
 //    else
 //       SFLPhone::app()->bookmarkDock()->removeBookmark(m_PhoneNumber);
 }

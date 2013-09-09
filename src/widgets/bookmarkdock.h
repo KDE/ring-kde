@@ -19,6 +19,7 @@
 #define BOOKMARK_DOCK_H
 
 #include <QtGui/QDockWidget>
+#include <QtGui/QSortFilterProxyModel>
 #include "ui_dockbase.h"
 
 //Qt
@@ -34,16 +35,11 @@ public:
    //Constructors
    explicit BookmarkDock(QWidget* parent = nullptr);
    virtual ~BookmarkDock();
-
-   //Mutators
-   void addBookmark(const QString& phone);
-   void removeBookmark(const QString& phone);
 private:
    //Attributes
    QCheckBox*              m_pMostUsedCK;
 
 private Q_SLOTS:
-   void filter(QString text);
    void reload();
    void expandTree();
    void slotDoubleClick(const QModelIndex& index);
