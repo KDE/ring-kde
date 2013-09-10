@@ -538,5 +538,5 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
 ///Expand the tree according to the user preferences
 void ContactDock::expandTree()
 {
-   m_pView->expandToDepth( 0 + (ConfigurationSkeleton::alwaysShowPhoneNumber()==true));
+   m_pView->expandToDepth( 1 );
 }

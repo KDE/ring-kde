@@ -160,11 +160,6 @@
       <default>false</default>
     </entry>
 
-    <entry name="alwaysShowPhoneNumber" type="Bool">
-      <label>Defines if the contact tree should be expanded by default to show all numbers</label>
-      <default>false</default>
-    </entry>
-
     <entry name="defaultAccountId" type="String">
       <label>Default account used for contact lookup if only partial (only extension) contacts info is available</label>
       <default>IP2IP</default>
