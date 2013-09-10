@@ -152,7 +152,8 @@ int AbstractContactBackend::rowCount( const QModelIndex& par ) const
       return getContactList().size();
    }
    else if (!par.parent().isValid() && par.row() < getContactList().size()) {
-      return getContactList()[par.row()]->phoneNumbers().size();
+      const int size = getContactList()[par.row()]->phoneNumbers().size();
+      return size==1?0:size;
    }
    return 0;
 }

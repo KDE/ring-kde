@@ -37,14 +37,4 @@ private:
    static QHash<QString, QPixmap> m_hIcons;
 };
 
-// class ContactDelegateStyle : public QProxyStyle
-// {
-// public:
-//    ContactDelegateStyle(QStyle *baseStyle = 0) : QProxyStyle(baseStyle) {}
-// 
-//    void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
-// private:
-//    QModelIndex m_CurrentIndex;
-// };
-
 #endif

@@ -219,7 +219,9 @@ int ContactProxyModel::rowCount( const QModelIndex& parent ) const
       return m_lCategoryCounter[parent.row()]->m_lChildren.size();
    }
    else if (parent.parent().isValid() && !parent.parent().parent().isValid()) {
-      return m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->phoneNumbers().size();
+      const int size = m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->phoneNumbers().size();
+      return size==1?0:size;
+      return size;
    }
    return 0;
 }

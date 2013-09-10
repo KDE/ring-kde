@@ -29,6 +29,7 @@ public:
    virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 private:
+   static QHash<QString, QPixmap> m_hIcons;
 };
 
 #endif

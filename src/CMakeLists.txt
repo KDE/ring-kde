@@ -219,3 +219,4 @@ INSTALL( FILES icons/miniicons/pager.png         DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/miniicons/preferred.png     DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
 INSTALL( FILES icons/miniicons/video.png         DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
 INSTALL( FILES icons/miniicons/work.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
+INSTALL( FILES icons/miniicons/call.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )

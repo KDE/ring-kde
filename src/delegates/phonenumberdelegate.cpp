@@ -17,20 +17,41 @@
  ***************************************************************************/
 #include "phonenumberdelegate.h"
 
+//Qt
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
 #include <QtGui/QSortFilterProxyModel>
-
 #include <QtCore/QDebug>
 
+//KDE
 #include <KLocale>
 #include <KIcon>
+#include <KStandardDirs>
 
+//SFLPhone
 #include <lib/contact.h>
+
+QHash<QString,QPixmap> PhoneNumberDelegate::m_hIcons;
 
 PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent)
 {
+   if (!m_hIcons.size()) {
+      m_hIcons["Home"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/home.png"));
+      m_hIcons["Work"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/work.png"));
+      m_hIcons["Msg"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Pref"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/preferred.png"));
+      m_hIcons["Voice" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Fax"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Cell"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mobile.png"));
+      m_hIcons["Video" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/video.png"));
+      m_hIcons["Bbs"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Modem" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Car"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/cat.png"));
+      m_hIcons["Isdn"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Pcs"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+      m_hIcons["Pager" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/pager.png"));
+   }
 }
 
 QSize PhoneNumberDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
@@ -56,5 +77,9 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    painter->setPen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
    painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->type().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->type());
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   painter->drawText(option.rect.x()+3,option.rect.y()+fm.height()+3,nb->number());
+   painter->drawText(option.rect.x()+3+22,option.rect.y()+fm.height()+3,nb->number());
+   if (m_hIcons.contains(nb->type() )) {
+         const int fmh = fm.height();
+         painter->drawPixmap(option.rect.x()+3,option.rect.y()+fmh-12+3,m_hIcons[nb->type()]);
+   }
 }

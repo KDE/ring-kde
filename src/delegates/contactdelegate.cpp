@@ -113,7 +113,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    painter->drawText(option.rect.x()+15+48,currentHeight,index.data(Qt::DisplayRole).toString());
    currentHeight +=fm.height();
    font.setBold(false);
-   painter->setPen(QApplication::palette().color((option.state & QStyle::State_Selected)?QPalette::Active:QPalette::Disabled,QPalette::Text));
+   painter->setPen((option.state & QStyle::State_Selected)?Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
    painter->setFont(font);
    if (!ct->organization().isEmpty()) {
       painter->drawText(option.rect.x()+15+48,currentHeight,ct->organization());

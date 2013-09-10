@@ -280,7 +280,7 @@ void AbstractBookmarkModel::slotIncomingNotifications(const QString& uri, bool s
 void AbstractBookmarkModel::slotRequest(const QString& uri)
 {
    Q_UNUSED(uri)
-   DBus::PresenceManager::instance().approvePresSubServer(uri,true);
+   DBus::PresenceManager::instance().answerServerRequest(uri,true);
 }
 
 

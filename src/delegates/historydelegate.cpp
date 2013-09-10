@@ -85,6 +85,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
    Q_ASSERT(index.isValid());
 
+   const int radius = (option.rect.height() > 45) ? 7 : 5;
+
    painter->save();
    int iconHeight = option.rect.height() -4;
    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
@@ -112,7 +114,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       customPainter.fillRect       (pxRect                ,"white" );
       customPainter.setBackground  (QColor("black")                );
       customPainter.setBrush       (QColor("black")                );
-      customPainter.drawRoundedRect(pxRect,5,5);
+      customPainter.drawRoundedRect(pxRect,radius,radius);
       pxm.setMask(mask);
    }
    else {
@@ -154,26 +156,45 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    int x_offset((iconHeight-pxm.width())/2),y_offset((iconHeight-pxm.height())/2);
    painter->drawPixmap(option.rect.x()+4+x_offset,option.rect.y()+y_offset+(option.rect.height()-iconHeight)/2,pxm);
+   if (pxmPtr) {
+      painter->save();
+      painter->setBrush(Qt::NoBrush);
+      QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
+      pen.setWidth(1);
+      painter->setPen(pen);
+      painter->setRenderHint  (QPainter::Antialiasing, true   );
+      painter->drawRoundedRect(option.rect.x()+4+x_offset,option.rect.y()+y_offset+(option.rect.height()-iconHeight)/2,pxm.width(),pxm.height(),radius,radius);
+      painter->restore();
+   }
 
    QFont font = painter->font();
    QFontMetrics fm(font);
    int currentHeight = option.rect.y()+fm.height()+2;
+   //BEGIN history fields
    if (currentState == Call::State::OVER) { //History/Bookmarks
-      font.setBold(true);
+      const QPen textCol = (option.state & QStyle::State_Selected) ? Qt::white : QApplication::palette().color(QPalette::Disabled,QPalette::Text);
+      font.setWeight(QFont::DemiBold);
+      painter->save();
       painter->setFont(font);
       painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
-      font.setBold(false);
+      font.setWeight(QFont::Normal);
       painter->setFont(font);
+      painter->setPen(textCol);
       currentHeight +=fm.height();
       painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::FormattedDate).toString());
       currentHeight +=fm.height();
-      painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Number).toString());
+      const static QPixmap* callPxm = nullptr;
+      if (!callPxm)
+         callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
+      painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),*callPxm);
+      painter->drawText(option.rect.x()+15+iconHeight+12,currentHeight,index.data(Call::Role::Number).toString());
       currentHeight +=fm.height();
+      painter->restore();
    }
+   //END history fields
    else { //Active calls
       if (ConfigurationSkeleton::displayCallIcon()) {
-//          m_pIconL = new QLabel(" ");
-//          mainLayout->addWidget(m_pIconL);
+         //TODO dead code
       }
       if(ConfigurationSkeleton::displayCallPeer() && !(currentState == Call::State::DIALING || (option.state & QStyle::State_Editing))) {
          font.setBold(true);
