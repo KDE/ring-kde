@@ -120,6 +120,7 @@ SET(
    widgets/playeroverlay.cpp
    widgets/filterlineedit.cpp
    widgets/kphonenumberselector.cpp
+   widgets/contactview.cpp
    delegates/conferencedelegate.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp
@@ -151,6 +152,7 @@ SET(
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/dockbase.ui
+   widgets/ui/contactdock.ui
    widgets/ui/transfer.ui
 )
 

@@ -102,8 +102,13 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    setHistoryVisible(ConfigurationSkeleton::displayContactCallHistory());
 
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
-   delegate->setChildDelegate(new ContactDelegate());
-   delegate->setChildChildDelegate(new PhoneNumberDelegate());
+   m_pView->setSelectionModel(new QItemSelectionModel(m_pView->model()));
+   PhoneNumberDelegate* phoneNumberDelegate = new PhoneNumberDelegate();
+   phoneNumberDelegate->setView(m_pView);
+   ContactDelegate* contactDelegate = new ContactDelegate();
+   contactDelegate->setChildDelegate(phoneNumberDelegate);
+   delegate->setChildDelegate(contactDelegate);
+   delegate->setChildChildDelegate(phoneNumberDelegate);
    m_pView->setDelegate(delegate);
 
    m_pSourceModel = new ContactProxyModel(AkonadiBackend::instance(),Qt::DisplayRole,false);

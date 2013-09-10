@@ -18,7 +18,7 @@
 #ifndef CONTACT_DOCK_H
 #define CONTACT_DOCK_H
 
-#include "ui_dockbase.h"
+#include "ui_contactdock.h"
 
 //Qt
 #include <QtCore/QHash>
@@ -70,7 +70,7 @@ protected:
 };
 
 ///ContactDock: Dock to access contacts
-class ContactDock : public QDockWidget, public Ui_DockBase
+class ContactDock : public QDockWidget, public Ui_ContactDock
 {
    Q_OBJECT
 public:

@@ -43,6 +43,9 @@ QSize CategorizedDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
    if (index.parent().isValid() && !index.parent().parent().isValid() && m_pChildDelegate) {
       return m_pChildDelegate->sizeHint(option,index);
    }
+   if (index.parent().parent().isValid() && m_pChildChildDelegate) {
+      return m_pChildChildDelegate->sizeHint(option,index);
+   }
    if (!index.parent().isValid() || index.parent().parent().isValid()) {
       QSize sh = QStyledItemDelegate::sizeHint(option, index);
       sh.rheight() += 2 * m_LeftMargin;

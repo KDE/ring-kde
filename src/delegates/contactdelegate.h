@@ -32,9 +32,13 @@ public:
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+
+   void setChildDelegate(QStyledItemDelegate* child);
+
 private:
-   DelegateDropOverlay* m_pDelegatedropoverlay;
-   static QHash<QString, QPixmap> m_hIcons;
+   DelegateDropOverlay*           m_pDelegatedropoverlay;
+   static QHash<QString, QPixmap> m_hIcons              ;
+   QStyledItemDelegate*           m_pChildDelegate      ;
 };
 
 #endif

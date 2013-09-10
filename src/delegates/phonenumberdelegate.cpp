@@ -22,6 +22,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
 #include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QTreeView>
 #include <QtCore/QDebug>
 
 //KDE
@@ -34,13 +35,13 @@
 
 QHash<QString,QPixmap> PhoneNumberDelegate::m_hIcons;
 
-PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent)
+PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr)
 {
    if (!m_hIcons.size()) {
       m_hIcons["Home"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/home.png"));
       m_hIcons["Work"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/work.png"));
       m_hIcons["Msg"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
-      m_hIcons["Pref"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/preferred.png"));
+      m_hIcons["Preferred"] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/preferred.png"));
       m_hIcons["Voice" ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
       m_hIcons["Fax"   ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
       m_hIcons["Cell"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mobile.png"));
@@ -56,13 +57,12 @@ PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(
 
 QSize PhoneNumberDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QFontMetrics fm(QApplication::font());
-   return QSize(QStyledItemDelegate::sizeHint(option, index).rwidth(),fm.height() + 6);
+   return QSize(QStyledItemDelegate::sizeHint(option, index).rwidth(),fm.height());
 }
 
 void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
-
    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
       QStyleOptionViewItem opt2 = option;
       QPalette pal = option.palette;
@@ -72,14 +72,28 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
       QStyledItemDelegate::paint(painter,opt2,index);
    }
 
-   Contact::PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self())->phoneNumbers()[index.row()];
-   QFontMetrics fm(painter->font());
-   painter->setPen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-   painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->type().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->type());
-   painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   painter->drawText(option.rect.x()+3+22,option.rect.y()+fm.height()+3,nb->number());
+   static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
+   const Contact::PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self())->phoneNumbers()[index.row()];
+   const QFontMetrics fm(painter->font());
+   painter->setPen(((option.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
+      Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
+//    painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->type().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->type());
+//    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
+   painter->drawText(option.rect.x()+3+16,option.rect.y()+fm.height()-metric,nb->number());
+   const int fmh = fm.height();
    if (m_hIcons.contains(nb->type() )) {
-         const int fmh = fm.height();
-         painter->drawPixmap(option.rect.x()+3,option.rect.y()+fmh-12+3,m_hIcons[nb->type()]);
+      painter->drawPixmap(option.rect.x()+3,option.rect.y()+fmh-12-metric,m_hIcons[nb->type()]);
+   }
+   else {
+      const static QPixmap* callPxm = nullptr;
+      if (!callPxm)
+         callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
+      painter->drawPixmap(option.rect.x()+3,option.rect.y()+fmh-12-metric,*callPxm);
    }
 }
+
+void PhoneNumberDelegate::setView(QTreeView* model)
+{
+   m_pView = model;
+}
+
