@@ -64,7 +64,7 @@
        <enum>QAbstractItemView::ScrollPerItem</enum>
       </property>
       <property name="indentation">
-       <number>25</number>
+       <number>5</number>
       </property>
       <property name="rootIsDecorated">
        <bool>false</bool>
@@ -103,14 +103,14 @@
    <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>CategorizedTreeView</class>
-   <extends>QTreeView</extends>
-   <header>widgets/categorizedtreeview.h</header>
-  </customwidget>
-  <customwidget>
    <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>widgets/filterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header>widgets/categorizedtreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

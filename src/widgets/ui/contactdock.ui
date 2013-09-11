@@ -64,7 +64,7 @@
        <enum>QAbstractItemView::ScrollPerItem</enum>
       </property>
       <property name="indentation">
-       <number>25</number>
+       <number>5</number>
       </property>
       <property name="rootIsDecorated">
        <bool>false</bool>

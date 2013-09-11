@@ -23,6 +23,10 @@
 
 #include <QtCore/QDebug>
 
+namespace {
+   static const int TOP_MARGIN = 20;
+}
+
 ///Construnctor
 CategorizedDelegate::CategorizedDelegate(QTreeView* widget)
    : QStyledItemDelegate(widget)
@@ -46,9 +50,10 @@ QSize CategorizedDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
    if (index.parent().parent().isValid() && m_pChildChildDelegate) {
       return m_pChildChildDelegate->sizeHint(option,index);
    }
-   if (!index.parent().isValid() || index.parent().parent().isValid()) {
+   if (!index.parent().isValid() /*|| index.parent().parent().isValid()*/) {
+      static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
       QSize sh = QStyledItemDelegate::sizeHint(option, index);
-      sh.rheight() += 2 * m_LeftMargin;
+      sh.rheight() += 2 * m_LeftMargin + (index.row()==0?-metric:TOP_MARGIN);
       sh.rwidth() += m_LeftMargin;
       return sh;
    }
@@ -110,7 +115,8 @@ void CategorizedDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
       const QRegion cl = painter->clipRegion();
       painter->setClipRect(opt.rect);
       opt.rect = fullCategoryRect(option, index);
-      drawCategory(index, 0, opt, painter);
+//       drawCategory(index, 0, opt, painter);
+      drawSimpleCategory(index, 0, opt, painter);
       painter->setClipRegion(cl);
       return;
    }
@@ -128,7 +134,8 @@ void CategorizedDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
          }
       }
       painter->setClipRect(cr);
-      drawCategory(index, 0, opt, painter);
+//       drawCategory(index, 0, opt, painter);
+//       drawSimpleCategory(index, 0, opt, painter);
       painter->setClipRegion(cl);
       painter->setRenderHint(QPainter::Antialiasing, false);
    }
@@ -406,3 +413,19 @@ void CategorizedDelegate::setChildChildDelegate(QStyledItemDelegate* childDelega
 {
    m_pChildChildDelegate = childDelegate;
 }
+
+void CategorizedDelegate::drawSimpleCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const
+{
+   Q_UNUSED(sortRole)
+   static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
+   const QString category = index.model()->data(index, Qt::DisplayRole).toString();
+   painter->setClipping(false);
+   QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
+   pen.setWidth(1);
+   painter->setPen(pen);
+   painter->setOpacity(0.3);
+   painter->drawLine(option.rect.x()-metric*2,option.rect.y()+(index.row()==0?-metric:TOP_MARGIN),option.rect.x()+option.rect.width()+metric*2,option.rect.y()+(index.row()==0?-metric:TOP_MARGIN));
+   painter->setOpacity(1);
+   painter->drawText(QRect(option.rect.x(),option.rect.y()+1+(index.row()==0?-metric:TOP_MARGIN),option.rect.width(),option.rect.height()-1),Qt::AlignLeft | Qt::AlignTop,category);
+}
+
