@@ -32,6 +32,7 @@
 #include "dlghooks.h"
 #include "dlgaccessibility.h"
 #include "dlgvideo.h"
+#include "dlgpresence.h"
 
 #include "lib/sflphone_const.h"
 
@@ -52,6 +53,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    #ifdef ENABLE_VIDEO
    dlgVideo         = new DlgVideo         (this);
    #endif
+   dlgPresence      = new DlgPresence      (this);
 
    addPage( dlgAccounts      , i18n("Accounts")                     , "user-identity"                     );
    addPage( dlgDisplay       , i18nc("User interterface settings"   ,"Display"), "applications-graphics"  );
@@ -63,6 +65,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    #ifdef ENABLE_VIDEO
    addPage( dlgVideo         , i18nc("Video conversation","Video")  , "camera-web"                        );
    #endif
+   addPage( dlgPresence      , i18nc("SIP Presence","Presence")     , "camera-web"                        );
 
    connect(this, SIGNAL(applyClicked()) , this, SLOT(applyCustomSettings()));
    connect(this, SIGNAL(okClicked())    , this, SLOT(applyCustomSettings()));
@@ -81,6 +84,7 @@ ConfigurationDialog::~ConfigurationDialog()
    delete dlgAddressBook  ;
    delete dlgHooks        ;
    delete dlgAccessibility;
+   delete dlgPresence     ;
    #ifdef ENABLE_VIDEO
    delete dlgVideo        ;
    #endif
@@ -94,6 +98,7 @@ void ConfigurationDialog::updateWidgets()
    dlgGeneral->updateWidgets      ();
    dlgAddressBook->updateWidgets  ();
    dlgAccessibility->updateWidgets();
+   dlgPresence->updateWidgets     ();
 }
 
 ///Save all settings when apply is clicked
@@ -105,6 +110,7 @@ void ConfigurationDialog::updateSettings()
    dlgAddressBook->updateSettings  ();
    dlgAccessibility->updateSettings();
    dlgDisplay->updateSettings      ();
+   dlgPresence->updateSettings     ();
 }
 
 ///Cancel current modification
@@ -122,7 +128,8 @@ bool ConfigurationDialog::hasChanged()
             || (dlgDisplay       && dlgDisplay->hasChanged()       )
             || (dlgAddressBook   && dlgAddressBook->hasChanged()   )
             || (dlgAccessibility && dlgAccessibility->hasChanged() )
-            || (dlgVideo         && dlgVideo->hasChanged()         );
+            || (dlgVideo         && dlgVideo->hasChanged()         )
+            || (dlgPresence      && dlgPresence->hasChanged()      );
 
    return res;
 }

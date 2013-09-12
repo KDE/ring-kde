@@ -37,6 +37,7 @@ class DlgHooks;
 class DlgAccessibility;
 class DlgVideo;
 class SFLPhoneView;
+class DlgPresence;
 
 /**
    @author Jérémy Quentin <jeremy.quentin@gmail.com>
@@ -61,6 +62,7 @@ private:
    DlgHooks*         dlgHooks        ;
    DlgAccessibility* dlgAccessibility;
    DlgVideo*         dlgVideo        ;
+   DlgPresence*      dlgPresence     ;
 
 public:
    explicit ConfigurationDialog(SFLPhoneView *parent = nullptr);
