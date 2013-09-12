@@ -39,6 +39,7 @@
 #include "historymodel.h"
 #include "instantmessagingmodel.h"
 #include "useractionmodel.h"
+#include "callmodel.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
@@ -163,11 +164,12 @@ AbstractContactBackend* Call::contactBackend ()
 
 ///Constructor
 Call::Call(Call::State startState, const QString& callId, QString peerName, QString peerNumber, QString account)
-   :  HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),m_pStartTimeStamp(0),
+   :  QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
    m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),m_Account(account),
-   m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),m_CallId(callId),m_CurrentState(startState)
+   m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0)
 {
 //    qRegisterMetaType<Call*>();
+   setObjectName("Call:"+callId);
    changeCurrentState(startState);
    m_pUserActionModel = new UserActionModel(this);
 
@@ -187,10 +189,11 @@ Call::~Call()
 }
 
 ///Constructor
-Call::Call(QString confId, QString account): HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),
-   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),m_Account(account),m_CurrentState(Call::State::CONFERENCE),
-   m_pTimer(nullptr)
+Call::Call(QString confId, QString account): QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL),
+   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),m_Account(account),
+   m_CurrentState(Call::State::CONFERENCE),m_pTimer(nullptr), m_isConference(false)
 {
+   setObjectName("Call:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
    m_pUserActionModel = new UserActionModel(this);
 

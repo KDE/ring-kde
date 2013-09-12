@@ -51,8 +51,8 @@ class LIB_EXPORT Account : public QObject {
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
-   
 
+   //Properties
    Q_PROPERTY(QString        alias                        READ alias                         WRITE setAlias                       )
    Q_PROPERTY(QString        type                         READ accountType                   WRITE setAccountType                 )
    Q_PROPERTY(QString        hostname                     READ hostname                      WRITE setHostname                    )
@@ -92,40 +92,42 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           ringtoneEnabled              READ isRingtoneEnabled             WRITE setRingtoneEnabled             )
    Q_PROPERTY(DtmfType       dTMFType                     READ DTMFType                      WRITE setDTMFType                    )
    Q_PROPERTY(QString        typeName                     READ accountType                   WRITE setAccountType                 )
+   Q_PROPERTY(bool           presenceStatus               READ presenceStatus                                                     )
+   Q_PROPERTY(QString        presenceMessage              READ presenceMessage                                                    )
 
    public:
       ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
       enum AccountEditState {
-         READY    =0,
-         EDITING  =1,
-         OUTDATED =2,
-         NEW      =3,
-         MODIFIED =4,
-         REMOVED  =5
+         READY    = 0,
+         EDITING  = 1,
+         OUTDATED = 2,
+         NEW      = 3,
+         MODIFIED = 4,
+         REMOVED  = 5
       };
 
       ///@enum AccountEditAction Actions that can be performed on the Account state
       enum AccountEditAction {
-         NOTHING =0,
-         EDIT    =1,
-         RELOAD  =2,
-         SAVE    =3,
-         REMOVE  =4,
-         MODIFY  =5,
-         CANCEL  =6
+         NOTHING = 0,
+         EDIT    = 1,
+         RELOAD  = 2,
+         SAVE    = 3,
+         REMOVE  = 4,
+         MODIFY  = 5,
+         CANCEL  = 6
       };
 
       class State {
       public:
-         constexpr static const char* REGISTERED       = "REGISTERED";
-         constexpr static const char* READY            = "READY";
-         constexpr static const char* UNREGISTERED     = "UNREGISTERED";
-         constexpr static const char* TRYING           = "TRYING";
-         constexpr static const char* ERROR            = "ERROR";
-         constexpr static const char* ERROR_AUTH       = "ERROR_AUTH";
-         constexpr static const char* ERROR_NETWORK    = "ERROR_NETWORK";
-         constexpr static const char* ERROR_HOST       = "ERROR_HOST";
-         constexpr static const char* ERROR_CONF_STUN  = "ERROR_CONF_STUN";
+         constexpr static const char* REGISTERED       = "REGISTERED"      ;
+         constexpr static const char* READY            = "READY"           ;
+         constexpr static const char* UNREGISTERED     = "UNREGISTERED"    ;
+         constexpr static const char* TRYING           = "TRYING"          ;
+         constexpr static const char* ERROR            = "ERROR"           ;
+         constexpr static const char* ERROR_AUTH       = "ERROR_AUTH"      ;
+         constexpr static const char* ERROR_NETWORK    = "ERROR_NETWORK"   ;
+         constexpr static const char* ERROR_HOST       = "ERROR_HOST"      ;
+         constexpr static const char* ERROR_CONF_STUN  = "ERROR_CONF_STUN" ;
          constexpr static const char* ERROR_EXIST_STUN = "ERROR_EXIST_STUN";
       };
 
@@ -176,8 +178,10 @@ class LIB_EXPORT Account : public QObject {
          Id                          = 139,
          Object                      = 140,
          TypeName                    = 141,
+         PresenceStatus              = 142,
+         PresenceMessage             = 143,
       };
-      
+
       class MapField {
       public:
          constexpr static const char* ID                     = "Account.id"                   ;
@@ -233,11 +237,11 @@ class LIB_EXPORT Account : public QObject {
       QString         stateColorName()                    const;
       QVariant        stateColor()                        const;
 
-      Q_INVOKABLE CredentialModel*        credentialsModel();
-      Q_INVOKABLE AudioCodecModel*        audioCodecModel() ;
-      Q_INVOKABLE VideoCodecModel*        videoCodecModel() ;
+      Q_INVOKABLE CredentialModel* credentialsModel();
+      Q_INVOKABLE AudioCodecModel* audioCodecModel ();
+      Q_INVOKABLE VideoCodecModel* videoCodecModel ();
 
-      ///Return the account hostname
+      //Getters
       QString hostname                     () const;
       bool    isEnabled                    () const;
       bool    isAutoAnswer                 () const;
@@ -276,8 +280,9 @@ class LIB_EXPORT Account : public QObject {
       QString accountRegistrationStatus    () const;
       QString accountType                  () const;
       DtmfType DTMFType                    () const;
-
-      QVariant roleData                    (int role) const;
+      bool    presenceStatus               () const;
+      QString presenceMessage              () const;
+      QVariant roleData            (int role) const;
 
       //Setters
       void setId      (const QString& id);
@@ -369,13 +374,13 @@ class LIB_EXPORT Account : public QObject {
       void reload();
       void save();
       void reloadMod() {reload();modify();};
-      
+
       CredentialModel* m_pCredentials;
       AudioCodecModel* m_pAudioCodecs;
       VideoCodecModel* m_pVideoCodecs;
       AccountEditState m_CurrentState;
       static const account_function stateMachineActionsOnState[6][7];
-      
+
       //Cached account details (as they are called too often for the hash)
       QString m_HostName;
 

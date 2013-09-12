@@ -58,8 +58,10 @@ CallModel*   CallModel::m_spInstance = nullptr;
 
 ///Singleton
 CallModel* CallModel::instance() {
-   if (!m_spInstance)
+   if (!m_spInstance) {
       m_spInstance = new CallModel();
+      m_spInstance->init();
+   }
    return m_spInstance;
 }
 
@@ -67,6 +69,11 @@ CallModel* CallModel::instance() {
 CallModel::CallModel() : QAbstractItemModel(QCoreApplication::instance())
 {
    setObjectName("CallModel");
+} //CallModel
+
+///Constructor (there fix an initializationn loop)
+void CallModel::init()
+{
    static bool dbusInit = false;
    initRoles();
    if (!dbusInit) {
@@ -116,7 +123,7 @@ CallModel::CallModel() : QAbstractItemModel(QCoreApplication::instance())
       Call* conf = addConference(confId);
       emit conferenceCreated(conf);
    }
-} //CallModel
+}
 
 ///Destructor
 CallModel::~CallModel()

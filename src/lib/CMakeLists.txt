@@ -55,6 +55,7 @@ set( qtsflphone_LIB_SRCS
   instantmessagingmodel.cpp
   contactproxymodel.cpp
   useractionmodel.cpp
+  presencestatusmodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -88,6 +89,7 @@ set( qtsflphone_LIB_HDRS
   instantmessagingmodel.h
   contactproxymodel.h
   useractionmodel.h
+  presencestatusmodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

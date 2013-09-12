@@ -59,16 +59,20 @@ int AccountListNoCheckProxyModel::rowCount(const QModelIndex& parentIdx ) const
 
 ///Constructors
 ///@param fill Whether to fill the list with accounts from configurationManager or not.
-AccountListModel::AccountListModel(bool fill) : QAbstractListModel(QCoreApplication::instance()),m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr)
+AccountListModel::AccountListModel() : QAbstractListModel(QCoreApplication::instance()),m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr)
 {
-   if(fill)
-      updateAccounts();
+   setupRoleName();
+}
+
+///Prevent constuctor loop
+void AccountListModel::init()
+{
+   updateAccounts();
    CallManagerInterface& callManager = DBus::CallManager::instance();
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    connect(&callManager         , SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
    connect(&configurationManager, SIGNAL(accountsChanged())                            ,this,SLOT(updateAccounts())                   );
-   setupRoleName();
 }
 
 ///Destructor
@@ -123,6 +127,9 @@ void AccountListModel::setupRoleName()
    roles.insert(Account::Role::Id                       ,QByteArray("id"                            ));
    roles.insert(Account::Role::Object                   ,QByteArray("object"                        ));
    roles.insert(Account::Role::TypeName                 ,QByteArray("typeName"                      ));
+   roles.insert(Account::Role::PresenceStatus           ,QByteArray("presenceStatus"                ));
+   roles.insert(Account::Role::PresenceMessage          ,QByteArray("presenceMessage"               ));
+
    setRoleNames(roles);
 }
 
@@ -130,7 +137,8 @@ void AccountListModel::setupRoleName()
 AccountListModel* AccountListModel::instance()
 {
    if (not m_spAccountList) {
-      m_spAccountList = new AccountListModel(true);
+      m_spAccountList = new AccountListModel();
+      m_spAccountList->init();
    }
    return m_spAccountList;
 }

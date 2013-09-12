@@ -36,6 +36,7 @@
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
 #include "videocodecmodel.h"
+#include "presencestatusmodel.h"
 
 const account_function Account::stateMachineActionsOnState[6][7] = {
 /*                 NOTHING              EDIT              RELOAD              SAVE               REMOVE             MODIFY             CANCEL            */
@@ -84,7 +85,7 @@ const QString& account_state_name(const QString& s)
 } //account_state_name
 
 ///Constructors
-Account::Account():m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
+Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
 m_pVideoCodecs(nullptr)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
@@ -97,6 +98,7 @@ Account* Account::buildExistingAccountFromId(const QString& _accountId)
    qDebug() << "Building an account from id: " << _accountId;
    Account* a = new Account();
    a->m_AccountId = _accountId;
+   a->setObjectName(_accountId);
 
    a->performAction(AccountEditAction::RELOAD);
 
@@ -119,6 +121,7 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
    }
    a->setHostname(a->m_hAccountDetails[Account::MapField::HOSTNAME]);
    a->setAccountDetail(Account::MapField::ALIAS,alias);
+   a->setObjectName(a->id());
    return a;
 }
 
@@ -507,6 +510,17 @@ DtmfType Account::DTMFType() const
    return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
 }
 
+
+bool Account::presenceStatus() const
+{
+   return PresenceStatusModel::instance()->currentStatus();
+}
+
+QString Account::presenceMessage() const
+{
+   return PresenceStatusModel::instance()->currentMessage();
+}
+
 QVariant Account::roleData(int role) const
 {
    switch(role) {
@@ -597,6 +611,10 @@ QVariant Account::roleData(int role) const
       }
       case Account::Role::TypeName:
          return accountType();
+      case Account::Role::PresenceStatus:
+         return PresenceStatusModel::instance()->currentStatus();
+      case Account::Role::PresenceMessage:
+         return PresenceStatusModel::instance()->currentMessage();
       default:
          return QVariant();
    }

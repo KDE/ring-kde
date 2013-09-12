@@ -58,10 +58,10 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       Q_INVOKABLE void removeConference         ( Call* conf                    );
 
       //Getters
-      bool isValid();
-      int size                   ();
-      CallList getCallList       ();
-      CallList getConferenceList ();
+      Q_INVOKABLE bool isValid();
+      Q_INVOKABLE int size                   ();
+      Q_INVOKABLE CallList getCallList       ();
+      Q_INVOKABLE CallList getConferenceList ();
 
       //Model implementation
       virtual bool          setData      ( const QModelIndex& index, const QVariant &value, int role   );
@@ -84,6 +84,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
 
    private:
       explicit CallModel();
+      void init();
       Call* addCall          ( Call* call                , Call* parent = nullptr );
       Call* addConference    ( const QString& confID                              );
       bool  changeConference ( const QString& confId, const QString& state        );
@@ -98,7 +99,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
 
       //Singleton
       static CallModel* m_spInstance;
-      
+
       //Helpers
       bool isPartOf(const QModelIndex& confIdx, Call* call);
       void initRoles();

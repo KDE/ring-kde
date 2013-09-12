@@ -85,7 +85,8 @@ public:
 
 private:
    //Constructors & Destructors
-   explicit AccountListModel(bool fill = true);
+   explicit AccountListModel();
+   void init();
    ~AccountListModel();
    void setupRoleName();
 
@@ -118,6 +119,7 @@ Q_SIGNALS:
    ///Emitted when the default account change
    void priorAccountChanged  ( Account* a                     );
 };
+Q_DECLARE_METATYPE(AccountListModel*)
 
 class LIB_EXPORT AccountListNoCheckProxyModel : public QAbstractListModel
 {
