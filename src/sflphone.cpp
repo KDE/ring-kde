@@ -51,9 +51,12 @@
 #include "lib/accountlistmodel.h"
 #include "lib/instantmessagingmodel.h"
 #include "klib/macromodel.h"
+#include "klib/akonadibackend.h"
+#include "klib/kcfg_settings.h"
+#include "lib/presencestatusmodel.h"
+#include "lib/videomodel.h"
 
 //sflphone
-#include "klib/akonadibackend.h"
 #include "accountwizard.h"
 #include "sflphoneview.h"
 #include "widgets/sflphonetray.h"
@@ -61,9 +64,8 @@
 #include "widgets/historydock.h"
 #include "widgets/bookmarkdock.h"
 #include "widgets/videodock.h"
-#include "klib/kcfg_settings.h"
+#include "widgets/presence.h"
 #include "sflphoneaccessibility.h"
-#include "lib/videomodel.h"
 #include "extendedaction.h"
 #include "errormessage.h"
 
@@ -236,6 +238,35 @@ SFLPhone::SFLPhone(QWidget *parent)
    m_pInitialized = true ;
 
    KStatusBar* bar = statusBar();
+//    bar->setStyleSheet("padding-left:0px;margin-left:0px;");
+   int left,top,right,bottom;
+   bar->layout()->getContentsMargins ( &left, &top, &right, &bottom );
+   bar->layout()->setContentsMargins(0,top,0,bottom);
+
+   //The presence button act as the label, remove the original one
+   QList<QLabel*> labels = bar->findChildren<QLabel*>();
+   for (int i=0;i<labels.size();i++) {
+      bar->layout()->removeWidget(labels[i]);
+      labels[i]->setHidden(true);
+   }
+
+   m_pPresent = new QToolButton(bar);
+   m_pPresent->setAutoRaise(true);
+   m_pPresent->setText("Present");
+   m_pPresent->setCheckable(true);
+//    m_pPresent->setStyleSheet("background-color:red;");
+   bar->addWidget(m_pPresent);
+   connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
+   connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
+
+   m_pPresenceDock = new QDockWidget(this);
+   m_pPresenceDock->setWidget(new Presence(m_pPresenceDock));
+   m_pPresenceDock->setAllowedAreas(Qt::BottomDockWidgetArea);
+   m_pPresenceDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+   addDockWidget( Qt::BottomDockWidgetArea, m_pPresenceDock );
+   m_pPresenceDock->setVisible(false);
+   if (m_pPresenceDock->titleBarWidget())
+      m_pPresenceDock->titleBarWidget()->setVisible(false);
 
    QLabel* curAccL = new QLabel(i18n("Account:"));
    bar->addPermanentWidget(curAccL);
@@ -245,6 +276,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    m_pAccountStatus->setModel(m_pAccountModel);
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
+   connect(m_pPresent,SIGNAL(toggled(bool)),m_pPresenceDock,SLOT(setVisible(bool)));
 
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(KIcon("view-refresh"));
@@ -305,6 +337,8 @@ SFLPhone::~SFLPhone()
    delete m_pHistoryDW       ;
    delete m_pBookmarkDW      ;
    delete m_pAccountModel    ;
+   delete m_pPresent         ;
+   delete m_pPresenceDock    ;
 
    delete AkonadiBackend::instance();
    delete CallModel::instance();
@@ -670,6 +704,19 @@ void SFLPhone::editToolBar()
    toolbareditor->exec();
    toolbareditor->setDefaultToolBar("mainToolBar");
    delete toolbareditor;
+}
+
+///Update presence label
+void SFLPhone::updatePresence(const QString& status)
+{
+   m_pPresent->setText(status);
+   m_pPresent->setToolTip(PresenceStatusModel::instance()->currentMessage());
+}
+
+///Hide the presence dock when not required
+void SFLPhone::hidePresenceDock()
+{
+   m_pPresent->setChecked(false);
 }
 
 #ifdef ENABLE_VIDEO

@@ -27,6 +27,7 @@ class QString;
 class QLabel;
 class QTreeWidgetItem;
 class QActionGroup;
+class QToolButton;
 
 //KDE
 class KAction;
@@ -117,6 +118,8 @@ private:
    #ifdef ENABLE_VIDEO
    VideoDock*     m_pVideoDW         ;
    #endif
+   QToolButton*   m_pPresent         ;
+   QDockWidget*   m_pPresenceDock    ;
 
    static SFLPhone*            m_sApp;
    AccountListNoCheckProxyModel* m_pAccountModel;
@@ -173,6 +176,8 @@ private Q_SLOTS:
    void updateTabIcons                           (                                      );
    void addMacro                                 ( KAction* newAction                   );
    void editToolBar                              (                                      );
+   void updatePresence                           ( const QString& status                );
+   void hidePresenceDock                         (                                      );
    #ifdef ENABLE_VIDEO
    void displayVideoDock                         ( VideoRenderer* r                     );
    #endif

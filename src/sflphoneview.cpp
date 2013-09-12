@@ -67,19 +67,19 @@
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
-QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::State& c)
+QDebug operator<<(QDebug dbg, const Call::State& c)
 {
    dbg.nospace() << QString(Call::toHumanStateName(c));
    return dbg.space();
 }
 
-QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::DaemonState& c)
+QDebug operator<<(QDebug dbg, const Call::DaemonState& c)
 {
    dbg.nospace() << static_cast<int>(c);
    return dbg.space();
 }
 
-QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
+QDebug operator<<(QDebug dbg, const Call::Action& c)
 {
    dbg.nospace() << static_cast<int>(c);
    return dbg.space();

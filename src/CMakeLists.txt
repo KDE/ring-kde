@@ -77,20 +77,22 @@ ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
 
 SET ( KDE4_KABC_LIBS  -lkabc )
 
+# Delegates
 SET(
-   sflphone_client_kde_SRCS
-   main.cpp
-   extendedaction.cpp
-   sflphoneview.cpp
-   sflphone.cpp
-   sflphonecmd.cpp
-   sflphoneapplication.cpp
-   errormessage.cpp
-   kspeechinterfacesingleton.cpp
-   sflphoneaccessibility.cpp
-   accountwizard.cpp
-   widgets/sflphonetray.cpp
-   actionsetaccountfirst.cpp
+   sflphone_client_kde_DELEGATES
+   delegates/conferencedelegate.cpp
+   delegates/contactdelegate.cpp
+   delegates/historydelegate.cpp
+   delegates/categorizeddelegate.cpp
+   delegates/phonenumberdelegate.cpp
+   delegates/delegatedropoverlay.cpp
+   delegates/dialpaddelegate.cpp
+   delegates/imdelegate.cpp
+)
+
+# Configuration pages
+SET(
+   sflphone_client_kde_CONF
    conf/configurationdialog.cpp
    conf/dlggeneral.cpp
    conf/dlgdisplay.cpp
@@ -100,6 +102,13 @@ SET(
    conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgvideo.cpp
+   conf/dlgpresence.cpp
+)
+
+# Widgets
+SET(
+   sflphone_client_kde_WIDGETS
+   widgets/sflphonetray.cpp
    widgets/dialpad.cpp
    widgets/contactdock.cpp
    widgets/historydock.cpp
@@ -121,14 +130,25 @@ SET(
    widgets/filterlineedit.cpp
    widgets/kphonenumberselector.cpp
    widgets/contactview.cpp
-   delegates/conferencedelegate.cpp
-   delegates/contactdelegate.cpp
-   delegates/historydelegate.cpp
-   delegates/categorizeddelegate.cpp
-   delegates/phonenumberdelegate.cpp
-   delegates/delegatedropoverlay.cpp
-   delegates/dialpaddelegate.cpp
-   delegates/imdelegate.cpp
+   widgets/presence.cpp
+)
+
+SET(
+   sflphone_client_kde_SRCS
+   main.cpp
+   extendedaction.cpp
+   sflphoneview.cpp
+   sflphone.cpp
+   sflphonecmd.cpp
+   sflphoneapplication.cpp
+   errormessage.cpp
+   kspeechinterfacesingleton.cpp
+   sflphoneaccessibility.cpp
+   accountwizard.cpp
+   actionsetaccountfirst.cpp
+   ${sflphone_client_kde_DELEGATES}
+   ${sflphone_client_kde_CONF}
+   ${sflphone_client_kde_WIDGETS}
 )
 
 
@@ -149,11 +169,13 @@ SET(
    conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
    conf/dlgvideobase.ui
+   conf/dlgpresence.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/dockbase.ui
    widgets/ui/contactdock.ui
    widgets/ui/transfer.ui
+   widgets/ui/presence.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
