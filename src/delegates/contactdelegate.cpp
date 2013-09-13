@@ -30,6 +30,7 @@
 #include <KIcon>
 
 #include <lib/contact.h>
+#include <lib/phonenumber.h>
 #include <lib/abstractcontactbackend.h>
 #include "delegatedropoverlay.h"
 
@@ -162,7 +163,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
             callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
          painter->drawPixmap(option.rect.x()+15+PX_HEIGHT,currentHeight-12+(fmh-12),*callPxm);
       }
-      painter->drawText(option.rect.x()+15+PX_HEIGHT+16,currentHeight,ct->phoneNumbers()[0]->number());
+      painter->drawText(option.rect.x()+15+PX_HEIGHT+16,currentHeight,ct->phoneNumbers()[0]->uri());
    }
    else {
 //       painter->drawText(option.rect.x()+15+PX_HEIGHT,currentHeight,i18np("%1 phone number", "%1 phone numbers", QString::number(ct->phoneNumbers().size())));

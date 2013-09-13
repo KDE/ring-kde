@@ -30,6 +30,7 @@
 
 //SFLPhone
 #include "../lib/contact.h"
+#include "../lib/phonenumber.h"
 
 ///Transform a contact list to a [QString][QString][QVariant] hash
 ContactHash HelperFunctions::toHash(QList<Contact*> contacts) {
@@ -39,7 +40,7 @@ ContactHash HelperFunctions::toHash(QList<Contact*> contacts) {
       QHash<QString,QVariant> conth = cont->toHash();
       conth   ["phoneCount" ] = cont->phoneNumbers().size();
       if (cont->phoneNumbers().size() == 1) {
-         conth["phoneNumber"] = cont->phoneNumbers()[0]->number();
+         conth["phoneNumber"] = cont->phoneNumbers()[0]->uri();
          conth["phoneType"  ] = cont->phoneNumbers()[0]->type();
       }
       else {

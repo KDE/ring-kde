@@ -23,6 +23,8 @@
 
 //SFLPhone
 #include "../klib/akonadibackend.h"
+#include "../lib/phonenumber.h"
+#include "../lib/phonedirectorymodel.h"
 #include "../sflphone.h"
 
 
@@ -32,7 +34,7 @@ void KPhoneNumberSelector::init()
    setDefaultVisitor(v);
 }
 
-const Contact::PhoneNumber KPhoneNumberSelector::getNumber(const QString& contactId)
+const PhoneNumber* KPhoneNumberSelector::getNumber(const QString& contactId)
 {
    const Contact* contact = AkonadiBackend::instance()->getContactByUid(contactId);
    if (contact) {
@@ -40,15 +42,15 @@ const Contact::PhoneNumber KPhoneNumberSelector::getNumber(const QString& contac
          bool                   ok = false;
          QHash<QString,QString> map       ;
          QStringList            list      ;
-         foreach (Contact::PhoneNumber* number, contact->phoneNumbers()) {
-            map[number->type()+" ("+number->number()+')'] = number->number();
-            list << number->type()+" ("+number->number()+')';
+         foreach (PhoneNumber* number, contact->phoneNumbers()) {
+            map[number->type()+" ("+number->uri()+')'] = number->uri();
+            list << number->type()+" ("+number->uri()+')';
          }
          const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,SFLPhone::app());
-         return Contact::PhoneNumber(result,"");
+         return PhoneDirectoryModel::instance()->getNumber(result);//new PhoneNumber(result,"");
       }
       else if (contact->phoneNumbers().size() == 1)
-         return Contact::PhoneNumber(*contact->phoneNumbers()[0]);
+         return contact->phoneNumbers()[0];
    }
-   return Contact::PhoneNumber(QString(),QString());
+   return PhoneNumber::BLANK;//new PhoneNumber(QString(),QString());
 }

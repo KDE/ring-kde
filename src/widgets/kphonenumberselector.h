@@ -20,13 +20,14 @@
 
 //SFLPhone
 #include "../lib/visitors/phonenumberselector.h"
-#include "../lib/contact.h"
+
+class PhoneNumber;
 
 class KPhoneNumberSelector : public PhoneNumberSelector
 {
 public:
    virtual ~KPhoneNumberSelector(){}
-   virtual const Contact::PhoneNumber getNumber(const QString& contactId);
+   virtual const PhoneNumber* getNumber(const QString& contactId);
    static void init();
 };
 

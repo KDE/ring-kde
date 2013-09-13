@@ -25,41 +25,23 @@
 
 //SFLPhone library
 #include "sflphone_const.h"
+#include "phonenumber.h"
 
 
-Contact::PhoneNumber::PhoneNumber(const QString& number, const QString& type) : m_Number(number),m_Type(type)
-    ,m_Tracked(false),m_Present(false)
-{
-}
 
-
-Contact::PhoneNumber::PhoneNumber(const PhoneNumber& number) : m_Number(number.m_Number),m_Type(number.m_Type)
-    ,m_Tracked(false),m_Present(false)
-{
-}
-
-Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<Contact::PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),
     m_pParent(parent)
 {
 }
 
-Contact::PhoneNumbers::PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list)
-: QList<Contact::PhoneNumber*>(list),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent, const QList<PhoneNumber*>& list)
+: QList<PhoneNumber*>(list),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
 {
 }
 
 Contact* Contact::PhoneNumbers::contact() const
 {
    return m_pParent;
-}
-bool Contact::PhoneNumber::present() const
-{
-    return m_Tracked && m_Present;
-}
-
-QString Contact::PhoneNumber::presentMessage() const
-{
-    return m_PresentMessage;
 }
 
 ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type(_type),m_DropState(0)
@@ -97,9 +79,9 @@ Contact::Contact():m_pPhoto(nullptr),ContactTreeBackend(ContactTreeBackend::Type
 Contact::~Contact()
 {
    delete m_pPhoto;
-   foreach (Contact::PhoneNumber* ph, m_Numbers) {
-      delete ph;
-   }
+//    foreach (PhoneNumber* ph, m_Numbers) {
+//       delete ph;
+//    }
 }
 
 ///Get the phone number list
@@ -189,12 +171,14 @@ void Contact::setNickName(const QString& name)
 void Contact::setFirstName(const QString& name)
 {
    m_FirstName  = name;
+   setObjectName(formattedName());
 }
 
 ///Set the family name
 void Contact::setFamilyName(const QString& name)
 {
    m_SecondName = name;
+   setObjectName(formattedName());
 }
 
 ///Set the Photo/Avatar
@@ -256,16 +240,6 @@ QHash<QString,QVariant> Contact::toHash()
    aContact[ "group"          ] = group();
    aContact[ "department"     ] = department();
    return aContact;
-}
-
-///Return the number
-QString Contact::PhoneNumber::number() const {
-   return m_Number ;
-}
-
-///Return the phone number type
-QString Contact::PhoneNumber::type() const {
-   return m_Type   ;
 }
 
 QObject* Contact::PhoneNumbers::self() {

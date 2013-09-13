@@ -64,7 +64,7 @@ public:
       Twelve_months_ago = 21 ,
       Last_year         = 22 ,
       Very_long_time_ago= 23 ,
-      Never             = 24
+      Never             = 24 ,
    };
    Q_ENUMS(HistoryConst)
 

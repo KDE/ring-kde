@@ -47,6 +47,8 @@
 #include "../lib/account.h"
 #include "../lib/call.h"
 #include "../lib/callmodel.h"
+#include "../lib/phonenumber.h"
+#include "../lib/phonedirectorymodel.h"
 #include "kcfg_settings.h"
 
 ///Init static attributes
@@ -208,7 +210,8 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
             const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
             Contact::PhoneNumbers newNumbers(aContact);
             foreach (const KABC::PhoneNumber& number, numbers) {
-               newNumbers << new Contact::PhoneNumber(number.number(),number.typeLabel());
+               newNumbers << PhoneDirectoryModel::instance()->getNumber(number.number(),aContact,nullptr,number.typeLabel());
+               //new PhoneNumber(number.number(),number.typeLabel());
                QString number2 = number.number();
                if (number2.left (5) == "<sip:")
                   number2 = number2.remove(0,5);
@@ -282,11 +285,11 @@ void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
    newContact.setDepartment     ( contact->department()      );
    //newContact.setPreferredEmail ( contact->getPreferredEmail()  );//TODO
 
-   foreach (Contact::PhoneNumber* nb, contact->phoneNumbers()) {
+   foreach (PhoneNumber* nb, contact->phoneNumbers()) {
       KABC::PhoneNumber pn;
       pn.setType(nameToType(nb->type()));
 
-      pn.setNumber(nb->number());
+      pn.setNumber(nb->uri());
       newContact.insertPhoneNumber(pn);
    }
 

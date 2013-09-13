@@ -32,6 +32,7 @@
 
 //SFLPhone
 #include <lib/contact.h>
+#include <lib/phonenumber.h>
 
 QHash<QString,QPixmap> PhoneNumberDelegate::m_hIcons;
 
@@ -73,13 +74,13 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    }
 
    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
-   const Contact::PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self())->phoneNumbers()[index.row()];
+   const PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self())->phoneNumbers()[index.row()];
    const QFontMetrics fm(painter->font());
    painter->setPen(((option.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
       Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
 //    painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->type().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->type());
 //    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   painter->drawText(option.rect.x()+3+16,option.rect.y()+fm.height()-metric,nb->number());
+   painter->drawText(option.rect.x()+3+16,option.rect.y()+fm.height()-metric,nb->uri());
    const int fmh = fm.height();
    if (m_hIcons.contains(nb->type() )) {
       painter->drawPixmap(option.rect.x()+3,option.rect.y()+fmh-12-metric,m_hIcons[nb->type()]);

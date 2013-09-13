@@ -33,6 +33,7 @@
 #include "../../lib/dbus/configurationmanager.h"
 #include "../../lib/dbus/callmanager.h"
 #include "../../lib/sflphone_const.h"
+#include "../../lib/phonenumber.h"
 #include "../../klib/akonadibackend.h"
 #include "../../klib/helperfunctions.h"
 #include "../../klib/kcfg_settings.h"
@@ -309,10 +310,10 @@ void SFLPhoneEngine::generateNumberList(QString name)
    qDebug() << "LOOKING FOR " << contactUid;
    Contact* cont = AkonadiBackend::instance()->getContactByUid(contactUid);
    if (cont) {
-      foreach(Contact::PhoneNumber* num,cont->phoneNumbers()) {
+      foreach(PhoneNumber* num,cont->phoneNumbers()) {
          QHash<QString,QVariant> hash;
-         hash[ "number" ] = num->number() ;
-         hash[ "type"   ] = num->type()   ;
+         hash[ "number" ] = num->uri() ;
+         hash[ "type"   ] = num->type();
          setData(name, QString::number(rand()) , hash);
       }
    }

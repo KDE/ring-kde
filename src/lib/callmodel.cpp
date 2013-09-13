@@ -23,6 +23,7 @@
 
 //SFLPhone library
 #include "call.h"
+#include "phonenumber.h"
 #include "accountlistmodel.h"
 #include "dbus/metatypes.h"
 #include "dbus/callmanager.h"
@@ -762,10 +763,10 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       Call* target = getCall(index(row,column,parentIdx));
       qDebug() << "Contact" << encodedContact << "on call" << target;
       if (PhoneNumberSelector::defaultVisitor()) {
-         const Contact::PhoneNumber number = PhoneNumberSelector::defaultVisitor()->getNumber(encodedContact);
-         if (!number.number().isEmpty()) {
+         const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(encodedContact);
+         if (!number->uri().isEmpty()) {
             Call* newCall = addDialingCall();
-            newCall->setCallNumber(number.number());
+            newCall->setCallNumber(number->uri());
             newCall->actionPerformed(Call::Action::ACCEPT);
             createConferenceFromCall(newCall,target);
          }

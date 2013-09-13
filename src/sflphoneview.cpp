@@ -40,6 +40,7 @@
 #include "conf/configurationdialog.h"
 #include "klib/kcfg_settings.h"
 #include "klib/akonadibackend.h"
+#include "lib/phonenumber.h"
 #include "accountwizard.h"
 #include "actionsetaccountfirst.h"
 #include "sflphone.h"
@@ -192,10 +193,10 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
          else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
             const QByteArray encodedContact     = e->mimeData()->data( MIME_CONTACT     );
             kDebug() << "Contact dropped on empty space";
-            const Contact::PhoneNumber number = KPhoneNumberSelector().getNumber(encodedContact);
-            if (number.number().isEmpty()) {
+            const PhoneNumber* number = KPhoneNumberSelector().getNumber(encodedContact);
+            if (number->uri().isEmpty()) {
                Call* newCall = CallModel::instance()->addDialingCall();
-               newCall->setCallNumber(number.number());
+               newCall->setCallNumber(number->uri());
                newCall->actionPerformed(Call::Action::ACCEPT);
             }
          }
@@ -584,14 +585,14 @@ bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
    if (contact->phoneNumbers().count() == 1) {
       *call2 = CallModel::instance()->addDialingCall(contact->formattedName(),AccountListModel::currentAccount());
       if (*call2)
-         (*call2)->appendText(contact->phoneNumbers()[0]->number());
+         (*call2)->appendText(contact->phoneNumbers()[0]->uri());
    }
    else if (contact->phoneNumbers().count() > 1) {
-      const Contact::PhoneNumber number = KPhoneNumberSelector().getNumber(contact->uid());
-      if (!number.number().isEmpty()) {
+      const PhoneNumber* number = KPhoneNumberSelector().getNumber(contact->uid());
+      if (!number->uri().isEmpty()) {
          (*call2) = CallModel::instance()->addDialingCall(contact->formattedName(), AccountListModel::currentAccount());
          if (*call2)
-            (*call2)->appendText(number.number());
+            (*call2)->appendText(number->uri());
       }
       else {
          kDebug() << "Operation cancelled";

@@ -50,6 +50,8 @@
 #include "lib/historymodel.h"
 #include "lib/accountlistmodel.h"
 #include "lib/callmodel.h"
+#include "lib/phonenumber.h"
+#include "lib/phonedirectorymodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
 
@@ -427,7 +429,7 @@ void HistoryDock::slotAaddContact()
    kDebug() << "Adding contact";
    Contact* aContact = new Contact();
    Contact::PhoneNumbers numbers(aContact);
-   numbers << new Contact::PhoneNumber(m_pCurrentCall->peerPhoneNumber(), "Home");
+   numbers << PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerPhoneNumber(),aContact,nullptr, "Home");//new PhoneNumber(m_pCurrentCall->peerPhoneNumber(), "Home");
    aContact->setPhoneNumbers(numbers);
    aContact->setFormattedName(m_pCurrentCall->peerName());
    AkonadiBackend::instance()->addNewContact(aContact);

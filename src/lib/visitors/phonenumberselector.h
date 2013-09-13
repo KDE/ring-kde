@@ -22,11 +22,13 @@
 #include "../typedefs.h"
 #include "../contact.h"
 
+class PhoneNumber;
+
 ///Common point visitor for UI specific contact dialog
 class LIB_EXPORT PhoneNumberSelector {
 public:
    virtual ~PhoneNumberSelector() {}
-   virtual const Contact::PhoneNumber getNumber(const QString& contactId) = 0;
+   virtual const PhoneNumber* getNumber(const QString& contactId) = 0;
    static PhoneNumberSelector* defaultVisitor();
 protected:
    static void setDefaultVisitor(PhoneNumberSelector* v);

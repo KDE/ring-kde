@@ -49,6 +49,7 @@
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
+#include "lib/phonenumber.h"
 #include "lib/accountlistmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/akonadibackend.h"
@@ -174,11 +175,11 @@ ContactDock::~ContactDock()
 QString ContactDock::showNumberSelector(bool& ok)
 {
    if (m_pCurrentContact && m_pCurrentContact->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
-      const Contact::PhoneNumber number = KPhoneNumberSelector().getNumber(m_pCurrentContact->uid());
-      if (number.number().isEmpty()) {
+      const PhoneNumber* number = KPhoneNumberSelector().getNumber(m_pCurrentContact->uid());
+      if (number->uri().isEmpty()) {
          kDebug() << "Operation cancelled";
       }
-      return number.number();
+      return number->uri();
    }
    else if (!m_PreselectedNb.isEmpty()) {
       ok = true;
@@ -186,7 +187,7 @@ QString ContactDock::showNumberSelector(bool& ok)
    }
    else if (m_pCurrentContact&& m_pCurrentContact->phoneNumbers().size() == 1) {
       ok = true;
-      return m_pCurrentContact->phoneNumbers()[0]->number();
+      return m_pCurrentContact->phoneNumbers()[0]->uri();
    }
    else {
       ok = false;
@@ -203,7 +204,7 @@ QString ContactDock::showNumberSelector(bool& ok)
 //          QNumericTreeWidgetItem_hist* realItem = dynamic_cast<QNumericTreeWidgetItem_hist*>(item);
 //          foreach (Call* call, HistoryModel::getHistory()) {
 //             if (realItem->widget != 0) {
-//                foreach (Contact::PhoneNumber* number, realItem->widget->getContact()->getPhoneNumbers()) {
+//                foreach (PhoneNumber* number, realItem->widget->getContact()->getPhoneNumbers()) {
 //                   if (number->getNumber() == call->getPeerPhoneNumber()) {
 //                      m_pCallView->addItem(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString());
 //                   }
@@ -298,7 +299,7 @@ void ContactDock::showContext(const QModelIndex& index)
    }
    else if (index.parent().parent().isValid()) {
       m_pCurrentContact = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->self();
-      m_PreselectedNb   = m_pCurrentContact->phoneNumbers()[index.row()]->number();
+      m_PreselectedNb   = m_pCurrentContact->phoneNumbers()[index.row()]->uri();
    }
    else {
       m_pCurrentContact = nullptr;
@@ -352,9 +353,9 @@ void ContactDock::copy()
    mimeData->setData(MIME_CONTACT, m_pCurrentContact->uid().toUtf8());
    QString numbers(m_pCurrentContact->formattedName()+": ");
    QString numbersHtml("<b>"+m_pCurrentContact->formattedName()+"</b><br />");
-   foreach (Contact::PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
-      numbers     += number->number()+" ("+number->type()+")  ";
-      numbersHtml += number->number()+" ("+number->type()+")  <br />";
+   foreach (PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
+      numbers     += number->uri()+" ("+number->type()+")  ";
+      numbersHtml += number->uri()+" ("+number->type()+")  <br />";
    }
    mimeData->setData("text/plain", numbers.toUtf8());
    mimeData->setData("text/html", numbersHtml.toUtf8());
@@ -386,7 +387,7 @@ void ContactDock::bookmark()
 {
    const Contact::PhoneNumbers numbers = m_pCurrentContact->phoneNumbers();
    if (numbers.count() == 1)
-      BookmarkModel::instance()->addBookmark(numbers[0]->number());
+      BookmarkModel::instance()->addBookmark(numbers[0]->uri());
 }
 
 ///Called when a call is dropped on transfer

@@ -29,7 +29,7 @@ PresenceStatusModel* PresenceStatusModel::m_spInstance = nullptr;
 
 ///Constructor
 PresenceStatusModel::PresenceStatusModel(QObject* parent) : QAbstractTableModel(parent?parent:QCoreApplication::instance()),
-m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr)
+m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_CustomStatus(false)
 {
    setObjectName("PresenceStatusModel");
    StatusData* data = new StatusData();
@@ -137,12 +137,14 @@ bool PresenceStatusModel::setData(const QModelIndex& index, const QVariant &valu
             if (role == Qt::EditRole) {
                dat->name = value.toString();
                emit dataChanged(index,index);
+               return true;
             }
             break;
          case PresenceStatusModel::Columns::Message:
             if (role == Qt::EditRole) {
                dat->message = value.toString();
                emit dataChanged(index,index);
+               return true;
             }
             break;
          case PresenceStatusModel::Columns::Color:
@@ -154,12 +156,14 @@ bool PresenceStatusModel::setData(const QModelIndex& index, const QVariant &valu
             if (role == Qt::CheckStateRole) {
                dat->status = value.toBool();
                emit dataChanged(index,index);
+               return true;
             }
             break;
          case PresenceStatusModel::Columns::Default:
             if (role == Qt::CheckStateRole) {
                dat->defaultStatus = value.toBool();
                setDefaultStatus(index);
+               return true;
             }
             break;
       };
@@ -336,7 +340,7 @@ QString PresenceStatusModel::currentMessage() const
 ///Return current name
 QString PresenceStatusModel::currentName() const
 {
-   return m_UseCustomStatus?"Custom":m_pCurrentStatus->name;
+   return m_UseCustomStatus?"Custom":m_pCurrentStatus?m_pCurrentStatus->name:"N/A";
 }
 
 ///Return the default status index

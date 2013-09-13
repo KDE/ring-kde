@@ -24,6 +24,7 @@
 //SFLPhone library
 #include "contact.h"
 #include "call.h"
+#include "phonenumber.h"
 
 //Qt
 #include <QtCore/QHash>
@@ -133,7 +134,7 @@ QVariant AbstractContactBackend::data( const QModelIndex& idx, int role) const
       return QVariant(getContactList()[idx.row()]->formattedName());
    }
    else if (idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(getContactList()[idx.parent().row()]->phoneNumbers()[idx.row()]->number());
+      return QVariant(getContactList()[idx.parent().row()]->phoneNumbers()[idx.row()]->uri());
    }
    return QVariant();
 }

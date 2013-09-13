@@ -33,13 +33,16 @@ namespace KABC {
    class PhoneNumber ;
 }
 
+//SFLPhone
+class PhoneNumber;
+
 #include "typedefs.h"
 
 class LIB_EXPORT ContactTreeBackend {
 public:
     enum Type {
-        CONTACT=0,
-        NUMBER=1,
+        CONTACT  =0,
+        NUMBER   =1,
         TOP_LEVEL=2
     };
     explicit ContactTreeBackend(ContactTreeBackend::Type _type);
@@ -61,32 +64,12 @@ class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
-   friend class PresenceModel;
-   ///PhoneNumber: represent a phone number
-   class PhoneNumber {
-   public:
-      ///Constructor
-      PhoneNumber(const QString& number, const QString& type);
-      PhoneNumber(const PhoneNumber& number);
 
-      //Getters
-      QString number        () const;
-      QString type          () const;
-      bool    present       () const;
-      QString presentMessage() const;
-
-   private:
-      QString m_Number        ;
-      QString m_Type          ;
-      bool    m_Present       ;
-      QString m_PresentMessage;
-      bool    m_Tracked       ;
-   };
-   class  PhoneNumbers : public QList<Contact::PhoneNumber*>, public ContactTreeBackend {
+   class  PhoneNumbers : public QList<PhoneNumber*>, public ContactTreeBackend {
    public:
       virtual QObject* self() __attribute__ ((const));
       explicit PhoneNumbers(Contact* parent);
-      PhoneNumbers(Contact* parent, const QList<Contact::PhoneNumber*>& list);
+      PhoneNumbers(Contact* parent, const QList<PhoneNumber*>& list);
       Contact* contact() const;
    private:
       Contact* m_pParent       ;
@@ -145,7 +128,7 @@ public:
    QHash<QString,QVariant> toHash();
 
 Q_SIGNALS:
-    void presenceChanged(Contact::PhoneNumber);
+    void presenceChanged(PhoneNumber*);
 
 protected:
     //Presence secret methods

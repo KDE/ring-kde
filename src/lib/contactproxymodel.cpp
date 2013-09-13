@@ -25,6 +25,7 @@
 #include "../lib/abstractcontactbackend.h"
 #include "../lib/callmodel.h"
 #include "../lib/historymodel.h"
+#include "../lib/phonenumber.h"
 
 const char* ContactProxyModel::m_slHistoryConstStr[25] = {
       "Today"                                                    ,//0
@@ -60,9 +61,10 @@ QObject* ContactProxyModel::TopLevelItem::self()
 }
 
 //
-ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(parent?static_cast<QObject*>(parent):static_cast<QObject*>(QCoreApplication::instance())),
+ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(QCoreApplication::instance()),
 m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
 {
+   setObjectName("ContactProxyModel");
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
    QHash<int, QByteArray> roles = roleNames();
@@ -183,7 +185,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
    case ContactTreeBackend::Type::NUMBER: /* && (role == Qt::DisplayRole)) {*/
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChildren[index.parent().row()]->phoneNumbers()[index.row()]->number());
+            return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChildren[index.parent().row()]->phoneNumbers()[index.row()]->uri());
       }
       break;
    default:
@@ -303,7 +305,7 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
             Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()];
             if (ct) {
                if (ct->phoneNumbers().size() == 1) {
-                  mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->number().toUtf8());
+                  mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->uri().toUtf8());
                }
                mimeData->setData(MIME_CONTACT , ct->uid().toUtf8());
             }

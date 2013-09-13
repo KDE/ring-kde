@@ -41,6 +41,7 @@ set( qtsflphone_LIB_SRCS
   contact.cpp
   videorenderer.cpp
   videodevice.cpp
+  phonenumber.cpp
 
   #Models
   accountlistmodel.cpp
@@ -56,6 +57,7 @@ set( qtsflphone_LIB_SRCS
   contactproxymodel.cpp
   useractionmodel.cpp
   presencestatusmodel.cpp
+  phonedirectorymodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -90,6 +92,8 @@ set( qtsflphone_LIB_HDRS
   contactproxymodel.h
   useractionmodel.h
   presencestatusmodel.h
+  phonenumber.h
+  phonedirectorymodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

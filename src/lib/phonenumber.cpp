@@ -16,36 +16,98 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "phonenumber.h"
+#include "phonedirectorymodel.h"
+#include "contact.h"
+#include "account.h"
+#include "call.h"
 
+QHash<int,Call*> PhoneNumber::m_shMostUsed = QHash<int,Call*>();
 
-PhoneNumber::PhoneNumber(const QString& number, const QString& type) : m_Number(number),m_Type(type)
-   ,m_Tracked(false),m_Present(false)
+class PhoneNumberPrivate {
+public:
+   static PhoneNumber* initBlank()
+   {
+      PhoneNumber* blanc = new PhoneNumber("","");
+      blanc->m_State = PhoneNumber::State::BLANK;
+      return blanc;
+   }
+};
+const PhoneNumber* PhoneNumber::BLANK = PhoneNumberPrivate::initBlank();
+
+///Constructor
+PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(PhoneDirectoryModel::instance()),
+   m_Uri(number),m_Type(type),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
+   m_State(PhoneNumber::State::UNUSED)
 {
-   
+   setObjectName(number);
 }
 
-
-PhoneNumber::PhoneNumber(const PhoneNumber& number) : m_Number(number.m_Number),m_Type(number.m_Type)
-   ,m_Tracked(false),m_Present(false)
-{
-}
-
+///Is this number present
 bool PhoneNumber::present() const
 {
    return m_Tracked && m_Present;
 }
 
+///This number presence status string
 QString PhoneNumber::presentMessage() const
 {
    return m_PresentMessage;
 }
 
 ///Return the number
-QString PhoneNumber::number() const {
-   return m_Number ;
+QString PhoneNumber::uri() const {
+   return m_Uri ;
 }
 
 ///Return the phone number type
 QString PhoneNumber::type() const {
    return m_Type   ;
+}
+
+///Return this number associated account, if any
+Account* PhoneNumber::account() const
+{
+   return m_pAccount;
+}
+
+///Return this number associated contact, if any
+Contact* PhoneNumber::contact() const
+{
+   return m_pContact;
+}
+
+///Return when this number was last used
+time_t PhoneNumber::lastUsed() const
+{
+   return m_LastUsed;
+}
+
+///Set this number default account
+void PhoneNumber::setAccount(Account* account)
+{
+   m_pAccount = account;
+}
+
+///Set this number contact
+void PhoneNumber::setContact(Contact* contact)
+{
+   m_pContact = contact;
+}
+
+///Return the current state of the number
+PhoneNumber::State PhoneNumber::state() const
+{
+   return m_State;
+}
+
+///Return the number of calls from this number
+int PhoneNumber::callCount() const
+{
+   return m_lCalls.size();
+}
+
+///Return all calls from this number
+QList<Call*> PhoneNumber::calls() const
+{
+   return m_lCalls;
 }

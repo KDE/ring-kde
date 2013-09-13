@@ -121,6 +121,7 @@ Q_SIGNALS:
    void currentStatusChanged  ( bool               status    );
 
 };
-Q_DECLARE_METATYPE(PresenceStatusModel*)
+
+Q_DECLARE_METATYPE( PresenceStatusModel* )
 
 #endif

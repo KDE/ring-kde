@@ -240,12 +240,13 @@ public:
    //Constructors & Destructors
    explicit Call(QString confId, QString account);
    ~Call();
-   static Call* buildDialingCall  (QString callId, const QString & peerName, Account* account = nullptr                                                         );
-   static Call* buildIncomingCall (const QString & callId                                                                                                       );
-   static Call* buildRingingCall  (const QString & callId                                                                                                       );
-   static Call* buildHistoryCall  (const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type );
-   static Call* buildExistingCall (QString callId                                                                                                               );
-   static void  setContactBackend (AbstractContactBackend* be                                                                                                   );
+   static Call* buildDialingCall  (QString callId, const QString & peerName, Account* account = nullptr );
+   static Call* buildIncomingCall (const QString & callId                                               );
+   static Call* buildRingingCall  (const QString & callId                                               );
+   static Call* buildHistoryCall  (const QString & callId, uint startTimeStamp, uint stopTimeStamp,
+               const QString& account, const QString& name, const QString& number, const QString& type  );
+   static Call* buildExistingCall (QString callId                                                       );
+   static void  setContactBackend (AbstractContactBackend* be                                           );
    static AbstractContactBackend* contactBackend ();
 
    //Static getters
@@ -304,7 +305,7 @@ public:
 private:
 
    //Attributes
-   QString                m_Account         ;
+   Account*               m_Account         ;
    QString                m_CallId          ;
    QString                m_ConfId          ;
    QString                m_PeerPhoneNumber ;

@@ -165,17 +165,20 @@ AbstractContactBackend* Call::contactBackend ()
 ///Constructor
 Call::Call(Call::State startState, const QString& callId, QString peerName, QString peerNumber, QString account)
    :  QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
-   m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),m_Account(account),
-   m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0)
+   m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),
+   m_Account(nullptr),m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),
+   m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0)
 {
-//    qRegisterMetaType<Call*>();
+   m_Account = AccountListModel::instance()->getAccountById(account);
    setObjectName("Call:"+callId);
    changeCurrentState(startState);
    m_pUserActionModel = new UserActionModel(this);
 
    CallManagerInterface& callManager = DBus::CallManager::instance();
-   connect(&callManager,SIGNAL(recordPlaybackStopped(QString)), this, SLOT(stopPlayback(QString))  );
-   connect(&callManager,SIGNAL(updatePlaybackScale(int,int))  , this, SLOT(updatePlayback(int,int)));
+   if (hasRecording()) {
+      connect(&callManager,SIGNAL(recordPlaybackStopped(QString)), this, SLOT(stopPlayback(QString))  );
+      connect(&callManager,SIGNAL(updatePlaybackScale(int,int))  , this, SLOT(updatePlayback(int,int)));
+   }
 
    emit changed();
    emit changed(this);
@@ -190,8 +193,9 @@ Call::~Call()
 
 ///Constructor
 Call::Call(QString confId, QString account): QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL),
-   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),m_Account(account),
-   m_CurrentState(Call::State::CONFERENCE),m_pTimer(nullptr), m_isConference(false)
+   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),
+   m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
+   m_pTimer(nullptr), m_isConference(false)
 {
    setObjectName("Call:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
@@ -296,15 +300,18 @@ Call* Call::buildRingingCall(const QString & callId)
  ****************************************************************************/
 
 ///Build a call that is already over
-Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint stopTimeStamp, QString account, QString name, QString number, QString type)
+Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint stopTimeStamp, 
+                             const QString& accId, const QString& name, const QString& number, const QString& type)
 {
-   if(name == "empty") name.clear();
-   Call* call            = new Call(Call::State::OVER, callId, name, number, account );
+   Call* call              = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, number, accId );
 
    call->m_pStopTimeStamp  = stopTimeStamp ;
    call->m_pStartTimeStamp = startTimeStamp;
 
-   call->m_HistoryState  = historyStateFromType(type);
+   call->m_HistoryState    = historyStateFromType(type);
+   call->m_Account         = AccountListModel::instance()->getAccountById(accId);
+
+   call->setObjectName("History:"+call->m_CallId);
 
    return call;
 }
@@ -527,7 +534,7 @@ bool Call::recording() const
 ///Get the call account id
 Account* Call::account() const
 {
-   return AccountListModel::instance()->getAccountById(m_Account);
+   return m_Account;
 }
 
 ///Is this call a conference
@@ -576,13 +583,12 @@ bool Call::isSelected() const
 ///This function could also be called mayBeSecure or haveChancesToBeEncryptedButWeCantTell.
 bool Call::isSecure() const {
 
-   if (m_Account.isEmpty()) {
+   if (!m_Account) {
       qDebug() << "Account not set, can't check security";
       return false;
    }
 
-   Account* currentAccount = AccountListModel::instance()->getAccountById(m_Account);
-   return currentAccount && ((currentAccount->isTlsEnable()) || (currentAccount->tlsMethod()));
+   return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod()));
 } //isSecure
 
 Contact* Call::contact()
@@ -946,13 +952,13 @@ void Call::call()
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "account = " << m_Account;
-   if(m_Account.isEmpty()) {
+   if(!m_Account) {
       qDebug() << "Account is not set, taking the first registered.";
-      this->m_Account = AccountListModel::currentAccount()->id();
+      this->m_Account = AccountListModel::currentAccount();
    }
-   if(!m_Account.isEmpty()) {
+   if(m_Account) {
       qDebug() << "Calling " << m_CallNumber << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
-      callManager.placeCall(m_Account, m_CallId, m_CallNumber);
+      callManager.placeCall(m_Account->id(), m_CallId, m_CallNumber);
       this->m_PeerPhoneNumber = m_CallNumber;
       if (m_pContactBackend) {
          if (contact())
