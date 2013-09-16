@@ -55,6 +55,7 @@
 #include "klib/kcfg_settings.h"
 #include "lib/presencestatusmodel.h"
 #include "lib/videomodel.h"
+#include "lib/phonenumber.h"
 
 //sflphone
 #include "accountwizard.h"
@@ -635,11 +636,11 @@ void SFLPhone::on_m_pView_recordCheckStateChangeAsked(bool recordCheckState)
 void SFLPhone::on_m_pView_incomingCall(const Call* call)
 {
    if (call) {
-      const Contact* contact = AkonadiBackend::instance()->getContactByPhone(call->peerPhoneNumber());
+      const Contact* contact = call->peerPhoneNumber()->contact();
       if (contact)
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber() : call->peerName()),((contact->photo())?*contact->photo():nullptr));
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()),((contact->photo())?*contact->photo():nullptr));
       else
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber() : call->peerName()));
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()));
    }
 }
 

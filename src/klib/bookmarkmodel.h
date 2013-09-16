@@ -39,12 +39,15 @@ public:
    static BookmarkModel* instance();
 
    //Management
-   virtual void addBookmark   ( const QString& uri, bool trackPresence = false);
-   virtual void removeBookmark( const QString& uri                            );
+   virtual void addBookmark   ( PhoneNumber* number, bool trackPresence = false);
+   virtual void removeBookmark( PhoneNumber* number                            );
 
 protected:
-   virtual bool displayFrequentlyUsed () const;
-   virtual QStringList bookmarkList   () const;
+   //Pure vrtual
+   virtual bool                  displayFrequentlyUsed         () const;
+   virtual QVector<PhoneNumber*> bookmarkList () const;
+
+   //Constructor
    virtual ~BookmarkModel() {}
    BookmarkModel(QObject* parent);
 

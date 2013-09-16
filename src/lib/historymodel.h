@@ -74,7 +74,7 @@ public:
    //Getters
    static const CallMap&    getHistory             ();
    static const QStringList getHistoryCallId       ();
-   static const QStringList getNumbersByPopularity ();
+//    static const QStringList getNumbersByPopularity ();
 
    //Setters
    void setCategoryRole(Call::Role role);

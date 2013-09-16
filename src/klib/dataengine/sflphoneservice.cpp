@@ -44,7 +44,7 @@ void CallJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->addDialingCall(m_Number,m_pAccount);
    if (call) {
-      call->setCallNumber(m_Number);
+      call->setDialNumber(m_Number);
       call->actionPerformed(Call::Action::ACCEPT);
    }
 }

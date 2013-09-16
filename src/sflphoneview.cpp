@@ -187,7 +187,7 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             const QByteArray encodedPhoneNumber = e->mimeData()->data( MIME_PHONENUMBER );
             kDebug() << "Phone number dropped on empty space";
             Call* newCall = CallModel::instance()->addDialingCall();
-            newCall->setCallNumber(encodedPhoneNumber);
+            newCall->setDialNumber(encodedPhoneNumber);
             newCall->actionPerformed(Call::Action::ACCEPT);
          }
          else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
@@ -196,13 +196,13 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             const PhoneNumber* number = KPhoneNumberSelector().getNumber(encodedContact);
             if (number->uri().isEmpty()) {
                Call* newCall = CallModel::instance()->addDialingCall();
-               newCall->setCallNumber(number->uri());
+               newCall->setDialNumber(number->uri());
                newCall->actionPerformed(Call::Action::ACCEPT);
             }
          }
          else if (e->mimeData()->hasFormat("text/plain")) {
             Call* newCall = CallModel::instance()->addDialingCall();
-            newCall->setCallNumber(e->mimeData()->data( "text/plain" ));
+            newCall->setDialNumber(e->mimeData()->data( "text/plain" ));
             newCall->actionPerformed(Call::Action::ACCEPT);
          }
          //Remove uneedded tip
@@ -647,7 +647,7 @@ void SFLPhoneView::updateWindowCallState()
 //       callView->overlayToolbar()->updateState(call->state());
 //       callView->overlayToolbar()->setVisible(true);
 
-      kDebug() << "Reached  State" << state << "(" << call->state() << ") with call" << call->callId();
+      kDebug() << "Reached  State" << state << "(" << call->state() << ") with call" << call->id();
 
       switch (state) {
          case Call::State::INCOMING:
@@ -732,12 +732,12 @@ void SFLPhoneView::updateWindowCallState()
             break;
 
          case Call::State::OVER:
-            kDebug() << "Error : Reached CALL_STATE_OVER with call "  << call->callId() << "!";
+            kDebug() << "Error : Reached CALL_STATE_OVER with call "  << call->id() << "!";
             m_pMessageBoxW->setVisible(false)                                    ;
             break;
 
          case Call::State::ERROR:
-            kDebug() << "Error : Reached CALL_STATE_ERROR with call " << call->callId() << "!";
+            kDebug() << "Error : Reached CALL_STATE_ERROR with call " << call->id() << "!";
             m_pMessageBoxW->setVisible(false)                                    ;
             break;
 
@@ -758,7 +758,7 @@ void SFLPhoneView::updateWindowCallState()
             break;
          case Call::State::COUNT:
          default: 
-            kDebug() << "Error : Reached unexisting state for call "  << call->callId() << "(" << call->state() << "!";
+            kDebug() << "Error : Reached unexisting state for call "  << call->id() << "(" << call->state() << "!";
             break;
 
       }
@@ -1193,7 +1193,7 @@ void SFLPhoneView::mailBox()
 ///When a call is coming (dbus)
 void SFLPhoneView::on1_incomingCall(Call* call)
 {
-   kDebug() << "Signal : Incoming Call ! ID = " << call->callId();
+   kDebug() << "Signal : Incoming Call ! ID = " << call->id();
 
    updateWindowCallState();
 

@@ -245,3 +245,13 @@ QHash<QString,QVariant> Contact::toHash()
 QObject* Contact::PhoneNumbers::self() {
    return m_pParent;
 }
+
+time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
+{
+   time_t t = 0;
+   for (int i=0;i<size();i++) {
+      if (at(1)->lastUsed() > t)
+         t = at(1)->lastUsed();
+   }
+   return t;
+}

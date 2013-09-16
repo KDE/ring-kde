@@ -17,15 +17,18 @@
  ***************************************************************************/
 #include "contactproxymodel.h"
 
+//Qt
 #include <QtCore/QDebug>
 #include <QtCore/QDate>
 #include <QtCore/QMimeData>
 #include <QtCore/QCoreApplication>
 
-#include "../lib/abstractcontactbackend.h"
-#include "../lib/callmodel.h"
-#include "../lib/historymodel.h"
-#include "../lib/phonenumber.h"
+//SFLPhone
+#include "abstractcontactbackend.h"
+#include "callmodel.h"
+#include "historymodel.h"
+#include "phonenumber.h"
+#include "phonedirectorymodel.h"
 
 const char* ContactProxyModel::m_slHistoryConstStr[25] = {
       "Today"                                                    ,//0
@@ -62,21 +65,21 @@ QObject* ContactProxyModel::TopLevelItem::self()
 
 //
 ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(QCoreApplication::instance()),
-m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_isContactDateInit(false)
+m_pModel(parent),m_Role(role),m_ShowAll(showAll)
 {
    setObjectName("ContactProxyModel");
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
    QHash<int, QByteArray> roles = roleNames();
-   roles.insert(AbstractContactBackend::Role::Organization      ,QByteArray("organization"));
-   roles.insert(AbstractContactBackend::Role::Group             ,QByteArray("group"));
-   roles.insert(AbstractContactBackend::Role::Department        ,QByteArray("department"));
-   roles.insert(AbstractContactBackend::Role::PreferredEmail    ,QByteArray("preferredEmail"));
+   roles.insert(AbstractContactBackend::Role::Organization      ,QByteArray("organization")     );
+   roles.insert(AbstractContactBackend::Role::Group             ,QByteArray("group")            );
+   roles.insert(AbstractContactBackend::Role::Department        ,QByteArray("department")       );
+   roles.insert(AbstractContactBackend::Role::PreferredEmail    ,QByteArray("preferredEmail")   );
    roles.insert(AbstractContactBackend::Role::FormattedLastUsed ,QByteArray("formattedLastUsed"));
-   roles.insert(AbstractContactBackend::Role::IndexedLastUsed   ,QByteArray("indexedLastUsed"));
-   roles.insert(AbstractContactBackend::Role::DatedLastUsed     ,QByteArray("datedLastUsed"));
-   roles.insert(AbstractContactBackend::Role::Filter            ,QByteArray("filter"));
-   roles.insert(AbstractContactBackend::Role::DropState         ,QByteArray("dropState"));
+   roles.insert(AbstractContactBackend::Role::IndexedLastUsed   ,QByteArray("indexedLastUsed")  );
+   roles.insert(AbstractContactBackend::Role::DatedLastUsed     ,QByteArray("datedLastUsed")    );
+   roles.insert(AbstractContactBackend::Role::Filter            ,QByteArray("filter")           );
+   roles.insert(AbstractContactBackend::Role::DropState         ,QByteArray("dropState")        );
    setRoleNames(roles);
 }
 
@@ -90,7 +93,6 @@ void ContactProxyModel::reloadCategories()
    beginResetModel();
    m_hCategories.clear();
    m_lCategoryCounter.clear();
-   m_isContactDateInit = false;
    foreach(Contact* cont, m_pModel->getContactList()) {
       QString val = category(cont);
       if (!m_hCategories[val]) {
@@ -139,40 +141,31 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             break;
       }
       break;
-   case ContactTreeBackend::Type::CONTACT: /* && (role == Qt::DisplayRole)) {*/
+   case ContactTreeBackend::Type::CONTACT:{ /* && (role == Qt::DisplayRole)) {*/
+      const Contact* c = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()];
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->formattedName());
+            return QVariant(c->formattedName());
          case AbstractContactBackend::Role::Organization:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->organization());
+            return QVariant(c->organization());
          case AbstractContactBackend::Role::Group:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->group());
+            return QVariant(c->group());
          case AbstractContactBackend::Role::Department:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->department());
+            return QVariant(c->department());
          case AbstractContactBackend::Role::PreferredEmail:
-            return QVariant(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->preferredEmail());
+            return QVariant(c->preferredEmail());
          case AbstractContactBackend::Role::DropState:
             return QVariant(modelItem->dropState());
-         case AbstractContactBackend::Role::FormattedLastUsed: {
-            if (!m_isContactDateInit)
-               const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
-            return QVariant(HistoryModel::timeToHistoryCategory(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
-         }
-         case AbstractContactBackend::Role::IndexedLastUsed: {
-            if (!m_isContactDateInit)
-               const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
-            return QVariant((int)HistoryModel::timeToHistoryConst(m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
-         }
-         case AbstractContactBackend::Role::DatedLastUsed: {
-            if (!m_isContactDateInit)
-               const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
-            return QVariant(QDateTime::fromTime_t( m_hContactByDate[m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]]));
-         }
+         case AbstractContactBackend::Role::FormattedLastUsed:
+            return QVariant(HistoryModel::timeToHistoryCategory(c->phoneNumbers().lastUsedTimeStamp()));
+         case AbstractContactBackend::Role::IndexedLastUsed:
+            return QVariant((int)HistoryModel::timeToHistoryConst(c->phoneNumbers().lastUsedTimeStamp()));
+         case AbstractContactBackend::Role::DatedLastUsed:
+            return QVariant(QDateTime::fromTime_t( c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::Filter: {
-            Contact* ct = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()];
             QString normStripppedC;
-            foreach(QChar char2,QString(ct->formattedName()+'\n'+ct->organization()+'\n'+ct->group()+'\n'+
-               ct->department()+'\n'+ct->preferredEmail()).toLower().normalized(QString::NormalizationForm_KD) ) {
+            foreach(QChar char2,QString(c->formattedName()+'\n'+c->organization()+'\n'+c->group()+'\n'+
+               c->department()+'\n'+c->preferredEmail()).toLower().normalized(QString::NormalizationForm_KD) ) {
                if (!char2.combiningClass())
                   normStripppedC += char2;
             }
@@ -182,6 +175,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             break;
       }
       break;
+   }
    case ContactTreeBackend::Type::NUMBER: /* && (role == Qt::DisplayRole)) {*/
       switch (role) {
          case Qt::DisplayRole:
@@ -338,24 +332,15 @@ QString ContactProxyModel::category(Contact* ct) const {
       case AbstractContactBackend::Role::PreferredEmail:
          cat = ct->preferredEmail();
          break;
-      case AbstractContactBackend::Role::FormattedLastUsed: {
-         if (!m_isContactDateInit)
-            const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
-         cat = HistoryModel::timeToHistoryCategory(m_hContactByDate[ct]);
+      case AbstractContactBackend::Role::FormattedLastUsed:
+         cat = HistoryModel::timeToHistoryCategory(ct->phoneNumbers().lastUsedTimeStamp());
          break;
-      }
-      case AbstractContactBackend::Role::IndexedLastUsed: {
-         if (!m_isContactDateInit)
-            const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
-         cat = QString::number((int)HistoryModel::timeToHistoryConst(m_hContactByDate[ct]));
+      case AbstractContactBackend::Role::IndexedLastUsed:
+         cat = QString::number((int)HistoryModel::timeToHistoryConst(ct->phoneNumbers().lastUsedTimeStamp()));
          break;
-      }
-      case AbstractContactBackend::Role::DatedLastUsed: {
-         if (!m_isContactDateInit)
-            const_cast<ContactProxyModel*>(this)->m_hContactByDate = getContactListByTime();
-         cat = QDateTime::fromTime_t(m_hContactByDate[ct]).toString();
+      case AbstractContactBackend::Role::DatedLastUsed:
+         cat = QDateTime::fromTime_t(ct->phoneNumbers().lastUsedTimeStamp()).toString();
          break;
-      }
       break;
       default:
          cat = ct->formattedName();
@@ -366,26 +351,26 @@ QString ContactProxyModel::category(Contact* ct) const {
 }
 
 ///Return the list of contact from history (in order, most recently used first)
-QHash<Contact*, time_t> ContactProxyModel::getContactListByTime() const
-{
-   const CallMap& history= HistoryModel::getHistory();
-   QHash<Contact*, time_t> toReturn;
-   QSet<QString> alreadyUsed;
-   QMapIterator<uint, Call*> i(history);
-   i.toBack();
-   while (i.hasPrevious()) { //Iterate from the end up
-      i.previous();
-      (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()); //Don't ask, leave it there Elv13(2012)
-      if (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()) {
-         Contact* contact = i.value()->contact();
-         if (contact && toReturn.find(contact) == toReturn.end()) {
-            toReturn[contact] = i.value()->startTimeStamp();
-         }
-         alreadyUsed << i.value()->peerPhoneNumber();
-      }
-   }
-   return toReturn;
-} //getContactListByTime
+// QHash<Contact*, time_t> ContactProxyModel::getContactListByTime() const
+// {
+//    const CallMap& history= HistoryModel::getHistory();
+//    QHash<Contact*, time_t> toReturn;
+//    QSet<QString> alreadyUsed;
+//    QMapIterator<uint, Call*> i(history);
+//    i.toBack();
+//    while (i.hasPrevious()) { //Iterate from the end up
+//       i.previous();
+//       (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()); //Don't ask, leave it there Elv13(2012)
+//       if (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()) {
+//          Contact* contact = i.value()->contact();
+//          if (contact && toReturn.find(contact) == toReturn.end()) {
+//             toReturn[contact] = i.value()->startTimeStamp();
+//          }
+//          alreadyUsed << i.value()->peerPhoneNumber();
+//       }
+//    }
+//    return toReturn;
+// } //getContactListByTime
 
 
 void ContactProxyModel::setRole(int role)

@@ -24,9 +24,11 @@
 #include <QtCore/QAbstractTableModel>
 
 //SFLPhone
-class PhoneNumber;
-class Contact;
-class Account;
+class PhoneNumber         ;
+class Contact             ;
+class Account             ;
+class Call                ;
+class TemporaryPhoneNumber;
 
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT PhoneDirectoryModel : public QAbstractTableModel {
@@ -57,11 +59,16 @@ public:
    Q_INVOKABLE PhoneNumber* getTemporaryNumber(const QString& uri, const QString& type = "N/A");
    Q_INVOKABLE PhoneNumber* getTemporaryNumber(const QString& uri, Account* account, const QString& type = "N/A");
    Q_INVOKABLE PhoneNumber* getTemporaryNumber(const QString& uri, Contact* contact, Account* account = nullptr, const QString& type = "N/A");
+   Q_INVOKABLE PhoneNumber* fromHash(const QString& hash);
+   Q_INVOKABLE PhoneNumber* fromTemporary(const TemporaryPhoneNumber* number);
 
    //Getter
    int count() {
       return m_lNumbers.size();
    }
+
+   //Static
+   QVector<PhoneNumber*> getNumbersByPopularity() const;
 
 private:
 
@@ -90,6 +97,10 @@ private:
    QVector<PhoneNumber*>         m_lNumbers         ;
    QHash<QString,NumberWrapper*> m_hDirectory       ;
    QHash<QString,NumberWrapper*> m_hTemporaryNumbers;
+   QVector<PhoneNumber*>         m_lPopularityIndex ;
+
+private Q_SLOTS:
+   void slotCallAdded(Call* call);
 };
 Q_DECLARE_METATYPE(PhoneDirectoryModel*)
 

@@ -178,7 +178,7 @@ void CallViewOverlay::slotLayoutChanged()
             KPushButton* btn = new KPushButton(call->roleData(Qt::DisplayRole).toString(),this);
             btn->setStyleSheet(m_pTransferB->styleSheet());
             m_pAttTransferGB->layout()->addWidget(btn);
-            btn->setProperty("callId",call->callId());
+            btn->setProperty("callId",call->id());
             connect(btn,SIGNAL(clicked()),this,SLOT(slotAttendedTransfer()));
          }
       }

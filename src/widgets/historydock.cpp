@@ -373,7 +373,7 @@ void HistoryDock::slotSendEmail()
    kDebug() << "Sending email";
    QProcess *myProcess = new QProcess(this);
    QStringList arguments;
-   Contact* ct = m_pCurrentCall->contact();
+   Contact* ct = m_pCurrentCall->peerPhoneNumber()->contact();
    if (ct)
       myProcess->start("xdg-email", (arguments << ct->preferredEmail()));
 }
@@ -384,7 +384,7 @@ void HistoryDock::slotCallAgain()
    kDebug() << "Calling "<< m_pCurrentCall->peerPhoneNumber();
    Call* call = CallModel::instance()->addDialingCall(m_pCurrentCall->peerName(), AccountListModel::currentAccount());
    if (call) {
-      call->setCallNumber  ( m_pCurrentCall->peerPhoneNumber() );
+      call->setDialNumber  ( m_pCurrentCall->peerPhoneNumber() );
       call->setPeerName    ( m_pCurrentCall->peerName() );
       call->actionPerformed( Call::Action::ACCEPT   );
    }
@@ -402,20 +402,20 @@ void HistoryDock::slotCopy()
 
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(MIME_CALLID, m_pCurrentCall->callId().toUtf8());
+   mimeData->setData(MIME_CALLID, m_pCurrentCall->id().toUtf8());
 
-   mimeData->setData(MIME_PHONENUMBER, m_pCurrentCall->peerPhoneNumber().toUtf8());
+   mimeData->setData(MIME_PHONENUMBER, m_pCurrentCall->peerPhoneNumber()->uri().toUtf8());
 
    QString numbers,numbersHtml;
-   const Contact* ct = m_pCurrentCall->contact();
+   const Contact* ct = m_pCurrentCall->peerPhoneNumber()->contact();
 
    if (ct) {
-      numbers     = ct->formattedName()+": "+m_pCurrentCall->peerPhoneNumber();
-      numbersHtml = "<b>"+ct->formattedName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber());
+      numbers     = ct->formattedName()+": "+m_pCurrentCall->peerPhoneNumber()->uri();
+      numbersHtml = "<b>"+ct->formattedName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber()->uri());
    }
    else {
-      numbers     = m_pCurrentCall->peerName()+": "+m_pCurrentCall->peerPhoneNumber();
-      numbersHtml = "<b>"+m_pCurrentCall->peerName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber());
+      numbers     = m_pCurrentCall->peerName()+": "+m_pCurrentCall->peerPhoneNumber()->uri();
+      numbersHtml = "<b>"+m_pCurrentCall->peerName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber()->uri());
    }
 
    mimeData->setData("text/plain", numbers.toUtf8()    );
@@ -429,7 +429,7 @@ void HistoryDock::slotAaddContact()
    kDebug() << "Adding contact";
    Contact* aContact = new Contact();
    Contact::PhoneNumbers numbers(aContact);
-   numbers << PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerPhoneNumber(),aContact,nullptr, "Home");//new PhoneNumber(m_pCurrentCall->peerPhoneNumber(), "Home");
+   numbers << PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerPhoneNumber()->uri(),aContact,nullptr, "Home");//new PhoneNumber(m_pCurrentCall->peerPhoneNumber(), "Home");
    aContact->setPhoneNumbers(numbers);
    aContact->setFormattedName(m_pCurrentCall->peerName());
    AkonadiBackend::instance()->addNewContact(aContact);

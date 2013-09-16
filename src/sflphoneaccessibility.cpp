@@ -23,6 +23,7 @@
 #include "sflphone.h"
 #include "lib/call.h"
 #include <lib/callmodel.h>
+#include <lib/phonenumber.h>
 
 SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance = nullptr;
 
@@ -61,7 +62,7 @@ void SFLPhoneAccessibility::listCall()
    if (CallModel::instance()->getCallList().size()>0) {
       KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance()->getCallList().size()), KSpeech::soPlainText);
       foreach (Call* call,CallModel::instance()->getCallList()) {
-         KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerPhoneNumber().isEmpty())?call->peerPhoneNumber():call->callNumber())), KSpeech::soPlainText);
+         KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerPhoneNumber()->uri().isEmpty())?call->peerPhoneNumber()->uri():call->dialNumber())), KSpeech::soPlainText);
       }
    }
    else {
@@ -90,10 +91,10 @@ void SFLPhoneAccessibility::currentCallDetails()
          QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toAscii() ));
          if (!call->peerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));
-         if (!call->peerPhoneNumber().isEmpty())
-            toSay += i18n(", the peer phone number is %1 ",numberToDigit(call->peerPhoneNumber())    );
-         else if (!call->callNumber().isEmpty())
-            toSay += i18n(", the phone number is %1 ",numberToDigit(call->callNumber()));
+         if (!call->peerPhoneNumber()->uri().isEmpty())
+            toSay += i18n(", the peer phone number is %1 ",numberToDigit(call->peerPhoneNumber()->uri())    );
+         else if (!call->dialNumber().isEmpty())
+            toSay += i18n(", the phone number is %1 ",numberToDigit(call->dialNumber()));
 
          const int nSec = QDateTime::fromTime_t(call->startTimeStamp()).time().secsTo( QTime::currentTime() );
          if (nSec>0)

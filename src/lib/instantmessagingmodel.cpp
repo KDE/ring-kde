@@ -21,6 +21,7 @@
 #include "dbus/callmanager.h"
 #include "call.h"
 #include "contact.h"
+#include "phonenumber.h"
 
 InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
 
@@ -63,7 +64,7 @@ void InstantMessagingModelManager::newMessage(QString callId, QString from, QStr
 
 ///Singleton
 InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
-   const QString key = call->isConference()?call->confId():call->callId();
+   const QString key = call->isConference()?call->confId():call->id();
    if (!m_lModels[key]) {
       m_lModels[key] = new InstantMessagingModel(call);
       emit newMessagingModel(call,m_lModels[key]);
@@ -102,14 +103,14 @@ QVariant InstantMessagingModel::data( const QModelIndex& idx, int role) const
             return INCOMMING_IM;
             break;
          case InstantMessagingModel::Role::CONTACT:
-            if (m_pCall->contact()) {
+            if (m_pCall->peerPhoneNumber()->contact()) {
                return QVariant();
             }
             break;
          case InstantMessagingModel::Role::IMAGE: {
             if (m_lImages.find(idx) != m_lImages.end())
                return m_lImages[idx];
-            const Contact* c = m_pCall->contact();
+            const Contact* c = m_pCall->peerPhoneNumber()->contact();
             if (c && c->photo()) {
                return QVariant::fromValue<void*>((void*)c->photo());
             }

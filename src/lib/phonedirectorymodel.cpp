@@ -25,6 +25,8 @@
 #include "call.h"
 #include "account.h"
 #include "contact.h"
+#include "accountlistmodel.h"
+#include "abstractcontactbackend.h"
 
 PhoneDirectoryModel* PhoneDirectoryModel::m_spInstance = nullptr;
 
@@ -140,6 +142,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
 
    //Too bad, lets create one
    PhoneNumber* number = new PhoneNumber(uri,type);
+   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    m_lNumbers << number;
    emit layoutChanged();
    wrap = new NumberWrapper();
@@ -162,6 +165,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
 
    //Create the number
    PhoneNumber* number = new PhoneNumber(uri,type);
+   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    number->setAccount(account);
    m_lNumbers << number;
    wrap = new NumberWrapper();
@@ -178,7 +182,6 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
          if (number->contact() == contact && number->account() == account) {
-            qDebug() << "\n\nRETURN" << uri << number->uri();
             return number;
          }
       }
@@ -186,6 +189,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
 
    //Create the number
    PhoneNumber* number = new PhoneNumber(uri,type);
+   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    number->setAccount(account);
    number->setContact(contact);
    m_lNumbers << number;
@@ -194,6 +198,24 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    m_hDirectory[uri] = wrap;
    emit layoutChanged();
    return number;
+}
+
+PhoneNumber* PhoneDirectoryModel::fromTemporary(const TemporaryPhoneNumber* number)
+{
+   return getNumber(number->uri(),number->contact(),number->account());
+}
+
+PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
+{
+   const QStringList fields = hash.split("///");
+   if (fields.size() == 3) {
+      const QString uri = fields[0];
+      Account* account = AccountListModel::instance()->getAccountById(fields[1]);
+      Contact* contact = Call::contactBackend()?Call::contactBackend()->getContactByUid(fields[2]):nullptr;
+      return getNumber(uri,contact,account);
+   }
+   qDebug() << "Invalid hash" << hash;
+   return nullptr;
 }
 
 PhoneNumber* PhoneDirectoryModel::getTemporaryNumber(const QString& uri, const QString& type)
@@ -216,3 +238,34 @@ PhoneNumber* PhoneDirectoryModel::getTemporaryNumber(const QString& uri, Contact
 {
    return getNumber(uri,contact,account,type);
 }
+
+QVector<PhoneNumber*> PhoneDirectoryModel::getNumbersByPopularity() const
+{
+   return m_lPopularityIndex;
+}
+
+void PhoneDirectoryModel::slotCallAdded(Call* call)
+{
+   Q_UNUSED(call)
+   PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
+   if (number) {
+      int currentIndex = number->popularityIndex();
+
+      //The number is already in the top 10 and just passed the "index-1" one
+      if (currentIndex > 0 && m_lPopularityIndex[currentIndex-1]->callCount() < number->callCount()) {
+         do {
+            PhoneNumber* tmp = m_lPopularityIndex[currentIndex-1];
+            m_lPopularityIndex[currentIndex-1] = number;
+            m_lPopularityIndex[currentIndex  ] = tmp   ;
+            currentIndex--;
+         } while (currentIndex && m_lPopularityIndex[currentIndex-1]->callCount() < number->callCount());
+      }
+      //The top 10 is not complete, a call count of "1" is enough to make it
+      else if (m_lPopularityIndex.size() < 10)
+         m_lPopularityIndex << number;
+      //The top 10 is full, but this number just made it to the top 10
+      else if (m_lPopularityIndex[9]->callCount() < number->callCount())
+         m_lPopularityIndex[9] = number;
+   }
+}
+

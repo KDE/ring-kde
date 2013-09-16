@@ -30,6 +30,7 @@ class Account;
 class Contact;
 class Call;
 class PhoneNumberPrivate;
+class TemporaryPhoneNumber;
 
 ///PhoneNumber: represent a phone number
 class LIB_EXPORT PhoneNumber : public QObject {
@@ -39,13 +40,14 @@ public:
    virtual ~PhoneNumber(){};
 
    //Properties
-   Q_PROPERTY(Account*      account   READ account  WRITE setAccount)
-   Q_PROPERTY(Contact*      contact   READ contact  WRITE setContact)
-   Q_PROPERTY(time_t        lastUsed  READ lastUsed                 )
-   Q_PROPERTY(QString       uri       READ uri                      )
-   Q_PROPERTY(QString       type      READ type                     )
-   Q_PROPERTY(int           callCount READ callCount                )
-   Q_PROPERTY(QList<Call*>  calls     READ calls                    )
+   Q_PROPERTY(Account*      account         READ account  WRITE setAccount)
+   Q_PROPERTY(Contact*      contact         READ contact  WRITE setContact)
+   Q_PROPERTY(time_t        lastUsed        READ lastUsed                 )
+   Q_PROPERTY(QString       uri             READ uri                      )
+   Q_PROPERTY(QString       type            READ type                     )
+   Q_PROPERTY(int           callCount       READ callCount                )
+   Q_PROPERTY(QList<Call*>  calls           READ calls                    )
+   Q_PROPERTY(int           popularityIndex READ popularityIndex          )
 
    ///@enum PresenceStatus: Presence status
    enum class PresenceStatus {
@@ -65,48 +67,75 @@ public:
    Q_ENUMS(State)
 
    //Getters
-   QString            uri           () const;
-   QString            type          () const;
-   bool               present       () const;
-   QString            presentMessage() const;
-   Account*           account       () const;
-   Contact*           contact       () const;
-   time_t             lastUsed      () const;
-   PhoneNumber::State state         () const;
-   int                callCount     () const;
-   QList<Call*>       calls         () const;
+   QString            uri             () const;
+   QString            type            () const;
+   bool               present         () const;
+   QString            presentMessage  () const;
+   Account*           account         () const;
+   Contact*           contact         () const;
+   time_t             lastUsed        () const;
+   PhoneNumber::State state           () const;
+   int                callCount       () const;
+   QList<Call*>       calls           () const;
+   int                popularityIndex () const;
+   QStringList        alternativeNames() const;
+   QString            mostCommonName  () const;
+   QHash<int,QString> names           () const;
 
    //Setters
    void setAccount(Account* account);
    void setContact(Contact* contact);
 
+   //Mutator
+   Q_INVOKABLE void addCall(Call* call);
+
    //Static
    static const PhoneNumber* BLANK;
 
-private:
-   friend class PhoneNumberPrivate;
+   //Helper
+   QString toHash() const;
 
+protected:
    //Constructor
    PhoneNumber(const QString& uri, const QString& type);
 
    //Attributes
-   QString            m_Uri           ;
-   QString            m_Type          ;
-   bool               m_Present       ;
-   QString            m_PresentMessage;
-   bool               m_Tracked       ;
-   bool               m_Temporary     ;
-   Contact*           m_pContact      ;
-   Account*           m_pAccount      ;
-   time_t             m_LastUsed      ;
-   PhoneNumber::State m_State         ;
-   QList<Call*>       m_lCalls        ;
+   QString            m_Uri              ;
+   PhoneNumber::State m_State            ;
+
+private:
+   friend class PhoneNumberPrivate;
+
+   //Attributes
+   QString            m_Type             ;
+   bool               m_Present          ;
+   QString            m_PresentMessage   ;
+   bool               m_Tracked          ;
+   bool               m_Temporary        ;
+   Contact*           m_pContact         ;
+   Account*           m_pAccount         ;
+   time_t             m_LastUsed         ;
+   QList<Call*>       m_lCalls           ;
+   int                m_PopularityIndex  ;
+   QStringList        m_lAlternativeNames;
+   QString            m_MostCommonName   ;
+   QHash<int,QString> m_hNames           ;
 
    //Static attributes
-   static QHash<int,Call*> m_shMostUsed;
+   static QHash<int,Call*> m_shMostUsed  ;
 
+Q_SIGNALS:
+   void callAdded(Call* call);
 };
 
 Q_DECLARE_METATYPE( PhoneNumber* )
+
+///@class TemporaryPhoneNumber: An incomplete phone number
+class LIB_EXPORT TemporaryPhoneNumber : public PhoneNumber {
+   Q_OBJECT
+public:
+   explicit TemporaryPhoneNumber(const PhoneNumber* number = nullptr);
+   void setUri(const QString& uri);
+};
 
 #endif

@@ -40,6 +40,8 @@
 #include "instantmessagingmodel.h"
 #include "useractionmodel.h"
 #include "callmodel.h"
+#include "phonedirectorymodel.h"
+#include "phonenumber.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
@@ -163,11 +165,11 @@ AbstractContactBackend* Call::contactBackend ()
 }
 
 ///Constructor
-Call::Call(Call::State startState, const QString& callId, QString peerName, QString peerNumber, QString account)
+Call::Call(Call::State startState, const QString& callId, const QString& peerName, const QString& peerNumber, const QString& account)
    :  QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
-   m_pContact(nullptr),m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),
-   m_Account(nullptr),m_PeerName(peerName),m_PeerPhoneNumber(peerNumber),
-   m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0)
+   m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
+   m_PeerName(peerName),m_pPeerPhoneNumber(PhoneDirectoryModel::instance()->getNumber(peerNumber,account)),
+   m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
    m_Account = AccountListModel::instance()->getAccountById(account);
    setObjectName("Call:"+callId);
@@ -192,10 +194,10 @@ Call::~Call()
 }
 
 ///Constructor
-Call::Call(QString confId, QString account): QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL),
-   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pContact(nullptr),m_pImModel(nullptr),m_ConfId(confId),
+Call::Call(const QString& confId, const QString& account): QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL),
+   m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pImModel(nullptr),m_ConfId(confId),
    m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
-   m_pTimer(nullptr), m_isConference(false)
+   m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
    setObjectName("Call:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
@@ -256,7 +258,7 @@ Call* Call::buildExistingCall(QString callId)
 } //buildExistingCall
 
 ///Build a call from a dialing call (a call that is about to exist)
-Call* Call::buildDialingCall(QString callId, const QString & peerName, Account* account)
+Call* Call::buildDialingCall(const QString& callId, const QString & peerName, Account* account)
 {
    Call* call = new Call(Call::State::DIALING, callId, peerName, "", account->id());
    call->m_HistoryState = NONE;
@@ -264,7 +266,7 @@ Call* Call::buildDialingCall(QString callId, const QString & peerName, Account* 
 }
 
 ///Build a call from a dbus event
-Call* Call::buildIncomingCall(const QString & callId)
+Call* Call::buildIncomingCall(const QString& callId)
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
@@ -317,7 +319,7 @@ Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint s
 }
 
 ///Get the history state from the type (see Call.cpp header)
-Call::HistoryState Call::historyStateFromType(QString type)
+Call::HistoryState Call::historyStateFromType(const QString& type)
 {
    if(type == MISSED_STRING        )
       return Call::HistoryState::MISSED   ;
@@ -329,7 +331,7 @@ Call::HistoryState Call::historyStateFromType(QString type)
 }
 
 ///Get the start sate from the daemon state
-Call::State Call::startStateFromDaemonCallState(QString daemonCallState, QString daemonCallType)
+Call::State Call::startStateFromDaemonCallState(const QString& daemonCallState, const QString& daemonCallType)
 {
    if(daemonCallState      == Call::DaemonStateInit::CURRENT  )
       return Call::State::CURRENT  ;
@@ -453,29 +455,37 @@ uint Call::startTimeStamp() const
 ///Get the number where the call have been transferred
 const QString Call::transferNumber() const
 {
-   return m_TransferNumber;
+   return m_pTransferNumber?m_pTransferNumber->uri():QString();
 }
 
 ///Get the call / peer number
-const QString Call::callNumber() const
+const QString Call::dialNumber() const
 {
-   return m_CallNumber;
+   if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
+      const_cast<Call*>(this)->m_pDialNumber = new TemporaryPhoneNumber();
+   }
+   return m_pDialNumber->uri();
 }
 
 ///Return the call id
-const QString Call::callId()            const
+const QString Call::id() const
 {
    return m_CallId;
 }
 
-///Return the peer phone number
-const QString Call::peerPhoneNumber()   const
+PhoneNumber* Call::peerPhoneNumber() const
 {
-   return m_PeerPhoneNumber;
+   if (m_CurrentState == Call::State::DIALING) {
+      if (!m_pTransferNumber) {
+         const_cast<Call*>(this)->m_pTransferNumber = new TemporaryPhoneNumber(m_pPeerPhoneNumber);
+      }
+      return m_pDialNumber;
+   }
+   return m_pPeerPhoneNumber;
 }
 
 ///Get the peer name
-const QString Call::peerName()          const
+const QString Call::peerName() const
 {
    return m_PeerName;
 }
@@ -485,16 +495,18 @@ const QString Call::formattedName()
 {
    if (isConference())
       return "Conference";
-   else if (m_pContact && !m_pContact->formattedName().isEmpty())
-      return m_pContact->formattedName();
+   else if (peerPhoneNumber()->contact() && !peerPhoneNumber()->contact()->formattedName().isEmpty())
+      return peerPhoneNumber()->contact()->formattedName();
    else if (!peerName().isEmpty())
       return m_PeerName;
+   else if (m_pPeerPhoneNumber)
+      return m_pPeerPhoneNumber->uri();
    else
-      return m_PeerPhoneNumber;
+      return "Unknown";
 }
 
 ///If the call have a valid record
-bool Call::hasRecording()                   const
+bool Call::hasRecording() const
 {
    return !recordingPath().isEmpty() && QFile::exists(recordingPath());
 }
@@ -591,14 +603,6 @@ bool Call::isSecure() const {
    return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod()));
 } //isSecure
 
-Contact* Call::contact()
-{
-   if (!m_pContact && m_pContactBackend && m_LastContactCheck < m_pContactBackend->getUpdateCount()) {
-      m_pContact = m_pContactBackend->getContactByPhone(m_PeerPhoneNumber,true,account());
-   }
-   return m_pContact;
-}
-
 ///Return the renderer associated with this call or nullptr
 VideoRenderer* Call::videoRenderer() const
 {
@@ -619,7 +623,10 @@ VideoRenderer* Call::videoRenderer() const
 ///Set the transfer number
 void Call::setTransferNumber(const QString& number)
 {
-   m_TransferNumber = number;
+   if (!m_pTransferNumber) {
+      m_pTransferNumber = new TemporaryPhoneNumber();
+   }
+   m_pTransferNumber->setUri(number);
 }
 
 ///This call is a conference
@@ -629,15 +636,28 @@ void Call::setConference(bool value)
 }
 
 ///Set the call number
-void Call::setCallNumber(const QString& number)
+void Call::setDialNumber(const QString& number)
 {
-   m_CallNumber = number;
+   if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
+      m_pDialNumber = new TemporaryPhoneNumber();
+   }
+   m_pDialNumber->setUri(number);
+   emit changed();
+   emit changed(this);
+}
+
+///Set the dial number from a full phone number
+void Call::setDialNumber(const PhoneNumber* number)
+{
+   if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
+      m_pDialNumber = new TemporaryPhoneNumber(number);
+   }
    emit changed();
    emit changed(this);
 }
 
 ///Set the conference ID
-void Call::setConfId(QString value)
+void Call::setConfId(const QString& value)
 {
    m_ConfId = value;
 }
@@ -745,7 +765,12 @@ Call::State Call::stateChanged(const QString& newStateName)
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
       m_pTimer->start();
    }
-   m_CallNumber.clear();
+   if (m_CurrentState != Call::State::DIALING && m_pDialNumber) {
+      if (!m_pPeerPhoneNumber)
+         m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->fromTemporary(m_pDialNumber);
+      delete m_pDialNumber;
+      m_pDialNumber = nullptr;
+   }
    emit changed();
    emit changed(this);
    qDebug() << "Calling stateChanged " << newStateName << " -> " << toDaemonCallState(newStateName) << " on call with state " << previousState << ". Become " << m_CurrentState;
@@ -888,10 +913,14 @@ void Call::refuse()
 ///Accept the transfer
 void Call::acceptTransf()
 {
+   if (!m_pTransferNumber) {
+      qDebug() << "Trying to transfer to noone";
+      return;
+   }
    CallManagerInterface & callManager = DBus::CallManager::instance();
-   qDebug() << "Accepting call and transferring it to number : " << m_TransferNumber << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
+   qDebug() << "Accepting call and transferring it to number : " << m_pTransferNumber->uri() << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
    callManager.accept(m_CallId);
-   Q_NOREPLY callManager.transfer(m_CallId, m_TransferNumber);
+   Q_NOREPLY callManager.transfer(m_CallId, m_pTransferNumber->uri());
 }
 
 ///Put the call on hold
@@ -950,19 +979,19 @@ void Call::hold()
 ///Start the call
 void Call::call()
 {
-   CallManagerInterface & callManager = DBus::CallManager::instance();
+   CallManagerInterface& callManager = DBus::CallManager::instance();
    qDebug() << "account = " << m_Account;
    if(!m_Account) {
       qDebug() << "Account is not set, taking the first registered.";
       this->m_Account = AccountListModel::currentAccount();
    }
    if(m_Account) {
-      qDebug() << "Calling " << m_CallNumber << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
-      callManager.placeCall(m_Account->id(), m_CallId, m_CallNumber);
-      this->m_PeerPhoneNumber = m_CallNumber;
+      qDebug() << "Calling " << peerPhoneNumber()->uri() << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
+      callManager.placeCall(m_Account->id(), m_CallId, m_pDialNumber->uri());
+      this->m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->getNumber(m_pDialNumber->uri(),account());
       if (m_pContactBackend) {
-         if (contact())
-            m_PeerName = m_pContact->formattedName();
+         if (peerPhoneNumber()->contact())
+            m_PeerName = peerPhoneNumber()->contact()->formattedName();
       }
       time_t curTime;
       ::time(&curTime);
@@ -970,7 +999,8 @@ void Call::call()
       this->m_HistoryState = HistoryState::OUTGOING;
    }
    else {
-      qDebug() << "Trying to call " << m_TransferNumber << " with no account registered . callId : " << m_CallId  << "ConfId:" << m_ConfId;
+      qDebug() << "Trying to call " << (m_pTransferNumber?m_pTransferNumber->uri():"ERROR") 
+         << " with no account registered . callId : " << m_CallId  << "ConfId:" << m_ConfId;
       this->m_HistoryState = HistoryState::NONE;
       throw "No account registered!";
    }
@@ -979,10 +1009,10 @@ void Call::call()
 ///Trnasfer the call
 void Call::transfer()
 {
-   if (!m_TransferNumber.isEmpty()) {
+   if (m_pTransferNumber) {
       CallManagerInterface & callManager = DBus::CallManager::instance();
-      qDebug() << "Transferring call to number : " << m_TransferNumber << ". callId : " << m_CallId;
-      Q_NOREPLY callManager.transfer(m_CallId, m_TransferNumber);
+      qDebug() << "Transferring call to number : " << m_pTransferNumber->uri() << ". callId : " << m_CallId;
+      Q_NOREPLY callManager.transfer(m_CallId, m_pTransferNumber->uri());
       time_t curTime;
       ::time(&curTime);
       m_pStopTimeStamp = curTime;
@@ -1022,7 +1052,12 @@ void Call::start()
    ::time(&curTime);
    emit changed();
    emit changed(this);
-   m_CallNumber.clear();
+   if (m_pDialNumber) {
+      if (!m_pPeerPhoneNumber)
+         m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->fromTemporary(m_pDialNumber);
+      delete m_pDialNumber;
+      m_pDialNumber = nullptr;
+   }
    m_pStartTimeStamp = curTime;
 }
 
@@ -1070,15 +1105,15 @@ void Call::warning()
 ///Input text on the call item
 void Call::appendText(const QString& str)
 {
-   QString* editNumber;
-   
+   TemporaryPhoneNumber* editNumber = nullptr;
+
    switch (m_CurrentState) {
    case Call::State::TRANSFERRED :
    case Call::State::TRANSF_HOLD :
-      editNumber = &m_TransferNumber;
+      editNumber = m_pTransferNumber;
       break;
    case Call::State::DIALING     :
-      editNumber = &m_CallNumber;
+      editNumber = m_pDialNumber;
       break;
    case Call::State::INCOMING:
    case Call::State::RINGING:
@@ -1096,7 +1131,10 @@ void Call::appendText(const QString& str)
       return;
    }
 
-   editNumber->append(str);
+   if (editNumber)
+      editNumber->setUri(editNumber->uri()+str);
+   else
+      qDebug() << "TemporaryPhoneNumber not defined";
 
    emit changed();
    emit changed(this);
@@ -1105,15 +1143,15 @@ void Call::appendText(const QString& str)
 ///Remove the last character
 void Call::backspaceItemText()
 {
-   QString* editNumber;
+   TemporaryPhoneNumber* editNumber = nullptr;
 
    switch (m_CurrentState) {
       case Call::State::TRANSFERRED      :
       case Call::State::TRANSF_HOLD      :
-         editNumber = &m_TransferNumber;
+         editNumber = m_pTransferNumber;
          break;
       case Call::State::DIALING          :
-         editNumber = &m_CallNumber;
+         editNumber = m_pDialNumber;
          break;
       case Call::State::INCOMING:
       case Call::State::RINGING:
@@ -1130,16 +1168,20 @@ void Call::backspaceItemText()
          qDebug() << "Backspace on call not editable. Doing nothing.";
          return;
    }
-   QString text = *editNumber;
-   int textSize = text.size();
-   if(textSize > 0) {
-      *editNumber = text.remove(textSize-1, 1);
-      emit changed();
-      emit changed(this);
+   if (editNumber) {
+      QString text = editNumber->uri();
+      const int textSize = text.size();
+      if(textSize > 0) {
+         editNumber->setUri(text.remove(textSize-1, 1));
+         emit changed();
+         emit changed(this);
+      }
+      else {
+         changeCurrentState(Call::State::OVER);
+      }
    }
-   else {
-      changeCurrentState(Call::State::OVER);
-   }
+   else
+      qDebug() << "TemporaryPhoneNumber not defined";
 }
 
 
@@ -1201,23 +1243,23 @@ UserActionModel* Call::userActionModel() const
 ///Common source for model data roles
 QVariant Call::roleData(int role) const
 {
-   Contact* ct = const_cast<Call*>(this)->contact();
+   const Contact* ct = peerPhoneNumber()?peerPhoneNumber()->contact():nullptr;
    switch (role) {
       case Call::Role::Name:
       case Qt::DisplayRole:
          if (isConference())
             return "Conference";
          else if (state() == Call::State::DIALING)
-            return m_CallNumber;
+            return dialNumber();
          else if (m_PeerName.isEmpty())
-            return ct?ct->formattedName():peerPhoneNumber();
+            return ct?ct->formattedName():peerPhoneNumber()?peerPhoneNumber()->uri():dialNumber();
          else
             return peerName();
          break;
       case Qt::EditRole:
-         return m_CallNumber;
+         return dialNumber();
       case Call::Role::Number:
-         return peerPhoneNumber();
+         return peerPhoneNumber()->uri();
          break;
       case Call::Role::Direction:
          return historyState();
@@ -1281,7 +1323,7 @@ QVariant Call::roleData(int role) const
          return static_cast<int>(state());
          break;
       case Call::Role::Id:
-         return ((m_isConference)?confId():callId());
+         return ((m_isConference)?confId():id());
          break;
       case Call::Role::StartTime:
          return m_pStartTimeStamp;

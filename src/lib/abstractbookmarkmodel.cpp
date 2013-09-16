@@ -23,19 +23,21 @@
 //SFLPhone
 #include "historymodel.h"
 #include "dbus/presencemanager.h"
+#include "phonedirectorymodel.h"
+#include "phonenumber.h"
 
 //Model item/index
 class NumberTreeBackend : public HistoryTreeBackend, public QObject
 {
    friend class AbstractBookmarkModel;
    public:
-      NumberTreeBackend(QString name): HistoryTreeBackend(HistoryTreeBackend::Type::BOOKMARK),m_Name(name),m_IsMostPopular(false){}
+      NumberTreeBackend(PhoneNumber* number): HistoryTreeBackend(HistoryTreeBackend::Type::BOOKMARK),m_pNumber(number){
+         Q_ASSERT(number != nullptr);
+      }
       virtual QObject* getSelf() { return this; }
 
    private:
-      QString  m_Name         ;
-      bool     m_IsMostPopular;
-      Contact* m_pContact     ;
+      PhoneNumber* m_pNumber;
 };
 
 AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemModel(parent){
@@ -69,15 +71,15 @@ void AbstractBookmarkModel::reloadCategories()
       TopLevelItem* item = new TopLevelItem("Most popular");
       m_hCategories["mp"] = item;
       m_lCategoryCounter << item;
-      const QStringList cl = HistoryModel::getNumbersByPopularity();
+      const QVector<PhoneNumber*> cl = PhoneDirectoryModel::instance()->getNumbersByPopularity();
       for (int i=0;i<((cl.size()>=10)?10:cl.size());i++) {
          NumberTreeBackend* bm = new NumberTreeBackend(cl[i]);
-         bm->m_IsMostPopular = true;
+//          bm->m_pNumber->popularityIndex() = true;
          item->m_lChildren << bm;
       }
    }
 
-   foreach(const QString& bookmark, bookmarkList()) {
+   foreach(PhoneNumber* bookmark, bookmarkList()) {
       NumberTreeBackend* bm = new NumberTreeBackend(bookmark);
       const QString val = category(bm);
       if (!m_hCategories[val]) {
@@ -176,7 +178,7 @@ QModelIndex AbstractBookmarkModel::parent( const QModelIndex& index) const
    const HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
    if (modelItem->type() == HistoryTreeBackend::Type::BOOKMARK) {
       const QString val = category(static_cast<NumberTreeBackend*>(index.internalPointer()));
-      if (static_cast<const NumberTreeBackend*>(modelItem)->m_IsMostPopular)
+      if (static_cast<const NumberTreeBackend*>(modelItem)->m_pNumber->popularityIndex() < 10)
          return AbstractBookmarkModel::index(0,0);
       else if (m_hCategories[val])
          return AbstractBookmarkModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
@@ -225,10 +227,10 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
    switch (role) {
       case Qt::DisplayRole:
       case Call::Role::Name:
-         cat = number->m_Name;
+         cat = number->m_pNumber->uri();
          break;
       case Call::Role::Number:
-         cat = number->m_Name;//call->getPeerPhoneNumber();
+         cat = number->m_pNumber->uri();//call->getPeerPhoneNumber();
          break;
       case Call::Role::Direction:
          cat = 4;//call->getHistoryState();
@@ -249,7 +251,7 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
          cat = Call::HistoryState::NONE;//call->getHistoryState();
          break;
       case Call::Role::Filter:
-         cat = number->m_Name;//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
+         cat = number->m_pNumber->uri();//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
          break;
       case Call::Role::FuzzyDate:
          cat = "N/A";//timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
@@ -291,3 +293,14 @@ void AbstractBookmarkModel::reloadPresence()
    m_lTracker.clear();
 }
 
+
+QVector<PhoneNumber*> AbstractBookmarkModel::serialisedToList(const QStringList& list)
+{
+   QVector<PhoneNumber*> numbers;
+   foreach(const QString& item,list) {
+      PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(item);
+      if (nb)
+         numbers << nb;
+   }
+   return numbers;
+}

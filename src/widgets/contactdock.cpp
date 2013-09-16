@@ -335,7 +335,7 @@ void ContactDock::callAgain()
    if (ok) {
       Call* call = CallModel::instance()->addDialingCall(m_pCurrentContact->formattedName(), AccountListModel::currentAccount());
       if (call) {
-         call->setCallNumber(number);
+         call->setDialNumber(number);
          call->setPeerName(m_pCurrentContact->formattedName());
          call->actionPerformed(Call::Action::ACCEPT);
       }
@@ -387,7 +387,7 @@ void ContactDock::bookmark()
 {
    const Contact::PhoneNumbers numbers = m_pCurrentContact->phoneNumbers();
    if (numbers.count() == 1)
-      BookmarkModel::instance()->addBookmark(numbers[0]->uri());
+      BookmarkModel::instance()->addBookmark(numbers[0]);
 }
 
 ///Called when a call is dropped on transfer

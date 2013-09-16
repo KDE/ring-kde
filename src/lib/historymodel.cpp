@@ -215,37 +215,37 @@ const QStringList HistoryModel::getHistoryCallId()
    instance();
    QStringList toReturn;
    foreach(Call* call, m_sHistoryCalls) {
-      toReturn << call->callId();
+      toReturn << call->id();
    }
    return toReturn;
 }
 
 ///Sort all history call by popularity and return the result (most popular first)
-const QStringList HistoryModel::getNumbersByPopularity()
-{
-   instance();
-   QHash<QString,SortableCallSource*> hc;
-   foreach (Call* call, getHistory()) {
-      if (!hc[call->peerPhoneNumber()]) {
-         hc[call->peerPhoneNumber()] = new SortableCallSource(call);
-      }
-      hc[call->peerPhoneNumber()]->count++;
-   }
-   QList<SortableCallSource> userList;
-   foreach (SortableCallSource* i,hc) {
-      userList << *i;
-   }
-   qSort(userList);
-   QStringList cl;
-   for (int i=userList.size()-1;i >=0 ;i--) {
-      cl << userList[i].callInfo->peerPhoneNumber();
-   }
-   foreach (SortableCallSource* i,hc) {
-      delete i;
-   }
-
-   return cl;
-} //getNumbersByPopularity
+// const QStringList HistoryModel::getNumbersByPopularity()
+// {
+//    instance();
+//    QHash<QString,SortableCallSource*> hc;
+//    foreach (Call* call, getHistory()) {
+//       if (!hc[call->peerPhoneNumber()]) {
+//          hc[call->peerPhoneNumber()] = new SortableCallSource(call);
+//       }
+//       hc[call->peerPhoneNumber()]->count++;
+//    }
+//    QList<SortableCallSource> userList;
+//    foreach (SortableCallSource* i,hc) {
+//       userList << *i;
+//    }
+//    qSort(userList);
+//    QStringList cl;
+//    for (int i=userList.size()-1;i >=0 ;i--) {
+//       cl << userList[i].callInfo->peerPhoneNumber();
+//    }
+//    foreach (SortableCallSource* i,hc) {
+//       delete i;
+//    }
+// 
+//    return cl;
+// } //getNumbersByPopularity
 
 
 /*****************************************************************************
@@ -419,7 +419,7 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
          QString text = data(idx, Call::Role::Number).toString();
          mimeData2->setData(MIME_PLAIN_TEXT , text.toUtf8());
          mimeData2->setData(MIME_PHONENUMBER, text.toUtf8());
-         mimeData2->setData(MIME_HISTORYID  , static_cast<Call*>(idx.internalPointer())->callId().toUtf8());
+         mimeData2->setData(MIME_HISTORYID  , static_cast<Call*>(idx.internalPointer())->id().toUtf8());
          return mimeData2;
       }
    }

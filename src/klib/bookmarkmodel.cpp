@@ -23,6 +23,7 @@
 //SFLPhone
 #include "kcfg_settings.h"
 #include "../lib/historymodel.h"
+#include "../lib/phonenumber.h"
 
 BookmarkModel* BookmarkModel::m_pSelf = nullptr;
 
@@ -38,23 +39,23 @@ BookmarkModel* BookmarkModel::instance()
 }
 
 
-void BookmarkModel::addBookmark(const QString& uri, bool trackPresence)
+void BookmarkModel::addBookmark(PhoneNumber* number, bool trackPresence)
 {
    Q_UNUSED(trackPresence)
-   ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << uri);
+   ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << number->toHash());
    reloadCategories();
 }
 
-void BookmarkModel::removeBookmark(const QString& uri)
+void BookmarkModel::removeBookmark(PhoneNumber* number)
 {
    foreach(AbstractBookmarkModel::Subscription* s, m_lTracker) {
-      if (s->uri == uri) {
+      if (s->number == number) {
          m_lTracker.removeAll(s);
          break;
       }
    }
    QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
-   bookmarks.removeAll(uri);
+   bookmarks.removeAll(number->toHash());
    ConfigurationSkeleton::setBookmarkList(bookmarks);
 }
 
@@ -63,7 +64,7 @@ bool BookmarkModel::displayFrequentlyUsed() const
    return ConfigurationSkeleton::displayContactCallHistory();
 }
 
-QStringList BookmarkModel::bookmarkList() const
+QVector<PhoneNumber*> BookmarkModel::bookmarkList() const
 {
-   return ConfigurationSkeleton::bookmarkList();
+   return serialisedToList(ConfigurationSkeleton::bookmarkList());
 }

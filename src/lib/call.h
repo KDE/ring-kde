@@ -30,11 +30,12 @@ class QTimer;
 #include "sflphone_const.h"
 #include "typedefs.h"
 class AbstractContactBackend;
-class Contact;
 class Account;
 class VideoRenderer;
 class InstantMessagingModel;
 class UserActionModel;
+class PhoneNumber;
+class TemporaryPhoneNumber;
 
 class Call;
 
@@ -212,7 +213,7 @@ public:
    //Read only properties
    Q_PROPERTY( Call::State        state            READ state             NOTIFY stateChanged     )
    Q_PROPERTY( Call::HistoryState historyState     READ historyState                              )
-   Q_PROPERTY( QString            id               READ callId                                    )
+   Q_PROPERTY( QString            id               READ id                                        )
    Q_PROPERTY( Account*           account          READ account                                   )
    Q_PROPERTY( bool               isHistory        READ isHistory                                 )
    Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
@@ -221,7 +222,6 @@ public:
    Q_PROPERTY( bool               isSecure         READ isSecure                                  )
    Q_PROPERTY( bool               isConference     READ isConference                              )
    Q_PROPERTY( QString            confId           READ confId                                    )
-   Q_PROPERTY( Contact*           contact          READ contact                                   )
    Q_PROPERTY( VideoRenderer*     videoRenderer    READ videoRenderer                             )
    Q_PROPERTY( QString            formattedName    READ formattedName                             )
    Q_PROPERTY( QString            length           READ length                                    )
@@ -230,34 +230,34 @@ public:
    Q_PROPERTY( UserActionModel*   userActionModel  READ userActionModel   CONSTANT                )
 
    //Read/write properties
-   Q_PROPERTY( QString            peerPhoneNumber  READ peerPhoneNumber   WRITE setCallNumber     )
+   Q_PROPERTY( PhoneNumber*       peerPhoneNumber  READ peerPhoneNumber                           )
    Q_PROPERTY( QString            peerName         READ peerName          WRITE setPeerName       )
    Q_PROPERTY( bool               isSelected       READ isSelected        WRITE setSelected       )
    Q_PROPERTY( QString            transferNumber   READ transferNumber    WRITE setTransferNumber )
-   Q_PROPERTY( QString            callNumber       READ callNumber        WRITE setCallNumber     )
+   Q_PROPERTY( QString            dialNumber       READ dialNumber        WRITE setDialNumber     )
    Q_PROPERTY( QString            recordingPath    READ recordingPath     WRITE setRecordingPath  )
 
    //Constructors & Destructors
-   explicit Call(QString confId, QString account);
+   explicit Call(const QString& confId, const QString& account);
    ~Call();
-   static Call* buildDialingCall  (QString callId, const QString & peerName, Account* account = nullptr );
-   static Call* buildIncomingCall (const QString & callId                                               );
-   static Call* buildRingingCall  (const QString & callId                                               );
-   static Call* buildHistoryCall  (const QString & callId, uint startTimeStamp, uint stopTimeStamp,
-               const QString& account, const QString& name, const QString& number, const QString& type  );
-   static Call* buildExistingCall (QString callId                                                       );
-   static void  setContactBackend (AbstractContactBackend* be                                           );
+   static Call* buildDialingCall  (const QString& callId, const QString & peerName, Account* account = nullptr );
+   static Call* buildIncomingCall (const QString& callId                                                       );
+   static Call* buildRingingCall  (const QString& callId                                                       );
+   static Call* buildHistoryCall  (const QString& callId, uint startTimeStamp, uint stopTimeStamp,
+               const QString& account, const QString& name, const QString& number, const QString& type         );
+   static Call* buildExistingCall (QString callId                                                              );
+   static void  setContactBackend (AbstractContactBackend* be                                                  );
    static AbstractContactBackend* contactBackend ();
 
    //Static getters
-   static Call::HistoryState historyStateFromType          ( QString type                                    );
-   static Call::State        startStateFromDaemonCallState ( QString daemonCallState, QString daemonCallType );
-   static const QString      toHumanStateName              ( const Call::State                               );
+   static Call::HistoryState historyStateFromType          ( const QString& type                                           );
+   static Call::State        startStateFromDaemonCallState ( const QString& daemonCallState, const QString& daemonCallType );
+   static const QString      toHumanStateName              ( const Call::State                                             );
 
    //Getters
    Call::State          state            () const;
-   const QString        callId           () const;
-   const QString        peerPhoneNumber  () const;
+   const QString        id               () const;
+   PhoneNumber*         peerPhoneNumber  () const;
    const QString        peerName         () const;
    Call::HistoryState   historyState     () const;
    bool                 recording        () const;
@@ -271,9 +271,8 @@ public:
    bool                 isSelected       () const;
    const QString        confId           () const;
    const QString        transferNumber   () const;
-   const QString        callNumber       () const;
+   const QString        dialNumber       () const;
    const QString        recordingPath    () const;
-   Contact*             contact          ()      ;
    VideoRenderer*       videoRenderer    () const;
    const QString        formattedName    ()      ;
    bool                 hasRecording     () const;
@@ -286,13 +285,14 @@ public:
    Call::State actionPerformed(Call::Action action);
 
    //Setters
-   void setConference     ( bool value            );
-   void setConfId         ( QString value         );
-   void setTransferNumber ( const QString& number );
-   void setCallNumber     ( const QString& number );
-   void setRecordingPath  ( const QString& path   );
-   void setPeerName       ( const QString& name   );
-   void setSelected       ( const bool     value  );
+   void setConference     ( bool value                );
+   void setConfId         ( const QString& value      );
+   void setTransferNumber ( const QString& number     );
+   void setDialNumber     ( const QString& number     );
+   void setDialNumber     ( const PhoneNumber* number );
+   void setRecordingPath  ( const QString& path       );
+   void setPeerName       ( const QString& name       );
+   void setSelected       ( const bool     value      );
 
    //Mutators
    void appendText(const QString& str);
@@ -308,19 +308,18 @@ private:
    Account*               m_Account         ;
    QString                m_CallId          ;
    QString                m_ConfId          ;
-   QString                m_PeerPhoneNumber ;
+   PhoneNumber*           m_pPeerPhoneNumber;
    QString                m_PeerName        ;
    QString                m_RecordingPath   ;
    Call::HistoryState     m_HistoryState    ;
    uint                   m_pStartTimeStamp ;
    uint                   m_pStopTimeStamp  ;
-   QString                m_TransferNumber  ;
-   QString                m_CallNumber      ;
+   TemporaryPhoneNumber*  m_pTransferNumber ;
+   TemporaryPhoneNumber*  m_pDialNumber     ;
    bool                   m_isConference    ;
    Call::State            m_CurrentState    ;
    bool                   m_Recording       ;
    static Call*           m_sSelectedCall   ;
-   Contact*               m_pContact        ;
    InstantMessagingModel* m_pImModel        ;
    int                    m_LastContactCheck;
    QTimer*                m_pTimer          ;
@@ -358,7 +357,7 @@ private:
    **/
    static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
 
-   Call(Call::State startState, const QString& callId, QString peerNumber = "", QString account = "", QString peerName = "");
+   Call(Call::State startState, const QString& callId, const QString& peerNumber = QString(), const QString& account = QString(), const QString& peerName = QString());
 
    static Call::DaemonState toDaemonCallState   (const QString& stateName);
    static Call::State       confStatetoCallState(const QString& stateName);

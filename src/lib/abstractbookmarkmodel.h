@@ -58,20 +58,20 @@ public:
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
 
    //Management
-   virtual void addBookmark   (const QString& uri, bool trackPresence = false) = 0;
-   virtual void removeBookmark(const QString& uri                            ) = 0;
+   virtual void addBookmark   (PhoneNumber* number, bool trackPresence = false) = 0;
+   virtual void removeBookmark(PhoneNumber* number                            ) = 0;
 
    //Presence
    void reloadPresence();
 
 
 protected:
-   virtual bool        displayFrequentlyUsed() const {return false;};
-   virtual QStringList bookmarkList         () const{return QStringList();};
+   virtual bool                  displayFrequentlyUsed() const {return false;};
+   virtual QVector<PhoneNumber*> bookmarkList         () const {return QVector<PhoneNumber*>();};
 
    ///@struct Subscription presence internal representation
    struct Subscription {
-      QString            uri    ;
+      PhoneNumber*       number ;
       Account*           account;
       QString            message;
       bool               present;
@@ -85,6 +85,9 @@ protected:
 
    //Attributes
    QList<Subscription*> m_lTracker;
+
+   //Helpers
+   static QVector<PhoneNumber*> serialisedToList(const QStringList& list);
 
 private:
    //Private constructor
@@ -116,12 +119,9 @@ private:
    QVariant commonCallInfo(NumberTreeBackend* call, int role = Qt::DisplayRole) const;
    QString category(NumberTreeBackend* number) const;
 
-   //Singleton
-//    static AbstractBookmarkModel* m_pSelf;
-
 private Q_SLOTS:
-    void slotIncomingNotifications(const QString& uri, bool status, const QString& message);
-    void slotRequest(const QString& uri);
+   void slotIncomingNotifications(const QString& uri, bool status, const QString& message);
+   void slotRequest(const QString& uri);
 
 public Q_SLOTS:
    void reloadCategories();

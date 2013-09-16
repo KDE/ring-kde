@@ -34,6 +34,7 @@
 #include "../../lib/dbus/callmanager.h"
 #include "../../lib/sflphone_const.h"
 #include "../../lib/phonenumber.h"
+#include "../../lib/phonedirectorymodel.h"
 #include "../../klib/akonadibackend.h"
 #include "../../klib/helperfunctions.h"
 #include "../../klib/kcfg_settings.h"
@@ -147,14 +148,14 @@ void SFLPhoneEngine::updateHistory()
       HashStringString current;
       /*             KEY                   VALUE                                             */
       /**/current[ "peerName"   ] = oldCall->peerName       ()                                ;
-      /**/current[ "peerNumber" ] = oldCall->peerPhoneNumber()                                ;
+      /**/current[ "peerNumber" ] = oldCall->peerPhoneNumber()->uri()                         ;
       /**/current[ "length"     ] = oldCall->stopTimeStamp  () - oldCall->startTimeStamp()    ;
       /**/current[ "date"       ] = oldCall->stopTimeStamp  ()                                ;
-      /**/current[ "id"         ] = oldCall->callId         ()                                ;
+      /**/current[ "id"         ] = oldCall->id             ()                                ;
       /*                                                                                     */
       if (oldCall->property("section").isValid())
          current[ "section" ] = oldCall->property("section");
-      setData("history", oldCall->callId() , current);
+      setData("history", oldCall->id() , current);
    }
 }
 
@@ -190,18 +191,18 @@ void SFLPhoneEngine::updateBookmarkList()
 {
    removeAllData("bookmark");
    int i=0;
-   QStringList cl = HistoryModel::getNumbersByPopularity();
+   QVector<PhoneNumber*> cl = PhoneDirectoryModel::instance()->getNumbersByPopularity();
    for (;i < ((cl.size() < 10)?cl.size():10);i++) {
       QHash<QString,QVariant> pop;
-      Contact* cont = AkonadiBackend::instance()->getContactByPhone(cl[i],true);
-      /*           KEY                          VALUE                */
-      /**/pop["peerName"     ] = (cont)?cont->formattedName():cl[i]   ;
-      /**/pop["peerNumber"   ] = cl[i]                                ;
-      /**/pop["section"      ] = "Popular"                            ;
-      /**/pop["listPriority" ] = 1000                                 ;
-      /**/pop["id"           ] = i                                    ;
-      /*                                                             */
-      
+      const Contact* cont = cl[i]->contact();
+      /*           KEY                          VALUE                     */
+      /**/pop["peerName"     ] = (cont)?cont->formattedName():cl[i]->uri() ;
+      /**/pop["peerNumber"   ] = cl[i]->uri()                              ;
+      /**/pop["section"      ] = "Popular"                                 ;
+      /**/pop["listPriority" ] = 1000                                      ;
+      /**/pop["id"           ] = i                                         ;
+      /*                                                                  */
+
       setData("bookmark", QString::number(i), pop);
    }
 

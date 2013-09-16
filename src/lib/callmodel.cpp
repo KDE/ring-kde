@@ -264,7 +264,7 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    m_sPrivateCallList_call  [ call              ] = aNewStruct;
    if (call->state() != Call::State::OVER)
       m_lInternalModel << aNewStruct;
-   m_sPrivateCallList_callId[ call->callId() ] = aNewStruct;
+   m_sPrivateCallList_callId[ call->id() ] = aNewStruct;
 
    if (call->state() != Call::State::OVER)
       emit callAdded(call,parentCall);
@@ -365,7 +365,7 @@ QModelIndex CallModel::getIndex(Call* call)
 void CallModel::attendedTransfer(Call* toTransfer, Call* target)
 {
    if ((!toTransfer) || (!target)) return;
-   Q_NOREPLY DBus::CallManager::instance().attendedTransfer(toTransfer->callId(),target->callId());
+   Q_NOREPLY DBus::CallManager::instance().attendedTransfer(toTransfer->id(),target->id());
 
    //TODO [Daemon] Implement this correctly
    toTransfer->changeCurrentState(Call::State::OVER);
@@ -375,7 +375,7 @@ void CallModel::attendedTransfer(Call* toTransfer, Call* target)
 ///Transfer this call to  "target" number
 void CallModel::transfer(Call* toTransfer, QString target)
 {
-   qDebug() << "Transferring call " << toTransfer->callId() << "to" << target;
+   qDebug() << "Transferring call " << toTransfer->id() << "to" << target;
    toTransfer->setTransferNumber ( target                 );
    toTransfer->changeCurrentState( Call::State::TRANSFERRED );
    toTransfer->actionPerformed   ( Call::Action::TRANSFER   );
@@ -446,8 +446,8 @@ Call* CallModel::addConference(const QString& confID)
 bool CallModel::createConferenceFromCall(Call* call1, Call* call2)
 {
   if (!call1 || !call2) return false;
-  qDebug() << "Joining call: " << call1->callId() << " and " << call2->callId();
-  Q_NOREPLY DBus::CallManager::instance().joinParticipant(call1->callId(),call2->callId());
+  qDebug() << "Joining call: " << call1->id() << " and " << call2->id();
+  Q_NOREPLY DBus::CallManager::instance().joinParticipant(call1->id(),call2->id());
   return true;
 } //createConferenceFromCall
 
@@ -455,7 +455,7 @@ bool CallModel::createConferenceFromCall(Call* call1, Call* call2)
 bool CallModel::addParticipant(Call* call2, Call* conference)
 {
    if (conference->isConference()) {
-      Q_NOREPLY DBus::CallManager::instance().addParticipant(call2->callId(), conference->confId());
+      Q_NOREPLY DBus::CallManager::instance().addParticipant(call2->id(), conference->confId());
       return true;
    }
    else {
@@ -467,7 +467,7 @@ bool CallModel::addParticipant(Call* call2, Call* conference)
 ///Remove a participant from a conference
 bool CallModel::detachParticipant(Call* call)
 {
-   Q_NOREPLY DBus::CallManager::instance().detachParticipant(call->callId());
+   Q_NOREPLY DBus::CallManager::instance().detachParticipant(call->id());
    return true;
 }
 
@@ -536,8 +536,8 @@ bool CallModel::setData( const QModelIndex& idx, const QVariant &value, int role
       else if (role == Qt::EditRole) {
          const QString number = value.toString();
          Call* call = getCall(idx);
-         if (call && number != call->callNumber()) {
-            call->setCallNumber(number);
+         if (call && number != call->dialNumber()) {
+            call->setDialNumber(number);
             emit dataChanged(idx,idx);
             return true;
          }
@@ -674,7 +674,7 @@ bool CallModel::isPartOf(const QModelIndex& confIdx, Call* call)
    if (!confIdx.isValid() || !call) return false;
 
    for (int i=0;i<confIdx.model()->rowCount(confIdx);i++) { //TODO use model one directly
-      if (confIdx.child(i,0).data(Call::Role::Id) == call->callId()) {
+      if (confIdx.child(i,0).data(Call::Role::Id) == call->id()) {
          return true;
       }
    }
@@ -723,7 +723,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
             else if (target && (targetIdx.parent().isValid() || target->isConference())) {
                Call* conf = target->isConference()?target:qvariant_cast<Call*>(targetIdx.parent().data(Call::Role::Object));
                if (conf) {
-                  qDebug() << "Adding call " << call->callId() << "to conference" << conf->confId();
+                  qDebug() << "Adding call " << call->id() << "to conference" << conf->confId();
                   addParticipant(call,conf);
                return true;
                }
@@ -754,7 +754,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       Call* target = getCall(index(row,column,parentIdx));
       qDebug() << "Phone number" << encodedPhoneNumber << "on call" << target;
       Call* newCall = addDialingCall(QString(),target->account());
-      newCall->setCallNumber(encodedPhoneNumber);
+      newCall->setDialNumber(encodedPhoneNumber);
       newCall->actionPerformed(Call::Action::ACCEPT);
       createConferenceFromCall(newCall,target);
    }
@@ -766,7 +766,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
          const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(encodedContact);
          if (!number->uri().isEmpty()) {
             Call* newCall = addDialingCall();
-            newCall->setCallNumber(number->uri());
+            newCall->setDialNumber(number);
             newCall->actionPerformed(Call::Action::ACCEPT);
             createConferenceFromCall(newCall,target);
          }
@@ -858,7 +858,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
       QStringList participants = callManager.getParticipantList(confID);
 
       foreach(InternalStruct* child,confInt->m_lChildren) {
-         if (participants.indexOf(child->call_real->callId()) == -1 && child->call_real->state() != Call::State::OVER)
+         if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->state() != Call::State::OVER)
             m_lInternalModel << child;
       }
       confInt->m_lChildren.clear();

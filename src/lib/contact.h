@@ -71,6 +71,7 @@ public:
       explicit PhoneNumbers(Contact* parent);
       PhoneNumbers(Contact* parent, const QList<PhoneNumber*>& list);
       Contact* contact() const;
+      time_t lastUsedTimeStamp() const;
    private:
       Contact* m_pParent       ;
    };

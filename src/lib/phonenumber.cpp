@@ -37,7 +37,7 @@ const PhoneNumber* PhoneNumber::BLANK = PhoneNumberPrivate::initBlank();
 ///Constructor
 PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(PhoneDirectoryModel::instance()),
    m_Uri(number),m_Type(type),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
-   m_State(PhoneNumber::State::UNUSED)
+   m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr)
 {
    setObjectName(number);
 }
@@ -110,4 +110,45 @@ int PhoneNumber::callCount() const
 QList<Call*> PhoneNumber::calls() const
 {
    return m_lCalls;
+}
+
+///Return the phonenumber position in the popularity index
+int PhoneNumber::popularityIndex() const
+{
+   return m_PopularityIndex;
+}
+
+///Add a call to the call list, notify listener
+void PhoneNumber::addCall(Call* call)
+{
+   m_lCalls << call;
+   emit callAdded(call);
+}
+
+///Generate an unique representation of this number
+QString PhoneNumber::toHash() const
+{
+   return QString("%1///%2///%3").arg(uri()).arg(account()?account()->id():QString()).arg(contact()?contact()->uid():QString());
+}
+
+
+/************************************************************************************
+ *                                                                                  *
+ *                             Temporary phone number                               *
+ *                                                                                  *
+ ***********************************************************************************/
+
+void TemporaryPhoneNumber::setUri(const QString& uri)
+{
+   m_Uri = uri;
+}
+
+///Constructor
+TemporaryPhoneNumber::TemporaryPhoneNumber(const PhoneNumber* number) : PhoneNumber(QString(),QString())
+{
+   if (number) {
+      setContact(number->contact());
+      setAccount(number->account());
+   }
+   m_State = PhoneNumber::State::TEMPORARY;
 }

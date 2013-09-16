@@ -71,7 +71,7 @@ private:
 
    //Helpers
    QString category(Contact* ct) const;
-   QHash<Contact*, time_t> getContactListByTime() const;
+//    QHash<Contact*, time_t> getContactListByTime() const;
 
    //Attributes
    QHash<Contact*, time_t>      m_hContactByDate       ;
@@ -81,7 +81,6 @@ private:
    int                          m_Role                 ;
    bool                         m_ShowAll              ;
    const static char*           m_slHistoryConstStr[25];
-   bool                         m_isContactDateInit    ;
    QStringList                  m_lMimes               ;
 
 private Q_SLOTS:
