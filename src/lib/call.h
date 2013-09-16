@@ -409,6 +409,7 @@ Q_SIGNALS:
    void dtmfPlayed(const QString& str);
    ///Notify of state change
    void stateChanged();
+   void startTimeStampChanged(time_t newTimeStamp);
 };
 
 Q_DECLARE_METATYPE(Call*)

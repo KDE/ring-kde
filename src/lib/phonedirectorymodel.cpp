@@ -27,6 +27,7 @@
 #include "contact.h"
 #include "accountlistmodel.h"
 #include "abstractcontactbackend.h"
+#include "dbus/presencemanager.h"
 
 PhoneDirectoryModel* PhoneDirectoryModel::m_spInstance = nullptr;
 
@@ -34,6 +35,7 @@ PhoneDirectoryModel::PhoneDirectoryModel(QObject* parent) :
    QAbstractTableModel(parent?parent:QCoreApplication::instance())
 {
    setObjectName("PhoneDirectoryModel");
+   connect(&DBus::PresenceManager::instance(),SIGNAL(newBuddySubscription(QString,bool,QString)),this,SLOT(slotNewBuddySubscription(QString,bool,QString)));
 }
 
 PhoneDirectoryModel* PhoneDirectoryModel::instance()
@@ -55,12 +57,14 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                return number->uri();
                break;
          }
+         break;
       case PhoneDirectoryModel::Columns::TYPE:
          switch (role) {
             case Qt::DisplayRole:
                return number->type();
                break;
          }
+         break;
       case PhoneDirectoryModel::Columns::CONTACT:
          switch (role) {
             case Qt::DisplayRole:
@@ -68,6 +72,7 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                return number->contact()?number->contact()->formattedName():QVariant();
                break;
          }
+         break;
       case PhoneDirectoryModel::Columns::ACCOUNT:
          switch (role) {
             case Qt::DisplayRole:
@@ -75,24 +80,71 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                return number->account()?number->account()->id():QVariant();
                break;
          }
+         break;
       case PhoneDirectoryModel::Columns::STATE:
          switch (role) {
             case Qt::DisplayRole:
                return (int)number->state();
                break;
          }
+         break;
       case PhoneDirectoryModel::Columns::CALL_COUNT:
          switch (role) {
             case Qt::DisplayRole:
                return number->callCount();
                break;
          }
+         break;
       case PhoneDirectoryModel::Columns::LAST_USED:
          switch (role) {
             case Qt::DisplayRole:
                return (int)number->lastUsed();
                break;
          }
+         break;
+      case PhoneDirectoryModel::Columns::NAME_COUNT:
+         switch (role) {
+            case Qt::DisplayRole:
+               return number->alternativeNames().size();
+               break;
+            case Qt::ToolTipRole: {
+               QString out = "<table>";
+               QHash<QString,int>::iterator i,beg(number->m_hNames.begin()),end(number->m_hNames.end());
+               for (i = beg; i != end; ++i)
+                  out += QString("<tr><td>%1</td><td>%2</td></tr>").arg(i.value()).arg(i.key());
+               out += "</table>";
+               return out;
+            }
+         }
+         break;
+      case PhoneDirectoryModel::Columns::POPULARITY_INDEX:
+         switch (role) {
+            case Qt::DisplayRole:
+               return (int)number->popularityIndex();
+               break;
+         }
+         break;
+      case PhoneDirectoryModel::Columns::TRACKED:
+         switch (role) {
+            case Qt::CheckStateRole:
+               return number->tracked()?Qt::Checked:Qt::Unchecked;
+               break;
+         }
+         break;
+      case PhoneDirectoryModel::Columns::PRESENT:
+         switch (role) {
+            case Qt::CheckStateRole:
+               return number->present()?Qt::Checked:Qt::Unchecked;
+               break;
+         }
+         break;
+      case PhoneDirectoryModel::Columns::PRESENCE_MESSAGE:
+         switch (role) {
+            case Qt::DisplayRole:
+               return number->presenceMessage();
+               break;
+         }
+         break;
    }
    return QVariant();
 }
@@ -107,21 +159,26 @@ int PhoneDirectoryModel::rowCount(const QModelIndex& parent ) const
 int PhoneDirectoryModel::columnCount(const QModelIndex& parent ) const
 {
    Q_UNUSED(parent)
-   return 7;
+   return 12;
 }
 
 Qt::ItemFlags PhoneDirectoryModel::flags(const QModelIndex& index ) const
 {
    Q_UNUSED(index)
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+   return Qt::ItemIsEnabled 
+      | Qt::ItemIsSelectable 
+      | (index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)?Qt::ItemIsUserCheckable:Qt::NoItemFlags);
 }
 
 ///This model is read and for debug purpose
 bool PhoneDirectoryModel::setData(const QModelIndex& index, const QVariant &value, int role )
 {
-   Q_UNUSED(index)
-   Q_UNUSED(value)
-   Q_UNUSED(role)
+   PhoneNumber* number = m_lNumbers[index.row()];
+   if (static_cast<PhoneDirectoryModel::Columns>(index.column())==PhoneDirectoryModel::Columns::TRACKED) {
+      if (role == Qt::CheckStateRole && number) {
+         number->setTracked(value.toBool());
+      }
+   }
    return false;
 }
 
@@ -129,7 +186,8 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
 {
    Q_UNUSED(section)
    Q_UNUSED(orientation)
-   constexpr static const char* headers[] = {"URI", "Type", "Contact", "Account", "State", "Call count", "Last used"};
+   constexpr static const char* headers[] = {"URI", "Type", "Contact", "Account", "State", "Call count", "Last used", 
+      "Name_count", "Popularity_index", "Tracked", "Present", "Presence message" };
    if (role == Qt::DisplayRole) return headers[section];
    return QVariant();
 }
@@ -143,6 +201,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    //Too bad, lets create one
    PhoneNumber* number = new PhoneNumber(uri,type);
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    m_lNumbers << number;
    emit layoutChanged();
    wrap = new NumberWrapper();
@@ -155,20 +214,24 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
 {
    //See if the number is already loaded
    NumberWrapper* wrap = m_hDirectory[uri];
-   foreach(PhoneNumber* number, wrap->numbers) {
-      //Not perfect, but better than ignoring the high probabilities
-      if (!number->account())
-         number->setAccount(account);
-      if (number->account() == account)
-         return number;
+   if (wrap) {
+      foreach(PhoneNumber* number, wrap->numbers) {
+         //Not perfect, but better than ignoring the high probabilities
+         if (!number->account())
+            number->setAccount(account);
+         if (number->account() == account)
+            return number;
+      }
    }
 
    //Create the number
    PhoneNumber* number = new PhoneNumber(uri,type);
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
    m_lNumbers << number;
-   wrap = new NumberWrapper();
+   if (!wrap)
+      wrap = new NumberWrapper();
    wrap->numbers << number;
    m_hDirectory[uri] = wrap;
    emit layoutChanged();
@@ -190,10 +253,12 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //Create the number
    PhoneNumber* number = new PhoneNumber(uri,type);
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
    number->setContact(contact);
    m_lNumbers << number;
-   wrap = new NumberWrapper();
+   if (!wrap)
+      wrap = new NumberWrapper();
    wrap->numbers << number;
    m_hDirectory[uri] = wrap;
    emit layoutChanged();
@@ -214,29 +279,12 @@ PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
       Contact* contact = Call::contactBackend()?Call::contactBackend()->getContactByUid(fields[2]):nullptr;
       return getNumber(uri,contact,account);
    }
+   else if (fields.size() == 1) {
+      //Remove someday, handle version v1.0 to v1.2.3 bookmark format
+      return getNumber(fields[0]);
+   }
    qDebug() << "Invalid hash" << hash;
    return nullptr;
-}
-
-PhoneNumber* PhoneDirectoryModel::getTemporaryNumber(const QString& uri, const QString& type)
-{
-   PhoneNumber* number = getNumber(uri,type);
-   if (number)
-      return number;
-   NumberWrapper* wrap = m_hTemporaryNumbers[uri];
-   if (wrap)
-      return wrap->numbers[0];
-   return getNumber(uri,type);//TODO
-}
-
-PhoneNumber* PhoneDirectoryModel::getTemporaryNumber(const QString& uri, Account* account, const QString& type)
-{
-   return getNumber(uri,account,type);
-}
-
-PhoneNumber* PhoneDirectoryModel::getTemporaryNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
-{
-   return getNumber(uri,contact,account,type);
 }
 
 QVector<PhoneNumber*> PhoneDirectoryModel::getNumbersByPopularity() const
@@ -257,15 +305,49 @@ void PhoneDirectoryModel::slotCallAdded(Call* call)
             PhoneNumber* tmp = m_lPopularityIndex[currentIndex-1];
             m_lPopularityIndex[currentIndex-1] = number;
             m_lPopularityIndex[currentIndex  ] = tmp   ;
+            tmp->m_PopularityIndex++;
             currentIndex--;
          } while (currentIndex && m_lPopularityIndex[currentIndex-1]->callCount() < number->callCount());
+         number->m_PopularityIndex = currentIndex;
+         emit layoutChanged();
       }
       //The top 10 is not complete, a call count of "1" is enough to make it
-      else if (m_lPopularityIndex.size() < 10)
+      else if (m_lPopularityIndex.size() < 10 && currentIndex == -1) {
          m_lPopularityIndex << number;
+         number->m_PopularityIndex = m_lPopularityIndex.size()-1;
+         emit layoutChanged();
+      }
       //The top 10 is full, but this number just made it to the top 10
-      else if (m_lPopularityIndex[9]->callCount() < number->callCount())
-         m_lPopularityIndex[9] = number;
+      else if (currentIndex == -1 && m_lPopularityIndex.size() >= 10 && m_lPopularityIndex[9] != number && m_lPopularityIndex[9]->callCount() < number->callCount()) {
+         PhoneNumber* tmp = m_lPopularityIndex[9];
+         tmp->m_PopularityIndex    = -1;
+         m_lPopularityIndex[9]     = number;
+         number->m_PopularityIndex = 9;
+         emit tmp->changed();
+         emit number->changed();
+      }
+
+      //Now check for new peer names
+      if (!call->peerName().isEmpty()) {
+         number->m_hNames[call->peerName()]++;
+      }
    }
 }
 
+void PhoneDirectoryModel::slotChanged()
+{
+   PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
+   if (number) {
+      const int idx = m_lNumbers.indexOf(number);
+      emit dataChanged(index(idx,0),index(idx,5));
+   }
+}
+
+void PhoneDirectoryModel::slotNewBuddySubscription(const QString& uri, bool status, const QString& message)
+{
+   qDebug() << "New presence buddy" << uri << status << message;
+   PhoneNumber* number = getNumber(uri);
+   number->m_Present = status;
+   number->m_PresentMessage = message;
+   emit number->changed();
+}

@@ -20,6 +20,7 @@
 #include "contact.h"
 #include "account.h"
 #include "call.h"
+#include "dbus/presencemanager.h"
 
 QHash<int,Call*> PhoneNumber::m_shMostUsed = QHash<int,Call*>();
 
@@ -42,6 +43,12 @@ PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(P
    setObjectName(number);
 }
 
+///Return if this number presence is being tracked
+bool PhoneNumber::tracked() const
+{
+   return m_Tracked;
+}
+
 ///Is this number present
 bool PhoneNumber::present() const
 {
@@ -49,7 +56,7 @@ bool PhoneNumber::present() const
 }
 
 ///This number presence status string
-QString PhoneNumber::presentMessage() const
+QString PhoneNumber::presenceMessage() const
 {
    return m_PresentMessage;
 }
@@ -86,12 +93,24 @@ time_t PhoneNumber::lastUsed() const
 void PhoneNumber::setAccount(Account* account)
 {
    m_pAccount = account;
+   emit changed();
 }
 
 ///Set this number contact
 void PhoneNumber::setContact(Contact* contact)
 {
    m_pContact = contact;
+   emit changed();
+}
+
+///Set if this number is tracking presence information
+void PhoneNumber::setTracked(bool track)
+{
+   //You can't subscribe without account
+   if (track && !m_pAccount) return;
+   m_Tracked = track;
+   DBus::PresenceManager::instance().subscribeBuddy(m_pAccount->id(),m_Uri,track);
+   emit changed();
 }
 
 ///Return the current state of the number
@@ -118,11 +137,20 @@ int PhoneNumber::popularityIndex() const
    return m_PopularityIndex;
 }
 
+QHash<QString,int> PhoneNumber::alternativeNames() const
+{
+   return m_hNames;
+}
+
 ///Add a call to the call list, notify listener
 void PhoneNumber::addCall(Call* call)
 {
+   if (!call) return;
    m_lCalls << call;
    emit callAdded(call);
+   if (call->startTimeStamp() > m_LastUsed)
+      m_LastUsed = call->startTimeStamp();
+   emit changed();
 }
 
 ///Generate an unique representation of this number
@@ -141,6 +169,7 @@ QString PhoneNumber::toHash() const
 void TemporaryPhoneNumber::setUri(const QString& uri)
 {
    m_Uri = uri;
+   emit changed();
 }
 
 ///Constructor

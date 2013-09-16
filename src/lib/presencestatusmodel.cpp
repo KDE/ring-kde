@@ -62,6 +62,7 @@ QVariant PresenceStatusModel::data(const QModelIndex& index, int role ) const
          case PresenceStatusModel::Columns::Name:
             switch (role) {
                case Qt::DisplayRole:
+               case Qt::EditRole:
                   return m_lStatuses[index.row()]->name;
                case Qt::ToolTipRole:
                   return m_lStatuses[index.row()]->message;
@@ -70,6 +71,7 @@ QVariant PresenceStatusModel::data(const QModelIndex& index, int role ) const
          case PresenceStatusModel::Columns::Message:
             switch (role) {
                case Qt::DisplayRole:
+               case Qt::EditRole:
                   return m_lStatuses[index.row()]->message;
             }
             break;

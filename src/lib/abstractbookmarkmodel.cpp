@@ -47,8 +47,8 @@ AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemMod
 
    //Connect
    connect(&DBus::PresenceManager::instance(),SIGNAL(newServerSubscriptionRequest(QString)),this,SLOT(slotRequest(QString)));
-   connect(&DBus::PresenceManager::instance(),SIGNAL(newClientSubscription(QString,bool,QString)),
-      this,SLOT(slotIncomingNotifications(QString,bool,QString)));
+//    connect(&DBus::PresenceManager::instance(),SIGNAL(newClientSubscription(QString,bool,QString)),
+//       this,SLOT(slotIncomingNotifications(QString,bool,QString)));
 }
 
 
@@ -126,7 +126,9 @@ QVariant AbstractBookmarkModel::data( const QModelIndex& index, int role) const
          break;
       case HistoryTreeBackend::Type::CALL:
       case HistoryTreeBackend::Type::BOOKMARK:
-         return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()],role);
+         if (index.row() < m_lCategoryCounter[index.parent().row()]->m_lChildren.size()) {
+            return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()],role);
+         }
          break;
       case HistoryTreeBackend::Type::NUMBER:
          break;
@@ -227,6 +229,10 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
    switch (role) {
       case Qt::DisplayRole:
       case Call::Role::Name:
+//          qDebug() << "\n\n\nEVIL1 -1" << dynamic_cast<NumberTreeBackend*>(number);
+//          qDebug() << "EVIL1" << number;
+//          qDebug() << "EVIL2" << number->m_pNumber;
+//          qDebug() << "EVIL" << number->m_pNumber << number->m_pNumber->uri();
          cat = number->m_pNumber->uri();
          break;
       case Call::Role::Number:
@@ -272,12 +278,12 @@ QString AbstractBookmarkModel::category(NumberTreeBackend* number) const
    return cat;
 }
 
-void AbstractBookmarkModel::slotIncomingNotifications(const QString& uri, bool status, const QString& message)
-{
-   Q_UNUSED(uri)
-   Q_UNUSED(status)
-   Q_UNUSED(message)
-}
+// void AbstractBookmarkModel::slotIncomingNotifications(const QString& uri, bool status, const QString& message)
+// {
+//    Q_UNUSED(uri)
+//    Q_UNUSED(status)
+//    Q_UNUSED(message)
+// }
 
 void AbstractBookmarkModel::slotRequest(const QString& uri)
 {

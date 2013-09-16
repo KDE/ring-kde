@@ -120,7 +120,7 @@ private:
    QString category(NumberTreeBackend* number) const;
 
 private Q_SLOTS:
-   void slotIncomingNotifications(const QString& uri, bool status, const QString& message);
+//    void slotIncomingNotifications(const QString& uri, bool status, const QString& message);
    void slotRequest(const QString& uri);
 
 public Q_SLOTS:

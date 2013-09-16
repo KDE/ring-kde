@@ -168,7 +168,7 @@ AbstractContactBackend* Call::contactBackend ()
 Call::Call(Call::State startState, const QString& callId, const QString& peerName, const QString& peerNumber, const QString& account)
    :  QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
    m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
-   m_PeerName(peerName),m_pPeerPhoneNumber(PhoneDirectoryModel::instance()->getNumber(peerNumber,account)),
+   m_PeerName(peerName),m_pPeerPhoneNumber(PhoneDirectoryModel::instance()->getNumber(peerNumber,AccountListModel::instance()->getAccountById(account))),
    m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
    m_Account = AccountListModel::instance()->getAccountById(account);
@@ -254,6 +254,10 @@ Call* Call::buildExistingCall(QString callId)
    connect(call->m_pTimer,SIGNAL(timeout()),call,SLOT(updated()));
    call->m_pTimer->start();
 
+   if (call->peerPhoneNumber()) {
+      call->peerPhoneNumber()->addCall(call);
+   }
+
    return call;
 } //buildExistingCall
 
@@ -277,6 +281,9 @@ Call* Call::buildIncomingCall(const QString& callId)
 
    Call* call = new Call(Call::State::INCOMING, callId, peerName, from, account);
    call->m_HistoryState = MISSED;
+   if (call->peerPhoneNumber()) {
+      call->peerPhoneNumber()->addCall(call);
+   }
    return call;
 } //buildIncomingCall
 
@@ -292,6 +299,10 @@ Call* Call::buildRingingCall(const QString & callId)
 
    Call* call = new Call(Call::State::RINGING, callId, peerName, from, account);
    call->m_HistoryState = HistoryState::OUTGOING;
+
+   if (call->peerPhoneNumber()) {
+      call->peerPhoneNumber()->addCall(call);
+   }
    return call;
 } //buildRingingCall
 
@@ -315,6 +326,10 @@ Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint s
 
    call->setObjectName("History:"+call->m_CallId);
 
+   if (call->peerPhoneNumber()) {
+      call->peerPhoneNumber()->addCall(call);
+   }
+
    return call;
 }
 
@@ -327,7 +342,7 @@ Call::HistoryState Call::historyStateFromType(const QString& type)
       return Call::HistoryState::OUTGOING ;
    else if(type == INCOMING_STRING )
       return Call::HistoryState::INCOMING ;
-   return NONE        ;
+   return  Call::HistoryState::NONE       ;
 }
 
 ///Get the start sate from the daemon state
@@ -461,7 +476,8 @@ const QString Call::transferNumber() const
 ///Get the call / peer number
 const QString Call::dialNumber() const
 {
-   if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
+   if (m_CurrentState != Call::State::DIALING) return QString();
+   if (!m_pDialNumber) {
       const_cast<Call*>(this)->m_pDialNumber = new TemporaryPhoneNumber();
    }
    return m_pDialNumber->uri();
@@ -997,6 +1013,9 @@ void Call::call()
       ::time(&curTime);
       m_pStartTimeStamp = curTime;
       this->m_HistoryState = HistoryState::OUTGOING;
+      if (peerPhoneNumber()) {
+         peerPhoneNumber()->addCall(this);
+      }
    }
    else {
       qDebug() << "Trying to call " << (m_pTransferNumber?m_pTransferNumber->uri():"ERROR") 

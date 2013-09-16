@@ -56,9 +56,6 @@ public:
    Q_INVOKABLE PhoneNumber* getNumber(const QString& uri, const QString& type = "N/A");
    Q_INVOKABLE PhoneNumber* getNumber(const QString& uri, Account* account, const QString& type = "N/A");
    Q_INVOKABLE PhoneNumber* getNumber(const QString& uri, Contact* contact, Account* account = nullptr, const QString& type = "N/A");
-   Q_INVOKABLE PhoneNumber* getTemporaryNumber(const QString& uri, const QString& type = "N/A");
-   Q_INVOKABLE PhoneNumber* getTemporaryNumber(const QString& uri, Account* account, const QString& type = "N/A");
-   Q_INVOKABLE PhoneNumber* getTemporaryNumber(const QString& uri, Contact* contact, Account* account = nullptr, const QString& type = "N/A");
    Q_INVOKABLE PhoneNumber* fromHash(const QString& hash);
    Q_INVOKABLE PhoneNumber* fromTemporary(const TemporaryPhoneNumber* number);
 
@@ -74,13 +71,18 @@ private:
 
    //Model columns
    enum class Columns {
-      URI        = 0,
-      TYPE       = 1,
-      CONTACT    = 2,
-      ACCOUNT    = 3,
-      STATE      = 4,
-      CALL_COUNT = 5,
-      LAST_USED  = 6,
+      URI              = 0,
+      TYPE             = 1,
+      CONTACT          = 2,
+      ACCOUNT          = 3,
+      STATE            = 4,
+      CALL_COUNT       = 5,
+      LAST_USED        = 6,
+      NAME_COUNT       = 7,
+      POPULARITY_INDEX = 8,
+      TRACKED          = 9,
+      PRESENT          = 10,
+      PRESENCE_MESSAGE = 11,
    };
    //Constructor
    explicit PhoneDirectoryModel(QObject* parent = nullptr);
@@ -101,6 +103,10 @@ private:
 
 private Q_SLOTS:
    void slotCallAdded(Call* call);
+   void slotChanged();
+
+   //From DBus
+   void slotNewBuddySubscription(const QString& uri, bool status, const QString& message);
 };
 Q_DECLARE_METATYPE(PhoneDirectoryModel*)
 

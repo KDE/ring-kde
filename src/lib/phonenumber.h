@@ -69,8 +69,9 @@ public:
    //Getters
    QString            uri             () const;
    QString            type            () const;
+   bool               tracked         () const;
    bool               present         () const;
-   QString            presentMessage  () const;
+   QString            presenceMessage () const;
    Account*           account         () const;
    Contact*           contact         () const;
    time_t             lastUsed        () const;
@@ -78,13 +79,13 @@ public:
    int                callCount       () const;
    QList<Call*>       calls           () const;
    int                popularityIndex () const;
-   QStringList        alternativeNames() const;
+   QHash<QString,int> alternativeNames() const;
    QString            mostCommonName  () const;
-   QHash<int,QString> names           () const;
 
    //Setters
-   void setAccount(Account* account);
-   void setContact(Contact* contact);
+   Q_INVOKABLE void setAccount(Account* account);
+   Q_INVOKABLE void setContact(Contact* contact);
+   Q_INVOKABLE void setTracked(bool     track  );
 
    //Mutator
    Q_INVOKABLE void addCall(Call* call);
@@ -117,15 +118,15 @@ private:
    time_t             m_LastUsed         ;
    QList<Call*>       m_lCalls           ;
    int                m_PopularityIndex  ;
-   QStringList        m_lAlternativeNames;
    QString            m_MostCommonName   ;
-   QHash<int,QString> m_hNames           ;
+   QHash<QString,int> m_hNames           ;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;
 
 Q_SIGNALS:
    void callAdded(Call* call);
+   void changed  (          );
 };
 
 Q_DECLARE_METATYPE( PhoneNumber* )
