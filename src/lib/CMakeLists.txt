@@ -58,6 +58,7 @@ set( qtsflphone_LIB_SRCS
   useractionmodel.cpp
   presencestatusmodel.cpp
   phonedirectorymodel.cpp
+  historytimecategorymodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -95,6 +96,7 @@ set( qtsflphone_LIB_HDRS
   presencestatusmodel.h
   phonenumber.h
   phonedirectorymodel.h
+  historytimecategorymodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

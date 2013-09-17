@@ -39,34 +39,6 @@ class LIB_EXPORT HistoryModel : public QAbstractItemModel {
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
-   enum class HistoryConst : int {
-      Today             = 0  ,
-      Yesterday         = 1  ,
-      Two_days_ago      = 2  ,
-      Three_days_ago    = 3  ,
-      Four_days_ago     = 4  ,
-      Five_days_ago     = 5  ,
-      Six_days_ago      = 6  ,
-      Last_week         = 7  ,
-      Two_weeks_ago     = 8  ,
-      Three_weeks_ago   = 9  ,
-      Last_month        = 10 ,
-      Two_months_ago    = 11 ,
-      Three_months_ago  = 12 ,
-      Four_months_ago   = 13 ,
-      Five_months_ago   = 14 ,
-      Six_months_ago    = 15 ,
-      Seven_months_ago  = 16 ,
-      Eight_months_ago  = 17 ,
-      Nine_months_ago   = 18 ,
-      Ten_months_ago    = 19 ,
-      Eleven_months_ago = 20 ,
-      Twelve_months_ago = 21 ,
-      Last_year         = 22 ,
-      Very_long_time_ago= 23 ,
-      Never             = 24 ,
-   };
-   Q_ENUMS(HistoryConst)
 
    //Singleton
    static HistoryModel* instance();
@@ -95,8 +67,6 @@ public:
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
    virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
-   static HistoryConst timeToHistoryConst   (const time_t time);
-   static QString      timeToHistoryCategory(const time_t time);
 
 private:
 
@@ -128,14 +98,12 @@ private:
 
    //Model categories
    QList<TopLevelItem*>         m_lCategoryCounter ;
-   QHash<int,TopLevelItem*> m_hCategories      ;
+   QHash<int,TopLevelItem*>     m_hCategories      ;
    bool                         m_isContactDateInit;
    int                          m_Role             ;
    bool                         m_ShowAll          ;
    bool                         m_HaveContactModel ;
    QStringList                  m_lMimes           ;
-
-   static const QString m_slHistoryConstStr[25];
 
 private Q_SLOTS:
    void reloadCategories();

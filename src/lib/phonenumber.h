@@ -82,6 +82,7 @@ public:
    QHash<QString,int> alternativeNames() const;
    QString            mostCommonName  () const;
    QString            hostname        () const;
+   QString            fullUri         () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account* account);

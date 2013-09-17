@@ -110,7 +110,7 @@ void PhoneNumber::setTracked(bool track)
    //You can't subscribe without account
    if (track && !m_pAccount) return;
    m_Tracked = track;
-   DBus::PresenceManager::instance().subscribeBuddy(m_pAccount->id(),m_Uri,track);
+   DBus::PresenceManager::instance().subscribeBuddy(m_pAccount->id(),fullUri(),track);
    emit changed();
 }
 
@@ -169,6 +169,11 @@ QString PhoneNumber::hostname() const
       return m_Uri.split('@')[1].left(m_Uri.split('@')[1].size()-1);
    }
    return "";
+}
+
+QString PhoneNumber::fullUri() const
+{
+   return QString("<sip:%1>").arg(m_Uri);
 }
 
 

@@ -42,10 +42,11 @@
 #include "callmodel.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
+#include "historytimecategorymodel.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
-//                      ACCEPT                  REFUSE                  TRANSFER                   HOLD                           RECORD            /**/
+//                           ACCEPT                   REFUSE                  TRANSFER                       HOLD                           RECORD              /**/
 /*INCOMING     */  {{Call::State::INCOMING   , Call::State::INCOMING    , Call::State::ERROR        , Call::State::INCOMING     ,  Call::State::INCOMING     }},/**/
 /*RINGING      */  {{Call::State::ERROR      , Call::State::RINGING     , Call::State::ERROR        , Call::State::ERROR        ,  Call::State::RINGING      }},/**/
 /*CURRENT      */  {{Call::State::ERROR      , Call::State::CURRENT     , Call::State::TRANSFERRED  , Call::State::CURRENT      ,  Call::State::CURRENT      }},/**/
@@ -64,7 +65,7 @@ const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::
 
 const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::State > Call::actionPerformedFunctionMap =
 {{ 
-//                      ACCEPT               REFUSE            TRANSFER                 HOLD                  RECORD             /**/
+//                        ACCEPT               REFUSE            TRANSFER                 HOLD                  RECORD             /**/
 /*INCOMING       */  {{&Call::accept     , &Call::refuse   , &Call::acceptTransf   , &Call::acceptHold  ,  &Call::setRecord     }},/**/
 /*RINGING        */  {{&Call::nothing    , &Call::hangUp   , &Call::nothing        , &Call::nothing     ,  &Call::setRecord     }},/**/
 /*CURRENT        */  {{&Call::nothing    , &Call::hangUp   , &Call::nothing        , &Call::hold        ,  &Call::setRecord     }},/**/
@@ -643,7 +644,8 @@ void Call::setDialNumber(const QString& number)
    if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
       m_pDialNumber = new TemporaryPhoneNumber();
    }
-   m_pDialNumber->setUri(number);
+   if (m_pDialNumber)
+      m_pDialNumber->setUri(number);
    emit changed();
    emit changed(this);
 }
@@ -1002,6 +1004,8 @@ void Call::call()
       if (peerPhoneNumber()) {
          peerPhoneNumber()->addCall(this);
       }
+      delete m_pDialNumber;
+      m_pDialNumber = nullptr;
    }
    else {
       qDebug() << "Trying to call " << (m_pTransferNumber?m_pTransferNumber->uri():"ERROR") 
@@ -1295,7 +1299,7 @@ QVariant Call::roleData(int role) const
          }
          break;
       case Call::Role::FuzzyDate:
-         return static_cast<int>(HistoryModel::timeToHistoryConst(startTimeStamp()));
+         return static_cast<int>(HistoryTimeCategoryModel::timeToHistoryConst(startTimeStamp()));
          break;
       case Call::Role::IsBookmark:
          return false;

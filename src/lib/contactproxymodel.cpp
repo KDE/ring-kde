@@ -29,6 +29,7 @@
 #include "historymodel.h"
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"
+#include "historytimecategorymodel.h"
 
 const char* ContactProxyModel::m_slHistoryConstStr[25] = {
       "Today"                                                    ,//0
@@ -157,9 +158,9 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
          case AbstractContactBackend::Role::DropState:
             return QVariant(modelItem->dropState());
          case AbstractContactBackend::Role::FormattedLastUsed:
-            return QVariant(HistoryModel::timeToHistoryCategory(c->phoneNumbers().lastUsedTimeStamp()));
+            return QVariant(HistoryTimeCategoryModel::timeToHistoryCategory(c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::IndexedLastUsed:
-            return QVariant((int)HistoryModel::timeToHistoryConst(c->phoneNumbers().lastUsedTimeStamp()));
+            return QVariant((int)HistoryTimeCategoryModel::timeToHistoryConst(c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::DatedLastUsed:
             return QVariant(QDateTime::fromTime_t( c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::Filter: {
@@ -335,10 +336,10 @@ QString ContactProxyModel::category(Contact* ct) const {
          cat = ct->preferredEmail();
          break;
       case AbstractContactBackend::Role::FormattedLastUsed:
-         cat = HistoryModel::timeToHistoryCategory(ct->phoneNumbers().lastUsedTimeStamp());
+         cat = HistoryTimeCategoryModel::timeToHistoryCategory(ct->phoneNumbers().lastUsedTimeStamp());
          break;
       case AbstractContactBackend::Role::IndexedLastUsed:
-         cat = QString::number((int)HistoryModel::timeToHistoryConst(ct->phoneNumbers().lastUsedTimeStamp()));
+         cat = QString::number((int)HistoryTimeCategoryModel::timeToHistoryConst(ct->phoneNumbers().lastUsedTimeStamp()));
          break;
       case AbstractContactBackend::Role::DatedLastUsed:
          cat = QDateTime::fromTime_t(ct->phoneNumbers().lastUsedTimeStamp()).toString();
