@@ -137,20 +137,6 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
 
 QObject* Call::getSelf() {return this;}
 
-HistoryTreeBackend::~HistoryTreeBackend()
-{
-}
-
-char HistoryTreeBackend::dropState()
-{
-   return m_DropState;
-}
-
-void HistoryTreeBackend::setDropState(const char state)
-{
-   m_DropState = state;
-}
-
 AbstractContactBackend* Call::m_pContactBackend = nullptr;
 Call*                   Call::m_sSelectedCall   = nullptr;
 
@@ -166,8 +152,8 @@ AbstractContactBackend* Call::contactBackend ()
 
 ///Constructor
 Call::Call(Call::State startState, const QString& callId, const QString& peerName, const QString& peerNumber, const QString& account)
-   :  QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
-   m_pImModel(nullptr),m_LastContactCheck(-1),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
+   :  QObject(CallModel::instance()),CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
+   m_pImModel(nullptr),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
    m_PeerName(peerName),m_pPeerPhoneNumber(PhoneDirectoryModel::instance()->getNumber(peerNumber,AccountListModel::instance()->getAccountById(account))),
    m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
@@ -194,7 +180,7 @@ Call::~Call()
 }
 
 ///Constructor
-Call::Call(const QString& confId, const QString& account): QObject(CallModel::instance()),HistoryTreeBackend(HistoryTreeBackend::Type::CALL),
+Call::Call(const QString& confId, const QString& account): QObject(CallModel::instance()),CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL),
    m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pImModel(nullptr),m_ConfId(confId),
    m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
    m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)

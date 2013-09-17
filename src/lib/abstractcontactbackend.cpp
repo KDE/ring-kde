@@ -166,8 +166,8 @@ QModelIndex AbstractContactBackend::parent( const QModelIndex& idx) const
 {
    if (!idx.isValid())
       return QModelIndex();
-   ContactTreeBackend* modelItem = (ContactTreeBackend*)idx.internalPointer();
-   if (modelItem && modelItem->type() == ContactTreeBackend::Type::NUMBER) {
+   CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)idx.internalPointer();
+   if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
       int idx2 = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
       if (idx2 != -1) {
          return AbstractContactBackend::index(idx2,0,QModelIndex());
@@ -182,7 +182,7 @@ QModelIndex AbstractContactBackend::index( int row, int column, const QModelInde
       return createIndex(row,column,getContactList()[row]);
    }
    else if (par.isValid() && getContactList()[par.row()]->phoneNumbers().size() > row) {
-      return createIndex(row,column,(ContactTreeBackend*)(&(getContactList()[par.row()]->phoneNumbers())));
+      return createIndex(row,column,(CategorizedCompositeNode*)(&(getContactList()[par.row()]->phoneNumbers())));
    }
    return QModelIndex();
 }

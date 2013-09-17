@@ -37,37 +37,20 @@ namespace KABC {
 class PhoneNumber;
 
 #include "typedefs.h"
-
-class LIB_EXPORT ContactTreeBackend {
-public:
-    enum Type {
-        CONTACT  =0,
-        NUMBER   =1,
-        TOP_LEVEL=2
-    };
-    explicit ContactTreeBackend(ContactTreeBackend::Type _type);
-    virtual ~ContactTreeBackend();
-    ContactTreeBackend::Type type() const;
-    virtual QObject* self() = 0;
-    char dropState();
-    void setDropState(const char state);
-private:
-    ContactTreeBackend::Type m_Type;
-    char m_DropState;
-};
+#include "categorizedcompositenode.h"
 
 
 ///Contact: Abstract version of a contact
-class LIB_EXPORT Contact : public QObject, public ContactTreeBackend {
+class LIB_EXPORT Contact : public QObject, public CategorizedCompositeNode {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
 
-   class  PhoneNumbers : public QList<PhoneNumber*>, public ContactTreeBackend {
+   class  PhoneNumbers : public QList<PhoneNumber*>, public CategorizedCompositeNode {
    public:
-      virtual QObject* self() __attribute__ ((const));
+      virtual QObject* getSelf() __attribute__ ((const));
       explicit PhoneNumbers(Contact* parent);
       PhoneNumbers(Contact* parent, const QList<PhoneNumber*>& list);
       Contact* contact() const;
@@ -76,7 +59,7 @@ public:
       Contact* m_pParent       ;
    };
 
-   virtual QObject* self();
+   virtual QObject* getSelf();
 
 private:
    QString      m_FirstName      ;

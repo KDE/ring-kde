@@ -263,12 +263,15 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //See if the number is already loaded
    NumberWrapper* wrap = m_hDirectory[strippedUri];
    if (wrap) {
+      //TODO find something better, it is prone to collisions
       foreach(PhoneNumber* number, wrap->numbers) {
          if (!number->contact()) {
             if (!number->account())
                number->setAccount(account);
             number->setContact(contact);
          }
+      }
+      foreach(PhoneNumber* number, wrap->numbers) {
          if ((!number->m_hasType) && (!type.isEmpty())) {
             number->m_hasType = true;
             number->m_Type = type;

@@ -29,13 +29,13 @@
 
 
 
-Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<PhoneNumber*>(),ContactTreeBackend(ContactTreeBackend::NUMBER),
+Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<PhoneNumber*>(),CategorizedCompositeNode(CategorizedCompositeNode::Type::NUMBER),
     m_pParent(parent)
 {
 }
 
 Contact::PhoneNumbers::PhoneNumbers(Contact* parent, const QList<PhoneNumber*>& list)
-: QList<PhoneNumber*>(list),ContactTreeBackend(ContactTreeBackend::NUMBER),m_pParent(parent)
+: QList<PhoneNumber*>(list),CategorizedCompositeNode(CategorizedCompositeNode::Type::NUMBER),m_pParent(parent)
 {
 }
 
@@ -44,36 +44,17 @@ Contact* Contact::PhoneNumbers::contact() const
    return m_pParent;
 }
 
-ContactTreeBackend::ContactTreeBackend(ContactTreeBackend::Type _type) : m_Type(_type),m_DropState(0)
-{
-}
-
-ContactTreeBackend::~ContactTreeBackend()
-{
-}
-
-
-char ContactTreeBackend::dropState()
-{
-   return m_DropState;
-}
-
-void ContactTreeBackend::setDropState(const char state)
-{
-   m_DropState = state;
-}
-
-ContactTreeBackend::Type ContactTreeBackend::type() const
-{
-   return m_Type;
-}
-
-QObject* Contact::self() {return this;}
+QObject* Contact::getSelf() {return this;}
 
 ///Constructor
-Contact::Contact():m_pPhoto(nullptr),ContactTreeBackend(ContactTreeBackend::Type::CONTACT),m_Numbers(this)
+Contact::Contact():m_pPhoto(nullptr),CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),m_Numbers(this)
 {
 }
+
+// QObject* Contact::getSelf()
+// {
+//    return this;
+// }
 
 ///Destructor
 Contact::~Contact()
@@ -242,9 +223,14 @@ QHash<QString,QVariant> Contact::toHash()
    return aContact;
 }
 
-QObject* Contact::PhoneNumbers::self() {
+QObject* Contact::PhoneNumbers::getSelf() {
    return m_pParent;
 }
+
+// QObject* Contact::getSelf()
+// {
+//    return this;
+// }
 
 time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
 {

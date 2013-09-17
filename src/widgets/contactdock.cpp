@@ -235,9 +235,9 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
    QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
-   if (((ContactTreeBackend*)idx.internalPointer())->type() != ContactTreeBackend::Type::CONTACT)
+   if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CONTACT)
       return;
-   m_pCurrentContact = static_cast<Contact*>(static_cast<ContactTreeBackend*>(idx.internalPointer())->self());
+   m_pCurrentContact = static_cast<Contact*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
    callAgain();
 }
 
@@ -288,7 +288,7 @@ void ContactDock::showContext(const QModelIndex& index)
       connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
    }
    if (index.parent().isValid()  && !index.parent().parent().isValid()) {
-      Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->self();
+      Contact* ct = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
       m_pCurrentContact = ct;
       m_PreselectedNb.clear();
       if (!ct->preferredEmail().isEmpty()) {
@@ -298,7 +298,7 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pBookmark->setEnabled(numbers.count() == 1);
    }
    else if (index.parent().parent().isValid()) {
-      m_pCurrentContact = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->self();
+      m_pCurrentContact = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
       m_PreselectedNb   = m_pCurrentContact->phoneNumbers()[index.row()]->uri();
    }
    else {

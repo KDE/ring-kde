@@ -55,12 +55,12 @@ public:
    virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
 private:
-   class TopLevelItem : public ContactTreeBackend,public QObject {
+   class TopLevelItem : public CategorizedCompositeNode,public QObject {
    friend class ContactProxyModel;
    public:
-      virtual QObject* self();
+      virtual QObject* getSelf();
    private:
-      explicit TopLevelItem(QString name) : ContactTreeBackend(ContactTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
+      explicit TopLevelItem(QString name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
       QList<Contact*> m_lChildren;
       QString m_Name;
    };

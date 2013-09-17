@@ -81,7 +81,7 @@ HistoryModel* HistoryModel::m_spInstance    = nullptr;
 CallMap       HistoryModel::m_sHistoryCalls          ;
 
 HistoryModel::TopLevelItem::TopLevelItem(int name) : 
-   HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name),m_NameStr(m_slHistoryConstStr[name])
+   CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name),m_NameStr(m_slHistoryConstStr[name])
 {}
 
 HistoryModel::TopLevelItem::~TopLevelItem() {
@@ -287,7 +287,7 @@ void HistoryModel::reloadCategories()
 bool HistoryModel::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
    if (idx.isValid() && idx.parent().isValid()) {
-      HistoryTreeBackend* modelItem = (HistoryTreeBackend*)idx.internalPointer();
+      CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)idx.internalPointer();
       if (role == Call::Role::DropState) {
          modelItem->setDropState(value.toInt());
          emit dataChanged(idx, idx);
@@ -301,9 +301,9 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
    if (!idx.isValid())
       return QVariant();
 
-   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
+   CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
    switch (modelItem->type()) {
-      case HistoryTreeBackend::Type::TOP_LEVEL:
+      case CategorizedCompositeNode::Type::TOP_LEVEL:
       switch (role) {
          case Qt::DisplayRole:
             return static_cast<TopLevelItem*>(modelItem)->m_NameStr;
@@ -314,7 +314,7 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
             break;
       }
       break;
-   case HistoryTreeBackend::Type::CALL:
+   case CategorizedCompositeNode::Type::CALL:
       if (role == Call::Role::DropState)
          return QVariant(modelItem->dropState());
       else if (m_lCategoryCounter.size() >= idx.parent().row() && idx.parent().row() >= 0
@@ -322,8 +322,9 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
          && m_lCategoryCounter[idx.parent().row()]->m_lChildren.size() >= idx.row())
          return m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->roleData((Call::Role)role);
       break;
-   case HistoryTreeBackend::Type::NUMBER:
-   case HistoryTreeBackend::Type::BOOKMARK:
+   case CategorizedCompositeNode::Type::NUMBER:
+   case CategorizedCompositeNode::Type::BOOKMARK:
+   case CategorizedCompositeNode::Type::CONTACT:
    default:
       break;
    };
@@ -372,14 +373,14 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
    if (!idx.isValid() || !idx.internalPointer()) {
       return QModelIndex();
    }
-   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(idx.internalPointer());
-   if (modelItem && modelItem->type() == HistoryTreeBackend::Type::CALL) {
-      const Call* call = (Call*)((HistoryTreeBackend*)(idx.internalPointer()))->getSelf();
+   CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
+   if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::CALL) {
+      const Call* call = (Call*)((CategorizedCompositeNode*)(idx.internalPointer()))->getSelf();
       const int val = call->roleData(Call::Role::FuzzyDate).toInt();
       if (m_hCategories[val])
          return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
-//    else if (modelItem && modelItem->type() == HistoryTreeBackend::Type::NUMBER) {
+//    else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
 //       Contact* ct = (Contact*)modelItem->getSelf();
 //       QString val = category(ct);
 //       if (m_hCategories[val]) {
@@ -389,7 +390,7 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
 //             HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
 //       }
 //    }
-   else if (modelItem && modelItem->type() == HistoryTreeBackend::Type::TOP_LEVEL) {
+   else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::TOP_LEVEL) {
       return QModelIndex();
    }
    return QModelIndex();
@@ -401,7 +402,7 @@ QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentI
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
    else if (!parentIdx.parent().isValid() && row >= 0 && parentIdx.row() >= 0 && m_lCategoryCounter.size() > parentIdx.row() && row < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
-      return createIndex(row,column,(void*)dynamic_cast<HistoryTreeBackend*>(m_lCategoryCounter[parentIdx.row()]->m_lChildren[row]));
+      return createIndex(row,column,(void*)dynamic_cast<CategorizedCompositeNode*>(m_lCategoryCounter[parentIdx.row()]->m_lChildren[row]));
    }
    return QModelIndex();
 }
@@ -465,15 +466,10 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
 //    return m_slHistoryConstStr[cat];
 // }
 
-HistoryTreeBackend::HistoryTreeBackend(HistoryTreeBackend::Type _type) : m_type(_type),m_DropState(0)
-{
-   
-}
-
-HistoryTreeBackend::Type HistoryTreeBackend::type() const
-{
-   return m_type;
-}
+// CategorizedCompositeNode::Type CategorizedCompositeNode::type() const
+// {
+//    return m_type;
+// }
 
 QString HistoryModel::timeToHistoryCategory(const time_t time)
 {

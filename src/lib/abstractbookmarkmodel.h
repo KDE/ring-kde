@@ -93,12 +93,12 @@ private:
    //Private constructor
 
    ///Top level bookmark item
-   class TopLevelItem : public HistoryTreeBackend, public QObject {
+   class TopLevelItem : public CategorizedCompositeNode, public QObject {
       friend class AbstractBookmarkModel;
       public:
          virtual QObject* getSelf() {return this;}
       private:
-         explicit TopLevelItem(QString name) : HistoryTreeBackend(HistoryTreeBackend::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
+         explicit TopLevelItem(QString name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
          QList<NumberTreeBackend*> m_lChildren;
          QString m_Name;
    };

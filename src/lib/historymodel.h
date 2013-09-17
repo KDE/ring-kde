@@ -114,7 +114,7 @@ private:
    bool m_HistoryInit;
 
    //Model
-   class TopLevelItem : public HistoryTreeBackend,public QObject {
+   class TopLevelItem : public CategorizedCompositeNode,public QObject {
    friend class HistoryModel;
    public:
       virtual QObject* getSelf();

@@ -16,10 +16,10 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-
-
 #ifndef CALL_H
 #define CALL_H
+
+#include "categorizedcompositenode.h"
 
 //Qt
 #include <QtCore/QDebug>
@@ -40,25 +40,6 @@ class TemporaryPhoneNumber;
 class Call;
 
 typedef  void (Call::*function)();
-
-class LIB_EXPORT HistoryTreeBackend {
-public:
-    enum Type {
-        CALL     = 0,
-        NUMBER   = 1,
-        TOP_LEVEL= 2,
-        BOOKMARK = 3,
-    };
-    explicit HistoryTreeBackend(HistoryTreeBackend::Type _type);
-    virtual ~HistoryTreeBackend();
-    HistoryTreeBackend::Type type() const;
-    virtual QObject* getSelf() = 0;
-    char dropState();
-    void setDropState(const char state);
-private:
-    HistoryTreeBackend::Type m_type;
-    char m_DropState;
-};
 
 /**
  *  This class represents a call either actual (in the call list
@@ -84,7 +65,7 @@ private:
  *  keeping the information gathered by the call and needed by the history
  *  call (history state, start time...).
 **/
-class  LIB_EXPORT Call : public QObject, public HistoryTreeBackend
+class  LIB_EXPORT Call : public QObject, public CategorizedCompositeNode
 {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
@@ -321,9 +302,10 @@ private:
    bool                   m_Recording       ;
    static Call*           m_sSelectedCall   ;
    InstantMessagingModel* m_pImModel        ;
-   int                    m_LastContactCheck;
    QTimer*                m_pTimer          ;
    UserActionModel*       m_pUserActionModel;
+
+   //Static attribute
    static AbstractContactBackend* m_pContactBackend;
 
    //State machine

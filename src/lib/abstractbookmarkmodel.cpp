@@ -27,11 +27,11 @@
 #include "phonenumber.h"
 
 //Model item/index
-class NumberTreeBackend : public HistoryTreeBackend, public QObject
+class NumberTreeBackend : public CategorizedCompositeNode, public QObject
 {
    friend class AbstractBookmarkModel;
    public:
-      NumberTreeBackend(PhoneNumber* number): HistoryTreeBackend(HistoryTreeBackend::Type::BOOKMARK),m_pNumber(number){
+      NumberTreeBackend(PhoneNumber* number): CategorizedCompositeNode(CategorizedCompositeNode::Type::BOOKMARK),m_pNumber(number){
          Q_ASSERT(number != nullptr);
       }
       virtual QObject* getSelf() { return this; }
@@ -108,29 +108,30 @@ bool AbstractBookmarkModel::setData( const QModelIndex& index, const QVariant &v
    return false;
 }
 
-///Get bookmark model data HistoryTreeBackend::Type and Call::Role
+///Get bookmark model data CategorizedCompositeNode::Type and Call::Role
 QVariant AbstractBookmarkModel::data( const QModelIndex& index, int role) const
 {
    if (!index.isValid())
       return QVariant();
 
-   HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
+   CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(index.internalPointer());
    if (!modelItem)
       return QVariant();
    switch (modelItem->type()) {
-      case HistoryTreeBackend::Type::TOP_LEVEL:
+      case CategorizedCompositeNode::Type::TOP_LEVEL:
          switch (role) {
             case Qt::DisplayRole:
                return static_cast<TopLevelItem*>(modelItem)->m_Name;
          }
          break;
-      case HistoryTreeBackend::Type::CALL:
-      case HistoryTreeBackend::Type::BOOKMARK:
+      case CategorizedCompositeNode::Type::CALL:
+      case CategorizedCompositeNode::Type::BOOKMARK:
          if (index.row() < m_lCategoryCounter[index.parent().row()]->m_lChildren.size()) {
             return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()],role);
          }
          break;
-      case HistoryTreeBackend::Type::NUMBER:
+      case CategorizedCompositeNode::Type::NUMBER:
+      case CategorizedCompositeNode::Type::CONTACT:
          break;
    };
    return QVariant();
@@ -177,8 +178,8 @@ QModelIndex AbstractBookmarkModel::parent( const QModelIndex& index) const
    if (!index.isValid() || !index.internalPointer()) {
       return QModelIndex();
    }
-   const HistoryTreeBackend* modelItem = static_cast<HistoryTreeBackend*>(index.internalPointer());
-   if (modelItem->type() == HistoryTreeBackend::Type::BOOKMARK) {
+   const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(index.internalPointer());
+   if (modelItem->type() == CategorizedCompositeNode::Type::BOOKMARK) {
       const QString val = category(static_cast<NumberTreeBackend*>(index.internalPointer()));
       if (static_cast<const NumberTreeBackend*>(modelItem)->m_pNumber->popularityIndex() < 10)
          return AbstractBookmarkModel::index(0,0);

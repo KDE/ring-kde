@@ -306,7 +306,7 @@ void HistoryDock::expandTree()
 void HistoryDock::slotContextMenu(const QModelIndex& index)
 {
    QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
-   if (((HistoryTreeBackend*)idx.internalPointer())->type() != HistoryTreeBackend::Type::CALL)
+   if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CALL)
       return;
    if (!m_pMenu) {
       m_pCallAgain    = new KAction(this);
@@ -363,7 +363,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       connect(m_pAddToContact , SIGNAL(triggered())                        , this , SLOT(slotAddToContact())     );
       connect(m_pBookmark     , SIGNAL(triggered())                        , this , SLOT(slotBookmark())         );
    }
-   m_pCurrentCall = static_cast<Call*>(static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf());
+   m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
    m_pMenu->exec(QCursor::pos());
 }
 
@@ -454,8 +454,8 @@ void HistoryDock::slotDoubleClick(const QModelIndex& index)
    QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
-   if (((HistoryTreeBackend*)idx.internalPointer())->type() != HistoryTreeBackend::Type::CALL)
+   if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CALL)
       return;
-   m_pCurrentCall = static_cast<Call*>(static_cast<HistoryTreeBackend*>(idx.internalPointer())->getSelf());
+   m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
    slotCallAgain();
 }

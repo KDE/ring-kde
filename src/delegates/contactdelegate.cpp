@@ -68,7 +68,7 @@ QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    QFontMetrics fm(QApplication::font());
    const int rowCount = index.model()->rowCount(index);
-   Contact* ct = (Contact*)((ContactTreeBackend*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->self();
+   Contact* ct = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
    static const int lineHeight = fm.height()+2;
    int lines = ((!ct->organization().isEmpty()) + (!ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight - (index.child(0,0).isValid()*lineHeight);
    lines += lines==lineHeight?3:0; //Bottom margin for contact with only multiple phone numbers
@@ -102,7 +102,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //END is selected
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   Contact* ct = (Contact*)((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self();
+   Contact* ct = (Contact*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
    if (ct->photo()) {
       QPixmap pxm = *ct->photo();
       const QRect pxRect = pxm.rect();

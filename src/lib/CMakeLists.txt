@@ -72,6 +72,7 @@ set( qtsflphone_LIB_SRCS
 
   #Other
   sflphone_const.h
+  categorizedcompositenode.cpp
 )
 
 set( qtsflphone_LIB_HDRS

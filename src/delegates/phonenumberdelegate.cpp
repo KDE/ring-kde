@@ -74,7 +74,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    }
 
    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
-   const PhoneNumber* nb = ((Contact*) ((ContactTreeBackend*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->self())->phoneNumbers()[index.row()];
+   const PhoneNumber* nb = ((Contact*) ((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf())->phoneNumbers()[index.row()];
    const QFontMetrics fm(painter->font());
    painter->setPen(((option.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
       Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
