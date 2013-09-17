@@ -64,7 +64,7 @@ const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::
 
 
 const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::State > Call::actionPerformedFunctionMap =
-{{ 
+{{
 //                        ACCEPT               REFUSE            TRANSFER                 HOLD                  RECORD             /**/
 /*INCOMING       */  {{&Call::accept     , &Call::refuse   , &Call::acceptTransf   , &Call::acceptHold  ,  &Call::setRecord     }},/**/
 /*RINGING        */  {{&Call::nothing    , &Call::hangUp   , &Call::nothing        , &Call::nothing     ,  &Call::setRecord     }},/**/

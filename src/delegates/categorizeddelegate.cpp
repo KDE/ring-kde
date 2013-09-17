@@ -428,4 +428,3 @@ void CategorizedDelegate::drawSimpleCategory(const QModelIndex &index, int sortR
    painter->setOpacity(1);
    painter->drawText(QRect(option.rect.x(),option.rect.y()+1+(index.row()==0?-metric:TOP_MARGIN),option.rect.width(),option.rect.height()-1),Qt::AlignLeft | Qt::AlignTop,category);
 }
-

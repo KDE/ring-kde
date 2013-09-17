@@ -610,6 +610,12 @@ Qt::ItemFlags CallModel::flags( const QModelIndex& idx ) const
       | ((idx.data(Call::Role::CallState) == static_cast<int>(Call::State::DIALING))?Qt::ItemIsEditable:Qt::NoItemFlags);
 }
 
+///Return valid payload types
+int CallModel::acceptedPayloadTypes()
+{
+   return DropPayloadType::CALL | DropPayloadType::HISTORY | DropPayloadType::CONTACT | DropPayloadType::NUMBER | DropPayloadType::TEXT;
+}
+
 ///There is always 1 column
 int CallModel::columnCount ( const QModelIndex& parentIdx) const
 {

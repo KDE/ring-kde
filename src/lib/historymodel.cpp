@@ -25,6 +25,7 @@
 #include "dbus/configurationmanager.h"
 #include "call.h"
 #include "contact.h"
+#include "callmodel.h"
 #include "historytimecategorymodel.h"
 
 /*****************************************************************************
@@ -171,7 +172,7 @@ void HistoryModel::add(Call* call)
    }
    m_hCategories[cat]->m_lChildren << call;
    emit historyChanged();
-//    emit layoutChanged();
+   emit layoutChanged();
 }
 
 ///Return the history list
@@ -392,7 +393,9 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
          QString text = data(idx, Call::Role::Number).toString();
          mimeData2->setData(MIME_PLAIN_TEXT , text.toUtf8());
          mimeData2->setData(MIME_PHONENUMBER, text.toUtf8());
-         mimeData2->setData(MIME_HISTORYID  , static_cast<Call*>(idx.internalPointer())->id().toUtf8());
+         CategorizedCompositeNode* node = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
+         if (node->type() == CategorizedCompositeNode::Type::CALL)
+            mimeData2->setData(MIME_HISTORYID  , static_cast<Call*>(node->getSelf())->id().toUtf8());
          return mimeData2;
       }
    }
@@ -428,6 +431,12 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
 //       contactToCall(parent, index, data, action);
 //    }
    return false;
+}
+
+///Return valid payload types
+int HistoryModel::acceptedPayloadTypes()
+{
+   return CallModel::DropPayloadType::CALL;
 }
 
 void HistoryModel::setCategoryRole(Call::Role role) 

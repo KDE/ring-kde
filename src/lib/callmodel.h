@@ -40,6 +40,16 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
    Q_OBJECT
    #pragma GCC diagnostic pop
    public:
+      ///Accepted (mime) payload types
+      enum DropPayloadType {
+         NONE    = 0   ,
+         CALL    = 1<<0,
+         HISTORY = 1<<1,
+         CONTACT = 1<<2,
+         NUMBER  = 1<<3,
+         TEXT    = 1<<4,
+      };
+
       //Constructors, initializer and destructors
       virtual ~CallModel( );
 
@@ -59,9 +69,10 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
 
       //Getters
       Q_INVOKABLE bool isValid();
-      Q_INVOKABLE int size                   ();
-      Q_INVOKABLE CallList getCallList       ();
-      Q_INVOKABLE CallList getConferenceList ();
+      Q_INVOKABLE int size                     ();
+      Q_INVOKABLE CallList getCallList         ();
+      Q_INVOKABLE CallList getConferenceList   ();
+      Q_INVOKABLE int      acceptedPayloadTypes();
 
       //Model implementation
       virtual bool          setData      ( const QModelIndex& index, const QVariant &value, int role   );

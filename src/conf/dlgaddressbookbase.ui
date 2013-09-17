@@ -15,13 +15,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QCheckBox" name="kcfg_enableAddressBook">
-     <property name="text">
-      <string>Enable address book</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="m_pPhonetypeL">
      <property name="text">
       <string>Use contact from the following phone number category:</string>

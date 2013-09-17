@@ -54,6 +54,9 @@ public:
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
    virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
+   //Getter
+   static int acceptedPayloadTypes();
+
 private:
    class TopLevelItem : public CategorizedCompositeNode,public QObject {
    friend class ContactProxyModel;

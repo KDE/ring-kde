@@ -64,6 +64,8 @@ public:
    //Presence
    void reloadPresence();
 
+   //Getters
+   int acceptedPayloadTypes();
 
 protected:
    virtual bool                  displayFrequentlyUsed() const {return false;};

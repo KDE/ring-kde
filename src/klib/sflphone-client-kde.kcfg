@@ -141,9 +141,9 @@
 
     <!-- Address Book Settings -->
 
-    <entry name="enableAddressBook" type="Bool">
+<!--    <entry name="enableAddressBook" type="Bool">
     	<label>Defines whether the search in KDE Address Book is enabled</label>
-    </entry>
+    </entry>-->
 
     <entry name="phoneTypeList" type="StringList">
       <label>Defines whether the search in KDE Address Book is enabled</label>

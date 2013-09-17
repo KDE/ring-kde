@@ -32,6 +32,8 @@
 #include <klib/tipmanager.h>
 #include <lib/call.h>
 #include <widgets/tips/tipcollection.h>
+#include <lib/contactproxymodel.h>
+#include <lib/historymodel.h>
 
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
@@ -69,14 +71,31 @@ void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
 void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
 {
    const QModelIndex& idxAt = indexAt(e->pos());
-   e->acceptProposedAction();
-   e->accept();
-   if (idxAt.isValid() && idxAt.parent().isValid()) {
-      ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
-      m_HoverIdx = idxAt;
+   const CallModel::DropPayloadType type = payloadType(e->mimeData());
+   bool accept = false;
+   switch (m_Type) {
+      case ViewType::Other:
+         break;
+      case ViewType::Contact:
+         accept = ContactProxyModel::acceptedPayloadTypes() & type;
+         break;
+      case ViewType::History:
+         accept = HistoryModel::instance()->acceptedPayloadTypes() & type;
+         break;
+      case ViewType::BookMark:
+         break;
+      case ViewType::Call:
+         accept = CallModel::instance()->acceptedPayloadTypes() & type;
+         break;
+   };
+   if (accept) {
+      e->acceptProposedAction();
+      e->accept();
+      if (idxAt.isValid() && idxAt.parent().isValid()) {
+         ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
+         m_HoverIdx = idxAt;
+      }
    }
-
-//    QTreeView::dragEnterEvent(e);
 }
 
 void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
@@ -198,3 +217,20 @@ bool CategorizedTreeView::edit(const QModelIndex& index, EditTrigger trigger, QE
       return !(index.data(Call::Role::CallState).toInt() != size_t(Call::State::DIALING));
    return QTreeView::edit(index,trigger,event);
 }
+
+CallModel::DropPayloadType CategorizedTreeView::payloadType(const QMimeData* data)
+{
+   if (data->hasFormat(MIME_CALLID))
+      return CallModel::DropPayloadType::CALL;
+   else if (data->hasFormat(MIME_CONTACT))
+      return CallModel::DropPayloadType::CONTACT;
+   else if (data->hasFormat(MIME_HISTORYID))
+      return CallModel::DropPayloadType::HISTORY;
+   else if (data->hasFormat(MIME_PHONENUMBER))
+      return CallModel::DropPayloadType::NUMBER;
+   else if (data->hasFormat(MIME_PLAIN_TEXT))
+      return CallModel::DropPayloadType::TEXT;
+   else
+      return CallModel::DropPayloadType::NONE;
+}
+

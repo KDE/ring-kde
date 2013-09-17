@@ -25,19 +25,30 @@
 class QTreeWidgetItem;
 class QStyledItemDelegate;
 
+//SFLPhone
+#include <lib/callmodel.h>
+
 ///CategorizedTreeView: A better looking widget than the plain QListWidget
 class CategorizedTreeView : public QTreeView
 {
   Q_OBJECT
 
   public:
-   enum ViewType {
+   enum class ViewType {
       Other,
       Contact,
       History,
       BookMark,
       Call
    };
+
+//    enum DropPayloadType {
+//       CALL    = 0x01,
+//       HISTORY = 0x02,
+//       CONTACT = 0x04,
+//       NUMBER  = 0x08,
+//       TEXT    = 0xFF,
+//    };
    explicit CategorizedTreeView(QWidget *parent = nullptr);
    void setDelegate(QStyledItemDelegate* delegate);
    void setViewType(ViewType type) {m_Type = type;}
@@ -55,6 +66,9 @@ class CategorizedTreeView : public QTreeView
   private:
    QModelIndex m_HoverIdx;
    ViewType m_Type;
+
+   //Helper
+   static CallModel::DropPayloadType payloadType(const QMimeData* data);
 
   Q_SIGNALS:
    void contextMenuRequest(QModelIndex);

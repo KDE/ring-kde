@@ -313,6 +313,14 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
    return mimeData;
 }
 
+///Return valid payload types
+int ContactProxyModel::acceptedPayloadTypes()
+{
+   return CallModel::DropPayloadType::CALL;
+}
+
+
+
 /*****************************************************************************
  *                                                                           *
  *                                  Helpers                                  *

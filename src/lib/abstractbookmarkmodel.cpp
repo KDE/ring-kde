@@ -25,6 +25,7 @@
 #include "dbus/presencemanager.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
+#include "callmodel.h"
 
 //Model item/index
 class NumberTreeBackend : public CategorizedCompositeNode, public QObject
@@ -220,6 +221,12 @@ QMimeData* AbstractBookmarkModel::mimeData(const QModelIndexList &indexes) const
    }
    return mimeData;
 } //mimeData
+
+///Return valid payload types
+int AbstractBookmarkModel::acceptedPayloadTypes()
+{
+   return CallModel::DropPayloadType::CALL;
+}
 
 ///Get call info TODO use Call:: one
 QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int role) const
