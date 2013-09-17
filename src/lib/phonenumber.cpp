@@ -37,10 +37,11 @@ const PhoneNumber* PhoneNumber::BLANK = PhoneNumberPrivate::initBlank();
 
 ///Constructor
 PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(PhoneDirectoryModel::instance()),
-   m_Uri(number),m_Type(type),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
+   m_Uri(stripUri(number)),m_Type(type),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
    m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr)
 {
-   setObjectName(number);
+   setObjectName(m_Uri);
+   m_hasType = !type.isEmpty();
 }
 
 ///Return if this number presence is being tracked
@@ -146,6 +147,7 @@ QHash<QString,int> PhoneNumber::alternativeNames() const
 void PhoneNumber::addCall(Call* call)
 {
    if (!call) return;
+   m_State = PhoneNumber::State::USED;
    m_lCalls << call;
    emit callAdded(call);
    if (call->startTimeStamp() > m_LastUsed)
@@ -157,6 +159,28 @@ void PhoneNumber::addCall(Call* call)
 QString PhoneNumber::toHash() const
 {
    return QString("%1///%2///%3").arg(uri()).arg(account()?account()->id():QString()).arg(contact()?contact()->uid():QString());
+}
+
+
+///Return the domaine of an URI (<sip:12345@exemple.com>)
+QString PhoneNumber::hostname() const
+{
+   if (m_Uri.indexOf('@') != -1) {
+      return m_Uri.split('@')[1].left(m_Uri.split('@')[1].size()-1);
+   }
+   return "";
+}
+
+
+///Strip out <sip:****> from the URI
+QString PhoneNumber::stripUri(const QString& uri)
+{
+   int start(0),end(uri.size()-1); //Other type of comparaisons were too slow
+   if (uri.size() > 0 && uri[0] == '<' && uri[4] == ':')
+      start = 5;
+   if (end && uri[end] == '>')
+      end--;
+   return uri.mid(start,end-start+1);
 }
 
 

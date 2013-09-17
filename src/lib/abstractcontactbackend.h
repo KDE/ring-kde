@@ -59,7 +59,7 @@ public:
 
    ///Get a contact using a phone number
    ///@param resolveDNS interpret the number as is (false) or parse it to extract the domain and number (true)
-   virtual Contact*    getContactByPhone ( const QString& phoneNumber , bool resolveDNS = false, Account* a = nullptr) = 0;
+//    virtual Contact*    getContactByPhone ( const QString& phoneNumber , bool resolveDNS = false, Account* a = nullptr) = 0;
 
    ///Return a contact (or nullptr) according to the contact unique identifier
    virtual Contact*    getContactByUid   ( const QString& uid         ) = 0;
@@ -90,7 +90,6 @@ protected:
 
    //Helper
    QString getUserFromPhone    (QString phoneNumber);
-   QString getHostNameFromPhone(QString phoneNumber);
 
    //Attributes
    QHash<QString,Contact*>        m_ContactByPhone ;

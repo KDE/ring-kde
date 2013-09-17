@@ -194,73 +194,102 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
 
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& type)
 {
-   NumberWrapper* wrap = m_hDirectory[uri];
-   if (wrap)
-      return wrap->numbers[0];
+   const QString strippedUri =  PhoneNumber::stripUri(uri);
+   NumberWrapper* wrap = m_hDirectory[strippedUri];
+   if (wrap) {
+      PhoneNumber* nb = wrap->numbers[0];
+      if ((!nb->m_hasType) && (!type.isEmpty())) {
+         nb->m_hasType = true;
+         nb->m_Type = type;
+      }
+      return nb;
+   }
 
    //Too bad, lets create one
-   PhoneNumber* number = new PhoneNumber(uri,type);
+   PhoneNumber* number = new PhoneNumber(strippedUri,type);
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    m_lNumbers << number;
    emit layoutChanged();
-   wrap = new NumberWrapper();
+   if (!wrap) {
+      wrap = new NumberWrapper();
+      m_hDirectory[strippedUri] = wrap;
+   }
    wrap->numbers << number;
-   m_hDirectory[uri] = wrap;
    return number;
 }
 
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account, const QString& type)
 {
+   const QString strippedUri =  PhoneNumber::stripUri(uri);
    //See if the number is already loaded
-   NumberWrapper* wrap = m_hDirectory[uri];
+   NumberWrapper* wrap = m_hDirectory[strippedUri];
+   if ((!wrap) && account && uri.indexOf('@') == -1) {
+      //Append the account hostname
+      wrap = m_hDirectory[strippedUri+'@'+account->hostname()];
+   }
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
          //Not perfect, but better than ignoring the high probabilities
          if (!number->account())
             number->setAccount(account);
-         if (number->account() == account)
+         if ((!number->m_hasType) && (!type.isEmpty())) {
+            number->m_hasType = true;
+            number->m_Type = type;
+         }
+         if ((!account) || number->account() == account)
             return number;
       }
    }
 
    //Create the number
-   PhoneNumber* number = new PhoneNumber(uri,type);
+   PhoneNumber* number = new PhoneNumber(strippedUri,type);
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
    m_lNumbers << number;
-   if (!wrap)
+   if (!wrap) {
       wrap = new NumberWrapper();
+      m_hDirectory[strippedUri] = wrap;
+   }
    wrap->numbers << number;
-   m_hDirectory[uri] = wrap;
    emit layoutChanged();
    return number;
 }
 
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
 {
+   const QString strippedUri =  PhoneNumber::stripUri(uri);
    //See if the number is already loaded
-   NumberWrapper* wrap = m_hDirectory[uri];
+   NumberWrapper* wrap = m_hDirectory[strippedUri];
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
-         if (number->contact() == contact && number->account() == account) {
-            return number;
+         if (!number->contact()) {
+            if (!number->account())
+               number->setAccount(account);
+            number->setContact(contact);
          }
+         if ((!number->m_hasType) && (!type.isEmpty())) {
+            number->m_hasType = true;
+            number->m_Type = type;
+         }
+         if (((!contact) || number->contact() == contact) && ((!account) || number->account() == account))
+            return number;
       }
    }
 
    //Create the number
-   PhoneNumber* number = new PhoneNumber(uri,type);
+   PhoneNumber* number = new PhoneNumber(strippedUri,type);
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
    number->setContact(contact);
    m_lNumbers << number;
-   if (!wrap)
+   if (!wrap) {
       wrap = new NumberWrapper();
+      m_hDirectory[strippedUri] = wrap;
+   }
    wrap->numbers << number;
-   m_hDirectory[uri] = wrap;
    emit layoutChanged();
    return number;
 }

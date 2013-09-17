@@ -23,7 +23,7 @@ PresenceManagerInterface& DBus::PresenceManager::instance()
 {
    if (!dbus_metaTypeInit) registerCommTypes();
    if (!interface)
-      interface = new PresenceManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/VideoControls", QDBusConnection::sessionBus());
+      interface = new PresenceManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/PresenceManager", QDBusConnection::sessionBus());
 
    if(!interface->connection().isConnected()) {
       throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From instance interface.";

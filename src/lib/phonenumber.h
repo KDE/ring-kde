@@ -81,6 +81,7 @@ public:
    int                popularityIndex () const;
    QHash<QString,int> alternativeNames() const;
    QString            mostCommonName  () const;
+   QString            hostname        () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account* account);
@@ -104,6 +105,9 @@ protected:
    QString            m_Uri              ;
    PhoneNumber::State m_State            ;
 
+   //Helper
+   static QString stripUri(const QString& uri);
+
 private:
    friend class PhoneNumberPrivate;
 
@@ -120,6 +124,7 @@ private:
    int                m_PopularityIndex  ;
    QString            m_MostCommonName   ;
    QHash<QString,int> m_hNames           ;
+   bool               m_hasType          ;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;

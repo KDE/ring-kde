@@ -101,16 +101,6 @@ QString AbstractContactBackend::getUserFromPhone(QString phoneNumber)
    return phoneNumber;
 } //getUserFromPhone
 
-///Return the domaine of an URI (<sip:12345@exemple.com>)
-QString AbstractContactBackend::getHostNameFromPhone(QString phoneNumber)
-{
-   if (phoneNumber.indexOf('@') != -1) {
-      return phoneNumber.split('@')[1].left(phoneNumber.split('@')[1].size()-1);
-   }
-   return "";
-}
-
-
 /*****************************************************************************
  *                                                                           *
  *                                   Model                                   *

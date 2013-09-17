@@ -48,7 +48,7 @@ class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
    Q_OBJECT
 public:
    static   AbstractContactBackend* instance();
-   Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
+//    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
    Contact* getContactByUid   ( const QString& uid                                                     );
    void     editContact       ( Contact*       contact , QWidget* parent = 0                           );
    void     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
