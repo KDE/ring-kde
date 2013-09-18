@@ -484,7 +484,7 @@ PhoneNumber* Call::peerPhoneNumber() const
       }
       return m_pDialNumber;
    }
-   return m_pPeerPhoneNumber;
+   return m_pPeerPhoneNumber?m_pPeerPhoneNumber:const_cast<PhoneNumber*>(PhoneNumber::BLANK);
 }
 
 ///Get the peer name

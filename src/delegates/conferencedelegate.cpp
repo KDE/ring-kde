@@ -427,6 +427,9 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
    for (int i=0;i<parent->model()->rowCount(index);i++) {
       size.setHeight(size.height()+parent->itemDelegate()->sizeHint(option,index.child(i,0)).height());
    }
+   if (index.parent().isValid() && index.model()->rowCount(index.parent()) -1 == index.row()) {
+      size = parent->itemDelegate()->sizeHint(option,index.parent().child(0,0));
+   }
 
    //Setup the painter
    QPixmap pixmap(parent->width(),size.height());

@@ -156,7 +156,6 @@ void HistoryModel::add(Call* call)
    if (!call || call->state() != Call::State::OVER)
       return;
 
-   m_sHistoryCalls[call->startTimeStamp()] = call;
    if (!m_HaveContactModel && call->contactBackend()) {
       connect(((QObject*)call->contactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
       m_HaveContactModel = true;
@@ -164,15 +163,17 @@ void HistoryModel::add(Call* call)
 
    emit newHistoryCall(call);
    const int cat = call->roleData(Call::Role::FuzzyDate).toInt();
-   if (!m_hCategories[cat]) { 
+   if (!m_hCategories[cat]) {
       TopLevelItem* item = new TopLevelItem(cat);
       m_hCategories[cat] = item;
       m_lCategoryCounter << item;
-      emit dataChanged(index(rowCount()-1,0),index(rowCount()-1,0));
+//       emit layoutChanged();
+//       emit dataChanged(index(rowCount()-1,0),index(rowCount()-1,0));
    }
    m_hCategories[cat]->m_lChildren << call;
+   m_sHistoryCalls[call->startTimeStamp()] = call;
    emit historyChanged();
-   emit layoutChanged();
+//    emit layoutChanged(); //Cause segfault
 }
 
 ///Return the history list

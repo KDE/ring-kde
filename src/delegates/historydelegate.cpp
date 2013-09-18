@@ -205,7 +205,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          currentHeight +=fm.height();
       }
 
-      if (ConfigurationSkeleton::displayCallNumber()) {
+      if (ConfigurationSkeleton::displayCallNumber() && !(currentState == Call::State::DIALING || (option.state & QStyle::State_Editing))) {
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Number).toString());
          currentHeight +=fm.height();
       }
@@ -262,7 +262,6 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       //Display the dialpad if necesary
       DialpadDelegate::paint(painter,option,index);
    }
-   
 
    static QMap<QString,DelegateDropOverlay::OverlayButton> historyMap,callMap;
    //BEGIN overlay path
