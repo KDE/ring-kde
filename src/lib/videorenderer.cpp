@@ -37,25 +37,27 @@
 #include <QtCore/QTimer>
 
 ///Shared memory object
-struct SHMHeader {
-    sem_t notification;
-    sem_t mutex;
+struct SHMHeader{
+   sem_t notification;
+   sem_t mutex;
 
-    unsigned m_BufferGen;
-    int m_BufferSize;
+   unsigned m_BufferGen;
+   int m_BufferSize;
+   /* The header will be aligned on 16-byte boundaries */
+   char padding[8];
 
-    char *m_Data;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-pedantic"
+   char m_Data[];
+#pragma GCC diagnostic pop
 };
 
 ///Constructor
 VideoRenderer::VideoRenderer(QString shmPath, Resolution res): QObject(nullptr),
-   m_Width(0), m_Height(0), m_ShmPath(QString()), fd(-1),
+   m_Width(res.width()), m_Height(res.height()), m_ShmPath(shmPath), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
    m_isRendering(false),m_pTimer(nullptr),m_Res(res)
 {
-   m_ShmPath = shmPath      ;
-   m_Width   = res.width()  ;
-   m_Height  = res.height() ;
 }
 
 ///Destructor

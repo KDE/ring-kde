@@ -183,17 +183,6 @@ const CallMap& HistoryModel::getHistory()
    return m_sHistoryCalls;
 }
 
-///Return a list of all previous calls
-const QStringList HistoryModel::getHistoryCallId()
-{
-   instance();
-   QStringList toReturn;
-   foreach(Call* call, m_sHistoryCalls) {
-      toReturn << call->id();
-   }
-   return toReturn;
-}
-
 ///Sort all history call by popularity and return the result (most popular first)
 // const QStringList HistoryModel::getNumbersByPopularity()
 // {
@@ -317,10 +306,10 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
 
 int HistoryModel::rowCount( const QModelIndex& parentIdx ) const
 {
-   if (!parentIdx.isValid() || !parentIdx.internalPointer()) {
+   if ((!parentIdx.isValid()) || (!parentIdx.internalPointer())) {
       return m_lCategoryCounter.size();
    }
-   else if (!parentIdx.parent().isValid()) {
+   else if (!parentIdx.parent().isValid() && parentIdx.row() < m_lCategoryCounter.size()) {
       return m_lCategoryCounter[parentIdx.row()]->m_lChildren.size();
    }
 //    else if (parent.parent().isValid() && !parent.parent().parent().isValid()) {
@@ -354,19 +343,10 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
       if (m_hCategories[val])
          return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
-//    else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
-//       Contact* ct = (Contact*)modelItem->getSelf();
-//       QString val = category(ct);
-//       if (m_hCategories[val]) {
-//          return HistoryModel::index(
-//             (m_hCategories[val]->m_lChildren.indexOf(ct)),
-//             0,
-//             HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
-//       }
+//    Useless
+//    else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::TOP_LEVEL) {
+//       return QModelIndex();
 //    }
-   else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::TOP_LEVEL) {
-      return QModelIndex();
-   }
    return QModelIndex();
 }
 

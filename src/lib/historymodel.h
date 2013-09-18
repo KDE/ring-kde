@@ -45,7 +45,6 @@ public:
 
    //Getters
    static const CallMap&    getHistory             ();
-   static const QStringList getHistoryCallId       ();
    int acceptedPayloadTypes();
 
    //Setters
