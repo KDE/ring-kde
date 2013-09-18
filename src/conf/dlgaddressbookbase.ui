@@ -22,15 +22,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="m_pPhoneTypeList">
+    <widget class="QListView" name="m_pPhoneTypeList">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
      </property>
     </widget>
    </item>

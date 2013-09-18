@@ -59,6 +59,7 @@ set( qtsflphone_LIB_SRCS
   presencestatusmodel.cpp
   phonedirectorymodel.cpp
   historytimecategorymodel.cpp
+  numbercategorymodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -70,6 +71,7 @@ set( qtsflphone_LIB_SRCS
   #Visitors
   visitors/accountlistcolorvisitor.cpp
   visitors/phonenumberselector.cpp
+  visitors/numbercategoryvisitor.cpp
 
   #Other
   sflphone_const.h
@@ -97,6 +99,7 @@ set( qtsflphone_LIB_HDRS
   phonenumber.h
   phonedirectorymodel.h
   historytimecategorymodel.h
+  numbercategorymodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

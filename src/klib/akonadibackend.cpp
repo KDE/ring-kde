@@ -49,6 +49,7 @@
 #include "../lib/callmodel.h"
 #include "../lib/phonenumber.h"
 #include "../lib/phonedirectorymodel.h"
+#include "../lib/numbercategorymodel.h"
 #include "kcfg_settings.h"
 
 ///Init static attributes

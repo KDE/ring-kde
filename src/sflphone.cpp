@@ -50,6 +50,8 @@
 #include "lib/contact.h"
 #include "lib/accountlistmodel.h"
 #include "lib/instantmessagingmodel.h"
+#include "lib/numbercategorymodel.h"
+#include "lib/visitors/numbercategoryvisitor.h"
 #include "klib/macromodel.h"
 #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
@@ -72,6 +74,52 @@
 
 SFLPhone* SFLPhone::m_sApp = nullptr;
 
+class ConcreteNumberCategoryVisitor :public NumberCategoryVisitor {
+   void serialize(NumberCategoryModel* model)
+   {
+      Q_UNUSED(model)
+      QList<int> list;
+      for(int i=0;i<model->rowCount();i++) {
+         const QModelIndex& idx = model->index(i,0);
+         if (idx.data(Qt::CheckStateRole) == Qt::Checked) {
+            list << idx.data(NumberCategoryModel::Role::INDEX).toInt();
+         }
+      }
+      ConfigurationSkeleton::setPhoneTypeList(list);
+   }
+
+   void load(NumberCategoryModel* model)
+   {
+      Q_UNUSED(model)
+      QList<int> list = ConfigurationSkeleton::phoneTypeList();
+      const bool isEmpty = !list.size();
+#define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
+#define ICN(name) new QPixmap(KStandardDirs::locate("data" , QString("sflphone-client-kde/mini/%1.png").arg(name)))
+      model->addCategory("Home"     ,ICN("home")     , KABC::PhoneNumber::Home ,IS_ENABLED( KABC::PhoneNumber::Home     ));
+      model->addCategory("Work"     ,ICN("work")     , KABC::PhoneNumber::Work ,IS_ENABLED( KABC::PhoneNumber::Work     ));
+      model->addCategory("Msg"      ,ICN("mail")     , KABC::PhoneNumber::Msg  ,IS_ENABLED( KABC::PhoneNumber::Msg      ));
+      model->addCategory("Pref"     ,ICN("call")     , KABC::PhoneNumber::Pref ,IS_ENABLED( KABC::PhoneNumber::Pref     ));
+      model->addCategory("Voice"    ,ICN("video")    , KABC::PhoneNumber::Voice,IS_ENABLED( KABC::PhoneNumber::Voice    ));
+      model->addCategory("Fax"      ,ICN("call")     , KABC::PhoneNumber::Fax  ,IS_ENABLED( KABC::PhoneNumber::Fax      ));
+      model->addCategory("Cell"     ,ICN("mobile")   , KABC::PhoneNumber::Cell ,IS_ENABLED( KABC::PhoneNumber::Cell     ));
+      model->addCategory("Video"    ,ICN("call")     , KABC::PhoneNumber::Video,IS_ENABLED( KABC::PhoneNumber::Video    ));
+      model->addCategory("Bbs"      ,ICN("call")     , KABC::PhoneNumber::Bbs  ,IS_ENABLED( KABC::PhoneNumber::Bbs      ));
+      model->addCategory("Modem"    ,ICN("call")     , KABC::PhoneNumber::Modem,IS_ENABLED( KABC::PhoneNumber::Modem    ));
+      model->addCategory("Car"      ,ICN("car")      , KABC::PhoneNumber::Car  ,IS_ENABLED( KABC::PhoneNumber::Car      ));
+      model->addCategory("Isdn"     ,ICN("call")     , KABC::PhoneNumber::Isdn ,IS_ENABLED( KABC::PhoneNumber::Isdn     ));
+      model->addCategory("Pcs"      ,ICN("call")     , KABC::PhoneNumber::Pcs  ,IS_ENABLED( KABC::PhoneNumber::Pcs      ));
+      model->addCategory("Pager"    ,ICN("pager")    , KABC::PhoneNumber::Pager,IS_ENABLED( KABC::PhoneNumber::Pager    ));
+      model->addCategory("Preferred",ICN("preferred"), 10000                   ,IS_ENABLED( 10000                       ));
+#undef ICN
+#undef IS_ENABLED
+   }
+
+   QVariant icon(QPixmap* icon )
+   {
+      return QIcon(*icon);
+   }
+};
+
 ///Constructor
 SFLPhone::SFLPhone(QWidget *parent)
     : KXmlGuiWindow(parent), m_pInitialized(false)
@@ -86,6 +134,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    static bool init = false;
    if (!init) {
       Call::setContactBackend(AkonadiBackend::instance());
+      NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
       InstantMessagingModelManager::init();
       AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
