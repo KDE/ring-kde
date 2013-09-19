@@ -68,6 +68,7 @@
 #include "widgets/bookmarkdock.h"
 #include "widgets/videodock.h"
 #include "widgets/presence.h"
+#include "widgets/videowidget2.h"
 #include "sflphoneaccessibility.h"
 #include "extendedaction.h"
 #include "errormessage.h"

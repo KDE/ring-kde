@@ -23,7 +23,7 @@
 //Qt
 
 //SFLPhone
-class VideoWidget;
+class VideoWidget2;
 class VideoRenderer;
 
 ///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
@@ -34,7 +34,7 @@ public:
    void setRenderer(VideoRenderer* r);
 
 private:
-   VideoWidget* m_pVideoWidet;
+   VideoWidget2* m_pVideoWidet;
 
 
 };
