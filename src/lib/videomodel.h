@@ -19,7 +19,7 @@
 #define VIDEO_MODEL_H
 //Base
 #include "typedefs.h"
-#include <QtCore/QObject>
+#include <QtCore/QThread>
 
 //Qt
 #include <QtCore/QHash>
@@ -31,7 +31,7 @@ class Call;
 struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
-class LIB_EXPORT VideoModel : public QObject {
+class LIB_EXPORT VideoModel : public QThread {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -44,9 +44,12 @@ public:
    bool       isPreviewing       ();
    VideoRenderer* getRenderer(Call* call);
    VideoRenderer* previewRenderer();
-   
+
    //Setters
    void       setBufferSize(uint size);
+
+protected:
+   void run();
 
 private:
    //Constructor
@@ -54,7 +57,7 @@ private:
 
    //Static attributes
    static VideoModel* m_spInstance;
-   
+
    //Attributes
    bool           m_PreviewState;
    uint           m_BufferSize  ;

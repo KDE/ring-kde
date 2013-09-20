@@ -54,6 +54,12 @@ SFLPhoneApplication::SFLPhoneApplication()
   : KUniqueApplication()
 #endif
 {
+
+#ifdef ENABLE_VIDEO
+   //Necessary to draw OpenGL from a separated thread
+   setAttribute(Qt::AA_X11InitThreads,true);
+#endif
+
    try {
       InstanceInterface& instance = DBus::InstanceManager::instance();
       QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);

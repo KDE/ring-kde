@@ -88,7 +88,6 @@ void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
          accept = CallModel::instance()->acceptedPayloadTypes() & type;
          break;
    };
-   qDebug() << "\n\n\nHERE" << accept << type << (int)HistoryModel::instance()->acceptedPayloadTypes() << (int)m_Type;
    if (accept) {
       e->acceptProposedAction();
       e->accept();

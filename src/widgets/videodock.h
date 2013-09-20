@@ -36,7 +36,6 @@ public:
 private:
    VideoWidget2* m_pVideoWidet;
 
-
 };
 
 #endif

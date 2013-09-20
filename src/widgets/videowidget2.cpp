@@ -1,4 +1,20 @@
-#include <QtGui/QImage>
+/***************************************************************************
+ *   Copyright (C) 2013 by Savoir-Faire Linux                              *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ **************************************************************************/
 #include "videowidget2.h"
 
 #include <QtCore/QDebug>
@@ -6,31 +22,139 @@
 #include <math.h>
 
 #include <lib/videorenderer.h>
+#include <lib/videomodel.h>
+
+#include <GL/glu.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
 #endif
 
+class ThreadedPainter: public QObject {
+   Q_OBJECT
+public:
+   ThreadedPainter(QGLWidget* wdg);
+   virtual ~ThreadedPainter(){}
+
+   //GL
+   QPoint anchor;
+   float scale;
+   float rot_x, rot_y, rot_z;
+   GLuint tile_list;
+
+   //Render
+   VideoRenderer* m_pRenderer;
+
+private:
+   QGLWidget* m_pW;
+
+
+   //Methods
+   void saveGLState();
+   void restoreGLState();
+
+public Q_SLOTS:
+   void draw();
+   void start();
+};
+
+ThreadedPainter::ThreadedPainter(QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
+   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.1f)
+{
+   
+}
+
+void ThreadedPainter::start()
+{
+   m_pW->makeCurrent();
+}
+
+void ThreadedPainter::draw()
+{
+   if (m_pRenderer) {
+      m_pRenderer->mutex()->lock();
+      glClearColor(0,0,0,0);
+      QPainter p(m_pW);
+
+      // save the GL state set for QPainter
+      saveGLState();
+
+      GLuint texture;
+      glGenTextures(1, &texture);
+      glBindTexture(GL_TEXTURE_2D, texture);
+      glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_DECAL);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_DECAL);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+      const QSize size = m_pRenderer->activeResolution();
+      if (size.width() && size.height() && m_pRenderer->rawData())
+         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, size.width(), size.height(), GL_BGRA, GL_UNSIGNED_BYTE, m_pRenderer->rawData());
+
+      // draw into the GL widget
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glFrustum(-1, 1, -1, 1, 10, 100);
+      glTranslatef(0.0f, 0.0f, -15.0f);
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+      glViewport(0, 0, m_pW->width(), m_pW->height());
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glEnable(GL_TEXTURE_2D);
+      glEnable(GL_MULTISAMPLE);
+      glEnable(GL_CULL_FACE);
+      glScalef(1.0f*scale, 1.0f*scale, 1.0f*scale);
+      glRotatef(rot_x, 1.0f, 0.0f, 0.0f);
+      glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
+      glRotatef(rot_z, 0.0f, 0.0f, 1.0f);
+
+      // draw background
+      glPushMatrix();
+      glScalef(1.7f, 1.7f, 1.7f);
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+      glCallList(tile_list);
+      glPopMatrix();
+
+      // restore the GL state that QPainter expects
+      restoreGLState();
+
+      // draw the overlayed text using QPainter
+      p.setPen  (QColor(197 , 197    , 197    , 157));
+      p.setBrush(QColor(197 , 197    , 197    , 127));
+      p.drawRect(QRect (0   , 0      , m_pW->width(), 50 ));
+      p.setPen(Qt::black);
+      p.setBrush(Qt::NoBrush);
+      const QString str1(tr("A simple OpenGL framebuffer object example."));
+      const QString str2(tr("Use the mouse wheel to zoom, press buttons and move mouse to rotate, double-click to flip."));
+      QFontMetrics fm(p.font());
+      p.drawText(m_pW->width()/2 - fm.width(str1)/2, 20, str1);
+      p.drawText(m_pW->width()/2 - fm.width(str2)/2, 20 + fm.lineSpacing(), str2);
+      m_pRenderer->mutex()->unlock();
+   }
+}
+
+
  VideoWidget2::VideoWidget2(QWidget *parent)
      : QGLWidget(QGLFormat(QGL::SampleBuffers|QGL::AlphaChannel), parent),
-     rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.1f),m_pRenderer(nullptr)
+     m_pPainter(new ThreadedPainter(this))
  {
    makeCurrent();
-   if (QGLFramebufferObject::hasOpenGLFramebufferBlit()) {
-      QGLFramebufferObjectFormat format;
-      format.setSamples(4);
-      format.setAttachment(QGLFramebufferObject::CombinedDepthStencil);
+   connect(VideoModel::instance(), SIGNAL(started()), m_pPainter, SLOT(start()));
+//    m_pPainter->moveToThread(VideoModel::instance());
+   if (!VideoModel::instance()->isRunning())
+      VideoModel::instance()->start();
+   connect(this,SIGNAL(changed()),m_pPainter,SLOT(draw()));
 
-      render_fbo = new QGLFramebufferObject(512, 512, format);
-   } else {
-      render_fbo = new QGLFramebufferObject(1024, 1024);
-   }
-
-   m_Image = new QImage("/home/etudiant/sflphone8.png");
-//      m_Image = m_Image->convertToFormat(QImage::Format_ARGB32);
-
-   tile_list = glGenLists(1);
-   glNewList(tile_list, GL_COMPILE);
+   m_pPainter->tile_list = glGenLists(1);
+   glNewList(m_pPainter->tile_list, GL_COMPILE);
    glBegin(GL_QUADS);
    {
       //Define the video plane
@@ -45,99 +169,41 @@
 
 VideoWidget2::~VideoWidget2()
 {
-   glDeleteLists(tile_list, 1);
-   delete render_fbo;
+   glDeleteLists(m_pPainter->tile_list, 1);
 }
 
 void VideoWidget2::paintEvent(QPaintEvent *)
 {
-   draw();
+   //Handled in thread
 }
 
-void VideoWidget2::draw()
-{
-   glClearColor(0,0,0,0);
-   QPainter p(this);
-
-   // save the GL state set for QPainter
-   saveGLState();
-
-   // render the 'bubbles.svg' file into our framebuffer object
-   QPainter fbo_painter(render_fbo);
-   fbo_painter.drawImage(0,0,*m_Image);
-   fbo_painter.end();
-
-   // draw into the GL widget
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   glFrustum(-1, 1, -1, 1, 10, 100);
-   glTranslatef(0.0f, 0.0f, -15.0f);
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   glViewport(0, 0, width(), height());
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-   glEnable(GL_TEXTURE_2D);
-   glEnable(GL_MULTISAMPLE);
-   glEnable(GL_CULL_FACE);
-   glScalef(1.0f*scale, 1.0f*scale, 1.0f*scale);
-   glRotatef(rot_x, 1.0f, 0.0f, 0.0f);
-   glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
-   glRotatef(rot_z, 0.0f, 0.0f, 1.0f);
-
-   // draw background
-   glPushMatrix();
-   glScalef(1.7f, 1.7f, 1.7f);
-   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-   glCallList(tile_list);
-   glPopMatrix();
-
-   // restore the GL state that QPainter expects
-   restoreGLState();
-
-   // draw the overlayed text using QPainter
-   p.setPen  (QColor(197 , 197    , 197    , 157));
-   p.setBrush(QColor(197 , 197    , 197    , 127));
-   p.drawRect(QRect (0   , 0      , width(), 50 ));
-   p.setPen(Qt::black);
-   p.setBrush(Qt::NoBrush);
-   const QString str1(tr("A simple OpenGL framebuffer object example."));
-   const QString str2(tr("Use the mouse wheel to zoom, press buttons and move mouse to rotate, double-click to flip."));
-   QFontMetrics fm(p.font());
-   p.drawText(width()/2 - fm.width(str1)/2, 20, str1);
-   p.drawText(width()/2 - fm.width(str2)/2, 20 + fm.lineSpacing(), str2);
-}
 
 void VideoWidget2::mousePressEvent(QMouseEvent *e)
 {
-   anchor = e->pos();
+   m_pPainter->anchor = e->pos();
 }
 
 void VideoWidget2::mouseMoveEvent(QMouseEvent *e)
 {
-   QPoint diff = e->pos() - anchor;
+   QPoint diff = e->pos() - m_pPainter->anchor;
    if (e->buttons() & Qt::LeftButton) {
-      rot_x += diff.y()/5.0f;
-      rot_y += diff.x()/5.0f;
+      m_pPainter->rot_x += diff.y()/5.0f;
+      m_pPainter->rot_y += diff.x()/5.0f;
    } else if (e->buttons() & Qt::RightButton) {
-      rot_z += diff.x()/5.0f;
+      m_pPainter->rot_z += diff.x()/5.0f;
    }
 
-   anchor = e->pos();
-   draw();
+   m_pPainter->anchor = e->pos();
+   emit changed();
 }
 
 void VideoWidget2::wheelEvent(QWheelEvent *e)
 {
-   e->delta() > 0 ? scale += scale*0.1f : scale -= scale*0.1f;
-   draw();
+   e->delta() > 0 ? m_pPainter->scale += m_pPainter->scale*0.1f : m_pPainter->scale -= m_pPainter->scale*0.1f;
+   emit changed();
 }
 
-void VideoWidget2::saveGLState()
+void ThreadedPainter::saveGLState()
 {
    glPushAttrib(GL_ALL_ATTRIB_BITS);
    glMatrixMode(GL_PROJECTION);
@@ -146,7 +212,7 @@ void VideoWidget2::saveGLState()
    glPushMatrix();
 }
 
-void VideoWidget2::restoreGLState()
+void ThreadedPainter::restoreGLState()
 {
    glMatrixMode(GL_PROJECTION);
    glPopMatrix();
@@ -155,48 +221,14 @@ void VideoWidget2::restoreGLState()
    glPopAttrib();
 }
 
-///Called when a new frame is ready
-void VideoWidget2::updateFrame()
-{
-   const QSize size(m_pRenderer->activeResolution().width(), m_pRenderer->activeResolution().height());
-   if (size != minimumSize())
-      setMinimumSize(size);
-   if (m_Image)
-      delete m_Image;
-   //if (!m_Image && VideoModel::instance()->isRendering())
-      m_Image = new QImage((uchar*)m_pRenderer->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
-   //This is the right way to do it, but it does not work
-//    if (!m_Image || (m_Image && m_Image->size() != size))
-//       m_Image = new QImage((uchar*)VideoModel::instance()->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
-//    if (!m_Image->loadFromData(VideoModel::instance()->getCurrentFrame())) {
-//       qDebug() << "Loading image failed";
-//    }
-   repaint();
-}
-
-///Prevent the painter to try to paint an invalid framebuffer
-void VideoWidget2::stop()
-{
-   if (m_Image) {
-      delete m_Image;
-      m_Image = nullptr;
-   }
-}
-
-
 ///Set widget renderer
 void VideoWidget2::setRenderer(VideoRenderer* renderer)
 {
-   if (m_pRenderer)
-      disconnect(m_pRenderer,SIGNAL(frameUpdated()),this,SLOT(updateFrame()));
-   m_pRenderer = renderer;
-   connect(m_pRenderer,SIGNAL(frameUpdated()),this,SLOT(updateFrame()));
+   if (m_pPainter->m_pRenderer)
+      disconnect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
+   m_pPainter->m_pRenderer = renderer;
+   connect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
 }
 
-///Repaint the widget
-void VideoWidget2::update() {
-   QPainter painter(this);
-   if (m_Image && m_pRenderer->isRendering())
-      painter.drawImage(QRect(0,0,width(),height()),*(m_Image));
-   painter.end();
-}
+#include "videowidget2.moc"
+#include "moc_videowidget2.cpp"

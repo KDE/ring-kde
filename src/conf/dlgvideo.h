@@ -17,6 +17,7 @@
  ***************************************************************************/
 #ifndef DLG_VIDEO_H
 #define DLG_VIDEO_H
+#ifdef ENABLE_VIDEO
 
 #include <QWidget>
 
@@ -57,4 +58,5 @@ Q_SIGNALS:
    void updateButtons();
 };
 
+#endif
 #endif

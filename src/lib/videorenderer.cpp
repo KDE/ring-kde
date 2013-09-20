@@ -18,6 +18,7 @@
 #include "videorenderer.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QMutex>
 
 #include <sys/ipc.h>
 #include <sys/sem.h>
@@ -56,7 +57,7 @@ struct SHMHeader{
 VideoRenderer::VideoRenderer(QString shmPath, Resolution res): QObject(nullptr),
    m_Width(res.width()), m_Height(res.height()), m_ShmPath(shmPath), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
-   m_isRendering(false),m_pTimer(nullptr),m_Res(res)
+   m_isRendering(false),m_pTimer(nullptr),m_Res(res),m_pMutex(new QMutex())
 {
 }
 
@@ -240,8 +241,9 @@ timespec VideoRenderer::createTimeout()
 void VideoRenderer::timedEvents()
 {
    bool ok = true;
-   QByteArray ba;
+//    m_pMutex->lock();
    renderToBitmap(m_Frame,ok);
+//    m_pMutex->unlock();
    if (ok == true) {
       emit frameUpdated();
    }
@@ -305,6 +307,13 @@ Resolution VideoRenderer::activeResolution()
 {
    return m_Res;
 }
+
+///Get mutex, in case renderer and views are not in the same thread
+QMutex* VideoRenderer::mutex()
+{
+   return m_pMutex;
+}
+
 
 /*****************************************************************************
  *                                                                           *

@@ -24,6 +24,7 @@
 
 //Qt
 class QTimer;
+class QMutex;
 
 //SFLPhone
 #include "videodevice.h"
@@ -48,10 +49,11 @@ class LIB_EXPORT VideoRenderer : public QObject {
 
       //Getters
       QByteArray  renderToBitmap(QByteArray& data, bool& ok);
-      const char* rawData            ();
-      bool        isRendering        ();
+      const char* rawData         ();
+      bool        isRendering     ();
       QByteArray  currentFrame    ();
       Resolution  activeResolution();
+      QMutex*     mutex           ();
 
       //Setters
       void setResolution(QSize   size);
@@ -70,6 +72,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
       QTimer*    m_pTimer     ;
       QByteArray m_Frame      ;
       Resolution m_Res        ;
+      QMutex*    m_pMutex     ;
 
       //Constants
       static const int TIMEOUT_SEC = 1; // 1 second

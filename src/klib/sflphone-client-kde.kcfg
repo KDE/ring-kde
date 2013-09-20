@@ -147,7 +147,7 @@
 
     <entry name="phoneTypeList" type="IntList">
       <label>Defines whether the search in KDE Address Book is enabled</label>
-      <default>{Work,Home,Messenger,Preferred number,Voice,Mobile,Work,Video,Mailbox,Modem,Car,ISDN,PCS,Pager,Other...,Work}</default>
+      <default>0,1,2,3,4,5,6,7,8,9,10,11,12,10000</default>
     </entry>
 
     <entry name="displayOrganisation" type="Bool">

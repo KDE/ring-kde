@@ -128,7 +128,9 @@ bool ConfigurationDialog::hasChanged()
             || (dlgDisplay       && dlgDisplay->hasChanged()       )
             || (dlgAddressBook   && dlgAddressBook->hasChanged()   )
             || (dlgAccessibility && dlgAccessibility->hasChanged() )
+#ifdef ENABLE_VIDEO
             || (dlgVideo         && dlgVideo->hasChanged()         )
+#endif
             || (dlgPresence      && dlgPresence->hasChanged()      );
 
    return res;

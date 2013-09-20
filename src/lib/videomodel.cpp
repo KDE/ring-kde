@@ -28,7 +28,7 @@
 VideoModel* VideoModel::m_spInstance = nullptr;
 
 ///Constructor
-VideoModel::VideoModel():m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false)
+VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false)
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
@@ -104,6 +104,9 @@ void VideoModel::startedDecoding(QString id, QString shmPath, int width, int hei
 
    if (m_lRenderers[id] == nullptr ) {
       m_lRenderers[id] = new VideoRenderer(shmPath,Resolution(width,height));
+      m_lRenderers[id]->moveToThread(this);
+      if (!isRunning())
+         start();
    }
    else {
       VideoRenderer* renderer = m_lRenderers[id];
@@ -126,4 +129,9 @@ void VideoModel::stoppedDecoding(QString id, QString shmPath)
        m_lRenderers[id]->stopRendering();
    qDebug() << "Video stopped for call" << id;
    emit videoStopped();
+}
+
+void VideoModel::run()
+{
+   exec();
 }
