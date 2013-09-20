@@ -20,6 +20,7 @@
 
 //KDE
 #include <KDebug>
+#include <KLocale>
 
 
 #include "klib/kcfg_settings.h"

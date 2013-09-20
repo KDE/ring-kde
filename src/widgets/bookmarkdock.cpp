@@ -31,6 +31,7 @@
 #include <KLocalizedString>
 #include <KIcon>
 #include <KLineEdit>
+#include <KLocale>
 
 //SFLPhone
 #include "klib/kcfg_settings.h"

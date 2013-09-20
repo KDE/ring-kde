@@ -18,6 +18,7 @@
 #include "sflphonecmd.h"
 #include <KCmdLineArgs>
 #include <KUniqueApplication>
+#include <KLocale>
 
 //SFLPhone
 #include <lib/call.h>

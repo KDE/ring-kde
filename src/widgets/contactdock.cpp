@@ -37,6 +37,7 @@
 #include <KIcon>
 #include <KInputDialog>
 #include <KAction>
+#include <KLocale>
 
 //SFLPhone
 #include "sflphone.h"

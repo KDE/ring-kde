@@ -20,6 +20,7 @@
 //KDE
 #include <KDebug>
 #include <KConfigDialog>
+#include <KLocale>
 
 //SFLPhone
 #include "../lib/videodevice.h"

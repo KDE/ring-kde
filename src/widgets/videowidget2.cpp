@@ -59,9 +59,8 @@ public Q_SLOTS:
 };
 
 ThreadedPainter::ThreadedPainter(QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
-   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.1f)
+   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f)
 {
-   
 }
 
 void ThreadedPainter::start()
@@ -111,7 +110,8 @@ void ThreadedPainter::draw()
       glEnable(GL_TEXTURE_2D);
       glEnable(GL_MULTISAMPLE);
       glEnable(GL_CULL_FACE);
-      glScalef(1.0f*scale, 1.0f*scale, 1.0f*scale);
+      qDebug() << "Scale" << scale;
+      glScalef(-1.0f*scale, -1.0f*scale, 1.0f*scale);
       glRotatef(rot_x, 1.0f, 0.0f, 0.0f);
       glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
       glRotatef(rot_z, 0.0f, 0.0f, 1.0f);

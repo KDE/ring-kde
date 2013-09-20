@@ -41,6 +41,7 @@
 #include <KComboBox>
 #include <KMessageBox>
 #include <KStandardDirs>
+#include <KLocale>
 #include <KEditToolBar>
 
 //sflphone library

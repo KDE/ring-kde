@@ -39,6 +39,7 @@
 #include <KLineEdit>
 #include <KDateWidget>
 #include <KComboBox>
+#include <KLocale>
 #include <KAction>
 
 //SFLPhone

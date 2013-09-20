@@ -22,6 +22,7 @@
 
 #include <KIcon>
 #include <KMessageBox>
+#include <KLocale>
 #include <KDebug>
 
 #include "lib/call.h"

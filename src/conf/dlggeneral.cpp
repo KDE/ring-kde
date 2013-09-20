@@ -24,6 +24,7 @@
 
 //KDE
 #include <KMessageBox>
+#include <KLocale>
 
 //SFLPhone
 #include "klib/kcfg_settings.h"

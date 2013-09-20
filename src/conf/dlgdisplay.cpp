@@ -22,6 +22,7 @@
 
 //KDE
 #include <KConfigDialog>
+#include <KLocale>
 
 ///Constructor
 DlgDisplay::DlgDisplay(KConfigDialog *parent)
