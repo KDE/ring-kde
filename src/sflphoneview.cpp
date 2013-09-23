@@ -35,6 +35,7 @@
 #include <KInputDialog>
 #include <kabc/addressbook.h>
 #include <KMessageBox>
+#include <KIcon>
 
 //sflphone
 #include "conf/configurationdialog.h"

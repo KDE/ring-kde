@@ -27,6 +27,7 @@
 #include <KSystemTrayIcon>
 #include <KMainWindow>
 #include <KDebug>
+#include <KIcon>
 #include <KMessageBox>
 
 //SFLPhone library

@@ -20,6 +20,8 @@
 #include <KSpeech>
 #include <KDebug>
 #include <KLocale>
+#include <KIcon>
+
 #include "sflphone.h"
 #include "lib/call.h"
 #include <lib/callmodel.h>

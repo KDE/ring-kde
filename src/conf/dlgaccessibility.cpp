@@ -22,6 +22,7 @@
 //KDE
 #include <KConfigDialog>
 #include <KLocale>
+#include <KIcon>
 
 //SFLPhone
 #include <klib/macromodel.h>

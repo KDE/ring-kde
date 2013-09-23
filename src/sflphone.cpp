@@ -43,6 +43,7 @@
 #include <KStandardDirs>
 #include <KLocale>
 #include <KEditToolBar>
+#include <KIcon>
 
 //sflphone library
 #include "lib/sflphone_const.h"

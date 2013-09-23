@@ -31,6 +31,7 @@
 #include <KStandardDirs>
 #include <KInputDialog>
 #include <KLocale>
+#include <KIcon>
 
 //SFLPhone
 #include "klib/kcfg_settings.h"

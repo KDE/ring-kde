@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "extendedaction.h"
+#include <KIcon>
 
 ExtendedAction::ExtendedAction(QObject* parent) : KAction(parent),m_pIcon(nullptr)
 {

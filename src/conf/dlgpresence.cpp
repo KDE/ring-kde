@@ -18,6 +18,8 @@
 #include "dlgpresence.h"
 #include <lib/presencestatusmodel.h>
 
+#include <KIcon>
+
 DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent)
 {
    setupUi(this);

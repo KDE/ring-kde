@@ -23,6 +23,7 @@
 //KDE
 #include <KAction>
 #include <KLocale>
+#include <KIcon>
 
 //SFLPhone
 #include "../lib/dbus/callmanager.h"
