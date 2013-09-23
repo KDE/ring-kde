@@ -182,7 +182,7 @@ bool VideoRenderer::resizeShm()
 
       shmUnlock();
       if (munmap(m_pShmArea, m_ShmAreaLen)) {
-            qDebug() << "Could not unmap shared area:%s" << strerror(errno);
+            qDebug() << "Could not unmap shared area:" << strerror(errno);
             return false;
       }
 

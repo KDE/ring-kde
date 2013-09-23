@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef VIDEO_CODEC_H
-#define VIDEO_CODEC_H
+#ifndef VIDEOCODECMODEL_H
+#define VIDEOCODECMODEL_H
 
 #include "typedefs.h"
 #include <QtCore/QAbstractListModel>
@@ -50,7 +50,7 @@ public:
    int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
    Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
-   
+
    void reload();
    void save();
    bool moveUp  (QModelIndex idx);
@@ -62,33 +62,4 @@ private:
    Account*           m_pAccount;
 };
 Q_DECLARE_METATYPE(VideoCodecModel*)
-
-///VideoCodec: Codecs used for video calls
-class LIB_EXPORT VideoCodec {
-   friend class VideoCodecModel;
-   public:
-      //Static setters
-      static void setActiveCodecList(Account* account, QStringList codecs);
-
-      //Getters
-      QString name   () const;
-      uint    bitrate() const;
-      bool    enabled() const;
-
-      //Setters
-      void setBitrate(const uint bitrate);
-      void setEnabled(const bool enabled);
-      
-   private:
-      //Constructor
-      VideoCodec(QString codecName, uint bitRate, bool enabled);
-      ~VideoCodec(){};
-
-      //Attributes
-      static CodecHash m_slCodecs;
-      QString     m_Name;
-      uint        m_Bitrate;
-      bool        m_Enabled;
-      static bool m_sInit;
-};
 #endif

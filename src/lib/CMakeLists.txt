@@ -48,6 +48,7 @@ set( qtsflphone_LIB_SRCS
   videorenderer.cpp
   videodevice.cpp
   phonenumber.cpp
+  videocodec.cpp
 
   #Models
   accountlistmodel.cpp
@@ -106,6 +107,7 @@ set( qtsflphone_LIB_HDRS
   phonedirectorymodel.h
   historytimecategorymodel.h
   numbercategorymodel.h
+  videocodec.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

@@ -1214,29 +1214,4 @@ bool Account::operator==(const Account& a)const
  *                                   Video                                   *
  *                                                                           *
  ****************************************************************************/
-#ifdef ENABLE_VIDEO
-///Save active video codecs
-void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs)
-{
-   Q_UNUSED(codecs)
-//    QStringList codecs2;
-//    VideoInterface& interface = DBus::VideoManager::instance();
-//    foreach(VideoCodec* codec,codecs) {
-//       codecs2 << codec->name();
-//    }
-//    interface.setCodecs(m_AccountId,codecs2);
-}
 
-///Return the list of active video dodecs
-QList<VideoCodec*> Account::activeVideoCodecList()
-{
-   QList<VideoCodec*> codecs;
-//    VideoInterface& interface = DBus::VideoManager::instance();
-//    const QStringList activeCodecList = interface.getCodecs(m_AccountId);
-//    foreach (const QString& codec, activeCodecList) {
-//       codecs << VideoCodec::Codec(codec);
-//    }
-   return codecs;
-}
-
-#endif

@@ -18,6 +18,7 @@
 #include "videocodecmodel.h"
 #include "call.h"
 #include "account.h"
+#include "videocodec.h"
 #include "dbus/videomanager.h"
 
 #include <QtCore/QCoreApplication>
@@ -84,7 +85,10 @@ void VideoCodecModel::reload()
    VideoInterface& interface = DBus::VideoManager::instance();
    const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->id());
    foreach(const MapStringString& h,codecs) {
-      VideoCodec* c = new VideoCodec(h["name"],h["bitrate"].toInt(),h["enabled"]=="true");
+      VideoCodec* c = new VideoCodec(h[VideoCodec::CodecFields::NAME],
+                                     h[VideoCodec::CodecFields::BITRATE].toInt(),
+                                     h[VideoCodec::CodecFields::ENABLED]=="true");
+      c->setParamaters(h[VideoCodec::CodecFields::PARAMETERS]);
       m_lCodecs << c;
    }
    emit dataChanged(index(0,0), index(m_lCodecs.size()-1,0));
@@ -96,11 +100,7 @@ void VideoCodecModel::save()
    VideoInterface& interface = DBus::VideoManager::instance();
    VectorMapStringString toSave;
    foreach(VideoCodec* vc,m_lCodecs) {
-      MapStringString details;
-      details[ "name"    ] = vc->name   ();
-      details[ "bitrate" ] = QString::number(vc->bitrate());
-      details[ "enabled" ] = vc->enabled()?"true":"false";
-      toSave << details;
+      toSave << vc->toMap();
    }
    interface.setCodecs(m_pAccount->id(),toSave);
 }
@@ -129,45 +129,4 @@ bool VideoCodecModel::moveDown(QModelIndex idx)
       return true;
    }
    return false;
-}
-
-
-QHash<QString,VideoCodec*> VideoCodec::m_slCodecs;
-bool VideoCodec::m_sInit = false;
-
-///Private constructor
-VideoCodec::VideoCodec(QString codecName, uint bitRate, bool enabled) :
-m_Name(codecName),m_Bitrate(bitRate),m_Enabled(enabled)
-{
-
-}
-
-///Get the current codec name
-QString VideoCodec::name() const
-{
-   return m_Name;
-}
-
-///Get the current codec id
-uint VideoCodec::bitrate() const
-{
-   return m_Bitrate;
-}
-
-///Get the current codec id
-bool VideoCodec::enabled() const
-{
-   return m_Enabled;
-}
-
-///Set the codec bitrate
-void VideoCodec::setBitrate(const uint bitrate)
-{
-   m_Bitrate = bitrate;
-}
-
-///Set if the codec is enabled
-void VideoCodec::setEnabled(const bool enabled)
-{
-   m_Enabled = enabled;
 }
