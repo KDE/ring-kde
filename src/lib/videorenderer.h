@@ -39,7 +39,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
 
    public:
       //Constructor
-      VideoRenderer (QString shmPath,Resolution res);
+      VideoRenderer (const QString& id, const QString& shmPath, const Resolution res);
       ~VideoRenderer();
 
       //Mutators
@@ -73,6 +73,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
       QByteArray m_Frame      ;
       Resolution m_Res        ;
       QMutex*    m_pMutex     ;
+      QString    m_Id         ;
 
       //Constants
       static const int TIMEOUT_SEC = 1; // 1 second
@@ -92,6 +93,8 @@ class LIB_EXPORT VideoRenderer : public QObject {
    Q_SIGNALS:
       ///Emitted when a new frame is ready
       void frameUpdated();
+      void stopped();
+      void started();
 
 };
 

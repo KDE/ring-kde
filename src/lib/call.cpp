@@ -42,6 +42,7 @@
 #include "callmodel.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
+#include "videorenderer.h"
 #include "historytimecategorymodel.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
@@ -879,6 +880,9 @@ void Call::nothing()
 
 void Call::error()
 {
+   if (videoRenderer()) {
+      videoRenderer()->stopRendering();
+   }
    throw QString("There was an error handling your call, please restart SFLPhone.Is you encounter this problem often, \
    please open SFLPhone-KDE in a terminal and send this last 100 lines before this message in a bug report at \
    https://projects.savoirfairelinux.com/projects/sflphone/issues");
@@ -946,6 +950,9 @@ void Call::hangUp()
    m_pStopTimeStamp = curTime;
    qDebug() << "Hanging up call. callId : " << m_CallId << "ConfId:" << m_ConfId;
    bool ret;
+   if (videoRenderer()) {
+      videoRenderer()->stopRendering();
+   }
    if (!isConference())
       ret = callManager.hangUp(m_CallId);
    else
@@ -1084,6 +1091,9 @@ void Call::startStop()
 void Call::stop()
 {
    qDebug() << "Stoping call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
+   if (videoRenderer()) {
+      videoRenderer()->stopRendering();
+   }
    time_t curTime;
    ::time(&curTime);
    m_pStopTimeStamp = curTime;

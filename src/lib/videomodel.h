@@ -42,7 +42,7 @@ public:
 
    //Getters
    bool       isPreviewing       ();
-   VideoRenderer* getRenderer(Call* call);
+   VideoRenderer* getRenderer(const Call* call) const;
    VideoRenderer* previewRenderer();
 
    //Setters
@@ -70,8 +70,8 @@ public Q_SLOTS:
    void startPreview();
 
 private Q_SLOTS:
-   void startedDecoding(QString id, QString shmPath, int width, int height);
-   void stoppedDecoding(QString id, QString shmPath);
+   void startedDecoding(const QString& id, const QString& shmPath, int width, int height);
+   void stoppedDecoding(const QString& id, const QString& shmPath);
    void deviceEvent();
 
 Q_SIGNALS:

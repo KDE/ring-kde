@@ -41,6 +41,7 @@ public:
    float scale;
    float rot_x, rot_y, rot_z;
    GLuint tile_list;
+   bool isRendering;
 
    //Render
    VideoRenderer* m_pRenderer;
@@ -56,11 +57,25 @@ private:
 public Q_SLOTS:
    void draw();
    void start();
+
+private Q_SLOTS:
+   void rendererStopped();
+   void rendererStarted();
 };
 
 ThreadedPainter::ThreadedPainter(QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
-   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f)
+   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(true)
 {
+}
+
+void ThreadedPainter::rendererStopped()
+{
+   isRendering = false;
+}
+
+void ThreadedPainter::rendererStarted()
+{
+   isRendering = true;
 }
 
 void ThreadedPainter::start()
@@ -70,7 +85,7 @@ void ThreadedPainter::start()
 
 void ThreadedPainter::draw()
 {
-   if (m_pRenderer) {
+   if (m_pRenderer && isRendering) {
       m_pRenderer->mutex()->lock();
       glClearColor(0,0,0,0);
       QPainter p(m_pW);
@@ -110,7 +125,6 @@ void ThreadedPainter::draw()
       glEnable(GL_TEXTURE_2D);
       glEnable(GL_MULTISAMPLE);
       glEnable(GL_CULL_FACE);
-      qDebug() << "Scale" << scale;
       glScalef(-1.0f*scale, -1.0f*scale, 1.0f*scale);
       glRotatef(rot_x, 1.0f, 0.0f, 0.0f);
       glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
@@ -224,10 +238,15 @@ void ThreadedPainter::restoreGLState()
 ///Set widget renderer
 void VideoWidget2::setRenderer(VideoRenderer* renderer)
 {
-   if (m_pPainter->m_pRenderer)
+   if (m_pPainter->m_pRenderer) {
       disconnect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
+      disconnect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
+      disconnect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
+   }
    m_pPainter->m_pRenderer = renderer;
    connect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
+   connect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
+   connect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
 }
 
 #include "videowidget2.moc"

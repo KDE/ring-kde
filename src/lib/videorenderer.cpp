@@ -54,11 +54,13 @@ struct SHMHeader{
 };
 
 ///Constructor
-VideoRenderer::VideoRenderer(QString shmPath, Resolution res): QObject(nullptr),
+VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, Resolution res): QObject(nullptr),
    m_Width(res.width()), m_Height(res.height()), m_ShmPath(shmPath), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
-   m_isRendering(false),m_pTimer(nullptr),m_Res(res),m_pMutex(new QMutex())
+   m_isRendering(false),m_pTimer(nullptr),m_Res(res),m_pMutex(new QMutex()),
+   m_Id(id)
 {
+   setObjectName("VideoRenderer:"+id);
 }
 
 ///Destructor
@@ -143,7 +145,7 @@ bool VideoRenderer::startShm()
 
    fd = shm_open(m_ShmPath.toAscii(), O_RDWR, 0);
    if (fd < 0) {
-      qDebug() << "could not open shm area \"%s\", shm_open failed:%s" << m_ShmPath << strerror(errno);
+      qDebug() << "could not open shm area " << m_ShmPath << ", shm_open failed:" << strerror(errno);
       return false;
    }
    m_ShmAreaLen = sizeof(SHMHeader);
@@ -155,6 +157,7 @@ bool VideoRenderer::startShm()
       qDebug() << "Could not map shm area, mmap failed";
       return false;
    }
+   emit started();
    return true;
 }
 
@@ -241,9 +244,10 @@ timespec VideoRenderer::createTimeout()
 void VideoRenderer::timedEvents()
 {
    bool ok = true;
-//    m_pMutex->lock();
+   sync();
+   m_pMutex->lock();
    renderToBitmap(m_Frame,ok);
-//    m_pMutex->unlock();
+   m_pMutex->unlock();
    if (ok == true) {
       emit frameUpdated();
    }
@@ -270,11 +274,13 @@ void VideoRenderer::startRendering()
 void VideoRenderer::stopRendering()
 {
    m_isRendering = false;
+   qDebug() << "Stopping rendering on" << m_Id;
+   if (m_pTimer)
+      m_pTimer->stop();
+   emit stopped();
    stopShm();
    //qDebug() << "Video stopped for call" << id;
    //emit videoStopped();
-   if (m_pTimer)
-      m_pTimer->stop();
 }
 
 

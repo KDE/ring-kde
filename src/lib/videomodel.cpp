@@ -46,7 +46,7 @@ VideoModel* VideoModel::instance()
 }
 
 ///Return the call renderer or nullptr
-VideoRenderer* VideoModel::getRenderer(Call* call)
+VideoRenderer* VideoModel::getRenderer(const Call* call) const
 {
    if (!call) return nullptr;
    return m_lRenderers[call->id()];
@@ -57,7 +57,7 @@ VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
       VideoInterface& interface = DBus::VideoManager::instance();
-      m_lRenderers["local"] = new VideoRenderer("", Resolution(interface.getActiveDeviceSize()));
+      m_lRenderers["local"] = new VideoRenderer("local","", Resolution(interface.getActiveDeviceSize()));
    }
    return m_lRenderers["local"];
 }
@@ -98,12 +98,12 @@ void VideoModel::deviceEvent()
 }
 
 ///A video is not being rendered
-void VideoModel::startedDecoding(QString id, QString shmPath, int width, int height)
+void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int width, int height)
 {
    Q_UNUSED(id)
 
    if (m_lRenderers[id] == nullptr ) {
-      m_lRenderers[id] = new VideoRenderer(shmPath,Resolution(width,height));
+      m_lRenderers[id] = new VideoRenderer(id,shmPath,Resolution(width,height));
       m_lRenderers[id]->moveToThread(this);
       if (!isRunning())
          start();
@@ -114,7 +114,7 @@ void VideoModel::startedDecoding(QString id, QString shmPath, int width, int hei
       renderer->setResolution(QSize(width,height));
    }
 
-    m_lRenderers[id]->startRendering();
+   m_lRenderers[id]->startRendering();
    if (id != "local") {
       qDebug() << "Starting video for call" << id;
       emit videoCallInitiated(m_lRenderers[id]);
@@ -122,12 +122,16 @@ void VideoModel::startedDecoding(QString id, QString shmPath, int width, int hei
 }
 
 ///A video stopped being rendered
-void VideoModel::stoppedDecoding(QString id, QString shmPath)
+void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
 {
    Q_UNUSED(shmPath)
-   if ( m_lRenderers[id] )
-       m_lRenderers[id]->stopRendering();
-   qDebug() << "Video stopped for call" << id;
+   VideoRenderer* r = m_lRenderers[id];
+   if ( r ) {
+      r->mutex()->lock();
+      r->stopRendering();
+      r->mutex()->unlock();
+   }
+   qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
    emit videoStopped();
 }
 

@@ -667,10 +667,6 @@ void Account::setId(const QString& id)
    m_AccountId = id;
 }
 
-#ifdef ENABLE_VIDEO
-void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
-QList<VideoCodec*> getActiveVideoCodecList();
-#endif
 ///Set the account type, SIP or IAX
 void Account::setAccountType(const QString& detail)
 {
@@ -1222,23 +1218,25 @@ bool Account::operator==(const Account& a)const
 ///Save active video codecs
 void Account::setActiveVideoCodecList(const QList<VideoCodec*>& codecs)
 {
-   QStringList codecs2;
-   VideoInterface& interface = DBus::VideoManager::instance();
-   foreach(VideoCodec* codec,codecs) {
-      codecs2 << codecs->getName();
-   }
-   interface.setActiveCodecList(codecs2,m_AccountId);
+   Q_UNUSED(codecs)
+//    QStringList codecs2;
+//    VideoInterface& interface = DBus::VideoManager::instance();
+//    foreach(VideoCodec* codec,codecs) {
+//       codecs2 << codec->name();
+//    }
+//    interface.setCodecs(m_AccountId,codecs2);
 }
 
 ///Return the list of active video dodecs
-QList<VideoCodec*> Account::ActiveVideoCodecList()
+QList<VideoCodec*> Account::activeVideoCodecList()
 {
    QList<VideoCodec*> codecs;
-   VideoInterface& interface = DBus::VideoManager::instance();
-   const QStringList activeCodecList = interface.getActiveCodecList(m_AccountId);
-   foreach (const QString& codec, activeCodecList) {
-      codecs << VideoCodec::Codec(codec);
-   }
+//    VideoInterface& interface = DBus::VideoManager::instance();
+//    const QStringList activeCodecList = interface.getCodecs(m_AccountId);
+//    foreach (const QString& codec, activeCodecList) {
+//       codecs << VideoCodec::Codec(codec);
+//    }
+   return codecs;
 }
 
 #endif

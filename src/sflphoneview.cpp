@@ -210,15 +210,6 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
          if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
             TipCollection::manager()->setCurrentTip(nullptr);
          }
-
-         //Remove item overlays
-         for (int i = 0;i < m_pParent->m_pView->model()->rowCount();i++) {
-            const QModelIndex& idx = m_pParent->m_pView->model()->index(i,0);
-            m_pParent->m_pView->model()->setData(idx,-1,Call::Role::DropState);
-            for (int j = 0;j < m_pParent->m_pView->model()->rowCount(idx);j++) {
-               m_pParent->m_pView->model()->setData(m_pParent->m_pView->model()->index(j,0,idx),-1,Call::Role::DropState);
-            }
-         }
          return true;
       }
       else {
@@ -231,6 +222,15 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
          //2) Send to the model for processing
          m_pParent->m_pView->model()->dropMimeData(data,Qt::MoveAction,idxAt.row(),idxAt.column(),idxAt.parent());
+      }
+
+      //Remove item overlays
+      for (int i = 0;i < m_pParent->m_pView->model()->rowCount();i++) {
+         const QModelIndex& idx = m_pParent->m_pView->model()->index(i,0);
+         m_pParent->m_pView->model()->setData(idx,-1,Call::Role::DropState);
+         for (int j = 0;j < m_pParent->m_pView->model()->rowCount(idx);j++) {
+            m_pParent->m_pView->model()->setData(m_pParent->m_pView->model()->index(j,0,idx),-1,Call::Role::DropState);
+         }
       }
    }
    else if (event->type() == QEvent::DragMove) {

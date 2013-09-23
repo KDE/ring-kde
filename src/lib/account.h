@@ -288,7 +288,7 @@ class LIB_EXPORT Account : public QObject {
       void setId      (const QString& id);
       #ifdef ENABLE_VIDEO
       void setActiveVideoCodecList(const QList<VideoCodec*>& codecs);
-      QList<VideoCodec*> getActiveVideoCodecList();
+      QList<VideoCodec*> activeVideoCodecList();
       #endif
       void setAlias                         (const QString& detail);
       void setAccountType                   (const QString& detail);
