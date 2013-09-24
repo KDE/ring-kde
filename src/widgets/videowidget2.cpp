@@ -33,8 +33,11 @@
 class ThreadedPainter: public QObject {
    Q_OBJECT
 public:
+   friend class VideoWidget2;
    ThreadedPainter(QGLWidget* wdg);
-   virtual ~ThreadedPainter(){}
+   virtual ~ThreadedPainter(){
+//       QThread::currentThread()->quit();
+   }
 
    //GL
    QPoint anchor;
@@ -48,6 +51,7 @@ public:
 
 private:
    QGLWidget* m_pW;
+   QMutex mutex;
 
 
    //Methods
@@ -56,36 +60,38 @@ private:
 
 public Q_SLOTS:
    void draw();
-   void start();
-
-private Q_SLOTS:
+   void reset();
    void rendererStopped();
    void rendererStarted();
 };
 
 ThreadedPainter::ThreadedPainter(QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
-   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(true)
+   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false)
 {
+}
+
+void ThreadedPainter::reset()
+{
+   m_pRenderer = nullptr;
 }
 
 void ThreadedPainter::rendererStopped()
 {
+   QMutexLocker locker(&mutex);
    isRendering = false;
 }
 
 void ThreadedPainter::rendererStarted()
 {
-   isRendering = true;
-}
-
-void ThreadedPainter::start()
-{
+   QMutexLocker locker(&mutex);
    m_pW->makeCurrent();
+   isRendering = true;
 }
 
 void ThreadedPainter::draw()
 {
    if (m_pRenderer && isRendering) {
+      QMutexLocker locker(&mutex);
       m_pRenderer->mutex()->lock();
       glClearColor(0,0,0,0);
       QPainter p(m_pW);
@@ -161,10 +167,10 @@ void ThreadedPainter::draw()
      m_pPainter(new ThreadedPainter(this))
  {
    makeCurrent();
-   connect(VideoModel::instance(), SIGNAL(started()), m_pPainter, SLOT(start()));
-//    m_pPainter->moveToThread(VideoModel::instance());
-   if (!VideoModel::instance()->isRunning())
-      VideoModel::instance()->start();
+//    QThread* t = new QThread(this);
+//    connect(t, SIGNAL(started()), m_pPainter, SLOT(rendererStarted()));
+//    m_pPainter->moveToThread(t);
+//    t->start();
    connect(this,SIGNAL(changed()),m_pPainter,SLOT(draw()));
 
    m_pPainter->tile_list = glGenLists(1);
@@ -179,10 +185,18 @@ void ThreadedPainter::draw()
    }
    glEnd();
    glEndList();
+
+   QSizePolicy sp = sizePolicy();
+   sp.setVerticalPolicy(QSizePolicy::Preferred);
+   sp.setHorizontalPolicy(QSizePolicy::Preferred);
+   sp.setHeightForWidth(true);
+   sp.setWidthForHeight(true);
+   setSizePolicy(sp);
  }
 
 VideoWidget2::~VideoWidget2()
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    glDeleteLists(m_pPainter->tile_list, 1);
 }
 
@@ -194,11 +208,13 @@ void VideoWidget2::paintEvent(QPaintEvent *)
 
 void VideoWidget2::mousePressEvent(QMouseEvent *e)
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    m_pPainter->anchor = e->pos();
 }
 
 void VideoWidget2::mouseMoveEvent(QMouseEvent *e)
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    QPoint diff = e->pos() - m_pPainter->anchor;
    if (e->buttons() & Qt::LeftButton) {
       m_pPainter->rot_x += diff.y()/5.0f;
@@ -213,6 +229,7 @@ void VideoWidget2::mouseMoveEvent(QMouseEvent *e)
 
 void VideoWidget2::wheelEvent(QWheelEvent *e)
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    e->delta() > 0 ? m_pPainter->scale += m_pPainter->scale*0.1f : m_pPainter->scale -= m_pPainter->scale*0.1f;
    emit changed();
 }
@@ -238,15 +255,41 @@ void ThreadedPainter::restoreGLState()
 ///Set widget renderer
 void VideoWidget2::setRenderer(VideoRenderer* renderer)
 {
+   m_pPainter->rendererStopped();
+   QMutexLocker locker(&m_pPainter->mutex);
    if (m_pPainter->m_pRenderer) {
       disconnect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
       disconnect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
       disconnect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
+      disconnect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(setRenderer()));
    }
    m_pPainter->m_pRenderer = renderer;
-   connect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
-   connect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
-   connect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
+   if (m_pPainter->m_pRenderer) {
+      connect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
+      connect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
+      connect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
+      connect(m_pPainter->m_pRenderer,SIGNAL(destroyed()),m_pPainter,SLOT(reset()));
+      setSizeIncrement(1,((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width()));
+      if (m_pPainter->thread()->isRunning())
+         m_pPainter->isRendering = true;
+   }
+}
+
+///Force widget aspect ratio
+int VideoWidget2::heightForWidth( int w ) const
+{
+   if (m_pPainter->m_pRenderer  )
+   if (m_pPainter->m_pRenderer)
+      return w*((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width());
+   return w*.75f;
+}
+
+QSize VideoWidget2::sizeHint() const
+{
+   if (m_pPainter->m_pRenderer) {
+      return m_pPainter->m_pRenderer->activeResolution();
+   }
+   return QSize(100,75);
 }
 
 #include "videowidget2.moc"

@@ -40,12 +40,15 @@ public:
    void mouseMoveEvent(QMouseEvent *);
    void wheelEvent(QWheelEvent *);
 
+   virtual int    heightForWidth( int w ) const;
+   virtual QSize  sizeHint      (       ) const;
+
 private:
    //Attributes
    ThreadedPainter* m_pPainter;
 
 public Q_SLOTS:
-   void setRenderer(VideoRenderer* renderer);
+   void setRenderer(VideoRenderer* renderer = nullptr);
 
 Q_SIGNALS:
    void changed();

@@ -1067,7 +1067,7 @@ void Account::save()
       m_CurrentState = READY;
    }
    #ifdef ENABLE_VIDEO
-   m_pVideoCodecs->save();
+   videoCodecModel()->save();
    #endif
    saveAudioCodecs();
    emit changed(this);

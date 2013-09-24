@@ -244,7 +244,6 @@ timespec VideoRenderer::createTimeout()
 void VideoRenderer::timedEvents()
 {
    bool ok = true;
-   sync();
    m_pMutex->lock();
    renderToBitmap(m_Frame,ok);
    m_pMutex->unlock();
@@ -260,6 +259,7 @@ void VideoRenderer::timedEvents()
 ///Start the rendering loop
 void VideoRenderer::startRendering()
 {
+   QMutexLocker locker(m_pMutex);
    startShm();
    if (!m_pTimer) {
       m_pTimer = new QTimer(this);
@@ -273,6 +273,7 @@ void VideoRenderer::startRendering()
 ///Stop the rendering loop
 void VideoRenderer::stopRendering()
 {
+   QMutexLocker locker(m_pMutex);
    m_isRendering = false;
    qDebug() << "Stopping rendering on" << m_Id;
    if (m_pTimer)
