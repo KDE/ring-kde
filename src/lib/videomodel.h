@@ -31,7 +31,7 @@ class Call;
 struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
-class LIB_EXPORT VideoModel : public QObject {
+class LIB_EXPORT VideoModel : public QThread {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -48,6 +48,9 @@ public:
    //Setters
    void       setBufferSize(uint size);
 
+protected:
+   void run();
+
 private:
    //Constructor
    VideoModel();
@@ -60,7 +63,6 @@ private:
    uint           m_BufferSize  ;
    uint           m_ShmKey      ;
    uint           m_SemKey      ;
-   QThread        m_Thread      ;
    QHash<QString,VideoRenderer*> m_lRenderers;
 
 public Q_SLOTS:

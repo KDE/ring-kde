@@ -48,7 +48,6 @@ class LIB_EXPORT VideoRenderer : public QObject {
       bool startShm ();
 
       //Getters
-      QByteArray  renderToBitmap(QByteArray& data, bool& ok);
       const char* rawData         ();
       bool        isRendering     ();
       QByteArray  currentFrame    ();
@@ -82,6 +81,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
       timespec createTimeout();
       bool     shmLock      ();
       void     shmUnlock    ();
+      bool     renderToBitmap(QByteArray& data);
 
    private Q_SLOTS:
       void timedEvents();

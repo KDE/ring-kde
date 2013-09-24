@@ -881,6 +881,7 @@ void Call::nothing()
 void Call::error()
 {
    if (videoRenderer()) {
+      //Well, in this case we have no choice, it still doesn't belong here
       videoRenderer()->stopRendering();
    }
    throw QString("There was an error handling your call, please restart SFLPhone.Is you encounter this problem often, \
@@ -950,7 +951,7 @@ void Call::hangUp()
    m_pStopTimeStamp = curTime;
    qDebug() << "Hanging up call. callId : " << m_CallId << "ConfId:" << m_ConfId;
    bool ret;
-   if (videoRenderer()) {
+   if (videoRenderer()) { //TODO remove, cheap hack
       videoRenderer()->stopRendering();
    }
    if (!isConference())
@@ -1091,7 +1092,7 @@ void Call::startStop()
 void Call::stop()
 {
    qDebug() << "Stoping call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
-   if (videoRenderer()) {
+   if (videoRenderer()) { //TODO remove, cheap hack
       videoRenderer()->stopRendering();
    }
    time_t curTime;

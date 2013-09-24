@@ -68,9 +68,11 @@
 #include "widgets/contactdock.h"
 #include "widgets/historydock.h"
 #include "widgets/bookmarkdock.h"
+#ifdef ENABLE_VIDEO
 #include "widgets/videodock.h"
-#include "widgets/presence.h"
 #include "widgets/videowidget2.h"
+#endif
+#include "widgets/presence.h"
 #include "sflphoneaccessibility.h"
 #include "extendedaction.h"
 #include "errormessage.h"
@@ -779,7 +781,7 @@ void SFLPhone::displayVideoDock(VideoRenderer* r)
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
    }
-   m_pVideoDW->setRenderer(r);
+   m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
 }
 #endif

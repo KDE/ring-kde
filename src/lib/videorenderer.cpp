@@ -71,15 +71,14 @@ VideoRenderer::~VideoRenderer()
 }
 
 ///Get the data from shared memory and transform it into a QByteArray
-QByteArray VideoRenderer::renderToBitmap(QByteArray& data,bool& ok)
+bool VideoRenderer::renderToBitmap(QByteArray& data)
 {
    if (!m_isRendering) {
-      return QByteArray();
+      return false;
    }
 
    if (!shmLock()) {
-      ok = false;
-      return QByteArray();
+      return false;
    }
 
    // wait for a new buffer
@@ -111,20 +110,17 @@ QByteArray VideoRenderer::renderToBitmap(QByteArray& data,bool& ok)
 //             break;
 //       }
       if (err < 0) {
-         ok = false;
-         return QByteArray();
+         return false;
       }
 
       if (!shmLock()) {
-         ok = false;
-         return QByteArray();
+         return false;
       }
    }
 
    if (!resizeShm()) {
       qDebug() << "Could not resize shared memory";
-      ok = false;
-      return QByteArray();
+      return false;
    }
 
    if (data.size() != m_pShmArea->m_BufferSize)
@@ -132,7 +128,8 @@ QByteArray VideoRenderer::renderToBitmap(QByteArray& data,bool& ok)
    memcpy(data.data(),m_pShmArea->m_Data,m_pShmArea->m_BufferSize);
    m_BufferGen = m_pShmArea->m_BufferGen;
    shmUnlock();
-   return data;
+//    return data;
+   return true;
 }
 
 ///Connect to the shared memory
@@ -243,9 +240,9 @@ timespec VideoRenderer::createTimeout()
 ///Update the buffer
 void VideoRenderer::timedEvents()
 {
-   bool ok = true;
    m_pMutex->lock();
-   renderToBitmap(m_Frame,ok);
+
+   bool ok = renderToBitmap(m_Frame);
    m_pMutex->unlock();
    if (ok == true) {
       emit frameUpdated();
@@ -294,7 +291,7 @@ void VideoRenderer::stopRendering()
 ///Get the raw bytes directly from the SHM, not recommended, but optimal
 const char* VideoRenderer::rawData()
 {
-   return m_isRendering?m_pShmArea->m_Data:nullptr;
+   return m_isRendering?m_Frame.data():nullptr;
 }
 
 ///Is this redenrer active

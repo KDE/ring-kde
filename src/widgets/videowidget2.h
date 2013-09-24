@@ -17,11 +17,8 @@
  **************************************************************************/
 #ifndef VIDEOWIDGET2_H
 #define VIDEOWIDGET2_H
- 
- #include <QtOpenGL>
- #include <QPixmap>
- #include <QTimeLine>
- #include <QSvgRenderer>
+
+#include <QGLWidget>
 
 class VideoRenderer;
 

@@ -18,6 +18,7 @@
 #include "videowidget2.h"
 
 #include <QtCore/QDebug>
+#include <QtOpenGL>
 
 #include <math.h>
 
@@ -91,7 +92,7 @@ void ThreadedPainter::rendererStarted()
 void ThreadedPainter::draw()
 {
    if (m_pRenderer && isRendering) {
-      QMutexLocker locker(&mutex);
+//       QMutexLocker locker(&mutex);
       m_pRenderer->mutex()->lock();
       glClearColor(0,0,0,0);
       QPainter p(m_pW);
@@ -158,6 +159,9 @@ void ThreadedPainter::draw()
       p.drawText(m_pW->width()/2 - fm.width(str1)/2, 20, str1);
       p.drawText(m_pW->width()/2 - fm.width(str2)/2, 20 + fm.lineSpacing(), str2);
       m_pRenderer->mutex()->unlock();
+      p.setPen  (Qt::NoPen);
+      p.setBrush(QColor(25 , 25    , 25    , 200));
+      p.drawRect(QRect (0  , m_pW->height()-30 , m_pW->width(), 30 ));
    }
 }
 
@@ -167,6 +171,7 @@ void ThreadedPainter::draw()
      m_pPainter(new ThreadedPainter(this))
  {
    makeCurrent();
+//    Should work, does not
 //    QThread* t = new QThread(this);
 //    connect(t, SIGNAL(started()), m_pPainter, SLOT(rendererStarted()));
 //    m_pPainter->moveToThread(t);
@@ -205,7 +210,6 @@ void VideoWidget2::paintEvent(QPaintEvent *)
    //Handled in thread
 }
 
-
 void VideoWidget2::mousePressEvent(QMouseEvent *e)
 {
    QMutexLocker locker(&m_pPainter->mutex);
@@ -215,7 +219,7 @@ void VideoWidget2::mousePressEvent(QMouseEvent *e)
 void VideoWidget2::mouseMoveEvent(QMouseEvent *e)
 {
    QMutexLocker locker(&m_pPainter->mutex);
-   QPoint diff = e->pos() - m_pPainter->anchor;
+   const QPoint diff = e->pos() - m_pPainter->anchor;
    if (e->buttons() & Qt::LeftButton) {
       m_pPainter->rot_x += diff.y()/5.0f;
       m_pPainter->rot_y += diff.x()/5.0f;

@@ -31,7 +31,7 @@ class VideoDock : public QDockWidget {
    Q_OBJECT
 public:
    explicit VideoDock(QWidget* parent = nullptr );
-   void setRenderer(VideoRenderer* r);
+   void addRenderer(VideoRenderer* r);
 
 private:
    VideoWidget2* m_pVideoWidet;

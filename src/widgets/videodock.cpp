@@ -51,10 +51,11 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),0,0);
    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),2,0);
    setWidget(wdg);
+   setMinimumSize(320,240);
 }
 
 ///Set current renderer
-void VideoDock::setRenderer(VideoRenderer* r)
+void VideoDock::addRenderer(VideoRenderer* r)
 {
    m_pVideoWidet->setRenderer(r);
 }

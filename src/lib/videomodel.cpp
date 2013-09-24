@@ -28,7 +28,7 @@
 VideoModel* VideoModel::m_spInstance = nullptr;
 
 ///Constructor
-VideoModel::VideoModel():QObject(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_Thread(this)
+VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false)
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
@@ -104,15 +104,15 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
 
    if (m_lRenderers[id] == nullptr ) {
       m_lRenderers[id] = new VideoRenderer(id,shmPath,Resolution(width,height));
-      m_lRenderers[id]->moveToThread(&m_Thread);
+      m_lRenderers[id]->moveToThread(this);
+      if (!isRunning())
+         start();
    }
    else {
       VideoRenderer* renderer = m_lRenderers[id];
       renderer->setShmPath(shmPath);
       renderer->setResolution(QSize(width,height));
    }
-   if (!m_Thread.isRunning())
-      m_Thread.start();
 
    m_lRenderers[id]->startRendering();
    if (id != "local") {
@@ -129,8 +129,13 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
    if ( r ) {
       r->stopRendering();
    }
+   qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
    m_lRenderers[id] = nullptr;
    delete r;
-   qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
    emit videoStopped();
+}
+
+void VideoModel::run()
+{
+   exec();
 }
