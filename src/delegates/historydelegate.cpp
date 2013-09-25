@@ -303,3 +303,11 @@ void HistoryDelegate::slotStopRingingAnimation()
          m_pRingingTip->setVisible(false);
    }
 }
+
+HistoryDelegate::~HistoryDelegate()
+{
+   if (m_AnimationWrapper)
+      delete m_AnimationWrapper;
+   if (m_pRingingTip)
+      delete m_pRingingTip;
+}

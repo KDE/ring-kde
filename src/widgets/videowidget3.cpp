@@ -60,9 +60,11 @@ VideoWidget3::~VideoWidget3()
 
 void VideoWidget3::addRenderer(VideoRenderer* renderer)
 {
+   m_pWdg->makeCurrent();
    if (renderer) {
       VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
       frm->setRenderer(renderer);
+      connect(frm,SIGNAL(changed()),m_pScene,SLOT(frameChanged()));
       m_pScene->m_lFrames << frm;
    }
 }

@@ -35,9 +35,10 @@ namespace KABC {
 }
 
 namespace Akonadi {
-   class Session        ;
-   class Collection     ;
-   class Item           ;
+   class Session           ;
+   class Collection        ;
+   class Item              ;
+   class CollectionFetchJob;
 }
 
 //SFLPhone
@@ -71,6 +72,7 @@ private:
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
    ContactList                    m_pContacts  ;
+   Akonadi::CollectionFetchJob*   m_pJob       ;
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);

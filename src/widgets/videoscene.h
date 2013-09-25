@@ -14,19 +14,12 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-
-#ifndef OPENGLSCENE_H
-#define OPENGLSCENE_H
-
-#include "point3d.h"
+#ifndef VIDEOSCENE_H
+#define VIDEOSCENE_H
 
 #include <QGraphicsScene>
-#include <QLabel>
-#include <QTime>
 
-#ifndef QT_NO_CONCURRENT
-#include <QFutureWatcher>
-#endif
+class QLabel;
 
 class VideoGLFrame;
 
@@ -42,6 +35,7 @@ public:
 
 public slots:
    void setBackgroundColor();
+   void frameChanged();
 
 protected:
    void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -53,15 +47,6 @@ private:
    QDialog *createDialog(const QString &windowTitle) const;
 
    QColor m_backgroundColor;
-
-   QTime m_time;
-   int m_lastTime;
-   int m_mouseEventTime;
-
-   float m_distance;
-   Point3d m_rotation;
-   Point3d m_angularMomentum;
-   Point3d m_accumulatedMomentum;
 
    QLabel *m_labels[4];
 

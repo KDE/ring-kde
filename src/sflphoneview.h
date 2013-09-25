@@ -34,6 +34,8 @@ class AccountWizard;
 class Contact;
 class CallViewOverlayToolbar;
 class CallViewOverlay;
+class HistoryDelegate;
+class ConferenceDelegate;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -56,6 +58,8 @@ private:
    AccountWizard* wizard     ;
    CallViewOverlayToolbar* m_pCanvasToolbar;
    CallViewOverlay* m_pTransferOverlay;
+   ConferenceDelegate* m_pConfDelegate;
+   HistoryDelegate* m_pHistoryDelegate;
 
 protected:
 

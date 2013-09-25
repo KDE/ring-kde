@@ -28,6 +28,7 @@ class SFLPhoneAccessibility : public QObject, public QList<KAction*>
 public:
    //Singleton
    static SFLPhoneAccessibility* instance();
+   virtual ~SFLPhoneAccessibility();
 private:
    //Constructor
    SFLPhoneAccessibility();

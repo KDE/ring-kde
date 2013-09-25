@@ -54,6 +54,8 @@ m_pRing2Pix(nullptr),m_pRing3Pix(nullptr)
 RingingTip::~RingingTip()
 {
    if (m_pTimer) delete m_pTimer;
+   if (m_pR)
+      delete m_pR;
 }
 
 ///Return the image rect

@@ -49,6 +49,13 @@ SFLPhoneAccessibility::SFLPhoneAccessibility() : QObject(0),QList<KAction*>()
    connect(action,SIGNAL(triggered(bool)),this,SLOT(currentCallDetails()));
 }
 
+SFLPhoneAccessibility::~SFLPhoneAccessibility()
+{
+   for (int i=0;i<QList<KAction*>::size();i++){
+      delete QList<KAction*>::at(i);
+   }
+}
+
 ///Signleton
 SFLPhoneAccessibility* SFLPhoneAccessibility::instance()
 {

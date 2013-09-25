@@ -86,13 +86,18 @@ m_pModel(parent),m_Role(role),m_ShowAll(showAll)
 
 ContactProxyModel::~ContactProxyModel()
 {
-
+   foreach(TopLevelItem* item,m_lCategoryCounter) {
+      delete item;
+   }
 }
 
 void ContactProxyModel::reloadCategories()
 {
    beginResetModel();
    m_hCategories.clear();
+   foreach(TopLevelItem* item,m_lCategoryCounter) {
+      delete item;
+   }
    m_lCategoryCounter.clear();
    foreach(Contact* cont, m_pModel->getContactList()) {
       QString val = category(cont);

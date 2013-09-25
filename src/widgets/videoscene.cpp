@@ -19,6 +19,7 @@
 
 #include <QtGui>
 #include <QtOpenGL>
+#include <QtGui/QLabel>
 #include <GL/glu.h>
 
 #include "videoglframe.h"
@@ -40,9 +41,6 @@ QDialog *VideoScene::createDialog(const QString &windowTitle) const
 
 VideoScene::VideoScene()
    : m_backgroundColor(0, 170, 255)
-   , m_lastTime(0)
-   , m_distance(1.4f)
-   , m_angularMomentum(0, 40, 0)
 {
    QWidget *controls = createDialog(tr("Controls"));
 
@@ -97,57 +95,20 @@ VideoScene::VideoScene()
    m_lightItem->setFlag(QGraphicsItem::ItemIsMovable);
    m_lightItem->setPos(800, 200);
    addItem(m_lightItem);
-   m_time.start();
 }
 
-void VideoScene::drawBackground(QPainter *painter, const QRectF &)
+void VideoScene::drawBackground(QPainter *painter, const QRectF& rect)
 {
+   Q_UNUSED(rect)
    if (painter->paintEngine()->type() != QPaintEngine::OpenGL && painter->paintEngine()->type() != QPaintEngine::OpenGL2) {
       qDebug() << "VideoScene: drawBackground needs a QGLWidget to be set as viewport on the graphics view" << painter->paintEngine()->type();
       return;
    }
-/*
+
    glClearColor(m_backgroundColor.redF(), m_backgroundColor.greenF(), m_backgroundColor.blueF(), 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   glMatrixMode(GL_PROJECTION);
-   glPushMatrix();
-   glLoadIdentity();
-   gluPerspective(70, width() / height(), 0.01, 1000);
-
-   glMatrixMode(GL_MODELVIEW);
-   glPushMatrix();
-   glLoadIdentity();
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnarrowing"
-#pragma GCC diagnostic ignored "-pedantic"
-//    char m_Data[];
-   const float pos[] = { m_lightItem->x() - width() / 2, height() / 2 - m_lightItem->y(), 512, 0 };
-   glLightfv(GL_LIGHT0, GL_POSITION, pos);
-   glColor4f(m_backgroundColor.redF(), m_backgroundColor.greenF(), m_backgroundColor.blueF(), 1.0f);
-
-   const int delta = m_time.elapsed() - m_lastTime;
-   m_rotation += m_angularMomentum * (delta / 1000.0);
-   m_lastTime += delta;
-#pragma GCC diagnostic pop
-
-   glTranslatef(0, 0, -m_distance);
-   glRotatef(m_rotation.x, 1, 0, 0);
-   glRotatef(m_rotation.y, 0, 1, 0);
-   glRotatef(m_rotation.z, 0, 0, 1);
-
-   glEnable(GL_MULTISAMPLE);
-   glDisable(GL_MULTISAMPLE);
-
-   glPopMatrix();
-
-   glMatrixMode(GL_PROJECTION);
-   glPopMatrix();*/
-
-   QTimer::singleShot(20, this, SLOT(update()));
    foreach(VideoGLFrame* frm, m_lFrames) {
-      qDebug() << "Drawing frame";
       frm->paintEvent(painter);
    }
 }
@@ -167,12 +128,6 @@ void VideoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
    if (event->isAccepted())
       return;
    if (event->buttons() & Qt::LeftButton) {
-      const QPointF delta = event->scenePos() - event->lastScenePos();
-      const Point3d angularImpulse = Point3d(delta.y(), delta.x(), 0) * 0.1;
-
-      m_rotation += angularImpulse;
-      m_accumulatedMomentum += angularImpulse;
-
       event->accept();
       update();
    }
@@ -195,8 +150,6 @@ void VideoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
    if (event->isAccepted())
       return;
 
-   m_mouseEventTime = m_time.elapsed();
-   m_angularMomentum = m_accumulatedMomentum = Point3d();
    event->accept();
 
    foreach(VideoGLFrame* frm, m_lFrames) {
@@ -210,8 +163,6 @@ void VideoScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
    if (event->isAccepted())
       return;
 
-   const int delta = m_time.elapsed() - m_mouseEventTime;
-   m_angularMomentum = m_accumulatedMomentum * (1000.0 / qMax(1, delta));
    event->accept();
    update();
 }
@@ -222,10 +173,15 @@ void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
    if (event->isAccepted())
       return;
 
-   m_distance *= qPow(1.2, -event->delta() / 120);
    event->accept();
    foreach(VideoGLFrame* frm, m_lFrames) {
       frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
    }
    update();
 }
+
+void VideoScene::frameChanged()
+{
+   update();
+}
+

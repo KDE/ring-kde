@@ -54,6 +54,13 @@ m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_C
    addStatus(data);
 }
 
+PresenceStatusModel::~PresenceStatusModel()
+{
+   foreach (StatusData* data, m_lStatuses) {
+      delete data;
+   }
+}
+
 ///Get model data
 QVariant PresenceStatusModel::data(const QModelIndex& index, int role ) const
 {

@@ -41,6 +41,7 @@ public:
 
    //Constructor
    explicit PresenceStatusModel(QObject* parent = nullptr);
+   virtual ~PresenceStatusModel();
 
    //Abstract model members
    virtual QVariant      data       (const QModelIndex& index, int role = Qt::DisplayRole                 ) const;

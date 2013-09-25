@@ -61,9 +61,9 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
    m_pSession = new Akonadi::Session( "SFLPhone::instance" );
 
    // fetching all collections containing emails recursively, starting at the root collection
-   Akonadi::CollectionFetchJob *job = new Akonadi::CollectionFetchJob( Akonadi::Collection::root(), Akonadi::CollectionFetchJob::Recursive, this );
-   job->fetchScope().setContentMimeTypes( QStringList() << "text/directory" );
-   connect( job, SIGNAL(collectionsReceived(Akonadi::Collection::List)), this, SLOT(collectionsReceived(Akonadi::Collection::List)) );
+   m_pJob = new Akonadi::CollectionFetchJob( Akonadi::Collection::root(), Akonadi::CollectionFetchJob::Recursive, this );
+   m_pJob->fetchScope().setContentMimeTypes( QStringList() << "text/directory" );
+   connect( m_pJob, SIGNAL(collectionsReceived(Akonadi::Collection::List)), this, SLOT(collectionsReceived(Akonadi::Collection::List)) );
 } //AkonadiBackend
 
 ///Destructor
@@ -72,6 +72,7 @@ AkonadiBackend::~AkonadiBackend()
    delete m_pSession;
    if (Call::contactBackend() == this)
       Call::setContactBackend(nullptr);
+   delete m_pJob;
 }
 
 

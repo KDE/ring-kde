@@ -291,9 +291,10 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    m_pView->setModel(CallModel::instance());
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
    m_pView->expandAll();
-   auto delegate = new ConferenceDelegate(m_pView,palette());
-   delegate->setCallDelegate(new HistoryDelegate(m_pView));
-   m_pView->setItemDelegate(delegate);
+   m_pConfDelegate = new ConferenceDelegate(m_pView,palette());
+   m_pHistoryDelegate = new HistoryDelegate(m_pView);
+   m_pConfDelegate->setCallDelegate(m_pHistoryDelegate);
+   m_pView->setItemDelegate(m_pConfDelegate);
    m_pView->viewport()->installEventFilter(new CallViewEventFilter(this));
    m_pView->installEventFilter(new CallViewEventFilter(this));
    m_pView->setViewType(CategorizedTreeView::ViewType::Call);
@@ -339,6 +340,8 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 ///Destructor
 SFLPhoneView::~SFLPhoneView()
 {
+   delete m_pConfDelegate;
+   delete m_pHistoryDelegate;
 }
 
 ///Init main window

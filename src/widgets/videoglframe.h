@@ -64,6 +64,9 @@ private:
 public Q_SLOTS:
    void setRenderer(VideoRenderer* renderer = nullptr);
 
+private Q_SLOTS:
+   void slotEmitChanged();
+
 Q_SIGNALS:
    void changed();
 };

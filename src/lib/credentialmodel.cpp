@@ -21,13 +21,20 @@
 #include <QtCore/QCoreApplication>
 
 ///Constructor
-CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()) {
-
+CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance())
+{
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(CredentialModel::Role::NAME    ,QByteArray("name"));
    roles.insert(CredentialModel::Role::PASSWORD,QByteArray("password"));
    roles.insert(CredentialModel::Role::REALM   ,QByteArray("realm"));
    setRoleNames(roles);
+}
+
+CredentialModel::~CredentialModel()
+{
+   foreach (CredentialData2* data, m_lCredentials) {
+      delete data;
+   }
 }
 
 ///Model data

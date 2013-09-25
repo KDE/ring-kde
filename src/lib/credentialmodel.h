@@ -39,6 +39,7 @@ public:
 
    //Constructor
    explicit CredentialModel(QObject* parent = nullptr);
+   virtual ~CredentialModel();
 
    //Abstract model member
    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;

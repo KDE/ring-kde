@@ -132,6 +132,14 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
 ///Destructor
 HistoryModel::~HistoryModel()
 {
+   for (int i=0; i<m_lCategoryCounter.size();i++) {
+      delete m_lCategoryCounter[i];
+   }
+   while(m_lCategoryCounter.size()) {
+      TopLevelItem* item = m_lCategoryCounter[0];
+      m_lCategoryCounter.removeAt(0);
+      delete item;
+   }
    m_spInstance = nullptr;
 }
 
