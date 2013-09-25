@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "videowidget2.h"
+#include "videoglframe.h"
 
 #include <QtCore/QDebug>
 #include <QtOpenGL>
@@ -31,17 +31,17 @@
 #define GL_MULTISAMPLE  0x809D
 #endif
 
-class ThreadedPainter: public QObject {
+class ThreadedPainter2: public QObject {
    Q_OBJECT
 public:
-   friend class VideoWidget2;
-   ThreadedPainter(QGLWidget* wdg);
-   virtual ~ThreadedPainter(){
+   friend class VideoGLFrame;
+   ThreadedPainter2(QGLWidget* wdg);
+   virtual ~ThreadedPainter2(){
 //       QThread::currentThread()->quit();
    }
 
    //GL
-   QPoint anchor;
+   QPointF anchor;
    float scale;
    float rot_x, rot_y, rot_z;
    GLuint tile_list;
@@ -53,6 +53,7 @@ public:
 private:
    QGLWidget* m_pW;
    QMutex mutex;
+   QByteArray m_Data;
 
 
    //Methods
@@ -60,42 +61,50 @@ private:
    void restoreGLState();
 
 public Q_SLOTS:
-   void draw();
+   void draw(QPainter* p);
+   void copyFrame();
    void reset();
    void rendererStopped();
    void rendererStarted();
 };
 
-ThreadedPainter::ThreadedPainter(QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
+ThreadedPainter2::ThreadedPainter2(QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
    m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false)
 {
 }
 
-void ThreadedPainter::reset()
+void ThreadedPainter2::reset()
 {
    m_pRenderer = nullptr;
 }
 
-void ThreadedPainter::rendererStopped()
+void ThreadedPainter2::rendererStopped()
 {
    QMutexLocker locker(&mutex);
    isRendering = false;
 }
 
-void ThreadedPainter::rendererStarted()
+void ThreadedPainter2::rendererStarted()
 {
    QMutexLocker locker(&mutex);
    m_pW->makeCurrent();
    isRendering = true;
 }
 
-void ThreadedPainter::draw()
+void ThreadedPainter2::copyFrame()
+{
+   qDebug() << "Copy";
+   m_Data = m_pRenderer->rawData();
+}
+
+void ThreadedPainter2::draw(QPainter* p)
 {
    if (m_pRenderer && isRendering) {
+   qDebug() << "Is redering";
 //       QMutexLocker locker(&mutex);
       m_pRenderer->mutex()->lock();
       glClearColor(0,0,0,0);
-      QPainter p(m_pW);
+//       QPainter p(m_pW);
 
       // save the GL state set for QPainter
       saveGLState();
@@ -112,8 +121,8 @@ void ThreadedPainter::draw()
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
       const QSize size = m_pRenderer->activeResolution();
-      if (size.width() && size.height() && m_pRenderer->rawData())
-         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, size.width(), size.height(), GL_BGRA, GL_UNSIGNED_BYTE, m_pRenderer->rawData());
+      if (size.width() && size.height() && m_Data.size())
+         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, size.width(), size.height(), GL_BGRA, GL_UNSIGNED_BYTE, m_Data);
 
       // draw into the GL widget
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -148,29 +157,30 @@ void ThreadedPainter::draw()
       restoreGLState();
 
       // draw the overlayed text using QPainter
-      p.setPen  (QColor(197 , 197 , 197 , 157));
-      p.setBrush(QColor(197 , 197 , 197 , 127));
-      p.drawRect(QRect (0   , 0   , m_pW->width(), 50 ));
-      p.setPen(Qt::black);
-      p.setBrush(Qt::NoBrush);
+      p->setPen  (QColor(197 , 197 , 197 , 157));
+      p->setBrush(QColor(197 , 197 , 197 , 127));
+      p->drawRect(QRect (0   , 0   , m_pW->width(), 50 ));
+      p->setPen(Qt::black);
+      p->setBrush(Qt::NoBrush);
       const QString str1(tr("A simple OpenGL framebuffer object example."));
       const QString str2(tr("Use the mouse wheel to zoom, press buttons and move mouse to rotate, double-click to flip."));
-      QFontMetrics fm(p.font());
-      p.drawText(m_pW->width()/2 - fm.width(str1)/2, 20, str1);
-      p.drawText(m_pW->width()/2 - fm.width(str2)/2, 20 + fm.lineSpacing(), str2);
+      QFontMetrics fm(p->font());
+      p->drawText(m_pW->width()/2 - fm.width(str1)/2, 20, str1);
+      p->drawText(m_pW->width()/2 - fm.width(str2)/2, 20 + fm.lineSpacing(), str2);
       m_pRenderer->mutex()->unlock();
-      p.setPen  (Qt::NoPen);
-      p.setBrush(QColor(25 , 25    , 25    , 200));
-      p.drawRect(QRect (0  , m_pW->height()-30 , m_pW->width(), 30 ));
+      p->setPen  (Qt::NoPen);
+      p->setBrush(QColor(25 , 25    , 25    , 200));
+      p->drawRect(QRect (0  , m_pW->height()-30 , m_pW->width(), 30 ));
    }
 }
 
 
- VideoWidget2::VideoWidget2(QWidget *parent)
-     : QGLWidget(QGLFormat(QGL::SampleBuffers|QGL::AlphaChannel), parent),
-     m_pPainter(new ThreadedPainter(this))
+ VideoGLFrame::VideoGLFrame(QGLWidget *parent)
+     : QObject(parent),m_pParent(parent),
+     m_pPainter(new ThreadedPainter2(parent))
  {
-   makeCurrent();
+//    makeCurrent();
+
 //    Should work, does not
 //    QThread* t = new QThread(this);
 //    connect(t, SIGNAL(started()), m_pPainter, SLOT(rendererStarted()));
@@ -190,55 +200,48 @@ void ThreadedPainter::draw()
    }
    glEnd();
    glEndList();
-
-   QSizePolicy sp = sizePolicy();
-   sp.setVerticalPolicy(QSizePolicy::Preferred);
-   sp.setHorizontalPolicy(QSizePolicy::Preferred);
-   sp.setHeightForWidth(true);
-   sp.setWidthForHeight(true);
-   setSizePolicy(sp);
  }
 
-VideoWidget2::~VideoWidget2()
+VideoGLFrame::~VideoGLFrame()
 {
    QMutexLocker locker(&m_pPainter->mutex);
    glDeleteLists(m_pPainter->tile_list, 1);
 }
 
-void VideoWidget2::paintEvent(QPaintEvent *)
+void VideoGLFrame::paintEvent(QPainter* p)
 {
-   //Handled in thread
+   m_pPainter->draw(p);
 }
 
-void VideoWidget2::mousePressEvent(QMouseEvent *e)
-{
-   QMutexLocker locker(&m_pPainter->mutex);
-   m_pPainter->anchor = e->pos();
-}
+// void VideoGLFrame::mousePressEvent(QMouseEvent *e)
+// {
+//    QMutexLocker locker(&m_pPainter->mutex);
+//    m_pPainter->anchor = e->pos();
+// }
 
-void VideoWidget2::mouseMoveEvent(QMouseEvent *e)
-{
-   QMutexLocker locker(&m_pPainter->mutex);
-   const QPoint diff = e->pos() - m_pPainter->anchor;
-   if (e->buttons() & Qt::LeftButton) {
-      m_pPainter->rot_x += diff.y()/5.0f;
-      m_pPainter->rot_y += diff.x()/5.0f;
-   } else if (e->buttons() & Qt::RightButton) {
-      m_pPainter->rot_z += diff.x()/5.0f;
-   }
+// void VideoGLFrame::mouseMoveEvent(QMouseEvent *e)
+// {
+//    QMutexLocker locker(&m_pPainter->mutex);
+//    const QPoint diff = e->pos() - m_pPainter->anchor;
+//    if (e->buttons() & Qt::LeftButton) {
+//       m_pPainter->rot_x += diff.y()/5.0f;
+//       m_pPainter->rot_y += diff.x()/5.0f;
+//    } else if (e->buttons() & Qt::RightButton) {
+//       m_pPainter->rot_z += diff.x()/5.0f;
+//    }
+// 
+//    m_pPainter->anchor = e->pos();
+//    emit changed();
+// }
 
-   m_pPainter->anchor = e->pos();
-   emit changed();
-}
+// void VideoGLFrame::wheelEvent(QWheelEvent *e)
+// {
+//    QMutexLocker locker(&m_pPainter->mutex);
+//    e->delta() > 0 ? m_pPainter->scale += m_pPainter->scale*0.1f : m_pPainter->scale -= m_pPainter->scale*0.1f;
+//    emit changed();
+// }
 
-void VideoWidget2::wheelEvent(QWheelEvent *e)
-{
-   QMutexLocker locker(&m_pPainter->mutex);
-   e->delta() > 0 ? m_pPainter->scale += m_pPainter->scale*0.1f : m_pPainter->scale -= m_pPainter->scale*0.1f;
-   emit changed();
-}
-
-void ThreadedPainter::saveGLState()
+void ThreadedPainter2::saveGLState()
 {
    glPushAttrib(GL_ALL_ATTRIB_BITS);
    glMatrixMode(GL_PROJECTION);
@@ -247,7 +250,7 @@ void ThreadedPainter::saveGLState()
    glPushMatrix();
 }
 
-void ThreadedPainter::restoreGLState()
+void ThreadedPainter2::restoreGLState()
 {
    glMatrixMode(GL_PROJECTION);
    glPopMatrix();
@@ -257,30 +260,30 @@ void ThreadedPainter::restoreGLState()
 }
 
 ///Set widget renderer
-void VideoWidget2::setRenderer(VideoRenderer* renderer)
+void VideoGLFrame::setRenderer(VideoRenderer* renderer)
 {
 //    if (m_pPainter->m_pRenderer && m_pPainter->m_pRenderer->isRendering())
 //       m_pPainter->rendererStopped();
    QMutexLocker locker(&m_pPainter->mutex);
    if (m_pPainter->m_pRenderer) {
-      disconnect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
+      disconnect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(copyFrame()));
       disconnect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
       disconnect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
    }
    m_pPainter->m_pRenderer = renderer;
    if (m_pPainter->m_pRenderer) {
-      connect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(draw()));
+      connect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(copyFrame()));
       connect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
       connect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
       connect(m_pPainter->m_pRenderer,SIGNAL(destroyed()),m_pPainter,SLOT(reset()));
-      setSizeIncrement(1,((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width()));
+//       setSizeIncrement(1,((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width()));
       if (m_pPainter->thread()->isRunning())
          m_pPainter->isRendering = true;
    }
 }
 
 ///Force widget aspect ratio
-int VideoWidget2::heightForWidth( int w ) const
+int VideoGLFrame::heightForWidth( int w ) const
 {
    if (m_pPainter->m_pRenderer  )
    if (m_pPainter->m_pRenderer)
@@ -288,7 +291,7 @@ int VideoWidget2::heightForWidth( int w ) const
    return w*.75f;
 }
 
-QSize VideoWidget2::sizeHint() const
+QSize VideoGLFrame::sizeHint() const
 {
    if (m_pPainter->m_pRenderer) {
       return m_pPainter->m_pRenderer->activeResolution();
@@ -296,5 +299,55 @@ QSize VideoWidget2::sizeHint() const
    return QSize(100,75);
 }
 
-#include "videowidget2.moc"
-#include "moc_videowidget2.cpp"
+void VideoGLFrame::setRotZ(float rot)
+{
+   m_pPainter->rot_z = rot;
+}
+
+void VideoGLFrame::setRotY(float rot)
+{
+   m_pPainter->rot_y = rot;
+}
+
+void VideoGLFrame::setRotX(float rot)
+{
+   m_pPainter->rot_x = rot;
+}
+
+void VideoGLFrame::setScale(float scale)
+{
+   m_pPainter->scale = scale;
+}
+
+void VideoGLFrame::setAnchor(const QPointF& point)
+{
+   m_pPainter->anchor = point;
+}
+
+QPointF VideoGLFrame::anchor() const
+{
+   return m_pPainter->anchor;
+}
+
+float VideoGLFrame::rotZ() const
+{
+   return m_pPainter->rot_z;
+}
+
+float VideoGLFrame::rotY() const
+{
+   return m_pPainter->rot_y;
+}
+
+float VideoGLFrame::rotX() const
+{
+   return m_pPainter->rot_x;
+}
+
+float VideoGLFrame::scale() const
+{
+   return m_pPainter->scale;
+}
+
+#include "videoglframe.moc"
+#include "moc_videoglframe.cpp"

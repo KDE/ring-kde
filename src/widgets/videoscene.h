@@ -1,6 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011-2013 by Savoir-Faire Linux                         *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C) 2008 Nokia Corporation                                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,28 +14,58 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef VIDEO_DOCK_H
-#define VIDEO_DOCK_H
 
-#include <QtGui/QDockWidget>
+#ifndef OPENGLSCENE_H
+#define OPENGLSCENE_H
 
-//Qt
-class QGraphicsView;
-class VideoScene;
+#include "point3d.h"
 
-//SFLPhone
-class VideoWidget3;
-class VideoRenderer;
+#include <QGraphicsScene>
+#include <QLabel>
+#include <QTime>
 
-///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
-class VideoDock : public QDockWidget {
+#ifndef QT_NO_CONCURRENT
+#include <QFutureWatcher>
+#endif
+
+class VideoGLFrame;
+
+class VideoScene : public QGraphicsScene
+{
    Q_OBJECT
+
 public:
-   explicit VideoDock(QWidget* parent = nullptr );
-   void addRenderer(VideoRenderer* r);
+   VideoScene();
+
+   void drawBackground(QPainter *painter, const QRectF &rect);
+   QList<VideoGLFrame*> m_lFrames ;
+
+public slots:
+   void setBackgroundColor();
+
+protected:
+   void mousePressEvent(QGraphicsSceneMouseEvent *event);
+   void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+   void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+   void wheelEvent(QGraphicsSceneWheelEvent * wheelEvent);
 
 private:
-   VideoWidget3*  m_pVideoWidet;
+   QDialog *createDialog(const QString &windowTitle) const;
+
+   QColor m_backgroundColor;
+
+   QTime m_time;
+   int m_lastTime;
+   int m_mouseEventTime;
+
+   float m_distance;
+   Point3d m_rotation;
+   Point3d m_angularMomentum;
+   Point3d m_accumulatedMomentum;
+
+   QLabel *m_labels[4];
+
+   QGraphicsRectItem *m_lightItem;
 };
 
 #endif

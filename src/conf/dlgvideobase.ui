@@ -105,24 +105,24 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
-       <widget class="VideoWidget" name="m_pPreviewGV" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>40</width>
-          <height>40</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="m_pPreviewPB">
-        <property name="text">
-         <string>Start preview</string>
-        </property>
-       </widget>
-      </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="VideoWidget2" name="m_pPreviewGV" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="m_pPreviewPB">
+     <property name="text">
+      <string>Start preview</string>
+     </property>
     </widget>
    </item>
    <item>
@@ -142,9 +142,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>VideoWidget</class>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>VideoWidget2</class>
    <extends>QWidget</extends>
-   <header>widgets/videowidget.h</header>
+   <header>widgets/videowidget2.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011-2013 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2013 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,28 +15,57 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef VIDEO_DOCK_H
-#define VIDEO_DOCK_H
+#ifndef VIDEOGLFRAME_H
+#define VIDEOGLFRAME_H
 
-#include <QtGui/QDockWidget>
+#include <QGLWidget>
 
-//Qt
-class QGraphicsView;
-class VideoScene;
-
-//SFLPhone
-class VideoWidget3;
 class VideoRenderer;
 
-///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
-class VideoDock : public QDockWidget {
+class ThreadedPainter2;
+class QGLWidget;
+class QPainter;
+
+class VideoGLFrame : public QObject
+{
    Q_OBJECT
+
 public:
-   explicit VideoDock(QWidget* parent = nullptr );
-   void addRenderer(VideoRenderer* r);
+   VideoGLFrame(QGLWidget *parent = nullptr);
+   ~VideoGLFrame();
+
+   void paintEvent     (QPainter* painter);
+//    void mousePressEvent( QMouseEvent *);
+//    void mouseMoveEvent ( QMouseEvent *);
+//    void wheelEvent     ( QWheelEvent *);
+
+   virtual int    heightForWidth( int w ) const;
+   virtual QSize  sizeHint      (       ) const;
+
+   //Setters
+   void setRotZ(float rot);
+   void setRotY(float rot);
+   void setRotX(float rot);
+   void setScale(float scale);
+   void setAnchor(const QPointF& point);
+
+   //Getter
+   QPointF anchor() const;
+   float rotZ() const;
+   float rotY() const;
+   float rotX() const;
+   float scale() const;
 
 private:
-   VideoWidget3*  m_pVideoWidet;
+   //Attributes
+   ThreadedPainter2* m_pPainter;
+   QGLWidget* m_pParent;
+
+public Q_SLOTS:
+   void setRenderer(VideoRenderer* renderer = nullptr);
+
+Q_SIGNALS:
+   void changed();
 };
 
 #endif

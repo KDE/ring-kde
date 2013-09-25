@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011-2013 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2013 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,28 +15,54 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef VIDEO_DOCK_H
-#define VIDEO_DOCK_H
+#include "videowidget3.h"
 
-#include <QtGui/QDockWidget>
+#include <QtCore/QDebug>
+#include <QtOpenGL>
 
-//Qt
-class QGraphicsView;
-class VideoScene;
+#include <math.h>
 
-//SFLPhone
-class VideoWidget3;
-class VideoRenderer;
+#include <lib/videorenderer.h>
+#include <lib/videomodel.h>
+#include "videoscene.h"
+#include "videoglframe.h"
 
-///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
-class VideoDock : public QDockWidget {
-   Q_OBJECT
-public:
-   explicit VideoDock(QWidget* parent = nullptr );
-   void addRenderer(VideoRenderer* r);
+#include <GL/glu.h>
 
-private:
-   VideoWidget3*  m_pVideoWidet;
-};
-
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE  0x809D
 #endif
+
+
+VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
+{
+   QSizePolicy sp = sizePolicy();
+   sp.setVerticalPolicy(QSizePolicy::Preferred);
+   sp.setHorizontalPolicy(QSizePolicy::Preferred);
+   sp.setHeightForWidth(true);
+   sp.setWidthForHeight(true);
+   setSizePolicy(sp);
+
+   m_pWdg = new QGLWidget(QGLFormat(QGL::SampleBuffers/*|QGL::AlphaChannel*/),this);
+   setViewport(m_pWdg);
+   setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+   m_pScene = new VideoScene();
+   setScene(m_pScene);
+}
+
+VideoWidget3::~VideoWidget3()
+{
+   
+}
+
+//    virtual int    VideoWidget3::heightForWidth( int w ) const;
+//    virtual QSize  VideoWidget3::sizeHint      (       ) const;
+
+void VideoWidget3::addRenderer(VideoRenderer* renderer)
+{
+   if (renderer) {
+      VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
+      frm->setRenderer(renderer);
+      m_pScene->m_lFrames << frm;
+   }
+}

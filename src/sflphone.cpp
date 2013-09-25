@@ -70,7 +70,6 @@
 #include "widgets/bookmarkdock.h"
 #ifdef ENABLE_VIDEO
 #include "widgets/videodock.h"
-#include "widgets/videowidget2.h"
 #endif
 #include "widgets/presence.h"
 #include "sflphoneaccessibility.h"

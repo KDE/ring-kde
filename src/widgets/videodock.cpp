@@ -20,14 +20,16 @@
 #include <QtGui/QSpacerItem>
 #include <QtGui/QGridLayout>
 #include <QtGui/QWidgetItem>
+#include <QtGui/QGraphicsView>
 
 #include <KLocale>
 
-#include "videowidget2.h"
+#include "videowidget3.h"
+#include "videoscene.h"
 
 class VideoWidgetItem : public QWidgetItem {
 public:
-   VideoWidgetItem(VideoWidget2* wdg) : QWidgetItem(wdg),m_pWdg(wdg){}
+   VideoWidgetItem(VideoWidget3* wdg) : QWidgetItem(wdg),m_pWdg(wdg){}
    virtual ~VideoWidgetItem(){}
    virtual bool hasHeightForWidth () const {
       return true;
@@ -36,7 +38,7 @@ public:
       return m_pWdg->heightForWidth(w);
    }
 private:
-   VideoWidget2* m_pWdg;
+   VideoWidget3* m_pWdg;
 };
 
 ///Constructor
@@ -45,11 +47,13 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
    setFloating(true);
    setWindowTitle(i18nc("Video conversation","Video"));
    QWidget* wdg = new QWidget(this);
-   m_pVideoWidet = new VideoWidget2(wdg);
+
+   m_pVideoWidet = new VideoWidget3(wdg);
    auto l = new QGridLayout(wdg);
-   l->addItem(new VideoWidgetItem(m_pVideoWidet),1,0);
-   l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),0,0);
-   l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),2,0);
+//    l->addItem(new VideoWidgetItem(m_pVideoWidet),1,0);
+   l->addWidget(m_pVideoWidet,1,0);
+//    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),0,0);
+//    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),2,0);
    setWidget(wdg);
    setMinimumSize(320,240);
 }
@@ -57,5 +61,6 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
 ///Set current renderer
 void VideoDock::addRenderer(VideoRenderer* r)
 {
-   m_pVideoWidet->setRenderer(r);
+   Q_UNUSED(r)
+   m_pVideoWidet->addRenderer(r);
 }

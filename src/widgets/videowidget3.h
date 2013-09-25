@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011-2013 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2013 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,28 +15,36 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef VIDEO_DOCK_H
-#define VIDEO_DOCK_H
+#ifndef VIDEOWIDGET3_H
+#define VIDEOWIDGET3_H
 
-#include <QtGui/QDockWidget>
+#include <QtGui/QGraphicsView>
 
-//Qt
-class QGraphicsView;
-class VideoScene;
+class QGLWidget;
 
-//SFLPhone
-class VideoWidget3;
 class VideoRenderer;
+class VideoScene;
+class VideoGLFrame;
 
-///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
-class VideoDock : public QDockWidget {
+class VideoWidget3 : public QGraphicsView
+{
    Q_OBJECT
+
 public:
-   explicit VideoDock(QWidget* parent = nullptr );
-   void addRenderer(VideoRenderer* r);
+   VideoWidget3(QWidget *parent);
+   ~VideoWidget3();
+//    virtual int    heightForWidth( int w ) const;
+//    virtual QSize  sizeHint      (       ) const;
 
 private:
-   VideoWidget3*  m_pVideoWidet;
+   VideoScene*          m_pScene  ;
+   QGLWidget*           m_pWdg    ;
+
+public Q_SLOTS:
+   void addRenderer(VideoRenderer* renderer);
+
+Q_SIGNALS:
+   void changed();
 };
 
 #endif

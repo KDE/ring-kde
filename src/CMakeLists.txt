@@ -137,8 +137,11 @@ IF(${ENABLE_VIDEO} MATCHES true)
    SET(
       sflphone_client_kde_VIDEO
       widgets/videodock.cpp
-      widgets/videowidget.cpp
-      widgets/videowidget2.cpp
+#       widgets/videowidget.cpp
+      widgets/videowidget2.cpp #Needed for preview
+      widgets/videowidget3.cpp
+      widgets/videoglframe.cpp
+      widgets/videoscene.cpp
       conf/dlgvideo.cpp
    )
 ENDIF(${ENABLE_VIDEO} MATCHES true)
