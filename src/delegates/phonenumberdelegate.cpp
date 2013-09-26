@@ -33,10 +33,11 @@
 //SFLPhone
 #include <lib/contact.h>
 #include <lib/phonenumber.h>
+#include <lib/abstractcontactbackend.h>
 
 QHash<QString,QPixmap> PhoneNumberDelegate::m_hIcons;
 
-PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr)
+PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr),m_Lock(false)
 {
    if (!m_hIcons.size()) {
       m_hIcons["Home"  ] = QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/home.png"));
@@ -75,6 +76,40 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    QStyleOptionViewItem opt = option;
    opt.rect.setX((opt.rect.x()+48+6));
    painter->setClipRect(opt.rect);
+
+   //Draw the parent in the clip
+   //BEGIN repaint parent
+   if (!m_Lock) {
+      painter->save();
+      const QModelIndex parent = index.parent();
+      const QRect parentRect = m_pView->visualRect(parent);
+      QStyleOptionViewItem parOpt;
+      parOpt.rect = parentRect;
+      //Set if the item is selected
+      parOpt.state |= QStyle::State_Enabled | (m_pView->selectionModel()->currentIndex()==parent?QStyle::State_Selected: QStyle::State_None);
+      parOpt.state |= m_pView->hasFocus()?QStyle::State_HasFocus|QStyle::State_Active:QStyle::State_None;
+      parOpt.state |= (parent.data(AbstractContactBackend::Role::HoverState).toInt()==true)?
+         opt.state & QStyle::State_MouseOver:QStyle::State_None;
+      m_pView->itemDelegate()->paint(painter,parOpt,parent);
+      painter->restore();
+//       if (parOpt.state & QStyle::State_Selected || parOpt.state & QStyle::State_MouseOver) {
+         const_cast<PhoneNumberDelegate*>(this)->m_Lock = true;
+         for (int i=0;i<m_pView->model()->rowCount(parent);i++) {
+            const QModelIndex numIdx = m_pView->model()->index(i,0,parent);
+            QStyleOptionViewItem opt3 = option;
+            if (numIdx != index) {
+               opt3.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
+               opt3.state |= (m_pView->selectionModel()->currentIndex()==numIdx?QStyle::State_Selected: QStyle::State_None);
+            }
+            opt3.rect = m_pView->visualRect(numIdx);
+            opt3.rect.setX(m_pView->indentation()*2);
+            paint(painter,opt3,numIdx);
+         }
+         const_cast<PhoneNumberDelegate*>(this)->m_Lock = false;
+         return;
+//       }
+   }
+   //END repaint parent
 
    if (opt.state & QStyle::State_Selected || opt.state & QStyle::State_MouseOver) {
       QStyleOptionViewItem opt2 = opt;

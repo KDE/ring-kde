@@ -19,6 +19,8 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPaintEvent>
 
+#include <lib/abstractcontactbackend.h>
+
 ContactView::ContactView(QWidget* parent) : CategorizedTreeView(parent)
 {
    
@@ -40,4 +42,24 @@ QRect ContactView::visualRect(const QModelIndex& index) const
       return phoneRect(index);
    }
    return CategorizedTreeView::visualRect(index);
+}
+
+bool ContactView::viewportEvent( QEvent * event ) {
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wswitch-enum"
+   switch (event->type()) {
+      case QEvent::HoverEnter:
+      case QEvent::HoverLeave:
+      case QEvent::HoverMove: {
+         const QHoverEvent *he = static_cast<QHoverEvent*>(event);
+         const QModelIndex oldIdx = indexAt(he->oldPos());
+         const QModelIndex newIdx = indexAt(he->pos());
+         model()->setData(oldIdx,false,AbstractContactBackend::Role::HoverState);
+         model()->setData(newIdx,true,AbstractContactBackend::Role::HoverState);
+      }
+      default:
+         break;
+   }
+   #pragma GCC diagnostic pop
+   return CategorizedTreeView::viewportEvent(event);
 }

@@ -89,6 +89,8 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          fullRect.setHeight(fullRect.height()+index.model()->rowCount(index)*(m_pChildDelegate->sizeHint(option,index.child(0,0)).height()));
          opt2.rect = fullRect;
          painter->setClipRect(fullRect);
+         //Clear the area (because of all the dirty little hacks)
+         painter->fillRect(fullRect,QApplication::palette().color(QPalette::Base));
       }
 
       if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
@@ -100,6 +102,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
    //END is selected
+
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
    Contact* ct = (Contact*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
