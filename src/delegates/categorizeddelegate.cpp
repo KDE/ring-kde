@@ -142,7 +142,6 @@ void CategorizedDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    //END: draw background of category for all other items
 
    painter->setClipRect(option.rect);
-   
 
    if (index.isValid()) {
       QWidget* widget = m_tree->indexWidget(index);
@@ -151,7 +150,7 @@ void CategorizedDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
          widget->setMaximumSize((m_tree->viewport()->width() - m_LeftMargin - m_RightMargin)-m_LeftMargin,99999);
       }
    }
-   
+
    if (m_pChildDelegate && !index.parent().parent().isValid()) {
       m_pChildDelegate->paint(painter,option,index);
    }

@@ -41,19 +41,3 @@ QRect ContactView::visualRect(const QModelIndex& index) const
    }
    return CategorizedTreeView::visualRect(index);
 }
-
-void ContactView::drawRow(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
-{
-   if (index.parent().parent().isValid()) {
-      //Hacky, but better than the other 2 alternative I tried
-      // * repainting "clear" orver the parent drawRow
-      // * forcing the delegate to ignore option.rect
-      const int ind = indentation();
-      const_cast<ContactView*>(this)->setIndentation((ind+48+12)/2);
-      CategorizedTreeView::drawRow(painter,option,index);
-      const_cast<ContactView*>(this)->setIndentation(ind);
-   }
-   else {
-      CategorizedTreeView::drawRow(painter,option,index);
-   }
-}

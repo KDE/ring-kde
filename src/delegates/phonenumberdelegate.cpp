@@ -58,15 +58,27 @@ PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(
 
 QSize PhoneNumberDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QFontMetrics fm(QApplication::font());
-   return QSize(QStyledItemDelegate::sizeHint(option, index).rwidth(),fm.height());
+
+   //This indentation is wrong, if set manually, Qt will override it, it needs to be done here
+   QStyleOptionViewItem opt = option;
+   opt.rect.setX((opt.rect.x()+48+6));
+   opt.rect.setWidth(opt.rect.width()-48-6);
+
+   return QSize(QStyledItemDelegate::sizeHint(opt, index).rwidth(),fm.height());
 }
 
 void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
-   if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
-      QStyleOptionViewItem opt2 = option;
-      QPalette pal = option.palette;
+
+   //This indentation is wrong, if set manually, Qt will override it, it needs to be done here
+   QStyleOptionViewItem opt = option;
+   opt.rect.setX((opt.rect.x()+48+6));
+   painter->setClipRect(opt.rect);
+
+   if (opt.state & QStyle::State_Selected || opt.state & QStyle::State_MouseOver) {
+      QStyleOptionViewItem opt2 = opt;
+      QPalette pal = opt.palette;
       pal.setBrush(QPalette::Text,QColor(0,0,0,0));
       pal.setBrush(QPalette::HighlightedText,QColor(0,0,0,0));
       opt2.palette = pal;
@@ -76,20 +88,18 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
    const PhoneNumber* nb = ((Contact*) ((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf())->phoneNumbers()[index.row()];
    const QFontMetrics fm(painter->font());
-   painter->setPen(((option.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
+   painter->setPen(((opt.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
       Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-//    painter->drawText(option.rect.x()+option.rect.width()-fm.width(nb->type().trimmed())-7/*padding*/,option.rect.y()+fm.height()+3,nb->type());
-//    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   painter->drawText(option.rect.x()+3+16,option.rect.y()+fm.height()-metric,nb->uri());
+   painter->drawText(opt.rect.x()+3+16,opt.rect.y()+fm.height()-metric,nb->uri());
    const int fmh = fm.height();
    if (m_hIcons.contains(nb->type() )) {
-      painter->drawPixmap(option.rect.x()+3,option.rect.y()+fmh-12-metric,m_hIcons[nb->type()]);
+      painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-12-metric,m_hIcons[nb->type()]);
    }
    else {
       const static QPixmap* callPxm = nullptr;
       if (!callPxm)
          callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
-      painter->drawPixmap(option.rect.x()+3,option.rect.y()+fmh-12-metric,*callPxm);
+      painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-12-metric,*callPxm);
    }
 }
 

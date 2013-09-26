@@ -26,8 +26,8 @@ public:
    explicit ContactView(QWidget* parent = nullptr);
    virtual QRect visualRect(const QModelIndex& index) const;
 
-protected:
-   virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+// protected:
+//    virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 private:
    QRect phoneRect(const QModelIndex & index) const;
 };
