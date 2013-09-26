@@ -64,7 +64,7 @@ AccountListModel::AccountListModel() : QAbstractListModel(QCoreApplication::inst
    setupRoleName();
 }
 
-///Prevent constuctor loop
+///Prevent constructor loop
 void AccountListModel::init()
 {
    updateAccounts();

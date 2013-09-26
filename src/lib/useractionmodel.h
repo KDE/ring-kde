@@ -100,10 +100,10 @@ private:
    //Attribues
    Call* m_pCall;
 
-private slots:
+private Q_SLOTS:
    void slotStateChanged();
 
-signals:
+Q_SIGNALS:
    void actionStateChanged();
 };
 // Q_DECLARE_METATYPE(UserActionModel*)

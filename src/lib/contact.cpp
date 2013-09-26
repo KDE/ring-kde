@@ -47,7 +47,8 @@ Contact* Contact::PhoneNumbers::contact() const
 QObject* Contact::getSelf() {return this;}
 
 ///Constructor
-Contact::Contact():m_pPhoto(nullptr),CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),m_Numbers(this)
+Contact::Contact():m_pPhoto(nullptr),CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),
+   m_Numbers(this),m_DisplayPhoto(nullptr)
 {
 }
 

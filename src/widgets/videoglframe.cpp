@@ -74,7 +74,8 @@ Q_SIGNALS:
 };
 
 ThreadedPainter2::ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
-   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false),m_pFrm(frm),m_Data(nullptr)
+   m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false),m_pFrm(frm),
+   m_Data(nullptr),tile_list(0)
 {
 }
 

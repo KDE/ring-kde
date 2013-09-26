@@ -71,7 +71,7 @@ QString VideoCodec::parameters() const
    return m_Parameters;
 }
 
-///Generate a deamon compatible codec representation
+///Generate a daemon compatible codec representation
 QMap<QString,QString> VideoCodec::toMap() const
 {
    QMap<QString,QString> ret;

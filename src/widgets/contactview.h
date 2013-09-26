@@ -23,7 +23,7 @@ class ContactView : public CategorizedTreeView
 {
    Q_OBJECT
 public:
-   ContactView(QWidget* parent = nullptr);
+   explicit ContactView(QWidget* parent = nullptr);
    virtual QRect visualRect(const QModelIndex& index) const;
 
 protected:

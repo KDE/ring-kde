@@ -68,8 +68,8 @@ public:
    int acceptedPayloadTypes();
 
 protected:
-   virtual bool                  displayFrequentlyUsed() const {return false;};
-   virtual QVector<PhoneNumber*> bookmarkList         () const {return QVector<PhoneNumber*>();};
+   virtual bool                  displayFrequentlyUsed() const;
+   virtual QVector<PhoneNumber*> bookmarkList         () const;
 
    ///@struct Subscription presence internal representation
    struct Subscription {
@@ -100,7 +100,7 @@ private:
       public:
          virtual QObject* getSelf() {return this;}
       private:
-         explicit TopLevelItem(QString name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
+         explicit TopLevelItem(QString name);
          QList<NumberTreeBackend*> m_lChildren;
          QString m_Name;
    };

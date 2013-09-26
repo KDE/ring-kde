@@ -29,7 +29,7 @@ class NumberCategoryVisitor;
 class LIB_EXPORT NumberCategoryModel : public QAbstractListModel {
    Q_OBJECT
 public:
-   NumberCategoryModel(QObject* parent = nullptr);
+   explicit NumberCategoryModel(QObject* parent = nullptr);
 
    enum Role {
       INDEX = 100,

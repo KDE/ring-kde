@@ -63,7 +63,8 @@ m_step(0)
 //    m_pBackground->setGraphicsEffect(eff2);
 
    m_pMainWidget = new QWidget(this);
-   m_pMainWidget->resize(parent->width(),parent->height());
+   if (parent)
+      m_pMainWidget->resize(parent->width(),parent->height());
    setupUi(m_pMainWidget);
 
    connect(CallModel::instance(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutChanged()));

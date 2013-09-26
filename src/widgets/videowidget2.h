@@ -18,7 +18,7 @@
 #ifndef VIDEOWIDGET2_H
 #define VIDEOWIDGET2_H
 
-#include <QGLWidget>
+#include <QtOpenGL>
 
 class VideoRenderer;
 
@@ -29,7 +29,7 @@ class VideoWidget2 : public QGLWidget
    Q_OBJECT
 
 public:
-   VideoWidget2(QWidget *parent);
+   explicit VideoWidget2(QWidget *parent);
    ~VideoWidget2();
 
    void paintEvent(QPaintEvent *);

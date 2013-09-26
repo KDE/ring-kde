@@ -225,7 +225,6 @@ int ContactProxyModel::rowCount( const QModelIndex& parent ) const
    else if (parent.parent().isValid() && !parent.parent().parent().isValid()) {
       const int size = m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->phoneNumbers().size();
       return size==1?0:size;
-      return size;
    }
    return 0;
 }
@@ -357,7 +356,6 @@ QString ContactProxyModel::category(Contact* ct) const {
       case AbstractContactBackend::Role::DatedLastUsed:
          cat = QDateTime::fromTime_t(ct->phoneNumbers().lastUsedTimeStamp()).toString();
          break;
-      break;
       default:
          cat = ct->formattedName();
    }

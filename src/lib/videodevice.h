@@ -35,9 +35,10 @@ class LIB_EXPORT Resolution : public QSize {
 public:
    //Constructor
    Resolution(uint _width, uint _height);
-   Resolution(const QString& size);
+   Resolution(const QString& size = QString());
    Resolution(const Resolution& res);
    Resolution(const QSize& size);
+   explicit Resolution() : QSize(){}
    //Getter
    const QString toString() const;
 

@@ -184,4 +184,3 @@ void VideoScene::frameChanged()
 {
    update();
 }
-

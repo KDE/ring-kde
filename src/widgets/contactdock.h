@@ -53,6 +53,9 @@ namespace KABC {
 ///SFLPhone
 class Contact;
 class ContactProxyModel;
+class CategorizedDelegate;
+class PhoneNumberDelegate;
+class ContactDelegate;
 
 class ContactSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -99,6 +102,11 @@ private:
    KAction* m_pEmail       ;
    KAction* m_pAddPhone    ;
    KAction* m_pBookmark    ;
+   
+   //Delegates
+   CategorizedDelegate* m_pCategoryDelegate;
+   PhoneNumberDelegate* m_pPhoneNumberDelegate;
+   ContactDelegate*     m_pContactDelegate;
 
    //Helper
    QString showNumberSelector(bool& ok);

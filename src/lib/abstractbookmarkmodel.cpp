@@ -318,3 +318,18 @@ QVector<PhoneNumber*> AbstractBookmarkModel::serialisedToList(const QStringList&
    }
    return numbers;
 }
+
+bool AbstractBookmarkModel::displayFrequentlyUsed() const
+{
+   return false;
+}
+
+QVector<PhoneNumber*> AbstractBookmarkModel::bookmarkList() const 
+{
+   return QVector<PhoneNumber*>();
+}
+
+AbstractBookmarkModel::TopLevelItem::TopLevelItem(QString name) 
+   : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name)
+{
+}

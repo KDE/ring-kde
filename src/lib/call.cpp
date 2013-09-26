@@ -301,7 +301,7 @@ Call* Call::buildRingingCall(const QString & callId)
  ****************************************************************************/
 
 ///Build a call that is already over
-Call* Call::buildHistoryCall(const QString & callId, uint startTimeStamp, uint stopTimeStamp, 
+Call* Call::buildHistoryCall(const QString & callId, time_t startTimeStamp, time_t stopTimeStamp, 
                              const QString& accId, const QString& name, const QString& number, const QString& type)
 {
    Call* call              = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, number, accId );
@@ -444,13 +444,13 @@ const QString Call::toHumanStateName(const Call::State cur)
 }
 
 ///Get the time (second from 1 jan 1970) when the call ended
-uint Call::stopTimeStamp() const
+time_t Call::stopTimeStamp() const
 {
    return m_pStopTimeStamp;
 }
 
 ///Get the time (second from 1 jan 1970) when the call started
-uint Call::startTimeStamp() const
+time_t Call::startTimeStamp() const
 {
    return m_pStartTimeStamp;
 }
@@ -923,7 +923,7 @@ void Call::refuse()
 void Call::acceptTransf()
 {
    if (!m_pTransferNumber) {
-      qDebug() << "Trying to transfer to noone";
+      qDebug() << "Trying to transfer to no one";
       return;
    }
    CallManagerInterface & callManager = DBus::CallManager::instance();
@@ -1285,7 +1285,7 @@ QVariant Call::roleData(int role) const
          return historyState();
          break;
       case Call::Role::Date:
-         return startTimeStamp();
+         return (int)startTimeStamp();
          break;
       case Call::Role::Length:
          return length();
@@ -1346,9 +1346,9 @@ QVariant Call::roleData(int role) const
          return ((m_isConference)?confId():id());
          break;
       case Call::Role::StartTime:
-         return m_pStartTimeStamp;
+         return (int) m_pStartTimeStamp;
       case Call::Role::StopTime:
-         return m_pStopTimeStamp;
+         return (int) m_pStopTimeStamp;
       case Call::Role::IsRecording:
          return recording();
       case Call::Role::DropState:

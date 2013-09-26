@@ -197,8 +197,8 @@ public:
    Q_PROPERTY( QString            id               READ id                                        )
    Q_PROPERTY( Account*           account          READ account                                   )
    Q_PROPERTY( bool               isHistory        READ isHistory                                 )
-   Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
-   Q_PROPERTY( uint               startTimeStamp   READ startTimeStamp                            )
+   Q_PROPERTY( time_t             stopTimeStamp    READ stopTimeStamp                             )
+   Q_PROPERTY( time_t             startTimeStamp   READ startTimeStamp                            )
    Q_PROPERTY( QString            currentCodecName READ currentCodecName                          )
    Q_PROPERTY( bool               isSecure         READ isSecure                                  )
    Q_PROPERTY( bool               isConference     READ isConference                              )
@@ -224,7 +224,7 @@ public:
    static Call* buildDialingCall  (const QString& callId, const QString & peerName, Account* account = nullptr );
    static Call* buildIncomingCall (const QString& callId                                                       );
    static Call* buildRingingCall  (const QString& callId                                                       );
-   static Call* buildHistoryCall  (const QString& callId, uint startTimeStamp, uint stopTimeStamp,
+   static Call* buildHistoryCall  (const QString& callId, time_t startTimeStamp, time_t stopTimeStamp,
                const QString& account, const QString& name, const QString& number, const QString& type         );
    static Call* buildExistingCall (QString callId                                                              );
    static void  setContactBackend (AbstractContactBackend* be                                                  );
@@ -244,8 +244,8 @@ public:
    bool                 recording        () const;
    Account*             account          () const;
    bool                 isHistory        () const;
-   uint                 stopTimeStamp    () const;
-   uint                 startTimeStamp   () const;
+   time_t               stopTimeStamp    () const;
+   time_t               startTimeStamp   () const;
    QString              currentCodecName () const;
    bool                 isSecure         () const;
    bool                 isConference     () const;
@@ -293,8 +293,8 @@ private:
    QString                m_PeerName        ;
    QString                m_RecordingPath   ;
    Call::HistoryState     m_HistoryState    ;
-   uint                   m_pStartTimeStamp ;
-   uint                   m_pStopTimeStamp  ;
+   time_t                 m_pStartTimeStamp ;
+   time_t                 m_pStopTimeStamp  ;
    TemporaryPhoneNumber*  m_pTransferNumber ;
    TemporaryPhoneNumber*  m_pDialNumber     ;
    bool                   m_isConference    ;

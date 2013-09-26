@@ -43,7 +43,7 @@ public:
    virtual void removeBookmark( PhoneNumber* number                            );
 
 protected:
-   //Pure vrtual
+   //Pure virtual
    virtual bool                  displayFrequentlyUsed         () const;
    virtual QVector<PhoneNumber*> bookmarkList () const;
 
