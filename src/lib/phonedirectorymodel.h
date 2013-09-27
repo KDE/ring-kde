@@ -106,7 +106,8 @@ private Q_SLOTS:
    void slotChanged();
 
    //From DBus
-   void slotNewBuddySubscription(const QString& uri, bool status, const QString& message);
+   void slotNewBuddySubscription(const QString& uri, const QString& accountId, bool status, const QString& message);
+//    void slotStatusChanges(const QString& accountId, const QString& uri, bool status); //Deprecated?
 };
 Q_DECLARE_METATYPE(PhoneDirectoryModel*)
 

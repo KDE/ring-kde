@@ -99,15 +99,17 @@ void ThreadedPainter2::rendererStarted()
 
 void ThreadedPainter2::copyFrame()
 {
-   m_pRenderer->mutex()->lock();
-   const QByteArray raw = m_pRenderer->currentFrame();
-   if (m_Data)
-      free(m_Data);
-   m_Data = (char*)malloc(raw.size()*sizeof(char));
-   memcpy(m_Data,raw.data(),raw.size());
-   m_ActiveSize = m_pRenderer->activeResolution();
-   m_pRenderer->mutex()->unlock();
-   emit changed();
+   if (m_pRenderer) {
+      m_pRenderer->mutex()->lock();
+      const QByteArray raw = m_pRenderer->currentFrame();
+      if (m_Data)
+         free(m_Data);
+      m_Data = (char*)malloc(raw.size()*sizeof(char));
+      memcpy(m_Data,raw.data(),raw.size());
+      m_ActiveSize = m_pRenderer->activeResolution();
+      m_pRenderer->mutex()->unlock();
+      emit changed();
+   }
 }
 
 void ThreadedPainter2::draw(QPainter* p)

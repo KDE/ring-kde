@@ -26,6 +26,7 @@
 #include <lib/videomodel.h>
 #include "videoscene.h"
 #include "videoglframe.h"
+#include "videotoolbar.h"
 
 #include <GL/glu.h>
 
@@ -43,11 +44,22 @@ VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
    sp.setWidthForHeight(true);
    setSizePolicy(sp);
 
+   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
    m_pWdg = new QGLWidget(QGLFormat(QGL::SampleBuffers/*|QGL::AlphaChannel*/),this);
    setViewport(m_pWdg);
    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+
    m_pScene = new VideoScene();
    setScene(m_pScene);
+   VideoToolbar* tb = new VideoToolbar(nullptr);
+   tb->setForcedParent(this);
+   tb->show();
+   m_pScene->setToolbar(tb);
+   m_pScene->setSceneRect(0,0,width(),height());
+   tb->resizeToolbar();
 }
 
 VideoWidget3::~VideoWidget3()
@@ -65,6 +77,11 @@ void VideoWidget3::addRenderer(VideoRenderer* renderer)
       VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
       frm->setRenderer(renderer);
       connect(frm,SIGNAL(changed()),m_pScene,SLOT(frameChanged()));
-      m_pScene->m_lFrames << frm;
+      m_pScene->addFrame(frm);
    }
+}
+
+void VideoWidget3::resizeEvent(QResizeEvent* event)
+{
+   m_pScene->setSceneRect(0,0,event->size().width(),event->size().height());
 }

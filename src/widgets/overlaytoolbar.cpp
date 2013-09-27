@@ -15,13 +15,14 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "callviewoverlaytoolbar.h"
+#include "overlaytoolbar.h"
 
 //Qt
 #include <QtGui/QPaintEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QBrush>
 #include <QtGui/QPen>
+#include <QtGui/QScrollBar>
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QStyle>
@@ -35,81 +36,58 @@
 #include "sflphone.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
-#include <lib/call.h>
-#include <lib/useractionmodel.h>
-#include <lib/callmodel.h>
+
+///Button constructor
+ObserverToolButton::ObserverToolButton(QWidget* parent) : QToolButton(parent)
+{
+   QPalette pal = palette();
+   pal.setColor(QPalette::Background,Qt::transparent);
+   pal.setColor(QPalette::Button    ,Qt::transparent);
+   pal.setColor(QPalette::ButtonText,"#dddddd");
+   setPalette(pal);
+}
 
 ///Constructor
-CallViewOverlayToolbar::CallViewOverlayToolbar(QTreeView* parent) : QWidget(parent),m_pRightRender(nullptr),m_pLeftRender(nullptr),m_pParent(parent)
+OverlayToolbar::OverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender(nullptr),
+   m_pLeftRender(nullptr),m_pForcedParent(nullptr),m_IconSize(-1)
 {
+   QPalette pal = palette();
+   pal.setColor(QPalette::Background,Qt::transparent);
+   pal.setColor(QPalette::Button    ,Qt::transparent);
+   setPalette(pal);
+   setAutoFillBackground(false);
    m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_right_corner.svg") );
    m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_left_corner.svg" ) );
-
-   QHBoxLayout* layout = new QHBoxLayout(this);
-
-   m_pHold     = createButton( SFLPhone::app()->getHoldAction()     );
-   m_pUnhold   = createButton( SFLPhone::app()->getUnholdAction()   );
-   m_pMute     = createButton( SFLPhone::app()->getMuteAction()     );
-   m_pPickup   = createButton( SFLPhone::app()->getPickupAction()   );
-   m_pHangup   = createButton( SFLPhone::app()->getHangupAction()   );
-   m_pTransfer = createButton( SFLPhone::app()->getTransferAction() );
-   m_pRecord   = createButton( SFLPhone::app()->getRecordAction()   );
-   m_pRefuse   = createButton( SFLPhone::app()->getRefuseAction()   );
-   m_pAccept   = createButton( SFLPhone::app()->getAcceptAction()   );
-
-   m_hButtons[ static_cast<int>(UserActionModel::Action::HOLD)     ] = m_pHold    ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::UNHOLD)   ] = m_pUnhold  ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::PICKUP)   ] = m_pPickup  ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::MUTE)     ] = m_pMute    ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::TRANSFER) ] = m_pTransfer;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::RECORD)   ] = m_pRecord  ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::REFUSE)   ] = m_pRefuse  ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::ACCEPT)   ] = m_pAccept  ;
-   m_hButtons[ static_cast<int>(UserActionModel::Action::HANGUP)   ] = m_pHangup  ;
-
-   layout->addWidget( m_pHangup   );
-   layout->addWidget( m_pTransfer );
-   layout->addWidget( m_pMute     );
-   layout->addWidget( m_pRecord   );
-   layout->addWidget( m_pUnhold   );
-   layout->addWidget( m_pHold     );
-   layout->addWidget( m_pPickup   );
-   layout->addWidget( m_pRefuse   );
-   layout->addWidget( m_pAccept   );
 
    setMinimumSize(100,56);
    if (parent)
       parent->installEventFilter(this);
    setVisible(false);
    hideEvent(nullptr);
-} //CallViewOverlayToolbar
 
-CallViewOverlayToolbar::~CallViewOverlayToolbar()
+   m_pLayout = new QHBoxLayout(this);
+} //OverlayToolbar
+
+OverlayToolbar::~OverlayToolbar()
 {
    delete m_pRightRender;
    delete m_pLeftRender;
 }
 
-///Resize event
-void CallViewOverlayToolbar::resizeEvent(QResizeEvent* event)
-{
-   QWidget::resizeEvent(event);
-}
-
 ///Repaint event
-void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
+void OverlayToolbar::paintEvent(QPaintEvent* event)
 {
    Q_UNUSED(event);
    QPainter customPainter(this);
    customPainter.setRenderHint(QPainter::Antialiasing);
    QBrush b = customPainter.brush();
 
-   b.setColor("black");
+   b.setColor(Qt::black);
    //Use the current style pixel metrics to do as well as possible to guess the right shape
    int margin = style()->pixelMetric(QStyle::PM_FocusFrameHMargin);
    customPainter.setOpacity( 0.5                                                             );
    customPainter.setBrush  ( Qt::black                                                       );
-   customPainter.setPen    ( Qt::transparent                                                 );
+   customPainter.setPen    ( Qt::NoPen                                                       );
    customPainter.drawRect  ( QRect(margin,10,width()-2*margin,height()-10-2*margin - margin) );
    customPainter.drawPie   ( QRect(width()-8-margin,height()-10,8,8),270*16,90*16            );
    customPainter.drawPie   ( QRect(margin,height()-10,8,8),180*16,90*16                      );
@@ -120,7 +98,7 @@ void CallViewOverlayToolbar::paintEvent(QPaintEvent* event)
 } //paintEvent
 
 ///Create a toolbar button
-ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
+ObserverToolButton* OverlayToolbar::createButton(ExtendedAction* action)
 {
    ObserverToolButton* b = new ObserverToolButton(this);
    b->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
@@ -128,7 +106,7 @@ ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
    b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    b->setText(action->text());
    b->setShortcut(0);
-   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;background-color:transparent;color:#DDDDDD;padding-top:5px;");
+   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;padding-top:5px;");
    b->setIcon(action->altIcon());
    connect(action,SIGNAL(textChanged(QString)),b,SLOT(setNewText(QString)));
    connect(b,SIGNAL(clicked()),action,SLOT(trigger()));
@@ -136,78 +114,92 @@ ObserverToolButton* CallViewOverlayToolbar::createButton(ExtendedAction* action)
 } //createButton
 
 ///Hide or show the toolbar and select visible actions
-void CallViewOverlayToolbar::updateState()
+void OverlayToolbar::updateState()
 {
-   QModelIndex index = m_pParent->selectionModel()->currentIndex();
-   if ((!m_pParent->selectionModel()->hasSelection() || !index.isValid()) && CallModel::instance()->rowCount()) {
-      m_pParent->selectionModel()->setCurrentIndex(CallModel::instance()->index(0,0),QItemSelectionModel::SelectCurrent);
-      index = m_pParent->selectionModel()->currentIndex();
-   }
-   if (index.isValid() && CallModel::instance()->rowCount()) {
-      Call* call = qvariant_cast<Call*>(index.data(Call::Role::Object));
-      setVisible(true);
-      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-      manager->setBottomMargin(53);
-      char act_counter = 0;
-      for (int i = 0;i<static_cast<int>(UserActionModel::Action::COUNT);i++) {
-         try {
-            if (call && call->userActionModel()) {
-               m_hButtons[ i ]->setVisible(call->userActionModel()->isActionEnabled(static_cast<UserActionModel::Action>(i)));
-               act_counter += call->userActionModel()->isActionEnabled( static_cast<UserActionModel::Action>(i));
-            }
-         }
-         catch (Call::State& state) {
-            qDebug() << "CallViewOverlayToolbar is out of bound (state)" << state;
-         }
-         catch (UserActionModel::Action& btn) {
-            kDebug() << "CallViewOverlayToolbar is out of bound (Action)" << (int)btn;
-         }
-         catch (...) {
-            kDebug() << "CallViewOverlayToolbar is out of bound (Other)";
-         }
-      }
-      if (!act_counter)
-         setVisible(false);
-   }
-   else {
-      setVisible(false);
-      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-      manager->setBottomMargin(0);
-   }
-   //Now set the top margin, this doesn't really belong anywhere, so why not here
-   const int rows = CallModel::instance()->rowCount(QModelIndex());
-   QModelIndex last = CallModel::instance()->index(rows-1,0);
-   if (CallModel::instance()->rowCount(last) > 0)
-      last = CallModel::instance()->index(CallModel::instance()->rowCount(last)-1,0,last);
-   const QRect topMargin =  m_pParent->visualRect(last);
-   TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-   manager->setTopMargin(topMargin.y()+topMargin.height());
+   
 } //updateState
 
-void CallViewOverlayToolbar::hideEvent(QHideEvent *)
+void OverlayToolbar::hideEvent(QHideEvent *)
 {
-   if (parentWidget()->property("tipManager").isValid()) {
-      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-      manager->setBottomMargin(0);
+   const QWidget* p = m_pForcedParent?m_pForcedParent:parentWidget();
+   if (p && p->property("tipManager").isValid()) {
+      TipManager* manager = qvariant_cast<TipManager*>(p->property("tipManager"));
+      if (manager)
+         manager->setBottomMargin(0);
    }
    emit visibilityChanged(false);
 }
 
-void CallViewOverlayToolbar::showEvent(QShowEvent *)
+void OverlayToolbar::showEvent(QShowEvent *)
 {
-   if (parentWidget()->property("tipManager").isValid()) {
-      TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-      manager->setBottomMargin(53);
+   const QWidget* p = m_pForcedParent?m_pForcedParent:parentWidget();
+   if (p && p->property("tipManager").isValid()) {
+      TipManager* manager = qvariant_cast<TipManager*>(p->property("tipManager"));
+      if (manager)
+         manager->setBottomMargin(53);
    }
    emit visibilityChanged(true);
 }
 
-bool CallViewOverlayToolbar::eventFilter(QObject *obj, QEvent *event)
+void OverlayToolbar::resizeToolbar()
 {
-   if (event->type() == QEvent::Resize && parentWidget()) {
-      resize(parentWidget()->width(),72);
-      move(0,parentWidget()->height()-72);
+   const QWidget* p = m_pForcedParent?m_pForcedParent:parentWidget();
+   int vOffset(0),wOffset(0);
+
+   if (p) {
+      //If the parent has scrollbar, take this into account
+      if (p->inherits("QAbstractScrollArea")) {
+         const QAbstractScrollArea* scrl = static_cast< const QAbstractScrollArea*>(p);
+         if (scrl && scrl->horizontalScrollBar()->isVisible())
+            vOffset += scrl->horizontalScrollBar()->height();
+         if (scrl && scrl->verticalScrollBar()->isVisible())
+            wOffset += scrl->verticalScrollBar()->width();
+      }
+      resize(p->width()-wOffset,72);
+      move(0,p->height()-72-vOffset);
+   }
+}
+
+bool OverlayToolbar::eventFilter(QObject *obj, QEvent *event)
+{
+   if (event->type() == QEvent::Resize) {
+      resizeToolbar();
    }
    // standard event processing
    return QObject::eventFilter(obj, event);
+}
+
+void OverlayToolbar::setForcedParent(QWidget* parent)
+{
+   m_pForcedParent = parent;
+   if (m_pForcedParent) {
+      m_pForcedParent->installEventFilter(this);
+      resizeToolbar();
+   }
+}
+
+void OverlayToolbar::setIconSize(int size)
+{
+   m_IconSize = size;
+   QMutableHashIterator<int,ObserverToolButton*> iter(m_hButtons);
+   while (iter.hasNext())
+      iter.value()->setIconSize(QSize(m_IconSize,m_IconSize));
+}
+
+
+void OverlayToolbar::addAction(ExtendedAction* action, int key)
+{
+   int k = key==-1?m_hButtons.size()+1:key;
+   while(m_hButtons[k]) k++;
+   ObserverToolButton* btn = createButton( action);
+   if (m_IconSize>0) {
+      btn->setIconSize(QSize(m_IconSize,m_IconSize));
+   }
+   m_hButtons[key] = btn;
+   m_pLayout->addWidget( btn );
+}
+
+ObserverToolButton* OverlayToolbar::actionButton(int key)
+{
+   return m_hButtons[key];
 }

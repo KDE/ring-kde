@@ -18,11 +18,22 @@
 #ifndef CALLVIEWTOOLBAR_H
 #define CALLVIEWTOOLBAR_H
 
+#include "overlaytoolbar.h"
+
+class QTreeView;
+
 class CallViewToolbar : public OverlayToolbar {
    Q_OBJECT
 public:
-   CallViewToolbar(QWidget* parent = nullptr);
+   CallViewToolbar(QTreeView* parent = nullptr);
    virtual ~CallViewToolbar();
+
+private:
+   //Attributes
+   QTreeView*    m_pParent;
+
+public Q_SLOTS:
+   virtual void updateState();
 };
 
 #endif

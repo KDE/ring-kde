@@ -117,7 +117,8 @@ SET(
    widgets/categorizedtreeview.cpp
    widgets/immanager.cpp
    widgets/callviewoverlay.cpp
-   widgets/callviewoverlaytoolbar.cpp
+   widgets/overlaytoolbar.cpp
+   widgets/callviewtoolbar.cpp
    widgets/tips/conftip.cpp
    widgets/tips/dialpadtip.cpp
    widgets/tips/ringingtip.cpp
@@ -137,11 +138,12 @@ IF(${ENABLE_VIDEO} MATCHES true)
    SET(
       sflphone_client_kde_VIDEO
       widgets/videodock.cpp
-#       widgets/videowidget.cpp
+#       widgets/videowidget.cpp #Software rendering, can still be useful
       widgets/videowidget2.cpp #Needed for preview
       widgets/videowidget3.cpp
       widgets/videoglframe.cpp
       widgets/videoscene.cpp
+      widgets/videotoolbar.cpp
       conf/dlgvideo.cpp
    )
 ENDIF(${ENABLE_VIDEO} MATCHES true)

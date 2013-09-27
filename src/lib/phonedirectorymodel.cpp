@@ -35,7 +35,8 @@ PhoneDirectoryModel::PhoneDirectoryModel(QObject* parent) :
    QAbstractTableModel(parent?parent:QCoreApplication::instance())
 {
    setObjectName("PhoneDirectoryModel");
-   connect(&DBus::PresenceManager::instance(),SIGNAL(newBuddySubscription(QString,bool,QString)),this,SLOT(slotNewBuddySubscription(QString,bool,QString)));
+   connect(&DBus::PresenceManager::instance(),SIGNAL(newBuddyNotification(QString,QString,bool,QString)),this,
+           SLOT(slotNewBuddySubscription(QString,QString,bool,QString)));
 }
 
 PhoneDirectoryModel* PhoneDirectoryModel::instance()
@@ -375,11 +376,20 @@ void PhoneDirectoryModel::slotChanged()
    }
 }
 
-void PhoneDirectoryModel::slotNewBuddySubscription(const QString& uri, bool status, const QString& message)
+void PhoneDirectoryModel::slotNewBuddySubscription(const QString& uri, const QString& accountId, bool status, const QString& message)
 {
    qDebug() << "New presence buddy" << uri << status << message;
-   PhoneNumber* number = getNumber(uri);
+   PhoneNumber* number = getNumber(uri,AccountListModel::instance()->getAccountById(accountId));
    number->m_Present = status;
    number->m_PresentMessage = message;
    emit number->changed();
 }
+
+// void PhoneDirectoryModel::slotStatusChanges(const QString& accountId, const QString& uri, bool status)
+// {
+//    qDebug() << "Presence status changed for" << uri << status;
+//    PhoneNumber* number = getNumber(uri,AccountListModel::instance()->getAccountById(accountId));
+//    number->m_Present = status;
+//    number->m_PresentMessage = message;
+//    emit number->changed();
+// }

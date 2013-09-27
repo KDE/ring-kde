@@ -29,8 +29,6 @@ ELSE()
    FIND_PACKAGE ( Qt4  REQUIRED )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
-
-
 set(GENERIC_LIB_VERSION "1.2.3")
 
 include_directories(SYSTEM ${QT_INCLUDES} )

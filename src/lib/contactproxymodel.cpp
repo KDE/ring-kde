@@ -105,7 +105,7 @@ void ContactProxyModel::reloadCategories()
          TopLevelItem* item = new TopLevelItem(val);
          m_hCategories[val] = item;
          m_lCategoryCounter << item;
-         emit dataChanged(index(0,0),index(rowCount()-1,0));
+//          emit dataChanged(index(0,0),index(rowCount()-1,0));
       }
       TopLevelItem* item = m_hCategories[val];
       if (item) {
@@ -117,7 +117,7 @@ void ContactProxyModel::reloadCategories()
    }
    endResetModel();
    emit layoutChanged();
-   emit dataChanged(index(0,0),index(rowCount()-1,0));
+//    emit dataChanged(index(0,0),index(rowCount()-1,0));
 }
 
 bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
@@ -126,6 +126,10 @@ bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value
       CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)index.internalPointer();
       if (role == AbstractContactBackend::Role::DropState) {
          modelItem->setDropState(value.toInt());
+         emit dataChanged(index, index);
+      }
+      else if (role == AbstractContactBackend::Role::HoverState) {
+         modelItem->setHoverState(value.toInt());
          emit dataChanged(index, index);
       }
    }
@@ -162,6 +166,8 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             return QVariant(c->preferredEmail());
          case AbstractContactBackend::Role::DropState:
             return QVariant(modelItem->dropState());
+         case AbstractContactBackend::Role::HoverState:
+            return QVariant(modelItem->hoverState());
          case AbstractContactBackend::Role::FormattedLastUsed:
             return QVariant(HistoryTimeCategoryModel::timeToHistoryCategory(c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::IndexedLastUsed:

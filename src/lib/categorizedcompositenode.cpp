@@ -41,3 +41,13 @@ CategorizedCompositeNode::Type CategorizedCompositeNode::type() const
 {
    return m_type;
 }
+
+char CategorizedCompositeNode::hoverState()
+{
+   return m_HoverState;
+}
+
+void CategorizedCompositeNode::setHoverState(const char state)
+{
+   m_HoverState = state;
+}

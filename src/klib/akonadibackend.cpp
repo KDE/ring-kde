@@ -72,7 +72,8 @@ AkonadiBackend::~AkonadiBackend()
    delete m_pSession;
    if (Call::contactBackend() == this)
       Call::setContactBackend(nullptr);
-   delete m_pJob;
+   if (m_pJob)
+      delete m_pJob;
 }
 
 

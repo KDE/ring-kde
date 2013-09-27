@@ -38,6 +38,11 @@ void ExtendedAction::setAltIcon(QString path)
    m_pIcon = new KIcon(path);
 }
 
+void ExtendedAction::setAltIcon(KIcon icon)
+{
+   m_pIcon = new KIcon(icon);
+}
+
 void ExtendedAction::setText(const QString& newText)
 {
    QAction::setText(newText);

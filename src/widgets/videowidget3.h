@@ -36,6 +36,9 @@ public:
 //    virtual int    heightForWidth( int w ) const;
 //    virtual QSize  sizeHint      (       ) const;
 
+protected:
+   virtual void resizeEvent(QResizeEvent* event);
+
 private:
    VideoScene*          m_pScene  ;
    QGLWidget*           m_pWdg    ;

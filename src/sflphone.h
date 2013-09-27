@@ -90,6 +90,15 @@ private:
    ExtendedAction* action_hangup         ;
    ExtendedAction* action_unhold         ;
    ExtendedAction* action_pickup         ;
+   //Video actions
+   #ifdef ENABLE_VIDEO
+   ExtendedAction* action_video_rotate_left    ;
+   ExtendedAction* action_video_rotate_right   ;
+   ExtendedAction* action_video_flip_horizontal;
+   ExtendedAction* action_video_flip_vertical  ;
+   ExtendedAction* action_video_mute           ;
+   ExtendedAction* action_video_preview        ;
+   #endif
    KAction* action_mailBox               ;
    KAction* action_close                 ;
    KAction* action_quit                  ;
@@ -139,7 +148,7 @@ public:
    bool             initialize     ();
    void             setupActions   ();
    void             trayIconSignal ();
-   QList<QAction *> getCallActions ();
+   QList<QAction *> callActions    ();
 
    friend class SFLPhoneView;
 
@@ -150,15 +159,25 @@ public:
    HistoryDock*  historyDock ();
    BookmarkDock* bookmarkDock();
 
-   ExtendedAction* getHoldAction    () { return action_hold;     }
-   ExtendedAction* getRecordAction  () { return action_record;   }
-   ExtendedAction* getRefuseAction  () { return action_refuse;   }
-   ExtendedAction* getMuteAction    () { return action_mute;     }
-   ExtendedAction* getHangupAction  () { return action_hangup;   }
-   ExtendedAction* getUnholdAction  () { return action_unhold;   }
-   ExtendedAction* getTransferAction() { return action_transfer; }
-   ExtendedAction* getPickupAction  () { return action_pickup;   }
-   ExtendedAction* getAcceptAction  () { return action_accept;   }
+   ExtendedAction* holdAction    () { return action_hold;     }
+   ExtendedAction* recordAction  () { return action_record;   }
+   ExtendedAction* refuseAction  () { return action_refuse;   }
+   ExtendedAction* muteAction    () { return action_mute;     }
+   ExtendedAction* hangupAction  () { return action_hangup;   }
+   ExtendedAction* unholdAction  () { return action_unhold;   }
+   ExtendedAction* transferAction() { return action_transfer; }
+   ExtendedAction* pickupAction  () { return action_pickup;   }
+   ExtendedAction* acceptAction  () { return action_accept;   }
+
+   //Video actions
+   #ifdef ENABLE_VIDEO
+   ExtendedAction* videoRotateLeftAction     () { return action_video_rotate_left    ;}
+   ExtendedAction* videoRotateRightAction    () { return action_video_rotate_right   ;}
+   ExtendedAction* videoFlipHorizontalAction () { return action_video_flip_horizontal;}
+   ExtendedAction* videoFlipVerticalAction   () { return action_video_flip_vertical  ;}
+   ExtendedAction* videoMuteAction           () { return action_video_mute           ;}
+   ExtendedAction* videoPreviewAction        () { return action_video_preview        ;}
+   #endif
 
 private Q_SLOTS:
    void on_m_pView_statusMessageChangeAsked      ( const QString& message               );

@@ -20,6 +20,8 @@
 #ifndef AKONADI_BACKEND_H
 #define AKONADI_BACKEND_H
 
+#include <QtCore/QPointer>
+
 #include "../lib/abstractcontactbackend.h"
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
@@ -72,7 +74,7 @@ private:
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
    ContactList                    m_pContacts  ;
-   Akonadi::CollectionFetchJob*   m_pJob       ;
+   QPointer<Akonadi::CollectionFetchJob>   m_pJob;
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);

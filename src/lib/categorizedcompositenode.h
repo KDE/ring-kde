@@ -36,9 +36,12 @@ public:
     virtual QObject* getSelf() = 0;
     char dropState();
     void setDropState(const char state);
+    char hoverState();
+    void setHoverState(const char state);
 private:
     CategorizedCompositeNode::Type m_type;
     char m_DropState;
+    char m_HoverState;
 };
 
 #endif

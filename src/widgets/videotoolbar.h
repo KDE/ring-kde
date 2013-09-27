@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C)  2013 by Savoir-Faire Linux                             *
+ *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,33 +15,23 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef EXTENDED_ACTION_H
-#define EXTENDED_ACTION_H
-#include <KAction>
+#ifndef VIDEOTOOLBAR_H
+#define VIDEOTOOLBAR_H
 
-//KDE
-class KIcon;
+#include "overlaytoolbar.h"
 
-class ExtendedAction : public KAction
-{
+class QWidget;
+
+class VideoToolbar : public OverlayToolbar {
    Q_OBJECT
 public:
-   explicit ExtendedAction(QObject* parent = nullptr);
-   virtual ~ExtendedAction();
-
-   const KIcon& altIcon();
-   void setAltIcon(QString path);
-   void setAltIcon(KIcon icon);
+   VideoToolbar(QWidget* parent = nullptr);
+   virtual ~VideoToolbar();
 
 private:
-   KIcon* m_pIcon;
 
-public Q_SLOTS:
-   void setText(const QString&);
-   void hasChanged();
-
-Q_SIGNALS:
-   void textChanged(QString text);
+// public Q_SLOTS:
+//    virtual void updateState();
 };
 
-#endif //EXTENDED_ACTION_H
+#endif

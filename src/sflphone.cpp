@@ -178,7 +178,28 @@ SFLPhone::SFLPhone(QWidget *parent)
    action_pickup  ->setText ( i18n( "Pickup"   ) );
    action_mute    ->setText ( i18nc("Mute the current audio device", "Mute"     ) );
    action_accept  ->setText ( i18n("Dial"      ) );
-   
+
+   #ifdef ENABLE_VIDEO
+   action_video_rotate_left     = new ExtendedAction(this);
+   action_video_rotate_right    = new ExtendedAction(this);
+   action_video_flip_horizontal = new ExtendedAction(this);
+   action_video_flip_vertical   = new ExtendedAction(this);
+   action_video_mute            = new ExtendedAction(this);
+   action_video_preview         = new ExtendedAction(this);
+   action_video_rotate_left     ->setText ( i18n( "Rotate left"  ) );
+   action_video_rotate_right    ->setText ( i18n( "Rotate right" ) );
+   action_video_flip_horizontal ->setText ( i18n( "Flip"         ) );
+   action_video_flip_vertical   ->setText ( i18n( "Flip"         ) );
+   action_video_mute            ->setText ( i18n( "Mute"         ) );
+   action_video_preview         ->setText ( i18n( "Preview"      ) );
+   action_video_rotate_left     ->setAltIcon(KIcon("object-rotate-left"    ));
+   action_video_rotate_right    ->setAltIcon(KIcon("object-rotate-right"   ));
+   action_video_flip_horizontal ->setAltIcon(KIcon("object-flip-horizontal"));
+   action_video_flip_vertical   ->setAltIcon(KIcon("object-flip-vertical"  ));
+   action_video_mute            ->setAltIcon(KIcon("camera-web"            ));
+   action_video_preview         ->setAltIcon(KIcon("view-preview"          ));
+   #endif
+
    action_mute->setCheckable(true);
 
    m_pView = new SFLPhoneView(this);
@@ -561,7 +582,7 @@ void SFLPhone::showShortCutEditor() {
 }
 
 ///Produce an actionList for auto CallBack
-QList<QAction*> SFLPhone::getCallActions()
+QList<QAction*> SFLPhone::callActions()
 {
    QList<QAction*> callActions = QList<QAction *>();
    callActions.insert((int) Accept   , action_accept   );

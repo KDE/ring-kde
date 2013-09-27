@@ -17,11 +17,12 @@
 #ifndef VIDEOSCENE_H
 #define VIDEOSCENE_H
 
-#include <QGraphicsScene>
+#include <QtGui/QGraphicsScene>
 
 class QLabel;
 
 class VideoGLFrame;
+class VideoToolbar;
 
 class VideoScene : public QGraphicsScene
 {
@@ -31,7 +32,10 @@ public:
    VideoScene();
 
    void drawBackground(QPainter *painter, const QRectF &rect);
-   QList<VideoGLFrame*> m_lFrames ;
+
+   //Setters
+   void setToolbar(VideoToolbar* tb);
+   void addFrame(VideoGLFrame* frame);
 
 public slots:
    void setBackgroundColor();
@@ -44,13 +48,12 @@ protected:
    void wheelEvent(QGraphicsSceneWheelEvent * wheelEvent);
 
 private:
-   QDialog *createDialog(const QString &windowTitle) const;
+   QList<VideoGLFrame*> m_lFrames ;
 
    QColor m_backgroundColor;
+//    QGraphicsRectItem *m_lightItem;
 
-   QLabel *m_labels[4];
-
-   QGraphicsRectItem *m_lightItem;
+   VideoToolbar* m_pToolbar;
 };
 
 #endif

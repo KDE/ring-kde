@@ -46,7 +46,7 @@
 #include "actionsetaccountfirst.h"
 #include "sflphone.h"
 #include "widgets/tips/tipcollection.h"
-#include "widgets/callviewoverlaytoolbar.h"
+#include "widgets/callviewtoolbar.h"
 #include "extendedaction.h"
 #include "delegates/conferencedelegate.h"
 #include "delegates/historydelegate.h"
@@ -331,7 +331,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    MacroModel::addListener(this);
 
 
-   m_pCanvasToolbar = new CallViewOverlayToolbar(m_pView);
+   m_pCanvasToolbar = new CallViewToolbar(m_pView);
    connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)) , m_pCanvasToolbar, SLOT(updateState()));
    connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*))                 , m_pCanvasToolbar, SLOT(updateState()));
    connect(CallModel::instance()    , SIGNAL(layoutChanged())                         , m_pCanvasToolbar, SLOT(updateState()));
@@ -1001,7 +1001,7 @@ void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
    KMenu menu(this);
 
    SFLPhone * window = SFLPhone::app();
-   QList<QAction *> callActions = window->getCallActions();
+   QList<QAction *> callActions = window->callActions();
 
    menu.addAction ( callActions.at((int) SFLPhone::Accept) );
    menu.addAction ( callActions[ SFLPhone::Refuse   ]      );
@@ -1168,13 +1168,13 @@ void SFLPhoneView::mute(bool value)
       toolButton_recVol->setChecked(false);
       slider_recVol->setEnabled(true);
       Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)slider_recVol->value() / 100.0);
-      SFLPhone::app()->getMuteAction()->setText(i18nc("Mute the current audio device","Mute"));
+      SFLPhone::app()->muteAction()->setText(i18nc("Mute the current audio device","Mute"));
    }
    else {
       toolButton_recVol->setChecked(true);
       slider_recVol->setEnabled(false);
       Q_NOREPLY callManager.setVolume(RECORD_DEVICE, 0.0);
-      SFLPhone::app()->getMuteAction()->setText(i18nc("Unmute the current audio device","Unmute"));
+      SFLPhone::app()->muteAction()->setText(i18nc("Unmute the current audio device","Unmute"));
    }
    updateRecordButton();
 }

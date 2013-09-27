@@ -32,7 +32,7 @@ class QKeyEvent;
 //SFLPhone
 class AccountWizard;
 class Contact;
-class CallViewOverlayToolbar;
+class CallViewToolbar;
 class CallViewOverlay;
 class HistoryDelegate;
 class ConferenceDelegate;
@@ -56,7 +56,7 @@ class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListe
 
 private:
    AccountWizard* wizard     ;
-   CallViewOverlayToolbar* m_pCanvasToolbar;
+   CallViewToolbar* m_pCanvasToolbar;
    CallViewOverlay* m_pTransferOverlay;
    ConferenceDelegate* m_pConfDelegate;
    HistoryDelegate* m_pHistoryDelegate;

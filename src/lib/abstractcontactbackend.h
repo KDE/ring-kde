@@ -52,8 +52,9 @@ public:
       DatedLastUsed     = 106,
       Filter            = 200, //All roles, all at once
       DropState         = 300, //State for drag and drop
+      HoverState        = 301, //State for hovered items (hack)
    };
-   
+
    explicit AbstractContactBackend(QObject* parent = nullptr);
    virtual ~AbstractContactBackend();
 

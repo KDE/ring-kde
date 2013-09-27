@@ -17,94 +17,48 @@
 
 #include "videoscene.h"
 
-#include <QtGui>
 #include <QtOpenGL>
 #include <QtGui/QLabel>
 #include <GL/glu.h>
 
+#include <KDialog>
+
 #include "videoglframe.h"
+#include "videotoolbar.h"
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
 #endif
 
-QDialog *VideoScene::createDialog(const QString &windowTitle) const
-{
-   QDialog *dialog = new QDialog(0, Qt::CustomizeWindowHint | Qt::WindowTitleHint);
-
-   dialog->setWindowOpacity(0.8);
-   dialog->setWindowTitle(windowTitle);
-   dialog->setLayout(new QVBoxLayout);
-
-   return dialog;
-}
-
 VideoScene::VideoScene()
-   : m_backgroundColor(0, 170, 255)
+   : m_backgroundColor(25, 25, 25)
 {
-   QWidget *controls = createDialog(tr("Controls"));
 
-   QCheckBox *wireframe = new QCheckBox(tr("Render as wireframe"));
-   connect(wireframe, SIGNAL(toggled(bool)), this, SLOT(enableWireframe(bool)));
-   controls->layout()->addWidget(wireframe);
+//    QPointF pos(10, 10);
+//    foreach (QGraphicsItem *item, items()) {
+//       item->setFlag(QGraphicsItem::ItemIsMovable);
+//       item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+// 
+//       const QRectF rect = item->boundingRect();
+//       item->setPos(pos.x() - rect.x(), pos.y() - rect.y());
+//       pos += QPointF(0, 10 + rect.height());
+//    }
 
-   QCheckBox *normals = new QCheckBox(tr("Display normals vectors"));
-   connect(normals, SIGNAL(toggled(bool)), this, SLOT(enableNormals(bool)));
-   controls->layout()->addWidget(normals);
+//    QRadialGradient gradient(40, 40, 40, 40, 40);
+//    gradient.setColorAt(0.2, Qt::yellow);
+//    gradient.setColorAt(1, Qt::transparent);
 
-   QPushButton *colorButton = new QPushButton(tr("Choose model color"));
-   controls->layout()->addWidget(colorButton);
-
-   QPushButton *backgroundButton = new QPushButton(tr("Choose background color"));
-   connect(backgroundButton, SIGNAL(clicked()), this, SLOT(setBackgroundColor()));
-   controls->layout()->addWidget(backgroundButton);
-
-   QWidget *statistics = createDialog(tr("Model info"));
-   statistics->layout()->setMargin(20);
-
-   for (int i = 0; i < 4; ++i) {
-      m_labels[i] = new QLabel;
-      statistics->layout()->addWidget(m_labels[i]);
-   }
-
-   QWidget *instructions = createDialog(tr("Instructions"));
-   instructions->layout()->addWidget(new QLabel(tr("Use mouse wheel to zoom model, and click and drag to rotate model")));
-   instructions->layout()->addWidget(new QLabel(tr("Move the sun around to change the light position")));
-
-   addWidget(instructions);
-   addWidget(controls);
-   addWidget(statistics);
-
-   QPointF pos(10, 10);
-   foreach (QGraphicsItem *item, items()) {
-      item->setFlag(QGraphicsItem::ItemIsMovable);
-      item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-
-      const QRectF rect = item->boundingRect();
-      item->setPos(pos.x() - rect.x(), pos.y() - rect.y());
-      pos += QPointF(0, 10 + rect.height());
-   }
-
-   QRadialGradient gradient(40, 40, 40, 40, 40);
-   gradient.setColorAt(0.2, Qt::yellow);
-   gradient.setColorAt(1, Qt::transparent);
-
-   m_lightItem = new QGraphicsRectItem(0, 0, 80, 80);
-   m_lightItem->setPen(Qt::NoPen);
-   m_lightItem->setBrush(gradient);
-   m_lightItem->setFlag(QGraphicsItem::ItemIsMovable);
-   m_lightItem->setPos(800, 200);
-   addItem(m_lightItem);
+//    m_lightItem = new QGraphicsRectItem(0, 0, 80, 80);
+//    m_lightItem->setPen(Qt::NoPen);
+//    m_lightItem->setBrush(gradient);
+//    m_lightItem->setFlag(QGraphicsItem::ItemIsMovable);
+//    m_lightItem->setPos(800, 200);
+//    addItem(m_lightItem);
 }
 
 void VideoScene::drawBackground(QPainter *painter, const QRectF& rect)
 {
    Q_UNUSED(rect)
-   if (painter->paintEngine()->type() != QPaintEngine::OpenGL && painter->paintEngine()->type() != QPaintEngine::OpenGL2) {
-      qDebug() << "VideoScene: drawBackground needs a QGLWidget to be set as viewport on the graphics view" << painter->paintEngine()->type();
-      return;
-   }
-
    glClearColor(m_backgroundColor.redF(), m_backgroundColor.greenF(), m_backgroundColor.blueF(), 1.0f);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -183,4 +137,16 @@ void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 void VideoScene::frameChanged()
 {
    update();
+}
+
+void VideoScene::setToolbar(VideoToolbar* tb)
+{
+   m_pToolbar = tb;
+   addWidget(m_pToolbar);
+}
+
+void VideoScene::addFrame(VideoGLFrame* frame)
+{
+   m_lFrames << frame;
+   m_pToolbar->resizeToolbar();
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C)  2013 by Savoir-Faire Linux                             *
+ *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,33 +15,23 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef EXTENDED_ACTION_H
-#define EXTENDED_ACTION_H
-#include <KAction>
+#include "videotoolbar.h"
 
-//KDE
-class KIcon;
+#include <QtGui/QHBoxLayout>
+#include "sflphone.h"
 
-class ExtendedAction : public KAction
+VideoToolbar::VideoToolbar(QWidget* parent) : OverlayToolbar(parent)
 {
-   Q_OBJECT
-public:
-   explicit ExtendedAction(QObject* parent = nullptr);
-   virtual ~ExtendedAction();
+   setIconSize(16);
+   addAction(SFLPhone::app()->videoRotateLeftAction     ());
+   addAction(SFLPhone::app()->videoRotateRightAction    ());
+   addAction(SFLPhone::app()->videoFlipHorizontalAction ());
+   addAction(SFLPhone::app()->videoFlipVerticalAction   ());
+   addAction(SFLPhone::app()->videoMuteAction           ());
+   addAction(SFLPhone::app()->videoPreviewAction        ());
+}
 
-   const KIcon& altIcon();
-   void setAltIcon(QString path);
-   void setAltIcon(KIcon icon);
-
-private:
-   KIcon* m_pIcon;
-
-public Q_SLOTS:
-   void setText(const QString&);
-   void hasChanged();
-
-Q_SIGNALS:
-   void textChanged(QString text);
-};
-
-#endif //EXTENDED_ACTION_H
+VideoToolbar::~VideoToolbar()
+{
+   
+}

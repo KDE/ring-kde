@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef CALL_VIEW_OVERLAY_H
-#define CALL_VIEW_OVERLAY_H
+#ifndef OVERLAYTOOLBAR_H
+#define OVERLAYTOOLBAR_H
 
 //Qt
 #include <QtGui/QToolButton>
@@ -31,74 +31,65 @@
 class QSvgRenderer;
 class QToolButton;
 class QTreeView;
+class QHBoxLayout;
 
 //KDE
 
 //SFLPhone
 class ExtendedAction;
+class ObserverToolButton;
 
 class ObserverToolButton : public QToolButton
 {
    Q_OBJECT
 public:
-   explicit ObserverToolButton(QWidget* parent = nullptr) : QToolButton(parent){}
+   explicit ObserverToolButton(QWidget* parent = nullptr);
 public Q_SLOTS:
    void setNewText(const QString& text) {
       setText(text);
    }
 };
 
-// enum class ActionButton : unsigned int {
-//    PICKUP   = 0,
-//    HOLD     = 1,
-//    UNHOLD   = 2,
-//    HANGUP   = 3,
-//    MUTE     = 4,
-//    TRANSFER = 5,
-//    RECORD   = 6,
-//    REFUSE   = 7,
-//    ACCEPT   = 8,
-//    COUNT
-// };
-
-class CallViewOverlayToolbar : public QWidget
+class OverlayToolbar : public QWidget
 {
    Q_OBJECT
 public:
-   explicit CallViewOverlayToolbar(QTreeView* parent = nullptr);
-   virtual ~CallViewOverlayToolbar();
+   explicit OverlayToolbar(QWidget* parent = nullptr);
+   virtual ~OverlayToolbar();
+
+   //Setters
+   void setForcedParent(QWidget* parent);
+   void setIconSize(int size);
+
+   //Getter
+   ObserverToolButton* actionButton(int key);
+
+   //Mutator
+   void resizeToolbar();
+   void addAction(ExtendedAction* action, int key = -1);
 
 private:
    //Attributes
-   QTreeView*    m_pParent;
-   QSvgRenderer* m_pRightRender;
-   QSvgRenderer* m_pLeftRender ;
-
-   //Buttons
-   ObserverToolButton* m_pHold    ;
-   ObserverToolButton* m_pUnhold  ;
-   ObserverToolButton* m_pMute    ;
-   ObserverToolButton* m_pPickup  ;
-   ObserverToolButton* m_pHangup  ;
-   ObserverToolButton* m_pTransfer;
-   ObserverToolButton* m_pRecord  ;
-   ObserverToolButton* m_pRefuse  ;
-   ObserverToolButton* m_pAccept  ;
-
+   QSvgRenderer* m_pRightRender ;
+   QSvgRenderer* m_pLeftRender  ;
+   QWidget*      m_pForcedParent;
+   int           m_IconSize     ;
+   QHBoxLayout*  m_pLayout      ;
    QHash<int,ObserverToolButton*> m_hButtons;
 
-   //Helpers
-   ObserverToolButton* createButton(ExtendedAction* action);
 
 public Q_SLOTS:
-   void updateState();
+   virtual void updateState();
 
 protected:
-   void resizeEvent( QResizeEvent* event);
+   //Virtual events
    void paintEvent ( QPaintEvent*  event);
    void hideEvent  ( QHideEvent*   event);
    void showEvent  ( QShowEvent*   event);
    bool eventFilter( QObject *obj, QEvent *event);
+
+   //Helpers
+   ObserverToolButton* createButton(ExtendedAction* action);
 
 Q_SIGNALS:
    void visibilityChanged(bool);

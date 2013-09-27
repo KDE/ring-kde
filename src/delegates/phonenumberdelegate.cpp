@@ -85,29 +85,29 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
       const QRect parentRect = m_pView->visualRect(parent);
       QStyleOptionViewItem parOpt;
       parOpt.rect = parentRect;
-      //Set if the item is selected
+      //Set if the item is selected, active, hover and focus
       parOpt.state |= QStyle::State_Enabled | (m_pView->selectionModel()->currentIndex()==parent?QStyle::State_Selected: QStyle::State_None);
       parOpt.state |= m_pView->hasFocus()?QStyle::State_HasFocus|QStyle::State_Active:QStyle::State_None;
       parOpt.state |= (parent.data(AbstractContactBackend::Role::HoverState).toInt()==true)?
          opt.state & QStyle::State_MouseOver:QStyle::State_None;
       m_pView->itemDelegate()->paint(painter,parOpt,parent);
       painter->restore();
-//       if (parOpt.state & QStyle::State_Selected || parOpt.state & QStyle::State_MouseOver) {
-         const_cast<PhoneNumberDelegate*>(this)->m_Lock = true;
-         for (int i=0;i<m_pView->model()->rowCount(parent);i++) {
-            const QModelIndex numIdx = m_pView->model()->index(i,0,parent);
-            QStyleOptionViewItem opt3 = option;
-            if (numIdx != index) {
-               opt3.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
-               opt3.state |= (m_pView->selectionModel()->currentIndex()==numIdx?QStyle::State_Selected: QStyle::State_None);
-            }
-            opt3.rect = m_pView->visualRect(numIdx);
-            opt3.rect.setX(m_pView->indentation()*2);
-            paint(painter,opt3,numIdx);
+
+      //Now repaint ALL numbers, including the current one
+      const_cast<PhoneNumberDelegate*>(this)->m_Lock = true;
+      for (int i=0;i<m_pView->model()->rowCount(parent);i++) {
+         const QModelIndex numIdx = m_pView->model()->index(i,0,parent);
+         QStyleOptionViewItem opt3 = option;
+         if (numIdx != index) {
+            opt3.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
+            opt3.state |= (m_pView->selectionModel()->currentIndex()==numIdx?QStyle::State_Selected: QStyle::State_None);
          }
-         const_cast<PhoneNumberDelegate*>(this)->m_Lock = false;
-         return;
-//       }
+         opt3.rect = m_pView->visualRect(numIdx);
+         opt3.rect.setX(m_pView->indentation()*2);
+         paint(painter,opt3,numIdx);
+      }
+      const_cast<PhoneNumberDelegate*>(this)->m_Lock = false;
+      return;
    }
    //END repaint parent
 
