@@ -313,8 +313,10 @@ QVector<PhoneNumber*> AbstractBookmarkModel::serialisedToList(const QStringList&
    QVector<PhoneNumber*> numbers;
    foreach(const QString& item,list) {
       PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(item);
-      if (nb)
+      if (nb) {
+         nb->setTracked(true);
          numbers << nb;
+      }
    }
    return numbers;
 }
@@ -332,4 +334,15 @@ QVector<PhoneNumber*> AbstractBookmarkModel::bookmarkList() const
 AbstractBookmarkModel::TopLevelItem::TopLevelItem(QString name) 
    : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name)
 {
+}
+
+void AbstractBookmarkModel::remove(const QModelIndex& idx)
+{
+   if (idx.isValid()) {
+      CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
+      if (modelItem->type() == CategorizedCompositeNode::Type::BOOKMARK) {
+         PhoneNumber* nb = m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->m_pNumber;
+         removeBookmark(nb);
+      }
+   }
 }

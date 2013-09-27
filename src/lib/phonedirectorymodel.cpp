@@ -49,7 +49,7 @@ PhoneDirectoryModel* PhoneDirectoryModel::instance()
 
 QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
 {
-   if (!index.isValid()) return QVariant();
+   if (!index.isValid() || !m_lNumbers[index.row()]) return QVariant();
    const PhoneNumber* number = m_lNumbers[index.row()];
    switch (static_cast<PhoneDirectoryModel::Columns>(index.column())) {
       case PhoneDirectoryModel::Columns::URI:

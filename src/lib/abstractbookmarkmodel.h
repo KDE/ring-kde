@@ -58,6 +58,7 @@ public:
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
 
    //Management
+   void         remove(const QModelIndex& idx                         );
    virtual void addBookmark   (PhoneNumber* number, bool trackPresence = false) = 0;
    virtual void removeBookmark(PhoneNumber* number                            ) = 0;
 

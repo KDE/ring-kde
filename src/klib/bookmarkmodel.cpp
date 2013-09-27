@@ -42,6 +42,7 @@ BookmarkModel* BookmarkModel::instance()
 void BookmarkModel::addBookmark(PhoneNumber* number, bool trackPresence)
 {
    Q_UNUSED(trackPresence)
+   number->setTracked(true);
    ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << number->toHash());
    reloadCategories();
 }

@@ -25,6 +25,9 @@
 //Qt
 class QCheckBox;
 
+//KDE
+class KAction;
+
 //SFLPhone
 #include "klib/bookmarkmodel.h"
 
@@ -37,12 +40,26 @@ public:
    virtual ~BookmarkDock();
 private:
    //Attributes
-   QCheckBox*              m_pMostUsedCK;
+   QCheckBox*              m_pMostUsedCK ;
+   QMenu*                  m_pMenu       ;
+   QModelIndex             m_CurrentIndex;
+
+   //Actions
+   KAction* m_pCallAgain   ;
+   KAction* m_pEditContact ;
+   KAction* m_pCopy        ;
+   KAction* m_pEmail       ;
+   KAction* m_pAddPhone    ;
+   KAction* m_pBookmark    ;
 
 private Q_SLOTS:
    void reload();
    void expandTree();
    void slotDoubleClick(const QModelIndex& index);
+   void slotContextMenu( const QModelIndex& index );
+
+   //Menu
+   void bookmark();
 };
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
