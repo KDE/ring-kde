@@ -67,3 +67,15 @@ Exec=sflphone-client-kde
 Icon=sflphone-client-kde
 StartupNotify=true
 Categories=Network;Telephony;
+
+[Protocol]
+exec=sflphone-client-kde --place-call "%u"
+protocol=sip
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false
