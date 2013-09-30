@@ -71,7 +71,36 @@ KeyExchangeModel* KeyExchangeModel::instance()
 }
 
 ///Translate enum type to QModelIndex
-QModelIndex KeyExchangeModel::toIndex(KeyExchangeModel::Type type)
+QModelIndex KeyExchangeModel::toIndex(KeyExchangeModel::Type type) const
 {
    return index(static_cast<int>(type),0,QModelIndex());
+}
+
+///Translate enum to daemon name
+const char* KeyExchangeModel::toDaemonName(KeyExchangeModel::Type type)
+{
+   switch (type) {
+      case KeyExchangeModel::Type::NONE:
+         return KeyExchangeModel::DaemonName::NONE;
+         break;
+      case KeyExchangeModel::Type::ZRTP:
+         return KeyExchangeModel::DaemonName::ZRTP;
+         break;
+      case KeyExchangeModel::Type::SDES:
+         return KeyExchangeModel::DaemonName::SDES;
+         break;
+   };
+   return nullptr; //Cannot heppen
+}
+
+KeyExchangeModel::Type KeyExchangeModel::fromDaemonName(const QString& name)
+{
+   if (name.isEmpty())
+      return KeyExchangeModel::Type::NONE;
+   else if (name == KeyExchangeModel::DaemonName::SDES)
+      return KeyExchangeModel::Type::SDES;
+   else if (name == KeyExchangeModel::DaemonName::ZRTP)
+      return KeyExchangeModel::Type::ZRTP;
+   qDebug() << "Undefined Key exchange mechanism" << name;
+   return KeyExchangeModel::Type::NONE;
 }

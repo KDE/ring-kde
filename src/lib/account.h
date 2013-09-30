@@ -28,6 +28,7 @@ class QString;
 //SFLPhone
 #include "videocodecmodel.h"
 #include "keyexchangemodel.h"
+#include "tlsmethodmodel.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
 // #include "dbus/metatypes.h"
@@ -70,8 +71,9 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(QString        publishedAddress             READ publishedAddress              WRITE setPublishedAddress            )
    Q_PROPERTY(QString        localInterface               READ localInterface                WRITE setLocalInterface              )
    Q_PROPERTY(QString        ringtonePath                 READ ringtonePath                  WRITE setRingtonePath                )
-   Q_PROPERTY(KeyExchangeModel::Type tlsMethod         READ tlsMethod                     WRITE setTlsMethod                   )
-   Q_PROPERTY(int            registrationExpire           READ registrationExpire            WRITE setRegistrationExpire   )
+   Q_PROPERTY(TlsMethodModel::Type tlsMethod              READ tlsMethod                     WRITE setTlsMethod                   )
+   Q_PROPERTY(KeyExchangeModel::Type keyExchange          READ keyExchange                   WRITE setKeyExchange                 )
+   Q_PROPERTY(int            registrationExpire           READ registrationExpire            WRITE setRegistrationExpire          )
    Q_PROPERTY(int            tlsNegotiationTimeoutSec     READ tlsNegotiationTimeoutSec      WRITE setTlsNegotiationTimeoutSec    )
    Q_PROPERTY(int            tlsNegotiationTimeoutMsec    READ tlsNegotiationTimeoutMsec     WRITE setTlsNegotiationTimeoutMsec   )
    Q_PROPERTY(int            localPort                    READ localPort                     WRITE setLocalPort                   )
@@ -155,7 +157,8 @@ class LIB_EXPORT Account : public QObject {
          LocalInterface              = 115,
          RingtonePath                = 116,
          TlsMethod                   = 117,
-         RegistrationExpire   = 118,
+         KeyExchange                 = 190,
+         RegistrationExpire          = 118,
          TlsNegotiationTimeoutSec    = 119,
          TlsNegotiationTimeoutMsec   = 120,
          LocalPort                   = 121,
@@ -282,7 +285,8 @@ class LIB_EXPORT Account : public QObject {
       DtmfType DTMFType                    () const;
       bool    presenceStatus               () const;
       QString presenceMessage              () const;
-      KeyExchangeModel::Type tlsMethod  () const;
+      TlsMethodModel::Type tlsMethod       () const;
+      KeyExchangeModel::Type keyExchange   () const;
       QVariant roleData            (int role) const;
 
       //Setters
@@ -304,7 +308,8 @@ class LIB_EXPORT Account : public QObject {
       void setPublishedAddress              (const QString& detail);
       void setLocalInterface                (const QString& detail);
       void setRingtonePath                  (const QString& detail);
-      void setTlsMethod                     (KeyExchangeModel::Type detail);
+      void setTlsMethod                     (TlsMethodModel::Type   detail);
+      void setKeyExchange                   (KeyExchangeModel::Type detail);
       void setRegistrationExpire            (int  detail);
       void setTlsNegotiationTimeoutSec      (int  detail);
       void setTlsNegotiationTimeoutMsec     (int  detail);

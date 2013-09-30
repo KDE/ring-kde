@@ -23,10 +23,11 @@
 //Qt
 #include <QtCore/QString>
 #include <QtCore/QPointer>
-#include <QtGui/QContextMenuEvent>
 #include <QtGui/QPalette>
 #include <QtGui/QWidget>
 #include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QDropEvent>
 
 //KDE
 #include <KLocale>
@@ -994,37 +995,6 @@ void SFLPhoneView::on_toolButton_sndVol_clicked(bool checked)
 
    updateVolumeButton();
 }
-
-///There is a right click menu request
-void SFLPhoneView::contextMenuEvent(QContextMenuEvent *event)
-{
-   KMenu menu(this);
-
-   SFLPhone * window = SFLPhone::app();
-   QList<QAction *> callActions = window->callActions();
-
-   menu.addAction ( callActions.at((int) SFLPhone::Accept) );
-   menu.addAction ( callActions[ SFLPhone::Refuse   ]      );
-   menu.addAction ( callActions[ SFLPhone::Hold     ]      );
-   menu.addAction ( callActions[ SFLPhone::Transfer ]      );
-   menu.addAction ( callActions[ SFLPhone::Record   ]      );
-   menu.addSeparator();
-
-   QAction* action = new ActionSetAccountFirst(nullptr, &menu);
-//    action->setChecked(AccountListModel::getPriorAccount() == nullptr);
-   connect(action,  SIGNAL(setFirst(Account*)), this  ,  SLOT(setAccountFirst(Account*)));
-   menu.addAction(action);
-
-   const QVector<Account *> accounts = AccountListModel::instance()->registeredAccounts();
-   for (int i = 0 ; i < accounts.size() ; i++) {
-      Account* account = accounts.at(i);
-      QAction* action = new ActionSetAccountFirst(account, &menu);
-//       action->setChecked(account == AccountListModel::getPriorAccount());
-      connect(action, SIGNAL(setFirst(Account*)), this  , SLOT(setAccountFirst(Account*)));
-      menu.addAction(action);
-   }
-   menu.exec(event->globalPos());
-} //contextMenuEvent
 
 ///Pick the default account and load it
 void SFLPhoneView::setAccountFirst(Account * account)

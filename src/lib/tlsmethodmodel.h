@@ -15,14 +15,14 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef KEYEXCHANGEMODEL_H
-#define KEYEXCHANGEMODEL_H
+#ifndef TLSMETHODMODEL_H
+#define TLSMETHODMODEL_H
 
 #include "typedefs.h"
 #include <QtCore/QAbstractListModel>
 
 ///Static model for handling encryption types
-class LIB_EXPORT KeyExchangeModel : public QAbstractListModel {
+class LIB_EXPORT TlsMethodModel : public QAbstractListModel {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -31,27 +31,30 @@ class LIB_EXPORT KeyExchangeModel : public QAbstractListModel {
 public:
    ///@enum Type Every supported encryption types
    enum class Type {
-      NONE = 0,
-      ZRTP = 1,
-      SDES = 2,
+      DEFAULT = 0,
+      TLSv1   = 1,
+      SSLv3   = 2,
+      SSLv23  = 3,
    };
 
    class Name {
    public:
-      constexpr static const char* NONE = "None";
-      constexpr static const char* ZRTP = "ZRTP";
-      constexpr static const char* SDES = "SDES";
+      constexpr static const char* DEFAULT = "Default";
+      constexpr static const char* TLSv1   = "TLSv1"  ;
+      constexpr static const char* SSLv3   = "SSLv3"  ;
+      constexpr static const char* SSLv23  = "SSLv23" ;
    };
 
    class DaemonName {
    public:
-      constexpr static const char* NONE = ""    ;
-      constexpr static const char* ZRTP = "zrtp";
-      constexpr static const char* SDES = "sdes";
+      constexpr static const char* DEFAULT = "Default";
+      constexpr static const char* TLSv1   = "TLSv1"  ;
+      constexpr static const char* SSLv3   = "SSLv3"  ;
+      constexpr static const char* SSLv23  = "SSLv23" ;
    };
 
    //Private constructor, can only be called by 'Account'
-   explicit KeyExchangeModel();
+   explicit TlsMethodModel();
 
    //Model functions
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
@@ -60,15 +63,15 @@ public:
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
 
    //Getters
-   QModelIndex                   toIndex       (KeyExchangeModel::Type type) const;
-   static const char*            toDaemonName  (KeyExchangeModel::Type type)      ;
-   static KeyExchangeModel::Type fromDaemonName(const QString& name        )      ;
+   QModelIndex   toIndex  (TlsMethodModel::Type type);
+   static const char* toDaemonName(TlsMethodModel::Type type);
+   static TlsMethodModel::Type fromDaemonName(const QString& name);
 
    //Singleton
-   static KeyExchangeModel* instance();
+   static TlsMethodModel* instance();
 
 private:
-   static KeyExchangeModel* m_spInstance;
+   static TlsMethodModel* m_spInstance;
 };
-Q_DECLARE_METATYPE(KeyExchangeModel*)
+Q_DECLARE_METATYPE(TlsMethodModel*)
 #endif

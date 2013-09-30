@@ -462,10 +462,16 @@ bool Account::isTlsEnable() const
 }
 
 ///Return the account the TLS encryption method
-KeyExchangeModel::Type Account::tlsMethod() const
+TlsMethodModel::Type Account::tlsMethod() const
 {
-   const int value = accountDetail(TLS_METHOD).toInt();
-   return value<=2?static_cast<KeyExchangeModel::Type>(value):KeyExchangeModel::Type::NONE;
+   const QString value = accountDetail(TLS_METHOD);
+   return TlsMethodModel::fromDaemonName(value);
+}
+
+///Return the key exchange mechanism
+KeyExchangeModel::Type Account::keyExchange() const
+{
+   return KeyExchangeModel::fromDaemonName(accountDetail(ACCOUNT_KEY_EXCHANGE));
 }
 
 ///Return if the ringtone are enabled
@@ -768,9 +774,16 @@ void Account::setRingtonePath(const QString& detail)
 }
 
 ///Set the Tls method
-void Account::setTlsMethod(KeyExchangeModel::Type detail)
+void Account::setTlsMethod(TlsMethodModel::Type detail)
 {
-   setAccountDetail(TLS_METHOD ,QString::number(static_cast<int>(detail)));
+   
+   setAccountDetail(TLS_METHOD ,TlsMethodModel::toDaemonName(detail));
+}
+
+///Set the Tls method
+void Account::setKeyExchange(KeyExchangeModel::Type detail)
+{
+   setAccountDetail(ACCOUNT_KEY_EXCHANGE ,KeyExchangeModel::toDaemonName(detail));
 }
 
 ///Set the account timeout, it will be renegotiated when that timeout occur
@@ -931,7 +944,11 @@ void Account::setRoleData(int role, const QVariant& value)
          setRingtonePath(value.toString());
       case Account::Role::TlsMethod: {
          const int method = value.toInt();
-         setTlsMethod(method<=2?static_cast<KeyExchangeModel::Type>(method):KeyExchangeModel::Type::NONE);
+         setTlsMethod(method<=TlsMethodModel::instance()->rowCount()?static_cast<TlsMethodModel::Type>(method):TlsMethodModel::Type::DEFAULT);
+      }
+      case Account::Role::KeyExchange: {
+         const int method = value.toInt();
+         setKeyExchange(method<=KeyExchangeModel::instance()->rowCount()?static_cast<KeyExchangeModel::Type>(method):KeyExchangeModel::Type::NONE);
       }
       case Account::Role::RegistrationExpire:
          setRegistrationExpire(value.toInt());

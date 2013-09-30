@@ -44,6 +44,7 @@
 #include "phonenumber.h"
 #include "videorenderer.h"
 #include "historytimecategorymodel.h"
+#include "tlsmethodmodel.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
@@ -604,7 +605,7 @@ bool Call::isSecure() const {
       return false;
    }
 
-   return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod() != KeyExchangeModel::Type::NONE));
+   return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod() != TlsMethodModel::Type::DEFAULT));
 } //isSecure
 
 ///Return the renderer associated with this call or nullptr

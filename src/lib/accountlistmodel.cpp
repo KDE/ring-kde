@@ -346,11 +346,11 @@ Account* AccountListModel::getAccountAt (int i) const
 ///Get account using its ID
 Account* AccountListModel::getAccountById(const QString& id) const
 {
-   if(id.isEmpty())
-      return nullptr;
-   for (int i = 0; i < m_lAccounts.size(); ++i) {
-      if (!m_lAccounts[i]->isNew() && m_lAccounts[i]->id() == id)
-         return m_lAccounts[i];
+   Q_ASSERT(!id.isEmpty());
+   for (int i = 0; i < m_lAccounts.size(); i++) {
+      Account* acc = m_lAccounts[i];
+      if (acc && !acc->isNew() && acc->id() == id)
+         return acc;
    }
    return nullptr;
 }
@@ -359,27 +359,12 @@ Account* AccountListModel::getAccountById(const QString& id) const
 QVector<Account*> AccountListModel::getAccountsByState(const QString& state)
 {
    QVector<Account *> v;
-   for (int i = 0; i < m_lAccounts.size(); ++i) {
-      if (m_lAccounts[i]->registrationStatus() == state)
-         v += m_lAccounts[i];
+   for (int i = 0; i < m_lAccounts.size(); i++) {
+      Account* acc = m_lAccounts[i];
+      if (acc->registrationStatus() == state)
+         v += acc;
    }
    return v;
-}
-
-///Get a list of all registerred account
-QVector<Account*> AccountListModel::registeredAccounts() const
-{
-   qDebug() << "registeredAccounts";
-   QVector<Account*> registeredAccountsVector;
-   Account* current;
-   for (int i = 0; i < m_lAccounts.count(); ++i) {
-      current = m_lAccounts[i];
-      if(current->registrationStatus() == Account::State::REGISTERED) {
-         qDebug() << current->alias() << " : " << current;
-         registeredAccountsVector.append(current);
-      }
-   }
-   return registeredAccountsVector;
 }
 
 ///Get the first registerred account (default account)

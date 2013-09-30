@@ -61,14 +61,6 @@ private:
    ConferenceDelegate* m_pConfDelegate;
    HistoryDelegate* m_pHistoryDelegate;
 
-protected:
-
-   /**
-    * override context menu handling
-    * @param event
-    */
-   void contextMenuEvent(QContextMenuEvent *event);
-
 public:
    //Constructors & Destructors
    /**

@@ -72,7 +72,6 @@ public:
    Q_INVOKABLE Account* addAccount          ( const QString & alias   )      ;
    Q_INVOKABLE void     removeAccount       ( Account* account        )      ;
    void                 removeAccount       ( QModelIndex index       )      ;
-   QVector<Account*>    registeredAccounts  (                         ) const;
    void                 save                (                         )      ;
    Q_INVOKABLE bool     accountUp           ( int index               )      ;
    Q_INVOKABLE bool     accountDown         ( int index               )      ;

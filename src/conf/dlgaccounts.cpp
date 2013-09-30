@@ -43,6 +43,7 @@
 #include "lib/audiocodecmodel.h"
 #include "lib/accountlistmodel.h"
 #include "lib/keyexchangemodel.h"
+#include "lib/tlsmethodmodel.h"
 
 //OS
 #ifdef Q_WS_WIN // MS Windows version
@@ -82,6 +83,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    accountListHasChanged = false;
 
    combo_security_STRP->setModel(KeyExchangeModel::instance());
+   combo_tls_method->setModel(TlsMethodModel::instance());
 
    //SLOTS
    //                     SENDER                            SIGNAL                       RECEIVER              SLOT                          /
@@ -119,6 +121,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(file_tls_endpoint,                 SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_private_key,              SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
    /**/connect(combo_tls_method,                  SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
+   /**/connect(combo_security_STRP,               SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_cipher,                   SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_outgoing,                 SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_tls_timeout_sec,           SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
@@ -222,12 +225,12 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setTlsCaListFile               ( file_tls_authority->text()                                               );
    /**/account->setTlsCertificateFile          ( file_tls_endpoint->text()                                                );
    /**/account->setTlsPrivateKeyFile           ( file_tls_private_key->text()                                             );
-   /**/account->setTlsMethod                   ( static_cast<KeyExchangeModel::Type>(combo_tls_method->currentIndex())   );
+   /**/account->setTlsMethod                   ( static_cast<TlsMethodModel::Type>(combo_tls_method->currentIndex())      );
    /**/account->setTlsCiphers                  ( edit_tls_cipher->text()                                                  );
    /**/account->setTlsServerName               ( edit_tls_outgoing->text()                                                );
    /**/account->setTlsNegotiationTimeoutSec    ( spinbox_tls_timeout_sec->value()                                         );
    /**/account->setTlsNegotiationTimeoutMsec   ( spinbox_tls_timeout_msec->value()                                        );
-   ///**/account->setTlsMethod                   ( QString::number(combo_security_STRP->currentIndex())                   );
+   /**/account->setKeyExchange                 ( static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex()) );
    /**/account->setTlsVerifyServer             ( check_tls_incoming->isChecked()                                          );
    /**/account->setTlsVerifyClient             ( check_tls_answer->isChecked()                                            );
    /**/account->setTlsRequireClientCertificate ( check_tls_requier_cert->isChecked()                                      );
@@ -319,7 +322,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    disconnect(this,SLOT(aliasChanged(QString)));
    connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));
 
-   switch (account->tlsMethod()) {
+   switch (account->keyExchange()) {
       case KeyExchangeModel::Type::NONE:
          checkbox_SDES_fallback_rtp->setVisible   ( false );
          checkbox_ZRTP_Ask_user->setVisible       ( false );
@@ -376,7 +379,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/check_tls_requier_cert->setChecked       (  account->isTlsRequireClientCertificate  ());
    /**/group_security_tls->setChecked           (  account->isTlsEnable                    ());
    /**/m_pAutoAnswer->setChecked                (  account->isAutoAnswer                   ());
-   /**/combo_security_STRP->setCurrentIndex     (  KeyExchangeModel::instance()->toIndex(account->tlsMethod()).row());
+   /**/combo_security_STRP->setCurrentIndex     (  KeyExchangeModel::instance()->toIndex(account->keyExchange()).row());
    /*                                                                                        */
 
    m_pDTMFOverRTP->setChecked(account->DTMFType()==DtmfType::OverRtp);
@@ -437,8 +440,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    const QString ringtonePath = KStandardDirs::realFilePath(account->ringtonePath());
    m_pRingTonePath->setUrl( ringtonePath );
 
-
-   combo_tls_method->setCurrentIndex( KeyExchangeModel::instance()->toIndex(account->tlsMethod()).row() );
+   combo_tls_method->setCurrentIndex( TlsMethodModel::instance()->toIndex(account->tlsMethod()).row() );
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    m_pRingtoneListLW->clear();
@@ -784,22 +786,22 @@ void DlgAccounts::selectedCodecChanged(const QModelIndex& current,const QModelIn
 void DlgAccounts::updateCombo(int value)
 {
    Q_UNUSED(value)
-   switch (combo_security_STRP->currentIndex()) {
-      case 0: //KEY_EXCHANGE_NONE
+   switch (static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex())) {
+      case KeyExchangeModel::Type::NONE:
          checkbox_SDES_fallback_rtp->setVisible   ( false );
          checkbox_ZRTP_Ask_user->setVisible       ( false );
          checkbox_ZRTP_display_SAS->setVisible    ( false );
          checkbox_ZRTP_warn_supported->setVisible ( false );
          checkbox_ZTRP_send_hello->setVisible     ( false );
          break;
-      case 1: //ZRTP
+      case KeyExchangeModel::Type::ZRTP:
          checkbox_SDES_fallback_rtp->setVisible   ( false );
          checkbox_ZRTP_Ask_user->setVisible       ( true  );
          checkbox_ZRTP_display_SAS->setVisible    ( true  );
          checkbox_ZRTP_warn_supported->setVisible ( true  );
          checkbox_ZTRP_send_hello->setVisible     ( true  );
          break;
-      case 2: //SDES
+      case KeyExchangeModel::Type::SDES:
          checkbox_SDES_fallback_rtp->setVisible   ( true  );
          checkbox_ZRTP_Ask_user->setVisible       ( false );
          checkbox_ZRTP_display_SAS->setVisible    ( false );
