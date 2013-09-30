@@ -88,8 +88,8 @@
 #define ACCOUNT_ZRTP_HELLO_HASH            "ZRTP.helloHashEnable"
 #define ACCOUNT_DISPLAY_SAS_ONCE           "ZRTP.displaySasOnce"
 #define KEY_EXCHANGE_NONE                  "none"
-#define ZRTP                               "zrtp"
-#define SDES                               "sdes"
+// #define ZRTP                               "zrtp"
+// #define SDES                               "sdes"
 
 
 

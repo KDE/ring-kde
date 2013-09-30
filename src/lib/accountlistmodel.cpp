@@ -103,7 +103,7 @@ void AccountListModel::setupRoleName()
    roles.insert(Account::Role::LocalInterface           ,QByteArray("localInterface"                ));
    roles.insert(Account::Role::RingtonePath             ,QByteArray("ringtonePath"                  ));
    roles.insert(Account::Role::TlsMethod                ,QByteArray("tlsMethod"                     ));
-   roles.insert(Account::Role::AccountRegistrationExpire,QByteArray("accountRegistrationExpire"     ));
+   roles.insert(Account::Role::RegistrationExpire       ,QByteArray("registrationExpire"            ));
    roles.insert(Account::Role::TlsNegotiationTimeoutSec ,QByteArray("tlsNegotiationTimeoutSec"      ));
    roles.insert(Account::Role::TlsNegotiationTimeoutMsec,QByteArray("tlsNegotiationTimeoutMsec"     ));
    roles.insert(Account::Role::LocalPort                ,QByteArray("localPort"                     ));
@@ -360,7 +360,7 @@ QVector<Account*> AccountListModel::getAccountsByState(const QString& state)
 {
    QVector<Account *> v;
    for (int i = 0; i < m_lAccounts.size(); ++i) {
-      if (m_lAccounts[i]->accountRegistrationStatus() == state)
+      if (m_lAccounts[i]->registrationStatus() == state)
          v += m_lAccounts[i];
    }
    return v;
@@ -374,7 +374,7 @@ QVector<Account*> AccountListModel::registeredAccounts() const
    Account* current;
    for (int i = 0; i < m_lAccounts.count(); ++i) {
       current = m_lAccounts[i];
-      if(current->accountRegistrationStatus() == Account::State::REGISTERED) {
+      if(current->registrationStatus() == Account::State::REGISTERED) {
          qDebug() << current->alias() << " : " << current;
          registeredAccountsVector.append(current);
       }
@@ -388,9 +388,9 @@ Account* AccountListModel::firstRegisteredAccount() const
    Account* current;
    for (int i = 0; i < m_lAccounts.count(); ++i) {
       current = m_lAccounts[i];
-      if(current && current->accountRegistrationStatus() == Account::State::REGISTERED && current->isEnabled())
+      if(current && current->registrationStatus() == Account::State::REGISTERED && current->isEnabled())
          return current;
-      else if (current && (current->accountRegistrationStatus() == Account::State::READY) && m_lAccounts.count() == 1)
+      else if (current && (current->registrationStatus() == Account::State::READY) && m_lAccounts.count() == 1)
          return current;
 //       else if (current && !(current->accountRegistrationStatus()() == ACCOUNT_STATE_READY)) {
 //          qDebug() << "Account " << ((current)?current->accountId():"") << " is not registered ("
@@ -411,7 +411,7 @@ int AccountListModel::size() const
 Account* AccountListModel::currentAccount()
 {
    Account* priorAccount = m_spPriorAccount;
-   if(priorAccount && priorAccount->accountRegistrationStatus() == Account::State::REGISTERED && priorAccount->isEnabled() ) {
+   if(priorAccount && priorAccount->registrationStatus() == Account::State::REGISTERED && priorAccount->isEnabled() ) {
       return priorAccount;
    }
    else {

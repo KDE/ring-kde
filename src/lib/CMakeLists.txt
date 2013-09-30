@@ -65,6 +65,7 @@ set( qtsflphone_LIB_SRCS
   phonedirectorymodel.cpp
   historytimecategorymodel.cpp
   numbercategorymodel.cpp
+  keyexchangemodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -106,6 +107,7 @@ set( qtsflphone_LIB_HDRS
   historytimecategorymodel.h
   numbercategorymodel.h
   videocodec.h
+  keyexchangemodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

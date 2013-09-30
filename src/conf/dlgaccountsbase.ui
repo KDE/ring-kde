@@ -1322,21 +1322,6 @@
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
-                   <item>
-                    <property name="text">
-                     <string comment="Disabled security">Disabled</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>ZRTP</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>SDES</string>
-                    </property>
-                   </item>
                   </widget>
                  </item>
                  <item>

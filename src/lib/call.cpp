@@ -604,7 +604,7 @@ bool Call::isSecure() const {
       return false;
    }
 
-   return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod()));
+   return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod() != KeyExchangeModel::Type::NONE));
 } //isSecure
 
 ///Return the renderer associated with this call or nullptr

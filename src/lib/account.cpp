@@ -233,9 +233,9 @@ QModelIndex Account::index()
 ///Return status color name
 QString Account::stateColorName() const
 {
-   if(accountRegistrationStatus() == Account::State::UNREGISTERED)
+   if(registrationStatus() == Account::State::UNREGISTERED)
       return "black";
-   if(accountRegistrationStatus() == Account::State::REGISTERED || accountRegistrationStatus() == Account::State::READY)
+   if(registrationStatus() == Account::State::REGISTERED || registrationStatus() == Account::State::READY)
       return "darkGreen";
    return "red";
 }
@@ -318,49 +318,49 @@ QString Account::proxy() const
 }
 
 ///
-bool Account::isAccountDisplaySasOnce() const
+bool Account::isDisplaySasOnce() const
 { 
    return (accountDetail(ACCOUNT_DISPLAY_SAS_ONCE)  == "true")?1:0 ;
 }
 
 ///Return the account security fallback
-bool Account::isAccountSrtpRtpFallback() const
+bool Account::isSrtpRtpFallback() const
 {
    return (accountDetail(ACCOUNT_SRTP_RTP_FALLBACK)  == "true")?1:0 ;
 }
 
 ///
-bool Account::isAccountZrtpDisplaySas         () const
+bool Account::isZrtpDisplaySas         () const
 {
    return (accountDetail(ACCOUNT_ZRTP_DISPLAY_SAS)  == "true")?1:0 ;
 }
 
 ///Return if the other side support warning
-bool Account::isAccountZrtpNotSuppWarning() const
+bool Account::isZrtpNotSuppWarning() const
 {
    return (accountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING) == "true")?1:0 ;
 }
 
 ///
-bool Account::isAccountZrtpHelloHash() const
+bool Account::isZrtpHelloHash() const
 {
    return (accountDetail(ACCOUNT_ZRTP_HELLO_HASH)  == "true")?1:0 ;
 }
 
 ///Return if the account is using a STUN server
-bool Account::isAccountSipStunEnabled() const
+bool Account::isSipStunEnabled() const
 {
    return (accountDetail(ACCOUNT_SIP_STUN_ENABLED)  == "true")?1:0 ;
 }
 
 ///Return the account STUN server
-QString Account::accountSipStunServer() const
+QString Account::sipStunServer() const
 {
    return accountDetail(ACCOUNT_SIP_STUN_SERVER);
 }
 
 ///Return when the account expire (require renewal)
-int Account::accountRegistrationExpire() const
+int Account::registrationExpire() const
 {
    return accountDetail(Account::MapField::Registration::EXPIRE).toInt();
 }
@@ -462,9 +462,10 @@ bool Account::isTlsEnable() const
 }
 
 ///Return the account the TLS encryption method
-int Account::tlsMethod() const
+KeyExchangeModel::Type Account::tlsMethod() const
 {
-   return accountDetail(TLS_METHOD).toInt();
+   const int value = accountDetail(TLS_METHOD).toInt();
+   return value<=2?static_cast<KeyExchangeModel::Type>(value):KeyExchangeModel::Type::NONE;
 }
 
 ///Return if the ringtone are enabled
@@ -492,13 +493,13 @@ QString Account::localInterface() const
 }
 
 ///Return the account registration status
-QString Account::accountRegistrationStatus() const
+QString Account::registrationStatus() const
 {
    return accountDetail(Account::MapField::Registration::STATUS);
 }
 
 ///Return the account type
-QString Account::accountType() const
+QString Account::type() const
 {
    return accountDetail(Account::MapField::TYPE);
 }
@@ -527,7 +528,7 @@ QVariant Account::roleData(int role) const
       case Account::Role::Alias:
          return alias();
       case Account::Role::Type:
-         return accountType();
+         return type();
       case Account::Role::Hostname:
          return hostname();
       case Account::Role::Username:
@@ -551,7 +552,7 @@ QVariant Account::roleData(int role) const
       case Account::Role::TlsServerName:
          return tlsServerName();
       case Account::Role::SipStunServer:
-         return accountSipStunServer();
+         return sipStunServer();
       case Account::Role::PublishedAddress:
          return publishedAddress();
       case Account::Role::LocalInterface:
@@ -559,9 +560,9 @@ QVariant Account::roleData(int role) const
       case Account::Role::RingtonePath:
          return ringtonePath();
       case Account::Role::TlsMethod:
-         return tlsMethod();
-      case Account::Role::AccountRegistrationExpire:
-         return accountRegistrationExpire();
+         return static_cast<int>(tlsMethod());
+      case Account::Role::RegistrationExpire:
+         return registrationExpire();
       case Account::Role::TlsNegotiationTimeoutSec:
          return tlsNegotiationTimeoutSec();
       case Account::Role::TlsNegotiationTimeoutMsec:
@@ -585,17 +586,17 @@ QVariant Account::roleData(int role) const
       case Account::Role::TlsEnable:
          return isTlsEnable();
       case Account::Role::DisplaySasOnce:
-         return isAccountDisplaySasOnce();
+         return isDisplaySasOnce();
       case Account::Role::SrtpRtpFallback:
-         return isAccountSrtpRtpFallback();
+         return isSrtpRtpFallback();
       case Account::Role::ZrtpDisplaySas:
-         return isAccountZrtpDisplaySas();
+         return isZrtpDisplaySas();
       case Account::Role::ZrtpNotSuppWarning:
-         return isAccountZrtpNotSuppWarning();
+         return isZrtpNotSuppWarning();
       case Account::Role::ZrtpHelloHash:
-         return isAccountZrtpHelloHash();
+         return isZrtpHelloHash();
       case Account::Role::SipStunEnabled:
-         return isAccountSipStunEnabled();
+         return isSipStunEnabled();
       case Account::Role::PublishedSameAsLocal:
          return isPublishedSameAsLocal();
       case Account::Role::RingtoneEnabled:
@@ -610,7 +611,7 @@ QVariant Account::roleData(int role) const
          return var;
       }
       case Account::Role::TypeName:
-         return accountType();
+         return type();
       case Account::Role::PresenceStatus:
          return PresenceStatusModel::instance()->currentStatus();
       case Account::Role::PresenceMessage:
@@ -668,7 +669,7 @@ void Account::setId(const QString& id)
 }
 
 ///Set the account type, SIP or IAX
-void Account::setAccountType(const QString& detail)
+void Account::setType(const QString& detail)
 {
    setAccountDetail(Account::MapField::TYPE ,detail);
 }
@@ -701,7 +702,7 @@ void Account::setProxy(const QString& detail)
 }
 
 ///Set the main credential password
-void Account::setAccountPassword(const QString& detail)
+void Account::setPassword(const QString& detail)
 {
    setAccountDetail(Account::MapField::PASSWORD, detail);
 }
@@ -743,7 +744,7 @@ void Account::setTlsServerName(const QString& detail)
 }
 
 ///Set the stun server
-void Account::setAccountSipStunServer(const QString& detail)
+void Account::setSipStunServer(const QString& detail)
 {
    setAccountDetail(ACCOUNT_SIP_STUN_SERVER, detail);
 }
@@ -767,13 +768,13 @@ void Account::setRingtonePath(const QString& detail)
 }
 
 ///Set the Tls method
-void Account::setTlsMethod(int detail)
+void Account::setTlsMethod(KeyExchangeModel::Type detail)
 {
-   setAccountDetail(TLS_METHOD ,QString::number(detail));
+   setAccountDetail(TLS_METHOD ,QString::number(static_cast<int>(detail)));
 }
 
 ///Set the account timeout, it will be renegotiated when that timeout occur
-void Account::setAccountRegistrationExpire(int detail)
+void Account::setRegistrationExpire(int detail)
 {
    setAccountDetail(Account::MapField::Registration::EXPIRE, QString::number(detail));
 }
@@ -844,32 +845,32 @@ void Account::setTlsEnable(bool detail)
    setAccountDetail(TLS_ENABLE ,detail?"true":"false");
 }
 
-void Account::setAccountDisplaySasOnce(bool detail)
+void Account::setDisplaySasOnce(bool detail)
 {
    setAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE, detail?"true":"false");
 }
 
-void Account::setAccountSrtpRtpFallback(bool detail)
+void Account::setSrtpRtpFallback(bool detail)
 {
    setAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK, detail?"true":"false");
 }
 
-void Account::setAccountZrtpDisplaySas(bool detail)
+void Account::setZrtpDisplaySas(bool detail)
 {
    setAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS, detail?"true":"false");
 }
 
-void Account::setAccountZrtpNotSuppWarning(bool detail)
+void Account::setZrtpNotSuppWarning(bool detail)
 {
    setAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING, detail?"true":"false");
 }
 
-void Account::setAccountZrtpHelloHash(bool detail)
+void Account::setZrtpHelloHash(bool detail)
 {
    setAccountDetail(ACCOUNT_ZRTP_HELLO_HASH, detail?"true":"false");
 }
 
-void Account::setAccountSipStunEnabled(bool detail)
+void Account::setSipStunEnabled(bool detail)
 {
    setAccountDetail(ACCOUNT_SIP_STUN_ENABLED, detail?"true":"false");
 }
@@ -897,7 +898,7 @@ void Account::setRoleData(int role, const QVariant& value)
       case Account::Role::Alias:
          setAlias(value.toString());
       case Account::Role::Type:
-         setAccountType(value.toString());
+         setType(value.toString());
       case Account::Role::Hostname:
          setHostname(value.toString());
       case Account::Role::Username:
@@ -921,17 +922,19 @@ void Account::setRoleData(int role, const QVariant& value)
       case Account::Role::TlsServerName:
          setTlsServerName(value.toString());
       case Account::Role::SipStunServer:
-         setAccountSipStunServer(value.toString());
+         setSipStunServer(value.toString());
       case Account::Role::PublishedAddress:
          setPublishedAddress(value.toString());
       case Account::Role::LocalInterface:
          setLocalInterface(value.toString());
       case Account::Role::RingtonePath:
          setRingtonePath(value.toString());
-      case Account::Role::TlsMethod:
-         setTlsMethod(value.toInt());
-      case Account::Role::AccountRegistrationExpire:
-         setAccountRegistrationExpire(value.toInt());
+      case Account::Role::TlsMethod: {
+         const int method = value.toInt();
+         setTlsMethod(method<=2?static_cast<KeyExchangeModel::Type>(method):KeyExchangeModel::Type::NONE);
+      }
+      case Account::Role::RegistrationExpire:
+         setRegistrationExpire(value.toInt());
       case Account::Role::TlsNegotiationTimeoutSec:
          setTlsNegotiationTimeoutSec(value.toInt());
       case Account::Role::TlsNegotiationTimeoutMsec:
@@ -955,17 +958,17 @@ void Account::setRoleData(int role, const QVariant& value)
       case Account::Role::TlsEnable:
          setTlsEnable(value.toBool());
       case Account::Role::DisplaySasOnce:
-         setAccountDisplaySasOnce(value.toBool());
+         setDisplaySasOnce(value.toBool());
       case Account::Role::SrtpRtpFallback:
-         setAccountSrtpRtpFallback(value.toBool());
+         setSrtpRtpFallback(value.toBool());
       case Account::Role::ZrtpDisplaySas:
-         setAccountZrtpDisplaySas(value.toBool());
+         setZrtpDisplaySas(value.toBool());
       case Account::Role::ZrtpNotSuppWarning:
-         setAccountZrtpNotSuppWarning(value.toBool());
+         setZrtpNotSuppWarning(value.toBool());
       case Account::Role::ZrtpHelloHash:
-         setAccountZrtpHelloHash(value.toBool());
+         setZrtpHelloHash(value.toBool());
       case Account::Role::SipStunEnabled:
-         setAccountSipStunEnabled(value.toBool());
+         setSipStunEnabled(value.toBool());
       case Account::Role::PublishedSameAsLocal:
          setPublishedSameAsLocal(value.toBool());
       case Account::Role::RingtoneEnabled:
@@ -1005,7 +1008,7 @@ bool Account::updateState()
       ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
       const MapStringString details       = configurationManager.getAccountDetails(id()).value();
       const QString         status        = details[Account::MapField::Registration::STATUS];
-      const QString         currentStatus = accountRegistrationStatus();
+      const QString         currentStatus = registrationStatus();
       setAccountDetail(Account::MapField::Registration::STATUS, status); //Update -internal- object state
       return status == currentStatus;
    }

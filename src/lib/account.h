@@ -27,6 +27,7 @@ class QString;
 
 //SFLPhone
 #include "videocodecmodel.h"
+#include "keyexchangemodel.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
 // #include "dbus/metatypes.h"
@@ -54,7 +55,7 @@ class LIB_EXPORT Account : public QObject {
 
    //Properties
    Q_PROPERTY(QString        alias                        READ alias                         WRITE setAlias                       )
-   Q_PROPERTY(QString        type                         READ accountType                   WRITE setAccountType                 )
+   Q_PROPERTY(QString        type                         READ type                          WRITE setType                        )
    Q_PROPERTY(QString        hostname                     READ hostname                      WRITE setHostname                    )
    Q_PROPERTY(QString        username                     READ username                      WRITE setUsername                    )
    Q_PROPERTY(QString        mailbox                      READ mailbox                       WRITE setMailbox                     )
@@ -65,12 +66,12 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(QString        tlsPrivateKeyFile            READ tlsPrivateKeyFile             WRITE setTlsPrivateKeyFile           )
    Q_PROPERTY(QString        tlsCiphers                   READ tlsCiphers                    WRITE setTlsCiphers                  )
    Q_PROPERTY(QString        tlsServerName                READ tlsServerName                 WRITE setTlsServerName               )
-   Q_PROPERTY(QString        sipStunServer                READ accountSipStunServer          WRITE setAccountSipStunServer        )
+   Q_PROPERTY(QString        sipStunServer                READ sipStunServer                 WRITE setSipStunServer               )
    Q_PROPERTY(QString        publishedAddress             READ publishedAddress              WRITE setPublishedAddress            )
    Q_PROPERTY(QString        localInterface               READ localInterface                WRITE setLocalInterface              )
    Q_PROPERTY(QString        ringtonePath                 READ ringtonePath                  WRITE setRingtonePath                )
-   Q_PROPERTY(int            tlsMethod                    READ tlsMethod                     WRITE setTlsMethod                   )
-   Q_PROPERTY(int            accountRegistrationExpire    READ accountRegistrationExpire     WRITE setAccountRegistrationExpire   )
+   Q_PROPERTY(KeyExchangeModel::Type tlsMethod         READ tlsMethod                     WRITE setTlsMethod                   )
+   Q_PROPERTY(int            registrationExpire           READ registrationExpire            WRITE setRegistrationExpire   )
    Q_PROPERTY(int            tlsNegotiationTimeoutSec     READ tlsNegotiationTimeoutSec      WRITE setTlsNegotiationTimeoutSec    )
    Q_PROPERTY(int            tlsNegotiationTimeoutMsec    READ tlsNegotiationTimeoutMsec     WRITE setTlsNegotiationTimeoutMsec   )
    Q_PROPERTY(int            localPort                    READ localPort                     WRITE setLocalPort                   )
@@ -82,16 +83,16 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           tlsVerifyClient              READ isTlsVerifyClient             WRITE setTlsVerifyClient             )
    Q_PROPERTY(bool           tlsRequireClientCertificate  READ isTlsRequireClientCertificate WRITE setTlsRequireClientCertificate )
    Q_PROPERTY(bool           tlsEnable                    READ isTlsEnable                   WRITE setTlsEnable                   )
-   Q_PROPERTY(bool           displaySasOnce               READ isAccountDisplaySasOnce       WRITE setAccountDisplaySasOnce       )
-   Q_PROPERTY(bool           srtpRtpFallback              READ isAccountSrtpRtpFallback      WRITE setAccountSrtpRtpFallback      )
-   Q_PROPERTY(bool           zrtpDisplaySas               READ isAccountZrtpDisplaySas       WRITE setAccountZrtpDisplaySas       )
-   Q_PROPERTY(bool           zrtpNotSuppWarning           READ isAccountZrtpNotSuppWarning   WRITE setAccountZrtpNotSuppWarning   )
-   Q_PROPERTY(bool           zrtpHelloHash                READ isAccountZrtpHelloHash        WRITE setAccountZrtpHelloHash        )
-   Q_PROPERTY(bool           sipStunEnabled               READ isAccountSipStunEnabled       WRITE setAccountSipStunEnabled       )
+   Q_PROPERTY(bool           displaySasOnce               READ isDisplaySasOnce              WRITE setDisplaySasOnce              )
+   Q_PROPERTY(bool           srtpRtpFallback              READ isSrtpRtpFallback             WRITE setSrtpRtpFallback             )
+   Q_PROPERTY(bool           zrtpDisplaySas               READ isZrtpDisplaySas              WRITE setZrtpDisplaySas              )
+   Q_PROPERTY(bool           zrtpNotSuppWarning           READ isZrtpNotSuppWarning          WRITE setZrtpNotSuppWarning          )
+   Q_PROPERTY(bool           zrtpHelloHash                READ isZrtpHelloHash               WRITE setZrtpHelloHash               )
+   Q_PROPERTY(bool           sipStunEnabled               READ isSipStunEnabled              WRITE setSipStunEnabled              )
    Q_PROPERTY(bool           publishedSameAsLocal         READ isPublishedSameAsLocal        WRITE setPublishedSameAsLocal        )
    Q_PROPERTY(bool           ringtoneEnabled              READ isRingtoneEnabled             WRITE setRingtoneEnabled             )
    Q_PROPERTY(DtmfType       dTMFType                     READ DTMFType                      WRITE setDTMFType                    )
-   Q_PROPERTY(QString        typeName                     READ accountType                   WRITE setAccountType                 )
+   Q_PROPERTY(QString        typeName                     READ type                          WRITE setType                        )
    Q_PROPERTY(bool           presenceStatus               READ presenceStatus                                                     )
    Q_PROPERTY(QString        presenceMessage              READ presenceMessage                                                    )
 
@@ -154,7 +155,7 @@ class LIB_EXPORT Account : public QObject {
          LocalInterface              = 115,
          RingtonePath                = 116,
          TlsMethod                   = 117,
-         AccountRegistrationExpire   = 118,
+         RegistrationExpire   = 118,
          TlsNegotiationTimeoutSec    = 119,
          TlsNegotiationTimeoutMsec   = 120,
          LocalPort                   = 121,
@@ -248,14 +249,14 @@ class LIB_EXPORT Account : public QObject {
       QString username                     () const;
       QString mailbox                      () const;
       QString proxy                        () const;
-      bool    isAccountDisplaySasOnce      () const;
-      bool    isAccountSrtpRtpFallback     () const;
-      bool    isAccountZrtpDisplaySas      () const;
-      bool    isAccountZrtpNotSuppWarning  () const;
-      bool    isAccountZrtpHelloHash       () const;
-      bool    isAccountSipStunEnabled      () const;
-      QString accountSipStunServer         () const;
-      int     accountRegistrationExpire    () const;
+      bool    isDisplaySasOnce             () const;
+      bool    isSrtpRtpFallback            () const;
+      bool    isZrtpDisplaySas             () const;
+      bool    isZrtpNotSuppWarning         () const;
+      bool    isZrtpHelloHash              () const;
+      bool    isSipStunEnabled             () const;
+      QString sipStunServer                () const;
+      int     registrationExpire           () const;
       bool    isPublishedSameAsLocal       () const;
       QString publishedAddress             () const;
       int     publishedPort                () const;
@@ -272,39 +273,39 @@ class LIB_EXPORT Account : public QObject {
       bool    isTlsVerifyClient            () const;
       bool    isTlsRequireClientCertificate() const;
       bool    isTlsEnable                  () const;
-      int     tlsMethod                    () const;
       bool    isRingtoneEnabled            () const;
       QString ringtonePath                 () const;
       int     localPort                    () const;
       QString localInterface               () const;
-      QString accountRegistrationStatus    () const;
-      QString accountType                  () const;
+      QString registrationStatus           () const;
+      QString type                         () const;
       DtmfType DTMFType                    () const;
       bool    presenceStatus               () const;
       QString presenceMessage              () const;
+      KeyExchangeModel::Type tlsMethod  () const;
       QVariant roleData            (int role) const;
 
       //Setters
       void setId      (const QString& id);
       void setAlias                         (const QString& detail);
-      void setAccountType                   (const QString& detail);
+      void setType                          (const QString& detail);
       void setHostname                      (const QString& detail);
       void setUsername                      (const QString& detail);
       void setMailbox                       (const QString& detail);
       void setProxy                         (const QString& detail);
-      void setAccountPassword               (const QString& detail);
+      void setPassword                      (const QString& detail);
       void setTlsPassword                   (const QString& detail);
       void setTlsCaListFile                 (const QString& detail);
       void setTlsCertificateFile            (const QString& detail);
       void setTlsPrivateKeyFile             (const QString& detail);
       void setTlsCiphers                    (const QString& detail);
       void setTlsServerName                 (const QString& detail);
-      void setAccountSipStunServer          (const QString& detail);
+      void setSipStunServer                 (const QString& detail);
       void setPublishedAddress              (const QString& detail);
       void setLocalInterface                (const QString& detail);
       void setRingtonePath                  (const QString& detail);
-      void setTlsMethod                     (int  detail);
-      void setAccountRegistrationExpire     (int  detail);
+      void setTlsMethod                     (KeyExchangeModel::Type detail);
+      void setRegistrationExpire            (int  detail);
       void setTlsNegotiationTimeoutSec      (int  detail);
       void setTlsNegotiationTimeoutMsec     (int  detail);
       void setLocalPort                     (unsigned short detail);
@@ -315,15 +316,15 @@ class LIB_EXPORT Account : public QObject {
       void setTlsVerifyClient               (bool detail);
       void setTlsRequireClientCertificate   (bool detail);
       void setTlsEnable                     (bool detail);
-      void setAccountDisplaySasOnce         (bool detail);
-      void setAccountSrtpRtpFallback        (bool detail);
-      void setAccountZrtpDisplaySas         (bool detail);
-      void setAccountZrtpNotSuppWarning     (bool detail);
-      void setAccountZrtpHelloHash          (bool detail);
-      void setAccountSipStunEnabled         (bool detail);
+      void setDisplaySasOnce                (bool detail);
+      void setSrtpRtpFallback               (bool detail);
+      void setZrtpDisplaySas                (bool detail);
+      void setZrtpNotSuppWarning            (bool detail);
+      void setZrtpHelloHash                 (bool detail);
+      void setSipStunEnabled                (bool detail);
       void setPublishedSameAsLocal          (bool detail);
       void setRingtoneEnabled               (bool detail);
-      void setDTMFType                      (DtmfType type );
+      void setDTMFType                      (DtmfType type);
 
       void setRoleData(int role, const QVariant& value);
 

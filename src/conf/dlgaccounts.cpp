@@ -42,6 +42,7 @@
 #include "lib/credentialmodel.h"
 #include "lib/audiocodecmodel.h"
 #include "lib/accountlistmodel.h"
+#include "lib/keyexchangemodel.h"
 
 //OS
 #ifdef Q_WS_WIN // MS Windows version
@@ -79,6 +80,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 
    loadAccountList();
    accountListHasChanged = false;
+
+   combo_security_STRP->setModel(KeyExchangeModel::instance());
 
    //SLOTS
    //                     SENDER                            SIGNAL                       RECEIVER              SLOT                          /
@@ -194,24 +197,24 @@ void DlgAccounts::saveAccount(QModelIndex item)
       return;
    }
    m_IsLoading++;
-   
+
    if (!m_pProxyCK->isChecked()) {
       m_pProxyLE->setText("");
    }
-   
+
    QString protocolsTab[] = ACCOUNT_TYPES_TAB;
-   
+
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                     /
-   /**/account->setAccountType                 ( protocolsTab[edit2_protocol->currentIndex()]                             );
+   /**/account->setType                        ( protocolsTab[edit2_protocol->currentIndex()]                             );
    /**/account->setAlias                       ( edit1_alias->text()                                                      );
    /**/account->setHostname                    ( edit3_server->text()                                                     );
    /**/account->setUsername                    ( edit4_user->text()                                                       );
-   /**/account->setAccountPassword             ( edit5_password->text()                                                   );
+   /**/account->setPassword                    ( edit5_password->text()                                                   );
    /**/account->setMailbox                     ( edit6_mailbox->text()                                                    );
    /**/account->setProxy                       ( m_pProxyLE->text()                                                       );
    /**/account->setEnabled                     ( item.data(Qt::CheckStateRole).toBool()                                   );
-   /**/account->setAccountRegistrationExpire   ( spinbox_regExpire->value()                                               );
+   /**/account->setRegistrationExpire          ( spinbox_regExpire->value()                                               );
    /**/                                                                                                                 /**/
    /*                                            Security                                                                 */
    /**/account->setTlsPassword                 ( edit_tls_private_key_password->text()                                    );
@@ -219,7 +222,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setTlsCaListFile               ( file_tls_authority->text()                                               );
    /**/account->setTlsCertificateFile          ( file_tls_endpoint->text()                                                );
    /**/account->setTlsPrivateKeyFile           ( file_tls_private_key->text()                                             );
-   /**/account->setTlsMethod                   ( combo_tls_method->currentIndex()                                         );
+   /**/account->setTlsMethod                   ( static_cast<KeyExchangeModel::Type>(combo_tls_method->currentIndex())   );
    /**/account->setTlsCiphers                  ( edit_tls_cipher->text()                                                  );
    /**/account->setTlsServerName               ( edit_tls_outgoing->text()                                                );
    /**/account->setTlsNegotiationTimeoutSec    ( spinbox_tls_timeout_sec->value()                                         );
@@ -229,14 +232,14 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setTlsVerifyClient             ( check_tls_answer->isChecked()                                            );
    /**/account->setTlsRequireClientCertificate ( check_tls_requier_cert->isChecked()                                      );
    /**/account->setTlsEnable                   ( group_security_tls->isChecked()                                          );
-   /**/account->setAccountDisplaySasOnce       ( checkbox_ZRTP_Ask_user->isChecked()                                      );
-   /**/account->setAccountSrtpRtpFallback      ( checkbox_SDES_fallback_rtp->isChecked()                                  );
-   /**/account->setAccountZrtpDisplaySas       ( checkbox_ZRTP_display_SAS->isChecked()                                   );
-   /**/account->setAccountZrtpNotSuppWarning   ( checkbox_ZRTP_warn_supported->isChecked()                                );
-   /**/account->setAccountZrtpHelloHash        ( checkbox_ZTRP_send_hello->isChecked()                                    );
-   /**/account->setAccountSipStunEnabled       ( checkbox_stun->isChecked()                                               );
+   /**/account->setDisplaySasOnce              ( checkbox_ZRTP_Ask_user->isChecked()                                      );
+   /**/account->setSrtpRtpFallback             ( checkbox_SDES_fallback_rtp->isChecked()                                  );
+   /**/account->setZrtpDisplaySas              ( checkbox_ZRTP_display_SAS->isChecked()                                   );
+   /**/account->setZrtpNotSuppWarning          ( checkbox_ZRTP_warn_supported->isChecked()                                );
+   /**/account->setZrtpHelloHash               ( checkbox_ZTRP_send_hello->isChecked()                                    );
+   /**/account->setSipStunEnabled              ( checkbox_stun->isChecked()                                               );
    /**/account->setPublishedSameAsLocal        ( radioButton_pa_same_as_local->isChecked()                                );
-   /**/account->setAccountSipStunServer        ( line_stun->text()                                                        );
+   /**/account->setSipStunServer               ( line_stun->text()                                                        );
    /**/account->setPublishedPort               ( spinBox_pa_published_port->value()                                       );
    /**/account->setPublishedAddress            ( lineEdit_pa_published_address ->text()                                   );
    /**/account->setLocalPort                   ( spinBox_pa_published_port->value()                                       );
@@ -299,8 +302,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
       protocolsList->append(protocolsTab[i]);
    }
 
-   const QString accountName = account->accountType();
-   int protocolIndex = protocolsList->indexOf(accountName);
+   const QString accountType = account->type();
+   const int protocolIndex = protocolsList->indexOf(accountType);
    delete protocolsList;
 
 
@@ -317,21 +320,21 @@ void DlgAccounts::loadAccount(QModelIndex item)
    connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));
 
    switch (account->tlsMethod()) {
-      case 0: //KEY_EXCHANGE_NONE
+      case KeyExchangeModel::Type::NONE:
          checkbox_SDES_fallback_rtp->setVisible   ( false );
          checkbox_ZRTP_Ask_user->setVisible       ( false );
          checkbox_ZRTP_display_SAS->setVisible    ( false );
          checkbox_ZRTP_warn_supported->setVisible ( false );
          checkbox_ZTRP_send_hello->setVisible     ( false );
          break;
-      case 1: //ZRTP
+      case KeyExchangeModel::Type::ZRTP:
          checkbox_SDES_fallback_rtp->setVisible   ( false );
          checkbox_ZRTP_Ask_user->setVisible       ( true  );
          checkbox_ZRTP_display_SAS->setVisible    ( true  );
          checkbox_ZRTP_warn_supported->setVisible ( true  );
          checkbox_ZTRP_send_hello->setVisible     ( true  );
          break;
-      case 2: //SDES
+      case KeyExchangeModel::Type::SDES:
          checkbox_SDES_fallback_rtp->setVisible   ( true  );
          checkbox_ZRTP_Ask_user->setVisible       ( false );
          checkbox_ZRTP_display_SAS->setVisible    ( false );
@@ -346,14 +349,14 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/edit4_user->setText                      (  account->username                       ());
    /**/edit6_mailbox->setText                   (  account->mailbox                        ());
    /**/m_pProxyLE->setText                      (  account->proxy                          ());
-   /**/checkbox_ZRTP_Ask_user->setChecked       (  account->isAccountDisplaySasOnce        ());
-   /**/checkbox_SDES_fallback_rtp->setChecked   (  account->isAccountSrtpRtpFallback       ());
-   /**/checkbox_ZRTP_display_SAS->setChecked    (  account->isAccountZrtpDisplaySas        ());
-   /**/checkbox_ZRTP_warn_supported->setChecked (  account->isAccountZrtpNotSuppWarning    ());
-   /**/checkbox_ZTRP_send_hello->setChecked     (  account->isAccountZrtpHelloHash         ());
-   /**/checkbox_stun->setChecked                (  account->isAccountSipStunEnabled        ());
-   /**/line_stun->setText                       (  account->accountSipStunServer           ());
-   /**/spinbox_regExpire->setValue              (  account->accountRegistrationExpire      ());
+   /**/checkbox_ZRTP_Ask_user->setChecked       (  account->isDisplaySasOnce               ());
+   /**/checkbox_SDES_fallback_rtp->setChecked   (  account->isSrtpRtpFallback              ());
+   /**/checkbox_ZRTP_display_SAS->setChecked    (  account->isZrtpDisplaySas               ());
+   /**/checkbox_ZRTP_warn_supported->setChecked (  account->isZrtpNotSuppWarning           ());
+   /**/checkbox_ZTRP_send_hello->setChecked     (  account->isZrtpHelloHash                ());
+   /**/checkbox_stun->setChecked                (  account->isSipStunEnabled               ());
+   /**/line_stun->setText                       (  account->sipStunServer                  ());
+   /**/spinbox_regExpire->setValue              (  account->registrationExpire             ());
    /**/radioButton_pa_same_as_local->setChecked (  account->isPublishedSameAsLocal         ());
    /**/radioButton_pa_custom->setChecked        ( !account->isPublishedSameAsLocal         ());
    /**/lineEdit_pa_published_address->setText   (  account->publishedAddress               ());
@@ -372,8 +375,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/check_tls_answer->setChecked             (  account->isTlsVerifyClient              ());
    /**/check_tls_requier_cert->setChecked       (  account->isTlsRequireClientCertificate  ());
    /**/group_security_tls->setChecked           (  account->isTlsEnable                    ());
-   /**/combo_security_STRP->setCurrentIndex     (  account->tlsMethod                      ());
    /**/m_pAutoAnswer->setChecked                (  account->isAutoAnswer                   ());
+   /**/combo_security_STRP->setCurrentIndex     (  KeyExchangeModel::instance()->toIndex(account->tlsMethod()).row());
    /*                                                                                        */
 
    m_pDTMFOverRTP->setChecked(account->DTMFType()==DtmfType::OverRtp);
@@ -435,7 +438,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    m_pRingTonePath->setUrl( ringtonePath );
 
 
-   combo_tls_method->setCurrentIndex( account->tlsMethod() );
+   combo_tls_method->setCurrentIndex( KeyExchangeModel::instance()->toIndex(account->tlsMethod()).row() );
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    m_pRingtoneListLW->clear();
@@ -480,8 +483,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
       comboBox_ni_local_address->setCurrentIndex(0);
 
    if(protocolIndex == 0 || account->isNew()) { // if sip selected
-      checkbox_stun->setChecked(account->isAccountSipStunEnabled());
-      line_stun->setText( account->accountSipStunServer() );
+      checkbox_stun->setChecked(account->isSipStunEnabled());
+      line_stun->setText( account->sipStunServer() );
       //checkbox_zrtp->setChecked(account->accountDetail(ACCOUNT_SRTP_ENABLED) == REGISTRATION_ENABLED_TRUE);
 
       tab_advanced->                setEnabled ( true                       );
@@ -492,7 +495,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    else {
       checkbox_stun->setChecked(false);
       tab_advanced->setEnabled (false);
-      line_stun->setText( account->accountSipStunServer() );
+      line_stun->setText( account->sipStunServer() );
       //checkbox_zrtp->setChecked(false);
    }
 
@@ -719,7 +722,7 @@ void DlgAccounts::updateStatusLabel(Account* account)
 {
    if(!account || AccountListModel::instance()->getAccountByModelIndex(listView_accountList->currentIndex()) != account)
       return;
-   const QString status = account->accountRegistrationStatus();
+   const QString status = account->registrationStatus();
    edit7_state->setText( "<FONT COLOR=\"" + account->stateColorName() + "\">" + status + "</FONT>" );
 }
 

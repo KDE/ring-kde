@@ -117,12 +117,12 @@ public:
    }
 
    virtual QVariant getColor(const Account* a) {
-      if(a->accountRegistrationStatus() == Account::State::UNREGISTERED || !a->isEnabled())
+      if(a->registrationStatus() == Account::State::UNREGISTERED || !a->isEnabled())
          return m_Pal.color(QPalette::Base);
-      if(a->accountRegistrationStatus() == Account::State::REGISTERED || a->accountRegistrationStatus() == Account::State::READY) {
+      if(a->registrationStatus() == Account::State::REGISTERED || a->registrationStatus() == Account::State::READY) {
          return m_Green;
       }
-      if(a->accountRegistrationStatus() == Account::State::TRYING)
+      if(a->registrationStatus() == Account::State::TRYING)
          return m_Yellow;
       return m_Red;
    }
@@ -900,14 +900,14 @@ void SFLPhoneView::updateDialpad()
 ///Change the statusbar message
 void SFLPhoneView::updateStatusMessage()
 {
-   Account * account = AccountListModel::currentAccount();
+   const Account* account = AccountListModel::currentAccount();
 
    if(!account) {
       emit statusMessageChangeAsked(i18n("No registered accounts"));
    }
    else {
       emit statusMessageChangeAsked(i18n("Using account \'%1\' (%2)",
-         account->alias(), account->accountRegistrationStatus()));
+         account->alias(), account->registrationStatus()));
    }
 }
 

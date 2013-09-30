@@ -302,12 +302,12 @@ void AccountWizard::accept()
       }
 
       if(field(FIELD_ZRTP_ENABLED).toBool()) {
-         srtp_enabled          = QString( REGISTRATION_ENABLED_TRUE  );
-         key_exchange          = QString( ZRTP                       );
-         zrtp_display_sas      = QString( REGISTRATION_ENABLED_TRUE  );
-         zrtp_not_supp_warning = QString( REGISTRATION_ENABLED_TRUE  );
-         zrtp_hello_hash       = QString( REGISTRATION_ENABLED_TRUE  );
-         display_sas_once      = QString( REGISTRATION_ENABLED_FALSE );
+         srtp_enabled          = QString( REGISTRATION_ENABLED_TRUE       );
+         key_exchange          = QString( KeyExchangeModel::Name::ZRTP );
+         zrtp_display_sas      = QString( REGISTRATION_ENABLED_TRUE       );
+         zrtp_not_supp_warning = QString( REGISTRATION_ENABLED_TRUE       );
+         zrtp_hello_hash       = QString( REGISTRATION_ENABLED_TRUE       );
+         display_sas_once      = QString( REGISTRATION_ENABLED_FALSE      );
       }
 
       QStringList ifaceList = configurationManager.getAllIpInterface();

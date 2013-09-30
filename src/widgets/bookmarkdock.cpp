@@ -77,7 +77,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
 
-   m_pMostUsedCK->setChecked(ConfigurationSkeleton::displayContactCallHistory());
+   m_pMostUsedCK->setChecked(ConfigurationSkeleton::displayPopularAsBookmark());
 
    setWidget(mainWidget);
 
@@ -113,7 +113,7 @@ BookmarkDock::~BookmarkDock()
 ///Show the most popular items
 void BookmarkDock::reload()
 {
-   ConfigurationSkeleton::setDisplayContactCallHistory(m_pMostUsedCK->isChecked());
+   ConfigurationSkeleton::setDisplayPopularAsBookmark(m_pMostUsedCK->isChecked());
    BookmarkModel::instance()->reloadCategories();
 } //reload
 
