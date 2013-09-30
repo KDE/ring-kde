@@ -250,26 +250,26 @@ QVariant Account::stateColor() const
 }
 
 ///Create and return the credential model
-CredentialModel* Account::credentialsModel()
+CredentialModel* Account::credentialsModel() const
 {
    if (!m_pCredentials)
-      reloadCredentials();
+      const_cast<Account*>(this)->reloadCredentials();
    return m_pCredentials;
 }
 
 ///Create and return the audio codec model
-AudioCodecModel* Account::audioCodecModel()
+AudioCodecModel* Account::audioCodecModel() const
 {
    if (!m_pAudioCodecs)
-      reloadAudioCodecs();
+      const_cast<Account*>(this)->reloadAudioCodecs();
    return m_pAudioCodecs;
 }
 
 ///Create and return the video codec model
-VideoCodecModel* Account::videoCodecModel()
+VideoCodecModel* Account::videoCodecModel() const
 {
    if (!m_pVideoCodecs)
-      m_pVideoCodecs = new VideoCodecModel(this);
+      const_cast<Account*>(this)->m_pVideoCodecs = new VideoCodecModel(const_cast<Account*>(this));
    return m_pVideoCodecs;
 }
 
@@ -315,6 +315,19 @@ QString Account::mailbox() const
 QString Account::proxy() const
 {
    return accountDetail(Account::MapField::ROUTE);
+}
+
+
+QString Account::password() const
+{
+   switch (type()) {
+      case Account::Protocol::SIP:
+         if (credentialsModel()->rowCount())
+            return credentialsModel()->data(credentialsModel()->index(0,0),CredentialModel::Role::PASSWORD).toString();
+      case Account::Protocol::IAX:
+         return accountDetail(Account::MapField::PASSWORD);
+   };
+   return "";
 }
 
 ///
@@ -505,9 +518,15 @@ QString Account::registrationStatus() const
 }
 
 ///Return the account type
-QString Account::type() const
+Account::Protocol Account::type() const
 {
-   return accountDetail(Account::MapField::TYPE);
+   const QString str = accountDetail(Account::MapField::TYPE);
+   if (str.isEmpty() || str == Account::ProtocolName::SIP)
+      return Account::Protocol::SIP;
+   else if (str == Account::ProtocolName::IAX)
+      return Account::Protocol::IAX;
+   qDebug() << "Warning: unhandled protocol name" << str << ", defaulting to SIP";
+   return Account::Protocol::SIP;
 }
 
 ///Return the DTMF type
@@ -534,7 +553,7 @@ QVariant Account::roleData(int role) const
       case Account::Role::Alias:
          return alias();
       case Account::Role::Type:
-         return type();
+         return static_cast<int>(type());
       case Account::Role::Hostname:
          return hostname();
       case Account::Role::Username:
@@ -617,7 +636,7 @@ QVariant Account::roleData(int role) const
          return var;
       }
       case Account::Role::TypeName:
-         return type();
+         return static_cast<int>(type());
       case Account::Role::PresenceStatus:
          return PresenceStatusModel::instance()->currentStatus();
       case Account::Role::PresenceMessage:
@@ -675,9 +694,14 @@ void Account::setId(const QString& id)
 }
 
 ///Set the account type, SIP or IAX
-void Account::setType(const QString& detail)
+void Account::setType(Account::Protocol proto)
 {
-   setAccountDetail(Account::MapField::TYPE ,detail);
+   switch (proto) {
+      case Account::Protocol::SIP:
+         setAccountDetail(Account::MapField::TYPE ,Account::ProtocolName::SIP);
+      case Account::Protocol::IAX:
+         setAccountDetail(Account::MapField::TYPE ,Account::ProtocolName::IAX);
+   };
 }
 
 ///The set account hostname, it can be an hostname or an IP address
@@ -710,7 +734,19 @@ void Account::setProxy(const QString& detail)
 ///Set the main credential password
 void Account::setPassword(const QString& detail)
 {
-   setAccountDetail(Account::MapField::PASSWORD, detail);
+   switch (type()) {
+      case Account::Protocol::SIP:
+         if (credentialsModel()->rowCount())
+            credentialsModel()->setData(credentialsModel()->index(0,0),detail,CredentialModel::Role::PASSWORD);
+         else {
+            const QModelIndex idx = credentialsModel()->addCredentials();
+            credentialsModel()->setData(idx,detail,CredentialModel::Role::PASSWORD);
+         }
+         break;
+      case Account::Protocol::IAX:
+         setAccountDetail(Account::MapField::PASSWORD, detail);
+         break;
+   };
 }
 
 ///Set the TLS (encryption) password
@@ -910,8 +946,10 @@ void Account::setRoleData(int role, const QVariant& value)
    switch(role) {
       case Account::Role::Alias:
          setAlias(value.toString());
-      case Account::Role::Type:
-         setType(value.toString());
+      case Account::Role::Type: {
+         const int proto = value.toInt();
+         setType((proto>=0&&proto<=1)?static_cast<Account::Protocol>(proto):Account::Protocol::SIP);
+      }
       case Account::Role::Hostname:
          setHostname(value.toString());
       case Account::Role::Username:

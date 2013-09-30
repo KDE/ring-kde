@@ -205,11 +205,9 @@ void DlgAccounts::saveAccount(QModelIndex item)
       m_pProxyLE->setText("");
    }
 
-   QString protocolsTab[] = ACCOUNT_TYPES_TAB;
-
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                     /
-   /**/account->setType                        ( protocolsTab[edit2_protocol->currentIndex()]                             );
+   /**/account->setType                        ( static_cast<Account::Protocol>(edit2_protocol->currentIndex())           );
    /**/account->setAlias                       ( edit1_alias->text()                                                      );
    /**/account->setHostname                    ( edit3_server->text()                                                     );
    /**/account->setUsername                    ( edit4_user->text()                                                       );
@@ -299,25 +297,21 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
    edit1_alias->setText( account->alias());
 
-   QString protocolsTab[] = ACCOUNT_TYPES_TAB;
-   QList<QString> * protocolsList = new QList<QString>();
-   for(int i = 0 ; i < (int) (sizeof(protocolsTab) / sizeof(QString)) ; i++) {
-      protocolsList->append(protocolsTab[i]);
+   const int protocolIndex = static_cast<int>(account->type());
+
+   if (account->type() == Account::Protocol::SIP) {
+      const QModelIndex idx = account->credentialsModel()->index(0,0);
+      disconnect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
+      if (idx.isValid() && !account->id().isEmpty()) {
+         edit5_password->setText(account->credentialsModel()->data(idx,CredentialModel::Role::PASSWORD).toString());
+      }
+      else
+         edit5_password->setText("");
+      connect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
    }
-
-   const QString accountType = account->type();
-   const int protocolIndex = protocolsList->indexOf(accountType);
-   delete protocolsList;
-
-
-   const QModelIndex idx = account->credentialsModel()->index(0,0);
-   disconnect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
-   if (idx.isValid() && !account->id().isEmpty()) {
-      edit5_password->setText(account->credentialsModel()->data(idx,CredentialModel::Role::PASSWORD).toString());
+   else {
+      edit5_password->setText(account->password());
    }
-   else
-      edit5_password->setText("");
-   connect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
 
    disconnect(this,SLOT(aliasChanged(QString)));
    connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));

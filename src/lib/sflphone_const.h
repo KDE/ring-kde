@@ -116,7 +116,7 @@
 /** Maybe to remove **/
 static const QString REGISTRATION_ENABLED_TRUE("true");
 static const QString REGISTRATION_ENABLED_FALSE("false");
-#define ACCOUNT_TYPES_TAB                 {QString(Account::Protocol::SIP), QString(Account::Protocol::IAX)}
+// #define ACCOUNT_TYPES_TAB                 {QString(Account::ProtocolName::SIP), QString(Account::ProtocolName::IAX)}
 /*********************/
 
 /** Constant variables */

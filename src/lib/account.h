@@ -56,7 +56,7 @@ class LIB_EXPORT Account : public QObject {
 
    //Properties
    Q_PROPERTY(QString        alias                        READ alias                         WRITE setAlias                       )
-   Q_PROPERTY(QString        type                         READ type                          WRITE setType                        )
+   Q_PROPERTY(Account::Protocol type                      READ type                          WRITE setType                        )
    Q_PROPERTY(QString        hostname                     READ hostname                      WRITE setHostname                    )
    Q_PROPERTY(QString        username                     READ username                      WRITE setUsername                    )
    Q_PROPERTY(QString        mailbox                      READ mailbox                       WRITE setMailbox                     )
@@ -94,7 +94,7 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           publishedSameAsLocal         READ isPublishedSameAsLocal        WRITE setPublishedSameAsLocal        )
    Q_PROPERTY(bool           ringtoneEnabled              READ isRingtoneEnabled             WRITE setRingtoneEnabled             )
    Q_PROPERTY(DtmfType       dTMFType                     READ DTMFType                      WRITE setDTMFType                    )
-   Q_PROPERTY(QString        typeName                     READ type                          WRITE setType                        )
+//    Q_PROPERTY(QString        typeName                     READ type                          WRITE setType                        )
    Q_PROPERTY(bool           presenceStatus               READ presenceStatus                                                     )
    Q_PROPERTY(QString        presenceMessage              READ presenceMessage                                                    )
 
@@ -217,11 +217,17 @@ class LIB_EXPORT Account : public QObject {
          };
       };
 
-      class Protocol {
+      class ProtocolName {
       public:
          constexpr static const char* SIP = "SIP";
          constexpr static const char* IAX = "IAX";
       };
+
+      enum class Protocol {
+         SIP = 0,
+         IAX = 1,
+      };
+      Q_ENUMS(Protocol)
 
       /**
        *Perform an action
@@ -241,9 +247,9 @@ class LIB_EXPORT Account : public QObject {
       QString         stateColorName()                    const;
       QVariant        stateColor()                        const;
 
-      Q_INVOKABLE CredentialModel* credentialsModel();
-      Q_INVOKABLE AudioCodecModel* audioCodecModel ();
-      Q_INVOKABLE VideoCodecModel* videoCodecModel ();
+      Q_INVOKABLE CredentialModel* credentialsModel() const;
+      Q_INVOKABLE AudioCodecModel* audioCodecModel () const;
+      Q_INVOKABLE VideoCodecModel* videoCodecModel () const;
 
       //Getters
       QString hostname                     () const;
@@ -252,6 +258,7 @@ class LIB_EXPORT Account : public QObject {
       QString username                     () const;
       QString mailbox                      () const;
       QString proxy                        () const;
+      QString password                     () const;
       bool    isDisplaySasOnce             () const;
       bool    isSrtpRtpFallback            () const;
       bool    isZrtpDisplaySas             () const;
@@ -281,18 +288,18 @@ class LIB_EXPORT Account : public QObject {
       int     localPort                    () const;
       QString localInterface               () const;
       QString registrationStatus           () const;
-      QString type                         () const;
       DtmfType DTMFType                    () const;
       bool    presenceStatus               () const;
       QString presenceMessage              () const;
-      TlsMethodModel::Type tlsMethod       () const;
+      Account::Protocol      type          () const;
+      TlsMethodModel::Type   tlsMethod     () const;
       KeyExchangeModel::Type keyExchange   () const;
       QVariant roleData            (int role) const;
 
       //Setters
       void setId      (const QString& id);
       void setAlias                         (const QString& detail);
-      void setType                          (const QString& detail);
+      void setType                          (Account::Protocol proto);
       void setHostname                      (const QString& detail);
       void setUsername                      (const QString& detail);
       void setMailbox                       (const QString& detail);
@@ -350,9 +357,9 @@ class LIB_EXPORT Account : public QObject {
       Account();
 
       //Attributes
-      QString                 m_AccountId     ;
+      QString                 m_AccountId      ;
       QHash<QString,QString>  m_hAccountDetails;
-      
+
 
    public Q_SLOTS:
       void setEnabled(bool checked);

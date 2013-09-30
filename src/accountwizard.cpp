@@ -246,7 +246,7 @@ void AccountWizard::accept()
          field( FIELD_SIP_USER      ) = QString( acc.user                         );
          field( FIELD_SIP_VOICEMAIL ).clear();
 
-         protocol = QString( Account::Protocol::SIP    );
+         protocol = QString( Account::ProtocolName::SIP    );
          server   = QString( SFL_ACCOUNT_HOST          );
          password = QString( acc.passwd                );
          user     = QString( acc.user                  );
@@ -265,7 +265,7 @@ void AccountWizard::accept()
       alias    = field   ( FIELD_SIP_ALIAS           ).toString();
       enabled  = QString ( REGISTRATION_ENABLED_TRUE )           ;
       mailbox  = field   ( FIELD_SIP_VOICEMAIL       ).toString();
-      protocol = QString ( Account::Protocol::SIP    )           ;
+      protocol = QString ( Account::ProtocolName::SIP    )           ;
       server   = field   ( FIELD_SIP_SERVER          ).toString();
       password = field   ( FIELD_SIP_PASSWORD        ).toString();
       user     = field   ( FIELD_SIP_USER            ).toString();
@@ -280,7 +280,7 @@ void AccountWizard::accept()
       alias    = field   ( FIELD_IAX_ALIAS           ).toString();
       enabled  = QString ( REGISTRATION_ENABLED_TRUE )           ;
       mailbox  = field   ( FIELD_IAX_VOICEMAIL       ).toString();
-      protocol = QString ( Account::Protocol::IAX    )           ;
+      protocol = QString ( Account::ProtocolName::IAX    )           ;
       server   = field   ( FIELD_IAX_SERVER          ).toString();
       password = field   ( FIELD_IAX_PASSWORD        ).toString();
       user     = field   ( FIELD_IAX_USER            ).toString();
