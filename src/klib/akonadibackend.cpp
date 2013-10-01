@@ -202,13 +202,19 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
       const Akonadi::Item::List items = job->items();
 
       foreach ( const Akonadi::Item &item, items ) {
-         if ( item.hasPayload<KABC::ContactGroup>() ) {
-            kDebug() << "Group:" << item.payload<KABC::ContactGroup>().name();
-         }
-
          if ( item.hasPayload<KABC::Addressee>() ) {
             KABC::Addressee tmp = item.payload<KABC::Addressee>();
             Contact* aContact   = new Contact();
+
+            //This need to be done first because of the phone numbers indexes
+            aContact->setNickName       (tmp.nickName()       );
+            aContact->setFormattedName  (tmp.formattedName()  );
+            aContact->setFirstName      (tmp.givenName()      );
+            aContact->setFamilyName     (tmp.familyName()     );
+            aContact->setOrganization   (tmp.organization()   );
+            aContact->setPreferredEmail (tmp.preferredEmail() );
+            aContact->setDepartment     (tmp.department()     );
+            aContact->setUid            (tmp.uid()            );
 
             const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
             Contact::PhoneNumbers newNumbers(aContact);
@@ -227,15 +233,6 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
                   m_ContactByPhone[number2+'@'+defaultAccount->hostname()] = aContact;
             }
             m_ContactByUid[tmp.uid()] = aContact;
-
-            aContact->setNickName       (tmp.nickName()       );
-            aContact->setFormattedName  (tmp.formattedName()  );
-            aContact->setFirstName      (tmp.givenName()      );
-            aContact->setFamilyName     (tmp.familyName()     );
-            aContact->setOrganization   (tmp.organization()   );
-            aContact->setPreferredEmail (tmp.preferredEmail() );
-            aContact->setDepartment     (tmp.department()     );
-            aContact->setUid            (tmp.uid()            );
             aContact->setPhoneNumbers   (newNumbers           );
 
             if (!tmp.photo().data().isNull())

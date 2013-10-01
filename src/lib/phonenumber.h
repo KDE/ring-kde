@@ -77,12 +77,16 @@ public:
    time_t             lastUsed        () const;
    PhoneNumber::State state           () const;
    int                callCount       () const;
+   uint               weekCount       () const;
+   uint               trimCount       () const;
+   bool               haveCalled      () const;
    QList<Call*>       calls           () const;
    int                popularityIndex () const;
    QHash<QString,int> alternativeNames() const;
    QString            mostCommonName  () const;
    QString            hostname        () const;
    QString            fullUri         () const;
+   QString            primaryName     () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account* account);
@@ -91,6 +95,7 @@ public:
 
    //Mutator
    Q_INVOKABLE void addCall(Call* call);
+   Q_INVOKABLE void incrementAlternativeName(const QString& name);
 
    //Static
    static const PhoneNumber* BLANK;
@@ -126,6 +131,9 @@ private:
    QString            m_MostCommonName   ;
    QHash<QString,int> m_hNames           ;
    bool               m_hasType          ;
+   uint               m_LastWeekCount    ;
+   uint               m_LastTrimCount    ;
+   bool               m_HaveCalled       ;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;

@@ -27,9 +27,9 @@ KeyExchangeModel::KeyExchangeModel() : QAbstractListModel(QCoreApplication::inst
 QVariant KeyExchangeModel::data( const QModelIndex& index, int role) const
 {
    if (!index.isValid()) return QVariant();
-   KeyExchangeModel::Type mathod = static_cast<KeyExchangeModel::Type>(index.row());
+   KeyExchangeModel::Type method = static_cast<KeyExchangeModel::Type>(index.row());
    if (role == Qt::DisplayRole) {
-      switch (mathod) {
+      switch (method) {
          case KeyExchangeModel::Type::NONE:
             return KeyExchangeModel::Name::NONE;
             break;

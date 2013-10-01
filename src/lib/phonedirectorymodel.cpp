@@ -118,6 +118,27 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
             }
          }
          break;
+      case PhoneDirectoryModel::Columns::WEEK_COUNT:
+         switch (role) {
+            case Qt::DisplayRole:
+               return number->weekCount();
+               break;
+         }
+         break;
+      case PhoneDirectoryModel::Columns::TRIM_COUNT:
+         switch (role) {
+            case Qt::DisplayRole:
+               return number->trimCount();
+               break;
+         }
+         break;
+      case PhoneDirectoryModel::Columns::HAVE_CALLED:
+         switch (role) {
+            case Qt::DisplayRole:
+               return number->haveCalled();
+               break;
+         }
+         break;
       case PhoneDirectoryModel::Columns::POPULARITY_INDEX:
          switch (role) {
             case Qt::DisplayRole:
@@ -160,7 +181,7 @@ int PhoneDirectoryModel::rowCount(const QModelIndex& parent ) const
 int PhoneDirectoryModel::columnCount(const QModelIndex& parent ) const
 {
    Q_UNUSED(parent)
-   return 12;
+   return 15;
 }
 
 Qt::ItemFlags PhoneDirectoryModel::flags(const QModelIndex& index ) const
@@ -187,8 +208,9 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
 {
    Q_UNUSED(section)
    Q_UNUSED(orientation)
-   constexpr static const char* headers[] = {"URI", "Type", "Contact", "Account", "State", "Call count", "Last used", 
-      "Name_count", "Popularity_index", "Tracked", "Present", "Presence message" };
+   constexpr static const char* headers[] = {"URI", "Type", "Contact", "Account", "State", "Call count", "Week count",
+   "Trimester count", "Have Called", "Last used", "Name_count", "Popularity_index", "Tracked", "Present",
+   "Presence message" };
    if (role == Qt::DisplayRole) return headers[section];
    return QVariant();
 }
@@ -215,6 +237,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    if (!wrap) {
       wrap = new NumberWrapper();
       m_hDirectory[strippedUri] = wrap;
+      m_hSortedNumbers[strippedUri] = wrap;
    }
    wrap->numbers << number;
    return number;
@@ -252,6 +275,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    if (!wrap) {
       wrap = new NumberWrapper();
       m_hDirectory[strippedUri] = wrap;
+      m_hSortedNumbers[strippedUri] = wrap;
    }
    wrap->numbers << number;
    emit layoutChanged();
@@ -292,6 +316,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    if (!wrap) {
       wrap = new NumberWrapper();
       m_hDirectory[strippedUri] = wrap;
+      m_hSortedNumbers[strippedUri] = wrap;
    }
    wrap->numbers << number;
    emit layoutChanged();
@@ -362,7 +387,7 @@ void PhoneDirectoryModel::slotCallAdded(Call* call)
 
       //Now check for new peer names
       if (!call->peerName().isEmpty()) {
-         number->m_hNames[call->peerName()]++;
+         number->incrementAlternativeName(call->peerName());
       }
    }
 }
@@ -393,3 +418,32 @@ void PhoneDirectoryModel::slotNewBuddySubscription(const QString& uri, const QSt
 //    number->m_PresentMessage = message;
 //    emit number->changed();
 // }
+
+///Make sure the indexes are still valid for those names
+void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList names)
+{
+   foreach(const QString& name, names) {
+      const QString lower = name.toLower();
+      const QStringList splitted = lower.split(' ');
+      foreach(const QString& chunk, splitted) {
+         NumberWrapper* wrap = m_hNumbersByNames[chunk];
+         if (!wrap) {
+            wrap = new NumberWrapper();
+            m_hNumbersByNames[chunk] = wrap;
+            m_lSortedNames[chunk]    = wrap;
+         }
+         const int numCount = wrap->numbers.size();
+         if (!((numCount == 1 && wrap->numbers[0] == number) || (numCount > 1 && wrap->numbers.indexOf(number) != -1)))
+            wrap->numbers << number;
+      }
+      NumberWrapper* wrap = m_hNumbersByNames[lower];
+      if (!wrap) {
+         wrap = new NumberWrapper();
+         m_hNumbersByNames[lower] = wrap;
+         m_lSortedNames[lower]    = wrap;
+      }
+      const int numCount = wrap->numbers.size();
+      if (!((numCount == 1 && wrap->numbers[0] == number) || (numCount > 1 && wrap->numbers.indexOf(number) != -1)))
+         wrap->numbers << number;
+   }
+}

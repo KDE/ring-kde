@@ -38,7 +38,8 @@ const PhoneNumber* PhoneNumber::BLANK = PhoneNumberPrivate::initBlank();
 ///Constructor
 PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(PhoneDirectoryModel::instance()),
    m_Uri(stripUri(number)),m_Type(type),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
-   m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr)
+   m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
+   m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false)
 {
    setObjectName(m_Uri);
    m_hasType = !type.isEmpty();
@@ -101,6 +102,8 @@ void PhoneNumber::setAccount(Account* account)
 void PhoneNumber::setContact(Contact* contact)
 {
    m_pContact = contact;
+   if (contact)
+      PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+QStringList(contact->formattedName()));
    emit changed();
 }
 
@@ -126,6 +129,42 @@ int PhoneNumber::callCount() const
    return m_lCalls.size();
 }
 
+uint PhoneNumber::weekCount() const
+{
+   return m_LastWeekCount;
+}
+
+uint PhoneNumber::trimCount() const
+{
+   return m_LastTrimCount;
+}
+
+bool PhoneNumber::haveCalled() const
+{
+   return m_HaveCalled;
+}
+
+///Best bet for this person real name
+QString PhoneNumber::primaryName() const
+{
+   if (m_pContact)
+      return m_pContact->formattedName();
+   else if (m_hNames.size() == 1)
+      return m_hNames.constBegin().key();
+   else {
+      QString toReturn = "Unknown";
+      QHash<QString,int>::const_iterator i = m_hNames.constBegin();
+      int max = 0;
+      while (i != m_hNames.end()) {
+         if (i.value() > max) {
+            max      = i.value();
+            toReturn = i.key  ();
+         }
+      }
+      return toReturn;
+   }
+}
+
 ///Return all calls from this number
 QList<Call*> PhoneNumber::calls() const
 {
@@ -149,6 +188,16 @@ void PhoneNumber::addCall(Call* call)
    if (!call) return;
    m_State = PhoneNumber::State::USED;
    m_lCalls << call;
+   time_t now;
+   ::time ( &now );
+   if (now - 3600*24*7 < call->stopTimeStamp())
+      m_LastWeekCount++;
+   if (now - 3600*24*7*15 < call->stopTimeStamp())
+      m_LastTrimCount++;
+
+   if (call->historyState() == Call::HistoryState::OUTGOING)
+      m_HaveCalled = true;
+
    emit callAdded(call);
    if (call->startTimeStamp() > m_LastUsed)
       m_LastUsed = call->startTimeStamp();
@@ -186,6 +235,15 @@ QString PhoneNumber::stripUri(const QString& uri)
    if (end && uri[end] == '>')
       end--;
    return uri.mid(start,end-start+1);
+}
+
+///Increment name counter and update indexes
+void PhoneNumber::incrementAlternativeName(const QString& name)
+{
+   const bool needReIndexing = !m_hNames[name];
+   m_hNames[name]++;
+   if (needReIndexing)
+      PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+(m_pContact?(QStringList(m_pContact->formattedName())):QStringList()));
 }
 
 

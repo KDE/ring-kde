@@ -32,13 +32,20 @@ class TemporaryPhoneNumber;
 
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT PhoneDirectoryModel : public QAbstractTableModel {
+
+   //NumberCompletionModel need direct access to the indexes
+   friend class NumberCompletionModel;
+
+   //Phone number need to update the indexes as they change
+   friend class PhoneNumber          ;
+
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
    Q_PROPERTY(int count READ count )
-   
+
    virtual ~PhoneDirectoryModel(){}
 
    //Abstract model members
@@ -77,29 +84,39 @@ private:
       ACCOUNT          = 3,
       STATE            = 4,
       CALL_COUNT       = 5,
-      LAST_USED        = 6,
-      NAME_COUNT       = 7,
-      POPULARITY_INDEX = 8,
-      TRACKED          = 9,
-      PRESENT          = 10,
-      PRESENCE_MESSAGE = 11,
+      WEEK_COUNT       = 6,
+      TRIM_COUNT       = 7,
+      HAVE_CALLED      = 8,
+      LAST_USED        = 9,
+      NAME_COUNT       = 10,
+      POPULARITY_INDEX = 11,
+      TRACKED          = 12,
+      PRESENT          = 13,
+      PRESENCE_MESSAGE = 14,
    };
-   //Constructor
-   explicit PhoneDirectoryModel(QObject* parent = nullptr);
 
-   //Singleton
-   static PhoneDirectoryModel* m_spInstance;
-
+   //Internal data structures
    ///@struct NumberWrapper Wrap phone numbers to prevent collisions
    struct NumberWrapper {
       QVector<PhoneNumber*> numbers;
    };
 
-   //Attribute
+   //Constructor
+   explicit PhoneDirectoryModel(QObject* parent = nullptr);
+
+   //Helpers
+   void indexNumber(PhoneNumber* number, const QStringList names);
+
+   //Singleton
+   static PhoneDirectoryModel* m_spInstance;
+
+   //Attributes
    QVector<PhoneNumber*>         m_lNumbers         ;
    QHash<QString,NumberWrapper*> m_hDirectory       ;
-   QHash<QString,NumberWrapper*> m_hTemporaryNumbers;
    QVector<PhoneNumber*>         m_lPopularityIndex ;
+   QMap<QString,NumberWrapper*>  m_lSortedNames     ;
+   QMap<QString,NumberWrapper*>  m_hSortedNumbers   ;
+   QHash<QString,NumberWrapper*> m_hNumbersByNames  ;
 
 private Q_SLOTS:
    void slotCallAdded(Call* call);

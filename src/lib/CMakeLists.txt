@@ -67,6 +67,7 @@ set( qtsflphone_LIB_SRCS
   numbercategorymodel.cpp
   keyexchangemodel.cpp
   tlsmethodmodel.cpp
+  numbercompletionmodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -110,6 +111,7 @@ set( qtsflphone_LIB_HDRS
   videocodec.h
   keyexchangemodel.h
   tlsmethodmodel.h
+  numbercompletionmodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

@@ -191,33 +191,6 @@ const CallMap& HistoryModel::getHistory()
    return m_sHistoryCalls;
 }
 
-///Sort all history call by popularity and return the result (most popular first)
-// const QStringList HistoryModel::getNumbersByPopularity()
-// {
-//    instance();
-//    QHash<QString,SortableCallSource*> hc;
-//    foreach (Call* call, getHistory()) {
-//       if (!hc[call->peerPhoneNumber()]) {
-//          hc[call->peerPhoneNumber()] = new SortableCallSource(call);
-//       }
-//       hc[call->peerPhoneNumber()]->count++;
-//    }
-//    QList<SortableCallSource> userList;
-//    foreach (SortableCallSource* i,hc) {
-//       userList << *i;
-//    }
-//    qSort(userList);
-//    QStringList cl;
-//    for (int i=userList.size()-1;i >=0 ;i--) {
-//       cl << userList[i].callInfo->peerPhoneNumber();
-//    }
-//    foreach (SortableCallSource* i,hc) {
-//       delete i;
-//    }
-// 
-//    return cl;
-// } //getNumbersByPopularity
-
 
 /*****************************************************************************
  *                                                                           *
@@ -280,7 +253,7 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
             return static_cast<TopLevelItem*>(modelItem)->m_NameStr;
          case Call::Role::FuzzyDate:
          case Call::Role::Date:
-            return 999 - static_cast<TopLevelItem*>(modelItem)->m_Name;
+            return static_cast<TopLevelItem*>(modelItem)->m_Name;
          default:
             break;
       }
@@ -288,10 +261,12 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
    case CategorizedCompositeNode::Type::CALL:
       if (role == Call::Role::DropState)
          return QVariant(modelItem->dropState());
-      else if (m_lCategoryCounter.size() >= idx.parent().row() && idx.parent().row() >= 0
-         && m_lCategoryCounter[idx.parent().row()]
-         && m_lCategoryCounter[idx.parent().row()]->m_lChildren.size() >= idx.row())
-         return m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->roleData((Call::Role)role);
+      else {
+         const int parRow = idx.parent().row();
+         const TopLevelItem* parTli = m_lCategoryCounter[parRow];
+         if (m_lCategoryCounter.size() > parRow && parRow >= 0 && parTli && parTli->m_lChildren.size() > idx.row())
+            return parTli->m_lChildren[idx.row()]->roleData((Call::Role)role);
+      }
       break;
    case CategorizedCompositeNode::Type::NUMBER:
    case CategorizedCompositeNode::Type::BOOKMARK:
@@ -320,9 +295,6 @@ int HistoryModel::rowCount( const QModelIndex& parentIdx ) const
    else if (!parentIdx.parent().isValid() && parentIdx.row() < m_lCategoryCounter.size()) {
       return m_lCategoryCounter[parentIdx.row()]->m_lChildren.size();
    }
-//    else if (parent.parent().isValid() && !parent.parent().parent().isValid()) {
-//       return m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->getPhoneNumbers().size();
-//    }
    return 0;
 }
 
