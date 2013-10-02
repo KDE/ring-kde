@@ -173,7 +173,7 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
       }
       foreach (Account* acc, m_lAccounts) {
          int idx =accountIds.indexOf(acc->id());
-         if (idx == -1 && (acc->currentState() == Account::AccountEditState::READY || acc->currentState() == Account::AccountEditState::REMOVED)) {
+         if (idx == -1 && (acc->state() == Account::AccountEditState::READY || acc->state() == Account::AccountEditState::REMOVED)) {
             m_lAccounts.remove(idx);
             emit dataChanged(index(idx - 1, 0), index(m_lAccounts.size()-1, 0));
             emit layoutChanged();
@@ -213,9 +213,9 @@ void AccountListModel::update()
 
    for (int i = 0; i < tmp.size(); i++) {
       current = tmp[i];
-      if (!current->isNew() && (current->currentState() != Account::AccountEditState::NEW 
-         && current->currentState() != Account::AccountEditState::MODIFIED
-         && current->currentState() != Account::AccountEditState::OUTDATED))
+      if (!current->isNew() && (current->state() != Account::AccountEditState::NEW 
+         && current->state() != Account::AccountEditState::MODIFIED
+         && current->state() != Account::AccountEditState::OUTDATED))
          removeAccount(current);
    }
    //ask for the list of accounts ids to the configurationManager
@@ -320,7 +320,7 @@ void AccountListModel::registerAllAccounts()
 ///Cancel all modifications
 void AccountListModel::cancel() {
    foreach (Account* a, getAccounts()) {
-      if (a->currentState() == Account::AccountEditState::MODIFIED || a->currentState() == Account::AccountEditState::OUTDATED)
+      if (a->state() == Account::AccountEditState::MODIFIED || a->state() == Account::AccountEditState::OUTDATED)
          a->performAction(Account::AccountEditAction::CANCEL);
    }
    m_lDeletedAccounts.clear();

@@ -65,6 +65,7 @@
 #include "lib/sflphone_const.h"
 #include "lib/contact.h"
 #include "lib/accountlistmodel.h"
+#include "lib/phonedirectorymodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
 #include "lib/visitors/accountlistcolorvisitor.cpp"
@@ -130,9 +131,9 @@ public:
    }
 
    virtual QVariant getIcon(const Account* a) {
-      if (a->currentState() == Account::AccountEditState::MODIFIED)
+      if (a->state() == Account::AccountEditState::MODIFIED)
          return KIcon("document-save");
-      else if (a->currentState() == Account::AccountEditState::OUTDATED) {
+      else if (a->state() == Account::AccountEditState::OUTDATED) {
          return KIcon("view-refresh");
       }
       return QVariant();
@@ -335,8 +336,9 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    //Auto completion
    if (ConfigurationSkeleton::enableAutoCompletion()) {
       m_pAutoCompletion = new AutoCompletion(m_pView);
+      PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
+      m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
    }
-
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
    connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)) , m_pCanvasToolbar, SLOT(updateState()));
@@ -384,24 +386,44 @@ void SFLPhoneView::loadWindow()
 ///Input grabber
 void SFLPhoneView::keyPressEvent(QKeyEvent *event)
 {
-   int key = event->key();
-   if(key == Qt::Key_Escape)
-      escape();
-   else if(key == Qt::Key_Return || key == Qt::Key_Enter)
-      enter();
-   else if(key == Qt::Key_Backspace)
-      backspace();
-   else if (key == Qt::Key_Left || key == Qt::Key_Right || key == Qt::Key_Up || key == Qt::Key_Down) {
-//       callView->moveSelectedItem((Qt::Key)key); //TODO port
-   }
-   else
-   {
-      QString text = event->text();
-      if(! text.isEmpty())
-      {
-         typeString(text);
+   switch(event->key()) {
+      case Qt::Key_Escape:
+         escape();
+         break;
+      case Qt::Key_Return:
+      case Qt::Key_Enter:
+         if (m_pAutoCompletion && m_pAutoCompletion->selection()) {
+            PhoneNumber* n = m_pAutoCompletion->selection();
+            Call* call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
+            if (call->state() == Call::State::DIALING) {
+               call->setDialNumber(n->uri());
+               if (PhoneDirectoryModel::instance()->callWithAccount() && n->account() && n->account()->id() != "IP2IP")
+                  call->setAccount(n->account());
+            }
+         }
+         enter();
+         break;
+      case Qt::Key_Backspace:
+         backspace();
+         break;
+      case Qt::Key_Up:
+         if (m_pAutoCompletion && m_pAutoCompletion->isVisible()) {
+            m_pAutoCompletion->moveUp();
+         }
+         break;
+      case Qt::Key_Down:
+         if (m_pAutoCompletion && m_pAutoCompletion->isVisible()) {
+            m_pAutoCompletion->moveDown();
+         }
+         break;
+      default: {
+         QString text = event->text();
+         if(! text.isEmpty()) {
+            typeString(text);
+         }
       }
-   }
+      break;
+   };
 } //keyPressEvent
 
 void SFLPhoneView::addDTMF(const QString& sequence)
@@ -445,7 +467,6 @@ void SFLPhoneView::typeString(QString str)
       }
       else if(dynamic_cast<Call*>(call2) && call2->state() == Call::State::DIALING) {
          candidate = call2;
-//          CallModel::instance()->setCurrentCall(CallModel::instance()->getIndex(call2)); //TODO port
       }
    }
 
@@ -458,7 +479,6 @@ void SFLPhoneView::typeString(QString str)
       }
    }
 
-   
    if (!candidate) {
       candidate = CallModel::instance()->addDialingCall();
    }

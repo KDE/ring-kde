@@ -70,6 +70,14 @@ public:
    int count() {
       return m_lNumbers.size();
    }
+   bool callWithAccount() const {
+      return m_CallWithAccount;
+   }
+
+   //Setters
+   void setCallWithAccount(bool value) {
+      m_CallWithAccount = value;
+   }
 
    //Static
    QVector<PhoneNumber*> getNumbersByPopularity() const;
@@ -117,6 +125,7 @@ private:
    QMap<QString,NumberWrapper*>  m_lSortedNames     ;
    QMap<QString,NumberWrapper*>  m_hSortedNumbers   ;
    QHash<QString,NumberWrapper*> m_hNumbersByNames  ;
+   bool                          m_CallWithAccount  ;
 
 private Q_SLOTS:
    void slotCallAdded(Call* call);

@@ -266,14 +266,15 @@ public:
    Call::State actionPerformed(Call::Action action);
 
    //Setters
-   void setConference     ( bool value                );
-   void setConfId         ( const QString& value      );
-   void setTransferNumber ( const QString& number     );
-   void setDialNumber     ( const QString& number     );
-   void setDialNumber     ( const PhoneNumber* number );
-   void setRecordingPath  ( const QString& path       );
-   void setPeerName       ( const QString& name       );
-   void setSelected       ( const bool     value      );
+   void setConference     ( bool               value      );
+   void setConfId         ( const QString&     value      );
+   void setTransferNumber ( const QString&     number     );
+   void setDialNumber     ( const QString&     number     );
+   void setDialNumber     ( const PhoneNumber* number     );
+   void setRecordingPath  ( const QString&     path       );
+   void setPeerName       ( const QString&     name       );
+   void setSelected       ( const bool         value      );
+   void setAccount        ( Account*           account    );
 
    //Mutators
    void appendText(const QString& str);

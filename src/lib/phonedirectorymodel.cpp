@@ -32,7 +32,7 @@
 PhoneDirectoryModel* PhoneDirectoryModel::m_spInstance = nullptr;
 
 PhoneDirectoryModel::PhoneDirectoryModel(QObject* parent) :
-   QAbstractTableModel(parent?parent:QCoreApplication::instance())
+   QAbstractTableModel(parent?parent:QCoreApplication::instance()),m_CallWithAccount(false)
 {
    setObjectName("PhoneDirectoryModel");
    connect(&DBus::PresenceManager::instance(),SIGNAL(newBuddyNotification(QString,QString,bool,QString)),this,

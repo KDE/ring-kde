@@ -30,6 +30,13 @@ class LIB_EXPORT NumberCompletionModel : public QAbstractTableModel {
    Q_OBJECT
 
 public:
+
+   enum Role {
+      ALTERNATE_ACCOUNT= 100,
+      FORCE_ACCOUNT    = 101,
+      ACCOUNT          = 102,
+   };
+
    NumberCompletionModel();
    virtual ~NumberCompletionModel();
 
@@ -43,9 +50,16 @@ public:
 
    //Setters
    void setCall(Call* call);
-   
+   void setUseUnregisteredAccounts(bool value) {
+      m_UseUnregisteredAccount = value;
+   }
+
    //Getters
    Call* call() const;
+   PhoneNumber* number(const QModelIndex& idx) const;
+   bool isUsingUnregisteredAccounts() {
+      return m_UseUnregisteredAccount;
+   }
 
 private:
    enum class Columns {
@@ -66,10 +80,11 @@ private:
    uint getWeight(PhoneNumber* number);
 
    //Attributes
-   QMultiMap<int,PhoneNumber*> m_hNumbers;
-   QString                     m_Prefix  ;
-   Call*                       m_pCall   ;
-   bool                        m_Enabled ;
+   QMultiMap<int,PhoneNumber*> m_hNumbers              ;
+   QString                     m_Prefix                ;
+   Call*                       m_pCall                 ;
+   bool                        m_Enabled               ;
+   bool                        m_UseUnregisteredAccount;
 
 public Q_SLOTS:
    void setPrefix(const QString& str);

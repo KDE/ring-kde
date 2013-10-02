@@ -25,11 +25,13 @@
 class QListView;
 class QTreeView;
 class QLabel;
+class QModelIndex;
 
 //SFLPhone
 class Call;
 class NumberCompletionModel;
-class QModelIndex;
+class AutoCompletionDelegate;
+class PhoneNumber;
 
 class AutoCompletion : public QWidget {
    Q_OBJECT
@@ -40,6 +42,10 @@ public:
 
    //Getters
    Call* call() const;
+   PhoneNumber* selection() const;
+
+   //Setters
+   void setUseUnregisteredAccounts(bool value);
 
 protected:
    //Virtual events
@@ -51,6 +57,7 @@ private:
    QListView* m_pView;
    QLabel*    m_pLabel;
    NumberCompletionModel* m_pModel;
+   AutoCompletionDelegate* m_pDelegate;
 
    //Helpers
    bool brightOrDarkBase();
@@ -62,6 +69,7 @@ public Q_SLOTS:
    
 private Q_SLOTS:
    void selectionChanged(const QModelIndex& idx = QModelIndex());
+   void slotLayoutChanged();
 };
 
 #endif

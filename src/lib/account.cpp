@@ -1049,7 +1049,7 @@ bool Account::performAction(AccountEditAction action)
    return curState != m_CurrentState;
 }
 
-Account::AccountEditState Account::currentState() const
+Account::AccountEditState Account::state() const
 {
    return m_CurrentState;
 }

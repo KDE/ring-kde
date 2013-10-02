@@ -34,6 +34,7 @@
 #include <lib/numbercompletionmodel.h>
 #include <lib/call.h>
 #include <lib/callmodel.h>
+#include <delegates/autocompletiondelegate.h>
 
 constexpr static const int TOOLBAR_HEIGHT = 72;
 constexpr static const int MARGINS        = 15;
@@ -52,28 +53,59 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent)
 
    m_pModel = new NumberCompletionModel();
    m_pView->setModel(m_pModel);
-   connect(m_pModel,SIGNAL(enabled(bool)),this,SLOT(setVisible(bool)));
+
+   connect(m_pModel,SIGNAL(enabled(bool))  ,this, SLOT(setVisible(bool))   );
+   connect(m_pModel,SIGNAL(layoutChanged()),this, SLOT(slotLayoutChanged()));
+
    if (parent) {
       connect(parent->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectionChanged(QModelIndex)));
       parent->installEventFilter(this);
    }
    setMinimumSize(0,125);
+   m_pDelegate = new AutoCompletionDelegate();
+   m_pView->setItemDelegate(m_pDelegate);
 }
 
 AutoCompletion::~AutoCompletion()
 {
+   m_pView->setItemDelegate(nullptr);
+   delete m_pDelegate;
    delete m_pView;
    delete m_pLabel;
 }
 
 void AutoCompletion::moveUp()
 {
-   
+   const QModelIndex idx = m_pView->selectionModel()->currentIndex();
+   if (idx.isValid() ) {
+      if (idx.row() != 0)
+         m_pView->selectionModel()->setCurrentIndex(m_pModel->index(idx.row()-1,0),QItemSelectionModel::ClearAndSelect);
+      else
+         m_pView->selectionModel()->setCurrentIndex(QModelIndex(),QItemSelectionModel::Clear);
+   }
+   else
+      m_pView->selectionModel()->setCurrentIndex(m_pModel->index(0,0),QItemSelectionModel::ClearAndSelect);
 }
 
 void AutoCompletion::moveDown()
 {
-   
+   const QModelIndex idx = m_pView->selectionModel()->currentIndex();
+   if (idx.isValid() ) {
+      if (idx.row() != m_pModel->rowCount()-1)
+         m_pView->selectionModel()->setCurrentIndex(m_pModel->index(idx.row()+1,0),QItemSelectionModel::ClearAndSelect);
+   }
+   else
+      m_pView->selectionModel()->setCurrentIndex(m_pModel->index(0,0),QItemSelectionModel::ClearAndSelect);
+}
+
+void AutoCompletion::setUseUnregisteredAccounts(bool value) {
+   m_pModel->setUseUnregisteredAccounts(value);
+}
+
+void AutoCompletion::slotLayoutChanged()
+{
+   if (!m_pModel->rowCount())
+      m_pView->selectionModel()->setCurrentIndex(QModelIndex(),QItemSelectionModel::Clear);
 }
 
 void AutoCompletion::selectionChanged(const QModelIndex& idx)
@@ -98,6 +130,15 @@ void AutoCompletion::setCall(Call* call)
 Call* AutoCompletion::call() const
 {
    return m_pModel->call();
+}
+
+PhoneNumber* AutoCompletion::selection() const
+{
+   const QModelIndex idx = m_pView->selectionModel()->currentIndex();
+   if (idx.isValid() && isVisible()) {
+      return m_pModel->number(idx);
+   }
+   return nullptr;
 }
 
 bool AutoCompletion::brightOrDarkBase()

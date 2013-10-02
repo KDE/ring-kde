@@ -689,6 +689,13 @@ void Call::setSelected(const bool value)
    }
 }
 
+///Set the account (DIALING only, may be ignored)
+void Call::setAccount( Account* account)
+{
+   if (state() == Call::State::DIALING)
+      m_Account = account;
+}
+
 /*****************************************************************************
  *                                                                           *
  *                                  Mutator                                  *

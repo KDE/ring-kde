@@ -30,7 +30,7 @@
 #include "accountlistmodel.h"
 
 NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance()),
-   m_pCall(nullptr),m_Enabled(false)
+   m_pCall(nullptr),m_Enabled(false),m_UseUnregisteredAccount(true)
 {
    setObjectName("NumberCompletionModel");
 }
@@ -47,11 +47,26 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
    const PhoneNumber* n = i.value();
    const int weight     = i.key  ();
 
+   bool needAcc = (role>=100) && n->account() && n->account() != AccountListModel::instance()->currentAccount()
+                  && n->account()->alias() != "IP2IP";
+
    switch (static_cast<NumberCompletionModel::Columns>(index.column())) {
       case NumberCompletionModel::Columns::CONTENT:
          switch (role) {
             case Qt::DisplayRole:
                return n->uri();
+               break;
+            case NumberCompletionModel::Role::ALTERNATE_ACCOUNT:
+               if (needAcc)
+                  return n->account()->alias();
+               else
+                  return QString();
+            case NumberCompletionModel::Role::FORCE_ACCOUNT:
+               return needAcc;
+            case NumberCompletionModel::Role::ACCOUNT:
+               if (needAcc)
+                  return QVariant::fromValue(const_cast<Account*>(n->account()));
+               break;
          };
          break;
       case NumberCompletionModel::Columns::NAME:
@@ -63,7 +78,7 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
       case NumberCompletionModel::Columns::ACCOUNT:
          switch (role) {
             case Qt::DisplayRole:
-               return n->account()?n->account()->id():AccountListModel::instance()->firstRegisteredAccount()->id();
+               return n->account()?n->account()->id():AccountListModel::instance()->currentAccount()->id();
          };
          break;
       case NumberCompletionModel::Columns::WEIGHT:
@@ -140,6 +155,14 @@ Call* NumberCompletionModel::call() const
    return m_pCall;
 }
 
+PhoneNumber* NumberCompletionModel::number(const QModelIndex& idx) const
+{
+   if (idx.isValid()) {
+      return (const_cast<NumberCompletionModel*>(this)->m_hNumbers.end()-1-idx.row()).value();
+   }
+   return nullptr;
+}
+
 void NumberCompletionModel::updateModel()
 {
    QSet<PhoneNumber*> numbers;
@@ -147,8 +170,10 @@ void NumberCompletionModel::updateModel()
    locateNumberRange( m_Prefix, numbers );
 
    m_hNumbers.clear();
-   foreach(PhoneNumber* n,numbers)
-      m_hNumbers.insert(getWeight(n),n);
+   foreach(PhoneNumber* n,numbers) {
+      if (m_UseUnregisteredAccount || (n->account() && n->account()->isRegistered()))
+         m_hNumbers.insert(getWeight(n),n);
+   }
    emit layoutChanged();
 }
 
@@ -164,7 +189,7 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
    const int prefixLen = pref.size();
    int size = map.size()/2;
    bool startOk(false),endOk(false);
-   while (size > 1 || (startOk&&endOk)) {
+   while (size > 1 && !(startOk&&endOk)) {
       QMap<QString,PhoneDirectoryModel::NumberWrapper*>::iterator mid = (iBeg+size);
       if (mid != map.end() && mid.key().left(prefixLen) == pref && iBeg.key().left(prefixLen) < pref) {
          //Too far, need to go back

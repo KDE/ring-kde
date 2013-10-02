@@ -234,7 +234,7 @@ class LIB_EXPORT Account : public QObject {
        * @return If the state changed
        */
       bool performAction(Account::AccountEditAction action);
-      Account::AccountEditState currentState() const;
+      Account::AccountEditState state() const;
 
       //Getters
       bool            isNew()                             const;

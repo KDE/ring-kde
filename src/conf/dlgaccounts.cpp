@@ -195,7 +195,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
    }
 
    //There is no point to save something that is unaltered, all it will cause is daemon corruption
-   if (account->currentState() != Account::AccountEditState::NEW and account->currentState() != Account::AccountEditState::MODIFIED) {
+   if (account->state() != Account::AccountEditState::NEW and account->state() != Account::AccountEditState::MODIFIED) {
       kDebug() << "Nothing to be saved";
       return;
    }
@@ -539,7 +539,7 @@ void DlgAccounts::accountListChanged(QModelIndex current, QModelIndex previous)
 {
    saveAccount(previous);
    Account* acc = AccountListModel::instance()->getAccountByModelIndex(previous);
-   if (acc->currentState() == Account::AccountEditState::EDITING || acc->currentState() == Account::AccountEditState::OUTDATED)
+   if (acc->state() == Account::AccountEditState::EDITING || acc->state() == Account::AccountEditState::OUTDATED)
       acc->performAction(Account::AccountEditAction::CANCEL);
    loadAccount(current);
    //updateAccountListCommands();
@@ -750,7 +750,7 @@ void DlgAccounts::updateSettings()
 //             acc->performAction(AccountEditAction::SAVE);
 //          }
          saveAccount(listView_accountList->currentIndex());
-         if (acc->currentState() == Account::AccountEditState::EDITING || acc->currentState() == Account::AccountEditState::OUTDATED)
+         if (acc->state() == Account::AccountEditState::EDITING || acc->state() == Account::AccountEditState::OUTDATED)
             acc->performAction(Account::AccountEditAction::CANCEL);
       }
 

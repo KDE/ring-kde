@@ -90,6 +90,7 @@ SET(
    delegates/delegatedropoverlay.cpp
    delegates/dialpaddelegate.cpp
    delegates/imdelegate.cpp
+   delegates/autocompletiondelegate.cpp
 )
 
 # Configuration pages
