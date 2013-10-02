@@ -648,6 +648,7 @@ void Call::setDialNumber(const QString& number)
    }
    if (m_pDialNumber)
       m_pDialNumber->setUri(number);
+   emit dialNumberChanged(number);
    emit changed();
    emit changed(this);
 }
@@ -975,6 +976,7 @@ void Call::cancel()
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Canceling call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
+   emit dialNumberChanged(QString());
    Q_NOREPLY callManager.hangUp(m_CallId);
 }
 
@@ -1013,6 +1015,8 @@ void Call::call()
       if (peerPhoneNumber()) {
          peerPhoneNumber()->addCall(this);
       }
+      if (m_pDialNumber)
+         emit dialNumberChanged(QString());
       delete m_pDialNumber;
       m_pDialNumber = nullptr;
    }
@@ -1147,7 +1151,7 @@ void Call::appendText(const QString& str)
    case Call::State::CONFERENCE:
    case Call::State::CONFERENCE_HOLD:
    case Call::State::COUNT:
-   default                     :
+   default:
       qDebug() << "Backspace on call not editable. Doing nothing.";
       return;
    }
@@ -1156,6 +1160,9 @@ void Call::appendText(const QString& str)
       editNumber->setUri(editNumber->uri()+str);
    else
       qDebug() << "TemporaryPhoneNumber not defined";
+
+   if (state() == Call::State::DIALING)
+      emit dialNumberChanged(editNumber->uri());
 
    emit changed();
    emit changed(this);

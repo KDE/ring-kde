@@ -205,6 +205,26 @@
       <default> false </default>
     </entry>
 
+    <!-- Auto completion -->
+    <entry name="enableAutoCompletion" type="Bool">
+      <label>Enable auto completion widget</label>
+      <default> false </default>
+    </entry>
+    <entry name="autoCompleteMergeNumbers" type="Bool">
+      <label>If there is multiple instance of the same number, merge them and use the default account</label>
+      <default> false </default>
+    </entry>
+    <entry name="autoCompleteUseAccount" type="Bool">
+      <label>Call numbers back with their original account instead of the default one</label>
+      <default> true </default>
+    </entry>
+
+    <!-- Presence -->
+    <entry name="trackBookmarkPresence" type="Bool">
+      <label>Track bookmarked contacts presence</label>
+      <default> true </default>
+    </entry>
+
    <!-- Dock settings -->
     <entry name="displayContactDock" type="Bool">
       <label>Enable audio feedback from common actions</label>

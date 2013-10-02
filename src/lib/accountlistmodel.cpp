@@ -78,7 +78,9 @@ void AccountListModel::init()
 ///Destructor
 AccountListModel::~AccountListModel()
 {
-   foreach(Account* a,m_lAccounts) {
+   while(m_lAccounts.size()) {
+      Account* a = m_lAccounts[0];
+      m_lAccounts.remove(0);
       delete a;
    }
 }

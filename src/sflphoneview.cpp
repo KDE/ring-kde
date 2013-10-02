@@ -55,6 +55,7 @@
 #include "widgets/tips/dialpadtip.h"
 #include "widgets/kphonenumberselector.h"
 #include "widgets/callviewoverlay.h"
+#include "widgets/autocompletion.h"
 
 //sflphone library
 #include "lib/typedefs.h"
@@ -284,7 +285,7 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
-   : QWidget(parent), wizard(0),m_pTransferOverlay(nullptr)
+   : QWidget(parent), wizard(0),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
 {
    setupUi(this);
    KPhoneNumberSelector::init();
@@ -331,6 +332,11 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    //Listen for macro
    MacroModel::addListener(this);
 
+   //Auto completion
+   if (ConfigurationSkeleton::enableAutoCompletion()) {
+      m_pAutoCompletion = new AutoCompletion(m_pView);
+   }
+
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
    connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)) , m_pCanvasToolbar, SLOT(updateState()));
@@ -341,8 +347,11 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 ///Destructor
 SFLPhoneView::~SFLPhoneView()
 {
+   m_pView->setItemDelegate(nullptr);
    delete m_pConfDelegate;
    delete m_pHistoryDelegate;
+   if (m_pAutoCompletion)
+      delete m_pAutoCompletion;
 }
 
 ///Init main window
@@ -422,6 +431,7 @@ void SFLPhoneView::typeString(QString str)
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
 
+
    //If the selected call is also the current one, then send DTMF and exit
    if(call && call->state() == Call::State::CURRENT) {
       currentCall = call;
@@ -448,16 +458,13 @@ void SFLPhoneView::typeString(QString str)
       }
    }
 
+   
+   if (!candidate) {
+      candidate = CallModel::instance()->addDialingCall();
+   }
    if(!currentCall && candidate) {
       candidate->playDTMF(str);
       candidate->appendText(str);
-   }
-   if (!candidate) {
-      candidate = CallModel::instance()->addDialingCall();
-      if (candidate) {
-         candidate->playDTMF(str);
-         candidate->appendText(str);
-      }
    }
 } //typeString
 

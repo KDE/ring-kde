@@ -34,22 +34,6 @@
  *                                                                           *
  ****************************************************************************/
 
-///SortableCallSource: helper class to make sorting possible
-class SortableCallSource {
-public:
-   SortableCallSource(Call* call= nullptr) : count(0),callInfo(call) {}
-   uint count;
-   Call* callInfo;
-   bool operator<(SortableCallSource other) {
-      return (other.count > count);
-   }
-};
-
-inline bool operator< (const SortableCallSource & s1, const SortableCallSource & s2)
-{
-    return  s1.count < s2.count;
-}
-
 HistoryModel* HistoryModel::m_spInstance    = nullptr;
 CallMap       HistoryModel::m_sHistoryCalls          ;
 

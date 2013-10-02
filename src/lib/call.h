@@ -215,8 +215,8 @@ public:
    Q_PROPERTY( QString            peerName         READ peerName          WRITE setPeerName       )
    Q_PROPERTY( bool               isSelected       READ isSelected        WRITE setSelected       )
    Q_PROPERTY( QString            transferNumber   READ transferNumber    WRITE setTransferNumber )
-   Q_PROPERTY( QString            dialNumber       READ dialNumber        WRITE setDialNumber     )
    Q_PROPERTY( QString            recordingPath    READ recordingPath     WRITE setRecordingPath  )
+   Q_PROPERTY( QString            dialNumber       READ dialNumber        WRITE setDialNumber      NOTIFY dialNumberChanged(QString))
 
    //Constructors & Destructors
    explicit Call(const QString& confId, const QString& account);
@@ -392,6 +392,7 @@ Q_SIGNALS:
    ///Notify of state change
    void stateChanged();
    void startTimeStampChanged(time_t newTimeStamp);
+   void dialNumberChanged(const QString& number);
 };
 
 Q_DECLARE_METATYPE(Call*)

@@ -26,9 +26,11 @@
 //SFLPhone
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
+#include "call.h"
 #include "accountlistmodel.h"
 
-NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance())
+NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance()),
+   m_pCall(nullptr),m_Enabled(false)
 {
    setObjectName("NumberCompletionModel");
 }
@@ -41,7 +43,7 @@ NumberCompletionModel::~NumberCompletionModel()
 QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
 {
    if (!index.isValid()) return QVariant();
-   const QMap<int,PhoneNumber*>::iterator i = const_cast<NumberCompletionModel*>(this)->m_hNumbers.begin()+index.row();
+   const QMap<int,PhoneNumber*>::iterator i = const_cast<NumberCompletionModel*>(this)->m_hNumbers.end()-1-index.row();
    const PhoneNumber* n = i.value();
    const int weight     = i.key  ();
 
@@ -111,10 +113,31 @@ bool NumberCompletionModel::setData(const QModelIndex& index, const QVariant &va
    return false;
 }
 
+//Set the current call
+void NumberCompletionModel::setCall(Call* call)
+{
+   if (m_pCall)
+      disconnect(m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
+   m_pCall = call;
+   connect(m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
+   setPrefix(call?call->dialNumber():QString());
+}
+
 void NumberCompletionModel::setPrefix(const QString& str)
 {
    m_Prefix = str;
-   updateModel();
+   const bool e = ((m_pCall && m_pCall->state() == Call::State::DIALING) || (!m_pCall)) && (!str.isEmpty());
+   if (m_Enabled != e) {
+      m_Enabled = e;
+      emit enabled(e);
+   }
+   if (m_Enabled)
+      updateModel();
+}
+
+Call* NumberCompletionModel::call() const
+{
+   return m_pCall;
 }
 
 void NumberCompletionModel::updateModel()
@@ -167,15 +190,14 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
       iBeg++;
 
    if (iEnd == iBeg && iBeg.key().left(prefixLen) != pref) {
-      iEnd   = map.end();
+      iEnd = map.end();
       iBeg = map.end();
    }
-   QMap<QString, PhoneDirectoryModel::NumberWrapper*>::iterator i = iBeg;
-   while(i != iEnd) {
-      foreach(PhoneNumber* n,i.value()->numbers) {
+   while(iBeg != iEnd) {
+      foreach(PhoneNumber* n,iBeg.value()->numbers) {
          set << n;
       }
-      i++;
+      iBeg++;
    }
 }
 

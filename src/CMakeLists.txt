@@ -131,6 +131,7 @@ SET(
    widgets/kphonenumberselector.cpp
    widgets/contactview.cpp
    widgets/presence.cpp
+   widgets/autocompletion.cpp
 )
 
 # Video Widgets

@@ -41,6 +41,11 @@ CategorizedTreeView::CategorizedTreeView(QWidget *parent)
 {
 }
 
+CategorizedTreeView::~CategorizedTreeView()
+{
+   
+}
+
 ///Do not draw branches
 void CategorizedTreeView::drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const
 {

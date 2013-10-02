@@ -24,6 +24,7 @@
 
 
 class PhoneNumber;
+class Call;
 
 class LIB_EXPORT NumberCompletionModel : public QAbstractTableModel {
    Q_OBJECT
@@ -39,6 +40,12 @@ public:
    virtual bool setData(const QModelIndex& index, const QVariant &value, int role);
    virtual int columnCount(const QModelIndex& parent = QModelIndex()  ) const;
    virtual QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+   //Setters
+   void setCall(Call* call);
+   
+   //Getters
+   Call* call() const;
 
 private:
    enum class Columns {
@@ -61,9 +68,14 @@ private:
    //Attributes
    QMultiMap<int,PhoneNumber*> m_hNumbers;
    QString                     m_Prefix  ;
+   Call*                       m_pCall   ;
+   bool                        m_Enabled ;
 
 public Q_SLOTS:
    void setPrefix(const QString& str);
+
+Q_SIGNALS:
+   void enabled(bool);
 
 };
 

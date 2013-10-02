@@ -50,6 +50,7 @@ class CategorizedTreeView : public QTreeView
 //       TEXT    = 0xFF,
 //    };
    explicit CategorizedTreeView(QWidget *parent = nullptr);
+   virtual ~CategorizedTreeView();
    void setDelegate(QStyledItemDelegate* delegate);
    void setViewType(ViewType type) {m_Type = type;}
 
