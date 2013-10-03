@@ -28,6 +28,7 @@
 #include "phonenumber.h"
 #include "call.h"
 #include "accountlistmodel.h"
+#include "numbercategorymodel.h"
 
 NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance()),
    m_pCall(nullptr),m_Enabled(false),m_UseUnregisteredAccount(true)
@@ -55,6 +56,13 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
          switch (role) {
             case Qt::DisplayRole:
                return n->uri();
+               break;
+            case Qt::ToolTipRole:
+               return QString("<table><tr><td>%1</td></tr><tr><td>%2</td></tr></table>").arg(n->primaryName()).arg(n->type());
+               break;
+            case Qt::DecorationRole:
+               if (NumberCategoryModel::instance()->visitor())
+                  return NumberCategoryModel::instance()->nameToIndex(n->type()).data(Qt::DecorationRole);
                break;
             case NumberCompletionModel::Role::ALTERNATE_ACCOUNT:
                if (needAcc)
@@ -171,7 +179,7 @@ void NumberCompletionModel::updateModel()
 
    m_hNumbers.clear();
    foreach(PhoneNumber* n,numbers) {
-      if (m_UseUnregisteredAccount || (n->account() && n->account()->isRegistered()))
+      if (m_UseUnregisteredAccount || ((n->account() && n->account()->isRegistered()) || !n->account()))
          m_hNumbers.insert(getWeight(n),n);
    }
    emit layoutChanged();
@@ -190,7 +198,18 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
    int size = map.size()/2;
    bool startOk(false),endOk(false);
    while (size > 1 && !(startOk&&endOk)) {
-      QMap<QString,PhoneDirectoryModel::NumberWrapper*>::iterator mid = (iBeg+size);
+      QMap<QString,PhoneDirectoryModel::NumberWrapper*>::iterator mid;
+      if (size > 7)
+         mid = (iBeg+size);
+      else {
+         //We have to be careful with "::ceil" it may cause an overflow in some rare case
+         int toAdd = size-1;
+         mid = iBeg;
+         while (toAdd && mid != map.end()) {
+            mid++;
+            toAdd--;
+         }
+      }
       if (mid != map.end() && mid.key().left(prefixLen) == pref && iBeg.key().left(prefixLen) < pref) {
          //Too far, need to go back
          iBeg = mid;
@@ -198,13 +217,16 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
             iBeg--;
          startOk = true;
       }
-      else if ((!startOk) && mid.key().left(prefixLen) < pref)
+      else if ((!startOk) && mid != map.end() && mid.key().left(prefixLen) < pref) {
          iBeg = mid;
-      else if(!endOk)
+      }
+      else if(!endOk) {
          iEnd = mid;
+      }
 
-      while ((iEnd).key().left(prefixLen) == pref && iEnd+1 != map.end())
+      while ((iEnd).key().left(prefixLen) == pref && iEnd+1 != map.end()) {
          iEnd++;
+      }
 
       endOk = (iEnd.key().left(prefixLen) == pref);
 

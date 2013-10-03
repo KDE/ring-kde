@@ -73,6 +73,7 @@ void NumberCategoryModel::addCategory(const QString& name, QPixmap* icon, int in
    rep->index      = index  ;
    rep->enabled    = enabled;
    m_hByIdx[index] = rep    ;
+   m_hByName[name] = rep    ;
    m_lCategories  << rep    ;
    emit layoutChanged()     ;
 }
@@ -99,6 +100,11 @@ void NumberCategoryModel::setVisitor(NumberCategoryVisitor* visitor)
    m_pVisitor->load(this);
 }
 
+NumberCategoryVisitor* NumberCategoryModel::visitor() const
+{
+   return m_pVisitor;
+}
+
 void NumberCategoryModel::save()
 {
    if (m_pVisitor) {
@@ -106,4 +112,13 @@ void NumberCategoryModel::save()
    }
    else
       qDebug() << "Cannot save NumberCategoryModel as there is no defined backend";
+}
+
+QModelIndex NumberCategoryModel::nameToIndex(const QString& name) const
+{
+   if (!m_hByName[name])
+      return QModelIndex();
+   else {
+      return index(m_hByName[name]->index,0);
+   }
 }

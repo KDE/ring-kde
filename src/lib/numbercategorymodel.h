@@ -52,6 +52,10 @@ public:
    //Setter
    void setVisitor(NumberCategoryVisitor* visitor);
 
+   //Getter
+   NumberCategoryVisitor* visitor() const;
+   QModelIndex nameToIndex(const QString& name) const;
+
 private:
    struct InternalTypeRepresentation {
       QString  name   ;
@@ -61,6 +65,7 @@ private:
    };
    QVector<InternalTypeRepresentation*>   m_lCategories;
    QHash<int,InternalTypeRepresentation*> m_hByIdx;
+   QHash<QString,InternalTypeRepresentation*> m_hByName;
    static NumberCategoryModel*            m_spInstance ;
    NumberCategoryVisitor*                 m_pVisitor   ;
 };
