@@ -134,6 +134,7 @@ private:
    uint               m_LastWeekCount    ;
    uint               m_LastTrimCount    ;
    bool               m_HaveCalled       ;
+   uint               m_Index            ;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;

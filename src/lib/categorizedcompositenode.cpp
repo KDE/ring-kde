@@ -18,7 +18,8 @@
 #include "categorizedcompositenode.h"
 
 
-CategorizedCompositeNode::CategorizedCompositeNode(CategorizedCompositeNode::Type _type) : m_type(_type),m_DropState(0)
+CategorizedCompositeNode::CategorizedCompositeNode(CategorizedCompositeNode::Type _type) : m_type(_type)
+   ,m_DropState(0),m_pParent(nullptr)
 {
    
 }
@@ -50,4 +51,14 @@ char CategorizedCompositeNode::hoverState()
 void CategorizedCompositeNode::setHoverState(const char state)
 {
    m_HoverState = state;
+}
+
+CategorizedCompositeNode* CategorizedCompositeNode::parentNode() const
+{
+   return m_pParent;
+}
+
+void CategorizedCompositeNode::setParentNode(CategorizedCompositeNode* node)
+{
+   m_pParent = node;
 }

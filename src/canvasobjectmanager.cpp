@@ -1,7 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Copyright (C) 2013 by Savoir-Faire Linux                              *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,29 +15,3 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-
-//Parent
-#include "actionsetaccountfirst.h"
-
-//KDE
-#include <KLocale>
-
-///Constrctor
-ActionSetAccountFirst::ActionSetAccountFirst(Account* account, QObject *parent)
- : QAction((account == nullptr) ? i18n("Default account") : account->alias(), parent)
-{
-   setCheckable(true);
-   this->account = account;
-   connect(this,    SIGNAL(triggered()), this,    SLOT(emitSetFirst()));
-}
-
-///Destructor
-ActionSetAccountFirst::~ActionSetAccountFirst()
-{
-}
-
-///
-void ActionSetAccountFirst::emitSetFirst()
-{
-   emit setFirst(account);
-}

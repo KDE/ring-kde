@@ -104,12 +104,12 @@ void ContactProxyModel::reloadCategories()
       if (!m_hCategories[val]) {
          TopLevelItem* item = new TopLevelItem(val);
          m_hCategories[val] = item;
+         item->m_Index = m_lCategoryCounter.size();
          m_lCategoryCounter << item;
 //          emit dataChanged(index(0,0),index(rowCount()-1,0));
       }
       TopLevelItem* item = m_hCategories[val];
       if (item) {
-         QModelIndex parent = index(m_lCategoryCounter.indexOf(item),0);
          item->m_lChildren << cont;
       }
       else
@@ -152,12 +152,13 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
       }
       break;
    case CategorizedCompositeNode::Type::CONTACT:{ /* && (role == Qt::DisplayRole)) {*/
+//       qDebug () <<"\n\n\nHERE" << index.parent().isValid() << index.parent().row() << index.row();
       const Contact* c = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()];
       switch (role) {
          case Qt::DisplayRole:
             return QVariant(c->formattedName());
          case AbstractContactBackend::Role::Organization:
-            return QVariant(c->organization());
+//             return QVariant(c->organization());
          case AbstractContactBackend::Role::Group:
             return QVariant(c->group());
          case AbstractContactBackend::Role::Department:
@@ -190,8 +191,8 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
    }
    case CategorizedCompositeNode::Type::NUMBER: /* && (role == Qt::DisplayRole)) {*/
       switch (role) {
-         case Qt::DisplayRole:
-            return QVariant(m_lCategoryCounter[index.parent().parent().row()]->m_lChildren[index.parent().row()]->phoneNumbers()[index.row()]->uri());
+//          case Qt::DisplayRole:
+//             return QVariant(static_cast<Phon>(modelItem)->uri());
       }
       break;
    default:
@@ -250,42 +251,89 @@ int ContactProxyModel::columnCount ( const QModelIndex& parent) const
 
 QModelIndex ContactProxyModel::parent( const QModelIndex& index) const
 {
-   if (!index.isValid() || !index.internalPointer()) {
+   if (!index.isValid() || !index.internalPointer())
       return QModelIndex();
-   }
    CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(index.internalPointer());
-   if (modelItem && (long long)modelItem > 100 && modelItem->type() == CategorizedCompositeNode::Type::CONTACT) {
-      Contact* ct = (Contact*)((CategorizedCompositeNode*)(index.internalPointer()))->getSelf();
-      const QString val = category(ct);
-      if (m_hCategories[val])
-         return ContactProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
-   }
-   else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
-      Contact* ct = static_cast<Contact*>(modelItem->getSelf());
-      const QString val = category(ct);
-      if (m_hCategories[val]) {
-         return ContactProxyModel::index(
-            (m_hCategories[val]->m_lChildren.indexOf(ct)),
-            0,
-            ContactProxyModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0));
-      }
-   }
-   else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::TOP_LEVEL) {
+
+   //Fast(er) code path
+   CategorizedCompositeNode* parentNode = modelItem->parentNode();
+   if (parentNode) {
+      switch (parentNode->type()) {
+         case CategorizedCompositeNode::Type::TOP_LEVEL: {
+            TopLevelItem* cat = (TopLevelItem*)parentNode;
+            return createIndex(cat->m_Index,0,cat);
+            } break;
+         case CategorizedCompositeNode::Type::CONTACT: {
+            Contact* ct = static_cast<Contact*>(parentNode->getSelf());
+            TopLevelItem* cat = (TopLevelItem*)parentNode->parentNode();
+            createIndex(cat->m_lChildren.indexOf(ct),0,ct);
+         } break;
+         case CategorizedCompositeNode::Type::BOOKMARK:
+         case CategorizedCompositeNode::Type::CALL:
+         case CategorizedCompositeNode::Type::NUMBER:
+            break;
+      };
+   } else if (modelItem->type() == CategorizedCompositeNode::Type::TOP_LEVEL)
       return QModelIndex();
+   else { //Old code path
+      Contact* ct = (Contact*)(modelItem)->getSelf();
+      TopLevelItem* tl = (ct&&ct->parentNode())?(TopLevelItem*)ct->parentNode():m_hCategories[category(ct)];
+      switch (modelItem->type()) {
+            case CategorizedCompositeNode::Type::CONTACT: {
+            if (tl) {
+               ct->setParentNode(tl);
+               return createIndex(tl->m_Index,0,tl);
+            }
+         }
+         break;
+         case CategorizedCompositeNode::Type::NUMBER: {
+               if (tl) {
+                  modelItem->setParentNode(ct);
+                  return createIndex((tl->m_lChildren.indexOf(ct)), 0, ct);
+               }
+            }
+            break;
+         case CategorizedCompositeNode::Type::TOP_LEVEL:
+         case CategorizedCompositeNode::Type::BOOKMARK:
+         case CategorizedCompositeNode::Type::CALL:
+            break;
+      };
    }
    return QModelIndex();
 }
 
 QModelIndex ContactProxyModel::index( int row, int column, const QModelIndex& parent) const
 {
-   if (!parent.isValid()) {
-      return createIndex(row,column,m_lCategoryCounter[row]);
+   CategorizedCompositeNode* node;
+   if (parent.isValid()) {
+      CategorizedCompositeNode* parentNode = static_cast<CategorizedCompositeNode*>(parent.internalPointer());
+      switch(parentNode->type()) {
+         case CategorizedCompositeNode::Type::TOP_LEVEL: {
+            TopLevelItem* tld = static_cast<TopLevelItem*>(parentNode);
+            node = tld->m_lChildren[row];
+            QModelIndex idx = createIndex(row,column,(void*)node);
+            node->setParentNode(tld);
+            return idx;
+         }
+            break;
+         case CategorizedCompositeNode::Type::CONTACT: {
+            Contact* ct = (Contact*)(parentNode->getSelf());
+            if (ct->phoneNumbers().size()>row) {
+               return createIndex(row,column,(void*)&ct->phoneNumbers());
+            }
+         }
+            break;
+         case CategorizedCompositeNode::Type::CALL:
+         case CategorizedCompositeNode::Type::BOOKMARK:
+         case CategorizedCompositeNode::Type::NUMBER:
+            break;
+      };
    }
-   else if (!parent.parent().isValid() && column < m_lCategoryCounter[parent.row()]->m_lChildren.size() ) {
-      return createIndex(row,column,(void*)dynamic_cast<CategorizedCompositeNode*>(m_lCategoryCounter[parent.row()]->m_lChildren[row]));
-   }
-   else if (parent.parent().isValid() && m_lCategoryCounter.size() > parent.parent().row() && m_lCategoryCounter[parent.parent().row()]->m_lChildren.size() > parent.row()) {
-      return createIndex(row,column,(void*)&m_lCategoryCounter[parent.parent().row()]->m_lChildren[parent.row()]->phoneNumbers());
+   else if (row < m_lCategoryCounter.size()){
+      //Return top level
+      node = m_lCategoryCounter[row];
+      QModelIndex idx = createIndex(row,column,node);
+      return idx;
    }
    return QModelIndex();
 }

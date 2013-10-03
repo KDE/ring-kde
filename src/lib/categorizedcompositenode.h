@@ -19,6 +19,7 @@
 #define CATEGORIZEDCOMPOSITENODE_H
 
 #include "typedefs.h"
+#include <QtCore/QModelIndex>
 class QObject;
 
 class LIB_EXPORT CategorizedCompositeNode {
@@ -38,10 +39,13 @@ public:
     void setDropState(const char state);
     char hoverState();
     void setHoverState(const char state);
+    CategorizedCompositeNode* parentNode() const;
+    void setParentNode(CategorizedCompositeNode* node);
 private:
     CategorizedCompositeNode::Type m_type;
     char m_DropState;
     char m_HoverState;
+    CategorizedCompositeNode* m_pParent;
 };
 
 #endif

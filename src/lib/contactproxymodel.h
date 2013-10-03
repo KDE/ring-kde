@@ -66,6 +66,7 @@ private:
       explicit TopLevelItem(QString name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
       QList<Contact*> m_lChildren;
       QString m_Name;
+      int m_Index;
    };
 
    virtual ~ContactProxyModel();

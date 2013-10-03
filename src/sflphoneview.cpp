@@ -44,7 +44,6 @@
 #include "klib/akonadibackend.h"
 #include "lib/phonenumber.h"
 #include "accountwizard.h"
-#include "actionsetaccountfirst.h"
 #include "sflphone.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewtoolbar.h"

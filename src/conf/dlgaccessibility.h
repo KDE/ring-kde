@@ -23,7 +23,11 @@
 #include "ui_dlgaccessibility.h"
 
 class KConfigDialog;
+class KShortCut;
 class Macro;
+
+class CategorizedDelegate;
+class QStyledItemDelegate;
 
 ///DlgAccessibility: Display option for the visually impaired
 class DlgAccessibility : public QWidget, public Ui_DlgAccessibility
@@ -40,7 +44,10 @@ public:
    bool hasChanged();
 
 private:
+   //Attributes
    bool m_Changed;
+   CategorizedDelegate* m_pCategoryDelegate;
+   QStyledItemDelegate* m_pItemDelegate    ;
 
 public Q_SLOTS:
    void updateSettings();
@@ -58,6 +65,7 @@ private Q_SLOTS:
    void slotDelaySB(int newValue);
    void slotSequenceLE(const QString& newText);
    void slotDescriptionLE(const QString& newText);
+   void slotShortcut(const KShortcut& shortcut);
 
 Q_SIGNALS:
    void updateButtons();

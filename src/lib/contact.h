@@ -56,7 +56,7 @@ public:
       Contact* contact() const;
       time_t lastUsedTimeStamp() const;
    private:
-      Contact* m_pParent       ;
+      Contact* m_pParent2       ;
    };
 
    virtual QObject* getSelf();

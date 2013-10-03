@@ -19,14 +19,19 @@
 #include "dlgaccessibility.h"
 #include "klib/kcfg_settings.h"
 
+//Qt
+#include <QtGui/QStyledItemDelegate>
+
 //KDE
 #include <KConfigDialog>
 #include <KLocale>
 #include <KIcon>
+#include <KAction>
 
 //SFLPhone
 #include <klib/macromodel.h>
 #include <klib/macro.h>
+#include "../delegates/categorizeddelegate.h"
 
 ///Constructor
 DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
@@ -47,20 +52,27 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
    connect(m_pAddTB         , SIGNAL(clicked())            , this,SLOT(addMacro())    );
    connect(m_pRemoveTB      , SIGNAL(clicked())            , this,SLOT(removeMacro()) );
-   
+
    connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(slotDelaySB(int))      );
    connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(slotNameLE(QString))        );
    connect(m_pCategoryCBB->lineEdit()   , SIGNAL(textChanged(QString)) , this,SLOT(slotCategoryCBB(QString))   );
    connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(slotSequenceLE(QString))    );
    connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(slotDescriptionLE(QString)) );
+   connect(m_pShortcuts     , SIGNAL(shortcutChanged(KShortcut)) , this,SLOT(slotShortcut(KShortcut)) );
 
    connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
-   
+
    connect(MacroModel::instance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
    connect(MacroModel::instance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
    m_pMacroListTV->setModel(MacroModel::instance());
+//    m_pCategoryCBB->setModel(MacroModel::instance()); //Works, but not perfect
    m_pMacroListTV->expandAll();
    connect(m_pMacroListTV->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),MacroModel::instance(),SLOT(setCurrent(QModelIndex,QModelIndex)));
+
+   m_pCategoryDelegate = new CategorizedDelegate(m_pMacroListTV);
+   m_pItemDelegate     = new QStyledItemDelegate;
+   m_pCategoryDelegate->setChildDelegate(m_pItemDelegate);
+   m_pMacroListTV->setItemDelegate(m_pCategoryDelegate);
 }
 
 ///Destructor
@@ -114,6 +126,7 @@ void DlgAccessibility::selectMacro(Macro* macro)
       m_pDelaySB->setValue(macro->delay());
       m_pSequenceLE->setText(macro->sequence());
       m_pDescriptionLE->setText(macro->description());
+      m_pShortcuts->setShortcut(macro->action()->shortcut());
       m_pMacroFrm->setEnabled(true);
       m_pNameLE->selectAll();
       m_pNameLE->setFocus();
@@ -163,4 +176,11 @@ void DlgAccessibility::slotDescriptionLE(const QString& newText)
    if (current) {
       current->setDescription(newText);
    }
+}
+
+void DlgAccessibility::slotShortcut(const KShortcut& shortcut)
+{
+   Macro* current = MacroModel::instance()->getCurrentMacro();
+   if (current)
+      current->action()->setShortcut(shortcut);
 }

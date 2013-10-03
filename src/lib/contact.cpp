@@ -30,18 +30,18 @@
 
 
 Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QList<PhoneNumber*>(),CategorizedCompositeNode(CategorizedCompositeNode::Type::NUMBER),
-    m_pParent(parent)
+    m_pParent2(parent)
 {
 }
 
 Contact::PhoneNumbers::PhoneNumbers(Contact* parent, const QList<PhoneNumber*>& list)
-: QList<PhoneNumber*>(list),CategorizedCompositeNode(CategorizedCompositeNode::Type::NUMBER),m_pParent(parent)
+: QList<PhoneNumber*>(list),CategorizedCompositeNode(CategorizedCompositeNode::Type::NUMBER),m_pParent2(parent)
 {
 }
 
 Contact* Contact::PhoneNumbers::contact() const
 {
-   return m_pParent;
+   return m_pParent2;
 }
 
 QObject* Contact::getSelf() {return this;}
@@ -225,7 +225,7 @@ QHash<QString,QVariant> Contact::toHash()
 }
 
 QObject* Contact::PhoneNumbers::getSelf() {
-   return m_pParent;
+   return m_pParent2;
 }
 
 // QObject* Contact::getSelf()

@@ -232,6 +232,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    PhoneNumber* number = new PhoneNumber(strippedUri,type);
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
+   number->m_Index = m_lNumbers.size();
    m_lNumbers << number;
    emit layoutChanged();
    if (!wrap) {
@@ -271,6 +272,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
+   number->m_Index = m_lNumbers.size();
    m_lNumbers << number;
    if (!wrap) {
       wrap = new NumberWrapper();
@@ -312,6 +314,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
    number->setContact(contact);
+   number->m_Index = m_lNumbers.size();
    m_lNumbers << number;
    if (!wrap) {
       wrap = new NumberWrapper();
@@ -396,7 +399,7 @@ void PhoneDirectoryModel::slotChanged()
 {
    PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
    if (number) {
-      const int idx = m_lNumbers.indexOf(number);
+      const int idx = number->m_Index;
       emit dataChanged(index(idx,0),index(idx,5));
    }
 }
