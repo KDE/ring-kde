@@ -34,7 +34,7 @@ public:
     explicit CategorizedCompositeNode(CategorizedCompositeNode::Type _type);
     virtual ~CategorizedCompositeNode();
     CategorizedCompositeNode::Type type() const;
-    virtual QObject* getSelf() = 0;
+    virtual QObject* getSelf() const = 0;
     char dropState();
     void setDropState(const char state);
     char hoverState();

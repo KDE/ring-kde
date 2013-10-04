@@ -138,7 +138,7 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
    return dbg.space();
 }
 
-QObject* Call::getSelf() {return this;}
+QObject* Call::getSelf() const {return const_cast<Call*>(this);}
 
 AbstractContactBackend* Call::m_pContactBackend = nullptr;
 Call*                   Call::m_sSelectedCall   = nullptr;

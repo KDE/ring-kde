@@ -48,11 +48,11 @@ class LIB_EXPORT Contact : public QObject {
    #pragma GCC diagnostic pop
 public:
 
-   class  PhoneNumbers : public QList<PhoneNumber*>, public CategorizedCompositeNode {
+   class  PhoneNumbers : public QVector<PhoneNumber*>, public CategorizedCompositeNode {
    public:
-      virtual QObject* getSelf() __attribute__ ((const));
+      virtual QObject* getSelf() const __attribute__ ((const));
       explicit PhoneNumbers(Contact* parent);
-      PhoneNumbers(Contact* parent, const QList<PhoneNumber*>& list);
+      PhoneNumbers(Contact* parent, const QVector<PhoneNumber*>& list);
       Contact* contact() const;
       time_t lastUsedTimeStamp() const;
    private:

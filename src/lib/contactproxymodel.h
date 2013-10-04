@@ -27,6 +27,7 @@
 #include "../lib/contact.h"
 class AbstractContactBackend;
 class ContactTreeNode;
+class TopLevelItem;
 
 class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
 {
@@ -60,29 +61,17 @@ public:
    static int acceptedPayloadTypes();
 
 private:
-   class TopLevelItem : public CategorizedCompositeNode,public QObject {
-   friend class ContactProxyModel;
-   public:
-      virtual QObject* getSelf();
-   private:
-      explicit TopLevelItem(QString name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-      QVector<ContactTreeNode*> m_lChildren;
-      QString m_Name;
-      int m_Index;
-   };
-
    virtual ~ContactProxyModel();
 
    QModelIndex getContactIndex(Contact* ct) const;
 
    //Helpers
    QString category(Contact* ct) const;
-//    QHash<Contact*, time_t> getContactListByTime() const;
 
    //Attributes
    QHash<Contact*, time_t>      m_hContactByDate       ;
    AbstractContactBackend*      m_pModel               ;
-   QList<TopLevelItem*>         m_lCategoryCounter     ;
+   QVector<TopLevelItem*>       m_lCategoryCounter     ;
    QHash<QString,TopLevelItem*> m_hCategories          ;
    int                          m_Role                 ;
    bool                         m_ShowAll              ;

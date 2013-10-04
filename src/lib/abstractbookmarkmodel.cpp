@@ -35,7 +35,7 @@ class NumberTreeBackend : public CategorizedCompositeNode, public QObject
       NumberTreeBackend(PhoneNumber* number): CategorizedCompositeNode(CategorizedCompositeNode::Type::BOOKMARK),m_pNumber(number){
          Q_ASSERT(number != nullptr);
       }
-      virtual QObject* getSelf() { return this; }
+      virtual QObject* getSelf() const { return const_cast<NumberTreeBackend*>(this); }
 
    private:
       PhoneNumber* m_pNumber;
@@ -332,7 +332,7 @@ QVector<PhoneNumber*> AbstractBookmarkModel::bookmarkList() const
 }
 
 AbstractBookmarkModel::TopLevelItem::TopLevelItem(QString name) 
-   : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name)
+   : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),m_Name(name)
 {
 }
 

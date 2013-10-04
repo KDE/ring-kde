@@ -18,23 +18,148 @@
 #ifndef CANVASOBJECTMANAGER_H
 #define CANVASOBJECTMANAGER_H
 
+#include <QtCore/QObject>
+
 class CanvasObjectManager : public QObject {
    Q_OBJECT
 
 public:
+   /*****************************************************************************************
+    * This manager is implemented as a closed loop state machine, each external events      *
+    * triggers a static set of operations defined at compile time.                          *
+    *                                                                                       *
+    *                                                  |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|          *
+    * |¯¯¯¯¯|                                          |                         |          *
+    * |  |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|   //Out_event // |       No objects        |          *
+    * |_>|                          |--//Life cycle//->|                         |          *
+    *    |     Current objects      | //          //   |_________________________|<¯¯|      *
+    *    |                          |                             |            |     |      *
+    *    |__________________________|<¯¯¯¯¯¯¯¯¯¯|                 |            |_____|      *
+    *               |                           |                 |                         *
+    *               |                           |     //                        //          *
+    *               |                           |    // Event & Next:In_events //           *
+    *     // Event & Next:In_events //          |   //                        //            *
+    *    //  Next:prio >= Cur:prio //           |                 |                         *
+    *   //                        //            |                \/                         *
+    *               |                        |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|                   *
+    *               |                        |                          |                   *
+    *               |_______________________>|       Next object        |                   *
+    *                                        |                          |                   *
+    *                                        |__________________________|                   *
+    *                                                                                       *
+    ****************************************************************************************/
 
-   enum class Objects {
-      DialInfo     ,
-      EndCall      ,
-      Ringing      ,
-      Network      ,
-      AutoComplete ,
-      DropInfo     ,
-      ConfInfo     ,
+   ///@enum Object All supported SFLPhone canvas objects (both elements and widgets)
+   enum class Object         : uchar {
+      NoObject       = 0, /* Blank canvas                                                  */
+      DialInfo       = 1, /* The message explaining how to make a call                     */
+      EndCall        = 2, /* Displayed when a call is over                                 */
+      Ringing        = 3, /* Displayed when call(s) are ringing                            */
+      Network        = 4, /* Displayed when there is a network error or ERRORAUTH          */
+      AutoComplete   = 5, /* Displayed when the user is dialling                           */
+      DropInfo       = 6, /* Displayed when the user is dropping something into the canvas */
+      ConfInfo       = 7, /* Displayed when there is multiple calls and no conferences     */
    };
 
+   ///@enum ObjectType if the objects is a background drawing or a front widget
+   enum class ObjectType      : uchar {
+      OBJECT         = 0, /* The element is a simple drawing                               */
+      WIDGET         = 1, /* The elements is a QWidget overlay                             */
+   };
+
+   ///@enum ObjectLifeCycle How is this object is supposed to withdraw itself from the canvas
+   enum class ObjectLifeCycle : uchar {
+      NONE           = 0, /* The element have an undefined life cycle                      */
+      TIMED          = 1, /* The element is waiting on a timer tick                        */
+      EVENT          = 2, /* The element is waiting for an external event                  */
+      STATIC         = 3, /* The element is permanent until overwritten                    */
+   };
+
+   ///@enum ObjectState What is the state of an object
+   enum class ObjectState     : uchar {
+      NO_OBJECT      = 0, /* No object is being displayed                                  */
+      TRANSITION_IN  = 1, /* The object is being introduced to the canvas                  */
+      TRANSITION_OUT = 2, /* The object is being phased out                                */
+      VISIBLE        = 3, /* The item is visible, waiting to be discarded                  */
+   };
+
+   ///@enum ObjectPriority Who can overwrite this object
+   enum ObjectPriority  : uchar {
+      NO_PRIORITY    = 0, /* Cannot discard nothing other and can be discarded by anyone    */
+      LOW            = 1, /* The item can be discarded by any other objects                 */
+      MEDIUM         = 2, /* The item can be discarded only by other MEDIUM || HIGH objects */
+      HIGH           = 3, /* This item can discard any other objects, now                   */
+   };
+
+   enum CanvasEvent {
+      //Generic events
+      NONE                 = 0x00    , /* No events, for item already present on startup    */
+      ANY                  = ~0      , /* Every event match this                            */
+      TIMEOUT              = 0x01<<1 , /* Waiting on an (internal) timer event              */
+
+      //Account related events
+      NETWORK_ERROR        = 0x01<<2 , /* When an ERRORAUTH or no Internet connection happen*/
+      UNREGISTERED_ACCOUNT = 0x01<<3 , /* When an account fall down                         */
+      REGISTERED_ACCOUNT   = 0x01<<4 , /* When an account become up again                   */
+
+      //Input events
+      DRAG_ENTER           = 0x01<<5 , /* When the user drag something into the canvas      */
+      DRAG_LEAVE           = 0x01<<6 , /* When the pending-drag leave the canvas            */
+      DRAG_MOVE            = 0x01<<7 , /* When the pending-drag position change             */
+      DROP                 = 0x01<<8 , /* When a drop event is triggered                    */
+
+      //Call events
+      CALL_RINGING         = 0x01<<9 , /* When a call is ringing                            */
+      CALL_STATE_CHANGED   = 0x01<<10, /* When a phone call state change                    */
+      CALL_DIALING_CHANGED = 0x01<<11, /* When the user type something on a dialing call    */
+      CALL_COUNT_CHANGED   = 0x01<<12, /* When the number of call change                    */
+      NO_CALLS             = 0x01<<13, /* When the last call have been removed from canvas  */
+      CALL_ENDED           = 0x01<<14, /* When a call end                                   */
+      BUDDY_IN             = 0x01<<15, /* When a buggy log in                               */
+      BUDDY_OUT            = 0x01<<16, /* When a buddy log out                              */
+   };
+
+   //Constructor
    CanvasObjectManager(QObject* parent = nullptr);
    virtual ~CanvasObjectManager();
+
+   //Mutator
+   bool newEvent   (CanvasEvent events);
+   bool operator <<(CanvasEvent events);
+
+private:
+
+   ///@struct CanvasElement internal State Machine transition parameters
+   struct CanvasElement {
+      ObjectType      type              ; /* See ObjectType                                    */
+      ObjectLifeCycle lifeCycle         ; /* See ObjectLifeCycle                               */
+      ObjectPriority  priority          ; /* See ObjectPriority                                */
+      int             inEvent           ; /* All compatible events to trigger this object      */
+      int             outEvent          ; /* All compatible events to phase out this object    */
+      bool            stack             ; /* Use an event counter to phase this object out     */
+      bool            systemNotification; /* Send a notification is SFLPhone ain't focussed    */
+   };
+
+   //Constants
+   constexpr static const char EVENT_COUNT   = 18;
+   constexpr static const char ELEMENT_COUNT = 8 ;
+
+   //Attributes
+   CanvasObjectManager::Object          m_CurrentObject      ;
+   CanvasObjectManager::Object          m_NextObject         ;
+   CanvasObjectManager::ObjectState     m_CurrentState       ;
+   CanvasObjectManager::ObjectLifeCycle m_CurrentLifeCycle   ;
+   static CanvasObjectManager::Object   m_slEvents[ EVENT_COUNT   ];
+   static const CanvasElement           elements  [ ELEMENT_COUNT ];
+
+   //Helpers
+   CanvasObjectManager::Object eventsObject;
+   constexpr static bool haveEvent(CanvasEvent events,CanvasEvent event) {
+      return events&event;
+   }
+   inline bool hasPriority(CanvasObjectManager::Object nextElement);
+   static void hInitEvents();
+
 };
 
 #endif

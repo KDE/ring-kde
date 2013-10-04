@@ -45,6 +45,7 @@
 #include "lib/phonenumber.h"
 #include "accountwizard.h"
 #include "sflphone.h"
+#include "canvasobjectmanager.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewtoolbar.h"
 #include "extendedaction.h"
@@ -285,7 +286,8 @@ bool CallViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
-   : QWidget(parent), wizard(0),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
+   : QWidget(parent), wizard(0),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr),
+   m_pCanvasManager(new CanvasObjectManager())
 {
    setupUi(this);
    KPhoneNumberSelector::init();

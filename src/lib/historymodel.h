@@ -86,7 +86,7 @@ private:
    class TopLevelItem : public CategorizedCompositeNode,public QObject {
    friend class HistoryModel;
    public:
-      virtual QObject* getSelf();
+      virtual QObject* getSelf() const;
       virtual ~TopLevelItem();
    private:
       explicit TopLevelItem(int name);

@@ -37,6 +37,7 @@ class CallViewOverlay;
 class HistoryDelegate;
 class ConferenceDelegate;
 class AutoCompletion;
+class CanvasObjectManager;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -56,12 +57,13 @@ class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListe
    friend class CallViewEventFilter;
 
 private:
-   AccountWizard*      wizard            ;
-   CallViewToolbar*    m_pCanvasToolbar  ;
-   CallViewOverlay*    m_pTransferOverlay;
-   ConferenceDelegate* m_pConfDelegate   ;
-   HistoryDelegate*    m_pHistoryDelegate;
-   AutoCompletion*     m_pAutoCompletion ;
+   AccountWizard*       wizard            ;
+   CallViewToolbar*     m_pCanvasToolbar  ;
+   CallViewOverlay*     m_pTransferOverlay;
+   ConferenceDelegate*  m_pConfDelegate   ;
+   HistoryDelegate*     m_pHistoryDelegate;
+   AutoCompletion*      m_pAutoCompletion ;
+   CanvasObjectManager* m_pCanvasManager  ;
 
 public:
    //Constructors & Destructors

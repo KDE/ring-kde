@@ -45,9 +45,9 @@ HistoryModel::TopLevelItem::~TopLevelItem() {
    m_spInstance->m_lCategoryCounter.removeAll(this);
 }
 
-QObject* HistoryModel::TopLevelItem::getSelf() 
+QObject* HistoryModel::TopLevelItem::getSelf() const
 {
-   return this;
+   return const_cast<HistoryModel::TopLevelItem*>(this);
 }
 
 
