@@ -44,26 +44,16 @@ Contact* Contact::PhoneNumbers::contact() const
    return m_pParent2;
 }
 
-QObject* Contact::getSelf() {return this;}
-
 ///Constructor
-Contact::Contact():m_pPhoto(nullptr),CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),
+Contact::Contact():m_pPhoto(nullptr),
    m_Numbers(this),m_DisplayPhoto(nullptr)
 {
 }
-
-// QObject* Contact::getSelf()
-// {
-//    return this;
-// }
 
 ///Destructor
 Contact::~Contact()
 {
    delete m_pPhoto;
-//    foreach (PhoneNumber* ph, m_Numbers) {
-//       delete ph;
-//    }
 }
 
 ///Get the phone number list

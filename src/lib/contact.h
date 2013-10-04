@@ -41,7 +41,7 @@ class PhoneNumber;
 
 
 ///Contact: Abstract version of a contact
-class LIB_EXPORT Contact : public QObject, public CategorizedCompositeNode {
+class LIB_EXPORT Contact : public QObject {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -59,7 +59,7 @@ public:
       Contact* m_pParent2       ;
    };
 
-   virtual QObject* getSelf();
+//    virtual QObject* getSelf();
 
 private:
    QString      m_FirstName      ;

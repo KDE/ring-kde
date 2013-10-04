@@ -26,6 +26,7 @@
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
 class AbstractContactBackend;
+class ContactTreeNode;
 
 class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
 {
@@ -35,6 +36,7 @@ class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
    #pragma GCC diagnostic pop
 public:
    friend class AbstractContactBackend;
+   friend class ContactTreeNode;
    explicit ContactProxyModel(AbstractContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
 
    //Setters
@@ -64,7 +66,7 @@ private:
       virtual QObject* getSelf();
    private:
       explicit TopLevelItem(QString name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name) {}
-      QList<Contact*> m_lChildren;
+      QVector<ContactTreeNode*> m_lChildren;
       QString m_Name;
       int m_Index;
    };
