@@ -78,10 +78,13 @@ void TipAnimationWrapper::start(bool show)
       m_Step = 0;
       m_CurrentAnimation = show?m_pTip->m_AnimationIn:m_pTip->m_AnimationOut;
       m_FadeDirection    = show;
-      if (m_CurrentAnimation != Tip::TipAnimation::None)
+      if (m_CurrentAnimation != Tip::TipAnimation::None) {
+         emit transitionStarted(show?QAbstractAnimation::Forward:QAbstractAnimation::Backward,QAbstractAnimation::Running);
          m_pTimer->start(33);
+      }
       else {
          step();
+         emit transitionStarted(show?QAbstractAnimation::Forward:QAbstractAnimation::Backward,QAbstractAnimation::Stopped);
          emit animationEnded();
       }
       m_pTip->setVisible(show);
@@ -96,6 +99,7 @@ void TipAnimationWrapper::step()
       m_Step = 0;
       if (m_pTimer)
          m_pTimer->stop();
+      emit transitionStarted(m_FadeDirection?QAbstractAnimation::Forward:QAbstractAnimation::Backward,QAbstractAnimation::Stopped);
       emit animationEnded();
    }
    else {

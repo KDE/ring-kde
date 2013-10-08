@@ -400,7 +400,6 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 {
    Q_UNUSED(call)
    Q_UNUSED(previousState)
-   qDebug() << "\n\n\nWORKS2" << call->state();
    switch (call->state()) {
       case Call::State::RINGING:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
@@ -409,7 +408,10 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::INCOMING:
          break; //Handled elsewhere
       case Call::State::OVER:
-         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED);
+         if (previousState == Call::State::DIALING || previousState == Call::State::OVER)
+            m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Cancelled"));
+         else
+            m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Call ended"));
          break;
       case Call::State::FAILURE:
       case Call::State::BUSY:
@@ -432,7 +434,6 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 void EventManager::slotIncomingCall(Call* call)
 {
    Q_UNUSED(call)
-   qDebug() << "\n\n\nWORKS";
    if (call->state() == Call::State::INCOMING || call->state() == Call::State::RINGING) {
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
    }

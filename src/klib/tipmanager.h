@@ -24,6 +24,7 @@
 #include <QtGui/QPalette>
 #include <QtGui/QTreeView>
 #include <QtGui/QImage>
+#include <QtCore/QAbstractAnimation>
 class QTimer;
 
 //SFLPhone
@@ -46,8 +47,7 @@ public:
    virtual ~TipManager();
 
    //Mutator
-//    void hideTip(Tip* tip);
-   void hideCurrentTip();
+   bool hideCurrentTip();
 
    //Getter
    QImage getImage();
@@ -64,7 +64,6 @@ protected:
 private:
    //Methods
    void reload();
-//    void setCurrentTip_private(Tip* tip);
 
    //Attributes
    QPalette                m_OriginalPalette ;
@@ -75,19 +74,16 @@ private:
    Tip*                    m_pCurrentTip     ;
    TipAnimationWrapper     m_pAnim           ;
    FrameDescription        m_CurrentFrame    ;
-//    QList<Tip*>             m_lTipQueue       ;
-//    QList<Tip*>             m_lHidingTipQueue ;
-//    QTimer*                 m_pTimer          ;
 
 private Q_SLOTS:
    void animationStep(FrameDescription desc);
    void changeSize(bool ignoreAnim = false);
-   void animationEnded();
-//    void timeout();
+   void slotTransitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
 
 Q_SIGNALS:
    void sizeChanged(QRect newRect,bool ignoreAnim);
    void currentTipChanged(Tip*);
+   void transitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
 
 };
 Q_DECLARE_METATYPE(TipManager*)

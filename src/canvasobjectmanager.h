@@ -19,6 +19,7 @@
 #define CANVASOBJECTMANAGER_H
 
 #include <QtCore/QObject>
+#include <QtCore/QAbstractAnimation>
 
 class QTimer;
 
@@ -193,7 +194,7 @@ private:
 
    //Private methods
    void initiateOutTransition();
-   void initiateInTransition(Object nextObj);
+   void initiateInTransition(Object nextObj,const QString& message = QString());
 
    //Tests
    bool testEventToEvent    () const;
@@ -204,6 +205,7 @@ private:
 
 private Q_SLOTS:
    void slotTimeout();
+   void slotTransitionEvents(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
 
 };
 

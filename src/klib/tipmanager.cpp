@@ -39,22 +39,20 @@ bool TipManager::eventFilter(QObject *obj, QEvent *event)
 ///Constructor
 TipManager::TipManager(QTreeView* parent):QObject(parent),
 m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
-m_pAnim(this),m_pCurrentTip(nullptr)/*,m_pTimer(new QTimer())*/
+m_pAnim(this),m_pCurrentTip(nullptr)
 {
    m_CurrentFrame = {QPoint(0,0),QRect(),0};
    parent->installEventFilter(this);
    parent->setProperty("tipManager",QVariant::fromValue(qobject_cast<TipManager*>(this)));
    reload();
 
-//    connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timeout()));
-
    connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
-   connect(&m_pAnim,SIGNAL(animationEnded()),this,SLOT(animationEnded()));
+   connect(&m_pAnim,SIGNAL(transitionStarted(QAbstractAnimation::Direction,QAbstractAnimation::State)),this,
+         SLOT(slotTransitionStarted(QAbstractAnimation::Direction,QAbstractAnimation::State)));
 }
 
 TipManager::~TipManager()
 {
-//    delete m_pTimer;
 }
 
 ///Get the current image
@@ -115,51 +113,6 @@ void TipManager::setCurrentTip(Tip* tip)
    changeSize(true);
 }
 
-// void TipManager::timeout()
-// {
-//    Tip* toHide = m_lHidingTipQueue.takeFirst();
-//    if (toHide && toHide == m_pCurrentTip) {
-//       m_lTipQueue.removeAll(toHide);
-//       setCurrentTip(nullptr);
-//    }
-//    if (m_lTipQueue.size()) {
-//       setCurrentTip(m_lTipQueue.takeFirst());
-//    }
-//    else
-//       setCurrentTip(nullptr);
-// }
-
-// void TipManager::setCurrentTip_private(Tip* tip)
-// {
-//    m_pAnim.setTip(tip);
-//    m_pCurrentTip =  (m_lTipQueue.size()&&(m_pCurrentTip&&!m_pCurrentTip->isVisible()))?m_lTipQueue.takeFirst():tip;
-//    emit currentTipChanged(tip);
-//    m_pAnim.start(m_pCurrentTip != nullptr);
-// 
-//    //Start timer if necessary
-//    if (m_pCurrentTip && m_pCurrentTip->timeOut()) {
-//       //QTimer::singleShot(tip->timeOut(), this, SLOT(timeout()));
-//       m_pTimer->setSingleShot(true);
-//       m_pTimer->setInterval(m_pCurrentTip->timeOut());
-//       m_lHidingTipQueue << m_pCurrentTip;
-//       m_pTimer->start();
-//    }
-//    changeSize(true);
-// }
-
-void TipManager::animationEnded()
-{
-   //TODO stop timer
-   if (m_pCurrentTip && !m_pCurrentTip->isVisible()) {
-//       m_lTipQueue.removeAll(m_pCurrentTip);
-//       m_pCurrentTip = nullptr;
-      emit currentTipChanged(nullptr);
-   }
-
-//    if (!m_pCurrentTip && m_lTipQueue.size())
-//       setCurrentTip_private(m_lTipQueue.takeFirst());
-}
-
 ///Callback for new animation frame
 void TipManager::animationStep(FrameDescription desc)
 {
@@ -177,21 +130,19 @@ void TipManager::changeSize(bool ignoreAnim)
    }
 }
 
-///Hide a tip, check if it is the current one or in the queue
-// void TipManager::hideTip(Tip* tip)
-// {
-//    if (m_pCurrentTip == tip)
-//       setCurrentTip(nullptr);
-//    m_lTipQueue.removeAll(tip);
-// }
-
-void TipManager::hideCurrentTip()
+bool TipManager::hideCurrentTip()
 {
    qDebug() << "hiding current";
    if (m_pCurrentTip) {
       m_pAnim.setTip(m_pCurrentTip);
-//       emit currentTipChanged(m_pCurrentTip);
       changeSize(false);
       m_pAnim.start(false);
+      return false;
    }
+   return true;
+}
+
+void TipManager::slotTransitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state)
+{
+   emit transitionStarted(direction,state);
 }

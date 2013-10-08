@@ -22,6 +22,7 @@
 //Qt
 #include <QtCore/QRect>
 #include <QtCore/QSize>
+#include <QtCore/QAbstractAnimation>
 #include <QtGui/QImage>
 class QTimer;
 
@@ -83,5 +84,6 @@ private Q_SLOTS:
 Q_SIGNALS:
    void animationStep(FrameDescription desc);
    void animationEnded();
+   void transitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
 };
 #endif

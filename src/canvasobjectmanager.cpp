@@ -36,7 +36,9 @@ const CanvasObjectManager::CanvasElement CanvasObjectManager::elements[ELEMENT_C
    /*0 NoObject     */ {_(Type)OBJECT , _(LifeCycle)STATIC , _(Priority)NO_PRIORITY, E::NONE                    , E::ANY               , false , false  },
    /*1 DialInfo     */ {_(Type)OBJECT , _(LifeCycle)STATIC , _(Priority)LOW        , E::NO_CALLS                , E::ANY               , false , false  },
    /*2 EndCall      */ {_(Type)OBJECT , _(LifeCycle)TIMED  , _(Priority)LOW        , E::CALL_ENDED              , E::ANY               , false , true   },
-   /*3 Ringing      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::CALL_RINGING            , E::CALL_STATE_CHANGED, true  , true   },
+   /*3 Ringing      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::CALL_RINGING            , E::CALL_STATE_CHANGED
+                                                                                                                 | E::CALL_ENDED
+                                                                                                                 | E::CALL_BUSY        , true  , true   },
    /*4 Network      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::NETWORK_ERROR           , E::ANY               , false , true   },
    /*5 AutoComplete */ {_(Type)WIDGET , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::CALL_DIALING_CHANGED    , E::CALL_STATE_CHANGED, false , false  },
    /*6 DropInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::DRAG_ENTER|E::DRAG_MOVE , E::DRAG_LEAVE|E::DROP, false , false  },
@@ -60,11 +62,14 @@ void CanvasObjectManager::hInitEvents() {
 
 CanvasObjectManager::CanvasObjectManager(QObject* parent) : QObject(parent),m_DisableTransition(false),
 m_CurrentObject(CanvasObjectManager::Object::NoObject),m_NextObject(CanvasObjectManager::Object::NoObject)
-,m_pTimer(nullptr)
+,m_pTimer(nullptr),m_CurrentState(ObjectState::NO_OBJECT)
 {
    hInitEvents();
 
-m_DisableTransition = true;
+//    m_DisableTransition = true;
+   connect(TipCollection::manager(),SIGNAL(transitionStarted(QAbstractAnimation::Direction,QAbstractAnimation::State)),
+      this,SLOT(slotTransitionEvents(QAbstractAnimation::Direction,QAbstractAnimation::State)));
+
 
    //TODO remove
 //    testEventToEvent    ();
@@ -130,9 +135,9 @@ int CanvasObjectManager::eventFlagToIndex(CanvasObjectManager::CanvasEvent event
 
 void CanvasObjectManager::initiateOutTransition()
 {
+//    qDebug() << "IN OUT" << (int)m_NextObject << (int)m_CurrentObject;
    if (m_NextObject != m_CurrentObject) {
       if (m_DisableTransition) {
-         qDebug() << "TRANSITION" << (int)m_CurrentObject << (int)m_NextObject;
          if (m_pTimer && m_pTimer->isActive())
             m_pTimer->stop();
          m_CurrentObject = m_NextObject;
@@ -141,21 +146,30 @@ void CanvasObjectManager::initiateOutTransition()
       }
       else {
          //TODO
+         if (m_CurrentObject != Object::NoObject) {
+            //If hideCurrentTip return true, then act as if the transition was over
+            if (TipCollection::manager()->hideCurrentTip()) {
+//                qDebug() << "PROBLEM";
+               m_CurrentObject = m_NextObject;
+               m_NextObject    = CanvasObjectManager::Object::NoObject;
+            }
+//             qDebug() << "SHOULD HIDE TIP" << (int)m_NextObject;
+         }
       }
    }
 }
 
-void CanvasObjectManager::initiateInTransition(Object nextObj)
+void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& message)
 {
    if (nextObj != m_CurrentObject) {
-      if (m_DisableTransition) {
+//       qDebug() << "HERE" << (int)m_CurrentState << m_DisableTransition;
+      if (m_DisableTransition || m_CurrentState == ObjectState::NO_OBJECT) {
          if (m_pTimer && m_pTimer->isActive())
             m_pTimer->stop();
          m_CurrentObject = nextObj;
          nextObj = CanvasObjectManager::Object::NoObject;
          switch (OBJ_DEF(m_CurrentObject).type) {
             case ObjectType::OBJECT: {
-               qDebug() << "\n\n\nICI" << (int)m_CurrentObject;
                Tip* currentTip = TipCollection::canvasObjectToTip(m_CurrentObject);
                if (currentTip) {
                   if (OBJ_DEF(m_CurrentObject).lifeCycle == ObjectLifeCycle::TIMED && currentTip->timeout()) {
@@ -163,6 +177,9 @@ void CanvasObjectManager::initiateInTransition(Object nextObj)
                         m_pTimer = new QTimer();
                         m_pTimer->setSingleShot(true);
                         connect(m_pTimer,SIGNAL(timeout()),this,SLOT(slotTimeout()));
+                     }
+                     if (!message.isEmpty()) {
+                        currentTip->setText(message);
                      }
                      m_pTimer->setInterval(currentTip->timeout());
                      m_pTimer->start();
@@ -175,18 +192,19 @@ void CanvasObjectManager::initiateInTransition(Object nextObj)
          };
       }
       else {
-         m_NextObject = nextObj;
+//          qDebug() << "CURRENT IS VISIBLE" <<(int)m_CurrentObject << "next" << (int)nextObj;
          initiateOutTransition();
+         m_NextObject = nextObj;
       }
    }
 }
 
 bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
 {
-   Q_UNUSED(message);
-   qDebug() << "NEW EVENT" << events;
+//    qDebug() << "NEW EVENT" << events << message << (int)m_CurrentState << (int)m_CurrentObject << (OBJ_DEF(m_CurrentObject).outEvent & events);
    //First, notify the current object of the new event, it may be discarded
    if (m_CurrentObject != CanvasObjectManager::Object::NoObject && OBJ_DEF(m_CurrentObject).outEvent & events) {
+//       qDebug() << "OUT";
       initiateOutTransition();
    }
 
@@ -194,8 +212,10 @@ bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
    const bool singleEvent = (events & (events - 1)) == 0;
    if (singleEvent) {
       CanvasObjectManager::Object nextObj = eventToObject(events);
-      if (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority) {
-         initiateInTransition(nextObj);
+//       qDebug() << "IS SINGLE" << (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority) << (int)nextObj << (int)m_CurrentObject << (int) m_CurrentState;
+      if (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority || m_CurrentState == ObjectState::TRANSITION_OUT) {
+         initiateInTransition(nextObj,message);
+//          qDebug() << "ret";
          return true;
       }
    }
@@ -207,10 +227,12 @@ bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
             highestPriorityNextObj = nextObj;
       }
       if (highestPriorityNextObj != CanvasObjectManager::Object::NoObject) {
-         initiateInTransition(highestPriorityNextObj);
+         initiateInTransition(highestPriorityNextObj,message);
          return true;
+//          qDebug() << "ret";
       }
    }
+//    qDebug() << "ret";
    return false;
 }
 
@@ -239,6 +261,67 @@ CanvasObjectManager::Object CanvasObjectManager::nextObject   () const
 {
    return m_NextObject;
 }
+
+
+
+void CanvasObjectManager::slotTimeout()
+{
+   //Hide the canvas object, stopping the countdown should be handled elsewhere
+   initiateOutTransition();
+}
+
+void CanvasObjectManager::slotTransitionEvents(QAbstractAnimation::Direction direction, QAbstractAnimation::State state)
+{
+//    qDebug() << "IN TRANSITION EVENT" << direction << state;
+   switch(state) {
+      case QAbstractAnimation::Stopped:
+         if (m_CurrentObject == Object::NoObject) {
+            m_CurrentState = ObjectState::NO_OBJECT;
+//             qDebug() << "HERE4" << (int)m_NextObject;
+            if (m_NextObject != Object::NoObject) {
+               initiateInTransition(m_NextObject);
+               m_NextObject = Object::NoObject;
+            }
+         }
+         else
+            switch (direction) {
+               case QAbstractAnimation::Forward:
+                  m_CurrentState = ObjectState::VISIBLE;
+//                   qDebug() << "HERE2";
+                  break;
+               case QAbstractAnimation::Backward:
+                  m_CurrentState = ObjectState::NO_OBJECT;
+//                   qDebug() << "HERE3" << (int) m_NextObject;
+                  initiateInTransition(m_NextObject);
+                  m_NextObject = Object::NoObject;
+                  break;
+            };
+         break;
+      case QAbstractAnimation::Paused:
+         //TODO
+         break;
+      case QAbstractAnimation::Running:
+         switch (direction) {
+            case QAbstractAnimation::Forward:
+               m_CurrentState = ObjectState::TRANSITION_IN;
+               break;
+            case QAbstractAnimation::Backward:
+               m_CurrentState = ObjectState::TRANSITION_OUT;
+               break;
+         };
+         break;
+   };
+}
+
+
+
+
+
+
+
+
+
+
 
 bool CanvasObjectManager::testEventToEvent() const
 {
@@ -270,24 +353,6 @@ bool CanvasObjectManager::testEventToEvent() const
    qDebug() << "\n\n\ntestEventToEvent" << success;
    return success;
 }
-
-
-
-void CanvasObjectManager::slotTimeout()
-{
-   //Hide the canvas object, stopping the countdown should be handled elsewhere
-   initiateOutTransition();
-}
-
-
-
-
-
-
-
-
-
-
 
 bool CanvasObjectManager::testEvenToObject() const
 {

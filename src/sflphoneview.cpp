@@ -28,6 +28,7 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDropEvent>
+#include <QtCore/QAbstractAnimation>
 
 //KDE
 #include <KLocale>
@@ -145,24 +146,6 @@ private:
    QColor   m_Yellow;
    QColor   m_Red;
 };
-
-// class CallViewEventFilter : public QObject
-// {
-// public:
-//    explicit CallViewEventFilter(SFLPhoneView* parent) : QObject(parent) {
-//       m_pParent = parent;
-//    }
-// 
-// protected:
-//    bool eventFilter(QObject *obj, QEvent *event);
-// 
-// private:
-//    SFLPhoneView* m_pParent;
-// 
-// };
-
-///Forward keypresses to the filter line edit
-
 
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
