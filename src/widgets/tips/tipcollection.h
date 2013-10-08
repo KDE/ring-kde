@@ -18,6 +18,10 @@
 #ifndef TIP_COLLECTION_H
 #define TIP_COLLECTION_H
 
+#include <QtCore/QHash>
+
+#include <canvasobjectmanager.h>
+
 class DialPadTip;
 class Tip;
 class TipManager;
@@ -26,8 +30,11 @@ class ConfTip;
 
 class TipCollection {
 public:
+   //CanvasManager
+   static Tip*       canvasObjectToTip(CanvasObjectManager::Object obj);
+   
    //Tutorial mode
-   static Tip* dialPad    ();
+   static Tip*        dialPad    ();
    static Tip*        conference ();
    static Tip*        dragAndDrop();
    

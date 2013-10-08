@@ -26,6 +26,7 @@
 
 //SFLPhone
 #include "sflphone.h"
+#include "actioncollection.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
 #include <lib/call.h>
@@ -34,15 +35,15 @@
 
 CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_pParent(parent)
 {
-   addAction( SFLPhone::app()->holdAction()     ,static_cast<int>(UserActionModel::Action::HOLD)     );
-   addAction( SFLPhone::app()->unholdAction()   ,static_cast<int>(UserActionModel::Action::UNHOLD)   );
-   addAction( SFLPhone::app()->muteAction()     ,static_cast<int>(UserActionModel::Action::MUTE)     );
-   addAction( SFLPhone::app()->pickupAction()   ,static_cast<int>(UserActionModel::Action::PICKUP)   );
-   addAction( SFLPhone::app()->hangupAction()   ,static_cast<int>(UserActionModel::Action::HANGUP)   );
-   addAction( SFLPhone::app()->transferAction() ,static_cast<int>(UserActionModel::Action::TRANSFER) );
-   addAction( SFLPhone::app()->recordAction()   ,static_cast<int>(UserActionModel::Action::RECORD)   );
-   addAction( SFLPhone::app()->refuseAction()   ,static_cast<int>(UserActionModel::Action::REFUSE)   );
-   addAction( SFLPhone::app()->acceptAction()   ,static_cast<int>(UserActionModel::Action::ACCEPT)   );
+   addAction( ActionCollection::instance()->holdAction()     ,static_cast<int>(UserActionModel::Action::HOLD)     );
+   addAction( ActionCollection::instance()->unholdAction()   ,static_cast<int>(UserActionModel::Action::UNHOLD)   );
+   addAction( ActionCollection::instance()->muteAction()     ,static_cast<int>(UserActionModel::Action::MUTE)     );
+   addAction( ActionCollection::instance()->pickupAction()   ,static_cast<int>(UserActionModel::Action::PICKUP)   );
+   addAction( ActionCollection::instance()->hangupAction()   ,static_cast<int>(UserActionModel::Action::HANGUP)   );
+   addAction( ActionCollection::instance()->transferAction() ,static_cast<int>(UserActionModel::Action::TRANSFER) );
+   addAction( ActionCollection::instance()->recordAction()   ,static_cast<int>(UserActionModel::Action::RECORD)   );
+   addAction( ActionCollection::instance()->refuseAction()   ,static_cast<int>(UserActionModel::Action::REFUSE)   );
+   addAction( ActionCollection::instance()->acceptAction()   ,static_cast<int>(UserActionModel::Action::ACCEPT)   );
 }
 
 CallViewToolbar::~CallViewToolbar()

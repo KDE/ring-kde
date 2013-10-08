@@ -163,6 +163,8 @@ SET(
    sflphoneaccessibility.cpp
    accountwizard.cpp
    canvasobjectmanager.cpp
+   eventmanager.cpp
+   actioncollection.cpp
    ${sflphone_client_kde_DELEGATES}
    ${sflphone_client_kde_CONF}
    ${sflphone_client_kde_WIDGETS}

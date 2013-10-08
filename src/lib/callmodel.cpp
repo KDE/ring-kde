@@ -800,6 +800,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
    qDebug() << "Call State Changed for call  " << callID << " . New state : " << state;
    InternalStruct* internal = m_sPrivateCallList_callId[callID];
    Call* call = nullptr;
+   Call::State previousState = Call::State::RINGING;
    if(!internal) {
       qDebug() << "Call not found";
       if(state == Call::StateChange::RINGING) {
@@ -812,6 +813,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
    }
    else {
       call = internal->call_real;
+      previousState = call->state();
       qDebug() << "Call found" << call << call->state();
       call->stateChanged(state);
       if (state == Call::StateChange::HUNG_UP)
@@ -822,7 +824,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       HistoryModel::instance()->add(call);
    }
 
-   emit callStateChanged(call);
+   emit callStateChanged(call,previousState);
 
 } //slotCallStateChanged
 

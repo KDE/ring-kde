@@ -92,52 +92,6 @@ AbstractContactBackend* AkonadiBackend::instance()
    return m_pInstance;
 }
 
-///Find contact using a phone number
-///@param resolveDNS check if the DNS is used by an account, then assume contact with that phone number / extension is the same as the caller
-// Contact* AkonadiBackend::getContactByPhone(const QString& phoneNumber,bool resolveDNS,Account* a)
-// {
-//    //Remove protocol dependant prefix and suffix
-//    int start(0),end(phoneNumber.size()); //Other type of comparaisons were too slow
-//    if (phoneNumber.size() > 0 && phoneNumber[0] == '<' && phoneNumber[4] == ':')
-//       start = 5;
-//    if (phoneNumber.size() > 0 && phoneNumber.right(1) == ">")
-//       end--;
-//    const QString number = phoneNumber.mid(start,end);
-// 
-//    //Try direct match
-//    Contact* c = m_ContactByPhone[number];
-//    if (c) {
-//       return c;
-//    }
-//    if (!a)
-//       a = AccountListModel::instance()->getDefaultAccount();
-// 
-//    if (number.indexOf('@') == -1 && a)
-//       return m_ContactByPhone[number+'@'+a->hostname()];
-// 
-//    //Use default resolve account to trim hostname away from the number
-//    Contact* userOnly = m_ContactByPhone[getUserFromPhone(number).trimmed()];
-//    const QString defaultResolveAccount = ConfigurationSkeleton::defaultAccountId();
-//    if (resolveDNS && !defaultResolveAccount.isEmpty() && number.indexOf('@') != -1) {
-//       const Account* defResolveAcc = AccountListModel::instance()->getAccountById(defaultResolveAccount);
-//       const QString host = defResolveAcc?defResolveAcc->hostname():QString();
-//       if (defResolveAcc && host == number.right(host.size())) {
-//          return userOnly;
-//       }
-//    }
-// 
-//    //Try to find something matching, but at this point it is not 100% sure it is the right one
-//    if (resolveDNS && number.indexOf('@') != -1 && !getHostNameFromPhone(number).isEmpty() && userOnly) {
-//       foreach (const Account* a, AccountListModel::instance()->getAccounts()) {
-//          if (a->hostname() == getHostNameFromPhone(number) && userOnly)
-//             return userOnly;
-//       }
-//    }
-// 
-//    //Give up
-//    return nullptr;
-// } //getContactByPhone
-
 ///Find contact by UID
 Contact* AkonadiBackend::getContactByUid(const QString& uid)
 {
@@ -188,7 +142,7 @@ KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 ContactList AkonadiBackend::update(Akonadi::Collection collection)
 {
    m_UpdatesCounter++;
-   Account* defaultAccount = AccountListModel::instance()->getDefaultAccount();
+//    Account* defaultAccount = AccountListModel::instance()->getDefaultAccount();
    m_Collection = collection;
    if ( !collection.isValid() ) {
       kDebug() << "The current collection is not valid";
@@ -226,11 +180,6 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
                   number2 = number2.remove(0,5);
                if (number2.right(1) == ">"    )
                   number2 = number2.remove(number2.size()-2,1);
-
-               m_ContactByPhone[number2] = aContact;
-
-               if (number2.size() <= 6 && defaultAccount && !defaultAccount->hostname().isEmpty())
-                  m_ContactByPhone[number2+'@'+defaultAccount->hostname()] = aContact;
             }
             m_ContactByUid[tmp.uid()] = aContact;
             aContact->setPhoneNumbers   (newNumbers           );

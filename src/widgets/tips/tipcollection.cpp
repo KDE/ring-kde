@@ -46,6 +46,28 @@ Tip*               TipCollection::m_spNetworkLost      = nullptr;
 TipManager*        TipCollection::m_spManager          = nullptr;
 
 
+Tip* TipCollection::canvasObjectToTip(CanvasObjectManager::Object obj)
+{
+   switch(obj) {
+      case CanvasObjectManager::Object::DialInfo:
+         return dialPad();
+      case CanvasObjectManager::Object::EndCall :
+         return endCall();
+      case CanvasObjectManager::Object::Ringing :
+         return ringing();
+      case CanvasObjectManager::Object::Network :
+         return networkLost();
+      case CanvasObjectManager::Object::DropInfo:
+         return removeConference();
+      case CanvasObjectManager::Object::ConfInfo:
+         return conference();
+      case CanvasObjectManager::Object::NoObject:
+      case CanvasObjectManager::Object::AutoComplete:
+      default:
+         return nullptr;
+   }
+}
+
 //Tutorial mode
 Tip* TipCollection::dialPad()
 {

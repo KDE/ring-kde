@@ -19,16 +19,17 @@
 
 #include <QtGui/QHBoxLayout>
 #include "sflphone.h"
+#include "actioncollection.h"
 
 VideoToolbar::VideoToolbar(QWidget* parent) : OverlayToolbar(parent)
 {
    setIconSize(16);
-   addAction(SFLPhone::app()->videoRotateLeftAction     ());
-   addAction(SFLPhone::app()->videoRotateRightAction    ());
-   addAction(SFLPhone::app()->videoFlipHorizontalAction ());
-   addAction(SFLPhone::app()->videoFlipVerticalAction   ());
-   addAction(SFLPhone::app()->videoMuteAction           ());
-   addAction(SFLPhone::app()->videoPreviewAction        ());
+   addAction(ActionCollection::instance()->videoRotateLeftAction     ());
+   addAction(ActionCollection::instance()->videoRotateRightAction    ());
+   addAction(ActionCollection::instance()->videoFlipHorizontalAction ());
+   addAction(ActionCollection::instance()->videoFlipVerticalAction   ());
+   addAction(ActionCollection::instance()->videoMuteAction           ());
+   addAction(ActionCollection::instance()->videoPreviewAction        ());
 }
 
 VideoToolbar::~VideoToolbar()

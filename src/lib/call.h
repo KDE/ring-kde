@@ -72,6 +72,7 @@ class  LIB_EXPORT Call : public QObject, public CategorizedCompositeNode
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
+   friend class CallModel;
    //Enum
 
    ///Model roles
@@ -279,7 +280,6 @@ public:
    //Mutators
    void appendText(const QString& str);
    void backspaceItemText();
-   void changeCurrentState(Call::State newState);
    void sendTextMessage(QString message);
 
    virtual QObject* getSelf() const;
@@ -367,6 +367,8 @@ private:
    void stop         ();
    void startWeird   ();
    void warning      ();
+
+   void changeCurrentState(Call::State newState);
 
 public Q_SLOTS:
    void playRecording();

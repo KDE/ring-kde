@@ -46,7 +46,8 @@ public:
    virtual ~TipManager();
 
    //Mutator
-   void hideTip(Tip* tip);
+//    void hideTip(Tip* tip);
+   void hideCurrentTip();
 
    //Getter
    QImage getImage();
@@ -63,7 +64,7 @@ protected:
 private:
    //Methods
    void reload();
-   void setCurrentTip_private(Tip* tip);
+//    void setCurrentTip_private(Tip* tip);
 
    //Attributes
    QPalette                m_OriginalPalette ;
@@ -74,15 +75,15 @@ private:
    Tip*                    m_pCurrentTip     ;
    TipAnimationWrapper     m_pAnim           ;
    FrameDescription        m_CurrentFrame    ;
-   QList<Tip*>             m_lTipQueue       ;
-   QList<Tip*>             m_lHidingTipQueue ;
-   QTimer*                 m_pTimer          ;
+//    QList<Tip*>             m_lTipQueue       ;
+//    QList<Tip*>             m_lHidingTipQueue ;
+//    QTimer*                 m_pTimer          ;
 
 private Q_SLOTS:
    void animationStep(FrameDescription desc);
    void changeSize(bool ignoreAnim = false);
    void animationEnded();
-   void timeout();
+//    void timeout();
 
 Q_SIGNALS:
    void sizeChanged(QRect newRect,bool ignoreAnim);

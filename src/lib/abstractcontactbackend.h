@@ -93,7 +93,6 @@ protected:
    QString getUserFromPhone    (QString phoneNumber);
 
    //Attributes
-   QHash<QString,Contact*>        m_ContactByPhone ;
    QHash<QString,Contact*>        m_ContactByUid   ;
    int m_UpdatesCounter;
 public Q_SLOTS:

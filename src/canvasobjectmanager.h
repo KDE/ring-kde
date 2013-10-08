@@ -25,8 +25,18 @@ class CanvasObjectManager : public QObject {
 
 public:
    /*****************************************************************************************
+    *                                                                                       *
+    *                            --CANVAS OBJECT MANAGER--                                  *
+    *                              ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯                                    *
+    *                                                                                       *
+    *                                  \_|¯¯¯¯¯¯¯¯¯¯|_/                                     *
+    *                     Event(s)-->       System       Object-->                          *
+    *                                  /¯|__________|¯\                                     *
+    *                                                                                       *
+    *                                                                                       *
     * This manager is implemented as a closed loop state machine, each external events      *
     * triggers a static set of operations defined at compile time.                          *
+    *                                                                                       *
     *                                                                                       *
     *                                                  |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|          *
     * |¯¯¯¯¯|                                          |                         |          *
@@ -46,6 +56,9 @@ public:
     *               |_______________________>|       Next object        |                   *
     *                                        |                          |                   *
     *                                        |__________________________|                   *
+    *                                                                                       *
+    *                                                                                       *
+    * Some events can also carry a custom message to be displayed in the notification       *
     *                                                                                       *
     ****************************************************************************************/
 
@@ -94,7 +107,7 @@ public:
    enum CanvasEvent {
       //Generic events
       NONE                 = 0x00    , /* No events, for item already present on startup    */
-      ANY                  = ~0      , /* Every event match this                            */
+      ANY                  = ~0L     , /* Every event match this                            */
       TIMEOUT              = 0x01<<1 , /* Waiting on an (internal) timer event              */
 
       //Account related events
@@ -113,10 +126,13 @@ public:
       CALL_STATE_CHANGED   = 0x01<<10, /* When a phone call state change                    */
       CALL_DIALING_CHANGED = 0x01<<11, /* When the user type something on a dialing call    */
       CALL_COUNT_CHANGED   = 0x01<<12, /* When the number of call change                    */
-      NO_CALLS             = 0x01<<13, /* When the last call have been removed from canvas  */
-      CALL_ENDED           = 0x01<<14, /* When a call end                                   */
-      BUDDY_IN             = 0x01<<15, /* When a buggy log in                               */
-      BUDDY_OUT            = 0x01<<16, /* When a buddy log out                              */
+      CALL_BUSY            = 0x01<<13, /* When a ringing call peer is busy                  */
+      NO_CALLS             = 0x01<<14, /* When the last call have been removed from canvas  */
+      CALL_ENDED           = 0x01<<15, /* When a call end                                   */
+      BUDDY_IN             = 0x01<<16, /* When a buggy log in                               */
+      BUDDY_OUT            = 0x01<<17, /* When a buddy log out                              */
+//       LEFT_CONFERENCE   = 0x01<<18, /* Someone left a conference                         */
+//       JOIN_CONFERENCE   = 0x01<<19, /* Someone joined a conference                       */
    };
 
    //Constructor
@@ -124,24 +140,31 @@ public:
    virtual ~CanvasObjectManager();
 
    //Mutator
-   bool newEvent   (CanvasEvent events);
+   bool newEvent   (CanvasEvent events, const QString& message = QString());
+   void reset      (                  );
+
+   //Operators
    bool operator <<(CanvasEvent events);
+
+   //Getter
+   CanvasObjectManager::Object currentObject() const;
+   CanvasObjectManager::Object nextObject   () const;
 
 private:
 
    ///@struct CanvasElement internal State Machine transition parameters
    struct CanvasElement {
-      ObjectType      type              ; /* See ObjectType                                    */
-      ObjectLifeCycle lifeCycle         ; /* See ObjectLifeCycle                               */
-      ObjectPriority  priority          ; /* See ObjectPriority                                */
-      int             inEvent           ; /* All compatible events to trigger this object      */
-      int             outEvent          ; /* All compatible events to phase out this object    */
-      bool            stack             ; /* Use an event counter to phase this object out     */
-      bool            systemNotification; /* Send a notification is SFLPhone ain't focussed    */
+      ObjectType      type              ; /* See ObjectType                                 */
+      ObjectLifeCycle lifeCycle         ; /* See ObjectLifeCycle                            */
+      ObjectPriority  priority          ; /* See ObjectPriority                             */
+      int             inEvent           ; /* All compatible events to trigger this object   */
+      int             outEvent          ; /* All compatible events to phase out this object */
+      bool            stack             ; /* Use an event counter to phase this object out  */
+      bool            systemNotification; /* Send a notification is SFLPhone ain't focussed */
    };
 
    //Constants
-   constexpr static const char EVENT_COUNT   = 18;
+   constexpr static const char EVENT_COUNT   = 19;
    constexpr static const char ELEMENT_COUNT = 8 ;
 
    //Attributes
@@ -149,16 +172,32 @@ private:
    CanvasObjectManager::Object          m_NextObject         ;
    CanvasObjectManager::ObjectState     m_CurrentState       ;
    CanvasObjectManager::ObjectLifeCycle m_CurrentLifeCycle   ;
+   bool                                 m_DisableTransition  ;
    static CanvasObjectManager::Object   m_slEvents[ EVENT_COUNT   ];
    static const CanvasElement           elements  [ ELEMENT_COUNT ];
 
    //Helpers
-   CanvasObjectManager::Object eventsObject;
    constexpr static bool haveEvent(CanvasEvent events,CanvasEvent event) {
       return events&event;
    }
    inline bool hasPriority(CanvasObjectManager::Object nextElement);
    static void hInitEvents();
+   CanvasObjectManager::Object        eventToObject   ( CanvasEvent event  ) const;
+   QList<CanvasObjectManager::Object> eventsToObjects ( CanvasEvent events ) const;
+   CanvasEvent                        firstInEvent    ( Object      object ) const;
+   CanvasEvent                        eventIndexToFlag( int index          ) const;
+   int                                eventFlagToIndex( CanvasEvent events ) const ;
+
+   //Private methods
+   void initiateOutTransition();
+   void initiateInTransition(Object nextObj);
+
+   //Tests
+   bool testEventToEvent    () const;
+   bool testEvenToObject    () const;
+   bool testFirstInEvent    () const;
+   bool testObjectPriority  ();
+   bool testObjectDiscarding();
 
 };
 

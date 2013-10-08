@@ -141,7 +141,7 @@ Account::~Account()
  ****************************************************************************/
 
 ///Callback when the account state change
-void Account::accountChanged(QString accountId,QString state,int)
+void Account::accountChanged(const QString& accountId, const QString& state,int)
 {
    if ((!m_AccountId.isEmpty()) && accountId == m_AccountId) {
       qDebug() << "Account" << m_AccountId << "status changed to" << state;

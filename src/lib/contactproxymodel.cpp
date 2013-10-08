@@ -441,29 +441,6 @@ QString ContactProxyModel::category(Contact* ct) const {
    return cat;
 }
 
-///Return the list of contact from history (in order, most recently used first)
-// QHash<Contact*, time_t> ContactProxyModel::getContactListByTime() const
-// {
-//    const CallMap& history= HistoryModel::getHistory();
-//    QHash<Contact*, time_t> toReturn;
-//    QSet<QString> alreadyUsed;
-//    QMapIterator<uint, Call*> i(history);
-//    i.toBack();
-//    while (i.hasPrevious()) { //Iterate from the end up
-//       i.previous();
-//       (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()); //Don't ask, leave it there Elv13(2012)
-//       if (alreadyUsed.find(i.value()->peerPhoneNumber()) == alreadyUsed.constEnd()) {
-//          Contact* contact = i.value()->contact();
-//          if (contact && toReturn.find(contact) == toReturn.end()) {
-//             toReturn[contact] = i.value()->startTimeStamp();
-//          }
-//          alreadyUsed << i.value()->peerPhoneNumber();
-//       }
-//    }
-//    return toReturn;
-// } //getContactListByTime
-
-
 void ContactProxyModel::setRole(int role)
 {
    if (role != m_Role) {

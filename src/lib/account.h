@@ -365,7 +365,7 @@ class LIB_EXPORT Account : public QObject {
       void setEnabled(bool checked);
 
    private Q_SLOTS:
-      void accountChanged(QString accountId,QString stateName, int state);
+      void accountChanged(const QString& accountId, const QString& stateName, int state);
 
    private:
 

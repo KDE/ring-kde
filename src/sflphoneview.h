@@ -30,7 +30,6 @@ class QString;
 class QKeyEvent;
 
 //SFLPhone
-class AccountWizard;
 class Contact;
 class CallViewToolbar;
 class CallViewOverlay;
@@ -38,6 +37,7 @@ class HistoryDelegate;
 class ConferenceDelegate;
 class AutoCompletion;
 class CanvasObjectManager;
+class EventManager;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -54,16 +54,16 @@ class CanvasObjectManager;
 class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListener
 {
    Q_OBJECT
-   friend class CallViewEventFilter;
+   friend class EventManager;
 
 private:
-   AccountWizard*       wizard            ;
    CallViewToolbar*     m_pCanvasToolbar  ;
    CallViewOverlay*     m_pTransferOverlay;
    ConferenceDelegate*  m_pConfDelegate   ;
    HistoryDelegate*     m_pHistoryDelegate;
    AutoCompletion*      m_pAutoCompletion ;
    CanvasObjectManager* m_pCanvasManager  ;
+   EventManager*        m_pEventManager   ;
 
 public:
    //Constructors & Destructors
@@ -86,6 +86,16 @@ public:
    //Implement macro key listener
    virtual void addDTMF(const QString& sequence);
 
+   //Getters
+   Call* currentCall() const {
+      return CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
+   }
+
+   //Setters
+   void setCurrentIndex(const QModelIndex& idx) {
+      m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
+   }
+
 private Q_SLOTS:
    /**
     *   Performs the action action on the call call, then updates window.
@@ -95,45 +105,6 @@ private Q_SLOTS:
     * @param action the code of the action to perform
     */
    void action(Call * call, Call::Action action);
-
-   /**
-    *   Sets the account account to be the prior account.
-    *   That means it's gonna be used when the user places a call
-    *   if it's defined and registered, else the first registered of
-    *   accountList will be used.
-    * @param account the account to use prior
-    */
-   void setAccountFirst(Account * account);
-
-   /**
-    *   Handles the behaviour when the user types something with
-    *   the dialpad widget or his keyboard (normally it's a one char
-    *   string but we use a string just in case).
-    *   Adds str to the selected item if in the main window
-    *   and creates a new item if no item is selected.
-    *   Send DTMF if appropriate according to current item's state.
-    *   Adds str to the search bar if in history or address book.
-    * @param str the string sent by the user
-    */
-   void typeString(QString str);
-
-   /**
-    *   Handles the behaviour when the user types a backspace
-    *   according to the current state (window, item selected...)
-    */
-   void backspace();
-
-   /**
-    *   Handles the behaviour when the user types escape
-    *   according to the current state (window, item selected...)
-    */
-   void escape();
-
-   /**
-    *   Handles the behaviour when the user types enter
-    *   according to the current state (window, item selected...)
-    */
-   void enter();
 
    /**
     * Updates the history's search bar's display according to the current
@@ -167,23 +138,11 @@ public Q_SLOTS:
    void updateStatusMessage();
 
 
-   virtual void keyPressEvent(QKeyEvent *event);
+//    virtual void keyPressEvent(QKeyEvent *event);
 
    void displayVolumeControls ( bool checked = true );
    void displayDialpad        ( bool checked = true );
    void displayMessageBox     ( bool checked = true );
-   void configureSflPhone     ();
-   void accountCreationWizard ();
-   void accept   ();
-   void hangup   ();
-   void refuse   ();
-   void hold     ();
-   void unhold   ();
-   void transfer ();
-   void record   ();
-   void mailBox  ();
-   void paste    ();
-   void mute     ( bool value = true);
 
    void on_widget_dialpad_typed(QString text);
 
@@ -195,6 +154,9 @@ public Q_SLOTS:
    void on1_incomingCall   ( Call* call                          );
    void on1_voiceMailNotify( const QString &accountID, int count );
    void on1_volumeChanged  ( const QString &device, double value );
+
+   void mute     ( bool value = true);
+   void paste();
 
 Q_SIGNALS:
    ///The status need to be updated

@@ -401,7 +401,7 @@ void ContactDock::transferEvent(QMimeData* data)
       if (ok) {
          Call* call = CallModel::instance()->getCall(data->data(MIME_CALLID));
          if (dynamic_cast<Call*>(call)) {
-            call->changeCurrentState(Call::State::TRANSFERRED);
+//             call->changeCurrentState(Call::State::TRANSFERRED);
             CallModel::instance()->transfer(call, result);
          }
       }

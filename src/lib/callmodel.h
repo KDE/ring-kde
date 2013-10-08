@@ -24,7 +24,7 @@
 #include "typedefs.h"
 
 //SFLPhone
-class Call;
+#include "call.h"
 class Account;
 struct InternalStruct;
 
@@ -134,7 +134,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
 
    Q_SIGNALS:
       ///Emitted when a call state change
-      void callStateChanged        ( Call* call                              );
+      void callStateChanged        ( Call* call, Call::State previousState   );
       ///Emitted when a new call is incoming
       void incomingCall            ( Call* call                              );
       ///Emitted when a conference is created

@@ -89,7 +89,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 
    setWindowTitle(i18n("Bookmark"));
 
-   connect(m_pFilterLE                    , SIGNAL(textChanged(QString))            , this , SLOT(filter(QString))             );
+//    connect(m_pFilterLE                    , SIGNAL(textChanged(QString))            , this , SLOT(filter(QString))             );
    connect(m_pMostUsedCK                  , SIGNAL(toggled(bool))                   , this , SLOT(reload())                    );
    connect(AkonadiBackend::instance()     , SIGNAL(collectionChanged())             , this , SLOT(reload())                    );
    connect(m_pView                        , SIGNAL(doubleClicked(QModelIndex))      , this , SLOT(slotDoubleClick(QModelIndex)));
