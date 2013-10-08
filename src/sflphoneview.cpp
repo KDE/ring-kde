@@ -394,20 +394,12 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::CallAction::Accept   ] = ACTION_LABEL_ACCEPT         ;
             actionTexts     [ SFLPhone::CallAction::Refuse   ] = ACTION_LABEL_REFUSE         ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)   ;
-            if (TipCollection::manager()) {
-//                TipCollection::manager()->setCurrentTip(TipCollection::ringing());
-               m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-            }
             break;
 
          case Call::State::RINGING:
             enabledActions  [ SFLPhone::CallAction::Hold     ] = false                       ;
             enabledActions  [ SFLPhone::CallAction::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
-            if (TipCollection::manager()) {
-//                TipCollection::manager()->setCurrentTip(TipCollection::ringing());
-               m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-            }
             break;
 
          case Call::State::CURRENT:
@@ -445,10 +437,6 @@ void SFLPhoneView::updateWindowCallState()
             enabledActions  [ SFLPhone::CallAction::Transfer ] = false                       ;
             enabledActions  [ SFLPhone::CallAction::Record   ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
-            if (TipCollection::manager()) {
-//                TipCollection::manager()->setCurrentTip(TipCollection::endBusy());
-               m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_BUSY);
-            }
             break;
 
          case Call::State::TRANSFERRED:
@@ -486,41 +474,19 @@ void SFLPhoneView::updateWindowCallState()
          case Call::State::CONFERENCE:
             enabledActions  [ SFLPhone::CallAction::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)                       ;
-            if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop() && TipCollection::dragAndDrop()) {
-//                TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
-               m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_STATE_CHANGED);
-            }
             break;
 
          case Call::State::CONFERENCE_HOLD:
             enabledActions  [ SFLPhone::CallAction::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
-            if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop() && TipCollection::dragAndDrop()) {
-//                TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
-               m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_STATE_CHANGED);
-            }
             break;
          case Call::State::COUNT:
-         default: 
+         default:
             kDebug() << "Error : Reached unexisting state for call "  << call->id() << "(" << call->state() << "!";
             break;
 
       }
 
-      //Manage tips
-      //There is little way to be sure when to end the ringing animation, for now, brute force the check
-//       bool displayRinging = false;
-//       if (TipCollection::ringing()->isVisible() || TipCollection::manager()->currentTip() == TipCollection::ringing()) {
-//          foreach (Call* call2, CallModel::instance()->getCallList()) {
-//             if(dynamic_cast<Call*>(call2) && (call2->state() == Call::State::INCOMING || call2->state() == Call::State::RINGING)) {
-//                displayRinging = true;
-//                break;
-//             }
-//          }
-//          if (!displayRinging) {
-//             TipCollection::manager()->hideTip(TipCollection::ringing());
-//          }
-//       }
       if (TipCollection::dragAndDrop()) {
          int activeCallCounter=0;
          foreach (Call* call2, CallModel::instance()->getCallList()) {
@@ -530,11 +496,7 @@ void SFLPhoneView::updateWindowCallState()
             }
          }
          if (activeCallCounter >= 2 && !CallModel::instance()->getConferenceList().size()) {
-//             TipCollection::manager()->setCurrentTip(TipCollection::dragAndDrop());
             m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NO_CALLS);
-         }
-         else if (TipCollection::manager()->currentTip() == TipCollection::dragAndDrop()) {
-//             TipCollection::manager()->hideTip(TipCollection::dragAndDrop());
          }
       }
    }

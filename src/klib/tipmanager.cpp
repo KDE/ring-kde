@@ -112,6 +112,7 @@ void TipManager::setCurrentTip(Tip* tip)
    m_pAnim.setTip(m_pCurrentTip);
    emit currentTipChanged(tip);
    m_pAnim.start(true);
+   changeSize(true);
 }
 
 // void TipManager::timeout()
@@ -186,9 +187,11 @@ void TipManager::changeSize(bool ignoreAnim)
 
 void TipManager::hideCurrentTip()
 {
+   qDebug() << "hiding current";
    if (m_pCurrentTip) {
       m_pAnim.setTip(m_pCurrentTip);
 //       emit currentTipChanged(m_pCurrentTip);
+      changeSize(false);
       m_pAnim.start(false);
    }
 }

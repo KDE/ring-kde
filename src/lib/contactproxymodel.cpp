@@ -192,7 +192,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
 
    CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)index.internalPointer();
    switch (modelItem->type()) {
-      case CategorizedCompositeNode::Type::TOP_LEVEL: /*|| !index.parent().isValid()) {*/
+      case CategorizedCompositeNode::Type::TOP_LEVEL:
       switch (role) {
          case Qt::DisplayRole:
             return static_cast<const TopLevelItem*>(modelItem)->m_Name;
@@ -200,14 +200,13 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             break;
       }
       break;
-   case CategorizedCompositeNode::Type::CONTACT:{ /* && (role == Qt::DisplayRole)) {*/
-//       qDebug () <<"\n\n\nHERE" << index.parent().isValid() << index.parent().row() << index.row();
+   case CategorizedCompositeNode::Type::CONTACT:{
       const Contact* c = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->m_pContact;
       switch (role) {
          case Qt::DisplayRole:
             return QVariant(c->formattedName());
          case AbstractContactBackend::Role::Organization:
-//             return QVariant(c->organization());
+            return QVariant(c->organization());
          case AbstractContactBackend::Role::Group:
             return QVariant(c->group());
          case AbstractContactBackend::Role::Department:

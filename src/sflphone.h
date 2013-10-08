@@ -81,39 +81,6 @@ enum CallAction {
 private:
    //Attributes
    bool   m_pInitialized;
-//    ExtendedAction* action_accept         ;
-//    ExtendedAction* action_refuse         ;
-//    ExtendedAction* action_hold           ;
-//    ExtendedAction* action_transfer       ;
-//    ExtendedAction* action_record         ;
-//    ExtendedAction* action_mute           ;
-//    ExtendedAction* action_hangup         ;
-//    ExtendedAction* action_unhold         ;
-//    ExtendedAction* action_pickup         ;
-//    //Video actions
-//    #ifdef ENABLE_VIDEO
-//    ExtendedAction* action_video_rotate_left    ;
-//    ExtendedAction* action_video_rotate_right   ;
-//    ExtendedAction* action_video_flip_horizontal;
-//    ExtendedAction* action_video_flip_vertical  ;
-//    ExtendedAction* action_video_mute           ;
-//    ExtendedAction* action_video_preview        ;
-//    #endif
-//    KAction* action_mailBox               ;
-//    KAction* action_close                 ;
-//    KAction* action_quit                  ;
-//    KAction* action_displayVolumeControls ;
-//    KAction* action_displayDialpad        ;
-//    KAction* action_displayMessageBox     ;
-//    KAction* action_configureSflPhone     ;
-//    KAction* action_configureShortcut     ;
-//    KAction* action_accountCreationWizard ;
-//    KAction* action_pastenumber           ;
-//    KAction* action_showContactDock       ;
-//    KAction* action_showHistoryDock       ;
-//    KAction* action_showBookmarkDock      ;
-//    KAction* action_editToolBar           ;
-//    QActionGroup* action_screen           ;
 
    SFLPhoneView*  m_pView            ;
    bool           m_pIconChanged     ;
@@ -146,9 +113,6 @@ public:
    explicit SFLPhone(QWidget *parent = 0);
    ~SFLPhone                       ();
    bool             initialize     ();
-//    void             setupActions   ();
-   void             trayIconSignal ();
-//    QList<QAction *> callActions    ();
 
    friend class SFLPhoneView;
 
@@ -158,26 +122,6 @@ public:
    ContactDock*  contactDock ();
    HistoryDock*  historyDock ();
    BookmarkDock* bookmarkDock();
-
-//    ExtendedAction* holdAction    () { return action_hold;     }
-//    ExtendedAction* recordAction  () { return action_record;   }
-//    ExtendedAction* refuseAction  () { return action_refuse;   }
-//    ExtendedAction* muteAction    () { return action_mute;     }
-//    ExtendedAction* hangupAction  () { return action_hangup;   }
-//    ExtendedAction* unholdAction  () { return action_unhold;   }
-//    ExtendedAction* transferAction() { return action_transfer; }
-//    ExtendedAction* pickupAction  () { return action_pickup;   }
-//    ExtendedAction* acceptAction  () { return action_accept;   }
-// 
-//    //Video actions
-//    #ifdef ENABLE_VIDEO
-//    ExtendedAction* videoRotateLeftAction     () { return action_video_rotate_left    ;}
-//    ExtendedAction* videoRotateRightAction    () { return action_video_rotate_right   ;}
-//    ExtendedAction* videoFlipHorizontalAction () { return action_video_flip_horizontal;}
-//    ExtendedAction* videoFlipVerticalAction   () { return action_video_flip_vertical  ;}
-//    ExtendedAction* videoMuteAction           () { return action_video_mute           ;}
-//    ExtendedAction* videoPreviewAction        () { return action_video_preview        ;}
-//    #endif
 
 private Q_SLOTS:
    void on_m_pView_statusMessageChangeAsked      ( const QString& message               );

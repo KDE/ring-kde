@@ -69,7 +69,7 @@ public:
 
    //Getter
    bool isVisible        () { return m_IsVisible; }
-   int  timeOut          () { return m_TimeOut;   }
+   int  timeout          () { return m_TimeOut;   }
    bool hasText          () { return m_HasText;   }
    bool hasBackground    () { return m_HasBg;     }
    virtual float opacity () { return 1.0f;        }

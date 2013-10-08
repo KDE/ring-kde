@@ -237,10 +237,6 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
    switch (role) {
       case Qt::DisplayRole:
       case Call::Role::Name:
-//          qDebug() << "\n\n\nEVIL1 -1" << dynamic_cast<NumberTreeBackend*>(number);
-//          qDebug() << "EVIL1" << number;
-//          qDebug() << "EVIL2" << number->m_pNumber;
-//          qDebug() << "EVIL" << number->m_pNumber << number->m_pNumber->uri();
          cat = number->m_pNumber->uri();
          break;
       case Call::Role::Number:

@@ -20,6 +20,8 @@
 
 #include <QtCore/QObject>
 
+class QTimer;
+
 class CanvasObjectManager : public QObject {
    Q_OBJECT
 
@@ -173,6 +175,7 @@ private:
    CanvasObjectManager::ObjectState     m_CurrentState       ;
    CanvasObjectManager::ObjectLifeCycle m_CurrentLifeCycle   ;
    bool                                 m_DisableTransition  ;
+   QTimer*                              m_pTimer             ;
    static CanvasObjectManager::Object   m_slEvents[ EVENT_COUNT   ];
    static const CanvasElement           elements  [ ELEMENT_COUNT ];
 
@@ -186,7 +189,7 @@ private:
    QList<CanvasObjectManager::Object> eventsToObjects ( CanvasEvent events ) const;
    CanvasEvent                        firstInEvent    ( Object      object ) const;
    CanvasEvent                        eventIndexToFlag( int index          ) const;
-   int                                eventFlagToIndex( CanvasEvent events ) const ;
+   int                                eventFlagToIndex( CanvasEvent events ) const;
 
    //Private methods
    void initiateOutTransition();
@@ -198,6 +201,9 @@ private:
    bool testFirstInEvent    () const;
    bool testObjectPriority  ();
    bool testObjectDiscarding();
+
+private Q_SLOTS:
+   void slotTimeout();
 
 };
 

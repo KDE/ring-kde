@@ -17,15 +17,18 @@
  **************************************************************************/
 #include "canvasobjectmanager.h"
 
+//Qt
 #include <QtCore/QDebug>
+#include <QtCore/QTimer>
 
+//SFLPHone
 #include <klib/tipmanager.h>
 #include <widgets/tips/tipcollection.h>
 
-#define OBJ_DEF(obj) elements[static_cast<int>(obj)]
 
 CanvasObjectManager::Object CanvasObjectManager::m_slEvents[EVENT_COUNT] = { CanvasObjectManager::Object::NoObject };
 
+#define OBJ_DEF(obj) elements[static_cast<int>(obj)]
 #define _(NAME) CanvasObjectManager::Object##NAME::
 #define E CanvasEvent
 const CanvasObjectManager::CanvasElement CanvasObjectManager::elements[ELEMENT_COUNT] = {
@@ -57,6 +60,7 @@ void CanvasObjectManager::hInitEvents() {
 
 CanvasObjectManager::CanvasObjectManager(QObject* parent) : QObject(parent),m_DisableTransition(false),
 m_CurrentObject(CanvasObjectManager::Object::NoObject),m_NextObject(CanvasObjectManager::Object::NoObject)
+,m_pTimer(nullptr)
 {
    hInitEvents();
 
@@ -128,7 +132,11 @@ void CanvasObjectManager::initiateOutTransition()
 {
    if (m_NextObject != m_CurrentObject) {
       if (m_DisableTransition) {
+         qDebug() << "TRANSITION" << (int)m_CurrentObject << (int)m_NextObject;
+         if (m_pTimer && m_pTimer->isActive())
+            m_pTimer->stop();
          m_CurrentObject = m_NextObject;
+         TipCollection::manager()->hideCurrentTip();
          m_NextObject    = CanvasObjectManager::Object::NoObject;
       }
       else {
@@ -141,13 +149,27 @@ void CanvasObjectManager::initiateInTransition(Object nextObj)
 {
    if (nextObj != m_CurrentObject) {
       if (m_DisableTransition) {
+         if (m_pTimer && m_pTimer->isActive())
+            m_pTimer->stop();
          m_CurrentObject = nextObj;
          nextObj = CanvasObjectManager::Object::NoObject;
          switch (OBJ_DEF(m_CurrentObject).type) {
-            case ObjectType::OBJECT:
+            case ObjectType::OBJECT: {
                qDebug() << "\n\n\nICI" << (int)m_CurrentObject;
-               TipCollection::manager()->setCurrentTip(TipCollection::canvasObjectToTip(m_CurrentObject));
-               break;
+               Tip* currentTip = TipCollection::canvasObjectToTip(m_CurrentObject);
+               if (currentTip) {
+                  if (OBJ_DEF(m_CurrentObject).lifeCycle == ObjectLifeCycle::TIMED && currentTip->timeout()) {
+                     if (!m_pTimer) {
+                        m_pTimer = new QTimer();
+                        m_pTimer->setSingleShot(true);
+                        connect(m_pTimer,SIGNAL(timeout()),this,SLOT(slotTimeout()));
+                     }
+                     m_pTimer->setInterval(currentTip->timeout());
+                     m_pTimer->start();
+                  }
+               }
+               TipCollection::manager()->setCurrentTip(currentTip);
+               } break;
             case ObjectType::WIDGET:
                break;
          };
@@ -162,14 +184,15 @@ void CanvasObjectManager::initiateInTransition(Object nextObj)
 bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
 {
    Q_UNUSED(message);
+   qDebug() << "NEW EVENT" << events;
    //First, notify the current object of the new event, it may be discarded
    if (m_CurrentObject != CanvasObjectManager::Object::NoObject && OBJ_DEF(m_CurrentObject).outEvent & events) {
       initiateOutTransition();
    }
 
    //Detect if there is multiple flags set
-   const bool multiEvent = (events & (events - 1)) == 0;
-   if (multiEvent) {
+   const bool singleEvent = (events & (events - 1)) == 0;
+   if (singleEvent) {
       CanvasObjectManager::Object nextObj = eventToObject(events);
       if (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority) {
          initiateInTransition(nextObj);
@@ -196,6 +219,8 @@ void CanvasObjectManager::reset()
    if (m_CurrentObject != CanvasObjectManager::Object::NoObject) {
       //TODO
    }
+   if (m_pTimer && m_pTimer->isActive())
+      m_pTimer->stop();
    m_CurrentObject = CanvasObjectManager::Object::NoObject;
    TipCollection::manager()->hideCurrentTip();
 }
@@ -245,6 +270,24 @@ bool CanvasObjectManager::testEventToEvent() const
    qDebug() << "\n\n\ntestEventToEvent" << success;
    return success;
 }
+
+
+
+void CanvasObjectManager::slotTimeout()
+{
+   //Hide the canvas object, stopping the countdown should be handled elsewhere
+   initiateOutTransition();
+}
+
+
+
+
+
+
+
+
+
+
 
 bool CanvasObjectManager::testEvenToObject() const
 {

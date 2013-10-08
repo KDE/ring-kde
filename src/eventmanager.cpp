@@ -41,7 +41,8 @@
 ///Constructor
 EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(parent)
 {
-   
+   connect(CallModel::instance() , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
+   connect(CallModel::instance() , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
 }
 
 ///Destructor
@@ -104,7 +105,6 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       }
       //Remove uneedded tip
       if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-//             TipCollection::manager()->setCurrentTip(nullptr);
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DROP);
       }
       return true;
@@ -203,6 +203,8 @@ bool EventManager::eventFilter(QObject *obj, QEvent *event)
          break;
       case QEvent::DragMove:
          if (viewDragMoveEvent(static_cast<QDragMoveEvent*>(event))) return true;
+      case QEvent::DragLeave:
+         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_LEAVE);
    };
    #pragma GCC diagnostic pop
    return QObject::eventFilter(obj, event);
@@ -315,9 +317,6 @@ void EventManager::backspace()
    }
    else {
       call->backspaceItemText();
-//       if(call->state() == Call::State::OVER && CallModel::instance()->getCall(m_pParent->m_pView->selectionModel()->currentIndex())) { //TODO dead code
-//          callView->removeItem(callView->getCurrentItem());
-//       }
    }
 }
 
@@ -331,7 +330,8 @@ void EventManager::escape()
       m_pParent->updateWindowCallState();
       return;
    }
-   /*else */if(!call) {
+
+   if(!call) {
       kDebug() << "Escape when no item is selected. Doing nothing.";
    }
    else {
@@ -400,9 +400,40 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 {
    Q_UNUSED(call)
    Q_UNUSED(previousState)
+   qDebug() << "\n\n\nWORKS2" << call->state();
+   switch (call->state()) {
+      case Call::State::RINGING:
+         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
+         break;
+      case Call::State::DIALING:
+      case Call::State::INCOMING:
+         break; //Handled elsewhere
+      case Call::State::OVER:
+         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED);
+         break;
+      case Call::State::FAILURE:
+      case Call::State::BUSY:
+         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_BUSY);
+         break;
+      case Call::State::TRANSFERRED:
+      case Call::State::TRANSF_HOLD:
+      case Call::State::HOLD:
+      case Call::State::CURRENT:
+      case Call::State::ERROR:
+      case Call::State::CONFERENCE:
+      case Call::State::CONFERENCE_HOLD:
+      case Call::State::COUNT:
+      default:
+         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_STATE_CHANGED);
+         kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
+   }
 }
 
 void EventManager::slotIncomingCall(Call* call)
 {
    Q_UNUSED(call)
+   qDebug() << "\n\n\nWORKS";
+   if (call->state() == Call::State::INCOMING || call->state() == Call::State::RINGING) {
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
+   }
 }
