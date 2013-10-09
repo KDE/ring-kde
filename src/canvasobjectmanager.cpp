@@ -33,16 +33,17 @@ CanvasObjectManager::Object CanvasObjectManager::m_slEvents[EVENT_COUNT] = { Can
 #define E CanvasEvent
 const CanvasObjectManager::CanvasElement CanvasObjectManager::elements[ELEMENT_COUNT] = {
    /*                  ObjectType       ObjectLifeCycle        ObjectPriority             IN-EVENT                   OUT-EVENT         STACK   NOTIFY */
-   /*0 NoObject     */ {_(Type)OBJECT , _(LifeCycle)STATIC , _(Priority)NO_PRIORITY, E::NONE                    , E::ANY               , false , false  },
-   /*1 DialInfo     */ {_(Type)OBJECT , _(LifeCycle)STATIC , _(Priority)LOW        , E::NO_CALLS                , E::ANY               , false , false  },
-   /*2 EndCall      */ {_(Type)OBJECT , _(LifeCycle)TIMED  , _(Priority)LOW        , E::CALL_ENDED              , E::ANY               , false , true   },
+   /*0 NoObject     */ {_(Type)OBJECT , _(LifeCycle)STATIC , _(Priority)NO_PRIORITY, E::NONE                    , E::ANY               , false , false  , false},
+   /*1 DialInfo     */ {_(Type)OBJECT , _(LifeCycle)STATIC , _(Priority)LOW        , E::NO_CALLS                , E::ANY               , false , false  , false},
+   /*2 EndCall      */ {_(Type)OBJECT , _(LifeCycle)TIMED  , _(Priority)LOW        , E::CALL_ENDED              , E::ANY               , false , true   , false},
    /*3 Ringing      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::CALL_RINGING            , E::CALL_STATE_CHANGED
                                                                                                                  | E::CALL_ENDED
-                                                                                                                 | E::CALL_BUSY        , true  , true   },
-   /*4 Network      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::NETWORK_ERROR           , E::ANY               , false , true   },
-   /*5 AutoComplete */ {_(Type)WIDGET , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::CALL_DIALING_CHANGED    , E::CALL_STATE_CHANGED, false , false  },
-   /*6 DropInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::DRAG_ENTER|E::DRAG_MOVE , E::DRAG_LEAVE|E::DROP, false , false  },
-   /*7 ConfInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)LOW        , E::CALL_COUNT_CHANGED      , E::ANY               , false , false  },
+                                                                                                                 | E::CALL_BUSY        , true  , true   , false},
+   /*4 Network      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::NETWORK_ERROR           , E::ANY               , false , true   , false},
+   /*5 AutoComplete */ {_(Type)WIDGET , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::CALL_DIALING_CHANGED    , E::CALL_STATE_CHANGED
+                                                                                                                 | E::CALL_ENDED       , false , false  , true },
+   /*6 DropInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::DRAG_ENTER|E::DRAG_MOVE , E::DRAG_LEAVE|E::DROP, false , false  , false},
+   /*7 ConfInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)LOW        , E::CALL_COUNT_CHANGED      , E::ANY               , false , false  , false},
 };
 #undef _
 #undef E
@@ -141,19 +142,33 @@ void CanvasObjectManager::initiateOutTransition()
          if (m_pTimer && m_pTimer->isActive())
             m_pTimer->stop();
          m_CurrentObject = m_NextObject;
-         TipCollection::manager()->hideCurrentTip();
+         TipCollection::manager()->hideCurrentTip(true);
          m_NextObject    = CanvasObjectManager::Object::NoObject;
       }
       else {
          //TODO
          if (m_CurrentObject != Object::NoObject) {
-            //If hideCurrentTip return true, then act as if the transition was over
-            if (TipCollection::manager()->hideCurrentTip()) {
-//                qDebug() << "PROBLEM";
-               m_CurrentObject = m_NextObject;
-               m_NextObject    = CanvasObjectManager::Object::NoObject;
-            }
-//             qDebug() << "SHOULD HIDE TIP" << (int)m_NextObject;
+            switch (OBJ_DEF(m_CurrentObject).type) {
+               case ObjectType::OBJECT: {
+                  //If hideCurrentTip return true, then act as if the transition was over
+                  qDebug() << "\n\n\nMMMMM" << OBJ_DEF(m_CurrentObject).skipAnimation << (int)m_NextObject;
+                  if (TipCollection::manager()->hideCurrentTip(OBJ_DEF(m_NextObject).skipAnimation)) {
+      //                qDebug() << "PROBLEM";
+                     m_CurrentObject = m_NextObject;
+                     m_NextObject    = CanvasObjectManager::Object::NoObject;
+                  }
+                  } break;
+               case ObjectType::WIDGET: {
+//                   qDebug() << "OUT WIDGET";
+                  QWidget* w = TipCollection::canvasWidgetsToTip(m_CurrentObject);
+                  if (w) {
+                     w->setVisible(false);
+                     m_CurrentObject = m_NextObject;
+                     m_NextObject    = CanvasObjectManager::Object::NoObject;
+                  }
+                  } break;
+   //             qDebug() << "SHOULD HIDE TIP" << (int)m_NextObject;
+            };
          }
       }
    }
@@ -161,8 +176,8 @@ void CanvasObjectManager::initiateOutTransition()
 
 void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& message)
 {
+//    qDebug() << "HERE" << (int)m_CurrentState << m_DisableTransition << (int)nextObj;
    if (nextObj != m_CurrentObject) {
-//       qDebug() << "HERE" << (int)m_CurrentState << m_DisableTransition;
       if (m_DisableTransition || m_CurrentState == ObjectState::NO_OBJECT) {
          if (m_pTimer && m_pTimer->isActive())
             m_pTimer->stop();
@@ -188,13 +203,17 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
                TipCollection::manager()->setCurrentTip(currentTip);
                } break;
             case ObjectType::WIDGET:
+               QWidget* w = TipCollection::canvasWidgetsToTip(m_CurrentObject);
+               if (w) {
+                  w->setVisible(true);
+               }
                break;
          };
       }
       else {
 //          qDebug() << "CURRENT IS VISIBLE" <<(int)m_CurrentObject << "next" << (int)nextObj;
-         initiateOutTransition();
          m_NextObject = nextObj;
+         initiateOutTransition();
       }
    }
 }
@@ -204,7 +223,7 @@ bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
 //    qDebug() << "NEW EVENT" << events << message << (int)m_CurrentState << (int)m_CurrentObject << (OBJ_DEF(m_CurrentObject).outEvent & events);
    //First, notify the current object of the new event, it may be discarded
    if (m_CurrentObject != CanvasObjectManager::Object::NoObject && OBJ_DEF(m_CurrentObject).outEvent & events) {
-//       qDebug() << "OUT";
+//       qDebug() << "OUT (dsfsdf)";
       initiateOutTransition();
    }
 
@@ -214,8 +233,8 @@ bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
       CanvasObjectManager::Object nextObj = eventToObject(events);
 //       qDebug() << "IS SINGLE" << (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority) << (int)nextObj << (int)m_CurrentObject << (int) m_CurrentState;
       if (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority || m_CurrentState == ObjectState::TRANSITION_OUT) {
+//          qDebug() << "In IF";
          initiateInTransition(nextObj,message);
-//          qDebug() << "ret";
          return true;
       }
    }
@@ -244,7 +263,7 @@ void CanvasObjectManager::reset()
    if (m_pTimer && m_pTimer->isActive())
       m_pTimer->stop();
    m_CurrentObject = CanvasObjectManager::Object::NoObject;
-   TipCollection::manager()->hideCurrentTip();
+   TipCollection::manager()->hideCurrentTip(true);
 }
 
 bool CanvasObjectManager::operator<<(CanvasEvent events)

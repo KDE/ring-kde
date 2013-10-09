@@ -90,6 +90,9 @@ public:
    Call* currentCall() const {
       return CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
    }
+   AutoCompletion* autoCompletion() const {
+      return m_pAutoCompletion;
+   }
 
    //Setters
    void setCurrentIndex(const QModelIndex& idx) {

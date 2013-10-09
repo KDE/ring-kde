@@ -203,6 +203,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
       m_pAutoCompletion = new AutoCompletion(m_pView);
       PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
       m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
+      connect(m_pAutoCompletion, SIGNAL(requestVisibility(bool)), m_pEventManager, SLOT(slotAutoCompletionVisibility(bool)));
    }
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);

@@ -66,10 +66,14 @@ public Q_SLOTS:
    void moveUp();
    void moveDown();
    void setCall(Call* call);
-   
+
 private Q_SLOTS:
    void selectionChanged(const QModelIndex& idx = QModelIndex());
    void slotLayoutChanged();
+   void slotVisibilityChange(bool visible);
+
+Q_SIGNALS:
+   void requestVisibility(bool visible);
 };
 
 #endif

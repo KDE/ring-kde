@@ -68,7 +68,7 @@ private:
    SFLPhoneView*        m_pParent       ;
 
    //Methods
-   bool viewKeyEvent      ( const QKeyEvent*       e);
+   bool viewKeyEvent      ( QKeyEvent*       e);
    bool viewDragEnterEvent( const QDragEnterEvent* e);
    bool viewDropEvent     ( QDropEvent*      e);
    bool viewDragMoveEvent ( const QDragMoveEvent*  e);
@@ -81,6 +81,7 @@ public Q_SLOTS:
     *   according to the current state (window, item selected...)
     */
    void enter();
+   void slotAutoCompletionVisibility(bool);
 
 private Q_SLOTS:
    void slotCallStateChanged(Call* call, Call::State previousState);

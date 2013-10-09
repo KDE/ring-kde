@@ -164,6 +164,7 @@ private:
       int             outEvent          ; /* All compatible events to phase out this object */
       bool            stack             ; /* Use an event counter to phase this object out  */
       bool            systemNotification; /* Send a notification is SFLPhone ain't focussed */
+      bool            skipAnimation     ; /* Do not trigger out animation when overriding   */
    };
 
    //Constants

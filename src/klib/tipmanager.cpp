@@ -22,6 +22,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QEvent>
 #include <QtCore/QDebug>
+#include <QtGui/QApplication>
 
 //KDE
 #include <KDebug>
@@ -37,9 +38,8 @@ bool TipManager::eventFilter(QObject *obj, QEvent *event)
 }
 
 ///Constructor
-TipManager::TipManager(QTreeView* parent):QObject(parent),
-m_OriginalPalette(parent->palette()),m_pParent(parent),m_BottomMargin(0),m_TopMargin(0),
-m_pAnim(this),m_pCurrentTip(nullptr)
+TipManager::TipManager(QTreeView* parent):QObject(parent),m_pParent(parent),
+   m_BottomMargin(0),m_TopMargin(0),m_pAnim(this),m_pCurrentTip(nullptr)
 {
    m_CurrentFrame = {QPoint(0,0),QRect(),0};
    parent->installEventFilter(this);
@@ -67,7 +67,7 @@ void TipManager::reload()
    int width(m_pParent->width()),height(m_pParent->height());
    int effectiveHeight = height-m_BottomMargin-m_TopMargin;
    m_CurrentImage = QImage(QSize(width,height),QImage::Format_RGB888);
-   m_CurrentImage.fill( m_OriginalPalette.base().color().rgb() );
+   m_CurrentImage.fill( QApplication::palette().base().color() );
    QPainter p(&m_CurrentImage);
 
    if (effectiveHeight >= m_pAnim.tipSize().height() /*&& m_pCurrentTip*/) {
@@ -130,10 +130,14 @@ void TipManager::changeSize(bool ignoreAnim)
    }
 }
 
-bool TipManager::hideCurrentTip()
+bool TipManager::hideCurrentTip(bool skipAnimation)
 {
-   qDebug() << "hiding current";
-   if (m_pCurrentTip) {
+   if (skipAnimation) {
+      m_pCurrentTip = nullptr;
+      emit currentTipChanged(nullptr);
+      emit transitionStarted(QAbstractAnimation::Backward,QAbstractAnimation::Stopped);
+   }
+   else if (m_pCurrentTip) {
       m_pAnim.setTip(m_pCurrentTip);
       changeSize(false);
       m_pAnim.start(false);

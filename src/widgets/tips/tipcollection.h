@@ -22,6 +22,10 @@
 
 #include <canvasobjectmanager.h>
 
+//Qt
+class QWidget;
+
+//SFLPhone
 class DialPadTip;
 class Tip;
 class TipManager;
@@ -32,44 +36,48 @@ class TipCollection {
 public:
    //CanvasManager
    static Tip*       canvasObjectToTip(CanvasObjectManager::Object obj);
-   
+
    //Tutorial mode
    static Tip*        dialPad    ();
    static Tip*        conference ();
    static Tip*        dragAndDrop();
-   
+
    //Call related
    static Tip*        endCall();
    static Tip*        endBusy();
    static Tip*        ringing();
    static Tip*        removeConference();
-   
+
    //Account related
    static Tip*        connectionLost();
-   
+
    //Network related
    static Tip*        networkLost();
-   
+
    //Manager
    static TipManager* manager();
    static void setManager(TipManager* manager);
+
+   //Widgets
+   static QWidget*    canvasWidgetsToTip(CanvasObjectManager::Object obj);
+
 private:
    //Tutorial mode
    static Tip* m_spDialPad;
    static ConfTip*    m_spConf   ;
-   
+
    //Call related
    static Tip*        m_spEndCall;
    static Tip*        m_spEndBusy;
    static Tip*        m_spRinging;
    static Tip*        m_spRemoveConference;
-   
+
    //Account related
    static ConnectionLostTip* m_spConnectionLost;
-   
+
    //Network related
    static Tip*        m_spNetworkLost;
-   
+
    //Global manager
    static TipManager* m_spManager;
 };

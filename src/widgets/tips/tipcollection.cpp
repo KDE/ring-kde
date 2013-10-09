@@ -25,6 +25,9 @@
 #include "conftip.h"
 #include "removeconferencetip.h"
 #include "klib/tipmanager.h"
+#include "sflphone.h"
+#include "sflphoneview.h"
+#include "widgets/autocompletion.h"
 
 //Tutorial mode
 Tip*               TipCollection::m_spDialPad          = nullptr;
@@ -63,6 +66,23 @@ Tip* TipCollection::canvasObjectToTip(CanvasObjectManager::Object obj)
          return conference();
       case CanvasObjectManager::Object::NoObject:
       case CanvasObjectManager::Object::AutoComplete:
+      default:
+         return nullptr;
+   }
+}
+
+QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
+{
+   switch(obj) {
+      case CanvasObjectManager::Object::AutoComplete:
+         return SFLPhone::view()->autoCompletion();
+      case CanvasObjectManager::Object::DialInfo:
+      case CanvasObjectManager::Object::EndCall :
+      case CanvasObjectManager::Object::Ringing :
+      case CanvasObjectManager::Object::Network :
+      case CanvasObjectManager::Object::DropInfo:
+      case CanvasObjectManager::Object::ConfInfo:
+      case CanvasObjectManager::Object::NoObject:
       default:
          return nullptr;
    }

@@ -54,7 +54,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent)
    m_pModel = new NumberCompletionModel();
    m_pView->setModel(m_pModel);
 
-   connect(m_pModel,SIGNAL(enabled(bool))  ,this, SLOT(setVisible(bool))   );
+   connect(m_pModel,SIGNAL(enabled(bool))  ,this, SLOT(slotVisibilityChange(bool))   );
    connect(m_pModel,SIGNAL(layoutChanged()),this, SLOT(slotLayoutChanged()));
 
    if (parent) {
@@ -152,9 +152,9 @@ void AutoCompletion::paintEvent(QPaintEvent* event)
    QPainter customPainter(this);
    customPainter.setOpacity(0.1);
    customPainter.setPen(Qt::NoPen);
+   customPainter.setRenderHint(QPainter::Antialiasing, true);
    customPainter.setBrush(QBrush(brightOrDarkBase()?Qt::black:Qt::white));
    customPainter.drawRoundedRect(0,0,width(),height(),10,10);
-   customPainter.setRenderHint(QPainter::Antialiasing, true);
    QWidget::paintEvent(event);
 }
 
@@ -179,4 +179,10 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
    }
    // standard event processing
    return QObject::eventFilter(obj, event);
+}
+
+void AutoCompletion::slotVisibilityChange(bool visible)
+{
+   qDebug() << "\n\n\nICI";
+   emit requestVisibility(visible);
 }

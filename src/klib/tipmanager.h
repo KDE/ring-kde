@@ -47,7 +47,7 @@ public:
    virtual ~TipManager();
 
    //Mutator
-   bool hideCurrentTip();
+   bool hideCurrentTip(bool skipAnimation = false);
 
    //Getter
    QImage getImage();
@@ -66,7 +66,6 @@ private:
    void reload();
 
    //Attributes
-   QPalette                m_OriginalPalette ;
    QTreeView*              m_pParent         ;
    int                     m_TopMargin       ;
    int                     m_BottomMargin    ;

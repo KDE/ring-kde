@@ -41,8 +41,8 @@
 ///Constructor
 EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(parent)
 {
-   connect(CallModel::instance() , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
-   connect(CallModel::instance() , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
+   connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
+   connect(CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
 }
 
 ///Destructor
@@ -194,7 +194,7 @@ bool EventManager::eventFilter(QObject *obj, QEvent *event)
    switch (event->type()) {
       case QEvent::KeyPress: {
          const int key = static_cast<QKeyEvent*>(event)->key();
-         if (key != Qt::Key_Left && key != Qt::Key_Right && key != Qt::Key_Down && key != Qt::Key_Up) {
+         if (key != Qt::Key_Left && key != Qt::Key_Right) {
             if (viewKeyEvent(static_cast<QKeyEvent*>(event))) return true;
          }
          } break;
@@ -210,9 +210,9 @@ bool EventManager::eventFilter(QObject *obj, QEvent *event)
    return QObject::eventFilter(obj, event);
 } //eventFilter
 
-bool EventManager::viewKeyEvent(const QKeyEvent* event)
+bool EventManager::viewKeyEvent(QKeyEvent* event)
 {
-      switch(event->key()) {
+   switch(event->key()) {
       case Qt::Key_Escape:
          escape();
          break;
@@ -236,11 +236,15 @@ bool EventManager::viewKeyEvent(const QKeyEvent* event)
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->isVisible()) {
             m_pParent->m_pAutoCompletion->moveUp();
          }
+         else
+            return false;
          break;
       case Qt::Key_Down:
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->isVisible()) {
             m_pParent->m_pAutoCompletion->moveDown();
          }
+         else
+            return false;
          break;
       default: {
          const QString& text = event->text();
@@ -408,8 +412,12 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::INCOMING:
          break; //Handled elsewhere
       case Call::State::OVER:
-         if (previousState == Call::State::DIALING || previousState == Call::State::OVER)
-            m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Cancelled"));
+         if (previousState == Call::State::DIALING || previousState == Call::State::OVER) {
+            if (call->historyState() == Call::HistoryState::MISSED)
+               m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Missed"));
+            else
+               m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Cancelled"));
+         }
          else
             m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Call ended"));
          break;
@@ -438,3 +446,10 @@ void EventManager::slotIncomingCall(Call* call)
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
    }
 }
+
+void EventManager::slotAutoCompletionVisibility(bool)
+{
+   qDebug() << "IN slotAutoCompletionVisibility";
+   m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_DIALING_CHANGED);
+}
+
