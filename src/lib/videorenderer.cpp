@@ -207,8 +207,9 @@ bool VideoRenderer::shmLock()
 {
    const timespec timeout = createTimeout();
    /* We need an upper limit on how long we'll wait to avoid locking the whole GUI */
-   if (sem_timedwait(&m_pShmArea->mutex, &timeout) == ETIMEDOUT) {
-      qDebug() << "Timed out before shm lock was acquired";
+   if (sem_timedwait(&m_pShmArea->mutex, &timeout) < 0) {
+       if (errno == ETIMEDOUT)
+           qDebug() << "Timed out before shm lock was acquired";
       return false;
    }
    return true;
