@@ -29,6 +29,10 @@ class QWidget;
 //KDE
 class KConfigDialog;
 
+//SFLPhone
+class TipManager;
+class Tip;
+
 //Typedef
 typedef QHash<QString, QString> StringHash;                          //Needed to fix a Qt foreach macro argument parsing bug
 
@@ -111,6 +115,8 @@ private:
    bool                  accountListHasChanged ;
    QMap<QString,QString> m_hRingtonePath       ;
    int                   m_IsLoading           ;
+   TipManager*           m_pTipManager         ;
+   Tip*                  m_pTip                ;
 
 public Q_SLOTS:
    void loadAccountList                  ();

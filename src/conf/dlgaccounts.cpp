@@ -38,6 +38,8 @@
 #include "conf/configurationdialog.h"
 #include "lib/dbus/configurationmanager.h"
 #include "sflphoneview.h"
+#include "klib/tipmanager.h"
+#include "klib/tip.h"
 #include "lib/sflphone_const.h"
 #include "lib/credentialmodel.h"
 #include "lib/audiocodecmodel.h"
@@ -74,6 +76,12 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 
    m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(32,32)));
    label_message_icon->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
+
+   //Add an info tip in the account list
+   m_pTipManager = new TipManager(listView_accountList);
+   m_pTip = new Tip(i18n("To add an account, press the \"add\" button bellow. Use the\
+   ⬆ up and ⬇ down button to change the default account priority."),this);
+   m_pTipManager->setCurrentTip(m_pTip);
 
    m_pRingTonePath->setMode(KFile::File | KFile::ExistingOnly);
    m_pRingTonePath->lineEdit()->setObjectName("m_pRingTonePath");
@@ -176,6 +184,8 @@ DlgAccounts::~DlgAccounts()
 {
    //accountList->disconnect();
    //if (accountList) delete accountList;
+   delete m_pTipManager;
+   delete m_pTip;
 }
 
 ///Save an account using the values from the widgets

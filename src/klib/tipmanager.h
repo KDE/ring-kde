@@ -20,9 +20,7 @@
 
 //Qt
 #include <QtCore/QObject>
-#include <QtCore/QStringList>
-#include <QtGui/QPalette>
-#include <QtGui/QTreeView>
+#include <QtGui/QAbstractItemView>
 #include <QtGui/QImage>
 #include <QtCore/QAbstractAnimation>
 class QTimer;
@@ -43,7 +41,7 @@ class LIB_EXPORT TipManager : public QObject
    friend class ResizeEventFilter;
 public:
    //Constructor
-   explicit TipManager(QTreeView* parent);
+   explicit TipManager(QAbstractItemView* parent);
    virtual ~TipManager();
 
    //Mutator
@@ -66,7 +64,7 @@ private:
    void reload();
 
    //Attributes
-   QTreeView*              m_pParent         ;
+   QAbstractItemView*      m_pParent         ;
    int                     m_TopMargin       ;
    int                     m_BottomMargin    ;
    QImage                  m_CurrentImage    ;
