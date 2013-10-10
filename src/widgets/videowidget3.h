@@ -20,8 +20,10 @@
 
 #include <QtGui/QGraphicsView>
 
+//Qt
 class QGLWidget;
 
+//SFLPhone
 class VideoRenderer;
 class VideoScene;
 class VideoGLFrame;

@@ -18,9 +18,11 @@
 #ifndef VIDEO_WIDGET_H
 #define VIDEO_WIDGET_H
 
+//Qt
 #include <QtGui/QWidget>
 #include <QtGui/QPainter>
 
+//SFLPhone
 #include "../lib/videomodel.h"
 class VideoRenderer;
 
@@ -30,21 +32,19 @@ class VideoWidget : public QWidget {
 public:
    explicit VideoWidget(QWidget* parent =nullptr, VideoRenderer* renderer = VideoModel::instance()->previewRenderer());
 
-
 protected:
+   //Events
    virtual void paintEvent(QPaintEvent* event);
-
 
 private:
    //Attributes
-   QImage*        m_Image;
+   QImage*        m_Image    ;
    VideoRenderer* m_pRenderer;
 
 private Q_SLOTS:
-   void update();
+   void update     ();
    void updateFrame();
-   void stop();
-
+   void stop       ();
 
 public Q_SLOTS:
    void setRenderer(VideoRenderer* renderer);

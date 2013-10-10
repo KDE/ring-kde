@@ -19,41 +19,42 @@
 
 #include <QtGui/QGraphicsScene>
 
-class QLabel;
-
+//SFLPhone
 class VideoGLFrame;
 class VideoToolbar;
 
 class VideoScene : public QGraphicsScene
 {
    Q_OBJECT
-
 public:
+   //Constructor
    VideoScene();
 
+   //Mutator
    void drawBackground(QPainter *painter, const QRectF &rect);
 
    //Setters
-   void setToolbar(VideoToolbar* tb);
-   void addFrame(VideoGLFrame* frame);
-
-public slots:
-   void setBackgroundColor();
-   void frameChanged();
+   void setToolbar( VideoToolbar* tb    );
+   void addFrame  ( VideoGLFrame* frame );
 
 protected:
-   void mousePressEvent(QGraphicsSceneMouseEvent *event);
-   void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-   void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-   void wheelEvent(QGraphicsSceneWheelEvent * wheelEvent);
+   //Events
+   virtual void mousePressEvent  ( QGraphicsSceneMouseEvent* event      );
+   virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event      );
+   virtual void mouseMoveEvent   ( QGraphicsSceneMouseEvent* event      );
+   virtual void wheelEvent       ( QGraphicsSceneWheelEvent* wheelEvent );
 
 private:
-   QList<VideoGLFrame*> m_lFrames ;
-
-   QColor m_backgroundColor;
+   //Atributes
+   QList<VideoGLFrame*> m_lFrames        ;
+   QColor               m_backgroundColor;
+   VideoToolbar*        m_pToolbar       ;
 //    QGraphicsRectItem *m_lightItem;
 
-   VideoToolbar* m_pToolbar;
+
+public Q_SLOTS:
+   void setBackgroundColor();
+   void frameChanged      ();
 };
 
 #endif

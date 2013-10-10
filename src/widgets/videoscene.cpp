@@ -21,8 +21,6 @@
 #include <QtGui/QLabel>
 #include <GL/glu.h>
 
-#include <KDialog>
-
 #include "videoglframe.h"
 #include "videotoolbar.h"
 

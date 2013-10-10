@@ -447,3 +447,127 @@ void ActionCollection::addMacro(KAction* newAction)
    SFLPhone::app()->actionCollection()->addAction(newAction->objectName() , newAction );
 }
 
+
+/*****************************************************************************
+ *                                                                           *
+ *                                  Getters                                  *
+ *                                                                           *
+ ****************************************************************************/
+
+ExtendedAction* ActionCollection::holdAction    ()
+{
+   return action_hold;
+}
+
+ExtendedAction* ActionCollection::recordAction  ()
+{
+   return action_record;
+}
+
+ExtendedAction* ActionCollection::refuseAction  ()
+{
+   return action_refuse;
+}
+
+ExtendedAction* ActionCollection::muteAction    ()
+{
+   return action_mute;
+}
+
+ExtendedAction* ActionCollection::hangupAction  ()
+{
+   return action_hangup;
+}
+
+ExtendedAction* ActionCollection::unholdAction  ()
+{
+   return action_unhold;
+}
+
+ExtendedAction* ActionCollection::transferAction()
+{
+   return action_transfer;
+}
+
+ExtendedAction* ActionCollection::pickupAction  ()
+{
+   return action_pickup;
+}
+
+ExtendedAction* ActionCollection::acceptAction  ()
+{
+   return action_accept;
+}
+
+KAction* ActionCollection::displayVolumeControlsAction()
+{
+   return action_displayVolumeControls;
+}
+
+KAction* ActionCollection::displayDialpadAction       ()
+{
+   return action_displayDialpad;
+}
+
+KAction* ActionCollection::displayMessageBoxAction    ()
+{
+   return action_displayMessageBox;
+}
+
+KAction* ActionCollection::mailBoxAction              ()
+{
+   return action_mailBox;
+}
+
+KAction* ActionCollection::showContactDockAction      ()
+{
+   return action_showContactDock;
+}
+
+KAction* ActionCollection::showHistoryDockAction      ()
+{
+   return action_showHistoryDock;
+}
+
+KAction* ActionCollection::showBookmarkDockAction     ()
+{
+   return action_showBookmarkDock;
+}
+
+KAction* ActionCollection::quitAction                 ()
+{
+   return action_quit;
+}
+
+//Video actions
+#ifdef ENABLE_VIDEO
+ExtendedAction* ActionCollection::videoRotateLeftAction     ()
+{
+   return action_video_rotate_left;
+}
+
+ExtendedAction* ActionCollection::videoRotateRightAction    ()
+{
+   return action_video_rotate_right;
+}
+
+ExtendedAction* ActionCollection::videoFlipHorizontalAction ()
+{
+   return action_video_flip_horizontal;
+}
+
+ExtendedAction* ActionCollection::videoFlipVerticalAction   ()
+{
+   return action_video_flip_vertical;
+}
+
+ExtendedAction* ActionCollection::videoMuteAction           ()
+{
+   return action_video_mute;
+}
+
+ExtendedAction* ActionCollection::videoPreviewAction        ()
+{
+   return action_video_preview;
+}
+#endif

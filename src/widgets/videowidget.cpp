@@ -16,8 +16,12 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "videowidget.h"
-#include "../lib/videorenderer.h"
+
+//KDE
 #include <KDebug>
+
+//SFLPhone
+#include "../lib/videorenderer.h"
 
 ///Constructor
 VideoWidget::VideoWidget(QWidget* parent ,VideoRenderer* renderer) : QWidget(parent),m_Image(nullptr),m_pRenderer(renderer) {
@@ -48,9 +52,7 @@ void VideoWidget::update() {
 void VideoWidget::paintEvent(QPaintEvent* event)
 {
    Q_UNUSED(event)
-   //if (VideoModel::instance()->isPreviewing()) {
    update();
-   //}
 }
 
 ///Called when a new frame is ready
@@ -61,14 +63,7 @@ void VideoWidget::updateFrame()
       setMinimumSize(size);
    if (m_Image)
       delete m_Image;
-   //if (!m_Image && VideoModel::instance()->isRendering())
-      m_Image = new QImage((uchar*)m_pRenderer->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
-   //This is the right way to do it, but it does not work
-//    if (!m_Image || (m_Image && m_Image->size() != size))
-//       m_Image = new QImage((uchar*)VideoModel::instance()->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
-//    if (!m_Image->loadFromData(VideoModel::instance()->getCurrentFrame())) {
-//       qDebug() << "Loading image failed";
-//    }
+   m_Image = new QImage((uchar*)m_pRenderer->rawData() , size.width(), size.height(), QImage::Format_ARGB32 );
    repaint();
 }
 

@@ -20,11 +20,17 @@
 
 #include <QtCore/QObject>
 
-class KAction;
+//Qt
 class QActionGroup;
+
+//KDE
+class KAction;
+
+//SFLPhonw
 class AccountWizard;
 class ExtendedAction;
 
+///Group action declaration under the same umbrella
 class ActionCollection : public QObject {
    Q_OBJECT
 public:
@@ -36,46 +42,47 @@ public:
    void setupAction();
 
    //Actions
-   ExtendedAction* holdAction    () { return action_hold;     }
-   ExtendedAction* recordAction  () { return action_record;   }
-   ExtendedAction* refuseAction  () { return action_refuse;   }
-   ExtendedAction* muteAction    () { return action_mute;     }
-   ExtendedAction* hangupAction  () { return action_hangup;   }
-   ExtendedAction* unholdAction  () { return action_unhold;   }
-   ExtendedAction* transferAction() { return action_transfer; }
-   ExtendedAction* pickupAction  () { return action_pickup;   }
-   ExtendedAction* acceptAction  () { return action_accept;   }
-   KAction*        displayVolumeControlsAction() { return action_displayVolumeControls; }
-   KAction*        displayDialpadAction       () { return action_displayDialpad;        }
-   KAction*        displayMessageBoxAction    () { return action_displayMessageBox;     }
-   KAction*        mailBoxAction              () { return action_mailBox;               }
-   KAction*        showContactDockAction      () { return action_showContactDock;       }
-   KAction*        showHistoryDockAction      () { return action_showHistoryDock;       }
-   KAction*        showBookmarkDockAction     () { return action_showBookmarkDock;      }
-   KAction*        quitAction                 () { return action_quit;                  }
+   ExtendedAction* holdAction    ();
+   ExtendedAction* recordAction  ();
+   ExtendedAction* refuseAction  ();
+   ExtendedAction* muteAction    ();
+   ExtendedAction* hangupAction  ();
+   ExtendedAction* unholdAction  ();
+   ExtendedAction* transferAction();
+   ExtendedAction* pickupAction  ();
+   ExtendedAction* acceptAction  ();
+   KAction*        displayVolumeControlsAction();
+   KAction*        displayDialpadAction       ();
+   KAction*        displayMessageBoxAction    ();
+   KAction*        mailBoxAction              ();
+   KAction*        showContactDockAction      ();
+   KAction*        showHistoryDockAction      ();
+   KAction*        showBookmarkDockAction     ();
+   KAction*        quitAction                 ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
-   ExtendedAction* videoRotateLeftAction     () { return action_video_rotate_left    ;}
-   ExtendedAction* videoRotateRightAction    () { return action_video_rotate_right   ;}
-   ExtendedAction* videoFlipHorizontalAction () { return action_video_flip_horizontal;}
-   ExtendedAction* videoFlipVerticalAction   () { return action_video_flip_vertical  ;}
-   ExtendedAction* videoMuteAction           () { return action_video_mute           ;}
-   ExtendedAction* videoPreviewAction        () { return action_video_preview        ;}
+   ExtendedAction* videoRotateLeftAction     ();
+   ExtendedAction* videoRotateRightAction    ();
+   ExtendedAction* videoFlipHorizontalAction ();
+   ExtendedAction* videoFlipVerticalAction   ();
+   ExtendedAction* videoMuteAction           ();
+   ExtendedAction* videoPreviewAction        ();
    #endif
 
 private:
 
-   //Attributes
-   ExtendedAction* action_accept         ;
-   ExtendedAction* action_refuse         ;
-   ExtendedAction* action_hold           ;
-   ExtendedAction* action_transfer       ;
-   ExtendedAction* action_record         ;
-   ExtendedAction* action_mute           ;
-   ExtendedAction* action_hangup         ;
-   ExtendedAction* action_unhold         ;
-   ExtendedAction* action_pickup         ;
+   //Toolbar actions
+   ExtendedAction* action_accept   ;
+   ExtendedAction* action_refuse   ;
+   ExtendedAction* action_hold     ;
+   ExtendedAction* action_transfer ;
+   ExtendedAction* action_record   ;
+   ExtendedAction* action_mute     ;
+   ExtendedAction* action_hangup   ;
+   ExtendedAction* action_unhold   ;
+   ExtendedAction* action_pickup   ;
+
    //Video actions
    #ifdef ENABLE_VIDEO
    ExtendedAction* action_video_rotate_left    ;
@@ -85,6 +92,8 @@ private:
    ExtendedAction* action_video_mute           ;
    ExtendedAction* action_video_preview        ;
    #endif
+
+   //Other actions
    KAction* action_mailBox               ;
    KAction* action_close                 ;
    KAction* action_quit                  ;
@@ -117,10 +126,10 @@ private Q_SLOTS:
    void record   ();
    void mailBox  ();
    void configureSflPhone     ();
-   void showShortCutEditor                       (                                      );
+   void showShortCutEditor    ();
    void accountCreationWizard ();
-   void editToolBar                              (                                      );
-   void addMacro                                 ( KAction* newAction                   );
+   void editToolBar           ();
+   void addMacro              ( KAction* newAction );
 
 Q_SIGNALS:
    void windowStateChanged();

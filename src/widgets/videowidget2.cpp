@@ -17,15 +17,17 @@
  **************************************************************************/
 #include "videowidget2.h"
 
+//Qt
 #include <QtCore/QDebug>
 #include <QtOpenGL>
 
+//System
 #include <math.h>
+#include <GL/glu.h>
 
+//SFLPhone
 #include <lib/videorenderer.h>
 #include <lib/videomodel.h>
-
-#include <GL/glu.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -35,53 +37,62 @@ class ThreadedPainter: public QObject {
    Q_OBJECT
 public:
    friend class VideoWidget2;
+
+   //Constructor
    ThreadedPainter(QGLWidget* wdg);
-   virtual ~ThreadedPainter(){
-//       QThread::currentThread()->quit();
-   }
+   virtual ~ThreadedPainter();
 
    //GL
-   QPoint anchor;
-   float scale;
-   float rot_x, rot_y, rot_z;
-   GLuint tile_list;
-   bool isRendering;
+   QPoint anchor             ;
+   float  scale              ;
+   float  rot_x, rot_y, rot_z;
+   GLuint tile_list          ;
+   bool   isRendering        ;
 
    //Render
    VideoRenderer* m_pRenderer;
 
 private:
-   QGLWidget* m_pW;
-   QMutex mutex;
-
+   //Attributes
+   QGLWidget* m_pW ;
+   QMutex     mutex;
 
    //Methods
    void saveGLState();
    void restoreGLState();
 
 public Q_SLOTS:
-   void draw();
-   void reset();
+   void draw           ();
+   void reset          ();
    void rendererStopped();
    void rendererStarted();
 };
 
+///Constructor
 ThreadedPainter::ThreadedPainter(QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
    m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false)
 {
 }
 
+///Destructor
+ThreadedPainter::~ThreadedPainter(){
+//       QThread::currentThread()->quit();
+}
+
+///Reset the painter state
 void ThreadedPainter::reset()
 {
    m_pRenderer = nullptr;
 }
 
+///Notify the painter that the (SHM) renderer has stopped
 void ThreadedPainter::rendererStopped()
 {
    QMutexLocker locker(&mutex);
    isRendering = false;
 }
 
+///Notify the painter that the (SHM) renderer has started
 void ThreadedPainter::rendererStarted()
 {
    QMutexLocker locker(&mutex);
@@ -89,6 +100,7 @@ void ThreadedPainter::rendererStarted()
    isRendering = true;
 }
 
+///Draw the video stream on the GL canvas
 void ThreadedPainter::draw()
 {
    if (m_pRenderer && isRendering) {
@@ -165,11 +177,11 @@ void ThreadedPainter::draw()
    }
 }
 
-
- VideoWidget2::VideoWidget2(QWidget *parent)
-     : QGLWidget(QGLFormat(QGL::SampleBuffers|QGL::AlphaChannel), parent),
-     m_pPainter(new ThreadedPainter(this))
- {
+///Constructor
+VideoWidget2::VideoWidget2(QWidget *parent)
+   : QGLWidget(QGLFormat(QGL::SampleBuffers|QGL::AlphaChannel), parent),
+   m_pPainter(new ThreadedPainter(this))
+{
    makeCurrent();
 //    Should work, does not
 //    QThread* t = new QThread(this);
@@ -197,8 +209,9 @@ void ThreadedPainter::draw()
    sp.setHeightForWidth(true);
    sp.setWidthForHeight(true);
    setSizePolicy(sp);
- }
+}
 
+///Destructor
 VideoWidget2::~VideoWidget2()
 {
    QMutexLocker locker(&m_pPainter->mutex);

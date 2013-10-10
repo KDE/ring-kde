@@ -17,18 +17,21 @@
  **************************************************************************/
 #include "videowidget3.h"
 
+//Qt
 #include <QtCore/QDebug>
 #include <QtOpenGL>
 
+//System
 #include <math.h>
+#include <GL/glu.h>
 
+//SFLPhone
 #include <lib/videorenderer.h>
 #include <lib/videomodel.h>
 #include "videoscene.h"
 #include "videoglframe.h"
 #include "videotoolbar.h"
 
-#include <GL/glu.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -38,22 +41,22 @@
 VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
 {
    QSizePolicy sp = sizePolicy();
-   sp.setVerticalPolicy(QSizePolicy::Preferred);
-   sp.setHorizontalPolicy(QSizePolicy::Preferred);
-   sp.setHeightForWidth(true);
-   sp.setWidthForHeight(true);
+   sp.setVerticalPolicy  ( QSizePolicy::Preferred );
+   sp.setHorizontalPolicy( QSizePolicy::Preferred );
+   sp.setHeightForWidth  ( true                   );
+   sp.setWidthForHeight  ( true                   );
    setSizePolicy(sp);
 
    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+   setVerticalScrollBarPolicy  (Qt::ScrollBarAlwaysOff);
 
    m_pWdg = new QGLWidget(QGLFormat(QGL::SampleBuffers/*|QGL::AlphaChannel*/),this);
    setViewport(m_pWdg);
    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-
    m_pScene = new VideoScene();
    setScene(m_pScene);
+
    VideoToolbar* tb = new VideoToolbar(nullptr);
    tb->setForcedParent(this);
    tb->show();
@@ -66,9 +69,6 @@ VideoWidget3::~VideoWidget3()
 {
    
 }
-
-//    virtual int    VideoWidget3::heightForWidth( int w ) const;
-//    virtual QSize  VideoWidget3::sizeHint      (       ) const;
 
 void VideoWidget3::addRenderer(VideoRenderer* renderer)
 {

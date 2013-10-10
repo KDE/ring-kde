@@ -21,6 +21,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QAbstractAnimation>
 
+//Qt
 class QTimer;
 
 class CanvasObjectManager : public QObject {

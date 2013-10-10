@@ -20,8 +20,8 @@
 
 #include <QtOpenGL>
 
-class VideoRenderer;
-
+//SFLPhone
+class VideoRenderer  ;
 class ThreadedPainter;
 
 class VideoWidget2 : public QGLWidget
@@ -29,13 +29,15 @@ class VideoWidget2 : public QGLWidget
    Q_OBJECT
 
 public:
+   //Constructor
    explicit VideoWidget2(QWidget *parent);
    ~VideoWidget2();
 
-   void paintEvent(QPaintEvent *);
-   void mousePressEvent(QMouseEvent *);
-   void mouseMoveEvent(QMouseEvent *);
-   void wheelEvent(QWheelEvent *);
+   //Events
+   virtual void paintEvent     ( QPaintEvent* e );
+   virtual void mousePressEvent( QMouseEvent* e );
+   virtual void mouseMoveEvent ( QMouseEvent* e );
+   virtual void wheelEvent     ( QWheelEvent* e );
 
    virtual int    heightForWidth( int w ) const;
    virtual QSize  sizeHint      (       ) const;

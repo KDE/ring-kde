@@ -17,10 +17,14 @@
  **************************************************************************/
 #include "videotoolbar.h"
 
+//Qt
 #include <QtGui/QHBoxLayout>
+
+//SFLPhone
 #include "sflphone.h"
 #include "actioncollection.h"
 
+///Constructor
 VideoToolbar::VideoToolbar(QWidget* parent) : OverlayToolbar(parent)
 {
    setIconSize(16);
@@ -32,7 +36,7 @@ VideoToolbar::VideoToolbar(QWidget* parent) : OverlayToolbar(parent)
    addAction(ActionCollection::instance()->videoPreviewAction        ());
 }
 
+///Destructor
 VideoToolbar::~VideoToolbar()
 {
-   
 }

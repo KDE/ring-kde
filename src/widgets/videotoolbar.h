@@ -20,18 +20,15 @@
 
 #include "overlaytoolbar.h"
 
+//Qt
 class QWidget;
 
 class VideoToolbar : public OverlayToolbar {
    Q_OBJECT
 public:
+   //Contructor
    VideoToolbar(QWidget* parent = nullptr);
    virtual ~VideoToolbar();
-
-private:
-
-// public Q_SLOTS:
-//    virtual void updateState();
 };
 
 #endif
