@@ -736,7 +736,17 @@ bool DlgAccounts::hasChanged()
 bool DlgAccounts::hasIncompleteRequiredFields()
 {
    Account* acc = AccountListModel::instance()->getAccountByModelIndex(listView_accountList->currentIndex());
-   return acc && (acc->alias() != "IP2IP") && (edit1_alias->text().isEmpty() || edit3_server->text().isEmpty() || edit4_user->text().isEmpty() || edit5_password->text().isEmpty());
+   static QList<QLabel*> requiredFieldsLabels;
+   if (!requiredFieldsLabels.size()) {
+      requiredFieldsLabels << label1_alias << label3_server << label4_user << label5_password;
+   }
+   bool fields[4] = {edit1_alias->text().isEmpty(),edit3_server->text().isEmpty(),edit4_user->text().isEmpty(),edit5_password->text().isEmpty()};
+   bool isIncomplete = acc && (acc->alias() != "IP2IP") && (fields[0]|fields[1]|fields[2]|fields[3]);
+   //Add visual feedback for missing fields
+   for (int i=0;i<4;i++) {
+      requiredFieldsLabels[i]->setStyleSheet(fields[i]?"color:darkred;":QString());
+   }
+   return isIncomplete;
 }
 
 ///Save settings
