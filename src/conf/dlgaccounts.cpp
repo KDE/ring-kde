@@ -32,6 +32,7 @@
 #include <KInputDialog>
 #include <KLocale>
 #include <KIcon>
+#include <KMessageBox>
 
 //SFLPhone
 #include "klib/kcfg_settings.h"
@@ -589,9 +590,14 @@ void DlgAccounts::on_button_accountAdd_clicked()
 ///Remove selected account
 void DlgAccounts::on_button_accountRemove_clicked()
 {
-   AccountListModel::instance()->removeAccount(listView_accountList->currentIndex());
-   listView_accountList->setCurrentIndex(listView_accountList->model()->index(0,0));
-   loadAccount(listView_accountList->currentIndex());
+   QModelIndex index = listView_accountList->currentIndex();
+   Account* acc = AccountListModel::instance()->getAccountByModelIndex(index);
+   const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to remove %1?",acc->alias()), i18n("Remove account"));
+   if (ret == KMessageBox::Yes) {
+      AccountListModel::instance()->removeAccount(listView_accountList->currentIndex());
+      listView_accountList->setCurrentIndex(listView_accountList->model()->index(0,0));
+      loadAccount(listView_accountList->currentIndex());
+   }
 }
 
 ///Update account list
