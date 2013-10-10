@@ -132,7 +132,7 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
       return;
    Call* call2 = CallModel::instance()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountListModel::currentAccount());
    call2->setDialNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
-   call2->actionPerformed( Call::Action::ACCEPT   );
+   call2->performAction( Call::Action::ACCEPT   );
 }
 
 void BookmarkDock::slotContextMenu( const QModelIndex& index )

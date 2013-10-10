@@ -53,7 +53,8 @@ const CanvasObjectManager::CanvasElement CanvasObjectManager::elements[ELEMENT_C
                                                                                                                  | E::CALL_BUSY        , true  , false  , false},
    /*4 Network      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::NETWORK_ERROR           , E::ANY               , false , true   , false},
    /*5 AutoComplete */ {_(Type)WIDGET , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::CALL_DIALING_CHANGED    , E::CALL_STATE_CHANGED
-                                                                                                                 | E::CALL_ENDED       , false , false  , true },
+                                                                                                                 | E::CALL_ENDED
+                                                                                                                 | E::CALL_RINGING     , false , false  , true },
    /*6 DropInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::DRAG_ENTER|E::DRAG_MOVE , E::DRAG_LEAVE|E::DROP, false , false  , false},
    /*7 ConfInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)LOW        , E::CALL_COUNT_CHANGED      , E::ANY               , false , false  , false},
 };
@@ -377,7 +378,6 @@ void CanvasObjectManager::slotTransitionEvents(QAbstractAnimation::Direction dir
 
 void CanvasObjectManager::slotMinimized(bool isMinimized)
 {
-   qDebug() << "SLOT MINIMZED";
    m_Minimized = isMinimized;
 }
 

@@ -290,7 +290,7 @@ Call* CallModel::addIncomingCall(const QString& callId)
    //Call without account is not possible
    if (dynamic_cast<Account*>(call->account())) {
       if (call->account()->isAutoAnswer()) {
-         call->actionPerformed(Call::Action::ACCEPT);
+         call->performAction(Call::Action::ACCEPT);
       }
    }
    else {
@@ -378,7 +378,7 @@ void CallModel::transfer(Call* toTransfer, QString target)
    qDebug() << "Transferring call " << toTransfer->id() << "to" << target;
    toTransfer->setTransferNumber ( target                 );
    toTransfer->changeCurrentState( Call::State::TRANSFERRED );
-   toTransfer->actionPerformed   ( Call::Action::TRANSFER   );
+   toTransfer->performAction     ( Call::Action::TRANSFER   );
    toTransfer->changeCurrentState( Call::State::OVER        );
 } //transfer
 
@@ -761,7 +761,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       qDebug() << "Phone number" << encodedPhoneNumber << "on call" << target;
       Call* newCall = addDialingCall(QString(),target->account());
       newCall->setDialNumber(encodedPhoneNumber);
-      newCall->actionPerformed(Call::Action::ACCEPT);
+      newCall->performAction(Call::Action::ACCEPT);
       createConferenceFromCall(newCall,target);
    }
    else if (mimedata->hasFormat(MIME_CONTACT)) {
@@ -773,7 +773,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
          if (!number->uri().isEmpty()) {
             Call* newCall = addDialingCall();
             newCall->setDialNumber(number);
-            newCall->actionPerformed(Call::Action::ACCEPT);
+            newCall->performAction(Call::Action::ACCEPT);
             createConferenceFromCall(newCall,target);
          }
          else {
@@ -930,7 +930,7 @@ void CallModel::slotNewRecordingAvail( const QString& callId, const QString& fil
 
 #ifdef ENABLE_VIDEO
 ///Updating call state when video is added
-void CallModel::slotStartedDecoding(const QString& callId, const QString& shmKey  )
+void CallModel::slotStartedDecoding(const QString& callId, const QString& shmKey)
 {
    Q_UNUSED(callId)
    Q_UNUSED(shmKey)
@@ -947,6 +947,11 @@ void CallModel::slotStoppedDecoding(const QString& callId, const QString& shmKey
 ///Update model if the data change
 void CallModel::slotCallChanged(Call* call)
 {
+   //Transfer is "local" state, it doesn't require the daemon, so it need to be
+   //handled "manually" instead of relying on the backend signals
+   if (call->state() == Call::State::TRANSFERRED) {
+      emit callStateChanged(call, Call::State::TRANSFERRED);
+   }
    InternalStruct* callInt = m_sPrivateCallList_call[call];
    if (callInt) {
       const int idxOf = m_lInternalModel.indexOf(callInt);

@@ -16,6 +16,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "sflphonecmd.h"
+
+//KDE
 #include <KCmdLineArgs>
 #include <KUniqueApplication>
 #include <KLocale>
@@ -61,7 +63,7 @@ void SFLPhoneCmd::placeCall(const QString& number)
 {
    Call* call = CallModel::instance()->addDialingCall();
    call->appendText(number);
-   call->actionPerformed(Call::Action::ACCEPT);
+   call->performAction(Call::Action::ACCEPT);
 }
 
 ///Send a text ans hang up (from the command line)
@@ -71,7 +73,7 @@ void SFLPhoneCmd::sendText(const QString& number, const QString& text)
    call->appendText(number);
    call->setProperty("message",text);
    connect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
-   call->actionPerformed(Call::Action::ACCEPT);
+   call->performAction(Call::Action::ACCEPT);
 }
 
 ///Send the message now that the call is ready
@@ -80,6 +82,6 @@ void SFLPhoneCmd::textMessagePickup(Call* call)
    if (call->state() == Call::State::CURRENT) {
       call->sendTextMessage(call->property("message").toString());
       disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
-      call->actionPerformed(Call::Action::REFUSE); //HangUp
+      call->performAction(Call::Action::REFUSE); //HangUp
    }
 }

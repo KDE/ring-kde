@@ -183,6 +183,5 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
 
 void AutoCompletion::slotVisibilityChange(bool visible)
 {
-   qDebug() << "\n\n\nICI";
    emit requestVisibility(visible);
 }

@@ -45,7 +45,7 @@ void CallJob::start()
    Call* call = SFLPhoneEngine::getModel()->addDialingCall(m_Number,m_pAccount);
    if (call) {
       call->setDialNumber(m_Number);
-      call->actionPerformed(Call::Action::ACCEPT);
+      call->performAction(Call::Action::ACCEPT);
    }
 }
 
@@ -78,7 +78,7 @@ HangUpJob::HangUpJob(QObject* parent, const QString& operation, const QVariantMa
 void HangUpJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->getCall(m_CallId);
-   call->actionPerformed(Call::Action::REFUSE);
+   call->performAction(Call::Action::REFUSE);
    call->changeCurrentState(Call::State::OVER);
 }
 
@@ -114,7 +114,7 @@ HoldJob::HoldJob(QObject* parent, const QString& operation, const QVariantMap& p
 void HoldJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->getCall(m_CallId);
-   call->actionPerformed(Call::Action::HOLD);
+   call->performAction(Call::Action::HOLD);
 }
 
 ///Constructor
@@ -130,7 +130,7 @@ RecordJob::RecordJob(QObject* parent, const QString& operation, const QVariantMa
 void RecordJob::start()
 {
    Call* call = SFLPhoneEngine::getModel()->getCall(m_CallId);
-   call->actionPerformed(Call::Action::RECORD);
+   call->performAction(Call::Action::RECORD);
 }
 
 

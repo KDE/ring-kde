@@ -41,6 +41,7 @@
 #include "conf/configurationdialog.h"
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
+#include "klib/macromodel.h"
 #include <lib/call.h>
 #include <lib/account.h>
 #include <lib/accountlistmodel.h>
@@ -267,7 +268,7 @@ void ActionCollection::accept() //TODO dead code?
       }
       else {
          try {
-            call->actionPerformed(Call::Action::ACCEPT);
+            call->performAction(Call::Action::ACCEPT);
          }
          catch(const char * msg) {
             KMessageBox::error(SFLPhone::app(),i18n(msg));
@@ -283,7 +284,7 @@ void ActionCollection::hangup()
    Call* call = SFLPhone::view()->currentCall();
    if (call) {
       try {
-         call->actionPerformed(Call::Action::REFUSE);
+         call->performAction(Call::Action::REFUSE);
       }
       catch(const char * msg) {
          KMessageBox::error(SFLPhone::app(),i18n(msg));
@@ -301,7 +302,7 @@ void ActionCollection::refuse()
    }
    else {
       try {
-         call->actionPerformed(Call::Action::REFUSE);
+         call->performAction(Call::Action::REFUSE);
       }
       catch(const char * msg) {
          KMessageBox::error(SFLPhone::app(),i18n(msg));
@@ -319,7 +320,7 @@ void ActionCollection::hold()
    }
    else {
       try {
-         call->actionPerformed(Call::Action::HOLD);
+         call->performAction(Call::Action::HOLD);
       }
       catch(const char * msg) {
          KMessageBox::error(SFLPhone::app(),i18n(msg));
@@ -337,7 +338,7 @@ void ActionCollection::unhold()
    }
    else {
       try {
-         call->actionPerformed(Call::Action::HOLD);
+         call->performAction(Call::Action::HOLD);
       }
       catch(const char * msg) {
          KMessageBox::error(SFLPhone::app(),i18n(msg));
@@ -355,7 +356,7 @@ void ActionCollection::transfer()
    }
    else {
       try {
-         call->actionPerformed(Call::Action::TRANSFER);
+         call->performAction(Call::Action::TRANSFER);
       }
       catch(const char * msg) {
          KMessageBox::error(SFLPhone::app(),i18n(msg));
@@ -373,7 +374,7 @@ void ActionCollection::record()
    }
    else {
       try {
-         call->actionPerformed(Call::Action::RECORD);
+         call->performAction(Call::Action::RECORD);
       }
       catch(const char * msg) {
          KMessageBox::error(SFLPhone::app(),i18n(msg));
@@ -391,7 +392,7 @@ void ActionCollection::mailBox()
    if (call) {
       call->appendText(mailBoxNumber);
       try {
-         call->actionPerformed(Call::Action::ACCEPT);
+         call->performAction(Call::Action::ACCEPT);
       }
       catch(const char * msg) {
          KMessageBox::error(SFLPhone::app(),i18n(msg));

@@ -60,10 +60,13 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
             case Qt::ToolTipRole:
                return QString("<table><tr><td>%1</td></tr><tr><td>%2</td></tr></table>").arg(n->primaryName()).arg(n->type());
                break;
-            case Qt::DecorationRole:
-               if (NumberCategoryModel::instance()->visitor())
-                  return NumberCategoryModel::instance()->nameToIndex(n->type()).data(Qt::DecorationRole);
-               break;
+            case Qt::DecorationRole: {
+               if (NumberCategoryModel::instance()->visitor()) {
+                  const QModelIndex idx2 = NumberCategoryModel::instance()->nameToIndex(n->type());
+                  if (idx2.isValid())
+                     return idx2.data(Qt::DecorationRole);
+               }
+               } break;
             case NumberCompletionModel::Role::ALTERNATE_ACCOUNT:
                if (needAcc)
                   return n->account()->alias();

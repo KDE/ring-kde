@@ -16,16 +16,19 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "sflphoneaccessibility.h"
-#include "kspeechinterfacesingleton.h"
+
+//KDE
 #include <KSpeech>
 #include <KDebug>
 #include <KLocale>
 #include <KIcon>
 
-#include "sflphone.h"
-#include "lib/call.h"
+//SFLPhone
+#include <lib/call.h>
 #include <lib/callmodel.h>
 #include <lib/phonenumber.h>
+#include "kspeechinterfacesingleton.h"
+#include "sflphone.h"
 
 SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance = nullptr;
 

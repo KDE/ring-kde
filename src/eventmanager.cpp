@@ -25,6 +25,11 @@
 #include <KDebug>
 
 //SFLPhone
+#include <lib/phonenumber.h>
+#include <lib/account.h>
+#include <lib/phonedirectorymodel.h>
+#include <klib/tipmanager.h>
+#include <klib/akonadibackend.h>
 #include "sflphoneview.h"
 #include "sflphone.h"
 #include "canvasobjectmanager.h"
@@ -32,11 +37,6 @@
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewoverlay.h"
 #include "widgets/autocompletion.h"
-#include "klib/tipmanager.h"
-#include <lib/phonenumber.h>
-#include <lib/account.h>
-#include <lib/phonedirectorymodel.h>
-#include "klib/akonadibackend.h"
 
 //This code detect if the window is active, innactive or minimzed
 class MainWindowEvent : public QObject {
@@ -83,6 +83,9 @@ EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(pare
    connect(CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
 
    connect(m_pMainWindowEv , SIGNAL(minimized(bool)) , m_pParent->m_pCanvasManager, SLOT(slotMinimized(bool)));
+
+   //Listen for macro
+   MacroModel::addListener(this);
 }
 
 ///Destructor
@@ -97,13 +100,15 @@ EventManager::~EventManager()
  *                                                                           *
  ****************************************************************************/
 
-
+///Callback when a grag event enter the canvas
 bool EventManager::viewDragEnterEvent(const QDragEnterEvent* e)
 {
    Q_UNUSED(e)
+   m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_ENTER);
    return false;
 }
 
+///Callback when something is dropped on the call canvas
 bool EventManager::viewDropEvent(QDropEvent* e)
 {
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
@@ -126,7 +131,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          kDebug() << "Phone number dropped on empty space";
          Call* newCall = CallModel::instance()->addDialingCall();
          newCall->setDialNumber(encodedPhoneNumber);
-         newCall->actionPerformed(Call::Action::ACCEPT);
+         newCall->performAction(Call::Action::ACCEPT);
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
          const QByteArray encodedContact     = e->mimeData()->data( MIME_CONTACT     );
@@ -135,18 +140,16 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          if (number->uri().isEmpty()) {
             Call* newCall = CallModel::instance()->addDialingCall();
             newCall->setDialNumber(number->uri());
-            newCall->actionPerformed(Call::Action::ACCEPT);
+            newCall->performAction(Call::Action::ACCEPT);
          }
       }
       else if (e->mimeData()->hasFormat("text/plain")) {
          Call* newCall = CallModel::instance()->addDialingCall();
          newCall->setDialNumber(e->mimeData()->data( "text/plain" ));
-         newCall->actionPerformed(Call::Action::ACCEPT);
+         newCall->performAction(Call::Action::ACCEPT);
       }
       //Remove uneedded tip
-      if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DROP);
-      }
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DROP);
       return true;
    }
    else {
@@ -172,6 +175,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
    return false;
 }
 
+///Callback when a drag and drop is in progress
 bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
 {
    if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
@@ -190,8 +194,6 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
       else if (e->mimeData()->hasFormat("text/plain")) {
          TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
       }
-//          TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
-      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_MOVE);
    }
    if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
       if (e->mimeData()->hasFormat(MIME_CALLID)) {
@@ -210,6 +212,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
       }
    }
+   m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_MOVE);
    //Just as drop, compute the position
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
    const QPoint position = e->pos();
@@ -219,14 +222,15 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    return true;
 }
 
+///Callback when a drag is cancelled
 bool EventManager::viewDragLeaveEvent(const QDragMoveEvent* e)
 {
    Q_UNUSED(e)
+   m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_LEAVE);
    return false;
 }
 
-
-
+///Dispatch call canvas events to the right function
 bool EventManager::eventFilter(QObject *obj, QEvent *event)
 {
    #pragma GCC diagnostic push
@@ -250,6 +254,7 @@ bool EventManager::eventFilter(QObject *obj, QEvent *event)
    return QObject::eventFilter(obj, event);
 } //eventFilter
 
+///Callback when a key is pressed on the view
 bool EventManager::viewKeyEvent(QKeyEvent* event)
 {
    switch(event->key()) {
@@ -326,7 +331,7 @@ void EventManager::typeString(const QString& str)
 
    foreach (Call* call2, CallModel::instance()->getCallList()) {
       if(dynamic_cast<Call*>(call2) && currentCall != call2 && call2->state() == Call::State::CURRENT) {
-         m_pParent->action(call2, Call::Action::HOLD);
+         call2->performAction(Call::Action::HOLD);
       }
       else if(dynamic_cast<Call*>(call2) && call2->state() == Call::State::DIALING) {
          candidate = call2;
@@ -382,7 +387,7 @@ void EventManager::escape()
       switch (call->state()) {
          case Call::State::TRANSFERRED:
          case Call::State::TRANSF_HOLD:
-            m_pParent->action(call, Call::Action::TRANSFER);
+            call->performAction(Call::Action::TRANSFER);
             break;
          case Call::State::INCOMING:
          case Call::State::DIALING:
@@ -397,7 +402,7 @@ void EventManager::escape()
          case Call::State::CONFERENCE_HOLD:
          case Call::State::COUNT:
          default:
-            m_pParent->action(call, Call::Action::REFUSE);
+            call->performAction(Call::Action::REFUSE);
       }
    }
 } //escape
@@ -405,7 +410,7 @@ void EventManager::escape()
 ///Called when enter is detected
 void EventManager::enter()
 {
-   Call* call = CallModel::instance()->getCall(m_pParent->m_pView->selectionModel()->currentIndex()); //TODO use selectionmodel
+   Call* call = m_pParent->currentCall();
    if(!call) {
       kDebug() << "Error : Enter on unexisting call.";
    }
@@ -415,10 +420,10 @@ void EventManager::enter()
          case Call::State::DIALING:
          case Call::State::TRANSFERRED:
          case Call::State::TRANSF_HOLD:
-            m_pParent->action(call, Call::Action::ACCEPT);
+            call->performAction(Call::Action::ACCEPT);
             break;
          case Call::State::HOLD:
-            m_pParent->action(call, Call::Action::HOLD);
+            call->performAction(Call::Action::HOLD);
             break;
          case Call::State::RINGING:
          case Call::State::CURRENT:
@@ -433,6 +438,15 @@ void EventManager::enter()
             kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
       }
    }
+}
+
+///Macros needs to be executed at high level so the animations kicks in
+void EventManager::addDTMF(const QString& sequence)
+{
+   if (sequence == "\n")
+      enter();
+   else
+      typeString(sequence);
 }
 
 /*****************************************************************************

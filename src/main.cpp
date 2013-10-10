@@ -36,7 +36,7 @@
 #include "lib/callmodel.h"
 #include "sflphonecmd.h"
 
-static const char description[] = "A KDE 4 Client for SFLphone";
+static const char description[] = "An enterprise grade KDE SIP and IAX phone";
 
 static const char version[] = "1.2.3";
 

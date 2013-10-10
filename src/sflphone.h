@@ -80,8 +80,7 @@ enum CallAction {
 
 private:
    //Attributes
-   bool   m_pInitialized;
-
+   bool           m_pInitialized     ;
    SFLPhoneView*  m_pView            ;
    bool           m_pIconChanged     ;
    SFLPhoneTray*  m_pTrayIcon        ;
@@ -105,7 +104,6 @@ private:
 
 protected:
    virtual bool  queryClose (                )      ;
-   virtual void  changeEvent( QEvent * event )      ;
    virtual QSize sizeHint   (                ) const;
 
 
@@ -124,7 +122,6 @@ public:
    BookmarkDock* bookmarkDock();
 
 private Q_SLOTS:
-   void on_m_pView_statusMessageChangeAsked      ( const QString& message               );
    void on_m_pView_windowTitleChangeAsked        ( const QString& message               );
    void on_m_pView_enabledActionsChangeAsked     ( const bool*    enabledActions        );
    void on_m_pView_actionIconsChangeAsked        ( const QString* actionIcons           );

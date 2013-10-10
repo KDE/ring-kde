@@ -69,13 +69,13 @@
 #include "widgets/contactdock.h"
 #include "widgets/historydock.h"
 #include "widgets/bookmarkdock.h"
-#ifdef ENABLE_VIDEO
-#include "widgets/videodock.h"
-#endif
 #include "widgets/presence.h"
 #include "sflphoneaccessibility.h"
 #include "extendedaction.h"
 #include "errormessage.h"
+#ifdef ENABLE_VIDEO
+#include "widgets/videodock.h"
+#endif
 
 SFLPhone* SFLPhone::m_sApp = nullptr;
 
@@ -127,14 +127,14 @@ class ConcreteNumberCategoryVisitor :public NumberCategoryVisitor {
 
 ///Constructor
 SFLPhone::SFLPhone(QWidget *parent)
-    : KXmlGuiWindow(parent), m_pInitialized(false)
+   : KXmlGuiWindow(parent), m_pInitialized(false)
 #ifdef ENABLE_VIDEO
       ,m_pVideoDW(nullptr)
 #endif
 {
-    if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid()) {
-       QTimer::singleShot(5000,this,SLOT(timeout()));
-    }
+   if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid()) {
+      QTimer::singleShot(5000,this,SLOT(timeout()));
+   }
 
    static bool init = false;
    if (!init) {
@@ -146,12 +146,10 @@ SFLPhone::SFLPhone(QWidget *parent)
       VideoModel::instance();
       #endif
       init = true;
-    }
+   }
 
-    //Belong to setupActions(), but is needed now
+   //Belong to setupActions(), but is needed now
    m_sApp = this;
-   
-
 
    m_pView = new SFLPhoneView(this);
 
@@ -216,8 +214,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    {
       foreach(QTabBar* bar, tabBars) {
          for (int i=0;i<bar->count();i++) {
-            QString text = bar->tabText(i);
-            if (text == i18n("Call")) {
+            if (bar->tabText(i) == i18n("Call")) {
                bar->setCurrentIndex(i);
                break;
             }
@@ -262,11 +259,9 @@ SFLPhone::SFLPhone(QWidget *parent)
    if (AccountListModel::instance()->size() <= 1)
       (new AccountWizard())->show();
 
-   m_pIconChanged = false;
    m_pInitialized = true ;
 
    KStatusBar* bar = statusBar();
-//    bar->setStyleSheet("padding-left:0px;margin-left:0px;");
    int left,top,right,bottom;
    bar->layout()->getContentsMargins ( &left, &top, &right, &bottom );
    bar->layout()->setContentsMargins(0,top,0,bottom);
@@ -354,18 +349,10 @@ SFLPhone::~SFLPhone()
 }
 
 ///Init everything
-bool SFLPhone::initialize()
+bool SFLPhone::initialize() //TODO deprecate
 {
-   if ( m_pInitialized ) {
-      kDebug() << "Already initialized.";
-      return false;
-   }
-
-   return true;
+   return !m_pInitialized;
 }
-
-///Setup evry actions
-
 
 
 /*****************************************************************************
@@ -403,20 +390,6 @@ BookmarkDock* SFLPhone::bookmarkDock()
 {
    return m_pBookmarkDW;
 }
-
-///Produce an actionList for auto CallBack
-// QList<QAction*> SFLPhone::callActions()
-// {
-//    QList<QAction*> callActions = QList<QAction *>();
-//    callActions.insert((int) Accept   , action_accept   );
-//    callActions.insert((int) Refuse   , action_refuse   );
-//    callActions.insert((int) Hold     , action_hold     );
-//    callActions.insert((int) Transfer , action_transfer );
-//    callActions.insert((int) Record   , action_record   );
-//    callActions.insert((int) Mailbox  , action_mailBox  );
-//    return callActions;
-// }
-
 
 /*****************************************************************************
  *                                                                           *
@@ -461,21 +434,6 @@ QSize SFLPhone::sizeHint() const
 void SFLPhone::quitButton()
 {
    qApp->quit();
-}
-
-///Called when something happen
-void SFLPhone::changeEvent(QEvent* event)
-{
-   if (event->type() == QEvent::ActivationChange && m_pIconChanged && isActiveWindow()) {
-      m_pIconChanged = false;
-   }
-}
-
-///Change status message
-void SFLPhone::on_m_pView_statusMessageChangeAsked(const QString& message)
-{
-   Q_UNUSED(message)
-//    m_pStatusBarWidget->setText(message);
 }
 
 ///Change windowtitle

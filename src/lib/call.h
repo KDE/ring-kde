@@ -264,7 +264,7 @@ public:
 
    //Automated function
    Call::State stateChanged(const QString & newState);
-   Call::State actionPerformed(Call::Action action);
+   Call::State performAction(Call::Action action);
 
    //Setters
    void setConference     ( bool               value      );

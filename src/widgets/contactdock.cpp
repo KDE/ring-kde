@@ -339,7 +339,7 @@ void ContactDock::callAgain()
       if (call) {
          call->setDialNumber(number);
          call->setPeerName(m_pCurrentContact->formattedName());
-         call->actionPerformed(Call::Action::ACCEPT);
+         call->performAction(Call::Action::ACCEPT);
       }
       else {
          HelperFunctions::displayNoAccountMessageBox(this);

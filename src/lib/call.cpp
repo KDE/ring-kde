@@ -792,7 +792,7 @@ Call::State Call::stateChanged(const QString& newStateName)
 } //stateChanged
 
 ///An account have been performed
-Call::State Call::actionPerformed(Call::Action action)
+Call::State Call::performAction(Call::Action action)
 {
    const Call::State previousState = m_CurrentState;
    //update the state

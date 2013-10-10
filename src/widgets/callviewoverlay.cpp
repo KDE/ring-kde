@@ -110,7 +110,7 @@ void CallViewOverlay::setVisible(bool enabled) {
    }
    else {
       if (m_pCurrentCall && m_pCurrentCall->state() == Call::State::TRANSFERRED) {
-         m_pCurrentCall->actionPerformed(Call::Action::TRANSFER);
+         m_pCurrentCall->performAction(Call::Action::TRANSFER);
       }
       m_pCurrentCall = nullptr;
    }

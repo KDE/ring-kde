@@ -18,6 +18,8 @@
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
 
+#include "klib/macromodel.h"
+
 //Qt
 class QKeyEvent      ;
 class QDragEnterEvent;
@@ -31,7 +33,7 @@ class SFLPhoneView;
 class CanvasObjectManager;
 class MainWindowEvent;
 
-class EventManager : public QObject {
+class EventManager : public QObject, public MacroListener {
    Q_OBJECT
 
 public:
@@ -60,11 +62,15 @@ public:
     */
    void escape();
 
+   //Implement macro key listener
+   virtual void addDTMF(const QString& sequence);
+
 
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event);
 
 private:
+   //Attributes
    CanvasObjectManager* m_pCanvasManager;
    SFLPhoneView*        m_pParent       ;
    MainWindowEvent*     m_pMainWindowEv ;

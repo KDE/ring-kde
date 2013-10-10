@@ -20,9 +20,6 @@
 #define SFLPHONEVIEW_H
 
 #include "ui_SFLPhoneView_base.h"
-#include "klib/macromodel.h"
-#include "lib/call.h"
-#include "lib/callmodel.h"
 #include <QtGui/QWidget>
 
 //Qt
@@ -30,6 +27,8 @@ class QString;
 class QKeyEvent;
 
 //SFLPhone
+#include "lib/call.h"
+#include "lib/callmodel.h"
 class Contact;
 class CallViewToolbar;
 class CallViewOverlay;
@@ -49,9 +48,10 @@ class EventManager;
  *
  * @short Main view
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
+ * @author Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>
  * @version 1.2.3
  */
-class SFLPhoneView : public QWidget, public Ui::SFLPhone_view, public MacroListener
+class SFLPhoneView : public QWidget, public Ui::SFLPhone_view
 {
    Q_OBJECT
    friend class EventManager;
@@ -79,36 +79,17 @@ public:
    explicit SFLPhoneView(QWidget *parent);
    virtual ~SFLPhoneView();
 
-
-
+   //Mutator
    bool selectCallPhoneNumber(Call** call,Contact* contact);
 
-   //Implement macro key listener
-   virtual void addDTMF(const QString& sequence);
-
    //Getters
-   Call* currentCall() const {
-      return CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
-   }
-   AutoCompletion* autoCompletion() const {
-      return m_pAutoCompletion;
-   }
+   Call*           currentCall   () const;
+   AutoCompletion* autoCompletion() const;
 
    //Setters
-   void setCurrentIndex(const QModelIndex& idx) {
-      m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
-   }
+   void setCurrentIndex(const QModelIndex& idx);
 
 private Q_SLOTS:
-   /**
-    *   Performs the action action on the call call, then updates window.
-    *   The call object will handle the action with its "actionPerformed" method.
-    *   See the documentation for more details.
-    * @param call the call on which to perform the action
-    * @param action the code of the action to perform
-    */
-   void action(Call * call, Call::Action action);
-
    /**
     * Updates the history's search bar's display according to the current
     * text searched.
@@ -119,7 +100,6 @@ private Q_SLOTS:
    void updateRecordBar      (double _value = -1);
    void updateVolumeBar      (double _value = -1);
    void updateVolumeControls ();
-   void updateDialpad        ();
    void sendMessage          ();
 
 
@@ -136,12 +116,6 @@ public Q_SLOTS:
     *   item's state.
     */
    void updateWindowCallState();
-
-
-   void updateStatusMessage();
-
-
-//    virtual void keyPressEvent(QKeyEvent *event);
 
    void displayVolumeControls ( bool checked = true );
    void displayDialpad        ( bool checked = true );
@@ -162,8 +136,6 @@ public Q_SLOTS:
    void paste();
 
 Q_SIGNALS:
-   ///The status need to be updated
-   void statusMessageChangeAsked      ( const QString&  message            );
    ///The window title need to be updated
    void windowTitleChangeAsked        ( const QString&  title              );
    ///The toolbar need to be updated

@@ -40,9 +40,6 @@
 #include <KIcon>
 
 //sflphone
-#include "klib/kcfg_settings.h"
-#include "klib/akonadibackend.h"
-#include "lib/phonenumber.h"
 #include "accountwizard.h"
 #include "sflphone.h"
 #include "canvasobjectmanager.h"
@@ -60,6 +57,9 @@
 #include "widgets/autocompletion.h"
 
 //sflphone library
+#include "klib/kcfg_settings.h"
+#include "klib/akonadibackend.h"
+#include "lib/phonenumber.h"
 #include "lib/typedefs.h"
 #include "lib/dbus/configurationmanager.h"
 #include "lib/dbus/callmanager.h"
@@ -102,7 +102,7 @@ public:
       }
       else
          m_Green.setGreen(((int)m_Green.green()+20));
-      
+
       m_Red = QColor(m_Pal.color(QPalette::Base));
       if (m_Red.red()+20 >= 255) {
          m_Red.setGreen(  ((int)m_Red.green()  -20));
@@ -196,9 +196,6 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    AccountListModel::instance()->updateAccounts();
 
-   //Listen for macro
-   MacroModel::addListener(this);
-
    //Auto completion
    if (ConfigurationSkeleton::enableAutoCompletion()) {
       m_pAutoCompletion = new AutoCompletion(m_pView);
@@ -232,10 +229,21 @@ void SFLPhoneView::loadWindow()
    updateRecordBar       ();
    updateVolumeBar       ();
    updateVolumeControls  ();
-   updateDialpad         ();
-//    updateStatusMessage   ();
+   widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
 }
 
+
+/*****************************************************************************
+ *                                                                           *
+ *                                  Setters                                  *
+ *                                                                           *
+ ****************************************************************************/
+
+///Set the current selection item
+void SFLPhoneView::setCurrentIndex(const QModelIndex& idx)
+{
+   m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
+}
 
 /*****************************************************************************
  *                                                                           *
@@ -243,27 +251,23 @@ void SFLPhoneView::loadWindow()
  *                                                                           *
  ****************************************************************************/
 
+///Return the auto completion widget
+AutoCompletion* SFLPhoneView::autoCompletion() const
+{
+   return m_pAutoCompletion;
+}
 
+///Return the current (selected) call
+Call* SFLPhoneView::currentCall() const
+{
+   return CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
+}
 
 /*****************************************************************************
  *                                                                           *
  *                              Keyboard input                               *
  *                                                                           *
  ****************************************************************************/
-
-///Input grabber
-// void SFLPhoneView::keyPressEvent(QKeyEvent *event)
-// {
-// 
-// } //keyPressEvent
-
-void SFLPhoneView::addDTMF(const QString& sequence)
-{
-   if (sequence == "\n")
-      m_pEventManager->enter();
-   else
-      m_pEventManager->typeString(sequence);
-}
 
 ///Create a call from the clipboard content
 void SFLPhoneView::paste()
@@ -284,23 +288,6 @@ void SFLPhoneView::paste()
  *                                  Mutator                                  *
  *                                                                           *
  ****************************************************************************/
-
-///Change call state
-void SFLPhoneView::action(Call* call, Call::Action action) //TODO deprecate
-{
-   if(! call) {
-      kDebug() << "Error : action " << action << "applied on null object call. Should not happen.";
-   }
-   else {
-      try {
-         call->actionPerformed(action);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(this,i18n(msg));
-      }
-      updateWindowCallState();
-   }
-} //action
 
 ///Select a phone number when calling using a contact
 bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
@@ -358,7 +345,6 @@ void SFLPhoneView::updateWindowCallState()
       enabledActions[ SFLPhone::CallAction::Transfer ] = false;
       enabledActions[ SFLPhone::CallAction::Record   ] = false;
       m_pMessageBoxW->setVisible(false);
-//       callView->overlayToolbar()->setVisible(false);
    }
    else if (call->isConference()) {
       //TODO Something to do?
@@ -366,11 +352,6 @@ void SFLPhoneView::updateWindowCallState()
    else {
       Call::State state = call->state();
       recordActivated = call->recording();
-
-//       callView->overlayToolbar()->updateState(call->state());
-//       callView->overlayToolbar()->setVisible(true);
-
-      kDebug() << "Reached  State" << state << "(" << call->state() << ") with call" << call->id();
 
       switch (state) {
          case Call::State::INCOMING:
@@ -399,7 +380,6 @@ void SFLPhoneView::updateWindowCallState()
             actionTexts     [ SFLPhone::CallAction::Accept   ] = ACTION_LABEL_ACCEPT         ;
             buttonIconFiles [ SFLPhone::CallAction::Accept   ] = ICON_ACCEPT                 ;
             m_pMessageBoxW->setVisible(false)                                    ;
-//             callView->overlayToolbar()->setVisible(false);
             break;
 
          case Call::State::HOLD:
@@ -600,26 +580,6 @@ void SFLPhoneView::updateVolumeControls()
    slider_sndVol->setVisible     ( ActionCollection::instance()->displayVolumeControlsAction()->isChecked() && ConfigurationSkeleton::displayVolume() );
 }
 
-///Hide or show the dialpad
-void SFLPhoneView::updateDialpad()
-{
-   widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());//TODO use display variable
-}
-
-///Change the statusbar message
-void SFLPhoneView::updateStatusMessage()
-{
-   const Account* account = AccountListModel::currentAccount();
-
-   if(!account) {
-      emit statusMessageChangeAsked(i18n("No registered accounts"));
-   }
-   else {
-      emit statusMessageChangeAsked(i18n("Using account \'%1\' (%2)",
-         account->alias(), account->registrationStatus()));
-   }
-}
-
 
 /*****************************************************************************
  *                                                                           *
@@ -639,7 +599,7 @@ void SFLPhoneView::displayVolumeControls(bool checked)
 void SFLPhoneView::displayDialpad(bool checked)
 {
    ConfigurationSkeleton::setDisplayDialpad(checked);
-   updateDialpad();
+   widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
 }
 
 ///Display a notification popup (freedesktop notification)
@@ -712,7 +672,6 @@ void SFLPhoneView::on1_incomingCall(Call* call)
    updateWindowCallState();
 
    if (ConfigurationSkeleton::displayOnCalls()) {
-      qDebug() << "\n\n\nRAISING" << ConfigurationSkeleton::displayOnCalls();
       SFLPhone::app()->activateWindow(      );
       SFLPhone::app()->raise         (      );
    }
@@ -753,5 +712,7 @@ void SFLPhoneView::sendMessage()
    }
    m_pSendMessageLE->clear();
 }
+
+#undef IM_ACTIVE
 
 #include "sflphoneview.moc"
