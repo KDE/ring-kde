@@ -58,106 +58,17 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QGridLayout" name="gridLayout_13">
-         <item row="1" column="2">
-          <widget class="QToolButton" name="button_accountDown">
-           <property name="toolTip">
-            <string>Get this account down</string>
-           </property>
-           <property name="whatsThis">
-            <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
-           </property>
-           <property name="text">
-            <string comment="Move account down">Down</string>
-           </property>
-           <property name="shortcut">
-            <string notr="true">Down, PgDown</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QToolButton" name="button_accountAdd">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="sizeIncrement">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Add a new account</string>
-           </property>
-           <property name="whatsThis">
-            <string>This button enables you to initialize a new account. You will then be able to edit it using the form on the right.</string>
-           </property>
-           <property name="text">
-            <string comment="Add new account">Add</string>
-           </property>
-           <property name="shortcut">
-            <string notr="true">+</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <widget class="QToolButton" name="button_accountRemove">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Remove the selected account</string>
-           </property>
-           <property name="whatsThis">
-            <string>This button will remove the selected account in the list below. Be sure you really don't need it anymore. If you think you might use it again later, just uncheck it.</string>
-           </property>
-           <property name="accessibleDescription">
-            <string/>
-           </property>
-           <property name="text">
-            <string comment="Remove selected account">Remove</string>
-           </property>
-           <property name="shortcut">
-            <string notr="true">-, Del, Backspace</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QToolButton" name="button_accountUp">
-           <property name="toolTip">
-            <string>Get this account up</string>
-           </property>
-           <property name="whatsThis">
-            <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
-           </property>
-           <property name="text">
-            <string comment="Move account up">Up</string>
-           </property>
-           <property name="shortcut">
-            <string notr="true">Up, PgUp</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>41</width>
-             <height>21</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="0" colspan="5">
+        <layout class="QGridLayout" name="gridLayout_9">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0" colspan="2">
           <widget class="QListView" name="listView_accountList">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -185,6 +96,111 @@
            </property>
           </widget>
          </item>
+         <item row="1" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="LeftToolButton" name="button_accountUp">
+             <property name="toolTip">
+              <string>Get this account up</string>
+             </property>
+             <property name="whatsThis">
+              <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+             </property>
+             <property name="text">
+              <string comment="Move account up">Up</string>
+             </property>
+             <property name="shortcut">
+              <string notr="true">Up, PgUp</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="CenterToolButton" name="button_accountDown">
+             <property name="toolTip">
+              <string>Get this account down</string>
+             </property>
+             <property name="whatsThis">
+              <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+             </property>
+             <property name="text">
+              <string comment="Move account down">Down</string>
+             </property>
+             <property name="shortcut">
+              <string notr="true">Down, PgDown</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="CenterToolButton" name="button_accountAdd">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="sizeIncrement">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Add a new account</string>
+             </property>
+             <property name="whatsThis">
+              <string>This button enables you to initialize a new account. You will then be able to edit it using the form on the right.</string>
+             </property>
+             <property name="text">
+              <string comment="Add new account">Add</string>
+             </property>
+             <property name="shortcut">
+              <string notr="true">+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="RightToolButton" name="button_accountRemove">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Remove the selected account</string>
+             </property>
+             <property name="whatsThis">
+              <string>This button will remove the selected account in the list below. Be sure you really don't need it anymore. If you think you might use it again later, just uncheck it.</string>
+             </property>
+             <property name="accessibleDescription">
+              <string/>
+             </property>
+             <property name="text">
+              <string comment="Remove selected account">Remove</string>
+             </property>
+             <property name="shortcut">
+              <string notr="true">-, Del, Backspace</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>41</width>
+             <height>21</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
        </widget>
       </item>
@@ -203,7 +219,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -677,6 +693,9 @@
              <string>Audio codecs</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
+             <item row="0" column="0" colspan="4">
+              <widget class="QListView" name="list_audiocodec"/>
+             </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_frequency">
                <property name="text">
@@ -684,24 +703,8 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="4">
-              <widget class="QToolButton" name="button_audiocodecUp">
-               <property name="toolTip">
-                <string>Get this account up</string>
-               </property>
-               <property name="whatsThis">
-                <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
-               </property>
-               <property name="text">
-                <string comment="Move audio codec up">Up</string>
-               </property>
-               <property name="shortcut">
-                <string notr="true">Up, PgUp</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QLabel" name="label_bitrate_value">
+             <item row="1" column="1">
+              <widget class="QLabel" name="label_frequency_value">
                <property name="text">
                 <string>-</string>
                </property>
@@ -720,36 +723,56 @@
                </property>
               </spacer>
              </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label_frequency_value">
-               <property name="text">
-                <string>-</string>
+             <item row="1" column="3">
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <property name="spacing">
+                <number>0</number>
                </property>
-              </widget>
+               <item>
+                <widget class="LeftToolButton" name="button_audiocodecUp">
+                 <property name="toolTip">
+                  <string>Get this account up</string>
+                 </property>
+                 <property name="whatsThis">
+                  <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+                 </property>
+                 <property name="text">
+                  <string comment="Move audio codec up">Up</string>
+                 </property>
+                 <property name="shortcut">
+                  <string notr="true">Up, PgUp</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="RightToolButton" name="button_audiocodecDown">
+                 <property name="toolTip">
+                  <string>Get this account down</string>
+                 </property>
+                 <property name="whatsThis">
+                  <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+                 </property>
+                 <property name="text">
+                  <string comment="Move audio codec down">Down</string>
+                 </property>
+                 <property name="shortcut">
+                  <string notr="true">Down, PgDown</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
-             <item row="0" column="0" colspan="6">
-              <widget class="QListView" name="list_audiocodec"/>
-             </item>
-             <item row="3" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="label_bitrate">
                <property name="text">
                 <string>Bitrate:</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="5">
-              <widget class="QToolButton" name="button_audiocodecDown">
-               <property name="toolTip">
-                <string>Get this account down</string>
-               </property>
-               <property name="whatsThis">
-                <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
-               </property>
+             <item row="2" column="1" colspan="2">
+              <widget class="QLabel" name="label_bitrate_value">
                <property name="text">
-                <string comment="Move audio codec down">Down</string>
-               </property>
-               <property name="shortcut">
-                <string notr="true">Down, PgDown</string>
+                <string>-</string>
                </property>
               </widget>
              </item>
@@ -762,6 +785,22 @@
              <string>Video codecs</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_12">
+             <item row="0" column="0" colspan="4">
+              <widget class="QListView" name="m_pCodecsLW"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Bitrate:</string>
+               </property>
+              </widget>
+             </item>
              <item row="1" column="1">
               <widget class="QSpinBox" name="m_pBitrateSB">
                <property name="maximum">
@@ -782,35 +821,26 @@
                </property>
               </spacer>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Bitrate:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="4">
-              <widget class="QToolButton" name="m_pVCodecDownPB">
-               <property name="text">
-                <string comment="Move video codec down">Down</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="3">
-              <widget class="QToolButton" name="m_pVCodecUpPB">
-               <property name="text">
-                <string comment="Move video codec up">Up</string>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <property name="spacing">
+                <number>0</number>
                </property>
-              </widget>
-             </item>
-             <item row="0" column="0" colspan="5">
-              <widget class="QListView" name="m_pCodecsLW"/>
+               <item>
+                <widget class="LeftToolButton" name="m_pVCodecUpPB">
+                 <property name="text">
+                  <string comment="Move video codec up">Up</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="RightToolButton" name="m_pVCodecDownPB">
+                 <property name="text">
+                  <string comment="Move video codec down">Down</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
@@ -835,36 +865,6 @@
           <string>Credential</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="1" colspan="3">
-           <widget class="QLabel" name="m_pInfoL">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>This tab help manage accounts with multiple credentials. If you have multiple accounts. Do not use this feature, just create multiple accounts in SFLPhone. Nor use this dialog if you only have one set of credentials. In that case, the &quot;Basic&quot; tab will provide everything you need.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QToolButton" name="button_add_credential">
-            <property name="text">
-             <string comment="Add new credential">Add</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="QToolButton" name="button_remove_credential">
-            <property name="text">
-             <string comment="Remove selected credential">Remove</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="m_pInfoIconL">
             <property name="sizePolicy">
@@ -884,7 +884,23 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="4">
+          <item row="0" column="1" colspan="2">
+           <widget class="QLabel" name="m_pInfoL">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>This tab help manage accounts with multiple credentials. If you have multiple accounts. Do not use this feature, just create multiple accounts in SFLPhone. Nor use this dialog if you only have one set of credentials. In that case, the &quot;Basic&quot; tab will provide everything you need.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
            <widget class="QListView" name="list_credential">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -894,20 +910,47 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="2" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <property name="spacing">
+             <number>0</number>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>327</width>
-              <height>23</height>
-             </size>
-            </property>
-           </spacer>
+            <item>
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="LeftToolButton" name="button_add_credential">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string comment="Add new credential">Add</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="RightToolButton" name="button_remove_credential">
+              <property name="text">
+               <string comment="Remove selected credential">Remove</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="3" column="0" colspan="4">
+          <item row="3" column="0" colspan="3">
            <widget class="QGroupBox" name="group_credential">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -976,7 +1019,7 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="3" column="0" colspan="2">
               <spacer name="verticalSpacer_4">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -1012,7 +1055,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>539</width>
+               <width>547</width>
                <height>666</height>
               </rect>
              </property>
@@ -1411,6 +1454,21 @@
    <extends>QTabWidget</extends>
    <header>ktabwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeftToolButton</class>
+   <extends>QToolButton</extends>
+   <header>widgets/groupedtoolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>RightToolButton</class>
+   <extends>QToolButton</extends>
+   <header>widgets/groupedtoolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CenterToolButton</class>
+   <extends>QToolButton</extends>
+   <header>widgets/groupedtoolbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -133,6 +133,7 @@ SET(
    widgets/contactview.cpp
    widgets/presence.cpp
    widgets/autocompletion.cpp
+   widgets/groupedtoolbutton.cpp
 )
 
 # Video Widgets

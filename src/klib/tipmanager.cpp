@@ -44,6 +44,7 @@ TipManager::TipManager(QAbstractItemView* parent):QObject(parent),m_pParent(pare
    m_CurrentFrame = {QPoint(0,0),QRect(),0};
    parent->installEventFilter(this);
    parent->setProperty("tipManager",QVariant::fromValue(qobject_cast<TipManager*>(this)));
+   changeSize();
    reload();
 
    connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
