@@ -62,7 +62,7 @@ const QString& account_state_name(const QString& s)
    static const QString stunConfigurationError = "Stun configuration error" ;
    static const QString stunServerInvalid      = "Stun server invalid"      ;
    static const QString invalid                = "Invalid"                  ;
-   
+
    if(s == Account::State::REGISTERED       )
       return registered             ;
    if(s == Account::State::UNREGISTERED     )
@@ -320,7 +320,7 @@ QString Account::proxy() const
 
 QString Account::password() const
 {
-   switch (type()) {
+   switch (protocol()) {
       case Account::Protocol::SIP:
          if (credentialsModel()->rowCount())
             return credentialsModel()->data(credentialsModel()->index(0,0),CredentialModel::Role::PASSWORD).toString();
@@ -518,7 +518,7 @@ QString Account::registrationStatus() const
 }
 
 ///Return the account type
-Account::Protocol Account::type() const
+Account::Protocol Account::protocol() const
 {
    const QString str = accountDetail(Account::MapField::TYPE);
    if (str.isEmpty() || str == Account::ProtocolName::SIP)
@@ -552,8 +552,8 @@ QVariant Account::roleData(int role) const
    switch(role) {
       case Account::Role::Alias:
          return alias();
-      case Account::Role::Type:
-         return static_cast<int>(type());
+      case Account::Role::Proto:
+         return static_cast<int>(protocol());
       case Account::Role::Hostname:
          return hostname();
       case Account::Role::Username:
@@ -636,7 +636,7 @@ QVariant Account::roleData(int role) const
          return var;
       }
       case Account::Role::TypeName:
-         return static_cast<int>(type());
+         return static_cast<int>(protocol());
       case Account::Role::PresenceStatus:
          return PresenceStatusModel::instance()->currentStatus();
       case Account::Role::PresenceMessage:
@@ -666,6 +666,8 @@ bool Account::setAccountDetail(const QString& param, const QString& val)
 {
    const bool accChanged = m_hAccountDetails[param] != val;
    const QString buf = m_hAccountDetails[param];
+   if (param == Account::MapField::TYPE && isNew() && val == "IAX")
+      ((QString*)0x00)->clear();
    if (param == Account::MapField::Registration::STATUS) {
       m_hAccountDetails[param] = val;
       if (accChanged) {
@@ -694,13 +696,15 @@ void Account::setId(const QString& id)
 }
 
 ///Set the account type, SIP or IAX
-void Account::setType(Account::Protocol proto)
+void Account::setProtocol(Account::Protocol proto)
 {
    switch (proto) {
       case Account::Protocol::SIP:
          setAccountDetail(Account::MapField::TYPE ,Account::ProtocolName::SIP);
+         break;
       case Account::Protocol::IAX:
          setAccountDetail(Account::MapField::TYPE ,Account::ProtocolName::IAX);
+         break;
    };
 }
 
@@ -734,7 +738,7 @@ void Account::setProxy(const QString& detail)
 ///Set the main credential password
 void Account::setPassword(const QString& detail)
 {
-   switch (type()) {
+   switch (protocol()) {
       case Account::Protocol::SIP:
          if (credentialsModel()->rowCount())
             credentialsModel()->setData(credentialsModel()->index(0,0),detail,CredentialModel::Role::PASSWORD);
@@ -946,9 +950,9 @@ void Account::setRoleData(int role, const QVariant& value)
    switch(role) {
       case Account::Role::Alias:
          setAlias(value.toString());
-      case Account::Role::Type: {
+      case Account::Role::Proto: {
          const int proto = value.toInt();
-         setType((proto>=0&&proto<=1)?static_cast<Account::Protocol>(proto):Account::Protocol::SIP);
+         setProtocol((proto>=0&&proto<=1)?static_cast<Account::Protocol>(proto):Account::Protocol::SIP);
       }
       case Account::Role::Hostname:
          setHostname(value.toString());
@@ -1134,25 +1138,27 @@ void Account::save()
 ///sync with the daemon, this need to be done manually to prevent reloading the account while it is being edited
 void Account::reload()
 {
-   qDebug() << "Reloading" << id() << alias();
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   QMap<QString,QString> aDetails = configurationManager.getAccountDetails(id());
+   if (!isNew()) {
+      qDebug() << "Reloading" << id() << alias();
+      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+      QMap<QString,QString> aDetails = configurationManager.getAccountDetails(id());
 
-   if (!aDetails.count()) {
-      qDebug() << "Account not found";
-   }
-   else {
-      m_hAccountDetails.clear();
-      QMutableMapIterator<QString, QString> iter(aDetails);
-      while (iter.hasNext()) {
-         iter.next();
-         m_hAccountDetails[iter.key()] = iter.value();
+      if (!aDetails.count()) {
+         qDebug() << "Account not found";
       }
-      setHostname(m_hAccountDetails[Account::MapField::HOSTNAME]);
+      else {
+         m_hAccountDetails.clear();
+         QMutableMapIterator<QString, QString> iter(aDetails);
+         while (iter.hasNext()) {
+            iter.next();
+            m_hAccountDetails[iter.key()] = iter.value();
+         }
+         setHostname(m_hAccountDetails[Account::MapField::HOSTNAME]);
+      }
+      m_CurrentState = READY;
+      reloadCredentials();
+      emit changed(this);
    }
-   m_CurrentState = READY;
-   reloadCredentials();
-   emit changed(this);
 }
 
 ///Reload credentials from DBUS

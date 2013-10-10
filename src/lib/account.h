@@ -56,7 +56,7 @@ class LIB_EXPORT Account : public QObject {
 
    //Properties
    Q_PROPERTY(QString        alias                        READ alias                         WRITE setAlias                       )
-   Q_PROPERTY(Account::Protocol type                      READ type                          WRITE setType                        )
+   Q_PROPERTY(Account::Protocol protocol                  READ protocol                      WRITE setProtocol                    )
    Q_PROPERTY(QString        hostname                     READ hostname                      WRITE setHostname                    )
    Q_PROPERTY(QString        username                     READ username                      WRITE setUsername                    )
    Q_PROPERTY(QString        mailbox                      READ mailbox                       WRITE setMailbox                     )
@@ -141,7 +141,7 @@ class LIB_EXPORT Account : public QObject {
 
       enum Role {
          Alias                       = 100,
-         Type                        = 101,
+         Proto                       = 101,
          Hostname                    = 102,
          Username                    = 103,
          Mailbox                     = 104,
@@ -291,7 +291,7 @@ class LIB_EXPORT Account : public QObject {
       DtmfType DTMFType                    () const;
       bool    presenceStatus               () const;
       QString presenceMessage              () const;
-      Account::Protocol      type          () const;
+      Account::Protocol      protocol      () const;
       TlsMethodModel::Type   tlsMethod     () const;
       KeyExchangeModel::Type keyExchange   () const;
       QVariant roleData            (int role) const;
@@ -299,7 +299,7 @@ class LIB_EXPORT Account : public QObject {
       //Setters
       void setId      (const QString& id);
       void setAlias                         (const QString& detail);
-      void setType                          (Account::Protocol proto);
+      void setProtocol                      (Account::Protocol proto);
       void setHostname                      (const QString& detail);
       void setUsername                      (const QString& detail);
       void setMailbox                       (const QString& detail);

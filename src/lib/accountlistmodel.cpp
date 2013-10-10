@@ -89,7 +89,7 @@ void AccountListModel::setupRoleName()
 {
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(Account::Role::Alias                    ,QByteArray("alias"                         ));
-   roles.insert(Account::Role::Type                     ,QByteArray("type"                          ));
+   roles.insert(Account::Role::Proto                    ,QByteArray("protocol"                      ));
    roles.insert(Account::Role::Hostname                 ,QByteArray("hostname"                      ));
    roles.insert(Account::Role::Username                 ,QByteArray("username"                      ));
    roles.insert(Account::Role::Mailbox                  ,QByteArray("mailbox"                       ));

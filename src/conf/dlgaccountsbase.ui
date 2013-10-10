@@ -203,7 +203,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -1011,7 +1011,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-168</y>
+               <y>0</y>
                <width>539</width>
                <height>666</height>
               </rect>

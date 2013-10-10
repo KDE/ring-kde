@@ -134,11 +134,10 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(radioButton_pa_custom,             SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pRingtoneListLW,                 SIGNAL(currentRowChanged(int))         , this   , SLOT(changedAccountList())              );
    /**/connect(m_pUseCustomFileCK,                SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
-   /**/connect(m_pCodecsLW,                       SIGNAL(itemChanged(QListWidgetItem*))  , this   , SLOT(changedAccountList())              );
    /**/connect(edit_credential_realm,             SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_credential_auth,              SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_credential_password,          SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
-   /**/connect(m_pCodecsLW,                       SIGNAL(currentTextChanged(QString))    , this   , SLOT(loadVidCodecDetails(QString))      );
+//    /**/connect(m_pCodecsLW,                       SIGNAL(currentTextChanged(QString))    , this   , SLOT(loadVidCodecDetails(QString))      );
    ///**/connect(&configurationManager,             SIGNAL(accountsChanged())            , this   , SLOT(updateAccountStates()             ));
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(this,                              SIGNAL(updateButtons())                , parent , SLOT(updateButtons())                   );
@@ -207,7 +206,7 @@ void DlgAccounts::saveAccount(QModelIndex item)
 
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                     /
-   /**/account->setType                        ( static_cast<Account::Protocol>(edit2_protocol->currentIndex())           );
+   /**/account->setProtocol                    ( static_cast<Account::Protocol>(edit2_protocol->currentIndex())           );
    /**/account->setAlias                       ( edit1_alias->text()                                                      );
    /**/account->setHostname                    ( edit3_server->text()                                                     );
    /**/account->setUsername                    ( edit4_user->text()                                                       );
@@ -297,9 +296,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
    edit1_alias->setText( account->alias());
 
-   const int protocolIndex = static_cast<int>(account->type());
+   const int protocolIndex = static_cast<int>(account->protocol());
 
-   if (account->type() == Account::Protocol::SIP) {
+   if (account->protocol() == Account::Protocol::SIP) {
       const QModelIndex idx = account->credentialsModel()->index(0,0);
       disconnect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
       if (idx.isValid() && !account->id().isEmpty()) {
