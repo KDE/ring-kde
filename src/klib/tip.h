@@ -68,11 +68,12 @@ public:
    virtual QSize reload(const QRect& availableSize,bool force = false);
 
    //Getter
-   bool isVisible        () { return m_IsVisible; }
-   int  timeout          () { return m_TimeOut;   }
-   bool hasText          () { return m_HasText;   }
-   bool hasBackground    () { return m_HasBg;     }
-   virtual float opacity () { return 1.0f;        }
+   bool isVisible        () { return m_IsVisible;    }
+   int  timeout          () { return m_TimeOut;      }
+   bool hasText          () { return m_HasText;      }
+   bool hasBackground    () { return m_HasBg;        }
+   virtual float opacity () { return 1.0f;           }
+   QString text          () { return m_OriginalText; }
 
    //Setter
    void setVisible(bool visible);

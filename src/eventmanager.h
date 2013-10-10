@@ -29,6 +29,7 @@ class QDragMoveEvent ;
 #include <lib/call.h>
 class SFLPhoneView;
 class CanvasObjectManager;
+class MainWindowEvent;
 
 class EventManager : public QObject {
    Q_OBJECT
@@ -66,6 +67,7 @@ protected:
 private:
    CanvasObjectManager* m_pCanvasManager;
    SFLPhoneView*        m_pParent       ;
+   MainWindowEvent*     m_pMainWindowEv ;
 
    //Methods
    bool viewKeyEvent      ( QKeyEvent*       e);

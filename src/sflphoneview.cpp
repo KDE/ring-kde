@@ -154,6 +154,10 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    setupUi(this);
    KPhoneNumberSelector::init();
 
+   //Enable on-canvas messages
+   TipCollection::setManager(new TipManager(m_pView));
+   m_pCanvasManager = new CanvasObjectManager();
+
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
@@ -166,9 +170,6 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    m_pView->installEventFilter(m_pEventManager);
    m_pView->setViewType(CategorizedTreeView::ViewType::Call);
 
-   //Enable on-canvas messages
-   TipCollection::setManager(new TipManager(m_pView));
-   m_pCanvasManager = new CanvasObjectManager();
 
    if (!CallModel::instance()->getCallList().size())
       m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NO_CALLS);
@@ -710,9 +711,12 @@ void SFLPhoneView::on1_incomingCall(Call* call)
 
    updateWindowCallState();
 
-   SFLPhone::app()->activateWindow  (      );
-   SFLPhone::app()->raise           (      );
-   SFLPhone::app()->setVisible      ( true );
+   if (ConfigurationSkeleton::displayOnCalls()) {
+      qDebug() << "\n\n\nRAISING" << ConfigurationSkeleton::displayOnCalls();
+      SFLPhone::app()->activateWindow(      );
+      SFLPhone::app()->raise         (      );
+   }
+   SFLPhone::app()->setVisible       ( true );
 
    const QModelIndex& idx = CallModel::instance()->getIndex(call);
    if (idx.isValid() && (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING)) {

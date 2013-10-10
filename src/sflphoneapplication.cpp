@@ -23,7 +23,6 @@
 #include <KCmdLineArgs>
 #include <KIconLoader>
 #include <KStandardDirs>
-#include <KNotification>
 #include <KSystemTrayIcon>
 #include <KMainWindow>
 #include <KDebug>

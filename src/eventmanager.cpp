@@ -38,17 +38,57 @@
 #include <lib/phonedirectorymodel.h>
 #include "klib/akonadibackend.h"
 
+//This code detect if the window is active, innactive or minimzed
+class MainWindowEvent : public QObject {
+   Q_OBJECT
+public:
+   MainWindowEvent() : QObject(nullptr) {
+      SFLPhone::app()->installEventFilter(this);
+   }
+protected:
+   virtual bool eventFilter(QObject *obj, QEvent *event) {
+      Q_UNUSED(obj)
+      if (event->type() == QEvent::FocusIn || event->type() == QEvent::FocusOut) {
+         QFocusEvent* e = static_cast<QFocusEvent*>(event);
+         if (e->reason() == Qt::ActiveWindowFocusReason) {
+            qDebug() << "ACTIVE WINDOW EVENT";
+         }
+      }
+      else if (event->type() == QEvent::WindowStateChange) {
+         QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
+         switch (SFLPhone::app()->windowState()) {
+            case Qt::WindowMinimized:
+               emit minimized(true);
+               break;
+            case Qt::WindowActive:
+               qDebug() << "The window is now active";
+            case Qt::WindowNoState:
+            default:
+               if (e->oldState() == Qt::WindowMinimized)
+                  emit minimized(false);
+               break;
+         };
+      }
+      return false;
+   }
+
+Q_SIGNALS:
+   void minimized(bool);
+};
+
 ///Constructor
-EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(parent)
+EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent())
 {
    connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
    connect(CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
+
+   connect(m_pMainWindowEv , SIGNAL(minimized(bool)) , m_pParent->m_pCanvasManager, SLOT(slotMinimized(bool)));
 }
 
 ///Destructor
 EventManager::~EventManager()
 {
-   
+   delete m_pMainWindowEv;
 }
 
 /*****************************************************************************
@@ -453,3 +493,5 @@ void EventManager::slotAutoCompletionVisibility(bool)
    m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_DIALING_CHANGED);
 }
 
+#include "moc_eventmanager.cpp"
+#include "eventmanager.moc"

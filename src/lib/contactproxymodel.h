@@ -75,7 +75,6 @@ private:
    QHash<QString,TopLevelItem*> m_hCategories          ;
    int                          m_Role                 ;
    bool                         m_ShowAll              ;
-   const static char*           m_slHistoryConstStr[25];
    QStringList                  m_lMimes               ;
 
 private Q_SLOTS:

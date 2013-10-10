@@ -204,9 +204,15 @@ private:
    bool testObjectPriority  ();
    bool testObjectDiscarding();
 
+   //Attributes
+   bool m_Minimized;
+
 private Q_SLOTS:
    void slotTimeout();
    void slotTransitionEvents(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
+
+public Q_SLOTS:
+   void slotMinimized(bool isMinimized);
 
 };
 

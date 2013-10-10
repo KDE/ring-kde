@@ -31,34 +31,6 @@
 #include "phonedirectorymodel.h"
 #include "historytimecategorymodel.h"
 
-const char* ContactProxyModel::m_slHistoryConstStr[25] = {
-      "Today"                                                    ,//0
-      "Yesterday"                                                ,//1
-      QDate::currentDate().addDays(-2).toString("dddd").toAscii().constData(),//2
-      QDate::currentDate().addDays(-3).toString("dddd").toAscii().constData(),//3
-      QDate::currentDate().addDays(-4).toString("dddd").toAscii().constData(),//4
-      QDate::currentDate().addDays(-5).toString("dddd").toAscii().constData(),//5
-      QDate::currentDate().addDays(-6).toString("dddd").toAscii().constData(),//6
-      "Last week"                                                ,//7
-      "Two weeks ago"                                            ,//8
-      "Three weeks ago"                                          ,//9
-      "Last month"                                               ,//10
-      "Two months ago"                                           ,//11
-      "Three months ago"                                         ,//12
-      "Four months ago"                                          ,//13
-      "Five months ago"                                          ,//14
-      "Six months ago"                                           ,//15
-      "Seven months ago"                                         ,//16
-      "Eight months ago"                                         ,//17
-      "Nine months ago"                                          ,//18
-      "Ten months ago"                                           ,//19
-      "Eleven months ago"                                        ,//20
-      "Twelve months ago"                                        ,//21
-      "Last year"                                                ,//22
-      "Very long time ago"                                       ,//23
-      "Never"                                                     //24
-};
-
 class ContactTreeNode;
 
 class TopLevelItem : public CategorizedCompositeNode {
@@ -224,6 +196,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
          case AbstractContactBackend::Role::DatedLastUsed:
             return QVariant(QDateTime::fromTime_t( c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::Filter: {
+            //Strip non essential characters like accents from the filter string
             QString normStripppedC;
             foreach(QChar char2,QString(c->formattedName()+'\n'+c->organization()+'\n'+c->group()+'\n'+
                c->department()+'\n'+c->preferredEmail()).toLower().normalized(QString::NormalizationForm_KD) ) {
@@ -280,6 +253,7 @@ int ContactProxyModel::rowCount( const QModelIndex& parent ) const
          return static_cast<const TopLevelItem*>(parentNode)->m_lChildren.size();
       case CategorizedCompositeNode::Type::CONTACT: {
          const int size = ((Contact*)static_cast<const ContactTreeNode*>(parentNode)->getSelf())->phoneNumbers().size();
+         //Do not return the number if there is only one, it will be drawn part of the contact
          return size==1?0:size;
       }
       case CategorizedCompositeNode::Type::CALL:

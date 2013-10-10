@@ -20,10 +20,22 @@
 //Qt
 #include <QtCore/QDebug>
 #include <QtCore/QTimer>
+#include <QtGui/QApplication>
 
-//SFLPHone
+//X11
+#ifdef Q_WS_X11
+// #include <xcb/xcb.h>
+// #include <xcb/xcb_atom.h>
+#endif
+
+//KDE
+#include <KNotification>
+#include <KLocale>
+
+//SFLPhone
 #include <klib/tipmanager.h>
 #include <widgets/tips/tipcollection.h>
+#include "sflphone.h"
 
 
 CanvasObjectManager::Object CanvasObjectManager::m_slEvents[EVENT_COUNT] = { CanvasObjectManager::Object::NoObject };
@@ -38,7 +50,7 @@ const CanvasObjectManager::CanvasElement CanvasObjectManager::elements[ELEMENT_C
    /*2 EndCall      */ {_(Type)OBJECT , _(LifeCycle)TIMED  , _(Priority)LOW        , E::CALL_ENDED              , E::ANY               , false , true   , false},
    /*3 Ringing      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::CALL_RINGING            , E::CALL_STATE_CHANGED
                                                                                                                  | E::CALL_ENDED
-                                                                                                                 | E::CALL_BUSY        , true  , true   , false},
+                                                                                                                 | E::CALL_BUSY        , true  , false  , false},
    /*4 Network      */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::NETWORK_ERROR           , E::ANY               , false , true   , false},
    /*5 AutoComplete */ {_(Type)WIDGET , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::CALL_DIALING_CHANGED    , E::CALL_STATE_CHANGED
                                                                                                                  | E::CALL_ENDED       , false , false  , true },
@@ -63,7 +75,7 @@ void CanvasObjectManager::hInitEvents() {
 
 CanvasObjectManager::CanvasObjectManager(QObject* parent) : QObject(parent),m_DisableTransition(false),
 m_CurrentObject(CanvasObjectManager::Object::NoObject),m_NextObject(CanvasObjectManager::Object::NoObject)
-,m_pTimer(nullptr),m_CurrentState(ObjectState::NO_OBJECT)
+,m_pTimer(nullptr),m_CurrentState(ObjectState::NO_OBJECT),m_Minimized(false)
 {
    hInitEvents();
 
@@ -151,7 +163,7 @@ void CanvasObjectManager::initiateOutTransition()
             switch (OBJ_DEF(m_CurrentObject).type) {
                case ObjectType::OBJECT: {
                   //If hideCurrentTip return true, then act as if the transition was over
-                  qDebug() << "\n\n\nMMMMM" << OBJ_DEF(m_CurrentObject).skipAnimation << (int)m_NextObject;
+//                   qDebug() << "\n\n\nMMMMM" << OBJ_DEF(m_CurrentObject).skipAnimation << (int)m_NextObject;
                   if (TipCollection::manager()->hideCurrentTip(OBJ_DEF(m_NextObject).skipAnimation)) {
       //                qDebug() << "PROBLEM";
                      m_CurrentObject = m_NextObject;
@@ -199,8 +211,39 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
                      m_pTimer->setInterval(currentTip->timeout());
                      m_pTimer->start();
                   }
+                  //If the window is minimized, use system notification
+                  const QString m = message.isEmpty()?currentTip->text():message;
+                  if (m_Minimized && !m.isEmpty())
+                     KNotification::event(KNotification::Notification, i18n("SFLPhone"), m);
+                  //If the window is not focussed and the object request notification, use system
+                  //disabled as it is not implemented by many top tier window managers
+#ifdef Q_WS_X11
+// Doesn't work on most window managers
+//                   static xcb_connection_t *c = nullptr;
+//                   if (c || (c = xcb_connect(nullptr,nullptr))) {
+//                      xcb_window_t win = SFLPhone::app()->winId();
+//                      xcb_generic_error_t *error;
+//                      xcb_intern_atom_cookie_t cookie = xcb_intern_atom(c, 0, strlen("_NET_WM_STATE_FOCUSED"), "_NET_WM_STATE_FOCUSED");
+//                      xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(c, cookie, &error);
+//                      static xcb_atom_t _NET_WM_STATE_FOCUSED = reply->atom;
+//                      xcb_get_property_cookie_t propC = xcb_get_property_unchecked(c, false, win,_NET_WM_STATE_FOCUSED, XCB_GET_PROPERTY_TYPE_ANY, 0, 1);
+//                      xcb_get_property_reply_t *replyP = xcb_get_property_reply(c, propC, NULL);
+//                      if (replyP) {
+//                         bool isFocussed = *((bool*)xcb_get_property_value(replyP));
+//                         qDebug() << "\n\n\nClient is focussed" <<isFocussed;
+//                         free(replyP);
+//                      }
+//                      free(reply);
+//                      qDebug() << "\n\nNOTIF" << QApplication::activeWindow() << OBJ_DEF(m_CurrentObject).systemNotification;
+//                      if (!QApplication::activeWindow() && OBJ_DEF(m_CurrentObject).systemNotification) {
+//                         KNotification::event(KNotification::Notification, i18n("SFLPhone"), message.isEmpty()?currentTip->text():message);
+//                      }
+//                   }
+#endif
                }
                TipCollection::manager()->setCurrentTip(currentTip);
+
+
                } break;
             case ObjectType::WIDGET:
                QWidget* w = TipCollection::canvasWidgetsToTip(m_CurrentObject);
@@ -332,7 +375,11 @@ void CanvasObjectManager::slotTransitionEvents(QAbstractAnimation::Direction dir
    };
 }
 
-
+void CanvasObjectManager::slotMinimized(bool isMinimized)
+{
+   qDebug() << "SLOT MINIMZED";
+   m_Minimized = isMinimized;
+}
 
 
 
