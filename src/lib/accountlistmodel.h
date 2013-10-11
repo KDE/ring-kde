@@ -69,13 +69,13 @@ public:
    void         setDefaultAccount(Account* a);
 
    //Mutators
-   Q_INVOKABLE Account* addAccount          ( const QString & alias   )      ;
-   Q_INVOKABLE void     removeAccount       ( Account* account        )      ;
-   void                 removeAccount       ( QModelIndex index       )      ;
-   void                 save                (                         )      ;
-   Q_INVOKABLE bool     accountUp           ( int index               )      ;
-   Q_INVOKABLE bool     accountDown         ( int index               )      ;
-   Q_INVOKABLE void     cancel              (                         )      ;
+   Q_INVOKABLE Account* addAccount          ( const QString & alias );
+   Q_INVOKABLE void     removeAccount       ( Account* account      );
+   void                 removeAccount       ( QModelIndex index     );
+   void                 save                (                       );
+   Q_INVOKABLE bool     accountUp           ( int index             );
+   Q_INVOKABLE bool     accountDown         ( int index             );
+   Q_INVOKABLE void     cancel              (                       );
 
    //Operators
    Account*       operator[] (int            i)      ;

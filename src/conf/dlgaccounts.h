@@ -118,6 +118,9 @@ private:
    TipManager*           m_pTipManager         ;
    Tip*                  m_pTip                ;
 
+   //Methods
+   Account* currentAccount() const;
+
 public Q_SLOTS:
    void loadAccountList                  ();
    bool hasChanged                       ();

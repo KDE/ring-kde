@@ -68,6 +68,7 @@ set( qtsflphone_LIB_SRCS
   keyexchangemodel.cpp
   tlsmethodmodel.cpp
   numbercompletionmodel.cpp
+  categorizedaccountmodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -112,6 +113,7 @@ set( qtsflphone_LIB_HDRS
   keyexchangemodel.h
   tlsmethodmodel.h
   numbercompletionmodel.h
+  categorizedaccountmodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

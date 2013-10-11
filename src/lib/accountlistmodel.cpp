@@ -49,6 +49,8 @@ bool AccountListNoCheckProxyModel::setData( const QModelIndex& idx, const QVaria
 
 Qt::ItemFlags AccountListNoCheckProxyModel::flags (const QModelIndex& idx) const
 {
+   if (!idx.row())
+      return Qt::NoItemFlags;
    return AccountListModel::instance()->flags(idx);
 }
 
@@ -446,6 +448,8 @@ int AccountListModel::rowCount(const QModelIndex& parentIdx) const
 
 Account* AccountListModel::getAccountByModelIndex(const QModelIndex& item) const
 {
+   if (!item.isValid())
+      return nullptr;
    return m_lAccounts[item.row()];
 }
 
