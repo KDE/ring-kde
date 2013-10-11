@@ -49,7 +49,8 @@ bool AccountListNoCheckProxyModel::setData( const QModelIndex& idx, const QVaria
 
 Qt::ItemFlags AccountListNoCheckProxyModel::flags (const QModelIndex& idx) const
 {
-   if (!idx.row())
+   const QModelIndex& src = AccountListModel::instance()->index(idx.row(),idx.column());
+   if (!idx.row() || AccountListModel::instance()->data(src,Qt::CheckStateRole) == Qt::Unchecked)
       return Qt::NoItemFlags;
    return AccountListModel::instance()->flags(idx);
 }
