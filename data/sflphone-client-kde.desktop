@@ -47,6 +47,7 @@ GenericName[x-test]=xxTelephonexx
 Comment=Call and receive calls with SIP or IAX protocols
 Comment[cs]=Volejte a přijímejte hovory s protokoly SIP a IAX
 Comment[da]=Foretag og modtag opkald med protokollerne SIP eller IAX
+Comment[de]=Anrufen und Anrufe annehmen mit SIP- oder IAX-Protokollen
 Comment[es]=Llamar y recibir llamadas de protocolos IAX y SIP
 Comment[et]=Kõnede tegemine ja vastuvõtmine SIP või IAX protokolli vahendusel
 Comment[fr]=Appeler et recevoir des appels avec les protocoles « SIP » ou « IAX »

@@ -21,6 +21,7 @@ Name[x-test]=xxSFLPhone plasmoidxx
 Comment=Plasma client for SFLPhone daemon
 Comment[cs]=Klient plasma pro démona SFLPhone
 Comment[da]=Plasma-klient til SFLPhone-dæmonen
+Comment[de]=Plasma-Programm für den SFLPhone-Dienst
 Comment[es]=Cliente Plasma para el demonio de SFLPhone
 Comment[et]=SFLphone deemoni Plasma klient
 Comment[fr]=Client Plasma pour le démon « SflPhone »
