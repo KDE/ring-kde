@@ -33,6 +33,7 @@
 #include <KLocale>
 #include <KIcon>
 #include <KMessageBox>
+#include <KColorScheme>
 
 //SFLPhone
 #include "klib/kcfg_settings.h"
@@ -786,7 +787,10 @@ bool DlgAccounts::hasIncompleteRequiredFields()
    bool isIncomplete = acc && (acc->alias() != "IP2IP") && (fields[0]|fields[1]|fields[2]|fields[3]);
    //Add visual feedback for missing fields
    for (int i=0;i<requiredFieldsLabels.size();i++) {
-      requiredFieldsLabels[i]->setStyleSheet(fields[i]?"color:darkred;":QString());
+      static KStatefulBrush errorBrush( KColorScheme::Window, KColorScheme::NegativeText );
+      QPalette pal = QApplication::palette();
+      pal.setBrush(QPalette::WindowText,fields[i]?errorBrush.brush(QPalette::Normal):pal.windowText());
+      requiredFieldsLabels[i]->setPalette(pal);
    }
    return isIncomplete;
 }
