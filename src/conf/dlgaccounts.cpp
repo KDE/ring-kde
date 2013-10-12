@@ -87,8 +87,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 
    //Add an info tip in the account list
    m_pTipManager = new TipManager(treeView_accountList);
-   m_pTip = new Tip(i18n("To add an account, press the \"add\" button bellow. Use the\
-   ⬆ up and ⬇ down button to change the default account priority."),this);
+   m_pTip = new Tip(i18n("To add an account, press the \"Add\" button below. Use the "
+   "⬆ up and ⬇ down button to change the default account priority."),this);
    m_pTipManager->setCurrentTip(m_pTip);
 
    m_pRingTonePath->setMode(KFile::File | KFile::ExistingOnly);
@@ -482,7 +482,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
       m_pRingtoneListLW->setDisabled(true);
       m_pUseCustomFileCK->setChecked(true);
       m_pRingTonePath->setEnabled(true);
-      
+
       m_pRingTonePath->setUrl( ringtonePath );
    }
 
@@ -886,11 +886,11 @@ void DlgAccounts::selectCredential(QModelIndex item, QModelIndex previous)
    list_credential->model()->setData(previous,edit_credential_auth->text()    , CredentialModel::Role::NAME     );
    list_credential->model()->setData(previous,edit_credential_password->text(), CredentialModel::Role::PASSWORD );
    list_credential->model()->setData(previous,edit_credential_realm->text()   , CredentialModel::Role::REALM    );
-   
+
    edit_credential_realm->setText       ( list_credential->model()->data(item,CredentialModel::Role::REALM)    .toString());
    edit_credential_auth->setText        ( list_credential->model()->data(item,CredentialModel::Role::NAME)     .toString());
    edit_credential_password->setText    ( list_credential->model()->data(item,CredentialModel::Role::PASSWORD) .toString());
-   
+
    edit_credential_realm->setEnabled    ( true );
    edit_credential_auth->setEnabled     ( true );
    edit_credential_password->setEnabled ( true );
