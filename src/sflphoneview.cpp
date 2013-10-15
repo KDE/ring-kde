@@ -186,8 +186,6 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this   , SLOT(on1_incomingCall(Call*))          );
    /**/connect(CallModel::instance()        , SIGNAL(voiceMailNotify(QString,int))          , this   , SLOT(on1_voiceMailNotify(QString,int)) );
    /**/connect(CallModel::instance()        , SIGNAL(callStateChanged(Call*,Call::State))   , this   , SLOT(updateWindowCallState())          );
-   /**/connect(AccountListModel::instance() , SIGNAL(accountStateChanged(Account*,QString)) , this   , SLOT(updateStatusMessage())            );
-   /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this   , SLOT(updateStatusMessage())            );
    /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this   , SLOT(updateWindowCallState())          );
    /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this   , SLOT(sendMessage())                    );
    /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this   , SLOT(sendMessage())                    );

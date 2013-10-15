@@ -122,16 +122,18 @@ class LIB_EXPORT Account : public QObject {
 
       class State {
       public:
-         constexpr static const char* REGISTERED       = "REGISTERED"      ;
-         constexpr static const char* READY            = "READY"           ;
-         constexpr static const char* UNREGISTERED     = "UNREGISTERED"    ;
-         constexpr static const char* TRYING           = "TRYING"          ;
-         constexpr static const char* ERROR            = "ERROR"           ;
-         constexpr static const char* ERROR_AUTH       = "ERROR_AUTH"      ;
-         constexpr static const char* ERROR_NETWORK    = "ERROR_NETWORK"   ;
-         constexpr static const char* ERROR_HOST       = "ERROR_HOST"      ;
-         constexpr static const char* ERROR_CONF_STUN  = "ERROR_CONF_STUN" ;
-         constexpr static const char* ERROR_EXIST_STUN = "ERROR_EXIST_STUN";
+         constexpr static const char* REGISTERED                = "REGISTERED"             ;
+         constexpr static const char* READY                     = "READY"                  ;
+         constexpr static const char* UNREGISTERED              = "UNREGISTERED"           ;
+         constexpr static const char* TRYING                    = "TRYING"                 ;
+         constexpr static const char* ERROR                     = "ERROR"                  ;
+         constexpr static const char* ERROR_AUTH                = "ERRORAUTH"              ;
+         constexpr static const char* ERROR_NETWORK             = "ERRORNETWORK"           ;
+         constexpr static const char* ERROR_HOST                = "ERRORHOST"              ;
+         constexpr static const char* ERROR_CONF_STUN           = "ERROR_CONF_STUN"        ;
+         constexpr static const char* ERROR_EXIST_STUN          = "ERROREXISTSTUN"         ;
+         constexpr static const char* ERROR_SERVICE_UNAVAILABLE = "ERRORSERVICEUNAVAILABLE";
+         constexpr static const char* ERROR_NOT_ACCEPTABLE      = "ERRORNOTACCEPTABLE"     ;
       };
 
       ~Account();
@@ -280,7 +282,7 @@ class LIB_EXPORT Account : public QObject {
       //Getters
       bool            isNew()                             const;
       const QString   id()                                const;
-      const QString   stateName(const QString& state)     const;
+      const QString   toHumanStateName()                  const;
       const QString   accountDetail(const QString& param) const;
       const QString   alias()                             const;
       bool            isRegistered()                      const;

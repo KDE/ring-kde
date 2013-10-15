@@ -744,7 +744,6 @@ void DlgAccounts::updateAccountStates()
 ///Update the status label to current account state
 void DlgAccounts::updateStatusLabel(QModelIndex item)
 {
-   kDebug() << "MODEL index is" << item.row();
    const QModelIndex srcItem = CategorizedAccountModel::instance()->mapToSource(item);
    if(!srcItem.isValid())
       return;
@@ -758,7 +757,7 @@ void DlgAccounts::updateStatusLabel(Account* account)
 {
    if(!account || currentAccount() != account)
       return;
-   const QString status = account->registrationStatus();
+   const QString status = account->toHumanStateName();
    edit7_state->setText( "<FONT COLOR=\"" + account->stateColorName() + "\">" + status + "</FONT>" );
 }
 

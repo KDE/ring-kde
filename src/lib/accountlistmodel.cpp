@@ -160,8 +160,15 @@ void AccountListModel::destroy()
 void AccountListModel::accountChanged(const QString& account,const QString& state, int code)
 {
    Q_UNUSED(code)
-   qDebug() << "Account" << account << "status changed to" << state;
    Account* a = getAccountById(account);
+   if (!a || (a && a->registrationStatus() != state )) {
+      qDebug() << "Account" << account << "status changed to" << state;
+      if (a) {
+         a->updateState();
+         const QModelIndex idx = a->index();
+         emit dataChanged(idx, idx);
+      }
+   }
    if (!a) {
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       QStringList accountIds = configurationManager.getAccountList().value();
@@ -175,7 +182,7 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
          }
       }
       foreach (Account* acc, m_lAccounts) {
-         int idx =accountIds.indexOf(acc->id());
+         const int idx =accountIds.indexOf(acc->id());
          if (idx == -1 && (acc->state() == Account::AccountEditState::READY || acc->state() == Account::AccountEditState::REMOVED)) {
             m_lAccounts.remove(idx);
             emit dataChanged(index(idx - 1, 0), index(m_lAccounts.size()-1, 0));
@@ -184,7 +191,7 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
       }
    }
    if (a)
-      emit accountStateChanged(a,a->stateName(state));
+      emit accountStateChanged(a,a->toHumanStateName());
    else
       qDebug() << "Account not found";
 }

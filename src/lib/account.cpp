@@ -112,7 +112,7 @@ void Account::accountChanged(const QString& accountId, const QString& state,int)
    if ((!m_AccountId.isEmpty()) && accountId == m_AccountId) {
       qDebug() << "Account" << m_AccountId << "status changed to" << state;
       if (Account::updateState())
-         emit stateChanged(stateName(state));
+         emit stateChanged(toHumanStateName());
    }
 }
 
@@ -144,8 +144,10 @@ const QString Account::id() const
 }
 
 ///Get current state
-const QString Account::stateName(const QString& s) const
+const QString Account::toHumanStateName() const
 {
+   const QString s = m_hAccountDetails[Account::MapField::Registration::STATUS];
+
    static const QString registered             = tr("Registered"               );
    static const QString notRegistered          = tr("Not Registered"           );
    static const QString trying                 = tr("Trying..."                );
@@ -155,6 +157,8 @@ const QString Account::stateName(const QString& s) const
    static const QString hostUnreachable        = tr("Host unreachable"         );
    static const QString stunConfigurationError = tr("Stun configuration error" );
    static const QString stunServerInvalid      = tr("Stun server invalid"      );
+   static const QString serviceUnavailable     = tr("Service unavailable"      );
+   static const QString notAcceptable          = tr("Unacceptable"             );
    static const QString invalid                = tr("Invalid"                  );
 
    if(s == Account::State::REGISTERED       )
@@ -175,6 +179,10 @@ const QString Account::stateName(const QString& s) const
       return stunConfigurationError ;
    if(s == Account::State::ERROR_EXIST_STUN )
       return stunServerInvalid      ;
+   if(s == Account::State::ERROR_SERVICE_UNAVAILABLE )
+      return serviceUnavailable     ;
+   if(s == Account::State::ERROR_NOT_ACCEPTABLE      )
+      return notAcceptable          ;
    return invalid                   ;
 }
 
