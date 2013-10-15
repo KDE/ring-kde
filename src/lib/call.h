@@ -301,7 +301,7 @@ public:
    const QString        dialNumber       () const;
    const QString        recordingPath    () const;
    VideoRenderer*       videoRenderer    () const;
-   const QString        formattedName    ()      ;
+   const QString        formattedName    () const;
    bool                 hasRecording     () const;
    QString              length           () const;
    QVariant             roleData         (int role) const;

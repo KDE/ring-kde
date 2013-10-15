@@ -237,7 +237,8 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
             return static_cast<TopLevelItem*>(modelItem)->m_NameStr;
          case Call::Role::FuzzyDate:
          case Call::Role::Date:
-            return static_cast<TopLevelItem*>(modelItem)->m_Name;
+            qDebug() << static_cast<TopLevelItem*>(modelItem)->m_Name;
+            return m_lCategoryCounter.size() - static_cast<TopLevelItem*>(modelItem)->m_Name;
          default:
             break;
       }

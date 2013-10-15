@@ -496,7 +496,7 @@ const QString Call::peerName() const
 }
 
 ///Generate the best possible peer name
-const QString Call::formattedName()
+const QString Call::formattedName() const
 {
    if (isConference())
       return tr("Conference");
@@ -504,7 +504,7 @@ const QString Call::formattedName()
       return peerPhoneNumber()->contact()->formattedName();
    else if (!peerName().isEmpty())
       return m_PeerName;
-   else if (m_pPeerPhoneNumber)
+   else if (peerPhoneNumber())
       return m_pPeerPhoneNumber->uri();
    else
       return tr("Unknown");
@@ -1289,7 +1289,7 @@ QVariant Call::roleData(int role) const
          else if (m_PeerName.isEmpty())
             return ct?ct->formattedName():peerPhoneNumber()?peerPhoneNumber()->uri():dialNumber();
          else
-            return peerName();
+            return formattedName();
          break;
       case Qt::EditRole:
          return dialNumber();

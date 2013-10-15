@@ -141,7 +141,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          }
       }
    }
-   else if (pxmPtr && (index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if ((index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));

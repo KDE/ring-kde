@@ -105,7 +105,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    m_pKeyPressEater = new KeyPressEater(this);
    m_pView->installEventFilter(m_pKeyPressEater);
    m_pView->setSortingEnabled(true);
-   m_pView->sortByColumn(0,Qt::AscendingOrder);
+   m_pView->sortByColumn(0,Qt::DescendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex)), this, SLOT(slotContextMenu(QModelIndex)));
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotDoubleClick(QModelIndex)));
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
