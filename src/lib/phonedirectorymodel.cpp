@@ -404,7 +404,7 @@ void PhoneDirectoryModel::slotChanged()
    }
 }
 
-void PhoneDirectoryModel::slotNewBuddySubscription(const QString& uri, const QString& accountId, bool status, const QString& message)
+void PhoneDirectoryModel::slotNewBuddySubscription(const QString& accountId, const QString& uri, bool status, const QString& message)
 {
    qDebug() << "New presence buddy" << uri << status << message;
    PhoneNumber* number = getNumber(uri,AccountListModel::instance()->getAccountById(accountId));

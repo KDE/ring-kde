@@ -453,25 +453,25 @@ int Account::tlsNegotiationTimeoutMsec() const
 ///Return the account TLS verify server
 bool Account::isTlsVerifyServer() const
 {
-   return (accountDetail(TLS_VERIFY_SERVER)  == "true")?1:0;
+   return (accountDetail(TLS_VERIFY_SERVER)  == "true");
 }
 
 ///Return the account TLS verify client
 bool Account::isTlsVerifyClient() const
 {
-   return (accountDetail(TLS_VERIFY_CLIENT)  == "true")?1:0;
+   return (accountDetail(TLS_VERIFY_CLIENT)  == "true");
 }
 
 ///Return if it is required for the peer to have a certificate
 bool Account::isTlsRequireClientCertificate() const
 {
-   return (accountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true")?1:0;
+   return (accountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true");
 }
 
 ///Return the account TLS security is enabled
 bool Account::isTlsEnable() const
 { 
-   return (accountDetail(TLS_ENABLE)  == "true")?1:0;
+   return (accountDetail(TLS_ENABLE)  == "true");
 }
 
 ///Return the account the TLS encryption method
@@ -490,7 +490,7 @@ KeyExchangeModel::Type Account::keyExchange() const
 ///Return if the ringtone are enabled
 bool Account::isRingtoneEnabled() const
 {
-   return (accountDetail(Account::MapField::Ringtone::ENABLED)  == "true")?1:0;
+   return (accountDetail(Account::MapField::Ringtone::ENABLED)  == "true");
 }
 
 ///Return the account ringtone path
@@ -536,7 +536,6 @@ DtmfType Account::DTMFType() const
    return (type == "overrtp" || type.isEmpty())? DtmfType::OverRtp:DtmfType::OverSip;
 }
 
-
 bool Account::presenceStatus() const
 {
    return PresenceStatusModel::instance()->currentStatus();
@@ -545,6 +544,16 @@ bool Account::presenceStatus() const
 QString Account::presenceMessage() const
 {
    return PresenceStatusModel::instance()->currentMessage();
+}
+
+bool Account::supportPresencePublish() const
+{
+   return accountDetail(Account::MapField::Presence::SUPPORT_PUBLISH)  == "true";
+}
+
+bool Account::supportedPresenceSubscribe() const
+{
+   return accountDetail(Account::MapField::Presence::SUPPORT_SUBSCRIBE)  == "true";
 }
 
 QVariant Account::roleData(int role) const

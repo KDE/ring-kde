@@ -188,32 +188,37 @@ class LIB_EXPORT Account : public QObject {
 
       class MapField {
       public:
-         constexpr static const char* ID                     = "Account.id"                   ;
-         constexpr static const char* TYPE                   = "Account.type"                 ;
-         constexpr static const char* ALIAS                  = "Account.alias"                ;
-         constexpr static const char* ENABLED                = "Account.enable"               ;
-         constexpr static const char* MAILBOX                = "Account.mailbox"              ;
-         constexpr static const char* DTMF_TYPE              = "Account.dtmfType"             ;
-         constexpr static const char* AUTOANSWER             = "Account.autoAnswer"           ;
-         constexpr static const char* HOSTNAME               = "Account.hostname"             ;
-         constexpr static const char* USERNAME               = "Account.username"             ;
-         constexpr static const char* ROUTE                  = "Account.routeset"             ;
-         constexpr static const char* PASSWORD               = "Account.password"             ;
-         constexpr static const char* REALM                  = "Account.realm"                ;
-         constexpr static const char* LOCAL_INTERFACE        = "Account.localInterface"       ;
-         constexpr static const char* PUBLISHED_SAMEAS_LOCAL = "Account.publishedSameAsLocal" ;
-         constexpr static const char* LOCAL_PORT             = "Account.localPort"            ;
-         constexpr static const char* PUBLISHED_PORT         = "Account.publishedPort"        ;
-         constexpr static const char* PUBLISHED_ADDRESS      = "Account.publishedAddress"     ;
+         constexpr static const char* ID                     = "Account.id"                      ;
+         constexpr static const char* TYPE                   = "Account.type"                    ;
+         constexpr static const char* ALIAS                  = "Account.alias"                   ;
+         constexpr static const char* ENABLED                = "Account.enable"                  ;
+         constexpr static const char* MAILBOX                = "Account.mailbox"                 ;
+         constexpr static const char* DTMF_TYPE              = "Account.dtmfType"                ;
+         constexpr static const char* AUTOANSWER             = "Account.autoAnswer"              ;
+         constexpr static const char* HOSTNAME               = "Account.hostname"                ;
+         constexpr static const char* USERNAME               = "Account.username"                ;
+         constexpr static const char* ROUTE                  = "Account.routeset"                ;
+         constexpr static const char* PASSWORD               = "Account.password"                ;
+         constexpr static const char* REALM                  = "Account.realm"                   ;
+         constexpr static const char* LOCAL_INTERFACE        = "Account.localInterface"          ;
+         constexpr static const char* PUBLISHED_SAMEAS_LOCAL = "Account.publishedSameAsLocal"    ;
+         constexpr static const char* LOCAL_PORT             = "Account.localPort"               ;
+         constexpr static const char* PUBLISHED_PORT         = "Account.publishedPort"           ;
+         constexpr static const char* PUBLISHED_ADDRESS      = "Account.publishedAddress"        ;
+         class Presence {
+         public:
+            constexpr static const char* SUPPORT_PUBLISH     = "Account.presencePublishEnabled"  ;
+            constexpr static const char* SUPPORT_SUBSCRIBE   = "Account.presenceSubscribeEnabled";
+         };
          class Registration {
          public:
-            constexpr static const char* EXPIRE              = "Account.registrationExpire"   ;
-            constexpr static const char* STATUS              = "Account.registrationStatus"   ;
+            constexpr static const char* EXPIRE              = "Account.registrationExpire"      ;
+            constexpr static const char* STATUS              = "Account.registrationStatus"      ;
          };
          class Ringtone {
          public:
-            constexpr static const char* PATH                = "Account.ringtonePath"         ;
-            constexpr static const char* ENABLED             = "Account.ringtoneEnabled"      ;
+            constexpr static const char* PATH                = "Account.ringtonePath"            ;
+            constexpr static const char* ENABLED             = "Account.ringtoneEnabled"         ;
          };
       };
 
@@ -291,6 +296,8 @@ class LIB_EXPORT Account : public QObject {
       DtmfType DTMFType                    () const;
       bool    presenceStatus               () const;
       QString presenceMessage              () const;
+      bool    supportPresencePublish       () const;
+      bool    supportedPresenceSubscribe   () const;
       Account::Protocol      protocol      () const;
       TlsMethodModel::Type   tlsMethod     () const;
       KeyExchangeModel::Type keyExchange   () const;

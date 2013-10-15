@@ -118,23 +118,25 @@ void ContactProxyModel::reloadCategories()
    }
    m_lCategoryCounter.clear();
    foreach(Contact* cont, m_pModel->getContactList()) {
-      QString val = category(cont);
-      if (!m_hCategories[val]) {
-         TopLevelItem* item = new TopLevelItem(val);
-         m_hCategories[val] = item;
-         item->m_Index = m_lCategoryCounter.size();
-         m_lCategoryCounter << item;
-//          emit dataChanged(index(0,0),index(rowCount()-1,0));
+      if (cont) {
+         QString val = category(cont);
+         if (!m_hCategories[val]) {
+            TopLevelItem* item = new TopLevelItem(val);
+            m_hCategories[val] = item;
+            item->m_Index = m_lCategoryCounter.size();
+            m_lCategoryCounter << item;
+   //          emit dataChanged(index(0,0),index(rowCount()-1,0));
+         }
+         TopLevelItem* item = m_hCategories[val];
+         if (item) {
+            ContactTreeNode* contactNode = new ContactTreeNode(cont);
+            contactNode->m_pParent3 = item;
+            contactNode->m_Index = item->m_lChildren.size();
+            item->m_lChildren << contactNode;
+         }
+         else
+            qDebug() << "ERROR count";
       }
-      TopLevelItem* item = m_hCategories[val];
-      if (item) {
-         ContactTreeNode* contactNode = new ContactTreeNode(cont);
-         contactNode->m_pParent3 = item;
-         contactNode->m_Index = item->m_lChildren.size();
-         item->m_lChildren << contactNode;
-      }
-      else
-         qDebug() << "ERROR count";
    }
    endResetModel();
    emit layoutChanged();
@@ -252,7 +254,8 @@ int ContactProxyModel::rowCount( const QModelIndex& parent ) const
       case CategorizedCompositeNode::Type::TOP_LEVEL:
          return static_cast<const TopLevelItem*>(parentNode)->m_lChildren.size();
       case CategorizedCompositeNode::Type::CONTACT: {
-         const int size = ((Contact*)static_cast<const ContactTreeNode*>(parentNode)->getSelf())->phoneNumbers().size();
+         const Contact* ct = static_cast<Contact*>(parentNode->getSelf());
+         const int size = ct->phoneNumbers().size();
          //Do not return the number if there is only one, it will be drawn part of the contact
          return size==1?0:size;
       }
