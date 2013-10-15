@@ -152,7 +152,7 @@ QString PhoneNumber::primaryName() const
    else if (m_hNames.size() == 1)
       return m_hNames.constBegin().key();
    else {
-      QString toReturn = "Unknown";
+      QString toReturn = tr("Unknown");
       QHash<QString,int>::const_iterator i = m_hNames.constBegin();
       int max = 0;
       while (i != m_hNames.end()) {

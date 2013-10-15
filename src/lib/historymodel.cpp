@@ -73,7 +73,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
                hc[ Call::HistoryMapFields::STATE           ]
       );
       if (pastCall->peerName().isEmpty()) {
-         pastCall->setPeerName("Unknown");
+         pastCall->setPeerName(tr("Unknown"));
       }
       pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
       add(pastCall);
@@ -265,7 +265,7 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant("History");
+      return QVariant(tr("History"));
    if (role == Qt::InitialSortOrderRole)
       return QVariant(Qt::DescendingOrder);
    return QVariant();

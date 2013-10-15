@@ -22,6 +22,7 @@
 
 //Qt
 #include <QtCore/QDebug>
+#include <QtCore/QObject>
 #include <QtCore/QString>
 
 //SFLPhone
@@ -48,41 +49,6 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 /*REMOVED  */{ &Account::nothing, &Account::nothing, &Account::nothing, &Account::nothing, &Account::nothing, &Account::nothing  , &Account::cancel  } /**/
 /*                                                                                                                                                       */
 };
-
-///Match state name to user readable string
-const QString& account_state_name(const QString& s)
-{
-   static const QString registered             = "Registered"               ;
-   static const QString notRegistered          = "Not Registered"           ;
-   static const QString trying                 = "Trying..."                ;
-   static const QString error                  = "Error"                    ;
-   static const QString authenticationFailed   = "Authentication Failed"    ;
-   static const QString networkUnreachable     = "Network unreachable"      ;
-   static const QString hostUnreachable        = "Host unreachable"         ;
-   static const QString stunConfigurationError = "Stun configuration error" ;
-   static const QString stunServerInvalid      = "Stun server invalid"      ;
-   static const QString invalid                = "Invalid"                  ;
-
-   if(s == Account::State::REGISTERED       )
-      return registered             ;
-   if(s == Account::State::UNREGISTERED     )
-      return notRegistered          ;
-   if(s == Account::State::TRYING           )
-      return trying                 ;
-   if(s == Account::State::ERROR            )
-      return error                  ;
-   if(s == Account::State::ERROR_AUTH       )
-      return authenticationFailed   ;
-   if(s == Account::State::ERROR_NETWORK    )
-      return networkUnreachable     ;
-   if(s == Account::State::ERROR_HOST       )
-      return hostUnreachable        ;
-   if(s == Account::State::ERROR_CONF_STUN  )
-      return stunConfigurationError ;
-   if(s == Account::State::ERROR_EXIST_STUN )
-      return stunServerInvalid      ;
-   return invalid                   ;
-} //account_state_name
 
 ///Constructors
 Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
@@ -173,14 +139,43 @@ const QString Account::id() const
       qDebug() << "Account not configured";
       return QString(); //WARNING May explode
    }
-   
+
    return m_AccountId;
 }
 
 ///Get current state
-const QString Account::stateName(const QString& state) const
+const QString Account::stateName(const QString& s) const
 {
-   return (const QString&)account_state_name(state);
+   static const QString registered             = tr("Registered"               );
+   static const QString notRegistered          = tr("Not Registered"           );
+   static const QString trying                 = tr("Trying..."                );
+   static const QString error                  = tr("Error"                    );
+   static const QString authenticationFailed   = tr("Authentication Failed"    );
+   static const QString networkUnreachable     = tr("Network unreachable"      );
+   static const QString hostUnreachable        = tr("Host unreachable"         );
+   static const QString stunConfigurationError = tr("Stun configuration error" );
+   static const QString stunServerInvalid      = tr("Stun server invalid"      );
+   static const QString invalid                = tr("Invalid"                  );
+
+   if(s == Account::State::REGISTERED       )
+      return registered             ;
+   if(s == Account::State::UNREGISTERED     )
+      return notRegistered          ;
+   if(s == Account::State::TRYING           )
+      return trying                 ;
+   if(s == Account::State::ERROR            )
+      return error                  ;
+   if(s == Account::State::ERROR_AUTH       )
+      return authenticationFailed   ;
+   if(s == Account::State::ERROR_NETWORK    )
+      return networkUnreachable     ;
+   if(s == Account::State::ERROR_HOST       )
+      return hostUnreachable        ;
+   if(s == Account::State::ERROR_CONF_STUN  )
+      return stunConfigurationError ;
+   if(s == Account::State::ERROR_EXIST_STUN )
+      return stunServerInvalid      ;
+   return invalid                   ;
 }
 
 ///Get an account detail
@@ -194,9 +189,9 @@ const QString Account::accountDetail(const QString& param) const
       return m_hAccountDetails[param];
    }
    else if (m_hAccountDetails.count() > 0) {
-      if (param == "Account.enable") //If an account is invalid, at least does not try to register it
+      if (param == Account::MapField::ENABLED) //If an account is invalid, at least does not try to register it
          return REGISTRATION_ENABLED_FALSE;
-      if (param == "Account.registrationStatus") //If an account is new, then it is unregistered
+      if (param == Account::MapField::Registration::STATUS) //If an account is new, then it is unregistered
          return Account::State::UNREGISTERED;
       qDebug() << "Account parameter \"" << param << "\" not found";
       return QString();

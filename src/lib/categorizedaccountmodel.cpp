@@ -65,9 +65,9 @@ QVariant CategorizedAccountModel::data(const QModelIndex& index, int role ) cons
       switch (role) {
          case Qt::DisplayRole:
             if (index.row() == Categories::IP2IP)
-               return "Peer to peer";
+               return tr("Peer to peer");
             else
-               return "Server";
+               return tr("Server");
       };
    }
    return QVariant();
@@ -145,7 +145,7 @@ QVariant CategorizedAccountModel::headerData(int section, Qt::Orientation orient
 {
    Q_UNUSED(section)
    Q_UNUSED(orientation)
-   if (role == Qt::DisplayRole) return "Accounts";
+   if (role == Qt::DisplayRole) return tr("Accounts");
    return QVariant();
 }
 

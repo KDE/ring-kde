@@ -400,45 +400,45 @@ const QString Call::toHumanStateName(const Call::State cur)
 {
    switch (cur) {
       case Call::State::INCOMING:
-         return ( "Ringing (in)"      );
+         return tr( "Ringing (in)"      );
          break;
       case Call::State::RINGING:
-         return ( "Ringing (out)"     );
+         return tr( "Ringing (out)"     );
          break;
       case Call::State::CURRENT:
-         return ( "Talking"           );
+         return tr( "Talking"           );
          break;
       case Call::State::DIALING:
-         return ( "Dialing"           );
+         return tr( "Dialing"           );
          break;
       case Call::State::HOLD:
-         return ( "Hold"              );
+         return tr( "Hold"              );
          break;
       case Call::State::FAILURE:
-         return ( "Failed"            );
+         return tr( "Failed"            );
          break;
       case Call::State::BUSY:
-         return ( "Busy"              );
+         return tr( "Busy"              );
          break;
       case Call::State::TRANSFERRED:
-         return ( "Transfer"          );
+         return tr( "Transfer"          );
          break;
       case Call::State::TRANSF_HOLD:
-         return ( "Transfer hold"     );
+         return tr( "Transfer hold"     );
          break;
       case Call::State::OVER:
-         return ( "Over"              );
+         return tr( "Over"              );
          break;
       case Call::State::ERROR:
-         return ( "Error"             );
+         return tr( "Error"             );
          break;
       case Call::State::CONFERENCE:
-         return ( "Conference"        );
+         return tr( "Conference"        );
          break;
       case Call::State::CONFERENCE_HOLD:
-         return ( "Conference (hold)" );
+         return tr( "Conference (hold)" );
       case Call::State::COUNT:
-         return "ERROR";
+         return tr( "ERROR"             );
       default:
          return QString::number(static_cast<int>(cur));
    }
@@ -499,7 +499,7 @@ const QString Call::peerName() const
 const QString Call::formattedName()
 {
    if (isConference())
-      return "Conference";
+      return tr("Conference");
    else if (peerPhoneNumber()->contact() && !peerPhoneNumber()->contact()->formattedName().isEmpty())
       return peerPhoneNumber()->contact()->formattedName();
    else if (!peerName().isEmpty())
@@ -507,7 +507,7 @@ const QString Call::formattedName()
    else if (m_pPeerPhoneNumber)
       return m_pPeerPhoneNumber->uri();
    else
-      return "Unknown";
+      return tr("Unknown");
 }
 
 ///If the call have a valid record
@@ -1031,7 +1031,7 @@ void Call::call()
       qDebug() << "Trying to call " << (m_pTransferNumber?m_pTransferNumber->uri():"ERROR") 
          << " with no account registered . callId : " << m_CallId  << "ConfId:" << m_ConfId;
       this->m_HistoryState = HistoryState::NONE;
-      throw "No account registered!";
+      throw tr("No account registered!");
    }
 }
 
@@ -1283,7 +1283,7 @@ QVariant Call::roleData(int role) const
       case Call::Role::Name:
       case Qt::DisplayRole:
          if (isConference())
-            return "Conference";
+            return tr("Conference");
          else if (state() == Call::State::DIALING)
             return dialNumber();
          else if (m_PeerName.isEmpty())

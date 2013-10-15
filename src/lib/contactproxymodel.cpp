@@ -230,7 +230,7 @@ QVariant ContactProxyModel::headerData(int section, Qt::Orientation orientation,
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant("Contacts");
+      return QVariant(tr("Contacts"));
    return QVariant();
 }
 

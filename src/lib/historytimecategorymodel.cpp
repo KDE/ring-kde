@@ -24,31 +24,31 @@ HistoryTimeCategoryModel* HistoryTimeCategoryModel::m_spInstance = new HistoryTi
 
 HistoryTimeCategoryModel::HistoryTimeCategoryModel(QObject* parent) : QAbstractListModel(parent)
 {
-   m_lCategories << QString("Today")                                 ;//0
-   m_lCategories << QString("Yesterday")                             ;//1
+   m_lCategories << tr("Today")                                 ;//0
+   m_lCategories << tr("Yesterday")                             ;//1
    m_lCategories << QDate::currentDate().addDays(-2).toString("dddd");//2
    m_lCategories << QDate::currentDate().addDays(-3).toString("dddd");//3
    m_lCategories << QDate::currentDate().addDays(-4).toString("dddd");//4
    m_lCategories << QDate::currentDate().addDays(-5).toString("dddd");//5
    m_lCategories << QDate::currentDate().addDays(-6).toString("dddd");//6
-   m_lCategories << QString("Last week")                             ;//7
-   m_lCategories << QString("Two weeks ago")                         ;//8
-   m_lCategories << QString("Three weeks ago")                       ;//9
-   m_lCategories << QString("Last month")                            ;//10
-   m_lCategories << QString("Two months ago")                        ;//11
-   m_lCategories << QString("Three months ago")                      ;//12
-   m_lCategories << QString("Four months ago")                       ;//13
-   m_lCategories << QString("Five months ago")                       ;//14
-   m_lCategories << QString("Six months ago")                        ;//15
-   m_lCategories << QString("Seven months ago")                      ;//16
-   m_lCategories << QString("Eight months ago")                      ;//17
-   m_lCategories << QString("Nine months ago")                       ;//18
-   m_lCategories << QString("Ten months ago")                        ;//19
-   m_lCategories << QString("Eleven months ago")                     ;//20
-   m_lCategories << QString("Twelve months ago")                     ;//21
-   m_lCategories << QString("Last year")                             ;//22
-   m_lCategories << QString("Very long time ago")                    ;//23
-   m_lCategories << QString("Never")                                 ;//24
+   m_lCategories << tr("Last week")                             ;//7
+   m_lCategories << tr("Two weeks ago")                         ;//8
+   m_lCategories << tr("Three weeks ago")                       ;//9
+   m_lCategories << tr("Last month")                            ;//10
+   m_lCategories << tr("Two months ago")                        ;//11
+   m_lCategories << tr("Three months ago")                      ;//12
+   m_lCategories << tr("Four months ago")                       ;//13
+   m_lCategories << tr("Five months ago")                       ;//14
+   m_lCategories << tr("Six months ago")                        ;//15
+   m_lCategories << tr("Seven months ago")                      ;//16
+   m_lCategories << tr("Eight months ago")                      ;//17
+   m_lCategories << tr("Nine months ago")                       ;//18
+   m_lCategories << tr("Ten months ago")                        ;//19
+   m_lCategories << tr("Eleven months ago")                     ;//20
+   m_lCategories << tr("Twelve months ago")                     ;//21
+   m_lCategories << tr("Last year")                             ;//22
+   m_lCategories << tr("Very long time ago")                    ;//23
+   m_lCategories << tr("Never")                                 ;//24
 }
 
 //Abstract model member

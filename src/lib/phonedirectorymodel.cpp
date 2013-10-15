@@ -208,9 +208,9 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
 {
    Q_UNUSED(section)
    Q_UNUSED(orientation)
-   constexpr static const char* headers[] = {"URI", "Type", "Contact", "Account", "State", "Call count", "Week count",
-   "Trimester count", "Have Called", "Last used", "Name_count", "Popularity_index", "Tracked", "Present",
-   "Presence message" };
+   static const QString headers[] = {tr("URI"), tr("Type"), tr("Contact"), tr("Account"), tr("State"), tr("Call count"), tr("Week count"),
+   tr("Trimester count"), tr("Have Called"), tr("Last used"), tr("Name_count"), tr("Popularity_index"), tr("Tracked"), tr("Present"),
+   tr("Presence message") };
    if (role == Qt::DisplayRole) return headers[section];
    return QVariant();
 }

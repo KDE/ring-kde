@@ -69,7 +69,7 @@ void AbstractBookmarkModel::reloadCategories()
 
    //Load most used contacts
    if (displayFrequentlyUsed()) {
-      TopLevelItem* item = new TopLevelItem("Most popular");
+      TopLevelItem* item = new TopLevelItem(tr("Most popular"));
       m_hCategories["mp"] = item;
       m_lCategoryCounter << item;
       const QVector<PhoneNumber*> cl = PhoneDirectoryModel::instance()->getNumbersByPopularity();
@@ -143,7 +143,7 @@ QVariant AbstractBookmarkModel::headerData(int section, Qt::Orientation orientat
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant("Contacts");
+      return QVariant(tr("Contacts"));
    return QVariant();
 }
 
@@ -246,13 +246,13 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
          cat = 4;//call->getHistoryState();
          break;
       case Call::Role::Date:
-         cat = "N/A";//call->getStartTimeStamp();
+         cat = tr("N/A");//call->getStartTimeStamp();
          break;
       case Call::Role::Length:
-         cat = "N/A";//call->getLength();
+         cat = tr("N/A");//call->getLength();
          break;
       case Call::Role::FormattedDate:
-         cat = "N/A";//QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
+         cat = tr("N/A");//QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString();
          break;
       case Call::Role::HasRecording:
          cat = false;//call->hasRecording();

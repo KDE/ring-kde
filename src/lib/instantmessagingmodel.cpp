@@ -164,7 +164,7 @@ void InstantMessagingModel::addIncommingMessage(QString from, QString message)
 void InstantMessagingModel::addOutgoingMessage(QString message)
 {
    InternalIM im;
-   im.from    = "Me";
+   im.from    = tr("Me");
    im.message = message;
    m_lMessages << im;
    emit dataChanged(index(m_lMessages.size() -1,0), index(m_lMessages.size()-1,0));

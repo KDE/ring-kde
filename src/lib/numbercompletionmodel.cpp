@@ -126,7 +126,7 @@ QVariant NumberCompletionModel::headerData (int section, Qt::Orientation orienta
 {
    Q_UNUSED(section)
    Q_UNUSED(orientation)
-   constexpr static const char* headers[] = {"URI", "Name", "Account", "Weight"};
+   static const QString headers[] = {tr("URI"), tr("Name"), tr("Account"), tr("Weight")};
    if (role == Qt::DisplayRole) return headers[section];
    return QVariant();
 }

@@ -133,7 +133,7 @@ QVariant AbstractContactBackend::headerData(int section, Qt::Orientation orienta
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant("Contacts");
+      return QVariant(tr("Contacts"));
    return QVariant();
 }
 

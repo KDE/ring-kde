@@ -243,8 +243,8 @@ Call* CallModel::getCall( const QModelIndex& idx              ) const
 }
 
 ///Get the call associated with this ID
- Call* CallModel::getCall( const QString& callId ) const
-{ 
+Call* CallModel::getCall( const QString& callId ) const
+{
    if (m_sPrivateCallList_callId[callId]) {
       return m_sPrivateCallList_callId[callId]->call_real;
    }
@@ -255,7 +255,7 @@ Call* CallModel::getCall( const QModelIndex& idx              ) const
 Call* CallModel::addCall(Call* call, Call* parentCall)
 {
    if (!call || call->state() == Call::State::OVER || (parentCall && parentCall->state() == Call::State::OVER))
-      return new Call("",""); //Invalid, but better than managing NULL everywhere
+      return new Call(QString(),QString()); //Invalid, but better than managing NULL everywhere
 
    InternalStruct* aNewStruct = new InternalStruct;
    aNewStruct->call_real  = call;
@@ -295,7 +295,7 @@ Call* CallModel::addIncomingCall(const QString& callId)
    }
    else {
       qDebug() << "Incoming call from an invalid account";
-      throw "Invalid account";
+      throw tr("Invalid account");
    }
    return call;
 }
@@ -583,7 +583,7 @@ QVariant CallModel::headerData(int section, Qt::Orientation orientation, int rol
 {
    Q_UNUSED(section)
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant("Calls");
+      return QVariant(tr("Calls"));
    return QVariant();
 }
 
@@ -695,7 +695,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       const QModelIndex targetIdx    = index   ( row,column,parentIdx );
       Call* call                     = getCall ( encodedCallId        );
       Call* target                   = getCall ( targetIdx            );
-      
+
       //Call or conference dropped on itself -> cannot transfer or merge, so exit now
       if (target == call) {
          qDebug() << "Call/Conf dropped on itself (doing nothing)";
@@ -705,7 +705,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
          qDebug() << "Call not found";
          return false;
       }
-      
+
       switch (mimedata->property("dropAction").toInt()) {
          case Call::DropAction::Conference:
             //Call or conference dropped on part of itself -> cannot merge conference with itself

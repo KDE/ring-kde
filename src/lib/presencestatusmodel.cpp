@@ -185,7 +185,7 @@ QVariant PresenceStatusModel::headerData(int section, Qt::Orientation orientatio
 {
    Q_UNUSED(section)
    Q_UNUSED(orientation)
-   constexpr static const char* rows[] = {"Name","Message","Color","Present","Default"};
+   static const QString rows[] = {tr("Name"),tr("Message"),tr("Color"),tr("Present"),tr("Default")};
    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
       return QVariant(rows[section]);
    }
@@ -298,9 +298,9 @@ void PresenceStatusModel::setUseCustomStatus(bool useCustom)
    if (changed) {
       emit useCustomStatusChanged( useCustom                                                                                );
       emit currentIndexChanged   ( useCustom||!m_pCurrentStatus?index(-1,-1):index(m_lStatuses.indexOf(m_pCurrentStatus),0) );
-      emit currentNameChanged    ( useCustom?"Custom":(m_pCurrentStatus?m_pCurrentStatus->name:"N/A")                       );
+      emit currentNameChanged    ( useCustom?tr("Custom"):(m_pCurrentStatus?m_pCurrentStatus->name:tr("N/A"))               );
       emit currentStatusChanged  ( useCustom?m_CustomStatus:(m_pCurrentStatus?m_pCurrentStatus->status:false)               );
-      emit currentMessageChanged ( useCustom?m_CustomMessage:(m_pCurrentStatus?m_pCurrentStatus->message:"N/A")             );
+      emit currentMessageChanged ( useCustom?m_CustomMessage:(m_pCurrentStatus?m_pCurrentStatus->message:tr("N/A"))         );
    }
 }
 
@@ -342,14 +342,14 @@ bool PresenceStatusModel::currentStatus() const
 QString PresenceStatusModel::currentMessage() const
 {
    if (m_UseCustomStatus) return m_CustomMessage;
-   if (!m_pCurrentStatus) return "N/A";
+   if (!m_pCurrentStatus) return tr("N/A");
    return m_pCurrentStatus->message;
 }
 
 ///Return current name
 QString PresenceStatusModel::currentName() const
 {
-   return m_UseCustomStatus?"Custom":m_pCurrentStatus?m_pCurrentStatus->name:"N/A";
+   return m_UseCustomStatus?tr("Custom"):m_pCurrentStatus?m_pCurrentStatus->name:tr("N/A");
 }
 
 ///Return the default status index
