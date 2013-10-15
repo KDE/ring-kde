@@ -160,6 +160,7 @@ const QString Account::toHumanStateName() const
    static const QString serviceUnavailable     = tr("Service unavailable"      );
    static const QString notAcceptable          = tr("Unacceptable"             );
    static const QString invalid                = tr("Invalid"                  );
+   static const QString requestTimeout         = tr("Request Timeout"          );
 
    if(s == Account::State::REGISTERED       )
       return registered             ;
@@ -183,6 +184,8 @@ const QString Account::toHumanStateName() const
       return serviceUnavailable     ;
    if(s == Account::State::ERROR_NOT_ACCEPTABLE      )
       return notAcceptable          ;
+   if(s == Account::State::REQUEST_TIMEOUT           )
+      return requestTimeout         ;
    return invalid                   ;
 }
 

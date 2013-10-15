@@ -21,6 +21,7 @@
 
 #include "klib/kcfg_settings.h"
 #include "lib/numbercategorymodel.h"
+#include "delegates/autocompletiondelegate.h"
 
 ///Constructor
 DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
@@ -28,6 +29,8 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 {
    setupUi(this);
    m_pPhoneTypeList->setModel(NumberCategoryModel::instance());
+   AutoCompletionDelegate* m_pDelegate = new AutoCompletionDelegate();
+   m_pPhoneTypeList->setItemDelegate(m_pDelegate);
    connect(m_pPhoneTypeList, SIGNAL(itemChanged(QListWidgetItem*)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
 } //DlgAddressBook
@@ -35,6 +38,8 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 ///Destructor
 DlgAddressBook::~DlgAddressBook()
 {
+   m_pPhoneTypeList->setItemDelegate(nullptr);
+   delete m_pDelegate;
 }
 
 ///Reload the widget

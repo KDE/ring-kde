@@ -222,8 +222,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    if (wrap) {
       PhoneNumber* nb = wrap->numbers[0];
       if ((!nb->m_hasType) && (!type.isEmpty())) {
-         nb->m_hasType = true;
-         nb->m_Type = type;
+         nb->setType(type);
       }
       return nb;
    }
@@ -259,8 +258,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
          if (!number->account())
             number->setAccount(account);
          if ((!number->m_hasType) && (!type.isEmpty())) {
-            number->m_hasType = true;
-            number->m_Type = type;
+            number->setType(type);
          }
          if ((!account) || number->account() == account)
             return number;
@@ -300,8 +298,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
       }
       foreach(PhoneNumber* number, wrap->numbers) {
          if ((!number->m_hasType) && (!type.isEmpty())) {
-            number->m_hasType = true;
-            number->m_Type = type;
+            number->setType(type);
          }
          if (((!contact) || number->contact() == contact) && ((!account) || number->account() == account))
             return number;

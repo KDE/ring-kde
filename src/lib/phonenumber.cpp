@@ -21,6 +21,7 @@
 #include "account.h"
 #include "call.h"
 #include "dbus/presencemanager.h"
+#include "numbercategorymodel.h"
 
 QHash<int,Call*> PhoneNumber::m_shMostUsed = QHash<int,Call*>();
 
@@ -43,6 +44,9 @@ PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(P
 {
    setObjectName(m_Uri);
    m_hasType = !type.isEmpty();
+   if (m_hasType) {
+      NumberCategoryModel::instance()->registerNumber(this);
+   }
 }
 
 ///Return if this number presence is being tracked
@@ -104,6 +108,18 @@ void PhoneNumber::setContact(Contact* contact)
    m_pContact = contact;
    if (contact)
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+QStringList(contact->formattedName()));
+   emit changed();
+}
+
+void PhoneNumber::setType(const QString& type)
+{
+   if (type == m_Type) return;
+   if (m_hasType)
+      NumberCategoryModel::instance()->unregisterNumber(this);
+   m_hasType = !type.isEmpty();
+   m_Type = type;
+   if (m_hasType)
+      NumberCategoryModel::instance()->registerNumber(this);
    emit changed();
 }
 

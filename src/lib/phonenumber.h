@@ -44,7 +44,7 @@ public:
    Q_PROPERTY(Contact*      contact         READ contact  WRITE setContact)
    Q_PROPERTY(time_t        lastUsed        READ lastUsed                 )
    Q_PROPERTY(QString       uri             READ uri                      )
-   Q_PROPERTY(QString       type            READ type                     )
+   Q_PROPERTY(QString       type            READ type     WRITE setType   )
    Q_PROPERTY(int           callCount       READ callCount                )
    Q_PROPERTY(QList<Call*>  calls           READ calls                    )
    Q_PROPERTY(int           popularityIndex READ popularityIndex          )
@@ -89,9 +89,10 @@ public:
    QString            primaryName     () const;
 
    //Setters
-   Q_INVOKABLE void setAccount(Account* account);
-   Q_INVOKABLE void setContact(Contact* contact);
-   Q_INVOKABLE void setTracked(bool     track  );
+   Q_INVOKABLE void setAccount(Account*       account);
+   Q_INVOKABLE void setContact(Contact*       contact);
+   Q_INVOKABLE void setTracked(bool           track  );
+   void             setType   (const QString& type   );
 
    //Mutator
    Q_INVOKABLE void addCall(Call* call);

@@ -25,6 +25,7 @@
 class QPixmap;
 
 class NumberCategoryVisitor;
+class PhoneNumber;
 
 class LIB_EXPORT NumberCategoryModel : public QAbstractListModel {
    Q_OBJECT
@@ -56,12 +57,17 @@ public:
    NumberCategoryVisitor* visitor() const;
    QModelIndex nameToIndex(const QString& name) const;
 
+   //Mutator
+   void registerNumber  (PhoneNumber* number);
+   void unregisterNumber(PhoneNumber* number);
+
 private:
    struct InternalTypeRepresentation {
       QString  name   ;
       int      index  ;
       QPixmap* icon   ;
       bool     enabled;
+      int      counter;
    };
    QVector<InternalTypeRepresentation*>   m_lCategories;
    QHash<int,InternalTypeRepresentation*> m_hByIdx;

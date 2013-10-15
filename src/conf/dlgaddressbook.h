@@ -28,6 +28,9 @@
 #include "ui_dlgaddressbookbase.h"
 #include <kconfigdialog.h>
 
+//SFLPhone
+class AutoCompletionDelegate;
+
 /**
 	@author Jérémy Quentin <jeremy.quentin@gmail.com>
 */
@@ -45,6 +48,7 @@ private:
    //Attributes
    QHash<QString,QListWidgetItem*> m_mNumbertype;
    bool m_HasChanged;
+   AutoCompletionDelegate* m_pDelegate;
 
 public Q_SLOTS:
    void updateWidgets ();

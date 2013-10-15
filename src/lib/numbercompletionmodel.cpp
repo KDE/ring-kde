@@ -48,7 +48,7 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
    const PhoneNumber* n = i.value();
    const int weight     = i.key  ();
 
-   bool needAcc = (role>=100) && n->account() && n->account() != AccountListModel::instance()->currentAccount()
+   bool needAcc = (role>=100 || role == Qt::UserRole) && n->account() && n->account() != AccountListModel::instance()->currentAccount()
                   && n->account()->alias() != "IP2IP";
 
    switch (static_cast<NumberCompletionModel::Columns>(index.column())) {
@@ -68,6 +68,7 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
                }
                } break;
             case NumberCompletionModel::Role::ALTERNATE_ACCOUNT:
+            case Qt::UserRole:
                if (needAcc)
                   return n->account()->alias();
                else

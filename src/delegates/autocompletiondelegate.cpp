@@ -33,8 +33,8 @@ AutoCompletionDelegate::AutoCompletionDelegate() : QStyledItemDelegate()
 void AutoCompletionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    QStyledItemDelegate::paint(painter,option,index);
-   const QString acc = index.data(NumberCompletionModel::Role::ALTERNATE_ACCOUNT).toString();
-   if (!acc.isEmpty()) {
+   const QString tag = index.data(Qt::UserRole).toString();
+   if (!tag.isEmpty()) {
       painter->save();
       painter->setRenderHint(QPainter::Antialiasing, true);
       painter->setClipRect(option.rect);
@@ -57,7 +57,7 @@ void AutoCompletionDelegate::paint(QPainter* painter, const QStyleOptionViewItem
       static int height    = m.height();
       static int topMargin = 2;
       painter->setFont(f);
-      const int width = m.width(acc);
+      const int width = m.width(tag);
       const int x = option.rect.x()+option.rect.width()-width-RIGHT_MARGIN-option.rect.height()/2;
       painter->setBrush(g);
       painter->setPen(Qt::NoPen);
@@ -68,7 +68,7 @@ void AutoCompletionDelegate::paint(QPainter* painter, const QStyleOptionViewItem
       painter->drawEllipse(QRect(x+width-option.rect.height()/2,option.rect.y()+2,option.rect.height()-4,option.rect.height()-4));
       painter->setPen(QApplication::palette().base().color());
       painter->setClipping(false);
-      painter->drawText(x,option.rect.y()+height-topMargin,acc);
+      painter->drawText(x,option.rect.y()+height-topMargin,tag);
       painter->restore();
    }
 }

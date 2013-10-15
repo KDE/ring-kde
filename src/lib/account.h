@@ -134,6 +134,7 @@ class LIB_EXPORT Account : public QObject {
          constexpr static const char* ERROR_EXIST_STUN          = "ERROREXISTSTUN"         ;
          constexpr static const char* ERROR_SERVICE_UNAVAILABLE = "ERRORSERVICEUNAVAILABLE";
          constexpr static const char* ERROR_NOT_ACCEPTABLE      = "ERRORNOTACCEPTABLE"     ;
+         constexpr static const char* REQUEST_TIMEOUT           = "Request Timeout"        ;
       };
 
       ~Account();

@@ -17,6 +17,7 @@
  ***************************************************************************/
 #include "numbercategorymodel.h"
 #include "visitors/numbercategoryvisitor.h"
+#include "phonenumber.h"
 
 NumberCategoryModel* NumberCategoryModel::m_spInstance = nullptr;
 
@@ -39,6 +40,8 @@ QVariant NumberCategoryModel::data(const QModelIndex& index, int role) const
          return m_lCategories[index.row()]->enabled?Qt::Checked:Qt::Unchecked;
       case Role::INDEX:
          return m_lCategories[index.row()]->index;
+      case Qt::UserRole:
+         return 'x'+QString::number(m_lCategories[index.row()]->counter);
    }
    return QVariant();
 }
@@ -67,7 +70,11 @@ bool NumberCategoryModel::setData(const QModelIndex& idx, const QVariant &value,
 
 void NumberCategoryModel::addCategory(const QString& name, QPixmap* icon, int index, bool enabled)
 {
-   InternalTypeRepresentation* rep = new InternalTypeRepresentation();
+   InternalTypeRepresentation* rep = m_hByName[name];
+   if (!rep) {
+      rep = new InternalTypeRepresentation();
+      rep->counter = 0      ;
+   }
    rep->name       = name   ;
    rep->icon       = icon   ;
    rep->index      = index  ;
@@ -121,4 +128,22 @@ QModelIndex NumberCategoryModel::nameToIndex(const QString& name) const
    else {
       return index(m_hByName[name]->index,0);
    }
+}
+
+///Be sure the category exist, increment the counter
+void NumberCategoryModel::registerNumber(PhoneNumber* number)
+{
+   InternalTypeRepresentation* rep = m_hByName[number->type()];
+   if (!rep) {
+      addCategory(number->type(),nullptr,-1,true);
+      rep = m_hByName[number->type()];
+   }
+   rep->counter++;
+}
+
+void NumberCategoryModel::unregisterNumber(PhoneNumber* number)
+{
+   InternalTypeRepresentation* rep = m_hByName[number->type()];
+   if (rep)
+      rep->counter--;
 }
