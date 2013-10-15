@@ -205,6 +205,11 @@ class LIB_EXPORT Account : public QObject {
          constexpr static const char* LOCAL_PORT             = "Account.localPort"               ;
          constexpr static const char* PUBLISHED_PORT         = "Account.publishedPort"           ;
          constexpr static const char* PUBLISHED_ADDRESS      = "Account.publishedAddress"        ;
+         class STUN {
+         public:
+            constexpr static const char* SERVER              = "STUN.server"                     ;
+            constexpr static const char* ENABLED             = "STUN.enable"                     ;
+         };
          class Presence {
          public:
             constexpr static const char* SUPPORT_PUBLISH     = "Account.presencePublishEnabled"  ;
@@ -219,6 +224,37 @@ class LIB_EXPORT Account : public QObject {
          public:
             constexpr static const char* PATH                = "Account.ringtonePath"            ;
             constexpr static const char* ENABLED             = "Account.ringtoneEnabled"         ;
+         };
+         class SRTP {
+         public:
+            constexpr static const char* KEY_EXCHANGE        = "SRTP.keyExchange"                ;
+            constexpr static const char* ENABLED             = "SRTP.enable"                     ;
+            constexpr static const char* RTP_FALLBACK        = "SRTP.rtpFallback"                ;
+         };
+         class ZRTP {
+         public:
+            constexpr static const char* DISPLAY_SAS         = "ZRTP.displaySAS"                 ;
+            constexpr static const char* NOT_SUPP_WARNING    = "ZRTP.notSuppWarning"             ;
+            constexpr static const char* HELLO_HASH          = "ZRTP.helloHashEnable"            ;
+            constexpr static const char* DISPLAY_SAS_ONCE    = "ZRTP.displaySasOnce"             ;
+         };
+         class TLS {
+         public:
+            constexpr static const char* LISTENER_PORT       = "TLS.listenerPort"                ;
+            constexpr static const char* ENABLE              = "TLS.enable"                      ;
+            constexpr static const char* PORT                = "TLS.port"                        ;
+            constexpr static const char* CA_LIST_FILE        = "TLS.certificateListFile"         ;
+            constexpr static const char* CERTIFICATE_FILE    = "TLS.certificateFile"             ;
+            constexpr static const char* PRIVATE_KEY_FILE    = "TLS.privateKeyFile"              ;
+            constexpr static const char* PASSWORD            = "TLS.password"                    ;
+            constexpr static const char* METHOD              = "TLS.method"                      ;
+            constexpr static const char* CIPHERS             = "TLS.ciphers"                     ;
+            constexpr static const char* SERVER_NAME         = "TLS.serverName"                  ;
+            constexpr static const char* VERIFY_SERVER       = "TLS.verifyServer"                ;
+            constexpr static const char* VERIFY_CLIENT       = "TLS.verifyClient"                ;
+            constexpr static const char* REQUIRE_CLIENT_CERTIFICATE = "TLS.requireClientCertificate";
+            constexpr static const char* NEGOTIATION_TIMEOUT_SEC    = "TLS.negotiationTimeoutSec"   ;
+            constexpr static const char* NEGOTIATION_TIMEOUT_MSEC   = "TLS.negotiationTimemoutMsec" ;
          };
       };
 

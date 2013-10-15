@@ -221,16 +221,16 @@ Call* Call::buildExistingCall(QString callId)
 
    qDebug() << "Constructing existing call with details : " << details;
 
-   QString    peerNumber  = details[ CALL_PEER_NUMBER ];
-   QString    peerName    = details[ CALL_PEER_NAME   ];
-   QString    account     = details[ CALL_ACCOUNTID   ];
-   Call::State startState = startStateFromDaemonCallState(details[CALL_STATE], details[CALL_TYPE]);
+   QString    peerNumber  = details[ Call::DetailsMapFields::PEER_NUMBER ];
+   QString    peerName    = details[ Call::DetailsMapFields::PEER_NAME   ];
+   QString    account     = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
+   Call::State startState = startStateFromDaemonCallState(details[Call::DetailsMapFields::STATE], details[Call::DetailsMapFields::TYPE]);
    Call* call             = new Call(startState, callId, peerName, peerNumber, account);
    call->m_Recording      = callManager.getIsRecording(callId);
-   call->m_HistoryState   = historyStateFromType(details[STATE_KEY]);
+   call->m_HistoryState   = historyStateFromType(details[Call::HistoryMapFields::STATE]);
 
-   if (!details[ CALL_TIMESTAMP_START ].isEmpty())
-      call->m_pStartTimeStamp =  details[ CALL_TIMESTAMP_START ].toInt() ;
+   if (!details[ Call::DetailsMapFields::TIMESTAMP_START ].isEmpty())
+      call->m_pStartTimeStamp =  details[ Call::DetailsMapFields::TIMESTAMP_START ].toInt() ;
    else {
       time_t curTime;
       ::time(&curTime);
@@ -264,9 +264,9 @@ Call* Call::buildIncomingCall(const QString& callId)
    CallManagerInterface & callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
 
-   QString from     = details[ CALL_PEER_NUMBER ];
-   QString account  = details[ CALL_ACCOUNTID   ];
-   QString peerName = details[ CALL_PEER_NAME   ];
+   QString from     = details[ Call::DetailsMapFields::PEER_NUMBER ];
+   QString account  = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
+   QString peerName = details[ Call::DetailsMapFields::PEER_NAME   ];
 
    Call* call = new Call(Call::State::INCOMING, callId, peerName, from, account);
    call->m_HistoryState = MISSED;
@@ -282,9 +282,9 @@ Call* Call::buildRingingCall(const QString & callId)
    CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
 
-   QString from     = details[ CALL_PEER_NUMBER ];
-   QString account  = details[ CALL_ACCOUNTID   ];
-   QString peerName = details[ CALL_PEER_NAME   ];
+   const QString from     = details[ Call::DetailsMapFields::PEER_NUMBER ];
+   const QString account  = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
+   const QString peerName = details[ Call::DetailsMapFields::PEER_NAME   ];
 
    Call* call = new Call(Call::State::RINGING, callId, peerName, from, account);
    call->m_HistoryState = HistoryState::OUTGOING;
@@ -325,11 +325,11 @@ Call* Call::buildHistoryCall(const QString & callId, time_t startTimeStamp, time
 ///Get the history state from the type (see Call.cpp header)
 Call::HistoryState Call::historyStateFromType(const QString& type)
 {
-   if(type == MISSED_STRING        )
+   if(type == Call::HistoryStateName::MISSED        )
       return Call::HistoryState::MISSED   ;
-   else if(type == OUTGOING_STRING )
+   else if(type == Call::HistoryStateName::OUTGOING )
       return Call::HistoryState::OUTGOING ;
-   else if(type == INCOMING_STRING )
+   else if(type == Call::HistoryStateName::INCOMING )
       return Call::HistoryState::INCOMING ;
    return  Call::HistoryState::NONE       ;
 }
@@ -343,9 +343,9 @@ Call::State Call::startStateFromDaemonCallState(const QString& daemonCallState, 
       return Call::State::HOLD     ;
    else if(daemonCallState == Call::DaemonStateInit::BUSY     )
       return Call::State::BUSY     ;
-   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == DAEMON_CALL_TYPE_INCOMING )
+   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == Call::CallType::INCOMING )
       return Call::State::INCOMING ;
-   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == DAEMON_CALL_TYPE_OUTGOING )
+   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == Call::CallType::OUTGOING )
       return Call::State::RINGING  ;
    else if(daemonCallState == Call::DaemonStateInit::INCOMING )
       return Call::State::INCOMING ;
@@ -387,9 +387,9 @@ Call::DaemonState Call::toDaemonCallState(const QString& stateName)
 ///Transform a conference call state to a proper call state
 Call::State Call::confStatetoCallState(const QString& stateName)
 {
-   if      ( stateName == CONF_STATE_CHANGE_HOLD   )
+   if      ( stateName == Call::ConferenceStateChange::HOLD   )
       return Call::State::CONFERENCE_HOLD;
-   else if ( stateName == CONF_STATE_CHANGE_ACTIVE )
+   else if ( stateName == Call::ConferenceStateChange::ACTIVE )
       return Call::State::CONFERENCE;
    else
       return Call::State::ERROR; //Well, this may bug a little
@@ -740,8 +740,8 @@ Call::State Call::stateChanged(const QString& newStateName)
 
       CallManagerInterface & callManager = DBus::CallManager::instance();
       MapStringString details = callManager.getCallDetails(m_CallId).value();
-      if (details[CALL_PEER_NAME] != m_PeerName)
-         m_PeerName = details[CALL_PEER_NAME];
+      if (details[Call::DetailsMapFields::PEER_NAME] != m_PeerName)
+         m_PeerName = details[Call::DetailsMapFields::PEER_NAME];
 
       try {
          (this->*(stateChangedFunctionMap[previousState][dcs]))();

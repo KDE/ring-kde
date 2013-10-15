@@ -212,16 +212,16 @@ void AccountWizard::accept()
    QString& password = accountDetails[ QString( Account::MapField::PASSWORD ) ];
 
    // sip only parameters
-   QString& stun_enabled = accountDetails[ QString(ACCOUNT_SIP_STUN_ENABLED) ];
-   QString& stun_server  = accountDetails[ QString(ACCOUNT_SIP_STUN_SERVER)  ];
+   QString& stun_enabled = accountDetails[ QString(Account::MapField::STUN::ENABLED) ];
+   QString& stun_server  = accountDetails[ QString(Account::MapField::STUN::SERVER)  ];
 
    // zrtp only parameters
-   QString& srtp_enabled          = accountDetails[ QString( ACCOUNT_SRTP_ENABLED          ) ];
-   QString& key_exchange          = accountDetails[ QString( ACCOUNT_KEY_EXCHANGE          ) ];
-   QString& zrtp_display_sas      = accountDetails[ QString( ACCOUNT_ZRTP_DISPLAY_SAS      ) ];
-   QString& zrtp_not_supp_warning = accountDetails[ QString( ACCOUNT_ZRTP_NOT_SUPP_WARNING ) ];
-   QString& zrtp_hello_hash       = accountDetails[ QString( ACCOUNT_ZRTP_HELLO_HASH       ) ];
-   QString& display_sas_once      = accountDetails[ QString( ACCOUNT_DISPLAY_SAS_ONCE      ) ];
+   QString& srtp_enabled          = accountDetails[ QString( Account::MapField::SRTP::ENABLED          ) ];
+   QString& key_exchange          = accountDetails[ QString( Account::MapField::SRTP::KEY_EXCHANGE          ) ];
+   QString& zrtp_display_sas      = accountDetails[ QString( Account::MapField::ZRTP::DISPLAY_SAS      ) ];
+   QString& zrtp_not_supp_warning = accountDetails[ QString( Account::MapField::ZRTP::NOT_SUPP_WARNING ) ];
+   QString& zrtp_hello_hash       = accountDetails[ QString( Account::MapField::ZRTP::HELLO_HASH       ) ];
+   QString& display_sas_once      = accountDetails[ QString( Account::MapField::ZRTP::DISPLAY_SAS_ONCE      ) ];
 
    //  interface parameters
    QString& locale_interface  = accountDetails[ QString(Account::MapField::LOCAL_INTERFACE)   ];

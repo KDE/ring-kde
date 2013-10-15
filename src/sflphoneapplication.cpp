@@ -62,7 +62,7 @@ SFLPhoneApplication::SFLPhoneApplication()
 
    try {
       InstanceInterface& instance = DBus::InstanceManager::instance();
-      QDBusPendingReply<QString> reply = instance.Register(getpid(), APP_NAME);
+      QDBusPendingReply<QString> reply = instance.Register(getpid(), "SFLPhone KDE Client");
       reply.waitForFinished();
    }
    catch (...) {

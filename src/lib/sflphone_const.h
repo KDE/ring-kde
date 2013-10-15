@@ -22,12 +22,6 @@
 
 #include <QtCore/QString>
 
-/* @file sflphone_const.h
- * @brief Contains the global variables for the client code
- */
-
-#define APP_NAME                          "SFLphone KDE Client"
-
 #define ACTION_LABEL_CALL                 i18n("New call")
 #define ACTION_LABEL_HANG_UP              i18n("Hang up")
 #define ACTION_LABEL_HOLD                 i18n("Hold on")
@@ -76,65 +70,11 @@
 #define RECORD_DEVICE                     "mic"
 #define SOUND_DEVICE                      "speaker"
 
-
-/** Account details */
-#define ACCOUNT_SIP_STUN_SERVER            "STUN.server"
-#define ACCOUNT_SIP_STUN_ENABLED           "STUN.enable"
-#define ACCOUNT_KEY_EXCHANGE               "SRTP.keyExchange"
-#define ACCOUNT_SRTP_ENABLED               "SRTP.enable"
-#define ACCOUNT_SRTP_RTP_FALLBACK          "SRTP.rtpFallback"
-#define ACCOUNT_ZRTP_DISPLAY_SAS           "ZRTP.displaySAS"
-#define ACCOUNT_ZRTP_NOT_SUPP_WARNING      "ZRTP.notSuppWarning"
-#define ACCOUNT_ZRTP_HELLO_HASH            "ZRTP.helloHashEnable"
-#define ACCOUNT_DISPLAY_SAS_ONCE           "ZRTP.displaySasOnce"
-#define KEY_EXCHANGE_NONE                  "none"
-// #define ZRTP                               "zrtp"
-// #define SDES                               "sdes"
-
-
-
-/**Security */
-#define TLS_LISTENER_PORT                  "TLS.listenerPort"
-#define TLS_ENABLE                         "TLS.enable"
-#define TLS_PORT                           "TLS.port"
-#define TLS_CA_LIST_FILE                   "TLS.certificateListFile"
-#define TLS_CERTIFICATE_FILE               "TLS.certificateFile"
-#define TLS_PRIVATE_KEY_FILE               "TLS.privateKeyFile"
-#define TLS_PASSWORD                       "TLS.password"
-#define TLS_METHOD                         "TLS.method"
-#define TLS_CIPHERS                        "TLS.ciphers"
-#define TLS_SERVER_NAME                    "TLS.serverName"
-#define TLS_VERIFY_SERVER                  "TLS.verifyServer"
-#define TLS_VERIFY_CLIENT                  "TLS.verifyClient"
-#define TLS_REQUIRE_CLIENT_CERTIFICATE     "TLS.requireClientCertificate"
-#define TLS_NEGOTIATION_TIMEOUT_SEC        "TLS.negotiationTimeoutSec"
-#define TLS_NEGOTIATION_TIMEOUT_MSEC       "TLS.negotiationTimemoutMsec"
-
-
-
-
 /** Maybe to remove **/
 static const QString REGISTRATION_ENABLED_TRUE("true");
 static const QString REGISTRATION_ENABLED_FALSE("false");
 // #define ACCOUNT_TYPES_TAB                 {QString(Account::ProtocolName::SIP), QString(Account::ProtocolName::IAX)}
 /*********************/
-
-/** Constant variables */
-
-/** Calls details */
-#define CALL_PEER_NAME                    "DISPLAY_NAME"
-//#define CALL_PEER_NAME                    "PEER_NAME"
-#define CALL_PEER_NUMBER                  "PEER_NUMBER"
-#define CALL_ACCOUNTID                    "ACCOUNTID"
-#define CALL_STATE                        "CALL_STATE"
-#define CALL_TYPE                         "CALL_TYPE"
-#define CALL_TIMESTAMP_START              "TIMESTAMP_START"
-
-#define CONF_STATE_CHANGE_HOLD            "HOLD"
-#define CONF_STATE_CHANGE_ACTIVE          "ACTIVE_ATTACHED"
-
-#define DAEMON_CALL_TYPE_INCOMING         "0"
-#define DAEMON_CALL_TYPE_OUTGOING         "1"
 
 /** Hooks settings */
 #define HOOKS_ADD_PREFIX                  "PHONE_NUMBER_HOOK_ADD_PREFIX"
@@ -151,16 +91,3 @@ static const QString REGISTRATION_ENABLED_FALSE("false");
 #define MIME_PHONENUMBER      "text/sflphone.phone.number"
 #define MIME_PLAIN_TEXT       "text/plain"
 #endif
-
-/** HISTORY SERIALIZATION */
-#define ACCOUNT_ID_KEY        "accountid"
-#define CALLID_KEY            "callid"
-#define DISPLAY_NAME_KEY      "display_name"
-#define PEER_NUMBER_KEY       "peer_number"
-#define RECORDING_PATH_KEY    "recordfile"
-#define STATE_KEY             "state"
-#define TIMESTAMP_START_KEY   "timestamp_start"
-#define TIMESTAMP_STOP_KEY    "timestamp_stop"
-#define MISSED_STRING         "missed"
-#define INCOMING_STRING       "incoming"
-#define OUTGOING_STRING       "outgoing"

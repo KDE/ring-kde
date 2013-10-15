@@ -333,43 +333,43 @@ QString Account::password() const
 ///
 bool Account::isDisplaySasOnce() const
 { 
-   return (accountDetail(ACCOUNT_DISPLAY_SAS_ONCE)  == "true")?1:0 ;
+   return (accountDetail(Account::MapField::ZRTP::DISPLAY_SAS_ONCE)  == "true")?1:0 ;
 }
 
 ///Return the account security fallback
 bool Account::isSrtpRtpFallback() const
 {
-   return (accountDetail(ACCOUNT_SRTP_RTP_FALLBACK)  == "true")?1:0 ;
+   return (accountDetail(Account::MapField::SRTP::RTP_FALLBACK)  == "true")?1:0 ;
 }
 
 ///
 bool Account::isZrtpDisplaySas         () const
 {
-   return (accountDetail(ACCOUNT_ZRTP_DISPLAY_SAS)  == "true")?1:0 ;
+   return (accountDetail(Account::MapField::ZRTP::DISPLAY_SAS)  == "true")?1:0 ;
 }
 
 ///Return if the other side support warning
 bool Account::isZrtpNotSuppWarning() const
 {
-   return (accountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING) == "true")?1:0 ;
+   return (accountDetail(Account::MapField::ZRTP::NOT_SUPP_WARNING) == "true")?1:0 ;
 }
 
 ///
 bool Account::isZrtpHelloHash() const
 {
-   return (accountDetail(ACCOUNT_ZRTP_HELLO_HASH)  == "true")?1:0 ;
+   return (accountDetail(Account::MapField::ZRTP::HELLO_HASH)  == "true")?1:0 ;
 }
 
 ///Return if the account is using a STUN server
 bool Account::isSipStunEnabled() const
 {
-   return (accountDetail(ACCOUNT_SIP_STUN_ENABLED)  == "true")?1:0 ;
+   return (accountDetail(Account::MapField::STUN::ENABLED)  == "true")?1:0 ;
 }
 
 ///Return the account STUN server
 QString Account::sipStunServer() const
 {
-   return accountDetail(ACCOUNT_SIP_STUN_SERVER);
+   return accountDetail(Account::MapField::STUN::SERVER);
 }
 
 ///Return when the account expire (require renewal)
@@ -399,92 +399,92 @@ int Account::publishedPort() const
 ///Return the account tls password
 QString Account::tlsPassword() const
 {
-   return accountDetail(TLS_PASSWORD);
+   return accountDetail(Account::MapField::TLS::PASSWORD);
 }
 
 ///Return the account TLS port
 int Account::tlsListenerPort() const
 {
-   return accountDetail(TLS_LISTENER_PORT).toInt();
+   return accountDetail(Account::MapField::TLS::LISTENER_PORT).toInt();
 }
 
 ///Return the account TLS certificate authority list file
 QString Account::tlsCaListFile() const
 {
-   return accountDetail(TLS_CA_LIST_FILE);
+   return accountDetail(Account::MapField::TLS::CA_LIST_FILE);
 }
 
 ///Return the account TLS certificate
 QString Account::tlsCertificateFile() const
 {
-   return accountDetail(TLS_CERTIFICATE_FILE);
+   return accountDetail(Account::MapField::TLS::CERTIFICATE_FILE);
 }
 
 ///Return the account private key
 QString Account::tlsPrivateKeyFile() const
 {
-   return accountDetail(TLS_PRIVATE_KEY_FILE);
+   return accountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE);
 }
 
 ///Return the account cipher
 QString Account::tlsCiphers() const
 {
-   return accountDetail(TLS_CIPHERS);
+   return accountDetail(Account::MapField::TLS::CIPHERS);
 }
 
 ///Return the account TLS server name
 QString Account::tlsServerName() const
 {
-   return accountDetail(TLS_SERVER_NAME);
+   return accountDetail(Account::MapField::TLS::SERVER_NAME);
 }
 
 ///Return the account negotiation timeout in seconds
 int Account::tlsNegotiationTimeoutSec() const
 {
-   return accountDetail(TLS_NEGOTIATION_TIMEOUT_SEC).toInt();
+   return accountDetail(Account::MapField::TLS::NEGOTIATION_TIMEOUT_SEC).toInt();
 }
 
 ///Return the account negotiation timeout in milliseconds
 int Account::tlsNegotiationTimeoutMsec() const
 {
-   return accountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC).toInt();
+   return accountDetail(Account::MapField::TLS::NEGOTIATION_TIMEOUT_MSEC).toInt();
 }
 
 ///Return the account TLS verify server
 bool Account::isTlsVerifyServer() const
 {
-   return (accountDetail(TLS_VERIFY_SERVER)  == "true");
+   return (accountDetail(Account::MapField::TLS::VERIFY_SERVER)  == "true");
 }
 
 ///Return the account TLS verify client
 bool Account::isTlsVerifyClient() const
 {
-   return (accountDetail(TLS_VERIFY_CLIENT)  == "true");
+   return (accountDetail(Account::MapField::TLS::VERIFY_CLIENT)  == "true");
 }
 
 ///Return if it is required for the peer to have a certificate
 bool Account::isTlsRequireClientCertificate() const
 {
-   return (accountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE)  == "true");
+   return (accountDetail(Account::MapField::TLS::REQUIRE_CLIENT_CERTIFICATE)  == "true");
 }
 
 ///Return the account TLS security is enabled
 bool Account::isTlsEnable() const
 { 
-   return (accountDetail(TLS_ENABLE)  == "true");
+   return (accountDetail(Account::MapField::TLS::ENABLE)  == "true");
 }
 
 ///Return the account the TLS encryption method
 TlsMethodModel::Type Account::tlsMethod() const
 {
-   const QString value = accountDetail(TLS_METHOD);
+   const QString value = accountDetail(Account::MapField::TLS::METHOD);
    return TlsMethodModel::fromDaemonName(value);
 }
 
 ///Return the key exchange mechanism
 KeyExchangeModel::Type Account::keyExchange() const
 {
-   return KeyExchangeModel::fromDaemonName(accountDetail(ACCOUNT_KEY_EXCHANGE));
+   return KeyExchangeModel::fromDaemonName(accountDetail(Account::MapField::SRTP::KEY_EXCHANGE));
 }
 
 ///Return if the ringtone are enabled
@@ -765,43 +765,43 @@ void Account::setPassword(const QString& detail)
 ///Set the TLS (encryption) password
 void Account::setTlsPassword(const QString& detail)
 {
-   setAccountDetail(TLS_PASSWORD, detail);
+   setAccountDetail(Account::MapField::TLS::PASSWORD, detail);
 }
 
 ///Set the certificate authority list file
 void Account::setTlsCaListFile(const QString& detail)
 {
-   setAccountDetail(TLS_CA_LIST_FILE, detail);
+   setAccountDetail(Account::MapField::TLS::CA_LIST_FILE, detail);
 }
 
 ///Set the certificate
 void Account::setTlsCertificateFile(const QString& detail)
 {
-   setAccountDetail(TLS_CERTIFICATE_FILE, detail);
+   setAccountDetail(Account::MapField::TLS::CERTIFICATE_FILE, detail);
 }
 
 ///Set the private key
 void Account::setTlsPrivateKeyFile(const QString& detail)
 {
-   setAccountDetail(TLS_PRIVATE_KEY_FILE, detail);
+   setAccountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE, detail);
 }
 
 ///Set the TLS cipher
 void Account::setTlsCiphers(const QString& detail)
 {
-   setAccountDetail(TLS_CIPHERS, detail);
+   setAccountDetail(Account::MapField::TLS::CIPHERS, detail);
 }
 
 ///Set the TLS server
 void Account::setTlsServerName(const QString& detail)
 {
-   setAccountDetail(TLS_SERVER_NAME, detail);
+   setAccountDetail(Account::MapField::TLS::SERVER_NAME, detail);
 }
 
 ///Set the stun server
 void Account::setSipStunServer(const QString& detail)
 {
-   setAccountDetail(ACCOUNT_SIP_STUN_SERVER, detail);
+   setAccountDetail(Account::MapField::STUN::SERVER, detail);
 }
 
 ///Set the published address
@@ -826,13 +826,13 @@ void Account::setRingtonePath(const QString& detail)
 void Account::setTlsMethod(TlsMethodModel::Type detail)
 {
    
-   setAccountDetail(TLS_METHOD ,TlsMethodModel::toDaemonName(detail));
+   setAccountDetail(Account::MapField::TLS::METHOD ,TlsMethodModel::toDaemonName(detail));
 }
 
 ///Set the Tls method
 void Account::setKeyExchange(KeyExchangeModel::Type detail)
 {
-   setAccountDetail(ACCOUNT_KEY_EXCHANGE ,KeyExchangeModel::toDaemonName(detail));
+   setAccountDetail(Account::MapField::SRTP::KEY_EXCHANGE ,KeyExchangeModel::toDaemonName(detail));
 }
 
 ///Set the account timeout, it will be renegotiated when that timeout occur
@@ -844,13 +844,13 @@ void Account::setRegistrationExpire(int detail)
 ///Set TLS negotiation timeout in second
 void Account::setTlsNegotiationTimeoutSec(int detail)
 {
-   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_SEC, QString::number(detail));
+   setAccountDetail(Account::MapField::TLS::NEGOTIATION_TIMEOUT_SEC, QString::number(detail));
 }
 
 ///Set the TLS negotiation timeout in milliseconds
 void Account::setTlsNegotiationTimeoutMsec(int detail)
 {
-   setAccountDetail(TLS_NEGOTIATION_TIMEOUT_MSEC, QString::number(detail));
+   setAccountDetail(Account::MapField::TLS::NEGOTIATION_TIMEOUT_MSEC, QString::number(detail));
 }
 
 ///Set the local port for SIP/IAX communications
@@ -862,7 +862,7 @@ void Account::setLocalPort(unsigned short detail)
 ///Set the TLS listener port (0-2^16)
 void Account::setTlsListenerPort(unsigned short detail)
 {
-   setAccountDetail(TLS_LISTENER_PORT, QString::number(detail));
+   setAccountDetail(Account::MapField::TLS::LISTENER_PORT, QString::number(detail));
 }
 
 ///Set the published port (0-2^16)
@@ -886,55 +886,55 @@ void Account::setAutoAnswer(bool detail)
 ///Set the TLS verification server
 void Account::setTlsVerifyServer(bool detail)
 {
-   setAccountDetail(TLS_VERIFY_SERVER, detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::VERIFY_SERVER, detail?"true":"false");
 }
 
 ///Set the TLS verification client
 void Account::setTlsVerifyClient(bool detail)
 {
-   setAccountDetail(TLS_VERIFY_CLIENT, detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::VERIFY_CLIENT, detail?"true":"false");
 }
 
 ///Set if the peer need to be providing a certificate
 void Account::setTlsRequireClientCertificate(bool detail)
 {
-   setAccountDetail(TLS_REQUIRE_CLIENT_CERTIFICATE ,detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::REQUIRE_CLIENT_CERTIFICATE ,detail?"true":"false");
 }
 
 ///Set if the security settings are enabled
 void Account::setTlsEnable(bool detail)
 {
-   setAccountDetail(TLS_ENABLE ,detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::ENABLE ,detail?"true":"false");
 }
 
 void Account::setDisplaySasOnce(bool detail)
 {
-   setAccountDetail(ACCOUNT_DISPLAY_SAS_ONCE, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::DISPLAY_SAS_ONCE, detail?"true":"false");
 }
 
 void Account::setSrtpRtpFallback(bool detail)
 {
-   setAccountDetail(ACCOUNT_SRTP_RTP_FALLBACK, detail?"true":"false");
+   setAccountDetail(Account::MapField::SRTP::RTP_FALLBACK, detail?"true":"false");
 }
 
 void Account::setZrtpDisplaySas(bool detail)
 {
-   setAccountDetail(ACCOUNT_ZRTP_DISPLAY_SAS, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::DISPLAY_SAS, detail?"true":"false");
 }
 
 void Account::setZrtpNotSuppWarning(bool detail)
 {
-   setAccountDetail(ACCOUNT_ZRTP_NOT_SUPP_WARNING, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::NOT_SUPP_WARNING, detail?"true":"false");
 }
 
 void Account::setZrtpHelloHash(bool detail)
 {
-   setAccountDetail(ACCOUNT_ZRTP_HELLO_HASH, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::HELLO_HASH, detail?"true":"false");
 }
 
 void Account::setSipStunEnabled(bool detail)
 {
-   setAccountDetail(ACCOUNT_SIP_STUN_ENABLED, detail?"true":"false");
+   setAccountDetail(Account::MapField::STUN::ENABLED, detail?"true":"false");
 }
 
 void Account::setPublishedSameAsLocal(bool detail)

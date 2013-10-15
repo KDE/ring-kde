@@ -64,18 +64,18 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
    foreach (const MapStringString& hc, history) {
       Call* pastCall = Call::buildHistoryCall(
-               hc[ CALLID_KEY          ]         ,
-               hc[ TIMESTAMP_START_KEY ].toUInt(),
-               hc[ TIMESTAMP_STOP_KEY  ].toUInt(),
-               hc[ ACCOUNT_ID_KEY      ]         ,
-               hc[ DISPLAY_NAME_KEY    ]         ,
-               hc[ PEER_NUMBER_KEY     ]         ,
-               hc[ STATE_KEY           ]
+               hc[ Call::HistoryMapFields::CALLID          ]         ,
+               hc[ Call::HistoryMapFields::TIMESTAMP_START ].toUInt(),
+               hc[ Call::HistoryMapFields::TIMESTAMP_STOP  ].toUInt(),
+               hc[ Call::HistoryMapFields::ACCOUNT_ID      ]         ,
+               hc[ Call::HistoryMapFields::DISPLAY_NAME    ]         ,
+               hc[ Call::HistoryMapFields::PEER_NUMBER     ]         ,
+               hc[ Call::HistoryMapFields::STATE           ]
       );
       if (pastCall->peerName().isEmpty()) {
          pastCall->setPeerName("Unknown");
       }
-      pastCall->setRecordingPath(hc[ RECORDING_PATH_KEY ]);
+      pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
       add(pastCall);
    }
    m_HistoryInit = true;

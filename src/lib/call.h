@@ -143,6 +143,21 @@ public:
       NONE
    };
 
+   ///@class HistoryStateName history map fields state names
+   class HistoryStateName {
+   public:
+      constexpr static const char* MISSED         = "missed"  ;
+      constexpr static const char* INCOMING       = "incoming";
+      constexpr static const char* OUTGOING       = "outgoing";
+   };
+
+   ///@class ConferenceStateChange Possible values from "conferencechanged" signal
+   class ConferenceStateChange {
+   public:
+      constexpr static const char* HOLD           = "HOLD"           ;
+      constexpr static const char* ACTIVE         = "ACTIVE_ATTACHED";
+   };
+
    class StateChange {
    public:
       constexpr static const char* HUNG_UP        = "HUNGUP" ;
@@ -164,6 +179,36 @@ public:
       constexpr static const char* INACTIVE = "INACTIVE" ;
    };
 
+   ///"getHistory()" fields
+   class HistoryMapFields {
+   public:
+      constexpr static const char* ACCOUNT_ID        = "accountid"      ;
+      constexpr static const char* CALLID            = "callid"         ;
+      constexpr static const char* DISPLAY_NAME      = "display_name"   ;
+      constexpr static const char* PEER_NUMBER       = "peer_number"    ;
+      constexpr static const char* RECORDING_PATH    = "recordfile"     ;
+      constexpr static const char* STATE             = "state"          ;
+      constexpr static const char* TIMESTAMP_START   = "timestamp_start";
+      constexpr static const char* TIMESTAMP_STOP    = "timestamp_stop" ;
+   };
+
+   ///"getCallDetails()" fields
+   class DetailsMapFields {
+   public:
+      constexpr static const char* PEER_NAME         = "DISPLAY_NAME"   ;
+      constexpr static const char* PEER_NUMBER       = "PEER_NUMBER"    ;
+      constexpr static const char* ACCOUNT_ID        = "ACCOUNTID"      ;
+      constexpr static const char* STATE             = "CALL_STATE"     ;
+      constexpr static const char* TYPE              = "CALL_TYPE"      ;
+      constexpr static const char* TIMESTAMP_START   = "TIMESTAMP_START";
+   };
+
+   ///If the call is incoming or outgoing
+   class CallType {
+   public:
+      constexpr static const char* INCOMING = "0";
+      constexpr static const char* OUTGOING = "1";
+   };
 
    /** @enum Call::DaemonState 
    * This enum have all the states a call can take for the daemon.
