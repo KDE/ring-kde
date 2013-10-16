@@ -98,9 +98,9 @@ QModelIndex CategorizedAccountModel::parent(const QModelIndex& idx) const
       case 0:
          return QModelIndex();
       case 1:
-         return createIndex((int)Categories::SERVER,0,0);
+         return createIndex((int)Categories::SERVER,0,static_cast<quint32>(0));
       case 2:
-         return createIndex((int)Categories::IP2IP,0,0);
+         return createIndex((int)Categories::IP2IP,0,static_cast<quint32>(0));
    };
    return QModelIndex();
 }
@@ -112,16 +112,16 @@ QModelIndex CategorizedAccountModel::index( int row, int column, const QModelInd
          return QModelIndex();
       switch (parent.row()) {
          case Categories::SERVER:
-            return createIndex(row,column,1);
+            return createIndex(row,column,static_cast<quint32>(1));
             break;
          case Categories::IP2IP:
-            return createIndex(row,column,2);
+            return createIndex(row,column,static_cast<quint32>(2));
             break;
       };
    }
    else if (parent.isValid())
       return QModelIndex();
-   return createIndex(row,column,0);
+   return createIndex(row,column,static_cast<quint32>(0));
 }
 
 Qt::ItemFlags CategorizedAccountModel::flags(const QModelIndex& index ) const

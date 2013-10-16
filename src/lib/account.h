@@ -97,6 +97,8 @@ class LIB_EXPORT Account : public QObject {
 //    Q_PROPERTY(QString        typeName                     READ type                          WRITE setType                        )
    Q_PROPERTY(bool           presenceStatus               READ presenceStatus                                                     )
    Q_PROPERTY(QString        presenceMessage              READ presenceMessage                                                    )
+   Q_PROPERTY(bool           supportPresencePublish       READ supportPresencePublish                                             )
+   Q_PROPERTY(bool           supportPresenceSubscribe     READ supportPresenceSubscribe                                           )
 
    public:
       ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
@@ -191,70 +193,72 @@ class LIB_EXPORT Account : public QObject {
 
       class MapField {
       public:
-         constexpr static const char* ID                     = "Account.id"                      ;
-         constexpr static const char* TYPE                   = "Account.type"                    ;
-         constexpr static const char* ALIAS                  = "Account.alias"                   ;
-         constexpr static const char* ENABLED                = "Account.enable"                  ;
-         constexpr static const char* MAILBOX                = "Account.mailbox"                 ;
-         constexpr static const char* DTMF_TYPE              = "Account.dtmfType"                ;
-         constexpr static const char* AUTOANSWER             = "Account.autoAnswer"              ;
-         constexpr static const char* HOSTNAME               = "Account.hostname"                ;
-         constexpr static const char* USERNAME               = "Account.username"                ;
-         constexpr static const char* ROUTE                  = "Account.routeset"                ;
-         constexpr static const char* PASSWORD               = "Account.password"                ;
-         constexpr static const char* REALM                  = "Account.realm"                   ;
-         constexpr static const char* LOCAL_INTERFACE        = "Account.localInterface"          ;
-         constexpr static const char* PUBLISHED_SAMEAS_LOCAL = "Account.publishedSameAsLocal"    ;
-         constexpr static const char* LOCAL_PORT             = "Account.localPort"               ;
-         constexpr static const char* PUBLISHED_PORT         = "Account.publishedPort"           ;
-         constexpr static const char* PUBLISHED_ADDRESS      = "Account.publishedAddress"        ;
+         constexpr static const char* ID                     = "Account.id"                        ;
+         constexpr static const char* TYPE                   = "Account.type"                      ;
+         constexpr static const char* ALIAS                  = "Account.alias"                     ;
+         constexpr static const char* ENABLED                = "Account.enable"                    ;
+         constexpr static const char* MAILBOX                = "Account.mailbox"                   ;
+         constexpr static const char* DTMF_TYPE              = "Account.dtmfType"                  ;
+         constexpr static const char* AUTOANSWER             = "Account.autoAnswer"                ;
+         constexpr static const char* HOSTNAME               = "Account.hostname"                  ;
+         constexpr static const char* USERNAME               = "Account.username"                  ;
+         constexpr static const char* ROUTE                  = "Account.routeset"                  ;
+         constexpr static const char* PASSWORD               = "Account.password"                  ;
+         constexpr static const char* REALM                  = "Account.realm"                     ;
+         constexpr static const char* LOCAL_INTERFACE        = "Account.localInterface"            ;
+         constexpr static const char* PUBLISHED_SAMEAS_LOCAL = "Account.publishedSameAsLocal"      ;
+         constexpr static const char* LOCAL_PORT             = "Account.localPort"                 ;
+         constexpr static const char* PUBLISHED_PORT         = "Account.publishedPort"             ;
+         constexpr static const char* PUBLISHED_ADDRESS      = "Account.publishedAddress"          ;
          class STUN {
          public:
-            constexpr static const char* SERVER              = "STUN.server"                     ;
-            constexpr static const char* ENABLED             = "STUN.enable"                     ;
+            constexpr static const char* SERVER              = "STUN.server"                       ;
+            constexpr static const char* ENABLED             = "STUN.enable"                       ;
          };
          class Presence {
          public:
-            constexpr static const char* SUPPORT_PUBLISH     = "Account.presencePublishEnabled"  ;
-            constexpr static const char* SUPPORT_SUBSCRIBE   = "Account.presenceSubscribeEnabled";
+            constexpr static const char* SUPPORT_PUBLISH     = "Account.presencePublishSupported"  ;
+            constexpr static const char* SUPPORT_SUBSCRIBE   = "Account.presenceSubscribeSupported";
+            constexpr static const char* ENABLE_PUBLISH      = "Account.presencePublishEnabled"    ;
+            constexpr static const char* ENABLE_SUBSCRIBE    = "Account.presenceSubscribeEnabled"  ;
          };
          class Registration {
          public:
-            constexpr static const char* EXPIRE              = "Account.registrationExpire"      ;
-            constexpr static const char* STATUS              = "Account.registrationStatus"      ;
+            constexpr static const char* EXPIRE              = "Account.registrationExpire"        ;
+            constexpr static const char* STATUS              = "Account.registrationStatus"        ;
          };
          class Ringtone {
          public:
-            constexpr static const char* PATH                = "Account.ringtonePath"            ;
-            constexpr static const char* ENABLED             = "Account.ringtoneEnabled"         ;
+            constexpr static const char* PATH                = "Account.ringtonePath"              ;
+            constexpr static const char* ENABLED             = "Account.ringtoneEnabled"           ;
          };
          class SRTP {
          public:
-            constexpr static const char* KEY_EXCHANGE        = "SRTP.keyExchange"                ;
-            constexpr static const char* ENABLED             = "SRTP.enable"                     ;
-            constexpr static const char* RTP_FALLBACK        = "SRTP.rtpFallback"                ;
+            constexpr static const char* KEY_EXCHANGE        = "SRTP.keyExchange"                  ;
+            constexpr static const char* ENABLED             = "SRTP.enable"                       ;
+            constexpr static const char* RTP_FALLBACK        = "SRTP.rtpFallback"                  ;
          };
          class ZRTP {
          public:
-            constexpr static const char* DISPLAY_SAS         = "ZRTP.displaySAS"                 ;
-            constexpr static const char* NOT_SUPP_WARNING    = "ZRTP.notSuppWarning"             ;
-            constexpr static const char* HELLO_HASH          = "ZRTP.helloHashEnable"            ;
-            constexpr static const char* DISPLAY_SAS_ONCE    = "ZRTP.displaySasOnce"             ;
+            constexpr static const char* DISPLAY_SAS         = "ZRTP.displaySAS"                   ;
+            constexpr static const char* NOT_SUPP_WARNING    = "ZRTP.notSuppWarning"               ;
+            constexpr static const char* HELLO_HASH          = "ZRTP.helloHashEnable"              ;
+            constexpr static const char* DISPLAY_SAS_ONCE    = "ZRTP.displaySasOnce"               ;
          };
          class TLS {
          public:
-            constexpr static const char* LISTENER_PORT       = "TLS.listenerPort"                ;
-            constexpr static const char* ENABLE              = "TLS.enable"                      ;
-            constexpr static const char* PORT                = "TLS.port"                        ;
-            constexpr static const char* CA_LIST_FILE        = "TLS.certificateListFile"         ;
-            constexpr static const char* CERTIFICATE_FILE    = "TLS.certificateFile"             ;
-            constexpr static const char* PRIVATE_KEY_FILE    = "TLS.privateKeyFile"              ;
-            constexpr static const char* PASSWORD            = "TLS.password"                    ;
-            constexpr static const char* METHOD              = "TLS.method"                      ;
-            constexpr static const char* CIPHERS             = "TLS.ciphers"                     ;
-            constexpr static const char* SERVER_NAME         = "TLS.serverName"                  ;
-            constexpr static const char* VERIFY_SERVER       = "TLS.verifyServer"                ;
-            constexpr static const char* VERIFY_CLIENT       = "TLS.verifyClient"                ;
+            constexpr static const char* LISTENER_PORT       = "TLS.listenerPort"                  ;
+            constexpr static const char* ENABLE              = "TLS.enable"                        ;
+            constexpr static const char* PORT                = "TLS.port"                          ;
+            constexpr static const char* CA_LIST_FILE        = "TLS.certificateListFile"           ;
+            constexpr static const char* CERTIFICATE_FILE    = "TLS.certificateFile"               ;
+            constexpr static const char* PRIVATE_KEY_FILE    = "TLS.privateKeyFile"                ;
+            constexpr static const char* PASSWORD            = "TLS.password"                      ;
+            constexpr static const char* METHOD              = "TLS.method"                        ;
+            constexpr static const char* CIPHERS             = "TLS.ciphers"                       ;
+            constexpr static const char* SERVER_NAME         = "TLS.serverName"                    ;
+            constexpr static const char* VERIFY_SERVER       = "TLS.verifyServer"                  ;
+            constexpr static const char* VERIFY_CLIENT       = "TLS.verifyClient"                  ;
             constexpr static const char* REQUIRE_CLIENT_CERTIFICATE = "TLS.requireClientCertificate";
             constexpr static const char* NEGOTIATION_TIMEOUT_SEC    = "TLS.negotiationTimeoutSec"   ;
             constexpr static const char* NEGOTIATION_TIMEOUT_MSEC   = "TLS.negotiationTimemoutMsec" ;
@@ -336,7 +340,7 @@ class LIB_EXPORT Account : public QObject {
       bool    presenceStatus               () const;
       QString presenceMessage              () const;
       bool    supportPresencePublish       () const;
-      bool    supportedPresenceSubscribe   () const;
+      bool    supportPresenceSubscribe     () const;
       Account::Protocol      protocol      () const;
       TlsMethodModel::Type   tlsMethod     () const;
       KeyExchangeModel::Type keyExchange   () const;

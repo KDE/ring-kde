@@ -149,7 +149,8 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
       case PhoneDirectoryModel::Columns::TRACKED:
          switch (role) {
             case Qt::CheckStateRole:
-               return number->tracked()?Qt::Checked:Qt::Unchecked;
+               if (number->account() && number->account()->supportPresenceSubscribe())
+                  return number->tracked()?Qt::Checked:Qt::Unchecked;
                break;
          }
          break;
@@ -162,9 +163,17 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
          break;
       case PhoneDirectoryModel::Columns::PRESENCE_MESSAGE:
          switch (role) {
-            case Qt::DisplayRole:
-               return number->presenceMessage();
-               break;
+            case Qt::DisplayRole: {
+               if ((index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)
+                  || static_cast<int>(PhoneDirectoryModel::Columns::PRESENT))
+                  && number->account() && (!number->account()->supportPresenceSubscribe())) {
+                  return tr("This account does not support presence tracking");
+               }
+               else if (!number->account())
+                  return tr("No associated account");
+               else
+                  return number->presenceMessage();
+            } break;
          }
          break;
    }
@@ -187,9 +196,15 @@ int PhoneDirectoryModel::columnCount(const QModelIndex& parent ) const
 Qt::ItemFlags PhoneDirectoryModel::flags(const QModelIndex& index ) const
 {
    Q_UNUSED(index)
-   return Qt::ItemIsEnabled 
+
+   const PhoneNumber* number = m_lNumbers[index.row()];
+   const bool enabled = !((index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)
+      || static_cast<int>(PhoneDirectoryModel::Columns::PRESENT))
+      && number->account() && (!number->account()->supportPresenceSubscribe()));
+
+   return Qt::ItemIsEnabled
       | Qt::ItemIsSelectable 
-      | (index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)?Qt::ItemIsUserCheckable:Qt::NoItemFlags);
+      | (index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)&&enabled?Qt::ItemIsUserCheckable:Qt::NoItemFlags);
 }
 
 ///This model is read and for debug purpose

@@ -557,7 +557,7 @@ bool Account::supportPresencePublish() const
    return accountDetail(Account::MapField::Presence::SUPPORT_PUBLISH)  == "true";
 }
 
-bool Account::supportedPresenceSubscribe() const
+bool Account::supportPresenceSubscribe() const
 {
    return accountDetail(Account::MapField::Presence::SUPPORT_SUBSCRIBE)  == "true";
 }

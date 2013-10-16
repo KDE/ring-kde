@@ -237,7 +237,6 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
             return static_cast<TopLevelItem*>(modelItem)->m_NameStr;
          case Call::Role::FuzzyDate:
          case Call::Role::Date:
-            qDebug() << static_cast<TopLevelItem*>(modelItem)->m_Name;
             return m_lCategoryCounter.size() - static_cast<TopLevelItem*>(modelItem)->m_Name;
          default:
             break;
@@ -320,9 +319,9 @@ QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentI
    if (!parentIdx.isValid() && row >= 0 && m_lCategoryCounter.size() > row) {
       return createIndex(row,column,m_lCategoryCounter[row]);
    }
-   else if (!parentIdx.parent().isValid() 
-      && row >= 0 && parentIdx.row() >= 0 
-      && m_lCategoryCounter.size() > parentIdx.row() 
+   else if (!parentIdx.parent().isValid()
+      && row >= 0 && parentIdx.row() >= 0
+      && m_lCategoryCounter.size() > parentIdx.row()
       && row < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
       return createIndex(row,column,(void*)dynamic_cast<CategorizedCompositeNode*>(m_lCategoryCounter[parentIdx.row()]->m_lChildren[row]));
    }
