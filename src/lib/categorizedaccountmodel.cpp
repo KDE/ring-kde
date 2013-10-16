@@ -21,6 +21,12 @@
 
 CategorizedAccountModel* CategorizedAccountModel::m_spInstance = nullptr;
 
+namespace {
+   const int TYPE_TOP_LEVEL = 0;
+   const int TYPE_IP2IP     = 2;
+   const int TYPE_SERVER    = 1;
+}
+
 CategorizedAccountModel* CategorizedAccountModel::instance()
 {
    if (!m_spInstance)
@@ -94,34 +100,34 @@ int CategorizedAccountModel::columnCount(const QModelIndex& parent ) const
 
 QModelIndex CategorizedAccountModel::parent(const QModelIndex& idx) const
 {
-   switch (idx.internalId()) {
-      case 0:
+   switch (*static_cast<int*>(idx.internalPointer())) {
+      case TYPE_TOP_LEVEL:
          return QModelIndex();
-      case 1:
-         return createIndex((int)Categories::SERVER,0,static_cast<quint32>(0));
-      case 2:
-         return createIndex((int)Categories::IP2IP,0,static_cast<quint32>(0));
+      case TYPE_SERVER:
+         return createIndex((int)Categories::SERVER,0,(void*)&TYPE_TOP_LEVEL);
+      case TYPE_IP2IP:
+         return createIndex((int)Categories::IP2IP,0,(void*)&TYPE_TOP_LEVEL);
    };
    return QModelIndex();
 }
 
 QModelIndex CategorizedAccountModel::index( int row, int column, const QModelIndex& parent ) const
 {
-   if (parent.isValid() && parent.internalId() == 0) {
+   if (parent.isValid() && *static_cast<int*>(parent.internalPointer()) == 0) {
       if (row >= rowCount(parent))
          return QModelIndex();
       switch (parent.row()) {
          case Categories::SERVER:
-            return createIndex(row,column,static_cast<quint32>(1));
+            return createIndex(row,column,(void*)&TYPE_SERVER);
             break;
          case Categories::IP2IP:
-            return createIndex(row,column,static_cast<quint32>(2));
+            return createIndex(row,column,(void*)&TYPE_IP2IP);
             break;
       };
    }
    else if (parent.isValid())
       return QModelIndex();
-   return createIndex(row,column,static_cast<quint32>(0));
+   return createIndex(row,column,(void*)&TYPE_TOP_LEVEL);
 }
 
 Qt::ItemFlags CategorizedAccountModel::flags(const QModelIndex& index ) const
