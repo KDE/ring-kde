@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "categorizedaccountmodel.h"
 
-#include <accountlistmodel.h>
+#include "accountlistmodel.h"
 
 CategorizedAccountModel* CategorizedAccountModel::m_spInstance = nullptr;
 
