@@ -21,8 +21,15 @@
 #include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
 
+//SFLPhone
+#include "account.h"
+#include "dbus/configurationmanager.h"
+
 ///Constructor
-AudioCodecModel::AudioCodecModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()) {
+AudioCodecModel::AudioCodecModel(Account* account) :
+QAbstractListModel(account?(QObject*)account:(QObject*)QCoreApplication::instance()),m_pAccount(account)
+{
+   setObjectName("AudioCodecModel: "+account->id());
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(AudioCodecModel::Role::ID        ,QByteArray("id"));
    roles.insert(AudioCodecModel::Role::NAME      ,QByteArray("name"));
@@ -149,6 +156,68 @@ bool AudioCodecModel::moveDown(QModelIndex idx)
       m_lAudioCodecs.insert(idx.row() + 1, data2);
       emit dataChanged(index(idx.row(), 0, QModelIndex()), index(idx.row() + 1, 0, QModelIndex()));
       return true;
+   }
+   return false;
+}
+
+///Reload the codeclist
+void AudioCodecModel::reload()
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   QVector<int> codecIdList = configurationManager.getAudioCodecList();
+   if (!m_pAccount->isNew()) {
+      QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(m_pAccount->id());
+      QStringList tmpNameList;
+
+      foreach (const int aCodec, activeCodecList) {
+         if (!findCodec(aCodec)) {
+            QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
+            QModelIndex idx = addAudioCodec();
+            setData(idx,codec[0]     ,AudioCodecModel::Role::NAME       );
+            setData(idx,codec[1]     ,AudioCodecModel::Role::SAMPLERATE );
+            setData(idx,codec[2]     ,AudioCodecModel::Role::BITRATE    );
+            setData(idx,aCodec       ,AudioCodecModel::Role::ID         );
+            setData(idx, Qt::Checked ,Qt::CheckStateRole               );
+            if (codecIdList.indexOf(aCodec)!=-1)
+               codecIdList.remove(codecIdList.indexOf(aCodec));
+         }
+      }
+   }
+
+   foreach (const int aCodec, codecIdList) {
+      if (!findCodec(aCodec)) {
+         const QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
+         QModelIndex idx = addAudioCodec();
+         setData(idx,codec[0],AudioCodecModel::Role::NAME       );
+         setData(idx,codec[1],AudioCodecModel::Role::SAMPLERATE );
+         setData(idx,codec[2],AudioCodecModel::Role::BITRATE    );
+         setData(idx,aCodec  ,AudioCodecModel::Role::ID         );
+         setData(idx, Qt::Unchecked ,Qt::CheckStateRole);
+      }
+   }
+}
+
+///Save details
+void AudioCodecModel::save()
+{
+   QStringList _codecList;
+   for (int i=0; i < rowCount();i++) {
+      QModelIndex idx = index(i,0);
+      if (data(idx,Qt::CheckStateRole) == Qt::Checked) {
+         _codecList << data(idx,AudioCodecModel::Role::ID).toString();
+      }
+   }
+
+   ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
+   configurationManager.setActiveAudioCodecList(_codecList, m_pAccount->id());
+}
+
+///Check is a codec is already in the list
+bool AudioCodecModel::findCodec(int id)
+{
+   foreach(AudioCodecData* data, m_lAudioCodecs) {
+      if (data->id == id)
+         return true;
    }
    return false;
 }

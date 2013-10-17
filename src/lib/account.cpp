@@ -1226,52 +1226,13 @@ void Account::reloadAudioCodecs()
    if (!m_pAudioCodecs) {
       m_pAudioCodecs = new AudioCodecModel(this);
    }
-   m_pAudioCodecs->clear();
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   QVector<int> codecIdList = configurationManager.getAudioCodecList();
-   if (!isNew()) {
-      QVector<int> activeCodecList = configurationManager.getActiveAudioCodecList(id());
-      QStringList tmpNameList;
-
-      foreach (const int aCodec, activeCodecList) {
-         QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
-         QModelIndex idx = m_pAudioCodecs->addAudioCodec();
-         m_pAudioCodecs->setData(idx,codec[0]     ,AudioCodecModel::Role::NAME       );
-         m_pAudioCodecs->setData(idx,codec[1]     ,AudioCodecModel::Role::SAMPLERATE );
-         m_pAudioCodecs->setData(idx,codec[2]     ,AudioCodecModel::Role::BITRATE    );
-         m_pAudioCodecs->setData(idx,aCodec       ,AudioCodecModel::Role::ID         );
-         m_pAudioCodecs->setData(idx, Qt::Checked ,Qt::CheckStateRole               );
-         if (codecIdList.indexOf(aCodec)!=-1)
-            codecIdList.remove(codecIdList.indexOf(aCodec));
-      }
-   }
-
-   foreach (const int aCodec, codecIdList) {
-      QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
-      QModelIndex idx = m_pAudioCodecs->addAudioCodec();
-      m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::Role::NAME       );
-      m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::Role::SAMPLERATE );
-      m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::Role::BITRATE    );
-      m_pAudioCodecs->setData(idx,aCodec  ,AudioCodecModel::Role::ID         );
-      
-      m_pAudioCodecs->setData(idx, Qt::Unchecked ,Qt::CheckStateRole);
-   }
+   m_pAudioCodecs->reload();
 }
 
 ///Save audio codecs
 void Account::saveAudioCodecs() {
-   if (m_pAudioCodecs) {
-      QStringList _codecList;
-      for (int i=0; i < m_pAudioCodecs->rowCount();i++) {
-         QModelIndex idx = m_pAudioCodecs->index(i,0);
-         if (m_pAudioCodecs->data(idx,Qt::CheckStateRole) == Qt::Checked) {
-            _codecList << m_pAudioCodecs->data(idx,AudioCodecModel::Role::ID).toString();
-         }
-      }
-
-      ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
-      configurationManager.setActiveAudioCodecList(_codecList, id());
-   }
+   if (m_pAudioCodecs)
+      m_pAudioCodecs->save();
 }
 
 /*****************************************************************************

@@ -487,6 +487,15 @@ void DlgAccounts::loadAccount(QModelIndex item)
       m_pRingTonePath->setUrl( ringtonePath );
    }
 
+   switch (static_cast<Account::Protocol>(edit2_protocol->currentIndex())) {
+      case Account::Protocol::SIP:
+         frame2_editAccounts->setTabEnabled( 3, true  );
+         break;
+      case Account::Protocol::IAX:
+         frame2_editAccounts->setTabEnabled( 3, false );
+         break;
+   }
+
    #ifndef ENABLE_VIDEO
    m_pVideoCodecGB->setVisible(false);
    #endif

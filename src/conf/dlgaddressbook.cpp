@@ -29,7 +29,7 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 {
    setupUi(this);
    m_pPhoneTypeList->setModel(NumberCategoryModel::instance());
-   AutoCompletionDelegate* m_pDelegate = new AutoCompletionDelegate();
+   m_pDelegate = new AutoCompletionDelegate();
    m_pPhoneTypeList->setItemDelegate(m_pDelegate);
    connect(m_pPhoneTypeList, SIGNAL(itemChanged(QListWidgetItem*)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));

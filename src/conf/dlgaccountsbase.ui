@@ -886,7 +886,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab">
+        <widget class="QWidget" name="tab_credentials">
          <attribute name="title">
           <string>Credential</string>
          </attribute>
@@ -1081,8 +1081,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>547</width>
-               <height>666</height>
+               <width>481</width>
+               <height>680</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">

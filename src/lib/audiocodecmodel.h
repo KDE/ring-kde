@@ -22,6 +22,8 @@
 #include <QtCore/QAbstractListModel>
 #include "typedefs.h"
 
+class Account;
+
 ///AudioCodecModel: A model for account audio codec
 class LIB_EXPORT AudioCodecModel : public QAbstractListModel {
    #pragma GCC diagnostic push
@@ -39,7 +41,7 @@ public:
    };
 
    //Constructor
-   explicit AudioCodecModel(QObject* parent =nullptr);
+   explicit AudioCodecModel(Account* account);
 
    //Abstract model member
    QVariant data        (const QModelIndex& index, int role = Qt::DisplayRole      ) const;
@@ -53,6 +55,8 @@ public:
    Q_INVOKABLE bool moveUp           ( QModelIndex idx );
    Q_INVOKABLE bool moveDown         ( QModelIndex idx );
    Q_INVOKABLE void clear            (                 );
+   Q_INVOKABLE void reload           (                 );
+   Q_INVOKABLE void save             (                 );
 
 private:
    ///@struct AudioCodecData store audio codec information
@@ -66,6 +70,10 @@ private:
    //Attributes
    QList<AudioCodecData*> m_lAudioCodecs  ;
    QMap<int,bool>         m_lEnabledCodecs;
+   Account*               m_pAccount      ;
+
+   //Helpers
+   bool findCodec(int id);
 };
 Q_DECLARE_METATYPE(AudioCodecModel*)
 
