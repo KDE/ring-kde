@@ -223,13 +223,13 @@ void AccountListModel::update()
 
    for (int i = 0; i < tmp.size(); i++) {
       current = tmp[i];
-      if (!current->isNew() && (current->state() != Account::AccountEditState::NEW 
+      if (!current->isNew() && (current->state() != Account::AccountEditState::NEW
          && current->state() != Account::AccountEditState::MODIFIED
          && current->state() != Account::AccountEditState::OUTDATED))
          removeAccount(current);
    }
    //ask for the list of accounts ids to the configurationManager
-   QStringList accountIds = configurationManager.getAccountList().value();
+   const QStringList accountIds = configurationManager.getAccountList().value();
    for (int i = 0; i < accountIds.size(); ++i) {
       if (m_lDeletedAccounts.indexOf(accountIds[i]) == -1) {
          Account* a = Account::buildExistingAccountFromId(accountIds[i]);

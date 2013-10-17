@@ -681,8 +681,6 @@ bool Account::setAccountDetail(const QString& param, const QString& val)
 {
    const bool accChanged = m_hAccountDetails[param] != val;
    const QString buf = m_hAccountDetails[param];
-   if (param == Account::MapField::TYPE && isNew() && val == "IAX")
-      ((QString*)0x00)->clear();
    if (param == Account::MapField::Registration::STATUS) {
       m_hAccountDetails[param] = val;
       if (accChanged) {
