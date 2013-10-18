@@ -265,12 +265,13 @@ void DlgAccounts::saveAccount(QModelIndex item)
    /**/account->setSipStunServer               ( line_stun->text()                                                        );
    /**/account->setPublishedPort               ( spinBox_pa_published_port->value()                                       );
    /**/account->setPublishedAddress            ( lineEdit_pa_published_address ->text()                                   );
-   /**/account->setLocalPort                   ( spinBox_pa_published_port->value()                                       );
+//    /**/account->setLocalPort                   ( spinBox_pa_published_port->value()                                       );
    /**/account->setLocalInterface              ( comboBox_ni_local_address->currentText()                                 );
    /**/account->setRingtoneEnabled             ( m_pEnableRingtoneGB->isChecked()                                         );
    /**/account->setRingtonePath                ( m_pRingTonePath->url().path()                                            );
    /**/account->setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
    /**/account->setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
+   /**/account->setLocalPort                   ( spinBox_ni_local_port->value()                                           );
    //                                                                                                                      /
 
 
