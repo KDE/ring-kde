@@ -48,6 +48,7 @@ public:
    Q_PROPERTY(int           callCount       READ callCount                )
    Q_PROPERTY(QList<Call*>  calls           READ calls                    )
    Q_PROPERTY(int           popularityIndex READ popularityIndex          )
+   Q_PROPERTY(bool          bookmarked      READ isBookmarked             )
 
    ///@enum PresenceStatus: Presence status
    enum class PresenceStatus {
@@ -87,12 +88,14 @@ public:
    QString            hostname        () const;
    QString            fullUri         () const;
    QString            primaryName     () const;
+   bool               isBookmarked    () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account*       account);
    Q_INVOKABLE void setContact(Contact*       contact);
    Q_INVOKABLE void setTracked(bool           track  );
    void             setType   (const QString& type   );
+   void             setBookmarked(bool bookmarked    );
 
    //Mutator
    Q_INVOKABLE void addCall(Call* call);
@@ -136,6 +139,7 @@ private:
    uint               m_LastTrimCount    ;
    bool               m_HaveCalled       ;
    uint               m_Index            ;
+   bool               m_IsBookmark       ;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;
@@ -145,7 +149,7 @@ Q_SIGNALS:
    void changed  (          );
 };
 
-Q_DECLARE_METATYPE( PhoneNumber* )
+Q_DECLARE_METATYPE(PhoneNumber*)
 
 ///@class TemporaryPhoneNumber: An incomplete phone number
 class LIB_EXPORT TemporaryPhoneNumber : public PhoneNumber {

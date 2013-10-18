@@ -40,7 +40,7 @@ const PhoneNumber* PhoneNumber::BLANK = PhoneNumberPrivate::initBlank();
 PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(PhoneDirectoryModel::instance()),
    m_Uri(stripUri(number)),m_Type(type),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
    m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
-   m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false)
+   m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false),m_IsBookmark(false)
 {
    setObjectName(m_Uri);
    m_hasType = !type.isEmpty();
@@ -123,6 +123,11 @@ void PhoneNumber::setType(const QString& type)
    emit changed();
 }
 
+void PhoneNumber::setBookmarked(bool bookmarked )
+{
+   m_IsBookmark = bookmarked;
+}
+
 ///Set if this number is tracking presence information
 void PhoneNumber::setTracked(bool track)
 {
@@ -179,6 +184,11 @@ QString PhoneNumber::primaryName() const
       }
       return toReturn;
    }
+}
+
+bool PhoneNumber::isBookmarked() const
+{
+   return m_IsBookmark;
 }
 
 ///Return all calls from this number

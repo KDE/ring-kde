@@ -15,58 +15,49 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "bookmarkmodel.h"
+#include "pixmapmanipulationvisitor.h"
 
-//Qt
-#include <QtCore/QMimeData>
+#include <QtCore/QSize>
 
-//SFLPhone
-#include "kcfg_settings.h"
-#include "../lib/historymodel.h"
-#include "../lib/phonenumber.h"
+PixmapManipulationVisitor* PixmapManipulationVisitor::m_spInstance = new PixmapManipulationVisitor();
 
-BookmarkModel* BookmarkModel::m_pSelf = nullptr;
-
-BookmarkModel::BookmarkModel(QObject* parent) : AbstractBookmarkModel(parent)
-{
+PixmapManipulationVisitor::PixmapManipulationVisitor() {
+   m_spInstance = this;
 }
 
-BookmarkModel* BookmarkModel::instance()
+QVariant PixmapManipulationVisitor::contactPhoto(Contact* c, QSize size, bool displayPresence)
 {
-   if (!m_pSelf)
-      m_pSelf = new BookmarkModel(nullptr);
-   return m_pSelf;
+   Q_UNUSED(c)
+   Q_UNUSED(size)
+   Q_UNUSED(displayPresence)
+   return QVariant();
 }
 
-
-void BookmarkModel::addBookmark(PhoneNumber* number, bool trackPresence)
+QVariant PixmapManipulationVisitor::numberCategoryIcon(PhoneNumber* n, QSize size, bool displayPresence)
 {
-   Q_UNUSED(trackPresence)
-   number->setTracked(true);
-   number->setBookmarked(true);
-   ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << number->toHash());
-   reloadCategories();
+   Q_UNUSED(n)
+   Q_UNUSED(size)
+   Q_UNUSED(displayPresence)
+   return QVariant();
 }
 
-void BookmarkModel::removeBookmark(PhoneNumber* number)
+QVariant PixmapManipulationVisitor::callPhoto(Call* c, QSize size, bool displayPresence)
 {
-   foreach(AbstractBookmarkModel::Subscription* s, m_lTracker) {
-      if (s->number == number) {
-         m_lTracker.removeAll(s);
-         break;
-      }
-   }
-   QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
-   bookmarks.removeAll(number->toHash());
-   ConfigurationSkeleton::setBookmarkList(bookmarks);
+   Q_UNUSED(c)
+   Q_UNUSED(size)
+   Q_UNUSED(displayPresence)
+   return QVariant();
 }
 
-bool BookmarkModel::displayFrequentlyUsed() const
+QVariant PixmapManipulationVisitor::callPhoto(const PhoneNumber* c, QSize size, bool displayPresence)
 {
-   return ConfigurationSkeleton::displayContactCallHistory();
+   Q_UNUSED(c)
+   Q_UNUSED(size)
+   Q_UNUSED(displayPresence)
+   return QVariant();
 }
 
-QVector<PhoneNumber*> BookmarkModel::bookmarkList() const
+PixmapManipulationVisitor* PixmapManipulationVisitor::instance()
 {
-   return serialisedToList(ConfigurationSkeleton::bookmarkList());
+   return m_spInstance;
 }

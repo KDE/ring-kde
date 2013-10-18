@@ -33,6 +33,7 @@
 #include <lib/phonenumber.h>
 #include <lib/abstractcontactbackend.h>
 #include "delegatedropoverlay.h"
+#include "lib/visitors/pixmapmanipulationvisitor.h"
 
 namespace { //TODO GCC46 uncomment when dropping support for Gcc 4.6
    /*constexpr */static const int PX_HEIGHT  = 48                 ;
@@ -106,31 +107,10 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
    Contact* ct = (Contact*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
-   if (ct->photo()) {
-      QPixmap pxm = *ct->photo();
-      const QRect pxRect = pxm.rect();
-      QBitmap mask(pxRect.size());
-      QPainter customPainter(&mask);
-      customPainter.setRenderHint  (QPainter::Antialiasing, true   );
-      customPainter.fillRect       (pxRect                ,"white" );
-      customPainter.setBackground  (QColor("black")                );
-      customPainter.setBrush       (QColor("black")                );
-      customPainter.drawRoundedRect(pxRect,PX_RADIUS,PX_RADIUS);
-      pxm.setMask(mask);
-      painter->save();
-      painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
-      painter->setBrush(Qt::NoBrush);
-      QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-      pen.setWidth(1);
-      painter->setPen(pen);
-      painter->setRenderHint  (QPainter::Antialiasing, true   );
-      painter->drawRoundedRect(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxRect.width(),pxRect.height(),PX_RADIUS,PX_RADIUS);
-      painter->restore();
-      
-   }
-   else {
-      painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,QPixmap(KIcon("user-identity").pixmap(QSize(PX_HEIGHT,PX_HEIGHT))));
-   }
+
+   QPixmap pxm = PixmapManipulationVisitor::instance()->contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
+   painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
+
 
    QFont font = painter->font();
    QFontMetrics fm(font);

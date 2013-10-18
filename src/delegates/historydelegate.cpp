@@ -35,12 +35,14 @@
 #include <lib/historymodel.h>
 #include <lib/contact.h>
 #include <lib/callmodel.h>
+#include <lib/phonenumber.h>
 #include "klib/kcfg_settings.h"
 #include "widgets/playeroverlay.h"
 #include "delegatedropoverlay.h"
 #include "dialpaddelegate.h"
 #include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
+#include "lib/visitors/pixmapmanipulationvisitor.h"
 
 static const char* icnPath[4] = {
 /* INCOMING */ ICON_HISTORY_INCOMING,
@@ -85,7 +87,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
    Q_ASSERT(index.isValid());
 
-   const int radius = (option.rect.height() > 45) ? 7 : 5;
+//    const int radius = (option.rect.height() > 45) ? 7 : 5;
+   const bool isBookmark = index.data(Call::Role::IsBookmark).toBool();
 
    painter->save();
    int iconHeight = option.rect.height() -4;
@@ -99,32 +102,20 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   const QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
+//    const QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
    const Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 
-   QPixmap pxm;
-   if (pxmPtr) {
-      pxm = (*pxmPtr).scaledToWidth(iconHeight);
-      QRect pxRect = pxm.rect();
-      QBitmap mask(pxRect.size());
-      QPainter customPainter(&mask);
-      customPainter.setRenderHint  (QPainter::Antialiasing, true   );
-      customPainter.fillRect       (pxRect                ,"white" );
-      customPainter.setBackground  (QColor("black")                );
-      customPainter.setBrush       (QColor("black")                );
-      customPainter.drawRoundedRect(pxRect,radius,radius);
-      pxm.setMask(mask);
-   }
-   else {
-      if (currentState == Call::State::OVER)
-         pxm = QPixmap(KIcon("user-identity").pixmap(QSize(iconHeight,iconHeight)));
-      else
-         pxm = QPixmap(callStateIcons[currentState]); //Do not scale
-   }
+   const PhoneNumber* n = qvariant_cast<PhoneNumber*>(index.data(Call::Role::PhoneNu));
+   QPixmap pxm = PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight,iconHeight)).value<QPixmap>();
 
-   if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
+   //Handle bookmarks
+   if (isBookmark) {
+      //TODO
+   }
+   //Handle history with recording
+   else if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
       QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
       Call* call  = nullptr;
       if (obj)
@@ -141,6 +132,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          }
       }
    }
+   //Handle history
    else if ((index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
@@ -156,16 +148,6 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    int x_offset((iconHeight-pxm.width())/2),y_offset((iconHeight-pxm.height())/2);
    painter->drawPixmap(option.rect.x()+4+x_offset,option.rect.y()+y_offset+(option.rect.height()-iconHeight)/2,pxm);
-   if (pxmPtr) {
-      painter->save();
-      painter->setBrush(Qt::NoBrush);
-      QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-      pen.setWidth(1);
-      painter->setPen(pen);
-      painter->setRenderHint  (QPainter::Antialiasing, true   );
-      painter->drawRoundedRect(option.rect.x()+4+x_offset,option.rect.y()+y_offset+(option.rect.height()-iconHeight)/2,pxm.width(),pxm.height(),radius,radius);
-      painter->restore();
-   }
 
    QFont font = painter->font();
    QFontMetrics fm(font);
@@ -244,7 +226,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
       DialpadDelegate::paint(painter,option,index,lenLen);
    }
-   else if ((currentState == Call::State::RINGING || currentState == Call::State::INCOMING) && index.model()->rowCount() > 1) {
+   else if (!isBookmark && ((currentState == Call::State::RINGING || currentState == Call::State::INCOMING) && index.model()->rowCount() > 1)) {
       if (!m_AnimationWrapper) {
          const_cast<HistoryDelegate*>(this)->m_AnimationWrapper = new TipAnimationWrapper();
          const_cast<HistoryDelegate*>(this)->m_pRingingTip = new RingingTip();

@@ -11,6 +11,7 @@ if(POLICY CMP0017)
    cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
+
 # --- custom targets: ---
 IF(NOT (${ENABLE_QT5} MATCHES true))
    FIND_PACKAGE ( KdepimLibs REQUIRED                                                            )
@@ -46,8 +47,12 @@ ELSE()
    add_subdirectory( src     )
    add_subdirectory( doc     )
    add_subdirectory( man     )
-#    add_subdirectory( plasma  )
 ENDIF(${ENABLE_QT5} MATCHES true)
+
+# IF(EXISTS "po" AND IS_DIRECTORY "po")
+   FIND_PACKAGE ( Gettext REQUIRED )
+   add_subdirectory( po      )
+# ENDIF()
 
 set(PROJECT_VERSION "1.2.3")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})

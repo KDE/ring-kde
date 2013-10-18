@@ -28,16 +28,15 @@
 #include "callmodel.h"
 
 //Model item/index
-class NumberTreeBackend : public CategorizedCompositeNode, public QObject
+class NumberTreeBackend : public CategorizedCompositeNode
 {
    friend class AbstractBookmarkModel;
    public:
       NumberTreeBackend(PhoneNumber* number): CategorizedCompositeNode(CategorizedCompositeNode::Type::BOOKMARK),m_pNumber(number){
          Q_ASSERT(number != nullptr);
       }
-      virtual QObject* getSelf() const { return const_cast<NumberTreeBackend*>(this); }
+      virtual QObject* getSelf() const { return nullptr; }
 
-   private:
       PhoneNumber* m_pNumber;
 };
 
@@ -90,6 +89,7 @@ void AbstractBookmarkModel::reloadCategories()
       }
       TopLevelItem* item = m_hCategories[val];
       if (item) {
+         bookmark->setBookmarked(true);
          item->m_lChildren << bm;
       }
       else
@@ -125,12 +125,10 @@ QVariant AbstractBookmarkModel::data( const QModelIndex& index, int role) const
                return static_cast<TopLevelItem*>(modelItem)->m_Name;
          }
          break;
-      case CategorizedCompositeNode::Type::CALL:
       case CategorizedCompositeNode::Type::BOOKMARK:
-         if (index.row() < m_lCategoryCounter[index.parent().row()]->m_lChildren.size()) {
-            return commonCallInfo(m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()],role);
-         }
+         return commonCallInfo(static_cast<NumberTreeBackend*>(modelItem),role);
          break;
+      case CategorizedCompositeNode::Type::CALL:
       case CategorizedCompositeNode::Type::NUMBER:
       case CategorizedCompositeNode::Type::CONTACT:
          break;
@@ -237,7 +235,7 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
    switch (role) {
       case Qt::DisplayRole:
       case Call::Role::Name:
-         cat = number->m_pNumber->uri();
+         cat = number->m_pNumber->primaryName();
          break;
       case Call::Role::Number:
          cat = number->m_pNumber->uri();//call->getPeerPhoneNumber();
@@ -266,7 +264,13 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
       case Call::Role::FuzzyDate:
          cat = "N/A";//timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
          break;
+      case Call::Role::PhoneNu:
+         return QVariant::fromValue(const_cast<PhoneNumber*>(number->m_pNumber));
       case Call::Role::IsBookmark:
+         return true;
+      case Call::Role::PhotoPtr:
+         if (number->m_pNumber->contact())
+            return number->m_pNumber->contact()->photo();
          cat = true;
          break;
    }
@@ -339,6 +343,7 @@ void AbstractBookmarkModel::remove(const QModelIndex& idx)
       if (modelItem->type() == CategorizedCompositeNode::Type::BOOKMARK) {
          PhoneNumber* nb = m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->m_pNumber;
          removeBookmark(nb);
+         emit layoutChanged();
       }
    }
 }

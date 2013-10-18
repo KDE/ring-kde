@@ -1351,6 +1351,9 @@ QVariant Call::roleData(int role) const
       case Call::Role::Object:
          return QVariant::fromValue(const_cast<Call*>(this));
          break;
+      case Call::Role::PhoneNu:
+         return QVariant::fromValue(const_cast<PhoneNumber*>(peerPhoneNumber()));
+         break;
       case Call::Role::PhotoPtr:
          return QVariant::fromValue((void*)(ct?ct->photo():nullptr));
          break;

@@ -28,6 +28,9 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDropEvent>
+#include <QtGui/QBitmap>
+#include <QtGui/QPainter>
+#include <QtGui/QPixmap>
 #include <QtCore/QAbstractAnimation>
 
 //KDE
@@ -71,6 +74,7 @@
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
 #include "lib/visitors/accountlistcolorvisitor.cpp"
+#include "lib/visitors/pixmapmanipulationvisitor.cpp"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
@@ -147,10 +151,90 @@ private:
    QColor   m_Red;
 };
 
+class KDEPixmapManipulation : public PixmapManipulationVisitor {
+public:
+   KDEPixmapManipulation() : PixmapManipulationVisitor() {}
+   QVariant contactPhoto(Contact* c, QSize size, bool displayPresence = true) {
+      Q_UNUSED(displayPresence)
+      QVariant preRendered = c->property(QString("photo2"+QString::number(size.height())).toAscii());
+      if (preRendered.isValid())
+         return preRendered;
+      const int radius = (size.height() > 35) ? 7 : 5;
+      const QPixmap* pxmPtr = c->photo();
+      QPixmap pxm;
+      if (pxmPtr) {
+         QPixmap contactPhoto(pxmPtr->scaledToWidth(size.height()));
+         pxm = QPixmap(size);
+         pxm.fill(Qt::transparent);
+         QPainter painter(&pxm);
+
+         painter.setCompositionMode(QPainter::CompositionMode_Clear);
+         painter.fillRect(0,0,size.width(),size.height(),QBrush(Qt::white));
+         painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+         QRect pxRect = contactPhoto.rect();
+         QBitmap mask(pxRect.size());
+         QPainter customPainter(&mask);
+         customPainter.setRenderHint  (QPainter::Antialiasing, true      );
+         customPainter.fillRect       (pxRect                , Qt::white );
+         customPainter.setBackground  (Qt::black                         );
+         customPainter.setBrush       (Qt::black                         );
+         customPainter.drawRoundedRect(pxRect,radius,radius);
+         contactPhoto.setMask(mask);
+         painter.drawPixmap(0,0,contactPhoto);
+         painter.setBrush(Qt::NoBrush);
+         QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
+         pen.setWidth(2);
+         painter.setPen(pen);
+         painter.setRenderHint  (QPainter::Antialiasing, true   );
+         painter.drawRoundedRect(0,0,pxm.height(),pxm.height(),radius,radius);
+      }
+      else
+         pxm = QPixmap(KIcon("user-identity").pixmap(size));
+
+      c->setProperty(QString("photo2"+QString::number(size.height())).toAscii(),pxm);
+      return pxm;
+   }
+
+   virtual QVariant callPhoto(const PhoneNumber* n, QSize size, bool displayPresence = true) {
+      if (n->contact()) {
+         return contactPhoto(n->contact(),size,displayPresence);
+      }
+      else
+         return QPixmap(KIcon("user-identity").pixmap(size));
+   }
+
+   virtual QVariant callPhoto(Call* c, QSize size, bool displayPresence = true) {
+      if (c->peerPhoneNumber()->contact()) {
+         return contactPhoto(c->peerPhoneNumber()->contact(),size,displayPresence);
+      }
+      else
+         return QPixmap(callStateIcons[c->state()]);
+   }
+
+   QVariant numberCategoryIcon(PhoneNumber* n, QSize size, bool displayPresence = false) {
+      Q_UNUSED(n)
+      Q_UNUSED(size)
+      Q_UNUSED(displayPresence)
+      return QVariant();
+   }
+
+private:
+   TypedStateMachine< const char* , Call::State > callStateIcons = {{ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE}};
+
+   constexpr static const char* icnPath[4] = {
+      /* INCOMING */ ICON_HISTORY_INCOMING,
+      /* OUTGOING */ ICON_HISTORY_OUTGOING,
+      /* MISSED   */ ICON_HISTORY_MISSED  ,
+      /* NONE     */ ""                   ,
+   };
+};
+
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
    : QWidget(parent),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
 {
+   new KDEPixmapManipulation();
    setupUi(this);
    KPhoneNumberSelector::init();
 

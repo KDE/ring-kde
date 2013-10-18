@@ -81,6 +81,7 @@ set( qtsflphone_LIB_SRCS
   visitors/accountlistcolorvisitor.cpp
   visitors/phonenumberselector.cpp
   visitors/numbercategoryvisitor.cpp
+  visitors/pixmapmanipulationvisitor.cpp
 
   #Other
   sflphone_const.h

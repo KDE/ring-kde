@@ -98,9 +98,10 @@ private:
       LAST_USED        = 9,
       NAME_COUNT       = 10,
       POPULARITY_INDEX = 11,
-      TRACKED          = 12,
-      PRESENT          = 13,
-      PRESENCE_MESSAGE = 14,
+      BOOKMARED        = 12,
+      TRACKED          = 13,
+      PRESENT          = 14,
+      PRESENCE_MESSAGE = 15,
    };
 
    //Internal data structures

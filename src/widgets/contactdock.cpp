@@ -388,8 +388,9 @@ void ContactDock::addPhone()
 void ContactDock::bookmark()
 {
    const Contact::PhoneNumbers numbers = m_pCurrentContact->phoneNumbers();
-   if (numbers.count() == 1)
+   if (numbers.count() == 1) {
       BookmarkModel::instance()->addBookmark(numbers[0]);
+   }
 }
 
 ///Called when a call is dropped on transfer

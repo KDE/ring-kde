@@ -15,58 +15,38 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "bookmarkmodel.h"
+
+#include "../typedefs.h"
 
 //Qt
-#include <QtCore/QMimeData>
+#include <QtCore/QVariant>
 
 //SFLPhone
-#include "kcfg_settings.h"
-#include "../lib/historymodel.h"
-#include "../lib/phonenumber.h"
+class Contact    ;
+class PhoneNumber;
+class Call       ;
 
-BookmarkModel* BookmarkModel::m_pSelf = nullptr;
+/**
+ * Different clients can have multiple way of displaying images. Some may
+ * add borders, other add corner radius (see Ubuntu-SDK HIG). This
+ * abstract class define many operations that can be defined by each clients.
+ *
+ * Most methods return QVariants as this library doesn't link against QtGui
+ * 
+ * This interface is not frozen, more methods may be added later. To implement,
+ * just create an object somewhere, be sure to call PixmapManipulationVisitor()
+ */
+class LIB_EXPORT PixmapManipulationVisitor {
+public:
+   PixmapManipulationVisitor();
+   virtual ~PixmapManipulationVisitor() {}
+   virtual QVariant contactPhoto(Contact* c, QSize size, bool displayPresence = true);
+   virtual QVariant callPhoto(Call* c, QSize size, bool displayPresence = true);
+   virtual QVariant callPhoto(const PhoneNumber* n, QSize size, bool displayPresence = true);
+   virtual QVariant numberCategoryIcon(PhoneNumber* n, QSize size, bool displayPresence = false);
 
-BookmarkModel::BookmarkModel(QObject* parent) : AbstractBookmarkModel(parent)
-{
-}
-
-BookmarkModel* BookmarkModel::instance()
-{
-   if (!m_pSelf)
-      m_pSelf = new BookmarkModel(nullptr);
-   return m_pSelf;
-}
-
-
-void BookmarkModel::addBookmark(PhoneNumber* number, bool trackPresence)
-{
-   Q_UNUSED(trackPresence)
-   number->setTracked(true);
-   number->setBookmarked(true);
-   ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << number->toHash());
-   reloadCategories();
-}
-
-void BookmarkModel::removeBookmark(PhoneNumber* number)
-{
-   foreach(AbstractBookmarkModel::Subscription* s, m_lTracker) {
-      if (s->number == number) {
-         m_lTracker.removeAll(s);
-         break;
-      }
-   }
-   QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
-   bookmarks.removeAll(number->toHash());
-   ConfigurationSkeleton::setBookmarkList(bookmarks);
-}
-
-bool BookmarkModel::displayFrequentlyUsed() const
-{
-   return ConfigurationSkeleton::displayContactCallHistory();
-}
-
-QVector<PhoneNumber*> BookmarkModel::bookmarkList() const
-{
-   return serialisedToList(ConfigurationSkeleton::bookmarkList());
-}
+   //Singleton
+   static PixmapManipulationVisitor* instance();
+protected:
+   static PixmapManipulationVisitor* m_spInstance;
+};

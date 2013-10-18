@@ -28,6 +28,7 @@
 #include "accountlistmodel.h"
 #include "abstractcontactbackend.h"
 #include "dbus/presencemanager.h"
+#include "visitors/pixmapmanipulationvisitor.h"
 
 PhoneDirectoryModel* PhoneDirectoryModel::m_spInstance = nullptr;
 
@@ -56,6 +57,9 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
          switch (role) {
             case Qt::DisplayRole:
                return number->uri();
+               break;
+            case Qt::DecorationRole :
+               return PixmapManipulationVisitor::instance()->callPhoto(number,QSize(16,16));
                break;
          }
          break;
@@ -146,6 +150,13 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                break;
          }
          break;
+      case PhoneDirectoryModel::Columns::BOOKMARED:
+         switch (role) {
+            case Qt::CheckStateRole:
+               return (bool)number->isBookmarked()?Qt::Checked:Qt::Unchecked;
+               break;
+         }
+         break;
       case PhoneDirectoryModel::Columns::TRACKED:
          switch (role) {
             case Qt::CheckStateRole:
@@ -190,7 +201,7 @@ int PhoneDirectoryModel::rowCount(const QModelIndex& parent ) const
 int PhoneDirectoryModel::columnCount(const QModelIndex& parent ) const
 {
    Q_UNUSED(parent)
-   return 15;
+   return 16;
 }
 
 Qt::ItemFlags PhoneDirectoryModel::flags(const QModelIndex& index ) const
@@ -224,7 +235,7 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
    Q_UNUSED(section)
    Q_UNUSED(orientation)
    static const QString headers[] = {tr("URI"), tr("Type"), tr("Contact"), tr("Account"), tr("State"), tr("Call count"), tr("Week count"),
-   tr("Trimester count"), tr("Have Called"), tr("Last used"), tr("Name_count"), tr("Popularity_index"), tr("Tracked"), tr("Present"),
+   tr("Trimester count"), tr("Have Called"), tr("Last used"), tr("Name_count"), tr("Popularity_index"), tr("Bookmarked"), tr("Tracked"), tr("Present"),
    tr("Presence message") };
    if (role == Qt::DisplayRole) return headers[section];
    return QVariant();
