@@ -46,6 +46,15 @@ ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget,QPalette pal)
 QSize ConferenceDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const 
 {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
+
+   //HACK make absolutely sure the editor (if any) is still required
+   if (m_tree->indexWidget(index)) {
+      Call* call = qvariant_cast<Call*>(index.data(Call::Role::Object));
+      if (call && call->state() != Call::State::DIALING) {
+         m_tree->closeEditor(m_tree->indexWidget(index),QAbstractItemDelegate::NoHint);
+      }
+   }
+
    if (index.parent().isValid()) {
       sh = m_pCallDelegate->sizeHint(option,index);
    }
@@ -482,6 +491,7 @@ void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * mod
 {
    KLineEdit* ed = qobject_cast<KLineEdit*>(editor);
    if (index.data(Call::Role::CallState) != static_cast<int>(Call::State::DIALING)) {
+      ed->setVisible(false);
       emit const_cast<ConferenceDelegate*>(this)->closeEditor(editor,NoHint);
    }
 

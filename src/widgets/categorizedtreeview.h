@@ -34,6 +34,8 @@ class CategorizedTreeView : public QTreeView
   Q_OBJECT
 
   public:
+   friend class ConferenceDelegate;
+
    enum class ViewType {
       Other,
       Contact,
@@ -42,19 +44,13 @@ class CategorizedTreeView : public QTreeView
       Call
    };
 
-//    enum DropPayloadType {
-//       CALL    = 0x01,
-//       HISTORY = 0x02,
-//       CONTACT = 0x04,
-//       NUMBER  = 0x08,
-//       TEXT    = 0xFF,
-//    };
    explicit CategorizedTreeView(QWidget *parent = nullptr);
    virtual ~CategorizedTreeView();
    void setDelegate(QStyledItemDelegate* delegate);
    void setViewType(ViewType type) {m_Type = type;}
 
    void cancelHoverState();
+   void setHoverState(const QModelIndex& idx);
 
   protected:
    virtual void contextMenuEvent ( QContextMenuEvent * e );

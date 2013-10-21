@@ -37,6 +37,7 @@ class EventManager : public QObject, public MacroListener {
    Q_OBJECT
 
 public:
+   friend class MainWindowEvent;
    EventManager(SFLPhoneView* parent = nullptr);
    virtual ~EventManager();
       /**

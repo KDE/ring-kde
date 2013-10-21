@@ -42,7 +42,7 @@
 class MainWindowEvent : public QObject {
    Q_OBJECT
 public:
-   MainWindowEvent() : QObject(nullptr) {
+   MainWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
       SFLPhone::app()->installEventFilter(this);
    }
 protected:
@@ -69,15 +69,21 @@ protected:
                break;
          };
       }
+      else if (event->type() == QEvent::KeyPress) {
+         m_pParent->viewKeyEvent(static_cast<QKeyEvent*>(event));
+      }
       return false;
    }
+
+private:
+   EventManager* m_pParent;
 
 Q_SIGNALS:
    void minimized(bool);
 };
 
 ///Constructor
-EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent())
+EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent(this))
 {
    connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
    connect(CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
@@ -220,6 +226,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
    Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
    CallModel::instance()->setData(idxAt,act,Call::Role::DropPosition);
+   m_pParent->m_pView->setHoverState(idxAt);
    return true;
 }
 

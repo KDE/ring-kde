@@ -67,9 +67,9 @@ void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
       ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
       m_HoverIdx = QModelIndex();
    }
-   if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-      TipCollection::manager()->setCurrentTip(nullptr);
-   }
+//    if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
+//       TipCollection::manager()->setCurrentTip(nullptr);
+//    }
    QTreeView::dragLeaveEvent(e);
 }
 
@@ -118,25 +118,18 @@ void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
 {
    const QModelIndex& idxAt = indexAt(e->pos());
    e->acceptProposedAction();
-   e->accept();
+//    e->accept();
    if (idxAt.isValid()) {
-      if (m_HoverIdx != idxAt) {
-         if (m_HoverIdx.isValid()) {
-            ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
-         }
-         ((QAbstractItemModel*)idxAt.model())->setData(idxAt,1,300);
-         m_HoverIdx = idxAt;
-      }
-      if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-         TipCollection::manager()->setCurrentTip(nullptr);
-      }
-   }
-//    else if (m_Type == CategorizedTreeView::ViewType::Call) {
-//       if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
-//          TipCollection::manager()->setCurrentTip(TipCollection::removeConference());
+//       if (m_HoverIdx != idxAt) {
+//          if (m_HoverIdx.isValid()) {
+//             ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
+//          }
 //       }
-//    }
-//    QTreeView::dragMoveEvent(e);
+//          setHoverState(idxAt);
+//       if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
+//          TipCollection::manager()->setCurrentTip(nullptr);
+//       }
+   }
 }
 
 void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)
@@ -258,3 +251,11 @@ void CategorizedTreeView::cancelHoverState()
    }
 }
 
+void CategorizedTreeView::setHoverState(const QModelIndex& idx)
+{
+   if (idx != m_HoverIdx) {
+      cancelHoverState();
+      model()->setData(idx,1,300);
+      m_HoverIdx = idx;
+   }
+}

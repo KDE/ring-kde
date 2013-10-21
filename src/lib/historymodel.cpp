@@ -308,10 +308,6 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
       if (m_hCategories[val])
          return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
    }
-//    Useless
-//    else if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::TOP_LEVEL) {
-//       return QModelIndex();
-//    }
    return QModelIndex();
 }
 

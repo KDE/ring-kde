@@ -98,7 +98,7 @@ void TipManager::setBottomMargin(int margin)
 {
    bool changed = !(m_BottomMargin == margin);
    m_BottomMargin = margin;
-   if (changed) { 
+   if (changed) {
       changeSize(false);
    }
    reload();
