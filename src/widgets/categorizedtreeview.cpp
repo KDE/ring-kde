@@ -103,6 +103,17 @@ void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
    }
 }
 
+void CategorizedTreeView::dropEvent( QDropEvent* e )
+{
+   const QModelIndex  newIdx = indexAt(e->pos());
+   //HACK client get invalid indexes unless I do this, find out why
+
+   //Clear drop state
+   cancelHoverState();
+
+   model()->dropMimeData(e->mimeData(), Qt::TargetMoveAction, newIdx.row(), newIdx.column(), newIdx.parent());
+}
+
 void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
 {
    const QModelIndex& idxAt = indexAt(e->pos());

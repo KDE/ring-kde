@@ -25,6 +25,7 @@
 #include "dbus/configurationmanager.h"
 #include "call.h"
 #include "contact.h"
+#include "phonenumber.h"
 #include "callmodel.h"
 #include "historytimecategorymodel.h"
 
@@ -355,29 +356,25 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
 {
    Q_UNUSED(row)
    Q_UNUSED(column)
-//    QModelIndex idx = index(row,column,parent);
-   qDebug() << "DROPPED" << action << parentIdx.data(Qt::DisplayRole) << parentIdx.isValid() << parentIdx.data(Qt::DisplayRole);
+   Q_UNUSED(action)
    setData(parentIdx,-1,Call::Role::DropState);
-   QByteArray encodedCallId      = mime->data( MIME_CALLID      );
    QByteArray encodedPhoneNumber = mime->data( MIME_PHONENUMBER );
    QByteArray encodedContact     = mime->data( MIME_CONTACT     );
 
-//    if (data->hasFormat( MIME_CALLID) && !QString(encodedCallId).isEmpty()) {
-//       qDebug() << "CallId dropped"<< QString(encodedCallId);
-//       Call* call = CallModel::instance()->getCall(data->data(MIME_CALLID));
-//       if (dynamic_cast<Call*>(call)) {
-//          call->changeCurrentState(CALL_STATE_TRANSFERRED);
-//          CallModel::instance()->transfer(call, m_pItemCall->getPeerPhoneNumber());
-//       }
-//    }
-//    else if (!QString(encodedPhoneNumber).isEmpty()) {
-//       qDebug() << "PhoneNumber dropped"<< QString(encodedPhoneNumber);
-//       phoneNumberToCall(parent, index, data, action);
-//    }
-//    else if (!QString(encodedContact).isEmpty()) {
-//       qDebug() << "Contact dropped"<< QString(encodedContact);
-//       contactToCall(parent, index, data, action);
-//    }
+   if (parentIdx.isValid() && mime->hasFormat( MIME_CALLID)) {
+      QByteArray encodedCallId      = mime->data( MIME_CALLID      );
+      Call* call = CallModel::instance()->getCall(encodedCallId);
+      if (call) {
+         const QModelIndex& idx = index(row,column,parentIdx);
+         if (idx.isValid()) {
+            const Call* target = (Call*)((CategorizedCompositeNode*)(idx.internalPointer()))->getSelf();
+            if (target) {
+               CallModel::instance()->transfer(call,target->peerPhoneNumber());
+               return true;
+            }
+         }
+      }
+   }
    return false;
 }
 

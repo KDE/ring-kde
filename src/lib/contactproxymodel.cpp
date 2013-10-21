@@ -253,7 +253,6 @@ bool ContactProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction actio
                      case 0:
                         return false;
                      case 1:
-                        qDebug() << "\n\n\nHERE" << call << call->state() << ct->phoneNumbers()[0]->uri();
                         CallModel::instance()->transfer(call,ct->phoneNumbers()[0]);
                         break;
                      default:

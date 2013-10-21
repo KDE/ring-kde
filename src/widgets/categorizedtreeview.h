@@ -61,6 +61,7 @@ class CategorizedTreeView : public QTreeView
    virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
    virtual void dragEnterEvent   ( QDragEnterEvent   * e );
    virtual void dragMoveEvent    ( QDragMoveEvent    * e );
+   virtual void dropEvent        ( QDropEvent        * e );
    virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
    virtual void mouseDoubleClickEvent(QMouseEvent* event);
    virtual void startDrag ( Qt::DropActions supportedActions );
