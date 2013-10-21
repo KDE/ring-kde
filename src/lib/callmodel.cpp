@@ -23,6 +23,7 @@
 
 //SFLPhone library
 #include "call.h"
+#include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "accountlistmodel.h"
 #include "dbus/metatypes.h"
@@ -103,9 +104,10 @@ void CallModel::init()
 
       dbusInit = true;
 
-      foreach(Call* call,HistoryModel::getHistory()){
-         addCall(call,nullptr);
-      }
+      HistoryModel::getHistory();
+//       foreach(Call* call,){
+//          addCall(call,nullptr);
+//       }
    }
    static bool m_sInstanceInit = false;
    if (!m_sInstanceInit)
@@ -373,13 +375,15 @@ void CallModel::attendedTransfer(Call* toTransfer, Call* target)
 } //attendedTransfer
 
 ///Transfer this call to  "target" number
-void CallModel::transfer(Call* toTransfer, QString target)
+void CallModel::transfer(Call* toTransfer, const PhoneNumber* target)
 {
-   qDebug() << "Transferring call " << toTransfer->id() << "to" << target;
-   toTransfer->setTransferNumber ( target                 );
-   toTransfer->changeCurrentState( Call::State::TRANSFERRED );
+   qDebug() << "Transferring call " << toTransfer->id() << "to" << target->uri();
+   toTransfer->setTransferNumber ( target->uri()            );
    toTransfer->performAction     ( Call::Action::TRANSFER   );
+   toTransfer->changeCurrentState( Call::State::TRANSFERRED );
+   toTransfer->performAction     ( Call::Action::ACCEPT     );
    toTransfer->changeCurrentState( Call::State::OVER        );
+   emit toTransfer->isOver(toTransfer);
 } //transfer
 
 /*****************************************************************************
@@ -769,7 +773,8 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       Call* target = getCall(index(row,column,parentIdx));
       qDebug() << "Contact" << encodedContact << "on call" << target;
       if (PhoneNumberSelector::defaultVisitor()) {
-         const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(encodedContact);
+         const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(
+            Call::contactBackend()->getContactByUid(encodedContact));
          if (!number->uri().isEmpty()) {
             Call* newCall = addDialingCall();
             newCall->setDialNumber(number);

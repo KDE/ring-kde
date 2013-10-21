@@ -34,9 +34,8 @@ void KPhoneNumberSelector::init()
    setDefaultVisitor(v);
 }
 
-const PhoneNumber* KPhoneNumberSelector::getNumber(const QString& contactId)
+PhoneNumber* KPhoneNumberSelector::getNumber(const Contact* contact)
 {
-   const Contact* contact = AkonadiBackend::instance()->getContactByUid(contactId);
    if (contact) {
       if (contact->phoneNumbers().size()>1) {
          bool                   ok = false;
@@ -52,5 +51,5 @@ const PhoneNumber* KPhoneNumberSelector::getNumber(const QString& contactId)
       else if (contact->phoneNumbers().size() == 1)
          return contact->phoneNumbers()[0];
    }
-   return PhoneNumber::BLANK;//new PhoneNumber(QString(),QString());
+   return const_cast<PhoneNumber*>(PhoneNumber::BLANK);//new PhoneNumber(QString(),QString());
 }

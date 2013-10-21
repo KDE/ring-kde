@@ -239,3 +239,11 @@ CallModel::DropPayloadType CategorizedTreeView::payloadType(const QMimeData* dat
       return CallModel::DropPayloadType::NONE;
 }
 
+void CategorizedTreeView::cancelHoverState()
+{
+   if (m_HoverIdx.isValid()) {
+      ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
+      m_HoverIdx = QModelIndex();
+   }
+}
+

@@ -27,6 +27,7 @@
 #include "call.h"
 class Account;
 struct InternalStruct;
+class PhoneNumber;
 
 //Typedef
 typedef QMap<uint, Call*>  CallMap;
@@ -55,10 +56,10 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
 
       //Call related
       Q_INVOKABLE Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
-      Q_INVOKABLE void  attendedTransfer ( Call* toTransfer          , Call* target   );
-      Q_INVOKABLE void  transfer         ( Call* toTransfer          , QString target );
-      Q_INVOKABLE void  removeCall       ( Call* call                                 );
-      QModelIndex getIndex               ( Call* call                                 );
+      Q_INVOKABLE void  attendedTransfer ( Call* toTransfer , Call* target              );
+      Q_INVOKABLE void  transfer         ( Call* toTransfer , const PhoneNumber* target );
+      Q_INVOKABLE void  removeCall       ( Call* call                                   );
+      QModelIndex getIndex               ( Call* call                                   );
 
       //Conference related
       Q_INVOKABLE bool createConferenceFromCall ( Call* call1, Call* call2      );
@@ -68,8 +69,8 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       Q_INVOKABLE void removeConference         ( Call* conf                    );
 
       //Getters
-      Q_INVOKABLE bool isValid();
-      Q_INVOKABLE int size                     ();
+      Q_INVOKABLE bool     isValid             ();
+      Q_INVOKABLE int      size                ();
       Q_INVOKABLE CallList getCallList         ();
       Q_INVOKABLE CallList getConferenceList   ();
       Q_INVOKABLE int      acceptedPayloadTypes();

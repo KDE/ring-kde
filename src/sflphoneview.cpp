@@ -380,7 +380,7 @@ bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
          (*call2)->appendText(contact->phoneNumbers()[0]->uri());
    }
    else if (contact->phoneNumbers().count() > 1) {
-      const PhoneNumber* number = KPhoneNumberSelector().getNumber(contact->uid());
+      const PhoneNumber* number = KPhoneNumberSelector().getNumber(contact);
       if (!number->uri().isEmpty()) {
          (*call2) = CallModel::instance()->addDialingCall(contact->formattedName(), AccountListModel::currentAccount());
          if (*call2)

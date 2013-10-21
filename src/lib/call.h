@@ -256,6 +256,7 @@ public:
    Q_PROPERTY( bool               hasRecording     READ hasRecording                              )
    Q_PROPERTY( bool               recording        READ recording                                 )
    Q_PROPERTY( UserActionModel*   userActionModel  READ userActionModel   CONSTANT                )
+   Q_PROPERTY( QString            toHumanStateName READ toHumanStateName                          )
 
    //Read/write properties
    Q_PROPERTY( PhoneNumber*       peerPhoneNumber  READ peerPhoneNumber                           )
@@ -266,7 +267,6 @@ public:
    Q_PROPERTY( QString            dialNumber       READ dialNumber        WRITE setDialNumber      NOTIFY dialNumberChanged(QString))
 
    //Constructors & Destructors
-   explicit Call(const QString& confId, const QString& account);
    ~Call();
    static Call* buildDialingCall  (const QString& callId, const QString & peerName, Account* account = nullptr );
    static Call* buildIncomingCall (const QString& callId                                                       );
@@ -307,6 +307,7 @@ public:
    QString              length           () const;
    QVariant             roleData         (int role) const;
    UserActionModel*     userActionModel  () const;
+   QString              toHumanStateName () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);
@@ -386,6 +387,7 @@ private:
    **/
    static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
 
+   explicit Call(const QString& confId, const QString& account);
    Call(Call::State startState, const QString& callId, const QString& peerNumber = QString(), const QString& account = QString(), const QString& peerName = QString());
 
    static Call::DaemonState toDaemonCallState   (const QString& stateName);

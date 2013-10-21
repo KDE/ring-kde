@@ -39,6 +39,7 @@
 #include "klib/kcfg_settings.h"
 #include "lib/callmodel.h"
 #include "lib/call.h"
+#include "lib/phonedirectorymodel.h"
 
 /*****************************************************************************
  *                                                                           *
@@ -214,6 +215,6 @@ Call* CallViewOverlay::currentCall()
 void CallViewOverlay::slotTransferClicked()
 {
    if (!m_pCurrentCall) return;
-   CallModel::instance()->transfer(m_pCurrentCall,m_pNumberLE->text());
+   CallModel::instance()->transfer(m_pCurrentCall,PhoneDirectoryModel::instance()->getNumber(m_pNumberLE->text()));
    setVisible(false);
 }

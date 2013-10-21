@@ -19,6 +19,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPaintEvent>
 
+#include <lib/contactproxymodel.h>
 #include <lib/abstractcontactbackend.h>
 
 ContactView::ContactView(QWidget* parent) : CategorizedTreeView(parent)
@@ -51,12 +52,24 @@ bool ContactView::viewportEvent( QEvent * event ) {
       case QEvent::HoverEnter:
       case QEvent::HoverLeave:
       case QEvent::HoverMove: {
-         const QHoverEvent *he = static_cast<QHoverEvent*>(event);
-         const QModelIndex oldIdx = indexAt(he->oldPos());
-         const QModelIndex newIdx = indexAt(he->pos());
+         const QHoverEvent* he     = static_cast<QHoverEvent*>(event);
+         const QModelIndex  oldIdx = indexAt(he->oldPos());
+         const QModelIndex  newIdx = indexAt(he->pos());
          model()->setData(oldIdx,false,AbstractContactBackend::Role::HoverState);
          model()->setData(newIdx,true,AbstractContactBackend::Role::HoverState);
-      }
+      } break;
+      case QEvent::Drop: {
+         const QDropEvent* de      = static_cast<QDropEvent*>(event);
+         const QModelIndex newIdx  = indexAt(de->pos());
+
+         //Clear drop state
+         cancelHoverState();
+
+         //HACK For some reasons, the proxy model fail to forward a valid index to dropMimeData()
+         //force it
+         model()->dropMimeData(de->mimeData(), Qt::TargetMoveAction, newIdx.row(), newIdx.column(), newIdx.parent());
+         return true;
+      } break;
       default:
          break;
    }

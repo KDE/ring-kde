@@ -30,6 +30,7 @@
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"
 #include "historytimecategorymodel.h"
+#include "contact.h"
 
 class ContactTreeNode;
 
@@ -236,11 +237,46 @@ QVariant ContactProxyModel::headerData(int section, Qt::Orientation orientation,
 
 bool ContactProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-   Q_UNUSED( data   )
-   Q_UNUSED( row    )
-   Q_UNUSED( column )
    Q_UNUSED( action )
    setData(parent,-1,Call::Role::DropState);
+   if (data->hasFormat(MIME_CALLID)) {
+      const QByteArray encodedCallId = data->data( MIME_CALLID    );
+      const QModelIndex targetIdx    = index   ( row,column,parent );
+      Call* call                     = CallModel::instance()->getCall ( encodedCallId        );
+      if (call && targetIdx.isValid()) {
+         CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)targetIdx.internalPointer();
+         switch (modelItem->type()) {
+            case CategorizedCompositeNode::Type::CONTACT: {
+               const Contact* ct = static_cast<Contact*>(modelItem->getSelf());
+               if (ct) {
+                  switch(ct->phoneNumbers().size()) {
+                     case 0:
+                        return false;
+                     case 1:
+                        qDebug() << "\n\n\nHERE" << call << call->state() << ct->phoneNumbers()[0]->uri();
+                        CallModel::instance()->transfer(call,ct->phoneNumbers()[0]);
+                        break;
+                     default:
+                        //TODO
+                        break;
+                  };
+               }
+            } break;
+            case CategorizedCompositeNode::Type::NUMBER: {
+               const Contact::PhoneNumbers nbs = *static_cast<Contact::PhoneNumbers*>(modelItem);
+               const PhoneNumber*          nb  = nbs[row];
+               if (nb) {
+                  call->setTransferNumber(nb->uri());
+                  CallModel::instance()->transfer(call,nb);
+               }
+            } break;
+            case CategorizedCompositeNode::Type::CALL:
+            case CategorizedCompositeNode::Type::BOOKMARK:
+            case CategorizedCompositeNode::Type::TOP_LEVEL:
+               break;
+         }
+      }
+   }
    return false;
 }
 

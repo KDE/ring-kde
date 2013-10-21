@@ -161,6 +161,7 @@ Call::Call(Call::State startState, const QString& callId, const QString& peerNam
    m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
    m_Account = AccountListModel::instance()->getAccountById(account);
+   Q_ASSERT(!callId.isEmpty());
    setObjectName("Call:"+callId);
    changeCurrentState(startState);
    m_pUserActionModel = new UserActionModel(this);
@@ -188,7 +189,7 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
    m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
    m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
-   setObjectName("Call:"+confId);
+   setObjectName("Conf:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
    m_pUserActionModel = new UserActionModel(this);
 
@@ -444,6 +445,11 @@ const QString Call::toHumanStateName(const Call::State cur)
    }
 }
 
+QString Call::toHumanStateName() const
+{
+   return toHumanStateName(state());
+}
+
 ///Get the time (second from 1 jan 1970) when the call ended
 time_t Call::stopTimeStamp() const
 {
@@ -484,6 +490,8 @@ PhoneNumber* Call::peerPhoneNumber() const
       if (!m_pTransferNumber) {
          const_cast<Call*>(this)->m_pTransferNumber = new TemporaryPhoneNumber(m_pPeerPhoneNumber);
       }
+      if (!m_pDialNumber)
+         const_cast<Call*>(this)->m_pDialNumber = new TemporaryPhoneNumber(m_pPeerPhoneNumber);
       return m_pDialNumber;
    }
    return m_pPeerPhoneNumber?m_pPeerPhoneNumber:const_cast<PhoneNumber*>(PhoneNumber::BLANK);
@@ -500,12 +508,14 @@ const QString Call::formattedName() const
 {
    if (isConference())
       return tr("Conference");
+   else if (!peerPhoneNumber())
+      return "Error";
    else if (peerPhoneNumber()->contact() && !peerPhoneNumber()->contact()->formattedName().isEmpty())
       return peerPhoneNumber()->contact()->formattedName();
    else if (!peerName().isEmpty())
       return m_PeerName;
    else if (peerPhoneNumber())
-      return m_pPeerPhoneNumber->uri();
+      return peerPhoneNumber()->uri();
    else
       return tr("Unknown");
 }

@@ -128,7 +128,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
    //Handle history
-   else if ((index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if (!isBookmark && (index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
       status=status.scaled(QSize(24,24));
@@ -148,7 +148,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    QFontMetrics fm(font);
    int currentHeight = option.rect.y()+fm.height()+2;
    //BEGIN history fields
-   if (currentState == Call::State::OVER) { //History/Bookmarks
+   if (currentState == Call::State::OVER || isBookmark) { //History/Bookmarks
       const QPen textCol = (option.state & QStyle::State_Selected) ? Qt::white : QApplication::palette().color(QPalette::Disabled,QPalette::Text);
       font.setWeight(QFont::DemiBold);
       painter->save();
@@ -158,13 +158,17 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       painter->setFont(font);
       painter->setPen(textCol);
       currentHeight +=fm.height();
-      painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::FormattedDate).toString());
-      currentHeight +=fm.height();
-      const static QPixmap* callPxm = nullptr;
-      if (!callPxm)
-         callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
-      painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),*callPxm);
-      painter->drawText(option.rect.x()+15+iconHeight+12,currentHeight,index.data(Call::Role::Number).toString());
+
+      //Draw INCOMING/OUTGOING/MISSED
+      if (!isBookmark) {
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::FormattedDate).toString());
+         currentHeight +=fm.height();
+         const static QPixmap* callPxm = nullptr;
+         if (!callPxm)
+            callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
+         painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),*callPxm);
+      }
+      painter->drawText(option.rect.x()+15+iconHeight+((!isBookmark)?12:0),currentHeight,index.data(Call::Role::Number).toString());
       currentHeight +=fm.height();
       painter->restore();
    }

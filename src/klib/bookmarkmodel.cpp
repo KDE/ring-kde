@@ -63,7 +63,7 @@ void BookmarkModel::removeBookmark(PhoneNumber* number)
 
 bool BookmarkModel::displayFrequentlyUsed() const
 {
-   return ConfigurationSkeleton::displayContactCallHistory();
+   return ConfigurationSkeleton::displayPopularAsBookmark();
 }
 
 QVector<PhoneNumber*> BookmarkModel::bookmarkList() const

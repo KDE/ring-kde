@@ -22,12 +22,13 @@
 #include "../lib/visitors/phonenumberselector.h"
 
 class PhoneNumber;
+class Contact;
 
 class KPhoneNumberSelector : public PhoneNumberSelector
 {
 public:
    virtual ~KPhoneNumberSelector(){}
-   virtual const PhoneNumber* getNumber(const QString& contactId);
+   virtual PhoneNumber* getNumber(const Contact* contact);
    static void init();
 };
 

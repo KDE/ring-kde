@@ -28,6 +28,7 @@
 
 //SFLPhone
 #include "categorizedtreeview.h"
+class PhoneNumber;
 
 //Qt
 class QSplitter;
@@ -83,11 +84,7 @@ public:
 
 private:
    //Attributes
-//    KLineEdit*                   m_pFilterLE      ;
-//    QSplitter*                   m_pSplitter      ;
-//    CategorizedTreeView*         m_pView          ;
    QListWidget*                 m_pCallView      ;
-//    KComboBox*                   m_pSortByCBB     ;
    QCheckBox*                   m_pShowHistoCK   ;
    QMenu*                       m_pMenu          ;
    Contact*                     m_pCurrentContact;
@@ -102,15 +99,15 @@ private:
    KAction* m_pEmail       ;
    KAction* m_pAddPhone    ;
    KAction* m_pBookmark    ;
-   
+
    //Delegates
    CategorizedDelegate* m_pCategoryDelegate;
    PhoneNumberDelegate* m_pPhoneNumberDelegate;
    ContactDelegate*     m_pContactDelegate;
 
    //Helper
-   QString showNumberSelector(bool& ok);
-   
+   PhoneNumber* showNumberSelector(bool& ok);
+
    enum SortingCategory {
       Name,
       Organization,

@@ -112,6 +112,7 @@ bool EventManager::viewDragEnterEvent(const QDragEnterEvent* e)
 bool EventManager::viewDropEvent(QDropEvent* e)
 {
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
+   m_pParent->m_pView->cancelHoverState();
    CallModel::instance()->setData(idxAt,-1,Call::Role::DropState);
    e->accept();
    if (!idxAt.isValid()) { //Dropped on empty space
@@ -136,7 +137,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
          const QByteArray encodedContact     = e->mimeData()->data( MIME_CONTACT     );
          kDebug() << "Contact dropped on empty space";
-         const PhoneNumber* number = KPhoneNumberSelector().getNumber(encodedContact);
+         const PhoneNumber* number = KPhoneNumberSelector().getNumber(AkonadiBackend::instance()->getContactByUid(encodedContact));
          if (number->uri().isEmpty()) {
             Call* newCall = CallModel::instance()->addDialingCall();
             newCall->setDialNumber(number->uri());

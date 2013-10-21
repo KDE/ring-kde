@@ -50,6 +50,7 @@
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
+#include "lib/phonedirectorymodel.h"
 #include "lib/phonenumber.h"
 #include "lib/accountlistmodel.h"
 #include "klib/helperfunctions.h"
@@ -134,18 +135,12 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    splitter->setStretchFactor(0,7);
 
-//    QTimer* timer = new QTimer(this);
-
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
-//    connect(AkonadiBackend::instance() ,SIGNAL(collectionChanged()),                                  this, SLOT(reloadContact())                     );
    connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(setCategory(int))                    );
-//    connect(m_pFilterLE,                   SIGNAL(textChanged(QString)),                                 this, SLOT(filter(QString))                     );
    connect(m_pShowHistoCK,                SIGNAL(toggled(bool)),                                        this, SLOT(setHistoryVisible(bool))             );
-//    connect(timer                         ,SIGNAL(timeout()),                                            this, SLOT(reloadHistoryConst())                );
 //    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadContact())                     );
    connect(m_pView                       ,SIGNAL(doubleClicked(QModelIndex)),                           this, SLOT(slotDoubleClick(QModelIndex))        );
-//    timer->start(1800*1000); //30 minutes
    setWindowTitle(i18n("Contact"));
 } //ContactDock
 
@@ -174,57 +169,28 @@ ContactDock::~ContactDock()
  ****************************************************************************/
 
 ///Select a number
-QString ContactDock::showNumberSelector(bool& ok)
+PhoneNumber* ContactDock::showNumberSelector(bool& ok)
 {
    if (m_pCurrentContact && m_pCurrentContact->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
-      const PhoneNumber* number = KPhoneNumberSelector().getNumber(m_pCurrentContact->uid());
+      PhoneNumber* number = KPhoneNumberSelector().getNumber(m_pCurrentContact);
       if (number->uri().isEmpty()) {
          kDebug() << "Operation cancelled";
       }
-      return number->uri();
+      return number;
    }
    else if (!m_PreselectedNb.isEmpty()) {
       ok = true;
-      return m_PreselectedNb;
+      return PhoneDirectoryModel::instance()->getNumber( m_PreselectedNb);
    }
    else if (m_pCurrentContact&& m_pCurrentContact->phoneNumbers().size() == 1) {
       ok = true;
-      return m_pCurrentContact->phoneNumbers()[0]->uri();
+      return m_pCurrentContact->phoneNumbers()[0];
    }
    else {
       ok = false;
-      return "";
+      return nullptr;
    }
 }
-
-///Query the call history for all items related to this contact
-// void ContactDock::loadContactHistory(QTreeWidgetItem* item)
-// {
-//    if (m_pShowHistoCK->isChecked()) {
-//       m_pCallView->clear();
-//       if (dynamic_cast<QNumericTreeWidgetItem_hist*>(item) != nullptr) {
-//          QNumericTreeWidgetItem_hist* realItem = dynamic_cast<QNumericTreeWidgetItem_hist*>(item);
-//          foreach (Call* call, HistoryModel::getHistory()) {
-//             if (realItem->widget != 0) {
-//                foreach (PhoneNumber* number, realItem->widget->getContact()->getPhoneNumbers()) {
-//                   if (number->getNumber() == call->getPeerPhoneNumber()) {
-//                      m_pCallView->addItem(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).toString());
-//                   }
-//                }
-//             }
-//          }
-//       }
-//    }
-// } //loadContactHistory
-
-// void ContactDock::reloadHistoryConst()
-// {
-//    switch (CURRENT_SORTING_MODE) {
-//       case Recently_used:
-//          reloadContact();
-//          break;
-//    }
-// }
 
 ///Called when someone right click on the 'index'
 void ContactDock::slotContextMenu(QModelIndex index)
@@ -333,8 +299,8 @@ void ContactDock::callAgain()
 {
    kDebug() << "Calling ";
    bool ok;
-   QString number = showNumberSelector(ok);
-   if (ok) {
+   PhoneNumber* number = showNumberSelector(ok);
+   if (ok && number) {
       Call* call = CallModel::instance()->addDialingCall(m_pCurrentContact->formattedName(), AccountListModel::currentAccount());
       if (call) {
          call->setDialNumber(number);
@@ -398,8 +364,8 @@ void ContactDock::transferEvent(QMimeData* data)
 {
    if (data->hasFormat( MIME_CALLID)) {
       bool ok;
-      const QString result = showNumberSelector(ok);
-      if (ok) {
+      const PhoneNumber* result = showNumberSelector(ok);
+      if (ok && result) {
          Call* call = CallModel::instance()->getCall(data->data(MIME_CALLID));
          if (dynamic_cast<Call*>(call)) {
 //             call->changeCurrentState(Call::State::TRANSFERRED);
