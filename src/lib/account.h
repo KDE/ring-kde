@@ -71,8 +71,10 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(QString        publishedAddress             READ publishedAddress              WRITE setPublishedAddress            )
    Q_PROPERTY(QString        localInterface               READ localInterface                WRITE setLocalInterface              )
    Q_PROPERTY(QString        ringtonePath                 READ ringtonePath                  WRITE setRingtonePath                )
+   Q_PROPERTY(QString        lastErrorMessage             READ lastErrorMessage              WRITE setLastErrorMessage            )
    Q_PROPERTY(TlsMethodModel::Type tlsMethod              READ tlsMethod                     WRITE setTlsMethod                   )
    Q_PROPERTY(KeyExchangeModel::Type keyExchange          READ keyExchange                   WRITE setKeyExchange                 )
+   Q_PROPERTY(int            lastErrorCode                READ lastErrorCode                 WRITE setLastErrorCode               )
    Q_PROPERTY(int            registrationExpire           READ registrationExpire            WRITE setRegistrationExpire          )
    Q_PROPERTY(int            tlsNegotiationTimeoutSec     READ tlsNegotiationTimeoutSec      WRITE setTlsNegotiationTimeoutSec    )
    Q_PROPERTY(int            tlsNegotiationTimeoutMsec    READ tlsNegotiationTimeoutMsec     WRITE setTlsNegotiationTimeoutMsec   )
@@ -333,6 +335,8 @@ class LIB_EXPORT Account : public QObject {
       bool    isTlsEnable                  () const;
       bool    isRingtoneEnabled            () const;
       QString ringtonePath                 () const;
+      QString lastErrorMessage             () const;
+      int     lastErrorCode                () const;
       int     localPort                    () const;
       QString localInterface               () const;
       QString registrationStatus           () const;
@@ -350,23 +354,25 @@ class LIB_EXPORT Account : public QObject {
       void setId      (const QString& id);
       void setAlias                         (const QString& detail);
       void setProtocol                      (Account::Protocol proto);
-      void setHostname                      (const QString& detail);
-      void setUsername                      (const QString& detail);
-      void setMailbox                       (const QString& detail);
-      void setProxy                         (const QString& detail);
-      void setPassword                      (const QString& detail);
-      void setTlsPassword                   (const QString& detail);
-      void setTlsCaListFile                 (const QString& detail);
-      void setTlsCertificateFile            (const QString& detail);
-      void setTlsPrivateKeyFile             (const QString& detail);
-      void setTlsCiphers                    (const QString& detail);
-      void setTlsServerName                 (const QString& detail);
-      void setSipStunServer                 (const QString& detail);
-      void setPublishedAddress              (const QString& detail);
-      void setLocalInterface                (const QString& detail);
-      void setRingtonePath                  (const QString& detail);
+      void setHostname                      (const QString& detail );
+      void setUsername                      (const QString& detail );
+      void setMailbox                       (const QString& detail );
+      void setProxy                         (const QString& detail );
+      void setPassword                      (const QString& detail );
+      void setTlsPassword                   (const QString& detail );
+      void setTlsCaListFile                 (const QString& detail );
+      void setTlsCertificateFile            (const QString& detail );
+      void setTlsPrivateKeyFile             (const QString& detail );
+      void setTlsCiphers                    (const QString& detail );
+      void setTlsServerName                 (const QString& detail );
+      void setSipStunServer                 (const QString& detail );
+      void setPublishedAddress              (const QString& detail );
+      void setLocalInterface                (const QString& detail );
+      void setRingtonePath                  (const QString& detail );
+      void setLastErrorMessage              (const QString& message);
       void setTlsMethod                     (TlsMethodModel::Type   detail);
       void setKeyExchange                   (KeyExchangeModel::Type detail);
+      void setLastErrorCode                 (int  code  );
       void setRegistrationExpire            (int  detail);
       void setTlsNegotiationTimeoutSec      (int  detail);
       void setTlsNegotiationTimeoutMsec     (int  detail);
@@ -442,6 +448,8 @@ class LIB_EXPORT Account : public QObject {
 
       //Cached account details (as they are called too often for the hash)
       QString m_HostName;
+      QString m_LastErrorMessage;
+      int     m_LastErrorCode;
 
 
    Q_SIGNALS:

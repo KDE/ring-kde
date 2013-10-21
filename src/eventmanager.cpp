@@ -260,6 +260,7 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
    switch(event->key()) {
       case Qt::Key_Escape:
          escape();
+         m_pParent->setFocus();
          break;
       case Qt::Key_Return:
       case Qt::Key_Enter:

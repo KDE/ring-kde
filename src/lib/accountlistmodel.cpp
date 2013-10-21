@@ -159,8 +159,8 @@ void AccountListModel::destroy()
 ///Account status changed
 void AccountListModel::accountChanged(const QString& account,const QString& state, int code)
 {
-   Q_UNUSED(code)
    Account* a = getAccountById(account);
+
    if (!a || (a && a->registrationStatus() != state )) {
       qDebug() << "Account" << account << "status changed to" << state;
       if (a) {
@@ -190,8 +190,13 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
          }
       }
    }
-   if (a)
+   if (a) {
+      //Keep the error message
+      a->setLastErrorMessage(state);
+      a->setLastErrorCode(code);
+
       emit accountStateChanged(a,a->toHumanStateName());
+   }
    else
       qDebug() << "Account not found";
 }

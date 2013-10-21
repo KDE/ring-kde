@@ -102,7 +102,6 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-//    const QPixmap* pxmPtr=  (QPixmap*)qvariant_cast<void*>(index.data(Call::Role::PhotoPtr));
    const Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
@@ -110,12 +109,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    const PhoneNumber* n = qvariant_cast<PhoneNumber*>(index.data(Call::Role::PhoneNu));
    QPixmap pxm = PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight,iconHeight)).value<QPixmap>();
 
-   //Handle bookmarks
-   if (isBookmark) {
-      //TODO
-   }
    //Handle history with recording
-   else if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
+   if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
       QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
       Call* call  = nullptr;
       if (obj)

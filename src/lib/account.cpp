@@ -52,7 +52,7 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 
 ///Constructors
 Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
-m_pVideoCodecs(nullptr)
+m_pVideoCodecs(nullptr),m_LastErrorCode(-1)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    connect(&callManager,SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
@@ -169,7 +169,7 @@ const QString Account::toHumanStateName() const
    if(s == Account::State::TRYING           )
       return trying                 ;
    if(s == Account::State::ERROR            )
-      return error                  ;
+      return m_LastErrorMessage.isEmpty()?error:m_LastErrorMessage;
    if(s == Account::State::ERROR_AUTH       )
       return authenticationFailed   ;
    if(s == Account::State::ERROR_NETWORK    )
@@ -204,7 +204,8 @@ const QString Account::accountDetail(const QString& param) const
          return REGISTRATION_ENABLED_FALSE;
       if (param == Account::MapField::Registration::STATUS) //If an account is new, then it is unregistered
          return Account::State::UNREGISTERED;
-      qDebug() << "Account parameter \"" << param << "\" not found";
+      if (protocol() != Account::Protocol::IAX) //IAX accounts lack some fields, be quiet
+         qDebug() << "Account parameter \"" << param << "\" not found";
       return QString();
    }
    else {
@@ -503,6 +504,18 @@ bool Account::isRingtoneEnabled() const
 QString Account::ringtonePath() const
 {
    return accountDetail(Account::MapField::Ringtone::PATH);
+}
+
+///Return the last error message received
+QString Account::lastErrorMessage() const
+{
+   return m_LastErrorMessage;
+}
+
+///Return the last error code (useful for debugging)
+int Account::lastErrorCode() const
+{
+   return m_LastErrorCode;
 }
 
 ///Return the account local port
@@ -824,6 +837,18 @@ void Account::setLocalInterface(const QString& detail)
 void Account::setRingtonePath(const QString& detail)
 {
    setAccountDetail(Account::MapField::Ringtone::PATH, detail);
+}
+
+///Set the last error message to be displayed as status instead of "Error"
+void Account::setLastErrorMessage(const QString& message)
+{
+   m_LastErrorMessage = message;
+}
+
+///Set the last error code
+void Account::setLastErrorCode(int code)
+{
+   m_LastErrorCode = code;
 }
 
 ///Set the Tls method
