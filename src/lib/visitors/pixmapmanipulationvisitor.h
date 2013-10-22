@@ -43,7 +43,7 @@ public:
    virtual QVariant contactPhoto(Contact* c, QSize size, bool displayPresence = true);
    virtual QVariant callPhoto(Call* c, QSize size, bool displayPresence = true);
    virtual QVariant callPhoto(const PhoneNumber* n, QSize size, bool displayPresence = true);
-   virtual QVariant numberCategoryIcon(PhoneNumber* n, QSize size, bool displayPresence = false);
+   virtual QVariant numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence = false, bool isPresent = false);
 
    //Singleton
    static PixmapManipulationVisitor* instance();

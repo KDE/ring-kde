@@ -26,7 +26,7 @@ class LIB_EXPORT NumberCategoryVisitor {
 public:
    virtual void     serialize(NumberCategoryModel* model) = 0;
    virtual void     load     (NumberCategoryModel* model) = 0;
-   virtual QVariant icon     (QPixmap*             icon ) = 0;
+//    virtual QVariant icon     (QPixmap*             icon ) = 0;
    virtual ~NumberCategoryVisitor(){};
 };
 

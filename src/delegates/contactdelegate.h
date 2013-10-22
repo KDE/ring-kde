@@ -37,7 +37,6 @@ public:
 
 private:
    DelegateDropOverlay*           m_pDelegatedropoverlay;
-   static QHash<QString, QPixmap> m_hIcons              ;
    QStyledItemDelegate*           m_pChildDelegate      ;
 };
 

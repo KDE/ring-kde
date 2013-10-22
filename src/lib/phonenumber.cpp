@@ -22,6 +22,7 @@
 #include "call.h"
 #include "dbus/presencemanager.h"
 #include "numbercategorymodel.h"
+#include "numbercategory.h"
 
 QHash<int,Call*> PhoneNumber::m_shMostUsed = QHash<int,Call*>();
 
@@ -29,7 +30,7 @@ class PhoneNumberPrivate {
 public:
    static PhoneNumber* initBlank()
    {
-      PhoneNumber* blanc = new PhoneNumber("","");
+      PhoneNumber* blanc = new PhoneNumber("",NumberCategoryModel::other());
       blanc->m_State = PhoneNumber::State::BLANK;
       return blanc;
    }
@@ -37,26 +38,27 @@ public:
 const PhoneNumber* PhoneNumber::BLANK = PhoneNumberPrivate::initBlank();
 
 ///Constructor
-PhoneNumber::PhoneNumber(const QString& number, const QString& type) : QObject(PhoneDirectoryModel::instance()),
-   m_Uri(stripUri(number)),m_Type(type),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
+PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat) : QObject(PhoneDirectoryModel::instance()),
+   m_Uri(stripUri(number)),m_pCategory(cat),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
    m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
    m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false),m_IsBookmark(false)
 {
    setObjectName(m_Uri);
-   m_hasType = !type.isEmpty();
+   m_hasType = cat != NumberCategoryModel::other();
    if (m_hasType) {
       NumberCategoryModel::instance()->registerNumber(this);
    }
 }
 
 ///Return if this number presence is being tracked
-bool PhoneNumber::tracked() const
+bool PhoneNumber::isTracked() const
 {
-   return m_Tracked;
+   //If the number doesn't support it, ignore the flag
+   return supportPresence() && m_Tracked;
 }
 
 ///Is this number present
-bool PhoneNumber::present() const
+bool PhoneNumber::isPresent() const
 {
    return m_Tracked && m_Present;
 }
@@ -73,8 +75,8 @@ QString PhoneNumber::uri() const {
 }
 
 ///Return the phone number type
-QString PhoneNumber::type() const {
-   return m_Type   ;
+NumberCategory* PhoneNumber::category() const {
+   return m_pCategory ;
 }
 
 ///Return this number associated account, if any
@@ -111,13 +113,13 @@ void PhoneNumber::setContact(Contact* contact)
    emit changed();
 }
 
-void PhoneNumber::setType(const QString& type)
+void PhoneNumber::setCategory(NumberCategory* cat)
 {
-   if (type == m_Type) return;
+   if (cat == m_pCategory) return;
    if (m_hasType)
       NumberCategoryModel::instance()->unregisterNumber(this);
-   m_hasType = !type.isEmpty();
-   m_Type = type;
+   m_hasType = cat != NumberCategoryModel::other();
+   m_pCategory = cat;
    if (m_hasType)
       NumberCategoryModel::instance()->registerNumber(this);
    emit changed();
@@ -186,9 +188,24 @@ QString PhoneNumber::primaryName() const
    }
 }
 
+///Is this number bookmarked
 bool PhoneNumber::isBookmarked() const
 {
    return m_IsBookmark;
+}
+
+///If this number could (theoretically) support presence status
+bool PhoneNumber::supportPresence() const
+{
+   //Without an account, presence is impossible
+   if (!m_pAccount)
+      return false;
+   //The account also have to support it
+   if (!m_pAccount->supportPresenceSubscribe())
+       return false;
+
+   //In the end, it all come down to this, is the number tracked
+   return true;
 }
 
 ///Return all calls from this number
@@ -286,7 +303,7 @@ void TemporaryPhoneNumber::setUri(const QString& uri)
 }
 
 ///Constructor
-TemporaryPhoneNumber::TemporaryPhoneNumber(const PhoneNumber* number) : PhoneNumber(QString(),QString())
+TemporaryPhoneNumber::TemporaryPhoneNumber(const PhoneNumber* number) : PhoneNumber(QString(),NumberCategoryModel::other())
 {
    if (number) {
       setContact(number->contact());

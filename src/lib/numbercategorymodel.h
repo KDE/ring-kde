@@ -26,6 +26,7 @@ class QPixmap;
 
 class NumberCategoryVisitor;
 class PhoneNumber;
+class NumberCategory;
 
 class LIB_EXPORT NumberCategoryModel : public QAbstractListModel {
    Q_OBJECT
@@ -43,7 +44,7 @@ public:
    virtual bool setData(const QModelIndex& index, const QVariant &value, int role);
 
    //Mutator
-   void addCategory(const QString& name, QPixmap* icon, int index = -1, bool enabled = true);
+   NumberCategory* addCategory(const QString& name, QPixmap* icon, int index = -1, bool enabled = true);
    void setIcon(int index, QPixmap* icon);
    void save();
 
@@ -56,6 +57,8 @@ public:
    //Getter
    NumberCategoryVisitor* visitor() const;
    QModelIndex nameToIndex(const QString& name) const;
+   NumberCategory* getCategory(const QString& type);
+   static NumberCategory* other();
 
    //Mutator
    void registerNumber  (PhoneNumber* number);
@@ -63,17 +66,17 @@ public:
 
 private:
    struct InternalTypeRepresentation {
-      QString  name   ;
-      int      index  ;
-      QPixmap* icon   ;
-      bool     enabled;
-      int      counter;
+      NumberCategory* category;
+      int             index   ;
+      bool            enabled ;
+      int             counter ;
    };
    QVector<InternalTypeRepresentation*>   m_lCategories;
    QHash<int,InternalTypeRepresentation*> m_hByIdx;
    QHash<QString,InternalTypeRepresentation*> m_hByName;
    static NumberCategoryModel*            m_spInstance ;
    NumberCategoryVisitor*                 m_pVisitor   ;
+   static NumberCategory*                 m_spOther    ;
 };
 
 #endif //NUMBERCATEGORYMODEL_H

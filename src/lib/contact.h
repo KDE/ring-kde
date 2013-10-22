@@ -59,8 +59,6 @@ public:
       Contact* m_pParent2       ;
    };
 
-//    virtual QObject* getSelf();
-
 private:
    QString      m_FirstName      ;
    QString      m_SecondName     ;
@@ -82,31 +80,36 @@ public:
    virtual ~Contact();
 
    //Getters
-   virtual const PhoneNumbers& phoneNumbers() const;
-   virtual const QString& nickName         () const;
-   virtual const QString& firstName        () const;
-   virtual const QString& secondName       () const;
-   virtual const QString& formattedName    () const;
-   virtual const QString& organization     () const;
-   virtual const QString& uid              () const;
-   virtual const QString& preferredEmail   () const;
-   virtual const QPixmap* photo            () const;
-   virtual const QString& type             () const;
-   virtual const QString& group            () const;
-   virtual const QString& department       () const;
+   const PhoneNumbers& phoneNumbers() const;
+   const QString& nickName         () const;
+   const QString& firstName        () const;
+   const QString& secondName       () const;
+   const QString& formattedName    () const;
+   const QString& organization     () const;
+   const QString& uid              () const;
+   const QString& preferredEmail   () const;
+   const QPixmap* photo            () const;
+   const QString& type             () const;
+   const QString& group            () const;
+   const QString& department       () const;
+
+   //Number related getters
+   bool isPresent() const;
+   bool isTracked() const;
+   bool supportPresence() const;
 
    //Setters
-   virtual void setPhoneNumbers   ( PhoneNumbers        );
-   virtual void setFormattedName  ( const QString& name );
-   virtual void setNickName       ( const QString& name );
-   virtual void setFirstName      ( const QString& name );
-   virtual void setFamilyName     ( const QString& name );
-   virtual void setOrganization   ( const QString& name );
-   virtual void setPreferredEmail ( const QString& name );
-   virtual void setGroup          ( const QString& name );
-   virtual void setDepartment     ( const QString& name );
-   virtual void setUid            ( const QString& id   );
-   virtual void setPhoto          ( QPixmap* photo      );
+   void setPhoneNumbers   ( PhoneNumbers        );
+   void setFormattedName  ( const QString& name );
+   void setNickName       ( const QString& name );
+   void setFirstName      ( const QString& name );
+   void setFamilyName     ( const QString& name );
+   void setOrganization   ( const QString& name );
+   void setPreferredEmail ( const QString& name );
+   void setGroup          ( const QString& name );
+   void setDepartment     ( const QString& name );
+   void setUid            ( const QString& id   );
+   void setPhoto          ( QPixmap* photo      );
 
    //Mutator
    QHash<QString,QVariant> toHash();

@@ -26,6 +26,8 @@
 #include "account.h"
 #include "contact.h"
 #include "accountlistmodel.h"
+#include "numbercategory.h"
+#include "numbercategorymodel.h"
 #include "abstractcontactbackend.h"
 #include "dbus/presencemanager.h"
 #include "visitors/pixmapmanipulationvisitor.h"
@@ -66,8 +68,10 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
       case PhoneDirectoryModel::Columns::TYPE:
          switch (role) {
             case Qt::DisplayRole:
-               return number->type();
+               return number->category()->name();
                break;
+            case Qt::DecorationRole:
+               return number->category()->icon();
          }
          break;
       case PhoneDirectoryModel::Columns::CONTACT:
@@ -161,14 +165,14 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
          switch (role) {
             case Qt::CheckStateRole:
                if (number->account() && number->account()->supportPresenceSubscribe())
-                  return number->tracked()?Qt::Checked:Qt::Unchecked;
+                  return number->isTracked()?Qt::Checked:Qt::Unchecked;
                break;
          }
          break;
       case PhoneDirectoryModel::Columns::PRESENT:
          switch (role) {
             case Qt::CheckStateRole:
-               return number->present()?Qt::Checked:Qt::Unchecked;
+               return number->isPresent()?Qt::Checked:Qt::Unchecked;
                break;
          }
          break;
@@ -248,13 +252,13 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    if (wrap) {
       PhoneNumber* nb = wrap->numbers[0];
       if ((!nb->m_hasType) && (!type.isEmpty())) {
-         nb->setType(type);
+         nb->setCategory(NumberCategoryModel::instance()->getCategory(type));
       }
       return nb;
    }
 
    //Too bad, lets create one
-   PhoneNumber* number = new PhoneNumber(strippedUri,type);
+   PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->m_Index = m_lNumbers.size();
@@ -284,7 +288,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
          if (!number->account())
             number->setAccount(account);
          if ((!number->m_hasType) && (!type.isEmpty())) {
-            number->setType(type);
+            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
          if ((!account) || number->account() == account)
             return number;
@@ -292,7 +296,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    }
 
    //Create the number
-   PhoneNumber* number = new PhoneNumber(strippedUri,type);
+   PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
@@ -324,7 +328,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
       }
       foreach(PhoneNumber* number, wrap->numbers) {
          if ((!number->m_hasType) && (!type.isEmpty())) {
-            number->setType(type);
+            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
          if (((!contact) || number->contact() == contact) && ((!account) || number->account() == account))
             return number;
@@ -332,7 +336,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    }
 
    //Create the number
-   PhoneNumber* number = new PhoneNumber(strippedUri,type);
+   PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);

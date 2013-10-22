@@ -50,6 +50,7 @@
 #include "../lib/phonenumber.h"
 #include "../lib/phonedirectorymodel.h"
 #include "../lib/numbercategorymodel.h"
+#include "../lib/numbercategory.h"
 #include "kcfg_settings.h"
 
 ///Init static attributes
@@ -236,7 +237,7 @@ void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 
    foreach (PhoneNumber* nb, contact->phoneNumbers()) {
       KABC::PhoneNumber pn;
-      pn.setType(nameToType(nb->type()));
+      pn.setType(nameToType(nb->category()->name()));
 
       pn.setNumber(nb->uri());
       newContact.insertPhoneNumber(pn);

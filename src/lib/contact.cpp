@@ -195,6 +195,36 @@ void Contact::setDepartment(const QString& name)
    m_Department = name;
 }
 
+///Return if one of the PhoneNumber is present
+bool Contact::isPresent() const
+{
+   foreach(const PhoneNumber* n,m_Numbers) {
+      if (n->isPresent())
+         return true;
+   }
+   return false;
+}
+
+///Return if one of the PhoneNumber is tracked
+bool Contact::isTracked() const
+{
+   foreach(const PhoneNumber* n,m_Numbers) {
+      if (n->isTracked())
+         return true;
+   }
+   return false;
+}
+
+///Return if one of the PhoneNumber support presence
+bool Contact::supportPresence() const
+{
+   foreach(const PhoneNumber* n,m_Numbers) {
+      if (n->supportPresence())
+         return true;
+   }
+   return false;
+}
+
 ///Turn the contact into QString-QString hash
 QHash<QString,QVariant> Contact::toHash()
 {
@@ -217,11 +247,6 @@ QHash<QString,QVariant> Contact::toHash()
 QObject* Contact::PhoneNumbers::getSelf() const {
    return m_pParent2;
 }
-
-// QObject* Contact::getSelf()
-// {
-//    return this;
-// }
 
 time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
 {

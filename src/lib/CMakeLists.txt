@@ -47,6 +47,7 @@ set( qtsflphone_LIB_SRCS
   videodevice.cpp
   phonenumber.cpp
   videocodec.cpp
+  numbercategory.cpp
 
   #Models
   accountlistmodel.cpp
@@ -115,6 +116,7 @@ set( qtsflphone_LIB_HDRS
   tlsmethodmodel.h
   numbercompletionmodel.h
   categorizedaccountmodel.h
+  numbercategory.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

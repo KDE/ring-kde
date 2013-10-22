@@ -27,6 +27,7 @@
 #include <QtCore/QDebug>
 
 //KDE
+#include <KColorScheme>
 #include <KLocale>
 #include <KIcon>
 #include <KStandardDirs>
@@ -89,6 +90,11 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
 //    const int radius = (option.rect.height() > 45) ? 7 : 5;
    const bool isBookmark = index.data(Call::Role::IsBookmark).toBool();
+//    const bool isPresent  = index.data(Call::Role::IsPresent ).toBool();
+//    const bool isTracked  = index.data(Call::Role::IsTracked ).toBool();
+//    static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
+//    static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+
 
    painter->save();
    int iconHeight = option.rect.height() -4;
@@ -107,7 +113,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       painter->setOpacity(0.70);
 
    const PhoneNumber* n = qvariant_cast<PhoneNumber*>(index.data(Call::Role::PhoneNu));
-   QPixmap pxm = PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight,iconHeight)).value<QPixmap>();
+   QPixmap pxm = PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>();
 
    //Handle history with recording
    if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
@@ -166,9 +172,21 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          const static QPixmap* callPxm = nullptr;
          if (!callPxm)
             callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
-         painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),*callPxm);
+         painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),index.data(Call::Role::CategoryIcon).value<QPixmap>());
       }
+
+// //       if (isTracked) {
+// //          if (isPresent)
+// //             painter->setPen(presentBrush);
+// //          else
+// //             painter->setPen(awayBrush);
+// //       }
+
       painter->drawText(option.rect.x()+15+iconHeight+((!isBookmark)?12:0),currentHeight,index.data(Call::Role::Number).toString());
+
+//       if (isTracked)
+//          painter->setPen(textCol);
+
       currentHeight +=fm.height();
       painter->restore();
    }
@@ -187,6 +205,12 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
 
       if (ConfigurationSkeleton::displayCallNumber() && !(currentState == Call::State::DIALING || (option.state & QStyle::State_Editing))) {
+//          if (isTracked) {
+//             if (isPresent)
+//                painter->setPen(presentBrush);
+//             else
+//                painter->setPen(awayBrush);
+//          }
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Number).toString());
          currentHeight +=fm.height();
       }

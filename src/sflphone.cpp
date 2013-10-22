@@ -119,10 +119,10 @@ class ConcreteNumberCategoryVisitor :public NumberCategoryVisitor {
 #undef IS_ENABLED
    }
 
-   QVariant icon(QPixmap* icon )
-   {
-      return QIcon(*icon);
-   }
+//    QVariant icon(QPixmap* icon )
+//    {
+//       return QIcon(*icon);
+//    }
 };
 
 ///Constructor
@@ -283,6 +283,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
 
    m_pPresenceDock = new QDockWidget(this);
+   m_pPresenceDock->setObjectName("presence-dock");
    m_pPresenceDock->setWidget(new Presence(m_pPresenceDock));
    m_pPresenceDock->setAllowedAreas(Qt::BottomDockWidgetArea);
    m_pPresenceDock->setFeatures(QDockWidget::NoDockWidgetFeatures);

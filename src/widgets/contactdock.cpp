@@ -50,6 +50,7 @@
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
+#include "lib/numbercategory.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/phonenumber.h"
 #include "lib/accountlistmodel.h"
@@ -322,8 +323,8 @@ void ContactDock::copy()
    QString numbers(m_pCurrentContact->formattedName()+": ");
    QString numbersHtml("<b>"+m_pCurrentContact->formattedName()+"</b><br />");
    foreach (PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
-      numbers     += number->uri()+" ("+number->type()+")  ";
-      numbersHtml += number->uri()+" ("+number->type()+")  <br />";
+      numbers     += number->uri()+" ("+number->category()->name()+")  ";
+      numbersHtml += number->uri()+" ("+number->category()->name()+")  <br />";
    }
    mimeData->setData("text/plain", numbers.toUtf8());
    mimeData->setData("text/html", numbersHtml.toUtf8());

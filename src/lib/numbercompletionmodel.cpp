@@ -27,6 +27,7 @@
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "call.h"
+#include "numbercategory.h"
 #include "accountlistmodel.h"
 #include "numbercategorymodel.h"
 
@@ -58,11 +59,11 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
                return n->uri();
                break;
             case Qt::ToolTipRole:
-               return QString("<table><tr><td>%1</td></tr><tr><td>%2</td></tr></table>").arg(n->primaryName()).arg(n->type());
+               return QString("<table><tr><td>%1</td></tr><tr><td>%2</td></tr></table>").arg(n->primaryName()).arg(n->category()->name());
                break;
             case Qt::DecorationRole: {
                if (NumberCategoryModel::instance()->visitor()) {
-                  const QModelIndex idx2 = NumberCategoryModel::instance()->nameToIndex(n->type());
+                  const QModelIndex idx2 = NumberCategoryModel::instance()->nameToIndex(n->category()->name());
                   if (idx2.isValid())
                      return idx2.data(Qt::DecorationRole);
                }
@@ -270,6 +271,6 @@ uint NumberCompletionModel::getWeight(PhoneNumber* number)
    weight += (number->trimCount()+1)*75 ;
    weight += (number->callCount()+1)*35 ;
    weight *= (number->uri().indexOf(m_Prefix)!= -1?3:1);
-   weight *= (number->present()?2:1);
+   weight *= (number->isPresent()?2:1);
    return weight;
 }

@@ -31,6 +31,7 @@ class Contact;
 class Call;
 class PhoneNumberPrivate;
 class TemporaryPhoneNumber;
+class NumberCategory;
 
 ///PhoneNumber: represent a phone number
 class LIB_EXPORT PhoneNumber : public QObject {
@@ -44,7 +45,7 @@ public:
    Q_PROPERTY(Contact*      contact         READ contact  WRITE setContact)
    Q_PROPERTY(time_t        lastUsed        READ lastUsed                 )
    Q_PROPERTY(QString       uri             READ uri                      )
-   Q_PROPERTY(QString       type            READ type     WRITE setType   )
+//    Q_PROPERTY(QString       type            READ type     WRITE setType   )
    Q_PROPERTY(int           callCount       READ callCount                )
    Q_PROPERTY(QList<Call*>  calls           READ calls                    )
    Q_PROPERTY(int           popularityIndex READ popularityIndex          )
@@ -69,9 +70,9 @@ public:
 
    //Getters
    QString            uri             () const;
-   QString            type            () const;
-   bool               tracked         () const;
-   bool               present         () const;
+   NumberCategory*    category        () const;
+   bool               isTracked       () const;
+   bool               isPresent       () const;
    QString            presenceMessage () const;
    Account*           account         () const;
    Contact*           contact         () const;
@@ -89,12 +90,13 @@ public:
    QString            fullUri         () const;
    QString            primaryName     () const;
    bool               isBookmarked    () const;
+   bool               supportPresence () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account*       account);
    Q_INVOKABLE void setContact(Contact*       contact);
    Q_INVOKABLE void setTracked(bool           track  );
-   void             setType   (const QString& type   );
+   void             setCategory(NumberCategory* cat  );
    void             setBookmarked(bool bookmarked    );
 
    //Mutator
@@ -109,7 +111,7 @@ public:
 
 protected:
    //Constructor
-   PhoneNumber(const QString& uri, const QString& type);
+   PhoneNumber(const QString& uri, NumberCategory* cat);
 
    //Attributes
    QString            m_Uri              ;
@@ -122,7 +124,7 @@ private:
    friend class PhoneNumberPrivate;
 
    //Attributes
-   QString            m_Type             ;
+   NumberCategory*    m_pCategory        ;
    bool               m_Present          ;
    QString            m_PresentMessage   ;
    bool               m_Tracked          ;

@@ -18,8 +18,10 @@
 #include "numbercategorymodel.h"
 #include "visitors/numbercategoryvisitor.h"
 #include "phonenumber.h"
+#include "numbercategory.h"
 
 NumberCategoryModel* NumberCategoryModel::m_spInstance = nullptr;
+NumberCategory*      NumberCategoryModel::m_spOther    = nullptr;
 
 NumberCategoryModel::NumberCategoryModel(QObject* parent) : QAbstractListModel(parent),m_pVisitor(nullptr)
 {
@@ -32,10 +34,9 @@ QVariant NumberCategoryModel::data(const QModelIndex& index, int role) const
    if (!index.isValid()) return QVariant();
    switch (role) {
       case Qt::DisplayRole:
-         return m_lCategories[index.row()]->name;
+         return m_lCategories[index.row()]->category->name();
       case Qt::DecorationRole:
-         if (m_lCategories[index.row()]->icon && m_pVisitor)
-            return m_pVisitor->icon(m_lCategories[index.row()]->icon);
+         return m_lCategories[index.row()]->category->icon();//m_pVisitor->icon(m_lCategories[index.row()]->icon);
       case Qt::CheckStateRole:
          return m_lCategories[index.row()]->enabled?Qt::Checked:Qt::Unchecked;
       case Role::INDEX:
@@ -68,21 +69,23 @@ bool NumberCategoryModel::setData(const QModelIndex& idx, const QVariant &value,
    return false;
 }
 
-void NumberCategoryModel::addCategory(const QString& name, QPixmap* icon, int index, bool enabled)
+NumberCategory* NumberCategoryModel::addCategory(const QString& name, QPixmap* icon, int index, bool enabled)
 {
    InternalTypeRepresentation* rep = m_hByName[name];
    if (!rep) {
       rep = new InternalTypeRepresentation();
       rep->counter = 0      ;
    }
-   rep->name       = name   ;
-   rep->icon       = icon   ;
+   NumberCategory* cat = new NumberCategory(this,name);
+   cat->setIcon(icon);
+   rep->category   = cat    ;
    rep->index      = index  ;
    rep->enabled    = enabled;
    m_hByIdx[index] = rep    ;
    m_hByName[name] = rep    ;
    m_lCategories  << rep    ;
    emit layoutChanged()     ;
+   return cat;
 }
 
 NumberCategoryModel* NumberCategoryModel::instance()
@@ -96,7 +99,7 @@ void NumberCategoryModel::setIcon(int idx, QPixmap* icon)
 {
    InternalTypeRepresentation* rep = m_hByIdx[idx];
    if (rep) {
-      rep->icon = icon;
+      rep->category->setIcon(icon);
       emit dataChanged(index(m_lCategories.indexOf(rep),0),index(m_lCategories.indexOf(rep),0));
    }
 }
@@ -133,17 +136,35 @@ QModelIndex NumberCategoryModel::nameToIndex(const QString& name) const
 ///Be sure the category exist, increment the counter
 void NumberCategoryModel::registerNumber(PhoneNumber* number)
 {
-   InternalTypeRepresentation* rep = m_hByName[number->type()];
+   InternalTypeRepresentation* rep = m_hByName[number->category()->name()];
    if (!rep) {
-      addCategory(number->type(),nullptr,-1,true);
-      rep = m_hByName[number->type()];
+      addCategory(number->category()->name(),nullptr,-1,true);
+      rep = m_hByName[number->category()->name()];
    }
    rep->counter++;
 }
 
 void NumberCategoryModel::unregisterNumber(PhoneNumber* number)
 {
-   InternalTypeRepresentation* rep = m_hByName[number->type()];
+   InternalTypeRepresentation* rep = m_hByName[number->category()->name()];
    if (rep)
       rep->counter--;
+}
+
+NumberCategory* NumberCategoryModel::getCategory(const QString& type)
+{
+   InternalTypeRepresentation* internal = m_hByName[type];
+   if (internal)
+      return internal->category;
+   return addCategory(type,nullptr);
+}
+
+
+NumberCategory* NumberCategoryModel::other()
+{
+   if (instance()->m_hByName["Other"])
+      return instance()->m_hByName["Other"]->category;
+   if (!m_spOther)
+      m_spOther = new NumberCategory(instance(),"Other");
+   return m_spOther;
 }

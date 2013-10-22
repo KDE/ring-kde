@@ -33,7 +33,6 @@ public:
 
    void setView(QTreeView* model);
 private:
-   static QHash<QString, QPixmap> m_hIcons;
    QTreeView* m_pView;
    bool m_Lock;
 };

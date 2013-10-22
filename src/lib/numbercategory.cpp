@@ -15,50 +15,34 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "pixmapmanipulationvisitor.h"
+#include "numbercategory.h"
 
 #include <QtCore/QSize>
 
-PixmapManipulationVisitor* PixmapManipulationVisitor::m_spInstance = new PixmapManipulationVisitor();
+#include "visitors/pixmapmanipulationvisitor.h"
 
-PixmapManipulationVisitor::PixmapManipulationVisitor() {
-   m_spInstance = this;
+
+NumberCategory::NumberCategory(QObject* parent, const QString& name) : QObject(parent), m_pIcon(nullptr),m_Name(name)
+{
+   
 }
 
-QVariant PixmapManipulationVisitor::contactPhoto(Contact* c, QSize size, bool displayPresence)
+QVariant NumberCategory::icon(bool isTracked, bool isPresent) const
 {
-   Q_UNUSED(c)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   return QVariant();
+   return PixmapManipulationVisitor::instance()->numberCategoryIcon(m_pIcon,QSize(),isTracked,isPresent);
 }
 
-QVariant PixmapManipulationVisitor::numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence, bool isPresent)
+QString  NumberCategory::name() const
 {
-   Q_UNUSED(p)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   Q_UNUSED(isPresent)
-   return QVariant();
+   return m_Name;
 }
 
-QVariant PixmapManipulationVisitor::callPhoto(Call* c, QSize size, bool displayPresence)
+void NumberCategory::setIcon(QPixmap*pixmap)
 {
-   Q_UNUSED(c)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   return QVariant();
+   m_pIcon = pixmap;
 }
 
-QVariant PixmapManipulationVisitor::callPhoto(const PhoneNumber* c, QSize size, bool displayPresence)
+void NumberCategory::setName(const QString& name)
 {
-   Q_UNUSED(c)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   return QVariant();
-}
-
-PixmapManipulationVisitor* PixmapManipulationVisitor::instance()
-{
-   return m_spInstance;
+   m_Name = name;
 }

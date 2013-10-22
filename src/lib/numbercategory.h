@@ -15,50 +15,39 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "pixmapmanipulationvisitor.h"
+#ifndef NUMBERCATEGORY_H
+#define NUMBERCATEGORY_H
 
-#include <QtCore/QSize>
+#include <QtCore/QObject>
 
-PixmapManipulationVisitor* PixmapManipulationVisitor::m_spInstance = new PixmapManipulationVisitor();
+#include "typedefs.h"
 
-PixmapManipulationVisitor::PixmapManipulationVisitor() {
-   m_spInstance = this;
-}
+class QPixmap;
 
-QVariant PixmapManipulationVisitor::contactPhoto(Contact* c, QSize size, bool displayPresence)
-{
-   Q_UNUSED(c)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   return QVariant();
-}
+/**
+ * This class represent a PhoneNumber category. Categories usually
+ * come from the contact provider, but can be added dynamically too
+ */
+class LIB_EXPORT NumberCategory : public QObject {
+   Q_OBJECT
+public:
+   friend class NumberCategoryModel;
+   virtual ~NumberCategory(){}
 
-QVariant PixmapManipulationVisitor::numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence, bool isPresent)
-{
-   Q_UNUSED(p)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   Q_UNUSED(isPresent)
-   return QVariant();
-}
+   //Getter
+   QVariant icon(bool isTracked = false, bool isPresent = false) const;
+   QString  name() const;
 
-QVariant PixmapManipulationVisitor::callPhoto(Call* c, QSize size, bool displayPresence)
-{
-   Q_UNUSED(c)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   return QVariant();
-}
+   //Setter
+   void setIcon(QPixmap*       pixmap );
+   void setName(const QString& name   );
 
-QVariant PixmapManipulationVisitor::callPhoto(const PhoneNumber* c, QSize size, bool displayPresence)
-{
-   Q_UNUSED(c)
-   Q_UNUSED(size)
-   Q_UNUSED(displayPresence)
-   return QVariant();
-}
+private:
+   NumberCategory(QObject* parent, const QString& name);
 
-PixmapManipulationVisitor* PixmapManipulationVisitor::instance()
-{
-   return m_spInstance;
-}
+   //Attributes
+   QString m_Name;
+   QPixmap* m_pIcon;
+};
+
+#endif //NUMBERCATEGORY_H

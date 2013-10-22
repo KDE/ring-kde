@@ -41,6 +41,8 @@
 #include <kabc/addressbook.h>
 #include <KMessageBox>
 #include <KIcon>
+#include <KColorScheme>
+#include <KStandardDirs>
 
 //sflphone
 #include "accountwizard.h"
@@ -155,15 +157,19 @@ class KDEPixmapManipulation : public PixmapManipulationVisitor {
 public:
    KDEPixmapManipulation() : PixmapManipulationVisitor() {}
    QVariant contactPhoto(Contact* c, QSize size, bool displayPresence = true) {
-      Q_UNUSED(displayPresence)
       QVariant preRendered = c->property(QString("photo2"+QString::number(size.height())).toAscii());
       if (preRendered.isValid())
          return preRendered;
       const int radius = (size.height() > 35) ? 7 : 5;
       const QPixmap* pxmPtr = c->photo();
+      bool isTracked = displayPresence && c->isTracked();
+      bool isPresent = displayPresence && c->isPresent();
+      static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
+      static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+
       QPixmap pxm;
       if (pxmPtr) {
-         QPixmap contactPhoto(pxmPtr->scaledToWidth(size.height()));
+         QPixmap contactPhoto(pxmPtr->scaledToWidth(size.height()-6));
          pxm = QPixmap(size);
          pxm.fill(Qt::transparent);
          QPainter painter(&pxm);
@@ -181,16 +187,30 @@ public:
          customPainter.setBrush       (Qt::black                         );
          customPainter.drawRoundedRect(pxRect,radius,radius);
          contactPhoto.setMask(mask);
-         painter.drawPixmap(0,0,contactPhoto);
+         painter.drawPixmap(3,3,contactPhoto);
          painter.setBrush(Qt::NoBrush);
          QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-         pen.setWidth(2);
+         pen.setWidth(isTracked?1:2);
          painter.setPen(pen);
          painter.setRenderHint  (QPainter::Antialiasing, true   );
-         painter.drawRoundedRect(0,0,pxm.height(),pxm.height(),radius,radius);
+         painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
+
+         if (isTracked) {
+            if (isPresent)
+               pen.setColor(presentBrush);
+            else
+               pen.setColor(awayBrush);
+            for (int i=2;i<=7;i+=2) {
+               pen.setWidth(i);
+               painter.setPen(pen);
+               painter.setOpacity(0.3f-(((i-2)*0.8f)/10.0f));
+               painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
+            }
+         }
       }
-      else
-         pxm = QPixmap(KIcon("user-identity").pixmap(size));
+      else {
+         pxm = drawDefaultUserPixmap(size,isTracked,isPresent);
+      }
 
       c->setProperty(QString("photo2"+QString::number(size.height())).toAscii(),pxm);
       return pxm;
@@ -200,8 +220,12 @@ public:
       if (n->contact()) {
          return contactPhoto(n->contact(),size,displayPresence);
       }
-      else
-         return QPixmap(KIcon("user-identity").pixmap(size));
+      else {
+         bool isTracked = displayPresence && n->isTracked();
+         bool isPresent = displayPresence && n->isPresent();
+
+         return drawDefaultUserPixmap(size,isTracked,isPresent);
+      }
    }
 
    virtual QVariant callPhoto(Call* c, QSize size, bool displayPresence = true) {
@@ -212,11 +236,22 @@ public:
          return QPixmap(callStateIcons[c->state()]);
    }
 
-   QVariant numberCategoryIcon(PhoneNumber* n, QSize size, bool displayPresence = false) {
-      Q_UNUSED(n)
+   QVariant numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence = false, bool isPresent = false) {
+      Q_UNUSED(p)
       Q_UNUSED(size)
       Q_UNUSED(displayPresence)
-      return QVariant();
+      Q_UNUSED(isPresent)
+      if (displayPresence) {
+         QPixmap pxm = p?*p:QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+         QPainter painter(&pxm);
+         painter.setOpacity(0.3);
+         painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+         painter.fillRect(pxm.rect(),isPresent?Qt::green:Qt::red);
+         return pxm;
+      }
+      if (p)
+         return *p;
+      return QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
    }
 
 private:
@@ -228,6 +263,43 @@ private:
       /* MISSED   */ ICON_HISTORY_MISSED  ,
       /* NONE     */ ""                   ,
    };
+
+   //Helper
+   QPixmap drawDefaultUserPixmap(QSize size, bool displayPresence, bool isPresent) {
+      //Load KDE default user pixmap
+      QPixmap pxm(KIcon("user-identity").pixmap(size));
+
+      //Create a region where the pixmap is not fully transparent
+      if (displayPresence) {
+         QPainter painter(&pxm);
+         static QRegion r,ri;
+         static bool init = false;
+         if (!init) {
+            r = QRegion(QPixmap::fromImage(pxm.toImage().createAlphaMask()));
+            ri = r.xored(pxm.rect());
+            init = true;
+         }
+
+         static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
+         static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+
+         //Paint only outside of the pixmap, it looks better
+         painter.setClipRegion(ri);
+         QPainterPath p;
+         p.addRegion(r);
+         QPen pen = painter.pen();
+         pen.setColor(isPresent?presentBrush:awayBrush);
+         painter.setBrush(Qt::NoBrush);
+         painter.setRenderHint  (QPainter::Antialiasing, true      );
+         for (int i=2;i<=9;i+=2) {
+            pen.setWidth(i);
+            painter.setPen(pen);
+            painter.setOpacity(0.30f-(((i-2)*0.45f)/10.0f));
+            painter.drawPath(p);
+         }
+      }
+      return pxm;
+   }
 };
 
 ///Constructor

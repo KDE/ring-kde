@@ -24,6 +24,7 @@
 //SFLPhone
 #include "../klib/akonadibackend.h"
 #include "../lib/phonenumber.h"
+#include "../lib/numbercategory.h"
 #include "../lib/phonedirectorymodel.h"
 #include "../sflphone.h"
 
@@ -42,8 +43,8 @@ PhoneNumber* KPhoneNumberSelector::getNumber(const Contact* contact)
          QHash<QString,QString> map       ;
          QStringList            list      ;
          foreach (PhoneNumber* number, contact->phoneNumbers()) {
-            map[number->type()+" ("+number->uri()+')'] = number->uri();
-            list << number->type()+" ("+number->uri()+')';
+            map[number->category()->name()+" ("+number->uri()+')'] = number->uri();
+            list << number->category()->name()+" ("+number->uri()+')';
          }
          const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,SFLPhone::app());
          return PhoneDirectoryModel::instance()->getNumber(result);//new PhoneNumber(result,"");

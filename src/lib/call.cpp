@@ -40,6 +40,7 @@
 #include "instantmessagingmodel.h"
 #include "useractionmodel.h"
 #include "callmodel.h"
+#include "numbercategory.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "videorenderer.h"
@@ -1379,6 +1380,14 @@ QVariant Call::roleData(int role) const
          return (int) m_pStopTimeStamp;
       case Call::Role::IsRecording:
          return recording();
+      case Call::Role::IsPresent:
+         return peerPhoneNumber()->isPresent();
+      case Call::Role::IsTracked:
+         return peerPhoneNumber()->isTracked();
+      case Call::Role::SupportPresence:
+         return peerPhoneNumber()->supportPresence();
+      case Call::Role::CategoryIcon:
+         return peerPhoneNumber()->category()->icon(peerPhoneNumber()->isTracked(),peerPhoneNumber()->isPresent());
       case Call::Role::DropState:
          return property("dropState");
          break;

@@ -268,6 +268,8 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
          return QVariant::fromValue(const_cast<PhoneNumber*>(number->m_pNumber));
       case Call::Role::IsBookmark:
          return true;
+      case Call::Role::IsPresent:
+         return number->m_pNumber->isPresent();
       case Call::Role::PhotoPtr:
          if (number->m_pNumber->contact())
             return number->m_pNumber->contact()->photo();
