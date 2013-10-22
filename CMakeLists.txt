@@ -49,10 +49,10 @@ ELSE()
    add_subdirectory( man     )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
-# IF(EXISTS "po" AND IS_DIRECTORY "po")
+IF(EXISTS "po" AND IS_DIRECTORY "po")
    FIND_PACKAGE ( Gettext REQUIRED )
    add_subdirectory( po      )
-# ENDIF()
+ENDIF()
 
 set(PROJECT_VERSION "1.2.3")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
