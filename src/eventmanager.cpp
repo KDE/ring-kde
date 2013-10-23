@@ -155,7 +155,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          newCall->setDialNumber(e->mimeData()->data( "text/plain" ));
          newCall->performAction(Call::Action::ACCEPT);
       }
-      //Remove uneedded tip
+      //Remove unneeded tip
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_LEAVE);
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DROP);
       return true;
@@ -170,6 +170,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
 
       //2) Send to the model for processing
       m_pParent->m_pView->model()->dropMimeData(data,Qt::MoveAction,idxAt.row(),idxAt.column(),idxAt.parent());
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_LEAVE);
    }
 
    //Remove item overlays

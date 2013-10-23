@@ -615,7 +615,7 @@ void SFLPhoneView::updateWindowCallState()
             }
          }
          if (activeCallCounter >= 2 && !CallModel::instance()->getConferenceList().size()) {
-            m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NO_CALLS);
+            m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_COUNT_CHANGED);
          }
       }
    }

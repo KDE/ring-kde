@@ -162,7 +162,8 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
    Account* a = getAccountById(account);
 
    if (!a || (a && a->registrationStatus() != state )) {
-      qDebug() << "Account" << account << "status changed to" << state;
+      if (state != "OK") //Do not polute the log
+         qDebug() << "Account" << account << "status changed to" << state;
       if (a) {
          a->updateState();
          const QModelIndex idx = a->index();
