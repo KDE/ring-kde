@@ -156,6 +156,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          newCall->performAction(Call::Action::ACCEPT);
       }
       //Remove uneedded tip
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_LEAVE);
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DROP);
       return true;
    }

@@ -30,6 +30,7 @@
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/sflphone_const.h"
+#include "lib/audiosettingsmodel.h"
 
 ///Constructor
 DlgAudio::DlgAudio(KConfigDialog *parent)
@@ -44,16 +45,24 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    KUrlRequester_destinationFolder->setUrl(KUrl(configurationManager.getRecordPath()));
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
-   connect( box_alsaPlugin, SIGNAL(activated(int)),  parent, SLOT(updateButtons()));
-   connect( this,           SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
-   connect(m_pAlwaysRecordCK, SIGNAL(clicked(bool)), this  , SLOT(changed())      );
+   alsaInputDevice->setModel   (AudioSettingsModel::instance()->inputDeviceModel () );
+   alsaOutputDevice->setModel  (AudioSettingsModel::instance()->outputDeviceModel() );
+   alsaRingtoneDevice->setModel(AudioSettingsModel::instance()->outputDeviceModel() );
+   kcfg_interface->setModel    (AudioSettingsModel::instance()->audioManagerModel() );
+   box_alsaPlugin->setModel    (AudioSettingsModel::instance()->alsaPluginModel  () );
+   loadAlsaSettings();
+
+   connect( box_alsaPlugin   , SIGNAL(activated(int)) , parent, SLOT(updateButtons()));
+   connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
+   connect( m_pAlwaysRecordCK, SIGNAL(clicked(bool))  , this  , SLOT(changed())      );
 
    connect( box_alsaPlugin                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( alsaInputDevice            , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( alsaOutputDevice           , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( alsaRingtoneDevice         , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( alsaInputDevice                 , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( alsaOutputDevice                , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
+   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , AudioSettingsModel::instance(),SLOT(reload()));
 }
 
 ///Destructor
@@ -79,10 +88,13 @@ void DlgAudio::updateSettings()
       configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
       configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
 
-      configurationManager.setAudioOutputDevice   ( alsaOutputDevice->currentIndex()   );
-      configurationManager.setAudioInputDevice    ( alsaInputDevice->currentIndex()    );
-      configurationManager.setAudioRingtoneDevice ( alsaRingtoneDevice->currentIndex() );
       configurationManager.setIsAlwaysRecording   ( m_pAlwaysRecordCK->isChecked()          );
+
+      AudioSettingsModel::instance()->inputDeviceModel   ()->setCurrentDevice(alsaInputDevice->currentIndex   ());
+      AudioSettingsModel::instance()->outputDeviceModel  ()->setCurrentDevice(alsaOutputDevice->currentIndex  ());
+      AudioSettingsModel::instance()->ringtoneDeviceModel()->setCurrentDevice(alsaRingtoneDevice->currentIndex());
+      AudioSettingsModel::instance()->alsaPluginModel    ()->setCurrentPlugin(box_alsaPlugin->currentIndex());
+
       m_Changed   = false;
       m_IsLoading = false;
    }
@@ -97,6 +109,7 @@ bool DlgAudio::hasChanged()
 ///Tag the dialog as needing saving
 void DlgAudio::changed()
 {
+   box_alsaPlugin->setDisabled(kcfg_interface->currentIndex());
    if (!m_IsLoading) {
       m_Changed = true;
       emit updateButtons();
@@ -107,38 +120,9 @@ void DlgAudio::changed()
 void DlgAudio::loadAlsaSettings()
 {
    m_IsLoading = true;
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   if(QString(configurationManager.getAudioManager()) == "alsa") {
-//       ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
-
-      const QString     curPlugin      = configurationManager.getCurrentAudioOutputPlugin();
-      const QStringList currentDevices = configurationManager.getCurrentAudioDevicesIndex();
-      int               index          = box_alsaPlugin->findText(curPlugin);
-
-      if(index < 0) index = 0;
-      const QStringList pluginList       = configurationManager.getAudioPluginList();
-      box_alsaPlugin->clear                   (                              );
-      box_alsaPlugin->addItems                ( pluginList                   );
-      box_alsaPlugin->setCurrentIndex         ( index                        );
-
-      const QStringList inputDeviceList  = configurationManager.getAudioInputDeviceList  ();
-      alsaInputDevice->clear             (                              );
-      alsaInputDevice->addItems          ( inputDeviceList              );
-      alsaInputDevice->setCurrentIndex   ( currentDevices[1].toInt()    );
-
-      const QStringList outputDeviceList = configurationManager.getAudioOutputDeviceList ();
-      alsaOutputDevice->clear            (                              );
-      alsaOutputDevice->addItems         ( outputDeviceList             );
-      alsaOutputDevice->setCurrentIndex  ( currentDevices[0].toInt()    );
-
-      alsaRingtoneDevice->clear          (                              );
-      alsaRingtoneDevice->addItems       ( outputDeviceList             );
-      alsaRingtoneDevice->setCurrentIndex( currentDevices[2].toInt()    );
-
-      groupBox_alsa->setEnabled(true);
-   }
-   else {
-      groupBox_alsa->setEnabled(false);
-   }
+   alsaInputDevice->setCurrentIndex    ( AudioSettingsModel::instance()->inputDeviceModel()->currentDevice().row()   );
+   alsaOutputDevice->setCurrentIndex   ( AudioSettingsModel::instance()->outputDeviceModel()->currentDevice().row()  );
+   alsaRingtoneDevice->setCurrentIndex ( AudioSettingsModel::instance()->ringtoneDeviceModel()->currentDevice().row());
+   box_alsaPlugin->setCurrentIndex     ( AudioSettingsModel::instance()->alsaPluginModel()->currentPlugin().row()    );
    m_IsLoading = false;
 }

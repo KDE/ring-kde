@@ -70,6 +70,7 @@ set( qtsflphone_LIB_SRCS
   tlsmethodmodel.cpp
   numbercompletionmodel.cpp
   categorizedaccountmodel.cpp
+  audiosettingsmodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -117,6 +118,7 @@ set( qtsflphone_LIB_HDRS
   numbercompletionmodel.h
   categorizedaccountmodel.h
   numbercategory.h
+  audiosettingsmodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS
