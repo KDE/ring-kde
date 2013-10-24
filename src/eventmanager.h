@@ -32,6 +32,7 @@ class QDragMoveEvent ;
 class SFLPhoneView;
 class CanvasObjectManager;
 class MainWindowEvent;
+class Account;
 
 class EventManager : public QObject, public MacroListener {
    Q_OBJECT
@@ -95,6 +96,8 @@ public Q_SLOTS:
 private Q_SLOTS:
    void slotCallStateChanged(Call* call, Call::State previousState);
    void slotIncomingCall(Call* call);
+   void slotAccountRegistrationChanged(Account* a,bool reg);
+   void slotNetworkDown();
 };
 
 #endif //EVENTMANAGER_H

@@ -54,6 +54,8 @@ class LIB_EXPORT Account : public QObject {
    Q_OBJECT
    #pragma GCC diagnostic pop
 
+   friend class AccountListModel;
+
    //Properties
    Q_PROPERTY(QString        alias                        READ alias                         WRITE setAlias                       )
    Q_PROPERTY(Account::Protocol protocol                  READ protocol                      WRITE setProtocol                    )
@@ -420,8 +422,8 @@ class LIB_EXPORT Account : public QObject {
    public Q_SLOTS:
       void setEnabled(bool checked);
 
-   private Q_SLOTS:
-      void accountChanged(const QString& accountId, const QString& stateName, int state);
+//    private Q_SLOTS:
+//       void accountChanged(const QString& accountId, const QString& stateName, int state);
 
    private:
 

@@ -174,10 +174,12 @@ public:
          pxm.fill(Qt::transparent);
          QPainter painter(&pxm);
 
+         //Clear the pixmap
          painter.setCompositionMode(QPainter::CompositionMode_Clear);
          painter.fillRect(0,0,size.width(),size.height(),QBrush(Qt::white));
          painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
+         //Add corner radius to the Pixmap
          QRect pxRect = contactPhoto.rect();
          QBitmap mask(pxRect.size());
          QPainter customPainter(&mask);
@@ -195,6 +197,7 @@ public:
          painter.setRenderHint  (QPainter::Antialiasing, true   );
          painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
 
+         //Draw the glow around pixmaps
          if (isTracked) {
             if (isPresent)
                pen.setColor(presentBrush);

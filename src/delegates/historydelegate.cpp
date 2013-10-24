@@ -137,8 +137,10 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    else if (!isBookmark && (index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
-      status=status.scaled(QSize(24,24));
-      painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+      if (!status.isNull()) {
+         status=status.scaled(QSize(24,24));
+         painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+      }
    }
    if (currentState != Call::State::OVER && index.data(Call::Role::IsRecording).toBool()) {
       const static QPixmap record(KStandardDirs::locate("data","sflphone-client-kde/record.png"));

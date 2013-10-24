@@ -59,11 +59,13 @@ Tip* TipCollection::canvasObjectToTip(CanvasObjectManager::Object obj)
       case CanvasObjectManager::Object::Ringing :
          return ringing();
       case CanvasObjectManager::Object::Network :
-         return networkLost();
+         return connectionLost();
       case CanvasObjectManager::Object::DropInfo:
          return removeConference();
       case CanvasObjectManager::Object::ConfInfo:
          return conference();
+      case CanvasObjectManager::Object::AccountDown:
+         return networkLost();
       case CanvasObjectManager::Object::NoObject:
       case CanvasObjectManager::Object::AutoComplete:
       default:
@@ -83,6 +85,7 @@ QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
       case CanvasObjectManager::Object::DropInfo:
       case CanvasObjectManager::Object::ConfInfo:
       case CanvasObjectManager::Object::NoObject:
+      case CanvasObjectManager::Object::AccountDown:
       default:
          return nullptr;
    }
@@ -161,7 +164,7 @@ Tip* TipCollection::connectionLost()
 Tip* TipCollection::networkLost()
 {
    if (!m_spNetworkLost) {
-      m_spNetworkLost = new Tip("Network lost");
+      m_spNetworkLost = new Tip(i18n("An account went down"));
    }
    return m_spNetworkLost;
 }

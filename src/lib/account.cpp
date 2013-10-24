@@ -54,8 +54,6 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
 m_pVideoCodecs(nullptr),m_LastErrorCode(-1)
 {
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   connect(&callManager,SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
 }
 
 ///Build an account from it'id
@@ -107,15 +105,15 @@ Account::~Account()
  ****************************************************************************/
 
 ///Callback when the account state change
-void Account::accountChanged(const QString& accountId, const QString& state,int)
-{
-   if ((!m_AccountId.isEmpty()) && accountId == m_AccountId) {
-      if (state != "OK") //Do not polute the log
-         qDebug() << "Account" << m_AccountId << "status changed to" << state;
-      if (Account::updateState())
-         emit stateChanged(toHumanStateName());
-   }
-}
+// void Account::accountChanged(const QString& accountId, const QString& state,int)
+// {
+//    if ((!m_AccountId.isEmpty()) && accountId == m_AccountId) {
+//       if (state != "OK") //Do not polute the log
+//          qDebug() << "Account" << m_AccountId << "status changed to" << state;
+//       if (Account::updateState())
+//          emit stateChanged(toHumanStateName());
+//    }
+// }
 
 
 /*****************************************************************************

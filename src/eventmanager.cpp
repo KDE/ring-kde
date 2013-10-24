@@ -28,6 +28,7 @@
 #include <lib/phonenumber.h>
 #include <lib/account.h>
 #include <lib/phonedirectorymodel.h>
+#include <lib/accountlistmodel.h>
 #include <klib/tipmanager.h>
 #include <klib/akonadibackend.h>
 #include "sflphoneview.h"
@@ -90,6 +91,8 @@ EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(pare
 
    connect(m_pMainWindowEv , SIGNAL(minimized(bool)) , m_pParent->m_pCanvasManager, SLOT(slotMinimized(bool)));
 
+   connect(AccountListModel::instance(),SIGNAL(accountRegistrationChanged(Account*,bool)),this,SLOT(slotAccountRegistrationChanged(Account*,bool)));
+   connect(AccountListModel::instance(),SIGNAL(badGateway()),this,SLOT(slotNetworkDown()));
    //Listen for macro
    MacroModel::addListener(this);
 }
@@ -514,8 +517,21 @@ void EventManager::slotIncomingCall(Call* call)
 
 void EventManager::slotAutoCompletionVisibility(bool)
 {
-   qDebug() << "IN slotAutoCompletionVisibility";
    m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_DIALING_CHANGED);
+}
+
+void EventManager::slotAccountRegistrationChanged(Account* a,bool reg)
+{
+   Q_UNUSED(a)
+   if (a && !reg)
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::UNREGISTERED_ACCOUNT,i18n("%1 is not unregistered",a->alias()));
+   else
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::REGISTERED_ACCOUNT);
+}
+
+void EventManager::slotNetworkDown()
+{
+   m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NETWORK_ERROR);
 }
 
 #include "moc_eventmanager.cpp"

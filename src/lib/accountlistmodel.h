@@ -117,6 +117,10 @@ Q_SIGNALS:
    void defaultAccountChanged( Account* a                     );
    ///Emitted when the default account change
    void priorAccountChanged  ( Account* a                     );
+   ///Emitted when one account registration state change
+   void accountRegistrationChanged(Account* a, bool registration);
+   ///Emitted when the network is down
+   void badGateway();
 };
 Q_DECLARE_METATYPE(AccountListModel*)
 

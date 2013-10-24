@@ -30,9 +30,10 @@
 #include <KStandardDirs>
 
 ///Constructor
-ConnectionLostTip::ConnectionLostTip(QWidget* parent) : Tip(i18n("Account ****** has disconnected, trying to reconnect in 10 seconds"),parent),m_pTimer(nullptr),m_Counter(0),
+ConnectionLostTip::ConnectionLostTip(QWidget* parent) : Tip(i18n("There was a network error, trying to reconnect in 60 seconds."),parent),m_pTimer(nullptr),m_Counter(0),
 m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 {
+   setTimeOut(60);
    loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/reload.svg"));
    connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }

@@ -164,11 +164,6 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
    if (!a || (a && a->registrationStatus() != state )) {
       if (state != "OK") //Do not polute the log
          qDebug() << "Account" << account << "status changed to" << state;
-      if (a) {
-         a->updateState();
-         const QModelIndex idx = a->index();
-         emit dataChanged(idx, idx);
-      }
    }
    if (!a) {
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
@@ -191,15 +186,26 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
          }
       }
    }
-   if (a) {
+   else {
+      const bool isRegistered = a->isRegistered();
+      a->updateState();
+      emit a->stateChanged(a->toHumanStateName());
+      const QModelIndex idx = a->index();
+      emit dataChanged(idx, idx);
+      const bool regStateChanged = isRegistered != a->isRegistered();
+      if (regStateChanged && (code == 502 || code == 503)) {
+         emit badGateway();
+      }
+      else if (regStateChanged)
+         emit accountRegistrationChanged(a,a->isRegistered());
+
       //Keep the error message
       a->setLastErrorMessage(state);
       a->setLastErrorCode(code);
 
       emit accountStateChanged(a,a->toHumanStateName());
    }
-   else
-      qDebug() << "Account not found";
+
 }
 
 ///Tell the model something changed

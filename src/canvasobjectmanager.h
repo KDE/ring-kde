@@ -76,6 +76,7 @@ public:
       AutoComplete   = 5, /* Displayed when the user is dialling                           */
       DropInfo       = 6, /* Displayed when the user is dropping something into the canvas */
       ConfInfo       = 7, /* Displayed when there is multiple calls and no conferences     */
+      AccountDown    = 8, /* Displayed when a previously registered account go down        */
    };
 
    ///@enum ObjectType if the objects is a background drawing or a front widget
@@ -116,25 +117,26 @@ public:
 
       //Account related events
       NETWORK_ERROR        = 0x01<<2 , /* When an ERRORAUTH or no Internet connection happen*/
-      UNREGISTERED_ACCOUNT = 0x01<<3 , /* When an account fall down                         */
-      REGISTERED_ACCOUNT   = 0x01<<4 , /* When an account become up again                   */
+      NETWORK_BACK         = 0x01<<3 , /* When the network is back                          */
+      UNREGISTERED_ACCOUNT = 0x01<<4 , /* When an account fall down                         */
+      REGISTERED_ACCOUNT   = 0x01<<5 , /* When an account become up again                   */
 
       //Input events
-      DRAG_ENTER           = 0x01<<5 , /* When the user drag something into the canvas      */
-      DRAG_LEAVE           = 0x01<<6 , /* When the pending-drag leave the canvas            */
-      DRAG_MOVE            = 0x01<<7 , /* When the pending-drag position change             */
-      DROP                 = 0x01<<8 , /* When a drop event is triggered                    */
+      DRAG_ENTER           = 0x01<<6 , /* When the user drag something into the canvas      */
+      DRAG_LEAVE           = 0x01<<7 , /* When the pending-drag leave the canvas            */
+      DRAG_MOVE            = 0x01<<8 , /* When the pending-drag position change             */
+      DROP                 = 0x01<<9 , /* When a drop event is triggered                    */
 
       //Call events
-      CALL_RINGING         = 0x01<<9 , /* When a call is ringing                            */
-      CALL_STATE_CHANGED   = 0x01<<10, /* When a phone call state change                    */
-      CALL_DIALING_CHANGED = 0x01<<11, /* When the user type something on a dialing call    */
-      CALL_COUNT_CHANGED   = 0x01<<12, /* When the number of call change                    */
-      CALL_BUSY            = 0x01<<13, /* When a ringing call peer is busy                  */
-      NO_CALLS             = 0x01<<14, /* When the last call have been removed from canvas  */
-      CALL_ENDED           = 0x01<<15, /* When a call end                                   */
-      BUDDY_IN             = 0x01<<16, /* When a buggy log in                               */
-      BUDDY_OUT            = 0x01<<17, /* When a buddy log out                              */
+      CALL_RINGING         = 0x01<<10, /* When a call is ringing                            */
+      CALL_STATE_CHANGED   = 0x01<<11, /* When a phone call state change                    */
+      CALL_DIALING_CHANGED = 0x01<<12, /* When the user type something on a dialing call    */
+      CALL_COUNT_CHANGED   = 0x01<<13, /* When the number of call change                    */
+      CALL_BUSY            = 0x01<<14, /* When a ringing call peer is busy                  */
+      NO_CALLS             = 0x01<<15, /* When the last call have been removed from canvas  */
+      CALL_ENDED           = 0x01<<16, /* When a call end                                   */
+      BUDDY_IN             = 0x01<<17, /* When a buggy log in                               */
+      BUDDY_OUT            = 0x01<<18, /* When a buddy log out                              */
 //       LEFT_CONFERENCE   = 0x01<<18, /* Someone left a conference                         */
 //       JOIN_CONFERENCE   = 0x01<<19, /* Someone joined a conference                       */
    };
@@ -169,8 +171,8 @@ private:
    };
 
    //Constants
-   constexpr static const char EVENT_COUNT   = 19;
-   constexpr static const char ELEMENT_COUNT = 8 ;
+   constexpr static const char EVENT_COUNT   = 20;
+   constexpr static const char ELEMENT_COUNT = 9 ;
 
    //Attributes
    CanvasObjectManager::Object          m_CurrentObject      ;
