@@ -30,6 +30,7 @@
 #include "numbercategory.h"
 #include "accountlistmodel.h"
 #include "numbercategorymodel.h"
+#include "visitors/pixmapmanipulationvisitor.h"
 
 NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance()),
    m_pCall(nullptr),m_Enabled(false),m_UseUnregisteredAccount(true)
@@ -61,13 +62,9 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
             case Qt::ToolTipRole:
                return QString("<table><tr><td>%1</td></tr><tr><td>%2</td></tr></table>").arg(n->primaryName()).arg(n->category()->name());
                break;
-            case Qt::DecorationRole: {
-               if (NumberCategoryModel::instance()->visitor()) {
-                  const QModelIndex idx2 = NumberCategoryModel::instance()->nameToIndex(n->category()->name());
-                  if (idx2.isValid())
-                     return idx2.data(Qt::DecorationRole);
-               }
-               } break;
+            case Qt::DecorationRole:
+               return n->icon();
+               break;
             case NumberCompletionModel::Role::ALTERNATE_ACCOUNT:
             case Qt::UserRole:
                if (needAcc)

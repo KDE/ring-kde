@@ -71,7 +71,7 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                return number->category()->name();
                break;
             case Qt::DecorationRole:
-               return number->category()->icon();
+               return number->icon();
          }
          break;
       case PhoneDirectoryModel::Columns::CONTACT:

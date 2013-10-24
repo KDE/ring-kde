@@ -208,6 +208,12 @@ bool PhoneNumber::supportPresence() const
    return true;
 }
 
+///Proxy accessor to the category icon
+QVariant PhoneNumber::icon() const
+{
+   return category()->icon(isTracked(),isPresent());
+}
+
 ///Return all calls from this number
 QList<Call*> PhoneNumber::calls() const
 {

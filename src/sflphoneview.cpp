@@ -240,16 +240,15 @@ public:
    }
 
    QVariant numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence = false, bool isPresent = false) {
-      Q_UNUSED(p)
       Q_UNUSED(size)
-      Q_UNUSED(displayPresence)
-      Q_UNUSED(isPresent)
       if (displayPresence) {
-         QPixmap pxm = p?*p:QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+         QPixmap pxm = p?(*p):QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
          QPainter painter(&pxm);
          painter.setOpacity(0.3);
          painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
          painter.fillRect(pxm.rect(),isPresent?Qt::green:Qt::red);
+         if (isPresent)
+            qDebug() << "ICI" << p << &pxm;
          return pxm;
       }
       if (p)

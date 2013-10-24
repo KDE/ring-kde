@@ -91,6 +91,7 @@ public:
    QString            primaryName     () const;
    bool               isBookmarked    () const;
    bool               supportPresence () const;
+   QVariant           icon            () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account*       account);
