@@ -51,6 +51,11 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
          TEXT    = 1<<4,
       };
 
+      //Properties
+      Q_PROPERTY(int  size          READ size         )
+      Q_PROPERTY(bool hasConference READ hasConference)
+      Q_PROPERTY(int  callCount     READ rowCount     )
+
       //Constructors, initializer and destructors
       virtual ~CallModel( );
 
@@ -74,6 +79,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       Q_INVOKABLE CallList getCallList         ();
       Q_INVOKABLE CallList getConferenceList   ();
       Q_INVOKABLE int      acceptedPayloadTypes();
+      Q_INVOKABLE bool     hasConference       () const;
 
       //Model implementation
       virtual bool          setData      ( const QModelIndex& index, const QVariant &value, int role   );

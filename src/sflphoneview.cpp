@@ -316,6 +316,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());
+   TipCollection::manager()->changeSize();
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
    m_pView->expandAll();
    m_pConfDelegate = new ConferenceDelegate(m_pView,palette());

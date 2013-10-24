@@ -225,6 +225,15 @@ CallList CallModel::getConferenceList()
    return confList;
 } //getConferenceList
 
+bool CallModel::hasConference() const
+{
+   foreach(const InternalStruct* s, m_lInternalModel) {
+      if (s->m_lChildren.size())
+         return true;
+   }
+   return false;
+}
+
 bool CallModel::isValid()
 {
    return DBus::CallManager::instance().isValid();

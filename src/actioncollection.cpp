@@ -109,8 +109,6 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_video_mute            ->setAltIcon(KIcon("camera-web"            ));
    action_video_preview         ->setAltIcon(KIcon("view-preview"          ));
    #endif
-   
-   
 }
 
 ActionCollection::~ActionCollection()

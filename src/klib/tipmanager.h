@@ -74,8 +74,10 @@ private:
 
 private Q_SLOTS:
    void animationStep(FrameDescription desc);
-   void changeSize(bool ignoreAnim = false);
    void slotTransitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
+
+public Q_SLOTS:
+   void changeSize(bool ignoreAnim = false);
 
 Q_SIGNALS:
    void sizeChanged(QRect newRect,bool ignoreAnim);

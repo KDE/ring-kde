@@ -113,7 +113,8 @@ EventManager::~EventManager()
 bool EventManager::viewDragEnterEvent(const QDragEnterEvent* e)
 {
    Q_UNUSED(e)
-   m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_ENTER);
+   if (!e->mimeData()->hasFormat(MIME_CALLID) || CallModel::instance()->hasConference())
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_ENTER);
    return false;
 }
 
@@ -225,7 +226,8 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
       }
    }
-   m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_MOVE);
+   if (!isCall || CallModel::instance()->hasConference())
+      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_MOVE);
    //Just as drop, compute the position
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
    const QPoint position = e->pos();
