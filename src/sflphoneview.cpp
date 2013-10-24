@@ -247,8 +247,6 @@ public:
          painter.setOpacity(0.3);
          painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
          painter.fillRect(pxm.rect(),isPresent?Qt::green:Qt::red);
-         if (isPresent)
-            qDebug() << "ICI" << p << &pxm;
          return pxm;
       }
       if (p)

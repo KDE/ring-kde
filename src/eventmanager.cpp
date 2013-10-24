@@ -190,8 +190,9 @@ bool EventManager::viewDropEvent(QDropEvent* e)
 ///Callback when a drag and drop is in progress
 bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
 {
+   const bool isCall = e->mimeData()->hasFormat(MIME_CALLID);
    if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
-      if (e->mimeData()->hasFormat(MIME_CALLID)) {
+      if (isCall) {
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
@@ -208,7 +209,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
       }
    }
    if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-      if (e->mimeData()->hasFormat(MIME_CALLID)) {
+      if (isCall) {
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
@@ -229,9 +230,15 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
    const QPoint position = e->pos();
    const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
+   Call* source = nullptr;
+   if (isCall)
+      source = CallModel::instance()->getCall(e->mimeData()->data(MIME_CALLID));
    Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
    CallModel::instance()->setData(idxAt,act,Call::Role::DropPosition);
-   m_pParent->m_pView->setHoverState(idxAt);
+   if ((!isCall) || CallModel::instance()->getIndex(source) != idxAt)
+      m_pParent->m_pView->setHoverState(idxAt);
+   else
+      m_pParent->m_pView->cancelHoverState();
    return true;
 }
 

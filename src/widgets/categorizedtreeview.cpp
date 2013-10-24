@@ -246,7 +246,7 @@ CallModel::DropPayloadType CategorizedTreeView::payloadType(const QMimeData* dat
 void CategorizedTreeView::cancelHoverState()
 {
    if (m_HoverIdx.isValid()) {
-      ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
+      ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,Call::Role::DropState);
       m_HoverIdx = QModelIndex();
    }
 }
@@ -255,7 +255,7 @@ void CategorizedTreeView::setHoverState(const QModelIndex& idx)
 {
    if (idx != m_HoverIdx) {
       cancelHoverState();
-      model()->setData(idx,1,300);
+      model()->setData(idx,1,Call::Role::DropState);
       m_HoverIdx = idx;
    }
 }
