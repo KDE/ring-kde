@@ -158,6 +158,7 @@ void AlsaPluginModel::reload()
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    m_lDeviceList = configurationManager.getAudioPluginList();
    emit layoutChanged();
+   emit dataChanged(index(0,0),index(m_lDeviceList.size()-1,0));
 }
 
 
@@ -238,6 +239,7 @@ void InputDeviceModel::reload()
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    m_lDeviceList = configurationManager.getAudioInputDeviceList  ();
    emit layoutChanged();
+   emit dataChanged(index(0,0),index(m_lDeviceList.size()-1,0));
 }
 
 
@@ -295,6 +297,7 @@ QModelIndex OutputDeviceModel::currentDevice() const
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList currentDevices = configurationManager.getCurrentAudioDevicesIndex();
    const int idx = currentDevices[AudioSettingsModel::DeviceIndex::OUTPUT].toInt();
+
    if (idx >= m_lDeviceList.size())
       return QModelIndex();
    return index(idx,0);
@@ -318,6 +321,7 @@ void OutputDeviceModel::reload()
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    m_lDeviceList = configurationManager.getAudioOutputDeviceList();
    emit layoutChanged();
+   emit dataChanged(index(0,0),index(m_lDeviceList.size()-1,0));
 }
 
 /****************************************************************
@@ -366,6 +370,40 @@ bool AudioManagerModel::setData( const QModelIndex& index, const QVariant &value
    Q_UNUSED(value)
    Q_UNUSED(role)
    return false;
+}
+
+QModelIndex AudioManagerModel::currentManager() const
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   const QString manager = configurationManager.getAudioManager();
+      if (manager == ManagerName::PULSEAUDIO)
+         return index((int)Manager::PULSE,0);
+      else if (manager == ManagerName::ALSA)
+         return index((int)Manager::ALSA,0);
+      return QModelIndex();
+}
+
+void AudioManagerModel::setCurrentManager(const QModelIndex& idx)
+{
+   if (!idx.isValid())
+      return;
+
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   switch (static_cast<Manager>(idx.row())) {
+      case Manager::PULSE:
+         configurationManager.setAudioManager(ManagerName::PULSEAUDIO);
+         AudioSettingsModel::instance()->reload();
+         break;
+      case Manager::ALSA:
+         configurationManager.setAudioManager(ManagerName::ALSA);
+         AudioSettingsModel::instance()->reload();
+         break;
+   };
+}
+
+void AudioManagerModel::setCurrentManager(int idx)
+{
+   setCurrentManager(index(idx,0));
 }
 
 /****************************************************************
@@ -445,4 +483,5 @@ void RingtoneDeviceModel::reload()
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    m_lDeviceList = configurationManager.getAudioOutputDeviceList();
    emit layoutChanged();
+   emit dataChanged(index(0,0),index(m_lDeviceList.size()-1,0));
 }

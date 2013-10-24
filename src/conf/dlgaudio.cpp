@@ -62,7 +62,9 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
-   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , AudioSettingsModel::instance(),SLOT(reload()));
+   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , 
+            AudioSettingsModel::instance()->audioManagerModel(),SLOT(setCurrentManager(int)));
+   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , SLOT(loadAlsaSettings()));
 }
 
 ///Destructor
@@ -120,6 +122,7 @@ void DlgAudio::changed()
 void DlgAudio::loadAlsaSettings()
 {
    m_IsLoading = true;
+   AudioSettingsModel::instance()->reload();
    alsaInputDevice->setCurrentIndex    ( AudioSettingsModel::instance()->inputDeviceModel()->currentDevice().row()   );
    alsaOutputDevice->setCurrentIndex   ( AudioSettingsModel::instance()->outputDeviceModel()->currentDevice().row()  );
    alsaRingtoneDevice->setCurrentIndex ( AudioSettingsModel::instance()->ringtoneDeviceModel()->currentDevice().row());

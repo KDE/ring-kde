@@ -160,10 +160,25 @@ public:
    virtual Qt::ItemFlags flags   ( const QModelIndex& index                             ) const;
    virtual bool          setData ( const QModelIndex& index, const QVariant &value, int role);
 
+   //Getters
+   QModelIndex currentManager() const;
+
+   //Setters
+   void setCurrentManager(const QModelIndex& index);
+
+public Q_SLOTS:
+   void setCurrentManager(int idx);
+
+
 private:
    QStringList m_lDeviceList;
+   class ManagerName {
+   public:
+      constexpr static const char* PULSEAUDIO = "pulseaudio";
+      constexpr static const char* ALSA       = "alsa";
+   };
 
-   enum class Types {
+   enum class Manager {
       ALSA =0,
       PULSE=1,
    };
