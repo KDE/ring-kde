@@ -197,3 +197,10 @@ void TipAnimationWrapper::tipChanged()
    if (m_pTimer && !m_pTimer->isActive())
       emit animationStep(m_pCurrentDesc);
 }
+
+void TipAnimationWrapper::setTip(Tip* tip)
+{
+   m_CurrentImage= QImage();
+   m_pTip = tip;
+   emit tipChanged();
+}

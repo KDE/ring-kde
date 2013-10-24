@@ -50,7 +50,7 @@ public:
    void start(bool show = true);
 
    //Setter
-   void setTip(Tip* tip) {m_pTip = tip;}
+   void setTip(Tip* tip);
 
    //Getter
    const QImage& currentImage();

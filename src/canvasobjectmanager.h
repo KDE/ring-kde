@@ -197,7 +197,7 @@ private:
    int                                eventFlagToIndex( CanvasEvent events ) const;
 
    //Private methods
-   void initiateOutTransition();
+   void initiateOutTransition(bool skipAnimation = false);
    void initiateInTransition(Object nextObj,const QString& message = QString());
 
    //Tests

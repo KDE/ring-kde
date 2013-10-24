@@ -150,11 +150,11 @@ int CanvasObjectManager::eventFlagToIndex(CanvasObjectManager::CanvasEvent event
    return 0;
 }
 
-void CanvasObjectManager::initiateOutTransition()
+void CanvasObjectManager::initiateOutTransition(bool skipAnimation)
 {
 //    qDebug() << "IN OUT" << (int)m_NextObject << (int)m_CurrentObject;
    if (m_NextObject != m_CurrentObject) {
-      if (m_DisableTransition) {
+      if (m_DisableTransition || skipAnimation) {
          if (m_pTimer && m_pTimer->isActive())
             m_pTimer->stop();
          m_CurrentObject = m_NextObject;
@@ -268,16 +268,18 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
 bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
 {
 //    qDebug() << "NEW EVENT" << events << message << (int)m_CurrentState << (int)m_CurrentObject << (OBJ_DEF(m_CurrentObject).outEvent & events);
+
+   const bool singleEvent = (events & (events - 1)) == 0;
+   CanvasObjectManager::Object nextObj = eventToObject(events);
+
    //First, notify the current object of the new event, it may be discarded
    if (m_CurrentObject != CanvasObjectManager::Object::NoObject && OBJ_DEF(m_CurrentObject).outEvent & events) {
 //       qDebug() << "OUT (dsfsdf)";
-      initiateOutTransition();
+      initiateOutTransition(singleEvent && OBJ_DEF(nextObj).skipAnimation);
    }
 
    //Detect if there is multiple flags set
-   const bool singleEvent = (events & (events - 1)) == 0;
    if (singleEvent) {
-      CanvasObjectManager::Object nextObj = eventToObject(events);
 //       qDebug() << "IS SINGLE" << (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority) << (int)nextObj << (int)m_CurrentObject << (int) m_CurrentState;
       if (OBJ_DEF(nextObj).priority >= OBJ_DEF(m_CurrentObject).priority || m_CurrentState == ObjectState::TRANSITION_OUT) {
 //          qDebug() << "In IF";

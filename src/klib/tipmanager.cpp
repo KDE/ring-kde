@@ -135,6 +135,7 @@ bool TipManager::hideCurrentTip(bool skipAnimation)
 {
    if (skipAnimation) {
       m_pCurrentTip = nullptr;
+      m_pAnim.setTip(nullptr);
       emit currentTipChanged(nullptr);
       emit transitionStarted(QAbstractAnimation::Backward,QAbstractAnimation::Stopped);
    }
