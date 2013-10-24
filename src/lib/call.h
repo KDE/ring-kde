@@ -258,7 +258,7 @@ public:
    Q_PROPERTY( QString            formattedName    READ formattedName                             )
    Q_PROPERTY( QString            length           READ length                                    )
    Q_PROPERTY( bool               hasRecording     READ hasRecording                              )
-   Q_PROPERTY( bool               recording        READ recording                                 )
+   Q_PROPERTY( bool               recording        READ isRecording                               )
    Q_PROPERTY( UserActionModel*   userActionModel  READ userActionModel   CONSTANT                )
    Q_PROPERTY( QString            toHumanStateName READ toHumanStateName                          )
 
@@ -292,7 +292,7 @@ public:
    PhoneNumber*         peerPhoneNumber  () const;
    const QString        peerName         () const;
    Call::HistoryState   historyState     () const;
-   bool                 recording        () const;
+   bool                 isRecording      () const;
    Account*             account          () const;
    bool                 isHistory        () const;
    time_t               stopTimeStamp    () const;

@@ -187,7 +187,7 @@ void ActionCollection::setupAction()
 
    action_showBookmarkDock->setCheckable( true );
    action_showBookmarkDock->setChecked(ConfigurationSkeleton::displayBookmarkDock());
-   
+
    action_mute->setCheckable(true);
 
 
@@ -201,8 +201,8 @@ void ActionCollection::setupAction()
    /**/connect(action_unhold,                SIGNAL(triggered()),           this    , SLOT(unhold())                    );
    /**/connect(action_transfer,              SIGNAL(triggered()),           this    , SLOT(transfer())                  );
    /**/connect(action_record,                SIGNAL(triggered()),           this    , SLOT(record())                    );
-   /**/connect(action_mute,                  SIGNAL(toggled(bool)),         this    , SLOT(mute(bool))                  );
    /**/connect(action_mailBox,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
+   /**/connect(action_mute,                  SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(mute(bool))         );
    /**/connect(action_displayVolumeControls, SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayVolumeControls(bool)) );
    /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayDialpad(bool))        );
    /**/connect(action_displayMessageBox,     SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayMessageBox(bool))     );

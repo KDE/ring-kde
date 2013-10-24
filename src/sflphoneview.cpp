@@ -508,7 +508,7 @@ void SFLPhoneView::updateWindowCallState()
    }
    else {
       Call::State state = call->state();
-      recordActivated = call->recording();
+      recordActivated = call->isRecording();
 
       switch (state) {
          case Call::State::INCOMING:

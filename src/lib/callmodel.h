@@ -128,6 +128,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       void slotNewRecordingAvail  ( const QString& callId    , const QString& filePath);
       void slotCallChanged        ( Call* call                                        );
       void slotDTMFPlayed         ( const QString& str                                );
+      void slotRecordStateChanged ( const QString& callId    , bool state             );
       #ifdef ENABLE_VIDEO
       void slotStartedDecoding    ( const QString& callId    , const QString& shmKey  );
       void slotStoppedDecoding    ( const QString& callId    , const QString& shmKey  );

@@ -94,6 +94,7 @@ void CallModel::init()
       /**/connect(&callManager, SIGNAL(voiceMailNotify(QString,int))            , this , SLOT(slotVoiceMailNotify(QString,int))        );
       /**/connect(&callManager, SIGNAL(volumeChanged(QString,double))           , this , SLOT(slotVolumeChanged(QString,double))       );
       /**/connect(&callManager, SIGNAL(recordPlaybackFilepath(QString,QString)) , this , SLOT(slotNewRecordingAvail(QString,QString))  );
+      /**/connect(&callManager, SIGNAL(recordingStateChanged(QString,bool))     , this,  SLOT(slotRecordStateChanged(QString,bool)));
       #ifdef ENABLE_VIDEO
       /**/connect(&interface  , SIGNAL(startedDecoding(QString,QString,int,int)), this , SLOT(slotStartedDecoding(QString,QString))    );
       /**/connect(&interface  , SIGNAL(stoppedDecoding(QString,QString))        , this , SLOT(slotStoppedDecoding(QString,QString))    );
@@ -990,4 +991,15 @@ void CallModel::slotDTMFPlayed( const QString& str )
    }
    const QModelIndex& idx = getIndex(call);
    setData(idx,50, Call::Role::DTMFAnimState);
+}
+
+///Called when a recording state change
+void CallModel::slotRecordStateChanged (const QString& callId, bool state)
+{
+   Call* call = getCall(callId);
+   if (call) {
+      call->m_Recording = state;
+      emit call->changed();
+      emit call->changed(call);
+   }
 }

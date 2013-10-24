@@ -552,10 +552,8 @@ Call::State Call::state() const
 }
 
 ///Get the call recording
-bool Call::recording() const
+bool Call::isRecording() const
 {
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   const_cast<Call*>(this)->m_Recording = callManager.getIsRecording(m_CallId);
    return m_Recording;
 }
 
@@ -1075,13 +1073,7 @@ void Call::setRecord()
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Setting record " << !m_Recording << " for call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
-   bool isRecording = callManager.toggleRecording((!m_isConference)?m_CallId:m_ConfId);
-   bool oldRecStatus = m_Recording;
-   m_Recording = isRecording;
-   if (oldRecStatus != m_Recording) {
-      emit changed();
-      emit changed(this);
-   }
+   callManager.toggleRecording((!m_isConference)?m_CallId:m_ConfId);
 }
 
 ///Start the timer
@@ -1379,7 +1371,7 @@ QVariant Call::roleData(int role) const
       case Call::Role::StopTime:
          return (int) m_pStopTimeStamp;
       case Call::Role::IsRecording:
-         return recording();
+         return isRecording();
       case Call::Role::IsPresent:
          return peerPhoneNumber()->isPresent();
       case Call::Role::IsTracked:
