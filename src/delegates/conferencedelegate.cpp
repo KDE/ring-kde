@@ -430,10 +430,11 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
    option.locale = parent->locale();
    option.widget = parent;
    option.state = QStyle::State_Selected | QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;
-   option.rect = QRect(0,0,parent->width(),parent->height());
+   option.rect = QRect(0,0,parent->width()-(index.parent().isValid()?15:0),parent->height());
    QSize size = parent->itemDelegate()->sizeHint(option,index);
    QSize itemSize = size;
-   for (int i=0;i<parent->model()->rowCount(index);i++) {
+   const int rowCount = parent->model()->rowCount(index);
+   for (int i=0;i<rowCount;i++) {
       size.setHeight(size.height()+parent->itemDelegate()->sizeHint(option,index.child(i,0)).height());
    }
    if (index.parent().isValid() && index.model()->rowCount(index.parent()) -1 == index.row()) {
@@ -441,7 +442,7 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
    }
 
    //Setup the painter
-   QPixmap pixmap(parent->width(),size.height());
+   QPixmap pixmap(parent->width()-(index.parent().isValid()?15:0),size.height());
    QPainter customPainter(&pixmap);
    customPainter.eraseRect(option.rect);
    customPainter.setCompositionMode(QPainter::CompositionMode_Clear);
@@ -450,10 +451,13 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
 
    //Draw the parent
    option.rect = QRect(0,0,parent->width(),itemSize.height());
+   if (rowCount)
+      option.rect.setHeight(pixmap.height()-3);
    parent->itemDelegate()->paint(&customPainter, option, index);
+   option.rect = QRect(0,0,parent->width(),itemSize.height());
 
    //Draw the children
-   for (int i=0;i<parent->model()->rowCount(index);i++) {
+   for (int i=0;i<rowCount;i++) {
       itemSize.setHeight(parent->itemDelegate()->sizeHint(option,index.child(i,0)).height());
       option.rect = QRect(10,option.rect.y()+option.rect.height(),parent->width()-20,itemSize.height());
       option.state = QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;

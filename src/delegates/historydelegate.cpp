@@ -88,16 +88,11 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
    Q_ASSERT(index.isValid());
 
-//    const int radius = (option.rect.height() > 45) ? 7 : 5;
    const bool isBookmark = index.data(Call::Role::IsBookmark).toBool();
-//    const bool isPresent  = index.data(Call::Role::IsPresent ).toBool();
-//    const bool isTracked  = index.data(Call::Role::IsTracked ).toBool();
-//    static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
-//    static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
-
 
    painter->save();
    int iconHeight = option.rect.height() -4;
+   //Paint the "selected" or "hover" backgrounds
    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
       QStyleOptionViewItem opt2 = option;
       QPalette pal = option.palette;

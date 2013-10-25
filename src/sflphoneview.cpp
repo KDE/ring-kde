@@ -286,6 +286,12 @@ private:
          static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
          static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
 
+
+         painter.setOpacity(0.05);
+         painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+         painter.fillRect(pxm.rect(),isPresent?Qt::green:Qt::red);
+         painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
          //Paint only outside of the pixmap, it looks better
          painter.setClipRegion(ri);
          QPainterPath p;
