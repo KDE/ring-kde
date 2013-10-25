@@ -267,11 +267,14 @@ private:
    //Helper
    QPixmap drawDefaultUserPixmap(QSize size, bool displayPresence, bool isPresent) {
       //Load KDE default user pixmap
-      QPixmap pxm(KIcon("user-identity").pixmap(size));
+      QPixmap pxm(size);
+      pxm.fill(Qt::transparent);
+      QPainter painter(&pxm);
+
+      painter.drawPixmap(3,3,KIcon("user-identity").pixmap(QSize(size.height()-6,size.width()-6)));
 
       //Create a region where the pixmap is not fully transparent
       if (displayPresence) {
-         QPainter painter(&pxm);
          static QRegion r,ri;
          static bool init = false;
          if (!init) {
