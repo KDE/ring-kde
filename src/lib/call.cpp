@@ -495,7 +495,7 @@ PhoneNumber* Call::peerPhoneNumber() const
          const_cast<Call*>(this)->m_pDialNumber = new TemporaryPhoneNumber(m_pPeerPhoneNumber);
       return m_pDialNumber;
    }
-   return m_pPeerPhoneNumber?m_pPeerPhoneNumber:const_cast<PhoneNumber*>(PhoneNumber::BLANK);
+   return m_pPeerPhoneNumber?m_pPeerPhoneNumber:const_cast<PhoneNumber*>(PhoneNumber::BLANK());
 }
 
 ///Get the peer name

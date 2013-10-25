@@ -45,9 +45,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
          -Wno-error
       )
 
-      # 4.6 kdelibs versions compiled on Ubuntu 12.04 have issues with KUniqueApplication
-      # disabling it  (((HACK)))
-      SET(DISABLE_UNIQUE_APPLICATION 1 CACHE BOOLEAN "Disable KUniqueApplication")
       add_definitions( -DDISABLE_UNIQUE_APPLICATION=true )
    endif()
    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)

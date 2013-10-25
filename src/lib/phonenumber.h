@@ -105,7 +105,7 @@ public:
    Q_INVOKABLE void incrementAlternativeName(const QString& name);
 
    //Static
-   static const PhoneNumber* BLANK;
+   static const PhoneNumber* BLANK();
 
    //Helper
    QString toHash() const;
@@ -146,6 +146,7 @@ private:
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;
+   static const PhoneNumber* m_spBlank   ;
 
 Q_SIGNALS:
    void callAdded(Call* call);

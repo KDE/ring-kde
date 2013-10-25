@@ -26,16 +26,15 @@
 
 QHash<int,Call*> PhoneNumber::m_shMostUsed = QHash<int,Call*>();
 
-class PhoneNumberPrivate {
-public:
-   static PhoneNumber* initBlank()
-   {
-      PhoneNumber* blanc = new PhoneNumber("",NumberCategoryModel::other());
-      blanc->m_State = PhoneNumber::State::BLANK;
-      return blanc;
+const PhoneNumber* PhoneNumber::m_spBlank = nullptr;
+const PhoneNumber* PhoneNumber::BLANK()
+{
+   if (!m_spBlank) {
+      m_spBlank = new PhoneNumber("",NumberCategoryModel::other());
+      const_cast<PhoneNumber*>(m_spBlank)->m_State = PhoneNumber::State::BLANK;
    }
-};
-const PhoneNumber* PhoneNumber::BLANK = PhoneNumberPrivate::initBlank();
+   return m_spBlank;
+}
 
 ///Constructor
 PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat) : QObject(PhoneDirectoryModel::instance()),

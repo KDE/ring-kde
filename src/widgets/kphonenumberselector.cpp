@@ -52,5 +52,5 @@ PhoneNumber* KPhoneNumberSelector::getNumber(const Contact* contact)
       else if (contact->phoneNumbers().size() == 1)
          return contact->phoneNumbers()[0];
    }
-   return const_cast<PhoneNumber*>(PhoneNumber::BLANK);//new PhoneNumber(QString(),QString());
+   return const_cast<PhoneNumber*>(PhoneNumber::BLANK());
 }
