@@ -165,6 +165,7 @@ Tip* TipCollection::networkLost()
 {
    if (!m_spNetworkLost) {
       m_spNetworkLost = new Tip(i18n("An account went down"));
+      m_spNetworkLost->setTimeOut(10000);
    }
    return m_spNetworkLost;
 }

@@ -110,9 +110,9 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    const QFontMetrics fm(painter->font());
    painter->setPen(((opt.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
       Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-   painter->drawText(opt.rect.x()+3+16,opt.rect.y()+fm.height()-metric,nb->uri());
    const int fmh = fm.height();
-   painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-12-metric,nb->category()->icon(nb->isTracked(),nb->isPresent()).value<QPixmap>());
+   painter->drawText(opt.rect.x()+3+16,opt.rect.y()+fmh-metric,nb->uri());
+   painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-9-metric,nb->category()->icon(nb->isTracked(),nb->isPresent()).value<QPixmap>());
 }
 
 void PhoneNumberDelegate::setView(QTreeView* model)

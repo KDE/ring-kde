@@ -830,8 +830,13 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       call = internal->call_real;
       previousState = call->state();
       qDebug() << "Call found" << call << call->state();
+      const Call::State oldState = call->state();
       call->stateChanged(state);
-      if (state == Call::StateChange::HUNG_UP)
+      //The second clause isn't required, but it does happen when errors happen
+      //if the error is reported afterwards, the call may be forgotten in this list
+      if (state == Call::StateChange::HUNG_UP
+         || (oldState != Call::State::OVER && call->state() == Call::State::OVER)
+         || call->state() == Call::State::ERROR)
          removeCall(call);
    }
 
@@ -969,11 +974,8 @@ void CallModel::slotCallChanged(Call* call)
    }
    InternalStruct* callInt = m_sPrivateCallList_call[call];
    if (callInt) {
-      const int idxOf = m_lInternalModel.indexOf(callInt);
-      if (idxOf != -1) {
-         const QModelIndex idx = index(idxOf,0,QModelIndex());
-         emit dataChanged(idx,idx);
-      }
+      const QModelIndex idx = getIndex(call);
+      emit dataChanged(idx,idx);
    }
 }
 

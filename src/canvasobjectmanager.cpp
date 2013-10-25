@@ -56,7 +56,8 @@ const CanvasObjectManager::CanvasElement CanvasObjectManager::elements[ELEMENT_C
                                                                                                                  |E::CALL_RINGING      , false , true   , false},
    /*5 AutoComplete */ {_(Type)WIDGET , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::CALL_DIALING_CHANGED    , E::CALL_STATE_CHANGED
                                                                                                                  | E::CALL_ENDED
-                                                                                                                 | E::CALL_RINGING     , false , false  , true },
+                                                                                                                 | E::CALL_RINGING
+                                                                                                                 | E::CALL_BUSY        , false , false  , true },
    /*6 DropInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::DRAG_ENTER|E::DRAG_MOVE , E::DRAG_LEAVE|E::DROP, false , false  , false},
    /*7 ConfInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)LOW        , E::CALL_COUNT_CHANGED      , E::ANY               , false , false  , false},
    /*8 AccountDown  */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::UNREGISTERED_ACCOUNT    , E::ANY               , false , true   , false},
