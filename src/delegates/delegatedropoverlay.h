@@ -59,6 +59,7 @@ private:
 
 private Q_SLOTS:
    void changeVisibility();
+   void slotLayoutChanged();
 };
 
 #endif

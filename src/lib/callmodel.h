@@ -63,7 +63,6 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       Q_INVOKABLE Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
       Q_INVOKABLE void  attendedTransfer ( Call* toTransfer , Call* target              );
       Q_INVOKABLE void  transfer         ( Call* toTransfer , const PhoneNumber* target );
-      Q_INVOKABLE void  removeCall       ( Call* call                                   );
       QModelIndex getIndex               ( Call* call                                   );
 
       //Conference related
@@ -71,7 +70,6 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       Q_INVOKABLE bool mergeConferences         ( Call* conf1, Call* conf2      );
       Q_INVOKABLE bool addParticipant           ( Call* call2, Call* conference );
       Q_INVOKABLE bool detachParticipant        ( Call* call                    );
-      Q_INVOKABLE void removeConference         ( Call* conf                    );
 
       //Getters
       Q_INVOKABLE bool     isValid             ();
@@ -105,8 +103,9 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       void init();
       Call* addCall          ( Call* call                , Call* parent = nullptr );
       Call* addConference    ( const QString& confID                              );
-      bool  changeConference ( const QString& confId, const QString& state        );
+//       bool  changeConference ( const QString& confId, const QString& state        );
       void  removeConference ( const QString& confId                              );
+      void  removeCall       ( Call* call       , bool noEmit = false             );
       Call* addIncomingCall  ( const QString& callId                              );
       Call* addRingingCall   ( const QString& callId                              );
 
@@ -121,6 +120,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       //Helpers
       bool isPartOf(const QModelIndex& confIdx, Call* call);
       void initRoles();
+      void removeConference       ( Call* conf                    );
 
    private Q_SLOTS:
       void slotCallStateChanged   ( const QString& callID    , const QString &state   );
@@ -151,8 +151,6 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       void conferenceChanged       ( Call* conf                              );
       ///Emitted when a conference is removed
       void conferenceRemoved       ( Call* conf                              );
-      ///Emitted just before a conference is removed
-      void aboutToRemoveConference ( Call* conf                              );
       ///Emitted when a new voice mail is available
       void voiceMailNotify         ( const QString& accountID , int    count );
       ///Emitted when the volume change

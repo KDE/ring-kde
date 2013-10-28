@@ -37,7 +37,8 @@
 
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
-  : QTreeView(parent),m_Type(CategorizedTreeView::ViewType::Other)
+  : QTreeView(parent),m_Type(CategorizedTreeView::ViewType::Other),
+  m_InitSignals(false)
 {
 }
 
@@ -63,6 +64,8 @@ void CategorizedTreeView::contextMenuEvent ( QContextMenuEvent * e ) {
 
 void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
 {
+   if (!m_InitSignals)
+      initSignals();
    if (m_HoverIdx.isValid()) {
       ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
       m_HoverIdx = QModelIndex();
@@ -75,6 +78,8 @@ void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
 
 void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
 {
+   if (!m_InitSignals)
+      initSignals();
    const QModelIndex& idxAt = indexAt(e->pos());
    const CallModel::DropPayloadType type = payloadType(e->mimeData());
    bool accept = false;
@@ -105,6 +110,8 @@ void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
 
 void CategorizedTreeView::dropEvent( QDropEvent* e )
 {
+   if (!m_InitSignals)
+      initSignals();
    const QModelIndex  newIdx = indexAt(e->pos());
    //HACK client get invalid indexes unless I do this, find out why
 
@@ -116,6 +123,8 @@ void CategorizedTreeView::dropEvent( QDropEvent* e )
 
 void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
 {
+   if (!m_InitSignals)
+      initSignals();
    const QModelIndex& idxAt = indexAt(e->pos());
    e->acceptProposedAction();
 //    e->accept();
@@ -134,6 +143,8 @@ void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
 
 void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)
 {
+   if (!m_InitSignals)
+      initSignals();
    setItemDelegate(delegate);
 }
 
@@ -258,4 +269,10 @@ void CategorizedTreeView::setHoverState(const QModelIndex& idx)
       model()->setData(idx,1,Call::Role::DropState);
       m_HoverIdx = idx;
    }
+}
+
+void CategorizedTreeView::initSignals()
+{
+   connect(model(),SIGNAL(layoutChanged()),SLOT(cancelHoverState()));
+   m_InitSignals = true;
 }

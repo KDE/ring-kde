@@ -249,7 +249,7 @@ bool CallModel::isValid()
 ///Get the call associated with this index
 Call* CallModel::getCall( const QModelIndex& idx              ) const
 {
-   if (idx.data(Call::Role::Object).canConvert<Call*>())
+   if (idx.isValid() && rowCount(idx.parent()) > idx.row() && idx.data(Call::Role::Object).canConvert<Call*>())
       return qvariant_cast<Call*>(idx.data(Call::Role::Object));
    return nullptr;
 }
@@ -319,7 +319,7 @@ Call* CallModel::addRingingCall(const QString& callId)
 }
 
 ///Remove a call and update the internal structure
-void CallModel::removeCall(Call* call)
+void CallModel::removeCall(Call* call, bool noEmit)
 {
    InternalStruct* internal = m_sPrivateCallList_call[call];
 
@@ -352,7 +352,8 @@ void CallModel::removeCall(Call* call)
       if (topLevel->call_real->isConference() && !topLevel->m_lChildren.size())
          removeConference(topLevel->call_real);
    }
-   emit layoutChanged();
+   if (!noEmit)
+      emit layoutChanged();
 } //removeCall
 
 
@@ -493,22 +494,22 @@ bool CallModel::mergeConferences(Call* conf1, Call* conf2)
 }
 
 ///Executed when the daemon signal a modification in an existing conference. Update the call list and update the TreeView
-bool CallModel::changeConference(const QString& confId, const QString& state)
-{
-   Q_UNUSED(state)
-   qDebug() << "Conf changed";
-
-   if (!m_sPrivateCallList_callId[confId]) {
-      qDebug() << "The conference does not exist";
-      return false;
-   }
-
-   if (!m_sPrivateCallList_callId[confId]->index.isValid()) {
-      qDebug() << "The conference item does not exist";
-      return false;
-   }
-   return true;
-} //changeConference
+// bool CallModel::changeConference(const QString& confId, const QString& state)
+// {
+//    Q_UNUSED(state)
+//    qDebug() << "Conf changed";
+// 
+//    if (!m_sPrivateCallList_callId[confId]) {
+//       qDebug() << "The conference does not exist" << ;
+//       return false;
+//    }
+// 
+//    if (!m_sPrivateCallList_callId[confId]->index.isValid()) {
+//       qDebug() << "The conference item does not exist";
+//       return false;
+//    }
+//    return true;
+// } //changeConference
 
 ///Remove a conference from the model and the TreeView
 void CallModel::removeConference(const QString &confId)
@@ -527,7 +528,7 @@ void CallModel::removeConference(Call* call)
       qDebug() << "Cannot remove conference: call not found";
       return;
    }
-   removeCall(call);
+   removeCall(call,true);
 }
 
 
@@ -588,6 +589,10 @@ QVariant CallModel::data( const QModelIndex& idx, int role) const
       InternalStruct* intList = m_lInternalModel[idx.parent().row()];
       if (intList->conference == true && intList->m_lChildren.size() > idx.row() && intList->m_lChildren[idx.row()])
          call = intList->m_lChildren[idx.row()]->call_real;
+   }
+   if (!call) {
+      qWarning() << "Call not found" << idx.row() << idx.isValid() << m_lInternalModel.size() << idx.parent().isValid() << idx.parent().row() << rowCount(idx.parent());
+      return QVariant();
    }
    return call?call->roleData((Call::Role)role):QVariant();
 }
@@ -661,6 +666,8 @@ QModelIndex CallModel::index( int row, int column, const QModelIndex& parentIdx)
    else if (row >= 0 && parentIdx.isValid() && m_lInternalModel[parentIdx.row()]->m_lChildren.size() > row) {
       return createIndex(row,column,m_lInternalModel[parentIdx.row()]->m_lChildren[row]);
    }
+   if (!parentIdx.isValid())
+      qWarning() << "Invalid index" << row << column << "model size" << m_lInternalModel.size();
    return QModelIndex();
 }
 
@@ -877,17 +884,27 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
    Call* conf = confInt->call_real;
    qDebug() << "Changing conference state" << conf << confID;
    if (conf && dynamic_cast<Call*>(conf)) { //Prevent a race condition between call and conference
-      if (!changeConference(confID, state)) {
-         qDebug() << "Changing conference failed";
+      if (!getIndex(conf).isValid()) {
+         qWarning() << "The conference item does not exist";
          return;
       }
-      conf->stateChanged(state);
-      CallManagerInterface& callManager = DBus::CallManager::instance();
-      QStringList participants = callManager.getParticipantList(confID);
 
+      //TODO check if the state changed first
+      conf->stateChanged(state); //TODO enable again
+      CallManagerInterface& callManager = DBus::CallManager::instance();
+      const QStringList participants = callManager.getParticipantList(confID);
+
+      qDebug() << "The conf has" << confInt->m_lChildren.size() << "calls, daemon has" <<participants.size();
+      
+      //First remove old participants, add them back to the top level list
       foreach(InternalStruct* child,confInt->m_lChildren) {
-         if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->state() != Call::State::OVER)
+         if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->state() != Call::State::OVER) {
+            qDebug() << "Remove" << child->call_real << "from" << conf;
+            child->m_pParent = nullptr;
             m_lInternalModel << child;
+            const QModelIndex idx = getIndex(child->call_real);
+//             emit layoutChanged();
+         }
       }
       confInt->m_lChildren.clear();
       foreach(const QString& callId,participants) {
@@ -906,13 +923,46 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
 
       //The daemon often fail to emit the right signal, cleanup manually
       foreach(InternalStruct* topLevel, m_lInternalModel) {
-         if (topLevel->call_real->isConference() && !topLevel->m_lChildren.size())
+         if (topLevel->call_real->isConference() && !topLevel->m_lChildren.size()) {
             removeConference(topLevel->call_real);
+         }
       }
 
+      //Test if there is no inconsistencies between the daemon and the client
+      const QStringList deamonCallList = callManager.getCallList();
+      foreach(const QString& callId, deamonCallList) {
+         const QMap<QString,QString> callDetails = callManager.getCallDetails(callId);
+         InternalStruct* callInt = m_sPrivateCallList_callId[callId];
+         if (callInt) {
+            const QString confId = callDetails[Call::DetailsMapFields::CONF_ID];
+            if (callInt->m_pParent) {
+               if (!confId.isEmpty()  && callInt->m_pParent->call_real->confId() != confId) {
+                  qWarning() << "Conference parent mismatch";
+               }
+               else if (confId.isEmpty() ){
+                  qWarning() << "Call:" << callId << "should not be part of a conference";
+                  callInt->m_pParent = nullptr;
+               }
+            }
+            else if (!confId.isEmpty()) {
+               qWarning() << "Found an orphan call";
+               InternalStruct* confInt2 = m_sPrivateCallList_callId[confId];
+               if (confInt2 && confInt2->call_real->isConference() && !callInt->call_real->isConference()) {
+                  m_lInternalModel.removeAll(callInt);
+                  if (confInt2->m_lChildren.indexOf(callInt) == -1)
+                     confInt2->m_lChildren << callInt;
+               }
+            }
+         }
+         else
+            qWarning() << "Conference: Call from call list not found in internal list";
+      }
+
+      //TODO force reload all conferences too
+
       const QModelIndex idx = index(m_lInternalModel.indexOf(confInt),0,QModelIndex());
-      emit dataChanged(idx, idx);
       emit layoutChanged();
+      emit dataChanged(idx, idx);
       emit conferenceChanged(conf);
    }
    else {
@@ -924,8 +974,8 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
 void CallModel::slotConferenceRemoved(const QString &confId)
 {
    Call* conf = getCall(confId);
-   emit aboutToRemoveConference(conf);
    removeConference(confId);
+   emit layoutChanged();
    emit conferenceRemoved(conf);
 }
 

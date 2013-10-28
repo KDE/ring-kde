@@ -206,6 +206,7 @@ public:
       constexpr static const char* STATE             = "CALL_STATE"     ;
       constexpr static const char* TYPE              = "CALL_TYPE"      ;
       constexpr static const char* TIMESTAMP_START   = "TIMESTAMP_START";
+      constexpr static const char* CONF_ID           = "CONF_ID"        ;
    };
 
    ///If the call is incoming or outgoing

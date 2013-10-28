@@ -49,7 +49,6 @@ class CategorizedTreeView : public QTreeView
    void setDelegate(QStyledItemDelegate* delegate);
    void setViewType(ViewType type) {m_Type = type;}
 
-   void cancelHoverState();
    void setHoverState(const QModelIndex& idx);
 
   protected:
@@ -67,13 +66,18 @@ class CategorizedTreeView : public QTreeView
 
   private:
    ViewType m_Type;
+   bool     m_InitSignals;
 
    //Helper
    static CallModel::DropPayloadType payloadType(const QMimeData* data);
+   void initSignals();
 
   Q_SIGNALS:
    void contextMenuRequest(QModelIndex);
    void itemDoubleClicked(QModelIndex);
+   
+public Q_SLOTS:
+   void cancelHoverState();
 };
 
 #endif

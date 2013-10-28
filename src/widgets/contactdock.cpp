@@ -201,7 +201,7 @@ void ContactDock::slotContextMenu(QModelIndex index)
 
 void ContactDock::slotDoubleClick(const QModelIndex& index)
 {
-   QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
+   const QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CONTACT)
@@ -305,6 +305,7 @@ void ContactDock::callAgain()
       Call* call = CallModel::instance()->addDialingCall(m_pCurrentContact->formattedName(), AccountListModel::currentAccount());
       if (call) {
          call->setDialNumber(number);
+         call->setAccount(number->account());
          call->setPeerName(m_pCurrentContact->formattedName());
          call->performAction(Call::Action::ACCEPT);
       }
