@@ -171,8 +171,8 @@ private:
    };
 
    //Constants
-   constexpr static const char EVENT_COUNT   = 20;
-   constexpr static const char ELEMENT_COUNT = 9 ;
+   static const char EVENT_COUNT   = 20;
+   static const char ELEMENT_COUNT = 9 ;
 
    //Attributes
    CanvasObjectManager::Object          m_CurrentObject      ;

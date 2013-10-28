@@ -36,8 +36,8 @@
 #include <lib/callmodel.h>
 #include <delegates/autocompletiondelegate.h>
 
-constexpr static const int TOOLBAR_HEIGHT = 72;
-constexpr static const int MARGINS        = 15;
+static const int TOOLBAR_HEIGHT = 72;
+static const int MARGINS        = 15;
 
 AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent)
 {

@@ -23,7 +23,7 @@
 
 #include <lib/numbercompletionmodel.h>
 
-constexpr static const int RIGHT_MARGIN = 2;
+static const int RIGHT_MARGIN = 2;
 
 AutoCompletionDelegate::AutoCompletionDelegate() : QStyledItemDelegate()
 {
