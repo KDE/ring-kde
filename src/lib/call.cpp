@@ -155,13 +155,13 @@ AbstractContactBackend* Call::contactBackend ()
 }
 
 ///Constructor
-Call::Call(Call::State startState, const QString& callId, const QString& peerName, const QString& peerNumber, const QString& account)
+Call::Call(Call::State startState, const QString& callId, const QString& peerName, PhoneNumber* number, Account* account)
    :  QObject(CallModel::instance()),CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
    m_pImModel(nullptr),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
-   m_PeerName(peerName),m_pPeerPhoneNumber(PhoneDirectoryModel::instance()->getNumber(peerNumber,AccountListModel::instance()->getAccountById(account))),
+   m_PeerName(peerName),m_pPeerPhoneNumber(number),
    m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
-   m_Account = AccountListModel::instance()->getAccountById(account);
+   m_Account = account;
    Q_ASSERT(!callId.isEmpty());
    setObjectName("Call:"+callId);
    changeCurrentState(startState);
@@ -223,11 +223,13 @@ Call* Call::buildExistingCall(QString callId)
 
    qDebug() << "Constructing existing call with details : " << details;
 
-   QString    peerNumber  = details[ Call::DetailsMapFields::PEER_NUMBER ];
-   QString    peerName    = details[ Call::DetailsMapFields::PEER_NAME   ];
-   QString    account     = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
-   Call::State startState = startStateFromDaemonCallState(details[Call::DetailsMapFields::STATE], details[Call::DetailsMapFields::TYPE]);
-   Call* call             = new Call(startState, callId, peerName, peerNumber, account);
+   const QString peerNumber  = details[ Call::DetailsMapFields::PEER_NUMBER ];
+   const QString peerName    = details[ Call::DetailsMapFields::PEER_NAME   ];
+   const QString account     = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
+   Call::State   startState  = startStateFromDaemonCallState(details[Call::DetailsMapFields::STATE], details[Call::DetailsMapFields::TYPE]);
+   Account*      acc         = AccountListModel::instance()->getAccountById(account);
+   PhoneNumber*  nb          = PhoneDirectoryModel::instance()->getNumber(peerNumber,acc);
+   Call*         call        = new Call(startState, callId, peerName, nb, acc);
    call->m_Recording      = callManager.getIsRecording(callId);
    call->m_HistoryState   = historyStateFromType(details[Call::HistoryMapFields::STATE]);
 
@@ -255,7 +257,7 @@ Call* Call::buildExistingCall(QString callId)
 ///Build a call from a dialing call (a call that is about to exist)
 Call* Call::buildDialingCall(const QString& callId, const QString & peerName, Account* account)
 {
-   Call* call = new Call(Call::State::DIALING, callId, peerName, "", account->id());
+   Call*         call     = new Call(Call::State::DIALING, callId, peerName, nullptr, account);
    call->m_HistoryState = NONE;
    return call;
 }
@@ -266,11 +268,12 @@ Call* Call::buildIncomingCall(const QString& callId)
    CallManagerInterface & callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
 
-   QString from     = details[ Call::DetailsMapFields::PEER_NUMBER ];
-   QString account  = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
-   QString peerName = details[ Call::DetailsMapFields::PEER_NAME   ];
-
-   Call* call = new Call(Call::State::INCOMING, callId, peerName, from, account);
+   const QString from     = details[ Call::DetailsMapFields::PEER_NUMBER ];
+   const QString account  = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
+   const QString peerName = details[ Call::DetailsMapFields::PEER_NAME   ];
+   Account*      acc      = AccountListModel::instance()->getAccountById(account);
+   PhoneNumber*  nb       = PhoneDirectoryModel::instance()->getNumber(from,acc);
+   Call* call = new Call(Call::State::INCOMING, callId, peerName, nb, acc);
    call->m_HistoryState = MISSED;
    if (call->peerPhoneNumber()) {
       call->peerPhoneNumber()->addCall(call);
@@ -287,8 +290,10 @@ Call* Call::buildRingingCall(const QString & callId)
    const QString from     = details[ Call::DetailsMapFields::PEER_NUMBER ];
    const QString account  = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
    const QString peerName = details[ Call::DetailsMapFields::PEER_NAME   ];
+   Account*      acc      = AccountListModel::instance()->getAccountById(account);
+   PhoneNumber*  nb       = PhoneDirectoryModel::instance()->getNumber(from,acc);
 
-   Call* call = new Call(Call::State::RINGING, callId, peerName, from, account);
+   Call* call = new Call(Call::State::RINGING, callId, peerName, nb, acc);
    call->m_HistoryState = HistoryState::OUTGOING;
 
    if (call->peerPhoneNumber()) {
@@ -307,7 +312,9 @@ Call* Call::buildRingingCall(const QString & callId)
 Call* Call::buildHistoryCall(const QString & callId, time_t startTimeStamp, time_t stopTimeStamp, 
                              const QString& accId, const QString& name, const QString& number, const QString& type)
 {
-   Call* call              = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, number, accId );
+   Account*      acc       = AccountListModel::instance()->getAccountById(accId);
+   PhoneNumber*  nb        = PhoneDirectoryModel::instance()->getNumber(number,acc);
+   Call*         call      = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, nb, acc );
 
    call->m_pStopTimeStamp  = stopTimeStamp ;
    call->m_pStartTimeStamp = startTimeStamp;
@@ -657,7 +664,7 @@ void Call::setDialNumber(const QString& number)
    }
    if (m_pDialNumber)
       m_pDialNumber->setUri(number);
-   emit dialNumberChanged(number);
+   emit dialNumberChanged(m_pDialNumber->uri());
    emit changed();
    emit changed(this);
 }
@@ -668,6 +675,9 @@ void Call::setDialNumber(const PhoneNumber* number)
    if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
       m_pDialNumber = new TemporaryPhoneNumber(number);
    }
+   if (m_pDialNumber)
+      m_pDialNumber->setUri(number->uri());
+   emit dialNumberChanged(m_pDialNumber->uri());
    emit changed();
    emit changed(this);
 }

@@ -130,7 +130,7 @@ private Q_SLOTS:
    ///Menu actions
    void showContext(const QModelIndex& index);
    void sendEmail   ();
-   void callAgain   ();
+   void callAgain   (const PhoneNumber* n = nullptr);
    void copy        ();
    void editContact ();
    void addPhone    ();

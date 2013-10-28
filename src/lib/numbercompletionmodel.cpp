@@ -244,7 +244,8 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
    }
    while(iBeg != iEnd) {
       foreach(PhoneNumber* n,iBeg.value()->numbers) {
-         set << n;
+         if (n->uri().left(m_Prefix.size()).toLower() == m_Prefix)
+            set << n;
       }
       iBeg++;
    }
@@ -270,4 +271,9 @@ uint NumberCompletionModel::getWeight(PhoneNumber* number)
    weight *= (number->uri().indexOf(m_Prefix)!= -1?3:1);
    weight *= (number->isPresent()?2:1);
    return weight;
+}
+
+QString NumberCompletionModel::prefix() const
+{
+   return m_Prefix;
 }

@@ -387,8 +387,9 @@ void HistoryDock::slotCallAgain()
    Call* call = CallModel::instance()->addDialingCall(m_pCurrentCall->peerName(), AccountListModel::currentAccount());
    if (call) {
       call->setDialNumber  ( m_pCurrentCall->peerPhoneNumber() );
-      call->setPeerName    ( m_pCurrentCall->peerName() );
-      call->performAction( Call::Action::ACCEPT   );
+      call->setAccount     ( m_pCurrentCall->account()         );
+      call->setPeerName    ( m_pCurrentCall->peerName()        );
+      call->performAction  ( Call::Action::ACCEPT              );
    }
    else {
       HelperFunctions::displayNoAccountMessageBox(this);

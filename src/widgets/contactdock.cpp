@@ -204,10 +204,19 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
    const QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
-   if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CONTACT)
-      return;
-   m_pCurrentContact = static_cast<Contact*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
-   callAgain();
+   const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
+   qDebug() << "\n\n\n\nHERE!!!!" << (int)modelItem->type();
+   if (modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
+      const Contact::PhoneNumbers nbs = *static_cast<const Contact::PhoneNumbers*>(modelItem);
+      const PhoneNumber*          nb  = nbs[index.row()];
+      qDebug() << "NUMBER" << nb << nb->uri();
+      m_pCurrentContact = nullptr;
+      callAgain(nb);
+   }
+   else if (modelItem->type() == CategorizedCompositeNode::Type::CONTACT) {
+      m_pCurrentContact = static_cast<Contact*>((modelItem)->getSelf());
+      callAgain();
+   }
 }
 
 
@@ -296,17 +305,18 @@ void ContactDock::sendEmail()
 }
 
 ///Call the same number again
-void ContactDock::callAgain()
+void ContactDock::callAgain(const PhoneNumber* n)
 {
    kDebug() << "Calling ";
    bool ok;
-   PhoneNumber* number = showNumberSelector(ok);
-   if (ok && number) {
-      Call* call = CallModel::instance()->addDialingCall(m_pCurrentContact->formattedName(), AccountListModel::currentAccount());
+   const PhoneNumber* number = n?n:showNumberSelector(ok);
+   if ( (n || ok) && number) {
+      const QString name = n?n->contact()->formattedName() : m_pCurrentContact->formattedName();
+      Call* call = CallModel::instance()->addDialingCall(name, AccountListModel::currentAccount());
       if (call) {
          call->setDialNumber(number);
          call->setAccount(number->account());
-         call->setPeerName(m_pCurrentContact->formattedName());
+         call->setPeerName(name);
          call->performAction(Call::Action::ACCEPT);
       }
       else {

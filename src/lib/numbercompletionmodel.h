@@ -31,6 +31,9 @@ class LIB_EXPORT NumberCompletionModel : public QAbstractTableModel {
 
 public:
 
+   //Properties
+   Q_PROPERTY(QString prefix READ prefix WRITE setPrefix)
+
    enum Role {
       ALTERNATE_ACCOUNT= 100,
       FORCE_ACCOUNT    = 101,
@@ -60,6 +63,7 @@ public:
    bool isUsingUnregisteredAccounts() {
       return m_UseUnregisteredAccount;
    }
+   QString prefix() const;
 
 private:
    enum class Columns {
@@ -85,6 +89,7 @@ private:
    Call*                       m_pCall                 ;
    bool                        m_Enabled               ;
    bool                        m_UseUnregisteredAccount;
+
 
 public Q_SLOTS:
    void setPrefix(const QString& str);
