@@ -120,7 +120,7 @@ void ContactProxyModel::reloadCategories()
    m_lCategoryCounter.clear();
    foreach(Contact* cont, m_pModel->getContactList()) {
       if (cont) {
-         QString val = category(cont);
+         const QString val = category(cont);
          if (!m_hCategories[val]) {
             TopLevelItem* item = new TopLevelItem(val);
             m_hCategories[val] = item;
@@ -167,6 +167,8 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
       switch (role) {
          case Qt::DisplayRole:
             return static_cast<const TopLevelItem*>(modelItem)->m_Name;
+         case AbstractContactBackend::Role::IndexedLastUsed:
+            return index.child(0,0).data(AbstractContactBackend::Role::IndexedLastUsed);
          default:
             break;
       }

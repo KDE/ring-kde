@@ -252,8 +252,8 @@ time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
 {
    time_t t = 0;
    for (int i=0;i<size();i++) {
-      if (at(1)->lastUsed() > t)
-         t = at(1)->lastUsed();
+      if (at(i)->lastUsed() > t)
+         t = at(i)->lastUsed();
    }
    return t;
 }

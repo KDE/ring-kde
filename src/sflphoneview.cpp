@@ -255,7 +255,7 @@ public:
    }
 
 private:
-   const TypedStateMachine< const char* , Call::State > callStateIcons = {{ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE}};
+   static const TypedStateMachine< const char* , Call::State > callStateIcons;
 
    constexpr static const char* icnPath[4] = {
       /* INCOMING */ ICON_HISTORY_INCOMING,
@@ -310,6 +310,20 @@ private:
       return pxm;
    }
 };
+const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {
+   {  ICON_INCOMING   ,
+      ICON_RINGING    ,
+      ICON_CURRENT    ,
+      ICON_DIALING    ,
+      ICON_HOLD       ,
+      ICON_FAILURE    ,
+      ICON_BUSY       ,
+      ICON_TRANSFER   ,
+      ICON_TRANSF_HOLD,
+      ""              ,
+      ""              ,
+      ICON_CONFERENCE}};
+
 
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)

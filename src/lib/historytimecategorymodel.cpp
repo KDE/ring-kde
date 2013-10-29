@@ -97,6 +97,9 @@ HistoryTimeCategoryModel::HistoryConst HistoryTimeCategoryModel::timeToHistoryCo
    time_t time2 = time;
    time_t currentTime;
    ::time(&currentTime);
+   if (!time || time < 0)
+      return HistoryTimeCategoryModel::HistoryConst::Never;
+
    if (currentTime - time <= 3600*24) //The future case would be a bug, but it have to be handled anyway or it will appear in "very long time ago"
       return HistoryConst::Today;
 
