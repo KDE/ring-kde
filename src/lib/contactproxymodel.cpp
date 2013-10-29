@@ -246,9 +246,9 @@ bool ContactProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction actio
                const Contact* ct = static_cast<Contact*>(modelItem->getSelf());
                if (ct) {
                   switch(ct->phoneNumbers().size()) {
-                     case 0:
+                     case 0: //Do nothing when there is no phone numbers
                         return false;
-                     case 1:
+                     case 1: //Call when there is one
                         CallModel::instance()->transfer(call,ct->phoneNumbers()[0]);
                         break;
                      default:

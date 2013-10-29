@@ -126,18 +126,18 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    m_pFilterLE->setClearButtonShown(true);
 
    QStringList sortBy;
-   sortBy << i18nc("Sort by date","Date") << i18nc("Sort by Name","Name") << i18nc("Sort by Popularity","Popularity") << i18nc("Sort by Length","Length");
+   sortBy << i18nc("Sort by date","Date") << i18nc("Sort by Name","Name") << i18nc("Sort by Popularity","Popularity") << i18nc("Sort by Length","Length") << i18nc("sort by spent time","Spent time");
    m_pSortByCBB->addItems(sortBy);
 
    setWidget(mainWidget);
    m_pTopWidget->layout()->addWidget(m_pAllTimeCB);
 
    QGridLayout* mainLayout = new QGridLayout();
-   mainLayout->addWidget(m_pLinkPB    ,1,2,3,1 );
-   mainLayout->addWidget(m_pFromL     ,0,0,1,2 );
-   mainLayout->addWidget(m_pFromDW    ,1,0,1,2 );
-   mainLayout->addWidget(m_pToL       ,2,0,1,2 );
-   mainLayout->addWidget(m_pToDW      ,3,0,1,2 );
+   mainLayout->addWidget(m_pLinkPB ,1,2,3,1 );
+   mainLayout->addWidget(m_pFromL  ,0,0,1,2 );
+   mainLayout->addWidget(m_pFromDW ,1,0,1,2 );
+   mainLayout->addWidget(m_pToL    ,2,0,1,2 );
+   mainLayout->addWidget(m_pToDW   ,3,0,1,2 );
    splitter->setStretchFactor(0,99);
    m_pBottomWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    m_pBottomWidget->layout()->addItem(mainLayout);
@@ -152,13 +152,8 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
 
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::historySortMode());
 
-   connect(m_pAllTimeCB,                   SIGNAL(toggled(bool)),            this, SLOT(enableDateRange(bool))      );
-//    connect(m_pFilterLE,                    SIGNAL(textChanged(QString)),     this, SLOT(filter(QString))            );
-//    connect(m_pFromDW  ,                    SIGNAL(changed(QDate)),           this, SLOT(updateLinkedFromDate(QDate)));
-//    connect(m_pToDW    ,                    SIGNAL(changed(QDate)),           this, SLOT(updateLinkedToDate(QDate))  );
-   connect(m_pSortByCBB,                   SIGNAL(currentIndexChanged(int)), this, SLOT(slotSetSortRole(int))       );
-//    connect(AkonadiBackend::instance(),  SIGNAL(collectionChanged()),      this, SLOT(updateContactInfo())        );
-//    connect(HistoryModel::self()         ,  SIGNAL(newHistoryCall(Call*)),    this, SLOT(newHistoryCall(Call*))      );
+   connect(m_pAllTimeCB, SIGNAL(toggled(bool)),            this, SLOT(enableDateRange(bool)) );
+   connect(m_pSortByCBB, SIGNAL(currentIndexChanged(int)), this, SLOT(slotSetSortRole(int))  );
 
 } //HistoryDock
 
@@ -176,13 +171,6 @@ HistoryDock::~HistoryDock()
    delete m_pLinkPB       ;
    delete m_pKeyPressEater;
 } //~HistoryDock
-
-
-/*****************************************************************************
- *                                                                           *
- *                                  Getters                                  *
- *                                                                           *
- ****************************************************************************/
 
 
 /*****************************************************************************
@@ -211,12 +199,16 @@ void HistoryDock::slotSetSortRole(int role)
          m_pProxyModel->setSortRole(Call::Role::Name);
          break;
       case HistoryDock::Role::Popularity:
-         //          m_pProxyModel->setSortRole(Call::Role::Name);
-         //TODO
+         HistoryModel::instance()->setCategoryRole(Call::Role::CallCount);
+         m_pProxyModel->setSortRole(Call::Role::CallCount);
          break;
       case HistoryDock::Role::Length:
          HistoryModel::instance()->setCategoryRole(Call::Role::Length);
          m_pProxyModel->setSortRole(Call::Role::Length);
+         break;
+      case HistoryDock::Role::SpentTime:
+         HistoryModel::instance()->setCategoryRole(Call::Role::TotalSpentTime);
+         m_pProxyModel->setSortRole(Call::Role::TotalSpentTime);
          break;
    }
 }
@@ -403,10 +395,7 @@ void HistoryDock::slotAddToContact()
 
 void HistoryDock::slotBookmark()
 {
-//    if (!m_IsBookmark)
-      BookmarkModel::instance()->addBookmark(m_pCurrentCall->peerPhoneNumber());
-//    else
-//       SFLPhone::app()->bookmarkDock()->removeBookmark(m_PhoneNumber);
+   BookmarkModel::instance()->addBookmark(m_pCurrentCall->peerPhoneNumber());
 }
 
 void HistoryDock::slotDoubleClick(const QModelIndex& index)

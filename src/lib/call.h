@@ -106,6 +106,8 @@ public:
       SupportPresence=126,
       IsTracked     = 127,
       CategoryIcon  = 128,
+      CallCount     = 129, /* The number of calls made with the same phone number */
+      TotalSpentTime= 130, /* The total time spent speaking to with this phone number*/
       DropState     = 300,
       DTMFAnimState = 400,
       LastDTMFidx   = 401,

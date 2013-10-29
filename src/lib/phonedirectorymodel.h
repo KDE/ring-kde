@@ -97,11 +97,12 @@ private:
       HAVE_CALLED      = 8,
       LAST_USED        = 9,
       NAME_COUNT       = 10,
-      POPULARITY_INDEX = 11,
-      BOOKMARED        = 12,
-      TRACKED          = 13,
-      PRESENT          = 14,
-      PRESENCE_MESSAGE = 15,
+      TOTAL_SECONDS    = 11,
+      POPULARITY_INDEX = 12,
+      BOOKMARED        = 13,
+      TRACKED          = 14,
+      PRESENT          = 15,
+      PRESENCE_MESSAGE = 16,
    };
 
    //Internal data structures

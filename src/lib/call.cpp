@@ -1390,6 +1390,10 @@ QVariant Call::roleData(int role) const
          return peerPhoneNumber()->supportPresence();
       case Call::Role::CategoryIcon:
          return peerPhoneNumber()->category()->icon(peerPhoneNumber()->isTracked(),peerPhoneNumber()->isPresent());
+      case Call::Role::CallCount:
+         return peerPhoneNumber()->callCount();
+      case Call::Role::TotalSpentTime:
+         return peerPhoneNumber()->totalSpentTime();
       case Call::Role::DropState:
          return property("dropState");
          break;

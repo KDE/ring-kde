@@ -92,6 +92,7 @@ public:
    bool               isBookmarked    () const;
    bool               supportPresence () const;
    QVariant           icon            () const;
+   int                totalSpentTime  () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account*       account);
@@ -143,6 +144,7 @@ private:
    bool               m_HaveCalled       ;
    uint               m_Index            ;
    bool               m_IsBookmark       ;
+   int                m_TotalSeconds     ;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;

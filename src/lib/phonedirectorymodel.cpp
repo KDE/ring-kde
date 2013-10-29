@@ -126,6 +126,13 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
             }
          }
          break;
+      case PhoneDirectoryModel::Columns::TOTAL_SECONDS:
+         switch (role) {
+            case Qt::DisplayRole:
+               return number->totalSpentTime();
+               break;
+         }
+         break;
       case PhoneDirectoryModel::Columns::WEEK_COUNT:
          switch (role) {
             case Qt::DisplayRole:
@@ -239,7 +246,7 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
    Q_UNUSED(section)
    Q_UNUSED(orientation)
    static const QString headers[] = {tr("URI"), tr("Type"), tr("Contact"), tr("Account"), tr("State"), tr("Call count"), tr("Week count"),
-   tr("Trimester count"), tr("Have Called"), tr("Last used"), tr("Name_count"), tr("Popularity_index"), tr("Bookmarked"), tr("Tracked"), tr("Present"),
+   tr("Trimester count"), tr("Have Called"), tr("Last used"), tr("Name_count"),tr("Total (in seconds)"), tr("Popularity_index"), tr("Bookmarked"), tr("Tracked"), tr("Present"),
    tr("Presence message") };
    if (role == Qt::DisplayRole) return headers[section];
    return QVariant();

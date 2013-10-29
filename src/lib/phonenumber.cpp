@@ -40,7 +40,7 @@ const PhoneNumber* PhoneNumber::BLANK()
 PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat) : QObject(PhoneDirectoryModel::instance()),
    m_Uri(stripUri(number)),m_pCategory(cat),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
    m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
-   m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false),m_IsBookmark(false)
+   m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false),m_IsBookmark(false),m_TotalSeconds(0)
 {
    setObjectName(m_Uri);
    m_hasType = cat != NumberCategoryModel::other();
@@ -132,11 +132,13 @@ void PhoneNumber::setBookmarked(bool bookmarked )
 ///Set if this number is tracking presence information
 void PhoneNumber::setTracked(bool track)
 {
-   //You can't subscribe without account
-   if (track && !m_pAccount) return;
-   m_Tracked = track;
-   DBus::PresenceManager::instance().subscribeBuddy(m_pAccount->id(),fullUri(),track);
-   emit changed();
+   if (track != m_Tracked) { //Subscribe only once
+      //You can't subscribe without account
+      if (track && !m_pAccount) return;
+      m_Tracked = track;
+      DBus::PresenceManager::instance().subscribeBuddy(m_pAccount->id(),fullUri(),track);
+      emit changed();
+   }
 }
 
 ///Return the current state of the number
@@ -213,6 +215,12 @@ QVariant PhoneNumber::icon() const
    return category()->icon(isTracked(),isPresent());
 }
 
+///The number of seconds spent with the URI (from history)
+int PhoneNumber::totalSpentTime() const
+{
+   return m_TotalSeconds;
+}
+
 ///Return all calls from this number
 QList<Call*> PhoneNumber::calls() const
 {
@@ -236,6 +244,7 @@ void PhoneNumber::addCall(Call* call)
    if (!call) return;
    m_State = PhoneNumber::State::USED;
    m_lCalls << call;
+   m_TotalSeconds += call->stopTimeStamp() - call->startTimeStamp();
    time_t now;
    ::time ( &now );
    if (now - 3600*24*7 < call->stopTimeStamp())

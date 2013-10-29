@@ -89,7 +89,8 @@ private:
       Date =0,
       Name,
       Popularity,
-      Length
+      Length,
+      SpentTime,
    };
 
 public Q_SLOTS:
