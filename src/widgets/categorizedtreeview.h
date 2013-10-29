@@ -78,6 +78,7 @@ class CategorizedTreeView : public QTreeView
    
 public Q_SLOTS:
    void cancelHoverState();
+   void setDirty(QRect rect);
 };
 
 #endif

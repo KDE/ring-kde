@@ -152,10 +152,6 @@ bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
       }
-      else if (role == AbstractContactBackend::Role::HoverState) {
-         modelItem->setHoverState(value.toInt());
-         emit dataChanged(index, index);
-      }
    }
    return false;
 }
@@ -190,8 +186,6 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             return QVariant(c->preferredEmail());
          case AbstractContactBackend::Role::DropState:
             return QVariant(modelItem->dropState());
-         case AbstractContactBackend::Role::HoverState:
-            return QVariant(modelItem->hoverState());
          case AbstractContactBackend::Role::FormattedLastUsed:
             return QVariant(HistoryTimeCategoryModel::timeToHistoryCategory(c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::IndexedLastUsed:

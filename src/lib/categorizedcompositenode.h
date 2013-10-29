@@ -37,14 +37,14 @@ public:
     virtual QObject* getSelf() const = 0;
     char dropState();
     void setDropState(const char state);
-    char hoverState();
-    void setHoverState(const char state);
+    int  hoverState();
+    void setHoverState(const int state);
     CategorizedCompositeNode* parentNode() const;
     void setParentNode(CategorizedCompositeNode* node);
 private:
     CategorizedCompositeNode::Type m_type;
     char m_DropState;
-    char m_HoverState;
+    int  m_HoverState;
     CategorizedCompositeNode* m_pParent;
 };
 

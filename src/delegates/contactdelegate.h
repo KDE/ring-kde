@@ -23,21 +23,24 @@
 #include <QtCore/QDebug>
 
 class DelegateDropOverlay;
+class PhoneNumberDelegate;
+class CategorizedTreeView          ;
 
 class ContactDelegate : public QStyledItemDelegate
 {
 public:
-   explicit ContactDelegate(QObject* parent = nullptr);
+   explicit ContactDelegate(CategorizedTreeView* parent);
 
    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
-   void setChildDelegate(QStyledItemDelegate* child);
+   void setChildDelegate(PhoneNumberDelegate* child);
 
 private:
-   DelegateDropOverlay*           m_pDelegatedropoverlay;
-   QStyledItemDelegate*           m_pChildDelegate      ;
+   DelegateDropOverlay* m_pDelegatedropoverlay;
+   PhoneNumberDelegate* m_pChildDelegate      ;
+   CategorizedTreeView* m_pView               ;
 };
 
 #endif

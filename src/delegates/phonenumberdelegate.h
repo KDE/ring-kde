@@ -20,7 +20,7 @@
 
 #include <QtGui/QStyledItemDelegate>
 
-class QTreeView;
+class CategorizedTreeView;
 
 class PhoneNumberDelegate : public QStyledItemDelegate
 {
@@ -31,9 +31,9 @@ public:
    virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
-   void setView(QTreeView* model);
+   void setView(CategorizedTreeView* model);
 private:
-   QTreeView* m_pView;
+   CategorizedTreeView* m_pView;
    bool m_Lock;
 };
 

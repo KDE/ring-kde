@@ -55,8 +55,6 @@ bool ContactView::viewportEvent( QEvent * event ) {
          const QHoverEvent* he     = static_cast<QHoverEvent*>(event);
          const QModelIndex  oldIdx = indexAt(he->oldPos());
          const QModelIndex  newIdx = indexAt(he->pos());
-         model()->setData(oldIdx,false,AbstractContactBackend::Role::HoverState);
-         model()->setData(newIdx,true,AbstractContactBackend::Role::HoverState);
       } break;
       case QEvent::Drop: {
          const QDropEvent* de      = static_cast<QDropEvent*>(event);

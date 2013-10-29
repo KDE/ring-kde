@@ -36,6 +36,10 @@
 #include <lib/abstractcontactbackend.h>
 #include "delegatedropoverlay.h"
 #include "lib/visitors/pixmapmanipulationvisitor.h"
+#include "phonenumberdelegate.h"
+#include "widgets/categorizedtreeview.h"
+
+#define BG_STATE(____) ((QStyle::State_Selected | QStyle::State_MouseOver)&____)
 
 namespace { //TODO GCC46 uncomment when dropping support for Gcc 4.6
    /*constexpr */static const int PX_HEIGHT  = 48                 ;
@@ -45,8 +49,8 @@ namespace { //TODO GCC46 uncomment when dropping support for Gcc 4.6
 }
 
 
-ContactDelegate::ContactDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pDelegatedropoverlay(nullptr),
-m_pChildDelegate(nullptr)
+ContactDelegate::ContactDelegate(CategorizedTreeView* parent) : QStyledItemDelegate(parent),m_pDelegatedropoverlay(nullptr),
+m_pChildDelegate(nullptr),m_pView(parent)
 {
 }
 
@@ -65,21 +69,33 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
    Q_ASSERT(index.isValid());
 
-//    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
    QRect fullRect = option.rect;
+   fullRect.setHeight(fullRect.height()+index.model()->rowCount(index)*(m_pChildDelegate->sizeHint(option,index.child(0,0)).height()));
+
+   //HACK There is two reliable way to set hover state, both are hacks. One is to intercept
+   //the view events using an eventFilter delegate and the other is this:
+   //The BG_STATE macro limit the number of redraw associated with irrelevant states
+   //setDirty force the phone number to redraw themselves as they need up upgrade their own
+   //background to match this one
+   CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)static_cast<const QSortFilterProxyModel*>(index.model())->mapToSource(index).internalPointer();
+   if (modelItem && BG_STATE(modelItem->hoverState()) != BG_STATE(option.state)) {
+      modelItem->setHoverState(option.state);
+      m_pView->setDirty(QRect(option.rect.x(),option.rect.y()+option.rect.height(),option.rect.width(),(fullRect.height()-option.rect.height())));
+   }
+
+   painter->setClipRect(fullRect);
+   Contact* ct = (Contact*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
 
    //BEGIN is selected
    {
-      QStyleOptionViewItem opt2 = option;
       if (index.model()->rowCount(index) && m_pChildDelegate) {
-         fullRect.setHeight(fullRect.height()+index.model()->rowCount(index)*(m_pChildDelegate->sizeHint(option,index.child(0,0)).height()));
-         opt2.rect = fullRect;
-         painter->setClipRect(fullRect);
          //Clear the area (because of all the dirty little hacks)
          painter->fillRect(fullRect,QApplication::palette().color(QPalette::Base));
       }
 
       if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
+         QStyleOptionViewItem opt2 = option;
+         opt2.rect = fullRect;
          QPalette pal = option.palette;
          pal.setBrush(QPalette::Text,QColor(0,0,0,0));
          pal.setBrush(QPalette::HighlightedText,QColor(0,0,0,0));
@@ -91,7 +107,6 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   Contact* ct = (Contact*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
 
    QPixmap pxm = PixmapManipulationVisitor::instance()->contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
    painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
@@ -130,6 +145,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 //       painter->drawText(option.rect.x()+15+PX_HEIGHT,currentHeight,i18np("%1 phone number", "%1 phone numbers", QString::number(ct->phoneNumbers().size())));
    }
 
+
    //BEGIN overlay path
    if (index.data(AbstractContactBackend::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
@@ -143,7 +159,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //END overlay path
 }
 
-void ContactDelegate::setChildDelegate(QStyledItemDelegate* child)
+void ContactDelegate::setChildDelegate(PhoneNumberDelegate* child)
 {
    m_pChildDelegate = child;
 }
@@ -174,3 +190,4 @@ void ContactDelegate::setChildDelegate(QStyledItemDelegate* child)
 //    }
 //    QProxyStyle::drawPrimitive(element, option, painter, widget);
 // }
+#undef BG_STATE

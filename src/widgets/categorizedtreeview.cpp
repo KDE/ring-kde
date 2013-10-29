@@ -276,3 +276,9 @@ void CategorizedTreeView::initSignals()
    connect(model(),SIGNAL(layoutChanged()),SLOT(cancelHoverState()));
    m_InitSignals = true;
 }
+
+
+void CategorizedTreeView::setDirty(QRect rect)
+{
+   setDirtyRegion(rect);
+}

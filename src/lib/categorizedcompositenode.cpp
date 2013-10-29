@@ -43,12 +43,12 @@ CategorizedCompositeNode::Type CategorizedCompositeNode::type() const
    return m_type;
 }
 
-char CategorizedCompositeNode::hoverState()
+int CategorizedCompositeNode::hoverState()
 {
    return m_HoverState;
 }
 
-void CategorizedCompositeNode::setHoverState(const char state)
+void CategorizedCompositeNode::setHoverState(const int state)
 {
    m_HoverState = state;
 }

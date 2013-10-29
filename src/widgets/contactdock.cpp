@@ -107,7 +107,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pView);
    m_pPhoneNumberDelegate = new PhoneNumberDelegate();
-   m_pContactDelegate = new ContactDelegate();
+   m_pContactDelegate = new ContactDelegate(m_pView);
 //    m_pView->setSelectionModel(new QItemSelectionModel(m_pView->model()));
    m_pPhoneNumberDelegate->setView(m_pView);
    m_pContactDelegate->setChildDelegate(m_pPhoneNumberDelegate);

@@ -37,6 +37,7 @@
 #include <lib/numbercategory.h>
 #include <lib/phonenumber.h>
 #include <lib/abstractcontactbackend.h>
+#include "widgets/categorizedtreeview.h"
 
 PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr),m_Lock(false)
 {
@@ -62,7 +63,8 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    opt.rect.setX((opt.rect.x()+48+6));
    painter->setClipRect(opt.rect);
 
-   //Draw the parent in the clip
+   //Draw the parent and all it's childs. This is not optimal, but dealing with
+   //Dirty regions from a delegate is worst
    //BEGIN repaint parent
    if (!m_Lock) {
       painter->save();
@@ -71,10 +73,9 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
       QStyleOptionViewItem parOpt;
       parOpt.rect = parentRect;
       //Set if the item is selected, active, hover and focus
-      parOpt.state |= QStyle::State_Enabled | (m_pView->selectionModel()->currentIndex()==parent?QStyle::State_Selected: QStyle::State_None);
-      parOpt.state |= m_pView->hasFocus()?QStyle::State_HasFocus|QStyle::State_Active:QStyle::State_None;
-      parOpt.state |= (parent.data(AbstractContactBackend::Role::HoverState).toInt()==true)?
-         opt.state & QStyle::State_MouseOver:QStyle::State_None;
+      CategorizedCompositeNode* modelItem = ((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(parent).internalPointer()));
+      parOpt.state = (QStyle::State)modelItem->hoverState();
+
       m_pView->itemDelegate()->paint(painter,parOpt,parent);
       painter->restore();
 
@@ -115,7 +116,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-9-metric,nb->category()->icon(nb->isTracked(),nb->isPresent()).value<QPixmap>());
 }
 
-void PhoneNumberDelegate::setView(QTreeView* model)
+void PhoneNumberDelegate::setView(CategorizedTreeView* model)
 {
    m_pView = model;
 }
