@@ -75,6 +75,25 @@ bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
    }
 }
 
+bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+{
+   if (!source_parent.isValid() ) { //Is a category
+      for (int i=0;i<HistoryModel::instance()->rowCount(HistoryModel::instance()->index(source_row,0,source_parent));i++) {
+         if (filterAcceptsRow(i, HistoryModel::instance()->index(source_row,0,source_parent)))
+            return true;
+      }
+   }
+   ///If date range is enabled, display only this range
+   else if (ConfigurationSkeleton::displayDataRange()) {
+      const int start = source_parent.child(source_row,0).data(Call::Role::StartTime).toInt();
+      const int stop  = source_parent.child(source_row,0).data(Call::Role::StopTime ).toInt();
+      if (!(start > m_pParent->startTime()) || !(m_pParent->stopTime() > stop))
+         return false;
+   }
+
+   return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+}
+
 ///Constructor
 HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
 {
@@ -147,13 +166,13 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    QDate date(2000,1,1);
    m_pFromDW->setDate(date);
 
-   m_CurrentFromDate = m_pFromDW->date();
-   m_CurrentToDate   = m_pToDW->date();
-
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::historySortMode());
 
    connect(m_pAllTimeCB, SIGNAL(toggled(bool)),            this, SLOT(enableDateRange(bool)) );
    connect(m_pSortByCBB, SIGNAL(currentIndexChanged(int)), this, SLOT(slotSetSortRole(int))  );
+   connect(m_pToDW,SIGNAL(changed(QDate)),this,SLOT(slotDateRangeCanched()));
+   connect(m_pFromDW,SIGNAL(changed(QDate)),this,SLOT(slotDateRangeCanched()));
+   slotDateRangeCanched();
 
 } //HistoryDock
 
@@ -407,4 +426,21 @@ void HistoryDock::slotDoubleClick(const QModelIndex& index)
       return;
    m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
    slotCallAgain();
+}
+
+void HistoryDock::slotDateRangeCanched()
+{
+   m_StopTime  = QDateTime(m_pToDW->date  ()).toTime_t() + 24*3600 - 1;
+   m_StartTime = QDateTime(m_pFromDW->date()).toTime_t();
+   m_pProxyModel->invalidate();
+}
+
+time_t HistoryDock::stopTime () const
+{
+   return m_StopTime;
+}
+
+time_t HistoryDock::startTime() const
+{
+   return m_StartTime;
 }

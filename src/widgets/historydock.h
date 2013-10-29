@@ -60,18 +60,23 @@ public:
    explicit HistoryDock(QWidget* parent = nullptr);
    virtual ~HistoryDock();
 
+   //Getters
+   time_t stopTime () const;
+   time_t startTime() const;
+
 private:
+   //Attributes
    QLabel*                m_pFromL           ;
    QLabel*                m_pToL             ;
    KDateWidget*           m_pFromDW          ;
    KDateWidget*           m_pToDW            ;
    QCheckBox*             m_pAllTimeCB       ;
    QPushButton*           m_pLinkPB          ;
-   QDate                  m_CurrentFromDate  ;
-   QDate                  m_CurrentToDate    ;
    KeyPressEater*         m_pKeyPressEater   ;
    QSortFilterProxyModel* m_pProxyModel      ;
-   
+   time_t                 m_StartTime        ;
+   time_t                 m_StopTime         ;
+
    //Menu
     KAction*     m_pCallAgain     ;
     KAction*     m_pAddContact    ;
@@ -84,7 +89,7 @@ private:
 
    //Mutator
    void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
-   
+
    enum Role {
       Date =0,
       Name,
@@ -96,6 +101,7 @@ private:
 public Q_SLOTS:
    void enableDateRange(bool disable);
    virtual void keyPressEvent(QKeyEvent* event);
+   void slotDateRangeCanched();
 
 private Q_SLOTS:
    void expandTree           (              );
@@ -117,19 +123,12 @@ class HistorySortFilterProxyModel : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   explicit HistorySortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+   explicit HistorySortFilterProxyModel(HistoryDock* parent) :
+      QSortFilterProxyModel(parent),m_pParent(parent) {}
 protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
-   {
-      if (!source_parent.isValid() ) { //Is a category
-         for (int i=0;i<HistoryModel::instance()->rowCount(HistoryModel::instance()->index(source_row,0,source_parent));i++) {
-            if (filterAcceptsRow(i, HistoryModel::instance()->index(source_row,0,source_parent)))
-               return true;
-         }
-      }
-
-      return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-   }
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
+private:
+   HistoryDock* m_pParent;
 };
 
 ///KeyPressEater: Intercept each keypress to manage it globally
