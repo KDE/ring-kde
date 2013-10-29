@@ -69,11 +69,27 @@ public:
 
 private:
 
+   //Model
+   class TopLevelItem : public CategorizedCompositeNode,public QObject {
+   friend class HistoryModel;
+   public:
+      virtual QObject* getSelf() const;
+      virtual ~TopLevelItem();
+   private:
+      explicit TopLevelItem(const QString& name, int index);
+      CallList m_lChildren;
+      int m_Index;
+      QString m_NameStr;
+      int modelRow;
+   };
+
    //Constructor
    explicit HistoryModel();
    ~HistoryModel();
 
-   bool initHistory ();
+   //Helpers
+   bool initHistory();
+   TopLevelItem* getCategory(const Call* call);
 
    //Static attributes
    static HistoryModel* m_spInstance;
@@ -82,22 +98,10 @@ private:
    static CallMap m_sHistoryCalls;
    bool m_HistoryInit;
 
-   //Model
-   class TopLevelItem : public CategorizedCompositeNode,public QObject {
-   friend class HistoryModel;
-   public:
-      virtual QObject* getSelf() const;
-      virtual ~TopLevelItem();
-   private:
-      explicit TopLevelItem(int name);
-      CallList m_lChildren;
-      int m_Name; //HistoryConst
-      QString m_NameStr;
-   };
-
    //Model categories
    QList<TopLevelItem*>         m_lCategoryCounter ;
    QHash<int,TopLevelItem*>     m_hCategories      ;
+   QHash<QString,TopLevelItem*> m_hCategoryByName  ;
    bool                         m_isContactDateInit;
    int                          m_Role             ;
    bool                         m_ShowAll          ;

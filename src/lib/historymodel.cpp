@@ -38,8 +38,8 @@
 HistoryModel* HistoryModel::m_spInstance    = nullptr;
 CallMap       HistoryModel::m_sHistoryCalls          ;
 
-HistoryModel::TopLevelItem::TopLevelItem(int name) : 
-   CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Name(name),m_NameStr(HistoryTimeCategoryModel::indexToName(name))
+HistoryModel::TopLevelItem::TopLevelItem(const QString& name, int index) : 
+   CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Index(index),m_NameStr(name)
 {}
 
 HistoryModel::TopLevelItem::~TopLevelItem() {
@@ -143,6 +143,30 @@ HistoryModel* HistoryModel::instance()
  *                                                                           *
  ****************************************************************************/
 
+HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
+{
+   TopLevelItem* category = nullptr;
+   QString name;
+   int index = -1;
+   if (m_Role == Call::Role::FuzzyDate) {
+      index = call->roleData(Call::Role::FuzzyDate).toInt();
+      name = HistoryTimeCategoryModel::indexToName(index);
+      category = m_hCategories[index];
+   }
+   else {
+      name = call->roleData(m_Role).toString();
+      category = m_hCategoryByName[name];
+   }
+   if (!category) {
+      category = new TopLevelItem(name,index);
+      category->modelRow = m_lCategoryCounter.size();
+      m_lCategoryCounter << category;
+      m_hCategories    [index] = category;
+      m_hCategoryByName[name ] = category;
+   }
+   return category;
+}
+
 ///Add to history
 void HistoryModel::add(Call* call)
 {
@@ -155,15 +179,7 @@ void HistoryModel::add(Call* call)
    }
 
    emit newHistoryCall(call);
-   const int cat = call->roleData(Call::Role::FuzzyDate).toInt();
-   if (!m_hCategories[cat]) {
-      TopLevelItem* item = new TopLevelItem(cat);
-      m_hCategories[cat] = item;
-      m_lCategoryCounter << item;
-//       emit layoutChanged();
-//       emit dataChanged(index(rowCount()-1,0),index(rowCount()-1,0));
-   }
-   m_hCategories[cat]->m_lChildren << call;
+   getCategory(call)->m_lChildren << call;
    m_sHistoryCalls[call->startTimeStamp()] = call;
    emit historyChanged();
 //    emit layoutChanged(); //Cause segfault
@@ -189,21 +205,16 @@ void HistoryModel::reloadCategories()
       return;
    beginResetModel();
    m_hCategories.clear();
+   m_hCategoryByName.clear();
    foreach(TopLevelItem* item, m_lCategoryCounter) {
       delete item;
    }
    m_lCategoryCounter.clear();
    m_isContactDateInit = false;
    foreach(Call* call, getHistory()) {
-      const int val = call->roleData(Call::Role::FuzzyDate).toInt();
-      if (!m_hCategories[val]) {
-         TopLevelItem* item = new TopLevelItem(val);
-         m_hCategories[val] = item;
-         m_lCategoryCounter << item;
-      }
-      TopLevelItem* item = m_hCategories[val];
-      if (item) {
-         item->m_lChildren << call;
+      TopLevelItem* category = getCategory(call);
+      if (category) {
+         category->m_lChildren << call;
       }
       else
          qDebug() << "ERROR count";
@@ -238,7 +249,7 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
             return static_cast<TopLevelItem*>(modelItem)->m_NameStr;
          case Call::Role::FuzzyDate:
          case Call::Role::Date:
-            return m_lCategoryCounter.size() - static_cast<TopLevelItem*>(modelItem)->m_Name;
+            return m_lCategoryCounter.size() - static_cast<TopLevelItem*>(modelItem)->m_Index;
          default:
             break;
       }
@@ -304,9 +315,9 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
    CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
    if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::CALL) {
       const Call* call = (Call*)((CategorizedCompositeNode*)(idx.internalPointer()))->getSelf();
-      const int val = call->roleData(Call::Role::FuzzyDate).toInt();
-      if (m_hCategories[val])
-         return HistoryModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
+      TopLevelItem* tli = const_cast<HistoryModel*>(this)->getCategory(call);
+      if (tli)
+         return HistoryModel::index(tli->modelRow,0);
    }
    return QModelIndex();
 }
@@ -383,6 +394,7 @@ int HistoryModel::acceptedPayloadTypes()
 void HistoryModel::setCategoryRole(Call::Role role) 
 {
    if (m_Role != role) {
-      m_Role = role;reloadCategories();
+      m_Role = role;
+      reloadCategories();
    }
 }

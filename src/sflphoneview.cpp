@@ -257,12 +257,7 @@ public:
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
 
-   constexpr static const char* icnPath[4] = {
-      /* INCOMING */ ICON_HISTORY_INCOMING,
-      /* OUTGOING */ ICON_HISTORY_OUTGOING,
-      /* MISSED   */ ICON_HISTORY_MISSED  ,
-      /* NONE     */ ""                   ,
-   };
+   static const char* icnPath[4];
 
    //Helper
    QPixmap drawDefaultUserPixmap(QSize size, bool displayPresence, bool isPresent) {
@@ -324,6 +319,12 @@ const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::call
       ""              ,
       ICON_CONFERENCE}};
 
+const char* KDEPixmapManipulation::icnPath[4] = {
+   /* INCOMING */ ICON_HISTORY_INCOMING,
+   /* OUTGOING */ ICON_HISTORY_OUTGOING,
+   /* MISSED   */ ICON_HISTORY_MISSED  ,
+   /* NONE     */ ""                   ,
+};
 
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)

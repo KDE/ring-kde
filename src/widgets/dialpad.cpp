@@ -43,19 +43,18 @@ Dialpad::Dialpad(QWidget *parent)
 {
    for (uint i=0; i < 12;i++) {
       m_pButtons[i]       = new DialpadButton( this,m_pNumbers[i] );
-      QHBoxLayout* layout = new QHBoxLayout  ( m_pButtons[i]      );
-      layout->setContentsMargins(0,0,0,0);
-      QLabel* number      = new QLabel       ( m_pNumbers[i]      );
-      QLabel* text        = new QLabel       ( m_pTexts[i]        );
-      QFontMetrics metric(m_pButtons[i]->font());
+      QHBoxLayout* layout = new QHBoxLayout  ( m_pButtons     [i]  );
+      QLabel *number(new QLabel(m_pNumbers[i])),*text(new QLabel(m_pTexts[i]));
+      static QFontMetrics metric(m_pButtons[i]->font());
       m_pButtons[i]->setMinimumHeight((30 > metric.height()+6)?30:metric.height()+6);
       gridLayout->addWidget( m_pButtons[i],i/3,i%3              );
       number->setFont      ( QFont("", m_NumberSize)            );
       number->setAlignment ( Qt::AlignRight | Qt::AlignVCenter  );
       text->setFont        ( QFont("", m_TextSize)              );
-      layout->setSpacing ( m_Spacing );
-      layout->addWidget  ( number    );
-      layout->addWidget  ( text      );
+      layout->setSpacing        ( m_Spacing );
+      layout->addWidget         ( number    );
+      layout->addWidget         ( text      );
+      layout->setContentsMargins( 0,0,0,0   );
       connect(m_pButtons[i],SIGNAL(typed(QString&)),this,SLOT(clicked(QString&)));
    }
 } //Dialpad

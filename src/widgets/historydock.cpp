@@ -221,49 +221,6 @@ void HistoryDock::slotSetSortRole(int role)
    }
 }
 
-/*****************************************************************************
- *                                                                           *
- *                             Drag and drop                                 *
- *                                                                           *
- ****************************************************************************/
-
-///Generate serializerd version of the content
-// QMimeData* HistoryTree::mimeData( const QList<QTreeWidgetItem *> items) const
-// {
-//    kDebug() << "An history call is being dragged";
-//    if (items.size() < 1) {
-//       return nullptr;
-//    }
-// 
-//    QMimeData *mimeData = new QMimeData();
-// 
-//    //Contact
-//    if (dynamic_cast<QNumericTreeWidgetItem*>(items[0])) {
-//       QNumericTreeWidgetItem* item = dynamic_cast<QNumericTreeWidgetItem*>(items[0]);
-//       if (item->widget != 0) {
-//          mimeData->setData(MIME_PHONENUMBER, item->widget->call()->getPeerPhoneNumber().toUtf8());
-//       }
-//    }
-//    else {
-//       kDebug() << "the item is not a call";
-//    }
-//    return mimeData;
-// } //mimeData
-
-///Handle what happen when serialized data is dropped
-// bool HistoryTree::dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action)
-// {
-//    Q_UNUSED( index  )
-//    Q_UNUSED( action )
-//    Q_UNUSED( parent )
-// 
-//    QByteArray encodedData = data->data(MIME_CALLID);
-// 
-//    kDebug() << "In history import"<< QString(encodedData);
-// 
-//    return false;
-// }
-
 
 /*****************************************************************************
  *                                                                           *

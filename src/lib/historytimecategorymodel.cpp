@@ -100,6 +100,7 @@ HistoryTimeCategoryModel::HistoryConst HistoryTimeCategoryModel::timeToHistoryCo
    if (!time || time < 0)
       return HistoryTimeCategoryModel::HistoryConst::Never;
 
+   //Check if part if the current Nychthemeron
    if (currentTime - time <= 3600*24) //The future case would be a bug, but it have to be handled anyway or it will appear in "very long time ago"
       return HistoryConst::Today;
 
