@@ -67,42 +67,6 @@ void Macro::nextStep()
    }
 }
 
-//Add a new macro if the current one can be saved
-Macro* MacroModel::newMacro(const QString& id)
-{
-   m_pCurrentMacro = new Macro();
-   KAction* newAction = new KAction(this);
-   m_pCurrentMacro->m_Action = newAction;
-   m_pCurrentMacro->m_Name = i18nc("New macro","New");
-   m_pCurrentMacro->m_Category = i18nc("Other category","Other");
-   m_pCurrentMacro->m_pModel = this;
-   if (id.isEmpty()) {
-      time_t curTime;
-      ::time(&curTime);
-      m_pCurrentMacro->m_Id = QString::number(curTime);
-      while (m_hMacros[m_pCurrentMacro->m_Id]) {
-         m_pCurrentMacro->m_Id += '1';
-      }
-   }
-   m_hMacros[m_pCurrentMacro->m_Id] = m_pCurrentMacro;
-   updateTreeModel(m_pCurrentMacro);
-   connect(m_pCurrentMacro,SIGNAL(changed(Macro*)),this,SLOT(changed(Macro*)));
-   emit dataChanged(index(0,0),index(m_lCategories.size()-1,0));
-   emit layoutChanged ();
-   emit selectMacro(m_pCurrentMacro);
-   newAction->setText(m_pCurrentMacro->m_Name);
-   newAction->setIcon(KIcon("view-form-action"));
-   newAction->setObjectName("action_macro"+m_pCurrentMacro->m_Id);
-   connect(newAction, SIGNAL(triggered()), m_pCurrentMacro , SLOT(execute()) );
-   emit addAction(newAction);
-   return m_pCurrentMacro;
-}
-
-Macro* MacroModel::getCurrentMacro()
-{
-   return m_pCurrentMacro;
-}
-
 QModelIndex Macro::index()
 {
    QModelIndex parent = m_pModel->index(m_pModel->m_lCategories.indexOf(m_pCat),0,QModelIndex());

@@ -44,7 +44,6 @@
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "videorenderer.h"
-#include "historytimecategorymodel.h"
 #include "tlsmethodmodel.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
@@ -158,7 +157,7 @@ AbstractContactBackend* Call::contactBackend ()
 Call::Call(Call::State startState, const QString& callId, const QString& peerName, PhoneNumber* number, Account* account)
    :  QObject(CallModel::instance()),CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL), m_isConference(false),m_pStopTimeStamp(0),
    m_pImModel(nullptr),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
-   m_PeerName(peerName),m_pPeerPhoneNumber(number),
+   m_PeerName(peerName),m_pPeerPhoneNumber(number),m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),
    m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
 {
    m_Account = account;
@@ -188,7 +187,8 @@ Call::~Call()
 Call::Call(const QString& confId, const QString& account): QObject(CallModel::instance()),CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL),
    m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pImModel(nullptr),m_ConfId(confId),
    m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
-   m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
+   m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
+   m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never)
 {
    setObjectName("Conf:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
@@ -197,8 +197,8 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
    if (m_isConference) {
       time_t curTime;
       ::time(&curTime);
-      m_pStartTimeStamp = curTime;
-      m_pTimer = new QTimer();
+      setStartTimeStamp(curTime);
+      m_pTimer = new QTimer(this);
       m_pTimer->setInterval(1000);
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
       m_pTimer->start();
@@ -234,15 +234,15 @@ Call* Call::buildExistingCall(QString callId)
    call->m_HistoryState   = historyStateFromType(details[Call::HistoryMapFields::STATE]);
 
    if (!details[ Call::DetailsMapFields::TIMESTAMP_START ].isEmpty())
-      call->m_pStartTimeStamp =  details[ Call::DetailsMapFields::TIMESTAMP_START ].toInt() ;
+      call->setStartTimeStamp(details[ Call::DetailsMapFields::TIMESTAMP_START ].toInt());
    else {
       time_t curTime;
       ::time(&curTime);
-      call->m_pStartTimeStamp = curTime  ;
+      call->setStartTimeStamp(curTime);
    }
 
 
-   call->m_pTimer = new QTimer();
+   call->m_pTimer = new QTimer(CallModel::instance());
    call->m_pTimer->setInterval(1000);
    connect(call->m_pTimer,SIGNAL(timeout()),call,SLOT(updated()));
    call->m_pTimer->start();
@@ -317,7 +317,7 @@ Call* Call::buildHistoryCall(const QString & callId, time_t startTimeStamp, time
    Call*         call      = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, nb, acc );
 
    call->m_pStopTimeStamp  = stopTimeStamp ;
-   call->m_pStartTimeStamp = startTimeStamp;
+   call->setStartTimeStamp(startTimeStamp);
 
    call->m_HistoryState    = historyStateFromType(type);
    call->m_Account         = AccountListModel::instance()->getAccountById(accId);
@@ -607,12 +607,6 @@ bool Call::isHistory()                   const
    return (state() == Call::State::OVER);
 }
 
-///Is this call selected (useful for GUIs)
-bool Call::isSelected() const
-{
-   return m_sSelectedCall == this;
-}
-
 ///This function could also be called mayBeSecure or haveChancesToBeEncryptedButWeCantTell.
 bool Call::isSecure() const {
 
@@ -700,14 +694,6 @@ void Call::setPeerName(const QString& name)
    m_PeerName = name;
 }
 
-///Set selected
-void Call::setSelected(const bool value)
-{
-   if (value) {
-      m_sSelectedCall = this;
-   }
-}
-
 ///Set the account (DIALING only, may be ignored)
 void Call::setAccount( Account* account)
 {
@@ -793,7 +779,7 @@ Call::State Call::stateChanged(const QString& newStateName)
       emit stateChanged();
    }
    if ((m_CurrentState == Call::State::HOLD || m_CurrentState == Call::State::CURRENT) && !m_pTimer) {
-      m_pTimer = new QTimer();
+      m_pTimer = new QTimer(this);
       m_pTimer->setInterval(1000);
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
       m_pTimer->start();
@@ -881,6 +867,15 @@ void Call::changeCurrentState(Call::State newState)
       emit isOver(this);
 }
 
+///Set the start timestamp and update the cache
+void Call::setStartTimeStamp(time_t stamp)
+{
+   m_pStartTimeStamp = stamp;
+   //While the HistoryConst is not directly related to the call concept,
+   //It is called to often to ignore
+   m_HistoryConst = HistoryTimeCategoryModel::timeToHistoryConst(m_pStartTimeStamp);
+}
+
 ///Send a text message
 void Call::sendTextMessage(QString message)
 {
@@ -903,7 +898,7 @@ void Call::sendTextMessage(QString message)
 ///Do nothing (literally)
 void Call::nothing()
 {
-   
+   //nop
 }
 
 void Call::error()
@@ -925,10 +920,10 @@ void Call::accept()
    Q_NOREPLY callManager.accept(m_CallId);
    time_t curTime;
    ::time(&curTime);
-   m_pStartTimeStamp = curTime;
+   setStartTimeStamp(curTime);
    this->m_HistoryState = HistoryState::INCOMING;
    if (!m_pTimer) {
-      m_pTimer = new QTimer();
+      m_pTimer = new QTimer(this);
       m_pTimer->setInterval(1000);
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
       m_pTimer->start();
@@ -943,7 +938,7 @@ void Call::refuse()
    Q_NOREPLY callManager.refuse(m_CallId);
    time_t curTime;
    ::time(&curTime);
-   m_pStartTimeStamp = curTime;
+   setStartTimeStamp(curTime);
    this->m_HistoryState = MISSED;
 }
 
@@ -1036,7 +1031,7 @@ void Call::call()
       }
       time_t curTime;
       ::time(&curTime);
-      m_pStartTimeStamp = curTime;
+      setStartTimeStamp(curTime);
       this->m_HistoryState = HistoryState::OUTGOING;
       if (peerPhoneNumber()) {
          peerPhoneNumber()->addCall(this);
@@ -1100,7 +1095,7 @@ void Call::start()
       delete m_pDialNumber;
       m_pDialNumber = nullptr;
    }
-   m_pStartTimeStamp = curTime;
+   setStartTimeStamp(curTime);
 }
 
 ///Toggle the timer
@@ -1109,7 +1104,7 @@ void Call::startStop()
    qDebug() << "Starting and stoping call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    time_t curTime;
    ::time(&curTime);
-   m_pStartTimeStamp = curTime;
+   setStartTimeStamp(curTime);
    m_pStopTimeStamp  = curTime;
 }
 
@@ -1131,7 +1126,7 @@ void Call::startWeird()
    qDebug() << "Starting call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    time_t curTime;
    ::time(&curTime);
-   m_pStartTimeStamp = curTime;
+   setStartTimeStamp(curTime);
    qDebug() << "Warning : call " << m_CallId << " had an unexpected transition of state at its start.";
 }
 
@@ -1270,7 +1265,7 @@ void Call::seekRecording(double position)
 }
 
 ///Daemon record playback stopped
-void Call::stopPlayback(QString filePath)
+void Call::stopPlayback(const QString& filePath)
 {
    if (filePath == recordingPath()) {
       emit playbackStopped();
@@ -1338,7 +1333,7 @@ QVariant Call::roleData(int role) const
          }
          break;
       case Call::Role::FuzzyDate:
-         return static_cast<int>(HistoryTimeCategoryModel::timeToHistoryConst(startTimeStamp()));
+         return (int)m_HistoryConst;
          break;
       case Call::Role::IsBookmark:
          return false;

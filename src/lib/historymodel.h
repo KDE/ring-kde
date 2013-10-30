@@ -30,7 +30,7 @@
 
 //Typedef
 typedef QMap<uint, Call*>  CallMap;
-typedef QList<Call*>          CallList;
+typedef QList<Call*>       CallList;
 
 ///HistoryModel: History call manager
 class LIB_EXPORT HistoryModel : public QAbstractItemModel {
@@ -77,7 +77,7 @@ private:
       virtual ~TopLevelItem();
    private:
       explicit TopLevelItem(const QString& name, int index);
-      CallList m_lChildren;
+      QVector<Call*> m_lChildren;
       int m_Index;
       QString m_NameStr;
       int modelRow;

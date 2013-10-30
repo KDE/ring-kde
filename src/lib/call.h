@@ -29,6 +29,7 @@ class QTimer;
 //SFLPhone
 #include "sflphone_const.h"
 #include "typedefs.h"
+#include "historytimecategorymodel.h"
 class AbstractContactBackend;
 class Account;
 class VideoRenderer;
@@ -268,7 +269,6 @@ public:
    //Read/write properties
    Q_PROPERTY( PhoneNumber*       peerPhoneNumber  READ peerPhoneNumber                           )
    Q_PROPERTY( QString            peerName         READ peerName          WRITE setPeerName       )
-   Q_PROPERTY( bool               isSelected       READ isSelected        WRITE setSelected       )
    Q_PROPERTY( QString            transferNumber   READ transferNumber    WRITE setTransferNumber )
    Q_PROPERTY( QString            recordingPath    READ recordingPath     WRITE setRecordingPath  )
    Q_PROPERTY( QString            dialNumber       READ dialNumber        WRITE setDialNumber      NOTIFY dialNumberChanged(QString))
@@ -303,7 +303,6 @@ public:
    QString              currentCodecName () const;
    bool                 isSecure         () const;
    bool                 isConference     () const;
-   bool                 isSelected       () const;
    const QString        confId           () const;
    const QString        transferNumber   () const;
    const QString        dialNumber       () const;
@@ -328,7 +327,6 @@ public:
    void setDialNumber     ( const PhoneNumber* number     );
    void setRecordingPath  ( const QString&     path       );
    void setPeerName       ( const QString&     name       );
-   void setSelected       ( const bool         value      );
    void setAccount        ( Account*           account    );
 
    //Mutators
@@ -359,6 +357,9 @@ private:
    InstantMessagingModel* m_pImModel        ;
    QTimer*                m_pTimer          ;
    UserActionModel*       m_pUserActionModel;
+
+   //Cache
+   HistoryTimeCategoryModel::HistoryConst m_HistoryConst;
 
    //Static attribute
    static AbstractContactBackend* m_pContactBackend;
@@ -423,7 +424,9 @@ private:
    void startWeird   ();
    void warning      ();
 
+   //Helpers
    void changeCurrentState(Call::State newState);
+   void setStartTimeStamp(time_t stamp);
 
 public Q_SLOTS:
    void playRecording();
@@ -432,7 +435,7 @@ public Q_SLOTS:
    void playDTMF(const QString& str);
 
 private Q_SLOTS:
-   void stopPlayback(QString filePath);
+   void stopPlayback(const QString& filePath);
    void updatePlayback(int position,int size);
    void updated();
 

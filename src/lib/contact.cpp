@@ -45,7 +45,7 @@ Contact* Contact::PhoneNumbers::contact() const
 }
 
 ///Constructor
-Contact::Contact():m_pPhoto(nullptr),
+Contact::Contact(QObject* parent):QObject(parent),m_pPhoto(nullptr),
    m_Numbers(this),m_DisplayPhoto(nullptr)
 {
 }

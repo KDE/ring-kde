@@ -159,7 +159,7 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
       foreach ( const Akonadi::Item &item, items ) {
          if ( item.hasPayload<KABC::Addressee>() ) {
             KABC::Addressee tmp = item.payload<KABC::Addressee>();
-            Contact* aContact   = new Contact();
+            Contact* aContact   = new Contact(this);
 
             //This need to be done first because of the phone numbers indexes
             aContact->setNickName       (tmp.nickName()       );

@@ -38,7 +38,6 @@
 //SFLPhone
 #include "klib/kcfg_settings.h"
 #include "sflphone.h"
-#include "klib/akonadibackend.h"
 #include "klib/helperfunctions.h"
 #include "klib/bookmarkmodel.h"
 #include "lib/historymodel.h"
@@ -49,25 +48,26 @@
 #include "../delegates/historydelegate.h"
 
 ///Constructor
-BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
+BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr),
+   m_pCallAgain(nullptr)
 {
    setObjectName("bookmarkDock");
-   QWidget* mainWidget     = new QWidget              ( this );
+   QWidget* mainWidget     = new QWidget   ( this );
+   m_pMostUsedCK           = new QCheckBox ( this );
    setupUi(mainWidget);
    m_pBottomWidget->setHidden(true);
-   m_pSortByCBB->setHidden(true);
-   m_pSortByL->setHidden(true);
+   m_pSortByCBB   ->setHidden(true);
+   m_pSortByL     ->setHidden(true);
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    setMinimumSize(250,0);
-   m_pMostUsedCK           = new QCheckBox            ( this );
 
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
    BookmarkSortFilterProxyModel* m_pProxyModel = new BookmarkSortFilterProxyModel(this);
-   m_pProxyModel->setSourceModel(BookmarkModel::instance());
-   m_pProxyModel->setFilterRole(Call::Role::Filter);
-   m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+   m_pProxyModel->setSourceModel          ( BookmarkModel::instance() );
+   m_pProxyModel->setFilterRole           ( Call::Role::Filter        );
+   m_pProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive       );
    m_pView->setModel(m_pProxyModel);
    expandTree();
 
@@ -91,7 +91,6 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 
 //    connect(m_pFilterLE                    , SIGNAL(textChanged(QString))            , this , SLOT(filter(QString))             );
    connect(m_pMostUsedCK                  , SIGNAL(toggled(bool))                   , this , SLOT(reload())                    );
-   connect(AkonadiBackend::instance()     , SIGNAL(collectionChanged())             , this , SLOT(reload())                    );
    connect(m_pView                        , SIGNAL(doubleClicked(QModelIndex))      , this , SLOT(slotDoubleClick(QModelIndex)));
    connect(m_pView                        , SIGNAL(contextMenuRequest(QModelIndex)) , this , SLOT(slotContextMenu(QModelIndex)));
    reload();
@@ -101,6 +100,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent)
 BookmarkDock::~BookmarkDock()
 {
    delete m_pMostUsedCK;
+   if (m_pMenu) delete m_pMenu;
 }
 
 

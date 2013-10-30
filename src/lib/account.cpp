@@ -556,12 +556,12 @@ DtmfType Account::DTMFType() const
 
 bool Account::presenceStatus() const
 {
-   return PresenceStatusModel::instance()->currentStatus();
+   return accountDetail(Account::MapField::Presence::CURRENT_STATUS)  == "true";
 }
 
 QString Account::presenceMessage() const
 {
-   return PresenceStatusModel::instance()->currentMessage();
+   return accountDetail(Account::MapField::Presence::CURRENT_NOTE);
 }
 
 bool Account::supportPresencePublish() const
@@ -1193,7 +1193,10 @@ void Account::reload()
          setHostname(m_hAccountDetails[Account::MapField::HOSTNAME]);
       }
       m_CurrentState = READY;
-      reloadCredentials();
+
+      //If the credential model is loaded, then update it
+      if (m_pCredentials)
+         reloadCredentials();
       emit changed(this);
    }
 }
@@ -1201,6 +1204,7 @@ void Account::reload()
 ///Reload credentials from DBUS
 void Account::reloadCredentials()
 {
+   qDebug() << "\n\nRELOAD";
    if (!m_pCredentials) {
       m_pCredentials = new CredentialModel(this);
    }

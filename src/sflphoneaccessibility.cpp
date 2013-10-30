@@ -29,6 +29,7 @@
 #include <lib/phonenumber.h>
 #include "kspeechinterfacesingleton.h"
 #include "sflphone.h"
+#include "sflphoneview.h"
 
 SFLPhoneAccessibility* SFLPhoneAccessibility::m_pInstance = nullptr;
 
@@ -99,7 +100,7 @@ QString SFLPhoneAccessibility::numberToDigit(QString number)
 void SFLPhoneAccessibility::currentCallDetails()
 {
    foreach (Call* call,CallModel::instance()->getCallList()) {
-      if (call->isSelected()) {
+      if (SFLPhone::view()->currentCall() == call) {
          QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toAscii() ));
          if (!call->peerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));

@@ -206,7 +206,7 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
                if (currentTip) {
                   if (OBJ_DEF(m_CurrentObject).lifeCycle == ObjectLifeCycle::TIMED && currentTip->timeout()) {
                      if (!m_pTimer) {
-                        m_pTimer = new QTimer();
+                        m_pTimer = new QTimer(this);
                         m_pTimer->setSingleShot(true);
                         connect(m_pTimer,SIGNAL(timeout()),this,SLOT(slotTimeout()));
                      }

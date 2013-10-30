@@ -167,8 +167,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(button_audiocodecDown,             SIGNAL(clicked())                      , this   , SLOT(moveAudioCodecDown())              );
    /**/connect(m_pVCodecUpPB,                     SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecUp())                );
    /**/connect(m_pVCodecDownPB,                   SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecDown())              );
-   /**/connect(AccountListModel::instance(),        SIGNAL(accountEnabledChanged(Account*)), this   , SLOT(otherAccountChanged())             );
-   /**/connect(AccountListModel::instance(),        SIGNAL(accountStateChanged(Account*,QString)), this   , SLOT(updateStatusLabel(Account*)) );
+   /**/connect(AccountListModel::instance(),      SIGNAL(accountEnabledChanged(Account*)), this   , SLOT(otherAccountChanged())             );
+   /**/connect(AccountListModel::instance(),      SIGNAL(accountStateChanged(Account*,QString)), this   , SLOT(updateStatusLabel(Account*)) );
    /*                                                                                                                                       */
 
    connect(treeView_accountList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(accountListChanged(QModelIndex,QModelIndex)) );
@@ -201,7 +201,7 @@ DlgAccounts::~DlgAccounts()
 }
 
 ///Save an account using the values from the widgets
-void DlgAccounts::saveAccount(QModelIndex item)
+void DlgAccounts::saveAccount(const QModelIndex& item)
 {
    const QModelIndex srcIdx = CategorizedAccountModel::instance()->mapToSource(item);
 
@@ -573,7 +573,7 @@ void DlgAccounts::otherAccountChanged()
 }
 
 ///Callback when the account change
-void DlgAccounts::accountListChanged(QModelIndex current, QModelIndex previous)
+void DlgAccounts::accountListChanged(const QModelIndex& current, const QModelIndex& previous)
 {
    saveAccount(previous);
    const QModelIndex srcPrevious = CategorizedAccountModel::instance()->mapToSource(previous);
@@ -752,7 +752,7 @@ void DlgAccounts::updateAccountStates()
 }
 
 ///Update the status label to current account state
-void DlgAccounts::updateStatusLabel(QModelIndex item)
+void DlgAccounts::updateStatusLabel(const QModelIndex& item)
 {
    const QModelIndex srcItem = CategorizedAccountModel::instance()->mapToSource(item);
    if(!srcItem.isValid())
@@ -894,7 +894,7 @@ void DlgAccounts::addCredential()
 } //addCredential
 
 ///Save and load a credential
-void DlgAccounts::selectCredential(QModelIndex item, QModelIndex previous)
+void DlgAccounts::selectCredential(const QModelIndex& item, const QModelIndex& previous)
 {
    list_credential->model()->setData(previous,edit_credential_auth->text()    , CredentialModel::Role::NAME     );
    list_credential->model()->setData(previous,edit_credential_password->text(), CredentialModel::Role::PASSWORD );

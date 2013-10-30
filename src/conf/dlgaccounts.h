@@ -89,7 +89,7 @@ public:
    explicit DlgAccounts(KConfigDialog *parent = nullptr);
    ~DlgAccounts();
 
-   void saveAccount(QModelIndex item);
+   void saveAccount(const QModelIndex& item);
 
    void cancel();
 
@@ -151,10 +151,10 @@ private Q_SLOTS:
 
    void loadVidCodecDetails        ( const QModelIndex& current, const QModelIndex& previous );
    void selectedCodecChanged       ( const QModelIndex& current, const QModelIndex& previous );
-   void updateStatusLabel          ( QModelIndex item                                        );
+   void updateStatusLabel          ( const QModelIndex& item                                 );
    void updateStatusLabel          (                                                         );
-   void accountListChanged         ( QModelIndex current, QModelIndex previous               );
-   void selectCredential           ( QModelIndex item, QModelIndex previous                  );
+   void accountListChanged         ( const QModelIndex& current, const QModelIndex& previous );
+   void selectCredential           ( const QModelIndex& item   , const QModelIndex& previous );
    void updateStatusLabel          ( Account*   account                                      );
    void updateCombo                ( int            value                                    );
    void saveCredential             (                                                         );

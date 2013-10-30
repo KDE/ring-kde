@@ -225,6 +225,8 @@ class LIB_EXPORT Account : public QObject {
             constexpr static const char* SUPPORT_SUBSCRIBE   = "Account.presenceSubscribeSupported";
             constexpr static const char* ENABLE_PUBLISH      = "Account.presencePublishEnabled"    ;
             constexpr static const char* ENABLE_SUBSCRIBE    = "Account.presenceSubscribeEnabled"  ;
+            constexpr static const char* CURRENT_STATUS      = "Account.presenceStatus"            ;
+            constexpr static const char* CURRENT_NOTE        = "Account.presenceNote"              ;
          };
          class Registration {
          public:

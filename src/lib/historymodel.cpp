@@ -288,10 +288,19 @@ int HistoryModel::rowCount( const QModelIndex& parentIdx ) const
    if ((!parentIdx.isValid()) || (!parentIdx.internalPointer())) {
       return m_lCategoryCounter.size();
    }
-   else if (!parentIdx.parent().isValid() && parentIdx.row() < m_lCategoryCounter.size()) {
-      return m_lCategoryCounter[parentIdx.row()]->m_lChildren.size();
+   else {
+      CategorizedCompositeNode* node = static_cast<CategorizedCompositeNode*>(parentIdx.internalPointer());
+      switch(node->type()) {
+         case CategorizedCompositeNode::Type::TOP_LEVEL:
+            return ((TopLevelItem*)node)->m_lChildren.size();
+         case CategorizedCompositeNode::Type::CALL:
+         case CategorizedCompositeNode::Type::NUMBER:
+         case CategorizedCompositeNode::Type::BOOKMARK:
+         case CategorizedCompositeNode::Type::CONTACT:
+         default:
+            return 0;
+      };
    }
-   return 0;
 }
 
 Qt::ItemFlags HistoryModel::flags( const QModelIndex& idx ) const
@@ -324,14 +333,24 @@ QModelIndex HistoryModel::parent( const QModelIndex& idx) const
 
 QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentIdx) const
 {
-   if (!parentIdx.isValid() && row >= 0 && m_lCategoryCounter.size() > row) {
-      return createIndex(row,column,m_lCategoryCounter[row]);
+   if (!parentIdx.isValid()) {
+      if (row >= 0 && m_lCategoryCounter.size() > row) {
+         return createIndex(row,column,(void*)m_lCategoryCounter[row]);
+      }
    }
-   else if (!parentIdx.parent().isValid()
-      && row >= 0 && parentIdx.row() >= 0
-      && m_lCategoryCounter.size() > parentIdx.row()
-      && row < m_lCategoryCounter[parentIdx.row()]->m_lChildren.size() ) {
-      return createIndex(row,column,(void*)dynamic_cast<CategorizedCompositeNode*>(m_lCategoryCounter[parentIdx.row()]->m_lChildren[row]));
+   else {
+      CategorizedCompositeNode* node = static_cast<CategorizedCompositeNode*>(parentIdx.internalPointer());
+      switch(node->type()) {
+         case CategorizedCompositeNode::Type::TOP_LEVEL:
+            if (((TopLevelItem*)node)->m_lChildren.size() > row)
+               return createIndex(row,column,(void*)static_cast<CategorizedCompositeNode*>(((TopLevelItem*)node)->m_lChildren[row]));
+            break;
+         case CategorizedCompositeNode::Type::CALL:
+         case CategorizedCompositeNode::Type::NUMBER:
+         case CategorizedCompositeNode::Type::BOOKMARK:
+         case CategorizedCompositeNode::Type::CONTACT:
+            break;
+      };
    }
    return QModelIndex();
 }

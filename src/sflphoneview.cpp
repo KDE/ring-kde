@@ -63,7 +63,6 @@
 
 //sflphone library
 #include "klib/kcfg_settings.h"
-#include "klib/akonadibackend.h"
 #include "lib/phonenumber.h"
 #include "lib/typedefs.h"
 #include "lib/dbus/configurationmanager.h"

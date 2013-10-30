@@ -22,7 +22,6 @@
 #include <KLocale>
 
 //SFLPhone
-#include "../klib/akonadibackend.h"
 #include "../lib/phonenumber.h"
 #include "../lib/numbercategory.h"
 #include "../lib/phonedirectorymodel.h"

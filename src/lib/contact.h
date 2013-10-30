@@ -76,7 +76,7 @@ private:
 
 public:
    //Constructors & Destructors
-   explicit Contact();
+   explicit Contact(QObject* parent = nullptr);
    virtual ~Contact();
 
    //Getters
@@ -93,10 +93,10 @@ public:
    const QString& group            () const;
    const QString& department       () const;
 
-   //Number related getters
-   bool isPresent() const;
-   bool isTracked() const;
-   bool supportPresence() const;
+   //Number related getters (proxies)
+   bool isPresent                  () const;
+   bool isTracked                  () const;
+   bool supportPresence            () const;
 
    //Setters
    void setPhoneNumbers   ( PhoneNumbers        );

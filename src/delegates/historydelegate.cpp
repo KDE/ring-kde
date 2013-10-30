@@ -108,7 +108,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       painter->setOpacity(0.70);
 
    const PhoneNumber* n = qvariant_cast<PhoneNumber*>(index.data(Call::Role::PhoneNu));
-   QPixmap pxm = PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>();
+   QPixmap pxm = n?PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap();
 
    //Handle history with recording
    if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
