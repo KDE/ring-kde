@@ -103,6 +103,7 @@ private:
       TRACKED          = 14,
       PRESENT          = 15,
       PRESENCE_MESSAGE = 16,
+      UID              = 17,
    };
 
    //Internal data structures

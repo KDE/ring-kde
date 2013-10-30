@@ -26,18 +26,23 @@
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "callmodel.h"
+#include "call.h"
+#include "abstractcontactbackend.h"
 
+static bool test = false;
 //Model item/index
 class NumberTreeBackend : public CategorizedCompositeNode
 {
    friend class AbstractBookmarkModel;
    public:
-      NumberTreeBackend(PhoneNumber* number): CategorizedCompositeNode(CategorizedCompositeNode::Type::BOOKMARK),m_pNumber(number){
+      NumberTreeBackend(PhoneNumber* number): CategorizedCompositeNode(CategorizedCompositeNode::Type::BOOKMARK),
+         m_pNumber(number),m_pParent(nullptr){
          Q_ASSERT(number != nullptr);
       }
       virtual QObject* getSelf() const { return nullptr; }
 
       PhoneNumber* m_pNumber;
+      AbstractBookmarkModel::TopLevelItem* m_pParent;
 };
 
 AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemModel(parent){
@@ -47,6 +52,9 @@ AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemMod
 
    //Connect
    connect(&DBus::PresenceManager::instance(),SIGNAL(newServerSubscriptionRequest(QString)),this,SLOT(slotRequest(QString)));
+   if (Call::contactBackend()) {
+      connect(Call::contactBackend(),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
+   }
 //    connect(&DBus::PresenceManager::instance(),SIGNAL(newClientSubscription(QString,bool,QString)),
 //       this,SLOT(slotIncomingNotifications(QString,bool,QString)));
 }
@@ -55,6 +63,7 @@ AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemMod
 ///Reload bookmark cateogries
 void AbstractBookmarkModel::reloadCategories()
 {
+   test = true;
    beginResetModel();
    m_hCategories.clear();
    foreach(TopLevelItem* item, m_lCategoryCounter) {
@@ -70,10 +79,12 @@ void AbstractBookmarkModel::reloadCategories()
    if (displayFrequentlyUsed()) {
       TopLevelItem* item = new TopLevelItem(tr("Most popular"));
       m_hCategories["mp"] = item;
+      item->m_Row = m_lCategoryCounter.size();
       m_lCategoryCounter << item;
       const QVector<PhoneNumber*> cl = PhoneDirectoryModel::instance()->getNumbersByPopularity();
       for (int i=0;i<((cl.size()>=10)?10:cl.size());i++) {
          NumberTreeBackend* bm = new NumberTreeBackend(cl[i]);
+         bm->m_pParent = item;
 //          bm->m_pNumber->popularityIndex() = true;
          item->m_lChildren << bm;
       }
@@ -85,19 +96,23 @@ void AbstractBookmarkModel::reloadCategories()
       if (!m_hCategories[val]) {
          TopLevelItem* item = new TopLevelItem(val);
          m_hCategories[val] = item;
+         item->m_Row = m_lCategoryCounter.size();
          m_lCategoryCounter << item;
       }
       TopLevelItem* item = m_hCategories[val];
       if (item) {
          bookmark->setBookmarked(true);
+         bm->m_pParent = item;
          item->m_lChildren << bm;
       }
       else
          qDebug() << "ERROR count";
    }
    endResetModel();
-   emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount()-1,0));
+   emit layoutAboutToBeChanged();
+   test = false;
+   emit layoutChanged();
 } //reloadCategories
 
 //Do nothing
@@ -112,7 +127,7 @@ bool AbstractBookmarkModel::setData( const QModelIndex& index, const QVariant &v
 ///Get bookmark model data CategorizedCompositeNode::Type and Call::Role
 QVariant AbstractBookmarkModel::data( const QModelIndex& index, int role) const
 {
-   if (!index.isValid())
+   if (!index.isValid() || test)
       return QVariant();
 
    CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(index.internalPointer());
@@ -149,10 +164,12 @@ QVariant AbstractBookmarkModel::headerData(int section, Qt::Orientation orientat
 ///Get the number of child of "parent"
 int AbstractBookmarkModel::rowCount( const QModelIndex& parent ) const
 {
-   if (!parent.isValid() || !parent.internalPointer())
+   if (test) return 0;
+   if (!parent.isValid())
       return m_lCategoryCounter.size();
-   else if (!parent.parent().isValid()) {
-      return m_lCategoryCounter[parent.row()]->m_lChildren.size();
+   else if (!parent.parent().isValid() && parent.row() < m_lCategoryCounter.size()) {
+      TopLevelItem* item = static_cast<TopLevelItem*>(parent.internalPointer());
+      return item->m_lChildren.size();
    }
    return 0;
 }
@@ -172,19 +189,19 @@ int AbstractBookmarkModel::columnCount ( const QModelIndex& parent) const
 }
 
 ///Get the bookmark parent
-QModelIndex AbstractBookmarkModel::parent( const QModelIndex& index) const
+QModelIndex AbstractBookmarkModel::parent( const QModelIndex& idx) const
 {
-   if (!index.isValid() || !index.internalPointer()) {
+   if (!idx.isValid() || !idx.internalPointer()) {
       return QModelIndex();
    }
-   const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(index.internalPointer());
+   const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
    if (modelItem->type() == CategorizedCompositeNode::Type::BOOKMARK) {
-      const QString val = category(static_cast<NumberTreeBackend*>(index.internalPointer()));
-      if (static_cast<const NumberTreeBackend*>(modelItem)->m_pNumber->popularityIndex() < 10)
-         return AbstractBookmarkModel::index(0,0);
-      else if (m_hCategories[val])
-         return AbstractBookmarkModel::index(m_lCategoryCounter.indexOf(m_hCategories[val]),0);
-      else AbstractBookmarkModel::index(0,0);
+      if (static_cast<const NumberTreeBackend*>(modelItem)->m_pNumber->popularityIndex() >= 0)
+         return index(0,0);
+      TopLevelItem* item = static_cast<const NumberTreeBackend*>(modelItem)->m_pParent;
+      if (item) {
+         return index(item->m_Row,0);
+      }
    }
    return QModelIndex();
 } //parent
@@ -193,9 +210,9 @@ QModelIndex AbstractBookmarkModel::parent( const QModelIndex& index) const
 QModelIndex AbstractBookmarkModel::index(int row, int column, const QModelIndex& parent) const
 {
    if (parent.isValid())
-      return createIndex(row,column,m_lCategoryCounter[parent.row()]->m_lChildren[row]);
+      return createIndex(row,column,(void*) static_cast<CategorizedCompositeNode*>(m_lCategoryCounter[parent.row()]->m_lChildren[row]));
    else {
-      return createIndex(row,column,m_lCategoryCounter[row]);
+      return createIndex(row,column,(void*) static_cast<CategorizedCompositeNode*>(m_lCategoryCounter[row]));
    }
 }
 
@@ -317,6 +334,7 @@ QVector<PhoneNumber*> AbstractBookmarkModel::serialisedToList(const QStringList&
       PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(item);
       if (nb) {
          nb->setTracked(true);
+         nb->setUid(item);
          numbers << nb;
       }
    }
@@ -341,9 +359,12 @@ AbstractBookmarkModel::TopLevelItem::TopLevelItem(QString name)
 void AbstractBookmarkModel::remove(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
-      if (modelItem->type() == CategorizedCompositeNode::Type::BOOKMARK) {
+      if (idx.parent().isValid() && idx.parent().row() < m_lCategoryCounter.size()) {
          PhoneNumber* nb = m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->m_pNumber;
+         removeRows(idx.row(),1,idx.parent());
+         m_lCategoryCounter[idx.parent().row()]->m_lChildren.removeAt(idx.row());
+         if (!m_lCategoryCounter[idx.parent().row()]->m_lChildren.size())
+            reloadCategories();
          removeBookmark(nb);
          emit layoutChanged();
       }

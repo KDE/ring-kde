@@ -37,6 +37,7 @@ class LIB_EXPORT AbstractBookmarkModel :  public QAbstractItemModel
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
+   friend class NumberTreeBackend;
    //Constructor
    virtual ~AbstractBookmarkModel() {}
    explicit AbstractBookmarkModel(QObject* parent);
@@ -104,6 +105,7 @@ private:
          explicit TopLevelItem(QString name);
          QList<NumberTreeBackend*> m_lChildren;
          QString m_Name;
+         int m_Row;
    };
 
    //Attributes

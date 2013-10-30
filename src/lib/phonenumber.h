@@ -50,6 +50,7 @@ public:
    Q_PROPERTY(QList<Call*>  calls           READ calls                    )
    Q_PROPERTY(int           popularityIndex READ popularityIndex          )
    Q_PROPERTY(bool          bookmarked      READ isBookmarked             )
+   Q_PROPERTY(QString       uid             READ uid      WRITE setUid    )
 
    ///@enum PresenceStatus: Presence status
    enum class PresenceStatus {
@@ -93,6 +94,7 @@ public:
    bool               supportPresence () const;
    QVariant           icon            () const;
    int                totalSpentTime  () const;
+   QString            uid             () const;
 
    //Setters
    Q_INVOKABLE void setAccount(Account*       account);
@@ -100,6 +102,7 @@ public:
    Q_INVOKABLE void setTracked(bool           track  );
    void             setCategory(NumberCategory* cat  );
    void             setBookmarked(bool bookmarked    );
+   void             setUid(const QString& uri        );
 
    //Mutator
    Q_INVOKABLE void addCall(Call* call);
@@ -145,6 +148,7 @@ private:
    uint               m_Index            ;
    bool               m_IsBookmark       ;
    int                m_TotalSeconds     ;
+   QString            m_Uid              ;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;

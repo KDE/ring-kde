@@ -198,6 +198,14 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
             } break;
          }
          break;
+      case PhoneDirectoryModel::Columns::UID:
+         switch (role) {
+            case Qt::DisplayRole:
+            case Qt::ToolTipRole:
+               return number->uid();
+               break;
+         }
+         break;
    }
    return QVariant();
 }
@@ -212,7 +220,7 @@ int PhoneDirectoryModel::rowCount(const QModelIndex& parent ) const
 int PhoneDirectoryModel::columnCount(const QModelIndex& parent ) const
 {
    Q_UNUSED(parent)
-   return 16;
+   return 18;
 }
 
 Qt::ItemFlags PhoneDirectoryModel::flags(const QModelIndex& index ) const
@@ -247,7 +255,7 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
    Q_UNUSED(orientation)
    static const QString headers[] = {tr("URI"), tr("Type"), tr("Contact"), tr("Account"), tr("State"), tr("Call count"), tr("Week count"),
    tr("Trimester count"), tr("Have Called"), tr("Last used"), tr("Name_count"),tr("Total (in seconds)"), tr("Popularity_index"), tr("Bookmarked"), tr("Tracked"), tr("Present"),
-   tr("Presence message") };
+   tr("Presence message"), tr("Uid") };
    if (role == Qt::DisplayRole) return headers[section];
    return QVariant();
 }

@@ -27,6 +27,7 @@ class QCheckBox;
 
 //KDE
 class KAction;
+class BookmarkSortFilterProxyModel;
 
 //SFLPhone
 #include "klib/bookmarkmodel.h"
@@ -43,6 +44,7 @@ private:
    QCheckBox*              m_pMostUsedCK ;
    QMenu*                  m_pMenu       ;
    QModelIndex             m_CurrentIndex;
+   BookmarkSortFilterProxyModel* m_pProxyModel;
 
    //Actions
    KAction* m_pCallAgain   ;

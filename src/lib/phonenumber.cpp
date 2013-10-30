@@ -129,6 +129,12 @@ void PhoneNumber::setBookmarked(bool bookmarked )
    m_IsBookmark = bookmarked;
 }
 
+///Force an Uid on this number (instead of hash)
+void PhoneNumber::setUid(const QString& uri)
+{
+   m_Uid = uri;
+}
+
 ///Set if this number is tracking presence information
 void PhoneNumber::setTracked(bool track)
 {
@@ -219,6 +225,12 @@ QVariant PhoneNumber::icon() const
 int PhoneNumber::totalSpentTime() const
 {
    return m_TotalSeconds;
+}
+
+///Return this number unique identifier (hash)
+QString PhoneNumber::uid() const
+{
+   return m_Uid.isEmpty()?toHash():m_Uid;
 }
 
 ///Return all calls from this number

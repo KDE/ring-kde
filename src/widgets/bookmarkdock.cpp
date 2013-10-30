@@ -64,8 +64,9 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullpt
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
-   BookmarkSortFilterProxyModel* m_pProxyModel = new BookmarkSortFilterProxyModel(this);
+   m_pProxyModel = new BookmarkSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel          ( BookmarkModel::instance() );
+   m_pProxyModel->setSortRole             ( Qt::DisplayRole           );
    m_pProxyModel->setFilterRole           ( Call::Role::Filter        );
    m_pProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive       );
    m_pView->setModel(m_pProxyModel);
@@ -100,6 +101,7 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullpt
 BookmarkDock::~BookmarkDock()
 {
    delete m_pMostUsedCK;
+   delete m_pProxyModel;
    if (m_pMenu) delete m_pMenu;
 }
 
@@ -166,12 +168,12 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
       m_pBookmark->setText        ( i18n("Remove Bookmark")    );
       m_pBookmark->setIcon        ( KIcon("list-remove")       );
 
-      connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
-      connect(m_pEditContact  , SIGNAL(triggered()) , this,SLOT(editContact()));
-      connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy())       );
-      connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
-      connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone())   );
-      connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
+      connect(m_pCallAgain   , SIGNAL(triggered()) , this,SLOT(callAgain())  );
+      connect(m_pEditContact , SIGNAL(triggered()) , this,SLOT(editContact()));
+      connect(m_pCopy        , SIGNAL(triggered()) , this,SLOT(copy())       );
+      connect(m_pEmail       , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
+      connect(m_pAddPhone    , SIGNAL(triggered()) , this,SLOT(addPhone())   );
+      connect(m_pBookmark    , SIGNAL(triggered()) , this,SLOT(bookmark())   );
    }
    if (!m_pMenu) {
       m_pMenu = new QMenu( this          );
@@ -182,12 +184,15 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
       m_pMenu->addAction( m_pEmail       );
       m_pMenu->addAction( m_pBookmark    );
    }
-   m_CurrentIndex = index;
+   m_CurrentIndex = m_pProxyModel->mapToSource(index);
    m_pMenu->exec(QCursor::pos());
 }
 
 void BookmarkDock::bookmark()
 {
-   if (m_CurrentIndex.isValid())
+   if (m_CurrentIndex.isValid()) {
       BookmarkModel::instance()->remove(m_CurrentIndex);
+      m_CurrentIndex = QModelIndex();
+      expandTree();
+   }
 }

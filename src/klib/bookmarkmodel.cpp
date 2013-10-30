@@ -42,10 +42,12 @@ BookmarkModel* BookmarkModel::instance()
 void BookmarkModel::addBookmark(PhoneNumber* number, bool trackPresence)
 {
    Q_UNUSED(trackPresence)
-   number->setTracked(true);
-   number->setBookmarked(true);
-   ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << number->toHash());
-   reloadCategories();
+   if (!number->isBookmarked()) {
+      number->setTracked(true);
+      number->setBookmarked(true);
+      ConfigurationSkeleton::setBookmarkList(ConfigurationSkeleton::bookmarkList() << number->toHash());
+      reloadCategories();
+   }
 }
 
 void BookmarkModel::removeBookmark(PhoneNumber* number)
@@ -57,7 +59,7 @@ void BookmarkModel::removeBookmark(PhoneNumber* number)
       }
    }
    QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
-   bookmarks.removeAll(number->toHash());
+   bookmarks.removeAll(number->uid());
    ConfigurationSkeleton::setBookmarkList(bookmarks);
 }
 

@@ -1204,7 +1204,6 @@ void Account::reload()
 ///Reload credentials from DBUS
 void Account::reloadCredentials()
 {
-   qDebug() << "\n\nRELOAD";
    if (!m_pCredentials) {
       m_pCredentials = new CredentialModel(this);
    }
