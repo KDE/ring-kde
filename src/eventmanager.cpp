@@ -296,6 +296,7 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
                call->setDialNumber(n->uri());
                if (PhoneDirectoryModel::instance()->callWithAccount() && n->account() && n->account()->id() != "IP2IP")
                   call->setAccount(n->account());
+               m_pParent->m_pAutoCompletion->reset();
             }
          }
          enter();

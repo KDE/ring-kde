@@ -895,6 +895,7 @@ void SFLPhoneView::slotAutoCompleteClicked(PhoneNumber* n)
       if (n->account())
          call->setAccount(n->account());
       call->performAction(Call::Action::ACCEPT);
+      m_pAutoCompletion->reset();
    }
 }
 

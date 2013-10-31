@@ -47,6 +47,9 @@ public:
    //Setters
    void setUseUnregisteredAccounts(bool value);
 
+   //Mutator
+   void reset();
+
 protected:
    //Virtual events
    void paintEvent ( QPaintEvent*  event);

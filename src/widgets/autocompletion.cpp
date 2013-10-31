@@ -196,3 +196,9 @@ void AutoCompletion::slotDoubleClicked(const QModelIndex& idx)
    qDebug() << "double clicked" << idx;
    emit doubleClicked(selection());
 }
+
+void AutoCompletion::reset()
+{
+   m_pView->selectionModel()->clear();
+   setCall(nullptr);
+}
