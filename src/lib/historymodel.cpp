@@ -179,10 +179,17 @@ void HistoryModel::add(Call* call)
    }
 
    emit newHistoryCall(call);
-   getCategory(call)->m_lChildren << call;
+   TopLevelItem* tl = getCategory(call);
+   const QModelIndex& parentIdx = index(tl->modelRow,0);
+   insertRow(tl->m_lChildren.size(),parentIdx);
+   insertRows(tl->m_lChildren.size()-1,1,index(tl->modelRow,0));
+   beginInsertRows(parentIdx,tl->m_lChildren.size(),tl->m_lChildren.size()+1);
+   tl->m_lChildren << call;
    m_sHistoryCalls[call->startTimeStamp()] = call;
+   endInsertRows();
    emit historyChanged();
-//    emit layoutChanged(); //Cause segfault
+   emit layoutAboutToBeChanged();
+   emit layoutChanged(); //Cause segfault
 }
 
 ///Return the history list
@@ -355,6 +362,19 @@ QModelIndex HistoryModel::index( int row, int column, const QModelIndex& parentI
    return QModelIndex();
 }
 
+///Called when dynamically adding calls, otherwise the proxy filter will segfault
+bool HistoryModel::insertRows( int row, int count, const QModelIndex & parent)
+{
+   if (parent.isValid()) {
+      beginInsertRows(parent,row,row+count-1);
+//       TopLevelItem* tl = static_cast<CategorizedCompositeNode*>(parent.internalPointer());
+//       tl->m_lChildren << 
+      endInsertRows();
+      return true;
+   }
+   return false;
+}
+
 QStringList HistoryModel::mimeTypes() const
 {
    return m_lMimes;
@@ -365,9 +385,10 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
    QMimeData *mimeData2 = new QMimeData();
    foreach (const QModelIndex &idx, indexes) {
       if (idx.isValid()) {
-         QString text = data(idx, Call::Role::Number).toString();
+         const QString text = data(idx, Call::Role::Number).toString();
          mimeData2->setData(MIME_PLAIN_TEXT , text.toUtf8());
-         mimeData2->setData(MIME_PHONENUMBER, text.toUtf8());
+         const Call* call = (Call*)((CategorizedCompositeNode*)(idx.internalPointer()))->getSelf();
+         mimeData2->setData(MIME_PHONENUMBER, call->peerPhoneNumber()->toHash().toUtf8());
          CategorizedCompositeNode* node = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
          if (node->type() == CategorizedCompositeNode::Type::CALL)
             mimeData2->setData(MIME_HISTORYID  , static_cast<Call*>(node->getSelf())->id().toUtf8());

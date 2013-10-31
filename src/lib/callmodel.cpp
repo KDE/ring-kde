@@ -685,9 +685,11 @@ QMimeData* CallModel::mimeData(const QModelIndexList& indexes) const
    QMimeData* mData = new QMimeData();
    foreach (const QModelIndex &idx, indexes) {
       if (idx.isValid()) {
-         QString text = data(idx, Call::Role::Number).toString();
+         const QString text = data(idx, Call::Role::Number).toString();
          mData->setData(MIME_PLAIN_TEXT , text.toUtf8());
-         mData->setData(MIME_PHONENUMBER, text.toUtf8());
+         Call* call = getCall(idx);
+         if (call)
+            mData->setData(MIME_PHONENUMBER, call->peerPhoneNumber()->toHash().toUtf8());
          qDebug() << "Setting mime" << idx.data(Call::Role::Id).toString();
          mData->setData(MIME_CALLID  , idx.data(Call::Role::Id).toString().toUtf8());
          return mData;
@@ -711,9 +713,9 @@ bool CallModel::isPartOf(const QModelIndex& confIdx, Call* call)
 bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, int row, int column, const QModelIndex& parentIdx )
 {
    Q_UNUSED(action)
+   const QModelIndex targetIdx    = index   ( row,column,parentIdx );
    if (mimedata->hasFormat(MIME_CALLID)) {
       const QByteArray encodedCallId = mimedata->data( MIME_CALLID    );
-      const QModelIndex targetIdx    = index   ( row,column,parentIdx );
       Call* call                     = getCall ( encodedCallId        );
       Call* target                   = getCall ( targetIdx            );
 
@@ -778,16 +780,17 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
    }
    else if (mimedata->hasFormat(MIME_PHONENUMBER)) {
       const QByteArray encodedPhoneNumber = mimedata->data( MIME_PHONENUMBER );
-      Call* target = getCall(index(row,column,parentIdx));
+      Call* target = getCall(targetIdx);
       qDebug() << "Phone number" << encodedPhoneNumber << "on call" << target;
       Call* newCall = addDialingCall(QString(),target->account());
-      newCall->setDialNumber(encodedPhoneNumber);
+      PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(encodedPhoneNumber);
+      newCall->setDialNumber(nb);
       newCall->performAction(Call::Action::ACCEPT);
       createConferenceFromCall(newCall,target);
    }
    else if (mimedata->hasFormat(MIME_CONTACT)) {
       const QByteArray encodedContact = mimedata->data(MIME_CONTACT);
-      Call* target = getCall(index(row,column,parentIdx));
+      Call* target = getCall(targetIdx);
       qDebug() << "Contact" << encodedContact << "on call" << target;
       if (PhoneNumberSelector::defaultVisitor()) {
          const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(

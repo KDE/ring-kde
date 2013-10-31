@@ -134,9 +134,11 @@ Call* AutoCompletion::call() const
 
 PhoneNumber* AutoCompletion::selection() const
 {
-   const QModelIndex idx = m_pView->selectionModel()->currentIndex();
-   if (idx.isValid() && isVisible()) {
-      return m_pModel->number(idx);
+   if (isVisible()) {
+      const QModelIndex idx = m_pView->selectionModel()->currentIndex();
+      if (idx.isValid()) {
+         return m_pModel->number(idx);
+      }
    }
    return nullptr;
 }
@@ -183,5 +185,7 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
 
 void AutoCompletion::slotVisibilityChange(bool visible)
 {
+   if (!visible)
+      m_pModel->setCall(nullptr);
    emit requestVisibility(visible);
 }

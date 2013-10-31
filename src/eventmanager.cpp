@@ -141,7 +141,10 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          const QByteArray encodedPhoneNumber = e->mimeData()->data( MIME_PHONENUMBER );
          kDebug() << "Phone number dropped on empty space";
          Call* newCall = CallModel::instance()->addDialingCall();
-         newCall->setDialNumber(encodedPhoneNumber);
+         PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(encodedPhoneNumber);
+         if (nb && nb->account())
+            newCall->setAccount(nb->account());
+         newCall->setDialNumber(nb);
          newCall->performAction(Call::Action::ACCEPT);
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
@@ -372,6 +375,7 @@ void EventManager::typeString(const QString& str)
 
    if (!candidate) {
       candidate = CallModel::instance()->addDialingCall();
+      candidate->playDTMF(str); //TODO backcheck if this if is needed
    }
    if(!currentCall && candidate) {
       candidate->playDTMF(str);

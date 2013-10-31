@@ -64,7 +64,8 @@ public:
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
    virtual QStringList   mimeTypes   (                                                             ) const;
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
-   virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
+   virtual bool          dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
+   virtual bool          insertRows  ( int row, int count, const QModelIndex & parent = QModelIndex() );
 
 
 private:

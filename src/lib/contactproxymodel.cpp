@@ -380,8 +380,10 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
          if (index.parent().parent().isValid()) {
             //Phone number
             const QString text = data(index, Qt::DisplayRole).toString();
+            const Contact::PhoneNumbers nbs = *static_cast<Contact::PhoneNumbers*>(index.internalPointer());
+            const PhoneNumber*          nb  = nbs[index.row()];
             mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
-            mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
+            mimeData->setData(MIME_PHONENUMBER, nb->toHash().toUtf8());
             return mimeData;
          }
          else if (index.parent().isValid()) {
@@ -390,7 +392,7 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
             const Contact* ct = (Contact*) ctn->getSelf();
             if (ct) {
                if (ct->phoneNumbers().size() == 1) {
-                  mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->uri().toUtf8());
+                  mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->toHash().toUtf8());
                }
                mimeData->setData(MIME_CONTACT , ct->uid().toUtf8());
             }
