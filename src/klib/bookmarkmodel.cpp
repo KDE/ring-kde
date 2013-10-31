@@ -59,6 +59,7 @@ void BookmarkModel::removeBookmark(PhoneNumber* number)
       }
    }
    QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
+         kDebug() << "Removing" << number->uri() << "from bookmarks";
    bookmarks.removeAll(number->uid());
    ConfigurationSkeleton::setBookmarkList(bookmarks);
 }

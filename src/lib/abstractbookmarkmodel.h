@@ -57,6 +57,7 @@ public:
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
    virtual QStringList   mimeTypes   (                                                             ) const;
    virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
+   virtual bool          removeRows  ( int row, int count, const QModelIndex & parent = QModelIndex() );
 
    //Management
    void         remove(const QModelIndex& idx                         );
@@ -113,7 +114,6 @@ private:
    QList<TopLevelItem*>         m_lCategoryCounter     ;
    QHash<QString,TopLevelItem*> m_hCategories          ;
    const static char*           m_slHistoryConstStr[25];
-   bool                         m_isContactDateInit    ;
    QHash<Contact*, QDateTime>   m_hContactByDate       ;
    QStringList                  m_lMimes               ;
 

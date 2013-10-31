@@ -55,8 +55,6 @@ AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemMod
    if (Call::contactBackend()) {
       connect(Call::contactBackend(),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
    }
-//    connect(&DBus::PresenceManager::instance(),SIGNAL(newClientSubscription(QString,bool,QString)),
-//       this,SLOT(slotIncomingNotifications(QString,bool,QString)));
 }
 
 
@@ -73,7 +71,6 @@ void AbstractBookmarkModel::reloadCategories()
       delete item;
    }
    m_lCategoryCounter.clear();
-   m_isContactDateInit = false;
 
    //Load most used contacts
    if (displayFrequentlyUsed()) {
@@ -85,7 +82,6 @@ void AbstractBookmarkModel::reloadCategories()
       for (int i=0;i<((cl.size()>=10)?10:cl.size());i++) {
          NumberTreeBackend* bm = new NumberTreeBackend(cl[i]);
          bm->m_pParent = item;
-//          bm->m_pNumber->popularityIndex() = true;
          item->m_lChildren << bm;
       }
    }
@@ -109,7 +105,6 @@ void AbstractBookmarkModel::reloadCategories()
          qDebug() << "ERROR count";
    }
    endResetModel();
-   emit dataChanged(index(0,0),index(rowCount()-1,0));
    emit layoutAboutToBeChanged();
    test = false;
    emit layoutChanged();
@@ -164,7 +159,7 @@ QVariant AbstractBookmarkModel::headerData(int section, Qt::Orientation orientat
 ///Get the number of child of "parent"
 int AbstractBookmarkModel::rowCount( const QModelIndex& parent ) const
 {
-   if (test) return 0;
+   if (test) return 0; //HACK
    if (!parent.isValid())
       return m_lCategoryCounter.size();
    else if (!parent.parent().isValid() && parent.row() < m_lCategoryCounter.size()) {
@@ -191,13 +186,11 @@ int AbstractBookmarkModel::columnCount ( const QModelIndex& parent) const
 ///Get the bookmark parent
 QModelIndex AbstractBookmarkModel::parent( const QModelIndex& idx) const
 {
-   if (!idx.isValid() || !idx.internalPointer()) {
+   if (!idx.isValid()) {
       return QModelIndex();
    }
    const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
    if (modelItem->type() == CategorizedCompositeNode::Type::BOOKMARK) {
-      if (static_cast<const NumberTreeBackend*>(modelItem)->m_pNumber->popularityIndex() >= 0)
-         return index(0,0);
       TopLevelItem* item = static_cast<const NumberTreeBackend*>(modelItem)->m_pParent;
       if (item) {
          return index(item->m_Row,0);
@@ -275,9 +268,6 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
       case Call::Role::Historystate:
          cat = Call::HistoryState::NONE;//call->getHistoryState();
          break;
-      case Call::Role::Filter:
-         cat = number->m_pNumber->uri();//call->getHistoryState()+'\n'+commonCallInfo(call,Name).toString()+'\n'+commonCallInfo(call,Number).toString();
-         break;
       case Call::Role::FuzzyDate:
          cat = "N/A";//timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());
          break;
@@ -285,6 +275,8 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
          return QVariant::fromValue(const_cast<PhoneNumber*>(number->m_pNumber));
       case Call::Role::IsBookmark:
          return true;
+      case Call::Role::Filter:
+         return number->m_pNumber->uri()+number->m_pNumber->primaryName();
       case Call::Role::IsPresent:
          return number->m_pNumber->isPresent();
       case Call::Role::PhotoPtr:
@@ -304,13 +296,6 @@ QString AbstractBookmarkModel::category(NumberTreeBackend* number) const
       cat = cat[0].toUpper();
    return cat;
 }
-
-// void AbstractBookmarkModel::slotIncomingNotifications(const QString& uri, bool status, const QString& message)
-// {
-//    Q_UNUSED(uri)
-//    Q_UNUSED(status)
-//    Q_UNUSED(message)
-// }
 
 void AbstractBookmarkModel::slotRequest(const QString& uri)
 {
@@ -356,16 +341,36 @@ AbstractBookmarkModel::TopLevelItem::TopLevelItem(QString name)
 {
 }
 
+bool AbstractBookmarkModel::removeRows( int row, int count, const QModelIndex & parent)
+{
+   if (parent.isValid()) {
+      const int parentRow = parent.row();
+      beginRemoveRows(parent,row,row+count-1);
+      for (int i=row;i<row+count;i++)
+         m_lCategoryCounter[parent.row()]->m_lChildren.removeAt(i);
+      endRemoveRows();
+      if (!m_lCategoryCounter[parentRow]->m_lChildren.size()) {
+         beginRemoveRows(QModelIndex(),parentRow,parentRow);
+         m_hCategories.remove(m_hCategories.key(m_lCategoryCounter[parentRow]));
+         m_lCategoryCounter.removeAt(parentRow);
+         for (int i=0;i<m_lCategoryCounter.size();i++) {
+            m_lCategoryCounter[i]->m_Row =i;
+         }
+         endRemoveRows();
+      }
+      return true;
+   }
+   return false;
+}
+
 void AbstractBookmarkModel::remove(const QModelIndex& idx)
 {
    if (idx.isValid()) {
       if (idx.parent().isValid() && idx.parent().row() < m_lCategoryCounter.size()) {
          PhoneNumber* nb = m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->m_pNumber;
          removeRows(idx.row(),1,idx.parent());
-         m_lCategoryCounter[idx.parent().row()]->m_lChildren.removeAt(idx.row());
-         if (!m_lCategoryCounter[idx.parent().row()]->m_lChildren.size())
-            reloadCategories();
          removeBookmark(nb);
+         emit layoutAboutToBeChanged();
          emit layoutChanged();
       }
    }
