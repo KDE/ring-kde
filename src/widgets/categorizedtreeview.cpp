@@ -273,8 +273,10 @@ void CategorizedTreeView::setHoverState(const QModelIndex& idx)
 
 void CategorizedTreeView::initSignals()
 {
-   connect(model(),SIGNAL(layoutChanged()),SLOT(cancelHoverState()));
-   m_InitSignals = true;
+   if (model()) {
+      connect(model(),SIGNAL(layoutChanged()),this,SLOT(cancelHoverState()));
+      m_InitSignals = true;
+   }
 }
 
 

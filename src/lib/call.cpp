@@ -221,7 +221,8 @@ Call* Call::buildExistingCall(QString callId)
    CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString       details     = callManager.getCallDetails(callId).value();
 
-   qDebug() << "Constructing existing call with details : " << details;
+   //Too noisy
+   //qDebug() << "Constructing existing call with details : " << details;
 
    const QString peerNumber  = details[ Call::DetailsMapFields::PEER_NUMBER ];
    const QString peerName    = details[ Call::DetailsMapFields::PEER_NAME   ];

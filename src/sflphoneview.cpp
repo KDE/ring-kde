@@ -372,7 +372,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex)), m_pEventManager, SLOT(enter())                          );
    /*                                                                                                                                        */
 
-   AccountListModel::instance()->updateAccounts();
+   
 
    //Auto completion
    if (ConfigurationSkeleton::enableAutoCompletion()) {
@@ -644,15 +644,12 @@ void SFLPhoneView::updateWindowCallState()
       }
    }
 
-   kDebug() << "Updating Window.";
-
    emit enabledActionsChangeAsked     ( enabledActions  );
    emit actionIconsChangeAsked        ( buttonIconFiles );
    emit actionTextsChangeAsked        ( actionTexts     );
    emit transferCheckStateChangeAsked ( transfer        );
    emit recordCheckStateChangeAsked   ( recordActivated );
 
-   kDebug() << "Window updated.";
 } //updateWindowCallState
 
 

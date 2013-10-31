@@ -59,7 +59,7 @@ m_pVideoCodecs(nullptr),m_LastErrorCode(-1)
 ///Build an account from it'id
 Account* Account::buildExistingAccountFromId(const QString& _accountId)
 {
-   qDebug() << "Building an account from id: " << _accountId;
+//    qDebug() << "Building an account from id: " << _accountId;
    Account* a = new Account();
    a->m_AccountId = _accountId;
    a->setObjectName(_accountId);
@@ -192,7 +192,7 @@ const QString Account::toHumanStateName() const
 const QString Account::accountDetail(const QString& param) const
 {
    if (!m_hAccountDetails.size()) {
-      qDebug() << "The account list is not set";
+      qDebug() << "The account details is not set";
       return QString(); //May crash, but better than crashing now
    }
    if (m_hAccountDetails.find(param) != m_hAccountDetails.end()) {
@@ -1176,7 +1176,10 @@ void Account::save()
 void Account::reload()
 {
    if (!isNew()) {
-      qDebug() << "Reloading" << id() << alias();
+      if (m_hAccountDetails.size())
+         qDebug() << "Reloading" << id() << alias();
+      else
+         qDebug() << "Loading" << id();
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       QMap<QString,QString> aDetails = configurationManager.getAccountDetails(id());
 

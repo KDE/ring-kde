@@ -666,8 +666,8 @@ QModelIndex CallModel::index( int row, int column, const QModelIndex& parentIdx)
    else if (row >= 0 && parentIdx.isValid() && m_lInternalModel[parentIdx.row()]->m_lChildren.size() > row) {
       return createIndex(row,column,m_lInternalModel[parentIdx.row()]->m_lChildren[row]);
    }
-   if (!parentIdx.isValid())
-      qWarning() << "Invalid index" << row << column << "model size" << m_lInternalModel.size();
+//    if (!parentIdx.isValid())
+//       qWarning() << "Invalid index" << row << column << "model size" << m_lInternalModel.size();
    return QModelIndex();
 }
 

@@ -256,14 +256,13 @@ void AccountListModel::update()
 ///Update accounts
 void AccountListModel::updateAccounts()
 {
-   qDebug() << "updateAccounts";
+   qDebug() << "Updating all accounts";
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QStringList accountIds = configurationManager.getAccountList().value();
    //m_lAccounts.clear();
    for (int i = 0; i < accountIds.size(); ++i) {
       Account* acc = getAccountById(accountIds[i]);
       if (!acc) {
-         qDebug() << "updateAccounts " << accountIds[i];
          Account* a = Account::buildExistingAccountFromId(accountIds[i]);
          m_lAccounts += a;
          connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
