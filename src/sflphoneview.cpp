@@ -372,14 +372,13 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex)), m_pEventManager, SLOT(enter())                          );
    /*                                                                                                                                        */
 
-   
-
    //Auto completion
    if (ConfigurationSkeleton::enableAutoCompletion()) {
       m_pAutoCompletion = new AutoCompletion(m_pView);
       PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
       m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
       connect(m_pAutoCompletion, SIGNAL(requestVisibility(bool)), m_pEventManager, SLOT(slotAutoCompletionVisibility(bool)));
+      connect(m_pAutoCompletion,SIGNAL(doubleClicked(PhoneNumber*)),this,SLOT(slotAutoCompleteClicked(PhoneNumber*)));
    }
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
@@ -886,6 +885,17 @@ void SFLPhoneView::sendMessage()
       call->sendTextMessage(m_pSendMessageLE->text());
    }
    m_pSendMessageLE->clear();
+}
+
+void SFLPhoneView::slotAutoCompleteClicked(PhoneNumber* n)
+{
+   Call* call = currentCall();
+   if (call->state() == Call::State::DIALING) {
+      call->setDialNumber(n);
+      if (n->account())
+         call->setAccount(n->account());
+      call->performAction(Call::Action::ACCEPT);
+   }
 }
 
 #undef IM_ACTIVE

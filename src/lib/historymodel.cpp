@@ -142,7 +142,7 @@ HistoryModel* HistoryModel::instance()
  *                           History related code                            *
  *                                                                           *
  ****************************************************************************/
-
+///Get the top level item based on a call
 HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
 {
    TopLevelItem* category = nullptr;
@@ -181,15 +181,13 @@ void HistoryModel::add(Call* call)
    emit newHistoryCall(call);
    TopLevelItem* tl = getCategory(call);
    const QModelIndex& parentIdx = index(tl->modelRow,0);
-   insertRow(tl->m_lChildren.size(),parentIdx);
-   insertRows(tl->m_lChildren.size()-1,1,index(tl->modelRow,0));
-   beginInsertRows(parentIdx,tl->m_lChildren.size(),tl->m_lChildren.size()+1);
+   beginInsertRows(parentIdx,tl->m_lChildren.size(),tl->m_lChildren.size());
    tl->m_lChildren << call;
    m_sHistoryCalls[call->startTimeStamp()] = call;
    endInsertRows();
    emit historyChanged();
    emit layoutAboutToBeChanged();
-   emit layoutChanged(); //Cause segfault
+   emit layoutChanged(); //WARNING Cause segfault 5% of the time...
 }
 
 ///Return the history list
@@ -227,6 +225,7 @@ void HistoryModel::reloadCategories()
          qDebug() << "ERROR count";
    }
    endResetModel();
+   emit layoutAboutToBeChanged();
    emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount()-1,0));
 }

@@ -37,6 +37,7 @@ class ConferenceDelegate;
 class AutoCompletion;
 class CanvasObjectManager;
 class EventManager;
+class PhoneNumber;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -101,6 +102,7 @@ private Q_SLOTS:
    void updateVolumeBar      (double _value = -1);
    void updateVolumeControls ();
    void sendMessage          ();
+   void slotAutoCompleteClicked(PhoneNumber* n);
 
 
 

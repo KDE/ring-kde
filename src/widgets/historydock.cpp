@@ -129,6 +129,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotDoubleClick(QModelIndex)));
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
+   connect(m_pProxyModel,SIGNAL(modelReset()), this , SLOT(expandTree()));
    connect(HistoryModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
    expandTree();
 
