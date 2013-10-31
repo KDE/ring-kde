@@ -200,6 +200,7 @@ void ActionCollection::setupAction()
    /**/connect(action_transfer,              SIGNAL(triggered()),           this    , SLOT(transfer())                  );
    /**/connect(action_record,                SIGNAL(triggered()),           this    , SLOT(record())                    );
    /**/connect(action_mailBox,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
+   /**/connect(action_pickup,                SIGNAL(triggered()),           this    , SLOT(accept())                    );
    /**/connect(action_mute,                  SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(mute(bool))         );
    /**/connect(action_displayVolumeControls, SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayVolumeControls(bool)) );
    /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayDialpad(bool))        );
@@ -219,6 +220,7 @@ void ActionCollection::setupAction()
    SFLPhone::app()->actionCollection()->addAction("action_mailBox"               , action_mailBox               );
    SFLPhone::app()->actionCollection()->addAction("action_close"                 , action_close                 );
    SFLPhone::app()->actionCollection()->addAction("action_quit"                  , action_quit                  );
+   SFLPhone::app()->actionCollection()->addAction("action_pickup"                , action_pickup                );
    SFLPhone::app()->actionCollection()->addAction("action_displayVolumeControls" , action_displayVolumeControls );
    SFLPhone::app()->actionCollection()->addAction("action_displayDialpad"        , action_displayDialpad        );
    SFLPhone::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
@@ -245,6 +247,7 @@ void ActionCollection::setupAction()
 ///Call
 void ActionCollection::accept() //TODO dead code?
 {
+   qDebug() << "HERE";
    Call* call = SFLPhone::view()->currentCall();// SFLPhone::view()->currentCall();
    if(!call) {
       kDebug() << "Calling when no item is selected. Opening an item.";

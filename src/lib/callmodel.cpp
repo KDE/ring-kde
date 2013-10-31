@@ -591,7 +591,7 @@ QVariant CallModel::data( const QModelIndex& idx, int role) const
          call = intList->m_lChildren[idx.row()]->call_real;
    }
    if (!call) {
-      qWarning() << "Call not found" << idx.row() << idx.isValid() << m_lInternalModel.size() << idx.parent().isValid() << idx.parent().row() << rowCount(idx.parent());
+//       qWarning() << "Call not found" << idx.row() << idx.isValid() << m_lInternalModel.size() << idx.parent().isValid() << idx.parent().row() << rowCount(idx.parent());
       return QVariant();
    }
    return call?call->roleData((Call::Role)role):QVariant();

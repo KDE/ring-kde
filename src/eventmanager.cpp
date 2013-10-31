@@ -368,6 +368,7 @@ void EventManager::typeString(const QString& str)
    if(!currentCall && !candidate) {
       kDebug() << "Typing when no item is selected. Opening an item.";
       candidate = CallModel::instance()->addDialingCall();
+      candidate->playDTMF(str);
       const QModelIndex& newCallIdx = CallModel::instance()->getIndex(candidate);
       if (newCallIdx.isValid()) {
          m_pParent->m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
@@ -376,7 +377,7 @@ void EventManager::typeString(const QString& str)
 
    if (!candidate) {
       candidate = CallModel::instance()->addDialingCall();
-      candidate->playDTMF(str); //TODO backcheck if this if is needed
+      candidate->playDTMF(str);
    }
    if(!currentCall && candidate) {
       candidate->playDTMF(str);
