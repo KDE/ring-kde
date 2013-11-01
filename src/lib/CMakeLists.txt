@@ -285,7 +285,7 @@ install( FILES ${qtsflphone_LIB_HDRS} ${qtsflphone_extra_LIB_HDRS}
 #This hack force Debian based system to return a non multi-arch path
 #this is required to prevent the .deb libqtsflphone.so from having an
 #higher priority than the prefixed one.
-STRING(REPLACE ${CMAKE_LIBRARY_ARCHITECTURE} "" SANE_LIBRARY_PATH "${CMAKE_INSTALL_FULL_LIBDIR}" )
+STRING(REPLACE "${CMAKE_LIBRARY_ARCHITECTURE}" "" SANE_LIBRARY_PATH "${CMAKE_INSTALL_FULL_LIBDIR}" )
 
 install( TARGETS qtsflphone
   ARCHIVE DESTINATION ${SANE_LIBRARY_PATH}
