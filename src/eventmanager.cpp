@@ -297,9 +297,11 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
                if (PhoneDirectoryModel::instance()->callWithAccount() && n->account() && n->account()->id() != "IP2IP")
                   call->setAccount(n->account());
                m_pParent->m_pAutoCompletion->reset();
+               call->performAction(Call::Action::ACCEPT);
             }
          }
-         enter();
+         else
+            enter();
          break;
       case Qt::Key_Backspace:
          backspace();
@@ -445,8 +447,10 @@ void EventManager::enter()
    }
    else {
       switch (call->state()) {
-         case Call::State::INCOMING:
          case Call::State::DIALING:
+            //Change account if it changed
+            call->setAccount(AccountListModel::instance()->currentAccount());
+         case Call::State::INCOMING:
          case Call::State::TRANSFERRED:
          case Call::State::TRANSF_HOLD:
             call->performAction(Call::Action::ACCEPT);
