@@ -59,7 +59,7 @@ void CallViewToolbar::updateState()
       m_pParent->selectionModel()->setCurrentIndex(CallModel::instance()->index(0,0),QItemSelectionModel::SelectCurrent);
       index = m_pParent->selectionModel()->currentIndex();
    }
-   if (rowcount && index.isValid() && index.row() < rowcount) {
+   if (rowcount && index.isValid() && (index.row() < rowcount || index.parent().isValid())) {
       Call* call = qvariant_cast<Call*>(index.data(Call::Role::Object));
       setVisible(true);
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
