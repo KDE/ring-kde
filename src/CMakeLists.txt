@@ -212,11 +212,11 @@ IF(${ENABLE_VIDEO} MATCHES true)
    )
 ENDIF(${ENABLE_VIDEO} MATCHES true)
 
-#IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
+IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    MESSAGE("KUniqueApplication disabled")
    SET(DISABLE_UNIQUE_APPLICATION 1 CACHE BOOLEAN "Disable KUniqueApplication")
    add_definitions( -DDISABLE_UNIQUE_APPLICATION=true )
-#ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
+ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 
 KDE4_ADD_UI_FILES(sflphone_client_kde_SRCS ui/SFLPhoneView_base.ui  ${config_ui_files}  )
 QT4_WRAP_UI(sflphone_client_kde_SRCS ${config_ui_files} )

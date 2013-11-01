@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+INCLUDE(GNUInstallDirs)
+
 ADD_DEFINITIONS("-std=c++0x")
 # ADD_DEFINITIONS("-std=c++0x")
 
@@ -274,15 +276,19 @@ set_target_properties( qtsflphone
 )
 
 SET(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
-SET(INSTALL_TARGETS_DEFAULT_ARGS ${CMAKE_INSTALL_PREFIX}/lib)
 
 install( FILES ${qtsflphone_LIB_HDRS} ${qtsflphone_extra_LIB_HDRS}
   DESTINATION ${INCLUDE_INSTALL_DIR}/qtsflphone
   COMPONENT Devel
 )
- 
+
+#This hack force Debian based system to return a non multi-arch path
+#this is required to prevent the .deb libqtsflphone.so from having an
+#higher priority than the prefixed one.
+STRING(REPLACE ${CMAKE_LIBRARY_ARCHITECTURE} "" SANE_LIBRARY_PATH "${CMAKE_INSTALL_FULL_LIBDIR}" )
+
 install( TARGETS qtsflphone
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS}
+  ARCHIVE DESTINATION ${SANE_LIBRARY_PATH}
+  LIBRARY DESTINATION ${SANE_LIBRARY_PATH}
+  DESTINATION ${SANE_LIBRARY_PATH}
 )
