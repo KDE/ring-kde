@@ -42,6 +42,7 @@
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
 #include "klib/macromodel.h"
+#include "klib/akonadibackend.h"
 #include <lib/call.h>
 #include <lib/account.h>
 #include <lib/accountlistmodel.h>
@@ -164,6 +165,9 @@ void ActionCollection::setupAction()
    action_showBookmarkDock      = new KAction(KIcon("bookmark-new-list"), i18n("Display bookmark")                        , this);
    action_editToolBar           = new KAction(KIcon("configure-toolbars"), i18n("Configure Toolbars")                     , this);
    action_accountCreationWizard = new KAction(i18n("Account creation wizard")                                             , this);
+   action_addContact            = new KAction(KIcon("contact-new"),i18n("Add new contact")                                                     , this);
+
+   action_addContact->setShortcut ( Qt::CTRL + Qt::Key_N );
 
    action_displayDialpad->setCheckable( true );
    action_displayDialpad->setChecked  ( ConfigurationSkeleton::displayDialpad() );
@@ -206,9 +210,10 @@ void ActionCollection::setupAction()
    /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayDialpad(bool))        );
    /**/connect(action_displayMessageBox,     SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayMessageBox(bool))     );
    /**/connect(action_accountCreationWizard, SIGNAL(triggered()),           this    , SLOT(accountCreationWizard())     );
-   /**/connect(action_pastenumber,           SIGNAL(triggered()),           SFLPhone::view() , SLOT(paste())             );
+   /**/connect(action_pastenumber,           SIGNAL(triggered()),           SFLPhone::view() , SLOT(paste())            );
    /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
    /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
+   /**/connect(action_addContact,            SIGNAL(triggered()),           this    , SLOT(slotAddContact())            );
    /**/connect(MacroModel::instance(),       SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
    /*                                                                                                                   */
 
@@ -232,6 +237,7 @@ void ActionCollection::setupAction()
    SFLPhone::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
    SFLPhone::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
    SFLPhone::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
+   SFLPhone::app()->actionCollection()->addAction("action_addContact"            , action_addContact            );
 
    MacroModel::instance()->initMacros();
 
@@ -538,6 +544,18 @@ KAction* ActionCollection::showBookmarkDockAction     ()
 KAction* ActionCollection::quitAction                 ()
 {
    return action_quit;
+}
+
+
+KAction* ActionCollection::addContact()
+{
+   return action_addContact;
+}
+
+void ActionCollection::slotAddContact()
+{
+   Contact* aContact = new Contact();
+   AkonadiBackend::instance()->addNewContact(aContact);
 }
 
 //Video actions

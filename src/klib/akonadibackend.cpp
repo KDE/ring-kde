@@ -213,10 +213,11 @@ void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
       editor->loadContact(item);
       QPointer<KDialog> dlg = new KDialog(parent);
       dlg->setMainWidget(editor);
-      dlg->exec();
-      if ( !editor->saveContact() ) {
-         kDebug() << "Unable to save new contact to storage";
-         return;
+      if ( dlg->exec() == QDialog::Accepted ) {
+         if ( !editor->saveContact() ) {
+            kDebug() << "Unable to save new contact to storage";
+            return;
+         }
       }
       delete editor;
       delete dlg   ;
@@ -251,11 +252,11 @@ void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 
    QPointer<KDialog> dlg = new KDialog(parent);
    dlg->setMainWidget(editor);
-   dlg->exec();
-
-   if ( !editor->saveContact() ) {
-      kDebug() << "Unable to save new contact to storage";
-      return;
+   if ( dlg->exec() == QDialog::Accepted ) {
+      if ( !editor->saveContact() ) {
+         kDebug() << "Unable to save new contact to storage";
+         return;
+      }
    }
    delete dlg;
 } //addNewContact
@@ -263,13 +264,13 @@ void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 ///Implement virtual pure method
 void AkonadiBackend::editContact(Contact* contact)
 {
-   editContact(contact,0);
+   editContact(contact,nullptr);
 }
 
 ///Implement virtual pure method
 void AkonadiBackend::addNewContact(Contact* contact)
 {
-   addNewContact(contact,0);
+   addNewContact(contact,nullptr);
 }
 
 ///Add a new phone number to an existing contact
@@ -287,12 +288,13 @@ void AkonadiBackend::addPhoneNumber(Contact* contact, QString number, QString ty
       QPointer<Akonadi::ContactEditor> editor = new Akonadi::ContactEditor( Akonadi::ContactEditor::EditMode, (QWidget*)nullptr );
       editor->loadContact(item);
 
-      QPointer<KDialog> dlg = new KDialog(0);
+      QPointer<KDialog> dlg = new KDialog(nullptr);
       dlg->setMainWidget(editor);
-      dlg->exec();
-      if ( !editor->saveContact() ) {
-         kDebug() << "Unable to save new contact to storage";
-         return;
+      if ( dlg->exec() == QDialog::Accepted ) {
+         if ( !editor->saveContact() ) {
+            kDebug() << "Unable to save new contact to storage";
+            return;
+         }
       }
       delete dlg   ;
       delete editor;

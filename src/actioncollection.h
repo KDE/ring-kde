@@ -59,6 +59,7 @@ public:
    KAction*        showHistoryDockAction      ();
    KAction*        showBookmarkDockAction     ();
    KAction*        quitAction                 ();
+   KAction*        addContact                 ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -108,6 +109,7 @@ private:
    KAction* action_showHistoryDock       ;
    KAction* action_showBookmarkDock      ;
    KAction* action_editToolBar           ;
+   KAction* action_addContact            ;
    QActionGroup* action_screen           ;
 
    AccountWizard*       m_pWizard        ;
@@ -130,6 +132,7 @@ private Q_SLOTS:
    void accountCreationWizard ();
    void editToolBar           ();
    void addMacro              ( KAction* newAction );
+   void slotAddContact();
 
 Q_SIGNALS:
    void windowStateChanged();

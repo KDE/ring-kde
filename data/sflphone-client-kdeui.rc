@@ -10,6 +10,8 @@
          <Action name="action_record" />
          <Action name="action_mailBox" />
          <Separator />
+         <Action name="action_addContact" />
+         <Separator />
          <Action name="action_close" />
          <Separator />
          <Action name="action_quit" />
