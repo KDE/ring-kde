@@ -113,7 +113,7 @@ private Q_SLOTS:
    void slotSendEmail        ();
    void slotCallAgain        ();
    void slotCopy             ();
-   void slotAaddContact      ();
+   void slotAddContact       ();
    void slotAddToContact     ();
    void slotBookmark         ();
 };

@@ -396,7 +396,7 @@ void HistoryDock::slotCopy()
    QApplication::clipboard()->setMimeData(mimeData);
 }
 
-void HistoryDock::slotAaddContact()
+void HistoryDock::slotAddContact()
 {
    kDebug() << "Adding contact";
    Contact* aContact = new Contact();
