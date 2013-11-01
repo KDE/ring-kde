@@ -174,7 +174,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
       }
       break;
    case CategorizedCompositeNode::Type::CONTACT:{
-      const Contact* c = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()]->m_pContact;
+      const Contact* c = static_cast<Contact*>(modelItem->getSelf());
       switch (role) {
          case Qt::DisplayRole:
             return QVariant(c->formattedName());
@@ -377,27 +377,34 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
    QMimeData *mimeData = new QMimeData();
    foreach (const QModelIndex &index, indexes) {
       if (index.isValid()) {
-         if (index.parent().parent().isValid()) {
-            //Phone number
-            const QString text = data(index, Qt::DisplayRole).toString();
-            const Contact::PhoneNumbers nbs = *static_cast<Contact::PhoneNumbers*>(index.internalPointer());
-            const PhoneNumber*          nb  = nbs[index.row()];
-            mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
-            mimeData->setData(MIME_PHONENUMBER, nb->toHash().toUtf8());
-            return mimeData;
-         }
-         else if (index.parent().isValid()) {
-            //Contact
-            ContactTreeNode* ctn = m_lCategoryCounter[index.parent().row()]->m_lChildren[index.row()];
-            const Contact* ct = (Contact*) ctn->getSelf();
-            if (ct) {
-               if (ct->phoneNumbers().size() == 1) {
-                  mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->toHash().toUtf8());
+         const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(index.internalPointer());
+         switch(modelItem->type()) {
+            case CategorizedCompositeNode::Type::CONTACT: {
+               //Contact
+               const Contact* ct = static_cast<Contact*>(modelItem->getSelf());
+               if (ct) {
+                  if (ct->phoneNumbers().size() == 1) {
+                     mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->toHash().toUtf8());
+                  }
+                  mimeData->setData(MIME_CONTACT , ct->uid().toUtf8());
                }
-               mimeData->setData(MIME_CONTACT , ct->uid().toUtf8());
-            }
-            return mimeData;
-         }
+               return mimeData;
+               } break;
+            case CategorizedCompositeNode::Type::NUMBER: {
+               //Phone number
+               const QString text = data(index, Qt::DisplayRole).toString();
+               const Contact::PhoneNumbers nbs = *static_cast<Contact::PhoneNumbers*>(index.internalPointer());
+               const PhoneNumber*          nb  = nbs[index.row()];
+               mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
+               mimeData->setData(MIME_PHONENUMBER, nb->toHash().toUtf8());
+               return mimeData;
+               } break;
+            case CategorizedCompositeNode::Type::TOP_LEVEL:
+            case CategorizedCompositeNode::Type::CALL:
+            case CategorizedCompositeNode::Type::BOOKMARK:
+            default:
+               return nullptr;
+         };
       }
    }
    return mimeData;

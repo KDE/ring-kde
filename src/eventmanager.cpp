@@ -142,9 +142,9 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          kDebug() << "Phone number dropped on empty space";
          Call* newCall = CallModel::instance()->addDialingCall();
          PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(encodedPhoneNumber);
+         newCall->setDialNumber(nb);
          if (nb && nb->account())
             newCall->setAccount(nb->account());
-         newCall->setDialNumber(nb);
          newCall->performAction(Call::Action::ACCEPT);
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
