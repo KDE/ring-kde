@@ -101,6 +101,7 @@ void OverlayToolbar::paintEvent(QPaintEvent* event)
 ObserverToolButton* OverlayToolbar::createButton(ExtendedAction* action)
 {
    ObserverToolButton* b = new ObserverToolButton(this);
+   b->setAutoFillBackground(false);
    b->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
    b->setIconSize(QSize(28,28));
    b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
