@@ -126,6 +126,7 @@ int SFLPhoneApplication::newInstance()
    static bool init = true;
    //Only call on the first instance
    if (init) {
+      init = false;
       SFLPhone* sflphoneWindow_ = new SFLPhone();
       if( ! sflphoneWindow_->initialize() ) {
          return 1;
@@ -135,7 +136,6 @@ int SFLPhoneApplication::newInstance()
          sflphoneWindow_->show();
       else
          sflphoneWindow_->hide();
-      init = false;
    }
 
    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
