@@ -404,7 +404,7 @@ void EventManager::backspace()
 void EventManager::escape()
 {
    kDebug() << "escape";
-   Call* call = CallModel::instance()->getCall(m_pParent->m_pView->selectionModel()->currentIndex());
+   Call* call = m_pParent->currentCall();
    if (m_pParent->m_pTransferOverlay && m_pParent->m_pTransferOverlay->isVisible()) {
       m_pParent->m_pTransferOverlay->setVisible(false);
       m_pParent->updateWindowCallState();

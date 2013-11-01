@@ -440,6 +440,7 @@ Call* CallModel::addConference(const QString& confID)
                callInt->m_pParent->m_lChildren.removeAll(callInt);
             m_lInternalModel.removeAll(callInt);
             callInt->m_pParent = aNewStruct;
+            callInt->call_real->setProperty("dropState",0);
             if (aNewStruct->m_lChildren.indexOf(callInt) == -1)
                aNewStruct->m_lChildren << callInt;
          }
@@ -891,13 +892,12 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          return;
       }
 
-      //TODO check if the state changed first
-      conf->stateChanged(state); //TODO enable again
+      conf->stateChanged(state);
       CallManagerInterface& callManager = DBus::CallManager::instance();
       const QStringList participants = callManager.getParticipantList(confID);
 
       qDebug() << "The conf has" << confInt->m_lChildren.size() << "calls, daemon has" <<participants.size();
-      
+
       //First remove old participants, add them back to the top level list
       foreach(InternalStruct* child,confInt->m_lChildren) {
          if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->state() != Call::State::OVER) {
@@ -905,7 +905,6 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
             child->m_pParent = nullptr;
             m_lInternalModel << child;
             const QModelIndex idx = getIndex(child->call_real);
-//             emit layoutChanged();
          }
       }
       confInt->m_lChildren.clear();
@@ -955,6 +954,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
                      confInt2->m_lChildren << callInt;
                }
             }
+            callInt->call_real->setProperty("dropState",0);
          }
          else
             qWarning() << "Conference: Call from call list not found in internal list";

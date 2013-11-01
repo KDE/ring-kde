@@ -144,7 +144,8 @@ void NumberCompletionModel::setCall(Call* call)
    if (m_pCall)
       disconnect(m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
    m_pCall = call;
-   connect(m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
+   if (m_pCall)
+      connect(m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
    setPrefix(call?call->dialNumber():QString());
 }
 
