@@ -91,7 +91,6 @@ void CallModel::init()
       /**/connect(&callManager, SIGNAL(conferenceCreated(QString))              , this , SLOT(slotIncomingConference(QString))         );
       /**/connect(&callManager, SIGNAL(conferenceChanged(QString,QString))      , this , SLOT(slotChangingConference(QString,QString)) );
       /**/connect(&callManager, SIGNAL(conferenceRemoved(QString))              , this , SLOT(slotConferenceRemoved(QString))          );
-      /**/connect(&callManager, SIGNAL(voiceMailNotify(QString,int))            , this , SLOT(slotVoiceMailNotify(QString,int))        );
       /**/connect(&callManager, SIGNAL(volumeChanged(QString,double))           , this , SLOT(slotVolumeChanged(QString,double))       );
       /**/connect(&callManager, SIGNAL(recordPlaybackFilepath(QString,QString)) , this , SLOT(slotNewRecordingAvail(QString,QString))  );
       /**/connect(&callManager, SIGNAL(recordingStateChanged(QString,bool))     , this,  SLOT(slotRecordStateChanged(QString,bool)));
@@ -980,13 +979,6 @@ void CallModel::slotConferenceRemoved(const QString &confId)
    removeConference(confId);
    emit layoutChanged();
    emit conferenceRemoved(conf);
-}
-
-///When a new voice mail is available
-void CallModel::slotVoiceMailNotify(const QString &accountID, int count)
-{
-   qDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << accountID;
-   emit voiceMailNotify(accountID,count);
 }
 
 ///When the daemon change the volume

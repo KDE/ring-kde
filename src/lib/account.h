@@ -98,6 +98,7 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           publishedSameAsLocal         READ isPublishedSameAsLocal        WRITE setPublishedSameAsLocal        )
    Q_PROPERTY(bool           ringtoneEnabled              READ isRingtoneEnabled             WRITE setRingtoneEnabled             )
    Q_PROPERTY(DtmfType       dTMFType                     READ DTMFType                      WRITE setDTMFType                    )
+   Q_PROPERTY(int            voiceMailCount               READ voiceMailCount                WRITE setVoiceMailCount              )
 //    Q_PROPERTY(QString        typeName                     READ type                          WRITE setType                        )
    Q_PROPERTY(bool           presenceStatus               READ presenceStatus                                                     )
    Q_PROPERTY(QString        presenceMessage              READ presenceMessage                                                    )
@@ -342,6 +343,7 @@ class LIB_EXPORT Account : public QObject {
       QString lastErrorMessage             () const;
       int     lastErrorCode                () const;
       int     localPort                    () const;
+      int     voiceMailCount               () const;
       QString localInterface               () const;
       QString registrationStatus           () const;
       DtmfType DTMFType                    () const;
@@ -377,6 +379,7 @@ class LIB_EXPORT Account : public QObject {
       void setTlsMethod                     (TlsMethodModel::Type   detail);
       void setKeyExchange                   (KeyExchangeModel::Type detail);
       void setLastErrorCode                 (int  code  );
+      void setVoiceMailCount                (int  count );
       void setRegistrationExpire            (int  detail);
       void setTlsNegotiationTimeoutSec      (int  detail);
       void setTlsNegotiationTimeoutMsec     (int  detail);
@@ -454,6 +457,7 @@ class LIB_EXPORT Account : public QObject {
       QString m_HostName;
       QString m_LastErrorMessage;
       int     m_LastErrorCode;
+      int     m_VoiceMailCount;
 
 
    Q_SIGNALS:

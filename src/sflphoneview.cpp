@@ -364,7 +364,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                      /
    /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this   , SLOT(on1_incomingCall(Call*))          );
-   /**/connect(CallModel::instance()        , SIGNAL(voiceMailNotify(QString,int))          , this   , SLOT(on1_voiceMailNotify(QString,int)) );
+   /**/connect(AccountListModel::instance() , SIGNAL(voiceMailNotify(Account*,int))         , this   , SLOT(on1_voiceMailNotify(Account*,int)) );
    /**/connect(CallModel::instance()        , SIGNAL(callStateChanged(Call*,Call::State))   , this   , SLOT(updateWindowCallState())          );
    /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this   , SLOT(updateWindowCallState())          );
    /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this   , SLOT(sendMessage())                    );
@@ -861,9 +861,9 @@ void SFLPhoneView::on1_incomingCall(Call* call)
 }
 
 ///When a new voice mail is coming
-void SFLPhoneView::on1_voiceMailNotify(const QString &accountID, int count)
+void SFLPhoneView::on1_voiceMailNotify(Account* a, int count)
 {
-   kDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << accountID;
+   kDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << a->alias();
 }
 
 ///When the volume change

@@ -105,6 +105,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void accountChanged(const QString& account,const QString& state, int code);
    void accountChanged(Account* a);
+   void slotVoiceMailNotify( const QString& accountID , int count );
 
 Q_SIGNALS:
    ///The account list changed
@@ -121,6 +122,8 @@ Q_SIGNALS:
    void accountRegistrationChanged(Account* a, bool registration);
    ///Emitted when the network is down
    void badGateway();
+   ///Emitted when a new voice mail is available
+   void voiceMailNotify(Account* account, int count);
 };
 Q_DECLARE_METATYPE(AccountListModel*)
 

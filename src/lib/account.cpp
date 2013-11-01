@@ -52,7 +52,7 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 
 ///Constructors
 Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
-m_pVideoCodecs(nullptr),m_LastErrorCode(-1)
+m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0)
 {
 }
 
@@ -523,6 +523,12 @@ int Account::localPort() const
    return accountDetail(Account::MapField::LOCAL_PORT).toInt();
 }
 
+///Return the number of voicemails
+int Account::voiceMailCount() const
+{
+   return m_VoiceMailCount;
+}
+
 ///Return the account local interface
 QString Account::localInterface() const
 {
@@ -836,6 +842,12 @@ void Account::setLocalInterface(const QString& detail)
 void Account::setRingtonePath(const QString& detail)
 {
    setAccountDetail(Account::MapField::Ringtone::PATH, detail);
+}
+
+///Set the number of voice mails
+void Account::setVoiceMailCount(int count)
+{
+   m_VoiceMailCount = count;
 }
 
 ///Set the last error message to be displayed as status instead of "Error"

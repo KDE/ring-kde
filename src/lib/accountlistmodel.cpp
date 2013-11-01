@@ -76,6 +76,8 @@ void AccountListModel::init()
 
    connect(&callManager         , SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
    connect(&configurationManager, SIGNAL(accountsChanged())                            ,this,SLOT(updateAccounts())                   );
+   connect(&callManager         , SIGNAL(voiceMailNotify(QString,int))                 ,this, SLOT(slotVoiceMailNotify(QString,int))  );
+
 }
 
 ///Destructor
@@ -223,6 +225,17 @@ void AccountListModel::accountChanged(Account* a)
  *                                  Mutator                                  *
  *                                                                           *
  ****************************************************************************/
+
+
+///When a new voice mail is available
+void AccountListModel::slotVoiceMailNotify(const QString &accountID, int count)
+{
+   Account* a = getAccountById(accountID);
+   if (a) {
+      a->setVoiceMailCount(count);
+      emit voiceMailNotify(a,count);
+   }
+}
 
 ///Update accounts
 void AccountListModel::update()
