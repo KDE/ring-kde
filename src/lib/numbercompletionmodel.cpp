@@ -158,6 +158,10 @@ void NumberCompletionModel::setPrefix(const QString& str)
    }
    if (m_Enabled)
       updateModel();
+   else {
+      m_hNumbers.clear();
+      emit layoutChanged();
+   }
 }
 
 Call* NumberCompletionModel::call() const
@@ -176,14 +180,18 @@ PhoneNumber* NumberCompletionModel::number(const QModelIndex& idx) const
 void NumberCompletionModel::updateModel()
 {
    QSet<PhoneNumber*> numbers;
-   locateNameRange  ( m_Prefix, numbers );
-   locateNumberRange( m_Prefix, numbers );
-
+   beginResetModel();
    m_hNumbers.clear();
-   foreach(PhoneNumber* n,numbers) {
-      if (m_UseUnregisteredAccount || ((n->account() && n->account()->isRegistered()) || !n->account()))
-         m_hNumbers.insert(getWeight(n),n);
+   if (!m_Prefix.isEmpty()) {
+      locateNameRange  ( m_Prefix, numbers );
+      locateNumberRange( m_Prefix, numbers );
+
+      foreach(PhoneNumber* n,numbers) {
+         if (m_UseUnregisteredAccount || ((n->account() && n->account()->isRegistered()) || !n->account()))
+            m_hNumbers.insert(getWeight(n),n);
+      }
    }
+   endResetModel();
    emit layoutChanged();
 }
 

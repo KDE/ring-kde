@@ -186,7 +186,7 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
 
 void AutoCompletion::slotVisibilityChange(bool visible)
 {
-   if (!visible)
+   if (!visible && (!m_pModel->call() || m_pModel->call()->state() != Call::State::DIALING))
       m_pModel->setCall(nullptr);
    emit requestVisibility(visible);
 }
