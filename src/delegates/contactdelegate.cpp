@@ -38,6 +38,7 @@
 #include "lib/visitors/pixmapmanipulationvisitor.h"
 #include "phonenumberdelegate.h"
 #include "widgets/categorizedtreeview.h"
+#include "klib/kcfg_settings.h"
 
 #define BG_STATE(____) ((QStyle::State_Selected | QStyle::State_MouseOver)&____)
 
@@ -58,9 +59,11 @@ QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    QFontMetrics fm(QApplication::font());
    const int rowCount = index.model()->rowCount(index);
+   static bool displayEmail = ConfigurationSkeleton::displayEmail();
+   static bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
    Contact* ct = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
    static const int lineHeight = fm.height()+2;
-   int lines = ((!ct->organization().isEmpty()) + (!ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight - ((ct->phoneNumbers().size()>0)*lineHeight);
+   int lines = ((displayOrg && !ct->organization().isEmpty()) + (displayEmail && !ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight - ((ct->phoneNumbers().size()>0)*lineHeight);
    lines += lines==lineHeight?3:0; //Bottom margin for contact with only multiple phone numbers
    return QSize(sh.rwidth(),(lines+rowCount*lineHeight)<MIN_HEIGHT?MIN_HEIGHT:lines);
 }
@@ -112,6 +115,12 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
 
 
+   //Config options
+   //Load them only once, it is a "bug", but it is faster to ignore a very, very
+   //rare event
+   static bool displayEmail = ConfigurationSkeleton::displayEmail();
+   static bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
+
    QFont font = painter->font();
    QFontMetrics fm(font);
    int currentHeight = option.rect.y()+fm.height()+2;
@@ -122,11 +131,11 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    font.setBold(false);
    painter->setPen((option.state & QStyle::State_Selected)?Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
    painter->setFont(font);
-   if (!ct->organization().isEmpty()) {
+   if (displayOrg && !ct->organization().isEmpty()) {
       painter->drawText(option.rect.x()+15+PX_HEIGHT,currentHeight,ct->organization());
       currentHeight +=fm.height();
    }
-   if (!ct->preferredEmail().isEmpty()) {
+   if (displayEmail && !ct->preferredEmail().isEmpty()) {
       const int fmh = fm.height();
       const static QPixmap* mail = nullptr;
       if (!mail)

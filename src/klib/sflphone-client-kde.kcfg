@@ -157,7 +157,7 @@
 
     <entry name="displayEmail" type="Bool">
       <label>Defines whether to display the organisation of the contact list item</label>
-      <default>false</default>
+      <default>true</default>
     </entry>
 
     <entry name="defaultAccountId" type="String">
