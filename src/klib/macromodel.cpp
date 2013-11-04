@@ -294,6 +294,8 @@ Macro* MacroModel::newMacro(const QString& id)
          m_pCurrentMacro->m_Id += '1';
       }
    }
+   else
+      m_pCurrentMacro->m_Id += id;
    m_hMacros[m_pCurrentMacro->m_Id] = m_pCurrentMacro;
    updateTreeModel(m_pCurrentMacro);
    connect(m_pCurrentMacro,SIGNAL(changed(Macro*)),this,SLOT(changed(Macro*)));
