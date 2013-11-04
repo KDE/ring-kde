@@ -114,7 +114,7 @@ void DlgAccessibility::addMacro()
 
 void DlgAccessibility::removeMacro()
 {
-   
+   MacroModel::instance()->removeMacro(m_pMacroListTV->selectionModel()->currentIndex());
 }
 
 void DlgAccessibility::selectMacro(Macro* macro)

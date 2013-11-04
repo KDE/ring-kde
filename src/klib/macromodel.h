@@ -111,9 +111,9 @@ private:
    Macro*                m_pCurrentMacroMemento;
 
 public Q_SLOTS:
-   Macro* newMacro(const QString& id = "");
-   bool removeMacro(QModelIndex idx);
-   void setCurrent(QModelIndex current,QModelIndex previous);
+   Macro* newMacro(const QString& id = QString());
+   bool removeMacro(const QModelIndex& idx);
+   void setCurrent(const QModelIndex& current, const QModelIndex& previous);
    void save();
 
 private Q_SLOTS:

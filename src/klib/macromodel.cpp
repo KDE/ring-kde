@@ -108,13 +108,21 @@ void MacroModel::updateTreeModel(Macro* newMacro)
 }
 
 //Remove the selected macro
-bool MacroModel::removeMacro(QModelIndex idx)
+bool MacroModel::removeMacro(const QModelIndex& idx)
 {
-   Q_UNUSED(idx)
+   IndexPointer* modelItem = (IndexPointer*)idx.internalPointer();
+   if (modelItem && modelItem->type == IndexType::MacroIndex) {
+      Macro* macro = static_cast<Macro*>(modelItem->data);
+      MacroCategory* cat = macro->m_pCat;
+      cat->m_lContent.removeAll(macro);
+      emit layoutChanged();
+   }
+   else
+      kWarning() << "Cannot remove macro: none is selected";
    return true;
 }
 
-void MacroModel::setCurrent(QModelIndex current,QModelIndex previous)
+void MacroModel::setCurrent(const QModelIndex& current, const QModelIndex& previous)
 {
    Q_UNUSED(previous)
    if (!current.isValid())
