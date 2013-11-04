@@ -13,22 +13,61 @@
   <property name="windowTitle">
    <string notr="true">Addressbook settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QLabel" name="m_pPhonetypeL">
-     <property name="text">
-      <string>Use contact from the following phone number category:</string>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Contact Filter</string>
      </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QCheckBox" name="kcfg_hideContactWithoutPhone">
+        <property name="text">
+         <string>Hide contacts without phone numbers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="m_pPhonetypeL">
+        <property name="text">
+         <string>Use contact from the following phone number category:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListView" name="m_pPhoneTypeList">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
-    <widget class="QListView" name="m_pPhoneTypeList">
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>Visible Contact Details</string>
      </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="kcfg_displayOrganisation">
+        <property name="text">
+         <string>Display organisation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_displayEmail">
+        <property name="text">
+         <string>Display email address</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

@@ -150,6 +150,8 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
       return ContactList();
    }
 
+   bool onlyWithNumber =  ConfigurationSkeleton::hideContactWithoutPhone();
+
    Akonadi::RecursiveItemFetchJob *job = new Akonadi::RecursiveItemFetchJob( collection, QStringList() << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType());
    job->fetchScope().fetchFullPayload();
    if ( job->exec() ) {
@@ -159,39 +161,42 @@ ContactList AkonadiBackend::update(Akonadi::Collection collection)
       foreach ( const Akonadi::Item &item, items ) {
          if ( item.hasPayload<KABC::Addressee>() ) {
             KABC::Addressee tmp = item.payload<KABC::Addressee>();
-            Contact* aContact   = new Contact(this);
-
-            //This need to be done first because of the phone numbers indexes
-            aContact->setNickName       (tmp.nickName()       );
-            aContact->setFormattedName  (tmp.formattedName()  );
-            aContact->setFirstName      (tmp.givenName()      );
-            aContact->setFamilyName     (tmp.familyName()     );
-            aContact->setOrganization   (tmp.organization()   );
-            aContact->setPreferredEmail (tmp.preferredEmail() );
-            aContact->setDepartment     (tmp.department()     );
-            aContact->setUid            (tmp.uid()            );
-
             const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
-            Contact::PhoneNumbers newNumbers(aContact);
-            foreach (const KABC::PhoneNumber& number, numbers) {
-               newNumbers << PhoneDirectoryModel::instance()->getNumber(number.number(),aContact,nullptr,number.typeLabel());
-               //new PhoneNumber(number.number(),number.typeLabel());
-               QString number2 = number.number();
-               if (number2.left (5) == "<sip:")
-                  number2 = number2.remove(0,5);
-               if (number2.right(1) == ">"    )
-                  number2 = number2.remove(number2.size()-2,1);
+
+            if (numbers.size() || !onlyWithNumber) {
+               Contact* aContact   = new Contact(this);
+
+               //This need to be done first because of the phone numbers indexes
+               aContact->setNickName       (tmp.nickName()       );
+               aContact->setFormattedName  (tmp.formattedName()  );
+               aContact->setFirstName      (tmp.givenName()      );
+               aContact->setFamilyName     (tmp.familyName()     );
+               aContact->setOrganization   (tmp.organization()   );
+               aContact->setPreferredEmail (tmp.preferredEmail() );
+               aContact->setDepartment     (tmp.department()     );
+               aContact->setUid            (tmp.uid()            );
+
+               Contact::PhoneNumbers newNumbers(aContact);
+               foreach (const KABC::PhoneNumber& number, numbers) {
+                  newNumbers << PhoneDirectoryModel::instance()->getNumber(number.number(),aContact,nullptr,number.typeLabel());
+                  //new PhoneNumber(number.number(),number.typeLabel());
+                  QString number2 = number.number();
+                  if (number2.left (5) == "<sip:")
+                     number2 = number2.remove(0,5);
+                  if (number2.right(1) == ">"    )
+                     number2 = number2.remove(number2.size()-2,1);
+               }
+               m_ContactByUid[tmp.uid()] = aContact;
+               aContact->setPhoneNumbers   (newNumbers           );
+
+               if (!tmp.photo().data().isNull())
+                  aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
+               else
+                  aContact->setPhoto(0);
+
+               m_AddrHash[ tmp.uid() ] = tmp ;
+               m_ItemHash[ tmp.uid() ] = item;
             }
-            m_ContactByUid[tmp.uid()] = aContact;
-            aContact->setPhoneNumbers   (newNumbers           );
-
-            if (!tmp.photo().data().isNull())
-               aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
-            else
-               aContact->setPhoto(0);
-
-            m_AddrHash[ tmp.uid() ] = tmp ;
-            m_ItemHash[ tmp.uid() ] = item;
          }
       }
       m_pContacts = m_ContactByUid.values();

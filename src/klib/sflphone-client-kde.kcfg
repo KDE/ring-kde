@@ -160,6 +160,11 @@
       <default>true</default>
     </entry>
 
+    <entry name="hideContactWithoutPhone" type="Bool">
+      <label>Defines whether to display the organisation of the contact list item</label>
+      <default> false </default>
+    </entry>
+
     <entry name="defaultAccountId" type="String">
       <label>Default account used for contact lookup if only partial (only extension) contacts info is available</label>
       <default>IP2IP</default>
