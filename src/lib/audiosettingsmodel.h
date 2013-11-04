@@ -49,11 +49,25 @@ public:
    static AudioSettingsModel* instance();
 
    //Getters
-   AlsaPluginModel*     alsaPluginModel    () const;
-   InputDeviceModel*    inputDeviceModel   () const;
-   OutputDeviceModel*   outputDeviceModel  () const;
-   AudioManagerModel*   audioManagerModel  () const;
-   RingtoneDeviceModel* ringtoneDeviceModel() const;
+   AlsaPluginModel*     alsaPluginModel    ();
+   InputDeviceModel*    inputDeviceModel   ();
+   OutputDeviceModel*   outputDeviceModel  ();
+   AudioManagerModel*   audioManagerModel  ();
+   RingtoneDeviceModel* ringtoneDeviceModel();
+   bool                 isRoomToneEnabled  ();
+
+   //Setters
+   void setEnableRoomTone(bool enable);
+
+   //Room tone type
+   enum class ToneType {
+      WITHOUT_MESSAGE = 0,
+      WITH_MESSAGE    = 1,
+   };
+
+   //Mutator
+   ToneType playRoomTone() const;
+   void     stopRoomTone() const;
 
 public Q_SLOTS:
    void reload();
@@ -65,6 +79,7 @@ private:
    OutputDeviceModel*   m_pOutputDeviceModel  ;
    AudioManagerModel*   m_pAudioManagerModel  ;
    RingtoneDeviceModel* m_pRingtoneDeviceModel;
+   bool                 m_EnableRoomTone      ;
 
    //Singleton
    static AudioSettingsModel* m_spInstance;

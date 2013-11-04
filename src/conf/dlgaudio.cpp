@@ -83,8 +83,6 @@ void DlgAudio::updateSettings()
 {
    if (m_Changed) {
       m_IsLoading = true;
-      ConfigurationSkeleton* skeleton = ConfigurationSkeleton::self();
-      skeleton->setAlsaPlugin(box_alsaPlugin->currentText());
 
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());

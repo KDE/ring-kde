@@ -116,7 +116,7 @@
 
     <!-- Audio Settings -->
 
-    <entry name="interface" type="Enum">
+<!--    <entry name="interface" type="Enum">
     	<label>Defines the audio output to use.</label>
     	<choices>
     		<choice name="ALSA" />
@@ -137,7 +137,12 @@
     </entry>
     <entry name="pulseAudioVolumeAlter" type="Bool">
     	<label>Defines whether pulse audio can mute other applications during a call.</label>
+    </entry>-->
+     <entry name="enableRoomTone" type="Bool">
+      <label>Enable or disables the "buzzzzz" sound</label>
+      <default>false</default>
     </entry>
+    
 
     <!-- Address Book Settings -->
 

@@ -17,27 +17,27 @@
  ***************************************************************************/
 #include "audiosettingsmodel.h"
 #include "dbus/configurationmanager.h"
+#include "dbus/callmanager.h"
 
 AudioSettingsModel* AudioSettingsModel::m_spInstance = nullptr;
 
 ///Constructor
-AudioSettingsModel::AudioSettingsModel() : QObject()
+AudioSettingsModel::AudioSettingsModel() : QObject(),m_EnableRoomTone(false),
+ m_pAlsaPluginModel  (nullptr), m_pInputDeviceModel   (nullptr),
+ m_pAudioManagerModel(nullptr), m_pRingtoneDeviceModel(nullptr),
+ m_pOutputDeviceModel(nullptr)
 {
-   m_pAlsaPluginModel     = new AlsaPluginModel     (this);
-   m_pInputDeviceModel    = new InputDeviceModel    (this);
-   m_pOutputDeviceModel   = new OutputDeviceModel   (this);
-   m_pAudioManagerModel   = new AudioManagerModel   (this);
    m_pRingtoneDeviceModel = new RingtoneDeviceModel (this);
 }
 
 ///Destructor
 AudioSettingsModel::~AudioSettingsModel()
 {
-   delete m_pAlsaPluginModel    ;
-   delete m_pInputDeviceModel   ;
-   delete m_pOutputDeviceModel  ;
-   delete m_pAudioManagerModel   ;
-   delete m_pRingtoneDeviceModel;
+   if ( m_pAlsaPluginModel     ) delete m_pAlsaPluginModel    ;
+   if ( m_pInputDeviceModel    ) delete m_pInputDeviceModel   ;
+   if ( m_pOutputDeviceModel   ) delete m_pOutputDeviceModel  ;
+   if ( m_pAudioManagerModel   ) delete m_pAudioManagerModel  ;
+   if ( m_pRingtoneDeviceModel ) delete m_pRingtoneDeviceModel;
 }
 
 ///Singleton
@@ -49,33 +49,49 @@ AudioSettingsModel* AudioSettingsModel::instance()
 }
 
 ///Return plugin model (alsa only for the time being)
-AlsaPluginModel* AudioSettingsModel::alsaPluginModel() const
+AlsaPluginModel* AudioSettingsModel::alsaPluginModel()
 {
+   if (!m_pAlsaPluginModel)
+      m_pAlsaPluginModel = new AlsaPluginModel(this);
    return m_pAlsaPluginModel;
 }
 
 ///Return the input device model
-InputDeviceModel* AudioSettingsModel::inputDeviceModel() const
+InputDeviceModel* AudioSettingsModel::inputDeviceModel()
 {
+   if (!m_pInputDeviceModel)
+      m_pInputDeviceModel = new InputDeviceModel(this);
    return m_pInputDeviceModel;
 }
 
 ///Return the output device model
-OutputDeviceModel* AudioSettingsModel::outputDeviceModel() const
+OutputDeviceModel* AudioSettingsModel::outputDeviceModel()
 {
+   if (!m_pOutputDeviceModel)
+      m_pOutputDeviceModel   = new OutputDeviceModel(this);
    return m_pOutputDeviceModel;
 }
 
 ///Return audio manager
-AudioManagerModel* AudioSettingsModel::audioManagerModel() const
+AudioManagerModel* AudioSettingsModel::audioManagerModel()
 {
+   if (!m_pAudioManagerModel)
+      m_pAudioManagerModel = new AudioManagerModel(this);
    return m_pAudioManagerModel;
 }
 
 ///Return the ringtone device model
-RingtoneDeviceModel* AudioSettingsModel::ringtoneDeviceModel() const
+RingtoneDeviceModel* AudioSettingsModel::ringtoneDeviceModel()
 {
+   if (!m_pRingtoneDeviceModel)
+      m_pRingtoneDeviceModel = new RingtoneDeviceModel (this);
    return m_pRingtoneDeviceModel;
+}
+
+///Is the room tone (globally) enabled
+bool AudioSettingsModel::isRoomToneEnabled()
+{
+   return m_EnableRoomTone;
 }
 
 ///Reload everything
@@ -86,6 +102,28 @@ void AudioSettingsModel::reload()
    m_pOutputDeviceModel->reload();
 //    m_pAudioManagerModel->reload();
    m_pRingtoneDeviceModel->reload();
+}
+
+///Play room tone
+AudioSettingsModel::ToneType AudioSettingsModel::playRoomTone() const
+{
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   callManager.startTone(true,static_cast<int>(AudioSettingsModel::ToneType::WITHOUT_MESSAGE));
+   //TODO support voicemail
+   return AudioSettingsModel::ToneType::WITHOUT_MESSAGE;
+}
+
+///Stop room tone if it is playing
+void AudioSettingsModel::stopRoomTone() const
+{
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   callManager.startTone(false,0);
+}
+
+///Set if the roomtone is (globally) enabled
+void AudioSettingsModel::setEnableRoomTone(bool enable)
+{
+   m_EnableRoomTone = enable;
 }
 
 /****************************************************************

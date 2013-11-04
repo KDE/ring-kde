@@ -72,6 +72,7 @@
 #include "lib/contact.h"
 #include "lib/accountlistmodel.h"
 #include "lib/phonedirectorymodel.h"
+#include "lib/audiosettingsmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
 #include "lib/visitors/accountlistcolorvisitor.cpp"
@@ -337,6 +338,9 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    TipCollection::setManager(new TipManager(m_pView));
    m_pCanvasManager = new CanvasObjectManager();
 
+   //Set global settings
+   AudioSettingsModel::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
+
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());
    TipCollection::manager()->changeSize();
@@ -402,6 +406,7 @@ void SFLPhoneView::loadWindow()
    updateVolumeControls  ();
    loadAutoCompletion    ();
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
+   AudioSettingsModel::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
 }
 
 
