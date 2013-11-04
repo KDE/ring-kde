@@ -26,6 +26,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
 #include <QtCore/QEvent>
+#include <QtGui/QResizeEvent>
 
 //KDE
 #include <KLocale>
@@ -61,6 +62,8 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent)
    if (parent) {
       connect(parent->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectionChanged(QModelIndex)));
       parent->installEventFilter(this);
+      QResizeEvent r(size(),size());
+      eventFilter(nullptr,&r);
    }
    setMinimumSize(0,125);
    m_pDelegate = new AutoCompletionDelegate();

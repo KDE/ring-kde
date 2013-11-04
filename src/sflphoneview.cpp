@@ -373,13 +373,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    /*                                                                                                                                        */
 
    //Auto completion
-   if (ConfigurationSkeleton::enableAutoCompletion()) {
-      m_pAutoCompletion = new AutoCompletion(m_pView);
-      PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
-      m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
-      connect(m_pAutoCompletion, SIGNAL(requestVisibility(bool)), m_pEventManager, SLOT(slotAutoCompletionVisibility(bool)));
-      connect(m_pAutoCompletion,SIGNAL(doubleClicked(PhoneNumber*)),this,SLOT(slotAutoCompleteClicked(PhoneNumber*)));
-   }
+   loadAutoCompletion();
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
    connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)) , m_pCanvasToolbar, SLOT(updateState()));
@@ -406,6 +400,7 @@ void SFLPhoneView::loadWindow()
    updateRecordBar       ();
    updateVolumeBar       ();
    updateVolumeControls  ();
+   loadAutoCompletion    ();
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
 }
 
@@ -651,6 +646,22 @@ void SFLPhoneView::updateWindowCallState()
 
 } //updateWindowCallState
 
+void SFLPhoneView::loadAutoCompletion()
+{
+   if (ConfigurationSkeleton::enableAutoCompletion()) {
+      if (!m_pAutoCompletion) {
+         m_pAutoCompletion = new AutoCompletion(m_pView);
+         PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
+         m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
+         connect(m_pAutoCompletion, SIGNAL(requestVisibility(bool)), m_pEventManager, SLOT(slotAutoCompletionVisibility(bool)));
+         connect(m_pAutoCompletion,SIGNAL(doubleClicked(PhoneNumber*)),this,SLOT(slotAutoCompleteClicked(PhoneNumber*)));
+      }
+   }
+   else if (m_pAutoCompletion) {
+      delete m_pAutoCompletion;
+      m_pAutoCompletion = nullptr;
+   }
+}
 
 //Mute a call
 void SFLPhoneView::mute(bool value)

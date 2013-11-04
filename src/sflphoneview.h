@@ -103,6 +103,7 @@ private Q_SLOTS:
    void updateVolumeControls ();
    void sendMessage          ();
    void slotAutoCompleteClicked(PhoneNumber* n);
+   void loadAutoCompletion   ();
 
 
 
