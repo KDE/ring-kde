@@ -107,6 +107,7 @@ private:
          QList<NumberTreeBackend*> m_lChildren;
          QString m_Name;
          int m_Row;
+         bool m_MostPopular;
    };
 
    //Attributes

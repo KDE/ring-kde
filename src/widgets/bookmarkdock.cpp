@@ -64,12 +64,16 @@ BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullpt
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
+   m_pView->setSortingEnabled(true);
    m_pProxyModel = new BookmarkSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel          ( BookmarkModel::instance() );
-   m_pProxyModel->setSortRole             ( Qt::DisplayRole           );
+   m_pProxyModel->setSortRole             ( Call::Role::Name          );
    m_pProxyModel->setFilterRole           ( Call::Role::Filter        );
    m_pProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive       );
+   m_pProxyModel->setSortCaseSensitivity  ( Qt::CaseInsensitive       );
+   m_pProxyModel->setDynamicSortFilter    ( true                      );
    m_pView->setModel(m_pProxyModel);
+   m_pProxyModel->sort(0);
    expandTree();
 
    connect(BookmarkModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));

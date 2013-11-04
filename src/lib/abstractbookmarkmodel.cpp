@@ -77,6 +77,7 @@ void AbstractBookmarkModel::reloadCategories()
       TopLevelItem* item = new TopLevelItem(tr("Most popular"));
       m_hCategories["mp"] = item;
       item->m_Row = m_lCategoryCounter.size();
+      item->m_MostPopular = true;
       m_lCategoryCounter << item;
       const QVector<PhoneNumber*> cl = PhoneDirectoryModel::instance()->getNumbersByPopularity();
       for (int i=0;i<((cl.size()>=10)?10:cl.size());i++) {
@@ -133,6 +134,13 @@ QVariant AbstractBookmarkModel::data( const QModelIndex& index, int role) const
          switch (role) {
             case Qt::DisplayRole:
                return static_cast<TopLevelItem*>(modelItem)->m_Name;
+            case Call::Role::Name:
+               if (static_cast<TopLevelItem*>(modelItem)->m_MostPopular) {
+                  return "000000";
+               }
+               else {
+                  return static_cast<TopLevelItem*>(modelItem)->m_Name;
+               }
          }
          break;
       case CategorizedCompositeNode::Type::BOOKMARK:
@@ -337,7 +345,8 @@ QVector<PhoneNumber*> AbstractBookmarkModel::bookmarkList() const
 }
 
 AbstractBookmarkModel::TopLevelItem::TopLevelItem(QString name) 
-   : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),m_Name(name)
+   : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),m_Name(name),
+      m_MostPopular(false)
 {
 }
 
