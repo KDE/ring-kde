@@ -512,6 +512,18 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
       if (ed)
          ed->deselect();
    }
+   else if (event->type() == QEvent::MouseButtonDblClick) {
+      KLineEdit* ed = qobject_cast<KLineEdit*>(obj);
+      if (ed) {
+         QObject* obj= qvariant_cast<Call*>(ed->property("call"));
+         Call* call  = nullptr;
+         if (obj)
+            call = qobject_cast<Call*>(obj);
+         if (call) {
+            call->performAction(Call::Action::ACCEPT);
+         }
+      }
+   }
    return false;
 }
 
