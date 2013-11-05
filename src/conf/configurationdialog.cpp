@@ -21,7 +21,7 @@
 //KDE
 #include <KDebug>
 #include <KLocale>
-
+#include <KStandardDirs>
 
 #include "klib/kcfg_settings.h"
 
@@ -66,7 +66,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    #ifdef ENABLE_VIDEO
    addPage( dlgVideo         , i18nc("Video conversation","Video")  , "camera-web"                        );
    #endif
-   addPage( dlgPresence      , i18nc("SIP Presence","Presence")     , "camera-web"                        );
+   addPage( dlgPresence      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "sflphone-client-kde/presence-icon.svg"));
 
    connect(this, SIGNAL(applyClicked()) , this, SLOT(applyCustomSettings()));
    connect(this, SIGNAL(okClicked())    , this, SLOT(applyCustomSettings()));

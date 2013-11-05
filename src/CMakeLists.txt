@@ -244,6 +244,8 @@ INSTALL( FILES icons/overlay_right_corner.svg    DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/overlay_left_corner.svg     DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/confBlackWhite.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/voicemail.png               DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/presence-icon.png           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
+INSTALL( FILES icons/presence-icon.svg           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/conf-small.png              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/hangup_grayscale.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
 INSTALL( FILES icons/mutemic_grayscale.svg       DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
