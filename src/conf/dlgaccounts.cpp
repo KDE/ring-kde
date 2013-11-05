@@ -47,8 +47,10 @@
 #include "lib/audiocodecmodel.h"
 #include "lib/accountlistmodel.h"
 #include "lib/keyexchangemodel.h"
+#include "lib/ringtonemodel.h"
 #include "lib/tlsmethodmodel.h"
 #include "lib/categorizedaccountmodel.h"
+#include "../delegates/ringtonedelegate.h"
 #include "../delegates/categorizeddelegate.h"
 
 //OS
@@ -102,6 +104,10 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    combo_security_STRP->setModel(KeyExchangeModel::instance());
    combo_tls_method->setModel(TlsMethodModel::instance());
 
+   m_pRingtoneListLW->horizontalHeader()->setResizeMode(0,QHeaderView::Stretch);
+   m_pRingtoneListLW->horizontalHeader()->setResizeMode(1,QHeaderView::ResizeToContents);
+   m_pRingtoneListLW->setItemDelegate(new RingToneDelegate(m_pRingtoneListLW));
+
    //SLOTS
    //                     SENDER                            SIGNAL                       RECEIVER              SLOT                          /
    /**/connect(edit1_alias,                       SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
@@ -149,13 +155,10 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(group_security_tls,                SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(radioButton_pa_same_as_local,      SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(radioButton_pa_custom,             SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
-   /**/connect(m_pRingtoneListLW,                 SIGNAL(currentRowChanged(int))         , this   , SLOT(changedAccountList())              );
    /**/connect(m_pUseCustomFileCK,                SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(edit_credential_realm,             SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_credential_auth,              SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_credential_password,          SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
-//    /**/connect(m_pCodecsLW,                       SIGNAL(currentTextChanged(QString))    , this   , SLOT(loadVidCodecDetails(QString))      );
-   ///**/connect(&configurationManager,             SIGNAL(accountsChanged())            , this   , SLOT(updateAccountStates()             ));
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(this,                              SIGNAL(updateButtons())                , parent , SLOT(updateButtons())                   );
    /**/connect(combo_security_STRP,               SIGNAL(currentIndexChanged(int))       , this   , SLOT(updateCombo(int))                  );
@@ -265,10 +268,8 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/account->setSipStunServer               ( line_stun->text()                                                        );
    /**/account->setPublishedPort               ( spinBox_pa_published_port->value()                                       );
    /**/account->setPublishedAddress            ( lineEdit_pa_published_address ->text()                                   );
-//    /**/account->setLocalPort                   ( spinBox_pa_published_port->value()                                       );
    /**/account->setLocalInterface              ( comboBox_ni_local_address->currentText()                                 );
    /**/account->setRingtoneEnabled             ( m_pEnableRingtoneGB->isChecked()                                         );
-   /**/account->setRingtonePath                ( m_pRingTonePath->url().path()                                            );
    /**/account->setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
    /**/account->setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
    /**/account->setLocalPort                   ( spinBox_ni_local_port->value()                                           );
@@ -280,12 +281,12 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
       AccountListModel::instance()->setDefaultAccount(account);
    }
 
-   if (m_pRingtoneListLW->selectedItems().size() == 1 && m_pRingtoneListLW->currentIndex().isValid() ) {
-      QListWidgetItem* selectedRingtone = m_pRingtoneListLW->currentItem();
-      RingToneListItem* ringtoneWidget = qobject_cast<RingToneListItem*>(m_pRingtoneListLW->itemWidget(selectedRingtone));
-      if (ringtoneWidget) {
-         account->setRingtonePath(ringtoneWidget->m_Path);
-      }
+   //Ringtone
+   if (!m_pUseCustomFileCK->isChecked()) {
+      account->setRingtonePath( m_pRingtoneListLW->currentIndex().data(RingToneModel::Role::FullPath).toString() );
+   }
+   else {
+      account->setRingtonePath( m_pRingTonePath->url().path() );
    }
 
    if (m_pCodecsLW->currentIndex().isValid())
@@ -296,10 +297,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
 
 void DlgAccounts::cancel()
 {
-//    Account* account = AccountListModel::instance()->getAccountByModelIndex(treeView_accountList->currentIndex());
-//    if (account) {
-//       account->performAction(CANCEL);
-//    }
    AccountListModel::instance()->cancel();
 }
 
@@ -330,7 +327,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
          edit5_password->setText(account->credentialsModel()->data(idx,CredentialModel::Role::PASSWORD).toString());
       }
       else
-         edit5_password->setText("");
+         edit5_password->setText(QString());
       connect(edit5_password, SIGNAL(textEdited(QString)), this , SLOT(main_password_field_changed()));
    }
    else {
@@ -461,31 +458,20 @@ void DlgAccounts::loadAccount(QModelIndex item)
    combo_tls_method->setCurrentIndex( TlsMethodModel::instance()->toIndex(account->tlsMethod()).row() );
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
-   m_pRingtoneListLW->clear();
-   m_hRingtonePath = configurationManager.getRingtoneList();
-   QMutableMapIterator<QString, QString> iter(m_hRingtonePath);
-   bool found = false;
-   while (iter.hasNext()) {
-      iter.next();
-      QListWidgetItem*  item        = new QListWidgetItem();
-      RingToneListItem* item_widget = new RingToneListItem(iter.key(),iter.value());
-      m_pRingtoneListLW->addItem      ( item              );
-      m_pRingtoneListLW->setItemWidget( item, item_widget );
-
-      if (KStandardDirs::realFilePath(iter.key()) == ringtonePath) {
-         m_pUseCustomFileCK->setChecked( false );
-         m_pRingTonePath->setDisabled  ( true  );
-         item->setSelected             ( true  );
-         found = true;
-      }
+   m_pRingtoneListLW->setModel(account->ringToneModel());
+   const QModelIndex& rtIdx = account->ringToneModel()->currentIndex();
+   if (rtIdx.isValid()) {
+      m_pRingtoneListLW->setEnabled(true);
+      m_pRingTonePath->setEnabled(false);
+      m_pUseCustomFileCK->setChecked(false);
+      disconnect(m_pRingtoneListLW->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(changedAccountList()));
+      m_pRingtoneListLW->setCurrentIndex(rtIdx);
+      connect(m_pRingtoneListLW->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(changedAccountList()));
    }
-   m_pRingtoneListLW->setEnabled(!m_pUseCustomFileCK->isChecked());
-   if (!found && !ringtonePath.isEmpty()) {
-      m_pRingtoneListLW->setDisabled(true);
-      m_pUseCustomFileCK->setChecked(true);
+   else {
       m_pRingTonePath->setEnabled(true);
-
-      m_pRingTonePath->setUrl( ringtonePath );
+      m_pUseCustomFileCK->setChecked(true);
+      m_pRingtoneListLW->setEnabled(false);
    }
 
    switch (static_cast<Account::Protocol>(edit2_protocol->currentIndex())) {
@@ -514,7 +500,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    if(protocolIndex == 0 || account->isNew()) { // if sip selected
       checkbox_stun->setChecked(account->isSipStunEnabled());
       line_stun->setText( account->sipStunServer() );
-      //checkbox_zrtp->setChecked(account->accountDetail(ACCOUNT_SRTP_ENABLED) == REGISTRATION_ENABLED_TRUE);
 
       tab_advanced->                setEnabled ( true                       );
       line_stun->                   setEnabled ( checkbox_stun->isChecked() );
@@ -525,7 +510,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
       checkbox_stun->setChecked(false);
       tab_advanced->setEnabled (false);
       line_stun->setText( account->sipStunServer() );
-      //checkbox_zrtp->setChecked(false);
    }
 
    updateStatusLabel(account);
@@ -810,9 +794,6 @@ void DlgAccounts::updateSettings()
    if(accountListHasChanged) {
       if(treeView_accountList->currentIndex().isValid()) {
          Account* acc = currentAccount();
-//          if (acc && acc->isNew()) { //Trying to save an account without ID work, but codecs and credential will be corrupted
-//             acc->performAction(AccountEditAction::SAVE);
-//          }
          saveAccount(treeView_accountList->currentIndex());
          if (acc && (acc->state() == Account::AccountEditState::EDITING || acc->state() == Account::AccountEditState::OUTDATED))
             acc->performAction(Account::AccountEditAction::CANCEL);
@@ -827,7 +808,6 @@ void DlgAccounts::updateSettings()
 void DlgAccounts::updateWidgets()
 {
    loadAccountList();
-   //toolButton_accountsApply->setEnabled(false);
    updateStatusLabel(treeView_accountList->currentIndex());
    accountListHasChanged = false;
 }
@@ -939,12 +919,9 @@ void DlgAccounts::changeAlias(QString newAlias)
       const QModelIndex src = CategorizedAccountModel::instance()->mapToSource(treeView_accountList->currentIndex());
       AccountListModel::instance()->setData(src,newAlias,Qt::EditRole);
    }
-//       acc->setAccountAlias(newAlias);
 }
 
 Account* DlgAccounts::currentAccount() const
 {
    return AccountListModel::instance()->getAccountByModelIndex(CategorizedAccountModel::instance()->mapToSource(treeView_accountList->currentIndex()));
 }
-
-//#include <dlgaccount.moc>

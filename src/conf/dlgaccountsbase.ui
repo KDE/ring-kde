@@ -222,7 +222,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -1081,8 +1081,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>481</width>
-               <height>680</height>
+               <width>547</width>
+               <height>666</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
@@ -1425,9 +1425,6 @@
              <bool>true</bool>
             </property>
             <layout class="QGridLayout" name="gridLayout_6">
-             <item row="0" column="0" colspan="2">
-              <widget class="QListWidget" name="m_pRingtoneListLW"/>
-             </item>
              <item row="1" column="0">
               <widget class="QCheckBox" name="m_pUseCustomFileCK">
                <property name="text">
@@ -1440,6 +1437,22 @@
                <property name="filter">
                 <string notr="true">*.ul *.au *.wav</string>
                </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <widget class="QTableView" name="m_pRingtoneListLW">
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <attribute name="horizontalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
               </widget>
              </item>
             </layout>
@@ -1513,7 +1526,7 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>395</x>
+     <x>387</x>
      <y>427</y>
     </hint>
     <hint type="destinationlabel">
@@ -1529,11 +1542,11 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>395</x>
+     <x>387</x>
      <y>427</y>
     </hint>
     <hint type="destinationlabel">
-     <x>623</x>
+     <x>619</x>
      <y>266</y>
     </hint>
    </hints>
@@ -1545,11 +1558,11 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>395</x>
+     <x>387</x>
      <y>427</y>
     </hint>
     <hint type="destinationlabel">
-     <x>623</x>
+     <x>619</x>
      <y>291</y>
     </hint>
    </hints>
@@ -1571,22 +1584,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_pUseCustomFileCK</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>m_pRingtoneListLW</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>340</x>
-     <y>520</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>365</x>
-     <y>394</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>m_pProxyCK</sender>
    <signal>toggled(bool)</signal>
    <receiver>m_pProxyLE</receiver>
@@ -1599,6 +1596,22 @@
     <hint type="destinationlabel">
      <x>403</x>
      <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pUseCustomFileCK</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_pRingtoneListLW</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>518</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>348</x>
+     <y>439</y>
     </hint>
    </hints>
   </connection>

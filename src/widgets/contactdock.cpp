@@ -205,11 +205,9 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
    if (!idx.isValid() || !idx.parent().isValid())
       return;
    const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
-   qDebug() << "\n\n\n\nHERE!!!!" << (int)modelItem->type();
    if (modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
       const Contact::PhoneNumbers nbs = *static_cast<const Contact::PhoneNumbers*>(modelItem);
       const PhoneNumber*          nb  = nbs[index.row()];
-      qDebug() << "NUMBER" << nb << nb->uri();
       m_pCurrentContact = nullptr;
       callAgain(nb);
    }

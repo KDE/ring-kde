@@ -73,6 +73,7 @@ set( qtsflphone_LIB_SRCS
   numbercompletionmodel.cpp
   categorizedaccountmodel.cpp
   audiosettingsmodel.cpp
+  ringtonemodel.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -121,6 +122,7 @@ set( qtsflphone_LIB_HDRS
   categorizedaccountmodel.h
   numbercategory.h
   audiosettingsmodel.h
+  ringtonemodel.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

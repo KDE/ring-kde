@@ -22,6 +22,8 @@
 #include "ui_dlgaccountsbase.h"
 #include "../lib/account.h"
 #include "../lib/dbus/callmanager.h"
+#include "../lib/ringtonemodel.h"
+#include <QtGui/QStyledItemDelegate>
 
 //Qt
 class QWidget;
@@ -32,50 +34,6 @@ class KConfigDialog;
 //SFLPhone
 class TipManager;
 class Tip;
-
-//Typedef
-typedef QHash<QString, QString> StringHash;                          //Needed to fix a Qt foreach macro argument parsing bug
-
-///RingToneListItem: Ringtone list widget
-class RingToneListItem : public QWidget
-{
-   Q_OBJECT
-   friend class DlgAccounts;
-   ///Constructor
-   RingToneListItem(QString path, QString name) : QWidget(0),m_Path(path) {
-      QHBoxLayout* l  = new QHBoxLayout(this);
-      m_pPlayPB       = new QPushButton(this);
-      QLabel* lblName = new QLabel(name,this);
-      l->setContentsMargins(0,0,0,0);
-      m_pPlayPB->setIcon(KIcon("media-playback-start"));
-      m_pPlayPB->setVisible(false);
-      lblName->setStyleSheet("padding-left:5px;");
-      lblName->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-      l->addWidget(lblName);
-      l->addWidget(m_pPlayPB);
-      connect(m_pPlayPB,SIGNAL(clicked()),this,SLOT(playRingtone()));
-   }
-protected:
-   ///Show the button when the cursor is over the item
-   virtual void enterEvent ( QEvent * event ) {
-      Q_UNUSED(event)
-      m_pPlayPB->setVisible(true);
-   }
-   ///Hide the button when the mouse leave the button
-   virtual void leaveEvent ( QEvent * event ) {
-      Q_UNUSED(event)
-      m_pPlayPB->setVisible(false);
-   }
-private Q_SLOTS:
-   ///Play the ringtone file when the button is clicked
-   void playRingtone() {
-      CallManagerInterface& callManager = DBus::CallManager::instance();
-      Q_NOREPLY callManager.startRecordedFilePlayback(m_Path);
-   }
-private:
-   QString m_Path;
-   QPushButton* m_pPlayPB;
-};
 
 /**
  *  @author Jérémy Quentin <jeremy.quentin@gmail.com>
@@ -111,7 +69,7 @@ public:
 
 private:
    ///Attributes
-   QList<StringHash>     codecList             ;
+   QList< QHash<QString, QString> >  codecList ;
    bool                  accountListHasChanged ;
    QMap<QString,QString> m_hRingtonePath       ;
    int                   m_IsLoading           ;

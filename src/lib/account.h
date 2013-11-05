@@ -35,6 +35,7 @@ class QString;
 class CredentialModel;
 class AudioCodecModel;
 class VideoCodecModel;
+class RingToneModel  ;
 
 const QString& account_state_name(const QString& s);
 
@@ -305,6 +306,7 @@ class LIB_EXPORT Account : public QObject {
       Q_INVOKABLE CredentialModel* credentialsModel() const;
       Q_INVOKABLE AudioCodecModel* audioCodecModel () const;
       Q_INVOKABLE VideoCodecModel* videoCodecModel () const;
+      Q_INVOKABLE RingToneModel*   ringToneModel   () const;
 
       //Getters
       QString hostname                     () const;
@@ -447,9 +449,10 @@ class LIB_EXPORT Account : public QObject {
       void save();
       void reloadMod() {reload();modify();};
 
-      CredentialModel* m_pCredentials;
-      AudioCodecModel* m_pAudioCodecs;
-      VideoCodecModel* m_pVideoCodecs;
+      CredentialModel* m_pCredentials  ;
+      AudioCodecModel* m_pAudioCodecs  ;
+      VideoCodecModel* m_pVideoCodecs  ;
+      RingToneModel*   m_pRingToneModel;
       AccountEditState m_CurrentState;
       static const account_function stateMachineActionsOnState[6][7];
 

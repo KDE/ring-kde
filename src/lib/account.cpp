@@ -37,6 +37,7 @@
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
 #include "videocodecmodel.h"
+#include "ringtonemodel.h"
 #include "presencestatusmodel.h"
 
 const account_function Account::stateMachineActionsOnState[6][7] = {
@@ -52,7 +53,7 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 
 ///Constructors
 Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
-m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0)
+m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0),m_pRingToneModel(nullptr)
 {
 }
 
@@ -277,6 +278,13 @@ VideoCodecModel* Account::videoCodecModel() const
    if (!m_pVideoCodecs)
       const_cast<Account*>(this)->m_pVideoCodecs = new VideoCodecModel(const_cast<Account*>(this));
    return m_pVideoCodecs;
+}
+
+RingToneModel* Account::ringToneModel() const
+{
+   if (!m_pRingToneModel)
+      const_cast<Account*>(this)->m_pRingToneModel = new RingToneModel(const_cast<Account*>(this));
+   return m_pRingToneModel;
 }
 
 void Account::setAlias(const QString& detail)

@@ -93,6 +93,7 @@ SET(
    delegates/dialpaddelegate.cpp
    delegates/imdelegate.cpp
    delegates/autocompletiondelegate.cpp
+   delegates/ringtonedelegate.cpp
 )
 
 # Configuration pages
