@@ -39,6 +39,8 @@
 #include "videocodecmodel.h"
 #include "ringtonemodel.h"
 #include "presencestatusmodel.h"
+#define TO_BOOL ?"true":"false"
+#define IS_TRUE == "true"
 
 const account_function Account::stateMachineActionsOnState[6][7] = {
 /*                 NOTHING              EDIT              RELOAD              SAVE               REMOVE             MODIFY             CANCEL            */
@@ -304,13 +306,13 @@ QString Account::hostname() const
 ///Return if the account is enabled
 bool Account::isEnabled() const
 {
-   return (accountDetail(Account::MapField::ENABLED)  == "true")?1:0;
+   return accountDetail(Account::MapField::ENABLED) IS_TRUE;
 }
 
 ///Return if the account should auto answer
 bool Account::isAutoAnswer() const
 {
-   return (accountDetail(Account::MapField::AUTOANSWER)  == "true")?1:0;
+   return accountDetail(Account::MapField::AUTOANSWER) IS_TRUE;
 }
 
 ///Return the account user name
@@ -347,37 +349,37 @@ QString Account::password() const
 ///
 bool Account::isDisplaySasOnce() const
 { 
-   return (accountDetail(Account::MapField::ZRTP::DISPLAY_SAS_ONCE)  == "true")?1:0 ;
+   return accountDetail(Account::MapField::ZRTP::DISPLAY_SAS_ONCE) IS_TRUE;
 }
 
 ///Return the account security fallback
 bool Account::isSrtpRtpFallback() const
 {
-   return (accountDetail(Account::MapField::SRTP::RTP_FALLBACK)  == "true")?1:0 ;
+   return accountDetail(Account::MapField::SRTP::RTP_FALLBACK) IS_TRUE;
 }
 
 ///
 bool Account::isZrtpDisplaySas         () const
 {
-   return (accountDetail(Account::MapField::ZRTP::DISPLAY_SAS)  == "true")?1:0 ;
+   return accountDetail(Account::MapField::ZRTP::DISPLAY_SAS) IS_TRUE;
 }
 
 ///Return if the other side support warning
 bool Account::isZrtpNotSuppWarning() const
 {
-   return (accountDetail(Account::MapField::ZRTP::NOT_SUPP_WARNING) == "true")?1:0 ;
+   return accountDetail(Account::MapField::ZRTP::NOT_SUPP_WARNING) IS_TRUE;
 }
 
 ///
 bool Account::isZrtpHelloHash() const
 {
-   return (accountDetail(Account::MapField::ZRTP::HELLO_HASH)  == "true")?1:0 ;
+   return accountDetail(Account::MapField::ZRTP::HELLO_HASH) IS_TRUE;
 }
 
 ///Return if the account is using a STUN server
 bool Account::isSipStunEnabled() const
 {
-   return (accountDetail(Account::MapField::STUN::ENABLED)  == "true")?1:0 ;
+   return accountDetail(Account::MapField::STUN::ENABLED) IS_TRUE;
 }
 
 ///Return the account STUN server
@@ -395,7 +397,7 @@ int Account::registrationExpire() const
 ///Return if the published address is the same as the local one
 bool Account::isPublishedSameAsLocal() const
 {
-   return (accountDetail(Account::MapField::PUBLISHED_SAMEAS_LOCAL)  == "true")?1:0 ;
+   return accountDetail(Account::MapField::PUBLISHED_SAMEAS_LOCAL) IS_TRUE;
 }
 
 ///Return the account published address
@@ -467,25 +469,25 @@ int Account::tlsNegotiationTimeoutMsec() const
 ///Return the account TLS verify server
 bool Account::isTlsVerifyServer() const
 {
-   return (accountDetail(Account::MapField::TLS::VERIFY_SERVER)  == "true");
+   return (accountDetail(Account::MapField::TLS::VERIFY_SERVER) IS_TRUE);
 }
 
 ///Return the account TLS verify client
 bool Account::isTlsVerifyClient() const
 {
-   return (accountDetail(Account::MapField::TLS::VERIFY_CLIENT)  == "true");
+   return (accountDetail(Account::MapField::TLS::VERIFY_CLIENT) IS_TRUE);
 }
 
 ///Return if it is required for the peer to have a certificate
 bool Account::isTlsRequireClientCertificate() const
 {
-   return (accountDetail(Account::MapField::TLS::REQUIRE_CLIENT_CERTIFICATE)  == "true");
+   return (accountDetail(Account::MapField::TLS::REQUIRE_CLIENT_CERTIFICATE) IS_TRUE);
 }
 
 ///Return the account TLS security is enabled
 bool Account::isTlsEnable() const
 { 
-   return (accountDetail(Account::MapField::TLS::ENABLE)  == "true");
+   return (accountDetail(Account::MapField::TLS::ENABLE) IS_TRUE);
 }
 
 ///Return the account the TLS encryption method
@@ -504,7 +506,7 @@ KeyExchangeModel::Type Account::keyExchange() const
 ///Return if the ringtone are enabled
 bool Account::isRingtoneEnabled() const
 {
-   return (accountDetail(Account::MapField::Ringtone::ENABLED)  == "true");
+   return (accountDetail(Account::MapField::Ringtone::ENABLED) IS_TRUE);
 }
 
 ///Return the account ringtone path
@@ -570,7 +572,7 @@ DtmfType Account::DTMFType() const
 
 bool Account::presenceStatus() const
 {
-   return accountDetail(Account::MapField::Presence::CURRENT_STATUS)  == "true";
+   return accountDetail(Account::MapField::Presence::CURRENT_STATUS) IS_TRUE;
 }
 
 QString Account::presenceMessage() const
@@ -580,12 +582,17 @@ QString Account::presenceMessage() const
 
 bool Account::supportPresencePublish() const
 {
-   return accountDetail(Account::MapField::Presence::SUPPORT_PUBLISH)  == "true";
+   return accountDetail(Account::MapField::Presence::SUPPORT_PUBLISH) IS_TRUE;
 }
 
 bool Account::supportPresenceSubscribe() const
 {
-   return accountDetail(Account::MapField::Presence::SUPPORT_SUBSCRIBE)  == "true";
+   return accountDetail(Account::MapField::Presence::SUPPORT_SUBSCRIBE) IS_TRUE;
+}
+
+bool Account::presenceEnabled() const
+{
+   return accountDetail(Account::MapField::Presence::ENABLE) IS_TRUE;
 }
 
 QVariant Account::roleData(int role) const
@@ -922,78 +929,83 @@ void Account::setPublishedPort(unsigned short detail)
 ///Set if the account is enabled or not
 void Account::setEnabled(bool detail)
 {
-   setAccountDetail(Account::MapField::ENABLED, detail?"true":"false");
+   setAccountDetail(Account::MapField::ENABLED, (detail)TO_BOOL);
 }
 
 ///Set if the account should auto answer
 void Account::setAutoAnswer(bool detail)
 {
-   setAccountDetail(Account::MapField::AUTOANSWER, detail?"true":"false");
+   setAccountDetail(Account::MapField::AUTOANSWER, (detail)TO_BOOL);
 }
 
 ///Set the TLS verification server
 void Account::setTlsVerifyServer(bool detail)
 {
-   setAccountDetail(Account::MapField::TLS::VERIFY_SERVER, detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::VERIFY_SERVER, (detail)TO_BOOL);
 }
 
 ///Set the TLS verification client
 void Account::setTlsVerifyClient(bool detail)
 {
-   setAccountDetail(Account::MapField::TLS::VERIFY_CLIENT, detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::VERIFY_CLIENT, (detail)TO_BOOL);
 }
 
 ///Set if the peer need to be providing a certificate
 void Account::setTlsRequireClientCertificate(bool detail)
 {
-   setAccountDetail(Account::MapField::TLS::REQUIRE_CLIENT_CERTIFICATE ,detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::REQUIRE_CLIENT_CERTIFICATE ,(detail)TO_BOOL);
 }
 
 ///Set if the security settings are enabled
 void Account::setTlsEnable(bool detail)
 {
-   setAccountDetail(Account::MapField::TLS::ENABLE ,detail?"true":"false");
+   setAccountDetail(Account::MapField::TLS::ENABLE ,(detail)TO_BOOL);
 }
 
 void Account::setDisplaySasOnce(bool detail)
 {
-   setAccountDetail(Account::MapField::ZRTP::DISPLAY_SAS_ONCE, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::DISPLAY_SAS_ONCE, (detail)TO_BOOL);
 }
 
 void Account::setSrtpRtpFallback(bool detail)
 {
-   setAccountDetail(Account::MapField::SRTP::RTP_FALLBACK, detail?"true":"false");
+   setAccountDetail(Account::MapField::SRTP::RTP_FALLBACK, (detail)TO_BOOL);
 }
 
 void Account::setZrtpDisplaySas(bool detail)
 {
-   setAccountDetail(Account::MapField::ZRTP::DISPLAY_SAS, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::DISPLAY_SAS, (detail)TO_BOOL);
 }
 
 void Account::setZrtpNotSuppWarning(bool detail)
 {
-   setAccountDetail(Account::MapField::ZRTP::NOT_SUPP_WARNING, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::NOT_SUPP_WARNING, (detail)TO_BOOL);
 }
 
 void Account::setZrtpHelloHash(bool detail)
 {
-   setAccountDetail(Account::MapField::ZRTP::HELLO_HASH, detail?"true":"false");
+   setAccountDetail(Account::MapField::ZRTP::HELLO_HASH, (detail)TO_BOOL);
 }
 
 void Account::setSipStunEnabled(bool detail)
 {
-   setAccountDetail(Account::MapField::STUN::ENABLED, detail?"true":"false");
+   setAccountDetail(Account::MapField::STUN::ENABLED, (detail)TO_BOOL);
 }
 
 void Account::setPublishedSameAsLocal(bool detail)
 {
-   setAccountDetail(Account::MapField::PUBLISHED_SAMEAS_LOCAL, detail?"true":"false");
+   setAccountDetail(Account::MapField::PUBLISHED_SAMEAS_LOCAL, (detail)TO_BOOL);
 }
 
 ///Set if custom ringtone are enabled
 void Account::setRingtoneEnabled(bool detail)
 {
-   setAccountDetail(Account::MapField::Ringtone::ENABLED, detail?"true":"false");
+   setAccountDetail(Account::MapField::Ringtone::ENABLED, (detail)TO_BOOL);
+}
+
+void Account::setPresenceEnabled(bool enable)
+{
+   setAccountDetail(Account::MapField::Presence::ENABLE, (enable)TO_BOOL);
 }
 
 ///Set the DTMF type
@@ -1303,3 +1315,5 @@ bool Account::operator==(const Account& a)const
  *                                                                           *
  ****************************************************************************/
 
+#undef TO_BOOL
+#undef IS_TRUE

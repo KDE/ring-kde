@@ -225,8 +225,7 @@ class LIB_EXPORT Account : public QObject {
          public:
             constexpr static const char* SUPPORT_PUBLISH     = "Account.presencePublishSupported"  ;
             constexpr static const char* SUPPORT_SUBSCRIBE   = "Account.presenceSubscribeSupported";
-            constexpr static const char* ENABLE_PUBLISH      = "Account.presencePublishEnabled"    ;
-            constexpr static const char* ENABLE_SUBSCRIBE    = "Account.presenceSubscribeEnabled"  ;
+            constexpr static const char* ENABLE              = "Account.presenceEnabled"           ;
             constexpr static const char* CURRENT_STATUS      = "Account.presenceStatus"            ;
             constexpr static const char* CURRENT_NOTE        = "Account.presenceNote"              ;
          };
@@ -353,6 +352,7 @@ class LIB_EXPORT Account : public QObject {
       QString presenceMessage              () const;
       bool    supportPresencePublish       () const;
       bool    supportPresenceSubscribe     () const;
+      bool    presenceEnabled              () const;
       Account::Protocol      protocol      () const;
       TlsMethodModel::Type   tlsMethod     () const;
       KeyExchangeModel::Type keyExchange   () const;
@@ -401,6 +401,7 @@ class LIB_EXPORT Account : public QObject {
       void setSipStunEnabled                (bool detail);
       void setPublishedSameAsLocal          (bool detail);
       void setRingtoneEnabled               (bool detail);
+      void setPresenceEnabled               (bool enable);
       void setDTMFType                      (DtmfType type);
 
       void setRoleData(int role, const QVariant& value);
