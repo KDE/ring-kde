@@ -126,6 +126,20 @@ void AudioSettingsModel::setEnableRoomTone(bool enable)
    m_EnableRoomTone = enable;
 }
 
+///Enable noise suppress code, may make things worst
+void AudioSettingsModel::setNoiseSuppressState(bool enabled)
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   configurationManager.setNoiseSuppressState(enabled);
+}
+
+///Enable noise suppress code, may make things worst
+bool AudioSettingsModel::noiseSuppressState() const
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   return configurationManager.getNoiseSuppressState();
+}
+
 /****************************************************************
  *                                                              *
  *                        AlsaPluginModel                       *

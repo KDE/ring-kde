@@ -55,9 +55,11 @@ public:
    AudioManagerModel*   audioManagerModel  ();
    RingtoneDeviceModel* ringtoneDeviceModel();
    bool                 isRoomToneEnabled  ();
+   bool                 noiseSuppressState () const;
 
    //Setters
    void setEnableRoomTone(bool enable);
+   void setNoiseSuppressState(bool enabled);
 
    //Room tone type
    enum class ToneType {

@@ -45,6 +45,8 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    KUrlRequester_destinationFolder->setUrl(KUrl(configurationManager.getRecordPath()));
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
+   m_pSuppressNoise->setChecked(AudioSettingsModel::instance()->noiseSuppressState());
+
    alsaInputDevice->setModel   (AudioSettingsModel::instance()->inputDeviceModel () );
    alsaOutputDevice->setModel  (AudioSettingsModel::instance()->outputDeviceModel() );
    alsaRingtoneDevice->setModel(AudioSettingsModel::instance()->outputDeviceModel() );
@@ -57,6 +59,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( m_pAlwaysRecordCK, SIGNAL(clicked(bool))  , this  , SLOT(changed())      );
 
    connect( box_alsaPlugin                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( m_pSuppressNoise                , SIGNAL(toggled(bool))            , SLOT(changed()));
    connect( alsaInputDevice                 , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( alsaOutputDevice                , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
@@ -94,6 +97,7 @@ void DlgAudio::updateSettings()
       AudioSettingsModel::instance()->outputDeviceModel  ()->setCurrentDevice(alsaOutputDevice->currentIndex  ());
       AudioSettingsModel::instance()->ringtoneDeviceModel()->setCurrentDevice(alsaRingtoneDevice->currentIndex());
       AudioSettingsModel::instance()->alsaPluginModel    ()->setCurrentPlugin(box_alsaPlugin->currentIndex());
+      AudioSettingsModel::instance()->setNoiseSuppressState(m_pSuppressNoise->isChecked());
 
       m_Changed   = false;
       m_IsLoading = false;

@@ -212,7 +212,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="m_pSuppressNoise">
         <property name="text">
          <string>Enable noise reduction</string>
         </property>
