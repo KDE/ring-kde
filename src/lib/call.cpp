@@ -167,12 +167,6 @@ Call::Call(Call::State startState, const QString& callId, const QString& peerNam
    changeCurrentState(startState);
    m_pUserActionModel = new UserActionModel(this);
 
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   if (hasRecording()) {
-      connect(&callManager,SIGNAL(recordPlaybackStopped(QString)), this, SLOT(stopPlayback(QString))  );
-      connect(&callManager,SIGNAL(updatePlaybackScale(int,int))  , this, SLOT(updatePlayback(int,int)));
-   }
-
    emit changed();
    emit changed(this);
 }
@@ -691,6 +685,11 @@ void Call::setConfId(const QString& value)
 void Call::setRecordingPath(const QString& path)
 {
    m_RecordingPath = path;
+   if (!m_RecordingPath.isEmpty()) {
+      CallManagerInterface & callManager = DBus::CallManager::instance();
+      connect(&callManager,SIGNAL(recordPlaybackStopped(QString)), this, SLOT(stopPlayback(QString))  );
+      connect(&callManager,SIGNAL(updatePlaybackScale(QString,int,int))  , this, SLOT(updatePlayback(QString,int,int)));
+   }
 }
 
 ///Set peer name
@@ -1278,9 +1277,11 @@ void Call::stopPlayback(const QString& filePath)
 }
 
 ///Daemon playback position chnaged
-void Call::updatePlayback(int position,int size)
+void Call::updatePlayback(const QString& path, int position,int size)
 {
-   emit playbackPositionChanged(position,size);
+   if (path == m_RecordingPath) {
+      emit playbackPositionChanged(position,size);
+   }
 }
 
 UserActionModel* Call::userActionModel() const

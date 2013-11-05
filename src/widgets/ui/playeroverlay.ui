@@ -116,6 +116,7 @@
    <container>1</container>
    <slots>
     <signal>sigHide(bool)</signal>
+    <slot>play()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -128,8 +129,8 @@
    <slot>slotShowPlayer()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>288</x>
-     <y>33</y>
+     <x>327</x>
+     <y>36</y>
     </hint>
     <hint type="destinationlabel">
      <x>43</x>
@@ -144,12 +145,12 @@
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>274</x>
-     <y>23</y>
+     <x>327</x>
+     <y>36</y>
     </hint>
     <hint type="destinationlabel">
-     <x>232</x>
-     <y>71</y>
+     <x>236</x>
+     <y>59</y>
     </hint>
    </hints>
   </connection>
@@ -160,8 +161,8 @@
    <slot>slotDeleteRecording()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>306</x>
-     <y>28</y>
+     <x>361</x>
+     <y>36</y>
     </hint>
     <hint type="destinationlabel">
      <x>341</x>
@@ -176,8 +177,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>267</x>
-     <y>16</y>
+     <x>327</x>
+     <y>29</y>
     </hint>
     <hint type="destinationlabel">
      <x>113</x>
@@ -192,12 +193,28 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>42</x>
-     <y>72</y>
+     <x>46</x>
+     <y>59</y>
     </hint>
     <hint type="destinationlabel">
      <x>71</x>
      <y>16</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pPlay</sender>
+   <signal>clicked()</signal>
+   <receiver>m_pPlayer</receiver>
+   <slot>play()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>308</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>269</x>
+     <y>53</y>
     </hint>
    </hints>
   </connection>

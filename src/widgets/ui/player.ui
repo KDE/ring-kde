@@ -83,8 +83,8 @@
    <slot>slotHide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>58</x>
-     <y>62</y>
+     <x>63</x>
+     <y>60</y>
     </hint>
     <hint type="destinationlabel">
      <x>161</x>

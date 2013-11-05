@@ -26,7 +26,6 @@ Player::Player(QWidget* parent) : QWidget(parent),m_pParent(static_cast<PlayerOv
    setupUi(this);
    m_pPlayPause->setIcon( KIcon( "media-playback-start" ));
    m_pStop->setIcon( KIcon( "media-playback-stop"  ));
-   connect( m_pParent->m_pCall , SIGNAL(playbackStopped())                , this               , SLOT(stopPlayer()));
    connect( m_pParent->m_pCall , SIGNAL(playbackPositionChanged(int,int)) , this               , SLOT(slotUpdateSlider(int,int)));
    connect( m_pPlayPause       , SIGNAL(clicked())                        , m_pParent->m_pCall , SLOT(playRecording()));
    connect( m_pStop            , SIGNAL(clicked())                        , m_pParent->m_pCall , SLOT(stopRecording()));
@@ -58,4 +57,9 @@ void Player::slotUpdateSlider(int pos, int size)
    m_pElapsed->setText(QString("%1").arg((pos/1000)/60,2,10,QChar('0'))+':'+QString("%1").arg((pos/1000)%60,2,10,QChar('0')));
    m_pSlider->setMaximum(size);
    m_pSlider->setValue(pos);
+}
+
+void Player::play()
+{
+   m_pParent->m_pCall->playRecording();
 }

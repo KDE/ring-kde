@@ -39,6 +39,7 @@ private Q_SLOTS:
    void slotDisconnectSlider();
    void slotConnectSlider();
    void slotUpdateSlider(int,int);
+   void play();
 
 Q_SIGNALS:
    void sigHide(bool);

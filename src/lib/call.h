@@ -436,7 +436,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
    void stopPlayback(const QString& filePath);
-   void updatePlayback(int position,int size);
+   void updatePlayback(const QString& path,int position,int size);
    void updated();
 
 Q_SIGNALS:
