@@ -233,7 +233,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    }
 
    //ACCOUNT DETAILS
-   //                                                                     WIDGET VALUE                                     /
+   //                                                                     WIDGET VALUE                                 /
    /**/ ACC setProtocol                    ( static_cast<Account::Protocol>(edit2_protocol->currentIndex())           );
    /**/ ACC setAlias                       ( edit1_alias->text()                                                      );
    /**/ ACC setHostname                    ( edit3_server->text()                                                     );
@@ -244,8 +244,8 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setPresenceEnabled             ( m_pPresenceCK->isChecked()                                               );
    /**/ ACC setEnabled                     ( item.data(Qt::CheckStateRole).toBool()                                   );
    /**/ ACC setRegistrationExpire          ( spinbox_regExpire->value()                                               );
-   /**/                                                                                                                 /**/
-   /*                                            Security                                                                 */
+   /**/                                                                                                             /**/
+   /*                                            Security                                                             */
    /**/ ACC setTlsPassword                 ( edit_tls_private_key_password->text()                                    );
    /**/ ACC setTlsListenerPort             ( spinbox_tls_listener->value()                                            );
    /**/ ACC setTlsCaListFile               ( file_tls_authority->text()                                               );
@@ -276,7 +276,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
    /**/ ACC setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
    /**/ ACC setLocalPort                   ( spinBox_ni_local_port->value()                                           );
-   //                                                                                                                      /
+   //                                                                                                                  /
 
 
    if (m_pDefaultAccount->isChecked()) {
@@ -340,30 +340,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    disconnect(this,SLOT(aliasChanged(QString)));
    connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));
 
-   switch ( ACC keyExchange()) {
-      case KeyExchangeModel::Type::NONE:
-         checkbox_SDES_fallback_rtp->setVisible   ( false );
-         checkbox_ZRTP_Ask_user->setVisible       ( false );
-         checkbox_ZRTP_display_SAS->setVisible    ( false );
-         checkbox_ZRTP_warn_supported->setVisible ( false );
-         checkbox_ZTRP_send_hello->setVisible     ( false );
-         break;
-      case KeyExchangeModel::Type::ZRTP:
-         checkbox_SDES_fallback_rtp->setVisible   ( false );
-         checkbox_ZRTP_Ask_user->setVisible       ( true  );
-         checkbox_ZRTP_display_SAS->setVisible    ( true  );
-         checkbox_ZRTP_warn_supported->setVisible ( true  );
-         checkbox_ZTRP_send_hello->setVisible     ( true  );
-         break;
-      case KeyExchangeModel::Type::SDES:
-         checkbox_SDES_fallback_rtp->setVisible   ( true  );
-         checkbox_ZRTP_Ask_user->setVisible       ( false );
-         checkbox_ZRTP_display_SAS->setVisible    ( false );
-         checkbox_ZRTP_warn_supported->setVisible ( false );
-         checkbox_ZTRP_send_hello->setVisible     ( false );
-         break;
-   }
-
    //         WIDGET VALUE                                          VALUE                     /
    /**/edit2_protocol->setCurrentIndex          ( (protocolIndex < 0) ? 0 : protocolIndex    );
    /**/edit3_server->setText                    (  ACC hostname                       ());
@@ -401,6 +377,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/m_pAutoAnswer->setChecked                (  ACC isAutoAnswer                   ());
    /**/combo_security_STRP->setCurrentIndex     (  KeyExchangeModel::instance()->toIndex( ACC keyExchange()).row());
    /*                                                                                        */
+
+   updateCombo(0);
 
    m_pDTMFOverRTP->setChecked( ACC DTMFType()==DtmfType::OverRtp);
    m_pDTMFOverSIP->setChecked( ACC DTMFType()==DtmfType::OverSip);
@@ -440,22 +418,14 @@ void DlgAccounts::loadAccount(QModelIndex item)
    #endif
 
 
-   if ( ACC alias() == "IP2IP") {
-      frame2_editAccounts->setTabEnabled( 0, false );
-      frame2_editAccounts->setTabEnabled( 1, false );
-      frame2_editAccounts->setTabEnabled( 2, true  );
-      frame2_editAccounts->setTabEnabled( 3, false );
-      frame2_editAccounts->setTabEnabled( 4, false );
-      frame2_editAccounts->setTabEnabled( 5, true  );
-   }
-   else {
-      frame2_editAccounts->setTabEnabled( 0, true );
-      frame2_editAccounts->setTabEnabled( 1, true );
-      frame2_editAccounts->setTabEnabled( 3, true );
-      frame2_editAccounts->setTabEnabled( 4, true );
-      frame2_editAccounts->setCurrentIndex(0);
-   }
+   //Enable tabs
+   bool isntIP2IP = ! ( ACC alias() == "IP2IP" );
+   bool isIAX     = ACC protocol()  == Account::Protocol::IAX;
+   bool enableTab[6] = {isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true};
+   for (int i=0;i<6;i++)
+      frame2_editAccounts->setTabEnabled( i, enableTab[i] );
 
+   //Setup ringtone
    m_pEnableRingtoneGB->setChecked( ACC isRingtoneEnabled());
    const QString ringtonePath = KStandardDirs::realFilePath( ACC ringtonePath());
    m_pRingTonePath->setUrl( ringtonePath );
@@ -477,15 +447,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
       m_pRingTonePath->setEnabled(true);
       m_pUseCustomFileCK->setChecked(true);
       m_pRingtoneListLW->setEnabled(false);
-   }
-
-   switch (static_cast<Account::Protocol>(edit2_protocol->currentIndex())) {
-      case Account::Protocol::SIP:
-         frame2_editAccounts->setTabEnabled( 3, true  );
-         break;
-      case Account::Protocol::IAX:
-         frame2_editAccounts->setTabEnabled( 3, false );
-         break;
    }
 
    #ifndef ENABLE_VIDEO
@@ -538,6 +499,7 @@ void DlgAccounts::loadAccountList()
    }
    else
       frame2_editAccounts->setEnabled(treeView_accountList->currentIndex().isValid());
+   updateAccountListCommands();
 }
 
 ///Called when one of the child widget is modified
@@ -572,7 +534,6 @@ void DlgAccounts::accountListChanged(const QModelIndex& current, const QModelInd
          acc->performAction(Account::AccountEditAction::CANCEL);
    }
    loadAccount(current);
-   //updateAccountListCommands();
 }
 
 ///Move account up
@@ -625,19 +586,12 @@ void DlgAccounts::on_button_accountRemove_clicked()
 ///Update account list
 void DlgAccounts::updateAccountListCommands()
 {
-   bool buttonsEnabled[4] = {true,true,true,true};
-   if(! treeView_accountList->currentIndex().isValid() || !treeView_accountList->currentIndex().parent().isValid()) {
-      buttonsEnabled[0]   = false;
-      buttonsEnabled[1]   = false;
-      buttonsEnabled[3]   = false;
-   }
-   else if(treeView_accountList->currentIndex().row() == 0) {
-      buttonsEnabled[0]   = false;
-   }
-   const QModelIndex cur = treeView_accountList->currentIndex();
-   if(!CategorizedAccountModel::instance()->index(cur.row()+1,0,cur.parent()).isValid()) {
-      buttonsEnabled[1]   = false;
-   }
+   bool isCategory        = ((!treeView_accountList->currentIndex().isValid()) || !treeView_accountList->currentIndex().parent().isValid());
+   bool isIP2IP           = treeView_accountList->currentIndex().parent().row()==1;
+   bool buttonsEnabled[4] = {!isCategory && !isIP2IP,!isCategory && !isIP2IP,!isCategory,!isCategory && !isIP2IP};
+   buttonsEnabled[0]     &= (treeView_accountList->currentIndex().row() != 0);
+   const QModelIndex cur  = treeView_accountList->currentIndex();
+   buttonsEnabled[1]     &= CategorizedAccountModel::instance()->index(cur.row()+1,0,cur.parent()).isValid();
 
    button_accountUp->setEnabled     ( buttonsEnabled[0] );
    button_accountDown->setEnabled   ( buttonsEnabled[1] );
@@ -829,53 +783,38 @@ void DlgAccounts::selectedCodecChanged(const QModelIndex& current,const QModelIn
 void DlgAccounts::updateCombo(int value)
 {
    Q_UNUSED(value)
-   switch (static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex())) {
-      case KeyExchangeModel::Type::NONE:
-         checkbox_SDES_fallback_rtp->setVisible   ( false );
-         checkbox_ZRTP_Ask_user->setVisible       ( false );
-         checkbox_ZRTP_display_SAS->setVisible    ( false );
-         checkbox_ZRTP_warn_supported->setVisible ( false );
-         checkbox_ZTRP_send_hello->setVisible     ( false );
-         break;
-      case KeyExchangeModel::Type::ZRTP:
-         checkbox_SDES_fallback_rtp->setVisible   ( false );
-         checkbox_ZRTP_Ask_user->setVisible       ( true  );
-         checkbox_ZRTP_display_SAS->setVisible    ( true  );
-         checkbox_ZRTP_warn_supported->setVisible ( true  );
-         checkbox_ZTRP_send_hello->setVisible     ( true  );
-         break;
-      case KeyExchangeModel::Type::SDES:
-         checkbox_SDES_fallback_rtp->setVisible   ( true  );
-         checkbox_ZRTP_Ask_user->setVisible       ( false );
-         checkbox_ZRTP_display_SAS->setVisible    ( false );
-         checkbox_ZRTP_warn_supported->setVisible ( false );
-         checkbox_ZTRP_send_hello->setVisible     ( false );
-         break;
-   }
+   static const bool enabledCombo[3][5] = {
+      /*KeyExchangeModel::Type::NONE*/ {false,false,false,false,false},
+      /*KeyExchangeModel::Type::ZRTP*/ {false,true ,true ,true ,true },
+      /*KeyExchangeModel::Type::SDES*/ {true ,false,false,false,false},
+   };
+   int idx = combo_security_STRP->currentIndex();
+   if (idx >= 3) return;
+   checkbox_SDES_fallback_rtp->setVisible   ( enabledCombo[idx][0] );
+   checkbox_ZRTP_Ask_user->setVisible       ( enabledCombo[idx][1] );
+   checkbox_ZRTP_display_SAS->setVisible    ( enabledCombo[idx][2] );
+   checkbox_ZRTP_warn_supported->setVisible ( enabledCombo[idx][3] );
+   checkbox_ZTRP_send_hello->setVisible     ( enabledCombo[idx][4] );
 } //updateCombo
 
 ///Save the current credential
 void DlgAccounts::saveCredential()
 {
    Account* acc = currentAccount();
+   if (!acc) return;
    const QModelIndex currentCredential = list_credential->currentIndex();
    if (currentCredential.isValid()) {
       acc->credentialsModel()->setData(currentCredential,edit_credential_auth->text()    , CredentialModel::Role::NAME     );
       acc->credentialsModel()->setData(currentCredential,edit_credential_password->text(), CredentialModel::Role::PASSWORD );
       acc->credentialsModel()->setData(currentCredential,edit_credential_realm->text()   , CredentialModel::Role::REALM    );
    }
-
-   if (acc)
-      acc->saveCredentials();
+   acc->saveCredentials();
 } //saveCredential
 
 ///Add a new credential
 void DlgAccounts::addCredential()
 {
-   Account* acc = currentAccount();
-
-   QModelIndex idx = acc->credentialsModel()->addCredentials();
-   list_credential->setCurrentIndex(idx);
+   list_credential->setCurrentIndex(currentAccount()->credentialsModel()->addCredentials());
 } //addCredential
 
 ///Save and load a credential
