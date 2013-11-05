@@ -34,7 +34,7 @@ m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_C
    setObjectName("PresenceStatusModel");
    StatusData* data = new StatusData();
    data->name       = "Online"    ;
-   data->message    = "I am bored, please disturb me";
+   data->message    = "I am available";
    data->status     = true      ;
    addStatus(data);
    data = new StatusData();
@@ -49,7 +49,7 @@ m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_C
    addStatus(data);
    data = new StatusData();
    data->name       = "DND"    ;
-   data->message    = "I wish great suffering to those trying to disturb me right now";
+   data->message    = "Please do not disturb me";
    data->status     = false      ;
    addStatus(data);
 }

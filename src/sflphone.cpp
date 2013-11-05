@@ -275,7 +275,7 @@ SFLPhone::SFLPhone(QWidget *parent)
 
    m_pPresent = new QToolButton(bar);
    m_pPresent->setAutoRaise(true);
-   m_pPresent->setText("Present");
+   m_pPresent->setText("Online");
    m_pPresent->setCheckable(true);
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);

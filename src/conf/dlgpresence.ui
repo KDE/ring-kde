@@ -13,6 +13,9 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QTableView" name="m_pView">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
@@ -41,6 +44,9 @@
      </item>
      <item>
       <widget class="LeftToolButton" name="m_pDown">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Move Down</string>
        </property>
@@ -48,6 +54,9 @@
      </item>
      <item>
       <widget class="CenterToolButton" name="m_pUp">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Move Up</string>
        </property>
@@ -55,6 +64,9 @@
      </item>
      <item>
       <widget class="CenterToolButton" name="m_pAdd">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Add</string>
        </property>
@@ -62,6 +74,9 @@
      </item>
      <item>
       <widget class="RightToolButton" name="m_pRemove">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Remove</string>
        </property>
