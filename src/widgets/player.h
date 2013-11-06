@@ -22,7 +22,6 @@
 
 #include "ui_player.h"
 
-class Call;
 class PlayerOverlay;
 
 class Player : public QWidget, public Ui_Player

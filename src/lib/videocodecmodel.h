@@ -22,7 +22,6 @@
 #include <QtCore/QAbstractListModel>
 
 //Qt
-class QStringList;
 
 //SFLPhone
 class Account;

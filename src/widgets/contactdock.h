@@ -31,16 +31,12 @@
 class PhoneNumber;
 
 //Qt
-class QSplitter;
 class QListWidget;
 class QTreeWidgetItem;
 class QCheckBox;
 class QMenu;
-class QTreeView;
 
 //KDE
-class KLineEdit;
-class KComboBox;
 class KAction;
 
 namespace Akonadi {

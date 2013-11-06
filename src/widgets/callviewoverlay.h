@@ -21,7 +21,6 @@
 #include <QtGui/QWidget>
 #include "ui_transfer.h"
 
-class QGroupBox;
 class Call;
 
 ///CallViewOverlay: Display overlay on top of the call tree

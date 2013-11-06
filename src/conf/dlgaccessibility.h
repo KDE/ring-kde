@@ -23,7 +23,6 @@
 #include "ui_dlgaccessibility.h"
 
 class KConfigDialog;
-class KShortCut;
 class Macro;
 
 class CategorizedDelegate;

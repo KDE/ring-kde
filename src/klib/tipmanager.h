@@ -23,7 +23,6 @@
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QImage>
 #include <QtCore/QAbstractAnimation>
-class QTimer;
 
 //SFLPhone
 #include "../lib/typedefs.h"

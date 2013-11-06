@@ -25,7 +25,6 @@
 #include <lib/call.h>
 
 class QTimer;
-class QMimeData;
 class QImage;
 
 ///DelegateDropOverlay: Fancy buttons for the call widget

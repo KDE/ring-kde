@@ -20,7 +20,7 @@
 
 #include <QtGui/QWidget>
 #include "ui_playeroverlay.h"
-
+class Call;
 class PlayerOverlay : public QWidget, public Ui_PlayerOverlay
 {
    Q_OBJECT

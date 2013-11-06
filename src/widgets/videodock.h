@@ -21,8 +21,6 @@
 #include <QtGui/QDockWidget>
 
 //Qt
-class QGraphicsView;
-class VideoScene;
 
 //SFLPhone
 class VideoWidget3;

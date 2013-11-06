@@ -22,7 +22,6 @@
 #include <QtGui/QTreeWidget>
 #include <QtCore/QDebug>
 
-class QTreeWidgetItem;
 class QStyledItemDelegate;
 
 //SFLPhone

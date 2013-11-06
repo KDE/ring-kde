@@ -26,7 +26,6 @@ class QGLWidget;
 //SFLPhone
 class VideoRenderer;
 class VideoScene;
-class VideoGLFrame;
 
 class VideoWidget3 : public QGraphicsView
 {

@@ -25,12 +25,9 @@
 //Qt
 class QString;
 class QLabel;
-class QTreeWidgetItem;
-class QActionGroup;
 class QToolButton;
 
 //KDE
-class KAction;
 class KComboBox;
 
 //SFLPhone
@@ -41,9 +38,7 @@ class VideoDock;
 class SFLPhoneTray;
 class SFLPhoneView;
 class HistoryDock;
-class CallTreeItem;
 class VideoRenderer;
-class ExtendedAction;
 class AccountListNoCheckProxyModel;
 class Account;
 

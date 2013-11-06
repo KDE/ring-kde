@@ -26,7 +26,6 @@
 class QWidget;
 
 //SFLPhone
-class DialPadTip;
 class Tip;
 class TipManager;
 class ConnectionLostTip;

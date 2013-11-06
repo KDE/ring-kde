@@ -24,7 +24,6 @@
 
 //Qt
 class QString;
-class QKeyEvent;
 
 //SFLPhone
 #include "lib/call.h"

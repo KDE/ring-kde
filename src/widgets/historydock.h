@@ -27,24 +27,18 @@
 #include <QtCore/QDate>
 
 //Qt
-class QString;
-class KComboBox;
 class QLabel;
 class QCheckBox;
 class QPushButton;
 class QDate;
-class QAction;
 
 //KDE
-class KLineEdit;
 class KDateWidget;
 class KAction;
 
 //SFLPhone
 #include "../lib/historymodel.h"
 class KeyPressEater;
-class QNumericTreeWidgetItem;
-class CategorizedTreeView;
 
 //Typedef
 

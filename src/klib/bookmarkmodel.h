@@ -25,8 +25,6 @@
 #include "../lib/call.h"
 #include "../lib/abstractbookmarkmodel.h"
 
-class ContactBackend;
-class NumberTreeBackend;
 
 class LIB_EXPORT BookmarkModel :  public AbstractBookmarkModel
 {

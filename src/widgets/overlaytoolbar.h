@@ -30,7 +30,6 @@
 //Qt
 class QSvgRenderer;
 class QToolButton;
-class QTreeView;
 class QHBoxLayout;
 
 //KDE
