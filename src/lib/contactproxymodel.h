@@ -39,6 +39,7 @@ public:
    friend class AbstractContactBackend;
    friend class ContactTreeNode;
    explicit ContactProxyModel(AbstractContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
+   virtual ~ContactProxyModel();
 
    //Setters
    void setRole(int role);
@@ -61,7 +62,6 @@ public:
    static int acceptedPayloadTypes();
 
 private:
-   virtual ~ContactProxyModel();
 
    QModelIndex getContactIndex(Contact* ct) const;
 
@@ -69,13 +69,13 @@ private:
    QString category(Contact* ct) const;
 
    //Attributes
-   QHash<Contact*, time_t>      m_hContactByDate       ;
-   AbstractContactBackend*      m_pModel               ;
-   QVector<TopLevelItem*>       m_lCategoryCounter     ;
-   QHash<QString,TopLevelItem*> m_hCategories          ;
-   int                          m_Role                 ;
-   bool                         m_ShowAll              ;
-   QStringList                  m_lMimes               ;
+   QHash<Contact*, time_t>      m_hContactByDate   ;
+   AbstractContactBackend*      m_pModel           ;
+   QVector<TopLevelItem*>       m_lCategoryCounter ;
+   QHash<QString,TopLevelItem*> m_hCategories      ;
+   int                          m_Role             ;
+   bool                         m_ShowAll          ;
+   QStringList                  m_lMimes           ;
 
 private Q_SLOTS:
    void reloadCategories();

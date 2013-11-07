@@ -85,30 +85,22 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    QWidget* mainWidget = new QWidget(this);
    setupUi(mainWidget);
 
-   m_pCallView     = new QListWidget ( this              );
-   m_pShowHistoCK  = new QCheckBox   ( this              );
-
    QStringList sortType;
    sortType << i18nc("Sort by Name","Name") << i18nc("Sort by Organisation","Organisation") << i18nc("Sort by Recently used","Recently used") << i18nc("Sort by Group","Group") << i18nc("Sort by Department","Department");
 
    m_pSortByCBB->addItems(sortType);
 
    setWidget(mainWidget);
-   KeyPressEaterC *keyPressEater = new KeyPressEaterC( this               );
+   m_pKeyPressEater = new KeyPressEaterC( this               );
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
    m_pFilterLE->setClearButtonShown(true);
-
-   m_pShowHistoCK->setChecked(ConfigurationSkeleton::displayContactCallHistory());
-   m_pShowHistoCK->setText(i18n("Display history"));
-   m_pTopWidget->layout()->addWidget(m_pShowHistoCK);
 
    setHistoryVisible(ConfigurationSkeleton::displayContactCallHistory());
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pView);
    m_pPhoneNumberDelegate = new PhoneNumberDelegate();
    m_pContactDelegate = new ContactDelegate(m_pView);
-//    m_pView->setSelectionModel(new QItemSelectionModel(m_pView->model()));
    m_pPhoneNumberDelegate->setView(m_pView);
    m_pContactDelegate->setChildDelegate(m_pPhoneNumberDelegate);
    m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);
@@ -125,21 +117,19 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
-   m_pView->installEventFilter(keyPressEater);
+   m_pView->installEventFilter(m_pKeyPressEater);
    m_pView->setSortingEnabled(true);
    m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex))     , this , SLOT(slotContextMenu(QModelIndex)));
    connect(m_pProxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
-   m_pBottomWidget->layout()->addWidget ( m_pCallView    );
 
    splitter->setStretchFactor(0,7);
 
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
    connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(setCategory(int))                    );
-   connect(m_pShowHistoCK,                SIGNAL(toggled(bool)),                                        this, SLOT(setHistoryVisible(bool))             );
 //    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadContact())                     );
    connect(m_pView                       ,SIGNAL(doubleClicked(QModelIndex)),                           this, SLOT(slotDoubleClick(QModelIndex))        );
    setWindowTitle(i18n("Contact"));
@@ -148,9 +138,6 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 ///Destructor
 ContactDock::~ContactDock()
 {
-   delete m_pCallView   ;
-   delete m_pShowHistoCK;
-   
    if (m_pMenu) {
       delete m_pMenu        ;
       delete m_pCallAgain   ;
@@ -160,6 +147,14 @@ ContactDock::~ContactDock()
       delete m_pAddPhone    ;
       delete m_pBookmark    ;
    }
+   //Delegates
+   delete m_pCategoryDelegate;
+
+   //Models
+   delete m_pProxyModel   ;
+   delete m_pSourceModel  ;
+   delete m_pKeyPressEater;
+
 }
 
 

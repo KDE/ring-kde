@@ -31,9 +31,6 @@
 class PhoneNumber;
 
 //Qt
-class QListWidget;
-class QTreeWidgetItem;
-class QCheckBox;
 class QMenu;
 
 //KDE
@@ -53,6 +50,7 @@ class ContactProxyModel;
 class CategorizedDelegate;
 class PhoneNumberDelegate;
 class ContactDelegate;
+class KeyPressEaterC;
 
 class ContactSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -80,13 +78,12 @@ public:
 
 private:
    //Attributes
-   QListWidget*                 m_pCallView      ;
-   QCheckBox*                   m_pShowHistoCK   ;
    QMenu*                       m_pMenu          ;
    Contact*                     m_pCurrentContact;
    QString                      m_PreselectedNb  ;
    QSortFilterProxyModel*       m_pProxyModel    ;
    ContactProxyModel*           m_pSourceModel   ;
+   KeyPressEaterC*              m_pKeyPressEater ;
 
    //Actions
    KAction* m_pCallAgain   ;
@@ -116,10 +113,7 @@ public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event);
 
 private Q_SLOTS:
-//    void loadContactHistory ( QTreeWidgetItem* item );
-//    void filter             ( const QString& text   );
    void setHistoryVisible  ( bool visible          );
-//    void reloadHistoryConst (                       );
    void slotContextMenu    ( QModelIndex index     );
 
 private Q_SLOTS:
