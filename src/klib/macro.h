@@ -43,25 +43,25 @@ public:
    explicit Macro(const Macro* macro);
 
    //Getters
-   QString  name();
-   QString  description();
-   QString  sequence();
-   QString  escaped();
-   QString  id();
-   int      delay();
-   QString  category();
+   QString  name() const;
+   QString  description() const;
+   QString  sequence() const;
+   QString  escaped() const;
+   QString  id() const;
+   int      delay() const;
+   QString  category() const;
    KAction* action();
 
    QModelIndex index();
 
    //Setters
-   void setName(QString value);
-   void setDescription(QString value);
-   void setSequence(QString value);
-   void setEscaped(QString value);
-   void setId(QString value);
+   void setName(const QString &value);
+   void setDescription(const QString &value);
+   void setSequence(const QString &value);
+   void setEscaped(const QString &value);
+   void setId(const QString &value);
    void setDelay(int value);
-   void setCategory(QString value);
+   void setCategory(const QString &value);
    
 private:
    explicit Macro(QObject* parent = nullptr);

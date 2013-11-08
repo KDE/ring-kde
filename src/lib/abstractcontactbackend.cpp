@@ -79,7 +79,7 @@ int AbstractContactBackend::getUpdateCount()
  ****************************************************************************/
 
 ///Return the extension/user of an URI (<sip:12345@exemple.com>)
-QString AbstractContactBackend::getUserFromPhone(QString phoneNumber)
+QString AbstractContactBackend::getUserFromPhone(const QString &phoneNumber)
 {
    //Too slow
 //    if (phoneNumber.indexOf('@') != -1) {

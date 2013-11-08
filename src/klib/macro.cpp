@@ -73,28 +73,28 @@ QModelIndex Macro::index()
    return  m_pModel->index(m_pCat->m_lContent.indexOf(this),0,parent);
 }
 
-void Macro::setName(QString value)
+void Macro::setName(const QString &value)
 {
    m_Name = value;
    emit changed(this);
    m_Action->setText(m_Name);
 }
 
-void Macro::setDescription(QString value)
+void Macro::setDescription(const QString &value)
 {
    m_Description = value;emit changed(this);
 }
-void Macro::setSequence(QString value)
+void Macro::setSequence(const QString &value)
 {
    m_Sequence = value;emit changed(this);
 }
 
-void Macro::setEscaped(QString value)
+void Macro::setEscaped(const QString &value)
 {
    m_Escaped = value;emit changed(this);
 }
 
-void Macro::setId(QString value)
+void Macro::setId(const QString &value)
 {
    m_Id = value;emit changed(this);
 }
@@ -104,42 +104,42 @@ void Macro::setDelay(int value)
    m_Delay = value;emit changed(this);
 }
 
-void Macro::setCategory(QString value)
+void Macro::setCategory(const QString &value)
 {
    m_Category = value;emit changed(this);
 }
 
-QString Macro::name()
+QString Macro::name() const
 {
    return m_Name;
 }
 
-QString Macro::description()
+QString Macro::description() const
 {
    return m_Description;
 }
 
-QString Macro::sequence()
+QString Macro::sequence() const
 {
    return m_Sequence;
 }
 
-QString Macro::escaped()
+QString Macro::escaped() const
 {
    return m_Escaped;
 }
 
-QString Macro::id()
+QString Macro::id() const
 {
    return m_Id;
 }
 
-int Macro::delay()
+int Macro::delay() const
 {
    return m_Delay;
 }
 
-QString  Macro::category()
+QString  Macro::category() const
 {
    return m_Category;
 }

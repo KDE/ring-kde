@@ -79,7 +79,7 @@ public Q_SLOTS:
    void changeSize(bool ignoreAnim = false);
 
 Q_SIGNALS:
-   void sizeChanged(QRect newRect,bool ignoreAnim);
+   void sizeChanged(const QRect &newRect,bool ignoreAnim);
    void currentTipChanged(Tip*);
    void transitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
 

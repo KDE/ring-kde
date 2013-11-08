@@ -71,7 +71,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
    ///Emitted to add a number/letter to the string
-   void typed(QString text);
+   void typed(const QString &text);
 };
 
 #endif

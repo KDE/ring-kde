@@ -48,7 +48,7 @@ public:
 class LIB_EXPORT VideoDevice {
    public:
       //Singleton
-      static VideoDevice* getDevice(QString id);
+      static VideoDevice* getDevice(const QString &id);
 
       //Getter
       const QStringList         rateList(VideoChannel channel, Resolution resolution);

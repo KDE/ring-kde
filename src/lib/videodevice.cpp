@@ -73,7 +73,7 @@ const QList<VideoDevice*> VideoDevice::deviceList()
 }
 
 ///Return the device
-VideoDevice* VideoDevice::getDevice(QString name)
+VideoDevice* VideoDevice::getDevice(const QString &name)
 {
    if (!m_sInit) deviceList();
    return m_slDevices[name];

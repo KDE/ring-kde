@@ -23,7 +23,7 @@ QHash<QString,VideoCodec*> VideoCodec::m_slCodecs;
 bool VideoCodec::m_sInit = false;
 
 ///Private constructor
-VideoCodec::VideoCodec(QString codecName, uint bitRate, bool enabled) : QObject(),
+VideoCodec::VideoCodec(const QString &codecName, uint bitRate, bool enabled) : QObject(),
 m_Name(codecName),m_Bitrate(bitRate),m_Enabled(enabled)
 {
    setObjectName("VideoCodec"+codecName);

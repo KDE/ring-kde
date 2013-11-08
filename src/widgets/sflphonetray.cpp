@@ -29,7 +29,7 @@
 #include <KAction>
 
 ///Constructor
-SFLPhoneTray::SFLPhoneTray(QIcon icon, QWidget *parent)
+SFLPhoneTray::SFLPhoneTray(const QIcon &icon, QWidget *parent)
       : KSystemTrayIcon(icon, parent),
          m_pTrayIconMenu(0)
 {
@@ -40,7 +40,7 @@ SFLPhoneTray::SFLPhoneTray(QIcon icon, QWidget *parent)
 ///Destructor
 SFLPhoneTray::~SFLPhoneTray()
 {
-   if (m_pTrayIconMenu) delete m_pTrayIconMenu;
+   delete m_pTrayIconMenu;
 }
 
 

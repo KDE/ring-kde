@@ -63,8 +63,8 @@ class LIB_EXPORT VideoCodec : public QObject {
 
    private:
       //Constructor
-      VideoCodec(QString codecName, uint bitRate, bool enabled);
-      ~VideoCodec(){};
+      VideoCodec(const QString &codecName, uint bitRate, bool enabled);
+      ~VideoCodec(){}
 
       //Attributes
       static CodecHash m_slCodecs;

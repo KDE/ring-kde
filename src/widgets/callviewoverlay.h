@@ -38,7 +38,7 @@ public:
    //Setters
    void setCornerWidget    ( QWidget* wdg     );
    virtual void setVisible ( bool     enabled );
-   void setAccessMessage   ( QString  message );
+   void setAccessMessage   (const QString &message );
    void setCurrentCall     ( Call* call       );
 
 protected:

@@ -89,7 +89,7 @@ protected:
    virtual ContactList update_slot() = 0;
 
    //Helper
-   QString getUserFromPhone    (QString phoneNumber);
+   QString getUserFromPhone    (const QString &phoneNumber);
 
    //Attributes
    QHash<QString,Contact*>        m_ContactByUid   ;

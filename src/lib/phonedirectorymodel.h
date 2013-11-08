@@ -67,7 +67,7 @@ public:
    Q_INVOKABLE PhoneNumber* fromTemporary(const TemporaryPhoneNumber* number);
 
    //Getter
-   int count() {
+   int count() const {
       return m_lNumbers.size();
    }
    bool callWithAccount() const {

@@ -77,7 +77,7 @@ protected:
 
 private Q_SLOTS:
    void step();
-   void sizeChanged(QRect rect,bool ignoreAnim);
+   void sizeChanged(const QRect &rect,bool ignoreAnim);
    void currentChanged(Tip* newCurrent);
    void tipChanged();
 

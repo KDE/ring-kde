@@ -33,11 +33,11 @@ AudioSettingsModel::AudioSettingsModel() : QObject(),m_EnableRoomTone(false),
 ///Destructor
 AudioSettingsModel::~AudioSettingsModel()
 {
-   if ( m_pAlsaPluginModel     ) delete m_pAlsaPluginModel    ;
-   if ( m_pInputDeviceModel    ) delete m_pInputDeviceModel   ;
-   if ( m_pOutputDeviceModel   ) delete m_pOutputDeviceModel  ;
-   if ( m_pAudioManagerModel   ) delete m_pAudioManagerModel  ;
-   if ( m_pRingtoneDeviceModel ) delete m_pRingtoneDeviceModel;
+   delete m_pAlsaPluginModel    ;
+   delete m_pInputDeviceModel   ;
+   delete m_pOutputDeviceModel  ;
+   delete m_pAudioManagerModel  ;
+   delete m_pRingtoneDeviceModel;
 }
 
 ///Singleton

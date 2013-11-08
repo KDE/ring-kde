@@ -147,7 +147,7 @@ void CallViewOverlay::changeVisibility() {
 }
 
 ///Set accessibility message
-void CallViewOverlay::setAccessMessage(QString message)
+void CallViewOverlay::setAccessMessage(const QString &message)
 {
    m_accessMessage = message;
 }

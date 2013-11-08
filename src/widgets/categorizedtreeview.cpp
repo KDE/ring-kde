@@ -280,7 +280,7 @@ void CategorizedTreeView::initSignals()
 }
 
 
-void CategorizedTreeView::setDirty(QRect rect)
+void CategorizedTreeView::setDirty(const QRect &rect)
 {
    setDirtyRegion(rect);
 }

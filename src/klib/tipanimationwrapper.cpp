@@ -37,7 +37,7 @@ TipAnimationWrapper::~TipAnimationWrapper()
    
 }
 
-void TipAnimationWrapper::sizeChanged(QRect rect,bool ignoreAnim)
+void TipAnimationWrapper::sizeChanged(const QRect &rect, bool ignoreAnim)
 {
    if (m_pTip) {
       m_TipSize = m_pTip->reload(QRect(0,0,rect.width(),rect.height()));
