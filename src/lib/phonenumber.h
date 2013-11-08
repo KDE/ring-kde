@@ -154,6 +154,9 @@ private:
    static QHash<int,Call*> m_shMostUsed  ;
    static const PhoneNumber* m_spBlank   ;
 
+private Q_SLOTS:
+   void accountDestroyed(QObject* o);
+
 Q_SIGNALS:
    void callAdded(Call* call);
    void changed  (          );

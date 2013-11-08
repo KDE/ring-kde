@@ -100,6 +100,8 @@ time_t PhoneNumber::lastUsed() const
 void PhoneNumber::setAccount(Account* account)
 {
    m_pAccount = account;
+   if (m_pAccount)
+      connect (m_pAccount,SIGNAL(destroyed(QObject*)),this,SLOT(accountDestroyed(QObject*)));
    emit changed();
 }
 
@@ -315,6 +317,11 @@ void PhoneNumber::incrementAlternativeName(const QString& name)
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+(m_pContact?(QStringList(m_pContact->formattedName())):QStringList()));
 }
 
+void PhoneNumber::accountDestroyed(QObject* o)
+{
+   if (o == m_pAccount)
+      m_pAccount = nullptr;
+}
 
 /************************************************************************************
  *                                                                                  *
