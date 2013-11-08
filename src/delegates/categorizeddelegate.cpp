@@ -23,7 +23,8 @@
 #include <QtGui/QApplication>
 
 namespace {
-   static const int TOP_MARGIN = 20;
+   static const int TOP_MARGIN       = 20;
+   static const int BOTTOM_MARGIN    = 7 ;
 }
 
 ///Construnctor
@@ -52,7 +53,7 @@ QSize CategorizedDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
    if (!index.parent().isValid()) {
       static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
       QSize sh = QStyledItemDelegate::sizeHint(option, index);
-      sh.rheight() += 2 * m_LeftMargin + (index.row()==0?-metric:TOP_MARGIN);
+      sh.rheight() += BOTTOM_MARGIN + (index.row()==0?metric:TOP_MARGIN);
       sh.rwidth() += m_LeftMargin;
       return sh;
    }
@@ -100,12 +101,12 @@ void CategorizedDelegate::drawSimpleCategory(const QModelIndex &index, int sortR
    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
 
    const QString category = index.model()->data(index, Qt::DisplayRole).toString();
-   painter->setClipping(false);
-   QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
+   static QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
    pen.setWidth(1);
    painter->setPen(pen);
    painter->setOpacity(0.3);
-   painter->drawLine(option.rect.x()-metric*2,option.rect.y()+(index.row()==0?-metric:TOP_MARGIN),option.rect.x()+option.rect.width()+metric*2,option.rect.y()+(index.row()==0?-metric:TOP_MARGIN));
+   const int topMargin2 = index.row()==0?metric:TOP_MARGIN;
+   painter->drawLine(option.rect.x()-metric*2,option.rect.y()+(topMargin2),option.rect.x()+option.rect.width()+metric*2,option.rect.y()+(topMargin2));
    painter->setOpacity(1);
-   painter->drawText(QRect(option.rect.x()+metric,option.rect.y()+1+(index.row()==0?-metric:TOP_MARGIN),option.rect.width(),option.rect.height()-1),Qt::AlignLeft | Qt::AlignTop,category);
+   painter->drawText(QRect(option.rect.x()+metric,option.rect.y()+1+(topMargin2),option.rect.width(),option.rect.height()-1),Qt::AlignLeft | Qt::AlignTop,category);
 }
