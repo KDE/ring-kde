@@ -73,8 +73,7 @@ AkonadiBackend::~AkonadiBackend()
    delete m_pSession;
    if (Call::contactBackend() == this)
       Call::setContactBackend(nullptr);
-   if (m_pJob)
-      delete m_pJob;
+   delete m_pJob;
 }
 
 
@@ -220,6 +219,7 @@ void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
       dlg->setMainWidget(editor);
       if ( dlg->exec() == QDialog::Accepted ) {
          if ( !editor->saveContact() ) {
+            delete dlg;
             kDebug() << "Unable to save new contact to storage";
             return;
          }
@@ -259,6 +259,7 @@ void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
    dlg->setMainWidget(editor);
    if ( dlg->exec() == QDialog::Accepted ) {
       if ( !editor->saveContact() ) {
+         delete dlg;
          kDebug() << "Unable to save new contact to storage";
          return;
       }
@@ -297,6 +298,7 @@ void AkonadiBackend::addPhoneNumber(Contact* contact, QString number, QString ty
       dlg->setMainWidget(editor);
       if ( dlg->exec() == QDialog::Accepted ) {
          if ( !editor->saveContact() ) {
+            delete dlg;
             kDebug() << "Unable to save new contact to storage";
             return;
          }
