@@ -221,7 +221,7 @@
       <item>
        <widget class="QCheckBox" name="kcfg_enableRoomTone">
         <property name="text">
-         <string>Enable room tone</string>
+         <string>Enable dial tone</string>
         </property>
        </widget>
       </item>
