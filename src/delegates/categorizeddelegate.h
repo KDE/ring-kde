@@ -40,14 +40,9 @@ public:
 
 private:
    //Helpers
-   QRect fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const;
-   void drawCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
-   int categoryHeight(const QModelIndex &index, const QStyleOption &option) const;
    void drawSimpleCategory(const QModelIndex &index, int sortRole, const QStyleOption &option, QPainter *painter) const;
 
    //Attributes
-   QTreeView* m_tree       ;
-   QSize      m_SH         ;
    const int  m_LeftMargin ;
    const int  m_RightMargin;
    QStyledItemDelegate* m_pChildDelegate     ;
