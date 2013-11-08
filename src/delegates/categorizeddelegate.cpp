@@ -101,12 +101,13 @@ void CategorizedDelegate::drawSimpleCategory(const QModelIndex &index, int sortR
    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
 
    const QString category = index.model()->data(index, Qt::DisplayRole).toString();
+   painter->setClipping(false);
    static QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
    pen.setWidth(1);
    painter->setPen(pen);
    painter->setOpacity(0.3);
    const int topMargin2 = index.row()==0?metric:TOP_MARGIN;
-   painter->drawLine(option.rect.x()-metric*2,option.rect.y()+(topMargin2),option.rect.x()+option.rect.width()+metric*2,option.rect.y()+(topMargin2));
+   painter->drawLine(0,option.rect.y()+(topMargin2),option.rect.x()+option.rect.width()+option.rect.x(),option.rect.y()+(topMargin2));
    painter->setOpacity(1);
-   painter->drawText(QRect(option.rect.x()+metric,option.rect.y()+1+(topMargin2),option.rect.width(),option.rect.height()-1),Qt::AlignLeft | Qt::AlignTop,category);
+   painter->drawText(QRect(metric?1.5*metric:4,option.rect.y()+1+(topMargin2),option.rect.width(),option.rect.height()-1),Qt::AlignLeft | Qt::AlignTop,category);
 }
