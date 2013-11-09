@@ -48,7 +48,7 @@ const QString Resolution::toString() const
 
 
 ///Constructor
-VideoDevice::VideoDevice(QString id) : m_DeviceId(id)
+VideoDevice::VideoDevice(const QString &id) : m_DeviceId(id)
 {
 }
 

@@ -465,7 +465,7 @@ void PhoneDirectoryModel::slotNewBuddySubscription(const QString& accountId, con
 // }
 
 ///Make sure the indexes are still valid for those names
-void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList names)
+void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList &names)
 {
    foreach(const QString& name, names) {
       const QString lower = name.toLower();

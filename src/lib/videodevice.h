@@ -68,7 +68,7 @@ class LIB_EXPORT VideoDevice {
       void setChannel    ( VideoChannel channel  );
    private:
       //Constructor
-      explicit VideoDevice(QString id);
+      explicit VideoDevice(const QString &id);
 
       //Attributes
       QString m_DeviceId;

@@ -116,7 +116,7 @@ private:
    explicit PhoneDirectoryModel(QObject* parent = nullptr);
 
    //Helpers
-   void indexNumber(PhoneNumber* number, const QStringList names);
+   void indexNumber(PhoneNumber* number, const QStringList& names);
 
    //Singleton
    static PhoneDirectoryModel* m_spInstance;
