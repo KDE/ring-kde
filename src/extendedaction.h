@@ -30,8 +30,8 @@ public:
    virtual ~ExtendedAction();
 
    const KIcon& altIcon();
-   void setAltIcon(QString path);
-   void setAltIcon(KIcon icon);
+   void setAltIcon(const QString &path);
+   void setAltIcon(const KIcon &icon);
 
 private:
    KIcon* m_pIcon;
@@ -41,7 +41,7 @@ public Q_SLOTS:
    void hasChanged();
 
 Q_SIGNALS:
-   void textChanged(QString text);
+   void textChanged(const QString &text);
 };
 
 #endif //EXTENDED_ACTION_H

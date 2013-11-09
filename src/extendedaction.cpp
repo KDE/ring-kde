@@ -25,7 +25,7 @@ ExtendedAction::ExtendedAction(QObject* parent) : KAction(parent),m_pIcon(nullpt
 
 ExtendedAction::~ExtendedAction()
 {
-   if (m_pIcon) delete m_pIcon;
+   delete m_pIcon;
 }
 
 const KIcon& ExtendedAction::altIcon()
@@ -33,12 +33,12 @@ const KIcon& ExtendedAction::altIcon()
    return (const KIcon&) *m_pIcon;
 }
 
-void ExtendedAction::setAltIcon(QString path)
+void ExtendedAction::setAltIcon(const QString &path)
 {
    m_pIcon = new KIcon(path);
 }
 
-void ExtendedAction::setAltIcon(KIcon icon)
+void ExtendedAction::setAltIcon(const KIcon &icon)
 {
    m_pIcon = new KIcon(icon);
 }

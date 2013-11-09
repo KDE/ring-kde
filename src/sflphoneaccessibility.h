@@ -32,7 +32,7 @@ public:
 private:
    //Constructor
    SFLPhoneAccessibility();
-   QString numberToDigit(QString number);
+   QString numberToDigit(const QString &number);
 
    //Static attributes
    static SFLPhoneAccessibility* m_pInstance;
@@ -40,7 +40,7 @@ private:
 public Q_SLOTS:
    void listCall();
    void currentCallDetails();
-   void say(QString message);
+   void say(const QString &message);
 };
 
 #endif

@@ -41,7 +41,7 @@ m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 ///Destructor
 ConnectionLostTip::~ConnectionLostTip()
 {
-   if (m_pTimer) delete m_pTimer;
+   delete m_pTimer;
 }
 
 ///Return the decoration/image rect

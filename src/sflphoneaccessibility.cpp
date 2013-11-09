@@ -84,7 +84,7 @@ void SFLPhoneAccessibility::listCall()
 }
 
 ///Convert number to digit so the speech daemon say "one two three" instead of "one hundred and twenty three"
-QString SFLPhoneAccessibility::numberToDigit(QString number)
+QString SFLPhoneAccessibility::numberToDigit(const QString &number)
 {
    QString toReturn;
    for(int i=0;i<number.count();i++) {
@@ -119,7 +119,7 @@ void SFLPhoneAccessibility::currentCallDetails()
 }
 
 ///Helper function is make code shorter
-void SFLPhoneAccessibility::say(QString message)
+void SFLPhoneAccessibility::say(const QString &message)
 {
    KSpeechInterfaceSingleton::instance()->say(message, KSpeech::soPlainText);
 }
