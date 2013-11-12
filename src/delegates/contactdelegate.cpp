@@ -17,6 +17,7 @@
  ***************************************************************************/
 #include "contactdelegate.h"
 
+//Qt
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
@@ -24,12 +25,12 @@
 #include <QtGui/QTreeView>
 #include <QtGui/QPixmap>
 
-#include <QtCore/QDebug>
-
+//KDE
 #include <KLocale>
 #include <KStandardDirs>
 #include <KIcon>
 
+//SFLPhone
 #include <lib/contact.h>
 #include <lib/numbercategory.h>
 #include <lib/phonenumber.h>
@@ -40,13 +41,16 @@
 #include "widgets/categorizedtreeview.h"
 #include "klib/kcfg_settings.h"
 
+//Macro
 #define BG_STATE(____) ((QStyle::State_Selected | QStyle::State_MouseOver)&____)
 
+//Metrics
 namespace { //TODO GCC46 uncomment when dropping support for Gcc 4.6
-   /*constexpr */static const int PX_HEIGHT  = 48                 ;
-   /*constexpr */static const int PX_RADIUS  = 7                  ;
-   /*constexpr */static const int PADDING    = 2                  ;
-   /*constexpr */static const int MIN_HEIGHT = PX_HEIGHT+2*PADDING;
+   /*constexpr */static const int PX_HEIGHT    = 48                 ;
+   /*constexpr */static const int PX_RADIUS    = 7                  ;
+   /*constexpr */static const int PADDING      = 2                  ;
+   /*constexpr */static const int MIN_HEIGHT   = PX_HEIGHT+2*PADDING;
+   /*constexpr */static const int LEFT_PADDING = 15;
 }
 
 
@@ -57,12 +61,15 @@ m_pChildDelegate(nullptr),m_pView(parent)
 
 QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
-   QFontMetrics fm(QApplication::font());
    const int rowCount = index.model()->rowCount(index);
-   static bool displayEmail = ConfigurationSkeleton::displayEmail();
-   static bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
+   bool displayEmail = ConfigurationSkeleton::displayEmail();
+   bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
    Contact* ct = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+
+   //Compute only once, the value is unlikely to change
+   static QFontMetrics fm(QApplication::font());
    static const int lineHeight = fm.height()+2;
+
    int lines = ((displayOrg && !ct->organization().isEmpty()) + (displayEmail && !ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight - ((ct->phoneNumbers().size()>0)*lineHeight);
    lines += lines==lineHeight?3:0; //Bottom margin for contact with only multiple phone numbers
    return QSize(sh.rwidth(),(lines+rowCount*lineHeight)<MIN_HEIGHT?MIN_HEIGHT:lines);
@@ -111,48 +118,56 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
 
+   //BEGIN draw photo
    QPixmap pxm = PixmapManipulationVisitor::instance()->contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
    painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
+   //END draw photo
 
 
    //Config options
-   //Load them only once, it is a "bug", but it is faster to ignore a very, very
-   //rare event
-   static bool displayEmail = ConfigurationSkeleton::displayEmail();
-   static bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
-
+   bool displayEmail = ConfigurationSkeleton::displayEmail();
+   bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
    QFont font = painter->font();
-   QFontMetrics fm(font);
-   int currentHeight = option.rect.y()+fm.height()+2;
+   static QFontMetrics fm(font);
+   static int fontH = fm.height();
+   int currentHeight = option.rect.y()+fontH+2;
+
+   //BEGIN display name
    font.setBold(true);
    painter->setFont(font);
-   painter->drawText(option.rect.x()+15+PX_HEIGHT,currentHeight,index.data(Qt::DisplayRole).toString());
-   currentHeight +=fm.height();
+   painter->drawText(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight,index.data(Qt::DisplayRole).toString());
+   currentHeight +=fontH;
    font.setBold(false);
    painter->setPen((option.state & QStyle::State_Selected)?Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
    painter->setFont(font);
+   //END display name
+
+   //BEGIN Display organization
    if (displayOrg && !ct->organization().isEmpty()) {
-      painter->drawText(option.rect.x()+15+PX_HEIGHT,currentHeight,ct->organization());
-      currentHeight +=fm.height();
+      painter->drawText(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight,ct->organization());
+      currentHeight +=fontH;
    }
+   //END Display organization
+
+   //BEGIN Display email
    if (displayEmail && !ct->preferredEmail().isEmpty()) {
-      const int fmh = fm.height();
+      const int fmh = fontH;
       const static QPixmap* mail = nullptr;
       if (!mail)
          mail = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
-      painter->drawPixmap(option.rect.x()+15+PX_HEIGHT,currentHeight-12+(fmh-12),*mail);
-      painter->drawText(option.rect.x()+15+PX_HEIGHT+16,currentHeight,ct->preferredEmail());
+      painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fmh-12),*mail);
+      painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->preferredEmail());
       currentHeight +=fmh;
    }
+   //END Display email
+
+   //BEGIN Display first phone number (if only one)
    if (ct->phoneNumbers().size() == 1) {
-      static const int fmh = fm.height();
-      painter->drawPixmap(option.rect.x()+15+PX_HEIGHT,currentHeight-12+(fmh-12),ct->phoneNumbers()[0]->category()->icon(
+      painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fontH-12),ct->phoneNumbers()[0]->category()->icon(
          ct->isTracked(),ct->isPresent()).value<QPixmap>());
-      painter->drawText(option.rect.x()+15+PX_HEIGHT+16,currentHeight,ct->phoneNumbers()[0]->uri());
+      painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->phoneNumbers()[0]->uri());
    }
-   else {
-//       painter->drawText(option.rect.x()+15+PX_HEIGHT,currentHeight,i18np("%1 phone number", "%1 phone numbers", QString::number(ct->phoneNumbers().size())));
-   }
+   //END Display first phone number
 
 
    //BEGIN overlay path
@@ -173,30 +188,4 @@ void ContactDelegate::setChildDelegate(PhoneNumberDelegate* child)
    m_pChildDelegate = child;
 }
 
-// This would be nice if it worked, but it doesn't work so well. The other code path for this is far from perfect, but is a little bit more reliable
-// void ContactDelegateStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const {
-//    if (widget) {
-//       QPoint point(option->rect.x(),option->rect.y());
-//       point.ry()+=1;
-//       QModelIndex index = static_cast<const QTreeView*>(widget)->indexAt(point);
-//       if (element != 31 && element == QStyle::PE_IndicatorItemViewItemDrop) {
-//          qDebug() << "\n\n\nCAST WORK" << index.isValid() << element << index.parent().isValid() << index.parent().parent().isValid() << index.data(Qt::DisplayRole) << point << QCursor::pos();
-//          qDebug() << index << m_CurrentIndex << index.data(ContactBackend::Role::DropState).toInt();
-//       }
-//       if ((element != 31) && index.isValid() && index.parent().isValid() && !index.parent().parent().isValid()) {
-//          int current = (element == 31)?0:index.data(ContactBackend::Role::DropState).toInt();//It crash on 0xFE, I don't know why
-//          if (m_CurrentIndex.isValid() && index != m_CurrentIndex) {
-//             qDebug() << "DROP LEAVE";
-//             ((QAbstractItemModel*)m_CurrentIndex.model())->setData(m_CurrentIndex,-1,ContactBackend::Role::DropState);
-// //             ((ContactDelegateStyle*)this)->m_CurrentIndex = QModelIndex();
-//          }
-//          if (element == QStyle::PE_IndicatorItemViewItemDrop && index != m_CurrentIndex) {
-//             ((QAbstractItemModel*)index.model())->setData(index,1,ContactBackend::Role::DropState);
-//             ((ContactDelegateStyle*)this)->m_CurrentIndex = index;
-//             qDebug() << "DROP" << current << index.data(ContactBackend::Role::DropState).toInt() << ((ContactDelegateStyle*)this)->m_CurrentIndex;
-//          }
-//       }
-//    }
-//    QProxyStyle::drawPrimitive(element, option, painter, widget);
-// }
 #undef BG_STATE
