@@ -41,6 +41,9 @@
          </item>
          <item>
           <widget class="KIntSpinBox" name="kcfg_historyMax">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -140,5 +143,22 @@
  <resources>
   <include location="../qrc/resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>kcfg_enableHistory</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_historyMax</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>141</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>237</x>
+     <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
