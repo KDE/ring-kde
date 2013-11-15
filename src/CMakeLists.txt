@@ -44,8 +44,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
          -Wno-pragmas
          -Wno-error
       )
-
-      add_definitions( -DDISABLE_UNIQUE_APPLICATION=true )
    endif()
    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
       ADD_DEFINITIONS(
