@@ -67,12 +67,14 @@
 bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
 {
    if (event->type() == QEvent::KeyPress) {
-      m_pDock->keyPressEvent((QKeyEvent*)event);
-      return true;
-   } else {
-      // standard event processing
-      return QObject::eventFilter(obj, event);
+      QKeyEvent* e = (QKeyEvent*)event;
+      if (e->key() != Qt::Key_Up && e->key() != Qt::Key_Down) {
+         m_pDock->keyPressEvent(e);
+         return true;
+      }
    }
+   // standard event processing
+   return QObject::eventFilter(obj, event);
 }
 
 bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const

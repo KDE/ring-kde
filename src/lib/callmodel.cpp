@@ -104,7 +104,7 @@ void CallModel::init()
 
       dbusInit = true;
 
-      HistoryModel::getHistory();
+      HistoryModel::instance();
 //       foreach(Call* call,){
 //          addCall(call,nullptr);
 //       }

@@ -28,6 +28,7 @@
 #include "phonenumber.h"
 #include "callmodel.h"
 #include "historytimecategorymodel.h"
+#include "lastusednumbermodel.h"
 
 /*****************************************************************************
  *                                                                           *
@@ -63,7 +64,8 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
-   foreach (const MapStringString& hc, history) {
+   for(int i = history.size()-1;i>=0;i--) {
+      const MapStringString& hc = history[i];
       Call* pastCall = Call::buildHistoryCall(
                hc[ Call::HistoryMapFields::CALLID          ]         ,
                hc[ Call::HistoryMapFields::TIMESTAMP_START ].toUInt(),
@@ -187,16 +189,9 @@ void HistoryModel::add(Call* call)
    endInsertRows();
    emit historyChanged();
    emit layoutAboutToBeChanged();
-   emit layoutChanged(); //WARNING Cause segfault 5% of the time...
+   emit layoutChanged(); //WARNING Cause segfault 0.05% of the time...
+   LastUsedNumberModel::instance()->addCall(call);
 }
-
-///Return the history list
-const CallMap& HistoryModel::getHistory()
-{
-   instance();
-   return m_sHistoryCalls;
-}
-
 
 /*****************************************************************************
  *                                                                           *
@@ -216,7 +211,7 @@ void HistoryModel::reloadCategories()
    }
    m_lCategoryCounter.clear();
    m_isContactDateInit = false;
-   foreach(Call* call, getHistory()) {
+   foreach(Call* call, m_sHistoryCalls) {
       TopLevelItem* category = getCategory(call);
       if (category) {
          category->m_lChildren << call;

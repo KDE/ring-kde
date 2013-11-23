@@ -68,13 +68,15 @@
 bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 {
    if (event->type() == QEvent::KeyPress) {
-      m_pDock->keyPressEvent((QKeyEvent*)event);
-      return true;
-   } else {
-      // standard event processing
-      return QObject::eventFilter(obj, event);
+      QKeyEvent* e = (QKeyEvent*)event;
+      if (e->key() != Qt::Key_Up && e->key() != Qt::Key_Down) {
+         m_pDock->keyPressEvent(e);
+         return true;
+      }
    }
-} //eventFilter
+   // standard event processing
+   return QObject::eventFilter(obj, event);
+}
 
 
 

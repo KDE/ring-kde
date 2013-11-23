@@ -44,7 +44,6 @@ public:
    static HistoryModel* instance();
 
    //Getters
-   static const CallMap&    getHistory             ();
    int acceptedPayloadTypes();
 
    //Setters
