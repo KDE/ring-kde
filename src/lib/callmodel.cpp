@@ -322,7 +322,7 @@ void CallModel::removeCall(Call* call, bool noEmit)
 {
    InternalStruct* internal = m_sPrivateCallList_call[call];
 
-   if (!internal) {
+   if (!internal || !call) {
       qDebug() << "Cannot remove call: call not found";
       return;
    }
@@ -338,13 +338,17 @@ void CallModel::removeCall(Call* call, bool noEmit)
 
    m_lInternalModel.removeAll(internal);
 
-   //Restore calls to the main list if they are not rey over
+   //Restore calls to the main list if they are not rely over
    if (internal->m_lChildren.size()) {
       foreach(InternalStruct* child,internal->m_lChildren) {
          if (child->call_real->state() != Call::State::OVER)
             m_lInternalModel << child;
       }
    }
+
+   //Be sure to reset these properties (just in case)
+   call->setProperty("DTMFAnimState",0);
+   call->setProperty("dropState",0);
 
    //The daemon often fail to emit the right signal, cleanup manually
    foreach(InternalStruct* topLevel, m_lInternalModel) {
@@ -609,11 +613,17 @@ QVariant CallModel::headerData(int section, Qt::Orientation orientation, int rol
 ///The number of conference and stand alone calls
 int CallModel::rowCount( const QModelIndex& parentIdx ) const
 {
-   if (!parentIdx.isValid()) {
+   if (!parentIdx.isValid() || !parentIdx.internalPointer())
       return m_lInternalModel.size();
-   }
-   else if (!parentIdx.parent().isValid()) {
-      return m_lInternalModel[parentIdx.row()]->m_lChildren.size();
+
+   const InternalStruct* modelItem = static_cast<InternalStruct*>(parentIdx.internalPointer());
+   if (modelItem) {
+      if (modelItem->call_real->isConference() && modelItem->m_lChildren.size() > 0)
+         return modelItem->m_lChildren.size();
+      else if (modelItem->call_real->isConference())
+         qWarning() << modelItem->call_real << "have"
+            << modelItem->m_lChildren.size() << "and"
+            << (modelItem->call_real->isConference()?"is":"is not") << "a conference";
    }
    return 0;
 }
@@ -638,7 +648,12 @@ int CallModel::acceptedPayloadTypes()
 ///There is always 1 column
 int CallModel::columnCount ( const QModelIndex& parentIdx) const
 {
-   Q_UNUSED(parentIdx)
+   const InternalStruct* modelItem = static_cast<InternalStruct*>(parentIdx.internalPointer());
+   if (modelItem) {
+      return modelItem->call_real->isConference()?1:0;
+   }
+   else if (parentIdx.isValid())
+      return 0;
    return 1;
 }
 
@@ -843,11 +858,12 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       const Call::State oldState = call->state();
       call->stateChanged(state);
       //The second clause isn't required, but it does happen when errors happen
-      //if the error is reported afterwards, the call may be forgotten in this list
+      //if the error is reported afterwards, the call may be forgotten 2in this list
       if (state == Call::StateChange::HUNG_UP
          || (oldState != Call::State::OVER && call->state() == Call::State::OVER)
-         || call->state() == Call::State::ERROR)
+         || call->state() == Call::State::ERROR) {
          removeCall(call);
+      }
    }
 
    if (call->state() == Call::State::OVER) {
@@ -1022,6 +1038,9 @@ void CallModel::slotCallChanged(Call* call)
       const QModelIndex idx = getIndex(call);
       emit dataChanged(idx,idx);
    }
+   /*if (call->state() == Call::State::ERROR && !call->isConference()) {
+      removeCall(call);
+   }*/
 }
 
 ///Add call slot

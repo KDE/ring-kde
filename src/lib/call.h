@@ -66,7 +66,7 @@ typedef  void (Call::*function)();
  *  keeping the information gathered by the call and needed by the history
  *  call (history state, start time...).
 **/
-class  LIB_EXPORT Call : public QObject, public CategorizedCompositeNode
+class  LIB_EXPORT Call : public QObject
 {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
@@ -334,8 +334,6 @@ public:
    void backspaceItemText();
    void sendTextMessage(QString message);
 
-   virtual QObject* getSelf() const;
-
 private:
 
    //Attributes
@@ -423,6 +421,7 @@ private:
    void stop         ();
    void startWeird   ();
    void warning      ();
+   void remove       ();
 
    //Helpers
    void changeCurrentState(Call::State newState);

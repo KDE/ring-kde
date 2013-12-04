@@ -45,11 +45,31 @@ HistoryModel::TopLevelItem::TopLevelItem(const QString& name, int index) :
 
 HistoryModel::TopLevelItem::~TopLevelItem() {
    m_spInstance->m_lCategoryCounter.removeAll(this);
+   while(m_lChildren.size()) {
+      HistoryModel::HistoryItem* item = m_lChildren[0];
+      m_lChildren.remove(0);
+      delete item;
+   }
 }
 
 QObject* HistoryModel::TopLevelItem::getSelf() const
 {
    return const_cast<HistoryModel::TopLevelItem*>(this);
+}
+
+HistoryModel::HistoryItem::HistoryItem(Call* call) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL),m_pCall(call)
+{
+   
+}
+
+QObject* HistoryModel::HistoryItem::getSelf() const
+{
+   return const_cast<Call*>(m_pCall);
+}
+
+Call* HistoryModel::HistoryItem::call() const
+{
+   return m_pCall;
 }
 
 
@@ -172,7 +192,7 @@ HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
 ///Add to history
 void HistoryModel::add(Call* call)
 {
-   if (!call || call->state() != Call::State::OVER)
+   if (!call || call->state() != Call::State::OVER || !call->startTimeStamp())
       return;
 
    if (!m_HaveContactModel && call->contactBackend()) {
@@ -184,12 +204,13 @@ void HistoryModel::add(Call* call)
    TopLevelItem* tl = getCategory(call);
    const QModelIndex& parentIdx = index(tl->modelRow,0);
    beginInsertRows(parentIdx,tl->m_lChildren.size(),tl->m_lChildren.size());
-   tl->m_lChildren << call;
+   HistoryItem* item = new HistoryItem(call);
+   tl->m_lChildren << item;
    m_sHistoryCalls[call->startTimeStamp()] = call;
    endInsertRows();
    emit historyChanged();
    emit layoutAboutToBeChanged();
-   emit layoutChanged(); //WARNING Cause segfault 0.05% of the time...
+   emit layoutChanged();
    LastUsedNumberModel::instance()->addCall(call);
 }
 
@@ -214,7 +235,8 @@ void HistoryModel::reloadCategories()
    foreach(Call* call, m_sHistoryCalls) {
       TopLevelItem* category = getCategory(call);
       if (category) {
-         category->m_lChildren << call;
+         HistoryItem* item = new HistoryItem(call);
+         category->m_lChildren << item;
       }
       else
          qDebug() << "ERROR count";
@@ -262,7 +284,7 @@ QVariant HistoryModel::data( const QModelIndex& idx, int role) const
          const int parRow = idx.parent().row();
          const TopLevelItem* parTli = m_lCategoryCounter[parRow];
          if (m_lCategoryCounter.size() > parRow && parRow >= 0 && parTli && parTli->m_lChildren.size() > idx.row())
-            return parTli->m_lChildren[idx.row()]->roleData((Call::Role)role);
+            return parTli->m_lChildren[idx.row()]->call()->roleData((Call::Role)role);
       }
       break;
    case CategorizedCompositeNode::Type::NUMBER:

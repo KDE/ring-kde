@@ -70,6 +70,15 @@ public:
 private:
 
    //Model
+   class HistoryItem : public CategorizedCompositeNode {
+   public:
+      HistoryItem(Call* call);
+      virtual QObject* getSelf() const;
+      Call* call() const;
+   private:
+      Call* m_pCall;
+   };
+
    class TopLevelItem : public CategorizedCompositeNode,public QObject {
    friend class HistoryModel;
    public:
@@ -77,7 +86,7 @@ private:
       virtual ~TopLevelItem();
    private:
       explicit TopLevelItem(const QString& name, int index);
-      QVector<Call*> m_lChildren;
+      QVector<HistoryItem*> m_lChildren;
       int m_Index;
       QString m_NameStr;
       int modelRow;
