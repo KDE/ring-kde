@@ -32,7 +32,7 @@
 #include <QtCore/QCoreApplication>
 
 ///Constructor
-AbstractContactBackend::AbstractContactBackend(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance()),m_UpdatesCounter(0)
+AbstractContactBackend::AbstractContactBackend(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance())
 {
    connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }
@@ -59,17 +59,6 @@ void AbstractContactBackend::slotReloadModel()
    reset();
    emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount(),0));
-}
-
-/*****************************************************************************
- *                                                                           *
- *                                  Getters                                  *
- *                                                                           *
- ****************************************************************************/
-
-int AbstractContactBackend::getUpdateCount()
-{
-   return m_UpdatesCounter;
 }
 
 /*****************************************************************************
@@ -121,10 +110,14 @@ QVariant AbstractContactBackend::data( const QModelIndex& idx, int role) const
    if (!idx.isValid())
       return QVariant();
    if (!idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(getContactList()[idx.row()]->formattedName());
+      const Contact* c = getContactList()[idx.row()];
+      if (c)
+         return QVariant(c->formattedName());
    }
    else if (idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      return QVariant(getContactList()[idx.parent().row()]->phoneNumbers()[idx.row()]->uri());
+      const Contact* c = getContactList()[idx.parent().row()];
+      if (c)
+         return QVariant(c->phoneNumbers()[idx.row()]->uri());
    }
    return QVariant();
 }
@@ -143,8 +136,11 @@ int AbstractContactBackend::rowCount( const QModelIndex& par ) const
       return getContactList().size();
    }
    else if (!par.parent().isValid() && par.row() < getContactList().size()) {
-      const int size = getContactList()[par.row()]->phoneNumbers().size();
-      return size==1?0:size;
+      const Contact* c = getContactList()[par.row()];
+      if (c) {
+         const int size = c->phoneNumbers().size();
+         return size==1?0:size;
+      }
    }
    return 0;
 }

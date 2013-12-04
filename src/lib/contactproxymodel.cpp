@@ -110,6 +110,19 @@ ContactProxyModel::~ContactProxyModel()
    }
 }
 
+TopLevelItem* ContactProxyModel::getTopLevelItem(const QString& category)
+{
+   if (!m_hCategories[category]) {
+      TopLevelItem* item = new TopLevelItem(category);
+      m_hCategories[category] = item;
+      item->m_Index = m_lCategoryCounter.size();
+      m_lCategoryCounter << item;
+   //          emit dataChanged(index(0,0),index(rowCount()-1,0));
+   }
+   TopLevelItem* item = m_hCategories[category];
+   return item;
+}
+
 void ContactProxyModel::reloadCategories()
 {
    beginResetModel();
@@ -121,14 +134,7 @@ void ContactProxyModel::reloadCategories()
    foreach(Contact* cont, m_pModel->getContactList()) {
       if (cont) {
          const QString val = category(cont);
-         if (!m_hCategories[val]) {
-            TopLevelItem* item = new TopLevelItem(val);
-            m_hCategories[val] = item;
-            item->m_Index = m_lCategoryCounter.size();
-            m_lCategoryCounter << item;
-   //          emit dataChanged(index(0,0),index(rowCount()-1,0));
-         }
-         TopLevelItem* item = m_hCategories[val];
+         TopLevelItem* item = getTopLevelItem(val);
          if (item) {
             ContactTreeNode* contactNode = new ContactTreeNode(cont);
             contactNode->m_pParent3 = item;

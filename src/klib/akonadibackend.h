@@ -26,6 +26,7 @@
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
 #include <kabc/phonenumber.h>
+#include <akonadi/item.h>
 
 //Qt
 class QObject;
@@ -39,8 +40,8 @@ namespace KABC {
 namespace Akonadi {
    class Session           ;
    class Collection        ;
-   class Item              ;
    class CollectionFetchJob;
+   class Monitor           ;
 }
 
 //SFLPhone
@@ -70,7 +71,7 @@ private:
    //Attributes
    static AkonadiBackend*         m_pInstance  ;
    Akonadi::Session*              m_pSession   ;
-   Akonadi::Collection            m_Collection ;
+   Akonadi::Monitor*              m_pMonitor   ;
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
    ContactList                    m_pContacts  ;
@@ -78,6 +79,8 @@ private:
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);
+   Contact* addItem(Akonadi::Item item, bool ignoreEmpty = false);
+   void fillContact(Contact* c, const KABC::Addressee& addr) const;
 
 protected:
    ContactList update_slot();
@@ -85,6 +88,10 @@ protected:
 public Q_SLOTS:
    ContactList update(Akonadi::Collection collection);
    void collectionsReceived( const Akonadi::Collection::List& );
+private Q_SLOTS:
+   void slotSollectionChanged(const Akonadi::Collection &collection, const QSet< QByteArray > &attributeNames);
+   void slotItemAdded(Akonadi::Item item,Akonadi::Collection coll);
+   void slotItemChanged (const Akonadi::Item &item, const QSet< QByteArray > &partIdentifiers);
 };
 
 #endif

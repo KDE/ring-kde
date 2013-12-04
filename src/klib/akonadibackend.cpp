@@ -37,6 +37,7 @@
 #include <akonadi/contact/contacteditor.h>
 #include <akonadi/contact/contacteditordialog.h>
 #include <akonadi/session.h>
+#include <akonadi/monitor.h>
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
@@ -61,10 +62,24 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
 {
    m_pSession = new Akonadi::Session( "SFLPhone::instance" );
 
-   // fetching all collections containing emails recursively, starting at the root collection
+   // fetching all collections recursively, starting at the root collection
    m_pJob = new Akonadi::CollectionFetchJob( Akonadi::Collection::root(), Akonadi::CollectionFetchJob::Recursive, this );
    m_pJob->fetchScope().setContentMimeTypes( QStringList() << "text/directory" );
    connect( m_pJob, SIGNAL(collectionsReceived(Akonadi::Collection::List)), this, SLOT(collectionsReceived(Akonadi::Collection::List)) );
+
+   //Configure change monitor
+   m_pMonitor = new Akonadi::Monitor(this);
+   m_pMonitor->fetchCollectionStatistics(false);
+   Akonadi::ItemFetchScope scope;
+   scope.fetchFullPayload(true);
+   //scope.fetchPayloadPart("PLD:RFC822",true); //TODO find a way not to load everything
+   m_pMonitor->setItemFetchScope(scope);
+   connect(m_pMonitor,SIGNAL(collectionChanged(const Akonadi::Collection,const QSet<QByteArray>)),
+      this,SLOT(slotSollectionChanged(const Akonadi::Collection,const QSet<QByteArray>)));
+   connect(m_pMonitor,SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)),
+      this,SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
+   connect(m_pMonitor,SIGNAL(itemChanged(const Akonadi::Item,const QSet<QByteArray>)),
+      this,SLOT(slotItemChanged(const Akonadi::Item,const QSet<QByteArray>)));
 } //AkonadiBackend
 
 ///Destructor
@@ -131,6 +146,58 @@ KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
    return KABC::PhoneNumber::Home;
 }
 
+void AkonadiBackend::fillContact(Contact* c, const KABC::Addressee& addr) const
+{
+   c->setNickName       (addr.nickName()       );
+   c->setFormattedName  (addr.formattedName()  );
+   c->setFirstName      (addr.givenName()      );
+   c->setFamilyName     (addr.familyName()     );
+   c->setOrganization   (addr.organization()   );
+   c->setPreferredEmail (addr.preferredEmail() );
+   c->setDepartment     (addr.department()     );
+   c->setUid            (addr.uid()            );
+
+   const KABC::PhoneNumber::List numbers = addr.phoneNumbers();
+   Contact::PhoneNumbers newNumbers(c);
+   foreach (const KABC::PhoneNumber& number, numbers) {
+      newNumbers << PhoneDirectoryModel::instance()->getNumber(number.number(),c,nullptr,number.typeLabel());
+      QString number2 = number.number();
+      if (number2.left (5) == "<sip:")
+         number2 = number2.remove(0,5);
+      if (number2.right(1) == ">"    )
+         number2 = number2.remove(number2.size()-2,1);
+   }
+   c->setPhoneNumbers   (newNumbers           );
+}
+
+Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
+{
+   Contact* aContact = nullptr;
+   if ( item.hasPayload<KABC::Addressee>() ) {
+      m_pMonitor->setItemMonitored(item,true);
+      KABC::Addressee tmp = item.payload<KABC::Addressee>();
+      const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
+
+      if (numbers.size() || !ignoreEmpty) {
+         aContact   = new Contact(this);
+
+         //This need to be done first because of the phone numbers indexes
+         fillContact(aContact,tmp);
+
+         m_ContactByUid[tmp.uid()] = aContact;
+
+         if (!tmp.photo().data().isNull())
+            aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
+         else
+            aContact->setPhoto(0);
+
+         m_AddrHash[ tmp.uid() ] = tmp ;
+         m_ItemHash[ tmp.uid() ] = item;
+      }
+   }
+   return aContact;
+}
+
 
 /*****************************************************************************
  *                                                                           *
@@ -141,64 +208,24 @@ KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 ///Update the contact list when a new Akonadi collection is added
 ContactList AkonadiBackend::update(Akonadi::Collection collection)
 {
-   m_UpdatesCounter++;
-//    Account* defaultAccount = AccountListModel::instance()->getDefaultAccount();
-   m_Collection = collection;
    if ( !collection.isValid() ) {
       kDebug() << "The current collection is not valid";
       return ContactList();
    }
 
-   bool onlyWithNumber =  ConfigurationSkeleton::hideContactWithoutPhone();
+   const bool onlyWithNumber =  ConfigurationSkeleton::hideContactWithoutPhone();
 
    Akonadi::RecursiveItemFetchJob *job = new Akonadi::RecursiveItemFetchJob( collection, QStringList() << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType());
    job->fetchScope().fetchFullPayload();
    if ( job->exec() ) {
-
       const Akonadi::Item::List items = job->items();
 
       foreach ( const Akonadi::Item &item, items ) {
-         if ( item.hasPayload<KABC::Addressee>() ) {
-            KABC::Addressee tmp = item.payload<KABC::Addressee>();
-            const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
-
-            if (numbers.size() || !onlyWithNumber) {
-               Contact* aContact   = new Contact(this);
-
-               //This need to be done first because of the phone numbers indexes
-               aContact->setNickName       (tmp.nickName()       );
-               aContact->setFormattedName  (tmp.formattedName()  );
-               aContact->setFirstName      (tmp.givenName()      );
-               aContact->setFamilyName     (tmp.familyName()     );
-               aContact->setOrganization   (tmp.organization()   );
-               aContact->setPreferredEmail (tmp.preferredEmail() );
-               aContact->setDepartment     (tmp.department()     );
-               aContact->setUid            (tmp.uid()            );
-
-               Contact::PhoneNumbers newNumbers(aContact);
-               foreach (const KABC::PhoneNumber& number, numbers) {
-                  newNumbers << PhoneDirectoryModel::instance()->getNumber(number.number(),aContact,nullptr,number.typeLabel());
-                  //new PhoneNumber(number.number(),number.typeLabel());
-                  QString number2 = number.number();
-                  if (number2.left (5) == "<sip:")
-                     number2 = number2.remove(0,5);
-                  if (number2.right(1) == ">"    )
-                     number2 = number2.remove(number2.size()-2,1);
-               }
-               m_ContactByUid[tmp.uid()] = aContact;
-               aContact->setPhoneNumbers   (newNumbers           );
-
-               if (!tmp.photo().data().isNull())
-                  aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
-               else
-                  aContact->setPhoto(0);
-
-               m_AddrHash[ tmp.uid() ] = tmp ;
-               m_ItemHash[ tmp.uid() ] = item;
-            }
-         }
+         addItem(item,onlyWithNumber);
       }
+      beginResetModel();
       m_pContacts = m_ContactByUid.values();
+      endResetModel();
    }
    return m_ContactByUid.values();
 } //update
@@ -323,7 +350,39 @@ void AkonadiBackend::collectionsReceived( const Akonadi::Collection::List&  list
 {
    foreach (const Akonadi::Collection& coll, list) {
       update(coll);
+      m_pMonitor->setCollectionMonitored(coll,true);
       emit collectionChanged();
+   }
+}
+
+///Be notified when a collection change
+void AkonadiBackend::slotSollectionChanged(const Akonadi::Collection &collection, const QSet< QByteArray > &attributeNames)
+{
+   Q_UNUSED(collection)
+   Q_UNUSED(attributeNames)
+   //TODO
+}
+
+///Callback when a new item is added
+void AkonadiBackend::slotItemAdded(Akonadi::Item item,Akonadi::Collection coll)
+{
+   Q_UNUSED(item)
+   beginInsertRows(QModelIndex(),m_pContacts.size()-1,m_pContacts.size());
+   m_pContacts << addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());
+   endInsertRows();
+   emit layoutChanged();
+}
+
+///Callback when an item change
+void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByteArray > &part)
+{
+   Q_UNUSED(part)
+   if (item.hasPayload<KABC::Addressee>()) {
+      KABC::Addressee tmp = item.payload<KABC::Addressee>();
+      Contact* c = getContactByUid(tmp.uid());
+      if (c) {
+         fillContact(c,tmp);
+      }
    }
 }
 

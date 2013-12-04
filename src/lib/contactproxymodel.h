@@ -63,8 +63,6 @@ public:
 
 private:
 
-   QModelIndex getContactIndex(Contact* ct) const;
-
    //Helpers
    QString category(Contact* ct) const;
 
@@ -76,6 +74,9 @@ private:
    int                          m_Role             ;
    bool                         m_ShowAll          ;
    QStringList                  m_lMimes           ;
+
+   //Helper
+   TopLevelItem* getTopLevelItem(const QString& category);
 
 private Q_SLOTS:
    void reloadCategories();
