@@ -136,6 +136,7 @@ private Q_SLOTS:
 
 public Q_SLOTS:
    void timeout                                  (                                      );
+   void selectCallTab                            (                                      );
 };
 
 #endif

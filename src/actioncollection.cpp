@@ -253,7 +253,6 @@ void ActionCollection::setupAction()
 ///Call
 void ActionCollection::accept() //TODO dead code?
 {
-   qDebug() << "HERE";
    Call* call = SFLPhone::view()->currentCall();// SFLPhone::view()->currentCall();
    if(!call) {
       kDebug() << "Calling when no item is selected. Opening an item.";

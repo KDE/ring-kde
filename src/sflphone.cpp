@@ -209,18 +209,7 @@ SFLPhone::SFLPhone(QWidget *parent)
 
    m_pCentralDW->show();
 
-   QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
-   if(tabBars.count())
-   {
-      foreach(QTabBar* bar, tabBars) {
-         for (int i=0;i<bar->count();i++) {
-            if (bar->tabText(i) == i18n("Call")) {
-               bar->setCurrentIndex(i);
-               break;
-            }
-         }
-      }
-   }
+   selectCallTab();
 
    setWindowIcon (QIcon(ICON_SFLPHONE) );
    setWindowTitle(i18n("SFLphone")     );
@@ -578,5 +567,22 @@ void SFLPhone::timeout()
    if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid() || (!CallModel::instance()->isValid())) {
       KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
+   }
+}
+
+///Select the call tab
+void SFLPhone::selectCallTab()
+{
+   QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
+   if(tabBars.count())
+   {
+      foreach(QTabBar* bar, tabBars) {
+         for (int i=0;i<bar->count();i++) {
+            if (bar->tabText(i).replace('&',QString()) == i18n("Call")) {
+               bar->setCurrentIndex(i);
+               break;
+            }
+         }
+      }
    }
 }

@@ -420,6 +420,7 @@ void EventManager::escape()
          case Call::State::TRANSF_HOLD:
             call->performAction(Call::Action::TRANSFER);
             break;
+         case Call::State::ERROR:
          case Call::State::INCOMING:
          case Call::State::DIALING:
          case Call::State::HOLD:
@@ -428,7 +429,6 @@ void EventManager::escape()
          case Call::State::FAILURE:
          case Call::State::BUSY:
          case Call::State::OVER:
-         case Call::State::ERROR:
          case Call::State::CONFERENCE:
          case Call::State::CONFERENCE_HOLD:
          case Call::State::COUNT:
@@ -494,6 +494,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
    switch (call->state()) {
       case Call::State::RINGING:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
+         SFLPhone::app()->selectCallTab();
          break;
       case Call::State::DIALING:
       case Call::State::INCOMING:
@@ -531,6 +532,7 @@ void EventManager::slotIncomingCall(Call* call)
    Q_UNUSED(call)
    if (call->state() == Call::State::INCOMING || call->state() == Call::State::RINGING) {
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
+      SFLPhone::app()->selectCallTab();
    }
 }
 
