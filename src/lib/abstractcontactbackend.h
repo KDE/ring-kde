@@ -103,6 +103,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
    void collectionChanged();
+   void newContactAdded(Contact* c);
 };
 
 #endif

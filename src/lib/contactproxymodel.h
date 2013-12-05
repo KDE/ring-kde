@@ -82,6 +82,7 @@ private:
 
 private Q_SLOTS:
    void reloadCategories();
+   void slotContactAdded(Contact* c);
 };
 
 class ContactTreeBinder : public QObject {

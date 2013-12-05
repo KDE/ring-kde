@@ -361,8 +361,10 @@ void AkonadiBackend::slotItemAdded(Akonadi::Item item,Akonadi::Collection coll)
 {
    Q_UNUSED(coll)
    beginInsertRows(QModelIndex(),m_pContacts.size()-1,m_pContacts.size());
-   m_pContacts << addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());
+   Contact* c = addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());
+   m_pContacts << c;
    endInsertRows();
+   emit newContactAdded(c);
    emit layoutChanged();
 }
 

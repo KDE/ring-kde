@@ -56,7 +56,9 @@ class ContactSortFilterProxyModel : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   explicit ContactSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
+   explicit ContactSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {
+      setDynamicSortFilter(true);
+   }
 protected:
    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
 };

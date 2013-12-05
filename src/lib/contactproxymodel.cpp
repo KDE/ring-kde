@@ -117,6 +117,7 @@ m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_lCategoryCounter()
    m_lCategoryCounter.reserve(32);
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
+   connect(m_pModel,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(AbstractContactBackend::Role::Organization      ,QByteArray("organization")     );
    roles.insert(AbstractContactBackend::Role::Group             ,QByteArray("group")            );
@@ -143,8 +144,11 @@ TopLevelItem* ContactProxyModel::getTopLevelItem(const QString& category)
       TopLevelItem* item = new TopLevelItem(category);
       m_hCategories[category] = item;
       item->m_Index = m_lCategoryCounter.size();
-      m_lCategoryCounter << item;
-   //          emit dataChanged(index(0,0),index(rowCount()-1,0));
+      emit layoutAboutToBeChanged();
+      beginInsertRows(QModelIndex(),m_lCategoryCounter.size(),m_lCategoryCounter.size()); {
+         m_lCategoryCounter << item;
+      } endInsertRows();
+      emit layoutChanged();
    }
    TopLevelItem* item = m_hCategories[category];
    return item;
@@ -162,19 +166,28 @@ void ContactProxyModel::reloadCategories()
       if (cont) {
          const QString val = category(cont);
          TopLevelItem* item = getTopLevelItem(val);
-         if (item) {
-            ContactTreeNode* contactNode = new ContactTreeNode(cont,this);
-            contactNode->m_pParent3 = item;
-            contactNode->m_Index = item->m_lChildren.size();
-            item->m_lChildren << contactNode;
-         }
-         else
-            qDebug() << "ERROR count";
+         ContactTreeNode* contactNode = new ContactTreeNode(cont,this);
+         contactNode->m_pParent3 = item;
+         contactNode->m_Index = item->m_lChildren.size();
+         item->m_lChildren << contactNode;
       }
    }
    endResetModel();
    emit layoutChanged();
-//    emit dataChanged(index(0,0),index(rowCount()-1,0));
+}
+
+void ContactProxyModel::slotContactAdded(Contact* c)
+{
+   const QString val = category(c);
+   TopLevelItem* item = getTopLevelItem(val);
+   ContactTreeNode* contactNode = new ContactTreeNode(c,this);
+   contactNode->m_pParent3 = item;
+   contactNode->m_Index = item->m_lChildren.size();
+   emit layoutAboutToBeChanged();
+   beginInsertRows(index(item->m_Index,0,QModelIndex()),item->m_lChildren.size(),item->m_lChildren.size()); {
+      item->m_lChildren << contactNode;
+   } endInsertRows();
+   emit layoutChanged();
 }
 
 bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
@@ -184,6 +197,7 @@ bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value
       if (role == AbstractContactBackend::Role::DropState) {
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
+         return true;
       }
    }
    return false;
