@@ -27,7 +27,7 @@
 #endif
 
 VideoScene::VideoScene()
-   : m_backgroundColor(25, 25, 25)
+   : m_backgroundColor(25, 25, 25),m_pToolbar(nullptr)
 {
 
 //    QPointF pos(10, 10);

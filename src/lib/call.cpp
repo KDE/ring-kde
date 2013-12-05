@@ -808,7 +808,7 @@ Call::State Call::performAction(Call::Action action)
    try {
       changeCurrentState(actionPerformedStateMap[previousState][action]);
    }
-   catch(Call::State state) {
+   catch(Call::State& state) {
       qDebug() << "State change failed (actionPerformedStateMap)" << state;
       m_CurrentState = Call::State::ERROR;
       emit stateChanged();

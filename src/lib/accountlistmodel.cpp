@@ -241,13 +241,12 @@ void AccountListModel::slotVoiceMailNotify(const QString &accountID, int count)
 void AccountListModel::update()
 {
    ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
-   Account* current;
    QList<Account*> tmp;
    for (int i = 0; i < m_lAccounts.size(); i++)
       tmp << m_lAccounts[i];
 
    for (int i = 0; i < tmp.size(); i++) {
-      current = tmp[i];
+      Account* current = tmp[i];
       if (!current->isNew() && (current->state() != Account::AccountEditState::NEW
          && current->state() != Account::AccountEditState::MODIFIED
          && current->state() != Account::AccountEditState::OUTDATED))
@@ -297,7 +296,6 @@ void AccountListModel::save()
    //create or update each account from accountList
    for (int i = 0; i < size(); i++) {
       Account* current = (*this)[i];
-      //current->save();
       current->performAction(Account::AccountEditAction::SAVE);
    }
 
@@ -406,9 +404,8 @@ QVector<Account*> AccountListModel::getAccountsByState(const QString& state)
 ///Get the first registerred account (default account)
 Account* AccountListModel::firstRegisteredAccount() const
 {
-   Account* current;
    for (int i = 0; i < m_lAccounts.count(); ++i) {
-      current = m_lAccounts[i];
+      Account* current = m_lAccounts[i];
       if(current && current->registrationStatus() == Account::State::REGISTERED && current->isEnabled())
          return current;
       else if (current && (current->registrationStatus() == Account::State::READY) && m_lAccounts.count() == 1)

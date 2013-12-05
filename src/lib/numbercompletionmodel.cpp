@@ -217,8 +217,8 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
          int toAdd = size-1;
          mid = iBeg;
          while (toAdd && mid != map.end()) {
-            mid++;
-            toAdd--;
+            ++mid;
+            --toAdd;
          }
       }
       if (mid != map.end() && mid.key().left(prefixLen) == pref && iBeg.key().left(prefixLen) < pref) {
@@ -236,7 +236,7 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
       }
 
       while ((iEnd).key().left(prefixLen) == pref && iEnd+1 != map.end()) {
-         iEnd++;
+         ++iEnd;
       }
 
       endOk = (iEnd.key().left(prefixLen) == pref);
@@ -245,7 +245,7 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
    }
 
    while (iBeg.key().left(prefixLen) != pref && iBeg != iEnd)
-      iBeg++;
+      ++iBeg;
 
    if (iEnd == iBeg && iBeg.key().left(prefixLen) != pref) {
       iEnd = map.end();
@@ -257,7 +257,7 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
             set << n;
          }
       }
-      iBeg++;
+      ++iBeg;
    }
 }
 

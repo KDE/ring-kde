@@ -234,7 +234,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
       if (ConfigurationSkeleton::displayCallEmail()) {
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Email).toString());
-         currentHeight +=fm.height();
+         //currentHeight +=fm.height();
       }
    }
 

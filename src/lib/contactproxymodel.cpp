@@ -70,7 +70,7 @@ TopLevelItem::~TopLevelItem() {
 }
 
 ContactTreeNode::ContactTreeNode(Contact* ct, ContactProxyModel* parent) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),
-   m_pContact(ct)
+   m_pContact(ct),m_pParent3(nullptr)
 {
    m_pBinder = new ContactTreeBinder(parent,this);
 }

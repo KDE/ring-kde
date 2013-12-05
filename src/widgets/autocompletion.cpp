@@ -168,9 +168,9 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
 {
    if (event->type() == QEvent::Resize) {
       const QWidget* p = parentWidget();
-      int vOffset(0),wOffset(0);
 
       if (p) {
+         int vOffset(0),wOffset(0);
          //If the parent has scrollbar, take this into account
          if (p->inherits("QAbstractScrollArea")) {
             const QAbstractScrollArea* scrl = static_cast< const QAbstractScrollArea*>(p);

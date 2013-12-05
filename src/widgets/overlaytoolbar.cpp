@@ -145,9 +145,9 @@ void OverlayToolbar::showEvent(QShowEvent *)
 void OverlayToolbar::resizeToolbar()
 {
    const QWidget* p = m_pForcedParent?m_pForcedParent:parentWidget();
-   int vOffset(0),wOffset(0);
 
    if (p) {
+      int vOffset(0),wOffset(0);
       //If the parent has scrollbar, take this into account
       if (p->inherits("QAbstractScrollArea")) {
          const QAbstractScrollArea* scrl = static_cast< const QAbstractScrollArea*>(p);
