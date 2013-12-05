@@ -42,6 +42,26 @@ PhoneDirectoryModel::PhoneDirectoryModel(QObject* parent) :
            SLOT(slotNewBuddySubscription(QString,QString,bool,QString)));
 }
 
+PhoneDirectoryModel::~PhoneDirectoryModel()
+{
+   QList<NumberWrapper*> vals = m_hNumbersByNames.values();
+   m_hNumbersByNames.clear();
+   m_lSortedNames.clear();
+   while (vals.size()) {
+      NumberWrapper* w = vals[0];
+      vals.removeAt(0);
+      delete w;
+   }
+   vals = m_hSortedNumbers.values();
+   m_hSortedNumbers.clear();
+   m_hDirectory.clear();
+   while (vals.size()) {
+      NumberWrapper* w = vals[0];
+      vals.removeAt(0);
+      delete w;
+   }
+}
+
 PhoneDirectoryModel* PhoneDirectoryModel::instance()
 {
    if (!m_spInstance) {

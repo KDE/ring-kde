@@ -391,6 +391,7 @@ SFLPhoneView::~SFLPhoneView()
    m_pView->setItemDelegate(nullptr);
    delete m_pConfDelegate;
    delete m_pHistoryDelegate;
+   delete m_pCanvasManager;
    if (m_pAutoCompletion)
       delete m_pAutoCompletion;
 }

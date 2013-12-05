@@ -61,6 +61,7 @@ private:
 
    struct MacroCategory {
       MacroCategory():m_pPointer(nullptr){}
+      ~MacroCategory() { delete m_pPointer; }
       QString m_Name;
       QList<Macro*> m_lContent;
       IndexPointer* m_pPointer;

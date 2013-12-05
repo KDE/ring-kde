@@ -46,7 +46,7 @@ class LIB_EXPORT PhoneDirectoryModel : public QAbstractTableModel {
 public:
    Q_PROPERTY(int count READ count )
 
-   virtual ~PhoneDirectoryModel(){}
+   virtual ~PhoneDirectoryModel();
 
    //Abstract model members
    virtual QVariant      data       (const QModelIndex& index, int role = Qt::DisplayRole                 ) const;
