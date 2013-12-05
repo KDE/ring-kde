@@ -36,6 +36,7 @@ class ContactTreeNode;
 
 class TopLevelItem : public CategorizedCompositeNode {
    friend class ContactProxyModel;
+   friend class ContactTreeBinder;
    public:
       virtual QObject* getSelf() const;
       virtual ~TopLevelItem();
@@ -51,11 +52,13 @@ class TopLevelItem : public CategorizedCompositeNode {
 
 class ContactTreeNode : public CategorizedCompositeNode {
 public:
-   ContactTreeNode(Contact* ct);
+   ContactTreeNode(Contact* ct, ContactProxyModel* parent);
+   ~ContactTreeNode();
    Contact* m_pContact;
    TopLevelItem* m_pParent3;
    uint m_Index;
    virtual QObject* getSelf() const;
+   ContactTreeBinder* m_pBinder;
 };
 
 TopLevelItem::~TopLevelItem() {
@@ -66,10 +69,15 @@ TopLevelItem::~TopLevelItem() {
    }
 }
 
-ContactTreeNode::ContactTreeNode(Contact* ct) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),
+ContactTreeNode::ContactTreeNode(Contact* ct, ContactProxyModel* parent) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),
    m_pContact(ct)
 {
-   
+   m_pBinder = new ContactTreeBinder(parent,this);
+}
+
+ContactTreeNode::~ContactTreeNode()
+{
+   delete m_pBinder;
 }
 
 QObject* ContactTreeNode::getSelf() const
@@ -80,6 +88,25 @@ QObject* ContactTreeNode::getSelf() const
 QObject* TopLevelItem::getSelf() const
 {
    return nullptr;
+}
+
+ContactTreeBinder::ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n) :
+   QObject(),m_pTreeNode(n),m_pModel(m)
+{
+   connect(n->m_pContact,SIGNAL(changed()),this,SLOT(slotContactChanged()));
+}
+
+
+void ContactTreeBinder::slotContactChanged()
+{
+   const QModelIndex idx = m_pModel->index(m_pTreeNode->m_Index,0,m_pModel->index(m_pTreeNode->m_pParent3->m_Index,0));
+   const QModelIndex lastPhoneIdx = m_pModel->index(m_pTreeNode->m_pContact->phoneNumbers().size()-1,0,idx);
+   emit m_pModel->dataChanged(idx,lastPhoneIdx);
+}
+
+void ContactTreeBinder::slotStatusChanged()
+{
+   
 }
 
 //
@@ -136,7 +163,7 @@ void ContactProxyModel::reloadCategories()
          const QString val = category(cont);
          TopLevelItem* item = getTopLevelItem(val);
          if (item) {
-            ContactTreeNode* contactNode = new ContactTreeNode(cont);
+            ContactTreeNode* contactNode = new ContactTreeNode(cont,this);
             contactNode->m_pParent3 = item;
             contactNode->m_Index = item->m_lChildren.size();
             item->m_lChildren << contactNode;

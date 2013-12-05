@@ -72,11 +72,7 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
    m_pMonitor->fetchCollectionStatistics(false);
    Akonadi::ItemFetchScope scope;
    scope.fetchFullPayload(true);
-//    scope.fetchAllAttributes(true);
-   //scope.fetchPayloadPart("PLD:RFC822",true); //TODO find a way not to load everything
    m_pMonitor->setItemFetchScope(scope);
-   connect(m_pMonitor,SIGNAL(collectionChanged(const Akonadi::Collection,const QSet<QByteArray>)),
-      this,SLOT(slotSollectionChanged(const Akonadi::Collection,const QSet<QByteArray>)));
    connect(m_pMonitor,SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)),
       this,SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
    connect(m_pMonitor,SIGNAL(itemChanged(const Akonadi::Item,const QSet<QByteArray>)),
@@ -360,14 +356,6 @@ void AkonadiBackend::collectionsReceived( const Akonadi::Collection::List&  list
    }
 }
 
-///Be notified when a collection change
-void AkonadiBackend::slotSollectionChanged(const Akonadi::Collection &collection, const QSet< QByteArray > &attributeNames)
-{
-   Q_UNUSED(collection)
-   Q_UNUSED(attributeNames)
-   //TODO
-}
-
 ///Callback when a new item is added
 void AkonadiBackend::slotItemAdded(Akonadi::Item item,Akonadi::Collection coll)
 {
@@ -385,9 +373,8 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
    if (item.hasPayload<KABC::Addressee>()) {
       KABC::Addressee tmp = item.payload<KABC::Addressee>();
       Contact* c = getContactByUid(tmp.uid());
-      if (c) {
+      if (c)
          fillContact(c,tmp);
-      }
    }
 }
 
@@ -395,9 +382,8 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
 void AkonadiBackend::slotItemRemoved(const Akonadi::Item &item)
 {
    Contact* c = getContactByUid(item.remoteId());
-   if (c) {
+   if (c)
       c->setActive(false);
-   }
 }
 
 ///Update the contact list even without a new collection

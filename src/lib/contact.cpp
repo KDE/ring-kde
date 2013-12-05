@@ -125,12 +125,14 @@ const QString& Contact::department() const
 void Contact::setPhoneNumbers(PhoneNumbers numbers)
 {
    m_Numbers = numbers;
+   emit changed();
 }
 
 ///Set the nickname
 void Contact::setNickName(const QString& name)
 {
    m_NickName = name;
+   emit changed();
 }
 
 ///Set the first name
@@ -138,6 +140,7 @@ void Contact::setFirstName(const QString& name)
 {
    m_FirstName = name;
    setObjectName(formattedName());
+   emit changed();
 }
 
 ///Set the family name
@@ -145,55 +148,64 @@ void Contact::setFamilyName(const QString& name)
 {
    m_SecondName = name;
    setObjectName(formattedName());
+   emit changed();
 }
 
 ///Set the Photo/Avatar
 void Contact::setPhoto(QPixmap* photo)
 {
    m_pPhoto = photo;
+   emit changed();
 }
 
 ///Set the formatted name (display name)
 void Contact::setFormattedName(const QString& name)
 {
    m_FormattedName = name;
+   emit changed();
 }
 
 ///Set the organisation / business
 void Contact::setOrganization(const QString& name)
 {
    m_Organization = name;
+   emit changed();
 }
 
 ///Set the default email
 void Contact::setPreferredEmail(const QString& name)
 {
    m_PreferredEmail = name;
+   emit changed();
 }
 
 ///Set UID
 void Contact::setUid(const QString& id)
 {
    m_Uid = id;
+   emit changed();
 }
 
 ///Set Group
 void Contact::setGroup(const QString& name)
 {
    m_Group = name;
+   emit changed();
 }
 
 ///Set department
 void Contact::setDepartment(const QString& name)
 {
    m_Department = name;
+   emit changed();
 }
 
-
+///If the contact have been deleted or not yet fully created
 void Contact::setActive( bool active)
 {
    m_Active = active;
    emit statusChanged(m_Active);
+   emit changed();
 }
 
 ///Return if one of the PhoneNumber is present

@@ -28,6 +28,7 @@
 class AbstractContactBackend;
 class ContactTreeNode;
 class TopLevelItem;
+class ContactTreeBinder;
 
 class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
 {
@@ -38,6 +39,7 @@ class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
 public:
    friend class AbstractContactBackend;
    friend class ContactTreeNode;
+   friend class ContactTreeBinder;
    explicit ContactProxyModel(AbstractContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
    virtual ~ContactProxyModel();
 
@@ -80,6 +82,18 @@ private:
 
 private Q_SLOTS:
    void reloadCategories();
+};
+
+class ContactTreeBinder : public QObject {
+   Q_OBJECT
+public:
+   ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n);
+private:
+   ContactTreeNode* m_pTreeNode;
+   ContactProxyModel* m_pModel;
+private Q_SLOTS:
+   void slotContactChanged();
+   void slotStatusChanged();
 };
 
 #endif

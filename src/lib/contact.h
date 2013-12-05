@@ -129,6 +129,7 @@ public:
 Q_SIGNALS:
    void presenceChanged( PhoneNumber* );
    void statusChanged  ( bool         );
+   void changed        (              );
 
 protected:
    //Presence secret methods
