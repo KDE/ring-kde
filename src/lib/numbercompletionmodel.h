@@ -53,16 +53,12 @@ public:
 
    //Setters
    void setCall(Call* call);
-   void setUseUnregisteredAccounts(bool value) {
-      m_UseUnregisteredAccount = value;
-   }
+   void setUseUnregisteredAccounts(bool value);
 
    //Getters
    Call* call() const;
    PhoneNumber* number(const QModelIndex& idx) const;
-   bool isUsingUnregisteredAccounts() {
-      return m_UseUnregisteredAccount;
-   }
+   bool isUsingUnregisteredAccounts();
    QString prefix() const;
 
 private:
@@ -72,7 +68,6 @@ private:
       ACCOUNT = 2,
       WEIGHT  = 3,
    };
-
 
    //Methods
    void updateModel();

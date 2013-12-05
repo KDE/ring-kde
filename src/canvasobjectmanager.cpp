@@ -220,7 +220,7 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
                   const QString m = message.isEmpty()?currentTip->text():message;
                   if (m_Minimized && !m.isEmpty())
                      KNotification::event(KNotification::Notification, i18n("SFLPhone"), m);
-                  //If the window is not focussed and the object request notification, use system
+                  //If the window is not focused and the object request notification, use system
                   //disabled as it is not implemented by many top tier window managers
 #ifdef Q_WS_X11
 // Doesn't work on most window managers
@@ -234,8 +234,8 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
 //                      xcb_get_property_cookie_t propC = xcb_get_property_unchecked(c, false, win,_NET_WM_STATE_FOCUSED, XCB_GET_PROPERTY_TYPE_ANY, 0, 1);
 //                      xcb_get_property_reply_t *replyP = xcb_get_property_reply(c, propC, NULL);
 //                      if (replyP) {
-//                         bool isFocussed = *((bool*)xcb_get_property_value(replyP));
-//                         qDebug() << "\n\n\nClient is focussed" <<isFocussed;
+//                         bool isFocused = *((bool*)xcb_get_property_value(replyP));
+//                         qDebug() << "\n\n\nClient is focused" <<isFocused;
 //                         free(replyP);
 //                      }
 //                      free(reply);
@@ -291,7 +291,7 @@ bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
    else {
       QList<CanvasObjectManager::Object> nextObjs = CanvasObjectManager::eventsToObjects(events);
       CanvasObjectManager::Object highestPriorityNextObj = CanvasObjectManager::Object::NoObject;
-      foreach(CanvasObjectManager::Object nextObj, nextObjs) {
+      foreach(const CanvasObjectManager::Object& nextObj, nextObjs) {
          if (OBJ_DEF(nextObj).priority > OBJ_DEF(highestPriorityNextObj).priority)
             highestPriorityNextObj = nextObj;
       }

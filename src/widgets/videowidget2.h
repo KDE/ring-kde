@@ -18,7 +18,7 @@
 #ifndef VIDEOWIDGET2_H
 #define VIDEOWIDGET2_H
 
-#include <QtOpenGL>
+#include <QtOpenGL/QGLWidget>
 
 //SFLPhone
 class VideoRenderer  ;

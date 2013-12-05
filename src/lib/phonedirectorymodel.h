@@ -67,17 +67,11 @@ public:
    Q_INVOKABLE PhoneNumber* fromTemporary(const TemporaryPhoneNumber* number);
 
    //Getter
-   int count() const {
-      return m_lNumbers.size();
-   }
-   bool callWithAccount() const {
-      return m_CallWithAccount;
-   }
+   int count() const;
+   bool callWithAccount() const;
 
    //Setters
-   void setCallWithAccount(bool value) {
-      m_CallWithAccount = value;
-   }
+   void setCallWithAccount(bool value);
 
    //Static
    QVector<PhoneNumber*> getNumbersByPopularity() const;

@@ -101,7 +101,7 @@ private:
    class TopLevelItem : public CategorizedCompositeNode {
       friend class AbstractBookmarkModel;
       public:
-         virtual QObject* getSelf() const {return nullptr;}
+         virtual QObject* getSelf() const;
       private:
          explicit TopLevelItem(QString name);
          QList<NumberTreeBackend*> m_lChildren;

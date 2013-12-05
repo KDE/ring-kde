@@ -142,7 +142,7 @@ public:
    };
 
    //Constructor
-   CanvasObjectManager(QObject* parent = nullptr);
+   explicit CanvasObjectManager(QObject* parent = nullptr);
    virtual ~CanvasObjectManager();
 
    //Mutator
@@ -166,7 +166,7 @@ private:
       int             inEvent           ; /* All compatible events to trigger this object   */
       int             outEvent          ; /* All compatible events to phase out this object */
       bool            stack             ; /* Use an event counter to phase this object out  */
-      bool            systemNotification; /* Send a notification is SFLPhone ain't focussed */
+      bool            systemNotification; /* Send a notification is SFLPhone ain't focused */
       bool            skipAnimation     ; /* Do not trigger out animation when overriding   */
    };
 

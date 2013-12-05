@@ -16,8 +16,6 @@
  **************************************************************************/
 
 #include "videoscene.h"
-
-#include <QtOpenGL>
 #include <QtGui/QLabel>
 #include <GL/glu.h>
 
@@ -67,11 +65,11 @@ void VideoScene::drawBackground(QPainter *painter, const QRectF& rect)
 
 void VideoScene::setBackgroundColor()
 {
-   const QColor color = QColorDialog::getColor(m_backgroundColor);
-   if (color.isValid()) {
-      m_backgroundColor = color;
-      update();
-   }
+//    const QColor color = QColorDialog::getColor(m_backgroundColor);
+//    if (color.isValid()) {
+//       m_backgroundColor = color;
+//       update();
+//    }
 }
 
 void VideoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

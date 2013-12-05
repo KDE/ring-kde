@@ -25,7 +25,7 @@ class QTreeView;
 class CallViewToolbar : public OverlayToolbar {
    Q_OBJECT
 public:
-   CallViewToolbar(QTreeView* parent = nullptr);
+   explicit CallViewToolbar(QTreeView* parent = nullptr);
    virtual ~CallViewToolbar();
 
 private:

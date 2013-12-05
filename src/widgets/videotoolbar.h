@@ -27,7 +27,7 @@ class VideoToolbar : public OverlayToolbar {
    Q_OBJECT
 public:
    //Contructor
-   VideoToolbar(QWidget* parent = nullptr);
+   explicit VideoToolbar(QWidget* parent = nullptr);
    virtual ~VideoToolbar();
 };
 

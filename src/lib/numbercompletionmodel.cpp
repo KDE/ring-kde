@@ -287,3 +287,13 @@ QString NumberCompletionModel::prefix() const
 {
    return m_Prefix;
 }
+
+void NumberCompletionModel::setUseUnregisteredAccounts(bool value)
+{
+   m_UseUnregisteredAccount = value;
+}
+
+bool NumberCompletionModel::isUsingUnregisteredAccounts()
+{
+   return m_UseUnregisteredAccount;
+}

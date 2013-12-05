@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 */
-#ifndef STATUSBARTOOLBUTTON_H
-#define STATUSBARTOOLBUTTON_H
+#ifndef GROUPEDTOOLBUTTON_H
+#define GROUPEDTOOLBUTTON_H
 
 // Qt
 #include <QToolButton>
@@ -54,21 +54,21 @@ private:
 
 class LeftToolButton : public GroupedToolButton {
 public:
-   LeftToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
+   explicit LeftToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
       setGroupPosition(GroupPosition::GroupLeft);
    }
 };
 class RightToolButton : public GroupedToolButton {
 public:
-   RightToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
+   explicit RightToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
       setGroupPosition(GroupPosition::GroupRight);
    }
 };
 class CenterToolButton : public GroupedToolButton {
 public:
-   CenterToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
+   explicit CenterToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
       setGroupPosition(GroupPosition::GroupCenter);
    }
 };
 
-#endif /* STATUSBARTOOLBUTTON_H */
+#endif /* GROUPEDTOOLBUTTON_H */

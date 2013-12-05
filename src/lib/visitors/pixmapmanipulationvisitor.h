@@ -15,7 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-
+#ifndef PIXMAPMANIPULATIONVISITOR_H
+#define PIXMAPMANIPULATIONVISITOR_H
 #include "../typedefs.h"
 
 //Qt
@@ -50,3 +51,5 @@ public:
 protected:
    static PixmapManipulationVisitor* m_spInstance;
 };
+
+#endif //PIXMAPMANIPULATIONVISITOR_H

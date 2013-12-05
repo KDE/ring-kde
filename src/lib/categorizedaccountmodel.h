@@ -24,19 +24,19 @@
 class LIB_EXPORT CategorizedAccountModel : public QAbstractItemModel {
    Q_OBJECT
 public:
-   CategorizedAccountModel(QObject* parent = nullptr);
+   explicit CategorizedAccountModel(QObject* parent = nullptr);
    virtual ~CategorizedAccountModel();
    static CategorizedAccountModel* instance();
 
    //Abstract model member
-   virtual QVariant data        (const QModelIndex& index, int role = Qt::DisplayRole      ) const;
-   virtual int rowCount         (const QModelIndex& parent = QModelIndex()                 ) const;
-   virtual int columnCount      (const QModelIndex& parent = QModelIndex()                 ) const;
-   virtual Qt::ItemFlags flags  (const QModelIndex& index                                  ) const;
-   virtual bool setData (const QModelIndex& index, const QVariant &value, int role );
-   virtual QModelIndex   index        ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
-   virtual QModelIndex parent(const QModelIndex& index) const;
-   virtual QVariant headerData(int section, Qt::Orientation orientation, int role ) const;
+   virtual QVariant data        (const QModelIndex& index, int role = Qt::DisplayRole         ) const;
+   virtual int rowCount         (const QModelIndex& parent = QModelIndex()                    ) const;
+   virtual int columnCount      (const QModelIndex& parent = QModelIndex()                    ) const;
+   virtual Qt::ItemFlags flags  (const QModelIndex& index                                     ) const;
+   virtual bool setData         (const QModelIndex& index, const QVariant &value, int role    )      ;
+   virtual QModelIndex   index  (int row, int column, const QModelIndex& parent=QModelIndex() ) const;
+   virtual QModelIndex parent   (const QModelIndex& index                                     ) const;
+   virtual QVariant headerData  (int section, Qt::Orientation orientation, int role           ) const;
 
    //Getter
    QModelIndex mapToSource(const QModelIndex& idx) const;
@@ -52,7 +52,7 @@ private:
    //Singleton
    static CategorizedAccountModel* m_spInstance;
 
-private slots:
+private Q_SLOTS:
    void slotDataChanged(const QModelIndex& tl,const QModelIndex& br);
    void slotLayoutchanged();
 

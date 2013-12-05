@@ -25,6 +25,10 @@ Resolution::Resolution(uint _width, uint _height):QSize(_width,_height)
 {
 }
 
+Resolution::Resolution() : QSize()
+{
+}
+
 Resolution::Resolution(const QString& size)
 {
    if (size.split('x').size() == 2) {

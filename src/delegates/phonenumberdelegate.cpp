@@ -120,4 +120,3 @@ void PhoneNumberDelegate::setView(CategorizedTreeView* model)
 {
    m_pView = model;
 }
-

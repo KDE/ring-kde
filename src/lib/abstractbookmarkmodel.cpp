@@ -45,6 +45,11 @@ class NumberTreeBackend : public CategorizedCompositeNode
       AbstractBookmarkModel::TopLevelItem* m_pParent;
 };
 
+QObject* AbstractBookmarkModel::TopLevelItem::getSelf() const
+{
+   return nullptr;
+}
+
 AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemModel(parent){
    setObjectName("AbstractBookmarkModel");
    reloadCategories();

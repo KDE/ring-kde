@@ -38,7 +38,7 @@ public:
    Resolution(const QString& size = QString());
    Resolution(const Resolution& res);
    Resolution(const QSize& size);
-   explicit Resolution() : QSize(){}
+   explicit Resolution();
    //Getter
    const QString toString() const;
 
@@ -58,7 +58,7 @@ class LIB_EXPORT VideoDevice {
       const VideoChannel        channel     ();
       const VideoRate           rate        ();
       const QString             deviceId    () const;
-      
+
       //Static getter
       static const QList<VideoDevice*> deviceList();
 

@@ -72,7 +72,7 @@ private:
    //Model
    class HistoryItem : public CategorizedCompositeNode {
    public:
-      HistoryItem(Call* call);
+      explicit HistoryItem(Call* call);
       virtual QObject* getSelf() const;
       Call* call() const;
    private:

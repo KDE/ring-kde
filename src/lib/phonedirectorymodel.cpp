@@ -489,9 +489,9 @@ void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList &na
 {
    foreach(const QString& name, names) {
       const QString lower = name.toLower();
-      const QStringList splitted = lower.split(' ');
-      if (splitted.size() > 1) {
-         foreach(const QString& chunk, splitted) {
+      const QStringList split = lower.split(' ');
+      if (split.size() > 1) {
+         foreach(const QString& chunk, split) {
             NumberWrapper* wrap = m_hNumbersByNames[chunk];
             if (!wrap) {
                wrap = new NumberWrapper();
@@ -513,4 +513,16 @@ void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList &na
       if (!((numCount == 1 && wrap->numbers[0] == number) || (numCount > 1 && wrap->numbers.indexOf(number) != -1)))
          wrap->numbers << number;
    }
+}
+
+int PhoneDirectoryModel::count() const {
+   return m_lNumbers.size();
+}
+bool PhoneDirectoryModel::callWithAccount() const {
+   return m_CallWithAccount;
+}
+
+//Setters
+void PhoneDirectoryModel::setCallWithAccount(bool value) {
+   m_CallWithAccount = value;
 }

@@ -36,7 +36,7 @@ class ActionCollection : public QObject {
 public:
 
    //Constructor
-   ActionCollection(QObject* parent = nullptr);
+   explicit ActionCollection(QObject* parent = nullptr);
    virtual ~ActionCollection();
    static ActionCollection* instance();
    void setupAction();

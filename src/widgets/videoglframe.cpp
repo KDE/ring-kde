@@ -17,15 +17,19 @@
  **************************************************************************/
 #include "videoglframe.h"
 
+//Qt
 #include <QtCore/QDebug>
+#include <QtOpenGL/QGLWidget>
 #include <QtOpenGL>
 
+//System
 #include <math.h>
+#include <GL/glu.h>
 
+//SFLPhone
 #include <lib/videorenderer.h>
 #include <lib/videomodel.h>
 
-#include <GL/glu.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D

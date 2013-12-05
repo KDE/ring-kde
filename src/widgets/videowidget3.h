@@ -32,7 +32,7 @@ class VideoWidget3 : public QGraphicsView
    Q_OBJECT
 
 public:
-   VideoWidget3(QWidget *parent);
+   explicit VideoWidget3(QWidget *parent);
    ~VideoWidget3();
 //    virtual int    heightForWidth( int w ) const;
 //    virtual QSize  sizeHint      (       ) const;

@@ -25,7 +25,7 @@ class RingToneDelegate : public QStyledItemDelegate
 {
    Q_OBJECT
 public:
-   RingToneDelegate(QTableView* view);
+   explicit RingToneDelegate(QTableView* view);
    virtual ~RingToneDelegate();
 
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;

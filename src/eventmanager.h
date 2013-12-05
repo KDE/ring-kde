@@ -39,7 +39,7 @@ class EventManager : public QObject, public MacroListener {
 
 public:
    friend class MainWindowEvent;
-   EventManager(SFLPhoneView* parent = nullptr);
+   explicit EventManager(SFLPhoneView* parent = nullptr);
    virtual ~EventManager();
       /**
     *   Handles the behaviour when the user types something with

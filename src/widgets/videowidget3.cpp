@@ -19,7 +19,8 @@
 
 //Qt
 #include <QtCore/QDebug>
-#include <QtOpenGL>
+#include <QtOpenGL/QGLWidget>
+#include <QtOpenGL/QGLFormat>
 
 //System
 #include <math.h>

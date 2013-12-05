@@ -221,7 +221,7 @@ void AlsaPluginModel::setCurrentPlugin(int idx)
    setCurrentPlugin(index(idx,0));
 }
 
-///Reload to current deamon state
+///Reload to current daemon state
 void AlsaPluginModel::reload()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();

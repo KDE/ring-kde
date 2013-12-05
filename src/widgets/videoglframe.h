@@ -18,8 +18,6 @@
 #ifndef VIDEOGLFRAME_H
 #define VIDEOGLFRAME_H
 
-#include <QGLWidget>
-
 class VideoRenderer;
 
 class ThreadedPainter2;
@@ -31,7 +29,7 @@ class VideoGLFrame : public QObject
    Q_OBJECT
 
 public:
-   VideoGLFrame(QGLWidget *parent = nullptr);
+   explicit VideoGLFrame(QGLWidget *parent = nullptr);
    ~VideoGLFrame();
 
    void paintEvent     (QPainter* painter);

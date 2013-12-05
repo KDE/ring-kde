@@ -37,7 +37,7 @@ public:
       FullPath  = 101,
    };
 
-   RingToneModel(Account* a);
+   explicit RingToneModel(Account* a);
    virtual ~RingToneModel();
 
    //Model functions
@@ -59,7 +59,7 @@ public:
 
 private:
    struct RingToneInfo {
-      RingToneInfo() : isPlaying(false),isCurrent(false){}
+      explicit RingToneInfo() : isPlaying(false),isCurrent(false){}
       QString name;
       QString path;
       bool isPlaying;

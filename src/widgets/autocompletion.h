@@ -37,7 +37,7 @@ class AutoCompletion : public QWidget {
    Q_OBJECT
 
 public:
-   AutoCompletion(QTreeView* parent = nullptr);
+   explicit AutoCompletion(QTreeView* parent = nullptr);
    virtual ~AutoCompletion();
 
    //Getters

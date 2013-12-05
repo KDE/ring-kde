@@ -43,8 +43,6 @@ public:
       RINGTONE = 2,
    };
 
-   //Constructor
-   AudioSettingsModel();
    virtual ~AudioSettingsModel();
    static AudioSettingsModel* instance();
 
@@ -75,6 +73,9 @@ public Q_SLOTS:
    void reload();
 
 private:
+   //Constructor
+   explicit AudioSettingsModel();
+
    //Attributes
    AlsaPluginModel*     m_pAlsaPluginModel    ;
    InputDeviceModel*    m_pInputDeviceModel   ;
@@ -90,7 +91,7 @@ private:
 class LIB_EXPORT AlsaPluginModel    : public QAbstractListModel {
    Q_OBJECT
 public:
-   AlsaPluginModel(QObject* parent);
+   explicit AlsaPluginModel(QObject* parent);
    virtual ~AlsaPluginModel();
 
    //Models function
@@ -116,7 +117,7 @@ private:
 class LIB_EXPORT InputDeviceModel   : public QAbstractListModel {
    Q_OBJECT
 public:
-   InputDeviceModel(QObject* parent);
+   explicit InputDeviceModel(QObject* parent);
    virtual ~InputDeviceModel();
 
    //Models function
@@ -142,7 +143,7 @@ private:
 class LIB_EXPORT OutputDeviceModel  : public QAbstractListModel {
    Q_OBJECT
 public:
-   OutputDeviceModel(QObject* parent);
+   explicit OutputDeviceModel(QObject* parent);
    virtual ~OutputDeviceModel();
 
    //Models function
@@ -168,7 +169,7 @@ private:
 class LIB_EXPORT AudioManagerModel   : public QAbstractListModel {
    Q_OBJECT
 public:
-   AudioManagerModel(QObject* parent);
+   explicit AudioManagerModel(QObject* parent);
    virtual ~AudioManagerModel();
 
    //Models function
@@ -204,7 +205,7 @@ private:
 class LIB_EXPORT RingtoneDeviceModel: public QAbstractListModel {
    Q_OBJECT
 public:
-   RingtoneDeviceModel(QObject* parent);
+   explicit RingtoneDeviceModel(QObject* parent);
    virtual ~RingtoneDeviceModel();
 
    //Models function
