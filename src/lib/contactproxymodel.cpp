@@ -175,6 +175,8 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             return static_cast<const TopLevelItem*>(modelItem)->m_Name;
          case AbstractContactBackend::Role::IndexedLastUsed:
             return index.child(0,0).data(AbstractContactBackend::Role::IndexedLastUsed);
+         case AbstractContactBackend::Role::Active:
+            return true;
          default:
             break;
       }
@@ -198,6 +200,8 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             return QVariant(HistoryTimeCategoryModel::timeToHistoryCategory(c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::IndexedLastUsed:
             return QVariant((int)HistoryTimeCategoryModel::timeToHistoryConst(c->phoneNumbers().lastUsedTimeStamp()));
+         case AbstractContactBackend::Role::Active:
+            return c->isActive();
          case AbstractContactBackend::Role::DatedLastUsed:
             return QVariant(QDateTime::fromTime_t( c->phoneNumbers().lastUsedTimeStamp()));
          case AbstractContactBackend::Role::Filter: {
@@ -216,14 +220,13 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
       break;
    }
    case CategorizedCompositeNode::Type::NUMBER: /* && (role == Qt::DisplayRole)) {*/
-      switch (role) {
-//          case Qt::DisplayRole:
-//             return QVariant(static_cast<Phon>(modelItem)->uri());
-      }
-      break;
-   default:
    case CategorizedCompositeNode::Type::CALL:
    case CategorizedCompositeNode::Type::BOOKMARK:
+   default:
+      switch (role) {
+         case AbstractContactBackend::Role::Active:
+            return true;
+      }
       break;
    };
    return QVariant();

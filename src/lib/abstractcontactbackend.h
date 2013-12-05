@@ -50,6 +50,7 @@ public:
       FormattedLastUsed = 104,
       IndexedLastUsed   = 105,
       DatedLastUsed     = 106,
+      Active            = 107,
       Filter            = 200, //All roles, all at once
       DropState         = 300, //State for drag and drop
    };

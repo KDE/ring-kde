@@ -78,7 +78,16 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
    return QObject::eventFilter(obj, event);
 }
 
+bool ContactSortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+{
+   const bool status = sourceModel()->index(source_row,0,source_parent).data(AbstractContactBackend::Role::Active).toBool();
+   if (!status)
+      return false;
+   else if (!source_parent.isValid() || source_parent.parent().isValid())
+      return true;
 
+   return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+}
 
 ///Constructor
 ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nullptr),m_pMenu(nullptr)

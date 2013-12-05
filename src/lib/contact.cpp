@@ -46,7 +46,7 @@ Contact* Contact::PhoneNumbers::contact() const
 
 ///Constructor
 Contact::Contact(QObject* parent):QObject(parent),m_pPhoto(nullptr),
-   m_Numbers(this),m_DisplayPhoto(nullptr)
+   m_Numbers(this),m_DisplayPhoto(nullptr),m_Active(true)
 {
 }
 
@@ -121,28 +121,22 @@ const QString& Contact::department() const
    return m_Department;
 }
 
-///Get the contact type
-const QString& Contact::type() const
-{
-   return m_Type;
-}
-
 ///Set the phone number (type and number) 
 void Contact::setPhoneNumbers(PhoneNumbers numbers)
 {
-   m_Numbers    = numbers;
+   m_Numbers = numbers;
 }
 
 ///Set the nickname
 void Contact::setNickName(const QString& name)
 {
-   m_NickName   = name;
+   m_NickName = name;
 }
 
 ///Set the first name
 void Contact::setFirstName(const QString& name)
 {
-   m_FirstName  = name;
+   m_FirstName = name;
    setObjectName(formattedName());
 }
 
@@ -195,6 +189,13 @@ void Contact::setDepartment(const QString& name)
    m_Department = name;
 }
 
+
+void Contact::setActive( bool active)
+{
+   m_Active = active;
+   emit statusChanged(m_Active);
+}
+
 ///Return if one of the PhoneNumber is present
 bool Contact::isPresent() const
 {
@@ -215,6 +216,12 @@ bool Contact::isTracked() const
    return false;
 }
 
+///Have this contact been deleted or doesn't exist yet
+bool Contact::isActive() const
+{
+   return m_Active;
+}
+
 ///Return if one of the PhoneNumber support presence
 bool Contact::supportPresence() const
 {
@@ -225,24 +232,6 @@ bool Contact::supportPresence() const
    return false;
 }
 
-///Turn the contact into QString-QString hash
-QHash<QString,QVariant> Contact::toHash()
-{
-   QHash<QString,QVariant> aContact;
-   //aContact[""] = PhoneNumbers   getPhoneNumbers()    const;
-   aContact[ "nickName"       ] = nickName();
-   aContact[ "firstName"      ] = firstName();
-   aContact[ "secondName"     ] = secondName();
-   aContact[ "formattedName"  ] = formattedName();
-   aContact[ "organization"   ] = organization();
-   aContact[ "uid"            ] = uid();
-   aContact[ "preferredEmail" ] = preferredEmail();
-   //aContact[ "Photo"          ] = QVariant(*getPhoto());
-   aContact[ "type"           ] = type();
-   aContact[ "group"          ] = group();
-   aContact[ "department"     ] = department();
-   return aContact;
-}
 
 QObject* Contact::PhoneNumbers::getSelf() const {
    return m_pParent2;

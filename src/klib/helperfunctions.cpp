@@ -33,26 +33,6 @@
 #include "../lib/phonenumber.h"
 #include "../lib/numbercategory.h"
 
-///Transform a contact list to a [QString][QString][QVariant] hash
-ContactHash HelperFunctions::toHash(QList<Contact*> contacts) {
-   QHash<QString,QHash<QString,QVariant> > hash;
-   for (int i=0;i<contacts.size();i++) {
-      Contact* cont = contacts[i];
-      QHash<QString,QVariant> conth = cont->toHash();
-      conth   ["phoneCount" ] = cont->phoneNumbers().size();
-      if (cont->phoneNumbers().size() == 1) {
-         conth["phoneNumber"] = cont->phoneNumbers()[0]->uri();
-         conth["phoneType"  ] = cont->phoneNumbers()[0]->category()->name();
-      }
-      else {
-         conth["phoneNumber"] = i18np("%1 number","%1 numbers",cont->phoneNumbers().size());
-         conth["phoneType"  ].clear();
-      }
-      hash[contacts[i]->uid()] = conth;
-   }
-   return hash;
-}
-
 ///Remove accent and upper caps, try to stay ascii as much as possible
 QString HelperFunctions::normStrippped(QString str)
 {

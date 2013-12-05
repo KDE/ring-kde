@@ -72,6 +72,7 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
    m_pMonitor->fetchCollectionStatistics(false);
    Akonadi::ItemFetchScope scope;
    scope.fetchFullPayload(true);
+//    scope.fetchAllAttributes(true);
    //scope.fetchPayloadPart("PLD:RFC822",true); //TODO find a way not to load everything
    m_pMonitor->setItemFetchScope(scope);
    connect(m_pMonitor,SIGNAL(collectionChanged(const Akonadi::Collection,const QSet<QByteArray>)),
@@ -80,6 +81,8 @@ AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
       this,SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
    connect(m_pMonitor,SIGNAL(itemChanged(const Akonadi::Item,const QSet<QByteArray>)),
       this,SLOT(slotItemChanged(const Akonadi::Item,const QSet<QByteArray>)));
+   connect(m_pMonitor,SIGNAL(itemRemoved(const Akonadi::Item)),
+      this,SLOT(slotItemRemoved(const Akonadi::Item)));
 } //AkonadiBackend
 
 ///Destructor
@@ -89,6 +92,7 @@ AkonadiBackend::~AkonadiBackend()
    if (Call::contactBackend() == this)
       Call::setContactBackend(nullptr);
    delete m_pJob;
+   delete m_pMonitor;
 }
 
 
@@ -177,6 +181,7 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
       m_pMonitor->setItemMonitored(item,true);
       KABC::Addressee tmp = item.payload<KABC::Addressee>();
       const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
+      const QString uid = tmp.uid();
 
       if (numbers.size() || !ignoreEmpty) {
          aContact   = new Contact(this);
@@ -184,15 +189,15 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
          //This need to be done first because of the phone numbers indexes
          fillContact(aContact,tmp);
 
-         m_ContactByUid[tmp.uid()] = aContact;
+         m_ContactByUid[uid] = aContact;
 
          if (!tmp.photo().data().isNull())
             aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
          else
             aContact->setPhoto(0);
 
-         m_AddrHash[ tmp.uid() ] = tmp ;
-         m_ItemHash[ tmp.uid() ] = item;
+         m_AddrHash[ uid ] = tmp ;
+         m_ItemHash[ uid ] = item;
       }
    }
    return aContact;
@@ -366,7 +371,7 @@ void AkonadiBackend::slotSollectionChanged(const Akonadi::Collection &collection
 ///Callback when a new item is added
 void AkonadiBackend::slotItemAdded(Akonadi::Item item,Akonadi::Collection coll)
 {
-   Q_UNUSED(item)
+   Q_UNUSED(coll)
    beginInsertRows(QModelIndex(),m_pContacts.size()-1,m_pContacts.size());
    m_pContacts << addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());
    endInsertRows();
@@ -383,6 +388,15 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
       if (c) {
          fillContact(c,tmp);
       }
+   }
+}
+
+///Callback when a contact is removed
+void AkonadiBackend::slotItemRemoved(const Akonadi::Item &item)
+{
+   Contact* c = getContactByUid(item.remoteId());
+   if (c) {
+      c->setActive(false);
    }
 }
 

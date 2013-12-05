@@ -58,13 +58,7 @@ class ContactSortFilterProxyModel : public QSortFilterProxyModel
 public:
    explicit ContactSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
 protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
-   {
-      if (!source_parent.isValid() || source_parent.parent().isValid())
-         return true;
-
-      return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-   }
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
 };
 
 ///ContactDock: Dock to access contacts
