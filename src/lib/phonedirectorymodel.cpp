@@ -470,16 +470,18 @@ void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList &na
    foreach(const QString& name, names) {
       const QString lower = name.toLower();
       const QStringList splitted = lower.split(' ');
-      foreach(const QString& chunk, splitted) {
-         NumberWrapper* wrap = m_hNumbersByNames[chunk];
-         if (!wrap) {
-            wrap = new NumberWrapper();
-            m_hNumbersByNames[chunk] = wrap;
-            m_lSortedNames[chunk]    = wrap;
+      if (splitted.size() > 1) {
+         foreach(const QString& chunk, splitted) {
+            NumberWrapper* wrap = m_hNumbersByNames[chunk];
+            if (!wrap) {
+               wrap = new NumberWrapper();
+               m_hNumbersByNames[chunk] = wrap;
+               m_lSortedNames[chunk]    = wrap;
+            }
+            const int numCount = wrap->numbers.size();
+            if (!((numCount == 1 && wrap->numbers[0] == number) || (numCount > 1 && wrap->numbers.indexOf(number) != -1)))
+               wrap->numbers << number;
          }
-         const int numCount = wrap->numbers.size();
-         if (!((numCount == 1 && wrap->numbers[0] == number) || (numCount > 1 && wrap->numbers.indexOf(number) != -1)))
-            wrap->numbers << number;
       }
       NumberWrapper* wrap = m_hNumbersByNames[lower];
       if (!wrap) {

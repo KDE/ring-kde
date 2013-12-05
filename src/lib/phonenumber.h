@@ -38,7 +38,7 @@ class LIB_EXPORT PhoneNumber : public QObject {
    Q_OBJECT
 public:
    friend class PhoneDirectoryModel;
-   virtual ~PhoneNumber(){}
+   virtual ~PhoneNumber();
 
    //Properties
    Q_PROPERTY(Account*      account         READ account  WRITE setAccount)
@@ -116,7 +116,7 @@ public:
 
 protected:
    //Constructor
-   PhoneNumber(const QString& uri, NumberCategory* cat);
+   PhoneNumber(const QString& uri, NumberCategory* cat, State st = State::UNUSED);
 
    //Attributes
    QString            m_Uri              ;
@@ -133,7 +133,6 @@ private:
    bool               m_Present          ;
    QString            m_PresentMessage   ;
    bool               m_Tracked          ;
-   bool               m_Temporary        ;
    Contact*           m_pContact         ;
    Account*           m_pAccount         ;
    time_t             m_LastUsed         ;

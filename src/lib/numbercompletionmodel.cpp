@@ -253,8 +253,9 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
    }
    while(iBeg != iEnd) {
       foreach(PhoneNumber* n,iBeg.value()->numbers) {
-//          if (n->uri().left(m_Prefix.size()).toLower() == m_Prefix)
+         if (n) {
             set << n;
+         }
       }
       iBeg++;
    }

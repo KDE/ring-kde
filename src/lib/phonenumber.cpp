@@ -37,9 +37,9 @@ const PhoneNumber* PhoneNumber::BLANK()
 }
 
 ///Constructor
-PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat) : QObject(PhoneDirectoryModel::instance()),
-   m_Uri(stripUri(number)),m_pCategory(cat),m_Tracked(false),m_Present(false),m_LastUsed(0),m_Temporary(false),
-   m_State(PhoneNumber::State::UNUSED),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
+PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat, State st) : QObject(PhoneDirectoryModel::instance()),
+   m_Uri(stripUri(number)),m_pCategory(cat),m_Tracked(false),m_Present(false),m_LastUsed(0),
+   m_State(st),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
    m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false),m_IsBookmark(false),m_TotalSeconds(0)
 {
    setObjectName(m_Uri);
@@ -47,6 +47,10 @@ PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat) : QObject(P
    if (m_hasType) {
       NumberCategoryModel::instance()->registerNumber(this);
    }
+}
+
+PhoneNumber::~PhoneNumber()
+{
 }
 
 ///Return if this number presence is being tracked
@@ -109,7 +113,7 @@ void PhoneNumber::setAccount(Account* account)
 void PhoneNumber::setContact(Contact* contact)
 {
    m_pContact = contact;
-   if (contact)
+   if (contact && m_State != PhoneNumber::State::TEMPORARY)
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+QStringList(contact->formattedName()));
    emit changed();
 }
@@ -313,7 +317,7 @@ void PhoneNumber::incrementAlternativeName(const QString& name)
 {
    const bool needReIndexing = !m_hNames[name];
    m_hNames[name]++;
-   if (needReIndexing)
+   if (needReIndexing && m_State != PhoneNumber::State::TEMPORARY)
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+(m_pContact?(QStringList(m_pContact->formattedName())):QStringList()));
 }
 
@@ -336,11 +340,11 @@ void TemporaryPhoneNumber::setUri(const QString& uri)
 }
 
 ///Constructor
-TemporaryPhoneNumber::TemporaryPhoneNumber(const PhoneNumber* number) : PhoneNumber(QString(),NumberCategoryModel::other())
+TemporaryPhoneNumber::TemporaryPhoneNumber(const PhoneNumber* number) :
+   PhoneNumber(QString(),NumberCategoryModel::other(),PhoneNumber::State::TEMPORARY)
 {
    if (number) {
       setContact(number->contact());
       setAccount(number->account());
    }
-   m_State = PhoneNumber::State::TEMPORARY;
 }

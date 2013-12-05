@@ -174,6 +174,8 @@ Call::~Call()
 {
    if (m_pTimer) delete m_pTimer;
    this->disconnect();
+   if ( m_pTransferNumber ) delete m_pTransferNumber;
+   if ( m_pDialNumber     ) delete m_pDialNumber;
 }
 
 ///Constructor
@@ -1182,13 +1184,14 @@ void Call::appendText(const QString& str)
       return;
    }
 
-   if (editNumber)
+   if (editNumber) {
       editNumber->setUri(editNumber->uri()+str);
+      if (state() == Call::State::DIALING)
+         emit dialNumberChanged(editNumber->uri());
+   }
    else
       qDebug() << "TemporaryPhoneNumber not defined";
 
-   if (state() == Call::State::DIALING)
-      emit dialNumberChanged(editNumber->uri());
 
    emit changed();
    emit changed(this);
