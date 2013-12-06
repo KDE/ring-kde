@@ -652,11 +652,17 @@ void Call::setConference(bool value)
 ///Set the call number
 void Call::setDialNumber(const QString& number)
 {
-   if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
+   //This is not supposed to happen, but this is not a serious issue if it does
+   if (m_CurrentState != Call::State::DIALING) {
+      qDebug() << "Trying to set a dial number to a non-dialing call, doing nothing";
+      return;
+   }
+
+   if (!m_pDialNumber) {
       m_pDialNumber = new TemporaryPhoneNumber();
    }
-   if (m_pDialNumber)
-      m_pDialNumber->setUri(number);
+
+   m_pDialNumber->setUri(number);
    emit dialNumberChanged(m_pDialNumber->uri());
    emit changed();
    emit changed(this);
