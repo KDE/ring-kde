@@ -31,6 +31,7 @@
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/dbus/configurationmanager.h"
+#include "lib/historymodel.h"
 
 ///Constructor
 DlgGeneral::DlgGeneral(KConfigDialog *parent)
@@ -40,7 +41,10 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
    connect(toolButton_historyClear, SIGNAL(clicked()), this, SLOT(slotClearCallHistoryAsked()));
    toolButton_historyClear->setIcon(KIcon("edit-clear-history"));
 
-   kcfg_historyMax->setValue(ConfigurationSkeleton::historyMax());
+   const bool isLimited = HistoryModel::instance()->isHistoryLimited();
+   m_pKeepHistory->setChecked(!isLimited);
+   m_pHistoryMax->setValue(HistoryModel::instance()->historyLimit());
+   m_HasChanged = false;
    connect(this             , SIGNAL(updateButtons())                , parent, SLOT(updateButtons()));
 }
 
@@ -70,19 +74,16 @@ void DlgGeneral::updateWidgets()
 ///Save current settings
 void DlgGeneral::updateSettings()
 {
-//    QMutableMapIterator<QString, QString> iter(m_lCallDetails);
-//    while (iter.hasNext()) {
-//       iter.next();
-//       ConfigurationSkeleton::self()->findItem(iter.value())->setProperty(m_lItemList[iter.value()]->checkState() == Qt::Checked);
-//    }
-   ConfigurationSkeleton::setHistoryMax(kcfg_historyMax->value());
+   HistoryModel::instance()->setHistoryLimited(m_pKeepHistory->isChecked());
+   if (!m_pKeepHistory->isChecked())
+      HistoryModel::instance()->setHistoryLimit(m_pHistoryMax->value());
 
    m_HasChanged = false;
 }
 
 void DlgGeneral::slotClearCallHistoryAsked()
 {
-   int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to clear history?"), i18n("Clear history"));
+   const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to clear history?"), i18n("Clear history"));
    if (ret == KMessageBox::Yes) {
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       configurationManager.clearHistory();

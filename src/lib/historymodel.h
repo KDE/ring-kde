@@ -44,10 +44,14 @@ public:
    static HistoryModel* instance();
 
    //Getters
-   int acceptedPayloadTypes();
+   int  acceptedPayloadTypes();
+   bool isHistoryLimited() const;
+   int  historyLimit() const;
 
    //Setters
    void setCategoryRole(Call::Role role);
+   void setHistoryLimited(bool isLimited);
+   void setHistoryLimit(int numberOfDays);
 
    //Mutator
    void add(Call* call);

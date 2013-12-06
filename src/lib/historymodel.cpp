@@ -214,6 +214,32 @@ void HistoryModel::add(Call* call)
    LastUsedNumberModel::instance()->addCall(call);
 }
 
+///Set if the history has a limit
+void HistoryModel::setHistoryLimited(bool isLimited)
+{
+   if (!isLimited)
+      DBus::ConfigurationManager::instance().setHistoryLimit(0);
+}
+
+///Set the number of days before history items are discarded
+void HistoryModel::setHistoryLimit(int numberOfDays)
+{
+   DBus::ConfigurationManager::instance().setHistoryLimit(numberOfDays);
+}
+
+///Is history items are being deleted after "historyLimit()" days
+bool HistoryModel::isHistoryLimited() const
+{
+   return DBus::ConfigurationManager::instance().getHistoryLimit() != 0;
+}
+
+///Number of days before items are discarded (0 = never)
+int HistoryModel::historyLimit() const
+{
+   return DBus::ConfigurationManager::instance().getHistoryLimit();
+}
+
+
 /*****************************************************************************
  *                                                                           *
  *                              Model related                                *

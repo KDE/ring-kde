@@ -47,7 +47,7 @@ public Q_SLOTS:
    void updateSettings();
    void slotClearCallHistoryAsked();
 
-private Q_SLOTS:
+public Q_SLOTS:
    void changed();
 
 Q_SIGNALS:
