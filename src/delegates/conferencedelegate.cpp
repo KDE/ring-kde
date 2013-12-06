@@ -512,7 +512,7 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
       if (ed)
          ed->deselect();
    }
-   else if (event->type() == QEvent::MouseButtonDblClick) {
+   else if (event->type() == QEvent::MouseButtonDblClick || event->type() == QEvent::MouseButtonPress) {
       KLineEdit* ed = qobject_cast<KLineEdit*>(obj);
       if (ed) {
          QObject* obj= qvariant_cast<Call*>(ed->property("call"));
@@ -520,7 +520,10 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
          if (obj)
             call = qobject_cast<Call*>(obj);
          if (call) {
-            call->performAction(Call::Action::ACCEPT);
+            if (event->type() == QEvent::MouseButtonDblClick)
+               call->performAction(Call::Action::ACCEPT);
+            else if (event->type() == QEvent::MouseButtonPress)
+               m_tree->selectionModel()->setCurrentIndex(CallModel::instance()->getIndex(call),QItemSelectionModel::SelectCurrent);
          }
       }
    }
