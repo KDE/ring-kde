@@ -256,21 +256,15 @@ void ActionCollection::accept() //TODO dead code?
    Call* call = SFLPhone::view()->currentCall();// SFLPhone::view()->currentCall();
    if(!call) {
       kDebug() << "Calling when no item is selected. Opening an item.";
-      Call* newCall = CallModel::instance()->addDialingCall();
-      const QModelIndex& newCallIdx = CallModel::instance()->getIndex(newCall);
-      if (newCallIdx.isValid()) {
-         SFLPhone::view()->setCurrentIndex(newCallIdx);
-      }
+      CallModel::instance()->dialingCall();
+      SFLPhone::view()->selectDialingCall();
    }
    else {
       const Call::State state = call->state();
       if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD || state == Call::State::BUSY) {
          kDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
-         Call* newCall = CallModel::instance()->addDialingCall();
-         const QModelIndex& newCallIdx = CallModel::instance()->getIndex(newCall);
-         if (newCallIdx.isValid()) {
-            SFLPhone::view()->setCurrentIndex(newCallIdx);
-         }
+         CallModel::instance()->dialingCall();
+         SFLPhone::view()->selectDialingCall();
       }
       else {
          try {
@@ -394,8 +388,9 @@ void ActionCollection::mailBox()
 {
    Account* account = AccountListModel::currentAccount();
    const QString mailBoxNumber = account->mailbox();
-   Call* call = CallModel::instance()->addDialingCall();
+   Call* call = CallModel::instance()->dialingCall();
    if (call) {
+      call->reset();
       call->appendText(mailBoxNumber);
       try {
          call->performAction(Call::Action::ACCEPT);
@@ -432,10 +427,10 @@ void ActionCollection::accountCreationWizard()
    m_pWizard->show();
 }
 
+///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor() {
    KShortcutsDialog::configure( SFLPhone::app()->actionCollection() );
 }
-
 
 ///Show the toolbar editor
 void ActionCollection::editToolBar()

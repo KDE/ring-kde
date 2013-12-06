@@ -81,13 +81,14 @@ public:
 
    //Mutator
    bool selectCallPhoneNumber(Call** call,Contact* contact);
+   void selectDialingCall() const;
 
    //Getters
    Call*           currentCall   () const;
    AutoCompletion* autoCompletion() const;
 
    //Setters
-   void setCurrentIndex(const QModelIndex& idx);
+   void setCurrentIndex(const QModelIndex& idx) const;
 
 private Q_SLOTS:
    /**

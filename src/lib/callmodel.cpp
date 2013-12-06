@@ -272,7 +272,7 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    aNewStruct->call_real  = call;
    aNewStruct->conference = false;
 
-   m_sPrivateCallList_call  [ call              ] = aNewStruct;
+   m_sPrivateCallList_call  [ call       ] = aNewStruct;
    if (call->state() != Call::State::OVER)
       m_lInternalModel << aNewStruct;
    m_sPrivateCallList_callId[ call->id() ] = aNewStruct;
@@ -287,12 +287,20 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    return call;
 } //addCall
 
-///Create a new dialing call from peer name and the account ID
-Call* CallModel::addDialingCall(const QString& peerName, Account* account)
+///Return the current or create a new dialing call from peer name and the account
+Call* CallModel::dialingCall(const QString& peerName, Account* account)
 {
+   //Having multiple dialing calls could be supported, but for now we decided not to
+   //handle this corner case as it will create issues of its own
+   foreach (Call* call, getCallList()) {
+      if (call->state() == Call::State::DIALING)
+         return call;
+   }
+
+   //No dialing call found, creating one
    Account* acc = (account)?account:AccountListModel::currentAccount();
    return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc));
-}  //addDialingCall
+}  //dialingCall
 
 ///Create a new incoming call when the daemon is being called
 Call* CallModel::addIncomingCall(const QString& callId)
@@ -797,7 +805,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       const QByteArray encodedPhoneNumber = mimedata->data( MIME_PHONENUMBER );
       Call* target = getCall(targetIdx);
       qDebug() << "Phone number" << encodedPhoneNumber << "on call" << target;
-      Call* newCall = addDialingCall(QString(),target->account());
+      Call* newCall = dialingCall(QString(),target->account());
       PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(encodedPhoneNumber);
       newCall->setDialNumber(nb);
       newCall->performAction(Call::Action::ACCEPT);
@@ -811,7 +819,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
          const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(
             Call::contactBackend()->getContactByUid(encodedContact));
          if (!number->uri().isEmpty()) {
-            Call* newCall = addDialingCall();
+            Call* newCall = dialingCall();
             newCall->setDialNumber(number);
             newCall->performAction(Call::Action::ACCEPT);
             createConferenceFromCall(newCall,target);

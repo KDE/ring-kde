@@ -418,7 +418,7 @@ void SFLPhoneView::loadWindow()
  ****************************************************************************/
 
 ///Set the current selection item
-void SFLPhoneView::setCurrentIndex(const QModelIndex& idx)
+void SFLPhoneView::setCurrentIndex(const QModelIndex& idx) const
 {
    m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
 }
@@ -471,16 +471,18 @@ void SFLPhoneView::paste()
 bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
 {
    if (contact->phoneNumbers().count() == 1) {
-      *call2 = CallModel::instance()->addDialingCall(contact->formattedName(),AccountListModel::currentAccount());
+      *call2 = CallModel::instance()->dialingCall(contact->formattedName(),AccountListModel::currentAccount());
       if (*call2)
          (*call2)->appendText(contact->phoneNumbers()[0]->uri());
+      selectDialingCall();
    }
    else if (contact->phoneNumbers().count() > 1) {
       const PhoneNumber* number = KPhoneNumberSelector().getNumber(contact);
       if (!number->uri().isEmpty()) {
-         (*call2) = CallModel::instance()->addDialingCall(contact->formattedName(), AccountListModel::currentAccount());
+         (*call2) = CallModel::instance()->dialingCall(contact->formattedName(), AccountListModel::currentAccount());
          if (*call2)
             (*call2)->appendText(number->uri());
+         selectDialingCall();
       }
       else {
          kDebug() << "Operation cancelled";
@@ -493,6 +495,19 @@ bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
    }
    return true;
 } //selectCallPhoneNumber
+
+void SFLPhoneView::selectDialingCall() const
+{
+   foreach(Call* call,CallModel::instance()->getCallList()) {
+      if (call->state() == Call::State::DIALING) {
+         const QModelIndex idx = CallModel::instance()->getIndex(call);
+         setCurrentIndex(idx);
+
+         //Focus editor widget
+         //m_pView->openPersistentEditor(idx);
+      }
+   }
+}
 
 
 /*****************************************************************************

@@ -75,6 +75,8 @@ Qt::ItemFlags CredentialModel::flags(const QModelIndex& idx) const {
 
 ///Set credential data
 bool CredentialModel::setData( const QModelIndex& idx, const QVariant &value, int role) {
+   if (!idx.isValid() || idx.row() > m_lCredentials.size()-1)
+      return false;
    if (idx.column() == 0 && role == CredentialModel::Role::NAME) {
       m_lCredentials[idx.row()]->name = value.toString();
       emit dataChanged(idx, idx);

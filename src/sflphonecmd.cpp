@@ -61,7 +61,8 @@ void SFLPhoneCmd::parseCmd(int argc, char **argv, KAboutData& about)
 ///Place a call (from the command line)
 void SFLPhoneCmd::placeCall(const QString& number)
 {
-   Call* call = CallModel::instance()->addDialingCall();
+   Call* call = CallModel::instance()->dialingCall();
+   call->reset();
    call->appendText(number);
    call->performAction(Call::Action::ACCEPT);
 }
@@ -69,7 +70,8 @@ void SFLPhoneCmd::placeCall(const QString& number)
 ///Send a text ans hang up (from the command line)
 void SFLPhoneCmd::sendText(const QString& number, const QString& text)
 {
-   Call* call = CallModel::instance()->addDialingCall();
+   Call* call = CallModel::instance()->dialingCall();
+   call->reset();
    call->appendText(number);
    call->setProperty("message",text);
    connect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));

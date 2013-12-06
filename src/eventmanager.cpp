@@ -140,7 +140,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
          const QByteArray encodedPhoneNumber = e->mimeData()->data( MIME_PHONENUMBER );
          kDebug() << "Phone number dropped on empty space";
-         Call* newCall = CallModel::instance()->addDialingCall();
+         Call* newCall = CallModel::instance()->dialingCall();
          PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(encodedPhoneNumber);
          newCall->setDialNumber(nb);
          if (nb && nb->account())
@@ -152,13 +152,13 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          kDebug() << "Contact dropped on empty space";
          const PhoneNumber* number = KPhoneNumberSelector().getNumber(AkonadiBackend::instance()->getContactByUid(encodedContact));
          if (number->uri().isEmpty()) {
-            Call* newCall = CallModel::instance()->addDialingCall();
+            Call* newCall = CallModel::instance()->dialingCall();
             newCall->setDialNumber(number->uri());
             newCall->performAction(Call::Action::ACCEPT);
          }
       }
       else if (e->mimeData()->hasFormat("text/plain")) {
-         Call* newCall = CallModel::instance()->addDialingCall();
+         Call* newCall = CallModel::instance()->dialingCall();
          newCall->setDialNumber(e->mimeData()->data( "text/plain" ));
          newCall->performAction(Call::Action::ACCEPT);
       }
@@ -364,12 +364,14 @@ void EventManager::typeString(const QString& str)
       }
       else if(dynamic_cast<Call*>(call2) && call2->state() == Call::State::DIALING) {
          candidate = call2;
+         m_pParent->selectDialingCall();
       }
    }
 
    if(!currentCall && !candidate) {
       kDebug() << "Typing when no item is selected. Opening an item.";
-      candidate = CallModel::instance()->addDialingCall();
+      candidate = CallModel::instance()->dialingCall();
+      m_pParent->selectDialingCall();
       candidate->playDTMF(str);
       const QModelIndex& newCallIdx = CallModel::instance()->getIndex(candidate);
       if (newCallIdx.isValid()) {
@@ -378,7 +380,7 @@ void EventManager::typeString(const QString& str)
    }
 
    if (!candidate) {
-      candidate = CallModel::instance()->addDialingCall();
+      candidate = CallModel::instance()->dialingCall();
       candidate->playDTMF(str);
    }
    if(!currentCall && candidate) {

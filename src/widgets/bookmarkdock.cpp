@@ -136,7 +136,7 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
       return;
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::BOOKMARK)
       return;
-   Call* call2 = CallModel::instance()->addDialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountListModel::currentAccount());
+   Call* call2 = CallModel::instance()->dialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountListModel::currentAccount());
    call2->setDialNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
    call2->performAction( Call::Action::ACCEPT   );
 }

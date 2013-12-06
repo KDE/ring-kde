@@ -332,6 +332,7 @@ public:
    //Mutators
    void appendText(const QString& str);
    void backspaceItemText();
+   void reset();
    void sendTextMessage(QString message);
 
 private:

@@ -1271,6 +1271,38 @@ void Call::backspaceItemText()
       qDebug() << "TemporaryPhoneNumber not defined";
 }
 
+///Reset the string a dialing or transfer call
+void Call::reset()
+{
+   TemporaryPhoneNumber* editNumber = nullptr;
+
+   switch (m_CurrentState) {
+      case Call::State::TRANSFERRED      :
+      case Call::State::TRANSF_HOLD      :
+         editNumber = m_pTransferNumber;
+         break;
+      case Call::State::DIALING          :
+         editNumber = m_pDialNumber;
+         break;
+      case Call::State::INCOMING         :
+      case Call::State::RINGING          :
+      case Call::State::CURRENT          :
+      case Call::State::HOLD             :
+      case Call::State::FAILURE          :
+      case Call::State::BUSY             :
+      case Call::State::OVER             :
+      case Call::State::ERROR            :
+      case Call::State::CONFERENCE       :
+      case Call::State::CONFERENCE_HOLD  :
+      case Call::State::COUNT:
+      default                            :
+         qDebug() << "Cannot reset" << m_CurrentState << "calls";
+         return;
+   }
+   if (editNumber) {
+      editNumber->setUri(QString());
+   }
+}
 
 /*****************************************************************************
  *                                                                           *

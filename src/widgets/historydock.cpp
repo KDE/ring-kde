@@ -41,6 +41,7 @@
 #include <KComboBox>
 #include <KLocale>
 #include <KAction>
+#include <KColorScheme>
 
 //SFLPhone
 #include "sflphone.h"
@@ -95,6 +96,24 @@ bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QMode
 
    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
+
+// QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) const
+// {
+//    if (index.isValid() && role == Qt::BackgroundRole 
+//       && index.data(Call::Role::Historystate).toInt() == Call::HistoryState::MISSED) {
+//       static bool initColor = false;
+//       static QColor awayBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+// 
+//       if (!initColor) {
+//          awayBrush.setAlpha(30);
+//          initColor = true;
+//       }
+//       return awayBrush;
+// 
+//    }
+// 
+//    return QSortFilterProxyModel::data(index,role);
+// }
 
 ///Constructor
 HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
@@ -355,7 +374,7 @@ void HistoryDock::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
    kDebug() << "Calling "<< m_pCurrentCall->peerPhoneNumber();
-   Call* call = CallModel::instance()->addDialingCall(m_pCurrentCall->peerName(), AccountListModel::currentAccount());
+   Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerName(), AccountListModel::currentAccount());
    if (call) {
       call->setDialNumber  ( m_pCurrentCall->peerPhoneNumber() );
       call->setAccount     ( m_pCurrentCall->account()         );

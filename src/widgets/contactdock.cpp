@@ -316,7 +316,7 @@ void ContactDock::callAgain(const PhoneNumber* n)
    const PhoneNumber* number = n?n:showNumberSelector(ok);
    if ( (n || ok) && number) {
       const QString name = n?n->contact()->formattedName() : m_pCurrentContact->formattedName();
-      Call* call = CallModel::instance()->addDialingCall(name, AccountListModel::currentAccount());
+      Call* call = CallModel::instance()->dialingCall(name, AccountListModel::currentAccount());
       if (call) {
          call->setDialNumber(number);
          call->setAccount(number->account());

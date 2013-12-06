@@ -60,7 +60,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       virtual ~CallModel( );
 
       //Call related
-      Q_INVOKABLE Call* addDialingCall   ( const QString& peerName=QString(), Account* account=nullptr );
+      Q_INVOKABLE Call* dialingCall      ( const QString& peerName=QString(), Account* account=nullptr );
       Q_INVOKABLE void  attendedTransfer ( Call* toTransfer , Call* target              );
       Q_INVOKABLE void  transfer         ( Call* toTransfer , const PhoneNumber* target );
       QModelIndex getIndex               ( Call* call                                   );
