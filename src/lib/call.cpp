@@ -1146,7 +1146,31 @@ void Call::startWeird()
 ///Print a warning
 void Call::warning()
 {
-   qDebug() << "Warning : call " << m_CallId << " had an unexpected transition of state.";
+   qWarning() << "Warning : call " << m_CallId << " had an unexpected transition of state.(" << m_CurrentState << ")";
+   switch (m_CurrentState) {
+      case Call::State::FAILURE        :
+      case Call::State::ERROR          :
+      case Call::State::COUNT          :
+         //If not stopped, then the counter will keep going
+         //Getting here indicate something wrong happened
+         //It can be normal, aka, an invalid URI such as '><'
+         // or an SFLPhone-KDE bug
+         stop();
+         break;
+      case Call::State::TRANSFERRED    :
+      case Call::State::TRANSF_HOLD    :
+      case Call::State::DIALING        :
+      case Call::State::INCOMING       :
+      case Call::State::RINGING        :
+      case Call::State::CURRENT        :
+      case Call::State::HOLD           :
+      case Call::State::BUSY           :
+      case Call::State::OVER           :
+      case Call::State::CONFERENCE     :
+      case Call::State::CONFERENCE_HOLD:
+      default:
+         break;
+   }
 }
 
 /*****************************************************************************

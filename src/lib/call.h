@@ -394,7 +394,6 @@ private:
    static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
 
    explicit Call(const QString& confId, const QString& account);
-//    Call(Call::State startState, const QString& callId, const QString& peerNumber = QString(), const QString& account = QString(), const QString& peerName = QString());
    Call(Call::State startState, const QString& callId, const QString& peerName = QString(), PhoneNumber* number = nullptr, Account* account = nullptr);
    static Call::DaemonState toDaemonCallState   (const QString& stateName);
    static Call::State       confStatetoCallState(const QString& stateName);
