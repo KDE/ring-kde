@@ -145,7 +145,7 @@ void CallModel::initRoles()
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(Call::Role::Name          ,QByteArray("name"));
    roles.insert(Call::Role::Number        ,QByteArray("number"));
-   roles.insert(Call::Role::Direction     ,QByteArray("direction"));
+   roles.insert(Call::Role::Direction2    ,QByteArray("direction"));
    roles.insert(Call::Role::Date          ,QByteArray("date"));
    roles.insert(Call::Role::Length        ,QByteArray("length"));
    roles.insert(Call::Role::FormattedDate ,QByteArray("formattedDate"));

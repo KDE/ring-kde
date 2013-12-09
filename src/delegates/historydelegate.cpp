@@ -93,14 +93,14 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    painter->save();
    int iconHeight = option.rect.height() -4;
    //Paint the "selected" or "hover" backgrounds
-   if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
+      //    if (option.state & QStyle::State_Selected || option.state & QStyle::State_MouseOver) {
       QStyleOptionViewItem opt2 = option;
       QPalette pal = option.palette;
       pal.setBrush(QPalette::Text,QColor(0,0,0,0));
       pal.setBrush(QPalette::HighlightedText,QColor(0,0,0,0));
       opt2.palette = pal;
       QStyledItemDelegate::paint(painter,opt2,index);
-   }
+      //    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
    const Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
@@ -129,7 +129,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
    //Handle history
-   else if (!isBookmark && (index.data(Call::Role::Historystate).toInt() != Call::HistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if (!isBookmark && (index.data(Call::Role::Historystate).toInt() != (int)Call::LegacyHistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
       if (!status.isNull()) {

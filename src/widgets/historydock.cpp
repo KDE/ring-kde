@@ -97,23 +97,33 @@ bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QMode
    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
 
-// QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) const
-// {
-//    if (index.isValid() && role == Qt::BackgroundRole 
-//       && index.data(Call::Role::Historystate).toInt() == Call::HistoryState::MISSED) {
-//       static bool initColor = false;
-//       static QColor awayBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
-// 
-//       if (!initColor) {
-//          awayBrush.setAlpha(30);
-//          initColor = true;
-//       }
-//       return awayBrush;
-// 
-//    }
-// 
-//    return QSortFilterProxyModel::data(index,role);
-// }
+QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) const
+{
+   //If the user turned on highlight missed, then set a background color
+   static const bool highlightMissedIn  = ConfigurationSkeleton::highlightMissedIncomingCalls();
+   static const bool highlightMissedOut = ConfigurationSkeleton::highlightMissedOutgoingCalls();
+   const bool missed = QSortFilterProxyModel::data(index,Call::Role::Missed).toBool();
+   const Call::Direction dir = static_cast<Call::Direction>(QSortFilterProxyModel::data(index,Call::Role::Direction2).toInt());
+
+   if (index.isValid()
+      && role == Qt::BackgroundRole 
+      && missed  &&  (
+         (dir == Call::Direction::INCOMING && highlightMissedIn)
+         ||
+         (dir == Call::Direction::OUTGOING && highlightMissedOut)
+   )) {
+      static bool initColor = false;
+      static QColor awayBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+
+      if (!initColor) {
+         awayBrush.setAlpha(30);
+         initColor = true;
+      }
+      return awayBrush;
+   }
+
+   return QSortFilterProxyModel::data(index,role);
+}
 
 ///Constructor
 HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)

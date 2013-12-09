@@ -503,7 +503,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
          break; //Handled elsewhere
       case Call::State::OVER:
          if (previousState == Call::State::DIALING || previousState == Call::State::OVER) {
-            if (call->historyState() == Call::HistoryState::MISSED)
+            if (call->historyState() == Call::LegacyHistoryState::MISSED)
                m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Missed"));
             else
                m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Cancelled"));

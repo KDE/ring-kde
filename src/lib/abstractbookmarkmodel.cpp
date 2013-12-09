@@ -263,7 +263,7 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
       case Call::Role::Number:
          cat = number->m_pNumber->uri();//call->getPeerPhoneNumber();
          break;
-      case Call::Role::Direction:
+      case Call::Role::Direction2:
          cat = 4;//call->getHistoryState();
          break;
       case Call::Role::Date:
@@ -279,7 +279,7 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
          cat = false;//call->hasRecording();
          break;
       case Call::Role::Historystate:
-         cat = Call::HistoryState::NONE;//call->getHistoryState();
+         cat = (int)Call::LegacyHistoryState::NONE;//call->getHistoryState();
          break;
       case Call::Role::FuzzyDate:
          cat = "N/A";//timeToHistoryCategory(QDateTime::fromTime_t(call->getStartTimeStamp().toUInt()).date());

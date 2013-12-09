@@ -119,7 +119,7 @@ class HistorySortFilterProxyModel : public QSortFilterProxyModel
 public:
    explicit HistorySortFilterProxyModel(HistoryDock* parent) :
       QSortFilterProxyModel(parent),m_pParent(parent) {}
-//       virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+      virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 protected:
    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
 private:

@@ -157,7 +157,8 @@ Call::Call(Call::State startState, const QString& callId, const QString& peerNam
    :  QObject(CallModel::instance()), m_isConference(false),m_pStopTimeStamp(0),
    m_pImModel(nullptr),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
    m_PeerName(peerName),m_pPeerPhoneNumber(number),m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),
-   m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr)
+   m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
+   m_History(false),m_Missed(false),m_Direction(Call::Direction::OUTGOING)
 {
    m_Account = account;
    Q_ASSERT(!callId.isEmpty());
@@ -183,7 +184,8 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
    m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pImModel(nullptr),m_ConfId(confId),
    m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
    m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
-   m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never)
+   m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),m_History(false),m_Missed(false),
+   m_Direction(Call::Direction::OUTGOING)
 {
    setObjectName("Conf:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
@@ -254,7 +256,8 @@ Call* Call::buildExistingCall(QString callId)
 Call* Call::buildDialingCall(const QString& callId, const QString & peerName, Account* account)
 {
    Call* call = new Call(Call::State::DIALING, callId, peerName, nullptr, account);
-   call->m_HistoryState = NONE;
+   call->m_HistoryState = Call::LegacyHistoryState::NONE;
+   call->m_Direction = Call::Direction::OUTGOING;
    if (AudioSettingsModel::instance()->isRoomToneEnabled()) {
       AudioSettingsModel::instance()->playRoomTone();
    }
@@ -273,7 +276,8 @@ Call* Call::buildIncomingCall(const QString& callId)
    Account*      acc      = AccountListModel::instance()->getAccountById(account);
    PhoneNumber*  nb       = PhoneDirectoryModel::instance()->getNumber(from,acc);
    Call* call = new Call(Call::State::INCOMING, callId, peerName, nb, acc);
-   call->m_HistoryState = MISSED;
+   call->m_HistoryState   = Call::LegacyHistoryState::MISSED;
+   call->m_Direction      = Call::Direction::INCOMING;
    if (call->peerPhoneNumber()) {
       call->peerPhoneNumber()->addCall(call);
    }
@@ -293,7 +297,8 @@ Call* Call::buildRingingCall(const QString & callId)
    PhoneNumber*  nb       = PhoneDirectoryModel::instance()->getNumber(from,acc);
 
    Call* call = new Call(Call::State::RINGING, callId, peerName, nb, acc);
-   call->m_HistoryState = HistoryState::OUTGOING;
+   call->m_HistoryState = LegacyHistoryState::OUTGOING;
+   call->m_Direction    = Call::Direction::OUTGOING;
 
    if (call->peerPhoneNumber()) {
       call->peerPhoneNumber()->addCall(call);
@@ -308,18 +313,51 @@ Call* Call::buildRingingCall(const QString & callId)
  ****************************************************************************/
 
 ///Build a call that is already over
-Call* Call::buildHistoryCall(const QString & callId, time_t startTimeStamp, time_t stopTimeStamp, 
-                             const QString& accId, const QString& name, const QString& number, const QString& type)
+Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
 {
+   const QString& callId          = hc[ Call::HistoryMapFields::CALLID          ]          ;
+   time_t         startTimeStamp  = hc[ Call::HistoryMapFields::TIMESTAMP_START ].toUInt() ;
+   time_t         stopTimeStamp   = hc[ Call::HistoryMapFields::TIMESTAMP_STOP  ].toUInt() ;
+   const QString& accId           = hc[ Call::HistoryMapFields::ACCOUNT_ID      ]          ;
+   const QString& name            = hc[ Call::HistoryMapFields::DISPLAY_NAME    ]          ;
+   const QString& number          = hc[ Call::HistoryMapFields::PEER_NUMBER     ]          ;
+   const QString& type            = hc[ Call::HistoryMapFields::STATE           ]          ;
+   const QString& direction       = hc[ Call::HistoryMapFields::DIRECTION       ]          ;
+   const bool     missed          = hc[ Call::HistoryMapFields::MISSED          ] == "true";
+
    Account*      acc       = AccountListModel::instance()->getAccountById(accId);
    PhoneNumber*  nb        = PhoneDirectoryModel::instance()->getNumber(number,acc);
    Call*         call      = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, nb, acc );
 
    call->m_pStopTimeStamp  = stopTimeStamp ;
+   call->m_History         = true;
    call->setStartTimeStamp(startTimeStamp);
 
    call->m_HistoryState    = historyStateFromType(type);
    call->m_Account         = AccountListModel::instance()->getAccountById(accId);
+
+   //BEGIN In ~2015, remove the old logic and clean this
+   if (missed || call->m_HistoryState == Call::LegacyHistoryState::MISSED) {
+      call->m_Missed = true;
+      call->m_HistoryState = Call::LegacyHistoryState::MISSED;
+   }
+   if (!direction.isEmpty()) {
+      if (direction == HistoryStateName::INCOMING) {
+         call->m_Direction    = Call::Direction::INCOMING         ;
+         call->m_HistoryState = Call::LegacyHistoryState::INCOMING;
+      }
+      else if (direction == HistoryStateName::OUTGOING) {
+         call->m_Direction    = Call::Direction::OUTGOING         ;
+         call->m_HistoryState = Call::LegacyHistoryState::OUTGOING;
+      }
+   }
+   else if (call->m_HistoryState == Call::LegacyHistoryState::INCOMING)
+      call->m_Direction    = Call::Direction::INCOMING            ;
+   else if (call->m_HistoryState == Call::LegacyHistoryState::OUTGOING)
+      call->m_Direction    = Call::Direction::OUTGOING            ;
+   else //BUG Pick one, even if it is the wrong one
+      call->m_Direction    = Call::Direction::OUTGOING            ;
+   //END
 
    call->setObjectName("History:"+call->m_CallId);
 
@@ -331,15 +369,15 @@ Call* Call::buildHistoryCall(const QString & callId, time_t startTimeStamp, time
 }
 
 ///Get the history state from the type (see Call.cpp header)
-Call::HistoryState Call::historyStateFromType(const QString& type)
+Call::LegacyHistoryState Call::historyStateFromType(const QString& type)
 {
    if(type == Call::HistoryStateName::MISSED        )
-      return Call::HistoryState::MISSED   ;
+      return Call::LegacyHistoryState::MISSED   ;
    else if(type == Call::HistoryStateName::OUTGOING )
-      return Call::HistoryState::OUTGOING ;
+      return Call::LegacyHistoryState::OUTGOING ;
    else if(type == Call::HistoryStateName::INCOMING )
-      return Call::HistoryState::INCOMING ;
-   return  Call::HistoryState::NONE       ;
+      return Call::LegacyHistoryState::INCOMING ;
+   return  Call::LegacyHistoryState::NONE       ;
 }
 
 ///Get the start sate from the daemon state
@@ -551,6 +589,26 @@ QString Call::length() const
       return QString("%1:%2 ").arg(nsec/60,2,10,QChar('0')).arg(nsec%60,2,10,QChar('0'));
 }
 
+///Is this call part of history
+bool Call::isHistory()
+{
+   if (m_CurrentState == Call::State::OVER && !m_History)
+      m_History = true;
+   return m_History;
+}
+
+///Is this call missed
+bool Call::isMissed() const
+{
+   return m_Missed;
+}
+
+///Is the call incoming or outgoing
+Call::Direction Call::direction() const
+{
+   return m_Direction;
+}
+
 ///Get the current state
 Call::State Call::state() const
 {
@@ -595,15 +653,9 @@ QString Call::currentCodecName()         const
 }
 
 ///Get the history state
-Call::HistoryState Call::historyState()  const
+Call::LegacyHistoryState Call::historyState()  const
 {
    return m_HistoryState;
-}
-
-///Is this call over?
-bool Call::isHistory()                   const
-{
-   return (state() == Call::State::OVER);
 }
 
 ///This function could also be called mayBeSecure or haveChancesToBeEncryptedButWeCantTell.
@@ -931,7 +983,8 @@ void Call::accept()
    time_t curTime;
    ::time(&curTime);
    setStartTimeStamp(curTime);
-   this->m_HistoryState = HistoryState::INCOMING;
+   this->m_HistoryState = LegacyHistoryState::INCOMING;
+   m_Direction = Call::Direction::INCOMING;
    if (!m_pTimer) {
       m_pTimer = new QTimer(this);
       m_pTimer->setInterval(1000);
@@ -949,7 +1002,8 @@ void Call::refuse()
    time_t curTime;
    ::time(&curTime);
    setStartTimeStamp(curTime);
-   this->m_HistoryState = MISSED;
+   this->m_HistoryState = Call::LegacyHistoryState::MISSED;
+   m_Missed = true;
 }
 
 ///Accept the transfer
@@ -972,7 +1026,8 @@ void Call::acceptHold()
    qDebug() << "Accepting call and holding it. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    callManager.accept(m_CallId);
    Q_NOREPLY callManager.hold(m_CallId);
-   this->m_HistoryState = HistoryState::INCOMING;
+   this->m_HistoryState = LegacyHistoryState::INCOMING;
+   m_Direction = Call::Direction::INCOMING;
 }
 
 ///Hang up
@@ -1051,7 +1106,8 @@ void Call::call()
       time_t curTime;
       ::time(&curTime);
       setStartTimeStamp(curTime);
-      this->m_HistoryState = HistoryState::OUTGOING;
+      this->m_HistoryState = LegacyHistoryState::OUTGOING;
+      m_Direction = Call::Direction::OUTGOING;
       if (peerPhoneNumber()) {
          peerPhoneNumber()->addCall(this);
       }
@@ -1063,7 +1119,7 @@ void Call::call()
    else {
       qDebug() << "Trying to call " << (m_pTransferNumber?m_pTransferNumber->uri():"ERROR") 
          << " with no account registered . callId : " << m_CallId  << "ConfId:" << m_ConfId;
-      this->m_HistoryState = HistoryState::NONE;
+      this->m_HistoryState = LegacyHistoryState::NONE;
       throw tr("No account registered!");
    }
 }
@@ -1382,8 +1438,8 @@ QVariant Call::roleData(int role) const
       case Call::Role::Number:
          return peerPhoneNumber()->uri();
          break;
-      case Call::Role::Direction:
-         return historyState();
+      case Call::Role::Direction2:
+         return static_cast<int>(m_Direction);
          break;
       case Call::Role::Date:
          return (int)startTimeStamp();
@@ -1398,11 +1454,11 @@ QVariant Call::roleData(int role) const
          return hasRecording();
          break;
       case Call::Role::Historystate:
-         return historyState();
+         return static_cast<int>(historyState());
          break;
       case Call::Role::Filter: {
          QString normStripppedC;
-         foreach(QChar char2,QString(historyState()+'\n'+roleData(Call::Role::Name).toString()+'\n'+
+         foreach(QChar char2,QString(static_cast<int>(historyState())+'\n'+roleData(Call::Role::Name).toString()+'\n'+
             roleData(Call::Role::Number).toString()).toLower().normalized(QString::NormalizationForm_KD) ) {
             if (!char2.combiningClass())
                normStripppedC += char2;
@@ -1470,6 +1526,8 @@ QVariant Call::roleData(int role) const
       case Call::Role::DropState:
          return property("dropState");
          break;
+      case Call::Role::Missed:
+         return m_Missed;
       case Call::Role::DTMFAnimState:
          return property("DTMFAnimState");
          break;

@@ -175,6 +175,16 @@
       <default>IP2IP</default>
     </entry>
 
+    <entry name="highlightMissedIncomingCalls" type="Bool">
+      <label></label>
+      <default> false </default>
+    </entry>
+
+    <entry name="highlightMissedOutgoingCalls" type="Bool">
+      <label></label>
+      <default> false </default>
+    </entry>
+
     <!-- Bookmark -->
     <entry name="bookmarkList" type="StringList">
         <label>List of bookmarked clients</label>

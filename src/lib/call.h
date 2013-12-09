@@ -80,7 +80,7 @@ public:
    enum Role {
       Name          = 100,
       Number        = 101,
-      Direction     = 102,
+      Direction2    = 102,
       Date          = 103,
       Length        = 104,
       FormattedDate = 105,
@@ -109,6 +109,7 @@ public:
       CategoryIcon  = 128,
       CallCount     = 129, /* The number of calls made with the same phone number */
       TotalSpentTime= 130, /* The total time spent speaking to with this phone number*/
+      Missed        = 131,
       DropState     = 300,
       DTMFAnimState = 400,
       LastDTMFidx   = 401,
@@ -140,16 +141,26 @@ public:
    Q_ENUMS(State)
 
    /**
-   * @enum Call::HistoryState
-   * This enum have all the state a call can take in the history
+   * @enum Call::LegacyHistoryState
+   * History items create before December 2013 will have a "state" field
+   * mixing direction and missed. Newer items will have separated fields for that.
+   *
+   * SFLPhone-KDE will keep support for at least a year
    */
-   enum HistoryState
+   enum class LegacyHistoryState : int //FIXME remove
    {
       INCOMING,
       OUTGOING,
       MISSED  ,
       NONE
    };
+
+   ///@enum Direction If the user have been called or have called
+   enum class Direction : int {
+      INCOMING,
+      OUTGOING,
+   };
+   Q_ENUMS(Direction)
 
    ///@class HistoryStateName history map fields state names
    class HistoryStateName {
@@ -198,6 +209,9 @@ public:
       constexpr static const char* STATE             = "state"          ;
       constexpr static const char* TIMESTAMP_START   = "timestamp_start";
       constexpr static const char* TIMESTAMP_STOP    = "timestamp_stop" ;
+      constexpr static const char* MISSED            = "missed"         ;
+      constexpr static const char* DIRECTION         = "direction"      ;
+
    };
 
    ///"getCallDetails()" fields
@@ -248,12 +262,11 @@ public:
 
    //Read only properties
    Q_PROPERTY( Call::State        state            READ state             NOTIFY stateChanged     )
-   Q_PROPERTY( Call::HistoryState historyState     READ historyState                              )
    Q_PROPERTY( QString            id               READ id                                        )
    Q_PROPERTY( Account*           account          READ account                                   )
    Q_PROPERTY( bool               isHistory        READ isHistory                                 )
-   Q_PROPERTY( time_t             stopTimeStamp    READ stopTimeStamp                             )
-   Q_PROPERTY( time_t             startTimeStamp   READ startTimeStamp                            )
+   Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
+   Q_PROPERTY( uint               startTimeStamp   READ startTimeStamp                            )
    Q_PROPERTY( QString            currentCodecName READ currentCodecName                          )
    Q_PROPERTY( bool               isSecure         READ isSecure                                  )
    Q_PROPERTY( bool               isConference     READ isConference                              )
@@ -265,6 +278,9 @@ public:
    Q_PROPERTY( bool               recording        READ isRecording                               )
    Q_PROPERTY( UserActionModel*   userActionModel  READ userActionModel   CONSTANT                )
    Q_PROPERTY( QString            toHumanStateName READ toHumanStateName                          )
+   Q_PROPERTY( bool               missed           READ isMissed                                  )
+   Q_PROPERTY( Direction          direction        READ direction                                 )
+   Q_PROPERTY( Call::LegacyHistoryState historyState     READ historyState                        )
 
    //Read/write properties
    Q_PROPERTY( PhoneNumber*       peerPhoneNumber  READ peerPhoneNumber                           )
@@ -278,42 +294,44 @@ public:
    static Call* buildDialingCall  (const QString& callId, const QString & peerName, Account* account = nullptr );
    static Call* buildIncomingCall (const QString& callId                                                       );
    static Call* buildRingingCall  (const QString& callId                                                       );
-   static Call* buildHistoryCall  (const QString& callId, time_t startTimeStamp, time_t stopTimeStamp,
-               const QString& account, const QString& name, const QString& number, const QString& type         );
+   static Call* buildHistoryCall  (const QMap<QString,QString>& hc                                             );
    static Call* buildExistingCall (QString callId                                                              );
    static void  setContactBackend (AbstractContactBackend* be                                                  );
    static AbstractContactBackend* contactBackend ();
 
    //Static getters
-   static Call::HistoryState historyStateFromType          ( const QString& type                                           );
+   static Call::LegacyHistoryState historyStateFromType    ( const QString& type                                           );
    static Call::State        startStateFromDaemonCallState ( const QString& daemonCallState, const QString& daemonCallType );
    static const QString      toHumanStateName              ( const Call::State                                             );
 
    //Getters
-   Call::State          state            () const;
-   const QString        id               () const;
-   PhoneNumber*         peerPhoneNumber  () const;
-   const QString        peerName         () const;
-   Call::HistoryState   historyState     () const;
-   bool                 isRecording      () const;
-   Account*             account          () const;
-   bool                 isHistory        () const;
-   time_t               stopTimeStamp    () const;
-   time_t               startTimeStamp   () const;
-   QString              currentCodecName () const;
-   bool                 isSecure         () const;
-   bool                 isConference     () const;
-   const QString        confId           () const;
-   const QString        transferNumber   () const;
-   const QString        dialNumber       () const;
-   const QString        recordingPath    () const;
-   VideoRenderer*       videoRenderer    () const;
-   const QString        formattedName    () const;
-   bool                 hasRecording     () const;
-   QString              length           () const;
-   QVariant             roleData         (int role) const;
-   UserActionModel*     userActionModel  () const;
-   QString              toHumanStateName () const;
+   Call::State              state            () const;
+   const QString            id               () const;
+   PhoneNumber*             peerPhoneNumber  () const;
+   const QString            peerName         () const;
+   Call::LegacyHistoryState historyState     () const;
+   bool                     isRecording      () const;
+   Account*                 account          () const;
+   bool                     isHistory        () const;
+   time_t                   stopTimeStamp    () const;
+   time_t                   startTimeStamp   () const;
+   QString                  currentCodecName () const;
+   bool                     isSecure         () const;
+   bool                     isConference     () const;
+   const QString            confId           () const;
+   const QString            transferNumber   () const;
+   const QString            dialNumber       () const;
+   const QString            recordingPath    () const;
+   VideoRenderer*           videoRenderer    () const;
+   const QString            formattedName    () const;
+   bool                     hasRecording     () const;
+   QString                  length           () const;
+   QVariant                 roleData         (int role) const;
+   UserActionModel*         userActionModel  () const;
+   QString                  toHumanStateName () const;
+   bool                     isHistory        ()      ;
+   bool                     isMissed         () const;
+   Call::Direction          direction        () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);
@@ -338,24 +356,27 @@ public:
 private:
 
    //Attributes
-   Account*               m_Account         ;
-   QString                m_CallId          ;
-   QString                m_ConfId          ;
-   PhoneNumber*           m_pPeerPhoneNumber;
-   QString                m_PeerName        ;
-   QString                m_RecordingPath   ;
-   Call::HistoryState     m_HistoryState    ;
-   time_t                 m_pStartTimeStamp ;
-   time_t                 m_pStopTimeStamp  ;
-   TemporaryPhoneNumber*  m_pTransferNumber ;
-   TemporaryPhoneNumber*  m_pDialNumber     ;
-   bool                   m_isConference    ;
-   Call::State            m_CurrentState    ;
-   bool                   m_Recording       ;
-   static Call*           m_sSelectedCall   ;
-   InstantMessagingModel* m_pImModel        ;
-   QTimer*                m_pTimer          ;
-   UserActionModel*       m_pUserActionModel;
+   Account*                 m_Account         ;
+   QString                  m_CallId          ;
+   QString                  m_ConfId          ;
+   PhoneNumber*             m_pPeerPhoneNumber;
+   QString                  m_PeerName        ;
+   QString                  m_RecordingPath   ;
+   Call::LegacyHistoryState m_HistoryState    ;
+   time_t                   m_pStartTimeStamp ;
+   time_t                   m_pStopTimeStamp  ;
+   TemporaryPhoneNumber*    m_pTransferNumber ;
+   TemporaryPhoneNumber*    m_pDialNumber     ;
+   bool                     m_isConference    ;
+   Call::State              m_CurrentState    ;
+   bool                     m_Recording       ;
+   static Call*             m_sSelectedCall   ;
+   InstantMessagingModel*   m_pImModel        ;
+   QTimer*                  m_pTimer          ;
+   UserActionModel*         m_pUserActionModel;
+   bool                     m_History         ;
+   bool                     m_Missed          ;
+   Call::Direction          m_Direction       ;
 
    //Cache
    HistoryTimeCategoryModel::HistoryConst m_HistoryConst;

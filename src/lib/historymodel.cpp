@@ -86,15 +86,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
    for(int i = history.size()-1;i>=0;i--) {
       const MapStringString& hc = history[i];
-      Call* pastCall = Call::buildHistoryCall(
-               hc[ Call::HistoryMapFields::CALLID          ]         ,
-               hc[ Call::HistoryMapFields::TIMESTAMP_START ].toUInt(),
-               hc[ Call::HistoryMapFields::TIMESTAMP_STOP  ].toUInt(),
-               hc[ Call::HistoryMapFields::ACCOUNT_ID      ]         ,
-               hc[ Call::HistoryMapFields::DISPLAY_NAME    ]         ,
-               hc[ Call::HistoryMapFields::PEER_NUMBER     ]         ,
-               hc[ Call::HistoryMapFields::STATE           ]
-      );
+      Call* pastCall = Call::buildHistoryCall(hc);
       if (pastCall->peerName().isEmpty()) {
          pastCall->setPeerName(tr("Unknown"));
       }
@@ -108,7 +100,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(Call::Role::Name          ,QByteArray("name"          ));
    roles.insert(Call::Role::Number        ,QByteArray("number"        ));
-   roles.insert(Call::Role::Direction     ,QByteArray("direction"     ));
+   roles.insert(Call::Role::Direction2    ,QByteArray("direction"     ));
    roles.insert(Call::Role::Date          ,QByteArray("date"          ));
    roles.insert(Call::Role::Length        ,QByteArray("length"        ));
    roles.insert(Call::Role::FormattedDate ,QByteArray("formattedDate" ));
@@ -192,8 +184,9 @@ HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
 ///Add to history
 void HistoryModel::add(Call* call)
 {
-   if (!call || call->state() != Call::State::OVER || !call->startTimeStamp())
+   if (!call || call->state() != Call::State::OVER || !call->startTimeStamp()) {
       return;
+   }
 
    if (!m_HaveContactModel && call->contactBackend()) {
       connect(((QObject*)call->contactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
@@ -206,7 +199,10 @@ void HistoryModel::add(Call* call)
    beginInsertRows(parentIdx,tl->m_lChildren.size(),tl->m_lChildren.size());
    HistoryItem* item = new HistoryItem(call);
    tl->m_lChildren << item;
-   m_sHistoryCalls[call->startTimeStamp()] = call;
+
+   //Try to prevent startTimeStamp() collisions, it technically doesn't work as time_t are signed
+   //we don't care
+   m_sHistoryCalls[(call->startTimeStamp() << 10)+qrand()%1024] = call;
    endInsertRows();
    emit historyChanged();
    emit layoutAboutToBeChanged();

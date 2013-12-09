@@ -270,7 +270,7 @@ void PhoneNumber::addCall(Call* call)
    if (now - 3600*24*7*15 < call->stopTimeStamp())
       m_LastTrimCount++;
 
-   if (call->historyState() == Call::HistoryState::OUTGOING)
+   if (call->historyState() == Call::LegacyHistoryState::OUTGOING)
       m_HaveCalled = true;
 
    emit callAdded(call);

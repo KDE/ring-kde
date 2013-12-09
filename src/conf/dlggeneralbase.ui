@@ -98,13 +98,6 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="0" colspan="5">
-       <widget class="QCheckBox" name="kcfg_displayHistoryStatus">
-        <property name="text">
-         <string>Display incoming, outgoing and missed for history items</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -128,6 +121,36 @@
          </spacer>
         </item>
        </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Display</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="kcfg_displayHistoryStatus">
+        <property name="text">
+         <string>Display incoming, outgoing and missed for history items</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_highlightMissedOutgoingCalls">
+        <property name="text">
+         <string>Highlight missed outgoing calls</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_highlightMissedIncomingCalls">
+        <property name="text">
+         <string>Highlight missed incoming calls</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
