@@ -572,7 +572,7 @@ void SFLPhoneView::updateWindowCallState()
             enabledActions  [ SFLPhone::CallAction::Hold     ] = false                       ;
             enabledActions  [ SFLPhone::CallAction::Transfer ] = false                       ;
             enabledActions  [ SFLPhone::CallAction::Record   ] = false                       ;
-            actionTexts     [ SFLPhone::CallAction::Accept   ] = ACTION_LABEL_ACCEPT         ;
+            actionTexts     [ SFLPhone::CallAction::Accept   ] = ACTION_LABEL_PLACE_CALL     ;
             buttonIconFiles [ SFLPhone::CallAction::Accept   ] = ICON_ACCEPT                 ;
             m_pMessageBoxW->setVisible(false)                                    ;
             break;

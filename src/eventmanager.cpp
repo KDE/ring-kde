@@ -383,11 +383,13 @@ void EventManager::typeString(const QString& str)
       if (newCallIdx.isValid()) {
          m_pParent->m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
       }
+      m_pParent->updateWindowCallState();
    }
 
    if (!candidate) {
       candidate = CallModel::instance()->dialingCall();
       candidate->playDTMF(str);
+      m_pParent->updateWindowCallState();
    }
    if(!currentCall && candidate) {
       candidate->playDTMF(str);
@@ -520,6 +522,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::FAILURE:
       case Call::State::BUSY:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_BUSY);
+         SFLPhone::view()->updateWindowCallState();
          break;
       case Call::State::TRANSFERRED:
       case Call::State::TRANSF_HOLD:

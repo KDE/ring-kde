@@ -63,6 +63,7 @@ private:
 
 private Q_SLOTS:
    void slotTextChanged(const QString& text);
+   void slotReturnPressed();
 };
 
 #endif

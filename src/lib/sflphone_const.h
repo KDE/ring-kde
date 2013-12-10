@@ -23,6 +23,7 @@
 #include <QtCore/QString>
 
 #define ACTION_LABEL_CALL                 i18n("New call")
+#define ACTION_LABEL_PLACE_CALL           i18n("Place call")
 #define ACTION_LABEL_HANG_UP              i18n("Hang up")
 #define ACTION_LABEL_HOLD                 i18n("Hold on")
 #define ACTION_LABEL_TRANSFER             i18n("Transfer")

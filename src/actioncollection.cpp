@@ -258,13 +258,16 @@ void ActionCollection::accept() //TODO dead code?
       kDebug() << "Calling when no item is selected. Opening an item.";
       CallModel::instance()->dialingCall();
       SFLPhone::view()->selectDialingCall();
+      SFLPhone::view()->updateWindowCallState();
    }
    else {
       const Call::State state = call->state();
-      if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD || state == Call::State::BUSY) {
+      if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD
+         || state == Call::State::BUSY || state == Call::State::FAILURE || state == Call::State::ERROR) {
          kDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
          CallModel::instance()->dialingCall();
          SFLPhone::view()->selectDialingCall();
+         SFLPhone::view()->updateWindowCallState();
       }
       else {
          try {

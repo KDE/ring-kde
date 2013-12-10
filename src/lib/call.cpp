@@ -1100,7 +1100,20 @@ void Call::call()
       qDebug() << "Account is not set, taking the first registered.";
       this->m_Account = AccountListModel::currentAccount();
    }
-   if(m_Account) {
+   //Calls to empty URI should not be allowed, sflphoned will go crazy
+   if (m_pDialNumber->uri().isEmpty()) {
+      qDebug() << "Trying to call an empty URI";
+      m_CurrentState = Call::State::FAILURE;
+      if (m_pDialNumber)
+         emit dialNumberChanged(QString());
+      setPeerName(tr("Failure"));
+      emit stateChanged();
+      emit changed();
+      delete m_pDialNumber;
+      m_pDialNumber = nullptr;
+   }
+   //Normal case
+   else if(m_Account) {
       qDebug() << "Calling " << peerPhoneNumber()->uri() << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
       callManager.placeCall(m_Account->id(), m_CallId, m_pDialNumber->uri());
       this->m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->getNumber(m_pDialNumber->uri(),account());

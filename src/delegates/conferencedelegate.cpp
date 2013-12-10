@@ -475,6 +475,7 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
    ed->setAutoFillBackground(false);
    ed->setProperty("call",index.data(Call::Role::Object));
    connect(ed,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
+   connect(ed,SIGNAL(returnPressed()),this,SLOT(slotReturnPressed()));
    ed->deselect();
 
    return ed;
@@ -530,7 +531,7 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
    return false;
 }
 
-///Update the model text as soon as 
+///Update the model text as soon as
 void ConferenceDelegate::slotTextChanged(const QString& text)
 {
    KLineEdit* ed = qobject_cast<KLineEdit*>(QObject::sender());
@@ -557,3 +558,11 @@ void ConferenceDelegate::slotTextChanged(const QString& text)
       emit closeEditor(ed);
    }
 } //slotTextChanged
+
+void ConferenceDelegate::slotReturnPressed()
+{
+   KLineEdit* ed = qobject_cast<KLineEdit*>(QObject::sender());
+   if (ed) {
+      emit closeEditor(ed);
+   }
+}
