@@ -50,6 +50,7 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent)
    The \"Message\" and \"Present\" values will be exported to the server for every accounts that support it. \
    The other fields are designed to make presence status management easier. Please note that some SIP registrar \
    have incomplete presence status (publishing) support."),this);
+   m_pTip->setMaximumWidth(510);
    m_pTipManager->setCurrentTip(m_pTip);
 }
 

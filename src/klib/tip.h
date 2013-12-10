@@ -80,6 +80,7 @@ public:
    void setTimeOut      ( int  timeOut      ) { m_TimeOut      = timeOut; }
    void setAnimationIn  ( TipAnimation a    ) { m_AnimationIn  = a;       }
    void setAnimationOut ( TipAnimation a    ) { m_AnimationOut = a;       }
+   void setMaximumWidth ( int width         ) { m_MaxWidth     = width;   }
    void setText         (const QString& text) {
       if (text != m_OriginalText) {
          m_OriginalText = text;
@@ -110,7 +111,7 @@ protected:
    bool          m_IsVisible      ;
    int           m_TimeOut        ;
    int           m_Padding        ;
-   static const int MAX_WIDTH = 350;
+   int           m_MaxWidth       ;
 
    //Helper
    bool brightOrDarkBase();
