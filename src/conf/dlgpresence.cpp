@@ -16,9 +16,14 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "dlgpresence.h"
-#include <lib/presencestatusmodel.h>
 
+//KDE
 #include <KIcon>
+
+//Sflphone
+#include <lib/presencestatusmodel.h>
+#include "klib/tipmanager.h"
+#include "klib/tip.h"
 
 DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent)
 {
@@ -32,12 +37,26 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent)
    connect(m_pUp    , SIGNAL(clicked()),this                            ,SLOT(slotMoveUp())   );
    connect(m_pDown  , SIGNAL(clicked()),this                            ,SLOT(slotMoveDown()) );
    connect(m_pRemove, SIGNAL(clicked()),this                            ,SLOT(slotRemoveRow()));
-   
+
    m_pView->horizontalHeader()->setResizeMode(0,QHeaderView::ResizeToContents);
    m_pView->horizontalHeader()->setResizeMode(1,QHeaderView::Stretch);
    for (int i=2;i<PresenceStatusModel::instance()->columnCount();i++) {
       m_pView->horizontalHeader()->setResizeMode(i,QHeaderView::ResizeToContents);
    }
+
+   //Add an info tip in the account list
+   m_pTipManager = new TipManager(m_pView);
+   m_pTip = new Tip(i18n("In this table, it is possible to manage different presence states. \
+   The \"Message\" and \"Present\" values will be exported to the server for every accounts that support it. \
+   The other fields are designed to make presence status management easier. Please note that some SIP registrar \
+   have incomplete presence status (publishing) support."),this);
+   m_pTipManager->setCurrentTip(m_pTip);
+}
+
+DlgPresence::~DlgPresence()
+{
+   delete m_pTipManager;
+   delete m_pTip;
 }
 
 void DlgPresence::updateWidgets()

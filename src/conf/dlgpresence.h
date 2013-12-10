@@ -23,6 +23,9 @@
 
 #include "ui_dlgpresence.h"
 
+class TipManager;
+class Tip;
+
 class DlgPresence : public QWidget, public Ui_DlgPresence
 {
 Q_OBJECT
@@ -31,10 +34,15 @@ public:
    explicit DlgPresence(QWidget *parent = nullptr);
 
    //Destructor
-   virtual ~DlgPresence() {}
+   virtual ~DlgPresence();
 
    //Getter
    bool hasChanged();
+
+private:
+
+   TipManager*           m_pTipManager         ;
+   Tip*                  m_pTip                ;
 
 public Q_SLOTS:
    //Mutator
