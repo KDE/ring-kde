@@ -200,7 +200,10 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
-         TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data(MIME_PHONENUMBER))));
+         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(MIME_PHONENUMBER));
+         if (n)
+            TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
+               (n->account()?n->account():AccountListModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
          Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
@@ -217,7 +220,10 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
-         TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data(MIME_PHONENUMBER))));
+         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(MIME_PHONENUMBER));
+         if (n)
+            TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
+               (n->account()?n->account():AccountListModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
          Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
