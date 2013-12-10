@@ -122,6 +122,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit6_mailbox,                     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pProxyLE,                        SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pProxyCK,                        SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pPresenceCK,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverRTP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverSIP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pAutoAnswer,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
@@ -684,15 +685,15 @@ void DlgAccounts::loadVidCodecDetails(const QModelIndex& current,const QModelInd
 }
 
 ///Update account state
-void DlgAccounts::updateAccountStates()
-{
-   kDebug() << "updateAccountStates";
-   for (int i = 0; i < AccountListModel::instance()->size(); i++) {
-      Account* current = AccountListModel::instance()->getAccountAt(i);
-      current->updateState();
-   }
-   updateStatusLabel(treeView_accountList->currentIndex());
-}
+// void DlgAccounts::updateAccountStates()
+// {
+//    kDebug() << "updateAccountStates";
+//    for (int i = 0; i < AccountListModel::instance()->size(); i++) {
+//       Account* current = AccountListModel::instance()->getAccountAt(i);
+//       current->updateState();
+//    }
+//    updateStatusLabel(treeView_accountList->currentIndex());
+// }
 
 ///Update the status label to current account state
 void DlgAccounts::updateStatusLabel(const QModelIndex& item)

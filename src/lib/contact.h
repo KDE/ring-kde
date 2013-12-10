@@ -126,6 +126,9 @@ public:
    void setPhoto          ( QPixmap* photo      );
    void setActive         ( bool  active        );
 
+private Q_SLOTS:
+   void slotPresenceChanged();
+
 Q_SIGNALS:
    void presenceChanged( PhoneNumber* );
    void statusChanged  ( bool         );

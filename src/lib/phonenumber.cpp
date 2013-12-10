@@ -150,6 +150,24 @@ void PhoneNumber::setTracked(bool track)
       m_Tracked = track;
       DBus::PresenceManager::instance().subscribeBuddy(m_pAccount->id(),fullUri(),track);
       emit changed();
+      emit trackedChanged(track);
+   }
+}
+
+///Allow phonedirectorymodel to change presence status
+void PhoneNumber::setPresent(bool present)
+{
+   if (m_Present != present) {
+      m_Present = present;
+      emit presentChanged(present);
+   }
+}
+
+void PhoneNumber::setPresenceMessage(const QString& message)
+{
+   if (m_PresentMessage != message) {
+      m_PresentMessage = message;
+      emit presenceMessageChanged(message);
    }
 }
 
@@ -290,9 +308,9 @@ QString PhoneNumber::toHash() const
 QString PhoneNumber::hostname() const
 {
    if (m_Uri.indexOf('@') != -1) {
-      return m_Uri.split('@')[1].left(m_Uri.split('@')[1].size()-1);
+      return m_Uri.split('@')[1].left(m_Uri.split('@')[1].size());
    }
-   return "";
+   return QString();
 }
 
 QString PhoneNumber::fullUri() const

@@ -124,7 +124,11 @@ const QString& Contact::department() const
 ///Set the phone number (type and number) 
 void Contact::setPhoneNumbers(PhoneNumbers numbers)
 {
+   foreach(PhoneNumber* n, m_Numbers)
+      disconnect(n,SIGNAL(presentChanged(bool)),this,SLOT(slotPresenceChanged()));
    m_Numbers = numbers;
+   foreach(PhoneNumber* n, m_Numbers)
+      connect(n,SIGNAL(presentChanged(bool)),this,SLOT(slotPresenceChanged()));
    emit changed();
 }
 
@@ -257,4 +261,10 @@ time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
          t = at(i)->lastUsed();
    }
    return t;
+}
+
+///Callback when one of the phone number presence change
+void Contact::slotPresenceChanged()
+{
+   emit changed();
 }

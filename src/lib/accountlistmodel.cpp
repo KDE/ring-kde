@@ -309,7 +309,7 @@ void AccountListModel::save()
    //Set account order
    QString order;
    for( int i = 0 ; i < size() ; i++)
-      order += getAccountAt(i)->id() + '/';
+      order += m_lAccounts[i]->id() + '/';
    configurationManager.setAccountsOrder(order);
    m_lDeletedAccounts.clear();
 }
@@ -318,7 +318,7 @@ void AccountListModel::save()
 bool AccountListModel::accountUp( int idx )
 {
    if(idx > 0 && idx <= rowCount()) {
-      Account* account = getAccountAt(idx);
+      Account* account = m_lAccounts[idx];
       m_lAccounts.remove(idx);
       m_lAccounts.insert(idx - 1, account);
       emit dataChanged(this->index(idx - 1, 0, QModelIndex()), this->index(idx, 0, QModelIndex()));
@@ -332,7 +332,7 @@ bool AccountListModel::accountUp( int idx )
 bool AccountListModel::accountDown( int idx )
 {
    if(idx >= 0 && idx < rowCount()) {
-      Account* account = getAccountAt(idx);
+      Account* account = m_lAccounts[idx];
       m_lAccounts.remove(idx);
       m_lAccounts.insert(idx + 1, account);
       emit dataChanged(this->index(idx, 0, QModelIndex()), this->index(idx + 1, 0, QModelIndex()));
@@ -372,9 +372,21 @@ const QVector<Account*>& AccountListModel::getAccounts()
 }
 
 ///Get a single account
-Account* AccountListModel::getAccountAt (int i) const
+// Account* AccountListModel::getAccountAt (int i) const
+// {
+//    return m_lAccounts[i];
+// }
+
+///Sometime, it may be useful to reverse map a phone number to an account using the hostname
+QList<Account*> AccountListModel::getAccountsByHostNames ( const QString& hostname ) const
 {
-   return m_lAccounts[i];
+   QList<Account*> toReturn;
+   for (int i = 0; i < m_lAccounts.size(); i++) {
+      Account* acc = m_lAccounts[i];
+      if (acc->hostname() == hostname)
+         toReturn << acc;
+   }
+   return toReturn;
 }
 
 ///Get account using its ID

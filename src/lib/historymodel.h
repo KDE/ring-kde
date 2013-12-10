@@ -32,6 +32,8 @@
 typedef QMap<uint, Call*>  CallMap;
 typedef QList<Call*>       CallList;
 
+class HistoryItemNode;
+
 ///HistoryModel: History call manager
 class LIB_EXPORT HistoryModel : public QAbstractItemModel {
    #pragma GCC diagnostic push
@@ -39,6 +41,7 @@ class LIB_EXPORT HistoryModel : public QAbstractItemModel {
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
+   friend class HistoryItemNode;
 
    //Singleton
    static HistoryModel* instance();
@@ -72,13 +75,18 @@ public:
 
 
 private:
+   class TopLevelItem;
 
    //Model
    class HistoryItem : public CategorizedCompositeNode {
    public:
       explicit HistoryItem(Call* call);
+      virtual ~HistoryItem();
       virtual QObject* getSelf() const;
       Call* call() const;
+      int m_Index;
+      TopLevelItem* m_pParent;
+      HistoryItemNode* m_pNode;
    private:
       Call* m_pCall;
    };
@@ -88,10 +96,11 @@ private:
    public:
       virtual QObject* getSelf() const;
       virtual ~TopLevelItem();
+      int m_Index;
+      int m_AbsoluteIndex;
+      QVector<HistoryItem*> m_lChildren;
    private:
       explicit TopLevelItem(const QString& name, int index);
-      QVector<HistoryItem*> m_lChildren;
-      int m_Index;
       QString m_NameStr;
       int modelRow;
    };
@@ -123,12 +132,29 @@ private:
 
 private Q_SLOTS:
    void reloadCategories();
+   void slotChanged(const QModelIndex& idx);
 
 Q_SIGNALS:
    ///Emitted when the history change (new items, cleared)
    void historyChanged          (            );
    ///Emitted when a new item is added to prevent full reload
    void newHistoryCall          ( Call* call );
+};
+
+
+class HistoryItemNode : public QObject //TODO remove this once Qt4 support is dropped
+{
+   Q_OBJECT
+public:
+   HistoryItemNode(HistoryModel* m, Call* c, HistoryModel::HistoryItem* backend);
+   Call* m_pCall;
+private:
+   HistoryModel::HistoryItem* m_pBackend;
+   HistoryModel* m_pModel;
+private Q_SLOTS:
+   void slotNumberChanged();
+Q_SIGNALS:
+   void changed(const QModelIndex& idx);
 };
 
 #endif

@@ -96,7 +96,7 @@ private Q_SLOTS:
    void addCredential                    ();
    void removeCredential                 ();
    void enablePublished                  ();
-   void updateAccountStates              ();
+//    void updateAccountStates              ();
    void updateAccountListCommands        ();
    void main_password_field_changed      ();
    void main_credential_password_changed ();

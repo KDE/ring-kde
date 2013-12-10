@@ -52,14 +52,8 @@ void BookmarkModel::addBookmark(PhoneNumber* number, bool trackPresence)
 
 void BookmarkModel::removeBookmark(PhoneNumber* number)
 {
-   foreach(AbstractBookmarkModel::Subscription* s, m_lTracker) {
-      if (s->number == number) {
-         m_lTracker.removeAll(s);
-         break;
-      }
-   }
    QStringList bookmarks = ConfigurationSkeleton::bookmarkList();
-         kDebug() << "Removing" << number->uri() << "from bookmarks";
+   kDebug() << "Removing" << number->uri() << "from bookmarks";
    bookmarks.removeAll(number->uid());
    ConfigurationSkeleton::setBookmarkList(bookmarks);
 }

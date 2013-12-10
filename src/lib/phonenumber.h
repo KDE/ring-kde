@@ -43,22 +43,38 @@ public:
    //Properties
    Q_PROPERTY(Account*      account         READ account  WRITE setAccount)
    Q_PROPERTY(Contact*      contact         READ contact  WRITE setContact)
-   Q_PROPERTY(time_t        lastUsed        READ lastUsed                 )
+   Q_PROPERTY(int           lastUsed        READ lastUsed                 )
    Q_PROPERTY(QString       uri             READ uri                      )
-//    Q_PROPERTY(QString       type            READ type     WRITE setType   )
    Q_PROPERTY(int           callCount       READ callCount                )
    Q_PROPERTY(QList<Call*>  calls           READ calls                    )
    Q_PROPERTY(int           popularityIndex READ popularityIndex          )
    Q_PROPERTY(bool          bookmarked      READ isBookmarked             )
    Q_PROPERTY(QString       uid             READ uid      WRITE setUid    )
+   Q_PROPERTY(bool               isTracked        READ isTracked         NOTIFY trackedChanged       )
+   Q_PROPERTY(bool               isPresent        READ isPresent         NOTIFY presentChanged       )
+   Q_PROPERTY(bool               supportPresence  READ supportPresence          )
+   Q_PROPERTY(QString            presenceMessage  READ presenceMessage  NOTIFY presenceMessageChanged        )
+   Q_PROPERTY(uint               weekCount        READ weekCount                )
+   Q_PROPERTY(uint               trimCount        READ trimCount                )
+   Q_PROPERTY(bool               haveCalled       READ haveCalled               )
+   Q_PROPERTY(QString            hostname         READ hostname                 )
+   Q_PROPERTY(QString            fullUri          READ fullUri                  )
+   Q_PROPERTY(QString            primaryName      READ primaryName              )
+   Q_PROPERTY(bool               isBookmarked     READ isBookmarked             )
+   Q_PROPERTY(QVariant           icon             READ icon                     )
+   Q_PROPERTY(int                totalSpentTime   READ totalSpentTime           )
 
-   ///@enum PresenceStatus: Presence status
+//    Q_PROPERTY(QString            mostCommonName   READ mostCommonName           )
+//    Q_PROPERTY(QHash<QString,int> alternativeNames READ alternativeNames         )
+//    Q_PROPERTY(QString       type            READ type     WRITE setType   )
+
+   /*///@enum PresenceStatus: Presence status
    enum class PresenceStatus {
       UNTRACKED = 0,
       PRESENT   = 1,
       ABSENT    = 2,
    };
-   Q_ENUMS(PresenceStatus)
+   Q_ENUMS(PresenceStatus)*/
 
    ///@enum State: Is this temporary, blank, used or unused
    enum class State {
@@ -125,6 +141,10 @@ protected:
    //Helper
    static QString stripUri(const QString& uri);
 
+   //Private setters
+   void setPresent(bool present);
+   void setPresenceMessage(const QString& message);
+
 private:
    friend class PhoneNumberPrivate;
 
@@ -159,6 +179,9 @@ private Q_SLOTS:
 Q_SIGNALS:
    void callAdded(Call* call);
    void changed  (          );
+   void presentChanged(bool);
+   void presenceMessageChanged(QString);
+   void trackedChanged(bool);
 };
 
 Q_DECLARE_METATYPE(PhoneNumber*)

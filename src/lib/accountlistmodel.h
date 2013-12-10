@@ -45,17 +45,18 @@ public:
    static void destroy();
 
    //Getters
-   const QVector<Account*>& getAccounts            (                         );
-   QVector<Account*>        getAccountsByState     ( const QString& state    );
-   Q_INVOKABLE Account*     getAccountById         ( const QString& id       ) const;
-   Q_INVOKABLE Account*     getAccountAt           ( int i                   ) const;
-   int                      size                   (                         ) const;
-   Account*                 firstRegisteredAccount (                         ) const;
-   Account*                 getDefaultAccount      (                         ) const;
-   static Account*          currentAccount         (                         );
-   Account*                 getAccountByModelIndex ( const QModelIndex& item ) const;
-   static QString           getSimilarAliasIndex   ( const QString& alias    );
-   AccountListColorVisitor* colorVisitor           (                         );
+   const QVector<Account*>&    getAccounts            (                         );
+   QVector<Account*>           getAccountsByState     ( const QString& state    );
+   Q_INVOKABLE Account*        getAccountById         ( const QString& id       ) const;
+//    Q_INVOKABLE Account*        getAccountAt           ( int i                   ) const;
+   Q_INVOKABLE QList<Account*> getAccountsByHostNames (const QString& hostName  ) const;
+   int                         size                   (                         ) const;
+   Account*                    firstRegisteredAccount (                         ) const;
+   Account*                    getDefaultAccount      (                         ) const;
+   static Account*             currentAccount         (                         );
+   Account*                    getAccountByModelIndex ( const QModelIndex& item ) const;
+   static QString              getSimilarAliasIndex   ( const QString& alias    );
+   AccountListColorVisitor*    colorVisitor           (                         );
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;

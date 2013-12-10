@@ -64,32 +64,12 @@ public:
    virtual void addBookmark   (PhoneNumber* number, bool trackPresence = false) = 0;
    virtual void removeBookmark(PhoneNumber* number                            ) = 0;
 
-   //Presence
-   void reloadPresence();
-
    //Getters
    int acceptedPayloadTypes();
 
 protected:
    virtual bool                  displayFrequentlyUsed() const;
    virtual QVector<PhoneNumber*> bookmarkList         () const;
-
-   ///@struct Subscription presence internal representation
-   struct Subscription {
-      PhoneNumber*       number ;
-      Account*           account;
-      QString            message;
-      bool               present;
-      NumberTreeBackend* view   ;
-      class Status {
-      public:
-         constexpr static const char* ONLINE  = "Online" ;
-         constexpr static const char* OFFLINE = "Offline";
-      };
-   };
-
-   //Attributes
-   QList<Subscription*> m_lTracker;
 
    //Helpers
    static QVector<PhoneNumber*> serialisedToList(const QStringList& list);
@@ -102,11 +82,11 @@ private:
       friend class AbstractBookmarkModel;
       public:
          virtual QObject* getSelf() const;
+         int m_Row;
       private:
          explicit TopLevelItem(QString name);
          QList<NumberTreeBackend*> m_lChildren;
          QString m_Name;
-         int m_Row;
          bool m_MostPopular;
    };
 
@@ -126,11 +106,26 @@ private:
    QString category(NumberTreeBackend* number) const;
 
 private Q_SLOTS:
-//    void slotIncomingNotifications(const QString& uri, bool status, const QString& message);
    void slotRequest(const QString& uri);
+   void slotIndexChanged(const QModelIndex& idx);
 
 public Q_SLOTS:
    void reloadCategories();
+};
+
+class BookmarkItemNode : public QObject //TODO remove this once Qt4 support is dropped
+{
+   Q_OBJECT
+public:
+   BookmarkItemNode(AbstractBookmarkModel* m, PhoneNumber* n, NumberTreeBackend* backend);
+private:
+   PhoneNumber* m_pNumber;
+   NumberTreeBackend* m_pBackend;
+   AbstractBookmarkModel* m_pModel;
+private Q_SLOTS:
+   void slotNumberChanged();
+Q_SIGNALS:
+   void changed(const QModelIndex& idx);
 };
 
 #endif

@@ -39,11 +39,27 @@ class NumberTreeBackend : public CategorizedCompositeNode
          m_pNumber(number),m_pParent(nullptr){
          Q_ASSERT(number != nullptr);
       }
+      virtual ~NumberTreeBackend() {
+         delete m_pNode;
+      }
       virtual QObject* getSelf() const { return nullptr; }
 
       PhoneNumber* m_pNumber;
       AbstractBookmarkModel::TopLevelItem* m_pParent;
+      int m_Index;
+      BookmarkItemNode* m_pNode;
 };
+
+
+BookmarkItemNode::BookmarkItemNode(AbstractBookmarkModel* m, PhoneNumber* n, NumberTreeBackend* backend) :
+m_pNumber(n),m_pBackend(backend),m_pModel(m){
+   connect(n,SIGNAL(changed()),this,SLOT(slotNumberChanged()));
+}
+
+void BookmarkItemNode::slotNumberChanged()
+{
+   emit changed(m_pModel->index(m_pBackend->m_Index,0,m_pModel->index(m_pBackend->m_pParent->m_Row,0)));
+}
 
 QObject* AbstractBookmarkModel::TopLevelItem::getSelf() const
 {
@@ -86,8 +102,12 @@ void AbstractBookmarkModel::reloadCategories()
       m_lCategoryCounter << item;
       const QVector<PhoneNumber*> cl = PhoneDirectoryModel::instance()->getNumbersByPopularity();
       for (int i=0;i<((cl.size()>=10)?10:cl.size());i++) {
-         NumberTreeBackend* bm = new NumberTreeBackend(cl[i]);
+         PhoneNumber* n = cl[i];
+         NumberTreeBackend* bm = new NumberTreeBackend(n);
          bm->m_pParent = item;
+         bm->m_Index = item->m_lChildren.size();
+         bm->m_pNode = new BookmarkItemNode(this,n,bm);
+         connect(bm->m_pNode,SIGNAL(changed(QModelIndex)),this,SLOT(slotIndexChanged(QModelIndex)));
          item->m_lChildren << bm;
       }
    }
@@ -105,6 +125,9 @@ void AbstractBookmarkModel::reloadCategories()
       if (item) {
          bookmark->setBookmarked(true);
          bm->m_pParent = item;
+         bm->m_Index = item->m_lChildren.size();
+         bm->m_pNode = new BookmarkItemNode(this,bookmark,bm);
+         connect(bm->m_pNode,SIGNAL(changed(QModelIndex)),this,SLOT(slotIndexChanged(QModelIndex)));
          item->m_lChildren << bm;
       }
       else
@@ -260,6 +283,9 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
       case Call::Role::Name:
          cat = number->m_pNumber->primaryName();
          break;
+      case Qt::ToolTipRole:
+         cat = number->m_pNumber->presenceMessage();
+         break;
       case Call::Role::Number:
          cat = number->m_pNumber->uri();//call->getPeerPhoneNumber();
          break;
@@ -316,13 +342,6 @@ void AbstractBookmarkModel::slotRequest(const QString& uri)
    DBus::PresenceManager::instance().answerServerRequest(uri,true);
 }
 
-
-void AbstractBookmarkModel::reloadPresence()
-{
-   foreach(Subscription* item,m_lTracker)
-      delete item;
-   m_lTracker.clear();
-}
 
 
 QVector<PhoneNumber*> AbstractBookmarkModel::serialisedToList(const QStringList& list)
@@ -389,3 +408,10 @@ void AbstractBookmarkModel::remove(const QModelIndex& idx)
       }
    }
 }
+
+///Callback when an item change
+void AbstractBookmarkModel::slotIndexChanged(const QModelIndex& idx)
+{
+   emit dataChanged(idx,idx);
+}
+

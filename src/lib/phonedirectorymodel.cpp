@@ -298,6 +298,14 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->m_Index = m_lNumbers.size();
    m_lNumbers << number;
+
+   const QString hn = number->hostname();
+
+   //Check if we are lucky enough to have a single registered account with the same hostname
+   /*if (!hn.isEmpty()) {
+      
+   }*/
+
    emit layoutChanged();
    if (!wrap) {
       wrap = new NumberWrapper();
@@ -470,8 +478,8 @@ void PhoneDirectoryModel::slotNewBuddySubscription(const QString& accountId, con
 {
    qDebug() << "New presence buddy" << uri << status << message;
    PhoneNumber* number = getNumber(uri,AccountListModel::instance()->getAccountById(accountId));
-   number->m_Present = status;
-   number->m_PresentMessage = message;
+   number->setPresent(status);
+   number->setPresenceMessage(message);
    emit number->changed();
 }
 

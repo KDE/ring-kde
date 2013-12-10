@@ -157,7 +157,8 @@ class KDEPixmapManipulation : public PixmapManipulationVisitor {
 public:
    KDEPixmapManipulation() : PixmapManipulationVisitor() {}
    QVariant contactPhoto(Contact* c, QSize size, bool displayPresence = true) {
-      QVariant preRendered = c->property(QString("photo2"+QString::number(size.height())).toAscii());
+      const QString hash = QString("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
+      QVariant preRendered = c->property(hash.toAscii());
       if (preRendered.isValid())
          return preRendered;
       const int radius = (size.height() > 35) ? 7 : 5;
@@ -215,7 +216,7 @@ public:
          pxm = drawDefaultUserPixmap(size,isTracked,isPresent);
       }
 
-      c->setProperty(QString("photo2"+QString::number(size.height())).toAscii(),pxm);
+      c->setProperty(hash.toAscii(),pxm);
       return pxm;
    }
 
@@ -270,12 +271,13 @@ private:
 
       //Create a region where the pixmap is not fully transparent
       if (displayPresence) {
-         static QRegion r,ri;
-         static bool init = false;
-         if (!init) {
-            r = QRegion(QPixmap::fromImage(pxm.toImage().createAlphaMask()));
-            ri = r.xored(pxm.rect());
-            init = true;
+         static QHash<int,QRegion> r,ri;
+         static QHash<int,bool> init;
+         const int width = size.width();
+         if (!init[width]) {
+            r[width] = QRegion(QPixmap::fromImage(pxm.toImage().createAlphaMask()));
+            ri[width] = r[width].xored(pxm.rect());
+            init[width] = true;
          }
 
          static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
@@ -288,9 +290,9 @@ private:
          painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
          //Paint only outside of the pixmap, it looks better
-         painter.setClipRegion(ri);
+         painter.setClipRegion(ri[width]);
          QPainterPath p;
-         p.addRegion(r);
+         p.addRegion(r[width]);
          QPen pen = painter.pen();
          pen.setColor(isPresent?presentBrush:awayBrush);
          painter.setBrush(Qt::NoBrush);

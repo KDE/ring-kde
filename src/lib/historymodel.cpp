@@ -36,6 +36,16 @@
  *                                                                           *
  ****************************************************************************/
 
+HistoryItemNode::HistoryItemNode(HistoryModel* m, Call* c, HistoryModel::HistoryItem* backend) :
+m_pCall(c),m_pBackend(backend),m_pModel(m){
+   connect(c,SIGNAL(changed()),this,SLOT(slotNumberChanged()));
+}
+
+void HistoryItemNode::slotNumberChanged()
+{
+   emit changed(m_pModel->index(m_pBackend->m_Index,0,m_pModel->index(m_pBackend->m_pParent->m_AbsoluteIndex,0)));
+}
+
 HistoryModel* HistoryModel::m_spInstance    = nullptr;
 CallMap       HistoryModel::m_sHistoryCalls          ;
 
@@ -62,6 +72,12 @@ HistoryModel::HistoryItem::HistoryItem(Call* call) : CategorizedCompositeNode(Ca
    
 }
 
+HistoryModel::HistoryItem::~HistoryItem()
+{
+   delete m_pNode;
+}
+
+
 QObject* HistoryModel::HistoryItem::getSelf() const
 {
    return const_cast<Call*>(m_pCall);
@@ -84,6 +100,7 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
+   beginResetModel();
    for(int i = history.size()-1;i>=0;i--) {
       const MapStringString& hc = history[i];
       Call* pastCall = Call::buildHistoryCall(hc);
@@ -93,9 +110,10 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
       pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
       add(pastCall);
    }
+   endResetModel();
    m_HistoryInit = true;
    m_spInstance  = this;
-   reloadCategories();
+//    reloadCategories();
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER << MIME_HISTORYID;
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(Call::Role::Name          ,QByteArray("name"          ));
@@ -174,9 +192,14 @@ HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
    if (!category) {
       category = new TopLevelItem(name,index);
       category->modelRow = m_lCategoryCounter.size();
+//       emit layoutAboutToBeChanged(); //Not necessary
+//       beginInsertRows(QModelIndex(),m_lCategoryCounter.size(),m_lCategoryCounter.size());
+      category->m_AbsoluteIndex = m_lCategoryCounter.size();
       m_lCategoryCounter << category;
       m_hCategories    [index] = category;
       m_hCategoryByName[name ] = category;
+//       endInsertRows();
+//       emit layoutChanged();
    }
    return category;
 }
@@ -194,20 +217,24 @@ void HistoryModel::add(Call* call)
    }
 
    emit newHistoryCall(call);
+   emit layoutAboutToBeChanged();
    TopLevelItem* tl = getCategory(call);
    const QModelIndex& parentIdx = index(tl->modelRow,0);
    beginInsertRows(parentIdx,tl->m_lChildren.size(),tl->m_lChildren.size());
    HistoryItem* item = new HistoryItem(call);
+   item->m_pParent = tl;
+   item->m_pNode = new HistoryItemNode(this,call,item);
+   connect(item->m_pNode,SIGNAL(changed(QModelIndex)),this,SLOT(slotChanged(QModelIndex)));
+   item->m_Index = tl->m_lChildren.size();
    tl->m_lChildren << item;
 
    //Try to prevent startTimeStamp() collisions, it technically doesn't work as time_t are signed
    //we don't care
    m_sHistoryCalls[(call->startTimeStamp() << 10)+qrand()%1024] = call;
    endInsertRows();
-   emit historyChanged();
-   emit layoutAboutToBeChanged();
    emit layoutChanged();
    LastUsedNumberModel::instance()->addCall(call);
+   emit historyChanged();
 }
 
 ///Set if the history has a limit
@@ -258,6 +285,10 @@ void HistoryModel::reloadCategories()
       TopLevelItem* category = getCategory(call);
       if (category) {
          HistoryItem* item = new HistoryItem(call);
+         item->m_Index = category->m_lChildren.size();
+         item->m_pNode = new HistoryItemNode(this,call,item);
+         connect(item->m_pNode,SIGNAL(changed(QModelIndex)),this,SLOT(slotChanged(QModelIndex)));
+         item->m_pParent = category;
          category->m_lChildren << item;
       }
       else
@@ -267,6 +298,11 @@ void HistoryModel::reloadCategories()
    emit layoutAboutToBeChanged();
    emit layoutChanged();
    emit dataChanged(index(0,0),index(rowCount()-1,0));
+}
+
+void HistoryModel::slotChanged(const QModelIndex& idx)
+{
+   emit dataChanged(idx,idx);
 }
 
 bool HistoryModel::setData( const QModelIndex& idx, const QVariant &value, int role)

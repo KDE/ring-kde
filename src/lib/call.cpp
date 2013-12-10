@@ -306,6 +306,7 @@ Call* Call::buildRingingCall(const QString & callId)
    return call;
 } //buildRingingCall
 
+
 /*****************************************************************************
  *                                                                           *
  *                                  History                                  *
@@ -357,12 +358,15 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
       call->m_Direction    = Call::Direction::OUTGOING            ;
    else //BUG Pick one, even if it is the wrong one
       call->m_Direction    = Call::Direction::OUTGOING            ;
+   if (missed)
+      call->m_HistoryState = Call::LegacyHistoryState::MISSED;
    //END
 
    call->setObjectName("History:"+call->m_CallId);
 
    if (call->peerPhoneNumber()) {
       call->peerPhoneNumber()->addCall(call);
+      connect(call->peerPhoneNumber(),SIGNAL(presentChanged(bool)),call,SLOT(updated()));
    }
 
    return call;
@@ -634,38 +638,39 @@ bool Call::isConference() const
 }
 
 ///Get the conference ID
-const QString Call::confId()            const
+const QString Call::confId() const
 {
    return m_ConfId;
 }
 
 ///Get the recording path
-const QString Call::recordingPath()     const
+const QString Call::recordingPath() const
 {
    return m_RecordingPath;
 }
 
 ///Get the current codec
-QString Call::currentCodecName()         const
+QString Call::currentCodecName() const
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    return callManager.getCurrentAudioCodecName(m_CallId);
 }
 
 ///Get the history state
-Call::LegacyHistoryState Call::historyState()  const
+Call::LegacyHistoryState Call::historyState() const
 {
    return m_HistoryState;
 }
 
 ///This function could also be called mayBeSecure or haveChancesToBeEncryptedButWeCantTell.
-bool Call::isSecure() const {
+bool Call::isSecure() const
+{
 
    if (!m_Account) {
       qDebug() << "Account not set, can't check security";
       return false;
    }
-
+   //BUG this doesn't work
    return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod() != TlsMethodModel::Type::DEFAULT));
 } //isSecure
 
@@ -1103,6 +1108,7 @@ void Call::call()
          if (peerPhoneNumber()->contact())
             m_PeerName = peerPhoneNumber()->contact()->formattedName();
       }
+      connect(peerPhoneNumber(),SIGNAL(presentChanged(bool)),this,SLOT(updated()));
       time_t curTime;
       ::time(&curTime);
       setStartTimeStamp(curTime);
