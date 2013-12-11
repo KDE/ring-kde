@@ -153,7 +153,8 @@ void CategorizedTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 {
    const QModelIndex& idxAt = indexAt(event->pos());
    emit itemDoubleClicked(idxAt);
-   QTreeView::mouseDoubleClickEvent(event);
+//    if (m_Type != ViewType::Contact)
+      QTreeView::mouseDoubleClickEvent(event);
 }
 
 ///This function allow for custom rendering of the drag widget

@@ -64,24 +64,15 @@ public:
    Q_PROPERTY(QVariant           icon             READ icon                     )
    Q_PROPERTY(int                totalSpentTime   READ totalSpentTime           )
 
-//    Q_PROPERTY(QString            mostCommonName   READ mostCommonName           )
 //    Q_PROPERTY(QHash<QString,int> alternativeNames READ alternativeNames         )
-//    Q_PROPERTY(QString       type            READ type     WRITE setType   )
-
-   /*///@enum PresenceStatus: Presence status
-   enum class PresenceStatus {
-      UNTRACKED = 0,
-      PRESENT   = 1,
-      ABSENT    = 2,
-   };
-   Q_ENUMS(PresenceStatus)*/
 
    ///@enum State: Is this temporary, blank, used or unused
    enum class State {
-      BLANK     = 0, //This number represent no number
-      TEMPORARY = 1, //This number is not yet complete
-      USED      = 2, //This number have been called before
-      UNUSED    = 3, //This number have never been called, but is in the address book
+      BLANK     = 0, /*This number represent no number                                  */
+      TEMPORARY = 1, /*This number is not yet complete                                  */
+      USED      = 2, /*This number have been called before                              */
+      UNUSED    = 3, /*This number have never been called, but is in the address book   */
+      ACCOUNT   = 4, /*This number correspond to the URI of a SIP account               */
    };
    Q_ENUMS(State)
 
@@ -102,7 +93,6 @@ public:
    QList<Call*>       calls           () const;
    int                popularityIndex () const;
    QHash<QString,int> alternativeNames() const;
-   QString            mostCommonName  () const;
    QString            hostname        () const;
    QString            fullUri         () const;
    QString            primaryName     () const;

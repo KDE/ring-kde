@@ -38,6 +38,8 @@
 #include "audiocodecmodel.h"
 #include "videocodecmodel.h"
 #include "ringtonemodel.h"
+#include "phonenumber.h"
+#include "phonedirectorymodel.h"
 #include "presencestatusmodel.h"
 #define TO_BOOL ?"true":"false"
 #define IS_TRUE == "true"
@@ -54,8 +56,8 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 };
 
 ///Constructors
-Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(READY),
-m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0),m_pRingToneModel(nullptr)
+Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(AccountEditState::READY),
+m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0),m_pRingToneModel(nullptr),m_pAccountNumber(nullptr)
 {
 }
 
@@ -80,6 +82,7 @@ Account* Account::buildNewAccountFromAlias(const QString& alias)
    Account* a = new Account();
    a->m_hAccountDetails.clear();
    a->m_hAccountDetails[Account::MapField::ENABLED] = "false";
+   a->m_pAccountNumber = const_cast<PhoneNumber*>(PhoneNumber::BLANK());
    MapStringString tmp = configurationManager.getAccountTemplate();
    QMutableMapIterator<QString, QString> iter(tmp);
    while (iter.hasNext()) {
@@ -118,6 +121,17 @@ Account::~Account()
 //    }
 // }
 
+void Account::slotPresentChanged(bool present)
+{
+   Q_UNUSED(present)
+   emit changed(this);
+}
+
+void Account::slotPresenceMessageChanged(const QString& message)
+{
+   Q_UNUSED(message)
+   emit changed(this);
+}
 
 /*****************************************************************************
  *                                                                           *
@@ -572,12 +586,12 @@ DtmfType Account::DTMFType() const
 
 bool Account::presenceStatus() const
 {
-   return accountDetail(Account::MapField::Presence::CURRENT_STATUS) IS_TRUE;
+   return m_pAccountNumber->isPresent();
 }
 
 QString Account::presenceMessage() const
 {
-   return accountDetail(Account::MapField::Presence::CURRENT_NOTE);
+   return m_pAccountNumber->presenceMessage();
 }
 
 bool Account::supportPresencePublish() const
@@ -722,14 +736,14 @@ bool Account::setAccountDetail(const QString& param, const QString& val)
    }
    else {
       performAction(AccountEditAction::MODIFY);
-      if (m_CurrentState == MODIFIED || m_CurrentState == NEW) {
+      if (m_CurrentState == AccountEditState::MODIFIED || m_CurrentState == AccountEditState::NEW) {
          m_hAccountDetails[param] = val;
          if (accChanged) {
             emit detailChanged(this,param,val,buf);
          }
       }
    }
-   return m_CurrentState == MODIFIED || m_CurrentState == NEW;
+   return m_CurrentState == AccountEditState::MODIFIED || m_CurrentState == AccountEditState::NEW;
 }
 
 ///Set the account id
@@ -1118,7 +1132,7 @@ void Account::setRoleData(int role, const QVariant& value)
 bool Account::performAction(AccountEditAction action)
 {
    AccountEditState curState = m_CurrentState;
-   (this->*(stateMachineActionsOnState[m_CurrentState][action]))();
+   (this->*(stateMachineActionsOnState[(int)m_CurrentState][(int)action]))();//FIXME don't use integer cast
    return curState != m_CurrentState;
 }
 
@@ -1185,7 +1199,6 @@ void Account::save()
       configurationManager.setAccountDetails(id(), tmp);
    }
 
-   //QString id = configurationManager.getAccountDetail(id());
    if (!id().isEmpty()) {
       Account* acc =  AccountListModel::instance()->getAccountById(id());
       qDebug() << "Adding the new account to the account list (" << id() << ")";
@@ -1195,7 +1208,7 @@ void Account::save()
 
       performAction(AccountEditAction::RELOAD);
       updateState();
-      m_CurrentState = READY;
+      m_CurrentState = AccountEditState::READY;
    }
    #ifdef ENABLE_VIDEO
    videoCodecModel()->save();
@@ -1227,7 +1240,18 @@ void Account::reload()
          }
          setHostname(m_hAccountDetails[Account::MapField::HOSTNAME]);
       }
-      m_CurrentState = READY;
+      m_CurrentState = AccountEditState::READY;
+
+      const QString currentUri = QString("%1@%2").arg(username()).arg(m_HostName);
+      if (!m_pAccountNumber || (m_pAccountNumber && m_pAccountNumber->uri() != currentUri)) {
+         if (m_pAccountNumber) {
+            disconnect(m_pAccountNumber,SIGNAL(presenceMessageChanged(QString)),this,SLOT(slotPresenceMessageChanged(QString)));
+            disconnect(m_pAccountNumber,SIGNAL(presentChanged(bool)),this,SLOT(slotPresentChanged(bool)));
+         }
+         m_pAccountNumber = PhoneDirectoryModel::instance()->getNumber(currentUri,this);
+         connect(m_pAccountNumber,SIGNAL(presenceMessageChanged(QString)),this,SLOT(slotPresenceMessageChanged(QString)));
+         connect(m_pAccountNumber,SIGNAL(presentChanged(bool)),this,SLOT(slotPresentChanged(bool)));
+      }
 
       //If the credential model is loaded, then update it
       if (m_pCredentials)

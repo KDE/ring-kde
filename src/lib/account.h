@@ -36,6 +36,7 @@ class CredentialModel;
 class AudioCodecModel;
 class VideoCodecModel;
 class RingToneModel  ;
+class PhoneNumber    ;
 
 const QString& account_state_name(const QString& s);
 
@@ -108,7 +109,7 @@ class LIB_EXPORT Account : public QObject {
 
    public:
       ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
-      enum AccountEditState {
+      enum class AccountEditState {
          READY    = 0,
          EDITING  = 1,
          OUTDATED = 2,
@@ -118,7 +119,7 @@ class LIB_EXPORT Account : public QObject {
       };
 
       ///@enum AccountEditAction Actions that can be performed on the Account state
-      enum AccountEditAction {
+      enum class AccountEditAction {
          NOTHING = 0,
          EDIT    = 1,
          RELOAD  = 2,
@@ -226,8 +227,6 @@ class LIB_EXPORT Account : public QObject {
             constexpr static const char* SUPPORT_PUBLISH     = "Account.presencePublishSupported"  ;
             constexpr static const char* SUPPORT_SUBSCRIBE   = "Account.presenceSubscribeSupported";
             constexpr static const char* ENABLE              = "Account.presenceEnabled"           ;
-            constexpr static const char* CURRENT_STATUS      = "Account.presenceStatus"            ;
-            constexpr static const char* CURRENT_NOTE        = "Account.presenceNote"              ;
          };
          class Registration {
          public:
@@ -418,22 +417,22 @@ class LIB_EXPORT Account : public QObject {
       Q_INVOKABLE void reloadCredentials();
       Q_INVOKABLE void reloadAudioCodecs();
 
-   protected:
+
+   public Q_SLOTS:
+      void setEnabled(bool checked);
+
+   private Q_SLOTS:
+      void slotPresentChanged        (bool  present  );
+      void slotPresenceMessageChanged(const QString& );
+
+   private:
       //Constructors
       Account();
 
       //Attributes
       QString                 m_AccountId      ;
       QHash<QString,QString>  m_hAccountDetails;
-
-
-   public Q_SLOTS:
-      void setEnabled(bool checked);
-
-//    private Q_SLOTS:
-//       void accountChanged(const QString& accountId, const QString& stateName, int state);
-
-   private:
+      PhoneNumber*            m_pAccountNumber ;
 
       //Setters
       void setAccountDetails (const QHash<QString,QString>& m          );
@@ -441,11 +440,11 @@ class LIB_EXPORT Account : public QObject {
 
       //State actions
       void nothing() {};
-      void edit()    {m_CurrentState = EDITING ;emit changed(this);};
-      void modify()  {m_CurrentState = MODIFIED;emit changed(this);};
-      void remove()  {m_CurrentState = REMOVED ;emit changed(this);};
-      void cancel()  {m_CurrentState = READY   ;emit changed(this);};
-      void outdate() {m_CurrentState = OUTDATED;emit changed(this);};
+      void edit()    {m_CurrentState = AccountEditState::EDITING ;emit changed(this);};
+      void modify()  {m_CurrentState = AccountEditState::MODIFIED;emit changed(this);};
+      void remove()  {m_CurrentState = AccountEditState::REMOVED ;emit changed(this);};
+      void cancel()  {m_CurrentState = AccountEditState::READY   ;emit changed(this);};
+      void outdate() {m_CurrentState = AccountEditState::OUTDATED;emit changed(this);};
       void reload();
       void save();
       void reloadMod() {reload();modify();};
