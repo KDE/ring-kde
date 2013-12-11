@@ -411,7 +411,7 @@ PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
       return getNumber(uri,contact,account);
    }
    else if (fields.size() == 1) {
-      //Remove someday, handle version v1.0 to v1.2.3 bookmark format
+      //FIXME Remove someday, handle version v1.0 to v1.2.3 bookmark format
       return getNumber(fields[0]);
    }
    qDebug() << "Invalid hash" << hash;

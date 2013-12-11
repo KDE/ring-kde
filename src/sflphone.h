@@ -56,7 +56,7 @@ class Account;
  * @short Main window
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
  * @author Emmanuel Lepage <emmanuel.lepage@savoirfairelinux.com>
- * @version 1.2.3
+ * @version 1.3.0
 **/
 class SFLPhone : public KXmlGuiWindow
 {

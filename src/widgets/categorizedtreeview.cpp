@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Rafael Fernández López <ereslibre@kde.org>      *
+ *   Copyright (C) 2012 by Savoir-Faire Linux                              *
  *   @author: Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  * This library is free software; you can redistribute it and/or           *
