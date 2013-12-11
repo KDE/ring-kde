@@ -74,7 +74,7 @@ void AccountListModel::init()
    CallManagerInterface& callManager = DBus::CallManager::instance();
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
-   connect(&callManager         , SIGNAL(registrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
+   connect(&configurationManager, SIGNAL(sipRegistrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
    connect(&configurationManager, SIGNAL(accountsChanged())                            ,this,SLOT(updateAccounts())                   );
    connect(&callManager         , SIGNAL(voiceMailNotify(QString,int))                 ,this, SLOT(slotVoiceMailNotify(QString,int))  );
 
@@ -370,12 +370,6 @@ const QVector<Account*>& AccountListModel::getAccounts()
 {
    return m_lAccounts;
 }
-
-///Get a single account
-// Account* AccountListModel::getAccountAt (int i) const
-// {
-//    return m_lAccounts[i];
-// }
 
 ///Sometime, it may be useful to reverse map a phone number to an account using the hostname
 QList<Account*> AccountListModel::getAccountsByHostNames ( const QString& hostname ) const

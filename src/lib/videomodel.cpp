@@ -66,7 +66,7 @@ VideoRenderer* VideoModel::previewRenderer()
 void VideoModel::stopPreview()
 {
    VideoInterface& interface = DBus::VideoManager::instance();
-   interface.stopPreview();
+   interface.stopCamera();
    m_PreviewState = false;
 }
 
@@ -75,7 +75,7 @@ void VideoModel::startPreview()
 {
    if (m_PreviewState) return;
    VideoInterface& interface = DBus::VideoManager::instance();
-   interface.startPreview();
+   interface.startCamera();
    m_PreviewState = true;
 }
 

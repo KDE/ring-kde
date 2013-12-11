@@ -48,7 +48,6 @@ public:
    const QVector<Account*>&    getAccounts            (                         );
    QVector<Account*>           getAccountsByState     ( const QString& state    );
    Q_INVOKABLE Account*        getAccountById         ( const QString& id       ) const;
-//    Q_INVOKABLE Account*        getAccountAt           ( int i                   ) const;
    Q_INVOKABLE QList<Account*> getAccountsByHostNames (const QString& hostName  ) const;
    int                         size                   (                         ) const;
    Account*                    firstRegisteredAccount (                         ) const;
