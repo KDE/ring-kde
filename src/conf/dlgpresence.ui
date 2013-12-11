@@ -11,7 +11,7 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QTableView" name="m_pView">
      <property name="enabled">
       <bool>true</bool>
@@ -24,7 +24,7 @@
      </attribute>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
       <number>0</number>
@@ -83,6 +83,13 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="kcfg_trackBookmarkPresence">
+     <property name="text">
+      <string>Track bookmarked number presence</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

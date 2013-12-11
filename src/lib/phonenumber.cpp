@@ -31,15 +31,15 @@ const PhoneNumber* PhoneNumber::BLANK()
 {
    if (!m_spBlank) {
       m_spBlank = new PhoneNumber("",NumberCategoryModel::other());
-      const_cast<PhoneNumber*>(m_spBlank)->m_State = PhoneNumber::State::BLANK;
+      const_cast<PhoneNumber*>(m_spBlank)->m_Type = PhoneNumber::Type::BLANK;
    }
    return m_spBlank;
 }
 
 ///Constructor
-PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat, State st) : QObject(PhoneDirectoryModel::instance()),
+PhoneNumber::PhoneNumber(const QString& number, NumberCategory* cat, Type st) : QObject(PhoneDirectoryModel::instance()),
    m_Uri(stripUri(number)),m_pCategory(cat),m_Tracked(false),m_Present(false),m_LastUsed(0),
-   m_State(st),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
+   m_Type(st),m_PopularityIndex(-1),m_pContact(nullptr),m_pAccount(nullptr),
    m_LastWeekCount(0),m_LastTrimCount(0),m_HaveCalled(false),m_IsBookmark(false),m_TotalSeconds(0)
 {
    setObjectName(m_Uri);
@@ -113,7 +113,7 @@ void PhoneNumber::setAccount(Account* account)
 void PhoneNumber::setContact(Contact* contact)
 {
    m_pContact = contact;
-   if (contact && m_State != PhoneNumber::State::TEMPORARY)
+   if (contact && m_Type != PhoneNumber::Type::TEMPORARY)
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+QStringList(contact->formattedName()));
    emit changed();
 }
@@ -139,6 +139,22 @@ void PhoneNumber::setBookmarked(bool bookmarked )
 void PhoneNumber::setUid(const QString& uri)
 {
    m_Uid = uri;
+}
+
+///Attempt to change the number type
+bool PhoneNumber::setType(PhoneNumber::Type t)
+{
+   if (m_Type == PhoneNumber::Type::BLANK)
+      return false;
+   if (account() && t == PhoneNumber::Type::ACCOUNT) {
+      if (account()->supportPresenceSubscribe()) {
+         m_Tracked = true; //The daemon will init the tracker itself
+         emit trackedChanged(true);
+      }
+      m_Type = t;
+      return true;
+   }
+   return false;
 }
 
 ///Set if this number is tracking presence information
@@ -171,10 +187,10 @@ void PhoneNumber::setPresenceMessage(const QString& message)
    }
 }
 
-///Return the current state of the number
-PhoneNumber::State PhoneNumber::state() const
+///Return the current type of the number
+PhoneNumber::Type PhoneNumber::type() const
 {
-   return m_State;
+   return m_Type;
 }
 
 ///Return the number of calls from this number
@@ -278,7 +294,7 @@ QHash<QString,int> PhoneNumber::alternativeNames() const
 void PhoneNumber::addCall(Call* call)
 {
    if (!call) return;
-   m_State = PhoneNumber::State::USED;
+   m_Type = PhoneNumber::Type::USED;
    m_lCalls << call;
    m_TotalSeconds += call->stopTimeStamp() - call->startTimeStamp();
    time_t now;
@@ -288,7 +304,7 @@ void PhoneNumber::addCall(Call* call)
    if (now - 3600*24*7*15 < call->stopTimeStamp())
       m_LastTrimCount++;
 
-   if (call->historyState() == Call::LegacyHistoryState::OUTGOING)
+   if (call->historyState() == Call::LegacyHistoryState::OUTGOING || call->direction() == Call::Direction::OUTGOING)
       m_HaveCalled = true;
 
    emit callAdded(call);
@@ -335,7 +351,7 @@ void PhoneNumber::incrementAlternativeName(const QString& name)
 {
    const bool needReIndexing = !m_hNames[name];
    m_hNames[name]++;
-   if (needReIndexing && m_State != PhoneNumber::State::TEMPORARY)
+   if (needReIndexing && m_Type != PhoneNumber::Type::TEMPORARY)
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+(m_pContact?(QStringList(m_pContact->formattedName())):QStringList()));
 }
 
@@ -359,7 +375,7 @@ void TemporaryPhoneNumber::setUri(const QString& uri)
 
 ///Constructor
 TemporaryPhoneNumber::TemporaryPhoneNumber(const PhoneNumber* number) :
-   PhoneNumber(QString(),NumberCategoryModel::other(),PhoneNumber::State::TEMPORARY)
+   PhoneNumber(QString(),NumberCategoryModel::other(),PhoneNumber::Type::TEMPORARY)
 {
    if (number) {
       setContact(number->contact());

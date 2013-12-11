@@ -245,6 +245,10 @@
       <default> true </default>
     </entry>
 
+    <entry name="presenceStatusList" type="StringList">
+        <label>List of presence status</label>
+    </entry>
+
    <!-- Dock settings -->
     <entry name="displayContactDock" type="Bool">
       <label>Enable audio feedback from common actions</label>

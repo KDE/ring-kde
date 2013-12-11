@@ -1249,6 +1249,7 @@ void Account::reload()
             disconnect(m_pAccountNumber,SIGNAL(presentChanged(bool)),this,SLOT(slotPresentChanged(bool)));
          }
          m_pAccountNumber = PhoneDirectoryModel::instance()->getNumber(currentUri,this);
+         m_pAccountNumber->setType(PhoneNumber::Type::ACCOUNT);
          connect(m_pAccountNumber,SIGNAL(presenceMessageChanged(QString)),this,SLOT(slotPresenceMessageChanged(QString)));
          connect(m_pAccountNumber,SIGNAL(presentChanged(bool)),this,SLOT(slotPresentChanged(bool)));
       }

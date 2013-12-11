@@ -73,10 +73,12 @@
 #include "lib/accountlistmodel.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/audiosettingsmodel.h"
+#include "lib/presencestatusmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
 #include "lib/visitors/accountlistcolorvisitor.cpp"
 #include "lib/visitors/pixmapmanipulationvisitor.cpp"
+#include "lib/visitors/presenceserializationvisitor.cpp"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
@@ -328,6 +330,66 @@ const char* KDEPixmapManipulation::icnPath[4] = {
    /* NONE     */ ""                   ,
 };
 
+class KDEPresenceSerializationVisitor : public PresenceSerializationVisitor {
+public:
+   virtual void serialize() {
+      PresenceStatusModel* m = PresenceStatusModel::instance();
+      QStringList list;
+      for (int i=0;i<m->rowCount();i++) {
+         QString line = QString("%1///%2///%3///%4///%5")
+            .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Name),Qt::DisplayRole).toString())
+            .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Message),Qt::DisplayRole).toString())
+            .arg(qvariant_cast<QColor>(m->data(m->index(i,(int)PresenceStatusModel::Columns::Message),Qt::BackgroundColorRole)).name())    //Color
+            .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Status),Qt::CheckStateRole) == Qt::Checked)    //Status
+            .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Default),Qt::CheckStateRole) == Qt::Checked);   //Default
+            list << line;
+      }
+      ConfigurationSkeleton::setPresenceStatusList(list);
+   }
+   virtual void load() {
+      QStringList list = ConfigurationSkeleton::presenceStatusList();
+      PresenceStatusModel* m = PresenceStatusModel::instance();
+
+      //Load the default one
+      if (!list.size()) {
+         PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
+         data->name       = "Online"    ;
+         data->message    = "I am available";
+         data->status     = true      ;
+         data->defaultStatus = true;
+         m->addStatus(data);
+         data = new PresenceStatusModel::StatusData();
+         data->name       = "Away"    ;
+         data->message    = "I am away";
+         data->status     = false      ;
+         m->addStatus(data);
+         data = new PresenceStatusModel::StatusData();
+         data->name       = "Busy"    ;
+         data->message    = "I am busy";
+         data->status     = false      ;
+         m->addStatus(data);
+         data = new PresenceStatusModel::StatusData();
+         data->name       = "DND"    ;
+         data->message    = "Please do not disturb me";
+         data->status     = false      ;
+         m->addStatus(data);
+      }
+      else {
+         foreach(const QString& line, list) {
+            QStringList fields = line.split("///");
+            PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
+            data->name          = fields[(int)PresenceStatusModel::Columns::Name   ];
+            data->message       = fields[(int)PresenceStatusModel::Columns::Message];
+            data->color         = QColor(fields[(int)PresenceStatusModel::Columns::Color]);
+            data->status        = fields[(int)PresenceStatusModel::Columns::Status] == "1";
+            data->defaultStatus = fields[(int)PresenceStatusModel::Columns::Default] == "1";
+            m->addStatus(data);
+         }
+      }
+   }
+   virtual ~KDEPresenceSerializationVisitor(){};
+};
+
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
    : QWidget(parent),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
@@ -342,6 +404,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    //Set global settings
    AudioSettingsModel::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
+   PresenceStatusModel::instance()->setPresenceVisitor(new KDEPresenceSerializationVisitor());
 
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());

@@ -25,7 +25,7 @@
 #include "klib/tipmanager.h"
 #include "klib/tip.h"
 
-DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent)
+DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
 {
    setupUi(this);
    m_pView->setModel(PresenceStatusModel::instance());
@@ -37,6 +37,8 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent)
    connect(m_pUp    , SIGNAL(clicked()),this                            ,SLOT(slotMoveUp())   );
    connect(m_pDown  , SIGNAL(clicked()),this                            ,SLOT(slotMoveDown()) );
    connect(m_pRemove, SIGNAL(clicked()),this                            ,SLOT(slotRemoveRow()));
+   connect(this     , SIGNAL(updateButtons()) , parent                  ,SLOT(updateButtons()));
+   connect(PresenceStatusModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotChanged()));
 
    m_pView->horizontalHeader()->setResizeMode(0,QHeaderView::ResizeToContents);
    m_pView->horizontalHeader()->setResizeMode(1,QHeaderView::Stretch);
@@ -68,11 +70,19 @@ void DlgPresence::updateWidgets()
 void DlgPresence::updateSettings()
 {
    PresenceStatusModel::instance()->save();
+   m_Changed = false;
+   emit updateButtons();
 }
 
 bool DlgPresence::hasChanged()
 {
-   return false;
+   return m_Changed;
+}
+
+void DlgPresence::slotChanged()
+{
+   m_Changed = true;
+   emit updateButtons();
 }
 
 void DlgPresence::slotRemoveRow()

@@ -113,7 +113,7 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
       case PhoneDirectoryModel::Columns::STATE:
          switch (role) {
             case Qt::DisplayRole:
-               return (int)number->state();
+               return (int)number->type();
                break;
          }
          break;

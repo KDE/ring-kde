@@ -66,15 +66,15 @@ public:
 
 //    Q_PROPERTY(QHash<QString,int> alternativeNames READ alternativeNames         )
 
-   ///@enum State: Is this temporary, blank, used or unused
-   enum class State {
+   ///@enum Type: Is this temporary, blank, used or unused
+   enum class Type {
       BLANK     = 0, /*This number represent no number                                  */
       TEMPORARY = 1, /*This number is not yet complete                                  */
       USED      = 2, /*This number have been called before                              */
       UNUSED    = 3, /*This number have never been called, but is in the address book   */
       ACCOUNT   = 4, /*This number correspond to the URI of a SIP account               */
    };
-   Q_ENUMS(State)
+   Q_ENUMS(Type)
 
    //Getters
    QString            uri             () const;
@@ -85,7 +85,7 @@ public:
    Account*           account         () const;
    Contact*           contact         () const;
    time_t             lastUsed        () const;
-   PhoneNumber::State state           () const;
+   PhoneNumber::Type  type            () const;
    int                callCount       () const;
    uint               weekCount       () const;
    uint               trimCount       () const;
@@ -109,6 +109,7 @@ public:
    void             setCategory(NumberCategory* cat  );
    void             setBookmarked(bool bookmarked    );
    void             setUid(const QString& uri        );
+   bool             setType(PhoneNumber::Type t      );
 
    //Mutator
    Q_INVOKABLE void addCall(Call* call);
@@ -122,11 +123,11 @@ public:
 
 protected:
    //Constructor
-   PhoneNumber(const QString& uri, NumberCategory* cat, State st = State::UNUSED);
+   PhoneNumber(const QString& uri, NumberCategory* cat, Type st = Type::UNUSED);
 
    //Attributes
-   QString            m_Uri              ;
-   PhoneNumber::State m_State            ;
+   QString            m_Uri  ;
+   PhoneNumber::Type  m_Type ;
 
    //Helper
    static QString stripUri(const QString& uri);

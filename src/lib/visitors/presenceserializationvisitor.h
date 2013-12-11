@@ -15,52 +15,18 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
+#ifndef PRESENCESERIALIZATIONVISITOR_H
+#define PRESENCESERIALIZATIONVISITOR_H
 
-#ifndef DLGPRESENCE_H
-#define DLGPRESENCE_H
+#include "../typedefs.h"
 
-#include <QWidget>
+class AbstractBookmarkModel;
 
-#include "ui_dlgpresence.h"
-
-class TipManager;
-class Tip;
-
-class DlgPresence : public QWidget, public Ui_DlgPresence
-{
-Q_OBJECT
+class LIB_EXPORT PresenceSerializationVisitor {
 public:
-   //Constructor
-   explicit DlgPresence(QWidget *parent = nullptr);
-
-   //Destructor
-   virtual ~DlgPresence();
-
-   //Getter
-   bool hasChanged();
-
-private:
-
-   TipManager* m_pTipManager         ;
-   Tip*        m_pTip                ;
-   bool        m_Changed             ;
-
-public Q_SLOTS:
-   //Mutator
-   void updateWidgets();
-   void updateSettings();
-
-private Q_SLOTS:
-   void slotChanged();
-
-private Q_SLOTS:
-   void slotRemoveRow();
-   void slotMoveUp   ();
-   void slotMoveDown ();
-
-Q_SIGNALS:
-   ///Emitted when the buttons need to be updated
-   void updateButtons();
+   virtual void     serialize() = 0;
+   virtual void     load     () = 0;
+   virtual ~PresenceSerializationVisitor(){};
 };
 
-#endif
+#endif //PRESENCESERIALIZATIONVISITOR_H

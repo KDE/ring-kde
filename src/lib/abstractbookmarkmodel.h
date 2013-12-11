@@ -75,8 +75,6 @@ protected:
    static QVector<PhoneNumber*> serialisedToList(const QStringList& list);
 
 private:
-   //Private constructor
-
    ///Top level bookmark item
    class TopLevelItem : public CategorizedCompositeNode {
       friend class AbstractBookmarkModel;
@@ -91,12 +89,9 @@ private:
    };
 
    //Attributes
-   ContactBackend*              m_pModel               ;
-   QList<TopLevelItem*>         m_lCategoryCounter     ;
-   QHash<QString,TopLevelItem*> m_hCategories          ;
-   const static char*           m_slHistoryConstStr[25];
-   QHash<Contact*, QDateTime>   m_hContactByDate       ;
-   QStringList                  m_lMimes               ;
+   QList<TopLevelItem*>         m_lCategoryCounter ;
+   QHash<QString,TopLevelItem*> m_hCategories      ;
+   QStringList                  m_lMimes           ;
 
    //Getters
    QModelIndex getContactIndex(Contact* ct) const;

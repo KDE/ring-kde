@@ -88,6 +88,7 @@ set( qtsflphone_LIB_SRCS
   visitors/phonenumberselector.cpp
   visitors/numbercategoryvisitor.cpp
   visitors/pixmapmanipulationvisitor.cpp
+  visitors/presenceserializationvisitor.cpp
 
   #Other
   sflphone_const.h
@@ -133,6 +134,7 @@ set( qtsflphone_extra_LIB_HDRS
   sflphone_const.h
   visitors/accountlistcolorvisitor.h
   visitors/phonenumberselector.h
+  visitors/presenceserializationvisitor.h
 )
 
 # presence manager interface

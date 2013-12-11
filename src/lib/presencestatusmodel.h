@@ -23,6 +23,8 @@
 #include <QtCore/QString>
 #include <QtCore/QAbstractTableModel>
 
+class PresenceSerializationVisitor;
+
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT PresenceStatusModel : public QAbstractTableModel {
    #pragma GCC diagnostic push
@@ -30,6 +32,29 @@ class LIB_EXPORT PresenceStatusModel : public QAbstractTableModel {
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
+
+   //Internal representation
+   struct StatusData {
+      QString  name         ;
+      QString  message      ;
+      QVariant color        ;
+      bool     status       ;
+      bool     defaultStatus;
+   };
+
+   //Table columns
+   enum class Columns {
+      Name    = 0,
+      Message = 1,
+      Color   = 2,
+      Status  = 3,
+      Default = 4,
+   };
+
+   //Methods
+   void addStatus(StatusData* status);
+   void setPresenceVisitor(PresenceSerializationVisitor* visitor);
+
    //Properties
    Q_PROPERTY( QString     customMessage     READ customMessage    WRITE  setCustomMessage              NOTIFY customMessageChanged(QString)     )
    Q_PROPERTY( bool        useCustomStatus   READ useCustomStatus  WRITE  setUseCustomStatus            NOTIFY useCustomStatusChanged(bool)      )
@@ -68,34 +93,14 @@ public:
 
 private:
 
-   //Table columns
-   enum class Columns {
-      Name    = 0,
-      Message = 1,
-      Color   = 2,
-      Status  = 3,
-      Default = 4,
-   };
-
-   //Internal representation
-   struct StatusData {
-      QString  name         ;
-      QString  message      ;
-      QVariant color        ;
-      bool     status       ;
-      bool     defaultStatus;
-   };
-
-   //Methods
-   void addStatus(StatusData* status);
-
    //Attributes
-   QVector<StatusData*> m_lStatuses      ;
-   QString              m_CustomMessage  ;
-   bool                 m_UseCustomStatus;
-   bool                 m_CustomStatus   ;
-   StatusData*          m_pCurrentStatus ;
-   StatusData*          m_pDefaultStatus ;
+   QVector<StatusData*> m_lStatuses        ;
+   QString              m_CustomMessage    ;
+   bool                 m_UseCustomStatus  ;
+   bool                 m_CustomStatus     ;
+   StatusData*          m_pCurrentStatus   ;
+   StatusData*          m_pDefaultStatus   ;
+   PresenceSerializationVisitor* m_pVisitor;
 
    //Singleton
    static PresenceStatusModel* m_spInstance;

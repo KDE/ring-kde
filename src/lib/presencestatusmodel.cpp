@@ -23,35 +23,16 @@
 //SFLPhone
 #include "accountlistmodel.h"
 #include "dbus/presencemanager.h"
+#include "visitors/presenceserializationvisitor.h"
 
 //Static
 PresenceStatusModel* PresenceStatusModel::m_spInstance = nullptr;
 
 ///Constructor
 PresenceStatusModel::PresenceStatusModel(QObject* parent) : QAbstractTableModel(parent?parent:QCoreApplication::instance()),
-m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_CustomStatus(false)
+m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_CustomStatus(false),m_pVisitor(nullptr)
 {
    setObjectName("PresenceStatusModel");
-   StatusData* data = new StatusData();
-   data->name       = "Online"    ;
-   data->message    = "I am available";
-   data->status     = true      ;
-   addStatus(data);
-   data = new StatusData();
-   data->name       = "Away"    ;
-   data->message    = "I am away";
-   data->status     = false      ;
-   addStatus(data);
-   data = new StatusData();
-   data->name       = "Busy"    ;
-   data->message    = "I am busy";
-   data->status     = false      ;
-   addStatus(data);
-   data = new StatusData();
-   data->name       = "DND"    ;
-   data->message    = "Please do not disturb me";
-   data->status     = false      ;
-   addStatus(data);
 }
 
 PresenceStatusModel::~PresenceStatusModel()
@@ -59,6 +40,7 @@ PresenceStatusModel::~PresenceStatusModel()
    foreach (StatusData* data, m_lStatuses) {
       delete data;
    }
+   if (m_pVisitor) delete m_pVisitor;
 }
 
 ///Get model data
@@ -203,6 +185,14 @@ void PresenceStatusModel::addStatus(StatusData* status)
    }
 }
 
+
+void PresenceStatusModel::setPresenceVisitor(PresenceSerializationVisitor* visitor)
+{
+   m_pVisitor = visitor;
+   if (m_pVisitor)
+      m_pVisitor->load();
+}
+
 ///Add a new status
 void PresenceStatusModel::addRow()
 {
@@ -224,7 +214,8 @@ void PresenceStatusModel::removeRow(const QModelIndex& index)
 ///Serialize model TODO a backend visitor need to be created
 void PresenceStatusModel::save()
 {
-   //TODO
+   if (m_pVisitor)
+      m_pVisitor->serialize();
 }
 
 ///Singleton
