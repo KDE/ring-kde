@@ -167,6 +167,7 @@ SET(
    canvasobjectmanager.cpp
    eventmanager.cpp
    actioncollection.cpp
+   implementation.cpp
    ${sflphone_client_kde_DELEGATES}
    ${sflphone_client_kde_CONF}
    ${sflphone_client_kde_WIDGETS}

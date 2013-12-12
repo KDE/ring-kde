@@ -135,6 +135,8 @@ private Q_SLOTS:
    void editToolBar           ();
    void addMacro              ( KAction* newAction );
    void slotAddContact();
+   void updateRecordButton   ();
+   void updateVolumeButton   ();
 
 Q_SIGNALS:
    void windowStateChanged();

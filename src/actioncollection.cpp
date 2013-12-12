@@ -225,6 +225,9 @@ void ActionCollection::setupAction()
    /**/connect(MacroModel::instance(),       SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
    /*                                                                                                                   */
 
+   connect(AudioSettingsModel::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
+   connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
+
    SFLPhone::app()->actionCollection()->addAction("action_accept"                , action_accept                );
    SFLPhone::app()->actionCollection()->addAction("action_refuse"                , action_refuse                );
    SFLPhone::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
@@ -251,13 +254,14 @@ void ActionCollection::setupAction()
 
    MacroModel::instance()->initMacros();
 
-
    QList<KAction*> acList = *SFLPhoneAccessibility::instance();
 
    foreach(KAction* ac,acList) {
       SFLPhone::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
 
+   void updateRecordButton();
+   void updateVolumeButton();
 }
 
 ///Call
@@ -568,6 +572,26 @@ void ActionCollection::slotAddContact()
 {
    Contact* aContact = new Contact();
    AkonadiBackend::instance()->addNewContact(aContact);
+}
+
+///Change icon of the record button
+void ActionCollection::updateRecordButton()
+{
+   double recVol = AudioSettingsModel::instance()->captureVolume();
+   static const QIcon icons[4] = {QIcon(":/images/icons/mic.svg"),QIcon(":/images/icons/mic_25.svg"),
+      QIcon(":/images/icons/mic_50.svg"),QIcon(":/images/icons/mic_75.svg")};
+   const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
+   ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
+}
+
+///Update the colunm button icon
+void ActionCollection::updateVolumeButton()
+{
+   double sndVol = AudioSettingsModel::instance()->playbackVolume();
+   static const QIcon icons[4] = {QIcon(":/images/icons/speaker.svg"),QIcon(":/images/icons/speaker_25.svg"),
+      QIcon(":/images/icons/speaker_50.svg"),QIcon(":/images/icons/speaker_75.svg")};
+   const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
+   ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
 }
 
 //Video actions

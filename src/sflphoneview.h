@@ -90,8 +90,6 @@ public:
    void setCurrentIndex(const QModelIndex& idx) const;
 
 private Q_SLOTS:
-   void updateRecordButton   ();
-   void updateVolumeButton   ();
    void updateVolumeControls ();
    void sendMessage          ();
    void slotAutoCompleteClicked(PhoneNumber* n);

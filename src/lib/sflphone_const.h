@@ -17,6 +17,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
+/* THIS FILE IS DEPRECATED DO NOT ADD NEW GLOBAL CONSTANTS */
+
 #ifndef SFLPHONE_CONST_H
 #define SFLPHONE_CONST_H
 
@@ -53,14 +55,7 @@
 #define ICON_REC_DEL_OFF                  ":/images/icons/record_disabled.svg"
 #define ICON_REC_DEL_ON                   ":/images/icons/record.svg"
 #define ICON_MAILBOX                      ":/images/icons/mailbox.svg"
-#define ICON_REC_VOL_0                    ":/images/icons/mic.svg"
-#define ICON_REC_VOL_1                    ":/images/icons/mic_25.svg"
-#define ICON_REC_VOL_2                    ":/images/icons/mic_50.svg"
-#define ICON_REC_VOL_3                    ":/images/icons/mic_75.svg"
-#define ICON_SND_VOL_0                    ":/images/icons/speaker.svg"
-#define ICON_SND_VOL_1                    ":/images/icons/speaker_25.svg"
-#define ICON_SND_VOL_2                    ":/images/icons/speaker_50.svg"
-#define ICON_SND_VOL_3                    ":/images/icons/speaker_75.svg"
+
 #define ICON_DISPLAY_VOLUME_CONSTROLS     ":/images/icons/icon_volume_off.svg"
 #define ICON_DISPLAY_DIALPAD              ":/images/icons/icon_dialpad.svg"
 #define ICON_HISTORY_INCOMING             ":/images/icons/incoming.svg"
