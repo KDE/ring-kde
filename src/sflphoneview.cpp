@@ -353,24 +353,24 @@ public:
       //Load the default one
       if (!list.size()) {
          PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
-         data->name       = "Online"    ;
-         data->message    = "I am available";
+         data->name       = i18n("Online")    ;
+         data->message    = i18n("I am available");
          data->status     = true      ;
          data->defaultStatus = true;
          m->addStatus(data);
          data = new PresenceStatusModel::StatusData();
-         data->name       = "Away"    ;
-         data->message    = "I am away";
+         data->name       = i18n("Away")    ;
+         data->message    = i18n("I am away");
          data->status     = false      ;
          m->addStatus(data);
          data = new PresenceStatusModel::StatusData();
-         data->name       = "Busy"    ;
-         data->message    = "I am busy";
+         data->name       = i18n("Busy")    ;
+         data->message    = i18n("I am busy");
          data->status     = false      ;
          m->addStatus(data);
          data = new PresenceStatusModel::StatusData();
-         data->name       = "DND"    ;
-         data->message    = "Please do not disturb me";
+         data->name       = i18n("DND")    ;
+         data->message    = i18n("Please do not disturb me");
          data->status     = false      ;
          m->addStatus(data);
       }
@@ -431,6 +431,21 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    m_pMessageBoxW->setVisible(false);
 
+   //Setup volume
+   toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction());
+   connect(ActionCollection::instance()->muteCaptureAction(),SIGNAL(toggled(bool)),slider_recVol,SLOT(setDisabled(bool)));
+   toolButton_sndVol->setDefaultAction(ActionCollection::instance()->mutePlaybackAction());
+   connect(ActionCollection::instance()->mutePlaybackAction(),SIGNAL(toggled(bool)),slider_sndVol,SLOT(setDisabled(bool)));
+
+   connect(slider_recVol,SIGNAL(valueChanged(int)),AudioSettingsModel::instance(),SLOT(setCaptureVolume(int)));
+   connect(slider_sndVol,SIGNAL(valueChanged(int)),AudioSettingsModel::instance(),SLOT(setPlaybackVolume(int)));
+   connect(AudioSettingsModel::instance(),SIGNAL(captureVolumeChanged(int)),slider_recVol,SLOT(setValue(int)));
+   connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),slider_sndVol,SLOT(setValue(int)));
+
+   connect(AudioSettingsModel::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
+   connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
+
+   //Setup signals
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                      /
    /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this   , SLOT(on1_incomingCall(Call*))          );
    /**/connect(AccountListModel::instance() , SIGNAL(voiceMailNotify(Account*,int))         , this   , SLOT(on1_voiceMailNotify(Account*,int)) );
@@ -467,10 +482,10 @@ void SFLPhoneView::loadWindow()
    updateWindowCallState ();
    updateRecordButton    ();
    updateVolumeButton    ();
-   updateRecordBar       ();
-   updateVolumeBar       ();
    updateVolumeControls  ();
    loadAutoCompletion    ();
+   slider_recVol->setValue(AudioSettingsModel::instance()->captureVolume());
+   slider_sndVol->setValue(AudioSettingsModel::instance()->playbackVolume());
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
    AudioSettingsModel::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
 }
@@ -531,35 +546,6 @@ void SFLPhoneView::paste()
  *                                  Mutator                                  *
  *                                                                           *
  ****************************************************************************/
-
-///Select a phone number when calling using a contact
-bool SFLPhoneView::selectCallPhoneNumber(Call** call2,Contact* contact)
-{
-   if (contact->phoneNumbers().count() == 1) {
-      *call2 = CallModel::instance()->dialingCall(contact->formattedName(),AccountListModel::currentAccount());
-      if (*call2)
-         (*call2)->appendText(contact->phoneNumbers()[0]->uri());
-      selectDialingCall();
-   }
-   else if (contact->phoneNumbers().count() > 1) {
-      const PhoneNumber* number = KPhoneNumberSelector().getNumber(contact);
-      if (!number->uri().isEmpty()) {
-         (*call2) = CallModel::instance()->dialingCall(contact->formattedName(), AccountListModel::currentAccount());
-         if (*call2)
-            (*call2)->appendText(number->uri());
-         selectDialingCall();
-      }
-      else {
-         kDebug() << "Operation cancelled";
-         return false;
-      }
-   }
-   else {
-      kDebug() << "This contact have no valid phone number";
-      return false;
-   }
-   return true;
-} //selectCallPhoneNumber
 
 void SFLPhoneView::selectDialingCall() const
 {
@@ -749,97 +735,48 @@ void SFLPhoneView::loadAutoCompletion()
    }
 }
 
-//Mute a call
-void SFLPhoneView::mute(bool value)
-{
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   kDebug() << "on_toolButton_recVol_clicked().";
-   if(!value) {
-      toolButton_recVol->setChecked(false);
-      slider_recVol->setEnabled(true);
-      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)slider_recVol->value() / 100.0);
-      ActionCollection::instance()->muteAction()->setText(i18nc("Mute the current audio device","Mute"));
-   }
-   else {
-      toolButton_recVol->setChecked(true);
-      slider_recVol->setEnabled(false);
-      Q_NOREPLY callManager.setVolume(RECORD_DEVICE, 0.0);
-      ActionCollection::instance()->muteAction()->setText(i18nc("Unmute the current audio device","Unmute"));
-   }
-   updateRecordButton();
-}
-
 ///Change icon of the record button
 void SFLPhoneView::updateRecordButton()
 {
-   kDebug() << "updateRecordButton";
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   double recVol = callManager.getVolume(RECORD_DEVICE);
-   if(recVol     == 0.00) {
+   double recVol = AudioSettingsModel::instance()->captureVolume();
+   kDebug() << "updateRecordButton" << recVol;
+   if(recVol     == 0 /*|| AudioSettingsModel::instance()->isCaptureMuted()*/) {
       static const QIcon recVol0 = QIcon(ICON_REC_VOL_0);
-      toolButton_recVol->setIcon(recVol0);
+      ActionCollection::instance()->muteCaptureAction()->setIcon(recVol0);
    }
-   else if(recVol < 0.33) {
+   else if(recVol < 33) {
       static const QIcon recVol1 = QIcon(ICON_REC_VOL_1);
-      toolButton_recVol->setIcon(recVol1);
+      ActionCollection::instance()->muteCaptureAction()->setIcon(recVol1);
    }
-   else if(recVol < 0.67) {
+   else if(recVol < 67) {
       static const QIcon recVol2 = QIcon(ICON_REC_VOL_2);
-      toolButton_recVol->setIcon(recVol2);
+      ActionCollection::instance()->muteCaptureAction()->setIcon(recVol2);
    }
    else {
       static const QIcon recVol3 = QIcon(ICON_REC_VOL_3);
-      toolButton_recVol->setIcon(recVol3);
+      ActionCollection::instance()->muteCaptureAction()->setIcon(recVol3);
    }
 
-   if(recVol > 0) {
-      toolButton_recVol->setChecked(false);
-   }
 }
 
 ///Update the colunm button icon
 void SFLPhoneView::updateVolumeButton()
 {
-   kDebug() << "updateVolumeButton";
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   const double sndVol = callManager.getVolume(SOUND_DEVICE);
+   const double sndVol = AudioSettingsModel::instance()->playbackVolume();
+   kDebug() << "updateVolumeButton" << sndVol;
 
-   if(sndVol     == 0.00) {
-      toolButton_sndVol->setIcon(QIcon(ICON_SND_VOL_0));
+   if(sndVol     == 00 /*|| AudioSettingsModel::instance()->isPlaybackMuted()*/) {
+      ActionCollection::instance()->mutePlaybackAction()->setIcon(QIcon(ICON_SND_VOL_0));
    }
-   else if(sndVol < 0.33) {
-      toolButton_sndVol->setIcon(QIcon(ICON_SND_VOL_1));
+   else if(sndVol < 33) {
+      ActionCollection::instance()->mutePlaybackAction()->setIcon(QIcon(ICON_SND_VOL_1));
    }
-   else if(sndVol < 0.67) {
-      toolButton_sndVol->setIcon(QIcon(ICON_SND_VOL_2));
+   else if(sndVol < 67) {
+      ActionCollection::instance()->mutePlaybackAction()->setIcon(QIcon(ICON_SND_VOL_2));
    }
    else {
-      toolButton_sndVol->setIcon(QIcon(ICON_SND_VOL_3));
+      ActionCollection::instance()->mutePlaybackAction()->setIcon(QIcon(ICON_SND_VOL_3));
    }
-
-   if(sndVol > 0) {
-      toolButton_sndVol->setChecked(false);
-   }
-}
-
-///Update the record bar
-void SFLPhoneView::updateRecordBar(double _value)
-{
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   const double recVol = callManager.getVolume(RECORD_DEVICE);
-   kDebug() << "updateRecordBar" << recVol;
-   const int value = (_value > 0)?_value:(int)(recVol * 100);
-   slider_recVol->setValue(value);
-}
-
-///Update the volume bar
-void SFLPhoneView::updateVolumeBar(double _value)
-{
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   const double sndVol = callManager.getVolume(SOUND_DEVICE);
-   kDebug() << "updateVolumeBar" << sndVol;
-   const int value = (_value > 0)?_value:(int)(sndVol * 100);
-   slider_sndVol->setValue(value);
 }
 
 ///Hide or show the volume control
@@ -861,7 +798,6 @@ void SFLPhoneView::updateVolumeControls()
 ///Proxy to hide or show the volume control
 void SFLPhoneView::displayVolumeControls(bool checked)
 {
-   //ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
    ConfigurationSkeleton::setDisplayVolume(checked);
    updateVolumeControls();
 }
@@ -892,49 +828,6 @@ void SFLPhoneView::on_widget_dialpad_typed(QString text)
    m_pEventManager->typeString(text);
 }
 
-///The value on the slider changed
-void SFLPhoneView::on_slider_recVol_valueChanged(int value)
-{
-   kDebug() << "on_slider_recVol_valueChanged(" << value << ")";
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   Q_NOREPLY callManager.setVolume(RECORD_DEVICE, (double)value / 100.0);
-   updateRecordButton();
-}
-
-///The value on the slider changed
-void SFLPhoneView::on_slider_sndVol_valueChanged(int value)
-{
-   kDebug() << "on_slider_sndVol_valueChanged(" << value << ")";
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   Q_NOREPLY callManager.setVolume(SOUND_DEVICE, (double)value / 100.0);
-   updateVolumeButton();
-}
-
-///The mute button have been clicked
-void SFLPhoneView::on_toolButton_recVol_clicked(bool checked)
-{
-   mute(checked);
-}
-
-///The mute button have been clicked
-void SFLPhoneView::on_toolButton_sndVol_clicked(bool checked)
-{
-   CallManagerInterface & callManager = DBus::CallManager::instance();
-   kDebug() << "on_toolButton_sndVol_clicked().";
-   if(!checked) {
-      toolButton_sndVol->setChecked(false);
-      slider_sndVol->setEnabled(true);
-      Q_NOREPLY callManager.setVolume(SOUND_DEVICE, (double)slider_sndVol->value() / 100.0);
-   }
-   else {
-      toolButton_sndVol->setChecked(true);
-      slider_sndVol->setEnabled(false);
-      Q_NOREPLY callManager.setVolume(SOUND_DEVICE, 0.0);
-   }
-
-   updateVolumeButton();
-}
-
 ///When a call is coming (dbus)
 void SFLPhoneView::on1_incomingCall(Call* call)
 {
@@ -963,16 +856,6 @@ void SFLPhoneView::on1_voiceMailNotify(Account* a, int count)
    kDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << a->alias();
 }
 
-///When the volume change
-void SFLPhoneView::on1_volumeChanged(const QString& device, double value)
-{
-   Q_UNUSED(device)
-   kDebug() << "Signal : Volume Changed !" << value;
-   if(! (toolButton_recVol->isChecked() && value == 0.0))
-      updateRecordBar(value);
-   if(! (toolButton_sndVol->isChecked() && value == 0.0))
-      updateVolumeBar(value);
-}
 
 ///Send a text message
 void SFLPhoneView::sendMessage()

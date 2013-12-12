@@ -37,7 +37,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
 {
    addAction( ActionCollection::instance()->holdAction()     ,static_cast<int>(UserActionModel::Action::HOLD)     );
    addAction( ActionCollection::instance()->unholdAction()   ,static_cast<int>(UserActionModel::Action::UNHOLD)   );
-   addAction( ActionCollection::instance()->muteAction()     ,static_cast<int>(UserActionModel::Action::MUTE)     );
+   addAction( ActionCollection::instance()->muteCaptureAction()     ,static_cast<int>(UserActionModel::Action::MUTE)     );
    addAction( ActionCollection::instance()->pickupAction()   ,static_cast<int>(UserActionModel::Action::PICKUP)   );
    addAction( ActionCollection::instance()->hangupAction()   ,static_cast<int>(UserActionModel::Action::HANGUP)   );
    addAction( ActionCollection::instance()->transferAction() ,static_cast<int>(UserActionModel::Action::TRANSFER) );

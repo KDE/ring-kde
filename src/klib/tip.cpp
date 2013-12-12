@@ -148,6 +148,7 @@ QByteArray Tip::loadSvg(const QString& path)
       m_OriginalFile = file.readAll();
       m_OriginalFile.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
       m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toAscii());
+      file.close();
    }
    return m_OriginalFile;
 }

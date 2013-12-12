@@ -45,7 +45,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    KUrlRequester_destinationFolder->setUrl(KUrl(configurationManager.getRecordPath()));
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
-   m_pSuppressNoise->setChecked(AudioSettingsModel::instance()->noiseSuppressState());
+   m_pSuppressNoise->setChecked(AudioSettingsModel::instance()->isNoiseSuppressEnabled());
 
    alsaInputDevice->setModel   (AudioSettingsModel::instance()->inputDeviceModel () );
    alsaOutputDevice->setModel  (AudioSettingsModel::instance()->outputDeviceModel() );

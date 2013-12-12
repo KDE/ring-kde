@@ -45,7 +45,8 @@ public:
    ExtendedAction* holdAction    ();
    ExtendedAction* recordAction  ();
    ExtendedAction* refuseAction  ();
-   ExtendedAction* muteAction    ();
+   ExtendedAction* muteCaptureAction  ();
+   ExtendedAction* mutePlaybackAction  ();
    ExtendedAction* hangupAction  ();
    ExtendedAction* unholdAction  ();
    ExtendedAction* transferAction();
@@ -79,7 +80,8 @@ private:
    ExtendedAction* action_hold     ;
    ExtendedAction* action_transfer ;
    ExtendedAction* action_record   ;
-   ExtendedAction* action_mute     ;
+   ExtendedAction* action_mute_capture     ;
+   ExtendedAction* action_mute_playback     ;
    ExtendedAction* action_hangup   ;
    ExtendedAction* action_unhold   ;
    ExtendedAction* action_pickup   ;

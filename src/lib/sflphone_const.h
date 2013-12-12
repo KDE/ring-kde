@@ -68,9 +68,6 @@
 #define ICON_HISTORY_MISSED               ":/images/icons/missed.svg"
 #define ICON_SFLPHONE                     ":/images/icons/sflphone.svg"
 
-#define RECORD_DEVICE                     "mic"
-#define SOUND_DEVICE                      "speaker"
-
 /** Maybe to remove **/
 static const QString REGISTRATION_ENABLED_TRUE("true");
 static const QString REGISTRATION_ENABLED_FALSE("false");

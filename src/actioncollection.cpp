@@ -47,7 +47,7 @@
 #include <lib/account.h>
 #include <lib/accountlistmodel.h>
 #include <lib/callmodel.h>
-#include <lib/dbus/callmanager.h>
+#include <lib/audiosettingsmodel.h>
 
 
 ActionCollection* ActionCollection::m_spInstance = nullptr;
@@ -65,7 +65,8 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_hold     = new ExtendedAction(this);
    action_transfer = new ExtendedAction(this);
    action_record   = new ExtendedAction(this);
-   action_mute     = new ExtendedAction(this);
+   action_mute_capture     = new ExtendedAction(this);
+   action_mute_playback     = new ExtendedAction(this);
    action_hangup   = new ExtendedAction(this);
    action_unhold   = new ExtendedAction(this);
    action_pickup   = new ExtendedAction(this);
@@ -74,7 +75,7 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_record  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/record_grayscale.png"   ));
    action_hold    ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/hold_grayscale.png"     ));
    action_refuse  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/refuse_grayscale.png"   ));
-   action_mute    ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/mutemic_grayscale.png"  ));
+   action_mute_capture    ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/mutemic_grayscale.png"  ));
    action_hangup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/hangup_grayscale.png"   ));
    action_unhold  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/unhold_grayscale.png"   ));
    action_pickup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/pickup_grayscale.png"   ));
@@ -87,7 +88,8 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_hangup  ->setText ( i18n( "Hang up"  ) );
    action_unhold  ->setText ( i18n( "Unhold"   ) );
    action_pickup  ->setText ( i18n( "Pickup"   ) );
-   action_mute    ->setText ( i18nc("Mute the current audio device", "Mute"     ) );
+   action_mute_capture    ->setText ( i18nc("Mute the current audio capture device", "Mute"     ) );
+   action_mute_playback    ->setText ( i18nc("Mute the current audio playback device", "Mute Playback"     ) );
    action_accept  ->setText ( i18n("Dial"      ) );
 
    #ifdef ENABLE_VIDEO
@@ -133,6 +135,8 @@ ActionCollection::~ActionCollection()
    delete action_showHistoryDock       ;
    delete action_showBookmarkDock      ;
    delete action_editToolBar           ;
+   delete action_mute_playback         ;
+   delete action_mute_capture          ;
 }
 
 void ActionCollection::setupAction()
@@ -190,7 +194,12 @@ void ActionCollection::setupAction()
    action_showBookmarkDock->setCheckable( true );
    action_showBookmarkDock->setChecked(ConfigurationSkeleton::displayBookmarkDock());
 
-   action_mute->setCheckable(true);
+   action_mute_capture->setCheckable(true);
+   connect(action_mute_capture,SIGNAL(toggled(bool)),AudioSettingsModel::instance(),SLOT(muteCapture(bool)));
+   connect(AudioSettingsModel::instance(),SIGNAL(captureMuted(bool)),action_mute_capture,SLOT(setChecked(bool)));
+   action_mute_playback->setCheckable(true);
+   connect(action_mute_playback,SIGNAL(toggled(bool)),AudioSettingsModel::instance(),SLOT(mutePlayback(bool)));
+   connect(AudioSettingsModel::instance(),SIGNAL(playbackMuted(bool)),action_mute_playback,SLOT(setChecked(bool)));
 
 
 
@@ -205,7 +214,6 @@ void ActionCollection::setupAction()
    /**/connect(action_record,                SIGNAL(triggered()),           this    , SLOT(record())                    );
    /**/connect(action_mailBox,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
    /**/connect(action_pickup,                SIGNAL(triggered()),           this    , SLOT(accept())                    );
-   /**/connect(action_mute,                  SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(mute(bool))         );
    /**/connect(action_displayVolumeControls, SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayVolumeControls(bool)) );
    /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayDialpad(bool))        );
    /**/connect(action_displayMessageBox,     SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayMessageBox(bool))     );
@@ -238,6 +246,8 @@ void ActionCollection::setupAction()
    SFLPhone::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
    SFLPhone::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
    SFLPhone::app()->actionCollection()->addAction("action_addContact"            , action_addContact            );
+   SFLPhone::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
+   SFLPhone::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
    MacroModel::instance()->initMacros();
 
@@ -473,9 +483,14 @@ ExtendedAction* ActionCollection::refuseAction  ()
    return action_refuse;
 }
 
-ExtendedAction* ActionCollection::muteAction    ()
+ExtendedAction* ActionCollection::muteCaptureAction()
 {
-   return action_mute;
+   return action_mute_capture;
+}
+
+ExtendedAction* ActionCollection::mutePlaybackAction()
+{
+   return action_mute_playback;
 }
 
 ExtendedAction* ActionCollection::hangupAction  ()

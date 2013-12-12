@@ -72,7 +72,7 @@ PhoneDirectoryModel* PhoneDirectoryModel::instance()
 
 QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
 {
-   if (!index.isValid() || !m_lNumbers[index.row()]) return QVariant();
+   if (!index.isValid() || index.row() >= m_lNumbers.size()) return QVariant();
    const PhoneNumber* number = m_lNumbers[index.row()];
    switch (static_cast<PhoneDirectoryModel::Columns>(index.column())) {
       case PhoneDirectoryModel::Columns::URI:
@@ -97,7 +97,6 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
       case PhoneDirectoryModel::Columns::CONTACT:
          switch (role) {
             case Qt::DisplayRole:
-//                return QVariant::fromValue(const_cast<Contact*>(number->contact()));
                return number->contact()?number->contact()->formattedName():QVariant();
                break;
          }
@@ -105,7 +104,6 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
       case PhoneDirectoryModel::Columns::ACCOUNT:
          switch (role) {
             case Qt::DisplayRole:
-//                return QVariant::fromValue(const_cast<Account*>(number->account()));
                return number->account()?number->account()->id():QVariant();
                break;
          }
@@ -138,7 +136,7 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                break;
             case Qt::ToolTipRole: {
                QString out = "<table>";
-               QMutableHashIterator<QString, int> iter(const_cast<PhoneNumber*>(number)->m_hNames);
+               QHashIterator<QString, int> iter(number->alternativeNames());
                while (iter.hasNext())
                   out += QString("<tr><td>%1</td><td>%2</td></tr>").arg(iter.value()).arg(iter.key());
                out += "</table>";

@@ -80,7 +80,6 @@ public:
    virtual ~SFLPhoneView();
 
    //Mutator
-   bool selectCallPhoneNumber(Call** call,Contact* contact);
    void selectDialingCall() const;
 
    //Getters
@@ -91,15 +90,8 @@ public:
    void setCurrentIndex(const QModelIndex& idx) const;
 
 private Q_SLOTS:
-   /**
-    * Updates the history's search bar's display according to the current
-    * text searched.
-    * If empty, hide the search bar.
-    */
    void updateRecordButton   ();
    void updateVolumeButton   ();
-   void updateRecordBar      (double _value = -1);
-   void updateVolumeBar      (double _value = -1);
    void updateVolumeControls ();
    void sendMessage          ();
    void slotAutoCompleteClicked(PhoneNumber* n);
@@ -126,16 +118,9 @@ public Q_SLOTS:
 
    void on_widget_dialpad_typed(QString text);
 
-   void on_slider_recVol_valueChanged ( int value    );
-   void on_slider_sndVol_valueChanged ( int value    );
-   void on_toolButton_recVol_clicked  ( bool checked );
-   void on_toolButton_sndVol_clicked  ( bool checked );
-
    void on1_incomingCall   ( Call* call                          );
    void on1_voiceMailNotify( Account* a, int count );
-   void on1_volumeChanged  ( const QString &device, double value );
 
-   void mute     ( bool value = true);
    void paste();
 
 Q_SIGNALS:

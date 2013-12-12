@@ -134,10 +134,62 @@ void AudioSettingsModel::setNoiseSuppressState(bool enabled)
 }
 
 ///Enable noise suppress code, may make things worst
-bool AudioSettingsModel::noiseSuppressState() const
+bool AudioSettingsModel::isNoiseSuppressEnabled() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    return configurationManager.getNoiseSuppressState();
+}
+
+///Mute playback
+void AudioSettingsModel::mutePlayback(bool m)
+{
+   DBus::ConfigurationManager::instance().mutePlayback(m);
+   emit playbackMuted(m);
+}
+
+///Mute capture
+void AudioSettingsModel::muteCapture(bool m)
+{
+   DBus::ConfigurationManager::instance().muteCapture(m);
+   emit captureMuted(m);
+}
+
+///is mute playback
+bool AudioSettingsModel::isPlaybackMuted() const
+{
+   return DBus::ConfigurationManager::instance().isPlaybackMuted();
+}
+
+///is mute capture
+bool AudioSettingsModel::isCaptureMuted() const
+{
+   return DBus::ConfigurationManager::instance().isCaptureMuted();
+}
+
+int AudioSettingsModel::playbackVolume() const
+{
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   return callManager.getVolume(DeviceKey::PLAYBACK)*100;
+}
+
+int AudioSettingsModel::captureVolume() const
+{
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   return callManager.getVolume(DeviceKey::CAPTURE)*100;
+}
+
+void AudioSettingsModel::setPlaybackVolume(int volume)
+{
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   callManager.setVolume(DeviceKey::PLAYBACK,volume/100.0f);
+   emit playbackVolumeChanged(volume);
+}
+
+void AudioSettingsModel::setCaptureVolume(int volume)
+{
+   CallManagerInterface& callManager = DBus::CallManager::instance();
+   callManager.setVolume(DeviceKey::CAPTURE,volume/100.0f);
+   emit captureVolumeChanged(volume);
 }
 
 /****************************************************************

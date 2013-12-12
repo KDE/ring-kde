@@ -40,7 +40,7 @@
 ///Constructor
 ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
  :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(0),dlgGeneral(0),dlgDisplay(0)
- ,dlgAudio(0),dlgAddressBook(0),dlgHooks(0),dlgAccessibility(0),dlgAccounts(0)
+ ,dlgAudio(0),dlgAddressBook(0),dlgHooks(0),dlgAccessibility(0),dlgAccounts(0),dlgPresence(0)
 {
    this->setWindowIcon(QIcon(ICON_SFLPHONE));
 

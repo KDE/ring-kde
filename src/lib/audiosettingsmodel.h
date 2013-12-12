@@ -53,16 +53,26 @@ public:
    AudioManagerModel*   audioManagerModel  ();
    RingtoneDeviceModel* ringtoneDeviceModel();
    bool                 isRoomToneEnabled  ();
-   bool                 noiseSuppressState () const;
+   bool                 isNoiseSuppressEnabled () const;
+   bool                 isPlaybackMuted() const;
+   bool                 isCaptureMuted () const;
+   int                  playbackVolume () const;
+   int                  captureVolume  () const;
 
    //Setters
-   void setEnableRoomTone(bool enable);
-   void setNoiseSuppressState(bool enabled);
+   void setEnableRoomTone    ( bool enable  );
+   void setNoiseSuppressState( bool enabled );
 
    //Room tone type
    enum class ToneType {
       WITHOUT_MESSAGE = 0,
       WITH_MESSAGE    = 1,
+   };
+
+   class DeviceKey {
+   public:
+      constexpr static const char* CAPTURE  = "mic"    ;
+      constexpr static const char* PLAYBACK = "speaker";
    };
 
    //Mutator
@@ -71,6 +81,16 @@ public:
 
 public Q_SLOTS:
    void reload();
+   void mutePlayback(bool m);
+   void muteCapture (bool m);
+   void setPlaybackVolume(int volume);
+   void setCaptureVolume(int volume);
+
+Q_SIGNALS:
+   void captureMuted(bool);
+   void playbackMuted(bool);
+   void playbackVolumeChanged(int);
+   void captureVolumeChanged(int);
 
 private:
    //Constructor
