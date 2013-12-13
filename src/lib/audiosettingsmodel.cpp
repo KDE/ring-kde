@@ -168,27 +168,27 @@ bool AudioSettingsModel::isCaptureMuted() const
 
 int AudioSettingsModel::playbackVolume() const
 {
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   return callManager.getVolume(DeviceKey::PLAYBACK)*100;
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   return configurationManager.getVolume(DeviceKey::PLAYBACK)*100;
 }
 
 int AudioSettingsModel::captureVolume() const
 {
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   return callManager.getVolume(DeviceKey::CAPTURE)*100;
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   return configurationManager.getVolume(DeviceKey::CAPTURE)*100;
 }
 
 void AudioSettingsModel::setPlaybackVolume(int volume)
 {
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   callManager.setVolume(DeviceKey::PLAYBACK,volume/100.0f);
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   configurationManager.setVolume(DeviceKey::PLAYBACK,volume/100.0f);
    emit playbackVolumeChanged(volume);
 }
 
 void AudioSettingsModel::setCaptureVolume(int volume)
 {
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   callManager.setVolume(DeviceKey::CAPTURE,volume/100.0f);
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   configurationManager.setVolume(DeviceKey::CAPTURE,volume/100.0f);
    emit captureVolumeChanged(volume);
 }
 

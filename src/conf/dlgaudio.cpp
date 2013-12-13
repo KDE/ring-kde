@@ -89,7 +89,7 @@ void DlgAudio::updateSettings()
 
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
-      configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
+//       configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
 
       configurationManager.setIsAlwaysRecording   ( m_pAlwaysRecordCK->isChecked()          );
 

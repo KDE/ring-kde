@@ -123,14 +123,10 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    //Setup volume
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction());
-//    connect(ActionCollection::instance()->muteCaptureAction(),SIGNAL(toggled(bool)),slider_recVol,SLOT(setDisabled(bool)));
    toolButton_sndVol->setDefaultAction(ActionCollection::instance()->mutePlaybackAction());
-//    connect(ActionCollection::instance()->mutePlaybackAction(),SIGNAL(toggled(bool)),slider_sndVol,SLOT(setDisabled(bool)));
 
    connect(slider_recVol,SIGNAL(valueChanged(int)),AudioSettingsModel::instance(),SLOT(setCaptureVolume(int)));
    connect(slider_sndVol,SIGNAL(valueChanged(int)),AudioSettingsModel::instance(),SLOT(setPlaybackVolume(int)));
-//    connect(AudioSettingsModel::instance(),SIGNAL(captureVolumeChanged(int)),slider_recVol,SLOT(setValue(int)));
-//    connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),slider_sndVol,SLOT(setValue(int)));
 
    //Setup signals
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                      /
