@@ -121,14 +121,19 @@ const QString& Contact::department() const
    return m_Department;
 }
 
-///Set the phone number (type and number) 
+///Set the phone number (type and number)
 void Contact::setPhoneNumbers(PhoneNumbers numbers)
 {
+   const int oldCount(m_Numbers.size()),newCount(numbers.size());
    foreach(PhoneNumber* n, m_Numbers)
       disconnect(n,SIGNAL(presentChanged(bool)),this,SLOT(slotPresenceChanged()));
    m_Numbers = numbers;
+   if (newCount < oldCount) //Rows need to be removed from models first
+      emit phoneNumberCountAboutToChange(newCount,oldCount);
    foreach(PhoneNumber* n, m_Numbers)
       connect(n,SIGNAL(presentChanged(bool)),this,SLOT(slotPresenceChanged()));
+   if (newCount > oldCount) //Need to be updated after the data to prevent invalid memory access
+      emit phoneNumberCountChanged(newCount,oldCount);
    emit changed();
 }
 

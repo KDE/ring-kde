@@ -133,6 +133,8 @@ Q_SIGNALS:
    void presenceChanged( PhoneNumber* );
    void statusChanged  ( bool         );
    void changed        (              );
+   void phoneNumberCountChanged(int,int);
+   void phoneNumberCountAboutToChange(int,int);
 
 protected:
    //Presence secret methods

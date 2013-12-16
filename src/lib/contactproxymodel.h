@@ -85,7 +85,7 @@ private Q_SLOTS:
    void slotContactAdded(Contact* c);
 };
 
-class ContactTreeBinder : public QObject {
+class ContactTreeBinder : public QObject { //FIXME Qt5 remove when dropping Qt4
    Q_OBJECT
 public:
    ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n);
@@ -95,6 +95,8 @@ private:
 private Q_SLOTS:
    void slotContactChanged();
    void slotStatusChanged();
+   void slotPhoneNumberCountChanged(int,int);
+   void slotPhoneNumberCountAboutToChange(int,int);
 };
 
 #endif

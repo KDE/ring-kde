@@ -94,6 +94,8 @@ ContactTreeBinder::ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n) :
    QObject(),m_pTreeNode(n),m_pModel(m)
 {
    connect(n->m_pContact,SIGNAL(changed()),this,SLOT(slotContactChanged()));
+   connect(n->m_pContact,SIGNAL(phoneNumberCountChanged(int,int)),this,SLOT(slotPhoneNumberCountChanged(int,int)));
+   connect(n->m_pContact,SIGNAL(phoneNumberCountAboutToChange(int,int)),this,SLOT(slotPhoneNumberCountAboutToChange(int,int)));
 }
 
 
@@ -101,12 +103,35 @@ void ContactTreeBinder::slotContactChanged()
 {
    const QModelIndex idx = m_pModel->index(m_pTreeNode->m_Index,0,m_pModel->index(m_pTreeNode->m_pParent3->m_Index,0));
    const QModelIndex lastPhoneIdx = m_pModel->index(m_pTreeNode->m_pContact->phoneNumbers().size()-1,0,idx);
-   emit m_pModel->dataChanged(idx,lastPhoneIdx);
+   emit m_pModel->dataChanged(idx,idx);
+   if (lastPhoneIdx.isValid()) //Need to be done twice
+      emit m_pModel->dataChanged(m_pModel->index(0,0,idx),lastPhoneIdx);
 }
 
 void ContactTreeBinder::slotStatusChanged()
 {
    
+}
+
+void ContactTreeBinder::slotPhoneNumberCountChanged(int count, int oldCount)
+{
+   const QModelIndex idx = m_pModel->index(m_pTreeNode->m_Index,0,m_pModel->index(m_pTreeNode->m_pParent3->m_Index,0));
+   if (count > oldCount) {
+      const QModelIndex lastPhoneIdx = m_pModel->index(oldCount-1,0,idx);
+      m_pModel->beginInsertRows(idx,oldCount,count-1);
+      m_pModel->endInsertRows();
+   }
+   emit m_pModel->dataChanged(idx,idx);
+}
+
+void ContactTreeBinder::slotPhoneNumberCountAboutToChange(int count, int oldCount)
+{
+   const QModelIndex idx = m_pModel->index(m_pTreeNode->m_Index,0,m_pModel->index(m_pTreeNode->m_pParent3->m_Index,0));
+   if (count < oldCount) {
+      //If count == 1, disable all children
+      m_pModel->beginRemoveRows(idx,count == 1?0:count,oldCount-1);
+      m_pModel->endRemoveRows();
+   }
 }
 
 //

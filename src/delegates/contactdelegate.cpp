@@ -70,7 +70,7 @@ QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    static QFontMetrics fm(QApplication::font());
    static const int lineHeight = fm.height()+2;
 
-   int lines = ((displayOrg && !ct->organization().isEmpty()) + (displayEmail && !ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight - ((ct->phoneNumbers().size()>0)*lineHeight);
+   int lines = ((displayOrg && !ct->organization().isEmpty()) + (displayEmail && !ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight - ((ct->phoneNumbers().size()>0?1:0)*lineHeight);
    lines += lines==lineHeight?3:0; //Bottom margin for contact with only multiple phone numbers
    return QSize(sh.rwidth(),(lines+rowCount*lineHeight)<MIN_HEIGHT?MIN_HEIGHT:lines);
 }
