@@ -169,11 +169,11 @@ TopLevelItem* ContactProxyModel::getTopLevelItem(const QString& category)
       TopLevelItem* item = new TopLevelItem(category);
       m_hCategories[category] = item;
       item->m_Index = m_lCategoryCounter.size();
-      emit layoutAboutToBeChanged();
+//       emit layoutAboutToBeChanged();
       beginInsertRows(QModelIndex(),m_lCategoryCounter.size(),m_lCategoryCounter.size()); {
          m_lCategoryCounter << item;
       } endInsertRows();
-      emit layoutChanged();
+//       emit layoutChanged();
    }
    TopLevelItem* item = m_hCategories[category];
    return item;
@@ -181,6 +181,7 @@ TopLevelItem* ContactProxyModel::getTopLevelItem(const QString& category)
 
 void ContactProxyModel::reloadCategories()
 {
+   emit layoutAboutToBeChanged();
    beginResetModel();
    m_hCategories.clear();
    foreach(TopLevelItem* item,m_lCategoryCounter) {
@@ -438,7 +439,7 @@ QModelIndex ContactProxyModel::index( int row, int column, const QModelIndex& pa
    }
    else if (row < m_lCategoryCounter.size()){
       //Return top level
-      return createIndex(row,column,m_lCategoryCounter[row]);
+      return createIndex(row,column,(void*)m_lCategoryCounter[row]);
    }
    return QModelIndex();
 }
