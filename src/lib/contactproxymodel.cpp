@@ -417,7 +417,8 @@ QModelIndex ContactProxyModel::index( int row, int column, const QModelIndex& pa
       switch(parentNode->type()) {
          case CategorizedCompositeNode::Type::TOP_LEVEL: {
             TopLevelItem* tld = static_cast<TopLevelItem*>(parentNode);
-            return createIndex(row,column,(void*)tld->m_lChildren[row]);
+            if (tld && row < tld->m_lChildren.size())
+               return createIndex(row,column,(void*)tld->m_lChildren[row]);
          }
             break;
          case CategorizedCompositeNode::Type::CONTACT: {
