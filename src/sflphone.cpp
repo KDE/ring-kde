@@ -135,7 +135,6 @@ SFLPhone::SFLPhone(QWidget *parent)
    if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid()) {
       QTimer::singleShot(5000,this,SLOT(timeout()));
    }
-
    static bool init = false;
    if (!init) {
       Call::setContactBackend(AkonadiBackend::instance());
@@ -243,7 +242,6 @@ SFLPhone::SFLPhone(QWidget *parent)
    m_pView->loadWindow();
 
    move(QCursor::pos().x() - geometry().width()/2, QCursor::pos().y() - geometry().height()/2);
-   show();
 
    if (AccountListModel::instance()->size() <= 1)
       (new AccountWizard())->show();
@@ -311,6 +309,11 @@ SFLPhone::SFLPhone(QWidget *parent)
       QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
+
+   if (ConfigurationSkeleton::displayOnStart())
+      show();
+   else
+      close();
 } //SFLPhone
 
 ///Destructor
