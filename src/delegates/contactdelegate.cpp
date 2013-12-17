@@ -174,8 +174,8 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (index.data(AbstractContactBackend::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         static QMap<QString,DelegateDropOverlay::OverlayButton> contactMap;
-         contactMap.insert(i18n("Transfer")   ,{new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Conference});
+         static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;
+         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Conference));
          m_pDelegatedropoverlay->setButtons(&contactMap);
       }
       m_pDelegatedropoverlay->paintEvent(painter, option, index);

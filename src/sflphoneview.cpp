@@ -117,7 +117,8 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    pal.setColor(QPalette::AlternateBase, Qt::lightGray);
    setPalette(pal);
 
-   AccountListModel::instance()->setColorVisitor(new ColorVisitor(pal));
+   m_pColorVisitor = new ColorVisitor(pal);
+   AccountListModel::instance()->setColorVisitor(m_pColorVisitor);
 
    m_pMessageBoxW->setVisible(false);
 
@@ -157,6 +158,7 @@ SFLPhoneView::~SFLPhoneView()
    delete m_pCanvasManager;
    if (m_pAutoCompletion)
       delete m_pAutoCompletion;
+   delete m_pColorVisitor;
 }
 
 ///Init main window

@@ -37,6 +37,7 @@ class AutoCompletion;
 class CanvasObjectManager;
 class EventManager;
 class PhoneNumber;
+class ColorVisitor;
 
 /**
  * This is the main view class for sflphone-client-kde.  Most of the non-menu,
@@ -64,6 +65,7 @@ private:
    AutoCompletion*      m_pAutoCompletion ;
    CanvasObjectManager* m_pCanvasManager  ;
    EventManager*        m_pEventManager   ;
+   ColorVisitor*        m_pColorVisitor   ;
 
 public:
    //Constructors & Destructors

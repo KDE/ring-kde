@@ -19,6 +19,7 @@
 #define HISTORYDELEGATE_H
 
 #include <QtGui/QStyledItemDelegate>
+#include "delegatedropoverlay.h"
 
 class QTreeView;
 class DelegateDropOverlay;
@@ -40,6 +41,7 @@ private:
    DelegateDropOverlay* m_pDelegatedropoverlay;
    TipAnimationWrapper* m_AnimationWrapper;
    Tip* m_pRingingTip;
+   QMap<QString,DelegateDropOverlay::OverlayButton*> historyMap,callMap;
 private slots:
    void slotStopRingingAnimation();
 };

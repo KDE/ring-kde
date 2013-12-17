@@ -35,6 +35,10 @@ public:
    struct OverlayButton {
       QImage* m_pImage;
       Call::DropAction role;
+      ~OverlayButton() {
+         delete m_pImage;
+      }
+      OverlayButton(QImage* i,Call::DropAction r) : m_pImage(i),role(r) {}
    };
    //Constructor
    explicit DelegateDropOverlay(QObject* parent = nullptr);
@@ -42,7 +46,7 @@ public:
 
    //Setters
    void setHoverState(bool hover);
-   void setButtons(QMap<QString,OverlayButton>* buttons) {
+   void setButtons(QMap<QString,OverlayButton*>* buttons) {
       m_lpButtons = buttons;
    }
    virtual void paintEvent(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index);
@@ -54,7 +58,7 @@ private:
    bool               m_Init          ;
    char               m_Reverse       ;
    QList<QModelIndex> m_lActiveIndexes;
-   QMap<QString,OverlayButton>* m_lpButtons;
+   QMap<QString,OverlayButton*>* m_lpButtons;
 
 private Q_SLOTS:
    void changeVisibility();

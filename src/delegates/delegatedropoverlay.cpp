@@ -72,12 +72,12 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
       }
    }
    int i =0;
-   QMapIterator<QString, OverlayButton> it(*m_lpButtons);
+   QMapIterator<QString, OverlayButton*> it(*m_lpButtons);
    const int dropPosition = index.data(Call::Role::DropPosition).toInt();
    while (it.hasNext()) {
       it.next();
       if (step) {
-         const bool highlight = dropPosition == it.value().role;
+         const bool highlight = dropPosition == it.value()->role;
          const int tmpStep = (step>0)?step:15+step;
          painter->save();
          painter->setOpacity(1);
@@ -97,12 +97,12 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
          painter->drawRoundedRect(buttonRect, 10, 10);
          painter->setPen(highlight?QColor(Qt::white):m_Pen);
 
-         if (it.value().m_pImage) {
+         if (it.value()->m_pImage) {
             painter->drawImage(QRect(
                buttonRect.x()+buttonRect.width()-(buttonRect.height()-10)-10/*padding*/,
                buttonRect.y()+5,
                (buttonRect.height()-10),
-               (buttonRect.height()-10)),*it.value().m_pImage);
+               (buttonRect.height()-10)),*it.value()->m_pImage);
          }
 
          QFont font = painter->font();

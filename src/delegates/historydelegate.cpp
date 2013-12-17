@@ -39,7 +39,6 @@
 #include <lib/phonenumber.h>
 #include "klib/kcfg_settings.h"
 #include "widgets/playeroverlay.h"
-#include "delegatedropoverlay.h"
 #include "dialpaddelegate.h"
 #include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
@@ -108,7 +107,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       painter->setOpacity(0.70);
 
    const PhoneNumber* n = qvariant_cast<PhoneNumber*>(index.data(Call::Role::PhoneNu));
-   QPixmap pxm = n?PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap();
+   QPixmap pxm = n?PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
 
    //Handle history with recording
    if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
@@ -265,20 +264,19 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       DialpadDelegate::paint(painter,option,index);
    }
 
-   static QMap<QString,DelegateDropOverlay::OverlayButton> historyMap,callMap;
    //BEGIN overlay path
    if (index.data(Call::Role::DropState).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
          const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         callMap.insert(i18n("Conference")   ,{new QImage(KStandardDirs::locate("data","sflphone-client-kde/confBlackWhite.png")),Call::DropAction::Conference});
-         callMap.insert(i18n("Transfer")     ,{new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer});
-         historyMap.insert(i18n("Transfer")  ,{new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer});
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/confBlackWhite.png")),Call::DropAction::Conference));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer));
       }
 
       if (currentState == Call::State::OVER)
-         m_pDelegatedropoverlay->setButtons(&historyMap);
+         const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay->setButtons(&const_cast<HistoryDelegate*>(this)->historyMap);
       else
-         m_pDelegatedropoverlay->setButtons(&callMap);
+         const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay->setButtons(&const_cast<HistoryDelegate*>(this)->callMap);
       m_pDelegatedropoverlay->paintEvent(painter, option, index);
    }
    //END overlay path
@@ -312,4 +310,11 @@ HistoryDelegate::~HistoryDelegate()
       delete m_AnimationWrapper;
    if (m_pRingingTip)
       delete m_pRingingTip;
+   if (m_pDelegatedropoverlay) {
+      delete m_pDelegatedropoverlay;
+      foreach (DelegateDropOverlay::OverlayButton* b, historyMap)
+         delete b;
+      foreach (DelegateDropOverlay::OverlayButton* b, callMap)
+         delete b;
+   }
 }

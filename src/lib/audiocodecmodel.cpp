@@ -113,11 +113,11 @@ QModelIndex AudioCodecModel::addAudioCodec() {
 
 ///Remove audio codec at 'idx'
 void AudioCodecModel::removeAudioCodec(QModelIndex idx) {
-   qDebug() << "REMOVING" << idx.row() << m_lAudioCodecs.size();
    if (idx.isValid()) {
+      AudioCodecData* d = m_lAudioCodecs[idx.row()];
       m_lAudioCodecs.removeAt(idx.row());
+      delete d;
       emit dataChanged(idx, index(m_lAudioCodecs.size()-1,0));
-      qDebug() << "DONE" << m_lAudioCodecs.size();
    }
    else {
       qDebug() << "Failed to remove an invalid audio codec";
@@ -127,8 +127,10 @@ void AudioCodecModel::removeAudioCodec(QModelIndex idx) {
 ///Remove everything
 void AudioCodecModel::clear()
 {
-   foreach(AudioCodecData* data2, m_lAudioCodecs) {
-      delete data2;
+   while(m_lAudioCodecs.size()) {
+      AudioCodecData* d = m_lAudioCodecs[0];
+      m_lAudioCodecs.removeAt(0);
+      delete d;
    }
    m_lAudioCodecs.clear  ();
    m_lEnabledCodecs.clear();

@@ -131,9 +131,11 @@ void CallModel::init()
 ///Destructor
 CallModel::~CallModel()
 {
-   foreach (Call* call,  m_sPrivateCallList_call.keys())
+   const QList<Call*> keys = m_sPrivateCallList_call.keys();
+   const QList<InternalStruct*> values = m_sPrivateCallList_call.values();
+   foreach (Call* call, keys )
       delete call;
-   foreach (InternalStruct* s,  m_sPrivateCallList_call.values())
+   foreach (InternalStruct* s,  values )
       delete s;
    m_sPrivateCallList_call.clear  ();
    m_sPrivateCallList_callId.clear();
@@ -337,7 +339,7 @@ void CallModel::removeCall(Call* call, bool noEmit)
 
    if (m_sPrivateCallList_call[call] != nullptr) {
       m_lInternalModel.removeAll(m_sPrivateCallList_call[call]);
-      m_sPrivateCallList_call.remove(call);
+      //NOTE Do not free the memory, it can still be used elsewhere or in modelindexes
    }
 
    if (m_sPrivateCallList_callId[m_sPrivateCallList_callId.key(internal)] == internal) {

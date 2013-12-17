@@ -54,6 +54,16 @@ m_pRing2Pix(nullptr),m_pRing3Pix(nullptr)
 RingingTip::~RingingTip()
 {
    delete m_pTimer;
+   if (m_pR) {
+      delete m_pPhoneR;
+      delete m_pRing1R;
+      delete m_pRing2R;
+      delete m_pRing3R;
+      delete m_pPhonePix;
+      delete m_pRing3Pix;
+      delete m_pRing2Pix;
+      delete m_pRing1Pix;
+   }
    delete m_pR;
 }
 
