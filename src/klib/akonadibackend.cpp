@@ -360,12 +360,14 @@ void AkonadiBackend::collectionsReceived( const Akonadi::Collection::List&  list
 void AkonadiBackend::slotItemAdded(Akonadi::Item item,Akonadi::Collection coll)
 {
    Q_UNUSED(coll)
-   beginInsertRows(QModelIndex(),m_pContacts.size()-1,m_pContacts.size());
    Contact* c = addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());
-   m_pContacts << c;
-   endInsertRows();
-   emit newContactAdded(c);
-   emit layoutChanged();
+   if (c) { //Not all items will have an addressee payload
+      beginInsertRows(QModelIndex(),m_pContacts.size()-1,m_pContacts.size());
+      m_pContacts << c;
+      endInsertRows();
+      emit newContactAdded(c);
+      emit layoutChanged();
+   }
 }
 
 ///Callback when an item change

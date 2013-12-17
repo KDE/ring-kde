@@ -46,6 +46,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
    m_pSuppressNoise->setChecked(AudioSettingsModel::instance()->isNoiseSuppressEnabled());
+   m_pCPlayDTMFCk->setChecked(AudioSettingsModel::instance()->areDTMFMuted());
 
    alsaInputDevice->setModel   (AudioSettingsModel::instance()->inputDeviceModel () );
    alsaOutputDevice->setModel  (AudioSettingsModel::instance()->outputDeviceModel() );
@@ -60,6 +61,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
 
    connect( box_alsaPlugin                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( m_pSuppressNoise                , SIGNAL(toggled(bool))            , SLOT(changed()));
+   connect( m_pCPlayDTMFCk                  , SIGNAL(toggled(bool))            , SLOT(changed()));
    connect( alsaInputDevice                 , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( alsaOutputDevice                , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
@@ -98,6 +100,7 @@ void DlgAudio::updateSettings()
       AudioSettingsModel::instance()->ringtoneDeviceModel()->setCurrentDevice(alsaRingtoneDevice->currentIndex());
       AudioSettingsModel::instance()->alsaPluginModel    ()->setCurrentPlugin(box_alsaPlugin->currentIndex());
       AudioSettingsModel::instance()->setNoiseSuppressState(m_pSuppressNoise->isChecked());
+      AudioSettingsModel::instance()->setDTMFMuted         (m_pCPlayDTMFCk  ->isChecked());
 
       m_Changed   = false;
       m_IsLoading = false;

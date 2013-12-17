@@ -204,16 +204,17 @@ void ContactProxyModel::reloadCategories()
 
 void ContactProxyModel::slotContactAdded(Contact* c)
 {
+   if (!c) return;
    const QString val = category(c);
    TopLevelItem* item = getTopLevelItem(val);
    ContactTreeNode* contactNode = new ContactTreeNode(c,this);
    contactNode->m_pParent3 = item;
    contactNode->m_Index = item->m_lChildren.size();
-   emit layoutAboutToBeChanged();
+   //emit layoutAboutToBeChanged();
    beginInsertRows(index(item->m_Index,0,QModelIndex()),item->m_lChildren.size(),item->m_lChildren.size()); {
       item->m_lChildren << contactNode;
    } endInsertRows();
-   emit layoutChanged();
+   //emit layoutChanged();
 }
 
 bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value, int role)
@@ -503,6 +504,8 @@ int ContactProxyModel::acceptedPayloadTypes()
 
 
 QString ContactProxyModel::category(Contact* ct) const {
+   if (!ct)
+      return QString();
    QString cat;
    switch (m_Role) {
       case AbstractContactBackend::Role::Organization:

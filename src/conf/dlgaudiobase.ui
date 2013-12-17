@@ -225,6 +225,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="m_pCPlayDTMFCk">
+        <property name="text">
+         <string>Mute DTMF</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

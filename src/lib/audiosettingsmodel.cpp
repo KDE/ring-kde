@@ -192,6 +192,18 @@ void AudioSettingsModel::setCaptureVolume(int volume)
    emit captureVolumeChanged(volume);
 }
 
+void AudioSettingsModel::setDTMFMuted(bool muted)
+{
+   //TODO
+   DBus::ConfigurationManager::instance().muteDtmf(muted);
+   emit DTMFMutedChanged(muted);
+}
+
+bool AudioSettingsModel::areDTMFMuted() const
+{
+   return DBus::ConfigurationManager::instance().isDtmfMuted();
+}
+
 /****************************************************************
  *                                                              *
  *                        AlsaPluginModel                       *

@@ -56,6 +56,7 @@ public:
    bool                 isNoiseSuppressEnabled () const;
    bool                 isPlaybackMuted() const;
    bool                 isCaptureMuted () const;
+   bool                 areDTMFMuted   () const;
    int                  playbackVolume () const;
    int                  captureVolume  () const;
 
@@ -80,17 +81,19 @@ public:
    void     stopRoomTone() const;
 
 public Q_SLOTS:
-   void reload();
-   void mutePlayback(bool m);
-   void muteCapture (bool m);
-   void setPlaybackVolume(int volume);
-   void setCaptureVolume(int volume);
+   void reload           (              );
+   void mutePlayback     ( bool m       );
+   void muteCapture      ( bool m       );
+   void setPlaybackVolume( int  volume  );
+   void setCaptureVolume ( int  volume  );
+   void setDTMFMuted     ( bool muted   );
 
 Q_SIGNALS:
    void captureMuted(bool);
    void playbackMuted(bool);
    void playbackVolumeChanged(int);
    void captureVolumeChanged(int);
+   void DTMFMutedChanged(bool);
 
 private:
    //Constructor
