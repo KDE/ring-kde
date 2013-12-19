@@ -100,10 +100,13 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    m_pRingTonePath->lineEdit()->setObjectName("m_pRingTonePath");
    m_pRingTonePath->lineEdit()->setReadOnly(true);
 
+   file_tls_authority->lineEdit()->setPlaceholderText(i18n("Usually called \"ca.crt\""));
+   file_tls_endpoint->lineEdit()->setPlaceholderText(i18n("A .pem or .crt"));
+   file_tls_private_key->lineEdit()->setPlaceholderText(i18n("A .key file"));
+
    loadAccountList();
    accountListHasChanged = false;
 
-   combo_security_STRP->setModel(KeyExchangeModel::instance());
    combo_tls_method->setModel(TlsMethodModel::instance());
 
    m_pRingtoneListLW->horizontalHeader()->setResizeMode(0,QHeaderView::Stretch);
@@ -156,6 +159,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(check_tls_answer,                  SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(check_tls_requier_cert,            SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(group_security_tls,                SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
+   /**/connect(groupbox_STRP_keyexchange,         SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(radioButton_pa_same_as_local,      SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(radioButton_pa_custom,             SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pUseCustomFileCK,                SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
@@ -233,6 +237,8 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
       m_pProxyLE->setText("");
    }
 
+   const KeyExchangeModel::Type currentKeyExchange = (!groupbox_STRP_keyexchange->isChecked())?KeyExchangeModel::Type::NONE:static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex());
+
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                 /
    /**/ ACC setProtocol                    ( static_cast<Account::Protocol>(edit2_protocol->currentIndex())           );
@@ -257,7 +263,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setTlsServerName               ( edit_tls_outgoing->text()                                                );
    /**/ ACC setTlsNegotiationTimeoutSec    ( spinbox_tls_timeout_sec->value()                                         );
    /**/ ACC setTlsNegotiationTimeoutMsec   ( spinbox_tls_timeout_msec->value()                                        );
-   /**/ ACC setKeyExchange                 ( static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex()) );
+   /**/ ACC setKeyExchange                 ( currentKeyExchange                                                       );
    /**/ ACC setTlsVerifyServer             ( check_tls_incoming->isChecked()                                          );
    /**/ ACC setTlsVerifyClient             ( check_tls_answer->isChecked()                                            );
    /**/ ACC setTlsRequireClientCertificate ( check_tls_requier_cert->isChecked()                                      );
@@ -376,8 +382,13 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/check_tls_requier_cert->setChecked       (  ACC isTlsRequireClientCertificate  ());
    /**/group_security_tls->setChecked           (  ACC isTlsEnable                    ());
    /**/m_pAutoAnswer->setChecked                (  ACC isAutoAnswer                   ());
-   /**/combo_security_STRP->setCurrentIndex     (  KeyExchangeModel::instance()->toIndex( ACC keyExchange()).row());
    /*                                                                                        */
+
+   combo_security_STRP->setModel(ACC keyExchangeModel());
+   groupbox_STRP_keyexchange->setChecked(!(ACC keyExchange() == KeyExchangeModel::Type::NONE));
+   if (!(ACC keyExchange() == KeyExchangeModel::Type::NONE)) {
+      /**/combo_security_STRP->setCurrentIndex     (  ACC keyExchangeModel()->toIndex( ACC keyExchange()).row());
+   }
 
    updateCombo(0);
 
@@ -785,11 +796,11 @@ void DlgAccounts::updateCombo(int value)
 {
    Q_UNUSED(value)
    static const bool enabledCombo[3][5] = {
-      /*KeyExchangeModel::Type::NONE*/ {false,false,false,false,false},
       /*KeyExchangeModel::Type::ZRTP*/ {false,true ,true ,true ,true },
       /*KeyExchangeModel::Type::SDES*/ {true ,false,false,false,false},
+      /*KeyExchangeModel::Type::NONE*/ {false,false,false,false,false},
    };
-   int idx = combo_security_STRP->currentIndex();
+   const int idx = combo_security_STRP->currentIndex();
    if (idx >= 3) return;
    checkbox_SDES_fallback_rtp->setVisible   ( enabledCombo[idx][0] );
    checkbox_ZRTP_Ask_user->setVisible       ( enabledCombo[idx][1] );

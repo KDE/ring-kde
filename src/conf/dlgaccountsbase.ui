@@ -222,7 +222,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -1101,7 +1101,7 @@
                  </sizepolicy>
                 </property>
                 <property name="title">
-                 <string>Enable TLS</string>
+                 <string>Encrypt negotiation (TLS)</string>
                 </property>
                 <property name="checkable">
                  <bool>true</bool>
@@ -1113,7 +1113,7 @@
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_tls_listener">
                    <property name="text">
-                    <string>Global TLS listener*</string>
+                    <string>Global TLS listener port*</string>
                    </property>
                   </widget>
                  </item>
@@ -1175,7 +1175,14 @@
                   </widget>
                  </item>
                  <item row="4" column="1" colspan="8">
-                  <widget class="KLineEdit" name="edit_tls_private_key_password"/>
+                  <widget class="KLineEdit" name="edit_tls_private_key_password">
+                   <property name="placeholderText">
+                    <string>Only necessary if the key have a password</string>
+                   </property>
+                   <property name="passwordMode">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
                  </item>
                  <item row="5" column="0">
                   <widget class="QLabel" name="label_tls_method">
@@ -1218,12 +1225,16 @@
                   </widget>
                  </item>
                  <item row="7" column="1" colspan="8">
-                  <widget class="KLineEdit" name="edit_tls_outgoing"/>
+                  <widget class="KLineEdit" name="edit_tls_outgoing">
+                   <property name="placeholderText">
+                    <string>Usually the SIP server hostname</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="8" column="0">
                   <widget class="QLabel" name="label_tls_timeout">
                    <property name="text">
-                    <string>Negotiation timeout (s:ms)</string>
+                    <string>Negotiation timeout</string>
                    </property>
                   </widget>
                  </item>
@@ -1240,6 +1251,9 @@
                      <width>50</width>
                      <height>0</height>
                     </size>
+                   </property>
+                   <property name="suffix">
+                    <string>s</string>
                    </property>
                   </widget>
                  </item>
@@ -1311,6 +1325,12 @@
                      <height>0</height>
                     </size>
                    </property>
+                   <property name="suffix">
+                    <string>ms</string>
+                   </property>
+                   <property name="maximum">
+                    <number>999</number>
+                   </property>
                   </widget>
                  </item>
                  <item row="8" column="2">
@@ -1344,7 +1364,10 @@
               <item row="0" column="0" colspan="2">
                <widget class="QGroupBox" name="groupbox_STRP_keyexchange">
                 <property name="title">
-                 <string>SRTP key exchange</string>
+                 <string>Encrypt media streams (SRTP)</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>

@@ -57,7 +57,8 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 
 ///Constructors
 Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(AccountEditState::READY),
-m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0),m_pRingToneModel(nullptr),m_pAccountNumber(nullptr)
+m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0),m_pRingToneModel(nullptr),m_pAccountNumber(nullptr),
+m_pKeyExchangeModel(nullptr)
 {
 }
 
@@ -301,6 +302,14 @@ RingToneModel* Account::ringToneModel() const
    if (!m_pRingToneModel)
       const_cast<Account*>(this)->m_pRingToneModel = new RingToneModel(const_cast<Account*>(this));
    return m_pRingToneModel;
+}
+
+KeyExchangeModel* Account::keyExchangeModel() const
+{
+   if (!m_pKeyExchangeModel) {
+      const_cast<Account*>(this)->m_pKeyExchangeModel = new KeyExchangeModel(const_cast<Account*>(this));
+   }
+   return m_pKeyExchangeModel;
 }
 
 void Account::setAlias(const QString& detail)
@@ -1073,7 +1082,7 @@ void Account::setRoleData(int role, const QVariant& value)
       }
       case Account::Role::KeyExchange: {
          const int method = value.toInt();
-         setKeyExchange(method<=KeyExchangeModel::instance()->rowCount()?static_cast<KeyExchangeModel::Type>(method):KeyExchangeModel::Type::NONE);
+         setKeyExchange(method<=keyExchangeModel()->rowCount()?static_cast<KeyExchangeModel::Type>(method):KeyExchangeModel::Type::NONE);
       }
       case Account::Role::RegistrationExpire:
          setRegistrationExpire(value.toInt());

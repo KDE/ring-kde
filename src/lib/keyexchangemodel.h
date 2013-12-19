@@ -21,19 +21,33 @@
 #include "typedefs.h"
 #include <QtCore/QAbstractListModel>
 
+class Account;
+
 ///Static model for handling encryption types
 class LIB_EXPORT KeyExchangeModel : public QAbstractListModel {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
+   friend class Account;
 
 public:
    ///@enum Type Every supported encryption types
    enum class Type {
-      NONE = 0,
-      ZRTP = 1,
-      SDES = 2,
+      ZRTP = 0,
+      SDES = 1,
+      NONE = 2,
+      COUNT,
+   };
+
+   ///@enum Options Every Key exchange options
+   enum class Options {
+      RTP_FALLBACK     = 0,
+      DISPLAY_SAS      = 1,
+      NOT_SUPP_WARNING = 2,
+      HELLO_HASH       = 3,
+      DISPLAY_SAS_ONCE = 4,
+      COUNT,
    };
 
    class Name {
@@ -51,7 +65,7 @@ public:
    };
 
    //Private constructor, can only be called by 'Account'
-   explicit KeyExchangeModel();
+   explicit KeyExchangeModel(Account* account);
 
    //Model functions
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
@@ -64,11 +78,23 @@ public:
    static const char*            toDaemonName  (KeyExchangeModel::Type type)      ;
    static KeyExchangeModel::Type fromDaemonName(const QString& name        )      ;
 
-   //Singleton
-   static KeyExchangeModel* instance();
+   bool isRtpFallbackEnabled() const;
+   bool isDisplaySASEnabled () const;
+   bool isDisplaySasOnce    () const;
+   bool areWarningSupressed () const;
+   bool isHelloHashEnabled  () const;
+
 
 private:
-   static KeyExchangeModel* m_spInstance;
+   KeyExchangeModel::Type m_CurrentMethod;
+   Account* m_pAccount;
+   static const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , KeyExchangeModel::Options > availableOptions;
+
+public Q_SLOTS:
+   void enableSRTP(bool enable);
+
+Q_SIGNALS:
+   void srtpEnabled(bool);
 };
 Q_DECLARE_METATYPE(KeyExchangeModel*)
 #endif

@@ -301,10 +301,11 @@ class LIB_EXPORT Account : public QObject {
       QString         stateColorName()                    const;
       QVariant        stateColor()                        const;
 
-      Q_INVOKABLE CredentialModel* credentialsModel() const;
-      Q_INVOKABLE AudioCodecModel* audioCodecModel () const;
-      Q_INVOKABLE VideoCodecModel* videoCodecModel () const;
-      Q_INVOKABLE RingToneModel*   ringToneModel   () const;
+      Q_INVOKABLE CredentialModel*  credentialsModel() const;
+      Q_INVOKABLE AudioCodecModel*  audioCodecModel () const;
+      Q_INVOKABLE VideoCodecModel*  videoCodecModel () const;
+      Q_INVOKABLE RingToneModel*    ringToneModel   () const;
+      Q_INVOKABLE KeyExchangeModel* keyExchangeModel() const;
 
       //Getters
       QString hostname                     () const;
@@ -449,10 +450,11 @@ class LIB_EXPORT Account : public QObject {
       void save();
       void reloadMod() {reload();modify();};
 
-      CredentialModel* m_pCredentials  ;
-      AudioCodecModel* m_pAudioCodecs  ;
-      VideoCodecModel* m_pVideoCodecs  ;
-      RingToneModel*   m_pRingToneModel;
+      CredentialModel*  m_pCredentials     ;
+      AudioCodecModel*  m_pAudioCodecs     ;
+      VideoCodecModel*  m_pVideoCodecs     ;
+      RingToneModel*    m_pRingToneModel   ;
+      KeyExchangeModel* m_pKeyExchangeModel;
       AccountEditState m_CurrentState;
       static const account_function stateMachineActionsOnState[6][7];
 

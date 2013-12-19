@@ -19,9 +19,19 @@
 
 #include <QtCore/QCoreApplication>
 
-KeyExchangeModel* KeyExchangeModel::m_spInstance = nullptr;
+#include "account.h"
 
-KeyExchangeModel::KeyExchangeModel() : QAbstractListModel(QCoreApplication::instance()) {}
+const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , KeyExchangeModel::Options > KeyExchangeModel::availableOptions = {{
+   /*                  */  /* ZRTP */ /* SDES */ /* NONE */
+   /* RTP_FALLBACK     */ {{ false    , true     , false   }},
+   /* DISPLAY_SAS      */ {{ true     , false    , false   }},
+   /* NOT_SUPP_WARNING */ {{ true     , false    , false   }},
+   /* HELLO_HASH       */ {{ true     , false    , false   }},
+   /* DISPLAY_SAS_ONCE */ {{ true     , false    , false   }},
+}};
+
+
+KeyExchangeModel::KeyExchangeModel(Account* account) : QAbstractListModel(account),m_pAccount(account) {}
 
 //Model functions
 QVariant KeyExchangeModel::data( const QModelIndex& index, int role) const
@@ -39,6 +49,8 @@ QVariant KeyExchangeModel::data( const QModelIndex& index, int role) const
          case KeyExchangeModel::Type::SDES:
             return KeyExchangeModel::Name::SDES;
             break;
+         case KeyExchangeModel::Type::COUNT:
+            break;
       };
    }
    return QVariant();
@@ -46,7 +58,7 @@ QVariant KeyExchangeModel::data( const QModelIndex& index, int role) const
 
 int KeyExchangeModel::rowCount( const QModelIndex& parent ) const
 {
-   return parent.isValid()?0:3;
+   return parent.isValid()?0:2;
 }
 
 Qt::ItemFlags KeyExchangeModel::flags( const QModelIndex& index ) const
@@ -61,13 +73,6 @@ bool KeyExchangeModel::setData( const QModelIndex& index, const QVariant &value,
    Q_UNUSED(value)
    Q_UNUSED(role )
    return false;
-}
-
-KeyExchangeModel* KeyExchangeModel::instance()
-{
-   if (!m_spInstance)
-      m_spInstance = new KeyExchangeModel();
-   return m_spInstance;
 }
 
 ///Translate enum type to QModelIndex
@@ -89,6 +94,8 @@ const char* KeyExchangeModel::toDaemonName(KeyExchangeModel::Type type)
       case KeyExchangeModel::Type::SDES:
          return KeyExchangeModel::DaemonName::SDES;
          break;
+      case KeyExchangeModel::Type::COUNT:
+         break;
    };
    return nullptr; //Cannot heppen
 }
@@ -103,4 +110,39 @@ KeyExchangeModel::Type KeyExchangeModel::fromDaemonName(const QString& name)
       return KeyExchangeModel::Type::ZRTP;
    qDebug() << "Undefined Key exchange mechanism" << name;
    return KeyExchangeModel::Type::NONE;
+}
+
+void KeyExchangeModel::enableSRTP(bool enable)
+{
+   if (enable && m_pAccount->keyExchange() == KeyExchangeModel::Type::NONE) {
+      m_pAccount->setKeyExchange(KeyExchangeModel::Type::ZRTP);
+   }
+   else if (!enable) {
+      m_pAccount->setKeyExchange(KeyExchangeModel::Type::NONE);
+   }
+}
+
+bool KeyExchangeModel::isRtpFallbackEnabled() const
+{
+   return availableOptions[Options::RTP_FALLBACK][m_pAccount->keyExchange()];
+}
+
+bool KeyExchangeModel::isDisplaySASEnabled() const
+{
+   return availableOptions[Options::DISPLAY_SAS][m_pAccount->keyExchange()];
+}
+
+bool KeyExchangeModel::isDisplaySasOnce() const
+{
+   return availableOptions[Options::DISPLAY_SAS_ONCE][m_pAccount->keyExchange()];
+}
+
+bool KeyExchangeModel::areWarningSupressed() const
+{
+   return availableOptions[Options::NOT_SUPP_WARNING][m_pAccount->keyExchange()];
+}
+
+bool KeyExchangeModel::isHelloHashEnabled() const
+{
+   return availableOptions[Options::HELLO_HASH][m_pAccount->keyExchange()];
 }
