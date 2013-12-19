@@ -43,7 +43,7 @@ public:
    void addCall(Call* call);
 private:
    //Const
-   constexpr static const int MAX_ITEM = 15;
+   static const int MAX_ITEM = 15;
 
    //Private constructor
    LastUsedNumberModel();
