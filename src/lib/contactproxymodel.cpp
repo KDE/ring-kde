@@ -184,9 +184,11 @@ void ContactProxyModel::reloadCategories()
    emit layoutAboutToBeChanged();
    beginResetModel();
    m_hCategories.clear();
+   beginRemoveRows(QModelIndex(),0,m_lCategoryCounter.size()-1);
    foreach(TopLevelItem* item,m_lCategoryCounter) {
       delete item;
    }
+   endRemoveRows();
    m_lCategoryCounter.clear();
    foreach(Contact* cont, m_pModel->getContactList()) {
       if (cont) {
@@ -414,7 +416,7 @@ QModelIndex ContactProxyModel::parent( const QModelIndex& index) const
 
 QModelIndex ContactProxyModel::index( int row, int column, const QModelIndex& parent) const
 {
-   if (parent.isValid()) {
+   if (parent.isValid() && parent.internalPointer()) {
       CategorizedCompositeNode* parentNode = static_cast<CategorizedCompositeNode*>(parent.internalPointer());
       switch(parentNode->type()) {
          case CategorizedCompositeNode::Type::TOP_LEVEL: {
