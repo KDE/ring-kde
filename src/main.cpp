@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2013 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2009-2014 by Savoir-Faire Linux                         *
  *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
  *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
          version                                    ,
          ki18n(description)                         ,
          KAboutData::License_GPL_V3                 ,
-         ki18n("(C) 2009-2013 Savoir-faire Linux")  ,
+         ki18n("(C) 2009-2014 Savoir-faire Linux")  ,
          KLocalizedString()                         ,
          "http://www.sflphone.org."                 ,
          "sflphone@lists.savoirfairelinux.net"
