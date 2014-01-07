@@ -49,6 +49,10 @@ ELSE()
    add_subdirectory( man     )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
+IF(${ENABLE_TEST} MATCHES true)
+   add_subdirectory( src/test)
+ENDIF()
+
 IF(EXISTS "po" AND IS_DIRECTORY "po")
    FIND_PACKAGE ( Gettext REQUIRED )
    add_subdirectory( po      )

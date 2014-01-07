@@ -61,6 +61,10 @@ public:
    bool isUsingUnregisteredAccounts();
    QString prefix() const;
 
+protected:
+   //Helper
+   void getRange(QMap<QString,PhoneDirectoryModel::NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const;
+
 private:
    enum class Columns {
       CONTENT = 0,
@@ -73,7 +77,6 @@ private:
    void updateModel();
 
    //Helper
-   void getRange(QMap<QString,PhoneDirectoryModel::NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set);
    void locateNameRange  (const QString& prefix, QSet<PhoneNumber*>& set);
    void locateNumberRange(const QString& prefix, QSet<PhoneNumber*>& set);
    uint getWeight(PhoneNumber* number);

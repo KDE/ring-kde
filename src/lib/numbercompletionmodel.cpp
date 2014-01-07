@@ -196,7 +196,7 @@ void NumberCompletionModel::updateModel()
    emit layoutChanged();
 }
 
-void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set)
+void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const
 {
    if (prefix.isEmpty())
       return;

@@ -36,6 +36,9 @@ class LIB_EXPORT PhoneDirectoryModel : public QAbstractTableModel {
    //NumberCompletionModel need direct access to the indexes
    friend class NumberCompletionModel;
 
+   //Friend unit test class
+   friend class AutoCompletionTest;
+
    //Phone number need to update the indexes as they change
    friend class PhoneNumber          ;
 
@@ -76,6 +79,13 @@ public:
    //Static
    QVector<PhoneNumber*> getNumbersByPopularity() const;
 
+protected:
+   //Internal data structures
+   ///@struct NumberWrapper Wrap phone numbers to prevent collisions
+   struct NumberWrapper {
+      QVector<PhoneNumber*> numbers;
+   };
+
 private:
 
    //Model columns
@@ -98,12 +108,6 @@ private:
       PRESENT          = 15,
       PRESENCE_MESSAGE = 16,
       UID              = 17,
-   };
-
-   //Internal data structures
-   ///@struct NumberWrapper Wrap phone numbers to prevent collisions
-   struct NumberWrapper {
-      QVector<PhoneNumber*> numbers;
    };
 
    //Constructor
