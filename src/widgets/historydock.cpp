@@ -24,6 +24,7 @@
 #include <QtCore/QDate>
 #include <QtCore/QPoint>
 #include <QtCore/QProcess>
+#include <QtCore/QTimer>
 #include <QtGui/QPushButton>
 #include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
@@ -87,7 +88,7 @@ bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QMode
       }
    }
    ///If date range is enabled, display only this range
-   else if (ConfigurationSkeleton::displayDataRange()) {
+   else if (ConfigurationSkeleton::displayDataRange() && false/*FIXME force disabled for 1.3.0, can SEGFAULT*/) {
       const int start = source_parent.child(source_row,0).data(Call::Role::StartTime).toInt();
       const int stop  = source_parent.child(source_row,0).data(Call::Role::StopTime ).toInt();
       if (!(start > m_pParent->startTime()) || !(m_pParent->stopTime() > stop))
@@ -165,6 +166,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    expandTree();
 
    m_pAllTimeCB->setChecked(!ConfigurationSkeleton::displayDataRange());
+   m_pAllTimeCB->setVisible(false);
    enableDateRange(!ConfigurationSkeleton::displayDataRange());
 
    m_pSortByL->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Preferred);
@@ -204,7 +206,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    connect(m_pSortByCBB, SIGNAL(currentIndexChanged(int)), this, SLOT(slotSetSortRole(int))  );
    connect(m_pToDW,SIGNAL(changed(QDate)),this,SLOT(slotDateRangeCanched()));
    connect(m_pFromDW,SIGNAL(changed(QDate)),this,SLOT(slotDateRangeCanched()));
-   slotDateRangeCanched();
+   QTimer::singleShot(0,this,SLOT(slotDateRangeCanched()));
 
 } //HistoryDock
 
@@ -234,8 +236,8 @@ HistoryDock::~HistoryDock()
 ///Enable the ability to set a date range like 1 month to limit history
 void HistoryDock::enableDateRange(bool disable)
 {
-   m_pBottomWidget->setHidden(disable);
-   ConfigurationSkeleton::setDisplayDataRange(!disable);
+   m_pBottomWidget->setHidden(disable || true /*FIXME disabled for 1.3.0*/);
+   ConfigurationSkeleton::setDisplayDataRange(!disable && false);
 }
 
 void HistoryDock::slotSetSortRole(int role)

@@ -317,6 +317,7 @@ class LIB_EXPORT Account : public QObject {
       QString password                     () const;
       bool    isDisplaySasOnce             () const;
       bool    isSrtpRtpFallback            () const;
+      bool    isSrtpEnabled                () const;
       bool    isZrtpDisplaySas             () const;
       bool    isZrtpNotSuppWarning         () const;
       bool    isZrtpHelloHash              () const;
@@ -395,6 +396,7 @@ class LIB_EXPORT Account : public QObject {
       void setTlsEnable                     (bool detail);
       void setDisplaySasOnce                (bool detail);
       void setSrtpRtpFallback               (bool detail);
+      void setSrtpEnabled                   (bool detail);
       void setZrtpDisplaySas                (bool detail);
       void setZrtpNotSuppWarning            (bool detail);
       void setZrtpHelloHash                 (bool detail);

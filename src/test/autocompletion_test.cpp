@@ -73,7 +73,7 @@ void AutoCompletionTest::testGetRange()
    QFETCH(QString   , prefix);
    AutoCompletionTest::NbWrap* realData = data.value<AutoCompletionTest::NbWrap*>();
    //qDebug() << "Values are" << prefix << *realData;
-   
+
    //Check if there is a result
    QSet<PhoneNumber*> set;
    getRange(PhoneDirectoryModel::instance()->m_hSortedNumbers,prefix,set);

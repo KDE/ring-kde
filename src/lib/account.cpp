@@ -381,6 +381,12 @@ bool Account::isSrtpRtpFallback() const
    return accountDetail(Account::MapField::SRTP::RTP_FALLBACK) IS_TRUE;
 }
 
+//Return if SRTP is enabled or not
+bool Account::isSrtpEnabled() const
+{
+   return accountDetail(Account::MapField::SRTP::ENABLED) IS_TRUE;
+}
+
 ///
 bool Account::isZrtpDisplaySas         () const
 {
@@ -993,6 +999,11 @@ void Account::setDisplaySasOnce(bool detail)
 void Account::setSrtpRtpFallback(bool detail)
 {
    setAccountDetail(Account::MapField::SRTP::RTP_FALLBACK, (detail)TO_BOOL);
+}
+
+void Account::setSrtpEnabled(bool detail)
+{
+   setAccountDetail(Account::MapField::SRTP::ENABLED, (detail)TO_BOOL);
 }
 
 void Account::setZrtpDisplaySas(bool detail)

@@ -100,7 +100,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    m_pRingTonePath->lineEdit()->setObjectName("m_pRingTonePath");
    m_pRingTonePath->lineEdit()->setReadOnly(true);
 
-   file_tls_authority->lineEdit()->setPlaceholderText(i18n("Usually called \"ca.crt\""));
+   file_tls_authority->lineEdit()->setPlaceholderText(i18n("Usually called \"ca.crt\" or \"cacert.pem\""));
    file_tls_endpoint->lineEdit()->setPlaceholderText(i18n("A .pem or .crt"));
    file_tls_private_key->lineEdit()->setPlaceholderText(i18n("A .key file"));
 
@@ -283,6 +283,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
    /**/ ACC setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
    /**/ ACC setLocalPort                   ( spinBox_ni_local_port->value()                                           );
+   /**/ ACC setSrtpEnabled                 ( groupbox_STRP_keyexchange->isChecked()                                   );
    //                                                                                                                  /
 
 
@@ -385,7 +386,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /*                                                                                        */
 
    combo_security_STRP->setModel(ACC keyExchangeModel());
-   groupbox_STRP_keyexchange->setChecked(!(ACC keyExchange() == KeyExchangeModel::Type::NONE));
+   groupbox_STRP_keyexchange->setChecked(ACC isSrtpEnabled());
    if (!(ACC keyExchange() == KeyExchangeModel::Type::NONE)) {
       /**/combo_security_STRP->setCurrentIndex     (  ACC keyExchangeModel()->toIndex( ACC keyExchange()).row());
    }
@@ -576,6 +577,7 @@ void DlgAccounts::on_button_accountAdd_clicked()
    treeView_accountList->setCurrentIndex(index);
 
    frame2_editAccounts->setEnabled(true);
+   frame2_editAccounts->setCurrentIndex(0);
    edit1_alias->setSelection(0,edit1_alias->text().size());
    edit1_alias->setFocus(Qt::OtherFocusReason);
 } //on_button_accountAdd_clicked
