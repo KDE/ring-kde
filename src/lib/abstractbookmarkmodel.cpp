@@ -339,7 +339,8 @@ QString AbstractBookmarkModel::category(NumberTreeBackend* number) const
 void AbstractBookmarkModel::slotRequest(const QString& uri)
 {
    Q_UNUSED(uri)
-   DBus::PresenceManager::instance().answerServerRequest(uri,true);
+   qDebug() << "Presence Request" << uri << "denied";
+   //DBus::PresenceManager::instance().answerServerRequest(uri,true); //FIXME turn on after 1.3.0
 }
 
 

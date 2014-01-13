@@ -67,7 +67,7 @@ int main(int argc, char **argv)
          "sflphone@lists.savoirfairelinux.net"
       );
       about.addAuthor( ki18n( "Emmanuel Lepage Vallée" ), KLocalizedString(), "emmanuel.lepage@savoirfairelinux.com" );
-      about.addAuthor( ki18n( "Jérémy Quentin"         ), KLocalizedString(), "jeremy.quentin@savoirfairelinux.com"  );
+      about.addCredit( ki18n( "Jérémy Quentin"         ), KLocalizedString(), "jeremy.quentin@savoirfairelinux.com"  );
 
       SFLPhoneCmd::parseCmd(argc,argv,about);
 

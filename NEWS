@@ -1,0 +1,73 @@
+# Changelog
+
+## 13 Jan 2013 - 1.3.0 has been released
+
+### Common
+
+ * SIP Presence subscribing and publishing support
+ * Video multiparty conferencing [EXPERIMENTAL]
+ * Multichannel audio support [EXPERIMENTAL]
+ * Additional Flac and OGG ringtone support
+ * Improved NAT support
+ * Improved audio quality, noise suppression and automatic gain control
+ * Bug fixes
+ * New volume controls for PulseAudio
+ * New mute DTMF option
+
+### libqtsflphone
+
+ * API version 2.0
+ * Qt5 support
+ * Full Model/View support (19 new models)
+ * New phone number statistics API
+ * Full QML / QtScript compatibility
+ * Improved performance
+   * Now support up to 15000 contacts and 10000 history entries
+ * Faster load time
+ * Now provide complete DBus API abstraction
+ * Bug fixes
+
+### KDE client
+
+ * Smart autocompletion [EXPERIMENTAL]
+   * Call using the right account
+   * Fast lookup
+   * Call using contact information
+   * Gather information from 11 sources to provide accurate results
+ * Improved Akonadi integration
+   * Support live contact list update
+ * Usability improvements
+   * Highlight missed calls in history
+   * New "flat design" Contact/History/Bookmark widgets
+   * More reliable canvas notifications
+   * Improved account setting dialog
+   * DTMF feedback
+   * Network issue detection
+ * Presence integration in contact, bookmarks and history views
+ * Status publishing support in the statusbar
+ * Dial tone support
+ * Translation updates
+ * Bug fixes
+
+### Gnome client
+
+ * New buddy list window
+   * Import buddies from Contact/History
+   * Organize buddies by group 
+ * Presence status notification
+ * Improved video support
+ * Add ringtone preview
+ * Translation updates
+
+### Statistics
+
+   **Issues fixed:** 995
+   **Bug fixed:** 311
+   **KDE related issues fixed:** 148
+   **KDE related bug fixed:** 49
+   **Daemon diff size:** 19523 lines
+   **Gnome client diff size:** 3792 lines
+   **KDE client diff size:** 47582 lines
+   **Total diff size:** 70897 lines
+   **Total commits:** 1584
+   **Total KDE related commits:** 331
