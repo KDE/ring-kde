@@ -51,9 +51,11 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    alsaInputDevice->setModel   (AudioSettingsModel::instance()->inputDeviceModel () );
    alsaOutputDevice->setModel  (AudioSettingsModel::instance()->outputDeviceModel() );
    alsaRingtoneDevice->setModel(AudioSettingsModel::instance()->outputDeviceModel() );
-   kcfg_interface->setModel    (AudioSettingsModel::instance()->audioManagerModel() );
+   m_pManager->setModel        (AudioSettingsModel::instance()->audioManagerModel() );
    box_alsaPlugin->setModel    (AudioSettingsModel::instance()->alsaPluginModel  () );
    loadAlsaSettings();
+
+   m_pManager->setCurrentIndex (AudioSettingsModel::instance()->audioManagerModel()->currentManager().row());
 
    connect( box_alsaPlugin   , SIGNAL(activated(int)) , parent, SLOT(updateButtons()));
    connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
@@ -65,11 +67,11 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( alsaInputDevice                 , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( alsaOutputDevice                , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
+   connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
-   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , 
+   connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , 
             AudioSettingsModel::instance()->audioManagerModel(),SLOT(setCurrentManager(int)));
-   connect( kcfg_interface                  , SIGNAL(currentIndexChanged(int)) , SLOT(loadAlsaSettings()));
+   connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(loadAlsaSettings()));
 }
 
 ///Destructor
@@ -116,7 +118,7 @@ bool DlgAudio::hasChanged()
 ///Tag the dialog as needing saving
 void DlgAudio::changed()
 {
-   box_alsaPlugin->setDisabled(kcfg_interface->currentIndex());
+   box_alsaPlugin->setDisabled(m_pManager->currentIndex());
    if (!m_IsLoading) {
       m_Changed = true;
       emit updateButtons();
