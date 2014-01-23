@@ -20,6 +20,10 @@
 //Qt
 #include <QtCore/QDebug>
 #include <QtOpenGL/QGLFormat>
+#include <QtCore/QMutex>
+#include <QtCore/QMutexLocker>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QWheelEvent>
 
 //System
 #include <math.h>

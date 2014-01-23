@@ -21,6 +21,7 @@
 #include <QtCore/QDebug>
 #include <QtOpenGL/QGLWidget>
 #include <QtOpenGL/QGLFormat>
+#include <QtGui/QResizeEvent>
 
 //System
 #include <math.h>

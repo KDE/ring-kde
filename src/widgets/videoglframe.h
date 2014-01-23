@@ -18,11 +18,15 @@
 #ifndef VIDEOGLFRAME_H
 #define VIDEOGLFRAME_H
 
+#include <QtCore/QObject>
+
 class VideoRenderer;
 
 class ThreadedPainter2;
 class QGLWidget;
 class QPainter;
+class QSize;
+class QPointF;
 
 class VideoGLFrame : public QObject
 {
