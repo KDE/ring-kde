@@ -230,6 +230,7 @@ QString PhoneNumber::primaryName() const
             max      = i.value();
             toReturn = i.key  ();
          }
+         i++;
       }
       return toReturn;
    }
