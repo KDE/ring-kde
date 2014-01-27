@@ -24,9 +24,22 @@
 #include <QtCore/QString>
 #include <QtGui/QWidget>
 #include <QtGui/QListWidgetItem>
+#include <QtGui/QSortFilterProxyModel>
 
 #include "ui_dlgaddressbookbase.h"
 #include <kconfigdialog.h>
+
+///Filter out notes and emails collections
+class AkonadiCollectionTypeFilter : public QSortFilterProxyModel
+{
+   Q_OBJECT
+public:
+   explicit AkonadiCollectionTypeFilter(QObject* parent) : QSortFilterProxyModel(parent) {
+      setDynamicSortFilter(true);
+   }
+protected:
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
+};
 
 //SFLPhone
 class AutoCompletionDelegate;

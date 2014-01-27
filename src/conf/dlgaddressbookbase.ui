@@ -15,6 +15,25 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Collections</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="Akonadi::EntityTreeView" name="collections" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Contact Filter</string>
@@ -72,6 +91,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Akonadi::EntityTreeView</class>
+   <extends>QWidget</extends>
+   <header>akonadi/entitytreeview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

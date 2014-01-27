@@ -22,6 +22,15 @@
 #include "klib/kcfg_settings.h"
 #include "lib/numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
+#include <akonadi/collectionmodel.h>
+#include <kcheckableproxymodel.h>
+
+bool AkonadiCollectionTypeFilter::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+{
+   const QModelIndex idx = sourceModel()->index(source_row,0,source_parent);
+   Akonadi::Collection col = qvariant_cast<Akonadi::Collection>(idx.data(Akonadi::CollectionModel::Roles::CollectionRole));
+   return col.contentMimeTypes().indexOf("text/directory") != -1;
+}
 
 ///Constructor
 DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
@@ -31,7 +40,20 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pPhoneTypeList->setModel(NumberCategoryModel::instance());
    m_pDelegate = new AutoCompletionDelegate();
    m_pPhoneTypeList->setItemDelegate(m_pDelegate);
-   connect(m_pPhoneTypeList, SIGNAL(itemChanged(QListWidgetItem*)), this   , SLOT(changed())      );
+
+   Akonadi::CollectionModel* model = new Akonadi::CollectionModel(this);
+
+   AkonadiCollectionTypeFilter* filter_model = new AkonadiCollectionTypeFilter(this);
+   filter_model->setSourceModel(model);
+
+   QItemSelectionModel *checkModel = new QItemSelectionModel(filter_model, this);
+   KCheckableProxyModel *checkable = new KCheckableProxyModel(this);
+   checkable->setSourceModel(filter_model);
+   checkable->setSelectionModel(checkModel);
+
+   collections->setModel( checkable );
+
+   connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
 } //DlgAddressBook
 
@@ -45,7 +67,6 @@ DlgAddressBook::~DlgAddressBook()
 ///Reload the widget
 void DlgAddressBook::updateWidgets()
 {
-   
 }
 
 ///Save the settings
