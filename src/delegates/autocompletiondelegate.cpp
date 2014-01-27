@@ -55,20 +55,35 @@ void AutoCompletionDelegate::paint(QPainter* painter, const QStyleOptionViewItem
       }
       static QFontMetrics m(f);
       static int height    = m.height();
-      static int topMargin = 2;
+      int rectHeight = option.rect.height();
+      int leftOver = (rectHeight-height);
+      int padding   = leftOver/2 >= 4 ? 2: 0;
+      int topMargin = (leftOver-2*padding)/2;
       painter->setFont(f);
       const int width = m.width(tag);
-      const int x = option.rect.x()+option.rect.width()-width-RIGHT_MARGIN-option.rect.height()/2;
+      const int x = option.rect.x()+option.rect.width()-width-RIGHT_MARGIN-rectHeight/2;
       painter->setBrush(g);
       painter->setPen(Qt::NoPen);
-      painter->drawRect(QRect(x-option.rect.height()/2+option.rect.height()/2,option.rect.y()+2,width,option.rect.height()-4));
-      painter->setClipRect(x-option.rect.height()/2,option.rect.y()+2,option.rect.height()/2,option.rect.height()-4);
-      painter->drawEllipse(QRect(x-option.rect.height()/2,option.rect.y()+2,option.rect.height()-4,option.rect.height()-4));
-      painter->setClipRect(x+width,option.rect.y()+2,option.rect.height()-4,option.rect.height()-4);
-      painter->drawEllipse(QRect(x+width-option.rect.height()/2,option.rect.y()+2,option.rect.height()-4,option.rect.height()-4));
+      QRect rect(x,
+         option.rect.y()+topMargin,
+         width,
+         height+2*padding);
+      painter->drawRect(rect);
+      painter->setClipRect(x-rectHeight/2,option.rect.y(),rectHeight/2,rectHeight);
+      painter->drawEllipse(QRect(
+         x-(height+2*padding)/2,
+         option.rect.y()+topMargin,
+         (height+2*padding),
+         (height+2*padding)));
+      painter->setClipRect(x+width,option.rect.y(),option.rect.height(),option.rect.height());
+      painter->drawEllipse(QRect(
+         x+width-(height+2*padding)/2,
+         option.rect.y()+topMargin,
+         (height+2*padding),
+         (height+2*padding)));
       painter->setPen(QApplication::palette().base().color());
       painter->setClipping(false);
-      painter->drawText(x,option.rect.y()+height-topMargin,tag);
+      painter->drawText(rect,Qt::AlignHCenter|Qt::AlignVCenter,tag);
       painter->restore();
    }
 }

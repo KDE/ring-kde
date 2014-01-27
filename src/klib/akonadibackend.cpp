@@ -349,6 +349,7 @@ void AkonadiBackend::addPhoneNumber(Contact* contact, QString number, QString ty
 ///Called when a new collection is added
 void AkonadiBackend::collectionsReceived( const Akonadi::Collection::List&  list)
 {
+   qDebug() << "\n\n\nNEW COL" << list.size();
    foreach (const Akonadi::Collection& coll, list) {
       update(coll);
       m_pMonitor->setCollectionMonitored(coll,true);
