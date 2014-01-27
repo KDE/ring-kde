@@ -37,8 +37,23 @@ public:
    explicit AkonadiCollectionTypeFilter(QObject* parent) : QSortFilterProxyModel(parent) {
       setDynamicSortFilter(true);
    }
+public:
+   virtual QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
+
+   //Mutator
+   void reload();
+   void save();
+
 protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
+   virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
+
+private:
+   QHash<int,bool> m_hChecked;
+
+Q_SIGNALS:
+   void changed();
 };
 
 //SFLPhone
@@ -62,6 +77,7 @@ private:
    QHash<QString,QListWidgetItem*> m_mNumbertype;
    bool m_HasChanged;
    AutoCompletionDelegate* m_pDelegate;
+   AkonadiCollectionTypeFilter* m_pFilterModel;
 
 public Q_SLOTS:
    void updateWidgets ();

@@ -32,6 +32,56 @@ bool AkonadiCollectionTypeFilter::filterAcceptsRow ( int source_row, const QMode
    return col.contentMimeTypes().indexOf("text/directory") != -1;
 }
 
+Qt::ItemFlags AkonadiCollectionTypeFilter::flags ( const QModelIndex& index ) const
+{
+   return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable;
+}
+
+QVariant AkonadiCollectionTypeFilter::data( const QModelIndex& index, int role ) const
+{
+   if (role == Qt::CheckStateRole) {
+      const int id = index.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt();
+      return m_hChecked[id]?Qt::Unchecked:Qt::Checked;
+   }
+   return QSortFilterProxyModel::data(index,role);
+}
+
+bool AkonadiCollectionTypeFilter::setData( const QModelIndex& index, const QVariant &value, int role)
+{
+   if (role == Qt::CheckStateRole) {
+      const int id = index.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt();
+      m_hChecked[id] = !value.toBool();
+      emit dataChanged(index,index);
+      emit changed();
+      return false;
+   }
+   else
+      return QSortFilterProxyModel::setData(index,value,role);
+}
+
+
+void AkonadiCollectionTypeFilter::reload()
+{
+   m_hChecked.clear();
+   const QList<int> disabled = ConfigurationSkeleton::disabledCollectionList();
+   foreach(const int str, disabled) {
+      m_hChecked[str] = true; //Disabled == true, enabled == false
+   }
+}
+
+void AkonadiCollectionTypeFilter::save()
+{
+   QList<int> ret;
+   QHash<int,bool>::const_iterator i = m_hChecked.constBegin();
+   while (i != m_hChecked.end()) {
+      if (i.value())
+         ret << i.key();
+      i++;
+   }
+   ConfigurationSkeleton::setDisabledCollectionList(ret);
+}
+
+
 ///Constructor
 DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
  : QWidget(parent),m_HasChanged(false)
@@ -43,18 +93,15 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 
    Akonadi::CollectionModel* model = new Akonadi::CollectionModel(this);
 
-   AkonadiCollectionTypeFilter* filter_model = new AkonadiCollectionTypeFilter(this);
-   filter_model->setSourceModel(model);
+   m_pFilterModel = new AkonadiCollectionTypeFilter(this);
+   m_pFilterModel->setSourceModel(model);
+   m_pFilterModel->reload();
 
-   QItemSelectionModel *checkModel = new QItemSelectionModel(filter_model, this);
-   KCheckableProxyModel *checkable = new KCheckableProxyModel(this);
-   checkable->setSourceModel(filter_model);
-   checkable->setSelectionModel(checkModel);
-
-   collections->setModel( checkable );
+   collections->setModel( m_pFilterModel );
 
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
+   connect(m_pFilterModel  , SIGNAL(changed())                    , this   , SLOT(changed()));
 } //DlgAddressBook
 
 ///Destructor
@@ -62,17 +109,20 @@ DlgAddressBook::~DlgAddressBook()
 {
    m_pPhoneTypeList->setItemDelegate(nullptr);
    delete m_pDelegate;
+   delete m_pFilterModel;
 }
 
 ///Reload the widget
 void DlgAddressBook::updateWidgets()
 {
+   m_pFilterModel->reload();
 }
 
 ///Save the settings
 void DlgAddressBook::updateSettings()
 {
    NumberCategoryModel::instance()->save();
+   m_pFilterModel->save();
    m_HasChanged = false;
 }
 

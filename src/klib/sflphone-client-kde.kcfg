@@ -150,6 +150,10 @@
     	<label>Defines whether the search in KDE Address Book is enabled</label>
     </entry>-->
 
+    <entry name="disabledCollectionList" type="IntList">
+        <label>List of disabled address book collections</label>
+    </entry>
+
     <entry name="phoneTypeList" type="IntList">
       <label>Defines whether the search in KDE Address Book is enabled</label>
       <default>0,1,2,3,4,5,6,7,8,9,10,11,12,10000</default>
