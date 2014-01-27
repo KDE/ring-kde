@@ -39,6 +39,7 @@ set( ksflphone_LIB_SRCS
    macromodel.cpp
    bookmarkmodel.cpp
    macro.cpp
+   akonadicontactcollectionmodel.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)

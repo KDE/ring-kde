@@ -24,63 +24,7 @@
 #include "delegates/autocompletiondelegate.h"
 #include <akonadi/collectionmodel.h>
 #include <kcheckableproxymodel.h>
-
-bool AkonadiCollectionTypeFilter::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
-{
-   const QModelIndex idx = sourceModel()->index(source_row,0,source_parent);
-   Akonadi::Collection col = qvariant_cast<Akonadi::Collection>(idx.data(Akonadi::CollectionModel::Roles::CollectionRole));
-   return col.contentMimeTypes().indexOf("text/directory") != -1;
-}
-
-Qt::ItemFlags AkonadiCollectionTypeFilter::flags ( const QModelIndex& index ) const
-{
-   return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable;
-}
-
-QVariant AkonadiCollectionTypeFilter::data( const QModelIndex& index, int role ) const
-{
-   if (role == Qt::CheckStateRole) {
-      const int id = index.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt();
-      return m_hChecked[id]?Qt::Unchecked:Qt::Checked;
-   }
-   return QSortFilterProxyModel::data(index,role);
-}
-
-bool AkonadiCollectionTypeFilter::setData( const QModelIndex& index, const QVariant &value, int role)
-{
-   if (role == Qt::CheckStateRole) {
-      const int id = index.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt();
-      m_hChecked[id] = !value.toBool();
-      emit dataChanged(index,index);
-      emit changed();
-      return false;
-   }
-   else
-      return QSortFilterProxyModel::setData(index,value,role);
-}
-
-
-void AkonadiCollectionTypeFilter::reload()
-{
-   m_hChecked.clear();
-   const QList<int> disabled = ConfigurationSkeleton::disabledCollectionList();
-   foreach(const int str, disabled) {
-      m_hChecked[str] = true; //Disabled == true, enabled == false
-   }
-}
-
-void AkonadiCollectionTypeFilter::save()
-{
-   QList<int> ret;
-   QHash<int,bool>::const_iterator i = m_hChecked.constBegin();
-   while (i != m_hChecked.end()) {
-      if (i.value())
-         ret << i.key();
-      i++;
-   }
-   ConfigurationSkeleton::setDisabledCollectionList(ret);
-}
-
+#include "klib/akonadicontactcollectionmodel.h"
 
 ///Constructor
 DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
@@ -93,7 +37,7 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 
    Akonadi::CollectionModel* model = new Akonadi::CollectionModel(this);
 
-   m_pFilterModel = new AkonadiCollectionTypeFilter(this);
+   m_pFilterModel = new AkonadiContactCollectionModel(this);
    m_pFilterModel->setSourceModel(model);
    m_pFilterModel->reload();
 

@@ -57,15 +57,19 @@ class LIB_EXPORT VideoDevice {
       const Resolution          resolution  ();
       const VideoChannel        channel     ();
       const VideoRate           rate        ();
-      const QString             deviceId    () const;
+      const QString             id          () const;
 
       //Static getter
       static const QList<VideoDevice*> deviceList();
+      static VideoDevice* activeDevice();
 
       //Setter
       void setRate       ( VideoRate rate        );
       void setResolution ( Resolution resolution );
       void setChannel    ( VideoChannel channel  );
+
+      //Static setters
+      static void setActiveDevice(const VideoDevice* device);
    private:
       //Constructor
       explicit VideoDevice(const QString &id);

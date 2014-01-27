@@ -100,6 +100,9 @@ void ConfigurationDialog::updateWidgets()
    dlgAddressBook->updateWidgets  ();
    dlgAccessibility->updateWidgets();
    dlgPresence->updateWidgets     ();
+   #ifdef ENABLE_VIDEO
+   dlgVideo->updateWidgets        ();
+   #endif
 }
 
 ///Save all settings when apply is clicked
@@ -112,6 +115,9 @@ void ConfigurationDialog::updateSettings()
    dlgAccessibility->updateSettings();
    dlgDisplay->updateSettings      ();
    dlgPresence->updateSettings     ();
+   #ifdef ENABLE_VIDEO
+   dlgVideo->updateSettings        ();
+   #endif
 }
 
 ///Cancel current modification

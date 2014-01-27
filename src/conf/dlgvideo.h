@@ -40,6 +40,10 @@ public:
    //Getter
    bool hasChanged();
 
+public Q_SLOTS:
+   void updateWidgets ();
+   void updateSettings();
+
 private Q_SLOTS:
    void loadDevice    ( QString device     );
    void loadResolution( QString channel    );

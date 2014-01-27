@@ -54,6 +54,7 @@ const QString Resolution::toString() const
 ///Constructor
 VideoDevice::VideoDevice(const QString &id) : m_DeviceId(id)
 {
+   
 }
 
 ///Get the video device list
@@ -74,6 +75,23 @@ const QList<VideoDevice*> VideoDevice::deviceList()
    }
    m_slDevices = devices;
    return m_slDevices.values();
+}
+
+VideoDevice* VideoDevice::activeDevice()
+{
+   VideoInterface& interface = DBus::VideoManager::instance();
+   const QString deId = interface.getActiveDevice();
+   if (!deId.isEmpty() && !m_slDevices.size()) {
+      deviceList();
+   }
+   return m_slDevices[deId];
+}
+
+///Set the current active device
+void VideoDevice::setActiveDevice(const VideoDevice* device)
+{
+   VideoInterface& interface = DBus::VideoManager::instance();
+   interface.setActiveDevice(device->id());
 }
 
 ///Return the device
@@ -152,7 +170,7 @@ const QList<Resolution> VideoDevice::resolutionList(VideoChannel channel)
 }
 
 ///Get the device id
-const QString VideoDevice::deviceId() const
+const QString VideoDevice::id() const
 {
    return m_DeviceId;
 }

@@ -32,11 +32,10 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
  : QWidget(parent),m_pDevice(nullptr),m_IsChanged(false),m_IsLoading(true)
 {
    setupUi(this);
-   
+
+   updateWidgets();
+
    const QList<VideoDevice*> devices =  VideoDevice::deviceList();
-   foreach(VideoDevice* dev,devices) {
-      m_pDeviceCB->addItem(dev->deviceId());
-   }
 
    connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadDevice(QString))    );
    connect(m_pChannelCB   ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadResolution(QString)));
@@ -49,7 +48,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    m_pConfGB->setEnabled(devices.size());
 
    if (devices.size())
-      loadDevice(devices[0]->deviceId());
+      loadDevice(devices[0]->id());
 
    if (VideoModel::instance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
@@ -146,4 +145,22 @@ void DlgVideo::startStopPreview()
       m_pPreviewPB->setText(i18n("Stop preview"));
       VideoModel::instance()->startPreview();
    }
+}
+
+
+void DlgVideo::updateWidgets ()
+{
+   const QList<VideoDevice*> devices =  VideoDevice::deviceList();
+   m_pDeviceCB->clear();
+   foreach(VideoDevice* dev,devices) {
+      m_pDeviceCB->addItem(dev->id());
+   }
+   m_pDeviceCB->setCurrentIndex(devices.indexOf(VideoDevice::activeDevice()));
+}
+
+void DlgVideo::updateSettings()
+{
+   const QList<VideoDevice*> devices =  VideoDevice::deviceList();
+   VideoDevice::setActiveDevice(devices[m_pDeviceCB->currentIndex()]);
+   m_IsChanged = false;
 }

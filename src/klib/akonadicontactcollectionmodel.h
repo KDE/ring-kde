@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009-2014 by Savoir-Faire Linux                          *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -16,54 +15,37 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef DLGADDRESSBOOK_H
-#define DLGADDRESSBOOK_H
+#ifndef AKONADI_CONTACT_COLLECTION_MODEL_H
+#define AKONADI_CONTACT_COLLECTION_MODEL_H
 
-//Qt
-#include <QtCore/QHash>
-#include <QtCore/QString>
-#include <QtGui/QWidget>
-#include <QtGui/QListWidgetItem>
+#include <QtGui/QSortFilterProxyModel>
+#include "../lib/typedefs.h"
 
-#include "ui_dlgaddressbookbase.h"
-#include <kconfigdialog.h>
-
-
-
-//SFLPhone
-class AutoCompletionDelegate;
-class AkonadiContactCollectionModel;
-
-/**
-	@author Jérémy Quentin <jeremy.quentin@gmail.com>
-*/
-class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase
+///Filter out notes and emails collections
+class LIB_EXPORT AkonadiContactCollectionModel : public QSortFilterProxyModel
 {
-Q_OBJECT
+   Q_OBJECT
 public:
-   explicit DlgAddressBook(KConfigDialog* parent = nullptr);
+   explicit AkonadiContactCollectionModel(QObject* parent) : QSortFilterProxyModel(parent) {
+      setDynamicSortFilter(true);
+   }
+public:
+   virtual QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
 
-   virtual ~DlgAddressBook();
+   //Mutator
+   void reload();
+   void save();
 
-   bool hasChanged();
+protected:
+   virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
 
 private:
-   //Attributes
-   QHash<QString,QListWidgetItem*> m_mNumbertype;
-   bool m_HasChanged;
-   AutoCompletionDelegate* m_pDelegate;
-   AkonadiContactCollectionModel* m_pFilterModel;
-
-public Q_SLOTS:
-   void updateWidgets ();
-   void updateSettings();
-
-private Q_SLOTS:
-   void changed();
+   QHash<int,bool> m_hChecked;
 
 Q_SIGNALS:
-   ///Emitted when the buttons need to be updated
-   void updateButtons();
+   void changed();
 };
 
 #endif
