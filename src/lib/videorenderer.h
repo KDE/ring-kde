@@ -21,6 +21,7 @@
 //Base
 #include <QtCore/QObject>
 #include "typedefs.h"
+#include <time.h>
 
 //Qt
 class QTimer;

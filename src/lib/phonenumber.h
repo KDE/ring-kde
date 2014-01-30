@@ -19,6 +19,7 @@
 #define PHONENUMBER_H
 
 #include "typedefs.h"
+#include <time.h>
 
 //Qt
 #include <QStringList>

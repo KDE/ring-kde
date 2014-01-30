@@ -18,6 +18,7 @@
 #ifndef HISTORYTIMECATEGORYMODEL_H
 #define HISTORYTIMECATEGORYMODEL_H
 #include "typedefs.h"
+#include <time.h>
 
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QVector>

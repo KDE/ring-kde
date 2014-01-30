@@ -18,6 +18,9 @@
 
 #include "macromodel.h"
 
+//System
+#include <time.h>
+
 //Qt
 #include <QtCore/QTimer>
 #include <QtCore/QFile>

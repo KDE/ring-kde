@@ -22,6 +22,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
+#include <time.h>
 
 //Qt
 class QPixmap;

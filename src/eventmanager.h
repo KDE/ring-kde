@@ -73,7 +73,6 @@ protected:
 
 private:
    //Attributes
-   CanvasObjectManager* m_pCanvasManager;
    SFLPhoneView*        m_pParent       ;
    MainWindowEvent*     m_pMainWindowEv ;
 

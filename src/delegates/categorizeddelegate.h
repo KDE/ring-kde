@@ -44,7 +44,6 @@ private:
 
    //Attributes
    const int  m_LeftMargin ;
-   const int  m_RightMargin;
    QStyledItemDelegate* m_pChildDelegate     ;
    QStyledItemDelegate* m_pChildChildDelegate;
 };

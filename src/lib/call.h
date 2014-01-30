@@ -20,6 +20,7 @@
 #define CALL_H
 
 #include "categorizedcompositenode.h"
+#include <time.h>
 
 //Qt
 #include <QtCore/QDebug>

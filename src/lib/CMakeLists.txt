@@ -270,8 +270,12 @@ IF(${ENABLE_QT5} MATCHES true)
    QT5_USE_MODULES(qtsflphone Core DBus)
 ENDIF(${ENABLE_QT5} MATCHES true)
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+   SET(LINK_LIBRT "-lrt")
+ENDIF()
+
 target_link_libraries( qtsflphone
-  -lrt
+  ${LINK_LIBRT}
   -lpthread
   ${QT_QTDBUS_LIBRARY}
   ${QT_QTCORE_LIBRARY}

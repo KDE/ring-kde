@@ -22,6 +22,9 @@
 //Unix
 #include <unistd.h>
 #include <netdb.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 //Qt
 #include <QtGui/QVBoxLayout>
@@ -129,7 +132,7 @@ int AccountWizard::sendRequest(const QString& host, int port, const QString& req
       ret[i] = fgetc(f);
 
    if (status != 200) {
-      ret = "http error: " + status;
+      ret = "http error:" + QString::number(status);
       fclose(f);
 //       sprintf(ret, "http error: %ld", status);
       return -1;

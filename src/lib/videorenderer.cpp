@@ -73,6 +73,7 @@ VideoRenderer::~VideoRenderer()
 ///Get the data from shared memory and transform it into a QByteArray
 bool VideoRenderer::renderToBitmap(QByteArray& data)
 {
+#ifdef Q_OS_LINUX
    if (!m_isRendering) {
       return false;
    }
@@ -130,6 +131,10 @@ bool VideoRenderer::renderToBitmap(QByteArray& data)
    shmUnlock();
 //    return data;
    return true;
+#else
+   Q_UNUSED(data)
+   return false;
+#endif
 }
 
 ///Connect to the shared memory
@@ -205,6 +210,7 @@ bool VideoRenderer::resizeShm()
 ///Lock the memory while the copy is being made
 bool VideoRenderer::shmLock()
 {
+#ifdef Q_OS_LINUX
    const timespec timeout = createTimeout();
    /* We need an upper limit on how long we'll wait to avoid locking the whole GUI */
    if (sem_timedwait(&m_pShmArea->mutex, &timeout) < 0) {
@@ -213,6 +219,9 @@ bool VideoRenderer::shmLock()
       return false;
    }
    return true;
+#else
+   return false;
+#endif
 }
 
 ///Remove the lock, allow a new frame to be drawn
@@ -224,11 +233,15 @@ void VideoRenderer::shmUnlock()
 ///Create a SHM timeout
 timespec VideoRenderer::createTimeout()
 {
+#ifdef Q_OS_LINUX
    timespec timeout = {0, 0};
    if (clock_gettime(CLOCK_REALTIME, &timeout) == -1)
       qDebug() << "clock_gettime";
    timeout.tv_sec += TIMEOUT_SEC;
    return timeout;
+#else
+   return {0,0};
+#endif
 }
 
 

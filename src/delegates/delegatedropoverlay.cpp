@@ -83,7 +83,7 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
          painter->setOpacity(1);
          painter->setRenderHint(QPainter::Antialiasing, true);
          QPen pen = highlight?QApplication::palette().color(QPalette::Highlight): QColor(235,235,235,235);
-         pen.setWidth(1.5);
+         pen.setWidth(1);
          painter->setPen(pen);
          QLinearGradient linearGrad(QPointF(0, 0), QPointF(0, 100));
          linearGrad.setColorAt(0, QColor(130,130,130,(0.7*tmpStep*tmpStep)));

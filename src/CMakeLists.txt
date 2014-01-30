@@ -56,6 +56,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
 #       ADD_DEFINITIONS("-Wzero-as-null-pointer-constant")
 #       ADD_DEFINITIONS( -DENABLE_IGNORE_NULL=true )
    endif()
+else()
+   ADD_DEFINITIONS(-Wno-unknown-pragmas)
 endif()
 
 ADD_DEFINITIONS("-std=c++0x")
