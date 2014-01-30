@@ -73,11 +73,9 @@ void AkonadiContactCollectionModel::reload()
 void AkonadiContactCollectionModel::save()
 {
    QList<int> ret;
-   QHash<int,bool>::const_iterator i = m_hChecked.constBegin();
-   while (i != m_hChecked.end()) {
+   for (QHash<int,bool>::iterator i = m_hChecked.begin(); i != m_hChecked.end(); ++i) {
       if (i.value())
          ret << i.key();
-      i++;
    }
    ConfigurationSkeleton::setDisabledCollectionList(ret);
 }
