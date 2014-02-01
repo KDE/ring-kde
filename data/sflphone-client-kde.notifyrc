@@ -1,5 +1,6 @@
 [Global]
 Name=sflphone-client-kde
+Name[bs]=sfltelefon-klijent-kde
 Name[cs]=sflphone-client-kde
 Name[da]=sflphone-client-kde
 Name[de]=sflphone-client-kde
@@ -20,6 +21,7 @@ Name[uk]=sflphone-client-kde
 Name[x-test]=xxsflphone-client-kdexx
 IconName=sflphone-client-kde
 Comment=SFLphone VoIP KDE4 client
+Comment[bs]=SFLtelefon  VoIP KDE4 klijent
 Comment[cs]=SFLphone VoIP klient pro KDE4
 Comment[da]=SFLphone VoIP-klient til KDE4
 Comment[de]=SFLphone-VoIP-Programm für KDE
@@ -41,6 +43,7 @@ Comment[x-test]=xxSFLphone VoIP KDE4 clientxx
 
 [Event/contact online]
 Name=Contact Online
+Name[bs]=Kontakt online
 Name[cs]=Osoba je online
 Name[da]=Kontakten er online
 Name[de]=Kontakt ist online
@@ -87,6 +90,7 @@ Action=Sound|Popup
 
 [Event/test_notification]
 Name=test message
+Name[bs]=test poruka
 Name[cs]=testovací zpráva
 Name[da]=testbesked
 Name[de]=Testnachricht
@@ -107,6 +111,7 @@ Name[tr]=test mesajı
 Name[uk]=тестове повідомлення
 Name[x-test]=xxtest messagexx
 Comment=Test message
+Comment[bs]=Test poruka
 Comment[cs]=Testovací zpráva
 Comment[da]=Testbesked
 Comment[de]=Testnachricht
@@ -133,6 +138,7 @@ Sound=
 
 [Event/test_notification2]
 Name=test message2
+Name[bs]=test poruka2
 Name[cs]=testovací zpráva2
 Name[da]=testbesked2
 Name[de]=Testnachricht 2
@@ -153,6 +159,7 @@ Name[tr]=test mesajı2
 Name[uk]=тестове повідомлення2
 Name[x-test]=xxtest message2xx
 Comment=Test message2
+Comment[bs]=Test poruka 2
 Comment[cs]=Testovací zpráva2
 Comment[da]=Testbesked2
 Comment[de]=Testnachricht 2

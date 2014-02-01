@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=SFLPhone plasmoid
+Name[bs]=SFLtelefon plasmoid
 Name[cs]=Plasmoid SFLPhone
 Name[da]=SFLphone-plasmoid
 Name[de]=SFLPhone-Plasmoid
@@ -19,6 +20,7 @@ Name[tr]=SFLPhone plasmoid
 Name[uk]=Плазмоїд SFLPhone
 Name[x-test]=xxSFLPhone plasmoidxx
 Comment=Plasma client for SFLPhone daemon
+Comment[bs]=Plasma klijent za SFLPtelefon demon
 Comment[cs]=Klient plasma pro démona SFLPhone
 Comment[da]=Plasma-klient til SFLPhone-dæmonen
 Comment[de]=Plasma-Programm für den SFLPhone-Dienst

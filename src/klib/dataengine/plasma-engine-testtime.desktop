@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=sflphone
+Name[bs]=sfltelefon
 Name[cs]=sflphone
 Name[da]=sflphone
 Name[de]=sflphone
@@ -20,6 +21,7 @@ Name[tr]=sflphone
 Name[uk]=sflphone
 Name[x-test]=xxsflphonexx
 Comment=An SFLPhone IP soft-phone frontend
+Comment[bs]=An SFL Telefon IP  soft-phone korisnički program
 Comment[da]=En brugerflade til SFLphone IP-softwaretelefon
 Comment[de]=Eine Benutzeroberfläche das SFLPhone-IP-Softwaretelefon
 Comment[es]=Una interfaz para teléfono virtual SFLPhone
