@@ -31,6 +31,7 @@
 #include "phonedirectorymodel.h"
 #include "historytimecategorymodel.h"
 #include "contact.h"
+#include "contactmodel.h"
 
 class ContactTreeNode;
 
@@ -144,15 +145,15 @@ m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_lCategoryCounter()
    connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
    connect(m_pModel,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
    QHash<int, QByteArray> roles = roleNames();
-   roles.insert(AbstractContactBackend::Role::Organization      ,QByteArray("organization")     );
-   roles.insert(AbstractContactBackend::Role::Group             ,QByteArray("group")            );
-   roles.insert(AbstractContactBackend::Role::Department        ,QByteArray("department")       );
-   roles.insert(AbstractContactBackend::Role::PreferredEmail    ,QByteArray("preferredEmail")   );
-   roles.insert(AbstractContactBackend::Role::FormattedLastUsed ,QByteArray("formattedLastUsed"));
-   roles.insert(AbstractContactBackend::Role::IndexedLastUsed   ,QByteArray("indexedLastUsed")  );
-   roles.insert(AbstractContactBackend::Role::DatedLastUsed     ,QByteArray("datedLastUsed")    );
-   roles.insert(AbstractContactBackend::Role::Filter            ,QByteArray("filter")           );
-   roles.insert(AbstractContactBackend::Role::DropState         ,QByteArray("dropState")        );
+   roles.insert(ContactModel::Role::Organization      ,QByteArray("organization")     );
+   roles.insert(ContactModel::Role::Group             ,QByteArray("group")            );
+   roles.insert(ContactModel::Role::Department        ,QByteArray("department")       );
+   roles.insert(ContactModel::Role::PreferredEmail    ,QByteArray("preferredEmail")   );
+   roles.insert(ContactModel::Role::FormattedLastUsed ,QByteArray("formattedLastUsed"));
+   roles.insert(ContactModel::Role::IndexedLastUsed   ,QByteArray("indexedLastUsed")  );
+   roles.insert(ContactModel::Role::DatedLastUsed     ,QByteArray("datedLastUsed")    );
+   roles.insert(ContactModel::Role::Filter            ,QByteArray("filter")           );
+   roles.insert(ContactModel::Role::DropState         ,QByteArray("dropState")        );
    setRoleNames(roles);
 }
 
@@ -190,11 +191,11 @@ void ContactProxyModel::reloadCategories()
    }
    endRemoveRows();
    m_lCategoryCounter.clear();
-   foreach(Contact* cont, m_pModel->getContactList()) {
+   foreach(const Contact* cont, ContactModel::instance()->contacts()) {
       if (cont) {
          const QString val = category(cont);
          TopLevelItem* item = getTopLevelItem(val);
-         ContactTreeNode* contactNode = new ContactTreeNode(cont,this);
+         ContactTreeNode* contactNode = new ContactTreeNode(const_cast<Contact*>(cont),this);
          contactNode->m_pParent3 = item;
          contactNode->m_Index = item->m_lChildren.size();
          item->m_lChildren << contactNode;
@@ -223,7 +224,7 @@ bool ContactProxyModel::setData( const QModelIndex& index, const QVariant &value
 {
    if (index.isValid() && index.parent().isValid()) {
       CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)index.internalPointer();
-      if (role == AbstractContactBackend::Role::DropState) {
+      if (role == ContactModel::Role::DropState) {
          modelItem->setDropState(value.toInt());
          emit dataChanged(index, index);
          return true;
@@ -243,9 +244,9 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
       switch (role) {
          case Qt::DisplayRole:
             return static_cast<const TopLevelItem*>(modelItem)->m_Name;
-         case AbstractContactBackend::Role::IndexedLastUsed:
-            return index.child(0,0).data(AbstractContactBackend::Role::IndexedLastUsed);
-         case AbstractContactBackend::Role::Active:
+         case ContactModel::Role::IndexedLastUsed:
+            return index.child(0,0).data(ContactModel::Role::IndexedLastUsed);
+         case ContactModel::Role::Active:
             return true;
          default:
             break;
@@ -256,25 +257,25 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
       switch (role) {
          case Qt::DisplayRole:
             return QVariant(c->formattedName());
-         case AbstractContactBackend::Role::Organization:
+         case ContactModel::Role::Organization:
             return QVariant(c->organization());
-         case AbstractContactBackend::Role::Group:
+         case ContactModel::Role::Group:
             return QVariant(c->group());
-         case AbstractContactBackend::Role::Department:
+         case ContactModel::Role::Department:
             return QVariant(c->department());
-         case AbstractContactBackend::Role::PreferredEmail:
+         case ContactModel::Role::PreferredEmail:
             return QVariant(c->preferredEmail());
-         case AbstractContactBackend::Role::DropState:
+         case ContactModel::Role::DropState:
             return QVariant(modelItem->dropState());
-         case AbstractContactBackend::Role::FormattedLastUsed:
+         case ContactModel::Role::FormattedLastUsed:
             return QVariant(HistoryTimeCategoryModel::timeToHistoryCategory(c->phoneNumbers().lastUsedTimeStamp()));
-         case AbstractContactBackend::Role::IndexedLastUsed:
+         case ContactModel::Role::IndexedLastUsed:
             return QVariant((int)HistoryTimeCategoryModel::timeToHistoryConst(c->phoneNumbers().lastUsedTimeStamp()));
-         case AbstractContactBackend::Role::Active:
+         case ContactModel::Role::Active:
             return c->isActive();
-         case AbstractContactBackend::Role::DatedLastUsed:
+         case ContactModel::Role::DatedLastUsed:
             return QVariant(QDateTime::fromTime_t( c->phoneNumbers().lastUsedTimeStamp()));
-         case AbstractContactBackend::Role::Filter: {
+         case ContactModel::Role::Filter: {
             //Strip non essential characters like accents from the filter string
             QString normStripppedC;
             foreach(QChar char2,QString(c->formattedName()+'\n'+c->organization()+'\n'+c->group()+'\n'+
@@ -294,7 +295,7 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
    case CategorizedCompositeNode::Type::BOOKMARK:
    default:
       switch (role) {
-         case AbstractContactBackend::Role::Active:
+         case ContactModel::Role::Active:
             return true;
       }
       break;
@@ -505,30 +506,30 @@ int ContactProxyModel::acceptedPayloadTypes()
  ****************************************************************************/
 
 
-QString ContactProxyModel::category(Contact* ct) const {
+QString ContactProxyModel::category(const Contact* ct) const {
    if (!ct)
       return QString();
    QString cat;
    switch (m_Role) {
-      case AbstractContactBackend::Role::Organization:
+      case ContactModel::Role::Organization:
          cat = ct->organization();
          break;
-      case AbstractContactBackend::Role::Group:
+      case ContactModel::Role::Group:
          cat = ct->group();
          break;
-      case AbstractContactBackend::Role::Department:
+      case ContactModel::Role::Department:
          cat = ct->department();
          break;
-      case AbstractContactBackend::Role::PreferredEmail:
+      case ContactModel::Role::PreferredEmail:
          cat = ct->preferredEmail();
          break;
-      case AbstractContactBackend::Role::FormattedLastUsed:
+      case ContactModel::Role::FormattedLastUsed:
          cat = HistoryTimeCategoryModel::timeToHistoryCategory(ct->phoneNumbers().lastUsedTimeStamp());
          break;
-      case AbstractContactBackend::Role::IndexedLastUsed:
+      case ContactModel::Role::IndexedLastUsed:
          cat = QString::number((int)HistoryTimeCategoryModel::timeToHistoryConst(ct->phoneNumbers().lastUsedTimeStamp()));
          break;
-      case AbstractContactBackend::Role::DatedLastUsed:
+      case ContactModel::Role::DatedLastUsed:
          cat = QDateTime::fromTime_t(ct->phoneNumbers().lastUsedTimeStamp()).toString();
          break;
       default:

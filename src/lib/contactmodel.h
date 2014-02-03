@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2013-2014 by Savoir-Faire Linux                          *
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
@@ -15,40 +15,63 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef CONTACT_PROXY_MODEL_H
-#define CONTACT_PROXY_MODEL_H
+#ifndef CONTACTMODEL_H
+#define CONTACTMODEL_H
 
-#include <QtCore/QHash>
-#include <QtCore/QStringList>
+#include <QObject>
+#include <QHash>
+#include <QStringList>
+#include <QVariant>
 #include <QtCore/QAbstractItemModel>
 
-//SFLPhone
-#include "../lib/typedefs.h"
-#include "../lib/contact.h"
-class AbstractContactBackend;
-class ContactTreeNode;
-class TopLevelItem;
-class ContactTreeBinder;
+#include "typedefs.h"
+#include "contact.h"
 
-class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
-{
+//SFLPhone
+class Contact;
+class Account;
+class AbstractContactBackend;
+
+//Typedef
+typedef QVector<Contact*> ContactList;
+
+///ContactModel: Allow different way to handle contact without poluting the library
+class LIB_EXPORT ContactModel : public QAbstractItemModel {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
-   friend class AbstractContactBackend;
-   friend class ContactTreeNode;
-   friend class ContactTreeBinder;
-   explicit ContactProxyModel(AbstractContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
-   virtual ~ContactProxyModel();
+   enum Role {
+      Organization      = 100,
+      Group             = 101,
+      Department        = 102,
+      PreferredEmail    = 103,
+      FormattedLastUsed = 104,
+      IndexedLastUsed   = 105,
+      DatedLastUsed     = 106,
+      Active            = 107,
+      Filter            = 200, //All roles, all at once
+      DropState         = 300, //State for drag and drop
+   };
 
-   //Setters
-   void setRole(int role);
-   void setShowAll(bool showAll);
+   //Properties
+   Q_PROPERTY(bool hasBackends   READ hasBackends  )
+
+   explicit ContactModel(QObject* parent = nullptr);
+   virtual ~ContactModel();
+
+   //Mutator
+   bool addContact(Contact* c);
+   void disableContact(Contact* c);
+
+   //Getters
+   Contact* getContactByUid   ( const QString& uid );
+   bool     hasBackends       () const;
+   const ContactList contacts() const;
 
    //Model implementation
-   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   )  __attribute__ ((const));
    virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
    virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
    virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
@@ -56,47 +79,38 @@ public:
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-   virtual QStringList   mimeTypes   (                                                             ) const;
-   virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
-   virtual bool dropMimeData         ( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
-   //Getter
-   static int acceptedPayloadTypes();
+   //Singleton
+   static ContactModel* instance();
 
-private:
-
-   //Helpers
-   QString category(const Contact* ct) const;
-
-   //Attributes
-   QHash<Contact*, time_t>      m_hContactByDate   ;
-   AbstractContactBackend*      m_pModel           ;
-   QVector<TopLevelItem*>       m_lCategoryCounter ;
-   QHash<QString,TopLevelItem*> m_hCategories      ;
-   int                          m_Role             ;
-   bool                         m_ShowAll          ;
-   QStringList                  m_lMimes           ;
+protected:
+//    virtual ContactList update_slot() = 0;
 
    //Helper
-   TopLevelItem* getTopLevelItem(const QString& category);
+//    QString getUserFromPhone    (const QString &phoneNumber);
 
-private Q_SLOTS:
-   void reloadCategories();
-   void slotContactAdded(Contact* c);
-};
+   //Attributes
+   QHash<QString,Contact*>        m_ContactByUid   ;
+   int m_UpdatesCounter;
 
-class ContactTreeBinder : public QObject { //FIXME Qt5 remove when dropping Qt4
-   Q_OBJECT
-public:
-   ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n);
 private:
-   ContactTreeNode* m_pTreeNode;
-   ContactProxyModel* m_pModel;
-private Q_SLOTS:
-   void slotContactChanged();
-   void slotStatusChanged();
-   void slotPhoneNumberCountChanged(int,int);
-   void slotPhoneNumberCountAboutToChange(int,int);
+   //Attributes
+   static ContactModel* m_spInstance;
+   QList<AbstractContactBackend*> m_lBackends;
+
+   //Indexes
+   QHash<QByteArray,Contact*> m_hContactsByUid;
+   QVector<Contact*> m_lContacts;
+
+// public Q_SLOTS:
+//    ContactList update();
+
+// private Q_SLOTS:
+//    void slotReloadModel();
+
+Q_SIGNALS:
+   void collectionChanged();
+   void newContactAdded(Contact* c);
 };
 
 #endif

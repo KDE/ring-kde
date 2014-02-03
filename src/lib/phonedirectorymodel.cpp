@@ -31,6 +31,7 @@
 #include "abstractcontactbackend.h"
 #include "dbus/presencemanager.h"
 #include "visitors/pixmapmanipulationvisitor.h"
+#include "contactmodel.h"
 
 PhoneDirectoryModel* PhoneDirectoryModel::m_spInstance = nullptr;
 
@@ -405,7 +406,7 @@ PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
    if (fields.size() == 3) {
       const QString uri = fields[0];
       Account* account = AccountListModel::instance()->getAccountById(fields[1]);
-      Contact* contact = Call::contactBackend()?Call::contactBackend()->getContactByUid(fields[2]):nullptr;
+      Contact* contact = ContactModel::instance()->getContactByUid(fields[2]);
       return getNumber(uri,contact,account);
    }
    else if (fields.size() == 1) {

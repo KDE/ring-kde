@@ -29,6 +29,7 @@
 #include <lib/account.h>
 #include <lib/phonedirectorymodel.h>
 #include <lib/accountlistmodel.h>
+#include <lib/contactmodel.h>
 #include <klib/tipmanager.h>
 #include <klib/akonadibackend.h>
 #include "sflphoneview.h"
@@ -150,7 +151,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
          const QByteArray encodedContact     = e->mimeData()->data( MIME_CONTACT     );
          kDebug() << "Contact dropped on empty space";
-         const PhoneNumber* number = KPhoneNumberSelector().getNumber(AkonadiBackend::instance()->getContactByUid(encodedContact));
+         const PhoneNumber* number = KPhoneNumberSelector().getNumber(ContactModel::instance()->getContactByUid(encodedContact));
          if (number->uri().isEmpty()) {
             Call* newCall = CallModel::instance()->dialingCall();
             newCall->setDialNumber(number->uri());
@@ -206,7 +207,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
                (n->account()?n->account():AccountListModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
-         Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
+         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
@@ -226,7 +227,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
                (n->account()?n->account():AccountListModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
-         Contact* c = AkonadiBackend::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
+         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }

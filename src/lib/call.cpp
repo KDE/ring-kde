@@ -46,6 +46,7 @@
 #include "videorenderer.h"
 #include "tlsmethodmodel.h"
 #include "audiosettingsmodel.h"
+#include "contactmodel.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
@@ -137,19 +138,6 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
 {
    dbg.nospace() << static_cast<int>(c);
    return dbg.space();
-}
-
-AbstractContactBackend* Call::m_pContactBackend = nullptr;
-Call*                   Call::m_sSelectedCall   = nullptr;
-
-void Call::setContactBackend(AbstractContactBackend* be)
-{
-   m_pContactBackend = be;
-}
-
-AbstractContactBackend* Call::contactBackend ()
-{
-   return m_pContactBackend;
 }
 
 ///Constructor
@@ -1117,7 +1105,7 @@ void Call::call()
       qDebug() << "Calling " << peerPhoneNumber()->uri() << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
       callManager.placeCall(m_Account->id(), m_CallId, m_pDialNumber->uri());
       this->m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->getNumber(m_pDialNumber->uri(),account());
-      if (m_pContactBackend) {
+      if (ContactModel::instance()->hasBackends()) {
          if (peerPhoneNumber()->contact())
             m_PeerName = peerPhoneNumber()->contact()->formattedName();
       }

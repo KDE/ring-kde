@@ -31,7 +31,6 @@ class QTimer;
 #include "sflphone_const.h"
 #include "typedefs.h"
 #include "historytimecategorymodel.h"
-class AbstractContactBackend;
 class Account;
 class VideoRenderer;
 class InstantMessagingModel;
@@ -297,8 +296,6 @@ public:
    static Call* buildRingingCall  (const QString& callId                                                       );
    static Call* buildHistoryCall  (const QMap<QString,QString>& hc                                             );
    static Call* buildExistingCall (QString callId                                                              );
-   static void  setContactBackend (AbstractContactBackend* be                                                  );
-   static AbstractContactBackend* contactBackend ();
 
    //Static getters
    static Call::LegacyHistoryState historyStateFromType    ( const QString& type                                           );
@@ -371,7 +368,6 @@ private:
    bool                     m_isConference    ;
    Call::State              m_CurrentState    ;
    bool                     m_Recording       ;
-   static Call*             m_sSelectedCall   ;
    InstantMessagingModel*   m_pImModel        ;
    QTimer*                  m_pTimer          ;
    UserActionModel*         m_pUserActionModel;
@@ -381,9 +377,6 @@ private:
 
    //Cache
    HistoryTimeCategoryModel::HistoryConst m_HistoryConst;
-
-   //Static attribute
-   static AbstractContactBackend* m_pContactBackend;
 
    //State machine
    /**

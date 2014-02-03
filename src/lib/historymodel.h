@@ -127,7 +127,6 @@ private:
    bool                         m_isContactDateInit;
    int                          m_Role             ;
    bool                         m_ShowAll          ;
-   bool                         m_HaveContactModel ;
    QStringList                  m_lMimes           ;
 
 private Q_SLOTS:

@@ -26,6 +26,8 @@
 //SFLPhone library
 #include "sflphone_const.h"
 #include "phonenumber.h"
+#include "abstractcontactbackend.h"
+#include "transitionalcontactbackend.h"
 
 
 
@@ -45,8 +47,8 @@ Contact* Contact::PhoneNumbers::contact() const
 }
 
 ///Constructor
-Contact::Contact(QObject* parent):QObject(parent),m_pPhoto(nullptr),
-   m_Numbers(this),m_DisplayPhoto(nullptr),m_Active(true)
+Contact::Contact(AbstractContactBackend* parent):QObject(parent?parent:TransitionalContactBackend::instance()),m_pPhoto(nullptr),
+   m_Numbers(this),m_DisplayPhoto(nullptr),m_Active(true),m_pBackend(parent?parent:TransitionalContactBackend::instance())
 {
 }
 
@@ -272,4 +274,10 @@ time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
 void Contact::slotPresenceChanged()
 {
    emit changed();
+}
+
+///Save the contact
+bool Contact::save() const
+{
+   return m_pBackend->saveContact(this);
 }

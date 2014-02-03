@@ -60,6 +60,7 @@
 #include "lib/presencestatusmodel.h"
 #include "lib/videomodel.h"
 #include "lib/phonenumber.h"
+#include "lib/contactmodel.h"
 
 //sflphone
 #include "accountwizard.h"
@@ -137,7 +138,6 @@ SFLPhone::SFLPhone(QWidget *parent)
    }
    static bool init = false;
    if (!init) {
-      Call::setContactBackend(AkonadiBackend::instance());
       NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
       InstantMessagingModelManager::init();
       AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
@@ -336,8 +336,8 @@ SFLPhone::~SFLPhone()
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
 
-   delete AkonadiBackend::instance();
    delete CallModel::instance();
+   delete ContactModel::instance();
    //saveState();
 }
 

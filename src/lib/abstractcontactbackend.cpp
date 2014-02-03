@@ -32,63 +32,27 @@
 #include <QtCore/QCoreApplication>
 
 ///Constructor
-AbstractContactBackend::AbstractContactBackend(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance())
+AbstractContactBackend::AbstractContactBackend(QObject* par) : QObject(par?par:QCoreApplication::instance())
 {
-   connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }
 
 ///Destructor
 AbstractContactBackend::~AbstractContactBackend()
 {
-   if (Call::contactBackend() == this)
-      Call::setContactBackend(nullptr);
-   foreach (Contact* c,m_ContactByUid) {
-      delete c;
-   }
+//    if (Call::contactBackend() == this)
+//       Call::setContactBackend(nullptr);
+//    foreach (Contact* c,m_ContactByUid) {
+//       delete c;
+//    } //TODO uncomment
 }
 
 ///Update slot
-ContactList AbstractContactBackend::update()
-{
-   return update_slot();
-}
+// ContactList AbstractContactBackend::update()
+// {
+//    return update_slot();
+   //TODO do something
+// }
 
-///Called when the new contacts are added
-void AbstractContactBackend::slotReloadModel()
-{
-   reset();
-   emit layoutChanged();
-   emit dataChanged(index(0,0),index(rowCount(),0));
-}
-
-/*****************************************************************************
- *                                                                           *
- *                                  Helpers                                  *
- *                                                                           *
- ****************************************************************************/
-
-///Return the extension/user of an URI (<sip:12345@exemple.com>)
-QString AbstractContactBackend::getUserFromPhone(const QString &phoneNumber)
-{
-   //Too slow
-//    if (phoneNumber.indexOf('@') != -1) {
-//       QString user = phoneNumber.split('@')[0];
-//       return (user.indexOf(':') != -1)?user.split(':')[1]:user;
-//    }
-   int start(0),stop(0);
-   for (int i=0;i<phoneNumber.size();i++) {
-      const char c = phoneNumber[i].cell(); //Because it is fast
-      if (c == ':')
-         start = i;
-      else if (c == '@') {
-         stop = i;
-         break;
-      }
-   }
-   if (stop)
-      return phoneNumber.mid(start,stop);
-   return phoneNumber;
-} //getUserFromPhone
 
 /*****************************************************************************
  *                                                                           *
@@ -97,88 +61,98 @@ QString AbstractContactBackend::getUserFromPhone(const QString &phoneNumber)
  ****************************************************************************/
 
 
-bool AbstractContactBackend::setData( const QModelIndex& idx, const QVariant &value, int role)
-{
-   Q_UNUSED(idx)
-   Q_UNUSED(value)
-   Q_UNUSED(role)
-   return false;
-}
+// bool AbstractContactBackend::setData( const QModelIndex& idx, const QVariant &value, int role)
+// {
+//    Q_UNUSED(idx)
+//    Q_UNUSED(value)
+//    Q_UNUSED(role)
+//    return false;
+// }
 
-QVariant AbstractContactBackend::data( const QModelIndex& idx, int role) const
-{
-   if (!idx.isValid())
-      return QVariant();
-   if (!idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      const Contact* c = getContactList()[idx.row()];
-      if (c)
-         return QVariant(c->formattedName());
-   }
-   else if (idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      const Contact* c = getContactList()[idx.parent().row()];
-      if (c)
-         return QVariant(c->phoneNumbers()[idx.row()]->uri());
-   }
-   return QVariant();
-}
+// QVariant AbstractContactBackend::data( const QModelIndex& idx, int role) const
+// {
+//    if (!idx.isValid())
+//       return QVariant();
+//    if (!idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+//       const Contact* c = getContactList()[idx.row()];
+//       if (c)
+//          return QVariant(c->formattedName());
+//    }
+//    else if (idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
+//       const Contact* c = getContactList()[idx.parent().row()];
+//       if (c)
+//          return QVariant(c->phoneNumbers()[idx.row()]->uri());
+//    }
+//    return QVariant();
+// }
 
-QVariant AbstractContactBackend::headerData(int section, Qt::Orientation orientation, int role) const
-{
-   Q_UNUSED(section)
-   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-      return QVariant(tr("Contacts"));
-   return QVariant();
-}
+// QVariant AbstractContactBackend::headerData(int section, Qt::Orientation orientation, int role) const
+// {
+//    Q_UNUSED(section)
+//    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+//       return QVariant(tr("Contacts"));
+//    return QVariant();
+// }
 
-int AbstractContactBackend::rowCount( const QModelIndex& par ) const
-{
-   if (!par.isValid()) {
-      return getContactList().size();
-   }
-   else if (!par.parent().isValid() && par.row() < getContactList().size()) {
-      const Contact* c = getContactList()[par.row()];
-      if (c) {
-         const int size = c->phoneNumbers().size();
-         return size==1?0:size;
-      }
-   }
-   return 0;
-}
+// int AbstractContactBackend::rowCount( const QModelIndex& par ) const
+// {
+//    if (!par.isValid()) {
+//       return getContactList().size();
+//    }
+//    else if (!par.parent().isValid() && par.row() < getContactList().size()) {
+//       const Contact* c = getContactList()[par.row()];
+//       if (c) {
+//          const int size = c->phoneNumbers().size();
+//          return size==1?0:size;
+//       }
+//    }
+//    return 0;
+// }
 
-Qt::ItemFlags AbstractContactBackend::flags( const QModelIndex& idx ) const
-{
-   if (!idx.isValid())
-      return Qt::NoItemFlags;
-   return Qt::ItemIsEnabled | ((idx.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
-}
+// Qt::ItemFlags AbstractContactBackend::flags( const QModelIndex& idx ) const
+// {
+//    if (!idx.isValid())
+//       return Qt::NoItemFlags;
+//    return Qt::ItemIsEnabled | ((idx.parent().isValid())?Qt::ItemIsSelectable:Qt::ItemIsEnabled);
+// }
 
-int AbstractContactBackend::columnCount ( const QModelIndex& par) const
-{
-   Q_UNUSED(par)
-   return 1;
-}
+// int AbstractContactBackend::columnCount ( const QModelIndex& par) const
+// {
+//    Q_UNUSED(par)
+//    return 1;
+// }
 
-QModelIndex AbstractContactBackend::parent( const QModelIndex& idx) const
-{
-   if (!idx.isValid())
-      return QModelIndex();
-   CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)idx.internalPointer();
-   if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
-      int idx2 = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
-      if (idx2 != -1) {
-         return AbstractContactBackend::index(idx2,0,QModelIndex());
-      }
-   }
-   return QModelIndex();
-}
+// QModelIndex AbstractContactBackend::parent( const QModelIndex& idx) const
+// {
+//    if (!idx.isValid())
+//       return QModelIndex();
+//    CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)idx.internalPointer();
+//    if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
+//       int idx2 = getContactList().indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
+//       if (idx2 != -1) {
+//          return AbstractContactBackend::index(idx2,0,QModelIndex());
+//       }
+//    }
+//    return QModelIndex();
+// }
 
-QModelIndex AbstractContactBackend::index( int row, int column, const QModelIndex& par) const
+// QModelIndex AbstractContactBackend::index( int row, int column, const QModelIndex& par) const
+// {
+//    if (!par.isValid() && getContactList().size() > row) {
+//       return createIndex(row,column,getContactList()[row]);
+//    }
+//    else if (par.isValid() && getContactList()[par.row()]->phoneNumbers().size() > row) {
+//       return createIndex(row,column,(CategorizedCompositeNode*)(&(getContactList()[par.row()]->phoneNumbers())));
+//    }
+//    return QModelIndex();
+// }
+
+
+bool AbstractContactBackend::saveContacts(const QList<Contact*> contacts)
 {
-   if (!par.isValid() && getContactList().size() > row) {
-      return createIndex(row,column,getContactList()[row]);
+   bool ret = true;
+   foreach(const Contact* c, contacts) {
+      ret &= saveContact(c);
    }
-   else if (par.isValid() && getContactList()[par.row()]->phoneNumbers().size() > row) {
-      return createIndex(row,column,(CategorizedCompositeNode*)(&(getContactList()[par.row()]->phoneNumbers())));
-   }
-   return QModelIndex();
+   return ret;
 }

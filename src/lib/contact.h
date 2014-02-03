@@ -36,6 +36,7 @@ namespace KABC {
 
 //SFLPhone
 class PhoneNumber;
+class AbstractContactBackend;
 
 #include "typedefs.h"
 #include "categorizedcompositenode.h"
@@ -74,6 +75,9 @@ public:
    Q_PROPERTY( QString               department     READ department     WRITE setDepartment                          )
    Q_PROPERTY( bool                  active         READ isActive       WRITE setActive         NOTIFY statusChanged )
 
+   //Mutator
+   Q_INVOKABLE bool save() const;
+
 private:
    QString      m_FirstName      ;
    QString      m_SecondName     ;
@@ -88,10 +92,11 @@ private:
    bool         m_DisplayPhoto   ;
    PhoneNumbers m_Numbers        ;
    bool         m_Active         ;
+   AbstractContactBackend* m_pBackend;
 
 public:
    //Constructors & Destructors
-   explicit Contact(QObject* parent = nullptr);
+   explicit Contact(AbstractContactBackend* parent = nullptr);
    virtual ~Contact();
 
    //Getters

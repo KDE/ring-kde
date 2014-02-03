@@ -53,17 +53,19 @@ class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
 public:
    static   AbstractContactBackend* instance();
 //    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
-   Contact* getContactByUid   ( const QString& uid                                                     );
    void     editContact       ( Contact*       contact , QWidget* parent = 0                           );
    void     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
-   virtual void addPhoneNumber( Contact*       contact , QString  number, QString type                 );
+   virtual void addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
 
    virtual void     editContact   ( Contact*   contact                                                 );
    virtual void     addNewContact ( Contact*   contact                                                 );
    virtual ~AkonadiBackend        (                                                                    );
 
-   virtual const ContactList& getContactList() const;
+   virtual bool load();
+   virtual bool reload();
+   virtual bool saveContact(const Contact* contact);
 
+   SupportedFeatures supportedFeatures() const;
 private:
    //Singleton constructor
    explicit AkonadiBackend(QObject* parent);
@@ -74,7 +76,6 @@ private:
    Akonadi::Monitor*              m_pMonitor   ;
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
-   ContactList                    m_pContacts  ;
    QPointer<Akonadi::CollectionFetchJob>   m_pJob;
 
    //Helper
@@ -82,11 +83,8 @@ private:
    Contact* addItem(Akonadi::Item item, bool ignoreEmpty = false);
    void fillContact(Contact* c, const KABC::Addressee& addr) const;
 
-protected:
-   ContactList update_slot();
-
 public Q_SLOTS:
-   ContactList update(Akonadi::Collection collection);
+   void update(Akonadi::Collection collection);
    void collectionsReceived( const Akonadi::Collection::List& );
 private Q_SLOTS:
    void slotItemAdded(Akonadi::Item item,Akonadi::Collection coll);

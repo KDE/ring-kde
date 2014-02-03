@@ -35,6 +35,7 @@
 #include <lib/numbercategory.h>
 #include <lib/phonenumber.h>
 #include <lib/abstractcontactbackend.h>
+#include <lib/contactmodel.h>
 #include "delegatedropoverlay.h"
 #include "lib/visitors/pixmapmanipulationvisitor.h"
 #include "phonenumberdelegate.h"
@@ -171,7 +172,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
 
    //BEGIN overlay path
-   if (index.data(AbstractContactBackend::Role::DropState).toInt() != 0) {
+   if (index.data(ContactModel::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;

@@ -160,6 +160,7 @@ private:
    bool               m_IsBookmark       ;
    int                m_TotalSeconds     ;
    QString            m_Uid              ;
+   QString            m_PrimaryName_cache;
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;
@@ -172,8 +173,9 @@ Q_SIGNALS:
    void callAdded(Call* call);
    void changed  (          );
    void presentChanged(bool);
-   void presenceMessageChanged(QString);
+   void presenceMessageChanged(const QString&);
    void trackedChanged(bool);
+   void primaryNameChanged(const QString& name);
 };
 
 Q_DECLARE_METATYPE(PhoneNumber*)

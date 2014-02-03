@@ -113,8 +113,11 @@ void PhoneNumber::setAccount(Account* account)
 void PhoneNumber::setContact(Contact* contact)
 {
    m_pContact = contact;
-   if (contact && m_Type != PhoneNumber::Type::TEMPORARY)
+   if (contact && m_Type != PhoneNumber::Type::TEMPORARY) {
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+QStringList(contact->formattedName()));
+      m_PrimaryName_cache = contact->formattedName();
+      emit primaryNameChanged(m_PrimaryName_cache);
+   }
    emit changed();
 }
 
@@ -217,23 +220,32 @@ bool PhoneNumber::haveCalled() const
 ///Best bet for this person real name
 QString PhoneNumber::primaryName() const
 {
-   if (m_pContact)
-      return m_pContact->formattedName();
-   else if (m_hNames.size() == 1)
-      return m_hNames.constBegin().key();
-   else {
-      QString toReturn = tr("Unknown");
-      QHash<QString,int>::const_iterator i = m_hNames.constBegin();
-      int max = 0;
-      while (i != m_hNames.end()) {
-         if (i.value() > max) {
-            max      = i.value();
-            toReturn = i.key  ();
+   //Compute the primary name
+   if (m_PrimaryName_cache.isEmpty()) {
+      QString ret;
+      if (m_hNames.size() == 1)
+         ret =  m_hNames.constBegin().key();
+      else {
+         QString toReturn = tr("Unknown");
+         int max = 0;
+         for (QHash<QString,int>::const_iterator i = m_hNames.begin(); i != m_hNames.end(); ++i) {
+            if (i.value() > max) {
+               max      = i.value();
+               toReturn = i.key  ();
+            }
          }
-         i++;
+         ret = toReturn;
       }
-      return toReturn;
+      const_cast<PhoneNumber*>(this)->m_PrimaryName_cache = ret;
+      emit const_cast<PhoneNumber*>(this)->primaryNameChanged(m_PrimaryName_cache);
    }
+   //Fallback: Use the URI
+   if (m_PrimaryName_cache.isEmpty()) {
+      return uri();
+   }
+
+   //Return the cached primaryname
+   return m_PrimaryName_cache;
 }
 
 ///Is this number bookmarked
@@ -321,7 +333,7 @@ QString PhoneNumber::toHash() const
 }
 
 
-///Return the domaine of an URI (<sip:12345@exemple.com>)
+///Return the domaine of an URI (<sip:12345@example.com>)
 QString PhoneNumber::hostname() const
 {
    if (m_Uri.indexOf('@') != -1) {
@@ -352,8 +364,12 @@ void PhoneNumber::incrementAlternativeName(const QString& name)
 {
    const bool needReIndexing = !m_hNames[name];
    m_hNames[name]++;
-   if (needReIndexing && m_Type != PhoneNumber::Type::TEMPORARY)
+   if (needReIndexing && m_Type != PhoneNumber::Type::TEMPORARY) {
       PhoneDirectoryModel::instance()->indexNumber(this,m_hNames.keys()+(m_pContact?(QStringList(m_pContact->formattedName())):QStringList()));
+      //Invalid m_PrimaryName_cache
+      if (!m_pContact)
+         m_PrimaryName_cache.clear();
+   }
 }
 
 void PhoneNumber::accountDestroyed(QObject* o)

@@ -96,7 +96,7 @@ Call* HistoryModel::HistoryItem::call() const
  ****************************************************************************/
 
 ///Constructor
-HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate),m_HaveContactModel(false)
+HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate)
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
@@ -211,10 +211,10 @@ void HistoryModel::add(Call* call)
       return;
    }
 
-   if (!m_HaveContactModel && call->contactBackend()) {
-      connect(((QObject*)call->contactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
-      m_HaveContactModel = true;
-   }
+//    if (!m_HaveContactModel && call->contactBackend()) {
+//       connect(((QObject*)call->contactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
+//       m_HaveContactModel = true;
+//    }//TODO implement reordering
 
    emit newHistoryCall(call);
    emit layoutAboutToBeChanged();

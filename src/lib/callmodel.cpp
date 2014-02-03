@@ -36,6 +36,7 @@
 #include "dbus/videomanager.h"
 #include "historymodel.h"
 #include "visitors/phonenumberselector.h"
+#include "contactmodel.h"
 
 //Define
 ///InternalStruct: internal representation of a call
@@ -819,7 +820,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       qDebug() << "Contact" << encodedContact << "on call" << target;
       if (PhoneNumberSelector::defaultVisitor()) {
          const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(
-            Call::contactBackend()->getContactByUid(encodedContact));
+         ContactModel::instance()->getContactByUid(encodedContact));
          if (!number->uri().isEmpty()) {
             Call* newCall = dialingCall();
             newCall->setDialNumber(number);
