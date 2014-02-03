@@ -41,10 +41,10 @@ class LIB_EXPORT PixmapManipulationVisitor {
 public:
    PixmapManipulationVisitor();
    virtual ~PixmapManipulationVisitor() {}
-   virtual QVariant contactPhoto(Contact* c, QSize size, bool displayPresence = true);
-   virtual QVariant callPhoto(Call* c, QSize size, bool displayPresence = true);
-   virtual QVariant callPhoto(const PhoneNumber* n, QSize size, bool displayPresence = true);
-   virtual QVariant numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence = false, bool isPresent = false);
+   virtual QVariant contactPhoto(Contact* c, const QSize& size, bool displayPresence = true);
+   virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
+   virtual QVariant callPhoto(const PhoneNumber* n, const QSize& size, bool displayPresence = true);
+   virtual QVariant numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence = false, bool isPresent = false);
 
    //Singleton
    static PixmapManipulationVisitor* instance();

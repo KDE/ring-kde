@@ -42,6 +42,7 @@ public:
 
    //Constructor
    explicit AudioCodecModel(Account* account);
+   virtual ~AudioCodecModel();
 
    //Abstract model member
    QVariant data        (const QModelIndex& index, int role = Qt::DisplayRole      ) const;

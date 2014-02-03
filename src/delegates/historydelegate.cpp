@@ -165,10 +165,14 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (!isBookmark) {
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::FormattedDate).toString());
          currentHeight +=fm.height();
-         const static QPixmap* callPxm = nullptr;
-         if (!callPxm)
-            callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
-         painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),index.data(Call::Role::CategoryIcon).value<QPixmap>());
+//          const static QPixmap* callPxm = nullptr;
+//          if (!callPxm)
+//             callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
+         QVariant var = index.data(Call::Role::CategoryIcon);
+         if (var.type() == QVariant::Pixmap) {
+            QPixmap pxm2 = var.value<QPixmap>();
+            painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),pxm2);
+         }
       }
 
 // //       if (isTracked) {

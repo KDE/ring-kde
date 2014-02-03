@@ -38,6 +38,15 @@ QAbstractListModel(account?(QObject*)account:(QObject*)QCoreApplication::instanc
    setRoleNames(roles);
 }
 
+AudioCodecModel::~AudioCodecModel()
+{
+   while (m_lAudioCodecs.size()) {
+      AudioCodecData* c = m_lAudioCodecs[0];
+      m_lAudioCodecs.removeAt(0);
+      delete c;
+   }
+}
+
 ///Model data
 QVariant AudioCodecModel::data(const QModelIndex& idx, int role) const {
    if(idx.column() == 0      && role == Qt::DisplayRole                   ) {

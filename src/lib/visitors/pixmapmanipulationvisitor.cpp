@@ -25,7 +25,7 @@ PixmapManipulationVisitor::PixmapManipulationVisitor() {
    m_spInstance = this;
 }
 
-QVariant PixmapManipulationVisitor::contactPhoto(Contact* c, QSize size, bool displayPresence)
+QVariant PixmapManipulationVisitor::contactPhoto(Contact* c, const QSize& size, bool displayPresence)
 {
    Q_UNUSED(c)
    Q_UNUSED(size)
@@ -33,7 +33,7 @@ QVariant PixmapManipulationVisitor::contactPhoto(Contact* c, QSize size, bool di
    return QVariant();
 }
 
-QVariant PixmapManipulationVisitor::numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence, bool isPresent)
+QVariant PixmapManipulationVisitor::numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence, bool isPresent)
 {
    Q_UNUSED(p)
    Q_UNUSED(size)
@@ -42,7 +42,7 @@ QVariant PixmapManipulationVisitor::numberCategoryIcon(const QPixmap* p, QSize s
    return QVariant();
 }
 
-QVariant PixmapManipulationVisitor::callPhoto(Call* c, QSize size, bool displayPresence)
+QVariant PixmapManipulationVisitor::callPhoto(Call* c, const QSize& size, bool displayPresence)
 {
    Q_UNUSED(c)
    Q_UNUSED(size)
@@ -50,7 +50,7 @@ QVariant PixmapManipulationVisitor::callPhoto(Call* c, QSize size, bool displayP
    return QVariant();
 }
 
-QVariant PixmapManipulationVisitor::callPhoto(const PhoneNumber* c, QSize size, bool displayPresence)
+QVariant PixmapManipulationVisitor::callPhoto(const PhoneNumber* c, const QSize& size, bool displayPresence)
 {
    Q_UNUSED(c)
    Q_UNUSED(size)

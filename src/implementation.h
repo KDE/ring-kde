@@ -46,13 +46,13 @@ private:
 class KDEPixmapManipulation : public PixmapManipulationVisitor {
 public:
    KDEPixmapManipulation();
-   QVariant contactPhoto(Contact* c, QSize size, bool displayPresence = true);
+   QVariant contactPhoto(Contact* c, const QSize& size, bool displayPresence = true);
 
-   virtual QVariant callPhoto(const PhoneNumber* n, QSize size, bool displayPresence = true);
+   virtual QVariant callPhoto(const PhoneNumber* n, const QSize& size, bool displayPresence = true);
 
-   virtual QVariant callPhoto(Call* c, QSize size, bool displayPresence = true);
+   virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
 
-   QVariant numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence = false, bool isPresent = false);
+   QVariant numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence = false, bool isPresent = false);
 
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
@@ -60,7 +60,7 @@ private:
    static const char* icnPath[4];
 
    //Helper
-   QPixmap drawDefaultUserPixmap(QSize size, bool displayPresence, bool isPresent);
+   QPixmap drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent);
 };
 
 class KDEPresenceSerializationVisitor : public PresenceSerializationVisitor {

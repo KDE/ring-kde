@@ -78,10 +78,24 @@ VideoCodecModel::VideoCodecModel(Account* account) : QAbstractListModel(QCoreApp
    reload();
 }
 
+///Destructor
+VideoCodecModel::~VideoCodecModel()
+{
+   while (m_lCodecs.size()) {
+      VideoCodec* c = m_lCodecs[0];
+      m_lCodecs.removeAt(0);
+      delete c;
+   }
+}
+
 ///Force a model reload from dbus
 void VideoCodecModel::reload()
 {
-   m_lCodecs.clear();
+   while (m_lCodecs.size()) {
+      VideoCodec* c = m_lCodecs[0];
+      m_lCodecs.removeAt(0);
+      delete c;
+   }
    VideoInterface& interface = DBus::VideoManager::instance();
    const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->id());
    foreach(const MapStringString& h,codecs) {

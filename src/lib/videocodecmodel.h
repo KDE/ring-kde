@@ -40,6 +40,7 @@ class LIB_EXPORT VideoCodecModel : public QAbstractListModel {
 public:
    //Private constructor, can only be called by 'Account'
    explicit VideoCodecModel(Account* account = nullptr);
+   ~VideoCodecModel();
 
    //Roles
    static const int BITRATE_ROLE = 101;
@@ -54,7 +55,7 @@ public:
    void save();
    bool moveUp  (QModelIndex idx);
    bool moveDown(QModelIndex idx);
-   
+
 private:
    //Attrbutes
    QList<VideoCodec*> m_lCodecs;

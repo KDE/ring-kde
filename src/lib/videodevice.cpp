@@ -63,6 +63,10 @@ const QList<VideoDevice*> VideoDevice::deviceList()
    QHash<QString,VideoDevice*> devices;
    VideoInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceList();
+   if (deviceList.size() == devices.size()) {
+      return m_slDevices.values();
+   }
+
    foreach(const QString& device,deviceList) {
       if (!m_slDevices[device])
          devices[device] = new VideoDevice(device);

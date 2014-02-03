@@ -127,7 +127,7 @@ KDEPixmapManipulation::KDEPixmapManipulation() : PixmapManipulationVisitor()
    
 }
 
-QVariant KDEPixmapManipulation::contactPhoto(Contact* c, QSize size, bool displayPresence) {
+QVariant KDEPixmapManipulation::contactPhoto(Contact* c, const QSize& size, bool displayPresence) {
    const QString hash = QString("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
    QVariant preRendered = c->property(hash.toAscii());
    if (preRendered.isValid())
@@ -191,7 +191,7 @@ QVariant KDEPixmapManipulation::contactPhoto(Contact* c, QSize size, bool displa
    return pxm;
 }
 
-QVariant KDEPixmapManipulation::callPhoto(const PhoneNumber* n, QSize size, bool displayPresence) {
+QVariant KDEPixmapManipulation::callPhoto(const PhoneNumber* n, const QSize& size, bool displayPresence) {
    if (n->contact()) {
       return contactPhoto(n->contact(),size,displayPresence);
    }
@@ -203,7 +203,7 @@ QVariant KDEPixmapManipulation::callPhoto(const PhoneNumber* n, QSize size, bool
    }
 }
 
-QVariant KDEPixmapManipulation::callPhoto(Call* c, QSize size, bool displayPresence) {
+QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displayPresence) {
    if (c->peerPhoneNumber()->contact()) {
       return contactPhoto(c->peerPhoneNumber()->contact(),size,displayPresence);
    }
@@ -211,7 +211,7 @@ QVariant KDEPixmapManipulation::callPhoto(Call* c, QSize size, bool displayPrese
       return QPixmap(callStateIcons[c->state()]);
 }
 
-QVariant KDEPixmapManipulation::numberCategoryIcon(const QPixmap* p, QSize size, bool displayPresence, bool isPresent) {
+QVariant KDEPixmapManipulation::numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence, bool isPresent) {
    Q_UNUSED(size)
    if (displayPresence) {
       QPixmap pxm = p?(*p):QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
@@ -226,7 +226,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QPixmap* p, QSize size,
    return QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
 }
 
-QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(QSize size, bool displayPresence, bool isPresent) {
+QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent) {
    //Load KDE default user pixmap
    QPixmap pxm(size);
    pxm.fill(Qt::transparent);
