@@ -57,16 +57,16 @@ public:
    virtual SupportedFeatures  supportedFeatures() const =0;
 
    ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual void        editContact       ( Contact*       contact     ) = 0;
+   virtual bool        editContact       ( Contact*       contact     ) = 0;
    ///Add a new contact to the backend
-   virtual void        addNewContact     ( Contact*       contact     ) = 0;
+   virtual bool        addNewContact     ( Contact*       contact     ) = 0;
 
    ///Add a new phone number to an existing contact
-   virtual void addPhoneNumber( Contact*       contact , PhoneNumber* number )=0;
+   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number )=0;
 
 
 Q_SIGNALS:
-   void collectionChanged();
+   void reloaded();
    void newContactAdded(Contact* c);
 };
 

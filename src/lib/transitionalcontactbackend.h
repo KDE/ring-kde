@@ -37,12 +37,12 @@ public:
    virtual bool saveContact(const Contact* contact);
 
    ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual void        editContact       ( Contact*       contact     );
+   virtual bool        editContact       ( Contact*       contact     );
    ///Add a new contact to the backend
-   virtual void        addNewContact     ( Contact*       contact     );
+   virtual bool        addNewContact     ( Contact*       contact     );
 
    ///Add a new phone number to an existing contact
-   virtual void addPhoneNumber( Contact*       contact , PhoneNumber* number );
+   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number );
 
    SupportedFeatures supportedFeatures() const;
 

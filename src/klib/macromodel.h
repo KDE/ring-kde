@@ -38,7 +38,7 @@ public:
    virtual ~MacroListener() {}
 };
 
-///AkonadiBackend: Implement a backend for Akonadi
+///MacroModel: DTMF emulators model
 class LIB_EXPORT MacroModel : public QAbstractItemModel {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

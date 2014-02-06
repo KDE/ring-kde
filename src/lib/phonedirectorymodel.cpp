@@ -406,7 +406,7 @@ PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
    if (fields.size() == 3) {
       const QString uri = fields[0];
       Account* account = AccountListModel::instance()->getAccountById(fields[1]);
-      Contact* contact = ContactModel::instance()->getContactByUid(fields[2]);
+      Contact* contact = ContactModel::instance()->getContactByUid(fields[2].toUtf8());
       return getNumber(uri,contact,account);
    }
    else if (fields.size() == 1) {

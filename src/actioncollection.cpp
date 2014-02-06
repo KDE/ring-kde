@@ -42,12 +42,12 @@
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
 #include "klib/macromodel.h"
-#include "klib/akonadibackend.h"
 #include <lib/call.h>
 #include <lib/account.h>
 #include <lib/accountlistmodel.h>
 #include <lib/callmodel.h>
 #include <lib/audiosettingsmodel.h>
+#include <lib/contactmodel.h>
 
 
 ActionCollection* ActionCollection::m_spInstance = nullptr;
@@ -273,6 +273,7 @@ void ActionCollection::accept() //TODO dead code?
       CallModel::instance()->dialingCall();
       SFLPhone::view()->selectDialingCall();
       SFLPhone::view()->updateWindowCallState();
+      SFLPhone::app()->selectCallTab();
    }
    else {
       const Call::State state = call->state();
@@ -571,7 +572,7 @@ KAction* ActionCollection::addContact()
 void ActionCollection::slotAddContact()
 {
    Contact* aContact = new Contact();
-   AkonadiBackend::instance()->addNewContact(aContact);
+   ContactModel::instance()->addNewContact(aContact);
 }
 
 ///Change icon of the record button

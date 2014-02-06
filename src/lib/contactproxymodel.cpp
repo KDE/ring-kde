@@ -24,7 +24,6 @@
 #include <QtCore/QCoreApplication>
 
 //SFLPhone
-#include "abstractcontactbackend.h"
 #include "callmodel.h"
 #include "historymodel.h"
 #include "phonenumber.h"
@@ -136,14 +135,14 @@ void ContactTreeBinder::slotPhoneNumberCountAboutToChange(int count, int oldCoun
 }
 
 //
-ContactProxyModel::ContactProxyModel(AbstractContactBackend* parent,int role, bool showAll) : QAbstractItemModel(QCoreApplication::instance()),
-m_pModel(parent),m_Role(role),m_ShowAll(showAll),m_lCategoryCounter()
+ContactProxyModel::ContactProxyModel(int role, bool showAll) : QAbstractItemModel(QCoreApplication::instance()),
+m_Role(role),m_ShowAll(showAll),m_lCategoryCounter()
 {
    setObjectName("ContactProxyModel");
    m_lCategoryCounter.reserve(32);
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
-   connect(m_pModel,SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
-   connect(m_pModel,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
+   connect(ContactModel::instance(),SIGNAL(reloaded()),this,SLOT(reloadCategories()));
+   connect(ContactModel::instance(),SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(ContactModel::Role::Organization      ,QByteArray("organization")     );
    roles.insert(ContactModel::Role::Group             ,QByteArray("group")            );
@@ -467,7 +466,7 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
                   if (ct->phoneNumbers().size() == 1) {
                      mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->toHash().toUtf8());
                   }
-                  mimeData->setData(MIME_CONTACT , ct->uid().toUtf8());
+                  mimeData->setData(MIME_CONTACT , ct->uid());
                }
                return mimeData;
                } break;

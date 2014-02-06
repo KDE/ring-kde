@@ -51,20 +51,23 @@ bool TransitionalContactBackend::saveContact(const Contact* contact)
    return false;
 }
 
-void TransitionalContactBackend::editContact( Contact* contact)
+bool TransitionalContactBackend::editContact( Contact* contact)
 {
    Q_UNUSED(contact)
+   return false;
 }
 
-void TransitionalContactBackend::addNewContact( Contact* contact)
+bool TransitionalContactBackend::addNewContact( Contact* contact)
 {
    Q_UNUSED(contact)
+   return false;
 }
 
-void TransitionalContactBackend::addPhoneNumber( Contact* contact , PhoneNumber* number )
+bool TransitionalContactBackend::addPhoneNumber( Contact* contact , PhoneNumber* number )
 {
    Q_UNUSED(contact)
    Q_UNUSED(number)
+   return false;
 }
 
 

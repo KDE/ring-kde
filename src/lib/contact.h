@@ -68,7 +68,7 @@ public:
    Q_PROPERTY( QString               secondName     READ secondName     WRITE setFamilyName                          )
    Q_PROPERTY( QString               formattedName  READ formattedName  WRITE setFormattedName                       )
    Q_PROPERTY( QString               organization   READ organization   WRITE setOrganization                        )
-   Q_PROPERTY( QString               uid            READ uid            WRITE setUid                                 )
+   Q_PROPERTY( QByteArray            uid            READ uid            WRITE setUid                                 )
    Q_PROPERTY( QString               preferredEmail READ preferredEmail WRITE setPreferredEmail                      )
 //    Q_PROPERTY( QPixmap*              photo          READ photo          WRITE setPhoto                               )
    Q_PROPERTY( QString               group          READ group          WRITE setGroup                               )
@@ -77,6 +77,8 @@ public:
 
    //Mutator
    Q_INVOKABLE bool save() const;
+   Q_INVOKABLE bool edit()      ;
+   Q_INVOKABLE bool addPhoneNumber(PhoneNumber* n);
 
 private:
    QString      m_FirstName      ;
@@ -86,7 +88,7 @@ private:
    QString      m_FormattedName  ;
    QString      m_PreferredEmail ;
    QString      m_Organization   ;
-   QString      m_Uid            ;
+   QByteArray   m_Uid            ;
    QString      m_Group          ;
    QString      m_Department     ;
    bool         m_DisplayPhoto   ;
@@ -106,7 +108,7 @@ public:
    const QString& secondName       () const;
    const QString& formattedName    () const;
    const QString& organization     () const;
-   const QString& uid              () const;
+   const QByteArray& uid           () const;
    const QString& preferredEmail   () const;
    const QPixmap* photo            () const;
    const QString& group            () const;
@@ -119,18 +121,18 @@ public:
    bool supportPresence            () const;
 
    //Setters
-   void setPhoneNumbers   ( PhoneNumbers        );
-   void setFormattedName  ( const QString& name );
-   void setNickName       ( const QString& name );
-   void setFirstName      ( const QString& name );
-   void setFamilyName     ( const QString& name );
-   void setOrganization   ( const QString& name );
-   void setPreferredEmail ( const QString& name );
-   void setGroup          ( const QString& name );
-   void setDepartment     ( const QString& name );
-   void setUid            ( const QString& id   );
-   void setPhoto          ( QPixmap* photo      );
-   void setActive         ( bool  active        );
+   void setPhoneNumbers   ( PhoneNumbers             );
+   void setFormattedName  ( const QString&    name   );
+   void setNickName       ( const QString&    name   );
+   void setFirstName      ( const QString&    name   );
+   void setFamilyName     ( const QString&    name   );
+   void setOrganization   ( const QString&    name   );
+   void setPreferredEmail ( const QString&    name   );
+   void setGroup          ( const QString&    name   );
+   void setDepartment     ( const QString&    name   );
+   void setUid            ( const QByteArray& id     );
+   void setPhoto          ( QPixmap*          photo  );
+   void setActive         ( bool              active );
 
 private Q_SLOTS:
    void slotPresenceChanged();

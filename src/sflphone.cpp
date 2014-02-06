@@ -138,6 +138,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    }
    static bool init = false;
    if (!init) {
+      ContactModel::instance()->addBackend(new AkonadiBackend(Akonadi::Collection::root(),this));
       NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
       InstantMessagingModelManager::init();
       AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));

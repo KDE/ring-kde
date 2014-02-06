@@ -107,7 +107,7 @@ const QString& Contact::preferredEmail()  const
 }
 
 ///Get the unique identifier (used for drag and drop) 
-const QString& Contact::uid() const
+const QByteArray& Contact::uid() const
 {
    return m_Uid;
 }
@@ -191,7 +191,7 @@ void Contact::setPreferredEmail(const QString& name)
 }
 
 ///Set UID
-void Contact::setUid(const QString& id)
+void Contact::setUid(const QByteArray& id)
 {
    m_Uid = id;
    emit changed();
@@ -280,4 +280,17 @@ void Contact::slotPresenceChanged()
 bool Contact::save() const
 {
    return m_pBackend->saveContact(this);
+}
+
+///Show an implementation dependant dialog to edit the contact
+bool Contact::edit()
+{
+   return m_pBackend->editContact(this);
+}
+
+///Add a new phone number to the backend
+///@note The backend is expected to notify the Contact (asynchronously) when done
+bool Contact::addPhoneNumber(PhoneNumber* n)
+{
+   return m_pBackend->addPhoneNumber(this,n);
 }

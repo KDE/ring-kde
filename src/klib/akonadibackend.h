@@ -51,14 +51,14 @@ class Contact;
 class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
    Q_OBJECT
 public:
-   static   AbstractContactBackend* instance();
+   explicit AkonadiBackend(Akonadi::Collection parentCol, QObject* parent);
 //    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
-   void     editContact       ( Contact*       contact , QWidget* parent = 0                           );
-   void     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
-   virtual void addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
+   bool     editContact       ( Contact*       contact , QWidget* parent = 0                           );
+   bool     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
+   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
 
-   virtual void     editContact   ( Contact*   contact                                                 );
-   virtual void     addNewContact ( Contact*   contact                                                 );
+   virtual bool     editContact   ( Contact*   contact                                                 );
+   virtual bool     addNewContact ( Contact*   contact                                                 );
    virtual ~AkonadiBackend        (                                                                    );
 
    virtual bool load();
@@ -67,11 +67,8 @@ public:
 
    SupportedFeatures supportedFeatures() const;
 private:
-   //Singleton constructor
-   explicit AkonadiBackend(QObject* parent);
 
    //Attributes
-   static AkonadiBackend*         m_pInstance  ;
    Akonadi::Session*              m_pSession   ;
    Akonadi::Monitor*              m_pMonitor   ;
    QHash<QString,KABC::Addressee> m_AddrHash   ;

@@ -55,16 +55,13 @@
 #include "../lib/contactmodel.h"
 #include "kcfg_settings.h"
 
-///Init static attributes
-AkonadiBackend*  AkonadiBackend::m_pInstance = nullptr;
-
 ///Constructor
-AkonadiBackend::AkonadiBackend(QObject* parent) : AbstractContactBackend(parent)
+AkonadiBackend::AkonadiBackend(Akonadi::Collection parentCol, QObject* parent) : AbstractContactBackend(parent)
 {
    m_pSession = new Akonadi::Session( "SFLPhone::instance" );
 
    // fetching all collections recursively, starting at the root collection
-   m_pJob = new Akonadi::CollectionFetchJob( Akonadi::Collection::root(), Akonadi::CollectionFetchJob::Recursive, this );
+   m_pJob = new Akonadi::CollectionFetchJob( parentCol, Akonadi::CollectionFetchJob::Recursive, this );
    m_pJob->fetchScope().setContentMimeTypes( QStringList() << "text/directory" );
    connect( m_pJob, SIGNAL(collectionsReceived(Akonadi::Collection::List)), this, SLOT(collectionsReceived(Akonadi::Collection::List)) );
 
@@ -112,24 +109,6 @@ AbstractContactBackend::SupportedFeatures AkonadiBackend::supportedFeatures() co
       AbstractContactBackend::SupportedFeatures::EDIT );
 }
 
-
-
-/*****************************************************************************
- *                                                                           *
- *                                  Getters                                  *
- *                                                                           *
- ****************************************************************************/
-
-///Singleton
-AbstractContactBackend* AkonadiBackend::instance()
-{
-   if (m_pInstance == nullptr) {
-      m_pInstance = new AkonadiBackend(nullptr);
-   }
-   return m_pInstance;
-}
-
-
 /*****************************************************************************
  *                                                                           *
  *                                  Helper                                   *
@@ -165,7 +144,7 @@ void AkonadiBackend::fillContact(Contact* c, const KABC::Addressee& addr) const
    c->setOrganization   (addr.organization()   );
    c->setPreferredEmail (addr.preferredEmail() );
    c->setDepartment     (addr.department()     );
-   c->setUid            (addr.uid()            );
+   c->setUid            (addr.uid().toUtf8()   );
 
    const KABC::PhoneNumber::List numbers = addr.phoneNumbers();
    Contact::PhoneNumbers newNumbers(c);
@@ -188,14 +167,11 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
       KABC::Addressee tmp = item.payload<KABC::Addressee>();
       const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
       const QString uid = tmp.uid();
-
       if (numbers.size() || !ignoreEmpty) {
          aContact   = new Contact(this);
 
          //This need to be done first because of the phone numbers indexes
          fillContact(aContact,tmp);
-
-         ContactModel::instance()->addContact(aContact);
 
          if (!tmp.photo().data().isNull())
             aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
@@ -232,22 +208,20 @@ void AkonadiBackend::update(Akonadi::Collection collection)
       const Akonadi::Item::List items = job->items();
 
       foreach ( const Akonadi::Item &item, items ) {
-         addItem(item,onlyWithNumber);
+         Contact* c = addItem(item,onlyWithNumber);
+         ContactModel::instance()->addContact(c);
       }
-//       beginResetModel();
-//       m_pContacts = m_ContactByUid.values();
-//       endResetModel();
    }
 //    return m_ContactByUid.values();
 } //update
 
 ///Edit backend value using an updated frontend contact
-void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
+bool AkonadiBackend::editContact(Contact* contact,QWidget* parent)
 {
    Akonadi::Item item = m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
-      return;
+      return false ;
    }
 
    if ( item.isValid() ) {
@@ -259,12 +233,14 @@ void AkonadiBackend::editContact(Contact* contact,QWidget* parent)
          if ( !editor->saveContact() ) {
             delete dlg;
             kDebug() << "Unable to save new contact to storage";
-            return;
+            return false;
          }
       }
       delete editor;
       delete dlg   ;
+      return true;
    }
+   return false;
 } //editContact
 
 ///Save a contact
@@ -295,7 +271,7 @@ bool AkonadiBackend::saveContact(const Contact* contact)
 }
 
 ///Add a new contact
-void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
+bool AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 {
    KABC::Addressee newContact;
    newContact.setNickName       ( contact->nickName()        );
@@ -326,31 +302,32 @@ void AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
       if ( !editor->saveContact() ) {
          delete dlg;
          kDebug() << "Unable to save new contact to storage";
-         return;
+         return false;
       }
    }
    delete dlg;
+   return true;
 } //addNewContact
 
 ///Implement virtual pure method
-void AkonadiBackend::editContact(Contact* contact)
+bool AkonadiBackend::editContact(Contact* contact)
 {
-   editContact(contact,nullptr);
+   return editContact(contact,nullptr);
 }
 
 ///Implement virtual pure method
-void AkonadiBackend::addNewContact(Contact* contact)
+bool AkonadiBackend::addNewContact(Contact* contact)
 {
-   addNewContact(contact,nullptr);
+   return addNewContact(contact,nullptr);
 }
 
 ///Add a new phone number to an existing contact
-void AkonadiBackend::addPhoneNumber(Contact* contact, PhoneNumber* number)
+bool AkonadiBackend::addPhoneNumber(Contact* contact, PhoneNumber* number)
 {
    Akonadi::Item item = m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
-      return;
+      return false;
    }
    if ( item.isValid() ) {
       KABC::Addressee payload = item.payload<KABC::Addressee>();
@@ -365,14 +342,16 @@ void AkonadiBackend::addPhoneNumber(Contact* contact, PhoneNumber* number)
          if ( !editor->saveContact() ) {
             delete dlg;
             kDebug() << "Unable to save new contact to storage";
-            return;
+            return false;
          }
       }
       delete dlg   ;
       delete editor;
+      return true;
    }
    else {
       kDebug() << "Invalid item";
+      return false;
    }
 }
 
@@ -391,7 +370,7 @@ void AkonadiBackend::collectionsReceived( const Akonadi::Collection::List&  list
       if (disabledColl.indexOf(coll.id()) == -1) {
          update(coll);
          m_pMonitor->setCollectionMonitored(coll,true);
-         emit collectionChanged();
+         emit reloaded();
       }
    }
 }
@@ -402,12 +381,7 @@ void AkonadiBackend::slotItemAdded(Akonadi::Item item,Akonadi::Collection coll)
    Q_UNUSED(coll)
    Contact* c = addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());
    if (c) { //Not all items will have an addressee payload
-//       beginInsertRows(QModelIndex(),m_pContacts.size()-1,m_pContacts.size());
-//       m_pContacts << c;
-      ContactModel::instance()->addContact(c);
-//       endInsertRows();
       emit newContactAdded(c);
-//       emit layoutChanged();
    }
 }
 
@@ -417,7 +391,7 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
    Q_UNUSED(part)
    if (item.hasPayload<KABC::Addressee>()) {
       KABC::Addressee tmp = item.payload<KABC::Addressee>();
-      Contact* c = ContactModel::instance()->getContactByUid(tmp.uid());
+      Contact* c = ContactModel::instance()->getContactByUid(tmp.uid().toUtf8());
       if (c)
          fillContact(c,tmp);
    }
@@ -426,6 +400,6 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
 ///Callback when a contact is removed
 void AkonadiBackend::slotItemRemoved(const Akonadi::Item &item)
 {
-   Contact* c = ContactModel::instance()->getContactByUid(item.remoteId());
+   Contact* c = ContactModel::instance()->getContactByUid(item.remoteId().toUtf8());
    ContactModel::instance()->disableContact(c);
 }

@@ -25,7 +25,7 @@
 //SFLPhone
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
-class AbstractContactBackend;
+class ContactModel;
 class ContactTreeNode;
 class TopLevelItem;
 class ContactTreeBinder;
@@ -37,10 +37,10 @@ class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
-   friend class AbstractContactBackend;
+   friend class ContactModel;
    friend class ContactTreeNode;
    friend class ContactTreeBinder;
-   explicit ContactProxyModel(AbstractContactBackend* parent,int role = Qt::DisplayRole, bool showAll = false);
+   explicit ContactProxyModel(int role = Qt::DisplayRole, bool showAll = false);
    virtual ~ContactProxyModel();
 
    //Setters
@@ -70,7 +70,6 @@ private:
 
    //Attributes
    QHash<Contact*, time_t>      m_hContactByDate   ;
-   AbstractContactBackend*      m_pModel           ;
    QVector<TopLevelItem*>       m_lCategoryCounter ;
    QHash<QString,TopLevelItem*> m_hCategories      ;
    int                          m_Role             ;

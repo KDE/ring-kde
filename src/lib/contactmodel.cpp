@@ -23,6 +23,7 @@
 #include "contact.h"
 #include "call.h"
 #include "phonenumber.h"
+#include "abstractcontactbackend.h"
 
 //Qt
 #include <QtCore/QHash>
@@ -147,11 +148,17 @@ QModelIndex ContactModel::index( int row, int column, const QModelIndex& par) co
    return QModelIndex();
 }
 
+/*****************************************************************************
+ *                                                                           *
+ *                                  Mutator                                  *
+ *                                                                           *
+ ****************************************************************************/
+
 
 ///Find contact by UID
-Contact* ContactModel::getContactByUid(const QString& uid)
+Contact* ContactModel::getContactByUid(const QByteArray& uid)
 {
-   return m_ContactByUid[uid];
+   return m_hContactsByUid[uid];
 }
 
 ///Return if there is backends
@@ -162,8 +169,14 @@ bool ContactModel::hasBackends() const
 
 bool ContactModel::addContact(Contact* c)
 {
+   if (!c)
+      return false;
+   beginInsertRows(QModelIndex(),m_lContacts.size()-1,m_lContacts.size());
    m_lContacts << c;
-   m_ContactByUid[c->uid()] = c;
+   m_hContactsByUid[c->uid()] = c;
+   endInsertRows();
+   emit layoutChanged();
+   emit newContactAdded(c);
    return true;
 }
 
@@ -177,4 +190,34 @@ void ContactModel::disableContact(Contact* c)
 const ContactList ContactModel::contacts() const
 {
    return m_lContacts;
+}
+
+void ContactModel::addBackend(AbstractContactBackend* backend)
+{
+   m_lBackends << backend;
+   connect(backend,SIGNAL(reloaded()),this,SLOT(slotReloaded()));
+   connect(backend,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
+}
+
+bool ContactModel::addNewContact(Contact* c, AbstractContactBackend* backend)
+{
+   Q_UNUSED(backend);
+   return m_lBackends[0]->addNewContact(c);
+}
+
+
+/*****************************************************************************
+ *                                                                           *
+ *                                    Slot                                   *
+ *                                                                           *
+ ****************************************************************************/
+
+void ContactModel::slotReloaded()
+{
+   emit reloaded();
+}
+
+void ContactModel::slotContactAdded(Contact* c)
+{
+   addContact(c);
 }

@@ -56,7 +56,6 @@
 #include "lib/phonenumber.h"
 #include "lib/accountlistmodel.h"
 #include "klib/helperfunctions.h"
-#include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
 #include "../lib/contactproxymodel.h"
 #include "../delegates/categorizeddelegate.h"
@@ -120,7 +119,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setDelegate(m_pCategoryDelegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::Contact);
 
-   m_pSourceModel = new ContactProxyModel(AkonadiBackend::instance(),Qt::DisplayRole,false);
+   m_pSourceModel = new ContactProxyModel(Qt::DisplayRole,false);
    m_pProxyModel = new ContactSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
@@ -335,7 +334,7 @@ void ContactDock::copy()
 {
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(MIME_CONTACT, m_pCurrentContact->uid().toUtf8());
+   mimeData->setData(MIME_CONTACT, m_pCurrentContact->uid());
    QString numbers(m_pCurrentContact->formattedName()+": ");
    QString numbersHtml("<b>"+m_pCurrentContact->formattedName()+"</b><br />");
    foreach (PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
@@ -352,7 +351,7 @@ void ContactDock::copy()
 void ContactDock::editContact()
 {
    kDebug() << "Edit contact";
-   AkonadiBackend::instance()->editContact(m_pCurrentContact);
+   m_pCurrentContact->edit();
 }
 
 ///Add a new phone number for this contact
@@ -364,7 +363,7 @@ void ContactDock::addPhone()
    const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
       PhoneNumber* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
-      AkonadiBackend::instance()->addPhoneNumber(m_pCurrentContact,n);
+      m_pCurrentContact->addPhoneNumber(n);
    }
 }
 

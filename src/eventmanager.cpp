@@ -31,7 +31,6 @@
 #include <lib/accountlistmodel.h>
 #include <lib/contactmodel.h>
 #include <klib/tipmanager.h>
-#include <klib/akonadibackend.h>
 #include "sflphoneview.h"
 #include "sflphone.h"
 #include "canvasobjectmanager.h"

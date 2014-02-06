@@ -64,9 +64,10 @@ public:
    //Mutator
    bool addContact(Contact* c);
    void disableContact(Contact* c);
+   void addBackend(AbstractContactBackend* backend);
 
    //Getters
-   Contact* getContactByUid   ( const QString& uid );
+   Contact* getContactByUid   ( const QByteArray& uid );
    bool     hasBackends       () const;
    const ContactList contacts() const;
 
@@ -83,33 +84,25 @@ public:
    //Singleton
    static ContactModel* instance();
 
-protected:
-//    virtual ContactList update_slot() = 0;
-
-   //Helper
-//    QString getUserFromPhone    (const QString &phoneNumber);
-
-   //Attributes
-   QHash<QString,Contact*>        m_ContactByUid   ;
-   int m_UpdatesCounter;
-
 private:
    //Attributes
    static ContactModel* m_spInstance;
    QList<AbstractContactBackend*> m_lBackends;
+   int m_UpdatesCounter;
 
    //Indexes
    QHash<QByteArray,Contact*> m_hContactsByUid;
    QVector<Contact*> m_lContacts;
 
-// public Q_SLOTS:
-//    ContactList update();
+public Q_SLOTS:
+   bool addNewContact(Contact* c, AbstractContactBackend* backend = nullptr);
 
-// private Q_SLOTS:
-//    void slotReloadModel();
+private Q_SLOTS:
+   void slotReloaded();
+   void slotContactAdded(Contact* c);
 
 Q_SIGNALS:
-   void collectionChanged();
+   void reloaded();
    void newContactAdded(Contact* c);
 };
 
