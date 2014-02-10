@@ -19,7 +19,7 @@
  ***********************************************************************************/
 
 //Parent
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 
 //SFLPhone library
 #include "contact.h"
@@ -41,12 +41,22 @@ AbstractContactBackend::~AbstractContactBackend()
 {
 }
 
+///Constructor
+AbstractHistoryBackend::AbstractHistoryBackend(QObject* par) : QObject(par?par:QCoreApplication::instance())
+{
+}
+
+///Destructor
+AbstractHistoryBackend::~AbstractHistoryBackend()
+{
+}
+
 ///Default batch saving implementation, some backends have better APIs
-bool AbstractContactBackend::saveContacts(const QList<Contact*> contacts)
+template <class T> bool AbstractItemBackendInterface<T>::batchSave(const QList<T*> contacts)
 {
    bool ret = true;
-   foreach(const Contact* c, contacts) {
-      ret &= saveContact(c);
+   foreach(const T* c, contacts) {
+      ret &= save(c);
    }
    return ret;
 }

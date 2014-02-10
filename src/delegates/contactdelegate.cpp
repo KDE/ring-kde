@@ -34,7 +34,7 @@
 #include <lib/contact.h>
 #include <lib/numbercategory.h>
 #include <lib/phonenumber.h>
-#include <lib/abstractcontactbackend.h>
+#include <lib/abstractitembackend.h>
 #include <lib/contactmodel.h>
 #include "delegatedropoverlay.h"
 #include "lib/visitors/pixmapmanipulationvisitor.h"

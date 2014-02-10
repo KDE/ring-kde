@@ -22,7 +22,7 @@
 
 #include <QtCore/QPointer>
 
-#include "../lib/abstractcontactbackend.h"
+#include "../lib/abstractitembackend.h"
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
 #include <kabc/phonenumber.h>
@@ -53,17 +53,17 @@ class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
 public:
    explicit AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent);
 //    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
-   bool     editContact       ( Contact*       contact , QWidget* parent = 0                           );
+   bool     edit       ( Contact*       contact , QWidget* parent = 0                           );
    bool     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
    virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
 
-   virtual bool     editContact   ( Contact*   contact                                                 );
-   virtual bool     addNewContact ( Contact*   contact                                                 );
+   virtual bool     edit   ( Contact*   contact                                                 );
+   virtual bool     addNew ( Contact*   contact                                                 );
    virtual ~AkonadiBackend        (                                                                    );
 
    virtual bool load();
    virtual bool reload();
-   virtual bool saveContact(const Contact* contact);
+   virtual bool save(const Contact* contact);
 
    SupportedFeatures supportedFeatures() const;
 private:

@@ -45,19 +45,19 @@ bool TransitionalContactBackend::reload()
    return false;
 }
 
-bool TransitionalContactBackend::saveContact(const Contact* contact)
+bool TransitionalContactBackend::save(const Contact* contact)
 {
    Q_UNUSED(contact)
    return false;
 }
 
-bool TransitionalContactBackend::editContact( Contact* contact)
+bool TransitionalContactBackend::edit( Contact* contact)
 {
    Q_UNUSED(contact)
    return false;
 }
 
-bool TransitionalContactBackend::addNewContact( Contact* contact)
+bool TransitionalContactBackend::addNew( Contact* contact)
 {
    Q_UNUSED(contact)
    return false;

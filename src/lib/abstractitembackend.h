@@ -31,13 +31,11 @@
 //SFLPhone
 class Contact;
 class Account;
+class Call   ;
 
-///AbstractContactBackend: Allow different way to handle contact without poluting the library
-class LIB_EXPORT AbstractContactBackend : public QObject {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-   Q_OBJECT
-   #pragma GCC diagnostic pop
+///AbstractItemBackendInterface: Allow different way to handle contact without poluting the library
+template <class T> class LIB_EXPORT AbstractItemBackendInterface
+{
 public:
    enum SupportedFeatures {
       NONE  = 0x0      ,
@@ -47,27 +45,61 @@ public:
       PROBE = 0x1 <<  3,
    };
 
-   explicit AbstractContactBackend(QObject* parent = nullptr);
-   virtual ~AbstractContactBackend();
+   explicit AbstractItemBackendInterface() {}
+   virtual ~AbstractItemBackendInterface() {}
 
    virtual bool load() = 0;
    virtual bool reload() = 0;
-   virtual bool saveContact(const Contact* contact) =0;
-   virtual bool saveContacts(const QList<Contact*> contacts);
+   virtual bool save(const T* item) =0;
+   virtual bool batchSave(const QList<T*> contacts);
    virtual SupportedFeatures  supportedFeatures() const =0;
 
-   ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual bool        editContact       ( Contact*       contact     ) = 0;
-   ///Add a new contact to the backend
-   virtual bool        addNewContact     ( Contact*       contact     ) = 0;
+   ///Edit 'item', the implementation may be a GUI or somehting else
+   virtual bool        edit       ( T*       item     ) = 0;
+   ///Add a new item to the backend
+   virtual bool        addNew     ( T*       item     ) = 0;
 
-   ///Add a new phone number to an existing contact
-   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number )=0;
+   ///Add a new phone number to an existing item
+   virtual bool addPhoneNumber( T*       item , PhoneNumber* number )=0;
 
+
+};
+
+class LIB_EXPORT AbstractContactBackend : public QObject, public AbstractItemBackendInterface<Contact>
+{
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
+public:
+   explicit AbstractContactBackend(QObject* parent = nullptr);
+   virtual ~AbstractContactBackend();
+   virtual bool load() = 0;
+   virtual bool reload() = 0;
+   virtual bool save(const Contact* item) =0;
 
 Q_SIGNALS:
    void reloaded();
    void newContactAdded(Contact* c);
 };
+
+class LIB_EXPORT AbstractHistoryBackend : public QObject, public AbstractItemBackendInterface<Call>
+{
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+   Q_OBJECT
+   #pragma GCC diagnostic pop
+public:
+   explicit AbstractHistoryBackend(QObject* parent = nullptr);
+   virtual ~AbstractHistoryBackend();
+   virtual bool load() = 0;
+   virtual bool reload() = 0;
+   virtual bool save(const Call* item) =0;
+
+Q_SIGNALS:
+   void reloaded();
+   void newHistoryCallAdded(Call* c);
+};
+
 
 #endif

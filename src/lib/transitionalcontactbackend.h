@@ -18,7 +18,7 @@
 #ifndef TRANSITIONAL_CONTACT_BACKEND
 #define TRANSITIONAL_CONTACT_BACKEND
 
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 
 #include "typedefs.h"
 
@@ -34,12 +34,12 @@ public:
 
    virtual bool load();
    virtual bool reload();
-   virtual bool saveContact(const Contact* contact);
+   virtual bool save(const Contact* contact);
 
    ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual bool        editContact       ( Contact*       contact     );
+   virtual bool        edit       ( Contact*       contact     );
    ///Add a new contact to the backend
-   virtual bool        addNewContact     ( Contact*       contact     );
+   virtual bool        addNew     ( Contact*       contact     );
 
    ///Add a new phone number to an existing contact
    virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number );

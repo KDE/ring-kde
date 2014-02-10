@@ -26,7 +26,7 @@
 //SFLPhone library
 #include "sflphone_const.h"
 #include "phonenumber.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 #include "transitionalcontactbackend.h"
 
 
@@ -279,13 +279,13 @@ void Contact::slotPresenceChanged()
 ///Save the contact
 bool Contact::save() const
 {
-   return m_pBackend->saveContact(this);
+   return m_pBackend->save(this);
 }
 
 ///Show an implementation dependant dialog to edit the contact
 bool Contact::edit()
 {
-   return m_pBackend->editContact(this);
+   return m_pBackend->edit(this);
 }
 
 ///Add a new phone number to the backend

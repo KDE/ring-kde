@@ -223,7 +223,7 @@ void AkonadiBackend::update(const Akonadi::Collection& collection)
 } //update
 
 ///Edit backend value using an updated frontend contact
-bool AkonadiBackend::editContact(Contact* contact,QWidget* parent)
+bool AkonadiBackend::edit(Contact* contact,QWidget* parent)
 {
    Akonadi::Item item = m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
@@ -251,7 +251,7 @@ bool AkonadiBackend::editContact(Contact* contact,QWidget* parent)
 } //editContact
 
 ///Save a contact
-bool AkonadiBackend::saveContact(const Contact* contact)
+bool AkonadiBackend::save(const Contact* contact)
 {
    Akonadi::Item item = m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
@@ -317,13 +317,13 @@ bool AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 } //addNewContact
 
 ///Implement virtual pure method
-bool AkonadiBackend::editContact(Contact* contact)
+bool AkonadiBackend::edit(Contact* contact)
 {
-   return editContact(contact,nullptr);
+   return edit(contact,nullptr);
 }
 
 ///Implement virtual pure method
-bool AkonadiBackend::addNewContact(Contact* contact)
+bool AkonadiBackend::addNew(Contact* contact)
 {
    return addNewContact(contact,nullptr);
 }

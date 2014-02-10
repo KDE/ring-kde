@@ -32,7 +32,7 @@
 #include "dbus/instancemanager.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 #include "dbus/videomanager.h"
 #include "historymodel.h"
 #include "visitors/phonenumberselector.h"

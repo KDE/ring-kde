@@ -23,7 +23,7 @@
 #include "contact.h"
 #include "call.h"
 #include "phonenumber.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 
 //Qt
 #include <QtCore/QHash>
@@ -201,7 +201,7 @@ void ContactModel::addBackend(AbstractContactBackend* backend)
 bool ContactModel::addNewContact(Contact* c, AbstractContactBackend* backend)
 {
    Q_UNUSED(backend);
-   return m_lBackends[0]->addNewContact(c);
+   return m_lBackends[0]->addNew(c);
 }
 
 

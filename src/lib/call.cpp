@@ -31,7 +31,7 @@
 //SFLPhone library
 #include "dbus/callmanager.h"
 #include "dbus/configurationmanager.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 #include "contact.h"
 #include "account.h"
 #include "accountlistmodel.h"

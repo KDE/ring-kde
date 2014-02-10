@@ -28,7 +28,7 @@
 #include "accountlistmodel.h"
 #include "numbercategory.h"
 #include "numbercategorymodel.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 #include "dbus/presencemanager.h"
 #include "visitors/pixmapmanipulationvisitor.h"
 #include "contactmodel.h"

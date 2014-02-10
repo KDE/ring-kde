@@ -55,7 +55,7 @@ set( qtsflphone_LIB_SRCS
   accountlistmodel.cpp
   callmodel.cpp
   historymodel.cpp
-  abstractcontactbackend.cpp
+  abstractitembackend.cpp
   abstractbookmarkmodel.cpp
   videocodecmodel.cpp
   videomodel.cpp
@@ -104,7 +104,7 @@ set( qtsflphone_LIB_HDRS
   callmodel.h
   historymodel.h
   contact.h
-  abstractcontactbackend.h
+  abstractitembackend.h
   abstractbookmarkmodel.h
   videocodecmodel.h
   videomodel.h

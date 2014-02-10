@@ -27,7 +27,7 @@
 #include "phonenumber.h"
 #include "callmodel.h"
 #include "call.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 
 static bool test = false;
 //Model item/index
