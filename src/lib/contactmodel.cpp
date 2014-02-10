@@ -35,7 +35,6 @@ ContactModel* ContactModel::m_spInstance = nullptr;
 ///Constructor
 ContactModel::ContactModel(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance())
 {
-   connect(this,SIGNAL(collectionChanged()),this,SLOT(slotReloadModel()));
 }
 
 ///Destructor

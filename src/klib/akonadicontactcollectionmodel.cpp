@@ -19,12 +19,40 @@
 
 //Qt
 #include <QtCore/QStringList>
+#include <QtCore/QCoreApplication>
 
 // KDE
 #include <akonadi/collectionmodel.h>
 
 // SFLphone
+#include "../lib/contactmodel.h"
+#include "akonadibackend.h"
 #include "kcfg_settings.h"
+
+AkonadiContactCollectionModel* AkonadiContactCollectionModel::m_spInstance = nullptr;
+
+
+AkonadiContactCollectionModel* AkonadiContactCollectionModel::instance()
+{
+   if (!m_spInstance)
+      m_spInstance = new AkonadiContactCollectionModel(QCoreApplication::instance());
+   return m_spInstance;
+}
+
+AkonadiContactCollectionModel::AkonadiContactCollectionModel(QObject* parent) : QSortFilterProxyModel(parent) {
+   m_pParentModel = new Akonadi::CollectionModel(this);
+   setSourceModel(m_pParentModel);
+   setDynamicSortFilter(true);
+   reload();
+   connect(this,SIGNAL(rowsInserted(QModelIndex,int,int)),this,SLOT(slotInsertCollection(QModelIndex,int,int)));
+   connect(this,SIGNAL(rowsRemoved(QModelIndex,int,int)),this,SLOT(slotRemoveCollection(QModelIndex,int,int)));
+}
+
+AkonadiContactCollectionModel::~AkonadiContactCollectionModel()
+{
+   setSourceModel(nullptr);
+   delete m_pParentModel;
+}
 
 bool AkonadiContactCollectionModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
@@ -78,4 +106,26 @@ void AkonadiContactCollectionModel::save()
          ret << i.key();
    }
    ConfigurationSkeleton::setDisabledCollectionList(ret);
+}
+
+
+void AkonadiContactCollectionModel::slotInsertCollection(const QModelIndex& parentIdx, int start, int end)
+{
+   for (int i =start; i <= end;i++) {
+      //ContactModel::instance()->addBackend(new AkonadiBackend(Akonadi::Collection::root(),this));
+      Akonadi::Collection col = qvariant_cast<Akonadi::Collection>(index(i,0,parentIdx).data(Akonadi::CollectionModel::Roles::CollectionRole));
+      if (!m_hChecked[col.id()]) {
+         ContactModel::instance()->addBackend(new AkonadiBackend(col,this));
+      }
+   }
+}
+
+void AkonadiContactCollectionModel::slotRemoveCollection(const QModelIndex& index , int start, int end)
+{
+   Q_UNUSED(index)
+   Q_UNUSED(start)
+   Q_UNUSED(end)
+   for (int i =start; i <= end;i++) {
+      
+   }
 }

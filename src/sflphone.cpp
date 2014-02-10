@@ -57,6 +57,7 @@
 #include "klib/macromodel.h"
 #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
+#include "klib/akonadicontactcollectionmodel.h"
 #include "lib/presencestatusmodel.h"
 #include "lib/videomodel.h"
 #include "lib/phonenumber.h"
@@ -138,7 +139,9 @@ SFLPhone::SFLPhone(QWidget *parent)
    }
    static bool init = false;
    if (!init) {
-      ContactModel::instance()->addBackend(new AkonadiBackend(Akonadi::Collection::root(),this));
+
+      //Start the Akonadi collection backend (contact loader)
+      AkonadiContactCollectionModel::instance();
       NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
       InstantMessagingModelManager::init();
       AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));

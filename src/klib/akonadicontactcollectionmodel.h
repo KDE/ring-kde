@@ -21,14 +21,17 @@
 #include <QtGui/QSortFilterProxyModel>
 #include "../lib/typedefs.h"
 
+namespace Akonadi {
+   class CollectionModel;
+}
+
 ///Filter out notes and emails collections
 class LIB_EXPORT AkonadiContactCollectionModel : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   explicit AkonadiContactCollectionModel(QObject* parent) : QSortFilterProxyModel(parent) {
-      setDynamicSortFilter(true);
-   }
+   virtual ~AkonadiContactCollectionModel();
+
 public:
    virtual QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
    virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
@@ -38,11 +41,23 @@ public:
    void reload();
    void save();
 
+   //Singleton
+   static AkonadiContactCollectionModel* instance();
+
 protected:
    virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
 
 private:
+   explicit AkonadiContactCollectionModel(QObject* parent);
    QHash<int,bool> m_hChecked;
+   Akonadi::CollectionModel* m_pParentModel;
+
+   //Singleton
+   static AkonadiContactCollectionModel* m_spInstance;
+
+private Q_SLOTS:
+   void slotInsertCollection(const QModelIndex&,int,int);
+   void slotRemoveCollection(const QModelIndex&,int,int);
 
 Q_SIGNALS:
    void changed();

@@ -48,6 +48,8 @@ class CategorizedTreeView : public QTreeView
    void setViewType(ViewType type) {m_Type = type;}
 
    void setHoverState(const QModelIndex& idx);
+   
+   virtual void setModel ( QAbstractItemModel * model );
 
   protected:
    virtual void contextMenuEvent ( QContextMenuEvent * e );
@@ -73,10 +75,13 @@ class CategorizedTreeView : public QTreeView
   Q_SIGNALS:
    void contextMenuRequest(QModelIndex);
    void itemDoubleClicked(QModelIndex);
-   
+
 public Q_SLOTS:
    void cancelHoverState();
    void setDirty(const QRect &rect);
+
+private Q_SLOTS:
+   void slotExpandInserted(const QModelIndex& parentIdx,int start, int end);
 };
 
 #endif

@@ -31,6 +31,7 @@
 #include <akonadi/collectionfilterproxymodel.h>
 #include <akonadi/kmime/messagemodel.h>
 #include <akonadi/recursiveitemfetchjob.h>
+#include <akonadi/itemfetchjob.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/collectionfetchjob.h>
 #include <akonadi/collectionfetchscope.h>
@@ -56,20 +57,23 @@
 #include "kcfg_settings.h"
 
 ///Constructor
-AkonadiBackend::AkonadiBackend(Akonadi::Collection parentCol, QObject* parent) : AbstractContactBackend(parent)
+AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent) : AbstractContactBackend(parent)
 {
    m_pSession = new Akonadi::Session( "SFLPhone::instance" );
+   m_Coll = parentCol;
+
+   Akonadi::ItemFetchScope scope;
+   scope.fetchFullPayload(true);
 
    // fetching all collections recursively, starting at the root collection
-   m_pJob = new Akonadi::CollectionFetchJob( parentCol, Akonadi::CollectionFetchJob::Recursive, this );
-   m_pJob->fetchScope().setContentMimeTypes( QStringList() << "text/directory" );
-   connect( m_pJob, SIGNAL(collectionsReceived(Akonadi::Collection::List)), this, SLOT(collectionsReceived(Akonadi::Collection::List)) );
+   m_pJob = new Akonadi::ItemFetchJob( parentCol, this );
+   m_pJob->setFetchScope(scope);
+//    m_pJob->fetchScope().setContentMimeTypes( QStringList() << "text/x-vcard" );
+   connect( m_pJob, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(itemsReceived(Akonadi::Item::List)) );
 
    //Configure change monitor
    m_pMonitor = new Akonadi::Monitor(this);
    m_pMonitor->fetchCollectionStatistics(false);
-   Akonadi::ItemFetchScope scope;
-   scope.fetchFullPayload(true);
    m_pMonitor->setItemFetchScope(scope);
    connect(m_pMonitor,SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)),
       this,SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
@@ -77,6 +81,9 @@ AkonadiBackend::AkonadiBackend(Akonadi::Collection parentCol, QObject* parent) :
       this,SLOT(slotItemChanged(const Akonadi::Item,const QSet<QByteArray>)));
    connect(m_pMonitor,SIGNAL(itemRemoved(const Akonadi::Item)),
       this,SLOT(slotItemRemoved(const Akonadi::Item)));
+
+
+   m_pMonitor->setCollectionMonitored(parentCol,true);
 } //AkonadiBackend
 
 ///Destructor
@@ -193,7 +200,7 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
  ****************************************************************************/
 
 ///Update the contact list when a new Akonadi collection is added
-void AkonadiBackend::update(Akonadi::Collection collection)
+void AkonadiBackend::update(const Akonadi::Collection& collection)
 {
    if ( !collection.isValid() ) {
       kDebug() << "The current collection is not valid";
@@ -363,20 +370,20 @@ bool AkonadiBackend::addPhoneNumber(Contact* contact, PhoneNumber* number)
  ****************************************************************************/
 
 ///Called when a new collection is added
-void AkonadiBackend::collectionsReceived( const Akonadi::Collection::List&  list)
+void AkonadiBackend::itemsReceived( const Akonadi::Item::List& list)
 {
-   QList<int> disabledColl = ConfigurationSkeleton::disabledCollectionList();
-   foreach (const Akonadi::Collection& coll, list) {
-      if (disabledColl.indexOf(coll.id()) == -1) {
-         update(coll);
-         m_pMonitor->setCollectionMonitored(coll,true);
-         emit reloaded();
-      }
+//    QList<int> disabledColl = ConfigurationSkeleton::disabledCollectionList();
+   foreach (const Akonadi::Item& item, list) {
+//       if (disabledColl.indexOf(coll.id()) == -1) {
+//          update(coll);
+//          emit reloaded();
+//       }
+      slotItemAdded(item,m_Coll);
    }
 }
 
 ///Callback when a new item is added
-void AkonadiBackend::slotItemAdded(Akonadi::Item item,Akonadi::Collection coll)
+void AkonadiBackend::slotItemAdded(const Akonadi::Item& item,const Akonadi::Collection& coll)
 {
    Q_UNUSED(coll)
    Contact* c = addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());

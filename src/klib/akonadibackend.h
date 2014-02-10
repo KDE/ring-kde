@@ -40,7 +40,7 @@ namespace KABC {
 namespace Akonadi {
    class Session           ;
    class Collection        ;
-   class CollectionFetchJob;
+   class ItemFetchJob;
    class Monitor           ;
 }
 
@@ -51,7 +51,7 @@ class Contact;
 class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
    Q_OBJECT
 public:
-   explicit AkonadiBackend(Akonadi::Collection parentCol, QObject* parent);
+   explicit AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent);
 //    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
    bool     editContact       ( Contact*       contact , QWidget* parent = 0                           );
    bool     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
@@ -71,9 +71,10 @@ private:
    //Attributes
    Akonadi::Session*              m_pSession   ;
    Akonadi::Monitor*              m_pMonitor   ;
+   Akonadi::Collection            m_Coll       ;
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
-   QPointer<Akonadi::CollectionFetchJob>   m_pJob;
+   QPointer<Akonadi::ItemFetchJob>   m_pJob;
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);
@@ -81,10 +82,10 @@ private:
    void fillContact(Contact* c, const KABC::Addressee& addr) const;
 
 public Q_SLOTS:
-   void update(Akonadi::Collection collection);
-   void collectionsReceived( const Akonadi::Collection::List& );
+   void update(const Akonadi::Collection& collection);
+   void itemsReceived( const Akonadi::Item::List& );
 private Q_SLOTS:
-   void slotItemAdded(Akonadi::Item item,Akonadi::Collection coll);
+   void slotItemAdded(const Akonadi::Item& item, const Akonadi::Collection& coll);
    void slotItemChanged (const Akonadi::Item &item, const QSet< QByteArray > &partIdentifiers);
    void slotItemRemoved (const Akonadi::Item &item);
 };

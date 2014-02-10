@@ -35,17 +35,12 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pDelegate = new AutoCompletionDelegate();
    m_pPhoneTypeList->setItemDelegate(m_pDelegate);
 
-   Akonadi::CollectionModel* model = new Akonadi::CollectionModel(this);
 
-   m_pFilterModel = new AkonadiContactCollectionModel(this);
-   m_pFilterModel->setSourceModel(model);
-   m_pFilterModel->reload();
-
-   collections->setModel( m_pFilterModel );
+   collections->setModel( AkonadiContactCollectionModel::instance() );
 
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
-   connect(m_pFilterModel  , SIGNAL(changed())                    , this   , SLOT(changed()));
+   connect(AkonadiContactCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
 } //DlgAddressBook
 
 ///Destructor
@@ -53,20 +48,19 @@ DlgAddressBook::~DlgAddressBook()
 {
    m_pPhoneTypeList->setItemDelegate(nullptr);
    delete m_pDelegate;
-   delete m_pFilterModel;
 }
 
 ///Reload the widget
 void DlgAddressBook::updateWidgets()
 {
-   m_pFilterModel->reload();
+   AkonadiContactCollectionModel::instance()->reload();
 }
 
 ///Save the settings
 void DlgAddressBook::updateSettings()
 {
    NumberCategoryModel::instance()->save();
-   m_pFilterModel->save();
+   AkonadiContactCollectionModel::instance()->save();
    m_HasChanged = false;
 }
 

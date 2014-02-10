@@ -41,6 +41,7 @@ AbstractContactBackend::~AbstractContactBackend()
 {
 }
 
+///Default batch saving implementation, some backends have better APIs
 bool AbstractContactBackend::saveContacts(const QList<Contact*> contacts)
 {
    bool ret = true;
