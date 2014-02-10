@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009-2014 by Savoir-Faire Linux                          *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -38,11 +37,13 @@ template <class T> class LIB_EXPORT AbstractItemBackendInterface
 {
 public:
    enum SupportedFeatures {
-      NONE  = 0x0      ,
-      LOAD  = 0x1 <<  0,
-      SAVE  = 0x1 <<  1,
-      EDIT  = 0x1 <<  2,
-      PROBE = 0x1 <<  3,
+      NONE     = 0x0      ,
+      LOAD     = 0x1 <<  0,
+      SAVE     = 0x1 <<  1,
+      EDIT     = 0x1 <<  2,
+      PROBE    = 0x1 <<  3,
+      ADD      = 0x1 <<  4,
+      SAVE_ALL = 0x1 <<  5,
    };
 
    explicit AbstractItemBackendInterface() {}
@@ -65,6 +66,8 @@ public:
 
 };
 
+// those classes cannot be typedefs because Qt doesn't support templace QObjects
+
 class LIB_EXPORT AbstractContactBackend : public QObject, public AbstractItemBackendInterface<Contact>
 {
    #pragma GCC diagnostic push
@@ -74,9 +77,6 @@ class LIB_EXPORT AbstractContactBackend : public QObject, public AbstractItemBac
 public:
    explicit AbstractContactBackend(QObject* parent = nullptr);
    virtual ~AbstractContactBackend();
-   virtual bool load() = 0;
-   virtual bool reload() = 0;
-   virtual bool save(const Contact* item) =0;
 
 Q_SIGNALS:
    void reloaded();
@@ -92,9 +92,6 @@ class LIB_EXPORT AbstractHistoryBackend : public QObject, public AbstractItemBac
 public:
    explicit AbstractHistoryBackend(QObject* parent = nullptr);
    virtual ~AbstractHistoryBackend();
-   virtual bool load() = 0;
-   virtual bool reload() = 0;
-   virtual bool save(const Call* item) =0;
 
 Q_SIGNALS:
    void reloaded();

@@ -55,7 +55,6 @@ set( qtsflphone_LIB_SRCS
   accountlistmodel.cpp
   callmodel.cpp
   historymodel.cpp
-  abstractitembackend.cpp
   abstractbookmarkmodel.cpp
   videocodecmodel.cpp
   videomodel.cpp
@@ -76,7 +75,11 @@ set( qtsflphone_LIB_SRCS
   ringtonemodel.cpp
   lastusednumbermodel.cpp
   contactmodel.cpp
+
+  #Data backends
   transitionalcontactbackend.cpp
+  legacyhistorybackend.cpp
+  abstractitembackend.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -130,6 +133,7 @@ set( qtsflphone_LIB_HDRS
   lastusednumbermodel.h
   contactmodel.h
   transitionalcontactbackend.h
+  abstractitembackend.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

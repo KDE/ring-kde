@@ -56,17 +56,32 @@
 #include "../lib/contactmodel.h"
 #include "kcfg_settings.h"
 
+Akonadi::Session* AkonadiBackend::m_pSession = nullptr;
+
 ///Constructor
 AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent) : AbstractContactBackend(parent)
 {
-   m_pSession = new Akonadi::Session( "SFLPhone::instance" );
+   if (!m_pSession)
+      m_pSession = new Akonadi::Session( "SFLPhone::instance" );
    m_Coll = parentCol;
+} //AkonadiBackend
 
+///Destructor
+AkonadiBackend::~AkonadiBackend()
+{
+   delete m_pSession;
+   delete m_pJob;
+   delete m_pMonitor;
+}
+
+
+bool AkonadiBackend::load()
+{
    Akonadi::ItemFetchScope scope;
    scope.fetchFullPayload(true);
 
    // fetching all collections recursively, starting at the root collection
-   m_pJob = new Akonadi::ItemFetchJob( parentCol, this );
+   m_pJob = new Akonadi::ItemFetchJob( m_Coll, this );
    m_pJob->setFetchScope(scope);
 //    m_pJob->fetchScope().setContentMimeTypes( QStringList() << "text/x-vcard" );
    connect( m_pJob, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(itemsReceived(Akonadi::Item::List)) );
@@ -83,22 +98,8 @@ AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* pa
       this,SLOT(slotItemRemoved(const Akonadi::Item)));
 
 
-   m_pMonitor->setCollectionMonitored(parentCol,true);
-} //AkonadiBackend
-
-///Destructor
-AkonadiBackend::~AkonadiBackend()
-{
-   delete m_pSession;
-   delete m_pJob;
-   delete m_pMonitor;
-}
-
-
-bool AkonadiBackend::load()
-{
-   //TODO
-   return false;
+   m_pMonitor->setCollectionMonitored(m_Coll,true);
+   return true;
 }
 
 bool AkonadiBackend::reload()
@@ -113,7 +114,8 @@ AbstractContactBackend::SupportedFeatures AkonadiBackend::supportedFeatures() co
       AbstractContactBackend::SupportedFeatures::NONE |
       AbstractContactBackend::SupportedFeatures::LOAD |
       AbstractContactBackend::SupportedFeatures::SAVE |
-      AbstractContactBackend::SupportedFeatures::EDIT );
+      AbstractContactBackend::SupportedFeatures::EDIT |
+      AbstractContactBackend::SupportedFeatures::ADD  );
 }
 
 /*****************************************************************************

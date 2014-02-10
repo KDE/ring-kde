@@ -16,46 +16,30 @@
  *   License along with this library; if not, write to the Free Software            *
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA *
  ***********************************************************************************/
+#ifndef LEGACYHISTORYBACKEND_H
+#define LEGACYHISTORYBACKEND_H
 
-//Parent
 #include "abstractitembackend.h"
 
-//SFLPhone library
-#include "contact.h"
-#include "call.h"
-#include "phonenumber.h"
-
-//Qt
-#include <QtCore/QHash>
-#include <QtCore/QDebug>
-#include <QtCore/QCoreApplication>
-
-///Constructor
-AbstractContactBackend::AbstractContactBackend(QObject* par) : QObject(par?par:QCoreApplication::instance())
+class LIB_EXPORT LegacyHistoryBackend : public AbstractHistoryBackend
 {
-}
+public:
+   explicit LegacyHistoryBackend(QObject* parent = nullptr);
+   virtual ~LegacyHistoryBackend();
 
-///Destructor
-AbstractContactBackend::~AbstractContactBackend()
-{
-}
+   virtual bool load();
+   virtual bool reload();
+   virtual bool save(const Call* call);
 
-///Constructor
-AbstractHistoryBackend::AbstractHistoryBackend(QObject* par) : QObject(par?par:QCoreApplication::instance())
-{
-}
+   virtual SupportedFeatures  supportedFeatures() const;
 
-///Destructor
-AbstractHistoryBackend::~AbstractHistoryBackend()
-{
-}
+   ///Edit 'item', the implementation may be a GUI or somehting else
+   virtual bool edit( Call* call);
+   ///Add a new item to the backend
+   virtual bool addNew( Call* call);
 
-///Default batch saving implementation, some backends have better APIs
-template <class T> bool AbstractItemBackendInterface<T>::batchSave(const QList<T*> contacts)
-{
-   bool ret = true;
-   foreach(const T* c, contacts) {
-      ret &= save(c);
-   }
-   return ret;
-}
+   ///Add a new phone number to an existing item
+   virtual bool addPhoneNumber( Call* call , PhoneNumber* number );
+};
+
+#endif

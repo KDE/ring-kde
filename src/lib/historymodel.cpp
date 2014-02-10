@@ -29,6 +29,7 @@
 #include "callmodel.h"
 #include "historytimecategorymodel.h"
 #include "lastusednumbermodel.h"
+#include "abstractitembackend.h"
 
 /*****************************************************************************
  *                                                                           *
@@ -96,24 +97,9 @@ Call* HistoryModel::HistoryItem::call() const
  ****************************************************************************/
 
 ///Constructor
-HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate)
+HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_Role(Call::Role::FuzzyDate)
 {
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
-   beginResetModel();
-   for(int i = history.size()-1;i>=0;i--) {
-      const MapStringString& hc = history[i];
-      Call* pastCall = Call::buildHistoryCall(hc);
-      if (pastCall->peerName().isEmpty()) {
-         pastCall->setPeerName(tr("Unknown"));
-      }
-      pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
-      add(pastCall);
-   }
-   endResetModel();
-   m_HistoryInit = true;
    m_spInstance  = this;
-//    reloadCategories();
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER << MIME_HISTORYID;
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(Call::Role::Name          ,QByteArray("name"          ));
@@ -207,6 +193,7 @@ HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
 ///Add to history
 void HistoryModel::add(Call* call)
 {
+   qDebug() << "HELLO";
    if (!call || call->state() != Call::State::OVER || !call->startTimeStamp()) {
       return;
    }
@@ -271,8 +258,6 @@ int HistoryModel::historyLimit() const
 
 void HistoryModel::reloadCategories()
 {
-   if (!m_HistoryInit)
-      return;
    beginResetModel();
    m_hCategories.clear();
    m_hCategoryByName.clear();
@@ -495,6 +480,19 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
       }
    }
    return false;
+}
+
+
+bool HistoryModel::hasBackends() const
+{
+   return m_lBackends.size();
+}
+
+void HistoryModel::addBackend(AbstractHistoryBackend* backend)
+{
+   m_lBackends << backend;
+   connect(backend,SIGNAL(newHistoryCallAdded(Call*)),this,SLOT(add(Call*)));
+   backend->load();
 }
 
 ///Return valid payload types

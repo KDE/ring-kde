@@ -33,6 +33,7 @@ typedef QMap<uint, Call*>  CallMap;
 typedef QList<Call*>       CallList;
 
 class HistoryItemNode;
+class AbstractHistoryBackend;
 
 ///HistoryModel: History call manager
 class LIB_EXPORT HistoryModel : public QAbstractItemModel {
@@ -43,6 +44,9 @@ class LIB_EXPORT HistoryModel : public QAbstractItemModel {
 public:
    friend class HistoryItemNode;
 
+   //Properties
+   Q_PROPERTY(bool hasBackends   READ hasBackends  )
+
    //Singleton
    static HistoryModel* instance();
 
@@ -50,6 +54,7 @@ public:
    int  acceptedPayloadTypes();
    bool isHistoryLimited() const;
    int  historyLimit() const;
+   bool hasBackends       () const;
 
    //Setters
    void setCategoryRole(Call::Role role);
@@ -57,7 +62,7 @@ public:
    void setHistoryLimit(int numberOfDays);
 
    //Mutator
-   void add(Call* call);
+   void addBackend(AbstractHistoryBackend* backend);
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -110,7 +115,6 @@ private:
    ~HistoryModel();
 
    //Helpers
-   bool initHistory();
    TopLevelItem* getCategory(const Call* call);
 
    //Static attributes
@@ -118,7 +122,7 @@ private:
 
    //Attributes
    static CallMap m_sHistoryCalls;
-   bool m_HistoryInit;
+   QList<AbstractHistoryBackend*> m_lBackends;
 
    //Model categories
    QList<TopLevelItem*>         m_lCategoryCounter ;
@@ -128,6 +132,9 @@ private:
    int                          m_Role             ;
    bool                         m_ShowAll          ;
    QStringList                  m_lMimes           ;
+
+public Q_SLOTS:
+   void add(Call* call);
 
 private Q_SLOTS:
    void reloadCategories();

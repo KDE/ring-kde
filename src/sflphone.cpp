@@ -53,6 +53,7 @@
 #include "lib/accountlistmodel.h"
 #include "lib/instantmessagingmodel.h"
 #include "lib/numbercategorymodel.h"
+#include "lib/legacyhistorybackend.h"
 #include "lib/visitors/numbercategoryvisitor.h"
 #include "klib/macromodel.h"
 #include "klib/akonadibackend.h"
@@ -142,6 +143,7 @@ SFLPhone::SFLPhone(QWidget *parent)
 
       //Start the Akonadi collection backend (contact loader)
       AkonadiContactCollectionModel::instance();
+      HistoryModel::instance()->addBackend(new LegacyHistoryBackend(this));
       NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
       InstantMessagingModelManager::init();
       AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));

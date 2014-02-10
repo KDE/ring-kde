@@ -196,6 +196,7 @@ void ContactModel::addBackend(AbstractContactBackend* backend)
    m_lBackends << backend;
    connect(backend,SIGNAL(reloaded()),this,SLOT(slotReloaded()));
    connect(backend,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
+   backend->load();
 }
 
 bool ContactModel::addNewContact(Contact* c, AbstractContactBackend* backend)

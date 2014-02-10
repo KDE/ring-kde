@@ -69,7 +69,7 @@ public:
 private:
 
    //Attributes
-   Akonadi::Session*              m_pSession   ;
+   static Akonadi::Session*              m_pSession   ;
    Akonadi::Monitor*              m_pMonitor   ;
    Akonadi::Collection            m_Coll       ;
    QHash<QString,KABC::Addressee> m_AddrHash   ;
