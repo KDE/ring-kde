@@ -50,10 +50,14 @@ protected:
 private:
    explicit AkonadiContactCollectionModel(QObject* parent);
    QHash<int,bool> m_hChecked;
+   QHash<int,bool> m_hLoaded ;
    Akonadi::CollectionModel* m_pParentModel;
 
    //Singleton
    static AkonadiContactCollectionModel* m_spInstance;
+
+   //Helper
+   void digg(const QModelIndex& idx);
 
 private Q_SLOTS:
    void slotInsertCollection(const QModelIndex&,int,int);

@@ -98,6 +98,20 @@ void AkonadiContactCollectionModel::reload()
    }
 }
 
+void AkonadiContactCollectionModel::digg(const QModelIndex& idx)
+{
+   for (int i = 0;i < rowCount(idx);i++) {
+      QModelIndex current = index(i,0,idx);
+      const bool checked = current.data(Qt::CheckStateRole).toBool()==Qt::Checked;
+      if (!checked && !m_hLoaded[current.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt()]) {
+         ContactModel::instance()->addBackend(new AkonadiBackend(
+            qvariant_cast<Akonadi::Collection>(index(i,0,idx).data(Akonadi::CollectionModel::Roles::CollectionRole)),this)
+         );
+      }
+      digg(current);
+   }
+}
+
 void AkonadiContactCollectionModel::save()
 {
    QList<int> ret;
@@ -105,6 +119,7 @@ void AkonadiContactCollectionModel::save()
       if (i.value())
          ret << i.key();
    }
+   digg(QModelIndex());
    ConfigurationSkeleton::setDisabledCollectionList(ret);
 }
 
@@ -112,10 +127,10 @@ void AkonadiContactCollectionModel::save()
 void AkonadiContactCollectionModel::slotInsertCollection(const QModelIndex& parentIdx, int start, int end)
 {
    for (int i =start; i <= end;i++) {
-      //ContactModel::instance()->addBackend(new AkonadiBackend(Akonadi::Collection::root(),this));
       Akonadi::Collection col = qvariant_cast<Akonadi::Collection>(index(i,0,parentIdx).data(Akonadi::CollectionModel::Roles::CollectionRole));
       if (!m_hChecked[col.id()]) {
          ContactModel::instance()->addBackend(new AkonadiBackend(col,this));
+         m_hLoaded[col.id()] = true;
       }
    }
 }
@@ -126,6 +141,6 @@ void AkonadiContactCollectionModel::slotRemoveCollection(const QModelIndex& inde
    Q_UNUSED(start)
    Q_UNUSED(end)
    for (int i =start; i <= end;i++) {
-      
+      //TODO
    }
 }
