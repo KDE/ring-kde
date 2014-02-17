@@ -34,6 +34,7 @@ public:
 
    virtual bool load();
    virtual bool reload();
+   virtual bool append(const Contact* item);
    virtual bool save(const Contact* contact);
 
    ///Edit 'contact', the implementation may be a GUI or somehting else

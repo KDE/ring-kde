@@ -189,6 +189,12 @@ HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
    return category;
 }
 
+
+const CallMap HistoryModel::getHistoryCalls() const
+{
+   return m_sHistoryCalls;
+}
+
 ///Add to history
 void HistoryModel::add(Call* call)
 {
@@ -220,6 +226,19 @@ void HistoryModel::add(Call* call)
    emit layoutChanged();
    LastUsedNumberModel::instance()->addCall(call);
    emit historyChanged();
+
+   // Loop until it find a compatible backend
+   //HACK only support a single active history backend
+   if (!call->backend()) {
+      foreach (AbstractHistoryBackend* backend,m_lBackends) {
+         if (backend->supportedFeatures() & AbstractHistoryBackend::ADD) {
+            if (backend->append(call)) {
+               call->setBackend(backend);
+               break;
+            }
+         }
+      }
+   }
 }
 
 ///Set if the history has a limit
@@ -494,7 +513,7 @@ void HistoryModel::addBackend(AbstractHistoryBackend* backend)
 }
 
 ///Return valid payload types
-int HistoryModel::acceptedPayloadTypes()
+int HistoryModel::acceptedPayloadTypes() const
 {
    return CallModel::DropPayloadType::CALL;
 }

@@ -53,6 +53,12 @@ bool LegacyHistoryBackend::reload()
    return false;
 }
 
+bool LegacyHistoryBackend::append(const Call* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
 bool LegacyHistoryBackend::save(const Call* call)
 {
    Q_UNUSED(call)
@@ -62,9 +68,7 @@ bool LegacyHistoryBackend::save(const Call* call)
 AbstractHistoryBackend::SupportedFeatures LegacyHistoryBackend::supportedFeatures() const
 {
    return (AbstractHistoryBackend::SupportedFeatures) (
-      AbstractHistoryBackend::SupportedFeatures::NONE |
-      AbstractHistoryBackend::SupportedFeatures::LOAD |
-      AbstractHistoryBackend::SupportedFeatures::ADD  );
+      AbstractHistoryBackend::SupportedFeatures::LOAD );
 }
 
 ///Edit 'item', the implementation may be a GUI or somehting else

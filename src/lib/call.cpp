@@ -146,7 +146,7 @@ Call::Call(Call::State startState, const QString& callId, const QString& peerNam
    m_pImModel(nullptr),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
    m_PeerName(peerName),m_pPeerPhoneNumber(number),m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),
    m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
-   m_History(false),m_Missed(false),m_Direction(Call::Direction::OUTGOING)
+   m_History(false),m_Missed(false),m_Direction(Call::Direction::OUTGOING),m_pBackend(nullptr)
 {
    m_Account = account;
    Q_ASSERT(!callId.isEmpty());
@@ -173,7 +173,7 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
    m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
    m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
    m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),m_History(false),m_Missed(false),
-   m_Direction(Call::Direction::OUTGOING)
+   m_Direction(Call::Direction::OUTGOING),m_pBackend(nullptr)
 {
    setObjectName("Conf:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
@@ -601,6 +601,13 @@ Call::Direction Call::direction() const
    return m_Direction;
 }
 
+///Return the backend used to serialize this call
+AbstractHistoryBackend* Call::backend() const
+{
+   return m_pBackend;
+}
+
+
 ///Get the current state
 Call::State Call::state() const
 {
@@ -747,6 +754,12 @@ void Call::setAccount( Account* account)
 {
    if (state() == Call::State::DIALING)
       m_Account = account;
+}
+
+/// Set the backend to save this call to. It is currently impossible to migrate.
+void Call::setBackend(AbstractHistoryBackend* backend)
+{
+   m_pBackend = backend;
 }
 
 /*****************************************************************************

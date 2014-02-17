@@ -45,6 +45,12 @@ bool TransitionalContactBackend::reload()
    return false;
 }
 
+bool TransitionalContactBackend::append(const Contact* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
 bool TransitionalContactBackend::save(const Contact* contact)
 {
    Q_UNUSED(contact)

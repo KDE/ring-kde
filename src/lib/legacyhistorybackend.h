@@ -30,6 +30,7 @@ public:
    virtual bool load();
    virtual bool reload();
    virtual bool save(const Call* call);
+   virtual bool append(const Call* item);
 
    virtual SupportedFeatures  supportedFeatures() const;
 

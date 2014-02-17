@@ -59,6 +59,7 @@ public:
 
    virtual bool     edit   ( Contact*   contact                                                 );
    virtual bool     addNew ( Contact*   contact                                                 );
+   virtual bool append(const Contact* item);
    virtual ~AkonadiBackend        (                                                                    );
 
    virtual bool load();

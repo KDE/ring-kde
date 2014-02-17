@@ -11,6 +11,10 @@
     <entry name="enableHistory" type="Bool">
       <label>Defines whether sflphone should keep a history of calls.</label>
     </entry>
+    <entry name="requireLegacyHistoryImport" type="Bool">
+      <label>Defines whether sflphone should keep a history of calls.</label>
+      <default> true </default>
+    </entry>
     <entry name="historyMax" type="Int">
       <label>Defines the number of days the history has to be kept.</label>
       <min> 1 </min>

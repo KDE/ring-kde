@@ -38,12 +38,16 @@ template <class T> class LIB_EXPORT AbstractItemBackendInterface
 public:
    enum SupportedFeatures {
       NONE     = 0x0      ,
-      LOAD     = 0x1 <<  0,
-      SAVE     = 0x1 <<  1,
-      EDIT     = 0x1 <<  2,
-      PROBE    = 0x1 <<  3,
-      ADD      = 0x1 <<  4,
-      SAVE_ALL = 0x1 <<  5,
+      LOAD     = 0x1 <<  0, /* Load this backend, DO NOT load anything before "load" is called         */
+      SAVE     = 0x1 <<  1, /* Save an item                                                            */
+      EDIT     = 0x1 <<  2, /* Edit, but **DOT NOT**, save an item)                                    */
+      PROBE    = 0x1 <<  3, /* Check if the backend has new items (some backends do this automagically)*/
+      ADD      = 0x1 <<  4, /* Add (and save) a new item to the backend                                */
+      SAVE_ALL = 0x1 <<  5, /* Save all items at once, this may or may not be faster than "add"        */
+      CLEAR    = 0x1 <<  6, /* Clear all items from this backend                                       */
+      REMOVE   = 0x1 <<  7, /* Remove a single item                                                    */
+      EXPORT   = 0x1 <<  8, /* Export all items, format and output need to be defined by each backends */
+      IMPORT   = 0x1 <<  9, /* Import items from an external source, details defined by each backends  */
    };
 
    explicit AbstractItemBackendInterface() {}
@@ -52,10 +56,11 @@ public:
    virtual bool load() = 0;
    virtual bool reload() = 0;
    virtual bool save(const T* item) =0;
+   virtual bool append(const T* item) =0;
    virtual bool batchSave(const QList<T*> contacts);
    virtual SupportedFeatures  supportedFeatures() const = 0;
 
-   ///Edit 'item', the implementation may be a GUI or somehting else
+   ///Edit 'item', the implementation may be a GUI or something else
    virtual bool        edit       ( T*       item     ) = 0;
    ///Add a new item to the backend
    virtual bool        addNew     ( T*       item     ) = 0;
@@ -66,7 +71,7 @@ public:
 
 };
 
-// those classes cannot be typedefs because Qt doesn't support templace QObjects
+// those classes cannot be typedefs because Qt doesn't support template QObjects
 
 class LIB_EXPORT AbstractContactBackend : public QObject, public AbstractItemBackendInterface<Contact>
 {

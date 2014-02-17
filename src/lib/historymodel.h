@@ -51,10 +51,11 @@ public:
    static HistoryModel* instance();
 
    //Getters
-   int  acceptedPayloadTypes();
-   bool isHistoryLimited() const;
-   int  historyLimit() const;
-   bool hasBackends       () const;
+   int  acceptedPayloadTypes    () const;
+   bool isHistoryLimited        () const;
+   int  historyLimit            () const;
+   bool hasBackends             () const;
+   const CallMap getHistoryCalls() const;
 
    //Setters
    void setCategoryRole(Call::Role role);

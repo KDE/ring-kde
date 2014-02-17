@@ -37,6 +37,7 @@ class InstantMessagingModel;
 class UserActionModel;
 class PhoneNumber;
 class TemporaryPhoneNumber;
+class AbstractHistoryBackend;
 
 class Call;
 
@@ -327,6 +328,7 @@ public:
    bool                     isHistory        ()      ;
    bool                     isMissed         () const;
    Call::Direction          direction        () const;
+   AbstractHistoryBackend*  backend          () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);
@@ -341,6 +343,7 @@ public:
    void setRecordingPath  ( const QString&     path       );
    void setPeerName       ( const QString&     name       );
    void setAccount        ( Account*           account    );
+   void setBackend        ( AbstractHistoryBackend* backend);
 
    //Mutators
    void appendText(const QString& str);
@@ -371,6 +374,7 @@ private:
    bool                     m_History         ;
    bool                     m_Missed          ;
    Call::Direction          m_Direction       ;
+   AbstractHistoryBackend*  m_pBackend        ;
 
    //Cache
    HistoryTimeCategoryModel::HistoryConst m_HistoryConst;

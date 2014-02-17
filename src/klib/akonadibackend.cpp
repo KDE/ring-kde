@@ -278,6 +278,13 @@ bool AkonadiBackend::save(const Contact* contact)
    return false;
 }
 
+
+bool AkonadiBackend::append(const Contact* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
 ///Add a new contact
 bool AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 {

@@ -27,6 +27,9 @@
 
 //SFLPhone
 #include "../lib/call.h"
+#include "../lib/account.h"
+#include "../lib/phonenumber.h"
+#include "../lib/historymodel.h"
 
 MinimalHistoryBackend::MinimalHistoryBackend(QObject* parent) : AbstractHistoryBackend(parent)
 {
@@ -53,6 +56,7 @@ bool MinimalHistoryBackend::load()
                pastCall->setPeerName(tr("Unknown"));
             }
             pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
+            pastCall->setBackend(this);
             emit newHistoryCallAdded(pastCall);
             hc.clear();
          }
@@ -66,7 +70,7 @@ bool MinimalHistoryBackend::load()
       return true;
    }
    else
-      qWarning() << "History doesn't exist or is not writable";
+      qWarning() << "History doesn't exist or is not readable";
    return false;
 }
 
@@ -75,9 +79,51 @@ bool MinimalHistoryBackend::reload()
    return false;
 }
 
+
+bool MinimalHistoryBackend::append(const Call* call)
+{
+   if (call->backend() == this  || call->id().isEmpty()) return false;
+   //TODO support \r and \n\r end of line
+   QFile file(KStandardDirs::locateLocal("appdata","")+"history.ini");
+   if ( file.open(QIODevice::Append | QIODevice::Text) ) {
+      const QString direction = (call->direction()==Call::Direction::INCOMING)?
+         Call::HistoryStateName::INCOMING : Call::HistoryStateName::OUTGOING;
+      QTextStream streamFileOut(&file);
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CALLID          ).arg(call->id()                     );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_START ).arg(call->startTimeStamp()         );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_STOP  ).arg(call->stopTimeStamp()          );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(call->account()->id()          );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DISPLAY_NAME    ).arg(call->peerName()               );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerPhoneNumber()->uri() );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DIRECTION       ).arg(direction                      );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::MISSED          ).arg(call->isMissed()               );
+      streamFileOut << "\n";
+      streamFileOut.flush();
+      file.close();
+      return true;
+   }
+   else
+      qWarning() << "Unable to save history";
+   return false;
+}
+
+/** Rewrite the file from scratch
+ * @todo Eventually check if it is necessary, it will be faster
+ */
 bool MinimalHistoryBackend::save(const Call* call)
 {
    Q_UNUSED(call)
+   if (call->backend() != this)
+      append(call);
+
+   //TODO, need to regenerate everything
+   /*QFile file(KStandardDirs::locateLocal("appdata","")+"history.ini");
+   if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
+      foreach(const Call* call, HistoryModel::instance()->getHistoryCalls()) {
+         qDebug() << "HERE" << call->id();
+      }
+      return true;
+   }*/
    return false;
 }
 
