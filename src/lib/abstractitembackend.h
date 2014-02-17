@@ -55,6 +55,7 @@ public:
 
    virtual bool load() = 0;
    virtual bool reload() = 0;
+   virtual bool clear();
    virtual bool save(const T* item) =0;
    virtual bool append(const T* item) =0;
    virtual bool batchSave(const QList<T*> contacts);

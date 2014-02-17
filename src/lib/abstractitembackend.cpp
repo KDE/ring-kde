@@ -50,6 +50,12 @@ AbstractHistoryBackend::~AbstractHistoryBackend()
 {
 }
 
+
+template <class T> bool AbstractItemBackendInterface<T>::clear()
+{
+   return false;
+}
+
 ///Default batch saving implementation, some backends have better APIs
 template <class T> bool AbstractItemBackendInterface<T>::batchSave(const QList<T*> contacts)
 {

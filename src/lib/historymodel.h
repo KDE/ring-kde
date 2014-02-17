@@ -64,6 +64,7 @@ public:
 
    //Mutator
    void addBackend(AbstractHistoryBackend* backend);
+   void clearAllBackends() const;
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );

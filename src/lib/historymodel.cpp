@@ -512,6 +512,16 @@ void HistoryModel::addBackend(AbstractHistoryBackend* backend)
    backend->load();
 }
 
+///Call all backends that support clearing
+void HistoryModel::clearAllBackends() const
+{
+   foreach (AbstractHistoryBackend* backend,m_lBackends) {
+      if (backend->supportedFeatures() & AbstractHistoryBackend::ADD) {
+         backend->clear();
+      }
+   }
+}
+
 ///Return valid payload types
 int HistoryModel::acceptedPayloadTypes() const
 {

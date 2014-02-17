@@ -29,6 +29,7 @@ public:
 
    virtual bool load();
    virtual bool reload();
+   virtual bool clear();
    virtual bool save(const Call* call);
    virtual bool append(const Call* item);
 

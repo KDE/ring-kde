@@ -84,9 +84,5 @@ void DlgGeneral::updateSettings()
 
 void DlgGeneral::slotClearCallHistoryAsked()
 {
-   const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to clear history?"), i18n("Clear history"));
-   if (ret == KMessageBox::Yes) {
-      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-      configurationManager.clearHistory();
-   }
+   HistoryModel::instance()->clearAllBackends();
 }

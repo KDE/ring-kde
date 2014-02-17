@@ -21,9 +21,12 @@
 //Qt
 #include <QtCore/QFile>
 #include <QtCore/QHash>
+#include <QtGui/QApplication>
 
 //KDE
 #include <KStandardDirs>
+#include <KMessageBox>
+#include <KLocale>
 
 //SFLPhone
 #include "../lib/call.h"
@@ -132,6 +135,7 @@ AbstractHistoryBackend::SupportedFeatures MinimalHistoryBackend::supportedFeatur
    return (AbstractHistoryBackend::SupportedFeatures) (
       AbstractHistoryBackend::SupportedFeatures::NONE |
       AbstractHistoryBackend::SupportedFeatures::LOAD |
+      AbstractHistoryBackend::SupportedFeatures::CLEAR|
       AbstractHistoryBackend::SupportedFeatures::ADD  );
 }
 
@@ -153,5 +157,15 @@ bool MinimalHistoryBackend::addPhoneNumber( Call* call , PhoneNumber* number )
 {
    Q_UNUSED(call)
    Q_UNUSED(number)
+   return false;
+}
+
+bool MinimalHistoryBackend::clear()
+{
+   const int ret = KMessageBox::questionYesNo(static_cast<QApplication*>(QApplication::instance())->activeWindow(), i18n("Are you sure you want to clear history?"), i18n("Clear history"));
+   if (ret == KMessageBox::Yes) {
+      QFile::remove(KStandardDirs::locateLocal("appdata","")+"history.ini");
+      return true;
+   }
    return false;
 }
