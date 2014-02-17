@@ -33,10 +33,6 @@
       <label>Should CallSecure be visible by default for calls</label>
       <default> false </default>
    </entry>
-   <entry name="displayCallCodec" type="Bool">
-      <label>Should CallCodec be visible by default for calls</label>
-      <default> false </default>
-   </entry>
    <entry name="displayCallOrganisation" type="Bool">
       <label>If a contact is present, display the organisation</label>
       <default> false </default>

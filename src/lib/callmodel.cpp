@@ -161,7 +161,6 @@ void CallModel::initRoles()
    roles.insert(Call::Role::Department    ,QByteArray("department"));
    roles.insert(Call::Role::Email         ,QByteArray("email"));
    roles.insert(Call::Role::Organisation  ,QByteArray("organisation"));
-   roles.insert(Call::Role::Codec         ,QByteArray("codec"));
    roles.insert(Call::Role::IsConference  ,QByteArray("isConference"));
    roles.insert(Call::Role::Object        ,QByteArray("object"));
    roles.insert(Call::Role::PhotoPtr      ,QByteArray("photoPtr"));

@@ -53,7 +53,7 @@ public:
    virtual bool reload() = 0;
    virtual bool save(const T* item) =0;
    virtual bool batchSave(const QList<T*> contacts);
-   virtual SupportedFeatures  supportedFeatures() const =0;
+   virtual SupportedFeatures  supportedFeatures() const = 0;
 
    ///Edit 'item', the implementation may be a GUI or somehting else
    virtual bool        edit       ( T*       item     ) = 0;

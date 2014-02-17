@@ -93,7 +93,6 @@ public:
       Department    = 112,
       Email         = 113,
       Organisation  = 114,
-      Codec         = 115,
       IsConference  = 116,
       Object        = 117,
       PhotoPtr      = 118,
@@ -267,7 +266,6 @@ public:
    Q_PROPERTY( bool               isHistory        READ isHistory                                 )
    Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
    Q_PROPERTY( uint               startTimeStamp   READ startTimeStamp                            )
-   Q_PROPERTY( QString            currentCodecName READ currentCodecName                          )
    Q_PROPERTY( bool               isSecure         READ isSecure                                  )
    Q_PROPERTY( bool               isConference     READ isConference                              )
    Q_PROPERTY( QString            confId           READ confId                                    )
@@ -295,7 +293,7 @@ public:
    static Call* buildIncomingCall (const QString& callId                                                       );
    static Call* buildRingingCall  (const QString& callId                                                       );
    static Call* buildHistoryCall  (const QMap<QString,QString>& hc                                             );
-   static Call* buildExistingCall (QString callId                                                              );
+   static Call* buildExistingCall (const QString& callId                                                       );
 
    //Static getters
    static Call::LegacyHistoryState historyStateFromType    ( const QString& type                                           );
@@ -313,7 +311,6 @@ public:
    bool                     isHistory        () const;
    time_t                   stopTimeStamp    () const;
    time_t                   startTimeStamp   () const;
-   QString                  currentCodecName () const;
    bool                     isSecure         () const;
    bool                     isConference     () const;
    const QString            confId           () const;

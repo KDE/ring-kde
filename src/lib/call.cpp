@@ -201,7 +201,7 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
  ****************************************************************************/
 
 ///Build a call from its ID
-Call* Call::buildExistingCall(QString callId)
+Call* Call::buildExistingCall(const QString& callId)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString       details     = callManager.getCallDetails(callId).value();
@@ -635,13 +635,6 @@ const QString Call::confId() const
 const QString Call::recordingPath() const
 {
    return m_RecordingPath;
-}
-
-///Get the current codec
-QString Call::currentCodecName() const
-{
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   return callManager.getCurrentAudioCodecName(m_CallId);
 }
 
 ///Get the history state
@@ -1490,9 +1483,6 @@ QVariant Call::roleData(int role) const
          break;
       case Call::Role::Organisation:
          return ct?ct->organization():QVariant();
-         break;
-      case Call::Role::Codec:
-         return currentCodecName();
          break;
       case Call::Role::IsConference:
          return isConference();

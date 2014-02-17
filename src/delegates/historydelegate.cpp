@@ -75,7 +75,6 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
       rowCount = ConfigurationSkeleton::displayCallPeer()
       + ConfigurationSkeleton::displayCallNumber       ()
       + ConfigurationSkeleton::displayCallSecure       ()
-      + ConfigurationSkeleton::displayCallCodec        ()
       + ConfigurationSkeleton::displayCallOrganisation ()
       + ConfigurationSkeleton::displayCallDepartment   ()
       + ConfigurationSkeleton::displayCallEmail        ();
@@ -217,11 +216,6 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
       if (ConfigurationSkeleton::displayCallSecure()) {
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Security).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallCodec()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Codec).toString());
          currentHeight +=fm.height();
       }
 

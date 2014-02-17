@@ -16,50 +16,72 @@
  *   License along with this library; if not, write to the Free Software            *
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA *
  ***********************************************************************************/
-#include "legacyhistorybackend.h"
+#include "minimalhistorybackend.h"
+
+//Qt
+#include <QtCore/QFile>
+#include <QtCore/QHash>
+
+//KDE
+#include <KStandardDirs>
 
 //SFLPhone
-#include "dbus/configurationmanager.h"
-#include "call.h"
+#include "../lib/call.h"
 
-LegacyHistoryBackend::LegacyHistoryBackend(QObject* parent) : AbstractHistoryBackend(parent)
+MinimalHistoryBackend::MinimalHistoryBackend(QObject* parent) : AbstractHistoryBackend(parent)
 {
-   setObjectName("LegacyHistoryBackend");
+   setObjectName("MinimalHistoryBackend");
 }
 
-LegacyHistoryBackend::~LegacyHistoryBackend()
+MinimalHistoryBackend::~MinimalHistoryBackend()
 {
    
 }
 
-bool LegacyHistoryBackend::load()
+bool MinimalHistoryBackend::load()
 {
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
-   for(int i = history.size()-1;i>=0;i--) {
-      const MapStringString& hc = history[i];
-      Call* pastCall = Call::buildHistoryCall(hc);
-      if (pastCall->peerName().isEmpty()) {
-         pastCall->setPeerName(tr("Unknown"));
+   QFile file(KStandardDirs::locateLocal("appdata","")+"history.ini");
+   if ( file.open(QIODevice::ReadOnly | QIODevice::Text) ) {
+      QMap<QString,QString> hc;
+      while (!file.atEnd()) {
+         QByteArray line = file.readLine().trimmed();
+
+         //The item is complete
+         if ((line.isEmpty() || !line.size()) && hc.size()) {
+            Call* pastCall = Call::buildHistoryCall(hc);
+            if (pastCall->peerName().isEmpty()) {
+               pastCall->setPeerName(tr("Unknown"));
+            }
+            pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
+            emit newHistoryCallAdded(pastCall);
+            hc.clear();
+         }
+         // Add to the current set
+         else {
+            const int idx = line.indexOf("=");
+            if (idx >= 0)
+               hc[line.left(idx)] = line.right(line.size()-idx-1);
+         }
       }
-      pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
-      emit newHistoryCallAdded(pastCall);
+      return true;
    }
-   return true;
+   else
+      qWarning() << "History doesn't exist or is not writable";
+   return false;
 }
 
-bool LegacyHistoryBackend::reload()
+bool MinimalHistoryBackend::reload()
 {
    return false;
 }
 
-bool LegacyHistoryBackend::save(const Call* call)
+bool MinimalHistoryBackend::save(const Call* call)
 {
    Q_UNUSED(call)
    return false;
 }
 
-AbstractHistoryBackend::SupportedFeatures LegacyHistoryBackend::supportedFeatures() const
+AbstractHistoryBackend::SupportedFeatures MinimalHistoryBackend::supportedFeatures() const
 {
    return (AbstractHistoryBackend::SupportedFeatures) (
       AbstractHistoryBackend::SupportedFeatures::NONE |
@@ -68,20 +90,20 @@ AbstractHistoryBackend::SupportedFeatures LegacyHistoryBackend::supportedFeature
 }
 
 ///Edit 'item', the implementation may be a GUI or somehting else
-bool LegacyHistoryBackend::edit( Call* call)
+bool MinimalHistoryBackend::edit( Call* call)
 {
    Q_UNUSED(call)
    return false;
 }
 ///Add a new item to the backend
-bool LegacyHistoryBackend::addNew( Call* call)
+bool MinimalHistoryBackend::addNew( Call* call)
 {
    Q_UNUSED(call)
    return true;
 }
 
 ///Add a new phone number to an existing item
-bool LegacyHistoryBackend::addPhoneNumber( Call* call , PhoneNumber* number )
+bool MinimalHistoryBackend::addPhoneNumber( Call* call , PhoneNumber* number )
 {
    Q_UNUSED(call)
    Q_UNUSED(number)

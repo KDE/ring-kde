@@ -69,7 +69,6 @@ AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* pa
 ///Destructor
 AkonadiBackend::~AkonadiBackend()
 {
-   delete m_pSession;
    delete m_pJob;
    delete m_pMonitor;
 }
