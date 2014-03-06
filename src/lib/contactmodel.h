@@ -26,6 +26,7 @@
 
 #include "typedefs.h"
 #include "contact.h"
+#include "commonbackendmanagerinterface.h"
 
 //SFLPhone
 class Contact;
@@ -36,7 +37,8 @@ class AbstractContactBackend;
 typedef QVector<Contact*> ContactList;
 
 ///ContactModel: Allow different way to handle contact without poluting the library
-class LIB_EXPORT ContactModel : public QAbstractItemModel {
+class LIB_EXPORT ContactModel :
+   public QAbstractItemModel, public CommonBackendManagerInterface<AbstractContactBackend> {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -64,12 +66,17 @@ public:
    //Mutator
    bool addContact(Contact* c);
    void disableContact(Contact* c);
-   void addBackend(AbstractContactBackend* backend);
+   void addBackend(AbstractContactBackend* backend, bool active = true);
 
    //Getters
    Contact* getContactByUid   ( const QByteArray& uid );
    bool     hasBackends       () const;
    const ContactList contacts() const;
+   virtual const QVector<AbstractContactBackend*> enabledBackends() const;
+   virtual bool hasEnabledBackends  () const;
+   virtual const QVector<AbstractContactBackend*> backends() const;
+   virtual bool enableBackend(AbstractContactBackend* backend, bool enabled);
+   virtual CommonItemBackendModel* backendModel() const;
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   )  __attribute__ ((const));
@@ -87,8 +94,9 @@ public:
 private:
    //Attributes
    static ContactModel* m_spInstance;
-   QList<AbstractContactBackend*> m_lBackends;
+   QVector<AbstractContactBackend*> m_lBackends;
    int m_UpdatesCounter;
+   CommonItemBackendModel* m_pBackendModel;
 
    //Indexes
    QHash<QByteArray,Contact*> m_hContactsByUid;
@@ -104,6 +112,7 @@ private Q_SLOTS:
 Q_SIGNALS:
    void reloaded();
    void newContactAdded(Contact* c);
+   void newBackendAdded(AbstractContactBackend* backend);
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include "call.h"
 #include "phonenumber.h"
 #include "abstractitembackend.h"
+#include "itembackendmodel.h"
 
 //Qt
 #include <QtCore/QHash>
@@ -33,7 +34,8 @@
 ContactModel* ContactModel::m_spInstance = nullptr;
 
 ///Constructor
-ContactModel::ContactModel(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance())
+ContactModel::ContactModel(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance()),
+m_pBackendModel(nullptr)
 {
 }
 
@@ -166,6 +168,38 @@ bool ContactModel::hasBackends() const
    return m_lBackends.size();
 }
 
+
+const QVector<AbstractContactBackend*> ContactModel::enabledBackends() const
+{
+   return m_lBackends;
+}
+
+bool ContactModel::hasEnabledBackends() const
+{
+   return m_lBackends.size()>0;
+}
+
+CommonItemBackendModel* ContactModel::backendModel() const
+{
+   if (!m_pBackendModel) {
+      const_cast<ContactModel*>(this)->m_pBackendModel = new CommonItemBackendModel(const_cast<ContactModel*>(this));
+   }
+   return m_pBackendModel; //TODO
+}
+
+const QVector<AbstractContactBackend*> ContactModel::backends() const
+{
+   return m_lBackends;
+}
+
+bool ContactModel::enableBackend(AbstractContactBackend* backend, bool enabled)
+{
+   Q_UNUSED(backend)
+   Q_UNUSED(enabled)
+   //TODO;
+   return false;
+}
+
 bool ContactModel::addContact(Contact* c)
 {
    if (!c)
@@ -191,12 +225,14 @@ const ContactList ContactModel::contacts() const
    return m_lContacts;
 }
 
-void ContactModel::addBackend(AbstractContactBackend* backend)
+void ContactModel::addBackend(AbstractContactBackend* backend, bool active)
 {
    m_lBackends << backend;
    connect(backend,SIGNAL(reloaded()),this,SLOT(slotReloaded()));
    connect(backend,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
-   backend->load();
+   if (active)
+      backend->load();
+   emit newBackendAdded(backend);
 }
 
 bool ContactModel::addNewContact(Contact* c, AbstractContactBackend* backend)

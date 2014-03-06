@@ -156,7 +156,7 @@ private:
    uint               m_LastWeekCount    ;
    uint               m_LastTrimCount    ;
    bool               m_HaveCalled       ;
-   uint               m_Index            ;
+   int                m_Index            ;
    bool               m_IsBookmark       ;
    int                m_TotalSeconds     ;
    QString            m_Uid              ;

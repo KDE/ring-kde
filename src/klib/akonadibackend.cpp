@@ -57,22 +57,43 @@
 #include "kcfg_settings.h"
 
 Akonadi::Session* AkonadiBackend::m_pSession = nullptr;
+QHash<Akonadi::Collection::Id, AkonadiBackend*> AkonadiBackend::m_hParentLookup;
 
 ///Constructor
-AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent) : AbstractContactBackend(parent)
+AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent) :
+   AbstractContactBackend(m_hParentLookup[parentCol.parent()],parent),m_pJob(nullptr),
+   m_pMonitor(nullptr),m_isEnabled(false)
 {
    if (!m_pSession)
       m_pSession = new Akonadi::Session( "SFLPhone::instance" );
+   setObjectName(parentCol.name());
    m_Coll = parentCol;
+   m_hParentLookup[m_Coll.id()] = this;
 } //AkonadiBackend
 
 ///Destructor
 AkonadiBackend::~AkonadiBackend()
 {
-   delete m_pJob;
-   delete m_pMonitor;
+   if (m_pJob)
+      delete m_pJob;
+   if (m_pMonitor)
+      delete m_pMonitor;
 }
 
+QString AkonadiBackend::name () const
+{
+   return m_Coll.name();
+}
+
+QVariant AkonadiBackend::icon() const
+{
+   return QVariant();
+}
+
+bool AkonadiBackend::isEnabled() const
+{
+   return m_isEnabled;
+}
 
 bool AkonadiBackend::load()
 {
@@ -98,7 +119,16 @@ bool AkonadiBackend::load()
 
 
    m_pMonitor->setCollectionMonitored(m_Coll,true);
+   m_isEnabled = true; //FIXME does it make sense to merge loaded and enabled?
    return true;
+}
+
+bool AkonadiBackend::enabled (bool enable)
+{
+   //TODO find a way to disable a backend
+   if (enable)
+      return load();
+   return false;
 }
 
 bool AkonadiBackend::reload()
@@ -110,11 +140,15 @@ bool AkonadiBackend::reload()
 AbstractContactBackend::SupportedFeatures AkonadiBackend::supportedFeatures() const
 {
    return (AbstractContactBackend::SupportedFeatures) (
-      AbstractContactBackend::SupportedFeatures::NONE |
-      AbstractContactBackend::SupportedFeatures::LOAD |
-      AbstractContactBackend::SupportedFeatures::SAVE |
-      AbstractContactBackend::SupportedFeatures::EDIT |
-      AbstractContactBackend::SupportedFeatures::ADD  );
+      AbstractContactBackend::SupportedFeatures::NONE        |
+      AbstractContactBackend::SupportedFeatures::LOAD        |
+      AbstractContactBackend::SupportedFeatures::SAVE        |
+      AbstractContactBackend::SupportedFeatures::EDIT        |
+      AbstractContactBackend::SupportedFeatures::ADD         |
+      AbstractContactBackend::SupportedFeatures::MANAGEABLE  |
+      AbstractContactBackend::SupportedFeatures::DISABLEABLE |
+      AbstractContactBackend::SupportedFeatures::ENABLEABLE
+   );
 }
 
 /*****************************************************************************

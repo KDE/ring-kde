@@ -73,6 +73,7 @@ class LIB_EXPORT VideoDevice {
    private:
       //Constructor
       explicit VideoDevice(const QString &id);
+      ~VideoDevice();
 
       //Attributes
       QString m_DeviceId;

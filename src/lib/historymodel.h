@@ -27,6 +27,7 @@
 
 //SFLPhone
 #include "call.h"
+#include "commonbackendmanagerinterface.h"
 
 //Typedef
 typedef QMap<uint, Call*>  CallMap;
@@ -36,7 +37,7 @@ class HistoryItemNode;
 class AbstractHistoryBackend;
 
 ///HistoryModel: History call manager
-class LIB_EXPORT HistoryModel : public QAbstractItemModel {
+class LIB_EXPORT HistoryModel : public QAbstractItemModel, public CommonBackendManagerInterface<AbstractHistoryBackend> {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -51,11 +52,15 @@ public:
    static HistoryModel* instance();
 
    //Getters
-   int  acceptedPayloadTypes    () const;
-   bool isHistoryLimited        () const;
-   int  historyLimit            () const;
-   bool hasBackends             () const;
+   int  acceptedPayloadTypes       () const;
+   bool isHistoryLimited           () const;
+   int  historyLimit               () const;
+   virtual bool hasBackends        () const;
+   virtual bool hasEnabledBackends () const;
    const CallMap getHistoryCalls() const;
+   virtual const QVector<AbstractHistoryBackend*> backends() const;
+   virtual const QVector<AbstractHistoryBackend*> enabledBackends() const;
+   virtual CommonItemBackendModel* backendModel() const;
 
    //Setters
    void setCategoryRole(Call::Role role);
@@ -63,8 +68,9 @@ public:
    void setHistoryLimit(int numberOfDays);
 
    //Mutator
-   void addBackend(AbstractHistoryBackend* backend);
+   void addBackend(AbstractHistoryBackend* backend, bool active = true);
    void clearAllBackends() const;
+   virtual bool enableBackend(AbstractHistoryBackend* backend, bool enabled);
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -124,7 +130,7 @@ private:
 
    //Attributes
    static CallMap m_sHistoryCalls;
-   QList<AbstractHistoryBackend*> m_lBackends;
+   QVector<AbstractHistoryBackend*> m_lBackends;
 
    //Model categories
    QList<TopLevelItem*>         m_lCategoryCounter ;
@@ -147,6 +153,7 @@ Q_SIGNALS:
    void historyChanged          (            );
    ///Emitted when a new item is added to prevent full reload
    void newHistoryCall          ( Call* call );
+   void newBackendAdded(AbstractHistoryBackend* backend);
 };
 
 

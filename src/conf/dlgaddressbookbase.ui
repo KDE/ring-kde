@@ -34,6 +34,9 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QTreeView" name="m_pItemBackendW"/>
+       </item>
       </layout>
      </widget>
      <widget class="QGroupBox" name="groupBox">

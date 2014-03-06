@@ -15,50 +15,33 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TRANSITIONAL_CONTACT_BACKEND
-#define TRANSITIONAL_CONTACT_BACKEND
-
-#include "abstractitembackend.h"
+#ifndef COMMONBACKENDMANAGERINTERFACE_H
+#define COMMONBACKENDMANAGERINTERFACE_H
 
 #include "typedefs.h"
 
-///Contact backend for new unsaved contacts
-class LIB_EXPORT TransitionalContactBackend : public AbstractContactBackend {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-   Q_OBJECT
-   #pragma GCC diagnostic pop
+class CommonItemBackendModel;
+
+template <class T> class LIB_EXPORT CommonBackendManagerInterface {
 public:
+   virtual ~CommonBackendManagerInterface() {};
 
-   virtual ~TransitionalContactBackend();
+   /// Add a new backend
+   virtual void addBackend(T* backend, bool active = true) = 0;
 
-   virtual bool load();
-   virtual bool reload();
-   virtual bool append(const Contact* item);
-   virtual bool save(const Contact* contact);
-   virtual bool isEnabled() const;
+   /// Do this manager have active backends
+   virtual bool hasEnabledBackends () const = 0;
+   virtual bool hasBackends        () const = 0;
 
-   virtual QString name () const;
-   virtual QVariant icon() const;
+   /// List all backends
+   virtual const QVector<T*> backends       () const = 0;
+   virtual const QVector<T*> enabledBackends() const = 0;
 
-   ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual bool        edit       ( Contact*       contact     );
-   ///Add a new contact to the backend
-   virtual bool        addNew     ( Contact*       contact     );
+   ///Enable / disable a backend
+   virtual bool enableBackend(T* backend, bool enabled) = 0;
 
-   ///Add a new phone number to an existing contact
-   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number );
-
-   SupportedFeatures supportedFeatures() const;
-
-   //Singleton
-   static AbstractContactBackend* instance();
-
-private:
-   explicit TransitionalContactBackend(QObject* parent = nullptr);
-   static AbstractContactBackend* m_spInstance;
-
+   /// Return a backend
+   virtual CommonItemBackendModel* backendModel() const = 0;
 };
-
 
 #endif

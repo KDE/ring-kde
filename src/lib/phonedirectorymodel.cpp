@@ -469,6 +469,10 @@ void PhoneDirectoryModel::slotChanged()
    PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
    if (number) {
       const int idx = number->m_Index;
+#ifndef NDEBUG
+      if (idx<0)
+         qDebug() << "Invalid slotChanged() index!";
+#endif
       emit dataChanged(index(idx,0),index(idx,5));
    }
 }

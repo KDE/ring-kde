@@ -34,7 +34,7 @@
 #include "../lib/phonenumber.h"
 #include "../lib/historymodel.h"
 
-MinimalHistoryBackend::MinimalHistoryBackend(QObject* parent) : AbstractHistoryBackend(parent)
+MinimalHistoryBackend::MinimalHistoryBackend(QObject* parent) : AbstractHistoryBackend(nullptr,parent)
 {
    setObjectName("MinimalHistoryBackend");
 }
@@ -42,6 +42,21 @@ MinimalHistoryBackend::MinimalHistoryBackend(QObject* parent) : AbstractHistoryB
 MinimalHistoryBackend::~MinimalHistoryBackend()
 {
    
+}
+
+QString MinimalHistoryBackend::name () const
+{
+   return "Minimal history backend";
+}
+
+QVariant MinimalHistoryBackend::icon() const
+{
+   return QVariant();
+}
+
+bool MinimalHistoryBackend::isEnabled() const
+{
+   return true;
 }
 
 bool MinimalHistoryBackend::load()

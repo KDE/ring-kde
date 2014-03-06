@@ -57,6 +57,11 @@ VideoDevice::VideoDevice(const QString &id) : m_DeviceId(id)
    
 }
 
+///Destructor
+VideoDevice::~VideoDevice()
+{
+}
+
 ///Get the video device list
 const QList<VideoDevice*> VideoDevice::deviceList()
 {
@@ -67,11 +72,11 @@ const QList<VideoDevice*> VideoDevice::deviceList()
       return m_slDevices.values();
    }
 
-   foreach(const QString& device,deviceList) {
-      if (!m_slDevices[device])
-         devices[device] = new VideoDevice(device);
+   foreach(const QString& deviceName,deviceList) {
+      if (!m_slDevices[deviceName])
+         devices[deviceName] = new VideoDevice(deviceName);
       else
-         devices[device] = m_slDevices[device];
+         devices[deviceName] = m_slDevices[deviceName];
    }
    foreach(VideoDevice* dev,m_slDevices) {
       if (devices.key(dev).isEmpty())

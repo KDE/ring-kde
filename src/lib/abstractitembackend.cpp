@@ -31,7 +31,8 @@
 #include <QtCore/QCoreApplication>
 
 ///Constructor
-AbstractContactBackend::AbstractContactBackend(QObject* par) : QObject(par?par:QCoreApplication::instance())
+AbstractContactBackend::AbstractContactBackend(AbstractItemBackendInterface<Contact>* parentBackend,QObject* par) 
+: AbstractItemBackendInterface<Contact>(parentBackend),QObject(par?par:QCoreApplication::instance())
 {
 }
 
@@ -41,7 +42,8 @@ AbstractContactBackend::~AbstractContactBackend()
 }
 
 ///Constructor
-AbstractHistoryBackend::AbstractHistoryBackend(QObject* par) : QObject(par?par:QCoreApplication::instance())
+AbstractHistoryBackend::AbstractHistoryBackend(AbstractItemBackendInterface<Call>* parentBackend, QObject* par)
+: AbstractItemBackendInterface<Call>(parentBackend),QObject(par?par:QCoreApplication::instance())
 {
 }
 
@@ -49,6 +51,7 @@ AbstractHistoryBackend::AbstractHistoryBackend(QObject* par) : QObject(par?par:Q
 AbstractHistoryBackend::~AbstractHistoryBackend()
 {
 }
+
 
 
 template <class T> bool AbstractItemBackendInterface<T>::clear()

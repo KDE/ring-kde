@@ -505,11 +505,18 @@ bool HistoryModel::hasBackends() const
    return m_lBackends.size();
 }
 
-void HistoryModel::addBackend(AbstractHistoryBackend* backend)
+bool HistoryModel::hasEnabledBackends() const
+{
+   return m_lBackends.size();
+}
+
+void HistoryModel::addBackend(AbstractHistoryBackend* backend, bool active)
 {
    m_lBackends << backend;
    connect(backend,SIGNAL(newHistoryCallAdded(Call*)),this,SLOT(add(Call*)));
-   backend->load();
+   if (active)
+      backend->load();
+   emit newBackendAdded(backend);
 }
 
 ///Call all backends that support clearing
@@ -520,6 +527,29 @@ void HistoryModel::clearAllBackends() const
          backend->clear();
       }
    }
+}
+
+
+bool HistoryModel::enableBackend(AbstractHistoryBackend* backend, bool enabled)
+{
+   Q_UNUSED(backend)
+   Q_UNUSED(enabled)
+   return false;//TODO
+}
+
+CommonItemBackendModel* HistoryModel::backendModel() const
+{
+   return nullptr; //TODO
+}
+
+const QVector<AbstractHistoryBackend*> HistoryModel::backends() const
+{
+   return m_lBackends;
+}
+
+const QVector<AbstractHistoryBackend*> HistoryModel::enabledBackends() const
+{
+   return m_lBackends;
 }
 
 ///Return valid payload types

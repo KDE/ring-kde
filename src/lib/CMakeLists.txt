@@ -75,6 +75,7 @@ set( qtsflphone_LIB_SRCS
   ringtonemodel.cpp
   lastusednumbermodel.cpp
   contactmodel.cpp
+  itembackendmodel.cpp
 
   #Data backends
   transitionalcontactbackend.cpp
@@ -134,6 +135,8 @@ set( qtsflphone_LIB_HDRS
   contactmodel.h
   transitionalcontactbackend.h
   abstractitembackend.h
+  itembackendmodel.h
+  #commonbackendmanagerinterface.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

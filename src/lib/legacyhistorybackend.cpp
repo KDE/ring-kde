@@ -22,7 +22,7 @@
 #include "dbus/configurationmanager.h"
 #include "call.h"
 
-LegacyHistoryBackend::LegacyHistoryBackend(QObject* parent) : AbstractHistoryBackend(parent)
+LegacyHistoryBackend::LegacyHistoryBackend(QObject* parent) : AbstractHistoryBackend(nullptr,parent)
 {
    setObjectName("LegacyHistoryBackend");
 }
@@ -30,6 +30,22 @@ LegacyHistoryBackend::LegacyHistoryBackend(QObject* parent) : AbstractHistoryBac
 LegacyHistoryBackend::~LegacyHistoryBackend()
 {
    
+}
+
+
+QString LegacyHistoryBackend::name () const
+{
+   return "Legacy history backend";
+}
+
+QVariant LegacyHistoryBackend::icon() const
+{
+   return QVariant();
+}
+
+bool LegacyHistoryBackend::isEnabled() const
+{
+   return false; //This one is never considered enabled
 }
 
 bool LegacyHistoryBackend::load()

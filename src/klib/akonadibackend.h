@@ -57,6 +57,11 @@ public:
    bool     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
    virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
 
+   virtual QString name () const;
+   virtual QVariant icon() const;
+   virtual bool isEnabled() const;
+   virtual bool enabled (bool enable);
+
    virtual bool     edit   ( Contact*   contact                                                 );
    virtual bool     addNew ( Contact*   contact                                                 );
    virtual bool append(const Contact* item);
@@ -76,11 +81,15 @@ private:
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
    QPointer<Akonadi::ItemFetchJob>   m_pJob;
+   bool                           m_isEnabled;
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);
    Contact* addItem(Akonadi::Item item, bool ignoreEmpty = false);
    void fillContact(Contact* c, const KABC::Addressee& addr) const;
+
+   //Parent locator
+   static QHash<Akonadi::Collection::Id, AkonadiBackend*> m_hParentLookup;
 
 public Q_SLOTS:
    void update(const Akonadi::Collection& collection);

@@ -23,7 +23,8 @@
 #include "lib/numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include <akonadi/collectionmodel.h>
-#include <kcheckableproxymodel.h>
+#include "lib/contactmodel.h"
+#include "lib/itembackendmodel.h"
 #include "klib/akonadicontactcollectionmodel.h"
 
 ///Constructor
@@ -37,6 +38,7 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 
 
    collections->setModel( AkonadiContactCollectionModel::instance() );
+   m_pItemBackendW->setModel(ContactModel::instance()->backendModel());
 
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));

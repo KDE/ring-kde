@@ -31,7 +31,7 @@ TransitionalContactBackend::~TransitionalContactBackend()
 {
 }
 
-TransitionalContactBackend::TransitionalContactBackend(QObject* parent) : AbstractContactBackend(parent)
+TransitionalContactBackend::TransitionalContactBackend(QObject* parent) : AbstractContactBackend(nullptr,parent)
 {
 }
 
@@ -76,8 +76,22 @@ bool TransitionalContactBackend::addPhoneNumber( Contact* contact , PhoneNumber*
    return false;
 }
 
+bool TransitionalContactBackend::isEnabled() const
+{
+   return false;
+}
 
 AbstractContactBackend::SupportedFeatures TransitionalContactBackend::supportedFeatures() const
 {
    return AbstractContactBackend::SupportedFeatures::NONE;
+}
+
+QString TransitionalContactBackend::name () const
+{
+   return "Transitional contact backend";
+}
+
+QVariant TransitionalContactBackend::icon() const
+{
+   return QVariant();
 }
