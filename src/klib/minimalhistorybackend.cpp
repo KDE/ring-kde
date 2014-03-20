@@ -184,3 +184,8 @@ bool MinimalHistoryBackend::clear()
    }
    return false;
 }
+
+QByteArray MinimalHistoryBackend::id() const
+{
+   return "mhb";
+}

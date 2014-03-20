@@ -95,3 +95,9 @@ QVariant TransitionalContactBackend::icon() const
 {
    return QVariant();
 }
+
+QByteArray TransitionalContactBackend::id() const
+{
+   return  "trcb";
+}
+

@@ -41,6 +41,7 @@ set( ksflphone_LIB_SRCS
    macro.cpp
    akonadicontactcollectionmodel.cpp
    minimalhistorybackend.cpp
+   itemmodelserialization.cpp
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)
@@ -67,6 +68,7 @@ set( ksflphone_LIB_HDRS
 #   sortabledockcommon.h
   macromodel.h
   macro.h
+  itemmodelserialization.h
 )
 
 INSTALL(FILES sflphone-client-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})

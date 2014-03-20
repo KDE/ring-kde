@@ -150,7 +150,7 @@
     	<label>Defines whether the search in KDE Address Book is enabled</label>
     </entry>-->
 
-    <entry name="disabledCollectionList" type="IntList">
+    <entry name="disabledCollectionList" type="StringList">
         <label>List of disabled address book collections</label>
     </entry>
 

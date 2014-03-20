@@ -15,52 +15,35 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TRANSITIONAL_CONTACT_BACKEND
-#define TRANSITIONAL_CONTACT_BACKEND
 
-#include "abstractitembackend.h"
+#ifndef ITEMMODELSTATESERIALIZATION_H
+#define ITEMMODELSTATESERIALIZATION_H
 
-#include "typedefs.h"
+#include <QtCore/QHash>
 
-///Contact backend for new unsaved contacts
-class LIB_EXPORT TransitionalContactBackend : public AbstractContactBackend {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-   Q_OBJECT
-   #pragma GCC diagnostic pop
+#include "../lib/typedefs.h"
+#include "../lib/visitors/itemmodelstateserializationvisitor.h"
+class Account;
+class AbstractItemBackendBase;
+
+///SFLPhonelib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
+class LIB_EXPORT ItemModelStateSerialization : public ItemModelStateSerializationVisitor {
 public:
-
-   virtual ~TransitionalContactBackend();
-
+   virtual bool save();
    virtual bool load();
-   virtual bool reload();
-   virtual bool append(const Contact* item);
-   virtual bool save(const Contact* contact);
-   virtual bool isEnabled() const;
+   virtual ~ItemModelStateSerialization();
 
-   virtual QString name () const;
-   virtual QVariant icon() const;
+   //Getter
+   virtual bool isChecked(AbstractItemBackendBase* backend) const;
 
-   virtual QByteArray  id() const;
-
-   ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual bool        edit       ( Contact*       contact     );
-   ///Add a new contact to the backend
-   virtual bool        addNew     ( Contact*       contact     );
-
-   ///Add a new phone number to an existing contact
-   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number );
-
-   SupportedFeatures supportedFeatures() const;
-
-   //Singleton
-   static AbstractContactBackend* instance();
+   //Setter
+   virtual bool setChecked(AbstractItemBackendBase* backend, bool enabled);
 
 private:
-   explicit TransitionalContactBackend(QObject* parent = nullptr);
-   static AbstractContactBackend* m_spInstance;
-
+   QHash<QByteArray,bool> m_hChecked;
+   QHash<QByteArray,bool> m_hLoaded ;
+   //Helper
+//    void digg(const AbstractItemBackendBase* idx);
 };
-
 
 #endif

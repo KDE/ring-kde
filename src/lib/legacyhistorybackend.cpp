@@ -107,3 +107,8 @@ bool LegacyHistoryBackend::addPhoneNumber( Call* call , PhoneNumber* number )
    Q_UNUSED(number)
    return false;
 }
+
+QByteArray LegacyHistoryBackend::id() const
+{
+   return "lhb";
+}

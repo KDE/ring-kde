@@ -91,11 +91,11 @@ bool AkonadiContactCollectionModel::setData( const QModelIndex& index, const QVa
 
 void AkonadiContactCollectionModel::reload()
 {
-   m_hChecked.clear();
-   const QList<int> disabled = ConfigurationSkeleton::disabledCollectionList();
-   foreach(const int str, disabled) {
-      m_hChecked[str] = true; //Disabled == true, enabled == false
-   }
+//    m_hChecked.clear();
+//    const QList<int> disabled = ConfigurationSkeleton::disabledCollectionList();
+//    foreach(const int str, disabled) {
+//       m_hChecked[str] = true; //Disabled == true, enabled == false
+//    }
 }
 
 void AkonadiContactCollectionModel::digg(const QModelIndex& idx)
@@ -114,13 +114,13 @@ void AkonadiContactCollectionModel::digg(const QModelIndex& idx)
 
 void AkonadiContactCollectionModel::save()
 {
-   QList<int> ret;
-   for (QHash<int,bool>::iterator i = m_hChecked.begin(); i != m_hChecked.end(); ++i) {
-      if (i.value())
-         ret << i.key();
-   }
+//    QList<int> ret;
+//    for (QHash<int,bool>::iterator i = m_hChecked.begin(); i != m_hChecked.end(); ++i) {
+//       if (i.value())
+//          ret << i.key();
+//    }
    digg(QModelIndex());
-   ConfigurationSkeleton::setDisabledCollectionList(ret);
+//    ConfigurationSkeleton::setDisabledCollectionList(ret);
 }
 
 

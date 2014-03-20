@@ -52,9 +52,13 @@ AbstractHistoryBackend::~AbstractHistoryBackend()
 {
 }
 
+QVector<AbstractItemBackendBase*> AbstractItemBackendBase::baseChildrenBackends() const
+{
+   return m_lBaseChildren;
+}
 
 
-template <class T> bool AbstractItemBackendInterface<T>::clear()
+bool AbstractItemBackendBase::clear()
 {
    return false;
 }

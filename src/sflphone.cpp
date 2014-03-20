@@ -64,6 +64,9 @@
 #include "lib/videomodel.h"
 #include "lib/phonenumber.h"
 #include "lib/contactmodel.h"
+#include "lib/itembackendmodel.h"
+#include "lib/visitors/itemmodelstateserializationvisitor.h"
+#include "klib/itemmodelserialization.h"
 
 //sflphone
 #include "accountwizard.h"
@@ -155,6 +158,8 @@ SFLPhone::SFLPhone(QWidget *parent)
          ConfigurationSkeleton::self()->writeConfig();
       }
       NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
+      ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
+      ContactModel::instance()->backendModel()->load();
       InstantMessagingModelManager::init();
       AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO

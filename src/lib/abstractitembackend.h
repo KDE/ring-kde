@@ -32,10 +32,10 @@ class Contact;
 class Account;
 class Call   ;
 
-///AbstractItemBackendInterface: Allow different way to handle contact without poluting the library
-template <class T> class LIB_EXPORT AbstractItemBackendInterface
-{
+class LIB_EXPORT AbstractItemBackendBase {
 public:
+   virtual ~AbstractItemBackendBase(){}
+
    enum SupportedFeatures {
       NONE        = 0x0      ,
       LOAD        = 0x1 <<  0, /* Load this backend, DO NOT load anything before "load" is called         */
@@ -53,22 +53,35 @@ public:
       MANAGEABLE  = 0x1 << 12, /* Can be managed the the config GUI                                       */
    };
 
-   explicit AbstractItemBackendInterface(AbstractItemBackendInterface<T>* parent = nullptr);
-   virtual ~AbstractItemBackendInterface() {}
-
    //Management methods
    virtual QString name () const =0;
    virtual QVariant icon() const =0;
    virtual bool isEnabled() const = 0;
    virtual bool enabled (bool){return false;};
+   virtual QByteArray  id() const = 0;
+
+   virtual SupportedFeatures  supportedFeatures() const = 0;
 
    virtual bool load()   = 0;
    virtual bool reload() = 0;
    virtual bool clear();
+
+   QVector<AbstractItemBackendBase*> baseChildrenBackends() const;
+protected:
+   QVector<AbstractItemBackendBase*> m_lBaseChildren;
+};
+
+///AbstractItemBackendInterface: Allow different way to handle contact without poluting the library
+template <class T> class LIB_EXPORT AbstractItemBackendInterface : public AbstractItemBackendBase
+{
+public:
+
+   explicit AbstractItemBackendInterface(AbstractItemBackendInterface<T>* parent = nullptr);
+   virtual ~AbstractItemBackendInterface() {}
+
    virtual bool save(const T* item) =0;
    virtual bool append(const T* item) =0;
    virtual bool batchSave(const QList<T*> contacts);
-   virtual SupportedFeatures  supportedFeatures() const = 0;
 
    ///Edit 'item', the implementation may be a GUI or something else
    virtual bool        edit       ( T*       item     ) = 0;
@@ -136,6 +149,7 @@ template <class T> QVector<AbstractItemBackendInterface<T>*> AbstractItemBackend
 template <class T> void AbstractItemBackendInterface<T>::addChildren(AbstractItemBackendInterface<T>* c)
 {
    m_lChildren << c;
+   m_lBaseChildren << c;
 }
 
 

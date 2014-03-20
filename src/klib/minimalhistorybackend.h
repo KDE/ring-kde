@@ -36,6 +36,7 @@ public:
    virtual QString name () const;
    virtual QVariant icon() const;
    virtual bool isEnabled() const;
+   virtual QByteArray  id() const;
 
    virtual SupportedFeatures  supportedFeatures() const;
 

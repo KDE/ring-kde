@@ -145,6 +145,11 @@ bool AkonadiBackend::reload()
    return false;
 }
 
+QByteArray AkonadiBackend::id() const
+{
+   return QString::number(m_Coll.id()).toAscii();
+}
+
 AbstractContactBackend::SupportedFeatures AkonadiBackend::supportedFeatures() const
 {
    return (AbstractContactBackend::SupportedFeatures) (

@@ -18,10 +18,12 @@
 #include "itembackendmodel.h"
 
 #include "commonbackendmanagerinterface.h"
+#include "visitors/itemmodelstateserializationvisitor.h"
 
 CommonItemBackendModel::CommonItemBackendModel(QObject* parent) : QAbstractItemModel(parent)
 {
    connect(ContactModel::instance(),SIGNAL(newBackendAdded(AbstractContactBackend*)),this,SLOT(slotUpdate()));
+   load();
 }
 
 CommonItemBackendModel::~CommonItemBackendModel()
@@ -33,7 +35,7 @@ CommonItemBackendModel::~CommonItemBackendModel()
          //FIXME I don't think it can currently happen, but there may be
          //more than 2 levels.
          ProxyItem* item2 = item->m_Children[0];
-         item2->m_Children.remove(0);
+         item->m_Children.remove(0);
          delete item2;
       }
       delete item;
@@ -51,8 +53,12 @@ QVariant CommonItemBackendModel::data (const QModelIndex& idx, int role) const
          case Qt::DecorationRole:
             return item->backend->icon();
             break;
-         case Qt::CheckStateRole:
-            return item->backend->isEnabled()?Qt::Checked:Qt::Unchecked;
+//          case Qt::CheckStateRole:
+//             return item->backend->isEnabled()?Qt::Checked:Qt::Unchecked;
+         case Qt::CheckStateRole: {
+            if (ItemModelStateSerializationVisitor::instance())
+               return ItemModelStateSerializationVisitor::instance()->isChecked(item->backend)?Qt::Checked:Qt::Unchecked;
+         }
       };
    }
    //else {
@@ -101,6 +107,13 @@ bool CommonItemBackendModel::setData (const QModelIndex& index, const QVariant &
    Q_UNUSED(index)
    Q_UNUSED(value)
    Q_UNUSED(role)
+   if (role == Qt::CheckStateRole) {
+      ProxyItem* item = static_cast<ProxyItem*>(index.internalPointer());
+      if (item) {
+         ItemModelStateSerializationVisitor::instance()->setChecked(item->backend,value==Qt::Checked);
+         return true;
+      }
+   }
    return false;
 }
 
@@ -158,4 +171,20 @@ QVariant CommonItemBackendModel::headerData(int section, Qt::Orientation orienta
    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
       return QVariant(tr("Name"));
    return QVariant();
+}
+
+bool CommonItemBackendModel::save()
+{
+   if (ItemModelStateSerializationVisitor::instance()) {
+      return ItemModelStateSerializationVisitor::instance()->save();
+   }
+   return false;
+}
+
+bool CommonItemBackendModel::load()
+{
+   if (ItemModelStateSerializationVisitor::instance()) {
+      return ItemModelStateSerializationVisitor::instance()->load();
+   }
+   return false;
 }

@@ -56,6 +56,7 @@ DlgAddressBook::~DlgAddressBook()
 void DlgAddressBook::updateWidgets()
 {
    AkonadiContactCollectionModel::instance()->reload();
+   ContactModel::instance()->backendModel()->load();
 }
 
 ///Save the settings
@@ -63,6 +64,7 @@ void DlgAddressBook::updateSettings()
 {
    NumberCategoryModel::instance()->save();
    AkonadiContactCollectionModel::instance()->save();
+   ContactModel::instance()->backendModel()->save();
    m_HasChanged = false;
 }
 

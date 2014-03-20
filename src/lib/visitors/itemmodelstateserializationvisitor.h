@@ -15,52 +15,32 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef TRANSITIONAL_CONTACT_BACKEND
-#define TRANSITIONAL_CONTACT_BACKEND
 
-#include "abstractitembackend.h"
+#ifndef ITEMMODELSTATESERIALIZATIONVISITOR_H
+#define ITEMMODELSTATESERIALIZATIONVISITOR_H
 
-#include "typedefs.h"
+#include "../typedefs.h"
+class AbstractItemBackendBase;
+class Account;
 
-///Contact backend for new unsaved contacts
-class LIB_EXPORT TransitionalContactBackend : public AbstractContactBackend {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-   Q_OBJECT
-   #pragma GCC diagnostic pop
+///SFLPhonelib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
+class LIB_EXPORT ItemModelStateSerializationVisitor {
 public:
+   virtual bool save() = 0;
+   virtual bool load() = 0;
+   virtual ~ItemModelStateSerializationVisitor() {}
 
-   virtual ~TransitionalContactBackend();
+   static void setInstance(ItemModelStateSerializationVisitor* i);
+   static ItemModelStateSerializationVisitor* instance();
 
-   virtual bool load();
-   virtual bool reload();
-   virtual bool append(const Contact* item);
-   virtual bool save(const Contact* contact);
-   virtual bool isEnabled() const;
+   //Getter
+   virtual bool isChecked(AbstractItemBackendBase* backend) const = 0;
 
-   virtual QString name () const;
-   virtual QVariant icon() const;
-
-   virtual QByteArray  id() const;
-
-   ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual bool        edit       ( Contact*       contact     );
-   ///Add a new contact to the backend
-   virtual bool        addNew     ( Contact*       contact     );
-
-   ///Add a new phone number to an existing contact
-   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number );
-
-   SupportedFeatures supportedFeatures() const;
-
-   //Singleton
-   static AbstractContactBackend* instance();
+   //Setter
+   virtual bool setChecked(AbstractItemBackendBase* backend, bool enabled) = 0;
 
 private:
-   explicit TransitionalContactBackend(QObject* parent = nullptr);
-   static AbstractContactBackend* m_spInstance;
-
+   static ItemModelStateSerializationVisitor* m_spInstance;
 };
-
 
 #endif

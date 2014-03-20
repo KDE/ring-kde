@@ -61,6 +61,7 @@ public:
    virtual QVariant icon() const;
    virtual bool isEnabled() const;
    virtual bool enabled (bool enable);
+   virtual QByteArray  id() const;
 
    virtual bool     edit   ( Contact*   contact                                                 );
    virtual bool     addNew ( Contact*   contact                                                 );
