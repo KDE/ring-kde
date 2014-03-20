@@ -39,6 +39,7 @@
 #include <akonadi/contact/contacteditordialog.h>
 #include <akonadi/session.h>
 #include <akonadi/monitor.h>
+#include <akonadi/entitydisplayattribute.h>
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
@@ -82,11 +83,18 @@ AkonadiBackend::~AkonadiBackend()
 
 QString AkonadiBackend::name () const
 {
-   return m_Coll.name();
+   QString name;
+   Akonadi::EntityDisplayAttribute* attr = m_Coll.attribute<Akonadi::EntityDisplayAttribute>();
+   if (attr)
+      name = attr->displayName().trimmed();
+   return name.isEmpty()?m_Coll.name():name;
 }
 
 QVariant AkonadiBackend::icon() const
 {
+   Akonadi::EntityDisplayAttribute* attr = m_Coll.attribute<Akonadi::EntityDisplayAttribute>();
+   if (attr)
+      return QVariant(attr->icon());
    return QVariant();
 }
 

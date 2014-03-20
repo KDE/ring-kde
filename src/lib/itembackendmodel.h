@@ -42,6 +42,8 @@ public:
    virtual bool setData (const QModelIndex& index, const QVariant &value, int role );
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
+   virtual QVariant      headerData(int section, Qt::Orientation orientation, int role) const;
+
 private Q_SLOTS:
    void slotUpdate();
 

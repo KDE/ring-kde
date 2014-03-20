@@ -137,11 +137,9 @@ QModelIndex CommonItemBackendModel::index( int row, int column, const QModelInde
       if (row < m_lTopLevelBackends.size())
          item = m_lTopLevelBackends[row];
       else {
-         qDebug() << "C3" << item;
          item = new ProxyItem();
          item->backend = ContactModel::instance()->backends()[row];
          const_cast<CommonItemBackendModel*>(this)->m_lTopLevelBackends << item;
-         qDebug() << "DANS IF";
       }
       item->row = row;
       item->col = column;
@@ -152,4 +150,12 @@ QModelIndex CommonItemBackendModel::index( int row, int column, const QModelInde
 void CommonItemBackendModel::slotUpdate()
 {
    emit layoutChanged();
+}
+
+QVariant CommonItemBackendModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+   Q_UNUSED(section)
+   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+      return QVariant(tr("Name"));
+   return QVariant();
 }
