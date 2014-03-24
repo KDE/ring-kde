@@ -26,6 +26,7 @@
 
 #include "videowidget3.h"
 #include "videoscene.h"
+#include "videotoolbar.h"
 
 class VideoWidgetItem : public QWidgetItem {
 public:
@@ -56,6 +57,9 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
 //    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),2,0);
    setWidget(wdg);
    setMinimumSize(320,240);
+
+   VideoToolbar* tb = new VideoToolbar(this);
+   l->addWidget(tb,2,0);
 }
 
 ///Set current renderer

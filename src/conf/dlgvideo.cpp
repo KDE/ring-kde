@@ -51,7 +51,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 
    m_pConfGB->setEnabled(devices.size());
 
-   if (devices.size())
+   if (devices.size() && devices[0])
       loadDevice(devices[0]->id());
 
    if (VideoModel::instance()->isPreviewing()) {
@@ -165,7 +165,9 @@ void DlgVideo::updateWidgets ()
    const QList<VideoDevice*> devices =  VideoModel::instance()->devices();
    m_pDeviceCB->clear();
    foreach(VideoDevice* dev,devices) {
-      m_pDeviceCB->addItem(dev->id());
+      if (dev) {
+         m_pDeviceCB->addItem(dev->id());
+      }
    }
    m_pDeviceCB->setCurrentIndex(devices.indexOf(VideoModel::instance()->activeDevice()));
 }

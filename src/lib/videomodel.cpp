@@ -201,9 +201,11 @@ QList<VideoDevice*> VideoModel::devices()
          devicesHash[deviceName] = m_hDevices[deviceName];
    }
    foreach(VideoDevice* dev,m_hDevices) {
-      if (devicesHash.key(dev).isEmpty())
+      if (dev && devicesHash.key(dev).isEmpty()) {
          delete dev;
+      }
    }
+   m_hDevices.clear();
    m_hDevices = devicesHash;
    return m_hDevices.values();
 }

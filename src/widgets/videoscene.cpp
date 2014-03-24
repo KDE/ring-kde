@@ -30,7 +30,7 @@
 #endif
 
 VideoScene::VideoScene()
-   : m_backgroundColor(25, 25, 25),m_pToolbar(nullptr)
+   : m_backgroundColor(25, 25, 25)//,m_pToolbar(nullptr)
 {
 
 //    QPointF pos(10, 10);
@@ -142,14 +142,15 @@ void VideoScene::frameChanged()
    update();
 }
 
-void VideoScene::setToolbar(VideoToolbar* tb)
-{
-   m_pToolbar = tb;
-   addWidget(m_pToolbar);
-}
+// void VideoScene::setToolbar(VideoToolbar* tb)
+// {
+//    m_pToolbar = tb;
+//    addWidget(m_pToolbar);
+// }
 
 void VideoScene::addFrame(VideoGLFrame* frame)
 {
    m_lFrames << frame;
-   m_pToolbar->resizeToolbar();
+   qDebug() << "HERE";
+//    m_pToolbar->resizeToolbar();
 }

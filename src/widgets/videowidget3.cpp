@@ -59,12 +59,8 @@ VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
    m_pScene = new VideoScene();
    setScene(m_pScene);
 
-   VideoToolbar* tb = new VideoToolbar(nullptr);
-   tb->setForcedParent(this);
-   tb->show();
-   m_pScene->setToolbar(tb);
+//    m_pScene->setToolbar(tb);
    m_pScene->setSceneRect(0,0,width(),height());
-   tb->resizeToolbar();
 }
 
 VideoWidget3::~VideoWidget3()

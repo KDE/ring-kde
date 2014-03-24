@@ -111,6 +111,12 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_video_flip_vertical   ->setAltIcon(KIcon("object-flip-vertical"  ));
    action_video_mute            ->setAltIcon(KIcon("camera-web"            ));
    action_video_preview         ->setAltIcon(KIcon("view-preview"          ));
+   action_video_rotate_left     ->setIcon(KIcon("object-rotate-left"    ));
+   action_video_rotate_right    ->setIcon(KIcon("object-rotate-right"   ));
+   action_video_flip_horizontal ->setIcon(KIcon("object-flip-horizontal"));
+   action_video_flip_vertical   ->setIcon(KIcon("object-flip-vertical"  ));
+   action_video_mute            ->setIcon(KIcon("camera-web"            ));
+   action_video_preview         ->setIcon(KIcon("view-preview"          ));
    #endif
 }
 
