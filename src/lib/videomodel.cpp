@@ -159,8 +159,8 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
       emit previewStateChanged(false);
       emit previewStopped(r);
    }
+//    r->mutex()->lock();
    m_lRenderers[id] = nullptr;
-   r->mutex()->lock();
    delete r;
 }
 
@@ -173,6 +173,9 @@ void VideoModel::run()
 void VideoModel::setActiveDevice(const VideoDevice* device)
 {
    VideoInterface& interface = DBus::VideoManager::instance();
+   if (isPreviewing()) {
+      switchDevice(device);
+   }
    interface.setActiveDevice(device->id());
 }
 

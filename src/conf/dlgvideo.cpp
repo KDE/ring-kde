@@ -89,6 +89,7 @@ void DlgVideo::loadDevice(const QString& device)
          if (channel == curChan)
             m_pChannelCB->setCurrentIndex(m_pChannelCB->count()-1);
       }
+      VideoModel::instance()->setActiveDevice(m_pDevice);
    }
 }
 

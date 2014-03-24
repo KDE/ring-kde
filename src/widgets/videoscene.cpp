@@ -17,11 +17,13 @@
 
 #include "videoscene.h"
 #include <QtGui/QLabel>
+#include <QtCore/QMutex>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <GL/glu.h>
 
 #include "videoglframe.h"
 #include "videotoolbar.h"
+#include <lib/videorenderer.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -126,9 +128,11 @@ void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 
    event->accept();
    foreach(VideoGLFrame* frm, m_lFrames) {
-//    VideoGLFrame* frm = m_lFrames[0];
-   if (frm)
-      frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
+      if (frm) {
+//          frm->renderer()->mutex()->lock();
+         frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
+//          frm->renderer()->mutex()->unlock();
+      }
    }
    update();
 }

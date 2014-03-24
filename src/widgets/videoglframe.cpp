@@ -178,7 +178,8 @@ void ThreadedPainter2::draw(QPainter* p)
 
  VideoGLFrame::VideoGLFrame(QGLWidget *parent)
      : QObject(parent),m_pParent(parent),
-     m_pPainter(new ThreadedPainter2(this,parent))
+     m_pPainter(new ThreadedPainter2(this,parent)),
+     m_pRenderer(nullptr)
  {
 
 //    Should work, does not
@@ -234,6 +235,7 @@ void ThreadedPainter2::restoreGLState()
 ///Set widget renderer
 void VideoGLFrame::setRenderer(VideoRenderer* renderer)
 {
+   m_pRenderer = renderer;
 //    if (m_pPainter->m_pRenderer && m_pPainter->m_pRenderer->isRendering())
 //       m_pPainter->rendererStopped();
    QMutexLocker locker(&m_pPainter->mutex);
@@ -293,6 +295,7 @@ void VideoGLFrame::setRotX(float rot)
 
 void VideoGLFrame::setScale(float scale)
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    m_pPainter->scale = scale;
 }
 
@@ -323,6 +326,7 @@ float VideoGLFrame::rotX() const
 
 float VideoGLFrame::scale() const
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    return m_pPainter->scale;
 }
 

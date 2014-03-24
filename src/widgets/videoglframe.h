@@ -57,11 +57,15 @@ public:
    float rotY() const;
    float rotX() const;
    float scale() const;
+   VideoRenderer* renderer() const {
+      return m_pRenderer;
+   }
 
 private:
    //Attributes
    ThreadedPainter2* m_pPainter;
    QGLWidget* m_pParent;
+   VideoRenderer* m_pRenderer;
 
 public Q_SLOTS:
    void setRenderer(VideoRenderer* renderer = nullptr);
