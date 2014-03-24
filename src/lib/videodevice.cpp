@@ -50,7 +50,7 @@ const QString Resolution::toString() const
 
 
 ///Constructor
-VideoDevice::VideoDevice(const QString &id) : m_DeviceId(id)
+VideoDevice::VideoDevice(const QString &id) : QObject(nullptr), m_DeviceId(id)
 {
    
 }

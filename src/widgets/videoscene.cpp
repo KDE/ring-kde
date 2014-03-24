@@ -126,6 +126,8 @@ void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 
    event->accept();
    foreach(VideoGLFrame* frm, m_lFrames) {
+//    VideoGLFrame* frm = m_lFrames[0];
+   if (frm)
       frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
    }
    update();

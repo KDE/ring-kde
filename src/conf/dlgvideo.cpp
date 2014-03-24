@@ -43,6 +43,10 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    connect(m_pRateCB      ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(changeRate(QString))    );
    connect(m_pPreviewPB   ,SIGNAL(clicked())                   , this   , SLOT(startStopPreview())     );
    connect( this          ,SIGNAL(updateButtons())             , parent , SLOT(updateButtons())        );
+   connect(VideoModel::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(startStopPreview(bool))  );
+
+   connect(VideoModel::instance(),SIGNAL(previewStarted(VideoRenderer*)),m_pPreviewGV,SLOT(addRenderer(VideoRenderer*))   );
+   connect(VideoModel::instance(),SIGNAL(previewStopped(VideoRenderer*)),m_pPreviewGV,SLOT(removeRenderer(VideoRenderer*)));
 
 
    m_pConfGB->setEnabled(devices.size());
@@ -138,15 +142,22 @@ void DlgVideo::startStopPreview()
 {
    //TODO check if the preview is already running
    if (VideoModel::instance()->isPreviewing()) {
-      m_pPreviewPB->setText(i18n("Start preview"));
       VideoModel::instance()->stopPreview();
    }
    else {
-      m_pPreviewPB->setText(i18n("Stop preview"));
       VideoModel::instance()->startPreview();
    }
 }
 
+void DlgVideo::startStopPreview(bool state)
+{
+   if (state) {
+      m_pPreviewPB->setText(i18n("Stop preview"));
+   }
+   else {
+      m_pPreviewPB->setText(i18n("Start preview"));
+   }
+}
 
 void DlgVideo::updateWidgets ()
 {

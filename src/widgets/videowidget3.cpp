@@ -83,6 +83,12 @@ void VideoWidget3::addRenderer(VideoRenderer* renderer)
    }
 }
 
+void VideoWidget3::removeRenderer(VideoRenderer* renderer)
+{
+   Q_UNUSED(renderer)
+   //TODO
+}
+
 void VideoWidget3::resizeEvent(QResizeEvent* event)
 {
    m_pScene->setSceneRect(0,0,event->size().width(),event->size().height());

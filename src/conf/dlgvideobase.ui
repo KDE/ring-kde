@@ -109,7 +109,13 @@
     </widget>
    </item>
    <item>
-    <widget class="VideoWidget2" name="m_pPreviewGV" native="true">
+    <widget class="VideoWidget3" name="m_pPreviewGV" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>40</width>
@@ -125,19 +131,6 @@
      </property>
     </widget>
    </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>34</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -147,9 +140,9 @@
    <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>VideoWidget2</class>
+   <class>VideoWidget3</class>
    <extends>QWidget</extends>
-   <header>widgets/videowidget2.h</header>
+   <header>widgets/videowidget3.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

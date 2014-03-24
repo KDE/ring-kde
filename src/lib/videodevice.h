@@ -24,6 +24,9 @@
 #include <QStringList>
 #include <QtCore/QSize>
 
+//SFLPhone
+class VideoRenderer;
+
 ///@typedef VideoChannel A channel available in a Device
 typedef QString VideoChannel;
 
@@ -47,7 +50,8 @@ public:
 class VideoModel;
 
 ///VideoDevice: V4L devices used to record video for video call
-class LIB_EXPORT VideoDevice {
+class LIB_EXPORT VideoDevice : public QObject {
+   Q_OBJECT
    friend class VideoModel;
    public:
       //Getter
@@ -73,6 +77,10 @@ class LIB_EXPORT VideoDevice {
 
       //Attributes
       QString m_DeviceId;
-      static bool m_sInit;
+
+   signals:
+      void renderingStarted(VideoRenderer*);
+      void renderingStopped(VideoRenderer*);
+      void renderStateChanged(bool state);
 };
 #endif

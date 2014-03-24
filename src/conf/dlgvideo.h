@@ -50,6 +50,7 @@ private Q_SLOTS:
    void loadRate      ( const QString& resolution );
    void changeRate    ( const QString& rate       );
    void startStopPreview();
+   void startStopPreview(bool state);
 
 private:
    //Attribute

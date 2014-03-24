@@ -124,9 +124,18 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
    }
 
    m_lRenderers[id]->startRendering();
+   VideoDevice* dev = device(id);
+   if (dev) {
+      emit dev->renderingStarted(m_lRenderers[id]);
+   }
    if (id != "local") {
       qDebug() << "Starting video for call" << id;
       emit videoCallInitiated(m_lRenderers[id]);
+   }
+   else {
+      m_PreviewState = true;
+      emit previewStateChanged(true);
+      emit previewStarted(m_lRenderers[id]);
    }
 }
 
@@ -139,10 +148,20 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
       r->stopRendering();
    }
    qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
+//    emit videoStopped();
+   
+   VideoDevice* dev = device(id);
+   if (dev) {
+      emit dev->renderingStopped(r);
+   }
+   if (id == "local") {
+      m_PreviewState = false;
+      emit previewStateChanged(false);
+      emit previewStopped(r);
+   }
    m_lRenderers[id] = nullptr;
    r->mutex()->lock();
    delete r;
-   emit videoStopped();
 }
 
 void VideoModel::run()

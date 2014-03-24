@@ -83,11 +83,16 @@ private Q_SLOTS:
 
 Q_SIGNALS:
    ///Emitted when a new frame is ready
-   void frameUpdated();
+//    void frameUpdated();
    ///Emmitted when the video is stopped, before the framebuffer become invalid
-   void videoStopped();
+//    void videoStopped();
    ///Emmitted when a call make video available
    void videoCallInitiated(VideoRenderer*);
+   ///The preview started/stopped
+   void previewStateChanged(bool startStop);
+   void previewStarted(VideoRenderer* renderer);
+   void previewStopped(VideoRenderer* renderer);
+   
 };
 
 #endif

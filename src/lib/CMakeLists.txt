@@ -137,11 +137,11 @@ set( qtsflphone_LIB_HDRS
   transitionalcontactbackend.h
   abstractitembackend.h
   itembackendmodel.h
+  videodevice.h
   #commonbackendmanagerinterface.h
 )
 
 set( qtsflphone_extra_LIB_HDRS
-  videodevice.h
   typedefs.h
   sflphone_const.h
   visitors/accountlistcolorvisitor.h
