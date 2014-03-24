@@ -18,8 +18,6 @@
 #include "videodevice.h"
 #include "dbus/videomanager.h"
 
-QHash<QString,VideoDevice*> VideoDevice::m_slDevices;
-bool VideoDevice::m_sInit = false;
 
 Resolution::Resolution(uint _width, uint _height):QSize(_width,_height)
 {
@@ -60,54 +58,6 @@ VideoDevice::VideoDevice(const QString &id) : m_DeviceId(id)
 ///Destructor
 VideoDevice::~VideoDevice()
 {
-}
-
-///Get the video device list
-const QList<VideoDevice*> VideoDevice::deviceList()
-{
-   QHash<QString,VideoDevice*> devices;
-   VideoInterface& interface = DBus::VideoManager::instance();
-   const QStringList deviceList = interface.getDeviceList();
-   if (deviceList.size() == devices.size()) {
-      return m_slDevices.values();
-   }
-
-   foreach(const QString& deviceName,deviceList) {
-      if (!m_slDevices[deviceName])
-         devices[deviceName] = new VideoDevice(deviceName);
-      else
-         devices[deviceName] = m_slDevices[deviceName];
-   }
-   foreach(VideoDevice* dev,m_slDevices) {
-      if (devices.key(dev).isEmpty())
-         delete dev;
-   }
-   m_slDevices = devices;
-   return m_slDevices.values();
-}
-
-VideoDevice* VideoDevice::activeDevice()
-{
-   VideoInterface& interface = DBus::VideoManager::instance();
-   const QString deId = interface.getActiveDevice();
-   if (!deId.isEmpty() && !m_slDevices.size()) {
-      deviceList();
-   }
-   return m_slDevices[deId];
-}
-
-///Set the current active device
-void VideoDevice::setActiveDevice(const VideoDevice* device)
-{
-   VideoInterface& interface = DBus::VideoManager::instance();
-   interface.setActiveDevice(device->id());
-}
-
-///Return the device
-VideoDevice* VideoDevice::getDevice(const QString &name)
-{
-   if (!m_sInit) deviceList();
-   return m_slDevices[name];
 }
 
 ///Get the valid rates for this device

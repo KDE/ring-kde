@@ -45,10 +45,10 @@ public Q_SLOTS:
    void updateSettings();
 
 private Q_SLOTS:
-   void loadDevice    ( QString device     );
-   void loadResolution( QString channel    );
-   void loadRate      ( QString resolution );
-   void changeRate    ( QString rate       );
+   void loadDevice    ( const QString& device     );
+   void loadResolution( const QString& channel    );
+   void loadRate      ( const QString& resolution );
+   void changeRate    ( const QString& rate       );
    void startStopPreview();
 
 private:

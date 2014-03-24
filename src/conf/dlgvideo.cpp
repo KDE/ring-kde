@@ -35,7 +35,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 
    updateWidgets();
 
-   const QList<VideoDevice*> devices =  VideoDevice::deviceList();
+   const QList<VideoDevice*> devices =  VideoModel::instance()->devices();
 
    connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadDevice(QString))    );
    connect(m_pChannelCB   ,SIGNAL(currentIndexChanged(QString)), this   , SLOT(loadResolution(QString)));
@@ -70,15 +70,15 @@ bool DlgVideo::hasChanged()
 }
 
 ///Load the device list
-void DlgVideo::loadDevice(QString device)
+void DlgVideo::loadDevice(const QString& device)
 {
    if (!m_IsLoading) {
       m_IsChanged = true;
       emit updateButtons();
    }
-   m_pDevice = VideoDevice::getDevice(device);
-   const QString curChan = m_pDevice->channel();
+   m_pDevice = VideoModel::instance()->device(device);
    if (m_pDevice) {
+      const QString curChan = m_pDevice->channel();
       m_pChannelCB->clear();
       foreach(const VideoChannel& channel,m_pDevice->channelList()) {
          m_pChannelCB->addItem(channel);
@@ -89,7 +89,7 @@ void DlgVideo::loadDevice(QString device)
 }
 
 ///Load resolution
-void DlgVideo::loadResolution(QString channel)
+void DlgVideo::loadResolution(const QString& channel)
 {
    if (!m_IsLoading) {
       m_IsChanged = true;
@@ -107,7 +107,7 @@ void DlgVideo::loadResolution(QString channel)
 }
 
 ///Load the rate
-void DlgVideo::loadRate(QString resolution)
+void DlgVideo::loadRate(const QString& resolution)
 {
    if (!m_IsLoading) {
       m_IsChanged = true;
@@ -124,7 +124,7 @@ void DlgVideo::loadRate(QString resolution)
 }
 
 ///Changes the rate
-void DlgVideo::changeRate(QString rate)
+void DlgVideo::changeRate(const QString& rate)
 {
    if (!m_IsLoading) {
       m_IsChanged = true;
@@ -150,17 +150,17 @@ void DlgVideo::startStopPreview()
 
 void DlgVideo::updateWidgets ()
 {
-   const QList<VideoDevice*> devices =  VideoDevice::deviceList();
+   const QList<VideoDevice*> devices =  VideoModel::instance()->devices();
    m_pDeviceCB->clear();
    foreach(VideoDevice* dev,devices) {
       m_pDeviceCB->addItem(dev->id());
    }
-   m_pDeviceCB->setCurrentIndex(devices.indexOf(VideoDevice::activeDevice()));
+   m_pDeviceCB->setCurrentIndex(devices.indexOf(VideoModel::instance()->activeDevice()));
 }
 
 void DlgVideo::updateSettings()
 {
-   const QList<VideoDevice*> devices =  VideoDevice::deviceList();
-   VideoDevice::setActiveDevice(devices[m_pDeviceCB->currentIndex()]);
+   const QList<VideoDevice*> devices =  VideoModel::instance()->devices();
+   VideoModel::instance()->setActiveDevice(devices[m_pDeviceCB->currentIndex()]);
    m_IsChanged = false;
 }

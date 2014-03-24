@@ -36,6 +36,15 @@ VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_Pre
    connect( &interface , SIGNAL(stoppedDecoding(QString,QString))        , this, SLOT(stoppedDecoding(QString,QString))        );
 }
 
+
+VideoModel::~VideoModel()
+{
+   foreach(VideoDevice* dev, m_hDevices) {
+      delete dev;
+   }
+   m_hDevices.clear();
+}
+
 ///Singleton
 VideoModel* VideoModel::instance()
 {
@@ -139,4 +148,49 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
 void VideoModel::run()
 {
    exec();
+}
+
+
+void VideoModel::setActiveDevice(const VideoDevice* device)
+{
+   VideoInterface& interface = DBus::VideoManager::instance();
+   interface.setActiveDevice(device->id());
+}
+
+QList<VideoDevice*> VideoModel::devices()
+{
+   QHash<QString,VideoDevice*> devicesHash;
+   VideoInterface& interface = DBus::VideoManager::instance();
+   const QStringList deviceList = interface.getDeviceList();
+   if (deviceList.size() == m_hDevices.size()) {
+      return m_hDevices.values();
+   }
+
+   foreach(const QString& deviceName,deviceList) {
+      if (!m_hDevices[deviceName])
+         devicesHash[deviceName] = new VideoDevice(deviceName);
+      else
+         devicesHash[deviceName] = m_hDevices[deviceName];
+   }
+   foreach(VideoDevice* dev,m_hDevices) {
+      if (devicesHash.key(dev).isEmpty())
+         delete dev;
+   }
+   m_hDevices = devicesHash;
+   return m_hDevices.values();
+}
+
+VideoDevice* VideoModel::activeDevice() const
+{
+   VideoInterface& interface = DBus::VideoManager::instance();
+   const QString deId = interface.getActiveDevice();
+   if (!deId.isEmpty() && !m_hDevices.size()) {
+      const_cast<VideoModel*>(this)->devices();
+   }
+   return m_hDevices[deId];
+}
+
+VideoDevice* VideoModel::device(const QString &id)
+{
+   return m_hDevices[id];
 }

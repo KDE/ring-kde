@@ -28,6 +28,7 @@
 #include "videodevice.h"
 class VideoRenderer;
 class Call;
+class VideoDevices;
 struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
@@ -44,9 +45,13 @@ public:
    bool       isPreviewing       ();
    VideoRenderer* getRenderer(const Call* call) const;
    VideoRenderer* previewRenderer();
+   QList<VideoDevice*> devices();
+   VideoDevice* activeDevice() const;
+   VideoDevice* device(const QString &id);
 
    //Setters
-   void       setBufferSize(uint size);
+   void setBufferSize(uint size);
+   void setActiveDevice(const VideoDevice* device);
 
 protected:
    void run();
@@ -54,6 +59,7 @@ protected:
 private:
    //Constructor
    VideoModel();
+   ~VideoModel();
 
    //Static attributes
    static VideoModel* m_spInstance;
@@ -64,6 +70,7 @@ private:
    uint           m_ShmKey      ;
    uint           m_SemKey      ;
    QHash<QString,VideoRenderer*> m_lRenderers;
+   QHash<QString,VideoDevice*>   m_hDevices  ;
 
 public Q_SLOTS:
    void stopPreview ();

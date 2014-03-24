@@ -44,12 +44,12 @@ public:
 
 };
 
+class VideoModel;
+
 ///VideoDevice: V4L devices used to record video for video call
 class LIB_EXPORT VideoDevice {
+   friend class VideoModel;
    public:
-      //Singleton
-      static VideoDevice* getDevice(const QString &id);
-
       //Getter
       const QStringList         rateList(VideoChannel channel, Resolution resolution);
       const QList<Resolution>   resolutionList(VideoChannel channel);
@@ -60,16 +60,12 @@ class LIB_EXPORT VideoDevice {
       const QString             id          () const;
 
       //Static getter
-      static const QList<VideoDevice*> deviceList();
-      static VideoDevice* activeDevice();
 
       //Setter
       void setRate       ( VideoRate rate        );
       void setResolution ( Resolution resolution );
       void setChannel    ( VideoChannel channel  );
 
-      //Static setters
-      static void setActiveDevice(const VideoDevice* device);
    private:
       //Constructor
       explicit VideoDevice(const QString &id);
@@ -77,7 +73,6 @@ class LIB_EXPORT VideoDevice {
 
       //Attributes
       QString m_DeviceId;
-      static QHash<QString,VideoDevice*> m_slDevices;
       static bool m_sInit;
 };
 #endif
