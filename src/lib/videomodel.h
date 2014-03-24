@@ -28,7 +28,6 @@
 #include "videodevice.h"
 class VideoRenderer;
 class Call;
-class VideoDevices;
 struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
@@ -52,6 +51,7 @@ public:
    //Setters
    void setBufferSize(uint size);
    void setActiveDevice(const VideoDevice* device);
+   void switchDevice(const VideoDevice* device) const;
 
 protected:
    void run();

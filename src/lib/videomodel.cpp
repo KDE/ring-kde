@@ -157,6 +157,12 @@ void VideoModel::setActiveDevice(const VideoDevice* device)
    interface.setActiveDevice(device->id());
 }
 
+void VideoModel::switchDevice(const VideoDevice* device) const
+{
+   VideoInterface& interface = DBus::VideoManager::instance();
+   interface.switchInput(device->id());
+}
+
 QList<VideoDevice*> VideoModel::devices()
 {
    QHash<QString,VideoDevice*> devicesHash;

@@ -938,7 +938,7 @@ void Call::setStartTimeStamp(time_t stamp)
 }
 
 ///Send a text message
-void Call::sendTextMessage(QString message)
+void Call::sendTextMessage(const QString& message)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.sendTextMessage(isConference()?m_ConfId:m_CallId,message);

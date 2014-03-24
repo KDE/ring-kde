@@ -349,7 +349,7 @@ public:
    void appendText(const QString& str);
    void backspaceItemText();
    void reset();
-   void sendTextMessage(QString message);
+   void sendTextMessage(const QString& message);
 
 private:
 
