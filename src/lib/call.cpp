@@ -608,6 +608,17 @@ AbstractHistoryBackend* Call::backend() const
 }
 
 
+///Does this call currently has video
+bool Call::hasVideo() const
+{
+   #ifdef ENABLE_VIDEO
+   return VideoModel::instance()->getRenderer(this) != nullptr;
+   #else
+   return false;
+   #endif
+}
+
+
 ///Get the current state
 Call::State Call::state() const
 {

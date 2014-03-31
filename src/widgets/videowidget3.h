@@ -47,6 +47,9 @@ private:
 public Q_SLOTS:
    void addRenderer(VideoRenderer* renderer);
    void removeRenderer(VideoRenderer* renderer);
+   void slotRotateLeft();
+   void slotRotateRight();
+   void slotShowPreview();
 
 Q_SIGNALS:
    void changed();

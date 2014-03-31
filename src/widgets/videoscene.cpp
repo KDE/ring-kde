@@ -85,12 +85,13 @@ void VideoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
       update();
    }
    foreach(VideoGLFrame* frm, m_lFrames) {
-      const QPointF diff = event->pos() - frm->anchor();
+//       const QPointF diff = event->pos() - frm->anchor();
       if (event->buttons() & Qt::LeftButton) {
-         frm->setRotX(frm->rotX()+diff.y()/5.0f);
-         frm->setRotY(frm->rotY()+diff.x()/5.0f);
-      } else if (event->buttons() & Qt::RightButton) {
-         frm->setRotZ(frm->rotZ()+diff.x()/5.0f);
+         
+         frm->setRotZ(frm->rotZ()+1);
+//          frm->setRotY(frm->rotY()+1/5.0f);
+//       } else if (event->buttons() & Qt::RightButton) {
+//          frm->setRotZ(frm->rotZ()+diff.x()/5.0f);
       }
 
       frm->setAnchor(event->pos());
@@ -126,15 +127,15 @@ void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
    if (event->isAccepted())
       return;
 
-   event->accept();
-   foreach(VideoGLFrame* frm, m_lFrames) {
-      if (frm) {
+//    event->accept();
+//    foreach(VideoGLFrame* frm, m_lFrames) {
+//       if (frm) {
 //          frm->renderer()->mutex()->lock();
-         frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
+//          frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
 //          frm->renderer()->mutex()->unlock();
-      }
-   }
-   update();
+//       }
+//    }
+//    update();
 }
 
 void VideoScene::frameChanged()
@@ -151,6 +152,26 @@ void VideoScene::frameChanged()
 void VideoScene::addFrame(VideoGLFrame* frame)
 {
    m_lFrames << frame;
-   qDebug() << "HERE";
 //    m_pToolbar->resizeToolbar();
 }
+
+
+void VideoScene::slotRotateLeft()
+{
+   foreach(VideoGLFrame* frm, m_lFrames) {
+      frm->setRotZ(frm->rotZ()-90);
+   }
+}
+
+void VideoScene::slotRotateRight()
+{
+   foreach(VideoGLFrame* frm, m_lFrames) {
+      frm->setRotZ(frm->rotZ()+90);
+   }
+}
+
+void VideoScene::slotShowPreview()
+{
+   
+}
+

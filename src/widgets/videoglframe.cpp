@@ -155,6 +155,7 @@ void ThreadedPainter2::draw(QPainter* p)
       glEnable(GL_MULTISAMPLE);
       glEnable(GL_CULL_FACE);
       glScalef(-1.0f*scale, -1.0f*scale, 1.0f*scale);
+
       glRotatef(rot_x, 1.0f, 0.0f, 0.0f);
       glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
       glRotatef(rot_z, 0.0f, 0.0f, 1.0f);
@@ -276,6 +277,7 @@ void VideoGLFrame::setRotZ(float rot)
 
 void VideoGLFrame::setRotY(float rot)
 {
+   qDebug() << "HERE" << this << rot << m_pPainter;
    m_pPainter->rot_y = rot;
 }
 

@@ -55,6 +55,9 @@ private:
 public Q_SLOTS:
    void setBackgroundColor();
    void frameChanged      ();
+   void slotRotateLeft();
+   void slotRotateRight();
+   void slotShowPreview();
 };
 
 #endif

@@ -89,3 +89,21 @@ void VideoWidget3::resizeEvent(QResizeEvent* event)
 {
    m_pScene->setSceneRect(0,0,event->size().width(),event->size().height());
 }
+
+
+
+void VideoWidget3::slotRotateLeft()
+{
+   m_pScene->slotRotateLeft();
+}
+
+void VideoWidget3::slotRotateRight()
+{
+   m_pScene->slotRotateRight();
+}
+
+void VideoWidget3::slotShowPreview()
+{
+   m_pScene->slotShowPreview();
+}
+

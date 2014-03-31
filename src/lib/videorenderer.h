@@ -20,6 +20,7 @@
 
 //Base
 #include <QtCore/QObject>
+#include <QtCore/QTime>
 #include "typedefs.h"
 #include <time.h>
 
@@ -49,11 +50,12 @@ class LIB_EXPORT VideoRenderer : public QObject {
       bool startShm ();
 
       //Getters
-      const char* rawData         ();
-      bool        isRendering     ();
-      QByteArray  currentFrame    ();
-      Resolution  activeResolution();
-      QMutex*     mutex           ();
+      const char* rawData         ()      ;
+      bool        isRendering     ()      ;
+      QByteArray  currentFrame    ()      ;
+      Resolution  activeResolution()      ;
+      QMutex*     mutex           ()      ;
+      int         fps             () const;
 
       //Setters
       void setResolution(QSize   size);
@@ -76,6 +78,9 @@ class LIB_EXPORT VideoRenderer : public QObject {
       QMutex*    m_pMutex     ;
       QMutex*    m_pSSMutex   ;
       QString    m_Id         ;
+      int        m_fpsC       ;
+      int        m_Fps        ;
+      QTime      m_CurrentTime;
 
       //Constants
       static const int TIMEOUT_SEC = 1; // 1 second

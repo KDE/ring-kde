@@ -279,6 +279,7 @@ public:
    Q_PROPERTY( QString            toHumanStateName READ toHumanStateName                          )
    Q_PROPERTY( bool               missed           READ isMissed                                  )
    Q_PROPERTY( Direction          direction        READ direction                                 )
+   Q_PROPERTY( bool               hasVideo         READ hasVideo                                  )
    Q_PROPERTY( Call::LegacyHistoryState historyState     READ historyState                        )
 
    //Read/write properties
@@ -329,6 +330,7 @@ public:
    bool                     isMissed         () const;
    Call::Direction          direction        () const;
    AbstractHistoryBackend*  backend          () const;
+   bool                     hasVideo         () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);

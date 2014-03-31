@@ -27,6 +27,8 @@
 #include "videowidget3.h"
 #include "videoscene.h"
 #include "videotoolbar.h"
+#include "actioncollection.h"
+#include "extendedaction.h"
 
 class VideoWidgetItem : public QWidgetItem {
 public:
@@ -60,6 +62,10 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
 
    VideoToolbar* tb = new VideoToolbar(this);
    l->addWidget(tb,2,0);
+
+   connect(ActionCollection::instance()->videoRotateLeftAction() ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateLeft()));
+   connect(ActionCollection::instance()->videoRotateRightAction(),SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateRight()));
+   connect(ActionCollection::instance()->videoPreviewAction()    ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotShowPreview()));
 }
 
 ///Set current renderer

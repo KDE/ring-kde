@@ -29,8 +29,7 @@
 #include <sys/mman.h>
 #include <semaphore.h>
 #include <errno.h>
-// #include <linux/time.h>
-#include <time.h>
+
 
 #ifndef CLOCK_REALTIME
 #define CLOCK_REALTIME 0
@@ -265,6 +264,15 @@ void VideoRenderer::timedEvents()
    bool ok = renderToBitmap();
 
    if (ok == true) {
+
+      //Compute the FPS shown to the client
+      if (m_CurrentTime.second() != QTime::currentTime().second()) {
+         m_Fps = m_fpsC;
+         m_fpsC=0;
+         m_CurrentTime = QTime::currentTime();
+      }
+      m_fpsC++;
+
       emit frameUpdated();
    }
    else {
@@ -347,6 +355,12 @@ Resolution VideoRenderer::activeResolution()
 QMutex* VideoRenderer::mutex()
 {
    return m_pMutex;
+}
+
+///Get the current frame rate of this renderer
+int VideoRenderer::fps() const
+{
+   return m_Fps;
 }
 
 
