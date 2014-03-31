@@ -31,6 +31,8 @@
 #include <lib/videomodel.h>
 #include "videoscene.h"
 #include "videotoolbar.h"
+#include "actioncollection.h"
+#include "extendedaction.h"
 
 
 #ifndef GL_MULTISAMPLE
@@ -122,6 +124,17 @@ void VideoWidget3::slotShowPreview(bool show)
    else {
       qDebug() << "hide";
       removeRenderer(VideoModel::instance()->previewRenderer());
+   }
+}
+
+void VideoWidget3::slotMuteOutgoindVideo(bool mute)
+{
+   if (VideoModel::instance()->isPreviewing() && mute)
+      VideoModel::instance()->stopPreview();
+   else {
+      VideoModel::instance()->startPreview();
+      if (ActionCollection::instance()->videoPreviewAction()->isChecked())
+         slotShowPreview(true);
    }
 }
 

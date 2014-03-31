@@ -54,6 +54,7 @@ public Q_SLOTS:
    void slotRotateLeft();
    void slotRotateRight();
    void slotShowPreview(bool show);
+   void slotMuteOutgoindVideo(bool mute);
 
 Q_SIGNALS:
    void changed();

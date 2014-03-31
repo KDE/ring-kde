@@ -178,6 +178,6 @@ void VideoScene::slotRotateRight()
 
 void VideoScene::slotShowPreview()
 {
-  
+   
 }
 

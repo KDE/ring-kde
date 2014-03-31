@@ -118,6 +118,7 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_video_mute            ->setIcon(KIcon("camera-web"            ));
    action_video_preview         ->setIcon(KIcon("view-preview"          ));
    action_video_preview         ->setCheckable(true);
+   action_video_mute            ->setCheckable(true);
    #endif
 }
 
