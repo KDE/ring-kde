@@ -48,6 +48,9 @@ public:
    void setRotZ(float rot);
    void setRotY(float rot);
    void setRotX(float rot);
+   void setTranslationZ(float tra);
+   void setTranslationY(float tra);
+   void setTranslationX(float tra);
    void setScale(float scale);
    void setAnchor(const QPointF& point);
 

@@ -19,6 +19,8 @@
 #define VIDEOWIDGET3_H
 
 #include <QtGui/QGraphicsView>
+#include "videoglframe.h"
+#include <lib/videorenderer.h>
 
 //Qt
 class QGLWidget;
@@ -26,6 +28,7 @@ class QGLWidget;
 //SFLPhone
 class VideoRenderer;
 class VideoScene;
+class VideoGLFrame;
 
 class VideoWidget3 : public QGraphicsView
 {
@@ -43,13 +46,14 @@ protected:
 private:
    VideoScene*          m_pScene  ;
    QGLWidget*           m_pWdg    ;
+   QHash<VideoRenderer*,VideoGLFrame*> m_hFrames;
 
 public Q_SLOTS:
    void addRenderer(VideoRenderer* renderer);
    void removeRenderer(VideoRenderer* renderer);
    void slotRotateLeft();
    void slotRotateRight();
-   void slotShowPreview();
+   void slotShowPreview(bool show);
 
 Q_SIGNALS:
    void changed();

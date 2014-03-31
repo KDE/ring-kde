@@ -28,10 +28,8 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/videorenderer.h>
 #include <lib/videomodel.h>
 #include "videoscene.h"
-#include "videoglframe.h"
 #include "videotoolbar.h"
 
 
@@ -71,18 +69,24 @@ VideoWidget3::~VideoWidget3()
 void VideoWidget3::addRenderer(VideoRenderer* renderer)
 {
    m_pWdg->makeCurrent();
+   if (m_hFrames[renderer]) {
+      m_pScene->addFrame(m_hFrames[renderer]);
+      return;
+   }
    if (renderer) {
+      qDebug() << "NEW";
       VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
       frm->setRenderer(renderer);
       connect(frm,SIGNAL(changed()),m_pScene,SLOT(frameChanged()));
       m_pScene->addFrame(frm);
+      m_hFrames[renderer] = frm;
    }
 }
 
 void VideoWidget3::removeRenderer(VideoRenderer* renderer)
 {
    Q_UNUSED(renderer)
-   //TODO
+   m_pScene->removeFrame(m_hFrames[renderer]);
 }
 
 void VideoWidget3::resizeEvent(QResizeEvent* event)
@@ -102,8 +106,22 @@ void VideoWidget3::slotRotateRight()
    m_pScene->slotRotateRight();
 }
 
-void VideoWidget3::slotShowPreview()
+void VideoWidget3::slotShowPreview(bool show)
 {
-   m_pScene->slotShowPreview();
+   if (VideoModel::instance()->isPreviewing() && show) {
+      qDebug() << "show";
+      addRenderer(VideoModel::instance()->previewRenderer());
+      VideoGLFrame* frm = m_hFrames[VideoModel::instance()->previewRenderer()];
+      if (frm) {
+         frm->setScale(0.3);
+         frm->setTranslationX(1.8);
+         frm->setTranslationY(1.8);
+//          frm->setRotY(60);
+      }
+   }
+   else {
+      qDebug() << "hide";
+      removeRenderer(VideoModel::instance()->previewRenderer());
+   }
 }
 

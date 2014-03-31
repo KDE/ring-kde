@@ -50,6 +50,7 @@ public:
    QPointF anchor;
    float scale;
    float rot_x, rot_y, rot_z;
+   float tra_x, tra_y, tra_z;
    GLuint tile_list;
    bool isRendering;
 
@@ -79,7 +80,7 @@ Q_SIGNALS:
 
 ThreadedPainter2::ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
    m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false),m_pFrm(frm),
-   m_Data(nullptr),tile_list(0)
+   m_Data(nullptr),tile_list(0),tra_x(0.0f), tra_y(0.0f), tra_z(0.0f)
 {
 }
 
@@ -138,7 +139,7 @@ void ThreadedPainter2::draw(QPainter* p)
          gluBuild2DMipmaps(GL_TEXTURE_2D, 4, m_ActiveSize.width(), m_ActiveSize.height(), GL_BGRA, GL_UNSIGNED_BYTE, m_Data);
 
       // draw into the GL widget
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glFrustum(-1, 1, -1, 1, 10, 100);
@@ -160,9 +161,12 @@ void ThreadedPainter2::draw(QPainter* p)
       glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
       glRotatef(rot_z, 0.0f, 0.0f, 1.0f);
 
+
+
       // draw background
       glPushMatrix();
       glScalef(1.7f, 1.7f, 1.7f);
+      glTranslatef(tra_x, tra_y, tra_z);
       glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
       glCallList(tile_list);
       glPopMatrix();
@@ -277,7 +281,6 @@ void VideoGLFrame::setRotZ(float rot)
 
 void VideoGLFrame::setRotY(float rot)
 {
-   qDebug() << "HERE" << this << rot << m_pPainter;
    m_pPainter->rot_y = rot;
 }
 
@@ -285,6 +288,22 @@ void VideoGLFrame::setRotX(float rot)
 {
    m_pPainter->rot_x = rot;
 }
+
+void VideoGLFrame::setTranslationZ(float tra)
+{
+   m_pPainter->tra_z = tra;
+}
+
+void VideoGLFrame::setTranslationY(float tra)
+{
+   m_pPainter->tra_y = tra;
+}
+
+void VideoGLFrame::setTranslationX(float tra)
+{
+   m_pPainter->tra_x = tra;
+}
+
 
 void VideoGLFrame::setScale(float scale)
 {

@@ -117,6 +117,7 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_video_flip_vertical   ->setIcon(KIcon("object-flip-vertical"  ));
    action_video_mute            ->setIcon(KIcon("camera-web"            ));
    action_video_preview         ->setIcon(KIcon("view-preview"          ));
+   action_video_preview         ->setCheckable(true);
    #endif
 }
 
