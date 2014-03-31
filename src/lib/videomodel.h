@@ -28,6 +28,7 @@
 #include "videodevice.h"
 class VideoRenderer;
 class Call;
+class QMutex;
 struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
@@ -47,6 +48,7 @@ public:
    QList<VideoDevice*> devices();
    VideoDevice* activeDevice() const;
    VideoDevice* device(const QString &id);
+   QMutex* startStopMutex() const;
 
    //Setters
    void setBufferSize(uint size);
@@ -54,7 +56,7 @@ public:
    void switchDevice(const VideoDevice* device) const;
 
 protected:
-   void run();
+//    void run();
 
 private:
    //Constructor
@@ -69,6 +71,7 @@ private:
    uint           m_BufferSize  ;
    uint           m_ShmKey      ;
    uint           m_SemKey      ;
+   QMutex*        m_SSMutex     ;
    QHash<QString,VideoRenderer*> m_lRenderers;
    QHash<QString,VideoDevice*>   m_hDevices  ;
 

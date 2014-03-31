@@ -17,6 +17,9 @@
  ***************************************************************************/
 #include "videomodel.h"
 
+//Qt
+#include <QtCore/QMutex>
+
 //SFLPhone
 #include "dbus/videomanager.h"
 #include "videodevice.h"
@@ -28,7 +31,7 @@
 VideoModel* VideoModel::m_spInstance = nullptr;
 
 ///Constructor
-VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false)
+VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex())
 {
    VideoInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
@@ -164,10 +167,10 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
    delete r;
 }
 
-void VideoModel::run()
-{
-   exec();
-}
+// void VideoModel::run()
+// {
+//    exec();
+// }
 
 
 void VideoModel::setActiveDevice(const VideoDevice* device)
@@ -224,3 +227,9 @@ VideoDevice* VideoModel::device(const QString &id)
 {
    return m_hDevices[id];
 }
+
+QMutex* VideoModel::startStopMutex() const
+{
+   return m_SSMutex;
+}
+

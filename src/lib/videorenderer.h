@@ -70,9 +70,11 @@ class LIB_EXPORT VideoRenderer : public QObject {
       uint       m_BufferGen  ;
       bool       m_isRendering;
       QTimer*    m_pTimer     ;
-      QByteArray m_Frame      ;
+      QByteArray m_Frame[2]   ;
+      bool       m_FrameIdx   ;
       Resolution m_Res        ;
       QMutex*    m_pMutex     ;
+      QMutex*    m_pSSMutex   ;
       QString    m_Id         ;
 
       //Constants
@@ -82,7 +84,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
       timespec createTimeout();
       bool     shmLock      ();
       void     shmUnlock    ();
-      bool     renderToBitmap(QByteArray& data);
+      bool     renderToBitmap();
 
    private Q_SLOTS:
       void timedEvents();

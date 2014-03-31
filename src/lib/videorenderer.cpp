@@ -19,6 +19,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QMutex>
+#include <QtCore/QThread>
 
 #include <sys/ipc.h>
 #include <sys/sem.h>
@@ -36,6 +37,7 @@
 #endif
 
 #include <QtCore/QTimer>
+#include "videomodel.h"
 
 ///Shared memory object
 struct SHMHeader{
@@ -58,7 +60,7 @@ VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, Resoluti
    m_Width(res.width()), m_Height(res.height()), m_ShmPath(shmPath), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
    m_isRendering(false),m_pTimer(nullptr),m_Res(res),m_pMutex(new QMutex()),
-   m_Id(id)
+   m_Id(id),m_FrameIdx(false),m_pSSMutex(new QMutex())
 {
    setObjectName("VideoRenderer:"+id);
 }
@@ -71,7 +73,7 @@ VideoRenderer::~VideoRenderer()
 }
 
 ///Get the data from shared memory and transform it into a QByteArray
-bool VideoRenderer::renderToBitmap(QByteArray& data)
+bool VideoRenderer::renderToBitmap()
 {
 #ifdef Q_OS_LINUX
    if (!m_isRendering) {
@@ -86,7 +88,10 @@ bool VideoRenderer::renderToBitmap(QByteArray& data)
    while (m_BufferGen == m_pShmArea->m_BufferGen) {
       shmUnlock();
       const struct timespec timeout = createTimeout();
+      if(!VideoModel::instance()->startStopMutex()->tryLock())
+         return false;
       int err = sem_timedwait(&m_pShmArea->notification, &timeout);
+      VideoModel::instance()->startStopMutex()->unlock();
       // Useful for debugging
 //       switch (errno ) {
 //          case EINTR:
@@ -124,15 +129,17 @@ bool VideoRenderer::renderToBitmap(QByteArray& data)
       return false;
    }
 
-   if (data.size() != m_pShmArea->m_BufferSize)
-      data.resize(m_pShmArea->m_BufferSize);
-   memcpy(data.data(),m_pShmArea->m_Data,m_pShmArea->m_BufferSize);
+   bool otherFrame = ! m_FrameIdx;
+   if (m_Frame[otherFrame].size() != m_pShmArea->m_BufferSize)
+      m_Frame[otherFrame].resize(m_pShmArea->m_BufferSize);
+   memcpy(m_Frame[otherFrame].data(),m_pShmArea->m_Data,m_pShmArea->m_BufferSize);
    m_BufferGen = m_pShmArea->m_BufferGen;
    shmUnlock();
+   m_FrameIdx = !m_FrameIdx;
 //    return data;
+//    m_pSSMutex->unlock();
    return true;
 #else
-   Q_UNUSED(data)
    return false;
 #endif
 }
@@ -254,10 +261,9 @@ timespec VideoRenderer::createTimeout()
 ///Update the buffer
 void VideoRenderer::timedEvents()
 {
-   m_pMutex->lock();
 
-   bool ok = renderToBitmap(m_Frame);
-   m_pMutex->unlock();
+   bool ok = renderToBitmap();
+
    if (ok == true) {
       emit frameUpdated();
    }
@@ -270,20 +276,32 @@ void VideoRenderer::timedEvents()
 ///Start the rendering loop
 void VideoRenderer::startRendering()
 {
+   VideoModel::instance()->startStopMutex()->lock();
    QMutexLocker locker(m_pMutex);
    startShm();
    if (!m_pTimer) {
-      m_pTimer = new QTimer(this);
+      m_pTimer = new QTimer(nullptr);
+
+//       m_pTimer->moveToThread(thread());
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timedEvents()));
-      m_pTimer->setInterval(42);
+      m_pTimer->setInterval(30);
    }
-   m_pTimer->start();
+
+   if (!m_pTimer->isActive()) {
+      qDebug() << "Is running" << thread()->isRunning();
+      m_pTimer->start();
+   }
+   else
+      qDebug() << "Timer already started!";
+
    m_isRendering = true;
+   VideoModel::instance()->startStopMutex()->unlock();
 }
 
 ///Stop the rendering loop
 void VideoRenderer::stopRendering()
 {
+   VideoModel::instance()->startStopMutex()->lock();
    QMutexLocker locker(m_pMutex);
    m_isRendering = false;
    qDebug() << "Stopping rendering on" << m_Id;
@@ -291,8 +309,7 @@ void VideoRenderer::stopRendering()
       m_pTimer->stop();
    emit stopped();
    stopShm();
-   //qDebug() << "Video stopped for call" << id;
-   //emit videoStopped();
+   VideoModel::instance()->startStopMutex()->unlock();
 }
 
 
@@ -305,7 +322,7 @@ void VideoRenderer::stopRendering()
 ///Get the raw bytes directly from the SHM, not recommended, but optimal
 const char* VideoRenderer::rawData()
 {
-   return m_isRendering?m_Frame.data():nullptr;
+   return m_isRendering?m_Frame[m_FrameIdx].data():nullptr;
 }
 
 ///Is this redenrer active
@@ -317,7 +334,7 @@ bool VideoRenderer::isRendering()
 ///Return the current framerate
 QByteArray VideoRenderer::currentFrame()
 {
-   return m_Frame;
+   return m_Frame[m_FrameIdx];
 }
 
 ///Return the current resolution

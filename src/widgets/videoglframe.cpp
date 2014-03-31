@@ -106,10 +106,9 @@ void ThreadedPainter2::copyFrame()
    if (m_pRenderer) {
       m_pRenderer->mutex()->lock();
       const QByteArray raw = m_pRenderer->currentFrame();
-      if (m_Data)
-         free(m_Data);
-      m_Data = (char*)malloc(raw.size()*sizeof(char));
-      memcpy(m_Data,raw.data(),raw.size());
+      if (!m_Data)
+         m_Data = (char*)malloc(raw.size()*sizeof(char));
+      m_Data = (char*)raw.data();
       m_ActiveSize = m_pRenderer->activeResolution();
       m_pRenderer->mutex()->unlock();
       emit changed();
@@ -120,8 +119,6 @@ void ThreadedPainter2::draw(QPainter* p)
 {
    Q_UNUSED(p)
    if (m_pRenderer && isRendering) {
-//       QMutexLocker locker(&mutex);
-//       m_pRenderer->mutex()->lock();
 
       // save the GL state set for QPainter
       saveGLState();
@@ -181,12 +178,6 @@ void ThreadedPainter2::draw(QPainter* p)
      m_pPainter(new ThreadedPainter2(this,parent)),
      m_pRenderer(nullptr)
  {
-
-//    Should work, does not
-//    QThread* t = new QThread(this);
-//    connect(t, SIGNAL(started()), m_pPainter, SLOT(rendererStarted()));
-//    m_pPainter->moveToThread(t);
-//    t->start();
    connect(m_pPainter,SIGNAL(changed()),this,SLOT(slotEmitChanged()));
 
    m_pPainter->tile_list = glGenLists(1);

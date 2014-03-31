@@ -107,10 +107,11 @@ bool MinimalHistoryBackend::append(const Call* call)
       const QString direction = (call->direction()==Call::Direction::INCOMING)?
          Call::HistoryStateName::INCOMING : Call::HistoryStateName::OUTGOING;
       QTextStream streamFileOut(&file);
+      const Account* a = call->account();
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CALLID          ).arg(call->id()                     );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_START ).arg(call->startTimeStamp()         );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_STOP  ).arg(call->stopTimeStamp()          );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(call->account()->id()          );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?a->id():""                   );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DISPLAY_NAME    ).arg(call->peerName()               );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerPhoneNumber()->uri() );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DIRECTION       ).arg(direction                      );
