@@ -76,6 +76,7 @@ set( qtsflphone_LIB_SRCS
   lastusednumbermodel.cpp
   contactmodel.cpp
   itembackendmodel.cpp
+  videodevicemodel.cpp
 
   #Data backends
   transitionalcontactbackend.cpp
@@ -138,6 +139,7 @@ set( qtsflphone_LIB_HDRS
   abstractitembackend.h
   itembackendmodel.h
   videodevice.h
+  videodevicemodel.h
   #commonbackendmanagerinterface.h
 )
 

@@ -53,6 +53,7 @@ class VideoModel;
 class LIB_EXPORT VideoDevice : public QObject {
    Q_OBJECT
    friend class VideoModel;
+   friend class VideoDeviceModel;
    public:
       //Getter
       const QStringList         rateList(VideoChannel channel, Resolution resolution);

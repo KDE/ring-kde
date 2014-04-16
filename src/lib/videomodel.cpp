@@ -173,14 +173,14 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
 // }
 
 
-void VideoModel::setActiveDevice(const VideoDevice* device)
-{
-   VideoInterface& interface = DBus::VideoManager::instance();
-   if (isPreviewing()) {
-      switchDevice(device);
-   }
-   interface.setActiveDevice(device->id());
-}
+// void VideoModel::setActiveDevice(const VideoDevice* device)
+// {
+//    VideoInterface& interface = DBus::VideoManager::instance();
+//    if (isPreviewing()) {
+//       switchDevice(device);
+//    }
+//    interface.setActiveDevice(device->id());
+// }
 
 void VideoModel::switchDevice(const VideoDevice* device) const
 {
@@ -194,17 +194,26 @@ QList<VideoDevice*> VideoModel::devices()
    VideoInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceList();
    if (deviceList.size() == m_hDevices.size()) {
+//       qDebug() << "\n\nRETUNING CACHE" << m_hDevices.values();
+//       foreach(const QString& deviceName,deviceList) {
+//          qDebug() << "Meh" << m_hDevices[deviceName];
+//       }
       return m_hDevices.values();
    }
 
    foreach(const QString& deviceName,deviceList) {
-      if (!m_hDevices[deviceName])
+      if (!m_hDevices[deviceName]) {
          devicesHash[deviceName] = new VideoDevice(deviceName);
-      else
+//          qDebug() << "\n\nNEW" << devicesHash[deviceName];
+      }
+      else {
+//          qDebug() << "\n\nPUSH" << m_hDevices[deviceName];
          devicesHash[deviceName] = m_hDevices[deviceName];
+      }
    }
    foreach(VideoDevice* dev,m_hDevices) {
       if (dev && devicesHash.key(dev).isEmpty()) {
+//          qDebug() << "\n\nDELETE";
          delete dev;
       }
    }
@@ -213,15 +222,15 @@ QList<VideoDevice*> VideoModel::devices()
    return m_hDevices.values();
 }
 
-VideoDevice* VideoModel::activeDevice() const
-{
-   VideoInterface& interface = DBus::VideoManager::instance();
-   const QString deId = interface.getActiveDevice();
-   if (!deId.isEmpty() && !m_hDevices.size()) {
-      const_cast<VideoModel*>(this)->devices();
-   }
-   return m_hDevices[deId];
-}
+// VideoDevice* VideoModel::activeDevice() const
+// {
+//    VideoInterface& interface = DBus::VideoManager::instance();
+//    const QString deId = interface.getActiveDevice();
+//    if (!deId.isEmpty() && !m_hDevices.size()) {
+//       const_cast<VideoModel*>(this)->devices();
+//    }
+//    return m_hDevices[deId];
+// }
 
 VideoDevice* VideoModel::device(const QString &id)
 {
