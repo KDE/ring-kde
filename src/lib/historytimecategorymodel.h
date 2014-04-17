@@ -56,7 +56,7 @@ public:
       Never             = 24 ,
    };
    Q_ENUMS(HistoryConst)
-   
+
    //Constructor
    explicit HistoryTimeCategoryModel(QObject* parent = nullptr);
 

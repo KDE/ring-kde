@@ -66,7 +66,6 @@
                         <li>TLS_VERIFY_CLIENT</li>
                         <li>TLS_REQUIRE_CLIENT_CERTIFICATE</li>
                         <li>TLS_NEGOTIATION_TIMEOUT_SEC</li>
-                        <li>TLS_NEGOTIATION_TIMEOUT_MSEC</li>
                     </ul>
                 </tp:docstring>
             </arg>
@@ -124,7 +123,6 @@
             <li>TLS_VERIFY_CLIENT</li>
             <li>TLS_REQUIRE_CLIENT_CERTIFICATE</li>
             <li>TLS_NEGOTIATION_TIMEOUT_SEC</li>
-            <li>TLS_NEGOTIATION_TIMEOUT_MSEC</li>
             </ul>
             </tp:docstring>
             </arg>
@@ -314,6 +312,14 @@
 
        <method name="setAudioManager" tp:name-for-bindings="setAudioManager">
            <arg type="s" name="api" direction="in">
+           </arg>
+       </method>
+
+       <method name="getSupportedAudioManagers" tp:name-for-bindings="getSupportedAudioManagers">
+           <tp:docstring>
+               Returns a list of compiled audio backends.
+           </tp:docstring>
+           <arg type="as" name="api" direction="out">
            </arg>
        </method>
 
@@ -605,6 +611,32 @@
        <method name="setShortcuts" tp:name-for-bindings="setShortcuts">
                    <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="MapStringString"/>
            <arg type="a{ss}" name="shortcutsMap" direction="in">
+           </arg>
+       </method>
+
+       <!-- Security Methods -->
+       <method name="checkForPrivateKey" tp:name-for-bindings="checkForPrivateKey">
+           <arg type="s" name="pemPath" direction="in">
+           </arg>
+           <arg type="b" name="containPrivateKey" direction="out">
+           </arg>
+       </method>
+
+       <method name="checkCertificateValidity" tp:name-for-bindings="checkCertificateValidity">
+           <arg type="s" name="pemPath" direction="in">
+           </arg>
+           <arg type="b" name="isValid" direction="out">
+           </arg>
+       </method>
+
+       <method name="checkHostnameCertificate" tp:name-for-bindings="checkHostnameCertificate">
+           <arg type="s" name="pemPath" direction="in">
+           </arg>
+           <arg type="s" name="host" direction="in">
+           </arg>
+           <arg type="s" name="port" direction="in">
+           </arg>
+           <arg type="b" name="isValid" direction="out">
            </arg>
        </method>
    </interface>
