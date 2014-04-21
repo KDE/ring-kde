@@ -54,6 +54,8 @@ public:
 
    QVariant numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence = false, bool isPresent = false);
 
+   virtual QVariant serurityIssueIcon(const QModelIndex& index);
+
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
 

@@ -21,6 +21,7 @@
 
 //Qt
 #include <QtCore/QVariant>
+#include <QtCore/QModelIndex>
 
 //SFLPhone
 class Contact    ;
@@ -45,6 +46,7 @@ public:
    virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
    virtual QVariant callPhoto(const PhoneNumber* n, const QSize& size, bool displayPresence = true);
    virtual QVariant numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence = false, bool isPresent = false);
+   virtual QVariant serurityIssueIcon(const QModelIndex& index);
 
    //Singleton
    static PixmapManipulationVisitor* instance();

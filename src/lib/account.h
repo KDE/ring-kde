@@ -37,6 +37,8 @@ class AudioCodecModel;
 class VideoCodecModel;
 class RingToneModel  ;
 class PhoneNumber    ;
+class SecurityValidationModel;
+class Certificate    ;
 
 const QString& account_state_name(const QString& s);
 
@@ -66,9 +68,9 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(QString        mailbox                      READ mailbox                       WRITE setMailbox                     )
    Q_PROPERTY(QString        proxy                        READ proxy                         WRITE setProxy                       )
    Q_PROPERTY(QString        tlsPassword                  READ tlsPassword                   WRITE setTlsPassword                 )
-   Q_PROPERTY(QString        tlsCaListFile                READ tlsCaListFile                 WRITE setTlsCaListFile               )
-   Q_PROPERTY(QString        tlsCertificateFile           READ tlsCertificateFile            WRITE setTlsCertificateFile          )
-   Q_PROPERTY(QString        tlsPrivateKeyFile            READ tlsPrivateKeyFile             WRITE setTlsPrivateKeyFile           )
+//    Q_PROPERTY(QString        tlsCaListFile                READ tlsCaListFile                 WRITE setTlsCaListFile               )
+//    Q_PROPERTY(QString        tlsCertificateFile           READ tlsCertificateFile            WRITE setTlsCertificateFile          )
+//    Q_PROPERTY(QString        tlsPrivateKeyFile            READ tlsPrivateKeyFile             WRITE setTlsPrivateKeyFile           )
    Q_PROPERTY(QString        tlsCiphers                   READ tlsCiphers                    WRITE setTlsCiphers                  )
    Q_PROPERTY(QString        tlsServerName                READ tlsServerName                 WRITE setTlsServerName               )
    Q_PROPERTY(QString        sipStunServer                READ sipStunServer                 WRITE setSipStunServer               )
@@ -159,9 +161,9 @@ class LIB_EXPORT Account : public QObject {
          Mailbox                     = 104,
          Proxy                       = 105,
          TlsPassword                 = 107,
-         TlsCaListFile               = 108,
-         TlsCertificateFile          = 109,
-         TlsPrivateKeyFile           = 110,
+         TlsCaListCertificate        = 108,
+         TlsCertificate              = 109,
+         TlsPrivateKeyCertificate    = 110,
          TlsCiphers                  = 111,
          TlsServerName               = 112,
          SipStunServer               = 113,
@@ -306,6 +308,7 @@ class LIB_EXPORT Account : public QObject {
       Q_INVOKABLE VideoCodecModel*  videoCodecModel () const;
       Q_INVOKABLE RingToneModel*    ringToneModel   () const;
       Q_INVOKABLE KeyExchangeModel* keyExchangeModel() const;
+      Q_INVOKABLE SecurityValidationModel* securityValidationModel() const;
 
       //Getters
       QString hostname                     () const;
@@ -329,9 +332,9 @@ class LIB_EXPORT Account : public QObject {
       int     publishedPort                () const;
       QString tlsPassword                  () const;
       int     tlsListenerPort              () const;
-      QString tlsCaListFile                () const;
-      QString tlsCertificateFile           () const;
-      QString tlsPrivateKeyFile            () const;
+      Certificate* tlsCaListCertificate    () const;
+      Certificate* tlsCertificate          () const;
+      Certificate* tlsPrivateKeyCertificate() const;
       QString tlsCiphers                   () const;
       QString tlsServerName                () const;
       int     tlsNegotiationTimeoutSec     () const;
@@ -369,9 +372,9 @@ class LIB_EXPORT Account : public QObject {
       void setProxy                         (const QString& detail );
       void setPassword                      (const QString& detail );
       void setTlsPassword                   (const QString& detail );
-      void setTlsCaListFile                 (const QString& detail );
-      void setTlsCertificateFile            (const QString& detail );
-      void setTlsPrivateKeyFile             (const QString& detail );
+      void setTlsCaListCertificate          (Certificate* cert     );
+      void setTlsCertificate                (Certificate* cert     );
+      void setTlsPrivateKeyCertificate      (Certificate* cert     );
       void setTlsCiphers                    (const QString& detail );
       void setTlsServerName                 (const QString& detail );
       void setSipStunServer                 (const QString& detail );
@@ -457,6 +460,7 @@ class LIB_EXPORT Account : public QObject {
       VideoCodecModel*  m_pVideoCodecs     ;
       RingToneModel*    m_pRingToneModel   ;
       KeyExchangeModel* m_pKeyExchangeModel;
+      SecurityValidationModel* m_pSecurityValidationModel;
       AccountEditState m_CurrentState;
       static const account_function stateMachineActionsOnState[6][7];
 
@@ -465,6 +469,9 @@ class LIB_EXPORT Account : public QObject {
       QString m_LastErrorMessage;
       int     m_LastErrorCode;
       int     m_VoiceMailCount;
+      Certificate* m_pCaCert;
+      Certificate* m_pTlsCert;
+      Certificate* m_pPrivateKey;
 
 
    Q_SIGNALS:

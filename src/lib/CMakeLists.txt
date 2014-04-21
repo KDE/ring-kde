@@ -75,6 +75,8 @@ set( qtsflphone_LIB_SRCS
   audiosettingsmodel.cpp
   ringtonemodel.cpp
   lastusednumbermodel.cpp
+  securityvalidationmodel.cpp
+  certificate.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -126,6 +128,8 @@ set( qtsflphone_LIB_HDRS
   audiosettingsmodel.h
   ringtonemodel.h
   lastusednumbermodel.h
+  securityvalidationmodel.h
+  certificate.h
 )
 
 set( qtsflphone_extra_LIB_HDRS

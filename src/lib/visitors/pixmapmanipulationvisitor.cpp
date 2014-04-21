@@ -62,3 +62,9 @@ PixmapManipulationVisitor* PixmapManipulationVisitor::instance()
 {
    return m_spInstance;
 }
+
+QVariant PixmapManipulationVisitor::serurityIssueIcon(const QModelIndex& index)
+{
+   Q_UNUSED(index)
+   return QVariant();
+}

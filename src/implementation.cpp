@@ -34,6 +34,7 @@
 #include <lib/contact.h>
 #include <lib/phonenumber.h>
 #include <lib/presencestatusmodel.h>
+#include <lib/securityvalidationmodel.h>
 #include "klib/kcfg_settings.h"
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {
@@ -224,6 +225,23 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QPixmap* p, const QSize
    if (p)
       return *p;
    return QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+}
+
+QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)
+{
+   SecurityValidationModel::Severity sev = static_cast<SecurityValidationModel::Severity>(index.data(SecurityValidationModel::Role::SeverityRole).toInt());
+   switch(sev) {
+      case SecurityValidationModel::Severity::INFORMATION:
+         return KIcon("dialog-information");
+      case SecurityValidationModel::Severity::WARNING:
+         return KIcon("dialog-warning");
+      case SecurityValidationModel::Severity::ISSUE:
+      case SecurityValidationModel::Severity::FATAL_WARNING:
+         return KIcon("task-attempt");
+      case SecurityValidationModel::Severity::ERROR:
+         return KIcon("dialog-error");
+   }
+   return QVariant();
 }
 
 QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent) {

@@ -33,6 +33,7 @@
 #include "dbus/callmanager.h"
 #include "dbus/videomanager.h"
 #include "visitors/accountlistcolorvisitor.h"
+#include "certificate.h"
 #include "accountlistmodel.h"
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
@@ -41,6 +42,7 @@
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"
 #include "presencestatusmodel.h"
+#include "securityvalidationmodel.h"
 #define TO_BOOL ?"true":"false"
 #define IS_TRUE == "true"
 
@@ -58,7 +60,7 @@ const account_function Account::stateMachineActionsOnState[6][7] = {
 ///Constructors
 Account::Account():QObject(AccountListModel::instance()),m_pCredentials(nullptr),m_pAudioCodecs(nullptr),m_CurrentState(AccountEditState::READY),
 m_pVideoCodecs(nullptr),m_LastErrorCode(-1),m_VoiceMailCount(0),m_pRingToneModel(nullptr),m_pAccountNumber(nullptr),
-m_pKeyExchangeModel(nullptr)
+m_pKeyExchangeModel(nullptr),m_pSecurityValidationModel(nullptr),m_pCaCert(nullptr),m_pTlsCert(nullptr),m_pPrivateKey(nullptr)
 {
 }
 
@@ -312,6 +314,14 @@ KeyExchangeModel* Account::keyExchangeModel() const
    return m_pKeyExchangeModel;
 }
 
+SecurityValidationModel* Account::securityValidationModel() const
+{
+   if (!m_pSecurityValidationModel) {
+      const_cast<Account*>(this)->m_pSecurityValidationModel = new SecurityValidationModel(const_cast<Account*>(this));
+   }
+   return m_pSecurityValidationModel;
+}
+
 void Account::setAlias(const QString& detail)
 {
    bool accChanged = detail != alias();
@@ -371,7 +381,7 @@ QString Account::password() const
 
 ///
 bool Account::isDisplaySasOnce() const
-{ 
+{
    return accountDetail(Account::MapField::ZRTP::DISPLAY_SAS_ONCE) IS_TRUE;
 }
 
@@ -454,21 +464,30 @@ int Account::tlsListenerPort() const
 }
 
 ///Return the account TLS certificate authority list file
-QString Account::tlsCaListFile() const
+Certificate* Account::tlsCaListCertificate() const
 {
-   return accountDetail(Account::MapField::TLS::CA_LIST_FILE);
+   if (!m_pCaCert)
+      const_cast<Account*>(this)->m_pCaCert = new Certificate(Certificate::Type::AUTHORITY,this);
+   const_cast<Account*>(this)->m_pCaCert->setPath(accountDetail(Account::MapField::TLS::CA_LIST_FILE));
+   return m_pCaCert;
 }
 
 ///Return the account TLS certificate
-QString Account::tlsCertificateFile() const
+Certificate* Account::tlsCertificate() const
 {
-   return accountDetail(Account::MapField::TLS::CERTIFICATE_FILE);
+   if (!m_pTlsCert)
+      const_cast<Account*>(this)->m_pTlsCert = new Certificate(Certificate::Type::USER,this);
+   const_cast<Account*>(this)->m_pTlsCert->setPath(accountDetail(Account::MapField::TLS::CERTIFICATE_FILE));
+   return m_pTlsCert;
 }
 
 ///Return the account private key
-QString Account::tlsPrivateKeyFile() const
+Certificate* Account::tlsPrivateKeyCertificate() const
 {
-   return accountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE);
+   if (!m_pPrivateKey)
+      const_cast<Account*>(this)->m_pPrivateKey = new Certificate(Certificate::Type::PRIVATE_KEY,this);
+   const_cast<Account*>(this)->m_pPrivateKey->setPath(accountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE));
+   return m_pPrivateKey;
 }
 
 ///Return the account cipher
@@ -643,12 +662,12 @@ QVariant Account::roleData(int role) const
 //          return accountPassword();
       case Account::Role::TlsPassword:
          return tlsPassword();
-      case Account::Role::TlsCaListFile:
-         return tlsCaListFile();
-      case Account::Role::TlsCertificateFile:
-         return tlsCertificateFile();
-      case Account::Role::TlsPrivateKeyFile:
-         return tlsPrivateKeyFile();
+      case Account::Role::TlsCaListCertificate:
+         return tlsCaListCertificate()->path().toLocalFile();
+      case Account::Role::TlsCertificate:
+         return tlsCertificate()->path().toLocalFile();
+      case Account::Role::TlsPrivateKeyCertificate:
+         return tlsPrivateKeyCertificate()->path().toLocalFile();
       case Account::Role::TlsCiphers:
          return tlsCiphers();
       case Account::Role::TlsServerName:
@@ -835,21 +854,21 @@ void Account::setTlsPassword(const QString& detail)
 }
 
 ///Set the certificate authority list file
-void Account::setTlsCaListFile(const QString& detail)
+void Account::setTlsCaListCertificate(Certificate* cert)
 {
-   setAccountDetail(Account::MapField::TLS::CA_LIST_FILE, detail);
+   setAccountDetail(Account::MapField::TLS::CA_LIST_FILE, cert?cert->path().toLocalFile():QString());
 }
 
 ///Set the certificate
-void Account::setTlsCertificateFile(const QString& detail)
+void Account::setTlsCertificate(Certificate* cert)
 {
-   setAccountDetail(Account::MapField::TLS::CERTIFICATE_FILE, detail);
+   setAccountDetail(Account::MapField::TLS::CERTIFICATE_FILE, cert?cert->path().toLocalFile():QString());
 }
 
 ///Set the private key
-void Account::setTlsPrivateKeyFile(const QString& detail)
+void Account::setTlsPrivateKeyCertificate(Certificate* cert)
 {
-   setAccountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE, detail);
+   setAccountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE, cert?cert->path().toLocalFile():QString());
 }
 
 ///Set the TLS cipher
@@ -1053,92 +1072,142 @@ void Account::setRoleData(int role, const QVariant& value)
    switch(role) {
       case Account::Role::Alias:
          setAlias(value.toString());
+         break;
       case Account::Role::Proto: {
          const int proto = value.toInt();
          setProtocol((proto>=0&&proto<=1)?static_cast<Account::Protocol>(proto):Account::Protocol::SIP);
+         break;
       }
       case Account::Role::Hostname:
          setHostname(value.toString());
+         break;
       case Account::Role::Username:
          setUsername(value.toString());
+         break;
       case Account::Role::Mailbox:
          setMailbox(value.toString());
+         break;
       case Account::Role::Proxy:
          setProxy(value.toString());
+         break;
 //       case Password:
 //          accountPassword();
       case Account::Role::TlsPassword:
          setTlsPassword(value.toString());
-      case Account::Role::TlsCaListFile:
-         setTlsCaListFile(value.toString());
-      case Account::Role::TlsCertificateFile:
-         setTlsCertificateFile(value.toString());
-      case Account::Role::TlsPrivateKeyFile:
-         setTlsPrivateKeyFile(value.toString());
+         break;
+      case Account::Role::TlsCaListCertificate: {
+         const QString path = value.toString();
+         if ((tlsCaListCertificate() && tlsCaListCertificate()->path() != QUrl(path)) || !tlsCaListCertificate()) {
+            tlsCaListCertificate()->setPath(path);
+         }
+         break;
+      }
+      case Account::Role::TlsCertificate: {
+         const QString path = value.toString();
+         if ((tlsCertificate() && tlsCertificate()->path() != QUrl(path)) || !tlsCertificate())
+            tlsCertificate()->setPath(path);
+      }
+         break;
+      case Account::Role::TlsPrivateKeyCertificate: {
+         const QString path = value.toString();
+         if ((tlsPrivateKeyCertificate() && tlsPrivateKeyCertificate()->path() != QUrl(path)) || !tlsPrivateKeyCertificate())
+            tlsPrivateKeyCertificate()->setPath(path);
+      }
+         break;
       case Account::Role::TlsCiphers:
          setTlsCiphers(value.toString());
+         break;
       case Account::Role::TlsServerName:
          setTlsServerName(value.toString());
+         break;
       case Account::Role::SipStunServer:
          setSipStunServer(value.toString());
+         break;
       case Account::Role::PublishedAddress:
          setPublishedAddress(value.toString());
+         break;
       case Account::Role::LocalInterface:
          setLocalInterface(value.toString());
+         break;
       case Account::Role::RingtonePath:
          setRingtonePath(value.toString());
+         break;
       case Account::Role::TlsMethod: {
          const int method = value.toInt();
          setTlsMethod(method<=TlsMethodModel::instance()->rowCount()?static_cast<TlsMethodModel::Type>(method):TlsMethodModel::Type::DEFAULT);
+         break;
       }
       case Account::Role::KeyExchange: {
          const int method = value.toInt();
          setKeyExchange(method<=keyExchangeModel()->rowCount()?static_cast<KeyExchangeModel::Type>(method):KeyExchangeModel::Type::NONE);
+         break;
       }
       case Account::Role::RegistrationExpire:
          setRegistrationExpire(value.toInt());
+         break;
       case Account::Role::TlsNegotiationTimeoutSec:
          setTlsNegotiationTimeoutSec(value.toInt());
+         break;
       case Account::Role::TlsNegotiationTimeoutMsec:
          setTlsNegotiationTimeoutMsec(value.toInt());
+         break;
       case Account::Role::LocalPort:
          setLocalPort(value.toInt());
+         break;
       case Account::Role::TlsListenerPort:
          setTlsListenerPort(value.toInt());
+         break;
       case Account::Role::PublishedPort:
          setPublishedPort(value.toInt());
+         break;
       case Account::Role::Enabled:
          setEnabled(value.toBool());
+         break;
       case Account::Role::AutoAnswer:
          setAutoAnswer(value.toBool());
+         break;
       case Account::Role::TlsVerifyServer:
          setTlsVerifyServer(value.toBool());
+         break;
       case Account::Role::TlsVerifyClient:
          setTlsVerifyClient(value.toBool());
+         break;
       case Account::Role::TlsRequireClientCertificate:
          setTlsRequireClientCertificate(value.toBool());
+         break;
       case Account::Role::TlsEnable:
          setTlsEnable(value.toBool());
+         break;
       case Account::Role::DisplaySasOnce:
          setDisplaySasOnce(value.toBool());
+         break;
       case Account::Role::SrtpRtpFallback:
          setSrtpRtpFallback(value.toBool());
+         break;
       case Account::Role::ZrtpDisplaySas:
          setZrtpDisplaySas(value.toBool());
+         break;
       case Account::Role::ZrtpNotSuppWarning:
          setZrtpNotSuppWarning(value.toBool());
+         break;
       case Account::Role::ZrtpHelloHash:
          setZrtpHelloHash(value.toBool());
+         break;
       case Account::Role::SipStunEnabled:
          setSipStunEnabled(value.toBool());
+         break;
       case Account::Role::PublishedSameAsLocal:
          setPublishedSameAsLocal(value.toBool());
+         break;
       case Account::Role::RingtoneEnabled:
          setRingtoneEnabled(value.toBool());
+         break;
       case Account::Role::dTMFType:
          setDTMFType((DtmfType)value.toInt());
+         break;
       case Account::Role::Id:
          setId(value.toString());
+         break;
    }
 }
 
