@@ -19,6 +19,8 @@
 #include "account.h"
 #include "visitors/pixmapmanipulationvisitor.h"
 
+#include <QtAlgorithms>
+
 const QString SecurityValidationModel::messages[static_cast<const int>(SecurityFlaw::COUNT)] = {
    QObject::tr("Your communication negotation is secured, but not the media stream, please enable ZRTP or SDES"),
    QObject::tr("TLS is disabled, the negotiation wont be encrypted. Your communication will be vulnerable to "
@@ -45,17 +47,17 @@ SecurityValidationModel::maximumSecurityLevel = {{
    /* TLS_DISABLED                   */ SecurityLevel::WEAK       ,
    /* CERTIFICATE_EXPIRED            */ SecurityLevel::MEDIUM     ,
    /* CERTIFICATE_SELF_SIGNED        */ SecurityLevel::MEDIUM     ,
-   /* CA_CERTIFICATE_MISSING         */ SecurityLevel::PARTIAL    ,
-   /* END_CERTIFICATE_MISSING        */ SecurityLevel::PARTIAL    ,
-   /* PRIVATE_KEY_MISSING            */ SecurityLevel::PARTIAL    ,
+   /* CA_CERTIFICATE_MISSING         */ SecurityLevel::MEDIUM     ,
+   /* END_CERTIFICATE_MISSING        */ SecurityLevel::MEDIUM     ,
+   /* PRIVATE_KEY_MISSING            */ SecurityLevel::MEDIUM     ,
    /* CERTIFICATE_MISMATCH           */ SecurityLevel::NONE       ,
    /* CERTIFICATE_STORAGE_PERMISSION */ SecurityLevel::ACCEPTABLE ,
    /* CERTIFICATE_STORAGE_FOLDER     */ SecurityLevel::ACCEPTABLE ,
    /* CERTIFICATE_STORAGE_LOCATION   */ SecurityLevel::ACCEPTABLE ,
    /* OUTGOING_SERVER_MISMATCH       */ SecurityLevel::ACCEPTABLE ,
-   /* VERIFY_INCOMING_DISABLED       */ SecurityLevel::PARTIAL    ,
-   /* VERIFY_ANSWER_DISABLED         */ SecurityLevel::PARTIAL    ,
-   /* REQUIRE_CERTIFICATE_DISABLED   */ SecurityLevel::PARTIAL    ,
+   /* VERIFY_INCOMING_DISABLED       */ SecurityLevel::MEDIUM     ,
+   /* VERIFY_ANSWER_DISABLED         */ SecurityLevel::MEDIUM     ,
+   /* REQUIRE_CERTIFICATE_DISABLED   */ SecurityLevel::MEDIUM     ,
    /* MISSING_CERTIFICATE            */ SecurityLevel::NONE       ,
    /* MISSING_AUTHORITY              */ SecurityLevel::WEAK       ,
 }};
@@ -181,8 +183,14 @@ void SecurityValidationModel::update()
          m_lCurrentFlaws << Flaw(SecurityFlaw::CERTIFICATE_STORAGE_LOCATION,cert->type());
       }
    }
+   qSort(m_lCurrentFlaws);
 
    emit layoutChanged();
+}
+
+QList<SecurityValidationModel::Flaw> SecurityValidationModel::currentFlaws()
+{
+   return m_lCurrentFlaws;
 }
 
 

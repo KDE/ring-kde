@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2013-2014 by Savoir-Faire Linux                         ***
+ *   Copyright (C) 2013-2014 by Savoir-Faire Linux                          *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
@@ -54,11 +54,10 @@ public:
    enum class SecurityLevel {
       NONE        = 0, /* Security is not functional or severely defective              */
       WEAK        = 1, /* There is some security, but way too many flaws                */
-      PARTIAL     = 2, /* There is some security, but there is too many flaws           */
-      MEDIUM      = 3, /* The security is probably good enough, but there is issues     */
-      ACCEPTABLE  = 4, /* The security is most probably good enough, only minor issues  */
-      STRONG      = 5, /* All the non-information items are correct                     */
-      VERY_STRONG = 6, /* Everything, even the recommendations, are correct             */
+      MEDIUM      = 2, /* The security is probably good enough, but there is issues     */
+      ACCEPTABLE  = 3, /* The security is most probably good enough, only minor issues  */
+      STRONG      = 4, /* All the non-information items are correct                     */
+      COMPLETE    = 5, /* Everything, even the recommendations, are correct             */
    };
 
    ///The severity of a given flaw
@@ -110,6 +109,12 @@ public:
       SecurityFlaw flaw;
       Severity severity;
       Certificate::Type certType;
+      bool operator < ( const Flaw &r ) const{
+         return ( (int)severity > (int)r.severity );
+      }
+      bool operator > ( const Flaw &r ) const{
+         return ( (int)severity < (int)r.severity );
+      }
    };
 
    //Constructor
@@ -122,6 +127,9 @@ public:
    int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
    Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
+
+   //Getter
+   QList<Flaw> currentFlaws();
 
    //Mutator
    void update();

@@ -137,6 +137,7 @@ SET(
    widgets/presence.cpp
    widgets/autocompletion.cpp
    widgets/groupedtoolbutton.cpp
+   widgets/securityprogress.cpp
 )
 
 # Video Widgets

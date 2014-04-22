@@ -95,6 +95,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    m_pCancelMove->setIcon(KIcon("dialog-close"));
    m_pMoveCertPB->setIcon(KIcon("folder-sync"));
    m_pFixCertPB->setIcon(KIcon("configure"));
+   label_3->setPixmap(KIcon("dialog-information").pixmap(QSize(22,22)));
+   label_2->setPixmap(KIcon("dialog-information").pixmap(QSize(22,22)));
 
    //Add an info tip in the account list
    m_pTipManager = new TipManager(treeView_accountList);
@@ -438,7 +440,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    #endif
 
    ACC securityValidationModel()->update();
-   m_pIssues->setModel(ACC securityValidationModel());
+   m_pSecurityIssues->setModel(ACC securityValidationModel());
 
 
    //Enable tabs
