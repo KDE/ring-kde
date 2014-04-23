@@ -371,7 +371,6 @@ bool IssuesIcon::eventFilter(QObject *obj, QEvent *event)
    if (le && event->type() == QEvent::Resize) {
       static const int margin = style()->pixelMetric(QStyle::PM_FocusFrameHMargin)/2;
       const QSize s = sizeHint();
-      qDebug() << "ICI" << s.width();
       resize(s.width(),le->height()-2*margin);
       move(le->width()-s.width(),margin);
    }

@@ -62,7 +62,8 @@ int AccountListNoCheckProxyModel::rowCount(const QModelIndex& parentIdx ) const
 
 ///Constructors
 ///@param fill Whether to fill the list with accounts from configurationManager or not.
-AccountListModel::AccountListModel() : QAbstractListModel(QCoreApplication::instance()),m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr)
+AccountListModel::AccountListModel() : QAbstractListModel(QCoreApplication::instance()),
+m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr),m_pIP2IP(nullptr)
 {
    setupRoleName();
 }
@@ -138,6 +139,18 @@ void AccountListModel::setupRoleName()
    roles.insert(Account::Role::PresenceMessage          ,QByteArray("presenceMessage"               ));
 
    setRoleNames(roles);
+}
+
+///Get the IP2IP account
+Account* AccountListModel::ip2ip() const
+{
+   if (!m_pIP2IP) {
+      foreach(Account* a,m_lAccounts) {
+         if (a->id() == "IP2IP")
+            const_cast<AccountListModel*>(this)->m_pIP2IP = a;
+      }
+   }
+   return m_pIP2IP;
 }
 
 ///Singleton

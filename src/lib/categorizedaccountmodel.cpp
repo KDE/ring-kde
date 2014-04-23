@@ -51,10 +51,11 @@ QModelIndex CategorizedAccountModel::mapToSource(const QModelIndex& idx) const
       return QModelIndex();
    switch (idx.parent().row()) {
       case Categories::IP2IP:
-         return AccountListModel::instance()->index(0,0);
+         return AccountListModel::instance()->ip2ip()->index();
          break;
       case Categories::SERVER:
-         return AccountListModel::instance()->index(idx.row()+1,0);
+         const QModelIndex& ip2ipIdx = AccountListModel::instance()->ip2ip()->index();
+         return AccountListModel::instance()->index((ip2ipIdx.row() < idx.row())?idx.row()+1:idx.row(),0);
          break;
    };
    return QModelIndex();

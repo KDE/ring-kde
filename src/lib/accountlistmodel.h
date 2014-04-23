@@ -39,6 +39,8 @@ class LIB_EXPORT AccountListModel : public QAbstractListModel {
    #pragma GCC diagnostic pop
 
 public:
+   Q_PROPERTY(Account* ip2ip READ ip2ip)
+
    friend class Account;
    //Static getter and destructor
    static AccountListModel* instance();
@@ -56,6 +58,7 @@ public:
    Account*                    getAccountByModelIndex ( const QModelIndex& item ) const;
    static QString              getSimilarAliasIndex   ( const QString& alias    );
    AccountListColorVisitor*    colorVisitor           (                         );
+   Account*                    ip2ip                  (                         ) const;
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -96,6 +99,7 @@ private:
    Account*                 m_pDefaultAccount ;
    AccountListColorVisitor* m_pColorVisitor   ;
    QStringList              m_lDeletedAccounts;
+   Account*                 m_pIP2IP          ;
 
 public Q_SLOTS:
    void update        ();
