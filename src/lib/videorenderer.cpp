@@ -80,16 +80,16 @@ bool VideoRenderer::renderToBitmap()
    }
 
    if (!shmLock()) {
-      return false;
+      return true;
    }
 
    // wait for a new buffer
    while (m_BufferGen == m_pShmArea->m_BufferGen) {
       shmUnlock();
-      const struct timespec timeout = createTimeout();
+
       if(!VideoModel::instance()->startStopMutex()->tryLock())
          return false;
-      int err = sem_timedwait(&m_pShmArea->notification, &timeout);
+      int err = sem_trywait(&m_pShmArea->notification);
       VideoModel::instance()->startStopMutex()->unlock();
       // Useful for debugging
 //       switch (errno ) {
@@ -115,11 +115,11 @@ bool VideoRenderer::renderToBitmap()
 //             break;
 //       }
       if (err < 0) {
-         return false;
+         return errno == EAGAIN;
       }
 
       if (!shmLock()) {
-         return false;
+         return true;
       }
    }
 
@@ -208,7 +208,7 @@ bool VideoRenderer::resizeShm()
 
       m_ShmAreaLen = new_size;
       if (!shmLock())
-            return false;
+            return true;
    }
    return true;
 }
@@ -217,14 +217,7 @@ bool VideoRenderer::resizeShm()
 bool VideoRenderer::shmLock()
 {
 #ifdef Q_OS_LINUX
-   const timespec timeout = createTimeout();
-   /* We need an upper limit on how long we'll wait to avoid locking the whole GUI */
-   if (sem_timedwait(&m_pShmArea->mutex, &timeout) < 0) {
-       if (errno == ETIMEDOUT)
-           qDebug() << "Timed out before shm lock was acquired";
-      return false;
-   }
-   return true;
+   return sem_trywait(&m_pShmArea->mutex) >= 0;
 #else
    return false;
 #endif
@@ -234,20 +227,6 @@ bool VideoRenderer::shmLock()
 void VideoRenderer::shmUnlock()
 {
    sem_post(&m_pShmArea->mutex);
-}
-
-///Create a SHM timeout
-timespec VideoRenderer::createTimeout()
-{
-#ifdef Q_OS_LINUX
-   timespec timeout = {0, 0};
-   if (clock_gettime(CLOCK_REALTIME, &timeout) == -1)
-      qDebug() << "clock_gettime";
-   timeout.tv_sec += TIMEOUT_SEC;
-   return timeout;
-#else
-   return {0,0};
-#endif
 }
 
 
