@@ -52,7 +52,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
       //Getters
       const char* rawData         ()      ;
       bool        isRendering     ()      ;
-      QByteArray  currentFrame    ()      ;
+      const QByteArray& currentFrame    ()      ;
       Resolution  activeResolution()      ;
       QMutex*     mutex           ()      ;
       int         fps             () const;

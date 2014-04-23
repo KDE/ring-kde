@@ -42,8 +42,6 @@ public:
    ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg);
    virtual ~ThreadedPainter2(){
 //       QThread::currentThread()->quit();
-      if (m_Data)
-         free(m_Data);
    }
 
    //GL
@@ -105,13 +103,9 @@ void ThreadedPainter2::rendererStarted()
 void ThreadedPainter2::copyFrame()
 {
    if (m_pRenderer) {
-      m_pRenderer->mutex()->lock();
-      const QByteArray raw = m_pRenderer->currentFrame();
-      if (!m_Data)
-         m_Data = (char*)malloc(raw.size()*sizeof(char));
-      m_Data = (char*)raw.data();
-      m_ActiveSize = m_pRenderer->activeResolution();
-      m_pRenderer->mutex()->unlock();
+      //TODO change the method name
+      //This is a left over from how 1.2.3 and 1.3.0 cached a copy of the
+      //buffer to avoid a nasty race condition now fixed in the daemon
       emit changed();
    }
 }
@@ -135,8 +129,17 @@ void ThreadedPainter2::draw(QPainter* p)
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-      if (m_ActiveSize.width() && m_ActiveSize.height() && m_Data)
-         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, m_ActiveSize.width(), m_ActiveSize.height(), GL_BGRA, GL_UNSIGNED_BYTE, m_Data);
+      //To give a bit of history about why this code is weird, it used to have another copy buffer
+      //but this was removed and replaced with a flip buffer in libQt, there is some leftover
+      //code that need to be cleaned
+      const QByteArray& data = m_pRenderer->currentFrame();
+      QSize res = m_pRenderer->activeResolution();
+
+      //Detect race conditions
+      Q_ASSERT(res.width() * res.height() == data.size()/3);
+
+      if (res.width() && res.height() && data.size())
+         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, res.width(), res.height(), GL_BGRA, GL_UNSIGNED_BYTE, data);
 
       // draw into the GL widget
 //       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -174,6 +177,10 @@ void ThreadedPainter2::draw(QPainter* p)
       // restore the GL state that QPainter expects
       restoreGLState();
       glDeleteTextures(1, &texture);
+   }
+   else {
+      //Try to cleanup
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    }
 }
 

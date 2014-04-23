@@ -76,7 +76,6 @@ void VideoWidget3::addRenderer(VideoRenderer* renderer)
       return;
    }
    if (renderer) {
-      qDebug() << "NEW";
       VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
       frm->setRenderer(renderer);
       connect(frm,SIGNAL(changed()),m_pScene,SLOT(frameChanged()));

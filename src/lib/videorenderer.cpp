@@ -319,9 +319,10 @@ bool VideoRenderer::isRendering()
 }
 
 ///Return the current framerate
-QByteArray VideoRenderer::currentFrame()
+const QByteArray& VideoRenderer::currentFrame()
 {
-   return m_Frame[m_FrameIdx];
+   static QByteArray empty;
+   return m_isRendering?m_Frame[m_FrameIdx]:empty;
 }
 
 ///Return the current resolution
