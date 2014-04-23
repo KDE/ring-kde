@@ -75,9 +75,14 @@ private:
    int                   m_IsLoading           ;
    TipManager*           m_pTipManager         ;
    Tip*                  m_pTip                ;
+   IssuesIcon*           m_pAuthorityII        ;
+   IssuesIcon*           m_pEndCertII          ;
+   IssuesIcon*           m_pPKII               ;
 
    //Methods
    Account* currentAccount() const;
+   void updateSecurityValidation();
+   void addFlawToCertificateField(const Flaw* flaw);
 
 public Q_SLOTS:
    void loadAccountList                  ();

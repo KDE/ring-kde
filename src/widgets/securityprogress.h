@@ -20,27 +20,45 @@
 
 #include <QtGui/QProgressBar>
 
+//Qt
 class QListView;
-class SecurityValidationModel;
 class QLabel;
+class QHBoxLayout;
+class QLineEdit;
 
-class SecurityProgress : public QProgressBar
-{
+//SFLPhone
+#include <lib/securityvalidationmodel.h>
+class SecurityProgress;
+
+class IssuesIcon : public QWidget {
    Q_OBJECT
 public:
-   explicit SecurityProgress(QWidget* parent = nullptr);
-   virtual ~SecurityProgress();
+   IssuesIcon(QWidget* parent = nullptr);
+   ~IssuesIcon();
 
+   //Setter
+   void setBuddy(QWidget* buddy);
+   void setModel(SecurityValidationModel* model);
+
+   //Getter
+   QWidget* buddy() const;
+
+   //Mutator
+   void addFlaw(const Flaw* flaw);
+   void setupForLineEdit(QLineEdit* le);
+   void reset();
 protected:
-   //Virtual events
-   void paintEvent ( QPaintEvent*  event);
+   virtual bool eventFilter(QObject *obj, QEvent *event);
 
 private:
-   //Attributes
-   QStringList m_Names;
-   QList<QColor> m_lColors;
-   QList<QColor> m_lAltColors;
-
+   QHBoxLayout* m_pLayout;
+   QWidget*     m_pBuddy;
+   SecurityValidationModel* m_pModel;
+private Q_SLOTS:
+   void slotSolved();
+   void slotFlawClicked();
+Q_SIGNALS:
+   void selectFlaw(const QModelIndex idx);
 };
 
 class SecurityLevelWidget : public QWidget
@@ -49,6 +67,9 @@ class SecurityLevelWidget : public QWidget
 public:
    explicit SecurityLevelWidget(QWidget* parent = nullptr);
    virtual ~SecurityLevelWidget();
+
+   //Getter
+   QListView* view() const;
 
    //Setter
    void setModel(SecurityValidationModel* model);
@@ -69,6 +90,7 @@ private:
 
 private Q_SLOTS:
    void reloadCount();
+   void dblClicked(const QModelIndex& idx);
 };
 
 #endif

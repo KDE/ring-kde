@@ -26,9 +26,11 @@
 
 //SFLPhone
 class Account;
+class Flaw;
 
 class LIB_EXPORT SecurityValidationModel : public QAbstractListModel {
    Q_OBJECT
+   friend class Flaw;
 public:
    /*
     * This class evaluate the overall security of an account.
@@ -99,24 +101,6 @@ public:
    ///Messages to show to the end user
    static const QString messages[static_cast<const int>(SecurityFlaw::COUNT)];
 
-   ///A flaw representation
-   struct Flaw {
-      Flaw(SecurityFlaw f,Certificate::Type type = Certificate::Type::NONE)
-      : flaw(f),certType(type)
-      {
-         severity = flawSeverity[f];
-      }
-      SecurityFlaw flaw;
-      Severity severity;
-      Certificate::Type certType;
-      bool operator < ( const Flaw &r ) const{
-         return ( (int)severity > (int)r.severity );
-      }
-      bool operator > ( const Flaw &r ) const{
-         return ( (int)severity < (int)r.severity );
-      }
-   };
-
    //Constructor
    SecurityValidationModel(Account* account);
    virtual ~SecurityValidationModel();
@@ -129,22 +113,66 @@ public:
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
 
    //Getter
-   QList<Flaw> currentFlaws();
+   QList<Flaw*> currentFlaws();
+   QModelIndex getIndex(const Flaw* flaw);
 
    //Mutator
    void update();
 
 private:
    //Attributes
-   QList<Flaw>   m_lCurrentFlaws       ;
+   QList<Flaw*>  m_lCurrentFlaws       ;
    SecurityLevel m_CurrentSecurityLevel;
    Account*      m_pAccount            ;
+   QHash< int, QHash< int, Flaw* > > m_hFlaws;
 
-private:
+   //Helpers
+   Flaw* getFlaw(SecurityFlaw _se,Certificate::Type _ty);
+
    //Static mapping
    static const TypedStateMachine< SecurityLevel , SecurityFlaw > maximumSecurityLevel;
    static const TypedStateMachine< Severity      , SecurityFlaw > flawSeverity        ;
 };
 Q_DECLARE_METATYPE(SecurityValidationModel*)
+
+///A flaw representation
+class LIB_EXPORT Flaw : public QObject
+{
+   Q_OBJECT
+   friend class SecurityValidationModel;
+public:
+
+   //Operators
+   bool operator < ( const Flaw &r ) const {
+      return ( (int)m_severity > (int)r.m_severity );
+   }
+   bool operator > ( const Flaw &r ) const {
+      return ( (int)m_severity < (int)r.m_severity );
+   }
+
+   //Getter
+   Certificate::Type type() const;
+   SecurityValidationModel::SecurityFlaw flaw() const;
+   SecurityValidationModel::Severity severity() const;
+private:
+   //Constructor
+   Flaw(SecurityValidationModel::SecurityFlaw f,Certificate::Type type = Certificate::Type::NONE)
+   : m_flaw(f),m_certType(type),m_Row(-1)
+   {
+      m_severity = SecurityValidationModel::flawSeverity[f];
+   }
+
+   //Attributes
+   SecurityValidationModel::SecurityFlaw m_flaw;
+   SecurityValidationModel::Severity m_severity;
+   Certificate::Type m_certType;
+   int m_Row;
+public Q_SLOTS:
+   void slotRequestHighlight();
+
+Q_SIGNALS:
+   void solved();
+   void requestHighlight();
+};
 
 #endif

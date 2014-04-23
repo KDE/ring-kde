@@ -98,10 +98,10 @@ QVariant SecurityValidationModel::data( const QModelIndex& index, int role) cons
 {
    if (index.isValid())  {
       if (role == Qt::DisplayRole) {
-         return messages[static_cast<int>( m_lCurrentFlaws[index.row()].flaw )];
+         return messages[static_cast<int>( m_lCurrentFlaws[index.row()]->flaw() )];
       }
       else if (role == Role::SeverityRole) {
-         return static_cast<int>(m_lCurrentFlaws[index.row()].severity);
+         return static_cast<int>(m_lCurrentFlaws[index.row()]->severity());
       }
       else if (role == Qt::DecorationRole) {
          return PixmapManipulationVisitor::instance()->serurityIssueIcon(index);
@@ -130,6 +130,16 @@ bool SecurityValidationModel::setData( const QModelIndex& index, const QVariant 
    return false;
 }
 
+///Do some unsafe convertions to bypass Qt4 issues with C++11 enum class
+Flaw* SecurityValidationModel::getFlaw(SecurityFlaw _se,Certificate::Type _ty)
+{
+   if (! m_hFlaws[(int)_se][(int)_ty]) {
+      m_hFlaws[(int)_se][(int)_ty] = new Flaw(_se,_ty);
+   }
+   return m_hFlaws[(int)_se][(int)_ty];
+}
+
+#define _F(_se,_ty) getFlaw(SecurityFlaw::_se,_ty);
 void SecurityValidationModel::update()
 {
    m_lCurrentFlaws.clear();
@@ -140,19 +150,19 @@ void SecurityValidationModel::update()
 
    /* If TLS is not enabled, everything else is worthless */
    if (!m_pAccount->isTlsEnable()) {
-      m_lCurrentFlaws << Flaw(SecurityFlaw::TLS_DISABLED);
+      m_lCurrentFlaws << _F(TLS_DISABLED,Certificate::Type::NONE);
    }
 
    /* Check if the media stream is encrypted, it is something users
     * may care about if they get this far ;) */
    if (!m_pAccount->isSrtpEnabled()) {
-      m_lCurrentFlaws << Flaw(SecurityFlaw::SRTP_DISABLED);
+      m_lCurrentFlaws << _F(SRTP_DISABLED,Certificate::Type::NONE);
    }
 
    /* The user certificate need to have a private key, otherwise it wont
     * be possible to encrypt anything */
    if ((! m_pAccount->tlsCertificate()->hasPrivateKey()) && (!m_pAccount->tlsPrivateKeyCertificate()->exist())) {
-      m_lCurrentFlaws << Flaw(SecurityFlaw::PRIVATE_KEY_MISSING,m_pAccount->tlsPrivateKeyCertificate()->type());
+      m_lCurrentFlaws << _F(PRIVATE_KEY_MISSING,m_pAccount->tlsPrivateKeyCertificate()->type());
    }
 
    /**********************************
@@ -162,35 +172,65 @@ void SecurityValidationModel::update()
    certs << m_pAccount->tlsCaListCertificate() << m_pAccount->tlsCertificate() << m_pAccount->tlsPrivateKeyCertificate();
    foreach (Certificate* cert, certs) {
       if (! cert->exist()) {
-         m_lCurrentFlaws << Flaw(SecurityFlaw::END_CERTIFICATE_MISSING,cert->type());
+         m_lCurrentFlaws << _F(END_CERTIFICATE_MISSING,cert->type());
       }
       if (! cert->isExpired()) {
-         m_lCurrentFlaws << Flaw(SecurityFlaw::CERTIFICATE_EXPIRED,cert->type());
+         m_lCurrentFlaws << _F(CERTIFICATE_EXPIRED,cert->type());
       }
       if (! cert->isSelfSigned()) {
-         m_lCurrentFlaws << Flaw(SecurityFlaw::CERTIFICATE_SELF_SIGNED,cert->type());
+         m_lCurrentFlaws << _F(CERTIFICATE_SELF_SIGNED,cert->type());
       }
       if (! cert->hasProtectedPrivateKey()) {
-         m_lCurrentFlaws << Flaw(SecurityFlaw::CERTIFICATE_STORAGE_PERMISSION,cert->type());
+         m_lCurrentFlaws << _F(CERTIFICATE_STORAGE_PERMISSION,cert->type());
       }
       if (! cert->hasRightPermissions()) {
-         m_lCurrentFlaws << Flaw(SecurityFlaw::CERTIFICATE_STORAGE_PERMISSION),cert->type();
+         m_lCurrentFlaws << _F(CERTIFICATE_STORAGE_PERMISSION,cert->type());
       }
       if (! cert->hasRightFolderPermissions()) {
-         m_lCurrentFlaws << Flaw(SecurityFlaw::CERTIFICATE_STORAGE_FOLDER,cert->type());
+         m_lCurrentFlaws << _F(CERTIFICATE_STORAGE_FOLDER,cert->type());
       }
       if (! cert->isLocationSecure()) {
-         m_lCurrentFlaws << Flaw(SecurityFlaw::CERTIFICATE_STORAGE_LOCATION,cert->type());
+         m_lCurrentFlaws << _F(CERTIFICATE_STORAGE_LOCATION,cert->type());
       }
    }
-   qSort(m_lCurrentFlaws);
+
+   qSort(m_lCurrentFlaws.begin(),m_lCurrentFlaws.end(),[] (const Flaw* f1, const Flaw* f2) -> int {
+      return (*f1) < (*f2);
+   });
+   for (int i=0;i<m_lCurrentFlaws.size();i++) {
+      m_lCurrentFlaws[i]->m_Row = i;
+   }
 
    emit layoutChanged();
 }
+#undef _F
 
-QList<SecurityValidationModel::Flaw> SecurityValidationModel::currentFlaws()
+QModelIndex SecurityValidationModel::getIndex(const Flaw* flaw)
+{
+   return index(flaw->m_Row,0);
+}
+
+QList<Flaw*> SecurityValidationModel::currentFlaws()
 {
    return m_lCurrentFlaws;
 }
 
+Certificate::Type Flaw::type() const
+{
+   return m_certType;
+}
 
+SecurityValidationModel::SecurityFlaw Flaw::flaw() const
+{
+   return m_flaw;
+}
+
+SecurityValidationModel::Severity Flaw::severity() const
+{
+   return m_severity;
+}
+
+void Flaw::slotRequestHighlight()
+{
+   emit requestHighlight();
+}

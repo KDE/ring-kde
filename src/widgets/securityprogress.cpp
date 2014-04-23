@@ -24,16 +24,33 @@
 #include <QtGui/QLinearGradient>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
-#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
 #include <QtGui/QListView>
+#include <QtGui/QLineEdit>
 #include <QtCore/QDebug>
 
 //KDE
 #include <KLocale>
 #include <KIcon>
 
-//SFLPhone
-#include <lib/securityvalidationmodel.h>
+class SecurityProgress : public QProgressBar
+{
+   Q_OBJECT
+public:
+   explicit SecurityProgress(QWidget* parent = nullptr);
+   virtual ~SecurityProgress();
+
+protected:
+   //Virtual events
+   void paintEvent ( QPaintEvent*  event);
+
+private:
+   //Attributes
+   QStringList m_Names;
+   QList<QColor> m_lColors;
+   QList<QColor> m_lAltColors;
+
+};
 
 SecurityProgress::SecurityProgress(QWidget* parent) : QProgressBar(parent)
 {
@@ -134,6 +151,8 @@ void SecurityProgress::paintEvent(QPaintEvent* event)
 SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pModel(nullptr)
 {
    QGridLayout* l = new QGridLayout(this);
+   l->setContentsMargins(0,0,0,0);
+   l->setSpacing(0);
 
    m_pLevel = new SecurityProgress(this);
    l->addWidget(m_pLevel,0,0);
@@ -176,6 +195,7 @@ SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pM
    m_pView->setMinimumSize(0,125);
    m_pView->setMaximumSize(99999999,125);
    m_pView->setVisible(false);
+   connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(dblClicked(QModelIndex)));
    l->addWidget(m_pView,2,0);
 //    QSize prog = m_pLevel->sizeHint();
 //    setMinimumSize(0,prog.height()+125);
@@ -196,6 +216,11 @@ void SecurityLevelWidget::setModel(SecurityValidationModel* model)
    connect(model,SIGNAL(layoutChanged()),this,SLOT(reloadCount()));
 }
 
+QListView* SecurityLevelWidget::view() const
+{
+   return m_pView;
+}
+
 void SecurityLevelWidget::mouseReleaseEvent(QMouseEvent * event)
 {
    Q_UNUSED(event)
@@ -206,8 +231,8 @@ void SecurityLevelWidget::reloadCount()
 {
    if (! m_pModel) return;
    int severity[5] = {0,0,0,0,0};
-   foreach(const SecurityValidationModel::Flaw flaw, m_pModel->currentFlaws()) {
-      severity[(int)flaw.severity]++;
+   foreach(const Flaw* flaw, m_pModel->currentFlaws()) {
+      severity[(int)flaw->severity()]++;
    }
    m_pInfoL   ->setText(i18np("%1 tip","%1 tips",severity[(int)SecurityValidationModel::Severity::INFORMATION]));
    m_pWarningL->setText(i18np("%1 warning","%1 warnings",
@@ -217,3 +242,150 @@ void SecurityLevelWidget::reloadCount()
    m_pIssueL  ->setText(i18np("%1 issue","%1 issues",severity[(int)SecurityValidationModel::Severity::ISSUE]));
    m_pErrorL  ->setText(i18np("%1 error","%1 errors",severity[(int)SecurityValidationModel::Severity::ERROR]));
 }
+
+void SecurityLevelWidget::dblClicked(const QModelIndex& idx)
+{
+   if (idx.isValid()) {
+      m_pModel->currentFlaws()[idx.row()]->slotRequestHighlight();
+   }
+}
+
+class IssueButton : public QToolButton
+{
+   Q_OBJECT
+public:
+   IssueButton(const Flaw* flaw, QWidget* parent);
+   const Flaw* m_pFlaw;
+public Q_SLOTS:
+   void slotHighlightFlaw();
+};
+
+IssueButton::IssueButton(const Flaw* flaw, QWidget* parent):
+QToolButton(parent),m_pFlaw(flaw)
+{
+   connect(flaw,SIGNAL(requestHighlight()),this,SLOT(slotHighlightFlaw()));
+}
+
+IssuesIcon::IssuesIcon(QWidget* parent) : QWidget(parent),m_pBuddy(nullptr),
+m_pLayout(new QHBoxLayout(this)),m_pModel(nullptr)
+{
+   
+}
+
+IssuesIcon::~IssuesIcon()
+{
+   
+}
+
+QWidget* IssuesIcon::buddy() const
+{
+   return m_pBuddy;
+}
+
+void IssueButton::slotHighlightFlaw()
+{
+   Flaw* flaw = qobject_cast<Flaw*>(sender());
+   if (flaw == m_pFlaw) {
+      IssuesIcon* par = static_cast<IssuesIcon*>(parentWidget());
+      if (par->buddy()) {
+         par->buddy()->setFocus(Qt::OtherFocusReason);
+      }
+      else {
+         par->parentWidget()->setFocus(Qt::OtherFocusReason);
+      }
+   }
+}
+
+void IssuesIcon::setModel(SecurityValidationModel* model)
+{
+   reset();
+   m_pModel = model;
+}
+
+void IssuesIcon::setBuddy(QWidget* buddy)
+{
+   m_pBuddy = buddy;
+}
+
+void IssuesIcon::addFlaw(const Flaw* flaw)
+{
+   Q_UNUSED(flaw)
+   IssueButton* btn = new IssueButton(flaw,this);
+   switch (flaw->severity()) {
+      case SecurityValidationModel::Severity::INFORMATION:
+         btn->setIcon(KIcon("dialog-information"));
+         break;
+      case SecurityValidationModel::Severity::WARNING:
+      case SecurityValidationModel::Severity::FATAL_WARNING:
+         btn->setIcon(KIcon("dialog-warning"));
+         break;
+      case SecurityValidationModel::Severity::ISSUE:
+         btn->setIcon(KIcon("task-attempt"));
+         break;
+      case SecurityValidationModel::Severity::ERROR:
+         btn->setIcon(KIcon("dialog-error"));
+         break;
+   };
+
+   btn->setToolButtonStyle(Qt::ToolButtonIconOnly);
+   btn->setStyleSheet("border:0px;background-color:transparent;margin:0px;padding:0px;");
+   m_pLayout->addWidget(btn);
+   connect(flaw,SIGNAL(solved()),this,SLOT(slotSolved()));
+   connect(btn,SIGNAL(clicked()),this,SLOT(slotFlawClicked()));
+
+   QLineEdit* le = qobject_cast<QLineEdit*>(parentWidget());
+   if (le) {
+      static const int margin = style()->pixelMetric(QStyle::PM_FocusFrameHMargin)/2;
+      const QSize s = sizeHint();
+      resize(s.width(),le->height()-2*margin);
+      move(le->width()-s.width(),margin);
+   }
+}
+
+void IssuesIcon::slotFlawClicked()
+{
+   IssueButton* btn = qobject_cast<IssueButton*>(sender());
+   if (btn) {
+      selectFlaw(m_pModel->getIndex(btn->m_pFlaw));
+   }
+}
+
+void IssuesIcon::setupForLineEdit(QLineEdit* le)
+{
+   le->installEventFilter(this);
+}
+
+void IssuesIcon::reset()
+{
+   while (layout()->count()) {
+      QWidget* w = layout()->takeAt(0)->widget();
+      if (w) {
+         delete w;
+      }
+   }
+}
+
+bool IssuesIcon::eventFilter(QObject *obj, QEvent *event)
+{
+   QLineEdit* le = qobject_cast<QLineEdit*>(obj);
+   if (le && event->type() == QEvent::Resize) {
+      static const int margin = style()->pixelMetric(QStyle::PM_FocusFrameHMargin)/2;
+      const QSize s = sizeHint();
+      qDebug() << "ICI" << s.width();
+      resize(s.width(),le->height()-2*margin);
+      move(le->width()-s.width(),margin);
+   }
+   return false;
+}
+
+
+void IssuesIcon::slotSolved()
+{
+   Flaw* f = qobject_cast<Flaw*>(sender());
+   if (f) {
+      //TODO
+   }
+}
+
+#include "moc_securityprogress.cpp"
+#include "securityprogress.moc"

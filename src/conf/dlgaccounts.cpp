@@ -51,6 +51,7 @@
 #include "lib/ringtonemodel.h"
 #include "lib/tlsmethodmodel.h"
 #include "lib/certificate.h"
+#include "lib/securityvalidationmodel.h"
 #include "lib/categorizedaccountmodel.h"
 #include "../delegates/ringtonedelegate.h"
 #include "../delegates/categorizeddelegate.h"
@@ -68,7 +69,7 @@
 
 ///Constructor
 DlgAccounts::DlgAccounts(KConfigDialog* parent)
- : QWidget(parent),m_IsLoading(false)
+ : QWidget(parent),m_IsLoading(false),m_pPKII(nullptr)
 {
    m_IsLoading++;
    setupUi(this);
@@ -111,6 +112,28 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    file_tls_authority->lineEdit()->setPlaceholderText(i18n("Usually called \"ca.crt\" or \"cacert.pem\""));
    file_tls_endpoint->lineEdit()->setPlaceholderText(i18n("A .pem or .crt"));
    file_tls_private_key->lineEdit()->setPlaceholderText(i18n("A .key file"));
+   file_tls_authority->lineEdit()->setClearButtonShown(false);
+   file_tls_endpoint->lineEdit()->setClearButtonShown(false);
+   file_tls_private_key->lineEdit()->setClearButtonShown(false);
+
+   //Authority
+   m_pAuthorityII = new IssuesIcon(file_tls_authority->lineEdit());
+   m_pAuthorityII->setupForLineEdit(file_tls_authority->lineEdit());
+   connect(m_pAuthorityII,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
+
+   //End point
+   m_pEndCertII = new IssuesIcon(file_tls_endpoint->lineEdit());
+   m_pEndCertII->setupForLineEdit(file_tls_endpoint->lineEdit());
+   connect(m_pEndCertII,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
+
+   //Private key
+   m_pPKII = new IssuesIcon(file_tls_private_key->lineEdit());
+   m_pPKII->setupForLineEdit(file_tls_private_key->lineEdit());
+   connect(m_pPKII,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
+
+   connect(m_pVerifyServer,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
+   connect(m_pVerifyClient,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
+   connect(m_pReqTLS,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
 
    loadAccountList();
    accountListHasChanged = false;
@@ -503,6 +526,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
       line_stun->setText( ACC sipStunServer() );
    }
 
+   updateSecurityValidation();
+
    updateStatusLabel(account);
    enablePublished();
    frame2_editAccounts->setEnabled(true);
@@ -894,6 +919,102 @@ void DlgAccounts::changeAlias(QString newAlias)
 Account* DlgAccounts::currentAccount() const
 {
    return AccountListModel::instance()->getAccountByModelIndex(CategorizedAccountModel::instance()->mapToSource(treeView_accountList->currentIndex()));
+}
+
+
+void DlgAccounts::addFlawToCertificateField(const Flaw* flaw)
+{
+   switch(flaw->type()) {
+      case Certificate::Type::AUTHORITY:
+         m_pAuthorityII->addFlaw(flaw);
+         break;
+      case Certificate::Type::USER:
+         m_pEndCertII->addFlaw(flaw);
+         break;
+      case Certificate::Type::PRIVATE_KEY:
+         m_pPKII->addFlaw(flaw);
+         break;
+      case Certificate::Type::NONE:
+         qDebug() << "Invalid certificate type";
+         break;
+   };
+}
+
+
+void DlgAccounts::updateSecurityValidation()
+{
+   Account* a = currentAccount();
+   //Create the widgets
+   m_pVerifyServer->setModel(a->securityValidationModel());
+   m_pVerifyClient->setModel(a->securityValidationModel());
+   m_pReqTLS->setModel(a->securityValidationModel());
+   m_pAuthorityII->setModel(a->securityValidationModel());
+   m_pEndCertII->setModel(a->securityValidationModel());
+   m_pPKII->setModel(a->securityValidationModel());
+
+//    IssuesIcon*
+
+//    newWidget->addFlaw(new Flaw(SecurityValidationModel::SecurityFlaw::TLS_DISABLED,Certificate::Type::NONE));
+
+   //Add the flaws
+   foreach(const Flaw* flaw, currentAccount()->securityValidationModel()->currentFlaws()) {
+      switch (flaw->flaw()) {
+         case SecurityValidationModel::SecurityFlaw::SRTP_DISABLED:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::TLS_DISABLED:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_EXPIRED:
+            addFlawToCertificateField(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_SELF_SIGNED:
+            addFlawToCertificateField(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::CA_CERTIFICATE_MISSING:
+            addFlawToCertificateField(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::END_CERTIFICATE_MISSING:
+            addFlawToCertificateField(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::PRIVATE_KEY_MISSING:
+            addFlawToCertificateField(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_MISMATCH:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_PERMISSION:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_FOLDER:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_LOCATION:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::OUTGOING_SERVER_MISMATCH:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::VERIFY_INCOMING_DISABLED:
+            m_pVerifyServer->addFlaw(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::VERIFY_ANSWER_DISABLED:
+            m_pVerifyClient->addFlaw(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::REQUIRE_CERTIFICATE_DISABLED:
+            
+            break;
+         case SecurityValidationModel::SecurityFlaw::MISSING_CERTIFICATE:
+            addFlawToCertificateField(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::MISSING_AUTHORITY:
+            addFlawToCertificateField(flaw);
+            break;
+         case SecurityValidationModel::SecurityFlaw::COUNT:
+         default:
+            qDebug() << "Invalid flaw";
+      }
+   }
 }
 
 #undef ACC_
