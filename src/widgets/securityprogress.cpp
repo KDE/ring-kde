@@ -209,11 +209,11 @@ void SecurityLevelWidget::reloadCount()
    foreach(const SecurityValidationModel::Flaw flaw, m_pModel->currentFlaws()) {
       severity[(int)flaw.severity]++;
    }
-   m_pInfoL   ->setText(i18n("%1 tips",severity[(int)SecurityValidationModel::Severity::INFORMATION]));
-   m_pWarningL->setText(i18n("%1 warnings",
+   m_pInfoL   ->setText(i18np("%1 tip","%1 tips",severity[(int)SecurityValidationModel::Severity::INFORMATION]));
+   m_pWarningL->setText(i18np("%1 warning","%1 warnings",
         severity[(int)SecurityValidationModel::Severity::WARNING      ]
       + severity[(int)SecurityValidationModel::Severity::FATAL_WARNING]
    ));
-   m_pIssueL  ->setText(i18n("%1 issues",severity[(int)SecurityValidationModel::Severity::ISSUE]));
-   m_pErrorL  ->setText(i18n("%1 errors",severity[(int)SecurityValidationModel::Severity::ERROR]));
+   m_pIssueL  ->setText(i18np("%1 issue","%1 issues",severity[(int)SecurityValidationModel::Severity::ISSUE]));
+   m_pErrorL  ->setText(i18np("%1 error","%1 errors",severity[(int)SecurityValidationModel::Severity::ERROR]));
 }

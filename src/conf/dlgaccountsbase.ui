@@ -1475,7 +1475,7 @@
                          </sizepolicy>
                         </property>
                         <property name="text">
-                         <string>A good security practice is to move the certificates to a common directory. SELinux recommand ~/.cert for this. Do you wish to move the certificate there?</string>
+                         <string>A good security practice is to move the certificates to a common directory. SELinux recommend ~/.cert for this. Do you wish to move the certificate there?</string>
                         </property>
                         <property name="wordWrap">
                          <bool>true</bool>
