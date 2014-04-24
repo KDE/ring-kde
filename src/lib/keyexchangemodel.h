@@ -37,7 +37,7 @@ public:
       ZRTP = 0,
       SDES = 1,
       NONE = 2,
-      COUNT,
+      __COUNT,
    };
 
    ///@enum Options Every Key exchange options
@@ -47,7 +47,7 @@ public:
       NOT_SUPP_WARNING = 2,
       HELLO_HASH       = 3,
       DISPLAY_SAS_ONCE = 4,
-      COUNT,
+      __COUNT,
    };
 
    class Name {

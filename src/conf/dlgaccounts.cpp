@@ -1010,7 +1010,7 @@ void DlgAccounts::updateSecurityValidation()
          case SecurityValidationModel::SecurityFlaw::MISSING_AUTHORITY:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::COUNT:
+         case SecurityValidationModel::SecurityFlaw::__COUNT:
          default:
             qDebug() << "Invalid flaw";
       }

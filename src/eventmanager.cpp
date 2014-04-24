@@ -441,7 +441,7 @@ void EventManager::escape()
          case Call::State::OVER:
          case Call::State::CONFERENCE:
          case Call::State::CONFERENCE_HOLD:
-         case Call::State::COUNT:
+         case Call::State::__COUNT:
          default:
             call->performAction(Call::Action::REFUSE);
       }
@@ -476,7 +476,7 @@ void EventManager::enter()
          case Call::State::ERROR:
          case Call::State::CONFERENCE:
          case Call::State::CONFERENCE_HOLD:
-         case Call::State::COUNT:
+         case Call::State::__COUNT:
          default:
             kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
       }
@@ -531,7 +531,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::ERROR:
       case Call::State::CONFERENCE:
       case Call::State::CONFERENCE_HOLD:
-      case Call::State::COUNT:
+      case Call::State::__COUNT:
       default:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_STATE_CHANGED);
          kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";

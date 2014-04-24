@@ -34,10 +34,10 @@ template<class T, class E>
 struct TypedStateMachine
 {
     // no ctor/dtor and one public member variable for easy initialization
-    T _data[size_t(E::COUNT)];
+    T _data[size_t(E::__COUNT)];
 
     T& operator[](E v) {
-      if (size_t(v) >= size_t(E::COUNT)) {
+      if (size_t(v) >= size_t(E::__COUNT)) {
          qDebug() << "State Machine Out of Bound" << size_t(v);
          throw v;
       }
@@ -45,7 +45,7 @@ struct TypedStateMachine
     }
 
     const T& operator[](E v) const {
-      if (size_t(v) >= size_t(E::COUNT)) {
+      if (size_t(v) >= size_t(E::__COUNT)) {
          qDebug() << "State Machine Out of Bound" << size_t(v);
          throw v;
       }
@@ -57,9 +57,18 @@ struct TypedStateMachine
     }
 
     T *end() {
-      return _data + size_t(E::COUNT);
+      return _data + size_t(E::__COUNT);
     }
 };
+
+/**
+ * This function add a safe way to get an enum class size
+ * @note it cannot be "const" due to some compiler issues
+ * @note it cannot be unsigned to avoid some compiler warnings
+ */
+template<typename A> constexpr int enum_class_size() {
+   return static_cast<int>(A::__COUNT);
+}
 
 #define LIB_EXPORT Q_DECL_EXPORT
 #define LIB_IMPORT Q_DECL_IMPORT

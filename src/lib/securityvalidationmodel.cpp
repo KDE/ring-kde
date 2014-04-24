@@ -21,7 +21,7 @@
 
 #include <QtAlgorithms>
 
-const QString SecurityValidationModel::messages[static_cast<const int>(SecurityFlaw::COUNT)] = {
+const QString SecurityValidationModel::messages[enum_class_size<SecurityFlaw>()] = {
    QObject::tr("Your communication negotiation is secured, but not the media stream, please enable ZRTP or SDES"),
    QObject::tr("TLS is disabled, the negotiation wont be encrypted. Your communication will be vulnerable to "
    "snooping"),

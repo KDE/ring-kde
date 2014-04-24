@@ -372,7 +372,7 @@ void SFLPhoneView::updateWindowCallState()
             enabledActions  [ SFLPhone::CallAction::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;
             break;
-         case Call::State::COUNT:
+         case Call::State::__COUNT:
          default:
             kDebug() << "Error : Reached unexisting state for call "  << call->id() << "(" << call->state() << "!";
             break;

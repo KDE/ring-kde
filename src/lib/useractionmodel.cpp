@@ -87,7 +87,7 @@ void UserActionModel::slotStateChanged()
 uint UserActionModel::relativeIndex( UserActionModel::Action action ) const
 {
    int i(0),ret(0);
-   while (i != static_cast<int>(action) && i < static_cast<int>(UserActionModel::Action::COUNT)) {
+   while (i != static_cast<int>(action) && i < enum_class_size<UserActionModel::Action>()) {
       ret += isActionEnabled(static_cast<UserActionModel::Action>(i))?1:0;
       i++;
    }
@@ -97,7 +97,7 @@ uint UserActionModel::relativeIndex( UserActionModel::Action action ) const
 uint UserActionModel::enabledCount( ) const
 {
    uint ret =0;
-   for (int i=0;i< static_cast<int>(UserActionModel::Action::COUNT); i++)
+   for (int i=0;i< enum_class_size<UserActionModel::Action>(); i++)
       ret += isActionEnabled(static_cast<UserActionModel::Action>(i))?1:0;
    return ret;
 }

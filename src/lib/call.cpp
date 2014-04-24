@@ -487,7 +487,7 @@ const QString Call::toHumanStateName(const Call::State cur)
          break;
       case Call::State::CONFERENCE_HOLD:
          return tr( "Conference (hold)" );
-      case Call::State::COUNT:
+      case Call::State::__COUNT:
          return tr( "ERROR"             );
       default:
          return QString::number(static_cast<int>(cur));
@@ -780,7 +780,7 @@ Call::State Call::stateChanged(const QString& newStateName)
    Call::State previousState = m_CurrentState;
    if (!m_isConference) {
       Call::DaemonState dcs = toDaemonCallState(newStateName);
-      if (dcs == Call::DaemonState::COUNT || m_CurrentState == Call::State::COUNT) {
+      if (dcs == Call::DaemonState::__COUNT || m_CurrentState == Call::State::__COUNT) {
          qDebug() << "Error: Invalid state change";
          return Call::State::FAILURE;
       }
@@ -918,7 +918,7 @@ Call::State Call::performAction(Call::Action action)
 ///Change the state
 void Call::changeCurrentState(Call::State newState)
 {
-   if (newState == Call::State::COUNT) {
+   if (newState == Call::State::__COUNT) {
       qDebug() << "Error: Call reach invalid state";
       m_CurrentState = Call::State::ERROR;
       throw newState;
@@ -1231,7 +1231,7 @@ void Call::warning()
    switch (m_CurrentState) {
       case Call::State::FAILURE        :
       case Call::State::ERROR          :
-      case Call::State::COUNT          :
+      case Call::State::__COUNT          :
          //If not stopped, then the counter will keep going
          //Getting here indicate something wrong happened
          //It can be normal, aka, an invalid URI such as '><'
@@ -1283,7 +1283,7 @@ void Call::appendText(const QString& str)
    case Call::State::ERROR:
    case Call::State::CONFERENCE:
    case Call::State::CONFERENCE_HOLD:
-   case Call::State::COUNT:
+   case Call::State::__COUNT:
    default:
       qDebug() << "Backspace on call not editable. Doing nothing.";
       return;
@@ -1325,7 +1325,7 @@ void Call::backspaceItemText()
       case Call::State::ERROR:
       case Call::State::CONFERENCE:
       case Call::State::CONFERENCE_HOLD:
-      case Call::State::COUNT:
+      case Call::State::__COUNT:
       default                          :
          qDebug() << "Backspace on call not editable. Doing nothing.";
          return;
@@ -1369,7 +1369,7 @@ void Call::reset()
       case Call::State::ERROR            :
       case Call::State::CONFERENCE       :
       case Call::State::CONFERENCE_HOLD  :
-      case Call::State::COUNT:
+      case Call::State::__COUNT:
       default                            :
          qDebug() << "Cannot reset" << m_CurrentState << "calls";
          return;

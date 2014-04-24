@@ -65,7 +65,7 @@ void CallViewToolbar::updateState()
       TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
       manager->setBottomMargin(53);
       char act_counter = 0;
-      for (int i = 0;i<static_cast<int>(UserActionModel::Action::COUNT);i++) {
+      for (int i = 0;i<enum_class_size<UserActionModel::Action>();i++) {
          try {
             if (call && call->userActionModel()) {
                actionButton(i)->setVisible(call->userActionModel()->isActionEnabled(static_cast<UserActionModel::Action>(i)));

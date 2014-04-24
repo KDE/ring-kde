@@ -90,7 +90,7 @@ public:
       REQUIRE_CERTIFICATE_DISABLED   ,
       MISSING_CERTIFICATE            ,
       MISSING_AUTHORITY              ,
-      COUNT
+      __COUNT
    };
 
    ///Role for the model
@@ -99,7 +99,7 @@ public:
    };
 
    ///Messages to show to the end user
-   static const QString messages[static_cast<const int>(SecurityFlaw::COUNT)];
+   static const QString messages[enum_class_size<SecurityFlaw>()];
 
    //Constructor
    SecurityValidationModel(Account* account);

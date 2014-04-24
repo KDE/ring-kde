@@ -137,7 +137,7 @@ public:
       ERROR           = 10,/** This state should never be reached */
       CONFERENCE      = 11,/** This call is the current conference*/
       CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
-      COUNT,
+      __COUNT,
    };
    Q_ENUMS(State)
 
@@ -245,7 +245,7 @@ public:
       HOLD    = 3, /** Call is on hold */
       HUNG_UP = 4, /** Call is over  */
       FAILURE = 5, /** Call has failed */
-      COUNT,
+      __COUNT,
    };
 
    /** @enum Call::Action
@@ -258,7 +258,7 @@ public:
       TRANSFER = 2, /** Put into or out of transfer mode*/
       HOLD     = 3, /** Hold or unhold the call */
       RECORD   = 4, /** Enable or disable recording */
-      COUNT,
+      __COUNT,
    };
 
    //Read only properties

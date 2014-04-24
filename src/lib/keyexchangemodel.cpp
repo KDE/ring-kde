@@ -49,7 +49,7 @@ QVariant KeyExchangeModel::data( const QModelIndex& index, int role) const
          case KeyExchangeModel::Type::SDES:
             return KeyExchangeModel::Name::SDES;
             break;
-         case KeyExchangeModel::Type::COUNT:
+         case KeyExchangeModel::Type::__COUNT:
             break;
       };
    }
@@ -94,7 +94,7 @@ const char* KeyExchangeModel::toDaemonName(KeyExchangeModel::Type type)
       case KeyExchangeModel::Type::SDES:
          return KeyExchangeModel::DaemonName::SDES;
          break;
-      case KeyExchangeModel::Type::COUNT:
+      case KeyExchangeModel::Type::__COUNT:
          break;
    };
    return nullptr; //Cannot heppen
