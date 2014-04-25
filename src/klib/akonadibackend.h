@@ -99,6 +99,7 @@ private Q_SLOTS:
    void slotItemAdded(const Akonadi::Item& item, const Akonadi::Collection& coll);
    void slotItemChanged (const Akonadi::Item &item, const QSet< QByteArray > &partIdentifiers);
    void slotItemRemoved (const Akonadi::Item &item);
+   void slotJobCompleted(KJob* job);
 };
 
 #endif

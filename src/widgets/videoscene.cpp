@@ -20,6 +20,7 @@
 #include <QtCore/QMutex>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <GL/glu.h>
+#include <QGraphicsSceneMouseEvent>
 
 #include "videoglframe.h"
 #include "videotoolbar.h"

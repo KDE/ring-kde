@@ -247,6 +247,23 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
  *                                                                           *
  ****************************************************************************/
 
+void AkonadiBackend::slotJobCompleted(KJob* job)
+{
+   if (job->error()) {
+      kDebug() << "An Akonadi job failed";
+      return;
+   }
+   Akonadi::RecursiveItemFetchJob* akojob = qobject_cast<Akonadi::RecursiveItemFetchJob*>(job);
+   if (akojob) {
+      const bool onlyWithNumber =  ConfigurationSkeleton::hideContactWithoutPhone();
+      const Akonadi::Item::List items = akojob->items();
+      foreach ( const Akonadi::Item &item, items ) {
+         Contact* c = addItem(item,onlyWithNumber);
+         ContactModel::instance()->addContact(c);
+      }
+   }
+}
+
 ///Update the contact list when a new Akonadi collection is added
 void AkonadiBackend::update(const Akonadi::Collection& collection)
 {
@@ -255,18 +272,10 @@ void AkonadiBackend::update(const Akonadi::Collection& collection)
       return;
    }
 
-   const bool onlyWithNumber =  ConfigurationSkeleton::hideContactWithoutPhone();
-
    Akonadi::RecursiveItemFetchJob *job = new Akonadi::RecursiveItemFetchJob( collection, QStringList() << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType());
    job->fetchScope().fetchFullPayload();
-   if ( job->exec() ) {
-      const Akonadi::Item::List items = job->items();
-
-      foreach ( const Akonadi::Item &item, items ) {
-         Contact* c = addItem(item,onlyWithNumber);
-         ContactModel::instance()->addContact(c);
-      }
-   }
+   connect(job, SIGNAL( result( KJob* ) ), this, SLOT( slotJobCompleted( KJob* ) ) );
+   job->start();
 //    return m_ContactByUid.values();
 } //update
 

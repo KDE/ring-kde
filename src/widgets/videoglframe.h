@@ -20,6 +20,10 @@
 
 #include <QtCore/QObject>
 
+#include <QObject>
+#include <QSize>
+#include <QPoint>
+
 class VideoRenderer;
 
 class ThreadedPainter2;
