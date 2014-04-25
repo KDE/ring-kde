@@ -59,7 +59,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
 
       //Setters
       void setResolution(QSize   size);
-      void setShmPath   (QString path);
+      void setShmPath   (const QString& path);
 
    private:
       //Attributes

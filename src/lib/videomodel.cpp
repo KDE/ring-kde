@@ -152,7 +152,7 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
    }
    qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
 //    emit videoStopped();
-   
+
    VideoDevice* dev = device(id);
    if (dev) {
       emit dev->renderingStopped(r);

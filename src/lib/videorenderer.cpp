@@ -83,14 +83,14 @@ bool VideoRenderer::renderToBitmap()
       return true;
    }
 
+   if(!VideoModel::instance()->startStopMutex()->tryLock())
+      return false;
+
    // wait for a new buffer
    while (m_BufferGen == m_pShmArea->m_BufferGen) {
       shmUnlock();
 
-      if(!VideoModel::instance()->startStopMutex()->tryLock())
-         return false;
       int err = sem_trywait(&m_pShmArea->notification);
-      VideoModel::instance()->startStopMutex()->unlock();
       // Useful for debugging
 //       switch (errno ) {
 //          case EINTR:
@@ -115,16 +115,20 @@ bool VideoRenderer::renderToBitmap()
 //             break;
 //       }
       if (err < 0) {
+         VideoModel::instance()->startStopMutex()->unlock();
          return errno == EAGAIN;
       }
 
       if (!shmLock()) {
+         VideoModel::instance()->startStopMutex()->unlock();
          return true;
       }
+      usleep((1/60.0)*10000);
    }
 
    if (!resizeShm()) {
       qDebug() << "Could not resize shared memory";
+      VideoModel::instance()->startStopMutex()->unlock();
       return false;
    }
 
@@ -135,8 +139,8 @@ bool VideoRenderer::renderToBitmap()
    m_BufferGen = m_pShmArea->m_BufferGen;
    shmUnlock();
    m_FrameIdx = !m_FrameIdx;
-//    return data;
-//    m_pSSMutex->unlock();
+
+   VideoModel::instance()->startStopMutex()->unlock();
    return true;
 #else
    return false;
@@ -357,7 +361,7 @@ void VideoRenderer::setResolution(QSize size)
    m_Height = size.height();
 }
 
-void VideoRenderer::setShmPath(QString path)
+void VideoRenderer::setShmPath(const QString& path)
 {
    m_ShmPath = path;
 }
