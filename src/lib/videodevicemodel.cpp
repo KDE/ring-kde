@@ -94,7 +94,7 @@ void VideoDeviceModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
    qDebug() << "DEV CHANGE" << m_lDevices[idx.row()]->id();
-      VideoInterface& interface = DBus::VideoManager::instance();
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
       interface.setActiveDevice(m_lDevices[idx.row()]->id());
       emit changed();
       emit currentIndexChanged(idx.row());
@@ -110,7 +110,7 @@ void VideoDeviceModel::setActive(const int idx)
 
 void VideoDeviceModel::setActive(const VideoDevice* device)
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.setActiveDevice(device->id());
    emit changed();
    const int idx = m_lDevices.indexOf((VideoDevice*)device);
@@ -120,7 +120,7 @@ void VideoDeviceModel::setActive(const VideoDevice* device)
 void VideoDeviceModel::reload()
 {
    QHash<QString,VideoDevice*> devicesHash;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceList();
    if (deviceList.size() == m_hDevices.size()) {
       m_lDevices = m_hDevices.values();
@@ -152,7 +152,7 @@ void VideoDeviceModel::reload()
 
 VideoDevice* VideoDeviceModel::activeDevice() const
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QString deId = interface.getActiveDevice();
    if (!m_lDevices.size())
       const_cast<VideoDeviceModel*>(this)->reload();
@@ -225,7 +225,7 @@ VideoDeviceResolutionModel::~VideoDeviceResolutionModel()
 
 Resolution VideoDeviceResolutionModel::activeResolution() const
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QString res = interface.getActiveDeviceSize();
    if (!m_hResolutions[res])
       const_cast<VideoDeviceResolutionModel*>(this)->reload();
@@ -239,7 +239,7 @@ void VideoDeviceResolutionModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
    qDebug() << "RES CHANGE" << m_lResolutions[idx.row()]->toString();
-      VideoInterface& interface = DBus::VideoManager::instance();
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
       interface.setActiveDeviceSize(m_lResolutions[idx.row()]->toString());
       emit changed();
       qDebug() << "CURRENT" << idx.row();
@@ -258,7 +258,7 @@ void VideoDeviceResolutionModel::setActive(const int idx)
 void VideoDeviceResolutionModel::reload()
 {
    QHash<QString,Resolution*> devicesHash;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceSizeList(VideoDeviceModel::instance()->activeDevice()->id(),
                                                               VideoDeviceModel::instance()->rateModel()->activeRate());
    if (deviceList.size() == m_hResolutions.size()) {
@@ -307,7 +307,7 @@ VideoDeviceChannelModel* VideoDeviceModel::channelModel() const
 
 QString VideoDeviceChannelModel::activeChannel() const
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceChannel();
 }
 
@@ -358,7 +358,7 @@ void VideoDeviceChannelModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
       qDebug() << "CHAN CHANGE" << m_lChannels[idx.row()];
-      VideoInterface& interface = DBus::VideoManager::instance();
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
       interface.setActiveDeviceChannel(m_lChannels[idx.row()]);
       emit changed();
       emit currentIndexChanged(idx.row());
@@ -374,7 +374,7 @@ void VideoDeviceChannelModel::setActive(const int idx)
 void VideoDeviceChannelModel::reload()
 {
    QHash<QString,QString> devicesHash;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceChannelList(VideoDeviceModel::instance()->activeDevice()->id());
 
    m_lChannels = deviceList;
@@ -405,7 +405,7 @@ VideoDeviceRateModel* VideoDeviceModel::rateModel() const
 
 QString VideoDeviceRateModel::activeRate() const
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceRate();
 }
 
@@ -456,7 +456,7 @@ void VideoDeviceRateModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
       qDebug() << "RATE CHANGE" << m_lRates[idx.row()];
-      VideoInterface& interface = DBus::VideoManager::instance();
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
       interface.setActiveDeviceRate(m_lRates[idx.row()]);
       emit changed();
       emit currentIndexChanged(idx.row());
@@ -474,7 +474,7 @@ void VideoDeviceRateModel::setActive(const int idx)
 void VideoDeviceRateModel::reload()
 {
    QHash<QString,VideoDevice*> devicesHash;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceRateList(VideoDeviceModel::instance()->activeDevice()->id                 (),
                                                               VideoDeviceModel::instance()->channelModel()->activeChannel      (),
                                                               VideoDeviceModel::instance()->resolutionModel()->activeResolution().toString()

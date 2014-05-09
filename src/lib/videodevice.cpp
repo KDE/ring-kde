@@ -63,56 +63,56 @@ VideoDevice::~VideoDevice()
 ///Get the valid rates for this device
 const QStringList VideoDevice::rateList(VideoChannel channel, Resolution resolution)
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    return interface.getDeviceRateList(m_DeviceId,channel,resolution.toString());
 }
 
 ///Get the valid channel list
 const QList<VideoChannel> VideoDevice::channelList()
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    return interface.getDeviceChannelList(m_DeviceId);
 }
 
 ///Set the current device rate
 void VideoDevice::setRate(VideoRate rate)
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.setActiveDeviceRate(rate);
 }
 
 ///Set the current resolution
 void VideoDevice::setResolution(Resolution resolution) //??? No device
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.setActiveDeviceSize(resolution.toString());
 }
 
 ///Set the current device channel
 void VideoDevice::setChannel(VideoChannel channel) //??? No device
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.setActiveDeviceChannel(channel);
 }
 
 ///Get the current resolution
 const Resolution VideoDevice::resolution()
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    return Resolution(interface.getActiveDeviceSize());
 }
 
 ///Get the current channel
 const VideoChannel VideoDevice::channel() //??? No device
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceChannel();
 }
 
 ///Get the current rate
 const VideoRate VideoDevice::rate()
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    return interface.getActiveDeviceRate();
 }
 
@@ -120,7 +120,7 @@ const VideoRate VideoDevice::rate()
 const QList<Resolution> VideoDevice::resolutionList(VideoChannel channel)
 {
    QList<Resolution> toReturn;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QStringList list = interface.getDeviceSizeList(m_DeviceId,channel);
    foreach(const QString& res,list) {
       toReturn << Resolution(res);

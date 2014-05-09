@@ -267,7 +267,7 @@
 
        <!-- For now only expose these two options to clients -->
        <method name="muteDtmf" tp:name-for-bindings="muteDtmf">
-           <arg type="b" name="muteDtmf" direction="in"/>
+           <arg type="b" name="mute" direction="in"/>
        </method>
        <method name="isDtmfMuted" tp:name-for-bindings="isDtmfMuted">
            <arg type="b" name="muted" direction="out"/>
@@ -312,6 +312,14 @@
 
        <method name="setAudioManager" tp:name-for-bindings="setAudioManager">
            <arg type="s" name="api" direction="in">
+           </arg>
+       </method>
+
+       <method name="getSupportedAudioManagers" tp:name-for-bindings="getSupportedAudioManagers">
+           <tp:docstring>
+               Returns a list of compiled audio backends.
+           </tp:docstring>
+           <arg type="as" name="api" direction="out">
            </arg>
        </method>
 
@@ -416,8 +424,15 @@
            </arg>
        </method>
 
-       <method name="getAudioDeviceIndex" tp:name-for-bindings="getAudioDeviceIndex">
-           <arg type="s" name="name" direction="in">
+       <method name="getAudioInputDeviceIndex" tp:name-for-bindings="getAudioInputDeviceIndex">
+           <arg type="s" name="devname" direction="in">
+           </arg>
+           <arg type="i" name="index" direction="out">
+           </arg>
+       </method>
+
+       <method name="getAudioOutputDeviceIndex" tp:name-for-bindings="getAudioOutputDeviceIndex">
+           <arg type="s" name="devname" direction="in">
            </arg>
            <arg type="i" name="index" direction="out">
            </arg>
@@ -603,6 +618,32 @@
        <method name="setShortcuts" tp:name-for-bindings="setShortcuts">
                    <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="MapStringString"/>
            <arg type="a{ss}" name="shortcutsMap" direction="in">
+           </arg>
+       </method>
+
+       <!-- Security Methods -->
+       <method name="checkForPrivateKey" tp:name-for-bindings="checkForPrivateKey">
+           <arg type="s" name="pemPath" direction="in">
+           </arg>
+           <arg type="b" name="containPrivateKey" direction="out">
+           </arg>
+       </method>
+
+       <method name="checkCertificateValidity" tp:name-for-bindings="checkCertificateValidity">
+           <arg type="s" name="pemPath" direction="in">
+           </arg>
+           <arg type="b" name="isValid" direction="out">
+           </arg>
+       </method>
+
+       <method name="checkHostnameCertificate" tp:name-for-bindings="checkHostnameCertificate">
+           <arg type="s" name="pemPath" direction="in">
+           </arg>
+           <arg type="s" name="host" direction="in">
+           </arg>
+           <arg type="s" name="port" direction="in">
+           </arg>
+           <arg type="b" name="isValid" direction="out">
            </arg>
        </method>
    </interface>

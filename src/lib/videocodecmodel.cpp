@@ -96,7 +96,7 @@ void VideoCodecModel::reload()
       m_lCodecs.removeAt(0);
       delete c;
    }
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->id());
    foreach(const MapStringString& h,codecs) {
       VideoCodec* c = new VideoCodec(h[VideoCodec::CodecFields::NAME],
@@ -111,7 +111,7 @@ void VideoCodecModel::reload()
 ///Save the current model over dbus
 void VideoCodecModel::save()
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    VectorMapStringString toSave;
    foreach(VideoCodec* vc,m_lCodecs) {
       toSave << vc->toMap();

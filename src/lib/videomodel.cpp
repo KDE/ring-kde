@@ -33,7 +33,7 @@ VideoModel* VideoModel::m_spInstance = nullptr;
 ///Constructor
 VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex())
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
    connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int)), this, SLOT(startedDecoding(QString,QString,int,int)));
    connect( &interface , SIGNAL(stoppedDecoding(QString,QString))        , this, SLOT(stoppedDecoding(QString,QString))        );
@@ -68,7 +68,7 @@ VideoRenderer* VideoModel::getRenderer(const Call* call) const
 VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
-      VideoInterface& interface = DBus::VideoManager::instance();
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
       m_lRenderers["local"] = new VideoRenderer("local","", Resolution(interface.getActiveDeviceSize()));
    }
    return m_lRenderers["local"];
@@ -77,7 +77,7 @@ VideoRenderer* VideoModel::previewRenderer()
 ///Stop video preview
 void VideoModel::stopPreview()
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.stopCamera();
    m_PreviewState = false;
 }
@@ -86,7 +86,7 @@ void VideoModel::stopPreview()
 void VideoModel::startPreview()
 {
    if (m_PreviewState) return;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.startCamera();
    m_PreviewState = true;
 }
@@ -175,7 +175,7 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
 
 // void VideoModel::setActiveDevice(const VideoDevice* device)
 // {
-//    VideoInterface& interface = DBus::VideoManager::instance();
+//    VideoManagerInterface& interface = DBus::VideoManager::instance();
 //    if (isPreviewing()) {
 //       switchDevice(device);
 //    }
@@ -184,14 +184,14 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
 
 void VideoModel::switchDevice(const VideoDevice* device) const
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.switchInput(device->id());
 }
 
 QList<VideoDevice*> VideoModel::devices()
 {
    QHash<QString,VideoDevice*> devicesHash;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceList();
    if (deviceList.size() == m_hDevices.size()) {
 //       qDebug() << "\n\nRETUNING CACHE" << m_hDevices.values();
@@ -224,7 +224,7 @@ QList<VideoDevice*> VideoModel::devices()
 
 // VideoDevice* VideoModel::activeDevice() const
 // {
-//    VideoInterface& interface = DBus::VideoManager::instance();
+//    VideoManagerInterface& interface = DBus::VideoManager::instance();
 //    const QString deId = interface.getActiveDevice();
 //    if (!deId.isEmpty() && !m_hDevices.size()) {
 //       const_cast<VideoModel*>(this)->devices();

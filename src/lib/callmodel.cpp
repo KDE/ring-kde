@@ -82,7 +82,7 @@ void CallModel::init()
    if (!dbusInit) {
       CallManagerInterface& callManager = DBus::CallManager::instance();
       #ifdef ENABLE_VIDEO
-      VideoInterface& interface = DBus::VideoManager::instance();
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
       #endif
 
       //SLOTS

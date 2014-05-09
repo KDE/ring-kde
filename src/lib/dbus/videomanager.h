@@ -30,10 +30,10 @@ namespace DBus {
    {
 
    private:
-      static VideoInterface* interface;
+      static VideoManagerInterface* interface;
 
    public:
-      static VideoInterface& instance();
+      static VideoManagerInterface& instance();
 
    };
 

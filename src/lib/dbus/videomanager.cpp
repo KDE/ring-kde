@@ -17,13 +17,13 @@
  ***************************************************************************/
 #include "videomanager.h"
 
-VideoInterface* DBus::VideoManager::interface = nullptr;
+VideoManagerInterface* DBus::VideoManager::interface = nullptr;
 
-VideoInterface& DBus::VideoManager::instance()
+VideoManagerInterface& DBus::VideoManager::instance()
 {
    if (!dbus_metaTypeInit) registerCommTypes();
    if (!interface)
-      interface = new VideoInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/VideoControls", QDBusConnection::sessionBus());
+      interface = new VideoManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/VideoManager", QDBusConnection::sessionBus());
    
    if(!interface->connection().isConnected()) {
       throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From instance interface.";

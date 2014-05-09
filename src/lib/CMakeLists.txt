@@ -225,12 +225,12 @@ ENDIF(${ENABLE_QT5} MATCHES true)
 
 
 # video manager interface
-SET ( video_xml  ${dbus_xml_introspecs_path}/video_controls-introspec.xml )
+SET ( video_xml  ${dbus_xml_introspecs_path}/videomanager-introspec.xml )
 
 SET_SOURCE_FILES_PROPERTIES(
    ${video_xml}
    PROPERTIES
-   CLASSNAME VideoInterface
+   CLASSNAME VideoManagerInterface
    INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h")
 
 IF(${ENABLE_QT5} MATCHES true)
