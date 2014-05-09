@@ -111,7 +111,8 @@ void VideoDeviceModel::setActive(const int idx)
 void VideoDeviceModel::setActive(const VideoDevice* device)
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   interface.setActiveDevice(device->id());
+   //An 
+   interface.setActiveDevice(device?device->id():VideoDevice::NONE);
    emit changed();
    const int idx = m_lDevices.indexOf((VideoDevice*)device);
    emit currentIndexChanged(idx);
@@ -227,7 +228,10 @@ Resolution VideoDeviceResolutionModel::activeResolution() const
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QString res = interface.getActiveDeviceSize();
-   if (!m_hResolutions[res])
+
+   //Empty rate is normal for the NONE device, while it should not get here
+   //better avoid the infinite loop that will be created
+   if (!m_hResolutions[res] && ! res.isEmpty())
       const_cast<VideoDeviceResolutionModel*>(this)->reload();
    if (m_hResolutions[res])
       return *m_hResolutions[res];
@@ -259,28 +263,35 @@ void VideoDeviceResolutionModel::reload()
 {
    QHash<QString,Resolution*> devicesHash;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   const QStringList deviceList = interface.getDeviceSizeList(VideoDeviceModel::instance()->activeDevice()->id(),
-                                                              VideoDeviceModel::instance()->rateModel()->activeRate());
-   if (deviceList.size() == m_hResolutions.size()) {
+   VideoDevice* active = VideoDeviceModel::instance()->activeDevice();
+   if (active) {
+      const QStringList deviceList = interface.getDeviceSizeList(active->id(),
+                                                               VideoDeviceModel::instance()->rateModel()->activeRate());
+      if (deviceList.size() == m_hResolutions.size()) {
+         m_lResolutions = m_hResolutions.values();
+      }
+
+      foreach(const QString& deviceName,deviceList) {
+         if (!m_hResolutions.contains(deviceName)) {
+            devicesHash[deviceName] = new Resolution(deviceName);
+         }
+         else {
+            devicesHash[deviceName] = m_hResolutions[deviceName];
+         }
+      }
+      m_hResolutions.clear();
+      m_hResolutions = devicesHash;
       m_lResolutions = m_hResolutions.values();
-   }
+      qDebug() << "\n\n\nRELOADING RES" << m_hResolutions.size();
+      emit layoutChanged();
 
-   foreach(const QString& deviceName,deviceList) {
-      if (!m_hResolutions.contains(deviceName)) {
-         devicesHash[deviceName] = new Resolution(deviceName);
-      }
-      else {
-         devicesHash[deviceName] = m_hResolutions[deviceName];
-      }
+      VideoDeviceModel::instance()->rateModel()->reload();
+      setActive(m_lResolutions.indexOf(m_hResolutions[activeResolution().toString()]));
    }
-   m_hResolutions.clear();
-   m_hResolutions = devicesHash;
-   m_lResolutions = m_hResolutions.values();
-   qDebug() << "\n\n\nRELOADING RES" << m_hResolutions.size();
-   emit layoutChanged();
-
-   VideoDeviceModel::instance()->rateModel()->reload();
-   setActive(m_lResolutions.indexOf(m_hResolutions[activeResolution().toString()]));
+   else {
+      m_hResolutions.clear();
+      emit layoutChanged();
+   }
 }
 
 
@@ -375,14 +386,22 @@ void VideoDeviceChannelModel::reload()
 {
    QHash<QString,QString> devicesHash;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   const QStringList deviceList = interface.getDeviceChannelList(VideoDeviceModel::instance()->activeDevice()->id());
+   VideoDevice* active = VideoDeviceModel::instance()->activeDevice();
+   if (active) {
+      const QStringList deviceList = interface.getDeviceChannelList(active->id());
 
-   m_lChannels = deviceList;
-   emit layoutChanged();
+      m_lChannels = deviceList;
+      emit layoutChanged();
 
-   VideoDeviceModel::instance()->resolutionModel()->reload();
+      VideoDeviceModel::instance()->resolutionModel()->reload();
 
-   setActive(m_lChannels.indexOf(activeChannel()));
+      setActive(m_lChannels.indexOf(activeChannel()));
+   }
+   else {
+      //There is no channel when there is no devices
+      m_lChannels.clear();
+      emit layoutChanged();
+   }
 }
 
 int VideoDeviceChannelModel::currentIndex() const
@@ -475,14 +494,21 @@ void VideoDeviceRateModel::reload()
 {
    QHash<QString,VideoDevice*> devicesHash;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   const QStringList deviceList = interface.getDeviceRateList(VideoDeviceModel::instance()->activeDevice()->id                 (),
-                                                              VideoDeviceModel::instance()->channelModel()->activeChannel      (),
-                                                              VideoDeviceModel::instance()->resolutionModel()->activeResolution().toString()
-                                                             );
-   m_lRates = deviceList;
-   emit layoutChanged();
-   qDebug() << "COMPUTE" << activeRate() << m_lRates << deviceList.size() << m_lRates.indexOf(activeRate());
-   setActive(m_lRates.indexOf(activeRate()));
+   VideoDevice* active = VideoDeviceModel::instance()->activeDevice();
+   if (active) {
+      const QStringList deviceList = interface.getDeviceRateList(active->id                                                       (),
+                                                               VideoDeviceModel::instance()->channelModel()->activeChannel      (),
+                                                               VideoDeviceModel::instance()->resolutionModel()->activeResolution().toString()
+                                                               );
+      m_lRates = deviceList;
+      emit layoutChanged();
+      qDebug() << "COMPUTE" << activeRate() << m_lRates << deviceList.size() << m_lRates.indexOf(activeRate());
+      setActive(m_lRates.indexOf(activeRate()));
+   }
+   else {
+      m_lRates.clear();
+      emit layoutChanged();
+   }
 }
 
 int VideoDeviceRateModel::currentIndex() const

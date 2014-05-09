@@ -35,8 +35,8 @@ VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_Pre
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
-   connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int)), this, SLOT(startedDecoding(QString,QString,int,int)));
-   connect( &interface , SIGNAL(stoppedDecoding(QString,QString))        , this, SLOT(stoppedDecoding(QString,QString))        );
+   connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int,bool)), this, SLOT(startedDecoding(QString,QString,int,int)));
+   connect( &interface , SIGNAL(stoppedDecoding(QString,QString,bool))        , this, SLOT(stoppedDecoding(QString,QString))        );
 }
 
 

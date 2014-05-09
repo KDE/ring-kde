@@ -96,8 +96,8 @@ void CallModel::init()
       /**/connect(&callManager, SIGNAL(recordPlaybackFilepath(QString,QString)) , this , SLOT(slotNewRecordingAvail(QString,QString))  );
       /**/connect(&callManager, SIGNAL(recordingStateChanged(QString,bool))     , this,  SLOT(slotRecordStateChanged(QString,bool)));
       #ifdef ENABLE_VIDEO
-      /**/connect(&interface  , SIGNAL(startedDecoding(QString,QString,int,int)), this , SLOT(slotStartedDecoding(QString,QString))    );
-      /**/connect(&interface  , SIGNAL(stoppedDecoding(QString,QString))        , this , SLOT(slotStoppedDecoding(QString,QString))    );
+      /**/connect(&interface  , SIGNAL(startedDecoding(QString,QString,int,int,bool)), this , SLOT(slotStartedDecoding(QString,QString))    );
+      /**/connect(&interface  , SIGNAL(stoppedDecoding(QString,QString,bool))        , this , SLOT(slotStoppedDecoding(QString,QString))    );
       #endif
       /*                                                                                                                           */
 
