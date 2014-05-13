@@ -102,11 +102,9 @@ void AkonadiContactCollectionModel::digg(const QModelIndex& idx)
 {
    for (int i = 0;i < rowCount(idx);i++) {
       QModelIndex current = index(i,0,idx);
-      const bool checked = current.data(Qt::CheckStateRole).toBool()==Qt::Checked;
       if (!m_hLoaded[current.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt()]) {
          ContactModel::instance()->addBackend(new AkonadiBackend(
-            qvariant_cast<Akonadi::Collection>(index(i,0,idx).data(Akonadi::CollectionModel::Roles::CollectionRole)),this)
-         ,!checked);
+            qvariant_cast<Akonadi::Collection>(index(i,0,idx).data(Akonadi::CollectionModel::Roles::CollectionRole)),this));
       }
       digg(current);
    }
@@ -129,7 +127,7 @@ void AkonadiContactCollectionModel::slotInsertCollection(const QModelIndex& pare
    for (int i =start; i <= end;i++) {
       Akonadi::Collection col = qvariant_cast<Akonadi::Collection>(index(i,0,parentIdx).data(Akonadi::CollectionModel::Roles::CollectionRole));
 
-      ContactModel::instance()->addBackend(new AkonadiBackend(col,this),!m_hChecked[col.id()]);
+      ContactModel::instance()->addBackend(new AkonadiBackend(col,this));
       m_hLoaded[col.id()] = !m_hChecked[col.id()];
    }
 }

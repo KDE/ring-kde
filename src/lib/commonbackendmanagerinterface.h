@@ -22,12 +22,20 @@
 
 class CommonItemBackendModel;
 
+enum LoadOptions {
+   NONE           = 0x0     ,
+   FORCE_ENABLED  = 0x1 << 0,
+   FORCE_DISABLED = 0x1 << 1,
+};
+
 template <class T> class LIB_EXPORT CommonBackendManagerInterface {
 public:
    virtual ~CommonBackendManagerInterface() {};
 
+
+
    /// Add a new backend
-   virtual void addBackend(T* backend, bool active = true) = 0;
+   virtual void addBackend(T* backend, LoadOptions options = LoadOptions::NONE) = 0;
 
    /// Do this manager have active backends
    virtual bool hasEnabledBackends () const = 0;

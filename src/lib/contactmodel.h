@@ -66,7 +66,7 @@ public:
    //Mutator
    bool addContact(Contact* c);
    void disableContact(Contact* c);
-   void addBackend(AbstractContactBackend* backend, bool active = true);
+   void addBackend(AbstractContactBackend* backend, LoadOptions = LoadOptions::NONE);
 
    //Getters
    Contact* getContactByUid   ( const QByteArray& uid );

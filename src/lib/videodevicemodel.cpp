@@ -111,7 +111,7 @@ void VideoDeviceModel::setActive(const int idx)
 void VideoDeviceModel::setActive(const VideoDevice* device)
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   //An 
+
    interface.setActiveDevice(device?device->id():VideoDevice::NONE);
    emit changed();
    const int idx = m_lDevices.indexOf((VideoDevice*)device);

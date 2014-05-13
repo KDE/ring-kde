@@ -36,13 +36,12 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pDelegate = new AutoCompletionDelegate();
    m_pPhoneTypeList->setItemDelegate(m_pDelegate);
 
-
-   collections->setModel( AkonadiContactCollectionModel::instance() );
    m_pItemBackendW->setModel(ContactModel::instance()->backendModel());
 
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
    connect(AkonadiContactCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
+   connect(ContactModel::instance()->backendModel(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
 } //DlgAddressBook
 
 ///Destructor

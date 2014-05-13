@@ -27,7 +27,6 @@ ItemModelStateSerialization::~ItemModelStateSerialization()
 
 bool ItemModelStateSerialization::save()
 {
-   qDebug() << "\n\n\nSAVE";
    QStringList ret;
    for (QHash<QByteArray,bool>::iterator i = m_hChecked.begin(); i != m_hChecked.end(); ++i) {
       if (i.value())
@@ -40,7 +39,6 @@ bool ItemModelStateSerialization::save()
 
 bool ItemModelStateSerialization::load()
 {
-   qDebug() << "\n\n\nLOAD";
    m_hChecked.clear();
    const QStringList disabled = ConfigurationSkeleton::disabledCollectionList();
    foreach(const QString& str, disabled) {

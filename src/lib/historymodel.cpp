@@ -30,6 +30,7 @@
 #include "historytimecategorymodel.h"
 #include "lastusednumbermodel.h"
 #include "abstractitembackend.h"
+#include "visitors/itemmodelstateserializationvisitor.h"
 
 /*****************************************************************************
  *                                                                           *
@@ -510,11 +511,11 @@ bool HistoryModel::hasEnabledBackends() const
    return m_lBackends.size();
 }
 
-void HistoryModel::addBackend(AbstractHistoryBackend* backend, bool active)
+void HistoryModel::addBackend(AbstractHistoryBackend* backend, LoadOptions options)
 {
    m_lBackends << backend;
    connect(backend,SIGNAL(newHistoryCallAdded(Call*)),this,SLOT(add(Call*)));
-   if (active)
+   if (options & LoadOptions::FORCE_ENABLED || ItemModelStateSerializationVisitor::instance()->isChecked(backend))
       backend->load();
    emit newBackendAdded(backend);
 }

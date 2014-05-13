@@ -68,7 +68,7 @@ public:
    void setHistoryLimit(int numberOfDays);
 
    //Mutator
-   void addBackend(AbstractHistoryBackend* backend, bool active = true);
+   void addBackend(AbstractHistoryBackend* backend, LoadOptions options = LoadOptions::NONE);
    void clearAllBackends() const;
    virtual bool enableBackend(AbstractHistoryBackend* backend, bool enabled);
 

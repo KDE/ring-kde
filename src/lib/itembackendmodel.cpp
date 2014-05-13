@@ -110,7 +110,10 @@ bool CommonItemBackendModel::setData (const QModelIndex& index, const QVariant &
    if (role == Qt::CheckStateRole) {
       ProxyItem* item = static_cast<ProxyItem*>(index.internalPointer());
       if (item) {
+         const bool old = item->backend->isEnabled();
          ItemModelStateSerializationVisitor::instance()->setChecked(item->backend,value==Qt::Checked);
+         if (old != (value==Qt::Checked))
+            emit checkStateChanged();
          return true;
       }
    }

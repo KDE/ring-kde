@@ -161,6 +161,6 @@ void DlgVideo::updateWidgets ()
 void DlgVideo::updateSettings()
 {
    const QList<VideoDevice*> devices =  VideoModel::instance()->devices();
-   VideoDeviceModel::instance()->setActive(devices[m_pDeviceCB->currentIndex()]);
+   VideoDeviceModel::instance()->setActive(devices.size() > m_pDeviceCB->currentIndex()? devices[m_pDeviceCB->currentIndex()]:nullptr);
    m_IsChanged = false;
 }

@@ -20,22 +20,25 @@
       <enum>Qt::Vertical</enum>
      </property>
      <widget class="QGroupBox" name="groupBox_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="title">
        <string>Collections</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QTreeView" name="collections">
-         <property name="dragEnabled">
-          <bool>false</bool>
-         </property>
-         <property name="autoExpandDelay">
-          <number>0</number>
+        <widget class="QTreeView" name="m_pItemBackendW">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QTreeView" name="m_pItemBackendW"/>
        </item>
       </layout>
      </widget>

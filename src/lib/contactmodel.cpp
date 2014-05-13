@@ -25,6 +25,7 @@
 #include "phonenumber.h"
 #include "abstractitembackend.h"
 #include "itembackendmodel.h"
+#include "visitors/itemmodelstateserializationvisitor.h"
 
 //Qt
 #include <QtCore/QHash>
@@ -225,12 +226,12 @@ const ContactList ContactModel::contacts() const
    return m_lContacts;
 }
 
-void ContactModel::addBackend(AbstractContactBackend* backend, bool active)
+void ContactModel::addBackend(AbstractContactBackend* backend, LoadOptions options)
 {
    m_lBackends << backend;
    connect(backend,SIGNAL(reloaded()),this,SLOT(slotReloaded()));
    connect(backend,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
-   if (active)
+   if (options & LoadOptions::FORCE_ENABLED || ItemModelStateSerializationVisitor::instance()->isChecked(backend))
       backend->load();
    emit newBackendAdded(backend);
 }

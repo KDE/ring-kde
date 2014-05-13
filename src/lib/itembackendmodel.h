@@ -50,6 +50,9 @@ public:
 private Q_SLOTS:
    void slotUpdate();
 
+Q_SIGNALS:
+   void checkStateChanged();
+
 private:
    /*
     * This is not very efficient, it doesn't really have to be given the low

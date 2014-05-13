@@ -147,11 +147,11 @@ SFLPhone::SFLPhone(QWidget *parent)
 
       //Start the Akonadi collection backend (contact loader)
       AkonadiContactCollectionModel::instance();
-      HistoryModel::instance()->addBackend(new MinimalHistoryBackend(this));
+      HistoryModel::instance()->addBackend(new MinimalHistoryBackend(this),LoadOptions::FORCE_ENABLED);
 
       // Import all calls from the legacy backend
       if (ConfigurationSkeleton::requireLegacyHistoryImport()) {
-         HistoryModel::instance()->addBackend(new LegacyHistoryBackend(this));
+         HistoryModel::instance()->addBackend(new LegacyHistoryBackend(this),LoadOptions::FORCE_ENABLED);
          ConfigurationSkeleton::setRequireLegacyHistoryImport(false);
 
          //In case the client is not quitted correctly, save now
