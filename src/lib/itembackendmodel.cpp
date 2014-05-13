@@ -179,6 +179,19 @@ QVariant CommonItemBackendModel::headerData(int section, Qt::Orientation orienta
 bool CommonItemBackendModel::save()
 {
    if (ItemModelStateSerializationVisitor::instance()) {
+
+      //Load newly enabled backends
+      foreach(ProxyItem* top ,m_lTopLevelBackends) {
+         AbstractContactBackend* current = top->backend;
+         if (ItemModelStateSerializationVisitor::instance()->isChecked(current) && !current->isEnabled())
+            current->load();
+         //TODO implement real tree digging
+         foreach(ProxyItem* leaf ,top->m_Children) {
+            current = leaf->backend;
+            if (ItemModelStateSerializationVisitor::instance()->isChecked(current) && !current->isEnabled())
+               current->load();
+         }
+      }
       return ItemModelStateSerializationVisitor::instance()->save();
    }
    return false;

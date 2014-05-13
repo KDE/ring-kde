@@ -27,6 +27,8 @@ ItemModelStateSerialization::~ItemModelStateSerialization()
 
 bool ItemModelStateSerialization::save()
 {
+   //FIXME this is too tied to the contact backend, it need to support roles for
+   //other collection types (aka: bookmarks)
    QStringList ret;
    for (QHash<QByteArray,bool>::iterator i = m_hChecked.begin(); i != m_hChecked.end(); ++i) {
       if (i.value())
