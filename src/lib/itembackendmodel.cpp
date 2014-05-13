@@ -183,13 +183,23 @@ bool CommonItemBackendModel::save()
       //Load newly enabled backends
       foreach(ProxyItem* top ,m_lTopLevelBackends) {
          AbstractContactBackend* current = top->backend;
-         if (ItemModelStateSerializationVisitor::instance()->isChecked(current) && !current->isEnabled())
-            current->load();
+         bool check = ItemModelStateSerializationVisitor::instance()->isChecked(current);
+         bool wasChecked = current->isEnabled();
+         if (check && !wasChecked)
+            current->enable(true);
+         else if ((!check) && wasChecked)
+            current->enable(false);
+
          //TODO implement real tree digging
          foreach(ProxyItem* leaf ,top->m_Children) {
             current = leaf->backend;
-            if (ItemModelStateSerializationVisitor::instance()->isChecked(current) && !current->isEnabled())
-               current->load();
+            check = ItemModelStateSerializationVisitor::instance()->isChecked(current);
+            wasChecked = current->isEnabled();
+            if (check && !wasChecked)
+               current->enable(true);
+            else if ((!check) && wasChecked)
+               current->enable(false);
+            //else: do nothing
          }
       }
       return ItemModelStateSerializationVisitor::instance()->save();

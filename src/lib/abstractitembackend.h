@@ -57,7 +57,7 @@ public:
    virtual QString name () const =0;
    virtual QVariant icon() const =0;
    virtual bool isEnabled() const = 0;
-   virtual bool enabled (bool){return false;};
+   virtual bool enable (bool){return false;};
    virtual QByteArray  id() const = 0;
 
    virtual SupportedFeatures  supportedFeatures() const = 0;

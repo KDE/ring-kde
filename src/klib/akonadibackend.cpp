@@ -63,7 +63,7 @@ QHash<Akonadi::Collection::Id, AkonadiBackend*> AkonadiBackend::m_hParentLookup;
 ///Constructor
 AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent) :
    AbstractContactBackend(m_hParentLookup[parentCol.parent()],parent),m_pJob(nullptr),
-   m_pMonitor(nullptr),m_isEnabled(false)
+   m_pMonitor(nullptr),m_isEnabled(false),m_wasEnabled(false)
 {
    if (!m_pSession)
       m_pSession = new Akonadi::Session( "SFLPhone::instance" );
@@ -79,6 +79,9 @@ AkonadiBackend::~AkonadiBackend()
       delete m_pJob;
    if (m_pMonitor)
       delete m_pMonitor;
+   m_lBackendContacts.clear();
+   m_ItemHash.clear();
+   m_AddrHash.clear();
 }
 
 QString AkonadiBackend::name () const
@@ -131,11 +134,25 @@ bool AkonadiBackend::load()
    return true;
 }
 
-bool AkonadiBackend::enabled (bool enable)
+bool AkonadiBackend::enable (bool enable)
 {
-   //TODO find a way to disable a backend
-   if (enable)
+   if (enable && (!m_wasEnabled)) {
       return load();
+   }
+   else if (m_wasEnabled && enable) {
+      foreach(Contact* contact, m_lBackendContacts) {
+         contact->setActive(true);
+      }
+      m_wasEnabled = false;
+      m_isEnabled = true;
+   }
+   else if (isEnabled()) {
+      foreach(Contact* contact, m_lBackendContacts) {
+         contact->setActive(false);
+      }
+      m_isEnabled = false;
+      m_wasEnabled = true;
+   }
    return false;
 }
 
@@ -231,10 +248,11 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
          if (!tmp.photo().data().isNull())
             aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
          else
-            aContact->setPhoto(0);
+            aContact->setPhoto(nullptr);
 
          m_AddrHash[ uid ] = tmp ;
          m_ItemHash[ uid ] = item;
+         m_lBackendContacts << aContact;
       }
    }
    return aContact;

@@ -42,7 +42,7 @@ uint VideoCodec::bitrate() const
 }
 
 ///Get the current codec id
-bool VideoCodec::enabled() const
+bool VideoCodec::isEnabled() const
 {
    return m_Enabled;
 }
@@ -75,7 +75,7 @@ QString VideoCodec::parameters() const
 QMap<QString,QString> VideoCodec::toMap() const
 {
    QMap<QString,QString> ret;
-   ret[CodecFields::ENABLED    ] = enabled   ()?"true":"false";
+   ret[CodecFields::ENABLED    ] = isEnabled ()?"true":"false";
    ret[CodecFields::BITRATE    ] = QString::number(bitrate());
    ret[CodecFields::NAME       ] = name      ();
    ret[CodecFields::PARAMETERS ] = parameters();

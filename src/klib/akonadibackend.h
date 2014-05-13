@@ -57,10 +57,10 @@ public:
    bool     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
    virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
 
-   virtual QString name () const;
-   virtual QVariant icon() const;
-   virtual bool isEnabled() const;
-   virtual bool enabled (bool enable);
+   virtual QString name () const override;
+   virtual QVariant icon() const override;
+   virtual bool isEnabled() const override;
+   virtual bool enable (bool enable) override;
    virtual QByteArray  id() const;
 
    virtual bool     edit   ( Contact*   contact                                                 );
@@ -81,8 +81,10 @@ private:
    Akonadi::Collection            m_Coll       ;
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
+   QList<Contact*>                m_lBackendContacts;
    QPointer<Akonadi::ItemFetchJob>   m_pJob;
    bool                           m_isEnabled;
+   bool                           m_wasEnabled;
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);

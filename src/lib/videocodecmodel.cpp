@@ -29,7 +29,7 @@ QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
    if(idx.column() == 0 && role == Qt::DisplayRole)
       return QVariant(m_lCodecs[idx.row()]->name());
    else if(idx.column() == 0 && role == Qt::CheckStateRole) {
-      return QVariant(m_lCodecs[idx.row()]->enabled()?Qt::Checked:Qt::Unchecked);
+      return QVariant(m_lCodecs[idx.row()]->isEnabled()?Qt::Checked:Qt::Unchecked);
    }
    else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE)
       return QVariant(m_lCodecs[idx.row()]->bitrate());
@@ -56,7 +56,7 @@ bool VideoCodecModel::setData(const QModelIndex& idx, const QVariant &value, int
 {
 
    if (idx.column() == 0 && role == Qt::CheckStateRole) {
-      bool changed = m_lCodecs[idx.row()]->enabled() != (value == Qt::Checked);
+      bool changed = m_lCodecs[idx.row()]->isEnabled() != (value == Qt::Checked);
       m_lCodecs[idx.row()]->setEnabled(value == Qt::Checked);
       if (changed)
          emit dataChanged(idx, idx);
