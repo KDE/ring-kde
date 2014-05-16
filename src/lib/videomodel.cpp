@@ -26,6 +26,7 @@
 #include "call.h"
 #include "callmodel.h"
 #include "videorenderer.h"
+#include "videodevicemodel.h"
 
 //Static member
 VideoModel* VideoModel::m_spInstance = nullptr;
@@ -68,8 +69,7 @@ VideoRenderer* VideoModel::getRenderer(const Call* call) const
 VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
-      VideoManagerInterface& interface = DBus::VideoManager::instance();
-      m_lRenderers["local"] = new VideoRenderer("local","", Resolution(interface.getActiveDeviceSize()));
+      m_lRenderers["local"] = new VideoRenderer("local","", VideoDeviceModel::instance()->activeDevice()->resolution());
    }
    return m_lRenderers["local"];
 }
@@ -221,16 +221,6 @@ QList<VideoDevice*> VideoModel::devices()
    m_hDevices = devicesHash;
    return m_hDevices.values();
 }
-
-// VideoDevice* VideoModel::activeDevice() const
-// {
-//    VideoManagerInterface& interface = DBus::VideoManager::instance();
-//    const QString deId = interface.getActiveDevice();
-//    if (!deId.isEmpty() && !m_hDevices.size()) {
-//       const_cast<VideoModel*>(this)->devices();
-//    }
-//    return m_hDevices[deId];
-// }
 
 VideoDevice* VideoModel::device(const QString &id)
 {

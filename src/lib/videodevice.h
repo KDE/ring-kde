@@ -59,20 +59,22 @@ class LIB_EXPORT VideoDevice : public QObject {
       constexpr static const char* NONE = "";
 
       //Getter
-      const QStringList         rateList(VideoChannel channel, Resolution resolution);
-      const QList<Resolution>   resolutionList(VideoChannel channel);
+      const QStringList         rateList(const VideoChannel& channel, const Resolution& resolution);
+      const QList<Resolution>   resolutionList(const VideoChannel& channel);
       const QList<VideoChannel> channelList ();
       const Resolution          resolution  ();
       const VideoChannel        channel     ();
       const VideoRate           rate        ();
       const QString             id          () const;
+      const QString             name        ();
+      bool  isActive                        ();
 
       //Static getter
 
       //Setter
-      void setRate       ( VideoRate rate        );
-      void setResolution ( Resolution resolution );
-      void setChannel    ( VideoChannel channel  );
+      void setRate       ( const VideoRate&    rate       );
+      void setResolution ( const Resolution&   resolution );
+      void setChannel    ( const VideoChannel& channel    );
 
    private:
       //Constructor
@@ -81,6 +83,14 @@ class LIB_EXPORT VideoDevice : public QObject {
 
       //Attributes
       QString m_DeviceId;
+
+      class PreferenceNames {
+      public:
+         constexpr static const char* RATE    = "rate"   ;
+         constexpr static const char* NAME    = "name"   ;
+         constexpr static const char* CHANNEL = "channel";
+         constexpr static const char* SIZE    = "size"   ;
+      };
 
    signals:
       void renderingStarted(VideoRenderer*);

@@ -93,7 +93,7 @@ VideoDeviceModel::~VideoDeviceModel()
 void VideoDeviceModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-   qDebug() << "DEV CHANGE" << m_lDevices[idx.row()]->id();
+      qDebug() << "DEV CHANGE" << m_lDevices[idx.row()]->id();
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       interface.setActiveDevice(m_lDevices[idx.row()]->id());
       emit changed();
@@ -226,27 +226,15 @@ VideoDeviceResolutionModel::~VideoDeviceResolutionModel()
 
 Resolution VideoDeviceResolutionModel::activeResolution() const
 {
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
-   const QString res = interface.getActiveDeviceSize();
-
-   //Empty rate is normal for the NONE device, while it should not get here
-   //better avoid the infinite loop that will be created
-   if (!m_hResolutions[res] && ! res.isEmpty())
-      const_cast<VideoDeviceResolutionModel*>(this)->reload();
-   if (m_hResolutions[res])
-      return *m_hResolutions[res];
-   return Resolution("0x0");
+   return VideoDeviceModel::instance()->activeDevice()->resolution();
 }
 
 ///Save the current model over dbus
 void VideoDeviceResolutionModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-   qDebug() << "RES CHANGE" << m_lResolutions[idx.row()]->toString();
-      VideoManagerInterface& interface = DBus::VideoManager::instance();
-      interface.setActiveDeviceSize(m_lResolutions[idx.row()]->toString());
+      VideoDeviceModel::instance()->activeDevice()->setResolution(m_lResolutions[idx.row()]->toString());
       emit changed();
-      qDebug() << "CURRENT" << idx.row();
       emit currentIndexChanged(idx.row());
    }
    else
@@ -318,8 +306,7 @@ VideoDeviceChannelModel* VideoDeviceModel::channelModel() const
 
 QString VideoDeviceChannelModel::activeChannel() const
 {
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
-   return interface.getActiveDeviceChannel();
+   return VideoDeviceModel::instance()->activeDevice()->channel();
 }
 
 ///Get data from the model
@@ -369,8 +356,7 @@ void VideoDeviceChannelModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
       qDebug() << "CHAN CHANGE" << m_lChannels[idx.row()];
-      VideoManagerInterface& interface = DBus::VideoManager::instance();
-      interface.setActiveDeviceChannel(m_lChannels[idx.row()]);
+      VideoDeviceModel::instance()->activeDevice()->setChannel(m_lChannels[idx.row()]);
       emit changed();
       emit currentIndexChanged(idx.row());
    }
@@ -424,8 +410,7 @@ VideoDeviceRateModel* VideoDeviceModel::rateModel() const
 
 QString VideoDeviceRateModel::activeRate() const
 {
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
-   return interface.getActiveDeviceRate();
+   return VideoDeviceModel::instance()->activeDevice()->rate();
 }
 
 ///Get data from the model
@@ -475,8 +460,7 @@ void VideoDeviceRateModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
       qDebug() << "RATE CHANGE" << m_lRates[idx.row()];
-      VideoManagerInterface& interface = DBus::VideoManager::instance();
-      interface.setActiveDeviceRate(m_lRates[idx.row()]);
+      VideoDeviceModel::instance()->activeDevice()->setRate(m_lRates[idx.row()]);
       emit changed();
       emit currentIndexChanged(idx.row());
    }

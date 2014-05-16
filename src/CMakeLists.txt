@@ -31,6 +31,7 @@ ADD_DEFINITIONS(
    -Wno-reorder
    -Wunused
    -Wuninitialized
+   -Woverloaded-virtual
 #    -Wsuggest-attribute=const
 #    -Wsystem-headers
 )

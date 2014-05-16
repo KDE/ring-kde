@@ -45,10 +45,6 @@ public Q_SLOTS:
    void updateSettings();
 
 private Q_SLOTS:
-   void loadDevice    ( const QString& device     );
-   void loadResolution( const QString& channel    );
-   void loadRate      ( const QString& resolution );
-   void changeRate    ( const QString& rate       );
    void startStopPreview();
    void startStopPreview(bool state);
 
@@ -57,6 +53,9 @@ private:
    VideoDevice* m_pDevice;
    bool m_IsChanged;
    bool m_IsLoading;
+
+private Q_SLOTS:
+   void slotReloadPreview();
 
 Q_SIGNALS:
    ///Emitted when the buttons need to be updated in the parent dialog

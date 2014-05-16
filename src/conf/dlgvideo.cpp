@@ -34,7 +34,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 {
    setupUi(this);
 
-   updateWidgets();
+   //updateWidgets();
 
    const QList<VideoDevice*> devices =  VideoModel::instance()->devices();
 
@@ -48,12 +48,16 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    connect(m_pResolutionCB,SIGNAL(currentIndexChanged(int)), VideoDeviceModel::instance()->resolutionModel(), SLOT(setActive(int)));
    connect(m_pRateCB      ,SIGNAL(currentIndexChanged(int)), VideoDeviceModel::instance()->rateModel()      , SLOT(setActive(int)));
 
+   connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
+   connect(m_pChannelCB   ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
+   connect(m_pResolutionCB,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
+   connect(m_pRateCB      ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
+
 //    connect(VideoDeviceModel::instance()                   ,SIGNAL(currentIndexChanged(int)), m_pDeviceCB    , SLOT(setCurrentIndex(int)));
    connect(VideoDeviceModel::instance()->channelModel()   ,SIGNAL(currentIndexChanged(int)), m_pChannelCB   , SLOT(setCurrentIndex(int)));
    connect(VideoDeviceModel::instance()->resolutionModel(),SIGNAL(currentIndexChanged(int)), m_pResolutionCB, SLOT(setCurrentIndex(int)));
    connect(VideoDeviceModel::instance()->rateModel()      ,SIGNAL(currentIndexChanged(int)), m_pRateCB      , SLOT(setCurrentIndex(int)));
 
-   qDebug() << "SETTING" << VideoDeviceModel::instance()-> currentIndex() << m_pDeviceCB->count();
    m_pDeviceCB    -> setCurrentIndex( VideoDeviceModel::instance()                   -> currentIndex() );
    m_pChannelCB   -> setCurrentIndex( VideoDeviceModel::instance()->channelModel()   -> currentIndex() );
    m_pResolutionCB-> setCurrentIndex( VideoDeviceModel::instance()->resolutionModel()-> currentIndex() );
@@ -66,11 +70,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    connect(VideoModel::instance(),SIGNAL(previewStarted(VideoRenderer*)),m_pPreviewGV,SLOT(addRenderer(VideoRenderer*))   );
    connect(VideoModel::instance(),SIGNAL(previewStopped(VideoRenderer*)),m_pPreviewGV,SLOT(removeRenderer(VideoRenderer*)));
 
-
    m_pConfGB->setEnabled(devices.size());
-
-   if ((devices.size() && devices[0]) || (devices[0] && (!m_pDeviceCB->count())))
-      loadDevice(devices[0]->id());
 
    if (VideoModel::instance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
@@ -89,46 +89,6 @@ DlgVideo::~DlgVideo()
 bool DlgVideo::hasChanged()
 {
    return m_IsChanged;
-}
-
-///Load the device list
-void DlgVideo::loadDevice(const QString& device)
-{
-   Q_UNUSED(device)
-   if (!m_IsLoading) {
-      m_IsChanged = true;
-      emit updateButtons();
-   }
-}
-
-///Load resolution
-void DlgVideo::loadResolution(const QString& channel)
-{
-   Q_UNUSED(channel)
-   if (!m_IsLoading) {
-      m_IsChanged = true;
-      emit updateButtons();
-   }
-}
-
-///Load the rate
-void DlgVideo::loadRate(const QString& resolution)
-{
-   Q_UNUSED(resolution)
-   if (!m_IsLoading) {
-      m_IsChanged = true;
-      emit updateButtons();
-   }
-}
-
-///Changes the rate
-void DlgVideo::changeRate(const QString& rate)
-{
-   if (!m_IsLoading) {
-      m_IsChanged = true;
-      emit updateButtons();
-   }
-   m_pDevice->setRate(rate);
 }
 
 ///Start or stop preview
@@ -156,6 +116,11 @@ void DlgVideo::startStopPreview(bool state)
 void DlgVideo::updateWidgets ()
 {
    //The models should take care of that
+   slotReloadPreview();
+   if (!m_IsLoading) {
+//       m_IsChanged = true;
+      emit updateButtons();
+   }
 }
 
 void DlgVideo::updateSettings()
@@ -163,4 +128,12 @@ void DlgVideo::updateSettings()
    const QList<VideoDevice*> devices =  VideoModel::instance()->devices();
    VideoDeviceModel::instance()->setActive(devices.size() > m_pDeviceCB->currentIndex()? devices[m_pDeviceCB->currentIndex()]:nullptr);
    m_IsChanged = false;
+}
+
+void DlgVideo::slotReloadPreview()
+{
+   if (VideoModel::instance()->isPreviewing()) {
+      VideoModel::instance()->stopPreview();
+      VideoModel::instance()->startPreview();
+   }
 }
