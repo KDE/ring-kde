@@ -83,6 +83,9 @@ class LIB_EXPORT VideoDevice : public QObject {
 
       //Attributes
       QString m_DeviceId;
+      QString m_Rate;
+      QString m_Channel;
+      Resolution m_Resolution;
 
       class PreferenceNames {
       public:

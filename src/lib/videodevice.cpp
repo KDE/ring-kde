@@ -50,7 +50,7 @@ const QString Resolution::toString() const
 
 
 ///Constructor
-VideoDevice::VideoDevice(const QString &id) : QObject(nullptr), m_DeviceId(id)
+VideoDevice::VideoDevice(const QString &id) : QObject(nullptr), m_DeviceId(id),m_Resolution("0x0")
 {
    
 }
@@ -105,21 +105,27 @@ void VideoDevice::setChannel(const VideoChannel& channel) //??? No device
 const Resolution VideoDevice::resolution()
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   return Resolution(QMap<QString,QString>(interface.getPreferences(m_DeviceId))[PreferenceNames::SIZE]);
+   if ((!m_Resolution.isValid()) || m_Resolution == QSize(0,0))
+      m_Resolution = Resolution(QMap<QString,QString>(interface.getPreferences(m_DeviceId))[PreferenceNames::SIZE]);
+   return m_Resolution;
 }
 
 ///Get the current channel
 const VideoChannel VideoDevice::channel() //??? No device
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   return QMap<QString,QString>(interface.getPreferences(m_DeviceId))[PreferenceNames::CHANNEL];
+   if (m_Channel.isEmpty())
+      m_Channel = QMap<QString,QString>(interface.getPreferences(m_DeviceId))[PreferenceNames::CHANNEL];
+   return m_Channel;
 }
 
 ///Get the current rate
 const VideoRate VideoDevice::rate()
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   return QMap<QString,QString>(interface.getPreferences(m_DeviceId))[PreferenceNames::RATE];
+   if (m_Rate.isEmpty())
+      m_Rate = QMap<QString,QString>(interface.getPreferences(m_DeviceId))[PreferenceNames::RATE];
+   return m_Rate;
 }
 
 ///Get a list of valid resolution

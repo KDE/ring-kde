@@ -54,8 +54,12 @@ private:
    bool m_IsChanged;
    bool m_IsLoading;
 
+public Q_SLOTS:
+   void resetChanges();
+
 private Q_SLOTS:
    void slotReloadPreview();
+   void slotFieldChanged();
 
 Q_SIGNALS:
    ///Emitted when the buttons need to be updated in the parent dialog

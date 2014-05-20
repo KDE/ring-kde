@@ -53,6 +53,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    dlgAccounts      = new DlgAccounts      (this);
    #ifdef ENABLE_VIDEO
    dlgVideo         = new DlgVideo         (this);
+   connect(this,SIGNAL(changesApplied()),dlgVideo,SLOT(resetChanges()));
    #endif
    dlgPresence      = new DlgPresence      (this);
 

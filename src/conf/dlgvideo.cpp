@@ -48,10 +48,10 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    connect(m_pResolutionCB,SIGNAL(currentIndexChanged(int)), VideoDeviceModel::instance()->resolutionModel(), SLOT(setActive(int)));
    connect(m_pRateCB      ,SIGNAL(currentIndexChanged(int)), VideoDeviceModel::instance()->rateModel()      , SLOT(setActive(int)));
 
-   connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
-   connect(m_pChannelCB   ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
-   connect(m_pResolutionCB,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
-   connect(m_pRateCB      ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(updateWidgets()));
+   connect(m_pDeviceCB    ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(slotFieldChanged()));
+   connect(m_pChannelCB   ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(slotFieldChanged()));
+   connect(m_pResolutionCB,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(slotFieldChanged()));
+   connect(m_pRateCB      ,SIGNAL(currentIndexChanged(int)), this                                           , SLOT(slotFieldChanged()));
 
 //    connect(VideoDeviceModel::instance()                   ,SIGNAL(currentIndexChanged(int)), m_pDeviceCB    , SLOT(setCurrentIndex(int)));
    connect(VideoDeviceModel::instance()->channelModel()   ,SIGNAL(currentIndexChanged(int)), m_pChannelCB   , SLOT(setCurrentIndex(int)));
@@ -116,11 +116,13 @@ void DlgVideo::startStopPreview(bool state)
 void DlgVideo::updateWidgets ()
 {
    //The models should take care of that
+}
+
+void DlgVideo::slotFieldChanged()
+{
+   m_IsChanged = true;
    slotReloadPreview();
-   if (!m_IsLoading) {
-//       m_IsChanged = true;
-      emit updateButtons();
-   }
+   emit updateButtons();
 }
 
 void DlgVideo::updateSettings()
@@ -136,4 +138,10 @@ void DlgVideo::slotReloadPreview()
       VideoModel::instance()->stopPreview();
       VideoModel::instance()->startPreview();
    }
+}
+
+void DlgVideo::resetChanges()
+{
+   m_IsChanged = false;
+   emit updateButtons();
 }

@@ -93,7 +93,6 @@ VideoDeviceModel::~VideoDeviceModel()
 void VideoDeviceModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      qDebug() << "DEV CHANGE" << m_lDevices[idx.row()]->id();
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       interface.setActiveDevice(m_lDevices[idx.row()]->id());
       emit changed();
@@ -144,7 +143,6 @@ void VideoDeviceModel::reload()
    m_hDevices = devicesHash;
    m_lDevices = m_hDevices.values();
 
-   qDebug() << "\n\n\nLAYOUT" << m_lDevices.size();
    emit layoutChanged();
    channelModel   ()->reload();
    setActive(activeDevice());
@@ -163,7 +161,6 @@ VideoDevice* VideoDeviceModel::activeDevice() const
 
 int VideoDeviceModel::currentIndex() const
 {
-   qDebug() << "\n\n\n\nCURRENT" << activeDevice() <<m_lDevices.indexOf(activeDevice()) <<rowCount();
    return m_lDevices.indexOf(activeDevice());
 }
 
@@ -238,7 +235,7 @@ void VideoDeviceResolutionModel::setActive(const QModelIndex& idx)
       emit currentIndexChanged(idx.row());
    }
    else
-      qDebug() << "INVALID INDEX2" << idx.row();
+      qDebug() << "INVALID RESOLUTION INDEX" << idx.row();
 }
 
 ///Convenience
@@ -270,7 +267,6 @@ void VideoDeviceResolutionModel::reload()
       m_hResolutions.clear();
       m_hResolutions = devicesHash;
       m_lResolutions = m_hResolutions.values();
-      qDebug() << "\n\n\nRELOADING RES" << m_hResolutions.size();
       emit layoutChanged();
 
       VideoDeviceModel::instance()->rateModel()->reload();
@@ -286,7 +282,14 @@ void VideoDeviceResolutionModel::reload()
 int VideoDeviceResolutionModel::currentIndex() const
 {
    const Resolution& res = activeResolution();
-   return m_lResolutions.indexOf((Resolution*)&res);
+   for (int i=0;i<m_lResolutions.size();i++) {
+      Resolution* availableRes  = m_lResolutions[i];
+      if (res.width() == availableRes->width() && res.height() == availableRes->height()) {
+         return i;
+      }
+   }
+   qWarning() << "Invalid resolution";
+   return -1;
 }
 
 
@@ -355,7 +358,6 @@ VideoDeviceChannelModel::~VideoDeviceChannelModel()
 void VideoDeviceChannelModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      qDebug() << "CHAN CHANGE" << m_lChannels[idx.row()];
       VideoDeviceModel::instance()->activeDevice()->setChannel(m_lChannels[idx.row()]);
       emit changed();
       emit currentIndexChanged(idx.row());
@@ -459,13 +461,12 @@ VideoDeviceRateModel::~VideoDeviceRateModel()
 void VideoDeviceRateModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      qDebug() << "RATE CHANGE" << m_lRates[idx.row()];
       VideoDeviceModel::instance()->activeDevice()->setRate(m_lRates[idx.row()]);
       emit changed();
       emit currentIndexChanged(idx.row());
    }
    else
-      qDebug() << "\n\n\n\nINVALID INDEX" << idx.row() << rowCount();
+      qDebug() << "INVALID RATE INDEX" << idx.row() << rowCount();
 }
 
 ///Convenience
@@ -486,7 +487,6 @@ void VideoDeviceRateModel::reload()
                                                                );
       m_lRates = deviceList;
       emit layoutChanged();
-      qDebug() << "COMPUTE" << activeRate() << m_lRates << deviceList.size() << m_lRates.indexOf(activeRate());
       setActive(m_lRates.indexOf(activeRate()));
    }
    else {
