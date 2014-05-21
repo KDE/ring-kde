@@ -20,6 +20,8 @@
 
 #include "typedefs.h"
 #include <QtCore/QAbstractListModel>
+#include <QtCore/QUrl>
+#include <QtCore/QPoint>
 #include "videodevice.h"
 
 //Qt
@@ -103,6 +105,44 @@ Q_SIGNALS:
    void currentIndexChanged(int);
 };
 Q_DECLARE_METATYPE(VideoDeviceChannelModel*)
+
+
+
+//TODO qt5, use QIdentityProxyModel
+class LIB_EXPORT ExtendedVideoDeviceModel : public QAbstractListModel {
+   Q_OBJECT
+public:
+   QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
+   int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
+   Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
+   virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
+
+   //Singleton
+   static ExtendedVideoDeviceModel* instance();
+private:
+   enum ExtendedDeviceList {
+      NONE   ,
+      SCREEN ,
+      FILE   ,
+      __COUNT
+   };
+   struct Display {
+      Display() : res("0x0"),point(0,0),index(0){}
+      Resolution res ; /* Resolution 0x0 for native */
+      QPoint point   ; /* Origin, usually x:0,y:0   */
+      int index      ; /* X11 display ID, usually 0 */
+   };
+   explicit ExtendedVideoDeviceModel();
+   static ExtendedVideoDeviceModel* m_spInstance;
+   QUrl m_CurrentFile;
+   Display m_Display;
+
+public Q_SLOTS:
+   void switchTo(const QModelIndex& idx);
+   void switchTo(const int idx);
+   void setFile(const QUrl& url);
+   void setDisplay(int index, Resolution res = Resolution("0x0"), QPoint point = QPoint(0,0));
+};
 
 ///Abstract model for managing account video codec list
 class LIB_EXPORT VideoDeviceRateModel : public QAbstractListModel {

@@ -85,11 +85,11 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
 
    KComboBox* device = new KComboBox(this);
    KComboBox* res    = new KComboBox(this);
-   device->setModel(VideoDeviceModel::instance());
+   device->setModel(ExtendedVideoDeviceModel::instance());
    moreOpts->addWidget(device,1,0,2,1);
    moreOpts->addWidget(res   ,1,1,2,1);
    connect(btn,SIGNAL(toggled(bool)),moreOptions,SLOT(setVisible(bool)));
-   connect(device,SIGNAL(currentIndexChanged(int)),VideoDeviceModel::instance(),SLOT(setActive(int)));
+   connect(device,SIGNAL(currentIndexChanged(int)),ExtendedVideoDeviceModel::instance(),SLOT(switchTo(int)));
 
    connect(ActionCollection::instance()->videoRotateLeftAction() ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateLeft()));
    connect(ActionCollection::instance()->videoRotateRightAction(),SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateRight()));

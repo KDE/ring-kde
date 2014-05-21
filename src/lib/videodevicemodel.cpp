@@ -230,6 +230,9 @@ Resolution VideoDeviceResolutionModel::activeResolution() const
 void VideoDeviceResolutionModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
+      QSize s1(*m_lResolutions[idx.row()]),s2(VideoDeviceModel::instance()->activeDevice()->resolution());
+      if (s1 == s2)
+         return;
       VideoDeviceModel::instance()->activeDevice()->setResolution(m_lResolutions[idx.row()]->toString());
       emit changed();
       emit currentIndexChanged(idx.row());
@@ -270,7 +273,9 @@ void VideoDeviceResolutionModel::reload()
       emit layoutChanged();
 
       VideoDeviceModel::instance()->rateModel()->reload();
-      setActive(m_lResolutions.indexOf(m_hResolutions[activeResolution().toString()]));
+
+      emit changed();
+      emit currentIndexChanged(m_lResolutions.indexOf(m_hResolutions[activeResolution().toString()]));
    }
    else {
       m_hResolutions.clear();
@@ -482,12 +487,13 @@ void VideoDeviceRateModel::reload()
    VideoDevice* active = VideoDeviceModel::instance()->activeDevice();
    if (active) {
       const QStringList deviceList = interface.getDeviceRateList(active->id                                                       (),
-                                                               VideoDeviceModel::instance()->channelModel()->activeChannel      (),
-                                                               VideoDeviceModel::instance()->resolutionModel()->activeResolution().toString()
-                                                               );
+         VideoDeviceModel::instance()->channelModel()->activeChannel      (),
+         VideoDeviceModel::instance()->resolutionModel()->activeResolution().toString()
+      );
       m_lRates = deviceList;
       emit layoutChanged();
-      setActive(m_lRates.indexOf(activeRate()));
+      const int currentRate = m_lRates.indexOf(activeRate());
+      setActive(currentRate==-1?0:currentRate);
    }
    else {
       m_lRates.clear();
@@ -498,4 +504,113 @@ void VideoDeviceRateModel::reload()
 int VideoDeviceRateModel::currentIndex() const
 {
    return m_lRates.indexOf(activeRate());
+}
+
+
+// Extended Device list
+
+
+ExtendedVideoDeviceModel* ExtendedVideoDeviceModel::m_spInstance = nullptr;
+
+ExtendedVideoDeviceModel::ExtendedVideoDeviceModel() : QAbstractListModel(QCoreApplication::instance())
+{
+   
+}
+
+ExtendedVideoDeviceModel* ExtendedVideoDeviceModel::instance()
+{
+   if (!m_spInstance)
+      m_spInstance = new ExtendedVideoDeviceModel();
+   return m_spInstance;
+}
+
+QVariant ExtendedVideoDeviceModel::data( const QModelIndex& index, int role ) const
+{
+   switch (index.row()) {
+      case ExtendedDeviceList::NONE:
+         switch(role) {
+            case Qt::DisplayRole:
+               return "NONE";
+         };
+         break;
+      case ExtendedDeviceList::SCREEN:
+         switch(role) {
+            case Qt::DisplayRole:
+               return "SCREEN";
+         };
+         break;
+      case ExtendedDeviceList::FILE:
+         switch(role) {
+            case Qt::DisplayRole:
+               return "FILE";
+         };
+         break;
+      default:
+         return VideoDeviceModel::instance()->data(VideoDeviceModel::instance()->index(index.row()-ExtendedDeviceList::__COUNT,0),role);
+   };
+   return QVariant();
+}
+
+int ExtendedVideoDeviceModel::rowCount( const QModelIndex& parent ) const
+{
+   Q_UNUSED(parent)
+   return VideoDeviceModel::instance()->rowCount() + ExtendedDeviceList::__COUNT;
+}
+
+Qt::ItemFlags ExtendedVideoDeviceModel::flags( const QModelIndex& idx ) const
+{
+   switch (idx.row()) {
+      case ExtendedDeviceList::NONE  :
+      case ExtendedDeviceList::SCREEN:
+      case ExtendedDeviceList::FILE  :
+         return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+         break;
+      default:
+         return VideoDeviceModel::instance()->flags(VideoDeviceModel::instance()->index(idx.row()-ExtendedDeviceList::__COUNT,0));
+   };
+}
+
+bool ExtendedVideoDeviceModel::setData( const QModelIndex& index, const QVariant &value, int role)
+{
+   Q_UNUSED(index)
+   Q_UNUSED(value)
+   Q_UNUSED(role)
+   return false;
+}
+
+void ExtendedVideoDeviceModel::switchTo(const QModelIndex& idx)
+{
+   switchTo(idx.row());
+}
+
+///This model is designed for "live" switching rather than configuration
+void ExtendedVideoDeviceModel::switchTo(const int idx)
+{
+   switch (idx) {
+      case ExtendedDeviceList::NONE:
+         DBus::VideoManager::instance().switchInput("");
+         break;
+      case ExtendedDeviceList::SCREEN:
+         DBus::VideoManager::instance().switchInput("display://0:100x100");
+         break;
+      case ExtendedDeviceList::FILE:
+         DBus::VideoManager::instance().switchInput(!m_CurrentFile.isEmpty()?"file://"+m_CurrentFile.path():"");
+         break;
+      default:
+         DBus::VideoManager::instance().switchInput("v4l2://"+
+            VideoDeviceModel::instance()->index(idx-ExtendedDeviceList::__COUNT,0).data(Qt::DisplayRole).toString());
+         break;
+   };
+}
+
+void ExtendedVideoDeviceModel::setFile(const QUrl& url)
+{
+   m_CurrentFile = url;
+}
+
+void ExtendedVideoDeviceModel::setDisplay(int index, Resolution res, QPoint point)
+{
+   m_Display.index  = index ;
+   m_Display.res    = res   ;
+   m_Display.point  = point ;
 }

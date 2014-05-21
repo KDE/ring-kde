@@ -77,6 +77,7 @@ const QList<VideoChannel> VideoDevice::channelList()
 ///Set the current device rate
 void VideoDevice::setRate(const VideoRate& rate)
 {
+   m_Rate = rate;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    MapStringString pref = interface.getPreferences(m_DeviceId);
    pref[PreferenceNames::RATE] = rate;
@@ -86,6 +87,7 @@ void VideoDevice::setRate(const VideoRate& rate)
 ///Set the current resolution
 void VideoDevice::setResolution(const Resolution& resolution) //??? No device
 {
+   m_Resolution = resolution;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    MapStringString pref = interface.getPreferences(m_DeviceId);
    pref[PreferenceNames::SIZE] = resolution.toString();
@@ -95,6 +97,7 @@ void VideoDevice::setResolution(const Resolution& resolution) //??? No device
 ///Set the current device channel
 void VideoDevice::setChannel(const VideoChannel& channel) //??? No device
 {
+   m_Channel = channel;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    MapStringString pref = interface.getPreferences(m_DeviceId);
    pref[PreferenceNames::CHANNEL] = channel;
