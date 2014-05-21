@@ -67,7 +67,8 @@ bool VideoDeviceModel::setData(const QModelIndex& idx, const QVariant &value, in
 
 ///Constructor
 VideoDeviceModel::VideoDeviceModel() : QAbstractListModel(QCoreApplication::instance()),
-m_pResolutionModel(nullptr),m_pChannelModel(nullptr),m_pRateModel(nullptr)
+m_pResolutionModel(nullptr),m_pChannelModel(nullptr),m_pRateModel(nullptr),
+m_pDummyDevice(nullptr)
 {
    connect(this             ,SIGNAL(changed()) , channelModel   () , SLOT(reload()));
    connect(channelModel()   ,SIGNAL(changed()) , resolutionModel() , SLOT(reload()));
@@ -155,7 +156,18 @@ VideoDevice* VideoDeviceModel::activeDevice() const
    const QString deId = interface.getActiveDevice();
    if (!m_lDevices.size())
       const_cast<VideoDeviceModel*>(this)->reload();
-   return m_hDevices[deId];
+   VideoDevice* dev =  m_hDevices[deId];
+
+   //Handling null everywhere is too long, better create a dummy device and
+   //log the event
+   if (!dev) {
+      if (!deId.isEmpty())
+         qWarning() << "Requested unknown device" << deId;
+      if (!m_pDummyDevice)
+         const_cast<VideoDeviceModel*>(this)->m_pDummyDevice = new VideoDevice("None");
+      return m_pDummyDevice;
+   }
+   return dev;
 }
 
 

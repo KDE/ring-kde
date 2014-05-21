@@ -32,6 +32,9 @@
 #include "actioncollection.h"
 #include "extendedaction.h"
 #include "lib/videodevicemodel.h"
+#include "ui_mediafilepicker.h"
+#include "ui_screensharingwidget.h"
+#include "ui_videodevicesetting.h"
 
 class VideoWidgetItem : public QWidgetItem {
 public:
@@ -47,8 +50,41 @@ private:
    VideoWidget3* m_pWdg;
 };
 
+class VideoSetting : public QWidget, public Ui_VideoSettings
+{
+   Q_OBJECT
+public:
+   VideoSetting(QWidget* parent) : QWidget(parent)
+   {
+      setupUi(this);
+   }
+};
+
+class MediaPicker : public QWidget, public Ui_MediaPicker
+{
+   Q_OBJECT
+public:
+   MediaPicker(QWidget* parent) : QWidget(parent)
+   {
+      setupUi(this);
+   }
+};
+
+class ScreenSharingWidget : public QWidget, public Ui_ScreenSharing
+{
+   Q_OBJECT
+public:
+   ScreenSharingWidget(QWidget* parent) : QWidget(parent)
+   {
+      setupUi(this);
+   }
+};
+
+
+
 ///Constructor
-VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
+VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nullptr),
+   m_pScreenSharing(nullptr), m_pMediaPicker(nullptr)
 {
    setFloating(true);
    setWindowTitle(i18nc("Video conversation","Video"));
@@ -77,19 +113,16 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent)
    moreOptions->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    l->addWidget(moreOptions,3,0,1,3);
 
-   QGridLayout* moreOpts = new QGridLayout(moreOptions);
+   m_pMoreOpts = new QGridLayout(moreOptions);
    QLabel* devL = new QLabel(i18n("Device:"));
-   QLabel* resL = new QLabel(i18n("Resolution:"));
-   moreOpts->addWidget(devL,1,0,1,1);
-   moreOpts->addWidget(resL,1,1,1,1);
+   m_pMoreOpts->addWidget(devL,1,0,1,1);
 
    KComboBox* device = new KComboBox(this);
-   KComboBox* res    = new KComboBox(this);
    device->setModel(ExtendedVideoDeviceModel::instance());
-   moreOpts->addWidget(device,1,0,2,1);
-   moreOpts->addWidget(res   ,1,1,2,1);
+   m_pMoreOpts->addWidget(device,1,1,2,1);
    connect(btn,SIGNAL(toggled(bool)),moreOptions,SLOT(setVisible(bool)));
    connect(device,SIGNAL(currentIndexChanged(int)),ExtendedVideoDeviceModel::instance(),SLOT(switchTo(int)));
+   connect(device,SIGNAL(currentIndexChanged(int)),this,SLOT(slotDeviceChanged(int)));
 
    connect(ActionCollection::instance()->videoRotateLeftAction() ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateLeft()));
    connect(ActionCollection::instance()->videoRotateRightAction(),SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateRight()));
@@ -103,3 +136,52 @@ void VideoDock::addRenderer(VideoRenderer* r)
    Q_UNUSED(r)
    m_pVideoWidet->addRenderer(r);
 }
+
+void VideoDock::slotDeviceChanged(int index)
+{
+   switch (index) {
+      case ExtendedVideoDeviceModel::ExtendedDeviceList::NONE:
+         if ( m_pVideoSettings )
+            m_pVideoSettings->setVisible(false);
+         if ( m_pScreenSharing         )
+            m_pScreenSharing->setVisible(false);
+         if ( m_pMediaPicker   )
+            m_pMediaPicker->setVisible(false);
+         break;
+      case ExtendedVideoDeviceModel::ExtendedDeviceList::SCREEN:
+         if ( m_pVideoSettings  )
+            m_pVideoSettings->setVisible(false);
+         if ( !m_pScreenSharing ) {
+            m_pScreenSharing = new ScreenSharingWidget(this);
+            m_pMoreOpts->addWidget(m_pScreenSharing,10,0,1,4);
+         }
+         if ( m_pMediaPicker    )
+            m_pMediaPicker->setVisible(false);
+         m_pScreenSharing->setVisible(true);
+         break;
+      case ExtendedVideoDeviceModel::ExtendedDeviceList::FILE:
+         if ( m_pVideoSettings )
+            m_pVideoSettings->setVisible(false);
+         if ( m_pScreenSharing )
+            m_pScreenSharing->setVisible(false);
+         if ( !m_pMediaPicker  ) {
+            m_pMediaPicker = new MediaPicker(this);
+            m_pMoreOpts->addWidget(m_pMediaPicker,11,0,1,4);
+         }
+         m_pMediaPicker->setVisible(true);
+         break;
+      default:
+         if ( !m_pVideoSettings ) {
+            m_pVideoSettings = new VideoSetting(this);
+            m_pMoreOpts->addWidget(m_pVideoSettings,12,0,1,4);
+         }
+         if ( m_pScreenSharing  )
+            m_pScreenSharing->setVisible(false);
+         if ( m_pMediaPicker    )
+            m_pMediaPicker->setVisible(false);
+         m_pVideoSettings->setVisible(true);
+   };
+}
+
+#include "moc_videodock.cpp"
+#include "videodock.moc"

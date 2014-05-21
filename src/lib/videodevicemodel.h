@@ -112,6 +112,12 @@ Q_DECLARE_METATYPE(VideoDeviceChannelModel*)
 class LIB_EXPORT ExtendedVideoDeviceModel : public QAbstractListModel {
    Q_OBJECT
 public:
+   enum ExtendedDeviceList {
+      NONE   ,
+      SCREEN ,
+      FILE   ,
+      __COUNT
+   };
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
    int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
    Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
@@ -120,12 +126,6 @@ public:
    //Singleton
    static ExtendedVideoDeviceModel* instance();
 private:
-   enum ExtendedDeviceList {
-      NONE   ,
-      SCREEN ,
-      FILE   ,
-      __COUNT
-   };
    struct Display {
       Display() : res("0x0"),point(0,0),index(0){}
       Resolution res ; /* Resolution 0x0 for native */
@@ -215,6 +215,7 @@ private:
    VideoDeviceResolutionModel* m_pResolutionModel;
    VideoDeviceChannelModel*    m_pChannelModel   ;
    VideoDeviceRateModel*       m_pRateModel      ;
+   VideoDevice*                m_pDummyDevice    ;
 
 public Q_SLOTS:
    void setActive(const QModelIndex& idx);

@@ -200,6 +200,9 @@ SET(
    widgets/ui/contactdock.ui
    widgets/ui/transfer.ui
    widgets/ui/presence.ui
+   widgets/ui/videodevicesetting.ui
+   widgets/ui/screensharingwidget.ui
+   widgets/ui/mediafilepicker.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
