@@ -9,6 +9,12 @@ function autocmd()
         }
 }
 
+if `echo $@ | grep -q "\--clear"`;then
+   echo "Clearing"
+   rm -rf build
+   exit 0
+fi
+
 if [ ! -d "build" ]; then
 	mkdir build
 fi
@@ -22,22 +28,32 @@ cd build
 
 # debug=`echo $@ | grep -q "debug"`
 
-options=`echo $@ | sed "s/--prefix=/-DCMAKE_INSTALL_PREFIX=/g" | sed "s/--with-debug//g"`
+options=`echo $@ | sed "s/--prefix=/-DCMAKE_INSTALL_PREFIX=/g" | sed "s/--with-debug//g" \
+   | sed "s/--with-video//g" | sed "s/--install//g"`
 
-if `echo $@ | grep -q "\--with-debug"`
-then echo "Enable debug messages"
-options="$options -DCMAKE_BUILD_TYPE=Debug"
-else echo "Disable debug messages"
-options="$options -DCMAKE_BUILD_TYPE=Release"
+if `echo $@ | grep -q "\--with-video"`;then
+   echo "Enable video messages"
+   options="$options -DENABLE_VIDEO=true"
+fi
+
+if `echo $@ | grep -q "\--with-debug"`;then
+   echo "Enable debug messages"
+   options="$options -DCMAKE_BUILD_TYPE=Debug"
+else
+   echo "Disable debug messages"
+   options="$options -DCMAKE_BUILD_TYPE=Release"
 fi
 
 echo "Passing argument  '$options'  to cmake"
 
 autocmd cmake $options ..
 
-
-echo "**********************************************"
-echo "Configuration done!"
-echo "Run \`cd build' to go to the build directory."
-echo "Then run \`make'to build the software."
-echo "**********************************************"
+if `echo $@ | grep -q "\--with-debug"`;then
+   make -j install
+else
+   echo "**********************************************"
+   echo "Configuration done!"
+   echo "Run \`cd build' to go to the build directory."
+   echo "Then run \`make'to build the software."
+   echo "**********************************************"
+fi
