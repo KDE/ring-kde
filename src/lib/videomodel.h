@@ -46,13 +46,13 @@ public:
    VideoRenderer* getRenderer(const Call* call) const;
    VideoRenderer* previewRenderer();
    QList<VideoDevice*> devices();
-//    VideoDevice* activeDevice() const;
+   VideoDevice* activeDevice() const;
    VideoDevice* device(const QString &id);
    QMutex* startStopMutex() const;
 
    //Setters
    void setBufferSize(uint size);
-//    void setActiveDevice(const VideoDevice* device);
+   void setActiveDevice(const VideoDevice* device);
    void switchDevice(const VideoDevice* device) const;
 
 protected:
@@ -74,6 +74,7 @@ private:
    QMutex*        m_SSMutex     ;
    QHash<QString,VideoRenderer*> m_lRenderers;
    QHash<QString,VideoDevice*>   m_hDevices  ;
+   VideoDevice*   m_pActiveDevice;
 
 public Q_SLOTS:
    void stopPreview ();

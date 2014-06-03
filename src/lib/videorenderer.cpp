@@ -55,10 +55,10 @@ struct SHMHeader{
 };
 
 ///Constructor
-VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, Resolution res): QObject(nullptr),
-   m_Width(res.width()), m_Height(res.height()), m_ShmPath(shmPath), fd(-1),
+VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const Resolution* res): QObject(nullptr),
+   m_Width(res->width()), m_Height(res->height()), m_ShmPath(shmPath), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
-   m_isRendering(false),m_pTimer(nullptr),m_Res(res),m_pMutex(new QMutex()),
+   m_isRendering(false),m_pTimer(nullptr),m_pRes(const_cast<Resolution*>(res)),m_pMutex(new QMutex()),
    m_Id(id),m_FrameIdx(false),m_pSSMutex(new QMutex())
 {
    setObjectName("VideoRenderer:"+id);
@@ -330,9 +330,9 @@ const QByteArray& VideoRenderer::currentFrame()
 }
 
 ///Return the current resolution
-Resolution VideoRenderer::activeResolution()
+const Resolution* VideoRenderer::activeResolution()
 {
-   return m_Res;
+   return m_pRes;
 }
 
 ///Get mutex, in case renderer and views are not in the same thread
@@ -354,11 +354,11 @@ int VideoRenderer::fps() const
  *                                                                           *
  ****************************************************************************/
 
-void VideoRenderer::setResolution(QSize size)
+void VideoRenderer::setResolution(Resolution* res)
 {
-   m_Res = size;
-   m_Width = size.width();
-   m_Height = size.height();
+   m_pRes = res;
+   m_Width  = res->width();
+   m_Height = res->height();
 }
 
 void VideoRenderer::setShmPath(const QString& path)

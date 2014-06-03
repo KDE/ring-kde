@@ -29,6 +29,7 @@
 //SFLPhone
 class VideoDevice;
 
+//DEPRECATED
 ///Abstract model for managing account video codec list
 class LIB_EXPORT VideoDeviceResolutionModel : public QAbstractListModel {
    #pragma GCC diagnostic push
@@ -47,13 +48,14 @@ public:
    Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
 
-   Resolution activeResolution() const;
+   Resolution* activeResolution() const;
    int currentIndex() const;
 
 private:
+
    //Attrbutes
    QHash<QString,Resolution*>   m_hResolutions  ;
-   QList<Resolution*> m_lResolutions;
+//    QList<Resolution*> m_lResolutions;
    static VideoDeviceResolutionModel* m_spInstance;
 
 public Q_SLOTS:
@@ -67,6 +69,7 @@ Q_SIGNALS:
 };
 Q_DECLARE_METATYPE(VideoDeviceResolutionModel*)
 
+//DEPRECATED
 ///Abstract model for managing account video codec list
 class LIB_EXPORT VideoDeviceChannelModel : public QAbstractListModel {
    #pragma GCC diagnostic push
@@ -87,12 +90,12 @@ public:
 
    static VideoDeviceChannelModel* instance();
 
-   QString activeChannel() const;
+   VideoChannel* activeChannel() const;
    int currentIndex() const;
 
 private:
    //Attrbutes
-   QList<QString> m_lChannels;
+//    QList<QString> m_lChannels;
 
 
 public Q_SLOTS:
@@ -126,6 +129,15 @@ public:
    //Singleton
    static ExtendedVideoDeviceModel* instance();
 private:
+   //Constants
+   class ProtocolPrefix {
+   public:
+      constexpr static const char* NONE    = ""          ;
+      constexpr static const char* DISPLAY = "display://";
+      constexpr static const char* FILE    = "file://"   ;
+      constexpr static const char* V4L2    = "v4l2://"   ;
+   };
+
    struct Display {
       Display() : res("0x0"),point(0,0),index(0){}
       Resolution res ; /* Resolution 0x0 for native */
@@ -144,6 +156,7 @@ public Q_SLOTS:
    void setDisplay(int index, Resolution res = Resolution("0x0"), QPoint point = QPoint(0,0));
 };
 
+//DEPRECATED
 ///Abstract model for managing account video codec list
 class LIB_EXPORT VideoDeviceRateModel : public QAbstractListModel {
    #pragma GCC diagnostic push
@@ -162,12 +175,12 @@ public:
    Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
 
-   QString activeRate() const;
+   VideoRate* activeRate() const;
    int currentIndex() const;
 
 private:
    //Attrbutes
-   QList<QString> m_lRates;
+//    QList<QString> m_lRates;
 
 public Q_SLOTS:
    void setActive(const QModelIndex& idx);

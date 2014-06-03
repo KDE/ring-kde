@@ -30,18 +30,27 @@ typedef QMap<QString, QString> MapStringString;
 typedef QMap<QString, int> MapStringInt;
 typedef QVector<int> VectorInt;
 typedef QVector< QMap<QString, QString> > VectorMapStringString;
+typedef QVector< QString > VectorString;
+typedef QMap< QString, QMap< QString, QVector<QString> > > MapStringMapStringVectorString;
+typedef QMap< QString, QVector<QString> > MapStringVectorString;
 
 Q_DECLARE_METATYPE(MapStringString)
 Q_DECLARE_METATYPE(MapStringInt)
 Q_DECLARE_METATYPE(VectorMapStringString)
+Q_DECLARE_METATYPE(MapStringMapStringVectorString)
 Q_DECLARE_METATYPE(VectorInt)
+Q_DECLARE_METATYPE(VectorString)
+Q_DECLARE_METATYPE(MapStringVectorString)
 
 static bool dbus_metaTypeInit = false;
 inline void registerCommTypes() {
 	qDBusRegisterMetaType<MapStringString>();
 	qDBusRegisterMetaType<MapStringInt>();
 	qDBusRegisterMetaType<VectorMapStringString>();
-	qDBusRegisterMetaType<VectorInt>();
+        qDBusRegisterMetaType<MapStringMapStringVectorString>();
+        qDBusRegisterMetaType<VectorInt>();
+	qDBusRegisterMetaType<VectorString>();
+        qDBusRegisterMetaType<MapStringVectorString>();
    dbus_metaTypeInit = true;
 }
 #pragma GCC diagnostic pop

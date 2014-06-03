@@ -41,7 +41,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
 
    public:
       //Constructor
-      VideoRenderer (const QString& id, const QString& shmPath, const Resolution res);
+      VideoRenderer (const QString& id, const QString& shmPath, const Resolution* res);
       ~VideoRenderer();
 
       //Mutators
@@ -50,37 +50,37 @@ class LIB_EXPORT VideoRenderer : public QObject {
       bool startShm ();
 
       //Getters
-      const char* rawData         ()      ;
-      bool        isRendering     ()      ;
+      const char*       rawData         ()      ;
+      bool              isRendering     ()      ;
       const QByteArray& currentFrame    ()      ;
-      Resolution  activeResolution()      ;
-      QMutex*     mutex           ()      ;
-      int         fps             () const;
+      const Resolution* activeResolution()      ;
+      QMutex*           mutex           ()      ;
+      int               fps             () const;
 
       //Setters
-      void setResolution(QSize   size);
+      void setResolution(Resolution* res);
       void setShmPath   (const QString& path);
 
    private:
       //Attributes
-      uint       m_Width      ;
-      uint       m_Height     ;
-      QString    m_ShmPath    ;
-      int        fd           ;
-      SHMHeader* m_pShmArea   ;
-      signed int m_ShmAreaLen ;
-      uint       m_BufferGen  ;
-      bool       m_isRendering;
-      QTimer*    m_pTimer     ;
-      QByteArray m_Frame[2]   ;
-      bool       m_FrameIdx   ;
-      Resolution m_Res        ;
-      QMutex*    m_pMutex     ;
-      QMutex*    m_pSSMutex   ;
-      QString    m_Id         ;
-      int        m_fpsC       ;
-      int        m_Fps        ;
-      QTime      m_CurrentTime;
+      uint              m_Width      ;
+      uint              m_Height     ;
+      QString           m_ShmPath    ;
+      int               fd           ;
+      SHMHeader      *  m_pShmArea   ;
+      signed int        m_ShmAreaLen ;
+      uint              m_BufferGen  ;
+      bool              m_isRendering;
+      QTimer*           m_pTimer     ;
+      QByteArray        m_Frame[2]   ;
+      bool              m_FrameIdx   ;
+      Resolution*       m_pRes       ;
+      QMutex*           m_pMutex     ;
+      QMutex*           m_pSSMutex   ;
+      QString           m_Id         ;
+      int               m_fpsC       ;
+      int               m_Fps        ;
+      QTime             m_CurrentTime;
 
       //Constants
       static const int TIMEOUT_SEC = 1; // 1 second

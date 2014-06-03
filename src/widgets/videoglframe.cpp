@@ -133,7 +133,7 @@ void ThreadedPainter2::draw(QPainter* p)
       //but this was removed and replaced with a flip buffer in libQt, there is some leftover
       //code that need to be cleaned
       const QByteArray& data = m_pRenderer->currentFrame();
-      QSize res = m_pRenderer->activeResolution();
+      QSize res = QSize(*m_pRenderer->activeResolution());
 
       //Detect race conditions
       Q_ASSERT(res.width() * res.height() == data.size()/3);
@@ -264,14 +264,14 @@ int VideoGLFrame::heightForWidth( int w ) const
 {
    if (m_pPainter->m_pRenderer  )
    if (m_pPainter->m_pRenderer)
-      return w*((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width());
+      return w*((float)m_pPainter->m_pRenderer->activeResolution()->height()/(float)m_pPainter->m_pRenderer->activeResolution()->width());
    return w*.75f;
 }
 
 QSize VideoGLFrame::sizeHint() const
 {
    if (m_pPainter->m_pRenderer) {
-      return m_pPainter->m_pRenderer->activeResolution();
+      return QSize(*m_pPainter->m_pRenderer->activeResolution());
    }
    return QSize(100,75);
 }

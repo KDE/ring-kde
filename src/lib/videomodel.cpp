@@ -32,7 +32,8 @@
 VideoModel* VideoModel::m_spInstance = nullptr;
 
 ///Constructor
-VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex())
+VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex()),
+m_pActiveDevice(nullptr)
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
@@ -69,7 +70,8 @@ VideoRenderer* VideoModel::getRenderer(const Call* call) const
 VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
-      m_lRenderers["local"] = new VideoRenderer("local","", VideoDeviceModel::instance()->activeDevice()->resolution());
+      m_lRenderers["local"] = new VideoRenderer("local","",
+         VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution());
    }
    return m_lRenderers["local"];
 }
@@ -109,13 +111,41 @@ void VideoModel::deviceEvent()
    
 }
 
+VideoDevice* VideoModel::activeDevice() const
+{
+   if (!m_pActiveDevice) {
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
+      const QString activeDeviceId =  interface.getActiveDevice();
+      foreach(VideoDevice* dev, m_hDevices) {
+         if (dev->id() == activeDeviceId) {
+            const_cast<VideoModel*>(this)->m_pActiveDevice = dev;
+            break;
+         }
+      }
+   }
+   if (!m_pActiveDevice) {
+      qWarning() << "No active devices";
+   }
+   return m_pActiveDevice;
+}
+
 ///A video is not being rendered
 void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int width, int height)
 {
    Q_UNUSED(id)
 
+   Resolution* res;
+   if (VideoDeviceModel::instance()->activeDevice() 
+      && VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
+      //FIXME flawed logic
+      res = VideoModel::activeDevice()->activeChannel()->activeResolution();
+   }
+   else {
+      res = new Resolution(width,height); //FIXME leak
+   }
+
    if (m_lRenderers[id] == nullptr ) {
-      m_lRenderers[id] = new VideoRenderer(id,shmPath,Resolution(width,height));
+      m_lRenderers[id] = new VideoRenderer(id,shmPath,res); 
       m_lRenderers[id]->moveToThread(this);
       if (!isRunning())
          start();
@@ -123,7 +153,7 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
    else {
       VideoRenderer* renderer = m_lRenderers[id];
       renderer->setShmPath(shmPath);
-      renderer->setResolution(QSize(width,height));
+      renderer->setResolution(res);
    }
 
    m_lRenderers[id]->startRendering();

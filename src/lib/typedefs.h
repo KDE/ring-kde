@@ -28,6 +28,7 @@
 
 typedef QMap<QString, QString> MapStringString;
 typedef QVector< QMap<QString, QString> > VectorMapStringString;
+typedef QMap< QString, QMap< QString, QVector<QString> > > MapStringMapStringVectorString;
 typedef QMap<QString, int> MapStringInt;
 
 template<class T, class E>

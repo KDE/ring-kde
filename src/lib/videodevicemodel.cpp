@@ -193,7 +193,7 @@ VideoDeviceResolutionModel* VideoDeviceModel::resolutionModel() const
 QVariant VideoDeviceResolutionModel::data( const QModelIndex& idx, int role) const
 {
    if(idx.column() == 0 && role == Qt::DisplayRole)
-      return QVariant(m_lResolutions[idx.row()]->toString());
+      return QVariant(VideoDeviceModel::instance()->activeDevice()->activeChannel()->validResolutions()[idx.row()]->name());
    return QVariant();
 }
 
@@ -201,7 +201,7 @@ QVariant VideoDeviceResolutionModel::data( const QModelIndex& idx, int role) con
 int VideoDeviceResolutionModel::rowCount( const QModelIndex& par ) const
 {
    Q_UNUSED(par)
-   return m_lResolutions.size();
+   return VideoDeviceModel::instance()->activeDevice()->activeChannel()->validResolutions().size();
 }
 
 ///Items flag
@@ -233,19 +233,20 @@ VideoDeviceResolutionModel::~VideoDeviceResolutionModel()
 }
 
 
-Resolution VideoDeviceResolutionModel::activeResolution() const
+Resolution* VideoDeviceResolutionModel::activeResolution() const
 {
-   return VideoDeviceModel::instance()->activeDevice()->resolution();
+   return VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution();
 }
 
 ///Save the current model over dbus
 void VideoDeviceResolutionModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      QSize s1(*m_lResolutions[idx.row()]),s2(VideoDeviceModel::instance()->activeDevice()->resolution());
+      Resolution* r = VideoDeviceModel::instance()->activeDevice()->activeChannel()->validResolutions()[idx.row()];
+      QSize s1(*r),s2(*VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution());
       if (s1 == s2)
          return;
-      VideoDeviceModel::instance()->activeDevice()->setResolution(m_lResolutions[idx.row()]->toString());
+      VideoDeviceModel::instance()->activeDevice()->activeChannel()->setActiveResolution(r);
       emit changed();
       emit currentIndexChanged(idx.row());
    }
@@ -262,32 +263,15 @@ void VideoDeviceResolutionModel::setActive(const int idx)
 void VideoDeviceResolutionModel::reload()
 {
    QHash<QString,Resolution*> devicesHash;
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
    VideoDevice* active = VideoDeviceModel::instance()->activeDevice();
    if (active) {
-      const QStringList deviceList = interface.getDeviceSizeList(active->id(),
-                                                               VideoDeviceModel::instance()->rateModel()->activeRate());
-      if (deviceList.size() == m_hResolutions.size()) {
-         m_lResolutions = m_hResolutions.values();
-      }
 
-      foreach(const QString& deviceName,deviceList) {
-         if (!m_hResolutions.contains(deviceName)) {
-            devicesHash[deviceName] = new Resolution(deviceName);
-         }
-         else {
-            devicesHash[deviceName] = m_hResolutions[deviceName];
-         }
-      }
-      m_hResolutions.clear();
-      m_hResolutions = devicesHash;
-      m_lResolutions = m_hResolutions.values();
       emit layoutChanged();
 
       VideoDeviceModel::instance()->rateModel()->reload();
 
       emit changed();
-      emit currentIndexChanged(m_lResolutions.indexOf(m_hResolutions[activeResolution().toString()]));
+      emit currentIndexChanged(activeResolution()->index());
    }
    else {
       m_hResolutions.clear();
@@ -298,15 +282,7 @@ void VideoDeviceResolutionModel::reload()
 
 int VideoDeviceResolutionModel::currentIndex() const
 {
-   const Resolution& res = activeResolution();
-   for (int i=0;i<m_lResolutions.size();i++) {
-      Resolution* availableRes  = m_lResolutions[i];
-      if (res.width() == availableRes->width() && res.height() == availableRes->height()) {
-         return i;
-      }
-   }
-   qWarning() << "Invalid resolution";
-   return -1;
+   return VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->index();
 }
 
 
@@ -324,16 +300,16 @@ VideoDeviceChannelModel* VideoDeviceModel::channelModel() const
 }
 
 
-QString VideoDeviceChannelModel::activeChannel() const
+VideoChannel* VideoDeviceChannelModel::activeChannel() const
 {
-   return VideoDeviceModel::instance()->activeDevice()->channel();
+   return VideoDeviceModel::instance()->activeDevice()->activeChannel();
 }
 
 ///Get data from the model
 QVariant VideoDeviceChannelModel::data( const QModelIndex& idx, int role) const
 {
    if(idx.column() == 0 && role == Qt::DisplayRole)
-      return QVariant(m_lChannels[idx.row()]);
+      return QVariant(activeChannel()->name());
    return QVariant();
 }
 
@@ -341,7 +317,7 @@ QVariant VideoDeviceChannelModel::data( const QModelIndex& idx, int role) const
 int VideoDeviceChannelModel::rowCount( const QModelIndex& par ) const
 {
    Q_UNUSED(par)
-   return m_lChannels.size();
+   return VideoDeviceModel::instance()->activeDevice()->channelList().size();
 }
 
 ///Items flag
@@ -375,7 +351,8 @@ VideoDeviceChannelModel::~VideoDeviceChannelModel()
 void VideoDeviceChannelModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      VideoDeviceModel::instance()->activeDevice()->setChannel(m_lChannels[idx.row()]);
+      VideoChannel* c = VideoDeviceModel::instance()->activeDevice()->channelList()[idx.row()];
+      VideoDeviceModel::instance()->activeDevice()->setActiveChannel(c);
       emit changed();
       emit currentIndexChanged(idx.row());
    }
@@ -389,29 +366,23 @@ void VideoDeviceChannelModel::setActive(const int idx)
 
 void VideoDeviceChannelModel::reload()
 {
-   QHash<QString,QString> devicesHash;
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
    VideoDevice* active = VideoDeviceModel::instance()->activeDevice();
    if (active) {
-      const QStringList deviceList = interface.getDeviceChannelList(active->id());
 
-      m_lChannels = deviceList;
       emit layoutChanged();
 
       VideoDeviceModel::instance()->resolutionModel()->reload();
 
-      setActive(m_lChannels.indexOf(activeChannel()));
+      setActive(activeChannel()->index());
    }
    else {
-      //There is no channel when there is no devices
-      m_lChannels.clear();
       emit layoutChanged();
    }
 }
 
 int VideoDeviceChannelModel::currentIndex() const
 {
-   return m_lChannels.indexOf(activeChannel());
+   return activeChannel()->index();
 }
 
 
@@ -427,16 +398,16 @@ VideoDeviceRateModel* VideoDeviceModel::rateModel() const
    return m_pRateModel;
 }
 
-QString VideoDeviceRateModel::activeRate() const
+VideoRate* VideoDeviceRateModel::activeRate() const
 {
-   return VideoDeviceModel::instance()->activeDevice()->rate();
+   return VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->activeRate();
 }
 
 ///Get data from the model
 QVariant VideoDeviceRateModel::data( const QModelIndex& idx, int role) const
 {
-   if(idx.isValid() && idx.column() == 0 && role == Qt::DisplayRole && idx.row() < m_lRates.size())
-      return QVariant(m_lRates[idx.row()]);
+   if(idx.isValid() && idx.column() == 0 && role == Qt::DisplayRole)
+      return QVariant(VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates()[idx.row()]->name());
    return QVariant();
 }
 
@@ -444,7 +415,7 @@ QVariant VideoDeviceRateModel::data( const QModelIndex& idx, int role) const
 int VideoDeviceRateModel::rowCount( const QModelIndex& par ) const
 {
    Q_UNUSED(par)
-   return m_lRates.size();
+   return VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().size();
 }
 
 ///Items flag
@@ -478,7 +449,8 @@ VideoDeviceRateModel::~VideoDeviceRateModel()
 void VideoDeviceRateModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      VideoDeviceModel::instance()->activeDevice()->setRate(m_lRates[idx.row()]);
+      VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->setActiveRate(
+         VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates()[idx.row()]);
       emit changed();
       emit currentIndexChanged(idx.row());
    }
@@ -495,27 +467,19 @@ void VideoDeviceRateModel::setActive(const int idx)
 void VideoDeviceRateModel::reload()
 {
    QHash<QString,VideoDevice*> devicesHash;
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
    VideoDevice* active = VideoDeviceModel::instance()->activeDevice();
    if (active) {
-      const QStringList deviceList = interface.getDeviceRateList(active->id                                                       (),
-         VideoDeviceModel::instance()->channelModel()->activeChannel      (),
-         VideoDeviceModel::instance()->resolutionModel()->activeResolution().toString()
-      );
-      m_lRates = deviceList;
       emit layoutChanged();
-      const int currentRate = m_lRates.indexOf(activeRate());
-      setActive(currentRate==-1?0:currentRate);
+      setActive(activeRate()->index());
    }
    else {
-      m_lRates.clear();
       emit layoutChanged();
    }
 }
 
 int VideoDeviceRateModel::currentIndex() const
 {
-   return m_lRates.indexOf(activeRate());
+   return activeRate()->index();
 }
 
 
@@ -542,19 +506,19 @@ QVariant ExtendedVideoDeviceModel::data( const QModelIndex& index, int role ) co
       case ExtendedDeviceList::NONE:
          switch(role) {
             case Qt::DisplayRole:
-               return "NONE";
+               return tr("NONE");
          };
          break;
       case ExtendedDeviceList::SCREEN:
          switch(role) {
             case Qt::DisplayRole:
-               return "SCREEN";
+               return tr("SCREEN");
          };
          break;
       case ExtendedDeviceList::FILE:
          switch(role) {
             case Qt::DisplayRole:
-               return "FILE";
+               return tr("FILE");
          };
          break;
       default:
@@ -600,16 +564,18 @@ void ExtendedVideoDeviceModel::switchTo(const int idx)
 {
    switch (idx) {
       case ExtendedDeviceList::NONE:
-         DBus::VideoManager::instance().switchInput("");
+         DBus::VideoManager::instance().switchInput(ProtocolPrefix::NONE);
          break;
       case ExtendedDeviceList::SCREEN:
-         DBus::VideoManager::instance().switchInput("display://0:100x100");
+         DBus::VideoManager::instance().switchInput( QString(ProtocolPrefix::DISPLAY)+"0:100x100");
          break;
       case ExtendedDeviceList::FILE:
-         DBus::VideoManager::instance().switchInput(!m_CurrentFile.isEmpty()?"file://"+m_CurrentFile.path():"");
+         DBus::VideoManager::instance().switchInput(
+            !m_CurrentFile.isEmpty()?+ProtocolPrefix::FILE+m_CurrentFile.path():ProtocolPrefix::NONE
+         );
          break;
       default:
-         DBus::VideoManager::instance().switchInput("v4l2://"+
+         DBus::VideoManager::instance().switchInput(ProtocolPrefix::V4L2 +
             VideoDeviceModel::instance()->index(idx-ExtendedDeviceList::__COUNT,0).data(Qt::DisplayRole).toString());
          break;
    };
