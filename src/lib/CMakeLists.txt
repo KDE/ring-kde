@@ -45,19 +45,17 @@ set( qtsflphone_LIB_SRCS
   call.cpp
   account.cpp
   contact.cpp
-  videorenderer.cpp
-  videodevice.cpp
   phonenumber.cpp
-  videocodec.cpp
   numbercategory.cpp
+  video/videodevice.cpp
+  video/videorenderer.cpp
+  video/videocodec.cpp
 
   #Models
   accountlistmodel.cpp
   callmodel.cpp
   historymodel.cpp
   abstractbookmarkmodel.cpp
-  videocodecmodel.cpp
-  videomodel.cpp
   credentialmodel.cpp
   audiocodecmodel.cpp
   instantmessagingmodel.cpp
@@ -76,7 +74,9 @@ set( qtsflphone_LIB_SRCS
   lastusednumbermodel.cpp
   contactmodel.cpp
   itembackendmodel.cpp
-  videodevicemodel.cpp
+  video/videodevicemodel.cpp
+  video/videocodecmodel.cpp
+  video/videomodel.cpp
 
   #Data backends
   transitionalcontactbackend.cpp
@@ -112,9 +112,6 @@ set( qtsflphone_LIB_HDRS
   contact.h
   abstractitembackend.h
   abstractbookmarkmodel.h
-  videocodecmodel.h
-  videomodel.h
-  videorenderer.h
   credentialmodel.h
   audiocodecmodel.h
   instantmessagingmodel.h
@@ -125,7 +122,6 @@ set( qtsflphone_LIB_HDRS
   phonedirectorymodel.h
   historytimecategorymodel.h
   numbercategorymodel.h
-  videocodec.h
   keyexchangemodel.h
   tlsmethodmodel.h
   numbercompletionmodel.h
@@ -138,8 +134,12 @@ set( qtsflphone_LIB_HDRS
   transitionalcontactbackend.h
   abstractitembackend.h
   itembackendmodel.h
-  videodevice.h
-  videodevicemodel.h
+  video/videodevice.h
+  video/videodevicemodel.h
+  video/videocodec.h
+  video/videocodecmodel.h
+  video/videomodel.h
+  video/videorenderer.h
   #commonbackendmanagerinterface.h
 )
 

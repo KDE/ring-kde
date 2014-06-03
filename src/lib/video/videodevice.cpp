@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "videodevice.h"
 #include "dbus/videomanager.h"
-
+#include "videodevicemodel.h"
 
 Resolution::Resolution(uint _width, uint _height):QSize(_width,_height),
 m_pCurrentRate(nullptr),m_pChannel(nullptr)
@@ -122,7 +122,7 @@ const QString VideoDevice::name() const
 ///Is this device the default one
 bool VideoDevice::isActive() const
 {
-   return QString(DBus::VideoManager::instance().getActiveDevice()) == m_DeviceId;
+   return VideoDeviceModel::instance()->activeDevice() == this;
 }
 
 Resolution* VideoChannel::activeResolution()

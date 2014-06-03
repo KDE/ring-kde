@@ -16,9 +16,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "videocodecmodel.h"
-#include "call.h"
-#include "account.h"
-#include "videocodec.h"
+#include <call.h>
+#include <account.h>
+#include <video/videocodec.h>
 #include "dbus/videomanager.h"
 
 #include <QtCore/QCoreApplication>

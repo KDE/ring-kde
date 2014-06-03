@@ -68,7 +68,7 @@ bool VideoDeviceModel::setData(const QModelIndex& idx, const QVariant &value, in
 ///Constructor
 VideoDeviceModel::VideoDeviceModel() : QAbstractListModel(QCoreApplication::instance()),
 m_pResolutionModel(nullptr),m_pChannelModel(nullptr),m_pRateModel(nullptr),
-m_pDummyDevice(nullptr)
+m_pDummyDevice(nullptr),m_pActiveDevice(nullptr)
 {
    connect(this             ,SIGNAL(changed()) , channelModel   () , SLOT(reload()));
    connect(channelModel()   ,SIGNAL(changed()) , resolutionModel() , SLOT(reload()));
@@ -96,6 +96,7 @@ void VideoDeviceModel::setActive(const QModelIndex& idx)
    if (idx.isValid()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       interface.setActiveDevice(m_lDevices[idx.row()]->id());
+      m_pActiveDevice = m_lDevices[idx.row()];
       emit changed();
       emit currentIndexChanged(idx.row());
    }
@@ -113,6 +114,7 @@ void VideoDeviceModel::setActive(const VideoDevice* device)
    VideoManagerInterface& interface = DBus::VideoManager::instance();
 
    interface.setActiveDevice(device?device->id():VideoDevice::NONE);
+   m_pActiveDevice = const_cast<VideoDevice*>(device);
    emit changed();
    const int idx = m_lDevices.indexOf((VideoDevice*)device);
    emit currentIndexChanged(idx);
@@ -152,22 +154,25 @@ void VideoDeviceModel::reload()
 
 VideoDevice* VideoDeviceModel::activeDevice() const
 {
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
-   const QString deId = interface.getActiveDevice();
-   if (!m_lDevices.size())
-      const_cast<VideoDeviceModel*>(this)->reload();
-   VideoDevice* dev =  m_hDevices[deId];
+   if (!m_pActiveDevice) {
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
+      const QString deId = interface.getActiveDevice();
+      if (!m_lDevices.size())
+         const_cast<VideoDeviceModel*>(this)->reload();
+      VideoDevice* dev =  m_hDevices[deId];
 
-   //Handling null everywhere is too long, better create a dummy device and
-   //log the event
-   if (!dev) {
-      if (!deId.isEmpty())
-         qWarning() << "Requested unknown device" << deId;
-      if (!m_pDummyDevice)
-         const_cast<VideoDeviceModel*>(this)->m_pDummyDevice = new VideoDevice("None");
-      return m_pDummyDevice;
+      //Handling null everywhere is too long, better create a dummy device and
+      //log the event
+      if (!dev) {
+         if (!deId.isEmpty())
+            qWarning() << "Requested unknown device" << deId;
+         if (!m_pDummyDevice)
+            const_cast<VideoDeviceModel*>(this)->m_pDummyDevice = new VideoDevice("None");
+         return m_pDummyDevice;
+      }
+      const_cast<VideoDeviceModel*>(this)->m_pActiveDevice = dev;
    }
-   return dev;
+   return m_pActiveDevice;
 }
 
 

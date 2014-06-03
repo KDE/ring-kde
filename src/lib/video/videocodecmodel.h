@@ -18,7 +18,7 @@
 #ifndef VIDEOCODECMODEL_H
 #define VIDEOCODECMODEL_H
 
-#include "typedefs.h"
+#include "../typedefs.h"
 #include <QtCore/QAbstractListModel>
 
 //Qt

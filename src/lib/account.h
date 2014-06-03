@@ -26,7 +26,7 @@
 class QString;
 
 //SFLPhone
-#include "videocodecmodel.h"
+#include "video/videocodecmodel.h"
 #include "keyexchangemodel.h"
 #include "tlsmethodmodel.h"
 #include "sflphone_const.h"

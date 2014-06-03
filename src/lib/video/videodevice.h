@@ -18,7 +18,7 @@
 #ifndef VIDEO_DEVICE_H
 #define VIDEO_DEVICE_H
 
-#include "typedefs.h"
+#include "../typedefs.h"
 
 //Qt
 #include <QStringList>

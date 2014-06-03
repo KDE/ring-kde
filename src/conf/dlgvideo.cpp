@@ -23,10 +23,10 @@
 #include <KLocale>
 
 //SFLPhone
-#include "../lib/videodevice.h"
-#include "../lib/videocodecmodel.h"
-#include "../lib/videomodel.h"
-#include "../lib/videodevicemodel.h"
+#include "../lib/video/videodevice.h"
+#include "../lib/video/videocodecmodel.h"
+#include "../lib/video/videomodel.h"
+#include "../lib/video/videodevicemodel.h"
 
 ///Constructor
 DlgVideo::DlgVideo(KConfigDialog* parent)

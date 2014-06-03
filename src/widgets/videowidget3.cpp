@@ -28,7 +28,7 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/videomodel.h>
+#include <lib/video/videomodel.h>
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"

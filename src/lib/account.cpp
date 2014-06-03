@@ -36,7 +36,7 @@
 #include "accountlistmodel.h"
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
-#include "videocodecmodel.h"
+#include <video/videocodecmodel.h>
 #include "ringtonemodel.h"
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"

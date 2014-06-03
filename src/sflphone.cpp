@@ -61,7 +61,7 @@
 #include "klib/kcfg_settings.h"
 #include "klib/akonadicontactcollectionmodel.h"
 #include "lib/presencestatusmodel.h"
-#include "lib/videomodel.h"
+#include "lib/video/videomodel.h"
 #include "lib/phonenumber.h"
 #include "lib/contactmodel.h"
 #include "lib/itembackendmodel.h"

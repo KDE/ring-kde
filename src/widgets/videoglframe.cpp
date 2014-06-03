@@ -27,8 +27,8 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/videorenderer.h>
-#include <lib/videomodel.h>
+#include <lib/video/videorenderer.h>
+#include <lib/video/videomodel.h>
 
 
 #ifndef GL_MULTISAMPLE

@@ -32,8 +32,7 @@
 VideoModel* VideoModel::m_spInstance = nullptr;
 
 ///Constructor
-VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex()),
-m_pActiveDevice(nullptr)
+VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex())
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
@@ -111,24 +110,6 @@ void VideoModel::deviceEvent()
    
 }
 
-VideoDevice* VideoModel::activeDevice() const
-{
-   if (!m_pActiveDevice) {
-      VideoManagerInterface& interface = DBus::VideoManager::instance();
-      const QString activeDeviceId =  interface.getActiveDevice();
-      foreach(VideoDevice* dev, m_hDevices) {
-         if (dev->id() == activeDeviceId) {
-            const_cast<VideoModel*>(this)->m_pActiveDevice = dev;
-            break;
-         }
-      }
-   }
-   if (!m_pActiveDevice) {
-      qWarning() << "No active devices";
-   }
-   return m_pActiveDevice;
-}
-
 ///A video is not being rendered
 void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int width, int height)
 {
@@ -138,7 +119,7 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
    if (VideoDeviceModel::instance()->activeDevice() 
       && VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
       //FIXME flawed logic
-      res = VideoModel::activeDevice()->activeChannel()->activeResolution();
+      res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution();
    }
    else {
       res = new Resolution(width,height); //FIXME leak
@@ -196,21 +177,6 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
    m_lRenderers[id] = nullptr;
    delete r;
 }
-
-// void VideoModel::run()
-// {
-//    exec();
-// }
-
-
-// void VideoModel::setActiveDevice(const VideoDevice* device)
-// {
-//    VideoManagerInterface& interface = DBus::VideoManager::instance();
-//    if (isPreviewing()) {
-//       switchDevice(device);
-//    }
-//    interface.setActiveDevice(device->id());
-// }
 
 void VideoModel::switchDevice(const VideoDevice* device) const
 {

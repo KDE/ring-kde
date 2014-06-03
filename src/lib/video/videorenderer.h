@@ -21,7 +21,7 @@
 //Base
 #include <QtCore/QObject>
 #include <QtCore/QTime>
-#include "typedefs.h"
+#include "../typedefs.h"
 #include <time.h>
 
 //Qt

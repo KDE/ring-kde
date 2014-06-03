@@ -31,7 +31,7 @@
 #include "videotoolbar.h"
 #include "actioncollection.h"
 #include "extendedaction.h"
-#include "lib/videodevicemodel.h"
+#include "lib/video/videodevicemodel.h"
 #include "ui_mediafilepicker.h"
 #include "ui_screensharingwidget.h"
 #include "ui_videodevicesetting.h"

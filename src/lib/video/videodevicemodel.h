@@ -18,7 +18,7 @@
 #ifndef VIDEODEVICEMODEL_H
 #define VIDEODEVICEMODEL_H
 
-#include "typedefs.h"
+#include "../typedefs.h"
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QUrl>
 #include <QtCore/QPoint>
@@ -229,6 +229,7 @@ private:
    VideoDeviceChannelModel*    m_pChannelModel   ;
    VideoDeviceRateModel*       m_pRateModel      ;
    VideoDevice*                m_pDummyDevice    ;
+   VideoDevice*                m_pActiveDevice   ;
 
 public Q_SLOTS:
    void setActive(const QModelIndex& idx);
