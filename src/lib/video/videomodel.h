@@ -45,9 +45,9 @@ public:
    bool       isPreviewing       ();
    VideoRenderer* getRenderer(const Call* call) const;
    VideoRenderer* previewRenderer();
-   QList<VideoDevice*> devices();
+//    QList<VideoDevice*> devices();
 //    VideoDevice* activeDevice() const;
-   VideoDevice* device(const QString &id);
+//    VideoDevice* device(const QString &id);
    QMutex* startStopMutex() const;
 
    //Setters
@@ -73,7 +73,7 @@ private:
    uint           m_SemKey      ;
    QMutex*        m_SSMutex     ;
    QHash<QString,VideoRenderer*> m_lRenderers;
-   QHash<QString,VideoDevice*>   m_hDevices  ;
+//    QHash<QString,VideoDevice*>   m_hDevices  ;
 
 public Q_SLOTS:
    void stopPreview ();

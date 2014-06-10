@@ -37,6 +37,7 @@
 
 #include <QtCore/QTimer>
 #include "videomodel.h"
+#include "videoresolution.h"
 
 ///Shared memory object
 struct SHMHeader{
@@ -55,10 +56,10 @@ struct SHMHeader{
 };
 
 ///Constructor
-VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const Resolution* res): QObject(nullptr),
-   m_Width(res->width()), m_Height(res->height()), m_ShmPath(shmPath), fd(-1),
+VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const QSize& res): QObject(nullptr),
+   m_ShmPath(shmPath), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
-   m_isRendering(false),m_pTimer(nullptr),m_pRes(const_cast<Resolution*>(res)),m_pMutex(new QMutex()),
+   m_isRendering(false),m_pTimer(nullptr),m_pSize(res),m_pMutex(new QMutex()),
    m_Id(id),m_FrameIdx(false),m_pSSMutex(new QMutex())
 {
    setObjectName("VideoRenderer:"+id);
@@ -330,9 +331,9 @@ const QByteArray& VideoRenderer::currentFrame()
 }
 
 ///Return the current resolution
-const Resolution* VideoRenderer::activeResolution()
+QSize VideoRenderer::size()
 {
-   return m_pRes;
+   return m_pSize;
 }
 
 ///Get mutex, in case renderer and views are not in the same thread
@@ -354,11 +355,9 @@ int VideoRenderer::fps() const
  *                                                                           *
  ****************************************************************************/
 
-void VideoRenderer::setResolution(Resolution* res)
+void VideoRenderer::setSize(const QSize& size)
 {
-   m_pRes = res;
-   m_Width  = res->width();
-   m_Height = res->height();
+   m_pSize = size;
 }
 
 void VideoRenderer::setShmPath(const QString& path)

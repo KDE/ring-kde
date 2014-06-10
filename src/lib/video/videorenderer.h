@@ -41,7 +41,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
 
    public:
       //Constructor
-      VideoRenderer (const QString& id, const QString& shmPath, const Resolution* res);
+      VideoRenderer (const QString& id, const QString& shmPath, const QSize& res);
       ~VideoRenderer();
 
       //Mutators
@@ -53,18 +53,16 @@ class LIB_EXPORT VideoRenderer : public QObject {
       const char*       rawData         ()      ;
       bool              isRendering     ()      ;
       const QByteArray& currentFrame    ()      ;
-      const Resolution* activeResolution()      ;
+      QSize             size            ()      ;
       QMutex*           mutex           ()      ;
       int               fps             () const;
 
       //Setters
-      void setResolution(Resolution* res);
+      void setSize(const QSize& res);
       void setShmPath   (const QString& path);
 
    private:
       //Attributes
-      uint              m_Width      ;
-      uint              m_Height     ;
       QString           m_ShmPath    ;
       int               fd           ;
       SHMHeader      *  m_pShmArea   ;
@@ -74,7 +72,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
       QTimer*           m_pTimer     ;
       QByteArray        m_Frame[2]   ;
       bool              m_FrameIdx   ;
-      Resolution*       m_pRes       ;
+      QSize             m_pSize      ;
       QMutex*           m_pMutex     ;
       QMutex*           m_pSSMutex   ;
       QString           m_Id         ;

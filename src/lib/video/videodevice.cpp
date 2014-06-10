@@ -18,49 +18,17 @@
 #include "videodevice.h"
 #include "dbus/videomanager.h"
 #include "videodevicemodel.h"
-
-Resolution::Resolution(uint _width, uint _height):QSize(_width,_height),
-m_pCurrentRate(nullptr),m_pChannel(nullptr)
-{
-}
-
-Resolution::Resolution() : QSize(),m_pCurrentRate(nullptr),m_pChannel(nullptr)
-{
-}
-
-Resolution::Resolution(const QString& size, VideoChannel* chan)
-: m_pCurrentRate(nullptr),m_pChannel(chan)
-{
-   if (size.split('x').size() == 2) {
-      setWidth(size.split('x')[0].toInt());
-      setHeight(size.split('x')[1].toInt());
-   }
-}
-
-Resolution::Resolution(const Resolution& res):QSize(res.width(),res.height()),
-m_pCurrentRate(nullptr),m_pChannel(nullptr)
-{
-}
-
-Resolution::Resolution(const QSize& size):QSize(size),
-m_pCurrentRate(nullptr),m_pChannel(nullptr)
-{
-}
-
-const QString Resolution::name() const
-{
-   return QString::number(width())+'x'+QString::number(height());
-}
-
+#include "videoresolution.h"
+#include "videorate.h"
+#include "videochannel.h"
 
 ///Constructor
-VideoDevice::VideoDevice(const QString &id) : QObject(nullptr), m_DeviceId(id),
+VideoDevice::VideoDevice(const QString &id) : QAbstractListModel(nullptr), m_DeviceId(id),
 m_pCurrentChannel(nullptr)
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    MapStringMapStringVectorString cap = interface.getCapabilities(id);
    QMapIterator<QString, MapStringVectorString> channels(cap);
-   qDebug() << "\n\n\n\nCAP"  << id << cap.size();
    while (channels.hasNext()) {
       channels.next();
 
@@ -71,7 +39,7 @@ m_pCurrentChannel(nullptr)
       while (resolutions.hasNext()) {
          resolutions.next();
 
-         Resolution* res = new Resolution(resolutions.key(),chan);
+         VideoResolution* res = new VideoResolution(resolutions.key(),chan);
          chan->m_lValidResolutions << res;
 
          foreach(const QString& rate, resolutions.value()) {
@@ -87,6 +55,38 @@ m_pCurrentChannel(nullptr)
 VideoDevice::~VideoDevice()
 {
 }
+
+QVariant VideoDevice::data( const QModelIndex& index, int role) const
+{
+   if (index.isValid() && role == Qt::DisplayRole) {
+      return m_lChannels[index.row()]->name();
+   }
+   return QVariant();
+}
+
+int VideoDevice::rowCount( const QModelIndex& parent) const
+{
+   return (parent.isValid())?0:m_lChannels.size();
+}
+
+Qt::ItemFlags VideoDevice::flags( const QModelIndex& idx) const
+{
+   if (idx.column() == 0)
+      return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+   return QAbstractItemModel::flags(idx);
+}
+
+bool VideoDevice::setData( const QModelIndex& index, const QVariant &value, int role)
+{
+   Q_UNUSED(index)
+   Q_UNUSED(value)
+   Q_UNUSED(role)
+   return false;
+}
+
+// int VideoDevice::relativeIndex() {
+//    return m_pDevice->channelList().indexOf(this);
+// }
 
 ///Get the valid channel list
 QList<VideoChannel*> VideoDevice::channelList() const
@@ -125,13 +125,13 @@ bool VideoDevice::isActive() const
    return VideoDeviceModel::instance()->activeDevice() == this;
 }
 
-Resolution* VideoChannel::activeResolution()
+VideoResolution* VideoChannel::activeResolution()
 {
    //If it is the current device, then there is "current" resolution
    if ((!m_pCurrentResolution) && m_pDevice->isActive()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       const QString res = QMap<QString,QString>(interface.getPreferences(m_pDevice->id()))[VideoDevice::PreferenceNames::SIZE];
-      foreach(Resolution* r, validResolutions()) {
+      foreach(VideoResolution* r, validResolutions()) {
          if (r->name() == res) {
             m_pCurrentResolution = r;
             break;
@@ -146,52 +146,6 @@ Resolution* VideoChannel::activeResolution()
    return m_pCurrentResolution;
 }
 
-bool VideoChannel::setActiveResolution(Resolution* res) {
-   if ((!res) || m_lValidResolutions.indexOf(res) == -1 || res->name().isEmpty()) {
-      qWarning() << "Invalid active resolution" << (res?res->name():"NULL");
-      return false;
-   }
-   m_pCurrentResolution = res;
-   m_pDevice->save();
-   return true;
-}
-
-VideoRate* Resolution::activeRate()
-{
-   if (!m_pChannel) {
-      qWarning() << "Trying to get the active rate of an unattached resolution";
-      return nullptr;
-   }
-   if (!m_pCurrentRate && m_pChannel && m_pChannel->device()->isActive()) {
-      VideoManagerInterface& interface = DBus::VideoManager::instance();
-      const QString rate = QMap<QString,QString>(
-         interface.getPreferences(m_pChannel->device()->id()))[VideoDevice::PreferenceNames::RATE];
-      foreach(VideoRate* r, m_lValidRates) {
-         if (r->name() == rate) {
-            m_pCurrentRate = r;
-            break;
-         }
-      }
-   }
-   if ((!m_pCurrentRate) && m_lValidRates.size())
-      m_pCurrentRate = m_lValidRates[0];
-
-   return m_pCurrentRate;
-}
-
-int Resolution::index() const
-{
-   return m_pChannel?m_pChannel->validResolutions().indexOf(const_cast<Resolution*>(this)):-1;
-}
-
-int VideoChannel::index() {
-   return m_pDevice->channelList().indexOf(this);
-}
-
-int VideoRate::index() {
-   return m_pResolution->validRates().indexOf(this);
-}
-
 bool VideoDevice::setActiveChannel(VideoChannel* chan)
 {
    if (!chan || !m_lChannels.indexOf(chan)) {
@@ -203,30 +157,8 @@ bool VideoDevice::setActiveChannel(VideoChannel* chan)
    return true;
 }
 
-VideoChannel::VideoChannel(VideoDevice* dev,const QString& name) :
-   m_Name(name),m_pCurrentResolution(nullptr),m_pDevice(dev)
+bool VideoDevice::setActiveChannel(int idx)
 {
-   m_pCurrentResolution = nullptr;
-   m_pCurrentResolution = nullptr;
-   m_pCurrentResolution = nullptr;
-   m_pCurrentResolution = nullptr;
-   m_pCurrentResolution = nullptr;
-}
-
-VideoChannel* VideoDevice::activeChannel() const
-{
-   if (!m_pCurrentChannel) {
-      VideoManagerInterface& interface = DBus::VideoManager::instance();
-      const QString chan = QMap<QString,QString>(interface.getPreferences(m_DeviceId))[VideoDevice::PreferenceNames::CHANNEL];
-      foreach(VideoChannel* c, m_lChannels) {
-         if (c->name() == chan) {
-            const_cast<VideoDevice*>(this)->m_pCurrentChannel = c;
-            break;
-         }
-      }
-   }
-   if (!m_pCurrentChannel && m_lChannels.size()) {
-      const_cast<VideoDevice*>(this)->m_pCurrentChannel = m_lChannels[0];
-   }
-   return m_pCurrentChannel;
+   if (idx < 0 || idx >= m_lChannels.size()) return false;
+   return setActiveChannel(m_lChannels[idx]);
 }

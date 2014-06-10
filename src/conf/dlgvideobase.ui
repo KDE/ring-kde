@@ -147,5 +147,76 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>m_pChannelCB</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>DlgVideoBase</receiver>
+   <slot>slotChannelChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>631</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>654</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pResolutionCB</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>DlgVideoBase</receiver>
+   <slot>slotResolutionChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>629</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>654</x>
+     <y>108</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pRateCB</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>DlgVideoBase</receiver>
+   <slot>slotRateChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>636</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>656</x>
+     <y>144</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pDeviceCB</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>DlgVideoBase</receiver>
+   <slot>slotDeviceChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>648</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>656</x>
+     <y>16</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotChannelChanged(int)</slot>
+  <slot>slotResolutionChanged(int)</slot>
+  <slot>slotRateChanged(int)</slot>
+  <slot>slotDeviceChanged(int)</slot>
+ </slots>
 </ui>

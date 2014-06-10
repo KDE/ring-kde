@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2012-2014 by Savoir-Faire Linux                          *
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
@@ -15,60 +15,12 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef DLG_VIDEO_H
-#define DLG_VIDEO_H
-#ifdef ENABLE_VIDEO
+#include "videorate.h"
+#include "videodevicemodel.h"
+#include "videochannel.h"
+#include "videoresolution.h"
 
-#include <QWidget>
-
-#include "ui_dlgvideobase.h"
-
-class VideoDevice;
-class KConfigDialog;
-
-class VideoChannel;
-class VideoResolution;
-
-///DlgVideo: video preferences for sflphone
-class DlgVideo : public QWidget, public Ui_DlgVideoBase
+int VideoRate::relativeIndex()
 {
-Q_OBJECT
-public:
-   //Constructor
-   explicit DlgVideo(KConfigDialog* parent = nullptr);
-
-   //Destructor
-   ~DlgVideo();
-
-   //Getter
-   bool hasChanged();
-
-private:
-   //Attribute
-   VideoDevice* m_pDevice;
-   bool m_IsChanged;
-   bool m_IsLoading;
-   VideoChannel* m_pChannel;
-   VideoResolution* m_pResolution;
-
-public Q_SLOTS:
-   void updateWidgets ();
-   void updateSettings();
-
-private Q_SLOTS:
-   void slotReloadPreview();
-   void startStopPreview();
-   void startStopPreview(bool state);
-   void slotReloadDevices();
-   void slotDeviceChanged(int idx = -1);
-   void slotChannelChanged(int idx = -1);
-   void slotResolutionChanged(int idx = -1);
-   void slotRateChanged(int idx = -1);
-
-Q_SIGNALS:
-   ///Emitted when the buttons need to be updated in the parent dialog
-   void updateButtons();
-};
-
-#endif
-#endif
+   return VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().indexOf(this);
+}

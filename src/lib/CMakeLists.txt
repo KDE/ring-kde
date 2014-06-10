@@ -76,6 +76,9 @@ set( qtsflphone_LIB_SRCS
   itembackendmodel.cpp
   video/videodevicemodel.cpp
   video/videocodecmodel.cpp
+  video/videochannel.cpp
+  video/videoresolution.cpp
+  video/videorate.cpp
   video/videomodel.cpp
 
   #Data backends
@@ -140,6 +143,9 @@ set( qtsflphone_LIB_HDRS
   video/videocodecmodel.h
   video/videomodel.h
   video/videorenderer.h
+  video/videoresolution.h
+  video/videochannel.h
+  video/videorate.h
   #commonbackendmanagerinterface.h
 )
 

@@ -19,6 +19,7 @@
 #define VIDEO_DEVICE_H
 
 #include "../typedefs.h"
+#include <QtCore/QAbstractListModel>
 
 //Qt
 #include <QStringList>
@@ -26,96 +27,15 @@
 
 //SFLPhone
 class VideoRenderer;
-class Resolution;
+class VideoResolution;
 class VideoRate;
 class VideoChannel;
 class VideoDevice;
 
-///@typedef VideoChannel A channel available in a Device
-class LIB_EXPORT VideoChannel
-{
-   //Only VideoDevice can add resolutions
-   friend class VideoDevice;
-public:
-   QString name() const {
-      return m_Name;
-   }
-   Resolution* activeResolution();
-   QList<Resolution*> validResolutions() const {
-      return m_lValidResolutions;
-   }
-   VideoDevice* device() const {
-      return m_pDevice;
-   }
-   int index();
-
-   bool setActiveResolution(Resolution* res);
-
-private:
-   VideoChannel(VideoDevice* dev,const QString& name);
-   virtual ~VideoChannel() {}
-   QString m_Name;
-   QList<Resolution*> m_lValidResolutions;
-   Resolution*        m_pCurrentResolution;
-   VideoDevice*       m_pDevice;
-};
-
-///@typedef VideoRate The rate for a device
-class LIB_EXPORT VideoRate
-{
-   //Can only be created by VideoDevice
-   friend class VideoDevice;
-
-public:
-   virtual ~VideoRate() {}
-   QString name() const {
-      return m_Name;
-   }
-   int index();
-private:
-   VideoRate(const Resolution* res,const QString& name) :
-      m_Name(name),m_pResolution(res) {}
-   QString m_Name;
-   const Resolution* m_pResolution;
-};
-
-///@struct Resolution Equivalent of "640x480"
-class LIB_EXPORT Resolution : public QSize {
-   //Only VideoDevice can add validated rates
-   friend class VideoDevice;
-public:
-   //Constructor
-   Resolution(uint _width, uint _height);
-   Resolution(const QString& size = QString(), VideoChannel* chan = nullptr);
-   Resolution(const Resolution& res);
-   Resolution(const QSize& size);
-   explicit Resolution();
-   //Getter
-   const QString name() const;
-   const QList<VideoRate*> validRates() const {
-      return m_lValidRates;
-   }
-   int index() const;
-   VideoRate* activeRate();
-   bool setActiveRate(VideoRate* rate) {
-      if (!rate || (m_lValidRates.indexOf(rate) != -1)) {
-         qWarning() << "Trying to set an invalid rate";
-         return false;
-      }
-      return true;
-   }
-private:
-
-   //Attributes
-   QList<VideoRate*> m_lValidRates;
-   VideoRate*        m_pCurrentRate;
-   VideoChannel*     m_pChannel;
-};
-
 class VideoModel;
 
 ///VideoDevice: V4L devices used to record video for video call
-class LIB_EXPORT VideoDevice : public QObject {
+class LIB_EXPORT VideoDevice : public QAbstractListModel {
    Q_OBJECT
    friend class VideoModel;
    friend class VideoDeviceModel;
@@ -124,8 +44,23 @@ class LIB_EXPORT VideoDevice : public QObject {
    friend class VideoChannel;
    friend class Resolution;
    public:
+
+      class PreferenceNames {
+      public:
+         constexpr static const char* RATE    = "rate"   ;
+         constexpr static const char* NAME    = "name"   ;
+         constexpr static const char* CHANNEL = "channel";
+         constexpr static const char* SIZE    = "size"   ;
+      };
+
       //Constants
       constexpr static const char* NONE = "";
+
+      //Model
+      QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
+      int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
+      Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
+      virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
 
       //Getter
       QList<VideoChannel*> channelList      () const;
@@ -138,6 +73,10 @@ class LIB_EXPORT VideoDevice : public QObject {
 
       //Setter
       bool setActiveChannel(VideoChannel* chan);
+      bool setActiveChannel(int idx);
+
+      //Mutator
+      void save();
 
    private:
       //Constructor
@@ -149,16 +88,6 @@ class LIB_EXPORT VideoDevice : public QObject {
       VideoChannel* m_pCurrentChannel   ;
       QList<VideoChannel*> m_lChannels  ;
 
-      //Helper
-      void save();
-
-      class PreferenceNames {
-      public:
-         constexpr static const char* RATE    = "rate"   ;
-         constexpr static const char* NAME    = "name"   ;
-         constexpr static const char* CHANNEL = "channel";
-         constexpr static const char* SIZE    = "size"   ;
-      };
 
    Q_SIGNALS:
       void renderingStarted(VideoRenderer*);

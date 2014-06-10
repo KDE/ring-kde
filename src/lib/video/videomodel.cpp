@@ -27,6 +27,9 @@
 #include "callmodel.h"
 #include "videorenderer.h"
 #include "videodevicemodel.h"
+#include "videochannel.h"
+#include "videorate.h"
+#include "videoresolution.h"
 
 //Static member
 VideoModel* VideoModel::m_spInstance = nullptr;
@@ -43,10 +46,7 @@ VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_Pre
 
 VideoModel::~VideoModel()
 {
-   foreach(VideoDevice* dev, m_hDevices) {
-      delete dev;
-   }
-   m_hDevices.clear();
+
 }
 
 ///Singleton
@@ -70,7 +70,7 @@ VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
       m_lRenderers["local"] = new VideoRenderer("local","",
-         VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution());
+         VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size());
    }
    return m_lRenderers["local"];
 }
@@ -115,18 +115,18 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
 {
    Q_UNUSED(id)
 
-   Resolution* res;
+   QSize res;
    if (VideoDeviceModel::instance()->activeDevice() 
       && VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
       //FIXME flawed logic
-      res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution();
+      res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size();
    }
    else {
-      res = new Resolution(width,height); //FIXME leak
+      res =  QSize(width,height);
    }
 
    if (m_lRenderers[id] == nullptr ) {
-      m_lRenderers[id] = new VideoRenderer(id,shmPath,res); 
+      m_lRenderers[id] = new VideoRenderer(id,shmPath,res);
       m_lRenderers[id]->moveToThread(this);
       if (!isRunning())
          start();
@@ -134,11 +134,11 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
    else {
       VideoRenderer* renderer = m_lRenderers[id];
       renderer->setShmPath(shmPath);
-      renderer->setResolution(res);
+      renderer->setSize(res);
    }
 
    m_lRenderers[id]->startRendering();
-   VideoDevice* dev = device(id);
+   VideoDevice* dev = VideoDeviceModel::instance()->getDevice(id);
    if (dev) {
       emit dev->renderingStarted(m_lRenderers[id]);
    }
@@ -164,7 +164,7 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
    qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
 //    emit videoStopped();
 
-   VideoDevice* dev = device(id);
+   VideoDevice* dev = VideoDeviceModel::instance()->getDevice(id);
    if (dev) {
       emit dev->renderingStopped(r);
    }
@@ -182,45 +182,6 @@ void VideoModel::switchDevice(const VideoDevice* device) const
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.switchInput(device->id());
-}
-
-QList<VideoDevice*> VideoModel::devices()
-{
-   QHash<QString,VideoDevice*> devicesHash;
-   VideoManagerInterface& interface = DBus::VideoManager::instance();
-   const QStringList deviceList = interface.getDeviceList();
-   if (deviceList.size() == m_hDevices.size()) {
-//       qDebug() << "\n\nRETUNING CACHE" << m_hDevices.values();
-//       foreach(const QString& deviceName,deviceList) {
-//          qDebug() << "Meh" << m_hDevices[deviceName];
-//       }
-      return m_hDevices.values();
-   }
-
-   foreach(const QString& deviceName,deviceList) {
-      if (!m_hDevices[deviceName]) {
-         devicesHash[deviceName] = new VideoDevice(deviceName);
-//          qDebug() << "\n\nNEW" << devicesHash[deviceName];
-      }
-      else {
-//          qDebug() << "\n\nPUSH" << m_hDevices[deviceName];
-         devicesHash[deviceName] = m_hDevices[deviceName];
-      }
-   }
-   foreach(VideoDevice* dev,m_hDevices) {
-      if (dev && devicesHash.key(dev).isEmpty()) {
-//          qDebug() << "\n\nDELETE";
-         delete dev;
-      }
-   }
-   m_hDevices.clear();
-   m_hDevices = devicesHash;
-   return m_hDevices.values();
-}
-
-VideoDevice* VideoModel::device(const QString &id)
-{
-   return m_hDevices[id];
 }
 
 QMutex* VideoModel::startStopMutex() const
