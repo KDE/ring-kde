@@ -69,8 +69,12 @@ VideoRenderer* VideoModel::getRenderer(const Call* call) const
 VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
-      m_lRenderers["local"] = new VideoRenderer("local","",
-         VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size());
+      VideoResolution* res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution();
+      if (!res) {
+         qWarning() << "Misconfigured video device";
+         return nullptr;
+      }
+      m_lRenderers["local"] = new VideoRenderer("local","",res->size());
    }
    return m_lRenderers["local"];
 }
@@ -115,15 +119,15 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
 {
    Q_UNUSED(id)
 
-   QSize res;
-   if (VideoDeviceModel::instance()->activeDevice() 
-      && VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
-      //FIXME flawed logic
-      res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size();
-   }
-   else {
-      res =  QSize(width,height);
-   }
+   QSize res = QSize(width,height);
+//    if (VideoDeviceModel::instance()->activeDevice()
+//       && VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
+//       //FIXME flawed logic
+//       res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size();
+//    }
+//    else {
+//       res =  QSize(width,height);
+//    }
 
    if (m_lRenderers[id] == nullptr ) {
       m_lRenderers[id] = new VideoRenderer(id,shmPath,res);

@@ -50,7 +50,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    if (VideoModel::instance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
    }
-   slotReloadDevices();
+//    m_pVideoSettings->slotReloadDevices();
    m_IsChanged = false;
    m_IsLoading = false;
 }
@@ -96,8 +96,7 @@ void DlgVideo::updateWidgets ()
 
 void DlgVideo::updateSettings()
 {
-   const QList<VideoDevice*> devices =  VideoDeviceModel::instance()->devices();
-   VideoDeviceModel::instance()->setActive(devices.size() > m_pDeviceCB->currentIndex()? devices[m_pDeviceCB->currentIndex()]:nullptr);
+   VideoDeviceModel::instance()->setActive(m_pVideoSettings->device());
    m_IsChanged = false;
 }
 
@@ -109,74 +108,10 @@ void DlgVideo::slotReloadPreview()
    }
 }
 
-void DlgVideo::slotReloadDevices()
-{
-   m_pDeviceCB->blockSignals(true);
-   m_pDeviceCB->setModel(VideoDeviceModel::instance());
-   m_pDeviceCB->blockSignals(false);
-   m_pDeviceCB->setCurrentIndex(VideoDeviceModel::instance()->currentIndex());
-   slotChannelChanged   ();
-   slotResolutionChanged();
-   slotRateChanged      ();
-   m_pConfGB->setEnabled(m_pDeviceCB->count());
-}
 
-void DlgVideo::slotChannelChanged(int idx)
+void DlgVideo::slotSettingsChanged()
 {
-   if (idx != -1 && idx >= VideoDeviceModel::instance()->activeDevice()->channelList().size()) {
-      VideoDeviceModel::instance()->activeDevice()->setActiveChannel(idx);
-      slotReloadPreview();
-   }
-   else
-      m_pChannelCB->setCurrentIndex(VideoDeviceModel::instance()->activeDevice()->activeChannel()->relativeIndex());
-   m_pResolutionCB->blockSignals(true);
-   m_pResolutionCB->setModel(VideoDeviceModel::instance()->activeDevice()->activeChannel());
-   m_pResolutionCB->blockSignals(false);
-   slotResolutionChanged();
-}
-
-void DlgVideo::slotResolutionChanged(int idx)
-{
-   if (idx >= 0 && VideoDeviceModel::instance()->activeDevice()->activeChannel()->validResolutions().size() >idx) {
-      VideoDeviceModel::instance()->activeDevice()->activeChannel()->setActiveResolution(idx);
-      slotReloadPreview();
-      m_IsChanged = true;
-      emit updateButtons();
-   }
-   else {
-      m_pResolutionCB->setCurrentIndex(VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->relativeIndex());
-   }
-
-   m_pRateCB->blockSignals(true);
-   m_pRateCB->setModel(VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution());
-   m_pRateCB->blockSignals(false);
-   slotRateChanged();
-}
-
-void DlgVideo::slotRateChanged(int idx)
-{
-   Q_UNUSED(idx)
-   if (idx == -1 || idx >= VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().size()) {
-      m_pRateCB->setCurrentIndex(
-         VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->activeRate()->relativeIndex()
-      );
-   }
-   else {
-      VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->setActiveRate(idx);
-      slotReloadPreview();
-      m_IsChanged = true;
-      emit updateButtons();
-   }
-}
-
-void DlgVideo::slotDeviceChanged(int idx)
-{
-   VideoDeviceModel::instance()->setActive(VideoDeviceModel::instance()->index(idx,0));
-   m_pChannelCB->blockSignals(true);
-   m_pChannelCB->setModel(VideoDeviceModel::instance()->activeDevice());
-   m_pChannelCB->blockSignals(false);
-   slotReloadPreview();
-   slotChannelChanged();
    m_IsChanged = true;
    emit updateButtons();
+   slotReloadPreview();
 }

@@ -169,7 +169,7 @@ VideoDevice* VideoDeviceModel::activeDevice() const
 }
 
 
-int VideoDeviceModel::currentIndex() const
+int VideoDeviceModel::activeIndex() const
 {
    return m_lDevices.indexOf(activeDevice());
 }
@@ -270,6 +270,19 @@ void ExtendedVideoDeviceModel::switchTo(const int idx)
          DBus::VideoManager::instance().switchInput(ProtocolPrefix::V4L2 +
             VideoDeviceModel::instance()->index(idx-ExtendedDeviceList::__COUNT,0).data(Qt::DisplayRole).toString());
          break;
+   };
+}
+
+VideoDevice* ExtendedVideoDeviceModel::deviceAt(const QModelIndex& idx) const
+{
+   if (!idx.isValid()) return nullptr;
+   switch (idx.row()) {
+      case ExtendedDeviceList::NONE:
+      case ExtendedDeviceList::SCREEN:
+      case ExtendedDeviceList::FILE:
+         return nullptr;
+      default:
+         return VideoDeviceModel::instance()->devices()[idx.row()-ExtendedDeviceList::__COUNT];
    };
 }
 

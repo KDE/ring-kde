@@ -44,6 +44,8 @@ public:
    Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
 
+   VideoDevice* deviceAt(const QModelIndex& idx) const;
+
    //Singleton
    static ExtendedVideoDeviceModel* instance();
 private:
@@ -95,7 +97,7 @@ public:
 
 
    VideoDevice* activeDevice() const;
-   int currentIndex() const;
+   int activeIndex() const;
    VideoDevice* getDevice(const QString& devId) const
    {
       return m_hDevices[devId];

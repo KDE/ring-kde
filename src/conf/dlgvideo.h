@@ -54,16 +54,12 @@ private:
 public Q_SLOTS:
    void updateWidgets ();
    void updateSettings();
+   void slotSettingsChanged();
 
 private Q_SLOTS:
    void slotReloadPreview();
    void startStopPreview();
    void startStopPreview(bool state);
-   void slotReloadDevices();
-   void slotDeviceChanged(int idx = -1);
-   void slotChannelChanged(int idx = -1);
-   void slotResolutionChanged(int idx = -1);
-   void slotRateChanged(int idx = -1);
 
 Q_SIGNALS:
    ///Emitted when the buttons need to be updated in the parent dialog

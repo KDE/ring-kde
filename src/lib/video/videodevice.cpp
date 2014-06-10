@@ -140,7 +140,7 @@ VideoResolution* VideoChannel::activeResolution()
    }
    //If it isn't the current _or_ the current res is invalid, pick the first valid one
    if (!m_pCurrentResolution && validResolutions().size()) {
-      m_pCurrentResolution = validResolutions()[0];
+      m_pCurrentResolution = validResolutions().first();
    }
 
    return m_pCurrentResolution;

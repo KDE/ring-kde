@@ -145,6 +145,7 @@ IF(${ENABLE_VIDEO} MATCHES true)
    SET(
       sflphone_client_kde_VIDEO
       widgets/videodock.cpp
+      widgets/videosettings.cpp
 #       widgets/videowidget.cpp #Software rendering, can still be useful
       widgets/videowidget2.cpp #Needed for preview
       widgets/videowidget3.cpp

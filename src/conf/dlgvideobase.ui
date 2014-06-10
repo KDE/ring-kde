@@ -15,31 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="m_pDeviceL">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Device:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="KComboBox" name="m_pDeviceCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <layout class="QHBoxLayout" name="horizontalLayout_2"/>
    </item>
    <item>
     <widget class="QGroupBox" name="m_pConfGB">
@@ -47,63 +23,15 @@
       <string>Device Configuration</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0" rowspan="2">
-       <layout class="QFormLayout" name="formLayout">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      <item row="0" column="0">
+       <widget class="VideoSettings" name="m_pVideoSettings" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
         </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="m_pChannelL">
-          <property name="text">
-           <string>Channel</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="KComboBox" name="m_pChannelCB">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="m_pResolutionL">
-          <property name="text">
-           <string>Resolution</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="KComboBox" name="m_pResolutionCB">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="m_pRateL">
-          <property name="text">
-           <string>Rate</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="KComboBox" name="m_pRateCB">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -135,88 +63,41 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>VideoWidget3</class>
    <extends>QWidget</extends>
    <header>widgets/videowidget3.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>VideoSettings</class>
+   <extends>QWidget</extends>
+   <header>widgets/videosettings.h</header>
+   <container>1</container>
+   <slots>
+    <signal>settingsChanged()</signal>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>m_pChannelCB</sender>
-   <signal>currentIndexChanged(int)</signal>
+   <sender>m_pVideoSettings</sender>
+   <signal>settingsChanged()</signal>
    <receiver>DlgVideoBase</receiver>
-   <slot>slotChannelChanged(int)</slot>
+   <slot>slotSettingsChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>631</x>
-     <y>79</y>
+     <x>45</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
-     <x>654</x>
-     <y>74</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_pResolutionCB</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>DlgVideoBase</receiver>
-   <slot>slotResolutionChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>629</x>
-     <y>108</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>654</x>
-     <y>108</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_pRateCB</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>DlgVideoBase</receiver>
-   <slot>slotRateChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>636</x>
-     <y>134</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>656</x>
-     <y>144</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_pDeviceCB</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>DlgVideoBase</receiver>
-   <slot>slotDeviceChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>648</x>
-     <y>16</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>656</x>
-     <y>16</y>
+     <x>1</x>
+     <y>147</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>slotChannelChanged(int)</slot>
-  <slot>slotResolutionChanged(int)</slot>
-  <slot>slotRateChanged(int)</slot>
-  <slot>slotDeviceChanged(int)</slot>
+  <slot>slotSettingsChanged()</slot>
  </slots>
 </ui>

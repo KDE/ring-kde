@@ -15,37 +15,38 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef VIDEO_DOCK_H
-#define VIDEO_DOCK_H
+#ifndef VIDEO_SETTINGS_H
+#define VIDEO_SETTINGS_H
 
-#include <QtGui/QDockWidget>
+#include <QtGui/QWidget>
+#include "ui_videodevicesetting.h"
 
-//Qt
-class QGridLayout;
+class VideoDevice;
 
-//SFLPhone
-class VideoWidget3;
-class VideoRenderer;
-class VideoSettings;
-class MediaPicker;
-class ScreenSharingWidget;
-
-///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
-class VideoDock : public QDockWidget {
+class VideoSettings : public QWidget, public Ui_VideoSettings
+{
    Q_OBJECT
 public:
-   explicit VideoDock(QWidget* parent = nullptr );
-   void addRenderer(VideoRenderer* r);
+   VideoSettings(QWidget* parent);
 
-private:
-   QGridLayout*         m_pMoreOpts     ;
-   VideoWidget3*        m_pVideoWidet   ;
-   VideoSettings*       m_pVideoSettings;
-   ScreenSharingWidget* m_pScreenSharing;
-   MediaPicker*         m_pMediaPicker  ;
+   void setDevice(VideoDevice* dev);
+
+   VideoDevice* device() const;
+
+   void hideDevices();
+
+public Q_SLOTS:
+   void slotReloadDevices();
 
 private Q_SLOTS:
-   void slotDeviceChanged(int index);
+   void slotDeviceChanged(int idx = -1);
+   void slotChannelChanged(int idx = -1);
+   void slotResolutionChanged(int idx = -1);
+   void slotRateChanged(int idx = -1);
+Q_SIGNALS:
+   void settingsChanged();
 };
+
+
 
 #endif

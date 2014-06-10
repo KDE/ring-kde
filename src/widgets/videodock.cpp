@@ -34,7 +34,7 @@
 #include "lib/video/videodevicemodel.h"
 #include "ui_mediafilepicker.h"
 #include "ui_screensharingwidget.h"
-#include "ui_videodevicesetting.h"
+#include "videosettings.h"
 
 class VideoWidgetItem : public QWidgetItem {
 public:
@@ -48,16 +48,6 @@ public:
    }
 private:
    VideoWidget3* m_pWdg;
-};
-
-class VideoSetting : public QWidget, public Ui_VideoSettings
-{
-   Q_OBJECT
-public:
-   VideoSetting(QWidget* parent) : QWidget(parent)
-   {
-      setupUi(this);
-   }
 };
 
 class MediaPicker : public QWidget, public Ui_MediaPicker
@@ -172,13 +162,17 @@ void VideoDock::slotDeviceChanged(int index)
          break;
       default:
          if ( !m_pVideoSettings ) {
-            m_pVideoSettings = new VideoSetting(this);
+            m_pVideoSettings = new VideoSettings(this);
+            m_pVideoSettings->hideDevices();
             m_pMoreOpts->addWidget(m_pVideoSettings,12,0,1,4);
          }
          if ( m_pScreenSharing  )
             m_pScreenSharing->setVisible(false);
          if ( m_pMediaPicker    )
             m_pMediaPicker->setVisible(false);
+         m_pVideoSettings->setDevice(ExtendedVideoDeviceModel::instance()->deviceAt(
+            ExtendedVideoDeviceModel::instance()->index(index,0))
+         );
          m_pVideoSettings->setVisible(true);
    };
 }

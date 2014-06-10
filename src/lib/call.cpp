@@ -1070,7 +1070,8 @@ void Call::hangUp()
 ///Remove the call without contacting the daemon
 void Call::remove()
 {
-   m_CurrentState = Call::State::OVER;
+   if (m_CurrentState != Call::State::ERROR && m_CurrentState != Call::State::FAILURE)
+      m_CurrentState = Call::State::OVER;
    emit stateChanged();
    emit changed();
    emit changed(this);
