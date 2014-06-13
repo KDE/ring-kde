@@ -146,7 +146,7 @@ Account* AccountListModel::ip2ip() const
 {
    if (!m_pIP2IP) {
       foreach(Account* a,m_lAccounts) {
-         if (a->id() == "IP2IP")
+         if (a->id() == Account::ProtocolName::IP2IP)
             const_cast<AccountListModel*>(this)->m_pIP2IP = a;
       }
    }
@@ -454,7 +454,7 @@ Account* AccountListModel::currentAccount()
    else {
       Account* a = instance()->firstRegisteredAccount();
       if (!a)
-         a = instance()->getAccountById("IP2IP");
+         a = instance()->getAccountById(Account::ProtocolName::IP2IP);
       instance()->setPriorAccount(a);
       return a;
    }
@@ -563,7 +563,7 @@ void AccountListModel::removeAccount(Account* account)
    m_lAccounts.remove(aindex);
    m_lDeletedAccounts << account->id();
    if (currentAccount() == account)
-      setPriorAccount(getAccountById("IP2IP"));
+      setPriorAccount(getAccountById(Account::ProtocolName::IP2IP));
    emit dataChanged(index(aindex,0), index(m_lAccounts.size()-1,0));
    emit layoutChanged();
    //delete account;

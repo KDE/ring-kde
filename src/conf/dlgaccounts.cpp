@@ -467,7 +467,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    //Enable tabs
-   bool isntIP2IP = ! ( ACC alias() == "IP2IP" );
+   bool isntIP2IP = ! ( ACC alias() == Account::ProtocolName::IP2IP );
    bool isIAX     = ACC protocol()  == Account::Protocol::IAX;
    bool enableTab[6] = {isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true};
    for (int i=0;i<6;i++)
@@ -787,7 +787,7 @@ bool DlgAccounts::hasIncompleteRequiredFields()
    }
 
    bool fields[4] = {edit1_alias->text().isEmpty(),edit3_server->text().isEmpty(),edit4_user->text().isEmpty(),edit5_password->text().isEmpty()};
-   bool isIncomplete = acc && (acc->alias() != "IP2IP") && (fields[0]|fields[1]|fields[2]|fields[3]);
+   bool isIncomplete = acc && (acc->alias() != Account::ProtocolName::IP2IP) && (fields[0]|fields[1]|fields[2]|fields[3]);
    //Add visual feedback for missing fields
    for (int i=0;i<requiredFieldsLabels.size();i++) {
       static KStatefulBrush errorBrush( KColorScheme::Window, KColorScheme::NegativeText );

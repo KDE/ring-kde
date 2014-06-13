@@ -305,14 +305,19 @@ Call* Call::buildRingingCall(const QString & callId)
 Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
 {
    const QString& callId          = hc[ Call::HistoryMapFields::CALLID          ]          ;
-   time_t         startTimeStamp  = hc[ Call::HistoryMapFields::TIMESTAMP_START ].toUInt() ;
-   time_t         stopTimeStamp   = hc[ Call::HistoryMapFields::TIMESTAMP_STOP  ].toUInt() ;
-   const QString& accId           = hc[ Call::HistoryMapFields::ACCOUNT_ID      ]          ;
    const QString& name            = hc[ Call::HistoryMapFields::DISPLAY_NAME    ]          ;
    const QString& number          = hc[ Call::HistoryMapFields::PEER_NUMBER     ]          ;
    const QString& type            = hc[ Call::HistoryMapFields::STATE           ]          ;
    const QString& direction       = hc[ Call::HistoryMapFields::DIRECTION       ]          ;
    const bool     missed          = hc[ Call::HistoryMapFields::MISSED          ] == "true";
+   time_t         startTimeStamp  = hc[ Call::HistoryMapFields::TIMESTAMP_START ].toUInt() ;
+   time_t         stopTimeStamp   = hc[ Call::HistoryMapFields::TIMESTAMP_STOP  ].toUInt() ;
+   QString accId                  = hc[ Call::HistoryMapFields::ACCOUNT_ID      ]          ;
+
+   if (accId.isEmpty()) {
+      qWarning() << "An history call has an invalid account identifier";
+      accId = QString(Account::ProtocolName::IP2IP);
+   }
 
    Account*      acc       = AccountListModel::instance()->getAccountById(accId);
    PhoneNumber*  nb        = PhoneDirectoryModel::instance()->getNumber(number,acc);

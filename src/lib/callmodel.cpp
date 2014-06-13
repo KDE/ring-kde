@@ -267,8 +267,15 @@ Call* CallModel::getCall( const QString& callId ) const
 ///Add a call in the model structure, the call must exist before being added to the model
 Call* CallModel::addCall(Call* call, Call* parentCall)
 {
-   if (!call || call->state() == Call::State::OVER || (parentCall && parentCall->state() == Call::State::OVER))
-      return new Call(QString(),QString()); //Invalid, but better than managing NULL everywhere
+   if (!call || (parentCall && parentCall->state() == Call::State::OVER && call->state() != Call::State::OVER)) {
+      qWarning() << "Trying to add an invalid call to the tree" << call;
+
+      //WARNING this will trigger an assert later on, but isn't critical enough in release mode.
+      //HACK This return an invalid object that should be equivalent to NULL but wont require
+      //nullptr check everywhere in the code. It is safer to use an invalid object rather than
+      //causing a NULL dereference
+      return new Call(QString(),QString());
+   }
 
    InternalStruct* aNewStruct = new InternalStruct;
    aNewStruct->call_real  = call;

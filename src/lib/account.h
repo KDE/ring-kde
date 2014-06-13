@@ -275,8 +275,9 @@ class LIB_EXPORT Account : public QObject {
 
       class ProtocolName {
       public:
-         constexpr static const char* SIP = "SIP";
-         constexpr static const char* IAX = "IAX";
+         constexpr static const char* SIP   = "SIP"  ;
+         constexpr static const char* IAX   = "IAX"  ;
+         constexpr static const char* IP2IP = "IP2IP";
       };
 
       enum class Protocol {

@@ -49,7 +49,7 @@ echo "Passing argument  '$options'  to cmake"
 autocmd cmake $options ..
 
 if `echo $@ | grep -q "\--with-debug"`;then
-   make -j install
+   make -j3 install
 else
    echo "**********************************************"
    echo "Configuration done!"

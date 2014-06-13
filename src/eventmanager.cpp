@@ -300,7 +300,8 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
             Call* call = m_pParent->currentCall();
             if (call->state() == Call::State::DIALING) {
                call->setDialNumber(n->uri());
-               if (PhoneDirectoryModel::instance()->callWithAccount() && n->account() && n->account()->id() != "IP2IP")
+               if (PhoneDirectoryModel::instance()->callWithAccount()
+                && n->account() && n->account()->id() != Account::ProtocolName::IP2IP)
                   call->setAccount(n->account());
                m_pParent->m_pAutoCompletion->reset();
                call->performAction(Call::Action::ACCEPT);

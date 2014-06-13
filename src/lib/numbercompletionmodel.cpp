@@ -51,7 +51,7 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
    const int weight     = i.key  ();
 
    bool needAcc = (role>=100 || role == Qt::UserRole) && n->account() && n->account() != AccountListModel::instance()->currentAccount()
-                  && n->account()->alias() != "IP2IP";
+                  && n->account()->alias() != Account::ProtocolName::IP2IP;
 
    switch (static_cast<NumberCompletionModel::Columns>(index.column())) {
       case NumberCompletionModel::Columns::CONTENT:
