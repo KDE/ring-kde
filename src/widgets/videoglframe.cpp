@@ -136,7 +136,11 @@ void ThreadedPainter2::draw(QPainter* p)
       QSize res = m_pRenderer->size();
 
       //Detect race conditions
-      Q_ASSERT(res.width() * res.height() == data.size()/3);
+      const int expectedSize = res.width() * res.height();
+      if (expectedSize == data.size()/3) {
+         qWarning() << "Invalid video size. Expected" << expectedSize << "got" << data.size()/3;
+         return;
+      }
 
       if (res.width() && res.height() && data.size())
          gluBuild2DMipmaps(GL_TEXTURE_2D, 4, res.width(), res.height(), GL_BGRA, GL_UNSIGNED_BYTE, data);

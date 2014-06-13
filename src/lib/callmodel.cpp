@@ -1064,6 +1064,7 @@ void CallModel::slotCallChanged(Call* call)
       case Call::State::INCOMING:
       case Call::State::OVER:
       case Call::State::RINGING:
+      case Call::State::INITIALIZATION:
       case Call::State::CURRENT:
       case Call::State::DIALING:
       case Call::State::HOLD:

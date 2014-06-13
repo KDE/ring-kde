@@ -290,6 +290,7 @@ void SFLPhoneView::updateWindowCallState()
             break;
 
          case Call::State::RINGING:
+         case Call::State::INITIALIZATION:
             enabledActions  [ SFLPhone::CallAction::Hold     ] = false                       ;
             enabledActions  [ SFLPhone::CallAction::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                    ;

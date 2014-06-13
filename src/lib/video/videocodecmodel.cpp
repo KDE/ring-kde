@@ -19,7 +19,7 @@
 #include <call.h>
 #include <account.h>
 #include <video/videocodec.h>
-#include "dbus/videomanager.h"
+#include "../dbus/videomanager.h"
 
 #include <QtCore/QCoreApplication>
 

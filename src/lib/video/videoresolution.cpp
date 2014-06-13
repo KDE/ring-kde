@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "videoresolution.h"
 
-#include "dbus/videomanager.h"
+#include "../dbus/videomanager.h"
 #include "videochannel.h"
 #include "videorate.h"
 #include "videodevice.h"

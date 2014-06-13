@@ -20,7 +20,7 @@
 //SFLphone
 #include "videoresolution.h"
 #include "videodevice.h"
-#include "dbus/videomanager.h"
+#include "../dbus/videomanager.h"
 
 VideoChannel::VideoChannel(VideoDevice* dev,const QString& name) :
    m_Name(name),m_pCurrentResolution(nullptr),m_pDevice(dev)

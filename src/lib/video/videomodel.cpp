@@ -21,7 +21,7 @@
 #include <QtCore/QMutex>
 
 //SFLPhone
-#include "dbus/videomanager.h"
+#include "../dbus/videomanager.h"
 #include "videodevice.h"
 #include "call.h"
 #include "callmodel.h"

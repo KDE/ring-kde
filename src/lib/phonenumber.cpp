@@ -352,6 +352,8 @@ QString PhoneNumber::fullUri() const
 ///Strip out <sip:****> from the URI
 QString PhoneNumber::stripUri(const QString& uri)
 {
+   if (uri.isEmpty())
+      return QString();
    int start(0),end(uri.size()-1); //Other type of comparaisons were too slow
    if (uri.size() > 0 && uri[0] == '<' && uri[4] == ':')
       start = 5;

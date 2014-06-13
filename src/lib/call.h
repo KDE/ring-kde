@@ -136,6 +136,7 @@ public:
       ERROR           = 10,/** This state should never be reached */
       CONFERENCE      = 11,/** This call is the current conference*/
       CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
+      INITIALIZATION  = 13,/** The call have been placed, but the peer hasn't confirmed yet */
       __COUNT,
    };
    Q_ENUMS(State)
