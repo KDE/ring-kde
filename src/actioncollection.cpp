@@ -42,12 +42,12 @@
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
 #include "klib/macromodel.h"
-#include "klib/akonadibackend.h"
 #include <lib/call.h>
 #include <lib/account.h>
 #include <lib/accountlistmodel.h>
 #include <lib/callmodel.h>
 #include <lib/audiosettingsmodel.h>
+#include <lib/contactmodel.h>
 
 
 ActionCollection* ActionCollection::m_spInstance = nullptr;
@@ -111,6 +111,14 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(
    action_video_flip_vertical   ->setAltIcon(KIcon("object-flip-vertical"  ));
    action_video_mute            ->setAltIcon(KIcon("camera-web"            ));
    action_video_preview         ->setAltIcon(KIcon("view-preview"          ));
+   action_video_rotate_left     ->setIcon(KIcon("object-rotate-left"    ));
+   action_video_rotate_right    ->setIcon(KIcon("object-rotate-right"   ));
+   action_video_flip_horizontal ->setIcon(KIcon("object-flip-horizontal"));
+   action_video_flip_vertical   ->setIcon(KIcon("object-flip-vertical"  ));
+   action_video_mute            ->setIcon(KIcon("camera-web"            ));
+   action_video_preview         ->setIcon(KIcon("view-preview"          ));
+   action_video_preview         ->setCheckable(true);
+   action_video_mute            ->setCheckable(true);
    #endif
 }
 
@@ -273,6 +281,7 @@ void ActionCollection::accept() //TODO dead code?
       CallModel::instance()->dialingCall();
       SFLPhone::view()->selectDialingCall();
       SFLPhone::view()->updateWindowCallState();
+      SFLPhone::app()->selectCallTab();
    }
    else {
       const Call::State state = call->state();
@@ -571,7 +580,7 @@ KAction* ActionCollection::addContact()
 void ActionCollection::slotAddContact()
 {
    Contact* aContact = new Contact();
-   AkonadiBackend::instance()->addNewContact(aContact);
+   ContactModel::instance()->addNewContact(aContact);
 }
 
 ///Change icon of the record button

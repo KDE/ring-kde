@@ -27,7 +27,8 @@
 #include <QMimeData>
 #include <QtGui/QApplication>
 #include "lib/call.h"
-#include <lib/abstractcontactbackend.h>
+#include <lib/abstractitembackend.h>
+#include <lib/contactmodel.h>
 
 ///Constructor
 DelegateDropOverlay::DelegateDropOverlay(QObject* parent):QObject(parent),
@@ -57,7 +58,7 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
       connect(index.model(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutChanged()));
       initSignals = true;
    }
-   int step = index.data(AbstractContactBackend::Role::DropState).toInt();
+   int step = index.data(ContactModel::Role::DropState).toInt();
    if ((step == 1 || step == -1) && m_lActiveIndexes.indexOf(index) == -1) {
       m_lActiveIndexes << index;
       //Create tge timer
@@ -133,17 +134,17 @@ void DelegateDropOverlay::changeVisibility()
    foreach(const QModelIndex& idx, m_lActiveIndexes) {
       //There is a race condition when removing a conference participant
       if (idx.isValid() && !idx.model()->rowCount(idx)) {
-         int step = idx.data(AbstractContactBackend::Role::DropState).toInt();
+         int step = idx.data(ContactModel::Role::DropState).toInt();
          //Remove items from the loop if there is no animation
          if (step >= 15 || step <= -15) {
             m_lActiveIndexes.removeAll(idx);
             if (step <= -15) //Hide the overlay
-               ((QAbstractItemModel*)idx.model())->setData(idx,QVariant((int)0),AbstractContactBackend::Role::DropState);
+               ((QAbstractItemModel*)idx.model())->setData(idx,QVariant((int)0),ContactModel::Role::DropState);
          }
          else {
             //Update opacity
             step+=(step>0)?1:-1;
-            ((QAbstractItemModel*)idx.model())->setData(idx,QVariant((int)step),AbstractContactBackend::Role::DropState);
+            ((QAbstractItemModel*)idx.model())->setData(idx,QVariant((int)step),ContactModel::Role::DropState);
          }
       }
    }

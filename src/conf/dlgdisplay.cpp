@@ -35,7 +35,6 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
    //Need to be ordered
    m_lCallDetails[ "Display Icon"         ] = "displayCallIcon"        ;
    m_lCallDetails[ "Display Security"     ] = "displayCallSecure"      ;
-   m_lCallDetails[ "Display Codec"        ] = "displayCallCodec"       ;
    m_lCallDetails[ "Display Call Number"  ] = "displayCallNumber"      ;
    m_lCallDetails[ "Display Peer Name"    ] = "displayCallPeer"        ;
    m_lCallDetails[ "Display organisation" ] = "displayCallOrganisation";

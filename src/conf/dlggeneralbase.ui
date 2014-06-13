@@ -28,6 +28,9 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0" colspan="2">
        <widget class="QCheckBox" name="m_pKeepHistory">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Keep history forever</string>
         </property>
@@ -51,6 +54,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QLabel" name="label_2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Automatically remove calls after</string>
         </property>
@@ -80,6 +86,9 @@
       </item>
       <item row="1" column="3">
        <widget class="QLabel" name="label">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>days</string>
         </property>

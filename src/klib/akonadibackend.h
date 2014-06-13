@@ -22,7 +22,7 @@
 
 #include <QtCore/QPointer>
 
-#include "../lib/abstractcontactbackend.h"
+#include "../lib/abstractitembackend.h"
 #include "../lib/typedefs.h"
 #include <akonadi/collectionmodel.h>
 #include <kabc/phonenumber.h>
@@ -40,7 +40,7 @@ namespace KABC {
 namespace Akonadi {
    class Session           ;
    class Collection        ;
-   class CollectionFetchJob;
+   class ItemFetchJob;
    class Monitor           ;
 }
 
@@ -51,47 +51,57 @@ class Contact;
 class LIB_EXPORT AkonadiBackend : public AbstractContactBackend {
    Q_OBJECT
 public:
-   static   AbstractContactBackend* instance();
+   explicit AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent);
 //    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
-   Contact* getContactByUid   ( const QString& uid                                                     );
-   void     editContact       ( Contact*       contact , QWidget* parent = 0                           );
-   void     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
-   virtual void addPhoneNumber( Contact*       contact , QString  number, QString type                 );
+   bool     edit       ( Contact*       contact , QWidget* parent = 0                           );
+   bool     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
+   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
 
-   virtual void     editContact   ( Contact*   contact                                                 );
-   virtual void     addNewContact ( Contact*   contact                                                 );
+   virtual QString name () const override;
+   virtual QVariant icon() const override;
+   virtual bool isEnabled() const override;
+   virtual bool enable (bool enable) override;
+   virtual QByteArray  id() const;
+
+   virtual bool     edit   ( Contact*   contact                                                 );
+   virtual bool     addNew ( Contact*   contact                                                 );
+   virtual bool append(const Contact* item);
    virtual ~AkonadiBackend        (                                                                    );
 
-   virtual const ContactList& getContactList() const;
+   virtual bool load();
+   virtual bool reload();
+   virtual bool save(const Contact* contact);
 
+   SupportedFeatures supportedFeatures() const;
 private:
-   //Singleton constructor
-   explicit AkonadiBackend(QObject* parent);
 
    //Attributes
-   static AkonadiBackend*         m_pInstance  ;
-   Akonadi::Session*              m_pSession   ;
+   static Akonadi::Session*              m_pSession   ;
    Akonadi::Monitor*              m_pMonitor   ;
+   Akonadi::Collection            m_Coll       ;
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
-   ContactList                    m_pContacts  ;
-   QPointer<Akonadi::CollectionFetchJob>   m_pJob;
+   QList<Contact*>                m_lBackendContacts;
+   QPointer<Akonadi::ItemFetchJob>   m_pJob;
+   bool                           m_isEnabled;
+   bool                           m_wasEnabled;
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);
    Contact* addItem(Akonadi::Item item, bool ignoreEmpty = false);
    void fillContact(Contact* c, const KABC::Addressee& addr) const;
 
-protected:
-   ContactList update_slot();
+   //Parent locator
+   static QHash<Akonadi::Collection::Id, AkonadiBackend*> m_hParentLookup;
 
 public Q_SLOTS:
-   ContactList update(Akonadi::Collection collection);
-   void collectionsReceived( const Akonadi::Collection::List& );
+   void update(const Akonadi::Collection& collection);
+   void itemsReceived( const Akonadi::Item::List& );
 private Q_SLOTS:
-   void slotItemAdded(Akonadi::Item item,Akonadi::Collection coll);
+   void slotItemAdded(const Akonadi::Item& item, const Akonadi::Collection& coll);
    void slotItemChanged (const Akonadi::Item &item, const QSet< QByteArray > &partIdentifiers);
    void slotItemRemoved (const Akonadi::Item &item);
+   void slotJobCompleted(KJob* job);
 };
 
 #endif

@@ -31,6 +31,7 @@ ADD_DEFINITIONS(
    -Wno-reorder
    -Wunused
    -Wuninitialized
+   -Woverloaded-virtual
 #    -Wsuggest-attribute=const
 #    -Wsystem-headers
 )
@@ -145,6 +146,7 @@ IF(${ENABLE_VIDEO} MATCHES true)
    SET(
       sflphone_client_kde_VIDEO
       widgets/videodock.cpp
+      widgets/videosettings.cpp
 #       widgets/videowidget.cpp #Software rendering, can still be useful
       widgets/videowidget2.cpp #Needed for preview
       widgets/videowidget3.cpp
@@ -200,6 +202,9 @@ SET(
    widgets/ui/contactdock.ui
    widgets/ui/transfer.ui
    widgets/ui/presence.ui
+   widgets/ui/videodevicesetting.ui
+   widgets/ui/screensharingwidget.ui
+   widgets/ui/mediafilepicker.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users

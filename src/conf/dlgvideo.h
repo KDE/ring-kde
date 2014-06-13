@@ -26,6 +26,9 @@
 class VideoDevice;
 class KConfigDialog;
 
+class VideoChannel;
+class VideoResolution;
+
 ///DlgVideo: video preferences for sflphone
 class DlgVideo : public QWidget, public Ui_DlgVideoBase
 {
@@ -40,22 +43,23 @@ public:
    //Getter
    bool hasChanged();
 
-public Q_SLOTS:
-   void updateWidgets ();
-   void updateSettings();
-
-private Q_SLOTS:
-   void loadDevice    ( QString device     );
-   void loadResolution( QString channel    );
-   void loadRate      ( QString resolution );
-   void changeRate    ( QString rate       );
-   void startStopPreview();
-
 private:
    //Attribute
    VideoDevice* m_pDevice;
    bool m_IsChanged;
    bool m_IsLoading;
+   VideoChannel* m_pChannel;
+   VideoResolution* m_pResolution;
+
+public Q_SLOTS:
+   void updateWidgets ();
+   void updateSettings();
+   void slotSettingsChanged();
+
+private Q_SLOTS:
+   void slotReloadPreview();
+   void startStopPreview();
+   void startStopPreview(bool state);
 
 Q_SIGNALS:
    ///Emitted when the buttons need to be updated in the parent dialog

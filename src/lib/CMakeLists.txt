@@ -45,20 +45,17 @@ set( qtsflphone_LIB_SRCS
   call.cpp
   account.cpp
   contact.cpp
-  videorenderer.cpp
-  videodevice.cpp
   phonenumber.cpp
-  videocodec.cpp
   numbercategory.cpp
+  video/videodevice.cpp
+  video/videorenderer.cpp
+  video/videocodec.cpp
 
   #Models
   accountlistmodel.cpp
   callmodel.cpp
   historymodel.cpp
-  abstractcontactbackend.cpp
   abstractbookmarkmodel.cpp
-  videocodecmodel.cpp
-  videomodel.cpp
   credentialmodel.cpp
   audiocodecmodel.cpp
   instantmessagingmodel.cpp
@@ -77,6 +74,19 @@ set( qtsflphone_LIB_SRCS
   lastusednumbermodel.cpp
   securityvalidationmodel.cpp
   certificate.cpp
+  contactmodel.cpp
+  itembackendmodel.cpp
+  video/videodevicemodel.cpp
+  video/videocodecmodel.cpp
+  video/videochannel.cpp
+  video/videoresolution.cpp
+  video/videorate.cpp
+  video/videomodel.cpp
+
+  #Data backends
+  transitionalcontactbackend.cpp
+  legacyhistorybackend.cpp
+  abstractitembackend.cpp
 
   #Communication
   dbus/configurationmanager.cpp
@@ -91,6 +101,7 @@ set( qtsflphone_LIB_SRCS
   visitors/numbercategoryvisitor.cpp
   visitors/pixmapmanipulationvisitor.cpp
   visitors/presenceserializationvisitor.cpp
+  visitors/itemmodelstateserializationvisitor.cpp
 
   #Other
   sflphone_const.h
@@ -104,11 +115,8 @@ set( qtsflphone_LIB_HDRS
   callmodel.h
   historymodel.h
   contact.h
-  abstractcontactbackend.h
+  abstractitembackend.h
   abstractbookmarkmodel.h
-  videocodecmodel.h
-  videomodel.h
-  videorenderer.h
   credentialmodel.h
   audiocodecmodel.h
   instantmessagingmodel.h
@@ -119,7 +127,6 @@ set( qtsflphone_LIB_HDRS
   phonedirectorymodel.h
   historytimecategorymodel.h
   numbercategorymodel.h
-  videocodec.h
   keyexchangemodel.h
   tlsmethodmodel.h
   numbercompletionmodel.h
@@ -130,15 +137,29 @@ set( qtsflphone_LIB_HDRS
   lastusednumbermodel.h
   securityvalidationmodel.h
   certificate.h
+  contactmodel.h
+  transitionalcontactbackend.h
+  abstractitembackend.h
+  itembackendmodel.h
+  video/videodevice.h
+  video/videodevicemodel.h
+  video/videocodec.h
+  video/videocodecmodel.h
+  video/videomodel.h
+  video/videorenderer.h
+  video/videoresolution.h
+  video/videochannel.h
+  video/videorate.h
+  #commonbackendmanagerinterface.h
 )
 
 set( qtsflphone_extra_LIB_HDRS
-  videodevice.h
   typedefs.h
   sflphone_const.h
   visitors/accountlistcolorvisitor.h
   visitors/phonenumberselector.h
   visitors/presenceserializationvisitor.h
+  visitors/itemmodelstateserializationvisitor.h
 )
 
 # presence manager interface
@@ -214,12 +235,12 @@ ENDIF(${ENABLE_QT5} MATCHES true)
 
 
 # video manager interface
-SET ( video_xml  ${dbus_xml_introspecs_path}/video_controls-introspec.xml )
+SET ( video_xml  ${dbus_xml_introspecs_path}/videomanager-introspec.xml )
 
 SET_SOURCE_FILES_PROPERTIES(
    ${video_xml}
    PROPERTIES
-   CLASSNAME VideoInterface
+   CLASSNAME VideoManagerInterface
    INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h")
 
 IF(${ENABLE_QT5} MATCHES true)

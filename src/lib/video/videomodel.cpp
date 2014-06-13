@@ -17,23 +17,36 @@
  ***************************************************************************/
 #include "videomodel.h"
 
+//Qt
+#include <QtCore/QMutex>
+
 //SFLPhone
 #include "dbus/videomanager.h"
 #include "videodevice.h"
 #include "call.h"
 #include "callmodel.h"
 #include "videorenderer.h"
+#include "videodevicemodel.h"
+#include "videochannel.h"
+#include "videorate.h"
+#include "videoresolution.h"
 
 //Static member
 VideoModel* VideoModel::m_spInstance = nullptr;
 
 ///Constructor
-VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false)
+VideoModel::VideoModel():QThread(),m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex())
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , this, SLOT(deviceEvent())                           );
-   connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int)), this, SLOT(startedDecoding(QString,QString,int,int)));
-   connect( &interface , SIGNAL(stoppedDecoding(QString,QString))        , this, SLOT(stoppedDecoding(QString,QString))        );
+   connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int,bool)), this, SLOT(startedDecoding(QString,QString,int,int)));
+   connect( &interface , SIGNAL(stoppedDecoding(QString,QString,bool))        , this, SLOT(stoppedDecoding(QString,QString))        );
+}
+
+
+VideoModel::~VideoModel()
+{
+
 }
 
 ///Singleton
@@ -56,8 +69,12 @@ VideoRenderer* VideoModel::getRenderer(const Call* call) const
 VideoRenderer* VideoModel::previewRenderer()
 {
    if (!m_lRenderers["local"]) {
-      VideoInterface& interface = DBus::VideoManager::instance();
-      m_lRenderers["local"] = new VideoRenderer("local","", Resolution(interface.getActiveDeviceSize()));
+      VideoResolution* res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution();
+      if (!res) {
+         qWarning() << "Misconfigured video device";
+         return nullptr;
+      }
+      m_lRenderers["local"] = new VideoRenderer("local","",res->size());
    }
    return m_lRenderers["local"];
 }
@@ -65,7 +82,7 @@ VideoRenderer* VideoModel::previewRenderer()
 ///Stop video preview
 void VideoModel::stopPreview()
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.stopCamera();
    m_PreviewState = false;
 }
@@ -74,7 +91,7 @@ void VideoModel::stopPreview()
 void VideoModel::startPreview()
 {
    if (m_PreviewState) return;
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.startCamera();
    m_PreviewState = true;
 }
@@ -102,8 +119,18 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
 {
    Q_UNUSED(id)
 
+   QSize res = QSize(width,height);
+//    if (VideoDeviceModel::instance()->activeDevice()
+//       && VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
+//       //FIXME flawed logic
+//       res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size();
+//    }
+//    else {
+//       res =  QSize(width,height);
+//    }
+
    if (m_lRenderers[id] == nullptr ) {
-      m_lRenderers[id] = new VideoRenderer(id,shmPath,Resolution(width,height));
+      m_lRenderers[id] = new VideoRenderer(id,shmPath,res);
       m_lRenderers[id]->moveToThread(this);
       if (!isRunning())
          start();
@@ -111,13 +138,22 @@ void VideoModel::startedDecoding(const QString& id, const QString& shmPath, int 
    else {
       VideoRenderer* renderer = m_lRenderers[id];
       renderer->setShmPath(shmPath);
-      renderer->setResolution(QSize(width,height));
+      renderer->setSize(res);
    }
 
    m_lRenderers[id]->startRendering();
+   VideoDevice* dev = VideoDeviceModel::instance()->getDevice(id);
+   if (dev) {
+      emit dev->renderingStarted(m_lRenderers[id]);
+   }
    if (id != "local") {
       qDebug() << "Starting video for call" << id;
       emit videoCallInitiated(m_lRenderers[id]);
+   }
+   else {
+      m_PreviewState = true;
+      emit previewStateChanged(true);
+      emit previewStarted(m_lRenderers[id]);
    }
 }
 
@@ -130,13 +166,30 @@ void VideoModel::stoppedDecoding(const QString& id, const QString& shmPath)
       r->stopRendering();
    }
    qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
+//    emit videoStopped();
+
+   VideoDevice* dev = VideoDeviceModel::instance()->getDevice(id);
+   if (dev) {
+      emit dev->renderingStopped(r);
+   }
+   if (id == "local") {
+      m_PreviewState = false;
+      emit previewStateChanged(false);
+      emit previewStopped(r);
+   }
+//    r->mutex()->lock();
    m_lRenderers[id] = nullptr;
-   r->mutex()->lock();
    delete r;
-   emit videoStopped();
 }
 
-void VideoModel::run()
+void VideoModel::switchDevice(const VideoDevice* device) const
 {
-   exec();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
+   interface.switchInput(device->id());
 }
+
+QMutex* VideoModel::startStopMutex() const
+{
+   return m_SSMutex;
+}
+

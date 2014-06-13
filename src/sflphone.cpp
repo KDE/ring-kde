@@ -53,13 +53,20 @@
 #include "lib/accountlistmodel.h"
 #include "lib/instantmessagingmodel.h"
 #include "lib/numbercategorymodel.h"
+#include "lib/legacyhistorybackend.h"
+#include "klib/minimalhistorybackend.h"
 #include "lib/visitors/numbercategoryvisitor.h"
 #include "klib/macromodel.h"
 #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
+#include "klib/akonadicontactcollectionmodel.h"
 #include "lib/presencestatusmodel.h"
-#include "lib/videomodel.h"
+#include "lib/video/videomodel.h"
 #include "lib/phonenumber.h"
+#include "lib/contactmodel.h"
+#include "lib/itembackendmodel.h"
+#include "lib/visitors/itemmodelstateserializationvisitor.h"
+#include "klib/itemmodelserialization.h"
 
 //sflphone
 #include "accountwizard.h"
@@ -137,8 +144,22 @@ SFLPhone::SFLPhone(QWidget *parent)
    }
    static bool init = false;
    if (!init) {
-      Call::setContactBackend(AkonadiBackend::instance());
+
+      //Start the Akonadi collection backend (contact loader)
+      AkonadiContactCollectionModel::instance();
+      HistoryModel::instance()->addBackend(new MinimalHistoryBackend(this),LoadOptions::FORCE_ENABLED);
+
+      // Import all calls from the legacy backend
+      if (ConfigurationSkeleton::requireLegacyHistoryImport()) {
+         HistoryModel::instance()->addBackend(new LegacyHistoryBackend(this),LoadOptions::FORCE_ENABLED);
+         ConfigurationSkeleton::setRequireLegacyHistoryImport(false);
+
+         //In case the client is not quitted correctly, save now
+         ConfigurationSkeleton::self()->writeConfig();
+      }
       NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
+      ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
+      ContactModel::instance()->backendModel()->load();
       InstantMessagingModelManager::init();
       AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
@@ -336,8 +357,8 @@ SFLPhone::~SFLPhone()
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
 
-   delete AkonadiBackend::instance();
    delete CallModel::instance();
+   delete ContactModel::instance();
    //saveState();
 }
 

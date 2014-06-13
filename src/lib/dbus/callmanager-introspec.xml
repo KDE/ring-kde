@@ -534,6 +534,23 @@
             </arg>
         </signal>
 
+        <method name="getDisplayNames" tp:name-for-bindings="getDisplayNames">
+            <tp:added version="1.3.0"/>
+            <tp:docstring>
+              Get the display name of every participant in a given conference, or their number as a fallback.
+            </tp:docstring>
+            <arg type="s" name="confID" direction="in">
+              <tp:docstring>
+                The conference ID.
+              </tp:docstring>
+            </arg>
+            <arg type="as" name="list" direction="out">
+              <tp:docstring>
+                The list of the display names.
+              </tp:docstring>
+            </arg>
+        </method>
+
         <method name="getParticipantList" tp:name-for-bindings="getParticipantList">
             <tp:added version="0.9.7"/>
             <tp:docstring>
@@ -759,7 +776,6 @@
                 <p>Signal sent adter a RTCP report has been received and computed.</p>
             </tp:docstring>
             <arg type="s" name="callID" />
-            <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="MapStringInt"/>
             <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="MapStringInt"/>
             <arg type="a{si}" name="report" direction="out" tp:type="String_Integer_Map">
               <tp:docstring xmlns="http://www.w3.org/1999/xhtml">

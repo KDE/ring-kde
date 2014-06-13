@@ -18,7 +18,7 @@
 #ifndef VIDEO_MODEL_H
 #define VIDEO_MODEL_H
 //Base
-#include "typedefs.h"
+#include "../typedefs.h"
 #include <QtCore/QThread>
 
 //Qt
@@ -28,6 +28,7 @@
 #include "videodevice.h"
 class VideoRenderer;
 class Call;
+class QMutex;
 struct SHMHeader;
 
 ///VideoModel: Video event dispatcher
@@ -44,16 +45,23 @@ public:
    bool       isPreviewing       ();
    VideoRenderer* getRenderer(const Call* call) const;
    VideoRenderer* previewRenderer();
+//    QList<VideoDevice*> devices();
+//    VideoDevice* activeDevice() const;
+//    VideoDevice* device(const QString &id);
+   QMutex* startStopMutex() const;
 
    //Setters
-   void       setBufferSize(uint size);
+   void setBufferSize(uint size);
+//    void setActiveDevice(const VideoDevice* device);
+   void switchDevice(const VideoDevice* device) const;
 
 protected:
-   void run();
+//    void run();
 
 private:
    //Constructor
    VideoModel();
+   ~VideoModel();
 
    //Static attributes
    static VideoModel* m_spInstance;
@@ -63,7 +71,9 @@ private:
    uint           m_BufferSize  ;
    uint           m_ShmKey      ;
    uint           m_SemKey      ;
+   QMutex*        m_SSMutex     ;
    QHash<QString,VideoRenderer*> m_lRenderers;
+//    QHash<QString,VideoDevice*>   m_hDevices  ;
 
 public Q_SLOTS:
    void stopPreview ();
@@ -76,11 +86,16 @@ private Q_SLOTS:
 
 Q_SIGNALS:
    ///Emitted when a new frame is ready
-   void frameUpdated();
+//    void frameUpdated();
    ///Emmitted when the video is stopped, before the framebuffer become invalid
-   void videoStopped();
+//    void videoStopped();
    ///Emmitted when a call make video available
    void videoCallInitiated(VideoRenderer*);
+   ///The preview started/stopped
+   void previewStateChanged(bool startStop);
+   void previewStarted(VideoRenderer* renderer);
+   void previewStopped(VideoRenderer* renderer);
+   
 };
 
 #endif

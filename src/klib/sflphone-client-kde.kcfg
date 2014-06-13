@@ -11,6 +11,10 @@
     <entry name="enableHistory" type="Bool">
       <label>Defines whether sflphone should keep a history of calls.</label>
     </entry>
+    <entry name="requireLegacyHistoryImport" type="Bool">
+      <label>Defines whether sflphone should keep a history of calls.</label>
+      <default> true </default>
+    </entry>
     <entry name="historyMax" type="Int">
       <label>Defines the number of days the history has to be kept.</label>
       <min> 1 </min>
@@ -31,10 +35,6 @@
    </entry>
    <entry name="displayCallSecure" type="Bool">
       <label>Should CallSecure be visible by default for calls</label>
-      <default> false </default>
-   </entry>
-   <entry name="displayCallCodec" type="Bool">
-      <label>Should CallCodec be visible by default for calls</label>
       <default> false </default>
    </entry>
    <entry name="displayCallOrganisation" type="Bool">
@@ -150,7 +150,7 @@
     	<label>Defines whether the search in KDE Address Book is enabled</label>
     </entry>-->
 
-    <entry name="disabledCollectionList" type="IntList">
+    <entry name="disabledCollectionList" type="StringList">
         <label>List of disabled address book collections</label>
     </entry>
 

@@ -21,10 +21,14 @@
 #include <QtGui/QDockWidget>
 
 //Qt
+class QGridLayout;
 
 //SFLPhone
 class VideoWidget3;
 class VideoRenderer;
+class VideoSettings;
+class MediaPicker;
+class ScreenSharingWidget;
 
 ///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
 class VideoDock : public QDockWidget {
@@ -34,7 +38,14 @@ public:
    void addRenderer(VideoRenderer* r);
 
 private:
-   VideoWidget3*  m_pVideoWidet;
+   QGridLayout*         m_pMoreOpts     ;
+   VideoWidget3*        m_pVideoWidet   ;
+   VideoSettings*       m_pVideoSettings;
+   ScreenSharingWidget* m_pScreenSharing;
+   MediaPicker*         m_pMediaPicker  ;
+
+private Q_SLOTS:
+   void slotDeviceChanged(int index);
 };
 
 #endif

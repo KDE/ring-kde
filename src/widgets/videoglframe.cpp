@@ -27,8 +27,8 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/videorenderer.h>
-#include <lib/videomodel.h>
+#include <lib/video/videorenderer.h>
+#include <lib/video/videomodel.h>
 
 
 #ifndef GL_MULTISAMPLE
@@ -42,14 +42,13 @@ public:
    ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg);
    virtual ~ThreadedPainter2(){
 //       QThread::currentThread()->quit();
-      if (m_Data)
-         free(m_Data);
    }
 
    //GL
    QPointF anchor;
    float scale;
    float rot_x, rot_y, rot_z;
+   float tra_x, tra_y, tra_z;
    GLuint tile_list;
    bool isRendering;
 
@@ -79,7 +78,7 @@ Q_SIGNALS:
 
 ThreadedPainter2::ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
    m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false),m_pFrm(frm),
-   m_Data(nullptr),tile_list(0)
+   m_Data(nullptr),tile_list(0),tra_x(0.0f), tra_y(0.0f), tra_z(0.0f)
 {
 }
 
@@ -104,14 +103,9 @@ void ThreadedPainter2::rendererStarted()
 void ThreadedPainter2::copyFrame()
 {
    if (m_pRenderer) {
-      m_pRenderer->mutex()->lock();
-      const QByteArray raw = m_pRenderer->currentFrame();
-      if (m_Data)
-         free(m_Data);
-      m_Data = (char*)malloc(raw.size()*sizeof(char));
-      memcpy(m_Data,raw.data(),raw.size());
-      m_ActiveSize = m_pRenderer->activeResolution();
-      m_pRenderer->mutex()->unlock();
+      //TODO change the method name
+      //This is a left over from how 1.2.3 and 1.3.0 cached a copy of the
+      //buffer to avoid a nasty race condition now fixed in the daemon
       emit changed();
    }
 }
@@ -120,8 +114,6 @@ void ThreadedPainter2::draw(QPainter* p)
 {
    Q_UNUSED(p)
    if (m_pRenderer && isRendering) {
-//       QMutexLocker locker(&mutex);
-//       m_pRenderer->mutex()->lock();
 
       // save the GL state set for QPainter
       saveGLState();
@@ -137,11 +129,20 @@ void ThreadedPainter2::draw(QPainter* p)
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-      if (m_ActiveSize.width() && m_ActiveSize.height() && m_Data)
-         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, m_ActiveSize.width(), m_ActiveSize.height(), GL_BGRA, GL_UNSIGNED_BYTE, m_Data);
+      //To give a bit of history about why this code is weird, it used to have another copy buffer
+      //but this was removed and replaced with a flip buffer in libQt, there is some leftover
+      //code that need to be cleaned
+      const QByteArray& data = m_pRenderer->currentFrame();
+      QSize res = m_pRenderer->size();
+
+      //Detect race conditions
+      Q_ASSERT(res.width() * res.height() == data.size()/3);
+
+      if (res.width() && res.height() && data.size())
+         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, res.width(), res.height(), GL_BGRA, GL_UNSIGNED_BYTE, data);
 
       // draw into the GL widget
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glFrustum(-1, 1, -1, 1, 10, 100);
@@ -158,13 +159,17 @@ void ThreadedPainter2::draw(QPainter* p)
       glEnable(GL_MULTISAMPLE);
       glEnable(GL_CULL_FACE);
       glScalef(-1.0f*scale, -1.0f*scale, 1.0f*scale);
+
       glRotatef(rot_x, 1.0f, 0.0f, 0.0f);
       glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
       glRotatef(rot_z, 0.0f, 0.0f, 1.0f);
 
+
+
       // draw background
       glPushMatrix();
       glScalef(1.7f, 1.7f, 1.7f);
+      glTranslatef(tra_x, tra_y, tra_z);
       glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
       glCallList(tile_list);
       glPopMatrix();
@@ -173,19 +178,18 @@ void ThreadedPainter2::draw(QPainter* p)
       restoreGLState();
       glDeleteTextures(1, &texture);
    }
+   else {
+      //Try to cleanup
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   }
 }
 
 
  VideoGLFrame::VideoGLFrame(QGLWidget *parent)
      : QObject(parent),m_pParent(parent),
-     m_pPainter(new ThreadedPainter2(this,parent))
+     m_pPainter(new ThreadedPainter2(this,parent)),
+     m_pRenderer(nullptr)
  {
-
-//    Should work, does not
-//    QThread* t = new QThread(this);
-//    connect(t, SIGNAL(started()), m_pPainter, SLOT(rendererStarted()));
-//    m_pPainter->moveToThread(t);
-//    t->start();
    connect(m_pPainter,SIGNAL(changed()),this,SLOT(slotEmitChanged()));
 
    m_pPainter->tile_list = glGenLists(1);
@@ -234,6 +238,7 @@ void ThreadedPainter2::restoreGLState()
 ///Set widget renderer
 void VideoGLFrame::setRenderer(VideoRenderer* renderer)
 {
+   m_pRenderer = renderer;
 //    if (m_pPainter->m_pRenderer && m_pPainter->m_pRenderer->isRendering())
 //       m_pPainter->rendererStopped();
    QMutexLocker locker(&m_pPainter->mutex);
@@ -248,7 +253,7 @@ void VideoGLFrame::setRenderer(VideoRenderer* renderer)
       connect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
       connect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
       connect(m_pPainter->m_pRenderer,SIGNAL(destroyed()),m_pPainter,SLOT(reset()));
-//       setSizeIncrement(1,((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width()));
+//       setSizeIncrement(1,((float)m_pPainter->m_pRenderer->size().height()/(float)m_pPainter->m_pRenderer->size().width()));
       if (m_pPainter->thread()->isRunning())
          m_pPainter->isRendering = true;
    }
@@ -259,14 +264,14 @@ int VideoGLFrame::heightForWidth( int w ) const
 {
    if (m_pPainter->m_pRenderer  )
    if (m_pPainter->m_pRenderer)
-      return w*((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width());
+      return w*((float)m_pPainter->m_pRenderer->size().height()/(float)m_pPainter->m_pRenderer->size().width());
    return w*.75f;
 }
 
 QSize VideoGLFrame::sizeHint() const
 {
    if (m_pPainter->m_pRenderer) {
-      return m_pPainter->m_pRenderer->activeResolution();
+      return m_pPainter->m_pRenderer->size();
    }
    return QSize(100,75);
 }
@@ -291,8 +296,25 @@ void VideoGLFrame::setRotX(float rot)
    m_pPainter->rot_x = rot;
 }
 
+void VideoGLFrame::setTranslationZ(float tra)
+{
+   m_pPainter->tra_z = tra;
+}
+
+void VideoGLFrame::setTranslationY(float tra)
+{
+   m_pPainter->tra_y = tra;
+}
+
+void VideoGLFrame::setTranslationX(float tra)
+{
+   m_pPainter->tra_x = tra;
+}
+
+
 void VideoGLFrame::setScale(float scale)
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    m_pPainter->scale = scale;
 }
 
@@ -323,6 +345,7 @@ float VideoGLFrame::rotX() const
 
 float VideoGLFrame::scale() const
 {
+   QMutexLocker locker(&m_pPainter->mutex);
    return m_pPainter->scale;
 }
 

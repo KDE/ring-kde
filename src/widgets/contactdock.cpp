@@ -50,12 +50,12 @@
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
+#include "lib/contactmodel.h"
 #include "lib/numbercategory.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/phonenumber.h"
 #include "lib/accountlistmodel.h"
 #include "klib/helperfunctions.h"
-#include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
 #include "../lib/contactproxymodel.h"
 #include "../delegates/categorizeddelegate.h"
@@ -80,7 +80,7 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 
 bool ContactSortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
-   const bool status = sourceModel()->index(source_row,0,source_parent).data(AbstractContactBackend::Role::Active).toBool();
+   const bool status = sourceModel()->index(source_row,0,source_parent).data(ContactModel::Role::Active).toBool();
    if (!status)
       return false;
    else if (!source_parent.isValid() || source_parent.parent().isValid())
@@ -119,12 +119,12 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setDelegate(m_pCategoryDelegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::Contact);
 
-   m_pSourceModel = new ContactProxyModel(AkonadiBackend::instance(),Qt::DisplayRole,false);
+   m_pSourceModel = new ContactProxyModel(Qt::DisplayRole,false);
    m_pProxyModel = new ContactSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
    m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole(AbstractContactBackend::Role::Filter);
+   m_pProxyModel->setFilterRole(ContactModel::Role::Filter);
    m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
@@ -132,7 +132,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setSortingEnabled(true);
    m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex))     , this , SLOT(slotContextMenu(QModelIndex)));
-   connect(m_pProxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
+   connect(m_pProxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
 
@@ -334,7 +334,7 @@ void ContactDock::copy()
 {
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(MIME_CONTACT, m_pCurrentContact->uid().toUtf8());
+   mimeData->setData(MIME_CONTACT, m_pCurrentContact->uid());
    QString numbers(m_pCurrentContact->formattedName()+": ");
    QString numbersHtml("<b>"+m_pCurrentContact->formattedName()+"</b><br />");
    foreach (PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
@@ -351,7 +351,7 @@ void ContactDock::copy()
 void ContactDock::editContact()
 {
    kDebug() << "Edit contact";
-   AkonadiBackend::instance()->editContact(m_pCurrentContact);
+   m_pCurrentContact->edit();
 }
 
 ///Add a new phone number for this contact
@@ -362,7 +362,8 @@ void ContactDock::addPhone()
    bool ok;
    const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
-      AkonadiBackend::instance()->addPhoneNumber(m_pCurrentContact,text,"work");
+      PhoneNumber* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
+      m_pCurrentContact->addPhoneNumber(n);
    }
 }
 
@@ -466,24 +467,24 @@ void ContactDock::setCategory(int index)
          m_pProxyModel->setSortRole(Qt::DisplayRole);
          break;
       case SortingCategory::Organization:
-         m_pProxyModel->setSortRole(AbstractContactBackend::Role::Organization);
-         m_pSourceModel->setRole(AbstractContactBackend::Role::Organization);
+         m_pProxyModel->setSortRole(ContactModel::Role::Organization);
+         m_pSourceModel->setRole(ContactModel::Role::Organization);
          m_pSourceModel->setShowAll(true);
          break;
       case SortingCategory::RecentlyUsed:
-         m_pSourceModel->setRole(AbstractContactBackend::Role::FormattedLastUsed);
+         m_pSourceModel->setRole(ContactModel::Role::FormattedLastUsed);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(AbstractContactBackend::Role::IndexedLastUsed);
+         m_pProxyModel->setSortRole(ContactModel::Role::IndexedLastUsed);
          break;
       case SortingCategory::Group:
-         m_pSourceModel->setRole(AbstractContactBackend::Role::Group);
+         m_pSourceModel->setRole(ContactModel::Role::Group);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(AbstractContactBackend::Role::Group);
+         m_pProxyModel->setSortRole(ContactModel::Role::Group);
          break;
       case SortingCategory::Department:
-         m_pSourceModel->setRole(AbstractContactBackend::Role::Department);
+         m_pSourceModel->setRole(ContactModel::Role::Department);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(AbstractContactBackend::Role::Department);
+         m_pProxyModel->setSortRole(ContactModel::Role::Department);
          break;
    };
 }
@@ -524,5 +525,5 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
 ///Expand the tree according to the user preferences
 void ContactDock::expandTree()
 {
-   m_pView->expandToDepth( 1 );
+   m_pView->expandToDepth( 2 );
 }

@@ -23,11 +23,12 @@
 //SFLPhone
 #include "sflphone.h"
 #include "actioncollection.h"
+#include "extendedaction.h"
 
 ///Constructor
-VideoToolbar::VideoToolbar(QWidget* parent) : OverlayToolbar(parent)
+VideoToolbar::VideoToolbar(QWidget* parent) : QToolBar(parent)
 {
-   setIconSize(16);
+   QToolBar::setIconSize(QSize(16,16));
    addAction(ActionCollection::instance()->videoRotateLeftAction     ());
    addAction(ActionCollection::instance()->videoRotateRightAction    ());
    addAction(ActionCollection::instance()->videoFlipHorizontalAction ());

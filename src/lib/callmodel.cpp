@@ -32,10 +32,11 @@
 #include "dbus/instancemanager.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 #include "dbus/videomanager.h"
 #include "historymodel.h"
 #include "visitors/phonenumberselector.h"
+#include "contactmodel.h"
 
 //Define
 ///InternalStruct: internal representation of a call
@@ -81,7 +82,7 @@ void CallModel::init()
    if (!dbusInit) {
       CallManagerInterface& callManager = DBus::CallManager::instance();
       #ifdef ENABLE_VIDEO
-      VideoInterface& interface = DBus::VideoManager::instance();
+      VideoManagerInterface& interface = DBus::VideoManager::instance();
       #endif
 
       //SLOTS
@@ -95,8 +96,8 @@ void CallModel::init()
       /**/connect(&callManager, SIGNAL(recordPlaybackFilepath(QString,QString)) , this , SLOT(slotNewRecordingAvail(QString,QString))  );
       /**/connect(&callManager, SIGNAL(recordingStateChanged(QString,bool))     , this,  SLOT(slotRecordStateChanged(QString,bool)));
       #ifdef ENABLE_VIDEO
-      /**/connect(&interface  , SIGNAL(startedDecoding(QString,QString,int,int)), this , SLOT(slotStartedDecoding(QString,QString))    );
-      /**/connect(&interface  , SIGNAL(stoppedDecoding(QString,QString))        , this , SLOT(slotStoppedDecoding(QString,QString))    );
+      /**/connect(&interface  , SIGNAL(startedDecoding(QString,QString,int,int,bool)), this , SLOT(slotStartedDecoding(QString,QString))    );
+      /**/connect(&interface  , SIGNAL(stoppedDecoding(QString,QString,bool))        , this , SLOT(slotStoppedDecoding(QString,QString))    );
       #endif
       /*                                                                                                                           */
 
@@ -160,7 +161,6 @@ void CallModel::initRoles()
    roles.insert(Call::Role::Department    ,QByteArray("department"));
    roles.insert(Call::Role::Email         ,QByteArray("email"));
    roles.insert(Call::Role::Organisation  ,QByteArray("organisation"));
-   roles.insert(Call::Role::Codec         ,QByteArray("codec"));
    roles.insert(Call::Role::IsConference  ,QByteArray("isConference"));
    roles.insert(Call::Role::Object        ,QByteArray("object"));
    roles.insert(Call::Role::PhotoPtr      ,QByteArray("photoPtr"));
@@ -348,10 +348,10 @@ void CallModel::removeCall(Call* call, bool noEmit)
 
    m_lInternalModel.removeAll(internal);
 
-   //Restore calls to the main list if they are not rely over
+   //Restore calls to the main list if they are not really over
    if (internal->m_lChildren.size()) {
       foreach(InternalStruct* child,internal->m_lChildren) {
-         if (child->call_real->state() != Call::State::OVER)
+         if (child->call_real->state() != Call::State::OVER && child->call_real->state() != Call::State::ERROR)
             m_lInternalModel << child;
       }
    }
@@ -362,8 +362,12 @@ void CallModel::removeCall(Call* call, bool noEmit)
 
    //The daemon often fail to emit the right signal, cleanup manually
    foreach(InternalStruct* topLevel, m_lInternalModel) {
-      if (topLevel->call_real->isConference() && !topLevel->m_lChildren.size())
-         removeConference(topLevel->call_real);
+      if (topLevel->call_real->isConference() &&
+         (!topLevel->m_lChildren.size() 
+            //HACK Make a simple validation to prevent ERROR->ERROR->ERROR state loop for conferences
+            || topLevel->m_lChildren.first()->call_real->state() == Call::State::ERROR
+            || topLevel->m_lChildren.last() ->call_real->state() == Call::State::ERROR))
+            removeConference(topLevel->call_real);
    }
    if (!noEmit)
       emit layoutChanged();
@@ -819,7 +823,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       qDebug() << "Contact" << encodedContact << "on call" << target;
       if (PhoneNumberSelector::defaultVisitor()) {
          const PhoneNumber* number = PhoneNumberSelector::defaultVisitor()->getNumber(
-            Call::contactBackend()->getContactByUid(encodedContact));
+         ContactModel::instance()->getContactByUid(encodedContact));
          if (!number->uri().isEmpty()) {
             Call* newCall = dialingCall();
             newCall->setDialNumber(number);
@@ -1038,19 +1042,37 @@ void CallModel::slotStoppedDecoding(const QString& callId, const QString& shmKey
 ///Update model if the data change
 void CallModel::slotCallChanged(Call* call)
 {
-   //Transfer is "local" state, it doesn't require the daemon, so it need to be
-   //handled "manually" instead of relying on the backend signals
-   if (call->state() == Call::State::TRANSFERRED) {
-      emit callStateChanged(call, Call::State::TRANSFERRED);
-   }
+   switch(call->state()) {
+      //Transfer is "local" state, it doesn't require the daemon, so it need to be
+      //handled "manually" instead of relying on the backend signals
+      case Call::State::TRANSFERRED:
+         emit callStateChanged(call, Call::State::TRANSFERRED);
+         break;
+      //Same goes for some errors
+      case Call::State::__COUNT:
+      case Call::State::ERROR:
+         removeCall(call);
+         break;
+      //Let the daemon handle the others
+      case Call::State::INCOMING:
+      case Call::State::OVER:
+      case Call::State::RINGING:
+      case Call::State::CURRENT:
+      case Call::State::DIALING:
+      case Call::State::HOLD:
+      case Call::State::FAILURE:
+      case Call::State::BUSY:
+      case Call::State::TRANSF_HOLD:
+      case Call::State::CONFERENCE:
+      case Call::State::CONFERENCE_HOLD:
+         break;
+   };
+
    InternalStruct* callInt = m_sPrivateCallList_call[call];
    if (callInt) {
       const QModelIndex idx = getIndex(call);
       emit dataChanged(idx,idx);
    }
-   /*if (call->state() == Call::State::ERROR && !call->isConference()) {
-      removeCall(call);
-   }*/
 }
 
 ///Add call slot

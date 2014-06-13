@@ -23,7 +23,8 @@
 #include "lib/numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include <akonadi/collectionmodel.h>
-#include <kcheckableproxymodel.h>
+#include "lib/contactmodel.h"
+#include "lib/itembackendmodel.h"
 #include "klib/akonadicontactcollectionmodel.h"
 
 ///Constructor
@@ -35,17 +36,12 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pDelegate = new AutoCompletionDelegate();
    m_pPhoneTypeList->setItemDelegate(m_pDelegate);
 
-   Akonadi::CollectionModel* model = new Akonadi::CollectionModel(this);
-
-   m_pFilterModel = new AkonadiContactCollectionModel(this);
-   m_pFilterModel->setSourceModel(model);
-   m_pFilterModel->reload();
-
-   collections->setModel( m_pFilterModel );
+   m_pItemBackendW->setModel(ContactModel::instance()->backendModel());
 
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
-   connect(m_pFilterModel  , SIGNAL(changed())                    , this   , SLOT(changed()));
+   connect(AkonadiContactCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
+   connect(ContactModel::instance()->backendModel(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
 } //DlgAddressBook
 
 ///Destructor
@@ -53,20 +49,21 @@ DlgAddressBook::~DlgAddressBook()
 {
    m_pPhoneTypeList->setItemDelegate(nullptr);
    delete m_pDelegate;
-   delete m_pFilterModel;
 }
 
 ///Reload the widget
 void DlgAddressBook::updateWidgets()
 {
-   m_pFilterModel->reload();
+   AkonadiContactCollectionModel::instance()->reload();
+   ContactModel::instance()->backendModel()->load();
 }
 
 ///Save the settings
 void DlgAddressBook::updateSettings()
 {
    NumberCategoryModel::instance()->save();
-   m_pFilterModel->save();
+   AkonadiContactCollectionModel::instance()->save();
+   ContactModel::instance()->backendModel()->save();
    m_HasChanged = false;
 }
 

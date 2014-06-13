@@ -27,7 +27,7 @@
 #include "phonenumber.h"
 #include "callmodel.h"
 #include "call.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 
 static bool test = false;
 //Model item/index
@@ -73,9 +73,9 @@ AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemMod
 
    //Connect
    connect(&DBus::PresenceManager::instance(),SIGNAL(newServerSubscriptionRequest(QString)),this,SLOT(slotRequest(QString)));
-   if (Call::contactBackend()) {
-      connect(Call::contactBackend(),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
-   }
+//    if (Call::contactBackend()) {
+//       connect(Call::contactBackend(),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
+//    } //TODO implement reordering
 }
 
 

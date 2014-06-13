@@ -30,8 +30,8 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/videorenderer.h>
-#include <lib/videomodel.h>
+#include <lib/video/videorenderer.h>
+#include <lib/video/videomodel.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -127,7 +127,7 @@ void ThreadedPainter::draw()
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-      const QSize size = m_pRenderer->activeResolution();
+      const QSize size = m_pRenderer->size();
       if (size.width() && size.height() && m_pRenderer->rawData())
          gluBuild2DMipmaps(GL_TEXTURE_2D, 4, size.width(), size.height(), GL_BGRA, GL_UNSIGNED_BYTE, m_pRenderer->rawData());
 
@@ -290,7 +290,7 @@ void VideoWidget2::setRenderer(VideoRenderer* renderer)
       connect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
       connect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
       connect(m_pPainter->m_pRenderer,SIGNAL(destroyed()),m_pPainter,SLOT(reset()));
-      setSizeIncrement(1,((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width()));
+      setSizeIncrement(1,((float)m_pPainter->m_pRenderer->size().height()/(float)m_pPainter->m_pRenderer->size().width()));
       if (m_pPainter->thread()->isRunning())
          m_pPainter->isRendering = true;
    }
@@ -301,14 +301,14 @@ int VideoWidget2::heightForWidth( int w ) const
 {
    if (m_pPainter->m_pRenderer  )
    if (m_pPainter->m_pRenderer)
-      return w*((float)m_pPainter->m_pRenderer->activeResolution().height()/(float)m_pPainter->m_pRenderer->activeResolution().width());
+      return w*((float)m_pPainter->m_pRenderer->size().height()/(float)m_pPainter->m_pRenderer->size().width());
    return w*.75f;
 }
 
 QSize VideoWidget2::sizeHint() const
 {
    if (m_pPainter->m_pRenderer) {
-      return m_pPainter->m_pRenderer->activeResolution();
+      return m_pPainter->m_pRenderer->size();
    }
    return QSize(100,75);
 }

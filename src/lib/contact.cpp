@@ -26,6 +26,8 @@
 //SFLPhone library
 #include "sflphone_const.h"
 #include "phonenumber.h"
+#include "abstractitembackend.h"
+#include "transitionalcontactbackend.h"
 
 
 
@@ -45,8 +47,8 @@ Contact* Contact::PhoneNumbers::contact() const
 }
 
 ///Constructor
-Contact::Contact(QObject* parent):QObject(parent),m_pPhoto(nullptr),
-   m_Numbers(this),m_DisplayPhoto(nullptr),m_Active(true)
+Contact::Contact(AbstractContactBackend* parent):QObject(parent?parent:TransitionalContactBackend::instance()),m_pPhoto(nullptr),
+   m_Numbers(this),m_DisplayPhoto(nullptr),m_Active(true),m_pBackend(parent?parent:TransitionalContactBackend::instance())
 {
 }
 
@@ -105,7 +107,7 @@ const QString& Contact::preferredEmail()  const
 }
 
 ///Get the unique identifier (used for drag and drop) 
-const QString& Contact::uid() const
+const QByteArray& Contact::uid() const
 {
    return m_Uid;
 }
@@ -189,7 +191,7 @@ void Contact::setPreferredEmail(const QString& name)
 }
 
 ///Set UID
-void Contact::setUid(const QString& id)
+void Contact::setUid(const QByteArray& id)
 {
    m_Uid = id;
    emit changed();
@@ -272,4 +274,23 @@ time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
 void Contact::slotPresenceChanged()
 {
    emit changed();
+}
+
+///Save the contact
+bool Contact::save() const
+{
+   return m_pBackend->save(this);
+}
+
+///Show an implementation dependant dialog to edit the contact
+bool Contact::edit()
+{
+   return m_pBackend->edit(this);
+}
+
+///Add a new phone number to the backend
+///@note The backend is expected to notify the Contact (asynchronously) when done
+bool Contact::addPhoneNumber(PhoneNumber* n)
+{
+   return m_pBackend->addPhoneNumber(this,n);
 }

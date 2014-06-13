@@ -1,0 +1,5 @@
+* Move all proxy model to the lib, use proxy model as base class for the existing ones
+* Move relevant selectionmodels to the lib
+* Remove foreach and use C++11 for : each
+* clean the .h for semi-private micro classes
+* Move attributes to a C++11 compatible private class

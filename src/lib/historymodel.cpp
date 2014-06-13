@@ -29,6 +29,8 @@
 #include "callmodel.h"
 #include "historytimecategorymodel.h"
 #include "lastusednumbermodel.h"
+#include "abstractitembackend.h"
+#include "visitors/itemmodelstateserializationvisitor.h"
 
 /*****************************************************************************
  *                                                                           *
@@ -96,24 +98,9 @@ Call* HistoryModel::HistoryItem::call() const
  ****************************************************************************/
 
 ///Constructor
-HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_HistoryInit(false),m_Role(Call::Role::FuzzyDate),m_HaveContactModel(false)
+HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_Role(Call::Role::FuzzyDate)
 {
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   const QVector< QMap<QString, QString> > history = configurationManager.getHistory();
-   beginResetModel();
-   for(int i = history.size()-1;i>=0;i--) {
-      const MapStringString& hc = history[i];
-      Call* pastCall = Call::buildHistoryCall(hc);
-      if (pastCall->peerName().isEmpty()) {
-         pastCall->setPeerName(tr("Unknown"));
-      }
-      pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
-      add(pastCall);
-   }
-   endResetModel();
-   m_HistoryInit = true;
    m_spInstance  = this;
-//    reloadCategories();
    m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER << MIME_HISTORYID;
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(Call::Role::Name          ,QByteArray("name"          ));
@@ -131,7 +118,6 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
    roles.insert(Call::Role::Department    ,QByteArray("department"    ));
    roles.insert(Call::Role::Email         ,QByteArray("email"         ));
    roles.insert(Call::Role::Organisation  ,QByteArray("organisation"  ));
-   roles.insert(Call::Role::Codec         ,QByteArray("codec"         ));
    roles.insert(Call::Role::IsConference  ,QByteArray("isConference"  ));
    roles.insert(Call::Role::Object        ,QByteArray("object"        ));
    roles.insert(Call::Role::PhotoPtr      ,QByteArray("photoPtr"      ));
@@ -204,6 +190,12 @@ HistoryModel::TopLevelItem* HistoryModel::getCategory(const Call* call)
    return category;
 }
 
+
+const CallMap HistoryModel::getHistoryCalls() const
+{
+   return m_sHistoryCalls;
+}
+
 ///Add to history
 void HistoryModel::add(Call* call)
 {
@@ -211,10 +203,10 @@ void HistoryModel::add(Call* call)
       return;
    }
 
-   if (!m_HaveContactModel && call->contactBackend()) {
-      connect(((QObject*)call->contactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
-      m_HaveContactModel = true;
-   }
+//    if (!m_HaveContactModel && call->contactBackend()) {
+//       connect(((QObject*)call->contactBackend()),SIGNAL(collectionChanged()),this,SLOT(reloadCategories()));
+//       m_HaveContactModel = true;
+//    }//TODO implement reordering
 
    emit newHistoryCall(call);
    emit layoutAboutToBeChanged();
@@ -235,6 +227,19 @@ void HistoryModel::add(Call* call)
    emit layoutChanged();
    LastUsedNumberModel::instance()->addCall(call);
    emit historyChanged();
+
+   // Loop until it find a compatible backend
+   //HACK only support a single active history backend
+   if (!call->backend()) {
+      foreach (AbstractHistoryBackend* backend,m_lBackends) {
+         if (backend->supportedFeatures() & AbstractHistoryBackend::ADD) {
+            if (backend->append(call)) {
+               call->setBackend(backend);
+               break;
+            }
+         }
+      }
+   }
 }
 
 ///Set if the history has a limit
@@ -271,8 +276,6 @@ int HistoryModel::historyLimit() const
 
 void HistoryModel::reloadCategories()
 {
-   if (!m_HistoryInit)
-      return;
    beginResetModel();
    m_hCategories.clear();
    m_hCategoryByName.clear();
@@ -497,8 +500,61 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
    return false;
 }
 
+
+bool HistoryModel::hasBackends() const
+{
+   return m_lBackends.size();
+}
+
+bool HistoryModel::hasEnabledBackends() const
+{
+   return m_lBackends.size();
+}
+
+void HistoryModel::addBackend(AbstractHistoryBackend* backend, LoadOptions options)
+{
+   m_lBackends << backend;
+   connect(backend,SIGNAL(newHistoryCallAdded(Call*)),this,SLOT(add(Call*)));
+   if (options & LoadOptions::FORCE_ENABLED || ItemModelStateSerializationVisitor::instance()->isChecked(backend))
+      backend->load();
+   emit newBackendAdded(backend);
+}
+
+///Call all backends that support clearing
+void HistoryModel::clearAllBackends() const
+{
+   foreach (AbstractHistoryBackend* backend,m_lBackends) {
+      if (backend->supportedFeatures() & AbstractHistoryBackend::ADD) {
+         backend->clear();
+      }
+   }
+}
+
+
+bool HistoryModel::enableBackend(AbstractHistoryBackend* backend, bool enabled)
+{
+   Q_UNUSED(backend)
+   Q_UNUSED(enabled)
+   return false;//TODO
+}
+
+CommonItemBackendModel* HistoryModel::backendModel() const
+{
+   return nullptr; //TODO
+}
+
+const QVector<AbstractHistoryBackend*> HistoryModel::backends() const
+{
+   return m_lBackends;
+}
+
+const QVector<AbstractHistoryBackend*> HistoryModel::enabledBackends() const
+{
+   return m_lBackends;
+}
+
 ///Return valid payload types
-int HistoryModel::acceptedPayloadTypes()
+int HistoryModel::acceptedPayloadTypes() const
 {
    return CallModel::DropPayloadType::CALL;
 }

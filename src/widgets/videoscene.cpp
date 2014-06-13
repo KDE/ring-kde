@@ -17,18 +17,22 @@
 
 #include "videoscene.h"
 #include <QtGui/QLabel>
+#include <QtCore/QMutex>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <GL/glu.h>
+#include <QGraphicsSceneMouseEvent>
 
 #include "videoglframe.h"
 #include "videotoolbar.h"
+#include <lib/video/videorenderer.h>
+#include <lib/video/videomodel.h>
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
 #endif
 
 VideoScene::VideoScene()
-   : m_backgroundColor(25, 25, 25),m_pToolbar(nullptr)
+   : m_backgroundColor(25, 25, 25)//,m_pToolbar(nullptr)
 {
 
 //    QPointF pos(10, 10);
@@ -60,7 +64,7 @@ void VideoScene::drawBackground(QPainter *painter, const QRectF& rect)
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    foreach(VideoGLFrame* frm, m_lFrames) {
-      frm->paintEvent(painter);
+         frm->paintEvent(painter);
    }
 }
 
@@ -73,50 +77,51 @@ void VideoScene::setBackgroundColor()
 //    }
 }
 
-void VideoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-   QGraphicsScene::mouseMoveEvent(event);
-   if (event->isAccepted())
-      return;
-   if (event->buttons() & Qt::LeftButton) {
-      event->accept();
-      update();
-   }
-   foreach(VideoGLFrame* frm, m_lFrames) {
-      const QPointF diff = event->pos() - frm->anchor();
-      if (event->buttons() & Qt::LeftButton) {
-         frm->setRotX(frm->rotX()+diff.y()/5.0f);
-         frm->setRotY(frm->rotY()+diff.x()/5.0f);
-      } else if (event->buttons() & Qt::RightButton) {
-         frm->setRotZ(frm->rotZ()+diff.x()/5.0f);
-      }
+// void VideoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+// {
+//    QGraphicsScene::mouseMoveEvent(event);
+//    if (event->isAccepted())
+//       return;
+//    if (event->buttons() & Qt::LeftButton) {
+//       event->accept();
+//       update();
+//    }
+//    foreach(VideoGLFrame* frm, m_lFrames) {
+// //       const QPointF diff = event->pos() - frm->anchor();
+//       if (event->buttons() & Qt::LeftButton) {
+//          
+//          frm->setRotZ(frm->rotZ()+1);
+// //          frm->setRotY(frm->rotY()+1/5.0f);
+// //       } else if (event->buttons() & Qt::RightButton) {
+// //          frm->setRotZ(frm->rotZ()+diff.x()/5.0f);
+//       }
+// 
+//       frm->setAnchor(event->pos());
+//    }
+// }
 
-      frm->setAnchor(event->pos());
-   }
-}
+// void VideoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+// {
+//    QGraphicsScene::mousePressEvent(event);
+//    if (event->isAccepted())
+//       return;
+// 
+//    event->accept();
+// 
+//    foreach(VideoGLFrame* frm, m_lFrames) {
+//       frm->setAnchor(event->pos());
+//    }
+// }
 
-void VideoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-   QGraphicsScene::mousePressEvent(event);
-   if (event->isAccepted())
-      return;
-
-   event->accept();
-
-   foreach(VideoGLFrame* frm, m_lFrames) {
-      frm->setAnchor(event->pos());
-   }
-}
-
-void VideoScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-   QGraphicsScene::mouseReleaseEvent(event);
-   if (event->isAccepted())
-      return;
-
-   event->accept();
-   update();
-}
+// void VideoScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+// {
+//    QGraphicsScene::mouseReleaseEvent(event);
+//    if (event->isAccepted())
+//       return;
+// 
+//    event->accept();
+//    update();
+// }
 
 void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
@@ -126,7 +131,10 @@ void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 
    event->accept();
    foreach(VideoGLFrame* frm, m_lFrames) {
-      frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
+      if (frm) {
+         if (VideoModel::instance()->previewRenderer() != frm->renderer())
+            frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
+      }
    }
    update();
 }
@@ -136,14 +144,41 @@ void VideoScene::frameChanged()
    update();
 }
 
-void VideoScene::setToolbar(VideoToolbar* tb)
-{
-   m_pToolbar = tb;
-   addWidget(m_pToolbar);
-}
+// void VideoScene::setToolbar(VideoToolbar* tb)
+// {
+//    m_pToolbar = tb;
+//    addWidget(m_pToolbar);
+// }
 
 void VideoScene::addFrame(VideoGLFrame* frame)
 {
    m_lFrames << frame;
-   m_pToolbar->resizeToolbar();
+//    m_pToolbar->resizeToolbar();
 }
+
+void VideoScene::removeFrame( VideoGLFrame* frame )
+{
+   m_lFrames.removeAll(frame);
+}
+
+void VideoScene::slotRotateLeft()
+{
+   foreach(VideoGLFrame* frm, m_lFrames) {
+      if (VideoModel::instance()->previewRenderer() != frm->renderer())
+         frm->setRotZ(frm->rotZ()-90);
+   }
+}
+
+void VideoScene::slotRotateRight()
+{
+   foreach(VideoGLFrame* frm, m_lFrames) {
+      if (VideoModel::instance()->previewRenderer() != frm->renderer())
+         frm->setRotZ(frm->rotZ()+90);
+   }
+}
+
+void VideoScene::slotShowPreview()
+{
+   
+}
+

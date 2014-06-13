@@ -28,9 +28,10 @@
 #include "accountlistmodel.h"
 #include "numbercategory.h"
 #include "numbercategorymodel.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 #include "dbus/presencemanager.h"
 #include "visitors/pixmapmanipulationvisitor.h"
+#include "contactmodel.h"
 
 PhoneDirectoryModel* PhoneDirectoryModel::m_spInstance = nullptr;
 
@@ -405,7 +406,7 @@ PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
    if (fields.size() == 3) {
       const QString uri = fields[0];
       Account* account = AccountListModel::instance()->getAccountById(fields[1]);
-      Contact* contact = Call::contactBackend()?Call::contactBackend()->getContactByUid(fields[2]):nullptr;
+      Contact* contact = ContactModel::instance()->getContactByUid(fields[2].toUtf8());
       return getNumber(uri,contact,account);
    }
    else if (fields.size() == 1) {
@@ -468,6 +469,10 @@ void PhoneDirectoryModel::slotChanged()
    PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
    if (number) {
       const int idx = number->m_Index;
+#ifndef NDEBUG
+      if (idx<0)
+         qDebug() << "Invalid slotChanged() index!";
+#endif
       emit dataChanged(index(idx,0),index(idx,5));
    }
 }

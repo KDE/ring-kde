@@ -20,6 +20,10 @@
 
 #include <QtCore/QObject>
 
+#include <QObject>
+#include <QSize>
+#include <QPoint>
+
 class VideoRenderer;
 
 class ThreadedPainter2;
@@ -48,6 +52,9 @@ public:
    void setRotZ(float rot);
    void setRotY(float rot);
    void setRotX(float rot);
+   void setTranslationZ(float tra);
+   void setTranslationY(float tra);
+   void setTranslationX(float tra);
    void setScale(float scale);
    void setAnchor(const QPointF& point);
 
@@ -57,11 +64,15 @@ public:
    float rotY() const;
    float rotX() const;
    float scale() const;
+   VideoRenderer* renderer() const {
+      return m_pRenderer;
+   }
 
 private:
    //Attributes
    ThreadedPainter2* m_pPainter;
    QGLWidget* m_pParent;
+   VideoRenderer* m_pRenderer;
 
 public Q_SLOTS:
    void setRenderer(VideoRenderer* renderer = nullptr);

@@ -16,9 +16,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "videocodecmodel.h"
-#include "call.h"
-#include "account.h"
-#include "videocodec.h"
+#include <call.h>
+#include <account.h>
+#include <video/videocodec.h>
 #include "dbus/videomanager.h"
 
 #include <QtCore/QCoreApplication>
@@ -29,7 +29,7 @@ QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
    if(idx.column() == 0 && role == Qt::DisplayRole)
       return QVariant(m_lCodecs[idx.row()]->name());
    else if(idx.column() == 0 && role == Qt::CheckStateRole) {
-      return QVariant(m_lCodecs[idx.row()]->enabled()?Qt::Checked:Qt::Unchecked);
+      return QVariant(m_lCodecs[idx.row()]->isEnabled()?Qt::Checked:Qt::Unchecked);
    }
    else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE)
       return QVariant(m_lCodecs[idx.row()]->bitrate());
@@ -56,7 +56,7 @@ bool VideoCodecModel::setData(const QModelIndex& idx, const QVariant &value, int
 {
 
    if (idx.column() == 0 && role == Qt::CheckStateRole) {
-      bool changed = m_lCodecs[idx.row()]->enabled() != (value == Qt::Checked);
+      bool changed = m_lCodecs[idx.row()]->isEnabled() != (value == Qt::Checked);
       m_lCodecs[idx.row()]->setEnabled(value == Qt::Checked);
       if (changed)
          emit dataChanged(idx, idx);
@@ -96,7 +96,7 @@ void VideoCodecModel::reload()
       m_lCodecs.removeAt(0);
       delete c;
    }
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->id());
    foreach(const MapStringString& h,codecs) {
       VideoCodec* c = new VideoCodec(h[VideoCodec::CodecFields::NAME],
@@ -111,7 +111,7 @@ void VideoCodecModel::reload()
 ///Save the current model over dbus
 void VideoCodecModel::save()
 {
-   VideoInterface& interface = DBus::VideoManager::instance();
+   VideoManagerInterface& interface = DBus::VideoManager::instance();
    VectorMapStringString toSave;
    foreach(VideoCodec* vc,m_lCodecs) {
       toSave << vc->toMap();

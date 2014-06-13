@@ -34,7 +34,7 @@ class LIB_EXPORT VideoCodec : public QObject {
       //Properties
       Q_PROPERTY(QString name       READ name                          )
       Q_PROPERTY(uint    bitrate    READ bitrate    WRITE setBitrate   )
-      Q_PROPERTY(bool    enabled    READ enabled    WRITE setEnabled   )
+      Q_PROPERTY(bool    enabled    READ isEnabled  WRITE setEnabled   )
       Q_PROPERTY(QString parameters READ parameters WRITE setParamaters)
 
       //Consts
@@ -52,7 +52,7 @@ class LIB_EXPORT VideoCodec : public QObject {
       //Getters
       QString name      () const;
       uint    bitrate   () const;
-      bool    enabled   () const;
+      bool    isEnabled () const;
       QString parameters() const;
       QMap<QString,QString> toMap() const;
 

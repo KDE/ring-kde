@@ -19,6 +19,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QMutex>
+#include <QtCore/QThread>
 
 #include <sys/ipc.h>
 #include <sys/sem.h>
@@ -28,14 +29,15 @@
 #include <sys/mman.h>
 #include <semaphore.h>
 #include <errno.h>
-// #include <linux/time.h>
-#include <time.h>
+
 
 #ifndef CLOCK_REALTIME
 #define CLOCK_REALTIME 0
 #endif
 
 #include <QtCore/QTimer>
+#include "videomodel.h"
+#include "videoresolution.h"
 
 ///Shared memory object
 struct SHMHeader{
@@ -54,11 +56,11 @@ struct SHMHeader{
 };
 
 ///Constructor
-VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, Resolution res): QObject(nullptr),
-   m_Width(res.width()), m_Height(res.height()), m_ShmPath(shmPath), fd(-1),
+VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const QSize& res): QObject(nullptr),
+   m_ShmPath(shmPath), fd(-1),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
-   m_isRendering(false),m_pTimer(nullptr),m_Res(res),m_pMutex(new QMutex()),
-   m_Id(id)
+   m_isRendering(false),m_pTimer(nullptr),m_pSize(res),m_pMutex(new QMutex()),
+   m_Id(id),m_FrameIdx(false),m_pSSMutex(new QMutex())
 {
    setObjectName("VideoRenderer:"+id);
 }
@@ -71,7 +73,7 @@ VideoRenderer::~VideoRenderer()
 }
 
 ///Get the data from shared memory and transform it into a QByteArray
-bool VideoRenderer::renderToBitmap(QByteArray& data)
+bool VideoRenderer::renderToBitmap()
 {
 #ifdef Q_OS_LINUX
    if (!m_isRendering) {
@@ -79,14 +81,17 @@ bool VideoRenderer::renderToBitmap(QByteArray& data)
    }
 
    if (!shmLock()) {
-      return false;
+      return true;
    }
+
+   if(!VideoModel::instance()->startStopMutex()->tryLock())
+      return false;
 
    // wait for a new buffer
    while (m_BufferGen == m_pShmArea->m_BufferGen) {
       shmUnlock();
-      const struct timespec timeout = createTimeout();
-      int err = sem_timedwait(&m_pShmArea->notification, &timeout);
+
+      int err = sem_trywait(&m_pShmArea->notification);
       // Useful for debugging
 //       switch (errno ) {
 //          case EINTR:
@@ -111,28 +116,34 @@ bool VideoRenderer::renderToBitmap(QByteArray& data)
 //             break;
 //       }
       if (err < 0) {
-         return false;
+         VideoModel::instance()->startStopMutex()->unlock();
+         return errno == EAGAIN;
       }
 
       if (!shmLock()) {
-         return false;
+         VideoModel::instance()->startStopMutex()->unlock();
+         return true;
       }
+      usleep((1/60.0)*10000);
    }
 
    if (!resizeShm()) {
       qDebug() << "Could not resize shared memory";
+      VideoModel::instance()->startStopMutex()->unlock();
       return false;
    }
 
-   if (data.size() != m_pShmArea->m_BufferSize)
-      data.resize(m_pShmArea->m_BufferSize);
-   memcpy(data.data(),m_pShmArea->m_Data,m_pShmArea->m_BufferSize);
+   bool otherFrame = ! m_FrameIdx;
+   if (m_Frame[otherFrame].size() != m_pShmArea->m_BufferSize)
+      m_Frame[otherFrame].resize(m_pShmArea->m_BufferSize);
+   memcpy(m_Frame[otherFrame].data(),m_pShmArea->m_Data,m_pShmArea->m_BufferSize);
    m_BufferGen = m_pShmArea->m_BufferGen;
    shmUnlock();
-//    return data;
+   m_FrameIdx = !m_FrameIdx;
+
+   VideoModel::instance()->startStopMutex()->unlock();
    return true;
 #else
-   Q_UNUSED(data)
    return false;
 #endif
 }
@@ -202,7 +213,7 @@ bool VideoRenderer::resizeShm()
 
       m_ShmAreaLen = new_size;
       if (!shmLock())
-            return false;
+            return true;
    }
    return true;
 }
@@ -211,14 +222,7 @@ bool VideoRenderer::resizeShm()
 bool VideoRenderer::shmLock()
 {
 #ifdef Q_OS_LINUX
-   const timespec timeout = createTimeout();
-   /* We need an upper limit on how long we'll wait to avoid locking the whole GUI */
-   if (sem_timedwait(&m_pShmArea->mutex, &timeout) < 0) {
-       if (errno == ETIMEDOUT)
-           qDebug() << "Timed out before shm lock was acquired";
-      return false;
-   }
-   return true;
+   return sem_trywait(&m_pShmArea->mutex) >= 0;
 #else
    return false;
 #endif
@@ -228,20 +232,6 @@ bool VideoRenderer::shmLock()
 void VideoRenderer::shmUnlock()
 {
    sem_post(&m_pShmArea->mutex);
-}
-
-///Create a SHM timeout
-timespec VideoRenderer::createTimeout()
-{
-#ifdef Q_OS_LINUX
-   timespec timeout = {0, 0};
-   if (clock_gettime(CLOCK_REALTIME, &timeout) == -1)
-      qDebug() << "clock_gettime";
-   timeout.tv_sec += TIMEOUT_SEC;
-   return timeout;
-#else
-   return {0,0};
-#endif
 }
 
 
@@ -254,11 +244,19 @@ timespec VideoRenderer::createTimeout()
 ///Update the buffer
 void VideoRenderer::timedEvents()
 {
-   m_pMutex->lock();
 
-   bool ok = renderToBitmap(m_Frame);
-   m_pMutex->unlock();
+   bool ok = renderToBitmap();
+
    if (ok == true) {
+
+      //Compute the FPS shown to the client
+      if (m_CurrentTime.second() != QTime::currentTime().second()) {
+         m_Fps = m_fpsC;
+         m_fpsC=0;
+         m_CurrentTime = QTime::currentTime();
+      }
+      m_fpsC++;
+
       emit frameUpdated();
    }
    else {
@@ -270,20 +268,32 @@ void VideoRenderer::timedEvents()
 ///Start the rendering loop
 void VideoRenderer::startRendering()
 {
+   VideoModel::instance()->startStopMutex()->lock();
    QMutexLocker locker(m_pMutex);
    startShm();
    if (!m_pTimer) {
-      m_pTimer = new QTimer(this);
+      m_pTimer = new QTimer(nullptr);
+
+//       m_pTimer->moveToThread(thread());
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timedEvents()));
-      m_pTimer->setInterval(42);
+      m_pTimer->setInterval(30);
    }
-   m_pTimer->start();
+
+   if (!m_pTimer->isActive()) {
+      qDebug() << "Is running" << thread()->isRunning();
+      m_pTimer->start();
+   }
+   else
+      qDebug() << "Timer already started!";
+
    m_isRendering = true;
+   VideoModel::instance()->startStopMutex()->unlock();
 }
 
 ///Stop the rendering loop
 void VideoRenderer::stopRendering()
 {
+   VideoModel::instance()->startStopMutex()->lock();
    QMutexLocker locker(m_pMutex);
    m_isRendering = false;
    qDebug() << "Stopping rendering on" << m_Id;
@@ -291,8 +301,7 @@ void VideoRenderer::stopRendering()
       m_pTimer->stop();
    emit stopped();
    stopShm();
-   //qDebug() << "Video stopped for call" << id;
-   //emit videoStopped();
+   VideoModel::instance()->startStopMutex()->unlock();
 }
 
 
@@ -305,7 +314,7 @@ void VideoRenderer::stopRendering()
 ///Get the raw bytes directly from the SHM, not recommended, but optimal
 const char* VideoRenderer::rawData()
 {
-   return m_isRendering?m_Frame.data():nullptr;
+   return m_isRendering?m_Frame[m_FrameIdx].data():nullptr;
 }
 
 ///Is this redenrer active
@@ -315,21 +324,28 @@ bool VideoRenderer::isRendering()
 }
 
 ///Return the current framerate
-QByteArray VideoRenderer::currentFrame()
+const QByteArray& VideoRenderer::currentFrame()
 {
-   return m_Frame;
+   static QByteArray empty;
+   return m_isRendering?m_Frame[m_FrameIdx]:empty;
 }
 
 ///Return the current resolution
-Resolution VideoRenderer::activeResolution()
+QSize VideoRenderer::size()
 {
-   return m_Res;
+   return m_pSize;
 }
 
 ///Get mutex, in case renderer and views are not in the same thread
 QMutex* VideoRenderer::mutex()
 {
    return m_pMutex;
+}
+
+///Get the current frame rate of this renderer
+int VideoRenderer::fps() const
+{
+   return m_Fps;
 }
 
 
@@ -339,14 +355,12 @@ QMutex* VideoRenderer::mutex()
  *                                                                           *
  ****************************************************************************/
 
-void VideoRenderer::setResolution(QSize size)
+void VideoRenderer::setSize(const QSize& size)
 {
-   m_Res = size;
-   m_Width = size.width();
-   m_Height = size.height();
+   m_pSize = size;
 }
 
-void VideoRenderer::setShmPath(QString path)
+void VideoRenderer::setShmPath(const QString& path)
 {
    m_ShmPath = path;
 }

@@ -32,11 +32,7 @@
 
 //SFLPhone
 class AutoCompletionDelegate;
-class AkonadiContactCollectionModel;
 
-/**
-	@author Jérémy Quentin <jeremy.quentin@gmail.com>
-*/
 class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase
 {
 Q_OBJECT
@@ -52,7 +48,6 @@ private:
    QHash<QString,QListWidgetItem*> m_mNumbertype;
    bool m_HasChanged;
    AutoCompletionDelegate* m_pDelegate;
-   AkonadiContactCollectionModel* m_pFilterModel;
 
 public Q_SLOTS:
    void updateWidgets ();

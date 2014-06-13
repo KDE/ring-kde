@@ -31,11 +31,11 @@
 //SFLPhone library
 #include "dbus/callmanager.h"
 #include "dbus/configurationmanager.h"
-#include "abstractcontactbackend.h"
+#include "abstractitembackend.h"
 #include "contact.h"
 #include "account.h"
 #include "accountlistmodel.h"
-#include "videomodel.h"
+#include "video/videomodel.h"
 #include "historymodel.h"
 #include "instantmessagingmodel.h"
 #include "useractionmodel.h"
@@ -43,9 +43,10 @@
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
-#include "videorenderer.h"
+#include "video/videorenderer.h"
 #include "tlsmethodmodel.h"
 #include "audiosettingsmodel.h"
+#include "contactmodel.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
@@ -139,26 +140,13 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
    return dbg.space();
 }
 
-AbstractContactBackend* Call::m_pContactBackend = nullptr;
-Call*                   Call::m_sSelectedCall   = nullptr;
-
-void Call::setContactBackend(AbstractContactBackend* be)
-{
-   m_pContactBackend = be;
-}
-
-AbstractContactBackend* Call::contactBackend ()
-{
-   return m_pContactBackend;
-}
-
 ///Constructor
 Call::Call(Call::State startState, const QString& callId, const QString& peerName, PhoneNumber* number, Account* account)
    :  QObject(CallModel::instance()), m_isConference(false),m_pStopTimeStamp(0),
    m_pImModel(nullptr),m_pTimer(nullptr),m_Recording(false),m_Account(nullptr),
    m_PeerName(peerName),m_pPeerPhoneNumber(number),m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),
    m_CallId(callId),m_CurrentState(startState),m_pStartTimeStamp(0),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
-   m_History(false),m_Missed(false),m_Direction(Call::Direction::OUTGOING)
+   m_History(false),m_Missed(false),m_Direction(Call::Direction::OUTGOING),m_pBackend(nullptr)
 {
    m_Account = account;
    Q_ASSERT(!callId.isEmpty());
@@ -185,7 +173,7 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
    m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
    m_pTimer(nullptr), m_isConference(false),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
    m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),m_History(false),m_Missed(false),
-   m_Direction(Call::Direction::OUTGOING)
+   m_Direction(Call::Direction::OUTGOING),m_pBackend(nullptr)
 {
    setObjectName("Conf:"+confId);
    m_isConference  = !m_ConfId.isEmpty();
@@ -213,7 +201,7 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
  ****************************************************************************/
 
 ///Build a call from its ID
-Call* Call::buildExistingCall(QString callId)
+Call* Call::buildExistingCall(const QString& callId)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString       details     = callManager.getCallDetails(callId).value();
@@ -613,6 +601,24 @@ Call::Direction Call::direction() const
    return m_Direction;
 }
 
+///Return the backend used to serialize this call
+AbstractHistoryBackend* Call::backend() const
+{
+   return m_pBackend;
+}
+
+
+///Does this call currently has video
+bool Call::hasVideo() const
+{
+   #ifdef ENABLE_VIDEO
+   return VideoModel::instance()->getRenderer(this) != nullptr;
+   #else
+   return false;
+   #endif
+}
+
+
 ///Get the current state
 Call::State Call::state() const
 {
@@ -647,13 +653,6 @@ const QString Call::confId() const
 const QString Call::recordingPath() const
 {
    return m_RecordingPath;
-}
-
-///Get the current codec
-QString Call::currentCodecName() const
-{
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   return callManager.getCurrentAudioCodecName(m_CallId);
 }
 
 ///Get the history state
@@ -766,6 +765,12 @@ void Call::setAccount( Account* account)
 {
    if (state() == Call::State::DIALING)
       m_Account = account;
+}
+
+/// Set the backend to save this call to. It is currently impossible to migrate.
+void Call::setBackend(AbstractHistoryBackend* backend)
+{
+   m_pBackend = backend;
 }
 
 /*****************************************************************************
@@ -944,7 +949,7 @@ void Call::setStartTimeStamp(time_t stamp)
 }
 
 ///Send a text message
-void Call::sendTextMessage(QString message)
+void Call::sendTextMessage(const QString& message)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.sendTextMessage(isConference()?m_ConfId:m_CallId,message);
@@ -1065,7 +1070,8 @@ void Call::hangUp()
 ///Remove the call without contacting the daemon
 void Call::remove()
 {
-   m_CurrentState = Call::State::OVER;
+   if (m_CurrentState != Call::State::ERROR && m_CurrentState != Call::State::FAILURE)
+      m_CurrentState = Call::State::OVER;
    emit stateChanged();
    emit changed();
    emit changed(this);
@@ -1117,7 +1123,7 @@ void Call::call()
       qDebug() << "Calling " << peerPhoneNumber()->uri() << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << m_ConfId;
       callManager.placeCall(m_Account->id(), m_CallId, m_pDialNumber->uri());
       this->m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->getNumber(m_pDialNumber->uri(),account());
-      if (m_pContactBackend) {
+      if (ContactModel::instance()->hasBackends()) {
          if (peerPhoneNumber()->contact())
             m_PeerName = peerPhoneNumber()->contact()->formattedName();
       }
@@ -1502,9 +1508,6 @@ QVariant Call::roleData(int role) const
          break;
       case Call::Role::Organisation:
          return ct?ct->organization():QVariant();
-         break;
-      case Call::Role::Codec:
-         return currentCodecName();
          break;
       case Call::Role::IsConference:
          return isConference();

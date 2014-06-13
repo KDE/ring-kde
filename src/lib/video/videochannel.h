@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2012-2014 by Savoir-Faire Linux                          *
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
@@ -15,51 +15,49 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef VIDEOCODECMODEL_H
-#define VIDEOCODECMODEL_H
+#ifndef VIDEOCHANNEL_H
+#define VIDEOCHANNEL_H
 
-#include "typedefs.h"
+#include "../typedefs.h"
 #include <QtCore/QAbstractListModel>
 
-//Qt
+class VideoResolution;
+class VideoDevice;
 
-//SFLPhone
-class Account;
-
-//Typedef
-class VideoCodec;
-typedef QHash<QString,VideoCodec*> CodecHash;
-
-///Abstract model for managing account video codec list
-class LIB_EXPORT VideoCodecModel : public QAbstractListModel {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-   Q_OBJECT
-   #pragma GCC diagnostic pop
-
+///@typedef VideoChannel A channel available in a Device
+class LIB_EXPORT VideoChannel : public QAbstractListModel
+{
+   //Only VideoDevice can add resolutions
+   friend class VideoDevice;
 public:
-   //Private constructor, can only be called by 'Account'
-   explicit VideoCodecModel(Account* account = nullptr);
-   ~VideoCodecModel();
+   QString name() const {
+      return m_Name;
+   }
+   VideoResolution* activeResolution();
+   QList<VideoResolution*> validResolutions() const {
+      return m_lValidResolutions;
+   }
+   VideoDevice* device() const {
+      return m_pDevice;
+   }
+   int relativeIndex();
 
-   //Roles
-   static const int BITRATE_ROLE = 101;
+   bool setActiveResolution(VideoResolution* res);
+   bool setActiveResolution(int idx);
 
-   //Model functions
+   //Model
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
    int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
    Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
 
-   void reload();
-   void save();
-   bool moveUp  (QModelIndex idx);
-   bool moveDown(QModelIndex idx);
-
 private:
-   //Attrbutes
-   QList<VideoCodec*> m_lCodecs;
-   Account*           m_pAccount;
+   VideoChannel(VideoDevice* dev,const QString& name);
+   virtual ~VideoChannel() {}
+   QString m_Name;
+   QList<VideoResolution*> m_lValidResolutions;
+   VideoResolution*        m_pCurrentResolution;
+   VideoDevice*       m_pDevice;
 };
-Q_DECLARE_METATYPE(VideoCodecModel*)
+
 #endif

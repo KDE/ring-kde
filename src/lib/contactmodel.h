@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009-2014 by Savoir-Faire Linux                          *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -16,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef ABSTRACTCONTACTBACKEND_H
-#define ABSTRACTCONTACTBACKEND_H
+#ifndef CONTACTMODEL_H
+#define CONTACTMODEL_H
 
 #include <QObject>
 #include <QHash>
@@ -27,16 +26,19 @@
 
 #include "typedefs.h"
 #include "contact.h"
+#include "commonbackendmanagerinterface.h"
 
 //SFLPhone
 class Contact;
 class Account;
+class AbstractContactBackend;
 
 //Typedef
-typedef QList<Contact*> ContactList;
+typedef QVector<Contact*> ContactList;
 
-///AbstractContactBackend: Allow different way to handle contact without poluting the library
-class LIB_EXPORT AbstractContactBackend : public QAbstractItemModel {
+///ContactModel: Allow different way to handle contact without poluting the library
+class LIB_EXPORT ContactModel :
+   public QAbstractItemModel, public CommonBackendManagerInterface<AbstractContactBackend> {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -55,24 +57,26 @@ public:
       DropState         = 300, //State for drag and drop
    };
 
-   explicit AbstractContactBackend(QObject* parent = nullptr);
-   virtual ~AbstractContactBackend();
+   //Properties
+   Q_PROPERTY(bool hasBackends   READ hasBackends  )
 
-   ///Get a contact using a phone number
-   ///@param resolveDNS interpret the number as is (false) or parse it to extract the domain and number (true)
-//    virtual Contact*    getContactByPhone ( const QString& phoneNumber , bool resolveDNS = false, Account* a = nullptr) = 0;
+   explicit ContactModel(QObject* parent = nullptr);
+   virtual ~ContactModel();
 
-   ///Return a contact (or nullptr) according to the contact unique identifier
-   virtual Contact*    getContactByUid   ( const QString& uid         ) = 0;
-   ///Edit 'contact', the implementation may be a GUI or somehting else
-   virtual void        editContact       ( Contact*       contact     ) = 0;
-   ///Add a new contact to the backend
-   virtual void        addNewContact     ( Contact*       contact     ) = 0;
-   
-   virtual const ContactList& getContactList() const = 0;
+   //Mutator
+   bool addContact(Contact* c);
+   void disableContact(Contact* c);
+   void addBackend(AbstractContactBackend* backend, LoadOptions = LoadOptions::NONE);
 
-   ///Add a new phone number to an existing contact
-   virtual void addPhoneNumber( Contact*       contact , QString  number, QString type )=0;
+   //Getters
+   Contact* getContactByUid   ( const QByteArray& uid );
+   bool     hasBackends       () const;
+   const ContactList contacts() const;
+   virtual const QVector<AbstractContactBackend*> enabledBackends() const;
+   virtual bool hasEnabledBackends  () const;
+   virtual const QVector<AbstractContactBackend*> backends() const;
+   virtual bool enableBackend(AbstractContactBackend* backend, bool enabled);
+   virtual CommonItemBackendModel* backendModel() const;
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   )  __attribute__ ((const));
@@ -84,26 +88,31 @@ public:
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
    virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-   int getUpdateCount();
+   //Singleton
+   static ContactModel* instance();
 
-protected:
-   virtual ContactList update_slot() = 0;
-
-   //Helper
-   QString getUserFromPhone    (const QString &phoneNumber);
-
+private:
    //Attributes
-   QHash<QString,Contact*>        m_ContactByUid   ;
+   static ContactModel* m_spInstance;
+   QVector<AbstractContactBackend*> m_lBackends;
    int m_UpdatesCounter;
+   CommonItemBackendModel* m_pBackendModel;
+
+   //Indexes
+   QHash<QByteArray,Contact*> m_hContactsByUid;
+   QVector<Contact*> m_lContacts;
+
 public Q_SLOTS:
-   ContactList update();
+   bool addNewContact(Contact* c, AbstractContactBackend* backend = nullptr);
 
 private Q_SLOTS:
-   void slotReloadModel();
+   void slotReloaded();
+   void slotContactAdded(Contact* c);
 
 Q_SIGNALS:
-   void collectionChanged();
+   void reloaded();
    void newContactAdded(Contact* c);
+   void newBackendAdded(AbstractContactBackend* backend);
 };
 
 #endif

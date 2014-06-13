@@ -18,12 +18,14 @@
 #ifndef VIDEOTOOLBAR_H
 #define VIDEOTOOLBAR_H
 
+#include <QtGui/QToolBar>
+
 #include "overlaytoolbar.h"
 
 //Qt
 class QWidget;
 
-class VideoToolbar : public OverlayToolbar {
+class VideoToolbar : public QToolBar {
    Q_OBJECT
 public:
    //Contructor

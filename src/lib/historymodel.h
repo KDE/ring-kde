@@ -27,15 +27,17 @@
 
 //SFLPhone
 #include "call.h"
+#include "commonbackendmanagerinterface.h"
 
 //Typedef
 typedef QMap<uint, Call*>  CallMap;
 typedef QList<Call*>       CallList;
 
 class HistoryItemNode;
+class AbstractHistoryBackend;
 
 ///HistoryModel: History call manager
-class LIB_EXPORT HistoryModel : public QAbstractItemModel {
+class LIB_EXPORT HistoryModel : public QAbstractItemModel, public CommonBackendManagerInterface<AbstractHistoryBackend> {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -43,13 +45,22 @@ class LIB_EXPORT HistoryModel : public QAbstractItemModel {
 public:
    friend class HistoryItemNode;
 
+   //Properties
+   Q_PROPERTY(bool hasBackends   READ hasBackends  )
+
    //Singleton
    static HistoryModel* instance();
 
    //Getters
-   int  acceptedPayloadTypes();
-   bool isHistoryLimited() const;
-   int  historyLimit() const;
+   int  acceptedPayloadTypes       () const;
+   bool isHistoryLimited           () const;
+   int  historyLimit               () const;
+   virtual bool hasBackends        () const;
+   virtual bool hasEnabledBackends () const;
+   const CallMap getHistoryCalls() const;
+   virtual const QVector<AbstractHistoryBackend*> backends() const;
+   virtual const QVector<AbstractHistoryBackend*> enabledBackends() const;
+   virtual CommonItemBackendModel* backendModel() const;
 
    //Setters
    void setCategoryRole(Call::Role role);
@@ -57,7 +68,9 @@ public:
    void setHistoryLimit(int numberOfDays);
 
    //Mutator
-   void add(Call* call);
+   void addBackend(AbstractHistoryBackend* backend, LoadOptions options = LoadOptions::NONE);
+   void clearAllBackends() const;
+   virtual bool enableBackend(AbstractHistoryBackend* backend, bool enabled);
 
    //Model implementation
    virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
@@ -110,7 +123,6 @@ private:
    ~HistoryModel();
 
    //Helpers
-   bool initHistory();
    TopLevelItem* getCategory(const Call* call);
 
    //Static attributes
@@ -118,7 +130,7 @@ private:
 
    //Attributes
    static CallMap m_sHistoryCalls;
-   bool m_HistoryInit;
+   QVector<AbstractHistoryBackend*> m_lBackends;
 
    //Model categories
    QList<TopLevelItem*>         m_lCategoryCounter ;
@@ -127,8 +139,10 @@ private:
    bool                         m_isContactDateInit;
    int                          m_Role             ;
    bool                         m_ShowAll          ;
-   bool                         m_HaveContactModel ;
    QStringList                  m_lMimes           ;
+
+public Q_SLOTS:
+   void add(Call* call);
 
 private Q_SLOTS:
    void reloadCategories();
@@ -139,6 +153,7 @@ Q_SIGNALS:
    void historyChanged          (            );
    ///Emitted when a new item is added to prevent full reload
    void newHistoryCall          ( Call* call );
+   void newBackendAdded(AbstractHistoryBackend* backend);
 };
 
 

@@ -47,6 +47,12 @@ CategorizedTreeView::~CategorizedTreeView()
    
 }
 
+void CategorizedTreeView::setModel ( QAbstractItemModel * model )
+{
+   connect(model,SIGNAL(rowsInserted(QModelIndex,int,int)),this,SLOT(slotExpandInserted(QModelIndex,int,int)));
+   QTreeView::setModel(model);
+}
+
 ///Do not draw branches
 void CategorizedTreeView::drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const
 {
@@ -280,8 +286,14 @@ void CategorizedTreeView::initSignals()
    }
 }
 
-
 void CategorizedTreeView::setDirty(const QRect &rect)
 {
    setDirtyRegion(rect);
+}
+
+void CategorizedTreeView::slotExpandInserted(const QModelIndex& parentIdx,int start, int end)
+{
+   for (int i=start;i<=end;i++) {
+      setExpanded(model()->index(i,0,parentIdx),true);
+   }
 }

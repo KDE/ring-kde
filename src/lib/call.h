@@ -31,13 +31,13 @@ class QTimer;
 #include "sflphone_const.h"
 #include "typedefs.h"
 #include "historytimecategorymodel.h"
-class AbstractContactBackend;
 class Account;
 class VideoRenderer;
 class InstantMessagingModel;
 class UserActionModel;
 class PhoneNumber;
 class TemporaryPhoneNumber;
+class AbstractHistoryBackend;
 
 class Call;
 
@@ -94,7 +94,6 @@ public:
       Department    = 112,
       Email         = 113,
       Organisation  = 114,
-      Codec         = 115,
       IsConference  = 116,
       Object        = 117,
       PhotoPtr      = 118,
@@ -268,7 +267,6 @@ public:
    Q_PROPERTY( bool               isHistory        READ isHistory                                 )
    Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
    Q_PROPERTY( uint               startTimeStamp   READ startTimeStamp                            )
-   Q_PROPERTY( QString            currentCodecName READ currentCodecName                          )
    Q_PROPERTY( bool               isSecure         READ isSecure                                  )
    Q_PROPERTY( bool               isConference     READ isConference                              )
    Q_PROPERTY( QString            confId           READ confId                                    )
@@ -281,6 +279,7 @@ public:
    Q_PROPERTY( QString            toHumanStateName READ toHumanStateName                          )
    Q_PROPERTY( bool               missed           READ isMissed                                  )
    Q_PROPERTY( Direction          direction        READ direction                                 )
+   Q_PROPERTY( bool               hasVideo         READ hasVideo                                  )
    Q_PROPERTY( Call::LegacyHistoryState historyState     READ historyState                        )
 
    //Read/write properties
@@ -296,9 +295,7 @@ public:
    static Call* buildIncomingCall (const QString& callId                                                       );
    static Call* buildRingingCall  (const QString& callId                                                       );
    static Call* buildHistoryCall  (const QMap<QString,QString>& hc                                             );
-   static Call* buildExistingCall (QString callId                                                              );
-   static void  setContactBackend (AbstractContactBackend* be                                                  );
-   static AbstractContactBackend* contactBackend ();
+   static Call* buildExistingCall (const QString& callId                                                       );
 
    //Static getters
    static Call::LegacyHistoryState historyStateFromType    ( const QString& type                                           );
@@ -316,7 +313,6 @@ public:
    bool                     isHistory        () const;
    time_t                   stopTimeStamp    () const;
    time_t                   startTimeStamp   () const;
-   QString                  currentCodecName () const;
    bool                     isSecure         () const;
    bool                     isConference     () const;
    const QString            confId           () const;
@@ -333,6 +329,8 @@ public:
    bool                     isHistory        ()      ;
    bool                     isMissed         () const;
    Call::Direction          direction        () const;
+   AbstractHistoryBackend*  backend          () const;
+   bool                     hasVideo         () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);
@@ -347,12 +345,13 @@ public:
    void setRecordingPath  ( const QString&     path       );
    void setPeerName       ( const QString&     name       );
    void setAccount        ( Account*           account    );
+   void setBackend        ( AbstractHistoryBackend* backend);
 
    //Mutators
    void appendText(const QString& str);
    void backspaceItemText();
    void reset();
-   void sendTextMessage(QString message);
+   void sendTextMessage(const QString& message);
 
 private:
 
@@ -371,19 +370,16 @@ private:
    bool                     m_isConference    ;
    Call::State              m_CurrentState    ;
    bool                     m_Recording       ;
-   static Call*             m_sSelectedCall   ;
    InstantMessagingModel*   m_pImModel        ;
    QTimer*                  m_pTimer          ;
    UserActionModel*         m_pUserActionModel;
    bool                     m_History         ;
    bool                     m_Missed          ;
    Call::Direction          m_Direction       ;
+   AbstractHistoryBackend*  m_pBackend        ;
 
    //Cache
    HistoryTimeCategoryModel::HistoryConst m_HistoryConst;
-
-   //Static attribute
-   static AbstractContactBackend* m_pContactBackend;
 
    //State machine
    /**
