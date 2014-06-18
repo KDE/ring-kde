@@ -26,6 +26,7 @@
 
 //KDE
 #include <KDebug>
+#include <KJob>
 #include <kdialog.h>
 #include <akonadi/control.h>
 #include <akonadi/collectionfilterproxymodel.h>

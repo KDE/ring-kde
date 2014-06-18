@@ -43,6 +43,7 @@ namespace Akonadi {
    class ItemFetchJob;
    class Monitor           ;
 }
+class KJob;
 
 //SFLPhone
 class Contact;
