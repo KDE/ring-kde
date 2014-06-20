@@ -17,8 +17,8 @@
  ***************************************************************************/
 #include "videodevicemodel.h"
 #include "videodevice.h"
-#include "call.h"
-#include "account.h"
+#include <call.h>
+#include <account.h>
 #include "videocodec.h"
 #include "../dbus/videomanager.h"
 

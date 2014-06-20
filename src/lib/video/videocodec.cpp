@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "videocodec.h"
 
-#include "account.h"
+#include <account.h>
 
 QHash<QString,VideoCodec*> VideoCodec::m_slCodecs;
 bool VideoCodec::m_sInit = false;

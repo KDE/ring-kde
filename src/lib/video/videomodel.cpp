@@ -23,8 +23,8 @@
 //SFLPhone
 #include "../dbus/videomanager.h"
 #include "videodevice.h"
-#include "call.h"
-#include "callmodel.h"
+#include <call.h>
+#include <callmodel.h>
 #include "videorenderer.h"
 #include "videodevicemodel.h"
 #include "videochannel.h"
