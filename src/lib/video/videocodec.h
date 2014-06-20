@@ -18,7 +18,7 @@
 #ifndef VIDEO_CODEC_H
 #define VIDEO_CODEC_H
 
-#include "typedefs.h"
+#include "../typedefs.h"
 #include <QtCore/QObject>
 
 class Account;

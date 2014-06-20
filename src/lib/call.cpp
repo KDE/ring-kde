@@ -373,6 +373,13 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
    return call;
 }
 
+/// aCall << Call::Action::HOLD
+Call* Call::operator<<( Call::Action& c)
+{
+   performAction(c);
+   return this;
+}
+
 ///Get the history state from the type (see Call.cpp header)
 Call::LegacyHistoryState Call::historyStateFromType(const QString& type)
 {
@@ -1103,8 +1110,7 @@ void Call::remove()
 ///Cancel this call
 void Call::cancel()
 {
-   Q_ASSERT_IS_IN_PROGRESS
-
+   //This one can be over if the peer server failed to comply with the correct sequence
    CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Canceling call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
    emit dialNumberChanged(QString());

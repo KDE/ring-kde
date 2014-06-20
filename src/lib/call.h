@@ -354,6 +354,9 @@ public:
    void reset();
    void sendTextMessage(const QString& message);
 
+   //syntactic sugar
+   Call* operator<<( Call::Action& c);
+
 private:
 
    //Attributes
