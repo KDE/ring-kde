@@ -82,7 +82,6 @@ void VideoWidget3::dragLeaveEvent( QDragLeaveEvent* e )
 
 void VideoWidget3::dragEnterEvent( QDragEnterEvent* e )
 {
-   qDebug() << "DRAG ENTER VIDEO" << e->mimeData()->formats();
    e->accept();
 }
 
@@ -93,8 +92,9 @@ void VideoWidget3::dragMoveEvent( QDragMoveEvent* e )
 
 void VideoWidget3::dropEvent( QDropEvent* e )
 {
-   qDebug() << "DROP ENTER VIDEO" << e->mimeData()->formats();
-   ExtendedVideoDeviceModel::instance()->setFile(QUrl(""));
+   if (e->mimeData()->hasFormat("text/uri-list")) {
+      ExtendedVideoDeviceModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
+   }
    e->accept();
 }
 

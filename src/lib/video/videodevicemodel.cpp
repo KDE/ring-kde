@@ -289,6 +289,7 @@ VideoDevice* ExtendedVideoDeviceModel::deviceAt(const QModelIndex& idx) const
 void ExtendedVideoDeviceModel::setFile(const QUrl& url)
 {
    m_CurrentFile = url;
+   switchTo(ExtendedDeviceList::FILE);
 }
 
 void ExtendedVideoDeviceModel::setDisplay(int index, QRect rect)
