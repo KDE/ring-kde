@@ -19,9 +19,8 @@
 
 
 CategorizedCompositeNode::CategorizedCompositeNode(CategorizedCompositeNode::Type _type) : m_type(_type)
-   ,m_DropState(0),m_pParent(nullptr)
+   ,m_DropState(0),m_pParent(nullptr),m_HoverState(0)
 {
-   
 }
 
 CategorizedCompositeNode::~CategorizedCompositeNode()

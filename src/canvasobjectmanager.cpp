@@ -38,7 +38,7 @@
 #include "sflphone.h"
 
 
-CanvasObjectManager::Object CanvasObjectManager::m_slEvents[EVENT_COUNT] = { CanvasObjectManager::Object::NoObject };
+CanvasObjectManager::Object CanvasObjectManager::m_slEvents[EVENT_COUNT+1] = { CanvasObjectManager::Object::NoObject };
 
 #define OBJ_DEF(obj) elements[static_cast<int>(obj)]
 #define _(NAME) CanvasObjectManager::Object##NAME::
@@ -80,7 +80,7 @@ void CanvasObjectManager::hInitEvents() {
 
 CanvasObjectManager::CanvasObjectManager(QObject* parent) : QObject(parent),m_DisableTransition(false),
 m_CurrentObject(CanvasObjectManager::Object::NoObject),m_NextObject(CanvasObjectManager::Object::NoObject)
-,m_pTimer(nullptr),m_CurrentState(ObjectState::NO_OBJECT),m_Minimized(false)
+,m_pTimer(nullptr),m_CurrentState(ObjectState::NO_OBJECT),m_Minimized(false),m_CurrentLifeCycle(ObjectLifeCycle::NONE)
 {
    hInitEvents();
 

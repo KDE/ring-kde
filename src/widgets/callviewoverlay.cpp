@@ -49,7 +49,7 @@
 
 ///Constructor
 CallViewOverlay::CallViewOverlay(QWidget* parent) : QWidget(parent),m_pIcon(0),m_pTimer(0),m_enabled(true),m_black("black"),
-m_step(0)
+m_step(0),m_pCurrentCall(nullptr)
 {
    m_black.setAlpha(200);
    if (parent)

@@ -58,7 +58,12 @@ ActionCollection* ActionCollection::instance() {
    return m_spInstance;
 }
 
-ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(nullptr)
+ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(nullptr),
+action_mailBox(nullptr), action_close(nullptr), action_quit(nullptr), action_displayVolumeControls(nullptr),
+action_displayDialpad(nullptr), action_displayMessageBox(nullptr), action_configureSflPhone(nullptr),
+action_configureShortcut(nullptr), action_accountCreationWizard(nullptr), action_pastenumber(nullptr),
+action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBookmarkDock(nullptr),
+action_editToolBar(nullptr), action_addContact(nullptr), action_screen(nullptr)
 {
    action_accept   = new ExtendedAction(this);
    action_refuse   = new ExtendedAction(this);

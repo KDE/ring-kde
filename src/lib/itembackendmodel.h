@@ -60,7 +60,7 @@ private:
     * index have to be implemented.
     */
    struct ProxyItem {
-      ProxyItem() : parent(0),col(1){}
+      ProxyItem() : parent(nullptr),col(1),row(0),backend(nullptr){}
       int row;
       int col;
       AbstractContactBackend* backend;

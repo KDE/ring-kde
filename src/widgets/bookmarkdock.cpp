@@ -49,7 +49,8 @@
 
 ///Constructor
 BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr),
-   m_pCallAgain(nullptr)
+m_pEditContact(nullptr), m_pCopy(nullptr), m_pEmail(nullptr), m_pAddPhone(nullptr), 
+m_pBookmark(nullptr), m_pCallAgain(nullptr)
 {
    setObjectName("bookmarkDock");
    QWidget* mainWidget     = new QWidget   ( this );

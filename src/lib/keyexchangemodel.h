@@ -86,7 +86,6 @@ public:
 
 
 private:
-   KeyExchangeModel::Type m_CurrentMethod;
    Account* m_pAccount;
    static const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , KeyExchangeModel::Options > availableOptions;
 

@@ -29,7 +29,7 @@
 AudioCodecModel::AudioCodecModel(Account* account) :
 QAbstractListModel(account?(QObject*)account:(QObject*)QCoreApplication::instance()),m_pAccount(account)
 {
-   setObjectName("AudioCodecModel: "+account->id());
+   setObjectName("AudioCodecModel: "+(account?account->id():"Unknown"));
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(AudioCodecModel::Role::ID        ,QByteArray("id"));
    roles.insert(AudioCodecModel::Role::NAME      ,QByteArray("name"));

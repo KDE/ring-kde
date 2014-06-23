@@ -84,7 +84,8 @@ SecurityValidationModel::flawSeverity = {{
 }};
 
 
-SecurityValidationModel::SecurityValidationModel(Account* account) : QAbstractListModel(account), m_pAccount(account)
+SecurityValidationModel::SecurityValidationModel(Account* account) : QAbstractListModel(account),
+m_pAccount(account),m_CurrentSecurityLevel(SecurityLevel::NONE)
 {
    
 }

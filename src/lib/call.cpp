@@ -752,7 +752,7 @@ void Call::setDialNumber(const PhoneNumber* number)
    if (m_CurrentState == Call::State::DIALING && !m_pDialNumber) {
       m_pDialNumber = new TemporaryPhoneNumber(number);
    }
-   if (m_pDialNumber)
+   if (m_pDialNumber && number)
       m_pDialNumber->setUri(number->uri());
    emit dialNumberChanged(m_pDialNumber->uri());
    emit changed();
@@ -1146,16 +1146,19 @@ void Call::call()
       this->m_Account = AccountListModel::currentAccount();
    }
    //Calls to empty URI should not be allowed, sflphoned will go crazy
-   if (m_pDialNumber->uri().isEmpty()) {
+   if ((!m_pDialNumber) || m_pDialNumber->uri().isEmpty()) {
       qDebug() << "Trying to call an empty URI";
       m_CurrentState = Call::State::FAILURE;
-      if (m_pDialNumber)
+      if (!m_pDialNumber) {
          emit dialNumberChanged(QString());
+      }
+      else {
+         delete m_pDialNumber;
+         m_pDialNumber = nullptr;
+      }
       setPeerName(tr("Failure"));
       emit stateChanged();
       emit changed();
-      delete m_pDialNumber;
-      m_pDialNumber = nullptr;
    }
    //Normal case
    else if(m_Account) {

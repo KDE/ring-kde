@@ -95,7 +95,6 @@ private:
    //Attributes
    static ContactModel* m_spInstance;
    QVector<AbstractContactBackend*> m_lBackends;
-   int m_UpdatesCounter;
    CommonItemBackendModel* m_pBackendModel;
 
    //Indexes

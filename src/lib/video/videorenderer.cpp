@@ -57,7 +57,7 @@ struct SHMHeader{
 
 ///Constructor
 VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const QSize& res): QObject(nullptr),
-   m_ShmPath(shmPath), fd(-1),
+   m_ShmPath(shmPath), fd(-1),m_fpsC(0),m_Fps(0),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
    m_isRendering(false),m_pTimer(nullptr),m_pSize(res),m_pMutex(new QMutex()),
    m_Id(id),m_FrameIdx(false),m_pSSMutex(new QMutex())

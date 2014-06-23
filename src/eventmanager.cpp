@@ -278,8 +278,10 @@ bool EventManager::eventFilter(QObject *obj, QEvent *event)
          break;
       case QEvent::DragMove:
          if (viewDragMoveEvent(static_cast<QDragMoveEvent*>(event))) return true;
+         break;
       case QEvent::DragLeave:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_LEAVE);
+         break;
    };
    #pragma GCC diagnostic pop
    return QObject::eventFilter(obj, event);

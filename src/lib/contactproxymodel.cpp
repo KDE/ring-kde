@@ -42,7 +42,7 @@ class TopLevelItem : public CategorizedCompositeNode {
       virtual ~TopLevelItem();
    private:
       explicit TopLevelItem(const QString& name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),m_Name(name),
-      m_lChildren(){
+      m_lChildren(),m_Index(-1){
          m_lChildren.reserve(32);
       }
       QVector<ContactTreeNode*> m_lChildren;
@@ -70,7 +70,7 @@ TopLevelItem::~TopLevelItem() {
 }
 
 ContactTreeNode::ContactTreeNode(Contact* ct, ContactProxyModel* parent) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),
-   m_pContact(ct),m_pParent3(nullptr)
+   m_pContact(ct),m_pParent3(nullptr),m_Index(-1)
 {
    m_pBinder = new ContactTreeBinder(parent,this);
 }

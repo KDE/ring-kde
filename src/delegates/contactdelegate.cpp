@@ -80,6 +80,9 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
    Q_ASSERT(index.isValid());
 
+   if (!m_pChildDelegate)
+      return;
+
    QRect fullRect = option.rect;
    fullRect.setHeight(fullRect.height()+index.model()->rowCount(index)*(m_pChildDelegate->sizeHint(option,index.child(0,0)).height()));
 

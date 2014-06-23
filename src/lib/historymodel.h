@@ -136,9 +136,7 @@ private:
    QList<TopLevelItem*>         m_lCategoryCounter ;
    QHash<int,TopLevelItem*>     m_hCategories      ;
    QHash<QString,TopLevelItem*> m_hCategoryByName  ;
-   bool                         m_isContactDateInit;
    int                          m_Role             ;
-   bool                         m_ShowAll          ;
    QStringList                  m_lMimes           ;
 
 public Q_SLOTS:

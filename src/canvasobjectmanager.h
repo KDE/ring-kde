@@ -181,7 +181,7 @@ private:
    CanvasObjectManager::ObjectLifeCycle m_CurrentLifeCycle   ;
    bool                                 m_DisableTransition  ;
    QTimer*                              m_pTimer             ;
-   static CanvasObjectManager::Object   m_slEvents[ EVENT_COUNT   ];
+   static CanvasObjectManager::Object   m_slEvents[ EVENT_COUNT+1 ];
    static const CanvasElement           elements  [ ELEMENT_COUNT ];
 
    //Helpers

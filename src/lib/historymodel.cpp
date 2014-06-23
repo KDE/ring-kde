@@ -52,7 +52,8 @@ HistoryModel* HistoryModel::m_spInstance    = nullptr;
 CallMap       HistoryModel::m_sHistoryCalls          ;
 
 HistoryModel::TopLevelItem::TopLevelItem(const QString& name, int index) : 
-   CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Index(index),m_NameStr(name)
+   CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),QObject(nullptr),m_Index(index),m_NameStr(name),
+   m_AbsoluteIndex(-1),modelRow(-1)
 {}
 
 HistoryModel::TopLevelItem::~TopLevelItem() {
@@ -69,7 +70,8 @@ QObject* HistoryModel::TopLevelItem::getSelf() const
    return const_cast<HistoryModel::TopLevelItem*>(this);
 }
 
-HistoryModel::HistoryItem::HistoryItem(Call* call) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL),m_pCall(call)
+HistoryModel::HistoryItem::HistoryItem(Call* call) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CALL),m_pCall(call),
+m_Index(0),m_pParent(nullptr),m_pNode(nullptr)
 {
    
 }
@@ -283,7 +285,6 @@ void HistoryModel::reloadCategories()
       delete item;
    }
    m_lCategoryCounter.clear();
-   m_isContactDateInit = false;
    foreach(Call* call, m_sHistoryCalls) {
       TopLevelItem* category = getCategory(call);
       if (category) {
