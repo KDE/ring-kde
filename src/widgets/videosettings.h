@@ -27,7 +27,7 @@ class VideoSettings : public QWidget, public Ui_VideoSettings
 {
    Q_OBJECT
 public:
-   VideoSettings(QWidget* parent);
+   explicit VideoSettings(QWidget* parent);
 
    void setDevice(VideoDevice* dev);
 
@@ -46,7 +46,5 @@ private Q_SLOTS:
 Q_SIGNALS:
    void settingsChanged();
 };
-
-
 
 #endif

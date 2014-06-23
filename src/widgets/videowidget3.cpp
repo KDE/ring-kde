@@ -22,6 +22,11 @@
 #include <QtOpenGL/QGLWidget>
 #include <QtOpenGL/QGLFormat>
 #include <QtGui/QResizeEvent>
+#include <QtGui/QDragEnterEvent>
+#include <QtGui/QDragLeaveEvent>
+#include <QtGui/QDragMoveEvent>
+#include <QtGui/QDropEvent>
+#include <QtCore/QMimeData>
 
 //System
 #include <math.h>
@@ -33,6 +38,7 @@
 #include "videotoolbar.h"
 #include "actioncollection.h"
 #include "extendedaction.h"
+#include <lib/video/videodevicemodel.h>
 
 
 #ifndef GL_MULTISAMPLE
@@ -61,11 +67,35 @@ VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
 
 //    m_pScene->setToolbar(tb);
    m_pScene->setSceneRect(0,0,width(),height());
+   setAcceptDrops(true);
 }
 
 VideoWidget3::~VideoWidget3()
 {
    
+}
+
+void VideoWidget3::dragLeaveEvent( QDragLeaveEvent* e )
+{
+   Q_UNUSED(e)
+}
+
+void VideoWidget3::dragEnterEvent( QDragEnterEvent* e )
+{
+   qDebug() << "DRAG ENTER VIDEO" << e->mimeData()->formats();
+   e->accept();
+}
+
+void VideoWidget3::dragMoveEvent( QDragMoveEvent* e )
+{
+   e->accept();
+}
+
+void VideoWidget3::dropEvent( QDropEvent* e )
+{
+   qDebug() << "DROP ENTER VIDEO" << e->mimeData()->formats();
+   ExtendedVideoDeviceModel::instance()->setFile(QUrl(""));
+   e->accept();
 }
 
 void VideoWidget3::addRenderer(VideoRenderer* renderer)

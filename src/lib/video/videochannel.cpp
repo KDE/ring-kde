@@ -96,3 +96,17 @@ VideoResolution* VideoChannel::activeResolution()
    return m_pCurrentResolution;
 }
 
+QString VideoChannel::name() const
+{
+   return m_Name;
+}
+
+QList<VideoResolution*> VideoChannel::validResolutions() const
+{
+   return m_lValidResolutions;
+}
+VideoDevice* VideoChannel::device() const
+{
+   return m_pDevice;
+}
+

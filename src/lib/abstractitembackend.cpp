@@ -72,3 +72,8 @@ template <class T> bool AbstractItemBackendInterface<T>::batchSave(const QList<T
    }
    return ret;
 }
+
+bool AbstractItemBackendBase::enable(bool)
+{
+   return false;
+}

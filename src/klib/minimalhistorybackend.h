@@ -33,10 +33,10 @@ public:
    virtual bool save(const Call* call);
    virtual bool append(const Call* item);
 
-   virtual QString name () const;
-   virtual QVariant icon() const;
-   virtual bool isEnabled() const;
-   virtual QByteArray  id() const;
+   virtual QString    name     () const;
+   virtual QVariant   icon     () const;
+   virtual bool       isEnabled() const;
+   virtual QByteArray id       () const;
 
    virtual SupportedFeatures  supportedFeatures() const;
 

@@ -122,12 +122,9 @@ bool AkonadiBackend::load()
    m_pMonitor = new Akonadi::Monitor(this);
    m_pMonitor->fetchCollectionStatistics(false);
    m_pMonitor->setItemFetchScope(scope);
-   connect(m_pMonitor,SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)),
-      this,SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
-   connect(m_pMonitor,SIGNAL(itemChanged(const Akonadi::Item,const QSet<QByteArray>)),
-      this,SLOT(slotItemChanged(const Akonadi::Item,const QSet<QByteArray>)));
-   connect(m_pMonitor,SIGNAL(itemRemoved(const Akonadi::Item)),
-      this,SLOT(slotItemRemoved(const Akonadi::Item)));
+   connect(m_pMonitor,SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)),this,SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
+   connect(m_pMonitor,SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)),this,SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
+   connect(m_pMonitor,SIGNAL(itemRemoved(Akonadi::Item)),this,SLOT(slotItemRemoved(Akonadi::Item)));
 
 
    m_pMonitor->setCollectionMonitored(m_Coll,true);

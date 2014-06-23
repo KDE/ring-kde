@@ -19,8 +19,8 @@
 
 //Qt
 #include <QtCore/QDebug>
+#include <QtCore/QMutex>
 #include <QtOpenGL/QGLWidget>
-#include <QtOpenGL>
 
 //System
 #include <math.h>

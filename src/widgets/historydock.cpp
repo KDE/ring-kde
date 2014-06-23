@@ -453,6 +453,8 @@ void HistoryDock::slotBookmark()
 
 void HistoryDock::slotDoubleClick(const QModelIndex& index)
 {
+   if (!index.isValid())
+      return;
    QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;

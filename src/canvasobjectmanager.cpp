@@ -397,7 +397,7 @@ void CanvasObjectManager::slotMinimized(bool isMinimized)
 
 bool CanvasObjectManager::testEventToEvent() const
 {
-   /* This test is to validate the the event table is correctly generated
+   /* This test is to validate the event table is correctly generated
     * from the structured elements transition table ("elements"). Each
     * event can be mapped to ONE AND ONLY ONE canvas object
     *

@@ -75,7 +75,7 @@ Categories=Network;Telephony;
 
 [Protocol]
 exec=sflphone-client-kde --place-call "%u"
-protocol=sip
+X-protocol=sip
 input=none
 output=none
 helper=true

@@ -31,7 +31,7 @@
 
 class ColorVisitor : public AccountListColorVisitor {
 public:
-   ColorVisitor(QPalette pal);
+   explicit ColorVisitor(QPalette pal);
 
    virtual QVariant getColor(const Account* a);
 

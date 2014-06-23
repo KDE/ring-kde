@@ -30,9 +30,7 @@ class LIB_EXPORT VideoRate
 
 public:
    virtual ~VideoRate() {}
-   QString name() const {
-      return m_Name;
-   }
+   QString name() const;
    int relativeIndex();
 
 private:

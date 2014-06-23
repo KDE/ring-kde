@@ -35,7 +35,7 @@ public:
       NONE       ,
    };
 
-   Certificate(Certificate::Type type ,const QObject* parent = nullptr);
+   explicit Certificate(Certificate::Type type ,const QObject* parent = nullptr);
 
    //Getter
    QUrl path() const;

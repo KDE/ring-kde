@@ -98,13 +98,8 @@ public:
 
    VideoDevice* activeDevice() const;
    int activeIndex() const;
-   VideoDevice* getDevice(const QString& devId) const
-   {
-      return m_hDevices[devId];
-   }
-   QList<VideoDevice*> devices() const {
-      return m_lDevices;
-   }
+   VideoDevice* getDevice(const QString& devId) const;
+   QList<VideoDevice*> devices() const;
 
 private:
    //Attrbutes

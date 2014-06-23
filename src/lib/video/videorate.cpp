@@ -24,3 +24,8 @@ int VideoRate::relativeIndex()
 {
    return VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().indexOf(this);
 }
+
+QString VideoRate::name() const
+{
+   return m_Name;
+}

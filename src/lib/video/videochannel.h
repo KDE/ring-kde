@@ -30,16 +30,10 @@ class LIB_EXPORT VideoChannel : public QAbstractListModel
    //Only VideoDevice can add resolutions
    friend class VideoDevice;
 public:
-   QString name() const {
-      return m_Name;
-   }
+   QString name() const;
    VideoResolution* activeResolution();
-   QList<VideoResolution*> validResolutions() const {
-      return m_lValidResolutions;
-   }
-   VideoDevice* device() const {
-      return m_pDevice;
-   }
+   QList<VideoResolution*> validResolutions() const;
+   VideoDevice* device() const;
    int relativeIndex();
 
    bool setActiveResolution(VideoResolution* res);

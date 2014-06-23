@@ -102,7 +102,7 @@ public:
    static const QString messages[enum_class_size<SecurityFlaw>()];
 
    //Constructor
-   SecurityValidationModel(Account* account);
+   explicit SecurityValidationModel(Account* account);
    virtual ~SecurityValidationModel();
 
 

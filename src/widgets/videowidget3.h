@@ -24,6 +24,10 @@
 
 //Qt
 class QGLWidget;
+class QDragLeaveEvent;
+class QDragEnterEvent;
+class QDragMoveEvent;
+class QDropEvent;
 
 //SFLPhone
 class VideoRenderer;
@@ -42,6 +46,10 @@ public:
 
 protected:
    virtual void resizeEvent(QResizeEvent* event);
+   virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
+   virtual void dragEnterEvent   ( QDragEnterEvent   * e );
+   virtual void dragMoveEvent    ( QDragMoveEvent    * e );
+   virtual void dropEvent        ( QDropEvent        * e );
 
 private:
    VideoScene*          m_pScene  ;

@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef ITEMBACKENDMODEL_H
-#define ITEMBACKENDMODEL_H
+#ifndef COMMONITEMBACKENDMODEL_H
+#define COMMONITEMBACKENDMODEL_H
 
 #include "typedefs.h"
 #include "contact.h"
@@ -32,7 +32,7 @@ class LIB_EXPORT CommonItemBackendModel : public QAbstractItemModel
 {
    Q_OBJECT
 public:
-   CommonItemBackendModel(QObject* parent = nullptr);
+   explicit CommonItemBackendModel(QObject* parent = nullptr);
    ~CommonItemBackendModel();
 
    QVariant data                (const QModelIndex& index, int role = Qt::DisplayRole      ) const;

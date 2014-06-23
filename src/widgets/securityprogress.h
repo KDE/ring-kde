@@ -33,7 +33,7 @@ class SecurityProgress;
 class IssuesIcon : public QWidget {
    Q_OBJECT
 public:
-   IssuesIcon(QWidget* parent = nullptr);
+   explicit IssuesIcon(QWidget* parent = nullptr);
    ~IssuesIcon();
 
    //Setter

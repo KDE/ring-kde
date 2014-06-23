@@ -50,17 +50,17 @@ private slots:
 private:
    QString getMapContent(AutoCompletionTest::NbWrap* map)
    {
-      QString ret ="'";
+      QString ret ='\'';
       foreach(PhoneDirectoryModel::NumberWrapper* wrap,*map)
-         ret += " " + wrap->numbers[0]->uri();
-      return ret+"'";
+         ret += ' ' + wrap->numbers[0]->uri();
+      return ret+'\'';
    }
    QString getSetContent(QSet<PhoneNumber*> set)
    {
-      QString ret ="'";
+      QString ret ='\'';
       foreach(PhoneNumber* n,set)
-         ret += " " + n->uri();
-      return ret+"'";
+         ret += ' ' + n->uri();
+      return ret+'\'';
    }
 };
 Q_DECLARE_METATYPE(AutoCompletionTest::NbWrap*)

@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef ABSTRACTCONTACTBACKEND_H
-#define ABSTRACTCONTACTBACKEND_H
+#ifndef ABSTRACTITEMBACKENDBASE_H
+#define ABSTRACTITEMBACKENDBASE_H
 
 #include <QObject>
 #include <QHash>
@@ -50,14 +50,14 @@ public:
       IMPORT      = 0x1 <<  9, /* Import items from an external source, details defined by each backends  */
       ENABLEABLE  = 0x1 << 10, /*Can be enabled, I know, it is not a word, but Java use it too            */
       DISABLEABLE = 0x1 << 11, /*Can be disabled, I know, it is not a word, but Java use it too           */
-      MANAGEABLE  = 0x1 << 12, /* Can be managed the the config GUI                                       */
+      MANAGEABLE  = 0x1 << 12, /* Can be managed the config GUI                                       */
    };
 
    //Management methods
    virtual QString name () const =0;
    virtual QVariant icon() const =0;
    virtual bool isEnabled() const = 0;
-   virtual bool enable (bool){return false;};
+   virtual bool enable (bool);
    virtual QByteArray  id() const = 0;
 
    virtual SupportedFeatures  supportedFeatures() const = 0;

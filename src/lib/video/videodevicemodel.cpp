@@ -296,3 +296,13 @@ void ExtendedVideoDeviceModel::setDisplay(int index, QRect rect)
    m_Display.index  = index ;
    m_Display.rect   = rect  ;
 }
+
+VideoDevice* VideoDeviceModel::getDevice(const QString& devId) const
+{
+   return m_hDevices[devId];
+}
+
+QList<VideoDevice*> VideoDeviceModel::devices() const
+{
+   return m_lDevices;
+}

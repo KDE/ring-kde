@@ -100,4 +100,3 @@ QByteArray TransitionalContactBackend::id() const
 {
    return  "trcb";
 }
-
