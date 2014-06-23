@@ -37,6 +37,21 @@ public:
    //Destructor
    ~DlgHooks();
 
+   bool hasChanged();
+
+private:
+   bool m_Changed;
+
+public Q_SLOTS:
+   void updateWidgets();
+   void updateSettings();
+
+private Q_SLOTS:
+   void setChanged();
+
+Q_SIGNALS:
+   void updateButtons();
+
 };
 
 #endif

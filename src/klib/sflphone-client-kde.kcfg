@@ -196,7 +196,7 @@
 
     <!-- Hooks Settings -->
 
-    <entry name="enableHooksSIP" type="Bool">
+<!--    <entry name="enableHooksSIP" type="Bool">
     	<label>Defines whether to enable hooks for SIP accounts.</label>
     </entry>
     <entry name="enableHooksIAX" type="Bool">
@@ -213,7 +213,7 @@
     </entry>
     <entry name="prepend" type="String">
     	<label>Defines the prefix to add.</label>
-    </entry>
+    </entry>-->
 
     <!-- Accessibility Settings -->
     <entry name="enableVoiceFeedback" type="Bool">

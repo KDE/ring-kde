@@ -106,6 +106,7 @@ set( qtsflphone_LIB_SRCS
   #Other
   sflphone_const.h
   categorizedcompositenode.cpp
+  hookmanager.cpp
 )
 
 set( qtsflphone_LIB_HDRS
@@ -141,6 +142,7 @@ set( qtsflphone_LIB_HDRS
   transitionalcontactbackend.h
   abstractitembackend.h
   itembackendmodel.h
+  hookmanager.h
   video/videodevice.h
   video/videodevicemodel.h
   video/videocodec.h

@@ -101,6 +101,7 @@ void ConfigurationDialog::updateWidgets()
    dlgAddressBook->updateWidgets  ();
    dlgAccessibility->updateWidgets();
    dlgPresence->updateWidgets     ();
+   dlgHooks->updateWidgets        ();
    #ifdef ENABLE_VIDEO
    dlgVideo->updateWidgets        ();
    #endif
@@ -116,6 +117,7 @@ void ConfigurationDialog::updateSettings()
    dlgAccessibility->updateSettings();
    dlgDisplay->updateSettings      ();
    dlgPresence->updateSettings     ();
+   dlgHooks->updateSettings        ();
    #ifdef ENABLE_VIDEO
    dlgVideo->updateSettings        ();
    #endif
@@ -136,6 +138,7 @@ bool ConfigurationDialog::hasChanged()
             || (dlgDisplay       && dlgDisplay->hasChanged()       )
             || (dlgAddressBook   && dlgAddressBook->hasChanged()   )
             || (dlgAccessibility && dlgAccessibility->hasChanged() )
+            || (dlgAccessibility && dlgHooks->hasChanged()         )
 #ifdef ENABLE_VIDEO
             || (dlgVideo         && dlgVideo->hasChanged()         )
 #endif
