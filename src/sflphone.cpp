@@ -285,10 +285,12 @@ SFLPhone::SFLPhone(QWidget *parent)
    m_pPresent->setAutoRaise(true);
    m_pPresent->setText("Online");
    m_pPresent->setCheckable(true);
+   m_pPresent->setVisible(AccountListModel::instance()->isPresenceEnabled() && AccountListModel::instance()->isPresencePublishSupported());
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
+   connect(AccountListModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
 
    m_pPresenceDock = new QDockWidget(this);
    m_pPresenceDock->setObjectName("presence-dock");
@@ -511,6 +513,12 @@ void SFLPhone::on_m_pView_incomingCall(const Call* call)
       else
          KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()));
    }
+}
+
+///Hide or show the statusbar presence widget
+void SFLPhone::slotPresenceEnabled(bool state)
+{
+   m_pPresent->setVisible(state && AccountListModel::instance()->isPresencePublishSupported());
 }
 
 ///Change current account

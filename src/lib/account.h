@@ -108,6 +108,7 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(QString        presenceMessage              READ presenceMessage                                                    )
    Q_PROPERTY(bool           supportPresencePublish       READ supportPresencePublish                                             )
    Q_PROPERTY(bool           supportPresenceSubscribe     READ supportPresenceSubscribe                                           )
+   Q_PROPERTY(bool           presenceEnabled              READ presenceEnabled               WRITE setPresenceEnabled NOTIFY presenceEnabledChanged)
 
    public:
       ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
@@ -476,12 +477,14 @@ class LIB_EXPORT Account : public QObject {
 
 
    Q_SIGNALS:
-      ///The account state (Invalif,Trying,Registered) changed
+      ///The account state (Invalid,Trying,Registered) changed
       void stateChanged(QString state);
       void detailChanged(Account* a,QString name,QString newVal, QString oldVal);
       void changed(Account* a);
       ///The alias changed, take effect instantaneously
       void aliasChanged(const QString&);
+      ///The presence support changed
+      void presenceEnabledChanged(bool);
 };
 // Q_DISABLE_COPY(Account)
 Q_DECLARE_METATYPE(Account*)

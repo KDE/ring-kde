@@ -130,6 +130,7 @@ private Q_SLOTS:
    void updateTabIcons                           (                                      );
    void updatePresence                           ( const QString& status                );
    void hidePresenceDock                         (                                      );
+   void slotPresenceEnabled                      ( bool state                           );
    #ifdef ENABLE_VIDEO
    void displayVideoDock                         ( VideoRenderer* r                     );
    #endif

@@ -188,6 +188,7 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
             Account* acc = Account::buildExistingAccountFromId(accountIds[i]);
             m_lAccounts.insert(i, acc);
             connect(acc,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
+            connect(acc,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
             emit dataChanged(index(i,0),index(size()-1));
             emit layoutChanged();
          }
@@ -250,6 +251,13 @@ void AccountListModel::slotVoiceMailNotify(const QString &accountID, int count)
    }
 }
 
+///Propagate account presence state
+void AccountListModel::slotAccountPresenceEnabledChanged(bool state)
+{
+   Q_UNUSED(state)
+   emit presenceEnabledChanged(isPresenceEnabled());
+}
+
 ///Update accounts
 void AccountListModel::update()
 {
@@ -273,6 +281,7 @@ void AccountListModel::update()
          m_lAccounts.insert(i, a);
          emit dataChanged(index(i,0),index(size()-1,0));
          connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
+         connect(a,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
          emit layoutChanged();
       }
    }
@@ -291,6 +300,7 @@ void AccountListModel::updateAccounts()
          Account* a = Account::buildExistingAccountFromId(accountIds[i]);
          m_lAccounts += a;
          connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
+         connect(a,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
          emit dataChanged(index(size()-1,0),index(size()-1,0));
       }
       else {
@@ -536,6 +546,33 @@ QString AccountListModel::getSimilarAliasIndex(const QString& alias)
    return QString();
 }
 
+bool AccountListModel::isPresenceEnabled() const
+{
+   foreach(Account* a,m_lAccounts) {
+      if (a->presenceEnabled())
+         return true;
+   }
+   return false;
+}
+
+bool AccountListModel::isPresencePublishSupported() const
+{
+   foreach(Account* a,m_lAccounts) {
+      if (a->supportPresencePublish())
+         return true;
+   }
+   return false;
+}
+
+bool AccountListModel::isPresenceSubscribeSupported() const
+{
+   foreach(Account* a,m_lAccounts) {
+      if (a->supportPresenceSubscribe())
+         return true;
+   }
+   return false;
+}
+
 
 /*****************************************************************************
  *                                                                           *
@@ -549,6 +586,7 @@ Account* AccountListModel::addAccount(const QString& alias)
    Account* a = Account::buildNewAccountFromAlias(alias);
    connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
    m_lAccounts += a;
+   connect(a,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
 
    emit dataChanged(index(m_lAccounts.size()-1,0), index(m_lAccounts.size()-1,0));
    return a;

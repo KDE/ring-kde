@@ -80,6 +80,7 @@ private:
    DlgAccessibility* dlgAccessibility;
    DlgVideo*         dlgVideo        ;
    DlgPresence*      dlgPresence     ;
+   KPageWidgetItem*  m_pPresPage     ;
 
 public:
    explicit ConfigurationDialog(SFLPhoneView *parent = nullptr);
@@ -131,6 +132,8 @@ private Q_SLOTS:
     *   Should be removed when accounts are managed by kconfig.
     */
    void applyCustomSettings();
+
+   void slotPresenceEnabled(bool);
 
 
 Q_SIGNALS:

@@ -293,10 +293,10 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
 
    //Too bad, lets create one
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
-   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
-   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->m_Index = m_lNumbers.size();
    m_lNumbers << number;
+   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
 
    const QString hn = number->hostname();
 
@@ -339,11 +339,11 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
 
    //Create the number
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
-   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
-   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
    number->m_Index = m_lNumbers.size();
    m_lNumbers << number;
+   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    if (!wrap) {
       wrap = new NumberWrapper();
       m_hDirectory[strippedUri] = wrap;
@@ -379,12 +379,12 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
 
    //Create the number
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
-   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
-   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    number->setAccount(account);
    number->setContact(contact);
    number->m_Index = m_lNumbers.size();
    m_lNumbers << number;
+   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    if (!wrap) {
       wrap = new NumberWrapper();
       m_hDirectory[strippedUri] = wrap;
@@ -471,9 +471,9 @@ void PhoneDirectoryModel::slotChanged()
       const int idx = number->m_Index;
 #ifndef NDEBUG
       if (idx<0)
-         qDebug() << "Invalid slotChanged() index!";
+         qDebug() << "Invalid slotChanged() index!" << idx;
 #endif
-      emit dataChanged(index(idx,0),index(idx,5));
+      emit dataChanged(index(idx,0),index(idx,static_cast<int>(Columns::UID)));
    }
 }
 

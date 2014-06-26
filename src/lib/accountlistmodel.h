@@ -40,6 +40,9 @@ class LIB_EXPORT AccountListModel : public QAbstractListModel {
 
 public:
    Q_PROPERTY(Account* ip2ip READ ip2ip)
+   Q_PROPERTY(bool presenceEnabled   READ isPresenceEnabled   )
+   Q_PROPERTY(bool presencePublishSupported READ isPresencePublishSupported )
+   Q_PROPERTY(bool presenceSubscribeSupported READ isPresenceSubscribeSupported )
 
    friend class Account;
    //Static getter and destructor
@@ -47,18 +50,21 @@ public:
    static void destroy();
 
    //Getters
-   const QVector<Account*>&    getAccounts            (                         );
-   QVector<Account*>           getAccountsByState     ( const QString& state    );
-   Q_INVOKABLE Account*        getAccountById         ( const QString& id       ) const;
-   Q_INVOKABLE QList<Account*> getAccountsByHostNames (const QString& hostName  ) const;
-   int                         size                   (                         ) const;
-   Account*                    firstRegisteredAccount (                         ) const;
-   Account*                    getDefaultAccount      (                         ) const;
-   static Account*             currentAccount         (                         );
-   Account*                    getAccountByModelIndex ( const QModelIndex& item ) const;
-   static QString              getSimilarAliasIndex   ( const QString& alias    );
-   AccountListColorVisitor*    colorVisitor           (                         );
-   Account*                    ip2ip                  (                         ) const;
+   const QVector<Account*>&    getAccounts                 (                         );
+   QVector<Account*>           getAccountsByState          ( const QString& state    );
+   Q_INVOKABLE Account*        getAccountById              ( const QString& id       ) const;
+   Q_INVOKABLE QList<Account*> getAccountsByHostNames      (const QString& hostName  ) const;
+   int                         size                        (                         ) const;
+   Account*                    firstRegisteredAccount      (                         ) const;
+   Account*                    getDefaultAccount           (                         ) const;
+   static Account*             currentAccount              (                         );
+   Account*                    getAccountByModelIndex      ( const QModelIndex& item ) const;
+   static QString              getSimilarAliasIndex        ( const QString& alias    );
+   AccountListColorVisitor*    colorVisitor                (                         );
+   Account*                    ip2ip                       (                         ) const;
+   bool                        isPresenceEnabled           (                         ) const;
+   bool                        isPresencePublishSupported  (                         ) const;
+   bool                        isPresenceSubscribeSupported(                         ) const;
 
    //Abstract model accessors
    QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -110,6 +116,7 @@ private Q_SLOTS:
    void accountChanged(const QString& account,const QString& state, int code);
    void accountChanged(Account* a);
    void slotVoiceMailNotify( const QString& accountID , int count );
+   void slotAccountPresenceEnabledChanged(bool state);
 
 Q_SIGNALS:
    ///The account list changed
@@ -128,6 +135,8 @@ Q_SIGNALS:
    void badGateway();
    ///Emitted when a new voice mail is available
    void voiceMailNotify(Account* account, int count);
+   ///Propagate Account::presenceEnabledChanged
+   void presenceEnabledChanged(bool);
 };
 Q_DECLARE_METATYPE(AccountListModel*)
 

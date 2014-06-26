@@ -135,7 +135,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    connect(m_pVerifyClient,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
    connect(m_pReqTLS,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
 
-   loadAccountList();
+//    loadAccountList();
    accountListHasChanged = false;
 
    combo_tls_method->setModel(TlsMethodModel::instance());

@@ -1059,6 +1059,7 @@ void Account::setRingtoneEnabled(bool detail)
 void Account::setPresenceEnabled(bool enable)
 {
    setAccountDetail(Account::MapField::Presence::ENABLE, (enable)TO_BOOL);
+   emit presenceEnabledChanged(enable);
 }
 
 ///Set the DTMF type

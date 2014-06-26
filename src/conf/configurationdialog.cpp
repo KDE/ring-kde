@@ -36,6 +36,7 @@
 #include "dlgpresence.h"
 
 #include "lib/sflphone_const.h"
+#include "lib/accountlistmodel.h"
 
 typedef  QWidget* QWidgetPtr;
 
@@ -92,7 +93,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //Account
    dlgHolder[ConfigurationDialog::Page::Accounts]   = new PlaceHolderWidget(Page::Accounts,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgAccounts      = new DlgAccounts      (dialog);
+      dialog->dlgAccounts = new DlgAccounts(dialog);
       return dialog->dlgAccounts;
    });
    auto accDlg = addPage( dlgHolder[ConfigurationDialog::Page::Accounts]      , i18n("Accounts")                     , "user-identity"                     );
@@ -101,7 +102,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //General
    dlgHolder[ConfigurationDialog::Page::General]   = new PlaceHolderWidget(Page::General,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgGeneral       = new DlgGeneral       (dialog);
+      dialog->dlgGeneral = new DlgGeneral(dialog);
       connect(dialog->dlgGeneral, SIGNAL(clearCallHistoryAsked()), dialog, SIGNAL(clearCallHistoryAsked()));
       return dialog->dlgGeneral;
    });
@@ -110,7 +111,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //Display
    dlgHolder[ConfigurationDialog::Page::Display]    = new PlaceHolderWidget(Page::Display,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgDisplay       = new DlgDisplay       (dialog);
+      dialog->dlgDisplay = new DlgDisplay(dialog);
       return dialog->dlgDisplay;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Display]       , i18nc("User interterface settings"   ,"Display"), "applications-graphics"  )
@@ -118,7 +119,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //Audio
    dlgHolder[ConfigurationDialog::Page::Audio]      = new PlaceHolderWidget(Page::Audio,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgAudio         = new DlgAudio         (dialog);
+      dialog->dlgAudio = new DlgAudio(dialog);
       return dialog->dlgAudio;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Audio]         , i18n("Audio")                        , "audio-headset"                     )
@@ -126,7 +127,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //AddressBook
    dlgHolder[ConfigurationDialog::Page::AddressBook]= new PlaceHolderWidget(Page::AddressBook,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgAddressBook   = new DlgAddressBook   (dialog);
+      dialog->dlgAddressBook = new DlgAddressBook(dialog);
       return dialog->dlgAddressBook;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::AddressBook]   , i18n("Address Book")                 , "x-office-address-book"             )
@@ -134,7 +135,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //Hooks
    dlgHolder[ConfigurationDialog::Page::Hooks]      = new PlaceHolderWidget(Page::Hooks,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgHooks         = new DlgHooks         (dialog);
+      dialog->dlgHooks = new DlgHooks(dialog);
       return dialog->dlgHooks;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Hooks]         , i18n("Hooks")                        , "insert-link"                       )
@@ -151,7 +152,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //Video
 #ifdef ENABLE_VIDEO
    dlgHolder[ConfigurationDialog::Page::Video]      = new PlaceHolderWidget(Page::Video,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgVideo         = new DlgVideo         (dialog);
+      dialog->dlgVideo = new DlgVideo(dialog);
       return dialog->dlgVideo;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Video]         , i18nc("Video conversation","Video")  , "camera-web"                        )
@@ -160,12 +161,13 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //Presence
    dlgHolder[ConfigurationDialog::Page::Presence]   = new PlaceHolderWidget(Page::Presence,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgPresence      = new DlgPresence      (dialog);
+      dialog->dlgPresence = new DlgPresence(dialog);
       return dialog->dlgPresence;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "sflphone-client-kde/presence-icon.svg"))
-      ->setProperty("id",ConfigurationDialog::Page::Presence);
-
+   m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "sflphone-client-kde/presence-icon.svg"));
+   m_pPresPage->setProperty("id",ConfigurationDialog::Page::Presence);
+   m_pPresPage->setEnabled(AccountListModel::instance()->isPresencePublishSupported() && AccountListModel::instance()->isPresenceEnabled());
+   connect(AccountListModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
 
    //Connect everything
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
@@ -281,6 +283,12 @@ void ConfigurationDialog::reload()
    ConfigurationSkeleton::self()->readConfig();
    updateWidgets();
    updateButtons();
+}
+
+
+void ConfigurationDialog::slotPresenceEnabled(bool state)
+{
+   m_pPresPage->setEnabled(state && AccountListModel::instance()->isPresencePublishSupported());
 }
 
 #undef GUARD
