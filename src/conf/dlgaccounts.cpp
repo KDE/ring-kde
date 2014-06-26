@@ -960,10 +960,10 @@ void DlgAccounts::updateSecurityValidation()
    foreach(const Flaw* flaw, currentAccount()->securityValidationModel()->currentFlaws()) {
       switch (flaw->flaw()) {
          case SecurityValidationModel::SecurityFlaw::SRTP_DISABLED:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::TLS_DISABLED:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::CERTIFICATE_EXPIRED:
             addFlawToCertificateField(flaw);
@@ -981,19 +981,19 @@ void DlgAccounts::updateSecurityValidation()
             addFlawToCertificateField(flaw);
             break;
          case SecurityValidationModel::SecurityFlaw::CERTIFICATE_MISMATCH:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_PERMISSION:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_FOLDER:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_LOCATION:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::OUTGOING_SERVER_MISMATCH:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::VERIFY_INCOMING_DISABLED:
             m_pVerifyServer->addFlaw(flaw);
@@ -1002,7 +1002,7 @@ void DlgAccounts::updateSecurityValidation()
             m_pVerifyClient->addFlaw(flaw);
             break;
          case SecurityValidationModel::SecurityFlaw::REQUIRE_CERTIFICATE_DISABLED:
-            
+
             break;
          case SecurityValidationModel::SecurityFlaw::MISSING_CERTIFICATE:
             addFlawToCertificateField(flaw);

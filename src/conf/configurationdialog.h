@@ -39,6 +39,9 @@ class DlgVideo;
 class SFLPhoneView;
 class DlgPresence;
 
+//Private
+class PlaceHolderWidget;
+
 /**
    @author Jérémy Quentin <jeremy.quentin@gmail.com>
    This class represents the config dialog for sflphone.
@@ -53,7 +56,21 @@ class DlgPresence;
 class ConfigurationDialog : public KConfigDialog
 {
 Q_OBJECT
+friend class PlaceHolderWidget;
 private:
+   enum Page {
+      General,
+      Display,
+      Accounts,
+      Audio,
+      AddressBook,
+      Hooks,
+      Accessibility,
+      Video,
+      Presence,
+   };
+   PlaceHolderWidget* dlgHolder[Page::Presence+1];
+
    DlgGeneral*       dlgGeneral      ;
    DlgDisplay*       dlgDisplay      ;
    DlgAccounts*      dlgAccounts     ;
