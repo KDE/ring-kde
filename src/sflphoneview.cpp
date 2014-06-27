@@ -385,8 +385,8 @@ void SFLPhoneView::updateWindowCallState()
          int activeCallCounter=0;
          foreach (Call* call2, CallModel::instance()->getCallList()) {
             if (dynamic_cast<Call*>(call2)) {
-               activeCallCounter += (call2->state() == Call::State::CURRENT || call2->state() == Call::State::HOLD);
-               activeCallCounter -= (call2->state() == Call::State::INCOMING || call2->state() ==Call::State::RINGING)*1000;
+               activeCallCounter += (call2->lifeCycleState() == Call::LifeCycleState::PROGRESS)?1:0;
+               activeCallCounter -= (call2->lifeCycleState() == Call::LifeCycleState::INITIALIZATION)*1000;
             }
          }
          if (activeCallCounter >= 2 && !CallModel::instance()->getConferenceList().size()) {

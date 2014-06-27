@@ -290,6 +290,7 @@ void ActionCollection::accept() //TODO dead code?
    }
    else {
       const Call::State state = call->state();
+      //TODO port to lifeCycle code
       if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD
          || state == Call::State::BUSY || state == Call::State::FAILURE || state == Call::State::ERROR) {
          kDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";

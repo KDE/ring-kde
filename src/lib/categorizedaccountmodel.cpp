@@ -53,9 +53,13 @@ QModelIndex CategorizedAccountModel::mapToSource(const QModelIndex& idx) const
       case Categories::IP2IP:
          return AccountListModel::instance()->ip2ip()->index();
          break;
-      case Categories::SERVER:
+      case Categories::SERVER: {
          const QModelIndex& ip2ipIdx = AccountListModel::instance()->ip2ip()->index();
          return AccountListModel::instance()->index((ip2ipIdx.row() < idx.row())?idx.row()+1:idx.row(),0);
+      }
+         break;
+      default:
+         qDebug() << "The account list has too many top levels";
          break;
    };
    return QModelIndex();

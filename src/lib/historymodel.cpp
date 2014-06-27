@@ -201,7 +201,7 @@ const CallMap HistoryModel::getHistoryCalls() const
 ///Add to history
 void HistoryModel::add(Call* call)
 {
-   if (!call || call->state() != Call::State::OVER || !call->startTimeStamp()) {
+   if (!call || call->lifeCycleState() != Call::LifeCycleState::FINISHED || !call->startTimeStamp()) {
       return;
    }
 

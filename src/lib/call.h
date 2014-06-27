@@ -158,8 +158,8 @@ public:
 
    ///@enum Direction If the user have been called or have called
    enum class Direction : int {
-      INCOMING,
-      OUTGOING,
+      INCOMING, /** Someone has called      */
+      OUTGOING, /** The user called someone */
    };
    Q_ENUMS(Direction)
 
@@ -212,7 +212,6 @@ public:
       constexpr static const char* TIMESTAMP_STOP    = "timestamp_stop" ;
       constexpr static const char* MISSED            = "missed"         ;
       constexpr static const char* DIRECTION         = "direction"      ;
-
    };
 
    ///"getCallDetails()" fields
@@ -227,6 +226,13 @@ public:
       constexpr static const char* CONF_ID           = "CONF_ID"        ;
    };
 
+   ///"getConferenceDetails()" fields
+   class ConfDetailsMapFields {
+   public:
+      constexpr static const char* CONF_STATE        = "CONF_STATE"     ;
+      constexpr static const char* CONFID            = "CONFID"         ;
+   };
+
    ///If the call is incoming or outgoing
    class CallType {
    public:
@@ -234,7 +240,7 @@ public:
       constexpr static const char* OUTGOING = "1";
    };
 
-   /** @enum Call::DaemonState 
+   /** @enum Call::DaemonState
    * This enum have all the states a call can take for the daemon.
    */
    enum class DaemonState : unsigned int
@@ -259,6 +265,16 @@ public:
       HOLD     = 3, /** Hold or unhold the call */
       RECORD   = 4, /** Enable or disable recording */
       __COUNT,
+   };
+
+   /** @enum Call::LifeCycleState
+    * This enum help track the call meta state
+    */
+   enum class LifeCycleState {
+      INITIALIZATION = 0, /** Anything before the media transfer start   */
+      PROGRESS       = 1, /** The peers are in communication (or hold)   */
+      FINISHED       = 2, /** Everything is over, there is no going back */
+      __COUNT
    };
 
    //Read only properties
@@ -332,6 +348,7 @@ public:
    Call::Direction          direction        () const;
    AbstractHistoryBackend*  backend          () const;
    bool                     hasVideo         () const;
+   Call::LifeCycleState     lifeCycleState   () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);
@@ -415,6 +432,19 @@ private:
     *  on a call in state orig_state.
    **/
    static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
+
+   /**
+    * metaStateTransitionValidationMap help validate if a state transition violate the lifecycle logic.
+    * it should technically never happen, but this is an easy additional safety to implement
+    * and prevent human (developer) errors.
+    */
+   static const TypedStateMachine< TypedStateMachine< bool , Call::LifeCycleState > , Call::State > metaStateTransitionValidationMap;
+
+   /**
+    * Convert the call state into its meta state (life cycle state). The meta state is a flat,
+    * forward only progression from creating to archiving of a call.
+    */
+   static const TypedStateMachine< Call::LifeCycleState , Call::State > metaStateMap;
 
    explicit Call(const QString& confId, const QString& account);
    Call(Call::State startState, const QString& callId, const QString& peerName = QString(), PhoneNumber* number = nullptr, Account* account = nullptr);

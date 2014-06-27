@@ -112,7 +112,7 @@ const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState> , C
 }};//                                                                                                                                                             
 
 const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > Call::stateChangedFunctionMap =
-{{ 
+{{
 //                      RINGING                  CURRENT             BUSY              HOLD                    HUNGUP           FAILURE            /**/
 /*INCOMING       */  {{&Call::nothing    , &Call::start     , &Call::startWeird     , &Call::startWeird   ,  &Call::startStop    , &Call::start   }},/**/
 /*RINGING        */  {{&Call::nothing    , &Call::start     , &Call::start          , &Call::start        ,  &Call::startStop    , &Call::start   }},/**/
@@ -129,6 +129,47 @@ const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Cal
 /*CONF_HOLD      */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
 /*INIT           */  {{&Call::nothing    , &Call::warning   , &Call::warning        , &Call::warning      ,  &Call::stop         , &Call::warning }},/**/
 }};//                                                                                                                                                   
+
+const TypedStateMachine< Call::LifeCycleState , Call::State > Call::metaStateMap =
+{{
+/*               *        Life cycle meta-state              **/
+/*INCOMING       */   Call::LifeCycleState::INITIALIZATION ,/**/
+/*RINGING        */   Call::LifeCycleState::INITIALIZATION ,/**/
+/*CURRENT        */   Call::LifeCycleState::PROGRESS       ,/**/
+/*DIALING        */   Call::LifeCycleState::INITIALIZATION ,/**/
+/*HOLD           */   Call::LifeCycleState::PROGRESS       ,/**/
+/*FAILURE        */   Call::LifeCycleState::FINISHED       ,/**/
+/*BUSY           */   Call::LifeCycleState::FINISHED       ,/**/
+/*TRANSFERT      */   Call::LifeCycleState::PROGRESS       ,/**/
+/*TRANSFERT_HOLD */   Call::LifeCycleState::PROGRESS       ,/**/
+/*OVER           */   Call::LifeCycleState::FINISHED       ,/**/
+/*ERROR          */   Call::LifeCycleState::FINISHED       ,/**/
+/*CONF           */   Call::LifeCycleState::PROGRESS       ,/**/
+/*CONF_HOLD      */   Call::LifeCycleState::PROGRESS       ,/**/
+/*INIT           */   Call::LifeCycleState::INITIALIZATION ,/**/
+}};/*                                                        **/
+
+const TypedStateMachine< TypedStateMachine< bool , Call::LifeCycleState > , Call::State > Call::metaStateTransitionValidationMap =
+{{
+/*               *     INITIALIZATION    PROGRESS      FINISHED   **/
+/*INCOMING       */  {{     true     ,    false    ,    false }},/**/
+/*RINGING        */  {{     true     ,    false    ,    false }},/**/
+/*CURRENT        */  {{     true     ,    true     ,    false }},/**/
+/*DIALING        */  {{     true     ,    false    ,    false }},/**/
+/*HOLD           */  {{     true     ,    true     ,    false }},/**/
+/*FAILURE        */  {{     true     ,    true     ,    false }},/**/
+/*BUSY           */  {{     true     ,    false    ,    false }},/**/
+/*TRANSFERT      */  {{     false    ,    true     ,    false }},/**/
+/*TRANSFERT_HOLD */  {{     false    ,    true     ,    false }},/**/
+/*OVER           */  {{     true     ,    true     ,    false }},/**/
+/*ERROR          */  {{     true     ,    true     ,    false }},/**/
+/*CONF           */  {{     true     ,    false    ,    false }},/**/
+/*CONF_HOLD      */  {{     true     ,    false    ,    false }},/**/
+/*INIT           */  {{     true     ,    false    ,    false }},/**/
+}};/*                                                             **/
+/*^^ A call _can_ be created on hold (conference) and as over (peer hang up before pickup)
+ the progress->failure one is an implementation bug*/
+
 
 QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::State& c)
 {
@@ -197,7 +238,7 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
       m_pTimer->start();
       CallManagerInterface& callManager = DBus::CallManager::instance();
       MapStringString        details    = callManager.getConferenceDetails(m_ConfId)  ;
-      m_CurrentState = confStatetoCallState(details["CONF_STATE"]);
+      m_CurrentState = confStatetoCallState(details[ConfDetailsMapFields::CONF_STATE]);
       emit stateChanged();
    }
 }
@@ -606,7 +647,7 @@ QString Call::length() const
 ///Is this call part of history
 bool Call::isHistory()
 {
-   if (m_CurrentState == Call::State::OVER && !m_History)
+   if (lifeCycleState() == Call::LifeCycleState::FINISHED && !m_History)
       m_History = true;
    return m_History;
 }
@@ -645,6 +686,12 @@ bool Call::hasVideo() const
 Call::State Call::state() const
 {
    return m_CurrentState;
+}
+
+///Translate the state into its life cycle equivalent
+Call::LifeCycleState Call::lifeCycleState() const
+{
+   return metaStateMap[m_CurrentState];
 }
 
 ///Get the call recording
@@ -801,10 +848,10 @@ void Call::setBackend(AbstractHistoryBackend* backend)
  *                                                                           *
  ****************************************************************************/
 
-///The call state just changed
+///The call state just changed (by the daemon)
 Call::State Call::stateChanged(const QString& newStateName)
 {
-   Call::State previousState = m_CurrentState;
+   const Call::State previousState = m_CurrentState;
    if (!m_isConference) {
       Call::DaemonState dcs = toDaemonCallState(newStateName);
       if (dcs == Call::DaemonState::__COUNT || m_CurrentState == Call::State::__COUNT) {
@@ -813,27 +860,26 @@ Call::State Call::stateChanged(const QString& newStateName)
       }
 
       try {
+         //Validate if the transition respect the expected life cycle
+         if (!metaStateTransitionValidationMap[stateChangedStateMap[m_CurrentState][dcs]][lifeCycleState()]) {
+            qWarning() << "Unexpected state transition from" << state() << "to" << stateChangedStateMap[m_CurrentState][dcs];
+            Q_ASSERT(false);
+         }
          changeCurrentState(stateChangedStateMap[m_CurrentState][dcs]);
       }
       catch(Call::State& state) {
          qDebug() << "State change failed (stateChangedStateMap)" << state;
-         m_CurrentState = Call::State::ERROR;
-         emit stateChanged();
-         emit changed();
+         changeCurrentState(Call::State::ERROR);
          return m_CurrentState;
       }
       catch(Call::DaemonState& state) {
          qDebug() << "State change failed (stateChangedStateMap)" << state;
-         m_CurrentState = Call::State::ERROR;
-         emit stateChanged();
-         emit changed();
+         changeCurrentState(Call::State::ERROR);
          return m_CurrentState;
       }
       catch (...) {
          qDebug() << "State change failed (stateChangedStateMap) other";;
-         m_CurrentState = Call::State::ERROR;
-         emit stateChanged();
-         emit changed();
+         changeCurrentState(Call::State::ERROR);
          return m_CurrentState;
       }
 
@@ -847,32 +893,27 @@ Call::State Call::stateChanged(const QString& newStateName)
       }
       catch(Call::State& state) {
          qDebug() << "State change failed (stateChangedFunctionMap)" << state;
-         m_CurrentState = Call::State::ERROR;
-         emit stateChanged();
-         emit changed();
+         changeCurrentState(Call::State::ERROR);
          return m_CurrentState;
       }
       catch(Call::DaemonState& state) {
          qDebug() << "State change failed (stateChangedFunctionMap)" << state;
-         m_CurrentState = Call::State::ERROR;
-         emit stateChanged();
-         emit changed();
+         changeCurrentState(Call::State::ERROR);
          return m_CurrentState;
       }
       catch (...) {
          qDebug() << "State change failed (stateChangedFunctionMap) other";;
-         m_CurrentState = Call::State::ERROR;
-         emit stateChanged();
-         emit changed();
+         changeCurrentState(Call::State::ERROR);
          return m_CurrentState;
       }
    }
    else {
       //Until now, it does not worth using stateChangedStateMap, conferences are quite simple
-      m_CurrentState = confStatetoCallState(newStateName);
+      //update 2014: Umm... wrong
+      m_CurrentState = confStatetoCallState(newStateName); //TODO don't do this
       emit stateChanged();
    }
-   if ((m_CurrentState == Call::State::HOLD || m_CurrentState == Call::State::CURRENT) && !m_pTimer) {
+   if ((lifeCycleState() == Call::LifeCycleState::PROGRESS) && !m_pTimer) {
       m_pTimer = new QTimer(this);
       m_pTimer->setInterval(1000);
       connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
@@ -900,16 +941,12 @@ Call::State Call::performAction(Call::Action action)
    }
    catch(Call::State& state) {
       qDebug() << "State change failed (actionPerformedStateMap)" << state;
-      m_CurrentState = Call::State::ERROR;
-      emit stateChanged();
-      emit changed();
+      changeCurrentState(Call::State::ERROR);
       return Call::State::ERROR;
    }
    catch (...) {
       qDebug() << "State change failed (actionPerformedStateMap) other";;
-      m_CurrentState = Call::State::ERROR;
-      emit stateChanged();
-      emit changed();
+      changeCurrentState(Call::State::ERROR);
       return m_CurrentState;
    }
 
@@ -919,23 +956,17 @@ Call::State Call::performAction(Call::Action action)
    }
    catch(Call::State& state) {
       qDebug() << "State change failed (actionPerformedFunctionMap)" << state;
-      m_CurrentState = Call::State::ERROR;
-      emit stateChanged();
-      emit changed();
+      changeCurrentState(Call::State::ERROR);
       return Call::State::ERROR;
    }
    catch(Call::Action& action) {
       qDebug() << "State change failed (actionPerformedFunctionMap)" << action;
-      m_CurrentState = Call::State::ERROR;
-      emit stateChanged();
-      emit changed();
+      changeCurrentState(Call::State::ERROR);
       return Call::State::ERROR;
    }
    catch (...) {
       qDebug() << "State change failed (actionPerformedFunctionMap) other";;
-      m_CurrentState = Call::State::ERROR;
-      emit stateChanged();
-      emit changed();
+      changeCurrentState(Call::State::ERROR);
       return m_CurrentState;
    }
    qDebug() << "Calling action " << action << " on call with state " << previousState << ". Become " << m_CurrentState;
@@ -947,7 +978,7 @@ void Call::changeCurrentState(Call::State newState)
 {
    if (newState == Call::State::__COUNT) {
       qDebug() << "Error: Call reach invalid state";
-      m_CurrentState = Call::State::ERROR;
+      changeCurrentState(Call::State::ERROR);
       throw newState;
    }
 
@@ -957,7 +988,7 @@ void Call::changeCurrentState(Call::State newState)
    emit changed();
    emit changed(this);
 
-   if (m_CurrentState == Call::State::OVER)
+   if (lifeCycleState() == Call::LifeCycleState::FINISHED)
       emit isOver(this);
 }
 
@@ -1100,8 +1131,8 @@ void Call::hangUp()
 ///Remove the call without contacting the daemon
 void Call::remove()
 {
-   if (m_CurrentState != Call::State::ERROR && m_CurrentState != Call::State::FAILURE)
-      m_CurrentState = Call::State::OVER;
+   if (lifeCycleState() != Call::LifeCycleState::FINISHED)
+      changeCurrentState(Call::State::ERROR);
    emit stateChanged();
    emit changed();
    emit changed(this);
@@ -1117,7 +1148,7 @@ void Call::cancel()
 //    Q_NOREPLY callManager.hangUp(m_CallId);
    if (!callManager.hangUp(m_CallId)) {
       qWarning() << "HangUp failed, the call was probably already over";
-      m_CurrentState = Call::State::ERROR;
+      changeCurrentState(Call::State::ERROR);
    }
 }
 
@@ -1148,7 +1179,7 @@ void Call::call()
    //Calls to empty URI should not be allowed, sflphoned will go crazy
    if ((!m_pDialNumber) || m_pDialNumber->uri().isEmpty()) {
       qDebug() << "Trying to call an empty URI";
-      m_CurrentState = Call::State::FAILURE;
+      changeCurrentState(Call::State::FAILURE);
       if (!m_pDialNumber) {
          emit dialNumberChanged(QString());
       }

@@ -266,8 +266,14 @@ Call* CallModel::getCall( const QString& callId ) const
 ///Add a call in the model structure, the call must exist before being added to the model
 Call* CallModel::addCall(Call* call, Call* parentCall)
 {
-   if (!call || (parentCall && parentCall->state() == Call::State::OVER && call->state() != Call::State::OVER)) {
+   //The current History implementation doesn't support conference
+   //if something try to add an history conference, something went wrong
+   if (!call
+    || ((parentCall && parentCall->lifeCycleState() == Call::LifeCycleState::FINISHED)
+    && (call->lifeCycleState() == Call::LifeCycleState::FINISHED))) {
+
       qWarning() << "Trying to add an invalid call to the tree" << call;
+      Q_ASSERT(false);
 
       //WARNING this will trigger an assert later on, but isn't critical enough in release mode.
       //HACK This return an invalid object that should be equivalent to NULL but wont require
@@ -281,11 +287,11 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    aNewStruct->conference = false;
 
    m_sPrivateCallList_call  [ call       ] = aNewStruct;
-   if (call->state() != Call::State::OVER)
+   if (call->lifeCycleState() != Call::LifeCycleState::FINISHED)
       m_lInternalModel << aNewStruct;
    m_sPrivateCallList_callId[ call->id() ] = aNewStruct;
 
-   if (call->state() != Call::State::OVER)
+   if (call->lifeCycleState() != Call::LifeCycleState::FINISHED)
       emit callAdded(call,parentCall);
    const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
    emit dataChanged(idx, idx);
@@ -850,16 +856,16 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
  ****************************************************************************/
 
 ///When a call state change
-void CallModel::slotCallStateChanged(const QString& callID, const QString& state)
+void CallModel::slotCallStateChanged(const QString& callID, const QString& stateName)
 {
    //This code is part of the CallModel interface too
-   qDebug() << "Call State Changed for call  " << callID << " . New state : " << state;
+   qDebug() << "Call State Changed for call  " << callID << " . New state : " << stateName;
    InternalStruct* internal = m_sPrivateCallList_callId[callID];
    Call* call = nullptr;
    Call::State previousState = Call::State::RINGING;
    if(!internal) {
       qDebug() << "Call not found";
-      if(state == Call::StateChange::RINGING) {
+      if(stateName == Call::StateChange::RINGING) {
          call = addRingingCall(callID);
       }
       else {
@@ -871,18 +877,17 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       call = internal->call_real;
       previousState = call->state();
       qDebug() << "Call found" << call << call->state();
-      const Call::State oldState = call->state();
-      call->stateChanged(state);
-      //The second clause isn't required, but it does happen when errors happen
-      //if the error is reported afterwards, the call may be forgotten 2in this list
-      if (state == Call::StateChange::HUNG_UP
-         || (oldState != Call::State::OVER && call->state() == Call::State::OVER)
-         || call->state() == Call::State::ERROR) {
+      const Call::LifeCycleState oldLifeCycleState = call->lifeCycleState();
+      call->stateChanged(stateName);
+      //Remove call when they end normally, keep errors and failure one
+      if (stateName == Call::StateChange::HUNG_UP
+         || (oldLifeCycleState != Call::LifeCycleState::FINISHED && call->state() == Call::State::OVER)) {
          removeCall(call);
       }
    }
 
-   if (call->state() == Call::State::OVER) {
+   //Add to history
+   if (call->lifeCycleState() == Call::LifeCycleState::FINISHED) {
       HistoryModel::instance()->add(call);
    }
 
@@ -932,7 +937,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
 
       //First remove old participants, add them back to the top level list
       foreach(InternalStruct* child,confInt->m_lChildren) {
-         if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->state() != Call::State::OVER) {
+         if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->lifeCycleState() != Call::LifeCycleState::FINISHED) {
             qDebug() << "Remove" << child->call_real << "from" << conf;
             child->m_pParent = nullptr;
             m_lInternalModel << child;
