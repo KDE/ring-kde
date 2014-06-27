@@ -110,6 +110,7 @@ public:
       CallCount     = 129, /* The number of calls made with the same phone number */
       TotalSpentTime= 130, /* The total time spent speaking to with this phone number*/
       Missed        = 131,
+      CallLifeCycleState= 132,
       DropState     = 300,
       DTMFAnimState = 400,
       LastDTMFidx   = 401,
@@ -478,6 +479,7 @@ private:
    //Helpers
    void changeCurrentState(Call::State newState);
    void setStartTimeStamp(time_t stamp);
+   void initTimer();
 
 public Q_SLOTS:
    void playRecording();

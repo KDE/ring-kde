@@ -50,7 +50,7 @@
 
 //Track where state changes are performed on finished (over, error, failed) calls
 //while not really problematic, it is technically wrong
-#define Q_ASSERT_IS_IN_PROGRESS Q_ASSERT(m_CurrentState != Call::State::OVER);
+#define Q_ASSERT_IS_IN_PROGRESS Q_ASSERT(state() != Call::State::OVER);
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
@@ -60,7 +60,7 @@ const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::
 /*CURRENT      */  {{Call::State::ERROR         , Call::State::CURRENT     , Call::State::TRANSFERRED  , Call::State::CURRENT      ,  Call::State::CURRENT      }},/**/
 /*DIALING      */  {{Call::State::INITIALIZATION, Call::State::OVER        , Call::State::ERROR        , Call::State::ERROR        ,  Call::State::ERROR        }},/**/
 /*HOLD         */  {{Call::State::ERROR         , Call::State::HOLD        , Call::State::TRANSF_HOLD  , Call::State::HOLD         ,  Call::State::HOLD         }},/**/
-/*FAILURE      */  {{Call::State::ERROR         , Call::State::FAILURE     , Call::State::ERROR        , Call::State::ERROR        ,  Call::State::ERROR        }},/**/
+/*FAILURE      */  {{Call::State::ERROR         , Call::State::OVER        , Call::State::ERROR        , Call::State::ERROR        ,  Call::State::ERROR        }},/**/
 /*BUSY         */  {{Call::State::ERROR         , Call::State::BUSY        , Call::State::ERROR        , Call::State::ERROR        ,  Call::State::ERROR        }},/**/
 /*TRANSFER     */  {{Call::State::TRANSFERRED   , Call::State::TRANSFERRED , Call::State::CURRENT      , Call::State::TRANSFERRED  ,  Call::State::TRANSFERRED  }},/**/
 /*TRANSF_HOLD  */  {{Call::State::TRANSF_HOLD   , Call::State::TRANSF_HOLD , Call::State::HOLD         , Call::State::TRANSF_HOLD  ,  Call::State::TRANSF_HOLD  }},/**/
@@ -80,7 +80,7 @@ const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::St
 /*CURRENT        */  {{&Call::nothing    , &Call::hangUp   , &Call::nothing        , &Call::hold        ,  &Call::setRecord     }},/**/
 /*DIALING        */  {{&Call::call       , &Call::cancel   , &Call::nothing        , &Call::nothing     ,  &Call::nothing       }},/**/
 /*HOLD           */  {{&Call::nothing    , &Call::hangUp   , &Call::nothing        , &Call::unhold      ,  &Call::setRecord     }},/**/
-/*FAILURE        */  {{&Call::nothing    , &Call::hangUp   , &Call::nothing        , &Call::nothing     ,  &Call::nothing       }},/**/
+/*FAILURE        */  {{&Call::nothing    , &Call::remove   , &Call::nothing        , &Call::nothing     ,  &Call::nothing       }},/**/
 /*BUSY           */  {{&Call::nothing    , &Call::hangUp   , &Call::nothing        , &Call::nothing     ,  &Call::nothing       }},/**/
 /*TRANSFERT      */  {{&Call::transfer   , &Call::hangUp   , &Call::transfer       , &Call::hold        ,  &Call::setRecord     }},/**/
 /*TRANSFERT_HOLD */  {{&Call::transfer   , &Call::hangUp   , &Call::transfer       , &Call::unhold      ,  &Call::setRecord     }},/**/
@@ -232,10 +232,7 @@ Call::Call(const QString& confId, const QString& account): QObject(CallModel::in
       time_t curTime;
       ::time(&curTime);
       setStartTimeStamp(curTime);
-      m_pTimer = new QTimer(this);
-      m_pTimer->setInterval(1000);
-      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
-      m_pTimer->start();
+      initTimer();
       CallManagerInterface& callManager = DBus::CallManager::instance();
       MapStringString        details    = callManager.getConferenceDetails(m_ConfId)  ;
       m_CurrentState = confStatetoCallState(details[ConfDetailsMapFields::CONF_STATE]);
@@ -276,11 +273,7 @@ Call* Call::buildExistingCall(const QString& callId)
       call->setStartTimeStamp(curTime);
    }
 
-
-   call->m_pTimer = new QTimer(CallModel::instance());
-   call->m_pTimer->setInterval(1000);
-   connect(call->m_pTimer,SIGNAL(timeout()),call,SLOT(updated()));
-   call->m_pTimer->start();
+   call->initTimer();
 
    if (call->peerPhoneNumber()) {
       call->peerPhoneNumber()->addCall(call);
@@ -858,6 +851,12 @@ Call::State Call::stateChanged(const QString& newStateName)
          qDebug() << "Error: Invalid state change";
          return Call::State::FAILURE;
       }
+//       if (previousState == stateChangedStateMap[m_CurrentState][dcs]) {
+// #ifndef NDEBUG
+//          qDebug() << "Trying to change state with the same state" << previousState;
+// #endif
+//          return previousState;
+//       }
 
       try {
          //Validate if the transition respect the expected life cycle
@@ -913,12 +912,6 @@ Call::State Call::stateChanged(const QString& newStateName)
       m_CurrentState = confStatetoCallState(newStateName); //TODO don't do this
       emit stateChanged();
    }
-   if ((lifeCycleState() == Call::LifeCycleState::PROGRESS) && !m_pTimer) {
-      m_pTimer = new QTimer(this);
-      m_pTimer->setInterval(1000);
-      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
-      m_pTimer->start();
-   }
    if (m_CurrentState != Call::State::DIALING && m_pDialNumber) {
       if (!m_pPeerPhoneNumber)
          m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->fromTemporary(m_pDialNumber);
@@ -935,6 +928,14 @@ Call::State Call::stateChanged(const QString& newStateName)
 Call::State Call::performAction(Call::Action action)
 {
    const Call::State previousState = m_CurrentState;
+
+//    if (actionPerformedStateMap[previousState][action] == previousState) {
+// #ifndef NDEBUG
+//       qDebug() << "Trying to change state with the same state" << previousState;
+// #endif
+//       return previousState;
+//    }
+
    //update the state
    try {
       changeCurrentState(actionPerformedStateMap[previousState][action]);
@@ -973,7 +974,7 @@ Call::State Call::performAction(Call::Action action)
    return m_CurrentState;
 } //actionPerformed
 
-///Change the state
+///Change the state, do not abuse of this, but it is necessary for error cases
 void Call::changeCurrentState(Call::State newState)
 {
    if (newState == Call::State::__COUNT) {
@@ -987,6 +988,8 @@ void Call::changeCurrentState(Call::State newState)
    emit stateChanged();
    emit changed();
    emit changed(this);
+
+   initTimer();
 
    if (lifeCycleState() == Call::LifeCycleState::FINISHED)
       emit isOver(this);
@@ -1018,7 +1021,7 @@ void Call::sendTextMessage(const QString& message)
  *                              Automate function                            *
  *                                                                           *
  ****************************************************************************/
-///@warning DO NOT TOUCH THAT, THEY ARE CALLED FROM AN ARRAY, HIGH FRAGILITY
+///@warning DO NOT TOUCH THAT, THEY ARE CALLED FROM AN AUTOMATE, HIGH FRAGILITY
 
 ///Do nothing (literally)
 void Call::nothing()
@@ -1050,12 +1053,6 @@ void Call::accept()
    setStartTimeStamp(curTime);
    this->m_HistoryState = LegacyHistoryState::INCOMING;
    m_Direction = Call::Direction::INCOMING;
-   if (!m_pTimer) {
-      m_pTimer = new QTimer(this);
-      m_pTimer->setInterval(1000);
-      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
-      m_pTimer->start();
-   }
 }
 
 ///Refuse the call
@@ -1133,6 +1130,7 @@ void Call::remove()
 {
    if (lifeCycleState() != Call::LifeCycleState::FINISHED)
       changeCurrentState(Call::State::ERROR);
+   emit isOver(this);
    emit stateChanged();
    emit changed();
    emit changed(this);
@@ -1523,6 +1521,25 @@ UserActionModel* Call::userActionModel() const
    return m_pUserActionModel;
 }
 
+///Check if creating a timer is necessary
+void Call::initTimer()
+{
+   if (lifeCycleState() == Call::LifeCycleState::PROGRESS) {
+      if (!m_pTimer) {
+         m_pTimer = new QTimer(this);
+         m_pTimer->setInterval(1000);
+         connect(m_pTimer,SIGNAL(timeout()),this,SLOT(updated()));
+      }
+      if (!m_pTimer->isActive())
+         m_pTimer->start();
+   }
+   else if (m_pTimer && lifeCycleState() != Call::LifeCycleState::PROGRESS) {
+      m_pTimer->stop();
+      delete m_pTimer;
+      m_pTimer = nullptr;
+   }
+}
+
 ///Common source for model data roles
 QVariant Call::roleData(int role) const
 {
@@ -1545,7 +1562,7 @@ QVariant Call::roleData(int role) const
          return peerPhoneNumber()->uri();
          break;
       case Call::Role::Direction2:
-         return static_cast<int>(m_Direction);
+         return static_cast<int>(m_Direction); //TODO Qt5, use the Q_ENUM
          break;
       case Call::Role::Date:
          return (int)startTimeStamp();
@@ -1573,7 +1590,7 @@ QVariant Call::roleData(int role) const
          }
          break;
       case Call::Role::FuzzyDate:
-         return (int)m_HistoryConst;
+         return (int)m_HistoryConst; //TODO Qt5, use the Q_ENUM
          break;
       case Call::Role::IsBookmark:
          return false;
@@ -1603,7 +1620,7 @@ QVariant Call::roleData(int role) const
          return QVariant::fromValue((void*)(ct?ct->photo():nullptr));
          break;
       case Call::Role::CallState:
-         return static_cast<int>(state());
+         return static_cast<int>(state()); //TODO Qt5, use the Q_ENUM
          break;
       case Call::Role::Id:
          return ((m_isConference)?confId():id());
@@ -1631,6 +1648,8 @@ QVariant Call::roleData(int role) const
          break;
       case Call::Role::Missed:
          return m_Missed;
+      case Call::Role::CallLifeCycleState:
+         return static_cast<int>(lifeCycleState()); //TODO Qt5, use the Q_ENUM
       case Call::Role::DTMFAnimState:
          return property("DTMFAnimState");
          break;

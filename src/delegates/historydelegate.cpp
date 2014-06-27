@@ -102,6 +102,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
    const Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
+   const Call::LifeCycleState currentLifeCycleState = static_cast<Call::LifeCycleState>(index.data(Call::Role::CallLifeCycleState).toInt());
+
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 
@@ -135,7 +137,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       }
    }
-   if (currentState != Call::State::OVER && index.data(Call::Role::IsRecording).toBool()) {
+   if (currentLifeCycleState == Call::LifeCycleState::PROGRESS && index.data(Call::Role::IsRecording).toBool()) {
       const static QPixmap record(KStandardDirs::locate("data","sflphone-client-kde/record.png"));
       time_t curTime;
       ::time(&curTime);
@@ -235,7 +237,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
 
-   if (!index.parent().isValid() && currentState != Call::State::RINGING && currentState != Call::State::INCOMING){
+   if (!index.parent().isValid() && currentLifeCycleState == Call::LifeCycleState::PROGRESS){
       const QString length = index.data(Call::Role::Length).toString();
       const int lenLen = fm.width(length);
       if (!length.isEmpty()) {
@@ -292,7 +294,7 @@ void HistoryDelegate::slotStopRingingAnimation()
    if (m_pRingingTip && m_pRingingTip->isVisible()) {
       bool found = false;
       foreach(const Call* call,CallModel::instance()->getCallList()) {
-         found = (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING);
+         found = (call->lifeCycleState() == Call::LifeCycleState::INITIALIZATION);
          if (found)
             break;
       }

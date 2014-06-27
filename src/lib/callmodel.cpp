@@ -281,6 +281,10 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
       //causing a NULL dereference
       return new Call(QString(),QString());
    }
+   if (m_sPrivateCallList_call[call]) {
+      qWarning() << "Trying to add a call that already have been added" << call;
+      Q_ASSERT(false);
+   }
 
    InternalStruct* aNewStruct = new InternalStruct;
    aNewStruct->call_real  = call;
@@ -358,7 +362,19 @@ void CallModel::removeCall(Call* call, bool noEmit)
       m_sPrivateCallList_callId.remove(m_sPrivateCallList_callId.key(internal));
    }
 
-   m_lInternalModel.removeAll(internal);
+   const int idx = m_lInternalModel.indexOf(internal);
+   //Exit if the call is not found
+   if (idx == -1) {
+      qDebug() << "Cannot remove call: call not found in tree";
+      return;
+   }
+
+   //Using layoutChanged would SEGFAULT when an editor is open
+   if (!noEmit)
+      beginRemoveRows(QModelIndex(),idx,idx);
+   m_lInternalModel.removeAt(idx);
+   if (!noEmit)
+      endRemoveRows();
 
    //Restore calls to the main list if they are not really over
    if (internal->m_lChildren.size()) {
@@ -375,7 +391,7 @@ void CallModel::removeCall(Call* call, bool noEmit)
    //The daemon often fail to emit the right signal, cleanup manually
    foreach(InternalStruct* topLevel, m_lInternalModel) {
       if (topLevel->call_real->isConference() &&
-         (!topLevel->m_lChildren.size() 
+         (!topLevel->m_lChildren.size()
             //HACK Make a simple validation to prevent ERROR->ERROR->ERROR state loop for conferences
             || topLevel->m_lChildren.first()->call_real->state() == Call::State::ERROR
             || topLevel->m_lChildren.last() ->call_real->state() == Call::State::ERROR))
@@ -878,9 +894,11 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       previousState = call->state();
       qDebug() << "Call found" << call << call->state();
       const Call::LifeCycleState oldLifeCycleState = call->lifeCycleState();
+      const Call::State          oldState          = call->state();
       call->stateChanged(stateName);
       //Remove call when they end normally, keep errors and failure one
-      if (stateName == Call::StateChange::HUNG_UP
+      if ((stateName == Call::StateChange::HUNG_UP)
+         || ((oldState == Call::State::OVER) && (call->state() == Call::State::OVER))
          || (oldLifeCycleState != Call::LifeCycleState::FINISHED && call->state() == Call::State::OVER)) {
          removeCall(call);
       }
@@ -1054,9 +1072,12 @@ void CallModel::slotCallChanged(Call* call)
       case Call::State::ERROR:
          removeCall(call);
          break;
+      //Over can be caused by local events
+      case Call::State::OVER:
+         removeCall(call);
+         break;
       //Let the daemon handle the others
       case Call::State::INCOMING:
-      case Call::State::OVER:
       case Call::State::RINGING:
       case Call::State::INITIALIZATION:
       case Call::State::CURRENT:
@@ -1073,12 +1094,15 @@ void CallModel::slotCallChanged(Call* call)
    InternalStruct* callInt = m_sPrivateCallList_call[call];
    if (callInt) {
       const QModelIndex idx = getIndex(call);
-      emit dataChanged(idx,idx);
+      if (idx.isValid())
+         emit dataChanged(idx,idx);
    }
 }
 
 ///Add call slot
 void CallModel::slotAddPrivateCall(Call* call) {
+   if (m_sPrivateCallList_call[call])
+      return;
    addCall(call,nullptr);
 }
 
