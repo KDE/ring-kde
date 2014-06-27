@@ -133,7 +133,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
       if (!status.isNull()) {
-         status=status.scaled(QSize(24,24));
+         const int pxmHeight = option.rect.height()<24?option.rect.height()-2:24;
+         status=status.scaled(QSize(pxmHeight,pxmHeight));
          painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       }
    }
@@ -241,7 +242,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       const QString length = index.data(Call::Role::Length).toString();
       const int lenLen = fm.width(length);
       if (!length.isEmpty()) {
-         painter->drawText(option.rect.x()+option.rect.width()-lenLen-4,option.rect.y()+(option.rect.height()/2)+(fm.height()/4),length);
+         painter->drawText(option.rect.x()+option.rect.width()-lenLen-4,option.rect.y()+(option.rect.height()/2)+(fm.height()/3),length);
       }
       DialpadDelegate::paint(painter,option,index,lenLen);
    }

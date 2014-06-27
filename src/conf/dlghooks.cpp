@@ -26,6 +26,7 @@ DlgHooks::DlgHooks(QWidget *parent)
 {
    setupUi(this);
    connect(this, SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
+   updateWidgets();
 }
 
 ///Destructor
