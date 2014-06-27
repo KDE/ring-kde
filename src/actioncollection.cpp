@@ -273,8 +273,8 @@ void ActionCollection::setupAction()
       SFLPhone::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
 
-   void updateRecordButton();
-   void updateVolumeButton();
+   updateRecordButton();
+   updateVolumeButton();
 }
 
 ///Call
@@ -596,6 +596,7 @@ void ActionCollection::updateRecordButton()
       QIcon(":/images/icons/mic_50.svg"),QIcon(":/images/icons/mic_75.svg")};
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
    ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
+   SFLPhone::view()->updateVolumeControls();
 }
 
 ///Update the colunm button icon
@@ -606,6 +607,7 @@ void ActionCollection::updateVolumeButton()
       QIcon(":/images/icons/speaker_50.svg"),QIcon(":/images/icons/speaker_75.svg")};
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
+   SFLPhone::view()->updateVolumeControls();
 }
 
 //Video actions

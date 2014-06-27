@@ -92,7 +92,6 @@ public:
    void setCurrentIndex(const QModelIndex& idx) const;
 
 private Q_SLOTS:
-   void updateVolumeControls ();
    void sendMessage          ();
    void slotAutoCompleteClicked(PhoneNumber* n);
    void loadAutoCompletion   ();
@@ -100,6 +99,7 @@ private Q_SLOTS:
 
 
 public Q_SLOTS:
+   void updateVolumeControls ();
    /**
     * Updates all the display
     * according to the settings.

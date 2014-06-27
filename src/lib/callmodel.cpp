@@ -92,7 +92,6 @@ void CallModel::init()
       /**/connect(&callManager, SIGNAL(conferenceCreated(QString))              , this , SLOT(slotIncomingConference(QString))         );
       /**/connect(&callManager, SIGNAL(conferenceChanged(QString,QString))      , this , SLOT(slotChangingConference(QString,QString)) );
       /**/connect(&callManager, SIGNAL(conferenceRemoved(QString))              , this , SLOT(slotConferenceRemoved(QString))          );
-      /**/connect(&callManager, SIGNAL(volumeChanged(QString,double))           , this , SLOT(slotVolumeChanged(QString,double))       );
       /**/connect(&callManager, SIGNAL(recordPlaybackFilepath(QString,QString)) , this , SLOT(slotNewRecordingAvail(QString,QString))  );
       /**/connect(&callManager, SIGNAL(recordingStateChanged(QString,bool))     , this,  SLOT(slotRecordStateChanged(QString,bool)));
       #ifdef ENABLE_VIDEO
@@ -1012,12 +1011,6 @@ void CallModel::slotConferenceRemoved(const QString &confId)
    removeConference(confId);
    emit layoutChanged();
    emit conferenceRemoved(conf);
-}
-
-///When the daemon change the volume
-void CallModel::slotVolumeChanged(const QString & device, double value)
-{
-   emit volumeChanged(device,value);
 }
 
 ///Make the call aware it has a recording

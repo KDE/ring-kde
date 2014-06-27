@@ -28,6 +28,8 @@ AudioSettingsModel::AudioSettingsModel() : QObject(),m_EnableRoomTone(false),
  m_pOutputDeviceModel(nullptr)
 {
    m_pRingtoneDeviceModel = new RingtoneDeviceModel (this);
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   connect(&configurationManager,SIGNAL(volumeChanged(QString,double)),this,SLOT(slotVolumeChanged(QString,double)));
 }
 
 ///Destructor
@@ -204,6 +206,18 @@ bool AudioSettingsModel::areDTMFMuted() const
    return DBus::ConfigurationManager::instance().isDtmfMuted();
 }
 
+///Called when the volume change for external reasons
+void AudioSettingsModel::slotVolumeChanged(const QString& str, double volume)
+{
+   if (str == AudioSettingsModel::DeviceKey::CAPTURE)
+      emit captureVolumeChanged(static_cast<int>(volume*100));
+   else if (str == AudioSettingsModel::DeviceKey::PLAYBACK)
+      emit playbackVolumeChanged(static_cast<int>(volume*100));
+   else
+      qDebug() << "Unknown audio device" << str;
+}
+
+
 /****************************************************************
  *                                                              *
  *                        AlsaPluginModel                       *
@@ -355,7 +369,7 @@ QModelIndex InputDeviceModel::currentDevice() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList currentDevices = configurationManager.getCurrentAudioDevicesIndex();
-   const int idx = currentDevices[AudioSettingsModel::DeviceIndex::INPUT].toInt();
+   const int idx = currentDevices[static_cast<int>(AudioSettingsModel::DeviceIndex::INPUT)].toInt();
    if (idx >= m_lDeviceList.size())
       return QModelIndex();
    return index(idx,0);
@@ -446,7 +460,7 @@ QModelIndex OutputDeviceModel::currentDevice() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList currentDevices = configurationManager.getCurrentAudioDevicesIndex();
-   const int         idx            = currentDevices[AudioSettingsModel::DeviceIndex::OUTPUT].toInt();
+   const int         idx            = currentDevices[static_cast<int>(AudioSettingsModel::DeviceIndex::OUTPUT)].toInt();
 
    if (idx >= m_lDeviceList.size())
       return QModelIndex();
@@ -631,7 +645,7 @@ QModelIndex RingtoneDeviceModel::currentDevice() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList currentDevices = configurationManager.getCurrentAudioDevicesIndex();
-   const int         idx            = currentDevices[AudioSettingsModel::DeviceIndex::RINGTONE].toInt();
+   const int         idx            = currentDevices[static_cast<int>(AudioSettingsModel::DeviceIndex::RINGTONE)].toInt();
    if (idx >= m_lDeviceList.size())
       return QModelIndex();
    return index(idx,0);

@@ -140,6 +140,9 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex)), m_pEventManager, SLOT(enter())                          );
    /*                                                                                                                                        */
 
+   //Volume controls
+//    connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),slider_sndVol,SLOT(setValue(int)));
+
    //Auto completion
    loadAutoCompletion();
 
@@ -167,8 +170,6 @@ void SFLPhoneView::loadWindow()
    updateWindowCallState ();
    updateVolumeControls  ();
    loadAutoCompletion    ();
-   slider_recVol->setValue(AudioSettingsModel::instance()->captureVolume());
-   slider_sndVol->setValue(AudioSettingsModel::instance()->playbackVolume());
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
    AudioSettingsModel::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
 }
@@ -426,6 +427,16 @@ void SFLPhoneView::updateVolumeControls()
    toolButton_sndVol->setVisible ( ActionCollection::instance()->displayVolumeControlsAction()->isChecked() && ConfigurationSkeleton::displayVolume() );
    slider_recVol->setVisible     ( ActionCollection::instance()->displayVolumeControlsAction()->isChecked() && ConfigurationSkeleton::displayVolume() );
    slider_sndVol->setVisible     ( ActionCollection::instance()->displayVolumeControlsAction()->isChecked() && ConfigurationSkeleton::displayVolume() );
+
+   //Prevent an infinite update loop
+   slider_recVol->blockSignals(true);
+   slider_sndVol->blockSignals(true);
+
+   slider_recVol->setValue(AudioSettingsModel::instance()->captureVolume());
+   slider_sndVol->setValue(AudioSettingsModel::instance()->playbackVolume());
+
+   slider_recVol->blockSignals(false);
+   slider_sndVol->blockSignals(false);
 }
 
 

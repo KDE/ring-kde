@@ -37,7 +37,7 @@ class LIB_EXPORT AudioSettingsModel : public QObject {
    Q_OBJECT
 public:
 
-   enum DeviceIndex {
+   enum class DeviceIndex {
       OUTPUT   = 0,
       INPUT    = 1,
       RINGTONE = 2,
@@ -94,6 +94,9 @@ Q_SIGNALS:
    void playbackVolumeChanged(int);
    void captureVolumeChanged(int);
    void DTMFMutedChanged(bool);
+
+private Q_SLOTS:
+   void slotVolumeChanged(const QString& str, double volume);
 
 private:
    //Constructor

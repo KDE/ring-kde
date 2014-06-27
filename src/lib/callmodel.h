@@ -128,7 +128,6 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       void slotIncomingConference ( const QString& confID                             );
       void slotChangingConference ( const QString& confID    , const QString &state   );
       void slotConferenceRemoved  ( const QString& confId                             );
-      void slotVolumeChanged      ( const QString& device    , double value           );
       void slotAddPrivateCall     ( Call* call                                        );
       void slotNewRecordingAvail  ( const QString& callId    , const QString& filePath);
       void slotCallChanged        ( Call* call                                        );
@@ -150,8 +149,6 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       void conferenceChanged       ( Call* conf                              );
       ///Emitted when a conference is removed
       void conferenceRemoved       ( Call* conf                              );
-      ///Emitted when the volume change
-      void volumeChanged           ( const QString& device    , double value );
       ///Emitted when a call is added
       void callAdded               ( Call* call               , Call* parent );
 };
