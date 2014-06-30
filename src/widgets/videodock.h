@@ -23,6 +23,9 @@
 //Qt
 class QGridLayout;
 
+//KDE
+class KUrl;
+
 //SFLPhone
 class VideoWidget3;
 class VideoRenderer;
@@ -46,6 +49,7 @@ private:
 
 private Q_SLOTS:
    void slotDeviceChanged(int index);
+   void slotFileSelected(const KUrl& url);
 };
 
 #endif

@@ -21,6 +21,7 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QWidgetItem>
 #include <QtGui/QGraphicsView>
+#include <QtGui/QDesktopWidget>
 #include <QtGui/QLabel>
 
 #include <KLocale>
@@ -67,9 +68,36 @@ public:
    ScreenSharingWidget(QWidget* parent) : QWidget(parent)
    {
       setupUi(this);
+      setupScreenCombo();
+      m_pFrame->setVisible(false);
+      slotScreenIndexChanged(0);
    }
+private:
+   //Helper
+   void setupScreenCombo();
+private Q_SLOTS:
+   void slotScreenIndexChanged(int idx);
 };
 
+void ScreenSharingWidget::setupScreenCombo()
+{
+   for (int i =0; i < QApplication::desktop()->screenCount();i++) {
+      m_pScreens->addItem(QString::number(i));
+   }
+   m_pScreens->addItem(i18n("Custom"));
+}
+
+
+void ScreenSharingWidget::slotScreenIndexChanged(int idx)
+{
+   if (idx == m_pScreens->count()-1) {
+      m_pFrame->setVisible(true);
+   }
+   else {
+      ExtendedVideoDeviceModel::instance()->setDisplay(0,QApplication::desktop()->screenGeometry(idx));
+      m_pFrame->setVisible(false);
+   }
+}
 
 
 ///Constructor
@@ -128,6 +156,9 @@ void VideoDock::addRenderer(VideoRenderer* r)
    m_pVideoWidet->addRenderer(r);
 }
 
+
+
+
 void VideoDock::slotDeviceChanged(int index)
 {
    switch (index) {
@@ -158,6 +189,8 @@ void VideoDock::slotDeviceChanged(int index)
          if ( !m_pMediaPicker  ) {
             m_pMediaPicker = new MediaPicker(this);
             m_pMoreOpts->addWidget(m_pMediaPicker,11,0,1,4);
+            connect(m_pMediaPicker->m_pPicker,SIGNAL(urlSelected(KUrl)),
+               this,SLOT(slotFileSelected(KUrl)));
          }
          m_pMediaPicker->setVisible(true);
          break;
@@ -176,6 +209,12 @@ void VideoDock::slotDeviceChanged(int index)
          );
          m_pVideoSettings->setVisible(true);
    };
+}
+
+
+void VideoDock::slotFileSelected(const KUrl& url)
+{
+   ExtendedVideoDeviceModel::instance()->setFile(url);
 }
 
 #include "moc_videodock.cpp"

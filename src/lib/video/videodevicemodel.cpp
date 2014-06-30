@@ -182,7 +182,7 @@ ExtendedVideoDeviceModel* ExtendedVideoDeviceModel::m_spInstance = nullptr;
 
 ExtendedVideoDeviceModel::ExtendedVideoDeviceModel() : QAbstractListModel(QCoreApplication::instance())
 {
-   
+   m_Display.rect = QRect(0,0,0,0);
 }
 
 ExtendedVideoDeviceModel* ExtendedVideoDeviceModel::instance()
@@ -259,7 +259,10 @@ void ExtendedVideoDeviceModel::switchTo(const int idx)
          DBus::VideoManager::instance().switchInput(ProtocolPrefix::NONE);
          break;
       case ExtendedDeviceList::SCREEN:
-         DBus::VideoManager::instance().switchInput( QString(ProtocolPrefix::DISPLAY)+"0:100x100");
+         DBus::VideoManager::instance().switchInput( QString(ProtocolPrefix::DISPLAY)+QString(":%1 %2x%3")
+            .arg(m_Display.index)
+            .arg(m_Display.rect.width())
+            .arg(m_Display.rect.height()));
          break;
       case ExtendedDeviceList::FILE:
          DBus::VideoManager::instance().switchInput(
@@ -296,6 +299,7 @@ void ExtendedVideoDeviceModel::setDisplay(int index, QRect rect)
 {
    m_Display.index  = index ;
    m_Display.rect   = rect  ;
+   switchTo(ExtendedDeviceList::SCREEN);
 }
 
 VideoDevice* VideoDeviceModel::getDevice(const QString& devId) const
