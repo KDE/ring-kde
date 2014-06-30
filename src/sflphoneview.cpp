@@ -64,8 +64,6 @@
 //sflphone library
 #include "klib/kcfg_settings.h"
 #include "lib/phonenumber.h"
-#include "lib/typedefs.h"
-#include "lib/dbus/configurationmanager.h"
 #include "lib/dbus/callmanager.h"
 #include "lib/dbus/instancemanager.h"
 #include "lib/sflphone_const.h"

@@ -26,7 +26,6 @@
 #include <KLineEdit>
 
 //SFLPhone
-#include "lib/dbus/configurationmanager.h"
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/sflphone_const.h"
@@ -38,11 +37,10 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
 {
    setupUi(this);
 
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   m_pAlwaysRecordCK->setChecked(configurationManager.getIsAlwaysRecording());
+   m_pAlwaysRecordCK->setChecked(AudioSettingsModel::instance()->isAlwaysRecording());
 
    KUrlRequester_destinationFolder->setMode(KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly);
-   KUrlRequester_destinationFolder->setUrl(KUrl(configurationManager.getRecordPath()));
+   KUrlRequester_destinationFolder->setUrl(KUrl(AudioSettingsModel::instance()->recordPath()));
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
    m_pSuppressNoise->setChecked(AudioSettingsModel::instance()->isNoiseSuppressEnabled());
@@ -55,7 +53,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    box_alsaPlugin->setModel    (AudioSettingsModel::instance()->alsaPluginModel  () );
    loadAlsaSettings();
 
-   m_pManager->setCurrentIndex (AudioSettingsModel::instance()->audioManagerModel()->currentManager().row());
+   m_pManager->setCurrentIndex (AudioSettingsModel::instance()->audioManagerModel()->currentManagerIndex().row());
 
    connect( box_alsaPlugin   , SIGNAL(activated(int)) , parent, SLOT(updateButtons()));
    connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
@@ -71,6 +69,8 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
    connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , 
             AudioSettingsModel::instance()->audioManagerModel(),SLOT(setCurrentManager(int)));
+   connect(AudioSettingsModel::instance()->audioManagerModel(),SIGNAL(currentManagerChanged(int)),m_pManager,
+           SLOT(setCurrentIndex(int)));
    connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(loadAlsaSettings()));
 }
 
@@ -91,11 +91,8 @@ void DlgAudio::updateSettings()
    if (m_Changed) {
       m_IsLoading = true;
 
-      ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-      configurationManager.setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
-//       configurationManager.setAudioPlugin(box_alsaPlugin->currentText());
-
-      configurationManager.setIsAlwaysRecording   ( m_pAlwaysRecordCK->isChecked()          );
+      AudioSettingsModel::instance()->setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
+      AudioSettingsModel::instance()->setAlwaysRecording(m_pAlwaysRecordCK->isChecked());
 
       AudioSettingsModel::instance()->inputDeviceModel   ()->setCurrentDevice(alsaInputDevice->currentIndex   ());
       AudioSettingsModel::instance()->outputDeviceModel  ()->setCurrentDevice(alsaOutputDevice->currentIndex  ());
@@ -118,7 +115,20 @@ bool DlgAudio::hasChanged()
 ///Tag the dialog as needing saving
 void DlgAudio::changed()
 {
-   box_alsaPlugin->setDisabled(m_pManager->currentIndex());
+   switch (AudioSettingsModel::instance()->audioManagerModel()->currentManager()) {
+      case AudioManagerModel::Manager::PULSE:
+         box_alsaPlugin->setDisabled(true);
+         stackedWidget_interfaceSpecificSettings->setVisible(true);
+         break;
+      case AudioManagerModel::Manager::ALSA:
+         box_alsaPlugin->setDisabled(false);
+         stackedWidget_interfaceSpecificSettings->setVisible(true);
+         break;
+      case AudioManagerModel::Manager::JACK:
+         box_alsaPlugin->setDisabled(true);
+         stackedWidget_interfaceSpecificSettings->setVisible(false);
+         break;
+   };
    if (!m_IsLoading) {
       m_Changed = true;
       emit updateButtons();

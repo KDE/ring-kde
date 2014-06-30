@@ -54,15 +54,19 @@ public:
    RingtoneDeviceModel* ringtoneDeviceModel();
    bool                 isRoomToneEnabled  ();
    bool                 isNoiseSuppressEnabled () const;
-   bool                 isPlaybackMuted() const;
-   bool                 isCaptureMuted () const;
-   bool                 areDTMFMuted   () const;
-   int                  playbackVolume () const;
-   int                  captureVolume  () const;
+   bool                 isPlaybackMuted  () const;
+   bool                 isCaptureMuted   () const;
+   bool                 isAlwaysRecording() const;
+   bool                 areDTMFMuted     () const;
+   int                  playbackVolume   () const;
+   int                  captureVolume    () const;
+   QUrl                 recordPath       () const;
 
    //Setters
-   void setEnableRoomTone    ( bool enable  );
-   void setNoiseSuppressState( bool enabled );
+   void setEnableRoomTone    ( bool        enable  );
+   void setNoiseSuppressState( bool        enabled );
+   void setRecordPath        ( const QUrl& path    );
+   void setAlwaysRecording   ( bool        record  );
 
    //Room tone type
    enum class ToneType {
@@ -195,6 +199,12 @@ private:
 class LIB_EXPORT AudioManagerModel   : public QAbstractListModel {
    Q_OBJECT
 public:
+
+   enum class Manager {
+      ALSA =0,
+      PULSE=1,
+      JACK =2,
+   };
    explicit AudioManagerModel(QObject* parent);
    virtual ~AudioManagerModel();
 
@@ -205,27 +215,30 @@ public:
    virtual bool          setData ( const QModelIndex& index, const QVariant &value, int role);
 
    //Getters
-   QModelIndex currentManager() const;
+   QModelIndex currentManagerIndex() const;
+   Manager     currentManager() const;
 
    //Setters
-   void setCurrentManager(const QModelIndex& index);
+   bool setCurrentManager(const QModelIndex& index);
 
 public Q_SLOTS:
-   void setCurrentManager(int idx);
+   bool setCurrentManager(int idx);
 
+Q_SIGNALS:
+   void currentManagerChanged(Manager);
+   void currentManagerChanged(int);
+   void currentManagerChanged(const QModelIndex&);
 
 private:
-   QStringList m_lDeviceList;
    class ManagerName {
    public:
       constexpr static const char* PULSEAUDIO = "pulseaudio";
-      constexpr static const char* ALSA       = "alsa";
+      constexpr static const char* ALSA       = "alsa"      ;
+      constexpr static const char* JACK       = "jack"      ;
    };
 
-   enum class Manager {
-      ALSA =0,
-      PULSE=1,
-   };
+   QStringList m_lDeviceList;
+   QList<Manager> m_lSupportedManagers;
 };
 
 class LIB_EXPORT RingtoneDeviceModel: public QAbstractListModel {

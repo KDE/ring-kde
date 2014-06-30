@@ -30,7 +30,6 @@
 //SFLPhone
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
-#include "lib/dbus/configurationmanager.h"
 #include "lib/historymodel.h"
 
 ///Constructor

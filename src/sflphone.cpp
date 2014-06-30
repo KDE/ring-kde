@@ -48,7 +48,6 @@
 //sflphone library
 #include "lib/sflphone_const.h"
 #include "lib/dbus/instancemanager.h"
-#include "lib/dbus/configurationmanager.h"
 #include "lib/contact.h"
 #include "lib/accountlistmodel.h"
 #include "lib/instantmessagingmodel.h"

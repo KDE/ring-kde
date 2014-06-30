@@ -168,6 +168,34 @@ bool AudioSettingsModel::isCaptureMuted() const
    return DBus::ConfigurationManager::instance().isCaptureMuted();
 }
 
+///Set where the call recordings will be saved
+void AudioSettingsModel::setRecordPath(const QUrl& path)
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   configurationManager.setRecordPath(path.toString());
+}
+
+///Return the path where recordings are going to be saved
+QUrl AudioSettingsModel::recordPath() const
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   return QUrl(configurationManager.getRecordPath());
+}
+
+///are all calls recorded by default
+bool AudioSettingsModel::isAlwaysRecording() const
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   return configurationManager.getIsAlwaysRecording();
+}
+
+///Set if all calls needs to be recorded
+void AudioSettingsModel::setAlwaysRecording(bool record)
+{
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   configurationManager.setIsAlwaysRecording   ( record );
+}
+
 int AudioSettingsModel::playbackVolume() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
@@ -500,7 +528,24 @@ void OutputDeviceModel::reload()
 ///Constructor
 AudioManagerModel::AudioManagerModel(QObject* parent) : QAbstractListModel(parent)
 {
-   m_lDeviceList << "ALSA" << "Pulse Audio";
+   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
+   const QStringList managers = configurationManager.getSupportedAudioManagers();
+   foreach(const QString& m,managers) {
+      if (m == ManagerName::PULSEAUDIO) {
+         m_lSupportedManagers << Manager::PULSE;
+         m_lDeviceList << "Pulse Audio";
+      }
+      else if (m == ManagerName::ALSA) {
+         m_lSupportedManagers << Manager::ALSA;
+         m_lDeviceList<< "ALSA";
+      }
+      else if (m == ManagerName::JACK) {
+         m_lSupportedManagers << Manager::JACK;
+         m_lDeviceList<< "Jack";
+      }
+      else
+         qDebug() << "Unsupported audio manager" << m;
+   }
 }
 
 ///Destructor
@@ -549,7 +594,7 @@ bool AudioManagerModel::setData( const QModelIndex& index, const QVariant &value
  * Return the current audio manager
  * @warning Changes to the current index model will invalid Input/Output/Ringtone devices models
  */
-QModelIndex AudioManagerModel::currentManager() const
+QModelIndex AudioManagerModel::currentManagerIndex() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QString manager = configurationManager.getAudioManager();
@@ -557,32 +602,51 @@ QModelIndex AudioManagerModel::currentManager() const
          return index((int)Manager::PULSE,0);
       else if (manager == ManagerName::ALSA)
          return index((int)Manager::ALSA,0);
+      else if (manager == ManagerName::JACK)
+         return index((int)Manager::JACK,0);
       return QModelIndex();
 }
 
+AudioManagerModel::Manager AudioManagerModel::currentManager() const
+{
+   return m_lSupportedManagers[currentManagerIndex().row()];
+}
+
 ///Set current audio manager
-void AudioManagerModel::setCurrentManager(const QModelIndex& idx)
+bool AudioManagerModel::setCurrentManager(const QModelIndex& idx)
 {
    if (!idx.isValid())
-      return;
+      return false;
 
+   bool ret = true;
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   switch (static_cast<Manager>(idx.row())) {
+   switch (m_lSupportedManagers[idx.row()]) {
       case Manager::PULSE:
-         configurationManager.setAudioManager(ManagerName::PULSEAUDIO);
+         ret = configurationManager.setAudioManager(ManagerName::PULSEAUDIO);
          AudioSettingsModel::instance()->reload();
          break;
       case Manager::ALSA:
-         configurationManager.setAudioManager(ManagerName::ALSA);
+         ret = configurationManager.setAudioManager(ManagerName::ALSA);
+         AudioSettingsModel::instance()->reload();
+         break;
+      case Manager::JACK:
+         ret = configurationManager.setAudioManager(ManagerName::JACK);
          AudioSettingsModel::instance()->reload();
          break;
    };
+   if (!ret) {
+      const QModelIndex& newIdx = currentManagerIndex();
+      emit currentManagerChanged(currentManager());
+      emit currentManagerChanged(newIdx);
+      emit currentManagerChanged(newIdx.row());
+   }
+   return ret;
 }
 
 ///QCombobox -> QModelIndex shim
-void AudioManagerModel::setCurrentManager(int idx)
+bool AudioManagerModel::setCurrentManager(int idx)
 {
-   setCurrentManager(index(idx,0));
+   return setCurrentManager(index(idx,0));
 }
 
 /****************************************************************
