@@ -53,6 +53,7 @@ public Q_SLOTS:
    void frameChanged      ();
    void slotRotateLeft();
    void slotRotateRight();
+   void slotKeepAspectRatio(bool keep);
 };
 
 #endif

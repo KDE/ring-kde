@@ -57,6 +57,7 @@ public:
    void setTranslationX(float tra);
    void setScale(float scale);
    void setAnchor(const QPointF& point);
+   void setKeepAspectRatio(bool keep);
 
    //Getter
    QPointF anchor() const;
@@ -64,6 +65,7 @@ public:
    float rotY() const;
    float rotX() const;
    float scale() const;
+   bool keepAspectRatio() const;
    VideoRenderer* renderer() const {
       return m_pRenderer;
    }
@@ -73,6 +75,7 @@ private:
    ThreadedPainter2* m_pPainter;
    QGLWidget* m_pParent;
    VideoRenderer* m_pRenderer;
+   bool m_KeepAspect;
 
 public Q_SLOTS:
    void setRenderer(VideoRenderer* renderer = nullptr);

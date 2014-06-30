@@ -118,6 +118,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    connect(ActionCollection::instance()->videoRotateRightAction(),SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateRight()));
    connect(ActionCollection::instance()->videoPreviewAction()    ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotShowPreview(bool)));
    connect(ActionCollection::instance()->videoMuteAction()       ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotMuteOutgoindVideo(bool)));
+   connect(ActionCollection::instance()->videoScaleAction()      ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotKeepAspectRatio(bool)));
 }
 
 ///Set current renderer

@@ -104,26 +104,34 @@ action_editToolBar(nullptr), action_addContact(nullptr), action_screen(nullptr)
    action_video_flip_vertical   = new ExtendedAction(this);
    action_video_mute            = new ExtendedAction(this);
    action_video_preview         = new ExtendedAction(this);
+   action_video_scale           = new ExtendedAction(this);
    action_video_rotate_left     ->setText ( i18n( "Rotate left"  ) );
    action_video_rotate_right    ->setText ( i18n( "Rotate right" ) );
    action_video_flip_horizontal ->setText ( i18n( "Flip"         ) );
    action_video_flip_vertical   ->setText ( i18n( "Flip"         ) );
    action_video_mute            ->setText ( i18n( "Mute"         ) );
    action_video_preview         ->setText ( i18n( "Preview"      ) );
+   action_video_scale           ->setText ( i18n( "Keep aspect ratio"      ));
    action_video_rotate_left     ->setAltIcon(KIcon("object-rotate-left"    ));
    action_video_rotate_right    ->setAltIcon(KIcon("object-rotate-right"   ));
    action_video_flip_horizontal ->setAltIcon(KIcon("object-flip-horizontal"));
    action_video_flip_vertical   ->setAltIcon(KIcon("object-flip-vertical"  ));
    action_video_mute            ->setAltIcon(KIcon("camera-web"            ));
    action_video_preview         ->setAltIcon(KIcon("view-preview"          ));
+   action_video_scale           ->setAltIcon(KIcon("transform-scale"       ));
    action_video_rotate_left     ->setIcon(KIcon("object-rotate-left"    ));
    action_video_rotate_right    ->setIcon(KIcon("object-rotate-right"   ));
    action_video_flip_horizontal ->setIcon(KIcon("object-flip-horizontal"));
    action_video_flip_vertical   ->setIcon(KIcon("object-flip-vertical"  ));
    action_video_mute            ->setIcon(KIcon("camera-web"            ));
    action_video_preview         ->setIcon(KIcon("view-preview"          ));
+   action_video_scale           ->setIcon(KIcon("transform-scale"          ));
    action_video_preview         ->setCheckable(true);
+   action_video_scale           ->setCheckable(true);
    action_video_mute            ->setCheckable(true);
+
+   action_video_scale           ->setChecked(ConfigurationSkeleton::keepVideoAspectRatio());
+   action_video_preview         ->setChecked(ConfigurationSkeleton::displayVideoPreview());
    #endif
 }
 
@@ -641,5 +649,10 @@ ExtendedAction* ActionCollection::videoMuteAction           ()
 ExtendedAction* ActionCollection::videoPreviewAction        ()
 {
    return action_video_preview;
+}
+
+ExtendedAction* ActionCollection::videoScaleAction        ()
+{
+   return action_video_scale;
 }
 #endif

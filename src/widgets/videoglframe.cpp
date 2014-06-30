@@ -166,11 +166,21 @@ void ThreadedPainter2::draw(QPainter* p)
       glRotatef(rot_y, 0.0f, 1.0f, 0.0f);
       glRotatef(rot_z, 0.0f, 0.0f, 1.0f);
 
+      //Handle the ratio
+      float xRatio(1),yRatio(1);
+      if (m_pFrm->keepAspectRatio()) {
+         float rendererRatio = ((float)res.width())/((float)res.height());
+         float windowRatio = ((float)p->device()->width())/((float)p->device()->height());
 
+         if (windowRatio > 1)
+            xRatio = (1.0f/windowRatio) * rendererRatio;
+         else
+            yRatio = 1.0f/windowRatio * rendererRatio;
+      }
 
       // draw background
       glPushMatrix();
-      glScalef(1.7f, 1.7f, 1.7f);
+      glScalef(xRatio*1.7f, yRatio*1.7f, 1.7f);
       glTranslatef(tra_x, tra_y, tra_z);
       glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
       glCallList(tile_list);
@@ -190,7 +200,7 @@ void ThreadedPainter2::draw(QPainter* p)
  VideoGLFrame::VideoGLFrame(QGLWidget *parent)
      : QObject(parent),m_pParent(parent),
      m_pPainter(new ThreadedPainter2(this,parent)),
-     m_pRenderer(nullptr)
+     m_pRenderer(nullptr),m_KeepAspect(true)
  {
    connect(m_pPainter,SIGNAL(changed()),this,SLOT(slotEmitChanged()));
 
@@ -349,6 +359,16 @@ float VideoGLFrame::scale() const
 {
    QMutexLocker locker(&m_pPainter->mutex);
    return m_pPainter->scale;
+}
+
+void VideoGLFrame::setKeepAspectRatio(bool keep)
+{
+   m_KeepAspect = keep;
+}
+
+bool VideoGLFrame::keepAspectRatio() const
+{
+   return m_KeepAspect;
 }
 
 #include "videoglframe.moc"

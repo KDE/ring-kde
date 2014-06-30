@@ -63,6 +63,8 @@ public Q_SLOTS:
    void slotRotateRight();
    void slotShowPreview(bool show);
    void slotMuteOutgoindVideo(bool mute);
+   void slotKeepAspectRatio(bool mute);
+   void slotPreviewEnabled(bool show);
 
 Q_SIGNALS:
    void changed();

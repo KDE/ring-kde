@@ -112,7 +112,16 @@
         <label>Defines if the individual contact history list is visible</label>
         <default>false</default>
    </entry>
-    
+
+   <!-- Video Settings -->
+   <entry name="keepVideoAspectRatio" type="Bool">
+        <label>Enforce video aspect ratio or allow stretching</label>
+        <default>true</default>
+   </entry>
+   <entry name="displayVideoPreview" type="Bool">
+        <label>Enforce video aspect ratio or allow stretching</label>
+        <default>false</default>
+   </entry>
 
     <!-- Audio Settings -->
 

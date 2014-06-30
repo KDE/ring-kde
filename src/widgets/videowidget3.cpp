@@ -39,6 +39,7 @@
 #include "actioncollection.h"
 #include "extendedaction.h"
 #include <lib/video/videodevicemodel.h>
+#include "klib/kcfg_settings.h"
 
 
 #ifndef GL_MULTISAMPLE
@@ -48,6 +49,7 @@
 
 VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
 {
+   connect(VideoModel::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
    sp.setVerticalPolicy  ( QSizePolicy::Preferred );
    sp.setHorizontalPolicy( QSizePolicy::Preferred );
@@ -64,6 +66,10 @@ VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
 
    m_pScene = new VideoScene();
    setScene(m_pScene);
+
+   if (VideoModel::instance()->isPreviewing()) {
+      slotShowPreview(true);
+   }
 
 //    m_pScene->setToolbar(tb);
    m_pScene->setSceneRect(0,0,width(),height());
@@ -107,6 +113,7 @@ void VideoWidget3::addRenderer(VideoRenderer* renderer)
    }
    if (renderer) {
       VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
+      frm->setKeepAspectRatio(ConfigurationSkeleton::keepVideoAspectRatio());
       frm->setRenderer(renderer);
       connect(frm,SIGNAL(changed()),m_pScene,SLOT(frameChanged()));
       m_pScene->addFrame(frm);
@@ -139,8 +146,8 @@ void VideoWidget3::slotRotateRight()
 
 void VideoWidget3::slotShowPreview(bool show)
 {
+   ConfigurationSkeleton::setDisplayVideoPreview(show);
    if (VideoModel::instance()->isPreviewing() && show) {
-      qDebug() << "show";
       addRenderer(VideoModel::instance()->previewRenderer());
       VideoGLFrame* frm = m_hFrames[VideoModel::instance()->previewRenderer()];
       if (frm) {
@@ -151,7 +158,6 @@ void VideoWidget3::slotShowPreview(bool show)
       }
    }
    else {
-      qDebug() << "hide";
       removeRenderer(VideoModel::instance()->previewRenderer());
    }
 }
@@ -164,6 +170,19 @@ void VideoWidget3::slotMuteOutgoindVideo(bool mute)
       VideoModel::instance()->startPreview();
       if (ActionCollection::instance()->videoPreviewAction()->isChecked())
          slotShowPreview(true);
+   }
+}
+
+void VideoWidget3::slotKeepAspectRatio(bool keep)
+{
+   m_pScene->slotKeepAspectRatio(keep);
+}
+
+
+void VideoWidget3::slotPreviewEnabled(bool show)
+{
+   if (show && ActionCollection::instance()->videoPreviewAction()->isChecked()) {
+      slotShowPreview(true);
    }
 }
 

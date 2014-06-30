@@ -26,6 +26,7 @@
 #include "videotoolbar.h"
 #include <lib/video/videorenderer.h>
 #include <lib/video/videomodel.h>
+#include "klib/kcfg_settings.h"
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -94,3 +95,13 @@ void VideoScene::slotRotateRight()
          frm->setRotZ(frm->rotZ()+90);
    }
 }
+
+void VideoScene::slotKeepAspectRatio(bool keep)
+{
+   ConfigurationSkeleton::setKeepVideoAspectRatio(keep);
+   foreach(VideoGLFrame* frm, m_lFrames) {
+      if (VideoModel::instance()->previewRenderer() != frm->renderer())
+         frm->setKeepAspectRatio(keep);
+   }
+}
+

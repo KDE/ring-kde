@@ -70,6 +70,7 @@ public:
    ExtendedAction* videoFlipVerticalAction   ();
    ExtendedAction* videoMuteAction           ();
    ExtendedAction* videoPreviewAction        ();
+   ExtendedAction* videoScaleAction          ();
    #endif
 
 private:
@@ -94,6 +95,7 @@ private:
    ExtendedAction* action_video_flip_vertical  ;
    ExtendedAction* action_video_mute           ;
    ExtendedAction* action_video_preview        ;
+   ExtendedAction* action_video_scale          ;
    #endif
 
    //Other actions
