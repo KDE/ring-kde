@@ -21,6 +21,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QMutex>
 #include <QtOpenGL/QGLWidget>
+#include <QtOpenGL/qglfunctions.h>
 
 //System
 #include <math.h>
@@ -35,7 +36,7 @@
 #define GL_MULTISAMPLE  0x809D
 #endif
 
-class ThreadedPainter2: public QObject {
+class ThreadedPainter2: public QObject, protected QGLFunctions {
    Q_OBJECT
 public:
    friend class VideoGLFrame;
@@ -121,13 +122,9 @@ void ThreadedPainter2::draw(QPainter* p)
       GLuint texture;
       glGenTextures(1, &texture);
       glBindTexture(GL_TEXTURE_2D, texture);
-      glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_DECAL);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_DECAL);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
       //To give a bit of history about why this code is weird, it used to have another copy buffer
       //but this was removed and replaced with a flip buffer in libQt, there is some leftover
@@ -142,11 +139,11 @@ void ThreadedPainter2::draw(QPainter* p)
          return;
       }
 
-      if (res.width() && res.height() && data.size())
-         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, res.width(), res.height(), GL_BGRA, GL_UNSIGNED_BYTE, data);
+      if (res.width() && res.height() && data.size()) {
+         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res.width(), res.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, data.data());
+      }
 
       // draw into the GL widget
-//       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glFrustum(-1, 1, -1, 1, 10, 100);
@@ -162,6 +159,7 @@ void ThreadedPainter2::draw(QPainter* p)
       glEnable(GL_TEXTURE_2D);
       glEnable(GL_MULTISAMPLE);
       glEnable(GL_CULL_FACE);
+      glBindTexture(GL_TEXTURE_2D, texture);
       glScalef(-1.0f*scale, -1.0f*scale, 1.0f*scale);
 
       glRotatef(rot_x, 1.0f, 0.0f, 0.0f);

@@ -34,27 +34,6 @@
 VideoScene::VideoScene()
    : m_backgroundColor(25, 25, 25)//,m_pToolbar(nullptr)
 {
-
-//    QPointF pos(10, 10);
-//    foreach (QGraphicsItem *item, items()) {
-//       item->setFlag(QGraphicsItem::ItemIsMovable);
-//       item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-// 
-//       const QRectF rect = item->boundingRect();
-//       item->setPos(pos.x() - rect.x(), pos.y() - rect.y());
-//       pos += QPointF(0, 10 + rect.height());
-//    }
-
-//    QRadialGradient gradient(40, 40, 40, 40, 40);
-//    gradient.setColorAt(0.2, Qt::yellow);
-//    gradient.setColorAt(1, Qt::transparent);
-
-//    m_lightItem = new QGraphicsRectItem(0, 0, 80, 80);
-//    m_lightItem->setPen(Qt::NoPen);
-//    m_lightItem->setBrush(gradient);
-//    m_lightItem->setFlag(QGraphicsItem::ItemIsMovable);
-//    m_lightItem->setPos(800, 200);
-//    addItem(m_lightItem);
 }
 
 void VideoScene::drawBackground(QPainter *painter, const QRectF& rect)
@@ -67,61 +46,6 @@ void VideoScene::drawBackground(QPainter *painter, const QRectF& rect)
          frm->paintEvent(painter);
    }
 }
-
-void VideoScene::setBackgroundColor()
-{
-//    const QColor color = QColorDialog::getColor(m_backgroundColor);
-//    if (color.isValid()) {
-//       m_backgroundColor = color;
-//       update();
-//    }
-}
-
-// void VideoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-// {
-//    QGraphicsScene::mouseMoveEvent(event);
-//    if (event->isAccepted())
-//       return;
-//    if (event->buttons() & Qt::LeftButton) {
-//       event->accept();
-//       update();
-//    }
-//    foreach(VideoGLFrame* frm, m_lFrames) {
-// //       const QPointF diff = event->pos() - frm->anchor();
-//       if (event->buttons() & Qt::LeftButton) {
-//          
-//          frm->setRotZ(frm->rotZ()+1);
-// //          frm->setRotY(frm->rotY()+1/5.0f);
-// //       } else if (event->buttons() & Qt::RightButton) {
-// //          frm->setRotZ(frm->rotZ()+diff.x()/5.0f);
-//       }
-// 
-//       frm->setAnchor(event->pos());
-//    }
-// }
-
-// void VideoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
-// {
-//    QGraphicsScene::mousePressEvent(event);
-//    if (event->isAccepted())
-//       return;
-// 
-//    event->accept();
-// 
-//    foreach(VideoGLFrame* frm, m_lFrames) {
-//       frm->setAnchor(event->pos());
-//    }
-// }
-
-// void VideoScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-// {
-//    QGraphicsScene::mouseReleaseEvent(event);
-//    if (event->isAccepted())
-//       return;
-// 
-//    event->accept();
-//    update();
-// }
 
 void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
@@ -143,12 +67,6 @@ void VideoScene::frameChanged()
 {
    update();
 }
-
-// void VideoScene::setToolbar(VideoToolbar* tb)
-// {
-//    m_pToolbar = tb;
-//    addWidget(m_pToolbar);
-// }
 
 void VideoScene::addFrame(VideoGLFrame* frame)
 {
@@ -176,9 +94,3 @@ void VideoScene::slotRotateRight()
          frm->setRotZ(frm->rotZ()+90);
    }
 }
-
-void VideoScene::slotShowPreview()
-{
-   
-}
-

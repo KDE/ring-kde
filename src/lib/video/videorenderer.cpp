@@ -81,7 +81,7 @@ bool VideoRenderer::renderToBitmap()
    }
 
    if (!shmLock()) {
-      return true;
+      return false;
    }
 
    if(!VideoModel::instance()->startStopMutex()->tryLock())
@@ -115,16 +115,11 @@ bool VideoRenderer::renderToBitmap()
 //             return QByteArray();
 //             break;
 //       }
-      if (err < 0) {
+      if ((err < 0) || (!shmLock())) {
          VideoModel::instance()->startStopMutex()->unlock();
-         return errno == EAGAIN;
+         return false;
       }
-
-      if (!shmLock()) {
-         VideoModel::instance()->startStopMutex()->unlock();
-         return true;
-      }
-      usleep((1/60.0)*10000);
+      usleep((1/60.0)*100);
    }
 
    if (!resizeShm()) {
@@ -247,7 +242,7 @@ void VideoRenderer::timedEvents()
 
    bool ok = renderToBitmap();
 
-   if (ok == true) {
+   if (ok) {
 
       //Compute the FPS shown to the client
       if (m_CurrentTime.second() != QTime::currentTime().second()) {
@@ -259,10 +254,10 @@ void VideoRenderer::timedEvents()
 
       emit frameUpdated();
    }
-   else {
+   /*else {
       qDebug() << "Frame dropped";
       usleep(rand()%1000); //Be sure it can come back in sync
-   }
+   }*/
 }
 
 ///Start the rendering loop

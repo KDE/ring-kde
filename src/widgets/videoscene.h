@@ -34,15 +34,11 @@ public:
    void drawBackground(QPainter *painter, const QRectF &rect);
 
    //Setters
-//    void setToolbar( VideoToolbar* tb    );
    void addFrame  ( VideoGLFrame* frame );
    void removeFrame( VideoGLFrame* frame );
 
 protected:
    //Events
-//    virtual void mousePressEvent  ( QGraphicsSceneMouseEvent* event      );
-//    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event      );
-//    virtual void mouseMoveEvent   ( QGraphicsSceneMouseEvent* event      );
    virtual void wheelEvent       ( QGraphicsSceneWheelEvent* wheelEvent );
 
 private:
@@ -54,11 +50,9 @@ private:
 
 
 public Q_SLOTS:
-   void setBackgroundColor();
    void frameChanged      ();
    void slotRotateLeft();
    void slotRotateRight();
-   void slotShowPreview();
 };
 
 #endif

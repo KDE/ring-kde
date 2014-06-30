@@ -161,7 +161,7 @@ const TypedStateMachine< TypedStateMachine< bool , Call::LifeCycleState > , Call
 /*BUSY           */  {{     true     ,    false    ,    false }},/**/
 /*TRANSFERT      */  {{     false    ,    true     ,    false }},/**/
 /*TRANSFERT_HOLD */  {{     false    ,    true     ,    false }},/**/
-/*OVER           */  {{     true     ,    true     ,    false }},/**/
+/*OVER           */  {{     true     ,    true     ,    true  }},/**/
 /*ERROR          */  {{     true     ,    true     ,    false }},/**/
 /*CONF           */  {{     true     ,    false    ,    false }},/**/
 /*CONF_HOLD      */  {{     true     ,    false    ,    false }},/**/
