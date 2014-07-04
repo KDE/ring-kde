@@ -29,6 +29,8 @@
 #include <kconfigdialog.h>
 
 
+//KDE
+class KJob;
 
 //SFLPhone
 class AutoCompletionDelegate;
@@ -55,6 +57,9 @@ public Q_SLOTS:
 
 private Q_SLOTS:
    void changed();
+   void slotEditCollection();
+   void slotAddCollection();
+   void slotResourceCreationResult(KJob*);
 
 Q_SIGNALS:
    ///Emitted when the buttons need to be updated

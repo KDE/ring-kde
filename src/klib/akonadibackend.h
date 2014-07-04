@@ -74,6 +74,8 @@ public:
    virtual bool save(const Contact* contact);
 
    SupportedFeatures supportedFeatures() const;
+
+   Akonadi::Collection collection() const;
 private:
 
    //Attributes

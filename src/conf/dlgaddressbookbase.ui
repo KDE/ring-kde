@@ -40,6 +40,37 @@
          </property>
         </widget>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_pEditCollection">
+           <property name="text">
+            <string>Edit collection</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_pAddCollection">
+           <property name="text">
+            <string>Add collection</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
      <widget class="QGroupBox" name="groupBox">
@@ -99,5 +130,42 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>m_pAddCollection</sender>
+   <signal>clicked()</signal>
+   <receiver>DlgAddressBookBase</receiver>
+   <slot>slotAddCollection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>567</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>661</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pEditCollection</sender>
+   <signal>clicked()</signal>
+   <receiver>DlgAddressBookBase</receiver>
+   <slot>slotEditCollection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>515</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>661</x>
+     <y>153</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotEditCollection()</slot>
+  <slot>slotAddCollection()</slot>
+ </slots>
 </ui>

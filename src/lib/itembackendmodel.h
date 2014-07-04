@@ -44,6 +44,8 @@ public:
    virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
    virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
 
+   AbstractContactBackend* backendAt(const QModelIndex& index);
+
    bool save();
    bool load();
 

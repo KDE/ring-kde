@@ -33,8 +33,10 @@ QVariant NumberCategoryModel::data(const QModelIndex& index, int role) const
 {
    if (!index.isValid()) return QVariant();
    switch (role) {
-      case Qt::DisplayRole:
-         return m_lCategories[index.row()]->category->name();
+      case Qt::DisplayRole: {
+         const QString name = m_lCategories[index.row()]->category->name();
+         return name.isEmpty()?tr("Uncategorized"):name;
+      }
       case Qt::DecorationRole:
          return m_lCategories[index.row()]->category->icon();//m_pVisitor->icon(m_lCategories[index.row()]->icon);
       case Qt::CheckStateRole:
@@ -56,7 +58,7 @@ int NumberCategoryModel::rowCount(const QModelIndex& parent) const
 Qt::ItemFlags NumberCategoryModel::flags(const QModelIndex& index) const
 {
    Q_UNUSED(index)
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+   return (m_lCategories[index.row()]->category->name().isEmpty()?Qt::NoItemFlags :Qt::ItemIsEnabled) | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 }
 
 bool NumberCategoryModel::setData(const QModelIndex& idx, const QVariant &value, int role)

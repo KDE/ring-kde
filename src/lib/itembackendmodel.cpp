@@ -214,3 +214,11 @@ bool CommonItemBackendModel::load()
    }
    return false;
 }
+
+///Return the backend at a given index
+AbstractContactBackend* CommonItemBackendModel::backendAt(const QModelIndex& index)
+{
+   if (!index.isValid())
+      return nullptr;
+   return static_cast<ProxyItem*>(index.internalPointer())->backend;
+}

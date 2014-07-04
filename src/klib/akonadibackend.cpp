@@ -490,3 +490,8 @@ void AkonadiBackend::slotItemRemoved(const Akonadi::Item &item)
    Contact* c = ContactModel::instance()->getContactByUid(item.remoteId().toUtf8());
    ContactModel::instance()->disableContact(c);
 }
+
+Akonadi::Collection AkonadiBackend::collection() const
+{
+   return m_Coll;
+}

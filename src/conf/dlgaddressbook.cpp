@@ -19,19 +19,31 @@
 
 #include "dlgaddressbook.h"
 
+#include <KMessageBox>
+#include <QtCore/QPointer>
 #include "klib/kcfg_settings.h"
+#include "klib/akonadibackend.h"
 #include "lib/numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include <akonadi/collectionmodel.h>
 #include "lib/contactmodel.h"
 #include "lib/itembackendmodel.h"
 #include "klib/akonadicontactcollectionmodel.h"
+#include <akonadi/collectionpropertiesdialog.h>
+#include <akonadi/agenttypedialog.h>
+#include <akonadi/agentfilterproxymodel.h>
+#include <akonadi/agentinstancecreatejob.h>
+#include <akonadi/standardactionmanager.h>
 
 ///Constructor
 DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
  : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
+
+   m_pAddCollection->setIcon(KIcon("list-add"));
+   m_pEditCollection->setIcon(KIcon("document-edit"));
+
    m_pPhoneTypeList->setModel(NumberCategoryModel::instance());
    m_pDelegate = new AutoCompletionDelegate();
    m_pPhoneTypeList->setItemDelegate(m_pDelegate);
@@ -79,3 +91,46 @@ bool DlgAddressBook::hasChanged()
 {
    return m_HasChanged;
 }
+
+///Edit the selection collection
+void DlgAddressBook::slotEditCollection()
+{
+   const QModelIndex& idx = m_pItemBackendW->selectionModel()->currentIndex();
+   AbstractContactBackend* backend = ContactModel::instance()->backendModel()->backendAt(idx);
+   AkonadiBackend* akoBackend = qobject_cast<AkonadiBackend*>(backend);
+   if (akoBackend) {
+      Akonadi::CollectionPropertiesDialog dlg( akoBackend->collection(), this );
+      dlg.exec();
+   }
+}
+
+///Add a new Akonadi collection
+void DlgAddressBook::slotAddCollection()
+{
+   QPointer<Akonadi::AgentTypeDialog> dlg = new Akonadi::AgentTypeDialog( this );
+   dlg->agentFilterProxyModel()->addMimeTypeFilter( "text/x-vcard" );
+   dlg->agentFilterProxyModel()->addMimeTypeFilter( "X-IMAddress" );
+   if ( dlg->exec() ) {
+      const Akonadi::AgentType agentType = dlg->agentType();
+
+      if ( agentType.isValid() ) {
+         Akonadi::AgentInstanceCreateJob *job = new Akonadi::AgentInstanceCreateJob( agentType, this );
+         connect( job, SIGNAL(result(KJob*)), SLOT(slotResourceCreationResult(KJob*)) );
+         job->configure( this );
+         job->start();
+      }
+
+   }
+   delete dlg;
+}
+
+void DlgAddressBook::slotResourceCreationResult(KJob* job)
+{
+   Q_UNUSED(job)
+//    if ( job->error() ) {
+//       KMessageBox::error( parentWidget,
+//          contextText( Akonadi::StandardActionManager::CreateResource, Akonadi::StandardActionManager::ErrorMessageText, job->errorString() ),
+//          contextText( Akonadi::StandardActionManager::CreateResource, Akonadi::StandardActionManager::ErrorMessageTitle ) );
+//    }
+}
+
