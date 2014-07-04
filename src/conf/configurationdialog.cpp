@@ -90,6 +90,8 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
  dlgPresence(nullptr)
 {
    this->setWindowIcon(QIcon(ICON_SFLPHONE));
+   for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
+      dlgHolder[i] = nullptr;
 
    //Account
    dlgHolder[ConfigurationDialog::Page::Accounts]   = new PlaceHolderWidget(Page::Accounts,this,[](ConfigurationDialog* dialog)->QWidget*{
@@ -171,7 +173,8 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 
    //Connect everything
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
-      connect(this,SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)),dlgHolder[i],SLOT(display(KPageWidgetItem*)));
+      if (dlgHolder[i])
+         connect(this,SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)),dlgHolder[i],SLOT(display(KPageWidgetItem*)));
 
    connect(this, SIGNAL(applyClicked()) , this, SLOT(applyCustomSettings()));
    connect(this, SIGNAL(okClicked())    , this, SLOT(applyCustomSettings()));
