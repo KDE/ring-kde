@@ -288,6 +288,12 @@ bool Contact::edit()
    return m_pBackend->edit(this);
 }
 
+///Remove the contact from the backend
+bool Contact::remove()
+{
+   return m_pBackend->remove(this);
+}
+
 ///Add a new phone number to the backend
 ///@note The backend is expected to notify the Contact (asynchronously) when done
 bool Contact::addPhoneNumber(PhoneNumber* n)

@@ -73,6 +73,12 @@ template <class T> bool AbstractItemBackendInterface<T>::batchSave(const QList<T
    return ret;
 }
 
+template <class T> bool AbstractItemBackendInterface<T>::remove(T* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
 bool AbstractItemBackendBase::enable(bool)
 {
    return false;

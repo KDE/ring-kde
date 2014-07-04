@@ -38,6 +38,7 @@
 #include <KInputDialog>
 #include <KAction>
 #include <KLocale>
+#include <KMessageBox>
 
 //SFLPhone
 #include "sflphone.h"
@@ -157,6 +158,7 @@ ContactDock::~ContactDock()
       delete m_pEmail       ;
       delete m_pAddPhone    ;
       delete m_pBookmark    ;
+      delete m_pRemove      ;
    }
    //Delegates
    delete m_pCategoryDelegate;
@@ -262,12 +264,18 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pBookmark->setText        ( i18n("Bookmark")           );
       m_pBookmark->setIcon        ( KIcon("bookmarks")         );
 
+      m_pRemove      = new KAction(this);
+      m_pRemove->setShortcut    ( Qt::CTRL + Qt::Key_Shift + Qt::Key_Delete );
+      m_pRemove->setText        ( i18n("Delete")               );
+      m_pRemove->setIcon        ( KIcon("edit-delete")         );
+
       connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
       connect(m_pEditContact  , SIGNAL(triggered()) , this,SLOT(editContact()));
       connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy())       );
       connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
       connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone())   );
       connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
+      connect(m_pRemove       , SIGNAL(triggered()) , this,SLOT(slotDelete()) );
    }
    if (index.parent().isValid()  && !index.parent().parent().isValid()) {
       Contact* ct = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
@@ -293,6 +301,7 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pMenu->addAction( m_pEditContact );
       m_pMenu->addAction( m_pAddPhone    );
       m_pMenu->addAction( m_pCopy        );
+      m_pMenu->addAction( m_pRemove      );
       m_pMenu->addAction( m_pEmail       );
       m_pMenu->addAction( m_pBookmark    );
    }
@@ -373,6 +382,17 @@ void ContactDock::bookmark()
    const Contact::PhoneNumbers numbers = m_pCurrentContact->phoneNumbers();
    if (numbers.count() == 1) {
       BookmarkModel::instance()->addBookmark(numbers[0]);
+   }
+}
+
+void ContactDock::slotDelete()
+{
+   if (!m_pCurrentContact)
+      return;
+   const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to permanently delete %1?",
+      m_pCurrentContact->formattedName()), i18n("Delete contact"));
+   if (ret == KMessageBox::Yes) {
+      m_pCurrentContact->remove();
    }
 }
 

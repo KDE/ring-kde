@@ -78,6 +78,7 @@ public:
    //Mutator
    Q_INVOKABLE bool save() const;
    Q_INVOKABLE bool edit()      ;
+   Q_INVOKABLE bool remove()    ;
    Q_INVOKABLE bool addPhoneNumber(PhoneNumber* n);
 
 private:

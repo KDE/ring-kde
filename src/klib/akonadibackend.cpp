@@ -40,6 +40,7 @@
 #include <akonadi/contact/contacteditordialog.h>
 #include <akonadi/session.h>
 #include <akonadi/monitor.h>
+#include <akonadi/itemdeletejob.h>
 #include <akonadi/entitydisplayattribute.h>
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
@@ -172,6 +173,7 @@ AbstractContactBackend::SupportedFeatures AkonadiBackend::supportedFeatures() co
       AbstractContactBackend::SupportedFeatures::LOAD        |
       AbstractContactBackend::SupportedFeatures::SAVE        |
       AbstractContactBackend::SupportedFeatures::EDIT        |
+      AbstractContactBackend::SupportedFeatures::REMOVE      |
       AbstractContactBackend::SupportedFeatures::ADD         |
       AbstractContactBackend::SupportedFeatures::MANAGEABLE  |
       AbstractContactBackend::SupportedFeatures::DISABLEABLE |
@@ -294,6 +296,17 @@ void AkonadiBackend::update(const Akonadi::Collection& collection)
    job->start();
 //    return m_ContactByUid.values();
 } //update
+
+bool AkonadiBackend::remove(Contact* c)
+{
+   if (!c)
+      return false;
+   Akonadi::Item item = m_ItemHash[c->uid()];
+   Akonadi::ItemDeleteJob *job = new Akonadi::ItemDeleteJob( item );
+   job->exec();
+   c->setActive(false);
+   return true;
+}
 
 ///Edit backend value using an updated frontend contact
 bool AkonadiBackend::edit(Contact* contact,QWidget* parent)

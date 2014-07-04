@@ -88,6 +88,7 @@ private:
    KAction* m_pEmail       ;
    KAction* m_pAddPhone    ;
    KAction* m_pBookmark    ;
+   KAction* m_pRemove      ;
 
    //Delegates
    CategorizedDelegate* m_pCategoryDelegate;
@@ -125,6 +126,7 @@ private Q_SLOTS:
    void expandTree  ();
    void setCategory (int index);
    void slotDoubleClick(const QModelIndex& index);
+   void slotDelete();
 };
 
 ///KeyPressEaterC: keygrabber

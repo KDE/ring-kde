@@ -64,8 +64,9 @@ public:
    virtual bool enable (bool enable) override;
    virtual QByteArray  id() const;
 
-   virtual bool     edit   ( Contact*   contact                                                 );
-   virtual bool     addNew ( Contact*   contact                                                 );
+   virtual bool     edit   ( Contact*   contact                                                 ) override;
+   virtual bool     addNew ( Contact*   contact                                                 ) override;
+   virtual bool     remove ( Contact* c                                                         ) override;
    virtual bool append(const Contact* item);
    virtual ~AkonadiBackend        (                                                                    );
 
