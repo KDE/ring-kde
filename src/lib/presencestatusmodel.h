@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractTableModel>
 
 class PresenceSerializationVisitor;
+class AbstractItemBackendBase;
 
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT PresenceStatusModel : public QAbstractTableModel {
@@ -81,6 +82,7 @@ public:
 
    //Setters
    void setDefaultStatus( const QModelIndex& idx );
+   void setAutoTracked(AbstractItemBackendBase* backend, bool tracked) const;
 
    //Getters
    QString     customMessage   () const;
@@ -90,6 +92,7 @@ public:
    QString     currentMessage  () const;
    QString     currentName     () const;
    QModelIndex defaultStatus   () const;
+   bool        isAutoTracked(AbstractItemBackendBase* backend) const;
 
 private:
 

@@ -36,6 +36,7 @@
 #include <lib/presencestatusmodel.h>
 #include <lib/securityvalidationmodel.h>
 #include "klib/kcfg_settings.h"
+#include <lib/abstractitembackend.h>
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {
    {  ICON_INCOMING   ,
@@ -350,4 +351,33 @@ void KDEPresenceSerializationVisitor::load() {
 KDEPresenceSerializationVisitor::~KDEPresenceSerializationVisitor()
 {
    
+}
+
+bool KDEPresenceSerializationVisitor::isTracked(AbstractItemBackendBase* backend)
+{
+   Q_UNUSED(backend)
+   if (!m_isLoaded) {
+      foreach(const QString& str,ConfigurationSkeleton::presenceAutoTrackedCollections()) {
+         m_hTracked[str] = true;
+      }
+      m_isLoaded = true;
+   }
+   return m_hTracked[backend->name()];
+}
+
+void KDEPresenceSerializationVisitor::setTracked(AbstractItemBackendBase* backend, bool tracked)
+{
+   if (!m_isLoaded) {
+      foreach(const QString& str,ConfigurationSkeleton::presenceAutoTrackedCollections()) {
+         m_hTracked[str] = true;
+      }
+      m_isLoaded = true;
+   }
+   m_hTracked[backend->name()] = tracked;
+   QStringList ret;
+   for (QHash<QString,bool>::iterator i = m_hTracked.begin(); i != m_hTracked.end(); ++i) {
+      if (i.value())
+         ret << i.key();
+   }
+   ConfigurationSkeleton::setPresenceAutoTrackedCollections(ret);
 }

@@ -53,6 +53,8 @@ public:
 
    SupportedFeatures supportedFeatures() const;
 
+   virtual QList<Contact*> items() const override;
+
    //Singleton
    static AbstractContactBackend* instance();
 

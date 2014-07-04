@@ -364,3 +364,13 @@ void PresenceStatusModel::setDefaultStatus( const QModelIndex& idx )
    emit defaultStatusChanged(idx);
    emit dataChanged(idx,idx);
 }
+
+bool PresenceStatusModel::isAutoTracked(AbstractItemBackendBase* backend) const
+{
+   return m_pVisitor->isTracked(backend);
+}
+
+void PresenceStatusModel::setAutoTracked(AbstractItemBackendBase* backend, bool tracked) const
+{
+   m_pVisitor->setTracked(backend,tracked);
+}

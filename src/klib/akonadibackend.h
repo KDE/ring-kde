@@ -75,6 +75,8 @@ public:
 
    SupportedFeatures supportedFeatures() const;
 
+   virtual QList<Contact*> items() const override;
+
    Akonadi::Collection collection() const;
 private:
 

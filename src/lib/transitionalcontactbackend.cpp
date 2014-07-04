@@ -100,3 +100,8 @@ QByteArray TransitionalContactBackend::id() const
 {
    return  "trcb";
 }
+
+QList<Contact*> TransitionalContactBackend::items() const
+{
+   return QList<Contact*>();
+}

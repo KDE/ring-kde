@@ -19,8 +19,9 @@
 
 #include "commonbackendmanagerinterface.h"
 #include "visitors/itemmodelstateserializationvisitor.h"
+#include "abstractitembackendmodelextension.h"
 
-CommonItemBackendModel::CommonItemBackendModel(QObject* parent) : QAbstractItemModel(parent)
+CommonItemBackendModel::CommonItemBackendModel(QObject* parent) : QAbstractTableModel(parent)
 {
    connect(ContactModel::instance(),SIGNAL(newBackendAdded(AbstractContactBackend*)),this,SLOT(slotUpdate()));
    load();
@@ -46,6 +47,10 @@ QVariant CommonItemBackendModel::data (const QModelIndex& idx, int role) const
 {
    if (idx.isValid()) {
       ProxyItem* item = static_cast<ProxyItem*>(idx.internalPointer());
+
+      if (idx.column() > 0)
+         return m_lExtensions[idx.column()-1]->data(item->backend,idx,role);
+
       switch(role) {
          case Qt::DisplayRole:
             return item->backend->name();
@@ -89,7 +94,7 @@ int CommonItemBackendModel::rowCount (const QModelIndex& parent) const
 int CommonItemBackendModel::columnCount (const QModelIndex& parent) const
 {
    Q_UNUSED(parent)
-   return 1;
+   return 1+m_lExtensions.size();
 }
 
 Qt::ItemFlags CommonItemBackendModel::flags(const QModelIndex& idx) const
@@ -97,7 +102,9 @@ Qt::ItemFlags CommonItemBackendModel::flags(const QModelIndex& idx) const
    if (!idx.isValid())
       return 0;
    ProxyItem* item = static_cast<ProxyItem*>(idx.internalPointer());
-   bool checkable = item->backend->supportedFeatures() & (AbstractContactBackend::SupportedFeatures::ENABLEABLE | 
+   if (idx.column() > 0)
+      return m_lExtensions[idx.column()-1]->flags(item->backend,idx);
+   const bool checkable = item->backend->supportedFeatures() & (AbstractContactBackend::SupportedFeatures::ENABLEABLE | 
    AbstractContactBackend::SupportedFeatures::DISABLEABLE | AbstractContactBackend::SupportedFeatures::MANAGEABLE  );
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (checkable?Qt::ItemIsUserCheckable:Qt::NoItemFlags);
 }
@@ -107,6 +114,11 @@ bool CommonItemBackendModel::setData (const QModelIndex& index, const QVariant &
    Q_UNUSED(index)
    Q_UNUSED(value)
    Q_UNUSED(role)
+   if (index.isValid() && index.column() > 0) {
+      ProxyItem* item = static_cast<ProxyItem*>(index.internalPointer());
+      return m_lExtensions[index.column()-1]->setData(item->backend,index,value,role);
+   }
+
    if (role == Qt::CheckStateRole) {
       ProxyItem* item = static_cast<ProxyItem*>(index.internalPointer());
       if (item) {
@@ -171,8 +183,11 @@ void CommonItemBackendModel::slotUpdate()
 QVariant CommonItemBackendModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
    Q_UNUSED(section)
-   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+      if (section > 0)
+         return m_lExtensions[section-1]->headerName();
       return QVariant(tr("Name"));
+   }
    return QVariant();
 }
 
@@ -222,3 +237,17 @@ AbstractContactBackend* CommonItemBackendModel::backendAt(const QModelIndex& ind
       return nullptr;
    return static_cast<ProxyItem*>(index.internalPointer())->backend;
 }
+
+void CommonItemBackendModel::addExtension(AbstractItemBackendModelExtension* extension)
+{
+   emit layoutAboutToBeChanged();
+   m_lExtensions << extension;
+   connect(extension,SIGNAL(dataChanged(QModelIndex)),this,SLOT(slotExtensionDataChanged(QModelIndex)));
+   emit layoutChanged();
+}
+
+void CommonItemBackendModel::slotExtensionDataChanged(const QModelIndex& idx)
+{
+   emit dataChanged(idx,idx);
+}
+

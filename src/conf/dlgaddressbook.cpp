@@ -50,6 +50,11 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 
    m_pItemBackendW->setModel(ContactModel::instance()->backendModel());
 
+   //Resize the columns
+   m_pItemBackendW->header()->setResizeMode(0,QHeaderView::Stretch);
+   for (int i =1;i<ContactModel::instance()->backendModel()->columnCount();i++)
+      m_pItemBackendW->header()->setResizeMode(i,QHeaderView::ResizeToContents);
+
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
    connect(AkonadiContactCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));

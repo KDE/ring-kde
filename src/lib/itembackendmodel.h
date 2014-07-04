@@ -27,8 +27,11 @@
 #include "contactmodel.h"
 #include "abstractitembackend.h"
 
+//SFLPhone
+class AbstractItemBackendModelExtension;
 
-class LIB_EXPORT CommonItemBackendModel : public QAbstractItemModel
+
+class LIB_EXPORT CommonItemBackendModel : public QAbstractTableModel
 {
    Q_OBJECT
 public:
@@ -46,11 +49,14 @@ public:
 
    AbstractContactBackend* backendAt(const QModelIndex& index);
 
+   void addExtension(AbstractItemBackendModelExtension* extension);
+
    bool save();
    bool load();
 
 private Q_SLOTS:
    void slotUpdate();
+   void slotExtensionDataChanged(const QModelIndex& idx);
 
 Q_SIGNALS:
    void checkStateChanged();
@@ -71,6 +77,7 @@ private:
    };
    QHash<AbstractContactBackend*,ProxyItem*> m_hBackendsNodes;
    QVector<ProxyItem*> m_lTopLevelBackends;
+   QVector<AbstractItemBackendModelExtension*> m_lExtensions;
 
 };
 

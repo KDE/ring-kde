@@ -190,3 +190,9 @@ QByteArray MinimalHistoryBackend::id() const
 {
    return "mhb";
 }
+
+QList<Call*> MinimalHistoryBackend::items() const
+{
+   return QList<Call*>(); //TODO
+}
+

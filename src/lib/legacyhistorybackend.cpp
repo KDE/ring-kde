@@ -112,3 +112,9 @@ QByteArray LegacyHistoryBackend::id() const
 {
    return "lhb";
 }
+
+QList<Call*> LegacyHistoryBackend::items() const
+{
+   return QList<Call*>();
+}
+

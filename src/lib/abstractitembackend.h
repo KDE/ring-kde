@@ -96,6 +96,8 @@ public:
    QVector<AbstractItemBackendInterface<T>*> childrenBackends() const;
    void addChildren(AbstractItemBackendInterface<T>* c);
 
+   virtual QList<T*> items() const = 0;
+
 private:
    AbstractItemBackendInterface<T>* m_pParent;
    QVector<AbstractItemBackendInterface<T>*> m_lChildren;

@@ -39,6 +39,8 @@ public:
 
    virtual SupportedFeatures  supportedFeatures() const;
 
+   virtual QList<Call*> items() const override;
+
    ///Edit 'item', the implementation may be a GUI or somehting else
    virtual bool edit( Call* call);
    ///Add a new item to the backend

@@ -48,6 +48,7 @@ set( qtsflphone_LIB_SRCS
   contact.cpp
   phonenumber.cpp
   numbercategory.cpp
+  abstractitembackendmodelextension.cpp
   video/videodevice.cpp
   video/videorenderer.cpp
   video/videocodec.cpp
@@ -108,6 +109,9 @@ set( qtsflphone_LIB_SRCS
   sflphone_const.h
   categorizedcompositenode.cpp
   hookmanager.cpp
+
+  #Extension
+  extensions/presenceitembackendmodelextension.cpp
 )
 
 set( qtsflphone_LIB_HDRS
@@ -144,6 +148,7 @@ set( qtsflphone_LIB_HDRS
   abstractitembackend.h
   itembackendmodel.h
   hookmanager.h
+  abstractitembackendmodelextension.h
   video/videodevice.h
   video/videodevicemodel.h
   video/videocodec.h
@@ -153,6 +158,7 @@ set( qtsflphone_LIB_HDRS
   video/videoresolution.h
   video/videochannel.h
   video/videorate.h
+  extensions/presenceitembackendmodelextension.h
   #commonbackendmanagerinterface.h
 )
 

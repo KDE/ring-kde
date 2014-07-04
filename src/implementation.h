@@ -67,9 +67,15 @@ private:
 
 class KDEPresenceSerializationVisitor : public PresenceSerializationVisitor {
 public:
-   virtual void serialize();
-   virtual void load();
+   KDEPresenceSerializationVisitor():m_isLoaded(false){}
+   virtual void serialize() override;
+   virtual void load() override;
    virtual ~KDEPresenceSerializationVisitor();
+   virtual bool isTracked(AbstractItemBackendBase* backend) override;
+   virtual void setTracked(AbstractItemBackendBase* backend, bool tracked) override;
+private:
+   QHash<QString,bool> m_hTracked;
+   bool m_isLoaded;
 };
 
 #endif

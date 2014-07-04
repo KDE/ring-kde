@@ -261,6 +261,9 @@
     <entry name="presenceStatusList" type="StringList">
         <label>List of presence status</label>
     </entry>
+    <entry name="presenceAutoTrackedCollections" type="StringList">
+        <label>List of item collections automatically tracked</label>
+    </entry>
 
    <!-- Dock settings -->
     <entry name="displayContactDock" type="Bool">

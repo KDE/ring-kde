@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2013-2014 by Savoir-Faire Linux                         ***
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
@@ -15,21 +15,10 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef PRESENCESERIALIZATIONVISITOR_H
-#define PRESENCESERIALIZATIONVISITOR_H
+#include "abstractitembackendmodelextension.h"
 
-#include "../typedefs.h"
 
-class AbstractBookmarkModel;
-class AbstractItemBackendBase;
-
-class LIB_EXPORT PresenceSerializationVisitor {
-public:
-   virtual void serialize() = 0;
-   virtual void load     () = 0;
-   virtual bool isTracked(AbstractItemBackendBase* backend) = 0;
-   virtual void setTracked(AbstractItemBackendBase* backend, bool tracked) = 0;
-   virtual ~PresenceSerializationVisitor(){};
-};
-
-#endif //PRESENCESERIALIZATIONVISITOR_H
+AbstractItemBackendModelExtension::AbstractItemBackendModelExtension(QObject* parent) : QObject(parent)
+{
+   
+}

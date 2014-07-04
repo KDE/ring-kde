@@ -495,3 +495,8 @@ Akonadi::Collection AkonadiBackend::collection() const
 {
    return m_Coll;
 }
+
+QList<Contact*> AkonadiBackend::items() const
+{
+   return m_lBackendContacts;
+}

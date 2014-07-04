@@ -66,6 +66,7 @@
 #include "lib/itembackendmodel.h"
 #include "lib/visitors/itemmodelstateserializationvisitor.h"
 #include "klib/itemmodelserialization.h"
+#include "lib/extensions/presenceitembackendmodelextension.h"
 
 //sflphone
 #include "accountwizard.h"
@@ -165,6 +166,9 @@ SFLPhone::SFLPhone(QWidget *parent)
       VideoModel::instance();
       #endif
       init = true;
+
+      PresenceItemBackendModelExtension* ext = new PresenceItemBackendModelExtension(this);
+      ContactModel::instance()->backendModel()->addExtension(ext);
    }
 
    //Belong to setupActions(), but is needed now
