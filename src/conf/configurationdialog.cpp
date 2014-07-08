@@ -180,6 +180,8 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    connect(this, SIGNAL(okClicked())    , this, SLOT(applyCustomSettings()));
    connect(this, SIGNAL(cancelClicked()), this, SLOT(cancelSettings())     );
 
+   setMinimumSize(1024,600);
+
 } //ConfigurationDialog
 
 ///Destructor

@@ -175,6 +175,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(lineEdit_pa_published_address,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(lineEdit_pa_published_address,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pUserAgent,                      SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_tls_listener,              SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(m_pBitrateSB,                      SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_authority,                SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
@@ -198,6 +199,10 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit_credential_auth,              SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_credential_password,          SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pMinAudioPort,                   SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pMaxAudioPort,                   SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pMinVideoPort,                   SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pMaxVideoPort,                   SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(this,                              SIGNAL(updateButtons())                , parent , SLOT(updateButtons())                   );
    /**/connect(combo_security_STRP,               SIGNAL(currentIndexChanged(int))       , this   , SLOT(updateCombo(int))                  );
    /**/connect(button_add_credential,             SIGNAL(clicked())                      , this   , SLOT(addCredential())                   );
@@ -295,7 +300,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setTlsVerifyServer             ( check_tls_incoming->isChecked()                                          );
    /**/ ACC setTlsVerifyClient             ( check_tls_answer->isChecked()                                            );
    /**/ ACC setTlsRequireClientCertificate ( check_tls_requier_cert->isChecked()                                      );
-   /**/ ACC setTlsEnable                   ( group_security_tls->isChecked()                                          );
+   /**/ ACC setTlsEnabled                  ( group_security_tls->isChecked()                                          );
    /**/ ACC setDisplaySasOnce              ( checkbox_ZRTP_Ask_user->isChecked()                                      );
    /**/ ACC setSrtpRtpFallback             ( checkbox_SDES_fallback_rtp->isChecked()                                  );
    /**/ ACC setZrtpDisplaySas              ( checkbox_ZRTP_display_SAS->isChecked()                                   );
@@ -312,6 +317,11 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
    /**/ ACC setLocalPort                   ( spinBox_ni_local_port->value()                                           );
    /**/ ACC setSrtpEnabled                 ( groupbox_STRP_keyexchange->isChecked()                                   );
+   /**/ ACC setAudioPortMax                ( m_pMaxAudioPort->value()                                                 );
+   /**/ ACC setAudioPortMin                ( m_pMinAudioPort->value()                                                 );
+   /**/ ACC setVideoPortMax                ( m_pMaxVideoPort->value()                                                 );
+   /**/ ACC setVideoPortMin                ( m_pMinVideoPort->value()                                                 );
+   /**/ ACC setUserAgent                   ( m_pUserAgent->text()                                                     );
    //                                                                                                                  /
 
    /**/ ACC tlsCaListCertificate()->setPath( file_tls_authority->text()                                               );
@@ -413,8 +423,13 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/check_tls_incoming->setChecked           (  ACC isTlsVerifyServer               ());
    /**/check_tls_answer->setChecked             (  ACC isTlsVerifyClient               ());
    /**/check_tls_requier_cert->setChecked       (  ACC isTlsRequireClientCertificate   ());
-   /**/group_security_tls->setChecked           (  ACC isTlsEnable                     ());
+   /**/group_security_tls->setChecked           (  ACC isTlsEnabled                    ());
    /**/m_pAutoAnswer->setChecked                (  ACC isAutoAnswer                    ());
+   /**/m_pMinVideoPort->setValue                (  ACC videoPortMin                    ());
+   /**/m_pMaxVideoPort->setValue                (  ACC videoPortMax                    ());
+   /**/m_pMaxAudioPort->setValue                (  ACC audioPortMax                    ());
+   /**/m_pMinAudioPort->setValue                (  ACC audioPortMin                    ());
+   /**/m_pUserAgent->setText                    (  ACC userAgent                       ());
    /*                                                                                        */
 
    combo_security_STRP->setModel(ACC keyExchangeModel());

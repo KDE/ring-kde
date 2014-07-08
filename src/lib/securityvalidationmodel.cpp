@@ -150,7 +150,7 @@ void SecurityValidationModel::update()
     *********************************/
 
    /* If TLS is not enabled, everything else is worthless */
-   if (!m_pAccount->isTlsEnable()) {
+   if (!m_pAccount->isTlsEnabled()) {
       m_lCurrentFlaws << _F(TLS_DISABLED,Certificate::Type::NONE);
    }
 

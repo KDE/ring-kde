@@ -92,7 +92,7 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           tlsVerifyServer              READ isTlsVerifyServer             WRITE setTlsVerifyServer             )
    Q_PROPERTY(bool           tlsVerifyClient              READ isTlsVerifyClient             WRITE setTlsVerifyClient             )
    Q_PROPERTY(bool           tlsRequireClientCertificate  READ isTlsRequireClientCertificate WRITE setTlsRequireClientCertificate )
-   Q_PROPERTY(bool           tlsEnable                    READ isTlsEnable                   WRITE setTlsEnable                   )
+   Q_PROPERTY(bool           tlsEnabled                   READ isTlsEnabled                  WRITE setTlsEnabled                  )
    Q_PROPERTY(bool           displaySasOnce               READ isDisplaySasOnce              WRITE setDisplaySasOnce              )
    Q_PROPERTY(bool           srtpRtpFallback              READ isSrtpRtpFallback             WRITE setSrtpRtpFallback             )
    Q_PROPERTY(bool           zrtpDisplaySas               READ isZrtpDisplaySas              WRITE setZrtpDisplaySas              )
@@ -109,6 +109,13 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           supportPresencePublish       READ supportPresencePublish                                             )
    Q_PROPERTY(bool           supportPresenceSubscribe     READ supportPresenceSubscribe                                           )
    Q_PROPERTY(bool           presenceEnabled              READ presenceEnabled               WRITE setPresenceEnabled NOTIFY presenceEnabledChanged)
+   Q_PROPERTY(bool           videoEnabled                 READ videoEnabled                  WRITE setVideoEnabled                )
+   Q_PROPERTY(int            videoPortMax                 READ videoPortMax                  WRITE setVideoPortMax                )
+   Q_PROPERTY(int            videoPortMin                 READ videoPortMin                  WRITE setVideoPortMin                )
+   Q_PROPERTY(int            audioPortMax                 READ audioPortMax                  WRITE setAudioPortMax                )
+   Q_PROPERTY(int            audioPortMin                 READ audioPortMin                  WRITE setAudioPortMin                )
+   Q_PROPERTY(QString        userAgent                    READ userAgent                     WRITE setUserAgent                   )
+
 
    public:
       ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
@@ -184,7 +191,7 @@ class LIB_EXPORT Account : public QObject {
          TlsVerifyServer             = 126,
          TlsVerifyClient             = 127,
          TlsRequireClientCertificate = 128,
-         TlsEnable                   = 129,
+         TlsEnabled                  = 129,
          DisplaySasOnce              = 130,
          SrtpRtpFallback             = 131,
          ZrtpDisplaySas              = 132,
@@ -220,6 +227,18 @@ class LIB_EXPORT Account : public QObject {
          constexpr static const char* LOCAL_PORT             = "Account.localPort"                 ;
          constexpr static const char* PUBLISHED_PORT         = "Account.publishedPort"             ;
          constexpr static const char* PUBLISHED_ADDRESS      = "Account.publishedAddress"          ;
+         constexpr static const char* USER_AGENT             = "Account.useragent"                 ;
+         class Audio {
+         public:
+            constexpr static const char* PORT_MAX            = "Account.audioPortMax"              ;
+            constexpr static const char* PORT_MIN            = "Account.audioPortMin"              ;
+         };
+         class Video {
+         public:
+            constexpr static const char* ENABLED             = "Account.videoEnabled"              ;
+            constexpr static const char* PORT_MAX            = "Account.videoPortMax"              ;
+            constexpr static const char* PORT_MIN            = "Account.videoPortMin"              ;
+         };
          class STUN {
          public:
             constexpr static const char* SERVER              = "STUN.server"                       ;
@@ -229,7 +248,7 @@ class LIB_EXPORT Account : public QObject {
          public:
             constexpr static const char* SUPPORT_PUBLISH     = "Account.presencePublishSupported"  ;
             constexpr static const char* SUPPORT_SUBSCRIBE   = "Account.presenceSubscribeSupported";
-            constexpr static const char* ENABLE              = "Account.presenceEnabled"           ;
+            constexpr static const char* ENABLED             = "Account.presenceEnabled"           ;
          };
          class Registration {
          public:
@@ -257,7 +276,7 @@ class LIB_EXPORT Account : public QObject {
          class TLS {
          public:
             constexpr static const char* LISTENER_PORT       = "TLS.listenerPort"                  ;
-            constexpr static const char* ENABLE              = "TLS.enable"                        ;
+            constexpr static const char* ENABLED             = "TLS.enable"                        ;
             constexpr static const char* PORT                = "TLS.port"                          ;
             constexpr static const char* CA_LIST_FILE        = "TLS.certificateListFile"           ;
             constexpr static const char* CERTIFICATE_FILE    = "TLS.certificateFile"               ;
@@ -344,7 +363,7 @@ class LIB_EXPORT Account : public QObject {
       bool    isTlsVerifyServer            () const;
       bool    isTlsVerifyClient            () const;
       bool    isTlsRequireClientCertificate() const;
-      bool    isTlsEnable                  () const;
+      bool    isTlsEnabled                 () const;
       bool    isRingtoneEnabled            () const;
       QString ringtonePath                 () const;
       QString lastErrorMessage             () const;
@@ -359,6 +378,12 @@ class LIB_EXPORT Account : public QObject {
       bool    supportPresencePublish       () const;
       bool    supportPresenceSubscribe     () const;
       bool    presenceEnabled              () const;
+      bool    videoEnabled                 () const;
+      int     videoPortMax                 () const;
+      int     videoPortMin                 () const;
+      int     audioPortMin                 () const;
+      int     audioPortMax                 () const;
+      QString userAgent                    () const;
       Account::Protocol      protocol      () const;
       TlsMethodModel::Type   tlsMethod     () const;
       KeyExchangeModel::Type keyExchange   () const;
@@ -398,7 +423,7 @@ class LIB_EXPORT Account : public QObject {
       void setTlsVerifyServer               (bool detail);
       void setTlsVerifyClient               (bool detail);
       void setTlsRequireClientCertificate   (bool detail);
-      void setTlsEnable                     (bool detail);
+      void setTlsEnabled                    (bool detail);
       void setDisplaySasOnce                (bool detail);
       void setSrtpRtpFallback               (bool detail);
       void setSrtpEnabled                   (bool detail);
@@ -409,7 +434,13 @@ class LIB_EXPORT Account : public QObject {
       void setPublishedSameAsLocal          (bool detail);
       void setRingtoneEnabled               (bool detail);
       void setPresenceEnabled               (bool enable);
+      void setVideoEnabled                  (bool enable);
+      void setAudioPortMax                  (int port   );
+      void setAudioPortMin                  (int port   );
+      void setVideoPortMax                  (int port   );
+      void setVideoPortMin                  (int port   );
       void setDTMFType                      (DtmfType type);
+      void setUserAgent                     (const QString& agent);
 
       void setRoleData(int role, const QVariant& value);
 

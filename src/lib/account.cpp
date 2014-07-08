@@ -533,9 +533,9 @@ bool Account::isTlsRequireClientCertificate() const
 }
 
 ///Return the account TLS security is enabled
-bool Account::isTlsEnable() const
+bool Account::isTlsEnabled() const
 { 
-   return (accountDetail(Account::MapField::TLS::ENABLE) IS_TRUE);
+   return (accountDetail(Account::MapField::TLS::ENABLED) IS_TRUE);
 }
 
 ///Return the account the TLS encryption method
@@ -640,7 +640,37 @@ bool Account::supportPresenceSubscribe() const
 
 bool Account::presenceEnabled() const
 {
-   return accountDetail(Account::MapField::Presence::ENABLE) IS_TRUE;
+   return accountDetail(Account::MapField::Presence::ENABLED) IS_TRUE;
+}
+
+bool Account::videoEnabled() const
+{
+   return accountDetail(Account::MapField::Video::ENABLED) IS_TRUE;
+}
+
+int Account::videoPortMax() const
+{
+   return accountDetail(Account::MapField::Video::PORT_MAX).toInt();
+}
+
+int Account::videoPortMin() const
+{
+   return accountDetail(Account::MapField::Video::PORT_MIN).toInt();
+}
+
+int Account::audioPortMin() const
+{
+   return accountDetail(Account::MapField::Audio::PORT_MIN).toInt();
+}
+
+int Account::audioPortMax() const
+{
+   return accountDetail(Account::MapField::Audio::PORT_MAX).toInt();
+}
+
+QString Account::userAgent() const
+{
+   return accountDetail(Account::MapField::USER_AGENT);
 }
 
 QVariant Account::roleData(int role) const
@@ -704,8 +734,8 @@ QVariant Account::roleData(int role) const
          return isTlsVerifyClient();
       case Account::Role::TlsRequireClientCertificate:
          return isTlsRequireClientCertificate();
-      case Account::Role::TlsEnable:
-         return isTlsEnable();
+      case Account::Role::TlsEnabled:
+         return isTlsEnabled();
       case Account::Role::DisplaySasOnce:
          return isDisplaySasOnce();
       case Account::Role::SrtpRtpFallback:
@@ -1005,9 +1035,9 @@ void Account::setTlsRequireClientCertificate(bool detail)
 }
 
 ///Set if the security settings are enabled
-void Account::setTlsEnable(bool detail)
+void Account::setTlsEnabled(bool detail)
 {
-   setAccountDetail(Account::MapField::TLS::ENABLE ,(detail)TO_BOOL);
+   setAccountDetail(Account::MapField::TLS::ENABLED ,(detail)TO_BOOL);
 }
 
 void Account::setDisplaySasOnce(bool detail)
@@ -1058,8 +1088,39 @@ void Account::setRingtoneEnabled(bool detail)
 
 void Account::setPresenceEnabled(bool enable)
 {
-   setAccountDetail(Account::MapField::Presence::ENABLE, (enable)TO_BOOL);
+   setAccountDetail(Account::MapField::Presence::ENABLED, (enable)TO_BOOL);
    emit presenceEnabledChanged(enable);
+}
+
+///Use video by default when available
+void Account::setVideoEnabled(bool enable)
+{
+   setAccountDetail(Account::MapField::Video::ENABLED, (enable)TO_BOOL);
+}
+
+void Account::setAudioPortMax(int port )
+{
+   setAccountDetail(Account::MapField::Audio::PORT_MAX, QString::number(port));
+}
+
+void Account::setAudioPortMin(int port )
+{
+   setAccountDetail(Account::MapField::Audio::PORT_MIN, QString::number(port));
+}
+
+void Account::setVideoPortMax(int port )
+{
+   setAccountDetail(Account::MapField::Video::PORT_MAX, QString::number(port));
+}
+
+void Account::setVideoPortMin(int port )
+{
+   setAccountDetail(Account::MapField::Video::PORT_MIN, QString::number(port));
+}
+
+void Account::setUserAgent(const QString& agent)
+{
+   setAccountDetail(Account::MapField::USER_AGENT, agent);
 }
 
 ///Set the DTMF type
@@ -1176,8 +1237,8 @@ void Account::setRoleData(int role, const QVariant& value)
       case Account::Role::TlsRequireClientCertificate:
          setTlsRequireClientCertificate(value.toBool());
          break;
-      case Account::Role::TlsEnable:
-         setTlsEnable(value.toBool());
+      case Account::Role::TlsEnabled:
+         setTlsEnabled(value.toBool());
          break;
       case Account::Role::DisplaySasOnce:
          setDisplaySasOnce(value.toBool());

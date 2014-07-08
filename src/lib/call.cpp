@@ -732,7 +732,7 @@ bool Call::isSecure() const
       return false;
    }
    //BUG this doesn't work
-   return m_Account && ((m_Account->isTlsEnable()) || (m_Account->tlsMethod() != TlsMethodModel::Type::DEFAULT));
+   return m_Account && ((m_Account->isTlsEnabled()) || (m_Account->tlsMethod() != TlsMethodModel::Type::DEFAULT));
 } //isSecure
 
 ///Return the renderer associated with this call or nullptr

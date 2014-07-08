@@ -122,7 +122,7 @@ void AccountListModel::setupRoleName()
    roles.insert(Account::Role::TlsVerifyServer          ,QByteArray("tlsVerifyServer"               ));
    roles.insert(Account::Role::TlsVerifyClient          ,QByteArray("tlsVerifyClient"               ));
    roles.insert(Account::Role::TlsRequireClientCertificate,QByteArray("tlsRequireClientCertificate" ));
-   roles.insert(Account::Role::TlsEnable                ,QByteArray("tlsEnable"                     ));
+   roles.insert(Account::Role::TlsEnabled               ,QByteArray("tlsEnabled"                    ));
    roles.insert(Account::Role::DisplaySasOnce           ,QByteArray("displaySasOnce"                ));
    roles.insert(Account::Role::SrtpRtpFallback          ,QByteArray("srtpRtpFallback"               ));
    roles.insert(Account::Role::ZrtpDisplaySas           ,QByteArray("zrtpDisplaySas"                ));
