@@ -55,6 +55,7 @@ private:
    VideoScene*          m_pScene  ;
    QGLWidget*           m_pWdg    ;
    QHash<VideoRenderer*,VideoGLFrame*> m_hFrames;
+   VideoDevice*         m_pBackDevice;
 
 public Q_SLOTS:
    void addRenderer(VideoRenderer* renderer);

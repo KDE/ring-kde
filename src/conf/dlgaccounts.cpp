@@ -160,6 +160,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(m_pDTMFOverRTP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverSIP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pAutoAnswer,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pEnableVideo,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_regExpire,                 SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(spinBox_pa_published_port,         SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(comboBox_ni_local_address,         SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
@@ -322,6 +323,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setVideoPortMax                ( m_pMaxVideoPort->value()                                                 );
    /**/ ACC setVideoPortMin                ( m_pMinVideoPort->value()                                                 );
    /**/ ACC setUserAgent                   ( m_pUserAgent->text()                                                     );
+   /**/ ACC setVideoEnabled                ( m_pEnableVideo->isChecked()                                              );
    //                                                                                                                  /
 
    /**/ ACC tlsCaListCertificate()->setPath( file_tls_authority->text()                                               );
@@ -404,6 +406,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/checkbox_ZRTP_warn_supported->setChecked (  ACC isZrtpNotSuppWarning            ());
    /**/checkbox_ZTRP_send_hello->setChecked     (  ACC isZrtpHelloHash                 ());
    /**/checkbox_stun->setChecked                (  ACC isSipStunEnabled                ());
+   /**/m_pEnableVideo->setChecked               (  ACC isVideoEnabled                  ());
    /**/line_stun->setText                       (  ACC sipStunServer                   ());
    /**/spinbox_regExpire->setValue              (  ACC registrationExpire              ());
    /**/radioButton_pa_same_as_local->setChecked (  ACC isPublishedSameAsLocal          ());
@@ -437,6 +440,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
    if (!(ACC keyExchange() == KeyExchangeModel::Type::NONE)) {
       /**/combo_security_STRP->setCurrentIndex     (  ACC keyExchangeModel()->toIndex( ACC keyExchange()).row());
    }
+
+   m_pCodecsLW->setEnabled(ACC isVideoEnabled ());
 
    updateCombo(0);
 

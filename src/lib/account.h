@@ -109,7 +109,7 @@ class LIB_EXPORT Account : public QObject {
    Q_PROPERTY(bool           supportPresencePublish       READ supportPresencePublish                                             )
    Q_PROPERTY(bool           supportPresenceSubscribe     READ supportPresenceSubscribe                                           )
    Q_PROPERTY(bool           presenceEnabled              READ presenceEnabled               WRITE setPresenceEnabled NOTIFY presenceEnabledChanged)
-   Q_PROPERTY(bool           videoEnabled                 READ videoEnabled                  WRITE setVideoEnabled                )
+   Q_PROPERTY(bool           videoEnabled                 READ isVideoEnabled                WRITE setVideoEnabled                )
    Q_PROPERTY(int            videoPortMax                 READ videoPortMax                  WRITE setVideoPortMax                )
    Q_PROPERTY(int            videoPortMin                 READ videoPortMin                  WRITE setVideoPortMin                )
    Q_PROPERTY(int            audioPortMax                 READ audioPortMax                  WRITE setAudioPortMax                )
@@ -378,7 +378,7 @@ class LIB_EXPORT Account : public QObject {
       bool    supportPresencePublish       () const;
       bool    supportPresenceSubscribe     () const;
       bool    presenceEnabled              () const;
-      bool    videoEnabled                 () const;
+      bool    isVideoEnabled               () const;
       int     videoPortMax                 () const;
       int     videoPortMin                 () const;
       int     audioPortMin                 () const;

@@ -643,7 +643,7 @@ bool Account::presenceEnabled() const
    return accountDetail(Account::MapField::Presence::ENABLED) IS_TRUE;
 }
 
-bool Account::videoEnabled() const
+bool Account::isVideoEnabled() const
 {
    return accountDetail(Account::MapField::Video::ENABLED) IS_TRUE;
 }

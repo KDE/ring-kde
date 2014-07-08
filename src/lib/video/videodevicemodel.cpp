@@ -276,6 +276,11 @@ void ExtendedVideoDeviceModel::switchTo(const int idx)
    };
 }
 
+void ExtendedVideoDeviceModel::switchTo(VideoDevice* device)
+{
+   DBus::VideoManager::instance().switchInput(ProtocolPrefix::V4L2 + device->id());
+}
+
 VideoDevice* ExtendedVideoDeviceModel::deviceAt(const QModelIndex& idx) const
 {
    if (!idx.isValid()) return nullptr;

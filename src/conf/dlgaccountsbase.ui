@@ -222,7 +222,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -799,7 +799,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>150</height>
+              <height>222</height>
              </size>
             </property>
            </spacer>
@@ -1204,7 +1204,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>555</width>
+               <width>513</width>
                <height>734</height>
               </rect>
              </property>
@@ -1852,11 +1852,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>387</x>
-     <y>427</y>
+     <y>194</y>
     </hint>
     <hint type="destinationlabel">
-     <x>838</x>
-     <y>428</y>
+     <x>804</x>
+     <y>195</y>
     </hint>
    </hints>
   </connection>
@@ -1867,12 +1867,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>390</x>
-     <y>519</y>
+     <x>403</x>
+     <y>599</y>
     </hint>
     <hint type="destinationlabel">
-     <x>469</x>
-     <y>519</y>
+     <x>804</x>
+     <y>601</y>
     </hint>
    </hints>
   </connection>
@@ -1883,12 +1883,28 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>310</x>
-     <y>518</y>
+     <x>403</x>
+     <y>599</y>
     </hint>
     <hint type="destinationlabel">
      <x>348</x>
      <y>439</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pEnableVideo</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_pCodecsLW</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>357</x>
+     <y>343</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>357</x>
+     <y>470</y>
     </hint>
    </hints>
   </connection>

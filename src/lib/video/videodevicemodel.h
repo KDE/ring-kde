@@ -71,6 +71,7 @@ private:
 public Q_SLOTS:
    void switchTo(const QModelIndex& idx);
    void switchTo(const int idx);
+   void switchTo(VideoDevice* device);
    void setFile(const QUrl& url);
    void setDisplay(int index, QRect rect = QRect(0,0,0,0));
 };

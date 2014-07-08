@@ -47,7 +47,7 @@
 #endif
 
 
-VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent)
+VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevice(nullptr)
 {
    connect(VideoModel::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
@@ -164,12 +164,12 @@ void VideoWidget3::slotShowPreview(bool show)
 
 void VideoWidget3::slotMuteOutgoindVideo(bool mute)
 {
-   if (VideoModel::instance()->isPreviewing() && mute)
-      VideoModel::instance()->stopPreview();
-   else {
-      VideoModel::instance()->startPreview();
-      if (ActionCollection::instance()->videoPreviewAction()->isChecked())
-         slotShowPreview(true);
+   if (mute) {
+      m_pBackDevice = VideoDeviceModel::instance()->activeDevice();
+      ExtendedVideoDeviceModel::instance()->switchTo(ExtendedVideoDeviceModel::ExtendedDeviceList::NONE);
+   }
+   else if (m_pBackDevice) {
+      ExtendedVideoDeviceModel::instance()->switchTo(m_pBackDevice);
    }
 }
 
@@ -185,4 +185,3 @@ void VideoWidget3::slotPreviewEnabled(bool show)
       slotShowPreview(true);
    }
 }
-
