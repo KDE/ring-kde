@@ -142,20 +142,19 @@ SET(
 )
 
 # Video Widgets
-IF(${ENABLE_VIDEO} MATCHES true)
+IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET(
       sflphone_client_kde_VIDEO
       widgets/videodock.cpp
       widgets/videosettings.cpp
 #       widgets/videowidget.cpp #Software rendering, can still be useful
-      widgets/videowidget2.cpp #Needed for preview
       widgets/videowidget3.cpp
       widgets/videoglframe.cpp
       widgets/videoscene.cpp
       widgets/videotoolbar.cpp
       conf/dlgvideo.cpp
    )
-ENDIF(${ENABLE_VIDEO} MATCHES true)
+ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
 SET(
    sflphone_client_kde_SRCS
@@ -209,7 +208,7 @@ SET(
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
 
-IF(${ENABLE_VIDEO} MATCHES true)
+IF(NOT (${ENABLE_VIDEO} MATCHES false))
    MESSAGE("VIDEO enabled")
    SET(ENABLE_VIDEO 1 CACHE BOOLEAN "Enable video")
    add_definitions( -DENABLE_VIDEO=true )
@@ -218,7 +217,7 @@ IF(${ENABLE_VIDEO} MATCHES true)
       ${config_ui_files}
       conf/dlgvideobase.ui
    )
-ENDIF(${ENABLE_VIDEO} MATCHES true)
+ENDIF(NOT ${ENABLE_VIDEO} MATCHES false)
 
 IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    MESSAGE("KUniqueApplication disabled")
@@ -235,9 +234,9 @@ QT4_ADD_DBUS_INTERFACES(sflphone_client_kde_SRCS ${KDE4_DBUS_INTERFACES_DIR}/org
 # QT4_AUTOMOC( ${sflphone_client_kde_SRCS} )
 KDE4_ADD_EXECUTABLE(sflphone-client-kde ${sflphone_client_kde_SRCS} ${QtApp_RCC_SRCS})
 
-IF(${ENABLE_VIDEO} MATCHES true)
-   SET( OPENGL_link   ${QT_QTOPENGL_LIBRARY} -lGL -lGLU)
-ENDIF(${ENABLE_VIDEO} MATCHES true)
+IF(NOT (${ENABLE_VIDEO} MATCHES false))
+   SET( OPENGL_link   ${QT_QTOPENGL_LIBRARY} -lGL)# -lGLU
+ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
 TARGET_LINK_LIBRARIES(sflphone-client-kde ksflphone qtsflphone  ${KDE4_KDEUI_LIBS} ${OPENGL_link} ${KDE4_KIO_LIBS} ${KDEPIMLIBS_AKONADI_KMIME_LIBS} ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${X11_LIBRARIES})
 
