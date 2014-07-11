@@ -291,8 +291,11 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    aNewStruct->conference = false;
 
    m_sPrivateCallList_call  [ call       ] = aNewStruct;
-   if (call->lifeCycleState() != Call::LifeCycleState::FINISHED)
+   if (call->lifeCycleState() != Call::LifeCycleState::FINISHED) {
+      beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
       m_lInternalModel << aNewStruct;
+      endInsertRows();
+   }
    m_sPrivateCallList_callId[ call->id() ] = aNewStruct;
 
    if (call->lifeCycleState() != Call::LifeCycleState::FINISHED)
@@ -343,25 +346,9 @@ Call* CallModel::addRingingCall(const QString& callId)
    return addCall(Call::buildRingingCall(callId));
 }
 
-///Remove a call and update the internal structure
-void CallModel::removeCall(Call* call, bool noEmit)
+///Properly remove an internal from the Qt model
+void CallModel::removeInternal(InternalStruct* internal)
 {
-   InternalStruct* internal = m_sPrivateCallList_call[call];
-
-   if (!internal || !call) {
-      qDebug() << "Cannot remove call: call not found";
-      return;
-   }
-
-   if (m_sPrivateCallList_call[call] != nullptr) {
-      m_lInternalModel.removeAll(m_sPrivateCallList_call[call]);
-      //NOTE Do not free the memory, it can still be used elsewhere or in modelindexes
-   }
-
-   if (m_sPrivateCallList_callId[m_sPrivateCallList_callId.key(internal)] == internal) {
-      m_sPrivateCallList_callId.remove(m_sPrivateCallList_callId.key(internal));
-   }
-
    const int idx = m_lInternalModel.indexOf(internal);
    //Exit if the call is not found
    if (idx == -1) {
@@ -370,17 +357,41 @@ void CallModel::removeCall(Call* call, bool noEmit)
    }
 
    //Using layoutChanged would SEGFAULT when an editor is open
-   if (!noEmit)
-      beginRemoveRows(QModelIndex(),idx,idx);
+   beginRemoveRows(QModelIndex(),idx,idx);
    m_lInternalModel.removeAt(idx);
-   if (!noEmit)
-      endRemoveRows();
+   endRemoveRows();
+}
+
+///Remove a call and update the internal structure
+void CallModel::removeCall(Call* call, bool noEmit)
+{
+   Q_UNUSED(noEmit)
+   InternalStruct* internal = m_sPrivateCallList_call[call];
+
+   if (!internal || !call) {
+      qDebug() << "Cannot remove call: call not found";
+      return;
+   }
+
+   if (m_sPrivateCallList_call[call] != nullptr) {
+      removeInternal(m_sPrivateCallList_call[call]);
+      //NOTE Do not free the memory, it can still be used elsewhere or in modelindexes
+   }
+
+   if (m_sPrivateCallList_callId[m_sPrivateCallList_callId.key(internal)] == internal) {
+      m_sPrivateCallList_callId.remove(m_sPrivateCallList_callId.key(internal));
+   }
+
+   removeInternal(internal);
 
    //Restore calls to the main list if they are not really over
    if (internal->m_lChildren.size()) {
       foreach(InternalStruct* child,internal->m_lChildren) {
-         if (child->call_real->state() != Call::State::OVER && child->call_real->state() != Call::State::ERROR)
+         if (child->call_real->state() != Call::State::OVER && child->call_real->state() != Call::State::ERROR) {
+            beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
             m_lInternalModel << child;
+            endInsertRows();
+         }
       }
    }
 
@@ -397,7 +408,7 @@ void CallModel::removeCall(Call* call, bool noEmit)
             || topLevel->m_lChildren.last() ->call_real->state() == Call::State::ERROR))
             removeConference(topLevel->call_real);
    }
-   if (!noEmit)
+//    if (!noEmit)
       emit layoutChanged();
 } //removeCall
 
@@ -477,14 +488,16 @@ Call* CallModel::addConference(const QString& confID)
 
       m_sPrivateCallList_call[newConf]  = aNewStruct;
       m_sPrivateCallList_callId[confID] = aNewStruct;
+      beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
       m_lInternalModel << aNewStruct;
+      endInsertRows();
 
       foreach(const QString& callId,callList) {
          InternalStruct* callInt = m_sPrivateCallList_callId[callId];
          if (callInt) {
             if (callInt->m_pParent && callInt->m_pParent != aNewStruct)
                callInt->m_pParent->m_lChildren.removeAll(callInt);
-            m_lInternalModel.removeAll(callInt);
+            removeInternal(callInt);
             callInt->m_pParent = aNewStruct;
             callInt->call_real->setProperty("dropState",0);
             if (aNewStruct->m_lChildren.indexOf(callInt) == -1)
@@ -958,7 +971,9 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->lifeCycleState() != Call::LifeCycleState::FINISHED) {
             qDebug() << "Remove" << child->call_real << "from" << conf;
             child->m_pParent = nullptr;
+            beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
             m_lInternalModel << child;
+            endInsertRows();
             const QModelIndex idx = getIndex(child->call_real);
          }
       }
@@ -968,7 +983,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          if (callInt) {
             if (callInt->m_pParent && callInt->m_pParent != confInt)
                callInt->m_pParent->m_lChildren.removeAll(callInt);
-            m_lInternalModel.removeAll(callInt);
+            removeInternal(callInt);
             callInt->m_pParent = confInt;
             confInt->m_lChildren << callInt;
          }
@@ -1004,7 +1019,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
                qWarning() << "Found an orphan call";
                InternalStruct* confInt2 = m_sPrivateCallList_callId[confId];
                if (confInt2 && confInt2->call_real->isConference() && !callInt->call_real->isConference()) {
-                  m_lInternalModel.removeAll(callInt);
+                  removeInternal(callInt);
                   if (confInt2->m_lChildren.indexOf(callInt) == -1)
                      confInt2->m_lChildren << callInt;
                }

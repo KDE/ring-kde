@@ -77,7 +77,7 @@ private Q_SLOTS:
    void slotDoubleClicked(const QModelIndex& idx);
 
 Q_SIGNALS:
-   void requestVisibility(bool visible);
+   void requestVisibility(bool visible, bool hasCall);
    void doubleClicked(PhoneNumber* n);
 };
 

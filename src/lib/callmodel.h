@@ -121,6 +121,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       bool isPartOf(const QModelIndex& confIdx, Call* call);
       void initRoles();
       void removeConference       ( Call* conf                    );
+      void removeInternal(InternalStruct* internal);
 
    private Q_SLOTS:
       void slotCallStateChanged   ( const QString& callID    , const QString &state   );

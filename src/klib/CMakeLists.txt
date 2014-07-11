@@ -45,9 +45,9 @@ set( ksflphone_LIB_SRCS
 )
 
 KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)
- 
+
 kde4_add_library( ksflphone  SHARED ${ksflphone_LIB_SRCS} )
- 
+
 target_link_libraries( ksflphone
   qtsflphone
   ${QT_QTCORE_LIBRARY}

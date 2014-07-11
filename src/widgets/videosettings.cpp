@@ -26,6 +26,9 @@ VideoSettings::VideoSettings(QWidget* parent) : QWidget(parent)
 {
    setupUi(this);
    slotReloadDevices();
+   m_pChannel->blockSignals(true);
+   m_pChannel->setModel(VideoDeviceModel::instance()->activeDevice());
+   m_pChannel->blockSignals(false);
 }
 
 void VideoSettings::setDevice(VideoDevice* dev)
@@ -54,7 +57,7 @@ void VideoSettings::slotReloadDevices()
 
 void VideoSettings::slotChannelChanged(int idx)
 {
-   if (m_pChannel->count() == 0) return;
+   if (m_pChannel->count() == 0 && (idx != -1)) return;
 
    if (idx != -1 && idx >= VideoDeviceModel::instance()->activeDevice()->channelList().size()) {
       VideoDeviceModel::instance()->activeDevice()->setActiveChannel(idx);
@@ -70,7 +73,7 @@ void VideoSettings::slotChannelChanged(int idx)
 
 void VideoSettings::slotResolutionChanged(int idx)
 {
-   if (m_pResolution->count() == 0) return;
+   if (m_pResolution->count() == 0 && (idx != -1)) return;
 
    if (idx >= 0 && VideoDeviceModel::instance()->activeDevice()->activeChannel()->validResolutions().size() >idx) {
       VideoDeviceModel::instance()->activeDevice()->activeChannel()->setActiveResolution(idx);
@@ -88,7 +91,7 @@ void VideoSettings::slotResolutionChanged(int idx)
 
 void VideoSettings::slotRateChanged(int idx)
 {
-   if (m_pRate->count() == 0) return;
+   if (m_pRate->count() == 0 && (idx != -1)) return;
 
    if (idx == -1 || idx >= VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().size()) {
       m_pRate->setCurrentIndex(
@@ -103,7 +106,7 @@ void VideoSettings::slotRateChanged(int idx)
 
 void VideoSettings::slotDeviceChanged(int idx)
 {
-   if (m_pDevice->count() == 0) return;
+   if (m_pDevice->count() == 0 && (idx != -1)) return;
 
    VideoDeviceModel::instance()->setActive(VideoDeviceModel::instance()->index(idx,0));
    m_pChannel->blockSignals(true);

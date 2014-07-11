@@ -189,9 +189,9 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
 
 void AutoCompletion::slotVisibilityChange(bool visible)
 {
-   if (!visible && (!m_pModel->call() || m_pModel->call()->state() != Call::State::DIALING))
+   if (!visible && ((!m_pModel->call()) || (m_pModel->call()->state() != Call::State::DIALING)))
       m_pModel->setCall(nullptr);
-   emit requestVisibility(visible);
+   emit requestVisibility(visible,m_pModel->call()!=nullptr);
 }
 
 void AutoCompletion::slotDoubleClicked(const QModelIndex& idx)

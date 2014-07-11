@@ -1060,12 +1060,16 @@ void Call::refuse()
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    qDebug() << "Refusing call. callId : " << m_CallId  << "ConfId:" << m_ConfId;
-   Q_NOREPLY callManager.refuse(m_CallId);
+   const bool ret = callManager.refuse(m_CallId);
    time_t curTime;
    ::time(&curTime);
    setStartTimeStamp(curTime);
    this->m_HistoryState = Call::LegacyHistoryState::MISSED;
    m_Missed = true;
+
+   //If the daemon crashed then re-spawned when a call is ringing, this happen.
+   if (!ret)
+      changeCurrentState(Call::State::ERROR);
 }
 
 ///Accept the transfer
@@ -1116,10 +1120,7 @@ void Call::hangUp()
       ret = callManager.hangUpConference(m_ConfId);
    if (!ret) { //Can happen if the daemon crash and open again
       qDebug() << "Error: Invalid call, the daemon may have crashed";
-      m_CurrentState = Call::State::OVER;
-      emit stateChanged();
-      emit changed();
-      emit changed(this);
+      changeCurrentState(Call::State::OVER);
    }
    if (m_pTimer)
       m_pTimer->stop();
@@ -1146,7 +1147,7 @@ void Call::cancel()
 //    Q_NOREPLY callManager.hangUp(m_CallId);
    if (!callManager.hangUp(m_CallId)) {
       qWarning() << "HangUp failed, the call was probably already over";
-      changeCurrentState(Call::State::ERROR);
+      changeCurrentState(Call::State::OVER);
    }
 }
 

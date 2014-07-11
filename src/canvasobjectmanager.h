@@ -137,6 +137,7 @@ public:
       CALL_ENDED           = 0x01<<16, /* When a call end                                   */
       BUDDY_IN             = 0x01<<17, /* When a buggy log in                               */
       BUDDY_OUT            = 0x01<<18, /* When a buddy log out                              */
+      USER_CANCEL          = 0x01<<19, /* When the user press escape                        */
 //       LEFT_CONFERENCE   = 0x01<<18, /* Someone left a conference                         */
 //       JOIN_CONFERENCE   = 0x01<<19, /* Someone joined a conference                       */
    };
@@ -171,7 +172,7 @@ private:
    };
 
    //Constants
-   static const char EVENT_COUNT   = 20;
+   static const char EVENT_COUNT   = 21;
    static const char ELEMENT_COUNT = 9 ;
 
    //Attributes
