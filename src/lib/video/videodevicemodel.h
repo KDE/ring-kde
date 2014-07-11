@@ -46,6 +46,8 @@ public:
 
    VideoDevice* deviceAt(const QModelIndex& idx) const;
 
+   int activeIndex() const;
+
    //Singleton
    static ExtendedVideoDeviceModel* instance();
 private:
@@ -67,6 +69,7 @@ private:
    static ExtendedVideoDeviceModel* m_spInstance;
    QUrl m_CurrentFile;
    Display m_Display;
+   int m_CurrentSelection;
 
 public Q_SLOTS:
    void switchTo(const QModelIndex& idx);

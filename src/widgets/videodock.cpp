@@ -137,6 +137,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
 
    KComboBox* device = new KComboBox(this);
    device->setModel(ExtendedVideoDeviceModel::instance());
+   device->setCurrentIndex(ExtendedVideoDeviceModel::instance()->activeIndex());
    m_pMoreOpts->addWidget(device,1,1,2,1);
    connect(btn,SIGNAL(toggled(bool)),moreOptions,SLOT(setVisible(bool)));
    connect(device,SIGNAL(currentIndexChanged(int)),ExtendedVideoDeviceModel::instance(),SLOT(switchTo(int)));
@@ -210,7 +211,6 @@ void VideoDock::slotDeviceChanged(int index)
          m_pVideoSettings->setVisible(true);
    };
 }
-
 
 void VideoDock::slotFileSelected(const KUrl& url)
 {

@@ -180,7 +180,8 @@ int VideoDeviceModel::activeIndex() const
 
 ExtendedVideoDeviceModel* ExtendedVideoDeviceModel::m_spInstance = nullptr;
 
-ExtendedVideoDeviceModel::ExtendedVideoDeviceModel() : QAbstractListModel(QCoreApplication::instance())
+ExtendedVideoDeviceModel::ExtendedVideoDeviceModel() : QAbstractListModel(QCoreApplication::instance()),
+m_CurrentSelection(-1)
 {
    m_Display.rect = QRect(0,0,0,0);
 }
@@ -274,6 +275,7 @@ void ExtendedVideoDeviceModel::switchTo(const int idx)
             VideoDeviceModel::instance()->index(idx-ExtendedDeviceList::__COUNT,0).data(Qt::DisplayRole).toString());
          break;
    };
+   m_CurrentSelection = (ExtendedDeviceList) idx;
 }
 
 void ExtendedVideoDeviceModel::switchTo(VideoDevice* device)
@@ -292,6 +294,14 @@ VideoDevice* ExtendedVideoDeviceModel::deviceAt(const QModelIndex& idx) const
       default:
          return VideoDeviceModel::instance()->devices()[idx.row()-ExtendedDeviceList::__COUNT];
    };
+}
+
+int ExtendedVideoDeviceModel::activeIndex() const
+{
+   if (m_CurrentSelection == -1) {
+      return ExtendedDeviceList::__COUNT + VideoDeviceModel::instance()->activeIndex();
+   }
+   return m_CurrentSelection;
 }
 
 void ExtendedVideoDeviceModel::setFile(const QUrl& url)
