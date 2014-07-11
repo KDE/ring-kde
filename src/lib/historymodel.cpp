@@ -120,7 +120,6 @@ HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),m_
    roles.insert(Call::Role::Department    ,QByteArray("department"    ));
    roles.insert(Call::Role::Email         ,QByteArray("email"         ));
    roles.insert(Call::Role::Organisation  ,QByteArray("organisation"  ));
-   roles.insert(Call::Role::IsConference  ,QByteArray("isConference"  ));
    roles.insert(Call::Role::Object        ,QByteArray("object"        ));
    roles.insert(Call::Role::PhotoPtr      ,QByteArray("photoPtr"      ));
    roles.insert(Call::Role::CallState     ,QByteArray("callState"     ));

@@ -160,7 +160,6 @@ void CallModel::initRoles()
    roles.insert(Call::Role::Department    ,QByteArray("department"));
    roles.insert(Call::Role::Email         ,QByteArray("email"));
    roles.insert(Call::Role::Organisation  ,QByteArray("organisation"));
-   roles.insert(Call::Role::IsConference  ,QByteArray("isConference"));
    roles.insert(Call::Role::Object        ,QByteArray("object"));
    roles.insert(Call::Role::PhotoPtr      ,QByteArray("photoPtr"));
    roles.insert(Call::Role::CallState     ,QByteArray("callState"));
@@ -401,7 +400,7 @@ void CallModel::removeCall(Call* call, bool noEmit)
 
    //The daemon often fail to emit the right signal, cleanup manually
    foreach(InternalStruct* topLevel, m_lInternalModel) {
-      if (topLevel->call_real->isConference() &&
+      if (topLevel->call_real->type() == Call::Type::CONFERENCE &&
          (!topLevel->m_lChildren.size()
             //HACK Make a simple validation to prevent ERROR->ERROR->ERROR state loop for conferences
             || topLevel->m_lChildren.first()->call_real->state() == Call::State::ERROR
@@ -528,8 +527,8 @@ bool CallModel::createConferenceFromCall(Call* call1, Call* call2)
 ///Add a new participant to a conference
 bool CallModel::addParticipant(Call* call2, Call* conference)
 {
-   if (conference->isConference()) {
-      Q_NOREPLY DBus::CallManager::instance().addParticipant(call2->id(), conference->confId());
+   if (conference->type() == Call::Type::CONFERENCE) {
+      Q_NOREPLY DBus::CallManager::instance().addParticipant(call2->id(), conference->id());
       return true;
    }
    else {
@@ -548,7 +547,7 @@ bool CallModel::detachParticipant(Call* call)
 ///Merge two conferences
 bool CallModel::mergeConferences(Call* conf1, Call* conf2)
 {
-   Q_NOREPLY DBus::CallManager::instance().joinConference(conf1->confId(),conf2->confId());
+   Q_NOREPLY DBus::CallManager::instance().joinConference(conf1->id(),conf2->id());
    return true;
 }
 
@@ -669,12 +668,12 @@ int CallModel::rowCount( const QModelIndex& parentIdx ) const
 
    const InternalStruct* modelItem = static_cast<InternalStruct*>(parentIdx.internalPointer());
    if (modelItem) {
-      if (modelItem->call_real->isConference() && modelItem->m_lChildren.size() > 0)
+      if (modelItem->call_real->type() == Call::Type::CONFERENCE && modelItem->m_lChildren.size() > 0)
          return modelItem->m_lChildren.size();
-      else if (modelItem->call_real->isConference())
+      else if (modelItem->call_real->type() == Call::Type::CONFERENCE)
          qWarning() << modelItem->call_real << "have"
             << modelItem->m_lChildren.size() << "and"
-            << (modelItem->call_real->isConference()?"is":"is not") << "a conference";
+            << ((modelItem->call_real->type() == Call::Type::CONFERENCE)?"is":"is not") << "a conference";
    }
    return 0;
 }
@@ -684,10 +683,16 @@ Qt::ItemFlags CallModel::flags( const QModelIndex& idx ) const
 {
    if (!idx.isValid())
       return Qt::NoItemFlags;
-   return Qt::ItemIsEnabled|Qt::ItemIsSelectable 
-      | Qt::ItemIsDragEnabled 
-      | ((!idx.data(Call::Role::IsConference).toBool())?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled)
-      | ((idx.data(Call::Role::CallState) == static_cast<int>(Call::State::DIALING))?Qt::ItemIsEditable:Qt::NoItemFlags);
+
+   const InternalStruct* modelItem = static_cast<InternalStruct*>(idx.internalPointer());
+   if (modelItem ) {
+      const Call* c = modelItem->call_real;
+      return Qt::ItemIsEnabled|Qt::ItemIsSelectable 
+         | Qt::ItemIsDragEnabled 
+         | ((c->type() != Call::Type::CONFERENCE)?(Qt::ItemIsDropEnabled):Qt::ItemIsEnabled)
+         | ((c->state() == Call::State::DIALING)?Qt::ItemIsEditable:Qt::NoItemFlags);
+   }
+   return Qt::NoItemFlags;
 }
 
 ///Return valid payload types
@@ -701,7 +706,7 @@ int CallModel::columnCount ( const QModelIndex& parentIdx) const
 {
    const InternalStruct* modelItem = static_cast<InternalStruct*>(parentIdx.internalPointer());
    if (modelItem) {
-      return modelItem->call_real->isConference()?1:0;
+      return (modelItem->call_real->type() == Call::Type::CONFERENCE)?1:0;
    }
    else if (parentIdx.isValid())
       return 0;
@@ -803,22 +808,22 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
                return false;
             }
             //Conference dropped on a conference -> merge both conferences
-            else if (call && target && call->isConference() && target->isConference()) {
-               qDebug() << "Merge conferences" << call->confId() << "and" << target->confId();
+            else if (call && target && call->type() == Call::Type::CONFERENCE && target->type() == Call::Type::CONFERENCE) {
+               qDebug() << "Merge conferences" << call->id() << "and" << target->id();
                mergeConferences(call,target);
                return true;
             }
             //Conference dropped on a call part of a conference -> merge both conferences
-            else if (call && call->isConference() && targetIdx.parent().isValid()) {
-               qDebug() << "Merge conferences" << call->confId() << "and" << targetIdx.parent().data(Call::Role::Id).toString();
+            else if (call && call->type() == Call::Type::CONFERENCE && targetIdx.parent().isValid()) {
+               qDebug() << "Merge conferences" << call->id() << "and" << targetIdx.parent().data(Call::Role::Id).toString();
                mergeConferences(call,getCall(targetIdx.parent()));
                return true;
             }
             //Drop a call on a conference -> add it to the conference
-            else if (target && (targetIdx.parent().isValid() || target->isConference())) {
-               Call* conf = target->isConference()?target:qvariant_cast<Call*>(targetIdx.parent().data(Call::Role::Object));
+            else if (target && (targetIdx.parent().isValid() || target->type() == Call::Type::CONFERENCE)) {
+               Call* conf = target->type() == Call::Type::CONFERENCE?target:qvariant_cast<Call*>(targetIdx.parent().data(Call::Role::Object));
                if (conf) {
-                  qDebug() << "Adding call " << call->id() << "to conference" << conf->confId();
+                  qDebug() << "Adding call " << call->id() << "to conference" << conf->id();
                   addParticipant(call,conf);
                return true;
                }
@@ -994,7 +999,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
 
       //The daemon often fail to emit the right signal, cleanup manually
       foreach(InternalStruct* topLevel, m_lInternalModel) {
-         if (topLevel->call_real->isConference() && !topLevel->m_lChildren.size()) {
+         if (topLevel->call_real->type() == Call::Type::CONFERENCE && !topLevel->m_lChildren.size()) {
             removeConference(topLevel->call_real);
          }
       }
@@ -1007,7 +1012,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          if (callInt) {
             const QString confId = callDetails[Call::DetailsMapFields::CONF_ID];
             if (callInt->m_pParent) {
-               if (!confId.isEmpty()  && callInt->m_pParent->call_real->confId() != confId) {
+               if (!confId.isEmpty()  && callInt->m_pParent->call_real->id() != confId) {
                   qWarning() << "Conference parent mismatch";
                }
                else if (confId.isEmpty() ){
@@ -1018,7 +1023,8 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
             else if (!confId.isEmpty()) {
                qWarning() << "Found an orphan call";
                InternalStruct* confInt2 = m_sPrivateCallList_callId[confId];
-               if (confInt2 && confInt2->call_real->isConference() && !callInt->call_real->isConference()) {
+               if (confInt2 && confInt2->call_real->type() == Call::Type::CONFERENCE 
+                && (callInt->call_real->type() != Call::Type::CONFERENCE)) {
                   removeInternal(callInt);
                   if (confInt2->m_lChildren.indexOf(callInt) == -1)
                      confInt2->m_lChildren << callInt;

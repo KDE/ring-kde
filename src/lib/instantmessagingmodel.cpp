@@ -64,7 +64,7 @@ void InstantMessagingModelManager::newMessage(QString callId, QString from, QStr
 
 ///Singleton
 InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
-   const QString key = call->isConference()?call->confId():call->id();
+   const QString key = call->id();
    if (!m_lModels[key]) {
       m_lModels[key] = new InstantMessagingModel(call);
       emit newMessagingModel(call,m_lModels[key]);

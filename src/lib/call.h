@@ -94,7 +94,6 @@ public:
       Department    = 112,
       Email         = 113,
       Organisation  = 114,
-      IsConference  = 116,
       Object        = 117,
       PhotoPtr      = 118,
       CallState     = 119,
@@ -235,10 +234,17 @@ public:
    };
 
    ///If the call is incoming or outgoing
-   class CallType {
+   class CallDirection {
    public:
       constexpr static const char* INCOMING = "0";
       constexpr static const char* OUTGOING = "1";
+   };
+
+   ///Is the call between one or more participants
+   enum class Type {
+      CALL      , /** A simple call                  */
+      CONFERENCE, /** A composition of other calls   */
+      HISTORY   , /** A call from a previous session */
    };
 
    /** @enum Call::DaemonState
@@ -286,8 +292,6 @@ public:
    Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
    Q_PROPERTY( uint               startTimeStamp   READ startTimeStamp                            )
    Q_PROPERTY( bool               isSecure         READ isSecure                                  )
-   Q_PROPERTY( bool               isConference     READ isConference                              )
-   Q_PROPERTY( QString            confId           READ confId                                    )
    Q_PROPERTY( VideoRenderer*     videoRenderer    READ videoRenderer                             )
    Q_PROPERTY( QString            formattedName    READ formattedName                             )
    Q_PROPERTY( QString            length           READ length                                    )
@@ -332,8 +336,6 @@ public:
    time_t                   stopTimeStamp    () const;
    time_t                   startTimeStamp   () const;
    bool                     isSecure         () const;
-   bool                     isConference     () const;
-   const QString            confId           () const;
    const QString            transferNumber   () const;
    const QString            dialNumber       () const;
    const QString            recordingPath    () const;
@@ -350,14 +352,13 @@ public:
    AbstractHistoryBackend*  backend          () const;
    bool                     hasVideo         () const;
    Call::LifeCycleState     lifeCycleState   () const;
+   Call::Type               type             () const;
 
    //Automated function
    Call::State stateChanged(const QString & newState);
    Call::State performAction(Call::Action action);
 
    //Setters
-   void setConference     ( bool               value      );
-   void setConfId         ( const QString&     value      );
    void setTransferNumber ( const QString&     number     );
    void setDialNumber     ( const QString&     number     );
    void setDialNumber     ( const PhoneNumber* number     );
@@ -380,7 +381,6 @@ private:
    //Attributes
    Account*                 m_Account         ;
    QString                  m_CallId          ;
-   QString                  m_ConfId          ;
    PhoneNumber*             m_pPeerPhoneNumber;
    QString                  m_PeerName        ;
    QString                  m_RecordingPath   ;
@@ -389,7 +389,6 @@ private:
    time_t                   m_pStopTimeStamp  ;
    TemporaryPhoneNumber*    m_pTransferNumber ;
    TemporaryPhoneNumber*    m_pDialNumber     ;
-   bool                     m_isConference    ;
    Call::State              m_CurrentState    ;
    bool                     m_Recording       ;
    InstantMessagingModel*   m_pImModel        ;
@@ -398,6 +397,7 @@ private:
    bool                     m_History         ;
    bool                     m_Missed          ;
    Call::Direction          m_Direction       ;
+   Call::Type               m_Type            ;
    AbstractHistoryBackend*  m_pBackend        ;
 
    //Cache

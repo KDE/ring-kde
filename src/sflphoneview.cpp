@@ -272,7 +272,7 @@ void SFLPhoneView::updateWindowCallState()
       enabledActions[ SFLPhone::CallAction::Record   ] = false;
       m_pMessageBoxW->setVisible(false);
    }
-   else if (call->isConference()) {
+   else if (call->type() == Call::Type::CONFERENCE) {
       //TODO Something to do?
    }
    else {

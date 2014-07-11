@@ -559,7 +559,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 ///Load an account
 void DlgAccounts::loadAccountList()
 {
-   AccountListModel::instance()->updateAccounts();
+//    AccountListModel::instance()->updateAccounts();
    if (treeView_accountList->model()->rowCount() > 0 && !treeView_accountList->currentIndex().isValid()) {
       if (CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)).isValid())
          treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)));
