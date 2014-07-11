@@ -80,7 +80,7 @@ VideoResolution* VideoChannel::activeResolution()
    //If it is the current device, then there is "current" resolution
    if ((!m_pCurrentResolution) && m_pDevice->isActive()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
-      const QString res = QMap<QString,QString>(interface.getPreferences(m_pDevice->id()))[VideoDevice::PreferenceNames::SIZE];
+      const QString res = QMap<QString,QString>(interface.getSettings(m_pDevice->id()))[VideoDevice::PreferenceNames::SIZE];
       foreach(VideoResolution* r, validResolutions()) {
          if (r->name() == res) {
             m_pCurrentResolution = r;

@@ -88,7 +88,7 @@ void VideoDeviceModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
-      interface.setActiveDevice(m_lDevices[idx.row()]->id());
+      interface.setDefaultDevice(m_lDevices[idx.row()]->id());
       m_pActiveDevice = m_lDevices[idx.row()];
       emit changed();
       emit currentIndexChanged(idx.row());
@@ -106,7 +106,7 @@ void VideoDeviceModel::setActive(const VideoDevice* device)
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
 
-   interface.setActiveDevice(device?device->id():VideoDevice::NONE);
+   interface.setDefaultDevice(device?device->id():VideoDevice::NONE);
    m_pActiveDevice = const_cast<VideoDevice*>(device);
    emit changed();
    const int idx = m_lDevices.indexOf((VideoDevice*)device);
@@ -149,7 +149,7 @@ VideoDevice* VideoDeviceModel::activeDevice() const
 {
    if (!m_pActiveDevice) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
-      const QString deId = interface.getActiveDevice();
+      const QString deId = interface.getDefaultDevice();
       if (!m_lDevices.size())
          const_cast<VideoDeviceModel*>(this)->reload();
       VideoDevice* dev =  m_hDevices[deId];

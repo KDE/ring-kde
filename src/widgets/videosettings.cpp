@@ -59,7 +59,7 @@ void VideoSettings::slotChannelChanged(int idx)
 {
    if (m_pChannel->count() == 0 && (idx != -1)) return;
 
-   if (idx != -1 && idx >= VideoDeviceModel::instance()->activeDevice()->channelList().size()) {
+   if (idx != -1 && idx < VideoDeviceModel::instance()->activeDevice()->channelList().size()) {
       VideoDeviceModel::instance()->activeDevice()->setActiveChannel(idx);
       emit settingsChanged();
    }

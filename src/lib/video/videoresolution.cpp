@@ -100,7 +100,7 @@ VideoRate* VideoResolution::activeRate()
    if (!m_pCurrentRate && m_pChannel && m_pChannel->device()->isActive()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       const QString rate = QMap<QString,QString>(
-         interface.getPreferences(m_pChannel->device()->id()))[VideoDevice::PreferenceNames::RATE];
+         interface.getSettings(m_pChannel->device()->id()))[VideoDevice::PreferenceNames::RATE];
       foreach(VideoRate* r, m_lValidRates) {
          if (r->name() == rate) {
             m_pCurrentRate = r;

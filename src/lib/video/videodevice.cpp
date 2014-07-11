@@ -99,11 +99,11 @@ void VideoDevice::save()
 {
    //In case new (unsupported) fields are added, merge with existing
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   MapStringString pref = interface.getPreferences(m_DeviceId);
+   MapStringString pref = interface.getSettings(m_DeviceId);
    pref[VideoDevice::PreferenceNames::CHANNEL] = activeChannel()->name();
    pref[VideoDevice::PreferenceNames::SIZE   ] = activeChannel()->activeResolution()->name();
    pref[VideoDevice::PreferenceNames::RATE   ] = activeChannel()->activeResolution()->activeRate()->name();
-   interface.setPreferences(m_DeviceId,pref);
+   interface.applySettings(m_DeviceId,pref);
 }
 
 ///Get the device id
@@ -116,7 +116,7 @@ const QString VideoDevice::id() const
 const QString VideoDevice::name() const
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   return QMap<QString,QString>(interface.getPreferences(m_DeviceId))[PreferenceNames::NAME];;
+   return QMap<QString,QString>(interface.getSettings(m_DeviceId))[PreferenceNames::NAME];;
 }
 
 ///Is this device the default one
@@ -146,7 +146,7 @@ VideoChannel* VideoDevice::activeChannel() const
 {
    if (!m_pCurrentChannel) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
-      const QString chan = QMap<QString,QString>(interface.getPreferences(m_DeviceId))[VideoDevice::PreferenceNames::CHANNEL];
+      const QString chan = QMap<QString,QString>(interface.getSettings(m_DeviceId))[VideoDevice::PreferenceNames::CHANNEL];
       foreach(VideoChannel* c, m_lChannels) {
          if (c->name() == chan) {
             const_cast<VideoDevice*>(this)->m_pCurrentChannel = c;
