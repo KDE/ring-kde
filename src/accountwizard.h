@@ -43,7 +43,7 @@ class AccountWizard : public QWizard
 Q_OBJECT
 
 public:
-   enum { Page_Intro, Page_AutoMan, Page_Type, Page_Email, Page_SIPForm, Page_IAXForm, Page_Stun, Page_Conclusion };
+   enum { Page_Intro, Page_Type, Page_SIPForm, Page_IAXForm, Page_Stun, Page_Conclusion };
    explicit AccountWizard(QWidget * parent = nullptr);
    ~AccountWizard();
    void accept();
@@ -69,26 +69,7 @@ public:
 
 private:
    QLabel * introLabel;
-};
-
-/***************************************************************************
- *   Class WizardAccountAutoManualPage                                     *
- *   Page in which user choses to create an account on                     *
- *   sflphone.org or register a new one.                                   *
- ***************************************************************************/
-
-class WizardAccountAutoManualPage : public QWizardPage
-{
-   Q_OBJECT
-
-public:
-   explicit WizardAccountAutoManualPage(QWidget *parent = nullptr);
-   ~WizardAccountAutoManualPage();
-   int nextId() const;
-
-private:
-   QRadioButton* radioButton_SFL;
-   QRadioButton* radioButton_manual;
+   QCheckBox * doNotshowAgain;
 };
 
 /***************************************************************************
@@ -108,27 +89,6 @@ public:
 private:
    QRadioButton* radioButton_SIP;
    QRadioButton* radioButton_IAX;
-};
-
-/***************************************************************************
- *   Class WizardAccountEmailAddressPage                                   *
- *   Page in which user choses between SIP and IAX account.                *
- ***************************************************************************/
-
-class WizardAccountEmailAddressPage : public QWizardPage
-{
-   Q_OBJECT
-
-public:
-   explicit WizardAccountEmailAddressPage(QWidget *parent = nullptr);
-   ~WizardAccountEmailAddressPage();
-   int nextId() const;
-
-private:
-   QLabel * label_emailAddress;
-   KLineEdit * lineEdit_emailAddress;
-   QLabel * label_enableZrtp;
-   QCheckBox * checkBox_enableZrtp;
 };
 
 /***************************************************************************

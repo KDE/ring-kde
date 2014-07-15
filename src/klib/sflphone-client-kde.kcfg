@@ -61,6 +61,10 @@
       <label>Display incoming, outgoing or missed</label>
       <default> true </default>
    </entry>
+   <entry name="displayAccountWizard" type="Bool">
+      <label>Display the account wizard when there is no configured accounts</label>
+      <default> true </default>
+   </entry>
 
     <!-- Display Settings -->
 

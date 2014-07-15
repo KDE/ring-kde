@@ -41,6 +41,7 @@
 //SFLphone
 #include "lib/sflphone_const.h"
 #include "lib/account.h"
+#include "klib/kcfg_settings.h"
 #include "lib/dbus/configurationmanager.h"
 
 //Define
@@ -176,9 +177,7 @@ AccountWizard::AccountWizard(QWidget * parent)
 {
    setModal(true);
    setPage(Page_Intro      , new WizardIntroPage               );
-   setPage(Page_AutoMan    , new WizardAccountAutoManualPage   );
    setPage(Page_Type       , new WizardAccountTypePage         );
-   setPage(Page_Email      , new WizardAccountEmailAddressPage );
    setPage(Page_SIPForm    , new WizardAccountSIPFormPage      );
    setPage(Page_IAXForm    , new WizardAccountIAXFormPage      );
    setPage(Page_Stun       , new WizardAccountStunPage         );
@@ -353,8 +352,15 @@ WizardIntroPage::WizardIntroPage(QWidget *parent)
    introLabel = new QLabel(i18n("This installation wizard will help you configure an account."));
    introLabel->setWordWrap(true);
 
+   doNotshowAgain = new QCheckBox(i18n("Always display this dialog when there is no accounts"),this);
+   doNotshowAgain->setChecked(ConfigurationSkeleton::displayAccountWizard());
+   connect(doNotshowAgain,SIGNAL(checked(bool)),ConfigurationSkeleton::self(),SLOT(setDisplayAccountWizard(bool)));
+
    QVBoxLayout *layout = new QVBoxLayout;
    layout->addWidget(introLabel);
+   layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding));
+   layout->addWidget(doNotshowAgain);
+
    setLayout(layout);
 }
 
@@ -366,48 +372,7 @@ WizardIntroPage::~WizardIntroPage()
 
 int WizardIntroPage::nextId() const
 {
-   return AccountWizard::Page_AutoMan;
-}
-
-/***************************************************************************
- *   Class WizardAccountAutoManualPage                                     *
- *   Page in which user choses to create an account on                     *
- *   sflphone.org or register a new one.                                   *
- **************************************************************************/
-///The second page
-WizardAccountAutoManualPage::WizardAccountAutoManualPage(QWidget *parent)
-     : QWizardPage(parent)
-{
-   setTitle(i18n("Account"));
-   setSubTitle(i18n("Please select one of the following options"));
-
-   radioButton_SFL    = new QRadioButton( i18n("Create a free SIP/IAX2 account on sflphone.org" ) );
-   radioButton_manual = new QRadioButton( i18n("Register an existing SIP or IAX2 account"       ) );
-   radioButton_SFL->setChecked(true);
-
-   registerField( FIELD_SFL_ACCOUNT   , radioButton_SFL    );
-   registerField( FIELD_OTHER_ACCOUNT , radioButton_manual );
-
-   QVBoxLayout *layout = new QVBoxLayout;
-   layout->addWidget( radioButton_SFL    );
-   layout->addWidget( radioButton_manual );
-   setLayout(layout);
-}
-
-///Second page destructor
-WizardAccountAutoManualPage::~WizardAccountAutoManualPage()
-{
-   delete radioButton_SFL;
-   delete radioButton_manual;
-}
-
-///
-int WizardAccountAutoManualPage::nextId() const
-{
-   if(radioButton_SFL->isChecked())
-      return AccountWizard::Page_Email;
-   else
-      return AccountWizard::Page_Type;
+   return AccountWizard::Page_Type;
 }
 
 /***************************************************************************
@@ -449,51 +414,6 @@ int WizardAccountTypePage::nextId() const
       return AccountWizard::Page_SIPForm;
    else
       return AccountWizard::Page_IAXForm;
-}
-
-/***************************************************************************
- *   Class WizardAccountEmailAddressPage                                   *
- *   Page in which user choses between SIP and IAX account.                *
- **************************************************************************/
-
-///Set your email address
-WizardAccountEmailAddressPage::WizardAccountEmailAddressPage(QWidget *parent)
-     : QWizardPage(parent)
-{
-   setTitle(   i18n( "Optional email address"                                           ));
-   setSubTitle(i18n( "This email address will be used to send your voicemail messages." ));
-
-   label_emailAddress    = new QLabel    ( i18n("Email address")    );
-   lineEdit_emailAddress = new KLineEdit (                          );
-   label_enableZrtp      = new QLabel    ( i18n("Secure with ZRTP") );
-   checkBox_enableZrtp   = new QCheckBox (                          );
-
-   registerField( FIELD_EMAIL_ADDRESS , lineEdit_emailAddress );
-   registerField( FIELD_ZRTP_ENABLED  , checkBox_enableZrtp   );
-
-   QFormLayout *layout = new QFormLayout;
-
-   layout->setWidget( 0 , QFormLayout::LabelRole , label_emailAddress    );
-   layout->setWidget( 0 , QFormLayout::FieldRole , lineEdit_emailAddress );
-   layout->setWidget( 1 , QFormLayout::LabelRole , label_enableZrtp      );
-   layout->setWidget( 1 , QFormLayout::FieldRole , checkBox_enableZrtp   );
-
-   setLayout(layout);
-}
-
-///Email page destructor
-WizardAccountEmailAddressPage::~WizardAccountEmailAddressPage()
-{
-   delete label_emailAddress   ;
-   delete lineEdit_emailAddress;
-   delete label_enableZrtp     ;
-   delete checkBox_enableZrtp  ;
-}
-
-///
-int WizardAccountEmailAddressPage::nextId() const
-{
-   return AccountWizard::Page_Stun;
 }
 
 /***************************************************************************

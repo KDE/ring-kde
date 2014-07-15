@@ -267,7 +267,7 @@ SFLPhone::SFLPhone(QWidget *parent)
 
    move(QCursor::pos().x() - geometry().width()/2, QCursor::pos().y() - geometry().height()/2);
 
-   if (AccountListModel::instance()->size() <= 1)
+   if (AccountListModel::instance()->size() <= 1 && ConfigurationSkeleton::displayAccountWizard())
       (new AccountWizard())->show();
 
    m_pInitialized = true ;
