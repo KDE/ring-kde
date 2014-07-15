@@ -22,6 +22,7 @@
 #include <KDebug>
 #include <KLocale>
 #include <KStandardDirs>
+#include <KConfigDialogManager>
 
 #include "klib/kcfg_settings.h"
 
@@ -93,9 +94,22 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
       dlgHolder[i] = nullptr;
 
+   //Usually, this is done automatically by KConfig, but for performance
+   //there is too many widgets and too many dbus calls to do it all at once
+   m_pManager = new KConfigDialogManager(this, ConfigurationSkeleton::self());
+   connect(this, SIGNAL(okClicked()), m_pManager, SLOT(updateSettings()));
+   connect(this, SIGNAL(applyClicked()), m_pManager, SLOT(updateSettings()));
+   connect(this, SIGNAL(cancelClicked()), m_pManager, SLOT(updateWidgets()));
+   connect(this, SIGNAL(defaultClicked()), m_pManager, SLOT(updateWidgetsDefault()));
+
+   connect(m_pManager, SIGNAL(settingsChanged()), this, SLOT(updateButtons()));
+   connect(m_pManager, SIGNAL(widgetModified()), this, SLOT(updateButtons()));
+
+
    //Account
    dlgHolder[ConfigurationDialog::Page::Accounts]   = new PlaceHolderWidget(Page::Accounts,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgAccounts = new DlgAccounts(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgAccounts);
       return dialog->dlgAccounts;
    });
    auto accDlg = addPage( dlgHolder[ConfigurationDialog::Page::Accounts]      , i18n("Accounts")                     , "user-identity"                     );
@@ -105,6 +119,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //General
    dlgHolder[ConfigurationDialog::Page::General]   = new PlaceHolderWidget(Page::General,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgGeneral = new DlgGeneral(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgGeneral);
       connect(dialog->dlgGeneral, SIGNAL(clearCallHistoryAsked()), dialog, SIGNAL(clearCallHistoryAsked()));
       return dialog->dlgGeneral;
    });
@@ -114,6 +129,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //Display
    dlgHolder[ConfigurationDialog::Page::Display]    = new PlaceHolderWidget(Page::Display,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgDisplay = new DlgDisplay(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgDisplay);
       return dialog->dlgDisplay;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Display]       , i18nc("User interterface settings"   ,"Display"), "applications-graphics"  )
@@ -122,6 +138,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //Audio
    dlgHolder[ConfigurationDialog::Page::Audio]      = new PlaceHolderWidget(Page::Audio,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgAudio = new DlgAudio(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgAudio);
       return dialog->dlgAudio;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Audio]         , i18n("Audio")                        , "audio-headset"                     )
@@ -130,6 +147,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //AddressBook
    dlgHolder[ConfigurationDialog::Page::AddressBook]= new PlaceHolderWidget(Page::AddressBook,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgAddressBook = new DlgAddressBook(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgAddressBook);
       return dialog->dlgAddressBook;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::AddressBook]   , i18n("Address Book")                 , "x-office-address-book"             )
@@ -138,6 +156,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //Hooks
    dlgHolder[ConfigurationDialog::Page::Hooks]      = new PlaceHolderWidget(Page::Hooks,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgHooks = new DlgHooks(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgHooks);
       return dialog->dlgHooks;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Hooks]         , i18n("Hooks")                        , "insert-link"                       )
@@ -146,6 +165,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //Accessibility
    dlgHolder[ConfigurationDialog::Page::Accessibility]= new PlaceHolderWidget(Page::Accessibility,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgAccessibility = new DlgAccessibility (dialog);
+      dialog->m_pManager->addWidget(dialog->dlgAccessibility);
       return dialog->dlgAccessibility;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Accessibility] , i18n("Accessibility")                , "preferences-desktop-accessibility" )
@@ -155,6 +175,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
 #ifdef ENABLE_VIDEO
    dlgHolder[ConfigurationDialog::Page::Video]      = new PlaceHolderWidget(Page::Video,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgVideo = new DlgVideo(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgVideo);
       return dialog->dlgVideo;
    });
    addPage( dlgHolder[ConfigurationDialog::Page::Video]         , i18nc("Video conversation","Video")  , "camera-web"                        )
@@ -164,6 +185,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    //Presence
    dlgHolder[ConfigurationDialog::Page::Presence]   = new PlaceHolderWidget(Page::Presence,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgPresence = new DlgPresence(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgPresence);
       return dialog->dlgPresence;
    });
    m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "sflphone-client-kde/presence-icon.svg"));
@@ -198,6 +220,7 @@ ConfigurationDialog::~ConfigurationDialog()
    #ifdef ENABLE_VIDEO
    if (dlgVideo        ) delete dlgVideo        ;
    #endif
+   delete m_pManager;
 }
 
 ///Update all widgets when something is reloaded
@@ -263,7 +286,7 @@ bool ConfigurationDialog::hasIncompleteRequiredFields()
 ///Update the buttons
 void ConfigurationDialog::updateButtons()
 {
-   bool changed      = hasChanged();
+   bool changed      = hasChanged() || m_pManager->hasChanged();
    bool preventApply = hasIncompleteRequiredFields();
    enableButtonApply( changed && (!preventApply) );
    enableButtonOk   ( !preventApply              );

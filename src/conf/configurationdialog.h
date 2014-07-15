@@ -26,6 +26,8 @@
 #include "sflphoneview.h"
 #define SETTINGS_NAME "settings"
 
+//KDE
+class KConfigDialogManager;
 
 //SFLPhone
 class DlgGeneral;
@@ -81,6 +83,8 @@ private:
    DlgVideo*         dlgVideo        ;
    DlgPresence*      dlgPresence     ;
    KPageWidgetItem*  m_pPresPage     ;
+
+   KConfigDialogManager* m_pManager;
 
 public:
    explicit ConfigurationDialog(SFLPhoneView *parent = nullptr);
