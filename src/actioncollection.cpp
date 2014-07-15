@@ -31,6 +31,8 @@
 #include <KShortcutsDialog>
 #include <KActionCollection>
 #include <KEditToolBar>
+#include <KGlobal>
+#include <KSharedConfig>
 
 //SFLPhone
 #include "extendedaction.h"
@@ -249,6 +251,7 @@ void ActionCollection::setupAction()
    connect(AudioSettingsModel::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
    connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
 
+//    SFLPhone::app()->actionCollection()->setConfigGlobal(true);
    SFLPhone::app()->actionCollection()->addAction("action_accept"                , action_accept                );
    SFLPhone::app()->actionCollection()->addAction("action_refuse"                , action_refuse                );
    SFLPhone::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
@@ -280,6 +283,9 @@ void ActionCollection::setupAction()
    foreach(KAction* ac,acList) {
       SFLPhone::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
+//    qDebug() << "\n\n\nGlobal" << KGlobal::config()->groupList();
+//    KConfigGroup g = KGlobal::config()->group("KShortcutsDialog Settings");
+//    SFLPhone::app()->actionCollection()->exportGlobalShortcuts(&g);
 
    updateRecordButton();
    updateVolumeButton();

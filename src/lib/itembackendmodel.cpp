@@ -102,30 +102,35 @@ Qt::ItemFlags CommonItemBackendModel::flags(const QModelIndex& idx) const
    if (!idx.isValid())
       return 0;
    ProxyItem* item = static_cast<ProxyItem*>(idx.internalPointer());
-   if (idx.column() > 0)
-      return m_lExtensions[idx.column()-1]->flags(item->backend,idx);
-   const bool checkable = item->backend->supportedFeatures() & (AbstractContactBackend::SupportedFeatures::ENABLEABLE | 
+   if (idx.column() > 0) {
+      //Make sure the cell is disabled if the row is
+      Qt::ItemFlags f = m_lExtensions[idx.column()-1]->flags(item->backend,idx);
+      return  (((f&Qt::ItemIsEnabled)&&(!item->backend->isEnabled()))?f^Qt::ItemIsEnabled:f);
+   }
+   const bool checkable = item->backend->supportedFeatures() & (AbstractContactBackend::SupportedFeatures::ENABLEABLE |
    AbstractContactBackend::SupportedFeatures::DISABLEABLE | AbstractContactBackend::SupportedFeatures::MANAGEABLE  );
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | (checkable?Qt::ItemIsUserCheckable:Qt::NoItemFlags);
 }
 
-bool CommonItemBackendModel::setData (const QModelIndex& index, const QVariant &value, int role )
+bool CommonItemBackendModel::setData (const QModelIndex& idx, const QVariant &value, int role )
 {
-   Q_UNUSED(index)
+   Q_UNUSED(idx)
    Q_UNUSED(value)
    Q_UNUSED(role)
-   if (index.isValid() && index.column() > 0) {
-      ProxyItem* item = static_cast<ProxyItem*>(index.internalPointer());
-      return m_lExtensions[index.column()-1]->setData(item->backend,index,value,role);
+   if (idx.isValid() && idx.column() > 0) {
+      ProxyItem* item = static_cast<ProxyItem*>(idx.internalPointer());
+      return m_lExtensions[idx.column()-1]->setData(item->backend,idx,value,role);
    }
 
-   if (role == Qt::CheckStateRole) {
-      ProxyItem* item = static_cast<ProxyItem*>(index.internalPointer());
+   if (role == Qt::CheckStateRole && idx.column() == 0) {
+      ProxyItem* item = static_cast<ProxyItem*>(idx.internalPointer());
       if (item) {
          const bool old = item->backend->isEnabled();
          ItemModelStateSerializationVisitor::instance()->setChecked(item->backend,value==Qt::Checked);
-         if (old != (value==Qt::Checked))
+         emit dataChanged(index(idx.row(),0),index(idx.row(),columnCount()-1));
+         if (old != (value==Qt::Checked)) {
             emit checkStateChanged();
+         }
          return true;
       }
    }

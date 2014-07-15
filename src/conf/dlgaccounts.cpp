@@ -90,6 +90,12 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    treeView_accountList->setItemDelegate(m_pCategoryDelegate);
    treeView_accountList->expandAll();
 
+   //BEGIN Temporarely disable advanced security widgets
+   m_pSecurityIssues->setVisible(false);
+   frame->setVisible(false);
+   frame_2->setVisible(false);
+   //END
+
    m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(32,32)));
    label_message_icon->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
    m_pCancelFix->setIcon(KIcon("dialog-close"));
@@ -116,6 +122,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    file_tls_endpoint->lineEdit()->setClearButtonShown(false);
    file_tls_private_key->lineEdit()->setClearButtonShown(false);
 
+#if false
+   //BEGIN Temporarely disable advanced security widgets
    //Authority
    m_pAuthorityII = new IssuesIcon(file_tls_authority->lineEdit());
    m_pAuthorityII->setupForLineEdit(file_tls_authority->lineEdit());
@@ -134,7 +142,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    connect(m_pVerifyServer,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
    connect(m_pVerifyClient,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
    connect(m_pReqTLS,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
-
+#endif
+//END
 //    loadAccountList();
    accountListHasChanged = false;
 
@@ -944,6 +953,9 @@ Account* DlgAccounts::currentAccount() const
 
 void DlgAccounts::addFlawToCertificateField(const Flaw* flaw)
 {
+Q_UNUSED(flaw)
+//BEGIN Temporarely disable advanced security widgets
+#if false
    switch(flaw->type()) {
       case Certificate::Type::AUTHORITY:
          m_pAuthorityII->addFlaw(flaw);
@@ -958,11 +970,14 @@ void DlgAccounts::addFlawToCertificateField(const Flaw* flaw)
          qDebug() << "Invalid certificate type";
          break;
    };
+#endif
+//END
 }
 
 
 void DlgAccounts::updateSecurityValidation()
 {
+#if false
    Account* a = currentAccount();
    //Create the widgets
    m_pVerifyServer->setModel(a->securityValidationModel());
@@ -1035,6 +1050,7 @@ void DlgAccounts::updateSecurityValidation()
             qDebug() << "Invalid flaw";
       }
    }
+#endif
 }
 
 #undef ACC_
