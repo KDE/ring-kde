@@ -96,7 +96,7 @@ void VideoScene::slotRotateLeft()
 {
    foreach(VideoGLFrame* frm, m_lFrames) {
       if (VideoModel::instance()->previewRenderer() != frm->renderer())
-         frm->setRotZ(frm->rotZ()-90);
+         frm->setRotZ(frm->rotZ()+90);
    }
 }
 
@@ -104,7 +104,7 @@ void VideoScene::slotRotateRight()
 {
    foreach(VideoGLFrame* frm, m_lFrames) {
       if (VideoModel::instance()->previewRenderer() != frm->renderer())
-         frm->setRotZ(frm->rotZ()+90);
+         frm->setRotZ(frm->rotZ()-90);
    }
 }
 

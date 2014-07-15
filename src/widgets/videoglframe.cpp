@@ -168,19 +168,21 @@ void ThreadedPainter2::draw(QPainter* p)
 
       //Handle the ratio
       float xRatio(1),yRatio(1);
+      bool invert = (((int)rot_z)/90)%2;
+
       if (m_pFrm->keepAspectRatio()) {
          float rendererRatio = ((float)res.width())/((float)res.height());
          float windowRatio = ((float)p->device()->width())/((float)p->device()->height());
 
-         if (windowRatio > 1)
+         if (windowRatio > rendererRatio)
             xRatio = (1.0f/windowRatio) * rendererRatio;
          else
-            yRatio = 1.0f/windowRatio * rendererRatio;
+            yRatio = 1.0f/((1.0f/windowRatio) * rendererRatio);
       }
 
       // draw background
       glPushMatrix();
-      glScalef(xRatio*1.7f, yRatio*1.7f, 1.7f);
+      glScalef((invert?yRatio:xRatio)*1.7f, (invert?xRatio:yRatio)*1.7f, 1.7f);
       glTranslatef(tra_x, tra_y, tra_z);
       glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
       glCallList(tile_list);
