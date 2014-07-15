@@ -393,11 +393,6 @@
    <header>kshortcutwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>CategorizedTreeView</class>
-   <extends>QTreeView</extends>
-   <header location="global">widgets/categorizedtreeview.h</header>
-  </customwidget>
-  <customwidget>
    <class>LeftToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
@@ -407,7 +402,112 @@
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
   </customwidget>
+  <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">widgets/categorizedtreeview.h</header>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>kcfg_enableAutoCompletion</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DlgAccessibility</receiver>
+   <slot>changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>446</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>794</x>
+     <y>13</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_autoCompleteMergeNumbers</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DlgAccessibility</receiver>
+   <slot>changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>792</x>
+     <y>42</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_autoCompleteUseAccount</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DlgAccessibility</receiver>
+   <slot>changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>247</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>795</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_enableVoiceFeedback</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DlgAccessibility</receiver>
+   <slot>changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>798</x>
+     <y>116</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_enableReadLabel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DlgAccessibility</receiver>
+   <slot>changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>157</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>798</x>
+     <y>148</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>kcfg_enableReadDetails</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DlgAccessibility</receiver>
+   <slot>changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>321</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>797</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>changed()</slot>
+ </slots>
 </ui>
