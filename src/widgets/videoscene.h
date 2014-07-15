@@ -47,6 +47,7 @@ private:
    QColor               m_backgroundColor;
 //    VideoToolbar*        m_pToolbar       ;
 //    QGraphicsRectItem *m_lightItem;
+   VideoGLFrame* m_pPreviewFrame;
 
 
 public Q_SLOTS:

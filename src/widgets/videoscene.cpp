@@ -33,7 +33,7 @@
 #endif
 
 VideoScene::VideoScene()
-   : m_backgroundColor(25, 25, 25)//,m_pToolbar(nullptr)
+   : m_backgroundColor(25, 25, 25),m_pPreviewFrame(nullptr)//,m_pToolbar(nullptr)
 {
 }
 
@@ -44,7 +44,10 @@ void VideoScene::drawBackground(QPainter *painter, const QRectF& rect)
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    foreach(VideoGLFrame* frm, m_lFrames) {
-         frm->paintEvent(painter);
+      frm->paintEvent(painter);
+   }
+   if (m_pPreviewFrame) {
+      m_pPreviewFrame->paintEvent(painter);
    }
 }
 
@@ -71,13 +74,22 @@ void VideoScene::frameChanged()
 
 void VideoScene::addFrame(VideoGLFrame* frame)
 {
-   m_lFrames << frame;
+   if (frame->renderer() == VideoModel::instance()->previewRenderer())
+      m_pPreviewFrame = frame;
+   else
+      m_lFrames << frame;
 //    m_pToolbar->resizeToolbar();
+   invalidate();
 }
 
 void VideoScene::removeFrame( VideoGLFrame* frame )
 {
-   m_lFrames.removeAll(frame);
+   if (!frame) return;
+   if (frame == m_pPreviewFrame)
+      m_pPreviewFrame = nullptr;
+   else
+      m_lFrames.removeAll(frame);
+   invalidate();
 }
 
 void VideoScene::slotRotateLeft()

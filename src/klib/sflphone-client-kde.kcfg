@@ -126,6 +126,11 @@
         <label>Enforce video aspect ratio or allow stretching</label>
         <default>false</default>
    </entry>
+   <entry name="autoHideDiapadForVideo" type="Bool">
+        <label>Save main window space by hiding the dialpad when the video is docked</label>
+        <default>false</default>
+   </entry>
+
 
     <!-- Audio Settings -->
 

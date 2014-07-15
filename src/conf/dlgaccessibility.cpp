@@ -85,6 +85,8 @@ DlgAccessibility::~DlgAccessibility()
 void DlgAccessibility::updateSettings()
 {
    MacroModel::instance()->save();
+   m_Changed = false;
+   emit updateButtons();
 }
 
 ///Load

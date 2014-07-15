@@ -127,7 +127,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    m_pScreenSharing(nullptr), m_pMediaPicker(nullptr), m_pWindow(nullptr)
 {
    setWindowTitle(i18nc("Video conversation","Video"));
-   setFloating(true);
+   setObjectName("Video Dock");
    m_pMainWidget = new QWidget(this);
 
    m_pVideoWidet = new VideoWidget3(m_pMainWidget);

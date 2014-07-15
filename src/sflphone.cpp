@@ -210,10 +210,10 @@ SFLPhone::SFLPhone(QWidget *parent)
    //System tray
    m_pTrayIcon        = new SFLPhoneTray ( this->windowIcon(), this );
 
-   addDockWidget( Qt::TopDockWidgetArea, m_pCentralDW  );
-   addDockWidget( Qt::TopDockWidgetArea, m_pContactCD  );
-   addDockWidget( Qt::TopDockWidgetArea, m_pHistoryDW  );
-   addDockWidget( Qt::TopDockWidgetArea, m_pBookmarkDW );
+   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
+   addDockWidget( Qt::BottomDockWidgetArea, m_pContactCD  );
+   addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  );
+   addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW );
 
    tabifyDockWidget(m_pCentralDW,m_pHistoryDW );
    tabifyDockWidget(m_pCentralDW,m_pContactCD );
@@ -298,9 +298,9 @@ SFLPhone::SFLPhone(QWidget *parent)
    m_pPresenceDock = new QDockWidget(this);
    m_pPresenceDock->setObjectName("presence-dock");
    m_pPresenceDock->setWidget(new Presence(m_pPresenceDock));
-   m_pPresenceDock->setAllowedAreas(Qt::BottomDockWidgetArea);
+   m_pPresenceDock->setAllowedAreas(Qt::TopDockWidgetArea);
    m_pPresenceDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-   addDockWidget( Qt::BottomDockWidgetArea, m_pPresenceDock );
+   addDockWidget( Qt::TopDockWidgetArea, m_pPresenceDock );
    m_pPresenceDock->setVisible(false);
    if (m_pPresenceDock->titleBarWidget())
       m_pPresenceDock->titleBarWidget()->setVisible(false);
@@ -590,6 +590,8 @@ void SFLPhone::displayVideoDock(VideoRenderer* r)
 {
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
+//       m_pVideoDW->setFloating(true);
+      addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
    }
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
