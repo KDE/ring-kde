@@ -51,11 +51,11 @@ bool ItemModelStateSerialization::load()
 
 bool ItemModelStateSerialization::isChecked(AbstractItemBackendBase* backend) const
 {
-   return m_hChecked[backend->id()];
+   return !(m_hChecked[backend->id()]);
 }
 
 bool ItemModelStateSerialization::setChecked(AbstractItemBackendBase* backend, bool enabled)
 {
-   m_hChecked[backend->id()] = enabled;
+   m_hChecked[backend->id()] = ! enabled;
    return true;
 }

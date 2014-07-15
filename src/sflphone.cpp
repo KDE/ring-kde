@@ -590,8 +590,8 @@ void SFLPhone::displayVideoDock(VideoRenderer* r)
 {
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
-//       m_pVideoDW->setFloating(true);
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
+      m_pVideoDW->setFloating(true);
    }
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
