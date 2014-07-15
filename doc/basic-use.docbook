@@ -93,6 +93,22 @@ The contact list provide an easy access to KDE address book contacts. By default
 
 </sect2>
 
+<sect2 id="basic-use-presence">
+   <title>Contact presence</title>
+   <para>
+      SIP accounts support a feature called "presence". This allow softphone users to track other users current status ("on the phone", "ready", "busy" and so on). It can be compared to an usual instant messaging online buddy list, but is more restricted. Each "buddy" have to be tracked individually and using this feature alongside IP2IP or DNS based phone number can consume extra energy, reducing notebook battery life. As of 2014, it also prove to be unreliable and multiple PBX such as Asterisk only support a subset of the protocol.
+   </para>
+   <para>
+      &sflphone-client-kde; will only track phone numbers if "Enable presence support" is checked for an account, that the phone number have already been called and if it is either bookmarked or is part of an explicitly tracked contact collection.
+   </para>
+   <para>
+      Presence publishing allow some accounts to publish a presence message and status (either online or offline) to other softphones. If an account support it (and have presence enabled), &sflphone-client-kde; will display a widget in the status bar to set the presence message. Some predefined messages can be configured in the configuration dialog, but a custom one can also be used. The default is "Online". An online presence status doesn't imply that you can make a call or that and account is online or not. As &sflphone; also support calls over ssh tunnels and localhost addresses, &sflphone; is, in theory, always online. Again, empirical testing show this feature does not work very well on the vast majority of PBX and registrar. Freeswitch based registrar seem to have the best support. This information can also be lost when calls are routed though proxies and intermediary PBX.
+   </para>
+   <para>
+      When the presence subscription work as expected, contacts, history calls and bookmarked numbers will have either a red or green tint or halo around them. This information will also be used to the auto completion engine to give better results.
+   </para>
+</sect2>
+
 <sect2 id="basic-use-bookmark-page">
 <title>The Bookmark page</title>
 <para>
@@ -134,6 +150,10 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 
 <para>
 If the contact have multiple phone numbers, a dialog will be shown to select the right number.
+</para>
+
+<para>
+Beginning with version 1.4.0, &sflphone-client-kde; can also act as a complete contact manager (oriented on phone related features). It is possible to add, manage and configure Akonadi collection directly from the configuration dialog "Address Book" section. It is also possible to add and remove contacts directly from the main interface.
 </para>
 
 <para>

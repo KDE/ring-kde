@@ -855,7 +855,7 @@
                <item>
                 <widget class="LeftToolButton" name="button_audiocodecUp">
                  <property name="toolTip">
-                  <string>Get this account up</string>
+                  <string>Increase codec priority</string>
                  </property>
                  <property name="whatsThis">
                   <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
@@ -871,7 +871,7 @@
                <item>
                 <widget class="RightToolButton" name="button_audiocodecDown">
                  <property name="toolTip">
-                  <string>Get this account down</string>
+                  <string>Decrease codec priority</string>
                  </property>
                  <property name="whatsThis">
                   <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
@@ -952,6 +952,9 @@
                </property>
                <item>
                 <widget class="LeftToolButton" name="m_pVCodecUpPB">
+                 <property name="toolTip">
+                  <string>Increase codec priority</string>
+                 </property>
                  <property name="text">
                   <string comment="Move video codec up">Up</string>
                  </property>
@@ -959,6 +962,9 @@
                </item>
                <item>
                 <widget class="RightToolButton" name="m_pVCodecDownPB">
+                 <property name="toolTip">
+                  <string>Decrease codec priority</string>
+                 </property>
                  <property name="text">
                   <string comment="Move video codec down">Down</string>
                  </property>
@@ -1174,7 +1180,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_2">
+        <widget class="QWidget" name="tab_security">
          <attribute name="title">
           <string>Security</string>
          </attribute>
@@ -1724,7 +1730,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_3">
+        <widget class="QWidget" name="tab_ringtone">
          <attribute name="title">
           <string>Ringtone</string>
          </attribute>

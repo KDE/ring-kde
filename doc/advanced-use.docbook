@@ -42,6 +42,16 @@
 
 	</sect1>
 
+        <sect1 id="advanced-use-macro">
+                <title>Macros</title>
+                <para>
+                   Macros are used to automate some type of calls. The basic use case is to assign a phone number to a keyboard shortcut. To do so, a new macro have to be created in the configuration dialog "accessibility" section. It can then be assigned to a shortcut either in the dialog itself or in the dedicated shortcut dialog. It is also possible add a macro to the toolbar using the dedicated dialog.
+                </para>
+                <para>
+                   Macros also support the "\n" escape sequence to emulate the effect of the "Enter" keyboard key and the "Pick up" button. The time between each keystroke is also configurable to match some PXB dial plan configuration (such as phone extensions or audio menu).
+                </para>
+        </sect1>
+
 	<sect1 id="advanced-use-codecs">
 		<title>Codecs</title>
 
@@ -53,6 +63,21 @@
 		</para>
 
 	</sect1>
+
+        <sect1 id="advanced-use-video">
+                <title>Video</title>
+
+                <para>
+                        &sflphone; versions higher than 1.1.2 have built in support for video calls. This feature work mostly the same way as the audio codecs. An option as also available to disable video transmission.
+                </para>
+                <para>
+                        During a video call, some display options are available to change the aspect ratio or rotate the video. By pressing the advanced settings button, it is also possible to switch from different camera, disable video, stream a file or share your screen(s). Sharing a file is also accessible by drag and dropping it on top of the video window.
+                </para>
+                <para>
+                        Video devices settings can be configured from the configuration window "video" section.
+                </para>
+
+        </sect1>
 
 		
 		
