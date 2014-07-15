@@ -71,6 +71,7 @@ public:
    ExtendedAction* videoMuteAction           ();
    ExtendedAction* videoPreviewAction        ();
    ExtendedAction* videoScaleAction          ();
+   ExtendedAction* videoFullscreenAction     ();
    #endif
 
 private:
@@ -96,6 +97,7 @@ private:
    ExtendedAction* action_video_mute           ;
    ExtendedAction* action_video_preview        ;
    ExtendedAction* action_video_scale          ;
+   ExtendedAction* action_video_fullscreen     ;
    #endif
 
    //Other actions

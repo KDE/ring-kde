@@ -34,6 +34,7 @@ VideoToolbar::VideoToolbar(QWidget* parent) : QToolBar(parent)
    addAction(ActionCollection::instance()->videoFlipHorizontalAction ());
    addAction(ActionCollection::instance()->videoFlipVerticalAction   ());
    addAction(ActionCollection::instance()->videoScaleAction          ());
+   addAction(ActionCollection::instance()->videoFullscreenAction     ());
    addAction(ActionCollection::instance()->videoMuteAction           ());
    addAction(ActionCollection::instance()->videoPreviewAction        ());
 }

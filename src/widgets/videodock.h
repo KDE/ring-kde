@@ -38,6 +38,7 @@ class VideoDock : public QDockWidget {
    Q_OBJECT
 public:
    explicit VideoDock(QWidget* parent = nullptr );
+   ~VideoDock();
    void addRenderer(VideoRenderer* r);
 
 private:
@@ -46,10 +47,14 @@ private:
    VideoSettings*       m_pVideoSettings;
    ScreenSharingWidget* m_pScreenSharing;
    MediaPicker*         m_pMediaPicker  ;
+   QWidget*             m_pMainWidget   ;
+   QWidget*             m_pWindow       ;
 
 private Q_SLOTS:
    void slotDeviceChanged(int index);
    void slotFileSelected(const KUrl& url);
+public Q_SLOTS:
+   void slotFullscreen  (bool);
 };
 
 #endif
