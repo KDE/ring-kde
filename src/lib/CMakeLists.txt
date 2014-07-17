@@ -31,7 +31,7 @@ ELSE()
    FIND_PACKAGE ( Qt4  REQUIRED )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
-set(GENERIC_LIB_VERSION "1.3.0")
+set(GENERIC_LIB_VERSION "1.4.0")
 
 include_directories(SYSTEM ${QT_INCLUDES} )
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

@@ -38,7 +38,7 @@
 
 static const char description[] = "An enterprise grade KDE SIP and IAX phone";
 
-static const char version[] = "1.3.0";
+static const char version[] = "1.4.0";
 
 SFLPhoneApplication* app;
 void quitOnSignal(int signal);

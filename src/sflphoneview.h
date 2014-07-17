@@ -50,7 +50,7 @@ class ColorVisitor;
  * @short Main view
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
  * @author Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>
- * @version 1.3.0
+ * @version 1.4.0
  */
 class SFLPhoneView : public QWidget, public Ui::SFLPhone_view
 {
