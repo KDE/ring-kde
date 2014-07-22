@@ -165,7 +165,9 @@ ActionCollection::~ActionCollection()
    delete action_editToolBar           ;
    delete action_mute_playback         ;
    delete action_mute_capture          ;
+#ifdef ENABLE_VIDEO
    delete action_video_fullscreen      ;
+#endif
 }
 
 void ActionCollection::setupAction()
