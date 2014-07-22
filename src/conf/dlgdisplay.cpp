@@ -33,13 +33,13 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
 
 
    //Need to be ordered
-   m_lCallDetails[ "Display Icon"         ] = "displayCallIcon"        ;
-   m_lCallDetails[ "Display Security"     ] = "displayCallSecure"      ;
-   m_lCallDetails[ "Display Call Number"  ] = "displayCallNumber"      ;
-   m_lCallDetails[ "Display Peer Name"    ] = "displayCallPeer"        ;
-   m_lCallDetails[ "Display organisation" ] = "displayCallOrganisation";
-   m_lCallDetails[ "Display department"   ] = "displayCallDepartment"  ;
-   m_lCallDetails[ "Display e-mail"       ] = "displayCallEmail"       ;
+   m_lCallDetails[ i18n("Display Icon")         ] = "displayCallIcon"        ;
+   m_lCallDetails[ i18n("Display Security")     ] = "displayCallSecure"      ;
+   m_lCallDetails[ i18n("Display Call Number")  ] = "displayCallNumber"      ;
+   m_lCallDetails[ i18n("Display Peer Name")    ] = "displayCallPeer"        ;
+   m_lCallDetails[ i18n("Display organisation") ] = "displayCallOrganisation";
+   m_lCallDetails[ i18n("Display department")   ] = "displayCallDepartment"  ;
+   m_lCallDetails[ i18n("Display e-mail")       ] = "displayCallEmail"       ;
 
    QMutableMapIterator<QString, QString> iter(m_lCallDetails);
    while (iter.hasNext()) {

@@ -36,8 +36,6 @@
 #include "lib/callmodel.h"
 #include "sflphonecmd.h"
 
-static const char description[] = "An enterprise grade KDE SIP and IAX phone";
-
 static const char version[] = "1.4.0";
 
 SFLPhoneApplication* app;
@@ -55,15 +53,15 @@ int main(int argc, char **argv)
       KLocale::setMainCatalog("sflphone-client-kde");
 
       KAboutData about(
-         "sflphone-client-kde"                      ,
-         "sflphone-client-kde"                      ,
-         ki18n("SFLPhone-KDE")                      ,
-         version                                    ,
-         ki18n(description)                         ,
-         KAboutData::License_GPL_V3                 ,
-         ki18n("(C) 2009-2014 Savoir-faire Linux")  ,
-         KLocalizedString()                         ,
-         "http://www.sflphone.org."                 ,
+         "sflphone-client-kde"                              ,
+         "sflphone-client-kde"                              ,
+         ki18n("SFLPhone-KDE")                              ,
+         version                                            ,
+         ki18n("An enterprise grade KDE SIP and IAX phone") ,
+         KAboutData::License_GPL_V3                         ,
+         ki18n("(C) 2009-2014 Savoir-faire Linux")          ,
+         KLocalizedString()                                 ,
+         "http://www.sflphone.org."                         ,
          "sflphone@lists.savoirfairelinux.net"
       );
       about.addAuthor( ki18n( "Emmanuel Lepage Vallée" ), KLocalizedString(), "emmanuel.lepage@savoirfairelinux.com" );

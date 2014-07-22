@@ -107,21 +107,21 @@ class ConcreteNumberCategoryVisitor :public NumberCategoryVisitor {
       const bool isEmpty = !list.size();
 #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
 #define ICN(name) new QPixmap(KStandardDirs::locate("data" , QString("sflphone-client-kde/mini/%1.png").arg(name)))
-      model->addCategory("Home"     ,ICN("home")     , KABC::PhoneNumber::Home ,IS_ENABLED( KABC::PhoneNumber::Home     ));
-      model->addCategory("Work"     ,ICN("work")     , KABC::PhoneNumber::Work ,IS_ENABLED( KABC::PhoneNumber::Work     ));
-      model->addCategory("Msg"      ,ICN("mail")     , KABC::PhoneNumber::Msg  ,IS_ENABLED( KABC::PhoneNumber::Msg      ));
-      model->addCategory("Pref"     ,ICN("call")     , KABC::PhoneNumber::Pref ,IS_ENABLED( KABC::PhoneNumber::Pref     ));
-      model->addCategory("Voice"    ,ICN("video")    , KABC::PhoneNumber::Voice,IS_ENABLED( KABC::PhoneNumber::Voice    ));
-      model->addCategory("Fax"      ,ICN("call")     , KABC::PhoneNumber::Fax  ,IS_ENABLED( KABC::PhoneNumber::Fax      ));
-      model->addCategory("Cell"     ,ICN("mobile")   , KABC::PhoneNumber::Cell ,IS_ENABLED( KABC::PhoneNumber::Cell     ));
-      model->addCategory("Video"    ,ICN("call")     , KABC::PhoneNumber::Video,IS_ENABLED( KABC::PhoneNumber::Video    ));
-      model->addCategory("Bbs"      ,ICN("call")     , KABC::PhoneNumber::Bbs  ,IS_ENABLED( KABC::PhoneNumber::Bbs      ));
-      model->addCategory("Modem"    ,ICN("call")     , KABC::PhoneNumber::Modem,IS_ENABLED( KABC::PhoneNumber::Modem    ));
-      model->addCategory("Car"      ,ICN("car")      , KABC::PhoneNumber::Car  ,IS_ENABLED( KABC::PhoneNumber::Car      ));
-      model->addCategory("Isdn"     ,ICN("call")     , KABC::PhoneNumber::Isdn ,IS_ENABLED( KABC::PhoneNumber::Isdn     ));
-      model->addCategory("Pcs"      ,ICN("call")     , KABC::PhoneNumber::Pcs  ,IS_ENABLED( KABC::PhoneNumber::Pcs      ));
-      model->addCategory("Pager"    ,ICN("pager")    , KABC::PhoneNumber::Pager,IS_ENABLED( KABC::PhoneNumber::Pager    ));
-      model->addCategory("Preferred",ICN("preferred"), 10000                   ,IS_ENABLED( 10000                       ));
+      model->addCategory(i18n("Home")     ,ICN("home")     , KABC::PhoneNumber::Home ,IS_ENABLED( KABC::PhoneNumber::Home     ));
+      model->addCategory(i18n("Work")     ,ICN("work")     , KABC::PhoneNumber::Work ,IS_ENABLED( KABC::PhoneNumber::Work     ));
+      model->addCategory(i18n("Msg")      ,ICN("mail")     , KABC::PhoneNumber::Msg  ,IS_ENABLED( KABC::PhoneNumber::Msg      ));
+      model->addCategory(i18n("Pref")     ,ICN("call")     , KABC::PhoneNumber::Pref ,IS_ENABLED( KABC::PhoneNumber::Pref     ));
+      model->addCategory(i18n("Voice")    ,ICN("video")    , KABC::PhoneNumber::Voice,IS_ENABLED( KABC::PhoneNumber::Voice    ));
+      model->addCategory(i18n("Fax")      ,ICN("call")     , KABC::PhoneNumber::Fax  ,IS_ENABLED( KABC::PhoneNumber::Fax      ));
+      model->addCategory(i18n("Cell")     ,ICN("mobile")   , KABC::PhoneNumber::Cell ,IS_ENABLED( KABC::PhoneNumber::Cell     ));
+      model->addCategory(i18n("Video")    ,ICN("call")     , KABC::PhoneNumber::Video,IS_ENABLED( KABC::PhoneNumber::Video    ));
+      model->addCategory(i18n("Bbs")      ,ICN("call")     , KABC::PhoneNumber::Bbs  ,IS_ENABLED( KABC::PhoneNumber::Bbs      ));
+      model->addCategory(i18n("Modem")    ,ICN("call")     , KABC::PhoneNumber::Modem,IS_ENABLED( KABC::PhoneNumber::Modem    ));
+      model->addCategory(i18n("Car")      ,ICN("car")      , KABC::PhoneNumber::Car  ,IS_ENABLED( KABC::PhoneNumber::Car      ));
+      model->addCategory(i18n("Isdn")     ,ICN("call")     , KABC::PhoneNumber::Isdn ,IS_ENABLED( KABC::PhoneNumber::Isdn     ));
+      model->addCategory(i18n("Pcs")      ,ICN("call")     , KABC::PhoneNumber::Pcs  ,IS_ENABLED( KABC::PhoneNumber::Pcs      ));
+      model->addCategory(i18n("Pager")    ,ICN("pager")    , KABC::PhoneNumber::Pager,IS_ENABLED( KABC::PhoneNumber::Pager    ));
+      model->addCategory(i18n("Preferred"),ICN("preferred"), 10000                   ,IS_ENABLED( 10000                       ));
 #undef ICN
 #undef IS_ENABLED
    }
@@ -185,7 +185,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    m_pCentralDW = new QDockWidget(this);
    m_pCentralDW->setSizePolicy  ( QSizePolicy::Expanding,QSizePolicy::Expanding );
    m_pCentralDW->setWidget      ( m_pView                                       );
-   m_pCentralDW->setWindowTitle ( i18n("Call")                                  );
+   m_pCentralDW->setWindowTitle ( i18nc("Call tab","Call")                                  );
    m_pCentralDW->setFeatures    ( QDockWidget::NoDockWidgetFeatures             );
    m_pView->setSizePolicy       ( QSizePolicy::Expanding,QSizePolicy::Expanding );
    m_pCentralDW->setStyleSheet  ( "\
@@ -286,7 +286,7 @@ SFLPhone::SFLPhone(QWidget *parent)
 
    m_pPresent = new QToolButton(bar);
    m_pPresent->setAutoRaise(true);
-   m_pPresent->setText("Online");
+   m_pPresent->setText(i18nc("The presence state is \"Online\"","Online"));
    m_pPresent->setCheckable(true);
    m_pPresent->setVisible(AccountListModel::instance()->isPresenceEnabled() && AccountListModel::instance()->isPresencePublishSupported());
 //    m_pPresent->setStyleSheet("background-color:red;");

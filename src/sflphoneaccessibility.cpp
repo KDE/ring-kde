@@ -79,7 +79,7 @@ void SFLPhoneAccessibility::listCall()
       }
    }
    else {
-      KSpeechInterfaceSingleton::instance()->say("You currently have no call", KSpeech::soPlainText);
+      KSpeechInterfaceSingleton::instance()->say(i18n("You currently have no call"), KSpeech::soPlainText);
    }
 }
 

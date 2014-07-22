@@ -280,7 +280,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    m_IsLoading++;
 
    if (!m_pProxyCK->isChecked()) {
-      m_pProxyLE->setText("");
+      m_pProxyLE->setText(QString());
    }
 
    const KeyExchangeModel::Type currentKeyExchange = (!groupbox_STRP_keyexchange->isChecked())?KeyExchangeModel::Type::NONE:static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex());
@@ -636,7 +636,7 @@ void DlgAccounts::on_button_accountDown_clicked()
 ///Add new account
 void DlgAccounts::on_button_accountAdd_clicked()
 {
-   const QString newAlias = i18n("New account%1",AccountListModel::getSimilarAliasIndex("New account"));
+   const QString newAlias = i18n("New account%1",AccountListModel::getSimilarAliasIndex(i18n("New account")));
    AccountListModel::instance()->addAccount(newAlias);
    int r = treeView_accountList->model()->rowCount(treeView_accountList->model()->index(0,0)) - 1;
    const QModelIndex index = treeView_accountList->model()->index(r,0,treeView_accountList->model()->index(0,0));

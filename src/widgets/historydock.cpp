@@ -195,7 +195,7 @@ HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    m_pBottomWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
    m_pBottomWidget->layout()->addItem(mainLayout);
 
-   setWindowTitle(i18n("History"));
+   setWindowTitle(i18nc("History tab","History"));
 
    QDate date(2000,1,1);
    m_pFromDW->setDate(date);

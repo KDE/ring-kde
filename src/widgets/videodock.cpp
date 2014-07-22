@@ -254,7 +254,7 @@ void VideoDock::slotFullscreen(bool isFullScreen)
    if (isFullScreen) {
       if (!m_pWindow) {
          m_pWindow = new QWidget(nullptr);
-         m_pWindow->setWindowTitle("Full screen video");
+         m_pWindow->setWindowTitle(i18n("Full screen video"));
          m_pWindow->installEventFilter(new FullscreenEventFilter(this));
       }
       m_pMainWidget->setParent(m_pWindow);

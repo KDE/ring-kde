@@ -93,7 +93,7 @@ m_pBookmark(nullptr), m_pCallAgain(nullptr)
 
    splitter->setStretchFactor(0,7);
 
-   setWindowTitle(i18n("Bookmark"));
+   setWindowTitle(i18nc("Bookmark dock","Bookmark"));
 
 //    connect(m_pFilterLE                    , SIGNAL(textChanged(QString))            , this , SLOT(filter(QString))             );
    connect(m_pMostUsedCK                  , SIGNAL(toggled(bool))                   , this , SLOT(reload())                    );

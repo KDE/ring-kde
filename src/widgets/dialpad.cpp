@@ -48,9 +48,9 @@ Dialpad::Dialpad(QWidget *parent)
       static QFontMetrics metric(m_pButtons[i]->font());
       m_pButtons[i]->setMinimumHeight((30 > metric.height()+6)?30:metric.height()+6);
       gridLayout->addWidget( m_pButtons[i],i/3,i%3              );
-      number->setFont      ( QFont("", m_NumberSize)            );
+      number->setFont      ( QFont(QString(), m_NumberSize)            );
       number->setAlignment ( Qt::AlignRight | Qt::AlignVCenter  );
-      text->setFont        ( QFont("", m_TextSize)              );
+      text->setFont        ( QFont(QString(), m_TextSize)              );
       layout->setSpacing        ( m_Spacing );
       layout->addWidget         ( number    );
       layout->addWidget         ( text      );

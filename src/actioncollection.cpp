@@ -189,7 +189,7 @@ void ActionCollection::setupAction()
    action_quit  = KStandardAction::quit(SFLPhone::app(), SLOT(quitButton()), SFLPhone::app());
 
    action_configureSflPhone = KStandardAction::preferences(this, SLOT(configureSflPhone()), SFLPhone::app());
-   action_configureSflPhone->setText(i18n("Configure SFLphone"));
+   action_configureSflPhone->setText(i18n("Configure SFLPhone-KDE"));
 
    action_displayDialpad        = new KAction(KIcon(QIcon(ICON_DISPLAY_DIALPAD)), i18n("Display dialpad")                 , this);
    action_displayMessageBox     = new KAction(KIcon("mail-message-new"), i18n("Display text message box")                 , this);
