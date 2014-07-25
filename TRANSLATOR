@@ -1,0 +1,39 @@
+SFLPhone-KDE rely on kde.org internationalization infrastructure to gather
+translations and receive l10n issues feedback. Please refer to:
+
+* https://techbase.kde.org/Localization
+* http://tsdgeos.blogspot.ca/2010/08/how-to-run-messagessh-file-to-create.html
+
+for more detailed description. This file is intended for translators who wish
+to bypass kde.org translation process and submit updates directly.
+
+For both legacy and simplicity reasons, some of the translations scripts are
+still hoster on SVN as of 2014. The first step is to fetch them:
+
+```
+svn co svn://anonsvn.kde.org/home/kde/branches/stable/l10n-kde4/scripts
+```
+
+The second is to download the current sflphone-kde source code:
+
+```
+git clone http://anongit.kde.org/sflphone-kde
+cd sflphone-kde
+```
+
+Please make sure `xgettext` and `extractrc` (`kde-developer-sdk` package or
+ `git clone http://anongit.kde.org/kde-dev-scripts`) are installed
+
+Finally, the `.pot` files need to be extracted.
+
+```
+mkdir po
+# Depend sur xgettext et extractrc
+////l10n-script/extract-messages.sh
+```
+
+Two files should now be present in the `./po` directory. They can be opened
+manually using a text editor or using the specialized `lokalize` application.
+
+Translations can be sent to `sflphone@lists.savoirfairelinux.net` and/or
+`kde-i18n-doc@@kde.org `
