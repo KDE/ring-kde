@@ -348,10 +348,12 @@ Call* CallModel::addRingingCall(const QString& callId)
 ///Properly remove an internal from the Qt model
 void CallModel::removeInternal(InternalStruct* internal)
 {
+   if (!internal) return;
+
    const int idx = m_lInternalModel.indexOf(internal);
    //Exit if the call is not found
    if (idx == -1) {
-      qDebug() << "Cannot remove call: call not found in tree";
+      qDebug() << "Cannot remove " << internal->call_real << ": call not found in tree";
       return;
    }
 
@@ -368,7 +370,7 @@ void CallModel::removeCall(Call* call, bool noEmit)
    InternalStruct* internal = m_sPrivateCallList_call[call];
 
    if (!internal || !call) {
-      qDebug() << "Cannot remove call: call not found";
+      qDebug() << "Cannot remove " << internal->call_real << ": call not found";
       return;
    }
 
@@ -377,9 +379,10 @@ void CallModel::removeCall(Call* call, bool noEmit)
       //NOTE Do not free the memory, it can still be used elsewhere or in modelindexes
    }
 
-   if (m_sPrivateCallList_callId[m_sPrivateCallList_callId.key(internal)] == internal) {
+   //TODO DEAD CODE Is this really required?
+   /*if (m_sPrivateCallList_callId[m_sPrivateCallList_callId.key(internal)] == internal) {
       m_sPrivateCallList_callId.remove(m_sPrivateCallList_callId.key(internal));
-   }
+   }*/
 
    removeInternal(internal);
 

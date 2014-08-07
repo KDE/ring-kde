@@ -51,6 +51,8 @@
 //Track where state changes are performed on finished (over, error, failed) calls
 //while not really problematic, it is technically wrong
 #define Q_ASSERT_IS_IN_PROGRESS Q_ASSERT(state() != Call::State::OVER);
+#define FORCE_ERROR_STATE() {qDebug() << "Fatal error on " << this << __FILE__ << __LINE__;\
+   changeCurrentState(Call::State::ERROR);}
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> Call::actionPerformedStateMap =
 {{
@@ -185,7 +187,22 @@ QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::DaemonState& c)
 
 QDebug LIB_EXPORT operator<<(QDebug dbg, const Call::Action& c)
 {
-   dbg.nospace() << static_cast<int>(c);
+   switch (c) {
+      case Call::Action::ACCEPT:
+         dbg.nospace() << "ACCEPT";
+      case Call::Action::REFUSE:
+         dbg.nospace() << "REFUSE";
+      case Call::Action::TRANSFER:
+         dbg.nospace() << "TRANSFER";
+      case Call::Action::HOLD:
+         dbg.nospace() << "HOLD";
+      case Call::Action::RECORD:
+         dbg.nospace() << "RECORD";
+      case Call::Action::__COUNT:
+         dbg.nospace() << "COUNT";
+   };
+   dbg.space();
+   dbg.nospace() << '(' << static_cast<int>(c) << ')';
    return dbg.space();
 }
 
@@ -291,6 +308,7 @@ Call* Call::buildDialingCall(const QString& callId, const QString & peerName, Ac
    if (AudioSettingsModel::instance()->isRoomToneEnabled()) {
       AudioSettingsModel::instance()->playRoomTone();
    }
+   qDebug() << "Created dialing call" << call;
    return call;
 }
 
@@ -850,17 +868,17 @@ Call::State Call::stateChanged(const QString& newStateName)
       }
       catch(Call::State& state) {
          qDebug() << "State change failed (stateChangedStateMap)" << state;
-         changeCurrentState(Call::State::ERROR);
+         FORCE_ERROR_STATE()
          return m_CurrentState;
       }
       catch(Call::DaemonState& state) {
          qDebug() << "State change failed (stateChangedStateMap)" << state;
-         changeCurrentState(Call::State::ERROR);
+         FORCE_ERROR_STATE()
          return m_CurrentState;
       }
       catch (...) {
          qDebug() << "State change failed (stateChangedStateMap) other";;
-         changeCurrentState(Call::State::ERROR);
+         FORCE_ERROR_STATE()
          return m_CurrentState;
       }
 
@@ -874,17 +892,17 @@ Call::State Call::stateChanged(const QString& newStateName)
       }
       catch(Call::State& state) {
          qDebug() << "State change failed (stateChangedFunctionMap)" << state;
-         changeCurrentState(Call::State::ERROR);
+         FORCE_ERROR_STATE()
          return m_CurrentState;
       }
       catch(Call::DaemonState& state) {
          qDebug() << "State change failed (stateChangedFunctionMap)" << state;
-         changeCurrentState(Call::State::ERROR);
+         FORCE_ERROR_STATE()
          return m_CurrentState;
       }
       catch (...) {
          qDebug() << "State change failed (stateChangedFunctionMap) other";;
-         changeCurrentState(Call::State::ERROR);
+         FORCE_ERROR_STATE()
          return m_CurrentState;
       }
    }
@@ -924,12 +942,12 @@ Call::State Call::performAction(Call::Action action)
    }
    catch(Call::State& state) {
       qDebug() << "State change failed (actionPerformedStateMap)" << state;
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
       return Call::State::ERROR;
    }
    catch (...) {
       qDebug() << "State change failed (actionPerformedStateMap) other";;
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
       return m_CurrentState;
    }
 
@@ -939,20 +957,20 @@ Call::State Call::performAction(Call::Action action)
    }
    catch(Call::State& state) {
       qDebug() << "State change failed (actionPerformedFunctionMap)" << state;
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
       return Call::State::ERROR;
    }
    catch(Call::Action& action) {
       qDebug() << "State change failed (actionPerformedFunctionMap)" << action;
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
       return Call::State::ERROR;
    }
    catch (...) {
       qDebug() << "State change failed (actionPerformedFunctionMap) other";;
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
       return m_CurrentState;
    }
-   qDebug() << "Calling action " << action << " on call with state " << previousState << ". Become " << m_CurrentState;
+   qDebug() << "Calling action " << action << " on " << id() << " with state " << previousState << ". Become " << m_CurrentState;
    return m_CurrentState;
 } //actionPerformed
 
@@ -961,7 +979,7 @@ void Call::changeCurrentState(Call::State newState)
 {
    if (newState == Call::State::__COUNT) {
       qDebug() << "Error: Call reach invalid state";
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
       throw newState;
    }
 
@@ -1051,7 +1069,7 @@ void Call::refuse()
 
    //If the daemon crashed then re-spawned when a call is ringing, this happen.
    if (!ret)
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
 }
 
 ///Accept the transfer
@@ -1112,7 +1130,17 @@ void Call::hangUp()
 void Call::remove()
 {
    if (lifeCycleState() != Call::LifeCycleState::FINISHED)
-      changeCurrentState(Call::State::ERROR);
+      FORCE_ERROR_STATE()
+
+   CallManagerInterface & callManager = DBus::CallManager::instance();
+
+   //HACK Call hang up again to make sure the busytone stop, this should
+   //return true or false, both are valid, no point to check the result
+   if (type() != Call::Type::CONFERENCE)
+      callManager.hangUp(m_CallId);
+   else
+      callManager.hangUpConference(id());
+
    emit isOver(this);
    emit stateChanged();
    emit changed();
@@ -1653,3 +1681,4 @@ void Call::playDTMF(const QString& str)
 }
 
 #undef Q_ASSERT_IS_IN_PROGRESS
+#undef FORCE_ERROR_STATE
