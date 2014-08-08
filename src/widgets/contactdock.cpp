@@ -321,7 +321,7 @@ void ContactDock::sendEmail()
 void ContactDock::callAgain(const PhoneNumber* n)
 {
    kDebug() << "Calling ";
-   bool ok;
+   bool ok = false;
    const PhoneNumber* number = n?n:showNumberSelector(ok);
    if ( (n || ok) && number) {
       const QString name = n?n->contact()->formattedName() : m_pCurrentContact->formattedName();
@@ -368,7 +368,7 @@ void ContactDock::editContact()
 void ContactDock::addPhone()
 {
    kDebug() << "Adding to contact";
-   bool ok;
+   bool ok = false;
    const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
       PhoneNumber* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
@@ -400,7 +400,7 @@ void ContactDock::slotDelete()
 void ContactDock::transferEvent(QMimeData* data)
 {
    if (data->hasFormat( MIME_CALLID)) {
-      bool ok;
+      bool ok = false;
       const PhoneNumber* result = showNumberSelector(ok);
       if (ok && result) {
          Call* call = CallModel::instance()->getCall(data->data(MIME_CALLID));

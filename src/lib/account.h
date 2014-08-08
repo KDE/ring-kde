@@ -31,7 +31,6 @@ class QString;
 #include "tlsmethodmodel.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
-// #include "dbus/metatypes.h"
 class CredentialModel;
 class AudioCodecModel;
 class VideoCodecModel;
@@ -39,8 +38,6 @@ class RingToneModel  ;
 class PhoneNumber    ;
 class SecurityValidationModel;
 class Certificate    ;
-
-const QString& account_state_name(const QString& s);
 
 typedef void (Account::*account_function)();
 

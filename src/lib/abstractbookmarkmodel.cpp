@@ -281,7 +281,7 @@ QVariant AbstractBookmarkModel::commonCallInfo(NumberTreeBackend* number, int ro
    switch (role) {
       case Qt::DisplayRole:
       case Call::Role::Name:
-         cat = number->m_pNumber->primaryName();
+         cat = number->m_pNumber->contact()?number->m_pNumber->contact()->formattedName():number->m_pNumber->primaryName();
          break;
       case Qt::ToolTipRole:
          cat = number->m_pNumber->presenceMessage();
@@ -399,15 +399,23 @@ bool AbstractBookmarkModel::removeRows( int row, int count, const QModelIndex & 
 
 void AbstractBookmarkModel::remove(const QModelIndex& idx)
 {
+   PhoneNumber* nb = getNumber(idx);
+   if (nb) {
+      removeRows(idx.row(),1,idx.parent());
+      removeBookmark(nb);
+      emit layoutAboutToBeChanged();
+      emit layoutChanged();
+   }
+}
+
+PhoneNumber* AbstractBookmarkModel::getNumber(const QModelIndex& idx)
+{
    if (idx.isValid()) {
       if (idx.parent().isValid() && idx.parent().row() < m_lCategoryCounter.size()) {
-         PhoneNumber* nb = m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->m_pNumber;
-         removeRows(idx.row(),1,idx.parent());
-         removeBookmark(nb);
-         emit layoutAboutToBeChanged();
-         emit layoutChanged();
+         return m_lCategoryCounter[idx.parent().row()]->m_lChildren[idx.row()]->m_pNumber;
       }
    }
+   return nullptr;
 }
 
 ///Callback when an item change

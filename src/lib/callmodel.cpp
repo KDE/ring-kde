@@ -379,10 +379,10 @@ void CallModel::removeCall(Call* call, bool noEmit)
       //NOTE Do not free the memory, it can still be used elsewhere or in modelindexes
    }
 
-   //TODO DEAD CODE Is this really required?
-   /*if (m_sPrivateCallList_callId[m_sPrivateCallList_callId.key(internal)] == internal) {
+   //TODO DEAD CODE Is this really required?, so far multi conference fail without
+   if (m_sPrivateCallList_callId[m_sPrivateCallList_callId.key(internal)] == internal) {
       m_sPrivateCallList_callId.remove(m_sPrivateCallList_callId.key(internal));
-   }*/
+   }
 
    removeInternal(internal);
 

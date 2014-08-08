@@ -65,7 +65,8 @@ public:
    virtual void removeBookmark(PhoneNumber* number                            ) = 0;
 
    //Getters
-   int acceptedPayloadTypes();
+   int          acceptedPayloadTypes();
+   PhoneNumber* getNumber(const QModelIndex& idx);
 
 protected:
    virtual bool                  displayFrequentlyUsed() const;

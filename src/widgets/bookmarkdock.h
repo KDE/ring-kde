@@ -61,7 +61,12 @@ private Q_SLOTS:
    void slotContextMenu( const QModelIndex& index );
 
    //Menu
-   void bookmark();
+   void removeBookmark();
+   void callAgain   ();
+   void addPhone    ();
+   void sendEmail   ();
+   void copy        ();
+   void editContact ();
 };
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
