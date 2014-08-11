@@ -315,23 +315,73 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    return number;
 }
 
+/**
+ * This version of getNumber() try to get a phone number with a contact from an URI and account
+ * It will also try to attach an account to existing numbers. This is not 100% reliable, but
+ * it is correct often enough to do it.
+ */
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account, const QString& type)
 {
    const QString strippedUri =  PhoneNumber::stripUri(uri);
+
+   //Try to use a PhoneNumber with a contact when possible, work only after the
+   //contact are loaded
+   bool hasContact = false;
+
    //See if the number is already loaded
-   NumberWrapper* wrap = m_hDirectory[strippedUri];
-   if ((!wrap) && account && uri.indexOf('@') == -1) {
+   NumberWrapper* wrap  = m_hDirectory[strippedUri];
+   NumberWrapper* wrap2 = nullptr;
+
+   //Try to see if there is a better candidate with a suffix (LAN only)
+   if ( uri.indexOf('@') == -1) {
       //Append the account hostname
-      wrap = m_hDirectory[strippedUri+'@'+account->hostname()];
+      wrap2 = m_hDirectory[strippedUri+'@'+account->hostname()];
    }
+
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
          //Not perfect, but better than ignoring the high probabilities
+         //TODO only do it is hostname match
          if (!number->account())
             number->setAccount(account);
          if ((!number->m_hasType) && (!type.isEmpty())) {
             number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
+         hasContact |= number->contact()!= nullptr;
+      }
+   }
+
+   //If the second candidate has a contact, choose it (LAN only)
+   if (wrap2 && (!hasContact)) {
+      foreach(PhoneNumber* number, wrap2->numbers) {
+         //Not perfect, but better than ignoring the high probabilities
+         //TODO only do it is hostname match
+         if (!number->account())
+            number->setAccount(account);
+         if ((!number->m_hasType) && (!type.isEmpty())) {
+            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
+         }
+         if (number->contact()) {
+            return number;
+         }
+      }
+   }
+
+   //Do the opposite, the URI has a suffix, try without
+   if ((!wrap) && account && uri.indexOf('@') != -1 ) {
+      const QString prefixOnly = strippedUri.left(uri.indexOf('@'));
+      NumberWrapper* potentialwrap = m_hDirectory[prefixOnly];
+      if (potentialwrap) {
+         foreach(PhoneNumber* number, potentialwrap->numbers) {
+            if (number->account() == account)
+               return number;
+         }
+      }
+   }
+
+   //No better candidates were found than the original assumption, use it
+   if (wrap) {
+      foreach(PhoneNumber* number, wrap->numbers) {
          if ((!account) || number->account() == account)
             return number;
       }
@@ -357,6 +407,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
 {
    const QString strippedUri =  PhoneNumber::stripUri(uri);
+
    //See if the number is already loaded
    NumberWrapper* wrap = m_hDirectory[strippedUri];
    if (wrap) {
