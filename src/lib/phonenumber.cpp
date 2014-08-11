@@ -463,6 +463,8 @@ bool PhoneNumber::merge(PhoneNumber* other)
 
    //Emit contact changed
 
+   //Handle presence
+
    //Change the D-Pointer
    return false;
 }

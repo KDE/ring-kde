@@ -22,6 +22,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
+#include <QtCore/QSharedPointer>
 #include <time.h>
 
 //Qt
@@ -37,6 +38,7 @@ namespace KABC {
 //SFLPhone
 class PhoneNumber;
 class AbstractContactBackend;
+class ContactPrivate;
 
 #include "typedefs.h"
 #include "categorizedcompositenode.h"
@@ -49,6 +51,7 @@ class LIB_EXPORT Contact : public QObject {
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
+   friend class ContactPrivate;
 
    class  PhoneNumbers : public QVector<PhoneNumber*>, public CategorizedCompositeNode {
    public:
@@ -82,20 +85,8 @@ public:
    Q_INVOKABLE bool addPhoneNumber(PhoneNumber* n);
 
 private:
-   QString      m_FirstName      ;
-   QString      m_SecondName     ;
-   QString      m_NickName       ;
-   QPixmap*     m_pPhoto         ;
-   QString      m_FormattedName  ;
-   QString      m_PreferredEmail ;
-   QString      m_Organization   ;
-   QByteArray   m_Uid            ;
-   QString      m_Group          ;
-   QString      m_Department     ;
-   bool         m_DisplayPhoto   ;
-   PhoneNumbers m_Numbers        ;
-   bool         m_Active         ;
-   AbstractContactBackend* m_pBackend;
+   //The D-Pointer can be shared if a PlaceHolderContact is merged with a real one
+   QSharedPointer<ContactPrivate> d;
 
 public:
    //Constructors & Destructors
