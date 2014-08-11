@@ -285,7 +285,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    NumberWrapper* wrap = m_hDirectory[strippedUri];
    if (wrap) {
       PhoneNumber* nb = wrap->numbers[0];
-      if ((!nb->m_hasType) && (!type.isEmpty())) {
+      if ((!nb->hasType()) && (!type.isEmpty())) {
          nb->setCategory(NumberCategoryModel::instance()->getCategory(type));
       }
       return nb;
@@ -293,7 +293,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
 
    //Too bad, lets create one
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
-   number->m_Index = m_lNumbers.size();
+   number->setIndex(m_lNumbers.size());
    m_lNumbers << number;
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
@@ -344,7 +344,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
          //TODO only do it is hostname match
          if (!number->account())
             number->setAccount(account);
-         if ((!number->m_hasType) && (!type.isEmpty())) {
+         if ((!number->hasType()) && (!type.isEmpty())) {
             number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
          hasContact |= number->contact()!= nullptr;
@@ -358,7 +358,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
          //TODO only do it is hostname match
          if (!number->account())
             number->setAccount(account);
-         if ((!number->m_hasType) && (!type.isEmpty())) {
+         if ((!number->hasType()) && (!type.isEmpty())) {
             number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
          if (number->contact()) {
@@ -390,7 +390,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    //Create the number
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    number->setAccount(account);
-   number->m_Index = m_lNumbers.size();
+   number->setIndex( m_lNumbers.size());
    m_lNumbers << number;
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
@@ -420,7 +420,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
          }
       }
       foreach(PhoneNumber* number, wrap->numbers) {
-         if ((!number->m_hasType) && (!type.isEmpty())) {
+         if ((!number->hasType()) && (!type.isEmpty())) {
             number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
          if (((!contact) || number->contact() == contact) && ((!account) || number->account() == account))
@@ -432,7 +432,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    number->setAccount(account);
    number->setContact(contact);
-   number->m_Index = m_lNumbers.size();
+   number->setIndex(m_lNumbers.size());
    m_lNumbers << number;
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
@@ -486,24 +486,24 @@ void PhoneDirectoryModel::slotCallAdded(Call* call)
             PhoneNumber* tmp = m_lPopularityIndex[currentIndex-1];
             m_lPopularityIndex[currentIndex-1] = number;
             m_lPopularityIndex[currentIndex  ] = tmp   ;
-            tmp->m_PopularityIndex++;
+            tmp->setPopularityIndex(tmp->popularityIndex()+1);
             currentIndex--;
          } while (currentIndex && m_lPopularityIndex[currentIndex-1]->callCount() < number->callCount());
-         number->m_PopularityIndex = currentIndex;
+         number->setPopularityIndex(currentIndex);
          emit layoutChanged();
       }
       //The top 10 is not complete, a call count of "1" is enough to make it
       else if (m_lPopularityIndex.size() < 10 && currentIndex == -1) {
          m_lPopularityIndex << number;
-         number->m_PopularityIndex = m_lPopularityIndex.size()-1;
+         number->setPopularityIndex(m_lPopularityIndex.size()-1);
          emit layoutChanged();
       }
       //The top 10 is full, but this number just made it to the top 10
       else if (currentIndex == -1 && m_lPopularityIndex.size() >= 10 && m_lPopularityIndex[9] != number && m_lPopularityIndex[9]->callCount() < number->callCount()) {
          PhoneNumber* tmp = m_lPopularityIndex[9];
-         tmp->m_PopularityIndex    = -1;
+         tmp->setPopularityIndex(-1);
          m_lPopularityIndex[9]     = number;
-         number->m_PopularityIndex = 9;
+         number->setPopularityIndex(9);
          emit tmp->changed();
          emit number->changed();
       }
@@ -519,7 +519,7 @@ void PhoneDirectoryModel::slotChanged()
 {
    PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
    if (number) {
-      const int idx = number->m_Index;
+      const int idx = number->index();
 #ifndef NDEBUG
       if (idx<0)
          qDebug() << "Invalid slotChanged() index!" << idx;

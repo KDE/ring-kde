@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QtCore/QSize>
 #include <QtCore/QObject>
+#include <QtCore/QSharedPointer>
 
 //SFLPhone
 class Account;
@@ -34,11 +35,14 @@ class PhoneNumberPrivate;
 class TemporaryPhoneNumber;
 class NumberCategory;
 
+class PrivatePhoneNumber;
+
 ///PhoneNumber: represent a phone number
 class LIB_EXPORT PhoneNumber : public QObject {
    Q_OBJECT
 public:
    friend class PhoneDirectoryModel;
+   friend class PrivatePhoneNumber;
    virtual ~PhoneNumber();
 
    //Properties
@@ -126,10 +130,6 @@ protected:
    //Constructor
    PhoneNumber(const QString& uri, NumberCategory* cat, Type st = Type::UNUSED);
 
-   //Attributes
-   QString            m_Uri  ;
-   PhoneNumber::Type  m_Type ;
-
    //Helper
    static QString stripUri(const QString& uri);
 
@@ -137,10 +137,25 @@ protected:
    void setPresent(bool present);
    void setPresenceMessage(const QString& message);
 
+   //PhoneDirectoryModel mutator
+   bool merge(PhoneNumber* other);
+
+   //Getter
+   bool hasType() const;
+   int  index() const;
+
+   //Setter
+   void setHasType(bool value);
+   void setIndex(int value);
+   void setPopularityIndex(int value);
+
+   //Many phone numbers can have the same "d" if they were merged
+   QSharedPointer<PrivatePhoneNumber> d;
+
 private:
    friend class PhoneNumberPrivate;
 
-   //Attributes
+   /*//Attributes
    NumberCategory*    m_pCategory        ;
    bool               m_Present          ;
    QString            m_PresentMessage   ;
@@ -160,7 +175,7 @@ private:
    bool               m_IsBookmark       ;
    int                m_TotalSeconds     ;
    QString            m_Uid              ;
-   QString            m_PrimaryName_cache;
+   QString            m_PrimaryName_cache;*/
 
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;
