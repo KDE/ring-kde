@@ -322,6 +322,9 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
  */
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account, const QString& type)
 {
+   if (!account)
+      return getNumber(uri,type);
+
    const QString strippedUri =  PhoneNumber::stripUri(uri);
 
    //Try to use a PhoneNumber with a contact when possible, work only after the
