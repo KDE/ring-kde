@@ -124,9 +124,22 @@ QVariant ColorVisitor::getIcon(const Account* a) {
    return QVariant();
 }
 
-KDEPixmapManipulation::KDEPixmapManipulation() : PixmapManipulationVisitor()
+KDEPixmapManipulation::KDEPixmapManipulation() : QObject(),PixmapManipulationVisitor()
 {
    
+}
+
+///When the Contact is rebased (use a new data source), everything is now invalid
+void KDEPixmapManipulation::clearCache()
+{
+   Contact* c = qobject_cast<Contact*>(sender());
+   if (!c) return;
+
+   //Hopefully it wont happen often
+   foreach (const QByteArray& name, c->dynamicPropertyNames()) {
+      if (name.left(5) == "photo")
+         c->setProperty(name,QVariant());
+   }
 }
 
 QVariant KDEPixmapManipulation::contactPhoto(Contact* c, const QSize& size, bool displayPresence) {
@@ -134,6 +147,8 @@ QVariant KDEPixmapManipulation::contactPhoto(Contact* c, const QSize& size, bool
    QVariant preRendered = c->property(hash.toAscii());
    if (preRendered.isValid())
       return preRendered;
+   else
+      connect(c,SIGNAL(rebased(Contact*)),this,SLOT(clearCache()));
    const int radius = (size.height() > 35) ? 7 : 5;
    const QPixmap* pxmPtr = c->photo();
    bool isTracked = displayPresence && c->isTracked();

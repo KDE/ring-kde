@@ -183,6 +183,7 @@ private:
 
 private Q_SLOTS:
    void accountDestroyed(QObject* o);
+   void contactRebased(Contact* other);
 
 Q_SIGNALS:
    void callAdded(Call* call);
@@ -191,6 +192,7 @@ Q_SIGNALS:
    void presenceMessageChanged(const QString&);
    void trackedChanged(bool);
    void primaryNameChanged(const QString& name);
+   void rebased(PhoneNumber* other);
 };
 
 Q_DECLARE_METATYPE(PhoneNumber*)

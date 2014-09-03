@@ -22,19 +22,6 @@
 #ifndef SFLPHONE_CONST_H
 #define SFLPHONE_CONST_H
 
-#include <QtCore/QString>
-
-#define ACTION_LABEL_CALL                 i18n("New call")
-#define ACTION_LABEL_PLACE_CALL           i18n("Place call")
-#define ACTION_LABEL_HANG_UP              i18n("Hang up")
-#define ACTION_LABEL_HOLD                 i18n("Hold on")
-#define ACTION_LABEL_TRANSFER             i18n("Transfer")
-#define ACTION_LABEL_RECORD               i18n("Record")
-#define ACTION_LABEL_ACCEPT               i18n("Pick up")
-#define ACTION_LABEL_REFUSE               i18n("Hang up")
-#define ACTION_LABEL_UNHOLD               i18n("Hold off")
-#define ACTION_LABEL_GIVE_UP_TRANSF       i18n("Give up transfer")
-#define ACTION_LABEL_MAILBOX              i18n("Voicemail")
 
 #define ICON_INCOMING                     ":/images/icons/ring.svg"
 #define ICON_RINGING                      ":/images/icons/ring.svg"
@@ -63,19 +50,8 @@
 #define ICON_HISTORY_MISSED               ":/images/icons/missed.svg"
 #define ICON_SFLPHONE                     ":/images/icons/sflphone.svg"
 
-/** Maybe to remove **/
-static const QString REGISTRATION_ENABLED_TRUE("true");
-static const QString REGISTRATION_ENABLED_FALSE("false");
 // #define ACCOUNT_TYPES_TAB                 {QString(Account::ProtocolName::SIP), QString(Account::ProtocolName::IAX)}
 /*********************/
-
-/** Hooks settings */
-#define HOOKS_ADD_PREFIX                  "PHONE_NUMBER_HOOK_ADD_PREFIX"
-#define HOOKS_ENABLED                     "PHONE_NUMBER_HOOK_ENABLED"
-#define HOOKS_COMMAND                     "URLHOOK_COMMAND"
-#define HOOKS_IAX2_ENABLED                "URLHOOK_IAX2_ENABLED"
-#define HOOKS_SIP_ENABLED                 "URLHOOK_SIP_ENABLED"
-#define HOOKS_SIP_FIELD                   "URLHOOK_SIP_FIELD"
 
 /** MIME API */
 #define MIME_CALLID           "text/sflphone.call.id"

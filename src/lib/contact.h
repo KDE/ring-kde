@@ -22,7 +22,6 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
-#include <QtCore/QSharedPointer>
 #include <time.h>
 
 //Qt
@@ -84,9 +83,10 @@ public:
    Q_INVOKABLE bool remove()    ;
    Q_INVOKABLE bool addPhoneNumber(PhoneNumber* n);
 
-private:
+protected:
    //The D-Pointer can be shared if a PlaceHolderContact is merged with a real one
-   QSharedPointer<ContactPrivate> d;
+   ContactPrivate* d;
+   void replaceDPointer(Contact* other);
 
 public:
    //Constructors & Destructors
@@ -126,6 +126,12 @@ public:
    void setPhoto          ( QPixmap*          photo  );
    void setActive         ( bool              active );
 
+   //Operator
+   bool operator==(Contact* other);
+   bool operator==(const Contact* other) const;
+   bool operator==(Contact& other);
+   bool operator==(const Contact& other) const;
+
 private Q_SLOTS:
    void slotPresenceChanged();
 
@@ -135,11 +141,20 @@ Q_SIGNALS:
    void changed        (              );
    void phoneNumberCountChanged(int,int);
    void phoneNumberCountAboutToChange(int,int);
+   void rebased        ( Contact*     );
 
 protected:
    //Presence secret methods
    void updatePresenceInformations(const QString& uri, bool status, const QString& message);
 };
+
+class LIB_EXPORT ContactPlaceHolder : public Contact {
+   Q_OBJECT
+public:
+   ContactPlaceHolder(const QByteArray& uid);
+   bool merge(Contact* contact);
+};
+
 
 Q_DECLARE_METATYPE(Contact*)
 

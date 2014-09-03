@@ -70,6 +70,7 @@ public:
 
    //Getters
    Contact* getContactByUid   ( const QByteArray& uid );
+   Contact* getPlaceHolder(const QByteArray& uid );
    bool     hasBackends       () const;
    const ContactList contacts() const;
    virtual const QVector<AbstractContactBackend*> enabledBackends() const;
@@ -96,6 +97,7 @@ private:
    static ContactModel* m_spInstance;
    QVector<AbstractContactBackend*> m_lBackends;
    CommonItemBackendModel* m_pBackendModel;
+   QHash<QByteArray,ContactPlaceHolder*> m_hPlaceholders;
 
    //Indexes
    QHash<QByteArray,Contact*> m_hContactsByUid;
@@ -113,5 +115,6 @@ Q_SIGNALS:
    void newContactAdded(Contact* c);
    void newBackendAdded(AbstractContactBackend* backend);
 };
+
 
 #endif

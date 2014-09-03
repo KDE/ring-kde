@@ -409,6 +409,9 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
 
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
 {
+   if (!contact)
+      return getNumber(uri,account,type);
+
    const QString strippedUri =  PhoneNumber::stripUri(uri);
 
    //See if the number is already loaded
@@ -426,7 +429,9 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
          if ((!number->hasType()) && (!type.isEmpty())) {
             number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
-         if (((!contact) || number->contact() == contact) && ((!account) || number->account() == account))
+         //Use the operator== check to avoid issues with placeholders
+         if (((!contact) || (number->contact() && (*number->contact()) == (*contact)))
+            && ((!account) || number->account() == account))
             return number;
       }
    }

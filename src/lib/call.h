@@ -212,6 +212,9 @@ public:
       constexpr static const char* TIMESTAMP_STOP    = "timestamp_stop" ;
       constexpr static const char* MISSED            = "missed"         ;
       constexpr static const char* DIRECTION         = "direction"      ;
+      constexpr static const char* CONTACT_USED      = "contact_used"   ;
+      constexpr static const char* CONTACT_UID       = "contact_uid"    ;
+      constexpr static const char* NUMBER_TYPE       = "number_type"    ;
    };
 
    ///"getCallDetails()" fields

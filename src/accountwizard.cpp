@@ -70,6 +70,9 @@
 
 #define SFL_ACCOUNT_HOST         "sip.sflphone.org"
 
+static const QString REGISTRATION_ENABLED_TRUE("true");
+static const QString REGISTRATION_ENABLED_FALSE("false");
+
 /***************************************************************************
  *                                                                         *
  *   Global functions for creating an account on sflphone.org              *

@@ -163,6 +163,25 @@ Contact* ContactModel::getContactByUid(const QByteArray& uid)
    return m_hContactsByUid[uid];
 }
 
+/**
+ * Create a temporary contact or return the existing one for an UID
+ * This temporary contact should eventually be merged into the real one
+ */
+Contact* ContactModel::getPlaceHolder(const QByteArray& uid )
+{
+   Contact* ct = m_hContactsByUid[uid];
+
+   //Do not create a placeholder if the real deal exist
+   if (ct) {
+      return ct;
+   }
+
+   ContactPlaceHolder* ct2 = new ContactPlaceHolder(uid);
+
+   m_hPlaceholders[ct2->uid()] = ct2;
+   return ct2;
+}
+
 ///Return if there is backends
 bool ContactModel::hasBackends() const
 {
@@ -208,6 +227,12 @@ bool ContactModel::addContact(Contact* c)
    beginInsertRows(QModelIndex(),m_lContacts.size()-1,m_lContacts.size());
    m_lContacts << c;
    m_hContactsByUid[c->uid()] = c;
+
+   //Deprecate the placeholder
+   if (m_hPlaceholders.contains(c->uid())) {
+      m_hPlaceholders[c->uid()]->merge(c);
+      m_hPlaceholders[c->uid()] = nullptr;
+   }
    endInsertRows();
    emit layoutChanged();
    emit newContactAdded(c);

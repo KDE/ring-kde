@@ -78,6 +78,18 @@
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
+#define ACTION_LABEL_CALL                 i18n("New call")
+#define ACTION_LABEL_PLACE_CALL           i18n("Place call")
+#define ACTION_LABEL_HANG_UP              i18n("Hang up")
+#define ACTION_LABEL_HOLD                 i18n("Hold on")
+#define ACTION_LABEL_TRANSFER             i18n("Transfer")
+#define ACTION_LABEL_RECORD               i18n("Record")
+#define ACTION_LABEL_ACCEPT               i18n("Pick up")
+#define ACTION_LABEL_REFUSE               i18n("Hang up")
+#define ACTION_LABEL_UNHOLD               i18n("Hold off")
+#define ACTION_LABEL_GIVE_UP_TRANSF       i18n("Give up transfer")
+#define ACTION_LABEL_MAILBOX              i18n("Voicemail")
+
 ///Constructor
 SFLPhoneView::SFLPhoneView(QWidget *parent)
    : QWidget(parent),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)

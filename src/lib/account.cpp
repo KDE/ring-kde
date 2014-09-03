@@ -220,7 +220,7 @@ const QString Account::accountDetail(const QString& param) const
    }
    else if (m_hAccountDetails.count() > 0) {
       if (param == Account::MapField::ENABLED) //If an account is invalid, at least does not try to register it
-         return REGISTRATION_ENABLED_FALSE;
+         return Account::RegistrationEnabled::NO;
       if (param == Account::MapField::Registration::STATUS) //If an account is new, then it is unregistered
          return Account::State::UNREGISTERED;
       if (protocol() != Account::Protocol::IAX) //IAX accounts lack some fields, be quiet

@@ -43,7 +43,8 @@ private:
    QColor   m_Red;
 };
 
-class KDEPixmapManipulation : public PixmapManipulationVisitor {
+class KDEPixmapManipulation : public QObject ,public PixmapManipulationVisitor {
+   Q_OBJECT
 public:
    KDEPixmapManipulation();
    QVariant contactPhoto(Contact* c, const QSize& size, bool displayPresence = true);
@@ -63,6 +64,9 @@ private:
 
    //Helper
    QPixmap drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent);
+
+private Q_SLOTS:
+   void clearCache();
 };
 
 class KDEPresenceSerializationVisitor : public PresenceSerializationVisitor {

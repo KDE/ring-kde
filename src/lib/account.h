@@ -153,6 +153,12 @@ class LIB_EXPORT Account : public QObject {
          constexpr static const char* REQUEST_TIMEOUT           = "Request Timeout"        ;
       };
 
+      class RegistrationEnabled {
+      public:
+         constexpr static const char* YES  = "true";
+         constexpr static const char* NO   = "false";
+      };
+
       ~Account();
       //Constructors
       static Account* buildExistingAccountFromId(const QString& _accountId);

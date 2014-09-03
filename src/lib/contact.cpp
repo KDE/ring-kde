@@ -46,7 +46,54 @@ public:
    Contact::PhoneNumbers   m_Numbers        ;
    bool                    m_Active         ;
    AbstractContactBackend* m_pBackend       ;
+   bool                    m_isPlaceHolder  ;
+
+   //Helper code to help handle multiple parents
+   QList<Contact*> m_lParents;
+
+   //As a single D-Pointer can have multiple parent (when merged), all emit need
+   //to use a proxy to make sure everybody is notified
+   void presenceChanged( PhoneNumber* );
+   void statusChanged  ( bool         );
+   void changed        (              );
+   void phoneNumberCountChanged(int,int);
+   void phoneNumberCountAboutToChange(int,int);
 };
+
+void ContactPrivate::changed()
+{
+   foreach (Contact* c,m_lParents) {
+      emit c->changed();
+   }
+}
+
+void ContactPrivate::presenceChanged( PhoneNumber* n )
+{
+   foreach (Contact* c,m_lParents) {
+      emit c->presenceChanged(n);
+   }
+}
+
+void ContactPrivate::statusChanged  ( bool s )
+{
+   foreach (Contact* c,m_lParents) {
+      emit c->statusChanged(s);
+   }
+}
+
+void ContactPrivate::phoneNumberCountChanged(int n,int o)
+{
+   foreach (Contact* c,m_lParents) {
+      emit c->phoneNumberCountChanged(n,o);
+   }
+}
+
+void ContactPrivate::phoneNumberCountAboutToChange(int n,int o)
+{
+   foreach (Contact* c,m_lParents) {
+      emit c->phoneNumberCountAboutToChange(n,o);
+   }
+}
 
 ContactPrivate::ContactPrivate(Contact* contact, AbstractContactBackend* parent):m_pPhoto(nullptr),
    m_Numbers(contact),m_DisplayPhoto(nullptr),m_Active(true),
@@ -72,6 +119,8 @@ Contact* Contact::PhoneNumbers::contact() const
 Contact::Contact(AbstractContactBackend* parent):QObject(parent?parent:TransitionalContactBackend::instance()),
    d(new ContactPrivate(this,parent))
 {
+   d->m_isPlaceHolder = false;
+   d->m_lParents << this;
 }
 
 ///Destructor
@@ -153,19 +202,19 @@ void Contact::setPhoneNumbers(PhoneNumbers numbers)
       disconnect(n,SIGNAL(presentChanged(bool)),this,SLOT(slotPresenceChanged()));
    d->m_Numbers = numbers;
    if (newCount < oldCount) //Rows need to be removed from models first
-      emit phoneNumberCountAboutToChange(newCount,oldCount);
+      d->phoneNumberCountAboutToChange(newCount,oldCount);
    foreach(PhoneNumber* n, d->m_Numbers)
       connect(n,SIGNAL(presentChanged(bool)),this,SLOT(slotPresenceChanged()));
    if (newCount > oldCount) //Need to be updated after the data to prevent invalid memory access
-      emit phoneNumberCountChanged(newCount,oldCount);
-   emit changed();
+      d->phoneNumberCountChanged(newCount,oldCount);
+   d->changed();
 }
 
 ///Set the nickname
 void Contact::setNickName(const QString& name)
 {
    d->m_NickName = name;
-   emit changed();
+   d->changed();
 }
 
 ///Set the first name
@@ -173,7 +222,7 @@ void Contact::setFirstName(const QString& name)
 {
    d->m_FirstName = name;
    setObjectName(formattedName());
-   emit changed();
+   d->changed();
 }
 
 ///Set the family name
@@ -181,64 +230,64 @@ void Contact::setFamilyName(const QString& name)
 {
    d->m_SecondName = name;
    setObjectName(formattedName());
-   emit changed();
+   d->changed();
 }
 
 ///Set the Photo/Avatar
 void Contact::setPhoto(QPixmap* photo)
 {
    d->m_pPhoto = photo;
-   emit changed();
+   d->changed();
 }
 
 ///Set the formatted name (display name)
 void Contact::setFormattedName(const QString& name)
 {
    d->m_FormattedName = name;
-   emit changed();
+   d->changed();
 }
 
 ///Set the organisation / business
 void Contact::setOrganization(const QString& name)
 {
    d->m_Organization = name;
-   emit changed();
+   d->changed();
 }
 
 ///Set the default email
 void Contact::setPreferredEmail(const QString& name)
 {
    d->m_PreferredEmail = name;
-   emit changed();
+   d->changed();
 }
 
 ///Set UID
 void Contact::setUid(const QByteArray& id)
 {
    d->m_Uid = id;
-   emit changed();
+   d->changed();
 }
 
 ///Set Group
 void Contact::setGroup(const QString& name)
 {
    d->m_Group = name;
-   emit changed();
+   d->changed();
 }
 
 ///Set department
 void Contact::setDepartment(const QString& name)
 {
    d->m_Department = name;
-   emit changed();
+   d->changed();
 }
 
 ///If the contact have been deleted or not yet fully created
 void Contact::setActive( bool active)
 {
    d->m_Active = active;
-   emit statusChanged(d->m_Active);
-   emit changed();
+   d->statusChanged(d->m_Active);
+   d->changed();
 }
 
 ///Return if one of the PhoneNumber is present
@@ -295,7 +344,7 @@ time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
 ///Callback when one of the phone number presence change
 void Contact::slotPresenceChanged()
 {
-   emit changed();
+   d->changed();
 }
 
 ///Save the contact
@@ -321,4 +370,50 @@ bool Contact::remove()
 bool Contact::addPhoneNumber(PhoneNumber* n)
 {
    return d->m_pBackend->addPhoneNumber(this,n);
+}
+
+///Create a placeholder contact, it will eventually be replaced when the real one is loaded
+ContactPlaceHolder::ContactPlaceHolder(const QByteArray& uid)
+{
+   setUid(uid);
+   d->m_isPlaceHolder = true;
+}
+
+
+bool ContactPlaceHolder::merge(Contact* contact)
+{
+   ContactPrivate* currentD = d;
+   replaceDPointer(contact);
+   currentD->m_lParents.removeAll(this);
+   if (!currentD->m_lParents.size())
+      delete currentD;
+   return true;
+}
+
+void Contact::replaceDPointer(Contact* c)
+{
+   this->d = c->d;
+   d->m_lParents << this;
+   emit changed();
+   emit rebased(c);
+}
+
+bool Contact::operator==(Contact* other)
+{
+   return this->d == other->d;
+}
+
+bool Contact::operator==(const Contact* other) const
+{
+   return this->d == other->d;
+}
+
+bool Contact::operator==(Contact& other)
+{
+   return this->d == other.d;
+}
+
+bool Contact::operator==(const Contact& other) const
+{
+   return this->d == other.d;
 }

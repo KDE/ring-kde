@@ -379,14 +379,23 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
       accId = QString(Account::ProtocolName::IP2IP);
    }
 
+   //Try to assiciate a contact now, the real contact object is probably not
+   //loaded yet, but we can get a placeholder for now
+//    const QString& contactUsed    = hc[ Call::HistoryMapFields::CONTACT_USED ]; //TODO
+   const QString& contactUid     = hc[ Call::HistoryMapFields::CONTACT_UID  ];
+
+   Contact* ct = nullptr;
+   if (!hc[ Call::HistoryMapFields::CONTACT_UID].isEmpty())
+      ct = ContactModel::instance()->getPlaceHolder(contactUid.toAscii());
+
    Account*      acc       = AccountListModel::instance()->getAccountById(accId);
-   PhoneNumber*  nb        = PhoneDirectoryModel::instance()->getNumber(number,acc);
+   PhoneNumber*  nb        = PhoneDirectoryModel::instance()->getNumber(number,ct,acc);
+
    Call*         call      = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, nb, acc );
 
    call->m_pStopTimeStamp  = stopTimeStamp ;
    call->m_History         = true;
    call->setStartTimeStamp(startTimeStamp);
-
    call->m_HistoryState    = historyStateFromType(type);
    call->m_Account         = AccountListModel::instance()->getAccountById(accId);
 
@@ -409,7 +418,7 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
       call->m_Direction    = Call::Direction::INCOMING            ;
    else if (call->m_HistoryState == Call::LegacyHistoryState::OUTGOING)
       call->m_Direction    = Call::Direction::OUTGOING            ;
-   else //BUG Pick one, even if it is the wrong one
+   else //Getting there is a bug. Pick one, even if it is the wrong one
       call->m_Direction    = Call::Direction::OUTGOING            ;
    if (missed)
       call->m_HistoryState = Call::LegacyHistoryState::MISSED;
@@ -419,7 +428,12 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
 
    if (call->peerPhoneNumber()) {
       call->peerPhoneNumber()->addCall(call);
+
+      //Reload the glow and number colors
       connect(call->peerPhoneNumber(),SIGNAL(presentChanged(bool)),call,SLOT(updated()));
+
+      //Change the display name and picture
+      connect(call->peerPhoneNumber(),SIGNAL(rebased(PhoneNumber*)),call,SLOT(updated()));
    }
 
    return call;

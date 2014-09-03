@@ -285,6 +285,7 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
       Q_ASSERT(false);
    }
 
+   //Even history call currently need to be tracked in CallModel, this may change
    InternalStruct* aNewStruct = new InternalStruct;
    aNewStruct->call_real  = call;
    aNewStruct->conference = false;
@@ -297,13 +298,15 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
    }
    m_sPrivateCallList_callId[ call->id() ] = aNewStruct;
 
-   if (call->lifeCycleState() != Call::LifeCycleState::FINISHED)
+   //If the call is already finished, there is no point to track it here
+   if (call->lifeCycleState() != Call::LifeCycleState::FINISHED) {
       emit callAdded(call,parentCall);
-   const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
-   emit dataChanged(idx, idx);
-   connect(call,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
-   connect(call,SIGNAL(dtmfPlayed(QString)),this,SLOT(slotDTMFPlayed(QString)));
-   emit layoutChanged();
+      const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
+      emit dataChanged(idx, idx);
+      connect(call,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
+      connect(call,SIGNAL(dtmfPlayed(QString)),this,SLOT(slotDTMFPlayed(QString)));
+      emit layoutChanged();
+   }
    return call;
 } //addCall
 

@@ -162,6 +162,7 @@ void PhoneNumber::setContact(Contact* contact)
       PhoneDirectoryModel::instance()->indexNumber(this,d->m_hNames.keys()+QStringList(contact->formattedName()));
       d->m_PrimaryName_cache = contact->formattedName();
       emit primaryNameChanged(d->m_PrimaryName_cache);
+      connect(contact,SIGNAL(rebased(Contact*)),this,SLOT(contactRebased(Contact*)));
    }
    emit changed();
 }
@@ -441,6 +442,20 @@ void PhoneNumber::accountDestroyed(QObject* o)
 {
    if (o == d->m_pAccount)
       d->m_pAccount = nullptr;
+}
+
+/**
+ * When the PhoneNumber contact is merged with another one, the phone number
+ * data might be replaced, like the preferred name.
+ */
+void PhoneNumber::contactRebased(Contact* other)
+{
+   d->m_PrimaryName_cache = other->formattedName();
+   emit primaryNameChanged(d->m_PrimaryName_cache);
+   emit changed();
+
+   //It is a "partial" rebase, so the PhoneNumber data stay the same
+   emit rebased(this);
 }
 
 /**
