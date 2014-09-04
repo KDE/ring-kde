@@ -293,15 +293,21 @@ void PhoneDirectoryModel::setAccount(PhoneNumber* number, Account* account ) {
    if (!hasAtSign) {
       NumberWrapper* wrap = m_hDirectory[strippedUri];
 
-      //Check if a compatible number already exist
-      if (wrap && wrap->numbers.indexOf(number) == -1) {
-         qDebug() << "TODO";
-      }
-
       //Let make sure none is created in the future for nothing
       if (!wrap) {
+         //It wont be a duplicate as none exist for this URI
          wrap = new NumberWrapper();
          m_hDirectory[strippedUri+'@'+account->hostname()] = wrap;
+
+      }
+      else {
+         //After all this, it is possible the number is now a duplicate
+         foreach(PhoneNumber* n, wrap->numbers) {
+            if (n != number && n->account() && n->account() == number->account()) {
+               //qDebug() << "DUPLICATE";
+               number->merge(n);
+            }
+         }
       }
       wrap->numbers << number;
 
@@ -351,9 +357,38 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
  */
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account, const QString& type)
 {
-   if (!account)
-      return getNumber(uri,type);
+   return getNumber(uri,nullptr,account,type);
+}
 
+PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, Account* account, Contact* contact, const QString& type,bool& hasContact)
+{
+   if (wrap) {
+      foreach(PhoneNumber* number, wrap->numbers) {
+         //Not perfect, but better than ignoring the high probabilities
+         //TODO only do it is hostname match
+         if ((!contact) && account && !number->account())
+            setAccount(number,account);
+
+         //Set a type, this has low probabilities of being invalid
+         if ((!number->hasType()) && (!type.isEmpty())) {
+            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
+         }
+
+         //If the contact has not already been set and account match, set it
+         if (account && account == number->account() && contact && !((*contact) == number->contact()))
+            number->setContact(contact);
+
+         //We already have enough information to confirm the choice
+         if (contact && number->contact() &&((contact->uid()) == number->contact()->uid()))
+            return number;
+         hasContact |= number->contact()!= nullptr;
+      }
+   }
+   return nullptr;
+}
+
+PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
+{
    const URI strippedUri(uri);
 
    //Try to use a PhoneNumber with a contact when possible, work only after the
@@ -368,64 +403,77 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    const bool hasAtSign = strippedUri.hasHostname();
 
    //Try to see if there is a better candidate with a suffix (LAN only)
-   if ( !hasAtSign ) {
+   if ( !hasAtSign && account ) {
       //Append the account hostname
       wrap2 = m_hDirectory[strippedUri+'@'+account->hostname()];
    }
 
-   if (wrap) {
-      foreach(PhoneNumber* number, wrap->numbers) {
-         //Not perfect, but better than ignoring the high probabilities
-         //TODO only do it is hostname match
-         if (!number->account())
-            setAccount(number,account);
-         if ((!number->hasType()) && (!type.isEmpty())) {
-            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
+   //Check
+   PhoneNumber* confirmedCandidate = fillDetails(wrap,account,contact,type,hasContact);
+
+   //URIs can be represented in multiple way, check if a more verbose version
+   //already exist
+   PhoneNumber* confirmedCandidate2 = fillDetails(wrap2,account,contact,type,hasContact);
+
+   PhoneNumber* confirmedCandidate3 = nullptr;
+
+   //Else, try to see if the hostname correspond to the account and flush it
+   //This have to be done after the parent if as the above give "better"
+   //results. It cannot be merged with wrap2 as this check only work if the
+   //candidate has an account.
+   if (hasAtSign && account && strippedUri.hostname() == account->hostname()) {
+     wrap2 = m_hDirectory[strippedUri.userinfo()];
+     if (wrap2) {
+         foreach(PhoneNumber* number, wrap2->numbers) {
+            if (number->account() == account) {
+               if (contact && ((!number->contact()) || (contact->uid() == number->contact()->uid())))
+                  number->setContact(contact);
+               //TODO add alternate URI
+               confirmedCandidate3 = number;
+               break;
+            }
          }
-         hasContact |= number->contact()!= nullptr;
-      }
+     }
    }
 
-   //If the second candidate has a contact, choose it (LAN only)
-   if (wrap2 && (!hasContact)) {
-      foreach(PhoneNumber* number, wrap2->numbers) {
-         //Not perfect, but better than ignoring the high probabilities
-         //TODO only do it is hostname match
-         if (!number->account())
-            setAccount(number,account);
-         if ((!number->hasType()) && (!type.isEmpty())) {
-            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
-         }
-         if (number->contact()) {
-            return number;
-         }
-      }
+   //qDebug() << "-----CANDID" << confirmedCandidate3 << confirmedCandidate << confirmedCandidate2;
+   //If multiple PhoneNumber are confirmed, then they are the same, merge them
+   if (confirmedCandidate3 && (confirmedCandidate || confirmedCandidate2)) {
+      confirmedCandidate3->merge(confirmedCandidate?confirmedCandidate:confirmedCandidate2);
+   }
+   else if (confirmedCandidate && confirmedCandidate2) {
+      if (confirmedCandidate->contact() && !confirmedCandidate2->contact())
+         confirmedCandidate2->merge(confirmedCandidate);
+      else if (confirmedCandidate2->contact() && !confirmedCandidate->contact())
+         confirmedCandidate->merge(confirmedCandidate2);
    }
 
-   //Do the opposite, the URI has a suffix, try without
-   if ((!wrap) && account && hasAtSign ) {
-      const QString prefixOnly = strippedUri.userinfo();
-      NumberWrapper* potentialwrap = m_hDirectory[prefixOnly];
-      if (potentialwrap) {
-         foreach(PhoneNumber* number, potentialwrap->numbers) {
-            if (number->account() == account)
-               return number;
-         }
-      }
-   }
+
+   if (confirmedCandidate2)
+      return confirmedCandidate2;
+   if (confirmedCandidate)
+      return confirmedCandidate;
+   if (confirmedCandidate3)
+      return confirmedCandidate3;
 
    //No better candidates were found than the original assumption, use it
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
-         if ((!account) || number->account() == account)
+         if (((!account) || number->account() == account) && ((!contact) || ((*contact) == number->contact()))) {
+            if (contact && (!number->contact() || (contact->uid() == number->contact()->uid())))
+               number->setContact(contact);
             return number;
+         }
       }
    }
 
    //Create the number
+   //qDebug() << "CREATE" << strippedUri << account << contact;
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    number->setAccount(account);
    number->setIndex( m_lNumbers.size());
+   if (contact)
+      number->setContact(contact);
    m_lNumbers << number;
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
@@ -434,7 +482,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
       m_hDirectory[strippedUri] = wrap;
 
       //Also add its alternative URI, it should be safe to do
-      if ( !hasAtSign && !account->hostname().isEmpty() ) {
+      if ( !hasAtSign && account && !account->hostname().isEmpty() ) {
          if (!wrap2) {
             wrap2 = new NumberWrapper();
             m_hDirectory[strippedUri+'@'+account->hostname()] = wrap2;
@@ -446,53 +494,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    }
    wrap->numbers << number;
    emit layoutChanged();
-   return number;
-}
 
-PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
-{
-   if (!contact)
-      return getNumber(uri,account,type);
-
-   const URI strippedUri(uri);
-
-   //See if the number is already loaded
-   NumberWrapper* wrap = m_hDirectory[strippedUri];
-   if (wrap) {
-      //TODO find something better, it is prone to collisions
-      foreach(PhoneNumber* number, wrap->numbers) {
-         if (!number->contact()) {
-            if (!number->account())
-               setAccount(number,account);
-            number->setContact(contact);
-         }
-      }
-      foreach(PhoneNumber* number, wrap->numbers) {
-         if ((!number->hasType()) && (!type.isEmpty())) {
-            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
-         }
-         //Use the operator== check to avoid issues with placeholders
-         if (((!contact) || (number->contact() && (*number->contact()) == (*contact)))
-            && ((!account) || number->account() == account))
-            return number;
-      }
-   }
-
-   //Create the number
-   PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
-   number->setAccount(account);
-   number->setContact(contact);
-   number->setIndex(m_lNumbers.size());
-   m_lNumbers << number;
-   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
-   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
-   if (!wrap) {
-      wrap = new NumberWrapper();
-      m_hDirectory[strippedUri] = wrap;
-      m_hSortedNumbers[strippedUri] = wrap;
-   }
-   wrap->numbers << number;
-   emit layoutChanged();
    return number;
 }
 

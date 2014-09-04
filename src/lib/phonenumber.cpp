@@ -521,22 +521,22 @@ bool PhoneNumber::merge(PhoneNumber* other)
 
 bool PhoneNumber::operator==(PhoneNumber* other)
 {
-   return this->d == other->d;
+   return other && this->d == other->d;
 }
 
 bool PhoneNumber::operator==(const PhoneNumber* other) const
 {
-   return this->d == other->d;
+   return other && this->d == other->d;
 }
 
 bool PhoneNumber::operator==(PhoneNumber& other)
 {
-   return this->d == other.d;
+   return &other && this->d == other.d;
 }
 
 bool PhoneNumber::operator==(const PhoneNumber& other) const
 {
-   return this->d == other.d;
+   return &other && this->d == other.d;
 }
 
 /************************************************************************************

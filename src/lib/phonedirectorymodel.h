@@ -116,6 +116,7 @@ private:
    //Helpers
    void indexNumber(PhoneNumber* number, const QStringList& names   );
    void setAccount (PhoneNumber* number,       Account*     account );
+   PhoneNumber* fillDetails(NumberWrapper* wrap, Account* account, Contact* contact, const QString& type, bool& hasContact);
 
    //Singleton
    static PhoneDirectoryModel* m_spInstance;

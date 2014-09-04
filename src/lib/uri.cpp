@@ -27,7 +27,7 @@ URI::URI(const QString& other):QString()
 }
 
 URI::URI(const URI& o):QString(),m_Parsed(o.m_Parsed),m_Hostname(o.m_Hostname),
-   m_HeaderType(o.m_HeaderType),m_Userinfo(o.m_Userinfo)
+   m_HeaderType(o.m_HeaderType),m_Userinfo(o.m_Userinfo),m_Stripped(o.m_Stripped)
 {
    (*static_cast<QString*>(this)) = o.m_Stripped;
 }

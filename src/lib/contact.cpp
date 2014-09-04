@@ -403,20 +403,20 @@ void Contact::replaceDPointer(Contact* c)
 
 bool Contact::operator==(Contact* other)
 {
-   return this->d == other->d;
+   return other && this->d == other->d;
 }
 
 bool Contact::operator==(const Contact* other) const
 {
-   return this->d == other->d;
+   return other && this->d == other->d;
 }
 
 bool Contact::operator==(Contact& other)
 {
-   return this->d == other.d;
+   return &other && this->d == other.d;
 }
 
 bool Contact::operator==(const Contact& other) const
 {
-   return this->d == other.d;
+   return &other && this->d == other.d;
 }
