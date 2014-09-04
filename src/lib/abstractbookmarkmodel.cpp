@@ -27,6 +27,7 @@
 #include "phonenumber.h"
 #include "callmodel.h"
 #include "call.h"
+#include "uri.h"
 #include "abstractitembackend.h"
 
 static bool test = false;

@@ -17,6 +17,7 @@
  ***************************************************************************/
 #include "lastusednumbermodel.h"
 #include "call.h"
+#include "uri.h"
 #include "phonenumber.h"
 
 LastUsedNumberModel* LastUsedNumberModel::m_spInstance = nullptr;

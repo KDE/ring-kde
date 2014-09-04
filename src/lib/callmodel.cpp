@@ -23,6 +23,7 @@
 
 //SFLPhone library
 #include "call.h"
+#include "uri.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "accountlistmodel.h"

@@ -42,6 +42,7 @@
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"
 #include "presencestatusmodel.h"
+#include "uri.h"
 #include "securityvalidationmodel.h"
 #define TO_BOOL ?"true":"false"
 #define IS_TRUE == "true"

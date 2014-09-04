@@ -114,7 +114,8 @@ private:
    explicit PhoneDirectoryModel(QObject* parent = nullptr);
 
    //Helpers
-   void indexNumber(PhoneNumber* number, const QStringList& names);
+   void indexNumber(PhoneNumber* number, const QStringList& names   );
+   void setAccount (PhoneNumber* number,       Account*     account );
 
    //Singleton
    static PhoneDirectoryModel* m_spInstance;

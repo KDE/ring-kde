@@ -382,6 +382,9 @@ ContactPlaceHolder::ContactPlaceHolder(const QByteArray& uid)
 
 bool ContactPlaceHolder::merge(Contact* contact)
 {
+   if ((!contact) || ((*contact) == this))
+      return false;
+
    ContactPrivate* currentD = d;
    replaceDPointer(contact);
    currentD->m_lParents.removeAll(this);

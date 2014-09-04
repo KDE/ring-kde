@@ -30,6 +30,7 @@
 #include "phonedirectorymodel.h"
 #include "historytimecategorymodel.h"
 #include "contact.h"
+#include "uri.h"
 #include "contactmodel.h"
 
 class ContactTreeNode;

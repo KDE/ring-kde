@@ -27,6 +27,7 @@
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "call.h"
+#include "uri.h"
 #include "numbercategory.h"
 #include "accountlistmodel.h"
 #include "numbercategorymodel.h"

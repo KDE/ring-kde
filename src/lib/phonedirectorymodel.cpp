@@ -23,6 +23,7 @@
 //SFLPhone
 #include "phonenumber.h"
 #include "call.h"
+#include "uri.h"
 #include "account.h"
 #include "contact.h"
 #include "accountlistmodel.h"
@@ -279,9 +280,37 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
    return QVariant();
 }
 
+/**
+ * This helper method make sure that number without an account get registered
+ * correctly with their alternate URIs. In case there is an obvious duplication,
+ * it will try to merge both numbers.
+ */
+void PhoneDirectoryModel::setAccount(PhoneNumber* number, Account* account ) {
+   const URI& strippedUri = number->uri();
+   const bool hasAtSign = strippedUri.hasHostname();
+   number->setAccount(account);
+
+   if (!hasAtSign) {
+      NumberWrapper* wrap = m_hDirectory[strippedUri];
+
+      //Check if a compatible number already exist
+      if (wrap && wrap->numbers.indexOf(number) == -1) {
+         qDebug() << "TODO";
+      }
+
+      //Let make sure none is created in the future for nothing
+      if (!wrap) {
+         wrap = new NumberWrapper();
+         m_hDirectory[strippedUri+'@'+account->hostname()] = wrap;
+      }
+      wrap->numbers << number;
+
+   }
+}
+
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& type)
 {
-   const QString strippedUri =  PhoneNumber::stripUri(uri);
+   const URI strippedUri(uri);
    NumberWrapper* wrap = m_hDirectory[strippedUri];
    if (wrap) {
       PhoneNumber* nb = wrap->numbers[0];
@@ -298,7 +327,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
 
-   const QString hn = number->hostname();
+   const QString hn = number->uri().hostname();
 
    //Check if we are lucky enough to have a single registered account with the same hostname
    /*if (!hn.isEmpty()) {
@@ -325,7 +354,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    if (!account)
       return getNumber(uri,type);
 
-   const QString strippedUri =  PhoneNumber::stripUri(uri);
+   const URI strippedUri(uri);
 
    //Try to use a PhoneNumber with a contact when possible, work only after the
    //contact are loaded
@@ -335,8 +364,11 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    NumberWrapper* wrap  = m_hDirectory[strippedUri];
    NumberWrapper* wrap2 = nullptr;
 
+   //Check if the URI is complete or short
+   const bool hasAtSign = strippedUri.hasHostname();
+
    //Try to see if there is a better candidate with a suffix (LAN only)
-   if ( uri.indexOf('@') == -1) {
+   if ( !hasAtSign ) {
       //Append the account hostname
       wrap2 = m_hDirectory[strippedUri+'@'+account->hostname()];
    }
@@ -346,7 +378,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
          //Not perfect, but better than ignoring the high probabilities
          //TODO only do it is hostname match
          if (!number->account())
-            number->setAccount(account);
+            setAccount(number,account);
          if ((!number->hasType()) && (!type.isEmpty())) {
             number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
@@ -360,7 +392,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
          //Not perfect, but better than ignoring the high probabilities
          //TODO only do it is hostname match
          if (!number->account())
-            number->setAccount(account);
+            setAccount(number,account);
          if ((!number->hasType()) && (!type.isEmpty())) {
             number->setCategory(NumberCategoryModel::instance()->getCategory(type));
          }
@@ -371,8 +403,8 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    }
 
    //Do the opposite, the URI has a suffix, try without
-   if ((!wrap) && account && uri.indexOf('@') != -1 ) {
-      const QString prefixOnly = strippedUri.left(uri.indexOf('@'));
+   if ((!wrap) && account && hasAtSign ) {
+      const QString prefixOnly = strippedUri.userinfo();
       NumberWrapper* potentialwrap = m_hDirectory[prefixOnly];
       if (potentialwrap) {
          foreach(PhoneNumber* number, potentialwrap->numbers) {
@@ -400,6 +432,16 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
    if (!wrap) {
       wrap = new NumberWrapper();
       m_hDirectory[strippedUri] = wrap;
+
+      //Also add its alternative URI, it should be safe to do
+      if ( !hasAtSign && !account->hostname().isEmpty() ) {
+         if (!wrap2) {
+            wrap2 = new NumberWrapper();
+            m_hDirectory[strippedUri+'@'+account->hostname()] = wrap2;
+         }
+         wrap2->numbers << number;
+      }
+
       m_hSortedNumbers[strippedUri] = wrap;
    }
    wrap->numbers << number;
@@ -412,7 +454,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    if (!contact)
       return getNumber(uri,account,type);
 
-   const QString strippedUri =  PhoneNumber::stripUri(uri);
+   const URI strippedUri(uri);
 
    //See if the number is already loaded
    NumberWrapper* wrap = m_hDirectory[strippedUri];
@@ -421,7 +463,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
       foreach(PhoneNumber* number, wrap->numbers) {
          if (!number->contact()) {
             if (!number->account())
-               number->setAccount(account);
+               setAccount(number,account);
             number->setContact(contact);
          }
       }

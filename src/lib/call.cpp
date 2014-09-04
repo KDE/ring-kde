@@ -33,6 +33,7 @@
 #include "dbus/configurationmanager.h"
 #include "abstractitembackend.h"
 #include "contact.h"
+#include "uri.h"
 #include "account.h"
 #include "accountlistmodel.h"
 #include "video/videomodel.h"
@@ -1238,7 +1239,7 @@ void Call::call()
       m_pDialNumber = nullptr;
    }
    else {
-      qDebug() << "Trying to call " << (m_pTransferNumber?m_pTransferNumber->uri():"ERROR") 
+      qDebug() << "Trying to call " << (m_pTransferNumber?QString(m_pTransferNumber->uri()):"ERROR") 
          << " with no account registered . callId : " << m_CallId  << "ConfId:" << id();
       this->m_HistoryState = LegacyHistoryState::NONE;
       throw tr("No account registered!");
@@ -1580,6 +1581,9 @@ QVariant Call::roleData(int role) const
             return ct?ct->formattedName():peerPhoneNumber()?peerPhoneNumber()->uri():dialNumber();
          else
             return formattedName();
+         break;
+      case Qt::ToolTipRole:
+         return tr("Account: ") + (account()?account()->alias():QString());
          break;
       case Qt::EditRole:
          return dialNumber();

@@ -25,9 +25,9 @@
 #include <QStringList>
 #include <QtCore/QSize>
 #include <QtCore/QObject>
-#include <QtCore/QSharedPointer>
 
 //SFLPhone
+#include "uri.h"
 class Account;
 class Contact;
 class Call;
@@ -62,8 +62,6 @@ public:
    Q_PROPERTY(uint               weekCount        READ weekCount                )
    Q_PROPERTY(uint               trimCount        READ trimCount                )
    Q_PROPERTY(bool               haveCalled       READ haveCalled               )
-   Q_PROPERTY(QString            hostname         READ hostname                 )
-   Q_PROPERTY(QString            fullUri          READ fullUri                  )
    Q_PROPERTY(QString            primaryName      READ primaryName              )
    Q_PROPERTY(bool               isBookmarked     READ isBookmarked             )
    Q_PROPERTY(QVariant           icon             READ icon                     )
@@ -82,7 +80,7 @@ public:
    Q_ENUMS(Type)
 
    //Getters
-   QString            uri             () const;
+   URI                uri             () const;
    NumberCategory*    category        () const;
    bool               isTracked       () const;
    bool               isPresent       () const;
@@ -98,8 +96,6 @@ public:
    QList<Call*>       calls           () const;
    int                popularityIndex () const;
    QHash<QString,int> alternativeNames() const;
-   QString            hostname        () const;
-   QString            fullUri         () const;
    QString            primaryName     () const;
    bool               isBookmarked    () const;
    bool               supportPresence () const;
@@ -126,12 +122,15 @@ public:
    //Helper
    QString toHash() const;
 
+   //Operator
+   bool operator==(PhoneNumber* other);
+   bool operator==(const PhoneNumber* other) const;
+   bool operator==(PhoneNumber& other);
+   bool operator==(const PhoneNumber& other) const;
+
 protected:
    //Constructor
-   PhoneNumber(const QString& uri, NumberCategory* cat, Type st = Type::UNUSED);
-
-   //Helper
-   static QString stripUri(const QString& uri);
+   PhoneNumber(const URI& uri, NumberCategory* cat, Type st = Type::UNUSED);
 
    //Private setters
    void setPresent(bool present);
@@ -150,7 +149,7 @@ protected:
    void setPopularityIndex(int value);
 
    //Many phone numbers can have the same "d" if they were merged
-   QSharedPointer<PrivatePhoneNumber> d;
+   PrivatePhoneNumber* d;
 
 private:
    friend class PhoneNumberPrivate;

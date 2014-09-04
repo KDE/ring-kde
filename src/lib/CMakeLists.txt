@@ -44,6 +44,7 @@ SET ( dbus_xml_introspecs_path ${CMAKE_CURRENT_SOURCE_DIR}/dbus/)
 set( qtsflphone_LIB_SRCS
   #Data objects
   call.cpp
+  uri.cpp
   account.cpp
   contact.cpp
   phonenumber.cpp
@@ -148,6 +149,7 @@ set( qtsflphone_LIB_HDRS
   abstractitembackend.h
   itembackendmodel.h
   hookmanager.h
+  uri.h
   abstractitembackendmodelextension.h
   video/videodevice.h
   video/videodevicemodel.h
