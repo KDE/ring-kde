@@ -1857,11 +1857,11 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>387</x>
+     <x>384</x>
      <y>194</y>
     </hint>
     <hint type="destinationlabel">
-     <x>804</x>
+     <x>491</x>
      <y>195</y>
     </hint>
    </hints>
@@ -1873,11 +1873,11 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>403</x>
+     <x>384</x>
      <y>599</y>
     </hint>
     <hint type="destinationlabel">
-     <x>804</x>
+     <x>507</x>
      <y>601</y>
     </hint>
    </hints>
@@ -1889,12 +1889,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>403</x>
+     <x>384</x>
      <y>599</y>
     </hint>
     <hint type="destinationlabel">
-     <x>348</x>
-     <y>439</y>
+     <x>384</x>
+     <y>92</y>
     </hint>
    </hints>
   </connection>
@@ -1905,12 +1905,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>357</x>
-     <y>343</y>
+     <x>384</x>
+     <y>354</y>
     </hint>
     <hint type="destinationlabel">
-     <x>357</x>
-     <y>470</y>
+     <x>384</x>
+     <y>388</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pProxyCK</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_pProxyLE</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>344</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>482</x>
+     <y>125</y>
     </hint>
    </hints>
   </connection>
