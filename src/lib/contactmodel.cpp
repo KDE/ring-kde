@@ -177,6 +177,11 @@ Contact* ContactModel::getPlaceHolder(const QByteArray& uid )
       return ct;
    }
 
+   //Do not re-create if it already exist
+   ct = m_hPlaceholders[uid];
+   if (ct)
+      return ct;
+
    ContactPlaceHolder* ct2 = new ContactPlaceHolder(uid);
 
    m_hPlaceholders[ct2->uid()] = ct2;
