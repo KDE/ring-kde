@@ -499,6 +499,10 @@ bool PhoneNumber::merge(PhoneNumber* other)
    if ((!other) || other == this || other->d == d)
       return false;
 
+   //This is invalid, those are different numbers
+   if (account() && other->account() && account() != other->account())
+      return false;
+
    //TODO Check if the merge is valid
 
    //TODO Merge the alternative names

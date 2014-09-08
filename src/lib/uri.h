@@ -58,8 +58,7 @@
     *
     *    authority   = [ userinfo "@" ] host [ ":" port ]
     *
-    *    "For
-    *    example, the semicolon (";") and equals ("=") reserved characters are
+    *    "For example, the semicolon (";") and equals ("=") reserved characters are
     *    often used to delimit parameters and parameter values applicable to
     *    that segment.  The comma (",") reserved character is often used for
     *    similar purposes.  For example, one URI producer might use a segment

@@ -304,7 +304,6 @@ void PhoneDirectoryModel::setAccount(PhoneNumber* number, Account* account ) {
          //After all this, it is possible the number is now a duplicate
          foreach(PhoneNumber* n, wrap->numbers) {
             if (n != number && n->account() && n->account() == number->account()) {
-               //qDebug() << "DUPLICATE";
                number->merge(n);
             }
          }
@@ -314,6 +313,91 @@ void PhoneDirectoryModel::setAccount(PhoneNumber* number, Account* account ) {
    }
 }
 
+/**
+ * This version of getNumber() try to get a phone number with a contact from an URI and account
+ * It will also try to attach an account to existing numbers. This is not 100% reliable, but
+ * it is correct often enough to do it.
+ */
+PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account, const QString& type)
+{
+   return getNumber(uri,nullptr,account,type);
+}
+
+///Add new information to existing numbers and try to merge
+PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type,bool& hasContact)
+{
+   //TODO pick the best URI
+   //TODO the account hostname change corner case
+   if (wrap) {
+      foreach(PhoneNumber* number, wrap->numbers) {
+
+         //BEGIN Check if contact can be set
+
+         //Check if the contact is compatible
+         const bool hasCompatibleContact = contact && (
+               (!number->contact())
+            || (
+                  (number->contact()->uid() == contact->uid())
+               && number->contact() != contact
+            )
+         );
+
+         //Check if the URI match
+         const bool hasCompatibleURI =  hasCompatibleContact && (number->uri().hasHostname()?(
+               /* Has hostname */
+                   strippedUri == number->uri()
+                   /* Something with an hostname can be used with IP2IP */ //TODO support DHT here
+               || (account && account->id() == Account::ProtocolName::IP2IP)
+            ) : ( /* Has no hostname */
+                  number->account() && number->uri()+'@'+number->account()->hostname() == strippedUri
+            ));
+
+         //Check if the account is compatible
+         const bool hasCompatibleAccount = hasCompatibleURI && ((!account)
+            || (!number->account())
+            /* Direct match, this is always valid */
+            || (account == number->account())
+            /* IP2IP is a special case */ //TODO support DHT here
+            || (
+                  account->id() == Account::ProtocolName::IP2IP
+                  && strippedUri.hasHostname()
+               ));
+
+         //TODO the Display name could be used to influence the choice
+
+         //If everything match, set the contact
+         if (hasCompatibleAccount)
+            number->setContact(contact);
+         //END Check if the contact can be set
+
+
+         //BEGIN Check is account can be set
+         // Try to match the account
+         // Not perfect, but better than ignoring the high probabilities
+         //TODO only do it is hostname match
+         if ((!account) || account != number->account()) {
+
+            if (account && (!contact) && !number->account())
+               setAccount(number,account);
+
+            //Set a type, this has low probabilities of being invalid
+            if ((!number->hasType()) && (!type.isEmpty())) {
+               number->setCategory(NumberCategoryModel::instance()->getCategory(type));
+            }
+
+            hasContact |= number->contact()!= nullptr;
+
+            //We already have enough information to confirm the choice
+            if (contact && number->contact() &&((contact->uid()) == number->contact()->uid()))
+               return number;
+         }
+         //END Check is account can be set
+      }
+   }
+   return nullptr;
+}
+
+///Return/create a number when no information is available
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& type)
 {
    const URI strippedUri(uri);
@@ -335,11 +419,6 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
 
    const QString hn = number->uri().hostname();
 
-   //Check if we are lucky enough to have a single registered account with the same hostname
-   /*if (!hn.isEmpty()) {
-      
-   }*/
-
    emit layoutChanged();
    if (!wrap) {
       wrap = new NumberWrapper();
@@ -350,50 +429,14 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
    return number;
 }
 
-/**
- * This version of getNumber() try to get a phone number with a contact from an URI and account
- * It will also try to attach an account to existing numbers. This is not 100% reliable, but
- * it is correct often enough to do it.
- */
-PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account, const QString& type)
-{
-   return getNumber(uri,nullptr,account,type);
-}
-
-PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, Account* account, Contact* contact, const QString& type,bool& hasContact)
-{
-   if (wrap) {
-      foreach(PhoneNumber* number, wrap->numbers) {
-         //Not perfect, but better than ignoring the high probabilities
-         //TODO only do it is hostname match
-         if ((!contact) && account && !number->account())
-            setAccount(number,account);
-
-         //Set a type, this has low probabilities of being invalid
-         if ((!number->hasType()) && (!type.isEmpty())) {
-            number->setCategory(NumberCategoryModel::instance()->getCategory(type));
-         }
-
-         //If the contact has not already been set and account match, set it
-         if (account && account == number->account() && contact && !((*contact) == number->contact()))
-            number->setContact(contact);
-
-         //We already have enough information to confirm the choice
-         if (contact && number->contact() &&((contact->uid()) == number->contact()->uid()))
-            return number;
-         hasContact |= number->contact()!= nullptr;
-      }
-   }
-   return nullptr;
-}
-
+///Create a number when a more information is available duplicated ones
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
 {
    const URI strippedUri(uri);
 
    //Try to use a PhoneNumber with a contact when possible, work only after the
    //contact are loaded
-   bool hasContact = false;
+   bool hasContact(false),hasContact2(false);
 
    //See if the number is already loaded
    NumberWrapper* wrap  = m_hDirectory[strippedUri];
@@ -409,11 +452,13 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    }
 
    //Check
-   PhoneNumber* confirmedCandidate = fillDetails(wrap,account,contact,type,hasContact);
+   PhoneNumber* confirmedCandidate = fillDetails(wrap,strippedUri,account,contact,type,hasContact);
 
    //URIs can be represented in multiple way, check if a more verbose version
    //already exist
-   PhoneNumber* confirmedCandidate2 = fillDetails(wrap2,account,contact,type,hasContact);
+   PhoneNumber* confirmedCandidate2 = nullptr;
+   if (!hasContact)
+      confirmedCandidate2 = fillDetails(wrap2,strippedUri,account,contact,type,hasContact2);
 
    PhoneNumber* confirmedCandidate3 = nullptr;
 
@@ -427,7 +472,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
          foreach(PhoneNumber* number, wrap2->numbers) {
             if (number->account() == account) {
                if (contact && ((!number->contact()) || (contact->uid() == number->contact()->uid())))
-                  number->setContact(contact);
+                  number->setContact(contact); //TODO Check all cases from fillDetails()
                //TODO add alternate URI
                confirmedCandidate3 = number;
                break;
@@ -436,7 +481,6 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
      }
    }
 
-   //qDebug() << "-----CANDID" << confirmedCandidate3 << confirmedCandidate << confirmedCandidate2;
    //If multiple PhoneNumber are confirmed, then they are the same, merge them
    if (confirmedCandidate3 && (confirmedCandidate || confirmedCandidate2)) {
       confirmedCandidate3->merge(confirmedCandidate?confirmedCandidate:confirmedCandidate2);
@@ -459,16 +503,16 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //No better candidates were found than the original assumption, use it
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
-         if (((!account) || number->account() == account) && ((!contact) || ((*contact) == number->contact()))) {
+         if (((!account) || number->account() == account) && ((!contact) || ((*contact) == number->contact()) || (!number->contact()))) {
             if (contact && (!number->contact() || (contact->uid() == number->contact()->uid())))
                number->setContact(contact);
+            
             return number;
          }
       }
    }
 
    //Create the number
-   //qDebug() << "CREATE" << strippedUri << account << contact;
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    number->setAccount(account);
    number->setIndex( m_lNumbers.size());

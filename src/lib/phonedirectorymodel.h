@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractTableModel>
 
 //SFLPhone
+#include "uri.h"
 class PhoneNumber         ;
 class Contact             ;
 class Account             ;
@@ -116,7 +117,7 @@ private:
    //Helpers
    void indexNumber(PhoneNumber* number, const QStringList& names   );
    void setAccount (PhoneNumber* number,       Account*     account );
-   PhoneNumber* fillDetails(NumberWrapper* wrap, Account* account, Contact* contact, const QString& type, bool& hasContact);
+   PhoneNumber* fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type, bool& hasContact);
 
    //Singleton
    static PhoneDirectoryModel* m_spInstance;
