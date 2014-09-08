@@ -63,8 +63,12 @@ void CategorizedTreeView::drawBranches(QPainter* painter, const QRect& rect, con
 
 void CategorizedTreeView::contextMenuEvent ( QContextMenuEvent * e ) {
   const QModelIndex index = indexAt(e->pos());
-  emit contextMenuRequest(index);
-  e->accept();
+
+  //There is currently nothing to do when right-clicking empty space
+  if (index.isValid()) {
+   emit contextMenuRequest(index);
+   e->accept();
+  }
 }
 
 
