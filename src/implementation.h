@@ -57,10 +57,10 @@ public:
 
    virtual QVariant serurityIssueIcon(const QModelIndex& index);
 
+   static const char* icnPath[2][2];
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
 
-   static const char* icnPath[4];
 
    //Helper
    QPixmap drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent);

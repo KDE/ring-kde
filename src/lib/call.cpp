@@ -117,8 +117,8 @@ const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState> , C
 const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > Call::stateChangedFunctionMap =
 {{
 //                      RINGING                  CURRENT             BUSY              HOLD                    HUNGUP           FAILURE            /**/
-/*INCOMING       */  {{&Call::nothing    , &Call::start     , &Call::startWeird     , &Call::startWeird   ,  &Call::startStop    , &Call::start   }},/**/
-/*RINGING        */  {{&Call::nothing    , &Call::start     , &Call::start          , &Call::start        ,  &Call::startStop    , &Call::start   }},/**/
+/*INCOMING       */  {{&Call::nothing    , &Call::start     , &Call::startWeird     , &Call::startWeird   ,  &Call::startStop    , &Call::failure }},/**/
+/*RINGING        */  {{&Call::nothing    , &Call::start     , &Call::start          , &Call::start        ,  &Call::startStop    , &Call::failure }},/**/
 /*CURRENT        */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
 /*DIALING        */  {{&Call::nothing    , &Call::warning   , &Call::warning        , &Call::warning      ,  &Call::stop         , &Call::warning }},/**/
 /*HOLD           */  {{&Call::nothing    , &Call::nothing   , &Call::warning        , &Call::nothing      ,  &Call::stop         , &Call::nothing }},/**/
@@ -370,7 +370,7 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
    const QString& number          = hc[ Call::HistoryMapFields::PEER_NUMBER     ]          ;
    const QString& type            = hc[ Call::HistoryMapFields::STATE           ]          ;
    const QString& direction       = hc[ Call::HistoryMapFields::DIRECTION       ]          ;
-   const bool     missed          = hc[ Call::HistoryMapFields::MISSED          ] == "true";
+   const bool     missed          = hc[ Call::HistoryMapFields::MISSED          ] == "1";
    time_t         startTimeStamp  = hc[ Call::HistoryMapFields::TIMESTAMP_START ].toUInt() ;
    time_t         stopTimeStamp   = hc[ Call::HistoryMapFields::TIMESTAMP_STOP  ].toUInt() ;
    QString accId                  = hc[ Call::HistoryMapFields::ACCOUNT_ID      ]          ;
@@ -681,7 +681,7 @@ bool Call::isHistory()
 ///Is this call missed
 bool Call::isMissed() const
 {
-   return m_Missed;
+   return m_Missed || m_HistoryState == Call::LegacyHistoryState::MISSED;
 }
 
 ///Is the call incoming or outgoing
@@ -1053,6 +1053,15 @@ void Call::error()
    throw QString("There was an error handling your call, please restart SFLPhone.Is you encounter this problem often, \
    please open SFLPhone-KDE in a terminal and send this last 100 lines before this message in a bug report at \
    https://projects.savoirfairelinux.com/projects/sflphone/issues");
+}
+
+///Change history state to failure
+void Call::failure()
+{
+   m_Missed = true;
+   //This is how it always was done
+   //The main point is to leave the call in the CallList
+   start();
 }
 
 ///Accept the call
@@ -1673,7 +1682,7 @@ QVariant Call::roleData(int role) const
          return property("dropState");
          break;
       case Call::Role::Missed:
-         return m_Missed;
+         return isMissed();
       case Call::Role::CallLifeCycleState:
          return static_cast<int>(lifeCycleState()); //TODO Qt5, use the Q_ENUM
       case Call::Role::DTMFAnimState:

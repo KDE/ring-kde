@@ -52,11 +52,15 @@ const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::call
       ""              ,
       ICON_CONFERENCE}};
 
-const char* KDEPixmapManipulation::icnPath[4] = {
-   /* INCOMING */ ICON_HISTORY_INCOMING,
-   /* OUTGOING */ ICON_HISTORY_OUTGOING,
-   /* MISSED   */ ICON_HISTORY_MISSED  ,
-   /* NONE     */ ""                   ,
+const char* KDEPixmapManipulation::icnPath[2][2] = {
+   {
+   /* INCOMING  */ ICON_HISTORY_INCOMING  ,
+   /* OUTGOING  */ ICON_HISTORY_OUTGOING  ,
+   },
+   {
+   /* MISSED_IN */ ICON_HISTORY_MISSED    ,
+   /* MISSED_OUT*/ ICON_HISTORY_MISSED_OUT,
+   }
 };
 
 QDebug operator<<(QDebug dbg, const Call::State& c)

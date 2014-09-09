@@ -279,6 +279,9 @@ public:
 
    /** @enum Call::LifeCycleState
     * This enum help track the call meta state
+    * @todo Eventually add a meta state between progress and finished for
+    *  calls that are still relevant enough to be in the main UI, such
+    *  as BUSY OR FAILURE while also finished
     */
    enum class LifeCycleState {
       INITIALIZATION = 0, /** Anything before the media transfer start   */
@@ -460,6 +463,7 @@ private:
    // to know when it is called.
    void nothing      () __attribute__ ((const));
    void error        () __attribute__ ((noreturn));
+   void failure      ();
    void accept       ();
    void refuse       ();
    void acceptTransf ();

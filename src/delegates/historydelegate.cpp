@@ -43,13 +43,7 @@
 #include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
 #include "lib/visitors/pixmapmanipulationvisitor.h"
-
-static const char* icnPath[4] = {
-/* INCOMING */ ICON_HISTORY_INCOMING,
-/* OUTGOING */ ICON_HISTORY_OUTGOING,
-/* MISSED   */ ICON_HISTORY_MISSED  ,
-/* NONE     */ ""                   ,
-};
+#include "implementation.h"
 
 ///Constant
 #pragma GCC diagnostic ignored "-Wmissing-braces"
@@ -131,7 +125,10 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //Handle history
    else if (!isBookmark && (index.data(Call::Role::Historystate).toInt() != (int)Call::LegacyHistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
       QPainter painter(&pxm);
-      QPixmap status((currentState==Call::State::OVER)?icnPath[index.data(Call::Role::Historystate).toInt()]:callStateIcons[currentState]);
+      QPixmap status((currentState==Call::State::OVER)?
+         KDEPixmapManipulation::icnPath   [index.data(Call::Role::Missed    ).toInt()]
+                                          [index.data(Call::Role::Direction2).toInt()]
+            :callStateIcons[currentState]);
       if (!status.isNull()) {
          const int pxmHeight = option.rect.height()<24?option.rect.height()-2:24;
          status=status.scaled(QSize(pxmHeight,pxmHeight));

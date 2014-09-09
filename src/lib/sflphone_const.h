@@ -48,6 +48,7 @@
 #define ICON_HISTORY_INCOMING             ":/images/icons/incoming.svg"
 #define ICON_HISTORY_OUTGOING             ":/images/icons/outgoing.svg"
 #define ICON_HISTORY_MISSED               ":/images/icons/missed.svg"
+#define ICON_HISTORY_MISSED_OUT           ":/images/icons/missed_out.svg"
 #define ICON_SFLPHONE                     ":/images/icons/sflphone.svg"
 
 // #define ACCOUNT_TYPES_TAB                 {QString(Account::ProtocolName::SIP), QString(Account::ProtocolName::IAX)}

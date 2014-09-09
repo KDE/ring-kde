@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="images">
+    <file>../icons/missed_out.svg</file>
     <file>../icons/user-group-properties.svg</file>
     <file>../icons/document-encrypt.svgz</file>
     <file>../icons/sflphone.svg</file>

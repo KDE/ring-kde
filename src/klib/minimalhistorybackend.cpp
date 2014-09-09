@@ -116,6 +116,7 @@ bool MinimalHistoryBackend::append(const Call* call)
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerPhoneNumber()->uri() );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DIRECTION       ).arg(direction                      );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::MISSED          ).arg(call->isMissed()               );
+      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(call->recordingPath()          );
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_USED    ).arg(false                          );//TODO
       if (call->peerPhoneNumber()->contact()) {
          streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_UID  ).arg(
