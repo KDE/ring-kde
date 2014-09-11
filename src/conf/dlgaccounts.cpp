@@ -450,6 +450,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
       /**/combo_security_STRP->setCurrentIndex     (  ACC keyExchangeModel()->toIndex( ACC keyExchange()).row());
    }
 
+   //BUG the daemon doesn't support changing account type after
+   edit2_protocol->setEnabled(ACC state() == Account::AccountEditState::NEW || ACC id().isEmpty());
+
    m_pCodecsLW->setEnabled(ACC isVideoEnabled ());
 
    updateCombo(0);
