@@ -140,6 +140,9 @@ d(new PrivatePhoneNumber(number,cat,st))
 
 PhoneNumber::~PhoneNumber()
 {
+   d->m_lParents.removeAll(this);
+   if (!d->m_lParents.size())
+      delete d;
 }
 
 ///Return if this number presence is being tracked

@@ -32,6 +32,7 @@
 class ContactPrivate {
 public:
    ContactPrivate(Contact* contact, AbstractContactBackend* parent);
+   ~ContactPrivate();
    QString                 m_FirstName      ;
    QString                 m_SecondName     ;
    QString                 m_NickName       ;
@@ -100,6 +101,11 @@ ContactPrivate::ContactPrivate(Contact* contact, AbstractContactBackend* parent)
    m_pBackend(parent?parent:TransitionalContactBackend::instance())
 {}
 
+ContactPrivate::~ContactPrivate()
+{
+   delete m_pPhoto;
+}
+
 Contact::PhoneNumbers::PhoneNumbers(Contact* parent) : QVector<PhoneNumber*>(),CategorizedCompositeNode(CategorizedCompositeNode::Type::NUMBER),
     m_pParent2(parent)
 {
@@ -126,7 +132,12 @@ Contact::Contact(AbstractContactBackend* parent):QObject(parent?parent:Transitio
 ///Destructor
 Contact::~Contact()
 {
-   delete d->m_pPhoto;
+   //Unregister itself from the D-Pointer list
+   d->m_lParents.removeAll(this);
+
+   if (!d->m_lParents.size()) {
+      delete d;
+   }
 }
 
 ///Get the phone number list

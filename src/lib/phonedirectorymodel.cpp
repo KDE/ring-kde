@@ -47,6 +47,7 @@ PhoneDirectoryModel::PhoneDirectoryModel(QObject* parent) :
 PhoneDirectoryModel::~PhoneDirectoryModel()
 {
    QList<NumberWrapper*> vals = m_hNumbersByNames.values();
+   //Used by indexes
    m_hNumbersByNames.clear();
    m_lSortedNames.clear();
    while (vals.size()) {
@@ -54,6 +55,8 @@ PhoneDirectoryModel::~PhoneDirectoryModel()
       vals.removeAt(0);
       delete w;
    }
+
+   //Used by auto completion
    vals = m_hSortedNumbers.values();
    m_hSortedNumbers.clear();
    m_hDirectory.clear();
@@ -296,8 +299,10 @@ void PhoneDirectoryModel::setAccount(PhoneNumber* number, Account* account ) {
       //Let make sure none is created in the future for nothing
       if (!wrap) {
          //It wont be a duplicate as none exist for this URI
+         const QString extendedUri = strippedUri+'@'+account->hostname();
          wrap = new NumberWrapper();
-         m_hDirectory[strippedUri+'@'+account->hostname()] = wrap;
+         m_hDirectory    [extendedUri] = wrap;
+         m_hSortedNumbers[extendedUri] = wrap;
 
       }
       else {
@@ -439,6 +444,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //See if the number is already loaded
    NumberWrapper* wrap  = m_hDirectory[strippedUri];
    NumberWrapper* wrap2 = nullptr;
+   NumberWrapper* wrap3 = nullptr;
 
    //Check if the URI is complete or short
    const bool hasAtSign = strippedUri.hasHostname();
@@ -468,9 +474,9 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //results. It cannot be merged with wrap2 as this check only work if the
    //candidate has an account.
    if (hasAtSign && account && strippedUri.hostname() == account->hostname()) {
-     wrap2 = m_hDirectory[strippedUri.userinfo()];
-     if (wrap2) {
-         foreach(PhoneNumber* number, wrap2->numbers) {
+     wrap3 = m_hDirectory[strippedUri.userinfo()];
+     if (wrap3) {
+         foreach(PhoneNumber* number, wrap3->numbers) {
             if (number->account() == account) {
                if (contact && ((!number->contact()) || (contact->uid() == number->contact()->uid())))
                   number->setContact(contact); //TODO Check all cases from fillDetails()
@@ -527,18 +533,21 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
    if (!wrap) {
       wrap = new NumberWrapper();
-      m_hDirectory[strippedUri] = wrap;
+      m_hDirectory    [strippedUri] = wrap;
+      m_hSortedNumbers[strippedUri] = wrap;
 
       //Also add its alternative URI, it should be safe to do
       if ( !hasAtSign && account && !account->hostname().isEmpty() ) {
-         if (!wrap2) {
+         const QString extendedUri = strippedUri+'@'+account->hostname();
+         //Also check if it hasn't been created by setAccount
+         if ((!wrap2) && (!m_hDirectory[extendedUri])) {
             wrap2 = new NumberWrapper();
-            m_hDirectory[strippedUri+'@'+account->hostname()] = wrap2;
+            m_hDirectory    [extendedUri] = wrap2;
+            m_hSortedNumbers[extendedUri] = wrap2;
          }
          wrap2->numbers << number;
       }
 
-      m_hSortedNumbers[strippedUri] = wrap;
    }
    wrap->numbers << number;
    emit layoutChanged();
