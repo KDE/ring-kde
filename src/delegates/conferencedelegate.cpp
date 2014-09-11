@@ -486,8 +486,13 @@ void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & ind
 {
    KLineEdit* ed = qobject_cast<KLineEdit*>(editor);
    if (ed) {
-      ed->setText(index.data(Qt::EditRole).toString());
-      ed->deselect();
+      const QString text = index.data(Qt::EditRole).toString();
+      //If the text was typed while the editor has focus, ed->text() == text
+      //this check is require to preserve the cursor and avoid "blinking"
+      if (ed->text() != text) {
+         ed->setText(text);
+         ed->deselect();
+      }
    }
 }
 
