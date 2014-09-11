@@ -39,7 +39,8 @@ public:
    virtual QVariant headerData  (int section, Qt::Orientation orientation, int role           ) const;
 
    //Getter
-   QModelIndex mapToSource(const QModelIndex& idx) const;
+   QModelIndex mapToSource  (const QModelIndex& idx) const;
+   QModelIndex mapFromSource(const QModelIndex& idx) const;
 
 
 private:

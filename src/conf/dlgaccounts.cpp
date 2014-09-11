@@ -637,10 +637,9 @@ void DlgAccounts::on_button_accountDown_clicked()
 void DlgAccounts::on_button_accountAdd_clicked()
 {
    const QString newAlias = i18n("New account%1",AccountListModel::getSimilarAliasIndex(i18n("New account")));
-   AccountListModel::instance()->addAccount(newAlias);
-   int r = treeView_accountList->model()->rowCount(treeView_accountList->model()->index(0,0)) - 1;
-   const QModelIndex index = treeView_accountList->model()->index(r,0,treeView_accountList->model()->index(0,0));
-   treeView_accountList->setCurrentIndex(index);
+   Account* newAcc = AccountListModel::instance()->addAccount(newAlias);
+   const QModelIndex& newIndex = CategorizedAccountModel::instance()->mapFromSource(newAcc->index());
+   treeView_accountList->setCurrentIndex(newIndex);
 
    frame2_editAccounts->setEnabled(true);
    frame2_editAccounts->setCurrentIndex(0);
