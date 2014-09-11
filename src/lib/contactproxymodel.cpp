@@ -275,16 +275,8 @@ QVariant ContactProxyModel::data( const QModelIndex& index, int role) const
             return c->isActive();
          case ContactModel::Role::DatedLastUsed:
             return QVariant(QDateTime::fromTime_t( c->phoneNumbers().lastUsedTimeStamp()));
-         case ContactModel::Role::Filter: {
-            //Strip non essential characters like accents from the filter string
-            QString normStripppedC;
-            foreach(QChar char2,QString(c->formattedName()+'\n'+c->organization()+'\n'+c->group()+'\n'+
-               c->department()+'\n'+c->preferredEmail()).toLower().normalized(QString::NormalizationForm_KD) ) {
-               if (!char2.combiningClass())
-                  normStripppedC += char2;
-            }
-            return normStripppedC;
-         }
+         case ContactModel::Role::Filter:
+            return c->filterString();
          default:
             break;
       }

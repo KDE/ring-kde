@@ -107,6 +107,9 @@ public:
    const QString& department       () const;
    bool  isActive                  () const;
 
+   //Cache
+   QString filterString            () const;
+
    //Number related getters (proxies)
    bool isPresent                  () const;
    bool isTracked                  () const;

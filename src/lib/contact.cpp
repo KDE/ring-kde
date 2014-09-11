@@ -49,6 +49,11 @@ public:
    AbstractContactBackend* m_pBackend       ;
    bool                    m_isPlaceHolder  ;
 
+   //Cache
+   QString m_CachedFilterString;
+
+   QString filterString();
+
    //Helper code to help handle multiple parents
    QList<Contact*> m_lParents;
 
@@ -61,8 +66,29 @@ public:
    void phoneNumberCountAboutToChange(int,int);
 };
 
+QString ContactPrivate::filterString()
+{
+   if (m_CachedFilterString.size())
+      return m_CachedFilterString;
+
+   //Also filter by phone numbers, accents are negligible
+   foreach(const PhoneNumber* n , m_Numbers) {
+      m_CachedFilterString += n->uri();
+   }
+
+   //Strip non essential characters like accents from the filter string
+   foreach(const QChar& char2,QString(m_FormattedName+'\n'+m_Organization+'\n'+m_Group+'\n'+
+      m_Department+'\n'+m_PreferredEmail).toLower().normalized(QString::NormalizationForm_KD) ) {
+      if (!char2.combiningClass())
+         m_CachedFilterString += char2;
+   }
+
+   return m_CachedFilterString;
+}
+
 void ContactPrivate::changed()
 {
+   m_CachedFilterString.clear();
    foreach (Contact* c,m_lParents) {
       emit c->changed();
    }
@@ -350,6 +376,12 @@ time_t Contact::PhoneNumbers::lastUsedTimeStamp() const
          t = at(i)->lastUsed();
    }
    return t;
+}
+
+///Recomputing the filter string is heavy, cache it
+QString Contact::filterString() const
+{
+   return d->filterString();
 }
 
 ///Callback when one of the phone number presence change
