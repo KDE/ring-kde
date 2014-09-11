@@ -324,10 +324,11 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
 }
 
 ///Add new information to existing numbers and try to merge
-PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type,bool& hasContact)
+PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type)
 {
    //TODO pick the best URI
    //TODO the account hostname change corner case
+   //TODO search for account that has the same hostname as the URI
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
 
@@ -364,6 +365,8 @@ PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, const URI& st
                ));
 
          //TODO the Display name could be used to influence the choice
+         //It would need to ignore all possible translated values of unknown
+         //and only be available when another information match
 
          //If everything match, set the contact
          if (hasCompatibleAccount)
@@ -384,8 +387,6 @@ PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, const URI& st
             if ((!number->hasType()) && (!type.isEmpty())) {
                number->setCategory(NumberCategoryModel::instance()->getCategory(type));
             }
-
-            hasContact |= number->contact()!= nullptr;
 
             //We already have enough information to confirm the choice
             if (contact && number->contact() &&((contact->uid()) == number->contact()->uid()))
@@ -432,11 +433,8 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
 ///Create a number when a more information is available duplicated ones
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact, Account* account, const QString& type)
 {
+   //Remove extra data such as "<sip:" from the main URI
    const URI strippedUri(uri);
-
-   //Try to use a PhoneNumber with a contact when possible, work only after the
-   //contact are loaded
-   bool hasContact(false),hasContact2(false);
 
    //See if the number is already loaded
    NumberWrapper* wrap  = m_hDirectory[strippedUri];
@@ -452,13 +450,16 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    }
 
    //Check
-   PhoneNumber* confirmedCandidate = fillDetails(wrap,strippedUri,account,contact,type,hasContact);
+   PhoneNumber* confirmedCandidate = fillDetails(wrap,strippedUri,account,contact,type);
 
    //URIs can be represented in multiple way, check if a more verbose version
    //already exist
    PhoneNumber* confirmedCandidate2 = nullptr;
-   if (!hasContact)
-      confirmedCandidate2 = fillDetails(wrap2,strippedUri,account,contact,type,hasContact2);
+
+   //Try to use a PhoneNumber with a contact when possible, work only after the
+   //contact are loaded
+   if (confirmedCandidate && confirmedCandidate->contact())
+      confirmedCandidate2 = fillDetails(wrap2,strippedUri,account,contact,type);
 
    PhoneNumber* confirmedCandidate3 = nullptr;
 
@@ -492,7 +493,8 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
          confirmedCandidate->merge(confirmedCandidate2);
    }
 
-
+   //Empirical testing resulted in this as the best return order
+   //The merge may have failed either in the "if" above or in the merging code
    if (confirmedCandidate2)
       return confirmedCandidate2;
    if (confirmedCandidate)
@@ -504,9 +506,11 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    if (wrap) {
       foreach(PhoneNumber* number, wrap->numbers) {
          if (((!account) || number->account() == account) && ((!contact) || ((*contact) == number->contact()) || (!number->contact()))) {
+            //Assume this is valid until a smarter solution is implemented to merge both
+            //For a short time, a placeholder contact and a contact can coexist, drop the placeholder
             if (contact && (!number->contact() || (contact->uid() == number->contact()->uid())))
                number->setContact(contact);
-            
+
             return number;
          }
       }

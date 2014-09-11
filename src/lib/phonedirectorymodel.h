@@ -117,7 +117,7 @@ private:
    //Helpers
    void indexNumber(PhoneNumber* number, const QStringList& names   );
    void setAccount (PhoneNumber* number,       Account*     account );
-   PhoneNumber* fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type, bool& hasContact);
+   PhoneNumber* fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type);
 
    //Singleton
    static PhoneDirectoryModel* m_spInstance;
