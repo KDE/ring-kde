@@ -236,7 +236,7 @@ bool ContactModel::addContact(Contact* c)
 
    //Deprecate the placeholder
    if (m_hPlaceholders.contains(c->uid())) {
-      Contact* c2 = m_hPlaceholders[c->uid()];
+      ContactPlaceHolder* c2 = m_hPlaceholders[c->uid()];
       if (c2) {
          c2->merge(c);
          m_hPlaceholders[c->uid()] = nullptr;
