@@ -528,6 +528,11 @@ void HistoryModel::clearAllBackends() const
          backend->clear();
       }
    }
+
+   //TODO Remove this
+   //Clear the daemon history backend as apparently the Gnome client wont
+   //Use its native backend anytime soon
+   DBus::ConfigurationManager::instance().clearHistory();
 }
 
 
