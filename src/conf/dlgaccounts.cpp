@@ -501,8 +501,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
    //Enable tabs
    bool isntIP2IP = ! ( ACC alias() == Account::ProtocolName::IP2IP );
    bool isIAX     = ACC protocol()  == Account::Protocol::IAX;
-   bool enableTab[6] = {isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true};
-   for (int i=0;i<6;i++)
+   bool enableTab[7] = {isntIP2IP,isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true};
+   for (int i=0;i<7;i++)
       frame2_editAccounts->setTabEnabled( i, enableTab[i] );
 
    //Setup ringtone
@@ -793,7 +793,9 @@ void DlgAccounts::updateStatusLabel(Account* account)
    if(!account || currentAccount() != account)
       return;
    const QString status = ACC toHumanStateName();
-   edit7_state->setText( "<FONT COLOR=\"" + ACC stateColorName() + "\">" + status + "</FONT>" );
+   const QString extra = ACC protocol() == Account::Protocol::SIP && ACC lastErrorCode()>=0
+      ? (QString(" (%1)").arg(ACC lastErrorCode())) :QString();
+   edit7_state->setText( "<FONT COLOR=\"" + ACC stateColorName() + "\">" + status + "</FONT>"+extra );
 }
 
 void DlgAccounts::updateStatusLabel()
