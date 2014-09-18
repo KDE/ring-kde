@@ -58,7 +58,7 @@ IF(EXISTS "po" AND IS_DIRECTORY "po")
    add_subdirectory( po      )
 ENDIF()
 
-set(PROJECT_VERSION "1.4.0")
+set(PROJECT_VERSION "1.4.1")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 
 add_custom_target(dist

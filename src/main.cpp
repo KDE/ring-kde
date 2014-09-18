@@ -36,7 +36,7 @@
 #include "lib/callmodel.h"
 #include "sflphonecmd.h"
 
-static const char version[] = "1.4.0";
+static const char version[] = "1.4.1";
 
 SFLPhoneApplication* app;
 void quitOnSignal(int signal);

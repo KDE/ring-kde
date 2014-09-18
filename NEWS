@@ -1,5 +1,27 @@
 # Changelog
 
+## 18 September 2014 - 1.4.1 has been released
+
+### Common
+* Fix transfer
+* Fix Speex 16kbs codec
+* Fix freeze when hanging up
+* Fix rare crash when using the PulseAudio backend
+* Build packages with the OPUS codec support
+* Fix crash when using IAX2 accounts
+
+### libqtsflphone
+* Rewritten contact matching algorithm, it should handle more use cases
+* Fix history call direction
+* Improved contact filtering speed
+* Correctly stop the "busy tone" when removing calls
+
+### KDE
+* Fix compilation with video disabled
+* Fix a crash when right clicking on history empty areas
+* Fix the bookmark context menu
+* Improved translations
+
 ## 16 July 2014 - 1.4.0 has been released
 
 ### Common
