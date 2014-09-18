@@ -53,6 +53,7 @@ public:
    QString            m_PrimaryName_cache;
    URI                m_Uri              ;
    PhoneNumber::Type  m_Type             ;
+   QList<URI>         m_lOtherURIs       ;
 
    //Parents
    QList<PhoneNumber*> m_lParents;
@@ -517,6 +518,16 @@ bool PhoneNumber::merge(PhoneNumber* other)
    //Replace the D-Pointer
    this->d = other->d;
    d->m_lParents << this;
+
+   //In case the URI is different, take the longest and most precise
+   //TODO keep a log of all URI used
+   if (currentD->m_Uri.size() > other->d->m_Uri.size()) {
+      other->d->m_lOtherURIs << other->d->m_Uri;
+      other->d->m_Uri = currentD->m_Uri;
+   }
+   else
+      other->d->m_lOtherURIs << currentD->m_Uri;
+
    emit changed();
    emit rebased(other);
 
