@@ -37,6 +37,7 @@ public:
    virtual QVariant   icon     () const;
    virtual bool       isEnabled() const;
    virtual QByteArray id       () const;
+   virtual bool remove ( Call* c ) override;
 
    virtual SupportedFeatures  supportedFeatures() const;
 

@@ -77,12 +77,14 @@ private:
     KAction*     m_pAddToContact  ;
     KAction*     m_pCopy          ;
     KAction*     m_pEmail         ;
+    KAction*     m_pRemove        ;
     KAction*     m_pBookmark      ;
     QMenu*       m_pMenu          ;
     Call*        m_pCurrentCall   ;
 
    //Mutator
    void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
+   void enableRemove();
 
    enum Role {
       Date =0,
@@ -101,10 +103,11 @@ private Q_SLOTS:
    void expandTree           (              );
    void slotSetSortRole      ( int          );
    void slotDoubleClick(const QModelIndex& index);
-   
+
    //Menu
    void slotContextMenu(const QModelIndex& index);
    void slotSendEmail        ();
+   void slotRemove           ();
    void slotCallAgain        ();
    void slotCopy             ();
    void slotAddContact       ();

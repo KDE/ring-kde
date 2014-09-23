@@ -54,6 +54,7 @@
 #include "lib/callmodel.h"
 #include "lib/phonenumber.h"
 #include "lib/phonedirectorymodel.h"
+#include "lib/abstractitembackend.h"
 #include "lib/contactmodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
@@ -127,7 +128,7 @@ QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) c
 }
 
 ///Constructor
-HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
+HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr),m_pRemove(nullptr)
 {
    setObjectName("historyDock");
    QWidget* mainWidget = new QWidget(this);
@@ -223,6 +224,16 @@ HistoryDock::~HistoryDock()
    delete m_pAllTimeCB    ;
    delete m_pLinkPB       ;
    delete m_pKeyPressEater;
+
+   if (m_pCallAgain) {
+      delete m_pCallAgain    ;
+      delete m_pAddContact   ;
+      delete m_pCopy         ;
+      delete m_pEmail        ;
+      delete m_pRemove       ;
+      delete m_pAddToContact ;
+      delete m_pBookmark     ;
+   }
 } //~HistoryDock
 
 
@@ -317,6 +328,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       m_pAddContact   = new KAction(this);
       m_pCopy         = new KAction(this);
       m_pEmail        = new KAction(this);
+      m_pRemove       = new KAction(this);
       m_pAddToContact = new KAction(this);
       m_pBookmark     = new KAction(this);
 
@@ -342,6 +354,10 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       m_pEmail->setIcon            ( KIcon("mail-message-new")      );
       m_pEmail->setDisabled        ( true                           );
 
+      m_pRemove->setShortcut       ( Qt::Key_Shift + Qt::Key_Delete );
+      m_pRemove->setText           ( i18n("Remove")                 );
+      m_pRemove->setIcon           ( KIcon("edit-delete")           );
+
       m_pBookmark->setShortcut     ( Qt::CTRL + Qt::Key_D           );
       m_pBookmark->setText         ( i18n("Bookmark")               );
       if (!idx.data(Call::Role::IsBookmark).toBool()) {
@@ -352,23 +368,32 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
          m_pBookmark->setText      ( i18n("Remove bookmark")        );
          m_pBookmark->setIcon      ( KIcon("edit-delete")           );
       }
-      
+
       m_pMenu = new QMenu(this);
       m_pMenu->addAction( m_pCallAgain    );
       m_pMenu->addAction( m_pAddContact   );
       m_pMenu->addAction( m_pAddToContact );
       m_pMenu->addAction( m_pCopy         );
       m_pMenu->addAction( m_pEmail        );
+      m_pMenu->addAction( m_pRemove       );
       m_pMenu->addAction( m_pBookmark     );
       connect(m_pCallAgain    , SIGNAL(triggered())                        , this , SLOT(slotCallAgain())        );
       connect(m_pAddContact   , SIGNAL(triggered())                        , this , SLOT(slotAddContact())       );
       connect(m_pCopy         , SIGNAL(triggered())                        , this , SLOT(slotCopy())             );
       connect(m_pEmail        , SIGNAL(triggered())                        , this , SLOT(slotSendEmail())        );
+      connect(m_pRemove       , SIGNAL(triggered())                        , this , SLOT(slotRemove())           );
       connect(m_pAddToContact , SIGNAL(triggered())                        , this , SLOT(slotAddToContact())     );
       connect(m_pBookmark     , SIGNAL(triggered())                        , this , SLOT(slotBookmark())         );
    }
    m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
+   enableRemove();
    m_pMenu->exec(QCursor::pos());
+}
+
+void HistoryDock::enableRemove()
+{
+   if (m_pRemove)
+      m_pRemove->setEnabled(m_pCurrentCall && m_pCurrentCall->backend() && m_pCurrentCall->backend()->supportedFeatures() & AbstractHistoryBackend::SupportedFeatures::REMOVE);
 }
 
 void HistoryDock::slotSendEmail()
@@ -380,6 +405,13 @@ void HistoryDock::slotSendEmail()
    Contact* ct = m_pCurrentCall->peerPhoneNumber()->contact();
    if (ct)
       myProcess->start("xdg-email", (arguments << ct->preferredEmail()));
+}
+
+void HistoryDock::slotRemove()
+{
+   if (m_pCurrentCall && m_pCurrentCall->backend()->supportedFeatures() & AbstractHistoryBackend::SupportedFeatures::REMOVE) {
+      m_pCurrentCall->backend()->remove(m_pCurrentCall);
+   }
 }
 
 void HistoryDock::slotCallAgain()
@@ -461,6 +493,7 @@ void HistoryDock::slotDoubleClick(const QModelIndex& index)
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CALL)
       return;
    m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
+   enableRemove();
    slotCallAgain();
 }
 

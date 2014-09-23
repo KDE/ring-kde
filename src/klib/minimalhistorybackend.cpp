@@ -156,10 +156,11 @@ bool MinimalHistoryBackend::save(const Call* call)
 AbstractHistoryBackend::SupportedFeatures MinimalHistoryBackend::supportedFeatures() const
 {
    return (AbstractHistoryBackend::SupportedFeatures) (
-      AbstractHistoryBackend::SupportedFeatures::NONE |
-      AbstractHistoryBackend::SupportedFeatures::LOAD |
-      AbstractHistoryBackend::SupportedFeatures::CLEAR|
-      AbstractHistoryBackend::SupportedFeatures::ADD  );
+      AbstractHistoryBackend::SupportedFeatures::NONE  |
+      AbstractHistoryBackend::SupportedFeatures::LOAD  |
+      AbstractHistoryBackend::SupportedFeatures::CLEAR |
+//       AbstractHistoryBackend::SupportedFeatures::REMOVE|
+      AbstractHistoryBackend::SupportedFeatures::ADD   );
 }
 
 ///Edit 'item', the implementation may be a GUI or somehting else
@@ -168,6 +169,15 @@ bool MinimalHistoryBackend::edit( Call* call)
    Q_UNUSED(call)
    return false;
 }
+
+
+bool MinimalHistoryBackend::remove ( Call* c )
+{
+   Q_UNUSED(c)
+   qDebug() << "Removing item is not yet supported";
+   return true;
+}
+
 ///Add a new item to the backend
 bool MinimalHistoryBackend::addNew( Call* call)
 {
