@@ -466,6 +466,7 @@ class LIB_EXPORT Account : public QObject {
    private Q_SLOTS:
       void slotPresentChanged        (bool  present  );
       void slotPresenceMessageChanged(const QString& );
+      void slotUpdateCertificate     (               );
 
    private:
       //Constructors

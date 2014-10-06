@@ -38,6 +38,7 @@ QUrl Certificate::path() const
 void Certificate::setPath(const QUrl& path)
 {
    m_Path = path;
+   emit changed();
 }
 
 bool Certificate::isExpired() const

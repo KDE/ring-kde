@@ -58,6 +58,9 @@ private:
    QUrl m_Path;
    Certificate::Type m_Type;
    //TODO
+
+Q_SIGNALS:
+   void changed();
 };
 Q_DECLARE_METATYPE(Certificate*)
 

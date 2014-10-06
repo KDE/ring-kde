@@ -137,6 +137,29 @@ void Account::slotPresenceMessageChanged(const QString& message)
    emit changed(this);
 }
 
+void Account::slotUpdateCertificate()
+{
+   Certificate* cert = qobject_cast<Certificate*>(sender());
+   if (cert) {
+      switch (cert->type()) {
+         case Certificate::Type::AUTHORITY:
+            if (accountDetail(Account::MapField::TLS::CA_LIST_FILE) != cert->path().toString())
+               setAccountDetail(Account::MapField::TLS::CA_LIST_FILE, cert->path().toString());
+            break;
+         case Certificate::Type::USER:
+            if (accountDetail(Account::MapField::TLS::CERTIFICATE_FILE) != cert->path().toString())
+               setAccountDetail(Account::MapField::TLS::CERTIFICATE_FILE, cert->path().toString());
+            break;
+         case Certificate::Type::PRIVATE_KEY:
+            if (accountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE) != cert->path().toString())
+               setAccountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE, cert->path().toString());
+            break;
+         case Certificate::Type::NONE:
+            break;
+      };
+   }
+}
+
 /*****************************************************************************
  *                                                                           *
  *                                  Getters                                  *
@@ -467,8 +490,10 @@ int Account::tlsListenerPort() const
 ///Return the account TLS certificate authority list file
 Certificate* Account::tlsCaListCertificate() const
 {
-   if (!m_pCaCert)
+   if (!m_pCaCert) {
       const_cast<Account*>(this)->m_pCaCert = new Certificate(Certificate::Type::AUTHORITY,this);
+      connect(m_pCaCert,SIGNAL(changed()),this,SLOT(slotUpdateCertificate()));
+   }
    const_cast<Account*>(this)->m_pCaCert->setPath(accountDetail(Account::MapField::TLS::CA_LIST_FILE));
    return m_pCaCert;
 }
@@ -476,8 +501,10 @@ Certificate* Account::tlsCaListCertificate() const
 ///Return the account TLS certificate
 Certificate* Account::tlsCertificate() const
 {
-   if (!m_pTlsCert)
+   if (!m_pTlsCert) {
       const_cast<Account*>(this)->m_pTlsCert = new Certificate(Certificate::Type::USER,this);
+      connect(m_pTlsCert,SIGNAL(changed()),this,SLOT(slotUpdateCertificate()));
+   }
    const_cast<Account*>(this)->m_pTlsCert->setPath(accountDetail(Account::MapField::TLS::CERTIFICATE_FILE));
    return m_pTlsCert;
 }
@@ -485,8 +512,10 @@ Certificate* Account::tlsCertificate() const
 ///Return the account private key
 Certificate* Account::tlsPrivateKeyCertificate() const
 {
-   if (!m_pPrivateKey)
+   if (!m_pPrivateKey) {
       const_cast<Account*>(this)->m_pPrivateKey = new Certificate(Certificate::Type::PRIVATE_KEY,this);
+      connect(m_pPrivateKey,SIGNAL(changed()),this,SLOT(slotUpdateCertificate()));
+   }
    const_cast<Account*>(this)->m_pPrivateKey->setPath(accountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE));
    return m_pPrivateKey;
 }
@@ -887,18 +916,21 @@ void Account::setTlsPassword(const QString& detail)
 ///Set the certificate authority list file
 void Account::setTlsCaListCertificate(Certificate* cert)
 {
+   m_pCaCert = cert; //FIXME memory leak
    setAccountDetail(Account::MapField::TLS::CA_LIST_FILE, cert?cert->path().toLocalFile():QString());
 }
 
 ///Set the certificate
 void Account::setTlsCertificate(Certificate* cert)
 {
+   m_pTlsCert = cert; //FIXME memory leak
    setAccountDetail(Account::MapField::TLS::CERTIFICATE_FILE, cert?cert->path().toLocalFile():QString());
 }
 
 ///Set the private key
 void Account::setTlsPrivateKeyCertificate(Certificate* cert)
 {
+   m_pPrivateKey = cert; //FIXME memory leak
    setAccountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE, cert?cert->path().toLocalFile():QString());
 }
 

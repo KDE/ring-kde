@@ -262,7 +262,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    const QModelIndex srcIdx = CategorizedAccountModel::instance()->mapToSource(item);
 
    if(!srcIdx.isValid()) {
-      kDebug() << "Attempting to save details of an account from a NULL item";
+      kDebug() << "Attempting to save details of an account from a NULL item" << item.data(Qt::DisplayRole);
       return;
    }
    Account* account = AccountListModel::instance()->getAccountByModelIndex(srcIdx);
