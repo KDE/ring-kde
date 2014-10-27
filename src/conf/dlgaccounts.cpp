@@ -27,7 +27,7 @@
 
 //KDE
 #include <KConfigDialog>
-#include <KDebug>
+#include <qDebug>
 #include <KStandardDirs>
 #include <KInputDialog>
 #include <KLocale>
@@ -262,19 +262,19 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    const QModelIndex srcIdx = CategorizedAccountModel::instance()->mapToSource(item);
 
    if(!srcIdx.isValid()) {
-      kDebug() << "Attempting to save details of an account from a NULL item" << item.data(Qt::DisplayRole);
+      qDebug() << "Attempting to save details of an account from a NULL item" << item.data(Qt::DisplayRole);
       return;
    }
    Account* account = AccountListModel::instance()->getAccountByModelIndex(srcIdx);
 
    if(!account) {
-      kDebug() << "Attempting to save details of an unexisting account : " << (srcIdx.data(Qt::DisplayRole).toString());
+      qDebug() << "Attempting to save details of an unexisting account : " << (srcIdx.data(Qt::DisplayRole).toString());
       return;
    }
 
    //There is no point to save something that is unaltered, all it will cause is daemon corruption
    if ( ACC state() != Account::AccountEditState::NEW and ACC state() != Account::AccountEditState::MODIFIED) {
-      kDebug() << "Nothing to be saved";
+      qDebug() << "Nothing to be saved";
       return;
    }
    m_IsLoading++;
@@ -369,13 +369,13 @@ void DlgAccounts::loadAccount(QModelIndex item)
 {
    const QModelIndex srcItem = CategorizedAccountModel::instance()->mapToSource(item);
    if(! srcItem.isValid() ) {
-      kDebug() << "Attempting to load details of an account from a NULL item (" << item.row() << ")";
+      qDebug() << "Attempting to load details of an account from a NULL item (" << item.row() << ")";
       return;
    }
 
    Account* account = AccountListModel::instance()->getAccountByModelIndex(srcItem);
    if(! account ) {
-      kDebug() << "Attempting to load details of an unexisting account";
+      qDebug() << "Attempting to load details of an unexisting account";
       return;
    }
    m_IsLoading++;
@@ -768,7 +768,7 @@ void DlgAccounts::loadVidCodecDetails(const QModelIndex& current,const QModelInd
 ///Update account state
 // void DlgAccounts::updateAccountStates()
 // {
-//    kDebug() << "updateAccountStates";
+//    qDebug() << "updateAccountStates";
 //    for (int i = 0; i < AccountListModel::instance()->size(); i++) {
 //       Account* current = AccountListModel::instance()->getAccountAt(i);
 //       current->updateState();
