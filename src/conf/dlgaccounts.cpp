@@ -24,10 +24,10 @@
 #include <QtGui/QTableWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QWidget>
+#include <QtCore/QDebug>
 
 //KDE
 #include <KConfigDialog>
-#include <qDebug>
 #include <KStandardDirs>
 #include <KInputDialog>
 #include <KLocale>
