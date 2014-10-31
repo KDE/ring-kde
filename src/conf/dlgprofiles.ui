@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DlgProfiles</class>
+ <widget class="QWidget" name="DlgProfiles">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>769</width>
+    <height>492</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>20</y>
+     <width>211</width>
+     <height>401</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>Accounts</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTreeView" name="treeView"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>380</y>
+     <width>531</width>
+     <height>83</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Custom field</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Add</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_8">
+      <property name="text">
+       <string>label</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>440</y>
+     <width>176</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+   </property>
+  </widget>
+  <widget class="QScrollArea" name="scrollArea">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>531</width>
+     <height>351</height>
+    </rect>
+   </property>
+   <property name="widgetResizable">
+    <bool>true</bool>
+   </property>
+   <widget class="QWidget" name="scrollAreaWidgetContents">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>529</width>
+      <height>349</height>
+     </rect>
+    </property>
+    <widget class="QWidget" name="formLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>521</width>
+       <height>261</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_name">
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="edit_name"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_lname">
+        <property name="text">
+         <string>Last Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="edit_lname"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_email">
+        <property name="text">
+         <string>Email</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="edit_email"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_cell">
+        <property name="text">
+         <string>Cell</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="edit_cell"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_adress">
+        <property name="text">
+         <string>Adress</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="edit_adress"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_city">
+        <property name="text">
+         <string>City</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="edit_city"/>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>699</x>
+     <y>449</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>667</x>
+     <y>481</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>cancel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>610</x>
+     <y>452</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>500</x>
+     <y>480</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>accept()</slot>
+  <slot>cancel()</slot>
+ </slots>
+</ui>
