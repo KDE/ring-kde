@@ -1,6 +1,6 @@
 /****************************************************************************
  *   Copyright (C) 2013-2014 by Savoir-Faire Linux                          *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Author : Alexandre Lision <alexandre.lision@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -15,48 +15,46 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "dlgprofiles.h"
 
-//KDE
-#include <KIcon>
-#include <QDebug>
+#include "kdeprofilepersister.h"
+#include "../lib/contact.h"
+#include <QFile>
+#include <KStandardDirs>
 
-//
-#include "lib/profilemodel.h"
-#include "lib/contactmodel.h"
-
-DlgProfiles::DlgProfiles(QWidget *parent) : QWidget(parent)
+bool KDEProfilePersister::load()
 {
-   setupUi(this);
-   qDebug() << "Constructing DlgProfiles";
-}
+   //TODO: Replace this with real directory and iterate over it to load all profiles
+   QDir profilesDir = getProfilesDir();
+   qDebug() << "Loading vcf from:" << profilesDir;
 
-DlgProfiles::~DlgProfiles()
-{
+   QStringList extensions = QStringList();
+   extensions << "*.vcf";
 
-}
+   QStringList entries = profilesDir.entryList(extensions, QDir::Files);
 
-bool DlgProfiles::checkValues()
-{
-   return !edit_name->text().isEmpty();
-}
+   for (QString item : entries) {
 
-void DlgProfiles::accept()
-{
-   qDebug() << "accept";
-   if(checkValues()) {
-      Contact* profile = ContactModel::instance()->getContactByUid(QString("12345678900").toUtf8());
-
-      if(profile) {
-         profile->setFirstName(edit_name->text());
-         profile->setFamilyName(edit_lname->text());
-         profile->setFormattedName(edit_name->text() + " " + edit_lname->text());
-      }
    }
+
+   return false;
 }
 
-void DlgProfiles::cancel()
+bool KDEProfilePersister::save(const Contact* c)
 {
-   qDebug() << "cancel";
+   QDir profilesDir = getProfilesDir();
+   qDebug() << "Saving vcf in:" << profilesDir.absolutePath()+"/"+c->uid()+".vcf";
+   const QByteArray result = c->toVCard();
+
+   QFile file(profilesDir.absolutePath()+"/"+c->uid()+".vcf");
+   file.open(QIODevice::WriteOnly);
+   file.write(result);
+   file.close();
+
+   return false;
 }
 
+QDir KDEProfilePersister::getProfilesDir()
+{
+   QDir(KStandardDirs::locateLocal("appdata","")).mkdir("profiles/");
+   return QDir(KStandardDirs::locateLocal("appdata","")+"profiles/");
+}

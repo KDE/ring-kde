@@ -1,6 +1,6 @@
 /****************************************************************************
  *   Copyright (C) 2013-2014 by Savoir-Faire Linux                          *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Author : Alexandre Lision <alexandre.lision@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -15,48 +15,25 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "dlgprofiles.h"
 
-//KDE
-#include <KIcon>
-#include <QDebug>
+#ifndef KDEPROFILEPERSISTER_H
+#define KDEPROFILEPERSISTER_H
 
-//
-#include "lib/profilemodel.h"
-#include "lib/contactmodel.h"
+//Ring
+#include "../lib/visitors/profilepersistervisitor.h"
 
-DlgProfiles::DlgProfiles(QWidget *parent) : QWidget(parent)
-{
-   setupUi(this);
-   qDebug() << "Constructing DlgProfiles";
-}
+//Qt
+#include <QDir>
 
-DlgProfiles::~DlgProfiles()
-{
+class Contact;
 
-}
+class LIB_EXPORT KDEProfilePersister : public ProfilePersisterVisitor {
+public:
+   virtual bool load();
+   virtual bool save(const Contact* c);
 
-bool DlgProfiles::checkValues()
-{
-   return !edit_name->text().isEmpty();
-}
+private:
+   QDir getProfilesDir();
+};
 
-void DlgProfiles::accept()
-{
-   qDebug() << "accept";
-   if(checkValues()) {
-      Contact* profile = ContactModel::instance()->getContactByUid(QString("12345678900").toUtf8());
-
-      if(profile) {
-         profile->setFirstName(edit_name->text());
-         profile->setFamilyName(edit_lname->text());
-         profile->setFormattedName(edit_name->text() + " " + edit_lname->text());
-      }
-   }
-}
-
-void DlgProfiles::cancel()
-{
-   qDebug() << "cancel";
-}
-
+#endif // KDEPROFILEPERSISTER_H
