@@ -18,6 +18,7 @@
 
 #include "kdeprofilepersister.h"
 #include "../lib/contact.h"
+#include "../lib/profilemodel.h"
 #include <QFile>
 #include <KStandardDirs>
 
@@ -32,23 +33,33 @@ bool KDEProfilePersister::load()
 
    QStringList entries = profilesDir.entryList(extensions, QDir::Files);
 
-   for (QString item : entries) {
+//   for (QString item : entries) {
+//      QFile file(item);
+//      if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+//         return 1;
 
-   }
+//      Contact* profile = new Contact(ProfileModel::instance());
+//      while (!file.atEnd()) {
+//         QByteArray line = file.readLine();
+//         profile->setFormattedName("ALRIGHT");
+
+//         line.split(';');
+//      }
+//   }
 
    return false;
 }
 
 bool KDEProfilePersister::save(const Contact* c)
 {
-   QDir profilesDir = getProfilesDir();
-   qDebug() << "Saving vcf in:" << profilesDir.absolutePath()+"/"+c->uid()+".vcf";
-   const QByteArray result = c->toVCard();
+     QDir profilesDir = getProfilesDir();
+     qDebug() << "Saving vcf in:" << profilesDir.absolutePath()+"/"+c->uid()+".vcf";
+//   const QByteArray result = c->toVCard();
 
-   QFile file(profilesDir.absolutePath()+"/"+c->uid()+".vcf");
-   file.open(QIODevice::WriteOnly);
-   file.write(result);
-   file.close();
+//   QFile file(profilesDir.absolutePath()+"/"+c->uid()+".vcf");
+//   file.open(QIODevice::WriteOnly);
+//   file.write(result);
+//   file.close();
 
    return false;
 }

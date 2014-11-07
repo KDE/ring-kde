@@ -20,6 +20,7 @@
 //KDE
 #include <KIcon>
 #include <QDebug>
+#include <QDateTime>
 
 //
 #include "lib/profilemodel.h"
@@ -45,13 +46,16 @@ void DlgProfiles::accept()
 {
    qDebug() << "accept";
    if(checkValues()) {
-      Contact* profile = ContactModel::instance()->getContactByUid(QString("12345678900").toUtf8());
+
+      Contact* profile = new Contact(ProfileModel::instance()->getBackEnd());
 
       if(profile) {
+         profile->setUid(QString::number(QDateTime::currentDateTime().currentMSecsSinceEpoch()).toUtf8());
          profile->setFirstName(edit_name->text());
          profile->setFamilyName(edit_lname->text());
          profile->setFormattedName(edit_name->text() + " " + edit_lname->text());
       }
+      ProfileModel::instance()->addNewProfile(profile, nullptr);
    }
 }
 

@@ -31,9 +31,9 @@ class LIB_EXPORT KDEProfilePersister : public ProfilePersisterVisitor {
 public:
    virtual bool load();
    virtual bool save(const Contact* c);
+   virtual QDir getProfilesDir();
 
-private:
-   QDir getProfilesDir();
+//private:
 };
 
 #endif // KDEPROFILEPERSISTER_H
