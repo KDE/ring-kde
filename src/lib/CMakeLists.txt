@@ -10,11 +10,13 @@ ADD_DEFINITIONS("-std=c++0x")
 # ADD_DEFINITIONS("-std=c++0x")
 
 ADD_DEFINITIONS(
-	${QT_DEFINITIONS} 
+	${QT_DEFINITIONS}
 	-fexceptions
 )
 
 PROJECT(qtsflphone)
+
+SET(CMAKE_AUTOMOC TRUE)
 
 #target_link_libraries(qtsflphone ${QT_QTCORE_LIBRARY} ${KDE4_KDEUI_LIBS})
 
@@ -182,7 +184,7 @@ SET ( presencemanager_xml  ${dbus_xml_introspecs_path}/presencemanager-introspec
 
 SET_SOURCE_FILES_PROPERTIES(
    ${presencemanager_xml}
-   PROPERTIES 
+   PROPERTIES
    CLASSNAME PresenceManagerInterface
    INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h")
 
@@ -206,7 +208,7 @@ SET ( configurationmanager_xml  ${dbus_xml_introspecs_path}/configurationmanager
 
 SET_SOURCE_FILES_PROPERTIES(
    ${configurationmanager_xml}
-   PROPERTIES 
+   PROPERTIES
    CLASSNAME ConfigurationManagerInterface
    INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h")
 
@@ -230,9 +232,9 @@ SET ( callmanager_xml  ${dbus_xml_introspecs_path}/callmanager-introspec.xml )
 
 SET_SOURCE_FILES_PROPERTIES(
    ${callmanager_xml}
-   PROPERTIES 
+   PROPERTIES
    CLASSNAME CallManagerInterface
-   INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h") 
+   INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h")
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_ADD_DBUS_INTERFACE(
@@ -278,9 +280,9 @@ SET ( instance_xml  ${dbus_xml_introspecs_path}/instance-introspec.xml )
 
 SET_SOURCE_FILES_PROPERTIES(
    ${instance_xml}
-   PROPERTIES 
+   PROPERTIES
    CLASSNAME InstanceInterface
-   INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h") 
+   INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/dbus/metatypes.h")
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_ADD_DBUS_INTERFACE(
@@ -296,13 +298,6 @@ ELSE()
    )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
-# ADD_DEFINITIONS("-w")
-IF(${ENABLE_QT5} MATCHES true)
-   QT5_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_LIB_HDRS})
-ELSE()
-   QT4_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_LIB_HDRS})
-ENDIF(${ENABLE_QT5} MATCHES true)
- 
 add_library( qtsflphone  SHARED ${qtsflphone_LIB_SRCS} ${LIB_HEADER_MOC} )
 # REMOVE_DEFINITIONS("-w")
 
