@@ -50,7 +50,7 @@
 #include "widgets/bookmarkdock.h"
 #include "klib/kcfg_settings.h"
 #include "lib/historymodel.h"
-#include "lib/accountlistmodel.h"
+#include "lib/accountmodel.h"
 #include "lib/callmodel.h"
 #include "lib/phonenumber.h"
 #include "lib/phonedirectorymodel.h"
@@ -418,7 +418,7 @@ void HistoryDock::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
    kDebug() << "Calling "<< m_pCurrentCall->peerPhoneNumber();
-   Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerName(), AccountListModel::currentAccount());
+   Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerName(), AccountModel::currentAccount());
    if (call) {
       call->setDialNumber  ( m_pCurrentCall->peerPhoneNumber() );
       call->setAccount     ( m_pCurrentCall->account()         );

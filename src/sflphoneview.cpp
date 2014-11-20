@@ -68,7 +68,7 @@
 #include "lib/dbus/instancemanager.h"
 #include "lib/sflphone_const.h"
 #include "lib/contact.h"
-#include "lib/accountlistmodel.h"
+#include "lib/accountmodel.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/audiosettingsmodel.h"
 #include "lib/presencestatusmodel.h"
@@ -128,7 +128,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    setPalette(pal);
 
    m_pColorVisitor = new ColorVisitor(pal);
-   AccountListModel::instance()->setColorVisitor(m_pColorVisitor);
+   AccountModel::instance()->setColorVisitor(m_pColorVisitor);
 
    m_pMessageBoxW->setVisible(false);
 
@@ -142,9 +142,9 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    //Setup signals
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                      /
    /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this   , SLOT(on1_incomingCall(Call*))          );
-   /**/connect(AccountListModel::instance() , SIGNAL(voiceMailNotify(Account*,int))         , this   , SLOT(on1_voiceMailNotify(Account*,int)) );
+   /**/connect(AccountModel::instance() , SIGNAL(voiceMailNotify(Account*,int))         , this   , SLOT(on1_voiceMailNotify(Account*,int)) );
    /**/connect(CallModel::instance()        , SIGNAL(callStateChanged(Call*,Call::State))   , this   , SLOT(updateWindowCallState())          );
-   /**/connect(AccountListModel::instance() , SIGNAL(accountListUpdated())                  , this   , SLOT(updateWindowCallState())          );
+   /**/connect(AccountModel::instance() , SIGNAL(accountListUpdated())                  , this   , SLOT(updateWindowCallState())          );
    /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this   , SLOT(sendMessage())                    );
    /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this   , SLOT(sendMessage())                    );
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex)), m_pEventManager, SLOT(enter())                          );
@@ -273,7 +273,7 @@ void SFLPhoneView::updateWindowCallState()
 
    bool transfer(false),recordActivated(false);
 
-   enabledActions[SFLPhone::CallAction::Mailbox] = AccountListModel::currentAccount() && ! AccountListModel::currentAccount()->mailbox().isEmpty();
+   enabledActions[SFLPhone::CallAction::Mailbox] = AccountModel::currentAccount() && ! AccountModel::currentAccount()->mailbox().isEmpty();
 
    call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
    if (!call) {

@@ -18,8 +18,8 @@
  ***************************************************************************/
 
 //Parent
-#include "accountlistmodel.h"
- 
+#include "accountmodel.h"
+
 //SFLPhone
 #include "sflphone_const.h"
 
@@ -31,69 +31,106 @@
 #include "dbus/callmanager.h"
 #include "visitors/accountlistcolorvisitor.h"
 
-AccountListModel* AccountListModel::m_spAccountList   = nullptr;
-Account*     AccountListModel::m_spPriorAccount   = nullptr     ;
+class AccountModelPrivate : public QObject
+{
+   Q_OBJECT
+   Q_DECLARE_PUBLIC(AccountModel)
+
+public:
+   //Constructor
+   AccountModelPrivate(AccountModel* parent);
+   void init();
+   void setupRoleName();
+
+   //Helpers
+   Account* firstRegisteredAccount() const;
+
+   //Attributes
+   AccountModel*            q_ptr             ;
+   QVector<Account*>        m_lAccounts       ;
+   AccountListColorVisitor* m_pColorVisitor   ;
+   QStringList              m_lDeletedAccounts;
+   Account*                 m_pIP2IP          ;
+
+public Q_SLOTS:
+   void slotAccountChanged(const QString& account,const QString& state, int code);
+   void slotAccountChanged(Account* a);
+   void slotVoiceMailNotify( const QString& accountID , int count );
+   void slotAccountPresenceEnabledChanged(bool state);
+};
+
+AccountModel* AccountModel::m_spAccountList  = nullptr;
+Account*      AccountModel::m_spPriorAccount = nullptr;
 
 QVariant AccountListNoCheckProxyModel::data(const QModelIndex& idx,int role ) const
 {
    if (role == Qt::CheckStateRole) {
       return QVariant();
    }
-   return AccountListModel::instance()->data(idx,role);
+   return AccountModel::instance()->data(idx,role);
 }
 
 bool AccountListNoCheckProxyModel::setData( const QModelIndex& idx, const QVariant &value, int role)
 {
-   return AccountListModel::instance()->setData(idx,value,role);
+   return AccountModel::instance()->setData(idx,value,role);
 }
 
 Qt::ItemFlags AccountListNoCheckProxyModel::flags (const QModelIndex& idx) const
 {
-   const QModelIndex& src = AccountListModel::instance()->index(idx.row(),idx.column());
-   if (!idx.row() || AccountListModel::instance()->data(src,Qt::CheckStateRole) == Qt::Unchecked)
+   const QModelIndex& src = AccountModel::instance()->index(idx.row(),idx.column());
+   if (!idx.row() || AccountModel::instance()->data(src,Qt::CheckStateRole) == Qt::Unchecked)
       return Qt::NoItemFlags;
-   return AccountListModel::instance()->flags(idx);
+   return AccountModel::instance()->flags(idx);
 }
 
 int AccountListNoCheckProxyModel::rowCount(const QModelIndex& parentIdx ) const
 {
-   return AccountListModel::instance()->rowCount(parentIdx);
+   return AccountModel::instance()->rowCount(parentIdx);
 }
 
-///Constructors
-///@param fill Whether to fill the list with accounts from configurationManager or not.
-AccountListModel::AccountListModel() : QAbstractListModel(QCoreApplication::instance()),
-m_pColorVisitor(nullptr),m_pDefaultAccount(nullptr),m_pIP2IP(nullptr)
+AccountModelPrivate::AccountModelPrivate(AccountModel* parent) : QObject(parent),q_ptr(parent),
+m_pColorVisitor(nullptr),m_pIP2IP(nullptr)
 {
    setupRoleName();
 }
 
-///Prevent constructor loop
-void AccountListModel::init()
+///Constructors
+///@param fill Whether to fill the list with accounts from configurationManager or not.
+AccountModel::AccountModel() : QAbstractListModel(QCoreApplication::instance())
+,d_ptr(new AccountModelPrivate(this))
 {
-   updateAccounts();
+
+}
+
+///Prevent constructor loop
+void AccountModelPrivate::init()
+{
+   q_ptr->updateAccounts();
    CallManagerInterface& callManager = DBus::CallManager::instance();
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
-   connect(&configurationManager, SIGNAL(sipRegistrationStateChanged(QString,QString,int)),this,SLOT(accountChanged(QString,QString,int)));
-   connect(&configurationManager, SIGNAL(accountsChanged())                            ,this,SLOT(updateAccounts())                   );
-   connect(&callManager         , SIGNAL(voiceMailNotify(QString,int))                 ,this, SLOT(slotVoiceMailNotify(QString,int))  );
+   connect(&configurationManager, SIGNAL(sipRegistrationStateChanged(QString,QString,int)),this ,
+      SLOT(slotAccountChanged(QString,QString,int)));
+   connect(&configurationManager, SIGNAL(accountsChanged())                               ,q_ptr,
+      SLOT(updateAccounts())                  );
+   connect(&callManager         , SIGNAL(voiceMailNotify(QString,int))                    ,this ,
+      SLOT(slotVoiceMailNotify(QString,int))  );
 
 }
 
 ///Destructor
-AccountListModel::~AccountListModel()
+AccountModel::~AccountModel()
 {
-   while(m_lAccounts.size()) {
-      Account* a = m_lAccounts[0];
-      m_lAccounts.remove(0);
+   while(d_ptr->m_lAccounts.size()) {
+      Account* a = d_ptr->m_lAccounts[0];
+      d_ptr->m_lAccounts.remove(0);
       delete a;
    }
 }
 
-void AccountListModel::setupRoleName()
+void AccountModelPrivate::setupRoleName()
 {
-   QHash<int, QByteArray> roles = roleNames();
+   QHash<int, QByteArray> roles = q_ptr->roleNames();
    roles.insert(Account::Role::Alias                    ,QByteArray("alias"                         ));
    roles.insert(Account::Role::Proto                    ,QByteArray("protocol"                      ));
    roles.insert(Account::Role::Hostname                 ,QByteArray("hostname"                      ));
@@ -138,33 +175,33 @@ void AccountListModel::setupRoleName()
    roles.insert(Account::Role::PresenceStatus           ,QByteArray("presenceStatus"                ));
    roles.insert(Account::Role::PresenceMessage          ,QByteArray("presenceMessage"               ));
 
-   setRoleNames(roles);
+   q_ptr->setRoleNames(roles);
 }
 
 ///Get the IP2IP account
-Account* AccountListModel::ip2ip() const
+Account* AccountModel::ip2ip() const
 {
-   if (!m_pIP2IP) {
-      foreach(Account* a,m_lAccounts) {
+   if (!d_ptr->m_pIP2IP) {
+      foreach(Account* a, d_ptr->m_lAccounts) {
          if (a->id() == Account::ProtocolName::IP2IP)
-            const_cast<AccountListModel*>(this)->m_pIP2IP = a;
+            d_ptr->m_pIP2IP = a;
       }
    }
-   return m_pIP2IP;
+   return d_ptr->m_pIP2IP;
 }
 
 ///Singleton
-AccountListModel* AccountListModel::instance()
+AccountModel* AccountModel::instance()
 {
-   if (not m_spAccountList) {
-      m_spAccountList = new AccountListModel();
-      m_spAccountList->init();
+   if (! m_spAccountList) {
+      m_spAccountList = new AccountModel();
+      m_spAccountList->d_ptr->init();
    }
    return m_spAccountList;
 }
 
 ///Static destructor
-void AccountListModel::destroy()
+void AccountModel::destroy()
 {
    if (m_spAccountList)
       delete m_spAccountList;
@@ -172,9 +209,9 @@ void AccountListModel::destroy()
 }
 
 ///Account status changed
-void AccountListModel::accountChanged(const QString& account,const QString& state, int code)
+void AccountModelPrivate::slotAccountChanged(const QString& account,const QString& state, int code)
 {
-   Account* a = getAccountById(account);
+   Account* a = q_ptr->getById(account);
 
    if (!a || (a && a->registrationStatus() != state )) {
       if (state != "OK") //Do not polute the log
@@ -184,21 +221,21 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
       ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
       QStringList accountIds = configurationManager.getAccountList().value();
       for (int i = 0; i < accountIds.size(); ++i) {
-         if ((!getAccountById(accountIds[i])) && m_lDeletedAccounts.indexOf(accountIds[i]) == -1) {
+         if ((!q_ptr->getById(accountIds[i])) && m_lDeletedAccounts.indexOf(accountIds[i]) == -1) {
             Account* acc = Account::buildExistingAccountFromId(accountIds[i]);
             m_lAccounts.insert(i, acc);
-            connect(acc,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
+            connect(acc,SIGNAL(changed(Account*)),this,SLOT(slotAccountChanged(Account*)));
             connect(acc,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
-            emit dataChanged(index(i,0),index(size()-1));
-            emit layoutChanged();
+            emit q_ptr->dataChanged(q_ptr->index(i,0),q_ptr->index(q_ptr->size()-1));
+            emit q_ptr->layoutChanged();
          }
       }
       foreach (Account* acc, m_lAccounts) {
          const int idx =accountIds.indexOf(acc->id());
          if (idx == -1 && (acc->state() == Account::EditState::READY || acc->state() == Account::EditState::REMOVED)) {
             m_lAccounts.remove(idx);
-            emit dataChanged(index(idx - 1, 0), index(m_lAccounts.size()-1, 0));
-            emit layoutChanged();
+            emit q_ptr->dataChanged(q_ptr->index(idx - 1, 0), q_ptr->index(m_lAccounts.size()-1, 0));
+            emit q_ptr->layoutChanged();
          }
       }
    }
@@ -207,29 +244,29 @@ void AccountListModel::accountChanged(const QString& account,const QString& stat
       a->updateState();
       emit a->stateChanged(a->toHumanStateName());
       const QModelIndex idx = a->index();
-      emit dataChanged(idx, idx);
+      emit q_ptr->dataChanged(idx, idx);
       const bool regStateChanged = isRegistered != a->isRegistered();
       if (regStateChanged && (code == 502 || code == 503)) {
-         emit badGateway();
+         emit q_ptr->badGateway();
       }
       else if (regStateChanged)
-         emit accountRegistrationChanged(a,a->isRegistered());
+         emit q_ptr->registrationChanged(a,a->isRegistered());
 
       //Keep the error message
       a->setLastErrorMessage(state);
       a->setLastErrorCode(code);
 
-      emit accountStateChanged(a,a->toHumanStateName());
+      emit q_ptr->accountStateChanged(a,a->toHumanStateName());
    }
 
 }
 
 ///Tell the model something changed
-void AccountListModel::accountChanged(Account* a)
+void AccountModelPrivate::slotAccountChanged(Account* a)
 {
    int idx = m_lAccounts.indexOf(a);
    if (idx != -1) {
-      emit dataChanged(index(idx, 0), index(idx, 0));
+      emit q_ptr->dataChanged(q_ptr->index(idx, 0), q_ptr->index(idx, 0));
    }
 }
 
@@ -242,65 +279,65 @@ void AccountListModel::accountChanged(Account* a)
 
 
 ///When a new voice mail is available
-void AccountListModel::slotVoiceMailNotify(const QString &accountID, int count)
+void AccountModelPrivate::slotVoiceMailNotify(const QString &accountID, int count)
 {
-   Account* a = getAccountById(accountID);
+   Account* a = q_ptr->getById(accountID);
    if (a) {
       a->setVoiceMailCount(count);
-      emit voiceMailNotify(a,count);
+      emit q_ptr->voiceMailNotify(a,count);
    }
 }
 
 ///Propagate account presence state
-void AccountListModel::slotAccountPresenceEnabledChanged(bool state)
+void AccountModelPrivate::slotAccountPresenceEnabledChanged(bool state)
 {
    Q_UNUSED(state)
-   emit presenceEnabledChanged(isPresenceEnabled());
+   emit q_ptr->presenceEnabledChanged(q_ptr->isPresenceEnabled());
 }
 
 ///Update accounts
-void AccountListModel::update()
+void AccountModel::update()
 {
    ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
    QList<Account*> tmp;
-   for (int i = 0; i < m_lAccounts.size(); i++)
-      tmp << m_lAccounts[i];
+   for (int i = 0; i < d_ptr->m_lAccounts.size(); i++)
+      tmp << d_ptr->m_lAccounts[i];
 
    for (int i = 0; i < tmp.size(); i++) {
       Account* current = tmp[i];
       if (!current->isNew() && (current->state() != Account::EditState::NEW
          && current->state() != Account::EditState::MODIFIED
          && current->state() != Account::EditState::OUTDATED))
-         removeAccount(current);
+         remove(current);
    }
    //ask for the list of accounts ids to the configurationManager
    const QStringList accountIds = configurationManager.getAccountList().value();
    for (int i = 0; i < accountIds.size(); ++i) {
-      if (m_lDeletedAccounts.indexOf(accountIds[i]) == -1) {
+      if (d_ptr->m_lDeletedAccounts.indexOf(accountIds[i]) == -1) {
          Account* a = Account::buildExistingAccountFromId(accountIds[i]);
-         m_lAccounts.insert(i, a);
+         d_ptr->m_lAccounts.insert(i, a);
          emit dataChanged(index(i,0),index(size()-1,0));
-         connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
-         connect(a,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
+         connect(a,SIGNAL(changed(Account*)),d_ptr.data(),SLOT(slotAccountChanged(Account*)));
+         connect(a,SIGNAL(presenceEnabledChanged(bool)),d_ptr.data(),SLOT(slotAccountPresenceEnabledChanged(bool)));
          emit layoutChanged();
       }
    }
 } //update
 
 ///Update accounts
-void AccountListModel::updateAccounts()
+void AccountModel::updateAccounts()
 {
    qDebug() << "Updating all accounts";
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    QStringList accountIds = configurationManager.getAccountList().value();
    //m_lAccounts.clear();
    for (int i = 0; i < accountIds.size(); ++i) {
-      Account* acc = getAccountById(accountIds[i]);
+      Account* acc = getById(accountIds[i]);
       if (!acc) {
          Account* a = Account::buildExistingAccountFromId(accountIds[i]);
-         m_lAccounts += a;
-         connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
-         connect(a,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
+         d_ptr->m_lAccounts += a;
+         connect(a,SIGNAL(changed(Account*)),d_ptr.data(),SLOT(slotAccountChanged(Account*)));
+         connect(a,SIGNAL(presenceEnabledChanged(bool)),d_ptr.data(),SLOT(slotAccountPresenceEnabledChanged(bool)));
          emit dataChanged(index(size()-1,0),index(size()-1,0));
       }
       else {
@@ -311,7 +348,7 @@ void AccountListModel::updateAccounts()
 } //updateAccounts
 
 ///Save accounts details and reload it
-void AccountListModel::save()
+void AccountModel::save()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList accountIds = QStringList(configurationManager.getAccountList().value());
@@ -324,7 +361,7 @@ void AccountListModel::save()
 
    //remove accounts that are in the configurationManager but not in the client
    for (int i = 0; i < accountIds.size(); i++) {
-      if(!getAccountById(accountIds[i])) {
+      if(!getById(accountIds[i])) {
          configurationManager.removeAccount(accountIds[i]);
       }
    }
@@ -332,19 +369,20 @@ void AccountListModel::save()
    //Set account order
    QString order;
    for( int i = 0 ; i < size() ; i++)
-      order += m_lAccounts[i]->id() + '/';
+      order += d_ptr->m_lAccounts[i]->id() + '/';
    configurationManager.setAccountsOrder(order);
-   m_lDeletedAccounts.clear();
+   d_ptr->m_lDeletedAccounts.clear();
 }
 
 ///Move account up
-bool AccountListModel::accountUp( int idx )
+bool AccountModel::moveUp( const QModelIndex& idx )
 {
-   if(idx > 0 && idx <= rowCount()) {
-      Account* account = m_lAccounts[idx];
-      m_lAccounts.remove(idx);
-      m_lAccounts.insert(idx - 1, account);
-      emit dataChanged(this->index(idx - 1, 0, QModelIndex()), this->index(idx, 0, QModelIndex()));
+   int row = idx.row();
+   if(row > 0 && row <= rowCount()) {
+      Account* account = d_ptr->m_lAccounts[row];
+      d_ptr->m_lAccounts.remove(row);
+      d_ptr->m_lAccounts.insert(row - 1, account);
+      emit dataChanged(this->index(row - 1, 0, QModelIndex()), this->index(row, 0, QModelIndex()));
       emit layoutChanged();
       return true;
    }
@@ -352,13 +390,14 @@ bool AccountListModel::accountUp( int idx )
 }
 
 ///Move account down
-bool AccountListModel::accountDown( int idx )
+bool AccountModel::moveDown( const QModelIndex& idx )
 {
-   if(idx >= 0 && idx < rowCount()) {
-      Account* account = m_lAccounts[idx];
-      m_lAccounts.remove(idx);
-      m_lAccounts.insert(idx + 1, account);
-      emit dataChanged(this->index(idx, 0, QModelIndex()), this->index(idx + 1, 0, QModelIndex()));
+   int row = idx.row();
+   if(row >= 0 && row < rowCount()) {
+      Account* account = d_ptr->m_lAccounts[row];
+      d_ptr->m_lAccounts.remove(row);
+      d_ptr->m_lAccounts.insert(row + 1, account);
+      emit dataChanged(this->index(row, 0, QModelIndex()), this->index(row + 1, 0, QModelIndex()));
       emit layoutChanged();
       return true;
    }
@@ -366,19 +405,19 @@ bool AccountListModel::accountDown( int idx )
 }
 
 ///Try to register all enabled accounts
-void AccountListModel::registerAllAccounts()
+void AccountModel::registerAllAccounts()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    configurationManager.registerAllAccounts();
 }
 
 ///Cancel all modifications
-void AccountListModel::cancel() {
-   foreach (Account* a, getAccounts()) {
+void AccountModel::cancel() {
+   foreach (Account* a, d_ptr->m_lAccounts) {
       if (a->state() == Account::EditState::MODIFIED || a->state() == Account::EditState::OUTDATED)
          a->performAction(Account::EditAction::CANCEL);
    }
-   m_lDeletedAccounts.clear();
+   d_ptr->m_lDeletedAccounts.clear();
 }
 
 
@@ -388,50 +427,20 @@ void AccountListModel::cancel() {
  *                                                                           *
  ****************************************************************************/
 
-///Get all accounts
-const QVector<Account*>& AccountListModel::getAccounts()
-{
-   return m_lAccounts;
-}
-
-///Sometime, it may be useful to reverse map a phone number to an account using the hostname
-QList<Account*> AccountListModel::getAccountsByHostNames ( const QString& hostname ) const
-{
-   QList<Account*> toReturn;
-   for (int i = 0; i < m_lAccounts.size(); i++) {
-      Account* acc = m_lAccounts[i];
-      if (acc->hostname() == hostname)
-         toReturn << acc;
-   }
-   return toReturn;
-}
-
 ///Get account using its ID
-Account* AccountListModel::getAccountById(const QString& id) const
+Account* AccountModel::getById(const QString& id) const
 {
    Q_ASSERT(!id.isEmpty());
-   for (int i = 0; i < m_lAccounts.size(); i++) {
-      Account* acc = m_lAccounts[i];
+   for (int i = 0; i < d_ptr->m_lAccounts.size(); i++) {
+      Account* acc = d_ptr->m_lAccounts[i];
       if (acc && !acc->isNew() && acc->id() == id)
          return acc;
    }
    return nullptr;
 }
 
-///Get account with a specific state
-QVector<Account*> AccountListModel::getAccountsByState(const QString& state)
-{
-   QVector<Account *> v;
-   for (int i = 0; i < m_lAccounts.size(); i++) {
-      Account* acc = m_lAccounts[i];
-      if (acc->registrationStatus() == state)
-         v += acc;
-   }
-   return v;
-}
-
 ///Get the first registerred account (default account)
-Account* AccountListModel::firstRegisteredAccount() const
+Account* AccountModelPrivate::firstRegisteredAccount() const
 {
    for (int i = 0; i < m_lAccounts.count(); ++i) {
       Account* current = m_lAccounts[i];
@@ -449,48 +458,48 @@ Account* AccountListModel::firstRegisteredAccount() const
 }
 
 ///Get the account size
-int AccountListModel::size() const
+int AccountModel::size() const
 {
-   return m_lAccounts.size();
+   return d_ptr->m_lAccounts.size();
 }
 
 ///Return the current account
-Account* AccountListModel::currentAccount()
+Account* AccountModel::currentAccount()
 {
    Account* priorAccount = m_spPriorAccount;
    if(priorAccount && priorAccount->registrationStatus() == Account::State::REGISTERED && priorAccount->isEnabled() ) {
       return priorAccount;
    }
    else {
-      Account* a = instance()->firstRegisteredAccount();
+      Account* a = instance()->d_ptr->firstRegisteredAccount();
       if (!a)
-         a = instance()->getAccountById(Account::ProtocolName::IP2IP);
+         a = instance()->getById(Account::ProtocolName::IP2IP);
       instance()->setPriorAccount(a);
       return a;
    }
 } //getCurrentAccount
 
 ///Get data from the model
-QVariant AccountListModel::data ( const QModelIndex& idx, int role) const
+QVariant AccountModel::data ( const QModelIndex& idx, int role) const
 {
    if (!idx.isValid() || idx.row() < 0 || idx.row() >= rowCount())
       return QVariant();
 
-   const Account* account = m_lAccounts[idx.row()];
+   const Account* account = d_ptr->m_lAccounts[idx.row()];
    if(idx.column() == 0 && (role == Qt::DisplayRole || role == Qt::EditRole))
       return QVariant(account->alias());
    else if(idx.column() == 0 && role == Qt::CheckStateRole)
       return QVariant(account->isEnabled() ? Qt::Checked : Qt::Unchecked);
    else if (role == Qt::BackgroundRole)
-      return (m_pColorVisitor)?m_pColorVisitor->getColor(account):account->stateColor();
-   else if(idx.column() == 0 && role == Qt::DecorationRole && m_pColorVisitor)
-      return m_pColorVisitor->getIcon(account);
+      return (d_ptr->m_pColorVisitor)?d_ptr->m_pColorVisitor->getColor(account):account->stateColor();
+   else if(idx.column() == 0 && role == Qt::DecorationRole && d_ptr->m_pColorVisitor)
+      return d_ptr->m_pColorVisitor->getIcon(account);
    else
       return account->roleData(role);
 } //data
 
 ///Flags for "idx"
-Qt::ItemFlags AccountListModel::flags(const QModelIndex& idx) const
+Qt::ItemFlags AccountModel::flags(const QModelIndex& idx) const
 {
    if (idx.column() == 0)
       return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
@@ -498,42 +507,36 @@ Qt::ItemFlags AccountListModel::flags(const QModelIndex& idx) const
 }
 
 ///Number of account
-int AccountListModel::rowCount(const QModelIndex& parentIdx) const
+int AccountModel::rowCount(const QModelIndex& parentIdx) const
 {
    Q_UNUSED(parentIdx);
-   return m_lAccounts.size();
+   return d_ptr->m_lAccounts.size();
 }
 
-Account* AccountListModel::getAccountByModelIndex(const QModelIndex& item) const
+Account* AccountModel::getAccountByModelIndex(const QModelIndex& item) const
 {
    if (!item.isValid())
       return nullptr;
-   return m_lAccounts[item.row()];
+   return d_ptr->m_lAccounts[item.row()];
 }
 
-AccountListColorVisitor* AccountListModel::colorVisitor()
+AccountListColorVisitor* AccountModel::colorVisitor()
 {
-   return m_pColorVisitor;
-}
-
-///Return the default account (used for contact lookup)
-Account* AccountListModel::getDefaultAccount() const
-{
-   return m_pDefaultAccount;
+   return d_ptr->m_pColorVisitor;
 }
 
 ///Generate an unique suffix to prevent multiple account from sharing alias
-QString AccountListModel::getSimilarAliasIndex(const QString& alias)
+QString AccountModel::getSimilarAliasIndex(const QString& alias)
 {
    int count = 0;
-   foreach (Account* a, instance()->getAccounts()) {
+   foreach (Account* a, instance()->d_ptr->m_lAccounts) {
       if (a->alias().left(alias.size()) == alias)
          count++;
    }
    bool found = true;
    do {
       found = false;
-      foreach (Account* a, instance()->getAccounts()) {
+      foreach (Account* a, instance()->d_ptr->m_lAccounts) {
          if (a->alias() == alias+QString(" (%1)").arg(count)) {
             count++;
             found = false;
@@ -546,27 +549,27 @@ QString AccountListModel::getSimilarAliasIndex(const QString& alias)
    return QString();
 }
 
-bool AccountListModel::isPresenceEnabled() const
+bool AccountModel::isPresenceEnabled() const
 {
-   foreach(Account* a,m_lAccounts) {
+   foreach(Account* a, d_ptr->m_lAccounts) {
       if (a->presenceEnabled())
          return true;
    }
    return false;
 }
 
-bool AccountListModel::isPresencePublishSupported() const
+bool AccountModel::isPresencePublishSupported() const
 {
-   foreach(Account* a,m_lAccounts) {
+   foreach(Account* a,d_ptr->m_lAccounts) {
       if (a->supportPresencePublish())
          return true;
    }
    return false;
 }
 
-bool AccountListModel::isPresenceSubscribeSupported() const
+bool AccountModel::isPresenceSubscribeSupported() const
 {
-   foreach(Account* a,m_lAccounts) {
+   foreach(Account* a,d_ptr->m_lAccounts) {
       if (a->supportPresenceSubscribe())
          return true;
    }
@@ -581,39 +584,39 @@ bool AccountListModel::isPresenceSubscribeSupported() const
  ****************************************************************************/
 
 ///Add an account
-Account* AccountListModel::addAccount(const QString& alias)
+Account* AccountModel::add(const QString& alias)
 {
    Account* a = Account::buildNewAccountFromAlias(alias);
-   connect(a,SIGNAL(changed(Account*)),this,SLOT(accountChanged(Account*)));
-   m_lAccounts += a;
-   connect(a,SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotAccountPresenceEnabledChanged(bool)));
+   connect(a,SIGNAL(changed(Account*)),d_ptr.data(),SLOT(slotAccountChanged(Account*)));
+   d_ptr->m_lAccounts += a;
+   connect(a,SIGNAL(presenceEnabledChanged(bool)),d_ptr.data(),SLOT(slotAccountPresenceEnabledChanged(bool)));
 
-   emit dataChanged(index(m_lAccounts.size()-1,0), index(m_lAccounts.size()-1,0));
+   emit dataChanged(index(d_ptr->m_lAccounts.size()-1,0), index(d_ptr->m_lAccounts.size()-1,0));
    return a;
 }
 
 ///Remove an account
-void AccountListModel::removeAccount(Account* account)
+void AccountModel::remove(Account* account)
 {
    if (not account) return;
    qDebug() << "Removing" << account->alias() << account->id();
-   const int aindex = m_lAccounts.indexOf(account);
-   m_lAccounts.remove(aindex);
-   m_lDeletedAccounts << account->id();
+   const int aindex = d_ptr->m_lAccounts.indexOf(account);
+   d_ptr->m_lAccounts.remove(aindex);
+   d_ptr->m_lDeletedAccounts << account->id();
    if (currentAccount() == account)
-      setPriorAccount(getAccountById(Account::ProtocolName::IP2IP));
-   emit dataChanged(index(aindex,0), index(m_lAccounts.size()-1,0));
+      setPriorAccount(getById(Account::ProtocolName::IP2IP));
+   emit dataChanged(index(aindex,0), index(d_ptr->m_lAccounts.size()-1,0));
    emit layoutChanged();
    //delete account;
 }
 
-void AccountListModel::removeAccount( QModelIndex idx )
+void AccountModel::remove(const QModelIndex& idx )
 {
-   removeAccount(getAccountByModelIndex(idx));
+   remove(getAccountByModelIndex(idx));
 }
 
 ///Set the previous account used
-void AccountListModel::setPriorAccount(const Account* account) {
+void AccountModel::setPriorAccount(const Account* account) {
    const bool changed = (account && m_spPriorAccount != account) || (!account && m_spPriorAccount);
    m_spPriorAccount = const_cast<Account*>(account);
    if (changed)
@@ -621,20 +624,20 @@ void AccountListModel::setPriorAccount(const Account* account) {
 }
 
 ///Set model data
-bool AccountListModel::setData(const QModelIndex& idx, const QVariant& value, int role)
+bool AccountModel::setData(const QModelIndex& idx, const QVariant& value, int role)
 {
    if (idx.isValid() && idx.column() == 0 && role == Qt::CheckStateRole) {
-      const bool prevEnabled = m_lAccounts[idx.row()]->isEnabled();
-      m_lAccounts[idx.row()]->setEnabled(value.toBool());
+      const bool prevEnabled = d_ptr->m_lAccounts[idx.row()]->isEnabled();
+      d_ptr->m_lAccounts[idx.row()]->setEnabled(value.toBool());
       emit dataChanged(idx, idx);
       if (prevEnabled != value.toBool())
-         emit accountEnabledChanged(m_lAccounts[idx.row()]);
+         emit accountEnabledChanged(d_ptr->m_lAccounts[idx.row()]);
       emit dataChanged(idx, idx);
       return true;
    }
    else if ( role == Qt::EditRole ) {
       if (value.toString() != data(idx,Qt::EditRole)) {
-         m_lAccounts[idx.row()]->setAlias(value.toString());
+         d_ptr->m_lAccounts[idx.row()]->setAlias(value.toString());
          emit dataChanged(idx, idx);
       }
    }
@@ -642,17 +645,9 @@ bool AccountListModel::setData(const QModelIndex& idx, const QVariant& value, in
 }
 
 ///Set QAbstractItemModel BackgroundRole visitor
-void AccountListModel::setColorVisitor(AccountListColorVisitor* visitor)
+void AccountModel::setColorVisitor(AccountListColorVisitor* visitor)
 {
-   m_pColorVisitor = visitor;
-}
-
-///Set the default account (used for contact lookup)
-void AccountListModel::setDefaultAccount(Account* a)
-{
-   if (a != m_pDefaultAccount)
-      emit defaultAccountChanged(a);
-   m_pDefaultAccount = a;
+   d_ptr->m_pColorVisitor = visitor;
 }
 
 
@@ -663,18 +658,25 @@ void AccountListModel::setDefaultAccount(Account* a)
  ****************************************************************************/
 
 ///Get the account from its index
-const Account* AccountListModel::operator[] (int i) const
+const Account* AccountModel::operator[] (int i) const
 {
-   return m_lAccounts[i];
+   return d_ptr->m_lAccounts[i];
 }
 
 ///Get the account from its index
-Account* AccountListModel::operator[] (int i)
+Account* AccountModel::operator[] (int i)
 {
-   return m_lAccounts[i];
+   return d_ptr->m_lAccounts[i];
 }
 
 ///Get accoutn by id
-Account* AccountListModel::operator[] (const QString& i) {
-   return getAccountById(i);
+Account* AccountModel::operator[] (const QString& i) {
+   return getById(i);
 }
+
+void AccountModel::add(Account* acc)
+{
+   d_ptr->m_lAccounts << acc;
+}
+
+#include <accountmodel.moc>

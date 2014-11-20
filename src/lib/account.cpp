@@ -34,7 +34,7 @@
 #include "dbus/videomanager.h"
 #include "visitors/accountlistcolorvisitor.h"
 #include "certificate.h"
-#include "accountlistmodel.h"
+#include "accountmodel.h"
 #include "credentialmodel.h"
 #include "audiocodecmodel.h"
 #include "video/videocodecmodel.h"
@@ -143,7 +143,7 @@ void AccountPrivate::changeState(Account::EditState state) {
 
 
 ///Constructors
-Account::Account():QObject(AccountListModel::instance()),d_ptr(new AccountPrivate(this))
+Account::Account():QObject(AccountModel::instance()),d_ptr(new AccountPrivate(this))
 
 {
 }
@@ -344,9 +344,9 @@ bool Account::isRegistered() const
 ///Return the model index of this item
 QModelIndex Account::index()
 {
-   for (int i=0;i < AccountListModel::instance()->m_lAccounts.size();i++) {
-      if (this == (AccountListModel::instance()->m_lAccounts)[i]) {
-         return AccountListModel::instance()->index(i,0);
+   for (int i=0;i < AccountModel::instance()->size();i++) {
+      if (this == (*AccountModel::instance())[i]) {
+         return AccountModel::instance()->index(i,0);
       }
    }
    return QModelIndex();
@@ -365,8 +365,8 @@ QString Account::stateColorName() const
 ///Return status Qt color, QColor is not part of QtCore, use using the global variant
 QVariant Account::stateColor() const
 {
-   if (AccountListModel::instance()->colorVisitor()) {
-      return AccountListModel::instance()->colorVisitor()->getColor(this);
+   if (AccountModel::instance()->colorVisitor()) {
+      return AccountModel::instance()->colorVisitor()->getColor(this);
    }
    return QVariant();
 }
@@ -564,7 +564,7 @@ Certificate* Account::tlsCaListCertificate() const
 {
    if (!d_ptr->m_pCaCert) {
       const_cast<Account*>(this)->d_ptr->m_pCaCert = new Certificate(Certificate::Type::AUTHORITY,this);
-      connect(d_ptr->m_pCaCert,SIGNAL(changed()),d_ptr,SLOT(slotUpdateCertificate()));
+      connect(d_ptr->m_pCaCert,SIGNAL(changed()),d_ptr.data(),SLOT(slotUpdateCertificate()));
    }
    const_cast<Account*>(this)->d_ptr->m_pCaCert->setPath(d_ptr->accountDetail(Account::MapField::TLS::CA_LIST_FILE));
    return d_ptr->m_pCaCert;
@@ -575,7 +575,7 @@ Certificate* Account::tlsCertificate() const
 {
    if (!d_ptr->m_pTlsCert) {
       const_cast<Account*>(this)->d_ptr->m_pTlsCert = new Certificate(Certificate::Type::USER,this);
-      connect(d_ptr->m_pTlsCert,SIGNAL(changed()),d_ptr,SLOT(slotUpdateCertificate()));
+      connect(d_ptr->m_pTlsCert,SIGNAL(changed()),d_ptr.data(),SLOT(slotUpdateCertificate()));
    }
    const_cast<Account*>(this)->d_ptr->m_pTlsCert->setPath(d_ptr->accountDetail(Account::MapField::TLS::CERTIFICATE_FILE));
    return d_ptr->m_pTlsCert;
@@ -586,7 +586,7 @@ Certificate* Account::tlsPrivateKeyCertificate() const
 {
    if (!d_ptr->m_pPrivateKey) {
       const_cast<Account*>(this)->d_ptr->m_pPrivateKey = new Certificate(Certificate::Type::PRIVATE_KEY,this);
-      connect(d_ptr->m_pPrivateKey,SIGNAL(changed()),d_ptr,SLOT(slotUpdateCertificate()));
+      connect(d_ptr->m_pPrivateKey,SIGNAL(changed()),d_ptr.data(),SLOT(slotUpdateCertificate()));
    }
    const_cast<Account*>(this)->d_ptr->m_pPrivateKey->setPath(d_ptr->accountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE));
    return d_ptr->m_pPrivateKey;
@@ -1460,10 +1460,10 @@ void AccountPrivate::save()
    }
 
    if (!q_ptr->id().isEmpty()) {
-      Account* acc =  AccountListModel::instance()->getAccountById(q_ptr->id());
+      Account* acc =  AccountModel::instance()->getById(q_ptr->id());
       qDebug() << "Adding the new account to the account list (" << q_ptr->id() << ")";
       if (acc != q_ptr) {
-         (AccountListModel::instance()->m_lAccounts) << q_ptr;
+         AccountModel::instance()->add(q_ptr);
       }
 
       q_ptr->performAction(Account::EditAction::RELOAD);

@@ -49,7 +49,7 @@
 #include "lib/sflphone_const.h"
 #include "lib/dbus/instancemanager.h"
 #include "lib/contact.h"
-#include "lib/accountlistmodel.h"
+#include "lib/accountmodel.h"
 #include "lib/instantmessagingmodel.h"
 #include "lib/numbercategorymodel.h"
 #include "lib/legacyhistorybackend.h"
@@ -161,7 +161,7 @@ SFLPhone::SFLPhone(QWidget *parent)
       ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
       ContactModel::instance()->backendModel()->load();
       InstantMessagingModelManager::init();
-      AccountListModel::instance()->setDefaultAccount(AccountListModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
+//       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
       VideoModel::instance();
       #endif
@@ -267,7 +267,7 @@ SFLPhone::SFLPhone(QWidget *parent)
 
    move(QCursor::pos().x() - geometry().width()/2, QCursor::pos().y() - geometry().height()/2);
 
-   if (AccountListModel::instance()->size() <= 1 && ConfigurationSkeleton::displayAccountWizard())
+   if (AccountModel::instance()->size() <= 1 && ConfigurationSkeleton::displayAccountWizard())
       (new AccountWizard())->show();
 
    m_pInitialized = true ;
@@ -288,12 +288,12 @@ SFLPhone::SFLPhone(QWidget *parent)
    m_pPresent->setAutoRaise(true);
    m_pPresent->setText(i18nc("The presence state is \"Online\"","Online"));
    m_pPresent->setCheckable(true);
-   m_pPresent->setVisible(AccountListModel::instance()->isPresenceEnabled() && AccountListModel::instance()->isPresencePublishSupported());
+   m_pPresent->setVisible(AccountModel::instance()->isPresenceEnabled() && AccountModel::instance()->isPresencePublishSupported());
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
-   connect(AccountListModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
+   connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
 
    m_pPresenceDock = new QDockWidget(this);
    m_pPresenceDock->setObjectName("presence-dock");
@@ -318,9 +318,9 @@ SFLPhone::SFLPhone(QWidget *parent)
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(KIcon("view-refresh"));
    bar->addPermanentWidget(m_pReloadButton);
-   connect(m_pReloadButton,SIGNAL(clicked()),AccountListModel::instance(),SLOT(registerAllAccounts()));
+   connect(m_pReloadButton,SIGNAL(clicked()),AccountModel::instance(),SLOT(registerAllAccounts()));
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
-   connect(AccountListModel::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
+   connect(AccountModel::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
 
    if (!CallModel::instance()->isValid()) {
       KMessageBox::error(this,i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually"));
@@ -328,7 +328,7 @@ SFLPhone::SFLPhone(QWidget *parent)
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
    try {
-      currentPriorAccountChanged(AccountListModel::currentAccount());
+      currentPriorAccountChanged(AccountModel::currentAccount());
    }
    catch(const char * msg) {
       KMessageBox::error(this,msg);
@@ -521,16 +521,16 @@ void SFLPhone::on_m_pView_incomingCall(const Call* call)
 ///Hide or show the statusbar presence widget
 void SFLPhone::slotPresenceEnabled(bool state)
 {
-   m_pPresent->setVisible(state && AccountListModel::instance()->isPresencePublishSupported());
+   m_pPresent->setVisible(state && AccountModel::instance()->isPresencePublishSupported());
 }
 
 ///Change current account
 void SFLPhone::currentAccountIndexChanged(int newIndex)
 {
-   if (AccountListModel::instance()->size()) {
-      const Account* acc = AccountListModel::instance()->getAccountByModelIndex(AccountListModel::instance()->index(newIndex,0));
+   if (AccountModel::instance()->size()) {
+      const Account* acc = AccountModel::instance()->getAccountByModelIndex(AccountModel::instance()->index(newIndex,0));
       if (acc)
-         AccountListModel::instance()->setPriorAccount(acc);
+         AccountModel::instance()->setPriorAccount(acc);
    }
 }
 

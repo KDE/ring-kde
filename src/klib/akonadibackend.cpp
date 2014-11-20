@@ -48,7 +48,7 @@
 
 //SFLPhone library
 #include "../lib/contact.h"
-#include "../lib/accountlistmodel.h"
+#include "../lib/accountmodel.h"
 #include "../lib/account.h"
 #include "../lib/call.h"
 #include "../lib/callmodel.h"

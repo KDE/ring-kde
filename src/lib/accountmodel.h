@@ -31,8 +31,11 @@
 
 class AccountListColorVisitor;
 
+//Private
+class AccountModelPrivate;
+
 ///AccountList: List of all daemon accounts
-class LIB_EXPORT AccountListModel : public QAbstractListModel {
+class LIB_EXPORT AccountModel : public QAbstractListModel {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -47,21 +50,16 @@ public:
    friend class Account;
    friend class AccountPrivate;
    //Static getter and destructor
-   static AccountListModel* instance();
+   static AccountModel* instance();
    static void destroy();
 
    //Getters
-   const QVector<Account*>&    getAccounts                 (                         );
-   QVector<Account*>           getAccountsByState          ( const QString& state    );
-   Q_INVOKABLE Account*        getAccountById              ( const QString& id       ) const;
-   Q_INVOKABLE QList<Account*> getAccountsByHostNames      (const QString& hostName  ) const;
+   Q_INVOKABLE Account*        getById                     ( const QString& id       ) const;
    int                         size                        (                         ) const;
-   Account*                    firstRegisteredAccount      (                         ) const;
-   Account*                    getDefaultAccount           (                         ) const;
    static Account*             currentAccount              (                         );
    Account*                    getAccountByModelIndex      ( const QModelIndex& item ) const;
    static QString              getSimilarAliasIndex        ( const QString& alias    );
-   AccountListColorVisitor*    colorVisitor                (                         );
+   AccountListColorVisitor*    colorVisitor                (                         ); //TODO VISITOR_REFACTOR
    Account*                    ip2ip                       (                         ) const;
    bool                        isPresenceEnabled           (                         ) const;
    bool                        isPresencePublishSupported  (                         ) const;
@@ -76,16 +74,16 @@ public:
    void setPriorAccount          ( const Account*                                           );
    virtual bool setData          ( const QModelIndex& index, const QVariant &value, int role);
    void         setColorVisitor  ( AccountListColorVisitor* visitor                         );
-   void         setDefaultAccount(Account* a);
+//    void         setDefaultAccount(Account* a);
 
    //Mutators
-   Q_INVOKABLE Account* addAccount          ( const QString & alias );
-   Q_INVOKABLE void     removeAccount       ( Account* account      );
-   void                 removeAccount       ( QModelIndex index     );
-   void                 save                (                       );
-   Q_INVOKABLE bool     accountUp           ( int index             );
-   Q_INVOKABLE bool     accountDown         ( int index             );
-   Q_INVOKABLE void     cancel              (                       );
+   Q_INVOKABLE Account* add                 ( const QString& alias         );
+   Q_INVOKABLE void     remove              ( Account* account             );
+   void                 remove              ( const QModelIndex& index     );
+   void                 save                (                              );
+   Q_INVOKABLE bool     moveUp              ( const QModelIndex& idx       );
+   Q_INVOKABLE bool     moveDown            ( const QModelIndex& idx       );
+   Q_INVOKABLE void     cancel              (                              );
 
    //Operators
    Account*       operator[] (int            i)      ;
@@ -94,25 +92,17 @@ public:
 
 private:
    //Constructors & Destructors
-   explicit AccountListModel();
-   void init();
-   ~AccountListModel();
-   void setupRoleName();
+   explicit AccountModel();
+   ~AccountModel();
+
+   //Helpers
+   void add(Account* acc);
 
    //Attributes
-   QVector<Account*>        m_lAccounts       ;
-   static AccountListModel* m_spAccountList   ;
+   static AccountModel* m_spAccountList   ;
    static Account*          m_spPriorAccount  ;
-   Account*                 m_pDefaultAccount ;
-   AccountListColorVisitor* m_pColorVisitor   ;
-   QStringList              m_lDeletedAccounts;
-   Account*                 m_pIP2IP          ;
-
-private Q_SLOTS:
-   void accountChanged(const QString& account,const QString& state, int code);
-   void accountChanged(Account* a);
-   void slotVoiceMailNotify( const QString& accountID , int count );
-   void slotAccountPresenceEnabledChanged(bool state);
+   QScopedPointer<AccountModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(AccountModel)
 
 public Q_SLOTS:
    void update        ();
@@ -132,7 +122,7 @@ Q_SIGNALS:
    ///Emitted when the default account change
    void priorAccountChanged  ( Account* a                     );
    ///Emitted when one account registration state change
-   void accountRegistrationChanged(Account* a, bool registration);
+   void registrationChanged(Account* a, bool registration);
    ///Emitted when the network is down
    void badGateway();
    ///Emitted when a new voice mail is available
@@ -140,7 +130,7 @@ Q_SIGNALS:
    ///Propagate Account::presenceEnabledChanged
    void presenceEnabledChanged(bool);
 };
-Q_DECLARE_METATYPE(AccountListModel*)
+Q_DECLARE_METATYPE(AccountModel*)
 
 class LIB_EXPORT AccountListNoCheckProxyModel : public QAbstractListModel
 {

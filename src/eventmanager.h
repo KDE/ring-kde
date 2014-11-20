@@ -95,7 +95,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void slotCallStateChanged(Call* call, Call::State previousState);
    void slotIncomingCall(Call* call);
-   void slotAccountRegistrationChanged(Account* a,bool reg);
+   void slotregistrationChanged(Account* a,bool reg);
    void slotNetworkDown();
 };
 

@@ -35,7 +35,7 @@
 #include "contact.h"
 #include "uri.h"
 #include "account.h"
-#include "accountlistmodel.h"
+#include "accountmodel.h"
 #include "video/videomodel.h"
 #include "historymodel.h"
 #include "instantmessagingmodel.h"
@@ -237,7 +237,7 @@ Call::~Call()
 ///Constructor
 Call::Call(const QString& confId, const QString& account): QObject(CallModel::instance()),
    m_pStopTimeStamp(0),m_pStartTimeStamp(0),m_pImModel(nullptr),
-   m_Account(AccountListModel::instance()->getAccountById(account)),m_CurrentState(Call::State::CONFERENCE),
+   m_Account(AccountModel::instance()->getById(account)),m_CurrentState(Call::State::CONFERENCE),
    m_pTimer(nullptr),m_pPeerPhoneNumber(nullptr),m_pDialNumber(nullptr),m_pTransferNumber(nullptr),
    m_HistoryConst(HistoryTimeCategoryModel::HistoryConst::Never),m_History(false),m_Missed(false),
    m_Direction(Call::Direction::OUTGOING),m_pBackend(nullptr), m_CallId(confId),
@@ -277,7 +277,7 @@ Call* Call::buildExistingCall(const QString& callId)
    const QString peerName    = details[ Call::DetailsMapFields::PEER_NAME   ];
    const QString account     = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
    Call::State   startState  = startStateFromDaemonCallState(details[Call::DetailsMapFields::STATE], details[Call::DetailsMapFields::TYPE]);
-   Account*      acc         = AccountListModel::instance()->getAccountById(account);
+   Account*      acc         = AccountModel::instance()->getById(account);
    PhoneNumber*  nb          = PhoneDirectoryModel::instance()->getNumber(peerNumber,acc);
    Call*         call        = new Call(startState, callId, peerName, nb, acc);
    call->m_Recording      = callManager.getIsRecording(callId);
@@ -322,7 +322,7 @@ Call* Call::buildIncomingCall(const QString& callId)
    const QString from     = details[ Call::DetailsMapFields::PEER_NUMBER ];
    const QString account  = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
    const QString peerName = details[ Call::DetailsMapFields::PEER_NAME   ];
-   Account*      acc      = AccountListModel::instance()->getAccountById(account);
+   Account*      acc      = AccountModel::instance()->getById(account);
    PhoneNumber*  nb       = PhoneDirectoryModel::instance()->getNumber(from,acc);
    Call* call = new Call(Call::State::INCOMING, callId, peerName, nb, acc);
    call->m_HistoryState   = Call::LegacyHistoryState::MISSED;
@@ -342,7 +342,7 @@ Call* Call::buildRingingCall(const QString & callId)
    const QString from     = details[ Call::DetailsMapFields::PEER_NUMBER ];
    const QString account  = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
    const QString peerName = details[ Call::DetailsMapFields::PEER_NAME   ];
-   Account*      acc      = AccountListModel::instance()->getAccountById(account);
+   Account*      acc      = AccountModel::instance()->getById(account);
    PhoneNumber*  nb       = PhoneDirectoryModel::instance()->getNumber(from,acc);
 
    Call* call = new Call(Call::State::RINGING, callId, peerName, nb, acc);
@@ -389,7 +389,7 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
    if (!hc[ Call::HistoryMapFields::CONTACT_UID].isEmpty())
       ct = ContactModel::instance()->getPlaceHolder(contactUid.toAscii());
 
-   Account*      acc       = AccountListModel::instance()->getAccountById(accId);
+   Account*      acc       = AccountModel::instance()->getById(accId);
    PhoneNumber*  nb        = PhoneDirectoryModel::instance()->getNumber(number,ct,acc);
 
    Call*         call      = new Call(Call::State::OVER, callId, (name == "empty")?QString():name, nb, acc );
@@ -398,7 +398,7 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
    call->m_History         = true;
    call->setStartTimeStamp(startTimeStamp);
    call->m_HistoryState    = historyStateFromType(type);
-   call->m_Account         = AccountListModel::instance()->getAccountById(accId);
+   call->m_Account         = AccountModel::instance()->getById(accId);
 
    //BEGIN In ~2015, remove the old logic and clean this
    if (missed || call->m_HistoryState == Call::LegacyHistoryState::MISSED) {
@@ -1207,7 +1207,7 @@ void Call::call()
    qDebug() << "account = " << m_Account;
    if(!m_Account) {
       qDebug() << "Account is not set, taking the first registered.";
-      this->m_Account = AccountListModel::currentAccount();
+      this->m_Account = AccountModel::currentAccount();
    }
    //Calls to empty URI should not be allowed, sflphoned will go crazy
    if ((!m_pDialNumber) || m_pDialNumber->uri().isEmpty()) {

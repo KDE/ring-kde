@@ -21,7 +21,7 @@
 #include <QtCore/QCoreApplication>
 
 //SFLPhone
-#include "accountlistmodel.h"
+#include "accountmodel.h"
 #include "dbus/presencemanager.h"
 #include "visitors/presenceserializationvisitor.h"
 
@@ -316,8 +316,10 @@ void PresenceStatusModel::setCurrentIndex  (const QModelIndex& index)
    emit currentNameChanged(m_pCurrentStatus->name);
    emit currentMessageChanged(m_pCurrentStatus->message);
    emit currentStatusChanged(m_pCurrentStatus->status);
-   foreach(Account* a, AccountListModel::instance()->getAccounts()) {
-      DBus::PresenceManager::instance().publish(a->id(), m_pCurrentStatus->status,m_pCurrentStatus->message);
+   for (int i=0; i < AccountModel::instance()->size(); i++) {
+      DBus::PresenceManager::instance().publish(
+         (*AccountModel::instance())[1]->id(), m_pCurrentStatus->status,m_pCurrentStatus->message
+      );
    }
 }
 

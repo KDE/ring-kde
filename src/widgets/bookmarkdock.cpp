@@ -48,7 +48,7 @@
 #include "lib/contactmodel.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/numbercategory.h"
-#include "lib/accountlistmodel.h"
+#include "lib/accountmodel.h"
 #include "lib/callmodel.h"
 #include "categorizedtreeview.h"
 #include "../delegates/categorizeddelegate.h"
@@ -144,7 +144,7 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
       return;
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::BOOKMARK)
       return;
-   Call* call2 = CallModel::instance()->dialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountListModel::currentAccount());
+   Call* call2 = CallModel::instance()->dialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AccountModel::currentAccount());
    call2->setDialNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
    call2->performAction( Call::Action::ACCEPT   );
 }
@@ -250,7 +250,7 @@ void BookmarkDock::callAgain()
    PhoneNumber* n = BookmarkModel::instance()->getNumber(m_CurrentIndex);
    if ( n ) {
       const QString name = n->contact()?n->contact()->formattedName() : n->primaryName();
-      Call* call = CallModel::instance()->dialingCall(name, AccountListModel::currentAccount());
+      Call* call = CallModel::instance()->dialingCall(name, AccountModel::currentAccount());
       if (call) {
          call->setDialNumber(n);
          call->setAccount(n->account());

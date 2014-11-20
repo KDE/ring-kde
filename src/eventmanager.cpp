@@ -28,7 +28,7 @@
 #include <lib/phonenumber.h>
 #include <lib/account.h>
 #include <lib/phonedirectorymodel.h>
-#include <lib/accountlistmodel.h>
+#include <lib/accountmodel.h>
 #include <lib/contactmodel.h>
 #include <klib/tipmanager.h>
 #include "sflphoneview.h"
@@ -91,8 +91,8 @@ EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(pare
 
    connect(m_pMainWindowEv , SIGNAL(minimized(bool)) , m_pParent->m_pCanvasManager, SLOT(slotMinimized(bool)));
 
-   connect(AccountListModel::instance(),SIGNAL(accountRegistrationChanged(Account*,bool)),this,SLOT(slotAccountRegistrationChanged(Account*,bool)));
-   connect(AccountListModel::instance(),SIGNAL(badGateway()),this,SLOT(slotNetworkDown()));
+   connect(AccountModel::instance(),SIGNAL(registrationChanged(Account*,bool)),this,SLOT(slotregistrationChanged(Account*,bool)));
+   connect(AccountModel::instance(),SIGNAL(badGateway()),this,SLOT(slotNetworkDown()));
    //Listen for macro
    MacroModel::addListener(this);
 }
@@ -203,7 +203,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(MIME_PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
-               (n->account()?n->account():AccountListModel::instance()->currentAccount())->alias()));
+               (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
          Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
@@ -223,7 +223,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(MIME_PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
-               (n->account()?n->account():AccountListModel::instance()->currentAccount())->alias()));
+               (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
          Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
@@ -463,7 +463,7 @@ void EventManager::enter()
       switch (call->state()) {
          case Call::State::DIALING:
             //Change account if it changed
-            call->setAccount(AccountListModel::instance()->currentAccount());
+            call->setAccount(AccountModel::instance()->currentAccount());
          case Call::State::INCOMING:
          case Call::State::TRANSFERRED:
          case Call::State::TRANSF_HOLD:
@@ -565,7 +565,7 @@ void EventManager::slotAutoCompletionVisibility(bool visible,bool hasCall)
    //The other is handled by call state changed
 }
 
-void EventManager::slotAccountRegistrationChanged(Account* a,bool reg)
+void EventManager::slotregistrationChanged(Account* a,bool reg)
 {
    Q_UNUSED(a)
    if (a && !reg)

@@ -26,7 +26,7 @@
 #include "uri.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
-#include "accountlistmodel.h"
+#include "accountmodel.h"
 #include "dbus/metatypes.h"
 #include "dbus/callmanager.h"
 #include "dbus/configurationmanager.h"
@@ -322,7 +322,7 @@ Call* CallModel::dialingCall(const QString& peerName, Account* account)
    }
 
    //No dialing call found, creating one
-   Account* acc = (account)?account:AccountListModel::currentAccount();
+   Account* acc = (account)?account:AccountModel::currentAccount();
    return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc));
 }  //dialingCall
 

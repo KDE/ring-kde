@@ -29,7 +29,7 @@
 #include "call.h"
 #include "uri.h"
 #include "numbercategory.h"
-#include "accountlistmodel.h"
+#include "accountmodel.h"
 #include "numbercategorymodel.h"
 #include "visitors/pixmapmanipulationvisitor.h"
 
@@ -51,7 +51,7 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
    const PhoneNumber* n = i.value();
    const int weight     = i.key  ();
 
-   bool needAcc = (role>=100 || role == Qt::UserRole) && n->account() && n->account() != AccountListModel::instance()->currentAccount()
+   bool needAcc = (role>=100 || role == Qt::UserRole) && n->account() && n->account() != AccountModel::instance()->currentAccount()
                   && n->account()->alias() != Account::ProtocolName::IP2IP;
 
    switch (static_cast<NumberCompletionModel::Columns>(index.column())) {
@@ -89,7 +89,7 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
       case NumberCompletionModel::Columns::ACCOUNT:
          switch (role) {
             case Qt::DisplayRole:
-               return n->account()?n->account()->id():AccountListModel::instance()->currentAccount()->id();
+               return n->account()?n->account()->id():AccountModel::instance()->currentAccount()->id();
          };
          break;
       case NumberCompletionModel::Columns::WEIGHT:

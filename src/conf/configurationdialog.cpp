@@ -37,7 +37,7 @@
 #include "dlgpresence.h"
 
 #include "lib/sflphone_const.h"
-#include "lib/accountlistmodel.h"
+#include "lib/accountmodel.h"
 
 typedef  QWidget* QWidgetPtr;
 
@@ -190,8 +190,8 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
    });
    m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "sflphone-client-kde/presence-icon.svg"));
    m_pPresPage->setProperty("id",ConfigurationDialog::Page::Presence);
-   m_pPresPage->setEnabled(AccountListModel::instance()->isPresencePublishSupported() && AccountListModel::instance()->isPresenceEnabled());
-   connect(AccountListModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
+   m_pPresPage->setEnabled(AccountModel::instance()->isPresencePublishSupported() && AccountModel::instance()->isPresenceEnabled());
+   connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
 
    //Connect everything
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
@@ -316,7 +316,7 @@ void ConfigurationDialog::reload()
 
 void ConfigurationDialog::slotPresenceEnabled(bool state)
 {
-   m_pPresPage->setEnabled(state && AccountListModel::instance()->isPresencePublishSupported());
+   m_pPresPage->setEnabled(state && AccountModel::instance()->isPresencePublishSupported());
 }
 
 #undef GUARD

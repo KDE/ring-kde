@@ -46,7 +46,7 @@
 #include "klib/macromodel.h"
 #include <lib/call.h>
 #include <lib/account.h>
-#include <lib/accountlistmodel.h>
+#include <lib/accountmodel.h>
 #include <lib/callmodel.h>
 #include <lib/audiosettingsmodel.h>
 #include <lib/contactmodel.h>
@@ -440,7 +440,7 @@ void ActionCollection::record()
 ///Access the voice mail list
 void ActionCollection::mailBox()
 {
-   Account* account = AccountListModel::currentAccount();
+   Account* account = AccountModel::currentAccount();
    const QString mailBoxNumber = account->mailbox();
    Call* call = CallModel::instance()->dialingCall();
    if (call) {

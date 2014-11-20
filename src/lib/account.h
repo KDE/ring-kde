@@ -57,7 +57,8 @@ class LIB_EXPORT Account : public QObject {
    Q_OBJECT
    #pragma GCC diagnostic pop
 
-   friend class AccountListModel;
+   friend class AccountModel;
+   friend class AccountModelPrivate;
 
    //Properties
    Q_PROPERTY(QString        alias                        READ alias                         WRITE setAlias                       )

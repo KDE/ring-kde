@@ -26,7 +26,7 @@
 #include "uri.h"
 #include "account.h"
 #include "contact.h"
-#include "accountlistmodel.h"
+#include "accountmodel.h"
 #include "numbercategory.h"
 #include "numbercategorymodel.h"
 #include "abstractitembackend.h"
@@ -565,7 +565,7 @@ PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
    const QStringList fields = hash.split("///");
    if (fields.size() == 3) {
       const QString uri = fields[0];
-      Account* account = AccountListModel::instance()->getAccountById(fields[1]);
+      Account* account = AccountModel::instance()->getById(fields[1]);
       Contact* contact = ContactModel::instance()->getContactByUid(fields[2].toUtf8());
       return getNumber(uri,contact,account);
    }
@@ -640,7 +640,7 @@ void PhoneDirectoryModel::slotChanged()
 void PhoneDirectoryModel::slotNewBuddySubscription(const QString& accountId, const QString& uri, bool status, const QString& message)
 {
    qDebug() << "New presence buddy" << uri << status << message;
-   PhoneNumber* number = getNumber(uri,AccountListModel::instance()->getAccountById(accountId));
+   PhoneNumber* number = getNumber(uri,AccountModel::instance()->getById(accountId));
    number->setPresent(status);
    number->setPresenceMessage(message);
    emit number->changed();
@@ -649,7 +649,7 @@ void PhoneDirectoryModel::slotNewBuddySubscription(const QString& accountId, con
 // void PhoneDirectoryModel::slotStatusChanges(const QString& accountId, const QString& uri, bool status)
 // {
 //    qDebug() << "Presence status changed for" << uri << status;
-//    PhoneNumber* number = getNumber(uri,AccountListModel::instance()->getAccountById(accountId));
+//    PhoneNumber* number = getNumber(uri,AccountModel::instance()->getById(accountId));
 //    number->m_Present = status;
 //    number->m_PresentMessage = message;
 //    emit number->changed();

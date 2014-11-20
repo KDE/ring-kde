@@ -55,7 +55,7 @@
 #include "lib/numbercategory.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/phonenumber.h"
-#include "lib/accountlistmodel.h"
+#include "lib/accountmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/kcfg_settings.h"
 #include "../lib/contactproxymodel.h"
@@ -325,7 +325,7 @@ void ContactDock::callAgain(const PhoneNumber* n)
    const PhoneNumber* number = n?n:showNumberSelector(ok);
    if ( (n || ok) && number) {
       const QString name = n?n->contact()->formattedName() : m_pCurrentContact->formattedName();
-      Call* call = CallModel::instance()->dialingCall(name, AccountListModel::currentAccount());
+      Call* call = CallModel::instance()->dialingCall(name, AccountModel::currentAccount());
       if (call) {
          call->setDialNumber(number);
          call->setAccount(number->account());

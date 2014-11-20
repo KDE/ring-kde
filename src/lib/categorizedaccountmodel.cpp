@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "categorizedaccountmodel.h"
 
-#include "accountlistmodel.h"
+#include "accountmodel.h"
 
 CategorizedAccountModel* CategorizedAccountModel::m_spInstance = nullptr;
 
@@ -36,8 +36,8 @@ CategorizedAccountModel* CategorizedAccountModel::instance()
 
 CategorizedAccountModel::CategorizedAccountModel(QObject* parent) : QAbstractItemModel(parent)
 {
-   connect(AccountListModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotDataChanged(QModelIndex,QModelIndex)));
-   connect(AccountListModel::instance(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutchanged()));
+   connect(AccountModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotDataChanged(QModelIndex,QModelIndex)));
+   connect(AccountModel::instance(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutchanged()));
 }
 
 CategorizedAccountModel::~CategorizedAccountModel()
@@ -51,12 +51,12 @@ QModelIndex CategorizedAccountModel::mapToSource(const QModelIndex& idx) const
       return QModelIndex();
    switch (idx.parent().row()) {
       case Categories::IP2IP:
-         return AccountListModel::instance()->ip2ip()->index();
+         return AccountModel::instance()->ip2ip()->index();
          break;
       case Categories::SERVER: {
-         const QModelIndex& ip2ipIdx = AccountListModel::instance()->ip2ip()->index();
+         const QModelIndex& ip2ipIdx = AccountModel::instance()->ip2ip()->index();
          //TODO DHT: this will stop working
-         return AccountListModel::instance()->index((ip2ipIdx.row() <= idx.row())?idx.row()+1:idx.row(),0);
+         return AccountModel::instance()->index((ip2ipIdx.row() <= idx.row())?idx.row()+1:idx.row(),0);
       }
          break;
       default:
@@ -68,11 +68,11 @@ QModelIndex CategorizedAccountModel::mapToSource(const QModelIndex& idx) const
 
 QModelIndex CategorizedAccountModel::mapFromSource(const QModelIndex& idx) const
 {
-   if (!idx.isValid() || idx.model() != AccountListModel::instance())
+   if (!idx.isValid() || idx.model() != AccountModel::instance())
       return QModelIndex();
 
    //TODO DHT: this will stop working
-   const QModelIndex& ip2ipIdx = AccountListModel::instance()->ip2ip()->index();
+   const QModelIndex& ip2ipIdx = AccountModel::instance()->ip2ip()->index();
    return idx.row() == ip2ipIdx.row()?index(0,0,index(Categories::IP2IP,0,QModelIndex())): (
       index(idx.row()+(idx.row() > ip2ipIdx.row()?-1:0),0,index(Categories::SERVER,0,QModelIndex()))
    );
@@ -104,7 +104,7 @@ int CategorizedAccountModel::rowCount(const QModelIndex& parent ) const
    else if (parent.isValid()) {
       if (parent.row() == 1)
          return 1;
-      return AccountListModel::instance()->size()-1;
+      return AccountModel::instance()->size()-1;
    }
    return 2;
 }
@@ -160,7 +160,7 @@ bool CategorizedAccountModel::setData(const QModelIndex& index, const QVariant &
    if (!index.isValid())
       return false;
    else if (index.parent().isValid()) {
-      return AccountListModel::instance()->setData(mapToSource(index),value,role);
+      return AccountModel::instance()->setData(mapToSource(index),value,role);
    }
    return false;
 }
