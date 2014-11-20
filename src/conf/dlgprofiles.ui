@@ -6,179 +6,260 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>769</width>
-    <height>492</height>
+    <width>834</width>
+    <height>572</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>550</x>
-     <y>20</y>
-     <width>211</width>
-     <height>401</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>Accounts</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QTreeView" name="treeView"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="gridLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>380</y>
-     <width>531</width>
-     <height>83</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Custom field</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Add</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_8">
-      <property name="text">
-       <string>label</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>570</x>
-     <y>440</y>
-     <width>176</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-   </property>
-  </widget>
-  <widget class="QScrollArea" name="scrollArea">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>531</width>
-     <height>351</height>
-    </rect>
-   </property>
-   <property name="widgetResizable">
-    <bool>true</bool>
-   </property>
-   <widget class="QWidget" name="scrollAreaWidgetContents">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>529</width>
-      <height>349</height>
-     </rect>
-    </property>
-    <widget class="QWidget" name="formLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>10</y>
-       <width>521</width>
-       <height>261</height>
-      </rect>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <widget class="QLabel" name="photoView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_name">
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="edit_name"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_lname">
-        <property name="text">
-         <string>Last Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="edit_lname"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_email">
-        <property name="text">
-         <string>Email</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="edit_email"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_cell">
-        <property name="text">
-         <string>Cell</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="edit_cell"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_adress">
-        <property name="text">
-         <string>Adress</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="edit_adress"/>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_city">
-        <property name="text">
-         <string>City</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="edit_city"/>
-      </item>
-     </layout>
+     <property name="minimumSize">
+      <size>
+       <width>64</width>
+       <height>64</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
     </widget>
-   </widget>
-  </widget>
+   </item>
+   <item row="2" column="0">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="7" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="select_photo_button">
+     <property name="text">
+      <string>Select...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Preferred</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="2" column="0" colspan="4">
+      <widget class="QLineEdit" name="edit_address_1">
+       <property name="placeholderText">
+        <string>Street, number...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="edit_city">
+       <property name="placeholderText">
+        <string>City...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="edit_state">
+       <property name="placeholderText">
+        <string>State...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cb_address_type">
+       <item>
+        <property name="text">
+         <string>WORK</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>HOME</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OTHER</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QLineEdit" name="edit_postal_code">
+       <property name="placeholderText">
+        <string>ZIP...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLineEdit" name="edit_country">
+       <property name="placeholderText">
+        <string>Country...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_adress">
+       <property name="text">
+        <string>Address</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1" rowspan="4">
+    <widget class="QScrollArea" name="scrollArea_2">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>723</width>
+        <height>354</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QFormLayout" name="formLayout">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_name">
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_lname">
+           <property name="text">
+            <string>Last Name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="edit_lname">
+           <property name="placeholderText">
+            <string>Family name...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_email">
+           <property name="text">
+            <string>Email</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="edit_email"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_cell">
+           <property name="text">
+            <string>Cell</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="edit_cell"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_organization">
+           <property name="text">
+            <string>Organization</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="edit_organization"/>
+         </item>
+         <item row="5" column="1">
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="1" column="1">
+            <widget class="QPushButton" name="btn_add_field">
+             <property name="text">
+              <string>Add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLineEdit" name="edit_custom_field">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="placeholderText">
+              <string>Custom field...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="edit_name">
+           <property name="placeholderText">
+            <string>First name...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>
@@ -214,9 +295,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>select_photo_button</sender>
+   <signal>clicked()</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>choosePhoto()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>76</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_add_field</sender>
+   <signal>clicked()</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>addCustomField()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>758</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>822</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>accept()</slot>
   <slot>cancel()</slot>
+  <slot>choosePhoto()</slot>
+  <slot>addCustomField()</slot>
  </slots>
 </ui>

@@ -39,5 +39,7 @@ public:
 public Q_SLOTS:
    void accept();
    void cancel();
+   void choosePhoto();
+   void addCustomField();
 };
 #endif

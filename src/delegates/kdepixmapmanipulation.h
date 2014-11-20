@@ -34,7 +34,9 @@ public:
 
    virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
 
-   virtual QByteArray toByteArray(const QPixmap* pxm);
+   virtual QByteArray toByteArray(const QVariant pxm);
+
+   virtual QVariant profilePhoto(const QByteArray& data);
 
    QVariant numberCategoryIcon(const QVariant p, const QSize& size, bool displayPresence = false, bool isPresent = false);
 

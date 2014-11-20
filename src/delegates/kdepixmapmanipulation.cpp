@@ -32,6 +32,7 @@
 #include <QtGui/QApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QSize>
+#include <QImage>
 #include <QtGui/QPalette>
 #include <QtCore/QBuffer>
 
@@ -82,15 +83,15 @@ QVariant KDEPixmapManipulation::contactPhoto(Contact* c, const QSize& size, bool
    else
       connect(c,SIGNAL(rebased(Contact*)),this,SLOT(clearCache()));
    const int radius = (size.height() > 35) ? 7 : 5;
-   const QPixmap* pxmPtr = c->photo();
+   //const QPixmap pxmPtr = qvariant_cast<QPixmap>(c->photo());
    bool isTracked = displayPresence && c->isTracked();
    bool isPresent = displayPresence && c->isPresent();
    static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
    static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
 
    QPixmap pxm;
-   if (pxmPtr) {
-      QPixmap contactPhoto(pxmPtr->scaledToWidth(size.height()-6));
+   if (c->photo().isValid()) {
+      QPixmap contactPhoto((qvariant_cast<QPixmap>(c->photo())).scaledToWidth(size.height()-6));
       pxm = QPixmap(size);
       pxm.fill(Qt::transparent);
       QPainter painter(&pxm);
@@ -198,7 +199,7 @@ QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)
    return QVariant();
 }
 
-QByteArray KDEPixmapManipulation::toByteArray(const QPixmap* pxm)
+QByteArray KDEPixmapManipulation::toByteArray(const QVariant pxm)
 {
    //Preparation of our QPixmap
    QByteArray bArray;
@@ -206,8 +207,16 @@ QByteArray KDEPixmapManipulation::toByteArray(const QPixmap* pxm)
    buffer.open(QIODevice::WriteOnly);
 
    //PNG ?
-   pxm->save(&buffer, "PNG");
+   (qvariant_cast<QPixmap>(pxm)).save(&buffer, "PNG");
    return bArray;
+}
+
+QVariant KDEPixmapManipulation::profilePhoto(const QByteArray& data)
+{
+   QImage image;
+   //For now, ENCODING is only base64 and image type PNG
+   image.loadFromData(QByteArray::fromBase64(data), "PNG");
+   return QPixmap::fromImage(image);
 }
 
 QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent) {
