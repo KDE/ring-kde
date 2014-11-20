@@ -45,6 +45,7 @@ public:
    Q_PROPERTY(bool presenceSubscribeSupported READ isPresenceSubscribeSupported )
 
    friend class Account;
+   friend class AccountPrivate;
    //Static getter and destructor
    static AccountListModel* instance();
    static void destroy();
@@ -107,16 +108,17 @@ private:
    QStringList              m_lDeletedAccounts;
    Account*                 m_pIP2IP          ;
 
-public Q_SLOTS:
-   void update        ();
-   void updateAccounts();
-   void registerAllAccounts();
-
 private Q_SLOTS:
    void accountChanged(const QString& account,const QString& state, int code);
    void accountChanged(Account* a);
    void slotVoiceMailNotify( const QString& accountID , int count );
    void slotAccountPresenceEnabledChanged(bool state);
+
+public Q_SLOTS:
+   void update        ();
+   void updateAccounts();
+   void registerAllAccounts();
+
 
 Q_SIGNALS:
    ///The account list changed

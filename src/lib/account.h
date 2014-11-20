@@ -39,7 +39,9 @@ class PhoneNumber    ;
 class SecurityValidationModel;
 class Certificate    ;
 
-typedef void (Account::*account_function)();
+//Private
+class AccountPrivate;
+
 
 ///@enum DtmfType Different method to send the DTMF (key sound) to the peer
 enum DtmfType {
@@ -115,8 +117,8 @@ class LIB_EXPORT Account : public QObject {
 
 
    public:
-      ///@enum AccountEditState: Manage how and when an account can be reloaded or change state
-      enum class AccountEditState {
+      ///@enum EditState: Manage how and when an account can be reloaded or change state
+      enum class EditState {
          READY    = 0,
          EDITING  = 1,
          OUTDATED = 2,
@@ -125,8 +127,8 @@ class LIB_EXPORT Account : public QObject {
          REMOVED  = 5
       };
 
-      ///@enum AccountEditAction Actions that can be performed on the Account state
-      enum class AccountEditAction {
+      ///@enum EditAction Actions that can be performed on the Account state
+      enum class EditAction {
          NOTHING = 0,
          EDIT    = 1,
          RELOAD  = 2,
@@ -313,14 +315,13 @@ class LIB_EXPORT Account : public QObject {
        *Perform an action
        * @return If the state changed
        */
-      bool performAction(Account::AccountEditAction action);
-      Account::AccountEditState state() const;
+      bool performAction(Account::EditAction action);
+      Account::EditState state() const;
 
       //Getters
       bool            isNew()                             const;
       const QString   id()                                const;
       const QString   toHumanStateName()                  const;
-      const QString   accountDetail(const QString& param) const;
       const QString   alias()                             const;
       bool            isRegistered()                      const;
       QModelIndex     index()                                  ;
@@ -463,53 +464,12 @@ class LIB_EXPORT Account : public QObject {
    public Q_SLOTS:
       void setEnabled(bool checked);
 
-   private Q_SLOTS:
-      void slotPresentChanged        (bool  present  );
-      void slotPresenceMessageChanged(const QString& );
-      void slotUpdateCertificate     (               );
-
    private:
       //Constructors
       Account();
 
-      //Attributes
-      QString                 m_AccountId      ;
-      QHash<QString,QString>  m_hAccountDetails;
-      PhoneNumber*            m_pAccountNumber ;
-
-      //Setters
-      void setAccountDetails (const QHash<QString,QString>& m          );
-      bool setAccountDetail  (const QString& param, const QString& val );
-
-      //State actions
-      void nothing() {};
-      void edit()    {m_CurrentState = AccountEditState::EDITING ;emit changed(this);};
-      void modify()  {m_CurrentState = AccountEditState::MODIFIED;emit changed(this);};
-      void remove()  {m_CurrentState = AccountEditState::REMOVED ;emit changed(this);};
-      void cancel()  {m_CurrentState = AccountEditState::READY   ;emit changed(this);};
-      void outdate() {m_CurrentState = AccountEditState::OUTDATED;emit changed(this);};
-      void reload();
-      void save();
-      void reloadMod() {reload();modify();};
-
-      CredentialModel*  m_pCredentials     ;
-      AudioCodecModel*  m_pAudioCodecs     ;
-      VideoCodecModel*  m_pVideoCodecs     ;
-      RingToneModel*    m_pRingToneModel   ;
-      KeyExchangeModel* m_pKeyExchangeModel;
-      SecurityValidationModel* m_pSecurityValidationModel;
-      AccountEditState m_CurrentState;
-      static const account_function stateMachineActionsOnState[6][7];
-
-      //Cached account details (as they are called too often for the hash)
-      QString m_HostName;
-      QString m_LastErrorMessage;
-      int     m_LastErrorCode;
-      int     m_VoiceMailCount;
-      Certificate* m_pCaCert;
-      Certificate* m_pTlsCert;
-      Certificate* m_pPrivateKey;
-
+      QScopedPointer<AccountPrivate> d_ptr;
+      Q_DECLARE_PRIVATE(Account)
 
    Q_SIGNALS:
       ///The account state (Invalid,Trying,Registered) changed

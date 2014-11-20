@@ -120,9 +120,9 @@ QVariant ColorVisitor::getColor(const Account* a) {
 }
 
 QVariant ColorVisitor::getIcon(const Account* a) {
-   if (a->state() == Account::AccountEditState::MODIFIED)
+   if (a->state() == Account::EditState::MODIFIED)
       return KIcon("document-save");
-   else if (a->state() == Account::AccountEditState::OUTDATED) {
+   else if (a->state() == Account::EditState::OUTDATED) {
       return KIcon("view-refresh");
    }
    return QVariant();

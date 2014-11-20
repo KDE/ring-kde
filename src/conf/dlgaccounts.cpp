@@ -273,7 +273,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    }
 
    //There is no point to save something that is unaltered, all it will cause is daemon corruption
-   if ( ACC state() != Account::AccountEditState::NEW and ACC state() != Account::AccountEditState::MODIFIED) {
+   if ( ACC state() != Account::EditState::NEW and ACC state() != Account::EditState::MODIFIED) {
       qDebug() << "Nothing to be saved";
       return;
    }
@@ -451,7 +451,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    }
 
    //BUG the daemon doesn't support changing account type after
-   edit2_protocol->setEnabled(ACC state() == Account::AccountEditState::NEW || ACC id().isEmpty());
+   edit2_protocol->setEnabled(ACC state() == Account::EditState::NEW || ACC id().isEmpty());
 
    m_pCodecsLW->setEnabled(ACC isVideoEnabled ());
 
@@ -564,7 +564,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    enablePublished();
    frame2_editAccounts->setEnabled(true);
    m_IsLoading--;
-   ACC performAction(Account::AccountEditAction::EDIT);
+   ACC performAction(Account::EditAction::EDIT);
    emit updateButtons();
 } //loadAccount
 
@@ -590,7 +590,7 @@ void DlgAccounts::changedAccountList()
    if (!m_IsLoading) {
       Account* acc = currentAccount();
       if (acc)
-         acc->performAction(Account::AccountEditAction::MODIFY);
+         acc->performAction(Account::EditAction::MODIFY);
       accountListHasChanged = true;
       emit updateButtons();
    }
@@ -612,8 +612,8 @@ void DlgAccounts::accountListChanged(const QModelIndex& current, const QModelInd
    const QModelIndex srcPrevious = CategorizedAccountModel::instance()->mapToSource(previous);
    if (srcPrevious.isValid()) {
       Account* acc = AccountListModel::instance()->getAccountByModelIndex(srcPrevious);
-      if (acc && (acc->state() == Account::AccountEditState::EDITING || acc->state() == Account::AccountEditState::OUTDATED))
-         acc->performAction(Account::AccountEditAction::CANCEL);
+      if (acc && (acc->state() == Account::EditState::EDITING || acc->state() == Account::EditState::OUTDATED))
+         acc->performAction(Account::EditAction::CANCEL);
    }
    loadAccount(current);
 }
@@ -838,8 +838,8 @@ void DlgAccounts::updateSettings()
       if(treeView_accountList->currentIndex().isValid()) {
          Account* acc = currentAccount();
          saveAccount(treeView_accountList->currentIndex());
-         if (acc && (acc->state() == Account::AccountEditState::EDITING || acc->state() == Account::AccountEditState::OUTDATED))
-            acc->performAction(Account::AccountEditAction::CANCEL);
+         if (acc && (acc->state() == Account::EditState::EDITING || acc->state() == Account::EditState::OUTDATED))
+            acc->performAction(Account::EditAction::CANCEL);
       }
 
       AccountListModel::instance()->save();

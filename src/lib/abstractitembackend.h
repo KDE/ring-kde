@@ -100,6 +100,7 @@ public:
    virtual QList<T*> items() const = 0;
 
 private:
+//    QScopedPointer<AbstractItemBackendInterface> m_P;
    AbstractItemBackendInterface<T>* m_pParent;
    QVector<AbstractItemBackendInterface<T>*> m_lChildren;
 };
