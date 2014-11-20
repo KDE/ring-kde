@@ -17,7 +17,6 @@ ADD_DEFINITIONS(
    -Wno-deprecated-declarations
    -DDATA_INSTALL_DIR="\\\"${DATA_INSTALL_DIR}\\\""
    -DSHARE_INSTALL_PREFIX="\\\"${SHARE_INSTALL_PREFIX}\\\""
-   -Werror
    -Wall
    -Wextra
 #    -Wmissing-declarations
@@ -82,6 +81,8 @@ MESSAGE("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
+ELSE()
+    ADD_DEFINITIONS(-Werror)
 ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
 
 SET ( KDE4_KABC_LIBS  -lkabc )
