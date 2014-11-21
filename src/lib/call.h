@@ -41,7 +41,9 @@ class AbstractHistoryBackend;
 
 class Call;
 
-typedef  void (Call::*function)();
+//Private
+class CallPrivate;
+
 
 /**
  *  This class represents a call either actual (in the call list
@@ -361,7 +363,6 @@ public:
    Call::Type               type             () const;
 
    //Automated function
-   Call::State stateChanged(const QString & newState);
    Call::State performAction(Call::Action action);
 
    //Setters
@@ -383,121 +384,16 @@ public:
    Call* operator<<( Call::Action& c);
 
 private:
-
-   //Attributes
-   Account*                 m_Account         ;
-   QString                  m_CallId          ;
-   PhoneNumber*             m_pPeerPhoneNumber;
-   QString                  m_PeerName        ;
-   QString                  m_RecordingPath   ;
-   Call::LegacyHistoryState m_HistoryState    ;
-   time_t                   m_pStartTimeStamp ;
-   time_t                   m_pStopTimeStamp  ;
-   TemporaryPhoneNumber*    m_pTransferNumber ;
-   TemporaryPhoneNumber*    m_pDialNumber     ;
-   Call::State              m_CurrentState    ;
-   bool                     m_Recording       ;
-   InstantMessagingModel*   m_pImModel        ;
-   QTimer*                  m_pTimer          ;
-   UserActionModel*         m_pUserActionModel;
-   bool                     m_History         ;
-   bool                     m_Missed          ;
-   Call::Direction          m_Direction       ;
-   Call::Type               m_Type            ;
-   AbstractHistoryBackend*  m_pBackend        ;
-
-   //Cache
-   HistoryTimeCategoryModel::HistoryConst m_HistoryConst;
-
-   //State machine
-   /**
-    *  actionPerformedStateMap[orig_state][action]
-    *  Map of the states to go to when the action action is 
-    *  performed on a call in state orig_state.
-   **/
-   static const TypedStateMachine< TypedStateMachine< Call::State , Call::Action > , Call::State > actionPerformedStateMap;
-
-   /**
-    *  actionPerformedFunctionMap[orig_state][action]
-    *  Map of the functions to call when the action action is 
-    *  performed on a call in state orig_state.
-   **/
-   static const TypedStateMachine< TypedStateMachine< function , Call::Action > , Call::State > actionPerformedFunctionMap;
-
-   /**
-    *  stateChangedStateMap[orig_state][daemon_new_state]
-    *  Map of the states to go to when the daemon sends the signal 
-    *  callStateChanged with arg daemon_new_state
-    *  on a call in state orig_state.
-   **/
-   static const TypedStateMachine< TypedStateMachine< Call::State , Call::DaemonState > , Call::State > stateChangedStateMap;
-
-   /**
-    *  stateChangedFunctionMap[orig_state][daemon_new_state]
-    *  Map of the functions to call when the daemon sends the signal 
-    *  callStateChanged with arg daemon_new_state
-    *  on a call in state orig_state.
-   **/
-   static const TypedStateMachine< TypedStateMachine< function , Call::DaemonState > , Call::State > stateChangedFunctionMap;
-
-   /**
-    * metaStateTransitionValidationMap help validate if a state transition violate the lifecycle logic.
-    * it should technically never happen, but this is an easy additional safety to implement
-    * and prevent human (developer) errors.
-    */
-   static const TypedStateMachine< TypedStateMachine< bool , Call::LifeCycleState > , Call::State > metaStateTransitionValidationMap;
-
-   /**
-    * Convert the call state into its meta state (life cycle state). The meta state is a flat,
-    * forward only progression from creating to archiving of a call.
-    */
-   static const TypedStateMachine< Call::LifeCycleState , Call::State > metaStateMap;
-
    explicit Call(const QString& confId, const QString& account);
    Call(Call::State startState, const QString& callId, const QString& peerName = QString(), PhoneNumber* number = nullptr, Account* account = nullptr);
-   static Call::DaemonState toDaemonCallState   (const QString& stateName);
-   static Call::State       confStatetoCallState(const QString& stateName);
-
-   //Automate functions
-   // See actionPerformedFunctionMap and stateChangedFunctionMap
-   // to know when it is called.
-   void nothing      () __attribute__ ((const));
-   void error        () __attribute__ ((noreturn));
-   void failure      ();
-   void accept       ();
-   void refuse       ();
-   void acceptTransf ();
-   void acceptHold   ();
-   void hangUp       ();
-   void cancel       ();
-   void hold         ();
-   void call         ();
-   void transfer     ();
-   void unhold       ();
-   void switchRecord ();
-   void setRecord    ();
-   void start        ();
-   void startStop    ();
-   void stop         ();
-   void startWeird   ();
-   void warning      ();
-   void remove       ();
-
-   //Helpers
-   void changeCurrentState(Call::State newState);
-   void setStartTimeStamp(time_t stamp);
-   void initTimer();
+   QScopedPointer<CallPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(Call)
 
 public Q_SLOTS:
    void playRecording();
    void stopRecording();
    void seekRecording(double position);
    void playDTMF(const QString& str);
-
-private Q_SLOTS:
-   void stopPlayback(const QString& filePath);
-   void updatePlayback(const QString& path,int position,int size);
-   void updated();
 
 Q_SIGNALS:
    ///Emitted when a call change (state or details)

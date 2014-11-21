@@ -298,6 +298,17 @@ ELSE()
    )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
+# Manually wrap private files
+SET(qtsflphone_PRIVATE_HDRS
+   private/call_p.h
+)
+IF(${ENABLE_QT5} MATCHES true)
+   QT5_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_PRIVATE_HDRS})
+ELSE()
+   QT4_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_PRIVATE_HDRS})
+ENDIF(${ENABLE_QT5} MATCHES true)
+
+
 add_library( qtsflphone  SHARED ${qtsflphone_LIB_SRCS} ${LIB_HEADER_MOC} )
 # REMOVE_DEFINITIONS("-w")
 

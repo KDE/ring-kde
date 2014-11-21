@@ -39,6 +39,9 @@
 #include "visitors/phonenumberselector.h"
 #include "contactmodel.h"
 
+//Private
+#include "private/call_p.h"
+
 //Define
 ///InternalStruct: internal representation of a call
 struct InternalStruct {
@@ -443,19 +446,19 @@ void CallModel::attendedTransfer(Call* toTransfer, Call* target)
    Q_NOREPLY DBus::CallManager::instance().attendedTransfer(toTransfer->id(),target->id());
 
    //TODO [Daemon] Implement this correctly
-   toTransfer->changeCurrentState(Call::State::OVER);
-   target->changeCurrentState(Call::State::OVER);
+   toTransfer->d_ptr->changeCurrentState(Call::State::OVER);
+   target->d_ptr->changeCurrentState(Call::State::OVER);
 } //attendedTransfer
 
 ///Transfer this call to  "target" number
 void CallModel::transfer(Call* toTransfer, const PhoneNumber* target)
 {
    qDebug() << "Transferring call " << toTransfer->id() << "to" << target->uri();
-   toTransfer->setTransferNumber ( target->uri()            );
-   toTransfer->performAction     ( Call::Action::TRANSFER   );
-   toTransfer->changeCurrentState( Call::State::TRANSFERRED );
-   toTransfer->performAction     ( Call::Action::ACCEPT     );
-   toTransfer->changeCurrentState( Call::State::OVER        );
+   toTransfer->setTransferNumber        ( target->uri()            );
+   toTransfer->performAction            ( Call::Action::TRANSFER   );
+   toTransfer->d_ptr->changeCurrentState( Call::State::TRANSFERRED );
+   toTransfer->performAction            ( Call::Action::ACCEPT     );
+   toTransfer->d_ptr->changeCurrentState( Call::State::OVER        );
    emit toTransfer->isOver(toTransfer);
 } //transfer
 
@@ -920,7 +923,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       qDebug() << "Call found" << call << call->state();
       const Call::LifeCycleState oldLifeCycleState = call->lifeCycleState();
       const Call::State          oldState          = call->state();
-      call->stateChanged(stateName);
+      call->d_ptr->stateChanged(stateName);
       //Remove call when they end normally, keep errors and failure one
       if ((stateName == Call::StateChange::HUNG_UP)
          || ((oldState == Call::State::OVER) && (call->state() == Call::State::OVER))
@@ -972,7 +975,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          return;
       }
 
-      conf->stateChanged(state);
+      conf->d_ptr->stateChanged(state);
       CallManagerInterface& callManager = DBus::CallManager::instance();
       const QStringList participants = callManager.getParticipantList(confID);
 
@@ -1159,7 +1162,7 @@ void CallModel::slotRecordStateChanged (const QString& callId, bool state)
 {
    Call* call = getCall(callId);
    if (call) {
-      call->m_Recording = state;
+      call->d_ptr->m_Recording = state;
       emit call->changed();
       emit call->changed(call);
    }

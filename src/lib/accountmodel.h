@@ -49,6 +49,7 @@ public:
 
    friend class Account;
    friend class AccountPrivate;
+
    //Static getter and destructor
    static AccountModel* instance();
    static void destroy();
@@ -74,7 +75,6 @@ public:
    void setPriorAccount          ( const Account*                                           );
    virtual bool setData          ( const QModelIndex& index, const QVariant &value, int role);
    void         setColorVisitor  ( AccountListColorVisitor* visitor                         );
-//    void         setDefaultAccount(Account* a);
 
    //Mutators
    Q_INVOKABLE Account* add                 ( const QString& alias         );
