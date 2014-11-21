@@ -36,7 +36,7 @@ public:
 
    virtual QByteArray toByteArray(const QPixmap* pxm);
 
-   QVariant numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence = false, bool isPresent = false);
+   QVariant numberCategoryIcon(const QVariant p, const QSize& size, bool displayPresence = false, bool isPresent = false);
 
    virtual QVariant serurityIssueIcon(const QModelIndex& index);
 

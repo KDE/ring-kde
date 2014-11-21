@@ -161,19 +161,23 @@ QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displ
       return QPixmap(callStateIcons[c->state()]);
 }
 
-QVariant KDEPixmapManipulation::numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence, bool isPresent)
+QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant p, const QSize& size, bool displayPresence, bool isPresent)
 {
    Q_UNUSED(size);
    if (displayPresence) {
-      QPixmap pxm = p?(*p):QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+      QPixmap pxm;
+      if(p.isValid())
+         pxm = qvariant_cast<QPixmap>(p);
+      else
+         pxm = QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
       QPainter painter(&pxm);
       painter.setOpacity(0.3);
       painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
       painter.fillRect(pxm.rect(),isPresent?Qt::green:Qt::red);
       return pxm;
    }
-   if (p)
-      return *p;
+   if (p.isValid())
+      return qvariant_cast<QPixmap>(p);
    return QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
 }
 
