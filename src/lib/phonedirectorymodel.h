@@ -31,6 +31,9 @@ class Account             ;
 class Call                ;
 class TemporaryPhoneNumber;
 
+//Private
+class PhoneDirectoryModelPrivate;
+
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT PhoneDirectoryModel : public QAbstractTableModel {
 
@@ -53,12 +56,12 @@ public:
    virtual ~PhoneDirectoryModel();
 
    //Abstract model members
-   virtual QVariant      data       (const QModelIndex& index, int role = Qt::DisplayRole                 ) const;
-   virtual int           rowCount   (const QModelIndex& parent = QModelIndex()                            ) const;
-   virtual int           columnCount(const QModelIndex& parent = QModelIndex()                            ) const;
-   virtual Qt::ItemFlags flags      (const QModelIndex& index                                             ) const;
-   virtual bool          setData    (const QModelIndex& index, const QVariant &value, int role            )      ;
-   virtual QVariant      headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual QVariant      data       (const QModelIndex& index, int role = Qt::DisplayRole                 ) const override;
+   virtual int           rowCount   (const QModelIndex& parent = QModelIndex()                            ) const override;
+   virtual int           columnCount(const QModelIndex& parent = QModelIndex()                            ) const override;
+   virtual Qt::ItemFlags flags      (const QModelIndex& index                                             ) const override;
+   virtual bool          setData    (const QModelIndex& index, const QVariant &value, int role            )       override;
+   virtual QVariant      headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
    //Singleton
    static PhoneDirectoryModel* instance();
@@ -67,7 +70,7 @@ public:
    Q_INVOKABLE PhoneNumber* getNumber(const QString& uri, const QString& type = QString());
    Q_INVOKABLE PhoneNumber* getNumber(const QString& uri, Account* account, const QString& type = QString());
    Q_INVOKABLE PhoneNumber* getNumber(const QString& uri, Contact* contact, Account* account = nullptr, const QString& type = QString());
-   Q_INVOKABLE PhoneNumber* fromHash(const QString& hash);
+   Q_INVOKABLE PhoneNumber* fromHash (const QString& hash);
    Q_INVOKABLE PhoneNumber* fromTemporary(const TemporaryPhoneNumber* number);
 
    //Getter
@@ -80,64 +83,16 @@ public:
    //Static
    QVector<PhoneNumber*> getNumbersByPopularity() const;
 
-protected:
-   //Internal data structures
-   ///@struct NumberWrapper Wrap phone numbers to prevent collisions
-   struct NumberWrapper {
-      QVector<PhoneNumber*> numbers;
-   };
-
 private:
-
-   //Model columns
-   enum class Columns {
-      URI              = 0,
-      TYPE             = 1,
-      CONTACT          = 2,
-      ACCOUNT          = 3,
-      STATE            = 4,
-      CALL_COUNT       = 5,
-      WEEK_COUNT       = 6,
-      TRIM_COUNT       = 7,
-      HAVE_CALLED      = 8,
-      LAST_USED        = 9,
-      NAME_COUNT       = 10,
-      TOTAL_SECONDS    = 11,
-      POPULARITY_INDEX = 12,
-      BOOKMARED        = 13,
-      TRACKED          = 14,
-      PRESENT          = 15,
-      PRESENCE_MESSAGE = 16,
-      UID              = 17,
-   };
-
    //Constructor
    explicit PhoneDirectoryModel(QObject* parent = nullptr);
 
-   //Helpers
-   void indexNumber(PhoneNumber* number, const QStringList& names   );
-   void setAccount (PhoneNumber* number,       Account*     account );
-   PhoneNumber* fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type);
+   //Attributes
+   QScopedPointer<PhoneDirectoryModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(PhoneDirectoryModel)
 
    //Singleton
    static PhoneDirectoryModel* m_spInstance;
-
-   //Attributes
-   QVector<PhoneNumber*>         m_lNumbers         ;
-   QHash<QString,NumberWrapper*> m_hDirectory       ;
-   QVector<PhoneNumber*>         m_lPopularityIndex ;
-   QMap<QString,NumberWrapper*>  m_lSortedNames     ;
-   QMap<QString,NumberWrapper*>  m_hSortedNumbers   ;
-   QHash<QString,NumberWrapper*> m_hNumbersByNames  ;
-   bool                          m_CallWithAccount  ;
-
-private Q_SLOTS:
-   void slotCallAdded(Call* call);
-   void slotChanged();
-
-   //From DBus
-   void slotNewBuddySubscription(const QString& uri, const QString& accountId, bool status, const QString& message);
-//    void slotStatusChanges(const QString& accountId, const QString& uri, bool status); //Deprecated?
 };
 Q_DECLARE_METATYPE(PhoneDirectoryModel*)
 

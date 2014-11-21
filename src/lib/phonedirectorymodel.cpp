@@ -34,22 +34,32 @@
 #include "visitors/pixmapmanipulationvisitor.h"
 #include "contactmodel.h"
 
+//Private
+#include "private/phonedirectorymodel_p.h"
+
 PhoneDirectoryModel* PhoneDirectoryModel::m_spInstance = nullptr;
 
+
+
+PhoneDirectoryModelPrivate::PhoneDirectoryModelPrivate(PhoneDirectoryModel* parent) : QObject(parent), q_ptr(parent),
+m_CallWithAccount(false)
+{
+}
+
 PhoneDirectoryModel::PhoneDirectoryModel(QObject* parent) :
-   QAbstractTableModel(parent?parent:QCoreApplication::instance()),m_CallWithAccount(false)
+   QAbstractTableModel(parent?parent:QCoreApplication::instance()), d_ptr(new PhoneDirectoryModelPrivate(this))
 {
    setObjectName("PhoneDirectoryModel");
-   connect(&DBus::PresenceManager::instance(),SIGNAL(newBuddyNotification(QString,QString,bool,QString)),this,
+   connect(&DBus::PresenceManager::instance(),SIGNAL(newBuddyNotification(QString,QString,bool,QString)),d_ptr.data(),
            SLOT(slotNewBuddySubscription(QString,QString,bool,QString)));
 }
 
 PhoneDirectoryModel::~PhoneDirectoryModel()
 {
-   QList<NumberWrapper*> vals = m_hNumbersByNames.values();
+   QList<NumberWrapper*> vals = d_ptr->m_hNumbersByNames.values();
    //Used by indexes
-   m_hNumbersByNames.clear();
-   m_lSortedNames.clear();
+   d_ptr->m_hNumbersByNames.clear();
+   d_ptr->m_lSortedNames.clear();
    while (vals.size()) {
       NumberWrapper* w = vals[0];
       vals.removeAt(0);
@@ -57,9 +67,9 @@ PhoneDirectoryModel::~PhoneDirectoryModel()
    }
 
    //Used by auto completion
-   vals = m_hSortedNumbers.values();
-   m_hSortedNumbers.clear();
-   m_hDirectory.clear();
+   vals = d_ptr->m_hSortedNumbers.values();
+   d_ptr->m_hSortedNumbers.clear();
+   d_ptr->m_hDirectory.clear();
    while (vals.size()) {
       NumberWrapper* w = vals[0];
       vals.removeAt(0);
@@ -77,10 +87,10 @@ PhoneDirectoryModel* PhoneDirectoryModel::instance()
 
 QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
 {
-   if (!index.isValid() || index.row() >= m_lNumbers.size()) return QVariant();
-   const PhoneNumber* number = m_lNumbers[index.row()];
-   switch (static_cast<PhoneDirectoryModel::Columns>(index.column())) {
-      case PhoneDirectoryModel::Columns::URI:
+   if (!index.isValid() || index.row() >= d_ptr->m_lNumbers.size()) return QVariant();
+   const PhoneNumber* number = d_ptr->m_lNumbers[index.row()];
+   switch (static_cast<PhoneDirectoryModelPrivate::Columns>(index.column())) {
+      case PhoneDirectoryModelPrivate::Columns::URI:
          switch (role) {
             case Qt::DisplayRole:
                return number->uri();
@@ -90,7 +100,7 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::TYPE:
+      case PhoneDirectoryModelPrivate::Columns::TYPE:
          switch (role) {
             case Qt::DisplayRole:
                return number->category()->name();
@@ -99,42 +109,42 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                return number->icon();
          }
          break;
-      case PhoneDirectoryModel::Columns::CONTACT:
+      case PhoneDirectoryModelPrivate::Columns::CONTACT:
          switch (role) {
             case Qt::DisplayRole:
                return number->contact()?number->contact()->formattedName():QVariant();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::ACCOUNT:
+      case PhoneDirectoryModelPrivate::Columns::ACCOUNT:
          switch (role) {
             case Qt::DisplayRole:
                return number->account()?number->account()->id():QVariant();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::STATE:
+      case PhoneDirectoryModelPrivate::Columns::STATE:
          switch (role) {
             case Qt::DisplayRole:
                return (int)number->type();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::CALL_COUNT:
+      case PhoneDirectoryModelPrivate::Columns::CALL_COUNT:
          switch (role) {
             case Qt::DisplayRole:
                return number->callCount();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::LAST_USED:
+      case PhoneDirectoryModelPrivate::Columns::LAST_USED:
          switch (role) {
             case Qt::DisplayRole:
                return (int)number->lastUsed();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::NAME_COUNT:
+      case PhoneDirectoryModelPrivate::Columns::NAME_COUNT:
          switch (role) {
             case Qt::DisplayRole:
                return number->alternativeNames().size();
@@ -149,49 +159,49 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
             }
          }
          break;
-      case PhoneDirectoryModel::Columns::TOTAL_SECONDS:
+      case PhoneDirectoryModelPrivate::Columns::TOTAL_SECONDS:
          switch (role) {
             case Qt::DisplayRole:
                return number->totalSpentTime();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::WEEK_COUNT:
+      case PhoneDirectoryModelPrivate::Columns::WEEK_COUNT:
          switch (role) {
             case Qt::DisplayRole:
                return number->weekCount();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::TRIM_COUNT:
+      case PhoneDirectoryModelPrivate::Columns::TRIM_COUNT:
          switch (role) {
             case Qt::DisplayRole:
                return number->trimCount();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::HAVE_CALLED:
+      case PhoneDirectoryModelPrivate::Columns::HAVE_CALLED:
          switch (role) {
             case Qt::DisplayRole:
                return number->haveCalled();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::POPULARITY_INDEX:
+      case PhoneDirectoryModelPrivate::Columns::POPULARITY_INDEX:
          switch (role) {
             case Qt::DisplayRole:
                return (int)number->popularityIndex();
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::BOOKMARED:
+      case PhoneDirectoryModelPrivate::Columns::BOOKMARED:
          switch (role) {
             case Qt::CheckStateRole:
                return (bool)number->isBookmarked()?Qt::Checked:Qt::Unchecked;
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::TRACKED:
+      case PhoneDirectoryModelPrivate::Columns::TRACKED:
          switch (role) {
             case Qt::CheckStateRole:
                if (number->account() && number->account()->supportPresenceSubscribe())
@@ -199,18 +209,18 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::PRESENT:
+      case PhoneDirectoryModelPrivate::Columns::PRESENT:
          switch (role) {
             case Qt::CheckStateRole:
                return number->isPresent()?Qt::Checked:Qt::Unchecked;
                break;
          }
          break;
-      case PhoneDirectoryModel::Columns::PRESENCE_MESSAGE:
+      case PhoneDirectoryModelPrivate::Columns::PRESENCE_MESSAGE:
          switch (role) {
             case Qt::DisplayRole: {
-               if ((index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)
-                  || static_cast<int>(PhoneDirectoryModel::Columns::PRESENT))
+               if ((index.column() == static_cast<int>(PhoneDirectoryModelPrivate::Columns::TRACKED)
+                  || static_cast<int>(PhoneDirectoryModelPrivate::Columns::PRESENT))
                   && number->account() && (!number->account()->supportPresenceSubscribe())) {
                   return tr("This account does not support presence tracking");
                }
@@ -221,7 +231,7 @@ QVariant PhoneDirectoryModel::data(const QModelIndex& index, int role ) const
             } break;
          }
          break;
-      case PhoneDirectoryModel::Columns::UID:
+      case PhoneDirectoryModelPrivate::Columns::UID:
          switch (role) {
             case Qt::DisplayRole:
             case Qt::ToolTipRole:
@@ -237,7 +247,7 @@ int PhoneDirectoryModel::rowCount(const QModelIndex& parent ) const
 {
    if (parent.isValid())
       return 0;
-   return m_lNumbers.size();
+   return d_ptr->m_lNumbers.size();
 }
 
 int PhoneDirectoryModel::columnCount(const QModelIndex& parent ) const
@@ -250,21 +260,21 @@ Qt::ItemFlags PhoneDirectoryModel::flags(const QModelIndex& index ) const
 {
    Q_UNUSED(index)
 
-   const PhoneNumber* number = m_lNumbers[index.row()];
-   const bool enabled = !((index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)
-      || static_cast<int>(PhoneDirectoryModel::Columns::PRESENT))
+   const PhoneNumber* number = d_ptr->m_lNumbers[index.row()];
+   const bool enabled = !((index.column() == static_cast<int>(PhoneDirectoryModelPrivate::Columns::TRACKED)
+      || static_cast<int>(PhoneDirectoryModelPrivate::Columns::PRESENT))
       && number->account() && (!number->account()->supportPresenceSubscribe()));
 
    return Qt::ItemIsEnabled
       | Qt::ItemIsSelectable 
-      | (index.column() == static_cast<int>(PhoneDirectoryModel::Columns::TRACKED)&&enabled?Qt::ItemIsUserCheckable:Qt::NoItemFlags);
+      | (index.column() == static_cast<int>(PhoneDirectoryModelPrivate::Columns::TRACKED)&&enabled?Qt::ItemIsUserCheckable:Qt::NoItemFlags);
 }
 
 ///This model is read and for debug purpose
 bool PhoneDirectoryModel::setData(const QModelIndex& index, const QVariant &value, int role )
 {
-   PhoneNumber* number = m_lNumbers[index.row()];
-   if (static_cast<PhoneDirectoryModel::Columns>(index.column())==PhoneDirectoryModel::Columns::TRACKED) {
+   PhoneNumber* number = d_ptr->m_lNumbers[index.row()];
+   if (static_cast<PhoneDirectoryModelPrivate::Columns>(index.column())==PhoneDirectoryModelPrivate::Columns::TRACKED) {
       if (role == Qt::CheckStateRole && number) {
          number->setTracked(value.toBool());
       }
@@ -288,7 +298,7 @@ QVariant PhoneDirectoryModel::headerData(int section, Qt::Orientation orientatio
  * correctly with their alternate URIs. In case there is an obvious duplication,
  * it will try to merge both numbers.
  */
-void PhoneDirectoryModel::setAccount(PhoneNumber* number, Account* account ) {
+void PhoneDirectoryModelPrivate::setAccount(PhoneNumber* number, Account* account ) {
    const URI& strippedUri = number->uri();
    const bool hasAtSign = strippedUri.hasHostname();
    number->setAccount(account);
@@ -329,7 +339,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Account* account
 }
 
 ///Add new information to existing numbers and try to merge
-PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type)
+PhoneNumber* PhoneDirectoryModelPrivate::fillDetails(NumberWrapper* wrap, const URI& strippedUri, Account* account, Contact* contact, const QString& type)
 {
    //TODO pick the best URI
    //TODO the account hostname change corner case
@@ -407,7 +417,7 @@ PhoneNumber* PhoneDirectoryModel::fillDetails(NumberWrapper* wrap, const URI& st
 PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& type)
 {
    const URI strippedUri(uri);
-   NumberWrapper* wrap = m_hDirectory[strippedUri];
+   NumberWrapper* wrap = d_ptr->m_hDirectory[strippedUri];
    if (wrap) {
       PhoneNumber* nb = wrap->numbers[0];
       if ((!nb->hasType()) && (!type.isEmpty())) {
@@ -418,18 +428,18 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, const QString& t
 
    //Too bad, lets create one
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
-   number->setIndex(m_lNumbers.size());
-   m_lNumbers << number;
-   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
-   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
+   number->setIndex(d_ptr->m_lNumbers.size());
+   d_ptr->m_lNumbers << number;
+   connect(number,SIGNAL(callAdded(Call*)),d_ptr.data(),SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),d_ptr.data(),SLOT(slotChanged()));
 
    const QString hn = number->uri().hostname();
 
    emit layoutChanged();
    if (!wrap) {
       wrap = new NumberWrapper();
-      m_hDirectory[strippedUri] = wrap;
-      m_hSortedNumbers[strippedUri] = wrap;
+      d_ptr->m_hDirectory[strippedUri] = wrap;
+      d_ptr->m_hSortedNumbers[strippedUri] = wrap;
    }
    wrap->numbers << number;
    return number;
@@ -442,7 +452,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    const URI strippedUri(uri);
 
    //See if the number is already loaded
-   NumberWrapper* wrap  = m_hDirectory[strippedUri];
+   NumberWrapper* wrap  = d_ptr->m_hDirectory[strippedUri];
    NumberWrapper* wrap2 = nullptr;
    NumberWrapper* wrap3 = nullptr;
 
@@ -452,11 +462,11 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //Try to see if there is a better candidate with a suffix (LAN only)
    if ( !hasAtSign && account ) {
       //Append the account hostname
-      wrap2 = m_hDirectory[strippedUri+'@'+account->hostname()];
+      wrap2 = d_ptr->m_hDirectory[strippedUri+'@'+account->hostname()];
    }
 
    //Check
-   PhoneNumber* confirmedCandidate = fillDetails(wrap,strippedUri,account,contact,type);
+   PhoneNumber* confirmedCandidate = d_ptr->fillDetails(wrap,strippedUri,account,contact,type);
 
    //URIs can be represented in multiple way, check if a more verbose version
    //already exist
@@ -465,7 +475,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //Try to use a PhoneNumber with a contact when possible, work only after the
    //contact are loaded
    if (confirmedCandidate && confirmedCandidate->contact())
-      confirmedCandidate2 = fillDetails(wrap2,strippedUri,account,contact,type);
+      confirmedCandidate2 = d_ptr->fillDetails(wrap2,strippedUri,account,contact,type);
 
    PhoneNumber* confirmedCandidate3 = nullptr;
 
@@ -474,7 +484,7 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //results. It cannot be merged with wrap2 as this check only work if the
    //candidate has an account.
    if (hasAtSign && account && strippedUri.hostname() == account->hostname()) {
-     wrap3 = m_hDirectory[strippedUri.userinfo()];
+     wrap3 = d_ptr->m_hDirectory[strippedUri.userinfo()];
      if (wrap3) {
          foreach(PhoneNumber* number, wrap3->numbers) {
             if (number->account() == account) {
@@ -525,25 +535,25 @@ PhoneNumber* PhoneDirectoryModel::getNumber(const QString& uri, Contact* contact
    //Create the number
    PhoneNumber* number = new PhoneNumber(strippedUri,NumberCategoryModel::instance()->getCategory(type));
    number->setAccount(account);
-   number->setIndex( m_lNumbers.size());
+   number->setIndex( d_ptr->m_lNumbers.size());
    if (contact)
       number->setContact(contact);
-   m_lNumbers << number;
-   connect(number,SIGNAL(callAdded(Call*)),this,SLOT(slotCallAdded(Call*)));
-   connect(number,SIGNAL(changed()),this,SLOT(slotChanged()));
+   d_ptr->m_lNumbers << number;
+   connect(number,SIGNAL(callAdded(Call*)),d_ptr.data(),SLOT(slotCallAdded(Call*)));
+   connect(number,SIGNAL(changed()),d_ptr.data(),SLOT(slotChanged()));
    if (!wrap) {
       wrap = new NumberWrapper();
-      m_hDirectory    [strippedUri] = wrap;
-      m_hSortedNumbers[strippedUri] = wrap;
+      d_ptr->m_hDirectory    [strippedUri] = wrap;
+      d_ptr->m_hSortedNumbers[strippedUri] = wrap;
 
       //Also add its alternative URI, it should be safe to do
       if ( !hasAtSign && account && !account->hostname().isEmpty() ) {
          const QString extendedUri = strippedUri+'@'+account->hostname();
          //Also check if it hasn't been created by setAccount
-         if ((!wrap2) && (!m_hDirectory[extendedUri])) {
+         if ((!wrap2) && (!d_ptr->m_hDirectory[extendedUri])) {
             wrap2 = new NumberWrapper();
-            m_hDirectory    [extendedUri] = wrap2;
-            m_hSortedNumbers[extendedUri] = wrap2;
+            d_ptr->m_hDirectory    [extendedUri] = wrap2;
+            d_ptr->m_hSortedNumbers[extendedUri] = wrap2;
          }
          wrap2->numbers << number;
       }
@@ -579,10 +589,10 @@ PhoneNumber* PhoneDirectoryModel::fromHash(const QString& hash)
 
 QVector<PhoneNumber*> PhoneDirectoryModel::getNumbersByPopularity() const
 {
-   return m_lPopularityIndex;
+   return d_ptr->m_lPopularityIndex;
 }
 
-void PhoneDirectoryModel::slotCallAdded(Call* call)
+void PhoneDirectoryModelPrivate::slotCallAdded(Call* call)
 {
    Q_UNUSED(call)
    PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
@@ -599,13 +609,13 @@ void PhoneDirectoryModel::slotCallAdded(Call* call)
             currentIndex--;
          } while (currentIndex && m_lPopularityIndex[currentIndex-1]->callCount() < number->callCount());
          number->setPopularityIndex(currentIndex);
-         emit layoutChanged();
+         emit q_ptr->layoutChanged();
       }
       //The top 10 is not complete, a call count of "1" is enough to make it
       else if (m_lPopularityIndex.size() < 10 && currentIndex == -1) {
          m_lPopularityIndex << number;
          number->setPopularityIndex(m_lPopularityIndex.size()-1);
-         emit layoutChanged();
+         emit q_ptr->layoutChanged();
       }
       //The top 10 is full, but this number just made it to the top 10
       else if (currentIndex == -1 && m_lPopularityIndex.size() >= 10 && m_lPopularityIndex[9] != number && m_lPopularityIndex[9]->callCount() < number->callCount()) {
@@ -624,7 +634,7 @@ void PhoneDirectoryModel::slotCallAdded(Call* call)
    }
 }
 
-void PhoneDirectoryModel::slotChanged()
+void PhoneDirectoryModelPrivate::slotChanged()
 {
    PhoneNumber* number = qobject_cast<PhoneNumber*>(sender());
    if (number) {
@@ -633,30 +643,21 @@ void PhoneDirectoryModel::slotChanged()
       if (idx<0)
          qDebug() << "Invalid slotChanged() index!" << idx;
 #endif
-      emit dataChanged(index(idx,0),index(idx,static_cast<int>(Columns::UID)));
+      emit q_ptr->dataChanged(q_ptr->index(idx,0),q_ptr->index(idx,static_cast<int>(Columns::UID)));
    }
 }
 
-void PhoneDirectoryModel::slotNewBuddySubscription(const QString& accountId, const QString& uri, bool status, const QString& message)
+void PhoneDirectoryModelPrivate::slotNewBuddySubscription(const QString& accountId, const QString& uri, bool status, const QString& message)
 {
    qDebug() << "New presence buddy" << uri << status << message;
-   PhoneNumber* number = getNumber(uri,AccountModel::instance()->getById(accountId));
+   PhoneNumber* number = q_ptr->getNumber(uri,AccountModel::instance()->getById(accountId));
    number->setPresent(status);
    number->setPresenceMessage(message);
    emit number->changed();
 }
 
-// void PhoneDirectoryModel::slotStatusChanges(const QString& accountId, const QString& uri, bool status)
-// {
-//    qDebug() << "Presence status changed for" << uri << status;
-//    PhoneNumber* number = getNumber(uri,AccountModel::instance()->getById(accountId));
-//    number->m_Present = status;
-//    number->m_PresentMessage = message;
-//    emit number->changed();
-// }
-
 ///Make sure the indexes are still valid for those names
-void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList &names)
+void PhoneDirectoryModelPrivate::indexNumber(PhoneNumber* number, const QStringList &names)
 {
    foreach(const QString& name, names) {
       const QString lower = name.toLower();
@@ -687,13 +688,15 @@ void PhoneDirectoryModel::indexNumber(PhoneNumber* number, const QStringList &na
 }
 
 int PhoneDirectoryModel::count() const {
-   return m_lNumbers.size();
+   return d_ptr->m_lNumbers.size();
 }
 bool PhoneDirectoryModel::callWithAccount() const {
-   return m_CallWithAccount;
+   return d_ptr->m_CallWithAccount;
 }
 
 //Setters
 void PhoneDirectoryModel::setCallWithAccount(bool value) {
-   m_CallWithAccount = value;
+   d_ptr->m_CallWithAccount = value;
 }
+
+#include <phonedirectorymodel.moc>

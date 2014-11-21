@@ -26,6 +26,9 @@
 class PhoneNumber;
 class Call;
 
+//TODO remove
+class NumberWrapper;
+
 class LIB_EXPORT NumberCompletionModel : public QAbstractTableModel {
    Q_OBJECT
 
@@ -63,7 +66,7 @@ public:
 
 protected:
    //Helper
-   void getRange(QMap<QString,PhoneDirectoryModel::NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const;
+   void getRange(QMap<QString,NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const;
 
 private:
    enum class Columns {

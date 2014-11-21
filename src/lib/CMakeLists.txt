@@ -301,6 +301,7 @@ ENDIF(${ENABLE_QT5} MATCHES true)
 # Manually wrap private files
 SET(qtsflphone_PRIVATE_HDRS
    private/call_p.h
+   private/phonedirectorymodel_p.h
 )
 IF(${ENABLE_QT5} MATCHES true)
    QT5_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_PRIVATE_HDRS})

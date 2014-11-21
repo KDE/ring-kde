@@ -24,6 +24,9 @@
 #include "numbercategorymodel.h"
 #include "numbercategory.h"
 
+//Private
+#include "private/phonedirectorymodel_p.h"
+
 QHash<int,Call*> PhoneNumber::m_shMostUsed = QHash<int,Call*>();
 
 const PhoneNumber* PhoneNumber::m_spBlank = nullptr;
@@ -219,7 +222,7 @@ void PhoneNumber::setContact(Contact* contact)
 {
    d->m_pContact = contact;
    if (contact && d->m_Type != PhoneNumber::Type::TEMPORARY) {
-      PhoneDirectoryModel::instance()->indexNumber(this,d->m_hNames.keys()+QStringList(contact->formattedName()));
+      PhoneDirectoryModel::instance()->d_ptr->indexNumber(this,d->m_hNames.keys()+QStringList(contact->formattedName()));
       d->m_PrimaryName_cache = contact->formattedName();
       d->primaryNameChanged(d->m_PrimaryName_cache);
       connect(contact,SIGNAL(rebased(Contact*)),this,SLOT(contactRebased(Contact*)));
@@ -464,7 +467,7 @@ void PhoneNumber::incrementAlternativeName(const QString& name)
    const bool needReIndexing = !d->m_hNames[name];
    d->m_hNames[name]++;
    if (needReIndexing && d->m_Type != PhoneNumber::Type::TEMPORARY) {
-      PhoneDirectoryModel::instance()->indexNumber(this,d->m_hNames.keys()+(d->m_pContact?(QStringList(d->m_pContact->formattedName())):QStringList()));
+      PhoneDirectoryModel::instance()->d_ptr->indexNumber(this,d->m_hNames.keys()+(d->m_pContact?(QStringList(d->m_pContact->formattedName())):QStringList()));
       //Invalid m_PrimaryName_cache
       if (!d->m_pContact)
          d->m_PrimaryName_cache.clear();

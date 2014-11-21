@@ -33,6 +33,9 @@
 #include "numbercategorymodel.h"
 #include "visitors/pixmapmanipulationvisitor.h"
 
+//Private
+#include "private/phonedirectorymodel_p.h"
+
 NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance()),
    m_pCall(nullptr),m_Enabled(false),m_UseUnregisteredAccount(true)
 {
@@ -197,12 +200,12 @@ void NumberCompletionModel::updateModel()
    emit layoutChanged();
 }
 
-void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const
+void NumberCompletionModel::getRange(QMap<QString,NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const
 {
    if (prefix.isEmpty())
       return;
-   QMap<QString,PhoneDirectoryModel::NumberWrapper*>::iterator iBeg = map.begin();
-   QMap<QString,PhoneDirectoryModel::NumberWrapper*>::iterator iEnd = map.end  ()-1;
+   QMap<QString,NumberWrapper*>::iterator iBeg = map.begin();
+   QMap<QString,NumberWrapper*>::iterator iEnd = map.end  ()-1;
 
    const QString pref = prefix.toLower();
 
@@ -210,7 +213,7 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
    int size = map.size()/2;
    bool startOk(false),endOk(false);
    while (size > 1 && !(startOk&&endOk)) {
-      QMap<QString,PhoneDirectoryModel::NumberWrapper*>::iterator mid;
+      QMap<QString,NumberWrapper*>::iterator mid;
       if (size > 7)
          mid = (iBeg+size);
       else {
@@ -264,12 +267,12 @@ void NumberCompletionModel::getRange(QMap<QString,PhoneDirectoryModel::NumberWra
 
 void NumberCompletionModel::locateNameRange(const QString& prefix, QSet<PhoneNumber*>& set)
 {
-   getRange(PhoneDirectoryModel::instance()->m_lSortedNames,prefix,set);
+   getRange(PhoneDirectoryModel::instance()->d_ptr->m_lSortedNames,prefix,set);
 }
 
 void NumberCompletionModel::locateNumberRange(const QString& prefix, QSet<PhoneNumber*>& set)
 {
-   getRange(PhoneDirectoryModel::instance()->m_hSortedNumbers,prefix,set);
+   getRange(PhoneDirectoryModel::instance()->d_ptr->m_hSortedNumbers,prefix,set);
 }
 
 uint NumberCompletionModel::getWeight(PhoneNumber* number)

@@ -42,6 +42,7 @@ class LIB_EXPORT PhoneNumber : public QObject {
    Q_OBJECT
 public:
    friend class PhoneDirectoryModel;
+   friend class PhoneDirectoryModelPrivate;
    friend class PrivatePhoneNumber;
    virtual ~PhoneNumber();
 
