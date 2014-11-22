@@ -222,7 +222,7 @@ IF(NOT (${ENABLE_VIDEO} MATCHES false))
       ${config_ui_files}
       conf/dlgvideobase.ui
    )
-ENDIF(NOT ${ENABLE_VIDEO} MATCHES false)
+ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
 IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    MESSAGE("KUniqueApplication disabled")
