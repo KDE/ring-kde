@@ -51,7 +51,7 @@
 
 //Track where state changes are performed on finished (over, error, failed) calls
 //while not really problematic, it is technically wrong
-#define Q_ASSERT_IS_IN_PROGRESS Q_ASSERT(state() != Call::State::OVER);
+#define Q_ASSERT_IS_IN_PROGRESS Q_ASSERT(m_CurrentState != Call::State::OVER);
 #define FORCE_ERROR_STATE() {qDebug() << "Fatal error on " << this << __FILE__ << __LINE__;\
    d_ptr->changeCurrentState(Call::State::ERROR);}
 
