@@ -36,29 +36,68 @@
 //Private
 #include "private/phonedirectorymodel_p.h"
 
-NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance()),
-   m_pCall(nullptr),m_Enabled(false),m_UseUnregisteredAccount(true)
+class NumberCompletionModelPrivate : public QObject
+{
+public:
+
+   enum class Columns {
+      CONTENT = 0,
+      NAME    = 1,
+      ACCOUNT = 2,
+      WEIGHT  = 3,
+   };
+
+   //Constructor
+   NumberCompletionModelPrivate(NumberCompletionModel* parent);
+
+   //Methods
+   void updateModel();
+
+   //Helper
+   void locateNameRange  (const QString& prefix, QSet<PhoneNumber*>& set);
+   void locateNumberRange(const QString& prefix, QSet<PhoneNumber*>& set);
+   uint getWeight(PhoneNumber* number);
+   void getRange(QMap<QString,NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const;
+
+   //Attributes
+   QMultiMap<int,PhoneNumber*> m_hNumbers              ;
+   QString                     m_Prefix                ;
+   Call*                       m_pCall                 ;
+   bool                        m_Enabled               ;
+   bool                        m_UseUnregisteredAccount;
+
+private:
+   NumberCompletionModel* q_ptr;
+};
+
+
+NumberCompletionModelPrivate::NumberCompletionModelPrivate(NumberCompletionModel* parent) : QObject(parent), q_ptr(parent),
+m_pCall(nullptr),m_Enabled(false),m_UseUnregisteredAccount(true)
+{
+}
+
+NumberCompletionModel::NumberCompletionModel() : QAbstractTableModel(QCoreApplication::instance()), d_ptr(new NumberCompletionModelPrivate(this))
 {
    setObjectName("NumberCompletionModel");
 }
 
 NumberCompletionModel::~NumberCompletionModel()
 {
-   
+
 }
 
 QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
 {
    if (!index.isValid()) return QVariant();
-   const QMap<int,PhoneNumber*>::iterator i = const_cast<NumberCompletionModel*>(this)->m_hNumbers.end()-1-index.row();
+   const QMap<int,PhoneNumber*>::iterator i = d_ptr->m_hNumbers.end()-1-index.row();
    const PhoneNumber* n = i.value();
    const int weight     = i.key  ();
 
    bool needAcc = (role>=100 || role == Qt::UserRole) && n->account() && n->account() != AccountModel::instance()->currentAccount()
                   && n->account()->alias() != Account::ProtocolName::IP2IP;
 
-   switch (static_cast<NumberCompletionModel::Columns>(index.column())) {
-      case NumberCompletionModel::Columns::CONTENT:
+   switch (static_cast<NumberCompletionModelPrivate::Columns>(index.column())) {
+      case NumberCompletionModelPrivate::Columns::CONTENT:
          switch (role) {
             case Qt::DisplayRole:
                return n->uri();
@@ -83,19 +122,19 @@ QVariant NumberCompletionModel::data(const QModelIndex& index, int role ) const
                break;
          };
          break;
-      case NumberCompletionModel::Columns::NAME:
+      case NumberCompletionModelPrivate::Columns::NAME:
          switch (role) {
             case Qt::DisplayRole:
                return n->primaryName();
          };
          break;
-      case NumberCompletionModel::Columns::ACCOUNT:
+      case NumberCompletionModelPrivate::Columns::ACCOUNT:
          switch (role) {
             case Qt::DisplayRole:
                return n->account()?n->account()->id():AccountModel::instance()->currentAccount()->id();
          };
          break;
-      case NumberCompletionModel::Columns::WEIGHT:
+      case NumberCompletionModelPrivate::Columns::WEIGHT:
          switch (role) {
             case Qt::DisplayRole:
                return weight;
@@ -109,7 +148,7 @@ int NumberCompletionModel::rowCount(const QModelIndex& parent ) const
 {
    if (parent.isValid())
       return 0;
-   return m_hNumbers.size();
+   return d_ptr->m_hNumbers.size();
 }
 
 int NumberCompletionModel::columnCount(const QModelIndex& parent ) const
@@ -145,47 +184,47 @@ bool NumberCompletionModel::setData(const QModelIndex& index, const QVariant &va
 //Set the current call
 void NumberCompletionModel::setCall(Call* call)
 {
-   if (m_pCall)
-      disconnect(m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
-   m_pCall = call;
-   if (m_pCall)
-      connect(m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
+   if (d_ptr->m_pCall)
+      disconnect(d_ptr->m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
+   d_ptr->m_pCall = call;
+   if (d_ptr->m_pCall)
+      connect(d_ptr->m_pCall,SIGNAL(dialNumberChanged(QString)),this,SLOT(setPrefix(QString)));
    setPrefix(call?call->dialNumber():QString());
 }
 
 void NumberCompletionModel::setPrefix(const QString& str)
 {
-   m_Prefix = str;
-   const bool e = ((m_pCall && m_pCall->state() == Call::State::DIALING) || (!m_pCall)) && (!str.isEmpty());
-   if (m_Enabled != e) {
-      m_Enabled = e;
+   d_ptr->m_Prefix = str;
+   const bool e = ((d_ptr->m_pCall && d_ptr->m_pCall->state() == Call::State::DIALING) || (!d_ptr->m_pCall)) && (!str.isEmpty());
+   if (d_ptr->m_Enabled != e) {
+      d_ptr->m_Enabled = e;
       emit enabled(e);
    }
-   if (m_Enabled)
-      updateModel();
+   if (d_ptr->m_Enabled)
+      d_ptr->updateModel();
    else {
-      m_hNumbers.clear();
+      d_ptr->m_hNumbers.clear();
       emit layoutChanged();
    }
 }
 
 Call* NumberCompletionModel::call() const
 {
-   return m_pCall;
+   return d_ptr->m_pCall;
 }
 
 PhoneNumber* NumberCompletionModel::number(const QModelIndex& idx) const
 {
    if (idx.isValid()) {
-      return (const_cast<NumberCompletionModel*>(this)->m_hNumbers.end()-1-idx.row()).value();
+      return (d_ptr->m_hNumbers.end()-1-idx.row()).value();
    }
    return nullptr;
 }
 
-void NumberCompletionModel::updateModel()
+void NumberCompletionModelPrivate::updateModel()
 {
    QSet<PhoneNumber*> numbers;
-   beginResetModel();
+   q_ptr->beginResetModel();
    m_hNumbers.clear();
    if (!m_Prefix.isEmpty()) {
       locateNameRange  ( m_Prefix, numbers );
@@ -196,11 +235,11 @@ void NumberCompletionModel::updateModel()
             m_hNumbers.insert(getWeight(n),n);
       }
    }
-   endResetModel();
-   emit layoutChanged();
+   q_ptr->endResetModel();
+   emit q_ptr->layoutChanged();
 }
 
-void NumberCompletionModel::getRange(QMap<QString,NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const
+void NumberCompletionModelPrivate::getRange(QMap<QString,NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const
 {
    if (prefix.isEmpty())
       return;
@@ -265,17 +304,17 @@ void NumberCompletionModel::getRange(QMap<QString,NumberWrapper*> map, const QSt
    }
 }
 
-void NumberCompletionModel::locateNameRange(const QString& prefix, QSet<PhoneNumber*>& set)
+void NumberCompletionModelPrivate::locateNameRange(const QString& prefix, QSet<PhoneNumber*>& set)
 {
    getRange(PhoneDirectoryModel::instance()->d_ptr->m_lSortedNames,prefix,set);
 }
 
-void NumberCompletionModel::locateNumberRange(const QString& prefix, QSet<PhoneNumber*>& set)
+void NumberCompletionModelPrivate::locateNumberRange(const QString& prefix, QSet<PhoneNumber*>& set)
 {
    getRange(PhoneDirectoryModel::instance()->d_ptr->m_hSortedNumbers,prefix,set);
 }
 
-uint NumberCompletionModel::getWeight(PhoneNumber* number)
+uint NumberCompletionModelPrivate::getWeight(PhoneNumber* number)
 {
    Q_UNUSED(number)
    uint weight = 1;
@@ -289,15 +328,18 @@ uint NumberCompletionModel::getWeight(PhoneNumber* number)
 
 QString NumberCompletionModel::prefix() const
 {
-   return m_Prefix;
+   return d_ptr->m_Prefix;
 }
 
 void NumberCompletionModel::setUseUnregisteredAccounts(bool value)
 {
-   m_UseUnregisteredAccount = value;
+   d_ptr->m_UseUnregisteredAccount = value;
 }
 
 bool NumberCompletionModel::isUsingUnregisteredAccounts()
 {
-   return m_UseUnregisteredAccount;
+   return d_ptr->m_UseUnregisteredAccount;
 }
+
+#include <numbercompletionmodel.moc>
+

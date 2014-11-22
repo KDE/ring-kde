@@ -22,12 +22,12 @@
 #include "typedefs.h"
 #include "phonedirectorymodel.h"
 
-
+//SFLPhone
 class PhoneNumber;
 class Call;
 
-//TODO remove
-class NumberWrapper;
+//Private
+class NumberCompletionModelPrivate;
 
 class LIB_EXPORT NumberCompletionModel : public QAbstractTableModel {
    Q_OBJECT
@@ -47,12 +47,12 @@ public:
    virtual ~NumberCompletionModel();
 
    //Abstract model member
-   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
-   int rowCount(const QModelIndex& parent = QModelIndex()             ) const;
-   Qt::ItemFlags flags(const QModelIndex& index                       ) const;
-   virtual bool setData(const QModelIndex& index, const QVariant &value, int role);
-   virtual int columnCount(const QModelIndex& parent = QModelIndex()  ) const;
-   virtual QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual QVariant      data       ( const QModelIndex& index, int role = Qt::DisplayRole                 ) const override;
+   virtual int           rowCount   ( const QModelIndex& parent = QModelIndex()                            ) const override;
+   virtual Qt::ItemFlags flags      ( const QModelIndex& index                                             ) const override;
+   virtual bool          setData    ( const QModelIndex& index, const QVariant &value, int role            )       override;
+   virtual int           columnCount( const QModelIndex& parent = QModelIndex()                            ) const override;
+   virtual QVariant      headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
    //Setters
    void setCall(Call* call);
@@ -64,32 +64,9 @@ public:
    bool isUsingUnregisteredAccounts();
    QString prefix() const;
 
-protected:
-   //Helper
-   void getRange(QMap<QString,NumberWrapper*> map, const QString& prefix, QSet<PhoneNumber*>& set) const;
-
 private:
-   enum class Columns {
-      CONTENT = 0,
-      NAME    = 1,
-      ACCOUNT = 2,
-      WEIGHT  = 3,
-   };
-
-   //Methods
-   void updateModel();
-
-   //Helper
-   void locateNameRange  (const QString& prefix, QSet<PhoneNumber*>& set);
-   void locateNumberRange(const QString& prefix, QSet<PhoneNumber*>& set);
-   uint getWeight(PhoneNumber* number);
-
-   //Attributes
-   QMultiMap<int,PhoneNumber*> m_hNumbers              ;
-   QString                     m_Prefix                ;
-   Call*                       m_pCall                 ;
-   bool                        m_Enabled               ;
-   bool                        m_UseUnregisteredAccount;
+   QScopedPointer<NumberCompletionModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(NumberCompletionModel)
 
 
 public Q_SLOTS:

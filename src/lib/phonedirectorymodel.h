@@ -39,12 +39,13 @@ class LIB_EXPORT PhoneDirectoryModel : public QAbstractTableModel {
 
    //NumberCompletionModel need direct access to the indexes
    friend class NumberCompletionModel;
+   friend class NumberCompletionModelPrivate;
 
    //Friend unit test class
    friend class AutoCompletionTest;
 
    //Phone number need to update the indexes as they change
-   friend class PhoneNumber          ;
+   friend class PhoneNumber;
 
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
