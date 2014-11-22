@@ -30,6 +30,9 @@ class QMutex;
 
 //SFLPhone
 #include "videodevice.h"
+
+//Private
+class VideoRendererPrivate;
 struct SHMHeader;
 
 ///Manage shared memory and convert it to QByteArray
@@ -42,7 +45,7 @@ class LIB_EXPORT VideoRenderer : public QObject {
    public:
       //Constructor
       VideoRenderer (const QString& id, const QString& shmPath, const QSize& res);
-      ~VideoRenderer();
+      virtual ~VideoRenderer();
 
       //Mutators
       bool resizeShm();
@@ -61,46 +64,19 @@ class LIB_EXPORT VideoRenderer : public QObject {
       void setSize(const QSize& res);
       void setShmPath   (const QString& path);
 
-   private:
-      //Attributes
-      QString           m_ShmPath    ;
-      int               fd           ;
-      SHMHeader      *  m_pShmArea   ;
-      signed int        m_ShmAreaLen ;
-      uint              m_BufferGen  ;
-      bool              m_isRendering;
-      QTimer*           m_pTimer     ;
-      QByteArray        m_Frame[2]   ;
-      bool              m_FrameIdx   ;
-      QSize             m_pSize      ;
-      QMutex*           m_pMutex     ;
-      QMutex*           m_pSSMutex   ;
-      QString           m_Id         ;
-      int               m_fpsC       ;
-      int               m_Fps        ;
-      QTime             m_CurrentTime;
+private:
+   QScopedPointer<VideoRendererPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(VideoRenderer)
 
-      //Constants
-      static const int TIMEOUT_SEC = 1; // 1 second
+public Q_SLOTS:
+   void startRendering();
+   void stopRendering ();
 
-      //Helpers
-      timespec createTimeout();
-      bool     shmLock      ();
-      void     shmUnlock    ();
-      bool     renderToBitmap();
-
-   private Q_SLOTS:
-      void timedEvents();
-
-   public Q_SLOTS:
-      void startRendering();
-      void stopRendering ();
-
-   Q_SIGNALS:
-      ///Emitted when a new frame is ready
-      void frameUpdated();
-      void stopped();
-      void started();
+Q_SIGNALS:
+   ///Emitted when a new frame is ready
+   void frameUpdated();
+   void stopped();
+   void started();
 
 };
 

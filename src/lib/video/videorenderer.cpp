@@ -55,13 +55,60 @@ struct SHMHeader{
 #pragma GCC diagnostic pop
 };
 
-///Constructor
-VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const QSize& res): QObject(nullptr),
-   m_ShmPath(shmPath), fd(-1),m_fpsC(0),m_Fps(0),
-   m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
-   m_isRendering(false),m_pTimer(nullptr),m_pSize(res),m_pMutex(new QMutex()),
-   m_Id(id),m_FrameIdx(false),m_pSSMutex(new QMutex())
+class VideoRendererPrivate : public QObject
 {
+   Q_OBJECT
+public:
+   VideoRendererPrivate(VideoRenderer* parent);
+
+   //Attributes
+   QString           m_ShmPath    ;
+   int               fd           ;
+   SHMHeader*        m_pShmArea   ;
+   signed int        m_ShmAreaLen ;
+   uint              m_BufferGen  ;
+   bool              m_isRendering;
+   QTimer*           m_pTimer     ;
+   QByteArray        m_Frame[2]   ;
+   bool              m_FrameIdx   ;
+   QSize             m_pSize      ;
+   QMutex*           m_pMutex     ;
+   QMutex*           m_pSSMutex   ;
+   QString           m_Id         ;
+   int               m_fpsC       ;
+   int               m_Fps        ;
+   QTime             m_CurrentTime;
+
+   //Constants
+   static const int TIMEOUT_SEC = 1; // 1 second
+
+   //Helpers
+   timespec createTimeout();
+   bool     shmLock      ();
+   void     shmUnlock    ();
+   bool     renderToBitmap();
+
+private:
+   VideoRenderer* q_ptr;
+
+private Q_SLOTS:
+   void timedEvents();
+};
+
+VideoRendererPrivate::VideoRendererPrivate(VideoRenderer* parent) : QObject(parent), q_ptr(parent),
+   fd(-1),m_fpsC(0),m_Fps(0),
+   m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
+   m_isRendering(false),m_pTimer(nullptr),m_pMutex(new QMutex()),
+   m_FrameIdx(false),m_pSSMutex(new QMutex())
+{
+}
+
+///Constructor
+VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const QSize& res): QObject(nullptr), d_ptr(new VideoRendererPrivate(this))
+{
+   d_ptr->m_ShmPath = shmPath;
+   d_ptr->m_Id      = id;
+   d_ptr->m_pSize   = res;
    setObjectName("VideoRenderer:"+id);
 }
 
@@ -73,7 +120,7 @@ VideoRenderer::~VideoRenderer()
 }
 
 ///Get the data from shared memory and transform it into a QByteArray
-bool VideoRenderer::renderToBitmap()
+bool VideoRendererPrivate::renderToBitmap()
 {
 #ifdef Q_OS_LINUX
    if (!m_isRendering) {
@@ -122,7 +169,7 @@ bool VideoRenderer::renderToBitmap()
       usleep((1/60.0)*100);
    }
 
-   if (!resizeShm()) {
+   if (!q_ptr->resizeShm()) {
       qDebug() << "Could not resize shared memory";
       VideoModel::instance()->startStopMutex()->unlock();
       return false;
@@ -146,22 +193,22 @@ bool VideoRenderer::renderToBitmap()
 ///Connect to the shared memory
 bool VideoRenderer::startShm()
 {
-   if (fd != -1) {
+   if (d_ptr->fd != -1) {
       qDebug() << "fd must be -1";
       return false;
    }
 
-   fd = shm_open(m_ShmPath.toAscii(), O_RDWR, 0);
-   if (fd < 0) {
-      qDebug() << "could not open shm area " << m_ShmPath << ", shm_open failed:" << strerror(errno);
+   d_ptr->fd = shm_open(d_ptr->m_ShmPath.toAscii(), O_RDWR, 0);
+   if (d_ptr->fd < 0) {
+      qDebug() << "could not open shm area " << d_ptr->m_ShmPath << ", shm_open failed:" << strerror(errno);
       return false;
    }
-   m_ShmAreaLen = sizeof(SHMHeader);
+   d_ptr->m_ShmAreaLen = sizeof(SHMHeader);
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-   m_pShmArea = (SHMHeader*) mmap(NULL, m_ShmAreaLen, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+   d_ptr->m_pShmArea = (SHMHeader*) mmap(NULL, d_ptr->m_ShmAreaLen, PROT_READ | PROT_WRITE, MAP_SHARED, d_ptr->fd, 0);
    #pragma GCC diagnostic pop
-   if (m_pShmArea == MAP_FAILED) {
+   if (d_ptr->m_pShmArea == MAP_FAILED) {
       qDebug() << "Could not map shm area, mmap failed";
       return false;
    }
@@ -172,49 +219,49 @@ bool VideoRenderer::startShm()
 ///Disconnect from the shared memory
 void VideoRenderer::stopShm()
 {
-   if (fd >= 0)
-      close(fd);
-   fd = -1;
+   if (d_ptr->fd >= 0)
+      close(d_ptr->fd);
+   d_ptr->fd = -1;
 
-   if (m_pShmArea != MAP_FAILED)
-      munmap(m_pShmArea, m_ShmAreaLen);
-   m_ShmAreaLen = 0;
-   m_pShmArea = (SHMHeader*) MAP_FAILED;
+   if (d_ptr->m_pShmArea != MAP_FAILED)
+      munmap(d_ptr->m_pShmArea, d_ptr->m_ShmAreaLen);
+   d_ptr->m_ShmAreaLen = 0;
+   d_ptr->m_pShmArea = (SHMHeader*) MAP_FAILED;
 }
 
 ///Resize the shared memory
 bool VideoRenderer::resizeShm()
 {
-   while (( (unsigned int) sizeof(SHMHeader) + (unsigned int) m_pShmArea->m_BufferSize) > (unsigned int) m_ShmAreaLen) {
-      const size_t new_size = sizeof(SHMHeader) + m_pShmArea->m_BufferSize;
+   while (( (unsigned int) sizeof(SHMHeader) + (unsigned int) d_ptr->m_pShmArea->m_BufferSize) > (unsigned int) d_ptr->m_ShmAreaLen) {
+      const size_t new_size = sizeof(SHMHeader) + d_ptr->m_pShmArea->m_BufferSize;
 
-      shmUnlock();
-      if (munmap(m_pShmArea, m_ShmAreaLen)) {
+      d_ptr->shmUnlock();
+      if (munmap(d_ptr->m_pShmArea, d_ptr->m_ShmAreaLen)) {
             qDebug() << "Could not unmap shared area:" << strerror(errno);
             return false;
       }
 
       #pragma GCC diagnostic push
       #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-      m_pShmArea = (SHMHeader*) mmap(NULL, new_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+      d_ptr->m_pShmArea = (SHMHeader*) mmap(NULL, new_size, PROT_READ | PROT_WRITE, MAP_SHARED, d_ptr->fd, 0);
       #pragma GCC diagnostic pop
-      m_ShmAreaLen = new_size;
+      d_ptr->m_ShmAreaLen = new_size;
 
-      if (!m_pShmArea) {
-            m_pShmArea = nullptr;
+      if (!d_ptr->m_pShmArea) {
+            d_ptr->m_pShmArea = nullptr;
             qDebug() << "Could not remap shared area";
             return false;
       }
 
-      m_ShmAreaLen = new_size;
-      if (!shmLock())
+      d_ptr->m_ShmAreaLen = new_size;
+      if (!d_ptr->shmLock())
             return true;
    }
    return true;
 }
 
 ///Lock the memory while the copy is being made
-bool VideoRenderer::shmLock()
+bool VideoRendererPrivate::shmLock()
 {
 #ifdef Q_OS_LINUX
    return sem_trywait(&m_pShmArea->mutex) >= 0;
@@ -224,7 +271,7 @@ bool VideoRenderer::shmLock()
 }
 
 ///Remove the lock, allow a new frame to be drawn
-void VideoRenderer::shmUnlock()
+void VideoRendererPrivate::shmUnlock()
 {
    sem_post(&m_pShmArea->mutex);
 }
@@ -237,7 +284,7 @@ void VideoRenderer::shmUnlock()
  ****************************************************************************/
 
 ///Update the buffer
-void VideoRenderer::timedEvents()
+void VideoRendererPrivate::timedEvents()
 {
 
    bool ok = renderToBitmap();
@@ -252,7 +299,7 @@ void VideoRenderer::timedEvents()
       }
       m_fpsC++;
 
-      emit frameUpdated();
+      emit q_ptr->frameUpdated();
    }
    /*else {
       qDebug() << "Frame dropped";
@@ -264,24 +311,24 @@ void VideoRenderer::timedEvents()
 void VideoRenderer::startRendering()
 {
    VideoModel::instance()->startStopMutex()->lock();
-   QMutexLocker locker(m_pMutex);
+   QMutexLocker locker(d_ptr->m_pMutex);
    startShm();
-   if (!m_pTimer) {
-      m_pTimer = new QTimer(nullptr);
+   if (!d_ptr->m_pTimer) {
+      d_ptr->m_pTimer = new QTimer(nullptr);
 
 //       m_pTimer->moveToThread(thread());
-      connect(m_pTimer,SIGNAL(timeout()),this,SLOT(timedEvents()));
-      m_pTimer->setInterval(30);
+      connect(d_ptr->m_pTimer,SIGNAL(timeout()),d_ptr.data(),SLOT(timedEvents()));
+      d_ptr->m_pTimer->setInterval(30);
    }
 
-   if (!m_pTimer->isActive()) {
+   if (!d_ptr->m_pTimer->isActive()) {
       qDebug() << "Is running" << thread()->isRunning();
-      m_pTimer->start();
+      d_ptr->m_pTimer->start();
    }
    else
       qDebug() << "Timer already started!";
 
-   m_isRendering = true;
+   d_ptr->m_isRendering = true;
    VideoModel::instance()->startStopMutex()->unlock();
 }
 
@@ -289,11 +336,11 @@ void VideoRenderer::startRendering()
 void VideoRenderer::stopRendering()
 {
    VideoModel::instance()->startStopMutex()->lock();
-   QMutexLocker locker(m_pMutex);
-   m_isRendering = false;
-   qDebug() << "Stopping rendering on" << m_Id;
-   if (m_pTimer)
-      m_pTimer->stop();
+   QMutexLocker locker(d_ptr->m_pMutex);
+   d_ptr->m_isRendering = false;
+   qDebug() << "Stopping rendering on" << d_ptr->m_Id;
+   if (d_ptr->m_pTimer)
+      d_ptr->m_pTimer->stop();
    emit stopped();
    stopShm();
    VideoModel::instance()->startStopMutex()->unlock();
@@ -309,38 +356,38 @@ void VideoRenderer::stopRendering()
 ///Get the raw bytes directly from the SHM, not recommended, but optimal
 const char* VideoRenderer::rawData()
 {
-   return m_isRendering?m_Frame[m_FrameIdx].data():nullptr;
+   return d_ptr->m_isRendering?d_ptr->m_Frame[d_ptr->m_FrameIdx].data():nullptr;
 }
 
 ///Is this redenrer active
 bool VideoRenderer::isRendering()
 {
-   return m_isRendering;
+   return d_ptr->m_isRendering;
 }
 
 ///Return the current framerate
 const QByteArray& VideoRenderer::currentFrame()
 {
    static QByteArray empty;
-   return m_isRendering?m_Frame[m_FrameIdx]:empty;
+   return d_ptr->m_isRendering?d_ptr->m_Frame[d_ptr->m_FrameIdx]:empty;
 }
 
 ///Return the current resolution
 QSize VideoRenderer::size()
 {
-   return m_pSize;
+   return d_ptr->m_pSize;
 }
 
 ///Get mutex, in case renderer and views are not in the same thread
 QMutex* VideoRenderer::mutex()
 {
-   return m_pMutex;
+   return d_ptr->m_pMutex;
 }
 
 ///Get the current frame rate of this renderer
 int VideoRenderer::fps() const
 {
-   return m_Fps;
+   return d_ptr->m_Fps;
 }
 
 
@@ -352,10 +399,13 @@ int VideoRenderer::fps() const
 
 void VideoRenderer::setSize(const QSize& size)
 {
-   m_pSize = size;
+   d_ptr->m_pSize = size;
 }
 
 void VideoRenderer::setShmPath(const QString& path)
 {
-   m_ShmPath = path;
+   d_ptr->m_ShmPath = path;
 }
+
+#include <videorenderer.moc>
+
