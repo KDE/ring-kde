@@ -56,6 +56,51 @@ struct InternalStruct {
 //Static member
 CallModel*   CallModel::m_spInstance = nullptr;
 
+class CallModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+      CallModelPrivate(CallModel* parent);
+      void init();
+      Call* addCall          ( Call* call                , Call* parent = nullptr );
+      Call* addConference    ( const QString& confID                              );
+      void  removeConference ( const QString& confId                              );
+      void  removeCall       ( Call* call       , bool noEmit = false             );
+      Call* addIncomingCall  ( const QString& callId                              );
+      Call* addRingingCall   ( const QString& callId                              );
+
+      //Attributes
+      QList<InternalStruct*> m_lInternalModel;
+      QHash< Call*       , InternalStruct* > m_sPrivateCallList_call   ;
+      QHash< QString     , InternalStruct* > m_sPrivateCallList_callId ;
+
+
+      //Helpers
+      bool isPartOf(const QModelIndex& confIdx, Call* call);
+      void initRoles();
+      void removeConference       ( Call* conf                    );
+      void removeInternal(InternalStruct* internal);
+
+   private:
+      CallModel* q_ptr;
+
+   private Q_SLOTS:
+      void slotCallStateChanged   ( const QString& callID    , const QString &state   );
+      void slotIncomingCall       ( const QString& accountID , const QString & callID );
+      void slotIncomingConference ( const QString& confID                             );
+      void slotChangingConference ( const QString& confID    , const QString &state   );
+      void slotConferenceRemoved  ( const QString& confId                             );
+      void slotAddPrivateCall     ( Call* call                                        );
+      void slotNewRecordingAvail  ( const QString& callId    , const QString& filePath);
+      void slotCallChanged        ( Call* call                                        );
+      void slotDTMFPlayed         ( const QString& str                                );
+      void slotRecordStateChanged ( const QString& callId    , bool state             );
+      #ifdef ENABLE_VIDEO
+      void slotStartedDecoding    ( const QString& callId    , const QString& shmKey  );
+      void slotStoppedDecoding    ( const QString& callId    , const QString& shmKey  );
+      #endif
+};
+
 
 /*****************************************************************************
  *                                                                           *
@@ -67,19 +112,24 @@ CallModel*   CallModel::m_spInstance = nullptr;
 CallModel* CallModel::instance() {
    if (!m_spInstance) {
       m_spInstance = new CallModel();
-      m_spInstance->init();
+      m_spInstance->d_ptr->init();
    }
    return m_spInstance;
 }
 
+CallModelPrivate::CallModelPrivate(CallModel* parent) : QObject(parent),q_ptr(parent)
+{
+   
+}
+
 ///Retrieve current and older calls from the daemon, fill history, model and enable drag n' drop
-CallModel::CallModel() : QAbstractItemModel(QCoreApplication::instance())
+CallModel::CallModel() : QAbstractItemModel(QCoreApplication::instance()),d_ptr(new CallModelPrivate(this))
 {
    setObjectName("CallModel");
 } //CallModel
 
 ///Constructor (there fix an initializationn loop)
-void CallModel::init()
+void CallModelPrivate::init()
 {
    static bool dbusInit = false;
    initRoles();
@@ -109,9 +159,6 @@ void CallModel::init()
       dbusInit = true;
 
       HistoryModel::instance();
-//       foreach(Call* call,){
-//          addCall(call,nullptr);
-//       }
    }
    static bool m_sInstanceInit = false;
    if (!m_sInstanceInit)
@@ -121,34 +168,34 @@ void CallModel::init()
    CallManagerInterface& callManager = DBus::CallManager::instance();
    const QStringList callList = callManager.getCallList();
    foreach (const QString& callId, callList) {
-      Call* tmpCall = Call::buildExistingCall(callId);
+      Call* tmpCall = CallPrivate::buildExistingCall(callId);
       addCall(tmpCall);
    }
 
    const QStringList confList = callManager.getConferenceList();
    foreach (const QString& confId, confList) {
       Call* conf = addConference(confId);
-      emit conferenceCreated(conf);
+      emit q_ptr->conferenceCreated(conf);
    }
 }
 
 ///Destructor
 CallModel::~CallModel()
 {
-   const QList<Call*> keys = m_sPrivateCallList_call.keys();
-   const QList<InternalStruct*> values = m_sPrivateCallList_call.values();
+   const QList<Call*> keys = d_ptr->m_sPrivateCallList_call.keys();
+   const QList<InternalStruct*> values = d_ptr->m_sPrivateCallList_call.values();
    foreach (Call* call, keys )
       delete call;
    foreach (InternalStruct* s,  values )
       delete s;
-   m_sPrivateCallList_call.clear  ();
-   m_sPrivateCallList_callId.clear();
+   d_ptr->m_sPrivateCallList_call.clear  ();
+   d_ptr->m_sPrivateCallList_callId.clear();
    m_spInstance = nullptr;
 }
 
-void CallModel::initRoles()
+void CallModelPrivate::initRoles()
 {
-   QHash<int, QByteArray> roles = roleNames();
+   QHash<int, QByteArray> roles = q_ptr->roleNames();
    roles.insert(Call::Role::Name          ,QByteArray("name"));
    roles.insert(Call::Role::Number        ,QByteArray("number"));
    roles.insert(Call::Role::Direction2    ,QByteArray("direction"));
@@ -174,7 +221,7 @@ void CallModel::initRoles()
    roles.insert(Call::Role::DTMFAnimState ,QByteArray("dTMFAnimState"));
    roles.insert(Call::Role::LastDTMFidx   ,QByteArray("lastDTMFidx"));
    roles.insert(Call::Role::IsRecording   ,QByteArray("isRecording"));
-   setRoleNames(roles);
+   q_ptr->setRoleNames(roles);
 }
 
 
@@ -187,7 +234,7 @@ void CallModel::initRoles()
 ///Return the active call count
 int CallModel::size()
 {
-   return m_lInternalModel.size();
+   return d_ptr->m_lInternalModel.size();
 }
 
 ///Return the action call list
@@ -195,7 +242,7 @@ int CallModel::size()
 {
    CallList callList;
    #pragma GCC diagnostic ignored "-Wshadow"
-   foreach(InternalStruct* internalS, m_lInternalModel) {
+   foreach(InternalStruct* internalS, d_ptr->m_lInternalModel) {
       callList.push_back(internalS->call_real);
       if (internalS->m_lChildren.size()) {
          #pragma GCC diagnostic ignored "-Wshadow"
@@ -215,10 +262,10 @@ CallList CallModel::getConferenceList()
    //That way it can not be invalid
    const QStringList confListS = DBus::CallManager::instance().getConferenceList();
    foreach (const QString& confId, confListS) {
-      InternalStruct* internalS = m_sPrivateCallList_callId[confId];
+      InternalStruct* internalS = d_ptr->m_sPrivateCallList_callId[confId];
       if (!internalS) {
          qDebug() << "Warning: Conference not found, creating it, this should not happen";
-         Call* conf = addConference(confId);
+         Call* conf = d_ptr->addConference(confId);
          confList << conf;
          emit conferenceCreated(conf);
       }
@@ -230,7 +277,7 @@ CallList CallModel::getConferenceList()
 
 bool CallModel::hasConference() const
 {
-   foreach(const InternalStruct* s, m_lInternalModel) {
+   foreach(const InternalStruct* s, d_ptr->m_lInternalModel) {
       if (s->m_lChildren.size())
          return true;
    }
@@ -260,14 +307,14 @@ Call* CallModel::getCall( const QModelIndex& idx              ) const
 ///Get the call associated with this ID
 Call* CallModel::getCall( const QString& callId ) const
 {
-   if (m_sPrivateCallList_callId[callId]) {
-      return m_sPrivateCallList_callId[callId]->call_real;
+   if (d_ptr->m_sPrivateCallList_callId[callId]) {
+      return d_ptr->m_sPrivateCallList_callId[callId]->call_real;
    }
    return nullptr;
 }
 
 ///Add a call in the model structure, the call must exist before being added to the model
-Call* CallModel::addCall(Call* call, Call* parentCall)
+Call* CallModelPrivate::addCall(Call* call, Call* parentCall)
 {
    //The current History implementation doesn't support conference
    //if something try to add an history conference, something went wrong
@@ -296,20 +343,20 @@ Call* CallModel::addCall(Call* call, Call* parentCall)
 
    m_sPrivateCallList_call  [ call       ] = aNewStruct;
    if (call->lifeCycleState() != Call::LifeCycleState::FINISHED) {
-      beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
+      q_ptr->beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
       m_lInternalModel << aNewStruct;
-      endInsertRows();
+      q_ptr->endInsertRows();
    }
    m_sPrivateCallList_callId[ call->id() ] = aNewStruct;
 
    //If the call is already finished, there is no point to track it here
    if (call->lifeCycleState() != Call::LifeCycleState::FINISHED) {
-      emit callAdded(call,parentCall);
-      const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
-      emit dataChanged(idx, idx);
+      emit q_ptr->callAdded(call,parentCall);
+      const QModelIndex idx = q_ptr->index(m_lInternalModel.size()-1,0,QModelIndex());
+      emit q_ptr->dataChanged(idx, idx);
       connect(call,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
       connect(call,SIGNAL(dtmfPlayed(QString)),this,SLOT(slotDTMFPlayed(QString)));
-      emit layoutChanged();
+      emit q_ptr->layoutChanged();
    }
    return call;
 } //addCall
@@ -326,13 +373,13 @@ Call* CallModel::dialingCall(const QString& peerName, Account* account)
 
    //No dialing call found, creating one
    Account* acc = (account)?account:AccountModel::currentAccount();
-   return (!acc)?nullptr:addCall(Call::buildDialingCall(QString::number(qrand()), peerName, acc));
+   return (!acc)?nullptr:d_ptr->addCall(CallPrivate::buildDialingCall(QString::number(qrand()), peerName, acc));
 }  //dialingCall
 
 ///Create a new incoming call when the daemon is being called
-Call* CallModel::addIncomingCall(const QString& callId)
+Call* CallModelPrivate::addIncomingCall(const QString& callId)
 {
-   Call* call = addCall(Call::buildIncomingCall(callId));
+   Call* call = addCall(CallPrivate::buildIncomingCall(callId));
    //Call without account is not possible
    if (dynamic_cast<Account*>(call->account())) {
       if (call->account()->isAutoAnswer()) {
@@ -347,13 +394,13 @@ Call* CallModel::addIncomingCall(const QString& callId)
 }
 
 ///Create a ringing call
-Call* CallModel::addRingingCall(const QString& callId)
+Call* CallModelPrivate::addRingingCall(const QString& callId)
 {
-   return addCall(Call::buildRingingCall(callId));
+   return addCall(CallPrivate::buildRingingCall(callId));
 }
 
 ///Properly remove an internal from the Qt model
-void CallModel::removeInternal(InternalStruct* internal)
+void CallModelPrivate::removeInternal(InternalStruct* internal)
 {
    if (!internal) return;
 
@@ -365,13 +412,13 @@ void CallModel::removeInternal(InternalStruct* internal)
    }
 
    //Using layoutChanged would SEGFAULT when an editor is open
-   beginRemoveRows(QModelIndex(),idx,idx);
+   q_ptr->beginRemoveRows(QModelIndex(),idx,idx);
    m_lInternalModel.removeAt(idx);
-   endRemoveRows();
+   q_ptr->endRemoveRows();
 }
 
 ///Remove a call and update the internal structure
-void CallModel::removeCall(Call* call, bool noEmit)
+void CallModelPrivate::removeCall(Call* call, bool noEmit)
 {
    Q_UNUSED(noEmit)
    InternalStruct* internal = m_sPrivateCallList_call[call];
@@ -397,9 +444,9 @@ void CallModel::removeCall(Call* call, bool noEmit)
    if (internal->m_lChildren.size()) {
       foreach(InternalStruct* child,internal->m_lChildren) {
          if (child->call_real->state() != Call::State::OVER && child->call_real->state() != Call::State::ERROR) {
-            beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
+            q_ptr->beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
             m_lInternalModel << child;
-            endInsertRows();
+            q_ptr->endInsertRows();
          }
       }
    }
@@ -418,22 +465,22 @@ void CallModel::removeCall(Call* call, bool noEmit)
             removeConference(topLevel->call_real);
    }
 //    if (!noEmit)
-      emit layoutChanged();
+      emit q_ptr->layoutChanged();
 } //removeCall
 
 
 QModelIndex CallModel::getIndex(Call* call)
 {
-   InternalStruct* internal = m_sPrivateCallList_call[call];
-   int idx = m_lInternalModel.indexOf(internal);
+   InternalStruct* internal = d_ptr->m_sPrivateCallList_call[call];
+   int idx = d_ptr->m_lInternalModel.indexOf(internal);
    if (idx != -1) {
       return index(idx,0);
    }
    else {
-      foreach(InternalStruct* str,m_lInternalModel) {
+      foreach(InternalStruct* str,d_ptr->m_lInternalModel) {
          idx = str->m_lChildren.indexOf(internal);
          if (idx != -1)
-            return index(idx,0,index(m_lInternalModel.indexOf(str),0));
+            return index(idx,0,index(d_ptr->m_lInternalModel.indexOf(str),0));
       }
    }
    return QModelIndex();
@@ -469,7 +516,7 @@ void CallModel::transfer(Call* toTransfer, const PhoneNumber* target)
  ****************************************************************************/
 
 ///Add a new conference, get the call list and update the interface as needed
-Call* CallModel::addConference(const QString& confID)
+Call* CallModelPrivate::addConference(const QString& confID)
 {
    qDebug() << "Notified of a new conference " << confID;
    CallManagerInterface& callManager = DBus::CallManager::instance();
@@ -497,9 +544,9 @@ Call* CallModel::addConference(const QString& confID)
 
       m_sPrivateCallList_call[newConf]  = aNewStruct;
       m_sPrivateCallList_callId[confID] = aNewStruct;
-      beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
+      q_ptr->beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
       m_lInternalModel << aNewStruct;
-      endInsertRows();
+      q_ptr->endInsertRows();
 
       foreach(const QString& callId,callList) {
          InternalStruct* callInt = m_sPrivateCallList_callId[callId];
@@ -516,9 +563,9 @@ Call* CallModel::addConference(const QString& confID)
             qDebug() << "References to unknown call";
          }
       }
-      const QModelIndex idx = index(m_lInternalModel.size()-1,0,QModelIndex());
-      emit dataChanged(idx, idx);
-      emit layoutChanged();
+      const QModelIndex idx = q_ptr->index(m_lInternalModel.size()-1,0,QModelIndex());
+      emit q_ptr->dataChanged(idx, idx);
+      emit q_ptr->layoutChanged();
       connect(newConf,SIGNAL(changed(Call*)),this,SLOT(slotCallChanged(Call*)));
    }
 
@@ -561,34 +608,16 @@ bool CallModel::mergeConferences(Call* conf1, Call* conf2)
    return true;
 }
 
-///Executed when the daemon signal a modification in an existing conference. Update the call list and update the TreeView
-// bool CallModel::changeConference(const QString& confId, const QString& state)
-// {
-//    Q_UNUSED(state)
-//    qDebug() << "Conf changed";
-// 
-//    if (!m_sPrivateCallList_callId[confId]) {
-//       qDebug() << "The conference does not exist" << ;
-//       return false;
-//    }
-// 
-//    if (!m_sPrivateCallList_callId[confId]->index.isValid()) {
-//       qDebug() << "The conference item does not exist";
-//       return false;
-//    }
-//    return true;
-// } //changeConference
-
 ///Remove a conference from the model and the TreeView
-void CallModel::removeConference(const QString &confId)
+void CallModelPrivate::removeConference(const QString &confId)
 {
    if (m_sPrivateCallList_callId[confId])
       qDebug() << "Ending conversation containing " << m_sPrivateCallList_callId[confId]->m_lChildren.size() << " participants";
-   removeConference(getCall(confId));
+   removeConference(q_ptr->getCall(confId));
 }
 
 ///Remove a conference using it's call object
-void CallModel::removeConference(Call* call)
+void CallModelPrivate::removeConference(Call* call)
 {
    const InternalStruct* internal = m_sPrivateCallList_call[call];
 
@@ -651,10 +680,10 @@ QVariant CallModel::data( const QModelIndex& idx, int role) const
    if (!idx.isValid())
       return QVariant();
    Call* call = nullptr;
-   if (!idx.parent().isValid() && m_lInternalModel.size() > idx.row() && m_lInternalModel[idx.row()])
-      call = m_lInternalModel[idx.row()]->call_real;
-   else if (idx.parent().isValid() && m_lInternalModel.size() > idx.parent().row()) {
-      InternalStruct* intList = m_lInternalModel[idx.parent().row()];
+   if (!idx.parent().isValid() && d_ptr->m_lInternalModel.size() > idx.row() && d_ptr->m_lInternalModel[idx.row()])
+      call = d_ptr->m_lInternalModel[idx.row()]->call_real;
+   else if (idx.parent().isValid() && d_ptr->m_lInternalModel.size() > idx.parent().row()) {
+      InternalStruct* intList = d_ptr->m_lInternalModel[idx.parent().row()];
       if (intList->conference == true && intList->m_lChildren.size() > idx.row() && intList->m_lChildren[idx.row()])
          call = intList->m_lChildren[idx.row()]->call_real;
    }
@@ -674,7 +703,7 @@ QVariant CallModel::headerData(int section, Qt::Orientation orientation, int rol
 int CallModel::rowCount( const QModelIndex& parentIdx ) const
 {
    if (!parentIdx.isValid() || !parentIdx.internalPointer())
-      return m_lInternalModel.size();
+      return d_ptr->m_lInternalModel.size();
 
    const InternalStruct* modelItem = static_cast<InternalStruct*>(parentIdx.internalPointer());
    if (modelItem) {
@@ -730,7 +759,7 @@ QModelIndex CallModel::parent( const QModelIndex& idx) const
       return QModelIndex();
    const InternalStruct* modelItem = (InternalStruct*)idx.internalPointer();
    if (modelItem && modelItem->m_pParent) {
-      const int rowidx = m_lInternalModel.indexOf(modelItem->m_pParent);
+      const int rowidx = d_ptr->m_lInternalModel.indexOf(modelItem->m_pParent);
       if (rowidx != -1) {
          return CallModel::index(rowidx,0,QModelIndex());
       }
@@ -741,11 +770,11 @@ QModelIndex CallModel::parent( const QModelIndex& idx) const
 ///Get the call index at row,column (active call only)
 QModelIndex CallModel::index( int row, int column, const QModelIndex& parentIdx) const
 {
-   if (row >= 0 && !parentIdx.isValid() && m_lInternalModel.size() > row) {
-      return createIndex(row,column,m_lInternalModel[row]);
+   if (row >= 0 && !parentIdx.isValid() && d_ptr->m_lInternalModel.size() > row) {
+      return createIndex(row,column,d_ptr->m_lInternalModel[row]);
    }
-   else if (row >= 0 && parentIdx.isValid() && m_lInternalModel[parentIdx.row()]->m_lChildren.size() > row) {
-      return createIndex(row,column,m_lInternalModel[parentIdx.row()]->m_lChildren[row]);
+   else if (row >= 0 && parentIdx.isValid() && d_ptr->m_lInternalModel[parentIdx.row()]->m_lChildren.size() > row) {
+      return createIndex(row,column,d_ptr->m_lInternalModel[parentIdx.row()]->m_lChildren[row]);
    }
 //    if (!parentIdx.isValid())
 //       qWarning() << "Invalid index" << row << column << "model size" << m_lInternalModel.size();
@@ -779,7 +808,7 @@ QMimeData* CallModel::mimeData(const QModelIndexList& indexes) const
    return mData;
 }
 
-bool CallModel::isPartOf(const QModelIndex& confIdx, Call* call)
+bool CallModelPrivate::isPartOf(const QModelIndex& confIdx, Call* call)
 {
    if (!confIdx.isValid() || !call) return false;
 
@@ -813,7 +842,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       switch (mimedata->property("dropAction").toInt()) {
          case Call::DropAction::Conference:
             //Call or conference dropped on part of itself -> cannot merge conference with itself
-            if (isPartOf(targetIdx,call) || isPartOf(targetIdx.parent(),call) || (call && targetIdx.parent().data(Call::Role::Id) == encodedCallId)) {
+            if (d_ptr->isPartOf(targetIdx,call) || d_ptr->isPartOf(targetIdx.parent(),call) || (call && targetIdx.parent().data(Call::Role::Id) == encodedCallId)) {
                qDebug() << "Call/Conf dropped on its own conference (doing nothing)";
                return false;
             }
@@ -900,7 +929,7 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
  ****************************************************************************/
 
 ///When a call state change
-void CallModel::slotCallStateChanged(const QString& callID, const QString& stateName)
+void CallModelPrivate::slotCallStateChanged(const QString& callID, const QString& stateName)
 {
    //This code is part of the CallModel interface too
    qDebug() << "Call State Changed for call  " << callID << " . New state : " << stateName;
@@ -909,7 +938,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
    Call::State previousState = Call::State::RINGING;
    if(!internal) {
       qDebug() << "Call not found";
-      if(stateName == Call::StateChange::RINGING) {
+      if(stateName == CallPrivate::StateChange::RINGING) {
          call = addRingingCall(callID);
       }
       else {
@@ -925,7 +954,7 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       const Call::State          oldState          = call->state();
       call->d_ptr->stateChanged(stateName);
       //Remove call when they end normally, keep errors and failure one
-      if ((stateName == Call::StateChange::HUNG_UP)
+      if ((stateName == CallPrivate::StateChange::HUNG_UP)
          || ((oldState == Call::State::OVER) && (call->state() == Call::State::OVER))
          || (oldLifeCycleState != Call::LifeCycleState::FINISHED && call->state() == Call::State::OVER)) {
          removeCall(call);
@@ -937,30 +966,30 @@ void CallModel::slotCallStateChanged(const QString& callID, const QString& state
       HistoryModel::instance()->add(call);
    }
 
-   emit callStateChanged(call,previousState);
+   emit q_ptr->callStateChanged(call,previousState);
 
 } //slotCallStateChanged
 
 ///When a new call is incoming
-void CallModel::slotIncomingCall(const QString& accountID, const QString& callID)
+void CallModelPrivate::slotIncomingCall(const QString& accountID, const QString& callID)
 {
    Q_UNUSED(accountID)
    qDebug() << "Signal : Incoming Call ! ID = " << callID;
-   emit incomingCall(addIncomingCall(callID));
+   emit q_ptr->incomingCall(addIncomingCall(callID));
 }
 
 ///When a new conference is incoming
-void CallModel::slotIncomingConference(const QString& confID)
+void CallModelPrivate::slotIncomingConference(const QString& confID)
 {
-   if (!getCall(confID)) {
+   if (!q_ptr->getCall(confID)) {
       Call* conf = addConference(confID);
       qDebug() << "Adding conference" << conf << confID;
-      emit conferenceCreated(conf);
+      emit q_ptr->conferenceCreated(conf);
    }
 }
 
 ///When a conference change
-void CallModel::slotChangingConference(const QString &confID, const QString& state)
+void CallModelPrivate::slotChangingConference(const QString &confID, const QString& state)
 {
    InternalStruct* confInt = m_sPrivateCallList_callId[confID];
    if (!confInt) {
@@ -970,7 +999,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
    Call* conf = confInt->call_real;
    qDebug() << "Changing conference state" << conf << confID;
    if (conf && dynamic_cast<Call*>(conf)) { //Prevent a race condition between call and conference
-      if (!getIndex(conf).isValid()) {
+      if (!q_ptr->getIndex(conf).isValid()) {
          qWarning() << "The conference item does not exist";
          return;
       }
@@ -986,10 +1015,10 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          if (participants.indexOf(child->call_real->id()) == -1 && child->call_real->lifeCycleState() != Call::LifeCycleState::FINISHED) {
             qDebug() << "Remove" << child->call_real << "from" << conf;
             child->m_pParent = nullptr;
-            beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
+            q_ptr->beginInsertRows(QModelIndex(),m_lInternalModel.size(),m_lInternalModel.size());
             m_lInternalModel << child;
-            endInsertRows();
-            const QModelIndex idx = getIndex(child->call_real);
+            q_ptr->endInsertRows();
+            const QModelIndex idx = q_ptr->getIndex(child->call_real);
          }
       }
       confInt->m_lChildren.clear();
@@ -1020,7 +1049,7 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
          const QMap<QString,QString> callDetails = callManager.getCallDetails(callId);
          InternalStruct* callInt = m_sPrivateCallList_callId[callId];
          if (callInt) {
-            const QString confId = callDetails[Call::DetailsMapFields::CONF_ID];
+            const QString confId = callDetails[CallPrivate::DetailsMapFields::CONF_ID];
             if (callInt->m_pParent) {
                if (!confId.isEmpty()  && callInt->m_pParent->call_real->id() != confId) {
                   qWarning() << "Conference parent mismatch";
@@ -1048,10 +1077,10 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
 
       //TODO force reload all conferences too
 
-      const QModelIndex idx = index(m_lInternalModel.indexOf(confInt),0,QModelIndex());
-      emit layoutChanged();
-      emit dataChanged(idx, idx);
-      emit conferenceChanged(conf);
+      const QModelIndex idx = q_ptr->index(m_lInternalModel.indexOf(confInt),0,QModelIndex());
+      emit q_ptr->layoutChanged();
+      emit q_ptr->dataChanged(idx, idx);
+      emit q_ptr->conferenceChanged(conf);
    }
    else {
       qDebug() << "Trying to affect a conference that does not exist (anymore)";
@@ -1059,30 +1088,30 @@ void CallModel::slotChangingConference(const QString &confID, const QString& sta
 } //slotChangingConference
 
 ///When a conference is removed
-void CallModel::slotConferenceRemoved(const QString &confId)
+void CallModelPrivate::slotConferenceRemoved(const QString &confId)
 {
-   Call* conf = getCall(confId);
+   Call* conf = q_ptr->getCall(confId);
    removeConference(confId);
-   emit layoutChanged();
-   emit conferenceRemoved(conf);
+   emit q_ptr->layoutChanged();
+   emit q_ptr->conferenceRemoved(conf);
 }
 
 ///Make the call aware it has a recording
-void CallModel::slotNewRecordingAvail( const QString& callId, const QString& filePath)
+void CallModelPrivate::slotNewRecordingAvail( const QString& callId, const QString& filePath)
 {
-   getCall(callId)->setRecordingPath(filePath);
+   q_ptr->getCall(callId)->setRecordingPath(filePath);
 }
 
 #ifdef ENABLE_VIDEO
 ///Updating call state when video is added
-void CallModel::slotStartedDecoding(const QString& callId, const QString& shmKey)
+void CallModelPrivate::slotStartedDecoding(const QString& callId, const QString& shmKey)
 {
    Q_UNUSED(callId)
    Q_UNUSED(shmKey)
 }
 
 ///Updating call state when video is removed
-void CallModel::slotStoppedDecoding(const QString& callId, const QString& shmKey)
+void CallModelPrivate::slotStoppedDecoding(const QString& callId, const QString& shmKey)
 {
    Q_UNUSED(callId)
    Q_UNUSED(shmKey)
@@ -1090,13 +1119,13 @@ void CallModel::slotStoppedDecoding(const QString& callId, const QString& shmKey
 #endif
 
 ///Update model if the data change
-void CallModel::slotCallChanged(Call* call)
+void CallModelPrivate::slotCallChanged(Call* call)
 {
    switch(call->state()) {
       //Transfer is "local" state, it doesn't require the daemon, so it need to be
       //handled "manually" instead of relying on the backend signals
       case Call::State::TRANSFERRED:
-         emit callStateChanged(call, Call::State::TRANSFERRED);
+         emit q_ptr->callStateChanged(call, Call::State::TRANSFERRED);
          break;
       //Same goes for some errors
       case Call::State::__COUNT:
@@ -1124,21 +1153,21 @@ void CallModel::slotCallChanged(Call* call)
 
    InternalStruct* callInt = m_sPrivateCallList_call[call];
    if (callInt) {
-      const QModelIndex idx = getIndex(call);
+      const QModelIndex idx = q_ptr->getIndex(call);
       if (idx.isValid())
-         emit dataChanged(idx,idx);
+         emit q_ptr->dataChanged(idx,idx);
    }
 }
 
 ///Add call slot
-void CallModel::slotAddPrivateCall(Call* call) {
+void CallModelPrivate::slotAddPrivateCall(Call* call) {
    if (m_sPrivateCallList_call[call])
       return;
    addCall(call,nullptr);
 }
 
 ///Notice views that a dtmf have been played
-void CallModel::slotDTMFPlayed( const QString& str )
+void CallModelPrivate::slotDTMFPlayed( const QString& str )
 {
    Call* call = qobject_cast<Call*>(QObject::sender());
    if (str.size()==1) {
@@ -1153,17 +1182,19 @@ void CallModel::slotDTMFPlayed( const QString& str )
       else                           idx = -1          ;
       call->setProperty("latestDtmfIdx",idx);
    }
-   const QModelIndex& idx = getIndex(call);
-   setData(idx,50, Call::Role::DTMFAnimState);
+   const QModelIndex& idx = q_ptr->getIndex(call);
+   q_ptr->setData(idx,50, Call::Role::DTMFAnimState);
 }
 
 ///Called when a recording state change
-void CallModel::slotRecordStateChanged (const QString& callId, bool state)
+void CallModelPrivate::slotRecordStateChanged (const QString& callId, bool state)
 {
-   Call* call = getCall(callId);
+   Call* call = q_ptr->getCall(callId);
    if (call) {
       call->d_ptr->m_Recording = state;
       emit call->changed();
       emit call->changed(call);
    }
 }
+
+#include <callmodel.moc>

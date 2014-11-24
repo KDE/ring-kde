@@ -40,6 +40,61 @@ class CallPrivate : public QObject
    Q_OBJECT
 public:
    friend class CallModel;
+   friend class CallModelPrivate;
+
+   ///@class ConferenceStateChange Possible values from "conferencechanged" signal
+   class ConferenceStateChange {
+   public:
+      constexpr static const char* HOLD           = "HOLD"           ;
+      constexpr static const char* ACTIVE         = "ACTIVE_ATTACHED";
+   };
+
+   class StateChange {
+   public:
+      constexpr static const char* HUNG_UP        = "HUNGUP" ;
+      constexpr static const char* RINGING        = "RINGING";
+      constexpr static const char* CURRENT        = "CURRENT";
+      constexpr static const char* HOLD           = "HOLD"   ;
+      constexpr static const char* BUSY           = "BUSY"   ;
+      constexpr static const char* FAILURE        = "FAILURE";
+      constexpr static const char* UNHOLD_CURRENT = "UNHOLD" ;
+   };
+
+   class DaemonStateInit {
+   public:
+      constexpr static const char* CURRENT  = "CURRENT"  ;
+      constexpr static const char* HOLD     = "HOLD"     ;
+      constexpr static const char* BUSY     = "BUSY"     ;
+      constexpr static const char* INCOMING = "INCOMING" ;
+      constexpr static const char* RINGING  = "RINGING"  ;
+      constexpr static const char* INACTIVE = "INACTIVE" ;
+   };
+
+   ///"getCallDetails()" fields
+   class DetailsMapFields {
+   public:
+      constexpr static const char* PEER_NAME         = "DISPLAY_NAME"   ;
+      constexpr static const char* PEER_NUMBER       = "PEER_NUMBER"    ;
+      constexpr static const char* ACCOUNT_ID        = "ACCOUNTID"      ;
+      constexpr static const char* STATE             = "CALL_STATE"     ;
+      constexpr static const char* TYPE              = "CALL_TYPE"      ;
+      constexpr static const char* TIMESTAMP_START   = "TIMESTAMP_START";
+      constexpr static const char* CONF_ID           = "CONF_ID"        ;
+   };
+
+   ///"getConferenceDetails()" fields
+   class ConfDetailsMapFields {
+   public:
+      constexpr static const char* CONF_STATE        = "CONF_STATE"     ;
+      constexpr static const char* CONFID            = "CONFID"         ;
+   };
+
+   ///If the call is incoming or outgoing
+   class CallDirection {
+   public:
+      constexpr static const char* INCOMING = "0";
+      constexpr static const char* OUTGOING = "1";
+   };
 
    CallPrivate(Call* parent);
 
@@ -148,6 +203,16 @@ public:
    void changeCurrentState(Call::State newState);
    void setStartTimeStamp(time_t stamp);
    void initTimer();
+
+   //Static getters
+   static Call::LegacyHistoryState historyStateFromType    ( const QString& type                                           );
+   static Call::State        startStateFromDaemonCallState ( const QString& daemonCallState, const QString& daemonCallType );
+
+   //Constructor
+   static Call* buildDialingCall  (const QString& callId, const QString & peerName, Account* account = nullptr );
+   static Call* buildIncomingCall (const QString& callId                                                       );
+   static Call* buildRingingCall  (const QString& callId                                                       );
+   static Call* buildExistingCall (const QString& callId                                                       );
 
 private:
    Call* q_ptr;

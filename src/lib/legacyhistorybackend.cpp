@@ -21,6 +21,7 @@
 //SFLPhone
 #include "dbus/configurationmanager.h"
 #include "call.h"
+#include "private/call_p.h"
 
 LegacyHistoryBackend::LegacyHistoryBackend(QObject* parent) : AbstractHistoryBackend(nullptr,parent)
 {

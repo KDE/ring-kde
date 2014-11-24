@@ -28,6 +28,7 @@
 class Account;
 struct InternalStruct;
 class PhoneNumber;
+class CallModelPrivate;
 
 //Typedef
 typedef QMap<uint, Call*>  CallMap;
@@ -79,6 +80,9 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       Q_INVOKABLE int      acceptedPayloadTypes();
       Q_INVOKABLE bool     hasConference       () const;
 
+      Q_INVOKABLE Call* getCall ( const QString& callId  ) const;
+      Q_INVOKABLE Call* getCall ( const QModelIndex& idx ) const;
+
       //Model implementation
       virtual bool          setData      ( const QModelIndex& index, const QVariant &value, int role   );
       virtual QVariant      data         ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
@@ -95,49 +99,13 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       //Singleton
       static CallModel* instance();
 
-      Q_INVOKABLE Call* getCall ( const QString& callId  ) const;
-      Q_INVOKABLE Call* getCall ( const QModelIndex& idx ) const;
-
    private:
       explicit CallModel();
-      void init();
-      Call* addCall          ( Call* call                , Call* parent = nullptr );
-      Call* addConference    ( const QString& confID                              );
-//       bool  changeConference ( const QString& confId, const QString& state        );
-      void  removeConference ( const QString& confId                              );
-      void  removeCall       ( Call* call       , bool noEmit = false             );
-      Call* addIncomingCall  ( const QString& callId                              );
-      Call* addRingingCall   ( const QString& callId                              );
-
-      //Attributes
-      QList<InternalStruct*> m_lInternalModel;
-      QHash< Call*       , InternalStruct* > m_sPrivateCallList_call   ;
-      QHash< QString     , InternalStruct* > m_sPrivateCallList_callId ;
+      QScopedPointer<CallModelPrivate> d_ptr;
+      Q_DECLARE_PRIVATE(CallModel)
 
       //Singleton
       static CallModel* m_spInstance;
-
-      //Helpers
-      bool isPartOf(const QModelIndex& confIdx, Call* call);
-      void initRoles();
-      void removeConference       ( Call* conf                    );
-      void removeInternal(InternalStruct* internal);
-
-   private Q_SLOTS:
-      void slotCallStateChanged   ( const QString& callID    , const QString &state   );
-      void slotIncomingCall       ( const QString& accountID , const QString & callID );
-      void slotIncomingConference ( const QString& confID                             );
-      void slotChangingConference ( const QString& confID    , const QString &state   );
-      void slotConferenceRemoved  ( const QString& confId                             );
-      void slotAddPrivateCall     ( Call* call                                        );
-      void slotNewRecordingAvail  ( const QString& callId    , const QString& filePath);
-      void slotCallChanged        ( Call* call                                        );
-      void slotDTMFPlayed         ( const QString& str                                );
-      void slotRecordStateChanged ( const QString& callId    , bool state             );
-      #ifdef ENABLE_VIDEO
-      void slotStartedDecoding    ( const QString& callId    , const QString& shmKey  );
-      void slotStoppedDecoding    ( const QString& callId    , const QString& shmKey  );
-      #endif
 
    Q_SIGNALS:
       ///Emitted when a call state change

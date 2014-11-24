@@ -261,7 +261,7 @@ Call::Call(const QString& confId, const QString& account)
       d_ptr->initTimer();
       CallManagerInterface& callManager = DBus::CallManager::instance();
       MapStringString        details    = callManager.getConferenceDetails(id())  ;
-      d_ptr->m_CurrentState             = d_ptr->confStatetoCallState(details[ConfDetailsMapFields::CONF_STATE]);
+      d_ptr->m_CurrentState             = d_ptr->confStatetoCallState(details[CallPrivate::ConfDetailsMapFields::CONF_STATE]);
       emit stateChanged();
    }
 }
@@ -284,7 +284,7 @@ Call::~Call()
  ****************************************************************************/
 
 ///Build a call from its ID
-Call* Call::buildExistingCall(const QString& callId)
+Call* CallPrivate::buildExistingCall(const QString& callId)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString       details     = callManager.getCallDetails(callId).value();
@@ -292,18 +292,18 @@ Call* Call::buildExistingCall(const QString& callId)
    //Too noisy
    //qDebug() << "Constructing existing call with details : " << details;
 
-   const QString peerNumber    = details[ Call::DetailsMapFields::PEER_NUMBER ];
-   const QString peerName      = details[ Call::DetailsMapFields::PEER_NAME   ];
-   const QString account       = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
-   Call::State   startState    = startStateFromDaemonCallState(details[Call::DetailsMapFields::STATE], details[Call::DetailsMapFields::TYPE]);
+   const QString peerNumber    = details[ CallPrivate::DetailsMapFields::PEER_NUMBER ];
+   const QString peerName      = details[ CallPrivate::DetailsMapFields::PEER_NAME   ];
+   const QString account       = details[ CallPrivate::DetailsMapFields::ACCOUNT_ID  ];
+   Call::State   startState    = startStateFromDaemonCallState(details[CallPrivate::DetailsMapFields::STATE], details[CallPrivate::DetailsMapFields::TYPE]);
    Account*      acc           = AccountModel::instance()->getById(account);
    PhoneNumber*  nb            = PhoneDirectoryModel::instance()->getNumber(peerNumber,acc);
    Call*         call          = new Call(startState, callId, peerName, nb, acc);
    call->d_ptr->m_Recording    = callManager.getIsRecording(callId);
    call->d_ptr->m_HistoryState = historyStateFromType(details[Call::HistoryMapFields::STATE]);
 
-   if (!details[ Call::DetailsMapFields::TIMESTAMP_START ].isEmpty())
-      call->d_ptr->setStartTimeStamp(details[ Call::DetailsMapFields::TIMESTAMP_START ].toInt());
+   if (!details[ CallPrivate::DetailsMapFields::TIMESTAMP_START ].isEmpty())
+      call->d_ptr->setStartTimeStamp(details[ CallPrivate::DetailsMapFields::TIMESTAMP_START ].toInt());
    else {
       time_t curTime;
       ::time(&curTime);
@@ -320,7 +320,7 @@ Call* Call::buildExistingCall(const QString& callId)
 } //buildExistingCall
 
 ///Build a call from a dialing call (a call that is about to exist)
-Call* Call::buildDialingCall(const QString& callId, const QString & peerName, Account* account)
+Call* CallPrivate::buildDialingCall(const QString& callId, const QString & peerName, Account* account)
 {
    Call* call = new Call(Call::State::DIALING, callId, peerName, nullptr, account);
    call->d_ptr->m_HistoryState = Call::LegacyHistoryState::NONE;
@@ -333,14 +333,14 @@ Call* Call::buildDialingCall(const QString& callId, const QString & peerName, Ac
 }
 
 ///Build a call from a dbus event
-Call* Call::buildIncomingCall(const QString& callId)
+Call* CallPrivate::buildIncomingCall(const QString& callId)
 {
    CallManagerInterface & callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
 
-   const QString from          = details[ Call::DetailsMapFields::PEER_NUMBER ];
-   const QString account       = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
-   const QString peerName      = details[ Call::DetailsMapFields::PEER_NAME   ];
+   const QString from          = details[ CallPrivate::DetailsMapFields::PEER_NUMBER ];
+   const QString account       = details[ CallPrivate::DetailsMapFields::ACCOUNT_ID  ];
+   const QString peerName      = details[ CallPrivate::DetailsMapFields::PEER_NAME   ];
    Account*      acc           = AccountModel::instance()->getById(account);
    PhoneNumber*  nb            = PhoneDirectoryModel::instance()->getNumber(from,acc);
    Call* call                  = new Call(Call::State::INCOMING, callId, peerName, nb, acc);
@@ -353,18 +353,18 @@ Call* Call::buildIncomingCall(const QString& callId)
 } //buildIncomingCall
 
 ///Build a ringing call (from dbus)
-Call* Call::buildRingingCall(const QString & callId)
+Call* CallPrivate::buildRingingCall(const QString & callId)
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
    MapStringString details = callManager.getCallDetails(callId).value();
 
-   const QString from          = details[ Call::DetailsMapFields::PEER_NUMBER ];
-   const QString account       = details[ Call::DetailsMapFields::ACCOUNT_ID  ];
-   const QString peerName      = details[ Call::DetailsMapFields::PEER_NAME   ];
+   const QString from          = details[ CallPrivate::DetailsMapFields::PEER_NUMBER ];
+   const QString account       = details[ CallPrivate::DetailsMapFields::ACCOUNT_ID  ];
+   const QString peerName      = details[ CallPrivate::DetailsMapFields::PEER_NAME   ];
    Account*      acc           = AccountModel::instance()->getById(account);
    PhoneNumber*  nb            = PhoneDirectoryModel::instance()->getNumber(from,acc);
    Call* call                  = new Call(Call::State::RINGING, callId, peerName, nb, acc);
-   call->d_ptr->m_HistoryState = LegacyHistoryState::OUTGOING;
+   call->d_ptr->m_HistoryState = Call::LegacyHistoryState::OUTGOING;
    call->d_ptr->m_Direction    = Call::Direction::OUTGOING;
 
    if (call->peerPhoneNumber()) {
@@ -415,7 +415,7 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
    call->d_ptr->m_pStopTimeStamp  = stopTimeStamp ;
    call->d_ptr->m_History         = true;
    call->d_ptr->setStartTimeStamp(startTimeStamp);
-   call->d_ptr->m_HistoryState    = historyStateFromType(type);
+   call->d_ptr->m_HistoryState    = CallPrivate::historyStateFromType(type);
    call->d_ptr->m_Account         = AccountModel::instance()->getById(accId);
 
    //BEGIN In ~2015, remove the old logic and clean this
@@ -424,11 +424,11 @@ Call* Call::buildHistoryCall(const QMap<QString,QString>& hc)
       call->d_ptr->m_HistoryState = Call::LegacyHistoryState::MISSED;
    }
    if (!direction.isEmpty()) {
-      if (direction == HistoryStateName::INCOMING) {
+      if (direction == Call::HistoryStateName::INCOMING) {
          call->d_ptr->m_Direction    = Call::Direction::INCOMING         ;
          call->d_ptr->m_HistoryState = Call::LegacyHistoryState::INCOMING;
       }
-      else if (direction == HistoryStateName::OUTGOING) {
+      else if (direction == Call::HistoryStateName::OUTGOING) {
          call->d_ptr->m_Direction    = Call::Direction::OUTGOING         ;
          call->d_ptr->m_HistoryState = Call::LegacyHistoryState::OUTGOING;
       }
@@ -466,7 +466,7 @@ Call* Call::operator<<( Call::Action& c)
 }
 
 ///Get the history state from the type (see Call.cpp header)
-Call::LegacyHistoryState Call::historyStateFromType(const QString& type)
+Call::LegacyHistoryState CallPrivate::historyStateFromType(const QString& type)
 {
    if(type == Call::HistoryStateName::MISSED        )
       return Call::LegacyHistoryState::MISSED   ;
@@ -478,21 +478,21 @@ Call::LegacyHistoryState Call::historyStateFromType(const QString& type)
 }
 
 ///Get the start sate from the daemon state
-Call::State Call::startStateFromDaemonCallState(const QString& daemonCallState, const QString& daemonCallType)
+Call::State CallPrivate::startStateFromDaemonCallState(const QString& daemonCallState, const QString& daemonCallType)
 {
-   if(daemonCallState      == Call::DaemonStateInit::CURRENT  )
+   if(daemonCallState      == CallPrivate::DaemonStateInit::CURRENT  )
       return Call::State::CURRENT  ;
-   else if(daemonCallState == Call::DaemonStateInit::HOLD     )
+   else if(daemonCallState == CallPrivate::DaemonStateInit::HOLD     )
       return Call::State::HOLD     ;
-   else if(daemonCallState == Call::DaemonStateInit::BUSY     )
+   else if(daemonCallState == CallPrivate::DaemonStateInit::BUSY     )
       return Call::State::BUSY     ;
-   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == Call::CallDirection::INCOMING )
+   else if(daemonCallState == CallPrivate::DaemonStateInit::INACTIVE && daemonCallType == CallPrivate::CallDirection::INCOMING )
       return Call::State::INCOMING ;
-   else if(daemonCallState == Call::DaemonStateInit::INACTIVE && daemonCallType == Call::CallDirection::OUTGOING )
+   else if(daemonCallState == CallPrivate::DaemonStateInit::INACTIVE && daemonCallType == CallPrivate::CallDirection::OUTGOING )
       return Call::State::RINGING  ;
-   else if(daemonCallState == Call::DaemonStateInit::INCOMING )
+   else if(daemonCallState == CallPrivate::DaemonStateInit::INCOMING )
       return Call::State::INCOMING ;
-   else if(daemonCallState == Call::DaemonStateInit::RINGING  )
+   else if(daemonCallState == CallPrivate::DaemonStateInit::RINGING  )
       return Call::State::RINGING  ;
    else
       return Call::State::FAILURE  ;
@@ -508,19 +508,19 @@ Call::State Call::startStateFromDaemonCallState(const QString& daemonCallState, 
 ///Transfer state from internal to daemon internal syntaz
 Call::DaemonState CallPrivate::toDaemonCallState(const QString& stateName)
 {
-   if(stateName == Call::StateChange::HUNG_UP        )
+   if(stateName == CallPrivate::StateChange::HUNG_UP        )
       return Call::DaemonState::HUNG_UP ;
-   if(stateName == Call::StateChange::RINGING        )
+   if(stateName == CallPrivate::StateChange::RINGING        )
       return Call::DaemonState::RINGING ;
-   if(stateName == Call::StateChange::CURRENT        )
+   if(stateName == CallPrivate::StateChange::CURRENT        )
       return Call::DaemonState::CURRENT ;
-   if(stateName == Call::StateChange::UNHOLD_CURRENT )
+   if(stateName == CallPrivate::StateChange::UNHOLD_CURRENT )
       return Call::DaemonState::CURRENT ;
-   if(stateName == Call::StateChange::HOLD           )
+   if(stateName == CallPrivate::StateChange::HOLD           )
       return Call::DaemonState::HOLD    ;
-   if(stateName == Call::StateChange::BUSY           )
+   if(stateName == CallPrivate::StateChange::BUSY           )
       return Call::DaemonState::BUSY    ;
-   if(stateName == Call::StateChange::FAILURE        )
+   if(stateName == CallPrivate::StateChange::FAILURE        )
       return Call::DaemonState::FAILURE ;
 
    qDebug() << "stateChanged signal received with unknown state.";
@@ -530,9 +530,9 @@ Call::DaemonState CallPrivate::toDaemonCallState(const QString& stateName)
 ///Transform a conference call state to a proper call state
 Call::State CallPrivate::confStatetoCallState(const QString& stateName)
 {
-   if      ( stateName == Call::ConferenceStateChange::HOLD   )
+   if      ( stateName == CallPrivate::ConferenceStateChange::HOLD   )
       return Call::State::CONFERENCE_HOLD;
-   else if ( stateName == Call::ConferenceStateChange::ACTIVE )
+   else if ( stateName == CallPrivate::ConferenceStateChange::ACTIVE )
       return Call::State::CONFERENCE;
    else
       return Call::State::ERROR; //Well, this may bug a little
@@ -917,8 +917,8 @@ Call::State CallPrivate::stateChanged(const QString& newStateName)
 
       CallManagerInterface & callManager = DBus::CallManager::instance();
       MapStringString details = callManager.getCallDetails(m_CallId).value();
-      if (details[Call::DetailsMapFields::PEER_NAME] != m_PeerName)
-         m_PeerName = details[Call::DetailsMapFields::PEER_NAME];
+      if (details[CallPrivate::DetailsMapFields::PEER_NAME] != m_PeerName)
+         m_PeerName = details[CallPrivate::DetailsMapFields::PEER_NAME];
 
       try {
          (this->*(stateChangedFunctionMap[previousState][dcs]))();
