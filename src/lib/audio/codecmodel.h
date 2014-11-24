@@ -15,17 +15,23 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef AUDIO_CODEC_MODEL_H
-#define AUDIO_CODEC_MODEL_H
+#ifndef CODEC_MODEL_H
+#define CODEC_MODEL_H
 
-#include <QtCore/QString>
 #include <QtCore/QAbstractListModel>
-#include "typedefs.h"
+
+//Qt
+#include <QtCore/QString>
+
+//SFLPhone
+#include "../typedefs.h"
 
 class Account;
 
+namespace Audio {
+
 ///AudioCodecModel: A model for account audio codec
-class LIB_EXPORT AudioCodecModel : public QAbstractListModel {
+class LIB_EXPORT CodecModel : public QAbstractListModel {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -41,23 +47,23 @@ public:
    };
 
    //Constructor
-   explicit AudioCodecModel(Account* account);
-   virtual ~AudioCodecModel();
+   explicit CodecModel(Account* account);
+   virtual ~CodecModel();
 
    //Abstract model member
-   QVariant data        (const QModelIndex& index, int role = Qt::DisplayRole      ) const;
-   int rowCount         (const QModelIndex& parent = QModelIndex()                 ) const;
-   Qt::ItemFlags flags  (const QModelIndex& index                                  ) const;
-   virtual bool setData (const QModelIndex& index, const QVariant &value, int role );
+   QVariant data        (const QModelIndex& index, int role = Qt::DisplayRole      ) const override;
+   int rowCount         (const QModelIndex& parent = QModelIndex()                 ) const override;
+   Qt::ItemFlags flags  (const QModelIndex& index                                  ) const override;
+   virtual bool setData (const QModelIndex& index, const QVariant &value, int role )       override;
 
    //Mutator
-   QModelIndex addAudioCodec();
-   Q_INVOKABLE void removeAudioCodec ( QModelIndex idx );
-   Q_INVOKABLE bool moveUp           ( QModelIndex idx );
-   Q_INVOKABLE bool moveDown         ( QModelIndex idx );
-   Q_INVOKABLE void clear            (                 );
-   Q_INVOKABLE void reload           (                 );
-   Q_INVOKABLE void save             (                 );
+   QModelIndex add();
+   Q_INVOKABLE void remove   ( const QModelIndex& idx );
+   Q_INVOKABLE bool moveUp   ( const QModelIndex& idx );
+   Q_INVOKABLE bool moveDown ( const QModelIndex& idx );
+   Q_INVOKABLE void clear    (                        );
+   Q_INVOKABLE void reload   (                        );
+   Q_INVOKABLE void save     (                        );
 
 private:
    ///@struct AudioCodecData store audio codec information
@@ -76,6 +82,8 @@ private:
    //Helpers
    bool findCodec(int id);
 };
-Q_DECLARE_METATYPE(AudioCodecModel*)
+
+}
+Q_DECLARE_METATYPE(Audio::CodecModel*)
 
 #endif

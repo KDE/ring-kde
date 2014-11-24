@@ -46,7 +46,7 @@
 #include "phonenumber.h"
 #include "video/videorenderer.h"
 #include "tlsmethodmodel.h"
-#include "audiosettingsmodel.h"
+#include "audio/settings.h"
 #include "contactmodel.h"
 
 //Track where state changes are performed on finished (over, error, failed) calls
@@ -325,8 +325,8 @@ Call* Call::buildDialingCall(const QString& callId, const QString & peerName, Ac
    Call* call = new Call(Call::State::DIALING, callId, peerName, nullptr, account);
    call->d_ptr->m_HistoryState = Call::LegacyHistoryState::NONE;
    call->d_ptr->m_Direction = Call::Direction::OUTGOING;
-   if (AudioSettingsModel::instance()->isRoomToneEnabled()) {
-      AudioSettingsModel::instance()->playRoomTone();
+   if (Audio::Settings::instance()->isRoomToneEnabled()) {
+      Audio::Settings::instance()->playRoomTone();
    }
    qDebug() << "Created dialing call" << call;
    return call;

@@ -29,7 +29,12 @@
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/sflphone_const.h"
-#include "lib/audiosettingsmodel.h"
+#include "lib/audio/settings.h"
+#include "lib/audio/inputdevicemodel.h"
+#include "lib/audio/outputdevicemodel.h"
+#include "lib/audio/ringtonedevicemodel.h"
+#include "lib/audio/managermodel.h"
+#include "lib/audio/alsapluginmodel.h"
 
 ///Constructor
 DlgAudio::DlgAudio(KConfigDialog *parent)
@@ -37,23 +42,23 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
 {
    setupUi(this);
 
-   m_pAlwaysRecordCK->setChecked(AudioSettingsModel::instance()->isAlwaysRecording());
+   m_pAlwaysRecordCK->setChecked(Audio::Settings::instance()->isAlwaysRecording());
 
    KUrlRequester_destinationFolder->setMode(KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly);
-   KUrlRequester_destinationFolder->setUrl(KUrl(AudioSettingsModel::instance()->recordPath()));
+   KUrlRequester_destinationFolder->setUrl(KUrl(Audio::Settings::instance()->recordPath()));
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
-   m_pSuppressNoise->setChecked(AudioSettingsModel::instance()->isNoiseSuppressEnabled());
-   m_pCPlayDTMFCk->setChecked(AudioSettingsModel::instance()->areDTMFMuted());
+   m_pSuppressNoise->setChecked(Audio::Settings::instance()->isNoiseSuppressEnabled());
+   m_pCPlayDTMFCk->setChecked(Audio::Settings::instance()->areDTMFMuted());
 
-   alsaInputDevice->setModel   (AudioSettingsModel::instance()->inputDeviceModel () );
-   alsaOutputDevice->setModel  (AudioSettingsModel::instance()->outputDeviceModel() );
-   alsaRingtoneDevice->setModel(AudioSettingsModel::instance()->outputDeviceModel() );
-   m_pManager->setModel        (AudioSettingsModel::instance()->audioManagerModel() );
-   box_alsaPlugin->setModel    (AudioSettingsModel::instance()->alsaPluginModel  () );
+   alsaInputDevice->setModel   (Audio::Settings::instance()->inputDeviceModel   () );
+   alsaOutputDevice->setModel  (Audio::Settings::instance()->outputDeviceModel  () );
+   alsaRingtoneDevice->setModel(Audio::Settings::instance()->ringtoneDeviceModel() );
+   m_pManager->setModel        (Audio::Settings::instance()->managerModel       () );
+   box_alsaPlugin->setModel    (Audio::Settings::instance()->alsaPluginModel    () );
    loadAlsaSettings();
 
-   m_pManager->setCurrentIndex (AudioSettingsModel::instance()->audioManagerModel()->currentManagerIndex().row());
+   m_pManager->setCurrentIndex (Audio::Settings::instance()->managerModel()->currentManagerIndex().row());
 
    connect( box_alsaPlugin   , SIGNAL(activated(int)) , parent, SLOT(updateButtons()));
    connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
@@ -68,8 +73,8 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
    connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , 
-            AudioSettingsModel::instance()->audioManagerModel(),SLOT(setCurrentManager(int)));
-   connect(AudioSettingsModel::instance()->audioManagerModel(),SIGNAL(currentManagerChanged(int)),m_pManager,
+            Audio::Settings::instance()->managerModel(),SLOT(setCurrentManager(int)));
+   connect(Audio::Settings::instance()->managerModel(),SIGNAL(currentManagerChanged(int)),m_pManager,
            SLOT(setCurrentIndex(int)));
    connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(loadAlsaSettings()));
 }
@@ -91,15 +96,15 @@ void DlgAudio::updateSettings()
    if (m_Changed) {
       m_IsLoading = true;
 
-      AudioSettingsModel::instance()->setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
-      AudioSettingsModel::instance()->setAlwaysRecording(m_pAlwaysRecordCK->isChecked());
+      Audio::Settings::instance()->setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
+      Audio::Settings::instance()->setAlwaysRecording(m_pAlwaysRecordCK->isChecked());
 
-      AudioSettingsModel::instance()->inputDeviceModel   ()->setCurrentDevice(alsaInputDevice->currentIndex   ());
-      AudioSettingsModel::instance()->outputDeviceModel  ()->setCurrentDevice(alsaOutputDevice->currentIndex  ());
-      AudioSettingsModel::instance()->ringtoneDeviceModel()->setCurrentDevice(alsaRingtoneDevice->currentIndex());
-      AudioSettingsModel::instance()->alsaPluginModel    ()->setCurrentPlugin(box_alsaPlugin->currentIndex());
-      AudioSettingsModel::instance()->setNoiseSuppressState(m_pSuppressNoise->isChecked());
-      AudioSettingsModel::instance()->setDTMFMuted         (m_pCPlayDTMFCk  ->isChecked());
+      Audio::Settings::instance()->inputDeviceModel   ()->setCurrentDevice(alsaInputDevice->currentIndex   ());
+      Audio::Settings::instance()->outputDeviceModel  ()->setCurrentDevice(alsaOutputDevice->currentIndex  ());
+      Audio::Settings::instance()->ringtoneDeviceModel()->setCurrentDevice(alsaRingtoneDevice->currentIndex());
+      Audio::Settings::instance()->alsaPluginModel    ()->setCurrentPlugin(box_alsaPlugin->currentIndex());
+      Audio::Settings::instance()->setNoiseSuppressState(m_pSuppressNoise->isChecked());
+      Audio::Settings::instance()->setDTMFMuted         (m_pCPlayDTMFCk  ->isChecked());
 
       m_Changed   = false;
       m_IsLoading = false;
@@ -115,16 +120,16 @@ bool DlgAudio::hasChanged()
 ///Tag the dialog as needing saving
 void DlgAudio::changed()
 {
-   switch (AudioSettingsModel::instance()->audioManagerModel()->currentManager()) {
-      case AudioManagerModel::Manager::PULSE:
+   switch (Audio::Settings::instance()->managerModel()->currentManager()) {
+      case Audio::ManagerModel::Manager::PULSE:
          box_alsaPlugin->setDisabled(true);
          stackedWidget_interfaceSpecificSettings->setVisible(true);
          break;
-      case AudioManagerModel::Manager::ALSA:
+      case Audio::ManagerModel::Manager::ALSA:
          box_alsaPlugin->setDisabled(false);
          stackedWidget_interfaceSpecificSettings->setVisible(true);
          break;
-      case AudioManagerModel::Manager::JACK:
+      case Audio::ManagerModel::Manager::JACK:
          box_alsaPlugin->setDisabled(true);
          stackedWidget_interfaceSpecificSettings->setVisible(false);
          break;
@@ -139,10 +144,10 @@ void DlgAudio::changed()
 void DlgAudio::loadAlsaSettings()
 {
    m_IsLoading = true;
-   AudioSettingsModel::instance()->reload();
-   alsaInputDevice->setCurrentIndex    ( AudioSettingsModel::instance()->inputDeviceModel()->currentDevice().row()   );
-   alsaOutputDevice->setCurrentIndex   ( AudioSettingsModel::instance()->outputDeviceModel()->currentDevice().row()  );
-   alsaRingtoneDevice->setCurrentIndex ( AudioSettingsModel::instance()->ringtoneDeviceModel()->currentDevice().row());
-   box_alsaPlugin->setCurrentIndex     ( AudioSettingsModel::instance()->alsaPluginModel()->currentPlugin().row()    );
+   Audio::Settings::instance()->reload();
+   alsaInputDevice->setCurrentIndex    ( Audio::Settings::instance()->inputDeviceModel()->currentDevice().row()   );
+   alsaOutputDevice->setCurrentIndex   ( Audio::Settings::instance()->outputDeviceModel()->currentDevice().row()  );
+   alsaRingtoneDevice->setCurrentIndex ( Audio::Settings::instance()->ringtoneDeviceModel()->currentDevice().row());
+   box_alsaPlugin->setCurrentIndex     ( Audio::Settings::instance()->alsaPluginModel()->currentPlugin().row()    );
    m_IsLoading = false;
 }

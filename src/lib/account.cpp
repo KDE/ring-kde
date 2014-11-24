@@ -36,7 +36,7 @@
 #include "certificate.h"
 #include "accountmodel.h"
 #include "credentialmodel.h"
-#include "audiocodecmodel.h"
+#include "audio/codecmodel.h"
 #include "video/videocodecmodel.h"
 #include "ringtonemodel.h"
 #include "phonenumber.h"
@@ -88,7 +88,7 @@ public:
    void reloadMod() {reload();modify();};
 
    CredentialModel*          m_pCredentials     ;
-   AudioCodecModel*          m_pAudioCodecs     ;
+   Audio::CodecModel*        m_pAudioCodecs     ;
    VideoCodecModel*          m_pVideoCodecs     ;
    RingToneModel*            m_pRingToneModel   ;
    KeyExchangeModel*         m_pKeyExchangeModel;
@@ -380,7 +380,7 @@ CredentialModel* Account::credentialsModel() const
 }
 
 ///Create and return the audio codec model
-AudioCodecModel* Account::audioCodecModel() const
+Audio::CodecModel* Account::audioCodecModel() const
 {
    if (!d_ptr->m_pAudioCodecs)
       const_cast<Account*>(this)->reloadAudioCodecs();
@@ -1436,11 +1436,11 @@ void AccountPrivate::save()
       const QVector<int> codecIdList = configurationManager.getAudioCodecList();
       foreach (const int aCodec, codecIdList) {
          const QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
-         const QModelIndex idx = m_pAudioCodecs->addAudioCodec();
-         m_pAudioCodecs->setData(idx,codec[0],AudioCodecModel::Role::NAME       );
-         m_pAudioCodecs->setData(idx,codec[1],AudioCodecModel::Role::SAMPLERATE );
-         m_pAudioCodecs->setData(idx,codec[2],AudioCodecModel::Role::BITRATE    );
-         m_pAudioCodecs->setData(idx,aCodec  ,AudioCodecModel::Role::ID         );
+         const QModelIndex idx = m_pAudioCodecs->add();
+         m_pAudioCodecs->setData(idx,codec[0],Audio::CodecModel::Role::NAME       );
+         m_pAudioCodecs->setData(idx,codec[1],Audio::CodecModel::Role::SAMPLERATE );
+         m_pAudioCodecs->setData(idx,codec[2],Audio::CodecModel::Role::BITRATE    );
+         m_pAudioCodecs->setData(idx,aCodec  ,Audio::CodecModel::Role::ID         );
          m_pAudioCodecs->setData(idx, Qt::Checked ,Qt::CheckStateRole);
       }
       q_ptr->saveAudioCodecs();
@@ -1571,7 +1571,7 @@ void Account::saveCredentials() {
 void Account::reloadAudioCodecs()
 {
    if (!d_ptr->m_pAudioCodecs) {
-      d_ptr->m_pAudioCodecs = new AudioCodecModel(this);
+      d_ptr->m_pAudioCodecs = new Audio::CodecModel(this);
    }
    d_ptr->m_pAudioCodecs->reload();
 }

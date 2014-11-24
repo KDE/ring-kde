@@ -32,12 +32,15 @@ class QString;
 #include "sflphone_const.h"
 #include "typedefs.h"
 class CredentialModel;
-class AudioCodecModel;
 class VideoCodecModel;
 class RingToneModel  ;
 class PhoneNumber    ;
 class SecurityValidationModel;
 class Certificate    ;
+
+namespace Audio {
+   class CodecModel;
+}
 
 //Private
 class AccountPrivate;
@@ -329,11 +332,11 @@ class LIB_EXPORT Account : public QObject {
       QString         stateColorName()                    const;
       QVariant        stateColor()                        const;
 
-      Q_INVOKABLE CredentialModel*  credentialsModel() const;
-      Q_INVOKABLE AudioCodecModel*  audioCodecModel () const;
-      Q_INVOKABLE VideoCodecModel*  videoCodecModel () const;
-      Q_INVOKABLE RingToneModel*    ringToneModel   () const;
-      Q_INVOKABLE KeyExchangeModel* keyExchangeModel() const;
+      Q_INVOKABLE CredentialModel*   credentialsModel() const;
+      Q_INVOKABLE Audio::CodecModel* audioCodecModel () const;
+      Q_INVOKABLE VideoCodecModel*   videoCodecModel () const;
+      Q_INVOKABLE RingToneModel*     ringToneModel   () const;
+      Q_INVOKABLE KeyExchangeModel*  keyExchangeModel() const;
       Q_INVOKABLE SecurityValidationModel* securityValidationModel() const;
 
       //Getters

@@ -44,7 +44,7 @@
 #include "klib/tip.h"
 #include "lib/sflphone_const.h"
 #include "lib/credentialmodel.h"
-#include "lib/audiocodecmodel.h"
+#include "lib/audio/codecmodel.h"
 #include "lib/securityvalidationmodel.h"
 #include "lib/accountmodel.h"
 #include "lib/keyexchangemodel.h"
@@ -729,14 +729,14 @@ void DlgAccounts::updateFirstCredential(QString text)
 ///Move codec up
 void DlgAccounts::moveAudioCodecUp()
 {
-   if (static_cast<AudioCodecModel*>(list_audiocodec->model())->moveUp(list_audiocodec->currentIndex()))
+   if (static_cast<Audio::CodecModel*>(list_audiocodec->model())->moveUp(list_audiocodec->currentIndex()))
       list_audiocodec->setCurrentIndex(list_audiocodec->model()->index(list_audiocodec->currentIndex().row()-1,0));
 }
 
 ///Move codec down
 void DlgAccounts::moveAudioCodecDown()
 {
-   if (static_cast<AudioCodecModel*>(list_audiocodec->model())->moveDown(list_audiocodec->currentIndex()))
+   if (static_cast<Audio::CodecModel*>(list_audiocodec->model())->moveDown(list_audiocodec->currentIndex()))
       list_audiocodec->setCurrentIndex(list_audiocodec->model()->index(list_audiocodec->currentIndex().row()+1,0));
 }
 
@@ -859,8 +859,8 @@ void DlgAccounts::updateWidgets()
 void DlgAccounts::selectedCodecChanged(const QModelIndex& current,const QModelIndex& previous)
 {
    Q_UNUSED(previous)
-   label_bitrate_value->setText   ( list_audiocodec->model()->data(current,AudioCodecModel::Role::BITRATE)   .toString());
-   label_frequency_value->setText ( list_audiocodec->model()->data(current,AudioCodecModel::Role::SAMPLERATE).toString());
+   label_bitrate_value->setText   ( list_audiocodec->model()->data(current,Audio::CodecModel::Role::BITRATE)   .toString());
+   label_frequency_value->setText ( list_audiocodec->model()->data(current,Audio::CodecModel::Role::SAMPLERATE).toString());
 }
 
 ///Select available security options for various methods

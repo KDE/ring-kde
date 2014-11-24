@@ -70,7 +70,7 @@
 #include "lib/contact.h"
 #include "lib/accountmodel.h"
 #include "lib/phonedirectorymodel.h"
-#include "lib/audiosettingsmodel.h"
+#include "lib/audio/settings.h"
 #include "lib/presencestatusmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
@@ -103,7 +103,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    m_pCanvasManager = new CanvasObjectManager();
 
    //Set global settings
-   AudioSettingsModel::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
+   Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
    PresenceStatusModel::instance()->setPresenceVisitor(new KDEPresenceSerializationVisitor());
 
    m_pEventManager = new EventManager(this);
@@ -136,8 +136,8 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction());
    toolButton_sndVol->setDefaultAction(ActionCollection::instance()->mutePlaybackAction());
 
-   connect(slider_recVol,SIGNAL(valueChanged(int)),AudioSettingsModel::instance(),SLOT(setCaptureVolume(int)));
-   connect(slider_sndVol,SIGNAL(valueChanged(int)),AudioSettingsModel::instance(),SLOT(setPlaybackVolume(int)));
+   connect(slider_recVol,SIGNAL(valueChanged(int)),Audio::Settings::instance(),SLOT(setCaptureVolume(int)));
+   connect(slider_sndVol,SIGNAL(valueChanged(int)),Audio::Settings::instance(),SLOT(setPlaybackVolume(int)));
 
    //Setup signals
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                      /
@@ -151,7 +151,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    /*                                                                                                                                        */
 
    //Volume controls
-//    connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),slider_sndVol,SLOT(setValue(int)));
+//    connect(Audio::Settings::instance(),SIGNAL(playbackVolumeChanged(int)),slider_sndVol,SLOT(setValue(int)));
 
    //Auto completion
    loadAutoCompletion();
@@ -181,7 +181,7 @@ void SFLPhoneView::loadWindow()
    updateVolumeControls  ();
    loadAutoCompletion    ();
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
-   AudioSettingsModel::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
+   Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
 }
 
 
@@ -442,8 +442,8 @@ void SFLPhoneView::updateVolumeControls()
    slider_recVol->blockSignals(true);
    slider_sndVol->blockSignals(true);
 
-   slider_recVol->setValue(AudioSettingsModel::instance()->captureVolume());
-   slider_sndVol->setValue(AudioSettingsModel::instance()->playbackVolume());
+   slider_recVol->setValue(Audio::Settings::instance()->captureVolume());
+   slider_sndVol->setValue(Audio::Settings::instance()->playbackVolume());
 
    slider_recVol->blockSignals(false);
    slider_sndVol->blockSignals(false);

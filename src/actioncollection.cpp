@@ -48,7 +48,7 @@
 #include <lib/account.h>
 #include <lib/accountmodel.h>
 #include <lib/callmodel.h>
-#include <lib/audiosettingsmodel.h>
+#include <lib/audio/settings.h>
 #include <lib/contactmodel.h>
 
 
@@ -226,11 +226,11 @@ void ActionCollection::setupAction()
    action_showBookmarkDock->setChecked(ConfigurationSkeleton::displayBookmarkDock());
 
    action_mute_capture->setCheckable(true);
-   connect(action_mute_capture,SIGNAL(toggled(bool)),AudioSettingsModel::instance(),SLOT(muteCapture(bool)));
-   connect(AudioSettingsModel::instance(),SIGNAL(captureMuted(bool)),action_mute_capture,SLOT(setChecked(bool)));
+   connect(action_mute_capture,SIGNAL(toggled(bool)),Audio::Settings::instance(),SLOT(muteCapture(bool)));
+   connect(Audio::Settings::instance(),SIGNAL(captureMuted(bool)),action_mute_capture,SLOT(setChecked(bool)));
    action_mute_playback->setCheckable(true);
-   connect(action_mute_playback,SIGNAL(toggled(bool)),AudioSettingsModel::instance(),SLOT(mutePlayback(bool)));
-   connect(AudioSettingsModel::instance(),SIGNAL(playbackMuted(bool)),action_mute_playback,SLOT(setChecked(bool)));
+   connect(action_mute_playback,SIGNAL(toggled(bool)),Audio::Settings::instance(),SLOT(mutePlayback(bool)));
+   connect(Audio::Settings::instance(),SIGNAL(playbackMuted(bool)),action_mute_playback,SLOT(setChecked(bool)));
 
 
 
@@ -256,8 +256,8 @@ void ActionCollection::setupAction()
    /**/connect(MacroModel::instance(),       SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
    /*                                                                                                                   */
 
-   connect(AudioSettingsModel::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
-   connect(AudioSettingsModel::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
+   connect(Audio::Settings::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
+   connect(Audio::Settings::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
 
 //    SFLPhone::app()->actionCollection()->setConfigGlobal(true);
    SFLPhone::app()->actionCollection()->addAction("action_accept"                , action_accept                );
@@ -614,7 +614,7 @@ void ActionCollection::slotAddContact()
 ///Change icon of the record button
 void ActionCollection::updateRecordButton()
 {
-   double recVol = AudioSettingsModel::instance()->captureVolume();
+   double recVol = Audio::Settings::instance()->captureVolume();
    static const QIcon icons[4] = {QIcon(":/images/icons/mic.svg"),QIcon(":/images/icons/mic_25.svg"),
       QIcon(":/images/icons/mic_50.svg"),QIcon(":/images/icons/mic_75.svg")};
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
@@ -625,7 +625,7 @@ void ActionCollection::updateRecordButton()
 ///Update the colunm button icon
 void ActionCollection::updateVolumeButton()
 {
-   double sndVol = AudioSettingsModel::instance()->playbackVolume();
+   double sndVol = Audio::Settings::instance()->playbackVolume();
    static const QIcon icons[4] = {QIcon(":/images/icons/speaker.svg"),QIcon(":/images/icons/speaker_25.svg"),
       QIcon(":/images/icons/speaker_50.svg"),QIcon(":/images/icons/speaker_75.svg")};
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;

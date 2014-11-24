@@ -66,7 +66,6 @@ set( qtsflphone_LIB_SRCS
   historymodel.cpp
   abstractbookmarkmodel.cpp
   credentialmodel.cpp
-  audiocodecmodel.cpp
   instantmessagingmodel.cpp
   contactproxymodel.cpp
   useractionmodel.cpp
@@ -78,7 +77,6 @@ set( qtsflphone_LIB_SRCS
   tlsmethodmodel.cpp
   numbercompletionmodel.cpp
   categorizedaccountmodel.cpp
-  audiosettingsmodel.cpp
   ringtonemodel.cpp
   lastusednumbermodel.cpp
   securityvalidationmodel.cpp
@@ -91,6 +89,14 @@ set( qtsflphone_LIB_SRCS
   video/videoresolution.cpp
   video/videorate.cpp
   video/videomodel.cpp
+  audio/alsapluginmodel.cpp
+  audio/codecmodel.cpp
+  audio/inputdevicemodel.cpp
+  audio/managermodel.cpp
+  audio/outputdevicemodel.cpp
+  audio/ringtonedevicemodel.cpp
+  audio/settings.cpp
+
 
   #Data backends
   transitionalcontactbackend.cpp
@@ -131,7 +137,6 @@ set( qtsflphone_LIB_HDRS
   abstractitembackend.h
   abstractbookmarkmodel.h
   credentialmodel.h
-  audiocodecmodel.h
   instantmessagingmodel.h
   contactproxymodel.h
   useractionmodel.h
@@ -145,7 +150,6 @@ set( qtsflphone_LIB_HDRS
   numbercompletionmodel.h
   categorizedaccountmodel.h
   numbercategory.h
-  audiosettingsmodel.h
   ringtonemodel.h
   lastusednumbermodel.h
   securityvalidationmodel.h
@@ -166,6 +170,14 @@ set( qtsflphone_LIB_HDRS
   video/videoresolution.h
   video/videochannel.h
   video/videorate.h
+  audio/alsapluginmodel.h
+  audio/codecmodel.h
+  audio/inputdevicemodel.h
+  audio/managermodel.h
+  audio/outputdevicemodel.h
+  audio/ringtonedevicemodel.h
+  audio/settings.h
+
   extensions/presenceitembackendmodelextension.h
   #commonbackendmanagerinterface.h
 )
