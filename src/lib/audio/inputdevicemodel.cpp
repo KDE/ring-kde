@@ -21,11 +21,28 @@
 #include "dbus/configurationmanager.h"
 #include "settings.h"
 
+class InputDeviceModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   InputDeviceModelPrivate(Audio::InputDeviceModel* parent);
+   QStringList m_lDeviceList;
+
+private:
+   Audio::InputDeviceModel* q_ptr;
+};
+
+InputDeviceModelPrivate::InputDeviceModelPrivate(Audio::InputDeviceModel* parent) : q_ptr(parent)
+{
+   
+}
+
 ///Constructor
-Audio::InputDeviceModel::InputDeviceModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent))
+Audio::InputDeviceModel::InputDeviceModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent)),
+d_ptr(new InputDeviceModelPrivate(this))
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   m_lDeviceList = configurationManager.getAudioInputDeviceList  ();
+   d_ptr->m_lDeviceList = configurationManager.getAudioInputDeviceList  ();
 }
 
 ///Destructor
@@ -41,7 +58,7 @@ QVariant Audio::InputDeviceModel::data( const QModelIndex& index, int role) cons
       return QVariant();
    switch(role) {
       case Qt::DisplayRole:
-         return m_lDeviceList[index.row()];
+         return d_ptr->m_lDeviceList[index.row()];
    };
    return QVariant();
 }
@@ -51,7 +68,7 @@ int Audio::InputDeviceModel::rowCount( const QModelIndex& parent ) const
 {
    if (parent.isValid())
       return 0;
-   return m_lDeviceList.size();
+   return d_ptr->m_lDeviceList.size();
 }
 
 ///Re-implement QAbstractListModel flags
@@ -76,7 +93,7 @@ QModelIndex Audio::InputDeviceModel::currentDevice() const
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList currentDevices = configurationManager.getCurrentAudioDevicesIndex();
    const int idx = currentDevices[static_cast<int>(Settings::DeviceIndex::INPUT)].toInt();
-   if (idx >= m_lDeviceList.size())
+   if (idx >= d_ptr->m_lDeviceList.size())
       return QModelIndex();
    return index(idx,0);
 }
@@ -100,7 +117,9 @@ void Audio::InputDeviceModel::setCurrentDevice(int idx)
 void Audio::InputDeviceModel::reload()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   m_lDeviceList = configurationManager.getAudioInputDeviceList  ();
+   d_ptr->m_lDeviceList = configurationManager.getAudioInputDeviceList  ();
    emit layoutChanged();
-   emit dataChanged(index(0,0),index(m_lDeviceList.size()-1,0));
+   emit dataChanged(index(0,0),index(d_ptr->m_lDeviceList.size()-1,0));
 }
+
+#include <inputdevicemodel.moc>

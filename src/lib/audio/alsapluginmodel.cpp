@@ -20,11 +20,28 @@
 //SFLPhone
 #include "dbus/configurationmanager.h"
 
+class AlsaPluginModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   AlsaPluginModelPrivate(Audio::AlsaPluginModel* parent);
+   QStringList m_lDeviceList;
+
+private:
+   Audio::AlsaPluginModel* q_ptr;
+};
+
+AlsaPluginModelPrivate::AlsaPluginModelPrivate(Audio::AlsaPluginModel* parent) : q_ptr(parent)
+{
+   
+}
+
 ///Constructor
-Audio::AlsaPluginModel::AlsaPluginModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent))
+Audio::AlsaPluginModel::AlsaPluginModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent)),
+d_ptr(new AlsaPluginModelPrivate(this))
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   m_lDeviceList = configurationManager.getAudioPluginList();
+   d_ptr->m_lDeviceList = configurationManager.getAudioPluginList();
 }
 
 ///Destructor
@@ -40,7 +57,7 @@ QVariant Audio::AlsaPluginModel::data( const QModelIndex& index, int role) const
       return QVariant();
    switch(role) {
       case Qt::DisplayRole:
-         return m_lDeviceList[index.row()];
+         return d_ptr->m_lDeviceList[index.row()];
    };
    return QVariant();
 }
@@ -50,7 +67,7 @@ int Audio::AlsaPluginModel::rowCount( const QModelIndex& parent ) const
 {
    if (parent.isValid())
       return 0;
-   return m_lDeviceList.size();
+   return d_ptr->m_lDeviceList.size();
 }
 
 ///Re-implement QAbstractListModel flags
@@ -73,7 +90,7 @@ bool Audio::AlsaPluginModel::setData( const QModelIndex& index, const QVariant &
 QModelIndex Audio::AlsaPluginModel::currentPlugin() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   const int idx = m_lDeviceList.indexOf(configurationManager.getCurrentAudioOutputPlugin());
+   const int idx = d_ptr->m_lDeviceList.indexOf(configurationManager.getCurrentAudioOutputPlugin());
    qDebug() << "Invalid current audio plugin";
    if (idx == -1)
       return QModelIndex();
@@ -87,7 +104,7 @@ void Audio::AlsaPluginModel::setCurrentPlugin(const QModelIndex& idx)
    if (!idx.isValid())
       return;
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   configurationManager.setAudioPlugin(m_lDeviceList[idx.row()]);
+   configurationManager.setAudioPlugin(d_ptr->m_lDeviceList[idx.row()]);
 }
 
 ///Set the current index (qcombobox compatibility shim)
@@ -100,7 +117,9 @@ void Audio::AlsaPluginModel::setCurrentPlugin(int idx)
 void Audio::AlsaPluginModel::reload()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   m_lDeviceList = configurationManager.getAudioPluginList();
+   d_ptr->m_lDeviceList = configurationManager.getAudioPluginList();
    emit layoutChanged();
-   emit dataChanged(index(0,0),index(m_lDeviceList.size()-1,0));
+   emit dataChanged(index(0,0),index(d_ptr->m_lDeviceList.size()-1,0));
 }
+
+#include <alsapluginmodel.moc>

@@ -27,6 +27,7 @@
 #include "../typedefs.h"
 
 class Account;
+class CodecModelPrivate;
 
 namespace Audio {
 
@@ -66,21 +67,8 @@ public:
    Q_INVOKABLE void save     (                        );
 
 private:
-   ///@struct AudioCodecData store audio codec information
-   struct AudioCodecData {
-      int              id        ;
-      QString          name      ;
-      QString          bitrate   ;
-      QString          samplerate;
-   };
-
-   //Attributes
-   QList<AudioCodecData*> m_lAudioCodecs  ;
-   QMap<int,bool>         m_lEnabledCodecs;
-   Account*               m_pAccount      ;
-
-   //Helpers
-   bool findCodec(int id);
+   QScopedPointer<CodecModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(CodecModel)
 };
 
 }

@@ -21,11 +21,28 @@
 #include "dbus/configurationmanager.h"
 #include "settings.h"
 
+class RingtoneDeviceModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   RingtoneDeviceModelPrivate(Audio::RingtoneDeviceModel* parent);
+   QStringList m_lDeviceList;
+
+private:
+   Audio::RingtoneDeviceModel* q_ptr;
+};
+
+RingtoneDeviceModelPrivate::RingtoneDeviceModelPrivate(Audio::RingtoneDeviceModel* parent) : q_ptr(parent)
+{
+   
+}
+
 ///Constructor
-Audio::RingtoneDeviceModel::RingtoneDeviceModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent))
+Audio::RingtoneDeviceModel::RingtoneDeviceModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent)),
+d_ptr(new RingtoneDeviceModelPrivate(this))
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   m_lDeviceList = configurationManager.getAudioOutputDeviceList();
+   d_ptr->m_lDeviceList = configurationManager.getAudioOutputDeviceList();
 }
 
 ///Destructor
@@ -41,7 +58,7 @@ QVariant Audio::RingtoneDeviceModel::data( const QModelIndex& index, int role) c
       return QVariant();
    switch(role) {
       case Qt::DisplayRole:
-         return m_lDeviceList[index.row()];
+         return d_ptr->m_lDeviceList[index.row()];
    };
    return QVariant();
 }
@@ -51,7 +68,7 @@ int Audio::RingtoneDeviceModel::rowCount( const QModelIndex& parent ) const
 {
    if (parent.isValid())
       return 0;
-   return m_lDeviceList.size();
+   return d_ptr->m_lDeviceList.size();
 }
 
 ///Re-implement QAbstractListModel flags
@@ -76,7 +93,7 @@ QModelIndex Audio::RingtoneDeviceModel::currentDevice() const
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList currentDevices = configurationManager.getCurrentAudioDevicesIndex();
    const int         idx            = currentDevices[static_cast<int>(Audio::Settings::DeviceIndex::RINGTONE)].toInt();
-   if (idx >= m_lDeviceList.size())
+   if (idx >= d_ptr->m_lDeviceList.size())
       return QModelIndex();
    return index(idx,0);
 }
@@ -100,7 +117,9 @@ void Audio::RingtoneDeviceModel::setCurrentDevice(int idx)
 void Audio::RingtoneDeviceModel::reload()
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   m_lDeviceList = configurationManager.getAudioOutputDeviceList();
+   d_ptr->m_lDeviceList = configurationManager.getAudioOutputDeviceList();
    emit layoutChanged();
-   emit dataChanged(index(0,0),index(m_lDeviceList.size()-1,0));
+   emit dataChanged(index(0,0),index(d_ptr->m_lDeviceList.size()-1,0));
 }
+
+#include <ringtonedevicemodel.moc>

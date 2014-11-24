@@ -26,6 +26,8 @@
 //SFLPhone
 #include "../typedefs.h"
 
+class ManagerModelPrivate;
+
 namespace Audio {
 
 class LIB_EXPORT ManagerModel   : public QAbstractListModel {
@@ -62,15 +64,8 @@ Q_SIGNALS:
    void currentManagerChanged(const QModelIndex&);
 
 private:
-   class ManagerName {
-   public:
-      constexpr static const char* PULSEAUDIO = "pulseaudio";
-      constexpr static const char* ALSA       = "alsa"      ;
-      constexpr static const char* JACK       = "jack"      ;
-   };
-
-   QStringList m_lDeviceList;
-   QList<Manager> m_lSupportedManagers;
+   QScopedPointer<ManagerModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(ManagerModel)
 };
 
 }

@@ -26,27 +26,55 @@
 #include "outputdevicemodel.h"
 #include "inputdevicemodel.h"
 
+namespace Audio {
+class SettingsPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   SettingsPrivate(Audio::Settings* parent);
+
+   //Attributes
+   mutable Audio::AlsaPluginModel*     m_pAlsaPluginModel    ;
+   mutable Audio::InputDeviceModel*    m_pInputDeviceModel   ;
+   mutable Audio::OutputDeviceModel*   m_pOutputDeviceModel  ;
+   mutable Audio::ManagerModel*        m_pAudioManagerModel  ;
+   mutable Audio::RingtoneDeviceModel* m_pRingtoneDeviceModel;
+   bool                 m_EnableRoomTone      ;
+
+private Q_SLOTS:
+   void slotVolumeChanged(const QString& str, double volume);
+
+private:
+   Audio::Settings* q_ptr;
+};
+}
+
 Audio::Settings* Audio::Settings::m_spInstance = nullptr;
 
-///Constructor
-Audio::Settings::Settings() : QObject(),m_EnableRoomTone(false),
+Audio::SettingsPrivate::SettingsPrivate(Audio::Settings* parent) : q_ptr(parent),m_EnableRoomTone(false),
  m_pAlsaPluginModel  (nullptr), m_pInputDeviceModel   (nullptr),
  m_pAudioManagerModel(nullptr), m_pRingtoneDeviceModel(nullptr),
  m_pOutputDeviceModel(nullptr)
 {
-   m_pRingtoneDeviceModel = new RingtoneDeviceModel (this);
+
+}
+
+///Constructor
+Audio::Settings::Settings() : QObject(), d_ptr(new Audio::SettingsPrivate(this))
+{
+   d_ptr->m_pRingtoneDeviceModel = new RingtoneDeviceModel (this);
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   connect(&configurationManager,SIGNAL(volumeChanged(QString,double)),this,SLOT(slotVolumeChanged(QString,double)));
+   connect(&configurationManager,SIGNAL(volumeChanged(QString,double)),d_ptr.data(),SLOT(slotVolumeChanged(QString,double)));
 }
 
 ///Destructor
 Audio::Settings::~Settings()
 {
-   delete m_pAlsaPluginModel    ;
-   delete m_pInputDeviceModel   ;
-   delete m_pOutputDeviceModel  ;
-   delete m_pAudioManagerModel  ;
-   delete m_pRingtoneDeviceModel;
+   delete d_ptr->m_pAlsaPluginModel    ;
+   delete d_ptr->m_pInputDeviceModel   ;
+   delete d_ptr->m_pOutputDeviceModel  ;
+   delete d_ptr->m_pAudioManagerModel  ;
+   delete d_ptr->m_pRingtoneDeviceModel;
 }
 
 ///Singleton
@@ -61,58 +89,58 @@ Audio::Settings* Audio::Settings::instance()
 ///Return plugin model (alsa only for the time being)
 Audio::AlsaPluginModel* Audio::Settings::alsaPluginModel() const
 {
-   if (!m_pAlsaPluginModel)
-      m_pAlsaPluginModel = new Audio::AlsaPluginModel(this);
-   return m_pAlsaPluginModel;
+   if (!d_ptr->m_pAlsaPluginModel)
+      d_ptr->m_pAlsaPluginModel = new Audio::AlsaPluginModel(this);
+   return d_ptr->m_pAlsaPluginModel;
 }
 
 
 ///Return the input device model
 Audio::InputDeviceModel* Audio::Settings::inputDeviceModel() const
 {
-   if (!m_pInputDeviceModel)
-      m_pInputDeviceModel = new Audio::InputDeviceModel(this);
-   return m_pInputDeviceModel;
+   if (!d_ptr->m_pInputDeviceModel)
+      d_ptr->m_pInputDeviceModel = new Audio::InputDeviceModel(this);
+   return d_ptr->m_pInputDeviceModel;
 }
 
 ///Return the output device model
 Audio::OutputDeviceModel* Audio::Settings::outputDeviceModel() const
 {
-   if (!m_pOutputDeviceModel)
-      m_pOutputDeviceModel   = new Audio::OutputDeviceModel(this);
-   return m_pOutputDeviceModel;
+   if (!d_ptr->m_pOutputDeviceModel)
+      d_ptr->m_pOutputDeviceModel   = new Audio::OutputDeviceModel(this);
+   return d_ptr->m_pOutputDeviceModel;
 }
 
 ///Return audio manager
 Audio::ManagerModel* Audio::Settings::managerModel() const
 {
-   if (!m_pAudioManagerModel)
-      m_pAudioManagerModel = new Audio::ManagerModel(this);
-   return m_pAudioManagerModel;
+   if (!d_ptr->m_pAudioManagerModel)
+      d_ptr->m_pAudioManagerModel = new Audio::ManagerModel(this);
+   return d_ptr->m_pAudioManagerModel;
 }
 
 ///Return the ringtone device model
 Audio::RingtoneDeviceModel* Audio::Settings::ringtoneDeviceModel() const
 {
-   if (!m_pRingtoneDeviceModel)
-      m_pRingtoneDeviceModel = new Audio::RingtoneDeviceModel (this);
-   return m_pRingtoneDeviceModel;
+   if (!d_ptr->m_pRingtoneDeviceModel)
+      d_ptr->m_pRingtoneDeviceModel = new Audio::RingtoneDeviceModel (this);
+   return d_ptr->m_pRingtoneDeviceModel;
 }
 
 ///Is the room tone (globally) enabled
 bool Audio::Settings::isRoomToneEnabled()
 {
-   return m_EnableRoomTone;
+   return d_ptr->m_EnableRoomTone;
 }
 
 ///Reload everything
 void Audio::Settings::reload()
 {
-   m_pAlsaPluginModel->reload();
-   m_pInputDeviceModel->reload();
-   m_pOutputDeviceModel->reload();
+   d_ptr->m_pAlsaPluginModel->reload();
+   d_ptr->m_pInputDeviceModel->reload();
+   d_ptr->m_pOutputDeviceModel->reload();
 //    m_pAudioManagerModel->reload();
-   m_pRingtoneDeviceModel->reload();
+   d_ptr->m_pRingtoneDeviceModel->reload();
 }
 
 ///Play room tone
@@ -134,7 +162,7 @@ void Audio::Settings::stopRoomTone() const
 ///Set if the roomtone is (globally) enabled
 void Audio::Settings::setEnableRoomTone(bool enable)
 {
-   m_EnableRoomTone = enable;
+   d_ptr->m_EnableRoomTone = enable;
 }
 
 ///Enable noise suppress code, may make things worst
@@ -244,13 +272,14 @@ bool Audio::Settings::areDTMFMuted() const
 }
 
 ///Called when the volume change for external reasons
-void Audio::Settings::slotVolumeChanged(const QString& str, double volume)
+void Audio::SettingsPrivate::slotVolumeChanged(const QString& str, double volume)
 {
    if (str == Audio::Settings::DeviceKey::CAPTURE)
-      emit captureVolumeChanged(static_cast<int>(volume*100));
+      emit q_ptr->captureVolumeChanged(static_cast<int>(volume*100));
    else if (str == Audio::Settings::DeviceKey::PLAYBACK)
-      emit playbackVolumeChanged(static_cast<int>(volume*100));
+      emit q_ptr->playbackVolumeChanged(static_cast<int>(volume*100));
    else
       qDebug() << "Unknown audio device" << str;
 }
 
+#include <settings.moc>

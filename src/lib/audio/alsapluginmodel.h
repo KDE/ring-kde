@@ -26,9 +26,11 @@
 //SFLPhone
 #include "../typedefs.h"
 
+class AlsaPluginModelPrivate;
+
 namespace Audio {
 
-class LIB_EXPORT AlsaPluginModel    : public QAbstractListModel {
+class LIB_EXPORT AlsaPluginModel : public QAbstractListModel {
    Q_OBJECT
 public:
    explicit AlsaPluginModel(const QObject* parent);
@@ -51,7 +53,8 @@ public:
    void reload();
 
 private:
-   QStringList m_lDeviceList;
+   QScopedPointer<AlsaPluginModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(AlsaPluginModel)
 };
 
 }

@@ -23,6 +23,7 @@
 //SFLPhone
 #include "../typedefs.h"
 
+
 namespace Audio {
 
 class AlsaPluginModel    ;
@@ -30,6 +31,8 @@ class InputDeviceModel   ;
 class OutputDeviceModel  ;
 class ManagerModel       ;
 class RingtoneDeviceModel;
+
+class SettingsPrivate;
 
 /**
  * This class group all ComboBox models used by audio settings dialogs
@@ -100,20 +103,11 @@ Q_SIGNALS:
    void captureVolumeChanged(int);
    void DTMFMutedChanged(bool);
 
-private Q_SLOTS:
-   void slotVolumeChanged(const QString& str, double volume);
-
 private:
    //Constructor
    explicit Settings();
-
-   //Attributes
-   mutable AlsaPluginModel*     m_pAlsaPluginModel    ;
-   mutable InputDeviceModel*    m_pInputDeviceModel   ;
-   mutable OutputDeviceModel*   m_pOutputDeviceModel  ;
-   mutable ManagerModel*        m_pAudioManagerModel  ;
-   mutable RingtoneDeviceModel* m_pRingtoneDeviceModel;
-   bool                 m_EnableRoomTone      ;
+   QScopedPointer<SettingsPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(Settings)
 
    //Singleton
    static Settings* m_spInstance;

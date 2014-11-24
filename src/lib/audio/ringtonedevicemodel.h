@@ -26,6 +26,8 @@
 //SFLPhone
 #include "../typedefs.h"
 
+class RingtoneDeviceModelPrivate;
+
 namespace Audio {
 
 class LIB_EXPORT RingtoneDeviceModel: public QAbstractListModel {
@@ -51,7 +53,8 @@ public:
    void reload();
 
 private:
-   QStringList m_lDeviceList;
+   QScopedPointer<RingtoneDeviceModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(RingtoneDeviceModel)
 };
 
 }

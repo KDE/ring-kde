@@ -26,6 +26,8 @@
 //SFLPhone
 #include "../typedefs.h"
 
+class InputDeviceModelPrivate;
+
 namespace Audio {
 
 class LIB_EXPORT InputDeviceModel   : public QAbstractListModel {
@@ -51,7 +53,8 @@ public:
    void reload();
 
 private:
-   QStringList m_lDeviceList;
+   QScopedPointer<InputDeviceModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(InputDeviceModel)
 };
 
 }

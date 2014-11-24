@@ -21,23 +21,48 @@
 #include "dbus/configurationmanager.h"
 #include "settings.h"
 
+class ManagerModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   ManagerModelPrivate(Audio::ManagerModel* parent);
+   class ManagerName {
+   public:
+      constexpr static const char* PULSEAUDIO = "pulseaudio";
+      constexpr static const char* ALSA       = "alsa"      ;
+      constexpr static const char* JACK       = "jack"      ;
+   };
+
+   QStringList m_lDeviceList;
+   QList<Audio::ManagerModel::Manager> m_lSupportedManagers;
+
+private:
+   Audio::ManagerModel* q_ptr;
+};
+
+ManagerModelPrivate::ManagerModelPrivate(Audio::ManagerModel* parent) : q_ptr(parent)
+{
+   
+}
+
 ///Constructor
-Audio::ManagerModel::ManagerModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent))
+Audio::ManagerModel::ManagerModel(const QObject* parent) : QAbstractListModel(const_cast<QObject*>(parent)),
+d_ptr(new ManagerModelPrivate(this))
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QStringList managers = configurationManager.getSupportedAudioManagers();
    foreach(const QString& m,managers) {
-      if (m == ManagerName::PULSEAUDIO) {
-         m_lSupportedManagers << Manager::PULSE;
-         m_lDeviceList << "Pulse Audio";
+      if (m == ManagerModelPrivate::ManagerName::PULSEAUDIO) {
+         d_ptr->m_lSupportedManagers << Manager::PULSE;
+         d_ptr->m_lDeviceList << "Pulse Audio";
       }
-      else if (m == ManagerName::ALSA) {
-         m_lSupportedManagers << Manager::ALSA;
-         m_lDeviceList<< "ALSA";
+      else if (m == ManagerModelPrivate::ManagerName::ALSA) {
+         d_ptr->m_lSupportedManagers << Manager::ALSA;
+         d_ptr->m_lDeviceList<< "ALSA";
       }
-      else if (m == ManagerName::JACK) {
-         m_lSupportedManagers << Manager::JACK;
-         m_lDeviceList<< "Jack";
+      else if (m == ManagerModelPrivate::ManagerName::JACK) {
+         d_ptr->m_lSupportedManagers << Manager::JACK;
+         d_ptr->m_lDeviceList<< "Jack";
       }
       else
          qDebug() << "Unsupported audio manager" << m;
@@ -47,7 +72,7 @@ Audio::ManagerModel::ManagerModel(const QObject* parent) : QAbstractListModel(co
 ///Destructor
 Audio::ManagerModel::~ManagerModel()
 {
-   m_lDeviceList.clear();
+   d_ptr->m_lDeviceList.clear();
 }
 
 ///Re-implement QAbstractListModel data
@@ -57,7 +82,7 @@ QVariant Audio::ManagerModel::data( const QModelIndex& index, int role) const
       return QVariant();
    switch(role) {
       case Qt::DisplayRole:
-         return m_lDeviceList[index.row()];
+         return d_ptr->m_lDeviceList[index.row()];
    };
    return QVariant();
 }
@@ -67,7 +92,7 @@ int Audio::ManagerModel::rowCount( const QModelIndex& parent ) const
 {
    if (parent.isValid())
       return 0;
-   return m_lDeviceList.size();
+   return d_ptr->m_lDeviceList.size();
 }
 
 ///Re-implement QAbstractListModel flags
@@ -94,18 +119,18 @@ QModelIndex Audio::ManagerModel::currentManagerIndex() const
 {
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
    const QString manager = configurationManager.getAudioManager();
-      if (manager == ManagerName::PULSEAUDIO)
+      if (manager == ManagerModelPrivate::ManagerName::PULSEAUDIO)
          return index((int)Manager::PULSE,0);
-      else if (manager == ManagerName::ALSA)
+      else if (manager == ManagerModelPrivate::ManagerName::ALSA)
          return index((int)Manager::ALSA,0);
-      else if (manager == ManagerName::JACK)
+      else if (manager == ManagerModelPrivate::ManagerName::JACK)
          return index((int)Manager::JACK,0);
       return QModelIndex();
 }
 
 Audio::ManagerModel::Manager Audio::ManagerModel::currentManager() const
 {
-   return m_lSupportedManagers[currentManagerIndex().row()];
+   return d_ptr->m_lSupportedManagers[currentManagerIndex().row()];
 }
 
 ///Set current audio manager
@@ -116,17 +141,17 @@ bool Audio::ManagerModel::setCurrentManager(const QModelIndex& idx)
 
    bool ret = true;
    ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
-   switch (m_lSupportedManagers[idx.row()]) {
+   switch (d_ptr->m_lSupportedManagers[idx.row()]) {
       case Manager::PULSE:
-         ret = configurationManager.setAudioManager(ManagerName::PULSEAUDIO);
+         ret = configurationManager.setAudioManager(ManagerModelPrivate::ManagerName::PULSEAUDIO);
          Audio::Settings::instance()->reload();
          break;
       case Manager::ALSA:
-         ret = configurationManager.setAudioManager(ManagerName::ALSA);
+         ret = configurationManager.setAudioManager(ManagerModelPrivate::ManagerName::ALSA);
          Audio::Settings::instance()->reload();
          break;
       case Manager::JACK:
-         ret = configurationManager.setAudioManager(ManagerName::JACK);
+         ret = configurationManager.setAudioManager(ManagerModelPrivate::ManagerName::JACK);
          Audio::Settings::instance()->reload();
          break;
    };
@@ -144,3 +169,5 @@ bool Audio::ManagerModel::setCurrentManager(int idx)
 {
    return setCurrentManager(index(idx,0));
 }
+
+#include <managermodel.moc>
