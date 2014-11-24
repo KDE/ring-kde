@@ -20,8 +20,23 @@
 #include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
 
+class CredentialModelPrivate
+{
+public:
+   ///@struct CredentialData store credential information
+   struct CredentialData2 {
+      QString          name    ;
+      QString          password;
+      QString          realm   ;
+   };
+
+   //Attributes
+   QList<CredentialData2*> m_lCredentials;
+};
+
 ///Constructor
-CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance())
+CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCoreApplication::instance()),
+d_ptr(new CredentialModelPrivate())
 {
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(CredentialModel::Role::NAME    ,QByteArray("name"));
@@ -32,7 +47,7 @@ CredentialModel::CredentialModel(QObject* par) : QAbstractListModel(par?par:QCor
 
 CredentialModel::~CredentialModel()
 {
-   foreach (CredentialData2* data, m_lCredentials) {
+   foreach (CredentialModelPrivate::CredentialData2* data, d_ptr->m_lCredentials) {
       delete data;
    }
 }
@@ -42,16 +57,16 @@ QVariant CredentialModel::data(const QModelIndex& idx, int role) const {
    if (idx.column() == 0) {
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lCredentials[idx.row()]->name);
+            return QVariant(d_ptr->m_lCredentials[idx.row()]->name);
             break;
          case CredentialModel::Role::NAME:
-            return m_lCredentials[idx.row()]->name;
+            return d_ptr->m_lCredentials[idx.row()]->name;
             break;
          case CredentialModel::Role::PASSWORD:
-            return m_lCredentials[idx.row()]->password;
+            return d_ptr->m_lCredentials[idx.row()]->password;
             break;
          case CredentialModel::Role::REALM:
-            return m_lCredentials[idx.row()]->realm;
+            return d_ptr->m_lCredentials[idx.row()]->realm;
             break;
          default:
             break;
@@ -63,7 +78,7 @@ QVariant CredentialModel::data(const QModelIndex& idx, int role) const {
 ///Number of credentials
 int CredentialModel::rowCount(const QModelIndex& par) const {
    Q_UNUSED(par)
-   return m_lCredentials.size();
+   return d_ptr->m_lCredentials.size();
 }
 
 ///Model flags
@@ -75,20 +90,20 @@ Qt::ItemFlags CredentialModel::flags(const QModelIndex& idx) const {
 
 ///Set credential data
 bool CredentialModel::setData( const QModelIndex& idx, const QVariant &value, int role) {
-   if (!idx.isValid() || idx.row() > m_lCredentials.size()-1)
+   if (!idx.isValid() || idx.row() > d_ptr->m_lCredentials.size()-1)
       return false;
    if (idx.column() == 0 && role == CredentialModel::Role::NAME) {
-      m_lCredentials[idx.row()]->name = value.toString();
+      d_ptr->m_lCredentials[idx.row()]->name = value.toString();
       emit dataChanged(idx, idx);
       return true;
    }
    else if (idx.column() == 0 && role == CredentialModel::Role::PASSWORD) {
-      m_lCredentials[idx.row()]->password = value.toString();
+      d_ptr->m_lCredentials[idx.row()]->password = value.toString();
       emit dataChanged(idx, idx);
       return true;
    }
    else if (idx.column() == 0 && role == CredentialModel::Role::REALM) {
-      m_lCredentials[idx.row()]->realm = value.toString();
+      d_ptr->m_lCredentials[idx.row()]->realm = value.toString();
       emit dataChanged(idx, idx);
       return true;
    }
@@ -97,18 +112,16 @@ bool CredentialModel::setData( const QModelIndex& idx, const QVariant &value, in
 
 ///Add a new credential
 QModelIndex CredentialModel::addCredentials() {
-   m_lCredentials << new CredentialData2;
-   emit dataChanged(index(m_lCredentials.size()-1,0), index(m_lCredentials.size()-1,0));
-   return index(m_lCredentials.size()-1,0);
+   d_ptr->m_lCredentials << new CredentialModelPrivate::CredentialData2;
+   emit dataChanged(index(d_ptr->m_lCredentials.size()-1,0), index(d_ptr->m_lCredentials.size()-1,0));
+   return index(d_ptr->m_lCredentials.size()-1,0);
 }
 
 ///Remove credential at 'idx'
 void CredentialModel::removeCredentials(QModelIndex idx) {
-   qDebug() << "REMOVING" << idx.row() << m_lCredentials.size();
    if (idx.isValid()) {
-      m_lCredentials.removeAt(idx.row());
-      emit dataChanged(idx, index(m_lCredentials.size()-1,0));
-      qDebug() << "DONE" << m_lCredentials.size();
+      d_ptr->m_lCredentials.removeAt(idx.row());
+      emit dataChanged(idx, index(d_ptr->m_lCredentials.size()-1,0));
    }
    else {
       qDebug() << "Failed to remove an invalid credential";
@@ -118,8 +131,8 @@ void CredentialModel::removeCredentials(QModelIndex idx) {
 ///Remove everything
 void CredentialModel::clear()
 {
-   foreach(CredentialData2* data2, m_lCredentials) {
+   foreach(CredentialModelPrivate::CredentialData2* data2, d_ptr->m_lCredentials) {
       delete data2;
    }
-   m_lCredentials.clear();
+   d_ptr->m_lCredentials.clear();
 }

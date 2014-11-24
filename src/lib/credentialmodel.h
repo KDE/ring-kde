@@ -23,6 +23,8 @@
 #include "typedefs.h"
 
 
+class CredentialModelPrivate;
+
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT CredentialModel : public QAbstractListModel {
    #pragma GCC diagnostic push
@@ -42,10 +44,10 @@ public:
    virtual ~CredentialModel();
 
    //Abstract model member
-   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
-   int rowCount(const QModelIndex& parent = QModelIndex()             ) const;
-   Qt::ItemFlags flags(const QModelIndex& index                       ) const;
-   virtual bool setData(const QModelIndex& index, const QVariant &value, int role);
+   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+   int rowCount(const QModelIndex& parent = QModelIndex()             ) const override;
+   Qt::ItemFlags flags(const QModelIndex& index                       ) const override;
+   virtual bool setData(const QModelIndex& index, const QVariant &value, int role) override;
 
    //Mutator
    QModelIndex addCredentials();
@@ -53,15 +55,7 @@ public:
    void clear();
 
 private:
-   ///@struct CredentialData store credential information
-   struct CredentialData2 {
-      QString          name    ;
-      QString          password;
-      QString          realm   ;
-   };
-
-   //Attributes
-   QList<CredentialData2*> m_lCredentials;
+   QScopedPointer<CredentialModelPrivate> d_ptr;
 };
 Q_DECLARE_METATYPE(CredentialModel*)
 

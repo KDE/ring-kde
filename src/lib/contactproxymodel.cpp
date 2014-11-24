@@ -54,7 +54,7 @@ class TopLevelItem : public CategorizedCompositeNode {
    friend class ContactProxyModelPrivate;
    friend class ContactTreeBinder;
    public:
-      virtual QObject* getSelf() const;
+      virtual QObject* getSelf() const override;
       virtual ~TopLevelItem();
    private:
       explicit TopLevelItem(const QString& name) : CategorizedCompositeNode(CategorizedCompositeNode::Type::TOP_LEVEL),m_Name(name),
@@ -69,11 +69,11 @@ class TopLevelItem : public CategorizedCompositeNode {
 class ContactTreeNode : public CategorizedCompositeNode {
 public:
    ContactTreeNode(Contact* ct, ContactProxyModel* parent);
-   ~ContactTreeNode();
+   virtual ~ContactTreeNode();
    Contact* m_pContact;
    TopLevelItem* m_pParent3;
    uint m_Index;
-   virtual QObject* getSelf() const;
+   virtual QObject* getSelf() const override;
    ContactTreeBinder* m_pBinder;
 };
 
@@ -113,6 +113,11 @@ TopLevelItem::~TopLevelItem() {
    }
 }
 
+QObject* TopLevelItem::getSelf() const
+{
+   return nullptr;
+}
+
 ContactTreeNode::ContactTreeNode(Contact* ct, ContactProxyModel* parent) : CategorizedCompositeNode(CategorizedCompositeNode::Type::CONTACT),
    m_pContact(ct),m_pParent3(nullptr),m_Index(-1)
 {
@@ -127,11 +132,6 @@ ContactTreeNode::~ContactTreeNode()
 QObject* ContactTreeNode::getSelf() const
 {
    return m_pContact;
-}
-
-QObject* TopLevelItem::getSelf() const
-{
-   return nullptr;
 }
 
 ContactTreeBinder::ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n) :

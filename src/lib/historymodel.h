@@ -35,6 +35,7 @@ typedef QList<Call*>       CallList;
 
 class HistoryItemNode;
 class AbstractHistoryBackend;
+class HistoryModelPrivate;
 
 ///HistoryModel: History call manager
 class LIB_EXPORT HistoryModel : public QAbstractItemModel, public CommonBackendManagerInterface<AbstractHistoryBackend> {
@@ -44,6 +45,8 @@ class LIB_EXPORT HistoryModel : public QAbstractItemModel, public CommonBackendM
    #pragma GCC diagnostic pop
 public:
    friend class HistoryItemNode;
+   friend class HistoryTopLevelItem;
+   friend class TopLevelItem;
 
    //Properties
    Q_PROPERTY(bool hasBackends   READ hasBackends  )
@@ -55,12 +58,12 @@ public:
    int  acceptedPayloadTypes       () const;
    bool isHistoryLimited           () const;
    int  historyLimit               () const;
-   virtual bool hasBackends        () const;
-   virtual bool hasEnabledBackends () const;
-   const CallMap getHistoryCalls() const;
-   virtual const QVector<AbstractHistoryBackend*> backends() const;
-   virtual const QVector<AbstractHistoryBackend*> enabledBackends() const;
-   virtual CommonItemBackendModel* backendModel() const;
+   const CallMap getHistoryCalls   () const;
+   virtual bool hasBackends        () const override;
+   virtual bool hasEnabledBackends () const override;
+   virtual const QVector<AbstractHistoryBackend*> backends() const override;
+   virtual const QVector<AbstractHistoryBackend*> enabledBackends() const override;
+   virtual CommonItemBackendModel* backendModel() const override;
 
    //Setters
    void setCategoryRole(Call::Role role);
@@ -73,78 +76,32 @@ public:
    virtual bool enableBackend(AbstractHistoryBackend* backend, bool enabled);
 
    //Model implementation
-   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
-   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
-   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
-   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
-   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const __attribute__ ((const));
-   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
-   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
-   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-   virtual QStringList   mimeTypes   (                                                             ) const;
-   virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const;
-   virtual bool          dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
-   virtual bool          insertRows  ( int row, int count, const QModelIndex & parent = QModelIndex() );
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   ) override;
+   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const override;
+   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const override;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const override;
+   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const  override __attribute__ ((const));
+   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const override;
+   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const override;
+   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+   virtual QStringList   mimeTypes   (                                                             ) const override;
+   virtual QMimeData*    mimeData    ( const QModelIndexList &indexes                              ) const override;
+   virtual bool          dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& ) override;
+   virtual bool          insertRows  ( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
 
 
 private:
-   class TopLevelItem;
-
-   //Model
-   class HistoryItem : public CategorizedCompositeNode {
-   public:
-      explicit HistoryItem(Call* call);
-      virtual ~HistoryItem();
-      virtual QObject* getSelf() const;
-      Call* call() const;
-      int m_Index;
-      TopLevelItem* m_pParent;
-      HistoryItemNode* m_pNode;
-   private:
-      Call* m_pCall;
-   };
-
-   class TopLevelItem : public CategorizedCompositeNode,public QObject {
-   friend class HistoryModel;
-   public:
-      virtual QObject* getSelf() const;
-      virtual ~TopLevelItem();
-      int m_Index;
-      int m_AbsoluteIndex;
-      QVector<HistoryItem*> m_lChildren;
-   private:
-      explicit TopLevelItem(const QString& name, int index);
-      QString m_NameStr;
-      int modelRow;
-   };
-
    //Constructor
    explicit HistoryModel();
    ~HistoryModel();
-
-   //Helpers
-   TopLevelItem* getCategory(const Call* call);
+   QScopedPointer<HistoryModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(HistoryModel)
 
    //Static attributes
    static HistoryModel* m_spInstance;
 
-   //Attributes
-   static CallMap m_sHistoryCalls;
-   QVector<AbstractHistoryBackend*> m_lBackends;
-
-   //Model categories
-   QList<TopLevelItem*>         m_lCategoryCounter ;
-   QHash<int,TopLevelItem*>     m_hCategories      ;
-   QHash<QString,TopLevelItem*> m_hCategoryByName  ;
-   int                          m_Role             ;
-   QStringList                  m_lMimes           ;
-
 public Q_SLOTS:
    void add(Call* call);
-
-private Q_SLOTS:
-   void reloadCategories();
-   void slotChanged(const QModelIndex& idx);
 
 Q_SIGNALS:
    ///Emitted when the history change (new items, cleared)
@@ -152,22 +109,6 @@ Q_SIGNALS:
    ///Emitted when a new item is added to prevent full reload
    void newHistoryCall          ( Call* call );
    void newBackendAdded(AbstractHistoryBackend* backend);
-};
-
-
-class HistoryItemNode : public QObject //TODO remove this once Qt4 support is dropped
-{
-   Q_OBJECT
-public:
-   HistoryItemNode(HistoryModel* m, Call* c, HistoryModel::HistoryItem* backend);
-   Call* m_pCall;
-private:
-   HistoryModel::HistoryItem* m_pBackend;
-   HistoryModel* m_pModel;
-private Q_SLOTS:
-   void slotNumberChanged();
-Q_SIGNALS:
-   void changed(const QModelIndex& idx);
 };
 
 #endif
