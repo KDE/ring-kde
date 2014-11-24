@@ -35,8 +35,23 @@
 
 class ContactTreeNode;
 
+class ContactTreeBinder : public QObject { //FIXME Qt5 remove when dropping Qt4
+   Q_OBJECT
+public:
+   ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n);
+private:
+   ContactTreeNode* m_pTreeNode;
+   ContactProxyModel* m_pModel;
+private Q_SLOTS:
+   void slotContactChanged();
+   void slotStatusChanged();
+   void slotPhoneNumberCountChanged(int,int);
+   void slotPhoneNumberCountAboutToChange(int,int);
+};
+
 class TopLevelItem : public CategorizedCompositeNode {
    friend class ContactProxyModel;
+   friend class ContactProxyModelPrivate;
    friend class ContactTreeBinder;
    public:
       virtual QObject* getSelf() const;
@@ -60,6 +75,34 @@ public:
    uint m_Index;
    virtual QObject* getSelf() const;
    ContactTreeBinder* m_pBinder;
+};
+
+class ContactProxyModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   ContactProxyModelPrivate(ContactProxyModel* parent);
+
+   //Helpers
+   QString category(const Contact* ct) const;
+
+   //Attributes
+   QHash<Contact*, time_t>      m_hContactByDate   ;
+   QVector<TopLevelItem*>       m_lCategoryCounter ;
+   QHash<QString,TopLevelItem*> m_hCategories      ;
+   int                          m_Role             ;
+   bool                         m_ShowAll          ;
+   QStringList                  m_lMimes           ;
+
+   //Helper
+   TopLevelItem* getTopLevelItem(const QString& category);
+
+private:
+   ContactProxyModel* q_ptr;
+
+public Q_SLOTS:
+   void reloadCategories();
+   void slotContactAdded(Contact* c);
 };
 
 TopLevelItem::~TopLevelItem() {
@@ -135,15 +178,22 @@ void ContactTreeBinder::slotPhoneNumberCountAboutToChange(int count, int oldCoun
    }
 }
 
+ContactProxyModelPrivate::ContactProxyModelPrivate(ContactProxyModel* parent) : QObject(parent), q_ptr(parent),
+m_lCategoryCounter()
+{
+   
+}
+
 //
-ContactProxyModel::ContactProxyModel(int role, bool showAll) : QAbstractItemModel(QCoreApplication::instance()),
-m_Role(role),m_ShowAll(showAll),m_lCategoryCounter()
+ContactProxyModel::ContactProxyModel(int role, bool showAll) : QAbstractItemModel(QCoreApplication::instance()),d_ptr(new ContactProxyModelPrivate(this))
 {
    setObjectName("ContactProxyModel");
-   m_lCategoryCounter.reserve(32);
-   m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
-   connect(ContactModel::instance(),SIGNAL(reloaded()),this,SLOT(reloadCategories()));
-   connect(ContactModel::instance(),SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
+   d_ptr->m_Role    = role;
+   d_ptr->m_ShowAll = showAll;
+   d_ptr->m_lCategoryCounter.reserve(32);
+   d_ptr->m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
+   connect(ContactModel::instance(),SIGNAL(reloaded()),d_ptr.data(),SLOT(reloadCategories()));
+   connect(ContactModel::instance(),SIGNAL(newContactAdded(Contact*)),d_ptr.data(),SLOT(slotContactAdded(Contact*)));
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(ContactModel::Role::Organization      ,QByteArray("organization")     );
    roles.insert(ContactModel::Role::Group             ,QByteArray("group")            );
@@ -159,64 +209,64 @@ m_Role(role),m_ShowAll(showAll),m_lCategoryCounter()
 
 ContactProxyModel::~ContactProxyModel()
 {
-   foreach(TopLevelItem* item,m_lCategoryCounter) {
+   foreach(TopLevelItem* item,d_ptr->m_lCategoryCounter) {
       delete item;
    }
 }
 
-TopLevelItem* ContactProxyModel::getTopLevelItem(const QString& category)
+TopLevelItem* ContactProxyModelPrivate::getTopLevelItem(const QString& category)
 {
    if (!m_hCategories[category]) {
       TopLevelItem* item = new TopLevelItem(category);
       m_hCategories[category] = item;
       item->m_Index = m_lCategoryCounter.size();
 //       emit layoutAboutToBeChanged();
-      beginInsertRows(QModelIndex(),m_lCategoryCounter.size(),m_lCategoryCounter.size()); {
+      q_ptr->beginInsertRows(QModelIndex(),m_lCategoryCounter.size(),m_lCategoryCounter.size()); {
          m_lCategoryCounter << item;
-      } endInsertRows();
+      } q_ptr->endInsertRows();
 //       emit layoutChanged();
    }
    TopLevelItem* item = m_hCategories[category];
    return item;
 }
 
-void ContactProxyModel::reloadCategories()
+void ContactProxyModelPrivate::reloadCategories()
 {
-   emit layoutAboutToBeChanged();
-   beginResetModel();
+   emit q_ptr->layoutAboutToBeChanged();
+   q_ptr->beginResetModel();
    m_hCategories.clear();
-   beginRemoveRows(QModelIndex(),0,m_lCategoryCounter.size()-1);
+   q_ptr->beginRemoveRows(QModelIndex(),0,m_lCategoryCounter.size()-1);
    foreach(TopLevelItem* item,m_lCategoryCounter) {
       delete item;
    }
-   endRemoveRows();
+   q_ptr->endRemoveRows();
    m_lCategoryCounter.clear();
    foreach(const Contact* cont, ContactModel::instance()->contacts()) {
       if (cont) {
          const QString val = category(cont);
          TopLevelItem* item = getTopLevelItem(val);
-         ContactTreeNode* contactNode = new ContactTreeNode(const_cast<Contact*>(cont),this);
+         ContactTreeNode* contactNode = new ContactTreeNode(const_cast<Contact*>(cont),q_ptr);
          contactNode->m_pParent3 = item;
          contactNode->m_Index = item->m_lChildren.size();
          item->m_lChildren << contactNode;
       }
    }
-   endResetModel();
-   emit layoutChanged();
+   q_ptr->endResetModel();
+   emit q_ptr->layoutChanged();
 }
 
-void ContactProxyModel::slotContactAdded(Contact* c)
+void ContactProxyModelPrivate::slotContactAdded(Contact* c)
 {
    if (!c) return;
    const QString val = category(c);
    TopLevelItem* item = getTopLevelItem(val);
-   ContactTreeNode* contactNode = new ContactTreeNode(c,this);
+   ContactTreeNode* contactNode = new ContactTreeNode(c,q_ptr);
    contactNode->m_pParent3 = item;
    contactNode->m_Index = item->m_lChildren.size();
    //emit layoutAboutToBeChanged();
-   beginInsertRows(index(item->m_Index,0,QModelIndex()),item->m_lChildren.size(),item->m_lChildren.size()); {
+   q_ptr->beginInsertRows(q_ptr->index(item->m_Index,0,QModelIndex()),item->m_lChildren.size(),item->m_lChildren.size()); {
       item->m_lChildren << contactNode;
-   } endInsertRows();
+   } q_ptr->endInsertRows();
    //emit layoutChanged();
 }
 
@@ -351,7 +401,7 @@ bool ContactProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction actio
 int ContactProxyModel::rowCount( const QModelIndex& parent ) const
 {
    if (!parent.isValid() || !parent.internalPointer())
-      return m_lCategoryCounter.size();
+      return d_ptr->m_lCategoryCounter.size();
    const CategorizedCompositeNode* parentNode = static_cast<CategorizedCompositeNode*>(parent.internalPointer());
    switch(parentNode->type()) {
       case CategorizedCompositeNode::Type::TOP_LEVEL:
@@ -433,16 +483,16 @@ QModelIndex ContactProxyModel::index( int row, int column, const QModelIndex& pa
             break;
       };
    }
-   else if (row < m_lCategoryCounter.size()){
+   else if (row < d_ptr->m_lCategoryCounter.size()){
       //Return top level
-      return createIndex(row,column,(void*)m_lCategoryCounter[row]);
+      return createIndex(row,column,(void*)d_ptr->m_lCategoryCounter[row]);
    }
    return QModelIndex();
 }
 
 QStringList ContactProxyModel::mimeTypes() const
 {
-   return m_lMimes;
+   return d_ptr->m_lMimes;
 }
 
 QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
@@ -498,7 +548,7 @@ int ContactProxyModel::acceptedPayloadTypes()
  ****************************************************************************/
 
 
-QString ContactProxyModel::category(const Contact* ct) const {
+QString ContactProxyModelPrivate::category(const Contact* ct) const {
    if (!ct)
       return QString();
    QString cat;
@@ -534,16 +584,18 @@ QString ContactProxyModel::category(const Contact* ct) const {
 
 void ContactProxyModel::setRole(int role)
 {
-   if (role != m_Role) {
-      m_Role = role;
-      reloadCategories();
+   if (role != d_ptr->m_Role) {
+      d_ptr->m_Role = role;
+      d_ptr->reloadCategories();
    }
 }
 
 void ContactProxyModel::setShowAll(bool showAll)
 {
-   if (showAll != m_ShowAll) {
-      m_ShowAll = showAll;
-      reloadCategories();
+   if (showAll != d_ptr->m_ShowAll) {
+      d_ptr->m_ShowAll = showAll;
+      d_ptr->reloadCategories();
    }
 }
+
+#include <contactproxymodel.moc>

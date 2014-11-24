@@ -17,10 +17,25 @@
  ***************************************************************************/
 #include "categorizedcompositenode.h"
 
-
-CategorizedCompositeNode::CategorizedCompositeNode(CategorizedCompositeNode::Type _type) : m_type(_type)
-   ,m_DropState(0),m_pParent(nullptr),m_HoverState(0)
+class CategorizedCompositeNodePrivate
 {
+public:
+   CategorizedCompositeNodePrivate();
+   CategorizedCompositeNode::Type m_type;
+   char m_DropState;
+   int  m_HoverState;
+   CategorizedCompositeNode* m_pParent;
+};
+
+CategorizedCompositeNodePrivate::CategorizedCompositeNodePrivate():
+m_DropState(0),m_pParent(nullptr),m_HoverState(0)
+{
+   
+}
+
+CategorizedCompositeNode::CategorizedCompositeNode(CategorizedCompositeNode::Type _type) : d_ptr(new CategorizedCompositeNodePrivate())
+{
+   d_ptr->m_type =_type;
 }
 
 CategorizedCompositeNode::~CategorizedCompositeNode()
@@ -29,35 +44,35 @@ CategorizedCompositeNode::~CategorizedCompositeNode()
 
 char CategorizedCompositeNode::dropState()
 {
-   return m_DropState;
+   return d_ptr->m_DropState;
 }
 
 void CategorizedCompositeNode::setDropState(const char state)
 {
-   m_DropState = state;
+   d_ptr->m_DropState = state;
 }
 
 CategorizedCompositeNode::Type CategorizedCompositeNode::type() const
 {
-   return m_type;
+   return d_ptr->m_type;
 }
 
 int CategorizedCompositeNode::hoverState()
 {
-   return m_HoverState;
+   return d_ptr->m_HoverState;
 }
 
 void CategorizedCompositeNode::setHoverState(const int state)
 {
-   m_HoverState = state;
+   d_ptr->m_HoverState = state;
 }
 
 CategorizedCompositeNode* CategorizedCompositeNode::parentNode() const
 {
-   return m_pParent;
+   return d_ptr->m_pParent;
 }
 
 void CategorizedCompositeNode::setParentNode(CategorizedCompositeNode* node)
 {
-   m_pParent = node;
+   d_ptr->m_pParent = node;
 }

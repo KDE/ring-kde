@@ -32,6 +32,7 @@
 class Contact;
 class Account;
 class AbstractContactBackend;
+class ContactModelPrivate;
 
 //Typedef
 typedef QVector<Contact*> ContactList;
@@ -73,42 +74,34 @@ public:
    Contact* getPlaceHolder(const QByteArray& uid );
    bool     hasBackends       () const;
    const ContactList contacts() const;
-   virtual const QVector<AbstractContactBackend*> enabledBackends() const;
-   virtual bool hasEnabledBackends  () const;
-   virtual const QVector<AbstractContactBackend*> backends() const;
-   virtual bool enableBackend(AbstractContactBackend* backend, bool enabled);
-   virtual CommonItemBackendModel* backendModel() const;
+   virtual const QVector<AbstractContactBackend*> enabledBackends() const override;
+   virtual bool hasEnabledBackends  () const override;
+   virtual const QVector<AbstractContactBackend*> backends() const override;
+   virtual bool enableBackend(AbstractContactBackend* backend, bool enabled) override;
+   virtual CommonItemBackendModel* backendModel() const override;
 
    //Model implementation
-   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   )  __attribute__ ((const));
-   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
-   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
-   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
-   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const;
-   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
-   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
-   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   ) override;
+   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const override;
+   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const override;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const override;
+   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const override;
+   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const override;
+   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const override;
+   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
    //Singleton
    static ContactModel* instance();
 
 private:
-   //Attributes
-   static ContactModel* m_spInstance;
-   QVector<AbstractContactBackend*> m_lBackends;
-   CommonItemBackendModel* m_pBackendModel;
-   QHash<QByteArray,ContactPlaceHolder*> m_hPlaceholders;
+   QScopedPointer<ContactModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(ContactModel)
 
-   //Indexes
-   QHash<QByteArray,Contact*> m_hContactsByUid;
-   QVector<Contact*> m_lContacts;
+   //Singleton
+   static ContactModel* m_spInstance;
 
 public Q_SLOTS:
    bool addNewContact(Contact* c, AbstractContactBackend* backend = nullptr);
-
-private Q_SLOTS:
-   void slotReloaded();
-   void slotContactAdded(Contact* c);
 
 Q_SIGNALS:
    void reloaded();

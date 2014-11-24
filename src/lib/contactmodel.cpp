@@ -35,19 +35,48 @@
 
 ContactModel* ContactModel::m_spInstance = nullptr;
 
-///Constructor
-ContactModel::ContactModel(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance()),
+
+class ContactModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   ContactModelPrivate(ContactModel* parent);
+
+   //Attributes
+   QVector<AbstractContactBackend*> m_lBackends;
+   CommonItemBackendModel* m_pBackendModel;
+   QHash<QByteArray,ContactPlaceHolder*> m_hPlaceholders;
+
+   //Indexes
+   QHash<QByteArray,Contact*> m_hContactsByUid;
+   QVector<Contact*> m_lContacts;
+
+private:
+   ContactModel* q_ptr;
+
+private Q_SLOTS:
+   void slotReloaded();
+   void slotContactAdded(Contact* c);
+};
+
+ContactModelPrivate::ContactModelPrivate(ContactModel* parent) : QObject(parent), q_ptr(parent),
 m_pBackendModel(nullptr)
+{
+   
+}
+
+///Constructor
+ContactModel::ContactModel(QObject* par) : QAbstractItemModel(par?par:QCoreApplication::instance()), d_ptr(new ContactModelPrivate(this))
 {
 }
 
 ///Destructor
 ContactModel::~ContactModel()
 {
-   m_hContactsByUid.clear();
-   while (m_lContacts.size()) {
-      Contact* c = m_lContacts[0];
-      m_lContacts.remove(0);
+   d_ptr->m_hContactsByUid.clear();
+   while (d_ptr->m_lContacts.size()) {
+      Contact* c = d_ptr->m_lContacts[0];
+      d_ptr->m_lContacts.remove(0);
       delete c;
    }
 }
@@ -78,12 +107,12 @@ QVariant ContactModel::data( const QModelIndex& idx, int role) const
    if (!idx.isValid())
       return QVariant();
    if (!idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      const Contact* c = m_lContacts[idx.row()];
+      const Contact* c = d_ptr->m_lContacts[idx.row()];
       if (c)
          return QVariant(c->formattedName());
    }
    else if (idx.parent().isValid() && (role == Qt::DisplayRole || role == Qt::EditRole)) {
-      const Contact* c = m_lContacts[idx.parent().row()];
+      const Contact* c = d_ptr->m_lContacts[idx.parent().row()];
       if (c)
          return QVariant(c->phoneNumbers()[idx.row()]->uri());
    }
@@ -101,10 +130,10 @@ QVariant ContactModel::headerData(int section, Qt::Orientation orientation, int 
 int ContactModel::rowCount( const QModelIndex& par ) const
 {
    if (!par.isValid()) {
-      return m_lContacts.size();
+      return d_ptr->m_lContacts.size();
    }
-   else if (!par.parent().isValid() && par.row() < m_lContacts.size()) {
-      const Contact* c = m_lContacts[par.row()];
+   else if (!par.parent().isValid() && par.row() < d_ptr->m_lContacts.size()) {
+      const Contact* c = d_ptr->m_lContacts[par.row()];
       if (c) {
          const int size = c->phoneNumbers().size();
          return size==1?0:size;
@@ -132,7 +161,7 @@ QModelIndex ContactModel::parent( const QModelIndex& idx) const
       return QModelIndex();
    CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)idx.internalPointer();
    if (modelItem && modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
-      int idx2 = m_lContacts.indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
+      int idx2 = d_ptr->m_lContacts.indexOf(((Contact::PhoneNumbers*)modelItem)->contact());
       if (idx2 != -1) {
          return ContactModel::index(idx2,0,QModelIndex());
       }
@@ -142,11 +171,11 @@ QModelIndex ContactModel::parent( const QModelIndex& idx) const
 
 QModelIndex ContactModel::index( int row, int column, const QModelIndex& par) const
 {
-   if (!par.isValid() && m_lContacts.size() > row) {
-      return createIndex(row,column,m_lContacts[row]);
+   if (!par.isValid() && d_ptr->m_lContacts.size() > row) {
+      return createIndex(row,column,d_ptr->m_lContacts[row]);
    }
-   else if (par.isValid() && m_lContacts[par.row()]->phoneNumbers().size() > row) {
-      return createIndex(row,column,(CategorizedCompositeNode*)(&(m_lContacts[par.row()]->phoneNumbers())));
+   else if (par.isValid() && d_ptr->m_lContacts[par.row()]->phoneNumbers().size() > row) {
+      return createIndex(row,column,(CategorizedCompositeNode*)(&(d_ptr->m_lContacts[par.row()]->phoneNumbers())));
    }
    return QModelIndex();
 }
@@ -161,7 +190,7 @@ QModelIndex ContactModel::index( int row, int column, const QModelIndex& par) co
 ///Find contact by UID
 Contact* ContactModel::getContactByUid(const QByteArray& uid)
 {
-   return m_hContactsByUid[uid];
+   return d_ptr->m_hContactsByUid[uid];
 }
 
 /**
@@ -170,7 +199,7 @@ Contact* ContactModel::getContactByUid(const QByteArray& uid)
  */
 Contact* ContactModel::getPlaceHolder(const QByteArray& uid )
 {
-   Contact* ct = m_hContactsByUid[uid];
+   Contact* ct = d_ptr->m_hContactsByUid[uid];
 
    //Do not create a placeholder if the real deal exist
    if (ct) {
@@ -178,44 +207,44 @@ Contact* ContactModel::getPlaceHolder(const QByteArray& uid )
    }
 
    //Do not re-create if it already exist
-   ct = m_hPlaceholders[uid];
+   ct = d_ptr->m_hPlaceholders[uid];
    if (ct)
       return ct;
 
    ContactPlaceHolder* ct2 = new ContactPlaceHolder(uid);
 
-   m_hPlaceholders[ct2->uid()] = ct2;
+   d_ptr->m_hPlaceholders[ct2->uid()] = ct2;
    return ct2;
 }
 
 ///Return if there is backends
 bool ContactModel::hasBackends() const
 {
-   return m_lBackends.size();
+   return d_ptr->m_lBackends.size();
 }
 
 
 const QVector<AbstractContactBackend*> ContactModel::enabledBackends() const
 {
-   return m_lBackends;
+   return d_ptr->m_lBackends;
 }
 
 bool ContactModel::hasEnabledBackends() const
 {
-   return m_lBackends.size()>0;
+   return d_ptr->m_lBackends.size()>0;
 }
 
 CommonItemBackendModel* ContactModel::backendModel() const
 {
-   if (!m_pBackendModel) {
-      const_cast<ContactModel*>(this)->m_pBackendModel = new CommonItemBackendModel(const_cast<ContactModel*>(this));
+   if (!d_ptr->m_pBackendModel) {
+      d_ptr->m_pBackendModel = new CommonItemBackendModel(const_cast<ContactModel*>(this));
    }
-   return m_pBackendModel; //TODO
+   return d_ptr->m_pBackendModel; //TODO
 }
 
 const QVector<AbstractContactBackend*> ContactModel::backends() const
 {
-   return m_lBackends;
+   return d_ptr->m_lBackends;
 }
 
 bool ContactModel::enableBackend(AbstractContactBackend* backend, bool enabled)
@@ -230,16 +259,16 @@ bool ContactModel::addContact(Contact* c)
 {
    if (!c)
       return false;
-   beginInsertRows(QModelIndex(),m_lContacts.size()-1,m_lContacts.size());
-   m_lContacts << c;
-   m_hContactsByUid[c->uid()] = c;
+   beginInsertRows(QModelIndex(),d_ptr->m_lContacts.size()-1,d_ptr->m_lContacts.size());
+   d_ptr->m_lContacts << c;
+   d_ptr->m_hContactsByUid[c->uid()] = c;
 
    //Deprecate the placeholder
-   if (m_hPlaceholders.contains(c->uid())) {
-      ContactPlaceHolder* c2 = m_hPlaceholders[c->uid()];
+   if (d_ptr->m_hPlaceholders.contains(c->uid())) {
+      ContactPlaceHolder* c2 = d_ptr->m_hPlaceholders[c->uid()];
       if (c2) {
          c2->merge(c);
-         m_hPlaceholders[c->uid()] = nullptr;
+         d_ptr->m_hPlaceholders[c->uid()] = nullptr;
       }
    }
    endInsertRows();
@@ -257,14 +286,14 @@ void ContactModel::disableContact(Contact* c)
 
 const ContactList ContactModel::contacts() const
 {
-   return m_lContacts;
+   return d_ptr->m_lContacts;
 }
 
 void ContactModel::addBackend(AbstractContactBackend* backend, LoadOptions options)
 {
-   m_lBackends << backend;
-   connect(backend,SIGNAL(reloaded()),this,SLOT(slotReloaded()));
-   connect(backend,SIGNAL(newContactAdded(Contact*)),this,SLOT(slotContactAdded(Contact*)));
+   d_ptr->m_lBackends << backend;
+   connect(backend,SIGNAL(reloaded()),d_ptr.data(),SLOT(slotReloaded()));
+   connect(backend,SIGNAL(newContactAdded(Contact*)),d_ptr.data(),SLOT(slotContactAdded(Contact*)));
    if (options & LoadOptions::FORCE_ENABLED || ItemModelStateSerializationVisitor::instance()->isChecked(backend))
       backend->load();
    emit newBackendAdded(backend);
@@ -273,7 +302,7 @@ void ContactModel::addBackend(AbstractContactBackend* backend, LoadOptions optio
 bool ContactModel::addNewContact(Contact* c, AbstractContactBackend* backend)
 {
    Q_UNUSED(backend);
-   return m_lBackends[0]->addNew(c);
+   return d_ptr->m_lBackends[0]->addNew(c);
 }
 
 
@@ -283,12 +312,14 @@ bool ContactModel::addNewContact(Contact* c, AbstractContactBackend* backend)
  *                                                                           *
  ****************************************************************************/
 
-void ContactModel::slotReloaded()
+void ContactModelPrivate::slotReloaded()
 {
-   emit reloaded();
+   emit q_ptr->reloaded();
 }
 
-void ContactModel::slotContactAdded(Contact* c)
+void ContactModelPrivate::slotContactAdded(Contact* c)
 {
-   addContact(c);
+   q_ptr->addContact(c);
 }
+
+#include <contactmodel.moc>

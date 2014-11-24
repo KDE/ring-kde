@@ -29,6 +29,7 @@ class ContactModel;
 class ContactTreeNode;
 class TopLevelItem;
 class ContactTreeBinder;
+class ContactProxyModelPrivate;
 
 class LIB_EXPORT ContactProxyModel :  public QAbstractItemModel
 {
@@ -64,38 +65,8 @@ public:
    static int acceptedPayloadTypes();
 
 private:
-
-   //Helpers
-   QString category(const Contact* ct) const;
-
-   //Attributes
-   QHash<Contact*, time_t>      m_hContactByDate   ;
-   QVector<TopLevelItem*>       m_lCategoryCounter ;
-   QHash<QString,TopLevelItem*> m_hCategories      ;
-   int                          m_Role             ;
-   bool                         m_ShowAll          ;
-   QStringList                  m_lMimes           ;
-
-   //Helper
-   TopLevelItem* getTopLevelItem(const QString& category);
-
-private Q_SLOTS:
-   void reloadCategories();
-   void slotContactAdded(Contact* c);
-};
-
-class ContactTreeBinder : public QObject { //FIXME Qt5 remove when dropping Qt4
-   Q_OBJECT
-public:
-   ContactTreeBinder(ContactProxyModel* m,ContactTreeNode* n);
-private:
-   ContactTreeNode* m_pTreeNode;
-   ContactProxyModel* m_pModel;
-private Q_SLOTS:
-   void slotContactChanged();
-   void slotStatusChanged();
-   void slotPhoneNumberCountChanged(int,int);
-   void slotPhoneNumberCountAboutToChange(int,int);
+   QScopedPointer<ContactProxyModelPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(ContactProxyModel)
 };
 
 #endif

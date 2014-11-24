@@ -22,30 +22,29 @@
 #include <QtCore/QModelIndex>
 class QObject;
 
+class CategorizedCompositeNodePrivate;
+
 class LIB_EXPORT CategorizedCompositeNode {
 public:
-    enum class Type {
-        CALL     = 0,
-        NUMBER   = 1,
-        TOP_LEVEL= 2,
-        BOOKMARK = 3,
-        CONTACT  = 4,
-    };
-    explicit CategorizedCompositeNode(CategorizedCompositeNode::Type _type);
-    virtual ~CategorizedCompositeNode();
-    CategorizedCompositeNode::Type type() const;
-    virtual QObject* getSelf() const = 0;
-    char dropState();
-    void setDropState(const char state);
-    int  hoverState();
-    void setHoverState(const int state);
-    CategorizedCompositeNode* parentNode() const;
-    void setParentNode(CategorizedCompositeNode* node);
+   enum class Type {
+      CALL     = 0,
+      NUMBER   = 1,
+      TOP_LEVEL= 2,
+      BOOKMARK = 3,
+      CONTACT  = 4,
+   };
+   explicit CategorizedCompositeNode(CategorizedCompositeNode::Type _type);
+   virtual ~CategorizedCompositeNode();
+   CategorizedCompositeNode::Type type() const;
+   virtual QObject* getSelf() const = 0;
+   char dropState();
+   void setDropState(const char state);
+   int  hoverState();
+   void setHoverState(const int state);
+   CategorizedCompositeNode* parentNode() const;
+   void setParentNode(CategorizedCompositeNode* node);
 private:
-    CategorizedCompositeNode::Type m_type;
-    char m_DropState;
-    int  m_HoverState;
-    CategorizedCompositeNode* m_pParent;
+   CategorizedCompositeNodePrivate* d_ptr;
 };
 
 #endif
