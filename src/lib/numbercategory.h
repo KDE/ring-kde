@@ -32,7 +32,6 @@ class LIB_EXPORT NumberCategory : public QObject {
    Q_OBJECT
 public:
    friend class NumberCategoryModel;
-   virtual ~NumberCategory(){}
 
    //Getter
    QVariant icon(bool isTracked = false, bool isPresent = false) const;
@@ -44,6 +43,7 @@ public:
 
 private:
    NumberCategory(QObject* parent, const QString& name);
+   virtual ~NumberCategory();
 
    //Attributes
    QString m_Name;

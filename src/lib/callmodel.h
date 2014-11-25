@@ -75,8 +75,8 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       //Getters
       Q_INVOKABLE bool     isValid             ();
       Q_INVOKABLE int      size                ();
-      Q_INVOKABLE CallList getCallList         ();
-      Q_INVOKABLE CallList getConferenceList   ();
+      Q_INVOKABLE CallList getActiveCalls      ();
+      Q_INVOKABLE CallList getActiveConferences();
       Q_INVOKABLE int      acceptedPayloadTypes();
       Q_INVOKABLE bool     hasConference       () const;
 
@@ -88,7 +88,7 @@ class LIB_EXPORT CallModel : public QAbstractItemModel
       virtual QVariant      data         ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
       virtual int           rowCount     ( const QModelIndex& parent = QModelIndex()                   ) const;
       virtual Qt::ItemFlags flags        ( const QModelIndex& index                                    ) const;
-      virtual int           columnCount  ( const QModelIndex& parent = QModelIndex()                   ) const __attribute__ ((const));
+      virtual int           columnCount  ( const QModelIndex& parent = QModelIndex()                   ) const;
       virtual QModelIndex   parent       ( const QModelIndex& index                                    ) const;
       virtual QModelIndex   index        ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
       virtual QVariant      headerData   ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;

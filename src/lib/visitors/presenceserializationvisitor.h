@@ -30,6 +30,11 @@ public:
    virtual bool isTracked(AbstractItemBackendBase* backend) = 0;
    virtual void setTracked(AbstractItemBackendBase* backend, bool tracked) = 0;
    virtual ~PresenceSerializationVisitor(){};
+
+   static PresenceSerializationVisitor* instance();
+   static void setInstance(PresenceSerializationVisitor* ins);
+private:
+   static PresenceSerializationVisitor* m_spInstance;
 };
 
 #endif //PRESENCESERIALIZATIONVISITOR_H

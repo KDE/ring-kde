@@ -21,33 +21,34 @@
 
 #include "abstractitembackend.h"
 
+/// @deprecated Remove once the daemon drop configurationmanager::getHistory()
 class LIB_EXPORT LegacyHistoryBackend : public AbstractHistoryBackend
 {
 public:
    explicit LegacyHistoryBackend(QObject* parent = nullptr);
    virtual ~LegacyHistoryBackend();
 
-   virtual bool load();
-   virtual bool reload();
-   virtual bool save(const Call* call);
-   virtual bool append(const Call* item);
+   virtual bool load() override;
+   virtual bool reload() override;
+   virtual bool save(const Call* call) override;
+   virtual bool append(const Call* item) override;
 
-   virtual QString name () const;
-   virtual QVariant icon() const;
-   virtual bool isEnabled() const;
-   virtual QByteArray  id() const;
+   virtual QString name () const override;
+   virtual QVariant icon() const override;
+   virtual bool isEnabled() const override;
+   virtual QByteArray id() const override;
 
-   virtual SupportedFeatures  supportedFeatures() const;
+   virtual SupportedFeatures supportedFeatures() const override;
 
    virtual QList<Call*> items() const override;
 
    ///Edit 'item', the implementation may be a GUI or somehting else
-   virtual bool edit( Call* call);
+   virtual bool edit( Call* call) override;
    ///Add a new item to the backend
-   virtual bool addNew( Call* call);
+   virtual bool addNew( Call* call) override;
 
    ///Add a new phone number to an existing item
-   virtual bool addPhoneNumber( Call* call , PhoneNumber* number );
+   virtual bool addPhoneNumber( Call* call , PhoneNumber* number ) override;
 };
 
 #endif

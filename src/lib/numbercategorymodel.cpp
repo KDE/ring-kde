@@ -21,11 +21,31 @@
 #include "numbercategory.h"
 
 NumberCategoryModel* NumberCategoryModel::m_spInstance = nullptr;
-NumberCategory*      NumberCategoryModel::m_spOther    = nullptr;
 
-NumberCategoryModel::NumberCategoryModel(QObject* parent) : QAbstractListModel(parent),m_pVisitor(nullptr)
+class NumberCategoryModelPrivate
 {
-   
+public:
+   struct InternalTypeRepresentation {
+      NumberCategory* category;
+      int             index   ;
+      bool            enabled ;
+      int             counter ;
+   };
+   QVector<InternalTypeRepresentation*>   m_lCategories;
+   QHash<int,InternalTypeRepresentation*> m_hByIdx;
+   QHash<QString,InternalTypeRepresentation*> m_hByName;
+   static NumberCategory*                 m_spOther    ;
+};
+
+NumberCategory*      NumberCategoryModelPrivate::m_spOther    = nullptr;
+
+NumberCategoryModel::NumberCategoryModel(QObject* parent) : QAbstractListModel(parent),d_ptr(new NumberCategoryModelPrivate())
+{
+}
+
+NumberCategoryModel::~NumberCategoryModel()
+{
+   delete d_ptr;
 }
 
 //Abstract model member
@@ -34,17 +54,17 @@ QVariant NumberCategoryModel::data(const QModelIndex& index, int role) const
    if (!index.isValid()) return QVariant();
    switch (role) {
       case Qt::DisplayRole: {
-         const QString name = m_lCategories[index.row()]->category->name();
+         const QString name = d_ptr->m_lCategories[index.row()]->category->name();
          return name.isEmpty()?tr("Uncategorized"):name;
       }
       case Qt::DecorationRole:
-         return m_lCategories[index.row()]->category->icon();//m_pVisitor->icon(m_lCategories[index.row()]->icon);
+         return d_ptr->m_lCategories[index.row()]->category->icon();//m_pVisitor->icon(m_lCategories[index.row()]->icon);
       case Qt::CheckStateRole:
-         return m_lCategories[index.row()]->enabled?Qt::Checked:Qt::Unchecked;
+         return d_ptr->m_lCategories[index.row()]->enabled?Qt::Checked:Qt::Unchecked;
       case Role::INDEX:
-         return m_lCategories[index.row()]->index;
+         return d_ptr->m_lCategories[index.row()]->index;
       case Qt::UserRole:
-         return 'x'+QString::number(m_lCategories[index.row()]->counter);
+         return 'x'+QString::number(d_ptr->m_lCategories[index.row()]->counter);
    }
    return QVariant();
 }
@@ -52,19 +72,19 @@ QVariant NumberCategoryModel::data(const QModelIndex& index, int role) const
 int NumberCategoryModel::rowCount(const QModelIndex& parent) const
 {
    if (parent.isValid()) return 0;
-   return m_lCategories.size();
+   return d_ptr->m_lCategories.size();
 }
 
 Qt::ItemFlags NumberCategoryModel::flags(const QModelIndex& index) const
 {
    Q_UNUSED(index)
-   return (m_lCategories[index.row()]->category->name().isEmpty()?Qt::NoItemFlags :Qt::ItemIsEnabled) | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+   return (d_ptr->m_lCategories[index.row()]->category->name().isEmpty()?Qt::NoItemFlags :Qt::ItemIsEnabled) | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 }
 
 bool NumberCategoryModel::setData(const QModelIndex& idx, const QVariant &value, int role)
 {
    if (idx.isValid() && role == Qt::CheckStateRole) {
-      m_lCategories[idx.row()]->enabled = value.toBool();
+      d_ptr->m_lCategories[idx.row()]->enabled = value.toBool();
       emit dataChanged(idx,idx);
       return true;
    }
@@ -73,9 +93,9 @@ bool NumberCategoryModel::setData(const QModelIndex& idx, const QVariant &value,
 
 NumberCategory* NumberCategoryModel::addCategory(const QString& name, QPixmap* icon, int index, bool enabled)
 {
-   InternalTypeRepresentation* rep = m_hByName[name];
+   NumberCategoryModelPrivate::InternalTypeRepresentation* rep = d_ptr->m_hByName[name];
    if (!rep) {
-      rep = new InternalTypeRepresentation();
+      rep = new NumberCategoryModelPrivate::InternalTypeRepresentation();
       rep->counter = 0      ;
    }
    NumberCategory* cat = new NumberCategory(this,name);
@@ -83,9 +103,9 @@ NumberCategory* NumberCategoryModel::addCategory(const QString& name, QPixmap* i
    rep->category   = cat    ;
    rep->index      = index  ;
    rep->enabled    = enabled;
-   m_hByIdx[index] = rep    ;
-   m_hByName[name] = rep    ;
-   m_lCategories  << rep    ;
+   d_ptr->m_hByIdx[index] = rep    ;
+   d_ptr->m_hByName[name] = rep    ;
+   d_ptr->m_lCategories  << rep    ;
    emit layoutChanged()     ;
    return cat;
 }
@@ -99,63 +119,48 @@ NumberCategoryModel* NumberCategoryModel::instance()
 
 void NumberCategoryModel::setIcon(int idx, QPixmap* icon)
 {
-   InternalTypeRepresentation* rep = m_hByIdx[idx];
+   NumberCategoryModelPrivate::InternalTypeRepresentation* rep = d_ptr->m_hByIdx[idx];
    if (rep) {
       rep->category->setIcon(icon);
-      emit dataChanged(index(m_lCategories.indexOf(rep),0),index(m_lCategories.indexOf(rep),0));
+      emit dataChanged(index(d_ptr->m_lCategories.indexOf(rep),0),index(d_ptr->m_lCategories.indexOf(rep),0));
    }
-}
-
-void NumberCategoryModel::setVisitor(NumberCategoryVisitor* visitor)
-{
-   m_pVisitor = visitor;
-   m_pVisitor->load(this);
-}
-
-NumberCategoryVisitor* NumberCategoryModel::visitor() const
-{
-   return m_pVisitor;
 }
 
 void NumberCategoryModel::save()
 {
-   if (m_pVisitor) {
-      m_pVisitor->serialize(this);
-   }
-   else
-      qDebug() << "Cannot save NumberCategoryModel as there is no defined backend";
+   NumberCategoryVisitor::instance()->serialize(this);
 }
 
 QModelIndex NumberCategoryModel::nameToIndex(const QString& name) const
 {
-   if (!m_hByName[name])
+   if (!d_ptr->m_hByName[name])
       return QModelIndex();
    else {
-      return index(m_hByName[name]->index,0);
+      return index(d_ptr->m_hByName[name]->index,0);
    }
 }
 
 ///Be sure the category exist, increment the counter
 void NumberCategoryModel::registerNumber(PhoneNumber* number)
 {
-   InternalTypeRepresentation* rep = m_hByName[number->category()->name()];
+   NumberCategoryModelPrivate::InternalTypeRepresentation* rep = d_ptr->m_hByName[number->category()->name()];
    if (!rep) {
       addCategory(number->category()->name(),nullptr,-1,true);
-      rep = m_hByName[number->category()->name()];
+      rep = d_ptr->m_hByName[number->category()->name()];
    }
    rep->counter++;
 }
 
 void NumberCategoryModel::unregisterNumber(PhoneNumber* number)
 {
-   InternalTypeRepresentation* rep = m_hByName[number->category()->name()];
+   NumberCategoryModelPrivate::InternalTypeRepresentation* rep = d_ptr->m_hByName[number->category()->name()];
    if (rep)
       rep->counter--;
 }
 
 NumberCategory* NumberCategoryModel::getCategory(const QString& type)
 {
-   InternalTypeRepresentation* internal = m_hByName[type];
+   NumberCategoryModelPrivate::InternalTypeRepresentation* internal = d_ptr->m_hByName[type];
    if (internal)
       return internal->category;
    return addCategory(type,nullptr);
@@ -164,9 +169,11 @@ NumberCategory* NumberCategoryModel::getCategory(const QString& type)
 
 NumberCategory* NumberCategoryModel::other()
 {
-   if (instance()->m_hByName["Other"])
-      return instance()->m_hByName["Other"]->category;
-   if (!m_spOther)
-      m_spOther = new NumberCategory(instance(),"Other");
-   return m_spOther;
+   if (instance()->d_ptr->m_hByName["Other"])
+      return instance()->d_ptr->m_hByName["Other"]->category;
+   if (NumberCategoryModelPrivate::m_spOther)
+      NumberCategoryModelPrivate::m_spOther = new NumberCategory(instance(),"Other");
+   return NumberCategoryModelPrivate::m_spOther;
 }
+
+#include <numbercategorymodel.moc>

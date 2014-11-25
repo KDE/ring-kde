@@ -28,6 +28,12 @@ public:
    virtual void     load     (NumberCategoryModel* model) = 0;
 //    virtual QVariant icon     (QPixmap*             icon ) = 0;
    virtual ~NumberCategoryVisitor(){};
+
+   static NumberCategoryVisitor* instance();
+   static void setInstance(NumberCategoryVisitor* ins);
+
+private:
+   static NumberCategoryVisitor* m_spInstance;
 };
 
 #endif //NUMBERCATEGORYVISITOR_H

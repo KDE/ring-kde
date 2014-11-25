@@ -16,3 +16,38 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "numbercategoryvisitor.h"
+#include "../numbercategorymodel.h"
+
+class DummyNumberCategoryVisitor : public NumberCategoryVisitor{
+public:
+   virtual void serialize(NumberCategoryModel* model) override;
+   virtual void load     (NumberCategoryModel* model) override;
+   virtual ~DummyNumberCategoryVisitor();
+};
+
+NumberCategoryVisitor* NumberCategoryVisitor::m_spInstance = new DummyNumberCategoryVisitor();
+
+
+void DummyNumberCategoryVisitor::serialize(NumberCategoryModel* model)
+{
+   Q_UNUSED(model)
+}
+
+void DummyNumberCategoryVisitor::load(NumberCategoryModel* model)
+{
+   Q_UNUSED(model)
+}
+
+DummyNumberCategoryVisitor::~DummyNumberCategoryVisitor()
+{}
+
+NumberCategoryVisitor* NumberCategoryVisitor::instance()
+{
+   return m_spInstance;
+}
+
+void NumberCategoryVisitor::setInstance(NumberCategoryVisitor* ins)
+{
+   m_spInstance = ins;
+   ins->load(NumberCategoryModel::instance());
+}

@@ -22,6 +22,7 @@
 
 LastUsedNumberModel* LastUsedNumberModel::m_spInstance = nullptr;
 
+
 struct ChainedPhoneNumber {
    ChainedPhoneNumber(PhoneNumber* n) : m_pPrevious(nullptr),m_pNext(nullptr),m_pSelf(n){}
    ChainedPhoneNumber* m_pPrevious;
@@ -29,9 +30,33 @@ struct ChainedPhoneNumber {
    PhoneNumber*  m_pSelf;
 };
 
-LastUsedNumberModel::LastUsedNumberModel() : QAbstractListModel(),m_pFirstNode(nullptr),m_IsValid(false)
+class LastUsedNumberModelPrivate
 {
-   for (int i=0;i<MAX_ITEM;i++) m_lLastNumbers[i] = nullptr;
+public:
+   LastUsedNumberModelPrivate();
+
+   //Const
+   constexpr static const int MAX_ITEM = 15;
+
+   //Attributes
+   ChainedPhoneNumber* m_pFirstNode;
+   QHash<PhoneNumber*,ChainedPhoneNumber*> m_hNumbers;
+   bool m_IsValid;
+   ChainedPhoneNumber* m_lLastNumbers[MAX_ITEM];
+};
+
+LastUsedNumberModelPrivate::LastUsedNumberModelPrivate():m_pFirstNode(nullptr),m_IsValid(false)
+{}
+
+LastUsedNumberModel::LastUsedNumberModel() : QAbstractListModel(),d_ptr(new LastUsedNumberModelPrivate())
+{
+   for (int i=0;i<LastUsedNumberModelPrivate::MAX_ITEM;i++)
+      d_ptr->m_lLastNumbers[i] = nullptr;
+}
+
+LastUsedNumberModel::~LastUsedNumberModel()
+{
+   delete d_ptr;
 }
 
 LastUsedNumberModel* LastUsedNumberModel::instance()
@@ -46,16 +71,15 @@ LastUsedNumberModel* LastUsedNumberModel::instance()
 void LastUsedNumberModel::addCall(Call* call)
 {
    PhoneNumber* number = call->peerPhoneNumber();
-   ChainedPhoneNumber* node = m_hNumbers[number];
-   if (!number || ( node && m_pFirstNode == node) ) {
-      
+   ChainedPhoneNumber* node = d_ptr->m_hNumbers[number];
+   if (!number || ( node && d_ptr->m_pFirstNode == node) ) {
       //TODO enable threaded numbers now
       return;
    }
 
    if (!node) {
       node = new ChainedPhoneNumber(number);
-      m_hNumbers[number] = node;
+      d_ptr->m_hNumbers[number] = node;
    }
    else {
       if (node->m_pPrevious)
@@ -63,12 +87,12 @@ void LastUsedNumberModel::addCall(Call* call)
       if (node->m_pNext)
          node->m_pNext->m_pPrevious = node->m_pPrevious;
    }
-   if (m_pFirstNode) {
-      m_pFirstNode->m_pPrevious = node;
-      node->m_pNext = m_pFirstNode;
+   if (d_ptr->m_pFirstNode) {
+      d_ptr->m_pFirstNode->m_pPrevious = node;
+      node->m_pNext = d_ptr->m_pFirstNode;
    }
-   m_pFirstNode = node;
-   m_IsValid = false;
+   d_ptr->m_pFirstNode = node;
+   d_ptr->m_IsValid = false;
    emit layoutChanged();
 }
 
@@ -77,19 +101,19 @@ QVariant LastUsedNumberModel::data( const QModelIndex& index, int role) const
 {
    if (!index.isValid())
       return QVariant();
-   if (!m_IsValid) {
-      ChainedPhoneNumber* current = m_pFirstNode;
-      for (int i=0;i<MAX_ITEM;i++) { //Can only grow, no need to clear
-         const_cast<LastUsedNumberModel*>(this)->m_lLastNumbers[i] = current;
+   if (!d_ptr->m_IsValid) {
+      ChainedPhoneNumber* current = d_ptr->m_pFirstNode;
+      for (int i=0;i<LastUsedNumberModelPrivate::MAX_ITEM;i++) { //Can only grow, no need to clear
+         d_ptr->m_lLastNumbers[i] = current;
          current = current->m_pNext;
          if (!current)
             break;
       }
-      const_cast<LastUsedNumberModel*>(this)->m_IsValid = true;
+      d_ptr->m_IsValid = true;
    }
    switch (role) {
       case Qt::DisplayRole: {
-         return m_lLastNumbers[index.row()]->m_pSelf->uri();
+         return d_ptr->m_lLastNumbers[index.row()]->m_pSelf->uri();
       }
    };
    return QVariant();
@@ -99,7 +123,7 @@ int LastUsedNumberModel::rowCount( const QModelIndex& parent) const
 {
    if (parent.isValid())
       return 0;
-   return m_hNumbers.size() < LastUsedNumberModel::MAX_ITEM?m_hNumbers.size():LastUsedNumberModel::MAX_ITEM;
+   return d_ptr->m_hNumbers.size() < LastUsedNumberModelPrivate::MAX_ITEM?d_ptr->m_hNumbers.size():LastUsedNumberModelPrivate::MAX_ITEM;
 }
 
 Qt::ItemFlags LastUsedNumberModel::flags( const QModelIndex& index) const

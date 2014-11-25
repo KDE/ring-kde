@@ -28,19 +28,37 @@
 //Static
 PresenceStatusModel* PresenceStatusModel::m_spInstance = nullptr;
 
+class PresenceStatusModelPrivate
+{
+public:
+   PresenceStatusModelPrivate();
+   //Attributes
+   QVector<PresenceStatusModel::StatusData*> m_lStatuses;
+   QString                          m_CustomMessage    ;
+   bool                             m_UseCustomStatus  ;
+   bool                             m_CustomStatus     ;
+   PresenceStatusModel::StatusData* m_pCurrentStatus   ;
+   PresenceStatusModel::StatusData* m_pDefaultStatus   ;
+};
+
+PresenceStatusModelPrivate::PresenceStatusModelPrivate() :
+m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_CustomStatus(false)
+{
+   
+}
+
 ///Constructor
 PresenceStatusModel::PresenceStatusModel(QObject* parent) : QAbstractTableModel(parent?parent:QCoreApplication::instance()),
-m_pCurrentStatus(nullptr),m_pDefaultStatus(nullptr),m_UseCustomStatus(false),m_CustomStatus(false),m_pVisitor(nullptr)
+d_ptr(new PresenceStatusModelPrivate())
 {
    setObjectName("PresenceStatusModel");
 }
 
 PresenceStatusModel::~PresenceStatusModel()
 {
-   foreach (StatusData* data, m_lStatuses) {
+   foreach (StatusData* data, d_ptr->m_lStatuses) {
       delete data;
    }
-   if (m_pVisitor) delete m_pVisitor;
 }
 
 ///Get model data
@@ -52,28 +70,28 @@ QVariant PresenceStatusModel::data(const QModelIndex& index, int role ) const
             switch (role) {
                case Qt::DisplayRole:
                case Qt::EditRole:
-                  return m_lStatuses[index.row()]->name;
+                  return d_ptr->m_lStatuses[index.row()]->name;
                case Qt::ToolTipRole:
-                  return m_lStatuses[index.row()]->message;
+                  return d_ptr->m_lStatuses[index.row()]->message;
             }
             break;
          case PresenceStatusModel::Columns::Message:
             switch (role) {
                case Qt::DisplayRole:
                case Qt::EditRole:
-                  return m_lStatuses[index.row()]->message;
+                  return d_ptr->m_lStatuses[index.row()]->message;
             }
             break;
          case PresenceStatusModel::Columns::Color:
             switch (role) {
                case Qt::BackgroundColorRole:
-                  return m_lStatuses[index.row()]->color;
+                  return d_ptr->m_lStatuses[index.row()]->color;
             }
             break;
          case PresenceStatusModel::Columns::Status:
             switch (role) {
                case Qt::CheckStateRole:
-                  return m_lStatuses[index.row()]->status?Qt::Checked:Qt::Unchecked;
+                  return d_ptr->m_lStatuses[index.row()]->status?Qt::Checked:Qt::Unchecked;
                case Qt::TextAlignmentRole:
                   return Qt::AlignCenter;
             }
@@ -81,7 +99,7 @@ QVariant PresenceStatusModel::data(const QModelIndex& index, int role ) const
          case PresenceStatusModel::Columns::Default:
             switch (role) {
                case Qt::CheckStateRole:
-                  return m_lStatuses[index.row()]->defaultStatus?Qt::Checked:Qt::Unchecked;
+                  return d_ptr->m_lStatuses[index.row()]->defaultStatus?Qt::Checked:Qt::Unchecked;
                case Qt::TextAlignmentRole:
                   return Qt::AlignCenter;
             }
@@ -95,7 +113,7 @@ QVariant PresenceStatusModel::data(const QModelIndex& index, int role ) const
 int PresenceStatusModel::rowCount(const QModelIndex& parent ) const
 {
    if (parent.isValid()) return 0;
-   return m_lStatuses.size();
+   return d_ptr->m_lStatuses.size();
 }
 
 ///Return the number of column (static: {"Name","Message","Color","Present","Default"})
@@ -122,7 +140,7 @@ bool PresenceStatusModel::setData(const QModelIndex& index, const QVariant &valu
    Q_UNUSED(value)
    Q_UNUSED(role)
    if (index.isValid()) {
-      StatusData* dat = m_lStatuses[index.row()];
+      StatusData* dat = d_ptr->m_lStatuses[index.row()];
       switch(static_cast<PresenceStatusModel::Columns>(index.column())) {
          case PresenceStatusModel::Columns::Name:
             if (role == Qt::EditRole) {
@@ -177,20 +195,12 @@ QVariant PresenceStatusModel::headerData(int section, Qt::Orientation orientatio
 ///Add a status to the model
 void PresenceStatusModel::addStatus(StatusData* status)
 {
-   m_lStatuses << status;
+   d_ptr->m_lStatuses << status;
    if (status->defaultStatus) {
-      m_pDefaultStatus = status;
-      if (!m_pCurrentStatus)
-         setCurrentIndex(index(m_lStatuses.size()-1,0));
+      d_ptr->m_pDefaultStatus = status;
+      if (!d_ptr->m_pCurrentStatus)
+         setCurrentIndex(index(d_ptr->m_lStatuses.size()-1,0));
    }
-}
-
-
-void PresenceStatusModel::setPresenceVisitor(PresenceSerializationVisitor* visitor)
-{
-   m_pVisitor = visitor;
-   if (m_pVisitor)
-      m_pVisitor->load();
 }
 
 ///Add a new status
@@ -198,15 +208,15 @@ void PresenceStatusModel::addRow()
 {
    StatusData* newRow = new StatusData();
    newRow->status = false;
-   m_lStatuses << newRow;
+   d_ptr->m_lStatuses << newRow;
    emit layoutChanged();
 }
 
 ///Remove status[index]
 void PresenceStatusModel::removeRow(const QModelIndex& index)
 {
-   StatusData* toDel = m_lStatuses[index.row()];
-   m_lStatuses.remove(index.row());
+   StatusData* toDel = d_ptr->m_lStatuses[index.row()];
+   d_ptr->m_lStatuses.remove(index.row());
    emit layoutChanged();
    delete toDel;
 }
@@ -214,8 +224,7 @@ void PresenceStatusModel::removeRow(const QModelIndex& index)
 ///Serialize model TODO a backend visitor need to be created
 void PresenceStatusModel::save()
 {
-   if (m_pVisitor)
-      m_pVisitor->serialize();
+   PresenceSerializationVisitor::instance()->serialize();
 }
 
 ///Singleton
@@ -232,9 +241,9 @@ void PresenceStatusModel::moveUp(const QModelIndex& idx)
 {
    const int row = idx.row();
    if (row > 0) {
-      StatusData* tmp      = m_lStatuses[row-1];
-      m_lStatuses[ row-1 ] = m_lStatuses[row  ];
-      m_lStatuses[ row]    = tmp;
+      StatusData* tmp      = d_ptr->m_lStatuses[row-1];
+      d_ptr->m_lStatuses[ row-1 ] = d_ptr->m_lStatuses[row  ];
+      d_ptr->m_lStatuses[ row]    = tmp;
       emit dataChanged(index(row-1,0),index(row,0));
    }
 }
@@ -243,10 +252,10 @@ void PresenceStatusModel::moveUp(const QModelIndex& idx)
 void PresenceStatusModel::moveDown(const QModelIndex& idx)
 {
    const int row = idx.row();
-   if (row-1 < m_lStatuses.size()) {
-      StatusData* tmp      = m_lStatuses[row+1];
-      m_lStatuses[ row+1 ] = m_lStatuses[row  ];
-      m_lStatuses[ row   ] = tmp;
+   if (row-1 < d_ptr->m_lStatuses.size()) {
+      StatusData* tmp      = d_ptr->m_lStatuses[row+1];
+      d_ptr->m_lStatuses[ row+1 ] = d_ptr->m_lStatuses[row  ];
+      d_ptr->m_lStatuses[ row   ] = tmp;
       emit dataChanged(index(row,0),index(row+1,0));
    }
 }
@@ -254,17 +263,17 @@ void PresenceStatusModel::moveDown(const QModelIndex& idx)
 ///Return the (user defined) custom message;
 QString PresenceStatusModel::customMessage() const
 {
-   return m_CustomMessage;
+   return d_ptr->m_CustomMessage;
 }
 
 ///Set the (user defined) custom message
 void PresenceStatusModel::setCustomMessage(const QString& message)
 {
-   const bool hasChanged = m_CustomMessage != message;
-   m_CustomMessage = message;
+   const bool hasChanged = d_ptr->m_CustomMessage != message;
+   d_ptr->m_CustomMessage = message;
    if (hasChanged) {
       emit customMessageChanged(message);
-      if (m_UseCustomStatus)
+      if (d_ptr->m_UseCustomStatus)
          emit currentMessageChanged(message);
    }
 }
@@ -272,11 +281,11 @@ void PresenceStatusModel::setCustomMessage(const QString& message)
 ///Set the custom status
 void PresenceStatusModel::setCustomStatus(bool status)
 {
-   const bool hasChanged = status != m_CustomStatus;
-   m_CustomStatus = status;
+   const bool hasChanged = status != d_ptr->m_CustomStatus;
+   d_ptr->m_CustomStatus = status;
    if (hasChanged) {
       emit customStatusChanged(status);
-      if (m_UseCustomStatus)
+      if (d_ptr->m_UseCustomStatus)
          emit currentStatusChanged(status);
    }
 }
@@ -284,41 +293,41 @@ void PresenceStatusModel::setCustomStatus(bool status)
 ///Switch between the pre-defined status list and custom ones
 void PresenceStatusModel::setUseCustomStatus(bool useCustom)
 {
-   const bool changed = m_UseCustomStatus != useCustom;
-   m_UseCustomStatus = useCustom;
+   const bool changed = d_ptr->m_UseCustomStatus != useCustom;
+   d_ptr->m_UseCustomStatus = useCustom;
    if (changed) {
-      emit useCustomStatusChanged( useCustom                                                                                );
-      emit currentIndexChanged   ( useCustom||!m_pCurrentStatus?index(-1,-1):index(m_lStatuses.indexOf(m_pCurrentStatus),0) );
-      emit currentNameChanged    ( useCustom?tr("Custom"):(m_pCurrentStatus?m_pCurrentStatus->name:tr("N/A"))               );
-      emit currentStatusChanged  ( useCustom?m_CustomStatus:(m_pCurrentStatus?m_pCurrentStatus->status:false)               );
-      emit currentMessageChanged ( useCustom?m_CustomMessage:(m_pCurrentStatus?m_pCurrentStatus->message:tr("N/A"))         );
+      emit useCustomStatusChanged( useCustom                                                                                                     );
+      emit currentIndexChanged   ( useCustom||!d_ptr->m_pCurrentStatus?index(-1,-1):index(d_ptr->m_lStatuses.indexOf(d_ptr->m_pCurrentStatus),0) );
+      emit currentNameChanged    ( useCustom?tr("Custom"):(d_ptr->m_pCurrentStatus?d_ptr->m_pCurrentStatus->name:tr("N/A"))                      );
+      emit currentStatusChanged  ( useCustom?d_ptr->m_CustomStatus:(d_ptr->m_pCurrentStatus?d_ptr->m_pCurrentStatus->status:false)               );
+      emit currentMessageChanged ( useCustom?d_ptr->m_CustomMessage:(d_ptr->m_pCurrentStatus?d_ptr->m_pCurrentStatus->message:tr("N/A"))         );
    }
 }
 
 ///Return if the presence status is from the predefined list or custom
 bool PresenceStatusModel::useCustomStatus() const
 {
-   return m_UseCustomStatus;
+   return d_ptr->m_UseCustomStatus;
 }
 
 ///Return the custom status
 bool PresenceStatusModel::customStatus() const
 {
-   return m_CustomStatus;
+   return d_ptr->m_CustomStatus;
 }
 
 ///Set the current status and publish it on the network
 void PresenceStatusModel::setCurrentIndex  (const QModelIndex& index)
 {
    if (!index.isValid()) return;
-   m_pCurrentStatus = m_lStatuses[index.row()];
+   d_ptr->m_pCurrentStatus = d_ptr->m_lStatuses[index.row()];
    emit currentIndexChanged(index);
-   emit currentNameChanged(m_pCurrentStatus->name);
-   emit currentMessageChanged(m_pCurrentStatus->message);
-   emit currentStatusChanged(m_pCurrentStatus->status);
+   emit currentNameChanged(d_ptr->m_pCurrentStatus->name);
+   emit currentMessageChanged(d_ptr->m_pCurrentStatus->message);
+   emit currentStatusChanged(d_ptr->m_pCurrentStatus->status);
    for (int i=0; i < AccountModel::instance()->size(); i++) {
       DBus::PresenceManager::instance().publish(
-         (*AccountModel::instance())[1]->id(), m_pCurrentStatus->status,m_pCurrentStatus->message
+         (*AccountModel::instance())[1]->id(), d_ptr->m_pCurrentStatus->status,d_ptr->m_pCurrentStatus->message
       );
    }
 }
@@ -326,53 +335,53 @@ void PresenceStatusModel::setCurrentIndex  (const QModelIndex& index)
 ///Return the current status
 bool PresenceStatusModel::currentStatus() const
 {
-   if (m_UseCustomStatus) return m_CustomStatus;
-   if (!m_pCurrentStatus) return false;
-   return m_UseCustomStatus?m_CustomStatus:m_pCurrentStatus->status;
+   if (d_ptr->m_UseCustomStatus) return d_ptr->m_CustomStatus;
+   if (!d_ptr->m_pCurrentStatus) return false;
+   return d_ptr->m_UseCustomStatus?d_ptr->m_CustomStatus:d_ptr->m_pCurrentStatus->status;
 }
 
 ///Return the current status message
 QString PresenceStatusModel::currentMessage() const
 {
-   if (m_UseCustomStatus) return m_CustomMessage;
-   if (!m_pCurrentStatus) return tr("N/A");
-   return m_pCurrentStatus->message;
+   if (d_ptr->m_UseCustomStatus) return d_ptr->m_CustomMessage;
+   if (!d_ptr->m_pCurrentStatus) return tr("N/A");
+   return d_ptr->m_pCurrentStatus->message;
 }
 
 ///Return current name
 QString PresenceStatusModel::currentName() const
 {
-   return m_UseCustomStatus?tr("Custom"):m_pCurrentStatus?m_pCurrentStatus->name:tr("N/A");
+   return d_ptr->m_UseCustomStatus?tr("Custom"):d_ptr->m_pCurrentStatus?d_ptr->m_pCurrentStatus->name:tr("N/A");
 }
 
 ///Return the default status index
 QModelIndex PresenceStatusModel::defaultStatus() const
 {
-   if (!m_pDefaultStatus) return index(-1,-1);
-   return index(m_lStatuses.indexOf(m_pDefaultStatus),0);
+   if (!d_ptr->m_pDefaultStatus) return index(-1,-1);
+   return index(d_ptr->m_lStatuses.indexOf(d_ptr->m_pDefaultStatus),0);
 }
 
 ///Set the new default status
 void PresenceStatusModel::setDefaultStatus( const QModelIndex& idx )
 {
    if (!idx.isValid()) return;
-   if (m_pDefaultStatus) {
-      m_pDefaultStatus->defaultStatus = false;
-      const QModelIndex& oldIdx = index(m_lStatuses.indexOf(m_pDefaultStatus),static_cast<int>(PresenceStatusModel::Columns::Default));
+   if (d_ptr->m_pDefaultStatus) {
+      d_ptr->m_pDefaultStatus->defaultStatus = false;
+      const QModelIndex& oldIdx = index(d_ptr->m_lStatuses.indexOf(d_ptr->m_pDefaultStatus),static_cast<int>(PresenceStatusModel::Columns::Default));
       emit dataChanged(oldIdx,oldIdx);
    }
-   m_pDefaultStatus = m_lStatuses[idx.row()];
-   m_pDefaultStatus->defaultStatus = true;
+   d_ptr->m_pDefaultStatus = d_ptr->m_lStatuses[idx.row()];
+   d_ptr->m_pDefaultStatus->defaultStatus = true;
    emit defaultStatusChanged(idx);
    emit dataChanged(idx,idx);
 }
 
 bool PresenceStatusModel::isAutoTracked(AbstractItemBackendBase* backend) const
 {
-   return m_pVisitor->isTracked(backend);
+   return PresenceSerializationVisitor::instance()->isTracked(backend);
 }
 
 void PresenceStatusModel::setAutoTracked(AbstractItemBackendBase* backend, bool tracked) const
 {
-   m_pVisitor->setTracked(backend,tracked);
+   PresenceSerializationVisitor::instance()->setTracked(backend,tracked);
 }

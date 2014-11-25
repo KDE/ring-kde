@@ -238,7 +238,7 @@ int CallModel::size()
 }
 
 ///Return the action call list
- CallList CallModel::getCallList()
+ CallList CallModel::getActiveCalls()
 {
    CallList callList;
    #pragma GCC diagnostic ignored "-Wshadow"
@@ -255,7 +255,7 @@ int CallModel::size()
 } //getCallList
 
 ///Return all conferences
-CallList CallModel::getConferenceList()
+CallList CallModel::getActiveConferences()
 {
    CallList confList;
 
@@ -366,7 +366,7 @@ Call* CallModel::dialingCall(const QString& peerName, Account* account)
 {
    //Having multiple dialing calls could be supported, but for now we decided not to
    //handle this corner case as it will create issues of its own
-   foreach (Call* call, getCallList()) {
+   foreach (Call* call, getActiveCalls()) {
       if (call->state() == Call::State::DIALING)
          return call;
    }

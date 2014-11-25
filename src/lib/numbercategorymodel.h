@@ -27,21 +27,21 @@ class QPixmap;
 class NumberCategoryVisitor;
 class PhoneNumber;
 class NumberCategory;
+class NumberCategoryModelPrivate;
 
 class LIB_EXPORT NumberCategoryModel : public QAbstractListModel {
    Q_OBJECT
 public:
-   explicit NumberCategoryModel(QObject* parent = nullptr);
 
    enum Role {
       INDEX = 100,
    };
 
    //Abstract model member
-   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
-   virtual int rowCount(const QModelIndex& parent = QModelIndex()             ) const;
-   virtual Qt::ItemFlags flags(const QModelIndex& index                       ) const;
-   virtual bool setData(const QModelIndex& index, const QVariant &value, int role);
+   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+   virtual int rowCount(const QModelIndex& parent = QModelIndex()             ) const override;
+   virtual Qt::ItemFlags flags(const QModelIndex& index                       ) const override;
+   virtual bool setData(const QModelIndex& index, const QVariant &value, int role) override;
 
    //Mutator
    NumberCategory* addCategory(const QString& name, QPixmap* icon, int index = -1, bool enabled = true);
@@ -51,11 +51,7 @@ public:
    //Singleton
    static NumberCategoryModel* instance();
 
-   //Setter
-   void setVisitor(NumberCategoryVisitor* visitor);
-
    //Getter
-   NumberCategoryVisitor* visitor() const;
    QModelIndex nameToIndex(const QString& name) const;
    NumberCategory* getCategory(const QString& type);
    static NumberCategory* other();
@@ -65,18 +61,14 @@ public:
    void unregisterNumber(PhoneNumber* number);
 
 private:
-   struct InternalTypeRepresentation {
-      NumberCategory* category;
-      int             index   ;
-      bool            enabled ;
-      int             counter ;
-   };
-   QVector<InternalTypeRepresentation*>   m_lCategories;
-   QHash<int,InternalTypeRepresentation*> m_hByIdx;
-   QHash<QString,InternalTypeRepresentation*> m_hByName;
-   static NumberCategoryModel*            m_spInstance ;
-   NumberCategoryVisitor*                 m_pVisitor   ;
-   static NumberCategory*                 m_spOther    ;
+   explicit NumberCategoryModel(QObject* parent = nullptr);
+   ~NumberCategoryModel();
+
+   NumberCategoryModelPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(NumberCategoryModel)
+
+   //Singleton
+   static NumberCategoryModel* m_spInstance;
 };
 
 #endif //NUMBERCATEGORYMODEL_H

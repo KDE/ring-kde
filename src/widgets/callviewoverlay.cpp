@@ -174,8 +174,8 @@ void CallViewOverlay::slotLayoutChanged()
       }
    }
    //Fill the list
-   if (CallModel::instance()->getCallList().size()-1 > 0) {
-      foreach(Call* call, CallModel::instance()->getCallList()) {
+   if (CallModel::instance()->getActiveCalls().size()-1 > 0) {
+      foreach(Call* call, CallModel::instance()->getActiveCalls()) {
          if (call != m_pCurrentCall) {
             KPushButton* btn = new KPushButton(call->roleData(Qt::DisplayRole).toString(),this);
             btn->setStyleSheet(m_pTransferB->styleSheet());

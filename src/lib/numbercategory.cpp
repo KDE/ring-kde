@@ -24,8 +24,10 @@
 
 NumberCategory::NumberCategory(QObject* parent, const QString& name) : QObject(parent), m_pIcon(nullptr),m_Name(name)
 {
-   
 }
+
+NumberCategory::~NumberCategory()
+{}
 
 QVariant NumberCategory::icon(bool isTracked, bool isPresent) const
 {

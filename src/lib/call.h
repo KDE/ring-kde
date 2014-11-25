@@ -127,20 +127,20 @@ public:
 
    ///Possible call states
    enum class State : unsigned int{
-      INCOMING        = 0, /** Ringing incoming call */
-      RINGING         = 1, /** Ringing outgoing call */
-      CURRENT         = 2, /** Call to which the user can speak and hear */
-      DIALING         = 3, /** Call which numbers are being added by the user */
-      HOLD            = 4, /** Call is on hold */
-      FAILURE         = 5, /** Call has failed */
-      BUSY            = 6, /** Call is busy */
-      TRANSFERRED     = 7, /** Call is being transferred.  During this state, the user can enter the new number. */
-      TRANSF_HOLD     = 8, /** Call is on hold for transfer */
-      OVER            = 9, /** Call is over and should not be used */
-      ERROR           = 10,/** This state should never be reached */
-      CONFERENCE      = 11,/** This call is the current conference*/
-      CONFERENCE_HOLD = 12,/** This call is a conference on hold*/
-      INITIALIZATION  = 13,/** The call have been placed, but the peer hasn't confirmed yet */
+      INCOMING        = 0, /*!<  Ringing incoming call */
+      RINGING         = 1, /*!< Ringing outgoing call */
+      CURRENT         = 2, /*!< Call to which the user can speak and hear */
+      DIALING         = 3, /*!< Call which numbers are being added by the user */
+      HOLD            = 4, /*!< Call is on hold */
+      FAILURE         = 5, /*!< Call has failed */
+      BUSY            = 6, /*!< Call is busy */
+      TRANSFERRED     = 7, /*!< Call is being transferred.  During this state, the user can enter the new number. */
+      TRANSF_HOLD     = 8, /*!< Call is on hold for transfer */
+      OVER            = 9, /*!< Call is over and should not be used */
+      ERROR           = 10,/*!< This state should never be reached */
+      CONFERENCE      = 11,/*!< This call is the current conference*/
+      CONFERENCE_HOLD = 12,/*!< This call is a conference on hold*/
+      INITIALIZATION  = 13,/*!< The call have been placed, but the peer hasn't confirmed yet */
       __COUNT,
    };
    Q_ENUMS(State)
@@ -152,7 +152,7 @@ public:
    *
    * SFLPhone-KDE will keep support for at least a year
    */
-   enum class LegacyHistoryState : int //FIXME remove
+   enum class LegacyHistoryState : int //DEPRECATED remove
    {
       INCOMING,
       OUTGOING,
@@ -162,16 +162,16 @@ public:
 
    ///@enum Direction If the user have been called or have called
    enum class Direction : int {
-      INCOMING, /** Someone has called      */
-      OUTGOING, /** The user called someone */
+      INCOMING, /*!< Someone has called      */
+      OUTGOING, /*!< The user called someone */
    };
    Q_ENUMS(Direction)
 
    ///Is the call between one or more participants
    enum class Type {
-      CALL      , /** A simple call                  */
-      CONFERENCE, /** A composition of other calls   */
-      HISTORY   , /** A call from a previous session */
+      CALL      , /*!< A simple call                  */
+      CONFERENCE, /*!< A composition of other calls   */
+      HISTORY   , /*!< A call from a previous session */
    };
 
    /** @enum Call::DaemonState
@@ -179,12 +179,12 @@ public:
    */
    enum class DaemonState : unsigned int
    {
-      RINGING = 0, /** Ringing outgoing or incoming call */
-      CURRENT = 1, /** Call to which the user can speak and hear */
-      BUSY    = 2, /** Call is busy */
-      HOLD    = 3, /** Call is on hold */
-      HUNG_UP = 4, /** Call is over  */
-      FAILURE = 5, /** Call has failed */
+      RINGING = 0, /*!< Ringing outgoing or incoming call */
+      CURRENT = 1, /*!< Call to which the user can speak and hear */
+      BUSY    = 2, /*!< Call is busy */
+      HOLD    = 3, /*!< Call is on hold */
+      HUNG_UP = 4, /*!< Call is over  */
+      FAILURE = 5, /*!< Call has failed */
       __COUNT,
    };
 
@@ -193,11 +193,11 @@ public:
    */
    enum class Action : unsigned int
    {
-      ACCEPT   = 0, /** Accept, create or place call or place transfer */
-      REFUSE   = 1, /** Red button, refuse or hang up */
-      TRANSFER = 2, /** Put into or out of transfer mode*/
-      HOLD     = 3, /** Hold or unhold the call */
-      RECORD   = 4, /** Enable or disable recording */
+      ACCEPT   = 0, /*!< Accept, create or place call or place transfer */
+      REFUSE   = 1, /*!< Red button, refuse or hang up */
+      TRANSFER = 2, /*!< Put into or out of transfer mode*/
+      HOLD     = 3, /*!< Hold or unhold the call */
+      RECORD   = 4, /*!< Enable or disable recording */
       __COUNT,
    };
 
@@ -208,9 +208,9 @@ public:
     *  as BUSY OR FAILURE while also finished
     */
    enum class LifeCycleState {
-      INITIALIZATION = 0, /** Anything before the media transfer start   */
-      PROGRESS       = 1, /** The peers are in communication (or hold)   */
-      FINISHED       = 2, /** Everything is over, there is no going back */
+      INITIALIZATION = 0, /*!< Anything before the media transfer start   */
+      PROGRESS       = 1, /*!< The peers are in communication (or hold)   */
+      FINISHED       = 2, /*!< Everything is over, there is no going back */
       __COUNT
    };
 
@@ -327,7 +327,7 @@ public:
 
 private:
    explicit Call(const QString& confId, const QString& account);
-   Call(Call::State startState, const QString& callId, const QString& peerName = QString(), PhoneNumber* number = nullptr, Account* account = nullptr);
+   Call(Call::State startState, const QString& callId, const QString& peerName = QString(), PhoneNumber* number = nullptr, Account* account = nullptr); //TODO MOVE TO PRIVATE
    QScopedPointer<CallPrivate> d_ptr;
    Q_DECLARE_PRIVATE(Call)
 

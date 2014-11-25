@@ -367,7 +367,7 @@ void EventManager::typeString(const QString& str)
       return;
    }
 
-   foreach (Call* call2, CallModel::instance()->getCallList()) {
+   foreach (Call* call2, CallModel::instance()->getActiveCalls()) {
       if(dynamic_cast<Call*>(call2) && currentCall != call2 && call2->state() == Call::State::CURRENT) {
          call2->performAction(Call::Action::HOLD);
       }

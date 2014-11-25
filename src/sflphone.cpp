@@ -158,10 +158,10 @@ SFLPhone::SFLPhone(QWidget *parent)
          //In case the client is not quitted correctly, save now
          ConfigurationSkeleton::self()->writeConfig();
       }
-      NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
+      NumberCategoryVisitor::setInstance(new ConcreteNumberCategoryVisitor());
       ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
       ContactModel::instance()->backendModel()->load();
-      IMConversationManager::init();
+      IMConversationManager::instance();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
       VideoModel::instance();

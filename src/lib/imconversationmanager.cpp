@@ -26,6 +26,26 @@
 
 IMConversationManager* IMConversationManager::m_spInstance = nullptr;
 
+class IMConversationManagerPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   IMConversationManagerPrivate(IMConversationManager* parent);
+
+   //Attributes
+   QHash<QString,InstantMessagingModel*> m_lModels;
+
+private:
+   IMConversationManager* q_ptr;
+
+private Q_SLOTS:
+   void newMessage(const QString& callId, const QString& from, const QString& message);
+};
+
+IMConversationManagerPrivate::IMConversationManagerPrivate(IMConversationManager* parent) : QObject(parent), q_ptr(parent)
+{
+}
+
 ///Signleton
 IMConversationManager* IMConversationManager::instance()
 {
@@ -35,26 +55,27 @@ IMConversationManager* IMConversationManager::instance()
    return m_spInstance;
 }
 
-void IMConversationManager::init() {
-   instance();
+IMConversationManager::~IMConversationManager()
+{
+   delete d_ptr;
 }
 
 ///Constructor
-IMConversationManager::IMConversationManager() : QObject(nullptr)
+IMConversationManager::IMConversationManager() : QObject(nullptr), d_ptr(new IMConversationManagerPrivate(this))
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
-   connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), this, SLOT(newMessage(QString,QString,QString)));
+   connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), d_ptr, SLOT(newMessage(QString,QString,QString)));
 }
 
 ///Called when a new message is incoming
-void IMConversationManager::newMessage(QString callId, QString from, QString message)
+void IMConversationManagerPrivate::newMessage(const QString& callId, const QString& from, const QString& message)
 {
    if (!m_lModels[callId] && CallModel::instance()) {
       Call* call = CallModel::instance()->getCall(callId);
       if (call) {
          qDebug() << "Creating messaging model for call" << callId;
          m_lModels[callId] = new InstantMessagingModel(call);
-         emit newMessagingModel(call,m_lModels[callId]);
+         emit q_ptr->newMessagingModel(call,m_lModels[callId]);
          m_lModels[callId]->d_ptr->addIncommingMessage(from,message);
       }
    }
@@ -66,9 +87,11 @@ void IMConversationManager::newMessage(QString callId, QString from, QString mes
 ///Singleton
 InstantMessagingModel* IMConversationManager::getModel(Call* call) {
    const QString key = call->id();
-   if (!m_lModels[key]) {
-      m_lModels[key] = new InstantMessagingModel(call);
-      emit newMessagingModel(call,m_lModels[key]);
+   if (!d_ptr->m_lModels[key]) {
+      d_ptr->m_lModels[key] = new InstantMessagingModel(call);
+      emit newMessagingModel(call,d_ptr->m_lModels[key]);
    }
-   return m_lModels[key];
+   return d_ptr->m_lModels[key];
 }
+
+#include <imconversationmanager.moc>

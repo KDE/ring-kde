@@ -155,28 +155,6 @@ protected:
 private:
    friend class PhoneNumberPrivate;
 
-   /*//Attributes
-   NumberCategory*    m_pCategory        ;
-   bool               m_Present          ;
-   QString            m_PresentMessage   ;
-   bool               m_Tracked          ;
-   Contact*           m_pContact         ;
-   Account*           m_pAccount         ;
-   time_t             m_LastUsed         ;
-   QList<Call*>       m_lCalls           ;
-   int                m_PopularityIndex  ;
-   QString            m_MostCommonName   ;
-   QHash<QString,int> m_hNames           ;
-   bool               m_hasType          ;
-   uint               m_LastWeekCount    ;
-   uint               m_LastTrimCount    ;
-   bool               m_HaveCalled       ;
-   int                m_Index            ;
-   bool               m_IsBookmark       ;
-   int                m_TotalSeconds     ;
-   QString            m_Uid              ;
-   QString            m_PrimaryName_cache;*/
-
    //Static attributes
    static QHash<int,Call*> m_shMostUsed  ;
    static const PhoneNumber* m_spBlank   ;

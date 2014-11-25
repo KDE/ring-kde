@@ -52,7 +52,7 @@ class LIB_EXPORT Contact : public QObject {
 public:
    friend class ContactPrivate;
 
-   class  PhoneNumbers : public QVector<PhoneNumber*>, public CategorizedCompositeNode {
+   class  PhoneNumbers : public QVector<PhoneNumber*>, public CategorizedCompositeNode { //TODO private
    public:
       virtual QObject* getSelf() const __attribute__ ((const));
       explicit PhoneNumbers(Contact* parent);
@@ -136,7 +136,7 @@ public:
    bool operator==(const Contact& other) const;
 
 private Q_SLOTS:
-   void slotPresenceChanged();
+   void slotPresenceChanged(); //TODO remove
 
 Q_SIGNALS:
    void presenceChanged( PhoneNumber* );

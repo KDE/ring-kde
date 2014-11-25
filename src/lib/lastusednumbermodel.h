@@ -22,11 +22,13 @@
 
 #include <QtCore/QAbstractListModel>
 
-struct ChainedPhoneNumber;
 class Call;
 class PhoneNumber;
 
-class LIB_EXPORT LastUsedNumberModel : public QAbstractListModel {
+class LastUsedNumberModelPrivate;
+
+class LIB_EXPORT LastUsedNumberModel : public QAbstractListModel
+{
    Q_OBJECT
 
 public:
@@ -34,25 +36,21 @@ public:
    static LastUsedNumberModel* instance();
 
    //Model functions
-   QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
-   int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
-   Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
-   virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
+   virtual  QVariant     data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const override;
+   virtual int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const override;
+   virtual Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const override;
+   virtual bool          setData  ( const QModelIndex& index, const QVariant &value, int role)       override;
 
    //Mutator
-   void addCall(Call* call);
-private:
-   //Const
-   static const int MAX_ITEM = 15;
+   Q_INVOKABLE void addCall(Call* call);
 
+private:
    //Private constructor
    LastUsedNumberModel();
+   ~LastUsedNumberModel();
 
-   //Attributes
-   ChainedPhoneNumber* m_pFirstNode;
-   QHash<PhoneNumber*,ChainedPhoneNumber*> m_hNumbers;
-   bool m_IsValid;
-   ChainedPhoneNumber* m_lLastNumbers[MAX_ITEM];
+   LastUsedNumberModelPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(LastUsedNumberModel)
 
    //Static attributes
    static LastUsedNumberModel* m_spInstance;

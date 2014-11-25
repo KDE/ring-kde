@@ -25,6 +25,7 @@
 
 class PresenceSerializationVisitor;
 class AbstractItemBackendBase;
+class PresenceStatusModelPrivate;
 
 ///CredentialModel: A model for account credentials
 class LIB_EXPORT PresenceStatusModel : public QAbstractTableModel {
@@ -54,7 +55,6 @@ public:
 
    //Methods
    void addStatus(StatusData* status);
-   void setPresenceVisitor(PresenceSerializationVisitor* visitor);
 
    //Properties
    Q_PROPERTY( QString     customMessage     READ customMessage    WRITE  setCustomMessage              NOTIFY customMessageChanged(QString)     )
@@ -70,12 +70,12 @@ public:
    virtual ~PresenceStatusModel();
 
    //Abstract model members
-   virtual QVariant      data       (const QModelIndex& index, int role = Qt::DisplayRole                 ) const;
-   virtual int           rowCount   (const QModelIndex& parent = QModelIndex()                            ) const;
-   virtual int           columnCount(const QModelIndex& parent = QModelIndex()                            ) const;
-   virtual Qt::ItemFlags flags      (const QModelIndex& index                                             ) const;
-   virtual bool          setData    (const QModelIndex& index, const QVariant &value, int role            )      ;
-   virtual QVariant      headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual QVariant      data       (const QModelIndex& index, int role = Qt::DisplayRole                 ) const override;
+   virtual int           rowCount   (const QModelIndex& parent = QModelIndex()                            ) const override;
+   virtual int           columnCount(const QModelIndex& parent = QModelIndex()                            ) const override;
+   virtual Qt::ItemFlags flags      (const QModelIndex& index                                             ) const override;
+   virtual bool          setData    (const QModelIndex& index, const QVariant &value, int role            )       override;
+   virtual QVariant      headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
    //Singleton
    static PresenceStatusModel* instance();
@@ -95,15 +95,7 @@ public:
    bool        isAutoTracked(AbstractItemBackendBase* backend) const;
 
 private:
-
-   //Attributes
-   QVector<StatusData*> m_lStatuses        ;
-   QString              m_CustomMessage    ;
-   bool                 m_UseCustomStatus  ;
-   bool                 m_CustomStatus     ;
-   StatusData*          m_pCurrentStatus   ;
-   StatusData*          m_pDefaultStatus   ;
-   PresenceSerializationVisitor* m_pVisitor;
+   QScopedPointer<PresenceStatusModelPrivate> d_ptr;
 
    //Singleton
    static PresenceStatusModel* m_spInstance;

@@ -291,7 +291,7 @@ void HistoryDelegate::slotStopRingingAnimation()
 {
    if (m_pRingingTip && m_pRingingTip->isVisible()) {
       bool found = false;
-      foreach(const Call* call,CallModel::instance()->getCallList()) {
+      foreach(const Call* call,CallModel::instance()->getActiveCalls()) {
          found = (call->lifeCycleState() == Call::LifeCycleState::INITIALIZATION);
          if (found)
             break;

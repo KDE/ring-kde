@@ -104,7 +104,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
 
    //Set global settings
    Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
-   PresenceStatusModel::instance()->setPresenceVisitor(new KDEPresenceSerializationVisitor());
+   PresenceSerializationVisitor::setInstance(new KDEPresenceSerializationVisitor());
 
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());
@@ -120,7 +120,7 @@ SFLPhoneView::SFLPhoneView(QWidget *parent)
    m_pView->setViewType(CategorizedTreeView::ViewType::Call);
 
 
-   if (!CallModel::instance()->getCallList().size())
+   if (!CallModel::instance()->getActiveCalls().size())
       m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NO_CALLS);
 
    QPalette pal = QPalette(palette());
@@ -243,7 +243,7 @@ void SFLPhoneView::paste()
 
 void SFLPhoneView::selectDialingCall() const
 {
-   foreach(Call* call,CallModel::instance()->getCallList()) {
+   foreach(Call* call,CallModel::instance()->getActiveCalls()) {
       if (call->state() == Call::State::DIALING) {
          const QModelIndex idx = CallModel::instance()->getIndex(call);
          setCurrentIndex(idx);
@@ -393,13 +393,13 @@ void SFLPhoneView::updateWindowCallState()
 
       if (TipCollection::dragAndDrop()) {
          int activeCallCounter=0;
-         foreach (Call* call2, CallModel::instance()->getCallList()) {
+         foreach (Call* call2, CallModel::instance()->getActiveCalls()) {
             if (dynamic_cast<Call*>(call2)) {
                activeCallCounter += (call2->lifeCycleState() == Call::LifeCycleState::PROGRESS)?1:0;
                activeCallCounter -= (call2->lifeCycleState() == Call::LifeCycleState::INITIALIZATION)*1000;
             }
          }
-         if (activeCallCounter >= 2 && !CallModel::instance()->getConferenceList().size()) {
+         if (activeCallCounter >= 2 && !CallModel::instance()->getActiveConferences().size()) {
             m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_COUNT_CHANGED);
          }
       }

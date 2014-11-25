@@ -24,6 +24,7 @@
 //SFLPhone
 class Call;
 class InstantMessagingModel;
+class IMConversationManagerPrivate;
 
 ///Manager for all IM conversations
 class LIB_EXPORT IMConversationManager : public QObject
@@ -36,23 +37,19 @@ public:
 
    //Singleton
    static IMConversationManager* instance();
-   static void init();
 
    //Getter
    InstantMessagingModel* getModel(Call* call);
 private:
    //Constructor
    explicit IMConversationManager();
+   ~IMConversationManager();
 
-   //Attributes
-   QHash<QString,InstantMessagingModel*> m_lModels;
+   IMConversationManagerPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(IMConversationManager)
 
    //Static attributes
    static IMConversationManager* m_spInstance;
-
-
-private Q_SLOTS:
-   void newMessage(QString callId, QString from, QString message);
 
 
 Q_SIGNALS:

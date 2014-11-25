@@ -36,6 +36,8 @@ class LIB_EXPORT InstantMessagingModel : public QAbstractListModel
    #pragma GCC diagnostic pop
    friend class Call;
    friend class IMConversationManager;
+   friend class IMConversationManagerPrivate;
+
 public:
    //Role const
    enum Role {
