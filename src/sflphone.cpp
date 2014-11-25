@@ -51,6 +51,7 @@
 #include "lib/contact.h"
 #include "lib/accountmodel.h"
 #include "lib/instantmessagingmodel.h"
+#include "lib/imconversationmanager.h"
 #include "lib/numbercategorymodel.h"
 #include "lib/legacyhistorybackend.h"
 #include "klib/minimalhistorybackend.h"
@@ -160,7 +161,7 @@ SFLPhone::SFLPhone(QWidget *parent)
       NumberCategoryModel::instance()->setVisitor(new ConcreteNumberCategoryVisitor());
       ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
       ContactModel::instance()->backendModel()->load();
-      InstantMessagingModelManager::init();
+      IMConversationManager::init();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
       VideoModel::instance();

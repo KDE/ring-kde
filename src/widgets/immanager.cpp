@@ -17,6 +17,7 @@
  **************************************************************************/
 #include "immanager.h"
 #include "../lib/instantmessagingmodel.h"
+#include "../lib/imconversationmanager.h"
 #include "../lib/call.h"
 #include "../delegates/imdelegate.h"
 #include <KDebug>
@@ -27,7 +28,7 @@ IMManager::IMManager(QWidget* parent) : KTabWidget(parent)
 {
    setVisible(false);
    setTabsClosable(true);
-   connect(InstantMessagingModelManager::instance(),SIGNAL(newMessagingModel(Call*,InstantMessagingModel*)),this,SLOT(newConversation(Call*,InstantMessagingModel*)));
+   connect(IMConversationManager::instance(),SIGNAL(newMessagingModel(Call*,InstantMessagingModel*)),this,SLOT(newConversation(Call*,InstantMessagingModel*)));
    connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeRequest(int)));
 }
 

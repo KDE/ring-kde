@@ -19,6 +19,7 @@
 #define HOOKMANAGER_H
 
 #include "typedefs.h"
+class HookManagerPrivate;
 
 /**
  * This class allow to get and set the different hooks
@@ -57,25 +58,8 @@ public:
 private:
    explicit HookManager();
    virtual ~HookManager();
-   void save();
 
-   class Names {
-   public:
-      constexpr static const char* PHONE_NUMBER_HOOK_ADD_PREFIX = "PHONE_NUMBER_HOOK_ADD_PREFIX";
-      constexpr static const char* URLHOOK_SIP_FIELD            = "URLHOOK_SIP_FIELD"           ;
-      constexpr static const char* URLHOOK_COMMAND              = "URLHOOK_COMMAND"             ;
-      constexpr static const char* URLHOOK_IAX2_ENABLED         = "URLHOOK_IAX2_ENABLED"        ;
-      constexpr static const char* URLHOOK_SIP_ENABLED          = "URLHOOK_SIP_ENABLED"         ;
-      constexpr static const char* PHONE_NUMBER_HOOK_ENABLED    = "PHONE_NUMBER_HOOK_ENABLED"   ;
-   };
-
-   //Attributes
-   QString m_AddPrefix      ;
-   QString m_SipFeild       ;
-   QString m_Command        ;
-   bool m_Iax2Enabled       ;
-   bool m_SipEnabled        ;
-   bool m_PhoneNumberEnabled;
+   QScopedPointer<HookManagerPrivate> d_ptr;
 
    static HookManager* m_spInstance;
 };

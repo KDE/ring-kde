@@ -22,59 +22,17 @@
 #include "call.h"
 #include "contact.h"
 #include "phonenumber.h"
+#include "private/instantmessagingmodel_p.h"
 
-InstantMessagingModelManager* InstantMessagingModelManager::m_spInstance  = nullptr;
-
-///Signleton
-InstantMessagingModelManager* InstantMessagingModelManager::instance()
+InstantMessagingModelPrivate::InstantMessagingModelPrivate(InstantMessagingModel* parent) : QObject(parent), q_ptr(parent)
 {
-   if (!m_spInstance) {
-      m_spInstance = new InstantMessagingModelManager();
-   }
-   return m_spInstance;
-}
 
-void InstantMessagingModelManager::init() {
-   instance();
 }
 
 ///Constructor
-InstantMessagingModelManager::InstantMessagingModelManager() : QObject(nullptr)
+InstantMessagingModel::InstantMessagingModel(Call* call, QObject* par) : QAbstractListModel(par), d_ptr(new InstantMessagingModelPrivate(this))
 {
-   CallManagerInterface& callManager = DBus::CallManager::instance();
-   connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), this, SLOT(newMessage(QString,QString,QString)));
-}
-
-///Called when a new message is incoming
-void InstantMessagingModelManager::newMessage(QString callId, QString from, QString message)
-{
-   if (!m_lModels[callId] && CallModel::instance()) {
-      Call* call = CallModel::instance()->getCall(callId);
-      if (call) {
-         qDebug() << "Creating messaging model for call" << callId;
-         m_lModels[callId] = new InstantMessagingModel(call);
-         emit newMessagingModel(call,m_lModels[callId]);
-         m_lModels[callId]->addIncommingMessage(from,message);
-      }
-   }
-   else if (m_lModels[callId]) {
-      m_lModels[callId]->addIncommingMessage(from,message);
-   }
-}
-
-///Singleton
-InstantMessagingModel* InstantMessagingModelManager::getModel(Call* call) {
-   const QString key = call->id();
-   if (!m_lModels[key]) {
-      m_lModels[key] = new InstantMessagingModel(call);
-      emit newMessagingModel(call,m_lModels[key]);
-   }
-   return m_lModels[key];
-}
-
-///Constructor
-InstantMessagingModel::InstantMessagingModel(Call* call, QObject* par) : QAbstractListModel(par),m_pCall(call)
-{
+   d_ptr->m_pCall = call;
    //QStringList callList = callManager.getCallList();
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(InstantMessagingModel::Role::TYPE    ,QByteArray("type"));
@@ -85,32 +43,37 @@ InstantMessagingModel::InstantMessagingModel(Call* call, QObject* par) : QAbstra
    setRoleNames(roles);
 }
 
+InstantMessagingModel::~InstantMessagingModel()
+{
+   delete d_ptr;
+}
+
 ///Get data from the model
 QVariant InstantMessagingModel::data( const QModelIndex& idx, int role) const
 {
    if (idx.column() == 0) {
       switch (role) {
          case Qt::DisplayRole:
-            return QVariant(m_lMessages[idx.row()].message);
+            return QVariant(d_ptr->m_lMessages[idx.row()].message);
             break;
          case InstantMessagingModel::Role::TYPE:
-            return QVariant(m_lMessages[idx.row()].message);
+            return QVariant(d_ptr->m_lMessages[idx.row()].message);
             break;
          case InstantMessagingModel::Role::FROM:
-            return QVariant(m_lMessages[idx.row()].from);
+            return QVariant(d_ptr->m_lMessages[idx.row()].from);
             break;
          case InstantMessagingModel::Role::TEXT:
-            return INCOMMING_IM;
+            return static_cast<int>(MessageRole::INCOMMING_IM);
             break;
          case InstantMessagingModel::Role::CONTACT:
-            if (m_pCall->peerPhoneNumber()->contact()) {
+            if (d_ptr->m_pCall->peerPhoneNumber()->contact()) {
                return QVariant();
             }
             break;
          case InstantMessagingModel::Role::IMAGE: {
-            if (m_lImages.find(idx) != m_lImages.end())
-               return m_lImages[idx];
-            const Contact* c = m_pCall->peerPhoneNumber()->contact();
+            if (d_ptr->m_lImages.find(idx) != d_ptr->m_lImages.end())
+               return d_ptr->m_lImages[idx];
+            const Contact* c = d_ptr->m_pCall->peerPhoneNumber()->contact();
             if (c && c->photo()) {
                return QVariant::fromValue<void*>((void*)c->photo());
             }
@@ -128,7 +91,7 @@ QVariant InstantMessagingModel::data( const QModelIndex& idx, int role) const
 int InstantMessagingModel::rowCount(const QModelIndex& parentIdx) const
 {
    Q_UNUSED(parentIdx)
-   return m_lMessages.size();
+   return d_ptr->m_lMessages.size();
 }
 
 ///Model flags
@@ -145,27 +108,27 @@ bool InstantMessagingModel::setData(const QModelIndex& idx, const QVariant &valu
    Q_UNUSED(value)
    Q_UNUSED(role)
    if (idx.column() == 0 && role == InstantMessagingModel::Role::IMAGE   ) {
-      m_lImages[idx] = value;
+      d_ptr->m_lImages[idx] = value;
    }
    return false;
 }
 
 ///Add new incoming message (to be used internally)
-void InstantMessagingModel::addIncommingMessage(QString from, QString message)
+void InstantMessagingModelPrivate::addIncommingMessage(const QString& from, const QString& message)
 {
    InternalIM im;
    im.from    = from;
    im.message = message;
    m_lMessages << im;
-   emit dataChanged(index(m_lMessages.size() -1,0), index(m_lMessages.size()-1,0));
+   emit q_ptr->dataChanged(q_ptr->index(m_lMessages.size() -1,0), q_ptr->index(m_lMessages.size()-1,0));
 }
 
 ///Add new outgoing message (to be used internally and externally)
-void InstantMessagingModel::addOutgoingMessage(QString message)
+void InstantMessagingModelPrivate::addOutgoingMessage(const QString& message)
 {
    InternalIM im;
    im.from    = tr("Me");
    im.message = message;
    m_lMessages << im;
-   emit dataChanged(index(m_lMessages.size() -1,0), index(m_lMessages.size()-1,0));
+   emit q_ptr->dataChanged(q_ptr->index(m_lMessages.size() -1,0), q_ptr->index(m_lMessages.size()-1,0));
 }

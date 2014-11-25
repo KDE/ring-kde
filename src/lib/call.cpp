@@ -48,6 +48,7 @@
 #include "tlsmethodmodel.h"
 #include "audio/settings.h"
 #include "contactmodel.h"
+#include "imconversationmanager.h"
 
 //Track where state changes are performed on finished (over, error, failed) calls
 //while not really problematic, it is technically wrong
@@ -59,6 +60,7 @@
    changeCurrentState(Call::State::ERROR);}
 
 #include "private/call_p.h"
+#include "private/instantmessagingmodel_p.h"
 
 const TypedStateMachine< TypedStateMachine< Call::State , Call::Action> , Call::State> CallPrivate::actionPerformedStateMap =
 {{
@@ -1053,9 +1055,9 @@ void Call::sendTextMessage(const QString& message)
    CallManagerInterface& callManager = DBus::CallManager::instance();
    Q_NOREPLY callManager.sendTextMessage(d_ptr->m_CallId,message);
    if (!d_ptr->m_pImModel) {
-      d_ptr->m_pImModel = InstantMessagingModelManager::instance()->getModel(this);
+      d_ptr->m_pImModel = IMConversationManager::instance()->getModel(this);
    }
-   d_ptr->m_pImModel->addOutgoingMessage(message);
+   d_ptr->m_pImModel->d_ptr->addOutgoingMessage(message);
 }
 
 

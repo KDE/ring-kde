@@ -67,6 +67,7 @@ set( qtsflphone_LIB_SRCS
   abstractbookmarkmodel.cpp
   credentialmodel.cpp
   instantmessagingmodel.cpp
+  imconversationmanager.cpp
   contactproxymodel.cpp
   useractionmodel.cpp
   presencestatusmodel.cpp
@@ -138,6 +139,7 @@ set( qtsflphone_LIB_HDRS
   abstractbookmarkmodel.h
   credentialmodel.h
   instantmessagingmodel.h
+  imconversationmanager.h
   contactproxymodel.h
   useractionmodel.h
   presencestatusmodel.h
@@ -314,7 +316,9 @@ ENDIF(${ENABLE_QT5} MATCHES true)
 SET(qtsflphone_PRIVATE_HDRS
    private/call_p.h
    private/phonedirectorymodel_p.h
+   private/instantmessagingmodel_p.h
 )
+
 IF(${ENABLE_QT5} MATCHES true)
    QT5_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_PRIVATE_HDRS})
 ELSE()

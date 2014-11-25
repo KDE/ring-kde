@@ -20,18 +20,42 @@
 #include <QtCore/QCoreApplication>
 #include "dbus/configurationmanager.h"
 
+class HookManagerPrivate
+{
+public:
+   void save();
+
+   class Names {
+   public:
+      constexpr static const char* PHONE_NUMBER_HOOK_ADD_PREFIX = "PHONE_NUMBER_HOOK_ADD_PREFIX";
+      constexpr static const char* URLHOOK_SIP_FIELD            = "URLHOOK_SIP_FIELD"           ;
+      constexpr static const char* URLHOOK_COMMAND              = "URLHOOK_COMMAND"             ;
+      constexpr static const char* URLHOOK_IAX2_ENABLED         = "URLHOOK_IAX2_ENABLED"        ;
+      constexpr static const char* URLHOOK_SIP_ENABLED          = "URLHOOK_SIP_ENABLED"         ;
+      constexpr static const char* PHONE_NUMBER_HOOK_ENABLED    = "PHONE_NUMBER_HOOK_ENABLED"   ;
+   };
+
+   //Attributes
+   QString m_AddPrefix      ;
+   QString m_SipFeild       ;
+   QString m_Command        ;
+   bool m_Iax2Enabled       ;
+   bool m_SipEnabled        ;
+   bool m_PhoneNumberEnabled;
+};
+
 HookManager* HookManager::m_spInstance = nullptr;
 
-HookManager::HookManager() : QObject(QCoreApplication::instance())
+HookManager::HookManager() : QObject(QCoreApplication::instance()),d_ptr(new HookManagerPrivate())
 {
    ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
    QMap<QString,QString> hooks = configurationManager.getHookSettings();
-   m_AddPrefix          = hooks[HookManager::Names::PHONE_NUMBER_HOOK_ADD_PREFIX];
-   m_SipFeild           = hooks[HookManager::Names::URLHOOK_SIP_FIELD           ];
-   m_Command            = hooks[HookManager::Names::URLHOOK_COMMAND             ];
-   m_Iax2Enabled        = hooks[HookManager::Names::URLHOOK_IAX2_ENABLED        ]=="true"?true:false;
-   m_SipEnabled         = hooks[HookManager::Names::URLHOOK_SIP_ENABLED         ]=="true"?true:false;
-   m_PhoneNumberEnabled = hooks[HookManager::Names::PHONE_NUMBER_HOOK_ENABLED   ]=="true"?true:false;
+   d_ptr->m_AddPrefix          = hooks[HookManagerPrivate::Names::PHONE_NUMBER_HOOK_ADD_PREFIX];
+   d_ptr->m_SipFeild           = hooks[HookManagerPrivate::Names::URLHOOK_SIP_FIELD           ];
+   d_ptr->m_Command            = hooks[HookManagerPrivate::Names::URLHOOK_COMMAND             ];
+   d_ptr->m_Iax2Enabled        = hooks[HookManagerPrivate::Names::URLHOOK_IAX2_ENABLED        ]=="true"?true:false;
+   d_ptr->m_SipEnabled         = hooks[HookManagerPrivate::Names::URLHOOK_SIP_ENABLED         ]=="true"?true:false;
+   d_ptr->m_PhoneNumberEnabled = hooks[HookManagerPrivate::Names::PHONE_NUMBER_HOOK_ENABLED   ]=="true"?true:false;
 
 }
 
@@ -39,17 +63,17 @@ HookManager::~HookManager()
 {
 }
 
-void HookManager::save()
+void HookManagerPrivate::save()
 {
    ConfigurationManagerInterface & configurationManager = DBus::ConfigurationManager::instance();
    QMap<QString,QString> hooks;
 
-   hooks[HookManager::Names::PHONE_NUMBER_HOOK_ADD_PREFIX] = m_AddPrefix;
-   hooks[HookManager::Names::URLHOOK_SIP_FIELD           ] = m_SipFeild;
-   hooks[HookManager::Names::URLHOOK_COMMAND             ] = m_Command;
-   hooks[HookManager::Names::URLHOOK_IAX2_ENABLED        ] = m_Iax2Enabled?"true":"false";
-   hooks[HookManager::Names::URLHOOK_SIP_ENABLED         ] = m_SipEnabled?"true":"false";
-   hooks[HookManager::Names::PHONE_NUMBER_HOOK_ENABLED   ] = m_PhoneNumberEnabled?"true":"false";
+   hooks[HookManagerPrivate::Names::PHONE_NUMBER_HOOK_ADD_PREFIX] = m_AddPrefix;
+   hooks[HookManagerPrivate::Names::URLHOOK_SIP_FIELD           ] = m_SipFeild;
+   hooks[HookManagerPrivate::Names::URLHOOK_COMMAND             ] = m_Command;
+   hooks[HookManagerPrivate::Names::URLHOOK_IAX2_ENABLED        ] = m_Iax2Enabled?"true":"false";
+   hooks[HookManagerPrivate::Names::URLHOOK_SIP_ENABLED         ] = m_SipEnabled?"true":"false";
+   hooks[HookManagerPrivate::Names::PHONE_NUMBER_HOOK_ENABLED   ] = m_PhoneNumberEnabled?"true":"false";
    configurationManager.setHookSettings(hooks);
 }
 
@@ -62,66 +86,66 @@ HookManager* HookManager::instance()
 
 QString HookManager::prefix() const
 {
-   return m_AddPrefix;
+   return d_ptr->m_AddPrefix;
 }
 
 QString HookManager::sipFeild() const
 {
-   return m_SipFeild;
+   return d_ptr->m_SipFeild;
 }
 
 QString HookManager::command() const
 {
-   return m_Command;
+   return d_ptr->m_Command;
 }
 
 bool HookManager::isIax2Enabled() const
 {
-   return m_Iax2Enabled;
+   return d_ptr->m_Iax2Enabled;
 }
 
 bool HookManager::isSipEnabled() const
 {
-   return m_SipEnabled;
+   return d_ptr->m_SipEnabled;
 }
 
 bool HookManager::isPhoneNumberEnabled() const
 {
-   return m_PhoneNumberEnabled;
+   return d_ptr->m_PhoneNumberEnabled;
 }
 
 void HookManager::setPrefix(const QString& prefix)
 {
-   m_AddPrefix = prefix;
-   save();
+   d_ptr->m_AddPrefix = prefix;
+   d_ptr->save();
 }
 
 void HookManager::setSipFeild(const QString& field)
 {
-   m_SipFeild = field;
-   save();
+   d_ptr->m_SipFeild = field;
+   d_ptr->save();
 }
 
 void HookManager::setCommand(const QString& command)
 {
-   m_Command = command;
-   save();
+   d_ptr->m_Command = command;
+   d_ptr->save();
 }
 
 void HookManager::setIax2Enabled(bool enabled)
 {
-   m_Iax2Enabled = enabled;
-   save();
+   d_ptr->m_Iax2Enabled = enabled;
+   d_ptr->save();
 }
 
 void HookManager::setSipEnabled(bool enabled)
 {
-   m_SipEnabled = enabled;
-   save();
+   d_ptr->m_SipEnabled = enabled;
+   d_ptr->save();
 }
 
 void HookManager::setPhoneNumberEnabled(bool enabled)
 {
-   m_PhoneNumberEnabled = enabled;
-   save();
+   d_ptr->m_PhoneNumberEnabled = enabled;
+   d_ptr->save();
 }
