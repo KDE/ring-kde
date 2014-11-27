@@ -38,9 +38,9 @@ public:
    };
 
    //Abstract model member
-   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const override;
-   virtual int rowCount(const QModelIndex& parent = QModelIndex()             ) const override;
-   virtual Qt::ItemFlags flags(const QModelIndex& index                       ) const override;
+   virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole    ) const override;
+   virtual int rowCount(const QModelIndex& parent = QModelIndex()                ) const override;
+   virtual Qt::ItemFlags flags(const QModelIndex& index                          ) const override;
    virtual bool setData(const QModelIndex& index, const QVariant &value, int role) override;
 
    //Mutator
@@ -65,7 +65,6 @@ private:
    ~NumberCategoryModel();
 
    NumberCategoryModelPrivate* d_ptr;
-   Q_DECLARE_PRIVATE(NumberCategoryModel)
 
    //Singleton
    static NumberCategoryModel* m_spInstance;

@@ -43,7 +43,7 @@ public:
 private:
    //Constructor
    explicit IMConversationManager();
-   ~IMConversationManager();
+   virtual ~IMConversationManager();
 
    IMConversationManagerPrivate* d_ptr;
    Q_DECLARE_PRIVATE(IMConversationManager)

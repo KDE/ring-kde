@@ -19,32 +19,65 @@
 
 constexpr const char* URI::schemeNames[];
 
-URI::URI(const QString& other):QString()
-   ,m_Parsed(false),m_HeaderType(SchemeType::NONE)
+class UriPrivate
 {
-   m_Stripped                     = strip(other,m_HeaderType);
-   (*static_cast<QString*>(this)) = m_Stripped               ;
+public:
+   UriPrivate(QString* uri);
+   //Attributes
+   QString          m_Hostname    ;
+   QString          m_Userinfo    ;
+   QStringList      m_lAttributes ;
+   QString          m_Stripped    ;
+   URI::SchemeType  m_HeaderType  ;
+   bool             m_hasChevrons ;
+   bool             m_Parsed      ;
+
+   //Helper
+   static QString strip(const QString& uri, URI::SchemeType& sheme);
+   void parse();
+private:
+   QString* q_ptr;
+};
+
+UriPrivate::UriPrivate(QString* uri) : m_Parsed(false),m_HeaderType(URI::SchemeType::NONE),q_ptr(uri)
+{
 }
 
-URI::URI(const URI& o):QString(),m_Parsed(o.m_Parsed),m_Hostname(o.m_Hostname),
-   m_HeaderType(o.m_HeaderType),m_Userinfo(o.m_Userinfo),m_Stripped(o.m_Stripped)
+URI::URI(const QString& other):QString(), d_ptr(new UriPrivate(this))
 {
-   (*static_cast<QString*>(this)) = o.m_Stripped;
+   d_ptr->m_Stripped              = UriPrivate::strip(other,d_ptr->m_HeaderType);
+   (*static_cast<QString*>(this)) = d_ptr->m_Stripped                           ;
+}
+
+URI::URI(const URI& o):QString(), d_ptr(new UriPrivate(this))
+{
+   d_ptr->m_Parsed     = o.d_ptr->m_Parsed    ;
+   d_ptr->m_Hostname   = o.d_ptr->m_Hostname  ;
+   d_ptr->m_HeaderType = o.d_ptr->m_HeaderType;
+   d_ptr->m_Userinfo   = o.d_ptr->m_Userinfo  ;
+   d_ptr->m_Stripped   = o.d_ptr->m_Stripped  ;
+
+   (*static_cast<QString*>(this)) = o.d_ptr->m_Stripped;
+}
+
+URI::~URI()
+{
+   delete d_ptr;
 }
 
 ///Strip out <sip:****> from the URI
-QString URI::strip(const QString& uri, SchemeType& sheme)
+QString UriPrivate::strip(const QString& uri, URI::SchemeType& sheme)
 {
    if (uri.isEmpty())
       return QString();
    int start(0),end(uri.size()-1); //Other type of comparisons were too slow
    if (end > 5 && uri[0] == '<' ) {
       if (uri[4] == ':') {
-         sheme = uri[1] == 's'?SchemeType::SIP:SchemeType::IAX;
+         sheme = uri[1] == 's'?URI::SchemeType::SIP : URI::SchemeType::IAX;
          start = 5;
       }
       else if (uri[5] == ':') {
-         sheme = SchemeType::SIPS;
+         sheme = URI::SchemeType::SIPS;
          start = 6;
       }
    }
@@ -59,23 +92,23 @@ QString URI::strip(const QString& uri, SchemeType& sheme)
 ///Return the domaine of an URI (<sip:12345@example.com>)
 QString URI::hostname() const
 {
-   if (!m_Parsed)
-      const_cast<URI*>(this)->parse();
-   return m_Hostname;
+   if (!d_ptr->m_Parsed)
+      const_cast<URI*>(this)->d_ptr->parse();
+   return d_ptr->m_Hostname;
 }
 
 bool URI::hasHostname() const
 {
-   if (!m_Parsed)
-      const_cast<URI*>(this)->parse();
-   return !m_Hostname.isEmpty();
+   if (!d_ptr->m_Parsed)
+      const_cast<URI*>(this)->d_ptr->parse();
+   return !d_ptr->m_Hostname.isEmpty();
 }
 
 ///Keep a cache of the values to avoid re-parsing them
-void URI::parse()
+void UriPrivate::parse()
 {
-   if (indexOf('@') != -1) {
-      const QStringList splitted = split('@');
+   if (q_ptr->indexOf('@') != -1) {
+      const QStringList splitted = q_ptr->split('@');
       m_Hostname = splitted[1];//splitted[1].left(splitted[1].size())
       m_Userinfo = splitted[0];
       m_Parsed = true;
@@ -84,9 +117,9 @@ void URI::parse()
 
 QString URI::userinfo() const
 {
-   if (!m_Parsed)
-      const_cast<URI*>(this)->parse();
-   return m_Userinfo;
+   if (!d_ptr->m_Parsed)
+      const_cast<URI*>(this)->d_ptr->parse();
+   return d_ptr->m_Userinfo;
 }
 
 /**
@@ -95,6 +128,6 @@ QString URI::userinfo() const
 QString URI::fullUri() const
 {
    return QString("<%1%2>")
-      .arg(schemeNames[static_cast<int>(m_HeaderType == SchemeType::NONE?SchemeType::SIP:m_HeaderType)])
+      .arg(schemeNames[static_cast<int>(d_ptr->m_HeaderType == SchemeType::NONE?SchemeType::SIP:d_ptr->m_HeaderType)])
       .arg(*this);
 }

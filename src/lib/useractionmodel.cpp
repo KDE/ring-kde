@@ -19,8 +19,25 @@
 
 #include "call.h"
 
+class UserActionModelPrivate : public QObject
+{
+   Q_OBJECT
+public:
+   UserActionModelPrivate(UserActionModel* parent);
+   static const TypedStateMachine< TypedStateMachine< bool , Call::State > , UserActionModel::Action > availableActionMap;
+
+   //Attribues
+   Call* m_pCall;
+
+private:
+   UserActionModel* q_ptr;
+
+private Q_SLOTS:
+   void slotStateChanged();
+};
+
 //Enabled actions
-const TypedStateMachine< TypedStateMachine< bool , Call::State > , UserActionModel::Action > UserActionModel::availableActionMap = {{
+const TypedStateMachine< TypedStateMachine< bool , Call::State > , UserActionModel::Action > UserActionModelPrivate::availableActionMap = {{
             /* INCOMING  RINGING CURRENT DIALING  HOLD  FAILURE BUSY  TRANSFERRED TRANSF_HOLD  OVER  ERROR CONFERENCE CONFERENCE_HOLD:*/
  /*PICKUP   */ {{ true   , true ,  false,  false, false, false, false,   false,     false,    false, false,  false,      false    }},
  /*HOLD     */ {{ false  , false,  true ,  false, false, false, false,   true ,     false,    false, false,  true ,      false    }},
@@ -33,9 +50,19 @@ const TypedStateMachine< TypedStateMachine< bool , Call::State > , UserActionMod
  /*HANGUP   */ {{ false  , true ,  true ,  true , true , true , true ,   true ,     true ,    false, true ,  true ,      true     }},
 }};
 
-UserActionModel::UserActionModel(Call* parent) : QObject(parent),m_pCall(parent)
+UserActionModelPrivate::UserActionModelPrivate(UserActionModel* parent) : QObject(parent),q_ptr(parent),m_pCall(nullptr)
+{
+}
+
+UserActionModel::UserActionModel(Call* parent) : QObject(parent),d_ptr(new UserActionModelPrivate(this))
 {
    Q_ASSERT(parent != nullptr);
+   d_ptr->m_pCall = parent;
+}
+
+UserActionModel::~UserActionModel()
+{
+   
 }
 
 // QVariant UserActionModel::data(const QModelIndex& index, int role ) const
@@ -75,12 +102,12 @@ UserActionModel::UserActionModel(Call* parent) : QObject(parent),m_pCall(parent)
 
 bool UserActionModel::isActionEnabled( UserActionModel::Action action ) const
 {
-   return availableActionMap[action][m_pCall->state()];
+   return d_ptr->availableActionMap[action][d_ptr->m_pCall->state()];
 }
 
-void UserActionModel::slotStateChanged()
+void UserActionModelPrivate::slotStateChanged()
 {
-   emit actionStateChanged();
+   emit q_ptr->actionStateChanged();
 }
 
 
@@ -153,3 +180,5 @@ bool UserActionModel::isAcceptEnabled() const
 {
    return isActionEnabled(UserActionModel::Action::ACCEPT);
 }
+
+#include <useractionmodel.moc>

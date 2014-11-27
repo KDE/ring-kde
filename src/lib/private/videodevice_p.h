@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2013-2014 by Savoir-Faire Linux                          *
+ *   Copyright (C) 2014 by Savoir-Faire Linux                               *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
@@ -15,51 +15,26 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "numbercategory.h"
+#ifndef VIDEODEVICEPRIVATE_H
+#define VIDEODEVICEPRIVATE_H
 
-#include <QtCore/QSize>
-
-#include "visitors/pixmapmanipulationvisitor.h"
-
-class NumberCategoryPrivate
+class VideoDevicePrivate
 {
 public:
-   NumberCategoryPrivate();
+   class PreferenceNames {
+   public:
+      constexpr static const char* RATE    = "rate"   ;
+      constexpr static const char* NAME    = "name"   ;
+      constexpr static const char* CHANNEL = "channel";
+      constexpr static const char* SIZE    = "size"   ;
+   };
+
+   VideoDevicePrivate();
+
    //Attributes
-   QString m_Name;
-   QPixmap* m_pIcon;
+   QString              m_DeviceId       ;
+   VideoChannel*        m_pCurrentChannel;
+   QList<VideoChannel*> m_lChannels      ;
 };
 
-NumberCategoryPrivate::NumberCategoryPrivate() : m_pIcon(nullptr), m_Name()
-{
-}
-
-NumberCategory::NumberCategory(QObject* parent, const QString& name) : QObject(parent), d_ptr(new NumberCategoryPrivate())
-{
-   d_ptr->m_Name = name;
-}
-
-NumberCategory::~NumberCategory()
-{
-   delete d_ptr;
-}
-
-QVariant NumberCategory::icon(bool isTracked, bool isPresent) const
-{
-   return PixmapManipulationVisitor::instance()->numberCategoryIcon(d_ptr->m_pIcon,QSize(),isTracked,isPresent);
-}
-
-QString  NumberCategory::name() const
-{
-   return d_ptr->m_Name;
-}
-
-void NumberCategory::setIcon(QPixmap*pixmap)
-{
-   d_ptr->m_pIcon = pixmap;
-}
-
-void NumberCategory::setName(const QString& name)
-{
-   d_ptr->m_Name = name;
-}
+#endif

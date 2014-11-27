@@ -25,6 +25,7 @@
 #include "call.h"
 
 class Call;
+class UserActionModelPrivate;
 
 /**
  * @class UserActionModel Hold available actions for a given call state
@@ -71,6 +72,7 @@ public:
 
    //Constructor
    explicit UserActionModel(Call* parent);
+   virtual ~UserActionModel();
 
    //Abstract model members
 //    virtual QVariant      data       (const QModelIndex& index, int role = Qt::DisplayRole  ) const;
@@ -95,13 +97,8 @@ public:
    bool isAcceptEnabled  () const;
 
 private:
-   static const TypedStateMachine< TypedStateMachine< bool , Call::State > , UserActionModel::Action > availableActionMap;
-
-   //Attribues
-   Call* m_pCall;
-
-private Q_SLOTS:
-   void slotStateChanged();
+   UserActionModelPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(UserActionModel)
 
 Q_SIGNALS:
    void actionStateChanged();

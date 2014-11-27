@@ -24,7 +24,7 @@
 class Account;
 class VideoCodec;
 
-typedef QHash<QString,VideoCodec*> CodecHash;
+class VideoCodecPrivate;
 
 ///VideoCodec: Codecs used for video calls
 class LIB_EXPORT VideoCodec : public QObject {
@@ -36,15 +36,6 @@ class LIB_EXPORT VideoCodec : public QObject {
       Q_PROPERTY(uint    bitrate    READ bitrate    WRITE setBitrate   )
       Q_PROPERTY(bool    enabled    READ isEnabled  WRITE setEnabled   )
       Q_PROPERTY(QString parameters READ parameters WRITE setParamaters)
-
-      //Consts
-      class CodecFields {
-      public:
-         constexpr static const char* PARAMETERS = "parameters";
-         constexpr static const char* ENABLED    = "enabled"   ;
-         constexpr static const char* BITRATE    = "bitrate"   ;
-         constexpr static const char* NAME       = "name"      ;
-      };
 
       //Static setters
       static void setActiveCodecList(Account* account, QStringList codecs);
@@ -64,15 +55,9 @@ class LIB_EXPORT VideoCodec : public QObject {
    private:
       //Constructor
       VideoCodec(const QString &codecName, uint bitRate, bool enabled);
-      ~VideoCodec(){}
+      virtual ~VideoCodec();
 
-      //Attributes
-      static CodecHash m_slCodecs;
-      QString          m_Name;
-      uint             m_Bitrate;
-      bool             m_Enabled;
-      static bool      m_sInit;
-      QString          m_Parameters;
+      VideoCodecPrivate* d_ptr;
 };
 
 #endif

@@ -61,7 +61,7 @@
 #include "klib/kcfg_settings.h"
 #include "klib/akonadicontactcollectionmodel.h"
 #include "lib/presencestatusmodel.h"
-#include "lib/video/videomodel.h"
+#include "lib/video/videomanager.h"
 #include "lib/phonenumber.h"
 #include "lib/contactmodel.h"
 #include "lib/itembackendmodel.h"
@@ -164,7 +164,7 @@ SFLPhone::SFLPhone(QWidget *parent)
       IMConversationManager::instance();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
-      VideoModel::instance();
+      VideoManager::instance();
       #endif
       init = true;
 
@@ -255,7 +255,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    connect(ActionCollection::instance()->showBookmarkDockAction(),SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
 #ifdef ENABLE_VIDEO
-   connect(VideoModel::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(displayVideoDock(VideoRenderer*)));
+   connect(VideoManager::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(displayVideoDock(VideoRenderer*)));
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);

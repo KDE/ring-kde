@@ -36,7 +36,7 @@
 #include "uri.h"
 #include "account.h"
 #include "accountmodel.h"
-#include "video/videomodel.h"
+#include "video/videomanager.h"
 #include "historymodel.h"
 #include "instantmessagingmodel.h"
 #include "useractionmodel.h"
@@ -727,7 +727,7 @@ AbstractHistoryBackend* Call::backend() const
 bool Call::hasVideo() const
 {
    #ifdef ENABLE_VIDEO
-   return VideoModel::instance()->getRenderer(this) != nullptr;
+   return VideoManager::instance()->getRenderer(this) != nullptr;
    #else
    return false;
    #endif
@@ -786,7 +786,7 @@ bool Call::isSecure() const
 VideoRenderer* Call::videoRenderer() const
 {
    #ifdef ENABLE_VIDEO
-   return VideoModel::instance()->getRenderer(this);
+   return VideoManager::instance()->getRenderer(this);
    #else
    return nullptr;
    #endif

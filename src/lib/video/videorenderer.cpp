@@ -36,7 +36,7 @@
 #endif
 
 #include <QtCore/QTimer>
-#include "videomodel.h"
+#include "videomanager.h"
 #include "videoresolution.h"
 
 ///Shared memory object
@@ -131,7 +131,7 @@ bool VideoRendererPrivate::renderToBitmap()
       return false;
    }
 
-   if(!VideoModel::instance()->startStopMutex()->tryLock())
+   if(!VideoManager::instance()->startStopMutex()->tryLock())
       return false;
 
    // wait for a new buffer
@@ -163,7 +163,7 @@ bool VideoRendererPrivate::renderToBitmap()
 //             break;
 //       }
       if ((err < 0) || (!shmLock())) {
-         VideoModel::instance()->startStopMutex()->unlock();
+         VideoManager::instance()->startStopMutex()->unlock();
          return false;
       }
       usleep((1/60.0)*100);
@@ -171,7 +171,7 @@ bool VideoRendererPrivate::renderToBitmap()
 
    if (!q_ptr->resizeShm()) {
       qDebug() << "Could not resize shared memory";
-      VideoModel::instance()->startStopMutex()->unlock();
+      VideoManager::instance()->startStopMutex()->unlock();
       return false;
    }
 
@@ -183,7 +183,7 @@ bool VideoRendererPrivate::renderToBitmap()
    shmUnlock();
    m_FrameIdx = !m_FrameIdx;
 
-   VideoModel::instance()->startStopMutex()->unlock();
+   VideoManager::instance()->startStopMutex()->unlock();
    return true;
 #else
    return false;
@@ -310,7 +310,7 @@ void VideoRendererPrivate::timedEvents()
 ///Start the rendering loop
 void VideoRenderer::startRendering()
 {
-   VideoModel::instance()->startStopMutex()->lock();
+   VideoManager::instance()->startStopMutex()->lock();
    QMutexLocker locker(d_ptr->m_pMutex);
    startShm();
    if (!d_ptr->m_pTimer) {
@@ -329,13 +329,13 @@ void VideoRenderer::startRendering()
       qDebug() << "Timer already started!";
 
    d_ptr->m_isRendering = true;
-   VideoModel::instance()->startStopMutex()->unlock();
+   VideoManager::instance()->startStopMutex()->unlock();
 }
 
 ///Stop the rendering loop
 void VideoRenderer::stopRendering()
 {
-   VideoModel::instance()->startStopMutex()->lock();
+   VideoManager::instance()->startStopMutex()->lock();
    QMutexLocker locker(d_ptr->m_pMutex);
    d_ptr->m_isRendering = false;
    qDebug() << "Stopping rendering on" << d_ptr->m_Id;
@@ -343,7 +343,7 @@ void VideoRenderer::stopRendering()
       d_ptr->m_pTimer->stop();
    emit stopped();
    stopShm();
-   VideoModel::instance()->startStopMutex()->unlock();
+   VideoManager::instance()->startStopMutex()->unlock();
 }
 
 

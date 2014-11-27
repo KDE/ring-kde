@@ -25,7 +25,7 @@
 //SFLPhone
 #include "../lib/video/videodevice.h"
 #include "../lib/video/videocodecmodel.h"
-#include "../lib/video/videomodel.h"
+#include "../lib/video/videomanager.h"
 #include "../lib/video/videoresolution.h"
 #include "../lib/video/videochannel.h"
 #include "../lib/video/videorate.h"
@@ -41,13 +41,13 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 
    connect(m_pPreviewPB   ,SIGNAL(clicked())                   , this   , SLOT(startStopPreview())     );
    connect( this          ,SIGNAL(updateButtons())             , parent , SLOT(updateButtons())        );
-   connect(VideoModel::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(startStopPreview(bool))  );
+   connect(VideoManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(startStopPreview(bool))  );
 
-   connect(VideoModel::instance(),SIGNAL(previewStarted(VideoRenderer*)),m_pPreviewGV,SLOT(addRenderer(VideoRenderer*))   );
-   connect(VideoModel::instance(),SIGNAL(previewStopped(VideoRenderer*)),m_pPreviewGV,SLOT(removeRenderer(VideoRenderer*)));
+   connect(VideoManager::instance(),SIGNAL(previewStarted(VideoRenderer*)),m_pPreviewGV,SLOT(addRenderer(VideoRenderer*))   );
+   connect(VideoManager::instance(),SIGNAL(previewStopped(VideoRenderer*)),m_pPreviewGV,SLOT(removeRenderer(VideoRenderer*)));
 
 
-   if (VideoModel::instance()->isPreviewing()) {
+   if (VideoManager::instance()->isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
    }
 //    m_pVideoSettings->slotReloadDevices();
@@ -58,7 +58,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 ///Destructor
 DlgVideo::~DlgVideo()
 {
-   VideoModel::instance()->stopPreview();
+   VideoManager::instance()->stopPreview();
 }
 
 ///Has the dialog chnaged
@@ -71,11 +71,11 @@ bool DlgVideo::hasChanged()
 void DlgVideo::startStopPreview()
 {
    //TODO check if the preview is already running
-   if (VideoModel::instance()->isPreviewing()) {
-      VideoModel::instance()->stopPreview();
+   if (VideoManager::instance()->isPreviewing()) {
+      VideoManager::instance()->stopPreview();
    }
    else {
-      VideoModel::instance()->startPreview();
+      VideoManager::instance()->startPreview();
    }
 }
 
@@ -102,9 +102,9 @@ void DlgVideo::updateSettings()
 
 void DlgVideo::slotReloadPreview()
 {
-   if (VideoModel::instance()->isPreviewing()) {
-      VideoModel::instance()->stopPreview();
-      VideoModel::instance()->startPreview();
+   if (VideoManager::instance()->isPreviewing()) {
+      VideoManager::instance()->stopPreview();
+      VideoManager::instance()->startPreview();
    }
 }
 

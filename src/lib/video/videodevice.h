@@ -31,27 +31,21 @@ class VideoResolution;
 class VideoRate;
 class VideoChannel;
 class VideoDevice;
-
 class VideoModel;
+
+class VideoDevicePrivate;
 
 ///VideoDevice: V4L devices used to record video for video call
 class LIB_EXPORT VideoDevice : public QAbstractListModel {
    Q_OBJECT
-   friend class VideoModel;
+   friend class VideoManager;
+   friend class VideoManagerPrivate;
    friend class VideoDeviceModel;
 
    //Need to access the PreferenceNames table
    friend class VideoChannel;
    friend class Resolution;
    public:
-
-      class PreferenceNames {
-      public:
-         constexpr static const char* RATE    = "rate"   ;
-         constexpr static const char* NAME    = "name"   ;
-         constexpr static const char* CHANNEL = "channel";
-         constexpr static const char* SIZE    = "size"   ;
-      };
 
       //Constants
       constexpr static const char* NONE = "";
@@ -81,12 +75,10 @@ class LIB_EXPORT VideoDevice : public QAbstractListModel {
    private:
       //Constructor
       explicit VideoDevice(const QString &id);
-      ~VideoDevice();
+      virtual ~VideoDevice();
 
-      //Attributes
-      QString       m_DeviceId          ;
-      VideoChannel* m_pCurrentChannel   ;
-      QList<VideoChannel*> m_lChannels  ;
+      VideoDevicePrivate* d_ptr;
+      Q_DECLARE_PRIVATE(VideoDevice)
 
 
    Q_SIGNALS:

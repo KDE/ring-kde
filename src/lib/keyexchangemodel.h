@@ -23,6 +23,8 @@
 
 class Account;
 
+class KeyExchangeModelPrivate;
+
 ///Static model for handling encryption types
 class LIB_EXPORT KeyExchangeModel : public QAbstractListModel {
    #pragma GCC diagnostic push
@@ -66,12 +68,13 @@ public:
 
    //Private constructor, can only be called by 'Account'
    explicit KeyExchangeModel(Account* account);
+   virtual ~KeyExchangeModel();
 
    //Model functions
-   QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
-   int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
-   Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
-   virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
+   virtual QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const override;
+   virtual int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const override;
+   virtual Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const override;
+   virtual bool          setData  ( const QModelIndex& index, const QVariant &value, int role)       override;
 
    //Getters
    QModelIndex                   toIndex       (KeyExchangeModel::Type type) const;
@@ -86,8 +89,7 @@ public:
 
 
 private:
-   Account* m_pAccount;
-   static const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , KeyExchangeModel::Options > availableOptions;
+   KeyExchangeModelPrivate* d_ptr;
 
 public Q_SLOTS:
    void enableSRTP(bool enable);

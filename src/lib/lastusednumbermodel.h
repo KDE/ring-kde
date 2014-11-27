@@ -46,8 +46,8 @@ public:
 
 private:
    //Private constructor
-   LastUsedNumberModel();
-   ~LastUsedNumberModel();
+   explicit LastUsedNumberModel();
+   virtual ~LastUsedNumberModel();
 
    LastUsedNumberModelPrivate* d_ptr;
    Q_DECLARE_PRIVATE(LastUsedNumberModel)

@@ -15,60 +15,50 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef VIDEODEVICEMODEL_H
-#define VIDEODEVICEMODEL_H
-
-#include "../typedefs.h"
+#ifndef VIDEOSOURCESMODEL_H
+#define VIDEOSOURCESMODEL_H
 #include <QtCore/QAbstractListModel>
-#include <QtCore/QUrl>
 #include <QtCore/QRect>
-#include "videodevice.h"
+#include "../typedefs.h"
 
+//SFLPhone
+class VideoDevice;
 
-//Qt
+class VideoSourcesModelPrivate;
 
-class VideoDeviceModelPrivate;
-
-///Abstract model for managing account video codec list
-class LIB_EXPORT VideoDeviceModel : public QAbstractListModel {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+//TODO qt5, use QIdentityProxyModel
+class LIB_EXPORT VideoSourcesModel : public QAbstractListModel {
    Q_OBJECT
-   #pragma GCC diagnostic pop
-
 public:
-   //Private constructor, can only be called by 'Account'
-   explicit VideoDeviceModel();
-   virtual ~VideoDeviceModel();
-
-   //Model functions
+   enum ExtendedDeviceList {
+      NONE   ,
+      SCREEN ,
+      FILE   ,
+      __COUNT
+   };
    virtual QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const override;
    virtual int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const override;
    virtual Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const override;
    virtual bool          setData  ( const QModelIndex& index, const QVariant &value, int role)       override;
 
-   static VideoDeviceModel* instance();
+   VideoDevice* deviceAt(const QModelIndex& idx) const;
 
-
-   VideoDevice* activeDevice() const;
    int activeIndex() const;
-   VideoDevice* getDevice(const QString& devId) const;
-   QList<VideoDevice*> devices() const;
 
+   //Singleton
+   static VideoSourcesModel* instance();
 private:
-   VideoDeviceModelPrivate* d_ptr;
-   static VideoDeviceModel* m_spInstance;
+   explicit VideoSourcesModel();
+
+   VideoSourcesModelPrivate* d_ptr;
+   static VideoSourcesModel* m_spInstance;
 
 public Q_SLOTS:
-   void setActive(const QModelIndex& idx);
-   void setActive(const int idx);
-   void setActive(const VideoDevice* device);
-   void reload();
-
-Q_SIGNALS:
-   void changed();
-   void currentIndexChanged(int);
-
+   void switchTo(const QModelIndex& idx);
+   void switchTo(const int idx);
+   void switchTo(VideoDevice* device);
+   void setFile(const QUrl& url);
+   void setDisplay(int index, QRect rect = QRect(0,0,0,0));
 };
-Q_DECLARE_METATYPE(VideoDeviceModel*)
+
 #endif

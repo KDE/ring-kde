@@ -18,6 +18,7 @@
 #include "videoresolution.h"
 
 #include "../dbus/videomanager.h"
+#include "../private/videodevice_p.h"
 #include "videochannel.h"
 #include "videorate.h"
 #include "videodevice.h"
@@ -100,7 +101,7 @@ VideoRate* VideoResolution::activeRate()
    if (!m_pCurrentRate && m_pChannel && m_pChannel->device()->isActive()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       const QString rate = QMap<QString,QString>(
-         interface.getSettings(m_pChannel->device()->id()))[VideoDevice::PreferenceNames::RATE];
+         interface.getSettings(m_pChannel->device()->id()))[VideoDevicePrivate::PreferenceNames::RATE];
       foreach(VideoRate* r, m_lValidRates) {
          if (r->name() == rate) {
             m_pCurrentRate = r;

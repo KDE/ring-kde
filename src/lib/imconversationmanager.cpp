@@ -30,6 +30,7 @@ class IMConversationManagerPrivate : public QObject
 {
    Q_OBJECT
 public:
+   friend class Call;
    IMConversationManagerPrivate(IMConversationManager* parent);
 
    //Attributes

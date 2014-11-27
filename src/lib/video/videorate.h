@@ -22,6 +22,12 @@
 
 class VideoResolution;
 
+// class VideoRatePrivate
+// {
+// public:
+//    
+// };
+
 ///@typedef VideoRate The rate for a device
 class LIB_EXPORT VideoRate
 {

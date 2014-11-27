@@ -28,8 +28,8 @@ VideoWidget::VideoWidget(QWidget* parent ,VideoRenderer* renderer) : QWidget(par
    setMinimumSize(200,200);
    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
    connect(m_pRenderer,SIGNAL(frameUpdated()),this,SLOT(updateFrame()));
-   connect(VideoModel::instance(),SIGNAL(videoStopped()),this,SLOT(stop()));
-   connect(VideoModel::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(setRenderer(VideoRenderer*)));
+   connect(VideoManager::instance(),SIGNAL(videoStopped()),this,SLOT(stop()));
+   connect(VideoManager::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(setRenderer(VideoRenderer*)));
 }
 
 ///Set widget renderer

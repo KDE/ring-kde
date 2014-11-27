@@ -21,7 +21,15 @@
 
 #include "account.h"
 
-const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , KeyExchangeModel::Options > KeyExchangeModel::availableOptions = {{
+class KeyExchangeModelPrivate
+{
+public:
+   KeyExchangeModelPrivate();
+   Account* m_pAccount;
+   static const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , KeyExchangeModel::Options > availableOptions;
+};
+
+const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , KeyExchangeModel::Options > KeyExchangeModelPrivate::availableOptions = {{
    /*                  */  /* ZRTP */ /* SDES */ /* NONE */
    /* RTP_FALLBACK     */ {{ false    , true     , false   }},
    /* DISPLAY_SAS      */ {{ true     , false    , false   }},
@@ -30,8 +38,20 @@ const TypedStateMachine< TypedStateMachine< bool , KeyExchangeModel::Type > , Ke
    /* DISPLAY_SAS_ONCE */ {{ true     , false    , false   }},
 }};
 
+KeyExchangeModelPrivate::KeyExchangeModelPrivate() : m_pAccount(nullptr)
+{
+}
 
-KeyExchangeModel::KeyExchangeModel(Account* account) : QAbstractListModel(account),m_pAccount(account) {}
+
+KeyExchangeModel::KeyExchangeModel(Account* account) : QAbstractListModel(account),d_ptr(new KeyExchangeModelPrivate())
+{
+   d_ptr->m_pAccount = account;
+}
+
+KeyExchangeModel::~KeyExchangeModel()
+{
+   delete d_ptr;
+}
 
 //Model functions
 QVariant KeyExchangeModel::data( const QModelIndex& index, int role) const
@@ -114,35 +134,35 @@ KeyExchangeModel::Type KeyExchangeModel::fromDaemonName(const QString& name)
 
 void KeyExchangeModel::enableSRTP(bool enable)
 {
-   if (enable && m_pAccount->keyExchange() == KeyExchangeModel::Type::NONE) {
-      m_pAccount->setKeyExchange(KeyExchangeModel::Type::ZRTP);
+   if (enable && d_ptr->m_pAccount->keyExchange() == KeyExchangeModel::Type::NONE) {
+      d_ptr->m_pAccount->setKeyExchange(KeyExchangeModel::Type::ZRTP);
    }
    else if (!enable) {
-      m_pAccount->setKeyExchange(KeyExchangeModel::Type::NONE);
+      d_ptr->m_pAccount->setKeyExchange(KeyExchangeModel::Type::NONE);
    }
 }
 
 bool KeyExchangeModel::isRtpFallbackEnabled() const
 {
-   return availableOptions[Options::RTP_FALLBACK][m_pAccount->keyExchange()];
+   return d_ptr->availableOptions[Options::RTP_FALLBACK][d_ptr->m_pAccount->keyExchange()];
 }
 
 bool KeyExchangeModel::isDisplaySASEnabled() const
 {
-   return availableOptions[Options::DISPLAY_SAS][m_pAccount->keyExchange()];
+   return d_ptr->availableOptions[Options::DISPLAY_SAS][d_ptr->m_pAccount->keyExchange()];
 }
 
 bool KeyExchangeModel::isDisplaySasOnce() const
 {
-   return availableOptions[Options::DISPLAY_SAS_ONCE][m_pAccount->keyExchange()];
+   return d_ptr->availableOptions[Options::DISPLAY_SAS_ONCE][d_ptr->m_pAccount->keyExchange()];
 }
 
 bool KeyExchangeModel::areWarningSupressed() const
 {
-   return availableOptions[Options::NOT_SUPP_WARNING][m_pAccount->keyExchange()];
+   return d_ptr->availableOptions[Options::NOT_SUPP_WARNING][d_ptr->m_pAccount->keyExchange()];
 }
 
 bool KeyExchangeModel::isHelloHashEnabled() const
 {
-   return availableOptions[Options::HELLO_HASH][m_pAccount->keyExchange()];
+   return d_ptr->availableOptions[Options::HELLO_HASH][d_ptr->m_pAccount->keyExchange()];
 }

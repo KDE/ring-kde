@@ -29,7 +29,7 @@
 
 //SFLPhone
 #include <lib/video/videorenderer.h>
-#include <lib/video/videomodel.h>
+#include <lib/video/videomanager.h>
 
 
 #ifndef GL_MULTISAMPLE

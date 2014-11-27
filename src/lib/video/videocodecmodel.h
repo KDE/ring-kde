@@ -30,6 +30,8 @@ class Account;
 class VideoCodec;
 typedef QHash<QString,VideoCodec*> CodecHash;
 
+class VideoCodecModelPrivate;
+
 ///Abstract model for managing account video codec list
 class LIB_EXPORT VideoCodecModel : public QAbstractListModel {
    #pragma GCC diagnostic push
@@ -40,16 +42,16 @@ class LIB_EXPORT VideoCodecModel : public QAbstractListModel {
 public:
    //Private constructor, can only be called by 'Account'
    explicit VideoCodecModel(Account* account = nullptr);
-   ~VideoCodecModel();
+   virtual ~VideoCodecModel();
 
    //Roles
    static const int BITRATE_ROLE = 101;
 
    //Model functions
-   QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
-   int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
-   Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
-   virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
+   virtual QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const override;
+   virtual int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const override;
+   virtual Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const override;
+   virtual bool  setData          ( const QModelIndex& index, const QVariant &value, int role)       override;
 
    void reload();
    void save();
@@ -57,9 +59,8 @@ public:
    bool moveDown(QModelIndex idx);
 
 private:
-   //Attrbutes
-   QList<VideoCodec*> m_lCodecs;
-   Account*           m_pAccount;
+   VideoCodecModelPrivate* d_ptr;
+
 };
 Q_DECLARE_METATYPE(VideoCodecModel*)
 #endif

@@ -85,11 +85,12 @@ set( qtsflphone_LIB_SRCS
   contactmodel.cpp
   itembackendmodel.cpp
   video/videodevicemodel.cpp
+  video/sourcesmodel.cpp
   video/videocodecmodel.cpp
   video/videochannel.cpp
   video/videoresolution.cpp
   video/videorate.cpp
-  video/videomodel.cpp
+  video/videomanager.cpp
   audio/alsapluginmodel.cpp
   audio/codecmodel.cpp
   audio/inputdevicemodel.cpp
@@ -165,9 +166,10 @@ set( qtsflphone_LIB_HDRS
   abstractitembackendmodelextension.h
   video/videodevice.h
   video/videodevicemodel.h
+  video/sourcesmodel.h
   video/videocodec.h
   video/videocodecmodel.h
-  video/videomodel.h
+  video/videomanager.h
   video/videorenderer.h
   video/videoresolution.h
   video/videochannel.h

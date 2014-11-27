@@ -17,15 +17,24 @@
  ***************************************************************************/
 #include "videodevice.h"
 #include "../dbus/videomanager.h"
+#include "../private/videochannel_p.h"
+#include "../private/videodevice_p.h"
 #include "videodevicemodel.h"
 #include "videoresolution.h"
 #include "videorate.h"
 #include "videochannel.h"
 
-///Constructor
-VideoDevice::VideoDevice(const QString &id) : QAbstractListModel(nullptr), m_DeviceId(id),
-m_pCurrentChannel(nullptr)
+
+
+VideoDevicePrivate::VideoDevicePrivate() : m_pCurrentChannel(nullptr)
 {
+}
+
+///Constructor
+VideoDevice::VideoDevice(const QString &id) : QAbstractListModel(nullptr),
+d_ptr(new VideoDevicePrivate())
+{
+   d_ptr->m_DeviceId = id;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    MapStringMapStringVectorString cap = interface.getCapabilities(id);
    QMapIterator<QString, MapStringVectorString> channels(cap);
@@ -33,14 +42,14 @@ m_pCurrentChannel(nullptr)
       channels.next();
 
       VideoChannel* chan = new VideoChannel(this,channels.key());
-      m_lChannels << chan;
+      d_ptr->m_lChannels << chan;
 
       QMapIterator<QString, VectorString> resolutions(channels.value());
       while (resolutions.hasNext()) {
          resolutions.next();
 
          VideoResolution* res = new VideoResolution(resolutions.key(),chan);
-         chan->m_lValidResolutions << res;
+         chan->d_ptr->m_lValidResolutions << res;
 
          foreach(const QString& rate, resolutions.value()) {
             VideoRate* r = new VideoRate(res,rate);
@@ -54,19 +63,20 @@ m_pCurrentChannel(nullptr)
 ///Destructor
 VideoDevice::~VideoDevice()
 {
+   delete d_ptr;
 }
 
 QVariant VideoDevice::data( const QModelIndex& index, int role) const
 {
    if (index.isValid() && role == Qt::DisplayRole) {
-      return m_lChannels[index.row()]->name();
+      return d_ptr->m_lChannels[index.row()]->name();
    }
    return QVariant();
 }
 
 int VideoDevice::rowCount( const QModelIndex& parent) const
 {
-   return (parent.isValid())?0:m_lChannels.size();
+   return (parent.isValid())?0:d_ptr->m_lChannels.size();
 }
 
 Qt::ItemFlags VideoDevice::flags( const QModelIndex& idx) const
@@ -91,7 +101,7 @@ bool VideoDevice::setData( const QModelIndex& index, const QVariant &value, int 
 ///Get the valid channel list
 QList<VideoChannel*> VideoDevice::channelList() const
 {
-   return m_lChannels;
+   return d_ptr->m_lChannels;
 }
 
 ///Save the current settings
@@ -99,24 +109,24 @@ void VideoDevice::save()
 {
    //In case new (unsupported) fields are added, merge with existing
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   MapStringString pref = interface.getSettings(m_DeviceId);
-   pref[VideoDevice::PreferenceNames::CHANNEL] = activeChannel()->name();
-   pref[VideoDevice::PreferenceNames::SIZE   ] = activeChannel()->activeResolution()->name();
-   pref[VideoDevice::PreferenceNames::RATE   ] = activeChannel()->activeResolution()->activeRate()->name();
-   interface.applySettings(m_DeviceId,pref);
+   MapStringString pref = interface.getSettings(d_ptr->m_DeviceId);
+   pref[VideoDevicePrivate::PreferenceNames::CHANNEL] = activeChannel()->name();
+   pref[VideoDevicePrivate::PreferenceNames::SIZE   ] = activeChannel()->activeResolution()->name();
+   pref[VideoDevicePrivate::PreferenceNames::RATE   ] = activeChannel()->activeResolution()->activeRate()->name();
+   interface.applySettings(d_ptr->m_DeviceId,pref);
 }
 
 ///Get the device id
 const QString VideoDevice::id() const
 {
-   return m_DeviceId;
+   return d_ptr->m_DeviceId;
 }
 
 ///Get the device name
 const QString VideoDevice::name() const
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   return QMap<QString,QString>(interface.getSettings(m_DeviceId))[PreferenceNames::NAME];;
+   return QMap<QString,QString>(interface.getSettings(d_ptr->m_DeviceId))[VideoDevicePrivate::PreferenceNames::NAME];;
 }
 
 ///Is this device the default one
@@ -127,35 +137,35 @@ bool VideoDevice::isActive() const
 
 bool VideoDevice::setActiveChannel(VideoChannel* chan)
 {
-   if (!chan || !m_lChannels.indexOf(chan)) {
+   if (!chan || !d_ptr->m_lChannels.indexOf(chan)) {
       qWarning() << "Trying to set an invalid channel" << (chan?chan->name():"NULL") << "for" << id();
       return false;
    }
-   m_pCurrentChannel = chan;
+   d_ptr->m_pCurrentChannel = chan;
    save();
    return true;
 }
 
 bool VideoDevice::setActiveChannel(int idx)
 {
-   if (idx < 0 || idx >= m_lChannels.size()) return false;
-   return setActiveChannel(m_lChannels[idx]);
+   if (idx < 0 || idx >= d_ptr->m_lChannels.size()) return false;
+   return setActiveChannel(d_ptr->m_lChannels[idx]);
 }
 
 VideoChannel* VideoDevice::activeChannel() const
 {
-   if (!m_pCurrentChannel) {
+   if (!d_ptr->m_pCurrentChannel) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
-      const QString chan = QMap<QString,QString>(interface.getSettings(m_DeviceId))[VideoDevice::PreferenceNames::CHANNEL];
-      foreach(VideoChannel* c, m_lChannels) {
+      const QString chan = QMap<QString,QString>(interface.getSettings(d_ptr->m_DeviceId))[VideoDevicePrivate::PreferenceNames::CHANNEL];
+      foreach(VideoChannel* c, d_ptr->m_lChannels) {
          if (c->name() == chan) {
-            const_cast<VideoDevice*>(this)->m_pCurrentChannel = c;
+            d_ptr->m_pCurrentChannel = c;
             break;
          }
       }
    }
-   if (!m_pCurrentChannel && m_lChannels.size()) {
-      const_cast<VideoDevice*>(this)->m_pCurrentChannel = m_lChannels[0];
+   if (!d_ptr->m_pCurrentChannel && d_ptr->m_lChannels.size()) {
+      d_ptr->m_pCurrentChannel = d_ptr->m_lChannels[0];
    }
-   return m_pCurrentChannel;
+   return d_ptr->m_pCurrentChannel;
 }

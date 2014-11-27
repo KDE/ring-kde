@@ -33,7 +33,8 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/video/videomodel.h>
+#include <lib/video/videomanager.h>
+#include <lib/video/sourcesmodel.h>
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
@@ -49,7 +50,7 @@
 
 VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevice(nullptr)
 {
-   connect(VideoModel::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
+   connect(VideoManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
    sp.setVerticalPolicy  ( QSizePolicy::Preferred );
    sp.setHorizontalPolicy( QSizePolicy::Preferred );
@@ -67,7 +68,7 @@ VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevic
    m_pScene = new VideoScene();
    setScene(m_pScene);
 
-   if (VideoModel::instance()->isPreviewing()) {
+   if (VideoManager::instance()->isPreviewing()) {
       slotShowPreview(true);
    }
 
@@ -99,7 +100,7 @@ void VideoWidget3::dragMoveEvent( QDragMoveEvent* e )
 void VideoWidget3::dropEvent( QDropEvent* e )
 {
    if (e->mimeData()->hasFormat("text/uri-list")) {
-      ExtendedVideoDeviceModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
+      VideoSourcesModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
    }
    e->accept();
 }
@@ -147,9 +148,9 @@ void VideoWidget3::slotRotateRight()
 void VideoWidget3::slotShowPreview(bool show)
 {
    ConfigurationSkeleton::setDisplayVideoPreview(show);
-   if (VideoModel::instance()->isPreviewing() && show) {
-      addRenderer(VideoModel::instance()->previewRenderer());
-      VideoGLFrame* frm = m_hFrames[VideoModel::instance()->previewRenderer()];
+   if (VideoManager::instance()->isPreviewing() && show) {
+      addRenderer(VideoManager::instance()->previewRenderer());
+      VideoGLFrame* frm = m_hFrames[VideoManager::instance()->previewRenderer()];
       if (frm) {
          frm->setScale(0.3);
          frm->setTranslationX(1.8);
@@ -158,7 +159,7 @@ void VideoWidget3::slotShowPreview(bool show)
       }
    }
    else {
-      removeRenderer(VideoModel::instance()->previewRenderer());
+      removeRenderer(VideoManager::instance()->previewRenderer());
    }
 }
 
@@ -166,10 +167,10 @@ void VideoWidget3::slotMuteOutgoindVideo(bool mute)
 {
    if (mute) {
       m_pBackDevice = VideoDeviceModel::instance()->activeDevice();
-      ExtendedVideoDeviceModel::instance()->switchTo(ExtendedVideoDeviceModel::ExtendedDeviceList::NONE);
+      VideoSourcesModel::instance()->switchTo(VideoSourcesModel::ExtendedDeviceList::NONE);
    }
    else if (m_pBackDevice) {
-      ExtendedVideoDeviceModel::instance()->switchTo(m_pBackDevice);
+      VideoSourcesModel::instance()->switchTo(m_pBackDevice);
    }
 }
 

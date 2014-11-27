@@ -22,6 +22,8 @@
 
 #include <QStringList>
 
+class UriPrivate;
+
 /**
     * @class URI A specialised string with multiple attributes
     * 
@@ -75,6 +77,7 @@ public:
     */
    URI(const QString& other);
    URI(const URI&     other);
+   virtual ~URI();
 
    ///@enum SchemeType The very first part of the URI followed by a ':'
    enum class SchemeType {
@@ -114,17 +117,7 @@ public:
    bool    hasHostname() const;
 
 private:
-   QString     m_Hostname    ;
-   QString     m_Userinfo    ;
-   QStringList m_lAttributes ;
-   QString     m_Stripped    ;
-   SchemeType  m_HeaderType  ;
-   bool        m_hasChevrons ;
-   bool        m_Parsed      ;
-
-   //Helper
-   static QString strip(const QString& uri, SchemeType& sheme);
-   void parse();
+   UriPrivate* d_ptr;
 };
 // Q_DECLARE_METATYPE(URI*)
 

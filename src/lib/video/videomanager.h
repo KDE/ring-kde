@@ -31,28 +31,26 @@ class Call;
 class QMutex;
 struct SHMHeader;
 
+class VideoManagerPrivate;
+
 ///VideoModel: Video event dispatcher
-class LIB_EXPORT VideoModel : public QThread {
+class LIB_EXPORT VideoManager : public QThread {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
    //Singleton
-   static VideoModel* instance();
+   static VideoManager* instance();
 
    //Getters
    bool       isPreviewing       ();
    VideoRenderer* getRenderer(const Call* call) const;
    VideoRenderer* previewRenderer();
-//    QList<VideoDevice*> devices();
-//    VideoDevice* activeDevice() const;
-//    VideoDevice* device(const QString &id);
    QMutex* startStopMutex() const;
 
    //Setters
    void setBufferSize(uint size);
-//    void setActiveDevice(const VideoDevice* device);
    void switchDevice(const VideoDevice* device) const;
 
 protected:
@@ -60,29 +58,18 @@ protected:
 
 private:
    //Constructor
-   VideoModel();
-   ~VideoModel();
+   explicit VideoManager();
+   virtual ~VideoManager();
+
+   VideoManagerPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(VideoManager)
 
    //Static attributes
-   static VideoModel* m_spInstance;
-
-   //Attributes
-   bool           m_PreviewState;
-   uint           m_BufferSize  ;
-   uint           m_ShmKey      ;
-   uint           m_SemKey      ;
-   QMutex*        m_SSMutex     ;
-   QHash<QString,VideoRenderer*> m_lRenderers;
-//    QHash<QString,VideoDevice*>   m_hDevices  ;
+   static VideoManager* m_spInstance;
 
 public Q_SLOTS:
    void stopPreview ();
    void startPreview();
-
-private Q_SLOTS:
-   void startedDecoding(const QString& id, const QString& shmPath, int width, int height);
-   void stoppedDecoding(const QString& id, const QString& shmPath);
-   void deviceEvent();
 
 Q_SIGNALS:
    ///Emitted when a new frame is ready

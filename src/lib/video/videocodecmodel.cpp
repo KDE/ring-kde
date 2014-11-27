@@ -19,20 +19,41 @@
 #include <call.h>
 #include <account.h>
 #include <video/videocodec.h>
+#include "../private/videocodec_p.h"
 #include "../dbus/videomanager.h"
 
 #include <QtCore/QCoreApplication>
+
+class VideoCodecModelPrivate
+{
+public:
+   VideoCodecModelPrivate();
+
+   //Attrbutes
+   QList<VideoCodec*> m_lCodecs;
+   Account*           m_pAccount;
+};
+
+VideoCodecModelPrivate::VideoCodecModelPrivate() : m_pAccount(nullptr)
+{}
+
+///Constructor
+VideoCodecModel::VideoCodecModel(Account* account) : QAbstractListModel(QCoreApplication::instance()),d_ptr(new VideoCodecModelPrivate())
+{
+   d_ptr->m_pAccount = account;
+   reload();
+}
 
 ///Get data from the model
 QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
 {
    if(idx.column() == 0 && role == Qt::DisplayRole)
-      return QVariant(m_lCodecs[idx.row()]->name());
+      return QVariant(d_ptr->m_lCodecs[idx.row()]->name());
    else if(idx.column() == 0 && role == Qt::CheckStateRole) {
-      return QVariant(m_lCodecs[idx.row()]->isEnabled()?Qt::Checked:Qt::Unchecked);
+      return QVariant(d_ptr->m_lCodecs[idx.row()]->isEnabled()?Qt::Checked:Qt::Unchecked);
    }
    else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE)
-      return QVariant(m_lCodecs[idx.row()]->bitrate());
+      return QVariant(d_ptr->m_lCodecs[idx.row()]->bitrate());
    return QVariant();
 }
 
@@ -40,7 +61,7 @@ QVariant VideoCodecModel::data( const QModelIndex& idx, int role) const
 int VideoCodecModel::rowCount( const QModelIndex& par ) const
 {
    Q_UNUSED(par)
-   return m_lCodecs.size();
+   return d_ptr->m_lCodecs.size();
 }
 
 ///Items flag
@@ -56,15 +77,15 @@ bool VideoCodecModel::setData(const QModelIndex& idx, const QVariant &value, int
 {
 
    if (idx.column() == 0 && role == Qt::CheckStateRole) {
-      bool changed = m_lCodecs[idx.row()]->isEnabled() != (value == Qt::Checked);
-      m_lCodecs[idx.row()]->setEnabled(value == Qt::Checked);
+      bool changed = d_ptr->m_lCodecs[idx.row()]->isEnabled() != (value == Qt::Checked);
+      d_ptr->m_lCodecs[idx.row()]->setEnabled(value == Qt::Checked);
       if (changed)
          emit dataChanged(idx, idx);
       return true;
    }
    else if (idx.column() == 0 && role == VideoCodecModel::BITRATE_ROLE) {
-      bool changed = m_lCodecs[idx.row()]->bitrate() != value.toUInt();
-      m_lCodecs[idx.row()]->setBitrate(value.toInt());
+      bool changed = d_ptr->m_lCodecs[idx.row()]->bitrate() != value.toUInt();
+      d_ptr->m_lCodecs[idx.row()]->setBitrate(value.toInt());
       if (changed)
          emit dataChanged(idx, idx);
       return true;
@@ -72,40 +93,35 @@ bool VideoCodecModel::setData(const QModelIndex& idx, const QVariant &value, int
    return false;
 }
 
-///Constructor
-VideoCodecModel::VideoCodecModel(Account* account) : QAbstractListModel(QCoreApplication::instance()),m_pAccount(account)
-{
-   reload();
-}
-
 ///Destructor
 VideoCodecModel::~VideoCodecModel()
 {
-   while (m_lCodecs.size()) {
-      VideoCodec* c = m_lCodecs[0];
-      m_lCodecs.removeAt(0);
+   while (d_ptr->m_lCodecs.size()) {
+      VideoCodec* c = d_ptr->m_lCodecs[0];
+      d_ptr->m_lCodecs.removeAt(0);
       delete c;
    }
+   delete d_ptr;
 }
 
 ///Force a model reload from dbus
 void VideoCodecModel::reload()
 {
-   while (m_lCodecs.size()) {
-      VideoCodec* c = m_lCodecs[0];
-      m_lCodecs.removeAt(0);
+   while (d_ptr->m_lCodecs.size()) {
+      VideoCodec* c = d_ptr->m_lCodecs[0];
+      d_ptr->m_lCodecs.removeAt(0);
       delete c;
    }
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   const VectorMapStringString codecs =  interface.getCodecs(m_pAccount->id());
+   const VectorMapStringString codecs =  interface.getCodecs(d_ptr->m_pAccount->id());
    foreach(const MapStringString& h,codecs) {
-      VideoCodec* c = new VideoCodec(h[VideoCodec::CodecFields::NAME],
-                                     h[VideoCodec::CodecFields::BITRATE].toInt(),
-                                     h[VideoCodec::CodecFields::ENABLED]=="true");
-      c->setParamaters(h[VideoCodec::CodecFields::PARAMETERS]);
-      m_lCodecs << c;
+      VideoCodec* c = new VideoCodec(h[VideoCodecPrivate::CodecFields::NAME],
+                                     h[VideoCodecPrivate::CodecFields::BITRATE].toInt(),
+                                     h[VideoCodecPrivate::CodecFields::ENABLED]=="true");
+      c->setParamaters(h[VideoCodecPrivate::CodecFields::PARAMETERS]);
+      d_ptr->m_lCodecs << c;
    }
-   emit dataChanged(index(0,0), index(m_lCodecs.size()-1,0));
+   emit dataChanged(index(0,0), index(d_ptr->m_lCodecs.size()-1,0));
 }
 
 ///Save the current model over dbus
@@ -113,19 +129,19 @@ void VideoCodecModel::save()
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    VectorMapStringString toSave;
-   foreach(VideoCodec* vc,m_lCodecs) {
+   foreach(VideoCodec* vc, d_ptr->m_lCodecs) {
       toSave << vc->toMap();
    }
-   interface.setCodecs(m_pAccount->id(),toSave);
+   interface.setCodecs(d_ptr->m_pAccount->id(),toSave);
 }
 
 ///Increase codec priority
 bool VideoCodecModel::moveUp(QModelIndex idx)
 {
    if(idx.row() > 0 && idx.row() <= rowCount()) {
-      VideoCodec* data2 = m_lCodecs[idx.row()];
-      m_lCodecs.removeAt(idx.row());
-      m_lCodecs.insert(idx.row() - 1, data2);
+      VideoCodec* data2 = d_ptr->m_lCodecs[idx.row()];
+      d_ptr->m_lCodecs.removeAt(idx.row());
+      d_ptr->m_lCodecs.insert(idx.row() - 1, data2);
       emit dataChanged(index(idx.row() - 1, 0, QModelIndex()), index(idx.row(), 0, QModelIndex()));
       return true;
    }
@@ -136,9 +152,9 @@ bool VideoCodecModel::moveUp(QModelIndex idx)
 bool VideoCodecModel::moveDown(QModelIndex idx)
 {
    if(idx.row() >= 0 && idx.row() < rowCount()) {
-      VideoCodec* data2 = m_lCodecs[idx.row()];
-      m_lCodecs.removeAt(idx.row());
-      m_lCodecs.insert(idx.row() + 1, data2);
+      VideoCodec* data2 = d_ptr->m_lCodecs[idx.row()];
+      d_ptr->m_lCodecs.removeAt(idx.row());
+      d_ptr->m_lCodecs.insert(idx.row() + 1, data2);
       emit dataChanged(index(idx.row(), 0, QModelIndex()), index(idx.row() + 1, 0, QModelIndex()));
       return true;
    }

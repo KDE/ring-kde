@@ -23,6 +23,7 @@
 #include "typedefs.h"
 
 class QPixmap;
+class NumberCategoryPrivate;
 
 /**
  * This class represent a PhoneNumber category. Categories usually
@@ -45,9 +46,9 @@ private:
    NumberCategory(QObject* parent, const QString& name);
    virtual ~NumberCategory();
 
-   //Attributes
-   QString m_Name;
-   QPixmap* m_pIcon;
+   NumberCategoryPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(NumberCategory)
+
 };
 
 #endif //NUMBERCATEGORY_H
