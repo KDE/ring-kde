@@ -69,6 +69,11 @@ void DlgProfiles::accept()
 
       profile->addAddress(test);
 
+      //Get values of custom fields
+      for (QString key : m_hCustomFields.keys()) {
+         profile->addCustomField(key, m_hCustomFields.value(key)->text());
+      }
+
       ProfileModel::instance()->addNewProfile(profile, nullptr);
    }
 }
@@ -130,6 +135,7 @@ void DlgProfiles::addCustomField()
    if(!edit_custom_field->text().isEmpty()) {
       QLineEdit* edit_custom = new QLineEdit(this);
       formLayout->insertRow(formLayout->rowCount() - 1, edit_custom_field->text(), edit_custom);
+      m_hCustomFields.insert("X-" + edit_custom_field->text().toUpper(),edit_custom);
    }
 }
 

@@ -36,6 +36,9 @@ public:
 
    bool checkValues();
 
+private:
+   QHash<QString, QLineEdit*> m_hCustomFields;
+
 public Q_SLOTS:
    void accept();
    void cancel();
