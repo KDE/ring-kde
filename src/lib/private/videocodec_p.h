@@ -18,7 +18,7 @@
 #ifndef VIDEOCODECPRIVATE_H
 #define VIDEOCODECPRIVATE_H
 
-typedef QHash<QString,VideoCodec*> CodecHash;
+typedef QHash<QString,Video::Codec*> CodecHash;
 
 class VideoCodecPrivate
 {

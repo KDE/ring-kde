@@ -118,7 +118,7 @@ const PhoneNumber* PhoneNumber::BLANK()
 {
    if (!m_spBlank) {
       m_spBlank = new PhoneNumber(QString(),NumberCategoryModel::other());
-      const_cast<PhoneNumber*>(m_spBlank)->d->m_Type = PhoneNumber::Type::BLANK;
+      const_cast<PhoneNumber*>(m_spBlank)->d_ptr->m_Type = PhoneNumber::Type::BLANK;
    }
    return m_spBlank;
 }
@@ -132,156 +132,156 @@ PrivatePhoneNumber::PrivatePhoneNumber(const URI& uri, NumberCategory* cat, Phon
 
 ///Constructor
 PhoneNumber::PhoneNumber(const URI& number, NumberCategory* cat, Type st) : QObject(PhoneDirectoryModel::instance()),
-d(new PrivatePhoneNumber(number,cat,st))
+d_ptr(new PrivatePhoneNumber(number,cat,st))
 {
-   setObjectName(d->m_Uri);
-   d->m_hasType = cat != NumberCategoryModel::other();
-   if (d->m_hasType) {
+   setObjectName(d_ptr->m_Uri);
+   d_ptr->m_hasType = cat != NumberCategoryModel::other();
+   if (d_ptr->m_hasType) {
       NumberCategoryModel::instance()->registerNumber(this);
    }
-   d->m_lParents << this;
+   d_ptr->m_lParents << this;
 }
 
 PhoneNumber::~PhoneNumber()
 {
-   d->m_lParents.removeAll(this);
-   if (!d->m_lParents.size())
-      delete d;
+   d_ptr->m_lParents.removeAll(this);
+   if (!d_ptr->m_lParents.size())
+      delete d_ptr;
 }
 
 ///Return if this number presence is being tracked
 bool PhoneNumber::isTracked() const
 {
    //If the number doesn't support it, ignore the flag
-   return supportPresence() && d->m_Tracked;
+   return supportPresence() && d_ptr->m_Tracked;
 }
 
 ///Is this number present
 bool PhoneNumber::isPresent() const
 {
-   return d->m_Tracked && d->m_Present;
+   return d_ptr->m_Tracked && d_ptr->m_Present;
 }
 
 ///This number presence status string
 QString PhoneNumber::presenceMessage() const
 {
-   return d->m_PresentMessage;
+   return d_ptr->m_PresentMessage;
 }
 
 ///Return the number
 URI PhoneNumber::uri() const {
-   return d->m_Uri ;
+   return d_ptr->m_Uri ;
 }
 
 ///This phone number has a type
 bool PhoneNumber::hasType() const
 {
-   return d->m_hasType;
+   return d_ptr->m_hasType;
 }
 
 ///Protected getter to get the number index
 int PhoneNumber::index() const
 {
-   return d->m_Index;
+   return d_ptr->m_Index;
 }
 
 ///Return the phone number type
 NumberCategory* PhoneNumber::category() const {
-   return d->m_pCategory ;
+   return d_ptr->m_pCategory ;
 }
 
 ///Return this number associated account, if any
 Account* PhoneNumber::account() const
 {
-   return d->m_pAccount;
+   return d_ptr->m_pAccount;
 }
 
 ///Return this number associated contact, if any
 Contact* PhoneNumber::contact() const
 {
-   return d->m_pContact;
+   return d_ptr->m_pContact;
 }
 
 ///Return when this number was last used
 time_t PhoneNumber::lastUsed() const
 {
-   return d->m_LastUsed;
+   return d_ptr->m_LastUsed;
 }
 
 ///Set this number default account
 void PhoneNumber::setAccount(Account* account)
 {
-   d->m_pAccount = account;
-   if (d->m_pAccount)
-      connect (d->m_pAccount,SIGNAL(destroyed(QObject*)),this,SLOT(accountDestroyed(QObject*)));
-   d->changed();
+   d_ptr->m_pAccount = account;
+   if (d_ptr->m_pAccount)
+      connect (d_ptr->m_pAccount,SIGNAL(destroyed(QObject*)),this,SLOT(accountDestroyed(QObject*)));
+   d_ptr->changed();
 }
 
 ///Set this number contact
 void PhoneNumber::setContact(Contact* contact)
 {
-   d->m_pContact = contact;
-   if (contact && d->m_Type != PhoneNumber::Type::TEMPORARY) {
-      PhoneDirectoryModel::instance()->d_ptr->indexNumber(this,d->m_hNames.keys()+QStringList(contact->formattedName()));
-      d->m_PrimaryName_cache = contact->formattedName();
-      d->primaryNameChanged(d->m_PrimaryName_cache);
+   d_ptr->m_pContact = contact;
+   if (contact && d_ptr->m_Type != PhoneNumber::Type::TEMPORARY) {
+      PhoneDirectoryModel::instance()->d_ptr->indexNumber(this,d_ptr->m_hNames.keys()+QStringList(contact->formattedName()));
+      d_ptr->m_PrimaryName_cache = contact->formattedName();
+      d_ptr->primaryNameChanged(d_ptr->m_PrimaryName_cache);
       connect(contact,SIGNAL(rebased(Contact*)),this,SLOT(contactRebased(Contact*)));
    }
-   d->changed();
+   d_ptr->changed();
 }
 
 ///Protected setter to set if there is a type
 void PhoneNumber::setHasType(bool value)
 {
-   d->m_hasType = value;
+   d_ptr->m_hasType = value;
 }
 
 ///Protected setter to set the PhoneDirectoryModel index
 void PhoneNumber::setIndex(int value)
 {
-   d->m_Index = value;
+   d_ptr->m_Index = value;
 }
 
 ///Protected setter to change the popularity index
 void PhoneNumber::setPopularityIndex(int value)
 {
-   d->m_PopularityIndex = value;
+   d_ptr->m_PopularityIndex = value;
 }
 
 void PhoneNumber::setCategory(NumberCategory* cat)
 {
-   if (cat == d->m_pCategory) return;
-   if (d->m_hasType)
+   if (cat == d_ptr->m_pCategory) return;
+   if (d_ptr->m_hasType)
       NumberCategoryModel::instance()->unregisterNumber(this);
-   d->m_hasType = cat != NumberCategoryModel::other();
-   d->m_pCategory = cat;
-   if (d->m_hasType)
+   d_ptr->m_hasType = cat != NumberCategoryModel::other();
+   d_ptr->m_pCategory = cat;
+   if (d_ptr->m_hasType)
       NumberCategoryModel::instance()->registerNumber(this);
-   d->changed();
+   d_ptr->changed();
 }
 
 void PhoneNumber::setBookmarked(bool bookmarked )
 {
-   d->m_IsBookmark = bookmarked;
+   d_ptr->m_IsBookmark = bookmarked;
 }
 
 ///Force an Uid on this number (instead of hash)
 void PhoneNumber::setUid(const QString& uri)
 {
-   d->m_Uid = uri;
+   d_ptr->m_Uid = uri;
 }
 
 ///Attempt to change the number type
 bool PhoneNumber::setType(PhoneNumber::Type t)
 {
-   if (d->m_Type == PhoneNumber::Type::BLANK)
+   if (d_ptr->m_Type == PhoneNumber::Type::BLANK)
       return false;
    if (account() && t == PhoneNumber::Type::ACCOUNT) {
       if (account()->supportPresenceSubscribe()) {
-         d->m_Tracked = true; //The daemon will init the tracker itself
-         d->trackedChanged(true);
+         d_ptr->m_Tracked = true; //The daemon will init the tracker itself
+         d_ptr->trackedChanged(true);
       }
-      d->m_Type = t;
+      d_ptr->m_Type = t;
       return true;
    }
    return false;
@@ -290,72 +290,72 @@ bool PhoneNumber::setType(PhoneNumber::Type t)
 ///Set if this number is tracking presence information
 void PhoneNumber::setTracked(bool track)
 {
-   if (track != d->m_Tracked) { //Subscribe only once
+   if (track != d_ptr->m_Tracked) { //Subscribe only once
       //You can't subscribe without account
-      if (track && !d->m_pAccount) return;
-      d->m_Tracked = track;
-      DBus::PresenceManager::instance().subscribeBuddy(d->m_pAccount->id(),uri().fullUri(),track);
-      d->changed();
-      d->trackedChanged(track);
+      if (track && !d_ptr->m_pAccount) return;
+      d_ptr->m_Tracked = track;
+      DBus::PresenceManager::instance().subscribeBuddy(d_ptr->m_pAccount->id(),uri().fullUri(),track);
+      d_ptr->changed();
+      d_ptr->trackedChanged(track);
    }
 }
 
 ///Allow phonedirectorymodel to change presence status
 void PhoneNumber::setPresent(bool present)
 {
-   if (d->m_Present != present) {
-      d->m_Present = present;
-      d->presentChanged(present);
+   if (d_ptr->m_Present != present) {
+      d_ptr->m_Present = present;
+      d_ptr->presentChanged(present);
    }
 }
 
 void PhoneNumber::setPresenceMessage(const QString& message)
 {
-   if (d->m_PresentMessage != message) {
-      d->m_PresentMessage = message;
-      d->presenceMessageChanged(message);
+   if (d_ptr->m_PresentMessage != message) {
+      d_ptr->m_PresentMessage = message;
+      d_ptr->presenceMessageChanged(message);
    }
 }
 
 ///Return the current type of the number
 PhoneNumber::Type PhoneNumber::type() const
 {
-   return d->m_Type;
+   return d_ptr->m_Type;
 }
 
 ///Return the number of calls from this number
 int PhoneNumber::callCount() const
 {
-   return d->m_lCalls.size();
+   return d_ptr->m_lCalls.size();
 }
 
 uint PhoneNumber::weekCount() const
 {
-   return d->m_LastWeekCount;
+   return d_ptr->m_LastWeekCount;
 }
 
 uint PhoneNumber::trimCount() const
 {
-   return d->m_LastTrimCount;
+   return d_ptr->m_LastTrimCount;
 }
 
 bool PhoneNumber::haveCalled() const
 {
-   return d->m_HaveCalled;
+   return d_ptr->m_HaveCalled;
 }
 
 ///Best bet for this person real name
 QString PhoneNumber::primaryName() const
 {
    //Compute the primary name
-   if (d->m_PrimaryName_cache.isEmpty()) {
+   if (d_ptr->m_PrimaryName_cache.isEmpty()) {
       QString ret;
-      if (d->m_hNames.size() == 1)
-         ret =  d->m_hNames.constBegin().key();
+      if (d_ptr->m_hNames.size() == 1)
+         ret =  d_ptr->m_hNames.constBegin().key();
       else {
          QString toReturn = tr("Unknown");
          int max = 0;
-         for (QHash<QString,int>::const_iterator i = d->m_hNames.begin(); i != d->m_hNames.end(); ++i) {
+         for (QHash<QString,int>::const_iterator i = d_ptr->m_hNames.begin(); i != d_ptr->m_hNames.end(); ++i) {
             if (i.value() > max) {
                max      = i.value();
                toReturn = i.key  ();
@@ -363,32 +363,32 @@ QString PhoneNumber::primaryName() const
          }
          ret = toReturn;
       }
-      const_cast<PhoneNumber*>(this)->d->m_PrimaryName_cache = ret;
-      const_cast<PhoneNumber*>(this)->d->primaryNameChanged(d->m_PrimaryName_cache);
+      const_cast<PhoneNumber*>(this)->d_ptr->m_PrimaryName_cache = ret;
+      const_cast<PhoneNumber*>(this)->d_ptr->primaryNameChanged(d_ptr->m_PrimaryName_cache);
    }
    //Fallback: Use the URI
-   if (d->m_PrimaryName_cache.isEmpty()) {
+   if (d_ptr->m_PrimaryName_cache.isEmpty()) {
       return uri();
    }
 
    //Return the cached primaryname
-   return d->m_PrimaryName_cache;
+   return d_ptr->m_PrimaryName_cache;
 }
 
 ///Is this number bookmarked
 bool PhoneNumber::isBookmarked() const
 {
-   return d->m_IsBookmark;
+   return d_ptr->m_IsBookmark;
 }
 
 ///If this number could (theoretically) support presence status
 bool PhoneNumber::supportPresence() const
 {
    //Without an account, presence is impossible
-   if (!d->m_pAccount)
+   if (!d_ptr->m_pAccount)
       return false;
    //The account also have to support it
-   if (!d->m_pAccount->supportPresenceSubscribe())
+   if (!d_ptr->m_pAccount->supportPresenceSubscribe())
        return false;
 
    //In the end, it all come down to this, is the number tracked
@@ -404,53 +404,53 @@ QVariant PhoneNumber::icon() const
 ///The number of seconds spent with the URI (from history)
 int PhoneNumber::totalSpentTime() const
 {
-   return d->m_TotalSeconds;
+   return d_ptr->m_TotalSeconds;
 }
 
 ///Return this number unique identifier (hash)
 QString PhoneNumber::uid() const
 {
-   return d->m_Uid.isEmpty()?toHash():d->m_Uid;
+   return d_ptr->m_Uid.isEmpty()?toHash():d_ptr->m_Uid;
 }
 
 ///Return all calls from this number
 QList<Call*> PhoneNumber::calls() const
 {
-   return d->m_lCalls;
+   return d_ptr->m_lCalls;
 }
 
 ///Return the phonenumber position in the popularity index
 int PhoneNumber::popularityIndex() const
 {
-   return d->m_PopularityIndex;
+   return d_ptr->m_PopularityIndex;
 }
 
 QHash<QString,int> PhoneNumber::alternativeNames() const
 {
-   return d->m_hNames;
+   return d_ptr->m_hNames;
 }
 
 ///Add a call to the call list, notify listener
 void PhoneNumber::addCall(Call* call)
 {
    if (!call) return;
-   d->m_Type = PhoneNumber::Type::USED;
-   d->m_lCalls << call;
-   d->m_TotalSeconds += call->stopTimeStamp() - call->startTimeStamp();
+   d_ptr->m_Type = PhoneNumber::Type::USED;
+   d_ptr->m_lCalls << call;
+   d_ptr->m_TotalSeconds += call->stopTimeStamp() - call->startTimeStamp();
    time_t now;
    ::time ( &now );
    if (now - 3600*24*7 < call->stopTimeStamp())
-      d->m_LastWeekCount++;
+      d_ptr->m_LastWeekCount++;
    if (now - 3600*24*7*15 < call->stopTimeStamp())
-      d->m_LastTrimCount++;
+      d_ptr->m_LastTrimCount++;
 
    if (call->historyState() == Call::LegacyHistoryState::OUTGOING || call->direction() == Call::Direction::OUTGOING)
-      d->m_HaveCalled = true;
+      d_ptr->m_HaveCalled = true;
 
-   d->callAdded(call);
-   if (call->startTimeStamp() > d->m_LastUsed)
-      d->m_LastUsed = call->startTimeStamp();
-   d->changed();
+   d_ptr->callAdded(call);
+   if (call->startTimeStamp() > d_ptr->m_LastUsed)
+      d_ptr->m_LastUsed = call->startTimeStamp();
+   d_ptr->changed();
 }
 
 ///Generate an unique representation of this number
@@ -464,20 +464,20 @@ QString PhoneNumber::toHash() const
 ///Increment name counter and update indexes
 void PhoneNumber::incrementAlternativeName(const QString& name)
 {
-   const bool needReIndexing = !d->m_hNames[name];
-   d->m_hNames[name]++;
-   if (needReIndexing && d->m_Type != PhoneNumber::Type::TEMPORARY) {
-      PhoneDirectoryModel::instance()->d_ptr->indexNumber(this,d->m_hNames.keys()+(d->m_pContact?(QStringList(d->m_pContact->formattedName())):QStringList()));
+   const bool needReIndexing = !d_ptr->m_hNames[name];
+   d_ptr->m_hNames[name]++;
+   if (needReIndexing && d_ptr->m_Type != PhoneNumber::Type::TEMPORARY) {
+      PhoneDirectoryModel::instance()->d_ptr->indexNumber(this,d_ptr->m_hNames.keys()+(d_ptr->m_pContact?(QStringList(d_ptr->m_pContact->formattedName())):QStringList()));
       //Invalid m_PrimaryName_cache
-      if (!d->m_pContact)
-         d->m_PrimaryName_cache.clear();
+      if (!d_ptr->m_pContact)
+         d_ptr->m_PrimaryName_cache.clear();
    }
 }
 
 void PhoneNumber::accountDestroyed(QObject* o)
 {
-   if (o == d->m_pAccount)
-      d->m_pAccount = nullptr;
+   if (o == d_ptr->m_pAccount)
+      d_ptr->m_pAccount = nullptr;
 }
 
 /**
@@ -486,12 +486,12 @@ void PhoneNumber::accountDestroyed(QObject* o)
  */
 void PhoneNumber::contactRebased(Contact* other)
 {
-   d->m_PrimaryName_cache = other->formattedName();
-   d->primaryNameChanged(d->m_PrimaryName_cache);
-   d->changed();
+   d_ptr->m_PrimaryName_cache = other->formattedName();
+   d_ptr->primaryNameChanged(d_ptr->m_PrimaryName_cache);
+   d_ptr->changed();
 
    //It is a "partial" rebase, so the PhoneNumber data stay the same
-   d->rebased(this);
+   d_ptr->rebased(this);
 }
 
 /**
@@ -503,7 +503,7 @@ void PhoneNumber::contactRebased(Contact* other)
 bool PhoneNumber::merge(PhoneNumber* other)
 {
 
-   if ((!other) || other == this || other->d == d)
+   if ((!other) || other == this || other->d_ptr == d_ptr)
       return false;
 
    //This is invalid, those are different numbers
@@ -516,20 +516,20 @@ bool PhoneNumber::merge(PhoneNumber* other)
 
    //TODO Handle presence
 
-   PrivatePhoneNumber* currentD = d;
+   PrivatePhoneNumber* currentD = d_ptr;
 
    //Replace the D-Pointer
-   this->d = other->d;
-   d->m_lParents << this;
+   this->d_ptr= other->d_ptr;
+   d_ptr->m_lParents << this;
 
    //In case the URI is different, take the longest and most precise
    //TODO keep a log of all URI used
-   if (currentD->m_Uri.size() > other->d->m_Uri.size()) {
-      other->d->m_lOtherURIs << other->d->m_Uri;
-      other->d->m_Uri = currentD->m_Uri;
+   if (currentD->m_Uri.size() > other->d_ptr->m_Uri.size()) {
+      other->d_ptr->m_lOtherURIs << other->d_ptr->m_Uri;
+      other->d_ptr->m_Uri = currentD->m_Uri;
    }
    else
-      other->d->m_lOtherURIs << currentD->m_Uri;
+      other->d_ptr->m_lOtherURIs << currentD->m_Uri;
 
    emit changed();
    emit rebased(other);
@@ -542,22 +542,22 @@ bool PhoneNumber::merge(PhoneNumber* other)
 
 bool PhoneNumber::operator==(PhoneNumber* other)
 {
-   return other && this->d == other->d;
+   return other && this->d_ptr== other->d_ptr;
 }
 
 bool PhoneNumber::operator==(const PhoneNumber* other) const
 {
-   return other && this->d == other->d;
+   return other && this->d_ptr== other->d_ptr;
 }
 
 bool PhoneNumber::operator==(PhoneNumber& other)
 {
-   return &other && this->d == other.d;
+   return &other && this->d_ptr== other.d_ptr;
 }
 
 bool PhoneNumber::operator==(const PhoneNumber& other) const
 {
-   return &other && this->d == other.d;
+   return &other && this->d_ptr== other.d_ptr;
 }
 
 /************************************************************************************
@@ -568,8 +568,8 @@ bool PhoneNumber::operator==(const PhoneNumber& other) const
 
 void TemporaryPhoneNumber::setUri(const QString& uri)
 {
-   d->m_Uri = uri;
-   d->changed();
+   d_ptr->m_Uri = uri;
+   d_ptr->changed();
 }
 
 ///Constructor

@@ -24,16 +24,16 @@
 #include "../lib/videorenderer.h"
 
 ///Constructor
-VideoWidget::VideoWidget(QWidget* parent ,VideoRenderer* renderer) : QWidget(parent),m_Image(nullptr),m_pRenderer(renderer) {
+VideoWidget::VideoWidget(QWidget* parent ,* renderer) : QWidget(parent),m_Image(nullptr),m_pRenderer(renderer) {
    setMinimumSize(200,200);
    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
    connect(m_pRenderer,SIGNAL(frameUpdated()),this,SLOT(updateFrame()));
-   connect(VideoManager::instance(),SIGNAL(videoStopped()),this,SLOT(stop()));
-   connect(VideoManager::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(setRenderer(VideoRenderer*)));
+   connect(Video::Manager::instance(),SIGNAL(videoStopped()),this,SLOT(stop()));
+   connect(Video::Manager::instance(),SIGNAL(videoCallInitiated(Video::Renderer*)),this,SLOT(setRenderer(Video::Renderer*)));
 }
 
 ///Set widget renderer
-void VideoWidget::setRenderer(VideoRenderer* renderer)
+void VideoWidget::setRenderer(* renderer)
 {
    disconnect(m_pRenderer,SIGNAL(frameUpdated()),this,SLOT(updateFrame()));
    m_pRenderer = renderer;

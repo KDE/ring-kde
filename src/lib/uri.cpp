@@ -19,10 +19,10 @@
 
 constexpr const char* URI::schemeNames[];
 
-class UriPrivate
+class URIPrivate
 {
 public:
-   UriPrivate(QString* uri);
+   URIPrivate(QString* uri);
    //Attributes
    QString          m_Hostname    ;
    QString          m_Userinfo    ;
@@ -39,17 +39,17 @@ private:
    QString* q_ptr;
 };
 
-UriPrivate::UriPrivate(QString* uri) : m_Parsed(false),m_HeaderType(URI::SchemeType::NONE),q_ptr(uri)
+URIPrivate::URIPrivate(QString* uri) : m_Parsed(false),m_HeaderType(URI::SchemeType::NONE),q_ptr(uri)
 {
 }
 
-URI::URI(const QString& other):QString(), d_ptr(new UriPrivate(this))
+URI::URI(const QString& other):QString(), d_ptr(new URIPrivate(this))
 {
-   d_ptr->m_Stripped              = UriPrivate::strip(other,d_ptr->m_HeaderType);
+   d_ptr->m_Stripped              = URIPrivate::strip(other,d_ptr->m_HeaderType);
    (*static_cast<QString*>(this)) = d_ptr->m_Stripped                           ;
 }
 
-URI::URI(const URI& o):QString(), d_ptr(new UriPrivate(this))
+URI::URI(const URI& o):QString(), d_ptr(new URIPrivate(this))
 {
    d_ptr->m_Parsed     = o.d_ptr->m_Parsed    ;
    d_ptr->m_Hostname   = o.d_ptr->m_Hostname  ;
@@ -62,11 +62,25 @@ URI::URI(const URI& o):QString(), d_ptr(new UriPrivate(this))
 
 URI::~URI()
 {
+   (*static_cast<QString*>(this)) = QString();
+   d_ptr->m_Stripped = QString();
    delete d_ptr;
 }
 
+URI& URI::operator=(const URI& o)
+{
+   d_ptr->m_Parsed     = o.d_ptr->m_Parsed    ;
+   d_ptr->m_Hostname   = o.d_ptr->m_Hostname  ;
+   d_ptr->m_HeaderType = o.d_ptr->m_HeaderType;
+   d_ptr->m_Userinfo   = o.d_ptr->m_Userinfo  ;
+   d_ptr->m_Stripped   = o.d_ptr->m_Stripped  ;
+
+   (*static_cast<QString*>(this)) = o.d_ptr->m_Stripped;
+   return (*this);
+}
+
 ///Strip out <sip:****> from the URI
-QString UriPrivate::strip(const QString& uri, URI::SchemeType& sheme)
+QString URIPrivate::strip(const QString& uri, URI::SchemeType& sheme)
 {
    if (uri.isEmpty())
       return QString();
@@ -105,7 +119,7 @@ bool URI::hasHostname() const
 }
 
 ///Keep a cache of the values to avoid re-parsing them
-void UriPrivate::parse()
+void URIPrivate::parse()
 {
    if (q_ptr->indexOf('@') != -1) {
       const QStringList splitted = q_ptr->split('@');

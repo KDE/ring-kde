@@ -354,7 +354,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    }
 
    if (m_pCodecsLW->currentIndex().isValid())
-      m_pCodecsLW->model()->setData(m_pCodecsLW->currentIndex(),m_pBitrateSB->value(),VideoCodecModel::BITRATE_ROLE);
+      m_pCodecsLW->model()->setData(m_pCodecsLW->currentIndex(),m_pBitrateSB->value(),Video::CodecModel2::BITRATE_ROLE);
    saveCredential();
    m_IsLoading--;
 } //saveAccount
@@ -743,14 +743,14 @@ void DlgAccounts::moveAudioCodecDown()
 ///Move video codec up
 void DlgAccounts::moveVideoCodecUp()
 {
-   if (static_cast<VideoCodecModel*>(m_pCodecsLW->model())->moveUp(m_pCodecsLW->currentIndex()))
+   if (static_cast<Video::CodecModel2*>(m_pCodecsLW->model())->moveUp(m_pCodecsLW->currentIndex()))
       m_pCodecsLW->setCurrentIndex(m_pCodecsLW->model()->index(m_pCodecsLW->currentIndex().row()-1,0));
 }
 
 ///Move video codec down
 void DlgAccounts::moveVideoCodecDown()
 {
-   if (static_cast<VideoCodecModel*>(m_pCodecsLW->model())->moveDown(m_pCodecsLW->currentIndex()))
+   if (static_cast<Video::CodecModel2*>(m_pCodecsLW->model())->moveDown(m_pCodecsLW->currentIndex()))
       m_pCodecsLW->setCurrentIndex(m_pCodecsLW->model()->index(m_pCodecsLW->currentIndex().row()+1,0));
 }
 
@@ -758,10 +758,10 @@ void DlgAccounts::moveVideoCodecDown()
 void DlgAccounts::loadVidCodecDetails(const QModelIndex& current,const QModelIndex& previous)
 {
    if (previous != current && previous.isValid()) {
-      m_pCodecsLW->model()->setData(previous,m_pBitrateSB->value(),VideoCodecModel::BITRATE_ROLE);
+      m_pCodecsLW->model()->setData(previous,m_pBitrateSB->value(),Video::CodecModel2::BITRATE_ROLE);
    }
 
-   const int bitrate = m_pCodecsLW->model()->data(current,VideoCodecModel::BITRATE_ROLE).toInt();
+   const int bitrate = m_pCodecsLW->model()->data(current,Video::CodecModel2::BITRATE_ROLE).toInt();
    m_pBitrateSB->setValue(bitrate);
 }
 

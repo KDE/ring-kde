@@ -38,10 +38,11 @@ class VideoDock;
 class SFLPhoneTray;
 class SFLPhoneView;
 class HistoryDock;
-class VideoRenderer;
 class AccountListNoCheckProxyModel;
 class Account;
-
+namespace Video {
+   class Renderer;
+}
 
 /**
  * This class represents the SFLphone main window
@@ -132,7 +133,7 @@ private Q_SLOTS:
    void hidePresenceDock                         (                                      );
    void slotPresenceEnabled                      ( bool state                           );
    #ifdef ENABLE_VIDEO
-   void displayVideoDock                         ( VideoRenderer* r                     );
+   void displayVideoDock                         ( Video::Renderer* r                   );
    #endif
 
 public Q_SLOTS:

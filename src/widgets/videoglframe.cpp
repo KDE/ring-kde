@@ -28,8 +28,8 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/video/videorenderer.h>
-#include <lib/video/videomanager.h>
+#include <lib/video/renderer.h>
+#include <lib/video/manager.h>
 
 
 #ifndef GL_MULTISAMPLE
@@ -54,7 +54,7 @@ public:
    bool isRendering;
 
    //Render
-   VideoRenderer* m_pRenderer;
+   Video::Renderer* m_pRenderer;
 
 private:
    QGLWidget* m_pW;
@@ -250,7 +250,7 @@ void ThreadedPainter2::restoreGLState()
 }
 
 ///Set widget renderer
-void VideoGLFrame::setRenderer(VideoRenderer* renderer)
+void VideoGLFrame::setRenderer(Video::Renderer* renderer)
 {
    m_pRenderer = renderer;
 //    if (m_pPainter->m_pRenderer && m_pPainter->m_pRenderer->isRendering())

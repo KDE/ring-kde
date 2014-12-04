@@ -22,14 +22,16 @@
 #include <QtCore/QObject>
 
 class Account;
-class VideoCodec;
 
 class VideoCodecPrivate;
 
-///VideoCodec: Codecs used for video calls
-class LIB_EXPORT VideoCodec : public QObject {
+namespace Video {
+
+
+///Codec: Codecs used for video calls
+class LIB_EXPORT Codec : public QObject {
    Q_OBJECT
-   friend class VideoCodecModel;
+   friend class CodecModel2;
    public:
       //Properties
       Q_PROPERTY(QString name       READ name                          )
@@ -38,7 +40,7 @@ class LIB_EXPORT VideoCodec : public QObject {
       Q_PROPERTY(QString parameters READ parameters WRITE setParamaters)
 
       //Static setters
-      static void setActiveCodecList(Account* account, QStringList codecs);
+//       static void setActiveCodecList(Account* account, const QStringList& codecs);
 
       //Getters
       QString name      () const;
@@ -54,10 +56,12 @@ class LIB_EXPORT VideoCodec : public QObject {
 
    private:
       //Constructor
-      VideoCodec(const QString &codecName, uint bitRate, bool enabled);
-      virtual ~VideoCodec();
+      Codec(const QString &codecName, uint bitRate, bool enabled);
+      virtual ~Codec();
 
       VideoCodecPrivate* d_ptr;
 };
+
+}
 
 #endif

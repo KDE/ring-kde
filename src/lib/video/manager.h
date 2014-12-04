@@ -25,47 +25,51 @@
 #include <QtCore/QHash>
 
 //SFLPhone
-#include "videodevice.h"
-class VideoRenderer;
+#include "device.h"
+namespace Video {
+   class Renderer;
+}
 class Call;
 class QMutex;
 struct SHMHeader;
 
-class VideoManagerPrivate;
+namespace Video {
+
+class ManagerPrivate;
 
 ///VideoModel: Video event dispatcher
-class LIB_EXPORT VideoManager : public QThread {
+class LIB_EXPORT Manager : public QThread {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
    #pragma GCC diagnostic pop
 public:
    //Singleton
-   static VideoManager* instance();
+   static Manager* instance();
 
    //Getters
    bool       isPreviewing       ();
-   VideoRenderer* getRenderer(const Call* call) const;
-   VideoRenderer* previewRenderer();
+   Video::Renderer* getRenderer(const Call* call) const;
+   Video::Renderer* previewRenderer();
    QMutex* startStopMutex() const;
 
    //Setters
    void setBufferSize(uint size);
-   void switchDevice(const VideoDevice* device) const;
+   void switchDevice(const Video::Device* device) const;
 
 protected:
 //    void run();
 
 private:
    //Constructor
-   explicit VideoManager();
-   virtual ~VideoManager();
+   explicit Manager();
+   virtual ~Manager();
 
-   VideoManagerPrivate* d_ptr;
-   Q_DECLARE_PRIVATE(VideoManager)
+   ManagerPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(Manager)
 
    //Static attributes
-   static VideoManager* m_spInstance;
+   static Manager* m_spInstance;
 
 public Q_SLOTS:
    void stopPreview ();
@@ -77,12 +81,14 @@ Q_SIGNALS:
    ///Emmitted when the video is stopped, before the framebuffer become invalid
 //    void videoStopped();
    ///Emmitted when a call make video available
-   void videoCallInitiated(VideoRenderer*);
+   void videoCallInitiated(Video::Renderer*);
    ///The preview started/stopped
    void previewStateChanged(bool startStop);
-   void previewStarted(VideoRenderer* renderer);
-   void previewStopped(VideoRenderer* renderer);
-   
+   void previewStarted(Video::Renderer* renderer);
+   void previewStopped(Video::Renderer* renderer);
+
 };
+
+}
 
 #endif

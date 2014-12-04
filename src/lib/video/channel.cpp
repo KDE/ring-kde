@@ -15,11 +15,11 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "videochannel.h"
+#include "channel.h"
 
 //SFLphone
-#include "videoresolution.h"
-#include "videodevice.h"
+#include "resolution.h"
+#include "device.h"
 #include "../dbus/videomanager.h"
 #include "../private/videochannel_p.h"
 #include "../private/videodevice_p.h"
@@ -28,19 +28,19 @@ VideoChannelPrivate::VideoChannelPrivate() : m_pCurrentResolution(nullptr)
 {
 }
 
-VideoChannel::VideoChannel(VideoDevice* dev,const QString& name) : QAbstractListModel(dev),
+Video::Channel::Channel(Video::Device* dev,const QString& name) : QAbstractListModel(dev),
 d_ptr(new VideoChannelPrivate())
 {
    d_ptr->m_Name    = name;
    d_ptr->m_pDevice = dev;
 }
 
-VideoChannel::~VideoChannel()
+Video::Channel::~Channel()
 {
    delete d_ptr;
 }
 
-QVariant VideoChannel::data( const QModelIndex& index, int role) const
+QVariant Video::Channel::data( const QModelIndex& index, int role) const
 {
    if (index.isValid() && role == Qt::DisplayRole) {
       return d_ptr->m_lValidResolutions[index.row()]->name();
@@ -48,19 +48,19 @@ QVariant VideoChannel::data( const QModelIndex& index, int role) const
    return QVariant();
 }
 
-int VideoChannel::rowCount( const QModelIndex& parent) const
+int Video::Channel::rowCount( const QModelIndex& parent) const
 {
    return (parent.isValid())?0:d_ptr->m_lValidResolutions.size();
 }
 
-Qt::ItemFlags VideoChannel::flags( const QModelIndex& idx) const
+Qt::ItemFlags Video::Channel::flags( const QModelIndex& idx) const
 {
    if (idx.column() == 0)
       return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
    return QAbstractItemModel::flags(idx);
 }
 
-bool VideoChannel::setData( const QModelIndex& index, const QVariant &value, int role)
+bool Video::Channel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
    Q_UNUSED(index)
    Q_UNUSED(value)
@@ -68,17 +68,17 @@ bool VideoChannel::setData( const QModelIndex& index, const QVariant &value, int
    return false;
 }
 
-int VideoChannel::relativeIndex() {
+int Video::Channel::relativeIndex() {
    return d_ptr->m_pDevice->channelList().indexOf(this);
 }
 
-bool VideoChannel::setActiveResolution(int idx)
+bool Video::Channel::setActiveResolution(int idx)
 {
    if (idx < 0 || idx >= d_ptr->m_lValidResolutions.size()) return false;
    return setActiveResolution(d_ptr->m_lValidResolutions[idx]);
 }
 
-bool VideoChannel::setActiveResolution(VideoResolution* res) {
+bool Video::Channel::setActiveResolution(Video::Resolution* res) {
    if ((!res) || d_ptr->m_lValidResolutions.indexOf(res) == -1 || res->name().isEmpty()) {
       qWarning() << "Invalid active resolution" << (res?res->name():"NULL");
       return false;
@@ -88,13 +88,13 @@ bool VideoChannel::setActiveResolution(VideoResolution* res) {
    return true;
 }
 
-VideoResolution* VideoChannel::activeResolution()
+Video::Resolution* Video::Channel::activeResolution()
 {
    //If it is the current device, then there is "current" resolution
    if ((!d_ptr->m_pCurrentResolution) && d_ptr->m_pDevice->isActive()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       const QString res = QMap<QString,QString>(interface.getSettings(d_ptr->m_pDevice->id()))[VideoDevicePrivate::PreferenceNames::SIZE];
-      foreach(VideoResolution* r, validResolutions()) {
+      foreach(Video::Resolution* r, validResolutions()) {
          if (r->name() == res) {
             d_ptr->m_pCurrentResolution = r;
             break;
@@ -109,16 +109,16 @@ VideoResolution* VideoChannel::activeResolution()
    return d_ptr->m_pCurrentResolution;
 }
 
-QString VideoChannel::name() const
+QString Video::Channel::name() const
 {
    return d_ptr->m_Name;
 }
 
-QList<VideoResolution*> VideoChannel::validResolutions() const
+QList<Video::Resolution*> Video::Channel::validResolutions() const
 {
    return d_ptr->m_lValidResolutions;
 }
-VideoDevice* VideoChannel::device() const
+Video::Device* Video::Channel::device() const
 {
    return d_ptr->m_pDevice;
 }

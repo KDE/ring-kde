@@ -19,12 +19,13 @@
 #include <QtCore/QUrl>
 #include <QtCore/QCoreApplication>
 #include "../dbus/videomanager.h"
-#include "videodevicemodel.h"
+#include "devicemodel.h"
 
-class VideoSourcesModelPrivate
+namespace Video {
+class SourcesModelPrivate
 {
 public:
-   VideoSourcesModelPrivate();
+   SourcesModelPrivate();
 
    //Constants
    class ProtocolPrefix {
@@ -45,28 +46,29 @@ public:
    Display m_Display;
    int m_CurrentSelection;
 };
+}
 
-VideoSourcesModelPrivate::VideoSourcesModelPrivate() : m_CurrentSelection(-1)
+Video::SourcesModelPrivate::SourcesModelPrivate() : m_CurrentSelection(-1)
 {
    
 }
 
-VideoSourcesModel* VideoSourcesModel::m_spInstance = nullptr;
+Video::SourcesModel* Video::SourcesModel::m_spInstance = nullptr;
 
-VideoSourcesModel::VideoSourcesModel() : QAbstractListModel(QCoreApplication::instance()),
-d_ptr(new VideoSourcesModelPrivate())
+Video::SourcesModel::SourcesModel() : QAbstractListModel(QCoreApplication::instance()),
+d_ptr(new Video::SourcesModelPrivate())
 {
    d_ptr->m_Display.rect = QRect(0,0,0,0);
 }
 
-VideoSourcesModel* VideoSourcesModel::instance()
+Video::SourcesModel* Video::SourcesModel::instance()
 {
    if (!m_spInstance)
-      m_spInstance = new VideoSourcesModel();
+      m_spInstance = new Video::SourcesModel();
    return m_spInstance;
 }
 
-QVariant VideoSourcesModel::data( const QModelIndex& index, int role ) const
+QVariant Video::SourcesModel::data( const QModelIndex& index, int role ) const
 {
    switch (index.row()) {
       case ExtendedDeviceList::NONE:
@@ -88,18 +90,18 @@ QVariant VideoSourcesModel::data( const QModelIndex& index, int role ) const
          };
          break;
       default:
-         return VideoDeviceModel::instance()->data(VideoDeviceModel::instance()->index(index.row()-ExtendedDeviceList::__COUNT,0),role);
+         return Video::DeviceModel::instance()->data(Video::DeviceModel::instance()->index(index.row()-ExtendedDeviceList::__COUNT,0),role);
    };
    return QVariant();
 }
 
-int VideoSourcesModel::rowCount( const QModelIndex& parent ) const
+int Video::SourcesModel::rowCount( const QModelIndex& parent ) const
 {
    Q_UNUSED(parent)
-   return VideoDeviceModel::instance()->rowCount() + ExtendedDeviceList::__COUNT;
+   return Video::DeviceModel::instance()->rowCount() + ExtendedDeviceList::__COUNT;
 }
 
-Qt::ItemFlags VideoSourcesModel::flags( const QModelIndex& idx ) const
+Qt::ItemFlags Video::SourcesModel::flags( const QModelIndex& idx ) const
 {
    switch (idx.row()) {
       case ExtendedDeviceList::NONE  :
@@ -108,11 +110,11 @@ Qt::ItemFlags VideoSourcesModel::flags( const QModelIndex& idx ) const
          return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
          break;
       default:
-         return VideoDeviceModel::instance()->flags(VideoDeviceModel::instance()->index(idx.row()-ExtendedDeviceList::__COUNT,0));
+         return Video::DeviceModel::instance()->flags(Video::DeviceModel::instance()->index(idx.row()-ExtendedDeviceList::__COUNT,0));
    };
 }
 
-bool VideoSourcesModel::setData( const QModelIndex& index, const QVariant &value, int role)
+bool Video::SourcesModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
    Q_UNUSED(index)
    Q_UNUSED(value)
@@ -120,43 +122,43 @@ bool VideoSourcesModel::setData( const QModelIndex& index, const QVariant &value
    return false;
 }
 
-void VideoSourcesModel::switchTo(const QModelIndex& idx)
+void Video::SourcesModel::switchTo(const QModelIndex& idx)
 {
    switchTo(idx.row());
 }
 
 ///This model is designed for "live" switching rather than configuration
-void VideoSourcesModel::switchTo(const int idx)
+void Video::SourcesModel::switchTo(const int idx)
 {
    switch (idx) {
       case ExtendedDeviceList::NONE:
-         DBus::VideoManager::instance().switchInput(VideoSourcesModelPrivate::ProtocolPrefix::NONE);
+         DBus::VideoManager::instance().switchInput(Video::SourcesModelPrivate::ProtocolPrefix::NONE);
          break;
       case ExtendedDeviceList::SCREEN:
-         DBus::VideoManager::instance().switchInput( QString(VideoSourcesModelPrivate::ProtocolPrefix::DISPLAY)+QString(":%1 %2x%3")
+         DBus::VideoManager::instance().switchInput( QString(Video::SourcesModelPrivate::ProtocolPrefix::DISPLAY)+QString(":%1 %2x%3")
             .arg(d_ptr->m_Display.index)
             .arg(d_ptr->m_Display.rect.width())
             .arg(d_ptr->m_Display.rect.height()));
          break;
       case ExtendedDeviceList::FILE:
          DBus::VideoManager::instance().switchInput(
-            !d_ptr->m_CurrentFile.isEmpty()?+VideoSourcesModelPrivate::ProtocolPrefix::FILE+d_ptr->m_CurrentFile.path():VideoSourcesModelPrivate::ProtocolPrefix::NONE
+            !d_ptr->m_CurrentFile.isEmpty()?+Video::SourcesModelPrivate::ProtocolPrefix::FILE+d_ptr->m_CurrentFile.path():Video::SourcesModelPrivate::ProtocolPrefix::NONE
          );
          break;
       default:
-         DBus::VideoManager::instance().switchInput(VideoSourcesModelPrivate::ProtocolPrefix::V4L2 +
-            VideoDeviceModel::instance()->index(idx-ExtendedDeviceList::__COUNT,0).data(Qt::DisplayRole).toString());
+         DBus::VideoManager::instance().switchInput(Video::SourcesModelPrivate::ProtocolPrefix::V4L2 +
+            Video::DeviceModel::instance()->index(idx-ExtendedDeviceList::__COUNT,0).data(Qt::DisplayRole).toString());
          break;
    };
    d_ptr->m_CurrentSelection = (ExtendedDeviceList) idx;
 }
 
-void VideoSourcesModel::switchTo(VideoDevice* device)
+void Video::SourcesModel::switchTo(Video::Device* device)
 {
-   DBus::VideoManager::instance().switchInput(VideoSourcesModelPrivate::ProtocolPrefix::V4L2 + device->id());
+   DBus::VideoManager::instance().switchInput(Video::SourcesModelPrivate::ProtocolPrefix::V4L2 + device->id());
 }
 
-VideoDevice* VideoSourcesModel::deviceAt(const QModelIndex& idx) const
+Video::Device* Video::SourcesModel::deviceAt(const QModelIndex& idx) const
 {
    if (!idx.isValid()) return nullptr;
    switch (idx.row()) {
@@ -165,25 +167,25 @@ VideoDevice* VideoSourcesModel::deviceAt(const QModelIndex& idx) const
       case ExtendedDeviceList::FILE:
          return nullptr;
       default:
-         return VideoDeviceModel::instance()->devices()[idx.row()-ExtendedDeviceList::__COUNT];
+         return Video::DeviceModel::instance()->devices()[idx.row()-ExtendedDeviceList::__COUNT];
    };
 }
 
-int VideoSourcesModel::activeIndex() const
+int Video::SourcesModel::activeIndex() const
 {
    if (d_ptr->m_CurrentSelection == -1) {
-      return ExtendedDeviceList::__COUNT + VideoDeviceModel::instance()->activeIndex();
+      return ExtendedDeviceList::__COUNT + Video::DeviceModel::instance()->activeIndex();
    }
    return d_ptr->m_CurrentSelection;
 }
 
-void VideoSourcesModel::setFile(const QUrl& url)
+void Video::SourcesModel::setFile(const QUrl& url)
 {
    d_ptr->m_CurrentFile = url;
    switchTo(ExtendedDeviceList::FILE);
 }
 
-void VideoSourcesModel::setDisplay(int index, QRect rect)
+void Video::SourcesModel::setDisplay(int index, QRect rect)
 {
    d_ptr->m_Display.index  = index ;
    d_ptr->m_Display.rect   = rect  ;

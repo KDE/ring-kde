@@ -56,9 +56,9 @@ set( qtsflphone_LIB_SRCS
   phonenumber.cpp
   numbercategory.cpp
   abstractitembackendmodelextension.cpp
-  video/videodevice.cpp
-  video/videorenderer.cpp
-  video/videocodec.cpp
+  video/device.cpp
+  video/renderer.cpp
+  video/codec.cpp
 
   #Models
   accountmodel.cpp
@@ -84,13 +84,13 @@ set( qtsflphone_LIB_SRCS
   certificate.cpp
   contactmodel.cpp
   itembackendmodel.cpp
-  video/videodevicemodel.cpp
+  video/devicemodel.cpp
   video/sourcesmodel.cpp
-  video/videocodecmodel.cpp
-  video/videochannel.cpp
-  video/videoresolution.cpp
-  video/videorate.cpp
-  video/videomanager.cpp
+  video/codecmodel2.cpp
+  video/channel.cpp
+  video/resolution.cpp
+  video/rate.cpp
+  video/manager.cpp
   audio/alsapluginmodel.cpp
   audio/codecmodel.cpp
   audio/inputdevicemodel.cpp
@@ -164,16 +164,16 @@ set( qtsflphone_LIB_HDRS
   hookmanager.h
   uri.h
   abstractitembackendmodelextension.h
-  video/videodevice.h
-  video/videodevicemodel.h
+  video/device.h
+  video/devicemodel.h
   video/sourcesmodel.h
-  video/videocodec.h
-  video/videocodecmodel.h
-  video/videomanager.h
-  video/videorenderer.h
-  video/videoresolution.h
-  video/videochannel.h
-  video/videorate.h
+  video/codec.h
+  video/codecmodel2.h
+  video/manager.h
+  video/renderer.h
+  video/resolution.h
+  video/channel.h
+  video/rate.h
   audio/alsapluginmodel.h
   audio/codecmodel.h
   audio/inputdevicemodel.h

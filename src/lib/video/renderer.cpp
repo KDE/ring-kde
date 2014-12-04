@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "videorenderer.h"
+#include "renderer.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QMutex>
@@ -36,8 +36,8 @@
 #endif
 
 #include <QtCore/QTimer>
-#include "videomanager.h"
-#include "videoresolution.h"
+#include "manager.h"
+#include "resolution.h"
 
 ///Shared memory object
 struct SHMHeader{
@@ -55,11 +55,13 @@ struct SHMHeader{
 #pragma GCC diagnostic pop
 };
 
-class VideoRendererPrivate : public QObject
+namespace Video {
+
+class RendererPrivate : public QObject
 {
    Q_OBJECT
 public:
-   VideoRendererPrivate(VideoRenderer* parent);
+   RendererPrivate(Video::Renderer* parent);
 
    //Attributes
    QString           m_ShmPath    ;
@@ -89,13 +91,15 @@ public:
    bool     renderToBitmap();
 
 private:
-   VideoRenderer* q_ptr;
+   Video::Renderer* q_ptr;
 
 private Q_SLOTS:
    void timedEvents();
 };
 
-VideoRendererPrivate::VideoRendererPrivate(VideoRenderer* parent) : QObject(parent), q_ptr(parent),
+}
+
+Video::RendererPrivate::RendererPrivate(Video::Renderer* parent) : QObject(parent), q_ptr(parent),
    fd(-1),m_fpsC(0),m_Fps(0),
    m_pShmArea((SHMHeader*)MAP_FAILED), m_ShmAreaLen(0), m_BufferGen(0),
    m_isRendering(false),m_pTimer(nullptr),m_pMutex(new QMutex()),
@@ -104,23 +108,23 @@ VideoRendererPrivate::VideoRendererPrivate(VideoRenderer* parent) : QObject(pare
 }
 
 ///Constructor
-VideoRenderer::VideoRenderer(const QString& id, const QString& shmPath, const QSize& res): QObject(nullptr), d_ptr(new VideoRendererPrivate(this))
+Video::Renderer::Renderer(const QString& id, const QString& shmPath, const QSize& res): QObject(nullptr), d_ptr(new RendererPrivate(this))
 {
    d_ptr->m_ShmPath = shmPath;
    d_ptr->m_Id      = id;
    d_ptr->m_pSize   = res;
-   setObjectName("VideoRenderer:"+id);
+   setObjectName("Video::Renderer:"+id);
 }
 
 ///Destructor
-VideoRenderer::~VideoRenderer()
+Video::Renderer::~Renderer()
 {
    stopShm();
    //delete m_pShmArea;
 }
 
 ///Get the data from shared memory and transform it into a QByteArray
-bool VideoRendererPrivate::renderToBitmap()
+bool Video::RendererPrivate::renderToBitmap()
 {
 #ifdef Q_OS_LINUX
    if (!m_isRendering) {
@@ -131,7 +135,7 @@ bool VideoRendererPrivate::renderToBitmap()
       return false;
    }
 
-   if(!VideoManager::instance()->startStopMutex()->tryLock())
+   if(!Video::Manager::instance()->startStopMutex()->tryLock())
       return false;
 
    // wait for a new buffer
@@ -163,7 +167,7 @@ bool VideoRendererPrivate::renderToBitmap()
 //             break;
 //       }
       if ((err < 0) || (!shmLock())) {
-         VideoManager::instance()->startStopMutex()->unlock();
+         Video::Manager::instance()->startStopMutex()->unlock();
          return false;
       }
       usleep((1/60.0)*100);
@@ -171,7 +175,7 @@ bool VideoRendererPrivate::renderToBitmap()
 
    if (!q_ptr->resizeShm()) {
       qDebug() << "Could not resize shared memory";
-      VideoManager::instance()->startStopMutex()->unlock();
+      Video::Manager::instance()->startStopMutex()->unlock();
       return false;
    }
 
@@ -183,7 +187,7 @@ bool VideoRendererPrivate::renderToBitmap()
    shmUnlock();
    m_FrameIdx = !m_FrameIdx;
 
-   VideoManager::instance()->startStopMutex()->unlock();
+   Video::Manager::instance()->startStopMutex()->unlock();
    return true;
 #else
    return false;
@@ -191,7 +195,7 @@ bool VideoRendererPrivate::renderToBitmap()
 }
 
 ///Connect to the shared memory
-bool VideoRenderer::startShm()
+bool Video::Renderer::startShm()
 {
    if (d_ptr->fd != -1) {
       qDebug() << "fd must be -1";
@@ -217,7 +221,7 @@ bool VideoRenderer::startShm()
 }
 
 ///Disconnect from the shared memory
-void VideoRenderer::stopShm()
+void Video::Renderer::stopShm()
 {
    if (d_ptr->fd >= 0)
       close(d_ptr->fd);
@@ -230,7 +234,7 @@ void VideoRenderer::stopShm()
 }
 
 ///Resize the shared memory
-bool VideoRenderer::resizeShm()
+bool Video::Renderer::resizeShm()
 {
    while (( (unsigned int) sizeof(SHMHeader) + (unsigned int) d_ptr->m_pShmArea->m_BufferSize) > (unsigned int) d_ptr->m_ShmAreaLen) {
       const size_t new_size = sizeof(SHMHeader) + d_ptr->m_pShmArea->m_BufferSize;
@@ -261,7 +265,7 @@ bool VideoRenderer::resizeShm()
 }
 
 ///Lock the memory while the copy is being made
-bool VideoRendererPrivate::shmLock()
+bool Video::RendererPrivate::shmLock()
 {
 #ifdef Q_OS_LINUX
    return sem_trywait(&m_pShmArea->mutex) >= 0;
@@ -271,7 +275,7 @@ bool VideoRendererPrivate::shmLock()
 }
 
 ///Remove the lock, allow a new frame to be drawn
-void VideoRendererPrivate::shmUnlock()
+void Video::RendererPrivate::shmUnlock()
 {
    sem_post(&m_pShmArea->mutex);
 }
@@ -284,7 +288,7 @@ void VideoRendererPrivate::shmUnlock()
  ****************************************************************************/
 
 ///Update the buffer
-void VideoRendererPrivate::timedEvents()
+void Video::RendererPrivate::timedEvents()
 {
 
    bool ok = renderToBitmap();
@@ -308,9 +312,9 @@ void VideoRendererPrivate::timedEvents()
 }
 
 ///Start the rendering loop
-void VideoRenderer::startRendering()
+void Video::Renderer::startRendering()
 {
-   VideoManager::instance()->startStopMutex()->lock();
+   Video::Manager::instance()->startStopMutex()->lock();
    QMutexLocker locker(d_ptr->m_pMutex);
    startShm();
    if (!d_ptr->m_pTimer) {
@@ -329,13 +333,13 @@ void VideoRenderer::startRendering()
       qDebug() << "Timer already started!";
 
    d_ptr->m_isRendering = true;
-   VideoManager::instance()->startStopMutex()->unlock();
+   Video::Manager::instance()->startStopMutex()->unlock();
 }
 
 ///Stop the rendering loop
-void VideoRenderer::stopRendering()
+void Video::Renderer::stopRendering()
 {
-   VideoManager::instance()->startStopMutex()->lock();
+   Video::Manager::instance()->startStopMutex()->lock();
    QMutexLocker locker(d_ptr->m_pMutex);
    d_ptr->m_isRendering = false;
    qDebug() << "Stopping rendering on" << d_ptr->m_Id;
@@ -343,7 +347,7 @@ void VideoRenderer::stopRendering()
       d_ptr->m_pTimer->stop();
    emit stopped();
    stopShm();
-   VideoManager::instance()->startStopMutex()->unlock();
+   Video::Manager::instance()->startStopMutex()->unlock();
 }
 
 
@@ -354,38 +358,38 @@ void VideoRenderer::stopRendering()
  ****************************************************************************/
 
 ///Get the raw bytes directly from the SHM, not recommended, but optimal
-const char* VideoRenderer::rawData()
+const char* Video::Renderer::rawData()
 {
    return d_ptr->m_isRendering?d_ptr->m_Frame[d_ptr->m_FrameIdx].data():nullptr;
 }
 
 ///Is this redenrer active
-bool VideoRenderer::isRendering()
+bool Video::Renderer::isRendering()
 {
    return d_ptr->m_isRendering;
 }
 
 ///Return the current framerate
-const QByteArray& VideoRenderer::currentFrame()
+const QByteArray& Video::Renderer::currentFrame()
 {
    static QByteArray empty;
    return d_ptr->m_isRendering?d_ptr->m_Frame[d_ptr->m_FrameIdx]:empty;
 }
 
 ///Return the current resolution
-QSize VideoRenderer::size()
+QSize Video::Renderer::size()
 {
    return d_ptr->m_pSize;
 }
 
 ///Get mutex, in case renderer and views are not in the same thread
-QMutex* VideoRenderer::mutex()
+QMutex* Video::Renderer::mutex()
 {
    return d_ptr->m_pMutex;
 }
 
 ///Get the current frame rate of this renderer
-int VideoRenderer::fps() const
+int Video::Renderer::fps() const
 {
    return d_ptr->m_Fps;
 }
@@ -397,15 +401,15 @@ int VideoRenderer::fps() const
  *                                                                           *
  ****************************************************************************/
 
-void VideoRenderer::setSize(const QSize& size)
+void Video::Renderer::setSize(const QSize& size)
 {
    d_ptr->m_pSize = size;
 }
 
-void VideoRenderer::setShmPath(const QString& path)
+void Video::Renderer::setShmPath(const QString& path)
 {
    d_ptr->m_ShmPath = path;
 }
 
-#include <videorenderer.moc>
+#include <renderer.moc>
 

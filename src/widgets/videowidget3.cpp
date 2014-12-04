@@ -33,13 +33,13 @@
 #include <GL/glu.h>
 
 //SFLPhone
-#include <lib/video/videomanager.h>
+#include <lib/video/manager.h>
 #include <lib/video/sourcesmodel.h>
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
 #include "extendedaction.h"
-#include <lib/video/videodevicemodel.h>
+#include <lib/video/devicemodel.h>
 #include "klib/kcfg_settings.h"
 
 
@@ -50,7 +50,7 @@
 
 VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevice(nullptr)
 {
-   connect(VideoManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
+   connect(Video::Manager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
    sp.setVerticalPolicy  ( QSizePolicy::Preferred );
    sp.setHorizontalPolicy( QSizePolicy::Preferred );
@@ -68,7 +68,7 @@ VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevic
    m_pScene = new VideoScene();
    setScene(m_pScene);
 
-   if (VideoManager::instance()->isPreviewing()) {
+   if (Video::Manager::instance()->isPreviewing()) {
       slotShowPreview(true);
    }
 
@@ -100,12 +100,12 @@ void VideoWidget3::dragMoveEvent( QDragMoveEvent* e )
 void VideoWidget3::dropEvent( QDropEvent* e )
 {
    if (e->mimeData()->hasFormat("text/uri-list")) {
-      VideoSourcesModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
+      Video::SourcesModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
    }
    e->accept();
 }
 
-void VideoWidget3::addRenderer(VideoRenderer* renderer)
+void VideoWidget3::addRenderer(Video::Renderer* renderer)
 {
    m_pWdg->makeCurrent();
    if (m_hFrames[renderer]) {
@@ -122,7 +122,7 @@ void VideoWidget3::addRenderer(VideoRenderer* renderer)
    }
 }
 
-void VideoWidget3::removeRenderer(VideoRenderer* renderer)
+void VideoWidget3::removeRenderer(Video::Renderer* renderer)
 {
    Q_UNUSED(renderer)
    m_pScene->removeFrame(m_hFrames[renderer]);
@@ -148,9 +148,9 @@ void VideoWidget3::slotRotateRight()
 void VideoWidget3::slotShowPreview(bool show)
 {
    ConfigurationSkeleton::setDisplayVideoPreview(show);
-   if (VideoManager::instance()->isPreviewing() && show) {
-      addRenderer(VideoManager::instance()->previewRenderer());
-      VideoGLFrame* frm = m_hFrames[VideoManager::instance()->previewRenderer()];
+   if (Video::Manager::instance()->isPreviewing() && show) {
+      addRenderer(Video::Manager::instance()->previewRenderer());
+      VideoGLFrame* frm = m_hFrames[Video::Manager::instance()->previewRenderer()];
       if (frm) {
          frm->setScale(0.3);
          frm->setTranslationX(1.8);
@@ -159,18 +159,18 @@ void VideoWidget3::slotShowPreview(bool show)
       }
    }
    else {
-      removeRenderer(VideoManager::instance()->previewRenderer());
+      removeRenderer(Video::Manager::instance()->previewRenderer());
    }
 }
 
 void VideoWidget3::slotMuteOutgoindVideo(bool mute)
 {
    if (mute) {
-      m_pBackDevice = VideoDeviceModel::instance()->activeDevice();
-      VideoSourcesModel::instance()->switchTo(VideoSourcesModel::ExtendedDeviceList::NONE);
+      m_pBackDevice = Video::DeviceModel::instance()->activeDevice();
+      Video::SourcesModel::instance()->switchTo(Video::SourcesModel::ExtendedDeviceList::NONE);
    }
    else if (m_pBackDevice) {
-      VideoSourcesModel::instance()->switchTo(m_pBackDevice);
+      Video::SourcesModel::instance()->switchTo(m_pBackDevice);
    }
 }
 

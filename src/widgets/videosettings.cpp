@@ -17,38 +17,38 @@
  **************************************************************************/
 #include "videosettings.h"
 
-#include <lib/video/videodevicemodel.h>
-#include <lib/video/videochannel.h>
-#include <lib/video/videoresolution.h>
-#include <lib/video/videorate.h>
+#include <lib/video/devicemodel.h>
+#include <lib/video/channel.h>
+#include <lib/video/resolution.h>
+#include <lib/video/rate.h>
 
 VideoSettings::VideoSettings(QWidget* parent) : QWidget(parent)
 {
    setupUi(this);
    slotReloadDevices();
    m_pChannel->blockSignals(true);
-   m_pChannel->setModel(VideoDeviceModel::instance()->activeDevice());
+   m_pChannel->setModel(Video::DeviceModel::instance()->activeDevice());
    m_pChannel->blockSignals(false);
 }
 
-void VideoSettings::setDevice(VideoDevice* dev)
+void VideoSettings::setDevice(Video::Device* dev)
 {
-   VideoDeviceModel::instance()->setActive(dev);
-   m_pDevice->setCurrentIndex(VideoDeviceModel::instance()->activeIndex());
+   Video::DeviceModel::instance()->setActive(dev);
+   m_pDevice->setCurrentIndex(Video::DeviceModel::instance()->activeIndex());
 }
 
-VideoDevice* VideoSettings::device() const
+Video::Device* VideoSettings::device() const
 {
-   const QList<VideoDevice*> devices = VideoDeviceModel::instance()->devices();
+   const QList<Video::Device*> devices = Video::DeviceModel::instance()->devices();
    return devices.size() > m_pDevice->currentIndex()? devices[m_pDevice->currentIndex()]:nullptr;
 }
 
 void VideoSettings::slotReloadDevices()
 {
    m_pDevice->blockSignals(true);
-   m_pDevice->setModel(VideoDeviceModel::instance());
+   m_pDevice->setModel(Video::DeviceModel::instance());
    m_pDevice->blockSignals(false);
-   m_pDevice->setCurrentIndex(VideoDeviceModel::instance()->activeIndex());
+   m_pDevice->setCurrentIndex(Video::DeviceModel::instance()->activeIndex());
    slotChannelChanged   ();
    slotResolutionChanged();
    slotRateChanged      ();
@@ -59,14 +59,14 @@ void VideoSettings::slotChannelChanged(int idx)
 {
    if (m_pChannel->count() == 0 && (idx != -1)) return;
 
-   if (idx != -1 && idx < VideoDeviceModel::instance()->activeDevice()->channelList().size()) {
-      VideoDeviceModel::instance()->activeDevice()->setActiveChannel(idx);
+   if (idx != -1 && idx < Video::DeviceModel::instance()->activeDevice()->channelList().size()) {
+      Video::DeviceModel::instance()->activeDevice()->setActiveChannel(idx);
       emit settingsChanged();
    }
    else
-      m_pChannel->setCurrentIndex(VideoDeviceModel::instance()->activeDevice()->activeChannel()->relativeIndex());
+      m_pChannel->setCurrentIndex(Video::DeviceModel::instance()->activeDevice()->activeChannel()->relativeIndex());
    m_pResolution->blockSignals(true);
-   m_pResolution->setModel(VideoDeviceModel::instance()->activeDevice()->activeChannel());
+   m_pResolution->setModel(Video::DeviceModel::instance()->activeDevice()->activeChannel());
    m_pResolution->blockSignals(false);
    slotResolutionChanged();
 }
@@ -75,16 +75,16 @@ void VideoSettings::slotResolutionChanged(int idx)
 {
    if (m_pResolution->count() == 0 && (idx != -1)) return;
 
-   if (idx >= 0 && VideoDeviceModel::instance()->activeDevice()->activeChannel()->validResolutions().size() >idx) {
-      VideoDeviceModel::instance()->activeDevice()->activeChannel()->setActiveResolution(idx);
+   if (idx >= 0 && Video::DeviceModel::instance()->activeDevice()->activeChannel()->validResolutions().size() >idx) {
+      Video::DeviceModel::instance()->activeDevice()->activeChannel()->setActiveResolution(idx);
       emit settingsChanged();
    }
    else {
-      m_pResolution->setCurrentIndex(VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->relativeIndex());
+      m_pResolution->setCurrentIndex(Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->relativeIndex());
    }
 
    m_pRate->blockSignals(true);
-   m_pRate->setModel(VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution());
+   m_pRate->setModel(Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution());
    m_pRate->blockSignals(false);
    slotRateChanged();
 }
@@ -93,13 +93,13 @@ void VideoSettings::slotRateChanged(int idx)
 {
    if (m_pRate->count() == 0 && (idx != -1)) return;
 
-   if (idx == -1 || idx >= VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().size()) {
+   if (idx == -1 || idx >= Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().size()) {
       m_pRate->setCurrentIndex(
-         VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->activeRate()->relativeIndex()
+         Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->activeRate()->relativeIndex()
       );
    }
    else {
-      VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->setActiveRate(idx);
+      Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->setActiveRate(idx);
       emit settingsChanged();
    }
 }
@@ -108,9 +108,9 @@ void VideoSettings::slotDeviceChanged(int idx)
 {
    if (m_pDevice->count() == 0 && (idx != -1)) return;
 
-   VideoDeviceModel::instance()->setActive(VideoDeviceModel::instance()->index(idx,0));
+   Video::DeviceModel::instance()->setActive(Video::DeviceModel::instance()->index(idx,0));
    m_pChannel->blockSignals(true);
-   m_pChannel->setModel(VideoDeviceModel::instance()->activeDevice());
+   m_pChannel->setModel(Video::DeviceModel::instance()->activeDevice());
    m_pChannel->blockSignals(false);
    slotChannelChanged();
    emit settingsChanged();

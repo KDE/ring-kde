@@ -22,12 +22,13 @@
 #include <QWidget>
 
 #include "ui_dlgvideobase.h"
-
-class VideoDevice;
+namespace Video {
+   class Device;
+   class Channel;
+   class Resolution;
+}
 class KConfigDialog;
 
-class VideoChannel;
-class VideoResolution;
 
 ///DlgVideo: video preferences for sflphone
 class DlgVideo : public QWidget, public Ui_DlgVideoBase
@@ -45,11 +46,11 @@ public:
 
 private:
    //Attribute
-   VideoDevice* m_pDevice;
+   Video::Device* m_pDevice;
    bool m_IsChanged;
    bool m_IsLoading;
-   VideoChannel* m_pChannel;
-   VideoResolution* m_pResolution;
+   Video::Channel* m_pChannel;
+   Video::Resolution* m_pResolution;
 
 public Q_SLOTS:
    void updateWidgets ();

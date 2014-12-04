@@ -150,7 +150,7 @@ protected:
    void setPopularityIndex(int value);
 
    //Many phone numbers can have the same "d" if they were merged
-   PrivatePhoneNumber* d;
+   PrivatePhoneNumber* d_ptr;
 
 private:
    friend class PhoneNumberPrivate;

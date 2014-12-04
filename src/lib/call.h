@@ -32,12 +32,14 @@ class QTimer;
 #include "typedefs.h"
 #include "historytimecategorymodel.h"
 class Account;
-class VideoRenderer;
 class InstantMessagingModel;
 class UserActionModel;
 class PhoneNumber;
 class TemporaryPhoneNumber;
 class AbstractHistoryBackend;
+namespace Video {
+   class Renderer;
+}
 
 class Call;
 
@@ -248,7 +250,7 @@ public:
    Q_PROPERTY( uint               stopTimeStamp    READ stopTimeStamp                             )
    Q_PROPERTY( uint               startTimeStamp   READ startTimeStamp                            )
    Q_PROPERTY( bool               isSecure         READ isSecure                                  )
-   Q_PROPERTY( VideoRenderer*     videoRenderer    READ videoRenderer                             )
+   Q_PROPERTY( Video::Renderer*   videoRenderer    READ videoRenderer                             )
    Q_PROPERTY( QString            formattedName    READ formattedName                             )
    Q_PROPERTY( QString            length           READ length                                    )
    Q_PROPERTY( bool               hasRecording     READ hasRecording                              )
@@ -289,7 +291,7 @@ public:
    const QString            transferNumber   () const;
    const QString            dialNumber       () const;
    const QString            recordingPath    () const;
-   VideoRenderer*           videoRenderer    () const;
+   Video::Renderer*         videoRenderer    () const;
    const QString            formattedName    () const;
    bool                     hasRecording     () const;
    QString                  length           () const;

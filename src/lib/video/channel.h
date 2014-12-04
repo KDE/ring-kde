@@ -15,47 +15,35 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef VIDEORESOLUTION_H
-#define VIDEORESOLUTION_H
+#ifndef VIDEOCHANNEL_H
+#define VIDEOCHANNEL_H
 
-#include <QtCore/QAbstractListModel>
-#include <QtCore/QSize>
 #include "../typedefs.h"
+#include <QtCore/QAbstractListModel>
 
-class VideoRate;
-class VideoChannel;
-class VideoDevice;
+namespace Video {
+   class Resolution;
+   class Device;
+}
 
-// class VideoResolutionPrivate
-// {
-// public:
-//    
-// };
+class VideoChannelPrivate;
 
-///@struct VideoResolution Equivalent of "640x480"
-class LIB_EXPORT VideoResolution : public QAbstractListModel {
-   Q_OBJECT
-   //Only VideoDevice can add validated rates
-   friend class VideoDevice;
+namespace Video {
+
+///@typedef Channel A channel available in a Device
+class LIB_EXPORT Channel : public QAbstractListModel
+{
+   //Only Video::Device can add resolutions
+   friend class Video::Device;
 public:
-   //Constructor
-   VideoResolution(const QString& size, VideoChannel* chan);
-   explicit VideoResolution();
+   QString name() const;
+   Video::Resolution* activeResolution();
+   QList<Video::Resolution*> validResolutions() const;
+   Video::Device* device() const;
+   int relativeIndex();
 
-   //Getter
-   const QString name() const;
-   const QList<VideoRate*> validRates() const;
-   int relativeIndex() const;
-   VideoRate* activeRate();
-   bool setActiveRate(VideoRate* rate);
-   bool setActiveRate(int index);
-   int width() const;
-   int height() const;
-   QSize size() const;
-
-   //Setters
-   void setWidth(int width);
-   void setHeight(int height);
+   bool setActiveResolution(Video::Resolution* res);
+   bool setActiveResolution(int idx);
 
    //Model
    virtual QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const override;
@@ -63,14 +51,13 @@ public:
    virtual Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const override;
    virtual bool          setData  ( const QModelIndex& index, const QVariant &value, int role)       override;
 
-
 private:
+   Channel(Video::Device* dev,const QString& name);
+   virtual ~Channel();
 
-   //Attributes
-   QList<VideoRate*> m_lValidRates;
-   VideoRate*        m_pCurrentRate;
-   VideoChannel*     m_pChannel;
-   QSize             m_Size;
+   VideoChannelPrivate* d_ptr;
 };
+
+}
 
 #endif

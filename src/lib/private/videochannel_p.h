@@ -22,10 +22,10 @@ class VideoChannelPrivate
 {
 public:
    VideoChannelPrivate();
-   QString                 m_Name;
-   QList<VideoResolution*> m_lValidResolutions;
-   VideoResolution*        m_pCurrentResolution;
-   VideoDevice*            m_pDevice;
+   QString                     m_Name;
+   QList<Video::Resolution*>   m_lValidResolutions;
+   Video::Resolution*          m_pCurrentResolution;
+   Video::Device*              m_pDevice;
 };
 
 #endif

@@ -15,17 +15,41 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "videorate.h"
-#include "videodevicemodel.h"
-#include "videochannel.h"
-#include "videoresolution.h"
+#ifndef VIDEORATE_H
+#define VIDEORATE_H
 
-int VideoRate::relativeIndex()
+#include "../typedefs.h"
+
+namespace Video {
+   class Resolution;
+   class Device;
+}
+// class VideoRatePrivate
+// {
+// public:
+//    
+// };
+
+namespace Video {
+
+///@typedef Rate The rate for a device
+class LIB_EXPORT Rate
 {
-   return VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->validRates().indexOf(this);
+   //Can only be created by Video::Device
+   friend class Video::Device;
+
+public:
+   virtual ~Rate() {}
+   QString name() const;
+   int relativeIndex();
+
+private:
+   Rate(const Video::Resolution* res,const QString& name) :
+      m_Name(name),m_pResolution(res) {}
+   QString m_Name;
+   const Video::Resolution* m_pResolution;
+};
+
 }
 
-QString VideoRate::name() const
-{
-   return m_Name;
-}
+#endif

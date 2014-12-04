@@ -29,12 +29,12 @@ public:
       constexpr static const char* SIZE    = "size"   ;
    };
 
-   VideoDevicePrivate();
+   explicit VideoDevicePrivate();
 
    //Attributes
-   QString              m_DeviceId       ;
-   VideoChannel*        m_pCurrentChannel;
-   QList<VideoChannel*> m_lChannels      ;
+   QString                m_DeviceId       ;
+   Video::Channel*        m_pCurrentChannel;
+   QList<Video::Channel*> m_lChannels      ;
 };
 
 #endif

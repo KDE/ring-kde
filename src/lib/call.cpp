@@ -36,7 +36,7 @@
 #include "uri.h"
 #include "account.h"
 #include "accountmodel.h"
-#include "video/videomanager.h"
+#include "video/manager.h"
 #include "historymodel.h"
 #include "instantmessagingmodel.h"
 #include "useractionmodel.h"
@@ -44,7 +44,7 @@
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
-#include "video/videorenderer.h"
+#include "video/renderer.h"
 #include "tlsmethodmodel.h"
 #include "audio/settings.h"
 #include "contactmodel.h"
@@ -727,7 +727,7 @@ AbstractHistoryBackend* Call::backend() const
 bool Call::hasVideo() const
 {
    #ifdef ENABLE_VIDEO
-   return VideoManager::instance()->getRenderer(this) != nullptr;
+   return Video::Manager::instance()->getRenderer(this) != nullptr;
    #else
    return false;
    #endif
@@ -783,10 +783,10 @@ bool Call::isSecure() const
 } //isSecure
 
 ///Return the renderer associated with this call or nullptr
-VideoRenderer* Call::videoRenderer() const
+Video::Renderer* Call::videoRenderer() const
 {
    #ifdef ENABLE_VIDEO
-   return VideoManager::instance()->getRenderer(this);
+   return Video::Manager::instance()->getRenderer(this);
    #else
    return nullptr;
    #endif

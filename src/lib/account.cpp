@@ -37,7 +37,7 @@
 #include "accountmodel.h"
 #include "credentialmodel.h"
 #include "audio/codecmodel.h"
-#include "video/videocodecmodel.h"
+#include "video/codecmodel2.h"
 #include "ringtonemodel.h"
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"
@@ -89,7 +89,7 @@ public:
 
    CredentialModel*          m_pCredentials     ;
    Audio::CodecModel*        m_pAudioCodecs     ;
-   VideoCodecModel*          m_pVideoCodecs     ;
+   Video::CodecModel2*        m_pVideoCodecs     ;
    RingToneModel*            m_pRingToneModel   ;
    KeyExchangeModel*         m_pKeyExchangeModel;
    SecurityValidationModel*  m_pSecurityValidationModel;
@@ -388,24 +388,24 @@ Audio::CodecModel* Account::audioCodecModel() const
 }
 
 ///Create and return the video codec model
-VideoCodecModel* Account::videoCodecModel() const
+Video::CodecModel2* Account::videoCodecModel() const
 {
    if (!d_ptr->m_pVideoCodecs)
-      const_cast<Account*>(this)->d_ptr->m_pVideoCodecs = new VideoCodecModel(const_cast<Account*>(this));
+      d_ptr->m_pVideoCodecs = new Video::CodecModel2(const_cast<Account*>(this));
    return d_ptr->m_pVideoCodecs;
 }
 
 RingToneModel* Account::ringToneModel() const
 {
    if (!d_ptr->m_pRingToneModel)
-      const_cast<Account*>(this)->d_ptr->m_pRingToneModel = new RingToneModel(const_cast<Account*>(this));
+      d_ptr->m_pRingToneModel = new RingToneModel(const_cast<Account*>(this));
    return d_ptr->m_pRingToneModel;
 }
 
 KeyExchangeModel* Account::keyExchangeModel() const
 {
    if (!d_ptr->m_pKeyExchangeModel) {
-      const_cast<Account*>(this)->d_ptr->m_pKeyExchangeModel = new KeyExchangeModel(const_cast<Account*>(this));
+      d_ptr->m_pKeyExchangeModel = new KeyExchangeModel(const_cast<Account*>(this));
    }
    return d_ptr->m_pKeyExchangeModel;
 }
@@ -413,7 +413,7 @@ KeyExchangeModel* Account::keyExchangeModel() const
 SecurityValidationModel* Account::securityValidationModel() const
 {
    if (!d_ptr->m_pSecurityValidationModel) {
-      const_cast<Account*>(this)->d_ptr->m_pSecurityValidationModel = new SecurityValidationModel(const_cast<Account*>(this));
+      d_ptr->m_pSecurityValidationModel = new SecurityValidationModel(const_cast<Account*>(this));
    }
    return d_ptr->m_pSecurityValidationModel;
 }
@@ -563,7 +563,7 @@ int Account::tlsListenerPort() const
 Certificate* Account::tlsCaListCertificate() const
 {
    if (!d_ptr->m_pCaCert) {
-      const_cast<Account*>(this)->d_ptr->m_pCaCert = new Certificate(Certificate::Type::AUTHORITY,this);
+      d_ptr->m_pCaCert = new Certificate(Certificate::Type::AUTHORITY,this);
       connect(d_ptr->m_pCaCert,SIGNAL(changed()),d_ptr.data(),SLOT(slotUpdateCertificate()));
    }
    const_cast<Account*>(this)->d_ptr->m_pCaCert->setPath(d_ptr->accountDetail(Account::MapField::TLS::CA_LIST_FILE));
@@ -574,7 +574,7 @@ Certificate* Account::tlsCaListCertificate() const
 Certificate* Account::tlsCertificate() const
 {
    if (!d_ptr->m_pTlsCert) {
-      const_cast<Account*>(this)->d_ptr->m_pTlsCert = new Certificate(Certificate::Type::USER,this);
+      d_ptr->m_pTlsCert = new Certificate(Certificate::Type::USER,this);
       connect(d_ptr->m_pTlsCert,SIGNAL(changed()),d_ptr.data(),SLOT(slotUpdateCertificate()));
    }
    const_cast<Account*>(this)->d_ptr->m_pTlsCert->setPath(d_ptr->accountDetail(Account::MapField::TLS::CERTIFICATE_FILE));
@@ -585,7 +585,7 @@ Certificate* Account::tlsCertificate() const
 Certificate* Account::tlsPrivateKeyCertificate() const
 {
    if (!d_ptr->m_pPrivateKey) {
-      const_cast<Account*>(this)->d_ptr->m_pPrivateKey = new Certificate(Certificate::Type::PRIVATE_KEY,this);
+      d_ptr->m_pPrivateKey = new Certificate(Certificate::Type::PRIVATE_KEY,this);
       connect(d_ptr->m_pPrivateKey,SIGNAL(changed()),d_ptr.data(),SLOT(slotUpdateCertificate()));
    }
    const_cast<Account*>(this)->d_ptr->m_pPrivateKey->setPath(d_ptr->accountDetail(Account::MapField::TLS::PRIVATE_KEY_FILE));

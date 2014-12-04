@@ -61,7 +61,7 @@
 #include "klib/kcfg_settings.h"
 #include "klib/akonadicontactcollectionmodel.h"
 #include "lib/presencestatusmodel.h"
-#include "lib/video/videomanager.h"
+#include "lib/video/manager.h"
 #include "lib/phonenumber.h"
 #include "lib/contactmodel.h"
 #include "lib/itembackendmodel.h"
@@ -164,7 +164,7 @@ SFLPhone::SFLPhone(QWidget *parent)
       IMConversationManager::instance();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
-      VideoManager::instance();
+      Video::Manager::instance();
       #endif
       init = true;
 
@@ -255,7 +255,7 @@ SFLPhone::SFLPhone(QWidget *parent)
    connect(ActionCollection::instance()->showBookmarkDockAction(),SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
 #ifdef ENABLE_VIDEO
-   connect(VideoManager::instance(),SIGNAL(videoCallInitiated(VideoRenderer*)),this,SLOT(displayVideoDock(VideoRenderer*)));
+   connect(Video::Manager::instance(),SIGNAL(videoCallInitiated(Video::Renderer*)),this,SLOT(displayVideoDock(Video::Renderer*)));
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
@@ -587,7 +587,7 @@ void SFLPhone::hidePresenceDock()
 
 #ifdef ENABLE_VIDEO
 ///Display the video dock
-void SFLPhone::displayVideoDock(VideoRenderer* r)
+void SFLPhone::displayVideoDock(Video::Renderer* r)
 {
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);

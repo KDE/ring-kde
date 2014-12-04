@@ -26,47 +26,56 @@
 #include <QtCore/QSize>
 
 //SFLPhone
-class VideoRenderer;
-class VideoResolution;
-class VideoRate;
-class VideoChannel;
-class VideoDevice;
-class VideoModel;
+namespace Video {
+   class Renderer;
+   class Resolution;
+   class Rate;
+   class Channel;
+   class Device;
+   class Model;
+   class Manager;
+   class DeviceModel;
+   class ManagerPrivate;
+}
 
 class VideoDevicePrivate;
 
-///VideoDevice: V4L devices used to record video for video call
-class LIB_EXPORT VideoDevice : public QAbstractListModel {
+namespace Video {
+
+
+///Device: V4L devices used to record video for video call
+class LIB_EXPORT Device : public QAbstractListModel {
    Q_OBJECT
-   friend class VideoManager;
-   friend class VideoManagerPrivate;
-   friend class VideoDeviceModel;
+   friend class Video::Manager;
+   friend class Video::ManagerPrivate;
+   friend class Video::DeviceModel;
+   friend class VideoDevicePrivate;
 
    //Need to access the PreferenceNames table
-   friend class VideoChannel;
-   friend class Resolution;
+   friend class Video::Channel;
+   friend class Video::Resolution;
    public:
 
       //Constants
       constexpr static const char* NONE = "";
 
       //Model
-      QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const;
-      int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const;
-      Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const;
-      virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)      ;
+      virtual QVariant      data     ( const QModelIndex& index, int role = Qt::DisplayRole     ) const override;
+      virtual int           rowCount ( const QModelIndex& parent = QModelIndex()                ) const override;
+      virtual Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const override;
+      virtual bool          setData  ( const QModelIndex& index, const QVariant &value, int role)       override;
 
       //Getter
-      QList<VideoChannel*> channelList      () const;
-      VideoChannel*        activeChannel    () const;
-      const QString        id               () const;
-      const QString        name             () const;
-      bool  isActive                        () const;
+      QList<Channel*> channelList      () const;
+      Video::Channel* activeChannel    () const;
+      const QString   id               () const;
+      const QString   name             () const;
+      bool  isActive                   () const;
 
       //Static getter
 
       //Setter
-      bool setActiveChannel(VideoChannel* chan);
+      bool setActiveChannel(Video::Channel* chan);
       bool setActiveChannel(int idx);
 
       //Mutator
@@ -74,16 +83,17 @@ class LIB_EXPORT VideoDevice : public QAbstractListModel {
 
    private:
       //Constructor
-      explicit VideoDevice(const QString &id);
-      virtual ~VideoDevice();
+      explicit Device(const QString& id);
+      virtual ~Device();
 
       VideoDevicePrivate* d_ptr;
-      Q_DECLARE_PRIVATE(VideoDevice)
 
 
    Q_SIGNALS:
-      void renderingStarted(VideoRenderer*);
-      void renderingStopped(VideoRenderer*);
+      void renderingStarted(Video::Renderer*);
+      void renderingStopped(Video::Renderer*);
       void renderStateChanged(bool state);
 };
+
+}
 #endif

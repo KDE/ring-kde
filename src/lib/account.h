@@ -26,13 +26,12 @@
 class QString;
 
 //SFLPhone
-#include "video/videocodecmodel.h"
+#include "video/codecmodel2.h"
 #include "keyexchangemodel.h"
 #include "tlsmethodmodel.h"
 #include "sflphone_const.h"
 #include "typedefs.h"
 class CredentialModel;
-class VideoCodecModel;
 class RingToneModel  ;
 class PhoneNumber    ;
 class SecurityValidationModel;
@@ -40,6 +39,9 @@ class Certificate    ;
 
 namespace Audio {
    class CodecModel;
+}
+namespace Video {
+   class CodecModel2;
 }
 
 //Private
@@ -334,7 +336,7 @@ class LIB_EXPORT Account : public QObject {
 
       Q_INVOKABLE CredentialModel*   credentialsModel() const;
       Q_INVOKABLE Audio::CodecModel* audioCodecModel () const;
-      Q_INVOKABLE VideoCodecModel*   videoCodecModel () const;
+      Q_INVOKABLE Video::CodecModel2* videoCodecModel () const;
       Q_INVOKABLE RingToneModel*     ringToneModel   () const;
       Q_INVOKABLE KeyExchangeModel*  keyExchangeModel() const;
       Q_INVOKABLE SecurityValidationModel* securityValidationModel() const;
@@ -470,7 +472,7 @@ class LIB_EXPORT Account : public QObject {
 
    private:
       //Constructors
-      Account();
+      explicit Account();
 
       QScopedPointer<AccountPrivate> d_ptr;
       Q_DECLARE_PRIVATE(Account)

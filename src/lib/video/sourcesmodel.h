@@ -22,12 +22,14 @@
 #include "../typedefs.h"
 
 //SFLPhone
-class VideoDevice;
 
-class VideoSourcesModelPrivate;
+namespace Video {
+
+class Device;
+class SourcesModelPrivate;
 
 //TODO qt5, use QIdentityProxyModel
-class LIB_EXPORT VideoSourcesModel : public QAbstractListModel {
+class LIB_EXPORT SourcesModel : public QAbstractListModel {
    Q_OBJECT
 public:
    enum ExtendedDeviceList {
@@ -41,24 +43,26 @@ public:
    virtual Qt::ItemFlags flags    ( const QModelIndex& index                                 ) const override;
    virtual bool          setData  ( const QModelIndex& index, const QVariant &value, int role)       override;
 
-   VideoDevice* deviceAt(const QModelIndex& idx) const;
+   Device* deviceAt(const QModelIndex& idx) const;
 
    int activeIndex() const;
 
    //Singleton
-   static VideoSourcesModel* instance();
+   static Video::SourcesModel* instance();
 private:
-   explicit VideoSourcesModel();
+   explicit SourcesModel();
 
-   VideoSourcesModelPrivate* d_ptr;
-   static VideoSourcesModel* m_spInstance;
+   Video::SourcesModelPrivate* d_ptr;
+   static Video::SourcesModel* m_spInstance;
 
 public Q_SLOTS:
    void switchTo(const QModelIndex& idx);
    void switchTo(const int idx);
-   void switchTo(VideoDevice* device);
+   void switchTo(Video::Device* device);
    void setFile(const QUrl& url);
    void setDisplay(int index, QRect rect = QRect(0,0,0,0));
 };
+
+}
 
 #endif

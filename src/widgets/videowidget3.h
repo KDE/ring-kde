@@ -20,7 +20,7 @@
 
 #include <QtGui/QGraphicsView>
 #include "videoglframe.h"
-#include <lib/video/videorenderer.h>
+#include <lib/video/renderer.h>
 
 //Qt
 class QGLWidget;
@@ -30,7 +30,9 @@ class QDragMoveEvent;
 class QDropEvent;
 
 //SFLPhone
-class VideoRenderer;
+namespace Video {
+   class Renderer;
+}
 class VideoScene;
 class VideoGLFrame;
 
@@ -54,12 +56,12 @@ protected:
 private:
    VideoScene*          m_pScene  ;
    QGLWidget*           m_pWdg    ;
-   QHash<VideoRenderer*,VideoGLFrame*> m_hFrames;
-   VideoDevice*         m_pBackDevice;
+   Video::Device*       m_pBackDevice;
+   QHash<Video::Renderer*,VideoGLFrame*> m_hFrames;
 
 public Q_SLOTS:
-   void addRenderer(VideoRenderer* renderer);
-   void removeRenderer(VideoRenderer* renderer);
+   void addRenderer(Video::Renderer* renderer);
+   void removeRenderer(Video::Renderer* renderer);
    void slotRotateLeft();
    void slotRotateRight();
    void slotShowPreview(bool show);

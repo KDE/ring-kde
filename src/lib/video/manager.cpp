@@ -15,31 +15,32 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "videomanager.h"
+#include "manager.h"
 
 //Qt
 #include <QtCore/QMutex>
 
 //SFLPhone
 #include "../dbus/videomanager.h"
-#include "videodevice.h"
+#include "device.h"
 #include <call.h>
 #include <callmodel.h>
-#include "videorenderer.h"
-#include "videodevicemodel.h"
-#include "videochannel.h"
-#include "videorate.h"
-#include "videoresolution.h"
+#include "renderer.h"
+#include "devicemodel.h"
+#include "channel.h"
+#include "rate.h"
+#include "resolution.h"
 
 //Static member
-VideoManager* VideoManager::m_spInstance = nullptr;
+Video::Manager* Video::Manager::m_spInstance = nullptr;
 
-class VideoManagerPrivate : public QObject
+namespace Video {
+class ManagerPrivate : public QObject
 {
    Q_OBJECT
 
 public:
-   VideoManagerPrivate(VideoManager* parent);
+   ManagerPrivate(Video::Manager* parent);
 
    //Attributes
    bool           m_PreviewState;
@@ -47,10 +48,10 @@ public:
    uint           m_ShmKey      ;
    uint           m_SemKey      ;
    QMutex*        m_SSMutex     ;
-   QHash<QString,VideoRenderer*> m_lRenderers;
+   QHash<QString,Video::Renderer*> m_lRenderers;
 
 private:
-   VideoManager* q_ptr;
+   Video::Manager* q_ptr;
 
 private Q_SLOTS:
    void startedDecoding(const QString& id, const QString& shmPath, int width, int height);
@@ -58,15 +59,16 @@ private Q_SLOTS:
    void deviceEvent();
 
 };
+}
 
-VideoManagerPrivate::VideoManagerPrivate(VideoManager* parent) : QObject(parent), q_ptr(parent),
+Video::ManagerPrivate::ManagerPrivate(Video::Manager* parent) : QObject(parent), q_ptr(parent),
 m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMutex())
 {
    
 }
 
 ///Constructor
-VideoManager::VideoManager():QThread(), d_ptr(new VideoManagerPrivate(this))
+Video::Manager::Manager():QThread(), d_ptr(new Video::ManagerPrivate(this))
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    connect( &interface , SIGNAL(deviceEvent())                           , d_ptr, SLOT(deviceEvent())                           );
@@ -75,43 +77,43 @@ VideoManager::VideoManager():QThread(), d_ptr(new VideoManagerPrivate(this))
 }
 
 
-VideoManager::~VideoManager()
+Video::Manager::~Manager()
 {
    delete d_ptr;
 }
 
 ///Singleton
-VideoManager* VideoManager::instance()
+Video::Manager* Video::Manager::instance()
 {
    if (!m_spInstance) {
-      m_spInstance = new VideoManager();
+      m_spInstance = new Video::Manager();
    }
    return m_spInstance;
 }
 
 ///Return the call renderer or nullptr
-VideoRenderer* VideoManager::getRenderer(const Call* call) const
+Video::Renderer* Video::Manager::getRenderer(const Call* call) const
 {
    if (!call) return nullptr;
    return d_ptr->m_lRenderers[call->id()];
 }
 
 ///Get the video preview renderer
-VideoRenderer* VideoManager::previewRenderer()
+Video::Renderer* Video::Manager::previewRenderer()
 {
    if (!d_ptr->m_lRenderers["local"]) {
-      VideoResolution* res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution();
+      Video::Resolution* res = Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution();
       if (!res) {
          qWarning() << "Misconfigured video device";
          return nullptr;
       }
-      d_ptr->m_lRenderers["local"] = new VideoRenderer("local","",res->size());
+      d_ptr->m_lRenderers["local"] = new Video::Renderer("local","",res->size());
    }
    return d_ptr->m_lRenderers["local"];
 }
 
 ///Stop video preview
-void VideoManager::stopPreview()
+void Video::Manager::stopPreview()
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.stopCamera();
@@ -119,7 +121,7 @@ void VideoManager::stopPreview()
 }
 
 ///Start video preview
-void VideoManager::startPreview()
+void Video::Manager::startPreview()
 {
    if (d_ptr->m_PreviewState) return;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
@@ -128,52 +130,52 @@ void VideoManager::startPreview()
 }
 
 ///Is the video model fetching preview from a camera
-bool VideoManager::isPreviewing()
+bool Video::Manager::isPreviewing()
 {
    return d_ptr->m_PreviewState;
 }
 
 ///@todo Set the video buffer size
-void VideoManager::setBufferSize(uint size)
+void Video::Manager::setBufferSize(uint size)
 {
    d_ptr->m_BufferSize = size;
 }
 
 ///Event callback
-void VideoManagerPrivate::deviceEvent()
+void Video::ManagerPrivate::deviceEvent()
 {
    //TODO is there anything useful to do?
 }
 
 ///A video is not being rendered
-void VideoManagerPrivate::startedDecoding(const QString& id, const QString& shmPath, int width, int height)
+void Video::ManagerPrivate::startedDecoding(const QString& id, const QString& shmPath, int width, int height)
 {
    Q_UNUSED(id)
 
    QSize res = QSize(width,height);
-//    if (VideoDeviceModel::instance()->activeDevice()
-//       && VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
+//    if (Video::DeviceModel::instance()->activeDevice()
+//       && Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->width() == width) {
 //       //FIXME flawed logic
-//       res = VideoDeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size();
+//       res = Video::DeviceModel::instance()->activeDevice()->activeChannel()->activeResolution()->size();
 //    }
 //    else {
 //       res =  QSize(width,height);
 //    }
 
    if (m_lRenderers[id] == nullptr ) {
-      m_lRenderers[id] = new VideoRenderer(id,shmPath,res);
+      m_lRenderers[id] = new Video::Renderer(id,shmPath,res);
       m_lRenderers[id]->moveToThread(q_ptr);
       if (!q_ptr->isRunning())
          q_ptr->start();
    }
    else {
-      VideoRenderer* renderer = m_lRenderers[id];
+      Video::Renderer* renderer = m_lRenderers[id];
       renderer->setShmPath(shmPath);
       renderer->setSize(res);
    }
 
    m_lRenderers[id]->startRendering();
-   VideoDevice* dev = VideoDeviceModel::instance()->getDevice(id);
+   Video::Device* dev = Video::DeviceModel::instance()->getDevice(id);
    if (dev) {
       emit dev->renderingStarted(m_lRenderers[id]);
    }
@@ -189,17 +191,17 @@ void VideoManagerPrivate::startedDecoding(const QString& id, const QString& shmP
 }
 
 ///A video stopped being rendered
-void VideoManagerPrivate::stoppedDecoding(const QString& id, const QString& shmPath)
+void Video::ManagerPrivate::stoppedDecoding(const QString& id, const QString& shmPath)
 {
    Q_UNUSED(shmPath)
-   VideoRenderer* r = m_lRenderers[id];
+   Video::Renderer* r = m_lRenderers[id];
    if ( r ) {
       r->stopRendering();
    }
    qDebug() << "Video stopped for call" << id <<  "Renderer found:" << (m_lRenderers[id] != nullptr);
 //    emit videoStopped();
 
-   VideoDevice* dev = VideoDeviceModel::instance()->getDevice(id);
+   Video::Device* dev = Video::DeviceModel::instance()->getDevice(id);
    if (dev) {
       emit dev->renderingStopped(r);
    }
@@ -213,15 +215,15 @@ void VideoManagerPrivate::stoppedDecoding(const QString& id, const QString& shmP
    delete r;
 }
 
-void VideoManager::switchDevice(const VideoDevice* device) const
+void Video::Manager::switchDevice(const Video::Device* device) const
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    interface.switchInput(device->id());
 }
 
-QMutex* VideoManager::startStopMutex() const
+QMutex* Video::Manager::startStopMutex() const
 {
    return d_ptr->m_SSMutex;
 }
 
-#include <videomanager.moc>
+#include <manager.moc>

@@ -15,53 +15,53 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "videodevicemodel.h"
-#include "videodevice.h"
+#include "devicemodel.h"
+#include "device.h"
 #include <call.h>
 #include <account.h>
-#include "videocodec.h"
+#include "codec.h"
 #include "../dbus/videomanager.h"
 
 #include <QtCore/QCoreApplication>
 
-VideoDeviceModel* VideoDeviceModel::m_spInstance = nullptr;
+Video::DeviceModel* Video::DeviceModel::m_spInstance = nullptr;
 
-
-class VideoDeviceModelPrivate
+namespace Video {
+class DeviceModelPrivate
 {
 public:
-   VideoDeviceModelPrivate();
+   DeviceModelPrivate();
 
    //Attrbutes
-   QHash<QString,VideoDevice*> m_hDevices     ;
-   QList<VideoDevice*>         m_lDevices     ;
-   VideoDevice*                m_pDummyDevice ;
-   VideoDevice*                m_pActiveDevice;
+   QHash<QString,Video::Device*> m_hDevices     ;
+   QList<Video::Device*>         m_lDevices     ;
+   Video::Device*                m_pDummyDevice ;
+   Video::Device*                m_pActiveDevice;
 };
+}
 
-
-VideoDeviceModelPrivate::VideoDeviceModelPrivate() : m_pDummyDevice(nullptr),m_pActiveDevice(nullptr)
+Video::DeviceModelPrivate::DeviceModelPrivate() : m_pDummyDevice(nullptr),m_pActiveDevice(nullptr)
 {
    
 }
 
 ///Constructor
-VideoDeviceModel::VideoDeviceModel() : QAbstractListModel(QCoreApplication::instance()),
-d_ptr(new VideoDeviceModelPrivate())
+Video::DeviceModel::DeviceModel() : QAbstractListModel(QCoreApplication::instance()),
+d_ptr(new Video::DeviceModelPrivate())
 {
    m_spInstance = this;
    reload();
 }
 
-VideoDeviceModel* VideoDeviceModel::instance()
+Video::DeviceModel* Video::DeviceModel::instance()
 {
    if (!m_spInstance)
-      m_spInstance = new VideoDeviceModel();
+      m_spInstance = new Video::DeviceModel();
    return m_spInstance;
 }
 
 ///Get data from the model
-QVariant VideoDeviceModel::data( const QModelIndex& idx, int role) const
+QVariant Video::DeviceModel::data( const QModelIndex& idx, int role) const
 {
    if(idx.column() == 0 && role == Qt::DisplayRole)
       return QVariant(d_ptr->m_lDevices[idx.row()]->id());
@@ -69,14 +69,14 @@ QVariant VideoDeviceModel::data( const QModelIndex& idx, int role) const
 }
 
 ///The number of codec
-int VideoDeviceModel::rowCount( const QModelIndex& par ) const
+int Video::DeviceModel::rowCount( const QModelIndex& par ) const
 {
    Q_UNUSED(par)
    return d_ptr->m_lDevices.size();
 }
 
 ///Items flag
-Qt::ItemFlags VideoDeviceModel::flags( const QModelIndex& idx ) const
+Qt::ItemFlags Video::DeviceModel::flags( const QModelIndex& idx ) const
 {
    if (idx.column() == 0)
       return QAbstractItemModel::flags(idx) | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -84,7 +84,7 @@ Qt::ItemFlags VideoDeviceModel::flags( const QModelIndex& idx ) const
 }
 
 ///Set the codec data (codecs can't be added or removed that way)
-bool VideoDeviceModel::setData(const QModelIndex& idx, const QVariant &value, int role)
+bool Video::DeviceModel::setData(const QModelIndex& idx, const QVariant &value, int role)
 {
    Q_UNUSED(idx)
    Q_UNUSED(value)
@@ -93,10 +93,10 @@ bool VideoDeviceModel::setData(const QModelIndex& idx, const QVariant &value, in
 }
 
 ///Destructor
-VideoDeviceModel::~VideoDeviceModel()
+Video::DeviceModel::~DeviceModel()
 {
    while (d_ptr->m_lDevices.size()) {
-      VideoDevice* c = d_ptr->m_lDevices[0];
+      Video::Device* c = d_ptr->m_lDevices[0];
       d_ptr->m_lDevices.removeAt(0);
       delete c;
    }
@@ -104,7 +104,7 @@ VideoDeviceModel::~VideoDeviceModel()
 }
 
 ///Save the current model over dbus
-void VideoDeviceModel::setActive(const QModelIndex& idx)
+void Video::DeviceModel::setActive(const QModelIndex& idx)
 {
    if (idx.isValid()) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
@@ -116,26 +116,26 @@ void VideoDeviceModel::setActive(const QModelIndex& idx)
 }
 
 ///Convenience
-void VideoDeviceModel::setActive(const int idx)
+void Video::DeviceModel::setActive(const int idx)
 {
    setActive(index(idx,0,QModelIndex()));
 }
 
 
-void VideoDeviceModel::setActive(const VideoDevice* device)
+void Video::DeviceModel::setActive(const Video::Device* device)
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
 
-   interface.setDefaultDevice(device?device->id():VideoDevice::NONE);
-   d_ptr->m_pActiveDevice = const_cast<VideoDevice*>(device);
+   interface.setDefaultDevice(device?device->id():Video::Device::NONE);
+   d_ptr->m_pActiveDevice = const_cast<Video::Device*>(device);
    emit changed();
-   const int idx = d_ptr->m_lDevices.indexOf((VideoDevice*)device);
+   const int idx = d_ptr->m_lDevices.indexOf((Video::Device*)device);
    emit currentIndexChanged(idx);
 }
 
-void VideoDeviceModel::reload()
+void Video::DeviceModel::reload()
 {
-   QHash<QString,VideoDevice*> devicesHash;
+   QHash<QString,Video::Device*> devicesHash;
    VideoManagerInterface& interface = DBus::VideoManager::instance();
    const QStringList deviceList = interface.getDeviceList();
    if (deviceList.size() == d_ptr->m_hDevices.size()) {
@@ -144,13 +144,13 @@ void VideoDeviceModel::reload()
 
    foreach(const QString& deviceName,deviceList) {
       if (!d_ptr->m_hDevices[deviceName]) {
-         devicesHash[deviceName] = new VideoDevice(deviceName);
+         devicesHash[deviceName] = new Video::Device(deviceName);
       }
       else {
          devicesHash[deviceName] = d_ptr->m_hDevices[deviceName];
       }
    }
-   foreach(VideoDevice* dev, d_ptr->m_hDevices) {
+   foreach(Video::Device* dev, d_ptr->m_hDevices) {
       if (dev && devicesHash.key(dev).isEmpty()) {
          delete dev;
       }
@@ -165,14 +165,14 @@ void VideoDeviceModel::reload()
 }
 
 
-VideoDevice* VideoDeviceModel::activeDevice() const
+Video::Device* Video::DeviceModel::activeDevice() const
 {
    if (!d_ptr->m_pActiveDevice) {
       VideoManagerInterface& interface = DBus::VideoManager::instance();
       const QString deId = interface.getDefaultDevice();
       if (!d_ptr->m_lDevices.size())
-         const_cast<VideoDeviceModel*>(this)->reload();
-      VideoDevice* dev =  d_ptr->m_hDevices[deId];
+         const_cast<Video::DeviceModel*>(this)->reload();
+      Video::Device* dev =  d_ptr->m_hDevices[deId];
 
       //Handling null everywhere is too long, better create a dummy device and
       //log the event
@@ -180,7 +180,7 @@ VideoDevice* VideoDeviceModel::activeDevice() const
          if (!deId.isEmpty())
             qWarning() << "Requested unknown device" << deId;
          if (!d_ptr->m_pDummyDevice)
-            d_ptr->m_pDummyDevice = new VideoDevice("None");
+            d_ptr->m_pDummyDevice = new Video::Device("None");
          return d_ptr->m_pDummyDevice;
       }
       d_ptr->m_pActiveDevice = dev;
@@ -189,18 +189,18 @@ VideoDevice* VideoDeviceModel::activeDevice() const
 }
 
 
-int VideoDeviceModel::activeIndex() const
+int Video::DeviceModel::activeIndex() const
 {
    return d_ptr->m_lDevices.indexOf(activeDevice());
 }
 
 
-VideoDevice* VideoDeviceModel::getDevice(const QString& devId) const
+Video::Device* Video::DeviceModel::getDevice(const QString& devId) const
 {
    return d_ptr->m_hDevices[devId];
 }
 
-QList<VideoDevice*> VideoDeviceModel::devices() const
+QList<Video::Device*> Video::DeviceModel::devices() const
 {
    return d_ptr->m_lDevices;
 }

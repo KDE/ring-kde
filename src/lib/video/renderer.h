@@ -29,14 +29,17 @@ class QTimer;
 class QMutex;
 
 //SFLPhone
-#include "videodevice.h"
+#include "device.h"
 
 //Private
-class VideoRendererPrivate;
 struct SHMHeader;
 
+
+namespace Video {
+class RendererPrivate;
+
 ///Manage shared memory and convert it to QByteArray
-class LIB_EXPORT VideoRenderer : public QObject {
+class LIB_EXPORT Renderer : public QObject {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
    Q_OBJECT
@@ -44,8 +47,8 @@ class LIB_EXPORT VideoRenderer : public QObject {
 
    public:
       //Constructor
-      VideoRenderer (const QString& id, const QString& shmPath, const QSize& res);
-      virtual ~VideoRenderer();
+      Renderer (const QString& id, const QString& shmPath, const QSize& res);
+      virtual ~Renderer();
 
       //Mutators
       bool resizeShm();
@@ -65,8 +68,8 @@ class LIB_EXPORT VideoRenderer : public QObject {
       void setShmPath   (const QString& path);
 
 private:
-   QScopedPointer<VideoRendererPrivate> d_ptr;
-   Q_DECLARE_PRIVATE(VideoRenderer)
+   QScopedPointer<RendererPrivate> d_ptr;
+   Q_DECLARE_PRIVATE(Renderer)
 
 public Q_SLOTS:
    void startRendering();
@@ -79,5 +82,7 @@ Q_SIGNALS:
    void started();
 
 };
+
+}
 
 #endif

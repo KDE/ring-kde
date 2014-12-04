@@ -24,13 +24,13 @@
 
 //SFLPhone
 #include "../lib/videomodel.h"
-class VideoRenderer;
+class ;
 
 ///VideoWidget: A widget to display video from a framebuffer
 class VideoWidget : public QWidget {
    Q_OBJECT
 public:
-   explicit VideoWidget(QWidget* parent =nullptr, VideoRenderer* renderer = VideoManager::instance()->previewRenderer());
+   explicit VideoWidget(QWidget* parent =nullptr, * renderer = Video::Manager::instance()->previewRenderer());
 
 protected:
    //Events
@@ -39,7 +39,7 @@ protected:
 private:
    //Attributes
    QImage*        m_Image    ;
-   VideoRenderer* m_pRenderer;
+   * m_pRenderer;
 
 private Q_SLOTS:
    void update     ();
@@ -47,7 +47,7 @@ private Q_SLOTS:
    void stop       ();
 
 public Q_SLOTS:
-   void setRenderer(VideoRenderer* renderer);
+   void setRenderer(* renderer);
 
 };
 

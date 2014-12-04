@@ -229,7 +229,7 @@ void Audio::CodecModel::reload()
    foreach (const int aCodec, codecIdList) {
       if (!d_ptr->findCodec(aCodec)) {
          const QStringList codec = configurationManager.getAudioCodecDetails(aCodec);
-         QModelIndex idx = add();
+         const QModelIndex& idx = add();
          setData(idx,codec[0],Audio::CodecModel::Role::NAME       );
          setData(idx,codec[1],Audio::CodecModel::Role::SAMPLERATE );
          setData(idx,codec[2],Audio::CodecModel::Role::BITRATE    );
@@ -244,7 +244,7 @@ void Audio::CodecModel::save()
 {
    QStringList _codecList;
    for (int i=0; i < rowCount();i++) {
-      QModelIndex idx = index(i,0);
+      const QModelIndex& idx = index(i,0);
       if (data(idx,Qt::CheckStateRole) == Qt::Checked) {
          _codecList << data(idx,Audio::CodecModel::Role::ID).toString();
       }

@@ -24,7 +24,9 @@
 #include <QSize>
 #include <QPoint>
 
-class VideoRenderer;
+namespace Video {
+   class Renderer;
+}
 
 class ThreadedPainter2;
 class QGLWidget;
@@ -38,7 +40,7 @@ class VideoGLFrame : public QObject
 
 public:
    explicit VideoGLFrame(QGLWidget *parent = nullptr);
-   ~VideoGLFrame();
+   virtual ~VideoGLFrame();
 
    void paintEvent     (QPainter* painter);
 //    void mousePressEvent( QMouseEvent *);
@@ -66,7 +68,7 @@ public:
    float rotX() const;
    float scale() const;
    bool keepAspectRatio() const;
-   VideoRenderer* renderer() const {
+   Video::Renderer* renderer() const {
       return m_pRenderer;
    }
 
@@ -74,11 +76,11 @@ private:
    //Attributes
    ThreadedPainter2* m_pPainter;
    QGLWidget* m_pParent;
-   VideoRenderer* m_pRenderer;
+   Video::Renderer* m_pRenderer;
    bool m_KeepAspect;
 
 public Q_SLOTS:
-   void setRenderer(VideoRenderer* renderer = nullptr);
+   void setRenderer(Video::Renderer* renderer = nullptr);
 
 private Q_SLOTS:
    void slotEmitChanged();

@@ -28,10 +28,12 @@ class KUrl;
 
 //SFLPhone
 class VideoWidget3;
-class VideoRenderer;
 class VideoSettings;
 class MediaPicker;
 class ScreenSharingWidget;
+namespace Video {
+   class Renderer;
+}
 
 ///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
 class VideoDock : public QDockWidget {
@@ -39,7 +41,7 @@ class VideoDock : public QDockWidget {
 public:
    explicit VideoDock(QWidget* parent = nullptr );
    ~VideoDock();
-   void addRenderer(VideoRenderer* r);
+   void addRenderer(Video::Renderer* r);
 
 private:
    QGridLayout*         m_pMoreOpts     ;

@@ -22,7 +22,7 @@
 
 #include <QStringList>
 
-class UriPrivate;
+class URIPrivate;
 
 /**
     * @class URI A specialised string with multiple attributes
@@ -116,8 +116,9 @@ public:
    QString userinfo   () const;
    bool    hasHostname() const;
 
+   URI& operator=(const URI&);
 private:
-   UriPrivate* d_ptr;
+   URIPrivate* d_ptr;
 };
 // Q_DECLARE_METATYPE(URI*)
 

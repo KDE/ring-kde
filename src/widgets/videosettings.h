@@ -21,7 +21,9 @@
 #include <QtGui/QWidget>
 #include "ui_videodevicesetting.h"
 
-class VideoDevice;
+namespace Video {
+   class Device;
+}
 
 class VideoSettings : public QWidget, public Ui_VideoSettings
 {
@@ -29,9 +31,9 @@ class VideoSettings : public QWidget, public Ui_VideoSettings
 public:
    explicit VideoSettings(QWidget* parent);
 
-   void setDevice(VideoDevice* dev);
+   void setDevice(Video::Device* dev);
 
-   VideoDevice* device() const;
+   Video::Device* device() const;
 
    void hideDevices();
 
