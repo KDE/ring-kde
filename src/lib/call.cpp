@@ -950,7 +950,7 @@ Call::State CallPrivate::stateChanged(const QString& newStateName)
    if (m_CurrentState != Call::State::DIALING && m_pDialNumber) {
       if (!m_pPeerPhoneNumber)
          m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->fromTemporary(m_pDialNumber);
-      delete m_pDialNumber;
+      m_pDialNumber->deleteLater();
       m_pDialNumber = nullptr;
    }
    emit q_ptr->changed();
@@ -1247,7 +1247,7 @@ void CallPrivate::call()
          emit q_ptr->dialNumberChanged(QString());
       }
       else {
-         delete m_pDialNumber;
+         m_pDialNumber->deleteLater();
          m_pDialNumber = nullptr;
       }
       q_ptr->setPeerName(tr("Failure"));
@@ -1257,8 +1257,12 @@ void CallPrivate::call()
    //Normal case
    else if(m_Account) {
       qDebug() << "Calling " << q_ptr->peerPhoneNumber()->uri() << " with account " << m_Account << ". callId : " << m_CallId  << "ConfId:" << q_ptr->id();
-      callManager.placeCall(m_Account->id(), m_CallId, m_pDialNumber->uri());
+
       this->m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->getNumber(m_pDialNumber->uri(),q_ptr->account());
+
+      //Warning: m_pDialNumber can become nullptr when linking directly
+      callManager.placeCall(m_Account->id(), m_CallId, m_pDialNumber->uri());
+
       if (ContactModel::instance()->hasBackends()) {
          if (q_ptr->peerPhoneNumber()->contact())
             m_PeerName = q_ptr->peerPhoneNumber()->contact()->formattedName();
@@ -1274,7 +1278,7 @@ void CallPrivate::call()
       }
       if (m_pDialNumber)
          emit q_ptr->dialNumberChanged(QString());
-      delete m_pDialNumber;
+      m_pDialNumber->deleteLater();
       m_pDialNumber = nullptr;
    }
    else {
@@ -1333,7 +1337,7 @@ void CallPrivate::start()
    if (m_pDialNumber) {
       if (!m_pPeerPhoneNumber)
          m_pPeerPhoneNumber = PhoneDirectoryModel::instance()->fromTemporary(m_pDialNumber);
-      delete m_pDialNumber;
+      m_pDialNumber->deleteLater();
       m_pDialNumber = nullptr;
    }
    setStartTimeStamp(curTime);
