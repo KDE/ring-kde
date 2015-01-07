@@ -50,7 +50,7 @@ KeyExchangeModel::KeyExchangeModel(Account* account) : QAbstractListModel(accoun
 
 KeyExchangeModel::~KeyExchangeModel()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 //Model functions

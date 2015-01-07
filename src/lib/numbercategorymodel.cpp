@@ -45,7 +45,7 @@ NumberCategoryModel::NumberCategoryModel(QObject* parent) : QAbstractListModel(p
 
 NumberCategoryModel::~NumberCategoryModel()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 //Abstract model member

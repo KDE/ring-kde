@@ -89,7 +89,7 @@ public:
 
 
 private:
-   KeyExchangeModelPrivate* d_ptr;
+   QScopedPointer<KeyExchangeModelPrivate> d_ptr;
 
 public Q_SLOTS:
    void enableSRTP(bool enable);

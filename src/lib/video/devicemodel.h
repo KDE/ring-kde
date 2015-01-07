@@ -59,7 +59,7 @@ public:
    QList<Video::Device*> devices() const;
 
 private:
-   DeviceModelPrivate* d_ptr;
+   const QScopedPointer<DeviceModelPrivate> d_ptr;
    static DeviceModel* m_spInstance;
 
 public Q_SLOTS:

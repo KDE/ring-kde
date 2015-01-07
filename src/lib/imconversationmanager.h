@@ -45,7 +45,7 @@ private:
    explicit IMConversationManager();
    virtual ~IMConversationManager();
 
-   IMConversationManagerPrivate* d_ptr;
+   const QScopedPointer<IMConversationManagerPrivate> d_ptr;
    Q_DECLARE_PRIVATE(IMConversationManager)
 
    //Static attributes

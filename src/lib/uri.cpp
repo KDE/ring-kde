@@ -33,7 +33,7 @@ public:
    bool             m_Parsed      ;
 
    //Helper
-   static QString strip(const QString& uri, URI::SchemeType& sheme);
+   static QString strip(const QString& uri, URI::SchemeType& scheme);
    void parse();
 private:
    QString* q_ptr;
@@ -64,7 +64,7 @@ URI::~URI()
 {
    (*static_cast<QString*>(this)) = QString();
    d_ptr->m_Stripped = QString();
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 URI& URI::operator=(const URI& o)
@@ -80,18 +80,18 @@ URI& URI::operator=(const URI& o)
 }
 
 ///Strip out <sip:****> from the URI
-QString URIPrivate::strip(const QString& uri, URI::SchemeType& sheme)
+QString URIPrivate::strip(const QString& uri, URI::SchemeType& scheme)
 {
    if (uri.isEmpty())
       return QString();
    int start(0),end(uri.size()-1); //Other type of comparisons were too slow
    if (end > 5 && uri[0] == '<' ) {
       if (uri[4] == ':') {
-         sheme = uri[1] == 's'?URI::SchemeType::SIP : URI::SchemeType::IAX;
+         scheme = uri[1] == 's'?URI::SchemeType::SIP : URI::SchemeType::IAX;
          start = 5;
       }
       else if (uri[5] == ':') {
-         sheme = URI::SchemeType::SIPS;
+         scheme = URI::SchemeType::SIPS;
          start = 6;
       }
    }
@@ -122,9 +122,9 @@ bool URI::hasHostname() const
 void URIPrivate::parse()
 {
    if (q_ptr->indexOf('@') != -1) {
-      const QStringList splitted = q_ptr->split('@');
-      m_Hostname = splitted[1];//splitted[1].left(splitted[1].size())
-      m_Userinfo = splitted[0];
+      const QStringList split = q_ptr->split('@');
+      m_Hostname = split[1];//split[1].left(split[1].size())
+      m_Userinfo = split[0];
       m_Parsed = true;
    }
 }

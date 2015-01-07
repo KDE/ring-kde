@@ -63,7 +63,7 @@ d_ptr(new VideoDevicePrivate())
 ///Destructor
 Video::Device::~Device()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 QVariant Video::Device::data( const QModelIndex& index, int role) const

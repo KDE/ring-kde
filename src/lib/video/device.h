@@ -86,7 +86,7 @@ class LIB_EXPORT Device : public QAbstractListModel {
       explicit Device(const QString& id);
       virtual ~Device();
 
-      VideoDevicePrivate* d_ptr;
+      QScopedPointer<VideoDevicePrivate> d_ptr;
 
 
    Q_SIGNALS:

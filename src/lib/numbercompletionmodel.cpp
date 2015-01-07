@@ -342,4 +342,3 @@ bool NumberCompletionModel::isUsingUnregisteredAccounts()
 }
 
 #include <numbercompletionmodel.moc>
-

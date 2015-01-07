@@ -97,7 +97,7 @@ public:
    bool isAcceptEnabled  () const;
 
 private:
-   UserActionModelPrivate* d_ptr;
+   const QScopedPointer<UserActionModelPrivate> d_ptr;
    Q_DECLARE_PRIVATE(UserActionModel)
 
 Q_SIGNALS:

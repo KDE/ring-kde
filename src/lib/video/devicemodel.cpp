@@ -100,7 +100,7 @@ Video::DeviceModel::~DeviceModel()
       d_ptr->m_lDevices.removeAt(0);
       delete c;
    }
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 ///Save the current model over dbus

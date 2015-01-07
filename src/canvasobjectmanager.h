@@ -73,7 +73,7 @@ public:
       EndCall        = 2, /* Displayed when a call is over                                 */
       Ringing        = 3, /* Displayed when call(s) are ringing                            */
       Network        = 4, /* Displayed when there is a network error or ERRORAUTH          */
-      AutoComplete   = 5, /* Displayed when the user is dialling                           */
+      AutoComplete   = 5, /* Displayed when the user is dialing                            */
       DropInfo       = 6, /* Displayed when the user is dropping something into the canvas */
       ConfInfo       = 7, /* Displayed when there is multiple calls and no conferences     */
       AccountDown    = 8, /* Displayed when a previously registered account go down        */

@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2009-2015 by Savoir-Faire Linux                          *
+ *   Copyright (C) 2009-2014 by Savoir-Faire Linux                          *
  *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
  *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
@@ -154,7 +154,7 @@ protected:
 class LIB_EXPORT ContactPlaceHolder : public Contact {
    Q_OBJECT
 public:
-   ContactPlaceHolder(const QByteArray& uid);
+   explicit ContactPlaceHolder(const QByteArray& uid);
    bool merge(Contact* contact);
 };
 

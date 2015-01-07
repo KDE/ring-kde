@@ -33,7 +33,7 @@ class PhoneDirectoryModelPrivate : public QObject
 {
    Q_OBJECT
 public:
-   PhoneDirectoryModelPrivate(PhoneDirectoryModel* parent);
+   explicit PhoneDirectoryModelPrivate(PhoneDirectoryModel* parent);
 
 
    //Model columns

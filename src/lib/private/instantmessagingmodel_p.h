@@ -27,7 +27,7 @@ class InstantMessagingModelPrivate : public QObject
 {
    Q_OBJECT
 public:
-   InstantMessagingModelPrivate(InstantMessagingModel* parent);
+   explicit InstantMessagingModelPrivate(InstantMessagingModel* parent);
 
    //Private members
    void addIncommingMessage(const QString& from, const QString& message);

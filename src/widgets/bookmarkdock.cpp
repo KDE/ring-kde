@@ -234,7 +234,7 @@ void BookmarkDock::copy()
          mimeData->setData("text/html", numbersHtml.toUtf8());
       }
       else {
-         mimeData->setData("text/plain", QString(nb->primaryName()+"\n"+nb->uri()).toUtf8());
+         mimeData->setData("text/plain", QString(nb->primaryName()+'\n'+nb->uri()).toUtf8());
          mimeData->setData("text/html", QString("<b>"+nb->primaryName()+"</b>\n<br>"+nb->uri()).toUtf8());
       }
 

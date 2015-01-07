@@ -49,7 +49,7 @@ private:
    explicit LastUsedNumberModel();
    virtual ~LastUsedNumberModel();
 
-   LastUsedNumberModelPrivate* d_ptr;
+   QScopedPointer<LastUsedNumberModelPrivate> d_ptr;
    Q_DECLARE_PRIVATE(LastUsedNumberModel)
 
    //Static attributes

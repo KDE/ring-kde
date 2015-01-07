@@ -58,14 +58,14 @@ IMConversationManager* IMConversationManager::instance()
 
 IMConversationManager::~IMConversationManager()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 ///Constructor
 IMConversationManager::IMConversationManager() : QObject(nullptr), d_ptr(new IMConversationManagerPrivate(this))
 {
    CallManagerInterface& callManager = DBus::CallManager::instance();
-   connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), d_ptr, SLOT(newMessage(QString,QString,QString)));
+   connect(&callManager, SIGNAL(incomingMessage(QString,QString,QString)), d_ptr.data(), SLOT(newMessage(QString,QString,QString)));
 }
 
 ///Called when a new message is incoming

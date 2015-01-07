@@ -25,7 +25,7 @@
 class URIPrivate;
 
 /**
-    * @class URI A specialised string with multiple attributes
+    * @class URI A specialized string with multiple attributes
     * 
     * Most of SFLPhone-KDE handle uri as strings, but more
     * advanced algorithms need to access the various sections.
@@ -117,8 +117,9 @@ public:
    bool    hasHostname() const;
 
    URI& operator=(const URI&);
+
 private:
-   URIPrivate* d_ptr;
+   const QScopedPointer<URIPrivate> d_ptr;
 };
 // Q_DECLARE_METATYPE(URI*)
 

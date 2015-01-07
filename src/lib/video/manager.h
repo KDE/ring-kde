@@ -15,8 +15,8 @@
  *   You should have received a copy of the Lesser GNU General Public License *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  *****************************************************************************/
-#ifndef VIDEO_MODEL_H
-#define VIDEO_MODEL_H
+#ifndef MANAGER_H
+#define MANAGER_H
 //Base
 #include "../typedefs.h"
 #include <QtCore/QThread>
@@ -65,7 +65,7 @@ private:
    explicit Manager();
    virtual ~Manager();
 
-   ManagerPrivate* d_ptr;
+   QScopedPointer<ManagerPrivate> d_ptr;
    Q_DECLARE_PRIVATE(Manager)
 
    //Static attributes

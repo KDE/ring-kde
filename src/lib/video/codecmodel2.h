@@ -15,8 +15,8 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef VIDEOCODECMODEL_H
-#define VIDEOCODECMODEL_H
+#ifndef CODECMODEL2_H
+#define CODECMODEL2_H
 
 #include "../typedefs.h"
 #include <QtCore/QAbstractListModel>
@@ -65,7 +65,7 @@ public:
    bool moveDown(const QModelIndex& idx);
 
 private:
-   CodecModelPrivate* d_ptr;
+   QScopedPointer<CodecModelPrivate> d_ptr;
 
 };
 

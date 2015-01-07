@@ -156,7 +156,7 @@ public:
    SecurityValidationModel::Severity severity() const;
 private:
    //Constructor
-   Flaw(SecurityValidationModel::SecurityFlaw f,Certificate::Type type = Certificate::Type::NONE)
+   explicit Flaw(SecurityValidationModel::SecurityFlaw f,Certificate::Type type = Certificate::Type::NONE)
    : m_flaw(f),m_certType(type),m_Row(-1)
    {
       m_severity = SecurityValidationModel::flawSeverity[f];

@@ -32,7 +32,7 @@ class LIB_EXPORT PresenceItemBackendModelExtension : public AbstractItemBackendM
    Q_OBJECT
 
 public:
-   PresenceItemBackendModelExtension(QObject* parent);
+   explicit PresenceItemBackendModelExtension(QObject* parent);
 
    virtual QVariant      data    (AbstractContactBackend* backend, const QModelIndex& index, int role = Qt::DisplayRole      ) const override;
    virtual Qt::ItemFlags flags   (AbstractContactBackend* backend, const QModelIndex& index                                  ) const override;

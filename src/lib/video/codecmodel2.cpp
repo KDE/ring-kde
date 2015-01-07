@@ -54,7 +54,7 @@ Video::CodecModel2::~CodecModel2()
       d_ptr->m_lCodecs.removeAt(0);
       delete c;
    }
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 ///Get data from the model

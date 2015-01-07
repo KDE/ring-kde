@@ -66,7 +66,7 @@ public:
    virtual bool  setData  ( const QModelIndex& index, const QVariant &value, int role)       override;
 
 private:
-   InstantMessagingModelPrivate* d_ptr;
+   const QScopedPointer<InstantMessagingModelPrivate> d_ptr;
    Q_DECLARE_PRIVATE(InstantMessagingModel)
 };
 #endif

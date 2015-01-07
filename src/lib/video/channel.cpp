@@ -37,7 +37,7 @@ d_ptr(new VideoChannelPrivate())
 
 Video::Channel::~Channel()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 QVariant Video::Channel::data( const QModelIndex& index, int role) const
@@ -122,4 +122,3 @@ Video::Device* Video::Channel::device() const
 {
    return d_ptr->m_pDevice;
 }
-

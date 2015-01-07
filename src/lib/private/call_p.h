@@ -96,7 +96,7 @@ public:
       constexpr static const char* OUTGOING = "1";
    };
 
-   CallPrivate(Call* parent);
+   explicit CallPrivate(Call* parent);
 
    //Attributes
    Account*                 m_Account         ;

@@ -56,7 +56,7 @@ LastUsedNumberModel::LastUsedNumberModel() : QAbstractListModel(),d_ptr(new Last
 
 LastUsedNumberModel::~LastUsedNumberModel()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 LastUsedNumberModel* LastUsedNumberModel::instance()

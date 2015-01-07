@@ -55,7 +55,7 @@ private:
    Channel(Video::Device* dev,const QString& name);
    virtual ~Channel();
 
-   VideoChannelPrivate* d_ptr;
+   QScopedPointer<VideoChannelPrivate> d_ptr;
 };
 
 }

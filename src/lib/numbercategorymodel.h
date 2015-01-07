@@ -64,7 +64,7 @@ private:
    explicit NumberCategoryModel(QObject* parent = nullptr);
    ~NumberCategoryModel();
 
-   NumberCategoryModelPrivate* d_ptr;
+   QScopedPointer<NumberCategoryModelPrivate> d_ptr;
 
    //Singleton
    static NumberCategoryModel* m_spInstance;

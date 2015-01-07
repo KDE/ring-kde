@@ -51,7 +51,6 @@
 #include "lib/ringtonemodel.h"
 #include "lib/tlsmethodmodel.h"
 #include "lib/certificate.h"
-#include "lib/securityvalidationmodel.h"
 #include "lib/categorizedaccountmodel.h"
 #include "../delegates/ringtonedelegate.h"
 #include "../delegates/categorizeddelegate.h"

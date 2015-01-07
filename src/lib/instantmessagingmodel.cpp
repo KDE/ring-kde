@@ -45,7 +45,7 @@ InstantMessagingModel::InstantMessagingModel(Call* call, QObject* par) : QAbstra
 
 InstantMessagingModel::~InstantMessagingModel()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 ///Get data from the model

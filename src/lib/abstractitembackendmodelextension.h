@@ -30,7 +30,7 @@ class LIB_EXPORT AbstractItemBackendModelExtension : public QObject
    Q_OBJECT
 
 public:
-   AbstractItemBackendModelExtension(QObject* parent);
+   explicit AbstractItemBackendModelExtension(QObject* parent);
 
    virtual QVariant      data    (AbstractContactBackend* backend, const QModelIndex& index, int role = Qt::DisplayRole      ) const = 0;
    virtual Qt::ItemFlags flags   (AbstractContactBackend* backend, const QModelIndex& index                                  ) const = 0;

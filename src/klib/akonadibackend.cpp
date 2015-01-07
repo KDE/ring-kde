@@ -292,7 +292,7 @@ void AkonadiBackend::update(const Akonadi::Collection& collection)
 
    Akonadi::RecursiveItemFetchJob *job = new Akonadi::RecursiveItemFetchJob( collection, QStringList() << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType());
    job->fetchScope().fetchFullPayload();
-   connect(job, SIGNAL( result( KJob* ) ), this, SLOT( slotJobCompleted( KJob* ) ) );
+   connect(job, SIGNAL(result(KJob*)), this, SLOT(slotJobCompleted(KJob*)));
    job->start();
 //    return m_ContactByUid.values();
 } //update

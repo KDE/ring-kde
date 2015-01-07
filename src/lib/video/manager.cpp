@@ -71,15 +71,15 @@ m_BufferSize(0),m_ShmKey(0),m_SemKey(0),m_PreviewState(false),m_SSMutex(new QMut
 Video::Manager::Manager():QThread(), d_ptr(new Video::ManagerPrivate(this))
 {
    VideoManagerInterface& interface = DBus::VideoManager::instance();
-   connect( &interface , SIGNAL(deviceEvent())                           , d_ptr, SLOT(deviceEvent())                           );
-   connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int,bool)), d_ptr, SLOT(startedDecoding(QString,QString,int,int)));
-   connect( &interface , SIGNAL(stoppedDecoding(QString,QString,bool))        , d_ptr, SLOT(stoppedDecoding(QString,QString))        );
+   connect( &interface , SIGNAL(deviceEvent())                           , d_ptr.data(), SLOT(deviceEvent())                           );
+   connect( &interface , SIGNAL(startedDecoding(QString,QString,int,int,bool)), d_ptr.data(), SLOT(startedDecoding(QString,QString,int,int)));
+   connect( &interface , SIGNAL(stoppedDecoding(QString,QString,bool))        , d_ptr.data(), SLOT(stoppedDecoding(QString,QString))        );
 }
 
 
 Video::Manager::~Manager()
 {
-   delete d_ptr;
+//    delete d_ptr;
 }
 
 ///Singleton
