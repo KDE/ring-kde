@@ -66,7 +66,7 @@ public:
     *                                                                                       *
     ****************************************************************************************/
 
-   ///@enum Object All supported SFLPhone canvas objects (both elements and widgets)
+   ///@enum Object All supported Ring canvas objects (both elements and widgets)
    enum class Object         : uchar {
       NoObject       = 0, /* Blank canvas                                                  */
       DialInfo       = 1, /* The message explaining how to make a call                     */
@@ -167,7 +167,7 @@ private:
       int             inEvent           ; /* All compatible events to trigger this object   */
       int             outEvent          ; /* All compatible events to phase out this object */
       bool            stack             ; /* Use an event counter to phase this object out  */
-      bool            systemNotification; /* Send a notification is SFLPhone ain't focused */
+      bool            systemNotification; /* Send a notification is Ring ain't focused */
       bool            skipAnimation     ; /* Do not trigger out animation when overriding   */
    };
 

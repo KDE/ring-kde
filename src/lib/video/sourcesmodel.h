@@ -21,7 +21,7 @@
 #include <QtCore/QRect>
 #include "../typedefs.h"
 
-//SFLPhone
+//Ring
 
 namespace Video {
 

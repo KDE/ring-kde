@@ -32,7 +32,7 @@
 #include <KIcon>
 #include <KStandardDirs>
 
-//SFLPhone
+//Ring
 #include <lib/contact.h>
 #include <lib/numbercategory.h>
 #include <lib/phonenumber.h>

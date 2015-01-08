@@ -32,10 +32,10 @@
 #include <KNotification>
 #include <KLocale>
 
-//SFLPhone
+//Ring
 #include <klib/tipmanager.h>
 #include <widgets/tips/tipcollection.h>
-#include "sflphone.h"
+#include "ring.h"
 
 
 CanvasObjectManager::Object CanvasObjectManager::m_slEvents[EVENT_COUNT+1] = { CanvasObjectManager::Object::NoObject };
@@ -221,14 +221,14 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
                   //If the window is minimized, use system notification
                   const QString m = message.isEmpty()?currentTip->text():message;
                   if (m_Minimized && !m.isEmpty())
-                     KNotification::event(KNotification::Notification, i18n("SFLPhone"), m);
+                     KNotification::event(KNotification::Notification, i18n("Ring"), m);
                   //If the window is not focused and the object request notification, use system
                   //disabled as it is not implemented by many top tier window managers
 #ifdef Q_WS_X11
 // Doesn't work on most window managers
 //                   static xcb_connection_t *c = nullptr;
 //                   if (c || (c = xcb_connect(nullptr,nullptr))) {
-//                      xcb_window_t win = SFLPhone::app()->winId();
+//                      xcb_window_t win = Ring::app()->winId();
 //                      xcb_generic_error_t *error;
 //                      xcb_intern_atom_cookie_t cookie = xcb_intern_atom(c, 0, strlen("_NET_WM_STATE_FOCUSED"), "_NET_WM_STATE_FOCUSED");
 //                      xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(c, cookie, &error);
@@ -243,7 +243,7 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
 //                      free(reply);
 //                      qDebug() << "\n\nNOTIF" << QApplication::activeWindow() << OBJ_DEF(m_CurrentObject).systemNotification;
 //                      if (!QApplication::activeWindow() && OBJ_DEF(m_CurrentObject).systemNotification) {
-//                         KNotification::event(KNotification::Notification, i18n("SFLPhone"), message.isEmpty()?currentTip->text():message);
+//                         KNotification::event(KNotification::Notification, i18n("Ring"), message.isEmpty()?currentTip->text():message);
 //                      }
 //                   }
 #endif

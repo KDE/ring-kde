@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gui name="ring-kde" version="1">
+   <MenuBar>
+      <Menu name="Actions" >
+         <text>Actions</text>
+         <Action name="action_accept" />
+         <Action name="action_refuse" />
+         <Action name="action_hold" />
+         <Action name="action_transfer" />
+         <Action name="action_record" />
+         <Action name="action_mailBox" />
+         <Separator />
+         <Action name="action_addContact" />
+         <Separator />
+         <Action name="action_close" />
+         <Separator />
+         <Action name="action_quit" />
+      </Menu>
+      <Menu name="View">
+         <text>View</text>
+         <Action name="action_showContactDock" />
+         <Action name="action_showHistoryDock" />
+         <Action name="action_showBookmarkDock" />
+         <Separator />
+         <Action name="action_displayVolumeControls" />
+         <Action name="action_displayDialpad" />
+         <Action name="action_displayMessageBox" />
+      </Menu>
+      <Menu name="Settings" >
+         <text>Settings</text>
+         <Action name="action_configureShortcut" />
+         <Action name="action_editToolBar" />
+         <Action name="action_configureRing" />
+      </Menu>
+   </MenuBar>
+   <ToolBar name="mainToolBar" iconText="textbesideicon" position="Top" noMerge="1" fullWidth="false" newline="true" >
+      <Action name="action_accept" />
+      <Action name="action_mailBox" />
+<!--       <Action name="action_refuse" /> -->
+<!--       <Action name="action_hold" /> -->
+<!--       <Action name="action_transfer" /> -->
+<!--       <Action name="action_record" /> -->
+   </ToolBar>
+</gui>

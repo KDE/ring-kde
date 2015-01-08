@@ -23,10 +23,10 @@ PresenceManagerInterface& DBus::PresenceManager::instance()
 {
    if (!dbus_metaTypeInit) registerCommTypes();
    if (!interface)
-      interface = new PresenceManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/PresenceManager", QDBusConnection::sessionBus());
+      interface = new PresenceManagerInterface("cx.ring.Ring", "/cx/ring/Ring/PresenceManager", QDBusConnection::sessionBus());
 
    if(!interface->connection().isConnected()) {
-      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From instance interface.";
+      throw "Error : dring not connected. Service " + interface->service() + " not connected. From instance interface.";
    }
    return *interface;
 }

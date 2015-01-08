@@ -30,7 +30,7 @@ namespace Video {
 class KConfigDialog;
 
 
-///DlgVideo: video preferences for sflphone
+///DlgVideo: video preferences for Ring
 class DlgVideo : public QWidget, public Ui_DlgVideoBase
 {
 Q_OBJECT

@@ -20,7 +20,7 @@
 //Parent
 #include "abstractitembackend.h"
 
-//SFLPhone library
+//Ring library
 #include "contact.h"
 #include "call.h"
 #include "phonenumber.h"

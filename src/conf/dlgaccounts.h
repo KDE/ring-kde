@@ -30,7 +30,7 @@ class QWidget;
 //KDE
 class KConfigDialog;
 
-//SFLPhone
+//Ring
 class TipManager;
 class Tip;
 

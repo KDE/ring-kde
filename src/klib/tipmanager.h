@@ -24,7 +24,7 @@
 #include <QtGui/QImage>
 #include <QtCore/QAbstractAnimation>
 
-//SFLPhone
+//Ring
 #include "../lib/typedefs.h"
 #include "tip.h"
 #include "tipanimationwrapper.h"

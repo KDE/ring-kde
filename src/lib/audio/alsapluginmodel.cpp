@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "alsapluginmodel.h"
 
-//SFLPhone
+//Ring
 #include "dbus/configurationmanager.h"
 
 class AlsaPluginModelPrivate : public QObject

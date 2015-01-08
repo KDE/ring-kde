@@ -11,7 +11,7 @@ ADD_DEFINITIONS(
 	-fexceptions
 )
 
-PROJECT(ksflphone)
+PROJECT(libkring)
 
 SET ( KDE4_KABC_LIBS  -lkabc )
 
@@ -33,7 +33,7 @@ include_directories(SYSTEM  ${QT_INCLUDES}  ${KDE4_INCLUDES} )
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 
 #File to compile
-set( ksflphone_LIB_SRCS
+set( libkring_LIB_SRCS
    helperfunctions.cpp
    akonadibackend.cpp
 #    configurationskeleton.cpp
@@ -48,12 +48,12 @@ set( ksflphone_LIB_SRCS
    itemmodelserialization.cpp
 )
 
-KDE4_ADD_KCFG_FILES(ksflphone_LIB_SRCS kcfg_settings.kcfgc)
+KDE4_ADD_KCFG_FILES(libkring_LIB_SRCS kcfg_settings.kcfgc)
 
-kde4_add_library( ksflphone  SHARED ${ksflphone_LIB_SRCS} )
+kde4_add_library( libkring  SHARED ${libkring_LIB_SRCS} )
 
-target_link_libraries( ksflphone
-  qtsflphone
+target_link_libraries( libkring
+  ringclient
   ${QT_QTCORE_LIBRARY}
   ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
   ${KDEPIMLIBS_KABC_LIBS}
@@ -62,11 +62,11 @@ target_link_libraries( ksflphone
   ${KDE4_KDEUI_LIBS}
 )
 
-set_target_properties( ksflphone
+set_target_properties( libkring
   PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION}
 )
 
-set( ksflphone_LIB_HDRS
+set( libkring_LIB_HDRS
   akonadibackend.h
   helperfunctions.h
 #   sortabledockcommon.h
@@ -75,11 +75,11 @@ set( ksflphone_LIB_HDRS
   itemmodelserialization.h
 )
 
-INSTALL(FILES sflphone-client-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})
+INSTALL(FILES ring-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})
 
-install( FILES ${ksflphone_LIB_HDRS}
-  DESTINATION ${INCLUDE_INSTALL_DIR}/ksflphone
+install( FILES ${libkring_LIB_HDRS}
+  DESTINATION ${INCLUDE_INSTALL_DIR}/libkring
   COMPONENT Devel
 )
  
-install( TARGETS ksflphone  ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install( TARGETS libkring  ${INSTALL_TARGETS_DEFAULT_ARGS} )

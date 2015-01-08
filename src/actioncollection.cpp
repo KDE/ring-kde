@@ -34,13 +34,13 @@
 #include <KGlobal>
 #include <KSharedConfig>
 
-//SFLPhone
+//Ring
 #include "extendedaction.h"
-#include "sflphone.h"
-#include "accountwizard.h"
-#include "sflphoneview.h"
-#include "sflphoneaccessibility.h"
+#include "ring.h"
+#include "view.h"
+#include "accessibility.h"
 #include "conf/configurationdialog.h"
+#include "icons/icons.h"
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
 #include "klib/macromodel.h"
@@ -60,33 +60,33 @@ ActionCollection* ActionCollection::instance() {
    return m_spInstance;
 }
 
-ActionCollection::ActionCollection(QObject* parent) : QObject(parent),m_pWizard(nullptr),
+ActionCollection::ActionCollection(QObject* parent) : QObject(parent),
 action_mailBox(nullptr), action_close(nullptr), action_quit(nullptr), action_displayVolumeControls(nullptr),
-action_displayDialpad(nullptr), action_displayMessageBox(nullptr), action_configureSflPhone(nullptr),
-action_configureShortcut(nullptr), action_accountCreationWizard(nullptr), action_pastenumber(nullptr),
+action_displayDialpad(nullptr), action_displayMessageBox(nullptr), action_configureRing(nullptr),
+action_configureShortcut(nullptr), action_pastenumber(nullptr),
 action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBookmarkDock(nullptr),
 action_editToolBar(nullptr), action_addContact(nullptr), action_screen(nullptr)
 {
-   action_accept   = new ExtendedAction(this);
-   action_refuse   = new ExtendedAction(this);
-   action_hold     = new ExtendedAction(this);
-   action_transfer = new ExtendedAction(this);
-   action_record   = new ExtendedAction(this);
-   action_mute_capture     = new ExtendedAction(this);
-   action_mute_playback     = new ExtendedAction(this);
-   action_hangup   = new ExtendedAction(this);
-   action_unhold   = new ExtendedAction(this);
-   action_pickup   = new ExtendedAction(this);
+   action_accept        = new ExtendedAction(this);
+   action_refuse        = new ExtendedAction(this);
+   action_hold          = new ExtendedAction(this);
+   action_transfer      = new ExtendedAction(this);
+   action_record        = new ExtendedAction(this);
+   action_mute_capture  = new ExtendedAction(this);
+   action_mute_playback = new ExtendedAction(this);
+   action_hangup        = new ExtendedAction(this);
+   action_unhold        = new ExtendedAction(this);
+   action_pickup        = new ExtendedAction(this);
 
-   action_transfer->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/transfer_grayscale.png" ));
-   action_record  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/record_grayscale.png"   ));
-   action_hold    ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/hold_grayscale.png"     ));
-   action_refuse  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/refuse_grayscale.png"   ));
-   action_mute_capture    ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/mutemic_grayscale.png"  ));
-   action_hangup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/hangup_grayscale.png"   ));
-   action_unhold  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/unhold_grayscale.png"   ));
-   action_pickup  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/pickup_grayscale.png"   ));
-   action_accept  ->setAltIcon(KStandardDirs::locate("data" , "sflphone-client-kde/pickup_grayscale.png"   ));
+   action_transfer->setAltIcon(KStandardDirs::locate("data" , "ring-kde/transfer_grayscale.png" ));
+   action_record  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/record_grayscale.png"   ));
+   action_hold    ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/hold_grayscale.png"     ));
+   action_refuse  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/refuse_grayscale.png"   ));
+   action_mute_capture    ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/mutemic_grayscale.png"  ));
+   action_hangup  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/hangup_grayscale.png"   ));
+   action_unhold  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/unhold_grayscale.png"   ));
+   action_pickup  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/pickup_grayscale.png"   ));
+   action_accept  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/pickup_grayscale.png"   ));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );
@@ -155,9 +155,8 @@ ActionCollection::~ActionCollection()
    delete action_displayVolumeControls ;
    delete action_displayDialpad        ;
    delete action_displayMessageBox     ;
-   delete action_configureSflPhone     ;
+   delete action_configureRing         ;
    delete action_configureShortcut     ;
-   delete action_accountCreationWizard ;
    delete action_pastenumber           ;
    delete action_showContactDock       ;
    delete action_showHistoryDock       ;
@@ -174,7 +173,7 @@ void ActionCollection::setupAction()
 {
    kDebug() << "setupActions";
 
-   action_mailBox  = new KAction(SFLPhone::app());
+   action_mailBox  = new KAction(Ring::app());
    action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
    action_refuse->setShortcut      ( Qt::CTRL + Qt::Key_D );
    action_hold->setShortcut        ( Qt::CTRL + Qt::Key_H );
@@ -182,31 +181,30 @@ void ActionCollection::setupAction()
    action_record->setShortcut      ( Qt::CTRL + Qt::Key_R );
    action_mailBox->setShortcut     ( Qt::CTRL + Qt::Key_M );
 
-   action_screen = new QActionGroup(SFLPhone::app());
+   action_screen = new QActionGroup(Ring::app());
    action_screen->setExclusive(true);
 
-   action_close = KStandardAction::close(SFLPhone::app(), SLOT(close()), SFLPhone::app());
-   action_quit  = KStandardAction::quit(SFLPhone::app(), SLOT(quitButton()), SFLPhone::app());
+   action_close = KStandardAction::close(Ring::app(), SLOT(close()), Ring::app());
+   action_quit  = KStandardAction::quit(Ring::app(), SLOT(quitButton()), Ring::app());
 
-   action_configureSflPhone = KStandardAction::preferences(this, SLOT(configureSflPhone()), SFLPhone::app());
-   action_configureSflPhone->setText(i18n("Configure SFLPhone-KDE"));
+   action_configureRing = KStandardAction::preferences(this, SLOT(configureRing()), Ring::app());
+   action_configureRing->setText(i18n("Configure Ring-KDE"));
 
-   action_displayDialpad        = new KAction(KIcon(QIcon(ICON_DISPLAY_DIALPAD)), i18n("Display dialpad")                 , this);
+   action_displayDialpad        = new KAction(KIcon(QIcon(RingIcons::DISPLAY_DIALPAD)), i18n("Display dialpad")                 , this);
    action_displayMessageBox     = new KAction(KIcon("mail-message-new"), i18n("Display text message box")                 , this);
-   action_displayVolumeControls = new KAction(KIcon(QIcon(ICON_DISPLAY_VOLUME_CONSTROLS)), i18n("Display volume controls"), this);
+   action_displayVolumeControls = new KAction(KIcon(QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS)), i18n("Display volume controls"), this);
    action_pastenumber           = new KAction(KIcon("edit-paste"), i18n("Paste")                                          , this);
    action_showContactDock       = new KAction(KIcon("edit-find-user")   , i18n("Display Contact")                         , this);
    action_showHistoryDock       = new KAction(KIcon("view-history")     , i18n("Display history")                         , this);
    action_showBookmarkDock      = new KAction(KIcon("bookmark-new-list"), i18n("Display bookmark")                        , this);
    action_editToolBar           = new KAction(KIcon("configure-toolbars"), i18n("Configure Toolbars")                     , this);
-   action_accountCreationWizard = new KAction(i18n("Account creation wizard")                                             , this);
    action_addContact            = new KAction(KIcon("contact-new"),i18n("Add new contact")                                                     , this);
 
    action_addContact->setShortcut ( Qt::CTRL + Qt::Key_N );
 
    action_displayDialpad->setCheckable( true );
    action_displayDialpad->setChecked  ( ConfigurationSkeleton::displayDialpad() );
-   action_configureSflPhone->setText(i18n("Configure SFLphone"));
+   action_configureRing->setText(i18n("Configure Ring-KDE"));
 
    action_displayMessageBox->setCheckable( true );
    action_displayMessageBox->setChecked  ( ConfigurationSkeleton::displayMessageBox() );
@@ -245,11 +243,10 @@ void ActionCollection::setupAction()
    /**/connect(action_record,                SIGNAL(triggered()),           this    , SLOT(record())                    );
    /**/connect(action_mailBox,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
    /**/connect(action_pickup,                SIGNAL(triggered()),           this    , SLOT(accept())                    );
-   /**/connect(action_displayVolumeControls, SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayVolumeControls(bool)) );
-   /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayDialpad(bool))        );
-   /**/connect(action_displayMessageBox,     SIGNAL(toggled(bool)),         SFLPhone::view() , SLOT(displayMessageBox(bool))     );
-   /**/connect(action_accountCreationWizard, SIGNAL(triggered()),           this    , SLOT(accountCreationWizard())     );
-   /**/connect(action_pastenumber,           SIGNAL(triggered()),           SFLPhone::view() , SLOT(paste())            );
+   /**/connect(action_displayVolumeControls, SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayVolumeControls(bool)) );
+   /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayDialpad(bool))        );
+   /**/connect(action_displayMessageBox,     SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayMessageBox(bool))     );
+   /**/connect(action_pastenumber,           SIGNAL(triggered()),           Ring::view() , SLOT(paste())            );
    /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
    /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
    /**/connect(action_addContact,            SIGNAL(triggered()),           this    , SLOT(slotAddContact())            );
@@ -259,41 +256,40 @@ void ActionCollection::setupAction()
    connect(Audio::Settings::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
    connect(Audio::Settings::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
 
-//    SFLPhone::app()->actionCollection()->setConfigGlobal(true);
-   SFLPhone::app()->actionCollection()->addAction("action_accept"                , action_accept                );
-   SFLPhone::app()->actionCollection()->addAction("action_refuse"                , action_refuse                );
-   SFLPhone::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
-   SFLPhone::app()->actionCollection()->addAction("action_transfer"              , action_transfer              );
-   SFLPhone::app()->actionCollection()->addAction("action_record"                , action_record                );
-   SFLPhone::app()->actionCollection()->addAction("action_mailBox"               , action_mailBox               );
-   SFLPhone::app()->actionCollection()->addAction("action_close"                 , action_close                 );
-   SFLPhone::app()->actionCollection()->addAction("action_quit"                  , action_quit                  );
-   SFLPhone::app()->actionCollection()->addAction("action_pickup"                , action_pickup                );
-   SFLPhone::app()->actionCollection()->addAction("action_displayVolumeControls" , action_displayVolumeControls );
-   SFLPhone::app()->actionCollection()->addAction("action_displayDialpad"        , action_displayDialpad        );
-   SFLPhone::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
-   SFLPhone::app()->actionCollection()->addAction("action_configureSflPhone"     , action_configureSflPhone     );
-   SFLPhone::app()->actionCollection()->addAction("action_accountCreationWizard" , action_accountCreationWizard );
-   SFLPhone::app()->actionCollection()->addAction("action_configureShortcut"     , action_configureShortcut     );
-   SFLPhone::app()->actionCollection()->addAction("action_pastenumber"           , action_pastenumber           );
-   SFLPhone::app()->actionCollection()->addAction("action_showContactDock"       , action_showContactDock       );
-   SFLPhone::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
-   SFLPhone::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
-   SFLPhone::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
-   SFLPhone::app()->actionCollection()->addAction("action_addContact"            , action_addContact            );
-   SFLPhone::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
-   SFLPhone::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
+//    Ring::app()->actionCollection()->setConfigGlobal(true);
+   Ring::app()->actionCollection()->addAction("action_accept"                , action_accept                );
+   Ring::app()->actionCollection()->addAction("action_refuse"                , action_refuse                );
+   Ring::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
+   Ring::app()->actionCollection()->addAction("action_transfer"              , action_transfer              );
+   Ring::app()->actionCollection()->addAction("action_record"                , action_record                );
+   Ring::app()->actionCollection()->addAction("action_mailBox"               , action_mailBox               );
+   Ring::app()->actionCollection()->addAction("action_close"                 , action_close                 );
+   Ring::app()->actionCollection()->addAction("action_quit"                  , action_quit                  );
+   Ring::app()->actionCollection()->addAction("action_pickup"                , action_pickup                );
+   Ring::app()->actionCollection()->addAction("action_displayVolumeControls" , action_displayVolumeControls );
+   Ring::app()->actionCollection()->addAction("action_displayDialpad"        , action_displayDialpad        );
+   Ring::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
+   Ring::app()->actionCollection()->addAction("action_configureRing"         , action_configureRing         );
+   Ring::app()->actionCollection()->addAction("action_configureShortcut"     , action_configureShortcut     );
+   Ring::app()->actionCollection()->addAction("action_pastenumber"           , action_pastenumber           );
+   Ring::app()->actionCollection()->addAction("action_showContactDock"       , action_showContactDock       );
+   Ring::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
+   Ring::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
+   Ring::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
+   Ring::app()->actionCollection()->addAction("action_addContact"            , action_addContact            );
+   Ring::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
+   Ring::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
    MacroModel::instance()->initMacros();
 
-   QList<KAction*> acList = *SFLPhoneAccessibility::instance();
+   QList<KAction*> acList = *Accessibility::instance();
 
    foreach(KAction* ac,acList) {
-      SFLPhone::app()->actionCollection()->addAction(ac->objectName() , ac);
+      Ring::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
 //    qDebug() << "\n\n\nGlobal" << KGlobal::config()->groupList();
 //    KConfigGroup g = KGlobal::config()->group("KShortcutsDialog Settings");
-//    SFLPhone::app()->actionCollection()->exportGlobalShortcuts(&g);
+//    Ring::app()->actionCollection()->exportGlobalShortcuts(&g);
 
    updateRecordButton();
    updateVolumeButton();
@@ -302,13 +298,13 @@ void ActionCollection::setupAction()
 ///Call
 void ActionCollection::accept() //TODO dead code?
 {
-   Call* call = SFLPhone::view()->currentCall();// SFLPhone::view()->currentCall();
+   Call* call = Ring::view()->currentCall();// Ring::view()->currentCall();
    if(!call) {
       kDebug() << "Calling when no item is selected. Opening an item.";
       CallModel::instance()->dialingCall();
-      SFLPhone::view()->selectDialingCall();
-      SFLPhone::view()->updateWindowCallState();
-      SFLPhone::app()->selectCallTab();
+      Ring::view()->selectDialingCall();
+      Ring::view()->updateWindowCallState();
+      Ring::app()->selectCallTab();
    }
    else {
       const Call::State state = call->state();
@@ -317,15 +313,15 @@ void ActionCollection::accept() //TODO dead code?
          || state == Call::State::BUSY || state == Call::State::FAILURE || state == Call::State::ERROR) {
          kDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
          CallModel::instance()->dialingCall();
-         SFLPhone::view()->selectDialingCall();
-         SFLPhone::view()->updateWindowCallState();
+         Ring::view()->selectDialingCall();
+         Ring::view()->updateWindowCallState();
       }
       else {
          try {
             call->performAction(Call::Action::ACCEPT);
          }
          catch(const char * msg) {
-            KMessageBox::error(SFLPhone::app(),i18n(msg));
+            KMessageBox::error(Ring::app(),i18n(msg));
          }
          emit windowStateChanged();
       }
@@ -335,13 +331,13 @@ void ActionCollection::accept() //TODO dead code?
 ///Call
 void ActionCollection::hangup()
 {
-   Call* call = SFLPhone::view()->currentCall();
+   Call* call = Ring::view()->currentCall();
    if (call) {
       try {
          call->performAction(Call::Action::REFUSE);
       }
       catch(const char * msg) {
-         KMessageBox::error(SFLPhone::app(),i18n(msg));
+         KMessageBox::error(Ring::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
@@ -350,7 +346,7 @@ void ActionCollection::hangup()
 ///Refuse call
 void ActionCollection::refuse()
 {
-   Call* call = SFLPhone::view()->currentCall();
+   Call* call = Ring::view()->currentCall();
    if(!call) {
       kDebug() << "Error : Hanging up when no item selected. Should not happen.";
    }
@@ -359,7 +355,7 @@ void ActionCollection::refuse()
          call->performAction(Call::Action::REFUSE);
       }
       catch(const char * msg) {
-         KMessageBox::error(SFLPhone::app(),i18n(msg));
+         KMessageBox::error(Ring::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
@@ -368,7 +364,7 @@ void ActionCollection::refuse()
 ///Put call on hold
 void ActionCollection::hold()
 {
-   Call* call = SFLPhone::view()->currentCall();
+   Call* call = Ring::view()->currentCall();
    if(!call) {
       kDebug() << "Error : Holding when no item selected. Should not happen.";
    }
@@ -377,7 +373,7 @@ void ActionCollection::hold()
          call->performAction(Call::Action::HOLD);
       }
       catch(const char * msg) {
-         KMessageBox::error(SFLPhone::app(),i18n(msg));
+         KMessageBox::error(Ring::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
@@ -386,7 +382,7 @@ void ActionCollection::hold()
 ///Remove call from hold
 void ActionCollection::unhold()
 {
-   Call* call = SFLPhone::view()->currentCall();
+   Call* call = Ring::view()->currentCall();
    if(!call) {
       kDebug() << "Error : Un-Holding when no item selected. Should not happen.";
    }
@@ -395,7 +391,7 @@ void ActionCollection::unhold()
          call->performAction(Call::Action::HOLD);
       }
       catch(const char * msg) {
-         KMessageBox::error(SFLPhone::app(),i18n(msg));
+         KMessageBox::error(Ring::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
@@ -404,7 +400,7 @@ void ActionCollection::unhold()
 ///Transfer a call
 void ActionCollection::transfer()
 {
-   Call* call = SFLPhone::view()->currentCall();
+   Call* call = Ring::view()->currentCall();
    if(!call) {
       kDebug() << "Error : Transferring when no item selected. Should not happen.";
    }
@@ -413,7 +409,7 @@ void ActionCollection::transfer()
          call->performAction(Call::Action::TRANSFER);
       }
       catch(const char * msg) {
-         KMessageBox::error(SFLPhone::app(),i18n(msg));
+         KMessageBox::error(Ring::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
@@ -422,7 +418,7 @@ void ActionCollection::transfer()
 ///Record a call
 void ActionCollection::record()
 {
-   Call* call = SFLPhone::view()->currentCall();
+   Call* call = Ring::view()->currentCall();
    if(!call) {
       kDebug() << "Error : Recording when no item selected. Should not happen.";
    }
@@ -431,7 +427,7 @@ void ActionCollection::record()
          call->performAction(Call::Action::RECORD);
       }
       catch(const char * msg) {
-         KMessageBox::error(SFLPhone::app(),i18n(msg));
+         KMessageBox::error(Ring::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
@@ -450,46 +446,36 @@ void ActionCollection::mailBox()
          call->performAction(Call::Action::ACCEPT);
       }
       catch(const char * msg) {
-         KMessageBox::error(SFLPhone::app(),i18n(msg));
+         KMessageBox::error(Ring::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
    else {
-      HelperFunctions::displayNoAccountMessageBox(SFLPhone::view());
+      HelperFunctions::displayNoAccountMessageBox(Ring::view());
    }
 }
 
 ///Show the configuration dialog
-void ActionCollection::configureSflPhone()
+void ActionCollection::configureRing()
 {
-   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(SFLPhone::view());
+   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(Ring::view());
    configDialog->setModal(true);
 
-   connect(configDialog, SIGNAL(changesApplied()), SFLPhone::view(), SLOT(loadWindow()));
+   connect(configDialog, SIGNAL(changesApplied()), Ring::view(), SLOT(loadWindow()));
    configDialog->exec();
-   disconnect(configDialog, SIGNAL(changesApplied()), SFLPhone::view(), SLOT(loadWindow()));
+   disconnect(configDialog, SIGNAL(changesApplied()), Ring::view(), SLOT(loadWindow()));
    delete configDialog;
-}
-
-///Show the account creation wizard
-void ActionCollection::accountCreationWizard()
-{
-   if (!m_pWizard) {
-      m_pWizard = new AccountWizard(SFLPhone::view());
-      m_pWizard->setModal(false);
-   }
-   m_pWizard->show();
 }
 
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor() {
-   KShortcutsDialog::configure( SFLPhone::app()->actionCollection() );
+   KShortcutsDialog::configure( Ring::app()->actionCollection() );
 }
 
 ///Show the toolbar editor
 void ActionCollection::editToolBar()
 {
-   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(SFLPhone::app()->guiFactory());
+   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(Ring::app()->guiFactory());
    toolbareditor->setModal(true);
    toolbareditor->exec();
    toolbareditor->setDefaultToolBar("mainToolBar");
@@ -499,7 +485,7 @@ void ActionCollection::editToolBar()
 ///Add a new dynamic action (macro)
 void ActionCollection::addMacro(KAction* newAction)
 {
-   SFLPhone::app()->actionCollection()->addAction(newAction->objectName() , newAction );
+   Ring::app()->actionCollection()->addAction(newAction->objectName() , newAction );
 }
 
 
@@ -619,7 +605,7 @@ void ActionCollection::updateRecordButton()
       QIcon(":/images/icons/mic_50.svg"),QIcon(":/images/icons/mic_75.svg")};
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
    ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
-   SFLPhone::view()->updateVolumeControls();
+   Ring::view()->updateVolumeControls();
 }
 
 ///Update the colunm button icon
@@ -630,7 +616,7 @@ void ActionCollection::updateVolumeButton()
       QIcon(":/images/icons/speaker_50.svg"),QIcon(":/images/icons/speaker_75.svg")};
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
-   SFLPhone::view()->updateVolumeControls();
+   Ring::view()->updateVolumeControls();
 }
 
 //Video actions

@@ -26,7 +26,7 @@
 #include <QtGui/QImage>
 class QTimer;
 
-//SFLPhone
+//Ring
 #include "tip.h"
 
 //Structs

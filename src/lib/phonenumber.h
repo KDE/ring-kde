@@ -26,7 +26,7 @@
 #include <QtCore/QSize>
 #include <QtCore/QObject>
 
-//SFLPhone
+//Ring
 #include "uri.h"
 class Account;
 class Contact;

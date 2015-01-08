@@ -19,7 +19,7 @@
 #define PHONEDIRECTORYMODEL_PRIVATE_H
 #include <QtCore/QObject>
 
-//SFLphone
+//Ring
 class PhoneDirectoryModel;
 #include "phonenumber.h"
 

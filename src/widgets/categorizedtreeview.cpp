@@ -27,13 +27,14 @@
 #include <klocale.h>
 #include <kdebug.h>
 
-//SFLPhone
+//Ring
 #include <delegates/conferencedelegate.h>
 #include <klib/tipmanager.h>
 #include <lib/call.h>
 #include <widgets/tips/tipcollection.h>
 #include <lib/contactproxymodel.h>
 #include <lib/historymodel.h>
+#include <lib/mime.h>
 
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
@@ -251,15 +252,15 @@ bool CategorizedTreeView::edit(const QModelIndex& index, EditTrigger trigger, QE
 
 CallModel::DropPayloadType CategorizedTreeView::payloadType(const QMimeData* data)
 {
-   if (data->hasFormat(MIME_CALLID))
+   if (data->hasFormat(RingMimes::CALLID))
       return CallModel::DropPayloadType::CALL;
-   else if (data->hasFormat(MIME_CONTACT))
+   else if (data->hasFormat(RingMimes::CONTACT))
       return CallModel::DropPayloadType::CONTACT;
-   else if (data->hasFormat(MIME_HISTORYID))
+   else if (data->hasFormat(RingMimes::HISTORYID))
       return CallModel::DropPayloadType::HISTORY;
-   else if (data->hasFormat(MIME_PHONENUMBER))
+   else if (data->hasFormat(RingMimes::PHONENUMBER))
       return CallModel::DropPayloadType::NUMBER;
-   else if (data->hasFormat(MIME_PLAIN_TEXT))
+   else if (data->hasFormat(RingMimes::PLAIN_TEXT))
       return CallModel::DropPayloadType::TEXT;
    else
       return CallModel::DropPayloadType::NONE;

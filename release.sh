@@ -12,4 +12,4 @@ else
 fi
 cp ../data/config.ini ./
 cp kde-dev-scripts/createtarball/create_tarball.rb ./
-ruby create_tarball.rb -n -a sflphone-kde && mv sflphone-kde-*.tar.* ../
+ruby create_tarball.rb -n -a sflphone-kde && mv ring-kde-*.tar.* ../

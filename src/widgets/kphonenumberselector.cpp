@@ -21,11 +21,11 @@
 #include <KInputDialog>
 #include <KLocale>
 
-//SFLPhone
+//Ring
 #include "../lib/phonenumber.h"
 #include "../lib/numbercategory.h"
 #include "../lib/phonedirectorymodel.h"
-#include "../sflphone.h"
+#include <ring.h>
 
 
 void KPhoneNumberSelector::init()
@@ -45,7 +45,7 @@ PhoneNumber* KPhoneNumberSelector::getNumber(const Contact* contact)
             map[number->category()->name()+" ("+number->uri()+')'] = number->uri();
             list << number->category()->name()+" ("+number->uri()+')';
          }
-         const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,SFLPhone::app());
+         const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,Ring::app());
          return PhoneDirectoryModel::instance()->getNumber(result);//new PhoneNumber(result,"");
       }
       else if (contact->phoneNumbers().size() == 1)

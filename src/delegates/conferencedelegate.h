@@ -20,7 +20,7 @@
 
 #include <QtGui/QStyledItemDelegate>
 
-//SFLPhone
+//Ring
 class CategorizedTreeView;
 
 ///ConferenceDelegate: Delegates for CallTreeItem

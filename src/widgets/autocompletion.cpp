@@ -31,7 +31,7 @@
 //KDE
 #include <KLocale>
 
-//SFLPhone
+//Ring
 #include <lib/numbercompletionmodel.h>
 #include <lib/call.h>
 #include <lib/callmodel.h>

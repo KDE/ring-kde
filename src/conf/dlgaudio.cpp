@@ -25,10 +25,9 @@
 #include <KStandardDirs>
 #include <KLineEdit>
 
-//SFLPhone
+//Ring
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
-#include "lib/sflphone_const.h"
 #include "lib/audio/settings.h"
 #include "lib/audio/inputdevicemodel.h"
 #include "lib/audio/outputdevicemodel.h"

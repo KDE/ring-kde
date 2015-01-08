@@ -23,10 +23,10 @@ VideoManagerInterface& DBus::VideoManager::instance()
 {
    if (!dbus_metaTypeInit) registerCommTypes();
    if (!interface)
-      interface = new VideoManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/VideoManager", QDBusConnection::sessionBus());
+      interface = new VideoManagerInterface("cx.ring.Ring", "/cx/ring/Ring/VideoManager", QDBusConnection::sessionBus());
    
    if(!interface->connection().isConnected()) {
-      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From instance interface.";
+      throw "Error : dring not connected. Service " + interface->service() + " not connected. From instance interface.";
    }
    return *interface;
 }

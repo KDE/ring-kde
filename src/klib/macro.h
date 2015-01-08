@@ -26,7 +26,7 @@
 //Qt
 class KAction;
 
-//SFLPhone
+//Ring
 #include "macromodel.h"
 
 class LIB_EXPORT Macro : public QObject {

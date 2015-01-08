@@ -24,12 +24,12 @@ ConfigurationManagerInterface& DBus::ConfigurationManager::instance()
 {
    if (!dbus_metaTypeInit) registerCommTypes();
    if (!interface)
-      interface = new ConfigurationManagerInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/ConfigurationManager", QDBusConnection::sessionBus());
+      interface = new ConfigurationManagerInterface("cx.ring.Ring", "/cx/ring/Ring/ConfigurationManager", QDBusConnection::sessionBus());
    if(!interface->connection().isConnected()) {
-      qDebug() << "Error : sflphoned not connected. Service " << interface->service() << " not connected. From configuration manager interface.";
-      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From configuration manager interface.";
+      qDebug() << "Error : dring not connected. Service " << interface->service() << " not connected. From configuration manager interface.";
+      throw "Error : dring not connected. Service " + interface->service() + " not connected. From configuration manager interface.";
    }
    if (!interface->isValid())
-      throw "SFLphone daemon not available, be sure it running";
+      throw "DRing daemon not available, be sure it running";
    return *interface;
 }

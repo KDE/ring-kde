@@ -46,7 +46,7 @@
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
 
-//SFLPhone library
+//Ring library
 #include "../lib/contact.h"
 #include "../lib/accountmodel.h"
 #include "../lib/account.h"
@@ -68,7 +68,7 @@ AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* pa
    m_pMonitor(nullptr),m_isEnabled(false),m_wasEnabled(false)
 {
    if (!m_pSession)
-      m_pSession = new Akonadi::Session( "SFLPhone::instance" );
+      m_pSession = new Akonadi::Session( "Ring::instance" );
    setObjectName(parentCol.name());
    m_Coll = parentCol;
    m_hParentLookup[m_Coll.id()] = this;

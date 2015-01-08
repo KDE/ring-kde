@@ -27,9 +27,9 @@ class QDropEvent     ;
 class QDragMoveEvent ;
 class QDragMoveEvent ;
 
-//SFLPhone
+//Ring
 #include <lib/call.h>
-class SFLPhoneView;
+class View;
 class CanvasObjectManager;
 class MainWindowEvent;
 class Account;
@@ -39,7 +39,7 @@ class EventManager : public QObject, public MacroListener {
 
 public:
    friend class MainWindowEvent;
-   explicit EventManager(SFLPhoneView* parent = nullptr);
+   explicit EventManager(View* parent = nullptr);
    virtual ~EventManager();
       /**
     *   Handles the behaviour when the user types something with
@@ -73,7 +73,7 @@ protected:
 
 private:
    //Attributes
-   SFLPhoneView*        m_pParent       ;
+   View*        m_pParent       ;
    MainWindowEvent*     m_pMainWindowEv ;
 
    //Methods

@@ -20,7 +20,8 @@
 //C include
 #include <time.h>
 
-//SFLPhone lib
+//Ring lib
+#include "mime.h"
 #include "dbus/callmanager.h"
 #include "dbus/configurationmanager.h"
 #include "call.h"
@@ -182,7 +183,7 @@ m_Role(Call::Role::FuzzyDate)
 HistoryModel::HistoryModel():QAbstractItemModel(QCoreApplication::instance()),d_ptr(new HistoryModelPrivate(this))
 {
    m_spInstance  = this;
-   d_ptr->m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER << MIME_HISTORYID;
+   d_ptr->m_lMimes << RingMimes::PLAIN_TEXT << RingMimes::PHONENUMBER << RingMimes::HISTORYID;
    QHash<int, QByteArray> roles = roleNames();
    roles.insert(Call::Role::Name          ,QByteArray("name"          ));
    roles.insert(Call::Role::Number        ,QByteArray("number"        ));
@@ -541,12 +542,12 @@ QMimeData* HistoryModel::mimeData(const QModelIndexList &indexes) const
    foreach (const QModelIndex &idx, indexes) {
       if (idx.isValid()) {
          const QString text = data(idx, Call::Role::Number).toString();
-         mimeData2->setData(MIME_PLAIN_TEXT , text.toUtf8());
+         mimeData2->setData(RingMimes::PLAIN_TEXT , text.toUtf8());
          const Call* call = (Call*)((CategorizedCompositeNode*)(idx.internalPointer()))->getSelf();
-         mimeData2->setData(MIME_PHONENUMBER, call->peerPhoneNumber()->toHash().toUtf8());
+         mimeData2->setData(RingMimes::PHONENUMBER, call->peerPhoneNumber()->toHash().toUtf8());
          CategorizedCompositeNode* node = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
          if (node->type() == CategorizedCompositeNode::Type::CALL)
-            mimeData2->setData(MIME_HISTORYID  , static_cast<Call*>(node->getSelf())->id().toUtf8());
+            mimeData2->setData(RingMimes::HISTORYID  , static_cast<Call*>(node->getSelf())->id().toUtf8());
          return mimeData2;
       }
    }
@@ -560,11 +561,11 @@ bool HistoryModel::dropMimeData(const QMimeData *mime, Qt::DropAction action, in
    Q_UNUSED(column)
    Q_UNUSED(action)
    setData(parentIdx,-1,Call::Role::DropState);
-   QByteArray encodedPhoneNumber = mime->data( MIME_PHONENUMBER );
-   QByteArray encodedContact     = mime->data( MIME_CONTACT     );
+   QByteArray encodedPhoneNumber = mime->data( RingMimes::PHONENUMBER );
+   QByteArray encodedContact     = mime->data( RingMimes::CONTACT     );
 
-   if (parentIdx.isValid() && mime->hasFormat( MIME_CALLID)) {
-      QByteArray encodedCallId      = mime->data( MIME_CALLID      );
+   if (parentIdx.isValid() && mime->hasFormat( RingMimes::CALLID)) {
+      QByteArray encodedCallId      = mime->data( RingMimes::CALLID      );
       Call* call = CallModel::instance()->getCall(encodedCallId);
       if (call) {
          const QModelIndex& idx = index(row,column,parentIdx);

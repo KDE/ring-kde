@@ -29,7 +29,7 @@ class QCheckBox;
 class KAction;
 class BookmarkSortFilterProxyModel;
 
-//SFLPhone
+//Ring
 #include "klib/bookmarkmodel.h"
 
 ///BookmarkDock: Dock for managing favorite contacts

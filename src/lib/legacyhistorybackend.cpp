@@ -18,7 +18,7 @@
  ***********************************************************************************/
 #include "legacyhistorybackend.h"
 
-//SFLPhone
+//Ring
 #include "dbus/configurationmanager.h"
 #include "call.h"
 #include "private/call_p.h"

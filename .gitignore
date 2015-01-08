@@ -7,8 +7,8 @@ ui_*.h
 *.files
 man/index.html
 doc/index.cache.bz2
-src/sflphone-client-kde
-src/sflphone-client-kde.shell
+src/ring-kde
+src/ring-kde.shell
 #po/
 #po/*
 #doc/
@@ -35,7 +35,7 @@ src/kcfg_settings.cpp
 src/kcfg_settings.h
 src/qrc_resources.cxx
 src/kde.shell
-man/sflphone.pod
+man/ring.pod
 *~
 .directory
 .*.kate-swp

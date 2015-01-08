@@ -18,7 +18,7 @@
 #ifndef KPHONENUMBERSELECTOR_H
 #define KPHONENUMBERSELECTOR_H
 
-//SFLPhone
+//Ring
 #include "../lib/visitors/phonenumberselector.h"
 
 class PhoneNumber;

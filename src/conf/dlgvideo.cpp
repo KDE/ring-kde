@@ -22,7 +22,7 @@
 #include <KConfigDialog>
 #include <KLocale>
 
-//SFLPhone
+//Ring
 #include "../lib/video/device.h"
 #include "../lib/video/codecmodel2.h"
 #include "../lib/video/manager.h"

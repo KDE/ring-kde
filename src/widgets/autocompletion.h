@@ -27,7 +27,7 @@ class QTreeView;
 class QLabel;
 class QModelIndex;
 
-//SFLPhone
+//Ring
 class Call;
 class NumberCompletionModel;
 class AutoCompletionDelegate;

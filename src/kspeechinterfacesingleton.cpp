@@ -25,7 +25,7 @@ OrgKdeKSpeechInterface* KSpeechInterfaceSingleton::m_pInstance = 0;
 OrgKdeKSpeechInterface* KSpeechInterfaceSingleton::instance() {
    if (!m_pInstance) {
       m_pInstance = new OrgKdeKSpeechInterface( "org.kde.kttsd", "/KSpeech", QDBusConnection::sessionBus());
-      m_pInstance->setApplicationName("SFLPhone KDE");
+      m_pInstance->setApplicationName("Ring KDE");
    }
    return m_pInstance;
 }

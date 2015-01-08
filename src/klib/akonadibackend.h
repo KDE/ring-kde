@@ -45,7 +45,7 @@ namespace Akonadi {
 }
 class KJob;
 
-//SFLPhone
+//Ring
 class Contact;
 
 ///AkonadiBackend: Implement a backend for Akonadi

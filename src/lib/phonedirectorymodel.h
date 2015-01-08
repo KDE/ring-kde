@@ -23,7 +23,7 @@
 #include <QtCore/QString>
 #include <QtCore/QAbstractTableModel>
 
-//SFLPhone
+//Ring
 #include "uri.h"
 class PhoneNumber         ;
 class Contact             ;

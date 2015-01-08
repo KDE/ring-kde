@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
-  <!ENTITY sflphone-client-kde "SFLPhone KDE Client">
-  <!ENTITY kappname "&sflphone-client-kde;">
-  <!ENTITY sflphonerelease "1.1.0">
+  <!ENTITY ring-kde "Ring KDE Client">
+  <!ENTITY kappname "&ring-kde;">
+  <!ENTITY ringrelease "1.1.0">
   <!ENTITY i18n-current-w "Current calls window">
   <!ENTITY i18n-history-w "Call history window">
   <!ENTITY i18n-address-w "Address book window">
@@ -13,7 +13,7 @@
   <!ENTITY i18n-pt-cell "cell phone">
   <!ENTITY i18n-pt-work "work phone">
 
-  <!ENTITY sflphone "SFLphone">
+  <!ENTITY Ring "Ring">
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % English "INCLUDE" >
 
@@ -26,11 +26,11 @@
   <!ENTITY credits SYSTEM "credits.docbook">
 ]>
 
-<book id="sflphone-kde" lang="&language;">
+<book id="ring-kde" lang="&language;">
 <bookinfo>
-  <title>&sflphone-client-kde; User Manual</title>
+  <title>&ring-kde; User Manual</title>
   <date>2009-05-10</date>
-  <releaseinfo>&sflphonerelease;</releaseinfo>
+  <releaseinfo>&ringrelease;</releaseinfo>
 
   <authorgroup>
     <author>
@@ -50,12 +50,12 @@
   <legalnotice>&FDLNotice;</legalnotice>
 
   <abstract>
-    <para>&sflphone-client-kde; is a &kde; client for &sflphone;, a robust enterprise-class desktop phone.</para>
+    <para>&ring-kde; is a &kde; client for &Ring;, a robust enterprise-class desktop phone.</para>
   </abstract>
 
   <keywordset>
     <keyword>KDE</keyword>
-    <keyword>SFLPhone</keyword>
+    <keyword>Ring</keyword>
     <keyword>client</keyword>
     <keyword>phone</keyword>
     <keyword>enterprise</keyword>
@@ -79,7 +79,7 @@
 <bibliography id="bibliography">
 
 <biblioentry>
-<title><ulink url="info://sflphone-client-kde/Top">&sflphone-client-kde; Manual</ulink></title>
+<title><ulink url="info://ring-kde/Top">&ring-kde; Manual</ulink></title>
 <authorgroup>
 <author><firstname>J&eacute;r&eacute;my</firstname><surname>Quentin</surname></author>
 </authorgroup>

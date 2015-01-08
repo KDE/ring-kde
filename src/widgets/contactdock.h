@@ -26,7 +26,7 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QTreeWidgetItem>
 
-//SFLPhone
+//Ring
 #include "categorizedtreeview.h"
 class PhoneNumber;
 
@@ -44,7 +44,7 @@ namespace Akonadi {
 namespace KABC {
 }
 
-///SFLPhone
+///Ring
 class Contact;
 class ContactProxyModel;
 class CategorizedDelegate;

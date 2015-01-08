@@ -1,15 +1,16 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-PROJECT(sflphone-client-kde)
+PROJECT(ring-kde)
+SET(PROJECT_VERSION "1.4.1")
 
 SET(LOCAL_CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/" )
 SET(CMAKE_MODULE_PATH       "${LOCAL_CMAKE_MODULE_PATH}" )
 
 SET(QT_USE_QT*)
 
-if(POLICY CMP0017)
-   cmake_policy(SET CMP0017 NEW)
-endif(POLICY CMP0017)
+IF(POLICY CMP0017)
+   CMAKE_POLICY(SET CMP0017 NEW)
+ENDIF(POLICY CMP0017)
 
 
 # --- custom targets: ---
@@ -20,20 +21,20 @@ IF(NOT (${ENABLE_QT5} MATCHES true))
 ENDIF(NOT (${ENABLE_QT5} MATCHES true))
 
 # GCC 4.5 is too old for C++11
-if (CMAKE_COMPILER_IS_GNUCC)
-   execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-   if (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)
-      message(STATUS "Found GCC version >= 4.8: " ${GCC_VERSION})
-   else()
-      message(FATAL_ERROR "Your version of GCC is too old, please install GCC 4.6 or later")
-   endif()
-endif()
+IF (CMAKE_COMPILER_IS_GNUCC)
+   EXECUTE_PROCESS(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+   IF (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)
+      MESSAGE(STATUS "Found GCC version >= 4.8: " ${GCC_VERSION})
+   ELSE()
+      MESSAGE(FATAL_ERROR "Your version of GCC is too old, please install GCC 4.8 or later")
+   ENDIF()
+ENDIF()
 
 IF(${ENABLE_QT5} MATCHES true)
-   add_subdirectory( src/lib )
+   ADD_SUBDIRECTORY( src/lib )
 ELSE()
-   set(AKONADI_MIN_VERSION 1.0)
-   find_package(Akonadi QUIET NO_MODULE ${AKONADI_MIN_VERSION})
+   SET(AKONADI_MIN_VERSION 1.0)
+   FIND_PACKAGE(Akonadi QUIET NO_MODULE ${AKONADI_MIN_VERSION})
 
    INCLUDE ( KDE4Defaults )
 
@@ -41,27 +42,26 @@ ELSE()
 
    INCLUDE_DIRECTORIES (${KDE4_INCLUDES} ${QT_INCLUDES} ${KDEPIMLIBS_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
-   INCLUDE (  ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
-   INCLUDE(   ${QT_USE_FILE}   )
-   add_subdirectory( data    )
-   add_subdirectory( src     )
-   add_subdirectory( doc     )
-   add_subdirectory( man     )
+   INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
+   INCLUDE( ${QT_USE_FILE}   )
+   ADD_SUBDIRECTORY( data )
+   ADD_SUBDIRECTORY( src  )
+   ADD_SUBDIRECTORY( doc  )
+   ADD_SUBDIRECTORY( man  )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
 IF(${ENABLE_TEST} MATCHES true)
-   add_subdirectory( src/test)
+   ADD_SUBDIRECTORY( src/test)
 ENDIF()
 
 IF(EXISTS "po" AND IS_DIRECTORY "po")
    FIND_PACKAGE ( Gettext REQUIRED )
-   add_subdirectory( po      )
+   ADD_SUBDIRECTORY( po      )
 ENDIF()
 
-set(PROJECT_VERSION "1.4.1")
-set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
+SET(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 
-add_custom_target(dist
+ADD_CUSTOM_TARGET(dist
       COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
       | gzip > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.gz
       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

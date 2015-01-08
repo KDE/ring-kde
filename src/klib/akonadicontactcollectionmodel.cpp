@@ -24,7 +24,7 @@
 // KDE
 #include <akonadi/collectionmodel.h>
 
-// SFLphone
+// Ring
 #include "../lib/contactmodel.h"
 #include "akonadibackend.h"
 #include "kcfg_settings.h"

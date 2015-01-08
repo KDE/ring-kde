@@ -29,8 +29,8 @@ set( dbus_SRCS dbus_test.cpp )
 #    ${KDE4_KDECORE_LIBS}
 #    ${QT_QTTEST_LIBRARY}
 #    ${KDE4_KDEUI_LIBS}
-#    ksflphone
-#    qtsflphone
+#    kring
+#    ringclient
 # )
 
 #ACCOUNT tests
@@ -45,8 +45,8 @@ set( account_SRCS account_test.cpp )
 #    ${KDE4_KDECORE_LIBS}
 #    ${QT_QTTEST_LIBRARY}
 #    ${KDE4_KDEUI_LIBS}
-#    ksflphone
-#    qtsflphone
+#    kring
+#    ringclient
 # )
 
 #Auto completion test
@@ -61,8 +61,8 @@ target_link_libraries( autocompletion
    ${KDE4_KDECORE_LIBS}
    ${QT_QTTEST_LIBRARY}
    ${KDE4_KDEUI_LIBS}
-   ksflphone
-   qtsflphone
+   kring
+   ringclient
 )
 
 #CALL tests
@@ -79,6 +79,6 @@ target_link_libraries( autocompletion
 #    ${KDE4_KDECORE_LIBS}
 #    ${QT_QTTEST_LIBRARY}
 #    ${KDE4_KDEUI_LIBS}
-#    ksflphone
-#    qtsflphone
+#    kring
+#    ringclient
 # )

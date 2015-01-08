@@ -25,9 +25,9 @@ InstanceInterface& DBus::InstanceManager::instance()
 {
    if (!dbus_metaTypeInit) registerCommTypes();
    if (!interface)
-      interface = new InstanceInterface("org.sflphone.SFLphone", "/org/sflphone/SFLphone/Instance", QDBusConnection::sessionBus());
+      interface = new InstanceInterface("cx.ring.Ring", "/cx/ring/Ring/Instance", QDBusConnection::sessionBus());
    if(!interface->connection().isConnected()) {
-      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From instance interface.";
+      throw "Error : dring not connected. Service " + interface->service() + " not connected. From instance interface.";
    }
    return *interface;
 }

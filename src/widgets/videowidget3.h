@@ -29,7 +29,7 @@ class QDragEnterEvent;
 class QDragMoveEvent;
 class QDropEvent;
 
-//SFLPhone
+//Ring
 namespace Video {
    class Renderer;
 }

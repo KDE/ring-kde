@@ -23,7 +23,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QDateTime>
 
-//SFLPhone
+//Ring
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
 #include "../lib/call.h"

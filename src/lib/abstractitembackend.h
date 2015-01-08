@@ -27,7 +27,7 @@
 #include "typedefs.h"
 #include "contact.h"
 
-//SFLPhone
+//Ring
 class Contact;
 class Account;
 class Call   ;

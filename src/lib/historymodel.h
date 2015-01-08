@@ -25,7 +25,7 @@
 
 //Qt
 
-//SFLPhone
+//Ring
 #include "call.h"
 #include "commonbackendmanagerinterface.h"
 

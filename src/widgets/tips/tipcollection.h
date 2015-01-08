@@ -25,7 +25,7 @@
 //Qt
 class QWidget;
 
-//SFLPhone
+//Ring
 class Tip;
 class TipManager;
 class ConnectionLostTip;

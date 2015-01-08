@@ -25,11 +25,10 @@
 //Qt
 class QString;
 
-//SFLPhone
+//Ring
 #include "video/codecmodel2.h"
 #include "keyexchangemodel.h"
 #include "tlsmethodmodel.h"
-#include "sflphone_const.h"
 #include "typedefs.h"
 class CredentialModel;
 class RingToneModel  ;
@@ -400,8 +399,8 @@ class LIB_EXPORT Account : public QObject {
       QVariant roleData            (int role) const;
 
       //Setters
-      void setId      (const QString& id);
-      void setAlias                         (const QString& detail);
+      void setId                            (const QString& id      );
+      void setAlias                         (const QString& detail  );
       void setProtocol                      (Account::Protocol proto);
       void setHostname                      (const QString& detail );
       void setUsername                      (const QString& detail );

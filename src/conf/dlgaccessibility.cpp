@@ -28,7 +28,7 @@
 #include <KIcon>
 #include <KAction>
 
-//SFLPhone
+//Ring
 #include <klib/macromodel.h>
 #include <klib/macro.h>
 #include "../delegates/categorizeddelegate.h"

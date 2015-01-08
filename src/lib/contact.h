@@ -34,7 +34,7 @@ namespace KABC {
    class PhoneNumber ;
 }
 
-//SFLPhone
+//Ring
 class PhoneNumber;
 class AbstractContactBackend;
 class ContactPrivate;

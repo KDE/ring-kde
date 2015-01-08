@@ -26,7 +26,7 @@
 //KDE
 class KAction;
 
-//SFLPhone
+//Ring
 
 class Macro;
 

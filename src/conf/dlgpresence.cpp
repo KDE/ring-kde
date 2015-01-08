@@ -20,7 +20,7 @@
 //KDE
 #include <KIcon>
 
-//Sflphone
+//Ring
 #include <lib/presencestatusmodel.h>
 #include "klib/tipmanager.h"
 #include "klib/tip.h"

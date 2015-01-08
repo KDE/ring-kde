@@ -19,45 +19,9 @@
 
 /* THIS FILE IS DEPRECATED DO NOT ADD NEW GLOBAL CONSTANTS */
 
-#ifndef SFLPHONE_CONST_H
-#define SFLPHONE_CONST_H
 
 
-#define ICON_INCOMING                     ":/images/icons/ring.svg"
-#define ICON_RINGING                      ":/images/icons/ring.svg"
-#define ICON_CURRENT                      ":/images/icons/current.svg"
-#define ICON_DIALING                      ":/images/icons/dial.svg"
-#define ICON_HOLD                         ":/images/icons/hold.svg"
-#define ICON_FAILURE                      ":/images/icons/fail.svg"
-#define ICON_BUSY                         ":/images/icons/busy.svg"
-#define ICON_TRANSFER                     ":/images/icons/transfert.svg"
-#define ICON_TRANSF_HOLD                  ":/images/icons/transfert.svg"
-#define ICON_CONFERENCE                   ":/images/icons/user-group-properties.svg"
-#define ICON_CALL                         ":/images/icons/call.svg"
-#define ICON_HANGUP                       ":/images/icons/hang_up.svg"
-#define ICON_UNHOLD                       ":/images/icons/unhold.svg"
-#define ICON_ACCEPT                       ":/images/icons/accept.svg"
-#define ICON_REFUSE                       ":/images/icons/refuse.svg"
-#define ICON_EXEC_TRANSF                  ":/images/icons/call.svg"
-#define ICON_REC_DEL_OFF                  ":/images/icons/record_disabled.svg"
-#define ICON_REC_DEL_ON                   ":/images/icons/record.svg"
-#define ICON_MAILBOX                      ":/images/icons/mailbox.svg"
 
-#define ICON_DISPLAY_VOLUME_CONSTROLS     ":/images/icons/icon_volume_off.svg"
-#define ICON_DISPLAY_DIALPAD              ":/images/icons/icon_dialpad.svg"
-#define ICON_HISTORY_INCOMING             ":/images/icons/incoming.svg"
-#define ICON_HISTORY_OUTGOING             ":/images/icons/outgoing.svg"
-#define ICON_HISTORY_MISSED               ":/images/icons/missed.svg"
-#define ICON_HISTORY_MISSED_OUT           ":/images/icons/missed_out.svg"
-#define ICON_SFLPHONE                     ":/images/icons/sflphone.svg"
 
-// #define ACCOUNT_TYPES_TAB                 {QString(Account::ProtocolName::SIP), QString(Account::ProtocolName::IAX)}
-/*********************/
 
-/** MIME API */
-#define MIME_CALLID           "text/sflphone.call.id"
-#define MIME_CONTACT          "text/sflphone.contact"
-#define MIME_HISTORYID        "text/sflphone.history.id"
-#define MIME_PHONENUMBER      "text/sflphone.phone.number"
-#define MIME_PLAIN_TEXT       "text/plain"
 #endif

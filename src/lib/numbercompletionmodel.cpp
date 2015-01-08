@@ -23,7 +23,7 @@
 //System
 #include <cmath>
 
-//SFLPhone
+//Ring
 #include "phonedirectorymodel.h"
 #include "phonenumber.h"
 #include "call.h"

@@ -23,13 +23,13 @@
 #include <kconfigdialog.h>
 
 #include "klib/kcfg_settings.h"
-#include "sflphoneview.h"
+#include "view.h"
 #define SETTINGS_NAME "settings"
 
 //KDE
 class KConfigDialogManager;
 
-//SFLPhone
+//Ring
 class DlgGeneral;
 class DlgDisplay;
 class DlgAccounts;
@@ -38,7 +38,7 @@ class DlgAddressBook;
 class DlgHooks;
 class DlgAccessibility;
 class DlgVideo;
-class SFLPhoneView;
+class View;
 class DlgPresence;
 
 //Private
@@ -46,7 +46,7 @@ class PlaceHolderWidget;
 
 /**
    @author Jérémy Quentin <jeremy.quentin@gmail.com>
-   This class represents the config dialog for sflphone.
+   This class represents the config dialog for Ring.
    It uses the ConfigurationSkeleton class to handle most of the settings.
    It inherits KConfigDialog with the pages defined in dlg... files.
    A few complicated settings are handled directly by its pages.
@@ -87,7 +87,7 @@ private:
    KConfigDialogManager* m_pManager;
 
 public:
-   explicit ConfigurationDialog(SFLPhoneView *parent = nullptr);
+   explicit ConfigurationDialog(View *parent = nullptr);
    virtual ~ConfigurationDialog();
 
 

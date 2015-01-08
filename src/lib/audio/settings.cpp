@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "settings.h"
 
-//SFLPhone
+//Ring
 #include "dbus/configurationmanager.h"
 #include "dbus/callmanager.h"
 #include "ringtonedevicemodel.h"

@@ -20,7 +20,7 @@
 //Qt
 #include <QtCore/QMimeData>
 
-//SFLPhone
+//Ring
 #include "kcfg_settings.h"
 #include "../lib/historymodel.h"
 #include "../lib/phonenumber.h"

@@ -21,7 +21,7 @@
 #include <QtCore/QDebug>
 #include <QtGui/QDragEnterEvent>
 
-//SFLPhone library
+//Ring library
 #include "call.h"
 #include "uri.h"
 #include "phonedirectorymodel.h"
@@ -31,7 +31,7 @@
 #include "dbus/callmanager.h"
 #include "dbus/configurationmanager.h"
 #include "dbus/instancemanager.h"
-#include "sflphone_const.h"
+#include "mime.h"
 #include "typedefs.h"
 #include "abstractitembackend.h"
 #include "dbus/videomanager.h"
@@ -785,7 +785,7 @@ QStringList CallModel::mimeTypes() const
 {
    static QStringList mimes;
    if (!mimes.size()) {
-      mimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER << MIME_CALLID << "text/html";
+      mimes << RingMimes::PLAIN_TEXT << RingMimes::PHONENUMBER << RingMimes::CALLID << "text/html";
    }
    return mimes;
 }
@@ -796,12 +796,12 @@ QMimeData* CallModel::mimeData(const QModelIndexList& indexes) const
    foreach (const QModelIndex &idx, indexes) {
       if (idx.isValid()) {
          const QString text = data(idx, Call::Role::Number).toString();
-         mData->setData(MIME_PLAIN_TEXT , text.toUtf8());
+         mData->setData(RingMimes::PLAIN_TEXT , text.toUtf8());
          Call* call = getCall(idx);
          if (call)
-            mData->setData(MIME_PHONENUMBER, call->peerPhoneNumber()->toHash().toUtf8());
+            mData->setData(RingMimes::PHONENUMBER, call->peerPhoneNumber()->toHash().toUtf8());
          qDebug() << "Setting mime" << idx.data(Call::Role::Id).toString();
-         mData->setData(MIME_CALLID  , idx.data(Call::Role::Id).toString().toUtf8());
+         mData->setData(RingMimes::CALLID  , idx.data(Call::Role::Id).toString().toUtf8());
          return mData;
       }
    }
@@ -824,8 +824,8 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
 {
    Q_UNUSED(action)
    const QModelIndex targetIdx    = index   ( row,column,parentIdx );
-   if (mimedata->hasFormat(MIME_CALLID)) {
-      const QByteArray encodedCallId = mimedata->data( MIME_CALLID    );
+   if (mimedata->hasFormat(RingMimes::CALLID)) {
+      const QByteArray encodedCallId = mimedata->data( RingMimes::CALLID    );
       Call* call                     = getCall ( encodedCallId        );
       Call* target                   = getCall ( targetIdx            );
 
@@ -888,8 +888,8 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
             break;
       }
    }
-   else if (mimedata->hasFormat(MIME_PHONENUMBER)) {
-      const QByteArray encodedPhoneNumber = mimedata->data( MIME_PHONENUMBER );
+   else if (mimedata->hasFormat(RingMimes::PHONENUMBER)) {
+      const QByteArray encodedPhoneNumber = mimedata->data( RingMimes::PHONENUMBER );
       Call* target = getCall(targetIdx);
       qDebug() << "Phone number" << encodedPhoneNumber << "on call" << target;
       Call* newCall = dialingCall(QString(),target->account());
@@ -898,8 +898,8 @@ bool CallModel::dropMimeData(const QMimeData* mimedata, Qt::DropAction action, i
       newCall->performAction(Call::Action::ACCEPT);
       createConferenceFromCall(newCall,target);
    }
-   else if (mimedata->hasFormat(MIME_CONTACT)) {
-      const QByteArray encodedContact = mimedata->data(MIME_CONTACT);
+   else if (mimedata->hasFormat(RingMimes::CONTACT)) {
+      const QByteArray encodedContact = mimedata->data(RingMimes::CONTACT);
       Call* target = getCall(targetIdx);
       qDebug() << "Contact" << encodedContact << "on call" << target;
       if (PhoneNumberSelector::defaultVisitor()) {

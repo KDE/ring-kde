@@ -21,7 +21,7 @@
 //KDE
 #include <KDebug>
 
-//SFLPhone
+//Ring
 #include "tip.h"
 #include "tipmanager.h"
 

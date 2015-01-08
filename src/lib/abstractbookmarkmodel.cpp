@@ -20,7 +20,7 @@
 //Qt
 #include <QtCore/QMimeData>
 
-//SFLPhone
+//Ring
 #include "historymodel.h"
 #include "dbus/presencemanager.h"
 #include "phonedirectorymodel.h"
@@ -28,6 +28,7 @@
 #include "callmodel.h"
 #include "call.h"
 #include "uri.h"
+#include "mime.h"
 #include "abstractitembackend.h"
 
 static bool test = false;
@@ -70,7 +71,7 @@ QObject* AbstractBookmarkModel::TopLevelItem::getSelf() const
 AbstractBookmarkModel::AbstractBookmarkModel(QObject* parent) : QAbstractItemModel(parent){
    setObjectName("AbstractBookmarkModel");
    reloadCategories();
-   m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
+   m_lMimes << RingMimes::PLAIN_TEXT << RingMimes::PHONENUMBER;
 
    //Connect
    connect(&DBus::PresenceManager::instance(),SIGNAL(newServerSubscriptionRequest(QString)),this,SLOT(slotRequest(QString)));
@@ -259,8 +260,8 @@ QMimeData* AbstractBookmarkModel::mimeData(const QModelIndexList &indexes) const
    foreach (const QModelIndex &index, indexes) {
       if (index.isValid()) {
          QString text = data(index, Call::Role::Number).toString();
-         mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
-         mimeData->setData(MIME_PHONENUMBER, text.toUtf8());
+         mimeData->setData(RingMimes::PLAIN_TEXT , text.toUtf8());
+         mimeData->setData(RingMimes::PHONENUMBER, text.toUtf8());
          return mimeData;
       }
    }

@@ -23,7 +23,7 @@
 class AbstractItemBackendBase;
 class Account;
 
-///SFLPhonelib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
+///Ringlib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
 class LIB_EXPORT ItemModelStateSerializationVisitor {
 public:
    virtual bool save() = 0;

@@ -32,7 +32,7 @@
 //KDE
 class KJob;
 
-//SFLPhone
+//Ring
 class AutoCompletionDelegate;
 
 class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase

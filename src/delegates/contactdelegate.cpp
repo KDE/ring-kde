@@ -30,7 +30,7 @@
 #include <KStandardDirs>
 #include <KIcon>
 
-//SFLPhone
+//Ring
 #include <lib/contact.h>
 #include <lib/numbercategory.h>
 #include <lib/phonenumber.h>
@@ -158,7 +158,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       const int fmh = fontH;
       const static QPixmap* mail = nullptr;
       if (!mail)
-         mail = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/mail.png"));
+         mail = new QPixmap(KStandardDirs::locate("data","ring-kde/mini/mail.png"));
       painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fmh-12),*mail);
       painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->preferredEmail());
       currentHeight +=fmh;
@@ -179,7 +179,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;
-         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Conference));
+         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/transferarrow.png")),Call::DropAction::Conference));
          m_pDelegatedropoverlay->setButtons(&contactMap);
       }
       m_pDelegatedropoverlay->paintEvent(painter, option, index);

@@ -35,14 +35,13 @@
 #include <KMessageBox>
 #include <KColorScheme>
 
-//SFLPhone
+//Ring
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/dbus/configurationmanager.h"
-#include "sflphoneview.h"
+#include "view.h"
 #include "klib/tipmanager.h"
 #include "klib/tip.h"
-#include "lib/sflphone_const.h"
 #include "lib/credentialmodel.h"
 #include "lib/audio/codecmodel.h"
 #include "lib/securityvalidationmodel.h"

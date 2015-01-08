@@ -24,7 +24,7 @@
 //Qt
 #include <QtCore/QHash>
 
-//SFLPhone
+//Ring
 #include "device.h"
 namespace Video {
    class Renderer;

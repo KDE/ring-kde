@@ -34,8 +34,8 @@
 #include <KLocale>
 #include <KStandardDirs>
 
-//SFLPhone 
-#include "../sflphoneaccessibility.h"
+//Ring 
+#include "../accessibility.h"
 #include "klib/kcfg_settings.h"
 #include "lib/callmodel.h"
 #include "lib/call.h"
@@ -116,7 +116,7 @@ void CallViewOverlay::setVisible(bool enabled) {
       m_pCurrentCall = nullptr;
    }
    if (!m_accessMessage.isEmpty() && enabled == true && ConfigurationSkeleton::enableReadLabel()) {
-      SFLPhoneAccessibility::instance()->say(m_accessMessage);
+      Accessibility::instance()->say(m_accessMessage);
    }
 } //setVisible
 
@@ -125,7 +125,7 @@ void CallViewOverlay::paintEvent(QPaintEvent* event) {
    Q_UNUSED(event)
    QPainter customPainter(this);
    customPainter.fillRect(rect(),m_black);
-   customPainter.drawPixmap(rect().width()-125-10,rect().height()-50-10,QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/transferarrow.png")));
+   customPainter.drawPixmap(rect().width()-125-10,rect().height()-50-10,QPixmap(KStandardDirs::locate("data" , "ring-kde/transferarrow.png")));
 }
 
 ///Be sure the event is always the right size

@@ -24,10 +24,10 @@ CallManagerInterface * DBus::CallManager::interface = nullptr;
 CallManagerInterface & DBus::CallManager::instance(){
    if (!dbus_metaTypeInit) registerCommTypes();
    if (!interface)
-      interface = new CallManagerInterface( "org.sflphone.SFLphone", "/org/sflphone/SFLphone/CallManager", QDBusConnection::sessionBus());
+      interface = new CallManagerInterface( "cx.ring.Ring", "/cx/ring/Ring/CallManager", QDBusConnection::sessionBus());
    if(!interface->connection().isConnected())
-      throw "Error : sflphoned not connected. Service " + interface->service() + " not connected. From call manager interface.";
+      throw "Error : dring not connected. Service " + interface->service() + " not connected. From call manager interface.";
    if (!interface->isValid())
-      throw "SFLphone daemon not available, be sure it running";
+      throw "Dring daemon not available, be sure it running";
    return *interface;
 }

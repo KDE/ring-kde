@@ -23,8 +23,7 @@
 //Qt
 #include <QtGui/QPixmap>
 
-//SFLPhone library
-#include "sflphone_const.h"
+//Ring library
 #include "phonenumber.h"
 #include "abstractitembackend.h"
 #include "transitionalcontactbackend.h"

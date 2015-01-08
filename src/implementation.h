@@ -27,7 +27,7 @@
 #include <QtGui/QPalette>
 #include <QtGui/QColor>
 
-//Implement all client dependant libqtsflphone abstract interfaces
+//Implement all client dependant libringclient abstract interfaces
 
 class ColorVisitor : public AccountListColorVisitor {
 public:

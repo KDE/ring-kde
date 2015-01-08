@@ -36,13 +36,13 @@ class QDate;
 class KDateWidget;
 class KAction;
 
-//SFLPhone
+//Ring
 #include "../lib/historymodel.h"
 class KeyPressEater;
 
 //Typedef
 
-///HistoryDock: Dock to see the previous SFLPhone calls
+///HistoryDock: Dock to see the previous Ring calls
 class HistoryDock : public QDockWidget, public Ui_DockBase {
    Q_OBJECT
 

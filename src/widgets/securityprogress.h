@@ -26,7 +26,7 @@ class QLabel;
 class QHBoxLayout;
 class QLineEdit;
 
-//SFLPhone
+//Ring
 #include <lib/securityvalidationmodel.h>
 class SecurityProgress;
 

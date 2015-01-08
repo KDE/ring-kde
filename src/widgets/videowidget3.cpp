@@ -32,7 +32,7 @@
 #include <math.h>
 #include <GL/glu.h>
 
-//SFLPhone
+//Ring
 #include <lib/video/manager.h>
 #include <lib/video/sourcesmodel.h>
 #include "videoscene.h"

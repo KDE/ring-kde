@@ -25,8 +25,8 @@
 #include "conftip.h"
 #include "removeconferencetip.h"
 #include "klib/tipmanager.h"
-#include "sflphone.h"
-#include "sflphoneview.h"
+#include "ring.h"
+#include "view.h"
 #include "widgets/autocompletion.h"
 
 //Tutorial mode
@@ -77,7 +77,7 @@ QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
 {
    switch(obj) {
       case CanvasObjectManager::Object::AutoComplete:
-         return SFLPhone::view()->autoCompletion();
+         return Ring::view()->autoCompletion();
       case CanvasObjectManager::Object::DialInfo:
       case CanvasObjectManager::Object::EndCall :
       case CanvasObjectManager::Object::Ringing :

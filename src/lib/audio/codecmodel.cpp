@@ -21,7 +21,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
 
-//SFLPhone
+//Ring
 #include "account.h"
 #include "dbus/configurationmanager.h"
 

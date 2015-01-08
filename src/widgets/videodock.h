@@ -26,7 +26,7 @@ class QGridLayout;
 //KDE
 class KUrl;
 
-//SFLPhone
+//Ring
 class VideoWidget3;
 class VideoSettings;
 class MediaPicker;

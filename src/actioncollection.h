@@ -26,8 +26,7 @@ class QActionGroup;
 //KDE
 class KAction;
 
-//SFLPhonw
-class AccountWizard;
+//Ring
 class ExtendedAction;
 
 ///Group action declaration under the same umbrella
@@ -107,9 +106,8 @@ private:
    KAction* action_displayVolumeControls ;
    KAction* action_displayDialpad        ;
    KAction* action_displayMessageBox     ;
-   KAction* action_configureSflPhone     ;
+   KAction* action_configureRing         ;
    KAction* action_configureShortcut     ;
-   KAction* action_accountCreationWizard ;
    KAction* action_pastenumber           ;
    KAction* action_showContactDock       ;
    KAction* action_showHistoryDock       ;
@@ -117,8 +115,6 @@ private:
    KAction* action_editToolBar           ;
    KAction* action_addContact            ;
    QActionGroup* action_screen           ;
-
-   AccountWizard*       m_pWizard        ;
 
    //Singleton
    static ActionCollection* m_spInstance;
@@ -133,9 +129,8 @@ private Q_SLOTS:
    void transfer ();
    void record   ();
    void mailBox  ();
-   void configureSflPhone     ();
+   void configureRing         ();
    void showShortCutEditor    ();
-   void accountCreationWizard ();
    void editToolBar           ();
    void addMacro              ( KAction* newAction );
    void slotAddContact();

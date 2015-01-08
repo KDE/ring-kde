@@ -24,7 +24,7 @@
 #include <QtCore/QAbstractTableModel>
 class QTimer;
 
-//SFLPhone
+//Ring
 class Account;
 
 ///CredentialModel: A model for account credentials

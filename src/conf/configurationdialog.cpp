@@ -35,8 +35,8 @@
 #include "dlgaccessibility.h"
 #include "dlgvideo.h"
 #include "dlgpresence.h"
+#include "icons/icons.h"
 
-#include "lib/sflphone_const.h"
 #include "lib/accountmodel.h"
 
 typedef  QWidget* QWidgetPtr;
@@ -85,12 +85,12 @@ void PlaceHolderWidget::display(KPageWidgetItem *current)
  */
 
 ///Constructor
-ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
+ConfigurationDialog::ConfigurationDialog(View *parent)
  :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(nullptr),dlgGeneral(nullptr),dlgDisplay(nullptr)
  ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgHooks(nullptr),dlgAccessibility(nullptr),dlgAccounts(nullptr),
  dlgPresence(nullptr)
 {
-   this->setWindowIcon(QIcon(ICON_SFLPHONE));
+   this->setWindowIcon(QIcon(RingIcons::RING));
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
       dlgHolder[i] = nullptr;
 
@@ -188,7 +188,7 @@ ConfigurationDialog::ConfigurationDialog(SFLPhoneView *parent)
       dialog->m_pManager->addWidget(dialog->dlgPresence);
       return dialog->dlgPresence;
    });
-   m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "sflphone-client-kde/presence-icon.svg"));
+   m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "ring-kde/presence-icon.svg"));
    m_pPresPage->setProperty("id",ConfigurationDialog::Page::Presence);
    m_pPresPage->setEnabled(AccountModel::instance()->isPresencePublishSupported() && AccountModel::instance()->isPresenceEnabled());
    connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));

@@ -22,7 +22,7 @@
 #include "../typedefs.h"
 class Account;
 
-///SFLPhonelib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
+///Ringlib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
 class LIB_EXPORT AccountListColorVisitor {
 public:
    virtual QVariant getColor(const Account* a) = 0;

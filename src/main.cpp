@@ -30,15 +30,15 @@
 #include <klocale.h>
 #include <kde_file.h>
 
-//SFLPhone
-#include "sflphoneapplication.h"
+//Ring
+#include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 #include "lib/callmodel.h"
-#include "sflphonecmd.h"
+#include "cmd.h"
 
 static const char version[] = "1.4.1";
 
-SFLPhoneApplication* app;
+RingApplication* app;
 void quitOnSignal(int signal);
 void quitOnSignal(int signal)
 {
@@ -50,26 +50,26 @@ int main(int argc, char **argv)
 {
    try
    {
-      KLocale::setMainCatalog("sflphone-client-kde");
+      KLocale::setMainCatalog("ring-kde");
 
       KAboutData about(
-         "sflphone-client-kde"                              ,
-         "sflphone-client-kde"                              ,
-         ki18n("SFLPhone-KDE")                              ,
+         "ring-kde"                                         ,
+         "ring-kde"                                         ,
+         ki18n("Ring-KDE")                                  ,
          version                                            ,
          ki18n("An enterprise grade KDE SIP and IAX phone") ,
          KAboutData::License_GPL_V3                         ,
          ki18n("(C) 2009-2015 Savoir-faire Linux")          ,
          KLocalizedString()                                 ,
-         "http://www.sflphone.org."                         ,
+         "http://www.ring.cx"                               ,
          "sflphone@lists.savoirfairelinux.net"
       );
       about.addAuthor( ki18n( "Emmanuel Lepage Vallée" ), KLocalizedString(), "emmanuel.lepage@savoirfairelinux.com" );
       about.addCredit( ki18n( "Jérémy Quentin"         ), KLocalizedString(), "jeremy.quentin@savoirfairelinux.com"  );
 
-      SFLPhoneCmd::parseCmd(argc,argv,about);
+      Cmd::parseCmd(argc,argv,about);
 
-      app = new SFLPhoneApplication();
+      app = new RingApplication();
 
       //dbus configuration
       CallModel::instance();

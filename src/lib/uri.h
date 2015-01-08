@@ -27,7 +27,7 @@ class URIPrivate;
 /**
     * @class URI A specialized string with multiple attributes
     * 
-    * Most of SFLPhone-KDE handle uri as strings, but more
+    * Most of Ring-KDE handle uri as strings, but more
     * advanced algorithms need to access the various sections.
     * 
     * Here is some example of common numbers/URIs:

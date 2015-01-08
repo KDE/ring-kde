@@ -20,7 +20,7 @@
 //Qt
 #include <QtCore/QTimer>
 
-//SFLphone
+//Ring
 #include "dbus/configurationmanager.h"
 #include "dbus/callmanager.h"
 #include "account.h"

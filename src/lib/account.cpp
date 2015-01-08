@@ -25,10 +25,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-//SFLPhone
-#include "sflphone_const.h"
-
-//SFLPhone lib
+//Ring lib
 #include "dbus/configurationmanager.h"
 #include "dbus/callmanager.h"
 #include "dbus/videomanager.h"

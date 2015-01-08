@@ -19,7 +19,7 @@
 //Parent
 #include "contactmodel.h"
 
-//SFLPhone library
+//Ring library
 #include "contact.h"
 #include "call.h"
 #include "uri.h"

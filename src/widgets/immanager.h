@@ -24,7 +24,7 @@
 //KDE
 #include <KTabWidget>
 
-//SFLPhone
+//Ring
 class IMTab;
 class InstantMessagingModel;
 class Call;

@@ -23,7 +23,7 @@
 //Qt
 #include <QtCore/QString>
 
-//SFLPhone
+//Ring
 #include "../typedefs.h"
 
 class Account;

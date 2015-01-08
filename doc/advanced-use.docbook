@@ -14,13 +14,13 @@
 		</authorgroup>
 	</chapterinfo>
 
-	<title>Advanced use of &sflphone-client-kde;</title>
+	<title>Advanced use of &ring-kde;</title>
 
 	<sect1 id="advanced-use-hooks">
 		<title>Hooks</title>
 
 		<para>
-			An interesting feature of &sflphone; is the hook handle. Hooks designate some actions you can choose to trigger on a particular signal, especially when receiving or sending a call. The two useful hooks that are implemented in &sflphone; are the URL argument, and the phone number formatting.
+			An interesting feature of &Ring; is the hook handle. Hooks designate some actions you can choose to trigger on a particular signal, especially when receiving or sending a call. The two useful hooks that are implemented in &Ring; are the URL argument, and the phone number formatting.
 		</para>
 
 		<sect2 id="advanced-use-hooks-url">
@@ -56,10 +56,10 @@
 		<title>Codecs</title>
 
 		<para>
-			To communicate voice information, &sflphone; uses some codecs. You can choose which codec to use in the audio configuration panel.
+			To communicate voice information, &Ring; uses some codecs. You can choose which codec to use in the audio configuration panel.
 		</para>
 		<para>
-			In this panel you will see the codecs available on your system with all their parameters. &sflphone; will use the first activated one in the list. So you can change the order of the list, and activate/deactivate some ones, to change which one will be used. To do that, select a codec and click on the up/down arrows, or just check/uncheck the corresponding checkbox.
+			In this panel you will see the codecs available on your system with all their parameters. &Ring; will use the first activated one in the list. So you can change the order of the list, and activate/deactivate some ones, to change which one will be used. To do that, select a codec and click on the up/down arrows, or just check/uncheck the corresponding checkbox.
 		</para>
 
 	</sect1>
@@ -68,7 +68,7 @@
                 <title>Video</title>
 
                 <para>
-                        &sflphone; versions higher than 1.1.2 have built in support for video calls. This feature work mostly the same way as the audio codecs. An option as also available to disable video transmission.
+                        &Ring; versions higher than 1.1.2 have built in support for video calls. This feature work mostly the same way as the audio codecs. An option as also available to disable video transmission.
                 </para>
                 <para>
                         During a video call, some display options are available to change the aspect ratio or rotate the video. By pressing the advanced settings button, it is also possible to switch from different camera, disable video, stream a file or share your screen(s). Sharing a file is also accessible by drag and dropping it on top of the video window.

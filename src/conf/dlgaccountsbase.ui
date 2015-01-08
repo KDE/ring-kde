@@ -89,7 +89,7 @@
             </size>
            </property>
            <property name="whatsThis">
-            <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows. Enable/disable them by checking/unchecking them on the left of the item. Add or remove some with &quot;Plus&quot; and &quot;Sub&quot; buttons. Edit the selected account with the form on the right.</string>
+            <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows. Enable/disable them by checking/unchecking them on the left of the item. Add or remove some with &quot;Plus&quot; and &quot;Sub&quot; buttons. Edit the selected account with the form on the right.</string>
            </property>
            <property name="dragEnabled">
             <bool>true</bool>
@@ -123,7 +123,7 @@
               <string>Get this account up</string>
              </property>
              <property name="whatsThis">
-              <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+              <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
              </property>
              <property name="text">
               <string comment="Move account up">Up</string>
@@ -139,7 +139,7 @@
               <string>Get this account down</string>
              </property>
              <property name="whatsThis">
-              <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+              <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
              </property>
              <property name="text">
               <string comment="Move account down">Down</string>
@@ -306,7 +306,7 @@
                </size>
               </property>
               <property name="placeholderText">
-               <string>Example: sip.sflphone.org or 192.168.0.2</string>
+               <string>Example: sip.Ring.org or 192.168.0.2</string>
               </property>
              </widget>
             </item>
@@ -858,7 +858,7 @@
                   <string>Increase codec priority</string>
                  </property>
                  <property name="whatsThis">
-                  <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+                  <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
                  </property>
                  <property name="text">
                   <string comment="Move audio codec up">Up</string>
@@ -874,7 +874,7 @@
                   <string>Decrease codec priority</string>
                  </property>
                  <property name="whatsThis">
-                  <string>By default, when you place a call, sflphone will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+                  <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
                  </property>
                  <property name="text">
                   <string comment="Move audio codec down">Down</string>
@@ -1033,7 +1033,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>This tab help manage accounts with multiple credentials. If you have multiple accounts. Do not use this feature, just create multiple accounts in SFLPhone. Nor use this dialog if you only have one set of credentials. In that case, the &quot;Basic&quot; tab will provide everything you need.</string>
+             <string>This tab help manage accounts with multiple credentials. If you have multiple accounts. Do not use this feature, just create multiple accounts in Ring. Nor use this dialog if you only have one set of credentials. In that case, the &quot;Basic&quot; tab will provide everything you need.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>

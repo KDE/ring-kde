@@ -22,7 +22,7 @@
 #include "typedefs.h"
 #include "phonedirectorymodel.h"
 
-//SFLPhone
+//Ring
 class PhoneNumber;
 class Call;
 

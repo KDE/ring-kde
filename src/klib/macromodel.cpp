@@ -30,7 +30,7 @@
 #include <KLocale>
 #include <KStandardDirs>
 
-//SFLPhone
+//Ring
 #include "../lib/dbus/callmanager.h"
 #include "kcfg_settings.h"
 #include "macro.h"

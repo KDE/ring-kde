@@ -34,7 +34,7 @@ ConnectionLostTip::ConnectionLostTip(QWidget* parent) : Tip(i18n("There was a ne
 m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 {
    setTimeOut(60);
-   loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/reload.svg"));
+   loadSvg(KStandardDirs::locate("data", "ring-kde/tips/reload.svg"));
    connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }
 

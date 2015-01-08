@@ -28,7 +28,7 @@
 #include <QtCore/QTimer>
 
 
-//SFLPhone library
+//Ring library
 #include "dbus/callmanager.h"
 #include "dbus/configurationmanager.h"
 #include "abstractitembackend.h"
@@ -1080,8 +1080,8 @@ void CallPrivate::error()
       //Well, in this case we have no choice, it still doesn't belong here
       q_ptr->videoRenderer()->stopRendering();
    }
-   throw QString("There was an error handling your call, please restart SFLPhone.Is you encounter this problem often, \
-   please open SFLPhone-KDE in a terminal and send this last 100 lines before this message in a bug report at \
+   throw QString("There was an error handling your call, please restart Ring.Is you encounter this problem often, \
+   please open Ring-KDE in a terminal and send this last 100 lines before this message in a bug report at \
    https://projects.savoirfairelinux.com/projects/sflphone/issues");
 }
 
@@ -1239,7 +1239,7 @@ void CallPrivate::call()
       qDebug() << "Account is not set, taking the first registered.";
       this->m_Account = AccountModel::currentAccount();
    }
-   //Calls to empty URI should not be allowed, sflphoned will go crazy
+   //Calls to empty URI should not be allowed, dring will go crazy
    if ((!m_pDialNumber) || m_pDialNumber->uri().isEmpty()) {
       qDebug() << "Trying to call an empty URI";
       changeCurrentState(Call::State::FAILURE);
@@ -1386,7 +1386,7 @@ void CallPrivate::warning()
          //If not stopped, then the counter will keep going
          //Getting here indicate something wrong happened
          //It can be normal, aka, an invalid URI such as '><'
-         // or an SFLPhone-KDE bug
+         // or an Ring-KDE bug
          stop();
          break;
       case Call::State::TRANSFERRED    :

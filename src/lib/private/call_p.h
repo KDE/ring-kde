@@ -26,7 +26,7 @@
 class QTimer;
 
 
-//SFLPhone
+//Ring
 class Account;
 class PhoneNumber;
 class UserActionModel;

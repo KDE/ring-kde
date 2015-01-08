@@ -22,7 +22,7 @@
 #include <QtGui/QWidget>
 #include <QtGui/QPainter>
 
-//SFLPhone
+//Ring
 #include "../lib/videomodel.h"
 class ;
 

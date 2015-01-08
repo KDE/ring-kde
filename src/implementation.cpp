@@ -30,36 +30,37 @@
 #include <KLocale>
 #include <KStandardDirs>
 
-//SFLPhone
+//Ring
 #include <lib/contact.h>
 #include <lib/phonenumber.h>
 #include <lib/presencestatusmodel.h>
 #include <lib/securityvalidationmodel.h>
 #include "klib/kcfg_settings.h"
 #include <lib/abstractitembackend.h>
+#include "icons/icons.h"
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {
-   {  ICON_INCOMING   ,
-      ICON_RINGING    ,
-      ICON_CURRENT    ,
-      ICON_DIALING    ,
-      ICON_HOLD       ,
-      ICON_FAILURE    ,
-      ICON_BUSY       ,
-      ICON_TRANSFER   ,
-      ICON_TRANSF_HOLD,
+   {  RingIcons::INCOMING   ,
+      RingIcons::RINGING    ,
+      RingIcons::CURRENT    ,
+      RingIcons::DIALING    ,
+      RingIcons::HOLD       ,
+      RingIcons::FAILURE    ,
+      RingIcons::BUSY       ,
+      RingIcons::TRANSFER   ,
+      RingIcons::TRANSF_HOLD,
       ""              ,
       ""              ,
-      ICON_CONFERENCE}};
+      RingIcons::CONFERENCE}};
 
 const char* KDEPixmapManipulation::icnPath[2][2] = {
    {
-   /* INCOMING  */ ICON_HISTORY_INCOMING  ,
-   /* OUTGOING  */ ICON_HISTORY_OUTGOING  ,
+   /* INCOMING  */ RingIcons::HISTORY_INCOMING  ,
+   /* OUTGOING  */ RingIcons::HISTORY_OUTGOING  ,
    },
    {
-   /* MISSED_IN */ ICON_HISTORY_MISSED    ,
-   /* MISSED_OUT*/ ICON_HISTORY_MISSED_OUT,
+   /* MISSED_IN */ RingIcons::HISTORY_MISSED    ,
+   /* MISSED_OUT*/ RingIcons::HISTORY_MISSED_OUT,
    }
 };
 
@@ -235,7 +236,7 @@ QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displ
 QVariant KDEPixmapManipulation::numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence, bool isPresent) {
    Q_UNUSED(size)
    if (displayPresence) {
-      QPixmap pxm = p?(*p):QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+      QPixmap pxm = p?(*p):QPixmap(KStandardDirs::locate("data" , "ring-kde/mini/call.png"));
       QPainter painter(&pxm);
       painter.setOpacity(0.3);
       painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
@@ -244,7 +245,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QPixmap* p, const QSize
    }
    if (p)
       return *p;
-   return QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+   return QPixmap(KStandardDirs::locate("data" , "ring-kde/mini/call.png"));
 }
 
 QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)

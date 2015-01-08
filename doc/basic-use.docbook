@@ -8,9 +8,9 @@
 </authorgroup>
 </chapterinfo>
 
-<title>Basic use of &sflphone-client-kde;</title>
+<title>Basic use of &ring-kde;</title>
 
-<para>Although &sflphone; is enterprise oriented, its interface is very easy to use and you can use the basic features without any particular skills or knowings.</para>
+<para>Although &Ring; is enterprise oriented, its interface is very easy to use and you can use the basic features without any particular skills or knowings.</para>
 
 <sect1 id="basic-use-mainwindow">
 <title>Presentation of the main window</title>
@@ -99,10 +99,10 @@ The contact list provide an easy access to KDE address book contacts. By default
       SIP accounts support a feature called "presence". This allow softphone users to track other users current status ("on the phone", "ready", "busy" and so on). It can be compared to an usual instant messaging online buddy list, but is more restricted. Each "buddy" have to be tracked individually and using this feature alongside IP2IP or DNS based phone number can consume extra energy, reducing notebook battery life. As of 2014, it also prove to be unreliable and multiple PBX such as Asterisk only support a subset of the protocol.
    </para>
    <para>
-      &sflphone-client-kde; will only track phone numbers if "Enable presence support" is checked for an account, that the phone number have already been called and if it is either bookmarked or is part of an explicitly tracked contact collection.
+      &ring-kde; will only track phone numbers if "Enable presence support" is checked for an account, that the phone number have already been called and if it is either bookmarked or is part of an explicitly tracked contact collection.
    </para>
    <para>
-      Presence publishing allow some accounts to publish a presence message and status (either online or offline) to other softphones. If an account support it (and have presence enabled), &sflphone-client-kde; will display a widget in the status bar to set the presence message. Some predefined messages can be configured in the configuration dialog, but a custom one can also be used. The default is "Online". An online presence status doesn't imply that you can make a call or that and account is online or not. As &sflphone; also support calls over ssh tunnels and localhost addresses, &sflphone; is, in theory, always online. Again, empirical testing show this feature does not work very well on the vast majority of PBX and registrar. Freeswitch based registrar seem to have the best support. This information can also be lost when calls are routed though proxies and intermediary PBX.
+      Presence publishing allow some accounts to publish a presence message and status (either online or offline) to other softphones. If an account support it (and have presence enabled), &ring-kde; will display a widget in the status bar to set the presence message. Some predefined messages can be configured in the configuration dialog, but a custom one can also be used. The default is "Online". An online presence status doesn't imply that you can make a call or that and account is online or not. As &Ring; also support calls over ssh tunnels and localhost addresses, &Ring; is, in theory, always online. Again, empirical testing show this feature does not work very well on the vast majority of PBX and registrar. Freeswitch based registrar seem to have the best support. This information can also be lost when calls are routed though proxies and intermediary PBX.
    </para>
    <para>
       When the presence subscription work as expected, contacts, history calls and bookmarked numbers will have either a red or green tint or halo around them. This information will also be used to the auto completion engine to give better results.
@@ -146,14 +146,14 @@ The <guilabel>Bookmark</guilabel> page allow to save some phone numbers to be mo
 <title>Calling from address book</title>
 
 
-<para>If you have configured contacts in either KAddressBook or Akonadi, &sflphone-client-kde; should automatically import them. To call a contact, it is possible to double click on it, drag and drop it to the current call list, press &Enter; or right click and select <guimenuitem>Call</guimenuitem>.</para>
+<para>If you have configured contacts in either KAddressBook or Akonadi, &ring-kde; should automatically import them. To call a contact, it is possible to double click on it, drag and drop it to the current call list, press &Enter; or right click and select <guimenuitem>Call</guimenuitem>.</para>
 
 <para>
 If the contact have multiple phone numbers, a dialog will be shown to select the right number.
 </para>
 
 <para>
-Beginning with version 1.4.0, &sflphone-client-kde; can also act as a complete contact manager (oriented on phone related features). It is possible to add, manage and configure Akonadi collection directly from the configuration dialog "Address Book" section. It is also possible to add and remove contacts directly from the main interface.
+Beginning with version 1.4.0, &ring-kde; can also act as a complete contact manager (oriented on phone related features). It is possible to add, manage and configure Akonadi collection directly from the configuration dialog "Address Book" section. It is also possible to add and remove contacts directly from the main interface.
 </para>
 
 <para>
@@ -196,7 +196,7 @@ Beginning with version 1.4.0, &sflphone-client-kde; can also act as a complete c
 <sect2 id="basic-use-becalled">
 <title>Receiving a call</title>
 
-<para>When one of the account registered in &sflphone; receives an incoming call, it will be displayed as a new item in the &i18n-current-w; with the "incoming" icon. You can either accept or refuse it. To accept it, select the item and click on the <guibutton>Accept</guibutton> button which replaced the <guibutton>Call</guibutton> button in toolbar and <guimenu>Actions</guimenu> menu, or double click the item, or press &Enter;. To refuse it, select it and click on the refuse button that replaced the <guibutton>Hang up</guibutton> button in toolbar and Actions menu or press &Esc;.</para>
+<para>When one of the account registered in &Ring; receives an incoming call, it will be displayed as a new item in the &i18n-current-w; with the "incoming" icon. You can either accept or refuse it. To accept it, select the item and click on the <guibutton>Accept</guibutton> button which replaced the <guibutton>Call</guibutton> button in toolbar and <guimenu>Actions</guimenu> menu, or double click the item, or press &Enter;. To refuse it, select it and click on the refuse button that replaced the <guibutton>Hang up</guibutton> button in toolbar and Actions menu or press &Esc;.</para>
 
 <para>Following behavior, common part...</para>
 
@@ -263,7 +263,7 @@ Beginning with version 1.4.0, &sflphone-client-kde; can also act as a complete c
 <title>The call is being transferred</title>
 
 
-<para>SFLPhone support two types of transfer, direct and attended. Attended will be discussed in the next section. Direct transfer is the action of transferring a call to another number. Once the call is transferred, it is considered over by SFLPhone. It should start ringing on the number you transferred to. To transfer a call, press on the <guibutton>Transfer</guibutton> button in the toolbar. This overlay should be presented:</para>
+<para>Ring support two types of transfer, direct and attended. Attended will be discussed in the next section. Direct transfer is the action of transferring a call to another number. Once the call is transferred, it is considered over by Ring. It should start ringing on the number you transferred to. To transfer a call, press on the <guibutton>Transfer</guibutton> button in the toolbar. This overlay should be presented:</para>
 
 <para>
 <screenshot>
@@ -286,10 +286,10 @@ Beginning with version 1.4.0, &sflphone-client-kde; can also act as a complete c
 <sect1 id="basic-managing-calls">
 <title>Managing calls</title>
 
-<para>SFLPhone support multiple calls at once. Managing multiple call offer many features, but it is also important to understand the relation between them. In theory, only 1 call or group of calls, referred here as conferences, can be active. Other calls are going to be on hold. A call on hold can not communicate, be it by instant message or voice unless it is activated again. Double click or press &Enter; to re-activate the call. Active call should have a green icon emblem are be more saturated than inactive calls.</para>
+<para>Ring support multiple calls at once. Managing multiple call offer many features, but it is also important to understand the relation between them. In theory, only 1 call or group of calls, referred here as conferences, can be active. Other calls are going to be on hold. A call on hold can not communicate, be it by instant message or voice unless it is activated again. Double click or press &Enter; to re-activate the call. Active call should have a green icon emblem are be more saturated than inactive calls.</para>
 
 <para>
-Conferences are a group of intercommunicating calls. Each participant of a conversation can hear all the other participants. However, it is important to note that if a conference have been created in SFLPhone, the other participants would not know about it, so it is useful to actually tell them they are in a conference.
+Conferences are a group of intercommunicating calls. Each participant of a conversation can hear all the other participants. However, it is important to note that if a conference have been created in Ring, the other participants would not know about it, so it is useful to actually tell them they are in a conference.
 </para>
 
 <para>Call management is mostly using drag and drop. Dragging a call on another call will result in this overlay being displayed.</para>
@@ -470,7 +470,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 <sect1 id="other-config">
 <title>Other configurations</title>
 
-<para>SFLPhone KDE also have settings not related to SIP accounts. Those settings allow to configure how the application look and behave.</para>
+<para>Ring KDE also have settings not related to SIP accounts. Those settings allow to configure how the application look and behave.</para>
 
 <sect2 id="display-config">
 <title>Display</title>
@@ -488,7 +488,7 @@ Conferences are a group of intercommunicating calls. Each participant of a conve
 </screenshot>
 </para>
 
-<para>The <guilabel>display</guilabel> page allow various configurations related to how the application look. The first subsection, <guilabel>Display Main Window</guilabel> configure when SFLPhone will pop-up the GUI when it is minimized in the system tray. The second, <guilabel>Notifications</guilabel>, configure when SFLPhone should display a notification pop-up. The third, <guilabel>Visible Call Details</guilabel> enable or disable various information fields in the call item. It also allow to select a minimum size for call items, to make them easier to target with the mouse. The last section, <guilabel>Visible Contact Details</guilabel> do the same for the contact items.</para>
+<para>The <guilabel>display</guilabel> page allow various configurations related to how the application look. The first subsection, <guilabel>Display Main Window</guilabel> configure when Ring will pop-up the GUI when it is minimized in the system tray. The second, <guilabel>Notifications</guilabel>, configure when Ring should display a notification pop-up. The third, <guilabel>Visible Call Details</guilabel> enable or disable various information fields in the call item. It also allow to select a minimum size for call items, to make them easier to target with the mouse. The last section, <guilabel>Visible Contact Details</guilabel> do the same for the contact items.</para>
 
 </sect2>
 

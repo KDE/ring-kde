@@ -14,12 +14,12 @@
 </authorgroup>
 </chapterinfo>
 
-<title>Common use of &sflphone-client-kde;</title>
+<title>Common use of &ring-kde;</title>
 
 <sect1 id="common-use-current">
 <title>Handling a call</title>
 
-<para>There are a bunch of features that you can apply on a current call with &sflphone;. Here are their descriptions.
+<para>There are a bunch of features that you can apply on a current call with &Ring;. Here are their descriptions.
 </para>
 
 <sect2 id="common-use-current-new">
@@ -49,7 +49,7 @@
 <sect2 id="common-use-current-record">
 <title>Recording a call</title>
 
-<para>If you want to record the current call, click on the <guibutton>Record</guibutton> button, the button will become triggered and the light may come on. Since &sflphone; only records calls when they are current (&ie;: not on hold), the light will be on if the selected call is current and can be recorded, and off if it is not. But if the button is triggered, &sflphone; will record as soon as it is communicating.
+<para>If you want to record the current call, click on the <guibutton>Record</guibutton> button, the button will become triggered and the light may come on. Since &Ring; only records calls when they are current (&ie;: not on hold), the light will be on if the selected call is current and can be recorded, and off if it is not. But if the button is triggered, &Ring; will record as soon as it is communicating.
 </para>
 
 </sect2>
@@ -61,7 +61,7 @@
 
 <para>You can call your mailbox typing your account's mailbox number. But if you have registered this number in account's settings, you can just click on Mailbox button. It will call the mailbox of the first registered account.</para>
 
-<para>In both case, you can then type your mailbox's password without worrying about people around, since &sflphone; will not display what you type if the called number is the registered mailbox number of the current call's account.
+<para>In both case, you can then type your mailbox's password without worrying about people around, since &Ring; will not display what you type if the called number is the registered mailbox number of the current call's account.
 </para>
 
 </sect1>
@@ -69,16 +69,16 @@
 <sect1 id="common-use-address">
 <title>Use the address book</title>
 
-<para>&sflphone-client-kde; communicates with the &kde; Address Book and gathers all the phone numbers matching your request and the options chosen. Here we will explain how to configure and use it.</para>
+<para>&ring-kde; communicates with the &kde; Address Book and gathers all the phone numbers matching your request and the options chosen. Here we will explain how to configure and use it.</para>
 
 
 <sect2 id="common-use-address-kde">
 <title>Configuring &kde; Address Book</title>
 
-<para>As it is fully designed for &kde;, &sflphone-client-kde; looks for your contacts in &kde; Address Book. So you first have to configure it. Choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Office</guisubmenu><guimenuitem>Address Book</guimenuitem></menuchoice> from the &kmenu;. You are now in the main window of the &kde; address book. You can add contacts and handle them from here. Press <keycap>F1</keycap> to see this application's help page if you have some problems with it.
+<para>As it is fully designed for &kde;, &ring-kde; looks for your contacts in &kde; Address Book. So you first have to configure it. Choose <menuchoice><guimenu>Applications</guimenu><guisubmenu>Office</guisubmenu><guimenuitem>Address Book</guimenuitem></menuchoice> from the &kmenu;. You are now in the main window of the &kde; address book. You can add contacts and handle them from here. Press <keycap>F1</keycap> to see this application's help page if you have some problems with it.
 </para>
 
-<para>&sflphone-client-kde; looks into the standard address book, that means it will look into the contacts displayed in the contact list on the left of the window. The selected address books in the bottom left of the window will be searched. If you add some contacts, you may have to restart &sflphone-client-kde; before it can see them.
+<para>&ring-kde; looks into the standard address book, that means it will look into the contacts displayed in the contact list on the left of the window. The selected address books in the bottom left of the window will be searched. If you add some contacts, you may have to restart &ring-kde; before it can see them.
 </para>
 
 
@@ -86,14 +86,14 @@
 
 
 <sect2 id="common-use-address-config">
-<title>Configuring &sflphone-client-kde;</title>
+<title>Configuring &ring-kde;</title>
 
-<para>You can now go to the Configuration Dialog to choose how &sflphone; will handle your searches in the address book. This step is optional though, because the default settings enable you to use the feature without more setup.
+<para>You can now go to the Configuration Dialog to choose how &Ring; will handle your searches in the address book. This step is optional though, because the default settings enable you to use the feature without more setup.
 </para>
 
 <para>The maximum results setting enables you to choose how many phone numbers can be displayed when you look for a contact. &kde; address book can contain lots of contacts, especially if connected to <acronym>LDAP</acronym> directories, and you do not want to see thousands of contacts displayed as soon as you type a letter to search for.</para>
 
-<para>&kde; address book can contain a photo for your contacts. &sflphone-client-kde; can display it in the result of your searches, but as it can take a little more time, you can choose to disable that feature.</para>
+<para>&kde; address book can contain a photo for your contacts. &ring-kde; can display it in the result of your searches, but as it can take a little more time, you can choose to disable that feature.</para>
 
 <para>Each phone number in &kde; address book is linked to a contact, and has a phone number type to differentiate work phones, home phones, and cell phones. You can choose to display only certain of those numbers. Check the types you are interested in and uncheck the other ones.</para>
 
@@ -115,7 +115,7 @@
 <sect1 id="common-use-config">
 <title>Configuration Dialog</title>
 
-<para>There are a lot of options in &sflphone;. All of them are gathered and sorted in the Configuration Dialog. You can reach it choosing <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure &sflphone;...</guimenuitem></menuchoice>. Here are presented some commonly useful options.</para>
+<para>There are a lot of options in &Ring;. All of them are gathered and sorted in the Configuration Dialog. You can reach it choosing <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure &Ring;...</guimenuitem></menuchoice>. Here are presented some commonly useful options.</para>
 
 <sect2 id="common-use-config-address">
 <title>General settings</title>

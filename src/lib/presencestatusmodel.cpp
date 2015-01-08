@@ -20,7 +20,7 @@
 //Qt
 #include <QtCore/QCoreApplication>
 
-//SFLPhone
+//Ring
 #include "accountmodel.h"
 #include "dbus/presencemanager.h"
 #include "visitors/presenceserializationvisitor.h"
@@ -327,7 +327,7 @@ void PresenceStatusModel::setCurrentIndex  (const QModelIndex& index)
    emit currentStatusChanged(d_ptr->m_pCurrentStatus->status);
    for (int i=0; i < AccountModel::instance()->size(); i++) {
       DBus::PresenceManager::instance().publish(
-         (*AccountModel::instance())[1]->id(), d_ptr->m_pCurrentStatus->status,d_ptr->m_pCurrentStatus->message
+         (*AccountModel::instance())[i]->id(), d_ptr->m_pCurrentStatus->status,d_ptr->m_pCurrentStatus->message
       );
    }
 }

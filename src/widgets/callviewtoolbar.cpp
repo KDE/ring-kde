@@ -24,8 +24,8 @@
 //KDE
 #include <KDebug>
 
-//SFLPhone
-#include "sflphone.h"
+//Ring
+#include "ring.h"
 #include "actioncollection.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>

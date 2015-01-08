@@ -16,17 +16,13 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-
 //Parent
 #include "accountmodel.h"
-
-//SFLPhone
-#include "sflphone_const.h"
 
 //Qt
 #include <QtCore/QObject>
 
-//SFLPhone library
+//Ring library
 #include "dbus/configurationmanager.h"
 #include "dbus/callmanager.h"
 #include "visitors/accountlistcolorvisitor.h"

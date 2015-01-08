@@ -27,7 +27,7 @@
 #include <KLocale>
 #include <KIcon>
 
-//SFLPhone
+//Ring
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
 #include "lib/historymodel.h"

@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = sflphone_kde
+PROJECT_NAME           = ring_kde
 PROJECT_NUMBER         = 0.1
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
@@ -94,7 +94,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/jquentin/sflphone/sflphone_kde
+INPUT                  = ./
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -277,7 +277,7 @@ SKIP_FUNCTION_MACROS   = YES
 # Configuration::additions related to external references
 #---------------------------------------------------------------------------
 TAGFILES               =
-GENERATE_TAGFILE       = sflphone_kde.tag
+GENERATE_TAGFILE       = ring_kde.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
 PERL_PATH              = /usr/bin/perl

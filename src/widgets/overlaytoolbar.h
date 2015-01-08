@@ -25,7 +25,6 @@
 //Base
 #include <QtGui/QWidget>
 #include <QtCore/QHash>
-#include "lib/sflphone_const.h"
 
 //Qt
 class QSvgRenderer;
@@ -34,7 +33,7 @@ class QHBoxLayout;
 
 //KDE
 
-//SFLPhone
+//Ring
 class ExtendedAction;
 class ObserverToolButton;
 

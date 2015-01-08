@@ -27,7 +27,7 @@
 #include <math.h>
 #include <GL/glu.h>
 
-//SFLPhone
+//Ring
 #include <lib/video/renderer.h>
 #include <lib/video/manager.h>
 

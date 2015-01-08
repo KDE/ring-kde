@@ -32,8 +32,8 @@
 #include <KStandardDirs>
 #include <KIcon>
 
-//SFLPhone
-#include "sflphone.h"
+//Ring
+#include "ring.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
 
@@ -56,8 +56,8 @@ OverlayToolbar::OverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender
    pal.setColor(QPalette::Button    ,Qt::transparent);
    setPalette(pal);
    setAutoFillBackground(false);
-   m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_right_corner.svg") );
-   m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","sflphone-client-kde/overlay_left_corner.svg" ) );
+   m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","ring-kde/overlay_right_corner.svg") );
+   m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","ring-kde/overlay_left_corner.svg" ) );
 
    setMinimumSize(100,56);
    if (parent)

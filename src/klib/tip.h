@@ -20,7 +20,7 @@
 //Base
 #include <QtCore/QObject>
 
-//SFLPhone
+//Ring
 #include <QtCore/QStringList>
 #include <QtCore/QSize>
 #include <QtGui/QImage>
@@ -29,7 +29,7 @@
 
 class QSvgRenderer;
 
-//SFLPhone
+//Ring
 #include "../lib/typedefs.h"
 
 //Qt

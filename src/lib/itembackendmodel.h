@@ -27,7 +27,7 @@
 #include "contactmodel.h"
 #include "abstractitembackend.h"
 
-//SFLPhone
+//Ring
 class AbstractItemBackendModelExtension;
 
 class CommonItemBackendModelPrivate;

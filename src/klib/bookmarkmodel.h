@@ -19,7 +19,7 @@
 #define BOOKMARKMODEL_H
 
 
-//SFLPhone
+//Ring
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
 #include "../lib/call.h"

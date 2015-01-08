@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "managermodel.h"
 
-//SFLPhone
+//Ring
 #include "dbus/configurationmanager.h"
 #include "settings.h"
 

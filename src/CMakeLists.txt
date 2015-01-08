@@ -89,7 +89,7 @@ SET ( KDE4_KABC_LIBS  -lkabc )
 
 # Delegates
 SET(
-   sflphone_client_kde_DELEGATES
+   ring_kde_DELEGATES
    delegates/conferencedelegate.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp
@@ -104,7 +104,7 @@ SET(
 
 # Configuration pages
 SET(
-   sflphone_client_kde_CONF
+   ring_kde_CONF
    conf/configurationdialog.cpp
    conf/dlggeneral.cpp
    conf/dlgdisplay.cpp
@@ -118,8 +118,8 @@ SET(
 
 # Widgets
 SET(
-   sflphone_client_kde_WIDGETS
-   widgets/sflphonetray.cpp
+   ring_kde_WIDGETS
+   widgets/systray.cpp
    widgets/dialpad.cpp
    widgets/contactdock.cpp
    widgets/historydock.cpp
@@ -149,7 +149,7 @@ SET(
 # Video Widgets
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET(
-      sflphone_client_kde_VIDEO
+      ring_kde_VIDEO
       widgets/videodock.cpp
       widgets/videosettings.cpp
 #       widgets/videowidget.cpp #Software rendering, can still be useful
@@ -162,34 +162,32 @@ IF(NOT (${ENABLE_VIDEO} MATCHES false))
 ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
 SET(
-   sflphone_client_kde_SRCS
+   ring_kde_SRCS
    main.cpp
    extendedaction.cpp
-   sflphoneview.cpp
-   sflphone.cpp
-   sflphonecmd.cpp
-   sflphoneapplication.cpp
+   view.cpp
+   ring.cpp
+   cmd.cpp
+   ringapplication.cpp
    errormessage.cpp
    kspeechinterfacesingleton.cpp
-   sflphoneaccessibility.cpp
-   accountwizard.cpp
+   accessibility.cpp
    canvasobjectmanager.cpp
    eventmanager.cpp
    actioncollection.cpp
    implementation.cpp
-   ${sflphone_client_kde_DELEGATES}
-   ${sflphone_client_kde_CONF}
-   ${sflphone_client_kde_WIDGETS}
-   ${sflphone_client_kde_VIDEO}
+   ${ring_kde_DELEGATES}
+   ${ring_kde_CONF}
+   ${ring_kde_WIDGETS}
+   ${ring_kde_VIDEO}
 )
-
 
 # generate rules for building source files from the resources
 SET(QtApp_RCCS qrc/resources.qrc)
 QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
 
-# kde4_automoc(${sflphone_client_kde_SRCS})
+# kde4_automoc(${ring_kde_SRCS})
 SET(
    config_ui_files
    conf/dlggeneralbase.ui
@@ -230,64 +228,64 @@ IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    add_definitions( -DDISABLE_UNIQUE_APPLICATION=true )
 ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 
-KDE4_ADD_UI_FILES(sflphone_client_kde_SRCS ui/SFLPhoneView_base.ui  ${config_ui_files}  )
-QT4_WRAP_UI(sflphone_client_kde_SRCS ${config_ui_files} )
+KDE4_ADD_UI_FILES(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
+QT4_WRAP_UI(ring_kde_SRCS ${config_ui_files} )
 
-QT4_ADD_DBUS_INTERFACES(sflphone_client_kde_SRCS ${KDE4_DBUS_INTERFACES_DIR}/org.kde.KSpeech.xml)
+QT4_ADD_DBUS_INTERFACES(ring_kde_SRCS ${KDE4_DBUS_INTERFACES_DIR}/org.kde.KSpeech.xml)
 
-# QT4_WRAP_CPP(sflphone_client_kde_SRCS)
-# QT4_AUTOMOC( ${sflphone_client_kde_SRCS} )
-KDE4_ADD_EXECUTABLE(sflphone-client-kde ${sflphone_client_kde_SRCS} ${QtApp_RCC_SRCS})
+# QT4_WRAP_CPP(ring_kde_SRCS)
+# QT4_AUTOMOC( ${ring_kde_SRCS} )
+KDE4_ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
 
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET( OPENGL_link   ${QT_QTOPENGL_LIBRARY} -lGL)# -lGLU
 ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
-TARGET_LINK_LIBRARIES(sflphone-client-kde ksflphone qtsflphone  ${KDE4_KDEUI_LIBS} ${OPENGL_link} ${KDE4_KIO_LIBS} ${KDEPIMLIBS_AKONADI_KMIME_LIBS} ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${X11_LIBRARIES})
+TARGET_LINK_LIBRARIES(ring-kde libkring ringclient  ${KDE4_KDEUI_LIBS} ${OPENGL_link} ${KDE4_KIO_LIBS} ${KDEPIMLIBS_AKONADI_KMIME_LIBS} ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${X11_LIBRARIES})
 
 ########### install files ###############
 
-INSTALL(TARGETS sflphone-client-kde              DESTINATION  ${BIN_INSTALL_DIR}                           )
-INSTALL( FILES icons/transferarrow.png           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/transfertarrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/confBlackWhite.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/overlay_right_corner.svg    DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/overlay_left_corner.svg     DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/confBlackWhite.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/voicemail.png               DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/presence-icon.png           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/presence-icon.svg           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/conf-small.png              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/hangup_grayscale.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/mutemic_grayscale.svg       DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/record_grayscale.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/transfer_grayscale.svg      DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/hangup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/mutemic_grayscale.png       DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/record_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/transfer_grayscale.png      DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/hold_grayscale.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/unhold_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/refuse_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/pickup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/record.png                  DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde      )
-INSTALL( FILES icons/tips/keyboard.svg           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/upArrow.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/downArrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/dragAndDrop.svg        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/ringing.svg            DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/reload.svg             DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/phoneDown.svg          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/ring1.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/ring2.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/ring3.svg              DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/tips/removeconference.svg   DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/tips )
-INSTALL( FILES icons/miniicons/car.png           DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/home.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/mail.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/mobile.png        DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/pager.png         DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/preferred.png     DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/video.png         DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/work.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
-INSTALL( FILES icons/miniicons/call.png          DESTINATION  ${DATA_INSTALL_DIR}/sflphone-client-kde/mini )
+INSTALL(TARGETS ring-kde              DESTINATION  ${BIN_INSTALL_DIR}                           )
+INSTALL( FILES icons/transferarrow.png           DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/transfertarrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/confBlackWhite.svg          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/overlay_right_corner.svg    DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/overlay_left_corner.svg     DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/confBlackWhite.png          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/voicemail.png               DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/presence-icon.png           DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/presence-icon.svg           DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/conf-small.png              DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/hangup_grayscale.svg        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/mutemic_grayscale.svg       DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/record_grayscale.svg        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/transfer_grayscale.svg      DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/hangup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/mutemic_grayscale.png       DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/record_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/transfer_grayscale.png      DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/hold_grayscale.png          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/unhold_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/refuse_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/pickup_grayscale.png        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/record.png                  DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/tips/keyboard.svg           DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/upArrow.svg            DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/downArrow.svg          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/dragAndDrop.svg        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/ringing.svg            DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/reload.svg             DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/phoneDown.svg          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/ring1.svg              DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/ring2.svg              DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/ring3.svg              DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/tips/removeconference.svg   DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/tips )
+INSTALL( FILES icons/miniicons/car.png           DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/home.png          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/mail.png          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/mobile.png        DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/pager.png         DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/preferred.png     DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/video.png         DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/work.png          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )
+INSTALL( FILES icons/miniicons/call.png          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde/mini )

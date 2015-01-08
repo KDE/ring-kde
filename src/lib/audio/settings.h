@@ -20,7 +20,7 @@
 
 #include <QtCore/QAbstractListModel>
 
-//SFLPhone
+//Ring
 #include "../typedefs.h"
 
 

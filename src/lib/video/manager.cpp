@@ -20,7 +20,7 @@
 //Qt
 #include <QtCore/QMutex>
 
-//SFLPhone
+//Ring
 #include "../dbus/videomanager.h"
 #include "device.h"
 #include <call.h>

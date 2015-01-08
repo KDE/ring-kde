@@ -28,7 +28,7 @@
 #include <KLocale>
 #include <KMessageBox>
 
-//SFLPhone
+//Ring
 #include "../lib/contact.h"
 #include "../lib/phonenumber.h"
 #include "../lib/numbercategory.h"

@@ -1,4 +1,4 @@
-h1. KDE client coding guidelines
+h1. KDE coding guidelines
 
 This document document the coding style
 
@@ -13,7 +13,7 @@ h2. Coding style
 * License header is necessary for all source files
 * Attribute are named with prefix "m_", then "s" for static, then "p" for pointer, "l" for list, "h" for hash, "f" for function/lambdas then the first letter is uppercase
 * Includes are located in the .cpp and only "class" and "namespace" are declared in the .h (where applicable)
-* Includes are sorted by libraries (Qt -> QtCore/QtGui/QtDbus, KDE -> Akonadi/KABC, SFLPhone)
+* Includes are sorted by libraries (Qt -> QtCore/QtGui/QtDbus, KDE -> Akonadi/KABC, Dring)
 * Setters take const references as parameter
 * Destructor are always virtual
 * C++11 is allowed
@@ -38,6 +38,14 @@ h2. Coding style
 * transform string into enum class literal or object as soon as possible in the code
 * use const and static variables in methods where applicable
 * Classes should not expose multiple mutually exclusive boolean properties and use enum classes instead. (Example: isAudioOnly() and hasVideo())
+* Friendship ("friend" keyword) is accepted between the model and their data object to avoid exposing factory interfaces
+* Private classes declaration need to be at the top of the CPP file
+
+h2. Necessary constraint
+
+* D-Pointer (public class pointer to private structure) need to be called d_ptr ( http://qt-project.org/wiki/Dpointer )
+* Q-Pointer (not to be confused with QPointer) need to be called q_ptr ( http://qt-project.org/wiki/Dpointer )
+* If a private header is necessary, then add it to the private folder with a classname_p.h name. Do not install those, never #include them in other .h, only .cpp
 
 h2. Design guideline
 
@@ -54,10 +62,10 @@ h2. Current design
 =========================QML plasmoid====== <- Abstact frontend using the dataengine model
 =====KDE frontend=========Dateengine======= <- Library frontend
 ==============KDE library================== <- Common GUI code and contact implementation
-===============Qt library================== <- Dbus to C++ object + state machine + frontend model, -GUI LESS-
+=============libringclient================= <- Dbus to C++ object + state machine + frontend model, -GUI LESS-
 ==================DBUS=====================
-================SFLPhone===================
-=================PJSIP=====================
-==================UDP======================
-================SERVER=====================
+==================DRing====================
+==================PJSIP====================
+===================UDP=====================
+=================SERVER====================
 </pre>

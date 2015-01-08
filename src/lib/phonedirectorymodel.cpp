@@ -20,7 +20,7 @@
 //Qt
 #include <QtCore/QCoreApplication>
 
-//SFLPhone
+//Ring
 #include "phonenumber.h"
 #include "call.h"
 #include "uri.h"

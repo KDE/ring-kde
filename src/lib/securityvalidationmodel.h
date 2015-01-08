@@ -19,12 +19,12 @@
 #define SECURITYVALIDATIONMODEL_H
 #include <QAbstractListModel>
 
-//SFLPhone
+//Ring
 #include "certificate.h"
 #include "typedefs.h"
 
 
-//SFLPhone
+//Ring
 class Account;
 class Flaw;
 
@@ -41,7 +41,7 @@ public:
     * 2) Decide if an account can be considered secure
     * 3) Decide if a call can be considered secure
     * 
-    * End users should not have to be security gurus to setup SFLphone. It is our
+    * End users should not have to be security gurus to setup Ring. It is our
     * job to do as much as we can to make security configuration as transparent as
     * possible.
     * 

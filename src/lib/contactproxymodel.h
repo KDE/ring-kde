@@ -22,7 +22,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QAbstractItemModel>
 
-//SFLPhone
+//Ring
 #include "../lib/typedefs.h"
 #include "../lib/contact.h"
 class ContactModel;

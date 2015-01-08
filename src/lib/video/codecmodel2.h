@@ -23,7 +23,7 @@
 
 //Qt
 
-//SFLPhone
+//Ring
 class Account;
 
 //Typedef

@@ -23,7 +23,7 @@
 #include <QMap>
 #include "typedefs.h"
 
-//SFLPhone
+//Ring
 #include "call.h"
 class Account;
 struct InternalStruct;
@@ -34,7 +34,7 @@ class CallModelPrivate;
 typedef QMap<uint, Call*>  CallMap;
 typedef QList<Call*>       CallList;
 
-///CallModel: Central model/frontend to deal with sflphoned
+///CallModel: Central model/frontend to deal with dring
 class LIB_EXPORT CallModel : public QAbstractItemModel
 {
    #pragma GCC diagnostic push

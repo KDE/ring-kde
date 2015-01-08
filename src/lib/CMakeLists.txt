@@ -7,18 +7,15 @@ endif(POLICY CMP0022)
 INCLUDE(GNUInstallDirs)
 
 ADD_DEFINITIONS("-std=c++0x")
-# ADD_DEFINITIONS("-std=c++0x")
 
 ADD_DEFINITIONS(
-	${QT_DEFINITIONS}
-	-fexceptions
+   ${QT_DEFINITIONS}
+   -fexceptions
 )
 
-PROJECT(qtsflphone)
+PROJECT(ringclient)
 
 SET(CMAKE_AUTOMOC TRUE)
-
-#target_link_libraries(qtsflphone ${QT_QTCORE_LIBRARY} ${KDE4_KDEUI_LIBS})
 
 SET(LOCAL_CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 SET(CMAKE_MODULE_PATH "${LOCAL_CMAKE_MODULE_PATH}")
@@ -47,7 +44,7 @@ INCLUDE_DIRECTORIES ( ${CMAKE_CURRENT_BINARY_DIR})
 SET ( dbus_xml_introspecs_path ${CMAKE_CURRENT_SOURCE_DIR}/dbus/)
 
 #File to compile
-set( qtsflphone_LIB_SRCS
+set( libringclient_LIB_SRCS
   #Data objects
   call.cpp
   uri.cpp
@@ -121,7 +118,6 @@ set( qtsflphone_LIB_SRCS
   visitors/itemmodelstateserializationvisitor.cpp
 
   #Other
-  sflphone_const.h
   categorizedcompositenode.cpp
   hookmanager.cpp
 
@@ -129,7 +125,7 @@ set( qtsflphone_LIB_SRCS
   extensions/presenceitembackendmodelextension.cpp
 )
 
-set( qtsflphone_LIB_HDRS
+set( libringclient_LIB_HDRS
   account.h
   accountmodel.h
   call.h
@@ -163,6 +159,7 @@ set( qtsflphone_LIB_HDRS
   itembackendmodel.h
   hookmanager.h
   uri.h
+  mime.h
   abstractitembackendmodelextension.h
   video/device.h
   video/devicemodel.h
@@ -186,9 +183,8 @@ set( qtsflphone_LIB_HDRS
   #commonbackendmanagerinterface.h
 )
 
-set( qtsflphone_extra_LIB_HDRS
+set( libringclient_extra_LIB_HDRS
   typedefs.h
-  sflphone_const.h
   visitors/accountlistcolorvisitor.h
   visitors/phonenumberselector.h
   visitors/presenceserializationvisitor.h
@@ -206,13 +202,13 @@ SET_SOURCE_FILES_PROPERTIES(
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${presencemanager_xml}
       presencemanager_dbus_interface
    )
 ELSE()
    QT4_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${presencemanager_xml}
       presencemanager_dbus_interface
    )
@@ -230,13 +226,13 @@ SET_SOURCE_FILES_PROPERTIES(
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${configurationmanager_xml}
       configurationmanager_dbus_interface
    )
 ELSE()
    QT4_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${configurationmanager_xml}
       configurationmanager_dbus_interface
    )
@@ -254,13 +250,13 @@ SET_SOURCE_FILES_PROPERTIES(
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${callmanager_xml}
       callmanager_dbus_interface
    )
 ELSE()
    QT4_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${callmanager_xml}
       callmanager_dbus_interface
    )
@@ -278,13 +274,13 @@ SET_SOURCE_FILES_PROPERTIES(
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${video_xml}
       video_dbus_interface
    )
 ELSE()
    QT4_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${video_xml}
       video_dbus_interface
    )
@@ -302,67 +298,68 @@ SET_SOURCE_FILES_PROPERTIES(
 
 IF(${ENABLE_QT5} MATCHES true)
    QT5_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${instance_xml}
       instance_dbus_interface
    )
 ELSE()
    QT4_ADD_DBUS_INTERFACE(
-      qtsflphone_LIB_SRCS
+      libringclient_LIB_SRCS
       ${instance_xml}
       instance_dbus_interface
    )
 ENDIF(${ENABLE_QT5} MATCHES true)
 
 # Manually wrap private files
-SET(qtsflphone_PRIVATE_HDRS
+SET(libringclient_PRIVATE_HDRS
    private/call_p.h
    private/phonedirectorymodel_p.h
    private/instantmessagingmodel_p.h
 )
 
 IF(${ENABLE_QT5} MATCHES true)
-   QT5_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_PRIVATE_HDRS})
+   QT5_WRAP_CPP(LIB_HEADER_MOC ${libringclient_PRIVATE_HDRS})
 ELSE()
-   QT4_WRAP_CPP(LIB_HEADER_MOC ${qtsflphone_PRIVATE_HDRS})
+   QT4_WRAP_CPP(LIB_HEADER_MOC ${libringclient_PRIVATE_HDRS})
 ENDIF(${ENABLE_QT5} MATCHES true)
 
 
-add_library( qtsflphone  SHARED ${qtsflphone_LIB_SRCS} ${LIB_HEADER_MOC} )
+add_library( ringclient  SHARED ${libringclient_LIB_SRCS} ${LIB_HEADER_MOC} )
+add_library( ringclient_static  STATIC ${libringclient_LIB_SRCS} ${LIB_HEADER_MOC} )
 # REMOVE_DEFINITIONS("-w")
 
 IF(${ENABLE_QT5} MATCHES true)
-   QT5_USE_MODULES(qtsflphone Core DBus)
+   QT5_USE_MODULES(ringclient Core DBus)
 ENDIF(${ENABLE_QT5} MATCHES true)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
    SET(LINK_LIBRT "-lrt")
 ENDIF()
 
-target_link_libraries( qtsflphone
+target_link_libraries( ringclient
   ${LINK_LIBRT}
   -lpthread
   ${QT_QTDBUS_LIBRARY}
   ${QT_QTCORE_LIBRARY}
 )
 
-set_target_properties( qtsflphone
+set_target_properties( ringclient
   PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_VERSION}
 )
 
 SET(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include)
 
-install( FILES ${qtsflphone_LIB_HDRS} ${qtsflphone_extra_LIB_HDRS}
-  DESTINATION ${INCLUDE_INSTALL_DIR}/qtsflphone
+install( FILES ${libringclient_LIB_HDRS} ${libringclient_extra_LIB_HDRS}
+  DESTINATION ${INCLUDE_INSTALL_DIR}/libringclient
   COMPONENT Devel
 )
 
 #This hack force Debian based system to return a non multi-arch path
-#this is required to prevent the .deb libqtsflphone.so from having an
+#this is required to prevent the .deb libringclient.so from having an
 #higher priority than the prefixed one.
 STRING(REPLACE "${CMAKE_LIBRARY_ARCHITECTURE}" "" SANE_LIBRARY_PATH "${CMAKE_INSTALL_FULL_LIBDIR}" )
 
-install( TARGETS qtsflphone
+install( TARGETS ringclient
   ARCHIVE DESTINATION ${SANE_LIBRARY_PATH}
   LIBRARY DESTINATION ${SANE_LIBRARY_PATH}
   DESTINATION ${SANE_LIBRARY_PATH}

@@ -27,8 +27,7 @@
 class QString;
 class QTimer;
 
-//SFLPhone
-#include "sflphone_const.h"
+//Ring
 #include "typedefs.h"
 #include "historytimecategorymodel.h"
 class Account;
@@ -152,7 +151,7 @@ public:
    * History items create before December 2013 will have a "state" field
    * mixing direction and missed. Newer items will have separated fields for that.
    *
-   * SFLPhone-KDE will keep support for at least a year
+   * Ring-KDE will keep support for at least a year
    */
    enum class LegacyHistoryState : int //DEPRECATED remove
    {

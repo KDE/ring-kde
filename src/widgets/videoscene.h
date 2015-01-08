@@ -19,7 +19,7 @@
 
 #include <QtGui/QGraphicsScene>
 
-//SFLPhone
+//Ring
 class VideoGLFrame;
 class VideoToolbar;
 

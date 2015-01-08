@@ -25,7 +25,7 @@
 #include <KLocale>
 #include <KIcon>
 
-//SFLPhone
+//Ring
 #include "../lib/dbus/callmanager.h"
 
 Macro::Macro(QObject* parent) : QObject(parent),m_Position(0),m_Delay(0),m_pCat(nullptr),m_pPointer(nullptr),

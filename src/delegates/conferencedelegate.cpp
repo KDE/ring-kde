@@ -30,9 +30,9 @@
 #include <KStandardDirs>
 #include <KLineEdit>
 
-//SFLPhone
+//Ring
 #include "../widgets/categorizedtreeview.h"
-#include "sflphone.h"
+#include "ring.h"
 #include "../lib/call.h"
 
 ///Constructor
@@ -131,7 +131,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       //Draw the conference icon and info
       static const QPixmap* pxm = nullptr;
       if (!pxm) //Static
-         pxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/conf-small.png"));
+         pxm = new QPixmap(KStandardDirs::locate("data","ring-kde/conf-small.png"));
       painter->drawPixmap ( opt.rect.x()+5, opt.rect.y()+2, 24, 24, *pxm);
       QFont font = painter->font();
       font.setBold(true);

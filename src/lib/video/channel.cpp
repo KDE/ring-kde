@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "channel.h"
 
-//SFLphone
+//Ring
 #include "resolution.h"
 #include "device.h"
 #include "../dbus/videomanager.h"

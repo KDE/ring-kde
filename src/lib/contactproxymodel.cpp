@@ -23,7 +23,7 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QCoreApplication>
 
-//SFLPhone
+//Ring
 #include "callmodel.h"
 #include "historymodel.h"
 #include "phonenumber.h"
@@ -31,6 +31,7 @@
 #include "historytimecategorymodel.h"
 #include "contact.h"
 #include "uri.h"
+#include "mime.h"
 #include "contactmodel.h"
 
 class ContactTreeNode;
@@ -191,7 +192,7 @@ ContactProxyModel::ContactProxyModel(int role, bool showAll) : QAbstractItemMode
    d_ptr->m_Role    = role;
    d_ptr->m_ShowAll = showAll;
    d_ptr->m_lCategoryCounter.reserve(32);
-   d_ptr->m_lMimes << MIME_PLAIN_TEXT << MIME_PHONENUMBER;
+   d_ptr->m_lMimes << RingMimes::PLAIN_TEXT << RingMimes::PHONENUMBER;
    connect(ContactModel::instance(),SIGNAL(reloaded()),d_ptr.data(),SLOT(reloadCategories()));
    connect(ContactModel::instance(),SIGNAL(newContactAdded(Contact*)),d_ptr.data(),SLOT(slotContactAdded(Contact*)));
    QHash<int, QByteArray> roles = roleNames();
@@ -357,8 +358,8 @@ bool ContactProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction actio
 {
    Q_UNUSED( action )
    setData(parent,-1,Call::Role::DropState);
-   if (data->hasFormat(MIME_CALLID)) {
-      const QByteArray encodedCallId = data->data( MIME_CALLID    );
+   if (data->hasFormat(RingMimes::CALLID)) {
+      const QByteArray encodedCallId = data->data( RingMimes::CALLID    );
       const QModelIndex targetIdx    = index   ( row,column,parent );
       Call* call                     = CallModel::instance()->getCall ( encodedCallId        );
       if (call && targetIdx.isValid()) {
@@ -507,9 +508,9 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
                const Contact* ct = static_cast<Contact*>(modelItem->getSelf());
                if (ct) {
                   if (ct->phoneNumbers().size() == 1) {
-                     mimeData->setData(MIME_PHONENUMBER , ct->phoneNumbers()[0]->toHash().toUtf8());
+                     mimeData->setData(RingMimes::PHONENUMBER , ct->phoneNumbers()[0]->toHash().toUtf8());
                   }
-                  mimeData->setData(MIME_CONTACT , ct->uid());
+                  mimeData->setData(RingMimes::CONTACT , ct->uid());
                }
                return mimeData;
                } break;
@@ -518,8 +519,8 @@ QMimeData* ContactProxyModel::mimeData(const QModelIndexList &indexes) const
                const QString text = data(index, Qt::DisplayRole).toString();
                const Contact::PhoneNumbers nbs = *static_cast<Contact::PhoneNumbers*>(index.internalPointer());
                const PhoneNumber*          nb  = nbs[index.row()];
-               mimeData->setData(MIME_PLAIN_TEXT , text.toUtf8());
-               mimeData->setData(MIME_PHONENUMBER, nb->toHash().toUtf8());
+               mimeData->setData(RingMimes::PLAIN_TEXT , text.toUtf8());
+               mimeData->setData(RingMimes::PHONENUMBER, nb->toHash().toUtf8());
                return mimeData;
                } break;
             case CategorizedCompositeNode::Type::TOP_LEVEL:

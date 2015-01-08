@@ -28,7 +28,7 @@
 #include "contact.h"
 #include "commonbackendmanagerinterface.h"
 
-//SFLPhone
+//Ring
 class Contact;
 class Account;
 class AbstractContactBackend;

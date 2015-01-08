@@ -23,7 +23,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QModelIndex>
 
-//SFLPhone
+//Ring
 class Contact    ;
 class PhoneNumber;
 class Call       ;

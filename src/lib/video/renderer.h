@@ -28,7 +28,7 @@
 class QTimer;
 class QMutex;
 
-//SFLPhone
+//Ring
 #include "device.h"
 
 //Private

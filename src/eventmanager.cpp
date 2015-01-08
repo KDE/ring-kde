@@ -24,15 +24,16 @@
 //KDE
 #include <KDebug>
 
-//SFLPhone
+//Ring
+#include <lib/mime.h>
 #include <lib/phonenumber.h>
 #include <lib/account.h>
 #include <lib/phonedirectorymodel.h>
 #include <lib/accountmodel.h>
 #include <lib/contactmodel.h>
 #include <klib/tipmanager.h>
-#include "sflphoneview.h"
-#include "sflphone.h"
+#include "view.h"
+#include "ring.h"
 #include "canvasobjectmanager.h"
 #include "widgets/kphonenumberselector.h"
 #include "widgets/tips/tipcollection.h"
@@ -44,7 +45,7 @@ class MainWindowEvent : public QObject {
    Q_OBJECT
 public:
    MainWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
-      SFLPhone::app()->installEventFilter(this);
+      Ring::app()->installEventFilter(this);
    }
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event) {
@@ -57,7 +58,7 @@ protected:
       }
       else if (event->type() == QEvent::WindowStateChange) {
          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
-         switch (SFLPhone::app()->windowState()) {
+         switch (Ring::app()->windowState()) {
             case Qt::WindowMinimized:
                emit minimized(true);
                break;
@@ -84,7 +85,7 @@ Q_SIGNALS:
 };
 
 ///Constructor
-EventManager::EventManager(SFLPhoneView* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent(this))
+EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent(this))
 {
    connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
    connect(CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
@@ -113,7 +114,7 @@ EventManager::~EventManager()
 bool EventManager::viewDragEnterEvent(const QDragEnterEvent* e)
 {
    Q_UNUSED(e)
-   if (!e->mimeData()->hasFormat(MIME_CALLID) || CallModel::instance()->hasConference())
+   if (!e->mimeData()->hasFormat(RingMimes::CALLID) || CallModel::instance()->hasConference())
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_ENTER);
    return false;
 }
@@ -126,8 +127,8 @@ bool EventManager::viewDropEvent(QDropEvent* e)
    CallModel::instance()->setData(idxAt,-1,Call::Role::DropState);
    e->accept();
    if (!idxAt.isValid()) { //Dropped on empty space
-      if (e->mimeData()->hasFormat(MIME_CALLID)) {
-         const QByteArray encodedCallId      = e->mimeData()->data( MIME_CALLID      );
+      if (e->mimeData()->hasFormat(RingMimes::CALLID)) {
+         const QByteArray encodedCallId      = e->mimeData()->data( RingMimes::CALLID      );
          kDebug() << "Call dropped on empty space";
          Call* call =  CallModel::instance()->getCall(encodedCallId);
          if (CallModel::instance()->getIndex(call).parent().isValid()) {
@@ -137,8 +138,8 @@ bool EventManager::viewDropEvent(QDropEvent* e)
          else
             kDebug() << "The call is not in a conversation (doing nothing)";
       }
-      else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
-         const QByteArray encodedPhoneNumber = e->mimeData()->data( MIME_PHONENUMBER );
+      else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
+         const QByteArray encodedPhoneNumber = e->mimeData()->data( RingMimes::PHONENUMBER );
          kDebug() << "Phone number dropped on empty space";
          Call* newCall = CallModel::instance()->dialingCall();
          PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(encodedPhoneNumber);
@@ -147,8 +148,8 @@ bool EventManager::viewDropEvent(QDropEvent* e)
             newCall->setAccount(nb->account());
          newCall->performAction(Call::Action::ACCEPT);
       }
-      else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
-         const QByteArray encodedContact     = e->mimeData()->data( MIME_CONTACT     );
+      else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
+         const QByteArray encodedContact     = e->mimeData()->data( RingMimes::CONTACT     );
          kDebug() << "Contact dropped on empty space";
          const PhoneNumber* number = KPhoneNumberSelector().getNumber(ContactModel::instance()->getContactByUid(encodedContact));
          if (number->uri().isEmpty()) {
@@ -194,19 +195,19 @@ bool EventManager::viewDropEvent(QDropEvent* e)
 ///Callback when a drag and drop is in progress
 bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
 {
-   const bool isCall = e->mimeData()->hasFormat(MIME_CALLID);
+   const bool isCall = e->mimeData()->hasFormat(RingMimes::CALLID);
    if (TipCollection::removeConference() != TipCollection::manager()->currentTip() /*&& idxAt.parent().isValid()*/) {
       if (isCall) {
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
-      else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
-         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(MIME_PHONENUMBER));
+      else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
+         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
                (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
       }
-      else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
-         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
+      else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
+         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(RingMimes::CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
@@ -219,14 +220,14 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
       if (isCall) {
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
-      else if (e->mimeData()->hasFormat(MIME_PHONENUMBER)) {
-         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(MIME_PHONENUMBER));
+      else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
+         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
                (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
       }
-      else if (e->mimeData()->hasFormat(MIME_CONTACT)) {
-         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(MIME_CONTACT));
+      else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
+         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(RingMimes::CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
@@ -243,7 +244,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
    Call* source = nullptr;
    if (isCall)
-      source = CallModel::instance()->getCall(e->mimeData()->data(MIME_CALLID));
+      source = CallModel::instance()->getCall(e->mimeData()->data(RingMimes::CALLID));
    Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
    CallModel::instance()->setData(idxAt,act,Call::Role::DropPosition);
    if ((!isCall) || CallModel::instance()->getIndex(source) != idxAt)
@@ -509,7 +510,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
    switch (call->state()) {
       case Call::State::RINGING:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-         SFLPhone::app()->selectCallTab();
+         Ring::app()->selectCallTab();
          break;
       case Call::State::DIALING:
       case Call::State::INCOMING:
@@ -527,7 +528,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::FAILURE:
       case Call::State::BUSY:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_BUSY);
-         SFLPhone::view()->updateWindowCallState();
+         Ring::view()->updateWindowCallState();
          break;
       case Call::State::INITIALIZATION:
       case Call::State::TRANSFERRED:
@@ -549,7 +550,7 @@ void EventManager::slotIncomingCall(Call* call)
    Q_UNUSED(call)
    if (call->state() == Call::State::INCOMING || call->state() == Call::State::RINGING) {
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-      SFLPhone::app()->selectCallTab();
+      Ring::app()->selectCallTab();
    }
 }
 

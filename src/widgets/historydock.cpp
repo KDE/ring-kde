@@ -44,14 +44,15 @@
 #include <KAction>
 #include <KColorScheme>
 
-//SFLPhone
-#include "sflphone.h"
+//Ring
+#include "ring.h"
 #include "widgets/categorizedtreeview.h"
 #include "widgets/bookmarkdock.h"
 #include "klib/kcfg_settings.h"
 #include "lib/historymodel.h"
 #include "lib/accountmodel.h"
 #include "lib/callmodel.h"
+#include "lib/mime.h"
 #include "lib/phonenumber.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/abstractitembackend.h"
@@ -59,9 +60,8 @@
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
 
-//SFLPhone library
+//Ring library
 #include "klib/helperfunctions.h"
-#include "lib/sflphone_const.h"
 
 
 #define CURRENT_SORTING_MODE m_pSortByCBB->currentIndex()
@@ -439,9 +439,9 @@ void HistoryDock::slotCopy()
 
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(MIME_CALLID, m_pCurrentCall->id().toUtf8());
+   mimeData->setData(RingMimes::CALLID, m_pCurrentCall->id().toUtf8());
 
-   mimeData->setData(MIME_PHONENUMBER, m_pCurrentCall->peerPhoneNumber()->uri().toUtf8());
+   mimeData->setData(RingMimes::PHONENUMBER, m_pCurrentCall->peerPhoneNumber()->uri().toUtf8());
 
    QString numbers,numbersHtml;
    const Contact* ct = m_pCurrentCall->peerPhoneNumber()->contact();

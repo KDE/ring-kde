@@ -19,11 +19,11 @@
 #include <KLocale>
 
 ///Error to display when there is nothing else to say
-const QString ErrorMessage::GENERIC_ERROR = i18n("An unknown error occurred. SFLPhone KDE will now exit. If the problem persist, please report a bug.\n\n"
-      "It is known that this message can be caused by trying to open SFLPhone KDE while the SFLPhone daemon is exiting. If so, waiting 15 seconds and "
+const QString ErrorMessage::GENERIC_ERROR = i18n("An unknown error occurred. Ring KDE will now exit. If the problem persist, please report a bug.\n\n"
+      "It is known that this message can be caused by trying to open Ring KDE while the Ring daemon is exiting. If so, waiting 15 seconds and "
       "trying again will solve the issue.");
 
 ///When the daemon is not detected
-const QString ErrorMessage::NO_DAEMON_ERROR = i18n("The SFLPhone daemon (sflphoned) is not available. Please be sure it is installed correctly or launch it manually. \n\n\
-Check in your distribution repository if the sflphone daemon (sometime called \"sflphone-common\") is available.\n\
-Help for building SFLPhone daemon from source are present at https://projects.savoirfairelinux.com/projects/sflphone/wiki/How_to_build");
+const QString ErrorMessage::NO_DAEMON_ERROR = i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually. \n\n\
+Check in your distribution repository if the Ring daemon (sometime called \"ring-daemon\") is available.\n\
+Help for building Ring daemon from source are present at https://projects.savoirfairelinux.com/projects/sflphone/wiki/How_to_build");

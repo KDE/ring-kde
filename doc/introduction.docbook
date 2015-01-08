@@ -3,11 +3,11 @@
 
 
 <para>
-This user manual is intended to describe the contents and use of the &sflphone-client-kde; &sflphonerelease; softphone.
-&sflphone-client-kde; is a &kde; client for &sflphone;. It communicates with the core side, sflphone daemon, through &DBus;.
-&sflphone; is meant to be a robust enterprise-class desktop phone.
+This user manual is intended to describe the contents and use of the &ring-kde; &ringrelease; softphone.
+&ring-kde; is a &kde; client for &Ring;. It communicates with the core side, Ring daemon, through &DBus;.
+&Ring; is meant to be a robust enterprise-class desktop phone.
 It provides functions like call transfer, call hold, multiple lines, multiple accounts support.
-It is SIP and IAX2 compatible. &sflphone; audio layer is built upon a native ALSA interface and a native PulseAudio interface.
+It is SIP and IAX2 compatible. &Ring; audio layer is built upon a native ALSA interface and a native PulseAudio interface.
 </para>
 
 </chapter>

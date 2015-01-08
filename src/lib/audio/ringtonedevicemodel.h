@@ -23,7 +23,7 @@
 //Qt
 #include <QtCore/QStringList>
 
-//SFLPhone
+//Ring
 #include "../typedefs.h"
 
 class RingtoneDeviceModelPrivate;

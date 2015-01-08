@@ -1,9 +1,9 @@
 
-### SFLPhone-KDE
+### Ring-KDE
 
-Welcome to SFLphone KDE Client!
+Welcome to Ring KDE Client!
 
-SFLPhone-KDE is a Qt based client for the [SFLPhone](www.sflphone.org) daemon.
+Ring-KDE is a Qt based client for the [Ring](www.ring.cx) daemon.
 
 ### Installation
 For install instructions, read the INSTALL file, in this directory.

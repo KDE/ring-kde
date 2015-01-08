@@ -23,7 +23,7 @@
 
 class QStyledItemDelegate;
 
-//SFLPhone
+//Ring
 #include <lib/callmodel.h>
 
 ///CategorizedTreeView: A better looking widget than the plain QListWidget

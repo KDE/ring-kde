@@ -25,7 +25,7 @@
 #include <QStringList>
 #include <QtCore/QSize>
 
-//SFLPhone
+//Ring
 namespace Video {
    class Renderer;
    class Resolution;

@@ -33,7 +33,7 @@ RemoveConferenceTip::RemoveConferenceTip(QWidget* parent) : Tip(i18n("Remove the
    setHasBackground(false);
    setHasText(false);
    m_Padding = 0;
-   loadSvg(KStandardDirs::locate("data", "sflphone-client-kde/tips/removeconference.svg"));
+   loadSvg(KStandardDirs::locate("data", "ring-kde/tips/removeconference.svg"));
 }
 
 ///Destructor

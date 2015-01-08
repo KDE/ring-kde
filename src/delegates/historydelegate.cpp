@@ -32,7 +32,7 @@
 #include <KIcon>
 #include <KStandardDirs>
 
-//SFLPhone
+//Ring
 #include <lib/historymodel.h>
 #include <lib/contact.h>
 #include <lib/callmodel.h>
@@ -44,10 +44,11 @@
 #include "klib/tipanimationwrapper.h"
 #include "lib/visitors/pixmapmanipulationvisitor.h"
 #include "implementation.h"
+#include "../icons/icons.h"
 
 ///Constant
 #pragma GCC diagnostic ignored "-Wmissing-braces"
-TypedStateMachine< const char* , Call::State > callStateIcons = {{ICON_INCOMING, ICON_RINGING, ICON_CURRENT, ICON_DIALING, ICON_HOLD, ICON_FAILURE, ICON_BUSY, ICON_TRANSFER, ICON_TRANSF_HOLD, "", "", ICON_CONFERENCE}};
+TypedStateMachine< const char* , Call::State > callStateIcons = {{RingIcons::INCOMING, RingIcons::RINGING, RingIcons::CURRENT, RingIcons::DIALING, RingIcons::HOLD, RingIcons::FAILURE, RingIcons::BUSY, RingIcons::TRANSFER, RingIcons::TRANSF_HOLD, "", "", RingIcons::CONFERENCE}};
 
 HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr),m_AnimationWrapper(nullptr),m_pRingingTip(nullptr)
 {
@@ -112,7 +113,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          call = qobject_cast<Call*>(obj);
       if (call && QFile::exists(call->recordingPath())) {
          QPainter painter(&pxm);
-         QPixmap status(KStandardDirs::locate("data","sflphone-client-kde/voicemail.png"));
+         QPixmap status(KStandardDirs::locate("data","ring-kde/voicemail.png"));
          status=status.scaled(QSize(24,24));
          painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
          if (m_pParent && m_pParent->indexWidget(index) == nullptr) {
@@ -136,7 +137,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
    if (currentLifeCycleState == Call::LifeCycleState::PROGRESS && index.data(Call::Role::IsRecording).toBool()) {
-      const static QPixmap record(KStandardDirs::locate("data","sflphone-client-kde/record.png"));
+      const static QPixmap record(KStandardDirs::locate("data","ring-kde/record.png"));
       time_t curTime;
       ::time(&curTime);
       if (curTime%3)
@@ -166,7 +167,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          currentHeight +=fm.height();
 //          const static QPixmap* callPxm = nullptr;
 //          if (!callPxm)
-//             callPxm = new QPixmap(KStandardDirs::locate("data","sflphone-client-kde/mini/call.png"));
+//             callPxm = new QPixmap(KStandardDirs::locate("data","ring-kde/mini/call.png"));
          QVariant var = index.data(Call::Role::CategoryIcon);
          if (var.type() == QVariant::Pixmap) {
             QPixmap pxm2 = var.value<QPixmap>();
@@ -266,9 +267,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (index.data(Call::Role::DropState).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
          const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/confBlackWhite.png")),Call::DropAction::Conference));
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer));
-         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","sflphone-client-kde/transferarrow.png")),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/confBlackWhite.png")),Call::DropAction::Conference));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/transferarrow.png")),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/transferarrow.png")),Call::DropAction::Transfer));
       }
 
       if (currentState == Call::State::OVER)

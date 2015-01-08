@@ -38,13 +38,14 @@
 #include <KLocale>
 #include <KAction>
 
-//SFLPhone
+//Ring
 #include "klib/kcfg_settings.h"
-#include "sflphone.h"
+#include "ring.h"
 #include "klib/helperfunctions.h"
 #include "klib/bookmarkmodel.h"
 #include "lib/historymodel.h"
 #include "lib/phonenumber.h"
+#include "lib/mime.h"
 #include "lib/contactmodel.h"
 #include "lib/phonedirectorymodel.h"
 #include "lib/numbercategory.h"
@@ -223,7 +224,7 @@ void BookmarkDock::copy()
 
       //A bookmark can exist without a contact
       if (c) {
-         mimeData->setData(MIME_CONTACT, c->uid());
+         mimeData->setData(RingMimes::CONTACT, c->uid());
          QString numbers(c->formattedName()+": ");
          QString numbersHtml("<b>"+c->formattedName()+"</b><br />\n");
          foreach (PhoneNumber* number, c->phoneNumbers()) {

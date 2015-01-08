@@ -27,13 +27,13 @@
 #include <QtCore/QList>
 #include <QtGui/QFont>
 
-//SFLPhone
+//Ring
 #include "../lib/contact.h"
 
 //Typedef
 typedef QHash<QString,QHash<QString,QVariant> > ContactHash;
 
-///HelperFunctions: little visitor not belonging to libqtsflphone
+///HelperFunctions: little visitor not belonging to libringclient
 ///Ramdom mix of dynamic property and transtypping
 class LIB_EXPORT HelperFunctions {
 public:

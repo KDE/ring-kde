@@ -21,7 +21,7 @@
 
 #include "typedefs.h"
 
-//SFLPhone
+//Ring
 class Call;
 class InstantMessagingModel;
 class IMConversationManagerPrivate;

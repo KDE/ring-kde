@@ -20,7 +20,7 @@
 //KDE
 #include <KDebug>
 
-//SFLPhone
+//Ring
 #include "../lib/videorenderer.h"
 
 ///Constructor

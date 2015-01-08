@@ -40,17 +40,18 @@
 #include <KLocale>
 #include <KMessageBox>
 
-//SFLPhone
-#include "sflphone.h"
-#include "sflphoneview.h"
+//Ring
+#include "ring.h"
+#include "view.h"
 #include "bookmarkdock.h"
 #include "kphonenumberselector.h"
 
-//SFLPhone library
+//Ring library
 #include "categorizedtreeview.h"
 #include "lib/historymodel.h"
 #include "lib/call.h"
 #include "lib/contact.h"
+#include "lib/mime.h"
 #include "lib/contactmodel.h"
 #include "lib/numbercategory.h"
 #include "lib/phonedirectorymodel.h"
@@ -343,7 +344,7 @@ void ContactDock::copy()
 {
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(MIME_CONTACT, m_pCurrentContact->uid());
+   mimeData->setData(RingMimes::CONTACT, m_pCurrentContact->uid());
    QString numbers(m_pCurrentContact->formattedName()+": ");
    QString numbersHtml("<b>"+m_pCurrentContact->formattedName()+"</b><br />");
    foreach (PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
@@ -399,11 +400,11 @@ void ContactDock::slotDelete()
 ///Called when a call is dropped on transfer
 void ContactDock::transferEvent(QMimeData* data)
 {
-   if (data->hasFormat( MIME_CALLID)) {
+   if (data->hasFormat( RingMimes::CALLID)) {
       bool ok = false;
       const PhoneNumber* result = showNumberSelector(ok);
       if (ok && result) {
-         Call* call = CallModel::instance()->getCall(data->data(MIME_CALLID));
+         Call* call = CallModel::instance()->getCall(data->data(RingMimes::CALLID));
          if (dynamic_cast<Call*>(call)) {
 //             call->changeCurrentState(Call::State::TRANSFERRED);
             CallModel::instance()->transfer(call, result);
@@ -436,10 +437,10 @@ void ContactDock::transferEvent(QMimeData* data)
 //    if (dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0])) {
 //       QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0]);
 //       if (item->widget != 0) {
-//          mimeData->setData(MIME_CONTACT, item->widget->getContact()->getUid().toUtf8());
+//          mimeData->setData(RingMimes::CONTACT, item->widget->getContact()->getUid().toUtf8());
 //       }
 //       else if (!item->number.isEmpty()) {
-//          mimeData->setData(MIME_PHONENUMBER, item->number.toUtf8());
+//          mimeData->setData(RingMimes::PHONENUMBER, item->number.toUtf8());
 //       }
 //    }
 //    else {
@@ -455,7 +456,7 @@ void ContactDock::transferEvent(QMimeData* data)
 //    Q_UNUSED(action)
 //    Q_UNUSED(parent)
 // 
-//    QByteArray encodedData = data->data(MIME_CALLID);
+//    QByteArray encodedData = data->data(RingMimes::CALLID);
 // 
 //    kDebug() << "In history import"<< QString(encodedData);
 // 
@@ -526,7 +527,7 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
 //          QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(m_pContactView->selectedItems()[0]);
 //          if (item) {
 //             Call* call = nullptr;
-//             SFLPhone::app()->view()->selectCallPhoneNumber(&call,item->widget->getContact());
+//             Ring::app()->view()->selectCallPhoneNumber(&call,item->widget->getContact());
 //          }
 //       }
    }
