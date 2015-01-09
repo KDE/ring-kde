@@ -19,7 +19,7 @@
 #define KPHONENUMBERSELECTOR_H
 
 //Ring
-#include "../lib/visitors/phonenumberselector.h"
+#include "visitors/phonenumberselector.h"
 
 class PhoneNumber;
 class Contact;

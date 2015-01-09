@@ -20,7 +20,7 @@
 
 #include <QtGui/QGraphicsView>
 #include "videoglframe.h"
-#include <lib/video/renderer.h>
+#include <video/renderer.h>
 
 //Qt
 class QGLWidget;

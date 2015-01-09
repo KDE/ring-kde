@@ -17,10 +17,10 @@
  **************************************************************************/
 #include "videosettings.h"
 
-#include <lib/video/devicemodel.h>
-#include <lib/video/channel.h>
-#include <lib/video/resolution.h>
-#include <lib/video/rate.h>
+#include <video/devicemodel.h>
+#include <video/channel.h>
+#include <video/resolution.h>
+#include <video/rate.h>
 
 VideoSettings::VideoSettings(QWidget* parent) : QWidget(parent)
 {

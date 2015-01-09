@@ -18,7 +18,7 @@
  ***************************************************************************/
 #include "dlghooks.h"
 
-#include <lib/hookmanager.h>
+#include <hookmanager.h>
 
 ///Constructor
 DlgHooks::DlgHooks(QWidget *parent)

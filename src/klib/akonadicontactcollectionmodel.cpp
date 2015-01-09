@@ -25,7 +25,7 @@
 #include <akonadi/collectionmodel.h>
 
 // Ring
-#include "../lib/contactmodel.h"
+#include "contactmodel.h"
 #include "akonadibackend.h"
 #include "kcfg_settings.h"
 

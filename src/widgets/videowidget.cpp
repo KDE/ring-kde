@@ -21,7 +21,7 @@
 #include <KDebug>
 
 //Ring
-#include "../lib/videorenderer.h"
+#include "videorenderer.h"
 
 ///Constructor
 VideoWidget::VideoWidget(QWidget* parent ,* renderer) : QWidget(parent),m_Image(nullptr),m_pRenderer(renderer) {

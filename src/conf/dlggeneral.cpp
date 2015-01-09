@@ -30,7 +30,7 @@
 //Ring
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
-#include "lib/historymodel.h"
+#include "historymodel.h"
 
 ///Constructor
 DlgGeneral::DlgGeneral(KConfigDialog *parent)

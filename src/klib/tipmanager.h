@@ -25,7 +25,7 @@
 #include <QtCore/QAbstractAnimation>
 
 //Ring
-#include "../lib/typedefs.h"
+#include "typedefs.h"
 #include "tip.h"
 #include "tipanimationwrapper.h"
 class TipManager;

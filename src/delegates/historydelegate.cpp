@@ -33,16 +33,16 @@
 #include <KStandardDirs>
 
 //Ring
-#include <lib/historymodel.h>
-#include <lib/contact.h>
-#include <lib/callmodel.h>
-#include <lib/phonenumber.h>
+#include <historymodel.h>
+#include <contact.h>
+#include <callmodel.h>
+#include <phonenumber.h>
 #include "klib/kcfg_settings.h"
 #include "widgets/playeroverlay.h"
 #include "dialpaddelegate.h"
 #include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
-#include "lib/visitors/pixmapmanipulationvisitor.h"
+#include "visitors/pixmapmanipulationvisitor.h"
 #include "implementation.h"
 #include "../icons/icons.h"
 

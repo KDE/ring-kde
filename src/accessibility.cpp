@@ -24,9 +24,9 @@
 #include <KIcon>
 
 //Ring
-#include <lib/call.h>
-#include <lib/callmodel.h>
-#include <lib/phonenumber.h>
+#include <call.h>
+#include <callmodel.h>
+#include <phonenumber.h>
 #include "kspeechinterfacesingleton.h"
 #include "ring.h"
 #include "view.h"

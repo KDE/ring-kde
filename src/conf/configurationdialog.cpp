@@ -37,7 +37,7 @@
 #include "dlgpresence.h"
 #include "icons/icons.h"
 
-#include "lib/accountmodel.h"
+#include "accountmodel.h"
 
 typedef  QWidget* QWidgetPtr;
 

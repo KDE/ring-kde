@@ -25,12 +25,12 @@
 #include <KDebug>
 
 //Ring
-#include <lib/mime.h>
-#include <lib/phonenumber.h>
-#include <lib/account.h>
-#include <lib/phonedirectorymodel.h>
-#include <lib/accountmodel.h>
-#include <lib/contactmodel.h>
+#include <mime.h>
+#include <phonenumber.h>
+#include <account.h>
+#include <phonedirectorymodel.h>
+#include <accountmodel.h>
+#include <contactmodel.h>
 #include <klib/tipmanager.h>
 #include "view.h"
 #include "ring.h"

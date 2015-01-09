@@ -33,13 +33,13 @@
 #include <GL/glu.h>
 
 //Ring
-#include <lib/video/manager.h>
-#include <lib/video/sourcesmodel.h>
+#include <video/manager.h>
+#include <video/sourcesmodel.h>
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
 #include "extendedaction.h"
-#include <lib/video/devicemodel.h>
+#include <video/devicemodel.h>
 #include "klib/kcfg_settings.h"
 
 

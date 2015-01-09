@@ -21,7 +21,7 @@
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QHash>
-#include "../lib/typedefs.h"
+#include "typedefs.h"
 
 //KDE
 class KAction;

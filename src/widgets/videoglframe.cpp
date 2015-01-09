@@ -28,8 +28,8 @@
 #include <GL/glu.h>
 
 //Ring
-#include <lib/video/renderer.h>
-#include <lib/video/manager.h>
+#include <video/renderer.h>
+#include <video/manager.h>
 
 
 #ifndef GL_MULTISAMPLE

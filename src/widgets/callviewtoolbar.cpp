@@ -29,9 +29,9 @@
 #include "actioncollection.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
-#include <lib/call.h>
-#include <lib/useractionmodel.h>
-#include <lib/callmodel.h>
+#include <call.h>
+#include <useractionmodel.h>
+#include <callmodel.h>
 
 CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_pParent(parent)
 {

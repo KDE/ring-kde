@@ -23,8 +23,8 @@
 #include <KLocale>
 
 //Ring
-#include <lib/call.h>
-#include <lib/callmodel.h>
+#include <call.h>
+#include <callmodel.h>
 #include <ring.h>
 
 //Static definition

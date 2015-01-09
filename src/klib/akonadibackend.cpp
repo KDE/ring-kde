@@ -47,16 +47,16 @@
 #include <kabc/contactgroup.h>
 
 //Ring library
-#include "../lib/contact.h"
-#include "../lib/accountmodel.h"
-#include "../lib/account.h"
-#include "../lib/call.h"
-#include "../lib/callmodel.h"
-#include "../lib/phonenumber.h"
-#include "../lib/phonedirectorymodel.h"
-#include "../lib/numbercategorymodel.h"
-#include "../lib/numbercategory.h"
-#include "../lib/contactmodel.h"
+#include "contact.h"
+#include "accountmodel.h"
+#include "account.h"
+#include "call.h"
+#include "callmodel.h"
+#include "phonenumber.h"
+#include "phonedirectorymodel.h"
+#include "numbercategorymodel.h"
+#include "numbercategory.h"
+#include "contactmodel.h"
 #include "kcfg_settings.h"
 
 Akonadi::Session* AkonadiBackend::m_pSession = nullptr;

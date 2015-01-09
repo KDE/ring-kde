@@ -32,9 +32,9 @@
 #include <KLocale>
 
 //Ring
-#include <lib/numbercompletionmodel.h>
-#include <lib/call.h>
-#include <lib/callmodel.h>
+#include <numbercompletionmodel.h>
+#include <call.h>
+#include <callmodel.h>
 #include <delegates/autocompletiondelegate.h>
 
 static const int TOOLBAR_HEIGHT = 72;

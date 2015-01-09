@@ -33,7 +33,7 @@
 //Ring
 #include "../widgets/categorizedtreeview.h"
 #include "ring.h"
-#include "../lib/call.h"
+#include "call.h"
 
 ///Constructor
 ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget,QPalette pal)

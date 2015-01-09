@@ -30,7 +30,7 @@
 class QSvgRenderer;
 
 //Ring
-#include "../lib/typedefs.h"
+#include "typedefs.h"
 
 //Qt
 class QPainter;

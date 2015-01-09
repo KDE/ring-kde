@@ -29,9 +29,9 @@
 #include <KMessageBox>
 
 //Ring
-#include "../lib/contact.h"
-#include "../lib/phonenumber.h"
-#include "../lib/numbercategory.h"
+#include "contact.h"
+#include "phonenumber.h"
+#include "numbercategory.h"
 
 ///Remove accent and upper caps, try to stay ascii as much as possible
 QString HelperFunctions::normStrippped(QString str)

@@ -31,13 +31,13 @@
 #include <KIcon>
 
 //Ring
-#include <lib/contact.h>
-#include <lib/numbercategory.h>
-#include <lib/phonenumber.h>
-#include <lib/abstractitembackend.h>
-#include <lib/contactmodel.h>
+#include <contact.h>
+#include <numbercategory.h>
+#include <phonenumber.h>
+#include <abstractitembackend.h>
+#include <contactmodel.h>
 #include "delegatedropoverlay.h"
-#include "lib/visitors/pixmapmanipulationvisitor.h"
+#include "visitors/pixmapmanipulationvisitor.h"
 #include "phonenumberdelegate.h"
 #include "widgets/categorizedtreeview.h"
 #include "klib/kcfg_settings.h"

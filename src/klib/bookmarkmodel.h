@@ -20,10 +20,10 @@
 
 
 //Ring
-#include "../lib/typedefs.h"
-#include "../lib/contact.h"
-#include "../lib/call.h"
-#include "../lib/abstractbookmarkmodel.h"
+#include "typedefs.h"
+#include "contact.h"
+#include "call.h"
+#include "abstractbookmarkmodel.h"
 
 
 class LIB_EXPORT BookmarkModel :  public AbstractBookmarkModel

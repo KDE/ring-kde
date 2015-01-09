@@ -27,7 +27,7 @@ class QHBoxLayout;
 class QLineEdit;
 
 //Ring
-#include <lib/securityvalidationmodel.h>
+#include <securityvalidationmodel.h>
 class SecurityProgress;
 
 class IssuesIcon : public QWidget {

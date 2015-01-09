@@ -26,9 +26,9 @@
 #include <QDragLeaveEvent>
 #include <QMimeData>
 #include <QtGui/QApplication>
-#include "lib/call.h"
-#include <lib/abstractitembackend.h>
-#include <lib/contactmodel.h>
+#include "call.h"
+#include <abstractitembackend.h>
+#include <contactmodel.h>
 
 ///Constructor
 DelegateDropOverlay::DelegateDropOverlay(QObject* parent):QObject(parent),

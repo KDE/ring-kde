@@ -22,8 +22,8 @@
 
 //Ring
 #include "kcfg_settings.h"
-#include "../lib/historymodel.h"
-#include "../lib/phonenumber.h"
+#include "historymodel.h"
+#include "phonenumber.h"
 
 BookmarkModel* BookmarkModel::m_pSelf = nullptr;
 

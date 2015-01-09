@@ -23,7 +23,7 @@
 
 #include <KIcon>
 
-#include <lib/ringtonemodel.h>
+#include <ringtonemodel.h>
 
 ///RingToneListItem: Ringtone list widget
 class RingToneListItem : public QPushButton

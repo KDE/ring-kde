@@ -19,9 +19,8 @@
 #define DLGACCOUNTS_H
 
 #include "ui_dlgaccountsbase.h"
-#include "../lib/account.h"
-#include "../lib/dbus/callmanager.h"
-#include "../lib/ringtonemodel.h"
+#include "account.h"
+#include "ringtonemodel.h"
 #include <QtGui/QStyledItemDelegate>
 
 //Qt

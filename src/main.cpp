@@ -33,7 +33,7 @@
 //Ring
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
-#include "lib/callmodel.h"
+#include "callmodel.h"
 #include "cmd.h"
 
 static const char version[] = "1.4.1";

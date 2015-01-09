@@ -22,7 +22,7 @@
 #include <QtGui/QStyleOptionViewItem>
 #include <QtCore/QModelIndex>
 
-#include <lib/call.h>
+#include <call.h>
 
 class QTimer;
 class QImage;

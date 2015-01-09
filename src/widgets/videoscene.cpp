@@ -24,8 +24,8 @@
 
 #include "videoglframe.h"
 #include "videotoolbar.h"
-#include <lib/video/renderer.h>
-#include <lib/video/manager.h>
+#include <video/renderer.h>
+#include <video/manager.h>
 #include "klib/kcfg_settings.h"
 
 #ifndef GL_MULTISAMPLE

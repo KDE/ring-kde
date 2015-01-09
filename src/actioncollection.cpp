@@ -44,12 +44,12 @@
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
 #include "klib/macromodel.h"
-#include <lib/call.h>
-#include <lib/account.h>
-#include <lib/accountmodel.h>
-#include <lib/callmodel.h>
-#include <lib/audio/settings.h>
-#include <lib/contactmodel.h>
+#include <call.h>
+#include <account.h>
+#include <accountmodel.h>
+#include <callmodel.h>
+#include <audio/settings.h>
+#include <contactmodel.h>
 
 
 ActionCollection* ActionCollection::m_spInstance = nullptr;

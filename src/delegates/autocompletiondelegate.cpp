@@ -21,7 +21,7 @@
 #include <QtGui/QFontMetrics>
 #include <QtGui/QApplication>
 
-#include <lib/numbercompletionmodel.h>
+#include <numbercompletionmodel.h>
 
 static const int RIGHT_MARGIN = 2;
 

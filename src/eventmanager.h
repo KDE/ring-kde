@@ -28,7 +28,7 @@ class QDragMoveEvent ;
 class QDragMoveEvent ;
 
 //Ring
-#include <lib/call.h>
+#include <call.h>
 class View;
 class CanvasObjectManager;
 class MainWindowEvent;

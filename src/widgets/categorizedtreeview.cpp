@@ -30,11 +30,11 @@
 //Ring
 #include <delegates/conferencedelegate.h>
 #include <klib/tipmanager.h>
-#include <lib/call.h>
+#include <call.h>
 #include <widgets/tips/tipcollection.h>
-#include <lib/contactproxymodel.h>
-#include <lib/historymodel.h>
-#include <lib/mime.h>
+#include <contactproxymodel.h>
+#include <historymodel.h>
+#include <mime.h>
 
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)

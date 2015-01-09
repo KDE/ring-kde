@@ -23,13 +23,13 @@
 #include <KLocale>
 
 //Ring
-#include "../lib/video/device.h"
-#include "../lib/video/codecmodel2.h"
-#include "../lib/video/manager.h"
-#include "../lib/video/resolution.h"
-#include "../lib/video/channel.h"
-#include "../lib/video/rate.h"
-#include "../lib/video/devicemodel.h"
+#include "video/device.h"
+#include "video/codecmodel2.h"
+#include "video/manager.h"
+#include "video/resolution.h"
+#include "video/channel.h"
+#include "video/rate.h"
+#include "video/devicemodel.h"
 
 ///Constructor
 DlgVideo::DlgVideo(KConfigDialog* parent)

@@ -19,7 +19,7 @@
 
 #include <KIcon>
 #include "playeroverlay.h"
-#include "lib/call.h"
+#include "call.h"
 
 Player::Player(QWidget* parent) : QWidget(parent),m_pParent(static_cast<PlayerOverlay*>(parent))
 {

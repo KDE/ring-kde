@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "itemmodelserialization.h"
 
-#include "../lib/abstractitembackend.h"
+#include "abstractitembackend.h"
 #include "kcfg_settings.h"
 
 ItemModelStateSerialization::~ItemModelStateSerialization()

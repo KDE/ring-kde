@@ -31,12 +31,12 @@
 #include <KStandardDirs>
 
 //Ring
-#include <lib/contact.h>
-#include <lib/phonenumber.h>
-#include <lib/presencestatusmodel.h>
-#include <lib/securityvalidationmodel.h>
+#include <contact.h>
+#include <phonenumber.h>
+#include <presencestatusmodel.h>
+#include <securityvalidationmodel.h>
 #include "klib/kcfg_settings.h"
-#include <lib/abstractitembackend.h>
+#include <abstractitembackend.h>
 #include "icons/icons.h"
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {

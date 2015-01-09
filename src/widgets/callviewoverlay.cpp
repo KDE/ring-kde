@@ -37,9 +37,9 @@
 //Ring 
 #include "../accessibility.h"
 #include "klib/kcfg_settings.h"
-#include "lib/callmodel.h"
-#include "lib/call.h"
-#include "lib/phonedirectorymodel.h"
+#include "callmodel.h"
+#include "call.h"
+#include "phonedirectorymodel.h"
 
 /*****************************************************************************
  *                                                                           *

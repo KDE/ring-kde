@@ -22,8 +22,8 @@
 
 #include <QtCore/QPointer>
 
-#include "../lib/abstractitembackend.h"
-#include "../lib/typedefs.h"
+#include "abstractitembackend.h"
+#include "typedefs.h"
 #include <akonadi/collectionmodel.h>
 #include <kabc/phonenumber.h>
 #include <akonadi/item.h>

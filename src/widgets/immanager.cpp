@@ -16,9 +16,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "immanager.h"
-#include "../lib/instantmessagingmodel.h"
-#include "../lib/imconversationmanager.h"
-#include "../lib/call.h"
+#include "instantmessagingmodel.h"
+#include "imconversationmanager.h"
+#include "call.h"
 #include "../delegates/imdelegate.h"
 #include <KDebug>
 #include <KLocale>

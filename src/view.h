@@ -26,8 +26,8 @@
 class QString;
 
 //Ring
-#include "lib/call.h"
-#include "lib/callmodel.h"
+#include "call.h"
+#include "callmodel.h"
 class Contact;
 class CallViewToolbar;
 class CallViewOverlay;

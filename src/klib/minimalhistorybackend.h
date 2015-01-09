@@ -19,7 +19,7 @@
 #ifndef MINIMALHISTORYBACKEND_H
 #define MINIMALHISTORYBACKEND_H
 
-#include "../lib/abstractitembackend.h"
+#include "abstractitembackend.h"
 
 class LIB_EXPORT MinimalHistoryBackend : public AbstractHistoryBackend
 {

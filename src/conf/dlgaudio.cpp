@@ -28,12 +28,12 @@
 //Ring
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
-#include "lib/audio/settings.h"
-#include "lib/audio/inputdevicemodel.h"
-#include "lib/audio/outputdevicemodel.h"
-#include "lib/audio/ringtonedevicemodel.h"
-#include "lib/audio/managermodel.h"
-#include "lib/audio/alsapluginmodel.h"
+#include "audio/settings.h"
+#include "audio/inputdevicemodel.h"
+#include "audio/outputdevicemodel.h"
+#include "audio/ringtonedevicemodel.h"
+#include "audio/managermodel.h"
+#include "audio/alsapluginmodel.h"
 
 ///Constructor
 DlgAudio::DlgAudio(KConfigDialog *parent)

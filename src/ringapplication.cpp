@@ -19,6 +19,10 @@
 //Parent
 #include "ringapplication.h"
 
+//Qt
+#include <QtCore/QDir>
+#include <QtCore/QTimer>
+
 //KDE
 #include <KCmdLineArgs>
 #include <KIconLoader>
@@ -29,15 +33,13 @@
 #include <KIcon>
 #include <KMessageBox>
 
-//Ring library
-#include "lib/dbus/instancemanager.h"
-#include "klib/kcfg_settings.h"
-#include "cmd.h"
 
 //Ring
+#include "klib/kcfg_settings.h"
+#include "cmd.h"
 #include "ring.h"
 #include "errormessage.h"
-#include "lib/call.h"
+#include "callmodel.h"
 
 //Other
 #include <unistd.h>
@@ -61,9 +63,7 @@ RingApplication::RingApplication()
 #endif
 
    try {
-      InstanceInterface& instance = DBus::InstanceManager::instance();
-      QDBusPendingReply<QString> reply = instance.Register(getpid(), "Ring KDE Client");
-      reply.waitForFinished();
+      CallModel::instance();
    }
    catch (...) {
       KMessageBox::error(Ring::app(),ErrorMessage::GENERIC_ERROR);
@@ -86,9 +86,6 @@ RingApplication::~RingApplication()
    delete Ring::app();
    // automatically destroyed
    disableSessionManagement();
-   InstanceInterface& instance = DBus::InstanceManager::instance();
-   Q_NOREPLY instance.Unregister(getpid());
-   instance.connection().disconnectFromBus(instance.connection().baseService());
 }
 
 /**

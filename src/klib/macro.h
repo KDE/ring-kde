@@ -21,7 +21,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QDateTime>
 #include <QtCore/QModelIndex>
-#include "../lib/typedefs.h"
+#include "typedefs.h"
 
 //Qt
 class KAction;

@@ -33,10 +33,10 @@
 #include <KStandardDirs>
 
 //Ring
-#include <lib/contact.h>
-#include <lib/numbercategory.h>
-#include <lib/phonenumber.h>
-#include <lib/abstractitembackend.h>
+#include <contact.h>
+#include <numbercategory.h>
+#include <phonenumber.h>
+#include <abstractitembackend.h>
 #include "widgets/categorizedtreeview.h"
 
 PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr),m_Lock(false)

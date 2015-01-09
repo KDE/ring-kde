@@ -26,7 +26,7 @@
 #include <KIcon>
 
 //Ring
-#include "../lib/dbus/callmanager.h"
+#include "audio/outputdevicemodel.h"
 
 Macro::Macro(QObject* parent) : QObject(parent),m_Position(0),m_Delay(0),m_pCat(nullptr),m_pPointer(nullptr),
 m_Action(nullptr),m_pModel(nullptr)
@@ -53,7 +53,7 @@ void Macro::nextStep()
 {
    if (m_Position < m_Escaped.size()) {
       if (!MacroModel::instance()->m_lListeners.size())
-         Q_NOREPLY DBus::CallManager::instance().playDTMF(QString(m_Escaped[m_Position]));
+         Audio::OutputDeviceModel::playDTMF(QString(m_Escaped[m_Position]));
       else {
          foreach(MacroListener* l,MacroModel::instance()->m_lListeners) {
             l->addDTMF(QString(m_Escaped[m_Position]));

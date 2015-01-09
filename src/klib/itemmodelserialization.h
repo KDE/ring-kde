@@ -15,14 +15,13 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-
 #ifndef ITEMMODELSTATESERIALIZATION_H
 #define ITEMMODELSTATESERIALIZATION_H
 
 #include <QtCore/QHash>
 
-#include "../lib/typedefs.h"
-#include "../lib/visitors/itemmodelstateserializationvisitor.h"
+#include "typedefs.h"
+#include "visitors/itemmodelstateserializationvisitor.h"
 class Account;
 class AbstractItemBackendBase;
 

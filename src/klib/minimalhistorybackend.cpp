@@ -29,10 +29,10 @@
 #include <KLocale>
 
 //Ring
-#include "../lib/call.h"
-#include "../lib/account.h"
-#include "../lib/phonenumber.h"
-#include "../lib/historymodel.h"
+#include "call.h"
+#include "account.h"
+#include "phonenumber.h"
+#include "historymodel.h"
 
 MinimalHistoryBackend::MinimalHistoryBackend(QObject* parent) : AbstractHistoryBackend(nullptr,parent)
 {

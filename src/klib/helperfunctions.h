@@ -28,7 +28,7 @@
 #include <QtGui/QFont>
 
 //Ring
-#include "../lib/contact.h"
+#include "contact.h"
 
 //Typedef
 typedef QHash<QString,QHash<QString,QVariant> > ContactHash;

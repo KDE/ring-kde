@@ -19,8 +19,8 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPaintEvent>
 
-#include <lib/contactproxymodel.h>
-#include <lib/abstractitembackend.h>
+#include <contactproxymodel.h>
+#include <abstractitembackend.h>
 
 ContactView::ContactView(QWidget* parent) : CategorizedTreeView(parent)
 {

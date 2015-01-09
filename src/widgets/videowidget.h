@@ -23,7 +23,7 @@
 #include <QtGui/QPainter>
 
 //Ring
-#include "../lib/videomodel.h"
+#include "videomodel.h"
 class ;
 
 ///VideoWidget: A widget to display video from a framebuffer

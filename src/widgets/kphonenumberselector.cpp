@@ -22,9 +22,9 @@
 #include <KLocale>
 
 //Ring
-#include "../lib/phonenumber.h"
-#include "../lib/numbercategory.h"
-#include "../lib/phonedirectorymodel.h"
+#include "phonenumber.h"
+#include "numbercategory.h"
+#include "phonedirectorymodel.h"
 #include <ring.h>
 
 

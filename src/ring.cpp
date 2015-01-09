@@ -29,6 +29,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QCursor>
 #include <QtCore/QPointer>
+#include <QtCore/QTimer>
 
 //KDE
 #include <KDebug>
@@ -46,27 +47,26 @@
 #include <KIcon>
 
 //Ring library
-#include "lib/dbus/instancemanager.h"
-#include "lib/contact.h"
-#include "lib/accountmodel.h"
-#include "lib/instantmessagingmodel.h"
-#include "lib/imconversationmanager.h"
-#include "lib/numbercategorymodel.h"
-#include "lib/legacyhistorybackend.h"
+#include "contact.h"
+#include "accountmodel.h"
+#include "instantmessagingmodel.h"
+#include "imconversationmanager.h"
+#include "numbercategorymodel.h"
+#include "legacyhistorybackend.h"
 #include "klib/minimalhistorybackend.h"
-#include "lib/visitors/numbercategoryvisitor.h"
+#include "visitors/numbercategoryvisitor.h"
 #include "klib/macromodel.h"
 #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
 #include "klib/akonadicontactcollectionmodel.h"
-#include "lib/presencestatusmodel.h"
-#include "lib/video/manager.h"
-#include "lib/phonenumber.h"
-#include "lib/contactmodel.h"
-#include "lib/itembackendmodel.h"
-#include "lib/visitors/itemmodelstateserializationvisitor.h"
+#include "presencestatusmodel.h"
+#include "video/manager.h"
+#include "phonenumber.h"
+#include "contactmodel.h"
+#include "itembackendmodel.h"
+#include "visitors/itemmodelstateserializationvisitor.h"
 #include "klib/itemmodelserialization.h"
-#include "lib/extensions/presenceitembackendmodelextension.h"
+#include "extensions/presenceitembackendmodelextension.h"
 
 //Ring
 #include "icons/icons.h"
@@ -139,7 +139,7 @@ Ring::Ring(QWidget* parent)
       ,m_pVideoDW(nullptr)
 #endif
 {
-   if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid()) {
+   if ((!CallModel::instance()->isConnected()) || (!CallModel::instance()->isValid())) {
       QTimer::singleShot(5000,this,SLOT(timeout()));
    }
    static bool init = false;
@@ -534,7 +534,7 @@ void Ring::currentAccountIndexChanged(int newIndex)
 ///Update the combobox index
 void Ring::currentPriorAccountChanged(Account* newPrior)
 {
-   if (DBus::InstanceManager::instance().connection().isConnected() && newPrior) {
+   if (CallModel::instance()->isConnected() && newPrior) {
       m_pAccountStatus->setCurrentIndex(newPrior->index().row());
    }
    else {
@@ -598,7 +598,7 @@ void Ring::displayVideoDock(Video::Renderer* r)
 ///The daemon is not found
 void Ring::timeout()
 {
-   if (!DBus::InstanceManager::instance().connection().isConnected() || !DBus::InstanceManager::instance().isValid() || (!CallModel::instance()->isValid())) {
+   if ((!CallModel::instance()->isConnected()) || (!CallModel::instance()->isValid())) {
       KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }

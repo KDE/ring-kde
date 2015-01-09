@@ -19,8 +19,8 @@
 #include <QtCore/QTimer>
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
-#include "lib/call.h"
-#include "lib/callmodel.h"
+#include "call.h"
+#include "callmodel.h"
 
 QTimer* DialpadDelegate::m_spTimer             = nullptr;
 DialpadDelegate* DialpadDelegate::m_spInstance = nullptr;

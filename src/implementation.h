@@ -18,11 +18,11 @@
 #ifndef IMPLEMENTATION_H
 #define IMPLEMENTATION_H
 
-#include <lib/visitors/accountlistcolorvisitor.h>
-#include <lib/visitors/pixmapmanipulationvisitor.h>
-#include <lib/visitors/presenceserializationvisitor.h>
-#include <lib/call.h>
-#include <lib/account.h>
+#include <visitors/accountlistcolorvisitor.h>
+#include <visitors/pixmapmanipulationvisitor.h>
+#include <visitors/presenceserializationvisitor.h>
+#include <call.h>
+#include <account.h>
 
 #include <QtGui/QPalette>
 #include <QtGui/QColor>

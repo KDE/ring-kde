@@ -21,7 +21,7 @@
 #include <KIcon>
 
 //Ring
-#include <lib/presencestatusmodel.h>
+#include <presencestatusmodel.h>
 #include "klib/tipmanager.h"
 #include "klib/tip.h"
 

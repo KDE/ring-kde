@@ -38,21 +38,21 @@
 //Ring
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"
-#include "lib/dbus/configurationmanager.h"
 #include "view.h"
 #include "klib/tipmanager.h"
 #include "klib/tip.h"
-#include "lib/credentialmodel.h"
-#include "lib/audio/codecmodel.h"
-#include "lib/securityvalidationmodel.h"
-#include "lib/accountmodel.h"
-#include "lib/keyexchangemodel.h"
-#include "lib/ringtonemodel.h"
-#include "lib/tlsmethodmodel.h"
-#include "lib/certificate.h"
-#include "lib/categorizedaccountmodel.h"
+#include "credentialmodel.h"
+#include "audio/codecmodel.h"
+#include "securityvalidationmodel.h"
+#include "accountmodel.h"
+#include "keyexchangemodel.h"
+#include "ringtonemodel.h"
+#include "tlsmethodmodel.h"
+#include "certificate.h"
+#include "categorizedaccountmodel.h"
 #include "../delegates/ringtonedelegate.h"
 #include "../delegates/categorizeddelegate.h"
+#include "networkinterfacemodel.h"
 
 #define ACC account->
 
@@ -509,7 +509,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    m_pRingTonePath->setUrl( ringtonePath );
 
    combo_tls_method->setCurrentIndex( TlsMethodModel::instance()->toIndex( ACC tlsMethod()).row() );
-   ConfigurationManagerInterface& configurationManager = DBus::ConfigurationManager::instance();
 
    m_pRingtoneListLW->setModel( ACC ringToneModel());
    const QModelIndex& rtIdx = ACC ringToneModel()->currentIndex();
@@ -532,8 +531,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    #endif
 
    comboBox_ni_local_address->clear();
-   QStringList interfaceList = configurationManager.getAllIpInterfaceByName();
-   comboBox_ni_local_address->addItems(interfaceList);
+   comboBox_ni_local_address->setModel(NetworkInterfaceModel::instance());
 
    spinBox_ni_local_port->setValue( ACC localPort());
    if (comboBox_ni_local_address->findText( ACC localInterface()) >=0)

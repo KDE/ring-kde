@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "presence.h"
-#include <lib/presencestatusmodel.h>
+#include <presencestatusmodel.h>
 
 Presence::Presence(QWidget* parent) : QWidget(parent)
 {

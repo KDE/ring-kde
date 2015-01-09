@@ -17,8 +17,8 @@
  **************************************************************************/
 #include "imdelegate.h"
 
-#include "../lib/instantmessagingmodel.h"
-#include "../lib/call.h"
+#include "instantmessagingmodel.h"
+#include "call.h"
 #include <QtGui/QPainter>
 #include <KDebug>
 #include <KIcon>

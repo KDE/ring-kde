@@ -25,7 +25,7 @@
 #include <KLocale>
 #include <KDebug>
 
-#include "lib/call.h"
+#include "call.h"
 
 PlayerOverlay::PlayerOverlay(Call* call, QWidget* parent) : QWidget(parent),m_pCall(call)
 {

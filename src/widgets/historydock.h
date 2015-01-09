@@ -37,7 +37,7 @@ class KDateWidget;
 class KAction;
 
 //Ring
-#include "../lib/historymodel.h"
+#include "historymodel.h"
 class KeyPressEater;
 
 //Typedef

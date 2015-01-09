@@ -24,7 +24,7 @@
 class QStyledItemDelegate;
 
 //Ring
-#include <lib/callmodel.h>
+#include <callmodel.h>
 
 ///CategorizedTreeView: A better looking widget than the plain QListWidget
 class CategorizedTreeView : public QTreeView
@@ -48,7 +48,7 @@ class CategorizedTreeView : public QTreeView
    void setViewType(ViewType type) {m_Type = type;}
 
    void setHoverState(const QModelIndex& idx);
-   
+
    virtual void setModel ( QAbstractItemModel * model );
 
   protected:

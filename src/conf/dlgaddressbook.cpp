@@ -23,11 +23,11 @@
 #include <QtCore/QPointer>
 #include "klib/kcfg_settings.h"
 #include "klib/akonadibackend.h"
-#include "lib/numbercategorymodel.h"
+#include "numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include <akonadi/collectionmodel.h>
-#include "lib/contactmodel.h"
-#include "lib/itembackendmodel.h"
+#include "contactmodel.h"
+#include "itembackendmodel.h"
 #include "klib/akonadicontactcollectionmodel.h"
 #include <akonadi/collectionpropertiesdialog.h>
 #include <akonadi/agenttypedialog.h>
