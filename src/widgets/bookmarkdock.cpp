@@ -42,7 +42,7 @@
 #include "klib/kcfg_settings.h"
 #include "ring.h"
 #include "klib/helperfunctions.h"
-#include "klib/bookmarkmodel.h"
+#include <bookmarkmodel.h>
 #include "historymodel.h"
 #include "phonenumber.h"
 #include "mime.h"

@@ -56,6 +56,7 @@
 #include "klib/minimalhistorybackend.h"
 #include "visitors/numbercategoryvisitor.h"
 #include "klib/macromodel.h"
+#include "klib/bookmarkbackend.h"
 #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
 #include "klib/akonadicontactcollectionmodel.h"
@@ -148,6 +149,8 @@ Ring::Ring(QWidget* parent)
       //Start the Akonadi collection backend (contact loader)
       AkonadiContactCollectionModel::instance();
       HistoryModel::instance()->addBackend(new MinimalHistoryBackend(this),LoadOptions::FORCE_ENABLED);
+
+      BookmarkModel::instance()->addBackend(new BookmarkBackend(this));
 
       // Import all calls from the legacy backend
       if (ConfigurationSkeleton::requireLegacyHistoryImport()) {

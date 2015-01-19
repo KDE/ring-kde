@@ -42,11 +42,11 @@ set( libkring_LIB_SRCS
    tip.cpp
    tipanimationwrapper.cpp
    macromodel.cpp
-   bookmarkmodel.cpp
    macro.cpp
    akonadicontactcollectionmodel.cpp
    minimalhistorybackend.cpp
    itemmodelserialization.cpp
+   bookmarkbackend.cpp
 )
 
 KDE4_ADD_KCFG_FILES(libkring_LIB_SRCS kcfg_settings.kcfgc)

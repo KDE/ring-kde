@@ -47,6 +47,7 @@
 #include "kphonenumberselector.h"
 
 //Ring library
+#include <bookmarkmodel.h>
 #include "categorizedtreeview.h"
 #include "historymodel.h"
 #include "call.h"

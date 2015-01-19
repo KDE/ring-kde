@@ -61,6 +61,7 @@
 #include "../delegates/historydelegate.h"
 
 //Ring library
+#include <bookmarkmodel.h>
 #include "klib/helperfunctions.h"
 
 

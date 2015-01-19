@@ -30,7 +30,7 @@ class KAction;
 class BookmarkSortFilterProxyModel;
 
 //Ring
-#include "klib/bookmarkmodel.h"
+#include <bookmarkmodel.h>
 
 ///BookmarkDock: Dock for managing favorite contacts
 class BookmarkDock : public QDockWidget, public Ui_DockBase {

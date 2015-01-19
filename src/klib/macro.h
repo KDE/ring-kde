@@ -62,7 +62,7 @@ public:
    void setId(const QString &value);
    void setDelay(int value);
    void setCategory(const QString &value);
-   
+
 private:
    explicit Macro(QObject* parent = nullptr);
    int         m_Position;
