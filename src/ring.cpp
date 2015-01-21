@@ -52,7 +52,6 @@
 #include "instantmessagingmodel.h"
 #include "imconversationmanager.h"
 #include "numbercategorymodel.h"
-#include "legacyhistorybackend.h"
 #include "klib/minimalhistorybackend.h"
 #include "visitors/numbercategoryvisitor.h"
 #include "klib/macromodel.h"
@@ -152,14 +151,6 @@ Ring::Ring(QWidget* parent)
 
       BookmarkModel::instance()->addBackend(new BookmarkBackend(this));
 
-      // Import all calls from the legacy backend
-      if (ConfigurationSkeleton::requireLegacyHistoryImport()) {
-         HistoryModel::instance()->addBackend(new LegacyHistoryBackend(this),LoadOptions::FORCE_ENABLED);
-         ConfigurationSkeleton::setRequireLegacyHistoryImport(false);
-
-         //In case the client is not quitted correctly, save now
-         ConfigurationSkeleton::self()->writeConfig();
-      }
       NumberCategoryVisitor::setInstance(new ConcreteNumberCategoryVisitor());
       ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
       ContactModel::instance()->backendModel()->load();
