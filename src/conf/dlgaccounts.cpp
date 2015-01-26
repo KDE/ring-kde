@@ -49,7 +49,7 @@
 #include "ringtonemodel.h"
 #include "tlsmethodmodel.h"
 #include "certificate.h"
-#include "categorizedaccountmodel.h"
+#include "profilemodel.h"
 #include "../delegates/ringtonedelegate.h"
 #include "../delegates/categorizeddelegate.h"
 #include "networkinterfacemodel.h"
@@ -81,7 +81,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    button_remove_credential->setIcon ( KIcon( "list-remove" ) );
    button_audiocodecUp->setIcon      ( KIcon( "go-up"       ) );
    button_audiocodecDown->setIcon    ( KIcon( "go-down"     ) );
-   treeView_accountList->setModel(CategorizedAccountModel::instance());
+   treeView_accountList->setModel(ProfileModel::instance());
    CategorizedDelegate* m_pCategoryDelegate = new CategorizedDelegate(treeView_accountList);
    QStyledItemDelegate* m_pItemDelegate     = new QStyledItemDelegate;
    m_pCategoryDelegate->setChildDelegate(m_pItemDelegate);
@@ -235,11 +235,11 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    connect(radioButton_pa_custom,          SIGNAL(clicked(bool)) , this , SLOT(enablePublished()));
 
 
-   if (CategorizedAccountModel::instance()->index(0,0).isValid()) {
-      if (CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)).isValid())
-         treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)));
+   if (ProfileModel::instance()->index(0,0).isValid()) {
+      if (ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(0,0)).isValid())
+         treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(0,0)));
       else //IP2IP
-         treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(1,0)));
+         treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(1,0)));
       loadAccount(treeView_accountList->currentIndex());
    }
    m_IsLoading--;
@@ -257,7 +257,7 @@ DlgAccounts::~DlgAccounts()
 ///Save an account using the values from the widgets
 void DlgAccounts::saveAccount(const QModelIndex& item)
 {
-   const QModelIndex srcIdx = CategorizedAccountModel::instance()->mapToSource(item);
+   const QModelIndex srcIdx = ProfileModel::instance()->mapToSource(item);
 
    if(!srcIdx.isValid()) {
       qDebug() << "Attempting to save details of an account from a NULL item" << item.data(Qt::DisplayRole);
@@ -365,7 +365,7 @@ void DlgAccounts::cancel()
 ///Load an account, set all field to the right value
 void DlgAccounts::loadAccount(QModelIndex item)
 {
-   const QModelIndex srcItem = CategorizedAccountModel::instance()->mapToSource(item);
+   const QModelIndex srcItem = ProfileModel::instance()->mapToSource(item);
    if(! srcItem.isValid() ) {
       qDebug() << "Attempting to load details of an account from a NULL item (" << item.row() << ")";
       return;
@@ -569,10 +569,10 @@ void DlgAccounts::loadAccountList()
 {
 //    AccountModel::instance()->updateAccounts();
    if (treeView_accountList->model()->rowCount() > 0 && !treeView_accountList->currentIndex().isValid()) {
-      if (CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)).isValid())
-         treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)));
+      if (ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(0,0)).isValid())
+         treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(0,0)));
       else //IP2IP
-         treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(1,0)));
+         treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(1,0)));
       loadAccount(treeView_accountList->currentIndex());
    }
    else
@@ -605,7 +605,7 @@ void DlgAccounts::otherAccountChanged()
 void DlgAccounts::accountListChanged(const QModelIndex& current, const QModelIndex& previous)
 {
    saveAccount(previous);
-   const QModelIndex srcPrevious = CategorizedAccountModel::instance()->mapToSource(previous);
+   const QModelIndex srcPrevious = ProfileModel::instance()->mapToSource(previous);
    if (srcPrevious.isValid()) {
       Account* acc = AccountModel::instance()->getAccountByModelIndex(srcPrevious);
       if (acc && (acc->state() == Account::EditState::EDITING || acc->state() == Account::EditState::OUTDATED))
@@ -620,7 +620,7 @@ void DlgAccounts::on_button_accountUp_clicked()
    const QModelIndex cur = treeView_accountList->currentIndex();
    Account* acc = currentAccount();
    AccountModel::instance()->moveUp(acc->index());
-   treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(cur.row()-1,0,cur.parent()));
+   treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(cur.row()-1,0,cur.parent()));
 }
 
 ///Move account down
@@ -629,7 +629,7 @@ void DlgAccounts::on_button_accountDown_clicked()
    const QModelIndex cur = treeView_accountList->currentIndex();
    Account* acc = currentAccount();
    AccountModel::instance()->moveDown(acc->index());
-   treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(cur.row()+1,0,cur.parent()));
+   treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(cur.row()+1,0,cur.parent()));
 }
 
 ///Add new account
@@ -637,7 +637,7 @@ void DlgAccounts::on_button_accountAdd_clicked()
 {
    const QString newAlias = i18n("New account%1",AccountModel::getSimilarAliasIndex(i18n("New account")));
    Account* newAcc = AccountModel::instance()->add(newAlias);
-   const QModelIndex& newIndex = CategorizedAccountModel::instance()->mapFromSource(newAcc->index());
+   const QModelIndex& newIndex = ProfileModel::instance()->mapFromSource(newAcc->index());
    treeView_accountList->setCurrentIndex(newIndex);
 
    frame2_editAccounts->setEnabled(true);
@@ -652,11 +652,11 @@ void DlgAccounts::on_button_accountRemove_clicked()
    Account* acc = currentAccount();
    const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to remove %1?",acc->alias()), i18n("Remove account"));
    if (ret == KMessageBox::Yes) {
-      AccountModel::instance()->remove(CategorizedAccountModel::instance()->mapToSource(treeView_accountList->currentIndex()));
-      if (CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)).isValid())
-         treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(0,0)));
+      AccountModel::instance()->remove(ProfileModel::instance()->mapToSource(treeView_accountList->currentIndex()));
+      if (ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(0,0)).isValid())
+         treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(0,0)));
       else //IP2IP
-         treeView_accountList->setCurrentIndex(CategorizedAccountModel::instance()->index(0,0,CategorizedAccountModel::instance()->index(1,0)));
+         treeView_accountList->setCurrentIndex(ProfileModel::instance()->index(0,0,ProfileModel::instance()->index(1,0)));
       loadAccount(treeView_accountList->currentIndex());
    }
 }
@@ -669,7 +669,7 @@ void DlgAccounts::updateAccountListCommands()
    bool buttonsEnabled[4] = {!isCategory && !isIP2IP,!isCategory && !isIP2IP,!isCategory,!isCategory && !isIP2IP};
    buttonsEnabled[0]     &= (treeView_accountList->currentIndex().row() != 0);
    const QModelIndex cur  = treeView_accountList->currentIndex();
-   buttonsEnabled[1]     &= CategorizedAccountModel::instance()->index(cur.row()+1,0,cur.parent()).isValid();
+   buttonsEnabled[1]     &= ProfileModel::instance()->index(cur.row()+1,0,cur.parent()).isValid();
 
    button_accountUp->setEnabled     ( buttonsEnabled[0] );
    button_accountDown->setEnabled   ( buttonsEnabled[1] );
@@ -775,7 +775,7 @@ void DlgAccounts::loadVidCodecDetails(const QModelIndex& current,const QModelInd
 ///Update the status label to current account state
 void DlgAccounts::updateStatusLabel(const QModelIndex& item)
 {
-   const QModelIndex srcItem = CategorizedAccountModel::instance()->mapToSource(item);
+   const QModelIndex srcItem = ProfileModel::instance()->mapToSource(item);
    if(!srcItem.isValid())
       return;
    Account* account = AccountModel::instance()->getAccountByModelIndex(srcItem);
@@ -940,14 +940,14 @@ void DlgAccounts::changeAlias(QString newAlias)
 {
    Account* acc = currentAccount();
    if (acc && newAlias != acc->alias()) {
-      const QModelIndex src = CategorizedAccountModel::instance()->mapToSource(treeView_accountList->currentIndex());
+      const QModelIndex src = ProfileModel::instance()->mapToSource(treeView_accountList->currentIndex());
       AccountModel::instance()->setData(src,newAlias,Qt::EditRole);
    }
 }
 
 Account* DlgAccounts::currentAccount() const
 {
-   return AccountModel::instance()->getAccountByModelIndex(CategorizedAccountModel::instance()->mapToSource(treeView_accountList->currentIndex()));
+   return AccountModel::instance()->getAccountByModelIndex(ProfileModel::instance()->mapToSource(treeView_accountList->currentIndex()));
 }
 
 

@@ -246,9 +246,7 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
          fillContact(aContact,tmp);
 
          if (!tmp.photo().data().isNull())
-            aContact->setPhoto(new QPixmap(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48))));
-         else
-            aContact->setPhoto(nullptr);
+            aContact->setPhoto(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48)));
 
          m_AddrHash[ uid ] = tmp ;
          m_ItemHash[ uid ] = item;

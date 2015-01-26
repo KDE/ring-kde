@@ -18,8 +18,8 @@
 #ifndef KDEPIXMAPMANIPULATION_H
 #define KDEPIXMAPMANIPULATION_H
 
-#include <lib/visitors/pixmapmanipulationvisitor.h>
-#include <lib/call.h>
+#include <visitors/pixmapmanipulationvisitor.h>
+#include <call.h>
 
 class Contact;
 
@@ -34,11 +34,11 @@ public:
 
    virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
 
-   virtual QByteArray toByteArray(const QVariant pxm);
+   virtual QByteArray toByteArray(const QVariant& pxm);
 
    virtual QVariant profilePhoto(const QByteArray& data);
 
-   QVariant numberCategoryIcon(const QVariant p, const QSize& size, bool displayPresence = false, bool isPresent = false);
+   QVariant numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence = false, bool isPresent = false);
 
    virtual QVariant serurityIssueIcon(const QModelIndex& index);
 

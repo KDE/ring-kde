@@ -73,6 +73,7 @@
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
 #include "implementation.h"
+#include "delegates/kdepixmapmanipulation.h"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
@@ -126,7 +127,7 @@ View::View(QWidget *parent)
    setPalette(pal);
 
    m_pColorVisitor = new ColorVisitor(pal);
-   AccountModel::instance()->setColorVisitor(m_pColorVisitor);
+   AccountListColorVisitor::setInstance(m_pColorVisitor);
 
    m_pMessageBoxW->setVisible(false);
 

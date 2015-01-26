@@ -20,7 +20,7 @@
 #define KDEPROFILEPERSISTER_H
 
 //Ring
-#include "../lib/visitors/profilepersistervisitor.h"
+#include <visitors/profilepersistervisitor.h>
 
 //Qt
 #include <QDir>
@@ -29,9 +29,9 @@ class Contact;
 
 class LIB_EXPORT KDEProfilePersister : public ProfilePersisterVisitor {
 public:
-   virtual bool load();
-   virtual bool save(const Contact* c);
-   virtual QDir getProfilesDir();
+   virtual bool load() override;
+   virtual bool save(const Contact* c) override;
+   virtual QDir getProfilesDir() override;
 
 //private:
 };

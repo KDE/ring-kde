@@ -67,6 +67,9 @@
 #include "visitors/itemmodelstateserializationvisitor.h"
 #include "klib/itemmodelserialization.h"
 #include "extensions/presenceitembackendmodelextension.h"
+#include "visitors/profilepersistervisitor.h"
+#include "klib/kdeprofilepersistor.h"
+
 
 //Ring
 #include "icons/icons.h"
@@ -106,7 +109,7 @@ class ConcreteNumberCategoryVisitor :public NumberCategoryVisitor {
       QList<int> list = ConfigurationSkeleton::phoneTypeList();
       const bool isEmpty = !list.size();
 #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
-#define ICN(name) new QPixmap(KStandardDirs::locate("data" , QString("ring-kde/mini/%1.png").arg(name)))
+#define ICN(name) QPixmap(KStandardDirs::locate("data" , QString("ring-kde/mini/%1.png").arg(name)))
       model->addCategory(i18n("Home")     ,ICN("home")     , KABC::PhoneNumber::Home ,IS_ENABLED( KABC::PhoneNumber::Home     ));
       model->addCategory(i18n("Work")     ,ICN("work")     , KABC::PhoneNumber::Work ,IS_ENABLED( KABC::PhoneNumber::Work     ));
       model->addCategory(i18n("Msg")      ,ICN("mail")     , KABC::PhoneNumber::Msg  ,IS_ENABLED( KABC::PhoneNumber::Msg      ));
@@ -144,12 +147,14 @@ Ring::Ring(QWidget* parent)
    }
    static bool init = false;
    if (!init) {
+      ProfilePersisterVisitor::setInstance(new KDEProfilePersister());
 
       //Start the Akonadi collection backend (contact loader)
       AkonadiContactCollectionModel::instance();
       HistoryModel::instance()->addBackend(new MinimalHistoryBackend(this),LoadOptions::FORCE_ENABLED);
 
       BookmarkModel::instance()->addBackend(new BookmarkBackend(this));
+
 
       NumberCategoryVisitor::setInstance(new ConcreteNumberCategoryVisitor());
       ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
@@ -502,8 +507,10 @@ void Ring::on_m_pView_incomingCall(const Call* call)
 {
    if (call) {
       const Contact* contact = call->peerPhoneNumber()->contact();
-      if (contact)
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()),((contact->photo())?*contact->photo():nullptr));
+      if (contact) {
+         const QPixmap px = (contact->photo()).type() == QVariant::Pixmap ? (contact->photo()).value<QPixmap>():QPixmap();
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()),px);
+      }
       else
          KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()));
    }

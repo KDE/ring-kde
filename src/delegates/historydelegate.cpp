@@ -44,6 +44,7 @@
 #include "klib/tipanimationwrapper.h"
 #include "visitors/pixmapmanipulationvisitor.h"
 #include "implementation.h"
+#include "delegates/kdepixmapmanipulation.h"
 #include "../icons/icons.h"
 
 ///Constant

@@ -4,6 +4,8 @@ if(POLICY CMP0022)
    cmake_policy(SET CMP0022 NEW)
 endif(POLICY CMP0022)
 
+INCLUDE(GNUInstallDirs)
+
 ADD_DEFINITIONS("-std=c++0x")
 
 ADD_DEFINITIONS(
@@ -44,6 +46,7 @@ set( libkring_LIB_SRCS
    macromodel.cpp
    macro.cpp
    akonadicontactcollectionmodel.cpp
+   kdeprofilepersistor.cpp
    minimalhistorybackend.cpp
    itemmodelserialization.cpp
    bookmarkbackend.cpp
@@ -51,7 +54,7 @@ set( libkring_LIB_SRCS
 
 KDE4_ADD_KCFG_FILES(libkring_LIB_SRCS kcfg_settings.kcfgc)
 
-kde4_add_library( libkring  SHARED ${libkring_LIB_SRCS} )
+kde4_add_library( libkring  STATIC ${libkring_LIB_SRCS} )
 
 target_link_libraries( libkring
   ${LIB_RING_CLIENT_LIBRARY}
@@ -82,5 +85,18 @@ install( FILES ${libkring_LIB_HDRS}
   DESTINATION ${INCLUDE_INSTALL_DIR}/libkring
   COMPONENT Devel
 )
+
+MESSAGE("INSTALLING IN!!!!! "  ${CMAKE_LIBRARY_ARCHITECTURE}   ${CMAKE_INSTALL_FULL_LIBDIR}   )
  
-install( TARGETS libkring  ${INSTALL_TARGETS_DEFAULT_ARGS} )
+#This hack force Debian based system to return a non multi-arch path
+#this is required to prevent the .deb libringclient.so from having an
+#higher priority than the prefixed one.
+STRING(REPLACE "${CMAKE_LIBRARY_ARCHITECTURE}" "" SANE_LIBRARY_PATH "${CMAKE_INSTALL_FULL_LIBDIR}" )
+MESSAGE("INSTALLING IN!!!!! "  ${CMAKE_LIBRARY_ARCHITECTURE}   ${CMAKE_INSTALL_FULL_LIBDIR}   )
+
+INSTALL( TARGETS libkring
+  ARCHIVE DESTINATION ${SANE_LIBRARY_PATH}
+  LIBRARY DESTINATION ${SANE_LIBRARY_PATH}
+  DESTINATION ${SANE_LIBRARY_PATH}
+)
+

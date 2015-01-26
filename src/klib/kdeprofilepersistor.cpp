@@ -15,10 +15,10 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
+#include "kdeprofilepersistor.h"
 
-#include "kdeprofilepersister.h"
-#include "../lib/contact.h"
-#include "../lib/profilemodel.h"
+#include <contact.h>
+#include <profilemodel.h>
 #include <QFile>
 #include <KStandardDirs>
 

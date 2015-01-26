@@ -72,11 +72,11 @@ bool BookmarkBackend::load()
 
          if (line.isEmpty() && hc.size()) {
             //Parse the info
-            const QString& aid = hc[Call::HistoryMapFields::ACCOUNT_ID];
-            Account*       a   = aid.isEmpty()?nullptr:AccountModel::instance()->getById(aid);
-            Contact*       c   = ContactModel::instance()->getContactByUid(hc[Call::HistoryMapFields::CONTACT_UID].toAscii());
-            const QString& uri = hc[Call::HistoryMapFields::PEER_NUMBER];
-            PhoneNumber*   n   = PhoneDirectoryModel::instance()->getNumber(uri,c,a);
+            const QByteArray& aid = hc[Call::HistoryMapFields::ACCOUNT_ID].toAscii();
+            Account*          a   = aid.isEmpty()?nullptr:AccountModel::instance()->getById(aid);
+            Contact*          c   = ContactModel::instance()->getContactByUid(hc[Call::HistoryMapFields::CONTACT_UID].toAscii());
+            const QString&    uri = hc[Call::HistoryMapFields::PEER_NUMBER];
+            PhoneNumber*      n   = PhoneDirectoryModel::instance()->getNumber(uri,c,a);
 
             //Add the number
             m_lNumbers << n;
@@ -110,7 +110,7 @@ bool BookmarkBackend::reload()
 void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const PhoneNumber* number)
 {
    const Account* a = number->account();
-   streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?a->id():""  );
+   streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?QString(a->id()):""  );
    streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(number->uri() );
    if (number->contact()) {
       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_UID  ).arg(

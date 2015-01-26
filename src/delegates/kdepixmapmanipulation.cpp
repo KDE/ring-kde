@@ -17,24 +17,16 @@
  ***************************************************************************/
 #include "kdepixmapmanipulation.h"
 
-//Ring
-#include "lib/contact.h"
-#include "lib/phonenumber.h"
-#include "lib/presencestatusmodel.h"
-#include "lib/securityvalidationmodel.h"
-#include "lib/abstractitembackend.h"
-
 //Qt
 #include <QtCore/QDebug>
+#include <QtCore/QSize>
+#include <QtCore/QBuffer>
 #include <QtGui/QColor>
 #include <QtGui/QPainter>
 #include <QtGui/QBitmap>
 #include <QtGui/QApplication>
-#include <QtCore/QDebug>
-#include <QtCore/QSize>
-#include <QImage>
+#include <QtGui/QImage>
 #include <QtGui/QPalette>
-#include <QtCore/QBuffer>
 
 //KDE
 #include <KIcon>
@@ -42,20 +34,28 @@
 #include <KLocale>
 #include <KStandardDirs>
 
+//Ring
+#include <contact.h>
+#include <phonenumber.h>
+#include <presencestatusmodel.h>
+#include <securityvalidationmodel.h>
+#include <abstractitembackend.h>
+#include "icons/icons.h"
+
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {
-   {  ICON_INCOMING   ,
-      ICON_RINGING    ,
-      ICON_CURRENT    ,
-      ICON_DIALING    ,
-      ICON_HOLD       ,
-      ICON_FAILURE    ,
-      ICON_BUSY       ,
-      ICON_TRANSFER   ,
-      ICON_TRANSF_HOLD,
+   {  RingIcons::INCOMING   ,
+      RingIcons::RINGING    ,
+      RingIcons::CURRENT    ,
+      RingIcons::DIALING    ,
+      RingIcons::HOLD       ,
+      RingIcons::FAILURE    ,
+      RingIcons::BUSY       ,
+      RingIcons::TRANSFER   ,
+      RingIcons::TRANSF_HOLD,
       ""              ,
       ""              ,
-      ICON_CONFERENCE}};
+      RingIcons::CONFERENCE}};
 
 KDEPixmapManipulation::KDEPixmapManipulation() : QObject(),PixmapManipulationVisitor()
 {
@@ -162,7 +162,7 @@ QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displ
       return QPixmap(callStateIcons[c->state()]);
 }
 
-QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant p, const QSize& size, bool displayPresence, bool isPresent)
+QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence, bool isPresent)
 {
    Q_UNUSED(size);
    if (displayPresence) {
@@ -199,7 +199,7 @@ QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)
    return QVariant();
 }
 
-QByteArray KDEPixmapManipulation::toByteArray(const QVariant pxm)
+QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
 {
    //Preparation of our QPixmap
    QByteArray bArray;
@@ -267,11 +267,12 @@ QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool dis
 
 const char* KDEPixmapManipulation::icnPath[2][2] = {
    {
-   /* INCOMING  */ ICON_HISTORY_INCOMING  ,
-   /* OUTGOING  */ ICON_HISTORY_OUTGOING  ,
+   /* INCOMING  */ RingIcons::HISTORY_INCOMING  ,
+   /* OUTGOING  */ RingIcons::HISTORY_OUTGOING  ,
    },
    {
-   /* MISSED_IN */ ICON_HISTORY_MISSED    ,
-   /* MISSED_OUT*/ ICON_HISTORY_MISSED_OUT,
+   /* MISSED_IN */ RingIcons::HISTORY_MISSED    ,
+   /* MISSED_OUT*/ RingIcons::HISTORY_MISSED_OUT,
    }
 };
+

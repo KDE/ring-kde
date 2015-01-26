@@ -19,7 +19,6 @@
 #define IMPLEMENTATION_H
 
 #include <visitors/accountlistcolorvisitor.h>
-#include <visitors/pixmapmanipulationvisitor.h>
 #include <visitors/presenceserializationvisitor.h>
 #include <call.h>
 #include <account.h>
@@ -41,32 +40,6 @@ private:
    QColor   m_Green;
    QColor   m_Yellow;
    QColor   m_Red;
-};
-
-class KDEPixmapManipulation : public QObject ,public PixmapManipulationVisitor {
-   Q_OBJECT
-public:
-   KDEPixmapManipulation();
-   QVariant contactPhoto(Contact* c, const QSize& size, bool displayPresence = true);
-
-   virtual QVariant callPhoto(const PhoneNumber* n, const QSize& size, bool displayPresence = true);
-
-   virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
-
-   QVariant numberCategoryIcon(const QPixmap* p, const QSize& size, bool displayPresence = false, bool isPresent = false);
-
-   virtual QVariant serurityIssueIcon(const QModelIndex& index);
-
-   static const char* icnPath[2][2];
-private:
-   static const TypedStateMachine< const char* , Call::State > callStateIcons;
-
-
-   //Helper
-   QPixmap drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent);
-
-private Q_SLOTS:
-   void clearCache();
 };
 
 class KDEPresenceSerializationVisitor : public PresenceSerializationVisitor {

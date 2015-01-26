@@ -18,7 +18,10 @@
  **************************************************************************/
 
 //System
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcpp"
 #include <unistd.h>
+#pragma GCC diagnostic pop
 #include <signal.h>
 
 //Qt

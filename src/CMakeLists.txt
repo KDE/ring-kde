@@ -21,6 +21,7 @@ ADD_DEFINITIONS(
    -DSHARE_INSTALL_PREFIX="\\\"${SHARE_INSTALL_PREFIX}\\\""
    -Wall
    -Wextra
+   -Wno-cpp
 #    -Wmissing-declarations
    -Wmissing-noreturn
    -Wpointer-arith
@@ -98,6 +99,7 @@ SET(
    delegates/imdelegate.cpp
    delegates/autocompletiondelegate.cpp
    delegates/ringtonedelegate.cpp
+   delegates/kdepixmapmanipulation.cpp
 )
 
 # Configuration pages
