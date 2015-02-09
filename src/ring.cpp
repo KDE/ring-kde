@@ -63,7 +63,7 @@
 #include "video/manager.h"
 #include "phonenumber.h"
 #include "contactmodel.h"
-#include "itembackendmodel.h"
+#include "collectionmodel.h"
 #include "visitors/itemmodelstateserializationvisitor.h"
 #include "klib/itemmodelserialization.h"
 #include "extensions/presenceitembackendmodelextension.h"
@@ -151,14 +151,14 @@ Ring::Ring(QWidget* parent)
 
       //Start the Akonadi collection backend (contact loader)
       AkonadiContactCollectionModel::instance();
-      HistoryModel::instance()->addBackend(new MinimalHistoryBackend(this),LoadOptions::FORCE_ENABLED);
+      HistoryModel::instance()->addBackend<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
 
-      BookmarkModel::instance()->addBackend(new BookmarkBackend(this));
+      BookmarkModel::instance()->addBackend<BookmarkBackend>();
 
 
       NumberCategoryVisitor::setInstance(new ConcreteNumberCategoryVisitor());
       ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
-      ContactModel::instance()->backendModel()->load();
+//       ContactModel::instance()->backendModel()->load();
       IMConversationManager::instance();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
@@ -166,8 +166,8 @@ Ring::Ring(QWidget* parent)
       #endif
       init = true;
 
-      PresenceItemBackendModelExtension* ext = new PresenceItemBackendModelExtension(this);
-      ContactModel::instance()->backendModel()->addExtension(ext);
+//       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
+//       ContactModel::instance()->backendModel()->addExtension(ext); //FIXME
    }
 
    //Belong to setupActions(), but is needed now

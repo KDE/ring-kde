@@ -34,19 +34,56 @@
 #include "phonenumber.h"
 #include "historymodel.h"
 
-MinimalHistoryBackend::MinimalHistoryBackend(QObject* parent) : AbstractHistoryBackend(nullptr,parent)
-{
-   setObjectName("MinimalHistoryBackend");
-}
+
 
 MinimalHistoryBackend::~MinimalHistoryBackend()
 {
-   
+
+}
+
+bool MinimalHistoryEditor::save(const Call* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool MinimalHistoryEditor::append(const Call* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool MinimalHistoryEditor::remove(Call* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool MinimalHistoryEditor::edit( Call* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool MinimalHistoryEditor::addNew( Call* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+QVector<Call*> MinimalHistoryEditor::items() const
+{
+   return QVector<Call*>();
 }
 
 QString MinimalHistoryBackend::name () const
 {
-   return "Minimal history backend";
+   return QObject::tr("Minimal history backend");
+}
+
+QString MinimalHistoryBackend::category () const
+{
+   return QObject::tr("History");
 }
 
 QVariant MinimalHistoryBackend::icon() const
@@ -71,11 +108,11 @@ bool MinimalHistoryBackend::load()
          if ((line.isEmpty() || !line.size()) && hc.size()) {
             Call* pastCall = Call::buildHistoryCall(hc);
             if (pastCall->peerName().isEmpty()) {
-               pastCall->setPeerName(tr("Unknown"));
+               pastCall->setPeerName(QObject::tr("Unknown"));
             }
             pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
             pastCall->setBackend(this);
-            emit newHistoryCallAdded(pastCall);
+            m_pMediator->addItem(pastCall);
             hc.clear();
          }
          // Add to the current set
@@ -98,100 +135,100 @@ bool MinimalHistoryBackend::reload()
 }
 
 
-bool MinimalHistoryBackend::append(const Call* call)
-{
-   if (call->backend() == this  || call->id().isEmpty()) return false;
-   //TODO support \r and \n\r end of line
-   QFile file(KStandardDirs::locateLocal("appdata","")+"history.ini");
-   if ( file.open(QIODevice::Append | QIODevice::Text) ) {
-      const QString direction = (call->direction()==Call::Direction::INCOMING)?
-         Call::HistoryStateName::INCOMING : Call::HistoryStateName::OUTGOING;
-      QTextStream streamFileOut(&file);
-      const Account* a = call->account();
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CALLID          ).arg(call->id()                     );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_START ).arg(call->startTimeStamp()         );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_STOP  ).arg(call->stopTimeStamp()          );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?QString(a->id()):""          );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DISPLAY_NAME    ).arg(call->peerName()               );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerPhoneNumber()->uri() );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DIRECTION       ).arg(direction                      );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::MISSED          ).arg(call->isMissed()               );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(call->recordingPath()          );
-      streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_USED    ).arg(false                          );//TODO
-      if (call->peerPhoneNumber()->contact()) {
-         streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_UID  ).arg(
-            QString(call->peerPhoneNumber()->contact()->uid())
-         );
-      }
-      streamFileOut << "\n";
-      streamFileOut.flush();
-      file.close();
-      return true;
-   }
-   else
-      qWarning() << "Unable to save history";
-   return false;
-}
+// bool MinimalHistoryBackend::append(const Call* call)
+// {
+//    if (call->backend() == this  || call->id().isEmpty()) return false;
+//    //TODO support \r and \n\r end of line
+//    QFile file(KStandardDirs::locateLocal("appdata","")+"history.ini");
+//    if ( file.open(QIODevice::Append | QIODevice::Text) ) {
+//       const QString direction = (call->direction()==Call::Direction::INCOMING)?
+//          Call::HistoryStateName::INCOMING : Call::HistoryStateName::OUTGOING;
+//       QTextStream streamFileOut(&file);
+//       const Account* a = call->account();
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CALLID          ).arg(call->id()                     );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_START ).arg(call->startTimeStamp()         );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_STOP  ).arg(call->stopTimeStamp()          );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?QString(a->id()):""          );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DISPLAY_NAME    ).arg(call->peerName()               );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerPhoneNumber()->uri() );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DIRECTION       ).arg(direction                      );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::MISSED          ).arg(call->isMissed()               );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(call->recordingPath()          );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_USED    ).arg(false                          );//TODO
+//       if (call->peerPhoneNumber()->contact()) {
+//          streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_UID  ).arg(
+//             QString(call->peerPhoneNumber()->contact()->uid())
+//          );
+//       }
+//       streamFileOut << "\n";
+//       streamFileOut.flush();
+//       file.close();
+//       return true;
+//    }
+//    else
+//       qWarning() << "Unable to save history";
+//    return false;
+// }
 
 /** Rewrite the file from scratch
  * @todo Eventually check if it is necessary, it will be faster
  */
-bool MinimalHistoryBackend::save(const Call* call)
-{
-   Q_UNUSED(call)
-   if (call->backend() != this)
-      append(call);
+// bool MinimalHistoryBackend::save(const Call* call)
+// {
+//    Q_UNUSED(call)
+//    if (call->backend() != this)
+//       append(call);
+// 
+//    //TODO, need to regenerate everything
+//    /*QFile file(KStandardDirs::locateLocal("appdata","")+"history.ini");
+//    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
+//       foreach(const Call* call, HistoryModel::instance()->getHistoryCalls()) {
+//          qDebug() << "HERE" << call->id();
+//       }
+//       return true;
+//    }*/
+//    return false;
+// }
 
-   //TODO, need to regenerate everything
-   /*QFile file(KStandardDirs::locateLocal("appdata","")+"history.ini");
-   if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
-      foreach(const Call* call, HistoryModel::instance()->getHistoryCalls()) {
-         qDebug() << "HERE" << call->id();
-      }
-      return true;
-   }*/
-   return false;
-}
-
-AbstractHistoryBackend::SupportedFeatures MinimalHistoryBackend::supportedFeatures() const
+CollectionInterface::SupportedFeatures MinimalHistoryBackend::supportedFeatures() const
 {
-   return (AbstractHistoryBackend::SupportedFeatures) (
-      AbstractHistoryBackend::SupportedFeatures::NONE  |
-      AbstractHistoryBackend::SupportedFeatures::LOAD  |
-      AbstractHistoryBackend::SupportedFeatures::CLEAR |
-//       AbstractHistoryBackend::SupportedFeatures::REMOVE|
-      AbstractHistoryBackend::SupportedFeatures::ADD   );
+   return (CollectionInterface::SupportedFeatures) (
+      CollectionInterface::SupportedFeatures::NONE  |
+      CollectionInterface::SupportedFeatures::LOAD  |
+      CollectionInterface::SupportedFeatures::CLEAR |
+//       CollectionInterface::SupportedFeatures::REMOVE|
+      CollectionInterface::SupportedFeatures::ADD   );
 }
 
 ///Edit 'item', the implementation may be a GUI or somehting else
-bool MinimalHistoryBackend::edit( Call* call)
-{
-   Q_UNUSED(call)
-   return false;
-}
+// bool MinimalHistoryBackend::edit( Call* call)
+// {
+//    Q_UNUSED(call)
+//    return false;
+// }
 
 
-bool MinimalHistoryBackend::remove ( Call* c )
-{
-   Q_UNUSED(c)
-   qDebug() << "Removing item is not yet supported";
-   return true;
-}
+// bool MinimalHistoryBackend::remove ( Call* c )
+// {
+//    Q_UNUSED(c)
+//    qDebug() << "Removing item is not yet supported";
+//    return true;
+// }
 
 ///Add a new item to the backend
-bool MinimalHistoryBackend::addNew( Call* call)
-{
-   Q_UNUSED(call)
-   return true;
-}
+// bool MinimalHistoryBackend::addNew( Call* call)
+// {
+//    Q_UNUSED(call)
+//    return true;
+// }
 
 ///Add a new phone number to an existing item
-bool MinimalHistoryBackend::addPhoneNumber( Call* call , PhoneNumber* number )
-{
-   Q_UNUSED(call)
-   Q_UNUSED(number)
-   return false;
-}
+// bool MinimalHistoryBackend::addPhoneNumber( Call* call , PhoneNumber* number )
+// {
+//    Q_UNUSED(call)
+//    Q_UNUSED(number)
+//    return false;
+// }
 
 bool MinimalHistoryBackend::clear()
 {
@@ -208,8 +245,8 @@ QByteArray MinimalHistoryBackend::id() const
    return "mhb";
 }
 
-QList<Call*> MinimalHistoryBackend::items() const
-{
-   return QList<Call*>(); //TODO
-}
+// QList<Call*> MinimalHistoryBackend::items() const
+// {
+//    return QList<Call*>(); //TODO
+// }
 

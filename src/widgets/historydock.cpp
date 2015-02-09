@@ -55,7 +55,7 @@
 #include "mime.h"
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"
-#include "abstractitembackend.h"
+#include "collectioninterface.h"
 #include "contactmodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
@@ -129,7 +129,8 @@ QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) c
 }
 
 ///Constructor
-HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr),m_pRemove(nullptr)
+HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr),m_pRemove(nullptr),
+m_pCallAgain(nullptr)
 {
    setObjectName("historyDock");
    QWidget* mainWidget = new QWidget(this);
@@ -394,7 +395,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 void HistoryDock::enableRemove()
 {
    if (m_pRemove)
-      m_pRemove->setEnabled(m_pCurrentCall && m_pCurrentCall->backend() && m_pCurrentCall->backend()->supportedFeatures() & AbstractHistoryBackend::SupportedFeatures::REMOVE);
+      m_pRemove->setEnabled(m_pCurrentCall && m_pCurrentCall->backend() && m_pCurrentCall->backend()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE);
 }
 
 void HistoryDock::slotSendEmail()
@@ -410,8 +411,8 @@ void HistoryDock::slotSendEmail()
 
 void HistoryDock::slotRemove()
 {
-   if (m_pCurrentCall && m_pCurrentCall->backend()->supportedFeatures() & AbstractHistoryBackend::SupportedFeatures::REMOVE) {
-      m_pCurrentCall->backend()->remove(m_pCurrentCall);
+   if (m_pCurrentCall && m_pCurrentCall->backend()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE) {
+      HistoryModel::instance()->deleteItem(m_pCurrentCall); //TODO add add and remove to the manager
    }
 }
 

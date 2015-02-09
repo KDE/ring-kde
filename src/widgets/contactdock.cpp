@@ -373,8 +373,8 @@ void ContactDock::addPhone()
    bool ok = false;
    const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
-      PhoneNumber* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
-      m_pCurrentContact->addPhoneNumber(n);
+//       PhoneNumber* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
+//       m_pCurrentContact->addPhoneNumber(n); //TODO fixme
    }
 }
 

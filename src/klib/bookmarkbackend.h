@@ -19,37 +19,43 @@
 #ifndef BOOKMARKBACKEND_H
 #define BOOKMARKBACKEND_H
 
-#include <abstractitembackend.h>
+#include <collectioninterface.h>
+#include <collectioneditor.h>
 
+template<typename T> class CollectionMediator;
+
+class PhoneNumber;
 class QTextStream;
 
-class LIB_EXPORT BookmarkBackend : public AbstractBookmarkBackend
+class LIB_EXPORT BookmarkBackend : public CollectionInterface
 {
 public:
-   explicit BookmarkBackend(QObject* parent = nullptr);
+   template<typename T>
+   explicit BookmarkBackend(CollectionMediator<T>* mediator);
    virtual ~BookmarkBackend();
 
    virtual bool load() override;
    virtual bool reload() override;
    virtual bool clear() override;
-   virtual bool remove(PhoneNumber* number) override;
-   virtual bool save(const PhoneNumber* number) override;
-   virtual bool append(const PhoneNumber* number) override;
+//    virtual bool remove(PhoneNumber* number) override;
+//    virtual bool save(const PhoneNumber* number) override;
+//    virtual bool append(const PhoneNumber* number) override;
 
    virtual QString    name     () const override;
+   virtual QString    category () const override;
    virtual QVariant   icon     () const override;
    virtual bool       isEnabled() const override;
    virtual QByteArray id       () const override;
 
    virtual SupportedFeatures  supportedFeatures() const override;
 
-   virtual QList<PhoneNumber*> items() const override;
+//    virtual QList<PhoneNumber*> items() const override;
 
    ///Edit 'item', the implementation may be a GUI or somehting else
-   virtual bool edit( PhoneNumber* number) override;
+//    virtual bool edit( PhoneNumber* number) override;
 
    ///Add a new item to the backend
-   virtual bool addNew( PhoneNumber* number) override;
+//    virtual bool addNew( PhoneNumber* number) override;
 
 //    ///Add a new phone number to an existing item
 //    virtual bool addPhoneNumber( PhoneNumber* number , PhoneNumber* number );
@@ -57,9 +63,33 @@ public:
 private:
    //Attributes
    QList<PhoneNumber*> m_lNumbers;
+   CollectionMediator<PhoneNumber>*  m_pMediator;
 
    //Helpers
    void saveHelper(QTextStream& streamFileOut, const PhoneNumber* number);
 };
+
+
+class BookmarkEditor : public CollectionEditor<PhoneNumber>
+{
+public:
+   BookmarkEditor(CollectionMediator<PhoneNumber>* m) : CollectionEditor<PhoneNumber>(m) {}
+   virtual bool save       ( const PhoneNumber* item ) override;
+   virtual bool append     ( const PhoneNumber* item ) override;
+   virtual bool remove     ( PhoneNumber*       item ) override;
+   virtual bool edit       ( PhoneNumber*       item ) override;
+   virtual bool addNew     ( PhoneNumber*       item ) override;
+
+private:
+   virtual QVector<PhoneNumber*> items() const override;
+};
+
+template<typename T>
+BookmarkBackend::BookmarkBackend(CollectionMediator<T>* mediator) :
+   CollectionInterface(new BookmarkEditor(mediator))
+{
+//    setObjectName("BookmarkBackend");
+   load();
+}
 
 #endif

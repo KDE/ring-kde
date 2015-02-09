@@ -27,7 +27,7 @@
 #include <QMimeData>
 #include <QtGui/QApplication>
 #include "call.h"
-#include <abstractitembackend.h>
+#include <collectioninterface.h>
 #include <contactmodel.h>
 
 ///Constructor

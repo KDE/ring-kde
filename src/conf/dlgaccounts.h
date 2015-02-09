@@ -121,6 +121,7 @@ private Q_SLOTS:
    void saveCredential             (                                                         );
    void aliasChanged               (QString newAlias                                         );
    void changeAlias                (QString newAlias                                         );
+   void statusModel();
 
 Q_SIGNALS:
    ///Update the Ok and Apply button style

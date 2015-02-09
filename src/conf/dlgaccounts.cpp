@@ -24,6 +24,7 @@
 #include <QtGui/QTableWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QWidget>
+#include <QtGui/QDialog>
 #include <QtCore/QDebug>
 
 //KDE
@@ -46,6 +47,7 @@
 #include "securityvalidationmodel.h"
 #include "accountmodel.h"
 #include "keyexchangemodel.h"
+#include "ciphermodel.h"
 #include "ringtonemodel.h"
 #include "tlsmethodmodel.h"
 #include "certificate.h"
@@ -191,10 +193,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(file_tls_private_key,              SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
    /**/connect(combo_tls_method,                  SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
    /**/connect(combo_security_STRP,               SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
-   /**/connect(edit_tls_cipher,                   SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_outgoing,                 SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_tls_timeout_sec,           SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
-   /**/connect(spinbox_tls_timeout_msec,          SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(check_tls_incoming,                SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(check_tls_answer,                  SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(check_tls_requier_cert,            SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
@@ -300,10 +300,8 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setTlsPassword                 ( edit_tls_private_key_password->text()                                    );
    /**/ ACC setTlsListenerPort             ( spinbox_tls_listener->value()                                            );
    /**/ ACC setTlsMethod                   ( static_cast<TlsMethodModel::Type>(combo_tls_method->currentIndex())      );
-   /**/ ACC setTlsCiphers                  ( edit_tls_cipher->text()                                                  );
    /**/ ACC setTlsServerName               ( edit_tls_outgoing->text()                                                );
    /**/ ACC setTlsNegotiationTimeoutSec    ( spinbox_tls_timeout_sec->value()                                         );
-   /**/ ACC setTlsNegotiationTimeoutMsec   ( spinbox_tls_timeout_msec->value()                                        );
    /**/ ACC setKeyExchange                 ( currentKeyExchange                                                       );
    /**/ ACC setTlsVerifyServer             ( check_tls_incoming->isChecked()                                          );
    /**/ ACC setTlsVerifyClient             ( check_tls_answer->isChecked()                                            );
@@ -333,9 +331,9 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setVideoEnabled                ( m_pEnableVideo->isChecked()                                              );
    //                                                                                                                  /
 
-   /**/ ACC tlsCaListCertificate()->setPath( file_tls_authority->text()                                               );
-   /**/ ACC tlsCertificate ()->setPath     ( file_tls_endpoint->text()                                                );
-   /**/ ACC tlsPrivateKeyCertificate()->setPath( file_tls_private_key->text()                                         );
+//    /**/ ACC tlsCaListCertificate()->setPath( file_tls_authority->text()                                               );
+//    /**/ ACC tlsCertificate ()->setPath     ( file_tls_endpoint->text()                                                );
+//    /**/ ACC tlsPrivateKeyCertificate()->setPath( file_tls_private_key->text()                                         );
 
 
 //    if (m_pDefaultAccount->isChecked()) {
@@ -423,13 +421,11 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /*                                                  Security                             **/
    /**/edit_tls_private_key_password->setText   (  ACC tlsPassword                     ());
    /**/spinbox_tls_listener->setValue           (  ACC tlsListenerPort                 ());
-   /**/file_tls_authority->setText              (  ACC tlsCaListCertificate    ()->path().toLocalFile());
-   /**/file_tls_endpoint->setText               (  ACC tlsCertificate          ()->path().toLocalFile());
-   /**/file_tls_private_key->setText            (  ACC tlsPrivateKeyCertificate()->path().toLocalFile());
-   /**/edit_tls_cipher->setText                 (  ACC tlsCiphers                      ());
+//    /**/file_tls_authority->setText              (  ACC tlsCaListCertificate    ()->path().toLocalFile());
+//    /**/file_tls_endpoint->setText               (  ACC tlsCertificate          ()->path().toLocalFile());
+//    /**/file_tls_private_key->setText            (  ACC tlsPrivateKeyCertificate()->path().toLocalFile());
    /**/edit_tls_outgoing->setText               (  ACC tlsServerName                   ());
    /**/spinbox_tls_timeout_sec->setValue        (  ACC tlsNegotiationTimeoutSec        ());
-   /**/spinbox_tls_timeout_msec->setValue       (  ACC tlsNegotiationTimeoutMsec       ());
    /**/check_tls_incoming->setChecked           (  ACC isTlsVerifyServer               ());
    /**/check_tls_answer->setChecked             (  ACC isTlsVerifyClient               ());
    /**/check_tls_requier_cert->setChecked       (  ACC isTlsRequireClientCertificate   ());
@@ -440,7 +436,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/m_pMaxAudioPort->setValue                (  ACC audioPortMax                    ());
    /**/m_pMinAudioPort->setValue                (  ACC audioPortMin                    ());
    /**/m_pUserAgent->setText                    (  ACC userAgent                       ());
-   /*                                                                                        */
+   /*                                                                                    */
+
+   m_pCiphers->setModel(ACC cipherModel());
 
    combo_security_STRP->setModel(ACC keyExchangeModel());
    groupbox_STRP_keyexchange->setChecked(ACC isSrtpEnabled());
@@ -974,6 +972,18 @@ Q_UNUSED(flaw)
 //END
 }
 
+#include <accountstatusmodel.h>
+void DlgAccounts::statusModel()
+{
+   Account* acc = currentAccount();
+   QDialog* d = new QDialog(this);
+   QTableView* v = new QTableView(d);
+   QHBoxLayout* l = new QHBoxLayout(d);
+   l->addWidget(v);
+   v->setModel(acc->statusModel());
+   d->show();
+}
+
 
 void DlgAccounts::updateSecurityValidation()
 {
@@ -1045,7 +1055,7 @@ void DlgAccounts::updateSecurityValidation()
          case SecurityValidationModel::SecurityFlaw::MISSING_AUTHORITY:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::__COUNT:
+         case SecurityValidationModel::SecurityFlaw::COUNT__:
          default:
             qDebug() << "Invalid flaw";
       }

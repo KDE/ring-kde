@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "itemmodelserialization.h"
 
-#include "abstractitembackend.h"
+#include "collectioninterface.h"
 #include "kcfg_settings.h"
 
 ItemModelStateSerialization::~ItemModelStateSerialization()
@@ -49,12 +49,12 @@ bool ItemModelStateSerialization::load()
    return true;
 }
 
-bool ItemModelStateSerialization::isChecked(AbstractItemBackendBase* backend) const
+bool ItemModelStateSerialization::isChecked(CollectionInterface* backend) const
 {
    return !(m_hChecked[backend->id()]);
 }
 
-bool ItemModelStateSerialization::setChecked(AbstractItemBackendBase* backend, bool enabled)
+bool ItemModelStateSerialization::setChecked(CollectionInterface* backend, bool enabled)
 {
    m_hChecked[backend->id()] = ! enabled;
    return true;

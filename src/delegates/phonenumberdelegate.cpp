@@ -36,7 +36,7 @@
 #include <contact.h>
 #include <numbercategory.h>
 #include <phonenumber.h>
-#include <abstractitembackend.h>
+#include <collectioninterface.h>
 #include "widgets/categorizedtreeview.h"
 
 PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr),m_Lock(false)

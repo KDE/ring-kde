@@ -45,6 +45,7 @@
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
+#include <QtCore/QAbstractItemModel>
 
 //Ring library
 #include "contact.h"
@@ -55,6 +56,7 @@
 #include "phonenumber.h"
 #include "phonedirectorymodel.h"
 #include "numbercategorymodel.h"
+#include "collectioninterface.h"
 #include "numbercategory.h"
 #include "contactmodel.h"
 #include "kcfg_settings.h"
@@ -62,17 +64,9 @@
 Akonadi::Session* AkonadiBackend::m_pSession = nullptr;
 QHash<Akonadi::Collection::Id, AkonadiBackend*> AkonadiBackend::m_hParentLookup;
 
-///Constructor
-AkonadiBackend::AkonadiBackend(const Akonadi::Collection& parentCol, QObject* parent) :
-   AbstractContactBackend(m_hParentLookup[parentCol.parent()],parent),m_pJob(nullptr),
-   m_pMonitor(nullptr),m_isEnabled(false),m_wasEnabled(false)
-{
-   if (!m_pSession)
-      m_pSession = new Akonadi::Session( "Ring::instance" );
-   setObjectName(parentCol.name());
-   m_Coll = parentCol;
-   m_hParentLookup[m_Coll.id()] = this;
-} //AkonadiBackend
+
+
+
 
 ///Destructor
 AkonadiBackend::~AkonadiBackend()
@@ -81,9 +75,46 @@ AkonadiBackend::~AkonadiBackend()
       delete m_pJob;
    if (m_pMonitor)
       delete m_pMonitor;
-   m_lBackendContacts.clear();
-   m_ItemHash.clear();
-   m_AddrHash.clear();
+}
+
+bool AkonadiEditor::save(const Contact* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool AkonadiEditor::append(const Contact* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool AkonadiEditor::remove(Contact* c)
+{
+   if (!c)
+      return false;
+   Akonadi::Item item = m_ItemHash[c->uid()];
+   Akonadi::ItemDeleteJob *job = new Akonadi::ItemDeleteJob( item );
+   job->exec();
+   c->setActive(false);
+   return true;
+}
+
+bool AkonadiEditor::edit( Contact* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool AkonadiEditor::addNew( Contact* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+QVector<Contact*> AkonadiEditor::items() const
+{
+   return QVector<Contact*>();
 }
 
 QString AkonadiBackend::name () const
@@ -93,6 +124,11 @@ QString AkonadiBackend::name () const
    if (attr)
       name = attr->displayName().trimmed();
    return name.isEmpty()?m_Coll.name():name;
+}
+
+QString AkonadiBackend::category() const
+{
+   return tr("Contact");
 }
 
 QVariant AkonadiBackend::icon() const
@@ -139,14 +175,14 @@ bool AkonadiBackend::enable (bool enable)
       return load();
    }
    else if (m_wasEnabled && enable) {
-      foreach(Contact* contact, m_lBackendContacts) {
+      foreach(Contact* contact, static_cast<AkonadiEditor*>(editor<Contact>())->m_lBackendContacts) {
          contact->setActive(true);
       }
       m_wasEnabled = false;
       m_isEnabled = true;
    }
    else if (isEnabled()) {
-      foreach(Contact* contact, m_lBackendContacts) {
+      foreach(Contact* contact, static_cast<AkonadiEditor*>(editor<Contact>())->m_lBackendContacts) {
          contact->setActive(false);
       }
       m_isEnabled = false;
@@ -166,18 +202,18 @@ QByteArray AkonadiBackend::id() const
    return QString::number(m_Coll.id()).toAscii();
 }
 
-AbstractContactBackend::SupportedFeatures AkonadiBackend::supportedFeatures() const
+CollectionInterface::SupportedFeatures AkonadiBackend::supportedFeatures() const
 {
-   return (AbstractContactBackend::SupportedFeatures) (
-      AbstractContactBackend::SupportedFeatures::NONE        |
-      AbstractContactBackend::SupportedFeatures::LOAD        |
-      AbstractContactBackend::SupportedFeatures::SAVE        |
-      AbstractContactBackend::SupportedFeatures::EDIT        |
-      AbstractContactBackend::SupportedFeatures::REMOVE      |
-      AbstractContactBackend::SupportedFeatures::ADD         |
-      AbstractContactBackend::SupportedFeatures::MANAGEABLE  |
-      AbstractContactBackend::SupportedFeatures::DISABLEABLE |
-      AbstractContactBackend::SupportedFeatures::ENABLEABLE
+   return (CollectionInterface::SupportedFeatures) (
+      CollectionInterface::SupportedFeatures::NONE        |
+      CollectionInterface::SupportedFeatures::LOAD        |
+      CollectionInterface::SupportedFeatures::SAVE        |
+      CollectionInterface::SupportedFeatures::EDIT        |
+      CollectionInterface::SupportedFeatures::REMOVE      |
+      CollectionInterface::SupportedFeatures::ADD         |
+      CollectionInterface::SupportedFeatures::MANAGEABLE  |
+      CollectionInterface::SupportedFeatures::DISABLEABLE |
+      CollectionInterface::SupportedFeatures::ENABLEABLE
    );
 }
 
@@ -248,9 +284,9 @@ Contact* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
          if (!tmp.photo().data().isNull())
             aContact->setPhoto(QPixmap::fromImage( tmp.photo().data()).scaled(QSize(48,48)));
 
-         m_AddrHash[ uid ] = tmp ;
-         m_ItemHash[ uid ] = item;
-         m_lBackendContacts << aContact;
+         static_cast<AkonadiEditor*>(editor<Contact>())->m_AddrHash[ uid ] = tmp ;
+         static_cast<AkonadiEditor*>(editor<Contact>())->m_ItemHash[ uid ] = item;
+         static_cast<AkonadiEditor*>(editor<Contact>())->m_lBackendContacts << aContact;
       }
    }
    return aContact;
@@ -295,21 +331,15 @@ void AkonadiBackend::update(const Akonadi::Collection& collection)
 //    return m_ContactByUid.values();
 } //update
 
-bool AkonadiBackend::remove(Contact* c)
-{
-   if (!c)
-      return false;
-   Akonadi::Item item = m_ItemHash[c->uid()];
-   Akonadi::ItemDeleteJob *job = new Akonadi::ItemDeleteJob( item );
-   job->exec();
-   c->setActive(false);
-   return true;
-}
+// bool AkonadiBackend::remove(Contact* c)
+// {
+//    
+// }
 
 ///Edit backend value using an updated frontend contact
 bool AkonadiBackend::edit(Contact* contact,QWidget* parent)
 {
-   Akonadi::Item item = m_ItemHash[contact->uid()];
+   Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Contact>())->m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
       return false ;
@@ -337,7 +367,7 @@ bool AkonadiBackend::edit(Contact* contact,QWidget* parent)
 ///Save a contact
 bool AkonadiBackend::save(const Contact* contact)
 {
-   Akonadi::Item item = m_ItemHash[contact->uid()];
+   Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Contact>())->m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
       return false;
@@ -362,11 +392,11 @@ bool AkonadiBackend::save(const Contact* contact)
 }
 
 
-bool AkonadiBackend::append(const Contact* item)
-{
-   Q_UNUSED(item)
-   return false;
-}
+// bool AkonadiBackend::append(const Contact* item)
+// {
+//    Q_UNUSED(item)
+//    return false;
+// }
 
 ///Add a new contact
 bool AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
@@ -408,21 +438,21 @@ bool AkonadiBackend::addNewContact(Contact* contact,QWidget* parent)
 } //addNewContact
 
 ///Implement virtual pure method
-bool AkonadiBackend::edit(Contact* contact)
-{
-   return edit(contact,nullptr);
-}
+// bool AkonadiBackend::edit(Contact* contact)
+// {
+//    return edit(contact,nullptr);
+// }
 
 ///Implement virtual pure method
-bool AkonadiBackend::addNew(Contact* contact)
-{
-   return addNewContact(contact,nullptr);
-}
+// bool AkonadiBackend::addNew(Contact* contact)
+// {
+//    return addNewContact(contact,nullptr);
+// }
 
 ///Add a new phone number to an existing contact
 bool AkonadiBackend::addPhoneNumber(Contact* contact, PhoneNumber* number)
 {
-   Akonadi::Item item = m_ItemHash[contact->uid()];
+   Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Contact>())->m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
       kDebug() << "Contact not found";
       return false;
@@ -479,7 +509,7 @@ void AkonadiBackend::slotItemAdded(const Akonadi::Item& item,const Akonadi::Coll
    Q_UNUSED(coll)
    Contact* c = addItem(item,ConfigurationSkeleton::hideContactWithoutPhone());
    if (c) { //Not all items will have an addressee payload
-      emit newContactAdded(c);
+      m_pMediator->addItem(c);
    }
 }
 
@@ -507,7 +537,7 @@ Akonadi::Collection AkonadiBackend::collection() const
    return m_Coll;
 }
 
-QList<Contact*> AkonadiBackend::items() const
-{
-   return m_lBackendContacts;
-}
+// QList<Contact*> AkonadiBackend::items() const
+// {
+//    return m_lBackendContacts;
+// }

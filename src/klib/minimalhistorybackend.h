@@ -1,5 +1,5 @@
 /************************************************************************************
- *   Copyright (C) 2014-2015 by Savoir-Faire Linux                                       *
+ *   Copyright (C) 2014-2015 by Savoir-Faire Linux                                  *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>         *
  *                                                                                  *
  *   This library is free software; you can redistribute it and/or                  *
@@ -19,37 +19,68 @@
 #ifndef MINIMALHISTORYBACKEND_H
 #define MINIMALHISTORYBACKEND_H
 
-#include "abstractitembackend.h"
+#include "collectioninterface.h"
+#include "collectioneditor.h"
 
-class LIB_EXPORT MinimalHistoryBackend : public AbstractHistoryBackend
+class Call;
+
+template<typename T> class CollectionMediator;
+
+class LIB_EXPORT MinimalHistoryBackend : public CollectionInterface
 {
 public:
-   explicit MinimalHistoryBackend(QObject* parent = nullptr);
+   template<typename T>
+   explicit MinimalHistoryBackend(CollectionMediator<T>* mediator);
    virtual ~MinimalHistoryBackend();
 
-   virtual bool load();
-   virtual bool reload();
-   virtual bool clear();
-   virtual bool save(const Call* call);
-   virtual bool append(const Call* item);
+   virtual bool load() override;
+   virtual bool reload() override;
+   virtual bool clear() override;
+//    virtual bool save(const Call* call) override;
+//    virtual bool append(const Call* item) override;
 
-   virtual QString    name     () const;
-   virtual QVariant   icon     () const;
-   virtual bool       isEnabled() const;
-   virtual QByteArray id       () const;
-   virtual bool remove ( Call* c ) override;
+   virtual QString    name     () const override;
+   virtual QString    category () const override;
+   virtual QVariant   icon     () const override;
+   virtual bool       isEnabled() const override;
+   virtual QByteArray id       () const override;
+//    virtual bool remove ( Call* c ) override;
 
-   virtual SupportedFeatures  supportedFeatures() const;
+   virtual SupportedFeatures  supportedFeatures() const override;
 
-   virtual QList<Call*> items() const override;
+//    virtual QList<Call*> items() const override;
 
    ///Edit 'item', the implementation may be a GUI or somehting else
-   virtual bool edit( Call* call);
+//    virtual bool edit( Call* call) override;
    ///Add a new item to the backend
-   virtual bool addNew( Call* call);
+//    virtual bool addNew( Call* call) override;
 
    ///Add a new phone number to an existing item
-   virtual bool addPhoneNumber( Call* call , PhoneNumber* number );
+//    virtual bool addPhoneNumber( Call* call , PhoneNumber* number ) override;
+private:
+   CollectionMediator<Call>*  m_pMediator;
 };
+
+class MinimalHistoryEditor : public CollectionEditor<Call>
+{
+public:
+   MinimalHistoryEditor(CollectionMediator<Call>* m) : CollectionEditor<Call>(m) {}
+   virtual bool save       ( const Call* item ) override;
+   virtual bool append     ( const Call* item ) override;
+   virtual bool remove     ( Call*       item ) override;
+   virtual bool edit       ( Call*       item ) override;
+   virtual bool addNew     ( Call*       item ) override;
+
+private:
+   virtual QVector<Call*> items() const override;
+};
+
+
+template<typename T>
+MinimalHistoryBackend::MinimalHistoryBackend(CollectionMediator<T>* mediator) :
+CollectionInterface(new MinimalHistoryEditor(nullptr)),m_pMediator(mediator)
+{
+//    setObjectName("MinimalHistoryBackend");
+}
 
 #endif

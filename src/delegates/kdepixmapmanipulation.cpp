@@ -39,7 +39,7 @@
 #include <phonenumber.h>
 #include <presencestatusmodel.h>
 #include <securityvalidationmodel.h>
-#include <abstractitembackend.h>
+#include <collectioninterface.h>
 #include "icons/icons.h"
 
 

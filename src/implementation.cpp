@@ -36,7 +36,7 @@
 #include <presencestatusmodel.h>
 #include <securityvalidationmodel.h>
 #include "klib/kcfg_settings.h"
-#include <abstractitembackend.h>
+#include <collectioninterface.h>
 #include "icons/icons.h"
 
 QDebug operator<<(QDebug dbg, const Call::State& c)
@@ -166,7 +166,7 @@ KDEPresenceSerializationVisitor::~KDEPresenceSerializationVisitor()
    
 }
 
-bool KDEPresenceSerializationVisitor::isTracked(AbstractItemBackendBase* backend)
+bool KDEPresenceSerializationVisitor::isTracked(CollectionInterface* backend)
 {
    Q_UNUSED(backend)
    if (!m_isLoaded) {
@@ -178,7 +178,7 @@ bool KDEPresenceSerializationVisitor::isTracked(AbstractItemBackendBase* backend
    return m_hTracked[backend->name()];
 }
 
-void KDEPresenceSerializationVisitor::setTracked(AbstractItemBackendBase* backend, bool tracked)
+void KDEPresenceSerializationVisitor::setTracked(CollectionInterface* backend, bool tracked)
 {
    if (!m_isLoaded) {
       foreach(const QString& str,ConfigurationSkeleton::presenceAutoTrackedCollections()) {
