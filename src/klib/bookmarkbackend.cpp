@@ -21,12 +21,12 @@
 //Qt
 #include <QtCore/QFile>
 #include <QtCore/QHash>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 //KDE
-#include <KStandardDirs>
-#include <KMessageBox>
-#include <KLocale>
+
+#include <kmessagebox.h>
+#include <klocalizedstring.h>
 
 //SFLPhone
 #include <call.h>
@@ -35,6 +35,7 @@
 #include <accountmodel.h>
 #include <personmodel.h>
 #include <phonedirectorymodel.h>
+#include <QStandardPaths>
 
 
 BookmarkBackend::~BookmarkBackend()
@@ -99,7 +100,7 @@ bool BookmarkBackend::isEnabled() const
 
 bool BookmarkBackend::load()
 {
-   QFile file(KStandardDirs::locateLocal("appdata","")+"bookmark.ini");
+   QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"bookmark.ini");
    if ( file.open(QIODevice::ReadOnly | QIODevice::Text) ) {
       QMap<QString,QString> hc;
       while (!file.atEnd()) {
@@ -107,9 +108,9 @@ bool BookmarkBackend::load()
 
          if (line.isEmpty() && hc.size()) {
             //Parse the info
-            const QByteArray& aid = hc[Call::HistoryMapFields::ACCOUNT_ID].toAscii();
+            const QByteArray& aid = hc[Call::HistoryMapFields::ACCOUNT_ID].toLatin1();
             Account*          a   = aid.isEmpty()?nullptr:AccountModel::instance()->getById(aid);
-            Person*          c   = PersonModel::instance()->getPersonByUid(hc[Call::HistoryMapFields::CONTACT_UID].toAscii());
+            Person*          c   = PersonModel::instance()->getPersonByUid(hc[Call::HistoryMapFields::CONTACT_UID].toLatin1());
             const QString&    uri = hc[Call::HistoryMapFields::PEER_NUMBER];
             ContactMethod*      n   = PhoneDirectoryModel::instance()->getNumber(uri,c,a);
 
@@ -161,7 +162,7 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const ContactMethod
 //       const_cast<ContactMethod*>(number)->setBookmarked(true);
 // 
 //       //TODO support \r and \n\r end of line
-//       QFile file(KStandardDirs::locateLocal("appdata","")+"bookmark.ini");
+//       QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + "")+"bookmark.ini";
 //       if ( file.open(QIODevice::Append | QIODevice::Text) ) {
 //          QTextStream streamFileOut(&file);
 //          saveHelper(streamFileOut,number);
@@ -189,7 +190,7 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const ContactMethod
 // //    if (call->backend() != this)
 // //       append(call);
 // 
-//    QFile file(KStandardDirs::locateLocal("appdata","")+"bookmark.ini");
+//    QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + "")+"bookmark.ini";
 //    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
 //       QTextStream streamFileOut(&file);
 //       foreach(const ContactMethod* n, m_lNumbers) {
@@ -241,7 +242,7 @@ bool BookmarkBackend::clear()
 {
    const int ret = KMessageBox::questionYesNo(static_cast<QApplication*>(QApplication::instance())->activeWindow(), i18n("Are you sure you want to clear history?"), i18n("Clear history"));
    if (ret == KMessageBox::Yes) {
-      QFile::remove(KStandardDirs::locateLocal("appdata","")+"bookmark.ini");
+      QFile::remove(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + "")+"bookmark.ini";
       return true;
    }
    return false;

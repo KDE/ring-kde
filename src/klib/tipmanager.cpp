@@ -22,11 +22,8 @@
 #include <QtCore/QTimer>
 #include <QtCore/QEvent>
 #include <QtCore/QDebug>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
-//KDE
-#include <KDebug>
-#include <KStandardDirs>
 
 bool TipManager::eventFilter(QObject *obj, QEvent *event)
 {

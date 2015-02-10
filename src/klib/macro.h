@@ -24,7 +24,7 @@
 #include "typedefs.h"
 
 //Qt
-class KAction;
+class QAction;
 
 //Ring
 #include "macromodel.h"
@@ -50,7 +50,7 @@ public:
    QString  id() const;
    int      delay() const;
    QString  category() const;
-   KAction* action();
+   QAction * action();
 
    QModelIndex index();
 
@@ -73,7 +73,7 @@ private:
    QString     m_Id;
    int         m_Delay;
    QString     m_Category;
-   KAction*    m_Action;
+   QAction *    m_Action;
    MacroModel* m_pModel;
    MacroModel::IndexPointer* m_pPointer;
 public Q_SLOTS:

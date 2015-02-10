@@ -19,8 +19,10 @@
 
 #include <person.h>
 #include <profilemodel.h>
-#include <QFile>
-#include <KStandardDirs>
+#include <QtCore/QFile>
+#include <QtCore/QStandardPaths>
+#include <QStandardPaths>
+
 
 bool KDEProfilePersister::load()
 {
@@ -66,6 +68,6 @@ bool KDEProfilePersister::save(const Person* c)
 
 QDir KDEProfilePersister::getProfilesDir()
 {
-   QDir(KStandardDirs::locateLocal("appdata","")).mkdir("profiles/");
-   return QDir(KStandardDirs::locateLocal("appdata","")+"profiles/");
+   QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')).mkdir("profiles/");
+   return QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')+"profiles/");
 }

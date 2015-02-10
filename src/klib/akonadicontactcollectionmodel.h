@@ -18,7 +18,7 @@
 #ifndef AKONADI_CONTACT_COLLECTION_MODEL_H
 #define AKONADI_CONTACT_COLLECTION_MODEL_H
 
-#include <QtGui/QSortFilterProxyModel>
+#include <QtCore/QSortFilterProxyModel>
 #include "typedefs.h"
 
 namespace Akonadi {

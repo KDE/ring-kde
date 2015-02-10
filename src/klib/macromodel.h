@@ -24,7 +24,7 @@
 #include "typedefs.h"
 
 //KDE
-class KAction;
+class QAction;
 
 //Ring
 
@@ -121,7 +121,7 @@ private Q_SLOTS:
    void changed(Macro* macro);
 
 Q_SIGNALS:
-   void addAction(KAction*);
+   void addAction(QAction *);
    void selectMacro(Macro* macro);
 };
 

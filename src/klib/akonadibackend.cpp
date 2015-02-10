@@ -20,14 +20,14 @@
 #include "akonadibackend.h"
 
 //Qt
-#include <QtCore/QTimer>
-#include <QtCore/QObject>
-#include <QtCore/QPointer>
+#include <QTimer>
+#include <QObject>
+#include <QPointer>
 
 //KDE
-#include <KDebug>
+#include <QDebug>
 #include <KJob>
-#include <kdialog.h>
+#include <QDialog>
 #include <akonadi/control.h>
 #include <akonadi/collectionfilterproxymodel.h>
 #include <akonadi/kmime/messagemodel.h>
@@ -45,7 +45,8 @@
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
-#include <QtCore/QAbstractItemModel>
+#include <QAbstractItemModel>
+#include <KConfigGroup>
 
 //Ring library
 #include "person.h"
@@ -199,7 +200,7 @@ bool AkonadiBackend::reload()
 
 QByteArray AkonadiBackend::id() const
 {
-   return QString::number(m_Coll.id()).toAscii();
+   return QString::number(m_Coll.id()).toLatin1();
 }
 
 CollectionInterface::SupportedFeatures AkonadiBackend::supportedFeatures() const
@@ -302,7 +303,7 @@ Person* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
 void AkonadiBackend::slotJobCompleted(KJob* job)
 {
    if (job->error()) {
-      kDebug() << "An Akonadi job failed";
+      qDebug() << "An Akonadi job failed";
       return;
    }
    Akonadi::RecursiveItemFetchJob* akojob = qobject_cast<Akonadi::RecursiveItemFetchJob*>(job);
@@ -320,7 +321,7 @@ void AkonadiBackend::slotJobCompleted(KJob* job)
 void AkonadiBackend::update(const Akonadi::Collection& collection)
 {
    if ( !collection.isValid() ) {
-      kDebug() << "The current collection is not valid";
+      qDebug() << "The current collection is not valid";
       return;
    }
 
@@ -341,19 +342,21 @@ bool AkonadiBackend::edit(Person* contact,QWidget* parent)
 {
    Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Person>())->m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
-      kDebug() << "Person not found";
+      qDebug() << "Person not found";
       return false ;
    }
 
    if ( item.isValid() ) {
       QPointer<Akonadi::ContactEditor> editor = new Akonadi::ContactEditor( Akonadi::ContactEditor::EditMode, parent );
       editor->loadContact(item);
-      QPointer<KDialog> dlg = new KDialog(parent);
-      dlg->setMainWidget(editor);
+      QPointer<QDialog> dlg = new QDialog(parent);
+      QVBoxLayout *mainLayout = new QVBoxLayout;
+      dlg->setLayout(mainLayout);
+      mainLayout->addWidget(editor);
       if ( dlg->exec() == QDialog::Accepted ) {
          if ( !editor->saveContact() ) {
             delete dlg;
-            kDebug() << "Unable to save new contact to storage";
+            qDebug() << "Unable to save new contact to storage";
             return false;
          }
       }
@@ -369,7 +372,7 @@ bool AkonadiBackend::save(const Person* contact)
 {
    Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Person>())->m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
-      kDebug() << "Person not found";
+      qDebug() << "Person not found";
       return false;
    }
    KABC::Addressee payload = item.payload<KABC::Addressee>();
@@ -424,12 +427,14 @@ bool AkonadiBackend::addNewPerson(Person* contact,QWidget* parent)
 
    editor->setContactTemplate(newPerson);
 
-   QPointer<KDialog> dlg = new KDialog(parent);
-   dlg->setMainWidget(editor);
+   QPointer<QDialog> dlg = new QDialog(parent);
+   QVBoxLayout *mainLayout = new QVBoxLayout;
+   dlg->setLayout(mainLayout);
+   mainLayout->addWidget(editor);
    if ( dlg->exec() == QDialog::Accepted ) {
       if ( !editor->saveContact() ) {
          delete dlg;
-         kDebug() << "Unable to save new contact to storage";
+         qDebug() << "Unable to save new contact to storage";
          return false;
       }
    }
@@ -454,7 +459,7 @@ bool AkonadiBackend::addContactMethod(Person* contact, ContactMethod* number)
 {
    Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Person>())->m_ItemHash[contact->uid()];
    if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
-      kDebug() << "Person not found";
+      qDebug() << "Person not found";
       return false;
    }
    if ( item.isValid() ) {
@@ -464,12 +469,14 @@ bool AkonadiBackend::addContactMethod(Person* contact, ContactMethod* number)
       QPointer<Akonadi::ContactEditor> editor = new Akonadi::ContactEditor( Akonadi::ContactEditor::EditMode, (QWidget*)nullptr );
       editor->loadContact(item);
 
-      QPointer<KDialog> dlg = new KDialog(nullptr);
-      dlg->setMainWidget(editor);
+      QPointer<QDialog> dlg = new QDialog(nullptr);
+      QVBoxLayout *mainLayout = new QVBoxLayout;
+      dlg->setLayout(mainLayout);
+      mainLayout->addWidget(editor);
       if ( dlg->exec() == QDialog::Accepted ) {
          if ( !editor->saveContact() ) {
             delete dlg;
-            kDebug() << "Unable to save new contact to storage";
+            qDebug() << "Unable to save new contact to storage";
             return false;
          }
       }
@@ -478,7 +485,7 @@ bool AkonadiBackend::addContactMethod(Person* contact, ContactMethod* number)
       return true;
    }
    else {
-      kDebug() << "Invalid item";
+      qDebug() << "Invalid item";
       return false;
    }
 }

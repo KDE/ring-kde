@@ -24,11 +24,12 @@
 //Qt
 #include <QtCore/QTimer>
 #include <QtCore/QFile>
+#include <QtWidgets/QAction>
 
 //KDE
-#include <KAction>
-#include <KLocale>
-#include <KStandardDirs>
+#include <klocalizedstring.h>
+#include <QStandardPaths>
+
 
 //Ring
 #include "kcfg_settings.h"
@@ -54,8 +55,8 @@ MacroModel* MacroModel::instance()
 
 void MacroModel::initMacros()
 {
-   if (KStandardDirs::exists(KStandardDirs::locateLocal("appdata","")+"macros.txt")) {
-      QFile serialized(KStandardDirs::locate( "appdata", "macros.txt" ));
+   if (QFile::exists(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + "")+"macros.txt") {
+      QFile serialized(QStandardPaths::locate(QStandardPaths::DataLocation, "macros.txt" ));
       if (serialized.open(QIODevice::ReadOnly)) {
          QDataStream in(&serialized);
          QList< QMap<QString, QString> > unserialized;
@@ -120,7 +121,7 @@ bool MacroModel::removeMacro(const QModelIndex& idx)
       emit layoutChanged();
    }
    else
-      kWarning() << "Cannot remove macro: none is selected";
+      qWarning() << "Cannot remove macro: none is selected";
    return true;
 }
 
@@ -139,7 +140,7 @@ void MacroModel::setCurrent(const QModelIndex& current, const QModelIndex& previ
 
 void MacroModel::save()
 {
-   QFile macros(KStandardDirs::locateLocal("appdata","")+"macros.txt");
+   QFile macros(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"macros.txt");
    if (macros.open(QIODevice::WriteOnly)) {
       QDataStream out(&macros);
       QList< QMap<QString, QString> > serialized;
@@ -157,10 +158,10 @@ void MacroModel::save()
       }
       out << serialized;
       macros.close();
-      kDebug() << "Macros correctly saved";
+      qDebug() << "Macros correctly saved";
    }
    else {
-      kDebug() << "Error saving macros";
+      qDebug() << "Error saving macros";
    }
 }
 
@@ -291,7 +292,7 @@ void MacroModel::changed(Macro* macro)
 Macro* MacroModel::newMacro(const QString& id)
 {
    m_pCurrentMacro = new Macro(this);
-   KAction* newAction = new KAction(this);
+   QAction * newAction = new QAction(this);
    m_pCurrentMacro->m_Action = newAction;
    m_pCurrentMacro->m_Name = i18nc("New macro","New");
    m_pCurrentMacro->m_Category = i18nc("Other category","Other");
@@ -313,7 +314,7 @@ Macro* MacroModel::newMacro(const QString& id)
    emit layoutChanged ();
    emit selectMacro(m_pCurrentMacro);
    newAction->setText(m_pCurrentMacro->m_Name);
-   newAction->setIcon(KIcon("view-form-action"));
+   newAction->setIcon(QIcon::fromTheme("view-form-action"));
    newAction->setObjectName("action_macro"+m_pCurrentMacro->m_Id);
    connect(newAction, SIGNAL(triggered()), m_pCurrentMacro , SLOT(execute()) );
    emit addAction(newAction);

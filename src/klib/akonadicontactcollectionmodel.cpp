@@ -18,8 +18,8 @@
 #include "akonadicontactcollectionmodel.h"
 
 //Qt
-#include <QtCore/QStringList>
-#include <QtCore/QCoreApplication>
+#include <QStringList>
+#include <QCoreApplication>
 
 // KDE
 #include <akonadi/collectionmodel.h>

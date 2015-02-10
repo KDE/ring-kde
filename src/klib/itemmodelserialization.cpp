@@ -44,7 +44,7 @@ bool ItemModelStateSerialization::load()
    m_hChecked.clear();
    const QStringList disabled = ConfigurationSkeleton::disabledCollectionList();
    foreach(const QString& str, disabled) {
-      m_hChecked[str.toAscii()] = true; //Disabled == true, enabled == false
+      m_hChecked[str.toLatin1()] = true; //Disabled == true, enabled == false
    }
    return true;
 }

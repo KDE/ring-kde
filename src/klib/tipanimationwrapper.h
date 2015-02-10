@@ -22,7 +22,7 @@
 //Qt
 #include <QtCore/QRect>
 #include <QtCore/QSize>
-#include <QtCore/QAbstractAnimation>
+#include <QAbstractAnimation>
 #include <QtGui/QImage>
 class QTimer;
 

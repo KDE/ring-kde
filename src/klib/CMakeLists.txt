@@ -1,102 +1,78 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-
-if(POLICY CMP0022)
-   cmake_policy(SET CMP0022 NEW)
-endif(POLICY CMP0022)
-
-INCLUDE(GNUInstallDirs)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 ADD_DEFINITIONS("-std=c++0x")
 
-ADD_DEFINITIONS(
-	${QT_DEFINITIONS} 
-	-fexceptions
-)
-
 PROJECT(libkring)
 
-SET ( KDE4_KABC_LIBS  -lkabc )
+FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
+SET (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
+INCLUDE(ECMInstallIcons)
+INCLUDE(ECMOptionalAddSubdirectory)
 
-# add_subdirectory(dataengine)
+INCLUDE(KDEInstallDirs)
+INCLUDE(KDECMakeSettings)
+INCLUDE(KDECompilerSettings)
 
-SET(LOCAL_CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
-SET(CMAKE_MODULE_PATH "${LOCAL_CMAKE_MODULE_PATH}")
-
-FIND_PACKAGE ( KDE4 REQUIRED )
-FIND_PACKAGE ( Qt4 REQUIRED )
-FIND_PACKAGE ( KdepimLibs REQUIRED )
 FIND_PACKAGE ( LibRingClient REQUIRED )
 
-INCLUDE ( KDE4Defaults )
+FIND_PACKAGE(Qt5 CONFIG REQUIRED Core Widgets Gui)
 
-set(GENERIC_LIB_VERSION "1.4.1")
+FIND_PACKAGE(KF5 REQUIRED COMPONENTS
+  Config
+  GuiAddons
+  I18n
+  Init
+  WindowSystem
+  WidgetsAddons
+  XmlGui
+)
 
-include_directories(SYSTEM  ${QT_INCLUDES}  ${KDE4_INCLUDES} )
-INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${LIB_RING_CLIENT_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${LIB_RING_CLIENT_INCLUDE_DIR})
+
+ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
+
+SET(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+
+SET(GENERIC_LIB_VERSION "1.4.1")
 
 #File to compile
-set( libkring_LIB_SRCS
+SET( libkring_LIB_SRCS
    helperfunctions.cpp
-   akonadibackend.cpp
-#    configurationskeleton.cpp
+#    akonadibackend.cpp
    tipmanager.cpp
    tip.cpp
    tipanimationwrapper.cpp
    macromodel.cpp
    macro.cpp
-   akonadicontactcollectionmodel.cpp
+#    akonadicontactcollectionmodel.cpp
    kdeprofilepersistor.cpp
    minimalhistorybackend.cpp
    itemmodelserialization.cpp
    bookmarkbackend.cpp
 )
 
-KDE4_ADD_KCFG_FILES(libkring_LIB_SRCS kcfg_settings.kcfgc)
+KCONFIG_ADD_KCFG_FILES (libkring_LIB_SRCS kcfg_settings.kcfgc)
 
-kde4_add_library( libkring  STATIC ${libkring_LIB_SRCS} )
+ADD_LIBRARY( libkring  STATIC ${libkring_LIB_SRCS} )
 
 target_link_libraries( libkring
   ${LIB_RING_CLIENT_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
-  ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-  ${KDEPIMLIBS_KABC_LIBS}
-  ${KDEPIMLIBS_AKONADI_LIBS}
-  ${KDEPIMLIBS_AKONADI_CONTACT_LIBS}
-  ${KDE4_KDEUI_LIBS}
+  ${Qt5Widgets_LIBRARIES}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Gui_LIBRARIES}
+  KF5::I18n
+  KF5::WidgetsAddons
+  KF5::ConfigCore
 )
 
-set_target_properties( libkring
-  PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION}
-)
-
-set( libkring_LIB_HDRS
-  akonadibackend.h
+SET( libkring_LIB_HDRS
+#   akonadibackend.h
   helperfunctions.h
-#   sortabledockcommon.h
   macromodel.h
   macro.h
   itemmodelserialization.h
 )
 
 INSTALL(FILES ring-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})
-
-install( FILES ${libkring_LIB_HDRS}
-  DESTINATION ${INCLUDE_INSTALL_DIR}/libkring
-  COMPONENT Devel
-)
-
-MESSAGE("INSTALLING IN!!!!! "  ${CMAKE_LIBRARY_ARCHITECTURE}   ${CMAKE_INSTALL_FULL_LIBDIR}   )
- 
-#This hack force Debian based system to return a non multi-arch path
-#this is required to prevent the .deb libringclient.so from having an
-#higher priority than the prefixed one.
-STRING(REPLACE "${CMAKE_LIBRARY_ARCHITECTURE}" "" SANE_LIBRARY_PATH "${CMAKE_INSTALL_FULL_LIBDIR}" )
-MESSAGE("INSTALLING IN!!!!! "  ${CMAKE_LIBRARY_ARCHITECTURE}   ${CMAKE_INSTALL_FULL_LIBDIR}   )
-
-INSTALL( TARGETS libkring
-  ARCHIVE DESTINATION ${SANE_LIBRARY_PATH}
-  LIBRARY DESTINATION ${SANE_LIBRARY_PATH}
-  DESTINATION ${SANE_LIBRARY_PATH}
-)
 

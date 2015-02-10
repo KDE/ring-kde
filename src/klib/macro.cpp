@@ -19,11 +19,11 @@
 
 //Qt
 #include <QtCore/QTimer>
+#include <QtWidgets/QAction>
 
 //KDE
-#include <KAction>
-#include <KLocale>
-#include <KIcon>
+#include <klocalizedstring.h>
+#include <QIcon>
 
 //Ring
 #include "audio/outputdevicemodel.h"
@@ -144,7 +144,7 @@ QString  Macro::category() const
    return m_Category;
 }
 
-KAction* Macro::action()
+QAction * Macro::action()
 {
    return m_Action;
 }

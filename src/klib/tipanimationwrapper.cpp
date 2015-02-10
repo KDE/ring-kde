@@ -18,9 +18,6 @@
 //Qt
 #include <QtCore/QTimer>
 
-//KDE
-#include <KDebug>
-
 //Ring
 #include "tip.h"
 #include "tipmanager.h"

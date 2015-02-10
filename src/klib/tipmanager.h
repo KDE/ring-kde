@@ -20,9 +20,9 @@
 
 //Qt
 #include <QtCore/QObject>
-#include <QtGui/QAbstractItemView>
+#include <QtWidgets/QAbstractItemView>
 #include <QtGui/QImage>
-#include <QtCore/QAbstractAnimation>
+#include <QAbstractAnimation>
 
 //Ring
 #include "typedefs.h"

@@ -20,7 +20,7 @@
 #ifndef AKONADI_BACKEND_H
 #define AKONADI_BACKEND_H
 
-#include <QtCore/QPointer>
+#include <QPointer>
 
 #include <collectioninterface.h>
 #include <collectioneditor.h>

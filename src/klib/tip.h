@@ -25,7 +25,7 @@
 #include <QtCore/QSize>
 #include <QtGui/QImage>
 #include <QtGui/QPalette>
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 class QSvgRenderer;
 

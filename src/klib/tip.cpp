@@ -21,11 +21,8 @@
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtCore/QFile>
-
-//KDE
-#include <KDebug>
 
 //Ring
 #include "tipmanager.h"
@@ -142,12 +139,12 @@ QByteArray Tip::loadSvg(const QString& path)
 {
    QFile file(path);
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      kDebug() << "The tip" << path << "failed to load: No such file";
+      qDebug() << "The tip" << path << "failed to load: No such file";
    }
    else {
       m_OriginalFile = file.readAll();
       m_OriginalFile.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
-      m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toAscii());
+      m_OriginalFile.replace("BASE_ROLE_COLOR",m_OriginalPalette.base().color().name().toLatin1());
       file.close();
    }
    return m_OriginalFile;

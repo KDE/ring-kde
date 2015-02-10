@@ -25,8 +25,8 @@
 #include <QtGui/QFontMetrics>
 
 //KDE
-#include <KLocale>
-#include <KMessageBox>
+#include <klocalizedstring.h>
+#include <kmessagebox.h>
 
 //Ring
 #include "person.h"
