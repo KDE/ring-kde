@@ -56,7 +56,7 @@ public:
 //    virtual bool addNew( Call* call) override;
 
    ///Add a new phone number to an existing item
-//    virtual bool addPhoneNumber( Call* call , PhoneNumber* number ) override;
+//    virtual bool addContactMethod( Call* call , ContactMethod* number ) override;
 private:
    CollectionMediator<Call>*  m_pMediator;
 };
@@ -78,7 +78,7 @@ private:
 
 template<typename T>
 MinimalHistoryBackend::MinimalHistoryBackend(CollectionMediator<T>* mediator) :
-CollectionInterface(new MinimalHistoryEditor(nullptr)),m_pMediator(mediator)
+CollectionInterface(new MinimalHistoryEditor(mediator)),m_pMediator(mediator)
 {
 //    setObjectName("MinimalHistoryBackend");
 }

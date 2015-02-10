@@ -136,7 +136,7 @@ Call* AutoCompletion::call() const
    return m_pModel->call();
 }
 
-PhoneNumber* AutoCompletion::selection() const
+ContactMethod* AutoCompletion::selection() const
 {
    if (isVisible()) {
       const QModelIndex idx = m_pView->selectionModel()->currentIndex();

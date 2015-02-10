@@ -33,17 +33,17 @@
 #include <KStandardDirs>
 
 //Ring
-#include <contact.h>
+#include <person.h>
 #include <numbercategory.h>
-#include <phonenumber.h>
+#include <contactmethod.h>
 #include <collectioninterface.h>
 #include "widgets/categorizedtreeview.h"
 
-PhoneNumberDelegate::PhoneNumberDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr),m_Lock(false)
+ContactMethodDelegate::ContactMethodDelegate(QObject* parent) : QStyledItemDelegate(parent),m_pView(nullptr),m_Lock(false)
 {
 }
 
-QSize PhoneNumberDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
+QSize ContactMethodDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QFontMetrics fm(QApplication::font());
 
    //This indentation is wrong, if set manually, Qt will override it, it needs to be done here
@@ -54,7 +54,7 @@ QSize PhoneNumberDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
    return QSize(QStyledItemDelegate::sizeHint(opt, index).rwidth(),fm.height());
 }
 
-void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ContactMethodDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
 
@@ -80,7 +80,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
       painter->restore();
 
       //Now repaint ALL numbers, including the current one
-      const_cast<PhoneNumberDelegate*>(this)->m_Lock = true;
+      const_cast<ContactMethodDelegate*>(this)->m_Lock = true;
       for (int i=0;i<m_pView->model()->rowCount(parent);i++) {
          const QModelIndex numIdx = m_pView->model()->index(i,0,parent);
          QStyleOptionViewItem opt3 = option;
@@ -92,7 +92,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
          opt3.rect.setX(m_pView->indentation()*2);
          paint(painter,opt3,numIdx);
       }
-      const_cast<PhoneNumberDelegate*>(this)->m_Lock = false;
+      const_cast<ContactMethodDelegate*>(this)->m_Lock = false;
       return;
    }
    //END repaint parent
@@ -107,7 +107,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    }
 
    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
-   const PhoneNumber* nb = ((Contact*) ((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf())->phoneNumbers()[index.row()];
+   const ContactMethod* nb = ((Person*) ((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf())->phoneNumbers()[index.row()];
    const QFontMetrics fm(painter->font());
    painter->setPen(((opt.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
       Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
@@ -116,7 +116,7 @@ void PhoneNumberDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
    painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-9-metric,nb->category()->icon(nb->isTracked(),nb->isPresent()).value<QPixmap>());
 }
 
-void PhoneNumberDelegate::setView(CategorizedTreeView* model)
+void ContactMethodDelegate::setView(CategorizedTreeView* model)
 {
    m_pView = model;
 }

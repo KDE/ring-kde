@@ -496,7 +496,7 @@ void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & ind
    }
 }
 
-///Update call PhoneNumber when leaving edit mode
+///Update call ContactMethod when leaving edit mode
 void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
 {
    KLineEdit* ed = qobject_cast<KLineEdit*>(editor);

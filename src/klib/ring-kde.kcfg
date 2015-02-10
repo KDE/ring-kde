@@ -108,7 +108,7 @@
    <entry name="contactSortMode" type="Int">
       <label>Define sorting order for contact list</label>
     </entry>
-   <entry name="displayContactCallHistory" type="Bool">
+   <entry name="displayPersonCallHistory" type="Bool">
         <label>Defines if the individual contact history list is visible</label>
         <default>false</default>
    </entry>
@@ -183,7 +183,7 @@
       <default>true</default>
     </entry>
 
-    <entry name="hideContactWithoutPhone" type="Bool">
+    <entry name="hidePersonWithoutPhone" type="Bool">
       <label>Defines whether to display the organisation of the contact list item</label>
       <default> false </default>
     </entry>

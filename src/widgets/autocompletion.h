@@ -31,7 +31,7 @@ class QModelIndex;
 class Call;
 class NumberCompletionModel;
 class AutoCompletionDelegate;
-class PhoneNumber;
+class ContactMethod;
 
 class AutoCompletion : public QWidget {
    Q_OBJECT
@@ -42,7 +42,7 @@ public:
 
    //Getters
    Call* call() const;
-   PhoneNumber* selection() const;
+   ContactMethod* selection() const;
 
    //Setters
    void setUseUnregisteredAccounts(bool value);
@@ -78,7 +78,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
    void requestVisibility(bool visible, bool hasCall);
-   void doubleClicked(PhoneNumber* n);
+   void doubleClicked(ContactMethod* n);
 };
 
 #endif

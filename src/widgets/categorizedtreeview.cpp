@@ -97,7 +97,7 @@ void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
    switch (m_Type) {
       case ViewType::Other:
          break;
-      case ViewType::Contact:
+      case ViewType::Person:
          accept = ContactProxyModel::acceptedPayloadTypes() & type;
          break;
       case ViewType::History:
@@ -164,7 +164,7 @@ void CategorizedTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 {
    const QModelIndex& idxAt = indexAt(event->pos());
    emit itemDoubleClicked(idxAt);
-//    if (m_Type != ViewType::Contact)
+//    if (m_Type != ViewType::Person)
       QTreeView::mouseDoubleClickEvent(event);
 }
 

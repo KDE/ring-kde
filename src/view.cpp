@@ -64,8 +64,8 @@
 //ring library
 #include "klib/kcfg_settings.h"
 #include "mime.h"
-#include "phonenumber.h"
-#include "contact.h"
+#include "contactmethod.h"
+#include "person.h"
 #include "accountmodel.h"
 #include "phonedirectorymodel.h"
 #include "audio/settings.h"
@@ -103,7 +103,7 @@ View::View(QWidget *parent)
 
    //Set global settings
    Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
-   PresenceSerializationVisitor::setInstance(new KDEPresenceSerializationVisitor());
+   PresenceSerializationDelegate::setInstance(new KDEPresenceSerializationDelegate());
 
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());
@@ -130,8 +130,8 @@ View::View(QWidget *parent)
    pal.setColor(QPalette::AlternateBase, Qt::lightGray);
    setPalette(pal);
 
-   m_pColorVisitor = new ColorVisitor(pal);
-   AccountListColorVisitor::setInstance(m_pColorVisitor);
+   m_pColorDelegate = new ColorDelegate(pal);
+   AccountListColorDelegate::setInstance(m_pColorDelegate);
 
    m_pMessageBoxW->setVisible(false);
 
@@ -173,7 +173,7 @@ View::~View()
    delete m_pConfDelegate   ;
    delete m_pHistoryDelegate;
    delete m_pCanvasManager  ;
-   delete m_pColorVisitor   ;
+   delete m_pColorDelegate   ;
 }
 
 ///Init main window
@@ -422,7 +422,7 @@ void View::loadAutoCompletion()
          PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
          m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
          connect(m_pAutoCompletion, SIGNAL(requestVisibility(bool,bool)), m_pEventManager, SLOT(slotAutoCompletionVisibility(bool,bool)));
-         connect(m_pAutoCompletion,SIGNAL(doubleClicked(PhoneNumber*)),this,SLOT(slotAutoCompleteClicked(PhoneNumber*)));
+         connect(m_pAutoCompletion,SIGNAL(doubleClicked(ContactMethod*)),this,SLOT(slotAutoCompleteClicked(ContactMethod*)));
       }
    }
    else if (m_pAutoCompletion) {
@@ -529,7 +529,7 @@ void View::sendMessage()
    m_pSendMessageLE->clear();
 }
 
-void View::slotAutoCompleteClicked(PhoneNumber* n)
+void View::slotAutoCompleteClicked(ContactMethod* n)
 {
    Call* call = currentCall();
    if (call->state() == Call::State::DIALING) {

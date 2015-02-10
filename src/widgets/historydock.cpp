@@ -53,10 +53,10 @@
 #include "accountmodel.h"
 #include "callmodel.h"
 #include "mime.h"
-#include "phonenumber.h"
+#include "contactmethod.h"
 #include "phonedirectorymodel.h"
 #include "collectioninterface.h"
-#include "contactmodel.h"
+#include "personmodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
 
@@ -229,11 +229,11 @@ HistoryDock::~HistoryDock()
 
    if (m_pCallAgain) {
       delete m_pCallAgain    ;
-      delete m_pAddContact   ;
+      delete m_pAddPerson   ;
       delete m_pCopy         ;
       delete m_pEmail        ;
       delete m_pRemove       ;
-      delete m_pAddToContact ;
+      delete m_pAddToPerson ;
       delete m_pBookmark     ;
    }
 } //~HistoryDock
@@ -327,25 +327,25 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       return;
    if (!m_pMenu) {
       m_pCallAgain    = new KAction(this);
-      m_pAddContact   = new KAction(this);
+      m_pAddPerson   = new KAction(this);
       m_pCopy         = new KAction(this);
       m_pEmail        = new KAction(this);
       m_pRemove       = new KAction(this);
-      m_pAddToContact = new KAction(this);
+      m_pAddToPerson = new KAction(this);
       m_pBookmark     = new KAction(this);
 
       m_pCallAgain->setShortcut    ( Qt::Key_Enter                  );
       m_pCallAgain->setText        ( i18n("Call Again")             );
       m_pCallAgain->setIcon        ( KIcon("call-start")            );
 
-      m_pAddToContact->setShortcut ( Qt::CTRL + Qt::Key_E           );
-      m_pAddToContact->setText     ( i18n("Add Number to Contact")  );
-      m_pAddToContact->setIcon     ( KIcon("list-resource-add")     );
-      m_pAddToContact->setDisabled ( true                           );
+      m_pAddToPerson->setShortcut ( Qt::CTRL + Qt::Key_E           );
+      m_pAddToPerson->setText     ( i18n("Add Number to Person")  );
+      m_pAddToPerson->setIcon     ( KIcon("list-resource-add")     );
+      m_pAddToPerson->setDisabled ( true                           );
 
-      m_pAddContact->setShortcut   ( Qt::CTRL + Qt::Key_E           );
-      m_pAddContact->setText       ( i18n("Add Contact")            );
-      m_pAddContact->setIcon       ( KIcon("contact-new")           );
+      m_pAddPerson->setShortcut   ( Qt::CTRL + Qt::Key_E           );
+      m_pAddPerson->setText       ( i18n("Add Person")            );
+      m_pAddPerson->setIcon       ( KIcon("contact-new")           );
 
       m_pCopy->setShortcut         ( Qt::CTRL + Qt::Key_C           );
       m_pCopy->setText             ( i18n("Copy")                   );
@@ -373,18 +373,18 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 
       m_pMenu = new QMenu(this);
       m_pMenu->addAction( m_pCallAgain    );
-      m_pMenu->addAction( m_pAddContact   );
-      m_pMenu->addAction( m_pAddToContact );
+      m_pMenu->addAction( m_pAddPerson   );
+      m_pMenu->addAction( m_pAddToPerson );
       m_pMenu->addAction( m_pCopy         );
       m_pMenu->addAction( m_pEmail        );
       m_pMenu->addAction( m_pRemove       );
       m_pMenu->addAction( m_pBookmark     );
       connect(m_pCallAgain    , SIGNAL(triggered())                        , this , SLOT(slotCallAgain())        );
-      connect(m_pAddContact   , SIGNAL(triggered())                        , this , SLOT(slotAddContact())       );
+      connect(m_pAddPerson   , SIGNAL(triggered())                        , this , SLOT(slotAddPerson())       );
       connect(m_pCopy         , SIGNAL(triggered())                        , this , SLOT(slotCopy())             );
       connect(m_pEmail        , SIGNAL(triggered())                        , this , SLOT(slotSendEmail())        );
       connect(m_pRemove       , SIGNAL(triggered())                        , this , SLOT(slotRemove())           );
-      connect(m_pAddToContact , SIGNAL(triggered())                        , this , SLOT(slotAddToContact())     );
+      connect(m_pAddToPerson , SIGNAL(triggered())                        , this , SLOT(slotAddToPerson())     );
       connect(m_pBookmark     , SIGNAL(triggered())                        , this , SLOT(slotBookmark())         );
    }
    m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
@@ -404,7 +404,7 @@ void HistoryDock::slotSendEmail()
    kDebug() << "Sending email";
    QProcess *myProcess = new QProcess(this);
    QStringList arguments;
-   Contact* ct = m_pCurrentCall->peerPhoneNumber()->contact();
+   Person* ct = m_pCurrentCall->peerContactMethod()->contact();
    if (ct)
       myProcess->start("xdg-email", (arguments << ct->preferredEmail()));
 }
@@ -419,10 +419,10 @@ void HistoryDock::slotRemove()
 void HistoryDock::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
-   kDebug() << "Calling "<< m_pCurrentCall->peerPhoneNumber();
+   kDebug() << "Calling "<< m_pCurrentCall->peerContactMethod();
    Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerName(), AccountModel::currentAccount());
    if (call) {
-      call->setDialNumber  ( m_pCurrentCall->peerPhoneNumber() );
+      call->setDialNumber  ( m_pCurrentCall->peerContactMethod() );
       call->setAccount     ( m_pCurrentCall->account()         );
       call->setPeerName    ( m_pCurrentCall->peerName()        );
       call->performAction  ( Call::Action::ACCEPT              );
@@ -443,18 +443,18 @@ void HistoryDock::slotCopy()
    QMimeData* mimeData = new QMimeData();
    mimeData->setData(RingMimes::CALLID, m_pCurrentCall->id().toUtf8());
 
-   mimeData->setData(RingMimes::PHONENUMBER, m_pCurrentCall->peerPhoneNumber()->uri().toUtf8());
+   mimeData->setData(RingMimes::PHONENUMBER, m_pCurrentCall->peerContactMethod()->uri().toUtf8());
 
    QString numbers,numbersHtml;
-   const Contact* ct = m_pCurrentCall->peerPhoneNumber()->contact();
+   const Person* ct = m_pCurrentCall->peerContactMethod()->contact();
 
    if (ct) {
-      numbers     = ct->formattedName()+": "+m_pCurrentCall->peerPhoneNumber()->uri();
-      numbersHtml = "<b>"+ct->formattedName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber()->uri());
+      numbers     = ct->formattedName()+": "+m_pCurrentCall->peerContactMethod()->uri();
+      numbersHtml = "<b>"+ct->formattedName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerContactMethod()->uri());
    }
    else {
-      numbers     = m_pCurrentCall->peerName()+": "+m_pCurrentCall->peerPhoneNumber()->uri();
-      numbersHtml = "<b>"+m_pCurrentCall->peerName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerPhoneNumber()->uri());
+      numbers     = m_pCurrentCall->peerName()+": "+m_pCurrentCall->peerContactMethod()->uri();
+      numbersHtml = "<b>"+m_pCurrentCall->peerName()+"</b><br />"+HelperFunctions::escapeHtmlEntities(m_pCurrentCall->peerContactMethod()->uri());
    }
 
    mimeData->setData("text/plain", numbers.toUtf8()    );
@@ -463,18 +463,18 @@ void HistoryDock::slotCopy()
    QApplication::clipboard()->setMimeData(mimeData);
 }
 
-void HistoryDock::slotAddContact()
+void HistoryDock::slotAddPerson()
 {
    kDebug() << "Adding contact";
-   Contact* aContact = new Contact();
-   Contact::PhoneNumbers numbers(aContact);
-   numbers << PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerPhoneNumber()->uri(),aContact,nullptr, "Home");//new PhoneNumber(m_pCurrentCall->peerPhoneNumber(), "Home");
-   aContact->setPhoneNumbers(numbers);
-   aContact->setFormattedName(m_pCurrentCall->peerName());
-   ContactModel::instance()->addNewContact(aContact);
+   Person* aPerson = new Person();
+   Person::ContactMethods numbers(aPerson);
+   numbers << PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home");//new ContactMethod(m_pCurrentCall->peerContactMethod(), "Home");
+   aPerson->setContactMethods(numbers);
+   aPerson->setFormattedName(m_pCurrentCall->peerName());
+   PersonModel::instance()->addNewPerson(aPerson);
 }
 
-void HistoryDock::slotAddToContact()
+void HistoryDock::slotAddToPerson()
 {
    //TODO
    kDebug() << "Adding to contact";
@@ -482,7 +482,7 @@ void HistoryDock::slotAddToContact()
 
 void HistoryDock::slotBookmark()
 {
-   BookmarkModel::instance()->addBookmark(m_pCurrentCall->peerPhoneNumber());
+   BookmarkModel::instance()->addBookmark(m_pCurrentCall->peerContactMethod());
 }
 
 void HistoryDock::slotDoubleClick(const QModelIndex& index)

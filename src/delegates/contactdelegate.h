@@ -23,7 +23,7 @@
 #include <QtCore/QDebug>
 
 class DelegateDropOverlay;
-class PhoneNumberDelegate;
+class ContactMethodDelegate;
 class CategorizedTreeView          ;
 
 class ContactDelegate : public QStyledItemDelegate
@@ -35,11 +35,11 @@ public:
 
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
-   void setChildDelegate(PhoneNumberDelegate* child);
+   void setChildDelegate(ContactMethodDelegate* child);
 
 private:
    DelegateDropOverlay* m_pDelegatedropoverlay;
-   PhoneNumberDelegate* m_pChildDelegate      ;
+   ContactMethodDelegate* m_pChildDelegate      ;
    CategorizedTreeView* m_pView               ;
 };
 

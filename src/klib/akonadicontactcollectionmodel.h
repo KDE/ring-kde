@@ -26,11 +26,11 @@ namespace Akonadi {
 }
 
 ///Filter out notes and emails collections
-class LIB_EXPORT AkonadiContactCollectionModel : public QSortFilterProxyModel
+class LIB_EXPORT AkonadiPersonCollectionModel : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   virtual ~AkonadiContactCollectionModel();
+   virtual ~AkonadiPersonCollectionModel();
 
 public:
    virtual QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
@@ -42,19 +42,19 @@ public:
    void save();
 
    //Singleton
-   static AkonadiContactCollectionModel* instance();
+   static AkonadiPersonCollectionModel* instance();
 
 protected:
    virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
 
 private:
-   explicit AkonadiContactCollectionModel(QObject* parent);
+   explicit AkonadiPersonCollectionModel(QObject* parent);
    QHash<int,bool> m_hChecked;
    QHash<int,bool> m_hLoaded ;
    Akonadi::CollectionModel* m_pParentModel;
 
    //Singleton
-   static AkonadiContactCollectionModel* m_spInstance;
+   static AkonadiPersonCollectionModel* m_spInstance;
 
    //Helper
    void digg(const QModelIndex& idx);

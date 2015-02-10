@@ -73,8 +73,8 @@ private:
 
    //Menu
     KAction*     m_pCallAgain     ;
-    KAction*     m_pAddContact    ;
-    KAction*     m_pAddToContact  ;
+    KAction*     m_pAddPerson    ;
+    KAction*     m_pAddToPerson  ;
     KAction*     m_pCopy          ;
     KAction*     m_pEmail         ;
     KAction*     m_pRemove        ;
@@ -110,8 +110,8 @@ private Q_SLOTS:
    void slotRemove           ();
    void slotCallAgain        ();
    void slotCopy             ();
-   void slotAddContact       ();
-   void slotAddToContact     ();
+   void slotAddPerson       ();
+   void slotAddToPerson     ();
    void slotBookmark         ();
 };
 

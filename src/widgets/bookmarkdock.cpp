@@ -44,9 +44,9 @@
 #include "klib/helperfunctions.h"
 #include <bookmarkmodel.h>
 #include "historymodel.h"
-#include "phonenumber.h"
+#include "contactmethod.h"
 #include "mime.h"
-#include "contactmodel.h"
+#include "personmodel.h"
 #include "phonedirectorymodel.h"
 #include "numbercategory.h"
 #include "accountmodel.h"
@@ -57,7 +57,7 @@
 
 ///Constructor
 BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr),
-m_pEditContact(nullptr), m_pCopy(nullptr), m_pEmail(nullptr), m_pAddPhone(nullptr), 
+m_pEditPerson(nullptr), m_pCopy(nullptr), m_pEmail(nullptr), m_pAddPhone(nullptr), 
 m_pBookmark(nullptr), m_pCallAgain(nullptr)
 {
    setObjectName("bookmarkDock");
@@ -159,9 +159,9 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
       m_pCallAgain->setText       ( i18n("Call Again")         );
       m_pCallAgain->setIcon       ( KIcon("call-start")        );
 
-      m_pEditContact = new KAction(this);
-      m_pEditContact->setText     ( i18n("Edit contact")       );
-      m_pEditContact->setIcon     ( KIcon("contact-new")       );
+      m_pEditPerson = new KAction(this);
+      m_pEditPerson->setText     ( i18n("Edit contact")       );
+      m_pEditPerson->setIcon     ( KIcon("contact-new")       );
 
       m_pCopy        = new KAction(this);
       m_pCopy->setText            ( i18n("Copy")               );
@@ -182,7 +182,7 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
       m_pBookmark->setIcon        ( KIcon("list-remove")       );
 
       connect(m_pCallAgain   , SIGNAL(triggered()) , this,SLOT(callAgain())  );
-      connect(m_pEditContact , SIGNAL(triggered()) , this,SLOT(editContact()));
+      connect(m_pEditPerson , SIGNAL(triggered()) , this,SLOT(editPerson()));
       connect(m_pCopy        , SIGNAL(triggered()) , this,SLOT(copy())       );
       connect(m_pEmail       , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
       connect(m_pAddPhone    , SIGNAL(triggered()) , this,SLOT(addPhone())   );
@@ -191,7 +191,7 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
    if (!m_pMenu) {
       m_pMenu = new QMenu( this          );
       m_pMenu->addAction( m_pCallAgain   );
-      m_pMenu->addAction( m_pEditContact );
+      m_pMenu->addAction( m_pEditPerson );
       m_pMenu->addAction( m_pAddPhone    );
       m_pMenu->addAction( m_pCopy        );
       m_pMenu->addAction( m_pEmail       );
@@ -217,17 +217,17 @@ void BookmarkDock::copy()
 {
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   PhoneNumber* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
 
    if (nb) {
-      Contact* c = nb->contact();
+      Person* c = nb->contact();
 
       //A bookmark can exist without a contact
       if (c) {
          mimeData->setData(RingMimes::CONTACT, c->uid());
          QString numbers(c->formattedName()+": ");
          QString numbersHtml("<b>"+c->formattedName()+"</b><br />\n");
-         foreach (PhoneNumber* number, c->phoneNumbers()) {
+         foreach (ContactMethod* number, c->phoneNumbers()) {
             numbers     += number->uri()+" ("+number->category()->name()+")  ";
             numbersHtml += number->uri()+" ("+number->category()->name()+")  <br />\n";
          }
@@ -248,7 +248,7 @@ void BookmarkDock::copy()
 void BookmarkDock::callAgain()
 {
    kDebug() << "Calling ";
-   PhoneNumber* n = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* n = BookmarkModel::instance()->getNumber(m_CurrentIndex);
    if ( n ) {
       const QString name = n->contact()?n->contact()->formattedName() : n->primaryName();
       Call* call = CallModel::instance()->dialingCall(name, AccountModel::currentAccount());
@@ -265,22 +265,22 @@ void BookmarkDock::callAgain()
 }
 
 ///Edit this contact
-void BookmarkDock::editContact()
+void BookmarkDock::editPerson()
 {
    kDebug() << "Edit contact";
 
-   PhoneNumber* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
    if (nb) {
       if (nb->contact())
          nb->contact()->edit();
       else {
          //Add a contact
-         Contact* aContact = new Contact();
-         Contact::PhoneNumbers numbers(aContact);
+         Person* aPerson = new Person();
+         Person::ContactMethods numbers(aPerson);
          numbers << nb;
-         aContact->setPhoneNumbers(numbers);
-         aContact->setFormattedName(nb->primaryName());
-         ContactModel::instance()->addNewContact(aContact);
+         aPerson->setContactMethods(numbers);
+         aPerson->setFormattedName(nb->primaryName());
+         PersonModel::instance()->addNewPerson(aPerson);
       }
    }
 }
@@ -290,19 +290,19 @@ void BookmarkDock::editContact()
 void BookmarkDock::addPhone()
 {
    kDebug() << "Adding to contact";
-   PhoneNumber* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
    if (nb) {
       if (nb->contact()) {
          bool ok;
          const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
          if (ok && !text.isEmpty()) {
-//             PhoneNumber* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
-//             nb->contact()->addPhoneNumber(n); //FIXME
+//             ContactMethod* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
+//             nb->contact()->addContactMethod(n); //FIXME
          }
       }
       else {
          //Better use the full dialog for this
-         editContact();
+         editPerson();
       }
    }
 }

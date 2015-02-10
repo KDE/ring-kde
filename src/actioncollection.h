@@ -59,7 +59,7 @@ public:
    KAction*        showHistoryDockAction      ();
    KAction*        showBookmarkDockAction     ();
    KAction*        quitAction                 ();
-   KAction*        addContact                 ();
+   KAction*        addPerson                 ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -113,7 +113,7 @@ private:
    KAction* action_showHistoryDock       ;
    KAction* action_showBookmarkDock      ;
    KAction* action_editToolBar           ;
-   KAction* action_addContact            ;
+   KAction* action_addPerson            ;
    QActionGroup* action_screen           ;
 
    //Singleton
@@ -133,7 +133,7 @@ private Q_SLOTS:
    void showShortCutEditor    ();
    void editToolBar           ();
    void addMacro              ( KAction* newAction );
-   void slotAddContact();
+   void slotAddPerson();
    void updateRecordButton   ();
    void updateVolumeButton   ();
 

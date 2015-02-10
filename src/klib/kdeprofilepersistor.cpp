@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "kdeprofilepersistor.h"
 
-#include <contact.h>
+#include <person.h>
 #include <profilemodel.h>
 #include <QFile>
 #include <KStandardDirs>
@@ -38,7 +38,7 @@ bool KDEProfilePersister::load()
 //      if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 //         return 1;
 
-//      Contact* profile = new Contact(ProfileModel::instance());
+//      Person* profile = new Person(ProfileModel::instance());
 //      while (!file.atEnd()) {
 //         QByteArray line = file.readLine();
 //         profile->setFormattedName("ALRIGHT");
@@ -50,7 +50,7 @@ bool KDEProfilePersister::load()
    return false;
 }
 
-bool KDEProfilePersister::save(const Contact* c)
+bool KDEProfilePersister::save(const Person* c)
 {
      QDir profilesDir = getProfilesDir();
      qDebug() << "Saving vcf in:" << profilesDir.absolutePath()+"/"+c->uid()+".vcf";

@@ -51,12 +51,12 @@
 #include "categorizedtreeview.h"
 #include "historymodel.h"
 #include "call.h"
-#include "contact.h"
+#include "person.h"
 #include "mime.h"
-#include "contactmodel.h"
+#include "personmodel.h"
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
-#include "phonenumber.h"
+#include "contactmethod.h"
 #include "accountmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/kcfg_settings.h"
@@ -81,9 +81,9 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
    return QObject::eventFilter(obj, event);
 }
 
-bool ContactSortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+bool PersonSortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
-   const bool status = sourceModel()->index(source_row,0,source_parent).data(ContactModel::Role::Active).toBool();
+   const bool status = sourceModel()->index(source_row,0,source_parent).data(PersonModel::Role::Active).toBool();
    if (!status)
       return false;
    else if (!source_parent.isValid() || source_parent.parent().isValid())
@@ -110,24 +110,24 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
    m_pFilterLE->setClearButtonShown(true);
 
-   setHistoryVisible(ConfigurationSkeleton::displayContactCallHistory());
+   setHistoryVisible(ConfigurationSkeleton::displayPersonCallHistory());
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pView);
-   m_pPhoneNumberDelegate = new PhoneNumberDelegate();
+   m_pContactMethodDelegate = new ContactMethodDelegate();
    m_pContactDelegate = new ContactDelegate(m_pView);
-   m_pPhoneNumberDelegate->setView(m_pView);
-   m_pContactDelegate->setChildDelegate(m_pPhoneNumberDelegate);
+   m_pContactMethodDelegate->setView(m_pView);
+   m_pContactDelegate->setChildDelegate(m_pContactMethodDelegate);
    m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);
-   m_pCategoryDelegate->setChildChildDelegate(m_pPhoneNumberDelegate);
+   m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
    m_pView->setDelegate(m_pCategoryDelegate);
-   m_pView->setViewType(CategorizedTreeView::ViewType::Contact);
+   m_pView->setViewType(CategorizedTreeView::ViewType::Person);
 
    m_pSourceModel = new ContactProxyModel(Qt::DisplayRole,false);
-   m_pProxyModel = new ContactSortFilterProxyModel(this);
+   m_pProxyModel = new PersonSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
    m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole(ContactModel::Role::Filter);
+   m_pProxyModel->setFilterRole(PersonModel::Role::Filter);
    m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
@@ -144,7 +144,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
    connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(setCategory(int))                    );
-//    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadContact())                     );
+//    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadPerson())                     );
    connect(m_pView                       ,SIGNAL(doubleClicked(QModelIndex)),                           this, SLOT(slotDoubleClick(QModelIndex))        );
    setWindowTitle(i18nc("Contact tab","Contact"));
 } //ContactDock
@@ -155,7 +155,7 @@ ContactDock::~ContactDock()
    if (m_pMenu) {
       delete m_pMenu        ;
       delete m_pCallAgain   ;
-      delete m_pEditContact ;
+      delete m_pEditPerson ;
       delete m_pCopy        ;
       delete m_pEmail       ;
       delete m_pAddPhone    ;
@@ -180,10 +180,10 @@ ContactDock::~ContactDock()
  ****************************************************************************/
 
 ///Select a number
-PhoneNumber* ContactDock::showNumberSelector(bool& ok)
+ContactMethod* ContactDock::showNumberSelector(bool& ok)
 {
-   if (m_pCurrentContact && m_pCurrentContact->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
-      PhoneNumber* number = KPhoneNumberSelector().getNumber(m_pCurrentContact);
+   if (m_pCurrentPerson && m_pCurrentPerson->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
+      ContactMethod* number = KPhoneNumberSelector().getNumber(m_pCurrentPerson);
       if (number->uri().isEmpty()) {
          kDebug() << "Operation cancelled";
       }
@@ -193,9 +193,9 @@ PhoneNumber* ContactDock::showNumberSelector(bool& ok)
       ok = true;
       return PhoneDirectoryModel::instance()->getNumber( m_PreselectedNb);
    }
-   else if (m_pCurrentContact&& m_pCurrentContact->phoneNumbers().size() == 1) {
+   else if (m_pCurrentPerson&& m_pCurrentPerson->phoneNumbers().size() == 1) {
       ok = true;
-      return m_pCurrentContact->phoneNumbers()[0];
+      return m_pCurrentPerson->phoneNumbers()[0];
    }
    else {
       ok = false;
@@ -216,13 +216,13 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
       return;
    const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
    if (modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
-      const Contact::PhoneNumbers nbs = *static_cast<const Contact::PhoneNumbers*>(modelItem);
-      const PhoneNumber*          nb  = nbs[index.row()];
-      m_pCurrentContact = nullptr;
+      const Person::ContactMethods nbs = *static_cast<const Person::ContactMethods*>(modelItem);
+      const ContactMethod*          nb  = nbs[index.row()];
+      m_pCurrentPerson = nullptr;
       callAgain(nb);
    }
    else if (modelItem->type() == CategorizedCompositeNode::Type::CONTACT) {
-      m_pCurrentContact = static_cast<Contact*>((modelItem)->getSelf());
+      m_pCurrentPerson = static_cast<Person*>((modelItem)->getSelf());
       callAgain();
    }
 }
@@ -239,10 +239,10 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pCallAgain->setText       ( i18n("Call Again")         );
       m_pCallAgain->setIcon       ( KIcon("call-start")        );
 
-      m_pEditContact = new KAction(this);
-      m_pEditContact->setShortcut ( Qt::CTRL + Qt::Key_E       );
-      m_pEditContact->setText     ( i18n("Edit contact")       );
-      m_pEditContact->setIcon     ( KIcon("contact-new")       );
+      m_pEditPerson = new KAction(this);
+      m_pEditPerson->setShortcut ( Qt::CTRL + Qt::Key_E       );
+      m_pEditPerson->setText     ( i18n("Edit contact")       );
+      m_pEditPerson->setIcon     ( KIcon("contact-new")       );
 
       m_pCopy        = new KAction(this);
       m_pCopy->setShortcut        ( Qt::CTRL + Qt::Key_C       );
@@ -272,7 +272,7 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pRemove->setIcon        ( KIcon("edit-delete")         );
 
       connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
-      connect(m_pEditContact  , SIGNAL(triggered()) , this,SLOT(editContact()));
+      connect(m_pEditPerson  , SIGNAL(triggered()) , this,SLOT(editPerson()));
       connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy())       );
       connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
       connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone())   );
@@ -280,27 +280,27 @@ void ContactDock::showContext(const QModelIndex& index)
       connect(m_pRemove       , SIGNAL(triggered()) , this,SLOT(slotDelete()) );
    }
    if (index.parent().isValid()  && !index.parent().parent().isValid()) {
-      Contact* ct = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
-      m_pCurrentContact = ct;
+      Person* ct = (Person*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+      m_pCurrentPerson = ct;
       m_PreselectedNb.clear();
       if (!ct->preferredEmail().isEmpty()) {
          m_pEmail->setEnabled(true);
       }
-      Contact::PhoneNumbers numbers = ct->phoneNumbers();
+      Person::ContactMethods numbers = ct->phoneNumbers();
       m_pBookmark->setEnabled(numbers.count() == 1);
    }
    else if (index.parent().parent().isValid()) {
-      m_pCurrentContact = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
-      m_PreselectedNb   = m_pCurrentContact->phoneNumbers()[index.row()]->uri();
+      m_pCurrentPerson = (Person*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+      m_PreselectedNb   = m_pCurrentPerson->phoneNumbers()[index.row()]->uri();
    }
    else {
-      m_pCurrentContact = nullptr;
+      m_pCurrentPerson = nullptr;
       m_PreselectedNb.clear();
    }
    if (!m_pMenu) {
       m_pMenu = new QMenu( this          );
       m_pMenu->addAction( m_pCallAgain   );
-      m_pMenu->addAction( m_pEditContact );
+      m_pMenu->addAction( m_pEditPerson );
       m_pMenu->addAction( m_pAddPhone    );
       m_pMenu->addAction( m_pCopy        );
       m_pMenu->addAction( m_pRemove      );
@@ -316,17 +316,17 @@ void ContactDock::sendEmail()
    kDebug() << "Sending email";
    QProcess *myProcess = new QProcess(this);
    QStringList arguments;
-   myProcess->start("xdg-email", (arguments << m_pCurrentContact->preferredEmail()));
+   myProcess->start("xdg-email", (arguments << m_pCurrentPerson->preferredEmail()));
 }
 
 ///Call the same number again
-void ContactDock::callAgain(const PhoneNumber* n)
+void ContactDock::callAgain(const ContactMethod* n)
 {
    kDebug() << "Calling ";
    bool ok = false;
-   const PhoneNumber* number = n?n:showNumberSelector(ok);
+   const ContactMethod* number = n?n:showNumberSelector(ok);
    if ( (n || ok) && number) {
-      const QString name = n?n->contact()->formattedName() : m_pCurrentContact->formattedName();
+      const QString name = n?n->contact()->formattedName() : m_pCurrentPerson->formattedName();
       Call* call = CallModel::instance()->dialingCall(name, AccountModel::currentAccount());
       if (call) {
          call->setDialNumber(number);
@@ -345,10 +345,10 @@ void ContactDock::copy()
 {
    kDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(RingMimes::CONTACT, m_pCurrentContact->uid());
-   QString numbers(m_pCurrentContact->formattedName()+": ");
-   QString numbersHtml("<b>"+m_pCurrentContact->formattedName()+"</b><br />");
-   foreach (PhoneNumber* number, m_pCurrentContact->phoneNumbers()) {
+   mimeData->setData(RingMimes::CONTACT, m_pCurrentPerson->uid());
+   QString numbers(m_pCurrentPerson->formattedName()+": ");
+   QString numbersHtml("<b>"+m_pCurrentPerson->formattedName()+"</b><br />");
+   foreach (ContactMethod* number, m_pCurrentPerson->phoneNumbers()) {
       numbers     += number->uri()+" ("+number->category()->name()+")  ";
       numbersHtml += number->uri()+" ("+number->category()->name()+")  <br />";
    }
@@ -359,10 +359,10 @@ void ContactDock::copy()
 }
 
 ///Edit this contact
-void ContactDock::editContact()
+void ContactDock::editPerson()
 {
    kDebug() << "Edit contact";
-   m_pCurrentContact->edit();
+   m_pCurrentPerson->edit();
 }
 
 ///Add a new phone number for this contact
@@ -373,15 +373,15 @@ void ContactDock::addPhone()
    bool ok = false;
    const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
    if (ok && !text.isEmpty()) {
-//       PhoneNumber* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
-//       m_pCurrentContact->addPhoneNumber(n); //TODO fixme
+//       ContactMethod* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
+//       m_pCurrentPerson->addContactMethod(n); //TODO fixme
    }
 }
 
 ///Add this contact to the bookmark list
 void ContactDock::bookmark()
 {
-   const Contact::PhoneNumbers numbers = m_pCurrentContact->phoneNumbers();
+   const Person::ContactMethods numbers = m_pCurrentPerson->phoneNumbers();
    if (numbers.count() == 1) {
       BookmarkModel::instance()->addBookmark(numbers[0]);
    }
@@ -389,12 +389,12 @@ void ContactDock::bookmark()
 
 void ContactDock::slotDelete()
 {
-   if (!m_pCurrentContact)
+   if (!m_pCurrentPerson)
       return;
    const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to permanently delete %1?",
-      m_pCurrentContact->formattedName()), i18n("Delete contact"));
+      m_pCurrentPerson->formattedName()), i18n("Delete contact"));
    if (ret == KMessageBox::Yes) {
-      m_pCurrentContact->remove();
+      m_pCurrentPerson->remove();
    }
 }
 
@@ -403,7 +403,7 @@ void ContactDock::transferEvent(QMimeData* data)
 {
    if (data->hasFormat( RingMimes::CALLID)) {
       bool ok = false;
-      const PhoneNumber* result = showNumberSelector(ok);
+      const ContactMethod* result = showNumberSelector(ok);
       if (ok && result) {
          Call* call = CallModel::instance()->getCall(data->data(RingMimes::CALLID));
          if (dynamic_cast<Call*>(call)) {
@@ -425,7 +425,7 @@ void ContactDock::transferEvent(QMimeData* data)
  ****************************************************************************/
 
 ///Serialize information to be used for drag and drop
-// QMimeData* ContactTree::mimeData( const QList<QTreeWidgetItem *> items) const
+// QMimeData* PersonTree::mimeData( const QList<QTreeWidgetItem *> items) const
 // {
 //    kDebug() << "An history call is being dragged";
 //    if (items.size() < 1) {
@@ -434,11 +434,11 @@ void ContactDock::transferEvent(QMimeData* data)
 // 
 //    QMimeData *mimeData = new QMimeData();
 // 
-//    //Contact
+//    //Person
 //    if (dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0])) {
 //       QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0]);
 //       if (item->widget != 0) {
-//          mimeData->setData(RingMimes::CONTACT, item->widget->getContact()->getUid().toUtf8());
+//          mimeData->setData(RingMimes::CONTACT, item->widget->getPerson()->getUid().toUtf8());
 //       }
 //       else if (!item->number.isEmpty()) {
 //          mimeData->setData(RingMimes::PHONENUMBER, item->number.toUtf8());
@@ -451,7 +451,7 @@ void ContactDock::transferEvent(QMimeData* data)
 // } //mimeData
 
 ///Handle data being dropped on the widget
-// bool ContactTree::dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action)
+// bool PersonTree::dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action)
 // {
 //    Q_UNUSED(index )
 //    Q_UNUSED(action)
@@ -476,7 +476,7 @@ void ContactDock::setHistoryVisible(bool visible)
 {
    kDebug() << "Toggling history visibility";
    m_pBottomWidget->setVisible(visible);
-   ConfigurationSkeleton::setDisplayContactCallHistory(visible);
+   ConfigurationSkeleton::setDisplayPersonCallHistory(visible);
 }
 
 ///Set sorting category
@@ -489,24 +489,24 @@ void ContactDock::setCategory(int index)
          m_pProxyModel->setSortRole(Qt::DisplayRole);
          break;
       case SortingCategory::Organization:
-         m_pProxyModel->setSortRole(ContactModel::Role::Organization);
-         m_pSourceModel->setRole(ContactModel::Role::Organization);
+         m_pProxyModel->setSortRole(PersonModel::Role::Organization);
+         m_pSourceModel->setRole(PersonModel::Role::Organization);
          m_pSourceModel->setShowAll(true);
          break;
       case SortingCategory::RecentlyUsed:
-         m_pSourceModel->setRole(ContactModel::Role::FormattedLastUsed);
+         m_pSourceModel->setRole(PersonModel::Role::FormattedLastUsed);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(ContactModel::Role::IndexedLastUsed);
+         m_pProxyModel->setSortRole(PersonModel::Role::IndexedLastUsed);
          break;
       case SortingCategory::Group:
-         m_pSourceModel->setRole(ContactModel::Role::Group);
+         m_pSourceModel->setRole(PersonModel::Role::Group);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(ContactModel::Role::Group);
+         m_pProxyModel->setSortRole(PersonModel::Role::Group);
          break;
       case SortingCategory::Department:
-         m_pSourceModel->setRole(ContactModel::Role::Department);
+         m_pSourceModel->setRole(PersonModel::Role::Department);
          m_pSourceModel->setShowAll(true);
-         m_pProxyModel->setSortRole(ContactModel::Role::Department);
+         m_pProxyModel->setSortRole(PersonModel::Role::Department);
          break;
    };
 }
@@ -528,7 +528,7 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
 //          QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(m_pContactView->selectedItems()[0]);
 //          if (item) {
 //             Call* call = nullptr;
-//             Ring::app()->view()->selectCallPhoneNumber(&call,item->widget->getContact());
+//             Ring::app()->view()->selectCallContactMethod(&call,item->widget->getPerson());
 //          }
 //       }
    }

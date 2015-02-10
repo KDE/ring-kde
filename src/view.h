@@ -28,7 +28,7 @@ class QString;
 //Ring
 #include "call.h"
 #include "callmodel.h"
-class Contact;
+class Person;
 class CallViewToolbar;
 class CallViewOverlay;
 class HistoryDelegate;
@@ -36,8 +36,8 @@ class ConferenceDelegate;
 class AutoCompletion;
 class CanvasObjectManager;
 class EventManager;
-class PhoneNumber;
-class ColorVisitor;
+class ContactMethod;
+class ColorDelegate;
 
 /**
  * This is the main view class for ring-kde.  Most of the non-menu,
@@ -65,7 +65,7 @@ private:
    AutoCompletion*      m_pAutoCompletion ;
    CanvasObjectManager* m_pCanvasManager  ;
    EventManager*        m_pEventManager   ;
-   ColorVisitor*        m_pColorVisitor   ;
+   ColorDelegate*        m_pColorDelegate   ;
 
 public:
    //Constructors & Destructors
@@ -93,7 +93,7 @@ public:
 
 private Q_SLOTS:
    void sendMessage          ();
-   void slotAutoCompleteClicked(PhoneNumber* n);
+   void slotAutoCompleteClicked(ContactMethod* n);
    void loadAutoCompletion   ();
 
 

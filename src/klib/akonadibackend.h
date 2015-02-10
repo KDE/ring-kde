@@ -36,7 +36,7 @@ class QObject;
 //KDE
 namespace KABC {
    class Addressee    ;
-   class PhoneNumber  ;
+   class ContactMethod  ;
 }
 
 namespace Akonadi {
@@ -47,10 +47,10 @@ namespace Akonadi {
 }
 class KJob;
 
-class PhoneNumber;
+class ContactMethod;
 
 //Ring
-class Contact;
+class Person;
 template<typename T> class CollectionMediator;
 
 ///AkonadiBackend: Implement a backend for Akonadi
@@ -60,10 +60,10 @@ class LIB_EXPORT AkonadiBackend : public QObject, public CollectionInterface
 public:
    template<typename T>
    explicit AkonadiBackend(CollectionMediator<T>* mediator, const Akonadi::Collection& parentCol);
-//    Contact* getContactByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
-   bool     edit       ( Contact*       contact , QWidget* parent = 0                           );
-   bool     addNewContact     ( Contact*       contact , QWidget* parent = 0                           );
-   virtual bool addPhoneNumber( Contact*       contact , PhoneNumber* number                           );
+//    Person* getPersonByPhone ( const QString& phoneNumber ,bool resolveDNS = false, Account* a=nullptr);
+   bool     edit       ( Person*       contact , QWidget* parent = 0                           );
+   bool     addNewPerson     ( Person*       contact , QWidget* parent = 0                           );
+   virtual bool addContactMethod( Person*       contact , ContactMethod* number                           );
 
    virtual QString name () const override;
    virtual QString category  () const override;
@@ -72,19 +72,19 @@ public:
    virtual bool enable (bool enable) override;
    virtual QByteArray  id() const;
 
-//    virtual bool     edit   ( Contact*   contact                                                 ) override;
-//    virtual bool     addNew ( Contact*   contact                                                 ) override;
-//    virtual bool     remove ( Contact* c                                                         ) override;
-//    virtual bool append(const Contact* item);
+//    virtual bool     edit   ( Person*   contact                                                 ) override;
+//    virtual bool     addNew ( Person*   contact                                                 ) override;
+//    virtual bool     remove ( Person* c                                                         ) override;
+//    virtual bool append(const Person* item);
    virtual ~AkonadiBackend        (                                                                    );
 
    virtual bool load();
    virtual bool reload();
-   virtual bool save(const Contact* contact);
+   virtual bool save(const Person* contact);
 
    SupportedFeatures supportedFeatures() const;
 
-//    virtual QList<Contact*> items() const override;
+//    virtual QList<Person*> items() const override;
 
    Akonadi::Collection collection() const;
 private:
@@ -96,12 +96,12 @@ private:
    QPointer<Akonadi::ItemFetchJob>   m_pJob;
    bool                           m_isEnabled;
    bool                           m_wasEnabled;
-   CollectionMediator<Contact>*  m_pMediator;
+   CollectionMediator<Person>*  m_pMediator;
 
    //Helper
    KABC::PhoneNumber::Type nameToType(const QString& name);
-   Contact* addItem(Akonadi::Item item, bool ignoreEmpty = false);
-   void fillContact(Contact* c, const KABC::Addressee& addr) const;
+   Person* addItem(Akonadi::Item item, bool ignoreEmpty = false);
+   void fillPerson(Person* c, const KABC::Addressee& addr) const;
 
    //Parent locator
    static QHash<Akonadi::Collection::Id, AkonadiBackend*> m_hParentLookup;
@@ -116,26 +116,26 @@ private Q_SLOTS:
    void slotJobCompleted(KJob* job);
 };
 
-class AkonadiEditor : public CollectionEditor<Contact>
+class AkonadiEditor : public CollectionEditor<Person>
 {
 public:
-   AkonadiEditor(CollectionMediator<Contact>* m) : CollectionEditor<Contact>(m) {}
+   AkonadiEditor(CollectionMediator<Person>* m) : CollectionEditor<Person>(m) {}
    ~AkonadiEditor() {
-      m_lBackendContacts.clear();
+      m_lBackendPersons.clear();
       m_ItemHash.clear();
       m_AddrHash.clear();
    }
-   virtual bool save       ( const Contact* item ) override;
-   virtual bool append     ( const Contact* item ) override;
-   virtual bool remove     ( Contact*       item ) override;
-   virtual bool edit       ( Contact*       item ) override;
-   virtual bool addNew     ( Contact*       item ) override;
+   virtual bool save       ( const Person* item ) override;
+   virtual bool append     ( const Person* item ) override;
+   virtual bool remove     ( Person*       item ) override;
+   virtual bool edit       ( Person*       item ) override;
+   virtual bool addNew     ( Person*       item ) override;
 
    QHash<QString,KABC::Addressee> m_AddrHash   ;
    QHash<QString,Akonadi::Item>   m_ItemHash   ;
-   QList<Contact*>                m_lBackendContacts;
+   QList<Person*>                m_lBackendPersons;
 private:
-   virtual QVector<Contact*> items() const override;
+   virtual QVector<Person*> items() const override;
 };
 #include <akonadi/control.h>
 #include <akonadi/collectionfilterproxymodel.h>

@@ -47,7 +47,7 @@ void DlgHooks::updateWidgets()
    kcfg_hooksCommand    ->setText   (HookManager::instance()->command             ());
    kcfg_prepend         ->setText   (HookManager::instance()->prefix              ());
    kcfg_hooksSIPHeader  ->setText   (HookManager::instance()->sipFeild            ());
-   kcfg_addPrefix       ->setChecked(HookManager::instance()->isPhoneNumberEnabled());
+   kcfg_addPrefix       ->setChecked(HookManager::instance()->isContactMethodEnabled());
    kcfg_enableHooksSIP->blockSignals(false);
    kcfg_enableHooksIAX->blockSignals(false);
    kcfg_hooksCommand->blockSignals(false);
@@ -63,7 +63,7 @@ void DlgHooks::updateSettings()
    HookManager::instance()->setCommand           (kcfg_hooksCommand    ->text     ());
    HookManager::instance()->setPrefix            (kcfg_prepend         ->text     ());
    HookManager::instance()->setSipFeild          (kcfg_hooksSIPHeader  ->text     ());
-   HookManager::instance()->setPhoneNumberEnabled(kcfg_addPrefix       ->isChecked());
+   HookManager::instance()->setContactMethodEnabled(kcfg_addPrefix       ->isChecked());
    m_Changed = false;
    emit updateButtons();
 }

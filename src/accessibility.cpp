@@ -26,7 +26,7 @@
 //Ring
 #include <call.h>
 #include <callmodel.h>
-#include <phonenumber.h>
+#include <contactmethod.h>
 #include "kspeechinterfacesingleton.h"
 #include "ring.h"
 #include "view.h"
@@ -75,7 +75,7 @@ void Accessibility::listCall()
    if (CallModel::instance()->getActiveCalls().size()>0) {
       KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance()->getActiveCalls().size()), KSpeech::soPlainText);
       foreach (Call* call,CallModel::instance()->getActiveCalls()) {
-         KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerPhoneNumber()->uri().isEmpty())?call->peerPhoneNumber()->uri():call->dialNumber())), KSpeech::soPlainText);
+         KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerContactMethod()->uri().isEmpty())?call->peerContactMethod()->uri():call->dialNumber())), KSpeech::soPlainText);
       }
    }
    else {
@@ -104,8 +104,8 @@ void Accessibility::currentCallDetails()
          QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toAscii() ));
          if (!call->peerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));
-         if (!call->peerPhoneNumber()->uri().isEmpty())
-            toSay += i18n(", the peer phone number is %1 ",numberToDigit(call->peerPhoneNumber()->uri())    );
+         if (!call->peerContactMethod()->uri().isEmpty())
+            toSay += i18n(", the peer phone number is %1 ",numberToDigit(call->peerContactMethod()->uri())    );
          else if (!call->dialNumber().isEmpty())
             toSay += i18n(", the phone number is %1 ",numberToDigit(call->dialNumber()));
 

@@ -31,13 +31,13 @@
 #include <KIcon>
 
 //Ring
-#include <contact.h>
+#include <person.h>
 #include <numbercategory.h>
-#include <phonenumber.h>
+#include <contactmethod.h>
 #include <collectioninterface.h>
-#include <contactmodel.h>
+#include <personmodel.h>
 #include "delegatedropoverlay.h"
-#include "visitors/pixmapmanipulationvisitor.h"
+#include "delegates/pixmapmanipulationdelegate.h"
 #include "phonenumberdelegate.h"
 #include "widgets/categorizedtreeview.h"
 #include "klib/kcfg_settings.h"
@@ -65,7 +65,7 @@ QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    const int rowCount = index.model()->rowCount(index);
    bool displayEmail = ConfigurationSkeleton::displayEmail();
    bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
-   Contact* ct = (Contact*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+   Person* ct = (Person*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
 
    //Compute only once, the value is unlikely to change
    static QFontMetrics fm(QApplication::font());
@@ -98,7 +98,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    painter->setClipRect(fullRect);
-   Contact* ct = (Contact*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
+   Person* ct = (Person*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
 
    //BEGIN is selected
    {
@@ -123,7 +123,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
 
    //BEGIN draw photo
-   QPixmap pxm = PixmapManipulationVisitor::instance()->contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
+   QPixmap pxm = PixmapManipulationDelegate::instance()->contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
    painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
    //END draw photo
 
@@ -175,7 +175,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
 
    //BEGIN overlay path
-   if (index.data(ContactModel::Role::DropState).toInt() != 0) {
+   if (index.data(PersonModel::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;
@@ -187,7 +187,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //END overlay path
 }
 
-void ContactDelegate::setChildDelegate(PhoneNumberDelegate* child)
+void ContactDelegate::setChildDelegate(ContactMethodDelegate* child)
 {
    m_pChildDelegate = child;
 }

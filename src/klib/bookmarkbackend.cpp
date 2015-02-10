@@ -31,9 +31,9 @@
 //SFLPhone
 #include <call.h>
 #include <account.h>
-#include <phonenumber.h>
+#include <contactmethod.h>
 #include <accountmodel.h>
-#include <contactmodel.h>
+#include <personmodel.h>
 #include <phonedirectorymodel.h>
 
 
@@ -42,39 +42,39 @@ BookmarkBackend::~BookmarkBackend()
 
 }
 
-bool BookmarkEditor::save(const PhoneNumber* item)
+bool BookmarkEditor::save(const ContactMethod* item)
 {
    Q_UNUSED(item)
    return false;
 }
 
-bool BookmarkEditor::append(const PhoneNumber* item)
+bool BookmarkEditor::append(const ContactMethod* item)
 {
    Q_UNUSED(item)
    return false;
 }
 
-bool BookmarkEditor::remove(PhoneNumber* item)
+bool BookmarkEditor::remove(ContactMethod* item)
 {
    Q_UNUSED(item)
    return false;
 }
 
-bool BookmarkEditor::edit( PhoneNumber* item)
+bool BookmarkEditor::edit( ContactMethod* item)
 {
    Q_UNUSED(item)
    return false;
 }
 
-bool BookmarkEditor::addNew( PhoneNumber* item)
+bool BookmarkEditor::addNew( ContactMethod* item)
 {
    Q_UNUSED(item)
    return false;
 }
 
-QVector<PhoneNumber*> BookmarkEditor::items() const
+QVector<ContactMethod*> BookmarkEditor::items() const
 {
-   return QVector<PhoneNumber*>();
+   return QVector<ContactMethod*>();
 }
 
 QString BookmarkBackend::name () const
@@ -109,9 +109,9 @@ bool BookmarkBackend::load()
             //Parse the info
             const QByteArray& aid = hc[Call::HistoryMapFields::ACCOUNT_ID].toAscii();
             Account*          a   = aid.isEmpty()?nullptr:AccountModel::instance()->getById(aid);
-            Contact*          c   = ContactModel::instance()->getContactByUid(hc[Call::HistoryMapFields::CONTACT_UID].toAscii());
+            Person*          c   = PersonModel::instance()->getPersonByUid(hc[Call::HistoryMapFields::CONTACT_UID].toAscii());
             const QString&    uri = hc[Call::HistoryMapFields::PEER_NUMBER];
-            PhoneNumber*      n   = PhoneDirectoryModel::instance()->getNumber(uri,c,a);
+            ContactMethod*      n   = PhoneDirectoryModel::instance()->getNumber(uri,c,a);
 
             //Add the number
             m_lNumbers << n;
@@ -142,7 +142,7 @@ bool BookmarkBackend::reload()
 }
 
 ///Save a single item
-void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const PhoneNumber* number)
+void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const ContactMethod* number)
 {
    const Account* a = number->account();
    streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?QString(a->id()):""  );
@@ -154,22 +154,22 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const PhoneNumber* 
    }
 }
 
-// bool BookmarkBackend::append(const PhoneNumber* number)
+// bool BookmarkBackend::append(const ContactMethod* number)
 // {
 //    if (!number->isBookmarked()) {
-//       const_cast<PhoneNumber*>(number)->setTracked(true);
-//       const_cast<PhoneNumber*>(number)->setBookmarked(true);
+//       const_cast<ContactMethod*>(number)->setTracked(true);
+//       const_cast<ContactMethod*>(number)->setBookmarked(true);
 // 
 //       //TODO support \r and \n\r end of line
 //       QFile file(KStandardDirs::locateLocal("appdata","")+"bookmark.ini");
 //       if ( file.open(QIODevice::Append | QIODevice::Text) ) {
 //          QTextStream streamFileOut(&file);
 //          saveHelper(streamFileOut,number);
-//          m_lNumbers << const_cast<PhoneNumber*>(number);
+//          m_lNumbers << const_cast<ContactMethod*>(number);
 //          streamFileOut << "\n";
 //          streamFileOut.flush();
 //          file.close();
-//          emit newBookmarkAdded(const_cast<PhoneNumber*>(number));
+//          emit newBookmarkAdded(const_cast<ContactMethod*>(number));
 //          return true;
 //       }
 //       else
@@ -183,7 +183,7 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const PhoneNumber* 
 /** Rewrite the file from scratch
  * @todo Eventually check if it is necessary, it will be faster
  */
-// bool BookmarkBackend::save(const PhoneNumber* number)
+// bool BookmarkBackend::save(const ContactMethod* number)
 // {
 //    Q_UNUSED(number)
 // //    if (call->backend() != this)
@@ -192,7 +192,7 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const PhoneNumber* 
 //    QFile file(KStandardDirs::locateLocal("appdata","")+"bookmark.ini");
 //    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
 //       QTextStream streamFileOut(&file);
-//       foreach(const PhoneNumber* n, m_lNumbers) {
+//       foreach(const ContactMethod* n, m_lNumbers) {
 //          saveHelper(streamFileOut,n);
 //       }
 //       streamFileOut << "\n";
@@ -207,7 +207,7 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const PhoneNumber* 
 // }
 
 ///Remove a bookmark and rewrite the file
-// bool BookmarkBackend::remove(PhoneNumber* number)
+// bool BookmarkBackend::remove(ContactMethod* number)
 // {
 //    m_lNumbers.removeAll(number);
 //    save(number);
@@ -225,13 +225,13 @@ CollectionInterface::SupportedFeatures BookmarkBackend::supportedFeatures() cons
 }
 
 ///Edit 'item', the implementation may be a GUI or somehting else
-// bool BookmarkBackend::edit( PhoneNumber* number)
+// bool BookmarkBackend::edit( ContactMethod* number)
 // {
 //    Q_UNUSED(number)
 //    return false;
 // }
 ///Add a new item to the backend
-// bool BookmarkBackend::addNew( PhoneNumber* number)
+// bool BookmarkBackend::addNew( ContactMethod* number)
 // {
 //    Q_UNUSED(number)
 //    return true;
@@ -252,7 +252,7 @@ QByteArray BookmarkBackend::id() const
    return "kbookmark";
 }
 
-// QList<PhoneNumber*> BookmarkBackend::items() const
+// QList<ContactMethod*> BookmarkBackend::items() const
 // {
 //    return m_lNumbers;
 // }

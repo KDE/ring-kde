@@ -29,8 +29,8 @@
 #include <KMessageBox>
 
 //Ring
-#include "contact.h"
-#include "phonenumber.h"
+#include "person.h"
+#include "contactmethod.h"
 #include "numbercategory.h"
 
 ///Remove accent and upper caps, try to stay ascii as much as possible

@@ -26,11 +26,11 @@
 
 //Ring
 #include <mime.h>
-#include <phonenumber.h>
+#include <contactmethod.h>
 #include <account.h>
 #include <phonedirectorymodel.h>
 #include <accountmodel.h>
-#include <contactmodel.h>
+#include <personmodel.h>
 #include <klib/tipmanager.h>
 #include "view.h"
 #include "ring.h"
@@ -139,19 +139,19 @@ bool EventManager::viewDropEvent(QDropEvent* e)
             kDebug() << "The call is not in a conversation (doing nothing)";
       }
       else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
-         const QByteArray encodedPhoneNumber = e->mimeData()->data( RingMimes::PHONENUMBER );
+         const QByteArray encodedContactMethod = e->mimeData()->data( RingMimes::PHONENUMBER );
          kDebug() << "Phone number dropped on empty space";
          Call* newCall = CallModel::instance()->dialingCall();
-         PhoneNumber* nb = PhoneDirectoryModel::instance()->fromHash(encodedPhoneNumber);
+         ContactMethod* nb = PhoneDirectoryModel::instance()->fromHash(encodedContactMethod);
          newCall->setDialNumber(nb);
          if (nb && nb->account())
             newCall->setAccount(nb->account());
          newCall->performAction(Call::Action::ACCEPT);
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
-         const QByteArray encodedContact     = e->mimeData()->data( RingMimes::CONTACT     );
-         kDebug() << "Contact dropped on empty space";
-         const PhoneNumber* number = KPhoneNumberSelector().getNumber(ContactModel::instance()->getContactByUid(encodedContact));
+         const QByteArray encodedPerson     = e->mimeData()->data( RingMimes::CONTACT     );
+         kDebug() << "Person dropped on empty space";
+         const ContactMethod* number = KPhoneNumberSelector().getNumber(PersonModel::instance()->getPersonByUid(encodedPerson));
          if (number->uri().isEmpty()) {
             Call* newCall = CallModel::instance()->dialingCall();
             newCall->setDialNumber(number->uri());
@@ -201,13 +201,13 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
-         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
+         ContactMethod* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
                (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
-         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(RingMimes::CONTACT));
+         Person* c = PersonModel::instance()->getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
@@ -221,13 +221,13 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
-         PhoneNumber* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
+         ContactMethod* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
                (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
-         Contact* c = ContactModel::instance()->getContactByUid(e->mimeData()->data(RingMimes::CONTACT));
+         Person* c = PersonModel::instance()->getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
@@ -299,7 +299,7 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
       case Qt::Key_Return:
       case Qt::Key_Enter:
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->selection()) {
-            PhoneNumber* n = m_pParent->m_pAutoCompletion->selection();
+            ContactMethod* n = m_pParent->m_pAutoCompletion->selection();
             Call* call = m_pParent->currentCall();
             if (call->state() == Call::State::DIALING) {
                call->setDialNumber(n->uri());

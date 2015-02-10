@@ -28,7 +28,7 @@
 
 //Ring
 #include "categorizedtreeview.h"
-class PhoneNumber;
+class ContactMethod;
 
 //Qt
 class QMenu;
@@ -37,7 +37,7 @@ class QMenu;
 class KAction;
 
 namespace Akonadi {
-   namespace Contact {
+   namespace Person {
    }
 }
 
@@ -45,18 +45,18 @@ namespace KABC {
 }
 
 ///Ring
-class Contact;
+class Person;
 class ContactProxyModel;
 class CategorizedDelegate;
-class PhoneNumberDelegate;
+class ContactMethodDelegate;
 class ContactDelegate;
 class KeyPressEaterC;
 
-class ContactSortFilterProxyModel : public QSortFilterProxyModel
+class PersonSortFilterProxyModel : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   explicit ContactSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {
+   explicit PersonSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {
       setDynamicSortFilter(true);
    }
 protected:
@@ -75,7 +75,7 @@ public:
 private:
    //Attributes
    QMenu*                       m_pMenu          ;
-   Contact*                     m_pCurrentContact;
+   Person*                     m_pCurrentPerson;
    QString                      m_PreselectedNb  ;
    QSortFilterProxyModel*       m_pProxyModel    ;
    ContactProxyModel*           m_pSourceModel   ;
@@ -83,7 +83,7 @@ private:
 
    //Actions
    KAction* m_pCallAgain   ;
-   KAction* m_pEditContact ;
+   KAction* m_pEditPerson ;
    KAction* m_pCopy        ;
    KAction* m_pEmail       ;
    KAction* m_pAddPhone    ;
@@ -92,11 +92,11 @@ private:
 
    //Delegates
    CategorizedDelegate* m_pCategoryDelegate;
-   PhoneNumberDelegate* m_pPhoneNumberDelegate;
+   ContactMethodDelegate* m_pContactMethodDelegate;
    ContactDelegate*     m_pContactDelegate;
 
    //Helper
-   PhoneNumber* showNumberSelector(bool& ok);
+   ContactMethod* showNumberSelector(bool& ok);
 
    enum SortingCategory {
       Name,
@@ -117,9 +117,9 @@ private Q_SLOTS:
    ///Menu actions
    void showContext(const QModelIndex& index);
    void sendEmail   ();
-   void callAgain   (const PhoneNumber* n = nullptr);
+   void callAgain   (const ContactMethod* n = nullptr);
    void copy        ();
-   void editContact ();
+   void editPerson ();
    void addPhone    ();
    void bookmark    ();
    void transferEvent( QMimeData* data   );

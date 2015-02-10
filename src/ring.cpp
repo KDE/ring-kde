@@ -47,13 +47,13 @@
 #include <KIcon>
 
 //Ring library
-#include "contact.h"
+#include "person.h"
 #include "accountmodel.h"
 #include "instantmessagingmodel.h"
 #include "imconversationmanager.h"
 #include "numbercategorymodel.h"
 #include "klib/minimalhistorybackend.h"
-#include "visitors/numbercategoryvisitor.h"
+#include "delegates/numbercategorydelegate.h"
 #include "klib/macromodel.h"
 #include "klib/bookmarkbackend.h"
 #include "klib/akonadibackend.h"
@@ -61,13 +61,13 @@
 #include "klib/akonadicontactcollectionmodel.h"
 #include "presencestatusmodel.h"
 #include "video/manager.h"
-#include "phonenumber.h"
-#include "contactmodel.h"
+#include "contactmethod.h"
+#include "personmodel.h"
 #include "collectionmodel.h"
-#include "visitors/itemmodelstateserializationvisitor.h"
+#include "delegates/itemmodelstateserializationdelegate.h"
 #include "klib/itemmodelserialization.h"
-#include "extensions/presenceitembackendmodelextension.h"
-#include "visitors/profilepersistervisitor.h"
+#include "extensions/presencecollectionextension.h"
+#include "delegates/profilepersisterdelegate.h"
 #include "klib/kdeprofilepersistor.h"
 
 
@@ -89,7 +89,7 @@
 
 Ring* Ring::m_sApp = nullptr;
 
-class ConcreteNumberCategoryVisitor :public NumberCategoryVisitor {
+class ConcreteNumberCategoryDelegate :public NumberCategoryDelegate {
    void serialize(NumberCategoryModel* model)
    {
       Q_UNUSED(model)
@@ -147,18 +147,18 @@ Ring::Ring(QWidget* parent)
    }
    static bool init = false;
    if (!init) {
-      ProfilePersisterVisitor::setInstance(new KDEProfilePersister());
+      ProfilePersisterDelegate::setInstance(new KDEProfilePersister());
 
       //Start the Akonadi collection backend (contact loader)
-      AkonadiContactCollectionModel::instance();
+      AkonadiPersonCollectionModel::instance();
       HistoryModel::instance()->addBackend<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
 
       BookmarkModel::instance()->addBackend<BookmarkBackend>();
 
 
-      NumberCategoryVisitor::setInstance(new ConcreteNumberCategoryVisitor());
-      ItemModelStateSerializationVisitor::setInstance(new ItemModelStateSerialization());
-//       ContactModel::instance()->backendModel()->load();
+      NumberCategoryDelegate::setInstance(new ConcreteNumberCategoryDelegate());
+      ItemModelStateSerializationDelegate::setInstance(new ItemModelStateSerialization());
+//       PersonModel::instance()->backendModel()->load();
       IMConversationManager::instance();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
       #ifdef ENABLE_VIDEO
@@ -167,7 +167,7 @@ Ring::Ring(QWidget* parent)
       init = true;
 
 //       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
-//       ContactModel::instance()->backendModel()->addExtension(ext); //FIXME
+//       PersonModel::instance()->backendModel()->addExtension(ext); //FIXME
    }
 
    //Belong to setupActions(), but is needed now
@@ -359,7 +359,7 @@ Ring::~Ring()
    delete m_pPresenceDock    ;
 
    delete CallModel::instance();
-   delete ContactModel::instance();
+   delete PersonModel::instance();
    //saveState();
 }
 
@@ -506,13 +506,13 @@ void Ring::on_m_pView_recordCheckStateChangeAsked(bool recordCheckState)
 void Ring::on_m_pView_incomingCall(const Call* call)
 {
    if (call) {
-      const Contact* contact = call->peerPhoneNumber()->contact();
+      const Person* contact = call->peerContactMethod()->contact();
       if (contact) {
          const QPixmap px = (contact->photo()).type() == QVariant::Pixmap ? (contact->photo()).value<QPixmap>():QPixmap();
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()),px);
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()),px);
       }
       else
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerPhoneNumber()->uri() : call->peerName()));
+         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()));
    }
 }
 

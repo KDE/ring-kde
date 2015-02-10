@@ -31,7 +31,7 @@
 //Ring
 #include "call.h"
 #include "account.h"
-#include "phonenumber.h"
+#include "contactmethod.h"
 #include "historymodel.h"
 
 
@@ -150,14 +150,14 @@ bool MinimalHistoryBackend::reload()
 //       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::TIMESTAMP_STOP  ).arg(call->stopTimeStamp()          );
 //       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?QString(a->id()):""          );
 //       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DISPLAY_NAME    ).arg(call->peerName()               );
-//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerPhoneNumber()->uri() );
+//       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerContactMethod()->uri() );
 //       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::DIRECTION       ).arg(direction                      );
 //       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::MISSED          ).arg(call->isMissed()               );
 //       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(call->recordingPath()          );
 //       streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_USED    ).arg(false                          );//TODO
-//       if (call->peerPhoneNumber()->contact()) {
+//       if (call->peerContactMethod()->contact()) {
 //          streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_UID  ).arg(
-//             QString(call->peerPhoneNumber()->contact()->uid())
+//             QString(call->peerContactMethod()->contact()->uid())
 //          );
 //       }
 //       streamFileOut << "\n";
@@ -223,7 +223,7 @@ CollectionInterface::SupportedFeatures MinimalHistoryBackend::supportedFeatures(
 // }
 
 ///Add a new phone number to an existing item
-// bool MinimalHistoryBackend::addPhoneNumber( Call* call , PhoneNumber* number )
+// bool MinimalHistoryBackend::addContactMethod( Call* call , ContactMethod* number )
 // {
 //    Q_UNUSED(call)
 //    Q_UNUSED(number)

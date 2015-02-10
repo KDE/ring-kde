@@ -34,15 +34,15 @@
 
 //Ring
 #include <historymodel.h>
-#include <contact.h>
+#include <person.h>
 #include <callmodel.h>
-#include <phonenumber.h>
+#include <contactmethod.h>
 #include "klib/kcfg_settings.h"
 #include "widgets/playeroverlay.h"
 #include "dialpaddelegate.h"
 #include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
-#include "visitors/pixmapmanipulationvisitor.h"
+#include "delegates/pixmapmanipulationdelegate.h"
 #include "implementation.h"
 #include "delegates/kdepixmapmanipulation.h"
 #include "../icons/icons.h"
@@ -103,8 +103,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 
-   const PhoneNumber* n = qvariant_cast<PhoneNumber*>(index.data(Call::Role::PhoneNu));
-   QPixmap pxm = n?PixmapManipulationVisitor::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
+   const ContactMethod* n = qvariant_cast<ContactMethod*>(index.data(Call::Role::PhoneNu));
+   QPixmap pxm = n?PixmapManipulationDelegate::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
 
    //Handle history with recording
    if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {

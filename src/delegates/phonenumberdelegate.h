@@ -22,10 +22,10 @@
 
 class CategorizedTreeView;
 
-class PhoneNumberDelegate : public QStyledItemDelegate
+class ContactMethodDelegate : public QStyledItemDelegate
 {
 public:
-   explicit PhoneNumberDelegate(QObject* parent = nullptr);
+   explicit ContactMethodDelegate(QObject* parent = nullptr);
 
    //Reimplemented methods
    virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;

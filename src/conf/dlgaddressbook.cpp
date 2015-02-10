@@ -26,7 +26,7 @@
 #include "numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include <akonadi/collectionmodel.h>
-#include "contactmodel.h"
+#include "personmodel.h"
 #include "collectionmodel.h"
 #include "klib/akonadicontactcollectionmodel.h"
 #include <akonadi/collectionpropertiesdialog.h>
@@ -48,17 +48,17 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pDelegate = new AutoCompletionDelegate();
    m_pPhoneTypeList->setItemDelegate(m_pDelegate);
 
-//    m_pCollectionW->setModel(ContactModel::instance()->backendModel());
+//    m_pCollectionW->setModel(PersonModel::instance()->backendModel());
 
    //Resize the columns
    //m_pCollectionW->header()->setResizeMode(0,QHeaderView::Stretch);
-//    for (int i =1;i<ContactModel::instance()->backendModel()->columnCount();i++)
+//    for (int i =1;i<PersonModel::instance()->backendModel()->columnCount();i++)
 //       m_pCollectionW->header()->setResizeMode(i,QHeaderView::ResizeToContents);
 
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
-   connect(AkonadiContactCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
-//    connect(ContactModel::instance()->backendModel(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
+   connect(AkonadiPersonCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
+//    connect(PersonModel::instance()->backendModel(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
 } //DlgAddressBook
 
 ///Destructor
@@ -71,16 +71,16 @@ DlgAddressBook::~DlgAddressBook()
 ///Reload the widget
 void DlgAddressBook::updateWidgets()
 {
-   AkonadiContactCollectionModel::instance()->reload();
-//    ContactModel::instance()->backendModel()->load();
+   AkonadiPersonCollectionModel::instance()->reload();
+//    PersonModel::instance()->backendModel()->load();
 }
 
 ///Save the settings
 void DlgAddressBook::updateSettings()
 {
    NumberCategoryModel::instance()->save();
-   AkonadiContactCollectionModel::instance()->save();
-//    ContactModel::instance()->backendModel()->save();
+   AkonadiPersonCollectionModel::instance()->save();
+//    PersonModel::instance()->backendModel()->save();
    m_HasChanged = false;
 }
 
@@ -101,7 +101,7 @@ bool DlgAddressBook::hasChanged()
 void DlgAddressBook::slotEditCollection()
 {
 //    const QModelIndex& idx = m_pCollectionW->selectionModel()->currentIndex();
-//    CollectionInterface* backend = ContactModel::instance()->backendModel()->backendAt(idx);
+//    CollectionInterface* backend = PersonModel::instance()->backendModel()->backendAt(idx);
 //    AkonadiBackend* akoBackend = dynamic_cast<AkonadiBackend*>(backend);
 //    if (akoBackend) {
 //       Akonadi::CollectionPropertiesDialog dlg( akoBackend->collection(), this );

@@ -48,7 +48,7 @@ private:
 
    //Actions
    KAction* m_pCallAgain   ;
-   KAction* m_pEditContact ;
+   KAction* m_pEditPerson ;
    KAction* m_pCopy        ;
    KAction* m_pEmail       ;
    KAction* m_pAddPhone    ;
@@ -66,7 +66,7 @@ private Q_SLOTS:
    void addPhone    ();
    void sendEmail   ();
    void copy        ();
-   void editContact ();
+   void editPerson ();
 };
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel

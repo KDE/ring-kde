@@ -35,8 +35,8 @@
 #include <KStandardDirs>
 
 //Ring
-#include <contact.h>
-#include <phonenumber.h>
+#include <person.h>
+#include <contactmethod.h>
 #include <presencestatusmodel.h>
 #include <securityvalidationmodel.h>
 #include <collectioninterface.h>
@@ -57,15 +57,15 @@ const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::call
       ""              ,
       RingIcons::CONFERENCE}};
 
-KDEPixmapManipulation::KDEPixmapManipulation() : QObject(),PixmapManipulationVisitor()
+KDEPixmapManipulation::KDEPixmapManipulation() : QObject(),PixmapManipulationDelegate()
 {
 
 }
 
-///When the Contact is rebased (use a new data source), everything is now invalid
+///When the Person is rebased (use a new data source), everything is now invalid
 void KDEPixmapManipulation::clearCache()
 {
-   Contact* c = qobject_cast<Contact*>(sender());
+   Person* c = qobject_cast<Person*>(sender());
    if (!c) return;
 
    //Hopefully it wont happen often
@@ -75,13 +75,13 @@ void KDEPixmapManipulation::clearCache()
    }
 }
 
-QVariant KDEPixmapManipulation::contactPhoto(Contact* c, const QSize& size, bool displayPresence) {
+QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence) {
    const QString hash = QString("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
    QVariant preRendered = c->property(hash.toAscii());
    if (preRendered.isValid())
       return preRendered;
    else
-      connect(c,SIGNAL(rebased(Contact*)),this,SLOT(clearCache()));
+      connect(c,SIGNAL(rebased(Person*)),this,SLOT(clearCache()));
    const int radius = (size.height() > 35) ? 7 : 5;
    //const QPixmap pxmPtr = qvariant_cast<QPixmap>(c->photo());
    bool isTracked = displayPresence && c->isTracked();
@@ -141,7 +141,7 @@ QVariant KDEPixmapManipulation::contactPhoto(Contact* c, const QSize& size, bool
    return pxm;
 }
 
-QVariant KDEPixmapManipulation::callPhoto(const PhoneNumber* n, const QSize& size, bool displayPresence) {
+QVariant KDEPixmapManipulation::callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence) {
    if (n->contact()) {
       return contactPhoto(n->contact(),size,displayPresence);
    }
@@ -155,8 +155,8 @@ QVariant KDEPixmapManipulation::callPhoto(const PhoneNumber* n, const QSize& siz
 
 QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displayPresence)
 {
-   if (c->peerPhoneNumber()->contact()) {
-      return contactPhoto(c->peerPhoneNumber()->contact(),size,displayPresence);
+   if (c->peerContactMethod()->contact()) {
+      return contactPhoto(c->peerContactMethod()->contact(),size,displayPresence);
    }
    else
       return QPixmap(callStateIcons[c->state()]);

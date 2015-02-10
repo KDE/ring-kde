@@ -36,7 +36,7 @@ class CategorizedTreeView : public QTreeView
 
    enum class ViewType {
       Other,
-      Contact,
+      Person,
       History,
       BookMark,
       Call

@@ -28,10 +28,10 @@
 #include <QtGui/QFont>
 
 //Ring
-#include "contact.h"
+#include "person.h"
 
 //Typedef
-typedef QHash<QString,QHash<QString,QVariant> > ContactHash;
+typedef QHash<QString,QHash<QString,QVariant> > PersonHash;
 
 ///HelperFunctions: little visitor not belonging to libringclient
 ///Ramdom mix of dynamic property and transtypping

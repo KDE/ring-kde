@@ -31,8 +31,8 @@
 #include <KStandardDirs>
 
 //Ring
-#include <contact.h>
-#include <phonenumber.h>
+#include <person.h>
+#include <contactmethod.h>
 #include <presencestatusmodel.h>
 #include <securityvalidationmodel.h>
 #include "klib/kcfg_settings.h"
@@ -57,7 +57,7 @@ QDebug operator<<(QDebug dbg, const Call::Action& c)
    return dbg.space();
 }
 
-ColorVisitor::ColorVisitor(QPalette pal) : m_Pal(pal) {
+ColorDelegate::ColorDelegate(QPalette pal) : m_Pal(pal) {
    m_Green = QColor(m_Pal.color(QPalette::Base));
    if (m_Green.green()+20 >= 255) {
       m_Green.setRed ( ((int)m_Green.red()  -20));
@@ -84,7 +84,7 @@ ColorVisitor::ColorVisitor(QPalette pal) : m_Pal(pal) {
    }
 }
 
-QVariant ColorVisitor::getColor(const Account* a) {
+QVariant ColorDelegate::getColor(const Account* a) {
    if(a->registrationStatus() == Account::State::UNREGISTERED || !a->isEnabled())
       return m_Pal.color(QPalette::Base);
    if(a->registrationStatus() == Account::State::REGISTERED || a->registrationStatus() == Account::State::READY) {
@@ -95,7 +95,7 @@ QVariant ColorVisitor::getColor(const Account* a) {
    return m_Red;
 }
 
-QVariant ColorVisitor::getIcon(const Account* a) {
+QVariant ColorDelegate::getIcon(const Account* a) {
    if (a->state() == Account::EditState::MODIFIED)
       return KIcon("document-save");
    else if (a->state() == Account::EditState::OUTDATED) {
@@ -104,7 +104,7 @@ QVariant ColorVisitor::getIcon(const Account* a) {
    return QVariant();
 }
 
-void KDEPresenceSerializationVisitor::serialize() {
+void KDEPresenceSerializationDelegate::serialize() {
    PresenceStatusModel* m = PresenceStatusModel::instance();
    QStringList list;
    for (int i=0;i<m->rowCount();i++) {
@@ -119,7 +119,7 @@ void KDEPresenceSerializationVisitor::serialize() {
    ConfigurationSkeleton::setPresenceStatusList(list);
 }
 
-void KDEPresenceSerializationVisitor::load() {
+void KDEPresenceSerializationDelegate::load() {
    QStringList list = ConfigurationSkeleton::presenceStatusList();
    PresenceStatusModel* m = PresenceStatusModel::instance();
 
@@ -161,12 +161,12 @@ void KDEPresenceSerializationVisitor::load() {
    }
 }
 
-KDEPresenceSerializationVisitor::~KDEPresenceSerializationVisitor()
+KDEPresenceSerializationDelegate::~KDEPresenceSerializationDelegate()
 {
    
 }
 
-bool KDEPresenceSerializationVisitor::isTracked(CollectionInterface* backend)
+bool KDEPresenceSerializationDelegate::isTracked(CollectionInterface* backend)
 {
    Q_UNUSED(backend)
    if (!m_isLoaded) {
@@ -178,7 +178,7 @@ bool KDEPresenceSerializationVisitor::isTracked(CollectionInterface* backend)
    return m_hTracked[backend->name()];
 }
 
-void KDEPresenceSerializationVisitor::setTracked(CollectionInterface* backend, bool tracked)
+void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, bool tracked)
 {
    if (!m_isLoaded) {
       foreach(const QString& str,ConfigurationSkeleton::presenceAutoTrackedCollections()) {

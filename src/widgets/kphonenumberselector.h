@@ -19,16 +19,16 @@
 #define KPHONENUMBERSELECTOR_H
 
 //Ring
-#include "visitors/phonenumberselector.h"
+#include "delegates/phonenumberselectordelegate.h"
 
-class PhoneNumber;
-class Contact;
+class ContactMethod;
+class Person;
 
-class KPhoneNumberSelector : public PhoneNumberSelector
+class KPhoneNumberSelector : public ContactMethodSelector
 {
 public:
    virtual ~KPhoneNumberSelector(){}
-   virtual PhoneNumber* getNumber(const Contact* contact);
+   virtual ContactMethod* getNumber(const Person* contact);
    static void init();
 };
 

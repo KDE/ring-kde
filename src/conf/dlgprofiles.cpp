@@ -25,7 +25,7 @@
 
 //Ring
 #include "lib/profilemodel.h"
-#include "lib/contactmodel.h"
+#include "lib/personmodel.h"
 
 DlgProfiles::DlgProfiles(QWidget *parent) : QWidget(parent)
 {
@@ -48,7 +48,7 @@ void DlgProfiles::accept()
    qDebug() << "accept";
    if(checkValues()) {
 
-      Contact* profile = new Contact(ProfileModel::instance()->getBackEnd());
+      Person* profile = new Person(ProfileModel::instance()->getBackEnd());
       profile->setUid(QString::number(QDateTime::currentDateTime().currentMSecsSinceEpoch()).toUtf8());
       profile->setFirstName(edit_name->text());
       profile->setFamilyName(edit_lname->text());
@@ -59,7 +59,7 @@ void DlgProfiles::accept()
          profile->setPhoto(QVariant::fromValue(photo));
       }
 
-      Contact::Address* test = new Contact::Address();
+      Person::Address* test = new Person::Address();
       test->addressLine = edit_address_1->text();
       test->city = edit_city->text();
       test->country = edit_country->text();

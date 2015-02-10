@@ -24,7 +24,7 @@
 
 template<typename T> class CollectionMediator;
 
-class PhoneNumber;
+class ContactMethod;
 class QTextStream;
 
 class LIB_EXPORT BookmarkBackend : public CollectionInterface
@@ -37,9 +37,9 @@ public:
    virtual bool load() override;
    virtual bool reload() override;
    virtual bool clear() override;
-//    virtual bool remove(PhoneNumber* number) override;
-//    virtual bool save(const PhoneNumber* number) override;
-//    virtual bool append(const PhoneNumber* number) override;
+//    virtual bool remove(ContactMethod* number) override;
+//    virtual bool save(const ContactMethod* number) override;
+//    virtual bool append(const ContactMethod* number) override;
 
    virtual QString    name     () const override;
    virtual QString    category () const override;
@@ -49,39 +49,39 @@ public:
 
    virtual SupportedFeatures  supportedFeatures() const override;
 
-//    virtual QList<PhoneNumber*> items() const override;
+//    virtual QList<ContactMethod*> items() const override;
 
    ///Edit 'item', the implementation may be a GUI or somehting else
-//    virtual bool edit( PhoneNumber* number) override;
+//    virtual bool edit( ContactMethod* number) override;
 
    ///Add a new item to the backend
-//    virtual bool addNew( PhoneNumber* number) override;
+//    virtual bool addNew( ContactMethod* number) override;
 
 //    ///Add a new phone number to an existing item
-//    virtual bool addPhoneNumber( PhoneNumber* number , PhoneNumber* number );
+//    virtual bool addContactMethod( ContactMethod* number , ContactMethod* number );
 
 private:
    //Attributes
-   QList<PhoneNumber*> m_lNumbers;
-   CollectionMediator<PhoneNumber>*  m_pMediator;
+   QList<ContactMethod*> m_lNumbers;
+   CollectionMediator<ContactMethod>*  m_pMediator;
 
    //Helpers
-   void saveHelper(QTextStream& streamFileOut, const PhoneNumber* number);
+   void saveHelper(QTextStream& streamFileOut, const ContactMethod* number);
 };
 
 
-class BookmarkEditor : public CollectionEditor<PhoneNumber>
+class BookmarkEditor : public CollectionEditor<ContactMethod>
 {
 public:
-   BookmarkEditor(CollectionMediator<PhoneNumber>* m) : CollectionEditor<PhoneNumber>(m) {}
-   virtual bool save       ( const PhoneNumber* item ) override;
-   virtual bool append     ( const PhoneNumber* item ) override;
-   virtual bool remove     ( PhoneNumber*       item ) override;
-   virtual bool edit       ( PhoneNumber*       item ) override;
-   virtual bool addNew     ( PhoneNumber*       item ) override;
+   BookmarkEditor(CollectionMediator<ContactMethod>* m) : CollectionEditor<ContactMethod>(m) {}
+   virtual bool save       ( const ContactMethod* item ) override;
+   virtual bool append     ( const ContactMethod* item ) override;
+   virtual bool remove     ( ContactMethod*       item ) override;
+   virtual bool edit       ( ContactMethod*       item ) override;
+   virtual bool addNew     ( ContactMethod*       item ) override;
 
 private:
-   virtual QVector<PhoneNumber*> items() const override;
+   virtual QVector<ContactMethod*> items() const override;
 };
 
 template<typename T>

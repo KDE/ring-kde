@@ -22,7 +22,7 @@
 #include <KLocale>
 
 //Ring
-#include "phonenumber.h"
+#include "contactmethod.h"
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
 #include <ring.h>
@@ -31,25 +31,25 @@
 void KPhoneNumberSelector::init()
 {
    static KPhoneNumberSelector* v = new KPhoneNumberSelector();
-   setDefaultVisitor(v);
+   setDefaultDelegate(v);
 }
 
-PhoneNumber* KPhoneNumberSelector::getNumber(const Contact* contact)
+ContactMethod* KPhoneNumberSelector::getNumber(const Person* contact)
 {
    if (contact) {
       if (contact->phoneNumbers().size()>1) {
          bool                   ok = false;
          QHash<QString,QString> map       ;
          QStringList            list      ;
-         foreach (PhoneNumber* number, contact->phoneNumbers()) {
+         foreach (ContactMethod* number, contact->phoneNumbers()) {
             map[number->category()->name()+" ("+number->uri()+')'] = number->uri();
             list << number->category()->name()+" ("+number->uri()+')';
          }
          const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,Ring::app());
-         return PhoneDirectoryModel::instance()->getNumber(result);//new PhoneNumber(result,"");
+         return PhoneDirectoryModel::instance()->getNumber(result);//new ContactMethod(result,"");
       }
       else if (contact->phoneNumbers().size() == 1)
          return contact->phoneNumbers()[0];
    }
-   return const_cast<PhoneNumber*>(PhoneNumber::BLANK());
+   return const_cast<ContactMethod*>(ContactMethod::BLANK());
 }

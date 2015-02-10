@@ -49,7 +49,7 @@
 #include <accountmodel.h>
 #include <callmodel.h>
 #include <audio/settings.h>
-#include <contactmodel.h>
+#include <personmodel.h>
 
 
 ActionCollection* ActionCollection::m_spInstance = nullptr;
@@ -65,7 +65,7 @@ action_mailBox(nullptr), action_close(nullptr), action_quit(nullptr), action_dis
 action_displayDialpad(nullptr), action_displayMessageBox(nullptr), action_configureRing(nullptr),
 action_configureShortcut(nullptr), action_pastenumber(nullptr),
 action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBookmarkDock(nullptr),
-action_editToolBar(nullptr), action_addContact(nullptr), action_screen(nullptr)
+action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
 {
    action_accept        = new ExtendedAction(this);
    action_refuse        = new ExtendedAction(this);
@@ -194,13 +194,13 @@ void ActionCollection::setupAction()
    action_displayMessageBox     = new KAction(KIcon("mail-message-new"), i18n("Display text message box")                 , this);
    action_displayVolumeControls = new KAction(KIcon(QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS)), i18n("Display volume controls"), this);
    action_pastenumber           = new KAction(KIcon("edit-paste"), i18n("Paste")                                          , this);
-   action_showContactDock       = new KAction(KIcon("edit-find-user")   , i18n("Display Contact")                         , this);
+   action_showContactDock       = new KAction(KIcon("edit-find-user")   , i18n("Display Person")                         , this);
    action_showHistoryDock       = new KAction(KIcon("view-history")     , i18n("Display history")                         , this);
    action_showBookmarkDock      = new KAction(KIcon("bookmark-new-list"), i18n("Display bookmark")                        , this);
    action_editToolBar           = new KAction(KIcon("configure-toolbars"), i18n("Configure Toolbars")                     , this);
-   action_addContact            = new KAction(KIcon("contact-new"),i18n("Add new contact")                                                     , this);
+   action_addPerson            = new KAction(KIcon("contact-new"),i18n("Add new contact")                                                     , this);
 
-   action_addContact->setShortcut ( Qt::CTRL + Qt::Key_N );
+   action_addPerson->setShortcut ( Qt::CTRL + Qt::Key_N );
 
    action_displayDialpad->setCheckable( true );
    action_displayDialpad->setChecked  ( ConfigurationSkeleton::displayDialpad() );
@@ -249,7 +249,7 @@ void ActionCollection::setupAction()
    /**/connect(action_pastenumber,           SIGNAL(triggered()),           Ring::view() , SLOT(paste())            );
    /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
    /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
-   /**/connect(action_addContact,            SIGNAL(triggered()),           this    , SLOT(slotAddContact())            );
+   /**/connect(action_addPerson,            SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
    /**/connect(MacroModel::instance(),       SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
    /*                                                                                                                   */
 
@@ -276,7 +276,7 @@ void ActionCollection::setupAction()
    Ring::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
    Ring::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
    Ring::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
-   Ring::app()->actionCollection()->addAction("action_addContact"            , action_addContact            );
+   Ring::app()->actionCollection()->addAction("action_addPerson"            , action_addPerson            );
    Ring::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
    Ring::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
@@ -586,15 +586,15 @@ KAction* ActionCollection::quitAction                 ()
 }
 
 
-KAction* ActionCollection::addContact()
+KAction* ActionCollection::addPerson()
 {
-   return action_addContact;
+   return action_addPerson;
 }
 
-void ActionCollection::slotAddContact()
+void ActionCollection::slotAddPerson()
 {
-   Contact* aContact = new Contact();
-   ContactModel::instance()->addNewContact(aContact);
+   Person* aPerson = new Person();
+   PersonModel::instance()->addNewPerson(aPerson);
 }
 
 ///Change icon of the record button

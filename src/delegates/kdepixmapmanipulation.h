@@ -18,19 +18,19 @@
 #ifndef KDEPIXMAPMANIPULATION_H
 #define KDEPIXMAPMANIPULATION_H
 
-#include <visitors/pixmapmanipulationvisitor.h>
+#include <delegates/pixmapmanipulationdelegate.h>
 #include <call.h>
 
-class Contact;
+class Person;
 
 
-class KDEPixmapManipulation : public QObject ,public PixmapManipulationVisitor {
+class KDEPixmapManipulation : public QObject ,public PixmapManipulationDelegate {
    Q_OBJECT
 public:
    KDEPixmapManipulation();
-   QVariant contactPhoto(Contact* c, const QSize& size, bool displayPresence = true);
+   QVariant contactPhoto(Person* c, const QSize& size, bool displayPresence = true);
 
-   virtual QVariant callPhoto(const PhoneNumber* n, const QSize& size, bool displayPresence = true);
+   virtual QVariant callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence = true);
 
    virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
 

@@ -18,8 +18,8 @@
 #ifndef IMPLEMENTATION_H
 #define IMPLEMENTATION_H
 
-#include <visitors/accountlistcolorvisitor.h>
-#include <visitors/presenceserializationvisitor.h>
+#include <delegates/accountlistcolordelegate.h>
+#include <delegates/presenceserializationdelegate.h>
 #include <call.h>
 #include <account.h>
 
@@ -28,9 +28,9 @@
 
 //Implement all client dependant libringclient abstract interfaces
 
-class ColorVisitor : public AccountListColorVisitor {
+class ColorDelegate : public AccountListColorDelegate {
 public:
-   explicit ColorVisitor(QPalette pal);
+   explicit ColorDelegate(QPalette pal);
 
    virtual QVariant getColor(const Account* a);
 
@@ -42,12 +42,12 @@ private:
    QColor   m_Red;
 };
 
-class KDEPresenceSerializationVisitor : public PresenceSerializationVisitor {
+class KDEPresenceSerializationDelegate : public PresenceSerializationDelegate {
 public:
-   KDEPresenceSerializationVisitor():m_isLoaded(false){}
+   KDEPresenceSerializationDelegate():m_isLoaded(false){}
    virtual void serialize() override;
    virtual void load() override;
-   virtual ~KDEPresenceSerializationVisitor();
+   virtual ~KDEPresenceSerializationDelegate();
    virtual bool isTracked(CollectionInterface* backend) override;
    virtual void setTracked(CollectionInterface* backend, bool tracked) override;
 private:

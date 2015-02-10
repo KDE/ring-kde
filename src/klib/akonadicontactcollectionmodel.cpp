@@ -25,21 +25,21 @@
 #include <akonadi/collectionmodel.h>
 
 // Ring
-#include "contactmodel.h"
+#include "personmodel.h"
 #include "akonadibackend.h"
 #include "kcfg_settings.h"
 
-AkonadiContactCollectionModel* AkonadiContactCollectionModel::m_spInstance = nullptr;
+AkonadiPersonCollectionModel* AkonadiPersonCollectionModel::m_spInstance = nullptr;
 
 
-AkonadiContactCollectionModel* AkonadiContactCollectionModel::instance()
+AkonadiPersonCollectionModel* AkonadiPersonCollectionModel::instance()
 {
    if (!m_spInstance)
-      m_spInstance = new AkonadiContactCollectionModel(QCoreApplication::instance());
+      m_spInstance = new AkonadiPersonCollectionModel(QCoreApplication::instance());
    return m_spInstance;
 }
 
-AkonadiContactCollectionModel::AkonadiContactCollectionModel(QObject* parent) : QSortFilterProxyModel(parent) {
+AkonadiPersonCollectionModel::AkonadiPersonCollectionModel(QObject* parent) : QSortFilterProxyModel(parent) {
    m_pParentModel = new Akonadi::CollectionModel(this);
    setSourceModel(m_pParentModel);
    setDynamicSortFilter(true);
@@ -48,25 +48,25 @@ AkonadiContactCollectionModel::AkonadiContactCollectionModel(QObject* parent) : 
    connect(this,SIGNAL(rowsRemoved(QModelIndex,int,int)),this,SLOT(slotRemoveCollection(QModelIndex,int,int)));
 }
 
-AkonadiContactCollectionModel::~AkonadiContactCollectionModel()
+AkonadiPersonCollectionModel::~AkonadiPersonCollectionModel()
 {
    setSourceModel(nullptr);
    delete m_pParentModel;
 }
 
-bool AkonadiContactCollectionModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+bool AkonadiPersonCollectionModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
    const QModelIndex idx = sourceModel()->index(source_row,0,source_parent);
    Akonadi::Collection col = qvariant_cast<Akonadi::Collection>(idx.data(Akonadi::CollectionModel::Roles::CollectionRole));
    return col.contentMimeTypes().indexOf("text/directory") != -1;
 }
 
-Qt::ItemFlags AkonadiContactCollectionModel::flags ( const QModelIndex& index ) const
+Qt::ItemFlags AkonadiPersonCollectionModel::flags ( const QModelIndex& index ) const
 {
    return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable;
 }
 
-QVariant AkonadiContactCollectionModel::data( const QModelIndex& index, int role ) const
+QVariant AkonadiPersonCollectionModel::data( const QModelIndex& index, int role ) const
 {
    if (role == Qt::CheckStateRole) {
       const int id = index.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt();
@@ -75,7 +75,7 @@ QVariant AkonadiContactCollectionModel::data( const QModelIndex& index, int role
    return QSortFilterProxyModel::data(index,role);
 }
 
-bool AkonadiContactCollectionModel::setData( const QModelIndex& index, const QVariant &value, int role)
+bool AkonadiPersonCollectionModel::setData( const QModelIndex& index, const QVariant &value, int role)
 {
    if (role == Qt::CheckStateRole) {
       const int id = index.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt();
@@ -89,7 +89,7 @@ bool AkonadiContactCollectionModel::setData( const QModelIndex& index, const QVa
 }
 
 
-void AkonadiContactCollectionModel::reload()
+void AkonadiPersonCollectionModel::reload()
 {
 //    m_hChecked.clear();
 //    const QList<int> disabled = ConfigurationSkeleton::disabledCollectionList();
@@ -98,18 +98,18 @@ void AkonadiContactCollectionModel::reload()
 //    }
 }
 
-void AkonadiContactCollectionModel::digg(const QModelIndex& idx)
+void AkonadiPersonCollectionModel::digg(const QModelIndex& idx)
 {
    for (int i = 0;i < rowCount(idx);i++) {
       QModelIndex current = index(i,0,idx);
       if (!m_hLoaded[current.data(Akonadi::CollectionModel::Roles::CollectionIdRole).toInt()]) {
-         ContactModel::instance()->addBackend<AkonadiBackend,Akonadi::Collection>(qvariant_cast<Akonadi::Collection>(index(i,0,idx).data(Akonadi::CollectionModel::Roles::CollectionRole)));
+         PersonModel::instance()->addBackend<AkonadiBackend,Akonadi::Collection>(qvariant_cast<Akonadi::Collection>(index(i,0,idx).data(Akonadi::CollectionModel::Roles::CollectionRole)));
       }
       digg(current);
    }
 }
 
-void AkonadiContactCollectionModel::save()
+void AkonadiPersonCollectionModel::save()
 {
 //    QList<int> ret;
 //    for (QHash<int,bool>::iterator i = m_hChecked.begin(); i != m_hChecked.end(); ++i) {
@@ -121,17 +121,17 @@ void AkonadiContactCollectionModel::save()
 }
 
 
-void AkonadiContactCollectionModel::slotInsertCollection(const QModelIndex& parentIdx, int start, int end)
+void AkonadiPersonCollectionModel::slotInsertCollection(const QModelIndex& parentIdx, int start, int end)
 {
    for (int i =start; i <= end;i++) {
       Akonadi::Collection col = qvariant_cast<Akonadi::Collection>(index(i,0,parentIdx).data(Akonadi::CollectionModel::Roles::CollectionRole));
 
-      ContactModel::instance()->addBackend<AkonadiBackend,Akonadi::Collection&>(col);
+      PersonModel::instance()->addBackend<AkonadiBackend,Akonadi::Collection&>(col);
       m_hLoaded[col.id()] = !m_hChecked[col.id()];
    }
 }
 
-void AkonadiContactCollectionModel::slotRemoveCollection(const QModelIndex& index , int start, int end)
+void AkonadiPersonCollectionModel::slotRemoveCollection(const QModelIndex& index , int start, int end)
 {
    Q_UNUSED(index)
    Q_UNUSED(start)
