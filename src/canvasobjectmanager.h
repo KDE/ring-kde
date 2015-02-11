@@ -18,8 +18,8 @@
 #ifndef CANVASOBJECTMANAGER_H
 #define CANVASOBJECTMANAGER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QAbstractAnimation>
+#include <QObject>
+#include <QAbstractAnimation>
 
 //Qt
 class QTimer;

@@ -18,7 +18,7 @@
 #ifndef DIALPADDELEGATE_H
 #define DIALPADDELEGATE_H
 
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 class QPainter;
 class QTimer;

@@ -21,8 +21,8 @@
 #include <klib/tip.h>
 
 //Qt
-#include <QtGui/QWidget>
-#include <QtCore/QTimer>
+#include <QtWidgets/QWidget>
+#include <QTimer>
 
 
 //Qt

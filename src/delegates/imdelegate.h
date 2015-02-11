@@ -19,8 +19,8 @@
 #ifndef IMDELEGATES_H
 #define IMDELEGATES_H
 
-#include <QtGui/QListView>
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QStyledItemDelegate>
 
 class InstantMessagingModel;
 class IMTab;

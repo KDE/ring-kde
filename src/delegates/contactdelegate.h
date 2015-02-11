@@ -18,9 +18,8 @@
 #ifndef CONTACTDELEGATE_H
 #define CONTACTDELEGATE_H
 
-#include <QtGui/QStyledItemDelegate>
-#include <QtGui/QProxyStyle>
-#include <QtCore/QDebug>
+#include <QtWidgets/QStyledItemDelegate>
+#include <QtWidgets/QProxyStyle>
 
 class DelegateDropOverlay;
 class ContactMethodDelegate;

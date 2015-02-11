@@ -18,17 +18,18 @@
 #include "conferencedelegate.h"
 
 //Qt
-#include <QtCore/QSize>
+#include <QSize>
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QGraphicsEffect>
-#include <QtGui/QGraphicsOpacityEffect>
-#include <QtGui/QApplication>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QGraphicsEffect>
+#include <QtWidgets/QGraphicsOpacityEffect>
+#include <QtWidgets/QApplication>
 
 //KDE
-#include <KStandardDirs>
-#include <KLineEdit>
+
+#include <QLineEdit>
+#include <QStandardPaths>
 
 //Ring
 #include "../widgets/categorizedtreeview.h"
@@ -37,8 +38,8 @@
 
 ///Constructor
 ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget,QPalette pal)
-      : QStyledItemDelegate(widget) , m_tree(widget) , m_Pal(pal),
-      m_LeftMargin(7),m_RightMargin(7),m_pCallDelegate(nullptr)
+      : QStyledItemDelegate(widget) , m_tree(widget) , m_LeftMargin(7),
+      m_RightMargin(7),m_Pal(pal),m_pCallDelegate(nullptr)
 {
 }
 
@@ -131,7 +132,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       //Draw the conference icon and info
       static const QPixmap* pxm = nullptr;
       if (!pxm) //Static
-         pxm = new QPixmap(KStandardDirs::locate("data","ring-kde/conf-small.png"));
+         pxm = new QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/conf-small.png"));
       painter->drawPixmap ( opt.rect.x()+5, opt.rect.y()+2, 24, 24, *pxm);
       QFont font = painter->font();
       font.setBold(true);
@@ -470,7 +471,7 @@ QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QMo
 QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
    Q_UNUSED(option)
-   KLineEdit* ed = new KLineEdit(parent);
+   QLineEdit* ed = new QLineEdit(parent);
    ed->setStyleSheet(QString("QLineEdit { background-color:transparent;border:0px;color:white;font-weight:bold;padding-left:%1 }").arg(option.rect.height()));
    ed->setAutoFillBackground(false);
    ed->setProperty("call",index.data(Call::Role::Object));
@@ -484,7 +485,7 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
 ///Update line edit text when in dialing mode
 void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & index ) const
 {
-   KLineEdit* ed = qobject_cast<KLineEdit*>(editor);
+   QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
    if (ed) {
       const QString text = index.data(Qt::EditRole).toString();
       //If the text was typed while the editor has focus, ed->text() == text
@@ -499,7 +500,7 @@ void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & ind
 ///Update call ContactMethod when leaving edit mode
 void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
 {
-   KLineEdit* ed = qobject_cast<KLineEdit*>(editor);
+   QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
    if (index.data(Call::Role::CallState) != static_cast<int>(Call::State::DIALING)) {
       ed->setVisible(false);
       emit const_cast<ConferenceDelegate*>(this)->closeEditor(editor,NoHint);
@@ -509,17 +510,17 @@ void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * mod
       model->setData(index,ed->text(),Qt::EditRole);
 }
 
-///Intercept KLineEdit show() call, to deselect the text (as it is selected automagically)
+///Intercept QLineEdit show() call, to deselect the text (as it is selected automagically)
 bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
 {
    Q_UNUSED(obj)
    if (event->type() == QEvent::Show) {
-      KLineEdit* ed = qobject_cast<KLineEdit*>(obj);
+      QLineEdit* ed = qobject_cast<QLineEdit*>(obj);
       if (ed)
          ed->deselect();
    }
    else if (event->type() == QEvent::MouseButtonDblClick || event->type() == QEvent::MouseButtonPress) {
-      KLineEdit* ed = qobject_cast<KLineEdit*>(obj);
+      QLineEdit* ed = qobject_cast<QLineEdit*>(obj);
       if (ed) {
          QObject* obj= qvariant_cast<Call*>(ed->property("call"));
          Call* call  = nullptr;
@@ -539,7 +540,7 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
 ///Update the model text as soon as
 void ConferenceDelegate::slotTextChanged(const QString& text)
 {
-   KLineEdit* ed = qobject_cast<KLineEdit*>(QObject::sender());
+   QLineEdit* ed = qobject_cast<QLineEdit*>(QObject::sender());
    if (ed) {
       ed->deselect();
       QObject* obj= qvariant_cast<Call*>(ed->property("call"));
@@ -566,7 +567,7 @@ void ConferenceDelegate::slotTextChanged(const QString& text)
 
 void ConferenceDelegate::slotReturnPressed()
 {
-   KLineEdit* ed = qobject_cast<KLineEdit*>(QObject::sender());
+   QLineEdit* ed = qobject_cast<QLineEdit*>(QObject::sender());
    if (ed) {
       emit closeEditor(ed);
    }

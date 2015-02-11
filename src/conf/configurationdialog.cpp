@@ -19,10 +19,11 @@
 #include "configurationdialog.h"
 
 //KDE
-#include <KDebug>
-#include <KLocale>
-#include <KStandardDirs>
+#include <QDebug>
+#include <klocalizedstring.h>
+
 #include <KConfigDialogManager>
+#include <QStandardPaths>
 
 #include "klib/kcfg_settings.h"
 
@@ -97,10 +98,10 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    //Usually, this is done automatically by KConfig, but for performance
    //there is too many widgets and too many dbus calls to do it all at once
    m_pManager = new KConfigDialogManager(this, ConfigurationSkeleton::self());
-   connect(this, SIGNAL(okClicked()), m_pManager, SLOT(updateSettings()));
-   connect(this, SIGNAL(applyClicked()), m_pManager, SLOT(updateSettings()));
-   connect(this, SIGNAL(cancelClicked()), m_pManager, SLOT(updateWidgets()));
-   connect(this, SIGNAL(defaultClicked()), m_pManager, SLOT(updateWidgetsDefault()));
+   connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked()), m_pManager, SLOT(updateSettings()));
+   connect(buttonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), m_pManager, SLOT(updateSettings()));
+   connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), m_pManager, SLOT(updateWidgets()));
+   connect(buttonBox()->button(QDialogButtonBox::RestoreDefaults), SIGNAL(clicked()), m_pManager, SLOT(updateWidgetsDefault()));
 
    connect(m_pManager, SIGNAL(settingsChanged()), this, SLOT(updateButtons()));
    connect(m_pManager, SIGNAL(widgetModified()), this, SLOT(updateButtons()));
@@ -188,7 +189,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgPresence);
       return dialog->dlgPresence;
    });
-   m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , KStandardDirs::locate("data" , "ring-kde/presence-icon.svg"));
+   m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/presence-icon.svg"));
    m_pPresPage->setProperty("id",ConfigurationDialog::Page::Presence);
    m_pPresPage->setEnabled(AccountModel::instance()->isPresencePublishSupported() && AccountModel::instance()->isPresenceEnabled());
    connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
@@ -198,9 +199,9 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       if (dlgHolder[i])
          connect(this,SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)),dlgHolder[i],SLOT(display(KPageWidgetItem*)));
 
-   connect(this, SIGNAL(applyClicked()) , this, SLOT(applyCustomSettings()));
-   connect(this, SIGNAL(okClicked())    , this, SLOT(applyCustomSettings()));
-   connect(this, SIGNAL(cancelClicked()), this, SLOT(cancelSettings())     );
+   connect(buttonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()) , this, SLOT(applyCustomSettings()));
+   connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked())    , this, SLOT(applyCustomSettings()));
+   connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(cancelSettings())     );
 
    setMinimumSize(1024,600);
 
@@ -288,15 +289,15 @@ void ConfigurationDialog::updateButtons()
 {
    bool changed      = hasChanged() || m_pManager->hasChanged();
    bool preventApply = hasIncompleteRequiredFields();
-   enableButtonApply( changed && (!preventApply) );
-   enableButtonOk   ( !preventApply              );
+   buttonBox()->button(QDialogButtonBox::Apply)->setEnabled( changed && (!preventApply) );
+   buttonBox()->button(QDialogButtonBox::Ok)->setEnabled   ( !preventApply              );
 }
 
 ///Apply settings
 void ConfigurationDialog::applyCustomSettings()
 {
    if(hasChanged()) {
-          ConfigurationSkeleton::self()->writeConfig();
+//           ConfigurationSkeleton::self()->writeConfig();
    }
    updateSettings();
    updateWidgets ();
@@ -307,8 +308,8 @@ void ConfigurationDialog::applyCustomSettings()
 ///Reload the pages
 void ConfigurationDialog::reload()
 {
-   kDebug() << "Reloading config";
-   ConfigurationSkeleton::self()->readConfig();
+   qDebug() << "Reloading config";
+//    ConfigurationSkeleton::self()->readConfig();
    updateWidgets();
    updateButtons();
 }

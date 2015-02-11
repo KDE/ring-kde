@@ -21,19 +21,18 @@
 #include "systray.h"
 
 //Qt
-#include <QtGui/QMenu>
+#include <QtWidgets/QMenu>
 #include <QtGui/QIcon>
 
 //KDE
-#include <KDebug>
-#include <KAction>
+#include <QAction>
 
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
-      : KSystemTrayIcon(icon, parent),
+      : QSystemTrayIcon(icon, parent),
          m_pTrayIconMenu(0)
 {
-   m_pTrayIconMenu = new QMenu(parentWidget());
+   m_pTrayIconMenu = new QMenu(/*parentWidget()*/);
    setContextMenu(m_pTrayIconMenu);
 }
 
@@ -51,7 +50,7 @@ SysTray::~SysTray()
  ****************************************************************************/
 
 ///Add a new action
-void SysTray::addAction(KAction *action)
+void SysTray::addAction(QAction *action)
 {
    m_pTrayIconMenu->addAction(action);
 }

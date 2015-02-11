@@ -18,7 +18,7 @@
 #ifndef AUTOCOMPLETIONDELEGATE_H
 #define AUTOCOMPLETIONDELEGATE_H
 
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 class AutoCompletionDelegate : public QStyledItemDelegate
 {

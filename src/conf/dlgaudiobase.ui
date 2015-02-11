@@ -37,7 +37,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="KComboBox" name="m_pManager"/>
+       <widget class="QComboBox" name="m_pManager"/>
       </item>
      </layout>
     </widget>
@@ -84,7 +84,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="KComboBox" name="box_alsaPlugin">
+           <widget class="QComboBox" name="box_alsaPlugin">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -101,7 +101,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="KComboBox" name="alsaInputDevice">
+           <widget class="QComboBox" name="alsaInputDevice">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -118,7 +118,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="KComboBox" name="alsaOutputDevice">
+           <widget class="QComboBox" name="alsaOutputDevice">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -132,7 +132,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="KComboBox" name="alsaRingtoneDevice"/>
+           <widget class="QComboBox" name="alsaRingtoneDevice"/>
           </item>
          </layout>
         </widget>
@@ -190,7 +190,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="clickMessage">
+        <property name="placeholderText">
          <string>Destination folder</string>
         </property>
        </widget>
@@ -251,11 +251,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
   <customwidget>
    <class>KUrlRequester</class>
    <extends>QFrame</extends>

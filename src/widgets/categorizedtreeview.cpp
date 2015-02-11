@@ -17,15 +17,16 @@
 #include "categorizedtreeview.h"
 
 //Qt
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 #include <QtGui/QPainter>
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QBrush>
+#include <QtGui/QDrag>
+#include <QtCore/QMimeData>
 #include <QEvent>
 
 //KDE
-#include <klocale.h>
-#include <kdebug.h>
+#include <KLocalizedString>
 
 //Ring
 #include <delegates/conferencedelegate.h>

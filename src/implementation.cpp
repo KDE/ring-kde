@@ -18,17 +18,17 @@
 #include "implementation.h"
 
 //Qt
-#include <QtCore/QDebug>
+#include <QDebug>
 #include <QtGui/QColor>
 #include <QtGui/QPainter>
 #include <QtGui/QBitmap>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 //KDE
-#include <KIcon>
+#include <QIcon>
 #include <KColorScheme>
-#include <KLocale>
-#include <KStandardDirs>
+#include <klocalizedstring.h>
+
 
 //Ring
 #include <person.h>
@@ -97,9 +97,9 @@ QVariant ColorDelegate::getColor(const Account* a) {
 
 QVariant ColorDelegate::getIcon(const Account* a) {
    if (a->state() == Account::EditState::MODIFIED)
-      return KIcon("document-save");
+      return QIcon::fromTheme("document-save");
    else if (a->state() == Account::EditState::OUTDATED) {
-      return KIcon("view-refresh");
+      return QIcon::fromTheme("view-refresh");
    }
    return QVariant();
 }

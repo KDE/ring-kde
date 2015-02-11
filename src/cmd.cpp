@@ -17,15 +17,19 @@
  **************************************************************************/
 #include "cmd.h"
 
+//Qt
+#include <QApplication>
+
 //KDE
-#include <KCmdLineArgs>
-#include <KUniqueApplication>
-#include <KLocale>
+#include <KAboutData>
+#include <klocalizedstring.h>
 
 //Ring
 #include <call.h>
 #include <callmodel.h>
 #include <ring.h>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 //Static definition
 Cmd* Cmd::m_spSelf = nullptr;
@@ -46,16 +50,23 @@ Cmd* Cmd::instance() {
 ///Setup command line options before passing them to the KUniqueApplication
 void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 {
-      KCmdLineArgs::init(argc, argv, &about);
-      KCmdLineOptions options;
-      options.add("place-call <number>", ki18n("Place a call to a given number"                                        ),"");
-      options.add("send-text <number>" , ki18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"),"");
-      options.add("message <content>"  , ki18n("Used in combination with --send-text"                                   ),"");
-      KCmdLineArgs::addCmdLineOptions(options);
+   QApplication app(argc, argv);
+   QCommandLineParser parser;
+   KAboutData::setApplicationData(about);
+   parser.addVersionOption();
+   parser.addHelpOption();
+   //PORTING SCRIPT: adapt aboutdata variable if necessary
+   about.setupCommandLine(&parser);
+   parser.process(app);
+   about.processCommandLine(&parser);
 
-      KCmdLineArgs::parsedArgs();
+   parser.addOption(QCommandLineOption(QStringList() << QLatin1String("call"), i18n("Place a call to a given number"                                        ), QLatin1String("number"), QLatin1String("")));
+   parser.addOption(QCommandLineOption(QStringList() << QLatin1String("text"), i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number"), QLatin1String("")));
+   parser.addOption(QCommandLineOption(QStringList() << QLatin1String("message"), i18n("Used in combination with --send-text"                                   ), QLatin1String("content"), QLatin1String("")));
 
-      KUniqueApplication::addCmdLineOptions();
+//    QCommandLineParser::parsedArgs();
+
+//    KUniqueApplication::addCmdLineOptions();
 }
 
 ///Place a call (from the command line)

@@ -25,12 +25,12 @@
 #include <signal.h>
 
 //Qt
-#include <QtCore/QString>
+#include <QString>
 
 //KDE
-#include <KDebug>
+#include <QDebug>
 #include <kaboutdata.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kde_file.h>
 
 //Ring
@@ -53,26 +53,37 @@ int main(int argc, char **argv)
 {
    try
    {
-      KLocale::setMainCatalog("ring-kde");
 
-      KAboutData about(
+      KAboutData about(QStringLiteral("ring-kde"),
+         i18n("ring-kde"),
+         /*QStringLiteral(*/version/*)*/,
+         i18n("KWrite - Text Editor"),
+         KAboutLicense::GPL_V3,
+         i18n("(C) 2009-2015 Savoir-faire Linux"),
+         QString(),
+         QStringLiteral("http://www.ring.cx"),
+         QStringLiteral("sflphone@lists.savoirfairelinux.net")
+      );
+
+
+      /*KAboutData about(
          "ring-kde"                                         ,
          "ring-kde"                                         ,
-         ki18n("Ring-KDE")                                  ,
+         i18n("Ring-KDE")                                  ,
          version                                            ,
-         ki18n("An enterprise grade KDE SIP and IAX phone") ,
-         KAboutData::License_GPL_V3                         ,
-         ki18n("(C) 2009-2015 Savoir-faire Linux")          ,
+         i18n("An enterprise grade KDE SIP and IAX phone") ,
+         KAboutLicense::GPL_V3                         ,
+         i18n("(C) 2009-2015 Savoir-faire Linux")          ,
          KLocalizedString()                                 ,
          "http://www.ring.cx"                               ,
          "sflphone@lists.savoirfairelinux.net"
-      );
-      about.addAuthor( ki18n( "Emmanuel Lepage Vallée" ), KLocalizedString(), "emmanuel.lepage@savoirfairelinux.com" );
-      about.addCredit( ki18n( "Jérémy Quentin"         ), KLocalizedString(), "jeremy.quentin@savoirfairelinux.com"  );
+      );*/
+      about.addAuthor( i18n( "Emmanuel Lepage Vallée" ), QString(), "emmanuel.lepage@savoirfairelinux.com" );
+      about.addCredit( i18n( "Jérémy Quentin"         ), QString(), "jeremy.quentin@savoirfairelinux.com"  );
 
       Cmd::parseCmd(argc,argv,about);
 
-      app = new RingApplication();
+      app = new RingApplication(argc, argv);
 
       //dbus configuration
       CallModel::instance();
@@ -80,19 +91,19 @@ int main(int argc, char **argv)
       KDE_signal(SIGINT  , quitOnSignal);
       KDE_signal(SIGTERM , quitOnSignal);
 
-      int retVal = app->exec();
+      const int retVal = app->exec();
 
-      ConfigurationSkeleton::self()->writeConfig();
+      /*ConfigurationSkeleton::self()->writeConfig();*/
 
       delete app;
       return retVal;
    }
    catch(const char * msg)
    {
-      kDebug() << msg;
+      qDebug() << msg;
    }
    catch(QString& msg)
    {
-      kDebug() << msg;
+      qDebug() << msg;
    }
 }

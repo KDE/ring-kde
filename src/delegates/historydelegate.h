@@ -18,7 +18,7 @@
 #ifndef HISTORYDELEGATE_H
 #define HISTORYDELEGATE_H
 
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 #include "delegatedropoverlay.h"
 
 class QTreeView;

@@ -22,20 +22,20 @@
 #include <QtGui/QPainter>
 #include <QtGui/QBrush>
 #include <QtGui/QPen>
-#include <QtGui/QScrollBar>
+#include <QtWidgets/QScrollBar>
 #include <QtSvg/QSvgRenderer>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QStyle>
-#include <KDebug> //TODO remove
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QStyle>
+#include <QDebug> //TODO remove
 
 //KDE
-#include <KStandardDirs>
-#include <KIcon>
+
 
 //Ring
 #include "ring.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
+#include <QStandardPaths>
 
 ///Button constructor
 ObserverToolButton::ObserverToolButton(QWidget* parent) : QToolButton(parent)
@@ -56,8 +56,8 @@ OverlayToolbar::OverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender
    pal.setColor(QPalette::Button    ,Qt::transparent);
    setPalette(pal);
    setAutoFillBackground(false);
-   m_pRightRender = new QSvgRenderer( KStandardDirs::locate("data","ring-kde/overlay_right_corner.svg") );
-   m_pLeftRender  = new QSvgRenderer( KStandardDirs::locate("data","ring-kde/overlay_left_corner.svg" ) );
+   m_pRightRender = new QSvgRenderer( QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/overlay_right_corner.svg") );
+   m_pLeftRender  = new QSvgRenderer( QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/overlay_left_corner.svg" ) );
 
    setMinimumSize(100,56);
    if (parent)

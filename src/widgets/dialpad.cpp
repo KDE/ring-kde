@@ -21,8 +21,8 @@
 #include "dialpad.h"
 
 //Qt
-#include <QtGui/QLabel>
-#include <QtGui/QGridLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QGridLayout>
 #include <QtGui/QFontMetrics>
 
 const char* Dialpad::m_pNumbers[] =
@@ -48,9 +48,13 @@ Dialpad::Dialpad(QWidget *parent)
       static QFontMetrics metric(m_pButtons[i]->font());
       m_pButtons[i]->setMinimumHeight((30 > metric.height()+6)?30:metric.height()+6);
       gridLayout->addWidget( m_pButtons[i],i/3,i%3              );
-      number->setFont      ( QFont(QString(), m_NumberSize)            );
+      QFont font = number->font();
+      font.setPointSize(m_NumberSize);
+      number->setFont      ( font );
       number->setAlignment ( Qt::AlignRight | Qt::AlignVCenter  );
-      text->setFont        ( QFont(QString(), m_TextSize)              );
+      font = text->font();
+      font.setPointSize(m_TextSize);
+      text->setFont        ( font );
       layout->setSpacing        ( m_Spacing );
       layout->addWidget         ( number    );
       layout->addWidget         ( text      );

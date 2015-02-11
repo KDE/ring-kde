@@ -22,8 +22,9 @@
 #include <QtGui/QPainter>
 
 //KDE
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
+
 
 ///Constructor
 RemoveConferenceTip::RemoveConferenceTip(QWidget* parent) : Tip(i18n("Remove the call from the conference, the call will be put on hold"),parent)
@@ -33,7 +34,7 @@ RemoveConferenceTip::RemoveConferenceTip(QWidget* parent) : Tip(i18n("Remove the
    setHasBackground(false);
    setHasText(false);
    m_Padding = 0;
-   loadSvg(KStandardDirs::locate("data", "ring-kde/tips/removeconference.svg"));
+   loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/removeconference.svg"));
 }
 
 ///Destructor

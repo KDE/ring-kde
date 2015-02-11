@@ -65,7 +65,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KLineEdit" name="kcfg_hooksSIPHeader">
+          <widget class="QLineEdit" name="kcfg_hooksSIPHeader">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -110,7 +110,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KLineEdit" name="kcfg_hooksCommand">
+          <widget class="QLineEdit" name="kcfg_hooksCommand">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -161,7 +161,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KLineEdit" name="kcfg_prepend">
+          <widget class="QLineEdit" name="kcfg_prepend">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -191,13 +191,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

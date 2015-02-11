@@ -18,21 +18,21 @@
 #include "callviewoverlay.h"
 
 //Qt
-#include <QtCore/QTimer>
-#include <QtCore/QEvent>
+#include <QTimer>
+#include <QEvent>
 #include <QtGui/QPainter>
-#include <QtGui/QGraphicsBlurEffect>
-#include <QtGui/QGraphicsOpacityEffect>
-#include <QtGui/QGroupBox>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
+#include <QtWidgets/QGraphicsBlurEffect>
+#include <QtWidgets/QGraphicsOpacityEffect>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 
 //KDE
-#include <KPushButton>
-#include <KLineEdit>
-#include <KLocale>
-#include <KStandardDirs>
+#include <QPushButton>
+#include <klocalizedstring.h>
+#include <QStandardPaths>
+
 
 //Ring 
 #include "../accessibility.h"
@@ -125,7 +125,7 @@ void CallViewOverlay::paintEvent(QPaintEvent* event) {
    Q_UNUSED(event)
    QPainter customPainter(this);
    customPainter.fillRect(rect(),m_black);
-   customPainter.drawPixmap(rect().width()-125-10,rect().height()-50-10,QPixmap(KStandardDirs::locate("data" , "ring-kde/transferarrow.png")));
+   customPainter.drawPixmap(rect().width()-125-10,rect().height()-50-10,QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transferarrow.png")));
 }
 
 ///Be sure the event is always the right size
@@ -177,7 +177,7 @@ void CallViewOverlay::slotLayoutChanged()
    if (CallModel::instance()->getActiveCalls().size()-1 > 0) {
       foreach(Call* call, CallModel::instance()->getActiveCalls()) {
          if (call != m_pCurrentCall) {
-            KPushButton* btn = new KPushButton(call->roleData(Qt::DisplayRole).toString(),this);
+            QPushButton* btn = new QPushButton(call->roleData(Qt::DisplayRole).toString(),this);
             btn->setStyleSheet(m_pTransferB->styleSheet());
             m_pAttTransferGB->layout()->addWidget(btn);
             btn->setProperty("callId",call->id());

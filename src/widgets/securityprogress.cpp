@@ -20,18 +20,17 @@
 //Qt
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QLinearGradient>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QToolButton>
-#include <QtGui/QListView>
-#include <QtGui/QLineEdit>
-#include <QtCore/QDebug>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QLineEdit>
 
 //KDE
-#include <KLocale>
-#include <KIcon>
+#include <klocalizedstring.h>
+#include <QIcon>
 
 class SecurityProgress : public QProgressBar
 {
@@ -170,10 +169,10 @@ SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pM
    m_pIssueL   = new QLabel(this);
    m_pErrorL   = new QLabel(this);
 
-   infoIcon->   setPixmap(KIcon("dialog-information").pixmap(QSize(16,16)));
-   warningIcon->setPixmap(KIcon("dialog-warning"    ).pixmap(QSize(16,16)));
-   issueIcon->  setPixmap(KIcon("task-attempt"      ).pixmap(QSize(16,16)));
-   errorIcon->  setPixmap(KIcon("dialog-error"      ).pixmap(QSize(16,16)));
+   infoIcon->   setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(16,16)));
+   warningIcon->setPixmap(QIcon::fromTheme("dialog-warning"    ).pixmap(QSize(16,16)));
+   issueIcon->  setPixmap(QIcon::fromTheme("task-attempt"      ).pixmap(QSize(16,16)));
+   errorIcon->  setPixmap(QIcon::fromTheme("dialog-error"      ).pixmap(QSize(16,16)));
 
    m_pInfoL   ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred));
    m_pWarningL->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred));
@@ -313,17 +312,17 @@ void IssuesIcon::addFlaw(const Flaw* flaw)
    IssueButton* btn = new IssueButton(flaw,this);
    switch (flaw->severity()) {
       case SecurityValidationModel::Severity::INFORMATION:
-         btn->setIcon(KIcon("dialog-information"));
+         btn->setIcon(QIcon::fromTheme("dialog-information"));
          break;
       case SecurityValidationModel::Severity::WARNING:
       case SecurityValidationModel::Severity::FATAL_WARNING:
-         btn->setIcon(KIcon("dialog-warning"));
+         btn->setIcon(QIcon::fromTheme("dialog-warning"));
          break;
       case SecurityValidationModel::Severity::ISSUE:
-         btn->setIcon(KIcon("task-attempt"));
+         btn->setIcon(QIcon::fromTheme("task-attempt"));
          break;
       case SecurityValidationModel::Severity::ERROR:
-         btn->setIcon(KIcon("dialog-error"));
+         btn->setIcon(QIcon::fromTheme("dialog-error"));
          break;
    };
 

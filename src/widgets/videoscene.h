@@ -17,7 +17,7 @@
 #ifndef VIDEOSCENE_H
 #define VIDEOSCENE_H
 
-#include <QtGui/QGraphicsScene>
+#include <QtWidgets/QGraphicsScene>
 
 //Ring
 class VideoGLFrame;

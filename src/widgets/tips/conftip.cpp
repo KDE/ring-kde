@@ -21,12 +21,11 @@
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#include <QtCore/QFile>
 
 //KDE
-#include <KDebug>
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
+
 
 ///Constructor
 ConfTip::ConfTip(QWidget* parent) : Tip(i18n("Do you know you can create conferences or transfer the call by drag and dropping one call on an other one?"),parent),
@@ -35,8 +34,8 @@ m_pDnDR(nullptr),m_pDnDPix(nullptr)
    m_Position = TipPosition::Top;
    setAnimationIn(Tip::TipAnimation::TranslationBottom);
    setAnimationOut(Tip::TipAnimation::TranslationBottom);
-   m_DragAndDrop = loadSvg(KStandardDirs::locate("data", "ring-kde/tips/dragAndDrop.svg"));
-   loadSvg(KStandardDirs::locate("data", "ring-kde/tips/upArrow.svg"));
+   m_DragAndDrop = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/dragAndDrop.svg"));
+   loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/upArrow.svg"));
 }
 
 ///Destructor

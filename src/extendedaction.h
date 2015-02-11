@@ -17,24 +17,24 @@
  **************************************************************************/
 #ifndef EXTENDED_ACTION_H
 #define EXTENDED_ACTION_H
-#include <KAction>
+#include <QAction>
 
 //KDE
-class KIcon;
+class QIcon;
 
-class ExtendedAction : public KAction
+class ExtendedAction : public QAction
 {
    Q_OBJECT
 public:
    explicit ExtendedAction(QObject* parent = nullptr);
    virtual ~ExtendedAction();
 
-   const KIcon& altIcon();
+   const QIcon& altIcon();
    void setAltIcon(const QString &path);
-   void setAltIcon(const KIcon &icon);
+   void setAltIcon(const QIcon &icon);
 
 private:
-   KIcon* m_pIcon;
+   QIcon m_Icon;
 
 public Q_SLOTS:
    void setText(const QString&);

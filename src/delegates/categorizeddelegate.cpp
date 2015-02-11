@@ -18,10 +18,9 @@
 #include "categorizeddelegate.h"
 
 //Qt
-#include <QtGui/QTreeView>
+#include <QtWidgets/QTreeView>
 #include <QtGui/QPainter>
-#include <QtGui/QApplication>
-#include <QtCore/QDebug>
+#include <QtWidgets/QApplication>
 
 namespace {
    static const int TOP_MARGIN       = 20;

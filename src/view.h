@@ -20,7 +20,7 @@
 #define VIEW_H
 
 #include "ui_View_base.h"
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 //Qt
 class QString;

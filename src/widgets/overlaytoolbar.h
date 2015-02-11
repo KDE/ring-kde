@@ -19,12 +19,12 @@
 #define OVERLAYTOOLBAR_H
 
 //Qt
-#include <QtGui/QToolButton>
-#include <QtGui/QItemSelectionModel>
+#include <QtWidgets/QToolButton>
+#include <QtCore/QItemSelectionModel>
 
 //Base
-#include <QtGui/QWidget>
-#include <QtCore/QHash>
+#include <QtWidgets/QWidget>
+#include <QHash>
 
 //Qt
 class QSvgRenderer;

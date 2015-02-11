@@ -19,21 +19,20 @@
 #include "dlgaccounts.h"
 
 //Qt
-#include <QtCore/QString>
+#include <QString>
 #include <qglobal.h>
-#include <QtGui/QTableWidget>
-#include <QtGui/QListWidgetItem>
-#include <QtGui/QWidget>
-#include <QtGui/QDialog>
-#include <QtCore/QDebug>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QListWidgetItem>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QDialog>
+#include <QDebug>
 
 //KDE
 #include <KConfigDialog>
-#include <KStandardDirs>
-#include <KInputDialog>
-#include <KLocale>
-#include <KIcon>
-#include <KMessageBox>
+#include <KLineEdit>
+#include <klocalizedstring.h>
+#include <QIcon>
+#include <kmessagebox.h>
 #include <KColorScheme>
 
 //Ring
@@ -73,16 +72,16 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 {
    m_IsLoading++;
    setupUi(this);
-   button_accountUp->setIcon         ( KIcon( "go-up"       ) );
-   button_accountDown->setIcon       ( KIcon( "go-down"     ) );
-   m_pVCodecUpPB->setIcon            ( KIcon( "go-up"       ) );
-   m_pVCodecDownPB->setIcon          ( KIcon( "go-down"     ) );
-   button_accountAdd->setIcon        ( KIcon( "list-add"    ) );
-   button_accountRemove->setIcon     ( KIcon( "list-remove" ) );
-   button_add_credential->setIcon    ( KIcon( "list-add"    ) );
-   button_remove_credential->setIcon ( KIcon( "list-remove" ) );
-   button_audiocodecUp->setIcon      ( KIcon( "go-up"       ) );
-   button_audiocodecDown->setIcon    ( KIcon( "go-down"     ) );
+   button_accountUp->setIcon         ( QIcon::fromTheme( "go-up"       ) );
+   button_accountDown->setIcon       ( QIcon::fromTheme( "go-down"     ) );
+   m_pVCodecUpPB->setIcon            ( QIcon::fromTheme( "go-up"       ) );
+   m_pVCodecDownPB->setIcon          ( QIcon::fromTheme( "go-down"     ) );
+   button_accountAdd->setIcon        ( QIcon::fromTheme( "list-add"    ) );
+   button_accountRemove->setIcon     ( QIcon::fromTheme( "list-remove" ) );
+   button_add_credential->setIcon    ( QIcon::fromTheme( "list-add"    ) );
+   button_remove_credential->setIcon ( QIcon::fromTheme( "list-remove" ) );
+   button_audiocodecUp->setIcon      ( QIcon::fromTheme( "go-up"       ) );
+   button_audiocodecDown->setIcon    ( QIcon::fromTheme( "go-down"     ) );
    treeView_accountList->setModel(ProfileModel::instance());
    CategorizedDelegate* m_pCategoryDelegate = new CategorizedDelegate(treeView_accountList);
    QStyledItemDelegate* m_pItemDelegate     = new QStyledItemDelegate;
@@ -96,14 +95,14 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    frame_2->setVisible(false);
    //END
 
-   m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(32,32)));
-   label_message_icon->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
-   m_pCancelFix->setIcon(KIcon("dialog-close"));
-   m_pCancelMove->setIcon(KIcon("dialog-close"));
-   m_pMoveCertPB->setIcon(KIcon("folder-sync"));
-   m_pFixCertPB->setIcon(KIcon("configure"));
-   label_3->setPixmap(KIcon("dialog-information").pixmap(QSize(22,22)));
-   label_2->setPixmap(KIcon("dialog-information").pixmap(QSize(22,22)));
+   m_pInfoIconL->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(32,32)));
+   label_message_icon->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(24,24)));
+   m_pCancelFix->setIcon(QIcon::fromTheme("dialog-close"));
+   m_pCancelMove->setIcon(QIcon::fromTheme("dialog-close"));
+   m_pMoveCertPB->setIcon(QIcon::fromTheme("folder-sync"));
+   m_pFixCertPB->setIcon(QIcon::fromTheme("configure"));
+   label_3->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(22,22)));
+   label_2->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(22,22)));
 
    //Add an info tip in the account list
    m_pTipManager = new TipManager(treeView_accountList);
@@ -118,9 +117,9 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    file_tls_authority->lineEdit()->setPlaceholderText(i18n("Usually called \"ca.crt\" or \"cacert.pem\""));
    file_tls_endpoint->lineEdit()->setPlaceholderText(i18n("A .pem or .crt"));
    file_tls_private_key->lineEdit()->setPlaceholderText(i18n("A .key file"));
-   file_tls_authority->lineEdit()->setClearButtonShown(false);
-   file_tls_endpoint->lineEdit()->setClearButtonShown(false);
-   file_tls_private_key->lineEdit()->setClearButtonShown(false);
+   file_tls_authority->lineEdit()->setClearButtonEnabled(false);
+   file_tls_endpoint->lineEdit()->setClearButtonEnabled(false);
+   file_tls_private_key->lineEdit()->setClearButtonEnabled(false);
 
 #if false
    //BEGIN Temporarely disable advanced security widgets
@@ -149,8 +148,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 
    combo_tls_method->setModel(TlsMethodModel::instance());
 
-   m_pRingtoneListLW->horizontalHeader()->setResizeMode(0,QHeaderView::Stretch);
-   m_pRingtoneListLW->horizontalHeader()->setResizeMode(1,QHeaderView::ResizeToContents);
+   m_pRingtoneListLW->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+   m_pRingtoneListLW->horizontalHeader()->setSectionResizeMode(1,QHeaderView::ResizeToContents);
    m_pRingtoneListLW->setItemDelegate(new RingToneDelegate(m_pRingtoneListLW));
 
    //SLOTS
@@ -503,7 +502,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
    //Setup ringtone
    m_pEnableRingtoneGB->setChecked( ACC isRingtoneEnabled());
-   const QString ringtonePath = KStandardDirs::realFilePath( ACC ringtonePath());
+   const QString ringtonePath = ACC ringtonePath();
    m_pRingTonePath->setUrl( ringtonePath );
 
    combo_tls_method->setCurrentIndex( TlsMethodModel::instance()->toIndex( ACC tlsMethod()).row() );
@@ -692,11 +691,11 @@ void DlgAccounts::main_password_field_changed()
       if (false) {
 #endif
       label_message->setText("<b>"+i18n("Warning, caps lock is turned on!")+"</b>");
-      label_message_icon->setPixmap(KIcon("dialog-warning").pixmap(QSize(32,32)));
+      label_message_icon->setPixmap(QIcon::fromTheme("dialog-warning").pixmap(QSize(32,32)));
    }
    else {
       label_message->setText(i18n("Fields marked with \"*\" are compulsory and required"));
-      label_message_icon->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
+      label_message_icon->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(24,24)));
    }
 }
 

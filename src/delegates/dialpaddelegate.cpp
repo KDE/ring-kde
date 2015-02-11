@@ -16,9 +16,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "dialpaddelegate.h"
-#include <QtCore/QTimer>
+#include <QTimer>
 #include <QtGui/QPainter>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include "call.h"
 #include "callmodel.h"
 

@@ -18,7 +18,6 @@
 #include "dlgprofiles.h"
 
 //KDE
-#include <KIcon>
 #include <QDebug>
 #include <QDateTime>
 #include <QFileDialog>

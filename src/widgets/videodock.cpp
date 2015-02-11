@@ -17,17 +17,17 @@
  **************************************************************************/
 #include "videodock.h"
 
-#include <QtGui/QSpacerItem>
-#include <QtGui/QGridLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QWidgetItem>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QDesktopWidget>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QWidgetItem>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QDesktopWidget>
 #include <QtGui/QKeyEvent>
-#include <QtGui/QLabel>
+#include <QtWidgets/QLabel>
 
-#include <KLocale>
-#include <KComboBox>
+#include <klocalizedstring.h>
+#include <QComboBox>
 
 #include "videowidget3.h"
 #include "videoscene.h"
@@ -146,7 +146,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    l->addWidget(tb,2,0);
 
    QToolButton* btn = new QToolButton(this);
-   btn->setIcon(KIcon("arrow-down-double"));
+   btn->setIcon(QIcon::fromTheme("arrow-down-double"));
    btn->setCheckable(true);
    l->addWidget(btn,2,2);
 
@@ -159,7 +159,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    QLabel* devL = new QLabel(i18n("Device:"));
    m_pMoreOpts->addWidget(devL,1,0,1,1);
 
-   KComboBox* device = new KComboBox(this);
+   QComboBox* device = new QComboBox(this);
    device->setModel(Video::SourcesModel::instance());
    device->setCurrentIndex(Video::SourcesModel::instance()->activeIndex());
    m_pMoreOpts->addWidget(device,1,1,2,1);
@@ -222,8 +222,8 @@ void VideoDock::slotDeviceChanged(int index)
          if ( !m_pMediaPicker  ) {
             m_pMediaPicker = new MediaPicker(this);
             m_pMoreOpts->addWidget(m_pMediaPicker,11,0,1,4);
-            connect(m_pMediaPicker->m_pPicker,SIGNAL(urlSelected(KUrl)),
-               this,SLOT(slotFileSelected(KUrl)));
+            connect(m_pMediaPicker->m_pPicker,SIGNAL(urlSelected(QUrl)),
+               this,SLOT(slotFileSelected(QUrl)));
          }
          m_pMediaPicker->setVisible(true);
          break;
@@ -244,7 +244,7 @@ void VideoDock::slotDeviceChanged(int index)
    };
 }
 
-void VideoDock::slotFileSelected(const KUrl& url)
+void VideoDock::slotFileSelected(const QUrl& url)
 {
    Video::SourcesModel::instance()->setFile(url);
 }

@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "tipcollection.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include "dialpadtip.h"
 #include "ringingtip.h"

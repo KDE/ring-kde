@@ -18,7 +18,9 @@
 #ifndef KSPEECH_INTERFACE_SINGLETON_H
 #define KSPEECH_INTERFACE_SINGLETON_H
 
-#include "src/kspeechinterface.h"
+// #include "src/kspeechinterface.h"
+
+class OrgKdeKSpeechInterface;
 
 class KSpeechInterfaceSingleton {
 public:

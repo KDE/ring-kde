@@ -18,13 +18,13 @@
 #ifndef VIDEO_DOCK_H
 #define VIDEO_DOCK_H
 
-#include <QtGui/QDockWidget>
+#include <QtWidgets/QDockWidget>
 
 //Qt
 class QGridLayout;
 
 //KDE
-class KUrl;
+class QUrl;
 
 //Ring
 class VideoWidget3;
@@ -54,7 +54,7 @@ private:
 
 private Q_SLOTS:
    void slotDeviceChanged(int index);
-   void slotFileSelected(const KUrl& url);
+   void slotFileSelected(const QUrl& url);
 public Q_SLOTS:
    void slotFullscreen  (bool);
 };

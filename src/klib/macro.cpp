@@ -23,7 +23,6 @@
 
 //KDE
 #include <klocalizedstring.h>
-#include <QIcon>
 
 //Ring
 #include "audio/outputdevicemodel.h"

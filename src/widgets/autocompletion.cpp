@@ -18,18 +18,18 @@
 #include "autocompletion.h"
 
 //Qt
-#include <QtGui/QLabel>
-#include <QtGui/QListView>
-#include <QtGui/QTreeView>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QScrollBar>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QScrollBar>
 #include <QtGui/QPainter>
-#include <QtGui/QApplication>
-#include <QtCore/QEvent>
+#include <QtWidgets/QApplication>
+#include <QEvent>
 #include <QtGui/QResizeEvent>
 
 //KDE
-#include <KLocale>
+#include <klocalizedstring.h>
 
 //Ring
 #include <numbercompletionmodel.h>

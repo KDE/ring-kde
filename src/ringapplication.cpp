@@ -22,16 +22,14 @@
 //Qt
 #include <QtCore/QDir>
 #include <QtCore/QTimer>
+#include <QtCore/QCommandLineParser>
 
 //KDE
-#include <KCmdLineArgs>
 #include <KIconLoader>
-#include <KStandardDirs>
-#include <KSystemTrayIcon>
+#include <QStandardPaths>
 #include <KMainWindow>
-#include <KDebug>
-#include <KIcon>
-#include <KMessageBox>
+#include <QDebug>
+#include <kmessagebox.h>
 
 
 //Ring
@@ -49,12 +47,7 @@ Ring* RingApplication::m_spApp = nullptr;
 /**
  * The application constructor
  */
-RingApplication::RingApplication()
-#ifdef DISABLE_UNIQUE_APPLICATION
-  : KApplication()
-#else
-  : KUniqueApplication()
-#endif
+RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv)
 {
 
 #ifdef ENABLE_VIDEO
@@ -73,9 +66,9 @@ RingApplication::RingApplication()
    initializePaths();
    initializeMainWindow();
 
-#ifdef DISABLE_UNIQUE_APPLICATION
+// #ifdef DISABLE_UNIQUE_APPLICATION
    newInstance();
-#endif
+// #endif
 }
 
 /**
@@ -85,7 +78,7 @@ RingApplication::~RingApplication()
 {
    delete Ring::app();
    // automatically destroyed
-   disableSessionManagement();
+   //disableSessionManagement();
 }
 
 /**
@@ -95,7 +88,7 @@ void RingApplication::initializeMainWindow()
 {
   // Enable KDE session restore.
 //   int restoredWindow = -1;
-  if( kapp->isSessionRestored() ) {
+  /*if( kapp->isSessionRestored() ) {
     int n = 0;
     while( KMainWindow::canBeRestored( ++n ) ) {
       if( KMainWindow::classNameOfToplevel( n ) != QLatin1String( "Ring" ) ) {
@@ -103,7 +96,7 @@ void RingApplication::initializeMainWindow()
       }
       break;
     }
-  }
+  }*/
 }
 
 /**
@@ -112,8 +105,8 @@ void RingApplication::initializeMainWindow()
 void RingApplication::initializePaths()
 {
   // Add compile time paths as fallback
-  KGlobal::dirs()       -> addPrefix( QString(DATA_INSTALL_DIR) );
-  KIconLoader::global() -> addAppDir( QString(DATA_INSTALL_DIR) + "/share" );
+  /*KGlobal::dirs()       -> addPrefix( QString(DATA_INSTALL_DIR) );
+  QIconLoader::global() -> addAppDir( QString(DATA_INSTALL_DIR) + "/share" );*/
 
 }
 
@@ -135,25 +128,23 @@ int RingApplication::newInstance()
          m_spApp->hide();
    }
 
-   KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
-   KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-   if(args->isSet("place-call")) {
-      Cmd::placeCall(args->getOption("place-call"));
+   /*KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
+   if(parser.isSet("place-call")) {
+      Cmd::placeCall(parser.value("place-call"));
    }
-   if (args->isSet("send-text")) {
-      QString smsNumber  = args->getOption("send-text");
-      QString smsMessage = args->getOption("message");
+   if (parser.isSet("send-text")) {
+      QString smsNumber  = parser.value("send-text");
+      QString smsMessage = parser.value("message");
       if (!smsMessage.isEmpty() && !smsNumber.isEmpty()) {
          Cmd::sendText(smsNumber,smsMessage);
       }
       else {
-         kDebug() << "Error: both --send-text and --message have to be set";
+         qDebug() << "Error: both --send-text and --message have to be set";
       }
-   }
+   }*/
 
-   args->clear();
 #ifndef DISABLE_UNIQUE_APPLICATION
-   KUniqueApplication::newInstance();
+//    KUniqueApplication::newInstance();
 #endif
    return 0;
 }
@@ -162,22 +153,22 @@ int RingApplication::newInstance()
 bool RingApplication::notify (QObject* receiver, QEvent* e)
 {
    try {
-#ifdef DISABLE_UNIQUE_APPLICATION
-      return KApplication::notify(receiver,e);
-#else
-      return KUniqueApplication::notify(receiver,e);
-#endif
+// #ifdef DISABLE_UNIQUE_APPLICATION
+      return QApplication::notify(receiver,e);
+// #else
+//      return KUniqueApplication::notify(receiver,e);
+// #endif
    }
    catch (const Call::State& state) {
-      kDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
+      qDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
       QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
    }
    catch (const Call::Action& state) {
-      kDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
+      qDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
       QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
    }
    catch (const Call::DaemonState& state) {
-      kDebug() << ErrorMessage::GENERIC_ERROR << "Call DaemonState" << state;
+      qDebug() << ErrorMessage::GENERIC_ERROR << "Call DaemonState" << state;
       QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
    }
    catch (const QString& errorMessage) {
@@ -185,7 +176,7 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
       QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
    }
    catch (...) {
-      kDebug() << ErrorMessage::GENERIC_ERROR;
+      qDebug() << ErrorMessage::GENERIC_ERROR;
       KMessageBox::error(Ring::app(),ErrorMessage::GENERIC_ERROR);
       QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
    }

@@ -21,7 +21,7 @@
 #include "ui_dlgaccountsbase.h"
 #include "account.h"
 #include "ringtonemodel.h"
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 //Qt
 class QWidget;

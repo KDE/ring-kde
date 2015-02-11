@@ -19,12 +19,12 @@
 #define HISTORY_DOCK_H
 
 #include "ui_dockbase.h"
-#include <QtGui/QDockWidget>
+#include <QtWidgets/QDockWidget>
 
-#include <QtGui/QTreeWidget>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtCore/QDate>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeWidgetItem>
+#include <QtCore/QSortFilterProxyModel>
+#include <QDate>
 
 //Qt
 class QLabel;
@@ -33,8 +33,8 @@ class QPushButton;
 class QDate;
 
 //KDE
-class KDateWidget;
-class KAction;
+class KDatePicker;
+class QAction;
 
 //Ring
 #include "historymodel.h"
@@ -62,8 +62,8 @@ private:
    //Attributes
    QLabel*                m_pFromL           ;
    QLabel*                m_pToL             ;
-   KDateWidget*           m_pFromDW          ;
-   KDateWidget*           m_pToDW            ;
+   KDatePicker*           m_pFromDW          ;
+   KDatePicker*           m_pToDW            ;
    QCheckBox*             m_pAllTimeCB       ;
    QPushButton*           m_pLinkPB          ;
    KeyPressEater*         m_pKeyPressEater   ;
@@ -72,18 +72,18 @@ private:
    time_t                 m_StopTime         ;
 
    //Menu
-    KAction*     m_pCallAgain     ;
-    KAction*     m_pAddPerson    ;
-    KAction*     m_pAddToPerson  ;
-    KAction*     m_pCopy          ;
-    KAction*     m_pEmail         ;
-    KAction*     m_pRemove        ;
-    KAction*     m_pBookmark      ;
-    QMenu*       m_pMenu          ;
-    Call*        m_pCurrentCall   ;
+    QAction *     m_pCallAgain     ;
+    QAction *     m_pAddPerson     ;
+    QAction *     m_pAddToPerson   ;
+    QAction *     m_pCopy          ;
+    QAction *     m_pEmail         ;
+    QMenu*        m_pMenu          ;
+    QAction *     m_pRemove        ;
+    QAction *     m_pBookmark      ;
+    Call*         m_pCurrentCall   ;
 
    //Mutator
-   void updateLinkedDate(KDateWidget* item, QDate& prevDate, QDate& newDate);
+   void updateLinkedDate(KDatePicker* item, QDate& prevDate, QDate& newDate);
    void enableRemove();
 
    enum Role {

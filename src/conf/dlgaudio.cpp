@@ -19,10 +19,9 @@
 #include "dlgaudio.h"
 
 //Qt
-#include <QtGui/QHeaderView>
+#include <QtWidgets/QHeaderView>
 
 //KDE
-#include <KStandardDirs>
 #include <KLineEdit>
 
 //Ring
@@ -44,7 +43,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    m_pAlwaysRecordCK->setChecked(Audio::Settings::instance()->isAlwaysRecording());
 
    KUrlRequester_destinationFolder->setMode(KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly);
-   KUrlRequester_destinationFolder->setUrl(KUrl(Audio::Settings::instance()->recordPath()));
+   KUrlRequester_destinationFolder->setUrl(QUrl(Audio::Settings::instance()->recordPath()));
    KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
    m_pSuppressNoise->setChecked(Audio::Settings::instance()->isNoiseSuppressEnabled());

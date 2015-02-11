@@ -20,8 +20,7 @@
 #include "instantmessagingmodel.h"
 #include "call.h"
 #include <QtGui/QPainter>
-#include <KDebug>
-#include <KIcon>
+#include <QIcon>
 #include <QtGui/QFont>
 
 ///Delegate contructor
@@ -55,7 +54,7 @@ void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, c
       icnWidth = icon->width();
    }
    else {
-      ((QAbstractListModel*) index.model())->setData(index,QPixmap(KIcon("user-identity").pixmap(QSize(48,48))),InstantMessagingModel::Role::IMAGE);
+      ((QAbstractListModel*) index.model())->setData(index,QPixmap(QIcon::fromTheme("user-identity").pixmap(QSize(48,48))),InstantMessagingModel::Role::IMAGE);
    }
 
    QFontMetrics metric(painter->font());

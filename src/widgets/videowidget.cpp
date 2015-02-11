@@ -18,7 +18,6 @@
 #include "videowidget.h"
 
 //KDE
-#include <KDebug>
 
 //Ring
 #include "videorenderer.h"

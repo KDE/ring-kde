@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 */
 // Self
-#include <groupedtoolbutton.moc>
+#include "groupedtoolbutton.h"
 
 // Qt
 #include <QAction>
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #include <QToolButton>
 
 // KDE
-#include <klocale.h>
+#include <KLocalizedString>
 
 GroupedToolButton::GroupedToolButton(QWidget* parent)
   : QToolButton(parent),

@@ -18,8 +18,8 @@
 #include "kphonenumberselector.h"
 
 //KDE
-#include <KInputDialog>
-#include <KLocale>
+#include <QInputDialog>
+#include <klocalizedstring.h>
 
 //Ring
 #include "contactmethod.h"
@@ -45,7 +45,7 @@ ContactMethod* KPhoneNumberSelector::getNumber(const Person* contact)
             map[number->category()->name()+" ("+number->uri()+')'] = number->uri();
             list << number->category()->name()+" ("+number->uri()+')';
          }
-         const QString result = KInputDialog::getItem (i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok,Ring::app());
+         const QString result = QInputDialog::getItem (Ring::app(),i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
          return PhoneDirectoryModel::instance()->getNumber(result);//new ContactMethod(result,"");
       }
       else if (contact->phoneNumbers().size() == 1)

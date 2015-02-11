@@ -18,8 +18,8 @@
 #ifndef AUTOCOMPLETION_H
 #define AUTOCOMPLETION_H
 
-#include <QtGui/QWidget>
-#include <QtCore/QModelIndex>
+#include <QtWidgets/QWidget>
+#include <QModelIndex>
 
 //Qt
 class QListView;

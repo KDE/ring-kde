@@ -21,7 +21,7 @@
 #include "../../klib/tip.h"
 
 //Qt
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 
 //Qt

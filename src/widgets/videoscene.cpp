@@ -16,9 +16,8 @@
  **************************************************************************/
 
 #include "videoscene.h"
-#include <QtGui/QLabel>
-#include <QtCore/QMutex>
-#include <QtGui/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
 #include <GL/glu.h>
 #include <QGraphicsSceneMouseEvent>
 

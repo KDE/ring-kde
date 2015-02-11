@@ -20,11 +20,10 @@
 #include "imconversationmanager.h"
 #include "call.h"
 #include "../delegates/imdelegate.h"
-#include <KDebug>
-#include <KLocale>
+#include <klocalizedstring.h>
 
 ///Constructor
-IMManager::IMManager(QWidget* parent) : KTabWidget(parent)
+IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
 {
    setVisible(false);
    setTabsClosable(true);

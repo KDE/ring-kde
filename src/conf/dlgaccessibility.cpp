@@ -20,13 +20,12 @@
 #include "klib/kcfg_settings.h"
 
 //Qt
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 //KDE
 #include <KConfigDialog>
-#include <KLocale>
-#include <KIcon>
-#include <KAction>
+#include <klocalizedstring.h>
+#include <QIcon>
 
 //Ring
 #include <klib/macromodel.h>
@@ -39,9 +38,9 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
 {
    setupUi(this);
 
-   m_pAddTB->setIcon    ( KIcon( "list-add"    ) );
-   m_pRemoveTB->setIcon ( KIcon( "list-remove" ) );
-   m_pInfoIconL->setPixmap(KIcon("dialog-information").pixmap(QSize(24,24)));
+   m_pAddTB->setIcon    ( QIcon::fromTheme( "list-add"    ) );
+   m_pRemoveTB->setIcon ( QIcon::fromTheme( "list-remove" ) );
+   m_pInfoIconL->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(24,24)));
    m_pInfoL->setText(i18n("This page allows to create macros that can then be called using keyboard shortcuts or added to the toolbar. To create one, "
    "assign a name and a character sequence. The sequence can be numeric or any character than can be interpreted as one (ex: \"A\" would be interpreted as 2)"));
 
@@ -58,7 +57,7 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    connect(m_pCategoryCBB->lineEdit()   , SIGNAL(textChanged(QString)) , this,SLOT(slotCategoryCBB(QString))   );
    connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(slotSequenceLE(QString))    );
    connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(slotDescriptionLE(QString)) );
-   connect(m_pShortcuts     , SIGNAL(shortcutChanged(KShortcut)) , this,SLOT(slotShortcut(KShortcut)) );
+   connect(m_pShortcuts     , SIGNAL(shortcutChanged(QKeySequence)) , this,SLOT(slotShortcut(QKeySequence)) );
 
    connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
 
@@ -128,7 +127,7 @@ void DlgAccessibility::selectMacro(Macro* macro)
       m_pDelaySB->setValue(macro->delay());
       m_pSequenceLE->setText(macro->sequence());
       m_pDescriptionLE->setText(macro->description());
-      m_pShortcuts->setShortcut(macro->action()->shortcut());
+      //m_pShortcuts->setShortcut(macro->action()->shortcut());
       m_pMacroFrm->setEnabled(true);
       m_pNameLE->selectAll();
       m_pNameLE->setFocus();
@@ -180,7 +179,7 @@ void DlgAccessibility::slotDescriptionLE(const QString& newText)
    }
 }
 
-void DlgAccessibility::slotShortcut(const KShortcut& shortcut)
+void DlgAccessibility::slotShortcut(const QKeySequence& shortcut)
 {
    Macro* current = MacroModel::instance()->getCurrentMacro();
    if (current)

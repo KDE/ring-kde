@@ -27,7 +27,7 @@ class QLabel;
 class QToolButton;
 
 //KDE
-class KComboBox;
+class QComboBox;
 
 //Ring
 class Call;
@@ -84,7 +84,7 @@ private:
    QDockWidget*   m_pCentralDW       ;
    HistoryDock*   m_pHistoryDW       ;
    BookmarkDock*  m_pBookmarkDW      ;
-   KComboBox*     m_pAccountStatus   ;
+   QComboBox*     m_pAccountStatus   ;
    #ifdef ENABLE_VIDEO
    VideoDock*     m_pVideoDW         ;
    #endif

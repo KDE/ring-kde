@@ -21,7 +21,7 @@
 
 #include <QWidget>
 #include <QObject>
-#include <QtCore/QObject>
+#include <QObject>
 #include "ui_dlgprofil.h"
 
 class DlgProfiles : public QWidget, public Ui_DlgProfiles

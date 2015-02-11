@@ -22,7 +22,7 @@
 
 //KDE
 #include <KConfigDialog>
-#include <KLocale>
+#include <klocalizedstring.h>
 
 ///Constructor
 DlgDisplay::DlgDisplay(KConfigDialog *parent)
@@ -45,7 +45,7 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
    while (iter.hasNext()) {
       iter.next();
       const bool checked = ConfigurationSkeleton::self()->findItem(iter.value())->isEqual(true);
-      QListWidgetItem* i = new QListWidgetItem(i18n(iter.key().toAscii()));
+      QListWidgetItem* i = new QListWidgetItem(i18n(iter.key().toLatin1()));
       i->setFlags      (Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
       i->setCheckState ((checked)?Qt::Checked:Qt::Unchecked        );
       m_pDetailsList->addItem(m_lItemList[iter.value()] = i);

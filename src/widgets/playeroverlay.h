@@ -18,7 +18,7 @@
 #ifndef PLAYER_OVERLAY_H
 #define PLAYER_OVERLAY_H
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 #include "ui_playeroverlay.h"
 class Call;
 class PlayerOverlay : public QWidget, public Ui_PlayerOverlay

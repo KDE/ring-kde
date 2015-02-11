@@ -18,7 +18,7 @@
 #include "videotoolbar.h"
 
 //Qt
-#include <QtGui/QHBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 
 //Ring
 #include "ring.h"

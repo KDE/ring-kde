@@ -20,25 +20,23 @@
 #include "contactdock.h"
 
 //Qt
-#include <QtCore/QDateTime>
-#include <QtCore/QMap>
-#include <QtCore/QTimer>
-#include <QtCore/QProcess>
-#include <QtGui/QCheckBox>
-#include <QtGui/QLabel>
-#include <QtGui/QMenu>
+#include <QProcess>
+#include <QtCore/QMimeData>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMenu>
 #include <QtGui/QClipboard>
-#include <QtGui/QListWidget>
+#include <QtWidgets/QListWidget>
 #include <QtGui/QKeyEvent>
+#include <QInputDialog>
 
 //KDE
-#include <KDebug>
-#include <KLocalizedString>
-#include <KIcon>
-#include <KInputDialog>
-#include <KAction>
-#include <KLocale>
-#include <KMessageBox>
+#include <QDebug>
+#include <klocalizedstring.h>
+#include <QIcon>
+#include <QAction>
+#include <klocalizedstring.h>
+#include <kmessagebox.h>
 
 //Ring
 #include "ring.h"
@@ -108,7 +106,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pKeyPressEater = new KeyPressEaterC( this               );
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
-   m_pFilterLE->setClearButtonShown(true);
+   m_pFilterLE->setClearButtonEnabled(true);
 
    setHistoryVisible(ConfigurationSkeleton::displayPersonCallHistory());
 
@@ -185,7 +183,7 @@ ContactMethod* ContactDock::showNumberSelector(bool& ok)
    if (m_pCurrentPerson && m_pCurrentPerson->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
       ContactMethod* number = KPhoneNumberSelector().getNumber(m_pCurrentPerson);
       if (number->uri().isEmpty()) {
-         kDebug() << "Operation cancelled";
+         qDebug() << "Operation cancelled";
       }
       return number;
    }
@@ -234,42 +232,42 @@ void ContactDock::showContext(const QModelIndex& index)
    if (!index.parent().isValid())
       return;
    if (!m_pCallAgain) {
-      m_pCallAgain   = new KAction(this);
+      m_pCallAgain   = new QAction(this);
       m_pCallAgain->setShortcut   ( Qt::CTRL + Qt::Key_Enter   );
       m_pCallAgain->setText       ( i18n("Call Again")         );
-      m_pCallAgain->setIcon       ( KIcon("call-start")        );
+      m_pCallAgain->setIcon       ( QIcon::fromTheme("call-start")        );
 
-      m_pEditPerson = new KAction(this);
+      m_pEditPerson = new QAction(this);
       m_pEditPerson->setShortcut ( Qt::CTRL + Qt::Key_E       );
       m_pEditPerson->setText     ( i18n("Edit contact")       );
-      m_pEditPerson->setIcon     ( KIcon("contact-new")       );
+      m_pEditPerson->setIcon     ( QIcon::fromTheme("contact-new")       );
 
-      m_pCopy        = new KAction(this);
+      m_pCopy        = new QAction(this);
       m_pCopy->setShortcut        ( Qt::CTRL + Qt::Key_C       );
       m_pCopy->setText            ( i18n("Copy")               );
-      m_pCopy->setIcon            ( KIcon("edit-copy")         );
+      m_pCopy->setIcon            ( QIcon::fromTheme("edit-copy")         );
 
-      m_pEmail       = new KAction(this);
+      m_pEmail       = new QAction(this);
       m_pEmail->setShortcut       ( Qt::CTRL + Qt::Key_M       );
       m_pEmail->setText           ( i18n("Send Email")         );
-      m_pEmail->setIcon           ( KIcon("mail-message-new")  );
+      m_pEmail->setIcon           ( QIcon::fromTheme("mail-message-new")  );
       m_pEmail->setEnabled        ( false                      );
 
-      m_pAddPhone    = new KAction(this);
+      m_pAddPhone    = new QAction(this);
       m_pAddPhone->setShortcut    ( Qt::CTRL + Qt::Key_N       );
       m_pAddPhone->setText        ( i18n("Add Phone Number")   );
-      m_pAddPhone->setIcon        ( KIcon("list-resource-add") );
+      m_pAddPhone->setIcon        ( QIcon::fromTheme("list-resource-add") );
       m_pEmail->setEnabled        ( false                      );
 
-      m_pBookmark    = new KAction(this);
+      m_pBookmark    = new QAction(this);
       m_pBookmark->setShortcut    ( Qt::CTRL + Qt::Key_D       );
       m_pBookmark->setText        ( i18n("Bookmark")           );
-      m_pBookmark->setIcon        ( KIcon("bookmarks")         );
+      m_pBookmark->setIcon        ( QIcon::fromTheme("bookmarks")         );
 
-      m_pRemove      = new KAction(this);
+      m_pRemove      = new QAction(this);
       m_pRemove->setShortcut    ( Qt::CTRL + Qt::Key_Shift + Qt::Key_Delete );
       m_pRemove->setText        ( i18n("Delete")               );
-      m_pRemove->setIcon        ( KIcon("edit-delete")         );
+      m_pRemove->setIcon        ( QIcon::fromTheme("edit-delete")         );
 
       connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
       connect(m_pEditPerson  , SIGNAL(triggered()) , this,SLOT(editPerson()));
@@ -313,7 +311,7 @@ void ContactDock::showContext(const QModelIndex& index)
 ///Send an email
 void ContactDock::sendEmail()
 {
-   kDebug() << "Sending email";
+   qDebug() << "Sending email";
    QProcess *myProcess = new QProcess(this);
    QStringList arguments;
    myProcess->start("xdg-email", (arguments << m_pCurrentPerson->preferredEmail()));
@@ -322,7 +320,7 @@ void ContactDock::sendEmail()
 ///Call the same number again
 void ContactDock::callAgain(const ContactMethod* n)
 {
-   kDebug() << "Calling ";
+   qDebug() << "Calling ";
    bool ok = false;
    const ContactMethod* number = n?n:showNumberSelector(ok);
    if ( (n || ok) && number) {
@@ -343,7 +341,7 @@ void ContactDock::callAgain(const ContactMethod* n)
 ///Copy contact to clipboard
 void ContactDock::copy()
 {
-   kDebug() << "Copying contact";
+   qDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
    mimeData->setData(RingMimes::CONTACT, m_pCurrentPerson->uid());
    QString numbers(m_pCurrentPerson->formattedName()+": ");
@@ -361,7 +359,7 @@ void ContactDock::copy()
 ///Edit this contact
 void ContactDock::editPerson()
 {
-   kDebug() << "Edit contact";
+   qDebug() << "Edit contact";
    m_pCurrentPerson->edit();
 }
 
@@ -369,9 +367,9 @@ void ContactDock::editPerson()
 //TODO
 void ContactDock::addPhone()
 {
-   kDebug() << "Adding to contact";
+   qDebug() << "Adding to contact";
    bool ok = false;
-   const QString text = KInputDialog::getText( i18n("Enter a new number"), i18n("New number:"), QString(), &ok,this);
+   const QString text = QInputDialog::getText(this, i18n("Enter a new number"), i18n("New number:"), QLineEdit::Normal, QString(), &ok);
    if (ok && !text.isEmpty()) {
 //       ContactMethod* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
 //       m_pCurrentPerson->addContactMethod(n); //TODO fixme
@@ -413,7 +411,7 @@ void ContactDock::transferEvent(QMimeData* data)
       }
    }
    else
-      kDebug() << "Invalid mime data";
+      qDebug() << "Invalid mime data";
 //    m_pBtnTrans->setHoverState(false);
 //    m_pBtnTrans->setVisible(false);
 }
@@ -427,7 +425,7 @@ void ContactDock::transferEvent(QMimeData* data)
 ///Serialize information to be used for drag and drop
 // QMimeData* PersonTree::mimeData( const QList<QTreeWidgetItem *> items) const
 // {
-//    kDebug() << "An history call is being dragged";
+//    qDebug() << "An history call is being dragged";
 //    if (items.size() < 1) {
 //       return nullptr;
 //    }
@@ -445,7 +443,7 @@ void ContactDock::transferEvent(QMimeData* data)
 //       }
 //    }
 //    else {
-//       kDebug() << "the item is not a call";
+//       qDebug() << "the item is not a call";
 //    }
 //    return mimeData;
 // } //mimeData
@@ -459,7 +457,7 @@ void ContactDock::transferEvent(QMimeData* data)
 // 
 //    QByteArray encodedData = data->data(RingMimes::CALLID);
 // 
-//    kDebug() << "In history import"<< QString(encodedData);
+//    qDebug() << "In history import"<< QString(encodedData);
 // 
 //    return false;
 // }
@@ -474,7 +472,7 @@ void ContactDock::transferEvent(QMimeData* data)
 ///Show or hide the history list
 void ContactDock::setHistoryVisible(bool visible)
 {
-   kDebug() << "Toggling history visibility";
+   qDebug() << "Toggling history visibility";
    m_pBottomWidget->setVisible(visible);
    ConfigurationSkeleton::setDisplayPersonCallHistory(visible);
 }

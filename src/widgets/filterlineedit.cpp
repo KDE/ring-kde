@@ -18,7 +18,7 @@
 #include "filterlineedit.h"
 
 
-FilterLineEdit::FilterLineEdit(QWidget *parent) : KLineEdit(parent)
+FilterLineEdit::FilterLineEdit(QWidget *parent) : QLineEdit(parent)
 {
    connect(this,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
 }

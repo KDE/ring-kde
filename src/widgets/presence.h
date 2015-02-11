@@ -18,7 +18,7 @@
 #ifndef PRESENCE_H
 #define PRESENCE_H
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 #include "ui_presence.h"
 

@@ -18,9 +18,9 @@
 #include "canvasobjectmanager.h"
 
 //Qt
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
-#include <QtGui/QApplication>
+#include <QDebug>
+#include <QTimer>
+#include <QtWidgets/QApplication>
 
 //X11
 #ifdef Q_WS_X11
@@ -30,7 +30,7 @@
 
 //KDE
 #include <KNotification>
-#include <KLocale>
+#include <klocalizedstring.h>
 
 //Ring
 #include <klib/tipmanager.h>
@@ -79,9 +79,9 @@ void CanvasObjectManager::hInitEvents() {
    }
 }
 
-CanvasObjectManager::CanvasObjectManager(QObject* parent) : QObject(parent),m_DisableTransition(false),
-m_CurrentObject(CanvasObjectManager::Object::NoObject),m_NextObject(CanvasObjectManager::Object::NoObject)
-,m_pTimer(nullptr),m_CurrentState(ObjectState::NO_OBJECT),m_Minimized(false),m_CurrentLifeCycle(ObjectLifeCycle::NONE)
+CanvasObjectManager::CanvasObjectManager(QObject* parent) : QObject(parent),
+m_CurrentObject(CanvasObjectManager::Object::NoObject),m_NextObject(CanvasObjectManager::Object::NoObject),
+m_CurrentState(ObjectState::NO_OBJECT),m_CurrentLifeCycle(ObjectLifeCycle::NONE),m_DisableTransition(false),m_pTimer(nullptr),m_Minimized(false)
 {
    hInitEvents();
 

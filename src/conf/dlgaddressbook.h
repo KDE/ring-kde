@@ -20,10 +20,10 @@
 #define DLGADDRESSBOOK_H
 
 //Qt
-#include <QtCore/QHash>
-#include <QtCore/QString>
-#include <QtGui/QWidget>
-#include <QtGui/QListWidgetItem>
+#include <QHash>
+#include <QString>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QListWidgetItem>
 
 #include "ui_dlgaddressbookbase.h"
 #include <kconfigdialog.h>

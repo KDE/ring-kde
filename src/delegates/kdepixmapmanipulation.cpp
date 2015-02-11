@@ -18,21 +18,20 @@
 #include "kdepixmapmanipulation.h"
 
 //Qt
-#include <QtCore/QDebug>
-#include <QtCore/QSize>
-#include <QtCore/QBuffer>
+#include <QSize>
+#include <QBuffer>
 #include <QtGui/QColor>
 #include <QtGui/QPainter>
 #include <QtGui/QBitmap>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QImage>
 #include <QtGui/QPalette>
 
 //KDE
-#include <KIcon>
+#include <QIcon>
 #include <KColorScheme>
-#include <KLocale>
-#include <KStandardDirs>
+#include <klocalizedstring.h>
+
 
 //Ring
 #include <person.h>
@@ -40,6 +39,7 @@
 #include <presencestatusmodel.h>
 #include <securityvalidationmodel.h>
 #include <collectioninterface.h>
+#include <QStandardPaths>
 #include "icons/icons.h"
 
 
@@ -77,7 +77,7 @@ void KDEPixmapManipulation::clearCache()
 
 QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence) {
    const QString hash = QString("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
-   QVariant preRendered = c->property(hash.toAscii());
+   QVariant preRendered = c->property(hash.toLatin1());
    if (preRendered.isValid())
       return preRendered;
    else
@@ -137,7 +137,7 @@ QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool 
       pxm = drawDefaultUserPixmap(size,isTracked,isPresent);
    }
 
-   c->setProperty(hash.toAscii(),pxm);
+   c->setProperty(hash.toLatin1(),pxm);
    return pxm;
 }
 
@@ -170,7 +170,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
       if(p.isValid())
          pxm = qvariant_cast<QPixmap>(p);
       else
-         pxm = QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+         pxm = QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "sflphone-client-kde/mini/call.png"));
       QPainter painter(&pxm);
       painter.setOpacity(0.3);
       painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
@@ -179,7 +179,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
    }
    if (p.isValid())
       return qvariant_cast<QPixmap>(p);
-   return QPixmap(KStandardDirs::locate("data" , "sflphone-client-kde/mini/call.png"));
+   return QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "sflphone-client-kde/mini/call.png"));
 }
 
 QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)
@@ -187,14 +187,14 @@ QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)
    SecurityValidationModel::Severity sev = static_cast<SecurityValidationModel::Severity>(index.data(SecurityValidationModel::Role::SeverityRole).toInt());
    switch(sev) {
       case SecurityValidationModel::Severity::INFORMATION:
-         return KIcon("dialog-information");
+         return QIcon::fromTheme("dialog-information");
       case SecurityValidationModel::Severity::WARNING:
-         return KIcon("dialog-warning");
+         return QIcon::fromTheme("dialog-warning");
       case SecurityValidationModel::Severity::ISSUE:
       case SecurityValidationModel::Severity::FATAL_WARNING:
-         return KIcon("task-attempt");
+         return QIcon::fromTheme("task-attempt");
       case SecurityValidationModel::Severity::ERROR:
-         return KIcon("dialog-error");
+         return QIcon::fromTheme("dialog-error");
    }
    return QVariant();
 }
@@ -225,7 +225,7 @@ QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool dis
    pxm.fill(Qt::transparent);
    QPainter painter(&pxm);
 
-   painter.drawPixmap(3,3,KIcon("user-identity").pixmap(QSize(size.height()-6,size.width()-6)));
+   painter.drawPixmap(3,3,QIcon::fromTheme("user-identity").pixmap(QSize(size.height()-6,size.width()-6)));
 
    //Create a region where the pixmap is not fully transparent
    if (displayPresence) {

@@ -17,9 +17,9 @@
  **************************************************************************/
 #ifndef DELEGATEDROPOVERLAY_H
 #define DELEGATEDROPOVERLAY_H
-#include <QtGui/QPushButton>
+#include <QtWidgets/QPushButton>
 #include <QtGui/QPen>
-#include <QtGui/QStyleOptionViewItem>
+#include <QtWidgets/QStyleOptionViewItem>
 #include <QtCore/QModelIndex>
 
 #include <call.h>

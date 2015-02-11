@@ -21,20 +21,19 @@
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
+#include <QTimer>
 
 //KDE
-#include <KDebug>
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
+
 
 ///Constructor
 ConnectionLostTip::ConnectionLostTip(QWidget* parent) : Tip(i18n("There was a network error, trying to reconnect in 60 seconds."),parent),m_pTimer(nullptr),m_Counter(0),
 m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 {
    setTimeOut(60);
-   loadSvg(KStandardDirs::locate("data", "ring-kde/tips/reload.svg"));
+   loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/reload.svg"));
    connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }
 

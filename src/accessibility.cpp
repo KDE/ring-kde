@@ -18,10 +18,13 @@
 #include "accessibility.h"
 
 //KDE
-#include <KSpeech>
-#include <KDebug>
-#include <KLocale>
-#include <KIcon>
+// #include <KSpeech>
+#include <klocalizedstring.h>
+#include <QIcon>
+
+//Qt
+#include <QtCore/QDateTime>
+#include <QtCore/QTime>
 
 //Ring
 #include <call.h>
@@ -34,29 +37,29 @@
 Accessibility* Accessibility::m_pInstance = nullptr;
 
 ///Constructor
-Accessibility::Accessibility() : QObject(0),QList<KAction*>()
+Accessibility::Accessibility() : QObject(0),QList<QAction *>()
 {
-   KAction* action = new KAction(0);
+   QAction * action = new QAction(0);
    action->setObjectName ( "listCall"               );
    action->setShortcut   ( Qt::CTRL + Qt::Key_L     );
    action->setText       ( i18n("List all current calls") );
-   action->setIcon       ( KIcon("text-speak")      );
+   action->setIcon       ( QIcon::fromTheme("text-speak")      );
    *this << action;
    connect(action,SIGNAL(triggered(bool)),this,SLOT(listCall()));
 
-   action = new KAction(0);
+   action = new QAction(0);
    action->setObjectName ( "currentCallDetails"       );
    action->setShortcut   ( Qt::CTRL + Qt::Key_I       );
    action->setText       ( i18n("Get current call details") );
-   action->setIcon       ( KIcon("text-speak")        );
+   action->setIcon       ( QIcon::fromTheme("text-speak")        );
    *this << action;
    connect(action,SIGNAL(triggered(bool)),this,SLOT(currentCallDetails()));
 }
 
 Accessibility::~Accessibility()
 {
-   for (int i=0;i<QList<KAction*>::size();i++){
-      delete QList<KAction*>::at(i);
+   for (int i=0;i<QList<QAction *>::size();i++){
+      delete QList<QAction *>::at(i);
    }
 }
 
@@ -73,13 +76,13 @@ Accessibility* Accessibility::instance()
 void Accessibility::listCall()
 {
    if (CallModel::instance()->getActiveCalls().size()>0) {
-      KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance()->getActiveCalls().size()), KSpeech::soPlainText);
-      foreach (Call* call,CallModel::instance()->getActiveCalls()) {
-         KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerContactMethod()->uri().isEmpty())?call->peerContactMethod()->uri():call->dialNumber())), KSpeech::soPlainText);
-      }
+//       KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance()->getActiveCalls().size()), KSpeech::soPlainText);
+//       foreach (Call* call,CallModel::instance()->getActiveCalls()) {
+//          KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerContactMethod()->uri().isEmpty())?call->peerContactMethod()->uri():call->dialNumber())), KSpeech::soPlainText);
+//       }
    }
    else {
-      KSpeechInterfaceSingleton::instance()->say(i18n("You currently have no call"), KSpeech::soPlainText);
+//       KSpeechInterfaceSingleton::instance()->say(i18n("You currently have no call"), KSpeech::soPlainText);
    }
 }
 
@@ -101,7 +104,7 @@ void Accessibility::currentCallDetails()
 {
    foreach (Call* call,CallModel::instance()->getActiveCalls()) {
       if (Ring::view()->currentCall() == call) {
-         QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toAscii() ));
+         QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toLatin1() ));
          if (!call->peerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));
          if (!call->peerContactMethod()->uri().isEmpty())
@@ -113,7 +116,7 @@ void Accessibility::currentCallDetails()
          if (nSec>0)
             toSay += i18n(" and you have been talking since %1 seconds",nSec );
 
-         KSpeechInterfaceSingleton::instance()->say(toSay, KSpeech::soPlainText);
+//          KSpeechInterfaceSingleton::instance()->say(toSay, KSpeech::soPlainText);
       }
    }
 }
@@ -121,5 +124,6 @@ void Accessibility::currentCallDetails()
 ///Helper function is make code shorter
 void Accessibility::say(const QString &message)
 {
-   KSpeechInterfaceSingleton::instance()->say(message, KSpeech::soPlainText);
+   Q_UNUSED(message)
+//    KSpeechInterfaceSingleton::instance()->say(message, KSpeech::soPlainText);
 }

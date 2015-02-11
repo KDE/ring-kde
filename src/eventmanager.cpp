@@ -20,9 +20,11 @@
 //Qt
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDropEvent>
+#include <QtCore/QMimeData>
+#include <QtCore/QLocale>
 
 //KDE
-#include <KDebug>
+#include <klocalizedstring.h>
 
 //Ring
 #include <mime.h>
@@ -129,18 +131,18 @@ bool EventManager::viewDropEvent(QDropEvent* e)
    if (!idxAt.isValid()) { //Dropped on empty space
       if (e->mimeData()->hasFormat(RingMimes::CALLID)) {
          const QByteArray encodedCallId      = e->mimeData()->data( RingMimes::CALLID      );
-         kDebug() << "Call dropped on empty space";
+         qDebug() << "Call dropped on empty space";
          Call* call =  CallModel::instance()->getCall(encodedCallId);
          if (CallModel::instance()->getIndex(call).parent().isValid()) {
-            kDebug() << "Detaching participant";
+            qDebug() << "Detaching participant";
             CallModel::instance()->detachParticipant(CallModel::instance()->getCall(encodedCallId));
          }
          else
-            kDebug() << "The call is not in a conversation (doing nothing)";
+            qDebug() << "The call is not in a conversation (doing nothing)";
       }
       else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
          const QByteArray encodedContactMethod = e->mimeData()->data( RingMimes::PHONENUMBER );
-         kDebug() << "Phone number dropped on empty space";
+         qDebug() << "Phone number dropped on empty space";
          Call* newCall = CallModel::instance()->dialingCall();
          ContactMethod* nb = PhoneDirectoryModel::instance()->fromHash(encodedContactMethod);
          newCall->setDialNumber(nb);
@@ -150,7 +152,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
          const QByteArray encodedPerson     = e->mimeData()->data( RingMimes::CONTACT     );
-         kDebug() << "Person dropped on empty space";
+         qDebug() << "Person dropped on empty space";
          const ContactMethod* number = KPhoneNumberSelector().getNumber(PersonModel::instance()->getPersonByUid(encodedPerson));
          if (number->uri().isEmpty()) {
             Call* newCall = CallModel::instance()->dialingCall();
@@ -379,7 +381,7 @@ void EventManager::typeString(const QString& str)
    }
 
    if(!currentCall && !candidate) {
-      kDebug() << "Typing when no item is selected. Opening an item.";
+      qDebug() << "Typing when no item is selected. Opening an item.";
       candidate = CallModel::instance()->dialingCall();
       m_pParent->selectDialingCall();
       candidate->playDTMF(str);
@@ -404,10 +406,10 @@ void EventManager::typeString(const QString& str)
 ///Called when a backspace is detected
 void EventManager::backspace()
 {
-   kDebug() << "backspace";
+   qDebug() << "backspace";
    Call* call = CallModel::instance()->getCall(m_pParent->m_pView->selectionModel()->currentIndex());
    if(!call) {
-      kDebug() << "Error : Backspace on unexisting call.";
+      qDebug() << "Error : Backspace on unexisting call.";
    }
    else {
       call->backspaceItemText();
@@ -417,7 +419,7 @@ void EventManager::backspace()
 ///Called when escape is detected
 void EventManager::escape()
 {
-   kDebug() << "escape";
+   qDebug() << "escape";
    Call* call = m_pParent->currentCall();
    if (m_pParent->m_pTransferOverlay && m_pParent->m_pTransferOverlay->isVisible()) {
       m_pParent->m_pTransferOverlay->setVisible(false);
@@ -426,7 +428,7 @@ void EventManager::escape()
    }
 
    if(!call) {
-      kDebug() << "Escape when no item is selected. Doing nothing.";
+      qDebug() << "Escape when no item is selected. Doing nothing.";
    }
    else {
       switch (call->state()) {
@@ -458,7 +460,7 @@ void EventManager::enter()
 {
    Call* call = m_pParent->currentCall();
    if(!call) {
-      kDebug() << "Error : Enter on unexisting call.";
+      qDebug() << "Error : Enter on unexisting call.";
    }
    else {
       switch (call->state()) {
@@ -484,7 +486,7 @@ void EventManager::enter()
          case Call::State::CONFERENCE_HOLD:
          case Call::State::COUNT__:
          default:
-            kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
+            qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
       }
    }
 }
@@ -541,7 +543,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::COUNT__:
       default:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_STATE_CHANGED);
-         kDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
+         qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
    }
 }
 

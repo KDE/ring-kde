@@ -19,7 +19,7 @@
 #define VIDEO_WIDGET_H
 
 //Qt
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 #include <QtGui/QPainter>
 
 //Ring

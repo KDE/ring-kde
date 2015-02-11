@@ -18,7 +18,7 @@
 #ifndef PHONENUMBERDELEGATE_H
 #define PHONENUMBERDELEGATE_H
 
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 class CategorizedTreeView;
 

@@ -19,16 +19,15 @@
 
 //Qt
 #include <QtGui/QPainter>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QBitmap>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QTreeView>
+#include <QtCore/QSortFilterProxyModel>
+#include <QtWidgets/QTreeView>
 #include <QtGui/QPixmap>
 
 //KDE
-#include <KLocale>
-#include <KStandardDirs>
-#include <KIcon>
+#include <klocalizedstring.h>
+
 
 //Ring
 #include <person.h>
@@ -36,6 +35,10 @@
 #include <contactmethod.h>
 #include <collectioninterface.h>
 #include <personmodel.h>
+#include <QStandardPaths>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "delegatedropoverlay.h"
 #include "delegates/pixmapmanipulationdelegate.h"
 #include "phonenumberdelegate.h"
@@ -158,7 +161,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       const int fmh = fontH;
       const static QPixmap* mail = nullptr;
       if (!mail)
-         mail = new QPixmap(KStandardDirs::locate("data","ring-kde/mini/mail.png"));
+         mail = new QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/mail.png"));
       painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fmh-12),*mail);
       painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->preferredEmail());
       currentHeight +=fmh;
@@ -179,8 +182,16 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;
-         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/transferarrow.png")),Call::DropAction::Conference));
-         m_pDelegatedropoverlay->setButtons(&contactMap);
+         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transferarrow.png")),Call::DropAction::Conference));
+         QDialogButtonBox *buttonBox = new QDialogButtonBox();
+         QWidget *mainWidget = new QWidget(m_pView);
+         QVBoxLayout *mainLayout = new QVBoxLayout;
+//          m_pDelegatedropoverlay->setLayout(mainLayout);
+         mainLayout->addWidget(mainWidget);
+         m_pDelegatedropoverlay->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+         m_pDelegatedropoverlay->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+         //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+         mainLayout->addWidget(buttonBox);
       }
       m_pDelegatedropoverlay->paintEvent(painter, option, index);
    }

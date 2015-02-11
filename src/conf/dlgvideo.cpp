@@ -18,9 +18,8 @@
 #include "dlgvideo.h"
 
 //KDE
-#include <KDebug>
 #include <KConfigDialog>
-#include <KLocale>
+#include <klocalizedstring.h>
 
 //Ring
 #include "video/device.h"

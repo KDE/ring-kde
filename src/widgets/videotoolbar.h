@@ -18,7 +18,7 @@
 #ifndef VIDEOTOOLBAR_H
 #define VIDEOTOOLBAR_H
 
-#include <QtGui/QToolBar>
+#include <QtWidgets/QToolBar>
 
 #include "overlaytoolbar.h"
 

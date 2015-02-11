@@ -21,17 +21,15 @@
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#include <QtGui/QApplication>
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
+#include <QtWidgets/QApplication>
+#include <QTimer>
 
 //KDE
-#include <KDebug>
-#include <KLocale>
-#include <KStandardDirs>
+
 
 //STD
 #include <cmath>
+#include <QStandardPaths>
 
 ///Constructor
 RingingTip::RingingTip(QWidget* parent) : Tip(QString(),parent),m_pTimer(nullptr),m_Counter(0),
@@ -42,11 +40,11 @@ m_pRing2Pix(nullptr),m_pRing3Pix(nullptr)
    setHasBackground(false);
    setHasText(false);
    m_Padding = 0;
-   m_phoneOriginalSVG = loadSvg(KStandardDirs::locate("data", "ring-kde/tips/phoneDown.svg"));
-   m_ring1OriginalSVG = loadSvg(KStandardDirs::locate("data", "ring-kde/tips/ring1.svg"));
-   m_ring2OriginalSVG = loadSvg(KStandardDirs::locate("data", "ring-kde/tips/ring2.svg"));
-   m_ring3OriginalSVG = loadSvg(KStandardDirs::locate("data", "ring-kde/tips/ring3.svg"));
-   loadSvg(KStandardDirs::locate("data", "ring-kde/tips/rigging.svg"));
+   m_phoneOriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/phoneDown.svg"));
+   m_ring1OriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/ring1.svg"));
+   m_ring2OriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/ring2.svg"));
+   m_ring3OriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/ring3.svg"));
+   loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/rigging.svg"));
    connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }
 

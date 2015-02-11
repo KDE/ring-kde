@@ -18,9 +18,8 @@
 #include "videoglframe.h"
 
 //Qt
-#include <QtCore/QDebug>
-#include <QtCore/QMutex>
-#include <QtOpenGL/QGLWidget>
+#include <QDebug>
+#include <QMutex>
 #include <QtOpenGL/qglfunctions.h>
 
 //System

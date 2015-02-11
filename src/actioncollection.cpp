@@ -18,20 +18,19 @@
 #include "actioncollection.h"
 
 //Qt
-#include <QtGui/QAction>
-#include <QtCore/QPointer>
+#include <QtWidgets/QAction>
+#include <QPointer>
 
 //KDE
-#include <KAction>
-#include <KStandardDirs>
-#include <KLocale>
-#include <KDebug>
-#include <KMessageBox>
+#include <QAction>
+
+#include <klocalizedstring.h>
+#include <QDebug>
+#include <kmessagebox.h>
 #include <KStandardAction>
 #include <KShortcutsDialog>
 #include <KActionCollection>
 #include <KEditToolBar>
-#include <KGlobal>
 #include <KSharedConfig>
 
 //Ring
@@ -50,6 +49,7 @@
 #include <callmodel.h>
 #include <audio/settings.h>
 #include <personmodel.h>
+#include <QStandardPaths>
 
 
 ActionCollection* ActionCollection::m_spInstance = nullptr;
@@ -78,15 +78,15 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
    action_unhold        = new ExtendedAction(this);
    action_pickup        = new ExtendedAction(this);
 
-   action_transfer->setAltIcon(KStandardDirs::locate("data" , "ring-kde/transfer_grayscale.png" ));
-   action_record  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/record_grayscale.png"   ));
-   action_hold    ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/hold_grayscale.png"     ));
-   action_refuse  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/refuse_grayscale.png"   ));
-   action_mute_capture    ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/mutemic_grayscale.png"  ));
-   action_hangup  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/hangup_grayscale.png"   ));
-   action_unhold  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/unhold_grayscale.png"   ));
-   action_pickup  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/pickup_grayscale.png"   ));
-   action_accept  ->setAltIcon(KStandardDirs::locate("data" , "ring-kde/pickup_grayscale.png"   ));
+   action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfer_grayscale.png" ));
+   action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record_grayscale.png"   ));
+   action_hold    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold_grayscale.png"     ));
+   action_refuse  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/refuse_grayscale.png"   ));
+   action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
+   action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
+   action_unhold  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/unhold_grayscale.png"   ));
+   action_pickup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+   action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );
@@ -116,22 +116,22 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
    action_video_preview         ->setText ( i18n( "Preview"      ) );
    action_video_scale           ->setText ( i18n( "Keep aspect ratio"      ));
    action_video_fullscreen      ->setText ( i18n( "Fullscreen"             ));
-   action_video_rotate_left     ->setAltIcon(KIcon("object-rotate-left"    ));
-   action_video_rotate_right    ->setAltIcon(KIcon("object-rotate-right"   ));
-   action_video_flip_horizontal ->setAltIcon(KIcon("object-flip-horizontal"));
-   action_video_flip_vertical   ->setAltIcon(KIcon("object-flip-vertical"  ));
-   action_video_mute            ->setAltIcon(KIcon("camera-web"            ));
-   action_video_preview         ->setAltIcon(KIcon("view-preview"          ));
-   action_video_scale           ->setAltIcon(KIcon("transform-scale"       ));
-   action_video_fullscreen      ->setAltIcon(KIcon("view-fullscreen"       ));
-   action_video_rotate_left     ->setIcon(KIcon("object-rotate-left"    ));
-   action_video_rotate_right    ->setIcon(KIcon("object-rotate-right"   ));
-   action_video_flip_horizontal ->setIcon(KIcon("object-flip-horizontal"));
-   action_video_flip_vertical   ->setIcon(KIcon("object-flip-vertical"  ));
-   action_video_mute            ->setIcon(KIcon("camera-web"            ));
-   action_video_preview         ->setIcon(KIcon("view-preview"          ));
-   action_video_scale           ->setIcon(KIcon("transform-scale"       ));
-   action_video_fullscreen      ->setIcon(KIcon("view-fullscreen"       ));
+   action_video_rotate_left     ->setAltIcon(QIcon::fromTheme("object-rotate-left"    ));
+   action_video_rotate_right    ->setAltIcon(QIcon::fromTheme("object-rotate-right"   ));
+   action_video_flip_horizontal ->setAltIcon(QIcon::fromTheme("object-flip-horizontal"));
+   action_video_flip_vertical   ->setAltIcon(QIcon::fromTheme("object-flip-vertical"  ));
+   action_video_mute            ->setAltIcon(QIcon::fromTheme("camera-web"            ));
+   action_video_preview         ->setAltIcon(QIcon::fromTheme("view-preview"          ));
+   action_video_scale           ->setAltIcon(QIcon::fromTheme("transform-scale"       ));
+   action_video_fullscreen      ->setAltIcon(QIcon::fromTheme("view-fullscreen"       ));
+   action_video_rotate_left     ->setIcon(QIcon::fromTheme("object-rotate-left"    ));
+   action_video_rotate_right    ->setIcon(QIcon::fromTheme("object-rotate-right"   ));
+   action_video_flip_horizontal ->setIcon(QIcon::fromTheme("object-flip-horizontal"));
+   action_video_flip_vertical   ->setIcon(QIcon::fromTheme("object-flip-vertical"  ));
+   action_video_mute            ->setIcon(QIcon::fromTheme("camera-web"            ));
+   action_video_preview         ->setIcon(QIcon::fromTheme("view-preview"          ));
+   action_video_scale           ->setIcon(QIcon::fromTheme("transform-scale"       ));
+   action_video_fullscreen      ->setIcon(QIcon::fromTheme("view-fullscreen"       ));
    action_video_preview         ->setCheckable(true);
    action_video_scale           ->setCheckable(true);
    action_video_fullscreen      ->setCheckable(true);
@@ -171,9 +171,9 @@ ActionCollection::~ActionCollection()
 
 void ActionCollection::setupAction()
 {
-   kDebug() << "setupActions";
+   qDebug() << "setupActions";
 
-   action_mailBox  = new KAction(Ring::app());
+   action_mailBox  = new QAction(Ring::app());
    action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
    action_refuse->setShortcut      ( Qt::CTRL + Qt::Key_D );
    action_hold->setShortcut        ( Qt::CTRL + Qt::Key_H );
@@ -190,15 +190,15 @@ void ActionCollection::setupAction()
    action_configureRing = KStandardAction::preferences(this, SLOT(configureRing()), Ring::app());
    action_configureRing->setText(i18n("Configure Ring-KDE"));
 
-   action_displayDialpad        = new KAction(KIcon(QIcon(RingIcons::DISPLAY_DIALPAD)), i18n("Display dialpad")                 , this);
-   action_displayMessageBox     = new KAction(KIcon("mail-message-new"), i18n("Display text message box")                 , this);
-   action_displayVolumeControls = new KAction(KIcon(QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS)), i18n("Display volume controls"), this);
-   action_pastenumber           = new KAction(KIcon("edit-paste"), i18n("Paste")                                          , this);
-   action_showContactDock       = new KAction(KIcon("edit-find-user")   , i18n("Display Person")                         , this);
-   action_showHistoryDock       = new KAction(KIcon("view-history")     , i18n("Display history")                         , this);
-   action_showBookmarkDock      = new KAction(KIcon("bookmark-new-list"), i18n("Display bookmark")                        , this);
-   action_editToolBar           = new KAction(KIcon("configure-toolbars"), i18n("Configure Toolbars")                     , this);
-   action_addPerson            = new KAction(KIcon("contact-new"),i18n("Add new contact")                                                     , this);
+   action_displayDialpad        = new QAction(QIcon(RingIcons::DISPLAY_DIALPAD), i18n("Display dialpad")                 , this);
+   action_displayMessageBox     = new QAction(QIcon::fromTheme("mail-message-new"), i18n("Display text message box")                 , this);
+   action_displayVolumeControls = new QAction(QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS), i18n("Display volume controls"), this);
+   action_pastenumber           = new QAction(QIcon::fromTheme("edit-paste"), i18n("Paste")                                          , this);
+   action_showContactDock       = new QAction(QIcon::fromTheme("edit-find-user")   , i18n("Display Person")                         , this);
+   action_showHistoryDock       = new QAction(QIcon::fromTheme("view-history")     , i18n("Display history")                         , this);
+   action_showBookmarkDock      = new QAction(QIcon::fromTheme("bookmark-new-list"), i18n("Display bookmark")                        , this);
+   action_editToolBar           = new QAction(QIcon::fromTheme("configure-toolbars"), i18n("Configure Toolbars")                     , this);
+   action_addPerson            = new QAction(QIcon::fromTheme("contact-new"),i18n("Add new contact")                                                     , this);
 
    action_addPerson->setShortcut ( Qt::CTRL + Qt::Key_N );
 
@@ -232,7 +232,7 @@ void ActionCollection::setupAction()
 
 
 
-   action_configureShortcut = new KAction(KIcon(KIcon("configure-shortcuts")), i18n("Configure Shortcut"), this);
+   action_configureShortcut = new QAction(QIcon::fromTheme("configure-shortcuts"), i18n("Configure Shortcut"), this);
    //                    SENDER                        SIGNAL               RECEIVER                 SLOT               /
    /**/connect(action_accept,                SIGNAL(triggered()),           this    , SLOT(accept())                    );
    /**/connect(action_hangup,                SIGNAL(triggered()),           this    , SLOT(hangup())                    );
@@ -250,7 +250,7 @@ void ActionCollection::setupAction()
    /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
    /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
    /**/connect(action_addPerson,            SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
-   /**/connect(MacroModel::instance(),       SIGNAL(addAction(KAction*)),   this    , SLOT(addMacro(KAction*))          );
+   /**/connect(MacroModel::instance(),       SIGNAL(addAction(QAction *)),   this    , SLOT(addMacro(QAction*))          );
    /*                                                                                                                   */
 
    connect(Audio::Settings::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
@@ -282,13 +282,13 @@ void ActionCollection::setupAction()
 
    MacroModel::instance()->initMacros();
 
-   QList<KAction*> acList = *Accessibility::instance();
+   QList<QAction *> acList = *Accessibility::instance();
 
-   foreach(KAction* ac,acList) {
+   foreach(QAction * ac,acList) {
       Ring::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
-//    qDebug() << "\n\n\nGlobal" << KGlobal::config()->groupList();
-//    KConfigGroup g = KGlobal::config()->group("KShortcutsDialog Settings");
+//    qDebug() << "\n\n\nGlobal" << KSharedConfig::openConfig()->groupList();
+//    KConfigGroup g = KSharedConfig::openConfig()->group("KShortcutsDialog Settings");
 //    Ring::app()->actionCollection()->exportGlobalShortcuts(&g);
 
    updateRecordButton();
@@ -300,7 +300,7 @@ void ActionCollection::accept() //TODO dead code?
 {
    Call* call = Ring::view()->currentCall();// Ring::view()->currentCall();
    if(!call) {
-      kDebug() << "Calling when no item is selected. Opening an item.";
+      qDebug() << "Calling when no item is selected. Opening an item.";
       CallModel::instance()->dialingCall();
       Ring::view()->selectDialingCall();
       Ring::view()->updateWindowCallState();
@@ -311,7 +311,7 @@ void ActionCollection::accept() //TODO dead code?
       //TODO port to lifeCycle code
       if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD
          || state == Call::State::BUSY || state == Call::State::FAILURE || state == Call::State::ERROR) {
-         kDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
+         qDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
          CallModel::instance()->dialingCall();
          Ring::view()->selectDialingCall();
          Ring::view()->updateWindowCallState();
@@ -348,7 +348,7 @@ void ActionCollection::refuse()
 {
    Call* call = Ring::view()->currentCall();
    if(!call) {
-      kDebug() << "Error : Hanging up when no item selected. Should not happen.";
+      qDebug() << "Error : Hanging up when no item selected. Should not happen.";
    }
    else {
       try {
@@ -366,7 +366,7 @@ void ActionCollection::hold()
 {
    Call* call = Ring::view()->currentCall();
    if(!call) {
-      kDebug() << "Error : Holding when no item selected. Should not happen.";
+      qDebug() << "Error : Holding when no item selected. Should not happen.";
    }
    else {
       try {
@@ -384,7 +384,7 @@ void ActionCollection::unhold()
 {
    Call* call = Ring::view()->currentCall();
    if(!call) {
-      kDebug() << "Error : Un-Holding when no item selected. Should not happen.";
+      qDebug() << "Error : Un-Holding when no item selected. Should not happen.";
    }
    else {
       try {
@@ -402,7 +402,7 @@ void ActionCollection::transfer()
 {
    Call* call = Ring::view()->currentCall();
    if(!call) {
-      kDebug() << "Error : Transferring when no item selected. Should not happen.";
+      qDebug() << "Error : Transferring when no item selected. Should not happen.";
    }
    else {
       try {
@@ -420,7 +420,7 @@ void ActionCollection::record()
 {
    Call* call = Ring::view()->currentCall();
    if(!call) {
-      kDebug() << "Error : Recording when no item selected. Should not happen.";
+      qDebug() << "Error : Recording when no item selected. Should not happen.";
    }
    else {
       try {
@@ -483,7 +483,7 @@ void ActionCollection::editToolBar()
 }
 
 ///Add a new dynamic action (macro)
-void ActionCollection::addMacro(KAction* newAction)
+void ActionCollection::addMacro(QAction * newAction)
 {
    Ring::app()->actionCollection()->addAction(newAction->objectName() , newAction );
 }
@@ -545,48 +545,48 @@ ExtendedAction* ActionCollection::acceptAction  ()
    return action_accept;
 }
 
-KAction* ActionCollection::displayVolumeControlsAction()
+QAction * ActionCollection::displayVolumeControlsAction()
 {
    return action_displayVolumeControls;
 }
 
-KAction* ActionCollection::displayDialpadAction       ()
+QAction * ActionCollection::displayDialpadAction       ()
 {
    return action_displayDialpad;
 }
 
-KAction* ActionCollection::displayMessageBoxAction    ()
+QAction * ActionCollection::displayMessageBoxAction    ()
 {
    return action_displayMessageBox;
 }
 
-KAction* ActionCollection::mailBoxAction              ()
+QAction * ActionCollection::mailBoxAction              ()
 {
    return action_mailBox;
 }
 
-KAction* ActionCollection::showContactDockAction      ()
+QAction * ActionCollection::showContactDockAction      ()
 {
    return action_showContactDock;
 }
 
-KAction* ActionCollection::showHistoryDockAction      ()
+QAction * ActionCollection::showHistoryDockAction      ()
 {
    return action_showHistoryDock;
 }
 
-KAction* ActionCollection::showBookmarkDockAction     ()
+QAction * ActionCollection::showBookmarkDockAction     ()
 {
    return action_showBookmarkDock;
 }
 
-KAction* ActionCollection::quitAction                 ()
+QAction * ActionCollection::quitAction                 ()
 {
    return action_quit;
 }
 
 
-KAction* ActionCollection::addPerson()
+QAction * ActionCollection::addPerson()
 {
    return action_addPerson;
 }

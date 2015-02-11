@@ -18,7 +18,7 @@
 #ifndef CALL_VIEW_OVERLAY
 #define CALL_VIEW_OVERLAY
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 #include "ui_transfer.h"
 
 class Call;

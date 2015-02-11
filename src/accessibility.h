@@ -18,11 +18,11 @@
 #ifndef ACCESSIBILITY_H
 #define ACCESSIBILITY_H
 
-#include <QtCore/QList>
-#include <KAction>
+#include <QList>
+#include <QAction>
 
 ///Accessibility: Functions to improve accessibility for disabled peoples
-class Accessibility : public QObject, public QList<KAction*>
+class Accessibility : public QObject, public QList<QAction *>
 {
    Q_OBJECT
 public:

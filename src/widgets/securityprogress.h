@@ -18,7 +18,7 @@
 #ifndef SECURITYPROGRESS_H
 #define SECURITYPROGRESS_H
 
-#include <QtGui/QProgressBar>
+#include <QtWidgets/QProgressBar>
 
 //Qt
 class QListView;

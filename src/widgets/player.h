@@ -18,7 +18,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 
 #include "ui_player.h"
 

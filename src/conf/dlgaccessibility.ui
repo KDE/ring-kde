@@ -212,7 +212,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="KLineEdit" name="m_pNameLE">
+            <widget class="QLineEdit" name="m_pNameLE">
              <property name="placeholderText">
               <string>Identifier for this macro (toolbar text)</string>
              </property>
@@ -232,7 +232,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="KComboBox" name="m_pCategoryCBB">
+            <widget class="QComboBox" name="m_pCategoryCBB">
              <property name="editable">
               <bool>true</bool>
              </property>
@@ -249,7 +249,7 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="KLineEdit" name="m_pSequenceLE">
+            <widget class="QLineEdit" name="m_pSequenceLE">
              <property name="placeholderText">
               <string>The key sequence to be executed</string>
              </property>
@@ -292,7 +292,7 @@
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="KLineEdit" name="m_pDescriptionLE">
+            <widget class="QLineEdit" name="m_pDescriptionLE">
              <property name="placeholderText">
               <string>A description for this macro</string>
              </property>
@@ -377,16 +377,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>KShortcutWidget</class>
    <extends>QWidget</extends>

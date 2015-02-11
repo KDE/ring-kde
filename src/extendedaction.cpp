@@ -16,31 +16,30 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "extendedaction.h"
-#include <KIcon>
+#include <QIcon>
 
-ExtendedAction::ExtendedAction(QObject* parent) : KAction(parent),m_pIcon(nullptr)
+ExtendedAction::ExtendedAction(QObject* parent) : QAction(parent)
 {
    connect(this,SIGNAL(changed()),this,SLOT(hasChanged()));
 }
 
 ExtendedAction::~ExtendedAction()
 {
-   delete m_pIcon;
 }
 
-const KIcon& ExtendedAction::altIcon()
+const QIcon& ExtendedAction::altIcon()
 {
-   return (const KIcon&) *m_pIcon;
+   return m_Icon;
 }
 
 void ExtendedAction::setAltIcon(const QString &path)
 {
-   m_pIcon = new KIcon(path);
+   m_Icon = QIcon::fromTheme(path);
 }
 
-void ExtendedAction::setAltIcon(const KIcon &icon)
+void ExtendedAction::setAltIcon(const QIcon &icon)
 {
-   m_pIcon = new KIcon(icon);
+   m_Icon = icon;
 }
 
 void ExtendedAction::setText(const QString& newText)

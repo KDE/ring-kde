@@ -19,21 +19,21 @@
 
 #include "dlgaddressbook.h"
 
-#include <KMessageBox>
-#include <QtCore/QPointer>
+#include <kmessagebox.h>
+#include <QPointer>
 #include "klib/kcfg_settings.h"
-#include "klib/akonadibackend.h"
+// #include "klib/akonadibackend.h"
 #include "numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
-#include <akonadi/collectionmodel.h>
+// #include <akonadi/collectionmodel.h>
 #include "personmodel.h"
 #include "collectionmodel.h"
-#include "klib/akonadicontactcollectionmodel.h"
-#include <akonadi/collectionpropertiesdialog.h>
-#include <akonadi/agenttypedialog.h>
-#include <akonadi/agentfilterproxymodel.h>
-#include <akonadi/agentinstancecreatejob.h>
-#include <akonadi/standardactionmanager.h>
+// #include "klib/akonadicontactcollectionmodel.h"
+// #include <akonadi/collectionpropertiesdialog.h>
+// #include <akonadi/agenttypedialog.h>
+// #include <akonadi/agentfilterproxymodel.h>
+// #include <akonadi/agentinstancecreatejob.h>
+// #include <akonadi/standardactionmanager.h>
 
 ///Constructor
 DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
@@ -41,8 +41,8 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 {
    setupUi(this);
 
-   m_pAddCollection->setIcon(KIcon("list-add"));
-   m_pEditCollection->setIcon(KIcon("document-edit"));
+   m_pAddCollection->setIcon(QIcon::fromTheme("list-add"));
+   m_pEditCollection->setIcon(QIcon::fromTheme("document-edit"));
 
    m_pPhoneTypeList->setModel(NumberCategoryModel::instance());
    m_pDelegate = new AutoCompletionDelegate();
@@ -57,7 +57,7 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 
    connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
-   connect(AkonadiPersonCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
+//    connect(AkonadiPersonCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
 //    connect(PersonModel::instance()->backendModel(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
 } //DlgAddressBook
 
@@ -71,7 +71,7 @@ DlgAddressBook::~DlgAddressBook()
 ///Reload the widget
 void DlgAddressBook::updateWidgets()
 {
-   AkonadiPersonCollectionModel::instance()->reload();
+//    AkonadiPersonCollectionModel::instance()->reload();
 //    PersonModel::instance()->backendModel()->load();
 }
 
@@ -79,7 +79,7 @@ void DlgAddressBook::updateWidgets()
 void DlgAddressBook::updateSettings()
 {
    NumberCategoryModel::instance()->save();
-   AkonadiPersonCollectionModel::instance()->save();
+//    AkonadiPersonCollectionModel::instance()->save();
 //    PersonModel::instance()->backendModel()->save();
    m_HasChanged = false;
 }
@@ -112,7 +112,7 @@ void DlgAddressBook::slotEditCollection()
 ///Add a new Akonadi collection
 void DlgAddressBook::slotAddCollection()
 {
-   QPointer<Akonadi::AgentTypeDialog> dlg = new Akonadi::AgentTypeDialog( this );
+   /*QPointer<Akonadi::AgentTypeDialog> dlg = new Akonadi::AgentTypeDialog( this );
    dlg->agentFilterProxyModel()->addMimeTypeFilter( "text/x-vcard" );
    dlg->agentFilterProxyModel()->addMimeTypeFilter( "X-IMAddress" );
    if ( dlg->exec() ) {
@@ -126,7 +126,7 @@ void DlgAddressBook::slotAddCollection()
       }
 
    }
-   delete dlg;
+   delete dlg;*/
 }
 
 void DlgAddressBook::slotResourceCreationResult(KJob* job)

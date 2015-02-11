@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "errormessage.h"
-#include <KLocale>
+#include <klocalizedstring.h>
 
 ///Error to display when there is nothing else to say
 const QString ErrorMessage::GENERIC_ERROR = i18n("An unknown error occurred. Ring KDE will now exit. If the problem persist, please report a bug.\n\n"

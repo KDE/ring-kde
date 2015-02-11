@@ -18,7 +18,7 @@
 #ifndef CONFERENCEDELEGATE_H
 #define CONFERENCEDELEGATE_H
 
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 //Ring
 class CategorizedTreeView;

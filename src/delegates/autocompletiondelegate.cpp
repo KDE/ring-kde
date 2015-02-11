@@ -19,7 +19,7 @@
 
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 #include <numbercompletionmodel.h>
 

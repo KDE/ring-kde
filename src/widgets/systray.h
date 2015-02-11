@@ -19,17 +19,17 @@
 #ifndef SYSTRAY_H
 #define SYSTRAY_H
 
-#include <KSystemTrayIcon>
+#include <QSystemTrayIcon>
 
 //KDE
-class KAction;
+class QAction;
 
 //Qt
 class QMenu;
 class QIcon;
 
 ///SysTray: The old system try, should be totally replaced by a plasmoid some day
-class SysTray : public KSystemTrayIcon
+class SysTray : public QSystemTrayIcon
 {
 Q_OBJECT
 
@@ -39,7 +39,7 @@ public:
    ~SysTray();
 
    //Mutators
-   void addAction(KAction *action);
+   void addAction(QAction *action);
    void addSeparator();
 
 private:

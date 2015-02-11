@@ -18,7 +18,8 @@
 #include "dlgpresence.h"
 
 //KDE
-#include <KIcon>
+#include <QIcon>
+#include <KLocalizedString>
 
 //Ring
 #include <presencestatusmodel.h>
@@ -29,10 +30,10 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
 {
    setupUi(this);
    m_pView->setModel(PresenceStatusModel::instance());
-   m_pUp->setIcon     ( KIcon( "go-up"       ) );
-   m_pDown->setIcon   ( KIcon( "go-down"     ) );
-   m_pAdd->setIcon    ( KIcon( "list-add"    ) );
-   m_pRemove->setIcon ( KIcon( "list-remove" ) );
+   m_pUp->setIcon     ( QIcon::fromTheme( "go-up"       ) );
+   m_pDown->setIcon   ( QIcon::fromTheme( "go-down"     ) );
+   m_pAdd->setIcon    ( QIcon::fromTheme( "list-add"    ) );
+   m_pRemove->setIcon ( QIcon::fromTheme( "list-remove" ) );
    connect(m_pAdd   , SIGNAL(clicked()),PresenceStatusModel::instance() ,SLOT(addRow())       );
    connect(m_pUp    , SIGNAL(clicked()),this                            ,SLOT(slotMoveUp())   );
    connect(m_pDown  , SIGNAL(clicked()),this                            ,SLOT(slotMoveDown()) );
@@ -40,10 +41,10 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
    connect(this     , SIGNAL(updateButtons()) , parent                  ,SLOT(updateButtons()));
    connect(PresenceStatusModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotChanged()));
 
-   m_pView->horizontalHeader()->setResizeMode(0,QHeaderView::ResizeToContents);
-   m_pView->horizontalHeader()->setResizeMode(1,QHeaderView::Stretch);
+   m_pView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+   m_pView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
    for (int i=2;i<PresenceStatusModel::instance()->columnCount();i++) {
-      m_pView->horizontalHeader()->setResizeMode(i,QHeaderView::ResizeToContents);
+      m_pView->horizontalHeader()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
    }
 
    //Add an info tip in the account list

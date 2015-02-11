@@ -24,27 +24,24 @@
 #include <unistd.h>
 
 //Qt
-#include <QtCore/QString>
-#include <QtGui/QActionGroup>
-#include <QtGui/QLabel>
+#include <QString>
+#include <QtWidgets/QActionGroup>
+#include <QtWidgets/QLabel>
 #include <QtGui/QCursor>
-#include <QtCore/QPointer>
-#include <QtCore/QTimer>
+#include <QTimer>
 
 //KDE
-#include <KDebug>
-#include <KStandardAction>
-#include <KAction>
-#include <KStatusBar>
-#include <KActionCollection>
+#include <QDebug>
+#include <QAction>
+#include <QStatusBar>
 #include <KNotification>
 #include <KShortcutsDialog>
-#include <KComboBox>
-#include <KMessageBox>
-#include <KStandardDirs>
-#include <KLocale>
-#include <KEditToolBar>
-#include <KIcon>
+#include <QComboBox>
+#include <kmessagebox.h>
+
+#include <klocalizedstring.h>
+#include <QIcon>
+#include <QStandardPaths>
 
 //Ring library
 #include "person.h"
@@ -56,9 +53,9 @@
 #include "delegates/numbercategorydelegate.h"
 #include "klib/macromodel.h"
 #include "klib/bookmarkbackend.h"
-#include "klib/akonadibackend.h"
+// #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
-#include "klib/akonadicontactcollectionmodel.h"
+// #include "klib/akonadicontactcollectionmodel.h"
 #include "presencestatusmodel.h"
 #include "video/manager.h"
 #include "contactmethod.h"
@@ -109,8 +106,8 @@ class ConcreteNumberCategoryDelegate :public NumberCategoryDelegate {
       QList<int> list = ConfigurationSkeleton::phoneTypeList();
       const bool isEmpty = !list.size();
 #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
-#define ICN(name) QPixmap(KStandardDirs::locate("data" , QString("ring-kde/mini/%1.png").arg(name)))
-      model->addCategory(i18n("Home")     ,ICN("home")     , KABC::PhoneNumber::Home ,IS_ENABLED( KABC::PhoneNumber::Home     ));
+#define ICN(name) QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString("ring-kde/mini/%1.png").arg(name)))
+      /*model->addCategory(i18n("Home")     ,ICN("home")     , KABC::PhoneNumber::Home ,IS_ENABLED( KABC::PhoneNumber::Home     ));
       model->addCategory(i18n("Work")     ,ICN("work")     , KABC::PhoneNumber::Work ,IS_ENABLED( KABC::PhoneNumber::Work     ));
       model->addCategory(i18n("Msg")      ,ICN("mail")     , KABC::PhoneNumber::Msg  ,IS_ENABLED( KABC::PhoneNumber::Msg      ));
       model->addCategory(i18n("Pref")     ,ICN("call")     , KABC::PhoneNumber::Pref ,IS_ENABLED( KABC::PhoneNumber::Pref     ));
@@ -123,7 +120,7 @@ class ConcreteNumberCategoryDelegate :public NumberCategoryDelegate {
       model->addCategory(i18n("Car")      ,ICN("car")      , KABC::PhoneNumber::Car  ,IS_ENABLED( KABC::PhoneNumber::Car      ));
       model->addCategory(i18n("Isdn")     ,ICN("call")     , KABC::PhoneNumber::Isdn ,IS_ENABLED( KABC::PhoneNumber::Isdn     ));
       model->addCategory(i18n("Pcs")      ,ICN("call")     , KABC::PhoneNumber::Pcs  ,IS_ENABLED( KABC::PhoneNumber::Pcs      ));
-      model->addCategory(i18n("Pager")    ,ICN("pager")    , KABC::PhoneNumber::Pager,IS_ENABLED( KABC::PhoneNumber::Pager    ));
+      model->addCategory(i18n("Pager")    ,ICN("pager")    , KABC::PhoneNumber::Pager,IS_ENABLED( KABC::PhoneNumber::Pager    ));*/
       model->addCategory(i18n("Preferred"),ICN("preferred"), 10000                   ,IS_ENABLED( 10000                       ));
 #undef ICN
 #undef IS_ENABLED
@@ -150,7 +147,7 @@ Ring::Ring(QWidget* parent)
       ProfilePersisterDelegate::setInstance(new KDEProfilePersister());
 
       //Start the Akonadi collection backend (contact loader)
-      AkonadiPersonCollectionModel::instance();
+//       AkonadiPersonCollectionModel::instance();
       HistoryModel::instance()->addBackend<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
 
       BookmarkModel::instance()->addBackend<BookmarkBackend>();
@@ -268,7 +265,7 @@ Ring::Ring(QWidget* parent)
 
    m_pInitialized = true ;
 
-   KStatusBar* bar = statusBar();
+   QStatusBar* bar = statusBar();
    int left,top,right,bottom;
    bar->layout()->getContentsMargins ( &left, &top, &right, &bottom );
    bar->layout()->setContentsMargins(0,top,0,bottom);
@@ -304,7 +301,7 @@ Ring::Ring(QWidget* parent)
    QLabel* curAccL = new QLabel(i18n("Account:"));
    bar->addPermanentWidget(curAccL);
 
-   m_pAccountStatus = new KComboBox(bar);
+   m_pAccountStatus = new QComboBox(bar);
    m_pAccountModel = new AccountListNoCheckProxyModel();
    m_pAccountStatus->setModel(m_pAccountModel);
    m_pAccountStatus->setMinimumSize(100,0);
@@ -312,7 +309,7 @@ Ring::Ring(QWidget* parent)
    connect(m_pPresent,SIGNAL(toggled(bool)),m_pPresenceDock,SLOT(setVisible(bool)));
 
    QToolButton* m_pReloadButton = new QToolButton(this);
-   m_pReloadButton->setIcon(KIcon("view-refresh"));
+   m_pReloadButton->setIcon(QIcon::fromTheme("view-refresh"));
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,SIGNAL(clicked()),AccountModel::instance(),SLOT(registerAllAccounts()));
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
@@ -539,7 +536,7 @@ void Ring::currentPriorAccountChanged(Account* newPrior)
       m_pAccountStatus->setCurrentIndex(newPrior->index().row());
    }
    else {
-      kDebug() << "Daemon not responding";
+      qDebug() << "Daemon not responding";
    }
 }
 
@@ -553,16 +550,16 @@ void Ring::updateTabIcons()
          for (int i=0;i<bar->count();i++) {
             QString text = bar->tabText(i);
             if (text == i18n("Call")) {
-               bar->setTabIcon(i,KIcon("call-start"));
+               bar->setTabIcon(i,QIcon::fromTheme("call-start"));
             }
             else if (text == i18n("Bookmark")) {
-               bar->setTabIcon(i,KIcon("bookmarks"));
+               bar->setTabIcon(i,QIcon::fromTheme("bookmarks"));
             }
             else if (text == i18n("Contact")) {
-               bar->setTabIcon(i,KIcon("edit-find-user"));
+               bar->setTabIcon(i,QIcon::fromTheme("edit-find-user"));
             }
             else if (text == i18n("History")) {
-               bar->setTabIcon(i,KIcon("view-history"));
+               bar->setTabIcon(i,QIcon::fromTheme("view-history"));
             }
          }
       }

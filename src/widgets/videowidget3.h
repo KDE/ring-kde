@@ -18,7 +18,7 @@
 #ifndef VIDEOWIDGET3_H
 #define VIDEOWIDGET3_H
 
-#include <QtGui/QGraphicsView>
+#include <QtWidgets/QGraphicsView>
 #include "videoglframe.h"
 #include <video/renderer.h>
 

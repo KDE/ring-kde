@@ -18,7 +18,7 @@
 #ifndef VIDEOGLFRAME_H
 #define VIDEOGLFRAME_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include <QObject>
 #include <QSize>

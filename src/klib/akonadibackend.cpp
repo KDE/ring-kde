@@ -20,8 +20,6 @@
 #include "akonadibackend.h"
 
 //Qt
-#include <QTimer>
-#include <QObject>
 #include <QPointer>
 
 //KDE
@@ -45,8 +43,6 @@
 #include <kabc/addressee.h>
 #include <kabc/addresseelist.h>
 #include <kabc/contactgroup.h>
-#include <QAbstractItemModel>
-#include <KConfigGroup>
 
 //Ring library
 #include "person.h"

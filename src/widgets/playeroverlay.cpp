@@ -17,13 +17,13 @@
  **************************************************************************/
 #include "playeroverlay.h"
 
-#include <QtCore/QFile>
-#include <QtGui/QGraphicsOpacityEffect>
+#include <QFile>
+#include <QtWidgets/QGraphicsOpacityEffect>
 
-#include <KIcon>
-#include <KMessageBox>
-#include <KLocale>
-#include <KDebug>
+#include <QIcon>
+#include <kmessagebox.h>
+#include <klocalizedstring.h>
+#include <QDebug>
 
 #include "call.h"
 
@@ -31,8 +31,8 @@ PlayerOverlay::PlayerOverlay(Call* call, QWidget* parent) : QWidget(parent),m_pC
 {
    setupUi(this);
    m_pPlayer->setVisible(false);
-   m_pDelete->setIcon( KIcon("edit-delete") );
-   m_pPlay->setIcon( KIcon( "media-playback-start" ));
+   m_pDelete->setIcon( QIcon::fromTheme("edit-delete") );
+   m_pPlay->setIcon( QIcon::fromTheme( "media-playback-start" ));
    QGraphicsOpacityEffect * effect = new QGraphicsOpacityEffect(m_pDelete);
    effect->setOpacity(0.3);
    m_pDelete->setGraphicsEffect(effect);
@@ -45,7 +45,7 @@ void PlayerOverlay::slotDeleteRecording()
 {
    const int ret = KMessageBox::questionYesNo(this, i18n("Are you sure you want to delete this recording?"), i18n("Delete recording"));
    if (ret == KMessageBox::Yes) {
-      kDebug() << "Deleting file";
+      qDebug() << "Deleting file";
       QFile::remove(m_pCall->recordingPath());
       setVisible(false);
    }

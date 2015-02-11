@@ -18,8 +18,7 @@
 #ifndef CATEGORIZEDTREEVIEW_H
 #define CATEGORIZEDTREEVIEW_H
 
-#include <QtGui/QTreeWidget>
-#include <QtCore/QDebug>
+#include <QtWidgets/QTreeWidget>
 
 class QStyledItemDelegate;
 

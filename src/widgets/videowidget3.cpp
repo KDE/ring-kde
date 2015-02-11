@@ -18,15 +18,13 @@
 #include "videowidget3.h"
 
 //Qt
-#include <QtCore/QDebug>
-#include <QtOpenGL/QGLWidget>
-#include <QtOpenGL/QGLFormat>
 #include <QtGui/QResizeEvent>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDragLeaveEvent>
 #include <QtGui/QDragMoveEvent>
 #include <QtGui/QDropEvent>
 #include <QtCore/QMimeData>
+#include <QtOpenGL/QGLWidget>
 
 //System
 #include <math.h>

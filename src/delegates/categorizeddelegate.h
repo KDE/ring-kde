@@ -18,7 +18,7 @@
 #ifndef CATEGORIZEDDELEGATE_H
 #define CATEGORIZEDDELEGATE_H
 
-#include <QtGui/QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 class QTreeView;
 

@@ -120,7 +120,7 @@
        </spacer>
       </item>
       <item row="0" column="0" colspan="3">
-       <widget class="KLineEdit" name="m_pNumberLE">
+       <widget class="QLineEdit" name="m_pNumberLE">
         <property name="autoFillBackground">
          <bool>false</bool>
         </property>
@@ -213,13 +213,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
  <slots>

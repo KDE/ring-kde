@@ -19,7 +19,7 @@
 #ifndef ERROR_MESSAGES_H
 #define ERROR_MESSAGES_H
 
-#include <KLocale>
+#include <klocalizedstring.h>
 
 class ErrorMessage {
 public:

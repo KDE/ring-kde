@@ -19,8 +19,7 @@
 #ifndef RINGAPPLICATION_H
 #define RINGAPPLICATION_H
 
-#include <KUniqueApplication>
-#include <QDBusAbstractAdaptor>
+#include <QApplication>
 
 //Qt
 class QEvent;
@@ -29,18 +28,13 @@ class QEvent;
 class Ring;
 
 ///RingApplication: Main application
-class RingApplication :
-#ifdef DISABLE_UNIQUE_APPLICATION
-   public KApplication
-#else
-   public KUniqueApplication
-#endif
+class RingApplication : public QApplication
 {
   Q_OBJECT
 
 public:
    // Constructor
-   RingApplication();
+   RingApplication(int & argc, char ** argv);
 
    // Destructor
    virtual ~RingApplication();

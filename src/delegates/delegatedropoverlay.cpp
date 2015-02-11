@@ -18,14 +18,9 @@
 #include "delegatedropoverlay.h"
 
 #include <QtGui/QPainter>
-#include <KDebug>
 
-#include <QtCore/QTimer>
-#include <QDragEnterEvent>
-#include <QDragMoveEvent>
-#include <QDragLeaveEvent>
-#include <QMimeData>
-#include <QtGui/QApplication>
+#include <QTimer>
+#include <QtWidgets/QApplication>
 #include "call.h"
 #include <collectioninterface.h>
 #include <personmodel.h>

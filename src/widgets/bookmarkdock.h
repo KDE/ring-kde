@@ -18,15 +18,15 @@
 #ifndef BOOKMARK_DOCK_H
 #define BOOKMARK_DOCK_H
 
-#include <QtGui/QDockWidget>
-#include <QtGui/QSortFilterProxyModel>
+#include <QtWidgets/QDockWidget>
+#include <QtCore/QSortFilterProxyModel>
 #include "ui_dockbase.h"
 
 //Qt
 class QCheckBox;
 
 //KDE
-class KAction;
+class QAction;
 class BookmarkSortFilterProxyModel;
 
 //Ring
@@ -47,12 +47,12 @@ private:
    BookmarkSortFilterProxyModel* m_pProxyModel;
 
    //Actions
-   KAction* m_pCallAgain   ;
-   KAction* m_pEditPerson ;
-   KAction* m_pCopy        ;
-   KAction* m_pEmail       ;
-   KAction* m_pAddPhone    ;
-   KAction* m_pBookmark    ;
+   QAction * m_pBookmark    ;
+   QAction * m_pCallAgain   ;
+   QAction * m_pEditPerson  ;
+   QAction * m_pCopy        ;
+   QAction * m_pEmail       ;
+   QAction * m_pAddPhone    ;
 
 private Q_SLOTS:
    void reload();

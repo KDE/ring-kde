@@ -36,7 +36,7 @@
     </widget>
    </item>
    <item row="3" column="0" colspan="2">
-    <widget class="KTextEdit" name="m_pMessage">
+    <widget class="QTextEdit" name="m_pMessage">
      <property name="maximumSize">
       <size>
        <width>16777215</width>
@@ -57,13 +57,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>ktextedit.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

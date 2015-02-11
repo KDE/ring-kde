@@ -18,11 +18,11 @@
 #include "callviewtoolbar.h"
 
 //Qt
-#include <QtGui/QTreeView>
-#include <QtGui/QHBoxLayout>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QHBoxLayout>
 
 //KDE
-#include <KDebug>
+#include <QDebug>
 
 //Ring
 #include "ring.h"
@@ -76,10 +76,10 @@ void CallViewToolbar::updateState()
             qDebug() << "OverlayToolbar is out of bound (state)" << state;
          }
          catch (UserActionModel::Action& btn) {
-            kDebug() << "OverlayToolbar is out of bound (Action)" << (int)btn;
+            qDebug() << "OverlayToolbar is out of bound (Action)" << (int)btn;
          }
          catch (...) {
-            kDebug() << "OverlayToolbar is out of bound (Other)";
+            qDebug() << "OverlayToolbar is out of bound (Other)";
          }
       }
       if (!act_counter)

@@ -22,26 +22,24 @@
 //Qt
 #include <QtCore/QString>
 #include <QtCore/QDate>
-#include <QtCore/QPoint>
 #include <QtCore/QProcess>
 #include <QtCore/QTimer>
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
-#include <QtGui/QCheckBox>
-#include <QtGui/QGridLayout>
-#include <QtGui/QMenu>
-#include <QtGui/QApplication>
+#include <QtCore/QMimeData>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QApplication>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 
 //KDE
-#include <KDebug>
-#include <KIcon>
-#include <KLineEdit>
-#include <KDateWidget>
-#include <KComboBox>
-#include <KLocale>
-#include <KAction>
+#include <QDebug>
+#include <QIcon>
+#include <KDatePicker>
+#include <klocalizedstring.h>
+#include <QAction>
 #include <KColorScheme>
 
 //Ring
@@ -139,8 +137,8 @@ m_pCallAgain(nullptr)
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    m_pFromL      = new QLabel      ( i18n("From:"), m_pBottomWidget           );
    m_pToL        = new QLabel      ( i18nc("To date:","To:"), m_pBottomWidget );
-   m_pFromDW     = new KDateWidget ( m_pBottomWidget                          );
-   m_pToDW       = new KDateWidget ( m_pBottomWidget                          );
+   m_pFromDW     = new KDatePicker ( m_pBottomWidget                          );
+   m_pToDW       = new KDatePicker ( m_pBottomWidget                          );
    m_pAllTimeCB  = new QCheckBox   ( i18n("Display all")                      );
    m_pLinkPB     = new QPushButton ( m_pBottomWidget                          );
 
@@ -179,7 +177,7 @@ m_pCallAgain(nullptr)
    m_pLinkPB->setCheckable(true);
 
    m_pFilterLE->setPlaceholderText(i18n("Filter"));
-   m_pFilterLE->setClearButtonShown(true);
+   m_pFilterLE->setClearButtonEnabled(true);
 
    QStringList sortBy;
    sortBy << i18nc("Sort by date","Date") << i18nc("Sort by Name","Name") << i18nc("Sort by Popularity","Popularity") << i18nc("Sort by Length","Length") << i18nc("sort by spent time","Spent time");
@@ -326,49 +324,49 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CALL)
       return;
    if (!m_pMenu) {
-      m_pCallAgain    = new KAction(this);
-      m_pAddPerson   = new KAction(this);
-      m_pCopy         = new KAction(this);
-      m_pEmail        = new KAction(this);
-      m_pRemove       = new KAction(this);
-      m_pAddToPerson = new KAction(this);
-      m_pBookmark     = new KAction(this);
+      m_pCallAgain    = new QAction(this);
+      m_pAddPerson   = new QAction(this);
+      m_pCopy         = new QAction(this);
+      m_pEmail        = new QAction(this);
+      m_pRemove       = new QAction(this);
+      m_pAddToPerson = new QAction(this);
+      m_pBookmark     = new QAction(this);
 
       m_pCallAgain->setShortcut    ( Qt::Key_Enter                  );
       m_pCallAgain->setText        ( i18n("Call Again")             );
-      m_pCallAgain->setIcon        ( KIcon("call-start")            );
+      m_pCallAgain->setIcon        ( QIcon::fromTheme("call-start")            );
 
       m_pAddToPerson->setShortcut ( Qt::CTRL + Qt::Key_E           );
       m_pAddToPerson->setText     ( i18n("Add Number to Person")  );
-      m_pAddToPerson->setIcon     ( KIcon("list-resource-add")     );
+      m_pAddToPerson->setIcon     ( QIcon::fromTheme("list-resource-add")     );
       m_pAddToPerson->setDisabled ( true                           );
 
       m_pAddPerson->setShortcut   ( Qt::CTRL + Qt::Key_E           );
       m_pAddPerson->setText       ( i18n("Add Person")            );
-      m_pAddPerson->setIcon       ( KIcon("contact-new")           );
+      m_pAddPerson->setIcon       ( QIcon::fromTheme("contact-new")           );
 
       m_pCopy->setShortcut         ( Qt::CTRL + Qt::Key_C           );
       m_pCopy->setText             ( i18n("Copy")                   );
-      m_pCopy->setIcon             ( KIcon("edit-copy")             );
+      m_pCopy->setIcon             ( QIcon::fromTheme("edit-copy")             );
 
       m_pEmail->setShortcut        ( Qt::CTRL + Qt::Key_M           );
       m_pEmail->setText            ( i18n("Send Email")             );
-      m_pEmail->setIcon            ( KIcon("mail-message-new")      );
+      m_pEmail->setIcon            ( QIcon::fromTheme("mail-message-new")      );
       m_pEmail->setDisabled        ( true                           );
 
       m_pRemove->setShortcut       ( Qt::Key_Shift + Qt::Key_Delete );
       m_pRemove->setText           ( i18n("Remove")                 );
-      m_pRemove->setIcon           ( KIcon("edit-delete")           );
+      m_pRemove->setIcon           ( QIcon::fromTheme("edit-delete")           );
 
       m_pBookmark->setShortcut     ( Qt::CTRL + Qt::Key_D           );
       m_pBookmark->setText         ( i18n("Bookmark")               );
       if (!idx.data(Call::Role::IsBookmark).toBool()) {
          m_pBookmark->setText      ( i18n("Bookmark")               );
-         m_pBookmark->setIcon      ( KIcon("bookmarks")             );
+         m_pBookmark->setIcon      ( QIcon::fromTheme("bookmarks")             );
       }
       else {
          m_pBookmark->setText      ( i18n("Remove bookmark")        );
-         m_pBookmark->setIcon      ( KIcon("edit-delete")           );
+         m_pBookmark->setIcon      ( QIcon::fromTheme("edit-delete")           );
       }
 
       m_pMenu = new QMenu(this);
@@ -401,7 +399,7 @@ void HistoryDock::enableRemove()
 void HistoryDock::slotSendEmail()
 {
    if (!m_pCurrentCall) return;
-   kDebug() << "Sending email";
+   qDebug() << "Sending email";
    QProcess *myProcess = new QProcess(this);
    QStringList arguments;
    Person* ct = m_pCurrentCall->peerContactMethod()->contact();
@@ -419,7 +417,7 @@ void HistoryDock::slotRemove()
 void HistoryDock::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
-   kDebug() << "Calling "<< m_pCurrentCall->peerContactMethod();
+   qDebug() << "Calling "<< m_pCurrentCall->peerContactMethod();
    Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerName(), AccountModel::currentAccount());
    if (call) {
       call->setDialNumber  ( m_pCurrentCall->peerContactMethod() );
@@ -435,11 +433,11 @@ void HistoryDock::slotCallAgain()
 void HistoryDock::slotCopy()
 {
    if (!m_pCurrentCall) {
-      kDebug() << "No call to copy";
+      qDebug() << "No call to copy";
       return;
    }
 
-   kDebug() << "Copying contact";
+   qDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
    mimeData->setData(RingMimes::CALLID, m_pCurrentCall->id().toUtf8());
 
@@ -465,7 +463,7 @@ void HistoryDock::slotCopy()
 
 void HistoryDock::slotAddPerson()
 {
-   kDebug() << "Adding contact";
+   qDebug() << "Adding contact";
    Person* aPerson = new Person();
    Person::ContactMethods numbers(aPerson);
    numbers << PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home");//new ContactMethod(m_pCurrentCall->peerContactMethod(), "Home");
@@ -477,7 +475,7 @@ void HistoryDock::slotAddPerson()
 void HistoryDock::slotAddToPerson()
 {
    //TODO
-   kDebug() << "Adding to contact";
+   qDebug() << "Adding to contact";
 }
 
 void HistoryDock::slotBookmark()

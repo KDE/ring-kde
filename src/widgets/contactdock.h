@@ -21,10 +21,10 @@
 #include "ui_contactdock.h"
 
 //Qt
-#include <QtCore/QHash>
-#include <QtGui/QDockWidget>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QTreeWidgetItem>
+#include <QHash>
+#include <QtWidgets/QDockWidget>
+#include <QtCore/QSortFilterProxyModel>
+#include <QtWidgets/QTreeWidgetItem>
 
 //Ring
 #include "categorizedtreeview.h"
@@ -34,7 +34,7 @@ class ContactMethod;
 class QMenu;
 
 //KDE
-class KAction;
+class QAction;
 
 namespace Akonadi {
    namespace Person {
@@ -82,13 +82,13 @@ private:
    KeyPressEaterC*              m_pKeyPressEater ;
 
    //Actions
-   KAction* m_pCallAgain   ;
-   KAction* m_pEditPerson ;
-   KAction* m_pCopy        ;
-   KAction* m_pEmail       ;
-   KAction* m_pAddPhone    ;
-   KAction* m_pBookmark    ;
-   KAction* m_pRemove      ;
+   QAction * m_pCallAgain   ;
+   QAction * m_pEditPerson ;
+   QAction * m_pCopy        ;
+   QAction * m_pEmail       ;
+   QAction * m_pAddPhone    ;
+   QAction * m_pBookmark    ;
+   QAction * m_pRemove      ;
 
    //Delegates
    CategorizedDelegate* m_pCategoryDelegate;

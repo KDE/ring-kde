@@ -19,18 +19,15 @@
 
 //Qt
 #include <QtGui/QPainter>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QBitmap>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QTreeView>
+#include <QtCore/QSortFilterProxyModel>
+#include <QtWidgets/QTreeView>
 #include <QtGui/QPixmap>
-#include <QtCore/QDebug>
-#include <QtCore/QVariant>
 
 //KDE
-#include <KLocale>
-#include <KIcon>
-#include <KStandardDirs>
+#include <klocalizedstring.h>
+
 
 //Ring
 #include <person.h>

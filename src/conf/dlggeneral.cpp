@@ -19,13 +19,13 @@
 #include "dlggeneral.h"
 
 //Qt
-#include <QtGui/QToolButton>
-#include <QtGui/QAction>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QAction>
 
 //KDE
-#include <KMessageBox>
-#include <KLocale>
-#include <KIcon>
+#include <kmessagebox.h>
+#include <klocalizedstring.h>
+#include <QIcon>
 
 //Ring
 #include "klib/kcfg_settings.h"
@@ -38,7 +38,7 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
 {
    setupUi(this);
    connect(toolButton_historyClear, SIGNAL(clicked()), this, SLOT(slotClearCallHistoryAsked()));
-   toolButton_historyClear->setIcon(KIcon("edit-clear-history"));
+   toolButton_historyClear->setIcon(QIcon::fromTheme("edit-clear-history"));
    const bool isLimited = HistoryModel::instance()->isHistoryLimited();
    m_pKeepHistory->setChecked(!isLimited);
    m_pHistoryMax ->setEnabled(isLimited );

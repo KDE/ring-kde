@@ -21,28 +21,23 @@
 #include "view.h"
 
 //Qt
-#include <QtCore/QString>
-#include <QtCore/QPointer>
+#include <QString>
 #include <QtGui/QPalette>
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDropEvent>
 #include <QtGui/QBitmap>
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
-#include <QtCore/QAbstractAnimation>
+#include <QtCore/QMimeData>
 
 //KDE
-#include <KLocale>
-#include <KAction>
-#include <KMenu>
-#include <KInputDialog>
-#include <kabc/addressbook.h>
-#include <KMessageBox>
-#include <KIcon>
+#include <klocalizedstring.h>
+// #include <kabc/addressbook.h>
+#include <kmessagebox.h>
 #include <KColorScheme>
-#include <KStandardDirs>
+
 
 //Ring
 #include "icons/icons.h"
@@ -266,7 +261,7 @@ void View::selectDialingCall() const
 ///Change GUI icons
 void View::updateWindowCallState()
 {
-   kDebug() << "Call state changed";
+   qDebug() << "Call state changed";
    bool    enabledActions [6] = { true              , true                 , true              , true                  , true                   , true                 };
    QString buttonIconFiles[6] = { RingIcons::CALL   , RingIcons::HANGUP    , RingIcons::HOLD   , RingIcons::TRANSFER   , RingIcons::REC_DEL_OFF , RingIcons::MAILBOX   };
    QString actionTexts    [6] = { ACTION_LABEL_CALL , ACTION_LABEL_HANG_UP , ACTION_LABEL_HOLD , ACTION_LABEL_TRANSFER , ACTION_LABEL_RECORD    , ACTION_LABEL_MAILBOX };
@@ -279,7 +274,7 @@ void View::updateWindowCallState()
 
    call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
    if (!call) {
-      kDebug() << "No item selected.";
+      qDebug() << "No item selected.";
       enabledActions[ Ring::CallAction::Refuse   ] = false;
       enabledActions[ Ring::CallAction::Hold     ] = false;
       enabledActions[ Ring::CallAction::Transfer ] = false;
@@ -368,12 +363,12 @@ void View::updateWindowCallState()
             break;
 
          case Call::State::OVER:
-            kDebug() << "Error : Reached CALL_STATE_OVER with call "  << call->id() << "!";
+            qDebug() << "Error : Reached CALL_STATE_OVER with call "  << call->id() << "!";
             m_pMessageBoxW->setVisible(false)                                            ;
             break;
 
          case Call::State::ERROR:
-            kDebug() << "Error : Reached CALL_STATE_ERROR with call " << call->id() << "!";
+            qDebug() << "Error : Reached CALL_STATE_ERROR with call " << call->id() << "!";
             m_pMessageBoxW->setVisible(false)                                            ;
             break;
 
@@ -388,7 +383,7 @@ void View::updateWindowCallState()
             break;
          case Call::State::COUNT__:
          default:
-            kDebug() << "Error : Reached unexisting state for call "  << call->id() << "(" << call->state() << "!";
+            qDebug() << "Error : Reached unexisting state for call "  << call->id() << "(" << call->state() << "!";
             break;
 
       }
@@ -493,7 +488,7 @@ void View::on_widget_dialpad_typed(QString text)
 ///When a call is coming (dbus)
 void View::on1_incomingCall(Call* call)
 {
-   kDebug() << "Signal : Incoming Call ! ID = " << call->id();
+   qDebug() << "Signal : Incoming Call ! ID = " << call->id();
 
    updateWindowCallState();
 
@@ -515,7 +510,7 @@ void View::on1_incomingCall(Call* call)
 ///When a new voice mail is coming
 void View::on1_voiceMailNotify(Account* a, int count)
 {
-   kDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << a->alias();
+   qDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << a->alias();
 }
 
 

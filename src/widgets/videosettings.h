@@ -18,7 +18,7 @@
 #ifndef VIDEO_SETTINGS_H
 #define VIDEO_SETTINGS_H
 
-#include <QtGui/QWidget>
+#include <QtWidgets/QWidget>
 #include "ui_videodevicesetting.h"
 
 namespace Video {

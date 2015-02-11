@@ -17,11 +17,10 @@
  ***************************************************************************/
 #include "ringtonedelegate.h"
 
-#include <QtGui/QTableView>
-#include <QtGui/QPushButton>
-#include <QtCore/QDebug>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QPushButton>
 
-#include <KIcon>
+#include <QIcon>
 
 #include <ringtonemodel.h>
 
@@ -33,7 +32,7 @@ class RingToneListItem : public QPushButton
 public:
    ///Constructor
    RingToneListItem(const QModelIndex& idx) : QPushButton(nullptr),m_Idx(idx) {
-      setIcon(KIcon("media-playback-start"));
+      setIcon(QIcon::fromTheme("media-playback-start"));
       setCheckable(true);
       connect(this,SIGNAL(clicked()),this,SLOT(playRingtone()));
    }

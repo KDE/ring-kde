@@ -18,13 +18,13 @@
 #ifndef ACTIONCOLLECTION_H
 #define ACTIONCOLLECTION_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 //Qt
 class QActionGroup;
 
 //KDE
-class KAction;
+class QAction;
 
 //Ring
 class ExtendedAction;
@@ -51,15 +51,15 @@ public:
    ExtendedAction* transferAction();
    ExtendedAction* pickupAction  ();
    ExtendedAction* acceptAction  ();
-   KAction*        displayVolumeControlsAction();
-   KAction*        displayDialpadAction       ();
-   KAction*        displayMessageBoxAction    ();
-   KAction*        mailBoxAction              ();
-   KAction*        showContactDockAction      ();
-   KAction*        showHistoryDockAction      ();
-   KAction*        showBookmarkDockAction     ();
-   KAction*        quitAction                 ();
-   KAction*        addPerson                 ();
+   QAction *        displayVolumeControlsAction();
+   QAction *        displayDialpadAction       ();
+   QAction *        displayMessageBoxAction    ();
+   QAction *        mailBoxAction              ();
+   QAction *        showContactDockAction      ();
+   QAction *        showHistoryDockAction      ();
+   QAction *        showBookmarkDockAction     ();
+   QAction *        quitAction                 ();
+   QAction *        addPerson                 ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -100,20 +100,20 @@ private:
    #endif
 
    //Other actions
-   KAction* action_mailBox               ;
-   KAction* action_close                 ;
-   KAction* action_quit                  ;
-   KAction* action_displayVolumeControls ;
-   KAction* action_displayDialpad        ;
-   KAction* action_displayMessageBox     ;
-   KAction* action_configureRing         ;
-   KAction* action_configureShortcut     ;
-   KAction* action_pastenumber           ;
-   KAction* action_showContactDock       ;
-   KAction* action_showHistoryDock       ;
-   KAction* action_showBookmarkDock      ;
-   KAction* action_editToolBar           ;
-   KAction* action_addPerson            ;
+   QAction * action_mailBox               ;
+   QAction * action_close                 ;
+   QAction * action_quit                  ;
+   QAction * action_displayVolumeControls ;
+   QAction * action_displayDialpad        ;
+   QAction * action_displayMessageBox     ;
+   QAction * action_configureRing         ;
+   QAction * action_configureShortcut     ;
+   QAction * action_pastenumber           ;
+   QAction * action_showContactDock       ;
+   QAction * action_showHistoryDock       ;
+   QAction * action_showBookmarkDock      ;
+   QAction * action_editToolBar           ;
+   QAction * action_addPerson            ;
    QActionGroup* action_screen           ;
 
    //Singleton
@@ -132,7 +132,7 @@ private Q_SLOTS:
    void configureRing         ();
    void showShortCutEditor    ();
    void editToolBar           ();
-   void addMacro              ( KAction* newAction );
+   void addMacro              ( QAction * newAction );
    void slotAddPerson();
    void updateRecordButton   ();
    void updateVolumeButton   ();

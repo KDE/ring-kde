@@ -19,17 +19,17 @@
 #define IM_MANAGER_H
 
 //Qt
-#include <QtCore/QHash>
+#include <QHash>
 
 //KDE
-#include <KTabWidget>
+#include <QTabWidget>
 
 //Ring
 class IMTab;
 class InstantMessagingModel;
 class Call;
 
-class IMManager : public KTabWidget
+class IMManager : public QTabWidget
 {
    Q_OBJECT
 public:

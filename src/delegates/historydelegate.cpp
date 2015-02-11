@@ -19,24 +19,23 @@
 
 //Qt
 #include <QtGui/QPainter>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtGui/QBitmap>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QTreeView>
+#include <QtCore/QSortFilterProxyModel>
+#include <QtWidgets/QTreeView>
 #include <QtCore/QFile>
-#include <QtCore/QDebug>
 
 //KDE
 #include <KColorScheme>
-#include <KLocale>
-#include <KIcon>
-#include <KStandardDirs>
+#include <klocalizedstring.h>
+
 
 //Ring
 #include <historymodel.h>
 #include <person.h>
 #include <callmodel.h>
 #include <contactmethod.h>
+#include <QStandardPaths>
 #include "klib/kcfg_settings.h"
 #include "widgets/playeroverlay.h"
 #include "dialpaddelegate.h"
@@ -114,7 +113,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          call = qobject_cast<Call*>(obj);
       if (call && QFile::exists(call->recordingPath())) {
          QPainter painter(&pxm);
-         QPixmap status(KStandardDirs::locate("data","ring-kde/voicemail.png"));
+         QPixmap status(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/voicemail.png"));
          status=status.scaled(QSize(24,24));
          painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
          if (m_pParent && m_pParent->indexWidget(index) == nullptr) {
@@ -138,7 +137,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
    if (currentLifeCycleState == Call::LifeCycleState::PROGRESS && index.data(Call::Role::IsRecording).toBool()) {
-      const static QPixmap record(KStandardDirs::locate("data","ring-kde/record.png"));
+      const static QPixmap record(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record.png"));
       time_t curTime;
       ::time(&curTime);
       if (curTime%3)
@@ -168,7 +167,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          currentHeight +=fm.height();
 //          const static QPixmap* callPxm = nullptr;
 //          if (!callPxm)
-//             callPxm = new QPixmap(KStandardDirs::locate("data","ring-kde/mini/call.png"));
+//             callPxm = new QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/call.png"));
          QVariant var = index.data(Call::Role::CategoryIcon);
          if (var.type() == QVariant::Pixmap) {
             QPixmap pxm2 = var.value<QPixmap>();
@@ -268,9 +267,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (index.data(Call::Role::DropState).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
          const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/confBlackWhite.png")),Call::DropAction::Conference));
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/transferarrow.png")),Call::DropAction::Transfer));
-         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(KStandardDirs::locate("data","ring-kde/transferarrow.png")),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/confBlackWhite.png")),Call::DropAction::Conference));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transferarrow.png")),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transferarrow.png")),Call::DropAction::Transfer));
       }
 
       if (currentState == Call::State::OVER)
