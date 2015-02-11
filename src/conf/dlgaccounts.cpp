@@ -148,9 +148,12 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 
    combo_tls_method->setModel(TlsMethodModel::instance());
 
-   m_pRingtoneListLW->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
-   m_pRingtoneListLW->horizontalHeader()->setSectionResizeMode(1,QHeaderView::ResizeToContents);
-   m_pRingtoneListLW->setItemDelegate(new RingToneDelegate(m_pRingtoneListLW));
+   if (m_pRingtoneListLW->horizontalHeader()) {
+      m_pRingtoneListLW->horizontalHeader()->setStretchLastSection(false);
+//       m_pRingtoneListLW->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+//       m_pRingtoneListLW->horizontalHeader()->setSectionResizeMode(1,QHeaderView::ResizeToContents);
+      m_pRingtoneListLW->setItemDelegate(new RingToneDelegate(m_pRingtoneListLW));
+   }
 
    //SLOTS
    //                     SENDER                            SIGNAL                       RECEIVER              SLOT                          /

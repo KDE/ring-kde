@@ -41,10 +41,12 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
    connect(this     , SIGNAL(updateButtons()) , parent                  ,SLOT(updateButtons()));
    connect(PresenceStatusModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotChanged()));
 
-   m_pView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-   m_pView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
-   for (int i=2;i<PresenceStatusModel::instance()->columnCount();i++) {
-      m_pView->horizontalHeader()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
+   if (m_pView->horizontalHeader()) {
+      /*m_pView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+      m_pView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
+      for (int i=2;i<PresenceStatusModel::instance()->columnCount();i++) {
+         m_pView->horizontalHeader()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
+      }*/
    }
 
    //Add an info tip in the account list
