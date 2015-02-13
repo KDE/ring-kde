@@ -56,7 +56,8 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    box_alsaPlugin->setModel    (Audio::Settings::instance()->alsaPluginModel    () );
    loadAlsaSettings();
 
-   m_pManager->setCurrentIndex (Audio::Settings::instance()->managerModel()->currentManagerIndex().row());
+   m_pManager->view()->setSelectionModel(Audio::Settings::instance()->managerModel       ()->selectionModel());
+//    m_pManager->setCurrentIndex (Audio::Settings::instance()->managerModel()->currentManagerIndex().row());
 
    connect( box_alsaPlugin   , SIGNAL(activated(int)) , parent, SLOT(updateButtons()));
    connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
@@ -130,6 +131,8 @@ void DlgAudio::changed()
       case Audio::ManagerModel::Manager::JACK:
          box_alsaPlugin->setDisabled(true);
          stackedWidget_interfaceSpecificSettings->setVisible(false);
+         break;
+      case Audio::ManagerModel::Manager::ERROR:
          break;
    };
    if (!m_IsLoading) {

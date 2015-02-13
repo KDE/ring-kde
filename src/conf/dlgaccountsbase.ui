@@ -222,7 +222,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -1216,7 +1216,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-349</y>
                <width>513</width>
                <height>906</height>
               </rect>
@@ -1395,7 +1395,7 @@
                   </widget>
                  </item>
                  <item row="8" column="1" colspan="3">
-                  <widget class="QComboBox" name="combo_tls_method"/>
+                  <widget class="AutoComboBox" name="combo_tls_method"/>
                  </item>
                  <item row="8" column="4" colspan="2">
                   <spacer name="horizontalSpacer_5">
@@ -1790,12 +1790,6 @@
    <header>kurlrequester.h</header>
   </customwidget>
   <customwidget>
-   <class>QTabWidget</class>
-   <extends>QTabWidget</extends>
-   <header>ktabwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>LeftToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
@@ -1826,6 +1820,11 @@
    <extends>QWidget</extends>
    <header>widgets/securityprogress.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>widgets/autocombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

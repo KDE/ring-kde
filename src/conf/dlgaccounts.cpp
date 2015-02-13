@@ -146,8 +146,6 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
 //    loadAccountList();
    accountListHasChanged = false;
 
-   combo_tls_method->setModel(TlsMethodModel::instance());
-
    if (m_pRingtoneListLW->horizontalHeader()) {
       m_pRingtoneListLW->horizontalHeader()->setStretchLastSection(false);
 //       m_pRingtoneListLW->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
@@ -301,7 +299,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /*                                            Security                                                             */
    /**/ ACC setTlsPassword                 ( edit_tls_private_key_password->text()                                    );
    /**/ ACC setTlsListenerPort             ( spinbox_tls_listener->value()                                            );
-   /**/ ACC setTlsMethod                   ( static_cast<TlsMethodModel::Type>(combo_tls_method->currentIndex())      );
    /**/ ACC setTlsServerName               ( edit_tls_outgoing->text()                                                );
    /**/ ACC setTlsNegotiationTimeoutSec    ( spinbox_tls_timeout_sec->value()                                         );
    /**/ ACC setKeyExchange                 ( currentKeyExchange                                                       );
@@ -442,6 +439,8 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
    m_pCiphers->setModel(ACC cipherModel());
 
+   combo_tls_method->bindToModel(ACC tlsMethodModel(), ACC tlsMethodModel()->selectionModel());
+
    combo_security_STRP->setModel(ACC keyExchangeModel());
    groupbox_STRP_keyexchange->setChecked(ACC isSrtpEnabled());
    if (!(ACC keyExchange() == KeyExchangeModel::Type::NONE)) {
@@ -507,8 +506,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    m_pEnableRingtoneGB->setChecked( ACC isRingtoneEnabled());
    const QString ringtonePath = ACC ringtonePath();
    m_pRingTonePath->setUrl( ringtonePath );
-
-   combo_tls_method->setCurrentIndex( TlsMethodModel::instance()->toIndex( ACC tlsMethod()).row() );
 
    m_pRingtoneListLW->setModel( ACC ringToneModel());
    const QModelIndex& rtIdx = ACC ringToneModel()->currentIndex();
