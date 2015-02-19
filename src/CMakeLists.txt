@@ -82,7 +82,9 @@ SET(
    delegates/imdelegate.cpp
    delegates/autocompletiondelegate.cpp
    delegates/ringtonedelegate.cpp
+   delegates/toolbardelegate.cpp
    delegates/kdepixmapmanipulation.cpp
+   proxies/simplerotateproxy.cpp
 )
 
 # Configuration pages

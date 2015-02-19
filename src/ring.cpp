@@ -46,6 +46,7 @@
 //Ring library
 #include "person.h"
 #include "accountmodel.h"
+#include "availableaccountmodel.h"
 #include "instantmessagingmodel.h"
 #include "imconversationmanager.h"
 #include "numbercategorymodel.h"
@@ -71,6 +72,7 @@
 //Ring
 #include "icons/icons.h"
 #include "view.h"
+#include "widgets/autocombobox.h"
 #include "actioncollection.h"
 #include "widgets/systray.h"
 #include "widgets/contactdock.h"
@@ -249,6 +251,8 @@ Ring::Ring(QWidget* parent)
    connect(ActionCollection::instance()->showHistoryDockAction(), SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
    connect(ActionCollection::instance()->showBookmarkDockAction(),SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
+   connect(CallModel::instance()->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
+
 #ifdef ENABLE_VIDEO
    connect(Video::Manager::instance(),SIGNAL(videoCallInitiated(Video::Renderer*)),this,SLOT(displayVideoDock(Video::Renderer*)));
 #endif
@@ -301,9 +305,9 @@ Ring::Ring(QWidget* parent)
    QLabel* curAccL = new QLabel(i18n("Account:"));
    bar->addPermanentWidget(curAccL);
 
-   m_pAccountStatus = new QComboBox(bar);
-   m_pAccountModel = new AccountListNoCheckProxyModel();
-   m_pAccountStatus->setModel(m_pAccountModel);
+   m_pAccountStatus = new AutoComboBox(bar);
+   m_pAccountModel = new AvailableAccountModel(this);
+   m_pAccountStatus->bindToModel(m_pAccountModel,m_pAccountModel->selectionModel());
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
    connect(m_pPresent,SIGNAL(toggled(bool)),m_pPresenceDock,SLOT(setVisible(bool)));
@@ -313,7 +317,7 @@ Ring::Ring(QWidget* parent)
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,SIGNAL(clicked()),AccountModel::instance(),SLOT(registerAllAccounts()));
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
-   connect(AccountModel::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
+//    connect(AccountModel::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
 
    if (!CallModel::instance()->isValid()) {
       KMessageBox::error(this,i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually"));
@@ -321,7 +325,7 @@ Ring::Ring(QWidget* parent)
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
    try {
-      currentPriorAccountChanged(AccountModel::currentAccount());
+      currentPriorAccountChanged(AvailableAccountModel::currentDefaultAccount());
    }
    catch(const char * msg) {
       KMessageBox::error(this,msg);
@@ -520,14 +524,14 @@ void Ring::slotPresenceEnabled(bool state)
 }
 
 ///Change current account
-void Ring::currentAccountIndexChanged(int newIndex)
+/*void Ring::currentAccountIndexChanged(int newIndex)
 {
    if (AccountModel::instance()->size()) {
       const Account* acc = AccountModel::instance()->getAccountByModelIndex(AccountModel::instance()->index(newIndex,0));
       if (acc)
          AccountModel::instance()->setPriorAccount(acc);
    }
-}
+}*/
 
 ///Update the combobox index
 void Ring::currentPriorAccountChanged(Account* newPrior)

@@ -35,9 +35,10 @@ class ContactDock;
 class BookmarkDock;
 class VideoDock;
 class HistoryDock;
-class AccountListNoCheckProxyModel;
+class AvailableAccountModel;
 class Account;
 class View;
+class AutoComboBox;
 class SysTray;
 namespace Video {
    class Renderer;
@@ -84,7 +85,7 @@ private:
    QDockWidget*   m_pCentralDW       ;
    HistoryDock*   m_pHistoryDW       ;
    BookmarkDock*  m_pBookmarkDW      ;
-   QComboBox*     m_pAccountStatus   ;
+   AutoComboBox*  m_pAccountStatus   ;
    #ifdef ENABLE_VIDEO
    VideoDock*     m_pVideoDW         ;
    #endif
@@ -92,7 +93,7 @@ private:
    QDockWidget*   m_pPresenceDock    ;
 
    static Ring*            m_sApp;
-   AccountListNoCheckProxyModel* m_pAccountModel;
+   AvailableAccountModel* m_pAccountModel;
 
    //Setters
    void setObjectNames();
@@ -124,7 +125,6 @@ private Q_SLOTS:
    void on_m_pView_transferCheckStateChangeAsked ( bool  transferCheckState      );
    void on_m_pView_recordCheckStateChangeAsked   ( bool  recordCheckState        );
    void on_m_pView_incomingCall                  ( const Call*    call           );
-   void currentAccountIndexChanged               ( int newIndex                  );
    void currentPriorAccountChanged               ( Account* newPrior             );
    void quitButton                               (                               );
    void updateTabIcons                           (                               );

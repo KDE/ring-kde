@@ -35,7 +35,7 @@
 
 CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_pParent(parent)
 {
-   addAction( ActionCollection::instance()->holdAction()     ,static_cast<int>(UserActionModel::Action::HOLD)     );
+   /*addAction( ActionCollection::instance()->holdAction()     ,static_cast<int>(UserActionModel::Action::HOLD)     );
    addAction( ActionCollection::instance()->unholdAction()   ,static_cast<int>(UserActionModel::Action::UNHOLD)   );
    addAction( ActionCollection::instance()->muteCaptureAction()     ,static_cast<int>(UserActionModel::Action::MUTE)     );
    addAction( ActionCollection::instance()->pickupAction()   ,static_cast<int>(UserActionModel::Action::PICKUP)   );
@@ -43,7 +43,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
    addAction( ActionCollection::instance()->transferAction() ,static_cast<int>(UserActionModel::Action::TRANSFER) );
    addAction( ActionCollection::instance()->recordAction()   ,static_cast<int>(UserActionModel::Action::RECORD)   );
    addAction( ActionCollection::instance()->refuseAction()   ,static_cast<int>(UserActionModel::Action::REFUSE)   );
-   addAction( ActionCollection::instance()->acceptAction()   ,static_cast<int>(UserActionModel::Action::ACCEPT)   );
+   addAction( ActionCollection::instance()->acceptAction()   ,static_cast<int>(UserActionModel::Action::ACCEPT)   );*/
 }
 
 CallViewToolbar::~CallViewToolbar()
@@ -53,7 +53,7 @@ CallViewToolbar::~CallViewToolbar()
 
 void CallViewToolbar::updateState()
 {
-   QModelIndex index = m_pParent->selectionModel()->currentIndex();
+   /*QModelIndex index = m_pParent->selectionModel()->currentIndex();
    const int rowcount = CallModel::instance()->rowCount();
    if ((!m_pParent->selectionModel()->hasSelection() || !index.isValid()) && rowcount) {
       m_pParent->selectionModel()->setCurrentIndex(CallModel::instance()->index(0,0),QItemSelectionModel::SelectCurrent);
@@ -97,5 +97,5 @@ void CallViewToolbar::updateState()
       last = CallModel::instance()->index(CallModel::instance()->rowCount(last)-1,0,last);
    const QRect topMargin =  m_pParent->visualRect(last);
    TipManager* manager = qvariant_cast<TipManager*>(parentWidget()->property("tipManager"));
-   manager->setTopMargin(topMargin.y()+topMargin.height());
+   manager->setTopMargin(topMargin.y()+topMargin.height());*/
 } //updateState

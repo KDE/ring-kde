@@ -39,6 +39,7 @@
 #include <presencestatusmodel.h>
 #include <securityvalidationmodel.h>
 #include <collectioninterface.h>
+#include <useractionmodel.h>
 #include <QStandardPaths>
 #include "icons/icons.h"
 
@@ -263,6 +264,42 @@ QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool dis
       }
    }
    return pxm;
+}
+
+QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) const
+{
+   /*action_transfer->setAltIcon(QStandardPaths::locate();
+   action_record  ->setAltIcon();
+   action_hold    ->setAltIcon();
+   action_refuse  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/refuse_grayscale.png"   ));
+   action_mute_capture    ->setAltIcon();
+   action_hangup  ->setAltIcon();
+   action_unhold  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/unhold_grayscale.png"   ));
+   action_pickup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+   action_accept  ->setAltIcon();*/
+
+   switch(state.action) {
+      case UserActionModel::Action::ACCEPT          :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+      case UserActionModel::Action::HOLD            :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold_grayscale.png"     ));
+      case UserActionModel::Action::MUTE_AUDIO      :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
+      case UserActionModel::Action::MUTE_VIDEO      :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
+      case UserActionModel::Action::SERVER_TRANSFER :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfer_grayscale.png" ));
+      case UserActionModel::Action::RECORD          :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record_grayscale.png"   ));
+      case UserActionModel::Action::HANGUP          :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
+      case UserActionModel::Action::JOIN            :
+         return QIcon();
+      case UserActionModel::Action::COUNT__:
+         break;
+   };
+
+   return QVariant();
 }
 
 const char* KDEPixmapManipulation::icnPath[2][2] = {

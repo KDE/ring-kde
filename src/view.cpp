@@ -62,6 +62,7 @@
 #include "contactmethod.h"
 #include "person.h"
 #include "accountmodel.h"
+#include "availableaccountmodel.h"
 #include "phonedirectorymodel.h"
 #include "audio/settings.h"
 #include "presencestatusmodel.h"
@@ -84,6 +85,12 @@
 #define ACTION_LABEL_GIVE_UP_TRANSF       i18n("Give up transfer")
 #define ACTION_LABEL_MAILBOX              i18n("Voicemail")
 
+//TODO remove
+#include <QtWidgets/QTableView>
+#include <useractionmodel.h>
+#include <proxies/simplerotateproxy.h>
+#include "delegates/toolbardelegate.h"
+
 ///Constructor
 View::View(QWidget *parent)
    : QWidget(parent),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
@@ -102,6 +109,7 @@ View::View(QWidget *parent)
 
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());
+   m_pView->setSelectionModel(CallModel::instance()->selectionModel());
    TipCollection::manager()->changeSize();
 
    //There is currently way to force a tree to be expanded beyond this
@@ -155,6 +163,22 @@ View::View(QWidget *parent)
    connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)) , m_pCanvasToolbar, SLOT(updateState()));
    connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State))     , m_pCanvasToolbar, SLOT(updateState()));
    connect(CallModel::instance()    , SIGNAL(layoutChanged())                         , m_pCanvasToolbar, SLOT(updateState()));
+
+   QDialog* d = new QDialog(this);
+
+   QHBoxLayout* l = new QHBoxLayout(d);
+   QTableView* lv = new QTableView(this);
+   SimpleRotateProxy* pm = new SimpleRotateProxy(this);
+   pm->setSourceModel(CallModel::instance()->userActionModel()->activeActionModel());
+   lv->setModel(pm);
+//    lv->setViewMode(QListView::IconMode);
+   lv->setItemDelegate(new ToolbarDelegate(lv));
+   l->addWidget(lv);
+   connect(lv,&QTableView::clicked,[](const QModelIndex & index ) {
+      CallModel::instance()->userActionModel()->execute(index);
+   });
+
+   d->show();
 }
 
 ///Destructor
@@ -270,7 +294,7 @@ void View::updateWindowCallState()
 
    bool transfer(false),recordActivated(false);
 
-   enabledActions[Ring::CallAction::Mailbox] = AccountModel::currentAccount() && ! AccountModel::currentAccount()->mailbox().isEmpty();
+   enabledActions[Ring::CallAction::Mailbox] = AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty();
 
    call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
    if (!call) {

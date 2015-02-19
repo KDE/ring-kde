@@ -46,6 +46,7 @@
 #include <call.h>
 #include <account.h>
 #include <accountmodel.h>
+#include <availableaccountmodel.h>
 #include <callmodel.h>
 #include <audio/settings.h>
 #include <personmodel.h>
@@ -198,7 +199,7 @@ void ActionCollection::setupAction()
    action_showHistoryDock       = new QAction(QIcon::fromTheme("view-history")     , i18n("Display history")                         , this);
    action_showBookmarkDock      = new QAction(QIcon::fromTheme("bookmark-new-list"), i18n("Display bookmark")                        , this);
    action_editToolBar           = new QAction(QIcon::fromTheme("configure-toolbars"), i18n("Configure Toolbars")                     , this);
-   action_addPerson            = new QAction(QIcon::fromTheme("contact-new"),i18n("Add new contact")                                                     , this);
+   action_addPerson             = new QAction(QIcon::fromTheme("contact-new"),i18n("Add new contact")                                                     , this);
 
    action_addPerson->setShortcut ( Qt::CTRL + Qt::Key_N );
 
@@ -249,8 +250,8 @@ void ActionCollection::setupAction()
    /**/connect(action_pastenumber,           SIGNAL(triggered()),           Ring::view() , SLOT(paste())            );
    /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
    /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
-   /**/connect(action_addPerson,            SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
-   /**/connect(MacroModel::instance(),       SIGNAL(addAction(QAction *)),   this    , SLOT(addMacro(QAction*))          );
+   /**/connect(action_addPerson,             SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
+   /**/connect(MacroModel::instance(),       SIGNAL(addAction(QAction *)),  this    , SLOT(addMacro(QAction*))          );
    /*                                                                                                                   */
 
    connect(Audio::Settings::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
@@ -295,6 +296,7 @@ void ActionCollection::setupAction()
    updateVolumeButton();
 }
 
+/*
 ///Call
 void ActionCollection::accept() //TODO dead code?
 {
@@ -431,12 +433,12 @@ void ActionCollection::record()
       }
       emit windowStateChanged();
    }
-}
+}*/
 
 ///Access the voice mail list
 void ActionCollection::mailBox()
 {
-   Account* account = AccountModel::currentAccount();
+   Account* account = AvailableAccountModel::currentDefaultAccount();
    const QString mailBoxNumber = account->mailbox();
    Call* call = CallModel::instance()->dialingCall();
    if (call) {

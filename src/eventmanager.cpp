@@ -32,6 +32,8 @@
 #include <account.h>
 #include <phonedirectorymodel.h>
 #include <accountmodel.h>
+#include <availableaccountmodel.h>
+#include <availableaccountmodel.h>
 #include <personmodel.h>
 #include <klib/tipmanager.h>
 #include "view.h"
@@ -206,7 +208,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          ContactMethod* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
-               (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
+               (n->account()?n->account():AvailableAccountModel::instance()->currentDefaultAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
          Person* c = PersonModel::instance()->getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
@@ -226,7 +228,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          ContactMethod* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
-               (n->account()?n->account():AccountModel::instance()->currentAccount())->alias()));
+               (n->account()?n->account():AvailableAccountModel::instance()->currentDefaultAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
          Person* c = PersonModel::instance()->getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
@@ -466,7 +468,7 @@ void EventManager::enter()
       switch (call->state()) {
          case Call::State::DIALING:
             //Change account if it changed
-            call->setAccount(AccountModel::instance()->currentAccount());
+            call->setAccount(AvailableAccountModel::instance()->currentDefaultAccount());
          case Call::State::INCOMING:
          case Call::State::TRANSFERRED:
          case Call::State::TRANSF_HOLD:

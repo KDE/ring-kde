@@ -42,6 +42,8 @@ public:
 
    virtual QVariant serurityIssueIcon(const QModelIndex& index);
 
+   virtual QVariant userActionIcon(const UserActionElement& state) const;
+
    static const char* icnPath[2][2];
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;

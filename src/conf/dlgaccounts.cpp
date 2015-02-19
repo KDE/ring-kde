@@ -222,7 +222,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(m_pVCodecUpPB,                     SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecUp())                );
    /**/connect(m_pVCodecDownPB,                   SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecDown())              );
    /**/connect(AccountModel::instance(),      SIGNAL(accountEnabledChanged(Account*)), this   , SLOT(otherAccountChanged())             );
-   /**/connect(AccountModel::instance(),      SIGNAL(accountStateChanged(Account*,QString)), this   , SLOT(updateStatusLabel(Account*)) );
+   /**/connect(AccountModel::instance(),      SIGNAL(accountStateChanged(Account*,Account::RestistrationState)), this   , SLOT(updateStatusLabel(Account*)) );
    /*                                                                                                                                       */
 
    connect(treeView_accountList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(accountListChanged(QModelIndex,QModelIndex)) );
@@ -271,7 +271,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    }
 
    //There is no point to save something that is unaltered, all it will cause is daemon corruption
-   if ( ACC state() != Account::EditState::NEW and ACC state() != Account::EditState::MODIFIED) {
+   if ( ACC editState() != Account::EditState::NEW and ACC editState() != Account::EditState::MODIFIED) {
       qDebug() << "Nothing to be saved";
       return;
    }
@@ -448,7 +448,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    }
 
    //BUG the daemon doesn't support changing account type after
-   edit2_protocol->setEnabled(ACC state() == Account::EditState::NEW || ACC id().isEmpty());
+   edit2_protocol->setEnabled(ACC editState() == Account::EditState::NEW || ACC id().isEmpty());
 
    m_pCodecsLW->setEnabled(ACC isVideoEnabled ());
 
@@ -605,7 +605,7 @@ void DlgAccounts::accountListChanged(const QModelIndex& current, const QModelInd
    const QModelIndex srcPrevious = ProfileModel::instance()->mapToSource(previous);
    if (srcPrevious.isValid()) {
       Account* acc = AccountModel::instance()->getAccountByModelIndex(srcPrevious);
-      if (acc && (acc->state() == Account::EditState::EDITING || acc->state() == Account::EditState::OUTDATED))
+      if (acc && (acc->editState() == Account::EditState::EDITING || acc->editState() == Account::EditState::OUTDATED))
          acc->performAction(Account::EditAction::CANCEL);
    }
    loadAccount(current);
@@ -831,7 +831,7 @@ void DlgAccounts::updateSettings()
       if(treeView_accountList->currentIndex().isValid()) {
          Account* acc = currentAccount();
          saveAccount(treeView_accountList->currentIndex());
-         if (acc && (acc->state() == Account::EditState::EDITING || acc->state() == Account::EditState::OUTDATED))
+         if (acc && (acc->editState() == Account::EditState::EDITING || acc->editState() == Account::EditState::OUTDATED))
             acc->performAction(Account::EditAction::CANCEL);
       }
 

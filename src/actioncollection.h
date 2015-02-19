@@ -121,13 +121,6 @@ private:
 
 
 private Q_SLOTS:
-   void accept   ();
-   void hangup   ();
-   void refuse   ();
-   void hold     ();
-   void unhold   ();
-   void transfer ();
-   void record   ();
    void mailBox  ();
    void configureRing         ();
    void showShortCutEditor    ();

@@ -49,6 +49,7 @@
 #include "klib/kcfg_settings.h"
 #include "historymodel.h"
 #include "accountmodel.h"
+#include "availableaccountmodel.h"
 #include "callmodel.h"
 #include "mime.h"
 #include "contactmethod.h"
@@ -418,7 +419,7 @@ void HistoryDock::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
    qDebug() << "Calling "<< m_pCurrentCall->peerContactMethod();
-   Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerName(), AccountModel::currentAccount());
+   Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerName(), AvailableAccountModel::currentDefaultAccount());
    if (call) {
       call->setDialNumber  ( m_pCurrentCall->peerContactMethod() );
       call->setAccount     ( m_pCurrentCall->account()         );

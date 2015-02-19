@@ -84,21 +84,27 @@ ColorDelegate::ColorDelegate(QPalette pal) : m_Pal(pal) {
    }
 }
 
-QVariant ColorDelegate::getColor(const Account* a) {
-   if(a->registrationStatus() == Account::State::UNREGISTERED || !a->isEnabled())
-      return m_Pal.color(QPalette::Base);
-   if(a->registrationStatus() == Account::State::REGISTERED || a->registrationStatus() == Account::State::READY) {
-      return m_Green;
-   }
-   if(a->registrationStatus() == Account::State::TRYING)
-      return m_Yellow;
-   return m_Red;
+QVariant ColorDelegate::getColor(const Account* a)
+{
+   switch(a->registrationState()) {
+      case Account::RegistrationState::READY:
+         return m_Green;
+      case Account::RegistrationState::UNREGISTERED:
+         return m_Pal.color(QPalette::Base);
+      case Account::RegistrationState::TRYING:
+         return m_Yellow;
+      case Account::RegistrationState::ERROR:
+         return m_Red;
+      case Account::RegistrationState::COUNT__:
+         break;
+   };
+   return QVariant();
 }
 
 QVariant ColorDelegate::getIcon(const Account* a) {
-   if (a->state() == Account::EditState::MODIFIED)
+   if (a->editState() == Account::EditState::MODIFIED)
       return QIcon::fromTheme("document-save");
-   else if (a->state() == Account::EditState::OUTDATED) {
+   else if (a->editState() == Account::EditState::OUTDATED) {
       return QIcon::fromTheme("view-refresh");
    }
    return QVariant();
