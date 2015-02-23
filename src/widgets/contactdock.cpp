@@ -121,7 +121,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setDelegate(m_pCategoryDelegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::Person);
 
-   m_pSourceModel = new ContactProxyModel(Qt::DisplayRole,false);
+   m_pSourceModel = new ContactProxyModel(Qt::DisplayRole);
    m_pProxyModel = new PersonSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
@@ -484,27 +484,22 @@ void ContactDock::setCategory(int index)
    switch(index) {
       case SortingCategory::Name:
          m_pSourceModel->setRole(Qt::DisplayRole);
-         m_pSourceModel->setShowAll(false);
          m_pProxyModel->setSortRole(Qt::DisplayRole);
          break;
       case SortingCategory::Organization:
          m_pProxyModel->setSortRole(PersonModel::Role::Organization);
          m_pSourceModel->setRole(PersonModel::Role::Organization);
-         m_pSourceModel->setShowAll(true);
          break;
       case SortingCategory::RecentlyUsed:
          m_pSourceModel->setRole(PersonModel::Role::FormattedLastUsed);
-         m_pSourceModel->setShowAll(true);
          m_pProxyModel->setSortRole(PersonModel::Role::IndexedLastUsed);
          break;
       case SortingCategory::Group:
          m_pSourceModel->setRole(PersonModel::Role::Group);
-         m_pSourceModel->setShowAll(true);
          m_pProxyModel->setSortRole(PersonModel::Role::Group);
          break;
       case SortingCategory::Department:
          m_pSourceModel->setRole(PersonModel::Role::Department);
-         m_pSourceModel->setShowAll(true);
          m_pProxyModel->setSortRole(PersonModel::Role::Department);
          break;
    };

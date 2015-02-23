@@ -222,7 +222,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -274,18 +274,7 @@
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QComboBox" name="edit2_protocol">
-              <item>
-               <property name="text">
-                <string>SIP</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>IAX</string>
-               </property>
-              </item>
-             </widget>
+             <widget class="AutoComboBox" name="edit2_protocol"/>
             </item>
             <item row="2" column="0">
              <widget class="QLabel" name="label3_server">
@@ -799,6 +788,42 @@
            </widget>
           </item>
           <item>
+           <widget class="QGroupBox" name="groupBox_8">
+            <property name="title">
+             <string>DHT</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Port</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="m_pBootstrapPort">
+               <property name="maximum">
+                <number>65543</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer_6">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1216,7 +1241,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-349</y>
+               <y>0</y>
                <width>513</width>
                <height>906</height>
               </rect>
@@ -1300,54 +1325,30 @@
                  <bool>false</bool>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="14" column="5">
+                 <item row="12" column="5">
+                  <widget class="IssuesIcon" name="m_pVerifyServer" native="true"/>
+                 </item>
+                 <item row="13" column="5">
                   <widget class="IssuesIcon" name="m_pVerifyClient" native="true"/>
                  </item>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="label_tls_listener">
-                   <property name="text">
-                    <string>Global TLS listener port</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1" colspan="3">
-                  <widget class="QSpinBox" name="spinbox_tls_listener">
-                   <property name="maximum">
-                    <number>65535</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="4" colspan="2">
-                  <spacer name="horizontalSpacer_4">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="1" column="0">
                   <widget class="QLabel" name="label_tls_authority">
                    <property name="text">
                     <string>Authority certificate list</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1" colspan="5">
+                 <item row="0" column="1" colspan="5">
                   <widget class="KUrlRequester" name="file_tls_authority"/>
                  </item>
-                 <item row="2" column="0">
+                 <item row="1" column="0">
                   <widget class="QLabel" name="label_tls_endpoint">
                    <property name="text">
                     <string>Public endpoint certificate</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="16" column="0">
+                 <item row="15" column="0">
                   <spacer name="verticalSpacer">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
@@ -1360,44 +1361,44 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="2" column="1" colspan="5">
+                 <item row="1" column="1" colspan="5">
                   <widget class="KUrlRequester" name="file_tls_endpoint"/>
                  </item>
-                 <item row="3" column="0">
+                 <item row="2" column="0">
                   <widget class="QLabel" name="label_tls_private_key">
                    <property name="text">
                     <string>Private key</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="1" colspan="5">
+                 <item row="2" column="1" colspan="5">
                   <widget class="KUrlRequester" name="file_tls_private_key"/>
                  </item>
-                 <item row="7" column="0">
+                 <item row="6" column="0">
                   <widget class="QLabel" name="label_tls_private_key_password">
                    <property name="text">
                     <string>Private key password</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="1" colspan="5">
+                 <item row="6" column="1" colspan="5">
                   <widget class="QLineEdit" name="edit_tls_private_key_password">
                    <property name="placeholderText">
                     <string>Only necessary if the key have a password</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="0">
+                 <item row="7" column="0">
                   <widget class="QLabel" name="label_tls_method">
                    <property name="text">
                     <string>TLS protocol method</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="1" colspan="3">
+                 <item row="7" column="1" colspan="3">
                   <widget class="AutoComboBox" name="combo_tls_method"/>
                  </item>
-                 <item row="8" column="4" colspan="2">
+                 <item row="7" column="4" colspan="2">
                   <spacer name="horizontalSpacer_5">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -1410,28 +1411,28 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="9" column="0">
+                 <item row="8" column="0">
                   <widget class="QLabel" name="label_tls_outgoing">
                    <property name="text">
                     <string>Outgoing TLS server name</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="1" colspan="5">
+                 <item row="8" column="1" colspan="5">
                   <widget class="QLineEdit" name="edit_tls_outgoing">
                    <property name="placeholderText">
                     <string>Usually the SIP server hostname</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="0">
+                 <item row="9" column="0">
                   <widget class="QLabel" name="label_tls_timeout">
                    <property name="text">
                     <string>Negotiation timeout</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="1">
+                 <item row="9" column="1">
                   <widget class="QSpinBox" name="spinbox_tls_timeout_sec">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1450,28 +1451,28 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="13" column="0" colspan="5">
+                 <item row="12" column="0" colspan="5">
                   <widget class="QCheckBox" name="check_tls_incoming">
                    <property name="text">
                     <string>Verify incoming certificates (server side)</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="14" column="0" colspan="5">
+                 <item row="13" column="0" colspan="5">
                   <widget class="QCheckBox" name="check_tls_answer">
                    <property name="text">
                     <string>Verify answer certificates (client side)</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="15" column="0" colspan="5">
+                 <item row="14" column="0" colspan="5">
                   <widget class="QCheckBox" name="check_tls_requier_cert">
                    <property name="text">
                     <string>Require a certificate for incoming TLS connections</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="4" colspan="2">
+                 <item row="9" column="4" colspan="2">
                   <spacer name="horizontalSpacer_3">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -1484,7 +1485,7 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="10" column="3">
+                 <item row="9" column="3">
                   <widget class="QSpinBox" name="spinbox_tls_timeout_msec">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1506,7 +1507,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="2">
+                 <item row="9" column="2">
                   <widget class="QLabel" name="label_timeout2">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1531,7 +1532,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0" colspan="6">
+                 <item row="3" column="0" colspan="6">
                   <widget class="QFrame" name="frame">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -1609,7 +1610,7 @@
                    </layout>
                   </widget>
                  </item>
-                 <item row="5" column="0" colspan="6">
+                 <item row="4" column="0" colspan="6">
                   <widget class="QFrame" name="frame_2">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -1687,13 +1688,10 @@
                    </layout>
                   </widget>
                  </item>
-                 <item row="13" column="5">
-                  <widget class="IssuesIcon" name="m_pVerifyServer" native="true"/>
-                 </item>
-                 <item row="15" column="5">
+                 <item row="14" column="5">
                   <widget class="IssuesIcon" name="m_pReqTLS" native="true"/>
                  </item>
-                 <item row="11" column="0" colspan="6">
+                 <item row="10" column="0" colspan="6">
                   <widget class="QListView" name="m_pCiphers"/>
                  </item>
                 </layout>

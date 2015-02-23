@@ -308,7 +308,7 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
             if (call->state() == Call::State::DIALING) {
                call->setDialNumber(n->uri());
                if (PhoneDirectoryModel::instance()->callWithAccount()
-                && n->account() && n->account()->id() != Account::ProtocolName::IP2IP)
+                && n->account() && n->account()->id() != "IP2IP") //FIXME do not hardcode this
                   call->setAccount(n->account());
                m_pParent->m_pAutoCompletion->reset();
                call->performAction(Call::Action::ACCEPT);

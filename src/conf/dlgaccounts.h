@@ -107,8 +107,6 @@ private Q_SLOTS:
 
    void moveAudioCodecUp                 ();
    void moveAudioCodecDown               ();
-   void moveVideoCodecUp                 ();
-   void moveVideoCodecDown               ();
 
    void loadVidCodecDetails        ( const QModelIndex& current, const QModelIndex& previous );
    void selectedCodecChanged       ( const QModelIndex& current, const QModelIndex& previous );

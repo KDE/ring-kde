@@ -48,6 +48,7 @@
 #include "keyexchangemodel.h"
 #include "ciphermodel.h"
 #include "ringtonemodel.h"
+#include "protocolmodel.h"
 #include "tlsmethodmodel.h"
 #include "certificate.h"
 #include "profilemodel.h"
@@ -186,7 +187,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(lineEdit_pa_published_address,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pUserAgent,                      SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
-   /**/connect(spinbox_tls_listener,              SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pBootstrapPort,                  SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(m_pBitrateSB,                      SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_authority,                SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_endpoint,                 SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
@@ -219,8 +220,6 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit_credential_password,          SIGNAL(textEdited(QString))            , this   , SLOT(main_credential_password_changed()));
    /**/connect(button_audiocodecUp,               SIGNAL(clicked())                      , this   , SLOT(moveAudioCodecUp())                );
    /**/connect(button_audiocodecDown,             SIGNAL(clicked())                      , this   , SLOT(moveAudioCodecDown())              );
-   /**/connect(m_pVCodecUpPB,                     SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecUp())                );
-   /**/connect(m_pVCodecDownPB,                   SIGNAL(clicked())                      , this   , SLOT(moveVideoCodecDown())              );
    /**/connect(AccountModel::instance(),      SIGNAL(accountEnabledChanged(Account*)), this   , SLOT(otherAccountChanged())             );
    /**/connect(AccountModel::instance(),      SIGNAL(accountStateChanged(Account*,Account::RestistrationState)), this   , SLOT(updateStatusLabel(Account*)) );
    /*                                                                                                                                       */
@@ -285,7 +284,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
 
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                 /
-   /**/ ACC setProtocol                    ( static_cast<Account::Protocol>(edit2_protocol->currentIndex())           );
    /**/ ACC setAlias                       ( edit1_alias->text()                                                      );
    /**/ ACC setHostname                    ( edit3_server->text()                                                     );
    /**/ ACC setUsername                    ( edit4_user->text()                                                       );
@@ -298,7 +296,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/                                                                                                             /**/
    /*                                            Security                                                             */
    /**/ ACC setTlsPassword                 ( edit_tls_private_key_password->text()                                    );
-   /**/ ACC setTlsListenerPort             ( spinbox_tls_listener->value()                                            );
+   /**/ ACC setBootstrapPort               ( m_pBootstrapPort->value()                                                );
    /**/ ACC setTlsServerName               ( edit_tls_outgoing->text()                                                );
    /**/ ACC setTlsNegotiationTimeoutSec    ( spinbox_tls_timeout_sec->value()                                         );
    /**/ ACC setKeyExchange                 ( currentKeyExchange                                                       );
@@ -348,8 +346,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
       ACC setRingtonePath( m_pRingTonePath->url().path() );
    }
 
-   if (m_pCodecsLW->currentIndex().isValid())
-      m_pCodecsLW->model()->setData(m_pCodecsLW->currentIndex(),m_pBitrateSB->value(),Video::CodecModel2::BITRATE_ROLE);
    saveCredential();
    m_IsLoading--;
 } //saveAccount
@@ -397,7 +393,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));
 
    //         WIDGET VALUE                                          VALUE                     /
-   /**/edit2_protocol->setCurrentIndex          ( (protocolIndex < 0) ? 0 : protocolIndex    );
    /**/edit3_server->setText                    (  ACC hostname                        ());
    /**/edit4_user->setText                      (  ACC username                        ());
    /**/edit6_mailbox->setText                   (  ACC mailbox                         ());
@@ -419,7 +414,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/spinBox_pa_published_port->setValue      (  ACC publishedPort                   ());
    /*                                                  Security                             **/
    /**/edit_tls_private_key_password->setText   (  ACC tlsPassword                     ());
-   /**/spinbox_tls_listener->setValue           (  ACC tlsListenerPort                 ());
+   /**/m_pBootstrapPort->setValue               (  ACC bootstrapPort                 ());
 //    /**/file_tls_authority->setText              (  ACC tlsCaListCertificate    ()->path().toLocalFile());
 //    /**/file_tls_endpoint->setText               (  ACC tlsCertificate          ()->path().toLocalFile());
 //    /**/file_tls_private_key->setText            (  ACC tlsPrivateKeyCertificate()->path().toLocalFile());
@@ -440,6 +435,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    m_pCiphers->setModel(ACC cipherModel());
 
    combo_tls_method->bindToModel(ACC tlsMethodModel(), ACC tlsMethodModel()->selectionModel());
+   edit2_protocol->bindToModel(ACC protocolModel(), ACC protocolModel()->selectionModel());
 
    combo_security_STRP->setModel(ACC keyExchangeModel());
    groupbox_STRP_keyexchange->setChecked(ACC isSrtpEnabled());
@@ -448,7 +444,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    }
 
    //BUG the daemon doesn't support changing account type after
-   edit2_protocol->setEnabled(ACC editState() == Account::EditState::NEW || ACC id().isEmpty());
 
    m_pCodecsLW->setEnabled(ACC isVideoEnabled ());
 
@@ -478,6 +473,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
    disconnect(list_audiocodec->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
    disconnect(list_audiocodec->model()         ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
+
    list_audiocodec->setModel( ACC audioCodecModel());
    connect(list_audiocodec->model()            ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(list_audiocodec->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
@@ -485,8 +481,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    #ifdef ENABLE_VIDEO
    disconnect(m_pCodecsLW->selectionModel()    ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
    disconnect(m_pCodecsLW->model()             ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
-   ACC videoCodecModel()->reload();
-   m_pCodecsLW->setModel( ACC videoCodecModel());
+
    connect(m_pCodecsLW->model()                ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(m_pCodecsLW->selectionModel()       ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
    #endif
@@ -496,7 +491,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    //Enable tabs
-   bool isntIP2IP = ! ( ACC alias() == Account::ProtocolName::IP2IP );
+   bool isntIP2IP = ! ( ACC alias() == "IP2IP" ); //FIXME do not hardcode this
    bool isIAX     = ACC protocol()  == Account::Protocol::IAX;
    bool enableTab[7] = {isntIP2IP,isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true};
    for (int i=0;i<7;i++)
@@ -733,29 +728,11 @@ void DlgAccounts::moveAudioCodecDown()
       list_audiocodec->setCurrentIndex(list_audiocodec->model()->index(list_audiocodec->currentIndex().row()+1,0));
 }
 
-///Move video codec up
-void DlgAccounts::moveVideoCodecUp()
-{
-   if (static_cast<Video::CodecModel2*>(m_pCodecsLW->model())->moveUp(m_pCodecsLW->currentIndex()))
-      m_pCodecsLW->setCurrentIndex(m_pCodecsLW->model()->index(m_pCodecsLW->currentIndex().row()-1,0));
-}
-
-///Move video codec down
-void DlgAccounts::moveVideoCodecDown()
-{
-   if (static_cast<Video::CodecModel2*>(m_pCodecsLW->model())->moveDown(m_pCodecsLW->currentIndex()))
-      m_pCodecsLW->setCurrentIndex(m_pCodecsLW->model()->index(m_pCodecsLW->currentIndex().row()+1,0));
-}
-
 ///Load the video codec list
 void DlgAccounts::loadVidCodecDetails(const QModelIndex& current,const QModelIndex& previous)
 {
-   if (previous != current && previous.isValid()) {
-      m_pCodecsLW->model()->setData(previous,m_pBitrateSB->value(),Video::CodecModel2::BITRATE_ROLE);
-   }
-
-   const int bitrate = m_pCodecsLW->model()->data(current,Video::CodecModel2::BITRATE_ROLE).toInt();
-   m_pBitrateSB->setValue(bitrate);
+   Q_UNUSED(current)
+   Q_UNUSED(previous)
 }
 
 ///Update account state
@@ -812,8 +789,14 @@ bool DlgAccounts::hasIncompleteRequiredFields()
       requiredFieldsLabels << label1_alias << label3_server << label4_user << label5_password;
    }
 
-   bool fields[4] = {edit1_alias->text().isEmpty(),edit3_server->text().isEmpty(),edit4_user->text().isEmpty(),edit5_password->text().isEmpty()};
-   bool isIncomplete = acc && (acc->alias() != Account::ProtocolName::IP2IP) && (fields[0]|fields[1]|fields[2]|fields[3]);
+   bool fields[4] = {
+      edit1_alias->text().isEmpty(),
+      edit3_server->text().isEmpty(),
+      edit4_user->text().isEmpty(),
+      edit5_password->text().isEmpty() || acc->protocol() == Account::Protocol::RING
+   };
+
+   bool isIncomplete = acc && (acc->alias() != "IP2IP") && (fields[0]|fields[1]|fields[2]|fields[3]);
    //Add visual feedback for missing fields
    for (int i=0;i<requiredFieldsLabels.size();i++) {
       static KStatefulBrush errorBrush( KColorScheme::Window, KColorScheme::NegativeText );
