@@ -404,7 +404,7 @@ void ContactDock::transferEvent(QMimeData* data)
       bool ok = false;
       const ContactMethod* result = showNumberSelector(ok);
       if (ok && result) {
-         Call* call = CallModel::instance()->getCall(data->data(RingMimes::CALLID));
+         Call* call = CallModel::instance()->fromMime(data->data(RingMimes::CALLID));
          if (dynamic_cast<Call*>(call)) {
 //             call->changeCurrentState(Call::State::TRANSFERRED);
             CallModel::instance()->transfer(call, result);

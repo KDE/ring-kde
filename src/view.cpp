@@ -69,7 +69,6 @@
 #include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
 #include "implementation.h"
-#include "delegates/kdepixmapmanipulation.h"
 
 #define IM_ACTIVE m_pMessageTabBox->isVisible()
 
@@ -95,7 +94,6 @@
 View::View(QWidget *parent)
    : QWidget(parent),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
 {
-   new KDEPixmapManipulation();
    setupUi(this);
    KPhoneNumberSelector::init();
 
@@ -387,12 +385,12 @@ void View::updateWindowCallState()
             break;
 
          case Call::State::OVER:
-            qDebug() << "Error : Reached CALL_STATE_OVER with call "  << call->id() << "!";
+            qDebug() << "Error : Reached CALL_STATE_OVER with call "  << call << "!";
             m_pMessageBoxW->setVisible(false)                                            ;
             break;
 
          case Call::State::ERROR:
-            qDebug() << "Error : Reached CALL_STATE_ERROR with call " << call->id() << "!";
+            qDebug() << "Error : Reached CALL_STATE_ERROR with call " << call << "!";
             m_pMessageBoxW->setVisible(false)                                            ;
             break;
 
@@ -407,7 +405,7 @@ void View::updateWindowCallState()
             break;
          case Call::State::COUNT__:
          default:
-            qDebug() << "Error : Reached unexisting state for call "  << call->id() << "(" << call->state() << "!";
+            qDebug() << "Error : Reached unexisting state for call "  << call << "(" << call->state() << "!";
             break;
 
       }
@@ -512,7 +510,7 @@ void View::on_widget_dialpad_typed(QString text)
 ///When a call is coming (dbus)
 void View::on1_incomingCall(Call* call)
 {
-   qDebug() << "Signal : Incoming Call ! ID = " << call->id();
+   qDebug() << "Signal : Incoming Call ! ID = " << call;
 
    updateWindowCallState();
 

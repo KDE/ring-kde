@@ -134,10 +134,10 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       if (e->mimeData()->hasFormat(RingMimes::CALLID)) {
          const QByteArray encodedCallId      = e->mimeData()->data( RingMimes::CALLID      );
          qDebug() << "Call dropped on empty space";
-         Call* call =  CallModel::instance()->getCall(encodedCallId);
+         Call* call =  CallModel::instance()->fromMime(encodedCallId);
          if (CallModel::instance()->getIndex(call).parent().isValid()) {
             qDebug() << "Detaching participant";
-            CallModel::instance()->detachParticipant(CallModel::instance()->getCall(encodedCallId));
+            CallModel::instance()->detachParticipant(CallModel::instance()->fromMime(encodedCallId));
          }
          else
             qDebug() << "The call is not in a conversation (doing nothing)";
@@ -248,7 +248,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
    Call* source = nullptr;
    if (isCall)
-      source = CallModel::instance()->getCall(e->mimeData()->data(RingMimes::CALLID));
+      source = CallModel::instance()->fromMime(e->mimeData()->data(RingMimes::CALLID));
    Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
    CallModel::instance()->setData(idxAt,act,Call::Role::DropPosition);
    if ((!isCall) || CallModel::instance()->getIndex(source) != idxAt)

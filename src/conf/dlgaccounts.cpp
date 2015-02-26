@@ -75,8 +75,6 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    setupUi(this);
    button_accountUp->setIcon         ( QIcon::fromTheme( "go-up"       ) );
    button_accountDown->setIcon       ( QIcon::fromTheme( "go-down"     ) );
-   m_pVCodecUpPB->setIcon            ( QIcon::fromTheme( "go-up"       ) );
-   m_pVCodecDownPB->setIcon          ( QIcon::fromTheme( "go-down"     ) );
    button_accountAdd->setIcon        ( QIcon::fromTheme( "list-add"    ) );
    button_accountRemove->setIcon     ( QIcon::fromTheme( "list-remove" ) );
    button_add_credential->setIcon    ( QIcon::fromTheme( "list-add"    ) );
@@ -188,7 +186,6 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pUserAgent,                      SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pBootstrapPort,                  SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
-   /**/connect(m_pBitrateSB,                      SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_authority,                SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_endpoint,                 SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_private_key,              SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
@@ -443,10 +440,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
       /**/combo_security_STRP->setCurrentIndex     (  ACC keyExchangeModel()->toIndex( ACC keyExchange()).row());
    }
 
-   //BUG the daemon doesn't support changing account type after
-
-   m_pCodecsLW->setEnabled(ACC isVideoEnabled ());
-
    updateCombo(0);
 
    m_pDTMFOverRTP->setChecked( ACC DTMFType()==DtmfType::OverRtp);
@@ -474,17 +467,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
    disconnect(list_audiocodec->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
    disconnect(list_audiocodec->model()         ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
 
-   list_audiocodec->setModel( ACC audioCodecModel());
+   list_audiocodec->setModel( ACC codecModel());
    connect(list_audiocodec->model()            ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(list_audiocodec->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
-
-   #ifdef ENABLE_VIDEO
-   disconnect(m_pCodecsLW->selectionModel()    ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
-   disconnect(m_pCodecsLW->model()             ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
-
-   connect(m_pCodecsLW->model()                ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
-   connect(m_pCodecsLW->selectionModel()       ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(loadVidCodecDetails(QModelIndex,QModelIndex))  );
-   #endif
 
    ACC securityValidationModel()->update();
    m_pSecurityIssues->setModel(ACC securityValidationModel());
@@ -717,14 +702,14 @@ void DlgAccounts::updateFirstCredential(QString text)
 ///Move codec up
 void DlgAccounts::moveAudioCodecUp()
 {
-   if (static_cast<Audio::CodecModel*>(list_audiocodec->model())->moveUp(list_audiocodec->currentIndex()))
+   if (static_cast<CodecModel*>(list_audiocodec->model())->moveUp(list_audiocodec->currentIndex()))
       list_audiocodec->setCurrentIndex(list_audiocodec->model()->index(list_audiocodec->currentIndex().row()-1,0));
 }
 
 ///Move codec down
 void DlgAccounts::moveAudioCodecDown()
 {
-   if (static_cast<Audio::CodecModel*>(list_audiocodec->model())->moveDown(list_audiocodec->currentIndex()))
+   if (static_cast<CodecModel*>(list_audiocodec->model())->moveDown(list_audiocodec->currentIndex()))
       list_audiocodec->setCurrentIndex(list_audiocodec->model()->index(list_audiocodec->currentIndex().row()+1,0));
 }
 
@@ -835,8 +820,8 @@ void DlgAccounts::updateWidgets()
 void DlgAccounts::selectedCodecChanged(const QModelIndex& current,const QModelIndex& previous)
 {
    Q_UNUSED(previous)
-   label_bitrate_value->setText   ( list_audiocodec->model()->data(current,Audio::CodecModel::Role::BITRATE)   .toString());
-   label_frequency_value->setText ( list_audiocodec->model()->data(current,Audio::CodecModel::Role::SAMPLERATE).toString());
+   label_bitrate_value->setText   ( list_audiocodec->model()->data(current,CodecModel::Role::BITRATE)   .toString());
+   label_frequency_value->setText ( list_audiocodec->model()->data(current,CodecModel::Role::SAMPLERATE).toString());
 }
 
 ///Select available security options for various methods

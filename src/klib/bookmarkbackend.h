@@ -75,10 +75,10 @@ class BookmarkEditor : public CollectionEditor<ContactMethod>
 public:
    BookmarkEditor(CollectionMediator<ContactMethod>* m) : CollectionEditor<ContactMethod>(m) {}
    virtual bool save       ( const ContactMethod* item ) override;
-   virtual bool append     ( const ContactMethod* item ) override;
-   virtual bool remove     ( ContactMethod*       item ) override;
+   virtual bool remove     ( const ContactMethod* item ) override;
    virtual bool edit       ( ContactMethod*       item ) override;
-   virtual bool addNew     ( ContactMethod*       item ) override;
+   virtual bool addNew     ( const ContactMethod* item ) override;
+   virtual bool addExisting( const ContactMethod* item ) override;
 
 private:
    virtual QVector<ContactMethod*> items() const override;

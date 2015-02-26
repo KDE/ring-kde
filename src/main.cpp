@@ -31,7 +31,7 @@
 #include <QDebug>
 #include <kaboutdata.h>
 #include <KLocalizedString>
-#include <kde_file.h>
+// #include <kde_file.h>
 
 //Ring
 #include "ringapplication.h"
@@ -88,8 +88,8 @@ int main(int argc, char **argv)
       //dbus configuration
       CallModel::instance();
 
-      KDE_signal(SIGINT  , quitOnSignal);
-      KDE_signal(SIGTERM , quitOnSignal);
+//       KDE_signal(SIGINT  , quitOnSignal);
+//       KDE_signal(SIGTERM , quitOnSignal);
 
       const int retVal = app->exec();
 

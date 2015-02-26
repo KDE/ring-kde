@@ -83,5 +83,5 @@ void DlgGeneral::updateSettings()
 
 void DlgGeneral::slotClearCallHistoryAsked()
 {
-   HistoryModel::instance()->clearAllBackends();
+   HistoryModel::instance()->clearAllCollections();
 }

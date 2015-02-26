@@ -52,6 +52,7 @@
 #include "numbercategorymodel.h"
 #include "klib/minimalhistorybackend.h"
 #include "delegates/numbercategorydelegate.h"
+#include "delegates/kdepixmapmanipulation.h"
 #include "klib/macromodel.h"
 #include "klib/bookmarkbackend.h"
 // #include "klib/akonadibackend.h"
@@ -60,6 +61,7 @@
 #include "presencestatusmodel.h"
 #include "video/manager.h"
 #include "contactmethod.h"
+#include <fallbackpersoncollection.h>
 #include "personmodel.h"
 #include "collectionmodel.h"
 #include "delegates/itemmodelstateserializationdelegate.h"
@@ -147,6 +149,7 @@ Ring::Ring(QWidget* parent)
    static bool init = false;
    if (!init) {
       ProfilePersisterDelegate::setInstance(new KDEProfilePersister());
+      new KDEPixmapManipulation(); //FIXME memory leak
 
       //Start the Akonadi collection backend (contact loader)
 //       AkonadiPersonCollectionModel::instance();
@@ -154,6 +157,7 @@ Ring::Ring(QWidget* parent)
 
       BookmarkModel::instance()->addBackend<BookmarkBackend>();
 
+      PersonModel::instance()->addBackend<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
       NumberCategoryDelegate::setInstance(new ConcreteNumberCategoryDelegate());
       ItemModelStateSerializationDelegate::setInstance(new ItemModelStateSerialization());

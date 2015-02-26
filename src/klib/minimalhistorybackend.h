@@ -29,8 +29,7 @@ template<typename T> class CollectionMediator;
 class LIB_EXPORT MinimalHistoryBackend : public CollectionInterface
 {
 public:
-   template<typename T>
-   explicit MinimalHistoryBackend(CollectionMediator<T>* mediator);
+   explicit MinimalHistoryBackend(CollectionMediator<Call>* mediator);
    virtual ~MinimalHistoryBackend();
 
    virtual bool load() override;
@@ -60,27 +59,5 @@ public:
 private:
    CollectionMediator<Call>*  m_pMediator;
 };
-
-class MinimalHistoryEditor : public CollectionEditor<Call>
-{
-public:
-   MinimalHistoryEditor(CollectionMediator<Call>* m) : CollectionEditor<Call>(m) {}
-   virtual bool save       ( const Call* item ) override;
-   virtual bool append     ( const Call* item ) override;
-   virtual bool remove     ( Call*       item ) override;
-   virtual bool edit       ( Call*       item ) override;
-   virtual bool addNew     ( Call*       item ) override;
-
-private:
-   virtual QVector<Call*> items() const override;
-};
-
-
-template<typename T>
-MinimalHistoryBackend::MinimalHistoryBackend(CollectionMediator<T>* mediator) :
-CollectionInterface(new MinimalHistoryEditor(mediator)),m_pMediator(mediator)
-{
-//    setObjectName("MinimalHistoryBackend");
-}
 
 #endif

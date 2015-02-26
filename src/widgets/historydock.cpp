@@ -378,13 +378,13 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       m_pMenu->addAction( m_pEmail        );
       m_pMenu->addAction( m_pRemove       );
       m_pMenu->addAction( m_pBookmark     );
-      connect(m_pCallAgain    , SIGNAL(triggered())                        , this , SLOT(slotCallAgain())        );
-      connect(m_pAddPerson   , SIGNAL(triggered())                        , this , SLOT(slotAddPerson())       );
-      connect(m_pCopy         , SIGNAL(triggered())                        , this , SLOT(slotCopy())             );
-      connect(m_pEmail        , SIGNAL(triggered())                        , this , SLOT(slotSendEmail())        );
-      connect(m_pRemove       , SIGNAL(triggered())                        , this , SLOT(slotRemove())           );
-      connect(m_pAddToPerson , SIGNAL(triggered())                        , this , SLOT(slotAddToPerson())     );
-      connect(m_pBookmark     , SIGNAL(triggered())                        , this , SLOT(slotBookmark())         );
+      connect(m_pCallAgain   , SIGNAL(triggered()) , this , SLOT(slotCallAgain())   );
+      connect(m_pAddPerson   , SIGNAL(triggered()) , this , SLOT(slotAddPerson())   );
+      connect(m_pCopy        , SIGNAL(triggered()) , this , SLOT(slotCopy())        );
+      connect(m_pEmail       , SIGNAL(triggered()) , this , SLOT(slotSendEmail())   );
+      connect(m_pRemove      , SIGNAL(triggered()) , this , SLOT(slotRemove())      );
+      connect(m_pAddToPerson , SIGNAL(triggered()) , this , SLOT(slotAddToPerson()) );
+      connect(m_pBookmark    , SIGNAL(triggered()) , this , SLOT(slotBookmark())    );
    }
    m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
    enableRemove();
@@ -394,7 +394,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 void HistoryDock::enableRemove()
 {
    if (m_pRemove)
-      m_pRemove->setEnabled(m_pCurrentCall && m_pCurrentCall->backend() && m_pCurrentCall->backend()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE);
+      m_pRemove->setEnabled(m_pCurrentCall && m_pCurrentCall->collection() && m_pCurrentCall->collection()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE);
 }
 
 void HistoryDock::slotSendEmail()
@@ -410,7 +410,7 @@ void HistoryDock::slotSendEmail()
 
 void HistoryDock::slotRemove()
 {
-   if (m_pCurrentCall && m_pCurrentCall->backend()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE) {
+   if (m_pCurrentCall && m_pCurrentCall->collection()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE) {
       HistoryModel::instance()->deleteItem(m_pCurrentCall); //TODO add add and remove to the manager
    }
 }
@@ -440,7 +440,7 @@ void HistoryDock::slotCopy()
 
    qDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(RingMimes::CALLID, m_pCurrentCall->id().toUtf8());
+   mimeData->setData(RingMimes::CALLID, CallModel::instance()->getMime(m_pCurrentCall));
 
    mimeData->setData(RingMimes::PHONENUMBER, m_pCurrentCall->peerContactMethod()->uri().toUtf8());
 

@@ -222,7 +222,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -846,40 +846,10 @@
           <item>
            <widget class="QGroupBox" name="groupBox_5">
             <property name="title">
-             <string>Audio codecs</string>
+             <string>Codecs</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
-             <item row="0" column="0" colspan="4">
-              <widget class="QListView" name="list_audiocodec"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_frequency">
-               <property name="text">
-                <string>Sample rate:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label_frequency_value">
-               <property name="text">
-                <string>-</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <spacer name="horizontalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>448</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="3">
+             <item row="3" column="4">
               <layout class="QHBoxLayout" name="horizontalLayout_7">
                <property name="spacing">
                 <number>0</number>
@@ -918,96 +888,51 @@
                </item>
               </layout>
              </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_bitrate">
-               <property name="text">
-                <string>Bitrate:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" colspan="2">
+             <item row="4" column="2" colspan="2">
               <widget class="QLabel" name="label_bitrate_value">
                <property name="text">
                 <string>-</string>
                </property>
               </widget>
              </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="m_pVideoCodecGB">
-            <property name="title">
-             <string>Video codecs</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_12">
-             <item row="3" column="0">
-              <widget class="QLabel" name="label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_bitrate">
                <property name="text">
                 <string>Bitrate:</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
-              <widget class="QSpinBox" name="m_pBitrateSB">
-               <property name="maximum">
-                <number>100000</number>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label_frequency_value">
+               <property name="text">
+                <string>-</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="2">
-              <spacer name="horizontalSpacer_11">
+             <item row="3" column="3">
+              <spacer name="horizontalSpacer_6">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>448</width>
                  <height>20</height>
                 </size>
                </property>
               </spacer>
              </item>
-             <item row="3" column="3">
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <property name="spacing">
-                <number>0</number>
+             <item row="1" column="0" colspan="5">
+              <widget class="QListView" name="list_audiocodec"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_frequency">
+               <property name="text">
+                <string>Sample rate:</string>
                </property>
-               <item>
-                <widget class="LeftToolButton" name="m_pVCodecUpPB">
-                 <property name="toolTip">
-                  <string>Increase codec priority</string>
-                 </property>
-                 <property name="text">
-                  <string comment="Move video codec up">Up</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="RightToolButton" name="m_pVCodecDownPB">
-                 <property name="toolTip">
-                  <string>Decrease codec priority</string>
-                 </property>
-                 <property name="text">
-                  <string comment="Move video codec down">Down</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              </widget>
              </item>
-             <item row="2" column="0" colspan="4">
-              <widget class="QListView" name="m_pCodecsLW"/>
-             </item>
-             <item row="1" column="0" colspan="4">
+             <item row="0" column="0">
               <widget class="QCheckBox" name="m_pEnableVideo">
                <property name="text">
                 <string>Enable video when supported</string>
@@ -1243,7 +1168,7 @@
                <x>0</x>
                <y>0</y>
                <width>513</width>
-               <height>906</height>
+               <height>880</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
@@ -1874,22 +1799,6 @@
     <hint type="destinationlabel">
      <x>384</x>
      <y>92</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_pEnableVideo</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>m_pCodecsLW</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>665</x>
-     <y>351</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>384</x>
-     <y>388</y>
     </hint>
    </hints>
   </connection>

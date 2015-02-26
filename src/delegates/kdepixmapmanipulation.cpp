@@ -212,11 +212,11 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
    return bArray;
 }
 
-QVariant KDEPixmapManipulation::profilePhoto(const QByteArray& data)
+QVariant KDEPixmapManipulation::profilePhoto(const QByteArray& data, const QString& type)
 {
    QImage image;
-   //For now, ENCODING is only base64 and image type PNG
-   image.loadFromData(QByteArray::fromBase64(data), "PNG");
+   //For now, ENCODING is only base64 and image type PNG or JPG
+   image.loadFromData(QByteArray::fromBase64(data),type.toLatin1());
    return QPixmap::fromImage(image);
 }
 

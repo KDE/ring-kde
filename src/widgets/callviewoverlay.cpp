@@ -180,7 +180,7 @@ void CallViewOverlay::slotLayoutChanged()
             QPushButton* btn = new QPushButton(call->roleData(Qt::DisplayRole).toString(),this);
             btn->setStyleSheet(m_pTransferB->styleSheet());
             m_pAttTransferGB->layout()->addWidget(btn);
-            btn->setProperty("callId",call->id());
+            btn->setProperty("callId",call->historyId());
             connect(btn,SIGNAL(clicked()),this,SLOT(slotAttendedTransfer()));
          }
       }
@@ -193,9 +193,9 @@ void CallViewOverlay::slotLayoutChanged()
 
 void CallViewOverlay::slotAttendedTransfer()
 {
-   const QString callId = QObject::sender()->property("callId").toString();
+   const QByteArray callId = QObject::sender()->property("callId").toByteArray();
    if (!callId.isEmpty()) {
-      CallModel::instance()->attendedTransfer(m_pCurrentCall,CallModel::instance()->getCall(callId));
+      CallModel::instance()->attendedTransfer(m_pCurrentCall,CallModel::instance()->fromMime(callId));
       setVisible(false);
    }
 }

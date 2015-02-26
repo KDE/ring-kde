@@ -28,21 +28,21 @@ class KDEPixmapManipulation : public QObject ,public PixmapManipulationDelegate 
    Q_OBJECT
 public:
    KDEPixmapManipulation();
-   QVariant contactPhoto(Person* c, const QSize& size, bool displayPresence = true);
+   QVariant contactPhoto(Person* c, const QSize& size, bool displayPresence = true) override;
 
-   virtual QVariant callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence = true);
+   virtual QVariant callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence = true) override;
 
-   virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true);
+   virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true) override;
 
-   virtual QByteArray toByteArray(const QVariant& pxm);
+   virtual QByteArray toByteArray(const QVariant& pxm) override;
 
-   virtual QVariant profilePhoto(const QByteArray& data);
+   virtual QVariant profilePhoto(const QByteArray& data, const QString& type = "PNG") override;
 
-   QVariant numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence = false, bool isPresent = false);
+   QVariant numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence = false, bool isPresent = false) override;
 
-   virtual QVariant serurityIssueIcon(const QModelIndex& index);
+   virtual QVariant serurityIssueIcon(const QModelIndex& index) override;
 
-   virtual QVariant userActionIcon(const UserActionElement& state) const;
+   virtual QVariant userActionIcon(const UserActionElement& state) const override;
 
    static const char* icnPath[2][2];
 private:

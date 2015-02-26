@@ -49,13 +49,7 @@ bool BookmarkEditor::save(const ContactMethod* item)
    return false;
 }
 
-bool BookmarkEditor::append(const ContactMethod* item)
-{
-   Q_UNUSED(item)
-   return false;
-}
-
-bool BookmarkEditor::remove(ContactMethod* item)
+bool BookmarkEditor::remove(const ContactMethod* item)
 {
    Q_UNUSED(item)
    return false;
@@ -67,7 +61,13 @@ bool BookmarkEditor::edit( ContactMethod* item)
    return false;
 }
 
-bool BookmarkEditor::addNew( ContactMethod* item)
+bool BookmarkEditor::addNew(const ContactMethod* item)
+{
+   Q_UNUSED(item)
+   return false;
+}
+
+bool BookmarkEditor::addExisting(const ContactMethod* item)
 {
    Q_UNUSED(item)
    return false;
