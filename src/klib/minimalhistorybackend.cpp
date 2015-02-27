@@ -144,7 +144,7 @@ bool MinimalHistoryEditor::addNew(const Call* call)
    QDir dir(QString('/'));
    dir.mkpath(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + QString());
 
-   if (call->collection()->editor<Call>() == this  || call->historyId().isEmpty()) return false;
+   if ((call->collection() && call->collection()->editor<Call>() == this)  || call->historyId().isEmpty()) return false;
    //TODO support \r and \n\r end of line
    QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')+"history.ini");
 
@@ -154,6 +154,7 @@ bool MinimalHistoryEditor::addNew(const Call* call)
       file.close();
 
       const_cast<Call*>(call)->setCollection(m_pCollection);
+      addExisting(call);
       return true;
    }
    else

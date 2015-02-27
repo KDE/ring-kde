@@ -65,4 +65,3 @@ RingToneDelegate::~RingToneDelegate()
 }
 
 #include "ringtonedelegate.moc"
-#include "moc_ringtonedelegate.cpp"

@@ -171,7 +171,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
       if(p.isValid())
          pxm = qvariant_cast<QPixmap>(p);
       else
-         pxm = QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "sflphone-client-kde/mini/call.png"));
+         pxm = QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/call.png"));
       QPainter painter(&pxm);
       painter.setOpacity(0.3);
       painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
@@ -180,7 +180,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
    }
    if (p.isValid())
       return qvariant_cast<QPixmap>(p);
-   return QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "sflphone-client-kde/mini/call.png"));
+   return QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/call.png"));
 }
 
 QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)

@@ -23,7 +23,6 @@
 
 //Ring
 #include "video/device.h"
-#include "video/codecmodel2.h"
 #include "video/manager.h"
 #include "video/resolution.h"
 #include "video/channel.h"
