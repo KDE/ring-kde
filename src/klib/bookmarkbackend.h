@@ -34,12 +34,9 @@ public:
    explicit BookmarkBackend(CollectionMediator<T>* mediator);
    virtual ~BookmarkBackend();
 
-   virtual bool load() override;
+   virtual bool load  () override;
    virtual bool reload() override;
-   virtual bool clear() override;
-//    virtual bool remove(ContactMethod* number) override;
-//    virtual bool save(const ContactMethod* number) override;
-//    virtual bool append(const ContactMethod* number) override;
+   virtual bool clear () override;
 
    virtual QString    name     () const override;
    virtual QString    category () const override;
@@ -48,17 +45,6 @@ public:
    virtual QByteArray id       () const override;
 
    virtual SupportedFeatures  supportedFeatures() const override;
-
-//    virtual QList<ContactMethod*> items() const override;
-
-   ///Edit 'item', the implementation may be a GUI or somehting else
-//    virtual bool edit( ContactMethod* number) override;
-
-   ///Add a new item to the backend
-//    virtual bool addNew( ContactMethod* number) override;
-
-//    ///Add a new phone number to an existing item
-//    virtual bool addContactMethod( ContactMethod* number , ContactMethod* number );
 
 private:
    //Attributes

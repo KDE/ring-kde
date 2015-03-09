@@ -49,11 +49,14 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    m_pSuppressNoise->setChecked(Audio::Settings::instance()->isNoiseSuppressEnabled());
    m_pCPlayDTMFCk->setChecked(Audio::Settings::instance()->areDTMFMuted());
 
-   alsaInputDevice->setModel   (Audio::Settings::instance()->inputDeviceModel   () );
+//    alsaInputDevice->setModel   (Audio::Settings::instance()->inputDeviceModel   () );
    alsaOutputDevice->setModel  (Audio::Settings::instance()->outputDeviceModel  () );
    alsaRingtoneDevice->setModel(Audio::Settings::instance()->ringtoneDeviceModel() );
    m_pManager->setModel        (Audio::Settings::instance()->managerModel       () );
    box_alsaPlugin->setModel    (Audio::Settings::instance()->alsaPluginModel    () );
+
+   alsaInputDevice ->bindToModel(Audio::Settings::instance()->inputDeviceModel(),Audio::Settings::instance()->inputDeviceModel()->selectionModel() );
+   alsaOutputDevice->bindToModel(Audio::Settings::instance()->outputDeviceModel(),Audio::Settings::instance()->outputDeviceModel()->selectionModel() );
    loadAlsaSettings();
 
    m_pManager->view()->setSelectionModel(Audio::Settings::instance()->managerModel       ()->selectionModel());
@@ -146,8 +149,8 @@ void DlgAudio::loadAlsaSettings()
 {
    m_IsLoading = true;
    Audio::Settings::instance()->reload();
-   alsaInputDevice->setCurrentIndex    ( Audio::Settings::instance()->inputDeviceModel()->currentDevice().row()   );
-   alsaOutputDevice->setCurrentIndex   ( Audio::Settings::instance()->outputDeviceModel()->currentDevice().row()  );
+//    alsaInputDevice->setCurrentIndex    ( Audio::Settings::instance()->inputDeviceModel()->currentDevice().row()   );
+//    alsaOutputDevice->setCurrentIndex   ( Audio::Settings::instance()->outputDeviceModel()->currentDevice().row()  );
    alsaRingtoneDevice->setCurrentIndex ( Audio::Settings::instance()->ringtoneDeviceModel()->currentDevice().row());
    box_alsaPlugin->setCurrentIndex     ( Audio::Settings::instance()->alsaPluginModel()->currentPlugin().row()    );
    m_IsLoading = false;

@@ -18,11 +18,14 @@
 #include "implementation.h"
 
 //Qt
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <QtGui/QColor>
 #include <QtGui/QPainter>
 #include <QtGui/QBitmap>
 #include <QtWidgets/QApplication>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
 
 //KDE
 #include <QIcon>
@@ -33,6 +36,7 @@
 //Ring
 #include <person.h>
 #include <contactmethod.h>
+#include "implementation.h"
 #include <presencestatusmodel.h>
 #include <securityvalidationmodel.h>
 #include "klib/kcfg_settings.h"
@@ -42,12 +46,6 @@
 QDebug operator<<(QDebug dbg, const Call::State& c)
 {
    dbg.nospace() << QString(Call::toHumanStateName(c));
-   return dbg.space();
-}
-
-QDebug operator<<(QDebug dbg, const Call::DaemonState& c)
-{
-   dbg.nospace() << static_cast<int>(c);
    return dbg.space();
 }
 
@@ -200,3 +198,65 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
    }
    ConfigurationSkeleton::setPresenceAutoTrackedCollections(ret);
 }
+
+QByteArray KDECertificateSerializationDelegate::loadCertificate(const QByteArray& id)
+{
+   QMutexLocker(&this->m_Mutex);
+
+   QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/certs/" + id + ".pem");
+   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      qDebug() << "Error opening certificate: " << id;
+      return QByteArray();
+   }
+
+   return file.readAll();
+}
+
+QUrl KDECertificateSerializationDelegate::saveCertificate(const QByteArray& id, const QByteArray& content)
+{
+   QMutexLocker(&this->m_Mutex);
+   QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+
+   dir.mkdir("certs/");
+
+   const QString path = "/certs/" + id + ".pem";
+
+   //There could be a race condition if the loader load while this is saving
+   if (dir.exists("certs/"+path))
+      return QUrl(dir.path() + path);
+
+   QFile file(dir.path() + path);
+
+   if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
+      QTextStream streamFileOut(&file);
+      streamFileOut << content;
+      streamFileOut.flush();
+      file.close();
+      return QUrl(dir.path() + path);
+   }
+
+   return QUrl();
+}
+
+bool KDECertificateSerializationDelegate::deleteCertificate(const QByteArray& id)
+{
+   Q_UNUSED(id)
+   QMutexLocker(&this->m_Mutex);
+   return false;
+}
+
+QList<QByteArray> KDECertificateSerializationDelegate::listCertificates()
+{
+   QMutexLocker(&this->m_Mutex);
+   QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/certs/");
+   if (!dir.exists())
+      return QList<QByteArray>();
+
+   QList<QByteArray> ret;
+   for (const QString& str : dir.entryList({"*.pem"}) ) {
+      ret << str.left(str.size()-4).toLatin1();
+   }
+
+   return ret;
+}
+

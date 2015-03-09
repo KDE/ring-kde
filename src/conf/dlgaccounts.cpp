@@ -282,7 +282,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                 /
    /**/ ACC setAlias                       ( edit1_alias->text()                                                      );
-   /**/ ACC setHostname                    ( edit3_server->text()                                                     );
    /**/ ACC setUsername                    ( edit4_user->text()                                                       );
    /**/ ACC setPassword                    ( edit5_password->text()                                                   );
    /**/ ACC setMailbox                     ( edit6_mailbox->text()                                                    );
@@ -324,6 +323,9 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setUserAgent                   ( m_pUserAgent->text()                                                     );
    /**/ ACC setVideoEnabled                ( m_pEnableVideo->isChecked()                                              );
    //                                                                                                                  /
+
+   if (account->protocol() != Account::Protocol::RING)
+      /**/ ACC setHostname                 ( edit3_server->text()                                                     );
 
 //    /**/ ACC tlsCaListCertificate()->setPath( file_tls_authority->text()                                               );
 //    /**/ ACC tlsCertificate ()->setPath     ( file_tls_endpoint->text()                                                );
@@ -390,7 +392,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    connect(account,SIGNAL(aliasChanged(QString)),this,SLOT(aliasChanged(QString)));
 
    //         WIDGET VALUE                                          VALUE                     /
-   /**/edit3_server->setText                    (  ACC hostname                        ());
    /**/edit4_user->setText                      (  ACC username                        ());
    /**/edit6_mailbox->setText                   (  ACC mailbox                         ());
    /**/m_pProxyLE->setText                      (  ACC proxy                           ());
@@ -428,8 +429,11 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/m_pMinAudioPort->setValue                (  ACC audioPortMin                    ());
    /**/m_pUserAgent->setText                    (  ACC userAgent                       ());
    /*                                                                                    */
+   if (account->protocol() != Account::Protocol::RING)
+      /**/edit3_server->setText                 (  ACC hostname                        ());
 
    m_pCiphers->setModel(ACC cipherModel());
+   m_pDlgDht->setAccount(account);
 
    combo_tls_method->bindToModel(ACC tlsMethodModel(), ACC tlsMethodModel()->selectionModel());
    edit2_protocol->bindToModel(ACC protocolModel(), ACC protocolModel()->selectionModel());
@@ -476,10 +480,11 @@ void DlgAccounts::loadAccount(QModelIndex item)
 
 
    //Enable tabs
-   bool isntIP2IP = ! ( ACC alias() == "IP2IP" ); //FIXME do not hardcode this
-   bool isIAX     = ACC protocol()  == Account::Protocol::IAX;
-   bool enableTab[7] = {isntIP2IP,isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true};
-   for (int i=0;i<7;i++)
+   const bool isntIP2IP = ! ( ACC alias() == "IP2IP" ); //FIXME do not hardcode this
+   const bool isIAX     = ACC protocol()  == Account::Protocol::IAX;
+   const bool isRing    = ACC protocol()  == Account::Protocol::RING;
+   bool enableTab[8] = {isntIP2IP,isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true,isRing};
+   for (int i=0;i<8;i++)
       frame2_editAccounts->setTabEnabled( i, enableTab[i] );
 
    //Setup ringtone
@@ -776,9 +781,9 @@ bool DlgAccounts::hasIncompleteRequiredFields()
 
    bool fields[4] = {
       edit1_alias->text().isEmpty(),
-      edit3_server->text().isEmpty(),
+      !(!edit3_server->text().isEmpty() || acc->protocol() == Account::Protocol::RING),
       edit4_user->text().isEmpty(),
-      edit5_password->text().isEmpty() || acc->protocol() == Account::Protocol::RING
+      !(!edit5_password->text().isEmpty() || acc->protocol() == Account::Protocol::RING)
    };
 
    bool isIncomplete = acc && (acc->alias() != "IP2IP") && (fields[0]|fields[1]|fields[2]|fields[3]);

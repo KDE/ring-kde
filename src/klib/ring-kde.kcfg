@@ -164,6 +164,11 @@
     	<label>Defines whether the search in KDE Address Book is enabled</label>
     </entry>-->
 
+    <entry name="displayAllCollections" type="Bool">
+        <label>Display non manageable collections</label>
+        <default>false</default>
+    </entry>
+
     <entry name="disabledCollectionList" type="StringList">
         <label>List of disabled address book collections</label>
     </entry>

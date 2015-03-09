@@ -31,6 +31,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
 #include <QtCore/QMimeData>
+#include <QtCore/QSharedPointer>
 
 //KDE
 #include <klocalizedstring.h>
@@ -61,6 +62,7 @@
 #include "mime.h"
 #include "contactmethod.h"
 #include "person.h"
+#include "certificate.h"
 #include "accountmodel.h"
 #include "availableaccountmodel.h"
 #include "phonedirectorymodel.h"
@@ -177,6 +179,16 @@ View::View(QWidget *parent)
    });
 
    d->show();
+
+   //TODO to remove
+   connect(m_pView,&CategorizedTreeView::contextMenuRequest, [this](QModelIndex) {
+      QDialog* d2 = new QDialog(this);
+      QHBoxLayout* hb = new QHBoxLayout(d2);
+      QTreeView* tv = new QTreeView();
+      tv->setModel(View::currentCall()->certificate()->model());
+      hb->addWidget(tv);
+      d2->show();
+   });
 }
 
 ///Destructor

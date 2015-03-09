@@ -31,13 +31,13 @@
 #include <GL/glu.h>
 
 //Ring
-#include <video/manager.h>
 #include <video/sourcesmodel.h>
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
 #include "extendedaction.h"
 #include <video/devicemodel.h>
+#include <video/previewmanager.h>
 #include "klib/kcfg_settings.h"
 
 
@@ -48,7 +48,7 @@
 
 VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevice(nullptr)
 {
-   connect(Video::Manager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
+   connect(Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
    sp.setVerticalPolicy  ( QSizePolicy::Preferred );
    sp.setHorizontalPolicy( QSizePolicy::Preferred );
@@ -66,7 +66,7 @@ VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevic
    m_pScene = new VideoScene();
    setScene(m_pScene);
 
-   if (Video::Manager::instance()->isPreviewing()) {
+   if (Video::PreviewManager::instance()->isPreviewing()) {
       slotShowPreview(true);
    }
 
@@ -146,9 +146,9 @@ void VideoWidget3::slotRotateRight()
 void VideoWidget3::slotShowPreview(bool show)
 {
    ConfigurationSkeleton::setDisplayVideoPreview(show);
-   if (Video::Manager::instance()->isPreviewing() && show) {
-      addRenderer(Video::Manager::instance()->previewRenderer());
-      VideoGLFrame* frm = m_hFrames[Video::Manager::instance()->previewRenderer()];
+   if (Video::PreviewManager::instance()->isPreviewing() && show) {
+      addRenderer(Video::PreviewManager::instance()->previewRenderer());
+      VideoGLFrame* frm = m_hFrames[Video::PreviewManager::instance()->previewRenderer()];
       if (frm) {
          frm->setScale(0.3);
          frm->setTranslationX(1.8);
@@ -157,7 +157,7 @@ void VideoWidget3::slotShowPreview(bool show)
       }
    }
    else {
-      removeRenderer(Video::Manager::instance()->previewRenderer());
+      removeRenderer(Video::PreviewManager::instance()->previewRenderer());
    }
 }
 

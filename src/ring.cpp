@@ -59,7 +59,6 @@
 #include "klib/kcfg_settings.h"
 // #include "klib/akonadicontactcollectionmodel.h"
 #include "presencestatusmodel.h"
-#include "video/manager.h"
 #include "contactmethod.h"
 #include <fallbackpersoncollection.h>
 #include "personmodel.h"
@@ -149,24 +148,23 @@ Ring::Ring(QWidget* parent)
    static bool init = false;
    if (!init) {
       ProfilePersisterDelegate::setInstance(new KDEProfilePersister());
+
       new KDEPixmapManipulation(); //FIXME memory leak
 
       //Start the Akonadi collection backend (contact loader)
 //       AkonadiPersonCollectionModel::instance();
-      HistoryModel::instance()->addBackend<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
+      HistoryModel::instance()->addCollection<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
 
-      BookmarkModel::instance()->addBackend<BookmarkBackend>();
+      BookmarkModel::instance()->addCollection<BookmarkBackend>();
 
-      PersonModel::instance()->addBackend<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
+      PersonModel::instance()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
       NumberCategoryDelegate::setInstance(new ConcreteNumberCategoryDelegate());
       ItemModelStateSerializationDelegate::setInstance(new ItemModelStateSerialization());
 //       PersonModel::instance()->backendModel()->load();
       IMConversationManager::instance();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
-      #ifdef ENABLE_VIDEO
-      Video::Manager::instance();
-      #endif
+
       init = true;
 
 //       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
@@ -244,7 +242,6 @@ Ring::Ring(QWidget* parent)
 
    m_pTrayIcon->addAction( ActionCollection::instance()->acceptAction  () );
    m_pTrayIcon->addAction( ActionCollection::instance()->mailBoxAction () );
-   m_pTrayIcon->addAction( ActionCollection::instance()->refuseAction  () );
    m_pTrayIcon->addAction( ActionCollection::instance()->holdAction    () );
    m_pTrayIcon->addAction( ActionCollection::instance()->transferAction() );
    m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
@@ -258,7 +255,7 @@ Ring::Ring(QWidget* parent)
    connect(CallModel::instance()->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
 
 #ifdef ENABLE_VIDEO
-   connect(Video::Manager::instance(),SIGNAL(videoCallInitiated(Video::Renderer*)),this,SLOT(displayVideoDock(Video::Renderer*)));
+   connect(CallModel::instance(),SIGNAL(rendererAdded(Call*,Video::Renderer*)),this,SLOT(displayVideoDock(Call*,Video::Renderer*)));
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
@@ -466,8 +463,6 @@ void Ring::on_m_pView_windowTitleChangeAsked(const QString& message)
 void Ring::on_m_pView_enabledActionsChangeAsked(const bool* enabledActions)
 {
    ActionCollection::instance()->acceptAction()->setVisible   ( enabledActions[Ring::CallAction::Accept   ]);
-   ActionCollection::instance()->refuseAction()->setVisible   ( enabledActions[Ring::CallAction::Refuse   ]);
-   ActionCollection::instance()->holdAction()->setVisible     ( enabledActions[Ring::CallAction::Hold     ]);
    ActionCollection::instance()->transferAction()->setVisible ( enabledActions[Ring::CallAction::Transfer ]);
    ActionCollection::instance()->recordAction()->setVisible   ( enabledActions[Ring::CallAction::Record   ]);
    ActionCollection::instance()->mailBoxAction()->setVisible  ( enabledActions[Ring::CallAction::Mailbox  ]);
@@ -477,9 +472,7 @@ void Ring::on_m_pView_enabledActionsChangeAsked(const bool* enabledActions)
 void Ring::on_m_pView_actionIconsChangeAsked(const QString* actionIcons)
 {
    ActionCollection::instance()->acceptAction()->setIcon   ( QIcon(actionIcons[Ring::CallAction::Accept   ]));
-   ActionCollection::instance()->refuseAction()->setIcon   ( QIcon(actionIcons[Ring::CallAction::Refuse   ]));
    ActionCollection::instance()->holdAction()->setIcon     ( QIcon(actionIcons[Ring::CallAction::Hold     ]));
-   ActionCollection::instance()->transferAction()->setIcon ( QIcon(actionIcons[Ring::CallAction::Transfer ]));
    ActionCollection::instance()->recordAction()->setIcon   ( QIcon(actionIcons[Ring::CallAction::Record   ]));
    ActionCollection::instance()->mailBoxAction()->setIcon  ( QIcon(actionIcons[Ring::CallAction::Mailbox  ]));
 }
@@ -488,7 +481,6 @@ void Ring::on_m_pView_actionIconsChangeAsked(const QString* actionIcons)
 void Ring::on_m_pView_actionTextsChangeAsked(const QString* actionTexts)
 {
    ActionCollection::instance()->acceptAction()->setText   ( actionTexts[Ring::CallAction::Accept   ]);
-   ActionCollection::instance()->refuseAction()->setText   ( actionTexts[Ring::CallAction::Refuse   ]);
    ActionCollection::instance()->holdAction()->setText     ( actionTexts[Ring::CallAction::Hold     ]);
    ActionCollection::instance()->transferAction()->setText ( actionTexts[Ring::CallAction::Transfer ]);
    ActionCollection::instance()->recordAction()->setText   ( actionTexts[Ring::CallAction::Record   ]);
@@ -589,8 +581,9 @@ void Ring::hidePresenceDock()
 
 #ifdef ENABLE_VIDEO
 ///Display the video dock
-void Ring::displayVideoDock(Video::Renderer* r)
+void Ring::displayVideoDock(Call* c, Video::Renderer* r)
 {
+   Q_UNUSED(c)
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );

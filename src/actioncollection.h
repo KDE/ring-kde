@@ -41,16 +41,13 @@ public:
    void setupAction();
 
    //Actions
-   ExtendedAction* holdAction    ();
-   ExtendedAction* recordAction  ();
-   ExtendedAction* refuseAction  ();
-   ExtendedAction* muteCaptureAction  ();
-   ExtendedAction* mutePlaybackAction  ();
-   ExtendedAction* hangupAction  ();
-   ExtendedAction* unholdAction  ();
-   ExtendedAction* transferAction();
-   ExtendedAction* pickupAction  ();
-   ExtendedAction* acceptAction  ();
+   ExtendedAction* holdAction                  ();
+   ExtendedAction* recordAction                ();
+   ExtendedAction* muteCaptureAction           ();
+   ExtendedAction* mutePlaybackAction          ();
+   ExtendedAction* hangupAction                ();
+   ExtendedAction* transferAction              ();
+   ExtendedAction* acceptAction                ();
    QAction *        displayVolumeControlsAction();
    QAction *        displayDialpadAction       ();
    QAction *        displayMessageBoxAction    ();
@@ -59,7 +56,7 @@ public:
    QAction *        showHistoryDockAction      ();
    QAction *        showBookmarkDockAction     ();
    QAction *        quitAction                 ();
-   QAction *        addPerson                 ();
+   QAction *        addPerson                  ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -76,16 +73,13 @@ public:
 private:
 
    //Toolbar actions
-   ExtendedAction* action_accept   ;
-   ExtendedAction* action_refuse   ;
-   ExtendedAction* action_hold     ;
-   ExtendedAction* action_transfer ;
-   ExtendedAction* action_record   ;
-   ExtendedAction* action_mute_capture     ;
-   ExtendedAction* action_mute_playback     ;
-   ExtendedAction* action_hangup   ;
-   ExtendedAction* action_unhold   ;
-   ExtendedAction* action_pickup   ;
+   ExtendedAction* action_accept        ;
+   ExtendedAction* action_hold          ;
+   ExtendedAction* action_transfer      ;
+   ExtendedAction* action_record        ;
+   ExtendedAction* action_mute_capture  ;
+   ExtendedAction* action_mute_playback ;
+   ExtendedAction* action_hangup        ;
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -113,8 +107,8 @@ private:
    QAction * action_showHistoryDock       ;
    QAction * action_showBookmarkDock      ;
    QAction * action_editToolBar           ;
-   QAction * action_addPerson            ;
-   QActionGroup* action_screen           ;
+   QAction * action_addPerson             ;
+   QActionGroup* action_screen            ;
 
    //Singleton
    static ActionCollection* m_spInstance;
@@ -125,10 +119,10 @@ private Q_SLOTS:
    void configureRing         ();
    void showShortCutEditor    ();
    void editToolBar           ();
+   void slotAddPerson         ();
+   void updateRecordButton    ();
+   void updateVolumeButton    ();
    void addMacro              ( QAction * newAction );
-   void slotAddPerson();
-   void updateRecordButton   ();
-   void updateVolumeButton   ();
 
 Q_SIGNALS:
    void windowStateChanged();

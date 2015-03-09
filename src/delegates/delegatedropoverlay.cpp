@@ -69,7 +69,7 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
    }
    int i =0;
    QMapIterator<QString, OverlayButton*> it(*m_lpButtons);
-   const int dropPosition = index.data(Call::Role::DropPosition).toInt();
+   const int dropPosition = index.data(static_cast<int>(Call::Role::DropPosition)).toInt();
    while (it.hasNext()) {
       it.next();
       if (step) {

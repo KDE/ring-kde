@@ -19,12 +19,14 @@
 #define IMPLEMENTATION_H
 
 #include <delegates/accountlistcolordelegate.h>
-#include <delegates/presenceserializationdelegate.h>
 #include <call.h>
 #include <account.h>
 
 #include <QtGui/QPalette>
 #include <QtGui/QColor>
+#include <QtCore/QMutex>
+#include <delegates/presenceserializationdelegate.h>
+#include <delegates/certificateserializationdelegate.h>
 
 //Implement all client dependant libringclient abstract interfaces
 
@@ -53,6 +55,18 @@ public:
 private:
    QHash<QString,bool> m_hTracked;
    bool m_isLoaded;
+};
+
+class KDECertificateSerializationDelegate : public CertificateSerializationDelegate
+{
+public:
+   virtual QByteArray loadCertificate(const QByteArray& id) override;
+   virtual QUrl       saveCertificate(const QByteArray& id, const QByteArray& content) override;
+   virtual bool       deleteCertificate(const QByteArray& id) override;
+   virtual QList<QByteArray> listCertificates() override;
+private:
+   virtual ~KDECertificateSerializationDelegate() {}
+   QMutex m_Mutex;
 };
 
 #endif

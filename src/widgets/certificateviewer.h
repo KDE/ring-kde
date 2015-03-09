@@ -1,7 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2009-2015 by Savoir-Faire Linux                          *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>          *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2015 by Savoir-Faire Linux                               *
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -16,56 +15,29 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef DLGADDRESSBOOK_H
-#define DLGADDRESSBOOK_H
+#ifndef CERTIFICATE_VIEWER_H
+#define CERTIFICATE_VIEWER_H
+
+#include <QtWidgets/QDialog>
+#include <QtCore/QAbstractItemModel>
 
 //Qt
-#include <QHash>
-#include <QString>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QListWidgetItem>
-
-#include "ui_dlgaddressbookbase.h"
-#include <kconfigdialog.h>
-
-
-//KDE
-class KJob;
+class QTreeView;
+class QWidget;
 
 //Ring
-class AutoCompletionDelegate;
-class CategorizedDelegate;
+class Certificate;
 
-class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase
+class CertificateViewer : public QDialog
 {
-Q_OBJECT
+   Q_OBJECT
 public:
-   explicit DlgAddressBook(KConfigDialog* parent = nullptr);
-
-   virtual ~DlgAddressBook();
-
-   bool hasChanged();
+   CertificateViewer(const QModelIndex& idx, QWidget* parent = nullptr);
+   CertificateViewer(Certificate* cert     , QWidget* parent = nullptr);
+   ~CertificateViewer();
 
 private:
-   //Attributes
-   QHash<QString,QListWidgetItem*> m_mNumbertype;
-   bool m_HasChanged;
-   AutoCompletionDelegate* m_pDelegate;
-   CategorizedDelegate* m_pCategoryDelegate;
-
-public Q_SLOTS:
-   void updateWidgets ();
-   void updateSettings();
-
-private Q_SLOTS:
-   void changed();
-   void slotEditCollection();
-   void slotAddCollection();
-   void slotResourceCreationResult(KJob*);
-
-Q_SIGNALS:
-   ///Emitted when the buttons need to be updated
-   void updateButtons();
+   QTreeView* m_pView;
 };
 
 #endif

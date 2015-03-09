@@ -25,6 +25,7 @@
 // #include "klib/akonadibackend.h"
 #include "numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
+#include "delegates/categorizeddelegate.h"
 // #include <akonadi/collectionmodel.h>
 #include "personmodel.h"
 #include "collectionmodel.h"
@@ -44,28 +45,40 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pAddCollection->setIcon(QIcon::fromTheme("list-add"));
    m_pEditCollection->setIcon(QIcon::fromTheme("document-edit"));
 
-   m_pPhoneTypeList->setModel(NumberCategoryModel::instance());
    m_pDelegate = new AutoCompletionDelegate();
-   m_pPhoneTypeList->setItemDelegate(m_pDelegate);
 
-//    m_pCollectionW->setModel(PersonModel::instance()->backendModel());
+   m_pCategoryDelegate = new CategorizedDelegate(m_pItemBackendW);
+   m_pCategoryDelegate->setChildDelegate(m_pDelegate);
+   m_pItemBackendW->setItemDelegate(m_pCategoryDelegate);
+
+   m_pItemBackendW->setModel(ConfigurationSkeleton::displayAllCollections()? CollectionModel::instance() : CollectionModel::instance()->manageableCollections());
 
    //Resize the columns
-   //m_pCollectionW->header()->setResizeMode(0,QHeaderView::Stretch);
-//    for (int i =1;i<PersonModel::instance()->backendModel()->columnCount();i++)
-//       m_pCollectionW->header()->setResizeMode(i,QHeaderView::ResizeToContents);
+   if (m_pItemBackendW->header()) {
+      m_pItemBackendW->header()->setSectionResizeMode(0,QHeaderView::Stretch);
+      for (int i =1;i<CollectionModel::instance()->columnCount();i++)
+         m_pItemBackendW->header()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
+   }
 
-   connect(m_pPhoneTypeList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this   , SLOT(changed())      );
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
-//    connect(AkonadiPersonCollectionModel::instance()  , SIGNAL(changed())                    , this   , SLOT(changed()));
-//    connect(PersonModel::instance()->backendModel(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
+   connect(CollectionModel::instance(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
+
+   connect(CollectionModel::instance(),&CollectionModel::rowsInserted,[this](const QModelIndex&,int,int) {
+      m_pItemBackendW->expandAll();
+   });
+
+   connect(kcfg_displayAllCollections,&QCheckBox::toggled,[this](bool checked) {
+      m_pItemBackendW->setModel( checked ? CollectionModel::instance() : CollectionModel::instance()->manageableCollections());
+      m_pItemBackendW->expandAll();
+   });
+
+   m_pItemBackendW->expandAll();
 } //DlgAddressBook
 
 ///Destructor
 DlgAddressBook::~DlgAddressBook()
 {
-   m_pPhoneTypeList->setItemDelegate(nullptr);
-   delete m_pDelegate;
+   m_pItemBackendW->setItemDelegate(nullptr);
 }
 
 ///Reload the widget

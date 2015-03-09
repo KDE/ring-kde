@@ -38,6 +38,8 @@
 #include "ring.h"
 #include "errormessage.h"
 #include "callmodel.h"
+#include "implementation.h"
+#include <delegates/certificateserializationdelegate.h>
 
 //Other
 #include <unistd.h>
@@ -55,6 +57,7 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
 
+   CertificateSerializationDelegate::setInstance(new KDECertificateSerializationDelegate());
    try {
       CallModel::instance();
    }
@@ -165,10 +168,6 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
    }
    catch (const Call::Action& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
-      QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
-   }
-   catch (const Call::DaemonState& state) {
-      qDebug() << ErrorMessage::GENERIC_ERROR << "Call DaemonState" << state;
       QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
    }
    catch (const QString& errorMessage) {

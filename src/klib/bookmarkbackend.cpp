@@ -80,7 +80,7 @@ QVector<ContactMethod*> BookmarkEditor::items() const
 
 QString BookmarkBackend::name () const
 {
-   return QObject::tr("Minimal history backend");
+   return QObject::tr("Local bookmark collection");
 }
 
 QString BookmarkBackend::category () const

@@ -50,7 +50,7 @@ QSize ConferenceDelegate::sizeHint(const QStyleOptionViewItem& option, const QMo
 
    //HACK make absolutely sure the editor (if any) is still required
    if (m_tree->indexWidget(index)) {
-      Call* call = qvariant_cast<Call*>(index.data(Call::Role::Object));
+      Call* call = qvariant_cast<Call*>(index.data(static_cast<int>(Call::Role::Object)));
       if (call && call->state() != Call::State::DIALING) {
          m_tree->closeEditor(m_tree->indexWidget(index),QAbstractItemDelegate::NoHint);
       }
@@ -157,7 +157,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       if (!fm) {
          fm = new QFontMetrics(painter->font());
       }
-      const QString len = index.data(Call::Role::Length).toString();
+      const QString len = index.data(static_cast<int>(Call::Role::Length)).toString();
       painter->drawText(opt.rect.x()+opt.rect.width()-fm->width(len),opt.rect.y()+font.pointSize()+8,len);
       painter->setClipRegion(cl);
       return;
@@ -474,7 +474,7 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
    QLineEdit* ed = new QLineEdit(parent);
    ed->setStyleSheet(QString("QLineEdit { background-color:transparent;border:0px;color:white;font-weight:bold;padding-left:%1 }").arg(option.rect.height()));
    ed->setAutoFillBackground(false);
-   ed->setProperty("call",index.data(Call::Role::Object));
+   ed->setProperty("call",index.data(static_cast<int>(Call::Role::Object)));
    connect(ed,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
    connect(ed,SIGNAL(returnPressed()),this,SLOT(slotReturnPressed()));
    ed->deselect();
@@ -501,7 +501,7 @@ void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & ind
 void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
 {
    QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
-   if (index.data(Call::Role::CallState) != static_cast<int>(Call::State::DIALING)) {
+   if (qvariant_cast<Call::State>(index.data(static_cast<int>(Call::Role::State))) != Call::State::DIALING) {
       ed->setVisible(false);
       emit const_cast<ConferenceDelegate*>(this)->closeEditor(editor,NoHint);
    }

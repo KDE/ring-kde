@@ -62,7 +62,7 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    const QFontMetrics fm(QApplication::font());
    int lineHeight = fm.height()+2;
    int rowCount = 0;
-   const Call::State currentState = static_cast<Call::State>(index.data(Call::Role::CallState).toInt());
+   const Call::State currentState = static_cast<Call::State>(index.data(static_cast<int>(Call::Role::State)).toInt());
    int minimumRowHeight = (currentState == Call::State::OVER)?48:(ConfigurationSkeleton::limitMinimumRowHeight()?ConfigurationSkeleton::minimumRowHeight():0);
    if (currentState == Call::State::OVER)
       rowCount = 3;
@@ -81,7 +81,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
    Q_ASSERT(index.isValid());
 
-   const bool isBookmark = index.data(Call::Role::IsBookmark).toBool();
+   const bool isBookmark = index.data(static_cast<int>(Call::Role::IsBookmark)).toBool();
 
    painter->save();
    int iconHeight = option.rect.height() -4;
@@ -96,18 +96,18 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       //    }
 
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
-   const Call::State currentState = (Call::State) index.data(Call::Role::CallState).toInt();
-   const Call::LifeCycleState currentLifeCycleState = static_cast<Call::LifeCycleState>(index.data(Call::Role::CallLifeCycleState).toInt());
+   const Call::State currentState = qvariant_cast<Call::State>(index.data(static_cast<int>(Call::Role::State)));
+   const Call::LifeCycleState currentLifeCycleState = qvariant_cast<Call::LifeCycleState>(index.data(static_cast<int>(Call::Role::LifeCycleState)));
 
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 
-   const ContactMethod* n = qvariant_cast<ContactMethod*>(index.data(Call::Role::PhoneNu));
+   const ContactMethod* n = qvariant_cast<ContactMethod*>(index.data(static_cast<int>(Call::Role::ContactMethod)));
    QPixmap pxm = n?PixmapManipulationDelegate::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
 
    //Handle history with recording
-   if (index.data(Call::Role::HasRecording).toBool() && currentState == Call::State::OVER) {
-      QObject* obj= qvariant_cast<Call*>(index.data(Call::Role::Object));
+   if (index.data(static_cast<int>(Call::Role::HasRecording)).toBool() && currentState == Call::State::OVER) {
+      QObject* obj= qvariant_cast<Call*>(index.data(static_cast<int>(Call::Role::Object)));
       Call* call  = nullptr;
       if (obj)
          call = qobject_cast<Call*>(obj);
@@ -124,11 +124,11 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
    //Handle history
-   else if (!isBookmark && (index.data(Call::Role::Historystate).toInt() != (int)Call::LegacyHistoryState::NONE || currentState != Call::State::OVER) && ConfigurationSkeleton::displayHistoryStatus()) {
+   else if (!isBookmark && ((currentState == Call::State::OVER && ConfigurationSkeleton::displayHistoryStatus()) || (currentState != Call::State::OVER))) {
       QPainter painter(&pxm);
       QPixmap status((currentState==Call::State::OVER)?
-         KDEPixmapManipulation::icnPath   [index.data(Call::Role::Missed    ).toInt()]
-                                          [index.data(Call::Role::Direction2).toInt()]
+         KDEPixmapManipulation::icnPath   [index.data(static_cast<int>(Call::Role::Missed   )).toInt()]
+                                          [(int)qvariant_cast<Call::Direction>(index.data(static_cast<int>(Call::Role::Direction)))]
             :callStateIcons[currentState]);
       if (!status.isNull()) {
          const int pxmHeight = option.rect.height()<24?option.rect.height()-2:24;
@@ -136,7 +136,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       }
    }
-   if (currentLifeCycleState == Call::LifeCycleState::PROGRESS && index.data(Call::Role::IsRecording).toBool()) {
+
+   if (currentLifeCycleState == Call::LifeCycleState::PROGRESS && index.data(static_cast<int>(Call::Role::IsRecording)).toBool()) {
       const static QPixmap record(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record.png"));
       time_t curTime;
       ::time(&curTime);
@@ -163,12 +164,12 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
       //Draw INCOMING/OUTGOING/MISSED
       if (!isBookmark) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::FormattedDate).toString());
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::FormattedDate)).toString());
          currentHeight +=fm.height();
 //          const static QPixmap* callPxm = nullptr;
 //          if (!callPxm)
 //             callPxm = new QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/call.png"));
-         QVariant var = index.data(Call::Role::CategoryIcon);
+         QVariant var = index.data(static_cast<int>(Call::Role::CategoryIcon));
          if (var.type() == QVariant::Pixmap) {
             QPixmap pxm2 = var.value<QPixmap>();
             painter->drawPixmap(option.rect.x()+15+iconHeight,currentHeight-12+(fm.height()-12),pxm2);
@@ -182,7 +183,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 // //             painter->setPen(awayBrush);
 // //       }
 
-      painter->drawText(option.rect.x()+15+iconHeight+((!isBookmark)?12:0),currentHeight,index.data(Call::Role::Number).toString());
+      painter->drawText(option.rect.x()+15+iconHeight+((!isBookmark)?12:0),currentHeight,index.data(static_cast<int>(Call::Role::Number)).toString());
 
 //       if (isTracked)
 //          painter->setPen(textCol);
@@ -211,33 +212,33 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 //             else
 //                painter->setPen(awayBrush);
 //          }
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Number).toString());
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Number)).toString());
          currentHeight +=fm.height();
       }
 
       if (ConfigurationSkeleton::displayCallSecure()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Security).toString());
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Security)).toString());
          currentHeight +=fm.height();
       }
 
       if (ConfigurationSkeleton::displayCallOrganisation()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Organisation).toString());
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Organisation)).toString());
          currentHeight +=fm.height();
       }
 
       if (ConfigurationSkeleton::displayCallDepartment()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Department).toString());
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Department)).toString());
          currentHeight +=fm.height();
       }
 
       if (ConfigurationSkeleton::displayCallEmail()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Call::Role::Email).toString());
+         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Email)).toString());
          //currentHeight +=fm.height();
       }
    }
 
    if (!index.parent().isValid() && currentLifeCycleState == Call::LifeCycleState::PROGRESS){
-      const QString length = index.data(Call::Role::Length).toString();
+      const QString length = index.data(static_cast<int>(Call::Role::Length)).toString();
       const int lenLen = fm.width(length);
       if (!length.isEmpty()) {
          painter->drawText(option.rect.x()+option.rect.width()-lenLen-4,option.rect.y()+(option.rect.height()/2)+(fm.height()/3),length);
@@ -264,7 +265,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
 
    //BEGIN overlay path
-   if (index.data(Call::Role::DropState).toInt() != 0) {
+   if (index.data(static_cast<int>(Call::Role::DropState)).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
          const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/confBlackWhite.png")),Call::DropAction::Conference));

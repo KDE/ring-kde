@@ -99,6 +99,7 @@ SET(
    conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
+   conf/dlgdht.cpp
 )
 
 # Widgets
@@ -130,6 +131,7 @@ SET(
    widgets/groupedtoolbutton.cpp
    widgets/securityprogress.cpp
    widgets/autocombobox.cpp
+   widgets/certificateviewer.cpp
 )
 
 # Video Widgets
@@ -184,6 +186,7 @@ SET(
    conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
    conf/dlgpresence.ui
+   conf/dlgdht.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/dockbase.ui

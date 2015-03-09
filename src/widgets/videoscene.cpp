@@ -24,7 +24,7 @@
 #include "videoglframe.h"
 #include "videotoolbar.h"
 #include <video/renderer.h>
-#include <video/manager.h>
+#include <video/previewmanager.h>
 #include "klib/kcfg_settings.h"
 
 #ifndef GL_MULTISAMPLE
@@ -59,7 +59,7 @@ void VideoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
    event->accept();
    foreach(VideoGLFrame* frm, m_lFrames) {
       if (frm) {
-         if (Video::Manager::instance()->previewRenderer() != frm->renderer())
+         if (Video::PreviewManager::instance()->previewRenderer() != frm->renderer())
             frm->setScale(frm->scale() +(event->delta() > 0 ?1:-1)*frm->scale()*0.1f);
       }
    }
@@ -73,7 +73,7 @@ void VideoScene::frameChanged()
 
 void VideoScene::addFrame(VideoGLFrame* frame)
 {
-   if (frame->renderer() == Video::Manager::instance()->previewRenderer())
+   if (frame->renderer() == Video::PreviewManager::instance()->previewRenderer())
       m_pPreviewFrame = frame;
    else
       m_lFrames << frame;
@@ -94,7 +94,7 @@ void VideoScene::removeFrame( VideoGLFrame* frame )
 void VideoScene::slotRotateLeft()
 {
    foreach(VideoGLFrame* frm, m_lFrames) {
-      if (Video::Manager::instance()->previewRenderer() != frm->renderer())
+      if (Video::PreviewManager::instance()->previewRenderer() != frm->renderer())
          frm->setRotZ(frm->rotZ()+90);
    }
 }
@@ -102,7 +102,7 @@ void VideoScene::slotRotateLeft()
 void VideoScene::slotRotateRight()
 {
    foreach(VideoGLFrame* frm, m_lFrames) {
-      if (Video::Manager::instance()->previewRenderer() != frm->renderer())
+      if (Video::PreviewManager::instance()->previewRenderer() != frm->renderer())
          frm->setRotZ(frm->rotZ()-90);
    }
 }
@@ -111,7 +111,7 @@ void VideoScene::slotKeepAspectRatio(bool keep)
 {
    ConfigurationSkeleton::setKeepVideoAspectRatio(keep);
    foreach(VideoGLFrame* frm, m_lFrames) {
-      if (Video::Manager::instance()->previewRenderer() != frm->renderer())
+      if (Video::PreviewManager::instance()->previewRenderer() != frm->renderer())
          frm->setKeepAspectRatio(keep);
    }
 }

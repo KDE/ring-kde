@@ -18,8 +18,9 @@
 #include "videoglframe.h"
 
 //Qt
-#include <QDebug>
-#include <QMutex>
+#include <QtCore/QDebug>
+#include <QtCore/QMutex>
+#include <QtCore/QThread>
 #include <QtOpenGL/qglfunctions.h>
 
 //System
@@ -28,7 +29,6 @@
 
 //Ring
 #include <video/renderer.h>
-#include <video/manager.h>
 
 
 #ifndef GL_MULTISAMPLE

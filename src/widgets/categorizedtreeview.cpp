@@ -247,7 +247,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
 bool CategorizedTreeView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
 {
    if (state() == QAbstractItemView::EditingState)
-      return !(index.data(Call::Role::CallState).toInt() != size_t(Call::State::DIALING));
+      return !(index.data(static_cast<int>(Call::Role::State)).toInt() != size_t(static_cast<int>(Call::State::DIALING)));
    return QTreeView::edit(index,trigger,event);
 }
 
@@ -270,7 +270,7 @@ CallModel::DropPayloadType CategorizedTreeView::payloadType(const QMimeData* dat
 void CategorizedTreeView::cancelHoverState()
 {
    if (m_HoverIdx.isValid()) {
-      ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,Call::Role::DropState);
+      ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,static_cast<int>(Call::Role::DropState));
       m_HoverIdx = QModelIndex();
    }
 }
@@ -279,7 +279,7 @@ void CategorizedTreeView::setHoverState(const QModelIndex& idx)
 {
    if (idx != m_HoverIdx) {
       cancelHoverState();
-      model()->setData(idx,1,Call::Role::DropState);
+      model()->setData(idx,1,static_cast<int>(Call::Role::DropState));
       m_HoverIdx = idx;
    }
 }

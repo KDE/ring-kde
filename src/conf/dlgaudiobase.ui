@@ -101,7 +101,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="alsaInputDevice">
+           <widget class="AutoComboBox" name="alsaInputDevice">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -118,7 +118,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QComboBox" name="alsaOutputDevice">
+           <widget class="AutoComboBox" name="alsaOutputDevice">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -132,7 +132,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QComboBox" name="alsaRingtoneDevice"/>
+           <widget class="AutoComboBox" name="alsaRingtoneDevice"/>
           </item>
          </layout>
         </widget>
@@ -190,7 +190,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="placeholderText">
+        <property name="placeholderText" stdset="0">
          <string>Destination folder</string>
         </property>
        </widget>
@@ -255,6 +255,11 @@
    <class>KUrlRequester</class>
    <extends>QFrame</extends>
    <header>kurlrequester.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>widgets/autocombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

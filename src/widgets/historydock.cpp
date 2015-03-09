@@ -90,8 +90,8 @@ bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QMode
    }
    ///If date range is enabled, display only this range
    else if (ConfigurationSkeleton::displayDataRange() && false/*FIXME force disabled for 1.3.0, can SEGFAULT*/) {
-      const int start = source_parent.child(source_row,0).data(Call::Role::StartTime).toInt();
-      const int stop  = source_parent.child(source_row,0).data(Call::Role::StopTime ).toInt();
+      const int start = source_parent.child(source_row,0).data(static_cast<int>(Call::Role::StartTime)).toInt();
+      const int stop  = source_parent.child(source_row,0).data(static_cast<int>(Call::Role::StopTime )).toInt();
       if (!(start > m_pParent->startTime()) || !(m_pParent->stopTime() > stop))
          return false;
    }
@@ -104,8 +104,8 @@ QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) c
    //If the user turned on highlight missed, then set a background color
    static const bool highlightMissedIn  = ConfigurationSkeleton::highlightMissedIncomingCalls();
    static const bool highlightMissedOut = ConfigurationSkeleton::highlightMissedOutgoingCalls();
-   const bool missed = QSortFilterProxyModel::data(index,Call::Role::Missed).toBool();
-   const Call::Direction dir = static_cast<Call::Direction>(QSortFilterProxyModel::data(index,Call::Role::Direction2).toInt());
+   const bool missed = QSortFilterProxyModel::data(index,static_cast<int>(Call::Role::Missed)).toBool();
+   const Call::Direction dir = qvariant_cast<Call::Direction>(QSortFilterProxyModel::data(index,static_cast<int>(Call::Role::Direction)));
 
    if (index.isValid()
       && role == Qt::BackgroundRole 
@@ -149,9 +149,9 @@ m_pCallAgain(nullptr)
    m_pView->setViewType(CategorizedTreeView::ViewType::History);
    m_pProxyModel = new HistorySortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(HistoryModel::instance());
-   m_pProxyModel->setSortRole(Call::Role::Date);
+   m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Date));
    m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole(Call::Role::Filter);
+   m_pProxyModel->setFilterRole(static_cast<int>(Call::Role::Filter));
    m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
@@ -256,24 +256,24 @@ void HistoryDock::slotSetSortRole(int role)
 {
    switch (role) {
       case HistoryDock::Role::Date:
-         HistoryModel::instance()->setCategoryRole(Call::Role::FuzzyDate);
-         m_pProxyModel->setSortRole(Call::Role::Date);
+         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::FuzzyDate));
+         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Date));
          break;
       case HistoryDock::Role::Name:
-         HistoryModel::instance()->setCategoryRole(Call::Role::Name);
-         m_pProxyModel->setSortRole(Call::Role::Name);
+         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Name));
+         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Name));
          break;
       case HistoryDock::Role::Popularity:
-         HistoryModel::instance()->setCategoryRole(Call::Role::CallCount);
-         m_pProxyModel->setSortRole(Call::Role::CallCount);
+         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::CallCount));
+         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::CallCount));
          break;
       case HistoryDock::Role::Length:
-         HistoryModel::instance()->setCategoryRole(Call::Role::Length);
-         m_pProxyModel->setSortRole(Call::Role::Length);
+         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Length));
+         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Length));
          break;
       case HistoryDock::Role::SpentTime:
-         HistoryModel::instance()->setCategoryRole(Call::Role::TotalSpentTime);
-         m_pProxyModel->setSortRole(Call::Role::TotalSpentTime);
+         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::TotalSpentTime));
+         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::TotalSpentTime));
          break;
    }
 }
@@ -361,7 +361,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 
       m_pBookmark->setShortcut     ( Qt::CTRL + Qt::Key_D           );
       m_pBookmark->setText         ( i18n("Bookmark")               );
-      if (!idx.data(Call::Role::IsBookmark).toBool()) {
+      if (!idx.data(static_cast<int>(Call::Role::IsBookmark)).toBool()) {
          m_pBookmark->setText      ( i18n("Bookmark")               );
          m_pBookmark->setIcon      ( QIcon::fromTheme("bookmarks")             );
       }

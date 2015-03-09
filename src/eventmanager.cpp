@@ -22,6 +22,7 @@
 #include <QtGui/QDropEvent>
 #include <QtCore/QMimeData>
 #include <QtCore/QLocale>
+#include <QtCore/QMutex>
 
 //KDE
 #include <klocalizedstring.h>
@@ -38,6 +39,7 @@
 #include <klib/tipmanager.h>
 #include "view.h"
 #include "ring.h"
+#include "useractionmodel.h"
 #include "canvasobjectmanager.h"
 #include "widgets/kphonenumberselector.h"
 #include "widgets/tips/tipcollection.h"
@@ -128,7 +130,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
 {
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
    m_pParent->m_pView->cancelHoverState();
-   CallModel::instance()->setData(idxAt,-1,Call::Role::DropState);
+   CallModel::instance()->setData(idxAt,-1,static_cast<int>(Call::Role::DropState));
    e->accept();
    if (!idxAt.isValid()) { //Dropped on empty space
       if (e->mimeData()->hasFormat(RingMimes::CALLID)) {
@@ -188,9 +190,9 @@ bool EventManager::viewDropEvent(QDropEvent* e)
    //Remove item overlays
    for (int i = 0;i < m_pParent->m_pView->model()->rowCount();i++) {
       const QModelIndex& idx = m_pParent->m_pView->model()->index(i,0);
-      m_pParent->m_pView->model()->setData(idx,-1,Call::Role::DropState);
+      m_pParent->m_pView->model()->setData(idx,-1,static_cast<int>(Call::Role::DropState));
       for (int j = 0;j < m_pParent->m_pView->model()->rowCount(idx);j++) {
-         m_pParent->m_pView->model()->setData(m_pParent->m_pView->model()->index(j,0,idx),-1,Call::Role::DropState);
+         m_pParent->m_pView->model()->setData(m_pParent->m_pView->model()->index(j,0,idx),-1,static_cast<int>(Call::Role::DropState));
       }
    }
    return false;
@@ -250,7 +252,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    if (isCall)
       source = CallModel::instance()->fromMime(e->mimeData()->data(RingMimes::CALLID));
    Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
-   CallModel::instance()->setData(idxAt,act,Call::Role::DropPosition);
+   CallModel::instance()->setData(idxAt,act,static_cast<int>(Call::Role::DropPosition));
    if ((!isCall) || CallModel::instance()->getIndex(source) != idxAt)
       m_pParent->m_pView->setHoverState(idxAt);
    else
@@ -452,7 +454,7 @@ void EventManager::escape()
          case Call::State::CONFERENCE_HOLD:
          case Call::State::COUNT__:
          default:
-            call->performAction(Call::Action::REFUSE);
+            CallModel::instance()->userActionModel() << UserActionModel::Action::HANGUP;
       }
    }
 } //escape
@@ -466,26 +468,26 @@ void EventManager::enter()
    }
    else {
       switch (call->state()) {
-         case Call::State::DIALING:
-            //Change account if it changed
-            call->setAccount(AvailableAccountModel::instance()->currentDefaultAccount());
-         case Call::State::INCOMING:
-         case Call::State::TRANSFERRED:
-         case Call::State::TRANSF_HOLD:
-            call->performAction(Call::Action::ACCEPT);
-            break;
+         case Call::State::CONFERENCE_HOLD:
          case Call::State::HOLD:
-            call->performAction(Call::Action::HOLD);
+            CallModel::instance()->userActionModel() << UserActionModel::Action::HOLD;
             break;
-         case Call::State::INITIALIZATION:
-         case Call::State::RINGING:
-         case Call::State::CURRENT:
          case Call::State::FAILURE:
          case Call::State::BUSY:
          case Call::State::OVER:
          case Call::State::ERROR:
+            CallModel::instance()->userActionModel() << UserActionModel::Action::HANGUP;
+            break;
+         case Call::State::DIALING:
+         case Call::State::INCOMING:
+         case Call::State::TRANSFERRED:
+         case Call::State::TRANSF_HOLD:
+         case Call::State::INITIALIZATION:
+         case Call::State::RINGING:
+         case Call::State::CURRENT:
          case Call::State::CONFERENCE:
-         case Call::State::CONFERENCE_HOLD:
+            CallModel::instance()->userActionModel() << UserActionModel::Action::ACCEPT;
+            break;
          case Call::State::COUNT__:
          default:
             qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
@@ -521,7 +523,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
          break; //Handled elsewhere
       case Call::State::OVER:
          if (previousState == Call::State::DIALING || previousState == Call::State::OVER) {
-            if (call->historyState() == Call::LegacyHistoryState::MISSED)
+            if (call->isMissed())
                m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Missed"));
             else
                m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Cancelled"));

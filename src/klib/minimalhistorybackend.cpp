@@ -35,6 +35,7 @@
 #include "call.h"
 #include "account.h"
 #include "person.h"
+#include "certificate.h"
 #include "contactmethod.h"
 #include "historymodel.h"
 
@@ -98,6 +99,8 @@ void MinimalHistoryEditor::saveCall(QTextStream& stream, const Call* call)
          QString(call->peerContactMethod()->contact()->uid())
       );
    }
+   if (call->certificate())
+      stream << QString("%1=%2\n").arg(Call::HistoryMapFields::CERT_PATH).arg(call->certificate()->path().path());
    stream << "\n";
    stream.flush();
 }
@@ -176,7 +179,7 @@ QVector<Call*> MinimalHistoryEditor::items() const
 
 QString MinimalHistoryBackend::name () const
 {
-   return QObject::tr("Minimal history backend");
+   return QObject::tr("Local history collection");
 }
 
 QString MinimalHistoryBackend::category () const

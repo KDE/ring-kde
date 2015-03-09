@@ -48,6 +48,7 @@
 #include <accountmodel.h>
 #include <availableaccountmodel.h>
 #include <callmodel.h>
+#include <useractionmodel.h>
 #include <audio/settings.h>
 #include <personmodel.h>
 #include <QStandardPaths>
@@ -69,33 +70,24 @@ action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBoo
 action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
 {
    action_accept        = new ExtendedAction(this);
-   action_refuse        = new ExtendedAction(this);
    action_hold          = new ExtendedAction(this);
    action_transfer      = new ExtendedAction(this);
    action_record        = new ExtendedAction(this);
    action_mute_capture  = new ExtendedAction(this);
    action_mute_playback = new ExtendedAction(this);
    action_hangup        = new ExtendedAction(this);
-   action_unhold        = new ExtendedAction(this);
-   action_pickup        = new ExtendedAction(this);
 
    action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfer_grayscale.png" ));
    action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record_grayscale.png"   ));
    action_hold    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold_grayscale.png"     ));
-   action_refuse  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/refuse_grayscale.png"   ));
    action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
    action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
-   action_unhold  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/unhold_grayscale.png"   ));
-   action_pickup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
    action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );
    action_hold    ->setText ( i18n( "Hold"     ) );
-   action_refuse  ->setText ( i18n( "Refuse"   ) );
    action_hangup  ->setText ( i18n( "Hang up"  ) );
-   action_unhold  ->setText ( i18n( "Unhold"   ) );
-   action_pickup  ->setText ( i18n( "Pickup"   ) );
    action_mute_capture    ->setText ( i18nc("Mute the current audio capture device", "Mute"     ) );
    action_mute_playback    ->setText ( i18nc("Mute the current audio playback device", "Mute Playback"     ) );
    action_accept  ->setText ( i18n("Dial"      ) );
@@ -146,7 +138,6 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
 ActionCollection::~ActionCollection()
 {
    delete action_accept                ;
-   delete action_refuse                ;
    delete action_hold                  ;
    delete action_transfer              ;
    delete action_record                ;
@@ -176,7 +167,6 @@ void ActionCollection::setupAction()
 
    action_mailBox  = new QAction(Ring::app());
    action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
-   action_refuse->setShortcut      ( Qt::CTRL + Qt::Key_D );
    action_hold->setShortcut        ( Qt::CTRL + Qt::Key_H );
    action_transfer->setShortcut    ( Qt::CTRL + Qt::Key_T );
    action_record->setShortcut      ( Qt::CTRL + Qt::Key_R );
@@ -200,6 +190,7 @@ void ActionCollection::setupAction()
    action_showBookmarkDock      = new QAction(QIcon::fromTheme("bookmark-new-list"), i18n("Display bookmark")                        , this);
    action_editToolBar           = new QAction(QIcon::fromTheme("configure-toolbars"), i18n("Configure Toolbars")                     , this);
    action_addPerson             = new QAction(QIcon::fromTheme("contact-new"),i18n("Add new contact")                                                     , this);
+   action_configureShortcut     = new QAction(QIcon::fromTheme("configure-shortcuts"), i18n("Configure Shortcut"), this);
 
    action_addPerson->setShortcut ( Qt::CTRL + Qt::Key_N );
 
@@ -231,42 +222,59 @@ void ActionCollection::setupAction()
    connect(action_mute_playback,SIGNAL(toggled(bool)),Audio::Settings::instance(),SLOT(mutePlayback(bool)));
    connect(Audio::Settings::instance(),SIGNAL(playbackMuted(bool)),action_mute_playback,SLOT(setChecked(bool)));
 
+   //Bind actions to the useractionmodel
+   UserActionModel* uam = CallModel::instance()->userActionModel();
+   QHash<int, ExtendedAction*> actionHash;
+   actionHash[ (int)UserActionModel::Action::ACCEPT          ] = action_accept;
+   actionHash[ (int)UserActionModel::Action::HOLD            ] = action_hold;
+   actionHash[ (int)UserActionModel::Action::MUTE_AUDIO      ] = action_mute_capture;
+   actionHash[ (int)UserActionModel::Action::SERVER_TRANSFER ] = action_transfer;
+   actionHash[ (int)UserActionModel::Action::RECORD          ] = action_record;
+   actionHash[ (int)UserActionModel::Action::HANGUP          ] = action_hangup;
 
+   for (QHash<int,ExtendedAction*>::const_iterator i = actionHash.begin(); i != actionHash.end(); ++i) {
+      ExtendedAction* ea = i.value();
+      UserActionModel::Action a = static_cast<UserActionModel::Action>(i.key());
+      connect(ea, &QAction::triggered, [uam,a](bool) {uam << a;});
+   }
 
-   action_configureShortcut = new QAction(QIcon::fromTheme("configure-shortcuts"), i18n("Configure Shortcut"), this);
-   //                    SENDER                        SIGNAL               RECEIVER                 SLOT               /
-   /**/connect(action_accept,                SIGNAL(triggered()),           this    , SLOT(accept())                    );
-   /**/connect(action_hangup,                SIGNAL(triggered()),           this    , SLOT(hangup())                    );
-   /**/connect(action_refuse,                SIGNAL(triggered()),           this    , SLOT(refuse())                    );
-   /**/connect(action_hold,                  SIGNAL(triggered()),           this    , SLOT(hold())                      );
-   /**/connect(action_unhold,                SIGNAL(triggered()),           this    , SLOT(unhold())                    );
-   /**/connect(action_transfer,              SIGNAL(triggered()),           this    , SLOT(transfer())                  );
-   /**/connect(action_record,                SIGNAL(triggered()),           this    , SLOT(record())                    );
-   /**/connect(action_mailBox,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
-   /**/connect(action_pickup,                SIGNAL(triggered()),           this    , SLOT(accept())                    );
-   /**/connect(action_displayVolumeControls, SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayVolumeControls(bool)) );
-   /**/connect(action_displayDialpad,        SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayDialpad(bool))        );
-   /**/connect(action_displayMessageBox,     SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayMessageBox(bool))     );
-   /**/connect(action_pastenumber,           SIGNAL(triggered()),           Ring::view() , SLOT(paste())            );
-   /**/connect(action_configureShortcut,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
-   /**/connect(action_editToolBar,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
-   /**/connect(action_addPerson,             SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
-   /**/connect(MacroModel::instance(),       SIGNAL(addAction(QAction *)),  this    , SLOT(addMacro(QAction*))          );
+   connect(uam,&UserActionModel::dataChanged, [actionHash,uam](const QModelIndex& tl, const QModelIndex& br) {
+      const int first(tl.row()),last(br.row());
+      for(int i = first; i <= last;i++) {
+         const QModelIndex& idx = uam->index(i,0);
+         ExtendedAction* a = actionHash[(int)qvariant_cast<UserActionModel::Action>(idx.data(UserActionModel::Role::ACTION))];
+         if (a) {
+            a->setText   ( idx.data(Qt::DisplayRole).toString()                 );
+            a->setEnabled( idx.flags() & Qt::ItemIsEnabled                      );
+            a->setChecked( idx.data(Qt::CheckStateRole) == Qt::Checked          );
+            a->setAltIcon( qvariant_cast<QPixmap>(idx.data(Qt::DecorationRole)) );
+         }
+      }
+   });
+
+   /**/connect(MacroModel::instance()           ,       SIGNAL(addAction(QAction *)),  this    , SLOT(addMacro(QAction*))          );
+   /**/connect(action_mailBox                   ,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
+   /**/connect(action_displayVolumeControls     ,   SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayVolumeControls(bool)) );
+   /**/connect(action_displayDialpad            ,        SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayDialpad(bool))        );
+   /**/connect(action_displayMessageBox         ,     SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayMessageBox(bool))     );
+   /**/connect(action_pastenumber               ,           SIGNAL(triggered()),           Ring::view() , SLOT(paste())            );
+   /**/connect(action_configureShortcut         ,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
+   /**/connect(action_editToolBar               ,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
+   /**/connect(action_addPerson                 ,             SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
    /*                                                                                                                   */
 
    connect(Audio::Settings::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
    connect(Audio::Settings::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
 
+
 //    Ring::app()->actionCollection()->setConfigGlobal(true);
    Ring::app()->actionCollection()->addAction("action_accept"                , action_accept                );
-   Ring::app()->actionCollection()->addAction("action_refuse"                , action_refuse                );
    Ring::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
    Ring::app()->actionCollection()->addAction("action_transfer"              , action_transfer              );
    Ring::app()->actionCollection()->addAction("action_record"                , action_record                );
    Ring::app()->actionCollection()->addAction("action_mailBox"               , action_mailBox               );
    Ring::app()->actionCollection()->addAction("action_close"                 , action_close                 );
    Ring::app()->actionCollection()->addAction("action_quit"                  , action_quit                  );
-   Ring::app()->actionCollection()->addAction("action_pickup"                , action_pickup                );
    Ring::app()->actionCollection()->addAction("action_displayVolumeControls" , action_displayVolumeControls );
    Ring::app()->actionCollection()->addAction("action_displayDialpad"        , action_displayDialpad        );
    Ring::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
@@ -277,7 +285,7 @@ void ActionCollection::setupAction()
    Ring::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
    Ring::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
    Ring::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
-   Ring::app()->actionCollection()->addAction("action_addPerson"            , action_addPerson            );
+   Ring::app()->actionCollection()->addAction("action_addPerson"             , action_addPerson             );
    Ring::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
    Ring::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
@@ -369,24 +377,6 @@ void ActionCollection::hold()
    Call* call = Ring::view()->currentCall();
    if(!call) {
       qDebug() << "Error : Holding when no item selected. Should not happen.";
-   }
-   else {
-      try {
-         call->performAction(Call::Action::HOLD);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(Ring::app(),i18n(msg));
-      }
-      emit windowStateChanged();
-   }
-}
-
-///Remove call from hold
-void ActionCollection::unhold()
-{
-   Call* call = Ring::view()->currentCall();
-   if(!call) {
-      qDebug() << "Error : Un-Holding when no item selected. Should not happen.";
    }
    else {
       try {
@@ -507,11 +497,6 @@ ExtendedAction* ActionCollection::recordAction  ()
    return action_record;
 }
 
-ExtendedAction* ActionCollection::refuseAction  ()
-{
-   return action_refuse;
-}
-
 ExtendedAction* ActionCollection::muteCaptureAction()
 {
    return action_mute_capture;
@@ -527,19 +512,9 @@ ExtendedAction* ActionCollection::hangupAction  ()
    return action_hangup;
 }
 
-ExtendedAction* ActionCollection::unholdAction  ()
-{
-   return action_unhold;
-}
-
 ExtendedAction* ActionCollection::transferAction()
 {
    return action_transfer;
-}
-
-ExtendedAction* ActionCollection::pickupAction  ()
-{
-   return action_pickup;
 }
 
 ExtendedAction* ActionCollection::acceptAction  ()

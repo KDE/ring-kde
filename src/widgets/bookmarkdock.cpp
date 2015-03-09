@@ -75,8 +75,8 @@ m_pBookmark(nullptr)
    m_pView->setSortingEnabled(true);
    m_pProxyModel = new BookmarkSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel          ( BookmarkModel::instance() );
-   m_pProxyModel->setSortRole             ( Call::Role::Name          );
-   m_pProxyModel->setFilterRole           ( Call::Role::Filter        );
+   m_pProxyModel->setSortRole             ( static_cast<int>(Call::Role::Name  )        );
+   m_pProxyModel->setFilterRole           ( static_cast<int>(Call::Role::Filter)        );
    m_pProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive       );
    m_pProxyModel->setSortCaseSensitivity  ( Qt::CaseInsensitive       );
    m_pProxyModel->setDynamicSortFilter    ( true                      );
@@ -144,8 +144,8 @@ void BookmarkDock::slotDoubleClick(const QModelIndex& index)
       return;
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::BOOKMARK)
       return;
-   Call* call2 = CallModel::instance()->dialingCall(idx.model()->data(idx,Call::Role::Number).toString(), AvailableAccountModel::currentDefaultAccount());
-   call2->setDialNumber  ( idx.model()->data(idx,Call::Role::Number).toString() );
+   Call* call2 = CallModel::instance()->dialingCall(idx.model()->data(idx,static_cast<int>(Call::Role::Number)).toString(), AvailableAccountModel::currentDefaultAccount());
+   call2->setDialNumber  ( idx.model()->data(idx,static_cast<int>(Call::Role::Number)).toString() );
    call2->performAction( Call::Action::ACCEPT   );
 }
 

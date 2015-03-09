@@ -132,7 +132,7 @@ private Q_SLOTS:
    void hidePresenceDock                         (                               );
    void slotPresenceEnabled                      ( bool state                    );
    #ifdef ENABLE_VIDEO
-   void displayVideoDock                         ( Video::Renderer* r            );
+   void displayVideoDock                         ( Call* c, Video::Renderer* r   );
    #endif
 
 public Q_SLOTS:

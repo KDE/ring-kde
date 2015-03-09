@@ -222,7 +222,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -359,7 +359,7 @@
             <item row="6" column="1">
              <widget class="QCheckBox" name="m_pDefaultAccount">
               <property name="text">
-               <string>Default account for contact with only extensions as phone number</string>
+               <string>TODO REMOVE Default account for contact with only extensions as phone number</string>
               </property>
              </widget>
             </item>
@@ -1699,6 +1699,16 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>RING</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="DlgDht" name="m_pDlgDht" native="true"/>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -1748,6 +1758,12 @@
    <class>AutoComboBox</class>
    <extends>QComboBox</extends>
    <header>widgets/autocombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DlgDht</class>
+   <extends>QWidget</extends>
+   <header>conf/dlgdht.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

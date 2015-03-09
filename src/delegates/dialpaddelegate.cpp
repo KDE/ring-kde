@@ -29,7 +29,7 @@ QSet<QModelIndex> DialpadDelegate::m_slIndexes = QSet<QModelIndex>();
 
 void DialpadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, uint rightPadding)
 {
-   int animStep(index.data(Call::Role::DTMFAnimState).toInt()),dialIdx(index.data(Call::Role::LastDTMFidx).toInt());
+   int animStep(index.data(static_cast<int>(Call::Role::DTMFAnimState)).toInt()),dialIdx(index.data(static_cast<int>(Call::Role::LastDTMFidx)).toInt());
    if (animStep <= 0)
       return;
    painter->save();
@@ -75,11 +75,11 @@ void DialpadDelegate::slotFade()
    m_sStep--;
 
    foreach(const QModelIndex& idx,m_slIndexes) {
-      if (!idx.isValid() || idx.data(Call::Role::DTMFAnimState).toInt() == 0) {
+      if (!idx.isValid() || idx.data(static_cast<int>(Call::Role::DTMFAnimState)).toInt() == 0) {
          m_slIndexes.remove(idx);
       }
       else {
-         CallModel::instance()->setData(idx,idx.data(Call::Role::DTMFAnimState).toInt() -1,Call::Role::DTMFAnimState);
+         CallModel::instance()->setData(idx,idx.data(static_cast<int>(Call::Role::DTMFAnimState)).toInt() -1,static_cast<int>(Call::Role::DTMFAnimState));
       }
    }
    if ((m_sStep<=0) ||!m_slIndexes.size()) {
