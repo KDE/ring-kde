@@ -51,6 +51,8 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pCategoryDelegate->setChildDelegate(m_pDelegate);
    m_pItemBackendW->setItemDelegate(m_pCategoryDelegate);
 
+   CollectionModel::instance()->load();
+
    m_pItemBackendW->setModel(ConfigurationSkeleton::displayAllCollections()? CollectionModel::instance() : CollectionModel::instance()->manageableCollections());
 
    //Resize the columns
@@ -85,15 +87,14 @@ DlgAddressBook::~DlgAddressBook()
 void DlgAddressBook::updateWidgets()
 {
 //    AkonadiPersonCollectionModel::instance()->reload();
-//    PersonModel::instance()->backendModel()->load();
+   CollectionModel::instance()->load();
 }
 
 ///Save the settings
 void DlgAddressBook::updateSettings()
 {
-   NumberCategoryModel::instance()->save();
 //    AkonadiPersonCollectionModel::instance()->save();
-//    PersonModel::instance()->backendModel()->save();
+   CollectionModel::instance()->save();
    m_HasChanged = false;
 }
 

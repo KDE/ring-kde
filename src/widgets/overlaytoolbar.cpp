@@ -158,6 +158,7 @@ void OverlayToolbar::resizeToolbar()
       }
       resize(p->width()-wOffset,72);
       move(0,p->height()-72-vOffset);
+      emit resized(p->width()-wOffset);
    }
 }
 
@@ -187,7 +188,6 @@ void OverlayToolbar::setIconSize(int size)
       iter.value()->setIconSize(QSize(m_IconSize,m_IconSize));
 }
 
-
 void OverlayToolbar::addAction(ExtendedAction* action, int key)
 {
    int k = key==-1?m_hButtons.size()+1:key;
@@ -198,6 +198,11 @@ void OverlayToolbar::addAction(ExtendedAction* action, int key)
    }
    m_hButtons[key] = btn;
    m_pLayout->addWidget( btn );
+}
+
+void OverlayToolbar::addWidget(QWidget* w)
+{
+   m_pLayout->addWidget(w);
 }
 
 ObserverToolButton* OverlayToolbar::actionButton(int key)

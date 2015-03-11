@@ -51,7 +51,9 @@
 #include "protocolmodel.h"
 #include "tlsmethodmodel.h"
 #include "certificate.h"
+#include "securityflaw.h"
 #include "profilemodel.h"
+#include "widgets/certificateviewer.h"
 #include "../delegates/ringtonedelegate.h"
 #include "../delegates/categorizeddelegate.h"
 #include "networkinterfacemodel.h"
@@ -88,12 +90,6 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    treeView_accountList->setItemDelegate(m_pCategoryDelegate);
    treeView_accountList->expandAll();
 
-   //BEGIN Temporarely disable advanced security widgets
-   m_pSecurityIssues->setVisible(false);
-   frame->setVisible(false);
-   frame_2->setVisible(false);
-   //END
-
    m_pInfoIconL->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(32,32)));
    label_message_icon->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(24,24)));
    m_pCancelFix->setIcon(QIcon::fromTheme("dialog-close"));
@@ -120,8 +116,6 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    file_tls_endpoint->lineEdit()->setClearButtonEnabled(false);
    file_tls_private_key->lineEdit()->setClearButtonEnabled(false);
 
-#if false
-   //BEGIN Temporarely disable advanced security widgets
    //Authority
    m_pAuthorityII = new IssuesIcon(file_tls_authority->lineEdit());
    m_pAuthorityII->setupForLineEdit(file_tls_authority->lineEdit());
@@ -140,8 +134,19 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    connect(m_pVerifyServer,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
    connect(m_pVerifyClient,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
    connect(m_pReqTLS,SIGNAL(selectFlaw(QModelIndex)),m_pSecurityIssues->view(),SLOT(setCurrentIndex(QModelIndex)));
-#endif
-//END
+
+   connect(m_pViewCa, &QToolButton::clicked, [this]() {
+      CertificateViewer* v = new CertificateViewer(currentAccount()->tlsCaListCertificate(),this);
+      v->show();
+      connect(v,&QDialog::finished,[v](int) { delete v; });
+   });
+
+   connect(m_pViewCert, &QToolButton::clicked, [this]() {
+      CertificateViewer* v = new CertificateViewer(currentAccount()->tlsCertificate(),this);
+      v->show();
+      connect(v,&QDialog::finished,[v](int) { delete v; });
+   });
+
 //    loadAccountList();
    accountListHasChanged = false;
 
@@ -327,9 +332,9 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    if (account->protocol() != Account::Protocol::RING)
       /**/ ACC setHostname                 ( edit3_server->text()                                                     );
 
-//    /**/ ACC tlsCaListCertificate()->setPath( file_tls_authority->text()                                               );
-//    /**/ ACC tlsCertificate ()->setPath     ( file_tls_endpoint->text()                                                );
-//    /**/ ACC tlsPrivateKeyCertificate()->setPath( file_tls_private_key->text()                                         );
+   /**/ ACC setTlsCaListCertificate    ( file_tls_authority->text()                                                   );
+   /**/ ACC setTlsCertificate          ( file_tls_endpoint->text()                                                    );
+   /**/ ACC setTlsPrivateKeyCertificate( file_tls_private_key->text()                                                 );
 
 
 //    if (m_pDefaultAccount->isChecked()) {
@@ -410,12 +415,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/radioButton_pa_custom->setChecked        ( !account->isPublishedSameAsLocal     ());
    /**/lineEdit_pa_published_address->setText   (  ACC publishedAddress                ());
    /**/spinBox_pa_published_port->setValue      (  ACC publishedPort                   ());
-   /*                                                  Security                             **/
+   /*                                                  Security                         **/
    /**/edit_tls_private_key_password->setText   (  ACC tlsPassword                     ());
-   /**/m_pBootstrapPort->setValue               (  ACC bootstrapPort                 ());
-//    /**/file_tls_authority->setText              (  ACC tlsCaListCertificate    ()->path().toLocalFile());
-//    /**/file_tls_endpoint->setText               (  ACC tlsCertificate          ()->path().toLocalFile());
-//    /**/file_tls_private_key->setText            (  ACC tlsPrivateKeyCertificate()->path().toLocalFile());
+   /**/m_pBootstrapPort->setValue               (  ACC bootstrapPort                   ());
    /**/edit_tls_outgoing->setText               (  ACC tlsServerName                   ());
    /**/spinbox_tls_timeout_sec->setValue        (  ACC tlsNegotiationTimeoutSec        ());
    /**/check_tls_incoming->setChecked           (  ACC isTlsVerifyServer               ());
@@ -431,6 +433,23 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /*                                                                                    */
    if (account->protocol() != Account::Protocol::RING)
       /**/edit3_server->setText                 (  ACC hostname                        ());
+
+
+   //Handle certificates
+   if (ACC tlsCaListCertificate    ())
+      /**/file_tls_authority->setText           (  ACC tlsCaListCertificate    ()->path().path());
+   else
+      /**/file_tls_authority->clear();
+
+   if (ACC tlsCertificate          ())
+      /**/file_tls_endpoint->setText            (  ACC tlsCertificate          ()->path().path());
+   else
+      /**/file_tls_endpoint->clear();
+
+   if (ACC tlsPrivateKeyCertificate())
+      /**/file_tls_private_key->setText         (  ACC tlsPrivateKeyCertificate()->path().path());
+   else
+      /**/file_tls_private_key->clear();
 
    m_pCiphers->setModel(ACC cipherModel());
    m_pDlgDht->setAccount(account);
@@ -475,7 +494,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    connect(list_audiocodec->model()            ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(list_audiocodec->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
 
-   ACC securityValidationModel()->update();
+//    ACC securityValidationModel()->update();
    m_pSecurityIssues->setModel(ACC securityValidationModel());
 
 
@@ -921,26 +940,29 @@ Account* DlgAccounts::currentAccount() const
 }
 
 
-void DlgAccounts::addFlawToCertificateField(const Flaw* flaw)
+void DlgAccounts::addFlawToCertificateField(const SecurityFlaw* flaw)
 {
 Q_UNUSED(flaw)
 //BEGIN Temporarely disable advanced security widgets
-#if false
    switch(flaw->type()) {
       case Certificate::Type::AUTHORITY:
+         qDebug() << "\n\n\nADDING";
          m_pAuthorityII->addFlaw(flaw);
          break;
       case Certificate::Type::USER:
+         qDebug() << "\n\n\nADDING";
          m_pEndCertII->addFlaw(flaw);
          break;
       case Certificate::Type::PRIVATE_KEY:
+         qDebug() << "\n\n\nADDING";
          m_pPKII->addFlaw(flaw);
          break;
       case Certificate::Type::NONE:
          qDebug() << "Invalid certificate type";
          break;
+      case Certificate::Type::CALL:
+         break;
    };
-#endif
 //END
 }
 
@@ -959,7 +981,6 @@ void DlgAccounts::statusModel()
 
 void DlgAccounts::updateSecurityValidation()
 {
-#if false
    Account* a = currentAccount();
    //Create the widgets
    m_pVerifyServer->setModel(a->securityValidationModel());
@@ -974,65 +995,64 @@ void DlgAccounts::updateSecurityValidation()
 //    newWidget->addFlaw(new Flaw(SecurityValidationModel::SecurityFlaw::TLS_DISABLED,Certificate::Type::NONE));
 
    //Add the flaws
-   foreach(const Flaw* flaw, currentAccount()->securityValidationModel()->currentFlaws()) {
+   foreach(const SecurityFlaw* flaw, currentAccount()->securityValidationModel()->currentFlaws()) {
       switch (flaw->flaw()) {
-         case SecurityValidationModel::SecurityFlaw::SRTP_DISABLED:
+         case SecurityValidationModel::AccountSecurityFlaw::SRTP_DISABLED:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::TLS_DISABLED:
+         case SecurityValidationModel::AccountSecurityFlaw::TLS_DISABLED:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_EXPIRED:
+         case SecurityValidationModel::AccountSecurityFlaw::CERTIFICATE_EXPIRED:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_SELF_SIGNED:
+         case SecurityValidationModel::AccountSecurityFlaw::CERTIFICATE_SELF_SIGNED:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::CA_CERTIFICATE_MISSING:
+         case SecurityValidationModel::AccountSecurityFlaw::CA_CERTIFICATE_MISSING:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::END_CERTIFICATE_MISSING:
+         case SecurityValidationModel::AccountSecurityFlaw::END_CERTIFICATE_MISSING:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::PRIVATE_KEY_MISSING:
+         case SecurityValidationModel::AccountSecurityFlaw::PRIVATE_KEY_MISSING:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_MISMATCH:
+         case SecurityValidationModel::AccountSecurityFlaw::CERTIFICATE_MISMATCH:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_PERMISSION:
+         case SecurityValidationModel::AccountSecurityFlaw::CERTIFICATE_STORAGE_PERMISSION:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_FOLDER:
+         case SecurityValidationModel::AccountSecurityFlaw::CERTIFICATE_STORAGE_FOLDER:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::CERTIFICATE_STORAGE_LOCATION:
+         case SecurityValidationModel::AccountSecurityFlaw::CERTIFICATE_STORAGE_LOCATION:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::OUTGOING_SERVER_MISMATCH:
+         case SecurityValidationModel::AccountSecurityFlaw::OUTGOING_SERVER_MISMATCH:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::VERIFY_INCOMING_DISABLED:
+         case SecurityValidationModel::AccountSecurityFlaw::VERIFY_INCOMING_DISABLED:
             m_pVerifyServer->addFlaw(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::VERIFY_ANSWER_DISABLED:
+         case SecurityValidationModel::AccountSecurityFlaw::VERIFY_ANSWER_DISABLED:
             m_pVerifyClient->addFlaw(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::REQUIRE_CERTIFICATE_DISABLED:
+         case SecurityValidationModel::AccountSecurityFlaw::REQUIRE_CERTIFICATE_DISABLED:
 
             break;
-         case SecurityValidationModel::SecurityFlaw::MISSING_CERTIFICATE:
+         case SecurityValidationModel::AccountSecurityFlaw::MISSING_CERTIFICATE:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::MISSING_AUTHORITY:
+         case SecurityValidationModel::AccountSecurityFlaw::MISSING_AUTHORITY:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityValidationModel::SecurityFlaw::COUNT__:
+         case SecurityValidationModel::AccountSecurityFlaw::COUNT__:
          default:
             qDebug() << "Invalid flaw";
       }
    }
-#endif
 }
 
 #undef ACC_

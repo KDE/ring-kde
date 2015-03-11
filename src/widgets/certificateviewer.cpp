@@ -30,6 +30,8 @@ CertificateViewer::CertificateViewer(const QModelIndex& idx, QWidget* parent) : 
 {
    QHBoxLayout* l = new QHBoxLayout(this);
    l->addWidget(m_pView);
+   m_pView->setWordWrap(true);
+   m_pView->setUniformRowHeights(false);
    m_pView->setModel(CertificateModel::instance()->model(idx));
 
    if (m_pView->header()) {
@@ -42,9 +44,22 @@ CertificateViewer::CertificateViewer(const QModelIndex& idx, QWidget* parent) : 
 
 CertificateViewer::CertificateViewer(Certificate* cert, QWidget* parent) : QDialog(parent), m_pView(new QTreeView(this))
 {
+   if (!cert)
+      return;
+
    QHBoxLayout* l = new QHBoxLayout(this);
+   m_pView->setWordWrap(true);
+   m_pView->setUniformRowHeights(false);
    l->addWidget(m_pView);
    m_pView->setModel(cert->model());
+
+   if (m_pView->header()) {
+      m_pView->header()->setSectionResizeMode (0,QHeaderView::ResizeToContents);
+      m_pView->header()->setSectionResizeMode (1,QHeaderView::Stretch         );
+   }
+
+   m_pView->expandAll();
+   resize(600,800);
 }
 
 CertificateViewer::~CertificateViewer()

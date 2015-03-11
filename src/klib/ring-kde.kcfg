@@ -251,7 +251,7 @@
     <!-- Auto completion -->
     <entry name="enableAutoCompletion" type="Bool">
       <label>Enable auto completion widget</label>
-      <default> false </default>
+      <default> true </default>
     </entry>
     <entry name="autoCompleteMergeNumbers" type="Bool">
       <label>If there is multiple instance of the same number, merge them and use the default account</label>

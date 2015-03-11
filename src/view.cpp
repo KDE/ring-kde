@@ -164,22 +164,6 @@ View::View(QWidget *parent)
    connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State))     , m_pCanvasToolbar, SLOT(updateState()));
    connect(CallModel::instance()    , SIGNAL(layoutChanged())                         , m_pCanvasToolbar, SLOT(updateState()));
 
-   QDialog* d = new QDialog(this);
-
-   QHBoxLayout* l = new QHBoxLayout(d);
-   QTableView* lv = new QTableView(this);
-   SimpleRotateProxy* pm = new SimpleRotateProxy(this);
-   pm->setSourceModel(CallModel::instance()->userActionModel()->activeActionModel());
-   lv->setModel(pm);
-//    lv->setViewMode(QListView::IconMode);
-   lv->setItemDelegate(new ToolbarDelegate(lv));
-   l->addWidget(lv);
-   connect(lv,&QTableView::clicked,[](const QModelIndex & index ) {
-      CallModel::instance()->userActionModel()->execute(index);
-   });
-
-   d->show();
-
    //TODO to remove
    connect(m_pView,&CategorizedTreeView::contextMenuRequest, [this](QModelIndex) {
       QDialog* d2 = new QDialog(this);

@@ -80,7 +80,7 @@ private:
    //Methods
    Account* currentAccount() const;
    void updateSecurityValidation();
-   void addFlawToCertificateField(const Flaw* flaw);
+   void addFlawToCertificateField(const SecurityFlaw* flaw);
 
 public Q_SLOTS:
    void loadAccountList                  ();

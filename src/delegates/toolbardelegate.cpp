@@ -42,7 +42,7 @@ static QStyleOptionToolButton fillOptions(const QStyleOptionViewItem & option,QS
    opt2.features = QStyleOptionToolButton::None;
 
    opt2.icon    = opt.icon;
-   opt2.iconSize= QSize(48,48);
+   opt2.iconSize= QSize(32,32);
    opt2.text    = opt.text;
    opt2.state   = option.state;
    opt2.rect    = opt.rect;
@@ -66,10 +66,10 @@ void ToolbarDelegate::paint(QPainter* painter, const QStyleOptionViewItem & opti
    /*qDebug() <<opt2.text << (int)opt2.state << (int)option.state << "end" << 
    (int)(opt2.state & QStyle::State_MouseOver) <<  (int)(opt2.state & QStyle::State_Sunken);*/
 
-   if (opt2.state & QStyle::State_MouseOver) {
-      painter->setBrush(Qt::red);
-      painter->drawRect(opt.rect);
-   }
+//    if (opt2.state & QStyle::State_MouseOver) {
+//       painter->setBrush(Qt::red);
+//       painter->drawRect(opt.rect);
+//    }
 //    QStylePainter stylePainter(m_pParent);
 //    stylePainter.drawControl(QStyle::CE_ItemViewItem, option);
 

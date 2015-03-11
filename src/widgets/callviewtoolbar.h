@@ -21,6 +21,7 @@
 #include "overlaytoolbar.h"
 
 class QTreeView;
+class QTableView;
 
 class CallViewToolbar : public OverlayToolbar {
    Q_OBJECT
@@ -31,6 +32,7 @@ public:
 private:
    //Attributes
    QTreeView*    m_pParent;
+   QTableView*   m_pContent;
 
 public Q_SLOTS:
    virtual void updateState();

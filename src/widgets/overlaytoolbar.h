@@ -65,6 +65,7 @@ public:
    //Mutator
    void resizeToolbar();
    void addAction(ExtendedAction* action, int key = -1);
+   void addWidget(QWidget* w);
 
 private:
    //Attributes
@@ -91,6 +92,7 @@ protected:
 
 Q_SIGNALS:
    void visibilityChanged(bool);
+   void resized(int width);
 
 };
 

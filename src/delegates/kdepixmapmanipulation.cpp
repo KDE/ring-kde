@@ -295,6 +295,8 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
          return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
       case UserActionModel::Action::JOIN            :
          return QIcon();
+      case UserActionModel::Action::ADD_NEW         :
+         return QIcon();
       case UserActionModel::Action::COUNT__:
          break;
    };

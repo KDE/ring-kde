@@ -151,7 +151,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgAddressBook);
       return dialog->dlgAddressBook;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::AddressBook]   , i18n("Collections and contacts")                 , "x-office-address-book"             )
+   addPage( dlgHolder[ConfigurationDialog::Page::AddressBook]   , i18n("Personal data")                 , "x-office-address-book"             )
       ->setProperty("id",ConfigurationDialog::Page::AddressBook);
 
    //Hooks

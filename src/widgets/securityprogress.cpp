@@ -32,6 +32,9 @@
 #include <klocalizedstring.h>
 #include <QIcon>
 
+//Ring
+#include <securityflaw.h>
+
 class SecurityProgress : public QProgressBar
 {
    Q_OBJECT
@@ -230,7 +233,7 @@ void SecurityLevelWidget::reloadCount()
 {
    if (! m_pModel) return;
    int severity[5] = {0,0,0,0,0};
-   foreach(const Flaw* flaw, m_pModel->currentFlaws()) {
+   foreach(const SecurityFlaw* flaw, m_pModel->currentFlaws()) {
       severity[(int)flaw->severity()]++;
    }
    m_pInfoL   ->setText(i18np("%1 tip","%1 tips",severity[(int)SecurityValidationModel::Severity::INFORMATION]));
@@ -245,7 +248,7 @@ void SecurityLevelWidget::reloadCount()
 void SecurityLevelWidget::dblClicked(const QModelIndex& idx)
 {
    if (idx.isValid()) {
-      m_pModel->currentFlaws()[idx.row()]->slotRequestHighlight();
+      m_pModel->currentFlaws()[idx.row()]->requestHighlight();
    }
 }
 
@@ -253,13 +256,13 @@ class IssueButton : public QToolButton
 {
    Q_OBJECT
 public:
-   IssueButton(const Flaw* flaw, QWidget* parent);
-   const Flaw* m_pFlaw;
+   IssueButton(const SecurityFlaw* flaw, QWidget* parent);
+   const SecurityFlaw* m_pFlaw;
 public Q_SLOTS:
    void slotHighlightFlaw();
 };
 
-IssueButton::IssueButton(const Flaw* flaw, QWidget* parent):
+IssueButton::IssueButton(const SecurityFlaw* flaw, QWidget* parent):
 QToolButton(parent),m_pFlaw(flaw)
 {
    connect(flaw,SIGNAL(requestHighlight()),this,SLOT(slotHighlightFlaw()));
@@ -283,7 +286,7 @@ QWidget* IssuesIcon::buddy() const
 
 void IssueButton::slotHighlightFlaw()
 {
-   Flaw* flaw = qobject_cast<Flaw*>(sender());
+   SecurityFlaw* flaw = qobject_cast<SecurityFlaw*>(sender());
    if (flaw == m_pFlaw) {
       IssuesIcon* par = static_cast<IssuesIcon*>(parentWidget());
       if (par->buddy()) {
@@ -306,7 +309,7 @@ void IssuesIcon::setBuddy(QWidget* buddy)
    m_pBuddy = buddy;
 }
 
-void IssuesIcon::addFlaw(const Flaw* flaw)
+void IssuesIcon::addFlaw(const SecurityFlaw* flaw)
 {
    Q_UNUSED(flaw)
    IssueButton* btn = new IssueButton(flaw,this);
@@ -379,7 +382,7 @@ bool IssuesIcon::eventFilter(QObject *obj, QEvent *event)
 
 void IssuesIcon::slotSolved()
 {
-   Flaw* f = qobject_cast<Flaw*>(sender());
+   SecurityFlaw* f = qobject_cast<SecurityFlaw*>(sender());
    if (f) {
       //TODO
    }

@@ -29,6 +29,7 @@ class QLineEdit;
 //Ring
 #include <securityvalidationmodel.h>
 class SecurityProgress;
+class SecurityFlaw;
 
 class IssuesIcon : public QWidget {
    Q_OBJECT
@@ -44,7 +45,7 @@ public:
    QWidget* buddy() const;
 
    //Mutator
-   void addFlaw(const Flaw* flaw);
+   void addFlaw(const SecurityFlaw* flaw);
    void setupForLineEdit(QLineEdit* le);
    void reset();
 protected:

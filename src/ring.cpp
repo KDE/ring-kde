@@ -51,7 +51,6 @@
 #include "imconversationmanager.h"
 #include "numbercategorymodel.h"
 #include "klib/minimalhistorybackend.h"
-#include "delegates/numbercategorydelegate.h"
 #include "delegates/kdepixmapmanipulation.h"
 #include "klib/macromodel.h"
 #include "klib/bookmarkbackend.h"
@@ -89,51 +88,31 @@
 
 Ring* Ring::m_sApp = nullptr;
 
-class ConcreteNumberCategoryDelegate :public NumberCategoryDelegate {
-   void serialize(NumberCategoryModel* model)
-   {
-      Q_UNUSED(model)
-      QList<int> list;
-      for(int i=0;i<model->rowCount();i++) {
-         const QModelIndex& idx = model->index(i,0);
-         if (idx.data(Qt::CheckStateRole) == Qt::Checked) {
-            list << idx.data(NumberCategoryModel::Role::INDEX).toInt();
-         }
-      }
-      ConfigurationSkeleton::setPhoneTypeList(list);
-   }
-
-   void load(NumberCategoryModel* model)
-   {
-      Q_UNUSED(model)
-      QList<int> list = ConfigurationSkeleton::phoneTypeList();
-      const bool isEmpty = !list.size();
-#define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
+static void loadNumberCategories()
+{
+//    QList<int> list = ConfigurationSkeleton::phoneTypeList();
+//    const bool isEmpty = !list.size();
+// #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
+   NumberCategoryModel* model = NumberCategoryModel::instance();
 #define ICN(name) QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString("ring-kde/mini/%1.png").arg(name)))
-      /*model->addCategory(i18n("Home")     ,ICN("home")     , KABC::PhoneNumber::Home ,IS_ENABLED( KABC::PhoneNumber::Home     ));
-      model->addCategory(i18n("Work")     ,ICN("work")     , KABC::PhoneNumber::Work ,IS_ENABLED( KABC::PhoneNumber::Work     ));
-      model->addCategory(i18n("Msg")      ,ICN("mail")     , KABC::PhoneNumber::Msg  ,IS_ENABLED( KABC::PhoneNumber::Msg      ));
-      model->addCategory(i18n("Pref")     ,ICN("call")     , KABC::PhoneNumber::Pref ,IS_ENABLED( KABC::PhoneNumber::Pref     ));
-      model->addCategory(i18n("Voice")    ,ICN("video")    , KABC::PhoneNumber::Voice,IS_ENABLED( KABC::PhoneNumber::Voice    ));
-      model->addCategory(i18n("Fax")      ,ICN("call")     , KABC::PhoneNumber::Fax  ,IS_ENABLED( KABC::PhoneNumber::Fax      ));
-      model->addCategory(i18n("Cell")     ,ICN("mobile")   , KABC::PhoneNumber::Cell ,IS_ENABLED( KABC::PhoneNumber::Cell     ));
-      model->addCategory(i18n("Video")    ,ICN("call")     , KABC::PhoneNumber::Video,IS_ENABLED( KABC::PhoneNumber::Video    ));
-      model->addCategory(i18n("Bbs")      ,ICN("call")     , KABC::PhoneNumber::Bbs  ,IS_ENABLED( KABC::PhoneNumber::Bbs      ));
-      model->addCategory(i18n("Modem")    ,ICN("call")     , KABC::PhoneNumber::Modem,IS_ENABLED( KABC::PhoneNumber::Modem    ));
-      model->addCategory(i18n("Car")      ,ICN("car")      , KABC::PhoneNumber::Car  ,IS_ENABLED( KABC::PhoneNumber::Car      ));
-      model->addCategory(i18n("Isdn")     ,ICN("call")     , KABC::PhoneNumber::Isdn ,IS_ENABLED( KABC::PhoneNumber::Isdn     ));
-      model->addCategory(i18n("Pcs")      ,ICN("call")     , KABC::PhoneNumber::Pcs  ,IS_ENABLED( KABC::PhoneNumber::Pcs      ));
-      model->addCategory(i18n("Pager")    ,ICN("pager")    , KABC::PhoneNumber::Pager,IS_ENABLED( KABC::PhoneNumber::Pager    ));*/
-      model->addCategory(i18n("Preferred"),ICN("preferred"), 10000                   ,IS_ENABLED( 10000                       ));
+   model->addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
+   model->addCategory(i18n("Work")     ,ICN("work")     , 2 /*KABC::PhoneNumber::Work */);
+   model->addCategory(i18n("Msg")      ,ICN("mail")     , 3 /*KABC::PhoneNumber::Msg  */);
+   model->addCategory(i18n("Pref")     ,ICN("call")     , 4 /*KABC::PhoneNumber::Pref */);
+   model->addCategory(i18n("Voice")    ,ICN("video")    , 5 /*KABC::PhoneNumber::Voice*/);
+   model->addCategory(i18n("Fax")      ,ICN("call")     , 6 /*KABC::PhoneNumber::Fax  */);
+   model->addCategory(i18n("Cell")     ,ICN("mobile")   , 7 /*KABC::PhoneNumber::Cell */);
+   model->addCategory(i18n("Video")    ,ICN("call")     , 8 /*KABC::PhoneNumber::Video*/);
+   model->addCategory(i18n("Bbs")      ,ICN("call")     , 9 /*KABC::PhoneNumber::Bbs  */);
+   model->addCategory(i18n("Modem")    ,ICN("call")     , 10/*KABC::PhoneNumber::Modem*/);
+   model->addCategory(i18n("Car")      ,ICN("car")      , 11/*KABC::PhoneNumber::Car  */);
+   model->addCategory(i18n("Isdn")     ,ICN("call")     , 12/*KABC::PhoneNumber::Isdn */);
+   model->addCategory(i18n("Pcs")      ,ICN("call")     , 13/*KABC::PhoneNumber::Pcs  */);
+   model->addCategory(i18n("Pager")    ,ICN("pager")    , 14/*KABC::PhoneNumber::Pager*/);
+   model->addCategory(i18n("Preferred"),ICN("preferred"), 10000                         );
 #undef ICN
 #undef IS_ENABLED
-   }
-
-//    QVariant icon(QPixmap* icon )
-//    {
-//       return QIcon(*icon);
-//    }
-};
+}
 
 ///Constructor
 Ring::Ring(QWidget* parent)
@@ -153,13 +132,14 @@ Ring::Ring(QWidget* parent)
 
       //Start the Akonadi collection backend (contact loader)
 //       AkonadiPersonCollectionModel::instance();
+      loadNumberCategories();
+
       HistoryModel::instance()->addCollection<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
 
       BookmarkModel::instance()->addCollection<BookmarkBackend>();
 
       PersonModel::instance()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
-      NumberCategoryDelegate::setInstance(new ConcreteNumberCategoryDelegate());
       ItemModelStateSerializationDelegate::setInstance(new ItemModelStateSerialization());
 //       PersonModel::instance()->backendModel()->load();
       IMConversationManager::instance();
@@ -502,15 +482,16 @@ void Ring::on_m_pView_recordCheckStateChangeAsked(bool recordCheckState)
 ///Called when a call is coming
 void Ring::on_m_pView_incomingCall(const Call* call)
 {
+   //FIXME create an infinite loop
    if (call) {
-      const Person* contact = call->peerContactMethod()->contact();
+      /*const Person* contact = call->peerContactMethod()->contact();
       if (contact) {
          const QPixmap px = (contact->photo()).type() == QVariant::Pixmap ? (contact->photo()).value<QPixmap>():QPixmap();
          KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()),px);
       }
       else
          KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()));
-   }
+   */}
 }
 
 ///Hide or show the statusbar presence widget

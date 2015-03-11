@@ -19,19 +19,22 @@
 
 //Qt
 #include <QtWidgets/QTreeView>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QHBoxLayout>
-
-//KDE
-#include <QDebug>
+#include <QtWidgets/QHeaderView>
+#include <QtCore/QDebug>
+#include <QtCore/QSortFilterProxyModel>
 
 //Ring
 #include "ring.h"
 #include "actioncollection.h"
 #include "extendedaction.h"
 #include <klib/tipmanager.h>
+#include <proxies/simplerotateproxy.h>
 #include <call.h>
 #include <useractionmodel.h>
 #include <callmodel.h>
+#include "delegates/toolbardelegate.h"
 
 CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_pParent(parent)
 {
@@ -44,6 +47,40 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
    addAction( ActionCollection::instance()->recordAction()   ,static_cast<int>(UserActionModel::Action::RECORD)   );
    addAction( ActionCollection::instance()->refuseAction()   ,static_cast<int>(UserActionModel::Action::REFUSE)   );
    addAction( ActionCollection::instance()->acceptAction()   ,static_cast<int>(UserActionModel::Action::ACCEPT)   );*/
+
+   m_pContent = new QTableView(this);
+//    m_pContent->setStyleSheet("QTableView{background-color:transparent;}");
+   m_pContent->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+   m_pContent->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+   if (m_pContent->verticalHeader())
+      m_pContent->verticalHeader()->setVisible(false);
+
+   if (m_pContent->horizontalHeader())
+      m_pContent->horizontalHeader()->setVisible(false);
+
+   SimpleRotateProxy* pm = new SimpleRotateProxy(this);
+   pm->setSourceModel(CallModel::instance()->userActionModel()->activeActionModel());
+
+   m_pContent->setItemDelegate(new ToolbarDelegate(m_pContent));
+   m_pContent->setModel(pm);
+
+   m_pContent->setRowHeight(0,55); //FIXME don't hardcode
+
+   addWidget(m_pContent);
+   setVisible(true);
+
+   auto lambda = [this,pm]() {
+      const int count = pm->columnCount(QModelIndex());
+      for (int i =0; i<count;i++)
+         m_pContent->setColumnWidth(i,width()/count);
+   };
+
+   connect(pm,&SimpleRotateProxy::layoutChanged,lambda);
+   connect(this,&CallViewToolbar::resized,lambda);
+   connect(m_pContent,&QTableView::clicked,[](const QModelIndex & index ) {
+      CallModel::instance()->userActionModel()->execute(index);
+   });
 }
 
 CallViewToolbar::~CallViewToolbar()
@@ -53,6 +90,7 @@ CallViewToolbar::~CallViewToolbar()
 
 void CallViewToolbar::updateState()
 {
+   setVisible(true);
    /*QModelIndex index = m_pParent->selectionModel()->currentIndex();
    const int rowcount = CallModel::instance()->rowCount();
    if ((!m_pParent->selectionModel()->hasSelection() || !index.isValid()) && rowcount) {
