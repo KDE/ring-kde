@@ -16,11 +16,11 @@
    sodipodi:version="0.32"
    inkscape:version="0.48.4 r9939"
    version="1.0"
-   sodipodi:docname="transfert.svg"
+   sodipodi:docname="lock_confirmed.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true">
   <title
-     id="title3002">transfert.svg</title>
+     id="title3012">lock_confirmed.svg</title>
   <defs
      id="defs4">
     <linearGradient
@@ -92,9 +92,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.627417"
-     inkscape:cx="-0.67971919"
-     inkscape:cy="13.786304"
+     inkscape:zoom="16"
+     inkscape:cx="-9.322691"
+     inkscape:cy="12.889047"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="32px"
@@ -115,24 +115,9 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>transfert.svg</dc:title>
+        <dc:title>lock_confirmed.svg</dc:title>
         <dc:date>2014/06/24</dc:date>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Gabrielle Maheux-Leclerc &lt;gabrielle.maheux@savoirfairelinux.com&gt;</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Savoir-faire Linux Inc.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-        <dc:publisher>
-          <cc:Agent>
-            <dc:title>Savoir-faire Linux Inc.</dc:title>
-          </cc:Agent>
-        </dc:publisher>
-        <dc:source>http://sflphone.org/download/source-code</dc:source>
+        <dc:coverage>SFLphone project</dc:coverage>
         <dc:subject>
           <rdf:Bag>
             <rdf:li>gnome</rdf:li>
@@ -140,7 +125,22 @@
             <rdf:li>sip</rdf:li>
           </rdf:Bag>
         </dc:subject>
-        <dc:coverage>SFLphone project</dc:coverage>
+        <dc:source>http://sflphone.org/download/source-code</dc:source>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>Savoir-faire Linux Inc.</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Savoir-faire Linux Inc.</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Gabrielle Maheux-Leclerc &lt;gabrielle.maheux@savoirfairelinux.com&gt;</dc:title>
+          </cc:Agent>
+        </dc:creator>
         <cc:license
            rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
       </cc:Work>
@@ -190,21 +190,96 @@
        width="27.402094"
        id="rect44122-0"
        style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+    <rect
+       inkscape:label="a"
+       y="-24.857332"
+       x="-2.7434559"
+       height="26.103628"
+       width="26.103628"
+       id="rect43299-7-0"
+       style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible"
+       transform="matrix(-0.25881905,0.96592583,-0.96592583,-0.25881905,0,0)" />
+    <rect
+       y="2.2499964"
+       x="-1.8749943"
+       height="27.875"
+       width="27.875"
+       id="rect3246-4-3-8-3-7"
+       style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+    <g
+       inkscape:label="accessories-calculator"
+       id="g40867-7-0-5"
+       transform="matrix(0,-1.4921875,1.4921875,0,-593.45313,95.6875)">
+      <rect
+         style="opacity:0.51464431;color:#bebebe;fill:none;stroke:none;stroke-width:3;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect40869-8-3-9"
+         width="16"
+         height="16"
+         x="48"
+         y="398" />
+    </g>
+    <rect
+       style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible"
+       id="rect20566-4-6-4-5-4-1-8-4"
+       width="9.0690622"
+       height="9.0690622"
+       x="4.1474762"
+       y="7.854094"
+       inkscape:label="a" />
+    <rect
+       inkscape:label="audio-volume-high"
+       y="-0.1875"
+       x="0.062504999"
+       height="24"
+       width="24"
+       id="rect16155-0"
+       style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
+    <rect
+       style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new"
+       id="rect10837-3-3"
+       y="-0.12497"
+       x="-0.87500161"
+       ry="0.15129246"
+       rx="0.14408804"
+       height="16"
+       width="16" />
+    <rect
+       style="color:#bebebe;fill:none;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible"
+       id="rect35598-3"
+       width="16"
+       height="16"
+       x="3.3125002"
+       y="1.125" />
     <path
-       inkscape:connector-curvature="0"
-       id="path44084-2-0"
-       d="m 16.029921,21.423862 c 0.254848,-1.219754 -0.510198,-2.362984 -1.146134,-3.339955 -0.742963,-0.978503 -1.568402,-1.994204 -2.707712,-2.518854 -0.356634,-0.09662 -0.648954,0.300579 -0.978359,0.419881 -0.856281,0.556767 -2.0622429,1.043172 -2.9637706,0.301789 C 7.1058138,15.280153 6.5732432,13.807679 5.7598696,12.563649 5.189408,11.579726 4.3969237,10.303434 5.1700028,9.2129354 5.7515946,8.4063694 6.7216293,8.0998704 7.4738192,7.5510554 7.6584188,6.5623256 7.2860419,5.5466087 7.006723,4.6032864 6.5319164,3.3631272 5.8950609,2.0397499 4.7242153,1.3222893 3.771279,0.82956144 2.9428394,1.7471716 2.2338636,2.2619178 0.60384202,3.5856661 -0.14465393,5.7500489 0.03357399,7.8098564 0.29734291,11.121098 1.8791983,14.156312 3.6190376,16.922175 c 1.594147,2.392713 3.5703332,4.79904 6.3613607,5.798852 1.9639747,0.698846 4.2279967,0.209183 5.8754887,-1.006925 l 0.103075,-0.139047 0.07098,-0.151144 z"
-       style="fill:#545454;fill-opacity:1;stroke:none;display:inline;enable-background:new" />
-    <path
-       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;color:#000000;fill:#4b8bc5;fill-opacity:1;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
-       d="m 18.938577,9.4521606 1.010591,0 c 0.26813,-3.22e-5 0.536212,-0.094013 0.726379,-0.2842282 l 3.031772,-3.0317886 0.284244,-0.2842282 0,-0.884269 L 23.707319,4.6834185 20.675531,1.6516459 C 20.485364,1.4614307 20.217266,1.36745 19.949168,1.36745 l -1.010591,-1.61e-5 0,1.0106069 c -4.8e-5,0.268114 0.09401,0.5362118 0.28418,0.7263788 l 2.305426,2.3054098 -2.30541,2.3054099 C 19.032622,7.9054062 18.938545,8.1735041 18.938545,8.441618 l -1.6e-5,1.0105909 z"
-       id="path3613-6-6-8-9"
+       style="color:#bebebe;fill:#545454;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible"
+       d="m 10.109807,0.03134266 c -2.5826927,0 -4.7109371,2.12824444 -4.7109371,4.71093724 l 0,4.7109372 -1.5703124,0 c -0.8699531,0 -1.5703124,0.7003589 -1.5703124,1.5703119 l 0,0.834229 0,8.587646 7.8515619,0 0.63794,0 c -0.217442,-0.672881 -0.392579,-1.364845 -0.392579,-2.110107 0,-3.832783 3.135475,-6.968262 6.968262,-6.968262 1.398065,0 2.689191,0.417422 3.778564,1.128662 l 0,-0.637939 0,-0.834229 c 0,-0.869953 -0.700359,-1.5703119 -1.570312,-1.5703119 l -1.570313,0 0,-4.7109372 c 0,-2.5826928 -2.128244,-4.71093724 -4.710937,-4.71093724 l -3.140625,0 z m 0,3.14062484 3.140625,0 c 0.897119,0 1.570312,0.6731929 1.570312,1.5703124 l 0,4.7109372 -6.2812493,0 0,-4.7109372 c 0,-0.8971195 0.6731929,-1.5703124 1.5703123,-1.5703124 z"
+       id="rect4063-0-6-3-1"
        inkscape:connector-curvature="0" />
+    <rect
+       style="fill:none;stroke:none;display:inline"
+       id="rect13555-9-9-6"
+       width="25.125002"
+       height="25.124998"
+       x="-0.56250727"
+       y="-0.68749839" />
+    <g
+       style="fill:#bebebe;fill-opacity:1;stroke:none;display:inline"
+       transform="matrix(1.5820312,0,0,1.5820312,-32.828097,-436.89061)"
+       inkscape:label="lock"
+       id="g4053-3-8-5-5">
+      <rect
+         style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible"
+         id="rect4055-9-7-2-4"
+         width="16"
+         height="16"
+         x="20"
+         y="276"
+         inkscape:label="a" />
+    </g>
     <path
-       sodipodi:nodetypes="cssc"
        inkscape:connector-curvature="0"
-       id="path35770-7-4"
-       d="m 13.885606,10.462752 0,-2.5264857 c 0,-1.3953356 1.13115,-2.5264852 2.526486,-2.5264852 l 5.558274,0"
-       style="color:#000000;fill:none;stroke:#4b8bc5;stroke-width:2.02118896999999986;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+       style="color:#bebebe;fill:#1aac36;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.90939795999999995;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 17.401393,12.923948 c -3.05805,0 -5.537109,2.479059 -5.537109,5.537109 0,3.058054 2.479059,5.537113 5.537109,5.537113 3.058051,0 5.537109,-2.479059 5.537109,-5.537113 0,-3.05805 -2.479058,-5.537109 -5.537109,-5.537109 z m 2.323608,2.966309 1.137085,0 0,1.186523 -3.114624,3.36182 c 0.133524,-0.18581 -1.087646,1.087646 -1.087646,1.087646 0,0 -1.091396,-1.034443 -1.137085,-1.087646 l -0.840454,-0.840455 0,-1.186526 1.087646,0 0.889893,0.889896 3.065185,-3.411258 z"
+       id="path3482-5-1-8-8-23" />
   </g>
 </svg>

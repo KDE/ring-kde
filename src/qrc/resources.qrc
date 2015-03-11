@@ -2,7 +2,6 @@
   <qresource prefix="images">
     <file>../icons/missed_out.svg</file>
     <file>../icons/user-group-properties.svg</file>
-    <file>../icons/document-encrypt.svgz</file>
     <file>../icons/ring.svg</file>
     <file>../icons/ring_notif.svg</file>
     <file>../icons/x-office-address-book.png</file>
@@ -46,9 +45,6 @@
     <file>../icons/stock_person.svg</file>
     <file>../icons/transfert.svg</file>
     <file>../icons/unhold.svg</file>
-    <file>../icons/led-red.svg</file>
-    <file>../icons/led-green.svg</file>
-    <file>../icons/led-gray.svg</file>
     <file>../icons/record.svg</file>
     <file>../icons/record_disabled.svg</file>
   </qresource>
