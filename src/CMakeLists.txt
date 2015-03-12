@@ -100,6 +100,7 @@ SET(
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
    conf/dlgdht.cpp
+   configurator/localhistoryconfigurator.cpp
 )
 
 # Widgets

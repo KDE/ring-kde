@@ -22,6 +22,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QHash>
 #include <QtWidgets/QApplication>
+#include <QtCore/QStandardPaths>
 
 //KDE
 
@@ -35,7 +36,7 @@
 #include <accountmodel.h>
 #include <personmodel.h>
 #include <phonedirectorymodel.h>
-#include <QStandardPaths>
+#include "delegates/pixmapmanipulationdelegate.h"
 
 
 BookmarkBackend::~BookmarkBackend()
@@ -80,7 +81,7 @@ QVector<ContactMethod*> BookmarkEditor::items() const
 
 QString BookmarkBackend::name () const
 {
-   return QObject::tr("Local bookmark collection");
+   return QObject::tr("Local bookmarks");
 }
 
 QString BookmarkBackend::category () const
@@ -90,7 +91,7 @@ QString BookmarkBackend::category () const
 
 QVariant BookmarkBackend::icon() const
 {
-   return QVariant();
+   return PixmapManipulationDelegate::instance()->collectionIcon(this,PixmapManipulationDelegate::CollectionIconHint::BOOKMARK);
 }
 
 bool BookmarkBackend::isEnabled() const

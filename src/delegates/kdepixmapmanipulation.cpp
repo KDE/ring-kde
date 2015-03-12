@@ -296,13 +296,38 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
       case UserActionModel::Action::JOIN            :
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
-         return QIcon();
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
       case UserActionModel::Action::COUNT__:
          break;
    };
 
    return QVariant();
 }
+
+QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interface, PixmapManipulationDelegate::CollectionIconHint hint) const
+{
+   Q_UNUSED(interface)
+
+   switch(hint) {
+      case PixmapManipulationDelegate::CollectionIconHint::CONTACT:
+         return QIcon::fromTheme("folder-publicshare");
+      case PixmapManipulationDelegate::CollectionIconHint::HISTORY:
+         return QIcon::fromTheme("view-history");
+      case PixmapManipulationDelegate::CollectionIconHint::BOOKMARK:
+         return QIcon::fromTheme("folder-bookmark");
+      case PixmapManipulationDelegate::CollectionIconHint::CERTIFICATE:
+         return QIcon::fromTheme("certificate-server");
+      case PixmapManipulationDelegate::CollectionIconHint::RINGTONE:
+      case PixmapManipulationDelegate::CollectionIconHint::NONE:
+      case PixmapManipulationDelegate::CollectionIconHint::PROFILE:
+      case PixmapManipulationDelegate::CollectionIconHint::PHONE_NUMBER:
+      case PixmapManipulationDelegate::CollectionIconHint::ACCOUNT:
+         break;
+   };
+
+   return QVariant();
+}
+
 
 const char* KDEPixmapManipulation::icnPath[2][2] = {
    {

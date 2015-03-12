@@ -27,7 +27,6 @@
 
 #include "klib/kcfg_settings.h"
 
-#include "dlggeneral.h"
 #include "dlgdisplay.h"
 #include "dlgaccounts.h"
 #include "dlgaudio.h"
@@ -87,7 +86,7 @@ void PlaceHolderWidget::display(KPageWidgetItem *current)
 
 ///Constructor
 ConfigurationDialog::ConfigurationDialog(View *parent)
- :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(nullptr),dlgGeneral(nullptr),dlgDisplay(nullptr)
+ :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(nullptr),dlgDisplay(nullptr)
  ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgHooks(nullptr),dlgAccessibility(nullptr),dlgAccounts(nullptr),
  dlgPresence(nullptr)
 {
@@ -117,16 +116,6 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    accDlg->setProperty("id",ConfigurationDialog::Page::Accounts);
    dlgHolder[ConfigurationDialog::Page::Accounts]->display(accDlg);
 
-   //General
-   dlgHolder[ConfigurationDialog::Page::General]   = new PlaceHolderWidget(Page::General,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgGeneral = new DlgGeneral(dialog);
-      dialog->m_pManager->addWidget(dialog->dlgGeneral);
-      connect(dialog->dlgGeneral, SIGNAL(clearCallHistoryAsked()), dialog, SIGNAL(clearCallHistoryAsked()));
-      return dialog->dlgGeneral;
-   });
-   addPage( dlgHolder[ConfigurationDialog::Page::General]       , i18nc("History settings","History")  , "view-history"               )
-      ->setProperty("id",ConfigurationDialog::Page::General);
-
    //Display
    dlgHolder[ConfigurationDialog::Page::Display]    = new PlaceHolderWidget(Page::Display,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgDisplay = new DlgDisplay(dialog);
@@ -142,7 +131,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgAudio);
       return dialog->dlgAudio;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::Audio]         , i18n("Audio")                        , "audio-headset"                     )
+   addPage( dlgHolder[ConfigurationDialog::Page::Audio]         , i18n("Audio")                        , "audio-volume-high"                     )
       ->setProperty("id",ConfigurationDialog::Page::Audio);
 
    //AddressBook
@@ -210,7 +199,6 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
 ///Destructor
 ConfigurationDialog::~ConfigurationDialog()
 {
-   if (dlgGeneral      ) delete dlgGeneral      ;
    if (dlgDisplay      ) delete dlgDisplay      ;
    if (dlgAccounts     ) delete dlgAccounts     ;
    if (dlgAudio        ) delete dlgAudio        ;
@@ -229,7 +217,6 @@ void ConfigurationDialog::updateWidgets()
 {
    GUARD(dlgAudio,updateWidgets        ());
    GUARD(dlgAccounts,updateWidgets     ());
-   GUARD(dlgGeneral,updateWidgets      ());
    GUARD(dlgAddressBook,updateWidgets  ());
    GUARD(dlgAccessibility,updateWidgets());
    GUARD(dlgPresence,updateWidgets     ());
@@ -244,7 +231,6 @@ void ConfigurationDialog::updateSettings()
 {
    GUARD(dlgAudio,updateSettings        ());
    GUARD(dlgAccounts,updateSettings     ());
-   GUARD(dlgGeneral,updateSettings      ());
    GUARD(dlgAddressBook,updateSettings  ());
    GUARD(dlgAccessibility,updateSettings());
    GUARD(dlgDisplay,updateSettings      ());
@@ -266,7 +252,6 @@ bool ConfigurationDialog::hasChanged()
 {
    bool res =  ((GUARD_FALSE(dlgAudio,hasChanged()        ))
             || (GUARD_FALSE(dlgAccounts,hasChanged()      ))
-            || (GUARD_FALSE(dlgGeneral,hasChanged()       ))
             || (GUARD_FALSE(dlgDisplay,hasChanged()       ))
             || (GUARD_FALSE(dlgAddressBook,hasChanged()   ))
             || (GUARD_FALSE(dlgAccessibility,hasChanged() ))

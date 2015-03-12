@@ -61,6 +61,7 @@
 #include "contactmethod.h"
 #include <fallbackpersoncollection.h>
 #include "personmodel.h"
+#include "configurator/localhistoryconfigurator.h"
 #include "collectionmodel.h"
 #include "delegates/itemmodelstateserializationdelegate.h"
 #include "klib/itemmodelserialization.h"
@@ -133,6 +134,16 @@ Ring::Ring(QWidget* parent)
       //Start the Akonadi collection backend (contact loader)
 //       AkonadiPersonCollectionModel::instance();
       loadNumberCategories();
+
+      /*******************************************
+       *           Set the configurator          *
+       ******************************************/
+
+      HistoryModel::instance()->registerConfigarator<MinimalHistoryBackend>(new LocalHistoryConfigurator(this));
+
+      /*******************************************
+       *           Load the collections          *
+       ******************************************/
 
       HistoryModel::instance()->addCollection<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
 

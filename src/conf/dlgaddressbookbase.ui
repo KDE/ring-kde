@@ -83,13 +83,6 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="m_pEditCollection">
-          <property name="text">
-           <string>Edit collection</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="m_pAddCollection">
           <property name="text">
            <string>Add collection</string>
@@ -121,6 +114,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
+     <layout class="QVBoxLayout" name="verticalLayout"/>
     </widget>
    </item>
   </layout>
@@ -147,22 +141,6 @@
     <hint type="destinationlabel">
      <x>661</x>
      <y>201</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_pEditCollection</sender>
-   <signal>clicked()</signal>
-   <receiver>DlgAddressBookBase</receiver>
-   <slot>slotEditCollection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>515</x>
-     <y>241</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>661</x>
-     <y>153</y>
     </hint>
    </hints>
   </connection>

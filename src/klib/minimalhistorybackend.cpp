@@ -38,6 +38,7 @@
 #include "certificate.h"
 #include "contactmethod.h"
 #include "historymodel.h"
+#include "delegates/pixmapmanipulationdelegate.h"
 
 class MinimalHistoryEditor : public CollectionEditor<Call>
 {
@@ -179,7 +180,7 @@ QVector<Call*> MinimalHistoryEditor::items() const
 
 QString MinimalHistoryBackend::name () const
 {
-   return QObject::tr("Local history collection");
+   return QObject::tr("Local history");
 }
 
 QString MinimalHistoryBackend::category () const
@@ -189,7 +190,7 @@ QString MinimalHistoryBackend::category () const
 
 QVariant MinimalHistoryBackend::icon() const
 {
-   return QVariant();
+   return PixmapManipulationDelegate::instance()->collectionIcon(this,PixmapManipulationDelegate::CollectionIconHint::HISTORY);
 }
 
 bool MinimalHistoryBackend::isEnabled() const
@@ -238,12 +239,13 @@ bool MinimalHistoryBackend::reload()
 
 CollectionInterface::SupportedFeatures MinimalHistoryBackend::supportedFeatures() const
 {
-   return (CollectionInterface::SupportedFeatures) (
-      CollectionInterface::SupportedFeatures::NONE  |
-      CollectionInterface::SupportedFeatures::LOAD  |
-      CollectionInterface::SupportedFeatures::CLEAR |
-      CollectionInterface::SupportedFeatures::REMOVE|
-      CollectionInterface::SupportedFeatures::ADD   );
+   return (CollectionInterface::SupportedFeatures)       (
+      CollectionInterface::SupportedFeatures::NONE       |
+      CollectionInterface::SupportedFeatures::LOAD       |
+      CollectionInterface::SupportedFeatures::CLEAR      |
+      CollectionInterface::SupportedFeatures::REMOVE     |
+      CollectionInterface::SupportedFeatures::MANAGEABLE |
+      CollectionInterface::SupportedFeatures::ADD        );
 }
 
 bool MinimalHistoryBackend::clear()

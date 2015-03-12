@@ -30,7 +30,6 @@
 class KConfigDialogManager;
 
 //Ring
-class DlgGeneral;
 class DlgDisplay;
 class DlgAccounts;
 class DlgAudio;
@@ -61,7 +60,6 @@ Q_OBJECT
 friend class PlaceHolderWidget;
 private:
    enum Page {
-      General,
       Display,
       Accounts,
       Audio,
@@ -73,7 +71,6 @@ private:
    };
    PlaceHolderWidget* dlgHolder[Page::Presence+1];
 
-   DlgGeneral*       dlgGeneral      ;
    DlgDisplay*       dlgDisplay      ;
    DlgAccounts*      dlgAccounts     ;
    DlgAudio*         dlgAudio        ;

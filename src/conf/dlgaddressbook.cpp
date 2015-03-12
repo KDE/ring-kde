@@ -26,6 +26,7 @@
 #include "numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include "delegates/categorizeddelegate.h"
+#include <collectionconfigurationinterface.h>
 // #include <akonadi/collectionmodel.h>
 #include "personmodel.h"
 #include "collectionmodel.h"
@@ -43,12 +44,12 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    setupUi(this);
 
    m_pAddCollection->setIcon(QIcon::fromTheme("list-add"));
-   m_pEditCollection->setIcon(QIcon::fromTheme("document-edit"));
 
    m_pDelegate = new AutoCompletionDelegate();
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pItemBackendW);
    m_pCategoryDelegate->setChildDelegate(m_pDelegate);
+   m_pCategoryDelegate->setChildChildDelegate(m_pDelegate);
    m_pItemBackendW->setItemDelegate(m_pCategoryDelegate);
 
    CollectionModel::instance()->load();
@@ -73,6 +74,8 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
       m_pItemBackendW->setModel( checked ? CollectionModel::instance() : CollectionModel::instance()->manageableCollections());
       m_pItemBackendW->expandAll();
    });
+
+   connect(m_pItemBackendW->selectionModel(), &QItemSelectionModel::currentChanged,this,&DlgAddressBook::slotEditCollection);
 
    m_pItemBackendW->expandAll();
 } //DlgAddressBook
@@ -114,13 +117,22 @@ bool DlgAddressBook::hasChanged()
 ///Edit the selection collection
 void DlgAddressBook::slotEditCollection()
 {
-//    const QModelIndex& idx = m_pCollectionW->selectionModel()->currentIndex();
-//    CollectionInterface* backend = PersonModel::instance()->backendModel()->backendAt(idx);
-//    AkonadiBackend* akoBackend = dynamic_cast<AkonadiBackend*>(backend);
-//    if (akoBackend) {
-//       Akonadi::CollectionPropertiesDialog dlg( akoBackend->collection(), this );
-//       dlg.exec();
-//    } //FIXME
+   CollectionInterface* col = CollectionModel::instance()->collectionAt(m_pItemBackendW->selectionModel()->currentIndex());
+   if (col) {
+      CollectionConfigurationInterface* configurator = col->configurator();
+      if (configurator) {
+         static QWidget* w = new QWidget(frame_2);
+         configurator->loadCollection(col,w);
+         verticalLayout->addWidget(w);
+      }
+      else goto resetView;
+
+      return;
+   }
+   else goto resetView;
+
+resetView:
+   while (verticalLayout->takeAt(0)) {}
 }
 
 ///Add a new Akonadi collection
