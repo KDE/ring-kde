@@ -180,14 +180,26 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="acceptDrops">
+            <bool>true</bool>
+           </property>
            <property name="whatsThis">
             <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows. Enable/disable them by checking/unchecking them on the left of the item. Add or remove some with &quot;Plus&quot; and &quot;Sub&quot; buttons. Edit the selected account with the form on the right.</string>
            </property>
            <property name="dragEnabled">
             <bool>true</bool>
            </property>
+           <property name="dragDropMode">
+            <enum>QAbstractItemView::DragDrop</enum>
+           </property>
+           <property name="defaultDropAction">
+            <enum>Qt::MoveAction</enum>
+           </property>
            <property name="indentation">
             <number>5</number>
+           </property>
+           <property name="headerHidden">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -222,7 +234,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -923,7 +935,20 @@
               </spacer>
              </item>
              <item row="1" column="0" colspan="5">
-              <widget class="QListView" name="list_audiocodec"/>
+              <widget class="QListView" name="list_audiocodec">
+               <property name="acceptDrops">
+                <bool>true</bool>
+               </property>
+               <property name="dragEnabled">
+                <bool>true</bool>
+               </property>
+               <property name="dragDropMode">
+                <enum>QAbstractItemView::InternalMove</enum>
+               </property>
+               <property name="defaultDropAction">
+                <enum>Qt::MoveAction</enum>
+               </property>
+              </widget>
              </item>
              <item row="3" column="0">
               <widget class="QLabel" name="label_frequency">
@@ -1526,8 +1551,7 @@
                    </property>
                    <property name="icon">
                     <iconset theme="view-list-text">
-                     <normaloff/>
-                    </iconset>
+                     <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1540,7 +1564,8 @@
                     <string>View</string>
                    </property>
                    <property name="icon">
-                    <iconset theme="view-list-text"/>
+                    <iconset theme="view-list-text">
+                     <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
                    </property>
                   </widget>
                  </item>
@@ -1714,14 +1739,14 @@
    <header>widgets/groupedtoolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>CenterToolButton</class>
-   <extends>QToolButton</extends>
-   <header>widgets/groupedtoolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>CategorizedTreeView</class>
    <extends>QTreeView</extends>
    <header location="global">widgets/categorizedtreeview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CenterToolButton</class>
+   <extends>QToolButton</extends>
+   <header>widgets/groupedtoolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>SecurityLevelWidget</class>
