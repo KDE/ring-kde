@@ -43,18 +43,6 @@
 #include <collectioninterface.h>
 #include "icons/icons.h"
 
-QDebug operator<<(QDebug dbg, const Call::State& c)
-{
-   dbg.nospace() << QString(Call::toHumanStateName(c));
-   return dbg.space();
-}
-
-QDebug operator<<(QDebug dbg, const Call::Action& c)
-{
-   dbg.nospace() << static_cast<int>(c);
-   return dbg.space();
-}
-
 ColorDelegate::ColorDelegate(QPalette pal) : m_Pal(pal) {
    m_Green = QColor(m_Pal.color(QPalette::Base));
    if (m_Green.green()+20 >= 255) {
