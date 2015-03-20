@@ -139,15 +139,15 @@ Ring::Ring(QWidget* parent)
        *           Set the configurator          *
        ******************************************/
 
-      HistoryModel::instance()->registerConfigarator<MinimalHistoryBackend>(new LocalHistoryConfigurator(this));
+      CategorizedHistoryModel::instance()->registerConfigarator<MinimalHistoryBackend>(new LocalHistoryConfigurator(this));
 
       /*******************************************
        *           Load the collections          *
        ******************************************/
 
-      HistoryModel::instance()->addCollection<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
+      CategorizedHistoryModel::instance()->addCollection<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
 
-      BookmarkModel::instance()->addCollection<BookmarkBackend>();
+      CategorizedBookmarkModel::instance()->addCollection<BookmarkBackend>();
 
       PersonModel::instance()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 

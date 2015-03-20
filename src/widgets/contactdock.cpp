@@ -45,9 +45,9 @@
 #include "kphonenumberselector.h"
 
 //Ring library
-#include <bookmarkmodel.h>
+#include <categorizedbookmarkmodel.h>
 #include "categorizedtreeview.h"
-#include "historymodel.h"
+#include "categorizedhistorymodel.h"
 #include "call.h"
 #include "person.h"
 #include "mime.h"
@@ -59,7 +59,7 @@
 #include "availableaccountmodel.h"
 #include "klib/helperfunctions.h"
 #include "klib/kcfg_settings.h"
-#include "contactproxymodel.h"
+#include "categorizedcontactmodel.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/contactdelegate.h"
 #include "../delegates/phonenumberdelegate.h"
@@ -82,7 +82,7 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 
 bool PersonSortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
-   const bool status = sourceModel()->index(source_row,0,source_parent).data(PersonModel::Role::Active).toBool();
+   const bool status = sourceModel()->index(source_row,0,source_parent).data((int)Person::Role::Active).toBool();
    if (!status)
       return false;
    else if (!source_parent.isValid() || source_parent.parent().isValid())
@@ -121,12 +121,12 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setDelegate(m_pCategoryDelegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::Person);
 
-   m_pSourceModel = new ContactProxyModel(Qt::DisplayRole);
+   m_pSourceModel = new CategorizedContactModel(Qt::DisplayRole);
    m_pProxyModel = new PersonSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
    m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole(PersonModel::Role::Filter);
+   m_pProxyModel->setFilterRole((int)Person::Role::Filter);
    m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
    m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
    m_pView->setModel(m_pProxyModel);
@@ -215,10 +215,11 @@ void ContactDock::slotDoubleClick(const QModelIndex& index)
       return;
    const CategorizedCompositeNode* modelItem = static_cast<CategorizedCompositeNode*>(idx.internalPointer());
    if (modelItem->type() == CategorizedCompositeNode::Type::NUMBER) {
-      const Person::ContactMethods nbs = *static_cast<const Person::ContactMethods*>(modelItem);
-      const ContactMethod*          nb  = nbs[index.row()];
+      const ContactMethod* nb  = qvariant_cast<ContactMethod*>(index.data((int)ContactMethod::Role::Object));
       m_pCurrentPerson = nullptr;
-      callAgain(nb);
+      if (nb) {
+         callAgain(nb);
+      }
    }
    else if (modelItem->type() == CategorizedCompositeNode::Type::CONTACT) {
       m_pCurrentPerson = static_cast<Person*>((modelItem)->getSelf());
@@ -279,18 +280,22 @@ void ContactDock::showContext(const QModelIndex& index)
       connect(m_pRemove       , SIGNAL(triggered()) , this,SLOT(slotDelete()) );
    }
    if (index.parent().isValid()  && !index.parent().parent().isValid()) {
-      Person* ct = (Person*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
-      m_pCurrentPerson = ct;
-      m_PreselectedNb.clear();
-      if (!ct->preferredEmail().isEmpty()) {
+      const QString& email = index.data((int)Person::Role::PreferredEmail).toString();
+      if (!email.isEmpty()) {
          m_pEmail->setEnabled(true);
       }
-      Person::ContactMethods numbers = ct->phoneNumbers();
-      m_pBookmark->setEnabled(numbers.count() == 1);
+      Person* ct = qvariant_cast<Person*>(index.data((int)Person::Role::Object));
+      if (ct) {
+         m_pCurrentPerson = ct;
+         m_PreselectedNb.clear();
+         Person::ContactMethods numbers = ct->phoneNumbers();
+         m_pBookmark->setEnabled(numbers.count() == 1);
+      }
    }
    else if (index.parent().parent().isValid()) {
-      m_pCurrentPerson = (Person*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
-      m_PreselectedNb   = m_pCurrentPerson->phoneNumbers()[index.row()]->uri();
+      m_pCurrentPerson = qvariant_cast<Person*>(index.data((int)Person::Role::Object));;
+
+      m_PreselectedNb   = (m_pCurrentPerson)?m_pCurrentPerson->phoneNumbers()[index.row()]->uri() : QString();
    }
    else {
       m_pCurrentPerson = nullptr;
@@ -382,7 +387,7 @@ void ContactDock::bookmark()
 {
    const Person::ContactMethods numbers = m_pCurrentPerson->phoneNumbers();
    if (numbers.count() == 1) {
-      BookmarkModel::instance()->addBookmark(numbers[0]);
+      CategorizedBookmarkModel::instance()->addBookmark(numbers[0]);
    }
 }
 
@@ -487,20 +492,20 @@ void ContactDock::setCategory(int index)
          m_pProxyModel->setSortRole(Qt::DisplayRole);
          break;
       case SortingCategory::Organization:
-         m_pProxyModel->setSortRole(PersonModel::Role::Organization);
-         m_pSourceModel->setRole(PersonModel::Role::Organization);
+         m_pProxyModel->setSortRole((int)Person::Role::Organization);
+         m_pSourceModel->setRole((int)Person::Role::Organization);
          break;
       case SortingCategory::RecentlyUsed:
-         m_pSourceModel->setRole(PersonModel::Role::FormattedLastUsed);
-         m_pProxyModel->setSortRole(PersonModel::Role::IndexedLastUsed);
+         m_pSourceModel->setRole((int)Person::Role::FormattedLastUsed);
+         m_pProxyModel->setSortRole((int)Person::Role::IndexedLastUsed);
          break;
       case SortingCategory::Group:
-         m_pSourceModel->setRole(PersonModel::Role::Group);
-         m_pProxyModel->setSortRole(PersonModel::Role::Group);
+         m_pSourceModel->setRole((int)Person::Role::Group);
+         m_pProxyModel->setSortRole((int)Person::Role::Group);
          break;
       case SortingCategory::Department:
-         m_pSourceModel->setRole(PersonModel::Role::Department);
-         m_pProxyModel->setSortRole(PersonModel::Role::Department);
+         m_pSourceModel->setRole((int)Person::Role::Department);
+         m_pProxyModel->setSortRole((int)Person::Role::Department);
          break;
    };
 }

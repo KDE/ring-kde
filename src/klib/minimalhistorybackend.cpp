@@ -37,7 +37,7 @@
 #include "person.h"
 #include "certificate.h"
 #include "contactmethod.h"
-#include "historymodel.h"
+#include "categorizedhistorymodel.h"
 #include "delegates/pixmapmanipulationdelegate.h"
 
 class MinimalHistoryEditor : public CollectionEditor<Call>
@@ -114,7 +114,7 @@ bool MinimalHistoryEditor::regenFile(const Call* toIgnore)
    QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"history.ini");
    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
       QTextStream stream(&file);
-      for (const Call* c : HistoryModel::instance()->getHistoryCalls()) {
+      for (const Call* c : CategorizedHistoryModel::instance()->getHistoryCalls()) {
          if (c != toIgnore)
             saveCall(stream, c);
       }

@@ -104,13 +104,12 @@ void ContactMethodDelegate::paint(QPainter* painter, const QStyleOptionViewItem&
    }
 
    static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
-   const ContactMethod* nb = ((Person*) ((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf())->phoneNumbers()[index.row()];
    const QFontMetrics fm(painter->font());
    painter->setPen(((opt.state & QStyle::State_Selected) || (m_pView && m_pView->selectionModel()->isSelected(index.parent())))?
       Qt::white:QApplication::palette().color(QPalette::Disabled,QPalette::Text));
    const int fmh = fm.height();
-   painter->drawText(opt.rect.x()+3+16,opt.rect.y()+fmh-metric,nb->uri());
-   painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-9-metric,nb->category()->icon(nb->isTracked(),nb->isPresent()).value<QPixmap>());
+   painter->drawText(opt.rect.x()+3+16,opt.rect.y()+fmh-metric,index.data(Qt::DisplayRole).toString());
+   painter->drawPixmap(opt.rect.x()+3,opt.rect.y()+fmh-9-metric,index.data((int)ContactMethod::Role::CategoryIcon).value<QPixmap>());
 }
 
 void ContactMethodDelegate::setView(CategorizedTreeView* model)

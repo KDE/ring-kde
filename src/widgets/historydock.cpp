@@ -47,7 +47,7 @@
 #include "widgets/categorizedtreeview.h"
 #include "widgets/bookmarkdock.h"
 #include "klib/kcfg_settings.h"
-#include "historymodel.h"
+#include "categorizedhistorymodel.h"
 #include "accountmodel.h"
 #include "availableaccountmodel.h"
 #include "callmodel.h"
@@ -60,7 +60,7 @@
 #include "../delegates/historydelegate.h"
 
 //Ring library
-#include <bookmarkmodel.h>
+#include <categorizedbookmarkmodel.h>
 #include "klib/helperfunctions.h"
 
 
@@ -83,8 +83,8 @@ bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
 bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
    if (!source_parent.isValid() ) { //Is a category
-      for (int i=0;i<HistoryModel::instance()->rowCount(HistoryModel::instance()->index(source_row,0,source_parent));i++) {
-         if (filterAcceptsRow(i, HistoryModel::instance()->index(source_row,0,source_parent)))
+      for (int i=0;i<CategorizedHistoryModel::instance()->rowCount(CategorizedHistoryModel::instance()->index(source_row,0,source_parent));i++) {
+         if (filterAcceptsRow(i, CategorizedHistoryModel::instance()->index(source_row,0,source_parent)))
             return true;
       }
    }
@@ -148,7 +148,7 @@ m_pCallAgain(nullptr)
    m_pView->setDelegate(delegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::History);
    m_pProxyModel = new HistorySortFilterProxyModel(this);
-   m_pProxyModel->setSourceModel(HistoryModel::instance());
+   m_pProxyModel->setSourceModel(CategorizedHistoryModel::instance());
    m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Date));
    m_pProxyModel->setSortLocaleAware(true);
    m_pProxyModel->setFilterRole(static_cast<int>(Call::Role::Filter));
@@ -164,7 +164,7 @@ m_pCallAgain(nullptr)
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
    connect(m_pProxyModel,SIGNAL(modelReset()), this , SLOT(expandTree()));
-   connect(HistoryModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
+   connect(CategorizedHistoryModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
    expandTree();
 
    m_pAllTimeCB->setChecked(!ConfigurationSkeleton::displayDataRange());
@@ -256,23 +256,23 @@ void HistoryDock::slotSetSortRole(int role)
 {
    switch (role) {
       case HistoryDock::Role::Date:
-         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::FuzzyDate));
+         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::FuzzyDate));
          m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Date));
          break;
       case HistoryDock::Role::Name:
-         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Name));
+         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Name));
          m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Name));
          break;
       case HistoryDock::Role::Popularity:
-         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::CallCount));
+         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::CallCount));
          m_pProxyModel->setSortRole(static_cast<int>(Call::Role::CallCount));
          break;
       case HistoryDock::Role::Length:
-         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Length));
+         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Length));
          m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Length));
          break;
       case HistoryDock::Role::SpentTime:
-         HistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::TotalSpentTime));
+         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::TotalSpentTime));
          m_pProxyModel->setSortRole(static_cast<int>(Call::Role::TotalSpentTime));
          break;
    }
@@ -411,7 +411,7 @@ void HistoryDock::slotSendEmail()
 void HistoryDock::slotRemove()
 {
    if (m_pCurrentCall && m_pCurrentCall->collection()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE) {
-      HistoryModel::instance()->deleteItem(m_pCurrentCall); //TODO add add and remove to the manager
+      CategorizedHistoryModel::instance()->deleteItem(m_pCurrentCall); //TODO add add and remove to the manager
    }
 }
 
@@ -466,9 +466,7 @@ void HistoryDock::slotAddPerson()
 {
    qDebug() << "Adding contact";
    Person* aPerson = new Person();
-   Person::ContactMethods numbers(aPerson);
-   numbers << PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home");//new ContactMethod(m_pCurrentCall->peerContactMethod(), "Home");
-   aPerson->setContactMethods(numbers);
+   aPerson->setContactMethods({PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home")});
    aPerson->setFormattedName(m_pCurrentCall->peerName());
    PersonModel::instance()->addNewPerson(aPerson);
 }
@@ -481,7 +479,7 @@ void HistoryDock::slotAddToPerson()
 
 void HistoryDock::slotBookmark()
 {
-   BookmarkModel::instance()->addBookmark(m_pCurrentCall->peerContactMethod());
+   CategorizedBookmarkModel::instance()->addBookmark(m_pCurrentCall->peerContactMethod());
 }
 
 void HistoryDock::slotDoubleClick(const QModelIndex& index)

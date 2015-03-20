@@ -46,7 +46,7 @@ namespace KABC {
 
 ///Ring
 class Person;
-class ContactProxyModel;
+class CategorizedContactModel;
 class CategorizedDelegate;
 class ContactMethodDelegate;
 class ContactDelegate;
@@ -78,7 +78,7 @@ private:
    Person*                     m_pCurrentPerson;
    QString                      m_PreselectedNb  ;
    QSortFilterProxyModel*       m_pProxyModel    ;
-   ContactProxyModel*           m_pSourceModel   ;
+   CategorizedContactModel*           m_pSourceModel   ;
    KeyPressEaterC*              m_pKeyPressEater ;
 
    //Actions

@@ -40,8 +40,8 @@
 #include "klib/kcfg_settings.h"
 #include "ring.h"
 #include "klib/helperfunctions.h"
-#include <bookmarkmodel.h>
-#include "historymodel.h"
+#include <categorizedbookmarkmodel.h>
+#include "categorizedhistorymodel.h"
 #include "contactmethod.h"
 #include "mime.h"
 #include "personmodel.h"
@@ -74,7 +74,7 @@ m_pBookmark(nullptr)
    m_pView->setDelegate(delegate);
    m_pView->setSortingEnabled(true);
    m_pProxyModel = new BookmarkSortFilterProxyModel(this);
-   m_pProxyModel->setSourceModel          ( BookmarkModel::instance() );
+   m_pProxyModel->setSourceModel          ( CategorizedBookmarkModel::instance() );
    m_pProxyModel->setSortRole             ( static_cast<int>(Call::Role::Name  )        );
    m_pProxyModel->setFilterRole           ( static_cast<int>(Call::Role::Filter)        );
    m_pProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive       );
@@ -84,7 +84,7 @@ m_pBookmark(nullptr)
    m_pProxyModel->sort(0);
    expandTree();
 
-   connect(BookmarkModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
+   connect(CategorizedBookmarkModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
 
@@ -128,7 +128,7 @@ BookmarkDock::~BookmarkDock()
 void BookmarkDock::reload()
 {
    ConfigurationSkeleton::setDisplayPopularAsBookmark(m_pMostUsedCK->isChecked());
-   BookmarkModel::instance()->reloadCategories();
+   CategorizedBookmarkModel::instance()->reloadCategories();
 } //reload
 
 ///Expand the tree according to the user preferences
@@ -204,7 +204,7 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
 void BookmarkDock::removeBookmark()
 {
    if (m_CurrentIndex.isValid()) {
-      BookmarkModel::instance()->remove(m_CurrentIndex);
+      CategorizedBookmarkModel::instance()->remove(m_CurrentIndex);
       m_CurrentIndex = QModelIndex();
       expandTree();
    }
@@ -216,7 +216,7 @@ void BookmarkDock::copy()
 {
    qDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   ContactMethod* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* nb = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
 
    if (nb) {
       Person* c = nb->contact();
@@ -247,7 +247,7 @@ void BookmarkDock::copy()
 void BookmarkDock::callAgain()
 {
    qDebug() << "Calling ";
-   ContactMethod* n = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* n = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
    if ( n ) {
       const QString name = n->contact()?n->contact()->formattedName() : n->primaryName();
       Call* call = CallModel::instance()->dialingCall(name, AvailableAccountModel::currentDefaultAccount());
@@ -268,16 +268,14 @@ void BookmarkDock::editPerson()
 {
    qDebug() << "Edit contact";
 
-   ContactMethod* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* nb = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
    if (nb) {
       if (nb->contact())
          nb->contact()->edit();
       else {
          //Add a contact
          Person* aPerson = new Person();
-         Person::ContactMethods numbers(aPerson);
-         numbers << nb;
-         aPerson->setContactMethods(numbers);
+         aPerson->setContactMethods({nb});
          aPerson->setFormattedName(nb->primaryName());
          PersonModel::instance()->addNewPerson(aPerson);
       }
@@ -289,7 +287,7 @@ void BookmarkDock::editPerson()
 void BookmarkDock::addPhone()
 {
    qDebug() << "Adding to contact";
-   ContactMethod* nb = BookmarkModel::instance()->getNumber(m_CurrentIndex);
+   ContactMethod* nb = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
    if (nb) {
       if (nb->contact()) {
          bool ok;

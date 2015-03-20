@@ -178,7 +178,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
 
    //BEGIN overlay path
-   if (index.data(PersonModel::Role::DropState).toInt() != 0) {
+   if (index.data((int)Person::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;

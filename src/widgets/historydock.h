@@ -37,7 +37,7 @@ class KDatePicker;
 class QAction;
 
 //Ring
-#include "historymodel.h"
+#include "categorizedhistorymodel.h"
 class KeyPressEater;
 
 //Typedef

@@ -33,8 +33,8 @@
 #include <klib/tipmanager.h>
 #include <call.h>
 #include <widgets/tips/tipcollection.h>
-#include <contactproxymodel.h>
-#include <historymodel.h>
+#include <categorizedcontactmodel.h>
+#include <categorizedhistorymodel.h>
 #include <mime.h>
 
 ///Constructor
@@ -99,10 +99,10 @@ void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
       case ViewType::Other:
          break;
       case ViewType::Person:
-         accept = ContactProxyModel::acceptedPayloadTypes() & type;
+         accept = CategorizedContactModel::acceptedPayloadTypes() & type;
          break;
       case ViewType::History:
-         accept = HistoryModel::instance()->acceptedPayloadTypes() & type;
+         accept = CategorizedHistoryModel::instance()->acceptedPayloadTypes() & type;
          break;
       case ViewType::BookMark:
          break;

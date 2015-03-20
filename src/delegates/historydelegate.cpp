@@ -31,7 +31,7 @@
 
 
 //Ring
-#include <historymodel.h>
+#include <categorizedhistorymodel.h>
 #include <person.h>
 #include <callmodel.h>
 #include <contactmethod.h>
