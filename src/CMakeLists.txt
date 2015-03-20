@@ -244,6 +244,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::I18n
   KF5::WidgetsAddons
   KF5::ConfigCore
+  KF5::ConfigGui
   KF5::DBusAddons
   KF5::XmlGui
   KF5::Notifications
