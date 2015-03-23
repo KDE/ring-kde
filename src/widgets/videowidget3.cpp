@@ -31,7 +31,7 @@
 #include <GL/glu.h>
 
 //Ring
-#include <video/sourcesmodel.h>
+#include <video/sourcemodel.h>
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
@@ -98,7 +98,7 @@ void VideoWidget3::dragMoveEvent( QDragMoveEvent* e )
 void VideoWidget3::dropEvent( QDropEvent* e )
 {
    if (e->mimeData()->hasFormat("text/uri-list")) {
-      Video::SourcesModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
+      Video::SourceModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
    }
    e->accept();
 }
@@ -165,10 +165,10 @@ void VideoWidget3::slotMuteOutgoindVideo(bool mute)
 {
    if (mute) {
       m_pBackDevice = Video::DeviceModel::instance()->activeDevice();
-      Video::SourcesModel::instance()->switchTo(Video::SourcesModel::ExtendedDeviceList::NONE);
+      Video::SourceModel::instance()->switchTo(Video::SourceModel::ExtendedDeviceList::NONE);
    }
    else if (m_pBackDevice) {
-      Video::SourcesModel::instance()->switchTo(m_pBackDevice);
+      Video::SourceModel::instance()->switchTo(m_pBackDevice);
    }
 }
 

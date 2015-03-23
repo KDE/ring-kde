@@ -35,7 +35,7 @@
 #include "actioncollection.h"
 #include "extendedaction.h"
 #include "video/devicemodel.h"
-#include "video/sourcesmodel.h"
+#include "video/sourcemodel.h"
 #include "ui_mediafilepicker.h"
 #include "ui_screensharingwidget.h"
 #include "videosettings.h"
@@ -117,7 +117,7 @@ void ScreenSharingWidget::slotScreenIndexChanged(int idx)
       m_pFrame->setVisible(true);
    }
    else {
-      Video::SourcesModel::instance()->setDisplay(0,QApplication::desktop()->screenGeometry(idx));
+      Video::SourceModel::instance()->setDisplay(0,QApplication::desktop()->screenGeometry(idx));
       m_pFrame->setVisible(false);
    }
 }
@@ -160,11 +160,11 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    m_pMoreOpts->addWidget(devL,1,0,1,1);
 
    QComboBox* device = new QComboBox(this);
-   device->setModel(Video::SourcesModel::instance());
-   device->setCurrentIndex(Video::SourcesModel::instance()->activeIndex());
+   device->setModel(Video::SourceModel::instance());
+   device->setCurrentIndex(Video::SourceModel::instance()->activeIndex());
    m_pMoreOpts->addWidget(device,1,1,2,1);
    connect(btn,SIGNAL(toggled(bool)),moreOptions,SLOT(setVisible(bool)));
-   connect(device,SIGNAL(currentIndexChanged(int)),Video::SourcesModel::instance(),SLOT(switchTo(int)));
+   connect(device,SIGNAL(currentIndexChanged(int)),Video::SourceModel::instance(),SLOT(switchTo(int)));
    connect(device,SIGNAL(currentIndexChanged(int)),this,SLOT(slotDeviceChanged(int)));
 
    connect(ActionCollection::instance()->videoRotateLeftAction() ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateLeft()));
@@ -195,7 +195,7 @@ void VideoDock::addRenderer(Video::Renderer* r)
 void VideoDock::slotDeviceChanged(int index)
 {
    switch (index) {
-      case Video::SourcesModel::ExtendedDeviceList::NONE:
+      case Video::SourceModel::ExtendedDeviceList::NONE:
          if ( m_pVideoSettings )
             m_pVideoSettings->setVisible(false);
          if ( m_pScreenSharing         )
@@ -203,7 +203,7 @@ void VideoDock::slotDeviceChanged(int index)
          if ( m_pMediaPicker   )
             m_pMediaPicker->setVisible(false);
          break;
-      case Video::SourcesModel::ExtendedDeviceList::SCREEN:
+      case Video::SourceModel::ExtendedDeviceList::SCREEN:
          if ( m_pVideoSettings  )
             m_pVideoSettings->setVisible(false);
          if ( !m_pScreenSharing ) {
@@ -214,7 +214,7 @@ void VideoDock::slotDeviceChanged(int index)
             m_pMediaPicker->setVisible(false);
          m_pScreenSharing->setVisible(true);
          break;
-      case Video::SourcesModel::ExtendedDeviceList::FILE:
+      case Video::SourceModel::ExtendedDeviceList::FILE:
          if ( m_pVideoSettings )
             m_pVideoSettings->setVisible(false);
          if ( m_pScreenSharing )
@@ -237,8 +237,8 @@ void VideoDock::slotDeviceChanged(int index)
             m_pScreenSharing->setVisible(false);
          if ( m_pMediaPicker    )
             m_pMediaPicker->setVisible(false);
-         m_pVideoSettings->setDevice(Video::SourcesModel::instance()->deviceAt(
-            Video::SourcesModel::instance()->index(index,0))
+         m_pVideoSettings->setDevice(Video::SourceModel::instance()->deviceAt(
+            Video::SourceModel::instance()->index(index,0))
          );
          m_pVideoSettings->setVisible(true);
    };
@@ -246,7 +246,7 @@ void VideoDock::slotDeviceChanged(int index)
 
 void VideoDock::slotFileSelected(const QUrl& url)
 {
-   Video::SourcesModel::instance()->setFile(url);
+   Video::SourceModel::instance()->setFile(url);
 }
 
 ///Make the video widget temporarely fullscreen
