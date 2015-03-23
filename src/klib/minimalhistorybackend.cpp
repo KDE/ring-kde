@@ -134,7 +134,11 @@ bool MinimalHistoryEditor::save(const Call* call)
 
 bool MinimalHistoryEditor::remove(const Call* item)
 {
-   return regenFile(item);
+   if (regenFile(item)) {
+      mediator()->removeItem(item);
+      return true;
+   }
+   return false;
 }
 
 bool MinimalHistoryEditor::edit( Call* item)

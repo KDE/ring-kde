@@ -82,6 +82,7 @@ bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
 
 bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
+   const QModelIndex idx = source_parent.child(source_row,0);
    if (!source_parent.isValid() ) { //Is a category
       for (int i=0;i<CategorizedHistoryModel::instance()->rowCount(CategorizedHistoryModel::instance()->index(source_row,0,source_parent));i++) {
          if (filterAcceptsRow(i, CategorizedHistoryModel::instance()->index(source_row,0,source_parent)))
@@ -90,13 +91,13 @@ bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QMode
    }
    ///If date range is enabled, display only this range
    else if (ConfigurationSkeleton::displayDataRange() && false/*FIXME force disabled for 1.3.0, can SEGFAULT*/) {
-      const int start = source_parent.child(source_row,0).data(static_cast<int>(Call::Role::StartTime)).toInt();
-      const int stop  = source_parent.child(source_row,0).data(static_cast<int>(Call::Role::StopTime )).toInt();
-      if (!(start > m_pParent->startTime()) || !(m_pParent->stopTime() > stop))
+      const int start = idx.data(static_cast<int>(Call::Role::StartTime)).toInt();
+      const int stop  = idx.data(static_cast<int>(Call::Role::StopTime )).toInt();
+      if (!(start > m_pParent->startTime()) || !(m_pParent->stopTime() > stop) || !(idx.flags() & Qt::ItemIsEnabled))
          return false;
    }
 
-   return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+   return (idx.flags() & Qt::ItemIsEnabled) && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
 
 QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) const

@@ -82,8 +82,8 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 
 bool PersonSortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
 {
-   const bool status = sourceModel()->index(source_row,0,source_parent).data((int)Person::Role::Active).toBool();
-   if (!status)
+   const Qt::ItemFlags flags = sourceModel()->index(source_row,0,source_parent).flags();
+   if (!(flags & Qt::ItemIsEnabled))
       return false;
    else if (!source_parent.isValid() || source_parent.parent().isValid())
       return true;
