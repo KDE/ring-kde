@@ -162,6 +162,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    //                     SENDER                            SIGNAL                       RECEIVER              SLOT                          /
    /**/connect(edit1_alias,                       SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit1_alias,                       SIGNAL(textEdited(QString))            , this   , SLOT(changeAlias(QString))              );
+   /**/connect(m_pDlgDht->m_pAlias,                          SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pDlgDht->m_pAlias,                          SIGNAL(textEdited(QString))            , this   , SLOT(changeAlias(QString))              );
    /**/connect(edit2_protocol,                    SIGNAL(activated(int))                 , this   , SLOT(changedAccountList())              );
    /**/connect(edit3_server,                      SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit4_user,                        SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
@@ -325,8 +327,10 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setVideoEnabled                ( m_pEnableVideo->isChecked()                                              );
    //                                                                                                                  /
 
-   if (account->protocol() != Account::Protocol::RING)
+   if (account->protocol() != Account::Protocol::RING) {
+      /**/ ACC setAlias                    ( m_pDlgDht->m_pAlias->text()                                                         );
       /**/ ACC setHostname                 ( edit3_server->text()                                                     );
+   }
 
    /**/ ACC setTlsCaListCertificate    ( file_tls_authority->text()                                                   );
    /**/ ACC setTlsCertificate          ( file_tls_endpoint->text()                                                    );
@@ -370,6 +374,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    }
    m_IsLoading++;
 
+   m_pDlgDht->m_pAlias->setText   ( ACC alias());
    edit1_alias->setText( ACC alias());
 
    const int protocolIndex = static_cast<int>( ACC protocol());
@@ -499,7 +504,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    const bool isntIP2IP = ! ( ACC alias() == "IP2IP" ); //FIXME do not hardcode this
    const bool isIAX     = ACC protocol()  == Account::Protocol::IAX;
    const bool isRing    = ACC protocol()  == Account::Protocol::RING;
-   bool enableTab[8] = {isntIP2IP,isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true,isRing};
+   const bool enableTab[8] = {isntIP2IP&&!isRing,isRing,isntIP2IP,isntIP2IP,true,isntIP2IP && !isIAX,isntIP2IP,true};
    for (int i=0;i<8;i++)
       frame2_editAccounts->setTabEnabled( i, enableTab[i] );
 

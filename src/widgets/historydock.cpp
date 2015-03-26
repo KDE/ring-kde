@@ -32,6 +32,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QApplication>
 #include <QtGui/QClipboard>
+#include <QtWidgets/QDialog>
 #include <QtGui/QKeyEvent>
 
 //KDE
@@ -56,6 +57,7 @@
 #include "phonedirectorymodel.h"
 #include "collectioninterface.h"
 #include "personmodel.h"
+#include "conf/dlgprofiles.h"
 #include "../delegates/categorizeddelegate.h"
 #include "../delegates/historydelegate.h"
 
@@ -229,11 +231,9 @@ HistoryDock::~HistoryDock()
 
    if (m_pCallAgain) {
       delete m_pCallAgain    ;
-      delete m_pAddPerson   ;
       delete m_pCopy         ;
       delete m_pEmail        ;
       delete m_pRemove       ;
-      delete m_pAddToPerson ;
       delete m_pBookmark     ;
    }
 } //~HistoryDock
@@ -327,25 +327,14 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       return;
    if (!m_pMenu) {
       m_pCallAgain    = new QAction(this);
-      m_pAddPerson   = new QAction(this);
       m_pCopy         = new QAction(this);
       m_pEmail        = new QAction(this);
       m_pRemove       = new QAction(this);
-      m_pAddToPerson = new QAction(this);
       m_pBookmark     = new QAction(this);
 
       m_pCallAgain->setShortcut    ( Qt::Key_Enter                  );
       m_pCallAgain->setText        ( i18n("Call Again")             );
       m_pCallAgain->setIcon        ( QIcon::fromTheme("call-start")            );
-
-      m_pAddToPerson->setShortcut ( Qt::CTRL + Qt::Key_E           );
-      m_pAddToPerson->setText     ( i18n("Add Number to contact")  );
-      m_pAddToPerson->setIcon     ( QIcon::fromTheme("list-resource-add")     );
-      m_pAddToPerson->setDisabled ( true                           );
-
-      m_pAddPerson->setShortcut   ( Qt::CTRL + Qt::Key_E           );
-      m_pAddPerson->setText       ( i18n("Add new contact")            );
-      m_pAddPerson->setIcon       ( QIcon::fromTheme("contact-new")           );
 
       m_pCopy->setShortcut         ( Qt::CTRL + Qt::Key_C           );
       m_pCopy->setText             ( i18n("Copy")                   );
@@ -373,18 +362,27 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 
       m_pMenu = new QMenu(this);
       m_pMenu->addAction( m_pCallAgain    );
-      m_pMenu->addAction( m_pAddPerson   );
-      m_pMenu->addAction( m_pAddToPerson );
+
+      //Allow to add new contacts
+      QMenu* subMenu = nullptr;
+      for (CollectionInterface* col : PersonModel::instance()->collections((CollectionInterface::SupportedFeatures)(CollectionInterface::SupportedFeatures::ADD | CollectionInterface::SupportedFeatures::MANAGEABLE))) {
+         if (!subMenu)
+            subMenu = m_pMenu->addMenu(QIcon::fromTheme("contact-new"), i18n("Add new contact"));
+         QAction* a = new QAction(this);
+         a->setText(col->name());
+         a->setIcon(qvariant_cast<QIcon>(col->icon()));
+         subMenu->addAction(a);
+         connect(a, &QAction::triggered, [this,col]() {slotAddPerson(col);});
+      }
+
       m_pMenu->addAction( m_pCopy         );
       m_pMenu->addAction( m_pEmail        );
       m_pMenu->addAction( m_pRemove       );
       m_pMenu->addAction( m_pBookmark     );
       connect(m_pCallAgain   , SIGNAL(triggered()) , this , SLOT(slotCallAgain())   );
-      connect(m_pAddPerson   , SIGNAL(triggered()) , this , SLOT(slotAddPerson())   );
       connect(m_pCopy        , SIGNAL(triggered()) , this , SLOT(slotCopy())        );
       connect(m_pEmail       , SIGNAL(triggered()) , this , SLOT(slotSendEmail())   );
       connect(m_pRemove      , SIGNAL(triggered()) , this , SLOT(slotRemove())      );
-      connect(m_pAddToPerson , SIGNAL(triggered()) , this , SLOT(slotAddToPerson()) );
       connect(m_pBookmark    , SIGNAL(triggered()) , this , SLOT(slotBookmark())    );
    }
    m_pCurrentCall = static_cast<Call*>(static_cast<CategorizedCompositeNode*>(idx.internalPointer())->getSelf());
@@ -463,19 +461,28 @@ void HistoryDock::slotCopy()
    QApplication::clipboard()->setMimeData(mimeData);
 }
 
-void HistoryDock::slotAddPerson()
+void HistoryDock::slotAddPerson(CollectionInterface* col)
 {
    qDebug() << "Adding contact";
-   Person* aPerson = new Person();
-   aPerson->setContactMethods({PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home")});
-   aPerson->setFormattedName(m_pCurrentCall->peerName());
-   PersonModel::instance()->addNewPerson(aPerson);
-}
+   QDialog* d = new QDialog();
+   DlgProfiles* p = new DlgProfiles(this,m_pCurrentCall->peerName(),m_pCurrentCall->peerContactMethod()->uri());
 
-void HistoryDock::slotAddToPerson()
-{
-   //TODO
-   qDebug() << "Adding to contact";
+   QHBoxLayout* l = new QHBoxLayout(d);
+   l->addWidget(p);
+   connect(p,&DlgProfiles::requestSave,[p,col,this,d]() {
+      Person* aPerson = p->create(col);
+
+      aPerson->setContactMethods({PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home")});
+
+      PersonModel::instance()->addNewPerson(aPerson,col);
+      d->close();
+   });
+   connect(p,&DlgProfiles::requestCancel,[col,d]() {
+      d->close();
+   });
+
+   d->exec();
+
 }
 
 void HistoryDock::slotBookmark()

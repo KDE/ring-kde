@@ -22,7 +22,7 @@
 
 class Account;
 
-class DlgDht : public QWidget
+class DlgDht : public QWidget, public Ui_DlgDht
 {
    Q_OBJECT
 public:
@@ -30,7 +30,6 @@ public:
    void setAccount(Account* a);
 
 private:
-   Ui_DlgDht* m_Ui;
    Account* m_pAccount;
 };
 

@@ -1,6 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2013-2014 by Savoir-Faire Linux                          *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Copyright (C) 2014-2015 by Savoir-Faire Linux                          *
+ *   Author : Alexandre Lision <alexandre.lision@savoirfairelinux.com>      *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -23,12 +23,14 @@
 #include <QFileDialog>
 
 //Ring
-#include "lib/profilemodel.h"
-#include "lib/personmodel.h"
+#include "profilemodel.h"
+#include "personmodel.h"
 
-DlgProfiles::DlgProfiles(QWidget *parent) : QWidget(parent)
+DlgProfiles::DlgProfiles(QWidget *parent, const QString& name, const QString& uri) : QWidget(parent)
 {
    setupUi(this);
+   edit_cell->setText(uri);
+   edit_name->setText(name);
    qDebug() << "Constructing DlgProfiles";
 }
 
@@ -42,29 +44,29 @@ bool DlgProfiles::checkValues()
    return !edit_name->text().isEmpty();
 }
 
-void DlgProfiles::accept()
+Person* DlgProfiles::create(CollectionInterface* col)
 {
-   qDebug() << "accept";
    if(checkValues()) {
 
-      Person* profile = new Person(ProfileModel::instance()->getBackEnd());
+      Person* profile = new Person(col);
       profile->setUid(QString::number(QDateTime::currentDateTime().currentMSecsSinceEpoch()).toUtf8());
       profile->setFirstName(edit_name->text());
       profile->setFamilyName(edit_lname->text());
       profile->setPreferredEmail(edit_email->text());
-      profile->setFormattedName(edit_name->text() + " " + edit_lname->text());
+      profile->setFormattedName(edit_name->text() + ' ' + edit_lname->text());
+      profile->setOrganization(edit_organization->text());
       if(photoView->pixmap()) {
          QPixmap photo = *photoView->pixmap();
          profile->setPhoto(QVariant::fromValue(photo));
       }
 
       Person::Address* test = new Person::Address();
-      test->addressLine = edit_address_1->text();
-      test->city = edit_city->text();
-      test->country = edit_country->text();
-      test->type = cb_address_type->currentText();
-      test->postalCode = edit_postal_code->text();
-      test->state = edit_state->text();
+      test->setAddressLine(edit_address_1->text());
+      test->setCity(edit_city->text());
+      test->setCountry(edit_country->text());
+      test->setType(cb_address_type->currentText());
+      test->setZipCode(edit_postal_code->text());
+      test->setState(edit_state->text());
 
       profile->addAddress(test);
 
@@ -73,13 +75,20 @@ void DlgProfiles::accept()
          profile->addCustomField(key, m_hCustomFields.value(key)->text());
       }
 
-      ProfileModel::instance()->addNewProfile(profile, nullptr);
+      return profile;
    }
+   return nullptr;
 }
 
 void DlgProfiles::cancel()
 {
    qDebug() << "cancel";
+   emit requestCancel();
+}
+
+void DlgProfiles::accept()
+{
+   emit requestSave();
 }
 
 //4.6 Image Restrictions

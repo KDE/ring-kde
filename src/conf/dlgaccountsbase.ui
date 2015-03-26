@@ -369,20 +369,13 @@
              </widget>
             </item>
             <item row="6" column="1">
-             <widget class="QCheckBox" name="m_pDefaultAccount">
-              <property name="text">
-               <string>TODO REMOVE Default account for contact with only extensions as phone number</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
              <widget class="QCheckBox" name="m_pAutoAnswer">
               <property name="text">
                <string>Auto answer</string>
               </property>
              </widget>
             </item>
-            <item row="8" column="1">
+            <item row="7" column="1">
              <widget class="QCheckBox" name="m_pPresenceCK">
               <property name="enabled">
                <bool>true</bool>
@@ -392,7 +385,7 @@
               </property>
              </widget>
             </item>
-            <item row="10" column="1">
+            <item row="9" column="1">
              <widget class="QLabel" name="edit7_state">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -471,6 +464,16 @@
              </item>
             </layout>
            </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>RING</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="DlgDht" name="m_pDlgDht" native="true"/>
           </item>
          </layout>
         </widget>
@@ -1705,16 +1708,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_2">
-         <attribute name="title">
-          <string>RING</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_10">
-          <item>
-           <widget class="DlgDht" name="m_pDlgDht" native="true"/>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </item>
      </layout>
@@ -1729,6 +1722,11 @@
    <header>kurlrequester.h</header>
   </customwidget>
   <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">widgets/categorizedtreeview.h</header>
+  </customwidget>
+  <customwidget>
    <class>LeftToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
@@ -1737,11 +1735,6 @@
    <class>RightToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CategorizedTreeView</class>
-   <extends>QTreeView</extends>
-   <header location="global">widgets/categorizedtreeview.h</header>
   </customwidget>
   <customwidget>
    <class>CenterToolButton</class>

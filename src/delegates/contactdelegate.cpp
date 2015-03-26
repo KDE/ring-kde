@@ -66,15 +66,20 @@ m_pChildDelegate(nullptr),m_pView(parent)
 QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    const int rowCount = index.model()->rowCount(index);
-   bool displayEmail = ConfigurationSkeleton::displayEmail();
-   bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
+   const bool displayEmail = ConfigurationSkeleton::displayEmail();
+   const bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
    Person* ct = (Person*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
 
    //Compute only once, the value is unlikely to change
    static QFontMetrics fm(QApplication::font());
    static const int lineHeight = fm.height()+2;
 
-   int lines = ((displayOrg && !ct->organization().isEmpty()) + (displayEmail && !ct->preferredEmail().isEmpty()))*lineHeight + 2*lineHeight - ((ct->phoneNumbers().size()>0?1:0)*lineHeight);
+   //Check the number of necessary rows
+   const int hasEmail = (displayEmail && !ct->preferredEmail().isEmpty()) ? lineHeight : 0;
+   const int hasOrg   = (displayOrg && !ct->organization().isEmpty()    ) ? lineHeight : 0;
+   const int hasPhone = (ct->phoneNumbers().size()>1                    ) ? lineHeight : 0;
+
+   int lines = hasEmail + hasOrg + 2*lineHeight - hasPhone;
    lines += lines==lineHeight?3:0; //Bottom margin for contact with only multiple phone numbers
    return QSize(sh.rwidth(),(lines+rowCount*lineHeight)<MIN_HEIGHT?MIN_HEIGHT:lines);
 }

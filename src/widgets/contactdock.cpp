@@ -245,6 +245,7 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pEditPerson->setShortcut ( Qt::CTRL + Qt::Key_E       );
       m_pEditPerson->setText     ( i18n("Edit contact")       );
       m_pEditPerson->setIcon     ( QIcon::fromTheme("contact-new")       );
+      m_pEditPerson->setDisabled(true);
 
       m_pCopy        = new QAction(this);
       m_pCopy->setShortcut        ( Qt::CTRL + Qt::Key_C       );
@@ -261,7 +262,7 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pAddPhone->setShortcut    ( Qt::CTRL + Qt::Key_N       );
       m_pAddPhone->setText        ( i18n("Add Phone Number")   );
       m_pAddPhone->setIcon        ( QIcon::fromTheme("list-resource-add") );
-      m_pEmail->setEnabled        ( false                      );
+      m_pAddPhone->setEnabled     ( false                      );
 
       m_pBookmark    = new QAction(this);
       m_pBookmark->setShortcut    ( Qt::CTRL + Qt::Key_D       );

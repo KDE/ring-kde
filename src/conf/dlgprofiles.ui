@@ -14,6 +14,29 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="3" column="0">
+    <widget class="QPushButton" name="select_photo_button">
+     <property name="text">
+      <string>Select...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Preferred</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="photoView">
      <property name="sizePolicy">
@@ -37,36 +60,6 @@
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="7" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="select_photo_button">
-     <property name="text">
-      <string>Select...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Preferred</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -164,8 +157,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>723</width>
-        <height>354</height>
+        <width>739</width>
+        <height>404</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -208,7 +201,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="label_cell">
            <property name="text">
-            <string>Cell</string>
+            <string>Phone number</string>
            </property>
           </widget>
          </item>
@@ -259,42 +252,17 @@
      </widget>
     </widget>
    </item>
+   <item row="7" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>DlgProfiles</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>699</x>
-     <y>449</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>667</x>
-     <y>481</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>DlgProfiles</receiver>
-   <slot>cancel()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>610</x>
-     <y>452</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>500</x>
-     <y>480</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>select_photo_button</sender>
    <signal>clicked()</signal>
@@ -324,6 +292,38 @@
     <hint type="destinationlabel">
      <x>822</x>
      <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>699</x>
+     <y>449</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>667</x>
+     <y>481</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>cancel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>610</x>
+     <y>452</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>500</x>
+     <y>480</y>
     </hint>
    </hints>
   </connection>

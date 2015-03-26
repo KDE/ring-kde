@@ -551,7 +551,7 @@ void Ring::updateTabIcons()
                bar->setTabIcon(i,QIcon::fromTheme("bookmarks"));
             }
             else if (text == i18n("Contact")) {
-               bar->setTabIcon(i,QIcon::fromTheme("edit-find-user"));
+               bar->setTabIcon(i,QIcon::fromTheme("folder-publicshare"));
             }
             else if (text == i18n("History")) {
                bar->setTabIcon(i,QIcon::fromTheme("view-history"));

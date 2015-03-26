@@ -39,6 +39,7 @@ class QAction;
 //Ring
 #include "categorizedhistorymodel.h"
 class KeyPressEater;
+class CollectionInterface;
 
 //Typedef
 
@@ -110,8 +111,7 @@ private Q_SLOTS:
    void slotRemove           ();
    void slotCallAgain        ();
    void slotCopy             ();
-   void slotAddPerson       ();
-   void slotAddToPerson     ();
+   void slotAddPerson       (CollectionInterface* col);
    void slotBookmark         ();
 };
 

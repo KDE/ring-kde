@@ -211,6 +211,8 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
 
    //PNG ?
    (qvariant_cast<QPixmap>(pxm)).save(&buffer, "PNG");
+   buffer.close();
+
    return bArray;
 }
 
@@ -218,7 +220,10 @@ QVariant KDEPixmapManipulation::profilePhoto(const QByteArray& data, const QStri
 {
    QImage image;
    //For now, ENCODING is only base64 and image type PNG or JPG
-   image.loadFromData(QByteArray::fromBase64(data),type.toLatin1());
+   const bool ret = image.loadFromData(QByteArray::fromBase64(data),type.toLatin1());
+   if (!ret)
+      qDebug() << "vCard image loading failed";
+
    return QPixmap::fromImage(image);
 }
 

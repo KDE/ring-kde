@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="m_pAlias">
      <property name="placeholderText">
       <string>The name you send to your peer</string>
      </property>
@@ -53,16 +53,26 @@
            </item>
            <item row="1" column="0">
             <widget class="QCheckBox" name="checkBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Automatically add nodes</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QSpinBox" name="spinBox"/>
+            <widget class="QSpinBox" name="spinBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
            <item row="1" column="2">
             <spacer name="horizontalSpacer_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -159,6 +169,9 @@
            </item>
            <item row="1" column="1">
             <widget class="QPushButton" name="pushButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Add</string>
              </property>
@@ -185,6 +198,9 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QCheckBox" name="checkBox_2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Only allow incoming calls from known peers</string>
         </property>

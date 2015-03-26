@@ -1,6 +1,6 @@
 /****************************************************************************
- *   Copyright (C) 2013-2014 by Savoir-Faire Linux                         ***
- *   Author : Alexandre Lision <alexandre.lision@savoirfairelinux.com> *
+ *   Copyright (C) 2014-2015 by Savoir-Faire Linux                          *
+ *   Author : Alexandre Lision <alexandre.lision@savoirfairelinux.com>      *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *
@@ -22,14 +22,17 @@
 #include <QWidget>
 #include <QObject>
 #include <QObject>
-#include "ui_dlgprofil.h"
+#include "ui_dlgprofiles.h"
+
+class CollectionInterface;
+class Person;
 
 class DlgProfiles : public QWidget, public Ui_DlgProfiles
 {
 Q_OBJECT
 public:
    //Constructor
-   explicit DlgProfiles(QWidget *parent = nullptr);
+   explicit DlgProfiles(QWidget *parent = nullptr, const QString& name = QString(), const QString& uri = QString());
 
    //Destructor
    virtual ~DlgProfiles();
@@ -40,9 +43,14 @@ private:
    QHash<QString, QLineEdit*> m_hCustomFields;
 
 public Q_SLOTS:
-   void accept();
+   Person* create(CollectionInterface* col);
    void cancel();
+   void accept();
    void choosePhoto();
    void addCustomField();
+
+Q_SIGNALS:
+   void requestSave();
+   void requestCancel();
 };
 #endif

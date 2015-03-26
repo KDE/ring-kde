@@ -101,6 +101,7 @@ SET(
    conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
+   conf/dlgprofiles.cpp
    conf/dlgdht.cpp
    configurator/localhistoryconfigurator.cpp
    configurator/fallbackpersonconfigurator.cpp
@@ -190,6 +191,7 @@ SET(
    conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
    conf/dlgpresence.ui
+   conf/dlgprofiles.ui
    conf/dlgdht.ui
    conf/dlgfallbackperson.ui
    widgets/ui/player.ui

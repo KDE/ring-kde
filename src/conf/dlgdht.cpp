@@ -23,12 +23,11 @@
 #include <bootstrapmodel.h>
 #include <widgets/certificateviewer.h>
 
-DlgDht::DlgDht(QWidget* parent) : QWidget(parent),m_Ui(nullptr),m_pAccount(nullptr)
+DlgDht::DlgDht(QWidget* parent) : QWidget(parent),m_pAccount(nullptr)
 {
-   m_Ui = new Ui_DlgDht();
-   m_Ui->setupUi(this);
+   setupUi(this);
 
-   connect(m_Ui->m_pKnownPeers, &QListView::doubleClicked, [this](const QModelIndex& index) {
+   connect(m_pKnownPeers, &QListView::doubleClicked, [this](const QModelIndex& index) {
       CertificateViewer* v = new CertificateViewer(index,this);
       v->show();
       connect(v,&QDialog::finished,[v](int) { delete v; });
@@ -40,11 +39,11 @@ void DlgDht::setAccount(Account* a)
    m_pAccount = a;
 
    if (a && a->protocol() == Account::Protocol::RING) {
-      m_Ui->m_pHash->setText(a->username());
-//       m_Ui->m_pKnownPeers->setModel();
-      m_Ui->m_pKnownPeers->setModel(CertificateModel::instance()->model(a));
-      m_Ui->m_pBootstrap->setModel(a->bootstrapModel());
-      if (m_Ui->m_pBootstrap->horizontalHeader())
-         m_Ui->m_pBootstrap->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+      m_pHash->setText(a->username());
+//       m_pKnownPeers->setModel();
+      m_pKnownPeers->setModel(CertificateModel::instance()->model(a));
+      m_pBootstrap->setModel(a->bootstrapModel());
+      if (m_pBootstrap->horizontalHeader())
+         m_pBootstrap->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
    }
 }
