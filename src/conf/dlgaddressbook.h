@@ -24,6 +24,7 @@
 #include <QString>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QListWidgetItem>
+class QSortFilterProxyModel;
 
 #include "ui_dlgaddressbookbase.h"
 #include <kconfigdialog.h>
@@ -31,10 +32,12 @@
 
 //KDE
 class KJob;
+class KConfigDialogManager;
 
 //Ring
 class AutoCompletionDelegate;
 class CategorizedDelegate;
+class CollectionInterface;
 
 class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase
 {
@@ -52,6 +55,10 @@ private:
    bool m_HasChanged;
    AutoCompletionDelegate* m_pDelegate;
    CategorizedDelegate* m_pCategoryDelegate;
+   QSortFilterProxyModel* m_pProxyModel;
+   QHash<CollectionInterface*,QWidget*> m_hWidgets;
+   QWidget* m_pCurrent;
+   KConfigDialogManager* m_pManager;
 
 public Q_SLOTS:
    void updateWidgets ();

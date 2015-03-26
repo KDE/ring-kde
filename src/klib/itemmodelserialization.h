@@ -33,10 +33,10 @@ public:
    virtual ~ItemModelStateSerialization();
 
    //Getter
-   virtual bool isChecked(CollectionInterface* backend) const;
+   virtual bool isChecked(const CollectionInterface* backend) const;
 
    //Setter
-   virtual bool setChecked(CollectionInterface* backend, bool enabled);
+   virtual bool setChecked(const CollectionInterface* backend, bool enabled);
 
 private:
    QHash<QByteArray,bool> m_hChecked;

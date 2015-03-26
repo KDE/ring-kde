@@ -124,6 +124,7 @@ private Q_SLOTS:
    void bookmark    ();
    void transferEvent( QMimeData* data   );
    void expandTree  ();
+   void expandTreeRows(const QModelIndex& idx);
    void setCategory (int index);
    void slotDoubleClick(const QModelIndex& index);
    void slotDelete();

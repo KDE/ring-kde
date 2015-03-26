@@ -40,11 +40,10 @@ QVariant LocalHistoryConfigurator::icon() const
 
 void LocalHistoryConfigurator::loadCollection(CollectionInterface* col, QObject* parent)
 {
-   qDebug() << "\n\n\n\n\nWORKS!!!!!" << col << parent;
+   Q_UNUSED(col)
    if (parent && qobject_cast<QWidget*>(parent)) {
       QWidget* w = qobject_cast<QWidget*>(parent);
       if (!m_pDialog) {
-      qDebug() << "IN";
          m_pDialog = new DlgGeneral(nullptr);
          QHBoxLayout* l = new QHBoxLayout(w);
          l->addWidget(m_pDialog);

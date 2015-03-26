@@ -19,6 +19,7 @@
 
 #include <QtCore/QItemSelectionModel>
 #include <QtCore/QDebug>
+#include <QtCore/QAbstractProxyModel>
 
 AutoComboBox::AutoComboBox(QWidget* parent) : QComboBox(parent), m_pSelectionModel(nullptr)
 {
@@ -27,7 +28,6 @@ AutoComboBox::AutoComboBox(QWidget* parent) : QComboBox(parent), m_pSelectionMod
 
 AutoComboBox::~AutoComboBox()
 {
-
 }
 
 void AutoComboBox::bindToModel(QAbstractItemModel* m, QItemSelectionModel* s)
@@ -37,7 +37,6 @@ void AutoComboBox::bindToModel(QAbstractItemModel* m, QItemSelectionModel* s)
 
    setModel(m);
    m_pSelectionModel = s;
-
    blockSignals(true);
    setCurrentIndex(s->currentIndex().row());
    blockSignals(false);
@@ -62,4 +61,9 @@ void AutoComboBox::slotModelSelectionChanged(const QModelIndex& idx)
       return;
 
    setCurrentIndex(idx.row());
+}
+
+QItemSelectionModel* AutoComboBox::selectionModel()
+{
+   return m_pSelectionModel;
 }

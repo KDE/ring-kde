@@ -114,14 +114,16 @@ QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool 
       contactPhoto.setMask(mask);
       painter.drawPixmap(3,3,contactPhoto);
       painter.setBrush(Qt::NoBrush);
-      QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-      pen.setWidth(isTracked?1:2);
-      painter.setPen(pen);
+      painter.setPen(Qt::white);
       painter.setRenderHint  (QPainter::Antialiasing, true   );
+      painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
       painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
+      painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
       //Draw the glow around pixmaps
       if (isTracked) {
+         QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
+         pen.setWidth(isTracked?1:2);
          if (isPresent)
             pen.setColor(presentBrush);
          else

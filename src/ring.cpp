@@ -48,6 +48,7 @@
 #include "accountmodel.h"
 #include "availableaccountmodel.h"
 #include "instantmessagingmodel.h"
+#include <categorizedcontactmodel.h>
 #include "imconversationmanager.h"
 #include "numbercategorymodel.h"
 #include "klib/minimalhistorybackend.h"
@@ -62,6 +63,7 @@
 #include <fallbackpersoncollection.h>
 #include "personmodel.h"
 #include "configurator/localhistoryconfigurator.h"
+#include "configurator/fallbackpersonconfigurator.h"
 #include "collectionmodel.h"
 #include "delegates/itemmodelstateserializationdelegate.h"
 #include "klib/itemmodelserialization.h"
@@ -139,6 +141,7 @@ Ring::Ring(QWidget* parent)
        *           Set the configurator          *
        ******************************************/
 
+      PersonModel::instance()            ->registerConfigarator<FallbackPersonCollection>(new FallbackPersonConfigurator(this));
       CategorizedHistoryModel::instance()->registerConfigarator<MinimalHistoryBackend>(new LocalHistoryConfigurator(this));
 
       /*******************************************

@@ -103,6 +103,7 @@ SET(
    conf/dlgpresence.cpp
    conf/dlgdht.cpp
    configurator/localhistoryconfigurator.cpp
+   configurator/fallbackpersonconfigurator.cpp
 )
 
 # Widgets
@@ -190,6 +191,7 @@ SET(
    conf/dlgaccessibility.ui
    conf/dlgpresence.ui
    conf/dlgdht.ui
+   conf/dlgfallbackperson.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/dockbase.ui

@@ -339,12 +339,12 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
       m_pCallAgain->setIcon        ( QIcon::fromTheme("call-start")            );
 
       m_pAddToPerson->setShortcut ( Qt::CTRL + Qt::Key_E           );
-      m_pAddToPerson->setText     ( i18n("Add Number to Person")  );
+      m_pAddToPerson->setText     ( i18n("Add Number to contact")  );
       m_pAddToPerson->setIcon     ( QIcon::fromTheme("list-resource-add")     );
       m_pAddToPerson->setDisabled ( true                           );
 
       m_pAddPerson->setShortcut   ( Qt::CTRL + Qt::Key_E           );
-      m_pAddPerson->setText       ( i18n("Add Person")            );
+      m_pAddPerson->setText       ( i18n("Add new contact")            );
       m_pAddPerson->setIcon       ( QIcon::fromTheme("contact-new")           );
 
       m_pCopy->setShortcut         ( Qt::CTRL + Qt::Key_C           );

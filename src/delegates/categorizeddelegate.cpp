@@ -37,8 +37,9 @@ CategorizedDelegate::CategorizedDelegate(QTreeView* widget)
 ///Destructor
 CategorizedDelegate::~CategorizedDelegate()
 {
-   if ( m_pChildDelegate      ) delete m_pChildDelegate     ;
-   if ( m_pChildChildDelegate ) delete m_pChildChildDelegate;
+   const bool isSame = m_pChildDelegate == m_pChildChildDelegate;
+   if ( m_pChildDelegate                 ) delete m_pChildDelegate     ;
+   if ( m_pChildChildDelegate && !isSame ) delete m_pChildChildDelegate;
 }
 
 ///Report category height

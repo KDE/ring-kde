@@ -15,33 +15,40 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef AUTOCOMBOBOX_H
-#define AUTOCOMBOBOX_H
+#include "fallbackpersonconfigurator.h"
+#include "ui_dlgfallbackperson.h"
 
-#include <QtWidgets/QComboBox>
-
-#include <QtCore/QAbstractItemModel>
-
-class QItemSelectionModel;
-
-class AutoComboBox : public QComboBox
+FallbackPersonConfigurator::FallbackPersonConfigurator(QObject* parent) : CollectionConfigurationInterface(parent),m_pDialog(nullptr)
 {
-   Q_OBJECT
 
-public:
-   AutoComboBox(QWidget* parent = nullptr);
-   virtual ~AutoComboBox();
+}
 
-   void bindToModel(QAbstractItemModel* m, QItemSelectionModel* s);
+QByteArray FallbackPersonConfigurator::id() const
+{
+   return "fallbackPersonConfigurator";
+}
 
-   QItemSelectionModel* selectionModel();
+QString FallbackPersonConfigurator::name() const
+{
+   return tr("Fallback person configurator");
+}
 
-private:
-   QItemSelectionModel* m_pSelectionModel;
+QVariant FallbackPersonConfigurator::icon() const
+{
+   return QVariant();
+}
 
-private Q_SLOTS:
-   void slotComboBoxSelectionChanged(int idx);
-   void slotModelSelectionChanged(const QModelIndex& idx);
-};
-
-#endif
+void FallbackPersonConfigurator::loadCollection(CollectionInterface* col, QObject* parent)
+{
+   Q_UNUSED(col)
+   if (parent && qobject_cast<QWidget*>(parent)) {
+      QWidget* w = qobject_cast<QWidget*>(parent);
+      if (!m_pDialog) {
+         m_pDialog = new QWidget();
+         Ui_DlgFallbackPerson* ui = new Ui_DlgFallbackPerson();
+         ui->setupUi(m_pDialog);
+         QHBoxLayout* l = new QHBoxLayout(w);
+         l->addWidget(m_pDialog);
+      }
+   }
+}

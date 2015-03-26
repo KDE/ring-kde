@@ -15,33 +15,37 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef AUTOCOMBOBOX_H
-#define AUTOCOMBOBOX_H
+#ifndef FALLBACKPERSONCONFIGURATOR_H
+#define FALLBACKPERSONCONFIGURATOR_H
 
-#include <QtWidgets/QComboBox>
+#include <collectionconfigurationinterface.h>
 
-#include <QtCore/QAbstractItemModel>
+class QWidget;
 
-class QItemSelectionModel;
-
-class AutoComboBox : public QComboBox
+class FallbackPersonConfigurator : public CollectionConfigurationInterface
 {
    Q_OBJECT
-
 public:
-   AutoComboBox(QWidget* parent = nullptr);
-   virtual ~AutoComboBox();
+   FallbackPersonConfigurator(QObject* parent = nullptr);
 
-   void bindToModel(QAbstractItemModel* m, QItemSelectionModel* s);
+   //Getter
+   virtual QByteArray id  () const override;
+   virtual QString    name() const override;
+   virtual QVariant   icon() const override;
 
-   QItemSelectionModel* selectionModel();
+   //Mutator
+
+   /**
+    * This function will be called when a collection request to be configured
+    * 
+    * @param col The collection to be edited. It can casted
+    * @param parent can be used for layout information.
+    */
+   virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
 
 private:
-   QItemSelectionModel* m_pSelectionModel;
+   QWidget* m_pDialog;
 
-private Q_SLOTS:
-   void slotComboBoxSelectionChanged(int idx);
-   void slotModelSelectionChanged(const QModelIndex& idx);
 };
 
 #endif

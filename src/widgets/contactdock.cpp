@@ -135,6 +135,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex))     , this , SLOT(slotContextMenu(QModelIndex)));
    connect(m_pProxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
+   connect(m_pProxyModel ,SIGNAL(rowsInserted(QModelIndex,int,int)), this , SLOT(expandTreeRows(QModelIndex)));
    connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
 
@@ -146,6 +147,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
 //    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadPerson())                     );
    connect(m_pView                       ,SIGNAL(doubleClicked(QModelIndex)),                           this, SLOT(slotDoubleClick(QModelIndex))        );
    setWindowTitle(i18nc("Contact tab","Contact"));
+   expandTree();
 } //ContactDock
 
 ///Destructor
@@ -272,12 +274,13 @@ void ContactDock::showContext(const QModelIndex& index)
       m_pRemove->setIcon        ( QIcon::fromTheme("edit-delete")         );
 
       connect(m_pCallAgain    , SIGNAL(triggered()) , this,SLOT(callAgain())  );
-      connect(m_pEditPerson  , SIGNAL(triggered()) , this,SLOT(editPerson()));
+      connect(m_pEditPerson   , SIGNAL(triggered()) , this,SLOT(editPerson()) );
       connect(m_pCopy         , SIGNAL(triggered()) , this,SLOT(copy())       );
       connect(m_pEmail        , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
       connect(m_pAddPhone     , SIGNAL(triggered()) , this,SLOT(addPhone())   );
       connect(m_pBookmark     , SIGNAL(triggered()) , this,SLOT(bookmark())   );
       connect(m_pRemove       , SIGNAL(triggered()) , this,SLOT(slotDelete()) );
+
    }
    if (index.parent().isValid()  && !index.parent().parent().isValid()) {
       const QString& email = index.data((int)Person::Role::PreferredEmail).toString();
@@ -290,6 +293,10 @@ void ContactDock::showContext(const QModelIndex& index)
          m_PreselectedNb.clear();
          Person::ContactMethods numbers = ct->phoneNumbers();
          m_pBookmark->setEnabled(numbers.count() == 1);
+         m_pRemove->setEnabled(ct->collection() && ct->collection()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE);
+      }
+      else {
+         m_pRemove->setEnabled(false);
       }
    }
    else if (index.parent().parent().isValid()) {
@@ -488,22 +495,32 @@ void ContactDock::setCategory(int index)
 {
    switch(index) {
       case SortingCategory::Name:
+         m_pSourceModel->setSortAlphabetical(true);
+         m_pSourceModel->setDefaultCategory(tr("Empty"));
          m_pSourceModel->setRole(Qt::DisplayRole);
          m_pProxyModel->setSortRole(Qt::DisplayRole);
          break;
       case SortingCategory::Organization:
+         m_pSourceModel->setSortAlphabetical(false);
+         m_pSourceModel->setDefaultCategory(tr("Unknown"));
          m_pProxyModel->setSortRole((int)Person::Role::Organization);
          m_pSourceModel->setRole((int)Person::Role::Organization);
          break;
       case SortingCategory::RecentlyUsed:
+         m_pSourceModel->setSortAlphabetical(false);
+         m_pSourceModel->setDefaultCategory(tr("Never"));
          m_pSourceModel->setRole((int)Person::Role::FormattedLastUsed);
          m_pProxyModel->setSortRole((int)Person::Role::IndexedLastUsed);
          break;
       case SortingCategory::Group:
+         m_pSourceModel->setSortAlphabetical(false);
+         m_pSourceModel->setDefaultCategory(tr("Other"));
          m_pSourceModel->setRole((int)Person::Role::Group);
          m_pProxyModel->setSortRole((int)Person::Role::Group);
          break;
       case SortingCategory::Department:
+         m_pSourceModel->setSortAlphabetical(false);
+         m_pSourceModel->setDefaultCategory(tr("Unknown"));
          m_pSourceModel->setRole((int)Person::Role::Department);
          m_pProxyModel->setSortRole((int)Person::Role::Department);
          break;
@@ -547,4 +564,10 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
 void ContactDock::expandTree()
 {
    m_pView->expandToDepth( 2 );
+}
+
+void ContactDock::expandTreeRows(const QModelIndex& idx)
+{
+   if (!idx.isValid()) //Only top level
+      m_pView->expandToDepth( 2 );
 }

@@ -100,10 +100,10 @@ void DlgVideo::updateSettings()
 
 void DlgVideo::slotReloadPreview()
 {
-   if (Video::PreviewManager::instance()->isPreviewing()) {
+   /*if (Video::PreviewManager::instance()->isPreviewing()) {
       Video::PreviewManager::instance()->stopPreview();
       Video::PreviewManager::instance()->startPreview();
-   }
+   }*/
 }
 
 

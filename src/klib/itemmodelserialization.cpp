@@ -49,12 +49,12 @@ bool ItemModelStateSerialization::load()
    return true;
 }
 
-bool ItemModelStateSerialization::isChecked(CollectionInterface* backend) const
+bool ItemModelStateSerialization::isChecked(const CollectionInterface* backend) const
 {
    return backend ? (!(m_hChecked[backend->id()])) : false;
 }
 
-bool ItemModelStateSerialization::setChecked(CollectionInterface* backend, bool enabled)
+bool ItemModelStateSerialization::setChecked(const CollectionInterface* backend, bool enabled)
 {
    m_hChecked[backend->id()] = ! enabled;
    return true;

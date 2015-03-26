@@ -18,7 +18,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="3" column="1">
-    <widget class="QComboBox" name="m_pRate">
+    <widget class="AutoComboBox" name="m_pRate">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -42,7 +42,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QComboBox" name="m_pChannel">
+    <widget class="AutoComboBox" name="m_pChannel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -52,7 +52,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QComboBox" name="m_pResolution">
+    <widget class="AutoComboBox" name="m_pResolution">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -69,7 +69,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QComboBox" name="m_pDevice"/>
+    <widget class="AutoComboBox" name="m_pDevice"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_4">
@@ -80,6 +80,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>widgets/autocombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

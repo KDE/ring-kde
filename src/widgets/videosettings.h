@@ -37,9 +37,6 @@ public:
 
    void hideDevices();
 
-public Q_SLOTS:
-   void slotReloadDevices();
-
 private Q_SLOTS:
    void slotDeviceChanged(int idx = -1);
    void slotChannelChanged(int idx = -1);
