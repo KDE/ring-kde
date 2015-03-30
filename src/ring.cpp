@@ -228,7 +228,7 @@ Ring::Ring(QWidget* parent)
 
    selectCallTab();
 
-   setWindowIcon (QIcon(RingIcons::RING) );
+   setWindowIcon (QIcon(":/appicon/icons/sc-apps-ring-kde.svgz") );
    setWindowTitle(i18n("Ring")     );
    ActionCollection::instance()->setupAction();
    setAutoSaveSettings();

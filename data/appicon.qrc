@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="appicon">
+    <file>icons/16-apps-ring-kde.png</file>
+    <file>icons/22-apps-ring-kde.png</file>
+    <file>icons/32-apps-ring-kde.png</file>
+    <file>icons/48-apps-ring-kde.png</file>
+    <file>icons/64-apps-ring-kde.png</file>
+    <file>icons/128-apps-ring-kde.png</file>
+    <file>icons/256-apps-ring-kde.png</file>
+    <file>icons/sc-apps-ring-kde.svgz</file>
+  </qresource>
+</RCC>

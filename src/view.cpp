@@ -56,6 +56,7 @@
 #include "widgets/kphonenumberselector.h"
 #include "widgets/callviewoverlay.h"
 #include "widgets/autocompletion.h"
+#include "widgets/wizard.h"
 
 //ring library
 #include "klib/kcfg_settings.h"
@@ -173,6 +174,11 @@ View::View(QWidget *parent)
       hb->addWidget(tv);
       d2->show();
    });
+
+   if (ConfigurationSkeleton::enableWizard() == true) {
+      new Wizard(this);
+      ConfigurationSkeleton::setEnableWizard(false);
+   }
 }
 
 ///Destructor

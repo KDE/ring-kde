@@ -113,10 +113,11 @@ private:
    //Singleton
    static ActionCollection* m_spInstance;
 
+public Q_SLOTS:
+   void configureRing         ();
 
 private Q_SLOTS:
    void mailBox  ();
-   void configureRing         ();
    void showShortCutEditor    ();
    void editToolBar           ();
    void slotAddPerson         ();

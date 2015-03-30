@@ -39,7 +39,7 @@
 #include "callmodel.h"
 #include "cmd.h"
 
-static const char version[] = "1.4.1";
+static const char version[] = "2.0.0";
 
 RingApplication* app;
 void quitOnSignal(int signal);
@@ -57,29 +57,23 @@ int main(int argc, char **argv)
       KAboutData about(QStringLiteral("ring-kde"),
          i18n("ring-kde"),
          /*QStringLiteral(*/version/*)*/,
-         i18n("KWrite - Text Editor"),
+         i18n("RING, a secured and distributed communication software"),
          KAboutLicense::GPL_V3,
-         i18n("(C) 2009-2015 Savoir-faire Linux"),
+         i18n("(C) 2015 Savoir-faire Linux"),
          QString(),
          QStringLiteral("http://www.ring.cx"),
-         QStringLiteral("sflphone@lists.savoirfairelinux.net")
+         QStringLiteral("ring@lists.savoirfairelinux.net")
       );
 
-
-      /*KAboutData about(
-         "ring-kde"                                         ,
-         "ring-kde"                                         ,
-         i18n("Ring-KDE")                                  ,
-         version                                            ,
-         i18n("An enterprise grade KDE SIP and IAX phone") ,
-         KAboutLicense::GPL_V3                         ,
-         i18n("(C) 2009-2015 Savoir-faire Linux")          ,
-         KLocalizedString()                                 ,
-         "http://www.ring.cx"                               ,
-         "sflphone@lists.savoirfairelinux.net"
-      );*/
-      about.addAuthor( i18n( "Emmanuel Lepage Vallée" ), QString(), "emmanuel.lepage@savoirfairelinux.com" );
-      about.addCredit( i18n( "Jérémy Quentin"         ), QString(), "jeremy.quentin@savoirfairelinux.com"  );
+      about.addAuthor( i18n( "Adrien Béraud"                   ), QString(), "adrien.beraud@savoirfairelinux.com"        );
+      about.addAuthor( i18n( "Alexandre Lision"                ), QString(), "alexandre.lision@savoirfairelinux.com"     );
+      about.addAuthor( i18n( "Édric Ladent-Milaret"            ), QString(), "edric.ladent-milaret@savoirfairelinux.com" );
+      about.addAuthor( i18n( "Éloi Bail"                       ), QString(), "eloi.bail@savoirfairelinux.com"            );
+      about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), "emmanuel.lepage@savoirfairelinux.com"      );
+      about.addAuthor( i18n( "Guillaume Roguez"                ), QString(), "guillaume.roguez@savoirfairelinux.com"     );
+      about.addAuthor( i18n( "Marianne Forget"                 ), QString(), "marianne.forget@savoirfairelinux.com"      );
+      about.addAuthor( i18n( "Stepan Salenikovich"             ), QString(), "stepan.salenikovich@savoirfairelinux.com"  );
+      about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                   );
 
       Cmd::parseCmd(argc,argv,about);
 
@@ -93,7 +87,7 @@ int main(int argc, char **argv)
 
       const int retVal = app->exec();
 
-      /*ConfigurationSkeleton::self()->writeConfig();*/
+      ConfigurationSkeleton::self()->save();
 
       delete app;
       return retVal;

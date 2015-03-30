@@ -8,6 +8,10 @@
   <group name="main">
 
     <!-- General Settings -->
+    <entry name="enableWizard" type="Bool">
+      <label>Show the first run wizard</label>
+      <default> true </default>
+    </entry>
     <entry name="enableHistory" type="Bool">
       <label>Defines whether Ring-KDE should keep a history of calls.</label>
     </entry>
