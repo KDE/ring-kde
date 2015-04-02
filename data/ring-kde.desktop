@@ -4,6 +4,13 @@ X-DocPath=ring-kde/index.html
 Terminal=false
 
 Name=Ring VoIP KDE4 client
+Name[ca]=Ring client de VoIP pel KDE4
+Name[gl]=Cliente de KDE4 para VoIP mediante Ring
+Name[nl]=Ring VoIP KDE4-client
+Name[pt]=Cliente de VoIP Ring para o KDE4
+Name[pt_BR]=Cliente do Ring VoIP para o KDE4
+Name[uk]=Клієнт інтернет-телефонії Ring для KDE4
+Name[x-test]=xxRing VoIP KDE4 clientxx
 GenericName=Telephone
 GenericName[bs]=Telefon
 GenericName[ca]=Telèfon
