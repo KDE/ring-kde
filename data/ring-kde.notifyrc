@@ -1,19 +1,23 @@
 [Global]
 Name=ring-kde
 Name[ca]=ring-kde
+Name[cs]=ring-kde
 Name[gl]=ring-kde
 Name[nl]=ring-kde
 Name[pt]=ring-kde
 Name[pt_BR]=ring-kde
+Name[sv]=ring-kde
 Name[uk]=ring-kde
 Name[x-test]=xxring-kdexx
 IconName=ring-kde
 Comment=Ring VoIP KDE4 client
 Comment[ca]=Ring client de VoIP pel KDE4
+Comment[cs]=Ring VoIP klient pro KDE4
 Comment[gl]=Cliente de KDE4 para VoIP mediante Ring
 Comment[nl]=Ring VoIP KDE4-client
 Comment[pt]=Cliente de VoIP Ring para o KDE4
 Comment[pt_BR]=Cliente do Ring VoIP para o KDE4
+Comment[sv]=Ring KDE4-klient för IP-telefoni
 Comment[uk]=Клієнт інтернет-телефонії Ring для KDE4
 Comment[x-test]=xxRing VoIP KDE4 clientxx
 
