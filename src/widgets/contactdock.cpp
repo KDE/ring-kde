@@ -35,7 +35,6 @@
 #include <klocalizedstring.h>
 #include <QIcon>
 #include <QAction>
-#include <klocalizedstring.h>
 #include <kmessagebox.h>
 
 //Ring

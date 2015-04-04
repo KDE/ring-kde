@@ -33,7 +33,6 @@
 //KDE
 #include <klocalizedstring.h>
 #include <QIcon>
-#include <klocalizedstring.h>
 #include <QAction>
 
 //Ring

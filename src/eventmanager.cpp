@@ -34,7 +34,6 @@
 #include <phonedirectorymodel.h>
 #include <accountmodel.h>
 #include <availableaccountmodel.h>
-#include <availableaccountmodel.h>
 #include <personmodel.h>
 #include <klib/tipmanager.h>
 #include "view.h"
