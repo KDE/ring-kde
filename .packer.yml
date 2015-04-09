@@ -1,0 +1,9 @@
+ubuntu_15.04:
+    debian: debian
+    ccache: true
+fedora_20:
+    spec: ring-kde.spec
+    ccache: true
+fedora_21:
+    spec: ring-kde.spec
+    ccache: true

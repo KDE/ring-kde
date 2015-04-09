@@ -1,0 +1,21 @@
+Source: ring-kde
+Section: comm
+Priority: extra
+Maintainer: Thibault Cohen <thibault.cohen@savoirfairelinux.com>
+Build-Depends: debhelper (>= 9),
+# KDE
+ cmake, git-core, qtbase5-dev, extra-cmake-modules, libqt5svg5-dev, libkf5attica-dev, libkf5attica-dev,
+ libkf5config-dev, libkf5guiaddons-dev, libkf5dbusaddons-dev, libkf5i18n-dev,
+ libkf5windowsystem-dev, libkf5xmlgui-dev, libkf5iconthemes-dev, kinit-dev, kio-dev,
+ libkf5completion-dev, libkf5crash-dev, kdelibs5-dev, libkf5notifications-dev,
+Standards-Version: 3.9.6
+Homepage: http://www.sflphone.org
+Vcs-Svn: svn://anonscm.debian.org/pkg-voip/sflphone/trunk/
+Vcs-Browser: http://anonscm.debian.org/viewvc/pkg-voip/sflphone/trunk/
+
+Package: ring-kde
+Architecture: any
+Section: kde
+Depends: ${shlibs:Depends}, ${misc:Depends}, ring-daemon
+Description: Ring KDE client
+ Ring is a secured and distributed communication software.
