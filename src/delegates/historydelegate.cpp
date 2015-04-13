@@ -48,7 +48,7 @@
 
 ///Constant
 #pragma GCC diagnostic ignored "-Wmissing-braces"
-TypedStateMachine< const char* , Call::State > callStateIcons = {{RingIcons::INCOMING, RingIcons::RINGING, RingIcons::CURRENT, RingIcons::DIALING, RingIcons::HOLD, RingIcons::FAILURE, RingIcons::BUSY, RingIcons::TRANSFER, RingIcons::TRANSF_HOLD, "", "", RingIcons::CONFERENCE}};
+TypedStateMachine< const char* , Call::State > callStateIcons = {{RingIcons::DIALING, RingIcons::INCOMING, RingIcons::RINGING, RingIcons::CURRENT, RingIcons::DIALING, RingIcons::HOLD, RingIcons::FAILURE, RingIcons::BUSY, RingIcons::TRANSFER, RingIcons::TRANSF_HOLD, "", "", RingIcons::CONFERENCE}};
 
 HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr),m_AnimationWrapper(nullptr),m_pRingingTip(nullptr)
 {
@@ -193,10 +193,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    //END history fields
    else { //Active calls
-      if (ConfigurationSkeleton::displayCallIcon()) {
-         //TODO dead code
-      }
-      if(ConfigurationSkeleton::displayCallPeer() && !(currentState == Call::State::DIALING || (option.state & QStyle::State_Editing))) {
+      if(ConfigurationSkeleton::displayCallPeer() && !(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
          font.setBold(true);
          painter->setFont(font);
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
@@ -205,7 +202,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          currentHeight +=fm.height();
       }
 
-      if (ConfigurationSkeleton::displayCallNumber() && !(currentState == Call::State::DIALING || (option.state & QStyle::State_Editing))) {
+      if (ConfigurationSkeleton::displayCallNumber() && !(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
 //          if (isTracked) {
 //             if (isPresent)
 //                painter->setPen(presentBrush);
@@ -282,7 +279,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //END overlay path
 
    //BEGIN Item editor
-   if (currentState == Call::State::DIALING) {
+   if (currentLifeCycleState == Call::LifeCycleState::CREATION) {
       m_pParent->edit(index);
    }
    //END item editor

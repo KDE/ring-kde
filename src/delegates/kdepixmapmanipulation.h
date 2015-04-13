@@ -20,6 +20,7 @@
 
 #include <delegates/pixmapmanipulationdelegate.h>
 #include <call.h>
+#include "matrixutils.h"
 
 class Person;
 
@@ -36,11 +37,11 @@ public:
 
    virtual QByteArray toByteArray(const QVariant& pxm) override;
 
-   virtual QVariant profilePhoto(const QByteArray& data, const QString& type = "PNG") override;
+   virtual QVariant personPhoto(const QByteArray& data, const QString& type = "PNG") override;
 
    QVariant numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence = false, bool isPresent = false) override;
 
-   virtual QVariant serurityIssueIcon(const QModelIndex& index) override;
+   virtual QVariant securityIssueIcon(const QModelIndex& index) override;
 
    virtual QVariant userActionIcon(const UserActionElement& state) const override;
 

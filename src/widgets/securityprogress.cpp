@@ -21,11 +21,12 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QHeaderView>
 #include <QtGui/QLinearGradient>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QToolButton>
-#include <QtWidgets/QListView>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QLineEdit>
 
 //KDE
@@ -177,10 +178,10 @@ SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pM
    issueIcon->  setPixmap(QIcon::fromTheme("task-attempt"      ).pixmap(QSize(16,16)));
    errorIcon->  setPixmap(QIcon::fromTheme("dialog-error"      ).pixmap(QSize(16,16)));
 
-   m_pInfoL   ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred));
-   m_pWarningL->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred));
-   m_pIssueL  ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred));
-   m_pErrorL  ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred));
+   m_pInfoL   ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed));
+   m_pWarningL->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed));
+   m_pIssueL  ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed));
+   m_pErrorL  ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed));
 
    labels->addWidget ( errorIcon   );
    labels->addWidget ( m_pErrorL   );
@@ -191,12 +192,15 @@ SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pM
    labels->addWidget ( infoIcon    );
    labels->addWidget ( m_pInfoL    );
 
-   m_pView = new QListView(this);
+   m_pView = new QTableView(this);
    m_pView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
    m_pView->setWordWrap(true);
    m_pView->setMinimumSize(0,125);
-   m_pView->setMaximumSize(99999999,125);
+   m_pView->resize(0,125);
+   m_pView->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding));
+//    m_pView->setMaximumSize(99999999,125);
    m_pView->setVisible(false);
+
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(dblClicked(QModelIndex)));
    l->addWidget(m_pView,2,0);
 //    QSize prog = m_pLevel->sizeHint();
@@ -207,18 +211,39 @@ SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pM
 
 SecurityLevelWidget::~SecurityLevelWidget()
 {
-   
+
 }
 
-void SecurityLevelWidget::setModel(SecurityValidationModel* model)
+void SecurityLevelWidget::setModel(SecurityEvaluationModel* model)
 {
    m_pView->setModel(model);
    m_pModel = model;
    reloadCount();
-   connect(model,SIGNAL(layoutChanged()),this,SLOT(reloadCount()));
+
+   //Resize the columns
+   if (m_pView->horizontalHeader()) {
+      m_pView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+      for (int i =1;i<model->columnCount();i++)
+         m_pView->horizontalHeader()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
+      m_pView->horizontalHeader()->setVisible(false);
+      m_pView->hideColumn(2);
+   }
+
+   if (m_pView->verticalHeader())
+      m_pView->verticalHeader()->setVisible(false);
+
+
+   if (m_pModel) {
+      connect(m_pModel,SIGNAL(layoutChanged()),this,SLOT(reloadCount()));
+      connect(m_pModel,&SecurityEvaluationModel::informationCountChanged  , this, &SecurityLevelWidget::reloadCount);
+      connect(m_pModel,&SecurityEvaluationModel::warningCountChanged      , this, &SecurityLevelWidget::reloadCount);
+      connect(m_pModel,&SecurityEvaluationModel::issueCountChanged        , this, &SecurityLevelWidget::reloadCount);
+      connect(m_pModel,&SecurityEvaluationModel::errorCountChanged        , this, &SecurityLevelWidget::reloadCount);
+      connect(m_pModel,&SecurityEvaluationModel::fatalWarningCountChanged , this, &SecurityLevelWidget::reloadCount);
+   }
 }
 
-QListView* SecurityLevelWidget::view() const
+QTableView* SecurityLevelWidget::view() const
 {
    return m_pView;
 }
@@ -232,24 +257,19 @@ void SecurityLevelWidget::mouseReleaseEvent(QMouseEvent * event)
 void SecurityLevelWidget::reloadCount()
 {
    if (! m_pModel) return;
-   int severity[5] = {0,0,0,0,0};
-   foreach(const SecurityFlaw* flaw, m_pModel->currentFlaws()) {
-      severity[(int)flaw->severity()]++;
-   }
-   m_pInfoL   ->setText(i18np("%1 tip","%1 tips",severity[(int)SecurityValidationModel::Severity::INFORMATION]));
-   m_pWarningL->setText(i18np("%1 warning","%1 warnings",
-        severity[(int)SecurityValidationModel::Severity::WARNING      ]
-      + severity[(int)SecurityValidationModel::Severity::FATAL_WARNING]
-   ));
-   m_pIssueL  ->setText(i18np("%1 issue","%1 issues",severity[(int)SecurityValidationModel::Severity::ISSUE]));
-   m_pErrorL  ->setText(i18np("%1 error","%1 errors",severity[(int)SecurityValidationModel::Severity::ERROR]));
+
+   m_pInfoL   ->setText(i18np("%1 tip","%1 tips",m_pModel->informationCount()));
+   m_pWarningL->setText(i18np("%1 warning","%1 warnings", m_pModel->warningCount() + m_pModel->fatalWarningCount()));
+   m_pIssueL  ->setText(i18np("%1 issue","%1 issues",m_pModel->issueCount()));
+   m_pErrorL  ->setText(i18np("%1 error","%1 errors",m_pModel->errorCount()));
 }
 
 void SecurityLevelWidget::dblClicked(const QModelIndex& idx)
 {
-   if (idx.isValid()) {
-      m_pModel->currentFlaws()[idx.row()]->requestHighlight();
-   }
+   Q_UNUSED(idx)
+//    if (idx.isValid()) {
+//       m_pModel->currentFlaws()[idx.row()]->requestHighlight();
+//    }
 }
 
 class IssueButton : public QToolButton
@@ -298,7 +318,7 @@ void IssueButton::slotHighlightFlaw()
    }
 }
 
-void IssuesIcon::setModel(SecurityValidationModel* model)
+void IssuesIcon::setModel(SecurityEvaluationModel* model)
 {
    reset();
    m_pModel = model;
@@ -314,18 +334,21 @@ void IssuesIcon::addFlaw(const SecurityFlaw* flaw)
    Q_UNUSED(flaw)
    IssueButton* btn = new IssueButton(flaw,this);
    switch (flaw->severity()) {
-      case SecurityValidationModel::Severity::INFORMATION:
+      case SecurityEvaluationModel::Severity::INFORMATION:
          btn->setIcon(QIcon::fromTheme("dialog-information"));
          break;
-      case SecurityValidationModel::Severity::WARNING:
-      case SecurityValidationModel::Severity::FATAL_WARNING:
+      case SecurityEvaluationModel::Severity::WARNING:
+      case SecurityEvaluationModel::Severity::FATAL_WARNING:
          btn->setIcon(QIcon::fromTheme("dialog-warning"));
          break;
-      case SecurityValidationModel::Severity::ISSUE:
+      case SecurityEvaluationModel::Severity::ISSUE:
          btn->setIcon(QIcon::fromTheme("task-attempt"));
          break;
-      case SecurityValidationModel::Severity::ERROR:
+      case SecurityEvaluationModel::Severity::ERROR:
          btn->setIcon(QIcon::fromTheme("dialog-error"));
+         break;
+      case SecurityEvaluationModel::Severity::UNSUPPORTED:
+      case SecurityEvaluationModel::Severity::COUNT__:
          break;
    };
 
