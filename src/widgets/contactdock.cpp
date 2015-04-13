@@ -121,6 +121,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setViewType(CategorizedTreeView::ViewType::Person);
 
    m_pSourceModel = new CategorizedContactModel(Qt::DisplayRole);
+   m_pSourceModel->setUnreachableHidden( ConfigurationSkeleton::hidePersonWithoutPhone() );
    m_pProxyModel = new PersonSortFilterProxyModel(this);
    m_pProxyModel->setSourceModel(m_pSourceModel);
    m_pProxyModel->setSortRole(Qt::DisplayRole);

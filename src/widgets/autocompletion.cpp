@@ -120,7 +120,7 @@ void AutoCompletion::selectionChanged(const QModelIndex& idx)
    }
 
    Call* call = CallModel::instance()->getCall(idx);
-   if (call && call->state() == Call::State::DIALING)
+   if (call && call->lifeCycleState() == Call::LifeCycleState::CREATION)
       setCall(call);
    else
       setCall(nullptr);
@@ -189,7 +189,7 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
 
 void AutoCompletion::slotVisibilityChange(bool visible)
 {
-   if (!visible && ((!m_pModel->call()) || (m_pModel->call()->state() != Call::State::DIALING)))
+   if (!visible && ((!m_pModel->call()) || m_pModel->call()->lifeCycleState() != Call::LifeCycleState::CREATION))
       m_pModel->setCall(nullptr);
    emit requestVisibility(visible,m_pModel->call()!=nullptr);
 }

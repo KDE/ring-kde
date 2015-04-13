@@ -51,7 +51,7 @@ QSize ConferenceDelegate::sizeHint(const QStyleOptionViewItem& option, const QMo
    //HACK make absolutely sure the editor (if any) is still required
    if (m_tree->indexWidget(index)) {
       Call* call = qvariant_cast<Call*>(index.data(static_cast<int>(Call::Role::Object)));
-      if (call && call->state() != Call::State::DIALING) {
+      if (call && call->lifeCycleState() != Call::LifeCycleState::CREATION) {
          m_tree->closeEditor(m_tree->indexWidget(index),QAbstractItemDelegate::NoHint);
       }
    }
@@ -501,7 +501,7 @@ void ConferenceDelegate::setEditorData(QWidget * editor, const QModelIndex & ind
 void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const
 {
    QLineEdit* ed = qobject_cast<QLineEdit*>(editor);
-   if (qvariant_cast<Call::State>(index.data(static_cast<int>(Call::Role::State))) != Call::State::DIALING) {
+   if (qvariant_cast<Call::LifeCycleState>(index.data(static_cast<int>(Call::Role::LifeCycleState))) != Call::LifeCycleState::CREATION) {
       ed->setVisible(false);
       emit const_cast<ConferenceDelegate*>(this)->closeEditor(editor,NoHint);
    }
@@ -547,7 +547,7 @@ void ConferenceDelegate::slotTextChanged(const QString& text)
       Call* call  = nullptr;
       if (obj)
          call = qobject_cast<Call*>(obj);
-      if (call && call->state() != Call::State::DIALING) {
+      if (call && call->lifeCycleState() != Call::LifeCycleState::CREATION) {
          emit closeEditor(ed);
       }
       if (call && call->dialNumber() != text) {

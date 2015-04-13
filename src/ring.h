@@ -119,9 +119,6 @@ public:
 
 private Q_SLOTS:
    void on_m_pView_windowTitleChangeAsked        ( const QString& message        );
-   void on_m_pView_enabledActionsChangeAsked     ( const bool*    enabledActions );
-   void on_m_pView_actionIconsChangeAsked        ( const QString* actionIcons    );
-   void on_m_pView_actionTextsChangeAsked        ( const QString* actionTexts    );
    void on_m_pView_transferCheckStateChangeAsked ( bool  transferCheckState      );
    void on_m_pView_recordCheckStateChangeAsked   ( bool  recordCheckState        );
    void on_m_pView_incomingCall                  ( const Call*    call           );

@@ -246,8 +246,10 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
 
 bool CategorizedTreeView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
 {
-   if (state() == QAbstractItemView::EditingState)
-      return !(index.data(static_cast<int>(Call::Role::State)).toInt() != size_t(static_cast<int>(Call::State::DIALING)));
+   if (state() == QAbstractItemView::EditingState) {
+      const Call::LifeCycleState current = qvariant_cast<Call::LifeCycleState>(index.data(static_cast<int>(Call::Role::LifeCycleState)));
+      return !(current != Call::LifeCycleState::CREATION);
+   }
    return QTreeView::edit(index,trigger,event);
 }
 

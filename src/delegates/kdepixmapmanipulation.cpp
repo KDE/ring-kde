@@ -37,7 +37,7 @@
 #include <person.h>
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
-#include <securityvalidationmodel.h>
+#include <securityevaluationmodel.h>
 #include <collectioninterface.h>
 #include <useractionmodel.h>
 #include <QStandardPaths>
@@ -45,7 +45,8 @@
 
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {
-   {  RingIcons::INCOMING   ,
+   {  RingIcons::DIALING    ,
+      RingIcons::INCOMING   ,
       RingIcons::RINGING    ,
       RingIcons::CURRENT    ,
       RingIcons::DIALING    ,
@@ -56,7 +57,11 @@ const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::call
       RingIcons::TRANSF_HOLD,
       ""              ,
       ""              ,
-      RingIcons::CONFERENCE}};
+      RingIcons::CONFERENCE,
+      "",
+      "",
+      "",
+   }};
 
 KDEPixmapManipulation::KDEPixmapManipulation() : QObject(),PixmapManipulationDelegate()
 {
@@ -185,19 +190,22 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
    return QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/call.png"));
 }
 
-QVariant KDEPixmapManipulation::serurityIssueIcon(const QModelIndex& index)
+QVariant KDEPixmapManipulation::securityIssueIcon(const QModelIndex& index)
 {
-   SecurityValidationModel::Severity sev = static_cast<SecurityValidationModel::Severity>(index.data(SecurityValidationModel::Role::SeverityRole).toInt());
+   SecurityEvaluationModel::Severity sev = qvariant_cast<SecurityEvaluationModel::Severity>(index.data((int)SecurityEvaluationModel::Role::Severity));
    switch(sev) {
-      case SecurityValidationModel::Severity::INFORMATION:
+      case SecurityEvaluationModel::Severity::INFORMATION:
          return QIcon::fromTheme("dialog-information");
-      case SecurityValidationModel::Severity::WARNING:
+      case SecurityEvaluationModel::Severity::WARNING:
          return QIcon::fromTheme("dialog-warning");
-      case SecurityValidationModel::Severity::ISSUE:
-      case SecurityValidationModel::Severity::FATAL_WARNING:
-         return QIcon::fromTheme("task-attempt");
-      case SecurityValidationModel::Severity::ERROR:
+      case SecurityEvaluationModel::Severity::ISSUE:
+      case SecurityEvaluationModel::Severity::FATAL_WARNING:
+         return QIcon::fromTheme("view-barcode");
+      case SecurityEvaluationModel::Severity::ERROR:
          return QIcon::fromTheme("dialog-error");
+      case SecurityEvaluationModel::Severity::UNSUPPORTED:
+      case SecurityEvaluationModel::Severity::COUNT__:
+         break;
    }
    return QVariant();
 }
@@ -216,7 +224,7 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
    return bArray;
 }
 
-QVariant KDEPixmapManipulation::profilePhoto(const QByteArray& data, const QString& type)
+QVariant KDEPixmapManipulation::personPhoto(const QByteArray& data, const QString& type)
 {
    QImage image;
    //For now, ENCODING is only base64 and image type PNG or JPG
