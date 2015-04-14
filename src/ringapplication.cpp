@@ -39,7 +39,6 @@
 #include "errormessage.h"
 #include "callmodel.h"
 #include "implementation.h"
-#include <delegates/certificateserializationdelegate.h>
 
 //Other
 #include <unistd.h>
@@ -57,7 +56,6 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
 
-   CertificateSerializationDelegate::setInstance(new KDECertificateSerializationDelegate());
    try {
       CallModel::instance();
    }
