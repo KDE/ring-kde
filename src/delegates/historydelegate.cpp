@@ -133,6 +133,10 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (!status.isNull()) {
          const int pxmHeight = option.rect.height()<24?option.rect.height()-2:24;
          status=status.scaled(QSize(pxmHeight,pxmHeight));
+//          painter.save();
+//          painter.setBrush(QColor(255,255,255,255));
+//          painter.drawEllipse(pxm.width()-status.width(),pxm.height()-status.height(),pxmHeight,pxmHeight);
+//          painter.restore();
          painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       }
    }

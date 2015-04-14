@@ -862,7 +862,7 @@ void DlgAccounts::saveCredential()
       acc->credentialModel()->setData(currentCredential,edit_credential_password->text(), CredentialModel::Role::PASSWORD );
       acc->credentialModel()->setData(currentCredential,edit_credential_realm->text()   , CredentialModel::Role::REALM    );
    }
-   acc->credentialModel()->save();
+   acc->credentialModel() << CredentialModel::EditAction::SAVE;
 } //saveCredential
 
 ///Add a new credential
