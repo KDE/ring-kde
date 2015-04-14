@@ -20,7 +20,6 @@
 
 #include <QObject>
 
-#include <QObject>
 #include <QSize>
 #include <QPoint>
 

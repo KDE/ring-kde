@@ -265,7 +265,7 @@ void View::paste()
 void View::selectDialingCall() const
 {
    foreach(Call* call,CallModel::instance()->getActiveCalls()) {
-      if (call->state() == Call::State::DIALING) {
+      if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
          const QModelIndex idx = CallModel::instance()->getIndex(call);
          setCurrentIndex(idx);
 
@@ -286,23 +286,16 @@ void View::selectDialingCall() const
 void View::updateWindowCallState()
 {
    qDebug() << "Call state changed";
-   bool    enabledActions [6] = { true              , true                 , true              , true                  , true                   , true                 };
-   QString buttonIconFiles[6] = { RingIcons::CALL   , RingIcons::HANGUP    , RingIcons::HOLD   , RingIcons::TRANSFER   , RingIcons::REC_DEL_OFF , RingIcons::MAILBOX   };
-   QString actionTexts    [6] = { ACTION_LABEL_CALL , ACTION_LABEL_HANG_UP , ACTION_LABEL_HOLD , ACTION_LABEL_TRANSFER , ACTION_LABEL_RECORD    , ACTION_LABEL_MAILBOX };
 
    Call* call = 0;
 
    bool transfer(false),recordActivated(false);
 
-   enabledActions[Ring::CallAction::Mailbox] = AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty();
+   ActionCollection::instance()->mailBoxAction()->setVisible(AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty());
 
    call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
    if (!call) {
       qDebug() << "No item selected.";
-      enabledActions[ Ring::CallAction::Refuse   ] = false;
-      enabledActions[ Ring::CallAction::Hold     ] = false;
-      enabledActions[ Ring::CallAction::Transfer ] = false;
-      enabledActions[ Ring::CallAction::Record   ] = false;
       m_pMessageBoxW->setVisible(false);
    }
    else if (call->type() == Call::Type::CONFERENCE) {
@@ -314,60 +307,24 @@ void View::updateWindowCallState()
 
       switch (state) {
          case Call::State::INCOMING:
-            buttonIconFiles [ Ring::CallAction::Accept   ] = RingIcons::ACCEPT           ;
-            buttonIconFiles [ Ring::CallAction::Refuse   ] = RingIcons::REFUSE           ;
-            actionTexts     [ Ring::CallAction::Accept   ] = ACTION_LABEL_ACCEPT         ;
-            actionTexts     [ Ring::CallAction::Refuse   ] = ACTION_LABEL_REFUSE         ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)   ;
             break;
 
          case Call::State::RINGING:
          case Call::State::INITIALIZATION:
-            enabledActions  [ Ring::CallAction::Hold     ] = false                       ;
-            enabledActions  [ Ring::CallAction::Transfer ] = false                       ;
+         case Call::State::DIALING:
+         case Call::State::HOLD:
+         case Call::State::NEW:
+         case Call::State::ABORTED:
+         case Call::State::FAILURE:
+         case Call::State::BUSY:
             m_pMessageBoxW->setVisible(false)                                            ;
             break;
 
          case Call::State::CURRENT:
-            buttonIconFiles [ Ring::CallAction::Record   ] = RingIcons::REC_DEL_ON       ;
             m_pMessageBoxW->setVisible((true && ConfigurationSkeleton::displayMessageBox()) || IM_ACTIVE);
             break;
-
-         case Call::State::DIALING:
-            enabledActions  [ Ring::CallAction::Hold     ] = false                       ;
-            enabledActions  [ Ring::CallAction::Transfer ] = false                       ;
-            enabledActions  [ Ring::CallAction::Record   ] = false                       ;
-            actionTexts     [ Ring::CallAction::Accept   ] = ACTION_LABEL_PLACE_CALL     ;
-            buttonIconFiles [ Ring::CallAction::Accept   ] = RingIcons::ACCEPT           ;
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-
-         case Call::State::HOLD:
-            buttonIconFiles [ Ring::CallAction::Hold     ] = RingIcons::UNHOLD           ;
-            actionTexts     [ Ring::CallAction::Hold     ] = ACTION_LABEL_UNHOLD         ;
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-
-         case Call::State::FAILURE:
-            //enabledActions  [ Ring::Accept   ] = false                                 ;
-            enabledActions  [ Ring::CallAction::Hold     ] = false                       ;
-            enabledActions  [ Ring::CallAction::Transfer ] = false                       ;
-            enabledActions  [ Ring::CallAction::Record   ] = false                       ;
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-
-         case Call::State::BUSY:
-            //enabledActions  [ Ring::Accept   ] = false                                 ;
-            enabledActions  [ Ring::CallAction::Hold     ] = false                       ;
-            enabledActions  [ Ring::CallAction::Transfer ] = false                       ;
-            enabledActions  [ Ring::CallAction::Record   ] = false                       ;
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-
          case Call::State::TRANSFERRED:
-            buttonIconFiles [ Ring::CallAction::Accept   ] = RingIcons::EXEC_TRANSF      ;
-            actionTexts     [ Ring::CallAction::Transfer ] = ACTION_LABEL_GIVE_UP_TRANSF ;
-            buttonIconFiles [ Ring::CallAction::Record   ] = RingIcons::REC_DEL_ON       ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)                               ;
             if (!m_pTransferOverlay) {
                m_pTransferOverlay = new CallViewOverlay(m_pView)                         ;
@@ -378,10 +335,6 @@ void View::updateWindowCallState()
             break;
 
          case Call::State::TRANSF_HOLD:
-            buttonIconFiles [ Ring::CallAction::Accept   ] = RingIcons::EXEC_TRANSF      ;
-            buttonIconFiles [ Ring::CallAction::Hold     ] = RingIcons::UNHOLD           ;
-            actionTexts     [ Ring::CallAction::Transfer ] = ACTION_LABEL_GIVE_UP_TRANSF ;
-            actionTexts     [ Ring::CallAction::Hold     ] = ACTION_LABEL_UNHOLD         ;
             m_pMessageBoxW->setVisible(false)                                            ;
             transfer = true                                                              ;
             break;
@@ -397,12 +350,10 @@ void View::updateWindowCallState()
             break;
 
          case Call::State::CONFERENCE:
-            enabledActions  [ Ring::CallAction::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false || IM_ACTIVE)                               ;
             break;
 
          case Call::State::CONFERENCE_HOLD:
-            enabledActions  [ Ring::CallAction::Transfer ] = false                       ;
             m_pMessageBoxW->setVisible(false)                                            ;
             break;
          case Call::State::COUNT__:
@@ -426,9 +377,8 @@ void View::updateWindowCallState()
       }
    }
 
-   emit enabledActionsChangeAsked     ( enabledActions  );
-   emit actionIconsChangeAsked        ( buttonIconFiles );
-   emit actionTextsChangeAsked        ( actionTexts     );
+//    emit actionIconsChangeAsked        ( buttonIconFiles );
+//    emit actionTextsChangeAsked        ( actionTexts     );
    emit transferCheckStateChangeAsked ( transfer        );
    emit recordCheckStateChangeAsked   ( recordActivated );
 } //updateWindowCallState
@@ -551,7 +501,7 @@ void View::sendMessage()
 void View::slotAutoCompleteClicked(ContactMethod* n)
 {
    Call* call = currentCall();
-   if (call->state() == Call::State::DIALING) {
+   if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
       call->setDialNumber(n);
       if (n->account())
          call->setAccount(n->account());

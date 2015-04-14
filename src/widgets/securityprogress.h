@@ -21,13 +21,13 @@
 #include <QtWidgets/QProgressBar>
 
 //Qt
-class QListView;
+class QTableView;
 class QLabel;
 class QHBoxLayout;
 class QLineEdit;
 
 //Ring
-#include <securityvalidationmodel.h>
+#include <securityevaluationmodel.h>
 class SecurityProgress;
 class SecurityFlaw;
 
@@ -39,7 +39,7 @@ public:
 
    //Setter
    void setBuddy(QWidget* buddy);
-   void setModel(SecurityValidationModel* model);
+   void setModel(SecurityEvaluationModel* model);
 
    //Getter
    QWidget* buddy() const;
@@ -54,7 +54,7 @@ protected:
 private:
    QHBoxLayout* m_pLayout;
    QWidget*     m_pBuddy;
-   SecurityValidationModel* m_pModel;
+   SecurityEvaluationModel* m_pModel;
 private Q_SLOTS:
    void slotSolved();
    void slotFlawClicked();
@@ -70,18 +70,18 @@ public:
    virtual ~SecurityLevelWidget();
 
    //Getter
-   QListView* view() const;
+   QTableView* view() const;
 
    //Setter
-   void setModel(SecurityValidationModel* model);
+   void setModel(SecurityEvaluationModel* model);
 protected:
    //Virtual events
    virtual void mouseReleaseEvent ( QMouseEvent * event );
 private:
    //Attributes
    SecurityProgress* m_pLevel;
-   QListView* m_pView;
-   SecurityValidationModel* m_pModel;
+   QTableView* m_pView;
+   SecurityEvaluationModel* m_pModel;
 
    //Widgets
    QLabel* m_pInfoL   ;

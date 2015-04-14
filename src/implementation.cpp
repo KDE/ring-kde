@@ -36,9 +36,8 @@
 //Ring
 #include <person.h>
 #include <contactmethod.h>
-#include "implementation.h"
 #include <presencestatusmodel.h>
-#include <securityvalidationmodel.h>
+#include <securityevaluationmodel.h>
 #include "klib/kcfg_settings.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"

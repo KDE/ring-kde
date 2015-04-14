@@ -453,34 +453,6 @@ void Ring::on_m_pView_windowTitleChangeAsked(const QString& message)
    setWindowTitle(message);
 }
 
-///Enable or disable toolbar items
-void Ring::on_m_pView_enabledActionsChangeAsked(const bool* enabledActions)
-{
-   ActionCollection::instance()->acceptAction()->setVisible   ( enabledActions[Ring::CallAction::Accept   ]);
-   ActionCollection::instance()->transferAction()->setVisible ( enabledActions[Ring::CallAction::Transfer ]);
-   ActionCollection::instance()->recordAction()->setVisible   ( enabledActions[Ring::CallAction::Record   ]);
-   ActionCollection::instance()->mailBoxAction()->setVisible  ( enabledActions[Ring::CallAction::Mailbox  ]);
-}
-
-///Change icons
-void Ring::on_m_pView_actionIconsChangeAsked(const QString* actionIcons)
-{
-   ActionCollection::instance()->acceptAction()->setIcon   ( QIcon(actionIcons[Ring::CallAction::Accept   ]));
-   ActionCollection::instance()->holdAction()->setIcon     ( QIcon(actionIcons[Ring::CallAction::Hold     ]));
-   ActionCollection::instance()->recordAction()->setIcon   ( QIcon(actionIcons[Ring::CallAction::Record   ]));
-   ActionCollection::instance()->mailBoxAction()->setIcon  ( QIcon(actionIcons[Ring::CallAction::Mailbox  ]));
-}
-
-///Change text
-void Ring::on_m_pView_actionTextsChangeAsked(const QString* actionTexts)
-{
-   ActionCollection::instance()->acceptAction()->setText   ( actionTexts[Ring::CallAction::Accept   ]);
-   ActionCollection::instance()->holdAction()->setText     ( actionTexts[Ring::CallAction::Hold     ]);
-   ActionCollection::instance()->transferAction()->setText ( actionTexts[Ring::CallAction::Transfer ]);
-   ActionCollection::instance()->recordAction()->setText   ( actionTexts[Ring::CallAction::Record   ]);
-   ActionCollection::instance()->mailBoxAction()->setText  ( actionTexts[Ring::CallAction::Mailbox  ]);
-}
-
 ///Change transfer state
 void Ring::on_m_pView_transferCheckStateChangeAsked(bool transferCheckState)
 {

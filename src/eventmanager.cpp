@@ -34,7 +34,6 @@
 #include <phonedirectorymodel.h>
 #include <accountmodel.h>
 #include <availableaccountmodel.h>
-#include <availableaccountmodel.h>
 #include <personmodel.h>
 #include <klib/tipmanager.h>
 #include "view.h"
@@ -375,10 +374,10 @@ void EventManager::typeString(const QString& str)
    }
 
    foreach (Call* call2, CallModel::instance()->getActiveCalls()) {
-      if(dynamic_cast<Call*>(call2) && currentCall != call2 && call2->state() == Call::State::CURRENT) {
+      if(call2 && currentCall != call2 && call2->state() == Call::State::CURRENT) {
          call2->performAction(Call::Action::HOLD);
       }
-      else if(dynamic_cast<Call*>(call2) && call2->state() == Call::State::DIALING) {
+      else if(call2 && (call2->lifeCycleState() == Call::LifeCycleState::CREATION)) {
          candidate = call2;
          m_pParent->selectDialingCall();
       }
@@ -449,6 +448,8 @@ void EventManager::escape()
          case Call::State::CURRENT:
          case Call::State::FAILURE:
          case Call::State::BUSY:
+         case Call::State::NEW:
+         case Call::State::ABORTED:
          case Call::State::OVER:
          case Call::State::CONFERENCE:
          case Call::State::CONFERENCE_HOLD:
@@ -475,6 +476,7 @@ void EventManager::enter()
          case Call::State::FAILURE:
          case Call::State::BUSY:
          case Call::State::OVER:
+         case Call::State::ABORTED:
          case Call::State::ERROR:
             CallModel::instance()->userActionModel() << UserActionModel::Action::HANGUP;
             break;
@@ -489,6 +491,7 @@ void EventManager::enter()
             CallModel::instance()->userActionModel() << UserActionModel::Action::ACCEPT;
             break;
          case Call::State::COUNT__:
+         case Call::State::NEW:
          default:
             qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
       }
@@ -519,10 +522,11 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
          Ring::app()->selectCallTab();
          break;
       case Call::State::DIALING:
+      case Call::State::NEW:
       case Call::State::INCOMING:
          break; //Handled elsewhere
       case Call::State::OVER:
-         if (previousState == Call::State::DIALING || previousState == Call::State::OVER) {
+         if (previousState == Call::State::DIALING || previousState == Call::State::NEW || previousState == Call::State::OVER) {
             if (call->isMissed())
                m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_ENDED,i18n("Missed"));
             else
@@ -540,6 +544,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::TRANSFERRED:
       case Call::State::TRANSF_HOLD:
       case Call::State::HOLD:
+      case Call::State::ABORTED:
       case Call::State::CURRENT:
       case Call::State::ERROR:
       case Call::State::CONFERENCE:

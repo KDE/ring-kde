@@ -10,9 +10,6 @@
     <height>665</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
     <widget class="QLabel" name="label_2">
@@ -225,7 +222,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>For your firends to be able to call you, send them your hash:</string>
+      <string>For your friends to be able to call you, send them your hash:</string>
      </property>
     </widget>
    </item>

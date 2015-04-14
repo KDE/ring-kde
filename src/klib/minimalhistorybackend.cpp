@@ -256,7 +256,7 @@ bool MinimalHistoryBackend::clear()
 {
    const int ret = KMessageBox::questionYesNo(static_cast<QApplication*>(QApplication::instance())->activeWindow(), i18n("Are you sure you want to clear history?"), i18n("Clear history"));
    if (ret == KMessageBox::Yes) {
-      QFile::remove(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + "")+"history.ini";
+      QFile::remove(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"history.ini");
       return true;
    }
    return false;
