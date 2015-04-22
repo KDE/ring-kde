@@ -451,6 +451,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    else
       /**/file_tls_private_key->clear();
 
+   m_pDefaultCiphers->setChecked(ACC cipherModel()->useDefault());
    m_pCiphers->setModel(ACC cipherModel());
    m_pDlgDht->setAccount(account);
 
@@ -497,7 +498,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    connect(list_audiocodec->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
 
 //    ACC securityValidationModel()->update();
-   m_pSecurityIssues->setModel(ACC securityValidationModel());
+   m_pSecurityIssues->setModel(ACC securityEvaluationModel());
 
 
    //Enable tabs
@@ -967,72 +968,72 @@ void DlgAccounts::updateSecurityValidation()
 {
    Account* a = currentAccount();
    //Create the widgets
-   m_pVerifyServer->setModel(a->securityValidationModel());
-   m_pVerifyClient->setModel(a->securityValidationModel());
-   m_pReqTLS->setModel(a->securityValidationModel());
-   m_pAuthorityII->setModel(a->securityValidationModel());
-   m_pEndCertII->setModel(a->securityValidationModel());
-   m_pPKII->setModel(a->securityValidationModel());
+   m_pVerifyServer->setModel(a->securityEvaluationModel());
+   m_pVerifyClient->setModel(a->securityEvaluationModel());
+   m_pReqTLS->setModel(a->securityEvaluationModel());
+   m_pAuthorityII->setModel(a->securityEvaluationModel());
+   m_pEndCertII->setModel(a->securityEvaluationModel());
+   m_pPKII->setModel(a->securityEvaluationModel());
 
 //    IssuesIcon*
 
 //    newWidget->addFlaw(new Flaw(SecurityEvaluationModel::SecurityFlaw::TLS_DISABLED,Certificate::Type::NONE));
 
    //Add the flaws
-   /*foreach(const SecurityFlaw* flaw, currentAccount()->securityValidationModel()->currentFlaws()) {
+   /*foreach(const SecurityFlaw* flaw, currentAccount()->securityEvaluationModel()->currentFlaws()) {
       switch (flaw->flaw()) {
-         case SecurityEvaluationModel::AccountSecurityFlaw::SRTP_DISABLED:
+         case SecurityEvaluationModel::AccountSecurityChecks::SRTP_DISABLED:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::TLS_DISABLED:
+         case SecurityEvaluationModel::AccountSecurityChecks::TLS_DISABLED:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::CERTIFICATE_EXPIRED:
+         case SecurityEvaluationModel::AccountSecurityChecks::CERTIFICATE_EXPIRED:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::CERTIFICATE_SELF_SIGNED:
+         case SecurityEvaluationModel::AccountSecurityChecks::CERTIFICATE_SELF_SIGNED:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::CA_CERTIFICATE_MISSING:
+         case SecurityEvaluationModel::AccountSecurityChecks::CA_CERTIFICATE_MISSING:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::END_CERTIFICATE_MISSING:
+         case SecurityEvaluationModel::AccountSecurityChecks::END_CERTIFICATE_MISSING:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::PRIVATE_KEY_MISSING:
+         case SecurityEvaluationModel::AccountSecurityChecks::PRIVATE_KEY_MISSING:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::CERTIFICATE_MISMATCH:
+         case SecurityEvaluationModel::AccountSecurityChecks::CERTIFICATE_MISMATCH:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::CERTIFICATE_STORAGE_PERMISSION:
+         case SecurityEvaluationModel::AccountSecurityChecks::CERTIFICATE_STORAGE_PERMISSION:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::CERTIFICATE_STORAGE_FOLDER:
+         case SecurityEvaluationModel::AccountSecurityChecks::CERTIFICATE_STORAGE_FOLDER:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::CERTIFICATE_STORAGE_LOCATION:
+         case SecurityEvaluationModel::AccountSecurityChecks::CERTIFICATE_STORAGE_LOCATION:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::OUTGOING_SERVER_MISMATCH:
+         case SecurityEvaluationModel::AccountSecurityChecks::OUTGOING_SERVER_MISMATCH:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::VERIFY_INCOMING_DISABLED:
+         case SecurityEvaluationModel::AccountSecurityChecks::VERIFY_INCOMING_DISABLED:
             m_pVerifyServer->addFlaw(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::VERIFY_ANSWER_DISABLED:
+         case SecurityEvaluationModel::AccountSecurityChecks::VERIFY_ANSWER_DISABLED:
             m_pVerifyClient->addFlaw(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::REQUIRE_CERTIFICATE_DISABLED:
+         case SecurityEvaluationModel::AccountSecurityChecks::REQUIRE_CERTIFICATE_DISABLED:
 
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::MISSING_CERTIFICATE:
+         case SecurityEvaluationModel::AccountSecurityChecks::MISSING_CERTIFICATE:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::MISSING_AUTHORITY:
+         case SecurityEvaluationModel::AccountSecurityChecks::MISSING_AUTHORITY:
             addFlawToCertificateField(flaw);
             break;
-         case SecurityEvaluationModel::AccountSecurityFlaw::COUNT__:
+         case SecurityEvaluationModel::AccountSecurityChecks::COUNT__:
          default:
             qDebug() << "Invalid flaw";
       }

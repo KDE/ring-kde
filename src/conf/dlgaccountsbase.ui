@@ -234,7 +234,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>6</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -1223,7 +1223,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>537</width>
-                <height>875</height>
+                <height>900</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1309,7 +1309,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="15" column="0">
+                  <item row="16" column="0">
                    <spacer name="verticalSpacer">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -1332,7 +1332,7 @@
                   <item row="1" column="1" colspan="4">
                    <widget class="KUrlRequester" name="file_tls_endpoint"/>
                   </item>
-                  <item row="12" column="0" colspan="4">
+                  <item row="13" column="0" colspan="4">
                    <widget class="QCheckBox" name="check_tls_incoming">
                     <property name="text">
                      <string>Verify incoming certificates (server side)</string>
@@ -1353,13 +1353,6 @@
                    <widget class="QLabel" name="label_tls_timeout">
                     <property name="text">
                      <string>Negotiation timeout</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0">
-                   <widget class="QLabel" name="label_tls_method">
-                    <property name="text">
-                     <string>TLS protocol method</string>
                     </property>
                    </widget>
                   </item>
@@ -1552,14 +1545,14 @@
                   <item row="0" column="5">
                    <widget class="QToolButton" name="m_pViewCa">
                     <property name="toolTip">
-                     <string>View the certificate authority</string>
+                     <string>View the cerificate authority</string>
                     </property>
                     <property name="text">
                      <string>View</string>
                     </property>
                     <property name="icon">
                      <iconset theme="view-list-text">
-                      <normaloff>../../../../../../../../.designer/backup</normaloff>../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../.designer/backup</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1573,7 +1566,7 @@
                     </property>
                     <property name="icon">
                      <iconset theme="view-list-text">
-                      <normaloff>../../../../../../../../.designer/backup</normaloff>../../../../../../../../.designer/backup</iconset>
+                      <normaloff>../../../../../../../../../../.designer/backup</normaloff>../../../../../../../../../../.designer/backup</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1584,10 +1577,10 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="14" column="4">
+                  <item row="15" column="4">
                    <widget class="IssuesIcon" name="m_pReqTLS" native="true"/>
                   </item>
-                  <item row="14" column="0" colspan="4">
+                  <item row="15" column="0" colspan="4">
                    <widget class="QCheckBox" name="check_tls_requier_cert">
                     <property name="text">
                      <string>Require a certificate for incoming TLS connections</string>
@@ -1616,7 +1609,7 @@
                   <item row="7" column="1" colspan="2">
                    <widget class="AutoComboBox" name="combo_tls_method"/>
                   </item>
-                  <item row="13" column="4">
+                  <item row="14" column="4">
                    <widget class="IssuesIcon" name="m_pVerifyClient" native="true"/>
                   </item>
                   <item row="8" column="0">
@@ -1626,7 +1619,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="13" column="0" colspan="4">
+                  <item row="14" column="0" colspan="4">
                    <widget class="QCheckBox" name="check_tls_answer">
                     <property name="text">
                      <string>Verify answer certificates (client side)</string>
@@ -1636,7 +1629,7 @@
                   <item row="2" column="1" colspan="5">
                    <widget class="KUrlRequester" name="file_tls_private_key"/>
                   </item>
-                  <item row="12" column="4">
+                  <item row="13" column="4">
                    <widget class="IssuesIcon" name="m_pVerifyServer" native="true"/>
                   </item>
                   <item row="9" column="2" colspan="4">
@@ -1652,8 +1645,25 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="10" column="0" colspan="6">
+                  <item row="11" column="0" colspan="6">
                    <widget class="QListView" name="m_pCiphers"/>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="label_tls_method">
+                    <property name="text">
+                     <string>TLS protocol method</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="0">
+                   <widget class="QCheckBox" name="m_pDefaultCiphers">
+                    <property name="text">
+                     <string>Use default ciphers</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1782,12 +1792,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>389</x>
-     <y>187</y>
+     <x>331</x>
+     <y>167</y>
     </hint>
     <hint type="destinationlabel">
-     <x>804</x>
-     <y>188</y>
+     <x>420</x>
+     <y>167</y>
     </hint>
    </hints>
   </connection>
@@ -1798,12 +1808,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>384</x>
-     <y>599</y>
+     <x>321</x>
+     <y>579</y>
     </hint>
     <hint type="destinationlabel">
-     <x>507</x>
-     <y>601</y>
+     <x>446</x>
+     <y>577</y>
     </hint>
    </hints>
   </connection>
@@ -1814,12 +1824,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>384</x>
-     <y>599</y>
+     <x>321</x>
+     <y>579</y>
     </hint>
     <hint type="destinationlabel">
-     <x>384</x>
-     <y>92</y>
+     <x>362</x>
+     <y>61</y>
     </hint>
    </hints>
   </connection>
@@ -1830,12 +1840,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>124</y>
+     <x>313</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
-     <x>482</x>
-     <y>125</y>
+     <x>449</x>
+     <y>114</y>
     </hint>
    </hints>
   </connection>
@@ -1846,12 +1856,28 @@
    <slot>statusModel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>297</x>
-     <y>313</y>
+     <x>307</x>
+     <y>306</y>
     </hint>
     <hint type="destinationlabel">
      <x>824</x>
      <y>322</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pDefaultCiphers</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_pCiphers</receiver>
+   <slot>setHidden(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>393</x>
+     <y>413</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>415</x>
+     <y>433</y>
     </hint>
    </hints>
   </connection>

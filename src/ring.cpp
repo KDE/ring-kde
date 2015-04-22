@@ -46,6 +46,8 @@
 //Ring library
 #include "person.h"
 #include "accountmodel.h"
+#include "certificatemodel.h"
+#include "foldercertificatecollection.h"
 #include "availableaccountmodel.h"
 #include "instantmessagingmodel.h"
 #include <categorizedcontactmodel.h>
@@ -149,6 +151,17 @@ Ring::Ring(QWidget* parent)
        ******************************************/
 
       CategorizedHistoryModel::instance()->addCollection<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
+
+#ifdef Q_OS_LINUX
+      CertificateModel::instance()->addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
+         QString("/usr/share/ca-certificates/"),
+         FolderCertificateCollection::Options::ROOT
+          | FolderCertificateCollection::Options::RECURSIVE
+          | FolderCertificateCollection::Options::READ_ONLY,
+         QObject::tr("System root certificates"),
+         LoadOptions::FORCE_ENABLED
+      );
+#endif
 
       CategorizedBookmarkModel::instance()->addCollection<BookmarkBackend>();
 

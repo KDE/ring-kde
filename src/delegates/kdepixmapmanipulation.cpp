@@ -343,7 +343,6 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
    return QVariant();
 }
 
-
 const char* KDEPixmapManipulation::icnPath[2][2] = {
    {
    /* INCOMING  */ RingIcons::HISTORY_INCOMING  ,
@@ -354,4 +353,27 @@ const char* KDEPixmapManipulation::icnPath[2][2] = {
    /* MISSED_OUT*/ RingIcons::HISTORY_MISSED_OUT,
    }
 };
+
+QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const
+{
+
+   QPixmap pxm(20,20);
+   QPainter p(&pxm);
+
+   static QStringList colors  = {
+      "#A02111",
+      "#A05C0F",
+      "#CBC910",
+      "#6DA00F",
+      "#0EA02B",
+      "#A02111",
+      "#A02111"
+   };
+
+   const QColor col = colors[(int)level];
+   p.setBrush(col);
+   p.drawRect(0,0,20,20);
+
+   return pxm;
+}
 

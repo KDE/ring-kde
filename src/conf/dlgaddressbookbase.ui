@@ -135,13 +135,16 @@
         </widget>
        </item>
       </layout>
-      <zorder>frame_2</zorder>
-      <zorder>frame_2</zorder>
      </widget>
      <widget class="QWidget" name="m_pTabExtent">
       <attribute name="title">
        <string>Extensions</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QListView" name="m_pExtensions"/>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="m_pTabContent">
       <attribute name="title">

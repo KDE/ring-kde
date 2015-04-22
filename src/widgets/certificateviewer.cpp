@@ -19,17 +19,21 @@
 
 //Qt
 #include <QtWidgets/QTreeView>
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHeaderView>
 
 //Ring
 #include <certificate.h>
 #include <certificatemodel.h>
 
-CertificateViewer::CertificateViewer(const QModelIndex& idx, QWidget* parent) : QDialog(parent), m_pView(new QTreeView(this))
+CertificateViewer::CertificateViewer(const QModelIndex& idx, QWidget* parent) : QDialog(parent),
+m_pView(new QTreeView(this)),m_pChainOfTrust(new QTreeView(this))
 {
-   QHBoxLayout* l = new QHBoxLayout(this);
+   QVBoxLayout* l = new QVBoxLayout(this);
+   m_pChainOfTrust->setMaximumSize(999999,150);
+   l->addWidget(m_pChainOfTrust);
    l->addWidget(m_pView);
+//    l->setStretchFactor(m_pChainOfTrust,0.3);
    m_pView->setWordWrap(true);
    m_pView->setUniformRowHeights(false);
    m_pView->setModel(CertificateModel::instance()->model(idx));
@@ -42,15 +46,17 @@ CertificateViewer::CertificateViewer(const QModelIndex& idx, QWidget* parent) : 
    resize(600,800);
 }
 
-CertificateViewer::CertificateViewer(Certificate* cert, QWidget* parent) : QDialog(parent), m_pView(new QTreeView(this))
+CertificateViewer::CertificateViewer(Certificate* cert, QWidget* parent) : QDialog(parent), m_pView(new QTreeView(this)),m_pChainOfTrust(new QTreeView(this))
 {
    if (!cert)
       return;
-
-   QHBoxLayout* l = new QHBoxLayout(this);
+   QVBoxLayout* l = new QVBoxLayout(this);
+   m_pChainOfTrust->setMaximumSize(999999,150);
    m_pView->setWordWrap(true);
    m_pView->setUniformRowHeights(false);
+   l->addWidget(m_pChainOfTrust);
    l->addWidget(m_pView);
+//    l->setStretchFactor(m_pChainOfTrust,0.3);
    m_pView->setModel(cert->model());
 
    if (m_pView->header()) {
