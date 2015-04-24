@@ -44,7 +44,7 @@ override_dh_auto_install:
 get-orig-source:
 	# Gnome
 	git init
-	git remote add git://anongit.kde.org/ring-kde.git
+	git remote add http://anongit.kde.org/ring-kde.git
 	git fetch --all
 	git checkout packaging -f
 	git config user.name "joulupukki"

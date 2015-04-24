@@ -47,7 +47,7 @@ Ring is a secured and distributed communication software.
 # Gnome
 echo "# Get gnome client"
 git init
-git remote add origin git://anongit.kde.org/ring-kde.git
+git remote add origin http://anongit.kde.org/ring-kde.git
 git fetch --all
 git checkout packaging -f
 git config user.name "joulupukki"
