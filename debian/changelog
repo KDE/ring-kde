@@ -1,3 +1,10 @@
+ring-kde (2.0.1-1) unstable
+
+  [ Thibault Cohen]
+  * New upstream release
+
+ -- Thibault Cohen <thibault.cohen@savoirfairelinux.com>  Fri, 24 Apr 2015 12:31:05 -0400
+
 ring-kde (2.0.0-1) unstable; urgency=medium
 
   [ Thibault Cohen]
