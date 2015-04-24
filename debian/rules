@@ -6,9 +6,9 @@ PKD  = $(abspath $(dir $(MAKEFILE_LIST)))
 PKG  = $(shell dpkg-parsechangelog -l$(PKD)/changelog --show-field=Source)
 VER ?= $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m{^Version:\s+(?:\d+:)?(\d.*)(?:\-\d+.*)};')
 
-DAEMON_TAG = origin/master
-LRC_TAG = origin/master
-KDE_TAG = origin/master
+DAEMON_TAG = 2.1.0
+LRC_TAG = 0.2.1
+KDE_TAG = $(VER)
 
 .PHONY: get-orig-source
 

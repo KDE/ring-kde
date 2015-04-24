@@ -1,9 +1,9 @@
 %define name        ring-kde
 %define version     2.0.1
 %define release     1
-%define daemon_tag  origin/master
-%define lrc_tag     origin/master
-%define kde_tag     origin/master
+%define daemon_tag  2.1.0
+%define lrc_tag     0.2.1
+%define kde_tag     %{version}
 
 Name:               %{name}
 Version:            %{version}
