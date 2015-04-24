@@ -24,7 +24,7 @@ override_dh_auto_configure:
 	# force disable codecs (most of them are dependencies of libav) and pulseaudio dependencies
 	#mkdir -p daemon/contrib/native && cd daemon/contrib/native && ../bootstrap --disable-gsm --disable-vorbis --disable-vorbisenc --disable-speex --disable-opus --disable-ogg --disable-flac --disable-sndfile --disable-speexdsp && make -j
 	cd libringclient && mkdir -p build && mkdir -p install && cd build && cmake -DRING_BUILD_DIR=$(PWD)/daemon/src -DCMAKE_INSTALL_PREFIX=$(PWD)/libringclient/install -DENABLE_VIDEO=true -DENABLE_STATIC=true .. && make -j 2 && make install
-	mkdir -p build && mkdir -p install && cd build && cmake -DCMAKE_INSTALL_PREFIX=$(PWD)/libringclient/install -DLIB_RING_CLIENT_LIBRARY=$(PWD)/libringclient/install/lib/libringclient_static.a -DENABLE_STATIC=true ..
+	mkdir -p build && mkdir -p install && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(PWD)/libringclient/install -DLIB_RING_CLIENT_LIBRARY=$(PWD)/libringclient/install/lib/libringclient_static.a -DENABLE_STATIC=true ..
 #	cd ring-client-gnome && ./config.sh --prefix=/usr CFLAGS="$(CFLAGS) -fPIC" LDFLAGS="-Wl,-z,defs" 
 #	cd ring-client-gnome && ./config.sh --prefix=/usr CFLAGS="$(CFLAGS) -fPIC" LDFLAGS="-Wl,-z,defs" 
 #	cd ring-client-kde && ./autogen.sh && ./configure --prefix=/usr CFLAGS="$(CFLAGS) -fPIC" LDFLAGS="-Wl,-z,defs" 
