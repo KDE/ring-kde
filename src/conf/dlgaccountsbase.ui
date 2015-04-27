@@ -407,16 +407,9 @@
            </layout>
           </item>
           <item>
-           <widget class="QLabel" name="label7_state">
-            <property name="text">
-             <string>Status</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QToolButton" name="statusButton">
             <property name="text">
-             <string>...</string>
+             <string>Display availability log</string>
             </property>
            </widget>
           </item>
@@ -487,7 +480,7 @@
             <property name="title">
              <string>Registration</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout_8">
+            <layout class="QFormLayout" name="formLayout_3">
              <item row="0" column="0">
               <widget class="QLabel" name="label_regExpire">
                <property name="text">
@@ -499,33 +492,40 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QSpinBox" name="spinbox_regExpire">
-               <property name="maximum">
-                <number>16777215</number>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <spacer name="horizontalSpacer_7">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QSpinBox" name="spinbox_regExpire">
+                 <property name="suffix">
+                  <string> seconds</string>
+                 </property>
+                 <property name="maximum">
+                  <number>16777215</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="m_pUserAgentL">
+              <widget class="QCheckBox" name="checkBox">
                <property name="text">
-                <string>User agent</string>
+                <string>Use custom user agent</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1" colspan="2">
+             <item row="1" column="1">
               <widget class="QLineEdit" name="m_pUserAgent"/>
              </item>
             </layout>
@@ -533,34 +533,74 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox_4">
-            <property name="title">
-             <string>STUN</string>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <layout class="QGridLayout" name="gridLayout_11">
-             <item row="0" column="0" colspan="2">
-              <widget class="QLabel" name="label_commonSettings">
-               <property name="text">
-                <string>STUN parameters will be applied on each SIP account created.</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
+            <property name="title">
+             <string>Negotiation</string>
+            </property>
+            <layout class="QFormLayout" name="formLayout_4">
              <item row="1" column="0">
-              <widget class="QCheckBox" name="checkbox_stun">
+              <widget class="QCheckBox" name="m_pProxyCK">
                <property name="text">
-                <string>Enable STUN</string>
+                <string>Use a proxy</string>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
+              <widget class="QLineEdit" name="m_pProxyLE">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="placeholderText">
+                <string>SIP proxy server (if none, leave blank)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="checkbox_stun">
+               <property name="text">
+                <string>STUN server</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
               <widget class="QLineEdit" name="line_stun">
                <property name="enabled">
                 <bool>false</bool>
                </property>
                <property name="placeholderText">
                 <string>Choose STUN server (example: stunserver.org)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="checkbox_turn">
+               <property name="text">
+                <string>TURN server</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="line_turn">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="placeholderText">
+                <string>Choose TURN server (example: turnserver.org)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="m_pEnableUPnP">
+               <property name="text">
+                <string>Enable UPnP</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -571,6 +611,9 @@
            <widget class="QGroupBox" name="groupBox_6">
             <property name="title">
              <string>DTMF</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
@@ -619,6 +662,19 @@
              <property name="fieldGrowthPolicy">
               <enum>QFormLayout::ExpandingFieldsGrow</enum>
              </property>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="comboBox_ni_local_address"/>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSpinBox" name="spinBox_ni_local_port">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <number>65535</number>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label_ni_local_address">
                <property name="text">
@@ -626,34 +682,10 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
-              <widget class="QComboBox" name="comboBox_ni_local_address"/>
-             </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="label_ni_local_port">
+              <widget class="QCheckBox" name="checkBox_2">
                <property name="text">
-                <string>Local port</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QSpinBox" name="spinBox_ni_local_port">
-               <property name="maximum">
-                <number>65535</number>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="m_pProxyLE">
-               <property name="placeholderText">
-                <string>SIP proxy server (if none, leave blank)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QCheckBox" name="m_pProxyCK">
-               <property name="text">
-                <string>Proxy</string>
+                <string>Use custom port</string>
                </property>
               </widget>
              </item>
@@ -663,7 +695,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_3">
             <property name="title">
-             <string>Published address</string>
+             <string>Fallback Published address</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_10">
              <item row="0" column="0" colspan="3">
@@ -727,7 +759,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_7">
             <property name="title">
-             <string>RTP configuration</string>
+             <string>Fallback RTP configuration</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_13">
              <item row="0" column="1">
@@ -1221,7 +1253,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-258</y>
                 <width>537</width>
                 <height>900</height>
                </rect>
@@ -1602,7 +1634,7 @@
                      </size>
                     </property>
                     <property name="suffix">
-                     <string>s</string>
+                     <string> seconds</string>
                     </property>
                    </widget>
                   </item>
@@ -1786,22 +1818,6 @@
  </resources>
  <connections>
   <connection>
-   <sender>checkbox_stun</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>line_stun</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>331</x>
-     <y>167</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>420</x>
-     <y>167</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>m_pUseCustomFileCK</sender>
    <signal>clicked(bool)</signal>
    <receiver>m_pRingTonePath</receiver>
@@ -1834,22 +1850,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_pProxyCK</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>m_pProxyLE</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>313</x>
-     <y>114</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>449</x>
-     <y>114</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>statusButton</sender>
    <signal>clicked()</signal>
    <receiver>DlgAccountsBase</receiver>
@@ -1872,12 +1872,92 @@
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>393</x>
-     <y>413</y>
+     <x>452</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
-     <x>415</x>
-     <y>433</y>
+     <x>693</x>
+     <y>792</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spinBox_ni_local_port</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>384</x>
+     <y>96</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>446</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_pUserAgent</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>438</x>
+     <y>99</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>512</x>
+     <y>102</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkbox_turn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>line_turn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>422</x>
+     <y>237</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkbox_stun</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>line_stun</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>335</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>478</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pProxyCK</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_pProxyLE</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>364</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>471</x>
+     <y>185</y>
     </hint>
    </hints>
   </connection>

@@ -36,7 +36,7 @@ m_pView(new QTreeView(this)),m_pChainOfTrust(new QTreeView(this))
 //    l->setStretchFactor(m_pChainOfTrust,0.3);
    m_pView->setWordWrap(true);
    m_pView->setUniformRowHeights(false);
-   m_pView->setModel(CertificateModel::instance()->model(idx));
+   m_pView->setModel(CertificateModel::instance()->singleCertificateModel(idx));
 
    if (m_pView->header()) {
       m_pView->header()->setSectionResizeMode (0,QHeaderView::ResizeToContents);

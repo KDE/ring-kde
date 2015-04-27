@@ -443,6 +443,7 @@ void EventManager::escape()
          case Call::State::INCOMING:
          case Call::State::DIALING:
          case Call::State::INITIALIZATION:
+         case Call::State::CONNECTED:
          case Call::State::HOLD:
          case Call::State::RINGING:
          case Call::State::CURRENT:
@@ -484,11 +485,14 @@ void EventManager::enter()
          case Call::State::INCOMING:
          case Call::State::TRANSFERRED:
          case Call::State::TRANSF_HOLD:
-         case Call::State::INITIALIZATION:
          case Call::State::RINGING:
          case Call::State::CURRENT:
          case Call::State::CONFERENCE:
             CallModel::instance()->userActionModel() << UserActionModel::Action::ACCEPT;
+            break;
+         case Call::State::INITIALIZATION:
+         case Call::State::CONNECTED:
+            //No event make sense for those states
             break;
          case Call::State::COUNT__:
          case Call::State::NEW:
@@ -541,6 +545,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
          Ring::view()->updateWindowCallState();
          break;
       case Call::State::INITIALIZATION:
+      case Call::State::CONNECTED:
       case Call::State::TRANSFERRED:
       case Call::State::TRANSF_HOLD:
       case Call::State::HOLD:

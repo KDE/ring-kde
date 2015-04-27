@@ -312,6 +312,7 @@ void View::updateWindowCallState()
 
          case Call::State::RINGING:
          case Call::State::INITIALIZATION:
+         case Call::State::CONNECTED:
          case Call::State::DIALING:
          case Call::State::HOLD:
          case Call::State::NEW:
