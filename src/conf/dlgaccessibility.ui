@@ -42,6 +42,9 @@
    </item>
    <item>
     <widget class="QGroupBox" name="m_pT2SBG">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Text to Speech</string>
      </property>
@@ -383,6 +386,11 @@
    <header>kshortcutwidget.h</header>
   </customwidget>
   <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">widgets/categorizedtreeview.h</header>
+  </customwidget>
+  <customwidget>
    <class>LeftToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
@@ -391,11 +399,6 @@
    <class>RightToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CategorizedTreeView</class>
-   <extends>QTreeView</extends>
-   <header location="global">widgets/categorizedtreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

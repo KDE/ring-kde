@@ -77,12 +77,12 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
    action_mute_playback = new ExtendedAction(this);
    action_hangup        = new ExtendedAction(this);
 
-   action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfer_grayscale.png" ));
-   action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record_grayscale.png"   ));
-   action_hold    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold_grayscale.png"     ));
-   action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
-   action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
-   action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+   action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/transfert.svg"   ));
+   action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/rec_call.svg"    ));
+   action_hold    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/hold.svg"        ));
+   action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg" ));
+   action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/refuse.svg"      ));
+   action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"      ));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );

@@ -295,23 +295,23 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
 
    switch(state.action) {
       case UserActionModel::Action::ACCEPT          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"   ));
       case UserActionModel::Action::HOLD            :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold_grayscale.png"     ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/hold.svg"     ));
       case UserActionModel::Action::MUTE_AUDIO      :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg"  ));
       case UserActionModel::Action::MUTE_VIDEO      :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg"  ));
       case UserActionModel::Action::SERVER_TRANSFER :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfer_grayscale.png" ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/transfert.svg" ));
       case UserActionModel::Action::RECORD          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/rec_call.svg"   ));
       case UserActionModel::Action::HANGUP          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/refuse.svg"   ));
       case UserActionModel::Action::JOIN            :
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"   ));
       case UserActionModel::Action::COUNT__:
          break;
    };
