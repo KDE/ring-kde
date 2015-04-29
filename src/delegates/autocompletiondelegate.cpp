@@ -27,7 +27,7 @@ static const int RIGHT_MARGIN = 2;
 
 AutoCompletionDelegate::AutoCompletionDelegate() : QStyledItemDelegate()
 {
-   
+
 }
 
 void AutoCompletionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const

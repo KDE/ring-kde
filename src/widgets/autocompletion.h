@@ -50,6 +50,7 @@ public:
    //Mutator
    void reset();
 
+   int m_Height;
 protected:
    //Virtual events
    void paintEvent ( QPaintEvent*  event);

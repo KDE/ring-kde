@@ -234,7 +234,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab_basic">
          <attribute name="title">
@@ -519,7 +519,7 @@
               </layout>
              </item>
              <item row="1" column="0">
-              <widget class="QCheckBox" name="checkBox">
+              <widget class="QCheckBox" name="m_pUseCustomUserAgent">
                <property name="text">
                 <string>Use custom user agent</string>
                </property>
@@ -1898,7 +1898,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox</sender>
+   <sender>m_pUseCustomUserAgent</sender>
    <signal>toggled(bool)</signal>
    <receiver>m_pUserAgent</receiver>
    <slot>setEnabled(bool)</slot>

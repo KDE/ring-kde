@@ -120,6 +120,10 @@
         <label>Defines if the individual contact history list is visible</label>
         <default>false</default>
    </entry>
+   <entry name="autoCompletionHeight" type="Int">
+        <label>The auto completion popup height</label>
+        <default>125</default>
+   </entry>
 
    <!-- Video Settings -->
    <entry name="keepVideoAspectRatio" type="Bool">

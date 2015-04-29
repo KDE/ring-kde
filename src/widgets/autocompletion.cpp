@@ -25,7 +25,7 @@
 #include <QtWidgets/QScrollBar>
 #include <QtGui/QPainter>
 #include <QtWidgets/QApplication>
-#include <QEvent>
+#include <QtCore/QEvent>
 #include <QtGui/QResizeEvent>
 
 //KDE
@@ -36,14 +36,85 @@
 #include <call.h>
 #include <callmodel.h>
 #include <delegates/autocompletiondelegate.h>
+#include "klib/kcfg_settings.h"
 
 static const int TOOLBAR_HEIGHT = 72;
 static const int MARGINS        = 15;
 
-AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent)
+class Handle : public QWidget
 {
-   setVisible(false);
+   Q_OBJECT
+public:
+   Handle(AutoCompletion* parent = nullptr) : QWidget(parent), m_IsPressed(false),m_Dy(0),m_pParent(parent) {
+      installEventFilter(this);
+      setMinimumSize(0,8);
+      setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+   }
+   virtual ~Handle() {}
+
+protected:
+
+   virtual void paintEvent(QPaintEvent* event) override {
+      Q_UNUSED(event)
+      static const QColor dotCol = QApplication::palette().base().color();
+      static const QColor hoverBg = QApplication::palette().highlight().color();
+      QPainter p(this);
+      p.setBrush(m_IsPressed? hoverBg : dotCol);
+      p.setPen(Qt::transparent);
+      p.setRenderHint(QPainter::Antialiasing,true);
+      p.drawEllipse(width()/2-12,2,5,5);
+      p.drawEllipse(width()/2-2,2,5,5);
+      p.drawEllipse(width()/2+8,2,5,5);
+   }
+
+   virtual bool eventFilter(QObject *obj, QEvent *event) override {
+      #pragma GCC diagnostic push
+      #pragma GCC diagnostic ignored "-Wswitch-enum"
+      switch(event->type()) {
+         case QEvent::HoverMove:
+         case QEvent::MouseMove:
+            if (m_IsPressed) {
+               int y = static_cast<QMouseEvent*>(event)->y();
+               m_pParent->m_Height = m_pParent->m_Height+(m_Dy-y);
+               m_pParent->setMinimumSize(0,m_pParent->m_Height);
+               m_pParent->resize(m_pParent->width(),m_pParent->m_Height);
+               m_pParent->move(m_pParent->x(),m_pParent->y()-(m_Dy-y));
+               m_Dy = y;
+            }
+            break;
+         case QEvent::MouseButtonPress:
+            m_Dy = static_cast<QMouseEvent*>(event)->y();
+            m_IsPressed = true;
+            grabMouse();
+            break;
+         case QEvent::MouseButtonRelease:
+            m_IsPressed = false;
+            releaseMouse();
+            ConfigurationSkeleton::setAutoCompletionHeight(m_pParent->m_Height);
+            break;
+         default:
+            break;
+      }
+      #pragma GCC diagnostic pop
+      return QObject::eventFilter(obj, event);
+   }
+
+
+private:
+   bool m_IsPressed;
+   int m_Dy;
+   AutoCompletion* m_pParent;
+};
+
+AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125)
+{
+   m_Height = ConfigurationSkeleton::autoCompletionHeight();
+   setVisible(true);
    QVBoxLayout* l = new QVBoxLayout(this);
+
+   Handle* h = new Handle(this);
+   l->addWidget(h);
+
    m_pLabel = new QLabel(this);
    m_pLabel->setText(i18n("Use ⬆ up and ⬇ down arrows to select one of these numbers"));
    m_pLabel->setStyleSheet(QString("color:%1;font-weight:bold;").arg(QApplication::palette().base().color().name()));
@@ -53,6 +124,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent)
    l->addWidget(m_pView);
 
    m_pModel = new NumberCompletionModel();
+   m_pModel->setDisplayMostUsedNumbers(true);
    m_pView->setModel(m_pModel);
 
    connect(m_pModel,SIGNAL(enabled(bool))  ,this, SLOT(slotVisibilityChange(bool))   );
@@ -65,9 +137,10 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent)
       QResizeEvent r(size(),size());
       eventFilter(nullptr,&r);
    }
-   setMinimumSize(0,125);
+   setMinimumSize(0,m_Height);
    m_pDelegate = new AutoCompletionDelegate();
    m_pView->setItemDelegate(m_pDelegate);
+   selectionChanged(CallModel::instance()->selectionModel()->currentIndex());
 }
 
 AutoCompletion::~AutoCompletion()
@@ -205,3 +278,5 @@ void AutoCompletion::reset()
    m_pView->selectionModel()->clear();
    setCall(nullptr);
 }
+
+#include "autocompletion.moc"

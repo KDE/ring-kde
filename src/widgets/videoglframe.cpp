@@ -254,18 +254,19 @@ void VideoGLFrame::setRenderer(Video::Renderer* renderer)
    m_pRenderer = renderer;
 //    if (m_pPainter->m_pRenderer && m_pPainter->m_pRenderer->isRendering())
 //       m_pPainter->rendererStopped();
+   qDebug() << "\n\n\nSET RENDERER" << renderer;
    QMutexLocker locker(&m_pPainter->mutex);
    if (m_pPainter->m_pRenderer) {
-      disconnect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(copyFrame()));
-      disconnect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
-      disconnect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
+      disconnect(m_pPainter->m_pRenderer,&Video::Renderer::frameUpdated, m_pPainter,&ThreadedPainter2::copyFrame      );
+      disconnect(m_pPainter->m_pRenderer,&Video::Renderer::started     , m_pPainter,&ThreadedPainter2::rendererStarted);
+      disconnect(m_pPainter->m_pRenderer,&Video::Renderer::stopped     , m_pPainter,&ThreadedPainter2::rendererStopped);
    }
    m_pPainter->m_pRenderer = renderer;
    if (m_pPainter->m_pRenderer) {
-      connect(m_pPainter->m_pRenderer,SIGNAL(frameUpdated()),m_pPainter,SLOT(copyFrame()));
-      connect(m_pPainter->m_pRenderer,SIGNAL(started()),m_pPainter,SLOT(rendererStarted()));
-      connect(m_pPainter->m_pRenderer,SIGNAL(stopped()),m_pPainter,SLOT(rendererStopped()));
-      connect(m_pPainter->m_pRenderer,SIGNAL(destroyed()),m_pPainter,SLOT(reset()));
+      connect(m_pPainter->m_pRenderer, &Video::Renderer::frameUpdated, m_pPainter, &ThreadedPainter2::copyFrame      );
+      connect(m_pPainter->m_pRenderer, &Video::Renderer::started     , m_pPainter, &ThreadedPainter2::rendererStarted);
+      connect(m_pPainter->m_pRenderer, &Video::Renderer::stopped     , m_pPainter, &ThreadedPainter2::rendererStopped);
+      connect(m_pPainter->m_pRenderer, &Video::Renderer::destroyed   , m_pPainter, &ThreadedPainter2::reset          );
 //       setSizeIncrement(1,((float)m_pPainter->m_pRenderer->size().height()/(float)m_pPainter->m_pRenderer->size().width()));
       if (m_pPainter->thread()->isRunning())
          m_pPainter->isRendering = true;

@@ -58,6 +58,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
       "border-width:0;"
       "border-style:none;"
    "}");
+
    m_pContent->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
    m_pContent->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 

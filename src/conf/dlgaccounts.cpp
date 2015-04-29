@@ -172,11 +172,13 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(edit6_mailbox,                     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pProxyLE,                        SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pProxyCK,                        SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
+   /**/connect(checkbox_turn,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pPresenceCK,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverRTP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pDTMFOverSIP,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pAutoAnswer,                     SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(m_pEnableVideo,                    SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
+   /**/connect(m_pUseCustomUserAgent,             SIGNAL(clicked(bool))                  , this   , SLOT(changedAccountList())              );
    /**/connect(spinbox_regExpire,                 SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(spinBox_pa_published_port,         SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(comboBox_ni_local_address,         SIGNAL(currentIndexChanged(int))       , this   , SLOT(changedAccountList())              );
@@ -280,6 +282,10 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
       m_pProxyLE->setText(QString());
    }
 
+   if (!checkbox_stun->isChecked()) {
+      line_turn->setText(QString());
+   }
+
    const KeyExchangeModel::Type currentKeyExchange = (!groupbox_STRP_keyexchange->isChecked())?KeyExchangeModel::Type::NONE:static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex());
 
    //ACCOUNT DETAILS
@@ -324,11 +330,13 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setVideoPortMax                ( m_pMaxVideoPort->value()                                                 );
    /**/ ACC setVideoPortMin                ( m_pMinVideoPort->value()                                                 );
    /**/ ACC setUserAgent                   ( m_pUserAgent->text()                                                     );
+   /**/ ACC setHasCustomUserAgent          ( m_pUseCustomUserAgent->isChecked()                                       );
+   /**/ ACC setTurnEnabled                 ( checkbox_turn->isChecked()                                               );
    /**/ ACC setVideoEnabled                ( m_pEnableVideo->isChecked()                                              );
    //                                                                                                                  /
 
    if (account->protocol() != Account::Protocol::RING) {
-      /**/ ACC setAlias                    ( m_pDlgDht->m_pAlias->text()                                                         );
+      /**/ ACC setAlias                    ( m_pDlgDht->m_pAlias->text()                                              );
       /**/ ACC setHostname                 ( edit3_server->text()                                                     );
    }
 
@@ -430,10 +438,14 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/m_pMaxAudioPort->setValue                (  ACC audioPortMax                    ());
    /**/m_pMinAudioPort->setValue                (  ACC audioPortMin                    ());
    /**/m_pUserAgent->setText                    (  ACC userAgent                       ());
+   /**/checkbox_turn->setChecked                (  ACC isTurnEnabled                   ());
+   /**/m_pUseCustomUserAgent->setChecked        (  ACC hasCustomUserAgent              ());
    /*                                                                                    */
    if (account->protocol() != Account::Protocol::RING)
       /**/edit3_server->setText                 (  ACC hostname                        ());
 
+   m_pUserAgent->setEnabled(ACC hasCustomUserAgent());
+   line_turn->setEnabled(ACC isTurnEnabled());
 
    //Handle certificates
    if (ACC tlsCaListCertificate    ())

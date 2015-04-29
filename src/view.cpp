@@ -113,6 +113,12 @@ View::View(QWidget *parent)
    m_pView->setSelectionModel(CallModel::instance()->selectionModel());
    TipCollection::manager()->changeSize();
 
+   //Create a call already, the app is useless without one anyway
+   m_pView->selectionModel()->setCurrentIndex(
+      CallModel::instance()->getIndex(CallModel::instance()->dialingCall()),
+      QItemSelectionModel::SelectCurrent
+   );
+
    //There is currently way to force a tree to be expanded beyond this
    connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
    m_pView->expandAll();
@@ -179,6 +185,8 @@ View::View(QWidget *parent)
       new Wizard(this);
       ConfigurationSkeleton::setEnableWizard(false);
    }
+
+   setFocus(Qt::OtherFocusReason);
 }
 
 ///Destructor
