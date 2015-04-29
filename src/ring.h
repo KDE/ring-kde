@@ -91,6 +91,7 @@ private:
    #endif
    QToolButton*   m_pPresent         ;
    QDockWidget*   m_pPresenceDock    ;
+   QLabel*        m_pCurAccL         ;
 
    static Ring*            m_sApp;
    AvailableAccountModel* m_pAccountModel;
@@ -124,6 +125,7 @@ private Q_SLOTS:
    void on_m_pView_incomingCall                  ( const Call*    call           );
    void currentPriorAccountChanged               ( Account* newPrior             );
    void quitButton                               (                               );
+   void displayAccountCbb                        ( bool checked = true           );
    void updateTabIcons                           (                               );
    void updatePresence                           ( const QString& status         );
    void hidePresenceDock                         (                               );

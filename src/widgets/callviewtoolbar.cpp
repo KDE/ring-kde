@@ -49,7 +49,15 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
    addAction( ActionCollection::instance()->acceptAction()   ,static_cast<int>(UserActionModel::Action::ACCEPT)   );*/
 
    m_pContent = new QTableView(this);
-//    m_pContent->setStyleSheet("QTableView{background-color:transparent;}");
+   m_pContent->setShowGrid(false);
+   m_pContent->setStyleSheet("QTableView::item{border-width:0px;border-style:none;}"
+   "QTableView{"
+      "margin-top:7px;"
+      "padding:0px;"
+      "background-color:transparent;"
+      "border-width:0;"
+      "border-style:none;"
+   "}");
    m_pContent->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
    m_pContent->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -73,7 +81,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
    auto lambda = [this,pm]() {
       const int count = pm->columnCount(QModelIndex());
       for (int i =0; i<count;i++)
-         m_pContent->setColumnWidth(i,width()/count);
+         m_pContent->setColumnWidth(i,(width()-14)/count);
    };
 
    connect(pm,&SimpleRotateProxy::layoutChanged,lambda);

@@ -283,15 +283,6 @@ QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool dis
 
 QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) const
 {
-   /*action_transfer->setAltIcon(QStandardPaths::locate();
-   action_record  ->setAltIcon();
-   action_hold    ->setAltIcon();
-   action_refuse  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/refuse_grayscale.png"   ));
-   action_mute_capture    ->setAltIcon();
-   action_hangup  ->setAltIcon();
-   action_unhold  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/unhold_grayscale.png"   ));
-   action_pickup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
-   action_accept  ->setAltIcon();*/
 
    switch(state.action) {
       case UserActionModel::Action::ACCEPT          :

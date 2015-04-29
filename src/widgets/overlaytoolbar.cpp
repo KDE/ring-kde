@@ -107,7 +107,7 @@ ObserverToolButton* OverlayToolbar::createButton(ExtendedAction* action)
    b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    b->setText(action->text());
    b->setShortcut(0);
-   b->setStyleSheet("margin-bottom:0px;margin-top:7px;font-weight:bold;padding-top:5px;");
+   b->setStyleSheet("margin-bottom:0px;margin-top:12px;font-weight:bold;padding-top:5px;");
    b->setIcon(action->altIcon());
    connect(action,SIGNAL(textChanged(QString)),b,SLOT(setNewText(QString)));
    connect(b,SIGNAL(clicked()),action,SLOT(trigger()));

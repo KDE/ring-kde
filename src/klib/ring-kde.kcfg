@@ -88,6 +88,10 @@
     	<label>Defines whether the dialpad is being shown by default</label>
       <default>true</default>
     </entry>
+    <entry name="displayAccountBox" type="Bool">
+        <label>Defines whether the statusbar account combobox is being shown by default</label>
+      <default>false</default>
+    </entry>
     <entry name="displayMessageBox" type="Bool">
       <label>Defines whether the text message box is visible</label>
       <default>false</default>

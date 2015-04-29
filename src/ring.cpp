@@ -310,10 +310,12 @@ Ring::Ring(QWidget* parent)
    if (m_pPresenceDock->titleBarWidget())
       m_pPresenceDock->titleBarWidget()->setVisible(false);
 
-   QLabel* curAccL = new QLabel(i18n("Account:"));
-   bar->addPermanentWidget(curAccL);
+   m_pCurAccL = new QLabel(i18n("Account:"));
+   bar->addPermanentWidget(m_pCurAccL);
 
    m_pAccountStatus = new AutoComboBox(bar);
+   m_pAccountStatus->setVisible(ConfigurationSkeleton::displayAccountBox());
+   m_pCurAccL->setVisible(ConfigurationSkeleton::displayAccountBox());
    m_pAccountModel = new AvailableAccountModel(this);
    m_pAccountStatus->bindToModel(m_pAccountModel,m_pAccountModel->selectionModel());
    m_pAccountStatus->setMinimumSize(100,0);
@@ -460,6 +462,13 @@ void Ring::quitButton()
    qApp->quit();
 }
 
+
+void Ring::displayAccountCbb( bool checked )
+{
+   m_pAccountStatus->setVisible(checked);
+   m_pCurAccL->setVisible(checked);
+}
+
 ///Change windowtitle
 void Ring::on_m_pView_windowTitleChangeAsked(const QString& message)
 {
@@ -512,12 +521,13 @@ void Ring::slotPresenceEnabled(bool state)
 ///Update the combobox index
 void Ring::currentPriorAccountChanged(Account* newPrior)
 {
-   if (CallModel::instance()->isConnected() && newPrior) {
+   Q_UNUSED(newPrior)
+   /*if (CallModel::instance()->isConnected() && newPrior) {
       m_pAccountStatus->setCurrentIndex(newPrior->index().row());
    }
    else {
       qDebug() << "Daemon not responding";
-   }
+   }*/
 }
 
 ///Qt does not support dock icons by default, this is an hack around this

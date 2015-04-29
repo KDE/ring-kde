@@ -50,6 +50,7 @@ public:
    ExtendedAction* acceptAction                ();
    QAction *        displayVolumeControlsAction();
    QAction *        displayDialpadAction       ();
+   QAction *        displayAccountCbbAction    ();
    QAction *        displayMessageBoxAction    ();
    QAction *        mailBoxAction              ();
    QAction *        showContactDockAction      ();
@@ -99,6 +100,7 @@ private:
    QAction * action_quit                  ;
    QAction * action_displayVolumeControls ;
    QAction * action_displayDialpad        ;
+   QAction * action_displayAccountCbb     ;
    QAction * action_displayMessageBox     ;
    QAction * action_configureRing         ;
    QAction * action_configureShortcut     ;
