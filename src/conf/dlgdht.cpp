@@ -41,7 +41,7 @@ void DlgDht::setAccount(Account* a)
    if (a && a->protocol() == Account::Protocol::RING) {
       m_pHash->setText(a->username());
 //       m_pKnownPeers->setModel();
-      m_pKnownPeers->setModel(CertificateModel::instance()->model(a));
+      m_pKnownPeers->setModel(a->knownCertificateModel());
       m_pBootstrap->setModel(a->bootstrapModel());
       if (m_pBootstrap->horizontalHeader())
          m_pBootstrap->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);

@@ -283,35 +283,26 @@ QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool dis
 
 QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) const
 {
-   /*action_transfer->setAltIcon(QStandardPaths::locate();
-   action_record  ->setAltIcon();
-   action_hold    ->setAltIcon();
-   action_refuse  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/refuse_grayscale.png"   ));
-   action_mute_capture    ->setAltIcon();
-   action_hangup  ->setAltIcon();
-   action_unhold  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/unhold_grayscale.png"   ));
-   action_pickup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
-   action_accept  ->setAltIcon();*/
 
    switch(state.action) {
       case UserActionModel::Action::ACCEPT          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"   ));
       case UserActionModel::Action::HOLD            :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold_grayscale.png"     ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/hold.svg"     ));
       case UserActionModel::Action::MUTE_AUDIO      :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg"  ));
       case UserActionModel::Action::MUTE_VIDEO      :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg"  ));
       case UserActionModel::Action::SERVER_TRANSFER :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfer_grayscale.png" ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/transfert.svg" ));
       case UserActionModel::Action::RECORD          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/rec_call.svg"   ));
       case UserActionModel::Action::HANGUP          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/refuse.svg"   ));
       case UserActionModel::Action::JOIN            :
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"   ));
       case UserActionModel::Action::COUNT__:
          break;
    };
@@ -343,7 +334,6 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
    return QVariant();
 }
 
-
 const char* KDEPixmapManipulation::icnPath[2][2] = {
    {
    /* INCOMING  */ RingIcons::HISTORY_INCOMING  ,
@@ -354,4 +344,27 @@ const char* KDEPixmapManipulation::icnPath[2][2] = {
    /* MISSED_OUT*/ RingIcons::HISTORY_MISSED_OUT,
    }
 };
+
+QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const
+{
+
+   QPixmap pxm(20,20);
+   QPainter p(&pxm);
+
+   static QStringList colors  = {
+      "#A02111",
+      "#A05C0F",
+      "#CBC910",
+      "#6DA00F",
+      "#0EA02B",
+      "#A02111",
+      "#A02111"
+   };
+
+   const QColor col = colors[(int)level];
+   p.setBrush(col);
+   p.drawRect(0,0,20,20);
+
+   return pxm;
+}
 

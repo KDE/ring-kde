@@ -64,7 +64,7 @@ ActionCollection* ActionCollection::instance() {
 
 ActionCollection::ActionCollection(QObject* parent) : QObject(parent),
 action_mailBox(nullptr), action_close(nullptr), action_quit(nullptr), action_displayVolumeControls(nullptr),
-action_displayDialpad(nullptr), action_displayMessageBox(nullptr), action_configureRing(nullptr),
+action_displayDialpad(nullptr), action_displayAccountCbb(nullptr),action_displayMessageBox(nullptr), action_configureRing(nullptr),
 action_configureShortcut(nullptr), action_pastenumber(nullptr),
 action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBookmarkDock(nullptr),
 action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
@@ -77,12 +77,12 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
    action_mute_playback = new ExtendedAction(this);
    action_hangup        = new ExtendedAction(this);
 
-   action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfer_grayscale.png" ));
-   action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record_grayscale.png"   ));
-   action_hold    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold_grayscale.png"     ));
-   action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mutemic_grayscale.png"  ));
-   action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hangup_grayscale.png"   ));
-   action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/pickup_grayscale.png"   ));
+   action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/transfert.svg"   ));
+   action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/rec_call.svg"    ));
+   action_hold    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/hold.svg"        ));
+   action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg" ));
+   action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/refuse.svg"      ));
+   action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"      ));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );
@@ -146,6 +146,7 @@ ActionCollection::~ActionCollection()
    delete action_quit                  ;
    delete action_displayVolumeControls ;
    delete action_displayDialpad        ;
+   delete action_displayAccountCbb     ;
    delete action_displayMessageBox     ;
    delete action_configureRing         ;
    delete action_configureShortcut     ;
@@ -182,6 +183,7 @@ void ActionCollection::setupAction()
    action_configureRing->setText(i18n("Configure Ring-KDE"));
 
    action_displayDialpad        = new QAction(QIcon(RingIcons::DISPLAY_DIALPAD), i18n("Display dialpad")                 , this);
+   action_displayAccountCbb        = new QAction(i18n("Display account selector")                 , this);
    action_displayMessageBox     = new QAction(QIcon::fromTheme("mail-message-new"), i18n("Display text message box")                 , this);
    action_displayVolumeControls = new QAction(QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS), i18n("Display volume controls"), this);
    action_pastenumber           = new QAction(QIcon::fromTheme("edit-paste"), i18n("Paste")                                          , this);
@@ -197,6 +199,9 @@ void ActionCollection::setupAction()
    action_displayDialpad->setCheckable( true );
    action_displayDialpad->setChecked  ( ConfigurationSkeleton::displayDialpad() );
    action_configureRing->setText(i18n("Configure Ring-KDE"));
+
+   action_displayAccountCbb->setCheckable( true );
+   action_displayAccountCbb->setChecked  ( ConfigurationSkeleton::displayAccountBox() );
 
    action_displayMessageBox->setCheckable( true );
    action_displayMessageBox->setChecked  ( ConfigurationSkeleton::displayMessageBox() );
@@ -256,6 +261,7 @@ void ActionCollection::setupAction()
    /**/connect(action_mailBox                   ,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
    /**/connect(action_displayVolumeControls     ,   SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayVolumeControls(bool)) );
    /**/connect(action_displayDialpad            ,        SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayDialpad(bool))        );
+   /**/connect(action_displayAccountCbb         ,        SIGNAL(toggled(bool)),         Ring::app() , SLOT(displayAccountCbb(bool))        );
    /**/connect(action_displayMessageBox         ,     SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayMessageBox(bool))     );
    /**/connect(action_pastenumber               ,           SIGNAL(triggered()),           Ring::view() , SLOT(paste())            );
    /**/connect(action_configureShortcut         ,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
@@ -277,6 +283,7 @@ void ActionCollection::setupAction()
    Ring::app()->actionCollection()->addAction("action_quit"                  , action_quit                  );
    Ring::app()->actionCollection()->addAction("action_displayVolumeControls" , action_displayVolumeControls );
    Ring::app()->actionCollection()->addAction("action_displayDialpad"        , action_displayDialpad        );
+   Ring::app()->actionCollection()->addAction("action_displayAccountCbb"     , action_displayAccountCbb     );
    Ring::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
    Ring::app()->actionCollection()->addAction("action_configureRing"         , action_configureRing         );
    Ring::app()->actionCollection()->addAction("action_configureShortcut"     , action_configureShortcut     );
@@ -530,6 +537,11 @@ QAction * ActionCollection::displayVolumeControlsAction()
 QAction * ActionCollection::displayDialpadAction       ()
 {
    return action_displayDialpad;
+}
+
+QAction * ActionCollection::displayAccountCbbAction   ()
+{
+   return action_displayAccountCbb;
 }
 
 QAction * ActionCollection::displayMessageBoxAction    ()

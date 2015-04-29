@@ -365,7 +365,7 @@ void HistoryDock::slotContextMenu(const QModelIndex& index)
 
       //Allow to add new contacts
       QMenu* subMenu = nullptr;
-      for (CollectionInterface* col : PersonModel::instance()->collections((CollectionInterface::SupportedFeatures)(CollectionInterface::SupportedFeatures::ADD | CollectionInterface::SupportedFeatures::MANAGEABLE))) {
+      for (CollectionInterface* col : PersonModel::instance()->collections(CollectionInterface::SupportedFeatures::ADD | CollectionInterface::SupportedFeatures::MANAGEABLE)) {
          if (!subMenu)
             subMenu = m_pMenu->addMenu(QIcon::fromTheme("contact-new"), i18n("Add new contact"));
          QAction* a = new QAction(this);

@@ -141,13 +141,25 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       }
    }
 
-   if (currentLifeCycleState == Call::LifeCycleState::PROGRESS && index.data(static_cast<int>(Call::Role::IsRecording)).toBool()) {
-      const static QPixmap record(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record.png"));
-      time_t curTime;
-      ::time(&curTime);
-      if (curTime%3)
-         painter->drawPixmap(option.rect.x()+option.rect.width()-record.width()-2,option.rect.y()+option.rect.height()-record.height()-2,record);
+   if (currentLifeCycleState == Call::LifeCycleState::PROGRESS) {
+      //Record
+      if (index.data(static_cast<int>(Call::Role::IsRecording)).toBool()) {
+         const static QPixmap record(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record.png"));
+         time_t curTime;
+         ::time(&curTime);
+         if (curTime%3)
+            painter->drawPixmap(option.rect.x()+option.rect.width()-record.width()-2,option.rect.y()+option.rect.height()-record.height()-2,record);
+      }
+
+      //Security level //FIXME is on top of the record indicator
+      static const QPixmap lock(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/lock.png"));
+      QPixmap status(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/voicemail.png"));
+      const QPixmap level = qvariant_cast<QPixmap>(index.data((int)Call::Role::SecurityLevelIcon));
+
+      painter->drawPixmap(option.rect.x()+option.rect.width()-level.width()-2,option.rect.y()+option.rect.height()-level.height()-2,level);
+      painter->drawPixmap(option.rect.x()+option.rect.width()-lock.width()-2,option.rect.y()+option.rect.height()-lock.height()-2,lock);
    }
+
    int x_offset((iconHeight-pxm.width())/2),y_offset((iconHeight-pxm.height())/2);
    painter->drawPixmap(option.rect.x()+4+x_offset,option.rect.y()+y_offset+(option.rect.height()-iconHeight)/2,pxm);
 

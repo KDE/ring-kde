@@ -42,6 +42,7 @@
 #include "numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include "delegates/categorizeddelegate.h"
+#include "collectionextensionmodel.h"
 #include <collectionconfigurationinterface.h>
 #include "personmodel.h"
 #include "collectionmodel.h"
@@ -193,6 +194,8 @@ void DlgAddressBook::slotEditCollection()
          m_pManager->addWidget(w);
          m_pCurrent = w;
       }
+
+      m_pExtensions->setModel(col->extensionsModel());
    }
 }
 

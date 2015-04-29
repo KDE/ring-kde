@@ -45,7 +45,7 @@ public:
    virtual QByteArray id       () const override;
 //    virtual bool remove ( Call* c ) override;
 
-   virtual SupportedFeatures  supportedFeatures() const override;
+   virtual FlagPack<SupportedFeatures> supportedFeatures() const override;
 
 //    virtual QList<Call*> items() const override;
 

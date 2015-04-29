@@ -37,6 +37,7 @@ public:
    ~CertificateViewer();
 
 private:
+   QTreeView* m_pChainOfTrust;
    QTreeView* m_pView;
 };
 

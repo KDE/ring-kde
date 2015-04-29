@@ -14,11 +14,13 @@
    height="24"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.91 r13725"
    version="1.0"
-   sodipodi:docname="incoming_rec.svg"
+   sodipodi:docname="unhold.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true">
+  <title
+     id="title3001">unhold.svg</title>
   <defs
      id="defs4">
     <linearGradient
@@ -90,19 +92,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="16"
-     inkscape:cx="10.302309"
-     inkscape:cy="16.452644"
+     inkscape:zoom="22.627417"
+     inkscape:cx="4.7339038"
+     inkscape:cy="15.554071"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="32px"
      height="32px"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1301"
-     inkscape:window-height="744"
-     inkscape:window-x="65"
-     inkscape:window-y="456"
+     inkscape:window-width="1918"
+     inkscape:window-height="1036"
+     inkscape:window-x="0"
+     inkscape:window-y="14"
      showgrid="false"
      inkscape:window-maximized="1" />
   <metadata
@@ -113,8 +115,50 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title>unhold.svg</dc:title>
+        <dc:date>2014/06/24</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Gabrielle Maheux-Leclerc &lt;gabrielle.maheux@savoirfairelinux.com&gt;</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Savoir-faire Linux Inc.</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>Savoir-faire Linux Inc.</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:source>http://sflphone.org/download/source-code</dc:source>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>gnome</rdf:li>
+            <rdf:li>voip</rdf:li>
+            <rdf:li>sip</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:coverage>SFLphone project</dc:coverage>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
       </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
     </rdf:RDF>
   </metadata>
   <g
@@ -146,48 +190,16 @@
        width="27.402094"
        id="rect44122-0"
        style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
-    <rect
-       inkscape:label="a"
-       y="-24.857332"
-       x="-2.7434559"
-       height="26.103628"
-       width="26.103628"
-       id="rect43299-7-0"
-       style="color:#bebebe;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible"
-       transform="matrix(-0.25881905,0.96592583,-0.96592583,-0.25881905,0,0)" />
     <path
        inkscape:connector-curvature="0"
-       id="path44084-2-2"
-       d="m 16.372485,22.32294 c 0.257765,-1.233676 -0.51601,-2.389943 -1.159215,-3.378065 -0.751431,-0.989663 -1.586296,-2.01697 -2.738603,-2.547599 -0.36071,-0.09776 -0.65637,0.304006 -0.98952,0.42468 -0.866053,0.563106 -2.0857778,1.055071 -2.9976078,0.305231 C 7.3465453,16.109117 6.8078942,14.619853 5.9852331,13.361613 5.4082644,12.366459 4.6067386,11.075609 5.3886427,9.972671 5.9768746,9.1568898 6.9579771,8.8468956 7.7187466,8.2918168 7.905457,7.2918035 7.5288262,6.2644937 7.2463133,5.3104117 6.7660995,4.0560922 6.121967,2.7176147 4.9377681,1.9919649 3.9739528,1.4936243 3.1360581,2.4216994 2.4189945,2.9423212 0.77037102,4.2811786 0.01333518,6.4702583 0.19358972,8.5535738 0.4603675,11.902599 2.0602759,14.972451 3.8199767,17.76989 c 1.6123434,2.420006 3.6110717,4.853808 6.4339613,5.865028 1.986384,0.706809 4.276243,0.211571 5.942533,-1.018422 l 0.104236,-0.140652 0.07171,-0.152902 z"
-       style="fill:#545454;fill-opacity:1;stroke:none;display:inline;enable-background:new" />
-    <g
-       id="g18385"
-       transform="matrix(1.0927377,-0.64521662,0.64521662,1.0927377,534.13192,-298.03832)"
-       style="fill:#545454;fill-opacity:1;opacity:0.5">
-      <g
-         id="g12169"
-         style="fill:#545454;fill-opacity:1">
-        <path
-           sodipodi:nodetypes="scccscccs"
-           inkscape:connector-curvature="0"
-           id="rect11714-3-90-5-8"
-           d="m -469.32862,1.1569422 c 0,-2.81422 -1,-5.17173 -2.58557,-7 l -1.41443,0 0,1.48072 c 1.26466,1.51928 2,3.21936 2,5.51928 0,2.299919 -0.77953,3.999999 -2,5.519279 l 0,1.48072 1.38128,0 c 1.46575,-1.64044 2.61872,-4.18578 2.61872,-6.999999 z"
-           style="color:#000000;fill:#545454;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           sodipodi:nodetypes="scccscccs"
-           inkscape:connector-curvature="0"
-           id="rect11703-1-59-3-6"
-           d="m -472.32862,1.1569422 c 0,-2.16664 -0.73878,-4.01982 -2,-5 l -1,0 0,2 c 0.60652,0.78878 1,1.75887004 1,3 0,1.24113 -0.39348,2.219379 -1,2.999999 l 0,2 1,0 c 1.2229,-0.99478 2,-2.8734 2,-4.999999 z"
-           style="color:#000000;fill:#545454;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-        <path
-           sodipodi:nodetypes="zccccccz"
-           inkscape:connector-curvature="0"
-           id="path6297-6-84-7-2"
-           d="m -475.32862,1.1569422 c 0,-1.25732996 -0.31165,-2.21571 -1,-3 l -1,0 0,3 0,0.375 0,2.624999 1,0 c 0.67206,-0.8369 1,-1.742669 1,-2.999999 z"
-           clip-path="none"
-           mask="none"
-           style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#545454;fill-opacity:1;stroke:none;stroke-width:2.32782053999999983;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" />
-      </g>
-    </g>
+       id="path44084-2-0"
+       d="m 16.029921,21.423862 c 0.254848,-1.219754 -0.510198,-2.362984 -1.146134,-3.339955 -0.742963,-0.978503 -1.568402,-1.994204 -2.707712,-2.518854 -0.356634,-0.09662 -0.648954,0.300579 -0.978359,0.419881 -0.856281,0.556767 -2.062243,1.043172 -2.963771,0.301789 C 7.105814,15.280153 6.573243,13.807679 5.7598696,12.563649 5.189408,11.579726 4.3969237,10.303434 5.1700028,9.2129354 5.7515946,8.4063694 6.721629,8.0998704 7.473819,7.5510554 7.658419,6.5623256 7.286042,5.5466087 7.006723,4.6032864 6.531916,3.3631272 5.8950609,2.0397499 4.7242153,1.3222893 3.771279,0.82956144 2.9428394,1.7471716 2.2338636,2.2619178 0.603842,3.5856661 -0.1446539,5.7500489 0.033574,7.8098564 c 0.2637689,3.3112416 1.8456243,6.3464556 3.5854636,9.1123186 1.594147,2.392713 3.5703334,4.79904 6.3613604,5.798852 1.963975,0.698846 4.227997,0.209183 5.875489,-1.006925 l 0.103075,-0.139047 0.07098,-0.151144 z"
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none;display:inline;enable-background:new" />
+    <path
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;color:#000000;fill:#1aac36;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       d="m 15.757784,1.3129546 0,9.1649544 0.830584,0 0.08582,0 c 0.160273,9.25e-4 0.318746,-0.03553 0.458255,-0.114527 l 6.415469,-3.6659821 c 0.284761,-0.1575158 0.429607,-0.4797338 0.429607,-0.8019356 0,-0.3221855 -0.144862,-0.6443873 -0.429607,-0.8019355 L 17.132438,1.4275631 C 16.992929,1.3485619 16.834489,1.3117379 16.674183,1.3130357 l -0.08582,0 z"
+       id="path3807-1-1-9-38-4-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccsccccc" />
   </g>
 </svg>

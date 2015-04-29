@@ -47,6 +47,8 @@ public:
 
    virtual QVariant collectionIcon(const CollectionInterface* interface, PixmapManipulationDelegate::CollectionIconHint hint = PixmapManipulationDelegate::CollectionIconHint::NONE) const override;
 
+   virtual QVariant securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const override;
+
    static const char* icnPath[2][2];
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;

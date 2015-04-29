@@ -42,6 +42,7 @@ class SecurityProgress : public QProgressBar
 public:
    explicit SecurityProgress(QWidget* parent = nullptr);
    virtual ~SecurityProgress();
+   SecurityEvaluationModel::SecurityLevel m_Level;
 
 protected:
    //Virtual events
@@ -55,13 +56,25 @@ private:
 
 };
 
-SecurityProgress::SecurityProgress(QWidget* parent) : QProgressBar(parent)
+SecurityProgress::SecurityProgress(QWidget* parent) : QProgressBar(parent),
+m_Level(SecurityEvaluationModel::SecurityLevel::NONE)
 {
-   setMaximum(5);
-   setValue(3);
+   setMaximum(enum_class_size<SecurityEvaluationModel::SecurityLevel>());
+   setValue((int)m_Level);
    setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed ));
-   m_Names << "Weak" << "Moderate" << "Good" << "Strong" << "Complete";
-   m_lColors << "#0EA02B" << "#6DA00F" << "#CBC910" << "#A05C0F" << "#A02111";
+   m_Names << "Weak" << "Moderate" << "Good" << "Strong" << "Complete" << "Complete" << "Complete";
+   m_lColors = {
+      "#A02111",
+      "#A05C0F",
+      "#CBC910",
+      "#6DA00F",
+      "#0EA02B",
+      "#A02111",
+      "#A02111"
+   };
+//    m_lColors.resize(enum_class_size<SecurityEvaluationModel::SecurityLevel>());
+//    m_Names.resize(enum_class_size<SecurityEvaluationModel::SecurityLevel>());
+
    foreach(const QColor& col,m_lColors) {
       QColor newCol = col;
       newCol.setRed  (newCol.red()  -55);
@@ -107,8 +120,8 @@ void SecurityProgress::paintEvent(QPaintEvent* event)
    QLinearGradient decoGradient2;
    decoGradient2.setStart(rect.topLeft());
    decoGradient2.setFinalStop(rect.bottomLeft());
-   decoGradient2.setColorAt(0, m_lColors[value()-1]);
-   decoGradient2.setColorAt(1, m_lAltColors[value()-1]);
+   decoGradient2.setColorAt(0, m_lColors[value()-1 <0? 0 : value()-1]);
+   decoGradient2.setColorAt(1, m_lAltColors[value()-1 <0? 0 : value()-1]);
    const QRect progress(rect.x(),rect.y(),rect.width()*(((float)value())/((float)maximum()))-1,rect.height());
    painter.setBrush(decoGradient2);
    painter.drawRoundedRect(progress,7,7);
@@ -240,6 +253,9 @@ void SecurityLevelWidget::setModel(SecurityEvaluationModel* model)
       connect(m_pModel,&SecurityEvaluationModel::issueCountChanged        , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::errorCountChanged        , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::fatalWarningCountChanged , this, &SecurityLevelWidget::reloadCount);
+
+      m_pLevel->m_Level = m_pModel->securityLevel();
+      m_pLevel->setValue((int)m_pLevel->m_Level);
    }
 }
 
@@ -262,6 +278,9 @@ void SecurityLevelWidget::reloadCount()
    m_pWarningL->setText(i18np("%1 warning","%1 warnings", m_pModel->warningCount() + m_pModel->fatalWarningCount()));
    m_pIssueL  ->setText(i18np("%1 issue","%1 issues",m_pModel->issueCount()));
    m_pErrorL  ->setText(i18np("%1 error","%1 errors",m_pModel->errorCount()));
+
+   m_pLevel->m_Level = m_pModel->securityLevel();
+   m_pLevel->setValue((int)m_pLevel->m_Level);
 }
 
 void SecurityLevelWidget::dblClicked(const QModelIndex& idx)

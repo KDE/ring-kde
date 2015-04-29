@@ -216,14 +216,14 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const ContactMethod
 //    return true;
 // }
 
-CollectionInterface::SupportedFeatures BookmarkBackend::supportedFeatures() const
+FlagPack<CollectionInterface::SupportedFeatures> BookmarkBackend::supportedFeatures() const
 {
-   return (CollectionInterface::SupportedFeatures)   (
+   return
       CollectionInterface::SupportedFeatures::NONE   |
       CollectionInterface::SupportedFeatures::LOAD   |
       CollectionInterface::SupportedFeatures::CLEAR  |
       CollectionInterface::SupportedFeatures::ADD    |
-      CollectionInterface::SupportedFeatures::REMOVE );
+      CollectionInterface::SupportedFeatures::REMOVE ;
 }
 
 ///Edit 'item', the implementation may be a GUI or somehting else
