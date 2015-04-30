@@ -35,7 +35,7 @@
 #include <numbercompletionmodel.h>
 #include <call.h>
 #include <callmodel.h>
-#include <delegates/autocompletiondelegate.h>
+#include <delegates/autocompletiondelegate2.h>
 #include "klib/kcfg_settings.h"
 
 static const int TOOLBAR_HEIGHT = 72;
@@ -138,7 +138,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125
       eventFilter(nullptr,&r);
    }
    setMinimumSize(0,m_Height);
-   m_pDelegate = new AutoCompletionDelegate();
+   m_pDelegate = new AutoCompletionDelegate2();
    m_pView->setItemDelegate(m_pDelegate);
    selectionChanged(CallModel::instance()->selectionModel()->currentIndex());
 }

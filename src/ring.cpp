@@ -223,8 +223,8 @@ Ring::Ring(QWidget* parent)
 
    addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
 
-   tabifyDockWidget(m_pBookmarkDW,m_pContactCD );
    tabifyDockWidget(m_pBookmarkDW,m_pHistoryDW );
+   tabifyDockWidget(m_pBookmarkDW,m_pContactCD );
 
    //Force the dock widget aspect ratio, doing this is an hack
    m_pHistoryDW ->setMinimumSize(350,0);

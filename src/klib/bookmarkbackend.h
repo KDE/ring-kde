@@ -47,8 +47,6 @@ public:
    virtual FlagPack<SupportedFeatures> supportedFeatures() const override;
 
 private:
-   //Attributes
-   QList<ContactMethod*> m_lNumbers;
    CollectionMediator<ContactMethod>*  m_pMediator;
 
    //Helpers
@@ -65,9 +63,13 @@ public:
    virtual bool edit       ( ContactMethod*       item ) override;
    virtual bool addNew     ( const ContactMethod* item ) override;
    virtual bool addExisting( const ContactMethod* item ) override;
+   bool append(const ContactMethod* number);
+   void saveHelper(QTextStream& streamFileOut, const ContactMethod* number);
 
 private:
    virtual QVector<ContactMethod*> items() const override;
+   //Attributes
+   QVector<ContactMethod*> m_lNumbers;
 };
 
 template<typename T>

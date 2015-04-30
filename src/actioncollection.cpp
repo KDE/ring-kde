@@ -77,6 +77,7 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), 
    action_mute_capture  = new ExtendedAction(this);
    action_mute_playback = new ExtendedAction(this);
    action_hangup        = new ExtendedAction(this);
+   action_mailBox       = new QAction(Ring::app());
 
    action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/transfert.svg"   ));
    action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/rec_call.svg"    ));
@@ -89,6 +90,7 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), 
    action_new_call->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/call.svg"      )));
    action_hold->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold.svg"      )));
    action_transfer->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfert.svg"      )));
+   action_mailBox->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mailbox.svg"      )));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );
@@ -174,7 +176,6 @@ void ActionCollection::setupAction()
 {
    qDebug() << "setupActions";
 
-   action_mailBox  = new QAction(Ring::app());
    action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
    action_new_call->setShortcut    ( Qt::CTRL + Qt::Key_N );
    action_hold->setShortcut        ( Qt::CTRL + Qt::Key_H );

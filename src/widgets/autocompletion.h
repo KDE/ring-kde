@@ -30,7 +30,7 @@ class QModelIndex;
 //Ring
 class Call;
 class NumberCompletionModel;
-class AutoCompletionDelegate;
+class AutoCompletionDelegate2;
 class ContactMethod;
 
 class AutoCompletion : public QWidget {
@@ -61,7 +61,7 @@ private:
    QListView* m_pView;
    QLabel*    m_pLabel;
    NumberCompletionModel* m_pModel;
-   AutoCompletionDelegate* m_pDelegate;
+   AutoCompletionDelegate2* m_pDelegate;
 
    //Helpers
    bool brightOrDarkBase();

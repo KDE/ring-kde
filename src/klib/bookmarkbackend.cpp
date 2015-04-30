@@ -44,15 +44,37 @@ BookmarkBackend::~BookmarkBackend()
 
 }
 
-bool BookmarkEditor::save(const ContactMethod* item)
+bool BookmarkEditor::save(const ContactMethod* number)
 {
-   Q_UNUSED(item)
+//    if (call->backend() != this)
+//       append(call);
+
+   QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')+"bookmark.ini");
+   if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
+      QTextStream streamFileOut(&file);
+      foreach(const ContactMethod* n, m_lNumbers) {
+         saveHelper(streamFileOut,n);
+      }
+      streamFileOut << "\n";
+      streamFileOut.flush();
+      file.close();
+      return true;
+   }
+   else
+      qWarning() << "Unable to save bookmarks";
+
    return false;
 }
 
 bool BookmarkEditor::remove(const ContactMethod* item)
 {
    Q_UNUSED(item)
+
+   if (m_lNumbers.indexOf(const_cast<ContactMethod*>(item)) != -1) {
+      m_lNumbers.removeAt(m_lNumbers.indexOf(const_cast<ContactMethod*>(item)));
+      mediator()->removeItem(item);
+      return save(nullptr);
+   }
    return false;
 }
 
@@ -65,18 +87,20 @@ bool BookmarkEditor::edit( ContactMethod* item)
 bool BookmarkEditor::addNew(const ContactMethod* item)
 {
    Q_UNUSED(item)
-   return false;
+   addExisting(item);
+   return save(item);
 }
 
 bool BookmarkEditor::addExisting(const ContactMethod* item)
 {
-   Q_UNUSED(item)
+   m_lNumbers << const_cast<ContactMethod*>(item);
+   mediator()->addItem(item);
    return false;
 }
 
 QVector<ContactMethod*> BookmarkEditor::items() const
 {
-   return QVector<ContactMethod*>();
+   return m_lNumbers;
 }
 
 QString BookmarkBackend::name () const
@@ -116,8 +140,7 @@ bool BookmarkBackend::load()
             ContactMethod*      n   = PhoneDirectoryModel::instance()->getNumber(uri,c,a);
 
             //Add the number
-            m_lNumbers << n;
-            m_pMediator->addItem(n);
+            editor<ContactMethod>()->addExisting(n);
 
             //Reset
             hc.clear();
@@ -144,7 +167,7 @@ bool BookmarkBackend::reload()
 }
 
 ///Save a single item
-void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const ContactMethod* number)
+void BookmarkEditor::saveHelper(QTextStream& streamFileOut, const ContactMethod* number)
 {
    const Account* a = number->account();
    streamFileOut << QString("%1=%2\n").arg(Call::HistoryMapFields::ACCOUNT_ID      ).arg(a?QString(a->id()):""  );
@@ -154,67 +177,33 @@ void BookmarkBackend::saveHelper(QTextStream& streamFileOut, const ContactMethod
          QString(number->contact()->uid())
       );
    }
+   streamFileOut << QString('\n');
 }
 
-// bool BookmarkBackend::append(const ContactMethod* number)
-// {
-//    if (!number->isBookmarked()) {
-//       const_cast<ContactMethod*>(number)->setTracked(true);
-//       const_cast<ContactMethod*>(number)->setBookmarked(true);
-// 
-//       //TODO support \r and \n\r end of line
-//       QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + "")+"bookmark.ini";
-//       if ( file.open(QIODevice::Append | QIODevice::Text) ) {
-//          QTextStream streamFileOut(&file);
-//          saveHelper(streamFileOut,number);
-//          m_lNumbers << const_cast<ContactMethod*>(number);
-//          streamFileOut << "\n";
-//          streamFileOut.flush();
-//          file.close();
-//          emit newBookmarkAdded(const_cast<ContactMethod*>(number));
-//          return true;
-//       }
-//       else
-//          qWarning() << "Unable to save bookmarks";
-//    }
-//    else
-//       qDebug() << number->uri() << "is already bookmarked";
-//    return false;
-// }
+bool BookmarkEditor::append(const ContactMethod* number)
+{
+   if (!number->isBookmarked()) {
+      const_cast<ContactMethod*>(number)->setTracked(true);
+      const_cast<ContactMethod*>(number)->setBookmarked(true);
 
-/** Rewrite the file from scratch
- * @todo Eventually check if it is necessary, it will be faster
- */
-// bool BookmarkBackend::save(const ContactMethod* number)
-// {
-//    Q_UNUSED(number)
-// //    if (call->backend() != this)
-// //       append(call);
-// 
-//    QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') + "")+"bookmark.ini";
-//    if ( file.open(QIODevice::WriteOnly | QIODevice::Text) ) {
-//       QTextStream streamFileOut(&file);
-//       foreach(const ContactMethod* n, m_lNumbers) {
-//          saveHelper(streamFileOut,n);
-//       }
-//       streamFileOut << "\n";
-//       streamFileOut.flush();
-//       file.close();
-//       return true;
-//    }
-//    else
-//       qWarning() << "Unable to save bookmarks";
-// 
-//    return false;
-// }
-
-///Remove a bookmark and rewrite the file
-// bool BookmarkBackend::remove(ContactMethod* number)
-// {
-//    m_lNumbers.removeAll(number);
-//    save(number);
-//    return true;
-// }
+      //TODO support \r and \n\r end of line
+      QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')+"bookmark.ini");
+      if ( file.open(QIODevice::Append | QIODevice::Text) ) {
+         QTextStream streamFileOut(&file);
+         saveHelper(streamFileOut,number);
+         m_lNumbers << const_cast<ContactMethod*>(number);
+         streamFileOut << "\n";
+         streamFileOut.flush();
+         file.close();
+         return true;
+      }
+      else
+         qWarning() << "Unable to save bookmarks";
+   }
+   else
+      qDebug() << number->uri() << "is already bookmarked";
+   return false;
+}
 
 FlagPack<CollectionInterface::SupportedFeatures> BookmarkBackend::supportedFeatures() const
 {
@@ -225,19 +214,6 @@ FlagPack<CollectionInterface::SupportedFeatures> BookmarkBackend::supportedFeatu
       CollectionInterface::SupportedFeatures::ADD    |
       CollectionInterface::SupportedFeatures::REMOVE ;
 }
-
-///Edit 'item', the implementation may be a GUI or somehting else
-// bool BookmarkBackend::edit( ContactMethod* number)
-// {
-//    Q_UNUSED(number)
-//    return false;
-// }
-///Add a new item to the backend
-// bool BookmarkBackend::addNew( ContactMethod* number)
-// {
-//    Q_UNUSED(number)
-//    return true;
-// }
 
 bool BookmarkBackend::clear()
 {
