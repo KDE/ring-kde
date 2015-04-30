@@ -67,9 +67,10 @@ action_mailBox(nullptr), action_close(nullptr), action_quit(nullptr), action_dis
 action_displayDialpad(nullptr), action_displayAccountCbb(nullptr),action_displayMessageBox(nullptr), action_configureRing(nullptr),
 action_configureShortcut(nullptr), action_pastenumber(nullptr),
 action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBookmarkDock(nullptr),
-action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
+action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), action_new_call(nullptr)
 {
    action_accept        = new ExtendedAction(this);
+   action_new_call      = new ExtendedAction(this);
    action_hold          = new ExtendedAction(this);
    action_transfer      = new ExtendedAction(this);
    action_record        = new ExtendedAction(this);
@@ -83,6 +84,11 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
    action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg" ));
    action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/refuse.svg"      ));
    action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"      ));
+   action_new_call->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/call.svg"      ));
+
+   action_new_call->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/call.svg"      )));
+   action_hold->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold.svg"      )));
+   action_transfer->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfert.svg"      )));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );
@@ -91,6 +97,7 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
    action_mute_capture    ->setText ( i18nc("Mute the current audio capture device", "Mute"     ) );
    action_mute_playback    ->setText ( i18nc("Mute the current audio playback device", "Mute Playback"     ) );
    action_accept  ->setText ( i18n("Dial"      ) );
+   action_new_call  ->setText ( i18n("New Call"      ) );
 
    #ifdef ENABLE_VIDEO
    action_video_rotate_left     = new ExtendedAction(this);
@@ -138,6 +145,7 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr)
 ActionCollection::~ActionCollection()
 {
    delete action_accept                ;
+   delete action_new_call              ;
    delete action_hold                  ;
    delete action_transfer              ;
    delete action_record                ;
@@ -168,6 +176,7 @@ void ActionCollection::setupAction()
 
    action_mailBox  = new QAction(Ring::app());
    action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
+   action_new_call->setShortcut    ( Qt::CTRL + Qt::Key_N );
    action_hold->setShortcut        ( Qt::CTRL + Qt::Key_H );
    action_transfer->setShortcut    ( Qt::CTRL + Qt::Key_T );
    action_record->setShortcut      ( Qt::CTRL + Qt::Key_R );
@@ -231,6 +240,7 @@ void ActionCollection::setupAction()
    UserActionModel* uam = CallModel::instance()->userActionModel();
    QHash<int, ExtendedAction*> actionHash;
    actionHash[ (int)UserActionModel::Action::ACCEPT          ] = action_accept;
+   actionHash[ (int)UserActionModel::Action::ADD_NEW         ] = action_new_call;
    actionHash[ (int)UserActionModel::Action::HOLD            ] = action_hold;
    actionHash[ (int)UserActionModel::Action::MUTE_AUDIO      ] = action_mute_capture;
    actionHash[ (int)UserActionModel::Action::SERVER_TRANSFER ] = action_transfer;
@@ -275,6 +285,7 @@ void ActionCollection::setupAction()
 
 //    Ring::app()->actionCollection()->setConfigGlobal(true);
    Ring::app()->actionCollection()->addAction("action_accept"                , action_accept                );
+   Ring::app()->actionCollection()->addAction("action_new_call"              , action_new_call              );
    Ring::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
    Ring::app()->actionCollection()->addAction("action_transfer"              , action_transfer              );
    Ring::app()->actionCollection()->addAction("action_record"                , action_record                );
@@ -527,6 +538,11 @@ ExtendedAction* ActionCollection::transferAction()
 ExtendedAction* ActionCollection::acceptAction  ()
 {
    return action_accept;
+}
+
+ExtendedAction* ActionCollection::newCallAction  ()
+{
+   return action_new_call;
 }
 
 QAction * ActionCollection::displayVolumeControlsAction()

@@ -173,7 +173,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
 #endif
 
    //Presence
-   dlgHolder[ConfigurationDialog::Page::Presence]   = new PlaceHolderWidget(Page::Presence,this,[](ConfigurationDialog* dialog)->QWidget*{
+   /*dlgHolder[ConfigurationDialog::Page::Presence]   = new PlaceHolderWidget(Page::Presence,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgPresence = new DlgPresence(dialog);
       dialog->m_pManager->addWidget(dialog->dlgPresence);
       return dialog->dlgPresence;
@@ -181,7 +181,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/presence-icon.svg"));
    m_pPresPage->setProperty("id",ConfigurationDialog::Page::Presence);
    m_pPresPage->setEnabled(AccountModel::instance()->isPresencePublishSupported() && AccountModel::instance()->isPresenceEnabled());
-   connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
+   connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));*/
 
    //Connect everything
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
@@ -192,7 +192,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked())    , this, SLOT(applyCustomSettings()));
    connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(cancelSettings())     );
 
-   setMinimumSize(1024,600);
+   setMinimumSize(1024,700);
 
 } //ConfigurationDialog
 
@@ -302,7 +302,8 @@ void ConfigurationDialog::reload()
 
 void ConfigurationDialog::slotPresenceEnabled(bool state)
 {
-   m_pPresPage->setEnabled(state && AccountModel::instance()->isPresencePublishSupported());
+   Q_UNUSED(state)
+//    m_pPresPage->setEnabled(state && AccountModel::instance()->isPresencePublishSupported());
 }
 
 #undef GUARD

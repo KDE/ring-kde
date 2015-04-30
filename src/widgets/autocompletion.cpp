@@ -132,7 +132,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(slotDoubleClicked(QModelIndex)));
 
    if (parent) {
-      connect(parent->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectionChanged(QModelIndex)));
+      connect(CallModel::instance()->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectionChanged(QModelIndex)));
       parent->installEventFilter(this);
       QResizeEvent r(size(),size());
       eventFilter(nullptr,&r);
@@ -193,15 +193,18 @@ void AutoCompletion::selectionChanged(const QModelIndex& idx)
    }
 
    Call* call = CallModel::instance()->getCall(idx);
-   if (call && call->lifeCycleState() == Call::LifeCycleState::CREATION)
+   if (call && call->lifeCycleState() == Call::LifeCycleState::CREATION) {
       setCall(call);
-   else
+   }
+   else {
       setCall(nullptr);
+   }
 }
 
 void AutoCompletion::setCall(Call* call)
 {
    m_pModel->setCall(call);
+   setVisible(call && call->lifeCycleState() == Call::LifeCycleState::CREATION);
 }
 
 Call* AutoCompletion::call() const

@@ -86,7 +86,7 @@
     </entry>
     <entry name="displayDialpad" type="Bool">
     	<label>Defines whether the dialpad is being shown by default</label>
-      <default>true</default>
+      <default>false</default>
     </entry>
     <entry name="displayAccountBox" type="Bool">
         <label>Defines whether the statusbar account combobox is being shown by default</label>
@@ -122,7 +122,7 @@
    </entry>
    <entry name="autoCompletionHeight" type="Int">
         <label>The auto completion popup height</label>
-        <default>125</default>
+        <default>225</default>
    </entry>
 
    <!-- Video Settings -->

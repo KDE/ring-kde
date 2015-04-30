@@ -32,6 +32,7 @@ DlgDht::DlgDht(QWidget* parent) : QWidget(parent),m_pAccount(nullptr)
       v->show();
       connect(v,&QDialog::finished,[v](int) { delete v; });
    });
+   groupBox->setVisible(false);
 }
 
 void DlgDht::setAccount(Account* a)

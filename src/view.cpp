@@ -181,10 +181,10 @@ View::View(QWidget *parent)
       d2->show();
    });
 
-   if (ConfigurationSkeleton::enableWizard() == true) {
+   if (ConfigurationSkeleton::enableWizard() == true && !AccountModel::instance()->isRingSupported()) {
       new Wizard(this);
-      ConfigurationSkeleton::setEnableWizard(false);
    }
+   ConfigurationSkeleton::setEnableWizard(false);
 
    setFocus(Qt::OtherFocusReason);
 }

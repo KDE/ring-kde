@@ -217,14 +217,23 @@ Ring::Ring(QWidget* parent)
    //System tray
    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
 
-   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
-   addDockWidget( Qt::BottomDockWidgetArea, m_pContactCD  );
-   addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  );
-   addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW );
+   addDockWidget( Qt::BottomDockWidgetArea, m_pContactCD  ,Qt::Horizontal);
+   addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  ,Qt::Horizontal);
+   addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW ,Qt::Horizontal);
 
-   tabifyDockWidget(m_pCentralDW,m_pHistoryDW );
-   tabifyDockWidget(m_pCentralDW,m_pContactCD );
-   tabifyDockWidget(m_pCentralDW,m_pBookmarkDW);
+   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
+
+   tabifyDockWidget(m_pBookmarkDW,m_pContactCD );
+   tabifyDockWidget(m_pBookmarkDW,m_pHistoryDW );
+
+   //Force the dock widget aspect ratio, doing this is an hack
+   m_pHistoryDW ->setMinimumSize(350,0);
+   m_pContactCD ->setMinimumSize(350,0);
+   m_pBookmarkDW->setMinimumSize(350,0);
+
+   m_pHistoryDW ->setMaximumSize(350,999999);
+   m_pContactCD ->setMaximumSize(350,999999);
+   m_pBookmarkDW->setMaximumSize(350,999999);
 
    m_pCentralDW->setObjectName( "callDock" );
 
@@ -293,7 +302,7 @@ Ring::Ring(QWidget* parent)
    m_pPresent->setAutoRaise(true);
    m_pPresent->setText(i18nc("The presence state is \"Online\"","Online"));
    m_pPresent->setCheckable(true);
-   m_pPresent->setVisible(AccountModel::instance()->isPresenceEnabled() && AccountModel::instance()->isPresencePublishSupported());
+   m_pPresent->setVisible(false/*AccountModel::instance()->isPresenceEnabled() && AccountModel::instance()->isPresencePublishSupported()*/);
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
@@ -347,6 +356,9 @@ Ring::Ring(QWidget* parent)
       show();
    else
       close();
+
+   //setupGui + default size doesn't really, use this for now
+   resize(QSize(1024,768));
 } //Ring
 
 ///Destructor
