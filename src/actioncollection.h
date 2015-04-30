@@ -48,6 +48,7 @@ public:
    ExtendedAction* hangupAction                ();
    ExtendedAction* transferAction              ();
    ExtendedAction* acceptAction                ();
+   ExtendedAction* newCallAction               ();
    QAction *        displayVolumeControlsAction();
    QAction *        displayDialpadAction       ();
    QAction *        displayAccountCbbAction    ();
@@ -75,6 +76,7 @@ private:
 
    //Toolbar actions
    ExtendedAction* action_accept        ;
+   ExtendedAction* action_new_call      ;
    ExtendedAction* action_hold          ;
    ExtendedAction* action_transfer      ;
    ExtendedAction* action_record        ;

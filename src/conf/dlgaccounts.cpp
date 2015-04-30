@@ -117,6 +117,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    file_tls_endpoint->lineEdit()->setClearButtonEnabled(false);
    file_tls_private_key->lineEdit()->setClearButtonEnabled(false);
 
+   m_pSecurityIssues->setVisible(false);
    //Authority
    m_pAuthorityII = new IssuesIcon(file_tls_authority->lineEdit());
    m_pAuthorityII->setupForLineEdit(file_tls_authority->lineEdit());

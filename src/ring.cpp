@@ -293,7 +293,7 @@ Ring::Ring(QWidget* parent)
    m_pPresent->setAutoRaise(true);
    m_pPresent->setText(i18nc("The presence state is \"Online\"","Online"));
    m_pPresent->setCheckable(true);
-   m_pPresent->setVisible(AccountModel::instance()->isPresenceEnabled() && AccountModel::instance()->isPresencePublishSupported());
+   m_pPresent->setVisible(false/*AccountModel::instance()->isPresenceEnabled() && AccountModel::instance()->isPresencePublishSupported()*/);
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));

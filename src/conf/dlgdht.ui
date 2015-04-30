@@ -118,11 +118,6 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Blacklist</string>
-          </attribute>
-         </widget>
         </widget>
        </item>
       </layout>
