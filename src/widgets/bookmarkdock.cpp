@@ -94,6 +94,7 @@ m_pBookmark(nullptr)
    setWidget(mainWidget);
 
    m_pMostUsedCK->setText(i18n("Show most called contacts"));
+   m_pMostUsedCK->setVisible(false); //FIXME
 
    m_pTopWidget->layout()->addWidget ( m_pMostUsedCK );
 

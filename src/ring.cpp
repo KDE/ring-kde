@@ -72,6 +72,7 @@
 #include "extensions/presencecollectionextension.h"
 #include "delegates/profilepersisterdelegate.h"
 #include "klib/kdeprofilepersistor.h"
+#include "video/renderer.h"
 
 
 //Ring
@@ -271,7 +272,8 @@ Ring::Ring(QWidget* parent)
    connect(CallModel::instance()->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
 
 #ifdef ENABLE_VIDEO
-   connect(CallModel::instance(),SIGNAL(rendererAdded(Call*,Video::Renderer*)),this,SLOT(displayVideoDock(Call*,Video::Renderer*)));
+   connect(CallModel::instance(),&CallModel::rendererAdded,this,&Ring::displayVideoDock);
+   connect(CallModel::instance(),&CallModel::rendererRemoved,this,&Ring::hideVideoDock);
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
@@ -586,13 +588,23 @@ void Ring::hidePresenceDock()
 void Ring::displayVideoDock(Call* c, Video::Renderer* r)
 {
    Q_UNUSED(c)
+
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
-      m_pVideoDW->setFloating(true);
+//       m_pVideoDW->setFloating(true);
    }
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
+}
+
+void Ring::hideVideoDock(Call* c, Video::Renderer* r)
+{
+   Q_UNUSED(c)
+   Q_UNUSED(r)
+   if (m_pVideoDW) {
+      m_pVideoDW->hide();
+   }
 }
 #endif
 
