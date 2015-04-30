@@ -57,11 +57,12 @@ Wizard::Wizard(QWidget* parent) : QWidget(parent)
    w->m_pName->selectAll();
    connect(w->m_pNext, &QPushButton::clicked,this,&Wizard::slotNext);
    connect(w->m_pName, &QLineEdit::returnPressed,this,&Wizard::slotNext);
+   setStyleSheet("QLabel{color:white;}");
 }
 
 Wizard::~Wizard()
 {
-   
+
 }
 
 void Wizard::slotNext()
@@ -147,6 +148,6 @@ bool Wizard::eventFilter(QObject *obj, QEvent *event)
 void Wizard::paintEvent(QPaintEvent* event) {
    Q_UNUSED(event)
    QPainter customPainter(this);
-   static QColor black(0,0,0,100);
+   static QColor black(0,0,0,200);
    customPainter.fillRect(rect(),black);
 }

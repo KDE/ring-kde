@@ -306,7 +306,7 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->selection()) {
             ContactMethod* n = m_pParent->m_pAutoCompletion->selection();
             Call* call = m_pParent->currentCall();
-            if (call->state() == Call::State::DIALING) {
+            if (call->state() == Call::State::DIALING || call->state() == Call::State::NEW) {
                call->setDialNumber(n->uri());
                if (PhoneDirectoryModel::instance()->callWithAccount()
                 && n->account() && n->account()->id() != "IP2IP") //FIXME do not hardcode this
