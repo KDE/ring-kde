@@ -92,7 +92,9 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset theme="go-up"/>
+                <iconset theme="go-up">
+                 <normaloff/>
+                </iconset>
                </property>
               </widget>
              </item>
@@ -102,7 +104,9 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset theme="go-down"/>
+                <iconset theme="go-down">
+                 <normaloff/>
+                </iconset>
                </property>
               </widget>
              </item>
@@ -112,7 +116,9 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset theme="list-add"/>
+                <iconset theme="list-add">
+                 <normaloff/>
+                </iconset>
                </property>
               </widget>
              </item>
@@ -122,7 +128,9 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset theme="list-remove"/>
+                <iconset theme="list-remove">
+                 <normaloff/>
+                </iconset>
                </property>
               </widget>
              </item>
@@ -237,6 +245,9 @@
     <widget class="QLineEdit" name="m_pHash">
      <property name="readOnly">
       <bool>true</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Your hash will be generated once the account is saved</string>
      </property>
     </widget>
    </item>

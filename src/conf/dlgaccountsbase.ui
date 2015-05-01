@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>844</width>
+    <width>870</width>
     <height>622</height>
    </rect>
   </property>
@@ -68,99 +68,7 @@
          <property name="rightMargin">
           <number>0</number>
          </property>
-         <item row="1" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="LeftToolButton" name="button_accountUp">
-             <property name="toolTip">
-              <string>Get this account up</string>
-             </property>
-             <property name="whatsThis">
-              <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
-             </property>
-             <property name="text">
-              <string comment="Move account up">Up</string>
-             </property>
-             <property name="shortcut">
-              <string notr="true">Up, PgUp</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="CenterToolButton" name="button_accountDown">
-             <property name="toolTip">
-              <string>Get this account down</string>
-             </property>
-             <property name="whatsThis">
-              <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
-             </property>
-             <property name="text">
-              <string comment="Move account down">Down</string>
-             </property>
-             <property name="shortcut">
-              <string notr="true">Down, PgDown</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="CenterToolButton" name="button_accountAdd">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="sizeIncrement">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Add a new account</string>
-             </property>
-             <property name="whatsThis">
-              <string>This button enables you to initialize a new account. You will then be able to edit it using the form on the right.</string>
-             </property>
-             <property name="text">
-              <string comment="Add new account">Add</string>
-             </property>
-             <property name="shortcut">
-              <string notr="true">+</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="RightToolButton" name="button_accountRemove">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Remove the selected account</string>
-             </property>
-             <property name="whatsThis">
-              <string>This button will remove the selected account in the list below. Be sure you really don't need it anymore. If you think you might use it again later, just uncheck it.</string>
-             </property>
-             <property name="accessibleDescription">
-              <string/>
-             </property>
-             <property name="text">
-              <string comment="Remove selected account">Remove</string>
-             </property>
-             <property name="shortcut">
-              <string notr="true">-, Del, Backspace</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0" colspan="2">
+         <item row="0" column="0" colspan="5">
           <widget class="CategorizedTreeView" name="treeView_accountList">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -203,7 +111,71 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="1" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="LeftToolButton" name="button_accountUp">
+             <property name="toolTip">
+              <string>Get this account up</string>
+             </property>
+             <property name="whatsThis">
+              <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+             </property>
+             <property name="text">
+              <string comment="Move account up">Up</string>
+             </property>
+             <property name="shortcut">
+              <string notr="true">Up, PgUp</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="CenterToolButton" name="button_accountDown">
+             <property name="toolTip">
+              <string>Get this account down</string>
+             </property>
+             <property name="whatsThis">
+              <string>By default, when you place a call, Ring will use the first account in this list which is &quot;registered&quot;. Change the order of the accounts using the &quot;Up&quot; and &quot;Down&quot; arrows.</string>
+             </property>
+             <property name="text">
+              <string comment="Move account down">Down</string>
+             </property>
+             <property name="shortcut">
+              <string notr="true">Down, PgDown</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="RightToolButton" name="button_accountRemove">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Remove the selected account</string>
+             </property>
+             <property name="whatsThis">
+              <string>This button will remove the selected account in the list below. Be sure you really don't need it anymore. If you think you might use it again later, just uncheck it.</string>
+             </property>
+             <property name="accessibleDescription">
+              <string/>
+             </property>
+             <property name="text">
+              <string comment="Remove selected account">Remove</string>
+             </property>
+             <property name="shortcut">
+              <string notr="true">-, Del, Backspace</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="2">
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -215,6 +187,37 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="1" column="4">
+          <widget class="QToolButton" name="button_accountAdd">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="sizeIncrement">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Add a new account</string>
+           </property>
+           <property name="whatsThis">
+            <string>This button enables you to initialize a new account. You will then be able to edit it using the form on the right.</string>
+           </property>
+           <property name="text">
+            <string comment="Add new account">Add</string>
+           </property>
+           <property name="shortcut">
+            <string notr="true">+</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="AutoComboBox" name="m_pGlobalProto"/>
          </item>
         </layout>
        </widget>
@@ -1254,8 +1257,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>537</width>
-                <height>900</height>
+                <width>517</width>
+                <height>913</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1782,11 +1785,6 @@
    <header>kurlrequester.h</header>
   </customwidget>
   <customwidget>
-   <class>CategorizedTreeView</class>
-   <extends>QTreeView</extends>
-   <header location="global">widgets/categorizedtreeview.h</header>
-  </customwidget>
-  <customwidget>
    <class>LeftToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
@@ -1800,6 +1798,11 @@
    <class>CenterToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">widgets/categorizedtreeview.h</header>
   </customwidget>
   <customwidget>
    <class>SecurityLevelWidget</class>

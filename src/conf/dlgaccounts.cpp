@@ -85,6 +85,9 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    treeView_accountList->setModel(AccountModel::instance());
    treeView_accountList->setSelectionModel(AccountModel::instance()->selectionModel());
 
+   m_pProtocolModel = new ProtocolModel(nullptr);
+   m_pGlobalProto->bindToModel(m_pProtocolModel,m_pProtocolModel->selectionModel());
+
    CategorizedDelegate* m_pCategoryDelegate = new CategorizedDelegate(treeView_accountList);
    QStyledItemDelegate* m_pItemDelegate     = new QStyledItemDelegate;
    m_pCategoryDelegate->setChildDelegate(m_pItemDelegate);
@@ -255,6 +258,8 @@ DlgAccounts::~DlgAccounts()
    //if (accountList) delete accountList;
    delete m_pTipManager;
    delete m_pTip;
+   m_pGlobalProto->setModel(nullptr);
+   delete m_pProtocolModel;
 }
 
 ///Save an account using the values from the widgets
@@ -291,7 +296,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
 
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                 /
-   /**/ ACC setAlias                       ( edit1_alias->text()                                                      );
    /**/ ACC setUsername                    ( edit4_user->text()                                                       );
    /**/ ACC setPassword                    ( edit5_password->text()                                                   );
    /**/ ACC setMailbox                     ( edit6_mailbox->text()                                                    );
@@ -336,9 +340,16 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setVideoEnabled                ( m_pEnableVideo->isChecked()                                              );
    //                                                                                                                  /
 
-   if (account->protocol() != Account::Protocol::RING) {
-      /**/ ACC setAlias                    ( m_pDlgDht->m_pAlias->text()                                              );
-      /**/ ACC setHostname                 ( edit3_server->text()                                                     );
+   switch (ACC protocol()) {
+      case Account::Protocol::SIP:
+      case Account::Protocol::IAX:
+      case Account::Protocol::COUNT__:
+         /**/ ACC setAlias                 ( edit1_alias->text()                                                      );
+         /**/ ACC setHostname              ( edit3_server->text()                                                     );
+         break;
+      case Account::Protocol::RING:
+         /**/ ACC setAlias                 ( m_pDlgDht->m_pAlias->text()                                              );
+         break;
    }
 
    /**/ ACC setTlsCaListCertificate    ( file_tls_authority->text()                                                   );
@@ -359,8 +370,8 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
       ACC setRingtonePath( m_pRingTonePath->url().path() );
    }
 
-   saveCredential();
    m_IsLoading--;
+
 } //saveAccount
 
 void DlgAccounts::cancel()
@@ -522,6 +533,13 @@ void DlgAccounts::loadAccount(QModelIndex item)
    for (int i=0;i<8;i++)
       frame2_editAccounts->setTabEnabled( i, enableTab[i] );
 
+   if (isRing && frame2_editAccounts->currentIndex() == 0) {
+      frame2_editAccounts->setCurrentIndex(1);
+   }
+   else if ((!isRing) && frame2_editAccounts->currentIndex() == 1) {
+      frame2_editAccounts->setCurrentIndex(0);
+   }
+
    //Setup ringtone
    m_pEnableRingtoneGB->setChecked( ACC isRingtoneEnabled());
    const QString ringtonePath = ACC ringtonePath();
@@ -643,12 +661,17 @@ void DlgAccounts::on_button_accountDown_clicked()
 void DlgAccounts::on_button_accountAdd_clicked()
 {
    const QString newAlias = i18n("New account%1",AccountModel::getSimilarAliasIndex(i18n("New account")));
-   AccountModel::instance()->add(newAlias);
+   const Account::Protocol proto = qvariant_cast<Account::Protocol>(m_pProtocolModel->data(m_pProtocolModel->selectionModel()->currentIndex(),Qt::UserRole));
+   AccountModel::instance()->add(newAlias,proto);
 
    frame2_editAccounts->setEnabled(true);
-   frame2_editAccounts->setCurrentIndex(0);
-   edit1_alias->setSelection(0,edit1_alias->text().size());
-   edit1_alias->setFocus(Qt::OtherFocusReason);
+   frame2_editAccounts->setCurrentIndex(proto == Account::Protocol::RING?1:0);
+
+   QLineEdit* le = proto == Account::Protocol::RING ? m_pDlgDht->m_pAlias : edit1_alias;
+
+   le->setSelection(0,le->text().size());
+   le->setFocus(Qt::OtherFocusReason);
+
 } //on_button_accountAdd_clicked
 
 ///Remove selected account
@@ -683,6 +706,7 @@ void DlgAccounts::updateAccountListCommands()
 ///Password changed
 void DlgAccounts::main_password_field_changed()
 {
+
    list_credential->model()->setData(list_credential->model()->index(0,0),edit5_password->text(),CredentialModel::Role::PASSWORD);
 #ifdef Q_WS_WIN // MS Windows version
       if (GetKeyState(VK_CAPITAL) == 1) {
@@ -708,13 +732,13 @@ void DlgAccounts::main_password_field_changed()
 ///Credential changed
 void DlgAccounts::main_credential_password_changed()
 {
-   if (list_credential->currentIndex().row() == 0) {
+   if (list_credential->model()->rowCount() && list_credential->currentIndex().row() == 0) {
       edit5_password->setText(edit_credential_password->text());
    }
 }
 
 ///Update the first credential
-void DlgAccounts::updateFirstCredential(QString text)
+void DlgAccounts::updateFirstCredential(const QString& text)
 {
    if (!m_IsLoading) {
       Account* acc = currentAccount();
@@ -812,7 +836,8 @@ bool DlgAccounts::hasIncompleteRequiredFields()
       pal.setBrush(QPalette::WindowText,fields[i]?errorBrush.brush(QPalette::Normal):pal.windowText());
       requiredFieldsLabels[i]->setPalette(pal);
    }
-   return isIncomplete;
+
+   return isIncomplete && !(acc->protocol() == Account::Protocol::RING && acc->isNew());
 }
 
 ///Save settings
@@ -917,14 +942,14 @@ void DlgAccounts::enablePublished()
 }
 
 ///Force a new alias for the account
-void DlgAccounts::aliasChanged(QString newAlias)
+void DlgAccounts::aliasChanged(const QString& newAlias)
 {
    if (newAlias != edit1_alias->text())
       edit1_alias->setText(newAlias);
 }
 
 ///Force a new alias for the account
-void DlgAccounts::changeAlias(QString newAlias)
+void DlgAccounts::changeAlias(const QString& newAlias)
 {
    Account* acc = currentAccount();
    if (acc && newAlias != acc->alias()) {

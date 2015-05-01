@@ -76,6 +76,7 @@ private:
    IssuesIcon*           m_pAuthorityII        ;
    IssuesIcon*           m_pEndCertII          ;
    IssuesIcon*           m_pPKII               ;
+   ProtocolModel*        m_pProtocolModel      ;
 
    //Methods
    Account* currentAccount() const;
@@ -103,7 +104,7 @@ private Q_SLOTS:
    void updateAccountListCommands        ();
    void main_password_field_changed      ();
    void main_credential_password_changed ();
-   void updateFirstCredential(QString text);
+   void updateFirstCredential(const QString& text);
 
    void moveAudioCodecUp                 ();
    void moveAudioCodecDown               ();
@@ -117,8 +118,8 @@ private Q_SLOTS:
    void updateStatusLabel          ( Account*   account                                      );
    void updateCombo                ( int            value                                    );
    void saveCredential             (                                                         );
-   void aliasChanged               (QString newAlias                                         );
-   void changeAlias                (QString newAlias                                         );
+   void aliasChanged               (const QString& newAlias                                  );
+   void changeAlias                (const QString& newAlias                                  );
    void statusModel();
 
 Q_SIGNALS:
