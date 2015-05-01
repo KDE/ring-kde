@@ -34,6 +34,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
  : QWidget(parent),m_pDevice(nullptr),m_IsChanged(false),m_IsLoading(true),m_pChannel(nullptr),m_pResolution(nullptr)
 {
    setupUi(this);
+   m_pPreviewGV->setPreviewOnly(true);
 
    //updateWidgets();
 

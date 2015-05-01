@@ -254,7 +254,6 @@ void VideoGLFrame::setRenderer(Video::Renderer* renderer)
    m_pRenderer = renderer;
 //    if (m_pPainter->m_pRenderer && m_pPainter->m_pRenderer->isRendering())
 //       m_pPainter->rendererStopped();
-   qDebug() << "\n\n\nSET RENDERER" << renderer;
    QMutexLocker locker(&m_pPainter->mutex);
    if (m_pPainter->m_pRenderer) {
       disconnect(m_pPainter->m_pRenderer,&Video::Renderer::frameUpdated, m_pPainter,&ThreadedPainter2::copyFrame      );

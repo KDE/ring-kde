@@ -46,7 +46,7 @@
 #endif
 
 
-VideoWidget3::VideoWidget3(QWidget *parent) : QGraphicsView(parent),m_pBackDevice(nullptr)
+VideoWidget3::VideoWidget3(QWidget *parent, const bool previewOnly) : QGraphicsView(parent),m_pBackDevice(nullptr),m_IsPreviewOnly(previewOnly)
 {
    connect(Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
@@ -180,7 +180,12 @@ void VideoWidget3::slotKeepAspectRatio(bool keep)
 
 void VideoWidget3::slotPreviewEnabled(bool show)
 {
-   if (show && ActionCollection::instance()->videoPreviewAction()->isChecked()) {
+   if (!m_IsPreviewOnly && show && ActionCollection::instance()->videoPreviewAction()->isChecked()) {
       slotShowPreview(true);
    }
+}
+
+void VideoWidget3::setPreviewOnly(bool prev)
+{
+   m_IsPreviewOnly = prev;
 }

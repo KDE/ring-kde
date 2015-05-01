@@ -28,29 +28,6 @@ ToolbarDelegate::ToolbarDelegate(QWidget* parent) : QStyledItemDelegate(parent),
 
 }
 
-// static QStyleOptionToolButton fillOptions(const QStyleOptionViewItem & option,QStyleOptionViewItem opt)
-// {
-//    QStyleOptionToolButton opt2;
-// 
-//    opt2.direction  = option.direction  ;
-//    opt2.fontMetrics= option.fontMetrics;
-//    opt2.styleObject= option.styleObject;
-//    opt2.version    = option.version    ;
-// 
-//    opt2.toolButtonStyle = Qt::ToolButtonTextUnderIcon;
-// 
-//    opt2.features = QStyleOptionToolButton::None;
-// 
-//    opt2.icon    = opt.icon;
-//    opt2.iconSize= QSize(32,32);
-//    opt2.text    = opt.text;
-//    opt2.state   = option.state;
-//    opt2.rect    = opt.rect;
-//    opt2.palette = opt.palette;
-// 
-//    return opt2;
-// }
-
 void ToolbarDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
    Q_ASSERT(index.isValid());
@@ -59,8 +36,10 @@ void ToolbarDelegate::paint(QPainter* painter, const QStyleOptionViewItem & opti
    //Init
    static const QColor hoverBg = QApplication::palette().highlight().color();
    static const QColor textCol = QColor("#F2F2F2"); //Same as the icons
+   static const int    fmh     = option.fontMetrics.height();
    static       QPen   checked ( hoverBg );
    static bool init = false;
+
    if (!init) {
       checked.setWidth(3);
       init = true;
@@ -83,34 +62,17 @@ void ToolbarDelegate::paint(QPainter* painter, const QStyleOptionViewItem & opti
 
    //Text
    const QString text = index.data(Qt::DisplayRole).toString();
-   int x = option.rect.x()+option.rect.width()/2-option.fontMetrics.width(text)/2;
-   int y = option.rect.y()+option.rect.height()-5;
+   int w = option.fontMetrics.width(text);
+   int x = option.rect.x()+option.rect.width()/2-w/2;
+   int y = option.rect.y()+option.rect.height()-5-fmh;
    painter->setPen(textCol);
-   painter->drawText(x,y,text);
+   painter->drawText(QRect(x,y,w,fmh),text);
 
    //Icon
    const QPixmap pxm = index.data(Qt::DecorationRole).value<QIcon>().pixmap(24,24);
    x = option.rect.x()+option.rect.width()/2- 24/2;
    y = option.rect.y()+5;
    painter->drawPixmap(QRect(x,y,24,24),pxm);
-}
-
-QSize ToolbarDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-   Q_UNUSED(option)
-   Q_UNUSED(index)
-   /*QStyleOptionViewItem opt = option;
-
-   initStyleOption(&opt, index);
-
-   QStyleOptionToolButton opt2 = fillOptions(option,opt);
-
-   QStyle *style = m_pParent ? m_pParent->style() : QApplication::style();
-
-   QRect geom = style->subElementRect(QStyle::SE_PushButtonContents, &opt2, m_pParent);
-
-   return style->sizeFromContents(QStyle::CT_ItemViewItem, &opt, QSize(), m_pParent);*/
-   return QSize(100,100);
 }
 
 ToolbarDelegate::~ToolbarDelegate()

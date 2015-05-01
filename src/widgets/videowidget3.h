@@ -41,10 +41,11 @@ class VideoWidget3 : public QGraphicsView
    Q_OBJECT
 
 public:
-   explicit VideoWidget3(QWidget *parent);
+   explicit VideoWidget3(QWidget *parent, const bool previewOnly = false);
    ~VideoWidget3();
 //    virtual int    heightForWidth( int w ) const;
 //    virtual QSize  sizeHint      (       ) const;
+   void setPreviewOnly(bool prev);
 
 protected:
    virtual void resizeEvent(QResizeEvent* event);
@@ -58,6 +59,7 @@ private:
    QGLWidget*           m_pWdg    ;
    Video::Device*       m_pBackDevice;
    QHash<Video::Renderer*,VideoGLFrame*> m_hFrames;
+   bool m_IsPreviewOnly;
 
 public Q_SLOTS:
    void addRenderer(Video::Renderer* renderer);

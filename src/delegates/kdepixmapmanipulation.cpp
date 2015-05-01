@@ -348,23 +348,19 @@ const char* KDEPixmapManipulation::icnPath[2][2] = {
 QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const
 {
 
-   QPixmap pxm(20,20);
-   QPainter p(&pxm);
+   switch (level) {
+      case SecurityEvaluationModel::SecurityLevel::COUNT__:
+      case SecurityEvaluationModel::SecurityLevel::NONE      :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/lock_off.svg"   ));
+      case SecurityEvaluationModel::SecurityLevel::WEAK      :
+      case SecurityEvaluationModel::SecurityLevel::MEDIUM    :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/lock_unconfirmed.svg"   ));
+      case SecurityEvaluationModel::SecurityLevel::ACCEPTABLE:
+      case SecurityEvaluationModel::SecurityLevel::STRONG    :
+      case SecurityEvaluationModel::SecurityLevel::COMPLETE  :
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/lock_confirmed.svg"   ));
+   }
 
-   static QStringList colors  = {
-      "#A02111",
-      "#A05C0F",
-      "#CBC910",
-      "#6DA00F",
-      "#0EA02B",
-      "#A02111",
-      "#A02111"
-   };
-
-   const QColor col = colors[(int)level];
-   p.setBrush(col);
-   p.drawRect(0,0,20,20);
-
-   return pxm;
+   return QVariant();
 }
 
