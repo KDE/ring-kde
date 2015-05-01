@@ -39,7 +39,7 @@
 #include "callmodel.h"
 #include "cmd.h"
 
-static const char version[] = "2.1.0";
+static const char version[] = "2.2.0";
 
 RingApplication* app;
 void quitOnSignal(int signal);
