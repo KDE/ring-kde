@@ -44,24 +44,25 @@
 #include "icons/icons.h"
 
 
-const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {
-   {  RingIcons::DIALING    ,
-      RingIcons::INCOMING   ,
-      RingIcons::RINGING    ,
-      RingIcons::CURRENT    ,
-      RingIcons::DIALING    ,
-      RingIcons::HOLD       ,
-      RingIcons::FAILURE    ,
-      RingIcons::BUSY       ,
-      RingIcons::TRANSFER   ,
-      RingIcons::TRANSF_HOLD,
-      ""              ,
-      ""              ,
-      RingIcons::CONFERENCE,
-      "",
-      "",
-      "",
-   }};
+const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {{
+   RingIcons::DIALING       , /* NEW            */
+   RingIcons::INCOMING      , /* INCOMING       */
+   RingIcons::RINGING       , /* RINGING        */
+   RingIcons::CURRENT       , /* CURRENT        */
+   RingIcons::DIALING       , /* DIALING        */
+   RingIcons::HOLD          , /* HOLD           */
+   RingIcons::FAILURE       , /* FAILURE        */
+   RingIcons::BUSY          , /* BUSY           */
+   RingIcons::TRANSFER      , /* TRANSFERRED    */
+   RingIcons::TRANSF_HOLD   , /* TRANSF_HOLD    */
+   ""                       , /* OVER           */
+   RingIcons::FAILURE       , /* ERROR          */
+   RingIcons::CONFERENCE    , /* CONFERENCE     */
+   RingIcons::HOLD          , /* CONFERENCE_HOLD*/
+   RingIcons::INITIALIZATION, /* INITIALIZATION */
+   RingIcons::FAILURE       , /* ABORTED        */
+   RingIcons::CONNECTED     , /* CONNECTED      */
+}};
 
 KDEPixmapManipulation::KDEPixmapManipulation() : QObject(),PixmapManipulationDelegate()
 {

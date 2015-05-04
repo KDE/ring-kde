@@ -35,6 +35,8 @@ namespace RingIcons {
    constexpr static const char* UNHOLD                   = ":/images/icons/unhold.svg"               ;
    constexpr static const char* ACCEPT                   = ":/images/icons/accept.svg"               ;
    constexpr static const char* REFUSE                   = ":/images/icons/refuse.svg"               ;
+   constexpr static const char* INITIALIZATION           = ":/images/icons/initialization.svg"       ;
+   constexpr static const char* CONNECTED                = ":/images/icons/connected.svg"            ;
    constexpr static const char* EXEC_TRANSF              = ":/images/icons/call.svg"                 ;
    constexpr static const char* REC_DEL_OFF              = ":/images/icons/record_disabled.svg"      ;
    constexpr static const char* REC_DEL_ON               = ":/images/icons/record.svg"               ;

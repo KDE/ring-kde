@@ -368,6 +368,8 @@ INSTALL( FILES icons/overlay_right_corner.svg    DESTINATION  ${DATA_INSTALL_DIR
 INSTALL( FILES icons/overlay_left_corner.svg     DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
 INSTALL( FILES icons/call.svg                    DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
 INSTALL( FILES icons/hold.svg                    DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/connected.svg               DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES icons/initialization.svg          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
 INSTALL( FILES icons/transfert.svg               DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
 INSTALL( FILES icons/mailbox.svg                 DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
 INSTALL( FILES icons/confBlackWhite.png          DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
