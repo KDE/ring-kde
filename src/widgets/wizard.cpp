@@ -57,7 +57,7 @@ Wizard::Wizard(QWidget* parent) : QWidget(parent)
    w->m_pName->selectAll();
    connect(w->m_pNext, &QPushButton::clicked,this,&Wizard::slotNext);
    connect(w->m_pName, &QLineEdit::returnPressed,this,&Wizard::slotNext);
-   setStyleSheet("QLabel{color:white;}");
+   setStyleSheet("QLabel{color:white;} QLineEdit{color:white;background:transparent;}");
 }
 
 Wizard::~Wizard()

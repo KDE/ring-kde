@@ -98,7 +98,7 @@
  </widget>
  <resources>
   <include location="../../../data/appicon.qrc"/>
-  <include location="../../data/appicon.qrc"/>
+  <include location="../../../data/appicon.qrc"/>
  </resources>
  <connections/>
 </ui>

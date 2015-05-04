@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="images">
+    <file>../icons/connected.svg</file>
+    <file>../icons/initialization.svg</file>
     <file>../icons/missed_out.svg</file>
     <file>../icons/user-group-properties.svg</file>
     <file>../icons/ring.svg</file>
