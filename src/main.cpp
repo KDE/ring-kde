@@ -75,15 +75,7 @@ int main(int argc, char **argv)
       about.addAuthor( i18n( "Stepan Salenikovich"             ), QString(), "stepan.salenikovich@savoirfairelinux.com"  );
       about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                   );
 
-      Cmd::parseCmd(argc,argv,about);
-
       app = new RingApplication(argc, argv);
-
-      //dbus configuration
-      CallModel::instance();
-
-//       KDE_signal(SIGINT  , quitOnSignal);
-//       KDE_signal(SIGTERM , quitOnSignal);
 
       const int retVal = app->exec();
 
