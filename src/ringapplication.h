@@ -46,10 +46,6 @@ public:
    virtual bool notify (QObject* receiver, QEvent* e);
 
 private:
-   //Init
-   void initializeMainWindow();
-   void initializePaths();
-
    //Attributes
    static Ring* m_spApp;
 };

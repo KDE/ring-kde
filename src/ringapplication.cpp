@@ -56,20 +56,7 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
 
-   try {
-      CallModel::instance();
-   }
-   catch (...) {
-      KMessageBox::error(Ring::app(),ErrorMessage::GENERIC_ERROR);
-   }
-
-   // Start remaining initialisation
-   initializePaths();
-   initializeMainWindow();
-
-// #ifdef DISABLE_UNIQUE_APPLICATION
    newInstance();
-// #endif
 }
 
 /**
@@ -78,37 +65,6 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
 RingApplication::~RingApplication()
 {
    delete Ring::app();
-   // automatically destroyed
-   //disableSessionManagement();
-}
-
-/**
- * Initialisation of the main window.
- */
-void RingApplication::initializeMainWindow()
-{
-  // Enable KDE session restore.
-//   int restoredWindow = -1;
-  /*if( kapp->isSessionRestored() ) {
-    int n = 0;
-    while( KMainWindow::canBeRestored( ++n ) ) {
-      if( KMainWindow::classNameOfToplevel( n ) != QLatin1String( "Ring" ) ) {
-        continue;
-      }
-      break;
-    }
-  }*/
-}
-
-/**
- * Initialize additional paths
- */
-void RingApplication::initializePaths()
-{
-  // Add compile time paths as fallback
-  /*KGlobal::dirs()       -> addPrefix( QString(DATA_INSTALL_DIR) );
-  QIconLoader::global() -> addAppDir( QString(DATA_INSTALL_DIR) + "/share" );*/
-
 }
 
 ///Parse command line arguments
@@ -129,24 +85,6 @@ int RingApplication::newInstance()
          m_spApp->hide();
    }
 
-   /*KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
-   if(parser.isSet("place-call")) {
-      Cmd::placeCall(parser.value("place-call"));
-   }
-   if (parser.isSet("send-text")) {
-      QString smsNumber  = parser.value("send-text");
-      QString smsMessage = parser.value("message");
-      if (!smsMessage.isEmpty() && !smsNumber.isEmpty()) {
-         Cmd::sendText(smsNumber,smsMessage);
-      }
-      else {
-         qDebug() << "Error: both --send-text and --message have to be set";
-      }
-   }*/
-
-#ifndef DISABLE_UNIQUE_APPLICATION
-//    KUniqueApplication::newInstance();
-#endif
    return 0;
 }
 
@@ -154,11 +92,7 @@ int RingApplication::newInstance()
 bool RingApplication::notify (QObject* receiver, QEvent* e)
 {
    try {
-// #ifdef DISABLE_UNIQUE_APPLICATION
       return QApplication::notify(receiver,e);
-// #else
-//      return KUniqueApplication::notify(receiver,e);
-// #endif
    }
    catch (const Call::State& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
