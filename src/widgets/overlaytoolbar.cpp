@@ -22,6 +22,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QBrush>
 #include <QtGui/QPen>
+#include <QtCore/QTimer>
 #include <QtWidgets/QScrollBar>
 #include <QtSvg/QSvgRenderer>
 #include <QtWidgets/QHBoxLayout>
@@ -66,6 +67,15 @@ OverlayToolbar::OverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender
    hideEvent(nullptr);
 
    m_pLayout = new QHBoxLayout(this);
+
+   //All size signals before the show() call seem unreliable, as the application
+   //is sure to be visible in the next loop cycle, wait for that and repaint
+#if QT_VERSION >= 0x050400
+   QTimer::singleShot(0,[this]() {
+      resizeToolbar();
+   });
+#endif
+
 } //OverlayToolbar
 
 OverlayToolbar::~OverlayToolbar()
