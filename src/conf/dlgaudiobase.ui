@@ -37,7 +37,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="m_pManager"/>
+       <widget class="AutoComboBox" name="m_pManager"/>
       </item>
      </layout>
     </widget>
@@ -84,7 +84,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="box_alsaPlugin">
+           <widget class="AutoComboBox" name="box_alsaPlugin">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>

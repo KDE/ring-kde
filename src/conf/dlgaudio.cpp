@@ -49,20 +49,14 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    m_pSuppressNoise->setChecked(Audio::Settings::instance()->isNoiseSuppressEnabled());
    m_pCPlayDTMFCk->setChecked(Audio::Settings::instance()->areDTMFMuted());
 
-//    alsaInputDevice->setModel   (Audio::Settings::instance()->inputDeviceModel   () );
-   alsaOutputDevice->setModel  (Audio::Settings::instance()->outputDeviceModel  () );
-   alsaRingtoneDevice->setModel(Audio::Settings::instance()->ringtoneDeviceModel() );
-   m_pManager->setModel        (Audio::Settings::instance()->managerModel       () );
-   box_alsaPlugin->setModel    (Audio::Settings::instance()->alsaPluginModel    () );
-
-   alsaInputDevice ->bindToModel(Audio::Settings::instance()->inputDeviceModel(),Audio::Settings::instance()->inputDeviceModel()->selectionModel() );
-   alsaOutputDevice->bindToModel(Audio::Settings::instance()->outputDeviceModel(),Audio::Settings::instance()->outputDeviceModel()->selectionModel() );
    loadAlsaSettings();
 
-   m_pManager->view()->setSelectionModel(Audio::Settings::instance()->managerModel       ()->selectionModel());
-//    m_pManager->setCurrentIndex (Audio::Settings::instance()->managerModel()->currentManagerIndex().row());
+   m_pManager           ->bindToModel(Audio::Settings::instance()->managerModel       (), Audio::Settings::instance()->managerModel       ()->selectionModel());
+   alsaOutputDevice     ->bindToModel(Audio::Settings::instance()->outputDeviceModel  (), Audio::Settings::instance()->outputDeviceModel  ()->selectionModel());
+   alsaRingtoneDevice   ->bindToModel(Audio::Settings::instance()->ringtoneDeviceModel(), Audio::Settings::instance()->ringtoneDeviceModel()->selectionModel());
+   alsaInputDevice      ->bindToModel(Audio::Settings::instance()->inputDeviceModel   (), Audio::Settings::instance()->inputDeviceModel   ()->selectionModel());
+   box_alsaPlugin       ->bindToModel(Audio::Settings::instance()->alsaPluginModel    (), Audio::Settings::instance()->alsaPluginModel    ()->selectionModel());
 
-   connect( box_alsaPlugin   , SIGNAL(activated(int)) , parent, SLOT(updateButtons()));
    connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
    connect( m_pAlwaysRecordCK, SIGNAL(clicked(bool))  , this  , SLOT(changed())      );
 
@@ -74,11 +68,7 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
-   connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , 
-            Audio::Settings::instance()->managerModel(),SLOT(setCurrentManager(int)));
-   connect(Audio::Settings::instance()->managerModel(),SIGNAL(currentManagerChanged(int)),m_pManager,
-           SLOT(setCurrentIndex(int)));
-   connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(loadAlsaSettings()));
+
 }
 
 ///Destructor
@@ -101,10 +91,6 @@ void DlgAudio::updateSettings()
       Audio::Settings::instance()->setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
       Audio::Settings::instance()->setAlwaysRecording(m_pAlwaysRecordCK->isChecked());
 
-      Audio::Settings::instance()->inputDeviceModel   ()->setCurrentDevice(alsaInputDevice->currentIndex   ());
-      Audio::Settings::instance()->outputDeviceModel  ()->setCurrentDevice(alsaOutputDevice->currentIndex  ());
-      Audio::Settings::instance()->ringtoneDeviceModel()->setCurrentDevice(alsaRingtoneDevice->currentIndex());
-      Audio::Settings::instance()->alsaPluginModel    ()->setCurrentPlugin(box_alsaPlugin->currentIndex());
       Audio::Settings::instance()->setNoiseSuppressState(m_pSuppressNoise->isChecked());
       Audio::Settings::instance()->setDTMFMuted         (m_pCPlayDTMFCk  ->isChecked());
 
@@ -149,9 +135,6 @@ void DlgAudio::loadAlsaSettings()
 {
    m_IsLoading = true;
    Audio::Settings::instance()->reload();
-//    alsaInputDevice->setCurrentIndex    ( Audio::Settings::instance()->inputDeviceModel()->currentDevice().row()   );
-//    alsaOutputDevice->setCurrentIndex   ( Audio::Settings::instance()->outputDeviceModel()->currentDevice().row()  );
-   alsaRingtoneDevice->setCurrentIndex ( Audio::Settings::instance()->ringtoneDeviceModel()->currentDevice().row());
-   box_alsaPlugin->setCurrentIndex     ( Audio::Settings::instance()->alsaPluginModel()->currentPlugin().row()    );
+
    m_IsLoading = false;
 }
