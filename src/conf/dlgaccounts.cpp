@@ -476,6 +476,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
       /**/file_tls_private_key->clear();
 
    m_pDefaultCiphers->setChecked(ACC cipherModel()->useDefault());
+   m_pCiphers->setVisible(!m_pDefaultCiphers->isChecked());
    m_pCiphers->setModel(ACC cipherModel());
    m_pDlgDht->setAccount(account);
 
@@ -513,13 +514,14 @@ void DlgAccounts::loadAccount(QModelIndex item)
    connect(list_credential->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectCredential(QModelIndex,QModelIndex))     );
 
    disconnect(list_audiocodec->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
-   disconnect(list_audiocodec->model()         ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
+   disconnect(list_audiocodec->model()         ,SIGNAL(dataChanged(QModelIndex,QModelIndex))   , this, SLOT(changedAccountList())                          );
 
    list_audiocodec->setModel( ACC codecModel());
    list_audiocodec->setSelectionModel(ACC codecModel()->selectionModel());
 
    connect(list_audiocodec->model()            ,SIGNAL(dataChanged(QModelIndex,QModelIndex)),    this, SLOT(changedAccountList())                          );
    connect(list_audiocodec->selectionModel()   ,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(selectedCodecChanged(QModelIndex,QModelIndex)) );
+   connect(ACC cipherModel()                   ,SIGNAL(modified())                             , this, SLOT(changedAccountList())                          );
 
 //    ACC securityValidationModel()->update();
    m_pSecurityIssues->setModel(ACC securityEvaluationModel());
