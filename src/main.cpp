@@ -75,6 +75,8 @@ int main(int argc, char **argv)
       about.addAuthor( i18n( "Stepan Salenikovich"             ), QString(), "stepan.salenikovich@savoirfairelinux.com"  );
       about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                   );
 
+      KAboutData::setApplicationData(about);
+
       app = new RingApplication(argc, argv);
 
       const int retVal = app->exec();
