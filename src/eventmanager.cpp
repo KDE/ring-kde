@@ -304,16 +304,7 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
       case Qt::Key_Return:
       case Qt::Key_Enter:
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->selection()) {
-            ContactMethod* n = m_pParent->m_pAutoCompletion->selection();
-            Call* call = m_pParent->currentCall();
-            if (call->state() == Call::State::DIALING || call->state() == Call::State::NEW) {
-               call->setDialNumber(n->uri());
-               if (PhoneDirectoryModel::instance()->callWithAccount()
-                && n->account() && n->account()->id() != "IP2IP") //FIXME do not hardcode this
-                  call->setAccount(n->account());
-               m_pParent->m_pAutoCompletion->reset();
-               call->performAction(Call::Action::ACCEPT);
-            }
+            m_pParent->m_pAutoCompletion->callSelectedNumber();
          }
          else
             enter();
