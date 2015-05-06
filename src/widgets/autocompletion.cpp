@@ -126,6 +126,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125
    m_pModel = new NumberCompletionModel();
    m_pModel->setDisplayMostUsedNumbers(true);
    m_pView->setModel(m_pModel);
+   m_pView->setSelectionModel(m_pModel->selectionModel());
 
    connect(m_pModel,SIGNAL(enabled(bool))  ,this, SLOT(slotVisibilityChange(bool))   );
    connect(m_pModel,SIGNAL(layoutChanged()),this, SLOT(slotLayoutChanged()));
@@ -137,6 +138,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125
       QResizeEvent r(size(),size());
       eventFilter(nullptr,&r);
    }
+
    setMinimumSize(0,m_Height);
    m_pDelegate = new AutoCompletionDelegate2();
    m_pView->setItemDelegate(m_pDelegate);
@@ -173,6 +175,11 @@ void AutoCompletion::moveDown()
    }
    else
       m_pView->selectionModel()->setCurrentIndex(m_pModel->index(0,0),QItemSelectionModel::ClearAndSelect);
+}
+
+void AutoCompletion::callSelectedNumber()
+{
+   m_pModel->callSelectedNumber();
 }
 
 void AutoCompletion::setUseUnregisteredAccounts(bool value) {

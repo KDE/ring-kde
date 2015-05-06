@@ -69,6 +69,7 @@ private:
 public Q_SLOTS:
    void moveUp();
    void moveDown();
+   void callSelectedNumber();
    void setCall(Call* call);
 
 private Q_SLOTS:
