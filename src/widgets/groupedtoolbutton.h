@@ -46,7 +46,7 @@ public:
     void setGroupPosition(GroupedToolButton::GroupPosition groupPosition);
 
 protected:
-    virtual void paintEvent(QPaintEvent* event);
+    virtual void paintEvent(QPaintEvent* event) override;
 
 private:
     GroupPosition mGroupPosition;

@@ -48,18 +48,18 @@ class CategorizedTreeView : public QTreeView
 
    void setHoverState(const QModelIndex& idx);
 
-   virtual void setModel ( QAbstractItemModel * model );
+   virtual void setModel ( QAbstractItemModel * model ) override;
 
   protected:
-   virtual void contextMenuEvent ( QContextMenuEvent * e );
-   virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
-   virtual void dragEnterEvent   ( QDragEnterEvent   * e );
-   virtual void dragMoveEvent    ( QDragMoveEvent    * e );
-   virtual void dropEvent        ( QDropEvent        * e );
-   virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const;
-   virtual void mouseDoubleClickEvent(QMouseEvent* event);
-   virtual void startDrag ( Qt::DropActions supportedActions );
-   virtual bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event);
+   virtual void contextMenuEvent ( QContextMenuEvent * e ) override;
+   virtual void dragLeaveEvent   ( QDragLeaveEvent   * e ) override;
+   virtual void dragEnterEvent   ( QDragEnterEvent   * e ) override;
+   virtual void dragMoveEvent    ( QDragMoveEvent    * e ) override;
+   virtual void dropEvent        ( QDropEvent        * e ) override;
+   virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const override;
+   virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+   virtual void startDrag ( Qt::DropActions supportedActions ) override;
+   virtual bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event) override;
 
    QModelIndex m_HoverIdx;
 

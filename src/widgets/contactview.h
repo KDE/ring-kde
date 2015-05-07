@@ -24,10 +24,10 @@ class ContactView : public CategorizedTreeView
    Q_OBJECT
 public:
    explicit ContactView(QWidget* parent = nullptr);
-   virtual QRect visualRect(const QModelIndex& index) const;
+   virtual QRect visualRect(const QModelIndex& index) const override;
 
 protected:
-   virtual bool viewportEvent ( QEvent * event );
+   virtual bool viewportEvent ( QEvent * event ) override;
 //    virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 private:
    QRect phoneRect(const QModelIndex & index) const;

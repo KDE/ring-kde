@@ -39,11 +39,11 @@ public:
    virtual ~RingingTip();
 
    //It is not a notification, it doesn't need to be as visible
-   virtual float opacity() { return 0.5f; }
+   virtual float opacity()  override { return 0.5f; }
 
 protected:
-   virtual QRect getDecorationRect();
-   virtual void paintDecorations(QPainter& p, const QRect& textRect);
+   virtual QRect getDecorationRect() override;
+   virtual void paintDecorations(QPainter& p, const QRect& textRect) override;
 
 private:
    QTimer*       m_pTimer           ;

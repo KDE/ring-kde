@@ -56,7 +56,7 @@ public:
    void setCurrentTip(Tip* tip);
 
 protected:
-   bool eventFilter(QObject *obj, QEvent *event);
+   virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
    //Methods

@@ -33,9 +33,9 @@ public:
    explicit HistoryDelegate(QTreeView* parent = nullptr);
    virtual ~HistoryDelegate();
 
-   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 private:
    QTreeView* m_pParent;
    DelegateDropOverlay* m_pDelegatedropoverlay;

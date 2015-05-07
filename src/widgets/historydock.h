@@ -97,7 +97,7 @@ private:
 
 public Q_SLOTS:
    void enableDateRange(bool disable);
-   virtual void keyPressEvent(QKeyEvent* event);
+   virtual void keyPressEvent(QKeyEvent* event) override;
    void slotDateRangeCanched();
 
 private Q_SLOTS:
@@ -122,9 +122,9 @@ class HistorySortFilterProxyModel : public QSortFilterProxyModel
 public:
    explicit HistorySortFilterProxyModel(HistoryDock* parent) :
       QSortFilterProxyModel(parent),m_pParent(parent) {}
-      virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+      virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const override;
 private:
    HistoryDock* m_pParent;
 };
@@ -138,7 +138,7 @@ public:
       m_pDock =  parent;
    }
 protected:
-   bool eventFilter(QObject *obj, QEvent *event);
+   bool eventFilter(QObject *obj, QEvent *event) override;
 private:
    HistoryDock* m_pDock;
 };

@@ -37,9 +37,9 @@ public:
    virtual ~ConnectionLostTip();
 
 protected:
-   virtual QRect getDecorationRect();
-   virtual void paintDecorations(QPainter& p, const QRect& textRect);
-   virtual QRect getTextRect(const QString& text);
+   virtual QRect getDecorationRect() override;
+   virtual void paintDecorations(QPainter& p, const QRect& textRect) override;
+   virtual QRect getTextRect(const QString& text) override;
 
 private:
    QTimer*   m_pTimer     ;

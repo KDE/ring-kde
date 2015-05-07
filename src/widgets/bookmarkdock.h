@@ -75,7 +75,7 @@ class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
 public:
    explicit BookmarkSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
 protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const override
    {
       if (!source_parent.isValid() ) { //Is a category
          for (int i=0;i<CategorizedBookmarkModel::instance()->rowCount(CategorizedBookmarkModel::instance()->index(source_row,0,source_parent));i++) {

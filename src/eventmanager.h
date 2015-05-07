@@ -65,11 +65,11 @@ public:
    void escape();
 
    //Implement macro key listener
-   virtual void addDTMF(const QString& sequence);
+   virtual void addDTMF(const QString& sequence) override;
 
 
 protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event);
+   virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
    //Attributes

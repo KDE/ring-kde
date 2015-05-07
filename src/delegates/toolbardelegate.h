@@ -29,7 +29,7 @@ public:
    explicit ToolbarDelegate(QWidget* view);
    virtual ~ToolbarDelegate();
 
-   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 //    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:

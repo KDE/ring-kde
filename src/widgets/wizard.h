@@ -32,7 +32,7 @@ public:
    virtual ~Wizard();
 
 protected:
-   virtual void paintEvent  (QPaintEvent*  event );
+   virtual void paintEvent  (QPaintEvent*  event ) override;
 
 private:
    QWidget*     m_pCurrentPage;
@@ -41,7 +41,7 @@ private:
    Account*     m_pAccount    ;
 
    //Event filter
-   bool eventFilter( QObject *obj, QEvent *event);
+   bool eventFilter( QObject *obj, QEvent *event) override;
 
 private Q_SLOTS:
    void slotNext();

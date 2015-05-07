@@ -34,12 +34,12 @@ class RemoveConferenceTip : public Tip
 public:
    explicit RemoveConferenceTip(QWidget* parent = nullptr);
    virtual ~RemoveConferenceTip();
-   virtual QSize reload(const QRect& availableSize,bool force = false);
+   virtual QSize reload(const QRect& availableSize,bool force = false) override;
 
 protected:
-   virtual QRect getDecorationRect();
-   virtual void  paintDecorations(QPainter& p, const QRect& textRect);
-   
+   virtual QRect getDecorationRect() override;
+   virtual void  paintDecorations(QPainter& p, const QRect& textRect) override;
+
 private:
    QRect m_DecoRect;
 };

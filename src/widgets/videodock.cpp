@@ -44,10 +44,10 @@ class VideoWidgetItem : public QWidgetItem {
 public:
    VideoWidgetItem(VideoWidget3* m_pMainWidget) : QWidgetItem(m_pMainWidget),m_pWdg(m_pMainWidget){}
    virtual ~VideoWidgetItem(){}
-   virtual bool hasHeightForWidth () const {
+   virtual bool hasHeightForWidth () const override {
       return true;
    }
-   virtual int heightForWidth ( int w ) const {
+   virtual int heightForWidth ( int w ) const override {
       return m_pWdg->heightForWidth(w);
    }
 private:
@@ -87,7 +87,7 @@ class FullscreenEventFilter : public QObject {
 public:
    explicit FullscreenEventFilter(VideoDock* parent) : QObject(parent),m_pParent(parent){}
 protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event) {
+   virtual bool eventFilter(QObject *obj, QEvent *event) override {
       Q_UNUSED(obj);
       if (event->type() == QEvent::KeyPress) {
          QKeyEvent* e = static_cast<QKeyEvent*>(event);

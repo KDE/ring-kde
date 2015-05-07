@@ -48,11 +48,11 @@ public:
    void setPreviewOnly(bool prev);
 
 protected:
-   virtual void resizeEvent(QResizeEvent* event);
-   virtual void dragLeaveEvent   ( QDragLeaveEvent   * e );
-   virtual void dragEnterEvent   ( QDragEnterEvent   * e );
-   virtual void dragMoveEvent    ( QDragMoveEvent    * e );
-   virtual void dropEvent        ( QDropEvent        * e );
+   virtual void resizeEvent(QResizeEvent* event) override;
+   virtual void dragLeaveEvent   ( QDragLeaveEvent   * e ) override;
+   virtual void dragEnterEvent   ( QDragEnterEvent   * e ) override;
+   virtual void dragMoveEvent    ( QDragMoveEvent    * e ) override;
+   virtual void dropEvent        ( QDropEvent        * e ) override;
 
 private:
    VideoScene*          m_pScene  ;

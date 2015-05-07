@@ -49,7 +49,7 @@ public:
    void setupForLineEdit(QLineEdit* le);
    void reset();
 protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event);
+   virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
    QHBoxLayout* m_pLayout;
@@ -76,7 +76,7 @@ public:
    void setModel(SecurityEvaluationModel* model);
 protected:
    //Virtual events
-   virtual void mouseReleaseEvent ( QMouseEvent * event );
+   virtual void mouseReleaseEvent ( QMouseEvent * event ) override;
 private:
    //Attributes
    SecurityProgress* m_pLevel;

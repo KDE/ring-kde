@@ -31,7 +31,7 @@ public:
    VideoScene();
 
    //Mutator
-   void drawBackground(QPainter *painter, const QRectF &rect);
+   void drawBackground(QPainter *painter, const QRectF &rect) override;
 
    //Setters
    void addFrame  ( VideoGLFrame* frame );
@@ -39,7 +39,7 @@ public:
 
 protected:
    //Events
-   virtual void wheelEvent       ( QGraphicsSceneWheelEvent* wheelEvent );
+   virtual void wheelEvent       ( QGraphicsSceneWheelEvent* wheelEvent ) override;
 
 private:
    //Atributes

@@ -37,13 +37,13 @@ public:
 
    //Setters
    void setCornerWidget    ( QWidget* wdg     );
-   virtual void setVisible ( bool     enabled );
+   virtual void setVisible ( bool     enabled ) override;
    void setAccessMessage   (const QString &message );
    void setCurrentCall     ( Call* call       );
 
 protected:
-   virtual void paintEvent  (QPaintEvent*  event );
-   virtual void resizeEvent (QResizeEvent* e     );
+   virtual void paintEvent  (QPaintEvent*  event ) override;
+   virtual void resizeEvent (QResizeEvent* e     ) override;
 
 private:
    QWidget* m_pIcon        ;
@@ -56,7 +56,7 @@ private:
    Call*    m_pCurrentCall ;
 
    //Event filter
-   bool eventFilter( QObject *obj, QEvent *event);
+   bool eventFilter( QObject *obj, QEvent *event) override;
 
 private Q_SLOTS:
    void changeVisibility();

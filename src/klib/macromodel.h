@@ -87,14 +87,14 @@ public:
    MacroModel::MacroCategory* createCategory(const QString& name);
 
    //Model implementation
-   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   );
-   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const;
-   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const;
-   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const;
-   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const;
-   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const;
-   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const;
-   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+   virtual bool          setData     ( const QModelIndex& index, const QVariant &value, int role   ) override;
+   virtual QVariant      data        ( const QModelIndex& index, int role = Qt::DisplayRole        ) const override;
+   virtual int           rowCount    ( const QModelIndex& parent = QModelIndex()                   ) const override;
+   virtual Qt::ItemFlags flags       ( const QModelIndex& index                                    ) const override;
+   virtual int           columnCount ( const QModelIndex& parent = QModelIndex()                   ) const override;
+   virtual QModelIndex   parent      ( const QModelIndex& index                                    ) const override;
+   virtual QModelIndex   index       ( int row, int column, const QModelIndex& parent=QModelIndex()) const override;
+   virtual QVariant      headerData  ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
 private:
    //Singleton constructor

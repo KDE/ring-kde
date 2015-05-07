@@ -35,9 +35,9 @@ void AutoComboBox::bindToModel(QAbstractItemModel* m, QItemSelectionModel* s)
    if (m_pSelectionModel)
       disconnect(m_pSelectionModel,&QItemSelectionModel::currentChanged,this,&AutoComboBox::slotModelSelectionChanged);
 
+   blockSignals(true);
    setModel(m);
    m_pSelectionModel = s;
-   blockSignals(true);
    setCurrentIndex(s->currentIndex().row());
    blockSignals(false);
 

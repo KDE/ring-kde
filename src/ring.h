@@ -100,8 +100,8 @@ private:
    void setObjectNames();
 
 protected:
-   virtual bool  queryClose (                )      ;
-   virtual QSize sizeHint   (                ) const;
+   virtual bool  queryClose (                )       override;
+   virtual QSize sizeHint   (                ) const override;
 
 
 public:

@@ -33,9 +33,9 @@ class ColorDelegate : public AccountListColorDelegate {
 public:
    explicit ColorDelegate(QPalette pal);
 
-   virtual QVariant getColor(const Account* a);
+   virtual QVariant getColor(const Account* a) override;
 
-   virtual QVariant getIcon(const Account* a);
+   virtual QVariant getIcon(const Account* a) override;
 private:
    QPalette m_Pal;
    QColor   m_Green;

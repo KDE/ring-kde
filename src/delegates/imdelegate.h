@@ -31,8 +31,8 @@ class ImDelegates : public QStyledItemDelegate
 public:
    explicit ImDelegates(IMTab* parent = nullptr);
 protected:
-   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-   virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+   virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 private:
    IMTab* m_pParent;
 };

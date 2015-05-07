@@ -26,7 +26,7 @@ class AutoCompletionDelegate : public QStyledItemDelegate
 public:
    AutoCompletionDelegate();
 
-   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
 
 #endif

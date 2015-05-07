@@ -46,7 +46,7 @@ public:
 
 protected:
    //Virtual events
-   void paintEvent ( QPaintEvent*  event);
+   void paintEvent ( QPaintEvent*  event) override;
 
 private:
    //Attributes

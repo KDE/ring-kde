@@ -53,7 +53,7 @@ public:
       Ring::app()->installEventFilter(this);
    }
 protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event) {
+   virtual bool eventFilter(QObject *obj, QEvent *event)  override {
       Q_UNUSED(obj)
       if (event->type() == QEvent::FocusIn || event->type() == QEvent::FocusOut) {
          QFocusEvent* e = static_cast<QFocusEvent*>(event);

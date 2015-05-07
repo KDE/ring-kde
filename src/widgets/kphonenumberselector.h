@@ -28,7 +28,7 @@ class KPhoneNumberSelector : public ContactMethodSelector
 {
 public:
    virtual ~KPhoneNumberSelector(){}
-   virtual ContactMethod* getNumber(const Person* contact);
+   virtual ContactMethod* getNumber(const Person* contact) override;
    static void init();
 };
 

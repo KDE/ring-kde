@@ -30,9 +30,9 @@ class ContactDelegate : public QStyledItemDelegate
 public:
    explicit ContactDelegate(CategorizedTreeView* parent);
 
-   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
    void setChildDelegate(ContactMethodDelegate* child);
 

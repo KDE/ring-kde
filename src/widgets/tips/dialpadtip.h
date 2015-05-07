@@ -36,8 +36,8 @@ public:
    virtual ~DialPadTip();
 
 protected:
-   virtual QRect getDecorationRect();
-   virtual void  paintDecorations(QPainter& p, const QRect& textRect);
+   virtual QRect getDecorationRect() override;
+   virtual void  paintDecorations(QPainter& p, const QRect& textRect) override;
 };
 
 #endif

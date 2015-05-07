@@ -82,10 +82,10 @@ public Q_SLOTS:
 
 protected:
    //Virtual events
-   void paintEvent ( QPaintEvent*  event);
-   void hideEvent  ( QHideEvent*   event);
-   void showEvent  ( QShowEvent*   event);
-   bool eventFilter( QObject *obj, QEvent *event);
+   void paintEvent ( QPaintEvent*  event) override;
+   void hideEvent  ( QHideEvent*   event) override;
+   void showEvent  ( QShowEvent*   event) override;
+   bool eventFilter( QObject *obj, QEvent *event) override;
 
    //Helpers
    ObserverToolButton* createButton(ExtendedAction* action);

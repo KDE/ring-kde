@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>870</width>
+    <width>900</width>
     <height>622</height>
    </rect>
   </property>
@@ -666,7 +666,7 @@
               <enum>QFormLayout::ExpandingFieldsGrow</enum>
              </property>
              <item row="0" column="1">
-              <widget class="QComboBox" name="comboBox_ni_local_address"/>
+              <widget class="AutoComboBox" name="comboBox_ni_local_address"/>
              </item>
              <item row="1" column="1">
               <widget class="QSpinBox" name="spinBox_ni_local_port">
@@ -1272,7 +1272,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
-                   <widget class="QComboBox" name="combo_security_STRP">
+                   <widget class="AutoComboBox" name="combo_security_STRP">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1785,6 +1785,11 @@
    <header>kurlrequester.h</header>
   </customwidget>
   <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">widgets/categorizedtreeview.h</header>
+  </customwidget>
+  <customwidget>
    <class>LeftToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
@@ -1795,14 +1800,14 @@
    <header>widgets/groupedtoolbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>widgets/autocombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>CenterToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CategorizedTreeView</class>
-   <extends>QTreeView</extends>
-   <header location="global">widgets/categorizedtreeview.h</header>
   </customwidget>
   <customwidget>
    <class>SecurityLevelWidget</class>
@@ -1815,11 +1820,6 @@
    <extends>QWidget</extends>
    <header>widgets/securityprogress.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>AutoComboBox</class>
-   <extends>QComboBox</extends>
-   <header>widgets/autocombobox.h</header>
   </customwidget>
   <customwidget>
    <class>DlgDht</class>

@@ -28,15 +28,15 @@ class CollectionInterface;
 ///Ringlib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
 class LIB_EXPORT ItemModelStateSerialization : public ItemModelStateSerializationDelegate {
 public:
-   virtual bool save();
-   virtual bool load();
+   virtual bool save() override;
+   virtual bool load() override;
    virtual ~ItemModelStateSerialization();
 
    //Getter
-   virtual bool isChecked(const CollectionInterface* backend) const;
+   virtual bool isChecked(const CollectionInterface* backend) const override;
 
    //Setter
-   virtual bool setChecked(const CollectionInterface* backend, bool enabled);
+   virtual bool setChecked(const CollectionInterface* backend, bool enabled) override;
 
 private:
    QHash<QByteArray,bool> m_hChecked;

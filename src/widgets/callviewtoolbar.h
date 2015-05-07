@@ -35,7 +35,7 @@ private:
    QTableView*   m_pContent;
 
 public Q_SLOTS:
-   virtual void updateState();
+   virtual void updateState() override;
 };
 
 #endif

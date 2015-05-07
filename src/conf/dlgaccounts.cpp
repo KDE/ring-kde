@@ -324,7 +324,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setSipStunServer               ( line_stun->text()                                                        );
    /**/ ACC setPublishedPort               ( spinBox_pa_published_port->value()                                       );
    /**/ ACC setPublishedAddress            ( lineEdit_pa_published_address ->text()                                   );
-   /**/ ACC setLocalInterface              ( comboBox_ni_local_address->currentText()                                 );
    /**/ ACC setRingtoneEnabled             ( m_pEnableRingtoneGB->isChecked()                                         );
    /**/ ACC setDTMFType                    ( m_pDTMFOverRTP->isChecked()?DtmfType::OverRtp:DtmfType::OverSip          );
    /**/ ACC setAutoAnswer                  ( m_pAutoAnswer->isChecked()                                               );
@@ -567,14 +566,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
    m_pVideoCodecGB->setVisible(false);
    #endif
 
-   comboBox_ni_local_address->clear();
-   comboBox_ni_local_address->setModel(NetworkInterfaceModel::instance());
+   comboBox_ni_local_address->bindToModel(ACC networkInterfaceModel(), ACC networkInterfaceModel()->selectionModel());
 
    spinBox_ni_local_port->setValue( ACC localPort());
-   if (comboBox_ni_local_address->findText( ACC localInterface()) >=0)
-      comboBox_ni_local_address->setCurrentIndex(comboBox_ni_local_address->findText( ACC localInterface()));
-   else //Just to be sure
-      comboBox_ni_local_address->setCurrentIndex(0);
 
    if(protocolIndex == 0 || ACC isNew()) { // if sip selected
       checkbox_stun->setChecked( ACC isSipStunEnabled());

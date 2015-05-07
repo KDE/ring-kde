@@ -60,7 +60,7 @@ public:
       setDynamicSortFilter(true);
    }
 protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
+   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const override;
 };
 
 ///ContactDock: Dock to access contacts
@@ -107,7 +107,7 @@ private:
    };
 
 public Q_SLOTS:
-   virtual void keyPressEvent(QKeyEvent* event);
+   virtual void keyPressEvent(QKeyEvent* event) override;
 
 private Q_SLOTS:
    void setHistoryVisible  ( bool visible          );
@@ -140,7 +140,7 @@ public:
    }
 
 protected:
-   bool eventFilter(QObject *obj, QEvent *event);
+   bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
    ContactDock* m_pDock;

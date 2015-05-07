@@ -92,11 +92,11 @@ public Q_SLOTS:
    /**
     *   Reimplements KConfigDialog
     */
-   void updateWidgets();
+   void updateWidgets() override;
    /**
     *   Reimplements KConfigDialog
     */
-   void updateSettings();
+   void updateSettings() override;
    /**
     *   @author Jérémy Quentin <jeremy.quentin@gmail.com>
     *   Is implemented in KConfigDialog only from KDE4.3
@@ -113,11 +113,11 @@ public Q_SLOTS:
     *   Cancel modifications (apply only to model changes)
     */
    void cancelSettings();
-   
+
    /**
     * @return whether any custom widget has changed in the dialog.
     */
-   bool hasChanged();
+   bool hasChanged() override;
 
    ///Are there required fields left to complete
    bool hasIncompleteRequiredFields();
