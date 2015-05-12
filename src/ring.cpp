@@ -327,8 +327,7 @@ Ring::Ring(QWidget* parent)
    m_pAccountStatus = new AutoComboBox(bar);
    m_pAccountStatus->setVisible(ConfigurationSkeleton::displayAccountBox());
    m_pCurAccL->setVisible(ConfigurationSkeleton::displayAccountBox());
-   m_pAccountModel = new AvailableAccountModel(this);
-   m_pAccountStatus->bindToModel(m_pAccountModel,m_pAccountModel->selectionModel());
+   m_pAccountStatus->bindToModel(AvailableAccountModel::instance(),AvailableAccountModel::instance()->selectionModel());
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
    connect(m_pPresent,SIGNAL(toggled(bool)),m_pPresenceDock,SLOT(setVisible(bool)));
@@ -379,7 +378,7 @@ Ring::~Ring()
    delete m_pCentralDW       ;
    delete m_pHistoryDW       ;
    delete m_pBookmarkDW      ;
-   delete m_pAccountModel    ;
+   delete AvailableAccountModel::instance()    ;
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
 

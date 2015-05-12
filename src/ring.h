@@ -94,7 +94,6 @@ private:
    QLabel*        m_pCurAccL         ;
 
    static Ring*            m_sApp;
-   AvailableAccountModel* m_pAccountModel;
 
    //Setters
    void setObjectNames();

@@ -199,6 +199,7 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
    /**/connect(lineEdit_pa_published_address,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(edit_tls_private_key_password,     SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pUserAgent,                      SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
+   /**/connect(line_turn,                         SIGNAL(textEdited(QString))            , this   , SLOT(changedAccountList())              );
    /**/connect(m_pBootstrapPort,                  SIGNAL(valueChanged(int))              , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_authority,                SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
    /**/connect(file_tls_endpoint,                 SIGNAL(textChanged(QString))           , this   , SLOT(changedAccountList())              );
@@ -292,8 +293,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
       line_turn->setText(QString());
    }
 
-   const KeyExchangeModel::Type currentKeyExchange = (!groupbox_STRP_keyexchange->isChecked())?KeyExchangeModel::Type::NONE:static_cast<KeyExchangeModel::Type>(combo_security_STRP->currentIndex());
-
    //ACCOUNT DETAILS
    //                                                                     WIDGET VALUE                                 /
    /**/ ACC setUsername                    ( edit4_user->text()                                                       );
@@ -309,7 +308,6 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setBootstrapPort               ( m_pBootstrapPort->value()                                                );
    /**/ ACC setTlsServerName               ( edit_tls_outgoing->text()                                                );
    /**/ ACC setTlsNegotiationTimeoutSec    ( spinbox_tls_timeout_sec->value()                                         );
-   /**/ ACC setKeyExchange                 ( currentKeyExchange                                                       );
    /**/ ACC setTlsVerifyServer             ( check_tls_incoming->isChecked()                                          );
    /**/ ACC setTlsVerifyClient             ( check_tls_answer->isChecked()                                            );
    /**/ ACC setTlsRequireClientCertificate ( check_tls_requier_cert->isChecked()                                      );
@@ -320,8 +318,10 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    /**/ ACC setZrtpNotSuppWarning          ( checkbox_ZRTP_warn_supported->isChecked()                                );
    /**/ ACC setZrtpHelloHash               ( checkbox_ZTRP_send_hello->isChecked()                                    );
    /**/ ACC setSipStunEnabled              ( checkbox_stun->isChecked()                                               );
+   /**/ ACC setTurnEnabled                 ( checkbox_turn->isChecked()                                               );
    /**/ ACC setPublishedSameAsLocal        ( radioButton_pa_same_as_local->isChecked()                                );
    /**/ ACC setSipStunServer               ( line_stun->text()                                                        );
+   /**/ ACC setTurnServer                  ( line_turn->text()                                                        );
    /**/ ACC setPublishedPort               ( spinBox_pa_published_port->value()                                       );
    /**/ ACC setPublishedAddress            ( lineEdit_pa_published_address ->text()                                   );
    /**/ ACC setRingtoneEnabled             ( m_pEnableRingtoneGB->isChecked()                                         );
@@ -427,8 +427,10 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/checkbox_ZRTP_warn_supported->setChecked (  ACC isZrtpNotSuppWarning            ());
    /**/checkbox_ZTRP_send_hello->setChecked     (  ACC isZrtpHelloHash                 ());
    /**/checkbox_stun->setChecked                (  ACC isSipStunEnabled                ());
+   /**/checkbox_turn->setChecked                (  ACC isTurnEnabled                   ());
    /**/m_pEnableVideo->setChecked               (  ACC isVideoEnabled                  ());
    /**/line_stun->setText                       (  ACC sipStunServer                   ());
+   /**/line_turn->setText                       (  ACC turnServer                      ());
    /**/spinbox_regExpire->setValue              (  ACC registrationExpire              ());
    /**/radioButton_pa_same_as_local->setChecked (  ACC isPublishedSameAsLocal          ());
    /**/radioButton_pa_custom->setChecked        ( !account->isPublishedSameAsLocal     ());
@@ -449,7 +451,6 @@ void DlgAccounts::loadAccount(QModelIndex item)
    /**/m_pMaxAudioPort->setValue                (  ACC audioPortMax                    ());
    /**/m_pMinAudioPort->setValue                (  ACC audioPortMin                    ());
    /**/m_pUserAgent->setText                    (  ACC userAgent                       ());
-   /**/checkbox_turn->setChecked                (  ACC isTurnEnabled                   ());
    /**/m_pUseCustomUserAgent->setChecked        (  ACC hasCustomUserAgent              ());
    /*                                                                                    */
    if (account->protocol() != Account::Protocol::RING)
@@ -482,11 +483,9 @@ void DlgAccounts::loadAccount(QModelIndex item)
    combo_tls_method->bindToModel(ACC tlsMethodModel(), ACC tlsMethodModel()->selectionModel());
    edit2_protocol->bindToModel(ACC protocolModel(), ACC protocolModel()->selectionModel());
 
-   combo_security_STRP->setModel(ACC keyExchangeModel());
+   combo_security_STRP->bindToModel(ACC keyExchangeModel(),ACC keyExchangeModel()->selectionModel());
+
    groupbox_STRP_keyexchange->setChecked(ACC isSrtpEnabled());
-   if (!(ACC keyExchange() == KeyExchangeModel::Type::NONE)) {
-      /**/combo_security_STRP->setCurrentIndex     (  ACC keyExchangeModel()->toIndex( ACC keyExchange()).row());
-   }
 
    updateCombo(0);
 
