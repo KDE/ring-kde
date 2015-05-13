@@ -19,19 +19,24 @@
 
 #include <QIcon>
 #include "playeroverlay.h"
-#include "call.h"
+#include "media/recording.h"
 
 Player::Player(QWidget* parent) : QWidget(parent),m_pParent(static_cast<PlayerOverlay*>(parent))
 {
    setupUi(this);
    m_pPlayPause->setIcon( QIcon::fromTheme( "media-playback-start" ));
    m_pStop->setIcon( QIcon::fromTheme( "media-playback-stop"  ));
-   connect( m_pParent->m_pCall , SIGNAL(playbackPositionChanged(int,int)) , this               , SLOT(slotUpdateSlider(int,int)));
-   connect( m_pPlayPause       , SIGNAL(clicked())                        , m_pParent->m_pCall , SLOT(playRecording()));
-   connect( m_pStop            , SIGNAL(clicked())                        , m_pParent->m_pCall , SLOT(stopRecording()));
+   slotConnectSlider();
+      void formattedTimeElapsedChanged(const QString& formattedValue);
+   ///Emitted when the formatted duration string change
+   void formattedDurationChanged   (const QString& formattedValue);
+   ///Emitted when the formatted time left string change
+   void formattedTimeLeftChanged   (const QString& formattedValue);
+   m_pSlider->setMaximum(10000);
+   connect( m_pPlayPause       , SIGNAL(clicked())                        , m_pParent->m_pRecording , SLOT(play()));
+   connect( m_pStop            , SIGNAL(clicked())                        , m_pParent->m_pRecording , SLOT(stop()));
    connect( m_pSlider          , SIGNAL(sliderPressed())                  , this               , SLOT(slotDisconnectSlider()));
    connect( m_pSlider          , SIGNAL(sliderReleased())                 , this               , SLOT(slotConnectSlider()));
-//    setAttribute( Qt::WA_TranslucentBackground, true );
 }
 
 void Player::slotHide()
@@ -42,24 +47,35 @@ void Player::slotHide()
 
 void Player::slotDisconnectSlider()
 {
-   disconnect(m_pParent->m_pCall,SIGNAL(playbackPositionChanged(int,int)),this,SLOT(slotUpdateSlider(int,int)));
+   disconnect(m_pParent->m_pRecording ,&Media::Recording::playbackPositionChanged     ,this,&Player::slotUpdateSlider           );
+   disconnect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeElapsedChanged ,this,&Player::formattedTimeElapsedChanged);
+   disconnect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeLeftChanged    ,this,&Player::formattedTimeLeftChanged   );
 }
 
 void Player::slotConnectSlider()
 {
-   m_pParent->m_pCall->seekRecording(((double)m_pSlider->value())/((double)m_pSlider->maximum()) * 100);
-   connect(m_pParent->m_pCall,SIGNAL(playbackPositionChanged(int,int)),this,SLOT(slotUpdateSlider(int,int)));
+   m_pParent->m_pRecording->seek(((double)m_pSlider->value())/((double)m_pSlider->maximum()) * 100);
+   connect(m_pParent->m_pRecording ,&Media::Recording::playbackPositionChanged     ,this,&Player::slotUpdateSlider           );
+   connect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeElapsedChanged ,this,&Player::formattedTimeElapsedChanged);
+   connect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeLeftChanged    ,this,&Player::formattedTimeLeftChanged   );
 }
 
-void Player::slotUpdateSlider(int pos, int size)
+void Player::slotUpdateSlider(double pos)
 {
-   m_pLeft->setText(QString("%1").arg((size/1000-pos/1000)/60,2,10,QChar('0'))+':'+QString("%1").arg((size/1000-pos/1000)%60,2,10,QChar('0')));
-   m_pElapsed->setText(QString("%1").arg((pos/1000)/60,2,10,QChar('0'))+':'+QString("%1").arg((pos/1000)%60,2,10,QChar('0')));
-   m_pSlider->setMaximum(size);
-   m_pSlider->setValue(pos);
+   m_pSlider->setValue(pos*10000);
+}
+
+void Player::formattedTimeElapsedChanged(const QString& formattedValue)
+{
+   m_pElapsed->setText(formattedValue);
+}
+
+void Player::formattedTimeLeftChanged(const QString& formattedValue)
+{
+   m_pLeft->setText(formattedValue);
 }
 
 void Player::play()
 {
-   m_pParent->m_pCall->playRecording();
+   m_pParent->m_pRecording->play();
 }

@@ -120,7 +120,6 @@ public:
 private Q_SLOTS:
    void on_m_pView_windowTitleChangeAsked        ( const QString& message        );
    void on_m_pView_transferCheckStateChangeAsked ( bool  transferCheckState      );
-   void on_m_pView_recordCheckStateChangeAsked   ( bool  recordCheckState        );
    void on_m_pView_incomingCall                  ( const Call*    call           );
    void currentPriorAccountChanged               ( Account* newPrior             );
    void quitButton                               (                               );

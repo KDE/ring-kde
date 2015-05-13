@@ -53,7 +53,9 @@
 #include <categorizedcontactmodel.h>
 #include "imconversationmanager.h"
 #include "numbercategorymodel.h"
+#include "media/recordingmodel.h"
 #include "klib/minimalhistorybackend.h"
+#include "localrecordingcollection.h"
 #include "delegates/kdepixmapmanipulation.h"
 #include "klib/macromodel.h"
 #include "klib/bookmarkbackend.h"
@@ -65,6 +67,7 @@
 #include <fallbackpersoncollection.h>
 #include "personmodel.h"
 #include "configurator/localhistoryconfigurator.h"
+#include "configurator/audiorecordingconfigurator.h"
 #include "configurator/fallbackpersonconfigurator.h"
 #include "collectionmodel.h"
 #include "delegates/itemmodelstateserializationdelegate.h"
@@ -145,7 +148,8 @@ Ring::Ring(QWidget* parent)
        ******************************************/
 
       PersonModel::instance()            ->registerConfigarator<FallbackPersonCollection>(new FallbackPersonConfigurator(this));
-      CategorizedHistoryModel::instance()->registerConfigarator<MinimalHistoryBackend>(new LocalHistoryConfigurator(this));
+      Media::RecordingModel::instance()  ->registerConfigarator<LocalRecordingCollection>(new AudioRecordingConfigurator(this));
+      CategorizedHistoryModel::instance()->registerConfigarator<MinimalHistoryBackend   >(new LocalHistoryConfigurator  (this));
 
       /*******************************************
        *           Load the collections          *
@@ -492,12 +496,6 @@ void Ring::on_m_pView_windowTitleChangeAsked(const QString& message)
 void Ring::on_m_pView_transferCheckStateChangeAsked(bool transferCheckState)
 {
    ActionCollection::instance()->transferAction()->setChecked(transferCheckState);
-}
-
-///Change record state
-void Ring::on_m_pView_recordCheckStateChangeAsked(bool recordCheckState)
-{
-   ActionCollection::instance()->recordAction()->setChecked(recordCheckState);
 }
 
 ///Called when a call is coming

@@ -175,6 +175,7 @@ SET(
    conf/dlgprofiles.cpp
    conf/dlgdht.cpp
    configurator/localhistoryconfigurator.cpp
+   configurator/audiorecordingconfigurator.cpp
    configurator/fallbackpersonconfigurator.cpp
 )
 
@@ -265,6 +266,7 @@ SET(
    conf/dlgaddressbookbase.ui
    conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
+   conf/dlgaudiorecording.ui
    conf/dlgpresence.ui
    conf/dlgprofiles.ui
    conf/dlgdht.ui

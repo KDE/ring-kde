@@ -324,6 +324,8 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
          return QIcon::fromTheme("folder-bookmark");
       case PixmapManipulationDelegate::CollectionIconHint::CERTIFICATE:
          return QIcon::fromTheme("certificate-server");
+      case PixmapManipulationDelegate::CollectionIconHint::RECORDING:
+         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mailbox.svg"   ));
       case PixmapManipulationDelegate::CollectionIconHint::RINGTONE:
       case PixmapManipulationDelegate::CollectionIconHint::NONE:
       case PixmapManipulationDelegate::CollectionIconHint::PROFILE:

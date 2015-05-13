@@ -40,12 +40,6 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
 {
    setupUi(this);
 
-   m_pAlwaysRecordCK->setChecked(Audio::Settings::instance()->isAlwaysRecording());
-
-   KUrlRequester_destinationFolder->setMode(KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly);
-   KUrlRequester_destinationFolder->setUrl(QUrl(Audio::Settings::instance()->recordPath()));
-   KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
-
    m_pSuppressNoise->setChecked(Audio::Settings::instance()->isNoiseSuppressEnabled());
    m_pCPlayDTMFCk->setChecked(Audio::Settings::instance()->areDTMFMuted());
 
@@ -58,7 +52,6 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    box_alsaPlugin       ->bindToModel(Audio::Settings::instance()->alsaPluginModel    (), Audio::Settings::instance()->alsaPluginModel    ()->selectionModel());
 
    connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
-   connect( m_pAlwaysRecordCK, SIGNAL(clicked(bool))  , this  , SLOT(changed())      );
 
    connect( box_alsaPlugin                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( m_pSuppressNoise                , SIGNAL(toggled(bool))            , SLOT(changed()));
@@ -67,7 +60,6 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
    connect( alsaOutputDevice                , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
    connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( KUrlRequester_destinationFolder , SIGNAL(textChanged(QString))     , SLOT(changed()));
 
 }
 
@@ -87,9 +79,6 @@ void DlgAudio::updateSettings()
 {
    if (m_Changed) {
       m_IsLoading = true;
-
-      Audio::Settings::instance()->setRecordPath(KUrlRequester_destinationFolder->lineEdit()->text());
-      Audio::Settings::instance()->setAlwaysRecording(m_pAlwaysRecordCK->isChecked());
 
       Audio::Settings::instance()->setNoiseSuppressState(m_pSuppressNoise->isChecked());
       Audio::Settings::instance()->setDTMFMuted         (m_pCPlayDTMFCk  ->isChecked());
