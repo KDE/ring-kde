@@ -141,6 +141,12 @@ void DlgAddressBook::updateSettings()
 //    AkonadiPersonCollectionModel::instance()->save();
    CollectionModel::instance()->save();
    m_pManager->updateSettings();
+
+   for (CollectionConfigurationInterface* c : m_lConfigurators) {
+      if (c->hasChanged())
+         c->save();
+   }
+
    m_HasChanged = false;
 }
 
@@ -154,6 +160,11 @@ void DlgAddressBook::changed()
 ///If the "Apply" button need to be enabled
 bool DlgAddressBook::hasChanged()
 {
+   bool configuratorChanged = false;
+   for (CollectionConfigurationInterface* c : m_lConfigurators) {
+      configuratorChanged |= c->hasChanged();
+   }
+
    return m_HasChanged || m_pManager->hasChanged();
 }
 
@@ -193,6 +204,8 @@ void DlgAddressBook::slotEditCollection()
          verticalLayout->addWidget(w);
          m_pManager->addWidget(w);
          m_pCurrent = w;
+         connect(configurator,&CollectionConfigurationInterface::changed,this,&DlgAddressBook::changed);
+         m_lConfigurators << configurator;
       }
 
       m_pExtensions->setModel(col->extensionsModel());

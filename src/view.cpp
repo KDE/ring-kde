@@ -297,7 +297,7 @@ void View::updateWindowCallState()
 
    Call* call = 0;
 
-   bool transfer(false),recordActivated(false);
+   bool transfer(false);
 
    ActionCollection::instance()->mailBoxAction()->setVisible(AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty());
 
@@ -311,7 +311,6 @@ void View::updateWindowCallState()
    }
    else {
       Call::State state = call->state();
-      recordActivated = call->isRecording();
 
       switch (state) {
          case Call::State::INCOMING:
@@ -389,7 +388,6 @@ void View::updateWindowCallState()
 //    emit actionIconsChangeAsked        ( buttonIconFiles );
 //    emit actionTextsChangeAsked        ( actionTexts     );
    emit transferCheckStateChangeAsked ( transfer        );
-   emit recordCheckStateChangeAsked   ( recordActivated );
 } //updateWindowCallState
 
 void View::loadAutoCompletion()

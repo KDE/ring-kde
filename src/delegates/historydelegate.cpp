@@ -33,6 +33,7 @@
 //Ring
 #include <categorizedhistorymodel.h>
 #include <person.h>
+#include <media/media.h>
 #include <callmodel.h>
 #include <contactmethod.h>
 #include <QStandardPaths>
@@ -125,21 +126,20 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    QPixmap pxm = n?PixmapManipulationDelegate::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
 
    //Handle history with recording
-   if (index.data(static_cast<int>(Call::Role::HasRecording)).toBool() && currentState == Call::State::OVER) {
+   if (index.data(static_cast<int>(Call::Role::HasAVRecording)).toBool() && currentState == Call::State::OVER) {
       QObject* obj= qvariant_cast<Call*>(index.data(static_cast<int>(Call::Role::Object)));
       Call* call  = nullptr;
       if (obj)
          call = qobject_cast<Call*>(obj);
-      if (call && QFile::exists(call->recordingPath())) {
-         QPainter painter(&pxm);
-         QPixmap status(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/voicemail.png"));
-         status=status.scaled(QSize(24,24));
-         painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
-         if (m_pParent && m_pParent->indexWidget(index) == nullptr) {
-            auto button = new PlayerOverlay(call,nullptr);
-            button->setCall(call);
-            m_pParent->setIndexWidget(index,button);
-         }
+
+      QPainter painter(&pxm);
+      QPixmap status(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/voicemail.png"));
+      status=status.scaled(QSize(24,24));
+      painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+      if (m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
+         auto button = new PlayerOverlay(call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0],nullptr); //TODO handle more than 1
+         button->setRecording(call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0]);
+         m_pParent->setIndexWidget(index,button);
       }
    }
    //Handle history
@@ -162,7 +162,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    if (currentLifeCycleState == Call::LifeCycleState::PROGRESS) {
       //Record
-      if (index.data(static_cast<int>(Call::Role::IsRecording)).toBool()) {
+      if (index.data(static_cast<int>(Call::Role::IsAVRecording)).toBool()) {
          const static QPixmap record(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/record.png"));
          time_t curTime;
          ::time(&curTime);

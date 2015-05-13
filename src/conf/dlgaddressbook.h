@@ -59,6 +59,7 @@ private:
    QHash<CollectionInterface*,QWidget*> m_hWidgets;
    QWidget* m_pCurrent;
    KConfigDialogManager* m_pManager;
+   QList<CollectionConfigurationInterface*> m_lConfigurators;
 
 public Q_SLOTS:
    void updateWidgets ();

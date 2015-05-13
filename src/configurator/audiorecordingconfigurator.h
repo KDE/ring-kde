@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012-2015 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2015 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,35 +15,45 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef AUDIORECORDINGCONFIGURATOR_H
+#define AUDIORECORDINGCONFIGURATOR_H
 
-#include <QtWidgets/QWidget>
+#include <collectionconfigurationinterface.h>
 
-#include "ui_player.h"
+class Ui_DlgAudioRecording;
 
-class PlayerOverlay;
-
-class Player : public QWidget, public Ui_Player
+class AudioRecordingConfigurator : public CollectionConfigurationInterface
 {
    Q_OBJECT
 public:
-   explicit Player(QWidget* parent = nullptr);
+   AudioRecordingConfigurator(QObject* parent = nullptr);
 
-private:
-   PlayerOverlay* m_pParent;
+   //Getter
+   virtual QByteArray id  () const override;
+   virtual QString    name() const override;
+   virtual QVariant   icon() const override;
+
+   //Mutator
+
+   /**
+    * This function will be called when a collection request to be configured
+    * 
+    * @param col The collection to be edited. It can casted
+    * @param parent can be used for layout information.
+    */
+   virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
+
+   virtual void save() override;
+   virtual bool hasChanged() override;
 
 private Q_SLOTS:
-   void slotHide();
-   void slotDisconnectSlider();
-   void slotConnectSlider();
-   void slotUpdateSlider(double);
-   void play();
-   void formattedTimeElapsedChanged(const QString& formattedValue);
-   void formattedTimeLeftChanged(const QString& formattedValue);
+   void slotChanged();
 
-Q_SIGNALS:
-   void sigHide(bool);
+private:
+   QWidget* m_pDialog;
+   bool m_HasChanged;
+   Ui_DlgAudioRecording* ui;
+
 };
 
 #endif

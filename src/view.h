@@ -134,8 +134,6 @@ Q_SIGNALS:
    void actionTextsChangeAsked        ( const QString*  actionTexts        );
    ///Transfer state has changed
    void transferCheckStateChangeAsked ( bool            transferCheckState );
-   ///Record state has changed
-   void recordCheckStateChangeAsked   ( bool            recordCheckState   );
    ///When a new call is coming
    void incomingCall(const Call * call);
 };

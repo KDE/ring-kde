@@ -20,17 +20,21 @@
 
 #include <QtWidgets/QWidget>
 #include "ui_playeroverlay.h"
-class Call;
+
+namespace Media {
+   class Recording;
+}
+
 class PlayerOverlay : public QWidget, public Ui_PlayerOverlay
 {
    Q_OBJECT
 public:
    friend class Player;
-   explicit PlayerOverlay(Call* call, QWidget* parent = nullptr);
-   void setCall(Call* call);
+   explicit PlayerOverlay(Media::Recording* rec, QWidget* parent = nullptr);
+   void setRecording(Media::Recording* rec);
 
 private:
-   Call* m_pCall;
+   Media::Recording* m_pRecording;
 
 private Q_SLOTS:
    void slotDeleteRecording();

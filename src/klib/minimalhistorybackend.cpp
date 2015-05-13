@@ -33,6 +33,8 @@
 
 //Ring
 #include "call.h"
+#include "media/media.h"
+#include "media/recording.h"
 #include "account.h"
 #include "person.h"
 #include "certificate.h"
@@ -93,8 +95,13 @@ void MinimalHistoryEditor::saveCall(QTextStream& stream, const Call* call)
    stream << QString("%1=%2\n").arg(Call::HistoryMapFields::PEER_NUMBER     ).arg(call->peerContactMethod()->uri() );
    stream << QString("%1=%2\n").arg(Call::HistoryMapFields::DIRECTION       ).arg(direction                      );
    stream << QString("%1=%2\n").arg(Call::HistoryMapFields::MISSED          ).arg(call->isMissed()               );
-   stream << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(call->recordingPath()          );
    stream << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_USED    ).arg(false                          );//TODO
+
+   //TODO handle more than one recording
+   if (call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
+      stream << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0]->path().path());
+   }
+
    if (call->peerContactMethod()->contact()) {
       stream << QString("%1=%2\n").arg(Call::HistoryMapFields::CONTACT_UID  ).arg(
          QString(call->peerContactMethod()->contact()->uid())
@@ -216,7 +223,6 @@ bool MinimalHistoryBackend::load()
             if (pastCall->peerName().isEmpty()) {
                pastCall->setPeerName(QObject::tr("Unknown"));
             }
-            pastCall->setRecordingPath(hc[ Call::HistoryMapFields::RECORDING_PATH ]);
             pastCall->setCollection(this);
 
             editor<Call>()->addExisting(pastCall);
