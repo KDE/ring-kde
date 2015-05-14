@@ -27,6 +27,7 @@
 //Ring
 #include <call.h>
 #include <callmodel.h>
+#include <media/text.h>
 #include <ring.h>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -93,7 +94,7 @@ void Cmd::sendText(const QString& number, const QString& text)
 void Cmd::textMessagePickup(Call* call)
 {
    if (call->state() == Call::State::CURRENT) {
-      call->sendTextMessage(call->property("message").toString());
+      call->addOutgoingMedia<Media::Text>()->send(call->property("message").toString());
       disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
       call->performAction(Call::Action::REFUSE); //HangUp
    }

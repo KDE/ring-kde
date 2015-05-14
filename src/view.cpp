@@ -64,6 +64,7 @@
 #include "contactmethod.h"
 #include "person.h"
 #include "certificate.h"
+#include "media/text.h"
 #include "accountmodel.h"
 #include "availableaccountmodel.h"
 #include "phonedirectorymodel.h"
@@ -494,13 +495,12 @@ void View::on1_voiceMailNotify(Account* a, int count)
    qDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << a->alias();
 }
 
-
 ///Send a text message
 void View::sendMessage()
 {
    Call* call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
    if (dynamic_cast<Call*>(call) && !m_pSendMessageLE->text().isEmpty()) {
-      call->sendTextMessage(m_pSendMessageLE->text());
+      call->addOutgoingMedia<Media::Text>()->send(m_pSendMessageLE->text());
    }
    m_pSendMessageLE->clear();
 }
