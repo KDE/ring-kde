@@ -62,9 +62,7 @@ m_pBookmark(nullptr)
    QWidget* mainWidget     = new QWidget   ( this );
    m_pMostUsedCK           = new QCheckBox ( this );
    setupUi(mainWidget);
-   m_pBottomWidget->setHidden(true);
    m_pSortByCBB   ->setHidden(true);
-   m_pSortByL     ->setHidden(true);
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
    setMinimumSize(250,0);
 
@@ -95,8 +93,6 @@ m_pBookmark(nullptr)
 
    m_pMostUsedCK->setText(i18n("Show most called contacts"));
    m_pMostUsedCK->setVisible(false); //FIXME
-
-   m_pTopWidget->layout()->addWidget ( m_pMostUsedCK );
 
    splitter->setStretchFactor(0,7);
 

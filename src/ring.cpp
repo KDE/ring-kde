@@ -35,6 +35,7 @@
 #include <QAction>
 #include <QStatusBar>
 #include <KNotification>
+#include <KToolBar>
 #include <KShortcutsDialog>
 #include <QComboBox>
 #include <kmessagebox.h>
@@ -288,6 +289,21 @@ Ring::Ring(QWidget* parent)
 
    m_pInitialized = true ;
 
+   //Add the toolbar Ring icon
+   QList<KToolBar*> toolBars = this->findChildren<KToolBar*>();
+   if (toolBars.size()) {
+      KToolBar* tb = toolBars[0];
+      QWidget* spacer = new QWidget(tb);
+      spacer->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+      tb->addWidget(spacer);
+      QToolButton* btn = new QToolButton(tb);
+      btn->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Expanding);
+      btn->setStyleSheet("padding:0px;spacing:0px;margin:0px;");
+      btn->setIcon(QIcon(":/appicon/icons/sc-apps-ring-kde.svgz"));
+      tb->addWidget(btn);
+   }
+
+   //Statusbar
    QStatusBar* bar = statusBar();
    int left,top,right,bottom;
    bar->layout()->getContentsMargins ( &left, &top, &right, &bottom );
@@ -310,6 +326,17 @@ Ring::Ring(QWidget* parent)
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
    connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
    connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
+
+   //Add the Ring hash
+   bar->addWidget(new QLabel(i18n("Your Ring ID:"),bar));
+   QLabel* ringId = new QLabel(bar);
+   QFont f = ringId->font();
+   f.setStyleHint(QFont::Monospace);
+   ringId->setFont(f);
+   ringId->setTextInteractionFlags(Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard);
+   Account* a = AvailableAccountModel::instance()->currentDefaultAccount(URI::SchemeType::RING);
+   ringId->setText(a ? a->username() : i18n("None"));
+   bar->addWidget(ringId);
 
    m_pPresenceDock = new QDockWidget(this);
    m_pPresenceDock->setObjectName("presence-dock");

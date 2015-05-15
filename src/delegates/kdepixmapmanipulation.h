@@ -49,6 +49,11 @@ public:
 
    virtual QVariant securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const override;
 
+   virtual QVariant   historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const override;
+
+   virtual QVariant   contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
+
+
    static const char* icnPath[2][2];
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;

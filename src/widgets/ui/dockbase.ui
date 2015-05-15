@@ -14,35 +14,7 @@
    <string>Dock</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="m_pSortByL">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Sort by:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="m_pSortByCBB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QWidget" name="m_pTopWidget" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_2"/>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
+   <item row="0" column="0" colspan="2">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -73,18 +45,9 @@
        <bool>true</bool>
       </attribute>
      </widget>
-     <widget class="QWidget" name="m_pBottomWidget" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3"/>
-     </widget>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="1" column="0">
     <widget class="FilterLineEdit" name="m_pFilterLE">
      <property name="placeholderText">
       <string>Filter</string>
@@ -94,18 +57,33 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="AutoComboBox" name="m_pSortByCBB">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>CategorizedTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">widgets/categorizedtreeview.h</header>
+  </customwidget>
   <customwidget>
    <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>widgets/filterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>CategorizedTreeView</class>
-   <extends>QTreeView</extends>
-   <header>widgets/categorizedtreeview.h</header>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>widgets/autocombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

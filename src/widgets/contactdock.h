@@ -23,7 +23,6 @@
 //Qt
 #include <QHash>
 #include <QtWidgets/QDockWidget>
-#include <QtCore/QSortFilterProxyModel>
 #include <QtWidgets/QTreeWidgetItem>
 
 //Ring
@@ -52,17 +51,6 @@ class ContactMethodDelegate;
 class ContactDelegate;
 class KeyPressEaterC;
 
-class PersonSortFilterProxyModel : public QSortFilterProxyModel
-{
-   Q_OBJECT
-public:
-   explicit PersonSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {
-      setDynamicSortFilter(true);
-   }
-protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const override;
-};
-
 ///ContactDock: Dock to access contacts
 class ContactDock : public QDockWidget, public Ui_ContactDock
 {
@@ -77,8 +65,6 @@ private:
    QMenu*                       m_pMenu          ;
    Person*                     m_pCurrentPerson;
    QString                      m_PreselectedNb  ;
-   QSortFilterProxyModel*       m_pProxyModel    ;
-   CategorizedContactModel*           m_pSourceModel   ;
    KeyPressEaterC*              m_pKeyPressEater ;
 
    //Actions
@@ -98,19 +84,10 @@ private:
    //Helper
    ContactMethod* showNumberSelector(bool& ok);
 
-   enum SortingCategory {
-      Name,
-      Organization,
-      RecentlyUsed,
-      Group,
-      Department
-   };
-
 public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event) override;
 
 private Q_SLOTS:
-   void setHistoryVisible  ( bool visible          );
    void slotContextMenu    ( QModelIndex index     );
 
 private Q_SLOTS:
@@ -125,7 +102,6 @@ private Q_SLOTS:
    void transferEvent( QMimeData* data   );
    void expandTree  ();
    void expandTreeRows(const QModelIndex& idx);
-   void setCategory (int index);
    void slotDoubleClick(const QModelIndex& index);
    void slotDelete();
 };
