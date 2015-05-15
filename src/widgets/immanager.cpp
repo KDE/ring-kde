@@ -17,8 +17,10 @@
  **************************************************************************/
 #include "immanager.h"
 #include "instantmessagingmodel.h"
-#include "imconversationmanager.h"
 #include "call.h"
+#include "callmodel.h"
+#include "contactmethod.h"
+#include <media/text.h>
 #include "../delegates/imdelegate.h"
 #include <klocalizedstring.h>
 
@@ -27,17 +29,26 @@ IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
 {
    setVisible(false);
    setTabsClosable(true);
-   connect(IMConversationManager::instance(),SIGNAL(newMessagingModel(Call*,InstantMessagingModel*)),this,SLOT(newConversation(Call*,InstantMessagingModel*)));
+
+   connect(CallModel::instance(), &CallModel::mediaAdded,[this](Call* c, Media::Media* m) {
+      if (m->type() == Media::Media::Type::TEXT) {
+
+         Media::Text* media = static_cast<Media::Text*>(m);
+
+         newConversation(c->peerContactMethod(),media->instantMessagingModel());
+      }
+   });
+
    connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeRequest(int)));
 }
 
 ///Destructor
-void IMManager::newConversation(Call* call, InstantMessagingModel* model)
+void IMManager::newConversation(ContactMethod* cm, InstantMessagingModel* model)
 {
    IMTab* newTab = new IMTab(model,this);
-   m_lTabs[call] = newTab;
+   m_lTabs[cm] = newTab;
    setVisible(true);
-   QString name = call->formattedName();
+   const QString name = cm->primaryName();
    addTab(newTab,name);
 }
 
@@ -45,9 +56,9 @@ void IMManager::newConversation(Call* call, InstantMessagingModel* model)
 void IMManager::closeRequest(int index)
 {
    QWidget* wdg = widget(index);
-   Call* call = m_lTabs.key(qobject_cast<IMTab*>(wdg));
-   if (call) {
-      m_lTabs[call] = nullptr;
+   ContactMethod* cm = m_lTabs.key(qobject_cast<IMTab*>(wdg));
+   if (cm) {
+      m_lTabs[cm] = nullptr;
       delete wdg;
       if (!count())
          setVisible(false);

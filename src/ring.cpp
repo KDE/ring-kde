@@ -51,7 +51,6 @@
 #include "availableaccountmodel.h"
 #include "instantmessagingmodel.h"
 #include <categorizedcontactmodel.h>
-#include "imconversationmanager.h"
 #include "numbercategorymodel.h"
 #include "media/recordingmodel.h"
 #include "klib/minimalhistorybackend.h"
@@ -174,7 +173,6 @@ Ring::Ring(QWidget* parent)
 
       ItemModelStateSerializationDelegate::setInstance(new ItemModelStateSerialization());
 //       PersonModel::instance()->backendModel()->load();
-      IMConversationManager::instance();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
 
       init = true;

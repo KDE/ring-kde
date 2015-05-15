@@ -85,8 +85,9 @@ public:
    void selectDialingCall() const;
 
    //Getters
-   Call*           currentCall   () const;
-   AutoCompletion* autoCompletion() const;
+   Call*           currentCall       () const;
+   AutoCompletion* autoCompletion    () const;
+   bool            messageBoxFocussed() const;
 
    //Setters
    void setCurrentIndex(const QModelIndex& idx) const;

@@ -303,10 +303,11 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
          break;
       case Qt::Key_Return:
       case Qt::Key_Enter:
+         qDebug() << "\n\n\nFOO" << Ring::view()->messageBoxFocussed();
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->selection()) {
             m_pParent->m_pAutoCompletion->callSelectedNumber();
          }
-         else
+         else if (!Ring::view()->messageBoxFocussed())
             enter();
          break;
       case Qt::Key_Backspace:

@@ -27,7 +27,7 @@
 //Ring
 class IMTab;
 class InstantMessagingModel;
-class Call;
+class ContactMethod;
 
 class IMManager : public QTabWidget
 {
@@ -38,10 +38,10 @@ public:
 
 private:
    //Attrubutes
-   QHash<Call*,IMTab*> m_lTabs;
+   QHash<ContactMethod*,IMTab*> m_lTabs;
 
 private Q_SLOTS:
-   void newConversation(Call* call, InstantMessagingModel* model);
+   void newConversation(ContactMethod* cm, InstantMessagingModel* model);
    void closeRequest(int index);
 };
 

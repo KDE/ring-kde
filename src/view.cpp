@@ -245,6 +245,11 @@ Call* View::currentCall() const
    return CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
 }
 
+bool View::messageBoxFocussed() const
+{
+   return m_pSendMessageLE && m_pSendMessageLE->hasFocus();
+}
+
 /*****************************************************************************
  *                                                                           *
  *                              Keyboard input                               *
