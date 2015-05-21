@@ -20,6 +20,7 @@
 #include <QIcon>
 #include "playeroverlay.h"
 #include "media/recording.h"
+#include "media/avrecording.h"
 
 Player::Player(QWidget* parent) : QWidget(parent),m_pParent(static_cast<PlayerOverlay*>(parent))
 {
@@ -47,17 +48,17 @@ void Player::slotHide()
 
 void Player::slotDisconnectSlider()
 {
-   disconnect(m_pParent->m_pRecording ,&Media::Recording::playbackPositionChanged     ,this,&Player::slotUpdateSlider           );
-   disconnect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeElapsedChanged ,this,&Player::formattedTimeElapsedChanged);
-   disconnect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeLeftChanged    ,this,&Player::formattedTimeLeftChanged   );
+   disconnect(m_pParent->m_pRecording ,&Media::AVRecording::playbackPositionChanged     ,this,&Player::slotUpdateSlider           );
+   disconnect(m_pParent->m_pRecording ,&Media::AVRecording::formattedTimeElapsedChanged ,this,&Player::formattedTimeElapsedChanged);
+   disconnect(m_pParent->m_pRecording ,&Media::AVRecording::formattedTimeLeftChanged    ,this,&Player::formattedTimeLeftChanged   );
 }
 
 void Player::slotConnectSlider()
 {
    m_pParent->m_pRecording->seek(((double)m_pSlider->value())/((double)m_pSlider->maximum()) * 100);
-   connect(m_pParent->m_pRecording ,&Media::Recording::playbackPositionChanged     ,this,&Player::slotUpdateSlider           );
-   connect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeElapsedChanged ,this,&Player::formattedTimeElapsedChanged);
-   connect(m_pParent->m_pRecording ,&Media::Recording::formattedTimeLeftChanged    ,this,&Player::formattedTimeLeftChanged   );
+   connect(m_pParent->m_pRecording ,&Media::AVRecording::playbackPositionChanged     ,this,&Player::slotUpdateSlider           );
+   connect(m_pParent->m_pRecording ,&Media::AVRecording::formattedTimeElapsedChanged ,this,&Player::formattedTimeElapsedChanged);
+   connect(m_pParent->m_pRecording ,&Media::AVRecording::formattedTimeLeftChanged    ,this,&Player::formattedTimeLeftChanged   );
 }
 
 void Player::slotUpdateSlider(double pos)

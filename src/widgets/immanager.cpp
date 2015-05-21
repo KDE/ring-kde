@@ -16,11 +16,11 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "immanager.h"
-#include "instantmessagingmodel.h"
 #include "call.h"
 #include "callmodel.h"
 #include "contactmethod.h"
 #include <media/text.h>
+#include <media/textrecording.h>
 #include "../delegates/imdelegate.h"
 #include <klocalizedstring.h>
 
@@ -35,7 +35,7 @@ IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
 
          Media::Text* media = static_cast<Media::Text*>(m);
 
-         newConversation(c->peerContactMethod(),media->instantMessagingModel());
+         newConversation(c->peerContactMethod(),media->recording()->instantMessagingModel());
       }
    });
 
@@ -43,7 +43,7 @@ IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
 }
 
 ///Destructor
-void IMManager::newConversation(ContactMethod* cm, InstantMessagingModel* model)
+void IMManager::newConversation(ContactMethod* cm, QAbstractListModel* model)
 {
    IMTab* newTab = new IMTab(model,this);
    m_lTabs[cm] = newTab;

@@ -27,8 +27,9 @@
 #include <QDebug>
 
 #include "media/recording.h"
+#include "media/avrecording.h"
 
-PlayerOverlay::PlayerOverlay(Media::Recording* rec, QWidget* parent) : QWidget(parent),m_pRecording(rec)
+PlayerOverlay::PlayerOverlay(Media::AVRecording* rec, QWidget* parent) : QWidget(parent),m_pRecording(rec)
 {
    setupUi(this);
    m_pPlayer->setVisible(false);
@@ -52,7 +53,7 @@ void PlayerOverlay::slotDeleteRecording()
    }
 }
 
-void PlayerOverlay::setRecording(Media::Recording* rec)
+void PlayerOverlay::setRecording(Media::AVRecording* rec)
 {
    m_pRecording = rec;
 }
