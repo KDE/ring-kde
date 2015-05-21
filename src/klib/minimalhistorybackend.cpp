@@ -35,6 +35,7 @@
 #include "call.h"
 #include "media/media.h"
 #include "media/recording.h"
+#include "media/avrecording.h"
 #include "account.h"
 #include "person.h"
 #include "certificate.h"
@@ -99,7 +100,7 @@ void MinimalHistoryEditor::saveCall(QTextStream& stream, const Call* call)
 
    //TODO handle more than one recording
    if (call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
-      stream << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0]->path().path());
+      stream << QString("%1=%2\n").arg(Call::HistoryMapFields::RECORDING_PATH  ).arg(((Media::AVRecording*)call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0])->path().path());
    }
 
    if (call->peerContactMethod()->contact()) {

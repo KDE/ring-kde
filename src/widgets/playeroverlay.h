@@ -22,7 +22,7 @@
 #include "ui_playeroverlay.h"
 
 namespace Media {
-   class Recording;
+   class AVRecording;
 }
 
 class PlayerOverlay : public QWidget, public Ui_PlayerOverlay
@@ -30,11 +30,11 @@ class PlayerOverlay : public QWidget, public Ui_PlayerOverlay
    Q_OBJECT
 public:
    friend class Player;
-   explicit PlayerOverlay(Media::Recording* rec, QWidget* parent = nullptr);
-   void setRecording(Media::Recording* rec);
+   explicit PlayerOverlay(Media::AVRecording* rec, QWidget* parent = nullptr);
+   void setRecording(Media::AVRecording* rec);
 
 private:
-   Media::Recording* m_pRecording;
+   Media::AVRecording* m_pRecording;
 
 private Q_SLOTS:
    void slotDeleteRecording();

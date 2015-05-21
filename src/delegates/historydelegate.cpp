@@ -34,6 +34,7 @@
 #include <categorizedhistorymodel.h>
 #include <person.h>
 #include <media/media.h>
+#include <media/avrecording.h>
 #include <callmodel.h>
 #include <contactmethod.h>
 #include <QStandardPaths>
@@ -137,8 +138,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       status=status.scaled(QSize(24,24));
       painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       if (m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
-         auto button = new PlayerOverlay(call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0],nullptr); //TODO handle more than 1
-         button->setRecording(call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0]);
+         auto button = new PlayerOverlay((Media::AVRecording*)call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0],nullptr); //TODO handle more than 1
+         button->setRecording((Media::AVRecording*)call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0]);
          m_pParent->setIndexWidget(index,button);
       }
    }

@@ -49,7 +49,6 @@
 #include "certificatemodel.h"
 #include "foldercertificatecollection.h"
 #include "availableaccountmodel.h"
-#include "instantmessagingmodel.h"
 #include <categorizedcontactmodel.h>
 #include "numbercategorymodel.h"
 #include "media/recordingmodel.h"

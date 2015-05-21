@@ -19,14 +19,14 @@
 #define IM_MANAGER_H
 
 //Qt
-#include <QHash>
+#include <QtCore/QHash>
+class QAbstractListModel;
 
 //KDE
-#include <QTabWidget>
+#include <QtWidgets/QTabWidget>
 
 //Ring
 class IMTab;
-class InstantMessagingModel;
 class ContactMethod;
 
 class IMManager : public QTabWidget
@@ -41,7 +41,7 @@ private:
    QHash<ContactMethod*,IMTab*> m_lTabs;
 
 private Q_SLOTS:
-   void newConversation(ContactMethod* cm, InstantMessagingModel* model);
+   void newConversation(ContactMethod* cm, QAbstractListModel* model);
    void closeRequest(int index);
 };
 

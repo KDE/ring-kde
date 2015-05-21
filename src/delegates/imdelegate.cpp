@@ -17,7 +17,6 @@
  **************************************************************************/
 #include "imdelegate.h"
 
-#include "instantmessagingmodel.h"
 #include "call.h"
 #include <QtGui/QPainter>
 #include <QIcon>
@@ -32,9 +31,9 @@ ImDelegates::ImDelegates(IMTab* parent) : QStyledItemDelegate(parent),m_pParent(
 ///Delegate size hint
 QSize ImDelegates::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    int height = 0;
-   const QPixmap* icon = (QPixmap*)index.data(InstantMessagingModel::Role::IMAGE).value<void*>();
+   const QPixmap* icon = (QPixmap*)index.data(Qt::DecorationRole).value<void*>();
    QFontMetrics metric( option.font);
-   const QRect requiredRect = metric.boundingRect(0,0,m_pParent->width()-30 - 48 - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,index.data(InstantMessagingModel::Role::TYPE).toString());
+   const QRect requiredRect = metric.boundingRect(0,0,m_pParent->width()-30 - 48 - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,index.data(Qt::DisplayRole).toString());
    height+=requiredRect.height();
    height+=metric.height()+10;
    if (icon && dynamic_cast<const QPixmap*>(icon) && height < icon->height()) {
@@ -47,32 +46,32 @@ QSize ImDelegates::sizeHint(const QStyleOptionViewItem& option, const QModelInde
 void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
-   QPixmap* icon = (QPixmap*)index.data(InstantMessagingModel::Role::IMAGE).value<void*>();
+   QPixmap* icon = (QPixmap*)index.data(Qt::DecorationRole).value<void*>();
    int icnWidth = 50;
    if (icon && dynamic_cast<QPixmap*>(icon)) {
       painter->drawPixmap(option.rect.x()+5,option.rect.y()+(option.rect.height()/2)-(icon->height()/2),*icon);
       icnWidth = icon->width();
    }
    else {
-      ((QAbstractListModel*) index.model())->setData(index,QPixmap(QIcon::fromTheme("user-identity").pixmap(QSize(48,48))),InstantMessagingModel::Role::IMAGE);
+      ((QAbstractListModel*) index.model())->setData(index,QPixmap(QIcon::fromTheme("user-identity").pixmap(QSize(48,48))),Qt::DecorationRole);
    }
 
    QFontMetrics metric(painter->font());
-   QString text = index.data(InstantMessagingModel::Role::TYPE).toString();
+   QString text = index.data(Qt::DisplayRole).toString();
    QRect requiredRect = metric.boundingRect(option.rect.x()+icnWidth+10,option.rect.y()+metric.height()+5,option.rect.width() - icnWidth - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,text);
    painter->drawText(requiredRect,Qt::AlignLeft|Qt::TextWordWrap,text);
 
    QFont font = painter->font();
    font.setBold(true);
    painter->setFont(font);
-   painter->drawText(option.rect.x()+icnWidth+10,option.rect.y()+metric.height(),index.data(InstantMessagingModel::Role::FROM).toString());
+   painter->drawText(option.rect.x()+icnWidth+10,option.rect.y()+metric.height(),QString());
    font.setBold(false);
    painter->setFont(font);
 
 }
 
 ///Constructor
-IMTab::IMTab(InstantMessagingModel* model,QWidget* parent) : QListView(parent)
+IMTab::IMTab(QAbstractListModel* model,QWidget* parent) : QListView(parent)
 {
    setModel(model);
    setAlternatingRowColors(true);
