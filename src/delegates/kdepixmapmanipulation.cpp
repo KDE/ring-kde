@@ -331,6 +331,7 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
       case PixmapManipulationDelegate::CollectionIconHint::PROFILE:
       case PixmapManipulationDelegate::CollectionIconHint::PHONE_NUMBER:
       case PixmapManipulationDelegate::CollectionIconHint::ACCOUNT:
+      case PixmapManipulationDelegate::CollectionIconHint::MACRO:
          break;
    };
 

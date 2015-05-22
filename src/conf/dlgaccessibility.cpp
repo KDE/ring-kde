@@ -111,6 +111,7 @@ void DlgAccessibility::addMacro()
    if (ret) {
       m_pMacroFrm->setEnabled(true);
    }
+   setCurrent(ret);
 }
 
 void DlgAccessibility::removeMacro()

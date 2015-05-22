@@ -194,12 +194,17 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
 
 QVariant KDEShortcutDelegate::createAction(Macro* macro)
 {
-   qDebug() << "\n\n\nCREATED";
+
    QAction * newAction = new QAction(macro);
    newAction->setText(macro->name());
    newAction->setIcon(QIcon::fromTheme("view-form-action"));
    newAction->setObjectName("action_macro"+macro->id());
    QObject::connect(newAction, SIGNAL(triggered()), macro , SLOT(execute()) );
+
+   QObject::connect(macro, &Macro::changed, [newAction](Macro* m) {
+      newAction->setText(m->name());
+      newAction->setObjectName("action_macro"+m->id());
+   });
 
    return QVariant::fromValue(newAction);
 }

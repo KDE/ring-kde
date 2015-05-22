@@ -37,6 +37,7 @@
 #include "extendedaction.h"
 #include "ring.h"
 #include "view.h"
+#include "localmacrocollection.h"
 #include "accessibility.h"
 #include "conf/configurationdialog.h"
 #include "icons/icons.h"
@@ -310,8 +311,7 @@ void ActionCollection::setupAction()
    Ring::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
    KDEShortcutDelegate::setInstance(new KDEShortcutDelegate());
-   MacroModel::instance()->initMacros();
-
+   MacroModel::instance()->addCollection<LocalMacroCollection>();
    QList<QAction *> acList = *Accessibility::instance();
 
    foreach(QAction * ac,acList) {
@@ -498,8 +498,6 @@ void ActionCollection::editToolBar()
 ///Add a new dynamic action (macro)
 void ActionCollection::addMacro(const QVariant& newAction)
 {
-   qDebug() << "\n\n\nNEW ACTION" << newAction;
-
    if (qvariant_cast<QAction*>(newAction))
       Ring::app()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
 }
