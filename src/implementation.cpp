@@ -23,6 +23,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QBitmap>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QAction>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -35,6 +36,7 @@
 
 //Ring
 #include <person.h>
+#include <macro.h>
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
 #include <securityevaluationmodel.h>
@@ -158,7 +160,7 @@ void KDEPresenceSerializationDelegate::load() {
 
 KDEPresenceSerializationDelegate::~KDEPresenceSerializationDelegate()
 {
-   
+
 }
 
 bool KDEPresenceSerializationDelegate::isTracked(CollectionInterface* backend)
@@ -190,3 +192,14 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
    ConfigurationSkeleton::setPresenceAutoTrackedCollections(ret);
 }
 
+QVariant KDEShortcutDelegate::createAction(Macro* macro)
+{
+   qDebug() << "\n\n\nCREATED";
+   QAction * newAction = new QAction(macro);
+   newAction->setText(macro->name());
+   newAction->setIcon(QIcon::fromTheme("view-form-action"));
+   newAction->setObjectName("action_macro"+macro->id());
+   QObject::connect(newAction, SIGNAL(triggered()), macro , SLOT(execute()) );
+
+   return QVariant::fromValue(newAction);
+}

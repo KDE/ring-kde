@@ -26,6 +26,9 @@
 #include <QtGui/QColor>
 #include <QtCore/QMutex>
 #include <delegates/presenceserializationdelegate.h>
+#include <delegates/shortcutdelegate.h>
+
+class Macro;
 
 //Implement all client dependant libringclient abstract interfaces
 
@@ -54,6 +57,12 @@ public:
 private:
    QHash<QString,bool> m_hTracked;
    bool m_isLoaded;
+};
+
+class KDEShortcutDelegate : public ShortcutDelegate {
+public:
+   virtual ~KDEShortcutDelegate(){}
+   virtual QVariant createAction(Macro* macro) override;
 };
 
 #endif

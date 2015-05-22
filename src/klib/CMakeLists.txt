@@ -43,8 +43,6 @@ SET( libkring_LIB_SRCS
    tipmanager.cpp
    tip.cpp
    tipanimationwrapper.cpp
-   macromodel.cpp
-   macro.cpp
 #    akonadicontactcollectionmodel.cpp
    kdeprofilepersistor.cpp
    minimalhistorybackend.cpp
@@ -70,8 +68,6 @@ target_link_libraries( libkring
 SET( libkring_LIB_HDRS
 #   akonadibackend.h
   helperfunctions.h
-  macromodel.h
-  macro.h
   itemmodelserialization.h
 )
 

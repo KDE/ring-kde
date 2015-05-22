@@ -55,7 +55,7 @@
 #include "klib/minimalhistorybackend.h"
 #include "localrecordingcollection.h"
 #include "delegates/kdepixmapmanipulation.h"
-#include "klib/macromodel.h"
+#include <macromodel.h>
 // #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
 // #include "klib/akonadicontactcollectionmodel.h"

@@ -42,12 +42,13 @@
 #include "icons/icons.h"
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
-#include "klib/macromodel.h"
+#include <macromodel.h>
 #include <call.h>
 #include <account.h>
 #include <accountmodel.h>
 #include <availableaccountmodel.h>
 #include <callmodel.h>
+#include <implementation.h>
 #include <useractionmodel.h>
 #include <audio/settings.h>
 #include <personmodel.h>
@@ -268,7 +269,7 @@ void ActionCollection::setupAction()
       }
    });
 
-   /**/connect(MacroModel::instance()           ,       SIGNAL(addAction(QAction *)),  this    , SLOT(addMacro(QAction*))          );
+   /**/connect(MacroModel::instance()           ,       SIGNAL(addAction(QVariant)),  this    , SLOT(addMacro(QVariant))          );
    /**/connect(action_mailBox                   ,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
    /**/connect(action_displayVolumeControls     ,   SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayVolumeControls(bool)) );
    /**/connect(action_displayDialpad            ,        SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayDialpad(bool))        );
@@ -308,6 +309,7 @@ void ActionCollection::setupAction()
    Ring::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
    Ring::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
+   KDEShortcutDelegate::setInstance(new KDEShortcutDelegate());
    MacroModel::instance()->initMacros();
 
    QList<QAction *> acList = *Accessibility::instance();
@@ -494,9 +496,12 @@ void ActionCollection::editToolBar()
 }
 
 ///Add a new dynamic action (macro)
-void ActionCollection::addMacro(QAction * newAction)
+void ActionCollection::addMacro(const QVariant& newAction)
 {
-   Ring::app()->actionCollection()->addAction(newAction->objectName() , newAction );
+   qDebug() << "\n\n\nNEW ACTION" << newAction;
+
+   if (qvariant_cast<QAction*>(newAction))
+      Ring::app()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
 }
 
 

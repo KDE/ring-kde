@@ -127,7 +127,7 @@ private Q_SLOTS:
    void slotAddPerson         ();
    void updateRecordButton    ();
    void updateVolumeButton    ();
-   void addMacro              ( QAction * newAction );
+   void addMacro              ( const QVariant& newAction );
 
 Q_SIGNALS:
    void windowStateChanged();

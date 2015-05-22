@@ -28,8 +28,8 @@
 #include <QIcon>
 
 //Ring
-#include <klib/macromodel.h>
-#include <klib/macro.h>
+#include <macromodel.h>
+#include <macro.h>
 #include "../delegates/categorizeddelegate.h"
 
 ///Constructor
@@ -181,7 +181,8 @@ void DlgAccessibility::slotDescriptionLE(const QString& newText)
 
 void DlgAccessibility::slotShortcut(const QKeySequence& shortcut)
 {
+   Q_UNUSED(shortcut)
    Macro* current = MacroModel::instance()->getCurrentMacro();
-   if (current)
-      current->action()->setShortcut(shortcut);
+   if (current && qvariant_cast<QAction*>(current->action()))
+      qvariant_cast<QAction*>(current->action())->setShortcut(shortcut);
 }

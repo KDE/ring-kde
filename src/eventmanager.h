@@ -18,7 +18,7 @@
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
 
-#include "klib/macromodel.h"
+#include <macromodel.h>
 
 //Qt
 class QKeyEvent      ;
@@ -34,7 +34,7 @@ class CanvasObjectManager;
 class MainWindowEvent;
 class Account;
 
-class EventManager : public QObject, public MacroListener {
+class EventManager : public QObject, public MacroModel::MacroListener {
    Q_OBJECT
 
 public:
