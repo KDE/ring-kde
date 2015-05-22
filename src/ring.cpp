@@ -56,7 +56,6 @@
 #include "localrecordingcollection.h"
 #include "delegates/kdepixmapmanipulation.h"
 #include "klib/macromodel.h"
-#include "klib/bookmarkbackend.h"
 // #include "klib/akonadibackend.h"
 #include "klib/kcfg_settings.h"
 // #include "klib/akonadicontactcollectionmodel.h"
@@ -74,6 +73,7 @@
 #include "delegates/profilepersisterdelegate.h"
 #include "klib/kdeprofilepersistor.h"
 #include "video/renderer.h"
+#include <localbookmarkcollection.h>
 
 
 //Ring
@@ -166,7 +166,7 @@ Ring::Ring(QWidget* parent)
       );
 #endif
 
-      CategorizedBookmarkModel::instance()->addCollection<BookmarkBackend>();
+      CategorizedBookmarkModel::instance()->addCollection<LocalBookmarkCollection>();
 
       PersonModel::instance()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 

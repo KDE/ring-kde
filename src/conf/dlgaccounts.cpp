@@ -857,7 +857,6 @@ void DlgAccounts::updateCombo(int value)
    checkbox_ZRTP_display_SAS   ->setVisible ( acc->roleState(Account::Role::ZrtpDisplaySas    ) == Account::RoleState::READ_WRITE );
    checkbox_ZRTP_warn_supported->setVisible ( acc->roleState(Account::Role::ZrtpNotSuppWarning) == Account::RoleState::READ_WRITE );
    checkbox_ZTRP_send_hello    ->setVisible ( acc->roleState(Account::Role::ZrtpHelloHash     ) == Account::RoleState::READ_WRITE );
-
 } //updateCombo
 
 ///Save the current credential
