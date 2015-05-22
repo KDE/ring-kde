@@ -14,22 +14,6 @@
    <string>Dock</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="AutoComboBox" name="m_pSortByCBB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-     </property>
-     <property name="minimumContentsLength">
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="FilterLineEdit" name="m_pFilterLE">
      <property name="placeholderText">
@@ -48,6 +32,9 @@
      <widget class="ContactView" name="m_pView">
       <property name="acceptDrops">
        <bool>true</bool>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
       </property>
       <property name="dragEnabled">
        <bool>true</bool>
@@ -71,6 +58,22 @@
        <bool>true</bool>
       </attribute>
      </widget>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="AutoComboBox" name="m_pSortByCBB">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
+     <property name="minimumContentsLength">
+      <number>0</number>
+     </property>
     </widget>
    </item>
   </layout>
