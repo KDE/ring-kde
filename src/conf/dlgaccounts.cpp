@@ -550,7 +550,17 @@ void DlgAccounts::loadAccount(QModelIndex item)
    const QString ringtonePath = ACC ringtonePath();
    m_pRingTonePath->setUrl( ringtonePath );
 
-   //TODO reactivate the ringtonemodel
+   m_pRingtoneListLW->setModel( RingtoneModel::instance() );
+   QItemSelectionModel* ringtoneSelModel = RingtoneModel::instance()->selectionModel(account);
+   m_pRingtoneListLW->setSelectionModel( ringtoneSelModel );
+   const QModelIndex& rtIdx = ringtoneSelModel->currentIndex();
+   m_pRingtoneListLW->setEnabled(rtIdx.isValid());
+   m_pRingTonePath->setEnabled(!rtIdx.isValid());
+   m_pUseCustomFileCK->setChecked(!rtIdx.isValid());
+
+   #ifndef ENABLE_VIDEO
+   m_pVideoCodecGB->setVisible(false);
+   #endif
 
    comboBox_ni_local_address->bindToModel(ACC networkInterfaceModel(), ACC networkInterfaceModel()->selectionModel());
 
