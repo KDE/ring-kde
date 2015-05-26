@@ -250,6 +250,8 @@ DlgAccounts::DlgAccounts(KConfigDialog* parent)
       treeView_accountList->setCurrentIndex(AccountModel::instance()->index(0,0));
    }
    m_IsLoading--;
+
+   AccountModel::instance()->editState();
 } //DlgAccounts
 
 ///Destructor
@@ -279,7 +281,10 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
    }
 
    //There is no point to save something that is unaltered, all it will cause is daemon corruption
-   if ( ACC editState() != Account::EditState::NEW and ACC editState() != Account::EditState::MODIFIED) {
+   if ( ACC editState() != Account::EditState::NEW && !(
+      ACC editState() == Account::EditState::MODIFIED_COMPLETE ||
+      ACC editState() == Account::EditState::MODIFIED_INCOMPLETE
+   )) {
       qDebug() << "Nothing to be saved";
       return;
    }
@@ -545,25 +550,7 @@ void DlgAccounts::loadAccount(QModelIndex item)
    const QString ringtonePath = ACC ringtonePath();
    m_pRingTonePath->setUrl( ringtonePath );
 
-   m_pRingtoneListLW->setModel( ACC ringToneModel());
-   const QModelIndex& rtIdx = ACC ringToneModel()->currentIndex();
-   if (rtIdx.isValid()) {
-      m_pRingtoneListLW->setEnabled(true);
-      m_pRingTonePath->setEnabled(false);
-      m_pUseCustomFileCK->setChecked(false);
-      disconnect(m_pRingtoneListLW->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(changedAccountList()));
-      m_pRingtoneListLW->setCurrentIndex(rtIdx);
-      connect(m_pRingtoneListLW->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(changedAccountList()));
-   }
-   else {
-      m_pRingTonePath->setEnabled(true);
-      m_pUseCustomFileCK->setChecked(true);
-      m_pRingtoneListLW->setEnabled(false);
-   }
-
-   #ifndef ENABLE_VIDEO
-   m_pVideoCodecGB->setVisible(false);
-   #endif
+   //TODO reactivate the ringtonemodel
 
    comboBox_ni_local_address->bindToModel(ACC networkInterfaceModel(), ACC networkInterfaceModel()->selectionModel());
 
@@ -613,7 +600,7 @@ void DlgAccounts::changedAccountList()
    if (!m_IsLoading) {
       Account* acc = currentAccount();
       if (acc)
-         acc->performAction(Account::EditAction::MODIFY);
+         acc->performAction(Account::EditAction::MODIFY); //TODO remove this
       accountListHasChanged = true;
       emit updateButtons();
    }
@@ -811,28 +798,20 @@ bool DlgAccounts::hasIncompleteRequiredFields()
 {
    Account* acc = currentAccount();
    if (!acc) return false;
+
    QList<QLabel*> requiredFieldsLabels;
    if (!requiredFieldsLabels.size()) {
       requiredFieldsLabels << label1_alias << label3_server << label4_user << label5_password;
    }
-
-   bool fields[4] = {
-      edit1_alias->text().isEmpty(),
-      !(!edit3_server->text().isEmpty() || acc->protocol() == Account::Protocol::RING),
-      edit4_user->text().isEmpty(),
-      !(!edit5_password->text().isEmpty() || acc->protocol() == Account::Protocol::RING)
-   };
-
-   bool isIncomplete = acc && (acc->alias() != "IP2IP") && (fields[0]|fields[1]|fields[2]|fields[3]);
    //Add visual feedback for missing fields
    for (int i=0;i<requiredFieldsLabels.size();i++) {
       static KStatefulBrush errorBrush( KColorScheme::Window, KColorScheme::NegativeText );
       QPalette pal = QApplication::palette();
-      pal.setBrush(QPalette::WindowText,fields[i]?errorBrush.brush(QPalette::Normal):pal.windowText());
+      pal.setBrush(QPalette::WindowText,requiredFieldsLabels[i]->text().isEmpty()?errorBrush.brush(QPalette::Normal):pal.windowText());
       requiredFieldsLabels[i]->setPalette(pal);
    }
 
-   return isIncomplete && !(acc->protocol() == Account::Protocol::RING && acc->isNew());
+   return false;//acc->editState() == Account::EditState::MODIFIED;
 }
 
 ///Save settings
@@ -871,18 +850,14 @@ void DlgAccounts::selectedCodecChanged(const QModelIndex& current,const QModelIn
 void DlgAccounts::updateCombo(int value)
 {
    Q_UNUSED(value)
-   static const bool enabledCombo[3][5] = {
-      /*KeyExchangeModel::Type::ZRTP*/ {false,true ,true ,true ,true },
-      /*KeyExchangeModel::Type::SDES*/ {true ,false,false,false,false},
-      /*KeyExchangeModel::Type::NONE*/ {false,false,false,false,false},
-   };
-   const int idx = combo_security_STRP->currentIndex();
-   if (idx >= 3) return;
-   checkbox_SDES_fallback_rtp->setVisible   ( enabledCombo[idx][0] );
-   checkbox_ZRTP_Ask_user->setVisible       ( enabledCombo[idx][1] );
-   checkbox_ZRTP_display_SAS->setVisible    ( enabledCombo[idx][2] );
-   checkbox_ZRTP_warn_supported->setVisible ( enabledCombo[idx][3] );
-   checkbox_ZTRP_send_hello->setVisible     ( enabledCombo[idx][4] );
+   Account* acc = currentAccount();
+
+   checkbox_ZRTP_Ask_user      ->setVisible ( acc->roleState(Account::Role::DisplaySasOnce    ) == Account::RoleState::READ_WRITE );
+   checkbox_SDES_fallback_rtp  ->setVisible ( acc->roleState(Account::Role::SrtpRtpFallback   ) == Account::RoleState::READ_WRITE );
+   checkbox_ZRTP_display_SAS   ->setVisible ( acc->roleState(Account::Role::ZrtpDisplaySas    ) == Account::RoleState::READ_WRITE );
+   checkbox_ZRTP_warn_supported->setVisible ( acc->roleState(Account::Role::ZrtpNotSuppWarning) == Account::RoleState::READ_WRITE );
+   checkbox_ZTRP_send_hello    ->setVisible ( acc->roleState(Account::Role::ZrtpHelloHash     ) == Account::RoleState::READ_WRITE );
+
 } //updateCombo
 
 ///Save the current credential
@@ -948,6 +923,7 @@ void DlgAccounts::changeAlias(const QString& newAlias)
 {
    Account* acc = currentAccount();
    if (acc && newAlias != acc->alias()) {
+      qDebug() << "\n\nSTATE" << (int)acc->editState();
       AccountModel::instance()->setData(treeView_accountList->currentIndex(),newAlias,Qt::EditRole);
    }
 }

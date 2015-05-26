@@ -87,8 +87,12 @@ QVariant ColorDelegate::getColor(const Account* a)
 }
 
 QVariant ColorDelegate::getIcon(const Account* a) {
-   if (a->editState() == Account::EditState::MODIFIED)
+   /*if (a->editState() == Account::EditState::MODIFIED)
+      return QIcon::fromTheme("document-save");*/
+   if (a->editState() == Account::EditState::MODIFIED_COMPLETE)
       return QIcon::fromTheme("document-save");
+   if (a->editState() == Account::EditState::MODIFIED_INCOMPLETE)
+      return QIcon::fromTheme("dialog-warning");
    else if (a->editState() == Account::EditState::OUTDATED) {
       return QIcon::fromTheme("view-refresh");
    }
