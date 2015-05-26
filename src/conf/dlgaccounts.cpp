@@ -368,7 +368,7 @@ void DlgAccounts::saveAccount(const QModelIndex& item)
 
    //Ringtone
    if (!m_pUseCustomFileCK->isChecked()) {
-      ACC setRingtonePath( m_pRingtoneListLW->currentIndex().data(RingToneModel::Role::FullPath).toString() );
+      ACC setRingtonePath( m_pRingtoneListLW->currentIndex().data(RingtoneModel::Role::FullPath).toString() );
    }
    else {
       ACC setRingtonePath( m_pRingTonePath->url().path() );

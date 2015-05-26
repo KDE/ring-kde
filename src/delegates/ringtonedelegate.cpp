@@ -39,7 +39,7 @@ public:
 private Q_SLOTS:
    ///Play the ringtone file when the button is clicked
    void playRingtone() {
-      RingToneModel* m =  const_cast<RingToneModel*>(qobject_cast<const RingToneModel*>(m_Idx.model()));
+      RingtoneModel* m =  const_cast<RingtoneModel*>(qobject_cast<const RingtoneModel*>(m_Idx.model()));
       if (m) {
          m->play(m_Idx);
       }
@@ -56,7 +56,7 @@ void RingToneDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
    if (index.column() == 1) {
       if (!m_pParent->indexWidget(index))
          m_pParent->setIndexWidget(index,new RingToneListItem(index));
-      qobject_cast<QPushButton*>(m_pParent->indexWidget(index))->setChecked(index.data(RingToneModel::Role::IsPlaying).toBool());
+      qobject_cast<QPushButton*>(m_pParent->indexWidget(index))->setChecked(index.data(RingtoneModel::Role::IsPlaying).toBool());
    }
 }
 
