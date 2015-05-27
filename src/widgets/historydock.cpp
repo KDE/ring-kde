@@ -82,27 +82,7 @@ bool KeyPressEater::eventFilter(QObject *obj, QEvent *event)
    return QObject::eventFilter(obj, event);
 }
 
-bool HistorySortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
-{
-   const QModelIndex idx = source_parent.child(source_row,0);
-   if (!source_parent.isValid() ) { //Is a category
-      for (int i=0;i<CategorizedHistoryModel::instance()->rowCount(CategorizedHistoryModel::instance()->index(source_row,0,source_parent));i++) {
-         if (filterAcceptsRow(i, CategorizedHistoryModel::instance()->index(source_row,0,source_parent)))
-            return true;
-      }
-   }
-   ///If date range is enabled, display only this range
-   else if (ConfigurationSkeleton::displayDataRange() && false/*FIXME force disabled for 1.3.0, can SEGFAULT*/) {
-      const int start = idx.data(static_cast<int>(Call::Role::StartTime)).toInt();
-      const int stop  = idx.data(static_cast<int>(Call::Role::StopTime )).toInt();
-      if (!(start > m_pParent->startTime()) || !(m_pParent->stopTime() > stop) || !(idx.flags() & Qt::ItemIsEnabled))
-         return false;
-   }
-
-   return (idx.flags() & Qt::ItemIsEnabled) && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-}
-
-QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) const
+/*QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) const
 {
    //If the user turned on highlight missed, then set a background color
    static const bool highlightMissedIn  = ConfigurationSkeleton::highlightMissedIncomingCalls();
@@ -128,7 +108,7 @@ QVariant HistorySortFilterProxyModel::data(const QModelIndex& index, int role) c
    }
 
    return QSortFilterProxyModel::data(index,role);
-}
+}*/
 
 ///Constructor
 HistoryDock::HistoryDock(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr),m_pRemove(nullptr),
@@ -139,78 +119,40 @@ m_pCallAgain(nullptr)
    setupUi(mainWidget);
    setMinimumSize(250,0);
    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-   m_pFromL      = new QLabel      ( i18n("From:"), m_pBottomWidget           );
-   m_pToL        = new QLabel      ( i18nc("To date:","To:"), m_pBottomWidget );
-   m_pFromDW     = new KDatePicker ( m_pBottomWidget                          );
-   m_pToDW       = new KDatePicker ( m_pBottomWidget                          );
-   m_pAllTimeCB  = new QCheckBox   ( i18n("Display all")                      );
-   m_pLinkPB     = new QPushButton ( m_pBottomWidget                          );
+
+   m_pSortByCBB->bindToModel(
+      CategorizedHistoryModel::SortedProxy::instance()->categoryModel         (),
+      CategorizedHistoryModel::SortedProxy::instance()->categorySelectionModel()
+   );
 
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pView);
    delegate->setChildDelegate(new HistoryDelegate(m_pView));
    m_pView->setDelegate(delegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::History);
-   m_pProxyModel = new HistorySortFilterProxyModel(this);
-   m_pProxyModel->setSourceModel(CategorizedHistoryModel::instance());
-   m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Date));
-   m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole(static_cast<int>(Call::Role::Filter));
-   m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-   m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-   m_pView->setModel(m_pProxyModel);
+
+   QSortFilterProxyModel* proxy = CategorizedHistoryModel::SortedProxy::instance()->model();
+
+   m_pView->setModel(proxy);
    m_pKeyPressEater = new KeyPressEater(this);
    m_pView->installEventFilter(m_pKeyPressEater);
    m_pView->setSortingEnabled(true);
    m_pView->sortByColumn(0,Qt::DescendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex)), this, SLOT(slotContextMenu(QModelIndex)));
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotDoubleClick(QModelIndex)));
-   connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
+   connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), proxy , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
-   connect(m_pProxyModel,SIGNAL(modelReset()), this , SLOT(expandTree()));
+   connect(proxy,SIGNAL(modelReset()), this , SLOT(expandTree()));
    connect(CategorizedHistoryModel::instance() ,SIGNAL(layoutChanged()), this , SLOT(expandTree())                );
    expandTree();
 
-   m_pAllTimeCB->setChecked(!ConfigurationSkeleton::displayDataRange());
-   m_pAllTimeCB->setVisible(false);
-   enableDateRange(!ConfigurationSkeleton::displayDataRange());
-
-   m_pSortByL->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Preferred);
    m_pSortByCBB->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-   m_pLinkPB->setMaximumSize(20,9999999);
-   m_pLinkPB->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-   m_pLinkPB->setCheckable(true);
-
-   m_pFilterLE->setPlaceholderText(i18n("Filter"));
-   m_pFilterLE->setClearButtonEnabled(true);
-
-   QStringList sortBy;
-   sortBy << i18nc("Sort by date","Date") << i18nc("Sort by Name","Name") << i18nc("Sort by Popularity","Popularity") << i18nc("Sort by Length","Length") << i18nc("sort by spent time","Spent time");
-   m_pSortByCBB->addItems(sortBy);
 
    setWidget(mainWidget);
-   m_pTopWidget->layout()->addWidget(m_pAllTimeCB);
-
-   QGridLayout* mainLayout = new QGridLayout();
-   mainLayout->addWidget(m_pLinkPB ,1,2,3,1 );
-   mainLayout->addWidget(m_pFromL  ,0,0,1,2 );
-   mainLayout->addWidget(m_pFromDW ,1,0,1,2 );
-   mainLayout->addWidget(m_pToL    ,2,0,1,2 );
-   mainLayout->addWidget(m_pToDW   ,3,0,1,2 );
-   splitter->setStretchFactor(0,99);
-   m_pBottomWidget->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-   m_pBottomWidget->layout()->addItem(mainLayout);
 
    setWindowTitle(i18nc("History tab","History"));
 
-   QDate date(2000,1,1);
-   m_pFromDW->setDate(date);
-
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::historySortMode());
 
-   connect(m_pAllTimeCB, SIGNAL(toggled(bool)),            this, SLOT(enableDateRange(bool)) );
-   connect(m_pSortByCBB, SIGNAL(currentIndexChanged(int)), this, SLOT(slotSetSortRole(int))  );
-   connect(m_pToDW,SIGNAL(changed(QDate)),this,SLOT(slotDateRangeCanched()));
-   connect(m_pFromDW,SIGNAL(changed(QDate)),this,SLOT(slotDateRangeCanched()));
    QTimer::singleShot(0,this,SLOT(slotDateRangeCanched()));
 
 } //HistoryDock
@@ -218,15 +160,6 @@ m_pCallAgain(nullptr)
 ///Destructor
 HistoryDock::~HistoryDock()
 {
-   delete m_pFilterLE     ;
-   delete m_pSortByCBB    ;
-   delete m_pSortByL      ;
-   delete m_pFromL        ;
-   delete m_pToL          ;
-   delete m_pFromDW       ;
-   delete m_pToDW         ;
-   delete m_pAllTimeCB    ;
-   delete m_pLinkPB       ;
    delete m_pKeyPressEater;
 
    if (m_pCallAgain) {
@@ -237,47 +170,6 @@ HistoryDock::~HistoryDock()
       delete m_pBookmark     ;
    }
 } //~HistoryDock
-
-
-/*****************************************************************************
- *                                                                           *
- *                                  Mutator                                  *
- *                                                                           *
- ****************************************************************************/
-
-
-///Enable the ability to set a date range like 1 month to limit history
-void HistoryDock::enableDateRange(bool disable)
-{
-   m_pBottomWidget->setHidden(disable || true /*FIXME disabled for 1.3.0*/);
-   ConfigurationSkeleton::setDisplayDataRange(!disable && false);
-}
-
-void HistoryDock::slotSetSortRole(int role)
-{
-   switch (role) {
-      case HistoryDock::Role::Date:
-         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::FuzzyDate));
-         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Date));
-         break;
-      case HistoryDock::Role::Name:
-         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Name));
-         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Name));
-         break;
-      case HistoryDock::Role::Popularity:
-         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::CallCount));
-         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::CallCount));
-         break;
-      case HistoryDock::Role::Length:
-         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::Length));
-         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::Length));
-         break;
-      case HistoryDock::Role::SpentTime:
-         CategorizedHistoryModel::instance()->setCategoryRole(static_cast<int>(Call::Role::TotalSpentTime));
-         m_pProxyModel->setSortRole(static_cast<int>(Call::Role::TotalSpentTime));
-         break;
-   }
-}
 
 
 /*****************************************************************************
@@ -299,6 +191,7 @@ void HistoryDock::keyPressEvent(QKeyEvent* event) {
    else if (!event->text().isEmpty() && !(key == Qt::Key_Backspace))
       m_pFilterLE->setText(m_pFilterLE->text()+event->text());
 } //keyPressEvent
+
 
 /*****************************************************************************
  *                                                                           *
@@ -322,7 +215,7 @@ void HistoryDock::expandTree()
 
 void HistoryDock::slotContextMenu(const QModelIndex& index)
 {
-   QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
+   QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CALL)
       return;
    if (!m_pMenu) {
@@ -494,7 +387,7 @@ void HistoryDock::slotDoubleClick(const QModelIndex& index)
 {
    if (!index.isValid())
       return;
-   QModelIndex idx = (static_cast<const HistorySortFilterProxyModel*>(index.model()))->mapToSource(index);
+   QModelIndex idx = (static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index);
    if (!idx.isValid() || !idx.parent().isValid())
       return;
    if (((CategorizedCompositeNode*)idx.internalPointer())->type() != CategorizedCompositeNode::Type::CALL)
@@ -504,19 +397,3 @@ void HistoryDock::slotDoubleClick(const QModelIndex& index)
    slotCallAgain();
 }
 
-void HistoryDock::slotDateRangeCanched()
-{
-   m_StopTime  = QDateTime(m_pToDW->date  ()).toTime_t() + 24*3600 - 1;
-   m_StartTime = QDateTime(m_pFromDW->date()).toTime_t();
-   m_pProxyModel->invalidate();
-}
-
-time_t HistoryDock::stopTime () const
-{
-   return m_StopTime;
-}
-
-time_t HistoryDock::startTime() const
-{
-   return m_StartTime;
-}

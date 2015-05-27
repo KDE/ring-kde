@@ -63,8 +63,6 @@
 #include "../delegates/contactdelegate.h"
 #include "../delegates/phonenumberdelegate.h"
 
-#define CURRENT_SORTING_MODE m_pSortByCBB->currentIndex()
-
 ///Forward keypresses to the filter line edit
 bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
 {
@@ -79,17 +77,6 @@ bool KeyPressEaterC::eventFilter(QObject *obj, QEvent *event)
    return QObject::eventFilter(obj, event);
 }
 
-bool PersonSortFilterProxyModel::filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const
-{
-   const Qt::ItemFlags flags = sourceModel()->index(source_row,0,source_parent).flags();
-   if (!(flags & Qt::ItemIsEnabled))
-      return false;
-   else if (!source_parent.isValid() || source_parent.parent().isValid())
-      return true;
-
-   return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-}
-
 ///Constructor
 ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nullptr),m_pMenu(nullptr)
 {
@@ -97,18 +84,11 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    QWidget* mainWidget = new QWidget(this);
    setupUi(mainWidget);
 
-   QStringList sortType;
-   sortType << i18nc("Sort by Name","Name") << i18nc("Sort by Organisation","Organisation") << i18nc("Sort by Recently used","Recently used") << i18nc("Sort by Group","Group") << i18nc("Sort by Department","Department");
-
-   m_pSortByCBB->addItems(sortType);
+   m_pSortByCBB->bindToModel(CategorizedContactModel::SortedProxy::instance()->categoryModel(),CategorizedContactModel::SortedProxy::instance()->categorySelectionModel());
 
    setWidget(mainWidget);
-   m_pKeyPressEater = new KeyPressEaterC( this               );
+   m_pKeyPressEater = new KeyPressEaterC( this );
 
-   m_pFilterLE->setPlaceholderText(i18n("Filter"));
-   m_pFilterLE->setClearButtonEnabled(true);
-
-   setHistoryVisible(ConfigurationSkeleton::displayPersonCallHistory());
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pView);
    m_pContactMethodDelegate = new ContactMethodDelegate();
@@ -120,31 +100,19 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setDelegate(m_pCategoryDelegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::Person);
 
-   m_pSourceModel = CategorizedContactModel::instance();
-   m_pSourceModel->setUnreachableHidden( ConfigurationSkeleton::hidePersonWithoutPhone() );
-   m_pProxyModel = new PersonSortFilterProxyModel(this);
-   m_pProxyModel->setSourceModel(m_pSourceModel);
-   m_pProxyModel->setSortRole(Qt::DisplayRole);
-   m_pProxyModel->setSortLocaleAware(true);
-   m_pProxyModel->setFilterRole((int)Person::Role::Filter);
-   m_pProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-   m_pProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-   m_pView->setModel(m_pProxyModel);
+   QSortFilterProxyModel* proxy = CategorizedContactModel::SortedProxy::instance()->model();
+   m_pView->setModel(proxy);
    m_pView->installEventFilter(m_pKeyPressEater);
    m_pView->setSortingEnabled(true);
    m_pView->sortByColumn(0,Qt::AscendingOrder);
    connect(m_pView,SIGNAL(contextMenuRequest(QModelIndex))     , this , SLOT(slotContextMenu(QModelIndex)));
-   connect(m_pProxyModel ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
-   connect(m_pProxyModel ,SIGNAL(rowsInserted(QModelIndex,int,int)), this , SLOT(expandTreeRows(QModelIndex)));
-   connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), m_pProxyModel , SLOT(setFilterRegExp(QString)));
+   connect(proxy ,SIGNAL(layoutChanged()), this , SLOT(expandTree()));
+   connect(proxy ,SIGNAL(rowsInserted(QModelIndex,int,int)), this , SLOT(expandTreeRows(QModelIndex)));
+   connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString)), proxy , SLOT(setFilterRegExp(QString)));
    connect(m_pFilterLE ,SIGNAL(textChanged(QString)), this , SLOT(expandTree()));
-
-   splitter->setStretchFactor(0,7);
 
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
-   connect(m_pSortByCBB                  ,SIGNAL(currentIndexChanged(int)),                             this, SLOT(setCategory(int))                    );
-//    connect(ConfigurationSkeleton::self() ,SIGNAL(configChanged()),                                      this, SLOT(reloadPerson())                     );
    connect(m_pView                       ,SIGNAL(doubleClicked(QModelIndex)),                           this, SLOT(slotDoubleClick(QModelIndex))        );
    setWindowTitle(i18nc("Contact tab","Contact"));
    expandTree();
@@ -167,8 +135,6 @@ ContactDock::~ContactDock()
    delete m_pCategoryDelegate;
 
    //Models
-   delete m_pProxyModel   ;
-//    delete m_pSourceModel  ;
    delete m_pKeyPressEater;
 
 }
@@ -419,113 +385,12 @@ void ContactDock::transferEvent(QMimeData* data)
       if (ok && result) {
          Call* call = CallModel::instance()->fromMime(data->data(RingMimes::CALLID));
          if (dynamic_cast<Call*>(call)) {
-//             call->changeCurrentState(Call::State::TRANSFERRED);
             CallModel::instance()->transfer(call, result);
          }
       }
    }
    else
       qDebug() << "Invalid mime data";
-//    m_pBtnTrans->setHoverState(false);
-//    m_pBtnTrans->setVisible(false);
-}
-
-/*****************************************************************************
- *                                                                           *
- *                                Drag and Drop                              *
- *                                                                           *
- ****************************************************************************/
-
-///Serialize information to be used for drag and drop
-// QMimeData* PersonTree::mimeData( const QList<QTreeWidgetItem *> items) const
-// {
-//    qDebug() << "An history call is being dragged";
-//    if (items.size() < 1) {
-//       return nullptr;
-//    }
-// 
-//    QMimeData *mimeData = new QMimeData();
-// 
-//    //Person
-//    if (dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0])) {
-//       QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(items[0]);
-//       if (item->widget != 0) {
-//          mimeData->setData(RingMimes::CONTACT, item->widget->getPerson()->getUid().toUtf8());
-//       }
-//       else if (!item->number.isEmpty()) {
-//          mimeData->setData(RingMimes::PHONENUMBER, item->number.toUtf8());
-//       }
-//    }
-//    else {
-//       qDebug() << "the item is not a call";
-//    }
-//    return mimeData;
-// } //mimeData
-
-///Handle data being dropped on the widget
-// bool PersonTree::dropMimeData(QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action)
-// {
-//    Q_UNUSED(index )
-//    Q_UNUSED(action)
-//    Q_UNUSED(parent)
-// 
-//    QByteArray encodedData = data->data(RingMimes::CALLID);
-// 
-//    qDebug() << "In history import"<< QString(encodedData);
-// 
-//    return false;
-// }
-
-
-/*****************************************************************************
- *                                                                           *
- *                                  Setters                                  *
- *                                                                           *
- ****************************************************************************/
-
-///Show or hide the history list
-void ContactDock::setHistoryVisible(bool visible)
-{
-   qDebug() << "Toggling history visibility";
-   m_pBottomWidget->setVisible(visible);
-   ConfigurationSkeleton::setDisplayPersonCallHistory(visible);
-}
-
-///Set sorting category
-void ContactDock::setCategory(int index)
-{
-   switch(index) {
-      case SortingCategory::Name:
-         m_pSourceModel->setSortAlphabetical(true);
-         m_pSourceModel->setDefaultCategory(tr("Empty"));
-         m_pSourceModel->setRole(Qt::DisplayRole);
-         m_pProxyModel->setSortRole(Qt::DisplayRole);
-         break;
-      case SortingCategory::Organization:
-         m_pSourceModel->setSortAlphabetical(false);
-         m_pSourceModel->setDefaultCategory(tr("Unknown"));
-         m_pProxyModel->setSortRole((int)Person::Role::Organization);
-         m_pSourceModel->setRole((int)Person::Role::Organization);
-         break;
-      case SortingCategory::RecentlyUsed:
-         m_pSourceModel->setSortAlphabetical(false);
-         m_pSourceModel->setDefaultCategory(tr("Never"));
-         m_pSourceModel->setRole((int)Person::Role::FormattedLastUsed);
-         m_pProxyModel->setSortRole((int)Person::Role::IndexedLastUsed);
-         break;
-      case SortingCategory::Group:
-         m_pSourceModel->setSortAlphabetical(false);
-         m_pSourceModel->setDefaultCategory(tr("Other"));
-         m_pSourceModel->setRole((int)Person::Role::Group);
-         m_pProxyModel->setSortRole((int)Person::Role::Group);
-         break;
-      case SortingCategory::Department:
-         m_pSourceModel->setSortAlphabetical(false);
-         m_pSourceModel->setDefaultCategory(tr("Unknown"));
-         m_pSourceModel->setRole((int)Person::Role::Department);
-         m_pProxyModel->setSortRole((int)Person::Role::Department);
-         break;
-   };
 }
 
 
@@ -541,13 +406,7 @@ void ContactDock::keyPressEvent(QKeyEvent* event) {
    if(key == Qt::Key_Escape)
       m_pFilterLE->setText(QString());
    else if(key == Qt::Key_Return || key == Qt::Key_Enter) {
-//       if (m_pContactView->selectedItems().size() && m_pContactView->selectedItems()[0] && m_pContactView->itemWidget(m_pContactView->selectedItems()[0],0)) {
-//          QNumericTreeWidgetItem_hist* item = dynamic_cast<QNumericTreeWidgetItem_hist*>(m_pContactView->selectedItems()[0]);
-//          if (item) {
-//             Call* call = nullptr;
-//             Ring::app()->view()->selectCallContactMethod(&call,item->widget->getPerson());
-//          }
-//       }
+
    }
    else if((key == Qt::Key_Backspace) && (m_pFilterLE->text().size()))
       m_pFilterLE->setText(m_pFilterLE->text().left( m_pFilterLE->text().size()-1 ));

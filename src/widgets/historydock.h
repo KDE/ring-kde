@@ -61,48 +61,28 @@ public:
 
 private:
    //Attributes
-   QLabel*                m_pFromL           ;
-   QLabel*                m_pToL             ;
-   KDatePicker*           m_pFromDW          ;
-   KDatePicker*           m_pToDW            ;
-   QCheckBox*             m_pAllTimeCB       ;
-   QPushButton*           m_pLinkPB          ;
    KeyPressEater*         m_pKeyPressEater   ;
-   QSortFilterProxyModel* m_pProxyModel      ;
-   time_t                 m_StartTime        ;
-   time_t                 m_StopTime         ;
 
    //Menu
-    QAction *     m_pCallAgain     ;
-    QAction *     m_pAddPerson     ;
-    QAction *     m_pAddToPerson   ;
-    QAction *     m_pCopy          ;
-    QAction *     m_pEmail         ;
-    QMenu*        m_pMenu          ;
-    QAction *     m_pRemove        ;
-    QAction *     m_pBookmark      ;
-    Call*         m_pCurrentCall   ;
+   QAction *     m_pCallAgain     ;
+   QAction *     m_pAddPerson     ;
+   QAction *     m_pAddToPerson   ;
+   QAction *     m_pCopy          ;
+   QAction *     m_pEmail         ;
+   QMenu*        m_pMenu          ;
+   QAction *     m_pRemove        ;
+   QAction *     m_pBookmark      ;
+   Call*         m_pCurrentCall   ;
 
    //Mutator
-   void updateLinkedDate(KDatePicker* item, QDate& prevDate, QDate& newDate);
    void enableRemove();
 
-   enum Role {
-      Date =0,
-      Name,
-      Popularity,
-      Length,
-      SpentTime,
-   };
 
 public Q_SLOTS:
-   void enableDateRange(bool disable);
    virtual void keyPressEvent(QKeyEvent* event) override;
-   void slotDateRangeCanched();
 
 private Q_SLOTS:
    void expandTree           (              );
-   void slotSetSortRole      ( int          );
    void slotDoubleClick(const QModelIndex& index);
 
    //Menu
@@ -113,20 +93,6 @@ private Q_SLOTS:
    void slotCopy             ();
    void slotAddPerson       (CollectionInterface* col);
    void slotBookmark         ();
-};
-
-///Tuned sorting model for the history model
-class HistorySortFilterProxyModel : public QSortFilterProxyModel
-{
-   Q_OBJECT
-public:
-   explicit HistorySortFilterProxyModel(HistoryDock* parent) :
-      QSortFilterProxyModel(parent),m_pParent(parent) {}
-      virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-protected:
-   virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const override;
-private:
-   HistoryDock* m_pParent;
 };
 
 ///KeyPressEater: Intercept each keypress to manage it globally

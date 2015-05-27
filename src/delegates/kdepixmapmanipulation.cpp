@@ -368,3 +368,35 @@ QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel:
    return QVariant();
 }
 
+QVariant KDEPixmapManipulation::historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const
+{
+   switch(cat) {
+      case CategorizedHistoryModel::SortedProxy::Categories::DATE      :
+         break;
+      case CategorizedHistoryModel::SortedProxy::Categories::NAME      :
+         return QIcon::fromTheme("folder-publicshare");
+      case CategorizedHistoryModel::SortedProxy::Categories::POPULARITY:
+         return QIcon::fromTheme("folder-bookmark");
+      case CategorizedHistoryModel::SortedProxy::Categories::LENGTH    :
+      case CategorizedHistoryModel::SortedProxy::Categories::SPENT_TIME:
+      case CategorizedHistoryModel::SortedProxy::Categories::COUNT__   :
+         break;
+   }
+   return QVariant();
+}
+
+QVariant KDEPixmapManipulation::contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const
+{
+   switch(cat) {
+      case CategorizedContactModel::SortedProxy::Categories::NAME        :
+         return QIcon::fromTheme("folder-publicshare");
+      case CategorizedContactModel::SortedProxy::Categories::RECENTLYUSED:
+         return QIcon::fromTheme("view-history");
+      case CategorizedContactModel::SortedProxy::Categories::ORGANIZATION:
+      case CategorizedContactModel::SortedProxy::Categories::GROUP       :
+      case CategorizedContactModel::SortedProxy::Categories::DEPARTMENT  :
+      case CategorizedContactModel::SortedProxy::Categories::COUNT__     :
+         break;
+   }
+   return QVariant();
+}
