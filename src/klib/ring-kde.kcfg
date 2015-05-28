@@ -80,6 +80,10 @@
     	<label>Defines whether the main window should be displayed on start.</label>
       <default>true</default>
     </entry>
+    <entry name="autoStart" type="Bool">
+        <label>Defines whether the main window should be displayed on start.</label>
+      <default>true</default>
+    </entry>
     <entry name="displayOnCalls" type="Bool">
     	<label>Defines whether the main window should be displayed when receiving a message.</label>
       <default>true</default>

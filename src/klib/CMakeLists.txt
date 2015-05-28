@@ -45,9 +45,7 @@ SET( libkring_LIB_SRCS
    tipanimationwrapper.cpp
 #    akonadicontactcollectionmodel.cpp
    kdeprofilepersistor.cpp
-   minimalhistorybackend.cpp
    itemmodelserialization.cpp
-   bookmarkbackend.cpp
 )
 
 KCONFIG_ADD_KCFG_FILES (libkring_LIB_SRCS kcfg_settings.kcfgc)

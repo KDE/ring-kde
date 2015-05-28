@@ -24,6 +24,9 @@
 #include <KConfigDialog>
 #include <klocalizedstring.h>
 
+//Ring
+#include "ring.h"
+
 ///Constructor
 DlgDisplay::DlgDisplay(KConfigDialog *parent)
  : QWidget(parent),m_HasChanged(false)
@@ -53,6 +56,8 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
    kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());
    connect(m_pDetailsList   , SIGNAL(itemChanged(QListWidgetItem*))  , this  , SLOT(changed())      );
    connect(this,SIGNAL(updateButtons()), parent , SLOT(updateButtons()));
+
+   Ring::app()->isAutoStart();
 }
 
 ///Destructor
@@ -76,6 +81,7 @@ void DlgDisplay::changed()
 ///Update all widgets
 void DlgDisplay::updateWidgets()
 {
+   kcfg_autoStart->setChecked(Ring::app()->isAutoStart());
 }
 
 ///Save current settings
@@ -86,6 +92,8 @@ void DlgDisplay::updateSettings()
       iter.next();
       ConfigurationSkeleton::self()->findItem(iter.value())->setProperty(m_lItemList[iter.value()]->checkState() == Qt::Checked);
    }
+
+   Ring::app()->setAutoStart(kcfg_autoStart->isChecked());
 
    m_HasChanged = false;
 }

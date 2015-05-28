@@ -222,7 +222,7 @@ void View::loadWindow()
  ****************************************************************************/
 
 ///Set the current selection item
-void View::setCurrentIndex(const QModelIndex& idx) const
+void View::setCurrentIndex(const QModelIndex& idx) const //TODO remove
 {
    m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
 }
@@ -276,7 +276,7 @@ void View::paste()
  *                                                                           *
  ****************************************************************************/
 
-void View::selectDialingCall() const
+void View::selectDialingCall() const //TODO remove
 {
    foreach(Call* call,CallModel::instance()->getActiveCalls()) {
       if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
@@ -297,7 +297,7 @@ void View::selectDialingCall() const
  ****************************************************************************/
 
 ///Change GUI icons
-void View::updateWindowCallState()
+void View::updateWindowCallState() //TODO remove
 {
    qDebug() << "Call state changed";
 
@@ -467,7 +467,7 @@ void View::displayMessageBox(bool checked)
 }
 
 ///Input grabber
-void View::on_widget_dialpad_typed(QString text)
+void View::on_widget_dialpad_typed(QString text) //TODO use the new connect API
 {
    m_pEventManager->typeString(text);
 }
@@ -495,7 +495,7 @@ void View::on1_incomingCall(Call* call)
 }
 
 ///When a new voice mail is coming
-void View::on1_voiceMailNotify(Account* a, int count)
+void View::on1_voiceMailNotify(Account* a, int count)  //TODO remove, it is broken
 {
    qDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << a->alias();
 }
@@ -510,7 +510,7 @@ void View::sendMessage()
    m_pSendMessageLE->clear();
 }
 
-void View::slotAutoCompleteClicked(ContactMethod* n)
+void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API for this
 {
    Call* call = currentCall();
    if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {

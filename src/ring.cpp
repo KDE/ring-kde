@@ -53,7 +53,7 @@
 #include <categorizedcontactmodel.h>
 #include "numbercategorymodel.h"
 #include "media/recordingmodel.h"
-#include "klib/minimalhistorybackend.h"
+#include "localhistorycollection.h"
 #include "localrecordingcollection.h"
 #include "delegates/kdepixmapmanipulation.h"
 #include <macromodel.h>
@@ -148,13 +148,13 @@ Ring::Ring(QWidget* parent)
 
       PersonModel::instance()            ->registerConfigarator<FallbackPersonCollection>(new FallbackPersonConfigurator(this));
       Media::RecordingModel::instance()  ->registerConfigarator<LocalRecordingCollection>(new AudioRecordingConfigurator(this));
-      CategorizedHistoryModel::instance()->registerConfigarator<MinimalHistoryBackend   >(new LocalHistoryConfigurator  (this));
+      CategorizedHistoryModel::instance()->registerConfigarator<LocalHistoryCollection  >(new LocalHistoryConfigurator  (this));
 
       /*******************************************
        *           Load the collections          *
        ******************************************/
 
-      CategorizedHistoryModel::instance()->addCollection<MinimalHistoryBackend>(LoadOptions::FORCE_ENABLED);
+      CategorizedHistoryModel::instance()->addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
 
 #ifdef Q_OS_LINUX
       CertificateModel::instance()->addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
@@ -511,19 +511,19 @@ void Ring::displayAccountCbb( bool checked )
 }
 
 ///Change windowtitle
-void Ring::on_m_pView_windowTitleChangeAsked(const QString& message)
+void Ring::on_m_pView_windowTitleChangeAsked(const QString& message) //TODO remove
 {
    setWindowTitle(message);
 }
 
 ///Change transfer state
-void Ring::on_m_pView_transferCheckStateChangeAsked(bool transferCheckState)
+void Ring::on_m_pView_transferCheckStateChangeAsked(bool transferCheckState) //TODO use saner code
 {
    ActionCollection::instance()->transferAction()->setChecked(transferCheckState);
 }
 
 ///Called when a call is coming
-void Ring::on_m_pView_incomingCall(const Call* call)
+void Ring::on_m_pView_incomingCall(const Call* call) //FIXME
 {
    //FIXME create an infinite loop
    if (call) {
@@ -544,7 +544,7 @@ void Ring::slotPresenceEnabled(bool state)
 }
 
 ///Change current account
-/*void Ring::currentAccountIndexChanged(int newIndex)
+/*void Ring::currentAccountIndexChanged(int newIndex) //TODO remove
 {
    if (AccountModel::instance()->size()) {
       const Account* acc = AccountModel::instance()->getAccountByModelIndex(AccountModel::instance()->index(newIndex,0));
@@ -554,7 +554,7 @@ void Ring::slotPresenceEnabled(bool state)
 }*/
 
 ///Update the combobox index
-void Ring::currentPriorAccountChanged(Account* newPrior)
+void Ring::currentPriorAccountChanged(Account* newPrior) //TODO remove
 {
    Q_UNUSED(newPrior)
    /*if (CallModel::instance()->isConnected() && newPrior) {
@@ -642,8 +642,7 @@ void Ring::timeout()
 void Ring::selectCallTab()
 {
    QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
-   if(tabBars.count())
-   {
+   if(tabBars.count()) {
       foreach(QTabBar* bar, tabBars) {
          for (int i=0;i<bar->count();i++) {
             if (bar->tabText(i).replace('&',QString()) == i18n("Call")) {
@@ -652,5 +651,44 @@ void Ring::selectCallTab()
             }
          }
       }
+   }
+}
+
+bool Ring::isAutoStart() const
+{
+   const bool enabled = ConfigurationSkeleton::autoStart();
+
+   const QString localPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/";
+
+   const QFile f(localPath);
+
+   if (enabled && f.exists()) {
+      ConfigurationSkeleton::setAutoStart(true);
+   }
+
+   return ConfigurationSkeleton::autoStart();
+}
+
+void Ring::setAutoStart(bool value)
+{
+   Q_UNUSED(value)
+
+   if (value) {
+      const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/ring-kde.desktop");
+      QFile f(path);
+
+      if (f.exists()) {
+         if (f.copy(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/ring-kde.desktop"))
+            ConfigurationSkeleton::setAutoStart(true);
+      }
+      else {
+         qWarning() << "Cannot enable autostart, file not found";
+      }
+
+   }
+   else {
+      QFile f(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/ring-kde.desktop");
+      f.remove();
+      ConfigurationSkeleton::setAutoStart(false);
    }
 }

@@ -117,6 +117,9 @@ public:
    HistoryDock*  historyDock ();
    BookmarkDock* bookmarkDock();
 
+   bool isAutoStart() const;
+   void setAutoStart(bool value);
+
 private Q_SLOTS:
    void on_m_pView_windowTitleChangeAsked        ( const QString& message        );
    void on_m_pView_transferCheckStateChangeAsked ( bool  transferCheckState      );

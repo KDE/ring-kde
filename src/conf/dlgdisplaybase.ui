@@ -46,6 +46,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_autoStart">
+        <property name="text">
+         <string>On boot (auto start)</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -172,12 +179,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>121</x>
-     <y>182</y>
+     <x>133</x>
+     <y>301</y>
     </hint>
     <hint type="destinationlabel">
-     <x>186</x>
-     <y>186</y>
+     <x>225</x>
+     <y>302</y>
     </hint>
    </hints>
   </connection>
