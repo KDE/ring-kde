@@ -41,17 +41,6 @@ public:
    friend class MainWindowEvent;
    explicit EventManager(View* parent = nullptr);
    virtual ~EventManager();
-      /**
-    *   Handles the behaviour when the user types something with
-    *   the dialpad widget or his keyboard (normally it's a one char
-    *   string but we use a string just in case).
-    *   Adds str to the selected item if in the main window
-    *   and creates a new item if no item is selected.
-    *   Send DTMF if appropriate according to current item's state.
-    *   Adds str to the search bar if in history or address book.
-    * @param str the string sent by the user
-    */
-   void typeString(const QString& str);
    /**
     *   Handles the behaviour when the user types a backspace
     *   according to the current state (window, item selected...)
@@ -91,6 +80,17 @@ public Q_SLOTS:
     */
    void enter();
    void slotAutoCompletionVisibility(bool,bool);
+   /**
+    *   Handles the behaviour when the user types something with
+    *   the dialpad widget or his keyboard (normally it's a one char
+    *   string but we use a string just in case).
+    *   Adds str to the selected item if in the main window
+    *   and creates a new item if no item is selected.
+    *   Send DTMF if appropriate according to current item's state.
+    *   Adds str to the search bar if in history or address book.
+    * @param str the string sent by the user
+    */
+   void typeString(const QString& str);
 
 private Q_SLOTS:
    void slotCallStateChanged(Call* call, Call::State previousState);

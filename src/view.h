@@ -1,7 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -65,78 +64,31 @@ private:
    AutoCompletion*      m_pAutoCompletion ;
    CanvasObjectManager* m_pCanvasManager  ;
    EventManager*        m_pEventManager   ;
-   ColorDelegate*        m_pColorDelegate   ;
+   ColorDelegate*       m_pColorDelegate  ;
 
 public:
    //Constructors & Destructors
-   /**
-    *   This constructor does not load the window as it would
-    *   better wait for the parent window to connect to the signals
-    *   for updating it (statusMessageChangeAsked...).
-    *   You should call the loadWindow() method once
-    *   you have constructed the object and connected the
-    *   expected signals.
-    * @param parent
-    */
    explicit View(QWidget *parent);
    virtual ~View();
 
-   //Mutator
-   void selectDialingCall() const;
-
-   //Getters
-   Call*           currentCall       () const;
    AutoCompletion* autoCompletion    () const;
    bool            messageBoxFocussed() const;
-
-   //Setters
-   void setCurrentIndex(const QModelIndex& idx) const;
 
 private Q_SLOTS:
    void sendMessage          ();
    void slotAutoCompleteClicked(ContactMethod* n);
    void loadAutoCompletion   ();
 
-
-
 public Q_SLOTS:
    void updateVolumeControls ();
-   /**
-    * Updates all the display
-    * according to the settings.
-    */
-   void loadWindow();
-
-   /**
-    *   Updates the toolbar's actions' display according to the selected
-    *   item's state.
-    */
-   void updateWindowCallState();
 
    void displayVolumeControls ( bool checked = true );
    void displayDialpad        ( bool checked = true );
    void displayMessageBox     ( bool checked = true );
 
-   void on_widget_dialpad_typed(QString text);
-
-   void on1_incomingCall   ( Call* call                          );
-   void on1_voiceMailNotify( Account* a, int count );
+   void incomingCall          ( Call* call          );
 
    void paste();
-
-Q_SIGNALS:
-   ///The window title need to be updated
-   void windowTitleChangeAsked        ( const QString&  title              );
-   ///The toolbar need to be updated
-   void enabledActionsChangeAsked     ( const bool*     enabledActions     );
-   ///Toolbar/actions icons need to be changed
-   void actionIconsChangeAsked        ( const QString*  actionIcons        );
-   ///Action string need to be changed
-   void actionTextsChangeAsked        ( const QString*  actionTexts        );
-   ///Transfer state has changed
-   void transferCheckStateChangeAsked ( bool            transferCheckState );
-   ///When a new call is coming
-   void incomingCall(const Call * call);
 };
 
 #endif // VIEW_H

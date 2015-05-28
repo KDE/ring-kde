@@ -218,7 +218,6 @@ IF(NOT (${ENABLE_VIDEO} MATCHES false))
       ring_kde_VIDEO
       widgets/videodock.cpp
       widgets/videosettings.cpp
-#       widgets/videowidget.cpp #Software rendering, can still be useful
       widgets/videowidget3.cpp
       widgets/videoglframe.cpp
       widgets/videoscene.cpp
@@ -230,7 +229,6 @@ ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 SET(
    ring_kde_SRCS
    main.cpp
-   extendedaction.cpp
    view.cpp
    ring.cpp
    cmd.cpp

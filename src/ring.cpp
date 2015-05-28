@@ -24,60 +24,52 @@
 #include <unistd.h>
 
 //Qt
-#include <QString>
-#include <QtWidgets/QActionGroup>
+#include <QtCore/QString>
 #include <QtWidgets/QLabel>
-#include <QtGui/QCursor>
-#include <QTimer>
+#include <QtCore/QTimer>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QComboBox>
 
 //KDE
-#include <QDebug>
-#include <QAction>
-#include <QStatusBar>
 #include <KNotification>
 #include <KToolBar>
-#include <KShortcutsDialog>
-#include <QComboBox>
 #include <kmessagebox.h>
 
 #include <klocalizedstring.h>
 #include <QIcon>
 #include <QStandardPaths>
 
-//Ring library
-#include "person.h"
-#include "accountmodel.h"
-#include "certificatemodel.h"
-#include "foldercertificatecollection.h"
-#include "availableaccountmodel.h"
-#include <categorizedcontactmodel.h>
-#include "numbercategorymodel.h"
-#include "media/recordingmodel.h"
-#include "localhistorycollection.h"
-#include "localrecordingcollection.h"
-#include "delegates/kdepixmapmanipulation.h"
+//Models
+#include <accountmodel.h>
+#include <certificatemodel.h>
+#include <availableaccountmodel.h>
+#include <numbercategorymodel.h>
+#include <media/recordingmodel.h>
+#include <presencestatusmodel.h>
+#include <personmodel.h>
 #include <macromodel.h>
-// #include "klib/akonadibackend.h"
-#include "klib/kcfg_settings.h"
-// #include "klib/akonadicontactcollectionmodel.h"
-#include "presencestatusmodel.h"
-#include "contactmethod.h"
+
+//Collections
+#include <foldercertificatecollection.h>
 #include <fallbackpersoncollection.h>
-#include "personmodel.h"
+#include <localhistorycollection.h>
+#include <localbookmarkcollection.h>
+#include <localrecordingcollection.h>
+
+//Configurators
 #include "configurator/localhistoryconfigurator.h"
 #include "configurator/audiorecordingconfigurator.h"
 #include "configurator/fallbackpersonconfigurator.h"
-#include "collectionmodel.h"
+
+//Delegates
+#include "delegates/kdepixmapmanipulation.h"
 #include "delegates/itemmodelstateserializationdelegate.h"
 #include "klib/itemmodelserialization.h"
 #include "extensions/presencecollectionextension.h"
-#include "delegates/profilepersisterdelegate.h"
 #include "klib/kdeprofilepersistor.h"
-#include "video/renderer.h"
-#include <localbookmarkcollection.h>
-
 
 //Ring
+#include "klib/kcfg_settings.h"
 #include "icons/icons.h"
 #include "view.h"
 #include "widgets/autocombobox.h"
@@ -88,8 +80,8 @@
 #include "widgets/bookmarkdock.h"
 #include "widgets/presence.h"
 #include "accessibility.h"
-#include "extendedaction.h"
 #include "errormessage.h"
+#include <video/renderer.h>
 #ifdef ENABLE_VIDEO
 #include "widgets/videodock.h"
 #endif
@@ -138,8 +130,6 @@ Ring::Ring(QWidget* parent)
 
       new KDEPixmapManipulation(); //FIXME memory leak
 
-      //Start the Akonadi collection backend (contact loader)
-//       AkonadiPersonCollectionModel::instance();
       loadNumberCategories();
 
       /*******************************************
@@ -185,6 +175,8 @@ Ring::Ring(QWidget* parent)
    m_sApp = this;
 
    m_pView = new View(this);
+   ActionCollection::instance()->setupAction();
+   m_pView->updateVolumeControls();
 
    ConfigurationSkeleton::self();
 
@@ -282,11 +274,9 @@ Ring::Ring(QWidget* parent)
 
    m_pTrayIcon->show();
 
-   setObjectNames();
-   QMetaObject::connectSlotsByName(this);
-   m_pView->loadWindow();
-
-   move(QCursor::pos().x() - geometry().width()/2, QCursor::pos().y() - geometry().height()/2);
+   m_pView->setObjectName      ( "m_pView"       );
+   statusBar()->setObjectName  ( "statusBar"     );
+   m_pTrayIcon->setObjectName  ( "m_pTrayIcon"   );
 
    m_pInitialized = true ;
 
@@ -365,18 +355,9 @@ Ring::Ring(QWidget* parent)
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,SIGNAL(clicked()),AccountModel::instance(),SLOT(registerAllAccounts()));
    connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
-//    connect(AccountModel::instance(), SIGNAL(priorAccountChanged(Account*)),this,SLOT(currentPriorAccountChanged(Account*)));
 
    if (!CallModel::instance()->isValid()) {
       KMessageBox::error(this,i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually"));
-      QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
-      //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
-   }
-   try {
-      currentPriorAccountChanged(AvailableAccountModel::currentDefaultAccount());
-   }
-   catch(const char * msg) {
-      KMessageBox::error(this,msg);
       QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
@@ -388,6 +369,7 @@ Ring::Ring(QWidget* parent)
 
    //setupGui + default size doesn't really, use this for now
    resize(QSize(1024,768));
+
 } //Ring
 
 ///Destructor
@@ -460,21 +442,6 @@ BookmarkDock* Ring::bookmarkDock()
 
 /*****************************************************************************
  *                                                                           *
- *                                  Setters                                  *
- *                                                                           *
- ****************************************************************************/
-
-///Set widgets object name
-void Ring::setObjectNames()
-{
-   m_pView->setObjectName      ( "m_pView"       );
-   statusBar()->setObjectName  ( "statusBar"     );
-   m_pTrayIcon->setObjectName  ( "m_pTrayIcon"   );
-}
-
-
-/*****************************************************************************
- *                                                                           *
  *                                  Mutator                                  *
  *                                                                           *
  ****************************************************************************/
@@ -503,30 +470,17 @@ void Ring::quitButton()
    qApp->quit();
 }
 
-
 void Ring::displayAccountCbb( bool checked )
 {
    m_pAccountStatus->setVisible(checked);
    m_pCurAccL->setVisible(checked);
 }
 
-///Change windowtitle
-void Ring::on_m_pView_windowTitleChangeAsked(const QString& message) //TODO remove
-{
-   setWindowTitle(message);
-}
-
-///Change transfer state
-void Ring::on_m_pView_transferCheckStateChangeAsked(bool transferCheckState) //TODO use saner code
-{
-   ActionCollection::instance()->transferAction()->setChecked(transferCheckState);
-}
-
 ///Called when a call is coming
-void Ring::on_m_pView_incomingCall(const Call* call) //FIXME
-{
+// void Ring::onIncomingCall(const Call* call) //FIXME
+// {
    //FIXME create an infinite loop
-   if (call) {
+//    if (call) {
       /*const Person* contact = call->peerContactMethod()->contact();
       if (contact) {
          const QPixmap px = (contact->photo()).type() == QVariant::Pixmap ? (contact->photo()).value<QPixmap>():QPixmap();
@@ -534,35 +488,13 @@ void Ring::on_m_pView_incomingCall(const Call* call) //FIXME
       }
       else
          KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()));
-   */}
-}
+   *///}
+// }
 
 ///Hide or show the statusbar presence widget
 void Ring::slotPresenceEnabled(bool state)
 {
    m_pPresent->setVisible(state && AccountModel::instance()->isPresencePublishSupported());
-}
-
-///Change current account
-/*void Ring::currentAccountIndexChanged(int newIndex) //TODO remove
-{
-   if (AccountModel::instance()->size()) {
-      const Account* acc = AccountModel::instance()->getAccountByModelIndex(AccountModel::instance()->index(newIndex,0));
-      if (acc)
-         AccountModel::instance()->setPriorAccount(acc);
-   }
-}*/
-
-///Update the combobox index
-void Ring::currentPriorAccountChanged(Account* newPrior) //TODO remove
-{
-   Q_UNUSED(newPrior)
-   /*if (CallModel::instance()->isConnected() && newPrior) {
-      m_pAccountStatus->setCurrentIndex(newPrior->index().row());
-   }
-   else {
-      qDebug() << "Daemon not responding";
-   }*/
 }
 
 ///Qt does not support dock icons by default, this is an hack around this
@@ -613,7 +545,6 @@ void Ring::displayVideoDock(Call* c, Video::Renderer* r)
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
-//       m_pVideoDW->setFloating(true);
    }
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();

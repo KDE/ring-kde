@@ -28,6 +28,7 @@
 #include <klocalizedstring.h>
 
 //Ring
+#include "klib/kcfg_settings.h"
 #include <mime.h>
 #include <contactmethod.h>
 #include <account.h>
@@ -38,6 +39,7 @@
 #include <klib/tipmanager.h>
 #include "view.h"
 #include "ring.h"
+#include "actioncollection.h"
 #include "useractionmodel.h"
 #include "canvasobjectmanager.h"
 #include "widgets/kphonenumberselector.h"
@@ -352,7 +354,7 @@ void EventManager::typeString(const QString& str)
     * Any other comportment need to be documented here or treated as a bug
     */
 
-   Call* call = CallModel::instance()->getCall(m_pParent->m_pView->selectionModel()->currentIndex());
+   Call* call = CallModel::instance()->selectedCall();
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
 
@@ -370,26 +372,24 @@ void EventManager::typeString(const QString& str)
       }
       else if(call2 && (call2->lifeCycleState() == Call::LifeCycleState::CREATION)) {
          candidate = call2;
-         m_pParent->selectDialingCall();
+         CallModel::instance()->selectDialingCall();
       }
    }
 
    if(!currentCall && !candidate) {
       qDebug() << "Typing when no item is selected. Opening an item.";
       candidate = CallModel::instance()->dialingCall();
-      m_pParent->selectDialingCall();
+      CallModel::instance()->selectDialingCall();
       candidate->playDTMF(str);
       const QModelIndex& newCallIdx = CallModel::instance()->getIndex(candidate);
       if (newCallIdx.isValid()) {
          m_pParent->m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
       }
-      m_pParent->updateWindowCallState();
    }
 
    if (!candidate) {
       candidate = CallModel::instance()->dialingCall();
       candidate->playDTMF(str);
-      m_pParent->updateWindowCallState();
    }
    if(!currentCall && candidate) {
       candidate->playDTMF(str);
@@ -401,7 +401,7 @@ void EventManager::typeString(const QString& str)
 void EventManager::backspace()
 {
    qDebug() << "backspace";
-   Call* call = CallModel::instance()->getCall(m_pParent->m_pView->selectionModel()->currentIndex());
+   Call* call = CallModel::instance()->selectedCall();
    if(!call) {
       qDebug() << "Error : Backspace on unexisting call.";
    }
@@ -414,10 +414,9 @@ void EventManager::backspace()
 void EventManager::escape()
 {
    qDebug() << "escape";
-   Call* call = m_pParent->currentCall();
+   Call* call = CallModel::instance()->selectedCall();
    if (m_pParent->m_pTransferOverlay && m_pParent->m_pTransferOverlay->isVisible()) {
       m_pParent->m_pTransferOverlay->setVisible(false);
-      m_pParent->updateWindowCallState();
       return;
    }
 
@@ -455,7 +454,7 @@ void EventManager::escape()
 ///Called when enter is detected
 void EventManager::enter()
 {
-   Call* call = m_pParent->currentCall();
+   Call* call = CallModel::instance()->selectedCall();
    if(!call) {
       qDebug() << "Error : Enter on unexisting call.";
    }
@@ -533,11 +532,10 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::FAILURE:
       case Call::State::BUSY:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_BUSY);
-         Ring::view()->updateWindowCallState();
          break;
       case Call::State::INITIALIZATION:
-      case Call::State::CONNECTED:
       case Call::State::TRANSFERRED:
+      case Call::State::CONNECTED:
       case Call::State::TRANSF_HOLD:
       case Call::State::HOLD:
       case Call::State::ABORTED:
@@ -549,6 +547,44 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       default:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_STATE_CHANGED);
          qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
+
+   }
+
+   //Hide the mailbox
+   ActionCollection::instance()->mailBoxAction()->setVisible(AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty());
+
+
+   //Update the window for the selected call
+   Call* call2 = call = CallModel::instance()->selectedCall();
+
+   if ((!call2) || (call2->type() == Call::Type::CONFERENCE)) {
+      m_pParent->m_pMessageBoxW->setVisible(false);
+      return;
+   }
+
+   m_pParent->m_pMessageBoxW->setVisible(
+      ConfigurationSkeleton::displayMessageBox() && call2->lifeCycleState() == Call::LifeCycleState::PROGRESS
+   );
+
+   if (call2->state() == Call::State::TRANSFERRED) {
+      if (!m_pParent->m_pTransferOverlay) {
+         m_pParent->m_pTransferOverlay = new CallViewOverlay(m_pParent->m_pView);
+      }
+      m_pParent->m_pTransferOverlay->setCurrentCall(call2);
+      m_pParent->m_pTransferOverlay->setVisible(true);
+   }
+
+   if (TipCollection::dragAndDrop()) {
+      int activeCallCounter=0;
+      foreach (Call* call2, CallModel::instance()->getActiveCalls()) {
+         if (dynamic_cast<Call*>(call2)) {
+            activeCallCounter += (call2->lifeCycleState() == Call::LifeCycleState::PROGRESS)?1:0;
+            activeCallCounter -= (call2->lifeCycleState() == Call::LifeCycleState::INITIALIZATION)*1000;
+         }
+      }
+      if (activeCallCounter >= 2 && !CallModel::instance()->getActiveConferences().size()) {
+         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_COUNT_CHANGED);
+      }
    }
 }
 
@@ -587,5 +623,4 @@ void EventManager::slotNetworkDown()
    m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NETWORK_ERROR);
 }
 
-#include "moc_eventmanager.cpp"
 #include "eventmanager.moc"

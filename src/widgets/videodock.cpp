@@ -33,7 +33,6 @@
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
-#include "extendedaction.h"
 #include "video/devicemodel.h"
 #include "video/sourcemodel.h"
 #include "ui_mediafilepicker.h"

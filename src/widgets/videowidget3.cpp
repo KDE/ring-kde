@@ -25,6 +25,7 @@
 #include <QtGui/QDropEvent>
 #include <QtCore/QMimeData>
 #include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QAction>
 
 //System
 #include <math.h>
@@ -35,7 +36,6 @@
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
-#include "extendedaction.h"
 #include <video/devicemodel.h>
 #include <video/previewmanager.h>
 #include "klib/kcfg_settings.h"

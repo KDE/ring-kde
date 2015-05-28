@@ -33,21 +33,6 @@ class QHBoxLayout;
 
 //KDE
 
-//Ring
-class ExtendedAction;
-class ObserverToolButton;
-
-class ObserverToolButton : public QToolButton
-{
-   Q_OBJECT
-public:
-   explicit ObserverToolButton(QWidget* parent = nullptr);
-public Q_SLOTS:
-   void setNewText(const QString& text) {
-      setText(text);
-   }
-};
-
 class OverlayToolbar : public QWidget
 {
    Q_OBJECT
@@ -57,14 +42,9 @@ public:
 
    //Setters
    void setForcedParent(QWidget* parent);
-   void setIconSize(int size);
-
-   //Getter
-   ObserverToolButton* actionButton(int key);
 
    //Mutator
    void resizeToolbar();
-   void addAction(ExtendedAction* action, int key = -1);
    void addWidget(QWidget* w);
 
 private:
@@ -74,8 +54,6 @@ private:
    QWidget*      m_pForcedParent;
    int           m_IconSize     ;
    QHBoxLayout*  m_pLayout      ;
-   QHash<int,ObserverToolButton*> m_hButtons;
-
 
 public Q_SLOTS:
    virtual void updateState();
@@ -86,9 +64,6 @@ protected:
    void hideEvent  ( QHideEvent*   event) override;
    void showEvent  ( QShowEvent*   event) override;
    bool eventFilter( QObject *obj, QEvent *event) override;
-
-   //Helpers
-   ObserverToolButton* createButton(ExtendedAction* action);
 
 Q_SIGNALS:
    void visibilityChanged(bool);

@@ -23,7 +23,6 @@
 //Ring
 #include "ring.h"
 #include "actioncollection.h"
-#include "extendedaction.h"
 
 ///Constructor
 VideoToolbar::VideoToolbar(QWidget* parent) : QToolBar(parent)

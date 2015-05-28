@@ -95,8 +95,6 @@ private:
 
    static Ring*            m_sApp;
 
-   //Setters
-   void setObjectNames();
 
 protected:
    virtual bool  queryClose (                )       override;
@@ -121,10 +119,6 @@ public:
    void setAutoStart(bool value);
 
 private Q_SLOTS:
-   void on_m_pView_windowTitleChangeAsked        ( const QString& message        );
-   void on_m_pView_transferCheckStateChangeAsked ( bool  transferCheckState      );
-   void on_m_pView_incomingCall                  ( const Call*    call           );
-   void currentPriorAccountChanged               ( Account* newPrior             );
    void quitButton                               (                               );
    void displayAccountCbb                        ( bool checked = true           );
    void updateTabIcons                           (                               );

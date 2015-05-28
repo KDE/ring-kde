@@ -27,26 +27,11 @@
 #include <QtSvg/QSvgRenderer>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QStyle>
-#include <QDebug> //TODO remove
-
-//KDE
-
 
 //Ring
 #include "ring.h"
-#include "extendedaction.h"
 #include <klib/tipmanager.h>
 #include <QStandardPaths>
-
-///Button constructor
-ObserverToolButton::ObserverToolButton(QWidget* parent) : QToolButton(parent)
-{
-   QPalette pal = palette();
-   pal.setColor(QPalette::Background,Qt::transparent);
-   pal.setColor(QPalette::Button    ,Qt::transparent);
-   pal.setColor(QPalette::ButtonText,"#dddddd");
-   setPalette(pal);
-}
 
 ///Constructor
 OverlayToolbar::OverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender(nullptr),
@@ -107,27 +92,10 @@ void OverlayToolbar::paintEvent(QPaintEvent* event)
    m_pRightRender->render  (&customPainter,QRect( width()-10-margin,0,10,10)                 );
 } //paintEvent
 
-///Create a toolbar button
-ObserverToolButton* OverlayToolbar::createButton(ExtendedAction* action)
-{
-   ObserverToolButton* b = new ObserverToolButton(this);
-   b->setAutoFillBackground(false);
-   b->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-   b->setIconSize(QSize(28,28));
-   b->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-   b->setText(action->text());
-   b->setShortcut(0);
-   b->setStyleSheet("margin-bottom:0px;margin-top:12px;font-weight:bold;padding-top:5px;");
-   b->setIcon(action->altIcon());
-   connect(action,SIGNAL(textChanged(QString)),b,SLOT(setNewText(QString)));
-   connect(b,SIGNAL(clicked()),action,SLOT(trigger()));
-   return b;
-} //createButton
-
 ///Hide or show the toolbar and select visible actions
 void OverlayToolbar::updateState()
 {
-   
+
 } //updateState
 
 void OverlayToolbar::hideEvent(QHideEvent *)
@@ -190,32 +158,7 @@ void OverlayToolbar::setForcedParent(QWidget* parent)
    }
 }
 
-void OverlayToolbar::setIconSize(int size)
-{
-   m_IconSize = size;
-   QMutableHashIterator<int,ObserverToolButton*> iter(m_hButtons);
-   while (iter.hasNext())
-      iter.value()->setIconSize(QSize(m_IconSize,m_IconSize));
-}
-
-void OverlayToolbar::addAction(ExtendedAction* action, int key)
-{
-   int k = key==-1?m_hButtons.size()+1:key;
-   while(m_hButtons[k]) k++;
-   ObserverToolButton* btn = createButton( action);
-   if (m_IconSize>0) {
-      btn->setIconSize(QSize(m_IconSize,m_IconSize));
-   }
-   m_hButtons[key] = btn;
-   m_pLayout->addWidget( btn );
-}
-
 void OverlayToolbar::addWidget(QWidget* w)
 {
    m_pLayout->addWidget(w);
-}
-
-ObserverToolButton* OverlayToolbar::actionButton(int key)
-{
-   return m_hButtons[key];
 }

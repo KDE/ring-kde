@@ -26,9 +26,6 @@ class QActionGroup;
 //KDE
 class QAction;
 
-//Ring
-class ExtendedAction;
-
 ///Group action declaration under the same umbrella
 class ActionCollection : public QObject {
    Q_OBJECT
@@ -41,14 +38,14 @@ public:
    void setupAction();
 
    //Actions
-   ExtendedAction* holdAction                  ();
-   ExtendedAction* recordAction                ();
-   ExtendedAction* muteCaptureAction           ();
-   ExtendedAction* mutePlaybackAction          ();
-   ExtendedAction* hangupAction                ();
-   ExtendedAction* transferAction              ();
-   ExtendedAction* acceptAction                ();
-   ExtendedAction* newCallAction               ();
+   QAction* holdAction                  ();
+   QAction* recordAction                ();
+   QAction* muteCaptureAction           ();
+   QAction* mutePlaybackAction          ();
+   QAction* hangupAction                ();
+   QAction* transferAction              ();
+   QAction* acceptAction                ();
+   QAction* newCallAction               ();
    QAction *        displayVolumeControlsAction();
    QAction *        displayDialpadAction       ();
    QAction *        displayAccountCbbAction    ();
@@ -62,38 +59,38 @@ public:
 
    //Video actions
    #ifdef ENABLE_VIDEO
-   ExtendedAction* videoRotateLeftAction     ();
-   ExtendedAction* videoRotateRightAction    ();
-   ExtendedAction* videoFlipHorizontalAction ();
-   ExtendedAction* videoFlipVerticalAction   ();
-   ExtendedAction* videoMuteAction           ();
-   ExtendedAction* videoPreviewAction        ();
-   ExtendedAction* videoScaleAction          ();
-   ExtendedAction* videoFullscreenAction     ();
+   QAction* videoRotateLeftAction     ();
+   QAction* videoRotateRightAction    ();
+   QAction* videoFlipHorizontalAction ();
+   QAction* videoFlipVerticalAction   ();
+   QAction* videoMuteAction           ();
+   QAction* videoPreviewAction        ();
+   QAction* videoScaleAction          ();
+   QAction* videoFullscreenAction     ();
    #endif
 
 private:
 
    //Toolbar actions
-   ExtendedAction* action_accept        ;
-   ExtendedAction* action_new_call      ;
-   ExtendedAction* action_hold          ;
-   ExtendedAction* action_transfer      ;
-   ExtendedAction* action_record        ;
-   ExtendedAction* action_mute_capture  ;
-   ExtendedAction* action_mute_playback ;
-   ExtendedAction* action_hangup        ;
+   QAction* action_accept        ;
+   QAction* action_new_call      ;
+   QAction* action_hold          ;
+   QAction* action_transfer      ;
+   QAction* action_record        ;
+   QAction* action_mute_capture  ;
+   QAction* action_mute_playback ;
+   QAction* action_hangup        ;
 
    //Video actions
    #ifdef ENABLE_VIDEO
-   ExtendedAction* action_video_rotate_left    ;
-   ExtendedAction* action_video_rotate_right   ;
-   ExtendedAction* action_video_flip_horizontal;
-   ExtendedAction* action_video_flip_vertical  ;
-   ExtendedAction* action_video_mute           ;
-   ExtendedAction* action_video_preview        ;
-   ExtendedAction* action_video_scale          ;
-   ExtendedAction* action_video_fullscreen     ;
+   QAction* action_video_rotate_left    ;
+   QAction* action_video_rotate_right   ;
+   QAction* action_video_flip_horizontal;
+   QAction* action_video_flip_vertical  ;
+   QAction* action_video_mute           ;
+   QAction* action_video_preview        ;
+   QAction* action_video_scale          ;
+   QAction* action_video_fullscreen     ;
    #endif
 
    //Other actions

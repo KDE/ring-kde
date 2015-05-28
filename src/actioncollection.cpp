@@ -34,7 +34,6 @@
 #include <KSharedConfig>
 
 //Ring
-#include "extendedaction.h"
 #include "ring.h"
 #include "view.h"
 #include "localmacrocollection.h"
@@ -71,23 +70,15 @@ action_configureShortcut(nullptr), action_pastenumber(nullptr),
 action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBookmarkDock(nullptr),
 action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), action_new_call(nullptr)
 {
-   action_accept        = new ExtendedAction(this);
-   action_new_call      = new ExtendedAction(this);
-   action_hold          = new ExtendedAction(this);
-   action_transfer      = new ExtendedAction(this);
-   action_record        = new ExtendedAction(this);
-   action_mute_capture  = new ExtendedAction(this);
-   action_mute_playback = new ExtendedAction(this);
-   action_hangup        = new ExtendedAction(this);
+   action_accept        = new QAction(this);
+   action_new_call      = new QAction(this);
+   action_hold          = new QAction(this);
+   action_transfer      = new QAction(this);
+   action_record        = new QAction(this);
+   action_mute_capture  = new QAction(this);
+   action_mute_playback = new QAction(this);
+   action_hangup        = new QAction(this);
    action_mailBox       = new QAction(Ring::app());
-
-   action_transfer->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/transfert.svg"   ));
-   action_record  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/rec_call.svg"    ));
-   action_hold    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/hold.svg"        ));
-   action_mute_capture    ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg" ));
-   action_hangup  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/refuse.svg"      ));
-   action_accept  ->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"      ));
-   action_new_call->setAltIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/call.svg"      ));
 
    action_new_call->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/call.svg"      )));
    action_hold->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold.svg"      )));
@@ -104,14 +95,14 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), 
    action_new_call  ->setText ( i18n("New Call"      ) );
 
    #ifdef ENABLE_VIDEO
-   action_video_rotate_left     = new ExtendedAction(this);
-   action_video_rotate_right    = new ExtendedAction(this);
-   action_video_flip_horizontal = new ExtendedAction(this);
-   action_video_flip_vertical   = new ExtendedAction(this);
-   action_video_mute            = new ExtendedAction(this);
-   action_video_preview         = new ExtendedAction(this);
-   action_video_scale           = new ExtendedAction(this);
-   action_video_fullscreen      = new ExtendedAction(this);
+   action_video_rotate_left     = new QAction(this);
+   action_video_rotate_right    = new QAction(this);
+   action_video_flip_horizontal = new QAction(this);
+   action_video_flip_vertical   = new QAction(this);
+   action_video_mute            = new QAction(this);
+   action_video_preview         = new QAction(this);
+   action_video_scale           = new QAction(this);
+   action_video_fullscreen      = new QAction(this);
    action_video_rotate_left     ->setText ( i18n( "Rotate left"  ) );
    action_video_rotate_right    ->setText ( i18n( "Rotate right" ) );
    action_video_flip_horizontal ->setText ( i18n( "Flip"         ) );
@@ -120,14 +111,6 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), 
    action_video_preview         ->setText ( i18n( "Preview"      ) );
    action_video_scale           ->setText ( i18n( "Keep aspect ratio"      ));
    action_video_fullscreen      ->setText ( i18n( "Fullscreen"             ));
-   action_video_rotate_left     ->setAltIcon(QIcon::fromTheme("object-rotate-left"    ));
-   action_video_rotate_right    ->setAltIcon(QIcon::fromTheme("object-rotate-right"   ));
-   action_video_flip_horizontal ->setAltIcon(QIcon::fromTheme("object-flip-horizontal"));
-   action_video_flip_vertical   ->setAltIcon(QIcon::fromTheme("object-flip-vertical"  ));
-   action_video_mute            ->setAltIcon(QIcon::fromTheme("camera-web"            ));
-   action_video_preview         ->setAltIcon(QIcon::fromTheme("view-preview"          ));
-   action_video_scale           ->setAltIcon(QIcon::fromTheme("transform-scale"       ));
-   action_video_fullscreen      ->setAltIcon(QIcon::fromTheme("view-fullscreen"       ));
    action_video_rotate_left     ->setIcon(QIcon::fromTheme("object-rotate-left"    ));
    action_video_rotate_right    ->setIcon(QIcon::fromTheme("object-rotate-right"   ));
    action_video_flip_horizontal ->setIcon(QIcon::fromTheme("object-flip-horizontal"));
@@ -195,7 +178,7 @@ void ActionCollection::setupAction()
    action_configureRing->setText(i18n("Configure Ring-KDE"));
 
    action_displayDialpad        = new QAction(QIcon(RingIcons::DISPLAY_DIALPAD), i18n("Display dialpad")                 , this);
-   action_displayAccountCbb        = new QAction(i18n("Display account selector")                 , this);
+   action_displayAccountCbb     = new QAction(i18n("Display account selector")                 , this);
    action_displayMessageBox     = new QAction(QIcon::fromTheme("mail-message-new"), i18n("Display text message box")                 , this);
    action_displayVolumeControls = new QAction(QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS), i18n("Display volume controls"), this);
    action_pastenumber           = new QAction(QIcon::fromTheme("edit-paste"), i18n("Paste")                                          , this);
@@ -241,7 +224,7 @@ void ActionCollection::setupAction()
 
    //Bind actions to the useractionmodel
    UserActionModel* uam = CallModel::instance()->userActionModel();
-   QHash<int, ExtendedAction*> actionHash;
+   QHash<int, QAction*> actionHash;
    actionHash[ (int)UserActionModel::Action::ACCEPT          ] = action_accept;
    actionHash[ (int)UserActionModel::Action::ADD_NEW         ] = action_new_call;
    actionHash[ (int)UserActionModel::Action::HOLD            ] = action_hold;
@@ -250,8 +233,8 @@ void ActionCollection::setupAction()
    actionHash[ (int)UserActionModel::Action::RECORD          ] = action_record;
    actionHash[ (int)UserActionModel::Action::HANGUP          ] = action_hangup;
 
-   for (QHash<int,ExtendedAction*>::const_iterator i = actionHash.begin(); i != actionHash.end(); ++i) {
-      ExtendedAction* ea = i.value();
+   for (QHash<int,QAction*>::const_iterator i = actionHash.begin(); i != actionHash.end(); ++i) {
+      QAction* ea = i.value();
       UserActionModel::Action a = static_cast<UserActionModel::Action>(i.key());
       connect(ea, &QAction::triggered, [uam,a](bool) {uam << a;});
    }
@@ -260,12 +243,11 @@ void ActionCollection::setupAction()
       const int first(tl.row()),last(br.row());
       for(int i = first; i <= last;i++) {
          const QModelIndex& idx = uam->index(i,0);
-         ExtendedAction* a = actionHash[(int)qvariant_cast<UserActionModel::Action>(idx.data(UserActionModel::Role::ACTION))];
+         QAction* a = actionHash[(int)qvariant_cast<UserActionModel::Action>(idx.data(UserActionModel::Role::ACTION))];
          if (a) {
             a->setText   ( idx.data(Qt::DisplayRole).toString()                 );
             a->setEnabled( idx.flags() & Qt::ItemIsEnabled                      );
             a->setChecked( idx.data(Qt::CheckStateRole) == Qt::Checked          );
-            a->setAltIcon( qvariant_cast<QPixmap>(idx.data(Qt::DecorationRole)) );
          }
       }
    });
@@ -317,134 +299,10 @@ void ActionCollection::setupAction()
    foreach(QAction * ac,acList) {
       Ring::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
-//    qDebug() << "\n\n\nGlobal" << KSharedConfig::openConfig()->groupList();
-//    KConfigGroup g = KSharedConfig::openConfig()->group("KShortcutsDialog Settings");
-//    Ring::app()->actionCollection()->exportGlobalShortcuts(&g);
 
    updateRecordButton();
    updateVolumeButton();
 }
-
-/*
-///Call
-void ActionCollection::accept() //TODO dead code?
-{
-   Call* call = Ring::view()->currentCall();// Ring::view()->currentCall();
-   if(!call) {
-      qDebug() << "Calling when no item is selected. Opening an item.";
-      CallModel::instance()->dialingCall();
-      Ring::view()->selectDialingCall();
-      Ring::view()->updateWindowCallState();
-      Ring::app()->selectCallTab();
-   }
-   else {
-      const Call::State state = call->state();
-      //TODO port to lifeCycle code
-      if (state == Call::State::RINGING || state == Call::State::CURRENT || state == Call::State::HOLD
-         || state == Call::State::BUSY || state == Call::State::FAILURE || state == Call::State::ERROR) {
-         qDebug() << "Calling when item currently ringing, current, hold or busy. Opening an item.";
-         CallModel::instance()->dialingCall();
-         Ring::view()->selectDialingCall();
-         Ring::view()->updateWindowCallState();
-      }
-      else {
-         try {
-            call->performAction(Call::Action::ACCEPT);
-         }
-         catch(const char * msg) {
-            KMessageBox::error(Ring::app(),i18n(msg));
-         }
-         emit windowStateChanged();
-      }
-   }
-} //accept
-
-///Call
-void ActionCollection::hangup()
-{
-   Call* call = Ring::view()->currentCall();
-   if (call) {
-      try {
-         call->performAction(Call::Action::REFUSE);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(Ring::app(),i18n(msg));
-      }
-      emit windowStateChanged();
-   }
-} //hangup
-
-///Refuse call
-void ActionCollection::refuse()
-{
-   Call* call = Ring::view()->currentCall();
-   if(!call) {
-      qDebug() << "Error : Hanging up when no item selected. Should not happen.";
-   }
-   else {
-      try {
-         call->performAction(Call::Action::REFUSE);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(Ring::app(),i18n(msg));
-      }
-      emit windowStateChanged();
-   }
-}
-
-///Put call on hold
-void ActionCollection::hold()
-{
-   Call* call = Ring::view()->currentCall();
-   if(!call) {
-      qDebug() << "Error : Holding when no item selected. Should not happen.";
-   }
-   else {
-      try {
-         call->performAction(Call::Action::HOLD);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(Ring::app(),i18n(msg));
-      }
-      emit windowStateChanged();
-   }
-}
-
-///Transfer a call
-void ActionCollection::transfer()
-{
-   Call* call = Ring::view()->currentCall();
-   if(!call) {
-      qDebug() << "Error : Transferring when no item selected. Should not happen.";
-   }
-   else {
-      try {
-         call->performAction(Call::Action::TRANSFER);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(Ring::app(),i18n(msg));
-      }
-      emit windowStateChanged();
-   }
-}
-
-///Record a call
-void ActionCollection::record()
-{
-   Call* call = Ring::view()->currentCall();
-   if(!call) {
-      qDebug() << "Error : Recording when no item selected. Should not happen.";
-   }
-   else {
-      try {
-         call->performAction(Call::Action::RECORD);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(Ring::app(),i18n(msg));
-      }
-      emit windowStateChanged();
-   }
-}*/
 
 ///Access the voice mail list
 void ActionCollection::mailBox()
@@ -509,42 +367,42 @@ void ActionCollection::addMacro(const QVariant& newAction)
  *                                                                           *
  ****************************************************************************/
 
-ExtendedAction* ActionCollection::holdAction    ()
+QAction* ActionCollection::holdAction    ()
 {
    return action_hold;
 }
 
-ExtendedAction* ActionCollection::recordAction  ()
+QAction* ActionCollection::recordAction  ()
 {
    return action_record;
 }
 
-ExtendedAction* ActionCollection::muteCaptureAction()
+QAction* ActionCollection::muteCaptureAction()
 {
    return action_mute_capture;
 }
 
-ExtendedAction* ActionCollection::mutePlaybackAction()
+QAction* ActionCollection::mutePlaybackAction()
 {
    return action_mute_playback;
 }
 
-ExtendedAction* ActionCollection::hangupAction  ()
+QAction* ActionCollection::hangupAction  ()
 {
    return action_hangup;
 }
 
-ExtendedAction* ActionCollection::transferAction()
+QAction* ActionCollection::transferAction()
 {
    return action_transfer;
 }
 
-ExtendedAction* ActionCollection::acceptAction  ()
+QAction* ActionCollection::acceptAction  ()
 {
    return action_accept;
 }
 
-ExtendedAction* ActionCollection::newCallAction  ()
+QAction* ActionCollection::newCallAction  ()
 {
    return action_new_call;
 }
@@ -630,42 +488,42 @@ void ActionCollection::updateVolumeButton()
 
 //Video actions
 #ifdef ENABLE_VIDEO
-ExtendedAction* ActionCollection::videoRotateLeftAction     ()
+QAction* ActionCollection::videoRotateLeftAction     ()
 {
    return action_video_rotate_left;
 }
 
-ExtendedAction* ActionCollection::videoRotateRightAction    ()
+QAction* ActionCollection::videoRotateRightAction    ()
 {
    return action_video_rotate_right;
 }
 
-ExtendedAction* ActionCollection::videoFlipHorizontalAction ()
+QAction* ActionCollection::videoFlipHorizontalAction ()
 {
    return action_video_flip_horizontal;
 }
 
-ExtendedAction* ActionCollection::videoFlipVerticalAction   ()
+QAction* ActionCollection::videoFlipVerticalAction   ()
 {
    return action_video_flip_vertical;
 }
 
-ExtendedAction* ActionCollection::videoMuteAction           ()
+QAction* ActionCollection::videoMuteAction           ()
 {
    return action_video_mute;
 }
 
-ExtendedAction* ActionCollection::videoPreviewAction        ()
+QAction* ActionCollection::videoPreviewAction        ()
 {
    return action_video_preview;
 }
 
-ExtendedAction* ActionCollection::videoScaleAction          ()
+QAction* ActionCollection::videoScaleAction          ()
 {
    return action_video_scale;
 }
 
-ExtendedAction* ActionCollection::videoFullscreenAction     ()
+QAction* ActionCollection::videoFullscreenAction     ()
 {
    return action_video_fullscreen;
 }

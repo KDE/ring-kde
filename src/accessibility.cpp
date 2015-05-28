@@ -103,7 +103,7 @@ QString Accessibility::numberToDigit(const QString &number)
 void Accessibility::currentCallDetails()
 {
    foreach (Call* call,CallModel::instance()->getActiveCalls()) {
-      if (Ring::view()->currentCall() == call) {
+      if (CallModel::instance()->selectedCall() == call) {
          QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toLatin1() ));
          if (!call->peerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));

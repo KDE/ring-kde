@@ -28,7 +28,6 @@
 //Ring
 #include "ring.h"
 #include "actioncollection.h"
-#include "extendedaction.h"
 #include <klib/tipmanager.h>
 #include <proxies/simplerotateproxy.h>
 #include <call.h>

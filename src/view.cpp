@@ -1,7 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,24 +20,14 @@
 #include "view.h"
 
 //Qt
-#include <QString>
+#include <QtCore/QString>
 #include <QtGui/QPalette>
 #include <QtWidgets/QWidget>
 #include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QDropEvent>
-#include <QtGui/QBitmap>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
 #include <QtCore/QMimeData>
-#include <QtCore/QSharedPointer>
 
 //KDE
 #include <klocalizedstring.h>
-// #include <kabc/addressbook.h>
-#include <kmessagebox.h>
-#include <KColorScheme>
-
 
 //Ring
 #include "icons/icons.h"
@@ -46,12 +35,10 @@
 #include "canvasobjectmanager.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewtoolbar.h"
-#include "extendedaction.h"
 #include "eventmanager.h"
 #include "actioncollection.h"
 #include "delegates/conferencedelegate.h"
 #include "delegates/historydelegate.h"
-#include "delegates/categorizeddelegate.h"
 #include "widgets/tips/dialpadtip.h"
 #include "widgets/kphonenumberselector.h"
 #include "widgets/callviewoverlay.h"
@@ -63,36 +50,12 @@
 #include "mime.h"
 #include "contactmethod.h"
 #include "person.h"
-#include "certificate.h"
 #include "media/text.h"
 #include "accountmodel.h"
-#include "availableaccountmodel.h"
 #include "phonedirectorymodel.h"
 #include "audio/settings.h"
-#include "presencestatusmodel.h"
-#include "klib/helperfunctions.h"
 #include "klib/tipmanager.h"
 #include "implementation.h"
-
-#define IM_ACTIVE m_pMessageTabBox->isVisible()
-
-#define ACTION_LABEL_CALL                 i18n("New call")
-#define ACTION_LABEL_PLACE_CALL           i18n("Place call")
-#define ACTION_LABEL_HANG_UP              i18n("Hang up")
-#define ACTION_LABEL_HOLD                 i18n("Hold on")
-#define ACTION_LABEL_TRANSFER             i18n("Transfer")
-#define ACTION_LABEL_RECORD               i18n("Record")
-#define ACTION_LABEL_ACCEPT               i18n("Pick up")
-#define ACTION_LABEL_REFUSE               i18n("Hang up")
-#define ACTION_LABEL_UNHOLD               i18n("Hold off")
-#define ACTION_LABEL_GIVE_UP_TRANSF       i18n("Give up transfer")
-#define ACTION_LABEL_MAILBOX              i18n("Voicemail")
-
-//TODO remove
-#include <QtWidgets/QTableView>
-#include <useractionmodel.h>
-#include <proxies/simplerotateproxy.h>
-#include "delegates/toolbardelegate.h"
 
 ///Constructor
 View::View(QWidget *parent)
@@ -155,32 +118,17 @@ View::View(QWidget *parent)
 
    /*Setup signals                                                                                                                                    */
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                              */
-   /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this           , SLOT(on1_incomingCall(Call*))          );
-   /**/connect(AccountModel::instance()     , SIGNAL(voiceMailNotify(Account*,int))         , this           , SLOT(on1_voiceMailNotify(Account*,int)));
-   /**/connect(CallModel::instance()        , SIGNAL(callStateChanged(Call*,Call::State))   , this           , SLOT(updateWindowCallState())          );
-   /**/connect(AccountModel::instance()     , SIGNAL(accountListUpdated())                  , this           , SLOT(updateWindowCallState())          );
+   /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))          );
    /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this           , SLOT(sendMessage())                    );
    /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this           , SLOT(sendMessage())                    );
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex))        , m_pEventManager, SLOT(enter())                          );
+   /**/connect(widget_dialpad               , &Dialpad::typed                               , m_pEventManager, &EventManager::typeString              );
    /*                                                                                                                                                 */
 
    //Auto completion
    loadAutoCompletion();
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
-   connect(m_pView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)) , m_pCanvasToolbar, SLOT(updateState()));
-   connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State))     , m_pCanvasToolbar, SLOT(updateState()));
-   connect(CallModel::instance()    , SIGNAL(layoutChanged())                         , m_pCanvasToolbar, SLOT(updateState()));
-
-   //TODO to remove
-   connect(m_pView,&CategorizedTreeView::contextMenuRequest, [this](QModelIndex) {
-      QDialog* d2 = new QDialog(this);
-      QHBoxLayout* hb = new QHBoxLayout(d2);
-      QTreeView* tv = new QTreeView();
-      tv->setModel(View::currentCall()->certificate()->model());
-      hb->addWidget(tv);
-      d2->show();
-   });
 
    if (ConfigurationSkeleton::enableWizard() == true && !AccountModel::instance()->isRingSupported()) {
       new Wizard(this);
@@ -188,6 +136,10 @@ View::View(QWidget *parent)
    ConfigurationSkeleton::setEnableWizard(false);
 
    setFocus(Qt::OtherFocusReason);
+
+   loadAutoCompletion    ();
+   widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
+   Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
 }
 
 ///Destructor
@@ -201,37 +153,8 @@ View::~View()
    delete m_pConfDelegate   ;
    delete m_pHistoryDelegate;
    delete m_pCanvasManager  ;
-   delete m_pColorDelegate   ;
+   delete m_pColorDelegate  ;
 }
-
-///Init main window
-void View::loadWindow()
-{
-   updateWindowCallState ();
-   updateVolumeControls  ();
-   loadAutoCompletion    ();
-   widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
-   Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
-}
-
-
-/*****************************************************************************
- *                                                                           *
- *                                  Setters                                  *
- *                                                                           *
- ****************************************************************************/
-
-///Set the current selection item
-void View::setCurrentIndex(const QModelIndex& idx) const //TODO remove
-{
-   m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
-}
-
-/*****************************************************************************
- *                                                                           *
- *                                  Getters                                  *
- *                                                                           *
- ****************************************************************************/
 
 ///Return the auto completion widget
 AutoCompletion* View::autoCompletion() const
@@ -239,22 +162,10 @@ AutoCompletion* View::autoCompletion() const
    return m_pAutoCompletion;
 }
 
-///Return the current (selected) call
-Call* View::currentCall() const
-{
-   return CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
-}
-
 bool View::messageBoxFocussed() const
 {
    return m_pSendMessageLE && m_pSendMessageLE->hasFocus();
 }
-
-/*****************************************************************************
- *                                                                           *
- *                              Keyboard input                               *
- *                                                                           *
- ****************************************************************************/
 
 ///Create a call from the clipboard content
 void View::paste()
@@ -268,133 +179,6 @@ void View::paste()
       m_pEventManager->typeString(cb->text());
    }
 }
-
-
-/*****************************************************************************
- *                                                                           *
- *                                  Mutator                                  *
- *                                                                           *
- ****************************************************************************/
-
-void View::selectDialingCall() const //TODO remove
-{
-   foreach(Call* call,CallModel::instance()->getActiveCalls()) {
-      if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
-         const QModelIndex idx = CallModel::instance()->getIndex(call);
-         setCurrentIndex(idx);
-
-         //Focus editor widget
-         //m_pView->openPersistentEditor(idx);
-      }
-   }
-}
-
-
-/*****************************************************************************
- *                                                                           *
- *                       Update display related code                         *
- *                                                                           *
- ****************************************************************************/
-
-///Change GUI icons
-void View::updateWindowCallState() //TODO remove
-{
-   qDebug() << "Call state changed";
-
-   Call* call = 0;
-
-   bool transfer(false);
-
-   ActionCollection::instance()->mailBoxAction()->setVisible(AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty());
-
-   call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
-   if (!call) {
-      qDebug() << "No item selected.";
-      m_pMessageBoxW->setVisible(false);
-   }
-   else if (call->type() == Call::Type::CONFERENCE) {
-      //TODO Something to do?
-   }
-   else {
-      Call::State state = call->state();
-
-      switch (state) {
-         case Call::State::INCOMING:
-            m_pMessageBoxW->setVisible(false || IM_ACTIVE)   ;
-            break;
-
-         case Call::State::RINGING:
-         case Call::State::INITIALIZATION:
-         case Call::State::CONNECTED:
-         case Call::State::DIALING:
-         case Call::State::HOLD:
-         case Call::State::NEW:
-         case Call::State::ABORTED:
-         case Call::State::FAILURE:
-         case Call::State::BUSY:
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-
-         case Call::State::CURRENT:
-            m_pMessageBoxW->setVisible((true && ConfigurationSkeleton::displayMessageBox()) || IM_ACTIVE);
-            break;
-         case Call::State::TRANSFERRED:
-            m_pMessageBoxW->setVisible(false || IM_ACTIVE)                               ;
-            if (!m_pTransferOverlay) {
-               m_pTransferOverlay = new CallViewOverlay(m_pView)                         ;
-            }
-            m_pTransferOverlay->setCurrentCall(call)                                     ;
-            m_pTransferOverlay->setVisible(true)                                         ;
-            transfer = true                                                              ;
-            break;
-
-         case Call::State::TRANSF_HOLD:
-            m_pMessageBoxW->setVisible(false)                                            ;
-            transfer = true                                                              ;
-            break;
-
-         case Call::State::OVER:
-            qDebug() << "Error : Reached CALL_STATE_OVER with call "  << call << "!";
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-
-         case Call::State::ERROR:
-            qDebug() << "Error : Reached CALL_STATE_ERROR with call " << call << "!";
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-
-         case Call::State::CONFERENCE:
-            m_pMessageBoxW->setVisible(false || IM_ACTIVE)                               ;
-            break;
-
-         case Call::State::CONFERENCE_HOLD:
-            m_pMessageBoxW->setVisible(false)                                            ;
-            break;
-         case Call::State::COUNT__:
-         default:
-            qDebug() << "Error : Reached unexisting state for call "  << call << "(" << call->state() << "!";
-            break;
-
-      }
-
-      if (TipCollection::dragAndDrop()) {
-         int activeCallCounter=0;
-         foreach (Call* call2, CallModel::instance()->getActiveCalls()) {
-            if (dynamic_cast<Call*>(call2)) {
-               activeCallCounter += (call2->lifeCycleState() == Call::LifeCycleState::PROGRESS)?1:0;
-               activeCallCounter -= (call2->lifeCycleState() == Call::LifeCycleState::INITIALIZATION)*1000;
-            }
-         }
-         if (activeCallCounter >= 2 && !CallModel::instance()->getActiveConferences().size()) {
-            m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_COUNT_CHANGED);
-         }
-      }
-   }
-
-//    emit actionIconsChangeAsked        ( buttonIconFiles );
-//    emit actionTextsChangeAsked        ( actionTexts     );
-   emit transferCheckStateChangeAsked ( transfer        );
-} //updateWindowCallState
 
 void View::loadAutoCompletion()
 {
@@ -432,13 +216,6 @@ void View::updateVolumeControls()
    slider_sndVol->blockSignals(false);
 }
 
-
-/*****************************************************************************
- *                                                                           *
- *                                    Slots                                  *
- *                                                                           *
- ****************************************************************************/
-
 ///Proxy to hide or show the volume control
 void View::displayVolumeControls(bool checked)
 {
@@ -457,27 +234,17 @@ void View::displayDialpad(bool checked)
 void View::displayMessageBox(bool checked)
 {
    ConfigurationSkeleton::setDisplayMessageBox(checked);
-   Call* call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
+   Call* call = CallModel::instance()->selectedCall();
    m_pMessageBoxW->setVisible(checked
       && call
-      && (call->state()   == Call::State::CURRENT
-         || call->state() == Call::State::HOLD
-      )
+      && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
    );
 }
 
-///Input grabber
-void View::on_widget_dialpad_typed(QString text) //TODO use the new connect API
-{
-   m_pEventManager->typeString(text);
-}
-
 ///When a call is coming (dbus)
-void View::on1_incomingCall(Call* call)
+void View::incomingCall(Call* call)
 {
    qDebug() << "Signal : Incoming Call ! ID = " << call;
-
-   updateWindowCallState();
 
    if (ConfigurationSkeleton::displayOnCalls()) {
       Ring::app()->activateWindow(      );
@@ -487,23 +254,14 @@ void View::on1_incomingCall(Call* call)
 
    const QModelIndex& idx = CallModel::instance()->getIndex(call);
    if (idx.isValid() && (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING)) {
-      m_pView->selectionModel()->clearSelection();
-      m_pView->selectionModel()->setCurrentIndex(idx,QItemSelectionModel::SelectCurrent);
+      CallModel::instance()->selectCall(call);
    }
-
-   emit incomingCall(call);
-}
-
-///When a new voice mail is coming
-void View::on1_voiceMailNotify(Account* a, int count)  //TODO remove, it is broken
-{
-   qDebug() << "Signal : VoiceMail Notify ! " << count << " new voice mails for account " << a->alias();
 }
 
 ///Send a text message
 void View::sendMessage()
 {
-   Call* call = CallModel::instance()->getCall(m_pView->selectionModel()->currentIndex());
+   Call* call = CallModel::instance()->selectedCall();
    if (dynamic_cast<Call*>(call) && !m_pSendMessageLE->text().isEmpty()) {
       call->addOutgoingMedia<Media::Text>()->send(m_pSendMessageLE->text());
    }
@@ -512,7 +270,7 @@ void View::sendMessage()
 
 void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API for this
 {
-   Call* call = currentCall();
+   Call* call = CallModel::instance()->selectedCall();
    if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
       call->setDialNumber(n);
       if (n->account())
@@ -521,7 +279,5 @@ void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API 
       m_pAutoCompletion->reset();
    }
 }
-
-#undef IM_ACTIVE
 
 #include "view.moc"
