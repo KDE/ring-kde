@@ -86,7 +86,7 @@
   <customwidget>
    <class>AutoComboBox</class>
    <extends>QComboBox</extends>
-   <header>widgets/autocombobox.h</header>
+   <header>conf/account/widgets/autocombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Tabs</class>
+ <widget class="QWidget" name="Tabs">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>538</width>
+    <height>278</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Basic</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="Pages::Basic" name="widget" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Advanced</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="Pages::Advanced" name="widget_2" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Network</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="Pages::Network" name="widget_3" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Codecs</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="Pages::Codecs" name="widget_4" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_7">
+      <attribute name="title">
+       <string>Credentials</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="Pages::Credentials" name="widget_5" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>Security</string>
+      </attribute>
+      <widget class="QWidget" name="widget_6" native="true">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>100</y>
+         <width>120</width>
+         <height>80</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_6">
+      <attribute name="title">
+       <string>Ringtones</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="Pages::RingTone" name="widget_7" native="true"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Pages::Basic</class>
+   <extends>QWidget</extends>
+   <header>accountpages/basic.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Pages::Advanced</class>
+   <extends>QWidget</extends>
+   <header>accountpages/advanced.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Pages::Network</class>
+   <extends>QWidget</extends>
+   <header>accountpages/network.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Pages::Codecs</class>
+   <extends>QWidget</extends>
+   <header>accountpages/codecs.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Pages::RingTone</class>
+   <extends>QWidget</extends>
+   <header>accountpages/ringtone.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Pages::Credentials</class>
+   <extends>QWidget</extends>
+   <header>accountpages/credentials.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

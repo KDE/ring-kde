@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+    <kcfgfile arg="true" />
+    <parameter name="magic" type="string">
+        sdfsdf
+    </parameter>
+
+    <group name="Account">
+
+        <entry name="id" type="String">
+            <label>Account identifier</label>
+            <tooltip></tooltip>
+            <default code=""><!--TODO autogenerate unique--></default>
+        </entry>
+
+        <entry name="profileId" type="String">
+            <label>Account profile identifier</label>
+            <tooltip></tooltip>
+            <default code=""><!--TODO autogenerate unique--></default>
+        </entry>
+
+        <entry name="alias" type="String">
+            <label>Alias</label>
+            <tooltip></tooltip>
+            <default code=""><!--TODO autogenerate "New Account (count)"--></default>
+        </entry>
+
+        <entry name="enable" type="Bool">
+            <label>Enabled</label>
+            <tooltip>Enable this account so you can send and receive calls and messages</tooltip>
+            <default>true</default>
+        </entry>
+
+        <entry name="type" type="">
+            <!--TODO use enum-->
+            <label>Account type</label>
+            <tooltip>The protocol used for this account</tooltip>
+            <default>SIP</default>
+        </entry>
+
+        <entry name="mailbox" type="String">
+            <label>Mailbox extension</label>
+            <tooltip>A phone number called to access your mailbox (optional)</tooltip>
+            <default></default>
+        </entry>
+
+        <!--
+        This doesn't belong here, this should be handled by an item extension
+        <entry name="autoAnswer" type="Bool">
+            <default>false</default>
+        </entry>
+        -->
+
+        <entry name="hasCustomUserAgent" type="Bool">
+            <label>Use custom user agent</label>
+            <tooltip>
+                By default, Ring will send "Ring/Version" as user agent. Some registrar only
+                support a small set of SIP client. Changing this value can be used to trick
+                your registrar into accepting Ring.
+            </tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="useragent" type="String">
+            <!-- Leave empty when hasCustomUserAgent == false -->
+            <label>User agent</label>
+            <tooltip>By default, Ring will send "Ring/Version" as user agent. Some registrar only
+                support a small set of SIP client. Changing this value can be used to trick
+                your registrar into accepting Ring.</tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="username" type="String">
+            <label>Username</label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <!--TODO wait, what? that exist? too bad a quick git grep don't seem to show Account::getDisplayName being used much -->
+        <entry name="displayName" type="String">
+            <label>Display name</label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="hostname" type="String">
+            <label>Hostname</label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="presenceModuleEnabled" type="Bool">
+            <label>Enable presence</label>
+            <tooltip>
+                By default, Ring wont track if a user is present on the network.
+                This can cause notebook batteries to train at a faster rate and
+                is not properly supported by many registrar.
+
+                If your registrar don't officially support this feature this
+                setting wont be available.
+            </tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="useProxy" type="Bool">
+            <label>Use a proxy</label>
+            <default>false</default>
+        </entry>
+
+        <entry name="proxy" type="String">
+            <label>Use a proxy</label>
+            <default>false</default>
+        </entry>
+
+        <!--
+        This should not be saved
+        <entry name="presencePublishSupported" type="">: false
+            <default></default>
+        </entry>
+        <entry name="presenceSubscribeSupported" type="">: false
+        </entry>
+        -->
+
+    </group>
+
+    <group name="Network">
+        <entry name="serviceRoute" type="String">
+            <label>Service route</label>
+            <tooltip><!--TODO document--></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="stunEnabled" type="Bool">
+            <label>Enable STUN and ICE</label>
+            <tooltip>
+                When behind a network address translation router (NAT), it may be
+                impossible to directly contact and be contacted by the registrar.
+                To solve this, it is possible to set a third party server as
+                an intermediary. Enable this setting if your network require
+                such intermediary.
+            </tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="stunServer" type="String">
+            <label>STUN/ICE server URL</label>
+            <tooltip>The URL of the STUN or ICE server</tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="keepAlive" type="Bool">
+            <label>Keep alive</label>
+            <tooltip>
+                Notify the server at an interval to ensure that the connection
+                is alive
+            </tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="interface" type="String">
+            <label>Network interface</label>
+            <tooltip>
+                If you can also access your registrar through a VPN, set this
+                value to the interface name. This can also prevent an account to
+                be used over Wifi for security or performance reasons.
+            </tooltip>
+            <default>default</default>
+        </entry>
+
+        <entry name="port" type="UInt">
+            <label>Port</label>
+            <tooltip>The local network interface port used to receive calls</tooltip>
+            <min>1025</min>
+            <max>65534</max>
+            <default>5060</default>
+        </entry>
+
+        <entry name="publishAddr" type="String">
+            <label>Published address</label>
+            <tooltip><!--TODO document--></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="publishPort" type="UInt">
+            <label>Published port</label>
+            <tooltip><!--TODO document--></tooltip>
+            <default>5060</default>
+        </entry>
+
+        <entry name="sameasLocal" type="Bool">
+            <label>Use the same address and port as local</label>
+            <tooltip><!--TODO document--></tooltip>
+            <default>true</default>
+        </entry>
+
+        <entry name="registrationexpire" type="UInt">
+            <!--TODO what is the accepted maximum? 3600*24?-->
+            <label>Registration expiration</label>
+            <tooltip>
+                Force a new registration to happen after a specified number of
+                seconds. Please note that some registrar may select a different
+                value according to their settings. In that case, this value will
+                be ignored.
+            </tooltip>
+            <min>0</min>
+            <default>60</default>
+        </entry>
+    </group>
+
+    <group name="Audio">
+        <entry name="audioPortMax" type="UInt">
+            <label>Audio port max</label>
+            <tooltip></tooltip>
+            <min>1025</min>
+            <max>65534</max>
+            <default>32766</default>
+        </entry>
+
+        <entry name="audioPortMin" type="UInt">
+            <label>Audio port min</label>
+            <tooltip></tooltip>
+            <min>1025</min>
+            <max>65534</max>
+            <default>16384</default>
+        </entry>
+
+        <entry name="dtmfType" type="Bool">
+            <!-- true = RTP, false = SIP-->
+            <label>DTMF type</label>
+            <tooltip></tooltip>
+            <default>true</default>
+        </entry>
+
+        <entry name="useCustomAudioCodecList" type="Bool">
+            <label>Use the default codec list</label>
+            <tooltip>Let Ring select the best audio codec.</tooltip>
+            <default>true</default>
+        </entry>
+
+        <entry name="audioCodecs" type="IntList">: 0/3/8/9/18/104/110/111/112/
+            <!--Wont ever be displayed as is, a relevant label is unnecessary -->
+            <label>Ordered codec list</label>
+            <tooltip>
+                To improve audio quality or prevent unwanted transcoding
+                with communicating through certain registrar, it may be necessary
+                to restrict or re-order the codec used by Ring.
+            </tooltip>
+            <default code=""><!--TODO fetch all codecs and add them--></default>
+        </entry>
+
+    </group>
+
+    <group name="Ringtone">
+        <entry name="ringtoneEnabled" type="Bool">
+            <label>Enable ringtone</label>
+            <tooltip>Play a sound when a new call is ringing</tooltip>
+            <default>true</default>
+        </entry>
+
+        <entry name="ringtonePath" type="Path">
+            <!--: /usr/share/sflphone/ringtones/konga.ul-->
+            <label>Current ringtone path</label>
+            <tooltip>
+                A path to the current ringtone file. The default will be used
+                if the file is not found.
+            </tooltip>
+            <default code=""><!--TODO get the default ringtone --></default>
+        </entry>
+    </group>
+
+    <group name="Video">
+        <entry name="videoEnabled" type="Bool">
+            <label>Enable video</label>
+            <tooltip>Enable the camera instead of the </tooltip>
+            <default>true</default>
+        </entry>
+
+        <!--TODO add an audio and video group-->
+        <entry name="videoPortMax" type="UInt">
+            <label>Video port max</label>
+            <tooltip></tooltip>
+            <min>1025</min>
+            <max>65534</max>
+            <default>65534</default>
+        </entry>
+
+        <entry name="videoPortMin" type="UInt">
+            <label>Video port min</label>
+            <tooltip></tooltip>
+            <min>1025</min>
+            <max>65534</max>
+            <default>49152</default>
+        </entry>
+
+        <entry name="useCustomVideoCodecList" type="Bool">
+            <label>Use the default codec list</label>
+            <tooltip></tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="videoCodecs" type="StringList">
+            <label></label>
+            <tooltip></tooltip>
+            <!--TODO add new "use default" value []-->
+            <default></default>
+        </entry>
+    </group>
+
+    <group name="TLS">
+
+        <entry name="tlsPort" type="UInt">
+            <label>TLS port</label>
+            <tooltip></tooltip>
+            <min>1025</min>
+            <max>65534</max>
+            <default>5061</default>
+        </entry>
+
+        <entry name="enable_sips" type="Bool">
+            <label>Enable TLS negotiation encryption</label>
+            <tooltip></tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="verifyClient" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>true</default>
+        </entry>
+
+        <entry name="verifyServer" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="requireCertif" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>true</default>
+        </entry>
+
+        <entry name="timeout" type="UInt">
+            <label></label>
+            <tooltip></tooltip>
+            <default>2</default> <!-- In seconds -->
+        </entry>
+
+        <entry name="calist" type="Path">
+            <label></label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="certificate" type="Path">
+            <label></label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="ciphers" type="String">
+            <label></label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="method" type="">
+            <!--TODO enum, add TLS1.1, 1.2 and 1.3? -->
+            <label></label>
+            <tooltip></tooltip>
+            <default>TLSv1</default>
+        </entry>
+
+        <!--FIXME this is a very, very bad idea... -->
+        <entry name="password" type="String">
+            <label></label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="privateKey" type="Path">
+            <label></label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+
+        <entry name="server" type="String">
+            <label></label>
+            <tooltip></tooltip>
+            <default></default>
+        </entry>
+    </group>
+
+    <group name="SRTP">
+
+        <entry name="enable_srtp" type="Bool">
+            <label>Enable media encryption (SRTP)</label>
+            <tooltip></tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="keyExchange" type="String">
+            <label></label>
+            <tooltip></tooltip>
+            <!--TODO Enum -->
+            <default>zrtp</default>
+        </entry>
+
+        <entry name="rtpFallback" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>false</default>
+        </entry>
+
+    </group>
+
+    <group name="ZRTP">
+
+        <entry name="displaySas" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="displaySasOnce" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>false</default>
+        </entry>
+
+        <entry name="helloHashEnabled" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>true</default>
+        </entry>
+
+        <!--FIXME double negative = evil -->
+        <entry name="notSuppWarning" type="Bool">
+            <label></label>
+            <tooltip></tooltip>
+            <default>true</default>
+        </entry>
+
+    </group>
+
+    <!--
+    Credentials are pushed programatically using this schema
+    Rationals: There can be more than one therefor cannot be exported without
+    some additional logic as KConfig-XT doesn't support complex data types
+    aggregation
+    <group name="CredentialsIndex">
+        <entry name="password" type="String"></entry>
+        <entry name="realm" type="String"></entry>
+        <entry name="username" type="String"></entry>
+    </group>
+    -->
+</kcfg>

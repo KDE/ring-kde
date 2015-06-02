@@ -72,7 +72,7 @@
 #include "klib/kcfg_settings.h"
 #include "icons/icons.h"
 #include "view.h"
-#include "widgets/autocombobox.h"
+#include "conf/account/widgets/autocombobox.h"
 #include "actioncollection.h"
 #include "widgets/systray.h"
 #include "widgets/contactdock.h"

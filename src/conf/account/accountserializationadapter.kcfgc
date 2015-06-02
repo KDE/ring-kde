@@ -1,0 +1,10 @@
+# Code generation options for kconfig_compiler
+File=accountserializationadapter.kcfg
+ClassName=AccountSerializationAdapter
+; Inherits=AbstractAccountSerializationAdapter
+ForceStringFilename=true
+
+# There can be multiple accounts, therefor it wont use a singleton
+Singleton=false
+Mutators=col_background,col_foreground
+# will create the necessary code for setting those variables

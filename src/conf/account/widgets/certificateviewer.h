@@ -20,6 +20,7 @@
 
 #include <QtWidgets/QDialog>
 #include <QtCore/QAbstractItemModel>
+#include "typedefs.h"
 
 //Qt
 class QTreeView;
@@ -28,7 +29,7 @@ class QWidget;
 //Ring
 class Certificate;
 
-class CertificateViewer : public QDialog
+class LIB_EXPORT CertificateViewer : public QDialog
 {
    Q_OBJECT
 public:

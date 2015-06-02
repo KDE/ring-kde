@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2015 by Savoir-Faire Linux                              *
+ *   Copyright (C) 2014-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,33 +15,24 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef AUTOCOMBOBOX_H
-#define AUTOCOMBOBOX_H
+#ifndef CREDENTIALS_PAGE_H
+#define CREDENTIALS_PAGE_H
 
-#include <QtWidgets/QComboBox>
+#include <QWidget>
+#include "pagebase.h"
+#include "ui_credentials.h"
 
-#include <QtCore/QAbstractItemModel>
+namespace Pages {
 
-class QItemSelectionModel;
-
-class AutoComboBox : public QComboBox
+class Credentials : public PageBase, public Ui_CredentialsPage
 {
-   Q_OBJECT
-
+Q_OBJECT
 public:
-   AutoComboBox(QWidget* parent = nullptr);
-   virtual ~AutoComboBox();
+   //Constructor
+   explicit Credentials(QWidget *parent = nullptr);
 
-   void bindToModel(QAbstractItemModel* m, QItemSelectionModel* s);
+};
 
-   QItemSelectionModel* selectionModel();
-
-private:
-   QItemSelectionModel* m_pSelectionModel;
-
-private Q_SLOTS:
-   void slotComboBoxSelectionChanged(int idx);
-   void slotModelSelectionChanged(const QModelIndex& idx);
 };
 
 #endif

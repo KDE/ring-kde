@@ -22,7 +22,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #define GROUPEDTOOLBUTTON_H
 
 // Qt
-#include <QToolButton>
+#include <QtWidgets/QToolButton>
+#include "typedefs.h"
 
 /**
  * A thin tool button which can be grouped with another and look like one solid
@@ -30,7 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * (button1 | button2)
  */
-class GroupedToolButton : public QToolButton
+class LIB_EXPORT GroupedToolButton : public QToolButton
 {
     Q_OBJECT
 public:
