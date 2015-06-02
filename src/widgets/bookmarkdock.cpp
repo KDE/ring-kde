@@ -177,7 +177,7 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
       m_pBookmark->setIcon        ( QIcon::fromTheme("list-remove")       );
 
       connect(m_pCallAgain   , SIGNAL(triggered()) , this,SLOT(callAgain())  );
-      connect(m_pEditPerson , SIGNAL(triggered()) , this,SLOT(editPerson()));
+      connect(m_pEditPerson  , SIGNAL(triggered()) , this,SLOT(editPerson()));
       connect(m_pCopy        , SIGNAL(triggered()) , this,SLOT(copy())       );
       connect(m_pEmail       , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
       connect(m_pAddPhone    , SIGNAL(triggered()) , this,SLOT(addPhone())   );
