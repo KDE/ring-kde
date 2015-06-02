@@ -22,7 +22,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="Pages::Basic" name="widget" native="true"/>
+        <widget class="Pages::Basic" name="dlgBasic" native="true"/>
        </item>
       </layout>
      </widget>

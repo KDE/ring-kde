@@ -21,6 +21,8 @@
 #include <KConfigDialogManager>
 #include "accountserializationadapter.h"
 
+#include "basic.h"
+
 Pages::Account::Account(const QString& accountId, QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
@@ -56,4 +58,12 @@ void Pages::Account::slotUpdateButtons()
 {
    qDebug() << "Update buttons";
    emit updateButtons();
+}
+
+void Pages::Account::selectAlias()
+{
+   QLineEdit* le  = dlgBasic->kcfg_alias;
+
+   le->setSelection(0,le->text().size());
+   le->setFocus(Qt::OtherFocusReason);
 }

@@ -18,24 +18,74 @@
 
 #include "dlgaccount.h"
 
+//Ring
+#include <accountmodel.h>
+#include <account.h>
+#include <protocolmodel.h>
+
 #include "accountpages/account.h"
 
 #include <QtGui/QPainter>
 
-DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent)
+#include <KMessageBox>
+
+DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent), m_pCurrentAccount(nullptr)
 {
    setupUi(this);
 
-   Pages::Account* acc = new Pages::Account("ring/account789.ini",this);
-   QHBoxLayout* l = new QHBoxLayout(m_pPanel);
-   l->addWidget(acc);
-   m_lPages["account456.ini"] = acc;
+   m_pAccountList->setModel         ( AccountModel::instance()                   );
+   m_pAccountList->setSelectionModel( AccountModel::instance()->selectionModel() );
+
+   m_pProtocolModel = new ProtocolModel();
+
+   m_pGlobalProto->bindToModel(m_pProtocolModel,m_pProtocolModel->selectionModel());
+
+   setCurrentAccount(nullptr);
+
+   connect(m_pMoveUp  , &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveUp  );
+   connect(m_pMoveDown, &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveDown);
+   connect(m_pRemove  , &QToolButton::clicked,[this]() {
+      const QModelIndex& idx = AccountModel::instance()->selectionModel()->currentIndex();
+      if (KMessageBox::questionYesNo(
+         this,
+         tr("Are you sure you want to remove %1?").arg(idx.data(Qt::DisplayRole).toString()),
+         tr("Remove account")
+      ) == KMessageBox::Yes)
+         AccountModel::instance()->remove(idx);
+   });
 
 }
 
 DlgAccount::~DlgAccount()
 {
 }
+
+void DlgAccount::setCurrentAccount(const QModelIndex& idx)
+{
+   setCurrentAccount(AccountModel::instance()->getAccountByModelIndex(idx));
+}
+
+void DlgAccount::setCurrentAccount(::Account* a)
+{
+   Pages::Account* acc = new Pages::Account("ring/account789.ini",this);
+   QHBoxLayout* l = new QHBoxLayout(m_pPanel);
+   l->addWidget(acc);
+   m_lPages["account456.ini"] = acc;
+
+   m_pCurrentAccount = acc;
+}
+
+void DlgAccount::slotNewAddAccount()
+{
+   const QString newAlias = tr("New account%1").arg(AccountModel::getSimilarAliasIndex(tr("New account")));
+   const Account::Protocol proto = qvariant_cast<Account::Protocol>(m_pProtocolModel->data(m_pProtocolModel->selectionModel()->currentIndex(),Qt::UserRole));
+   Account* a = AccountModel::instance()->add(newAlias,proto);
+
+   setCurrentAccount(a);
+
+   m_pCurrentAccount->selectAlias();
+
+} //on_button_accountAdd_clicked
 
 void DlgAccount::cancel()
 {

@@ -46,6 +46,8 @@ public Q_SLOTS:
    virtual void updateWidgets() override;
    virtual void updateSettings() override;
 
+   void selectAlias();
+
 private Q_SLOTS:
    void slotUpdateButtons();
 

@@ -21,6 +21,9 @@
 #include "ui_accountdlg.h"
 #include "typedefs.h"
 
+class Account;
+class ProtocolModel;
+
 namespace Pages {
     class Account;
 }
@@ -37,11 +40,19 @@ public:
 
 private:
    QHash<QString,Pages::Account*> m_lPages;
+   Pages::Account* m_pCurrentAccount;
+   ProtocolModel* m_pProtocolModel;
 
 public Q_SLOTS:
+   //Housekeeping
    void updateSettings();
    void updateWidgets();
    void cancel();
+   void setCurrentAccount(::Account* a);
+   void setCurrentAccount(const QModelIndex& idx);
+
+   //Core logic
+   void slotNewAddAccount();
 
 Q_SIGNALS:
    void updateButtons();

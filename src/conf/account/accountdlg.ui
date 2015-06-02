@@ -83,6 +83,9 @@
          <property name="text">
           <string comment="Add new account">Add</string>
          </property>
+         <property name="icon">
+          <iconset theme="list-add"/>
+         </property>
          <property name="shortcut">
           <string notr="true">+</string>
          </property>
@@ -92,7 +95,7 @@
         <widget class="AutoComboBox" name="m_pGlobalProto"/>
        </item>
        <item row="0" column="0" colspan="5">
-        <widget class="QTreeView" name="treeView_accountList">
+        <widget class="QTreeView" name="m_pAccountList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -153,7 +156,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="LeftToolButton" name="button_accountUp">
+          <widget class="LeftToolButton" name="m_pMoveUp">
            <property name="toolTip">
             <string>Get this account up</string>
            </property>
@@ -163,13 +166,16 @@
            <property name="text">
             <string comment="Move account up">Up</string>
            </property>
+           <property name="icon">
+            <iconset theme="go-up"/>
+           </property>
            <property name="shortcut">
             <string notr="true">Up, PgUp</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="CenterToolButton" name="button_accountDown">
+          <widget class="CenterToolButton" name="m_pMoveDown">
            <property name="toolTip">
             <string>Get this account down</string>
            </property>
@@ -179,13 +185,16 @@
            <property name="text">
             <string comment="Move account down">Down</string>
            </property>
+           <property name="icon">
+            <iconset theme="go-down"/>
+           </property>
            <property name="shortcut">
             <string notr="true">Down, PgDown</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="RightToolButton" name="button_accountRemove">
+          <widget class="RightToolButton" name="m_pRemove">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -203,6 +212,9 @@
            </property>
            <property name="text">
             <string comment="Remove selected account">Remove</string>
+           </property>
+           <property name="icon">
+            <iconset theme="list-remove"/>
            </property>
            <property name="shortcut">
             <string notr="true">-, Del, Backspace</string>
@@ -254,5 +266,25 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>button_accountAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>AccountDlg</receiver>
+   <slot>slotNewAddAccount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>327</x>
+     <y>530</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>361</x>
+     <y>550</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotNewAddAccount()</slot>
+ </slots>
 </ui>

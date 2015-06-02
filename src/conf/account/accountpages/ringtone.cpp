@@ -21,4 +21,3 @@ Pages::RingTone::RingTone(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
 }
-
