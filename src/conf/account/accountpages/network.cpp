@@ -17,8 +17,14 @@
  **************************************************************************/
 #include "network.h"
 
+#include <networkinterfacemodel.h>
+#include <account.h>
+
 Pages::Network::Network(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   connect(this,&PageBase::accountSet,[this]() {
+      m_pNetworkInterfaces->bindToModel(account()->networkInterfaceModel(),account()->networkInterfaceModel()->selectionModel());
+   });
 }
 

@@ -15,19 +15,30 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-
 #include "account.h"
 // #include ""
 #include <KConfigDialogManager>
 #include "accountserializationadapter.h"
 
+//Ring
+#include <account.h>
+
 #include "basic.h"
 
-Pages::Account::Account(const QString& accountId, QWidget *parent) : PageBase(parent)
+Pages::Account::Account(::Account* a, QWidget *parent) : PageBase(parent)
 {
+   setAccount(a);
    setupUi(this);
 
-   AccountSerializationAdapter* adapter = new AccountSerializationAdapter(accountId);
+   dlgBasic       -> setAccount(a);
+   dlgAdvanced    -> setAccount(a);
+   dlgNetwork     -> setAccount(a);
+   dlgCodec       -> setAccount(a);
+   dlgCredentials -> setAccount(a);
+   dlgRingtone    -> setAccount(a);
+//    dlgSecurity
+
+   AccountSerializationAdapter* adapter = new AccountSerializationAdapter("ring/"+a->id()+".ini");
 
    m_pCurrentManager = new KConfigDialogManager(this, adapter);
 

@@ -33,14 +33,11 @@ class Account : public PageBase, public Ui::Tabs
 Q_OBJECT
 public:
    //Constructor
-   explicit Account(const QString& accountId, QWidget *parent = nullptr);
+   explicit Account(::Account* a, QWidget *parent = nullptr);
 
    //Getters
-   Account* account() const;
    KConfigDialogManager* manager() const;
 
-   //Setters
-   void setAccount(Account* account);
 
 public Q_SLOTS:
    virtual void updateWidgets() override;

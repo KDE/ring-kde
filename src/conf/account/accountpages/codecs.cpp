@@ -17,8 +17,18 @@
  **************************************************************************/
 #include "codecs.h"
 
+#include <QtCore/QSortFilterProxyModel>
+
+#include <account.h>
+#include <audio/codecmodel.h>
+
 Pages::Codecs::Codecs(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   connect(this,&PageBase::accountSet,[this]() {
+      m_pAudioCodecs->setModel(account()->codecModel()->audioCodecs());
+      m_pVideoCodecs->setModel(account()->codecModel()->videoCodecs());
+      //TODO fix selectionmodels
+   });
 }
 

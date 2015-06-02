@@ -192,6 +192,8 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked())    , this, SLOT(applyCustomSettings()));
    connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(cancelSettings())     );
 
+   connect(dlgAccount, &DlgAccount::updateButtons,this,&ConfigurationDialog::updateButtons);
+
    setMinimumSize(1024,700);
 
 } //ConfigurationDialog
@@ -266,7 +268,7 @@ bool ConfigurationDialog::hasChanged()
 
 bool ConfigurationDialog::hasIncompleteRequiredFields()
 {
-   return false;//GUARD_FALSE(dlgAccount,hasIncompleteRequiredFields());
+   return AccountModel::instance()->editState() == AccountModel::EditState::INVALID;
 }
 
 ///Update the buttons

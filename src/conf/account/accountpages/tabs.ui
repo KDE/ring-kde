@@ -32,7 +32,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="Pages::Advanced" name="widget_2" native="true"/>
+        <widget class="Pages::Advanced" name="dlgAdvanced" native="true"/>
        </item>
       </layout>
      </widget>
@@ -42,7 +42,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="Pages::Network" name="widget_3" native="true"/>
+        <widget class="Pages::Network" name="dlgNetwork" native="true"/>
        </item>
       </layout>
      </widget>
@@ -52,7 +52,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="Pages::Codecs" name="widget_4" native="true"/>
+        <widget class="Pages::Codecs" name="dlgCodec" native="true"/>
        </item>
       </layout>
      </widget>
@@ -62,7 +62,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="Pages::Credentials" name="widget_5" native="true"/>
+        <widget class="Pages::Credentials" name="dlgCredentials" native="true"/>
        </item>
       </layout>
      </widget>
@@ -70,7 +70,7 @@
       <attribute name="title">
        <string>Security</string>
       </attribute>
-      <widget class="QWidget" name="widget_6" native="true">
+      <widget class="QWidget" name="dlgSecurity" native="true">
        <property name="geometry">
         <rect>
          <x>210</x>
@@ -87,7 +87,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="Pages::RingTone" name="widget_7" native="true"/>
+        <widget class="Pages::RingTone" name="dlgRingtone" native="true"/>
        </item>
       </layout>
      </widget>

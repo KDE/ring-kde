@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "pagebase.h"
 
-Pages::PageBase::PageBase(QWidget *parent) : QWidget(parent)
+Pages::PageBase::PageBase(QWidget *parent) : QWidget(parent), m_pAccount(nullptr)
 {
 }
 
@@ -44,4 +44,15 @@ void Pages::PageBase::updateSettings()
 void Pages::PageBase::setChanged()
 {
 
+}
+
+::Account* Pages::PageBase::account() const
+{
+   return m_pAccount;
+}
+
+void Pages::PageBase::setAccount(::Account* a)
+{
+   m_pAccount = a;
+   emit accountSet(a);
 }

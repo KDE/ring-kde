@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
+    <width>423</width>
     <height>359</height>
    </rect>
   </property>
@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox_ni_local_address"/>
+       <widget class="AutoComboBox" name="m_pNetworkInterfaces"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_ni_local_port">
@@ -44,20 +44,6 @@
        <widget class="QSpinBox" name="kcfg_port">
         <property name="maximum">
          <number>65535</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="kcfg_proxy">
-        <property name="placeholderText">
-         <string>SIP proxy server (if none, leave blank)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="kcfg_useProxy">
-        <property name="text">
-         <string>Proxy</string>
         </property>
        </widget>
       </item>
@@ -221,24 +207,15 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>widgets/autocombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>kcfg_useProxy</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>kcfg_proxy</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>76</x>
-     <y>99</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>156</x>
-     <y>99</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>radioButton_pa_custom</sender>
    <signal>toggled(bool)</signal>
@@ -246,12 +223,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>86</x>
-     <y>193</y>
+     <x>97</x>
+     <y>167</y>
     </hint>
     <hint type="destinationlabel">
-     <x>160</x>
-     <y>212</y>
+     <x>267</x>
+     <y>193</y>
     </hint>
    </hints>
   </connection>
@@ -262,12 +239,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>36</x>
-     <y>188</y>
+     <x>47</x>
+     <y>167</y>
     </hint>
     <hint type="destinationlabel">
-     <x>187</x>
-     <y>249</y>
+     <x>271</x>
+     <y>219</y>
     </hint>
    </hints>
   </connection>

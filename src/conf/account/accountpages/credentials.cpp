@@ -17,8 +17,14 @@
  **************************************************************************/
 #include "credentials.h"
 
+#include <account.h>
+#include <credentialmodel.h>
+
 Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
-}
 
+   connect(this,&PageBase::accountSet,[this]() {
+      m_pCredentials->setModel(account()->credentialModel());
+   });
+}

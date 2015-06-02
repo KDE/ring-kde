@@ -40,7 +40,7 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent), m_pCurrentAccount(nul
 
    m_pGlobalProto->bindToModel(m_pProtocolModel,m_pProtocolModel->selectionModel());
 
-   setCurrentAccount(nullptr);
+//    setCurrentAccount(nullptr);
 
    connect(m_pMoveUp  , &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveUp  );
    connect(m_pMoveDown, &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveDown);
@@ -52,6 +52,11 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent), m_pCurrentAccount(nul
          tr("Remove account")
       ) == KMessageBox::Yes)
          AccountModel::instance()->remove(idx);
+   });
+
+   //TODO eventually remove this once it is plugged into KConfig
+   connect(AccountModel::instance(), &AccountModel::editStateChanged, [this]() {
+      emit updateButtons();
    });
 
 }
@@ -67,7 +72,7 @@ void DlgAccount::setCurrentAccount(const QModelIndex& idx)
 
 void DlgAccount::setCurrentAccount(::Account* a)
 {
-   Pages::Account* acc = new Pages::Account("ring/account789.ini",this);
+   Pages::Account* acc = new Pages::Account(a,/*"ring/account789.ini",*/this);
    QHBoxLayout* l = new QHBoxLayout(m_pPanel);
    l->addWidget(acc);
    m_lPages["account456.ini"] = acc;
@@ -94,7 +99,7 @@ void DlgAccount::cancel()
 
 bool DlgAccount::hasChanged()
 {
-   return false;
+   return AccountModel::instance()->editState() != AccountModel::EditState::SAVED;
 }
 
 void DlgAccount::updateSettings()

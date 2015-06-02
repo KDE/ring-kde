@@ -17,8 +17,13 @@
  **************************************************************************/
 #include "basic.h"
 
+#include <account.h>
+#include <protocolmodel.h>
+
 Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   connect(this,&PageBase::accountSet,[this]() {
+      m_pProtocol->bindToModel(account()->protocolModel(),account()->protocolModel()->selectionModel());
+   });
 }
-

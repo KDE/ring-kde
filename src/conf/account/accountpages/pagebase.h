@@ -21,6 +21,8 @@
 #include <QtWidgets/QWidget>
 #include "ui_basic.h"
 
+class Account;
+
 namespace Pages {
 
 class PageBase : public QWidget
@@ -35,8 +37,14 @@ public:
 
    virtual bool hasChanged();
 
+   ::Account* account() const;
+   void setAccount(::Account* a);
+
 protected:
    bool m_Changed;
+
+private:
+   ::Account* m_pAccount;
 
 public Q_SLOTS:
    virtual void updateWidgets();
@@ -47,6 +55,7 @@ protected Q_SLOTS:
 
 Q_SIGNALS:
    void updateButtons();
+   void accountSet(::Account* a);
 
 };
 

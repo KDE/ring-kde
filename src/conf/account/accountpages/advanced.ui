@@ -113,20 +113,20 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="checkbox_turn">
+        <property name="text">
+         <string>TURN server</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
        <widget class="QCheckBox" name="m_pEnableUPnP">
         <property name="text">
          <string>Enable UPnP</string>
         </property>
         <property name="checked">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="checkbox_turn">
-        <property name="text">
-         <string>TURN server</string>
         </property>
        </widget>
       </item>
@@ -196,12 +196,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>81</x>
-     <y>154</y>
+     <x>92</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
-     <x>182</x>
-     <y>148</y>
+     <x>302</x>
+     <y>142</y>
     </hint>
    </hints>
   </connection>

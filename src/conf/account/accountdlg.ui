@@ -283,8 +283,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_pAccountList</sender>
+   <signal>clicked(QModelIndex)</signal>
+   <receiver>AccountDlg</receiver>
+   <slot>setCurrentAccount(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>296</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>255</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotNewAddAccount()</slot>
+  <slot>setCurrentAccount(QModelIndex)</slot>
  </slots>
 </ui>
