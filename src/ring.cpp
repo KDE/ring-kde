@@ -370,6 +370,9 @@ Ring::Ring(QWidget* parent)
    //setupGui + default size doesn't really, use this for now
    resize(QSize(1024,768));
 
+   if (!ConfigurationSkeleton::autoStartOverride())
+      setAutoStart(true);
+
 } //Ring
 
 ///Destructor

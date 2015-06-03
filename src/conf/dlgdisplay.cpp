@@ -93,6 +93,10 @@ void DlgDisplay::updateSettings()
       ConfigurationSkeleton::self()->findItem(iter.value())->setProperty(m_lItemList[iter.value()]->checkState() == Qt::Checked);
    }
 
+   if (ConfigurationSkeleton::autoStart() != kcfg_autoStart->isChecked()) {
+      ConfigurationSkeleton::setAutoStartOverride(true);
+   }
+
    Ring::app()->setAutoStart(kcfg_autoStart->isChecked());
 
    m_HasChanged = false;
