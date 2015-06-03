@@ -18,13 +18,10 @@
 #include "pagebase.h"
 
 Pages::PageBase::PageBase(QWidget *parent) : QWidget(parent), m_pAccount(nullptr)
-{
-}
+{ }
 
 Pages::PageBase::~PageBase()
-{
-
-}
+{ }
 
 bool Pages::PageBase::hasChanged()
 {
@@ -32,19 +29,13 @@ bool Pages::PageBase::hasChanged()
 }
 
 void Pages::PageBase::updateWidgets()
-{
-
-}
+{ }
 
 void Pages::PageBase::updateSettings()
-{
-
-}
+{ }
 
 void Pages::PageBase::setChanged()
-{
-
-}
+{ }
 
 ::Account* Pages::PageBase::account() const
 {

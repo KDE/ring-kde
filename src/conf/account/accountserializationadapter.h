@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014-2015 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2015 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,54 +15,31 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "account.h"
+#ifndef ACCOUNTSERIALIZATIONADAPTER_H
+#define ACCOUNTSERIALIZATIONADAPTER_H
 
-//Ring
-#include <account.h>
+#include "typedefs.h"
 
-//Binder
-#include "accountserializationadapter.h"
+class QWidget;
+class Account;
 
-#include "basic.h"
-
-Pages::Account::Account(::Account* a, QWidget *parent) : PageBase(parent)
+/**
+ * This class will automatically bridge QtDesigner .ui to the LRC Account::
+ * class. To use it, all relevant .ui fields need to have in their name
+ *
+ * `lrcfg_propertyName` where `propertyName` is part of the Account object
+ * roleName hash.
+ *
+ * Supported widgets are currently:
+ *
+ *  * QLineEdit
+ */
+class LIB_EXPORT AccountSerializationAdapter : public QObject
 {
-   setAccount(a);
-   setupUi(this);
+   Q_OBJECT
+public:
+   AccountSerializationAdapter(Account* a, QWidget* w);
+   virtual ~AccountSerializationAdapter();
+};
 
-   dlgBasic       -> setAccount(a);
-   dlgAdvanced    -> setAccount(a);
-   dlgNetwork     -> setAccount(a);
-   dlgCodec       -> setAccount(a);
-   dlgCredentials -> setAccount(a);
-   dlgRingtone    -> setAccount(a);
-
-   new AccountSerializationAdapter(a, this);
-//    dlgSecurity
-
-}
-
-void Pages::Account::updateWidgets()
-{
-   qDebug() << "Update widgets";
-   account() << ::Account::EditAction::CANCEL;
-}
-
-void Pages::Account::updateSettings()
-{
-   qDebug() << "Update settings";
-}
-
-void Pages::Account::slotUpdateButtons()
-{
-   qDebug() << "Update buttons";
-   emit updateButtons();
-}
-
-void Pages::Account::selectAlias()
-{
-   QLineEdit* le  = dlgBasic->lrcfg_alias;
-
-   le->setSelection(0,le->text().size());
-   le->setFocus(Qt::OtherFocusReason);
-}
+#endif

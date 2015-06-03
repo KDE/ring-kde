@@ -25,12 +25,12 @@
         <string>Alias*</string>
        </property>
        <property name="buddy">
-        <cstring>kcfg_alias</cstring>
+        <cstring>lrcfg_alias</cstring>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="kcfg_alias">
+      <widget class="QLineEdit" name="lrcfg_alias">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -67,12 +67,12 @@
         <string comment="SIP server">Server*</string>
        </property>
        <property name="buddy">
-        <cstring>kcfg_hostname</cstring>
+        <cstring>lrcfg_hostname</cstring>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="kcfg_hostname">
+      <widget class="QLineEdit" name="lrcfg_hostname">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -93,12 +93,12 @@
         <string comment="Account username">Username*</string>
        </property>
        <property name="buddy">
-        <cstring>kcfg_username</cstring>
+        <cstring>lrcfg_username</cstring>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="kcfg_username">
+      <widget class="QLineEdit" name="lrcfg_username">
        <property name="placeholderText">
         <string>Usually your extension number</string>
        </property>
@@ -110,7 +110,17 @@
         <string comment="Account password">Password*</string>
        </property>
        <property name="buddy">
-        <cstring>edit5_password</cstring>
+        <cstring>lrcfg_password</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="lrcfg_password">
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
+       </property>
+       <property name="placeholderText">
+        <string>SIP password, ask your network administrator</string>
        </property>
       </widget>
      </item>
@@ -120,32 +130,25 @@
         <string comment="Account voice mail address">Voicemail</string>
        </property>
        <property name="buddy">
-        <cstring>kcfg_mailbox</cstring>
+        <cstring>lrcfg_mailbox</cstring>
        </property>
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QLineEdit" name="kcfg_mailbox">
+      <widget class="QLineEdit" name="lrcfg_mailbox">
        <property name="placeholderText">
         <string>Usually the same as the username</string>
        </property>
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QCheckBox" name="m_pDefaultAccount">
-       <property name="text">
-        <string>TODO remove Default account for contact with only extensions as phone number</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QCheckBox" name="m_pAutoAnswer">
+      <widget class="QCheckBox" name="lrcfg_autoAnswer">
        <property name="text">
         <string>Auto answer</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="7" column="1">
       <widget class="QCheckBox" name="kcfg_presenceModuleEnabled">
        <property name="enabled">
         <bool>true</bool>
@@ -155,14 +158,14 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="label7_state">
        <property name="text">
         <string>Status</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
+     <item row="8" column="1">
       <widget class="QLabel" name="edit7_state">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -178,16 +181,6 @@
        </property>
        <property name="text">
         <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLineEdit" name="edit5_password">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-       <property name="placeholderText">
-        <string>SIP password, ask your network administrator</string>
        </property>
       </widget>
      </item>

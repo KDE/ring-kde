@@ -27,12 +27,12 @@ DlgDht::DlgDht(QWidget* parent) : QWidget(parent),m_pAccount(nullptr)
 {
    setupUi(this);
 
-   connect(m_pKnownPeers, &QListView::doubleClicked, [this](const QModelIndex& index) {
-      CertificateViewer* v = new CertificateViewer(index,this);
-      v->show();
-      connect(v,&QDialog::finished,[v](int) { delete v; });
-   });
-   groupBox->setVisible(false);
+//    connect(m_pKnownPeers, &QListView::doubleClicked, [this](const QModelIndex& index) {
+//       CertificateViewer* v = new CertificateViewer(index,this);
+//       v->show();
+//       connect(v,&QDialog::finished,[v](int) { delete v; });
+//    });
+//    groupBox->setVisible(false);
 }
 
 void DlgDht::setAccount(Account* a)
@@ -40,9 +40,9 @@ void DlgDht::setAccount(Account* a)
    m_pAccount = a;
 
    if (a && a->protocol() == Account::Protocol::RING) {
-      m_pHash->setText(a->username());
+//       lrcfg_username->setText(a->username());
 //       m_pKnownPeers->setModel();
-      m_pKnownPeers->setModel(a->knownCertificateModel());
+//       m_pKnownPeers->setModel(a->knownCertificateModel());
       m_pBootstrap->setModel(a->bootstrapModel());
       if (m_pBootstrap->horizontalHeader())
          m_pBootstrap->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);

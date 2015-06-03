@@ -1,10 +1,10 @@
 ADD_DEFINITIONS("-std=c++11")
 
-SET(KF5_DEP_VERSION "5.6.0")
 SET(QT_MIN_VERSION  "5.2.0")
 
 set(accountdialog_SRCS
    dlgaccount.cpp
+   accountserializationadapter.cpp
  )
 
 FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
@@ -13,22 +13,14 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
   Gui
 )
 
-FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
-  Config
-  ConfigWidgets
-)
-
 FIND_PACKAGE ( LibRingClient REQUIRED ENABLE_STATIC=true )
 
 INCLUDE_DIRECTORIES(SYSTEM
-   ${KF5_INCLUDES}
    ${Qt5Widgets_INCLUDES}
    ${Qt5Core_INCLUDES}
    ${CMAKE_BINARY_DIR}
    ${LIB_RING_CLIENT_INCLUDE_DIR}
 )
-
-KCONFIG_ADD_KCFG_FILES(accountdialog_SRCS accountserializationadapter.kcfgc )
 
 QT5_WRAP_UI(accountdialog_SRCS accountpages/advanced.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/credentials.ui)
@@ -59,10 +51,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
 
 ADD_LIBRARY(accountdialog ${accountdialog_SRCS})
 
-TARGET_LINK_LIBRARIES(accountdialog ${KDE4_KDEUI_LIBS}
-   KF5::ConfigCore
-   KF5::ConfigGui
-   KF5::ConfigWidgets
+TARGET_LINK_LIBRARIES(accountdialog
    ${Qt5Widgets_LIBRARIES}
    ${Qt5Core_LIBRARIES}
    ${Qt5Gui_LIBRARIES}
@@ -73,8 +62,3 @@ SET(LIB_CONFIG_INCLUDE ${CMAKE_BINARY_DIR}/src/conf/account/ PARENT_SCOPE)
 SET(LIB_CONFIG_WIDGETS ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 
 INSTALL(TARGETS accountdialog ${INSTALL_TARGETS_DEFAULT_ARGS} )
-
-
-########### install files ###############
-
-INSTALL(FILES ring-accountserializationadapter.kcfg DESTINATION ${KCFG_INSTALL_DIR})

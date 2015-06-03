@@ -41,7 +41,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="kcfg_port">
+       <widget class="QSpinBox" name="lrcfg_localPort">
         <property name="maximum">
          <number>65535</number>
         </property>
@@ -57,14 +57,14 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_10">
       <item row="0" column="0" colspan="3">
-       <widget class="QRadioButton" name="kcfg_sameasLocal">
+       <widget class="QRadioButton" name="lrcfg_publishedSameAsLocal">
         <property name="text">
          <string>Same as local parameters</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" rowspan="2" colspan="3">
-       <widget class="QRadioButton" name="radioButton_pa_custom">
+       <widget class="QRadioButton" name="auto_2">
         <property name="text">
          <string>Set published address and port</string>
         </property>
@@ -85,14 +85,14 @@
        </widget>
       </item>
       <item row="4" column="1" colspan="2">
-       <widget class="QSpinBox" name="kcfg_publishPort">
+       <widget class="QSpinBox" name="lrcfg_publishedPort">
         <property name="maximum">
          <number>65535</number>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="kcfg_publishAddr">
+       <widget class="QLineEdit" name="lrcfg_publishedAddress">
         <property name="placeholderText">
          <string>IP address or hostname</string>
         </property>
@@ -121,7 +121,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_13">
       <item row="0" column="1">
-       <widget class="QSpinBox" name="kcfg_audioPortMin">
+       <widget class="QSpinBox" name="lrcfg_audioPortMin">
         <property name="maximum">
          <number>65535</number>
         </property>
@@ -148,21 +148,21 @@
        </spacer>
       </item>
       <item row="0" column="3">
-       <widget class="QSpinBox" name="kcfg_audioPortMax">
+       <widget class="QSpinBox" name="lrcfg_audioPortMax">
         <property name="maximum">
          <number>65535</number>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="kcfg_videoPortMin">
+       <widget class="QSpinBox" name="lrcfg_videoPortMin">
         <property name="maximum">
          <number>65535</number>
         </property>
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QSpinBox" name="kcfg_videoPortMax">
+       <widget class="QSpinBox" name="lrcfg_videoPortMax">
         <property name="maximum">
          <number>65535</number>
         </property>
@@ -217,9 +217,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>radioButton_pa_custom</sender>
+   <sender>auto_2</sender>
    <signal>toggled(bool)</signal>
-   <receiver>kcfg_publishAddr</receiver>
+   <receiver>lrcfg_publishedAddress</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -233,9 +233,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>radioButton_pa_custom</sender>
+   <sender>auto_2</sender>
    <signal>toggled(bool)</signal>
-   <receiver>kcfg_publishPort</receiver>
+   <receiver>lrcfg_publishedPort</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

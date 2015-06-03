@@ -26,8 +26,8 @@
 #include "accountpages/account.h"
 
 #include <QtGui/QPainter>
+#include <QtWidgets/QMessageBox>
 
-#include <KMessageBox>
 
 DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent), m_pCurrentAccount(nullptr)
 {
@@ -46,15 +46,12 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent), m_pCurrentAccount(nul
    connect(m_pMoveDown, &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveDown);
    connect(m_pRemove  , &QToolButton::clicked,[this]() {
       const QModelIndex& idx = AccountModel::instance()->selectionModel()->currentIndex();
-      if (KMessageBox::questionYesNo(
-         this,
-         tr("Are you sure you want to remove %1?").arg(idx.data(Qt::DisplayRole).toString()),
-         tr("Remove account")
-      ) == KMessageBox::Yes)
+      if (QMessageBox::warning(this, tr("Remove account"),
+                               tr("Are you sure you want to remove %1?").arg(idx.data(Qt::DisplayRole).toString()),
+                               QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
          AccountModel::instance()->remove(idx);
    });
 
-   //TODO eventually remove this once it is plugged into KConfig
    connect(AccountModel::instance(), &AccountModel::editStateChanged, [this]() {
       emit updateButtons();
    });
@@ -72,7 +69,7 @@ void DlgAccount::setCurrentAccount(const QModelIndex& idx)
 
 void DlgAccount::setCurrentAccount(::Account* a)
 {
-   Pages::Account* acc = new Pages::Account(a,/*"ring/account789.ini",*/this);
+   Pages::Account* acc = new Pages::Account(a, this);
    QHBoxLayout* l = new QHBoxLayout(m_pPanel);
    l->addWidget(acc);
    m_lPages["account456.ini"] = acc;
@@ -104,7 +101,7 @@ bool DlgAccount::hasChanged()
 
 void DlgAccount::updateSettings()
 {
-
+   AccountModel::instance()->save();
 }
 
 void DlgAccount::updateWidgets()

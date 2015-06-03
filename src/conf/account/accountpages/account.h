@@ -23,8 +23,6 @@
 #include "ui_tabs.h"
 
 class Account;
-class AccountSerializationAdapter;
-class KConfigDialogManager;
 
 namespace Pages {
 
@@ -34,10 +32,6 @@ Q_OBJECT
 public:
    //Constructor
    explicit Account(::Account* a, QWidget *parent = nullptr);
-
-   //Getters
-   KConfigDialogManager* manager() const;
-
 
 public Q_SLOTS:
    virtual void updateWidgets() override;
@@ -51,8 +45,6 @@ private Q_SLOTS:
 private:
    //Attributes
    Account* m_pAccount;
-   KConfigDialogManager* m_pCurrentManager;
-   AccountSerializationAdapter* m_pCurrentAdapter;
 };
 
 };
