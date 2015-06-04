@@ -100,6 +100,7 @@ ContactDock::ContactDock(QWidget* parent) : QDockWidget(parent),m_pCallAgain(nul
    m_pView->setDelegate(m_pCategoryDelegate);
    m_pView->setViewType(CategorizedTreeView::ViewType::Person);
 
+   CategorizedContactModel::instance()->setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
    QSortFilterProxyModel* proxy = CategorizedContactModel::SortedProxy::instance()->model();
    m_pView->setModel(proxy);
    m_pView->installEventFilter(m_pKeyPressEater);

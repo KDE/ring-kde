@@ -52,11 +52,6 @@ QSize CategorizedDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
       return m_pChildChildDelegate->sizeHint(option,index);
    }
    if (!index.parent().isValid()) {
-      //This allow deleted contacts and filtered out categories not to be displayed
-      const bool hasChildren = index.child(0,0).isValid();
-      if (!hasChildren)
-         return QSize(0,0);
-
       //If the category has children, then return the real size
       static const int metric = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameVMargin)*2;
       QSize sh = QStyledItemDelegate::sizeHint(option, index);
