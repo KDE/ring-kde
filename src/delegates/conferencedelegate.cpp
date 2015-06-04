@@ -132,7 +132,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       //Draw the conference icon and info
       static const QPixmap* pxm = nullptr;
       if (!pxm) //Static
-         pxm = new QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/conf-small.png"));
+         pxm = new QPixmap(":/images/icons/conf-small.svg");
       painter->drawPixmap ( opt.rect.x()+5, opt.rect.y()+2, 24, 24, *pxm);
       QFont font = painter->font();
       font.setBold(true);

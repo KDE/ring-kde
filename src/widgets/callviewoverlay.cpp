@@ -125,7 +125,7 @@ void CallViewOverlay::paintEvent(QPaintEvent* event) {
    Q_UNUSED(event)
    QPainter customPainter(this);
    customPainter.fillRect(rect(),m_black);
-   customPainter.drawPixmap(rect().width()-125-10,rect().height()-50-10,QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transferarrow.png")));
+   customPainter.drawPixmap(rect().width()-125-10,rect().height()-50-10,QPixmap(":/gui/icons/transferarrow.svg"));
 }
 
 ///Be sure the event is always the right size

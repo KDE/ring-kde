@@ -94,7 +94,7 @@ static void loadNumberCategories()
 //    const bool isEmpty = !list.size();
 // #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
    NumberCategoryModel* model = NumberCategoryModel::instance();
-#define ICN(name) QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString("ring-kde/mini/%1.png").arg(name)))
+#define ICN(name) QPixmap(QString(":/mini/icons/miniicons/%1.png").arg(name))
    model->addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
    model->addCategory(i18n("Work")     ,ICN("work")     , 2 /*KABC::PhoneNumber::Work */);
    model->addCategory(i18n("Msg")      ,ICN("mail")     , 3 /*KABC::PhoneNumber::Msg  */);

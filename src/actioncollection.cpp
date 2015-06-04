@@ -80,10 +80,10 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), 
    action_hangup        = new QAction(this);
    action_mailBox       = new QAction(Ring::app());
 
-   action_new_call->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/call.svg"      )));
-   action_hold->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/hold.svg"      )));
-   action_transfer->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transfert.svg"      )));
-   action_mailBox->setIcon(QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mailbox.svg"      )));
+   action_new_call->setIcon(QIcon(":/images/icons/call.svg"     ));
+   action_hold->setIcon    (QIcon(":/images/icons/hold.svg"     ));
+   action_transfer->setIcon(QIcon(":/images/icons/transfert.svg"));
+   action_mailBox->setIcon (QIcon(":/images/icons/mailbox.svg"  ));
 
    action_transfer->setText ( i18n( "Transfer" ) );
    action_record  ->setText ( i18n( "Record"   ) );

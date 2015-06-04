@@ -179,7 +179,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
       if(p.isValid())
          pxm = qvariant_cast<QPixmap>(p);
       else
-         pxm = QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/call.png"));
+         pxm = QPixmap(":/mini/icons/miniicons/call.png");
       QPainter painter(&pxm);
       painter.setOpacity(0.3);
       painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
@@ -188,7 +188,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
    }
    if (p.isValid())
       return qvariant_cast<QPixmap>(p);
-   return QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/call.png"));
+   return QPixmap(":/mini/icons/miniicons/call.png");
 }
 
 QVariant KDEPixmapManipulation::securityIssueIcon(const QModelIndex& index)
@@ -287,23 +287,23 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
 
    switch(state.action) {
       case UserActionModel::Action::ACCEPT          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"   ));
+         return QIcon(":/callstate_light/icons/light/accept.svg"   );
       case UserActionModel::Action::HOLD            :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/hold.svg"     ));
+         return QIcon(":/callstate_light/icons/light/hold.svg"     );
       case UserActionModel::Action::MUTE_AUDIO      :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg"  ));
+         return QIcon(":/callstate_light/icons/light/mic.svg"  );
       case UserActionModel::Action::MUTE_VIDEO      :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/mic.svg"  ));
+         return QIcon(":/callstate_light/icons/light/mic.svg"  );
       case UserActionModel::Action::SERVER_TRANSFER :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/transfert.svg" ));
+         return QIcon(":/callstate_light/icons/light/transfert.svg" );
       case UserActionModel::Action::RECORD          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/rec_call.svg"   ));
+         return QIcon(":/callstate_light/icons/light/rec_call.svg"   );
       case UserActionModel::Action::HANGUP          :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/refuse.svg"   ));
+         return QIcon(":/callstate_light/icons/light/refuse.svg"   );
       case UserActionModel::Action::JOIN            :
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/light/accept.svg"   ));
+         return QIcon(":/callstate_light/icons/light/accept.svg"   );
       case UserActionModel::Action::COUNT__:
          break;
    };
@@ -325,7 +325,7 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
       case PixmapManipulationDelegate::CollectionIconHint::CERTIFICATE:
          return QIcon::fromTheme("certificate-server");
       case PixmapManipulationDelegate::CollectionIconHint::RECORDING:
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mailbox.svg"   ));
+         return QIcon(":/images/icons/mailbox.svg");
       case PixmapManipulationDelegate::CollectionIconHint::RINGTONE:
       case PixmapManipulationDelegate::CollectionIconHint::NONE:
       case PixmapManipulationDelegate::CollectionIconHint::PROFILE:
@@ -355,14 +355,14 @@ QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel:
    switch (level) {
       case SecurityEvaluationModel::SecurityLevel::COUNT__:
       case SecurityEvaluationModel::SecurityLevel::NONE      :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/lock_off.svg"   ));
+         return QIcon(":/images/icons/lock_off.svg");
       case SecurityEvaluationModel::SecurityLevel::WEAK      :
       case SecurityEvaluationModel::SecurityLevel::MEDIUM    :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/lock_unconfirmed.svg"   ));
+         return QIcon(":/images/icons/lock_unconfirmed.svg");
       case SecurityEvaluationModel::SecurityLevel::ACCEPTABLE:
       case SecurityEvaluationModel::SecurityLevel::STRONG    :
       case SecurityEvaluationModel::SecurityLevel::COMPLETE  :
-         return QIcon(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/lock_confirmed.svg"   ));
+         return QIcon(":/images/icons/lock_confirmed.svg");
    }
 
    return QVariant();

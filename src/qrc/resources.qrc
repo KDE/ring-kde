@@ -1,9 +1,14 @@
 <RCC>
   <qresource prefix="images">
+    <file>../icons/lock_certified.svg</file>
+    <file>../icons/lock_confirmed.svg</file>
+    <file>../icons/lock_error.svg</file>
+    <file>../icons/lock_off.svg</file>
+    <file>../icons/lock_unconfirmed.svg</file>
+    <file>../icons/conf-small.svg</file>
     <file>../icons/connected.svg</file>
     <file>../icons/initialization.svg</file>
     <file>../icons/missed_out.svg</file>
-    <file>../icons/user-group-properties.svg</file>
     <file>../icons/ring.svg</file>
     <file>../icons/ring_notif.svg</file>
     <file>../icons/x-office-address-book.png</file>
@@ -49,5 +54,30 @@
     <file>../icons/unhold.svg</file>
     <file>../icons/record.svg</file>
     <file>../icons/record_disabled.svg</file>
+  </qresource>
+  <qresource prefix="callstate_light">
+    <file>../icons/light/accept.svg</file>
+    <file>../icons/light/call.svg</file>
+    <file>../icons/light/hold.svg</file>
+    <file>../icons/light/mic.svg</file>
+    <file>../icons/light/rec_call.svg</file>
+    <file>../icons/light/refuse.svg</file>
+    <file>../icons/light/transfert.svg</file>
+    <file>../icons/light/unhold.svg</file>
+  </qresource>
+  <qresource prefix="mini">
+    <file>../icons/miniicons/call.png</file>
+    <file>../icons/miniicons/car.png</file>
+    <file>../icons/miniicons/home.png</file>
+    <file>../icons/miniicons/mail.png</file>
+    <file>../icons/miniicons/mobile.png</file>
+    <file>../icons/miniicons/pager.png</file>
+    <file>../icons/miniicons/preferred.png</file>
+    <file>../icons/miniicons/video.png</file>
+    <file>../icons/miniicons/work.png</file>
+  </qresource>
+  <qresource prefix="gui">
+    <file>../icons/transferarrow.svg</file>
+    <file>../icons/confBlackWhite.svg</file>
   </qresource>
 </RCC>

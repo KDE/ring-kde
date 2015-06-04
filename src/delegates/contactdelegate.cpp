@@ -166,7 +166,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       const int fmh = fontH;
       const static QPixmap* mail = nullptr;
       if (!mail)
-         mail = new QPixmap(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/mini/mail.png"));
+         mail = new QPixmap(":/images/icons/mailbox.svg");
       painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fmh-12),*mail);
       painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->preferredEmail());
       currentHeight +=fmh;
@@ -187,7 +187,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;
-         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/transferarrow.png")),Call::DropAction::Conference));
+         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(":/gui/icons/transferarrow.svg"),Call::DropAction::Conference));
          QDialogButtonBox *buttonBox = new QDialogButtonBox();
          QWidget *mainWidget = new QWidget(m_pView);
          QVBoxLayout *mainLayout = new QVBoxLayout;
