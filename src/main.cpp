@@ -29,6 +29,7 @@
 
 //KDE
 #include <QDebug>
+#include <QtGui/QImage>
 #include <kaboutdata.h>
 #include <KLocalizedString>
 // #include <kde_file.h>
@@ -64,6 +65,7 @@ int main(int argc, char **argv)
          QStringLiteral("http://www.ring.cx"),
          QStringLiteral("ring@lists.savoirfairelinux.net")
       );
+      about.setProgramLogo(QImage(":appicon/icons/64-apps-ring-kde.png"));
 
       about.addAuthor( i18n( "Adrien Béraud"                   ), QString(), "adrien.beraud@savoirfairelinux.com"        );
       about.addAuthor( i18n( "Alexandre Lision"                ), QString(), "alexandre.lision@savoirfairelinux.com"     );
