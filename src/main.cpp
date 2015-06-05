@@ -79,6 +79,8 @@ int main(int argc, char **argv)
 
       KAboutData::setApplicationData(about);
 
+      Cmd::parseCmd(argc, argv, about);
+
       app = new RingApplication(argc, argv);
 
       const int retVal = app->exec();

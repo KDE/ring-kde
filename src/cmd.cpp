@@ -18,7 +18,8 @@
 #include "cmd.h"
 
 //Qt
-#include <QApplication>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QTimer>
 
 //KDE
 #include <KAboutData>
@@ -51,51 +52,67 @@ Cmd* Cmd::instance() {
 ///Setup command line options before passing them to the KUniqueApplication
 void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 {
-   QApplication app(argc, argv);
+   QCoreApplication app(argc, argv);
    QCommandLineParser parser;
+
+   QCommandLineOption call     (QStringList {"place-call"   }, i18n("Place a call to a given number"                                              ), QLatin1String("number" ), QLatin1String(""));
+   QCommandLineOption text     (QStringList {"send-text"    }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number" ), QLatin1String(""));
+   QCommandLineOption message  (QStringList {"message"      }, i18n("Used in combination with --send-text"                                        ), QLatin1String("content"), QLatin1String(""));
+   QCommandLineOption minimixed(QStringList {"minimized"    }, i18n("Start in the system tray"                                                    ), QLatin1String("content"), QLatin1String(""));
+
+   parser.addOptions({call,text,message,minimixed});
+
    KAboutData::setApplicationData(about);
    parser.addVersionOption();
    parser.addHelpOption();
-   //PORTING SCRIPT: adapt aboutdata variable if necessary
+
    about.setupCommandLine(&parser);
    parser.process(app);
    about.processCommandLine(&parser);
 
-   parser.addOption(QCommandLineOption(QStringList() << QLatin1String("call"), i18n("Place a call to a given number"                                        ), QLatin1String("number"), QLatin1String("")));
-   parser.addOption(QCommandLineOption(QStringList() << QLatin1String("text"), i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number"), QLatin1String("")));
-   parser.addOption(QCommandLineOption(QStringList() << QLatin1String("message"), i18n("Used in combination with --send-text"                                   ), QLatin1String("content"), QLatin1String("")));
+   if (parser.isSet(call))
+      placeCall(parser.value(call));
 
-//    QCommandLineParser::parsedArgs();
-
-//    KUniqueApplication::addCmdLineOptions();
+   if (parser.isSet(text) && parser.isSet(message))
+      sendText(parser.value(text),parser.value(message));
 }
 
 ///Place a call (from the command line)
 void Cmd::placeCall(const QString& number)
 {
-   Call* call = CallModel::instance()->dialingCall();
-   call->reset();
-   call->appendText(number);
-   call->performAction(Call::Action::ACCEPT);
+   if (number.isEmpty()) {
+      qWarning() << "Example: --place-call 123@example.com";
+      exit(1);
+   }
+
+//    QTimer::singleShot(0,[number] {
+//       Call* call = CallModel::instance()->dialingCall();
+//       call->reset();
+//       call->appendText(number);
+//       call->performAction(Call::Action::ACCEPT);
+//    });
 }
 
 ///Send a text ans hang up (from the command line)
 void Cmd::sendText(const QString& number, const QString& text)
 {
-   Call* call = CallModel::instance()->dialingCall();
-   call->reset();
-   call->appendText(number);
-   call->setProperty("message",text);
-   connect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
-   call->performAction(Call::Action::ACCEPT);
+   Q_UNUSED(number)
+   Q_UNUSED(text)
+//    Call* call = CallModel::instance()->dialingCall();
+//    call->reset();
+//    call->appendText(number);
+//    call->setProperty("message",text);
+//    connect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
+//    call->performAction(Call::Action::ACCEPT);
 }
 
 ///Send the message now that the call is ready
 void Cmd::textMessagePickup(Call* call)
 {
-   if (call->state() == Call::State::CURRENT) {
-      call->addOutgoingMedia<Media::Text>()->send(call->property("message").toString());
-      disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
-      call->performAction(Call::Action::REFUSE); //HangUp
-   }
+   Q_UNUSED(call)
+//    if (call->state() == Call::State::CURRENT) {
+//       call->addOutgoingMedia<Media::Text>()->send(call->property("message").toString());
+//       disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
+//       call->performAction(Call::Action::REFUSE); //HangUp
+//    }
 }
