@@ -174,6 +174,8 @@ Ring::Ring(QWidget* parent)
 
    //Belong to setupActions(), but is needed now
    m_sApp = this;
+   setWindowIcon ( QIcon(":/appicon/icons/sc-apps-ring-kde.svgz") );
+   setWindowTitle( i18n("Ring"                                  ) );
 
    m_pView = new View(this);
    ActionCollection::instance()->setupAction();
@@ -188,7 +190,7 @@ Ring::Ring(QWidget* parent)
    m_pCentralDW = new QDockWidget(this);
    m_pCentralDW->setSizePolicy  ( QSizePolicy::Expanding,QSizePolicy::Expanding );
    m_pCentralDW->setWidget      ( m_pView                                       );
-   m_pCentralDW->setWindowTitle ( i18nc("Call tab","Call")                                  );
+   m_pCentralDW->setWindowTitle ( i18nc("Call tab","Call")                      );
    m_pCentralDW->setFeatures    ( QDockWidget::NoDockWidgetFeatures             );
    m_pView->setSizePolicy       ( QSizePolicy::Expanding,QSizePolicy::Expanding );
    m_pCentralDW->setStyleSheet  ( "\
@@ -245,9 +247,6 @@ Ring::Ring(QWidget* parent)
    m_pCentralDW->show();
 
    selectCallTab();
-
-   setWindowIcon (QIcon(":/appicon/icons/sc-apps-ring-kde.svgz") );
-   setWindowTitle(i18n("Ring")     );
    ActionCollection::instance()->setupAction();
    setAutoSaveSettings();
    createGUI();

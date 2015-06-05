@@ -27,6 +27,9 @@
 //KDE
 #include <QAction>
 
+//Ring
+#include "ring.h"
+
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
       : QSystemTrayIcon(icon, parent),
@@ -34,6 +37,7 @@ SysTray::SysTray(const QIcon &icon, QWidget *parent)
 {
    m_pTrayIconMenu = new QMenu(/*parentWidget()*/);
    setContextMenu(m_pTrayIconMenu);
+   connect(this,&QSystemTrayIcon::activated,this,&SysTray::slotActivated);
 }
 
 ///Destructor
@@ -59,4 +63,20 @@ void SysTray::addAction(QAction *action)
 void SysTray::addSeparator()
 {
    m_pTrayIconMenu->addSeparator();
+}
+
+void SysTray::slotActivated(QSystemTrayIcon::ActivationReason reason)
+{
+   switch(reason) {
+      case QSystemTrayIcon::DoubleClick:
+      case QSystemTrayIcon::Trigger    :
+      case QSystemTrayIcon::Unknown    :
+         Ring::app()->show          ();
+         Ring::app()->activateWindow();
+         Ring::app()->raise         ();
+         break;
+      case QSystemTrayIcon::Context    :
+      case QSystemTrayIcon::MiddleClick:
+         break;
+   }
 }

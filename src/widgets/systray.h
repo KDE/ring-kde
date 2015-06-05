@@ -45,6 +45,9 @@ public:
 private:
    //Attributes
    QMenu* m_pTrayIconMenu;
+
+private Q_SLOTS:
+   void slotActivated(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif // SYSTRAY_H
