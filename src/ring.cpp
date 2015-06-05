@@ -82,6 +82,7 @@
 #include "accessibility.h"
 #include "errormessage.h"
 #include <video/renderer.h>
+#include "ringapplication.h"
 #ifdef ENABLE_VIDEO
 #include "widgets/videodock.h"
 #endif
@@ -362,7 +363,8 @@ Ring::Ring(QWidget* parent)
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
 
-   if (ConfigurationSkeleton::displayOnStart())
+   if (ConfigurationSkeleton::displayOnStart()
+      && !qobject_cast<RingApplication*>(QApplication::instance())->startIconified())
       show();
    else
       close();

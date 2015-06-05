@@ -48,7 +48,7 @@ Ring* RingApplication::m_spApp = nullptr;
 /**
  * The application constructor
  */
-RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv)
+RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv),m_StartIconified(false)
 {
 
 #ifdef ENABLE_VIDEO
@@ -84,6 +84,16 @@ int RingApplication::newInstance()
    }
 
    return 0;
+}
+
+bool RingApplication::startIconified() const
+{
+   return m_StartIconified;
+}
+
+void RingApplication::setIconify(bool iconify)
+{
+   m_StartIconified = iconify;
 }
 
 ///Exit gracefully

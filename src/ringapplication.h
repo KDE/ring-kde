@@ -45,9 +45,16 @@ public:
    // Exit gracefully
    virtual bool notify (QObject* receiver, QEvent* e) override;
 
+   //Getter
+   bool startIconified() const;
+
+   //Setter
+   void setIconify(bool iconify);
+
 private:
    //Attributes
-   static Ring* m_spApp;
+   static Ring* m_spApp         ;
+   bool         m_StartIconified;
 };
 
 #endif // RINGAPPLICATION_H

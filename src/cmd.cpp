@@ -20,6 +20,8 @@
 //Qt
 #include <QtCore/QCoreApplication>
 #include <QtCore/QTimer>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QCommandLineOption>
 
 //KDE
 #include <KAboutData>
@@ -30,8 +32,8 @@
 #include <callmodel.h>
 #include <media/text.h>
 #include <ring.h>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
+#include "ringapplication.h"
+#include "klib/kcfg_settings.h"
 
 //Static definition
 Cmd* Cmd::m_spSelf = nullptr;
@@ -58,13 +60,13 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
    QCoreApplication* app = QCoreApplication::instance();
    bool isRunning = true;
 
-   QCommandLineOption call     (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QLatin1String("number" ), QLatin1String(""));
-   QCommandLineOption text     (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number" ), QLatin1String(""));
-   QCommandLineOption message  (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QLatin1String("content"), QLatin1String(""));
-   QCommandLineOption minimixed(QStringList { "minimized"  }, i18n("Start in the system tray"                                                    ), QLatin1String("content"), QLatin1String(""));
+   QCommandLineOption call    (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QLatin1String("number" ), QLatin1String(""));
+   QCommandLineOption text    (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number" ), QLatin1String(""));
+   QCommandLineOption message (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QLatin1String("content"), QLatin1String(""));
+   QCommandLineOption icon    (QStringList { "iconify"    }, i18n("Start in the system tray"                                                    )                                             );
 
    QCommandLineParser parser;
-   parser.addOptions({call,text,message,minimixed});
+   parser.addOptions({call,text,message,icon});
 
    if (about) {
       KAboutData::setApplicationData(*about);
@@ -78,6 +80,9 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
 
    if (parser.isSet(call))
       placeCall(parser.value(call));
+
+   if (parser.isSet(icon))
+      iconify();
 
    if (parser.isSet(text) && parser.isSet(message))
       sendText(parser.value(text),parser.value(message));
@@ -123,6 +128,13 @@ void Cmd::sendText(const QString& number, const QString& text)
    });
 }
 
+void Cmd::iconify()
+{
+   if (qobject_cast<RingApplication*>(QCoreApplication::instance())) {
+      qobject_cast<RingApplication*>(QCoreApplication::instance())->setIconify(true);
+   }
+}
+
 void Cmd::slotActivateActionRequested (const QString&, const QVariant&)
 {
 }
@@ -161,6 +173,7 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
          switch(current) {
             case Current::NONE      :
             case Current::MINIMIZED :
+               //Iconify do nothing when the executable is already started
                break;
             case Current::SEND_TEXT :
                sendTextTo = arg;
@@ -180,7 +193,7 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
             sendMessage = true;
          else if (arg == "--message")
             current = Current::MESSAGE;
-         else if (arg == "--minimixed")
+         else if (arg == "--iconify")
          {}//TODO
       }
    }
@@ -188,6 +201,12 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
    if (sendMessage && sendTextTo.size() && messages.size()) {
       for (const QString& msg : messages)
          sendText(sendTextTo, msg);
+   }
+
+   if (ConfigurationSkeleton::displayOnStart()) {
+      Ring::app()->show();
+      Ring::app()->activateWindow();
+      Ring::app()->raise();
    }
 }
 

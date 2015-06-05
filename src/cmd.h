@@ -40,6 +40,7 @@ private:
    //Static mutators
    static void placeCall(const QString& number);
    static void sendText(const QString& number, const QString& text);
+   static void iconify();
    //Private constructor
    explicit Cmd(QObject* parent=nullptr);
 
