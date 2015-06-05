@@ -26,7 +26,8 @@ class KAboutData;
 //Ring
 class Call;
 
-class Cmd : public QObject {
+class Cmd : public QObject
+{
    Q_OBJECT
 
 public:

@@ -325,6 +325,8 @@ ELSE()
    TARGET_LINK_LIBRARIES(ring-kde ${LIB_RING_CLIENT_LIBRARY_DYNAMIC})
 ENDIF()
 
+QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
+
 TARGET_LINK_LIBRARIES(ring-kde
   libkring
   ${LIB_RING_CLIENT_LIBRARY}

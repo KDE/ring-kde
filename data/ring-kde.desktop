@@ -53,6 +53,7 @@ Exec=ring-kde
 Icon=ring-kde
 StartupNotify=true
 Categories=Network;Telephony;
+DBusActivatable=true
 
 [Protocol]
 exec=ring-kde --place-call "%u"
