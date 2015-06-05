@@ -50,31 +50,40 @@ Cmd* Cmd::instance() {
 }
 
 ///Setup command line options before passing them to the KUniqueApplication
-void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
+void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
 {
-   QCoreApplication app(argc, argv);
+   Q_UNUSED(argc)
+   Q_UNUSED(argv)
+
+   QCoreApplication* app = QCoreApplication::instance();
+   bool isRunning = true;
+
+   QCommandLineOption call     (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QLatin1String("number" ), QLatin1String(""));
+   QCommandLineOption text     (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number" ), QLatin1String(""));
+   QCommandLineOption message  (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QLatin1String("content"), QLatin1String(""));
+   QCommandLineOption minimixed(QStringList { "minimized"  }, i18n("Start in the system tray"                                                    ), QLatin1String("content"), QLatin1String(""));
+
    QCommandLineParser parser;
-
-   QCommandLineOption call     (QStringList {"place-call"   }, i18n("Place a call to a given number"                                              ), QLatin1String("number" ), QLatin1String(""));
-   QCommandLineOption text     (QStringList {"send-text"    }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number" ), QLatin1String(""));
-   QCommandLineOption message  (QStringList {"message"      }, i18n("Used in combination with --send-text"                                        ), QLatin1String("content"), QLatin1String(""));
-   QCommandLineOption minimixed(QStringList {"minimized"    }, i18n("Start in the system tray"                                                    ), QLatin1String("content"), QLatin1String(""));
-
    parser.addOptions({call,text,message,minimixed});
 
-   KAboutData::setApplicationData(about);
-   parser.addVersionOption();
-   parser.addHelpOption();
+   if (about) {
+      KAboutData::setApplicationData(*about);
+      about->setupCommandLine(&parser);
+      about->processCommandLine(&parser);
+   }
 
-   about.setupCommandLine(&parser);
-   parser.process(app);
-   about.processCommandLine(&parser);
+   parser.process         (*app);
+   parser.addVersionOption(    );
+   parser.addHelpOption   (    );
 
    if (parser.isSet(call))
       placeCall(parser.value(call));
 
    if (parser.isSet(text) && parser.isSet(message))
       sendText(parser.value(text),parser.value(message));
+
+   if (!isRunning)
+      delete app;
 }
 
 ///Place a call (from the command line)
@@ -82,15 +91,16 @@ void Cmd::placeCall(const QString& number)
 {
    if (number.isEmpty()) {
       qWarning() << "Example: --place-call 123@example.com";
-      exit(1);
+      return;
    }
 
-//    QTimer::singleShot(0,[number] {
-//       Call* call = CallModel::instance()->dialingCall();
-//       call->reset();
-//       call->appendText(number);
-//       call->performAction(Call::Action::ACCEPT);
-//    });
+   //Wait until the initialization is done
+   QTimer::singleShot(0,[number] {
+      Call* call = CallModel::instance()->dialingCall();
+      call->reset();
+      call->appendText(number);
+      call->performAction(Call::Action::ACCEPT);
+   });
 }
 
 ///Send a text ans hang up (from the command line)
@@ -98,21 +108,89 @@ void Cmd::sendText(const QString& number, const QString& text)
 {
    Q_UNUSED(number)
    Q_UNUSED(text)
-//    Call* call = CallModel::instance()->dialingCall();
-//    call->reset();
-//    call->appendText(number);
-//    call->setProperty("message",text);
-//    connect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
-//    call->performAction(Call::Action::ACCEPT);
+   QTimer::singleShot(0,[number,text] {
+      Call* call = CallModel::instance()->dialingCall();
+      call->reset();
+      call->appendText(number);
+      call->setProperty("message",text);
+      QObject::connect(call,&Call::lifeCycleStateChanged,[text,call](const Call::LifeCycleState st) {
+         if (st == Call::LifeCycleState::PROGRESS) {
+            call->addOutgoingMedia<Media::Text>()->send(call->property("message").toString());
+            call->performAction(Call::Action::REFUSE); //HangUp
+         }
+      });
+      call->performAction(Call::Action::ACCEPT);
+   });
 }
 
-///Send the message now that the call is ready
-void Cmd::textMessagePickup(Call* call)
+void Cmd::slotActivateActionRequested (const QString&, const QVariant&)
 {
-   Q_UNUSED(call)
-//    if (call->state() == Call::State::CURRENT) {
-//       call->addOutgoingMedia<Media::Text>()->send(call->property("message").toString());
-//       disconnect(call,SIGNAL(changed(Call*)),instance(),SLOT(textMessagePickup(Call*)));
-//       call->performAction(Call::Action::REFUSE); //HangUp
+}
+
+/**
+ * This function is called when a new client try to open. It will stop but this
+ * process need to take care of its arguments.
+ */
+void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
+{
+   Q_UNUSED(cwd)
+//TODO manage to share the parseArgs implementation, QCommandLineOption cannot
+//    char** l = new char*[args.size()];
+//    int i=0;
+//    for (const QString& str : args) {
+//       l[i] = (char*) malloc(sizeof(char)*(str.toLatin1().size()+1/*for \0*/));
+//       strcpy(l[i++],str.toLatin1().data());
 //    }
+//    parseCmd(args.size(), l);
+
+   enum class Current {
+      NONE      , /* No args */
+      PLACE_CALL, /* One arg */
+      SEND_TEXT , /* One arg */
+      MESSAGE   , /* One arg */
+      MINIMIZED   /* No args */
+   };
+
+   Current current = Current::NONE;
+   bool sendMessage = false;
+   QStringList messages;
+   QString sendTextTo;
+
+   for(const QString& arg : args) {
+      if (current != Current::NONE) {
+         switch(current) {
+            case Current::NONE      :
+            case Current::MINIMIZED :
+               break;
+            case Current::SEND_TEXT :
+               sendTextTo = arg;
+               break;
+            case Current::PLACE_CALL:
+               placeCall(arg);
+               break;
+            case Current::MESSAGE   :
+               messages << arg;
+               break;
+         }
+      }
+      else {
+         if (arg == "--place-call")
+            current = Current::PLACE_CALL;
+         else if (arg == "--send-text")
+            sendMessage = true;
+         else if (arg == "--message")
+            current = Current::MESSAGE;
+         else if (arg == "--minimixed")
+         {}//TODO
+      }
+   }
+
+   if (sendMessage && sendTextTo.size() && messages.size()) {
+      for (const QString& msg : messages)
+         sendText(sendTextTo, msg);
+   }
+}
+
+void Cmd::slotOpenRequested (const QList<QUrl>&)
+{
 }

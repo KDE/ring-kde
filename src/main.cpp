@@ -28,7 +28,7 @@
 #include <QString>
 
 //KDE
-#include <QDebug>
+#include <KDBusService>
 #include <QtGui/QImage>
 #include <kaboutdata.h>
 #include <KLocalizedString>
@@ -79,9 +79,21 @@ int main(int argc, char **argv)
 
       KAboutData::setApplicationData(about);
 
-      Cmd::parseCmd(argc, argv, about);
+      app = new RingApplication ( argc, argv          );
+      Cmd::parseCmd(argc, argv, &about);
 
-      app = new RingApplication(argc, argv);
+      app->setApplicationName   ( about.productName() );
+      app->setApplicationVersion( about.version    () );
+      app->setOrganizationDomain( "ring.cx"           );
+
+      //Only start the application once
+      KDBusService service(KDBusService::Unique);
+      QObject::connect(&service, &KDBusService::activateActionRequested, Cmd::instance(), &Cmd::slotActivateActionRequested);
+      QObject::connect(&service, &KDBusService::activateRequested      , Cmd::instance(), &Cmd::slotActivateRequested      );
+      QObject::connect(&service, &KDBusService::openRequested          , Cmd::instance(), &Cmd::slotOpenRequested          );
+
+      //The app will have quitted by now if an instance already exist
+      app->newInstance();
 
       const int retVal = app->exec();
 

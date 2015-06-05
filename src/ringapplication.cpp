@@ -55,8 +55,6 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    //Necessary to draw OpenGL from a separated thread
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
-
-   newInstance();
 }
 
 /**

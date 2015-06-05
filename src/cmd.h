@@ -31,23 +31,25 @@ class Cmd : public QObject {
 
 public:
    virtual ~Cmd(){}
-
-   //Static mutators
-   static void parseCmd(int argc, char **argv, KAboutData& about);
-   static void placeCall(const QString& number);
-   static void sendText(const QString& number, const QString& text);
+   static Cmd* instance();
+   static void parseCmd(int argc, char **argv, KAboutData* about = nullptr);
 
 private:
+
+   //Static mutators
+   static void placeCall(const QString& number);
+   static void sendText(const QString& number, const QString& text);
    //Private constructor
    explicit Cmd(QObject* parent=nullptr);
 
-   static Cmd* instance();
 
    //Attributes
    static Cmd* m_spSelf;
 
-private Q_SLOTS:
-   void textMessagePickup(Call* call);
+public Q_SLOTS:
+   void slotActivateActionRequested (const QString &actionName, const QVariant &parameter);
+   void slotActivateRequested (const QStringList &arguments, const QString &workingDirectory);
+   void slotOpenRequested (const QList< QUrl > &uris);
 };
 
 #endif
