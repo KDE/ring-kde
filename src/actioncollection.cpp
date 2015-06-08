@@ -161,13 +161,6 @@ void ActionCollection::setupAction()
 {
    qDebug() << "setupActions";
 
-   action_accept->setShortcut      ( Qt::CTRL + Qt::Key_A );
-   action_new_call->setShortcut    ( Qt::CTRL + Qt::Key_N );
-   action_hold->setShortcut        ( Qt::CTRL + Qt::Key_H );
-   action_transfer->setShortcut    ( Qt::CTRL + Qt::Key_T );
-   action_record->setShortcut      ( Qt::CTRL + Qt::Key_R );
-   action_mailBox->setShortcut     ( Qt::CTRL + Qt::Key_M );
-
    action_screen = new QActionGroup(Ring::app());
    action_screen->setExclusive(true);
 
@@ -189,7 +182,16 @@ void ActionCollection::setupAction()
    action_addPerson             = new QAction(QIcon::fromTheme("contact-new"),i18n("Add new contact")                                                     , this);
    action_configureShortcut     = new QAction(QIcon::fromTheme("configure-shortcuts"), i18n("Configure Shortcut"), this);
 
-   action_addPerson->setShortcut ( Qt::CTRL + Qt::Key_N );
+#define COL(a,b) Ring::app()->actionCollection()->setDefaultShortcut(a,b)
+   COL(action_accept      , Qt::CTRL + Qt::Key_A );
+   COL(action_new_call    , Qt::CTRL + Qt::Key_N );
+   COL(action_hold        , Qt::CTRL + Qt::Key_H );
+   COL(action_transfer    , Qt::CTRL + Qt::Key_T );
+   COL(action_record      , Qt::CTRL + Qt::Key_R );
+   COL(action_mailBox     , Qt::CTRL + Qt::Key_M );
+   COL(action_addPerson   , Qt::CTRL + Qt::Key_N );
+   COL(action_pastenumber , Qt::CTRL + Qt::Key_V );
+#undef COL
 
    action_displayDialpad->setCheckable( true );
    action_displayDialpad->setChecked  ( ConfigurationSkeleton::displayDialpad() );
@@ -204,7 +206,6 @@ void ActionCollection::setupAction()
    action_displayVolumeControls->setCheckable( true );
    action_displayVolumeControls->setChecked  ( ConfigurationSkeleton::displayVolume() );
 
-   action_pastenumber->setShortcut ( Qt::CTRL + Qt::Key_V );
 
    action_showContactDock->setCheckable( true );
    action_showContactDock->setChecked(ConfigurationSkeleton::displayContactDock());
