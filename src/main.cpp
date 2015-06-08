@@ -87,10 +87,12 @@ int main(int argc, char **argv)
       app->setOrganizationDomain( "ring.cx"           );
 
       //Only start the application once
+#ifdef Q_OS_LINUX
       KDBusService service(KDBusService::Unique);
       QObject::connect(&service, &KDBusService::activateActionRequested, Cmd::instance(), &Cmd::slotActivateActionRequested);
       QObject::connect(&service, &KDBusService::activateRequested      , Cmd::instance(), &Cmd::slotActivateRequested      );
       QObject::connect(&service, &KDBusService::openRequested          , Cmd::instance(), &Cmd::slotOpenRequested          );
+#endif
 
       //The app will have quitted by now if an instance already exist
       app->newInstance();

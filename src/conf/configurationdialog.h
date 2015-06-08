@@ -79,7 +79,6 @@ private:
    DlgAccessibility* dlgAccessibility;
    DlgVideo*         dlgVideo        ;
    DlgPresence*      dlgPresence     ;
-   KPageWidgetItem*  m_pPresPage     ;
 
    KConfigDialogManager* m_pManager;
 

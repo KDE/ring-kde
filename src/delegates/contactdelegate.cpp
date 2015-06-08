@@ -51,7 +51,6 @@
 //Metrics
 namespace { //TODO GCC46 uncomment when dropping support for Gcc 4.6
    /*constexpr */static const int PX_HEIGHT    = 48                 ;
-   /*constexpr */static const int PX_RADIUS    = 7                  ;
    /*constexpr */static const int PADDING      = 2                  ;
    /*constexpr */static const int MIN_HEIGHT   = PX_HEIGHT+2*PADDING;
    /*constexpr */static const int LEFT_PADDING = 15;

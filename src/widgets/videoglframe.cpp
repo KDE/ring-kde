@@ -25,7 +25,12 @@
 
 //System
 #include <math.h>
-#include <GL/glu.h>
+
+#ifdef Q_OS_LINUX
+ #include <GL/glu.h>
+#else
+ #include <OpenGL/glu.h>
+#endif
 
 //Ring
 #include <video/renderer.h>
@@ -59,7 +64,6 @@ private:
    QGLWidget* m_pW;
    VideoGLFrame* m_pFrm;
    QMutex mutex;
-   char* m_Data;
    QSize m_ActiveSize;
 
    //Methods
@@ -78,7 +82,7 @@ Q_SIGNALS:
 
 ThreadedPainter2::ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
    m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false),m_pFrm(frm),
-   m_Data(nullptr),tile_list(0),tra_x(0.0f), tra_y(0.0f), tra_z(0.0f)
+   tile_list(0),tra_x(0.0f), tra_y(0.0f), tra_z(0.0f)
 {
 }
 
@@ -199,7 +203,7 @@ void ThreadedPainter2::draw(QPainter* p)
 
 
  VideoGLFrame::VideoGLFrame(QGLWidget *parent)
-     : QObject(parent),m_pParent(parent),
+     : QObject(parent),
      m_pPainter(new ThreadedPainter2(this,parent)),
      m_pRenderer(nullptr),m_KeepAspect(true)
  {

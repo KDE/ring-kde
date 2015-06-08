@@ -50,7 +50,6 @@ Ring* RingApplication::m_spApp = nullptr;
  */
 RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv),m_StartIconified(false)
 {
-
 #ifdef ENABLE_VIDEO
    //Necessary to draw OpenGL from a separated thread
    setAttribute(Qt::AA_X11InitThreads,true);

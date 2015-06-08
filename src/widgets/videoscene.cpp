@@ -18,7 +18,13 @@
 #include "videoscene.h"
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QGraphicsSceneMouseEvent>
-#include <GL/glu.h>
+
+#ifdef Q_OS_LINUX
+ #include <GL/glu.h>
+#else
+ #include <OpenGL/glu.h>
+#endif
+
 #include <QGraphicsSceneMouseEvent>
 
 #include "videoglframe.h"

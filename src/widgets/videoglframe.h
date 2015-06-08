@@ -74,7 +74,6 @@ public:
 private:
    //Attributes
    ThreadedPainter2* m_pPainter;
-   QGLWidget* m_pParent;
    Video::Renderer* m_pRenderer;
    bool m_KeepAspect;
 

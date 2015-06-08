@@ -84,7 +84,7 @@ struct Matrix1D
    class Matrix1DEnumClassIter
    {
    public:
-      Matrix1DEnumClassIter (const Matrix1D<Row, Value, A>* p_vec, int pos)
+      Matrix1DEnumClassIter (Matrix1D<Row, Value, A>* p_vec, int pos)
          : pos_( pos ), p_vec_( p_vec ) {}
 
       bool operator!= (const Matrix1DEnumClassIter& other) const;
@@ -96,7 +96,7 @@ struct Matrix1D
 
    private:
       int pos_;
-      const Matrix1D<Row, Value, A> *p_vec_;
+      Matrix1D<Row, Value, A> *p_vec_;
    };
 
    //Iterators
@@ -115,6 +115,17 @@ private:
    QVector<Value> m_lData;
    static QMap<A, Row> m_hReverseMapping;
 };
+
+/**
+ * Create a matrix type with 2 enum class dimensions M[I,J] = V
+ *                                                     ^ ^    ^
+ *                                                     | |    |
+ *                                          Rows    <--- |    |
+ *                                          Columns <-----    |
+ *                                          Value   <----------
+ */
+template<class Row, class Column, typename Value>
+using Matrix2D = Matrix1D<Row, Matrix1D<Column, Value>>;
 
 
 /**

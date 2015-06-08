@@ -75,7 +75,7 @@ QSize ConferenceDelegate::sizeHint(const QStyleOptionViewItem& option, const QMo
 ///Generate the rectangle
 QRect ConferenceDelegate::fullCategoryRect(const QStyleOptionViewItem& option, const QModelIndex& index) const 
 {
-   QModelIndex i(index),old(index);
+   QModelIndex i(index);
    //BEGIN real sizeHint()
    //Otherwise it would be called too often (thanks to valgrind)
    const_cast<ConferenceDelegate*>(this)->m_SH = QStyledItemDelegate::sizeHint(option, index);

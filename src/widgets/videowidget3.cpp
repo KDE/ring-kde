@@ -29,7 +29,12 @@
 
 //System
 #include <math.h>
-#include <GL/glu.h>
+
+#ifdef Q_OS_LINUX
+ #include <GL/glu.h>
+#else
+ #include <OpenGL/glu.h>
+#endif
 
 //Ring
 #include <video/sourcemodel.h>

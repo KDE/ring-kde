@@ -122,6 +122,16 @@ Ring::Ring(QWidget* parent)
       ,m_pVideoDW(nullptr)
 #endif
 {
+
+   //On OSX, QStandardPaths doesn't work as expected, it is better to pack the .ui in the DMG
+#ifdef Q_OS_MAC
+   QDir dir(QApplication::applicationDirPath());
+   dir.cdUp();
+   dir.cd("Resources/kxmlgui5/ring-kde/");
+   setXMLFile(dir.path()+"/ring-kdeui.rc");
+   setUnifiedTitleAndToolBarOnMac(true);
+#endif
+
    if ((!CallModel::instance()->isConnected()) || (!CallModel::instance()->isValid())) {
       QTimer::singleShot(5000,this,SLOT(timeout()));
    }
