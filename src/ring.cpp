@@ -364,7 +364,6 @@ Ring::Ring(QWidget* parent)
    m_pReloadButton->setIcon(QIcon::fromTheme("view-refresh"));
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,SIGNAL(clicked()),AccountModel::instance(),SLOT(registerAllAccounts()));
-   connect(m_pAccountStatus, SIGNAL(currentIndexChanged(int)), this, SLOT(currentAccountIndexChanged(int)) );
 
    if (!CallModel::instance()->isValid()) {
       KMessageBox::error(this,i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually"));

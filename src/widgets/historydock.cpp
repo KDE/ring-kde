@@ -153,8 +153,6 @@ m_pCallAgain(nullptr)
 
    m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::historySortMode());
 
-   QTimer::singleShot(0,this,SLOT(slotDateRangeCanched()));
-
 } //HistoryDock
 
 ///Destructor
