@@ -5,6 +5,7 @@ Terminal=false
 
 Name=Ring VoIP KDE client
 Name[ca]=Ring client de VoIP pel KDE
+Name[cs]=Ring - VoIP klient pro KDE
 Name[de]=Ring-VoIP-Programm für KDE
 Name[gl]=Cliente de KDE para VoIP mediante Ring
 Name[it]=Client VoIP per KDE Ring
@@ -17,6 +18,7 @@ Name[uk]=Клієнт інтернет-телефонії Ring для KDE
 Name[x-test]=xxRing VoIP KDE clientxx
 GenericName=Ring
 GenericName[ca]=Ring
+GenericName[cs]=Ring
 GenericName[de]=Ring
 GenericName[gl]=Ring
 GenericName[it]=Ring
