@@ -38,7 +38,6 @@ public:
    virtual bool hasChanged();
 
    ::Account* account() const;
-   void setAccount(::Account* a);
 
 protected:
    bool m_Changed;
@@ -47,6 +46,7 @@ private:
    ::Account* m_pAccount;
 
 public Q_SLOTS:
+   virtual void setAccount(::Account* a);
    virtual void updateWidgets();
    virtual void updateSettings();
 
@@ -59,6 +59,6 @@ Q_SIGNALS:
 
 };
 
-};
+}
 
 #endif

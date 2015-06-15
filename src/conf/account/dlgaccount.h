@@ -39,7 +39,6 @@ public:
    bool hasChanged();
 
 private:
-   QHash<QString,Pages::Account*> m_lPages;
    Pages::Account* m_pCurrentAccount;
    ProtocolModel* m_pProtocolModel;
 
@@ -48,8 +47,6 @@ public Q_SLOTS:
    void updateSettings();
    void updateWidgets();
    void cancel();
-   void setCurrentAccount(::Account* a);
-   void setCurrentAccount(const QModelIndex& idx);
 
    //Core logic
    void slotNewAddAccount();

@@ -19,10 +19,7 @@
      <property name="title">
       <string>Network Interface</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::ExpandingFieldsGrow</enum>
-      </property>
+     <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="label_ni_local_address">
         <property name="text">
@@ -31,7 +28,14 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="AutoComboBox" name="m_pNetworkInterfaces"/>
+       <widget class="AutoComboBox" name="m_pNetworkInterfaces">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_ni_local_port">

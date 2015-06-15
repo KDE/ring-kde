@@ -19,7 +19,10 @@
      <property name="title">
       <string>Registration</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QFormLayout" name="formLayout_2">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_regExpire">
         <property name="text">
@@ -40,19 +43,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="lrcfg_hasCustomUserAgent">
         <property name="text">
@@ -60,8 +50,12 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="lrcfg_userAgent"/>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lrcfg_userAgent">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -98,6 +92,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="lrcfg_proxy">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="placeholderText">
          <string>SIP proxy server (if none, leave blank)</string>
         </property>
@@ -151,6 +148,9 @@
         <property name="text">
          <string>Over SIP</string>
         </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>
@@ -202,6 +202,38 @@
     <hint type="destinationlabel">
      <x>302</x>
      <y>142</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lrcfg_hasProxy</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lrcfg_proxy</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>78</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>164</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lrcfg_turnEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lrcfg_turnServer</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>183</y>
     </hint>
    </hints>
   </connection>

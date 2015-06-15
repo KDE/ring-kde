@@ -31,13 +31,17 @@ class Account : public PageBase, public Ui::Tabs
 Q_OBJECT
 public:
    //Constructor
-   explicit Account(::Account* a, QWidget *parent = nullptr);
+   explicit Account(QWidget *parent = nullptr);
 
 public Q_SLOTS:
    virtual void updateWidgets() override;
    virtual void updateSettings() override;
 
    void selectAlias();
+
+public Q_SLOTS:
+   virtual void setAccount(::Account* a) override;
+   void setAccount(const QModelIndex& idx);
 
 private Q_SLOTS:
    void slotUpdateButtons();
@@ -47,6 +51,6 @@ private:
    Account* m_pAccount;
 };
 
-};
+}
 
 #endif

@@ -29,7 +29,7 @@
 #include <QtWidgets/QMessageBox>
 
 
-DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent), m_pCurrentAccount(nullptr)
+DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent)
 {
    setupUi(this);
 
@@ -56,25 +56,13 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent), m_pCurrentAccount(nul
       emit updateButtons();
    });
 
+   const QModelIndex idx = AccountModel::instance()->index(0,0);
+   m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
+   m_pPanel->setAccount(idx);
 }
 
 DlgAccount::~DlgAccount()
 {
-}
-
-void DlgAccount::setCurrentAccount(const QModelIndex& idx)
-{
-   setCurrentAccount(AccountModel::instance()->getAccountByModelIndex(idx));
-}
-
-void DlgAccount::setCurrentAccount(::Account* a)
-{
-   Pages::Account* acc = new Pages::Account(a, this);
-   QHBoxLayout* l = new QHBoxLayout(m_pPanel);
-   l->addWidget(acc);
-   m_lPages["account456.ini"] = acc;
-
-   m_pCurrentAccount = acc;
 }
 
 void DlgAccount::slotNewAddAccount()
@@ -83,9 +71,10 @@ void DlgAccount::slotNewAddAccount()
    const Account::Protocol proto = qvariant_cast<Account::Protocol>(m_pProtocolModel->data(m_pProtocolModel->selectionModel()->currentIndex(),Qt::UserRole));
    Account* a = AccountModel::instance()->add(newAlias,proto);
 
-   setCurrentAccount(a);
+   m_pAccountList->selectionModel()->setCurrentIndex(a->index(), QItemSelectionModel::ClearAndSelect);
+   m_pPanel->setAccount(a);
 
-   m_pCurrentAccount->selectAlias();
+   m_pPanel->selectAlias();
 
 } //on_button_accountAdd_clicked
 

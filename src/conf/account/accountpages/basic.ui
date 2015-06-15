@@ -84,19 +84,6 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label4_user">
-       <property name="accessibleDescription">
-        <string comment="Account username"/>
-       </property>
-       <property name="text">
-        <string comment="Account username">Username*</string>
-       </property>
-       <property name="buddy">
-        <cstring>lrcfg_username</cstring>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
       <widget class="QLineEdit" name="lrcfg_username">
        <property name="placeholderText">
@@ -181,6 +168,19 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label4_user">
+       <property name="accessibleDescription">
+        <string comment="Account username"/>
+       </property>
+       <property name="text">
+        <string comment="Account username">Username*</string>
+       </property>
+       <property name="buddy">
+        <cstring>lrcfg_username</cstring>
        </property>
       </widget>
      </item>

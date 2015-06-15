@@ -225,7 +225,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="m_pPanel" native="true">
+     <widget class="Pages::Account" name="m_pPanel" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>6</horstretch>
@@ -264,6 +264,15 @@
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
   </customwidget>
+  <customwidget>
+   <class>Pages::Account</class>
+   <extends>QWidget</extends>
+   <header>accountpages/account.h</header>
+   <container>1</container>
+   <slots>
+    <slot>setAccount(QModelIndex)</slot>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
@@ -286,16 +295,16 @@
   <connection>
    <sender>m_pAccountList</sender>
    <signal>clicked(QModelIndex)</signal>
-   <receiver>AccountDlg</receiver>
-   <slot>setCurrentAccount(QModelIndex)</slot>
+   <receiver>m_pPanel</receiver>
+   <slot>setAccount(QModelIndex)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>296</x>
-     <y>177</y>
+     <x>233</x>
+     <y>131</y>
     </hint>
     <hint type="destinationlabel">
-     <x>255</x>
-     <y>1</y>
+     <x>520</x>
+     <y>151</y>
     </hint>
    </hints>
   </connection>

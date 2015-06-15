@@ -19,16 +19,26 @@
 
 //Ring
 #include <account.h>
+#include <accountmodel.h>
 
 //Binder
 #include "accountserializationadapter.h"
 
 #include "basic.h"
 
-Pages::Account::Account(::Account* a, QWidget *parent) : PageBase(parent)
+Pages::Account::Account(QWidget *parent) : PageBase(parent)
 {
-   setAccount(a);
+//    setAccount(a);
    setupUi(this);
+
+//    setAccount(a);
+//    dlgSecurity
+
+}
+
+void Pages::Account::setAccount(::Account* a)
+{
+   PageBase::setAccount(a);
 
    dlgBasic       -> setAccount(a);
    dlgAdvanced    -> setAccount(a);
@@ -38,8 +48,12 @@ Pages::Account::Account(::Account* a, QWidget *parent) : PageBase(parent)
    dlgRingtone    -> setAccount(a);
 
    new AccountSerializationAdapter(a, this);
-//    dlgSecurity
+}
 
+void Pages::Account::setAccount(const QModelIndex& idx)
+{
+   if (::Account* a = AccountModel::instance()->getAccountByModelIndex(idx))
+      setAccount(a);
 }
 
 void Pages::Account::updateWidgets()
