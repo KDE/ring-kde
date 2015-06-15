@@ -48,6 +48,7 @@
 #include <presencestatusmodel.h>
 #include <personmodel.h>
 #include <macromodel.h>
+// #include <recentmodel.h>
 
 //Collections
 #include <foldercertificatecollection.h>
@@ -383,6 +384,8 @@ Ring::Ring(QWidget* parent)
    if (!ConfigurationSkeleton::autoStartOverride())
       setAutoStart(true);
 
+//    RecentModel::instance();
+
 } //Ring
 
 ///Destructor
@@ -401,7 +404,6 @@ Ring::~Ring()
    delete m_pCentralDW       ;
    delete m_pHistoryDW       ;
    delete m_pBookmarkDW      ;
-   delete AvailableAccountModel::instance()    ;
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
 

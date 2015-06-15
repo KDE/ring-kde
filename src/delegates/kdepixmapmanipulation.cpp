@@ -304,6 +304,17 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
          return QIcon(":/callstate_light/icons/light/accept.svg"   );
+      case UserActionModel::Action::TOGGLE_VIDEO:
+      case UserActionModel::Action::ADD_CONTACT:
+      case UserActionModel::Action::ADD_TO_CONTACT:
+      case UserActionModel::Action::DELETE_CONTACT:
+      case UserActionModel::Action::EMAIL_CONTACT:
+      case UserActionModel::Action::BOOKMARK:
+      case UserActionModel::Action::VIEW_CHAT_HISTORY:
+      case UserActionModel::Action::ADD_CONTACT_METHOD:
+      case UserActionModel::Action::REMOVE_HISTORY :
+      case UserActionModel::Action::CALL_CONTACT:
+      case UserActionModel::Action::COPY_CONTACT:
       case UserActionModel::Action::COUNT__:
          break;
    };

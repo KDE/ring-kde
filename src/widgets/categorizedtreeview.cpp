@@ -272,8 +272,10 @@ CallModel::DropPayloadType CategorizedTreeView::payloadType(const QMimeData* dat
 void CategorizedTreeView::cancelHoverState()
 {
    if (m_HoverIdx.isValid()) {
-      ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,static_cast<int>(Call::Role::DropState));
+      //Prevent recursion
+      const QModelIndex oldIdx = m_HoverIdx;
       m_HoverIdx = QModelIndex();
+      ((QAbstractItemModel*)oldIdx.model())->setData(oldIdx,-1,static_cast<int>(Call::Role::DropState));
    }
 }
 
