@@ -15,40 +15,22 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef ACCOUNT_PAGE_H
-#define ACCOUNT_PAGE_H
+#ifndef SECURITY_PAGE_H
+#define SECURITY_PAGE_H
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 #include "pagebase.h"
-#include "ui_tabs.h"
-
-class Account;
+#include "ui_security.h"
 
 namespace Pages {
 
-class Account : public PageBase, public Ui::Tabs
+class Security : public PageBase, public Ui_SecurityPage
 {
 Q_OBJECT
 public:
    //Constructor
-   explicit Account(QWidget *parent = nullptr);
+   explicit Security(QWidget *parent = nullptr);
 
-public Q_SLOTS:
-   virtual void updateWidgets() override;
-   virtual void updateSettings() override;
-
-   void selectAlias();
-
-public Q_SLOTS:
-   virtual void setAccount(::Account* a) override;
-   void setAccount(const QModelIndex& idx);
-
-private Q_SLOTS:
-   void slotUpdateButtons();
-
-private:
-   //Attributes
-   Account* m_pAccount;
 };
 
 }

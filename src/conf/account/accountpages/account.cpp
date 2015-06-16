@@ -28,12 +28,7 @@
 
 Pages::Account::Account(QWidget *parent) : PageBase(parent)
 {
-//    setAccount(a);
    setupUi(this);
-
-//    setAccount(a);
-//    dlgSecurity
-
 }
 
 void Pages::Account::setAccount(::Account* a)
@@ -46,8 +41,21 @@ void Pages::Account::setAccount(::Account* a)
    dlgCodec       -> setAccount(a);
    dlgCredentials -> setAccount(a);
    dlgRingtone    -> setAccount(a);
+   dlgSecurity    -> setAccount(a);
 
    new AccountSerializationAdapter(a, this);
+
+   switch (a->protocol()) {
+      case ::Account::Protocol::RING:
+      case ::Account::Protocol::IAX:
+         tabWidget->setTabEnabled(4,false);
+         break;
+      case ::Account::Protocol::SIP:
+         tabWidget->setTabEnabled(4, a->id() != "IP2IP");
+         break;
+      case ::Account::Protocol::COUNT__:
+         break;
+   }
 }
 
 void Pages::Account::setAccount(const QModelIndex& idx)

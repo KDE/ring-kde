@@ -19,11 +19,18 @@
 
 #include <account.h>
 #include <protocolmodel.h>
+#include <bootstrapmodel.h>
 
 Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
    connect(this,&PageBase::accountSet,[this]() {
       m_pProtocol->bindToModel(account()->protocolModel(),account()->protocolModel()->selectionModel());
+
+      m_pBootstrapModel->setModel((account()->protocol() == Account::Protocol::RING)?
+         account()->bootstrapModel() : nullptr
+      );
+      m_pBootstrapModel->setVisible(account()->protocol() == Account::Protocol::RING);
+
    });
 }

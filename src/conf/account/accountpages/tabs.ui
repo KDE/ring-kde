@@ -70,16 +70,11 @@
       <attribute name="title">
        <string>Security</string>
       </attribute>
-      <widget class="QWidget" name="dlgSecurity" native="true">
-       <property name="geometry">
-        <rect>
-         <x>210</x>
-         <y>100</y>
-         <width>120</width>
-         <height>80</height>
-        </rect>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="Pages::Security" name="dlgSecurity" native="true"/>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tab_6">
       <attribute name="title">
@@ -130,6 +125,12 @@
    <class>Pages::Credentials</class>
    <extends>QWidget</extends>
    <header>accountpages/credentials.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Pages::Security</class>
+   <extends>QWidget</extends>
+   <header>accountpages/security.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

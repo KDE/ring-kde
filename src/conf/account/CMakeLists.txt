@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 ADD_DEFINITIONS("-std=c++11")
 
 SET(QT_MIN_VERSION  "5.2.0")
+SET(KF5_DEP_VERSION "5.6.0")
 
 set(accountdialog_SRCS
    dlgaccount.cpp
@@ -12,6 +13,12 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
   Core
   Widgets
   Gui
+)
+
+
+FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
+  KIO
+  I18n
 )
 
 FIND_PACKAGE ( LibRingClient REQUIRED ENABLE_STATIC=true )
@@ -33,6 +40,7 @@ QT5_WRAP_UI(accountdialog_SRCS accountpages/network.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/codecs.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/ringtone.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/dlgdht.ui)
+QT5_WRAP_UI(accountdialog_SRCS accountpages/security.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/tabs.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountdlg.ui)
 
@@ -41,6 +49,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    widgets/autocombobox.cpp
    widgets/groupedtoolbutton.cpp
    widgets/certificateviewer.cpp
+   widgets/securityprogress.cpp
 
    accountpages/advanced.cpp
    accountpages/credentials.cpp
@@ -48,6 +57,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    accountpages/network.cpp
    accountpages/codecs.cpp
    accountpages/ringtone.cpp
+   accountpages/security.cpp
    accountpages/pagebase.cpp
    accountpages/account.cpp
    accountpages/dlgdht.cpp
@@ -59,6 +69,8 @@ TARGET_LINK_LIBRARIES(accountdialog
    ${Qt5Widgets_LIBRARIES}
    ${Qt5Core_LIBRARIES}
    ${Qt5Gui_LIBRARIES}
+   KF5::KIOWidgets
+   KF5::I18n
    ${LIB_RING_CLIENT_LIBRARY}
 )
 

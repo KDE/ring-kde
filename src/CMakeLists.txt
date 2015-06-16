@@ -217,7 +217,6 @@ SET(
    widgets/contactview.cpp
    widgets/presence.cpp
    widgets/autocompletion.cpp
-   widgets/securityprogress.cpp
    widgets/wizard.cpp
 )
 

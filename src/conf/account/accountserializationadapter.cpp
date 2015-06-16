@@ -21,8 +21,12 @@
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QAbstractButton>
+
+//KDE
+#include <KUrlRequester>
 
 #include <account.h>
 #include <accountmodel.h>
@@ -92,6 +96,33 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
                })
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
+         }
+         else if  (qobject_cast<QGroupBox*>(w)) {
+            QGroupBox* b = qobject_cast<QGroupBox*>(w);
+            avoidDuplicate(b);
+            b->setChecked(a->roleData(role).toBool());
+            ConnHolder* c = new ConnHolder {
+               QObject::connect(b, &QGroupBox::toggled,[a,role](bool c) {
+                  if (a->roleData(role).toBool() != c)
+                     a->setRoleData(role, c);
+               })
+            };
+            b->setProperty("lrcfgConn",QVariant::fromValue(c));
+         }
+         else if  (qobject_cast<KUrlRequester*>(w)) { //KDE only
+            KUrlRequester* b = qobject_cast<KUrlRequester*>(w);
+            avoidDuplicate(b);
+            b->setText(a->roleData(role).toString());
+            ConnHolder* c = new ConnHolder {
+               QObject::connect(b, &KUrlRequester::textChanged,[a,role](QString s) {
+                  if (a->roleData(role).toString() != s)
+                     a->setRoleData(role, s);
+               })
+            };
+            b->setProperty("lrcfgConn",QVariant::fromValue(c));
+         }
+         else {
+            qDebug() << "Unsupported widget type" << w;
          }
 
          //Check if the field is required for this account type

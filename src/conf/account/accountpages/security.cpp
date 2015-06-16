@@ -15,42 +15,20 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef ACCOUNT_PAGE_H
-#define ACCOUNT_PAGE_H
+#include "security.h"
 
-#include <QtWidgets/QWidget>
-#include "pagebase.h"
-#include "ui_tabs.h"
+#include <account.h>
+#include <credentialmodel.h>
 
-class Account;
+#include <ciphermodel.h>
 
-namespace Pages {
-
-class Account : public PageBase, public Ui::Tabs
+Pages::Security::Security(QWidget *parent) : PageBase(parent)
 {
-Q_OBJECT
-public:
-   //Constructor
-   explicit Account(QWidget *parent = nullptr);
+   setupUi(this);
 
-public Q_SLOTS:
-   virtual void updateWidgets() override;
-   virtual void updateSettings() override;
-
-   void selectAlias();
-
-public Q_SLOTS:
-   virtual void setAccount(::Account* a) override;
-   void setAccount(const QModelIndex& idx);
-
-private Q_SLOTS:
-   void slotUpdateButtons();
-
-private:
-   //Attributes
-   Account* m_pAccount;
-};
-
+   connect(this,&PageBase::accountSet,[this]() {
+      combo_security_STRP->bindToModel(account()->keyExchangeModel(),account()->keyExchangeModel()->selectionModel());
+      m_pCiphers->setModel(account()->cipherModel());
+      combo_tls_method->bindToModel(account()->tlsMethodModel(),account()->tlsMethodModel()->selectionModel());
+   });
 }
-
-#endif
