@@ -58,12 +58,16 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
 {
    if (w->objectName().left(LRC_CFG_LEN) == LRC_CFG) {
       const QByteArray prop = w->objectName().mid(LRC_CFG_LEN, 999).toLatin1();
+
       if (roles.contains(prop)) {
          const int role = roles[prop];
+         Account::RoleState rs = a->roleState((Account::Role)role);
+
          if (qobject_cast<QLineEdit*>(w)) {
             QLineEdit* le = qobject_cast<QLineEdit*>(w);
             avoidDuplicate(le);
             le->setText(a->roleData(role).toString());
+            le->setReadOnly(rs == Account::RoleState::READ_ONLY);
             ConnHolder* c = new ConnHolder {
                QObject::connect(le, &QLineEdit::textChanged, [a,role](const QString& text) {
                   if (a->roleData(role) != text)
@@ -126,9 +130,8 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
          }
 
          //Check if the field is required for this account type
-         if (a->roleState((Account::Role)role) == Account::RoleState::UNAVAILABLE) {
+         if (rs == Account::RoleState::UNAVAILABLE) {
 
-            w->setProperty("lrcfgVisible", w->isVisible() ? 2 : 1);
             w->setVisible(false);
 
             QFormLayout* fm = qobject_cast<QFormLayout*>(w->parentWidget()->layout());
@@ -144,16 +147,17 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
             if (fm) {
                QWidget* buddy = fm->labelForField(w);
 
-               if (buddy)
+               if (buddy) {
                   buddy->setVisible(false);
+                  w->setProperty("buddy", QVariant::fromValue(buddy));
+               }
 
             }
          }
          else {
-            //0 = unset, 1=invisible, 2=visible
-            const int oldVisibleState = w->property("lrcfgVisible").toInt();
-            if (oldVisibleState)
-               w->setVisible(oldVisibleState-1);
+            w->setVisible(true);
+            if (w->property("buddy").canConvert<QWidget*>())
+               qvariant_cast<QWidget*>(w->property("buddy"))->setVisible(true);
          }
       }
       else {

@@ -30,7 +30,7 @@ Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
       m_pBootstrapModel->setModel((account()->protocol() == Account::Protocol::RING)?
          account()->bootstrapModel() : nullptr
       );
-      m_pBootstrapModel->setVisible(account()->protocol() == Account::Protocol::RING);
+      m_pBootstrapModel->setVisible(account()->roleData((int)Account::Role::HasCustomBootstrap).toBool());
 
    });
 }
