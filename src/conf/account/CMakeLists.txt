@@ -63,7 +63,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    accountpages/dlgdht.cpp
 )
 
-ADD_LIBRARY(accountdialog ${accountdialog_SRCS})
+ADD_LIBRARY(accountdialog STATIC ${accountdialog_SRCS})
 
 TARGET_LINK_LIBRARIES(accountdialog
    ${Qt5Widgets_LIBRARIES}
