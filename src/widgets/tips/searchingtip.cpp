@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "connectionlosttip.h"
+#include "searchingtip.h"
 
 //Qt
 #include <QtSvg/QSvgRenderer>
@@ -29,28 +29,30 @@
 
 
 ///Constructor
-ConnectionLostTip::ConnectionLostTip(QWidget* parent) : Tip(i18n("There was a network error, trying to reconnect in 60 seconds."),parent),m_pTimer(nullptr),m_Counter(0),
+SearchingTip::SearchingTip(QWidget* parent) : Tip(i18n("There was a network error, trying to reconnect in 60 seconds."),parent),m_pTimer(nullptr),m_Counter(0),
 m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 {
+   setHasBackground(false);
+   setHasText(false);
    setTimeOut(60);
-   loadSvg(":/tip/icons/tips/reload.svg");
+   loadSvg(":/tip/icons/tips/searching.svg");
    connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }
 
 ///Destructor
-ConnectionLostTip::~ConnectionLostTip()
+SearchingTip::~SearchingTip()
 {
    delete m_pTimer;
 }
 
 ///Return the decoration/image rect
-QRect ConnectionLostTip::getDecorationRect()
+QRect SearchingTip::getDecorationRect()
 {
    return QRect(0,0,100,100);
 }
 
 ///The OCdecoration, a rotating arrow
-void ConnectionLostTip::paintDecorations(QPainter& p, const QRect& textRect)
+void SearchingTip::paintDecorations(QPainter& p, const QRect& textRect)
 {
    Q_UNUSED(textRect);
    QSize size(100,100);
@@ -71,7 +73,7 @@ void ConnectionLostTip::paintDecorations(QPainter& p, const QRect& textRect)
 } //paintDecorations
 
 ///Start tip animation
-void ConnectionLostTip::startAnimation(bool visibility)
+void SearchingTip::startAnimation(bool visibility)
 {
    if (!m_pTimer && visibility) {
       m_pTimer = new QTimer(this);
@@ -87,14 +89,14 @@ void ConnectionLostTip::startAnimation(bool visibility)
 } //startAnimation
 
 ///Next frame
-void ConnectionLostTip::timeout()
+void SearchingTip::timeout()
 {
    m_Counter += 4;
    reload(m_CurrentRect,true);
 }
 
 ///Return text allocated to this tip
-QRect ConnectionLostTip::getTextRect(const QString& text)
+QRect SearchingTip::getTextRect(const QString& text)
 {
    QRect r = Tip::getTextRect(text);
    r.setY(getDecorationRect().height()+m_Padding);

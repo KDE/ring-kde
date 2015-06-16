@@ -30,6 +30,7 @@ class Tip;
 class TipManager;
 class ConnectionLostTip;
 class ConfTip;
+class SearchingTip;
 
 class TipCollection {
 public:
@@ -52,6 +53,7 @@ public:
 
    //Network related
    static Tip*        networkLost();
+   static Tip*        searching();
 
    //Manager
    static TipManager* manager();
@@ -75,7 +77,8 @@ private:
    static ConnectionLostTip* m_spConnectionLost;
 
    //Network related
-   static Tip*        m_spNetworkLost;
+   static Tip*          m_spNetworkLost;
+   static SearchingTip* m_spSearching;
 
    //Global manager
    static TipManager* m_spManager;

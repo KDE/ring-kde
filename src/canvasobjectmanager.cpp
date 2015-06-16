@@ -62,6 +62,9 @@ const CanvasObjectManager::CanvasElement CanvasObjectManager::elements[ELEMENT_C
    /*6 DropInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::DRAG_ENTER|E::DRAG_MOVE , E::DRAG_LEAVE|E::DROP, false , false  , false},
    /*7 ConfInfo     */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)LOW        , E::CALL_COUNT_CHANGED      , E::ANY               , false , false  , false},
    /*8 AccountDown  */ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)HIGH       , E::UNREGISTERED_ACCOUNT    , E::ANY               , false , true   , false},
+   /*9 Searching for*/ {_(Type)OBJECT , _(LifeCycle)EVENT  , _(Priority)MEDIUM     , E::SEARCHING               , E::CALL_RINGING
+                                                                                                                 | E::CALL_ENDED
+                                                                                                                 | E::CALL_BUSY        , true  , false  , false},
 };
 #undef _
 #undef E

@@ -55,6 +55,20 @@
     <file>../icons/record.svg</file>
     <file>../icons/record_disabled.svg</file>
   </qresource>
+  <qresource prefix="tip">
+    <file>../icons/tips/removeconference.svg</file>
+    <file>../icons/tips/ringing.svg</file>
+    <file>../icons/tips/reload.svg</file>
+    <file>../icons/tips/searching.svg</file>
+    <file>../icons/tips/upArrow.svg</file>
+    <file>../icons/tips/ring3.svg</file>
+    <file>../icons/tips/ring2.svg</file>
+    <file>../icons/tips/ring1.svg</file>
+    <file>../icons/tips/phoneDown.svg</file>
+    <file>../icons/tips/keyboard.svg</file>
+    <file>../icons/tips/dragAndDrop.svg</file>
+    <file>../icons/tips/downArrow.svg</file>
+  </qresource>
   <qresource prefix="callstate_light">
     <file>../icons/light/accept.svg</file>
     <file>../icons/light/call.svg</file>

@@ -22,6 +22,7 @@
 #include "dialpadtip.h"
 #include "ringingtip.h"
 #include "connectionlosttip.h"
+#include "searchingtip.h"
 #include "conftip.h"
 #include "removeconferencetip.h"
 #include "klib/tipmanager.h"
@@ -44,6 +45,7 @@ ConnectionLostTip* TipCollection::m_spConnectionLost   = nullptr;
 
 //Network related
 Tip*               TipCollection::m_spNetworkLost      = nullptr;
+SearchingTip*      TipCollection::m_spSearching        = nullptr;
 
 //Global manager
 TipManager*        TipCollection::m_spManager          = nullptr;
@@ -66,6 +68,8 @@ Tip* TipCollection::canvasObjectToTip(CanvasObjectManager::Object obj)
          return conference();
       case CanvasObjectManager::Object::AccountDown:
          return networkLost();
+      case CanvasObjectManager::Object::Searching:
+         return searching();
       case CanvasObjectManager::Object::NoObject:
       case CanvasObjectManager::Object::AutoComplete:
       default:
@@ -86,6 +90,7 @@ QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
       case CanvasObjectManager::Object::ConfInfo:
       case CanvasObjectManager::Object::NoObject:
       case CanvasObjectManager::Object::AccountDown:
+      case CanvasObjectManager::Object::Searching:
       default:
          return nullptr;
    }
@@ -168,6 +173,15 @@ Tip* TipCollection::networkLost()
       m_spNetworkLost->setTimeOut(10000);
    }
    return m_spNetworkLost;
+}
+
+Tip* TipCollection::searching()
+{
+   if (!m_spSearching) {
+      m_spSearching = new SearchingTip();
+      m_spSearching->setTimeOut(10000);
+   }
+   return m_spSearching;
 }
 
 ///What happen if you drop a call from a conference on empty space

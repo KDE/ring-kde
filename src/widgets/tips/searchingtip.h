@@ -15,38 +15,40 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "dialpadtip.h"
+#ifndef SEARCHINGTIP_H
+#define SEARCHINGTIP_H
+
+#include <klib/tip.h>
 
 //Qt
-#include <QtSvg/QSvgRenderer>
-#include <QtGui/QPainter>
-#include <QtGui/QFontMetrics>
-
-//KDE
-#include <KLocalizedString>
-#include <QStandardPaths>
+#include <QtWidgets/QWidget>
+#include <QTimer>
 
 
-///Constructor
-DialPadTip::DialPadTip(QWidget* parent) : Tip(i18n("Use the dialpad below or start typing a number. Press enter or double click on the call to launch the call. Press escape or \"Hang Up\" to end the call."),parent)
+//Qt
+class QPainter;
 
+///A tip to be passed to the TipLoader
+class SearchingTip : public Tip
 {
-   loadSvg(":/tip/icons/tips/keyboard.svg");
-}
+   Q_OBJECT
+public:
+   explicit SearchingTip(QWidget* parent = nullptr);
+   virtual ~SearchingTip();
 
-///Destructor
-DialPadTip::~DialPadTip()
-{
-}
+protected:
+   virtual QRect getDecorationRect() override;
+   virtual void paintDecorations(QPainter& p, const QRect& textRect) override;
+   virtual QRect getTextRect(const QString& text) override;
 
-QRect DialPadTip::getDecorationRect()
-{
-   return QRect(0,0,m_CurrentSize.width()-2*m_Padding,60);
-}
+private:
+   QTimer*   m_pTimer     ;
+   uchar     m_Counter    ;
+   QImage    m_RenderCache;
 
-void DialPadTip::paintDecorations(QPainter& p, const QRect& textRect)
-{
-   if (!m_pR)
-      m_pR = new QSvgRenderer(m_OriginalFile);
-   m_pR->render(&p,QRect(m_CurrentRect.width() - m_Padding - 50*2.59143327842 - 10 ,textRect.y()+textRect.height() + 10,50*2.59143327842,50));
-}
+private Q_SLOTS:
+   void startAnimation(bool visibility);
+   void timeout();
+};
+
+#endif

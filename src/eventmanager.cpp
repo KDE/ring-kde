@@ -534,8 +534,10 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_BUSY);
          break;
       case Call::State::INITIALIZATION:
-      case Call::State::TRANSFERRED:
       case Call::State::CONNECTED:
+         m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::SEARCHING);
+         break;
+      case Call::State::TRANSFERRED:
       case Call::State::TRANSF_HOLD:
       case Call::State::HOLD:
       case Call::State::ABORTED:

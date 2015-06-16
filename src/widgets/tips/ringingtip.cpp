@@ -40,11 +40,11 @@ m_pRing2Pix(nullptr),m_pRing3Pix(nullptr)
    setHasBackground(false);
    setHasText(false);
    m_Padding = 0;
-   m_phoneOriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/phoneDown.svg"));
-   m_ring1OriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/ring1.svg"));
-   m_ring2OriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/ring2.svg"));
-   m_ring3OriginalSVG = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/ring3.svg"));
-   loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/rigging.svg"));
+   m_phoneOriginalSVG = loadSvg(":/tip/icons/tips/phoneDown.svg");
+   m_ring1OriginalSVG = loadSvg(":/tip/icons/tips/ring1.svg");
+   m_ring2OriginalSVG = loadSvg(":/tip/icons/tips/ring2.svg");
+   m_ring3OriginalSVG = loadSvg(":/tip/icons/tips/ring3.svg");
+   loadSvg(":/tip/icons/tips/ringing.svg");
    connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }
 

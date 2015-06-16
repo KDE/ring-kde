@@ -208,6 +208,7 @@ SET(
    widgets/tips/dialpadtip.cpp
    widgets/tips/ringingtip.cpp
    widgets/tips/connectionlosttip.cpp
+   widgets/tips/searchingtip.cpp
    widgets/tips/tipcollection.cpp
    widgets/tips/removeconferencetip.cpp
    widgets/player.cpp
