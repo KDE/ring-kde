@@ -28,7 +28,7 @@ class QLabel;
 class QModelIndex;
 
 //Ring
-class Call;
+#include <call.h>
 class NumberCompletionModel;
 class AutoCompletionDelegate2;
 class ContactMethod;
@@ -77,6 +77,7 @@ private Q_SLOTS:
    void slotLayoutChanged();
    void slotVisibilityChange(bool visible);
    void slotDoubleClicked(const QModelIndex& idx);
+   void slotCallStateChanged(Call::State s);
 
 Q_SIGNALS:
    void requestVisibility(bool visible, bool hasCall);
