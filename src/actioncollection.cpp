@@ -244,14 +244,19 @@ void ActionCollection::setupAction()
       const int first(tl.row()),last(br.row());
       for(int i = first; i <= last;i++) {
          const QModelIndex& idx = uam->index(i,0);
-         QAction* a = actionHash[(int)qvariant_cast<UserActionModel::Action>(idx.data(UserActionModel::Role::ACTION))];
+         const UserActionModel::Action action = qvariant_cast<UserActionModel::Action>(idx.data(UserActionModel::Role::ACTION));
+         QAction* a = actionHash[(int)action];
          if (a) {
             a->setText   ( idx.data(Qt::DisplayRole).toString()                 );
-            a->setEnabled( idx.flags() & Qt::ItemIsEnabled                      );
+
+            if (action != UserActionModel::Action::ADD_NEW) //HACK
+               a->setEnabled( idx.flags() & Qt::ItemIsEnabled                   );
+
             a->setChecked( idx.data(Qt::CheckStateRole) == Qt::Checked          );
          }
       }
    });
+
 
    /**/connect(MacroModel::instance()           ,       SIGNAL(addAction(QVariant)),  this    , SLOT(addMacro(QVariant))          );
    /**/connect(action_mailBox                   ,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
