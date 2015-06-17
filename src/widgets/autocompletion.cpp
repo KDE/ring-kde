@@ -128,7 +128,6 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125
    m_pView->setModel(m_pModel);
    m_pView->setSelectionModel(m_pModel->selectionModel());
 
-   connect(m_pModel,SIGNAL(enabled(bool))  ,this, SLOT(slotVisibilityChange(bool))   );
    connect(m_pModel,SIGNAL(layoutChanged()),this, SLOT(slotLayoutChanged()));
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(slotDoubleClicked(QModelIndex)));
 
@@ -197,6 +196,7 @@ void AutoCompletion::slotCallStateChanged(Call::State s)
 {
    Q_UNUSED(s)
    Call* call = m_pModel->call();
+
    setVisible(call && call->lifeCycleState() == Call::LifeCycleState::CREATION);
 }
 
@@ -292,13 +292,6 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
    }
    // standard event processing
    return QObject::eventFilter(obj, event);
-}
-
-void AutoCompletion::slotVisibilityChange(bool visible)
-{
-   if (!visible && ((!m_pModel->call()) || m_pModel->call()->lifeCycleState() != Call::LifeCycleState::CREATION))
-      m_pModel->setCall(nullptr);
-   emit requestVisibility(visible,m_pModel->call()!=nullptr);
 }
 
 void AutoCompletion::slotDoubleClicked(const QModelIndex& idx)

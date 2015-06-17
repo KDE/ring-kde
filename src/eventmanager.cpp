@@ -599,18 +599,6 @@ void EventManager::slotIncomingCall(Call* call)
    }
 }
 
-void EventManager::slotAutoCompletionVisibility(bool visible,bool hasCall)
-{
-   Q_UNUSED(visible)
-   Q_UNUSED(hasCall)
-   //Show/Hide the autocompletion widget. This does this way due to legacy reasons
-   if (visible)
-      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_DIALING_CHANGED);
-   else if (!hasCall)
-      m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::USER_CANCEL);
-   //The other is handled by call state changed
-}
-
 void EventManager::slotregistrationChanged(Account* a,bool reg)
 {
    Q_UNUSED(a)

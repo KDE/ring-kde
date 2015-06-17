@@ -187,7 +187,6 @@ void View::loadAutoCompletion()
          m_pAutoCompletion = new AutoCompletion(m_pView);
          PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
          m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
-         connect(m_pAutoCompletion, SIGNAL(requestVisibility(bool,bool)), m_pEventManager, SLOT(slotAutoCompletionVisibility(bool,bool)));
          connect(m_pAutoCompletion,SIGNAL(doubleClicked(ContactMethod*)),this,SLOT(slotAutoCompleteClicked(ContactMethod*)));
       }
    }
