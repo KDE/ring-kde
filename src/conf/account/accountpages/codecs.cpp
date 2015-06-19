@@ -18,6 +18,7 @@
 #include "codecs.h"
 
 #include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QMimeData>
 
 #include <account.h>
 #include <audio/codecmodel.h>
@@ -26,9 +27,19 @@ Pages::Codecs::Codecs(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
    connect(this,&PageBase::accountSet,[this]() {
-      m_pAudioCodecs->setModel(account()->codecModel()->audioCodecs());
-      m_pVideoCodecs->setModel(account()->codecModel()->videoCodecs());
-      //TODO fix selectionmodels
+      disconnect(button_audiocodecUp  );
+      disconnect(button_audiocodecDown);
+      m_pCodecs->setModel(account()->codecModel());
+      m_pCodecs->setSelectionModel(account()->codecModel()->selectionModel());
+      connect(button_audiocodecUp  , &QToolButton::clicked,account()->codecModel(), &CodecModel::moveUp  );
+      connect(button_audiocodecDown, &QToolButton::clicked,account()->codecModel(), &CodecModel::moveDown);
+   });
+
+   connect(m_pCodecs, &QListView::clicked, [this](const QModelIndex& idx) {
+      m_pSampleRate->setText(idx.data(CodecModel::Role::SAMPLERATE).toString());
+   });
+
+   connect(m_pCodecs, &QListView::clicked, [this](const QModelIndex& idx) {
+      m_pBitrate->setText(idx.data(CodecModel::Role::BITRATE).toString());
    });
 }
-

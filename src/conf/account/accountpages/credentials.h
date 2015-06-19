@@ -31,6 +31,8 @@ public:
    //Constructor
    explicit Credentials(QWidget *parent = nullptr);
 
+private Q_SLOTS:
+   void loadInfo();
 };
 
 }

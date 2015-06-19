@@ -30,7 +30,6 @@ Q_OBJECT
 public:
    //Constructor
    explicit Codecs(QWidget *parent = nullptr);
-
 };
 
 }

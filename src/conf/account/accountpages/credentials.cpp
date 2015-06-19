@@ -26,6 +26,7 @@ Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
 
    connect(this,&PageBase::accountSet,[this]() {
       m_pCredentials->setModel(account()->credentialModel());
+      loadInfo();
    });
 
    connect(m_pCredentials->selectionModel(), &QItemSelectionModel::currentChanged, [this](const QModelIndex& idx) {
@@ -33,4 +34,51 @@ Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
       edit_credential_auth_2     ->setText(idx.data(CredentialModel::Role::PASSWORD).toString());
       edit_credential_password_2 ->setText(idx.data(CredentialModel::Role::REALM   ).toString());
    });
+
+   connect(button_add_credential, &QToolButton::clicked,[this]() {
+      m_pCredentials->setCurrentIndex(account()->credentialModel()->addCredentials());
+      loadInfo();
+   });
+
+   connect(button_remove_credential, &QToolButton::clicked,[this]() {
+      account()->credentialModel()->removeCredentials(m_pCredentials->currentIndex());
+      m_pCredentials->setCurrentIndex(account()->credentialModel()->index(0,0));
+      loadInfo();
+   });
+
+   connect(edit_credential_realm_2, &QLineEdit::textChanged,[this](const QString& text) {
+      const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
+      account()->credentialModel()->setData(current,text, CredentialModel::Role::REALM);
+   });
+
+   connect(edit_credential_auth_2, &QLineEdit::textChanged,[this](const QString& text) {
+      const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
+      account()->credentialModel()->setData(current,text, CredentialModel::Role::NAME);
+   });
+
+   connect(edit_credential_password_2, &QLineEdit::textChanged,[this](const QString& text) {
+      const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
+      account()->credentialModel()->setData(current,text, CredentialModel::Role::PASSWORD);
+   });
+}
+
+
+void Pages::Credentials::loadInfo()
+{
+   const QModelIndex idx = m_pCredentials->selectionModel()->currentIndex();
+   if (idx.isValid()) {
+      edit_credential_password_2->blockSignals(true);
+      edit_credential_auth_2->blockSignals(true);
+      edit_credential_realm_2->blockSignals(true);
+      edit_credential_realm_2->setText       ( m_pCredentials->model()->data(idx,CredentialModel::Role::REALM)    .toString());
+      edit_credential_auth_2->setText        ( m_pCredentials->model()->data(idx,CredentialModel::Role::NAME)     .toString());
+      edit_credential_password_2->setText    ( m_pCredentials->model()->data(idx,CredentialModel::Role::PASSWORD) .toString());
+      edit_credential_realm_2->blockSignals(false);
+      edit_credential_auth_2->blockSignals(false);
+      edit_credential_password_2->blockSignals(false);
+   }
+   else if (account()->credentialModel()->rowCount()) {
+      m_pCredentials->setCurrentIndex(account()->credentialModel()->index(0,0));
+      loadInfo();
+   }
 }
