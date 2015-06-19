@@ -17,6 +17,7 @@
  **************************************************************************/
 #include "accountserializationadapter.h"
 
+#include <QtWidgets/QApplication>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QLineEdit>
@@ -25,8 +26,11 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QAbstractButton>
 
-//KDE
-#include <KUrlRequester>
+#ifdef HAS_KDE
+ //KDE
+ #include <KUrlRequester>
+ #include <kcolorscheme.h>
+#endif
 
 #include <account.h>
 #include <accountmodel.h>
@@ -51,12 +55,55 @@ static void avoidDuplicate(QWidget* w)
       delete qvariant_cast<ConnHolder*>(w->property("lrcfgConn"));
 }
 
+QWidget* buddyWidget(QWidget* w)
+{
+   if (w->property("lrcfgBuddy").canConvert<QWidget*>())
+      return qvariant_cast<QWidget*>(w->property("lrcfgBuddy"));
+
+   QFormLayout* fm = qobject_cast<QFormLayout*>(w->parentWidget()->layout());
+
+   //There is many of corner case here, this only handle the one that's
+   //created by Qt Designer
+   if (!fm) {
+      QLayoutItem* il = w->parentWidget()->layout()->itemAt(0);
+      if (il && il->layout())
+         fm = qobject_cast<QFormLayout*>(il->layout());
+   }
+
+   if (fm)
+      return fm->labelForField(w);
+
+   return nullptr;
+}
+
+static QHash<int, QString> m_hProblems;
+void updateProblemList(int role, Account::RoleStatus status, QWidget* buddy)
+{
+   switch(status) {
+      case Account::RoleStatus::OK            :
+         if (m_hProblems.contains(role))
+            m_hProblems.remove(role);
+      case Account::RoleStatus::UNTESTED      :
+         m_hProblems[role] = "UNTESTED";
+      case Account::RoleStatus::INVALID       :
+         m_hProblems[role] = "INVALID";
+      case Account::RoleStatus::REQUIRED_EMPTY:
+         m_hProblems[role] = "REQUIRED_EMPTY";
+      case Account::RoleStatus::OUT_OF_RANGE  :
+         m_hProblems[role] = "OUT_OF_RANGE";
+         break;
+   }
+}
+
 /**
  * This check for some supported widgets and bind the widgets and property
  */
-static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& roles)
+void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& roles)
 {
    if (w->objectName().left(LRC_CFG_LEN) == LRC_CFG) {
+#ifdef HAS_KDE
+      static KStatefulBrush errorBrush( KColorScheme::View, KColorScheme::NegativeText );
+#endif
       const QByteArray prop = w->objectName().mid(LRC_CFG_LEN, 999).toLatin1();
 
       if (roles.contains(prop)) {
@@ -69,9 +116,18 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
             le->setText(a->roleData(role).toString());
             le->setReadOnly(rs == Account::RoleState::READ_ONLY);
             ConnHolder* c = new ConnHolder {
-               QObject::connect(le, &QLineEdit::textChanged, [a,role](const QString& text) {
+               QObject::connect(le, &QLineEdit::textChanged, [a,role,le](const QString& text) {
                   if (a->roleData(role) != text)
                      a->setRoleData(role, text);
+
+                  const Account::RoleStatus rs = a->roleStatus((Account::Role)role);
+                  QPalette pal = QApplication::palette();
+                  static QPalette palOrig = QApplication::palette();
+                  pal.setBrush(QPalette::Base,rs != Account::RoleStatus::OK ?
+                     errorBrush.brush(QPalette::Normal) : palOrig.base()
+                  );
+
+                  le->setPalette(pal);
                })
             };
             le->setProperty("lrcfgConn",QVariant::fromValue(c));
@@ -113,6 +169,7 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
          }
+#ifdef HAS_KDE
          else if  (qobject_cast<KUrlRequester*>(w)) { //KDE only
             KUrlRequester* b = qobject_cast<KUrlRequester*>(w);
             avoidDuplicate(b);
@@ -125,6 +182,7 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
          }
+#endif
          else {
             qDebug() << "Unsupported widget type" << w;
          }
@@ -144,15 +202,13 @@ static void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& ro
                   fm = qobject_cast<QFormLayout*>(il->layout());
             }
 
-            if (fm) {
-               QWidget* buddy = fm->labelForField(w);
+            QWidget* buddy = buddyWidget(w);
 
-               if (buddy) {
-                  buddy->setVisible(false);
-                  w->setProperty("buddy", QVariant::fromValue(buddy));
-               }
-
+            if (buddy) {
+               buddy->setVisible(false);
+               w->setProperty("buddy", QVariant::fromValue(buddy));
             }
+
          }
          else {
             w->setVisible(true);
@@ -173,7 +229,7 @@ static void clearConnections(QWidget* w)
    }
 }
 
-static void drill(QWidget* w, Account* a, const QHash<QByteArray, int>& roles, bool clear = false)
+void AccountSerializationAdapter::drill(QWidget* w, Account* a, const QHash<QByteArray, int>& roles, bool clear)
 {
    for (QObject *object : w->children()) {
       if (!object->isWidgetType())

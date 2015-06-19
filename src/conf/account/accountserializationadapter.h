@@ -40,6 +40,9 @@ class LIB_EXPORT AccountSerializationAdapter : public QObject
 public:
    AccountSerializationAdapter(Account* a, QWidget* w);
    virtual ~AccountSerializationAdapter();
+private:
+   void drill(QWidget* w, Account* a, const QHash<QByteArray, int>& roles, bool clear = false);
+   void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& roles);
 };
 
 #endif
