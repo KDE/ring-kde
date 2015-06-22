@@ -31,6 +31,8 @@ public:
    //Constructor
    explicit Basic(QWidget *parent = nullptr);
 
+private Q_SLOTS:
+   void updateStatus();
 };
 
 }

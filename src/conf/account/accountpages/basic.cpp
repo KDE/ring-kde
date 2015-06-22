@@ -17,9 +17,13 @@
  **************************************************************************/
 #include "basic.h"
 
+#include <QtCore/QPointer>
+
 #include <account.h>
 #include <protocolmodel.h>
 #include <bootstrapmodel.h>
+
+#include <widgets/accountstatusviewer.h>
 
 Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
 {
@@ -30,7 +34,36 @@ Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
       m_pBootstrapModel->setModel((account()->protocol() == Account::Protocol::RING)?
          account()->bootstrapModel() : nullptr
       );
+
+      if (m_pBootstrapModel->horizontalHeader() && m_pBootstrapModel->model())
+         m_pBootstrapModel->horizontalHeader()->setSectionResizeMode (0,QHeaderView::Stretch);
+
       m_pBootstrapModel->setVisible(account()->roleData((int)Account::Role::HasCustomBootstrap).toBool());
 
+//       disconnect(this, &Pages::Basic::updateStatus); //TODO track previous account
+      connect(account(), &Account::stateChanged, this, &Pages::Basic::updateStatus);
+      updateStatus();
    });
+
+   connect(m_pDisplayLog, &QToolButton::clicked, [this]() {
+      if (account()) {
+         QPointer<AccountStatusViewer> d = new AccountStatusViewer(account(),this);
+         d->show();
+      }
+   });
+}
+
+void Pages::Basic::updateStatus()
+{
+   const int errorCode = account()->lastErrorCode();
+   QString message = account()->toHumanStateName();
+
+   if (account()->registrationState() == Account::RegistrationState::ERROR && !account()->lastErrorMessage().isEmpty())
+      message = account()->lastErrorMessage();
+
+   edit7_state->setText(QString("<span style='color:%3'> %1 </span>(%2)")
+      .arg(message                          )
+      .arg( errorCode==-1 ? 200 : errorCode )
+      .arg(account()->stateColorName()      )
+   );
 }

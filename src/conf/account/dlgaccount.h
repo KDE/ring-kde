@@ -51,6 +51,10 @@ public Q_SLOTS:
    //Core logic
    void slotNewAddAccount();
 
+private Q_SLOTS:
+   void slotUpdateButtons();
+   void slotRemoveAccount();
+
 Q_SIGNALS:
    void updateButtons();
 };

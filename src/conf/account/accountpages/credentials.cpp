@@ -29,11 +29,7 @@ Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
       loadInfo();
    });
 
-   connect(m_pCredentials->selectionModel(), &QItemSelectionModel::currentChanged, [this](const QModelIndex& idx) {
-      edit_credential_realm_2    ->setText(idx.data(CredentialModel::Role::NAME    ).toString());
-      edit_credential_auth_2     ->setText(idx.data(CredentialModel::Role::PASSWORD).toString());
-      edit_credential_password_2 ->setText(idx.data(CredentialModel::Role::REALM   ).toString());
-   });
+   connect(m_pCredentials, &QListView::clicked, this, &Pages::Credentials::loadInfo);
 
    connect(button_add_credential, &QToolButton::clicked,[this]() {
       m_pCredentials->setCurrentIndex(account()->credentialModel()->addCredentials());

@@ -44,17 +44,9 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent)
 
    connect(m_pMoveUp  , &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveUp  );
    connect(m_pMoveDown, &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveDown);
-   connect(m_pRemove  , &QToolButton::clicked,[this]() {
-      const QModelIndex& idx = AccountModel::instance()->selectionModel()->currentIndex();
-      if (QMessageBox::warning(this, tr("Remove account"),
-                               tr("Are you sure you want to remove %1?").arg(idx.data(Qt::DisplayRole).toString()),
-                               QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-         AccountModel::instance()->remove(idx);
-   });
+   connect(m_pRemove  , &QToolButton::clicked, this, &DlgAccount::slotRemoveAccount );
 
-   connect(AccountModel::instance(), &AccountModel::editStateChanged, [this]() {
-      emit updateButtons();
-   });
+   connect(AccountModel::instance(), &AccountModel::editStateChanged, this, &DlgAccount::slotUpdateButtons);
 
    const QModelIndex idx = AccountModel::instance()->index(0,0);
    m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
@@ -63,6 +55,21 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent)
 
 DlgAccount::~DlgAccount()
 {
+}
+
+void DlgAccount::slotRemoveAccount()
+{
+   const QModelIndex& idx = AccountModel::instance()->selectionModel()->currentIndex();
+   if (QMessageBox::warning(this, tr("Remove account"),
+      tr("Are you sure you want to remove %1?").arg(idx.data(Qt::DisplayRole).toString()),
+      QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
+   )
+      AccountModel::instance()->remove(idx);
+}
+
+void DlgAccount::slotUpdateButtons()
+{
+   emit updateButtons();
 }
 
 void DlgAccount::slotNewAddAccount()
@@ -80,7 +87,25 @@ void DlgAccount::slotNewAddAccount()
 
 void DlgAccount::cancel()
 {
+   for (int i=0; i < AccountModel::instance()->size(); i++) {
+      Account* a = (*AccountModel::instance())[i];
 
+      switch(a->editState()) {
+         case Account::EditState::MODIFIED_INCOMPLETE:
+         case Account::EditState::MODIFIED_COMPLETE  :
+         case Account::EditState::NEW                :
+            a << Account::EditAction::CANCEL;
+            break;
+         case Account::EditState::OUTDATED           :
+            a << Account::EditAction::RELOAD;
+            break;
+         case Account::EditState::READY              :
+         case Account::EditState::REMOVED            :
+         case Account::EditState::EDITING            :
+         case Account::EditState::COUNT__            :
+            break;
+      }
+   }
 }
 
 bool DlgAccount::hasChanged()

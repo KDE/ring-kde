@@ -55,6 +55,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    widgets/groupedtoolbutton.cpp
    widgets/certificateviewer.cpp
    widgets/securityprogress.cpp
+   widgets/accountstatusviewer.cpp
 
    accountpages/advanced.cpp
    accountpages/credentials.cpp
