@@ -15,30 +15,28 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef CERTIFICATE_VIEWER_H
-#define CERTIFICATE_VIEWER_H
+#ifndef ACCOUNTSTATUSVIEWER_H
+#define ACCOUNTSTATUSVIEWER_H
 
 #include <QtWidgets/QDialog>
-#include <QtCore/QAbstractItemModel>
+#include "typedefs.h"
 
 //Qt
-class QTreeView;
+class QTableView;
 class QWidget;
 
 //Ring
-class Certificate;
+class Account;
 
-class CertificateViewer : public QDialog
+class LIB_EXPORT AccountStatusViewer : public QDialog
 {
    Q_OBJECT
 public:
-   CertificateViewer(const QModelIndex& idx, QWidget* parent = nullptr);
-   CertificateViewer(Certificate* cert     , QWidget* parent = nullptr);
-   ~CertificateViewer();
+   AccountStatusViewer(Account* a , QWidget* parent = nullptr);
+   ~AccountStatusViewer();
 
 private:
-   QTreeView* m_pChainOfTrust;
-   QTreeView* m_pView;
+   QTableView* m_pView;
 };
 
 #endif

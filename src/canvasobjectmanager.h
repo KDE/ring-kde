@@ -77,6 +77,7 @@ public:
       DropInfo       = 6, /* Displayed when the user is dropping something into the canvas */
       ConfInfo       = 7, /* Displayed when there is multiple calls and no conferences     */
       AccountDown    = 8, /* Displayed when a previously registered account go down        */
+      Searching      = 9, /* Displayed when a Ring call is searching on the network        */
    };
 
    ///@enum ObjectType if the objects is a background drawing or a front widget
@@ -138,6 +139,7 @@ public:
       BUDDY_IN             = 0x01<<17, /* When a buggy log in                               */
       BUDDY_OUT            = 0x01<<18, /* When a buddy log out                              */
       USER_CANCEL          = 0x01<<19, /* When the user press escape                        */
+      SEARCHING            = 0x01<<20, /* When a call enter the searching for state         */
 //       LEFT_CONFERENCE   = 0x01<<18, /* Someone left a conference                         */
 //       JOIN_CONFERENCE   = 0x01<<19, /* Someone joined a conference                       */
    };
@@ -172,8 +174,8 @@ private:
    };
 
    //Constants
-   static const char EVENT_COUNT   = 21;
-   static const char ELEMENT_COUNT = 9 ;
+   static const char EVENT_COUNT   = 22;
+   static const char ELEMENT_COUNT = 10;
 
    //Attributes
    CanvasObjectManager::Object          m_CurrentObject      ;

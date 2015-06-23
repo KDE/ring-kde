@@ -15,36 +15,36 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "dlgdht.h"
+#include "accountstatusviewer.h"
+
+//Qt
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHeaderView>
 
 //Ring
 #include <account.h>
-#include <certificatemodel.h>
-#include <bootstrapmodel.h>
-#include <widgets/certificateviewer.h>
+#include <accountstatusmodel.h>
 
-DlgDht::DlgDht(QWidget* parent) : QWidget(parent),m_pAccount(nullptr)
+AccountStatusViewer::AccountStatusViewer(Account* a, QWidget* parent) : QDialog(parent),
+m_pView(new QTableView(this))
 {
-   setupUi(this);
+   QVBoxLayout* l = new QVBoxLayout(this);
+   l->addWidget(m_pView);
+   m_pView->setWordWrap(true);
+   m_pView->setModel(a->statusModel());
 
-   connect(m_pKnownPeers, &QListView::doubleClicked, [this](const QModelIndex& index) {
-      CertificateViewer* v = new CertificateViewer(index,this);
-      v->show();
-      connect(v,&QDialog::finished,[v](int) { delete v; });
-   });
-   groupBox->setVisible(false);
+   if (m_pView->horizontalHeader()) {
+      m_pView->horizontalHeader()->setSectionResizeMode (0,QHeaderView::Stretch         );
+      m_pView->horizontalHeader()->setSectionResizeMode (1,QHeaderView::ResizeToContents);
+      m_pView->horizontalHeader()->setSectionResizeMode (2,QHeaderView::ResizeToContents);
+      m_pView->horizontalHeader()->setSectionResizeMode (3,QHeaderView::ResizeToContents);
+   }
+
+   resize(800,600);
 }
 
-void DlgDht::setAccount(Account* a)
+AccountStatusViewer::~AccountStatusViewer()
 {
-   m_pAccount = a;
 
-   if (a && a->protocol() == Account::Protocol::RING) {
-      m_pHash->setText(a->username());
-//       m_pKnownPeers->setModel();
-      m_pKnownPeers->setModel(a->knownCertificateModel());
-      m_pBootstrap->setModel(a->bootstrapModel());
-      if (m_pBootstrap->horizontalHeader())
-         m_pBootstrap->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
-   }
 }

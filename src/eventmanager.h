@@ -79,7 +79,6 @@ public Q_SLOTS:
     *   according to the current state (window, item selected...)
     */
    void enter();
-   void slotAutoCompletionVisibility(bool,bool);
    /**
     *   Handles the behaviour when the user types something with
     *   the dialpad widget or his keyboard (normally it's a one char

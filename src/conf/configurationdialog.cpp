@@ -28,7 +28,7 @@
 #include "klib/kcfg_settings.h"
 
 #include "dlgdisplay.h"
-#include "dlgaccounts.h"
+#include "account/dlgaccount.h"
 #include "dlgaudio.h"
 #include "dlgaddressbook.h"
 #include "dlghooks.h"
@@ -87,7 +87,7 @@ void PlaceHolderWidget::display(KPageWidgetItem *current)
 ///Constructor
 ConfigurationDialog::ConfigurationDialog(View *parent)
  :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(nullptr),dlgDisplay(nullptr)
- ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgHooks(nullptr),dlgAccessibility(nullptr),dlgAccounts(nullptr),
+ ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgHooks(nullptr),dlgAccessibility(nullptr),dlgAccount(nullptr),
  dlgPresence(nullptr)
 {
    this->setWindowIcon(QIcon(RingIcons::RING));
@@ -108,9 +108,9 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
 
    //Account
    dlgHolder[ConfigurationDialog::Page::Accounts]   = new PlaceHolderWidget(Page::Accounts,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgAccounts = new DlgAccounts(dialog);
-      dialog->m_pManager->addWidget(dialog->dlgAccounts);
-      return dialog->dlgAccounts;
+      dialog->dlgAccount = new DlgAccount(dialog);
+      dialog->m_pManager->addWidget(dialog->dlgAccount);
+      return dialog->dlgAccount;
    });
    auto accDlg = addPage( dlgHolder[ConfigurationDialog::Page::Accounts]      , i18n("Accounts")                     , "user-identity"                     );
    accDlg->setProperty("id",ConfigurationDialog::Page::Accounts);
@@ -192,6 +192,8 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked())    , this, SLOT(applyCustomSettings()));
    connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(cancelSettings())     );
 
+   connect(dlgAccount, &DlgAccount::updateButtons,this,&ConfigurationDialog::updateButtons);
+
    setMinimumSize(1024,700);
 
 } //ConfigurationDialog
@@ -200,7 +202,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
 ConfigurationDialog::~ConfigurationDialog()
 {
    if (dlgDisplay      ) delete dlgDisplay      ;
-   if (dlgAccounts     ) delete dlgAccounts     ;
+   if (dlgAccount     ) delete dlgAccount     ;
    if (dlgAudio        ) delete dlgAudio        ;
    if (dlgAddressBook  ) delete dlgAddressBook  ;
    if (dlgHooks        ) delete dlgHooks        ;
@@ -216,7 +218,7 @@ ConfigurationDialog::~ConfigurationDialog()
 void ConfigurationDialog::updateWidgets()
 {
    GUARD(dlgAudio,updateWidgets        ());
-   GUARD(dlgAccounts,updateWidgets     ());
+   GUARD(dlgAccount,updateWidgets     ());
    GUARD(dlgAddressBook,updateWidgets  ());
    GUARD(dlgAccessibility,updateWidgets());
    GUARD(dlgPresence,updateWidgets     ());
@@ -230,7 +232,7 @@ void ConfigurationDialog::updateWidgets()
 void ConfigurationDialog::updateSettings()
 {
    GUARD(dlgAudio,updateSettings        ());
-   GUARD(dlgAccounts,updateSettings     ());
+   GUARD(dlgAccount,updateSettings     ());
    GUARD(dlgAddressBook,updateSettings  ());
    GUARD(dlgAccessibility,updateSettings());
    GUARD(dlgDisplay,updateSettings      ());
@@ -244,14 +246,14 @@ void ConfigurationDialog::updateSettings()
 ///Cancel current modification
 void ConfigurationDialog::cancelSettings()
 {
-   GUARD(dlgAccounts,cancel());
+   GUARD(dlgAccount,cancel());
 }
 
 ///If the account changed
 bool ConfigurationDialog::hasChanged()
 {
    bool res =  ((GUARD_FALSE(dlgAudio,hasChanged()        ))
-            || (GUARD_FALSE(dlgAccounts,hasChanged()      ))
+            || (GUARD_FALSE(dlgAccount,hasChanged()      ))
             || (GUARD_FALSE(dlgDisplay,hasChanged()       ))
             || (GUARD_FALSE(dlgAddressBook,hasChanged()   ))
             || (GUARD_FALSE(dlgAccessibility,hasChanged() ))
@@ -266,7 +268,7 @@ bool ConfigurationDialog::hasChanged()
 
 bool ConfigurationDialog::hasIncompleteRequiredFields()
 {
-   return GUARD_FALSE(dlgAccounts,hasIncompleteRequiredFields());
+   return AccountModel::instance()->editState() == AccountModel::EditState::INVALID;
 }
 
 ///Update the buttons

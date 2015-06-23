@@ -34,7 +34,7 @@ m_pDnDR(nullptr),m_pDnDPix(nullptr)
    m_Position = TipPosition::Top;
    setAnimationIn(Tip::TipAnimation::TranslationBottom);
    setAnimationOut(Tip::TipAnimation::TranslationBottom);
-   m_DragAndDrop = loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/dragAndDrop.svg"));
+   m_DragAndDrop = loadSvg(":/tip/icons/tips/dragAndDrop.svg");
    loadSvg(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/tips/upArrow.svg"));
 }
 

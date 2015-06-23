@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2015 by Savoir-Faire Linux                              *
+ *   Copyright (C) 2014-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,33 +15,42 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef AUTOCOMBOBOX_H
-#define AUTOCOMBOBOX_H
+#ifndef ACCOUNT_PAGE_H
+#define ACCOUNT_PAGE_H
 
-#include <QtWidgets/QComboBox>
+#include <QtWidgets/QWidget>
+#include "pagebase.h"
+#include "ui_tabs.h"
 
-#include <QtCore/QAbstractItemModel>
+class Account;
 
-class QItemSelectionModel;
+namespace Pages {
 
-class AutoComboBox : public QComboBox
+class Account : public PageBase, public Ui::Tabs
 {
-   Q_OBJECT
-
+Q_OBJECT
 public:
-   AutoComboBox(QWidget* parent = nullptr);
-   virtual ~AutoComboBox();
+   //Constructor
+   explicit Account(QWidget *parent = nullptr);
 
-   void bindToModel(QAbstractItemModel* m, QItemSelectionModel* s);
+public Q_SLOTS:
+   virtual void updateWidgets() override;
+   virtual void updateSettings() override;
 
-   QItemSelectionModel* selectionModel();
+   void selectAlias();
 
-private:
-   QItemSelectionModel* m_pSelectionModel;
+public Q_SLOTS:
+   virtual void setAccount(::Account* a) override;
+   void setAccount(const QModelIndex& idx);
 
 private Q_SLOTS:
-   void slotComboBoxSelectionChanged(int idx);
-   void slotModelSelectionChanged(const QModelIndex& idx);
+   void slotUpdateButtons();
+
+private:
+   //Attributes
+   Account* m_pAccount;
 };
+
+}
 
 #endif

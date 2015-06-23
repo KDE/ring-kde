@@ -128,7 +128,6 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125
    m_pView->setModel(m_pModel);
    m_pView->setSelectionModel(m_pModel->selectionModel());
 
-   connect(m_pModel,SIGNAL(enabled(bool))  ,this, SLOT(slotVisibilityChange(bool))   );
    connect(m_pModel,SIGNAL(layoutChanged()),this, SLOT(slotLayoutChanged()));
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(slotDoubleClicked(QModelIndex)));
 
@@ -182,7 +181,8 @@ void AutoCompletion::callSelectedNumber()
    m_pModel->callSelectedNumber();
 }
 
-void AutoCompletion::setUseUnregisteredAccounts(bool value) {
+void AutoCompletion::setUseUnregisteredAccounts(bool value)
+{
    m_pModel->setUseUnregisteredAccounts(value);
 }
 
@@ -190,6 +190,14 @@ void AutoCompletion::slotLayoutChanged()
 {
    if (!m_pModel->rowCount())
       m_pView->selectionModel()->setCurrentIndex(QModelIndex(),QItemSelectionModel::Clear);
+}
+
+void AutoCompletion::slotCallStateChanged(Call::State s)
+{
+   Q_UNUSED(s)
+   Call* call = m_pModel->call();
+
+   setVisible(call && call->lifeCycleState() == Call::LifeCycleState::CREATION);
 }
 
 void AutoCompletion::selectionChanged(const QModelIndex& idx)
@@ -210,8 +218,24 @@ void AutoCompletion::selectionChanged(const QModelIndex& idx)
 
 void AutoCompletion::setCall(Call* call)
 {
+   Call* old = m_pModel->call();
+
+   if (call == old)
+      return;
+
+   if (old) {
+      disconnect(old, &Call::stateChanged, this, &AutoCompletion::slotCallStateChanged);
+   }
+
+
    m_pModel->setCall(call);
-   setVisible(call && call->lifeCycleState() == Call::LifeCycleState::CREATION);
+
+   if (call) {
+      connect(call, &Call::stateChanged, this, &AutoCompletion::slotCallStateChanged);
+      slotCallStateChanged(call->state());
+   }
+   else
+      setVisible(false);
 }
 
 Call* AutoCompletion::call() const
@@ -270,16 +294,9 @@ bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
    return QObject::eventFilter(obj, event);
 }
 
-void AutoCompletion::slotVisibilityChange(bool visible)
-{
-   if (!visible && ((!m_pModel->call()) || m_pModel->call()->lifeCycleState() != Call::LifeCycleState::CREATION))
-      m_pModel->setCall(nullptr);
-   emit requestVisibility(visible,m_pModel->call()!=nullptr);
-}
-
 void AutoCompletion::slotDoubleClicked(const QModelIndex& idx)
 {
-   qDebug() << "double clicked" << idx;
+   Q_UNUSED(idx)
    emit doubleClicked(selection());
 }
 

@@ -18,6 +18,7 @@
 #include "imdelegate.h"
 
 #include "call.h"
+#include <media/textrecording.h>
 #include <QtGui/QPainter>
 #include <QIcon>
 #include <QtGui/QFont>
@@ -46,14 +47,11 @@ QSize ImDelegates::sizeHint(const QStyleOptionViewItem& option, const QModelInde
 void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
-   QPixmap* icon = (QPixmap*)index.data(Qt::DecorationRole).value<void*>();
+   QPixmap icon = index.data(Qt::DecorationRole).value<QPixmap>();
    int icnWidth = 50;
-   if (icon && dynamic_cast<QPixmap*>(icon)) {
-      painter->drawPixmap(option.rect.x()+5,option.rect.y()+(option.rect.height()/2)-(icon->height()/2),*icon);
-      icnWidth = icon->width();
-   }
-   else {
-      ((QAbstractListModel*) index.model())->setData(index,QPixmap(QIcon::fromTheme("user-identity").pixmap(QSize(48,48))),Qt::DecorationRole);
+   if (!icon.isNull()) {
+      painter->drawPixmap(option.rect.x()+5,option.rect.y()+(option.rect.height()/2)-(icon.height()/2),icon);
+      icnWidth = icon.width();
    }
 
    QFontMetrics metric(painter->font());
@@ -64,7 +62,8 @@ void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, c
    QFont font = painter->font();
    font.setBold(true);
    painter->setFont(font);
-   painter->drawText(option.rect.x()+icnWidth+10,option.rect.y()+metric.height(),QString());
+   const QString peerName = index.data((int)Media::TextRecording::Role::AuthorDisplayname).toString();
+   painter->drawText(option.rect.x()+icnWidth+10,option.rect.y()+metric.height(), peerName);
    font.setBold(false);
    painter->setFont(font);
 

@@ -25,7 +25,7 @@
 
 static const int RIGHT_MARGIN = 2;
 
-AutoCompletionDelegate::AutoCompletionDelegate() : QStyledItemDelegate()
+AutoCompletionDelegate::AutoCompletionDelegate(int role) : QStyledItemDelegate(), m_Role(role)
 {
 
 }
@@ -33,7 +33,7 @@ AutoCompletionDelegate::AutoCompletionDelegate() : QStyledItemDelegate()
 void AutoCompletionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    QStyledItemDelegate::paint(painter,option,index);
-   const QString tag = index.data(Qt::UserRole).toString();
+   const QString tag = index.data(m_Role).toString();
    if (!tag.isEmpty()) {
       painter->save();
       painter->setRenderHint(QPainter::Antialiasing, true);

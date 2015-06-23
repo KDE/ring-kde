@@ -31,7 +31,7 @@ class KConfigDialogManager;
 
 //Ring
 class DlgDisplay;
-class DlgAccounts;
+class DlgAccount;
 class DlgAudio;
 class DlgAddressBook;
 class DlgHooks;
@@ -72,7 +72,7 @@ private:
    PlaceHolderWidget* dlgHolder[Page::Presence+1];
 
    DlgDisplay*       dlgDisplay      ;
-   DlgAccounts*      dlgAccounts     ;
+   DlgAccount*       dlgAccount      ;
    DlgAudio*         dlgAudio        ;
    DlgAddressBook*   dlgAddressBook  ;
    DlgHooks*         dlgHooks        ;
