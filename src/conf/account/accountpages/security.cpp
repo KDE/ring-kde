@@ -22,13 +22,28 @@
 
 #include <ciphermodel.h>
 
+#include <widgets/certificateviewer.h>
+
 Pages::Security::Security(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   frame->setVisible(false);
+   frame_2->setVisible(false);
 
    connect(this,&PageBase::accountSet,[this]() {
       combo_security_STRP->bindToModel(account()->keyExchangeModel(),account()->keyExchangeModel()->selectionModel());
       m_pCiphers->setModel(account()->cipherModel());
       combo_tls_method->bindToModel(account()->tlsMethodModel(),account()->tlsMethodModel()->selectionModel());
+      m_pSecurityIssues->setModel(account()->securityEvaluationModel());
+   });
+
+   connect(m_pViewCa, &QToolButton::clicked, [this]() {
+      CertificateViewer* c = new CertificateViewer(account()->tlsCaListCertificate());
+      c->show();
+   });
+
+   connect(m_pViewCert, &QToolButton::clicked, [this]() {
+      CertificateViewer* c = new CertificateViewer(account()->tlsCertificate());
+      c->show();
    });
 }

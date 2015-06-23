@@ -203,7 +203,7 @@
    <sender>lrcfg_hasCustomUserAgent</sender>
    <signal>toggled(bool)</signal>
    <receiver>lrcfg_userAgent</receiver>
-   <slot>setDisabled(bool)</slot>
+   <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>94</x>
