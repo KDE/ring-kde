@@ -83,6 +83,7 @@ IF ((${KF5_I18n_FOUND}) AND (${KF5_KIO_FOUND}) AND (${KF5_GuiAddons_FOUND}))
       KF5::KIOWidgets
       KF5::I18n
       KF5::ConfigGui
+      KF5::XmlGui
    )
 ENDIF()
 
