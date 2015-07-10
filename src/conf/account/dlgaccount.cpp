@@ -25,6 +25,8 @@
 
 #include "accountpages/account.h"
 
+#include "delegates/righticondelegate.h"
+
 #include <QtGui/QPainter>
 #include <QtWidgets/QMessageBox>
 
@@ -35,6 +37,8 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent)
 
    m_pAccountList->setModel         ( AccountModel::instance()                   );
    m_pAccountList->setSelectionModel( AccountModel::instance()->selectionModel() );
+
+   m_pAccountList->setItemDelegate(new RightIconDelegate(this, (int)Account::Role::SecurityLevelIcon, 0.2f));
 
    m_pProtocolModel = new ProtocolModel();
 

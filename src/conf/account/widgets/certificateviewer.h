@@ -37,6 +37,9 @@ public:
    CertificateViewer(Certificate* cert     , QWidget* parent = nullptr);
    ~CertificateViewer();
 
+private Q_SLOTS:
+   void selectCert(const QModelIndex& idx);
+
 private:
    QTreeView* m_pChainOfTrust;
    QTreeView* m_pView;

@@ -427,7 +427,7 @@ bool CanvasObjectManager::testEventToEvent() const
          }
       }
    }
-   qDebug() << "\n\n\ntestEventToEvent" << success;
+//    qDebug() << "\n\n\ntestEventToEvent" << success;
    return success;
 }
 
@@ -453,7 +453,7 @@ bool CanvasObjectManager::testEvenToObject() const
       }
    }
 
-   qDebug() << "\n\n\ntestEvenToObject" << success;
+//    qDebug() << "\n\n\ntestEvenToObject" << success;
 
    return success;
 }

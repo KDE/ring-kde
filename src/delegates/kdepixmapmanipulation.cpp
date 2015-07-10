@@ -362,15 +362,14 @@ const char* KDEPixmapManipulation::icnPath[2][2] = {
 
 QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const
 {
-
    switch (level) {
       case SecurityEvaluationModel::SecurityLevel::COUNT__:
       case SecurityEvaluationModel::SecurityLevel::NONE      :
          return QIcon(":/images/icons/lock_off.svg");
       case SecurityEvaluationModel::SecurityLevel::WEAK      :
       case SecurityEvaluationModel::SecurityLevel::MEDIUM    :
-         return QIcon(":/images/icons/lock_unconfirmed.svg");
       case SecurityEvaluationModel::SecurityLevel::ACCEPTABLE:
+         return QIcon(":/images/icons/lock_unconfirmed.svg");
       case SecurityEvaluationModel::SecurityLevel::STRONG    :
       case SecurityEvaluationModel::SecurityLevel::COMPLETE  :
          return QIcon(":/images/icons/lock_confirmed.svg");

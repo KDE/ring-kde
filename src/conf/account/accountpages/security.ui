@@ -65,9 +65,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-78</y>
          <width>632</width>
-         <height>900</height>
+         <height>1136</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -158,25 +158,8 @@
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_tls_endpoint">
-             <property name="text">
-              <string>Public endpoint certificate</string>
-             </property>
-            </widget>
-           </item>
-           <item row="16" column="0">
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
+           <item row="1" column="1" colspan="4">
+            <widget class="KUrlRequester" name="lrcfg_tlsCertificate"/>
            </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label_tls_authority">
@@ -185,31 +168,88 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1" colspan="4">
-            <widget class="KUrlRequester" name="lrcfg_tlsCertificate"/>
-           </item>
-           <item row="13" column="0" colspan="4">
-            <widget class="QCheckBox" name="lrcfg_tlsVerifyServer">
-             <property name="text">
-              <string>Verify incoming certificates (server side)</string>
+           <item row="4" column="0" colspan="6">
+            <widget class="QFrame" name="frame_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>55</verstretch>
+              </sizepolicy>
              </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_tls_private_key">
-             <property name="text">
-              <string>Private key</string>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>66</height>
+              </size>
              </property>
-            </widget>
-           </item>
-           <item row="0" column="1" colspan="4">
-            <widget class="KUrlRequester" name="lrcfg_tlsCaListCertificate"/>
-           </item>
-           <item row="9" column="0">
-            <widget class="QLabel" name="label_tls_timeout">
-             <property name="text">
-              <string>Negotiation timeout</string>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
              </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_7">
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QLabel" name="label_3">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="m_pMoveCertL_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Your certificates access are too permissive. Certificates should only be readable by the owner.</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <item>
+                 <widget class="QPushButton" name="m_pFixCertPB">
+                  <property name="text">
+                   <string>Fix the permissions</string>
+                  </property>
+                  <property name="icon">
+                   <iconset theme="dialog-ok"/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="m_pCancelFix">
+                  <property name="text">
+                   <string>No thanks</string>
+                  </property>
+                  <property name="icon">
+                   <iconset theme="dialog-cancel"/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </widget>
            </item>
            <item row="3" column="0" colspan="6">
@@ -276,12 +316,18 @@
                   <property name="text">
                    <string>Move to ~/.cert</string>
                   </property>
+                  <property name="icon">
+                   <iconset theme="dialog-ok"/>
+                  </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="m_pCancelMove">
                   <property name="text">
                    <string>No thanks</string>
+                  </property>
+                  <property name="icon">
+                   <iconset theme="dialog-cancel"/>
                   </property>
                  </widget>
                 </item>
@@ -290,83 +336,42 @@
              </layout>
             </widget>
            </item>
-           <item row="4" column="0" colspan="6">
-            <widget class="QFrame" name="frame_2">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>55</verstretch>
-              </sizepolicy>
+           <item row="0" column="1" colspan="4">
+            <widget class="KUrlRequester" name="lrcfg_tlsCaListCertificate"/>
+           </item>
+           <item row="9" column="0">
+            <widget class="QLabel" name="label_tls_timeout">
+             <property name="text">
+              <string>Negotiation timeout</string>
              </property>
-             <property name="minimumSize">
+            </widget>
+           </item>
+           <item row="13" column="0" colspan="4">
+            <widget class="QCheckBox" name="lrcfg_tlsVerifyServer">
+             <property name="text">
+              <string>Verify incoming certificates (server side)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_tls_endpoint">
+             <property name="text">
+              <string>Public endpoint certificate</string>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>0</width>
-               <height>66</height>
+               <width>20</width>
+               <height>40</height>
               </size>
              </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_7">
-              <property name="margin">
-               <number>0</number>
-              </property>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_10">
-                <item>
-                 <widget class="QLabel" name="label_3">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="m_pMoveCertL_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Your certification access is too permissive. Certificates should only be readable by the owner.</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
-                <item>
-                 <widget class="QPushButton" name="m_pFixCertPB">
-                  <property name="text">
-                   <string>Fix the permissions</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="m_pCancelFix">
-                  <property name="text">
-                   <string>No thanks</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
+            </spacer>
            </item>
            <item row="7" column="3" colspan="3">
             <spacer name="horizontalSpacer_5">
@@ -388,6 +393,13 @@
              </property>
              <property name="placeholderText">
               <string>Only necessary if the key have a password</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_tls_private_key">
+             <property name="text">
+              <string>Private key</string>
              </property>
             </widget>
            </item>
@@ -502,7 +514,7 @@
             </spacer>
            </item>
            <item row="11" column="0" colspan="6">
-            <widget class="QListView" name="m_pCiphers"/>
+            <widget class="QListView" name="m_pCipherModel"/>
            </item>
            <item row="7" column="0">
             <widget class="QLabel" name="label_tls_method">
@@ -519,6 +531,43 @@
              <property name="checked">
               <bool>true</bool>
              </property>
+            </widget>
+           </item>
+           <item row="16" column="0" colspan="6">
+            <widget class="QTabWidget" name="tabWidget">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="tab">
+              <attribute name="title">
+               <string>Allowed certificates</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout">
+               <item row="0" column="0">
+                <widget class="QListView" name="lrcfg_allowedCertificatesModel"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_2">
+              <attribute name="title">
+               <string>Banned certificates</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_2">
+               <item row="0" column="0">
+                <widget class="QListView" name="lrcfg_bannedCertificatesModel"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_3">
+              <attribute name="title">
+               <string>Known certificates</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_3">
+               <item row="0" column="0">
+                <widget class="QListView" name="lrcfg_knownCertificateModel"/>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>
@@ -560,16 +609,48 @@
   <connection>
    <sender>m_pDefaultCiphers</sender>
    <signal>toggled(bool)</signal>
-   <receiver>m_pCiphers</receiver>
+   <receiver>m_pCipherModel</receiver>
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>43</x>
-     <y>250</y>
+     <y>441</y>
     </hint>
     <hint type="destinationlabel">
      <x>136</x>
-     <y>331</y>
+     <y>522</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pCancelMove</sender>
+   <signal>clicked()</signal>
+   <receiver>frame</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>585</x>
+     <y>239</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>621</x>
+     <y>215</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pCancelFix</sender>
+   <signal>clicked()</signal>
+   <receiver>frame_2</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>619</x>
+     <y>303</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>621</x>
+     <y>284</y>
     </hint>
    </hints>
   </connection>

@@ -62,18 +62,17 @@ m_Level(SecurityEvaluationModel::SecurityLevel::NONE)
    setMaximum(enum_class_size<SecurityEvaluationModel::SecurityLevel>());
    setValue((int)m_Level);
    setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed ));
-   m_Names << "Weak" << "Moderate" << "Good" << "Strong" << "Complete" << "Complete" << "Complete";
+   m_Names << tr("None") << tr("Weak") << tr("Medium") << tr("Acceptable") << tr("Strong") << tr("Complete");
    m_lColors = {
       "#A02111",
-      "#A05C0F",
+      "#E47D08",
       "#CBC910",
       "#6DA00F",
       "#0EA02B",
-      "#A02111",
-      "#A02111"
+      "#12860E"
    };
-//    m_lColors.resize(enum_class_size<SecurityEvaluationModel::SecurityLevel>());
-//    m_Names.resize(enum_class_size<SecurityEvaluationModel::SecurityLevel>());
+//    m_lColors.resize(enum_class_size<SecurityLevel>());
+//    m_Names.resize(enum_class_size<SecurityLevel>());
 
    foreach(const QColor& col,m_lColors) {
       QColor newCol = col;
@@ -253,9 +252,8 @@ void SecurityLevelWidget::setModel(SecurityEvaluationModel* model)
       connect(m_pModel,&SecurityEvaluationModel::issueCountChanged        , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::errorCountChanged        , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::fatalWarningCountChanged , this, &SecurityLevelWidget::reloadCount);
+      connect(m_pModel,&SecurityEvaluationModel::securityLevelChanged     , this, &SecurityLevelWidget::reloadCount);
 
-      m_pLevel->m_Level = m_pModel->securityLevel();
-      m_pLevel->setValue((int)m_pLevel->m_Level);
    }
 }
 
@@ -280,7 +278,9 @@ void SecurityLevelWidget::reloadCount()
    m_pErrorL  ->setText(i18np("%1 error","%1 errors",m_pModel->errorCount()));
 
    m_pLevel->m_Level = m_pModel->securityLevel();
-   m_pLevel->setValue((int)m_pLevel->m_Level);
+
+   //Visually None == 1 == red
+   m_pLevel->setValue((int)m_pLevel->m_Level+1);
 }
 
 void SecurityLevelWidget::dblClicked(const QModelIndex& idx)
@@ -307,8 +307,8 @@ QToolButton(parent),m_pFlaw(flaw)
    connect(flaw,SIGNAL(requestHighlight()),this,SLOT(slotHighlightFlaw()));
 }
 
-IssuesIcon::IssuesIcon(QWidget* parent) : QWidget(parent),m_pBuddy(nullptr),
-m_pLayout(new QHBoxLayout(this)),m_pModel(nullptr)
+IssuesIcon::IssuesIcon(QWidget* parent) : QWidget(parent),
+m_pLayout(new QHBoxLayout(this)),m_pBuddy(nullptr),m_pModel(nullptr)
 {
    
 }

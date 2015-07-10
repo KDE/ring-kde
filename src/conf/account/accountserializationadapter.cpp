@@ -25,6 +25,7 @@
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QAbstractItemView>
 
 #ifdef HAS_KDE
  //KDE
@@ -160,6 +161,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
          else if  (qobject_cast<QGroupBox*>(w)) {
             QGroupBox* b = qobject_cast<QGroupBox*>(w);
             avoidDuplicate(b);
+            b->setCheckable(rs == Account::RoleState::READ_WRITE);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
                QObject::connect(b, &QGroupBox::toggled,[a,role](bool c) {
@@ -169,15 +171,21 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
          }
+         else if  (qobject_cast<QAbstractItemView*>(w)) {
+            QAbstractItemView* v = qobject_cast<QAbstractItemView*>(w);
+            avoidDuplicate(v);
+            if (a->roleData(role).canConvert<QAbstractItemModel*>())
+               v->setModel(qvariant_cast<QAbstractItemModel*>(a->roleData(role)));
+         }
 #ifdef HAS_KDE
          else if  (qobject_cast<KUrlRequester*>(w)) { //KDE only
             KUrlRequester* b = qobject_cast<KUrlRequester*>(w);
             avoidDuplicate(b);
             b->setText(a->roleData(role).toString());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(b, &KUrlRequester::textChanged,[a,role](QString s) {
-                  if (a->roleData(role).toString() != s)
-                     a->setRoleData(role, s);
+               QObject::connect(b, &KUrlRequester::urlSelected,[a,role](const QUrl& s) {
+                  if (a->roleData(role).toString() != s.path())
+                     a->setRoleData(role, s.path());
                })
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));

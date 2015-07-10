@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014-2015 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2015 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,17 +15,21 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "advanced.h"
+#ifndef RIGHTICONDELEGATE_H
+#define RIGHTICONDELEGATE_H
 
-Pages::Advanced::Advanced(QWidget *parent) : PageBase(parent)
+#include <QtWidgets/QStyledItemDelegate>
+
+class RightIconDelegate : public QStyledItemDelegate
 {
-   setupUi(this);
+   Q_OBJECT
+public:
+   explicit RightIconDelegate(QObject* parent, int role, float opacity = 1.0f);
+protected:
+   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+private:
+   float m_Opacity;
+   int   m_Role;
+};
 
-   connect(lrcfg_hasActiveCallLimit, &QCheckBox::toggled, [this](bool v) {
-      if (!v)
-         lrcfg_activeCallLimit->setValue(-1);
-      else if (lrcfg_activeCallLimit->value() == -1)
-         lrcfg_activeCallLimit->setValue(1);
-   });
-}
-
+#endif
