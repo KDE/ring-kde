@@ -187,7 +187,7 @@
       <item row="2" column="0">
        <widget class="QCheckBox" name="lrcfg_hasActiveCallLimit">
         <property name="text">
-         <string>Limit the number of concurrent incmoing calls</string>
+         <string>Limit the number of concurrent incoming calls</string>
         </property>
        </widget>
       </item>
