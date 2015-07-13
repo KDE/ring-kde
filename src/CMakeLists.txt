@@ -161,7 +161,6 @@ SET(
    delegates/conferencedelegate.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp
-   delegates/categorizeddelegate.cpp
    delegates/phonenumberdelegate.cpp
    delegates/delegatedropoverlay.cpp
    delegates/dialpaddelegate.cpp
@@ -185,7 +184,6 @@ SET(
    conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
-   conf/dlgprofiles.cpp
    configurator/localhistoryconfigurator.cpp
    configurator/audiorecordingconfigurator.cpp
    configurator/fallbackpersonconfigurator.cpp
@@ -274,7 +272,6 @@ SET(
    conf/dlgaccessibility.ui
    conf/dlgaudiorecording.ui
    conf/dlgpresence.ui
-   conf/dlgprofiles.ui
    conf/dlgfallbackperson.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui

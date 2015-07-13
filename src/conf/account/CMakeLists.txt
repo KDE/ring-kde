@@ -47,6 +47,7 @@ QT5_WRAP_UI(accountdialog_SRCS accountpages/ringtone.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/dlgdht.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/security.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/tabs.ui)
+QT5_WRAP_UI(accountdialog_SRCS accountpages/dlgprofiles.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountdlg.ui)
 
 # Add pages
@@ -58,6 +59,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    widgets/accountstatusviewer.cpp
 
    delegates/righticondelegate.cpp
+   delegates/categorizeddelegate.cpp
 
    accountpages/advanced.cpp
    accountpages/credentials.cpp
@@ -69,6 +71,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    accountpages/pagebase.cpp
    accountpages/account.cpp
    accountpages/dlgdht.cpp
+   accountpages/dlgprofiles.cpp
 )
 
 ADD_LIBRARY(accountdialog STATIC ${accountdialog_SRCS})

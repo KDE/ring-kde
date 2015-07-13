@@ -59,7 +59,7 @@
 #include "klib/helperfunctions.h"
 #include "klib/kcfg_settings.h"
 #include "categorizedcontactmodel.h"
-#include "../delegates/categorizeddelegate.h"
+#include <conf/account/delegates/categorizeddelegate.h>
 #include "../delegates/contactdelegate.h"
 #include "../delegates/phonenumberdelegate.h"
 

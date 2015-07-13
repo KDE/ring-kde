@@ -41,6 +41,7 @@ public:
 private:
    Pages::Account* m_pCurrentAccount;
    ProtocolModel* m_pProtocolModel;
+   bool m_HasChanged;
 
 public Q_SLOTS:
    //Housekeeping
@@ -54,6 +55,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void slotUpdateButtons();
    void slotRemoveAccount();
+   void slotExpand();
 
 Q_SIGNALS:
    void updateButtons();

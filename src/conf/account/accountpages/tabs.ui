@@ -12,7 +12,7 @@
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="m_pPages">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -86,6 +86,16 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_8">
+      <attribute name="title">
+       <string>Profile</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item>
+        <widget class="DlgProfiles" name="dlgProfile" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -131,6 +141,12 @@
    <class>Pages::Security</class>
    <extends>QWidget</extends>
    <header>accountpages/security.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DlgProfiles</class>
+   <extends>QWidget</extends>
+   <header>accountpages/dlgprofiles.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -167,58 +167,58 @@
          <property name="fieldGrowthPolicy">
           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
          </property>
-         <item row="0" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="label_name">
            <property name="text">
             <string>Name</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="label_lname">
            <property name="text">
             <string>Last Name</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="1">
           <widget class="QLineEdit" name="edit_lname">
            <property name="placeholderText">
             <string>Family name...</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="label_email">
            <property name="text">
             <string>Email</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QLineEdit" name="edit_email"/>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="label_cell">
            <property name="text">
             <string>Phone number</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="QLineEdit" name="edit_cell"/>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="label_organization">
            <property name="text">
             <string>Organization</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <widget class="QLineEdit" name="edit_organization"/>
          </item>
-         <item row="5" column="1">
+         <item row="6" column="1">
           <layout class="QGridLayout" name="gridLayout">
            <item row="1" column="1">
             <widget class="QPushButton" name="btn_add_field">
@@ -239,10 +239,24 @@
            </item>
           </layout>
          </item>
-         <item row="0" column="1">
+         <item row="1" column="1">
           <widget class="QLineEdit" name="edit_name">
            <property name="placeholderText">
             <string>First name...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Formatted name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="edit_formattedName">
+           <property name="placeholderText">
+            <string>A pseudonym or a full name</string>
            </property>
           </widget>
          </item>
@@ -270,8 +284,8 @@
    <slot>choosePhoto()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>76</x>
-     <y>219</y>
+     <x>80</x>
+     <y>413</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -286,8 +300,8 @@
    <slot>addCustomField()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>758</x>
-     <y>246</y>
+     <x>820</x>
+     <y>191</y>
     </hint>
     <hint type="destinationlabel">
      <x>822</x>
@@ -302,8 +316,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>699</x>
-     <y>449</y>
+     <x>784</x>
+     <y>567</y>
     </hint>
     <hint type="destinationlabel">
      <x>667</x>
@@ -318,12 +332,220 @@
    <slot>cancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>610</x>
-     <y>452</y>
+     <x>695</x>
+     <y>567</y>
     </hint>
     <hint type="destinationlabel">
      <x>500</x>
      <y>480</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_formattedName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>222</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>3</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_name</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>209</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_lname</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>202</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_lname</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>315</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>102</x>
+     <y>2</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_email</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>351</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_cell</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>444</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_organization</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>489</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>466</x>
+     <y>2</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_add_field</sender>
+   <signal>clicked()</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>785</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>510</x>
+     <y>3</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_address_1</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>461</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-5</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_country</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>479</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_city</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>330</x>
+     <y>481</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_state</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>571</x>
+     <y>491</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>401</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>edit_postal_code</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DlgProfiles</receiver>
+   <slot>slotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>769</x>
+     <y>483</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>834</x>
+     <y>496</y>
     </hint>
    </hints>
   </connection>
@@ -333,5 +555,6 @@
   <slot>cancel()</slot>
   <slot>choosePhoto()</slot>
   <slot>addCustomField()</slot>
+  <slot>slotChanged()</slot>
  </slots>
 </ui>

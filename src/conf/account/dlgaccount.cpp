@@ -20,25 +20,30 @@
 
 //Ring
 #include <accountmodel.h>
+#include <profilemodel.h>
 #include <account.h>
 #include <protocolmodel.h>
 
 #include "accountpages/account.h"
 
 #include "delegates/righticondelegate.h"
+#include <delegates/categorizeddelegate.h>
 
 #include <QtGui/QPainter>
 #include <QtWidgets/QMessageBox>
 
 
-DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent)
+DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
 
-   m_pAccountList->setModel         ( AccountModel::instance()                   );
-   m_pAccountList->setSelectionModel( AccountModel::instance()->selectionModel() );
+   m_pAccountList->setModel         ( ProfileModel::instance()                   );
+   m_pAccountList->setSelectionModel( ProfileModel::instance()->selectionModel() );
 
-   m_pAccountList->setItemDelegate(new RightIconDelegate(this, (int)Account::Role::SecurityLevelIcon, 0.2f));
+   CategorizedDelegate* delegate = new CategorizedDelegate(m_pAccountList);
+   delegate->setChildDelegate(new RightIconDelegate(this, (int)Account::Role::SecurityLevelIcon, 0.2f));
+
+   m_pAccountList->setItemDelegate(delegate);
 
    m_pProtocolModel = new ProtocolModel();
 
@@ -55,10 +60,24 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent)
    const QModelIndex idx = AccountModel::instance()->index(0,0);
    m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
    m_pPanel->setAccount(idx);
+
+   m_pAccountList->expandAll();
+
+   connect(ProfileModel::instance(), &ProfileModel::rowsInserted, this, &DlgAccount::slotExpand);
+
+   connect(m_pPanel, &Pages::Account::changed, [this]() {
+      m_HasChanged = true;
+      updateButtons();
+   });
 }
 
 DlgAccount::~DlgAccount()
 {
+}
+
+void DlgAccount::slotExpand()
+{
+   m_pAccountList->expandAll();
 }
 
 void DlgAccount::slotRemoveAccount()
@@ -114,17 +133,19 @@ void DlgAccount::cancel()
 
 bool DlgAccount::hasChanged()
 {
-   return AccountModel::instance()->editState() != AccountModel::EditState::SAVED;
+   return m_HasChanged || AccountModel::instance()->editState() != AccountModel::EditState::SAVED;
 }
 
 void DlgAccount::updateSettings()
 {
+   m_pPanel->updateSettings();
    AccountModel::instance()->save();
+   m_HasChanged = false;
 }
 
 void DlgAccount::updateWidgets()
 {
-
+   m_HasChanged = false;
 }
 
 #include "dlgaccount.moc"

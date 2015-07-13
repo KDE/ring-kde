@@ -26,7 +26,8 @@
 #include "profilemodel.h"
 #include "personmodel.h"
 
-DlgProfiles::DlgProfiles(QWidget *parent, const QString& name, const QString& uri) : QWidget(parent)
+DlgProfiles::DlgProfiles(QWidget *parent, const QString& name, const QString& uri) : QWidget(parent),
+m_pCurrentPerson(nullptr)
 {
    setupUi(this);
    edit_cell->setText(uri);
@@ -44,36 +45,82 @@ bool DlgProfiles::checkValues()
    return !edit_name->text().isEmpty();
 }
 
+void DlgProfiles::loadPerson(Person* profile)
+{
+   edit_formattedName ->setText( profile->formattedName () );
+   edit_name          ->setText( profile->firstName     () );
+   edit_lname         ->setText( profile->secondName    () );
+   edit_email         ->setText( profile->preferredEmail() );
+   edit_organization  ->setText( profile->organization  () );
+
+   if(photoView->pixmap()) {
+      const QPixmap photo = profile->photo().value<QPixmap>();
+      photoView->setPixmap(photo);
+   }
+
+   m_pCurrentPerson = profile;
+}
+
+bool DlgProfiles::saveToPerson(Person* p)
+{
+   Person* profile = p?p:m_pCurrentPerson;
+
+   if (!profile)
+      return false;
+
+   if (profile->uid().isEmpty())
+      profile->setUid        ( QString::number(QDateTime::currentDateTime().currentMSecsSinceEpoch()).toUtf8());
+
+   profile->setFirstName     ( edit_name->text()                                                              );
+   profile->setFamilyName    ( edit_lname->text()                                                             );
+   profile->setPreferredEmail( edit_email->text()                                                             );
+   profile->setOrganization  ( edit_organization->text()                                                      );
+
+   if (!edit_formattedName->text().isEmpty())
+      profile->setFormattedName (edit_formattedName->text());
+   else if (profile->formattedName().isEmpty())
+      profile->setFormattedName ( edit_name->text() + ' ' + edit_lname->text()                                   );
+
+   if(photoView->pixmap()) {
+      const QPixmap photo = *photoView->pixmap();
+      profile->setPhoto(QVariant::fromValue(photo));
+   }
+
+   bool hasAddress = (
+      (!edit_address_1->text        ().isEmpty()) ||
+      (!edit_city->text             ().isEmpty()) ||
+      (!edit_country->text          ().isEmpty()) ||
+      (!cb_address_type->currentText().isEmpty()) ||
+      (!edit_postal_code->text      ().isEmpty()) ||
+      (!edit_state->text            ().isEmpty()) );
+
+   if (hasAddress) {
+      Person::Address* test = new Person::Address();
+      test->setAddressLine( edit_address_1  ->text       ());
+      test->setCity       ( edit_city       ->text       ());
+      test->setCountry    ( edit_country    ->text       ());
+      test->setType       ( cb_address_type ->currentText());
+      test->setZipCode    ( edit_postal_code->text       ());
+      test->setState      ( edit_state      ->text       ());
+
+      profile->addAddress(test);
+   }
+
+   //Get values of custom fields
+   for (QString key : m_hCustomFields.keys()) {
+      profile->addCustomField(key, m_hCustomFields.value(key)->text());
+   }
+
+   return true;
+}
+
 Person* DlgProfiles::create(CollectionInterface* col)
 {
    if(checkValues()) {
 
       Person* profile = new Person(col);
-      profile->setUid(QString::number(QDateTime::currentDateTime().currentMSecsSinceEpoch()).toUtf8());
-      profile->setFirstName(edit_name->text());
-      profile->setFamilyName(edit_lname->text());
-      profile->setPreferredEmail(edit_email->text());
-      profile->setFormattedName(edit_name->text() + ' ' + edit_lname->text());
-      profile->setOrganization(edit_organization->text());
-      if(photoView->pixmap()) {
-         QPixmap photo = *photoView->pixmap();
-         profile->setPhoto(QVariant::fromValue(photo));
-      }
 
-      Person::Address* test = new Person::Address();
-      test->setAddressLine(edit_address_1->text());
-      test->setCity(edit_city->text());
-      test->setCountry(edit_country->text());
-      test->setType(cb_address_type->currentText());
-      test->setZipCode(edit_postal_code->text());
-      test->setState(edit_state->text());
-
-      profile->addAddress(test);
-
-      //Get values of custom fields
-      for (QString key : m_hCustomFields.keys()) {
-         profile->addCustomField(key, m_hCustomFields.value(key)->text());
-      }
+      saveToPerson(profile);
 
       return profile;
    }
@@ -145,5 +192,10 @@ void DlgProfiles::addCustomField()
       formLayout->insertRow(formLayout->rowCount() - 1, edit_custom_field->text(), edit_custom);
       m_hCustomFields.insert("X-" + edit_custom_field->text().toUpper(),edit_custom);
    }
+}
+
+void DlgProfiles::slotChanged()
+{
+   emit changed();
 }
 
