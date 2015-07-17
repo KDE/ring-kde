@@ -41,6 +41,7 @@
 
 //Models
 #include <accountmodel.h>
+#include <profilemodel.h>
 #include <certificatemodel.h>
 #include <availableaccountmodel.h>
 #include <numbercategorymodel.h>
@@ -181,6 +182,8 @@ Ring::Ring(QWidget* parent)
 
 //       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
 //       PersonModel::instance()->backendModel()->addExtension(ext); //FIXME
+
+      ProfileModel::instance();
    }
 
    //Belong to setupActions(), but is needed now

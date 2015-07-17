@@ -53,7 +53,7 @@ void DlgProfiles::loadPerson(Person* profile)
    edit_email         ->setText( profile->preferredEmail() );
    edit_organization  ->setText( profile->organization  () );
 
-   if(photoView->pixmap()) {
+   if(!profile->photo().value<QPixmap>().isNull()) {
       const QPixmap photo = profile->photo().value<QPixmap>();
       photoView->setPixmap(photo);
    }
@@ -175,11 +175,11 @@ void DlgProfiles::choosePhoto()
       qDebug() << "Maximum size is 96px";
       return;
    }
-
+/*
    if(pic.width() < 32) {
       qDebug() << "Minimum size is 32px";
       return;
-   }
+   }*/
 
    photoView->setPixmap(pic);
 }

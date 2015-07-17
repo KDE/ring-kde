@@ -120,7 +120,7 @@ void Cmd::sendText(const QString& number, const QString& text)
       call->setProperty("message",text);
       QObject::connect(call,&Call::lifeCycleStateChanged,[text,call](const Call::LifeCycleState st) {
          if (st == Call::LifeCycleState::PROGRESS) {
-            call->addOutgoingMedia<Media::Text>()->send(call->property("message").toString());
+            call->addOutgoingMedia<Media::Text>()->send({{"text/plain",call->property("message").toString()}});
             call->performAction(Call::Action::REFUSE); //HangUp
          }
       });

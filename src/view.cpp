@@ -262,7 +262,7 @@ void View::sendMessage()
 {
    Call* call = CallModel::instance()->selectedCall();
    if (dynamic_cast<Call*>(call) && !m_pSendMessageLE->text().isEmpty()) {
-      call->addOutgoingMedia<Media::Text>()->send(m_pSendMessageLE->text());
+      call->addOutgoingMedia<Media::Text>()->send({{"text/plain",m_pSendMessageLE->text()}});
    }
    m_pSendMessageLE->clear();
 }
