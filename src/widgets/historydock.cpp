@@ -57,8 +57,8 @@
 #include "phonedirectorymodel.h"
 #include "collectioninterface.h"
 #include "personmodel.h"
-#include "conf/dlgprofiles.h"
-#include "../delegates/categorizeddelegate.h"
+#include <conf/account/accountpages/dlgprofiles.h>
+#include <conf/account/delegates/categorizeddelegate.h>
 #include "../delegates/historydelegate.h"
 
 //Ring library

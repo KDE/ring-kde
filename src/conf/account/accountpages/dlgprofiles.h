@@ -41,16 +41,23 @@ public:
 
 private:
    QHash<QString, QLineEdit*> m_hCustomFields;
+   Person* m_pCurrentPerson;
 
 public Q_SLOTS:
+   void loadPerson(Person* p);
+   bool saveToPerson(Person* p = nullptr);
    Person* create(CollectionInterface* col);
    void cancel();
    void accept();
    void choosePhoto();
    void addCustomField();
 
+private Q_SLOTS:
+   void slotChanged();
+
 Q_SIGNALS:
    void requestSave();
    void requestCancel();
+   void changed();
 };
 #endif

@@ -161,7 +161,6 @@ SET(
    delegates/conferencedelegate.cpp
    delegates/contactdelegate.cpp
    delegates/historydelegate.cpp
-   delegates/categorizeddelegate.cpp
    delegates/phonenumberdelegate.cpp
    delegates/delegatedropoverlay.cpp
    delegates/dialpaddelegate.cpp
@@ -185,7 +184,6 @@ SET(
    conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
-   conf/dlgprofiles.cpp
    configurator/localhistoryconfigurator.cpp
    configurator/audiorecordingconfigurator.cpp
    configurator/fallbackpersonconfigurator.cpp
@@ -274,7 +272,6 @@ SET(
    conf/dlgaccessibility.ui
    conf/dlgaudiorecording.ui
    conf/dlgpresence.ui
-   conf/dlgprofiles.ui
    conf/dlgfallbackperson.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
@@ -308,8 +305,8 @@ IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    ADD_DEFINITIONS( -DDISABLE_UNIQUE_APPLICATION=true )
 ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 
-QT5_WRAP_UI(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
-QT5_WRAP_UI(ring_kde_SRCS ${config_ui_files} )
+ki18n_wrap_ui(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
+ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
 ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
 

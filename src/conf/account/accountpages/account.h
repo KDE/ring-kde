@@ -23,6 +23,7 @@
 #include "ui_tabs.h"
 
 class Account;
+class Person;
 
 namespace Pages {
 
@@ -41,14 +42,20 @@ public Q_SLOTS:
 
 public Q_SLOTS:
    virtual void setAccount(::Account* a) override;
+   void setProfile(Person* p);
    void setAccount(const QModelIndex& idx);
 
 private Q_SLOTS:
    void slotUpdateButtons();
+   void displayProfile(bool display);
+
+Q_SIGNALS:
+   void changed();
 
 private:
    //Attributes
    Account* m_pAccount;
+   QList<Person*> m_lToSave;
 };
 
 }

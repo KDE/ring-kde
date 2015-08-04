@@ -50,7 +50,7 @@
 #include "availableaccountmodel.h"
 #include "callmodel.h"
 #include "categorizedtreeview.h"
-#include "../delegates/categorizeddelegate.h"
+#include <conf/account/delegates/categorizeddelegate.h>
 #include "../delegates/historydelegate.h"
 
 ///Constructor

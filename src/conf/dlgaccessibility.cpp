@@ -30,7 +30,7 @@
 //Ring
 #include <macromodel.h>
 #include <macro.h>
-#include "../delegates/categorizeddelegate.h"
+#include <conf/account/delegates/categorizeddelegate.h>
 
 ///Constructor
 DlgAccessibility::DlgAccessibility(KConfigDialog* parent)

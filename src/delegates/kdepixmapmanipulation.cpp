@@ -219,7 +219,7 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
    buffer.open(QIODevice::WriteOnly);
 
    //PNG ?
-   (qvariant_cast<QPixmap>(pxm)).save(&buffer, "PNG");
+   (qvariant_cast<QPixmap>(pxm)).save(&buffer, "JPEG");
    buffer.close();
 
    return bArray;
@@ -227,11 +227,19 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
 
 QVariant KDEPixmapManipulation::personPhoto(const QByteArray& data, const QString& type)
 {
+   if (data.isEmpty()) {
+      qDebug() << "vCard image loading failed, the image is empty";
+      return {};
+   }
+
    QImage image;
    //For now, ENCODING is only base64 and image type PNG or JPG
-   const bool ret = image.loadFromData(QByteArray::fromBase64(data),type.toLatin1());
-   if (!ret)
+   const bool ret = image.loadFromData(QByteArray::fromBase64(data),type.toLower().toLatin1());
+
+   if (!ret) {
       qDebug() << "vCard image loading failed";
+      return {};
+   } //TODO check is width || height == 0
 
    return QPixmap::fromImage(image);
 }

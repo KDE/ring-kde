@@ -20,6 +20,7 @@
 //Ring
 #include <account.h>
 #include <accountmodel.h>
+#include <profilemodel.h>
 
 //Binder
 #include "accountserializationadapter.h"
@@ -29,6 +30,14 @@
 Pages::Account::Account(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+
+   connect(dlgProfile, &DlgProfiles::changed,[this]() {
+      emit changed();
+   });
+
+   //Remove profile
+   m_pPages->removeTab(m_pPages->count()-1);
+
 }
 
 void Pages::Account::setAccount(::Account* a)
@@ -48,20 +57,62 @@ void Pages::Account::setAccount(::Account* a)
    switch (a->protocol()) {
       case ::Account::Protocol::RING:
       case ::Account::Protocol::IAX:
-         tabWidget->setTabEnabled(4,false);
+         m_pPages->setTabEnabled(4,false);
          break;
       case ::Account::Protocol::SIP:
-         tabWidget->setTabEnabled(4, a->id() != "IP2IP");
+         m_pPages->setTabEnabled(4, a->id() != "IP2IP");
          break;
       case ::Account::Protocol::COUNT__:
          break;
    }
 }
 
+void Pages::Account::displayProfile(bool display)
+{
+   if (display) {
+      while (m_pPages->count())
+         m_pPages->removeTab(0);
+
+      m_pPages->insertTab(0,dlgProfile,tr("Profile"));
+   }
+   else if (m_pPages->count() == 1) {
+      m_pPages->removeTab(0);
+      m_pPages->insertTab(0, dlgRingtone   ,tr("Ringtone"   ));
+      m_pPages->insertTab(0, dlgSecurity   ,tr("Security"   ));
+      m_pPages->insertTab(0, dlgCredentials,tr("Credentials"));
+      m_pPages->insertTab(0, dlgCodec      ,tr("Codecs"     ));
+      m_pPages->insertTab(0, dlgNetwork    ,tr("Network"    ));
+      m_pPages->insertTab(0, dlgAdvanced   ,tr("Advanced"   ));
+      m_pPages->insertTab(0, dlgBasic      ,tr("Basic"      ));
+      m_pPages->setCurrentIndex(0);
+   }
+}
+
+void Pages::Account::setProfile(Person* p)
+{
+   dlgProfile->loadPerson(p);
+   m_lToSave << p;
+}
+
 void Pages::Account::setAccount(const QModelIndex& idx)
 {
-   if (::Account* a = AccountModel::instance()->getAccountByModelIndex(idx))
+
+   QModelIndex i = idx;
+
+   if (i.model() == ProfileModel::instance())
+      i = ProfileModel::instance()->mapToSource(i);
+
+   if (!i.isValid()) {
+      Person* p = ProfileModel::instance()->getPerson(idx);
+      if (p) {
+         setProfile(p);
+         displayProfile(true);
+      }
+   }
+   else if (::Account* a = AccountModel::instance()->getAccountByModelIndex(i)) {
+      displayProfile(false);
       setAccount(a);
+   }
 }
 
 void Pages::Account::updateWidgets()
@@ -73,6 +124,10 @@ void Pages::Account::updateWidgets()
 void Pages::Account::updateSettings()
 {
    qDebug() << "Update settings";
+   dlgProfile->saveToPerson();
+
+   foreach(Person* p, m_lToSave)
+      p->save();
 }
 
 void Pages::Account::slotUpdateButtons()
@@ -83,7 +138,7 @@ void Pages::Account::slotUpdateButtons()
 
 void Pages::Account::selectAlias()
 {
-   QLineEdit* le  = dlgBasic->lrcfg_alias;
+   QLineEdit* le = dlgBasic->lrcfg_alias;
 
    le->setSelection(0,le->text().size());
    le->setFocus(Qt::OtherFocusReason);
