@@ -305,8 +305,8 @@ IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    ADD_DEFINITIONS( -DDISABLE_UNIQUE_APPLICATION=true )
 ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 
-QT5_WRAP_UI(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
-QT5_WRAP_UI(ring_kde_SRCS ${config_ui_files} )
+ki18n_wrap_ui(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
+ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
 ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
 
