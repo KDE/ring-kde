@@ -95,13 +95,13 @@ bool DlgProfiles::saveToPerson(Person* p)
       (!edit_state->text            ().isEmpty()) );
 
    if (hasAddress) {
-      Person::Address* test = new Person::Address();
-      test->setAddressLine( edit_address_1  ->text       ());
-      test->setCity       ( edit_city       ->text       ());
-      test->setCountry    ( edit_country    ->text       ());
-      test->setType       ( cb_address_type ->currentText());
-      test->setZipCode    ( edit_postal_code->text       ());
-      test->setState      ( edit_state      ->text       ());
+      Person::Address test;
+      test.setAddressLine( edit_address_1  ->text       ());
+      test.setCity       ( edit_city       ->text       ());
+      test.setCountry    ( edit_country    ->text       ());
+      test.setType       ( cb_address_type ->currentText());
+      test.setZipCode    ( edit_postal_code->text       ());
+      test.setState      ( edit_state      ->text       ());
 
       profile->addAddress(test);
    }

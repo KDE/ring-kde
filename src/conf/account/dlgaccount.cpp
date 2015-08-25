@@ -36,9 +36,8 @@
 DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
-
-   m_pAccountList->setModel         ( ProfileModel::instance()                   );
-   m_pAccountList->setSelectionModel( ProfileModel::instance()->selectionModel() );
+   m_pAccountList->setModel         ( ProfileModel::instance()->sortedProxyModel         () );
+   m_pAccountList->setSelectionModel( ProfileModel::instance()->sortedProxySelectionModel() );
 
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pAccountList);
    delegate->setChildDelegate(new RightIconDelegate(this, (int)Account::Role::SecurityLevelIcon, 0.2f));

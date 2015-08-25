@@ -261,7 +261,6 @@ Ring::Ring(QWidget* parent)
    m_pCentralDW->show();
 
    selectCallTab();
-   ActionCollection::instance()->setupAction();
    setAutoSaveSettings();
    createGUI();
 
