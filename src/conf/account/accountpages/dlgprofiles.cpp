@@ -57,6 +57,8 @@ void DlgProfiles::loadPerson(Person* profile)
       const QPixmap photo = profile->photo().value<QPixmap>();
       photoView->setPixmap(photo);
    }
+   else
+      photoView->setPixmap({});
 
    m_pCurrentPerson = profile;
 }

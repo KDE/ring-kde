@@ -97,19 +97,26 @@ void Pages::Account::setProfile(Person* p)
 void Pages::Account::setAccount(const QModelIndex& idx)
 {
 
+   QModelIndex prof = idx;
    QModelIndex i = idx;
+
+   while (qobject_cast<const QSortFilterProxyModel*>(i.model()))
+      i = prof = static_cast<const QSortFilterProxyModel*>(i.model())->mapToSource(i);
 
    if (i.model() == ProfileModel::instance())
       i = ProfileModel::instance()->mapToSource(i);
 
+
    if (!i.isValid()) {
-      Person* p = ProfileModel::instance()->getPerson(idx);
+      Person* p = ProfileModel::instance()->getPerson(prof);
+
       if (p) {
          setProfile(p);
          displayProfile(true);
       }
    }
    else if (::Account* a = AccountModel::instance()->getAccountByModelIndex(i)) {
+
       displayProfile(false);
       setAccount(a);
    }
