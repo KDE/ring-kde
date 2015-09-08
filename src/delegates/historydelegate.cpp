@@ -31,6 +31,7 @@
 
 
 //Ring
+#include <globalinstances.h>
 #include <categorizedhistorymodel.h>
 #include <person.h>
 #include <media/media.h>
@@ -43,7 +44,7 @@
 #include "dialpaddelegate.h"
 #include "../widgets/tips/ringingtip.h"
 #include "klib/tipanimationwrapper.h"
-#include "delegates/pixmapmanipulationdelegate.h"
+#include <interfaces/pixmapmanipulatori.h>
 #include "implementation.h"
 #include "delegates/kdepixmapmanipulation.h"
 #include "../icons/icons.h"
@@ -124,7 +125,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       painter->setOpacity(0.70);
 
    const ContactMethod* n = qvariant_cast<ContactMethod*>(index.data(static_cast<int>(Call::Role::ContactMethod)));
-   QPixmap pxm = n?PixmapManipulationDelegate::instance()->callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
+   QPixmap pxm = n?GlobalInstances::pixmapManipulator().callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
 
    //Handle history with recording
    if (index.data(static_cast<int>(Call::Role::HasAVRecording)).toBool() && currentState == Call::State::OVER) {

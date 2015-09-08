@@ -158,7 +158,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
          const QByteArray encodedPerson     = e->mimeData()->data( RingMimes::CONTACT     );
          qDebug() << "Person dropped on empty space";
-         const ContactMethod* number = KPhoneNumberSelector().getNumber(PersonModel::instance()->getPersonByUid(encodedPerson));
+         const ContactMethod* number = KPhoneNumberSelector().number(PersonModel::instance()->getPersonByUid(encodedPerson));
          if (number->uri().isEmpty()) {
             Call* newCall = CallModel::instance()->dialingCall();
             newCall->setDialNumber(number->uri());

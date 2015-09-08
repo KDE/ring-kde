@@ -64,7 +64,7 @@ const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::call
    RingIcons::CONNECTED     , /* CONNECTED      */
 }};
 
-KDEPixmapManipulation::KDEPixmapManipulation() : QObject(),PixmapManipulationDelegate()
+KDEPixmapManipulation::KDEPixmapManipulation() : QObject(), Interfaces::PixmapManipulatorI()
 {
 
 }
@@ -330,27 +330,27 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
    return QVariant();
 }
 
-QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interface, PixmapManipulationDelegate::CollectionIconHint hint) const
+QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interface, Interfaces::PixmapManipulatorI::CollectionIconHint hint) const
 {
    Q_UNUSED(interface)
 
    switch(hint) {
-      case PixmapManipulationDelegate::CollectionIconHint::CONTACT:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::CONTACT:
          return QIcon::fromTheme("folder-publicshare");
-      case PixmapManipulationDelegate::CollectionIconHint::HISTORY:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::HISTORY:
          return QIcon::fromTheme("view-history");
-      case PixmapManipulationDelegate::CollectionIconHint::BOOKMARK:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::BOOKMARK:
          return QIcon::fromTheme("folder-bookmark");
-      case PixmapManipulationDelegate::CollectionIconHint::CERTIFICATE:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::CERTIFICATE:
          return QIcon::fromTheme("certificate-server");
-      case PixmapManipulationDelegate::CollectionIconHint::RECORDING:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::RECORDING:
          return QIcon(":/images/icons/mailbox.svg");
-      case PixmapManipulationDelegate::CollectionIconHint::RINGTONE:
-      case PixmapManipulationDelegate::CollectionIconHint::NONE:
-      case PixmapManipulationDelegate::CollectionIconHint::PROFILE:
-      case PixmapManipulationDelegate::CollectionIconHint::PHONE_NUMBER:
-      case PixmapManipulationDelegate::CollectionIconHint::ACCOUNT:
-      case PixmapManipulationDelegate::CollectionIconHint::MACRO:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::RINGTONE:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::NONE:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::PROFILE:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::PHONE_NUMBER:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::ACCOUNT:
+      case Interfaces::PixmapManipulatorI::CollectionIconHint::MACRO:
          break;
    };
 

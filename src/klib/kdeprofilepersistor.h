@@ -20,18 +20,19 @@
 #define KDEPROFILEPERSISTER_H
 
 //Ring
-#include <delegates/profilepersisterdelegate.h>
+#include <interfaces/profilepersisteri.h>
 
 //Qt
 #include <QDir>
 
 class Person;
 
-class LIB_EXPORT KDEProfilePersister : public ProfilePersisterDelegate {
+class LIB_EXPORT KDEProfilePersister : public Interfaces::ProfilePersisterI
+{
 public:
    virtual bool load() override;
    virtual bool save(const Person* c) override;
-   virtual QDir getProfilesDir() override;
+   virtual QDir profilesDir() const override;
 
 //private:
 };

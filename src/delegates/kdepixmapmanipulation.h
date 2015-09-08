@@ -18,14 +18,14 @@
 #ifndef KDEPIXMAPMANIPULATION_H
 #define KDEPIXMAPMANIPULATION_H
 
-#include <delegates/pixmapmanipulationdelegate.h>
+#include <interfaces/pixmapmanipulatori.h>
 #include <call.h>
 #include "matrixutils.h"
 
 class Person;
 
 
-class KDEPixmapManipulation : public QObject ,public PixmapManipulationDelegate {
+class KDEPixmapManipulation : public QObject ,public Interfaces::PixmapManipulatorI {
    Q_OBJECT
 public:
    KDEPixmapManipulation();
@@ -45,7 +45,7 @@ public:
 
    virtual QVariant userActionIcon(const UserActionElement& state) const override;
 
-   virtual QVariant collectionIcon(const CollectionInterface* interface, PixmapManipulationDelegate::CollectionIconHint hint = PixmapManipulationDelegate::CollectionIconHint::NONE) const override;
+   virtual QVariant collectionIcon(const CollectionInterface* interface, Interfaces::PixmapManipulatorI::CollectionIconHint hint = Interfaces::PixmapManipulatorI::CollectionIconHint::NONE) const override;
 
    virtual QVariant securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const override;
 

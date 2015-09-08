@@ -21,6 +21,7 @@
 #include <account.h>
 #include <accountmodel.h>
 #include <profilemodel.h>
+#include <person.h>
 
 //Binder
 #include "accountserializationadapter.h"

@@ -26,15 +26,14 @@
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
 #include <ring.h>
+#include <person.h>
 
 
 void KPhoneNumberSelector::init()
 {
-   static KPhoneNumberSelector* v = new KPhoneNumberSelector();
-   setDefaultDelegate(v);
 }
 
-ContactMethod* KPhoneNumberSelector::getNumber(const Person* contact)
+ContactMethod* KPhoneNumberSelector::number(const Person* contact)
 {
    if (contact) {
       if (contact->phoneNumbers().size()>1) {

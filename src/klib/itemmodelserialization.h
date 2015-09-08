@@ -21,12 +21,13 @@
 #include <QtCore/QHash>
 
 #include "typedefs.h"
-#include "delegates/itemmodelstateserializationdelegate.h"
+#include <interfaces/itemmodelstateserializeri.h>
 class Account;
 class CollectionInterface;
 
 ///Ringlib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
-class LIB_EXPORT ItemModelStateSerialization : public ItemModelStateSerializationDelegate {
+class LIB_EXPORT ItemModelStateSerialization : public Interfaces::ItemModelStateSerializerI
+{
 public:
    virtual bool save() override;
    virtual bool load() override;

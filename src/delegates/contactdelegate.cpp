@@ -30,6 +30,7 @@
 
 
 //Ring
+#include <globalinstances.h>
 #include <person.h>
 #include <numbercategory.h>
 #include <contactmethod.h>
@@ -40,7 +41,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include "delegatedropoverlay.h"
-#include "delegates/pixmapmanipulationdelegate.h"
+#include <interfaces/pixmapmanipulatori.h>
 #include "phonenumberdelegate.h"
 #include "widgets/categorizedtreeview.h"
 #include "klib/kcfg_settings.h"
@@ -130,7 +131,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
 
    //BEGIN draw photo
-   QPixmap pxm = PixmapManipulationDelegate::instance()->contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
+   QPixmap pxm = GlobalInstances::pixmapManipulator().contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
    painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
    //END draw photo
 

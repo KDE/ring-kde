@@ -64,7 +64,6 @@ private:
    AutoCompletion*      m_pAutoCompletion ;
    CanvasObjectManager* m_pCanvasManager  ;
    EventManager*        m_pEventManager   ;
-   ColorDelegate*       m_pColorDelegate  ;
 
 public:
    //Constructors & Destructors

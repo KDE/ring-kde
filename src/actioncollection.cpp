@@ -34,6 +34,7 @@
 #include <KSharedConfig>
 
 //Ring
+#include "globalinstances.h"
 #include "ring.h"
 #include "view.h"
 #include "localmacrocollection.h"
@@ -298,7 +299,7 @@ void ActionCollection::setupAction()
    Ring::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
    Ring::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
-   KDEShortcutDelegate::setInstance(new KDEShortcutDelegate());
+   GlobalInstances::setInterface<KDEShortcutDelegate>();
    MacroModel::instance()->addCollection<LocalMacroCollection>();
    QList<QAction *> acList = *Accessibility::instance();
 

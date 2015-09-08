@@ -26,7 +26,7 @@
 
 #include "accountpages/account.h"
 
-#include "delegates/righticondelegate.h"
+#include <delegates/righticondelegate.h>
 #include <delegates/categorizeddelegate.h>
 
 #include <QtGui/QPainter>

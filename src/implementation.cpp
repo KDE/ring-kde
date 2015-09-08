@@ -71,7 +71,7 @@ ColorDelegate::ColorDelegate(QPalette pal) : m_Pal(pal) {
    }
 }
 
-QVariant ColorDelegate::getColor(const Account* a)
+QVariant ColorDelegate::color(const Account* a)
 {
    switch(a->registrationState()) {
       case Account::RegistrationState::READY:
@@ -88,7 +88,7 @@ QVariant ColorDelegate::getColor(const Account* a)
    return QVariant();
 }
 
-QVariant ColorDelegate::getIcon(const Account* a) {
+QVariant ColorDelegate::icon(const Account* a) {
    /*if (a->editState() == Account::EditState::MODIFIED)
       return QIcon::fromTheme("document-save");*/
    if (a->editState() == Account::EditState::MODIFIED_COMPLETE)
@@ -101,7 +101,7 @@ QVariant ColorDelegate::getIcon(const Account* a) {
    return QVariant();
 }
 
-void KDEPresenceSerializationDelegate::serialize() {
+void KDEPresenceSerializationDelegate::save() {
    PresenceStatusModel* m = PresenceStatusModel::instance();
    QStringList list;
    for (int i=0;i<m->rowCount();i++) {
@@ -163,11 +163,11 @@ KDEPresenceSerializationDelegate::~KDEPresenceSerializationDelegate()
 
 }
 
-bool KDEPresenceSerializationDelegate::isTracked(CollectionInterface* backend)
+bool KDEPresenceSerializationDelegate::isTracked(CollectionInterface* backend) const
 {
    Q_UNUSED(backend)
    if (!m_isLoaded) {
-      foreach(const QString& str,ConfigurationSkeleton::presenceAutoTrackedCollections()) {
+      foreach(const QString& str, ConfigurationSkeleton::presenceAutoTrackedCollections()) {
          m_hTracked[str] = true;
       }
       m_isLoaded = true;

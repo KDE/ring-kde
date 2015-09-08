@@ -18,27 +18,28 @@
 #ifndef IMPLEMENTATION_H
 #define IMPLEMENTATION_H
 
-#include <delegates/accountlistcolordelegate.h>
+#include <interfaces/accountlistcolorizeri.h>
 #include <call.h>
 #include <account.h>
 
 #include <QtGui/QPalette>
 #include <QtGui/QColor>
 #include <QtCore/QMutex>
-#include <delegates/presenceserializationdelegate.h>
-#include <delegates/shortcutdelegate.h>
+#include <interfaces/presenceserializeri.h>
+#include <interfaces/shortcutcreatori.h>
 
 class Macro;
 
 //Implement all client dependant libringclient abstract interfaces
 
-class ColorDelegate : public AccountListColorDelegate {
+class ColorDelegate : public Interfaces::AccountListColorizerI
+{
 public:
    explicit ColorDelegate(QPalette pal);
 
-   virtual QVariant getColor(const Account* a) override;
+   virtual QVariant color(const Account* a) override;
 
-   virtual QVariant getIcon(const Account* a) override;
+   virtual QVariant icon(const Account* a) override;
 private:
    QPalette m_Pal;
    QColor   m_Green;
@@ -46,20 +47,22 @@ private:
    QColor   m_Red;
 };
 
-class KDEPresenceSerializationDelegate : public PresenceSerializationDelegate {
+class KDEPresenceSerializationDelegate : public Interfaces::PresenceSerializerI
+{
 public:
    KDEPresenceSerializationDelegate():m_isLoaded(false){}
-   virtual void serialize() override;
+   virtual void save() override;
    virtual void load() override;
    virtual ~KDEPresenceSerializationDelegate();
-   virtual bool isTracked(CollectionInterface* backend) override;
+   virtual bool isTracked(CollectionInterface* backend) const override;
    virtual void setTracked(CollectionInterface* backend, bool tracked) override;
 private:
-   QHash<QString,bool> m_hTracked;
-   bool m_isLoaded;
+   mutable QHash<QString,bool> m_hTracked;
+   mutable bool m_isLoaded;
 };
 
-class KDEShortcutDelegate : public ShortcutDelegate {
+class KDEShortcutDelegate : public Interfaces::ShortcutCreatorI
+{
 public:
    virtual ~KDEShortcutDelegate(){}
    virtual QVariant createAction(Macro* macro) override;

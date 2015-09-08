@@ -27,13 +27,13 @@
 bool KDEProfilePersister::load()
 {
    //TODO: Replace this with real directory and iterate over it to load all profiles
-   QDir profilesDir = getProfilesDir();
-   qDebug() << "Loading vcf from:" << profilesDir;
+   QDir profDir = profilesDir();
+   qDebug() << "Loading vcf from:" << profDir;
 
    QStringList extensions = QStringList();
    extensions << "*.vcf";
 
-   QStringList entries = profilesDir.entryList(extensions, QDir::Files);
+   QStringList entries = profDir.entryList(extensions, QDir::Files);
 
 //   for (QString item : entries) {
 //      QFile file(item);
@@ -54,8 +54,8 @@ bool KDEProfilePersister::load()
 
 bool KDEProfilePersister::save(const Person* c)
 {
-     QDir profilesDir = getProfilesDir();
-     qDebug() << "Saving vcf in:" << profilesDir.absolutePath()+"/"+c->uid()+".vcf";
+     QDir profDir = profilesDir();
+     qDebug() << "Saving vcf in:" << profDir.absolutePath()+"/"+c->uid()+".vcf";
 //   const QByteArray result = c->toVCard();
 
 //   QFile file(profilesDir.absolutePath()+"/"+c->uid()+".vcf");
@@ -66,7 +66,7 @@ bool KDEProfilePersister::save(const Person* c)
    return false;
 }
 
-QDir KDEProfilePersister::getProfilesDir()
+QDir KDEProfilePersister::profilesDir() const
 {
    QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')).mkdir("profiles/");
    return QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')+"profiles/");

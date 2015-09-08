@@ -37,8 +37,8 @@
 #include "widgets/callviewtoolbar.h"
 #include "eventmanager.h"
 #include "actioncollection.h"
-#include "delegates/conferencedelegate.h"
-#include "delegates/historydelegate.h"
+#include <delegates/conferencedelegate.h>
+#include <delegates/historydelegate.h>
 #include "widgets/tips/dialpadtip.h"
 #include "widgets/kphonenumberselector.h"
 #include "widgets/callviewoverlay.h"
@@ -48,6 +48,7 @@
 //ring library
 #include "klib/kcfg_settings.h"
 #include "mime.h"
+#include <globalinstances.h>
 #include "contactmethod.h"
 #include "person.h"
 #include "media/text.h"
@@ -70,7 +71,7 @@ View::View(QWidget *parent)
 
    //Set global settings
    Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
-   PresenceSerializationDelegate::setInstance(new KDEPresenceSerializationDelegate());
+   GlobalInstances::setInterface<KDEPresenceSerializationDelegate>();
 
    m_pEventManager = new EventManager(this);
    m_pView->setModel(CallModel::instance());
@@ -104,8 +105,7 @@ View::View(QWidget *parent)
    pal.setColor(QPalette::AlternateBase, Qt::lightGray);
    setPalette(pal);
 
-   m_pColorDelegate = new ColorDelegate(pal);
-   AccountListColorDelegate::setInstance(m_pColorDelegate);
+   GlobalInstances::setInterface<ColorDelegate>(pal);
 
    m_pMessageBoxW->setVisible(false);
 
@@ -153,7 +153,6 @@ View::~View()
    delete m_pConfDelegate   ;
    delete m_pHistoryDelegate;
    delete m_pCanvasManager  ;
-   delete m_pColorDelegate  ;
 }
 
 ///Return the auto completion widget

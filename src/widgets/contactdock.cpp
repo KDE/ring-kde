@@ -151,7 +151,7 @@ ContactDock::~ContactDock()
 ContactMethod* ContactDock::showNumberSelector(bool& ok)
 {
    if (m_pCurrentPerson && m_pCurrentPerson->phoneNumbers().size() > 1 && m_PreselectedNb.isEmpty()) {
-      ContactMethod* number = KPhoneNumberSelector().getNumber(m_pCurrentPerson);
+      ContactMethod* number = KPhoneNumberSelector().number(m_pCurrentPerson);
       if (number->uri().isEmpty()) {
          qDebug() << "Operation cancelled";
       }

@@ -64,8 +64,8 @@
 #include "configurator/fallbackpersonconfigurator.h"
 
 //Delegates
-#include "delegates/kdepixmapmanipulation.h"
-#include "delegates/itemmodelstateserializationdelegate.h"
+#include <delegates/kdepixmapmanipulation.h>
+#include <interfaces/itemmodelstateserializeri.h>
 #include "klib/itemmodelserialization.h"
 #include "extensions/presencecollectionextension.h"
 #include "klib/kdeprofilepersistor.h"
@@ -74,6 +74,7 @@
 #include "klib/kcfg_settings.h"
 #include "icons/icons.h"
 #include "view.h"
+#include <globalinstances.h>
 #include "conf/account/widgets/autocombobox.h"
 #include "actioncollection.h"
 #include "widgets/systray.h"
@@ -139,9 +140,9 @@ Ring::Ring(QWidget* parent)
    }
    static bool init = false;
    if (!init) {
-      ProfilePersisterDelegate::setInstance(new KDEProfilePersister());
+      GlobalInstances::setInterface<KDEProfilePersister>();
 
-      new KDEPixmapManipulation(); //FIXME memory leak
+      GlobalInstances::setInterface<KDEPixmapManipulation>();
 
       loadNumberCategories();
 
@@ -174,7 +175,7 @@ Ring::Ring(QWidget* parent)
 
       PersonModel::instance()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
-      ItemModelStateSerializationDelegate::setInstance(new ItemModelStateSerialization());
+      GlobalInstances::setInterface<ItemModelStateSerialization>();
 //       PersonModel::instance()->backendModel()->load();
 //       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
 
