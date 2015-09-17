@@ -35,11 +35,14 @@
 
 
 //Ring 
-#include "../accessibility.h"
 #include "klib/kcfg_settings.h"
 #include "callmodel.h"
 #include "call.h"
 #include "phonedirectorymodel.h"
+
+#ifdef HAVE_SPEECH
+ #include <accessibility.h>
+#endif
 
 /*****************************************************************************
  *                                                                           *
@@ -111,9 +114,13 @@ void CallViewOverlay::setVisible(bool enabled) {
       }
       m_pCurrentCall = nullptr;
    }
+
+#ifdef HAVE_SPEECH
    if (!m_accessMessage.isEmpty() && enabled == true && ConfigurationSkeleton::enableReadLabel()) {
       Accessibility::instance()->say(m_accessMessage);
    }
+#endif
+
 } //setVisible
 
 ///How to paint the overlay

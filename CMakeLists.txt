@@ -31,6 +31,7 @@ INCLUDE(ECMOptionalAddSubdirectory)
 INCLUDE(KDEInstallDirs)
 INCLUDE(KDECMakeSettings)
 INCLUDE(KDECompilerSettings)
+INCLUDE(FeatureSummary)
 
 
 # Block known broken C++11 compilers
@@ -54,6 +55,16 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
   OpenGL
   PrintSupport
 )
+
+FIND_PACKAGE(Qt5TextToSpeech ${QT_MIN_VERSION} QUIET)
+
+SET_PACKAGE_PROPERTIES(Qt5TextToSpeech PROPERTIES
+   PURPOSE "Speech support"
+)
+
+IF (Qt5TextToSpeech_FOUND)
+   ADD_DEFINITIONS(-DHAVE_SPEECH)
+ENDIF()
 
 FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
   Config

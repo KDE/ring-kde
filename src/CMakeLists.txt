@@ -17,7 +17,7 @@ SET(QT_MIN_VERSION  "5.2.0")
 
 FIND_PACKAGE ( KF5 REQUIRED )
 
-find_package (ECM 1.1.0 REQUIRED NO_MODULE)
+FIND_PACKAGE (ECM 1.1.0 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 FIND_PACKAGE ( LibRingClient REQUIRED ENABLE_STATIC=true )
@@ -36,7 +36,6 @@ ADD_DEFINITIONS(
    -Wno-reorder
    -Wno-error=deprecated-declarations
 )
-
 
 # Enable some useful warnings
 ADD_DEFINITIONS(
@@ -256,8 +255,6 @@ SET(
    notification.cpp
    ringapplication.cpp
    errormessage.cpp
-   kspeechinterfacesingleton.cpp
-   accessibility.cpp
    canvasobjectmanager.cpp
    eventmanager.cpp
    actioncollection.cpp
@@ -267,6 +264,16 @@ SET(
    ${ring_kde_WIDGETS}
    ${ring_kde_VIDEO}
 )
+
+
+IF (Qt5TextToSpeech_FOUND)
+
+SET(
+   ring_kde_SRCS
+   ${ring_kde_SRCS}
+   accessibility.cpp
+)
+ENDIF()
 
 # generate rules for building source files from the resources
 SET(QtApp_RCCS
@@ -380,6 +387,12 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::NotifyConfig
   KF5::GlobalAccel
 )
+
+IF (Qt5TextToSpeech_FOUND)
+   TARGET_LINK_LIBRARIES(ring-kde
+      Qt5TextToSpeech
+   )
+ENDIF()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   TARGET_LINK_LIBRARIES(ring-kde ${OSX_FRAMEWORK_OPENGL})

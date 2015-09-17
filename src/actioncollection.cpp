@@ -40,7 +40,6 @@
 #include "mainwindow.h"
 #include "view.h"
 #include "localmacrocollection.h"
-#include "accessibility.h"
 #include "conf/configurationdialog.h"
 #include "icons/icons.h"
 #include "klib/kcfg_settings.h"
@@ -55,6 +54,10 @@
 #include <audio/settings.h>
 #include <personmodel.h>
 #include <delegates/kdepixmapmanipulation.h>
+
+#ifdef HAVE_SPEECH
+ #include "accessibility.h"
+#endif
 
 #define CREATE_ACTION(name) name = new QAction(this);name->setObjectName(#name);
 #define INIT_ACTION(name, icon, text) name = new QAction(icon, text, this);name->setObjectName(#name);
@@ -304,11 +307,13 @@ void ActionCollection::setupAction()
 
    MacroModel::instance().addCollection<LocalMacroCollection>();
 
+#ifdef HAVE_SPEECH
    QList<QAction *> acList = *Accessibility::instance();
 
    foreach(QAction * ac,acList) {
       MainWindow::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
+#endif
 
    updateRecordButton();
    updateVolumeButton();

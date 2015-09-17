@@ -83,11 +83,14 @@
 #include "actioncollection.h"
 #include "widgets/systray.h"
 #include "widgets/presence.h"
-#include "accessibility.h"
 #include "errormessage.h"
 #include <video/renderer.h>
 #include "ringapplication.h"
 #include "widgets/dockbase.h"
+
+#ifdef HAVE_SPEECH
+ #include "accessibility.h"
+#endif
 
 #ifdef ENABLE_AKONADI
  #include "klib/akonadibackend.h"
