@@ -36,15 +36,13 @@ namespace Video {
 class VideoScene;
 class VideoGLFrame;
 
-class VideoWidget3 : public QGraphicsView
+class VideoWidget : public QGraphicsView
 {
    Q_OBJECT
 
 public:
-   explicit VideoWidget3(QWidget *parent, const bool previewOnly = false);
-   ~VideoWidget3();
-//    virtual int    heightForWidth( int w ) const;
-//    virtual QSize  sizeHint      (       ) const;
+   explicit VideoWidget(QWidget *parent, const bool previewOnly = false);
+   virtual ~VideoWidget();
    void setPreviewOnly(bool prev);
 
 protected:

@@ -227,7 +227,7 @@ IF(NOT (${ENABLE_VIDEO} MATCHES false))
       ring_kde_VIDEO
       widgets/videodock.cpp
       widgets/videosettings.cpp
-      widgets/videowidget3.cpp
+      widgets/videowidget.cpp
       widgets/videoglframe.cpp
       widgets/videoscene.cpp
       widgets/videotoolbar.cpp

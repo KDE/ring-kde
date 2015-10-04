@@ -59,10 +59,6 @@ m_step(0),m_pCurrentCall(nullptr)
       move(0,0);
    }
 
-//    QGraphicsOpacityEffect* eff2 = new QGraphicsOpacityEffect(m_pBackground);
-//    eff2->setOpacity(0.7);
-//    m_pBackground->setGraphicsEffect(eff2);
-
    m_pMainWidget = new QWidget(this);
    if (parent)
       m_pMainWidget->resize(parent->width(),parent->height());

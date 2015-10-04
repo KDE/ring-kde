@@ -29,7 +29,7 @@
 #include <klocalizedstring.h>
 #include <QComboBox>
 
-#include "videowidget3.h"
+#include "videowidget.h"
 #include "videoscene.h"
 #include "videotoolbar.h"
 #include "actioncollection.h"
@@ -41,7 +41,7 @@
 
 class VideoWidgetItem : public QWidgetItem {
 public:
-   VideoWidgetItem(VideoWidget3* m_pMainWidget) : QWidgetItem(m_pMainWidget),m_pWdg(m_pMainWidget){}
+   VideoWidgetItem(VideoWidget* m_pMainWidget) : QWidgetItem(m_pMainWidget),m_pWdg(m_pMainWidget){}
    virtual ~VideoWidgetItem(){}
    virtual bool hasHeightForWidth () const override {
       return true;
@@ -50,7 +50,7 @@ public:
       return m_pWdg->heightForWidth(w);
    }
 private:
-   VideoWidget3* m_pWdg;
+   VideoWidget* m_pWdg;
 };
 
 class MediaPicker : public QWidget, public Ui_MediaPicker
@@ -130,7 +130,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    setObjectName("Video Dock");
    m_pMainWidget = new QWidget(this);
 
-   m_pVideoWidet = new VideoWidget3(m_pMainWidget);
+   m_pVideoWidet = new VideoWidget(m_pMainWidget);
    m_pVideoWidet->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    auto l = new QGridLayout(m_pMainWidget);
    l->setContentsMargins(0,0,0,0);
@@ -187,9 +187,6 @@ void VideoDock::addRenderer(Video::Renderer* r)
    Q_UNUSED(r)
    m_pVideoWidet->addRenderer(r);
 }
-
-
-
 
 void VideoDock::slotDeviceChanged(int index)
 {

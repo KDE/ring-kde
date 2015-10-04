@@ -242,7 +242,6 @@ void BookmarkDock::copy()
 ///Call the same number again
 void BookmarkDock::callAgain()
 {
-   qDebug() << "Calling ";
    ContactMethod* n = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
    if ( n ) {
       const QString name = n->contact()?n->contact()->formattedName() : n->primaryName();
