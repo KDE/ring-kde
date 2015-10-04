@@ -45,6 +45,7 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
    m_pAccountList->setItemDelegate(delegate);
 
    m_pProtocolModel = new ProtocolModel();
+   //m_pProtocolModel->displayProfile(true);
 
    m_pGlobalProto->bindToModel(m_pProtocolModel,m_pProtocolModel->selectionModel());
 
@@ -81,12 +82,33 @@ void DlgAccount::slotExpand()
 
 void DlgAccount::slotRemoveAccount()
 {
-   const QModelIndex& idx = AccountModel::instance()->selectionModel()->currentIndex();
-   if (QMessageBox::warning(this, tr("Remove account"),
-      tr("Are you sure you want to remove %1?").arg(idx.data(Qt::DisplayRole).toString()),
-      QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
-   )
-      AccountModel::instance()->remove(idx);
+   static const QString message = tr("Are you sure you want to remove %1?");
+   // Check if the selectied element is a profile
+   QModelIndex idx = ProfileModel::instance()->sortedProxySelectionModel()->currentIndex();
+   if (idx.isValid() && !idx.parent().isValid()) {
+      if (QMessageBox::warning(this, tr("Remove profile"),
+        message.arg(idx.data(Qt::DisplayRole).toString()),
+        QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
+      )
+         if (ProfileModel::instance()->remove(idx)) {
+            m_pAccountList->selectionModel()->setCurrentIndex(
+               m_pAccountList->model()->index(0,0), QItemSelectionModel::ClearAndSelect
+            );
+         }
+   }
+   else {
+   // Remove an account
+      idx = AccountModel::instance()->selectionModel()->currentIndex();
+
+      if (!idx.isValid())
+         return;
+
+      if (QMessageBox::warning(this, tr("Remove account"),
+         message.arg(idx.data(Qt::DisplayRole).toString()),
+         QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
+      )
+         AccountModel::instance()->remove(idx);
+   }
 }
 
 void DlgAccount::slotUpdateButtons()
@@ -96,11 +118,33 @@ void DlgAccount::slotUpdateButtons()
 
 void DlgAccount::slotNewAddAccount()
 {
+   const Account::Protocol proto = qvariant_cast<Account::Protocol>(
+      m_pProtocolModel->data(m_pProtocolModel->selectionModel()->currentIndex(),Qt::UserRole)
+   );
+
+   //Add profile
+   if (proto == Account::Protocol::COUNT__) {
+      const QModelIndex idx = ProfileModel::instance()->add();
+
+      if (idx.isValid()) {
+         m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
+      }
+
+      return;
+   }
+
    const QString newAlias = tr("New account%1").arg(AccountModel::getSimilarAliasIndex(tr("New account")));
-   const Account::Protocol proto = qvariant_cast<Account::Protocol>(m_pProtocolModel->data(m_pProtocolModel->selectionModel()->currentIndex(),Qt::UserRole));
    Account* a = AccountModel::instance()->add(newAlias,proto);
 
-   m_pAccountList->selectionModel()->setCurrentIndex(a->index(), QItemSelectionModel::ClearAndSelect);
+   QModelIndex accIdx = ProfileModel::instance()->mapFromSource(a->index());
+   accIdx = static_cast<QAbstractProxyModel*>(
+      ProfileModel::instance()->sortedProxyModel()
+   )->mapFromSource(accIdx);
+
+   ProfileModel::instance()->sortedProxySelectionModel()->setCurrentIndex(
+      accIdx, QItemSelectionModel::ClearAndSelect
+   );
+
    m_pPanel->setAccount(a);
 
    m_pPanel->selectAlias();

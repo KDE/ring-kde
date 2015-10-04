@@ -56,10 +56,10 @@ void Pages::Account::setAccount(::Account* a)
    new AccountSerializationAdapter(a, this);
 
    switch (a->protocol()) {
-      case ::Account::Protocol::RING:
       case ::Account::Protocol::IAX:
          m_pPages->setTabEnabled(4,false);
          break;
+      case ::Account::Protocol::RING:
       case ::Account::Protocol::SIP:
          m_pPages->setTabEnabled(4, a->id() != "IP2IP");
          break;
@@ -134,8 +134,10 @@ void Pages::Account::updateSettings()
    qDebug() << "Update settings";
    dlgProfile->saveToPerson();
 
-   foreach(Person* p, m_lToSave)
-      p->save();
+   foreach(Person* p, m_lToSave) {
+      if (p->isActive())
+         p->save();
+   }
 }
 
 void Pages::Account::slotUpdateButtons()
