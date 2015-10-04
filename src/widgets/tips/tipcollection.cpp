@@ -25,8 +25,8 @@
 #include "searchingtip.h"
 #include "conftip.h"
 #include "removeconferencetip.h"
-#include "klib/tipmanager.h"
 #include "mainwindow.h"
+#include <tip/tipmanager.h>
 #include "view.h"
 #include "widgets/autocompletion.h"
 

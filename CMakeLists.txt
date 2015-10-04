@@ -80,6 +80,7 @@ MESSAGE("cmake install prefix is : ${CMAKE_INSTALL_PREFIX}")
 
 INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
 # INCLUDE( ${QT_USE_FILE}   )
+ADD_SUBDIRECTORY( lib  )
 ADD_SUBDIRECTORY( data )
 ADD_SUBDIRECTORY( src  )
 ADD_SUBDIRECTORY( doc  )

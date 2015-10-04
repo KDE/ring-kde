@@ -30,7 +30,7 @@
 
 //Ring
 #include <delegates/conferencedelegate.h>
-#include <klib/tipmanager.h>
+#include <tip/tipmanager.h>
 #include <call.h>
 #include <widgets/tips/tipcollection.h>
 #include <categorizedcontactmodel.h>

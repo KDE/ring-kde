@@ -43,7 +43,7 @@
 #include "widgets/playeroverlay.h"
 #include "dialpaddelegate.h"
 #include "../widgets/tips/ringingtip.h"
-#include "klib/tipanimationwrapper.h"
+#include <tip/tipanimationwrapper.h>
 #include <interfaces/pixmapmanipulatori.h>
 #include "implementation.h"
 #include "delegates/kdepixmapmanipulation.h"

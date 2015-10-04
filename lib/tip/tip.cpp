@@ -23,6 +23,7 @@
 #include <QtGui/QFontMetrics>
 #include <QtWidgets/QApplication>
 #include <QtCore/QFile>
+#include <QtCore/QDebug>
 
 //Ring
 #include "tipmanager.h"

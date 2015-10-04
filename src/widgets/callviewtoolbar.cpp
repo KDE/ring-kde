@@ -28,7 +28,7 @@
 //Ring
 #include "mainwindow.h"
 #include "actioncollection.h"
-#include <klib/tipmanager.h>
+#include <tip/tipmanager.h>
 #include <proxies/simplerotateproxy.h>
 #include <call.h>
 #include <useractionmodel.h>

@@ -29,14 +29,11 @@
 
 class QSvgRenderer;
 
-//Ring
-#include "typedefs.h"
-
 //Qt
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class LIB_EXPORT Tip : public QObject
+class Q_DECL_EXPORT Tip : public QObject
 {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

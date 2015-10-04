@@ -19,7 +19,7 @@
 #define RINGINGTIP_H
 
 //Base
-#include "../../klib/tip.h"
+#include <tip/tip.h>
 
 //Qt
 #include <QtWidgets/QWidget>

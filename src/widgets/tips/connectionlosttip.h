@@ -18,7 +18,7 @@
 #ifndef CONNECTIONLOSTTIP_H
 #define CONNECTIONLOSTTIP_H
 
-#include <klib/tip.h>
+#include <tip/tip.h>
 
 //Qt
 #include <QtWidgets/QWidget>

@@ -40,9 +40,6 @@ SET(GENERIC_LIB_VERSION "2.0.0")
 SET( libkring_LIB_SRCS
    helperfunctions.cpp
 #    akonadibackend.cpp
-   tipmanager.cpp
-   tip.cpp
-   tipanimationwrapper.cpp
 #    akonadicontactcollectionmodel.cpp
    kdeprofilepersistor.cpp
    itemmodelserialization.cpp

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 ADD_DEFINITIONS("-std=c++11")
 
 SET(QT_MIN_VERSION  "5.2.0")
