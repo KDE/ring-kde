@@ -15,64 +15,39 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef AUTOCOMPLETION_H
-#define AUTOCOMPLETION_H
+#ifndef RESIZABLE_TIP_H
+#define RESIZABLE_TIP_H
 
-#include "tips/resizabletip.h"
-#include <QtCore/QModelIndex>
+#include <QtWidgets/QWidget>
 
-//Qt
-class QListView;
-class QTreeView;
-class QLabel;
-class QModelIndex;
+class QVBoxLayout;
 
-//Ring
-#include <call.h>
-class NumberCompletionModel;
-class AutoCompletionDelegate2;
-class ContactMethod;
-
-class AutoCompletion : public ResizableTip {
+class ResizableTip : public QWidget
+{
    Q_OBJECT
 
+   friend class Handle;
+
 public:
-   explicit AutoCompletion(QTreeView* parent = nullptr);
-   virtual ~AutoCompletion();
-
-   //Getters
-   Call* call() const;
-   ContactMethod* selection() const;
-
-   //Setters
-   void setUseUnregisteredAccounts(bool value);
+   explicit ResizableTip(QWidget* parent = nullptr);
+   virtual ~ResizableTip() {};
 
    //Mutator
-   void reset();
+   void addWidget(QWidget* w);
 
-   int m_Height;
+protected:
+   //Virtual events
+   void paintEvent ( QPaintEvent*  event) override;
+   bool eventFilter( QObject *obj, QEvent *event) override;
 
 private:
-   //Attributes
-   QListView* m_pView;
-   QLabel*    m_pLabel;
-   NumberCompletionModel* m_pModel;
-   AutoCompletionDelegate2* m_pDelegate;
+   QVBoxLayout* m_pLayout;
 
-public Q_SLOTS:
-   void moveUp();
-   void moveDown();
-   void callSelectedNumber();
-   void setCall(Call* call);
-
-private Q_SLOTS:
-   void selectionChanged(const QModelIndex& idx = QModelIndex());
-   void slotLayoutChanged();
-   void slotDoubleClicked(const QModelIndex& idx);
-   void slotCallStateChanged(Call::State s);
+   //Helpers
+   bool brightOrDarkBase();
 
 Q_SIGNALS:
-   void doubleClicked(ContactMethod* n);
+   void heightChanged(int h);
 };
 
 #endif

@@ -38,90 +38,18 @@
 #include <delegates/autocompletiondelegate2.h>
 #include "klib/kcfg_settings.h"
 
-static const int TOOLBAR_HEIGHT = 72;
-static const int MARGINS        = 15;
-
-class Handle : public QWidget
-{
-   Q_OBJECT
-public:
-   Handle(AutoCompletion* parent = nullptr) : QWidget(parent), m_IsPressed(false),m_Dy(0),m_pParent(parent) {
-      installEventFilter(this);
-      setMinimumSize(0,8);
-      setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-   }
-   virtual ~Handle() {}
-
-protected:
-
-   virtual void paintEvent(QPaintEvent* event) override {
-      Q_UNUSED(event)
-      static const QColor dotCol = QApplication::palette().base().color();
-      static const QColor hoverBg = QApplication::palette().highlight().color();
-      QPainter p(this);
-      p.setBrush(m_IsPressed? hoverBg : dotCol);
-      p.setPen(Qt::transparent);
-      p.setRenderHint(QPainter::Antialiasing,true);
-      p.drawEllipse(width()/2-12,2,5,5);
-      p.drawEllipse(width()/2-2,2,5,5);
-      p.drawEllipse(width()/2+8,2,5,5);
-   }
-
-   virtual bool eventFilter(QObject *obj, QEvent *event) override {
-      #pragma GCC diagnostic push
-      #pragma GCC diagnostic ignored "-Wswitch-enum"
-      switch(event->type()) {
-         case QEvent::HoverMove:
-         case QEvent::MouseMove:
-            if (m_IsPressed) {
-               int y = static_cast<QMouseEvent*>(event)->y();
-               m_pParent->m_Height = m_pParent->m_Height+(m_Dy-y);
-               m_pParent->setMinimumSize(0,m_pParent->m_Height);
-               m_pParent->resize(m_pParent->width(),m_pParent->m_Height);
-               m_pParent->move(m_pParent->x(),m_pParent->y()-(m_Dy-y));
-               m_Dy = y;
-            }
-            break;
-         case QEvent::MouseButtonPress:
-            m_Dy = static_cast<QMouseEvent*>(event)->y();
-            m_IsPressed = true;
-            grabMouse();
-            break;
-         case QEvent::MouseButtonRelease:
-            m_IsPressed = false;
-            releaseMouse();
-            ConfigurationSkeleton::setAutoCompletionHeight(m_pParent->m_Height);
-            break;
-         default:
-            break;
-      }
-      #pragma GCC diagnostic pop
-      return QObject::eventFilter(obj, event);
-   }
-
-
-private:
-   bool m_IsPressed;
-   int m_Dy;
-   AutoCompletion* m_pParent;
-};
-
-AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125)
+AutoCompletion::AutoCompletion(QTreeView* parent) : ResizableTip(parent),m_Height(125)
 {
    m_Height = ConfigurationSkeleton::autoCompletionHeight();
    setVisible(true);
-   QVBoxLayout* l = new QVBoxLayout(this);
-
-   Handle* h = new Handle(this);
-   l->addWidget(h);
 
    m_pLabel = new QLabel(this);
    m_pLabel->setText(i18n("Use ⬆ up and ⬇ down arrows to select one of these numbers"));
    m_pLabel->setStyleSheet(QString("color:%1;font-weight:bold;").arg(QApplication::palette().base().color().name()));
    m_pLabel->setWordWrap(true);
    m_pView = new QListView(this);
-   l->addWidget(m_pLabel);
-   l->addWidget(m_pView);
+   addWidget(m_pLabel);
+   addWidget(m_pView);
 
    m_pModel = new NumberCompletionModel();
    m_pModel->setDisplayMostUsedNumbers(true);
@@ -142,6 +70,10 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : QWidget(parent),m_Height(125
    m_pDelegate = new AutoCompletionDelegate2();
    m_pView->setItemDelegate(m_pDelegate);
    selectionChanged(CallModel::instance()->selectionModel()->currentIndex());
+
+   connect(this, &ResizableTip::heightChanged, [](int h) {
+      ConfigurationSkeleton::setAutoCompletionHeight(h);
+   });
 }
 
 AutoCompletion::~AutoCompletion()
@@ -252,46 +184,6 @@ ContactMethod* AutoCompletion::selection() const
       }
    }
    return nullptr;
-}
-
-bool AutoCompletion::brightOrDarkBase()
-{
-   const QColor color = palette().base().color();
-   return (color.red() > 128 && color.green() > 128 && color.blue() > 128);
-}
-
-void AutoCompletion::paintEvent(QPaintEvent* event)
-{
-   QPainter customPainter(this);
-   customPainter.setOpacity(0.1);
-   customPainter.setPen(Qt::NoPen);
-   customPainter.setRenderHint(QPainter::Antialiasing, true);
-   customPainter.setBrush(QBrush(brightOrDarkBase()?Qt::black:Qt::white));
-   customPainter.drawRoundedRect(0,0,width(),height(),10,10);
-   QWidget::paintEvent(event);
-}
-
-bool AutoCompletion::eventFilter(QObject *obj, QEvent *event)
-{
-   if (event->type() == QEvent::Resize) {
-      const QWidget* p = parentWidget();
-
-      if (p) {
-         int vOffset(0),wOffset(0);
-         //If the parent has scrollbar, take this into account
-         if (p->inherits("QAbstractScrollArea")) {
-            const QAbstractScrollArea* scrl = static_cast< const QAbstractScrollArea*>(p);
-            if (scrl && scrl->horizontalScrollBar()->isVisible())
-               vOffset += scrl->horizontalScrollBar()->height();
-            if (scrl && scrl->verticalScrollBar()->isVisible())
-               wOffset += scrl->verticalScrollBar()->width();
-         }
-         resize(p->width()-wOffset-2*MARGINS,height());
-         move(MARGINS,p->height()-TOOLBAR_HEIGHT-vOffset - MARGINS - height());
-      }
-   }
-   // standard event processing
-   return QObject::eventFilter(obj, event);
 }
 
 void AutoCompletion::slotDoubleClicked(const QModelIndex& idx)
