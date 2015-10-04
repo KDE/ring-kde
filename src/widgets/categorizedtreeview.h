@@ -18,7 +18,7 @@
 #ifndef CATEGORIZEDTREEVIEW_H
 #define CATEGORIZEDTREEVIEW_H
 
-#include <QtWidgets/QTreeWidget>
+#include "conf/account/widgets/categorizedtree.h"
 
 class QStyledItemDelegate;
 
@@ -26,7 +26,7 @@ class QStyledItemDelegate;
 #include <callmodel.h>
 
 ///CategorizedTreeView: A better looking widget than the plain QListWidget
-class CategorizedTreeView : public QTreeView
+class CategorizedTreeView : public CategorizedTree
 {
   Q_OBJECT
 
@@ -56,7 +56,6 @@ class CategorizedTreeView : public QTreeView
    virtual void dragEnterEvent   ( QDragEnterEvent   * e ) override;
    virtual void dragMoveEvent    ( QDragMoveEvent    * e ) override;
    virtual void dropEvent        ( QDropEvent        * e ) override;
-   virtual void drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const override;
    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
    virtual void startDrag ( Qt::DropActions supportedActions ) override;
    virtual bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event) override;

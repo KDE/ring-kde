@@ -95,7 +95,7 @@
         <widget class="AutoComboBox" name="m_pGlobalProto"/>
        </item>
        <item row="0" column="0" colspan="5">
-        <widget class="QTreeView" name="m_pAccountList">
+        <widget class="CategorizedTree" name="m_pAccountList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -248,6 +248,11 @@
    <class>LeftToolButton</class>
    <extends>QToolButton</extends>
    <header>widgets/groupedtoolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CategorizedTree</class>
+   <extends>QTreeView</extends>
+   <header>widgets/categorizedtree.h</header>
   </customwidget>
   <customwidget>
    <class>RightToolButton</class>

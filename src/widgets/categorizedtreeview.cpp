@@ -39,7 +39,7 @@
 
 ///Constructor
 CategorizedTreeView::CategorizedTreeView(QWidget *parent)
-  : QTreeView(parent),m_Type(CategorizedTreeView::ViewType::Other),
+  : CategorizedTree(parent),m_Type(CategorizedTreeView::ViewType::Other),
   m_InitSignals(false)
 {
 }
@@ -53,14 +53,6 @@ void CategorizedTreeView::setModel ( QAbstractItemModel * model )
 {
    connect(model,SIGNAL(rowsInserted(QModelIndex,int,int)),this,SLOT(slotExpandInserted(QModelIndex,int,int)));
    QTreeView::setModel(model);
-}
-
-///Do not draw branches
-void CategorizedTreeView::drawBranches(QPainter* painter, const QRect& rect, const QModelIndex& index) const
-{
-  Q_UNUSED( painter )
-  Q_UNUSED( rect    )
-  Q_UNUSED( index   )
 }
 
 void CategorizedTreeView::contextMenuEvent ( QContextMenuEvent * e ) {
