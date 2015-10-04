@@ -41,7 +41,7 @@ void VideoSettings::setDevice(Video::Device* dev)
 Video::Device* VideoSettings::device() const
 {
    const QList<Video::Device*> devices = Video::DeviceModel::instance()->devices();
-   return devices.size() > m_pDevice->currentIndex()? devices[m_pDevice->currentIndex()]:nullptr;
+   return m_pDevice->currentIndex() < devices.size() && m_pDevice->currentIndex() >= 0 ? devices[m_pDevice->currentIndex()]:nullptr;
 }
 
 void VideoSettings::slotChannelChanged(int idx)
