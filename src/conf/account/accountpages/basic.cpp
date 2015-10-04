@@ -22,6 +22,7 @@
 #include <account.h>
 #include <protocolmodel.h>
 #include <bootstrapmodel.h>
+#include <credentialmodel.h>
 
 #include <widgets/accountstatusviewer.h>
 
@@ -29,6 +30,8 @@ Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
    connect(this,&PageBase::accountSet,[this]() {
+      disconnect(m_CredConn );
+
       m_pProtocol->bindToModel(account()->protocolModel(),account()->protocolModel()->selectionModel());
 
       m_pBootstrapModel->setModel((account()->protocol() == Account::Protocol::RING)?
@@ -42,6 +45,13 @@ Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
 
 //       disconnect(this, &Pages::Basic::updateStatus); //TODO track previous account
       connect(account(), &Account::stateChanged, this, &Pages::Basic::updateStatus);
+
+/*      m_CredConn = connect(account()->credentialModel(), &CredentialModel::primaryCredentialChanged,[this](Credential::Type t, Credential* c) {
+         if (t == Credential::Type::SIP) {
+            lrcfg_password->setText(c->password());
+         }
+      });*/
+
       updateStatus();
    });
 

@@ -31,6 +31,9 @@ public:
    //Constructor
    explicit Basic(QWidget *parent = nullptr);
 
+private:
+   QMetaObject::Connection m_CredConn;
+
 private Q_SLOTS:
    void updateStatus();
 };
