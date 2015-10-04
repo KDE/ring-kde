@@ -49,13 +49,6 @@ bool ContactView::viewportEvent( QEvent * event ) {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wswitch-enum"
    switch (event->type()) {
-      case QEvent::HoverEnter:
-      case QEvent::HoverLeave:
-      case QEvent::HoverMove: {
-//          const QHoverEvent* he     = static_cast<QHoverEvent*>(event);
-//          const QModelIndex  oldIdx = indexAt(he->oldPos());
-//          const QModelIndex  newIdx = indexAt(he->pos());
-      } break;
       case QEvent::Drop: {
          const QDropEvent* de      = static_cast<QDropEvent*>(event);
          const QModelIndex newIdx  = indexAt(de->pos());

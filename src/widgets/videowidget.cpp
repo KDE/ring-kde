@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "videowidget3.h"
+#include "videowidget.h"
 
 //Qt
 #include <QtGui/QResizeEvent>
@@ -51,7 +51,7 @@
 #endif
 
 
-VideoWidget3::VideoWidget3(QWidget *parent, const bool previewOnly) : QGraphicsView(parent),m_pBackDevice(nullptr),m_IsPreviewOnly(previewOnly)
+VideoWidget::VideoWidget(QWidget *parent, const bool previewOnly) : QGraphicsView(parent),m_pBackDevice(nullptr),m_IsPreviewOnly(previewOnly)
 {
    connect(Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
@@ -80,27 +80,27 @@ VideoWidget3::VideoWidget3(QWidget *parent, const bool previewOnly) : QGraphicsV
    setAcceptDrops(true);
 }
 
-VideoWidget3::~VideoWidget3()
+VideoWidget::~VideoWidget()
 {
    
 }
 
-void VideoWidget3::dragLeaveEvent( QDragLeaveEvent* e )
+void VideoWidget::dragLeaveEvent( QDragLeaveEvent* e )
 {
    Q_UNUSED(e)
 }
 
-void VideoWidget3::dragEnterEvent( QDragEnterEvent* e )
+void VideoWidget::dragEnterEvent( QDragEnterEvent* e )
 {
    e->accept();
 }
 
-void VideoWidget3::dragMoveEvent( QDragMoveEvent* e )
+void VideoWidget::dragMoveEvent( QDragMoveEvent* e )
 {
    e->accept();
 }
 
-void VideoWidget3::dropEvent( QDropEvent* e )
+void VideoWidget::dropEvent( QDropEvent* e )
 {
    if (e->mimeData()->hasFormat("text/uri-list")) {
       Video::SourceModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
@@ -108,7 +108,7 @@ void VideoWidget3::dropEvent( QDropEvent* e )
    e->accept();
 }
 
-void VideoWidget3::addRenderer(Video::Renderer* renderer)
+void VideoWidget::addRenderer(Video::Renderer* renderer)
 {
    m_pWdg->makeCurrent();
    if (m_hFrames[renderer]) {
@@ -125,30 +125,30 @@ void VideoWidget3::addRenderer(Video::Renderer* renderer)
    }
 }
 
-void VideoWidget3::removeRenderer(Video::Renderer* renderer)
+void VideoWidget::removeRenderer(Video::Renderer* renderer)
 {
    Q_UNUSED(renderer)
    m_pScene->removeFrame(m_hFrames[renderer]);
 }
 
-void VideoWidget3::resizeEvent(QResizeEvent* event)
+void VideoWidget::resizeEvent(QResizeEvent* event)
 {
    m_pScene->setSceneRect(0,0,event->size().width(),event->size().height());
 }
 
 
 
-void VideoWidget3::slotRotateLeft()
+void VideoWidget::slotRotateLeft()
 {
    m_pScene->slotRotateLeft();
 }
 
-void VideoWidget3::slotRotateRight()
+void VideoWidget::slotRotateRight()
 {
    m_pScene->slotRotateRight();
 }
 
-void VideoWidget3::slotShowPreview(bool show)
+void VideoWidget::slotShowPreview(bool show)
 {
    ConfigurationSkeleton::setDisplayVideoPreview(show);
    if (Video::PreviewManager::instance()->isPreviewing() && show) {
@@ -166,7 +166,7 @@ void VideoWidget3::slotShowPreview(bool show)
    }
 }
 
-void VideoWidget3::slotMuteOutgoindVideo(bool mute)
+void VideoWidget::slotMuteOutgoindVideo(bool mute)
 {
    if (mute) {
       m_pBackDevice = Video::DeviceModel::instance()->activeDevice();
@@ -177,20 +177,20 @@ void VideoWidget3::slotMuteOutgoindVideo(bool mute)
    }
 }
 
-void VideoWidget3::slotKeepAspectRatio(bool keep)
+void VideoWidget::slotKeepAspectRatio(bool keep)
 {
    m_pScene->slotKeepAspectRatio(keep);
 }
 
 
-void VideoWidget3::slotPreviewEnabled(bool show)
+void VideoWidget::slotPreviewEnabled(bool show)
 {
    if (!m_IsPreviewOnly && show && ActionCollection::instance()->videoPreviewAction()->isChecked()) {
       slotShowPreview(true);
    }
 }
 
-void VideoWidget3::setPreviewOnly(bool prev)
+void VideoWidget::setPreviewOnly(bool prev)
 {
    m_IsPreviewOnly = prev;
 }
