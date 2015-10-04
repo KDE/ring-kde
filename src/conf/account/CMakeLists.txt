@@ -57,6 +57,7 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    widgets/certificateviewer.cpp
    widgets/securityprogress.cpp
    widgets/accountstatusviewer.cpp
+   widgets/categorizedtree.cpp
 
    delegates/righticondelegate.cpp
    delegates/categorizeddelegate.cpp
