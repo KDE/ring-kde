@@ -18,7 +18,7 @@
 #ifndef SEARCHINGTIP_H
 #define SEARCHINGTIP_H
 
-#include <klib/tip.h>
+#include <tip/tip.h>
 
 //Qt
 #include <QtWidgets/QWidget>

@@ -137,8 +137,10 @@ INCLUDE_DIRECTORIES(SYSTEM
    ${Qt5Core_INCLUDES}
    ${CMAKE_BINARY_DIR}
    ${LIB_RING_CLIENT_INCLUDE_DIR}
+   ${LIB_TIP_INCLUDE}
    ${LIB_CONFIG_INCLUDE}
    ${LIB_CONFIG_WIDGETS}
+   ${CMAKE_CURRENT_SOURCE_DIR}/../lib/
 )
 
 #Build KDE specific files
@@ -337,6 +339,7 @@ QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 
 TARGET_LINK_LIBRARIES(ring-kde
   libkring
+  tip
   accountdialog
   ${LIB_RING_CLIENT_LIBRARY}
   ${OPENGL_link}

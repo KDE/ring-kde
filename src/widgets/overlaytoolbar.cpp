@@ -30,7 +30,7 @@
 
 //Ring
 #include "ring.h"
-#include <klib/tipmanager.h>
+#include <tip/tipmanager.h>
 #include <QStandardPaths>
 
 ///Constructor

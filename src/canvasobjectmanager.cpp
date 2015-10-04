@@ -33,7 +33,7 @@
 #include <klocalizedstring.h>
 
 //Ring
-#include <klib/tipmanager.h>
+#include <tip/tipmanager.h>
 #include <widgets/tips/tipcollection.h>
 #include "ring.h"
 

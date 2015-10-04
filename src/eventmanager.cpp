@@ -36,7 +36,7 @@
 #include <accountmodel.h>
 #include <availableaccountmodel.h>
 #include <personmodel.h>
-#include <klib/tipmanager.h>
+#include <tip/tipmanager.h>
 #include "view.h"
 #include "ring.h"
 #include "actioncollection.h"

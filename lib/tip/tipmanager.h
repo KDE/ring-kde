@@ -25,13 +25,12 @@
 #include <QAbstractAnimation>
 
 //Ring
-#include "typedefs.h"
 #include "tip.h"
 #include "tipanimationwrapper.h"
 class TipManager;
 
 ///This class create a background brush for a QWidget with a tip window
-class LIB_EXPORT TipManager : public QObject
+class Q_DECL_EXPORT TipManager : public QObject
 {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

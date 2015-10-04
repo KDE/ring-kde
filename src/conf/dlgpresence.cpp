@@ -23,8 +23,8 @@
 
 //Ring
 #include <presencestatusmodel.h>
-#include "klib/tipmanager.h"
-#include "klib/tip.h"
+#include "tip/tipmanager.h"
+#include "tip/tip.h"
 
 DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
 {

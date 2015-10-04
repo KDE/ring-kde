@@ -36,7 +36,7 @@ struct FrameDescription {
    float  opacity;
 };
 
-class LIB_EXPORT TipAnimationWrapper : public QObject
+class Q_DECL_EXPORT TipAnimationWrapper : public QObject
 {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

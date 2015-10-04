@@ -55,7 +55,7 @@
 #include "accountmodel.h"
 #include "phonedirectorymodel.h"
 #include "audio/settings.h"
-#include "klib/tipmanager.h"
+#include <tip/tipmanager.h>
 #include "implementation.h"
 
 ///Constructor
