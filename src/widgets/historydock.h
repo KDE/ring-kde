@@ -40,6 +40,9 @@ class QAction;
 #include "categorizedhistorymodel.h"
 class KeyPressEater;
 class CollectionInterface;
+namespace Menu {
+   class Call;
+}
 
 //Typedef
 
@@ -64,19 +67,8 @@ private:
    KeyPressEater*         m_pKeyPressEater   ;
 
    //Menu
-   QAction *     m_pCallAgain     ;
-   QAction *     m_pAddPerson     ;
-   QAction *     m_pAddToPerson   ;
-   QAction *     m_pCopy          ;
-   QAction *     m_pEmail         ;
-   QMenu*        m_pMenu          ;
-   QAction *     m_pRemove        ;
-   QAction *     m_pBookmark      ;
+   Menu::Call*        m_pMenu          ;
    Call*         m_pCurrentCall   ;
-
-   //Mutator
-   void enableRemove();
-
 
 public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event) override;
@@ -87,12 +79,6 @@ private Q_SLOTS:
 
    //Menu
    void slotContextMenu(const QModelIndex& index);
-   void slotSendEmail        ();
-   void slotRemove           ();
-   void slotCallAgain        ();
-   void slotCopy             ();
-   void slotAddPerson       (CollectionInterface* col);
-   void slotBookmark         ();
 };
 
 ///KeyPressEater: Intercept each keypress to manage it globally

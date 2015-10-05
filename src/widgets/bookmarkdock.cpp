@@ -52,11 +52,10 @@
 #include "categorizedtreeview.h"
 #include <conf/account/delegates/categorizeddelegate.h>
 #include "../delegates/historydelegate.h"
+#include "../menu/contactmethod.h"
 
 ///Constructor
-BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent), m_pMenu(nullptr),m_pCallAgain(nullptr),
-m_pEditPerson(nullptr), m_pCopy(nullptr), m_pEmail(nullptr), m_pAddPhone(nullptr), 
-m_pBookmark(nullptr)
+BookmarkDock::BookmarkDock(QWidget* parent) : QDockWidget(parent), m_pMenu(nullptr)
 {
    setObjectName("bookmarkDock");
    QWidget* mainWidget     = new QWidget   ( this );
@@ -149,156 +148,11 @@ void BookmarkDock::slotContextMenu( const QModelIndex& index )
 {
    if (!index.parent().isValid())
       return;
-   if (!m_pCallAgain) {
-      m_pCallAgain   = new QAction(this);
-      m_pCallAgain->setText       ( i18n("Call Again")         );
-      m_pCallAgain->setIcon       ( QIcon::fromTheme("call-start")        );
 
-      m_pEditPerson = new QAction(this);
-      m_pEditPerson->setText     ( i18n("Edit contact")       );
-      m_pEditPerson->setIcon     ( QIcon::fromTheme("contact-new")       );
-
-      m_pCopy        = new QAction(this);
-      m_pCopy->setText            ( i18n("Copy")               );
-      m_pCopy->setIcon            ( QIcon::fromTheme("edit-copy")         );
-
-      m_pEmail       = new QAction(this);
-      m_pEmail->setText           ( i18n("Send Email")         );
-      m_pEmail->setIcon           ( QIcon::fromTheme("mail-message-new")  );
-      m_pEmail->setEnabled        ( false                      );
-
-      m_pAddPhone    = new QAction(this);
-      m_pAddPhone->setText        ( i18n("Add Phone Number")   );
-      m_pAddPhone->setIcon        ( QIcon::fromTheme("list-resource-add") );
-      m_pEmail->setEnabled        ( false                      );
-
-      m_pBookmark    = new QAction(this);
-      m_pBookmark->setText        ( i18n("Remove Bookmark")    );
-      m_pBookmark->setIcon        ( QIcon::fromTheme("list-remove")       );
-
-      connect(m_pCallAgain   , SIGNAL(triggered()) , this,SLOT(callAgain())  );
-      connect(m_pEditPerson  , SIGNAL(triggered()) , this,SLOT(editPerson()));
-      connect(m_pCopy        , SIGNAL(triggered()) , this,SLOT(copy())       );
-      connect(m_pEmail       , SIGNAL(triggered()) , this,SLOT(sendEmail())  );
-      connect(m_pAddPhone    , SIGNAL(triggered()) , this,SLOT(addPhone())   );
-      connect(m_pBookmark    , SIGNAL(triggered()) , this,SLOT(removeBookmark())   );
-   }
    if (!m_pMenu) {
-      m_pMenu = new QMenu( this          );
-      m_pMenu->addAction( m_pCallAgain   );
-      m_pMenu->addAction( m_pEditPerson );
-      m_pMenu->addAction( m_pAddPhone    );
-      m_pMenu->addAction( m_pCopy        );
-      m_pMenu->addAction( m_pEmail       );
-      m_pMenu->addAction( m_pBookmark    );
+      m_pMenu = new Menu::ContactMethod( this          );
    }
    //TODO Qt5 use lambdas for this
    m_CurrentIndex = m_pProxyModel->mapToSource(index);
    m_pMenu->exec(QCursor::pos());
-}
-
-void BookmarkDock::removeBookmark()
-{
-   if (m_CurrentIndex.isValid()) {
-      CategorizedBookmarkModel::instance()->remove(m_CurrentIndex);
-      m_CurrentIndex = QModelIndex();
-      expandTree();
-   }
-}
-
-
-///Copy contact to clipboard
-void BookmarkDock::copy()
-{
-   qDebug() << "Copying contact";
-   QMimeData* mimeData = new QMimeData();
-   ContactMethod* nb = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
-
-   if (nb) {
-      Person* c = nb->contact();
-
-      //A bookmark can exist without a contact
-      if (c) {
-         mimeData->setData(RingMimes::CONTACT, c->uid());
-         QString numbers(c->formattedName()+": ");
-         QString numbersHtml("<b>"+c->formattedName()+"</b><br />\n");
-         foreach (ContactMethod* number, c->phoneNumbers()) {
-            numbers     += number->uri()+" ("+number->category()->name()+")  ";
-            numbersHtml += number->uri()+" ("+number->category()->name()+")  <br />\n";
-         }
-         mimeData->setData("text/plain", numbers.toUtf8());
-         mimeData->setData("text/html", numbersHtml.toUtf8());
-      }
-      else {
-         mimeData->setData("text/plain", QString(nb->primaryName()+'\n'+nb->uri()).toUtf8());
-         mimeData->setData("text/html", QString("<b>"+nb->primaryName()+"</b>\n<br>"+nb->uri()).toUtf8());
-      }
-
-      QClipboard* clipboard = QApplication::clipboard();
-      clipboard->setMimeData(mimeData);
-   }
-}
-
-///Call the same number again
-void BookmarkDock::callAgain()
-{
-   ContactMethod* n = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
-   if ( n ) {
-      const QString name = n->contact()?n->contact()->formattedName() : n->primaryName();
-      Call* call = CallModel::instance()->dialingCall(name, AvailableAccountModel::currentDefaultAccount());
-      if (call) {
-         call->setDialNumber(n);
-         call->setAccount(n->account());
-         call->setPeerName(name);
-         call->performAction(Call::Action::ACCEPT);
-      }
-      else {
-         HelperFunctions::displayNoAccountMessageBox(this);
-      }
-   }
-}
-
-///Edit this contact
-void BookmarkDock::editPerson()
-{
-   qDebug() << "Edit contact";
-
-   ContactMethod* nb = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
-   if (nb) {
-      if (nb->contact())
-         nb->contact()->edit();
-      else {
-         //Add a contact
-         Person* aPerson = new Person();
-         aPerson->setContactMethods({nb});
-         aPerson->setFormattedName(nb->primaryName());
-         PersonModel::instance()->addNewPerson(aPerson);
-      }
-   }
-}
-
-///Add a new phone number for this contact
-//TODO
-void BookmarkDock::addPhone()
-{
-   qDebug() << "Adding to contact";
-   ContactMethod* nb = CategorizedBookmarkModel::instance()->getNumber(m_CurrentIndex);
-   if (nb) {
-      if (nb->contact()) {
-         bool ok;
-         const QString text = QInputDialog::getText(this, i18n("Enter a new number"), i18n("New number:"),QLineEdit::Normal, QString(), &ok);
-         if (ok && !text.isEmpty()) {
-//             ContactMethod* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
-//             nb->contact()->addContactMethod(n); //FIXME
-         }
-      }
-      else {
-         //Better use the full dialog for this
-         editPerson();
-      }
-   }
-}
-
-void BookmarkDock::sendEmail() {
-   
 }

@@ -222,6 +222,14 @@ SET(
    widgets/wizard.cpp
 )
 
+# Asset contextual menus
+SET(
+   ring_kde_MENUS
+   menu/person.cpp
+   menu/call.cpp
+   menu/contactmethod.cpp
+)
+
 # Video Widgets
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET(
@@ -254,6 +262,7 @@ SET(
    ${ring_kde_CONF}
    ${ring_kde_WIDGETS}
    ${ring_kde_VIDEO}
+   ${ring_kde_MENUS}
 )
 
 # generate rules for building source files from the resources

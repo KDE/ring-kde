@@ -31,6 +31,9 @@ class BookmarkSortFilterProxyModel;
 
 //Ring
 #include <categorizedbookmarkmodel.h>
+namespace Menu {
+   class ContactMethod;
+}
 
 ///BookmarkDock: Dock for managing favorite contacts
 class BookmarkDock : public QDockWidget, public Ui_DockBase {
@@ -42,31 +45,17 @@ public:
 private:
    //Attributes
    QCheckBox*              m_pMostUsedCK ;
-   QMenu*                  m_pMenu       ;
+   Menu::ContactMethod*    m_pMenu       ;
    QModelIndex             m_CurrentIndex;
    BookmarkSortFilterProxyModel* m_pProxyModel;
 
    //Actions
-   QAction * m_pBookmark    ;
-   QAction * m_pCallAgain   ;
-   QAction * m_pEditPerson  ;
-   QAction * m_pCopy        ;
-   QAction * m_pEmail       ;
-   QAction * m_pAddPhone    ;
 
 private Q_SLOTS:
    void reload();
    void expandTree();
    void slotDoubleClick(const QModelIndex& index);
    void slotContextMenu( const QModelIndex& index );
-
-   //Menu
-   void removeBookmark();
-   void callAgain   ();
-   void addPhone    ();
-   void sendEmail   ();
-   void copy        ();
-   void editPerson ();
 };
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel

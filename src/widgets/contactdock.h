@@ -35,12 +35,8 @@ class QMenu;
 //KDE
 class QAction;
 
-namespace Akonadi {
-   namespace Person {
-   }
-}
-
-namespace KABC {
+namespace Menu {
+   class Person;
 }
 
 ///Ring
@@ -62,27 +58,14 @@ public:
 
 private:
    //Attributes
-   QMenu*                       m_pMenu          ;
-   Person*                     m_pCurrentPerson;
-   QString                      m_PreselectedNb  ;
+   Menu::Person*                m_pMenu          ;
+   Person*                      m_pCurrentPerson ;
    KeyPressEaterC*              m_pKeyPressEater ;
 
-   //Actions
-   QAction * m_pCallAgain   ;
-   QAction * m_pEditPerson ;
-   QAction * m_pCopy        ;
-   QAction * m_pEmail       ;
-   QAction * m_pAddPhone    ;
-   QAction * m_pBookmark    ;
-   QAction * m_pRemove      ;
-
    //Delegates
-   CategorizedDelegate* m_pCategoryDelegate;
+   CategorizedDelegate*   m_pCategoryDelegate;
    ContactMethodDelegate* m_pContactMethodDelegate;
-   ContactDelegate*     m_pContactDelegate;
-
-   //Helper
-   ContactMethod* showNumberSelector(bool& ok);
+   ContactDelegate*       m_pContactDelegate;
 
 public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event) override;
@@ -91,19 +74,11 @@ private Q_SLOTS:
    void slotContextMenu    ( QModelIndex index     );
 
 private Q_SLOTS:
-   ///Menu actions
    void showContext(const QModelIndex& index);
-   void sendEmail   ();
-   void callAgain   (const ContactMethod* n = nullptr);
-   void copy        ();
-   void editPerson ();
-   void addPhone    ();
-   void bookmark    ();
    void transferEvent( QMimeData* data   );
    void expandTree  ();
    void expandTreeRows(const QModelIndex& idx);
    void slotDoubleClick(const QModelIndex& index);
-   void slotDelete();
 };
 
 ///KeyPressEaterC: keygrabber
