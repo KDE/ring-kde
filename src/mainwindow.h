@@ -38,6 +38,7 @@ class HistoryDock;
 class AvailableAccountModel;
 class Account;
 class View;
+class Dock;
 class AutoComboBox;
 class SysTray;
 namespace Video {
@@ -70,10 +71,7 @@ private:
    bool           m_pIconChanged     ;
    SysTray*       m_pTrayIcon        ;
    QLabel*        m_pStatusBarWidget ;
-   ContactDock*   m_pContactCD       ;
    QDockWidget*   m_pCentralDW       ;
-   HistoryDock*   m_pHistoryDW       ;
-   BookmarkDock*  m_pBookmarkDW      ;
    AutoComboBox*  m_pAccountStatus   ;
    #ifdef ENABLE_VIDEO
    VideoDock*     m_pVideoDW         ;
@@ -81,6 +79,7 @@ private:
    QToolButton*   m_pPresent         ;
    QDockWidget*   m_pPresenceDock    ;
    QLabel*        m_pCurAccL         ;
+   Dock*          m_pDock            ;
 
    static MainWindow*            m_sApp;
 
@@ -100,17 +99,12 @@ public:
    static MainWindow* app  ();
    static View* view ();
 
-   ContactDock*  contactDock ();
-   HistoryDock*  historyDock ();
-   BookmarkDock* bookmarkDock();
-
    bool isAutoStart() const;
    void setAutoStart(bool value);
 
 private Q_SLOTS:
    void quitButton                               (                               );
    void displayAccountCbb                        ( bool checked = true           );
-   void updateTabIcons                           (                               );
    void updatePresence                           ( const QString& status         );
    void hidePresenceDock                         (                               );
    void slotPresenceEnabled                      ( bool state                    );

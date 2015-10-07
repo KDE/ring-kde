@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
- *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
+ *   Copyright (C) 2015 by Emmanuel Lepage Vallee                          *
+ *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,51 +22,48 @@
 #include "ui_contactdock.h"
 
 //Qt
-#include <QHash>
 #include <QtWidgets/QDockWidget>
-#include <QtWidgets/QTreeWidgetItem>
 
 //Ring
 #include "categorizedtreeview.h"
-class ContactMethod;
 
 //Qt
 class QMenu;
-
-//KDE
-class QAction;
-
-namespace Menu {
-   class Person;
-}
+class QSortFilterProxyModel;
+class QStyledItemDelegate;
+class QAbstractItemModel;
+class QItemSelectionModel;
 
 ///Ring
-class Person;
-class CategorizedContactModel;
-class CategorizedDelegate;
-class ContactMethodDelegate;
-class ContactDelegate;
 class KeyPressEaterC;
+class CategorizedTreeView;
 
-///ContactDock: Dock to access contacts
-class ContactDock : public QDockWidget, public Ui_ContactDock
+///DockBase: Dock to access contacts
+class DockBase : public QDockWidget, public Ui_ContactDock
 {
    Q_OBJECT
 public:
    //Constructor
-   explicit ContactDock(QWidget* parent = nullptr);
-   virtual ~ContactDock();
+   explicit DockBase(QWidget* parent = nullptr);
+   virtual ~DockBase();
+
+   //Mutator
+   void setProxyModel(QSortFilterProxyModel* proxy);
+   void setDelegate(QStyledItemDelegate* delegate);
+   void setSortingModel(QAbstractItemModel* m, QItemSelectionModel* s);
+
+   //Getter
+   CategorizedTreeView* view() const;
+   QMenu* menu() const;
+
+   //Setter
+   void setMenuConstructor(std::function<QMenu*()> cst);
 
 private:
    //Attributes
-   Menu::Person*                m_pMenu          ;
-   Person*                      m_pCurrentPerson ;
-   KeyPressEaterC*              m_pKeyPressEater ;
-
-   //Delegates
-   CategorizedDelegate*   m_pCategoryDelegate;
-   ContactMethodDelegate* m_pContactMethodDelegate;
-   ContactDelegate*       m_pContactDelegate;
+   mutable QMenu*           m_pMenu {nullptr};
+   std::function<QMenu*()>  m_fMenuConstructor {nullptr};
+   KeyPressEaterC*          m_pKeyPressEater ;
 
 public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event) override;
@@ -74,28 +72,10 @@ private Q_SLOTS:
    void slotContextMenu    ( QModelIndex index     );
 
 private Q_SLOTS:
-   void showContext(const QModelIndex& index);
    void transferEvent( QMimeData* data   );
    void expandTree  ();
    void expandTreeRows(const QModelIndex& idx);
    void slotDoubleClick(const QModelIndex& index);
-};
-
-///KeyPressEaterC: keygrabber
-class KeyPressEaterC : public QObject
-{
-   Q_OBJECT
-public:
-   explicit KeyPressEaterC(ContactDock* parent) : QObject(parent) {
-      m_pDock = parent;
-   }
-
-protected:
-   bool eventFilter(QObject *obj, QEvent *event) override;
-
-private:
-   ContactDock* m_pDock;
-
 };
 
 #endif //CONTACT_DOCK_H

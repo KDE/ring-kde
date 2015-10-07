@@ -196,9 +196,7 @@ SET(
    ring_kde_WIDGETS
    widgets/systray.cpp
    widgets/dialpad.cpp
-   widgets/contactdock.cpp
-   widgets/historydock.cpp
-   widgets/bookmarkdock.cpp
+   widgets/dockbase.cpp
    widgets/categorizedtreeview.cpp
    widgets/immanager.cpp
    widgets/callviewoverlay.cpp
@@ -250,6 +248,7 @@ SET(
    view.cpp
    mainwindow.cpp
    cmd.cpp
+   dock.cpp
    ringapplication.cpp
    errormessage.cpp
    kspeechinterfacesingleton.cpp

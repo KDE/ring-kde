@@ -49,6 +49,7 @@
 #include <presencestatusmodel.h>
 #include <personmodel.h>
 #include <macromodel.h>
+#include <categorizedbookmarkmodel.h>
 // #include <recentmodel.h>
 
 //Collections
@@ -74,18 +75,17 @@
 #include "klib/kcfg_settings.h"
 #include "icons/icons.h"
 #include "view.h"
+#include "dock.h"
 #include <globalinstances.h>
 #include "conf/account/widgets/autocombobox.h"
 #include "actioncollection.h"
 #include "widgets/systray.h"
-#include "widgets/contactdock.h"
-#include "widgets/historydock.h"
-#include "widgets/bookmarkdock.h"
 #include "widgets/presence.h"
 #include "accessibility.h"
 #include "errormessage.h"
 #include <video/renderer.h>
 #include "ringapplication.h"
+#include "widgets/dockbase.h"
 #ifdef ENABLE_VIDEO
 #include "widgets/videodock.h"
 #endif
@@ -172,6 +172,7 @@ MainWindow::MainWindow(QWidget* parent)
 #endif
 
       CategorizedBookmarkModel::instance()->addCollection<LocalBookmarkCollection>();
+      CategorizedBookmarkModel::instance()->reloadCategories();
 
       PersonModel::instance()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
@@ -221,45 +222,17 @@ MainWindow::MainWindow(QWidget* parent)
    m_pCentralDW->setTitleBarWidget(new QWidget());
    m_pCentralDW->setContentsMargins(0,0,0,0);
    m_pView->setContentsMargins     (0,0,0,0);
+   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
+   m_pCentralDW->setObjectName( "callDock" );
+   m_pCentralDW->show();
 
-   m_pContactCD       = new ContactDock  ( this );
-   m_pHistoryDW       = new HistoryDock  ( this );
-   m_pBookmarkDW      = new BookmarkDock ( this );
    m_pStatusBarWidget = new QLabel       ( this );
 
    //System tray
    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
 
-   addDockWidget( Qt::BottomDockWidgetArea, m_pContactCD  ,Qt::Horizontal);
-   addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  ,Qt::Horizontal);
-   addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW ,Qt::Horizontal);
-
-   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
-
-   tabifyDockWidget(m_pBookmarkDW,m_pHistoryDW );
-   tabifyDockWidget(m_pBookmarkDW,m_pContactCD );
-
-   //Force the dock widget aspect ratio, doing this is an hack
-   m_pHistoryDW ->setMinimumSize(350,0);
-   m_pContactCD ->setMinimumSize(350,0);
-   m_pBookmarkDW->setMinimumSize(350,0);
-
-   m_pHistoryDW ->setMaximumSize(350,999999);
-   m_pContactCD ->setMaximumSize(350,999999);
-   m_pBookmarkDW->setMaximumSize(350,999999);
-
-   m_pCentralDW->setObjectName( "callDock" );
-
-   connect(m_pContactCD ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
-   connect(m_pHistoryDW ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
-   connect(m_pBookmarkDW,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
-   connect(m_pCentralDW ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
-
-   m_pContactCD-> setVisible(ConfigurationSkeleton::displayContactDock() );
-   m_pHistoryDW-> setVisible(ConfigurationSkeleton::displayHistoryDock() );
-   m_pBookmarkDW->setVisible(ConfigurationSkeleton::displayBookmarkDock());
-
-   m_pCentralDW->show();
+   m_pDock = new Dock(this);
+   connect(m_pCentralDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
 
    selectCallTab();
    setAutoSaveSettings();
@@ -272,10 +245,6 @@ MainWindow::MainWindow(QWidget* parent)
    m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
    m_pTrayIcon->addSeparator();
    m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
-
-   connect(ActionCollection::instance()->showContactDockAction(), SIGNAL(toggled(bool)),m_pContactCD, SLOT(setVisible(bool)));
-   connect(ActionCollection::instance()->showHistoryDockAction(), SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
-   connect(ActionCollection::instance()->showBookmarkDockAction(),SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
    connect(CallModel::instance()->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
 
@@ -394,19 +363,12 @@ MainWindow::MainWindow(QWidget* parent)
 ///Destructor
 MainWindow::~MainWindow()
 {
-   if (!isHidden()) {
-      ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
-      ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
-      ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
-   }
+   delete m_pDock;
 
    delete m_pView            ;
    delete m_pTrayIcon        ;
    delete m_pStatusBarWidget ;
-   delete m_pContactCD       ;
    delete m_pCentralDW       ;
-   delete m_pHistoryDW       ;
-   delete m_pBookmarkDW      ;
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
 
@@ -440,24 +402,6 @@ View* MainWindow::view()
    return app()->m_pView;
 }
 
-///Return the contact dock
-ContactDock*  MainWindow::contactDock()
-{
-   return m_pContactCD;
-}
-
-///Return the history dock
-HistoryDock*  MainWindow::historyDock()
-{
-   return m_pHistoryDW;
-}
-
-///Return the bookmark dock
-BookmarkDock* MainWindow::bookmarkDock()
-{
-   return m_pBookmarkDW;
-}
-
 /*****************************************************************************
  *                                                                           *
  *                                  Mutator                                  *
@@ -468,9 +412,9 @@ BookmarkDock* MainWindow::bookmarkDock()
 bool MainWindow::queryClose()
 {
    if (!isHidden()) {
-      ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
-      ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
-      ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
+      ConfigurationSkeleton::setDisplayContactDock ( m_pDock->contactDock()->isVisible()  );
+      ConfigurationSkeleton::setDisplayHistoryDock ( m_pDock->historyDock()->isVisible()  );
+      ConfigurationSkeleton::setDisplayBookmarkDock( m_pDock->bookmarkDock()->isVisible() );
    }
    hide();
    return false;
@@ -514,32 +458,6 @@ void MainWindow::slotPresenceEnabled(bool state)
 {
    m_pPresent->setVisible(state && AccountModel::instance()->isPresencePublishSupported());
 }
-
-///Qt does not support dock icons by default, this is an hack around this
-void MainWindow::updateTabIcons()
-{
-   QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
-   if(tabBars.count())
-   {
-      foreach(QTabBar* bar, tabBars) {
-         for (int i=0;i<bar->count();i++) {
-            QString text = bar->tabText(i);
-            if (text == i18n("Call")) {
-               bar->setTabIcon(i,QIcon::fromTheme("call-start"));
-            }
-            else if (text == i18n("Bookmark")) {
-               bar->setTabIcon(i,QIcon::fromTheme("bookmarks"));
-            }
-            else if (text == i18n("Contact")) {
-               bar->setTabIcon(i,QIcon::fromTheme("folder-publicshare"));
-            }
-            else if (text == i18n("History")) {
-               bar->setTabIcon(i,QIcon::fromTheme("view-history"));
-            }
-         }
-      }
-   }
-} //updateTabIcons
 
 ///Update presence label
 void MainWindow::updatePresence(const QString& status)
