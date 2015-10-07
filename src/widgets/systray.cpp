@@ -28,7 +28,7 @@
 #include <QAction>
 
 //Ring
-#include "ring.h"
+#include "mainwindow.h"
 
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
@@ -71,9 +71,9 @@ void SysTray::slotActivated(QSystemTrayIcon::ActivationReason reason)
       case QSystemTrayIcon::DoubleClick:
       case QSystemTrayIcon::Trigger    :
       case QSystemTrayIcon::Unknown    :
-         Ring::app()->show          ();
-         Ring::app()->activateWindow();
-         Ring::app()->raise         ();
+         MainWindow::app()->show          ();
+         MainWindow::app()->activateWindow();
+         MainWindow::app()->raise         ();
          break;
       case QSystemTrayIcon::Context    :
       case QSystemTrayIcon::MiddleClick:

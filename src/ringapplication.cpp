@@ -35,7 +35,7 @@
 //Ring
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
-#include "ring.h"
+#include "mainwindow.h"
 #include "errormessage.h"
 #include "callmodel.h"
 #include "implementation.h"
@@ -43,7 +43,7 @@
 //Other
 #include <unistd.h>
 
-Ring* RingApplication::m_spApp = nullptr;
+MainWindow* RingApplication::m_spApp = nullptr;
 
 /**
  * The application constructor
@@ -61,7 +61,7 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
  */
 RingApplication::~RingApplication()
 {
-   delete Ring::app();
+   delete MainWindow::app();
 }
 
 ///Parse command line arguments
@@ -71,7 +71,7 @@ int RingApplication::newInstance()
    //Only call on the first instance
    if (init) {
       init = false;
-      m_spApp = new Ring();
+      m_spApp = new MainWindow();
       if( ! m_spApp->initialize() ) {
          return 1;
       };
@@ -103,20 +103,20 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
    }
    catch (const Call::State& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
-      QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
+      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
    }
    catch (const Call::Action& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
-      QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
+      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
    }
    catch (const QString& errorMessage) {
-      KMessageBox::error(Ring::app(),errorMessage);
-      QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
+      KMessageBox::error(MainWindow::app(),errorMessage);
+      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
    }
    catch (...) {
       qDebug() << ErrorMessage::GENERIC_ERROR;
-      KMessageBox::error(Ring::app(),ErrorMessage::GENERIC_ERROR);
-      QTimer::singleShot(2500,Ring::app(),SLOT(timeout()));
+      KMessageBox::error(MainWindow::app(),ErrorMessage::GENERIC_ERROR);
+      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
    }
    return false;
 }

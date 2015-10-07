@@ -44,7 +44,7 @@
 #include <KColorScheme>
 
 //Ring
-#include "ring.h"
+#include "mainwindow.h"
 #include "widgets/categorizedtreeview.h"
 #include "widgets/bookmarkdock.h"
 #include "klib/kcfg_settings.h"

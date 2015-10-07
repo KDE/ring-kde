@@ -37,7 +37,7 @@
 
 //Ring
 #include "klib/kcfg_settings.h"
-#include "ring.h"
+#include "mainwindow.h"
 #include "klib/helperfunctions.h"
 #include <categorizedbookmarkmodel.h>
 #include "categorizedhistorymodel.h"

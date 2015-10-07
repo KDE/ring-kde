@@ -25,7 +25,7 @@
 class QEvent;
 
 //Ring
-class Ring;
+class MainWindow;
 
 ///RingApplication: Main application
 class RingApplication : public QApplication
@@ -53,8 +53,8 @@ public:
 
 private:
    //Attributes
-   static Ring* m_spApp         ;
-   bool         m_StartIconified;
+   static MainWindow* m_spApp         ;
+   bool               m_StartIconified;
 };
 
 #endif // RINGAPPLICATION_H

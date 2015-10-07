@@ -18,7 +18,7 @@
  **************************************************************************/
 
 //Parent
-#include "ring.h"
+#include "mainwindow.h"
 
 //System
 #include <unistd.h>
@@ -90,7 +90,7 @@
 #include "widgets/videodock.h"
 #endif
 
-Ring* Ring::m_sApp = nullptr;
+MainWindow* MainWindow::m_sApp = nullptr;
 
 static void loadNumberCategories()
 {
@@ -119,7 +119,7 @@ static void loadNumberCategories()
 }
 
 ///Constructor
-Ring::Ring(QWidget* parent)
+MainWindow::MainWindow(QWidget* parent)
    : KXmlGuiWindow(parent), m_pInitialized(false)
 #ifdef ENABLE_VIDEO
       ,m_pVideoDW(nullptr)
@@ -280,8 +280,8 @@ Ring::Ring(QWidget* parent)
    connect(CallModel::instance()->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
 
 #ifdef ENABLE_VIDEO
-   connect(CallModel::instance(),&CallModel::rendererAdded,this,&Ring::displayVideoDock);
-   connect(CallModel::instance(),&CallModel::rendererRemoved,this,&Ring::hideVideoDock);
+   connect(CallModel::instance(),&CallModel::rendererAdded,this,&MainWindow::displayVideoDock);
+   connect(CallModel::instance(),&CallModel::rendererRemoved,this,&MainWindow::hideVideoDock);
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
@@ -392,7 +392,7 @@ Ring::Ring(QWidget* parent)
 } //Ring
 
 ///Destructor
-Ring::~Ring()
+MainWindow::~MainWindow()
 {
    if (!isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
@@ -416,7 +416,7 @@ Ring::~Ring()
 }
 
 ///Init everything
-bool Ring::initialize() //TODO deprecate
+bool MainWindow::initialize() //TODO deprecate
 {
    return !m_pInitialized;
 }
@@ -429,31 +429,31 @@ bool Ring::initialize() //TODO deprecate
  ****************************************************************************/
 
 ///Singleton
-Ring* Ring::app()
+MainWindow* MainWindow::app()
 {
    return m_sApp;
 }
 
 ///Get the view (to be used with the singleton)
-View* Ring::view()
+View* MainWindow::view()
 {
    return app()->m_pView;
 }
 
 ///Return the contact dock
-ContactDock*  Ring::contactDock()
+ContactDock*  MainWindow::contactDock()
 {
    return m_pContactCD;
 }
 
 ///Return the history dock
-HistoryDock*  Ring::historyDock()
+HistoryDock*  MainWindow::historyDock()
 {
    return m_pHistoryDW;
 }
 
 ///Return the bookmark dock
-BookmarkDock* Ring::bookmarkDock()
+BookmarkDock* MainWindow::bookmarkDock()
 {
    return m_pBookmarkDW;
 }
@@ -465,7 +465,7 @@ BookmarkDock* Ring::bookmarkDock()
  ****************************************************************************/
 
 ///[Action]Hide Ring
-bool Ring::queryClose()
+bool MainWindow::queryClose()
 {
    if (!isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
@@ -477,25 +477,25 @@ bool Ring::queryClose()
 }
 
 ///Be sure the default size is look like a phone
-QSize Ring::sizeHint() const
+QSize MainWindow::sizeHint() const
 {
    return QSize(340,700);
 }
 
 ///[Action] Quit action
-void Ring::quitButton()
+void MainWindow::quitButton()
 {
    qApp->quit();
 }
 
-void Ring::displayAccountCbb( bool checked )
+void MainWindow::displayAccountCbb( bool checked )
 {
    m_pAccountStatus->setVisible(checked);
    m_pCurAccL->setVisible(checked);
 }
 
 ///Called when a call is coming
-// void Ring::onIncomingCall(const Call* call) //FIXME
+// void MainWindow::onIncomingCall(const Call* call) //FIXME
 // {
    //FIXME create an infinite loop
 //    if (call) {
@@ -510,13 +510,13 @@ void Ring::displayAccountCbb( bool checked )
 // }
 
 ///Hide or show the statusbar presence widget
-void Ring::slotPresenceEnabled(bool state)
+void MainWindow::slotPresenceEnabled(bool state)
 {
    m_pPresent->setVisible(state && AccountModel::instance()->isPresencePublishSupported());
 }
 
 ///Qt does not support dock icons by default, this is an hack around this
-void Ring::updateTabIcons()
+void MainWindow::updateTabIcons()
 {
    QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
    if(tabBars.count())
@@ -542,21 +542,21 @@ void Ring::updateTabIcons()
 } //updateTabIcons
 
 ///Update presence label
-void Ring::updatePresence(const QString& status)
+void MainWindow::updatePresence(const QString& status)
 {
    m_pPresent->setText(status);
    m_pPresent->setToolTip(PresenceStatusModel::instance()->currentMessage());
 }
 
 ///Hide the presence dock when not required
-void Ring::hidePresenceDock()
+void MainWindow::hidePresenceDock()
 {
    m_pPresent->setChecked(false);
 }
 
 #ifdef ENABLE_VIDEO
 ///Display the video dock
-void Ring::displayVideoDock(Call* c, Video::Renderer* r)
+void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
 {
    Q_UNUSED(c)
 
@@ -568,7 +568,7 @@ void Ring::displayVideoDock(Call* c, Video::Renderer* r)
    m_pVideoDW->show();
 }
 
-void Ring::hideVideoDock(Call* c, Video::Renderer* r)
+void MainWindow::hideVideoDock(Call* c, Video::Renderer* r)
 {
    Q_UNUSED(c)
    Q_UNUSED(r)
@@ -579,7 +579,7 @@ void Ring::hideVideoDock(Call* c, Video::Renderer* r)
 #endif
 
 ///The daemon is not found
-void Ring::timeout()
+void MainWindow::timeout()
 {
    if ((!CallModel::instance()->isConnected()) || (!CallModel::instance()->isValid())) {
       KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
@@ -588,7 +588,7 @@ void Ring::timeout()
 }
 
 ///Select the call tab
-void Ring::selectCallTab()
+void MainWindow::selectCallTab()
 {
    QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
    if(tabBars.count()) {
@@ -603,7 +603,7 @@ void Ring::selectCallTab()
    }
 }
 
-bool Ring::isAutoStart() const
+bool MainWindow::isAutoStart() const
 {
    const bool enabled = ConfigurationSkeleton::autoStart();
 
@@ -618,7 +618,7 @@ bool Ring::isAutoStart() const
    return ConfigurationSkeleton::autoStart();
 }
 
-void Ring::setAutoStart(bool value)
+void MainWindow::setAutoStart(bool value)
 {
    Q_UNUSED(value)
 

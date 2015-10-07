@@ -31,7 +31,7 @@
 #include <callmodel.h>
 #include <contactmethod.h>
 #include "kspeechinterfacesingleton.h"
-#include "ring.h"
+#include "mainwindow.h"
 #include "view.h"
 
 Accessibility* Accessibility::m_pInstance = nullptr;

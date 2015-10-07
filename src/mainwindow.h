@@ -59,20 +59,9 @@ namespace Video {
  * @author Emmanuel Lepage <emmanuel.lepage@savoirfairelinux.com>
  * @version 1.4.1
 **/
-class Ring : public KXmlGuiWindow
+class MainWindow : public KXmlGuiWindow
 {
 Q_OBJECT
-
-public:
-enum CallAction {
-        Accept            ,
-        Refuse            ,
-        Hold              ,
-        Transfer          ,
-        Record            ,
-        Mailbox           ,
-        NumberOfCallActions
-};
 
 private:
    //Attributes
@@ -93,7 +82,7 @@ private:
    QDockWidget*   m_pPresenceDock    ;
    QLabel*        m_pCurAccL         ;
 
-   static Ring*            m_sApp;
+   static MainWindow*            m_sApp;
 
 
 protected:
@@ -102,13 +91,13 @@ protected:
 
 
 public:
-   explicit Ring(QWidget* parent = nullptr);
-   ~Ring();
+   explicit MainWindow(QWidget* parent = nullptr);
+   virtual ~MainWindow();
    bool initialize();
 
    friend class View;
 
-   static Ring* app  ();
+   static MainWindow* app  ();
    static View* view ();
 
    ContactDock*  contactDock ();

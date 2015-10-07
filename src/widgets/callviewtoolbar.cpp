@@ -26,7 +26,7 @@
 #include <QtCore/QSortFilterProxyModel>
 
 //Ring
-#include "ring.h"
+#include "mainwindow.h"
 #include "actioncollection.h"
 #include <klib/tipmanager.h>
 #include <proxies/simplerotateproxy.h>

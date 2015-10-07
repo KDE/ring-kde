@@ -29,7 +29,7 @@
 #include <QtWidgets/QStyle>
 
 //Ring
-#include "ring.h"
+#include "mainwindow.h"
 #include <klib/tipmanager.h>
 #include <QStandardPaths>
 

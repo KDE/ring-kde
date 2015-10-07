@@ -21,7 +21,7 @@
 #include <QtWidgets/QHBoxLayout>
 
 //Ring
-#include "ring.h"
+#include "mainwindow.h"
 #include "actioncollection.h"
 
 ///Constructor

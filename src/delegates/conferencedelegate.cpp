@@ -33,7 +33,7 @@
 
 //Ring
 #include "../widgets/categorizedtreeview.h"
-#include "ring.h"
+#include "mainwindow.h"
 #include "call.h"
 
 ///Constructor

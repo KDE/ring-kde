@@ -38,7 +38,7 @@
 #include <personmodel.h>
 #include <klib/tipmanager.h>
 #include "view.h"
-#include "ring.h"
+#include "mainwindow.h"
 #include "actioncollection.h"
 #include "useractionmodel.h"
 #include "canvasobjectmanager.h"
@@ -52,7 +52,7 @@ class MainWindowEvent : public QObject {
    Q_OBJECT
 public:
    MainWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
-      Ring::app()->installEventFilter(this);
+      MainWindow::app()->installEventFilter(this);
    }
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event)  override {
@@ -65,7 +65,7 @@ protected:
       }
       else if (event->type() == QEvent::WindowStateChange) {
          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
-         switch (Ring::app()->windowState()) {
+         switch (MainWindow::app()->windowState()) {
             case Qt::WindowMinimized:
                emit minimized(true);
                break;
@@ -308,7 +308,7 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->selection()) {
             m_pParent->m_pAutoCompletion->callSelectedNumber();
          }
-         else if (!Ring::view()->messageBoxFocussed())
+         else if (!MainWindow::view()->messageBoxFocussed())
             enter();
          break;
       case Qt::Key_Backspace:
@@ -513,7 +513,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
    switch (call->state()) {
       case Call::State::RINGING:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-         Ring::app()->selectCallTab();
+         MainWindow::app()->selectCallTab();
          break;
       case Call::State::DIALING:
       case Call::State::NEW:
@@ -595,7 +595,7 @@ void EventManager::slotIncomingCall(Call* call)
    Q_UNUSED(call)
    if (call->state() == Call::State::INCOMING || call->state() == Call::State::RINGING) {
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-      Ring::app()->selectCallTab();
+      MainWindow::app()->selectCallTab();
    }
 }
 

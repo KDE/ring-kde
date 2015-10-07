@@ -31,7 +31,7 @@
 #include <call.h>
 #include <callmodel.h>
 #include <media/text.h>
-#include <ring.h>
+#include <mainwindow.h>
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 
@@ -204,9 +204,9 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
    }
 
    if (ConfigurationSkeleton::displayOnStart()) {
-      Ring::app()->show();
-      Ring::app()->activateWindow();
-      Ring::app()->raise();
+      MainWindow::app()->show();
+      MainWindow::app()->activateWindow();
+      MainWindow::app()->raise();
    }
 }
 

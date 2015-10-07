@@ -237,7 +237,7 @@ SET(
    ring_kde_SRCS
    main.cpp
    view.cpp
-   ring.cpp
+   mainwindow.cpp
    cmd.cpp
    ringapplication.cpp
    errormessage.cpp

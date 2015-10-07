@@ -35,7 +35,7 @@
 
 //Ring
 #include "globalinstances.h"
-#include "ring.h"
+#include "mainwindow.h"
 #include "view.h"
 #include "localmacrocollection.h"
 #include "accessibility.h"
@@ -79,7 +79,7 @@ action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), 
    action_mute_capture  = new QAction(this);
    action_mute_playback = new QAction(this);
    action_hangup        = new QAction(this);
-   action_mailBox       = new QAction(Ring::app());
+   action_mailBox       = new QAction(MainWindow::app());
 
    action_new_call->setIcon(QIcon(":/images/icons/call.svg"     ));
    action_hold->setIcon    (QIcon(":/images/icons/hold.svg"     ));
@@ -162,13 +162,13 @@ void ActionCollection::setupAction()
 {
    qDebug() << "setupActions";
 
-   action_screen = new QActionGroup(Ring::app());
+   action_screen = new QActionGroup(MainWindow::app());
    action_screen->setExclusive(true);
 
-   action_close = KStandardAction::close(Ring::app(), SLOT(close()), Ring::app());
-   action_quit  = KStandardAction::quit(Ring::app(), SLOT(quitButton()), Ring::app());
+   action_close = KStandardAction::close(MainWindow::app(), SLOT(close()), MainWindow::app());
+   action_quit  = KStandardAction::quit(MainWindow::app(), SLOT(quitButton()), MainWindow::app());
 
-   action_configureRing = KStandardAction::preferences(this, SLOT(configureRing()), Ring::app());
+   action_configureRing = KStandardAction::preferences(this, SLOT(configureRing()), MainWindow::app());
    action_configureRing->setText(i18n("Configure Ring-KDE"));
 
    action_displayDialpad        = new QAction(QIcon(RingIcons::DISPLAY_DIALPAD), i18n("Display dialpad")                 , this);
@@ -183,7 +183,7 @@ void ActionCollection::setupAction()
    action_addPerson             = new QAction(QIcon::fromTheme("contact-new"),i18n("Add new contact")                                                     , this);
    action_configureShortcut     = new QAction(QIcon::fromTheme("configure-shortcuts"), i18n("Configure Shortcut"), this);
 
-#define COL(a,b) Ring::app()->actionCollection()->setDefaultShortcut(a,b)
+#define COL(a,b) MainWindow::app()->actionCollection()->setDefaultShortcut(a,b)
    COL(action_accept      , Qt::CTRL + Qt::Key_A );
    COL(action_new_call    , Qt::CTRL + Qt::Key_N );
    COL(action_hold        , Qt::CTRL + Qt::Key_H );
@@ -261,11 +261,11 @@ void ActionCollection::setupAction()
 
    /**/connect(MacroModel::instance()           ,       SIGNAL(addAction(QVariant)),  this    , SLOT(addMacro(QVariant))          );
    /**/connect(action_mailBox                   ,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
-   /**/connect(action_displayVolumeControls     ,   SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayVolumeControls(bool)) );
-   /**/connect(action_displayDialpad            ,        SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayDialpad(bool))        );
-   /**/connect(action_displayAccountCbb         ,        SIGNAL(toggled(bool)),         Ring::app() , SLOT(displayAccountCbb(bool))        );
-   /**/connect(action_displayMessageBox         ,     SIGNAL(toggled(bool)),         Ring::view() , SLOT(displayMessageBox(bool))     );
-   /**/connect(action_pastenumber               ,           SIGNAL(triggered()),           Ring::view() , SLOT(paste())            );
+   /**/connect(action_displayVolumeControls     ,   SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayVolumeControls(bool)) );
+   /**/connect(action_displayDialpad            ,        SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayDialpad(bool))        );
+   /**/connect(action_displayAccountCbb         ,        SIGNAL(toggled(bool)),         MainWindow::app() , SLOT(displayAccountCbb(bool))        );
+   /**/connect(action_displayMessageBox         ,     SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayMessageBox(bool))     );
+   /**/connect(action_pastenumber               ,           SIGNAL(triggered()),           MainWindow::view() , SLOT(paste())            );
    /**/connect(action_configureShortcut         ,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
    /**/connect(action_editToolBar               ,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
    /**/connect(action_addPerson                 ,             SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
@@ -275,36 +275,36 @@ void ActionCollection::setupAction()
    connect(Audio::Settings::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
 
 
-//    Ring::app()->actionCollection()->setConfigGlobal(true);
-   Ring::app()->actionCollection()->addAction("action_accept"                , action_accept                );
-   Ring::app()->actionCollection()->addAction("action_new_call"              , action_new_call              );
-   Ring::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
-   Ring::app()->actionCollection()->addAction("action_transfer"              , action_transfer              );
-   Ring::app()->actionCollection()->addAction("action_record"                , action_record                );
-   Ring::app()->actionCollection()->addAction("action_mailBox"               , action_mailBox               );
-   Ring::app()->actionCollection()->addAction("action_close"                 , action_close                 );
-   Ring::app()->actionCollection()->addAction("action_quit"                  , action_quit                  );
-   Ring::app()->actionCollection()->addAction("action_displayVolumeControls" , action_displayVolumeControls );
-   Ring::app()->actionCollection()->addAction("action_displayDialpad"        , action_displayDialpad        );
-   Ring::app()->actionCollection()->addAction("action_displayAccountCbb"     , action_displayAccountCbb     );
-   Ring::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
-   Ring::app()->actionCollection()->addAction("action_configureRing"         , action_configureRing         );
-   Ring::app()->actionCollection()->addAction("action_configureShortcut"     , action_configureShortcut     );
-   Ring::app()->actionCollection()->addAction("action_pastenumber"           , action_pastenumber           );
-   Ring::app()->actionCollection()->addAction("action_showContactDock"       , action_showContactDock       );
-   Ring::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
-   Ring::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
-   Ring::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
-   Ring::app()->actionCollection()->addAction("action_addPerson"             , action_addPerson             );
-   Ring::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
-   Ring::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
+//    MainWindow::app()->actionCollection()->setConfigGlobal(true);
+   MainWindow::app()->actionCollection()->addAction("action_accept"                , action_accept                );
+   MainWindow::app()->actionCollection()->addAction("action_new_call"              , action_new_call              );
+   MainWindow::app()->actionCollection()->addAction("action_hold"                  , action_hold                  );
+   MainWindow::app()->actionCollection()->addAction("action_transfer"              , action_transfer              );
+   MainWindow::app()->actionCollection()->addAction("action_record"                , action_record                );
+   MainWindow::app()->actionCollection()->addAction("action_mailBox"               , action_mailBox               );
+   MainWindow::app()->actionCollection()->addAction("action_close"                 , action_close                 );
+   MainWindow::app()->actionCollection()->addAction("action_quit"                  , action_quit                  );
+   MainWindow::app()->actionCollection()->addAction("action_displayVolumeControls" , action_displayVolumeControls );
+   MainWindow::app()->actionCollection()->addAction("action_displayDialpad"        , action_displayDialpad        );
+   MainWindow::app()->actionCollection()->addAction("action_displayAccountCbb"     , action_displayAccountCbb     );
+   MainWindow::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
+   MainWindow::app()->actionCollection()->addAction("action_configureRing"         , action_configureRing         );
+   MainWindow::app()->actionCollection()->addAction("action_configureShortcut"     , action_configureShortcut     );
+   MainWindow::app()->actionCollection()->addAction("action_pastenumber"           , action_pastenumber           );
+   MainWindow::app()->actionCollection()->addAction("action_showContactDock"       , action_showContactDock       );
+   MainWindow::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
+   MainWindow::app()->actionCollection()->addAction("action_showBookmarkDock"      , action_showBookmarkDock      );
+   MainWindow::app()->actionCollection()->addAction("action_editToolBar"           , action_editToolBar           );
+   MainWindow::app()->actionCollection()->addAction("action_addPerson"             , action_addPerson             );
+   MainWindow::app()->actionCollection()->addAction("action_mute_capture"          , action_mute_capture          );
+   MainWindow::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
    GlobalInstances::setInterface<KDEShortcutDelegate>();
    MacroModel::instance()->addCollection<LocalMacroCollection>();
    QList<QAction *> acList = *Accessibility::instance();
 
    foreach(QAction * ac,acList) {
-      Ring::app()->actionCollection()->addAction(ac->objectName() , ac);
+      MainWindow::app()->actionCollection()->addAction(ac->objectName() , ac);
    }
 
    updateRecordButton();
@@ -324,36 +324,36 @@ void ActionCollection::mailBox()
          call->performAction(Call::Action::ACCEPT);
       }
       catch(const char * msg) {
-         KMessageBox::error(Ring::app(),i18n(msg));
+         KMessageBox::error(MainWindow::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
    else {
-      HelperFunctions::displayNoAccountMessageBox(Ring::view());
+      HelperFunctions::displayNoAccountMessageBox(MainWindow::view());
    }
 }
 
 ///Show the configuration dialog
 void ActionCollection::configureRing()
 {
-   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(Ring::view());
+   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(MainWindow::view());
    configDialog->setModal(true);
 
-   connect(configDialog, SIGNAL(changesApplied()), Ring::view(), SLOT(loadWindow()));
+   connect(configDialog, SIGNAL(changesApplied()), MainWindow::view(), SLOT(loadWindow()));
    configDialog->exec();
-   disconnect(configDialog, SIGNAL(changesApplied()), Ring::view(), SLOT(loadWindow()));
+   disconnect(configDialog, SIGNAL(changesApplied()), MainWindow::view(), SLOT(loadWindow()));
    delete configDialog;
 }
 
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor() {
-   KShortcutsDialog::configure( Ring::app()->actionCollection() );
+   KShortcutsDialog::configure( MainWindow::app()->actionCollection() );
 }
 
 ///Show the toolbar editor
 void ActionCollection::editToolBar()
 {
-   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(Ring::app()->guiFactory());
+   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(MainWindow::app()->guiFactory());
    toolbareditor->setModal(true);
    toolbareditor->exec();
    toolbareditor->setDefaultToolBar("mainToolBar");
@@ -364,7 +364,7 @@ void ActionCollection::editToolBar()
 void ActionCollection::addMacro(const QVariant& newAction)
 {
    if (qvariant_cast<QAction*>(newAction))
-      Ring::app()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
+      MainWindow::app()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
 }
 
 
@@ -479,7 +479,7 @@ void ActionCollection::updateRecordButton()
       QIcon(":/images/icons/mic_50.svg"),QIcon(":/images/icons/mic_75.svg")};
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
    ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
-   Ring::view()->updateVolumeControls();
+   MainWindow::view()->updateVolumeControls();
 }
 
 ///Update the colunm button icon
@@ -490,7 +490,7 @@ void ActionCollection::updateVolumeButton()
       QIcon(":/images/icons/speaker_50.svg"),QIcon(":/images/icons/speaker_75.svg")};
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
-   Ring::view()->updateVolumeControls();
+   MainWindow::view()->updateVolumeControls();
 }
 
 //Video actions

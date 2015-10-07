@@ -38,7 +38,7 @@
 #include <kmessagebox.h>
 
 //Ring
-#include "ring.h"
+#include "mainwindow.h"
 #include "view.h"
 #include "bookmarkdock.h"
 #include "kphonenumberselector.h"

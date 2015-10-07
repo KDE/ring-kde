@@ -25,7 +25,7 @@
 #include <klocalizedstring.h>
 
 //Ring
-#include "ring.h"
+#include "mainwindow.h"
 
 ///Constructor
 DlgDisplay::DlgDisplay(KConfigDialog *parent)
@@ -57,7 +57,7 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
    connect(m_pDetailsList   , SIGNAL(itemChanged(QListWidgetItem*))  , this  , SLOT(changed())      );
    connect(this,SIGNAL(updateButtons()), parent , SLOT(updateButtons()));
 
-   Ring::app()->isAutoStart();
+   MainWindow::app()->isAutoStart();
 }
 
 ///Destructor
@@ -81,7 +81,7 @@ void DlgDisplay::changed()
 ///Update all widgets
 void DlgDisplay::updateWidgets()
 {
-   kcfg_autoStart->setChecked(Ring::app()->isAutoStart());
+   kcfg_autoStart->setChecked(MainWindow::app()->isAutoStart());
 }
 
 ///Save current settings
@@ -97,7 +97,7 @@ void DlgDisplay::updateSettings()
       ConfigurationSkeleton::setAutoStartOverride(true);
    }
 
-   Ring::app()->setAutoStart(kcfg_autoStart->isChecked());
+   MainWindow::app()->setAutoStart(kcfg_autoStart->isChecked());
 
    m_HasChanged = false;
 }
