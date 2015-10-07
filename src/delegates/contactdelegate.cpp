@@ -68,7 +68,7 @@ QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    const int rowCount = index.model()->rowCount(index);
    const bool displayEmail = ConfigurationSkeleton::displayEmail();
    const bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
-   Person* ct = (Person*)((CategorizedCompositeNode*)(static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer())->getSelf();
+   Person* ct = qvariant_cast<Person*>((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).data((int)Person::Role::Object));
 
    //Compute only once, the value is unlikely to change
    static QFontMetrics fm(QApplication::font());
@@ -99,14 +99,14 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //The BG_STATE macro limit the number of redraw associated with irrelevant states
    //setDirty force the phone number to redraw themselves as they need up upgrade their own
    //background to match this one
-   CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)static_cast<const QSortFilterProxyModel*>(index.model())->mapToSource(index).internalPointer();
-   if (modelItem && BG_STATE(modelItem->hoverState()) != BG_STATE(option.state)) {
-      modelItem->setHoverState(option.state);
+//    CategorizedCompositeNode* modelItem = (CategorizedCompositeNode*)static_cast<const QSortFilterProxyModel*>(index.model())->mapToSource(index).internalPointer();
+   if (/*modelItem &&*/ BG_STATE(0/*FIXME modelItem->hoverState()*/) != BG_STATE(option.state)) {
+//       modelItem->setHoverState(option.state); //FIXME
       m_pView->setDirty(QRect(option.rect.x(),option.rect.y()+option.rect.height(),option.rect.width(),(fullRect.height()-option.rect.height())));
    }
 
    painter->setClipRect(fullRect);
-   Person* ct = (Person*)((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).internalPointer()))->getSelf();
+   Person* ct = qvariant_cast<Person*>((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).data((int)Person::Role::Object));
 
    //BEGIN is selected
    {

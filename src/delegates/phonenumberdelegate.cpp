@@ -70,8 +70,7 @@ void ContactMethodDelegate::paint(QPainter* painter, const QStyleOptionViewItem&
       QStyleOptionViewItem parOpt;
       parOpt.rect = parentRect;
       //Set if the item is selected, active, hover and focus
-      CategorizedCompositeNode* modelItem = ((CategorizedCompositeNode*)((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(parent).internalPointer()));
-      parOpt.state = (QStyle::State)modelItem->hoverState();
+      parOpt.state = (QStyle::State) 0; //modelItem->hoverState(); //FIXME dropped by LRC
 
       m_pView->itemDelegate()->paint(painter,parOpt,parent);
       painter->restore();
