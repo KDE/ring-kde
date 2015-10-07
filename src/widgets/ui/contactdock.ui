@@ -14,16 +14,6 @@
    <string>Dock</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="FilterLineEdit" name="m_pFilterLE">
-     <property name="placeholderText">
-      <string>Filter</string>
-     </property>
-     <property name="showClearButton" stdset="0">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
@@ -61,18 +51,19 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="AutoComboBox" name="m_pSortByCBB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="ToolButtonModelView" name="m_pMenuBtn">
+     <property name="text">
+      <string/>
      </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="FilterLineEdit" name="m_pFilterLE">
+     <property name="placeholderText">
+      <string>Filter</string>
      </property>
-     <property name="minimumContentsLength">
-      <number>0</number>
+     <property name="showClearButton" stdset="0">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -80,19 +71,19 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ContactView</class>
-   <extends>QTreeView</extends>
-   <header>widgets/contactview.h</header>
-  </customwidget>
-  <customwidget>
    <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>widgets/filterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>AutoComboBox</class>
-   <extends>QComboBox</extends>
-   <header>conf/account/widgets/autocombobox.h</header>
+   <class>ContactView</class>
+   <extends>QTreeView</extends>
+   <header>widgets/contactview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ToolButtonModelView</class>
+   <extends>QToolButton</extends>
+   <header>widgets/toolbuttonmodelview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

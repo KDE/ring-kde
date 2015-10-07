@@ -26,6 +26,7 @@
 
 //Ring
 #include "mime.h"
+#include "menumodelview.h"
 #include "klib/kcfg_settings.h"
 
 ///KeyPressEaterC: keygrabber
@@ -60,7 +61,7 @@ DockBase::DockBase(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
    setupUi(mainWidget);
 
    setWidget(mainWidget);
-   m_pSortByCBB   ->setHidden(true);
+   m_pMenuBtn  ->setHidden(true);
    m_pKeyPressEater = new KeyPressEaterC( this );
 
    m_pView->installEventFilter(m_pKeyPressEater    );
@@ -105,8 +106,8 @@ CategorizedTreeView* DockBase::view() const
 
 void DockBase::setSortingModel(QAbstractItemModel* m, QItemSelectionModel* s)
 {
-   m_pSortByCBB->bindToModel(m, s);
-   m_pSortByCBB->setHidden(false);
+   m_pMenuBtn->setHidden(false);
+   m_pMenuBtn->setModel(m, s);
 }
 
 void DockBase::setMenuConstructor(std::function<QMenu*()> cst)

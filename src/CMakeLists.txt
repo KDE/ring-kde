@@ -217,6 +217,8 @@ SET(
    widgets/contactview.cpp
    widgets/presence.cpp
    widgets/autocompletion.cpp
+   widgets/menumodelview.cpp
+   widgets/toolbuttonmodelview.cpp
    widgets/wizard.cpp
 )
 
@@ -286,7 +288,6 @@ SET(
    conf/dlgfallbackperson.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
-   widgets/ui/dockbase.ui
    widgets/ui/contactdock.ui
    widgets/ui/transfer.ui
    widgets/ui/presence.ui

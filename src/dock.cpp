@@ -87,7 +87,6 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);
    m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
    m_pContactCD->setDelegate(m_pCategoryDelegate);
-   //m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::contactSortMode());
 
    CategorizedContactModel::instance()->setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
    QSortFilterProxyModel* proxy = CategorizedContactModel::SortedProxy::instance()->model();
@@ -96,6 +95,18 @@ Dock::Dock(QMainWindow* w) : QObject(w)
       CategorizedContactModel::SortedProxy::instance()->categoryModel(),
       CategorizedContactModel::SortedProxy::instance()->categorySelectionModel()
    );
+
+   CategorizedContactModel::SortedProxy::instance()->categorySelectionModel()->setCurrentIndex(
+      CategorizedContactModel::SortedProxy::instance()->categoryModel()->index(
+         ConfigurationSkeleton::contactSortMode() , 0
+      ), QItemSelectionModel::ClearAndSelect
+   );
+
+   connect(CategorizedContactModel::SortedProxy::instance()->categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+      if (idx.isValid())
+         ConfigurationSkeleton::setContactSortMode(idx.row());
+   });
+
    m_pContactCD->setMenuConstructor([]() {
       return new Menu::Person();
    });
@@ -116,7 +127,17 @@ Dock::Dock(QMainWindow* w) : QObject(w)
       CategorizedHistoryModel::SortedProxy::instance()->categoryModel         (),
       CategorizedHistoryModel::SortedProxy::instance()->categorySelectionModel()
    );
-   //m_pSortByCBB->setCurrentIndex(ConfigurationSkeleton::historySortMode());
+
+   CategorizedHistoryModel::SortedProxy::instance()->categorySelectionModel()->setCurrentIndex(
+      CategorizedHistoryModel::SortedProxy::instance()->categoryModel()->index(
+         ConfigurationSkeleton::historySortMode() , 0
+      ), QItemSelectionModel::ClearAndSelect
+   );
+
+   connect(CategorizedHistoryModel::SortedProxy::instance()->categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+      if (idx.isValid())
+         ConfigurationSkeleton::setHistorySortMode(idx.row());
+   });
 
    //Bookmark dock
    m_pBookmarkDW      = new DockBase ( w );
