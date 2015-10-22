@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014-2015 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2015 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,50 +15,44 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef DLGACCOUNT_H
-#define DLGACCOUNT_H
+#include "extendedprotocolmodel.h"
 
-#include "ui_accountdlg.h"
-#include "typedefs.h"
+#include <account.h>
 
-class Account;
-class ExtendedProtocolModel;
+#include <klocale.h>
 
-namespace Pages {
-    class Account;
+ExtendedProtocolModel::ExtendedProtocolModel(QObject* parent) : QIdentityProxyModel(parent)
+{
+   setSourceModel(m_pSource);
 }
 
-class LIB_EXPORT DlgAccount : public QWidget, public Ui::AccountDlg
+ExtendedProtocolModel::~ExtendedProtocolModel()
 {
-   Q_OBJECT
-public:
-   DlgAccount(QWidget* parent);
-   virtual ~DlgAccount();
+   delete m_pSource;
+}
 
-   //Getters
-   bool hasChanged();
+QItemSelectionModel* ExtendedProtocolModel::selectionModel() const
+{
+   return m_pSource->selectionModel();
+}
 
-private:
-   Pages::Account* m_pCurrentAccount;
-   ExtendedProtocolModel* m_pProtocolModel;
-   bool m_HasChanged;
+QVariant ExtendedProtocolModel::data( const QModelIndex& index, int role ) const
+{
+   if (index.isValid() && index.row() == static_cast<int>(Account::Protocol::COUNT__) && role == Qt::DisplayRole)
+      return i18n("Profile");
+   else
+      return m_pSource->data(mapToSource(index), role);
+}
 
-public Q_SLOTS:
-   //Housekeeping
-   void updateSettings();
-   void updateWidgets();
-   void cancel();
+int ExtendedProtocolModel::rowCount( const QModelIndex& parent ) const
+{
+   return parent.isValid() ? 0 : m_pSource->rowCount() + 1;
+}
 
-   //Core logic
-   void slotNewAddAccount();
-
-private Q_SLOTS:
-   void slotUpdateButtons();
-   void slotRemoveAccount();
-   void slotExpand();
-
-Q_SIGNALS:
-   void updateButtons();
-};
-
-#endif // _DLGACCOUNT_H_
+QModelIndex ExtendedProtocolModel::index( int row, int column, const QModelIndex& parent) const
+{
+   if ( row == static_cast<int>(Account::Protocol::COUNT__))
+      return createIndex(row, column, static_cast<int>(Account::Protocol::COUNT__));
+   else
+      return mapFromSource(m_pSource->index(row, column, mapToSource(parent)));
+}

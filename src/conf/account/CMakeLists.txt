@@ -62,6 +62,8 @@ SET(accountdialog_SRCS ${accountdialog_SRCS}
    delegates/righticondelegate.cpp
    delegates/categorizeddelegate.cpp
 
+   model/extendedprotocolmodel.cpp
+
    accountpages/advanced.cpp
    accountpages/credentials.cpp
    accountpages/basic.cpp

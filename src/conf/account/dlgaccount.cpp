@@ -29,6 +29,8 @@
 #include <delegates/righticondelegate.h>
 #include <delegates/categorizeddelegate.h>
 
+#include <model/extendedprotocolmodel.h>
+
 #include <QtGui/QPainter>
 #include <QtWidgets/QMessageBox>
 
@@ -44,10 +46,10 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 
    m_pAccountList->setItemDelegate(delegate);
 
-   m_pProtocolModel = new ProtocolModel();
+   m_pProtocolModel = new ExtendedProtocolModel(this);
    //m_pProtocolModel->displayProfile(true);
 
-   m_pGlobalProto->bindToModel(m_pProtocolModel,m_pProtocolModel->selectionModel());
+   m_pGlobalProto->bindToModel(m_pProtocolModel, m_pProtocolModel->selectionModel());
 
 //    setCurrentAccount(nullptr);
 

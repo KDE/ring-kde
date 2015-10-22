@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014-2015 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2015 by Savoir-Faire Linux                              *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,50 +15,31 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef DLGACCOUNT_H
-#define DLGACCOUNT_H
+#ifndef EXTENDEDPROTOCOLMODEL_H
+#define EXTENDEDPROTOCOLMODEL_H
 
-#include "ui_accountdlg.h"
-#include "typedefs.h"
+#include <QtCore/QIdentityProxyModel>
+#include <QtCore/QItemSelectionModel>
 
-class Account;
-class ExtendedProtocolModel;
+#include <protocolmodel.h>
 
-namespace Pages {
-    class Account;
-}
-
-class LIB_EXPORT DlgAccount : public QWidget, public Ui::AccountDlg
+class ExtendedProtocolModel : public QIdentityProxyModel
 {
    Q_OBJECT
-public:
-   DlgAccount(QWidget* parent);
-   virtual ~DlgAccount();
 
-   //Getters
-   bool hasChanged();
+public:
+   explicit ExtendedProtocolModel(QObject* parent = nullptr);
+   virtual ~ExtendedProtocolModel();
+
+   //Model
+   virtual QVariant    data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+   virtual int         rowCount ( const QModelIndex& parent = QModelIndex()            ) const override;
+   virtual QModelIndex index    ( int row, int column, const QModelIndex& parent       ) const override;
+
+   QItemSelectionModel* selectionModel() const;
 
 private:
-   Pages::Account* m_pCurrentAccount;
-   ExtendedProtocolModel* m_pProtocolModel;
-   bool m_HasChanged;
-
-public Q_SLOTS:
-   //Housekeeping
-   void updateSettings();
-   void updateWidgets();
-   void cancel();
-
-   //Core logic
-   void slotNewAddAccount();
-
-private Q_SLOTS:
-   void slotUpdateButtons();
-   void slotRemoveAccount();
-   void slotExpand();
-
-Q_SIGNALS:
-   void updateButtons();
+   ProtocolModel* m_pSource {new ProtocolModel()};
 };
 
-#endif // _DLGACCOUNT_H_
+#endif
