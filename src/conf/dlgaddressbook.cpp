@@ -62,11 +62,11 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pCategoryDelegate->setChildChildDelegate(m_pDelegate);
    m_pItemBackendW->setItemDelegate(m_pCategoryDelegate);
 
-   CollectionModel::instance()->load();
+   CollectionModel::instance().load();
 
    m_pProxyModel = new QSortFilterProxyModel(this);
    m_pProxyModel->setSortRole(Qt::DisplayRole);
-   m_pProxyModel->setSourceModel(ConfigurationSkeleton::displayAllCollections()? CollectionModel::instance() : CollectionModel::instance()->manageableCollections());
+   m_pProxyModel->setSourceModel(ConfigurationSkeleton::displayAllCollections()? &CollectionModel::instance() : CollectionModel::instance().manageableCollections());
    m_pItemBackendW->sortByColumn(0,Qt::AscendingOrder);
 
    m_pItemBackendW->setModel(m_pProxyModel);
@@ -79,19 +79,19 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    //Resize the columns
    if (m_pItemBackendW->header()) {
       m_pItemBackendW->header()->setSectionResizeMode(0,QHeaderView::Stretch);
-      for (int i =1;i<CollectionModel::instance()->columnCount();i++)
+      for (int i =1;i<CollectionModel::instance().columnCount();i++)
          m_pItemBackendW->header()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
    }
 
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
-   connect(CollectionModel::instance(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
+   connect(&CollectionModel::instance(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
 
-   connect(CollectionModel::instance(),&CollectionModel::rowsInserted,[this](const QModelIndex&,int,int) {
+   connect(&CollectionModel::instance(),&CollectionModel::rowsInserted,[this](const QModelIndex&,int,int) {
       m_pItemBackendW->expandAll();
    });
 
    connect(kcfg_displayAllCollections,&QCheckBox::toggled,[this](bool checked) {
-      m_pProxyModel->setSourceModel( checked ? CollectionModel::instance() : CollectionModel::instance()->manageableCollections());
+      m_pProxyModel->setSourceModel( checked ? &CollectionModel::instance() : CollectionModel::instance().manageableCollections());
       m_pItemBackendW->expandAll();
    });
 
@@ -100,18 +100,18 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pItemBackendW->expandAll();
 
    //Select the first useful element
-   for (int i=0; i<CollectionModel::instance()->rowCount(); i++) {
-      const QModelIndex& cat = CollectionModel::instance()->index(i,0);
-      for (int j=0;j<CollectionModel::instance()->rowCount(cat);j++) {
-         const QModelIndex& orig = CollectionModel::instance()->index(j,0,cat);
-         CollectionInterface* col = CollectionModel::instance()->collectionAt(orig);
+   for (int i=0; i<CollectionModel::instance().rowCount(); i++) {
+      const QModelIndex& cat = CollectionModel::instance().index(i,0);
+      for (int j=0;j<CollectionModel::instance().rowCount(cat);j++) {
+         const QModelIndex& orig = CollectionModel::instance().index(j,0,cat);
+         CollectionInterface* col = CollectionModel::instance().collectionAt(orig);
          if (col) {
             CollectionConfigurationInterface* configurator = col->configurator();
             if (configurator) {
-               if (m_pProxyModel->sourceModel() == CollectionModel::instance())
+               if (m_pProxyModel->sourceModel() == &CollectionModel::instance())
                   m_pItemBackendW->selectionModel()->setCurrentIndex(m_pProxyModel->mapFromSource(orig), QItemSelectionModel::ClearAndSelect);
                else
-                  m_pItemBackendW->selectionModel()->setCurrentIndex(m_pProxyModel->mapFromSource(((QAbstractProxyModel*)CollectionModel::instance()->manageableCollections())->mapFromSource(orig)), QItemSelectionModel::ClearAndSelect);
+                  m_pItemBackendW->selectionModel()->setCurrentIndex(m_pProxyModel->mapFromSource(((QAbstractProxyModel*)CollectionModel::instance().manageableCollections())->mapFromSource(orig)), QItemSelectionModel::ClearAndSelect);
             }
          }
       }
@@ -130,16 +130,16 @@ DlgAddressBook::~DlgAddressBook()
 ///Reload the widget
 void DlgAddressBook::updateWidgets()
 {
-//    AkonadiPersonCollectionModel::instance()->reload();
+//    AkonadiPersonCollectionModel::instance().reload();
    m_pManager->updateWidgets();
-   CollectionModel::instance()->load();
+   CollectionModel::instance().load();
 }
 
 ///Save the settings
 void DlgAddressBook::updateSettings()
 {
-//    AkonadiPersonCollectionModel::instance()->save();
-   CollectionModel::instance()->save();
+//    AkonadiPersonCollectionModel::instance().save();
+   CollectionModel::instance().save();
    m_pManager->updateSettings();
 
    for (CollectionConfigurationInterface* c : m_lConfigurators) {
@@ -172,14 +172,14 @@ bool DlgAddressBook::hasChanged()
 void DlgAddressBook::slotEditCollection()
 {
    QModelIndex dest = m_pItemBackendW->selectionModel()->currentIndex();
-   if (m_pProxyModel->sourceModel() != CollectionModel::instance()) {
+   if (m_pProxyModel->sourceModel() != &CollectionModel::instance()) {
       dest = m_pProxyModel->mapToSource(dest);
-      dest = ((QAbstractProxyModel*)CollectionModel::instance()->manageableCollections())->mapToSource(dest);
+      dest = ((QAbstractProxyModel*)CollectionModel::instance().manageableCollections())->mapToSource(dest);
    }
    else
       dest = m_pProxyModel->mapToSource(dest);
 
-   CollectionInterface* col = CollectionModel::instance()->collectionAt(dest);
+   CollectionInterface* col = CollectionModel::instance().collectionAt(dest);
    if (col) {
 
       if (m_hWidgets[col]) {

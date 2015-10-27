@@ -89,7 +89,7 @@ void Menu::ContactMethod::setContactMethod(::ContactMethod* p)
 void Menu::ContactMethod::removeBookmark()
 {
 //    if (m_CurrentIndex.isValid()) {
-//       CategorizedBookmarkModel::instance()->remove(m_CurrentIndex);
+//       CategorizedBookmarkModel::instance().remove(m_CurrentIndex);
 //       m_CurrentIndex = QModelIndex();
 //       //expandTree();
 //    }
@@ -132,7 +132,7 @@ void Menu::ContactMethod::callAgain()
 {
    if ( m_pCurrentCM ) {
       const QString name = m_pCurrentCM->contact()?m_pCurrentCM->contact()->formattedName() : m_pCurrentCM->primaryName();
-      Call* call = CallModel::instance()->dialingCall(m_pCurrentCM);
+      Call* call = CallModel::instance().dialingCall(m_pCurrentCM);
       if (call) {
          call->performAction(Call::Action::ACCEPT);
       }
@@ -155,7 +155,7 @@ void Menu::ContactMethod::editPerson()
          Person* aPerson = new Person();
          aPerson->setContactMethods({m_pCurrentCM});
          aPerson->setFormattedName(m_pCurrentCM->primaryName());
-         PersonModel::instance()->addNewPerson(aPerson);
+         PersonModel::instance().addNewPerson(aPerson);
       }
    }
 }
@@ -171,7 +171,7 @@ void Menu::ContactMethod::addPhone()
          bool ok;
          const QString text = QInputDialog::getText(this, i18n("Enter a new number"), i18n("New number:"),QLineEdit::Normal, QString(), &ok);
          if (ok && !text.isEmpty()) {
-//             ContactMethod* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
+//             ContactMethod* n = PhoneDirectoryModel::instance().getNumber(text,"work");
 //             m_pCurrentCM->contact()->addContactMethod(n); //FIXME
          }
       }

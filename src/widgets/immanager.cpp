@@ -30,7 +30,7 @@ IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
    setVisible(false);
    setTabsClosable(true);
 
-   connect(CallModel::instance(), &CallModel::mediaAdded,[this](Call* c, Media::Media* m) {
+   connect(&CallModel::instance(), &CallModel::mediaAdded,[this](Call* c, Media::Media* m) {
       if (m->type() == Media::Media::Type::TEXT) {
 
          Media::Text* media = static_cast<Media::Text*>(m);

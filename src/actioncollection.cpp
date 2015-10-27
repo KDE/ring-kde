@@ -218,14 +218,14 @@ void ActionCollection::setupAction()
    action_showBookmarkDock->setChecked(ConfigurationSkeleton::displayBookmarkDock());
 
    action_mute_capture->setCheckable(true);
-   connect(action_mute_capture,SIGNAL(toggled(bool)),Audio::Settings::instance(),SLOT(muteCapture(bool)));
-   connect(Audio::Settings::instance(),SIGNAL(captureMuted(bool)),action_mute_capture,SLOT(setChecked(bool)));
+   connect(action_mute_capture,SIGNAL(toggled(bool)),&Audio::Settings::instance(),SLOT(muteCapture(bool)));
+   connect(&Audio::Settings::instance(),SIGNAL(captureMuted(bool)),action_mute_capture,SLOT(setChecked(bool)));
    action_mute_playback->setCheckable(true);
-   connect(action_mute_playback,SIGNAL(toggled(bool)),Audio::Settings::instance(),SLOT(mutePlayback(bool)));
-   connect(Audio::Settings::instance(),SIGNAL(playbackMuted(bool)),action_mute_playback,SLOT(setChecked(bool)));
+   connect(action_mute_playback,SIGNAL(toggled(bool)),&Audio::Settings::instance(),SLOT(mutePlayback(bool)));
+   connect(&Audio::Settings::instance(),SIGNAL(playbackMuted(bool)),action_mute_playback,SLOT(setChecked(bool)));
 
    //Bind actions to the useractionmodel
-   UserActionModel* uam = CallModel::instance()->userActionModel();
+   UserActionModel* uam = CallModel::instance().userActionModel();
    QHash<int, QAction*> actionHash;
    actionHash[ (int)UserActionModel::Action::ACCEPT          ] = action_accept;
    actionHash[ (int)UserActionModel::Action::ADD_NEW         ] = action_new_call;
@@ -259,20 +259,20 @@ void ActionCollection::setupAction()
    });
 
 
-   /**/connect(MacroModel::instance()           ,       SIGNAL(addAction(QVariant)),  this    , SLOT(addMacro(QVariant))          );
-   /**/connect(action_mailBox                   ,               SIGNAL(triggered()),           this    , SLOT(mailBox())                   );
-   /**/connect(action_displayVolumeControls     ,   SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayVolumeControls(bool)) );
-   /**/connect(action_displayDialpad            ,        SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayDialpad(bool))        );
-   /**/connect(action_displayAccountCbb         ,        SIGNAL(toggled(bool)),         MainWindow::app() , SLOT(displayAccountCbb(bool))        );
-   /**/connect(action_displayMessageBox         ,     SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayMessageBox(bool))     );
-   /**/connect(action_pastenumber               ,           SIGNAL(triggered()),           MainWindow::view() , SLOT(paste())            );
-   /**/connect(action_configureShortcut         ,     SIGNAL(triggered()),           this    , SLOT(showShortCutEditor())        );
-   /**/connect(action_editToolBar               ,           SIGNAL(triggered()),           this    , SLOT(editToolBar())               );
-   /**/connect(action_addPerson                 ,             SIGNAL(triggered()),           this    , SLOT(slotAddPerson())            );
+   /**/connect(&MacroModel::instance()          , SIGNAL(addAction(QVariant)),   this               , SLOT(addMacro(QVariant))          );
+   /**/connect(action_mailBox                   , SIGNAL(triggered()),           this               , SLOT(mailBox())                   );
+   /**/connect(action_displayVolumeControls     , SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayVolumeControls(bool)) );
+   /**/connect(action_displayDialpad            , SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayDialpad(bool))        );
+   /**/connect(action_displayAccountCbb         , SIGNAL(toggled(bool)),         MainWindow::app()  , SLOT(displayAccountCbb(bool))     );
+   /**/connect(action_displayMessageBox         , SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayMessageBox(bool))     );
+   /**/connect(action_pastenumber               , SIGNAL(triggered()),           MainWindow::view() , SLOT(paste())                     );
+   /**/connect(action_configureShortcut         , SIGNAL(triggered()),           this               , SLOT(showShortCutEditor())        );
+   /**/connect(action_editToolBar               , SIGNAL(triggered()),           this               , SLOT(editToolBar())               );
+   /**/connect(action_addPerson                 , SIGNAL(triggered()),           this               , SLOT(slotAddPerson())             );
    /*                                                                                                                   */
 
-   connect(Audio::Settings::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
-   connect(Audio::Settings::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
+   connect(&Audio::Settings::instance(),SIGNAL(captureVolumeChanged(int)),this,SLOT(updateRecordButton()));
+   connect(&Audio::Settings::instance(),SIGNAL(playbackVolumeChanged(int)),this,SLOT(updateVolumeButton()));
 
 
 //    MainWindow::app()->actionCollection()->setConfigGlobal(true);
@@ -300,7 +300,7 @@ void ActionCollection::setupAction()
    MainWindow::app()->actionCollection()->addAction("action_mute_playback"         , action_mute_playback         );
 
    GlobalInstances::setInterface<KDEShortcutDelegate>();
-   MacroModel::instance()->addCollection<LocalMacroCollection>();
+   MacroModel::instance().addCollection<LocalMacroCollection>();
    QList<QAction *> acList = *Accessibility::instance();
 
    foreach(QAction * ac,acList) {
@@ -316,7 +316,7 @@ void ActionCollection::mailBox()
 {
    Account* account = AvailableAccountModel::currentDefaultAccount();
    const QString mailBoxNumber = account->mailbox();
-   Call* call = CallModel::instance()->dialingCall();
+   Call* call = CallModel::instance().dialingCall();
    if (call) {
       call->reset();
       call->appendText(mailBoxNumber);
@@ -468,13 +468,13 @@ QAction * ActionCollection::addPerson()
 void ActionCollection::slotAddPerson()
 {
    Person* aPerson = new Person();
-   PersonModel::instance()->addNewPerson(aPerson);
+   PersonModel::instance().addNewPerson(aPerson);
 }
 
 ///Change icon of the record button
 void ActionCollection::updateRecordButton()
 {
-   double recVol = Audio::Settings::instance()->captureVolume();
+   double recVol = Audio::Settings::instance().captureVolume();
    static const QIcon icons[4] = {QIcon(":/images/icons/mic.svg"),QIcon(":/images/icons/mic_25.svg"),
       QIcon(":/images/icons/mic_50.svg"),QIcon(":/images/icons/mic_75.svg")};
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
@@ -485,7 +485,7 @@ void ActionCollection::updateRecordButton()
 ///Update the colunm button icon
 void ActionCollection::updateVolumeButton()
 {
-   double sndVol = Audio::Settings::instance()->playbackVolume();
+   double sndVol = Audio::Settings::instance().playbackVolume();
    static const QIcon icons[4] = {QIcon(":/images/icons/speaker.svg"),QIcon(":/images/icons/speaker_25.svg"),
       QIcon(":/images/icons/speaker_50.svg"),QIcon(":/images/icons/speaker_75.svg")};
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;

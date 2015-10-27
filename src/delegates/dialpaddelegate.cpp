@@ -79,7 +79,7 @@ void DialpadDelegate::slotFade()
          m_slIndexes.remove(idx);
       }
       else {
-         CallModel::instance()->setData(idx,idx.data(static_cast<int>(Call::Role::DTMFAnimState)).toInt() -1,static_cast<int>(Call::Role::DTMFAnimState));
+         CallModel::instance().setData(idx,idx.data(static_cast<int>(Call::Role::DTMFAnimState)).toInt() -1,static_cast<int>(Call::Role::DTMFAnimState));
       }
    }
    if ((m_sStep<=0) ||!m_slIndexes.size()) {

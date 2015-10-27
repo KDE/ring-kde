@@ -67,7 +67,7 @@ Wizard::~Wizard()
 
 void Wizard::slotNext()
 {
-   m_pAccount = AccountModel::instance()->add(m_pName->text(),Account::Protocol::RING);
+   m_pAccount = AccountModel::instance().add(m_pName->text(),Account::Protocol::RING);
    m_pAccount << Account::EditAction::SAVE;
    m_pAccount << Account::EditAction::RELOAD;
 

@@ -102,15 +102,15 @@ QVariant ColorDelegate::icon(const Account* a) {
 }
 
 void KDEPresenceSerializationDelegate::save() {
-   PresenceStatusModel* m = PresenceStatusModel::instance();
+   PresenceStatusModel& m = PresenceStatusModel::instance();
    QStringList list;
-   for (int i=0;i<m->rowCount();i++) {
+   for (int i=0;i<m.rowCount();i++) {
       QString line = QString("%1///%2///%3///%4///%5")
-         .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Name),Qt::DisplayRole).toString())
-         .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Message),Qt::DisplayRole).toString())
-         .arg(qvariant_cast<QColor>(m->data(m->index(i,(int)PresenceStatusModel::Columns::Message),Qt::BackgroundColorRole)).name())    //Color
-         .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Status),Qt::CheckStateRole) == Qt::Checked)    //Status
-         .arg(m->data(m->index(i,(int)PresenceStatusModel::Columns::Default),Qt::CheckStateRole) == Qt::Checked);   //Default
+         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Name),Qt::DisplayRole).toString())
+         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::DisplayRole).toString())
+         .arg(qvariant_cast<QColor>(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::BackgroundColorRole)).name())    //Color
+         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Status),Qt::CheckStateRole) == Qt::Checked)    //Status
+         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Default),Qt::CheckStateRole) == Qt::Checked);   //Default
          list << line;
    }
    ConfigurationSkeleton::setPresenceStatusList(list);
@@ -118,7 +118,7 @@ void KDEPresenceSerializationDelegate::save() {
 
 void KDEPresenceSerializationDelegate::load() {
    QStringList list = ConfigurationSkeleton::presenceStatusList();
-   PresenceStatusModel* m = PresenceStatusModel::instance();
+   PresenceStatusModel& m = PresenceStatusModel::instance();
 
    //Load the default one
    if (!list.size()) {
@@ -127,22 +127,22 @@ void KDEPresenceSerializationDelegate::load() {
       data->message    = i18n("I am available");
       data->status     = true      ;
       data->defaultStatus = true;
-      m->addStatus(data);
+      m.addStatus(data);
       data = new PresenceStatusModel::StatusData();
       data->name       = i18n("Away")    ;
       data->message    = i18n("I am away");
       data->status     = false      ;
-      m->addStatus(data);
+      m.addStatus(data);
       data = new PresenceStatusModel::StatusData();
       data->name       = i18n("Busy")    ;
       data->message    = i18n("I am busy");
       data->status     = false      ;
-      m->addStatus(data);
+      m.addStatus(data);
       data = new PresenceStatusModel::StatusData();
       data->name       = i18n("DND")    ;
       data->message    = i18n("Please do not disturb me");
       data->status     = false      ;
-      m->addStatus(data);
+      m.addStatus(data);
    }
    else {
       foreach(const QString& line, list) {
@@ -153,7 +153,7 @@ void KDEPresenceSerializationDelegate::load() {
          data->color         = QColor(fields[(int)PresenceStatusModel::Columns::Color]);
          data->status        = fields[(int)PresenceStatusModel::Columns::Status] == "1";
          data->defaultStatus = fields[(int)PresenceStatusModel::Columns::Default] == "1";
-         m->addStatus(data);
+         m.addStatus(data);
       }
    }
 }

@@ -94,13 +94,13 @@ Q_SIGNALS:
 ///Constructor
 EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent(this))
 {
-   connect(CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
-   connect(CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
+   connect(&CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
+   connect(&CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
 
    connect(m_pMainWindowEv , SIGNAL(minimized(bool)) , m_pParent->m_pCanvasManager, SLOT(slotMinimized(bool)));
 
-   connect(AccountModel::instance(),SIGNAL(registrationChanged(Account*,bool)),this,SLOT(slotregistrationChanged(Account*,bool)));
-   connect(AccountModel::instance(),SIGNAL(badGateway()),this,SLOT(slotNetworkDown()));
+   connect(&AccountModel::instance(),SIGNAL(registrationChanged(Account*,bool)),this,SLOT(slotregistrationChanged(Account*,bool)));
+   connect(&AccountModel::instance(),SIGNAL(badGateway()),this,SLOT(slotNetworkDown()));
    //Listen for macro
    MacroModel::addListener(this);
 }
@@ -121,7 +121,7 @@ EventManager::~EventManager()
 bool EventManager::viewDragEnterEvent(const QDragEnterEvent* e)
 {
    Q_UNUSED(e)
-   if (!e->mimeData()->hasFormat(RingMimes::CALLID) || CallModel::instance()->hasConference())
+   if (!e->mimeData()->hasFormat(RingMimes::CALLID) || CallModel::instance().hasConference())
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_ENTER);
    return false;
 }
@@ -131,16 +131,16 @@ bool EventManager::viewDropEvent(QDropEvent* e)
 {
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
    m_pParent->m_pView->cancelHoverState();
-   CallModel::instance()->setData(idxAt,-1,static_cast<int>(Call::Role::DropState));
+   CallModel::instance().setData(idxAt,-1,static_cast<int>(Call::Role::DropState));
    e->accept();
    if (!idxAt.isValid()) { //Dropped on empty space
       if (e->mimeData()->hasFormat(RingMimes::CALLID)) {
          const QByteArray encodedCallId      = e->mimeData()->data( RingMimes::CALLID      );
          qDebug() << "Call dropped on empty space";
-         Call* call =  CallModel::instance()->fromMime(encodedCallId);
-         if (CallModel::instance()->getIndex(call).parent().isValid()) {
+         Call* call =  CallModel::instance().fromMime(encodedCallId);
+         if (CallModel::instance().getIndex(call).parent().isValid()) {
             qDebug() << "Detaching participant";
-            CallModel::instance()->detachParticipant(CallModel::instance()->fromMime(encodedCallId));
+            CallModel::instance().detachParticipant(CallModel::instance().fromMime(encodedCallId));
          }
          else
             qDebug() << "The call is not in a conversation (doing nothing)";
@@ -148,8 +148,8 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
          const QByteArray encodedContactMethod = e->mimeData()->data( RingMimes::PHONENUMBER );
          qDebug() << "Phone number dropped on empty space";
-         Call* newCall = CallModel::instance()->dialingCall();
-         ContactMethod* nb = PhoneDirectoryModel::instance()->fromHash(encodedContactMethod);
+         Call* newCall = CallModel::instance().dialingCall();
+         ContactMethod* nb = PhoneDirectoryModel::instance().fromHash(encodedContactMethod);
          newCall->setDialNumber(nb);
          if (nb && nb->account())
             newCall->setAccount(nb->account());
@@ -158,15 +158,15 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
          const QByteArray encodedPerson     = e->mimeData()->data( RingMimes::CONTACT     );
          qDebug() << "Person dropped on empty space";
-         const ContactMethod* number = KPhoneNumberSelector().number(PersonModel::instance()->getPersonByUid(encodedPerson));
+         const ContactMethod* number = KPhoneNumberSelector().number(PersonModel::instance().getPersonByUid(encodedPerson));
          if (number->uri().isEmpty()) {
-            Call* newCall = CallModel::instance()->dialingCall();
+            Call* newCall = CallModel::instance().dialingCall();
             newCall->setDialNumber(number->uri());
             newCall->performAction(Call::Action::ACCEPT);
          }
       }
       else if (e->mimeData()->hasFormat("text/plain")) {
-         Call* newCall = CallModel::instance()->dialingCall();
+         Call* newCall = CallModel::instance().dialingCall();
          newCall->setDialNumber(e->mimeData()->data( "text/plain" ));
          newCall->performAction(Call::Action::ACCEPT);
       }
@@ -208,13 +208,13 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
-         ContactMethod* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
+         ContactMethod* n = PhoneDirectoryModel::instance().fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
-               (n->account()?n->account():AvailableAccountModel::instance()->currentDefaultAccount())->alias()));
+               (n->account()?n->account():AvailableAccountModel::instance().currentDefaultAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
-         Person* c = PersonModel::instance()->getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
+         Person* c = PersonModel::instance().getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
@@ -228,13 +228,13 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Remove the call from the conference, the call will be put on hold"));
       }
       else if (e->mimeData()->hasFormat(RingMimes::PHONENUMBER)) {
-         ContactMethod* n = PhoneDirectoryModel::instance()->fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
+         ContactMethod* n = PhoneDirectoryModel::instance().fromHash(e->mimeData()->data(RingMimes::PHONENUMBER));
          if (n)
             TipCollection::removeConference()->setText(i18n("Call %1 using %2",n->uri(),
-               (n->account()?n->account():AvailableAccountModel::instance()->currentDefaultAccount())->alias()));
+               (n->account()?n->account():AvailableAccountModel::instance().currentDefaultAccount())->alias()));
       }
       else if (e->mimeData()->hasFormat(RingMimes::CONTACT)) {
-         Person* c = PersonModel::instance()->getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
+         Person* c = PersonModel::instance().getPersonByUid(e->mimeData()->data(RingMimes::CONTACT));
          if (c) {
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
@@ -243,7 +243,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
          TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
       }
    }
-   if (!isCall || CallModel::instance()->hasConference())
+   if (!isCall || CallModel::instance().hasConference())
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_MOVE);
    //Just as drop, compute the position
    const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
@@ -251,10 +251,10 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
    Call* source = nullptr;
    if (isCall)
-      source = CallModel::instance()->fromMime(e->mimeData()->data(RingMimes::CALLID));
+      source = CallModel::instance().fromMime(e->mimeData()->data(RingMimes::CALLID));
    Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
-   CallModel::instance()->setData(idxAt,act,static_cast<int>(Call::Role::DropPosition));
-   if ((!isCall) || CallModel::instance()->getIndex(source) != idxAt)
+   CallModel::instance().setData(idxAt,act,static_cast<int>(Call::Role::DropPosition));
+   if ((!isCall) || CallModel::instance().getIndex(source) != idxAt)
       m_pParent->m_pView->setHoverState(idxAt);
    else
       m_pParent->m_pView->cancelHoverState();
@@ -354,7 +354,7 @@ void EventManager::typeString(const QString& str)
     * Any other comportment need to be documented here or treated as a bug
     */
 
-   Call* call = CallModel::instance()->selectedCall();
+   Call* call = CallModel::instance().selectedCall();
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
 
@@ -366,29 +366,29 @@ void EventManager::typeString(const QString& str)
       return;
    }
 
-   foreach (Call* call2, CallModel::instance()->getActiveCalls()) {
+   foreach (Call* call2, CallModel::instance().getActiveCalls()) {
       if(call2 && currentCall != call2 && call2->state() == Call::State::CURRENT) {
          call2->performAction(Call::Action::HOLD);
       }
       else if(call2 && (call2->lifeCycleState() == Call::LifeCycleState::CREATION)) {
          candidate = call2;
-         CallModel::instance()->selectDialingCall();
+         CallModel::instance().selectDialingCall();
       }
    }
 
    if(!currentCall && !candidate) {
       qDebug() << "Typing when no item is selected. Opening an item.";
-      candidate = CallModel::instance()->dialingCall();
-      CallModel::instance()->selectDialingCall();
+      candidate = CallModel::instance().dialingCall();
+      CallModel::instance().selectDialingCall();
       candidate->playDTMF(str);
-      const QModelIndex& newCallIdx = CallModel::instance()->getIndex(candidate);
+      const QModelIndex& newCallIdx = CallModel::instance().getIndex(candidate);
       if (newCallIdx.isValid()) {
          m_pParent->m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
       }
    }
 
    if (!candidate) {
-      candidate = CallModel::instance()->dialingCall();
+      candidate = CallModel::instance().dialingCall();
       candidate->playDTMF(str);
    }
    if(!currentCall && candidate) {
@@ -401,7 +401,7 @@ void EventManager::typeString(const QString& str)
 void EventManager::backspace()
 {
    qDebug() << "backspace";
-   Call* call = CallModel::instance()->selectedCall();
+   Call* call = CallModel::instance().selectedCall();
    if(!call) {
       qDebug() << "Error : Backspace on unexisting call.";
    }
@@ -414,7 +414,7 @@ void EventManager::backspace()
 void EventManager::escape()
 {
    qDebug() << "escape";
-   Call* call = CallModel::instance()->selectedCall();
+   Call* call = CallModel::instance().selectedCall();
    if (m_pParent->m_pTransferOverlay && m_pParent->m_pTransferOverlay->isVisible()) {
       m_pParent->m_pTransferOverlay->setVisible(false);
       return;
@@ -446,7 +446,7 @@ void EventManager::escape()
          case Call::State::CONFERENCE_HOLD:
          case Call::State::COUNT__:
          default:
-            CallModel::instance()->userActionModel() << UserActionModel::Action::HANGUP;
+            CallModel::instance().userActionModel() << UserActionModel::Action::HANGUP;
       }
    }
 } //escape
@@ -454,7 +454,7 @@ void EventManager::escape()
 ///Called when enter is detected
 void EventManager::enter()
 {
-   Call* call = CallModel::instance()->selectedCall();
+   Call* call = CallModel::instance().selectedCall();
    if(!call) {
       qDebug() << "Error : Enter on unexisting call.";
    }
@@ -462,14 +462,14 @@ void EventManager::enter()
       switch (call->state()) {
          case Call::State::CONFERENCE_HOLD:
          case Call::State::HOLD:
-            CallModel::instance()->userActionModel() << UserActionModel::Action::HOLD;
+            CallModel::instance().userActionModel() << UserActionModel::Action::HOLD;
             break;
          case Call::State::FAILURE:
          case Call::State::BUSY:
          case Call::State::OVER:
          case Call::State::ABORTED:
          case Call::State::ERROR:
-            CallModel::instance()->userActionModel() << UserActionModel::Action::HANGUP;
+            CallModel::instance().userActionModel() << UserActionModel::Action::HANGUP;
             break;
          case Call::State::DIALING:
          case Call::State::INCOMING:
@@ -478,7 +478,7 @@ void EventManager::enter()
          case Call::State::RINGING:
          case Call::State::CURRENT:
          case Call::State::CONFERENCE:
-            CallModel::instance()->userActionModel() << UserActionModel::Action::ACCEPT;
+            CallModel::instance().userActionModel() << UserActionModel::Action::ACCEPT;
             break;
          case Call::State::INITIALIZATION:
          case Call::State::CONNECTED:
@@ -557,7 +557,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 
 
    //Update the window for the selected call
-   Call* call2 = call = CallModel::instance()->selectedCall();
+   Call* call2 = call = CallModel::instance().selectedCall();
 
    if ((!call2) || (call2->type() == Call::Type::CONFERENCE)) {
       m_pParent->m_pMessageBoxW->setVisible(false);
@@ -578,13 +578,13 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 
    if (TipCollection::dragAndDrop()) {
       int activeCallCounter=0;
-      foreach (Call* call2, CallModel::instance()->getActiveCalls()) {
+      foreach (Call* call2, CallModel::instance().getActiveCalls()) {
          if (dynamic_cast<Call*>(call2)) {
             activeCallCounter += (call2->lifeCycleState() == Call::LifeCycleState::PROGRESS)?1:0;
             activeCallCounter -= (call2->lifeCycleState() == Call::LifeCycleState::INITIALIZATION)*1000;
          }
       }
-      if (activeCallCounter >= 2 && !CallModel::instance()->getActiveConferences().size()) {
+      if (activeCallCounter >= 2 && !CallModel::instance().getActiveConferences().size()) {
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_COUNT_CHANGED);
       }
    }

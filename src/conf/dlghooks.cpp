@@ -42,12 +42,12 @@ void DlgHooks::updateWidgets()
    kcfg_prepend->blockSignals(true);
    kcfg_hooksSIPHeader->blockSignals(true);
    kcfg_addPrefix->blockSignals(true);
-   kcfg_enableHooksSIP  ->setChecked(HookManager::instance()->isSipEnabled        ());
-   kcfg_enableHooksIAX  ->setChecked(HookManager::instance()->isIax2Enabled       ());
-   kcfg_hooksCommand    ->setText   (HookManager::instance()->command             ());
-   kcfg_prepend         ->setText   (HookManager::instance()->prefix              ());
-   kcfg_hooksSIPHeader  ->setText   (HookManager::instance()->sipFeild            ());
-   kcfg_addPrefix       ->setChecked(HookManager::instance()->isContactMethodEnabled());
+   kcfg_enableHooksSIP  ->setChecked(HookManager::instance().isSipEnabled        ());
+   kcfg_enableHooksIAX  ->setChecked(HookManager::instance().isIax2Enabled       ());
+   kcfg_hooksCommand    ->setText   (HookManager::instance().command             ());
+   kcfg_prepend         ->setText   (HookManager::instance().prefix              ());
+   kcfg_hooksSIPHeader  ->setText   (HookManager::instance().sipFeild            ());
+   kcfg_addPrefix       ->setChecked(HookManager::instance().isContactMethodEnabled());
    kcfg_enableHooksSIP->blockSignals(false);
    kcfg_enableHooksIAX->blockSignals(false);
    kcfg_hooksCommand->blockSignals(false);
@@ -58,12 +58,12 @@ void DlgHooks::updateWidgets()
 
 void DlgHooks::updateSettings()
 {
-   HookManager::instance()->setSipEnabled        (kcfg_enableHooksSIP  ->isChecked());
-   HookManager::instance()->setIax2Enabled       (kcfg_enableHooksIAX  ->isChecked());
-   HookManager::instance()->setCommand           (kcfg_hooksCommand    ->text     ());
-   HookManager::instance()->setPrefix            (kcfg_prepend         ->text     ());
-   HookManager::instance()->setSipFeild          (kcfg_hooksSIPHeader  ->text     ());
-   HookManager::instance()->setContactMethodEnabled(kcfg_addPrefix       ->isChecked());
+   HookManager::instance().setSipEnabled        (kcfg_enableHooksSIP  ->isChecked());
+   HookManager::instance().setIax2Enabled       (kcfg_enableHooksIAX  ->isChecked());
+   HookManager::instance().setCommand           (kcfg_hooksCommand    ->text     ());
+   HookManager::instance().setPrefix            (kcfg_prepend         ->text     ());
+   HookManager::instance().setSipFeild          (kcfg_hooksSIPHeader  ->text     ());
+   HookManager::instance().setContactMethodEnabled(kcfg_addPrefix       ->isChecked());
    m_Changed = false;
    emit updateButtons();
 }

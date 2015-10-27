@@ -51,7 +51,7 @@ class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
    Q_OBJECT
 public:
    explicit BookmarkSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {
-      setSourceModel          ( CategorizedBookmarkModel::instance() );
+      setSourceModel          ( &CategorizedBookmarkModel::instance() );
       setSortRole             ( static_cast<int>(Call::Role::Name  )        );
       setFilterRole           ( static_cast<int>(Call::Role::Filter)        );
       setFilterCaseSensitivity( Qt::CaseInsensitive       );
@@ -63,8 +63,8 @@ protected:
    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const override
    {
       if (!source_parent.isValid() ) { //Is a category
-         for (int i=0;i<CategorizedBookmarkModel::instance()->rowCount(CategorizedBookmarkModel::instance()->index(source_row,0,source_parent));i++) {
-            if (filterAcceptsRow(i, CategorizedBookmarkModel::instance()->index(source_row,0,source_parent)))
+         for (int i=0;i<CategorizedBookmarkModel::instance().rowCount(CategorizedBookmarkModel::instance().index(source_row,0,source_parent));i++) {
+            if (filterAcceptsRow(i, CategorizedBookmarkModel::instance().index(source_row,0,source_parent)))
                return true;
          }
       }
@@ -88,21 +88,21 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
    m_pContactCD->setDelegate(m_pCategoryDelegate);
 
-   CategorizedContactModel::instance()->setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
-   QSortFilterProxyModel* proxy = CategorizedContactModel::SortedProxy::instance()->model();
+   CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
+   QSortFilterProxyModel* proxy = CategorizedContactModel::SortedProxy::instance().model();
    m_pContactCD->setProxyModel(proxy);
    m_pContactCD->setSortingModel(
-      CategorizedContactModel::SortedProxy::instance()->categoryModel(),
-      CategorizedContactModel::SortedProxy::instance()->categorySelectionModel()
+      CategorizedContactModel::SortedProxy::instance().categoryModel(),
+      CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
    );
 
-   CategorizedContactModel::SortedProxy::instance()->categorySelectionModel()->setCurrentIndex(
-      CategorizedContactModel::SortedProxy::instance()->categoryModel()->index(
+   CategorizedContactModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
+      CategorizedContactModel::SortedProxy::instance().categoryModel()->index(
          ConfigurationSkeleton::contactSortMode() , 0
       ), QItemSelectionModel::ClearAndSelect
    );
 
-   connect(CategorizedContactModel::SortedProxy::instance()->categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+   connect(CategorizedContactModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
       if (idx.isValid())
          ConfigurationSkeleton::setContactSortMode(idx.row());
    });
@@ -121,20 +121,20 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pHistoryDW->setMenuConstructor([]() {
       return new Menu::Call();
    });
-   proxy = CategorizedHistoryModel::SortedProxy::instance()->model();
+   proxy = CategorizedHistoryModel::SortedProxy::instance().model();
    m_pHistoryDW->setProxyModel(proxy);
    m_pHistoryDW->setSortingModel(
-      CategorizedHistoryModel::SortedProxy::instance()->categoryModel         (),
-      CategorizedHistoryModel::SortedProxy::instance()->categorySelectionModel()
+      CategorizedHistoryModel::SortedProxy::instance().categoryModel         (),
+      CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()
    );
 
-   CategorizedHistoryModel::SortedProxy::instance()->categorySelectionModel()->setCurrentIndex(
-      CategorizedHistoryModel::SortedProxy::instance()->categoryModel()->index(
+   CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
+      CategorizedHistoryModel::SortedProxy::instance().categoryModel()->index(
          ConfigurationSkeleton::historySortMode() , 0
       ), QItemSelectionModel::ClearAndSelect
    );
 
-   connect(CategorizedHistoryModel::SortedProxy::instance()->categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+   connect(CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
       if (idx.isValid())
          ConfigurationSkeleton::setHistorySortMode(idx.row());
    });

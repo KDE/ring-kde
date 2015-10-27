@@ -94,12 +94,12 @@ void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
          accept = CategorizedContactModel::acceptedPayloadTypes() & type;
          break;
       case ViewType::History:
-         accept = CategorizedHistoryModel::instance()->acceptedPayloadTypes() & type;
+         accept = CategorizedHistoryModel::instance().acceptedPayloadTypes() & type;
          break;
       case ViewType::BookMark:
          break;
       case ViewType::Call:
-         accept = CallModel::instance()->acceptedPayloadTypes() & type;
+         accept = CallModel::instance().acceptedPayloadTypes() & type;
          break;
    };
    if (accept) {

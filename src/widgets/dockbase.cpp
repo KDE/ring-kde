@@ -154,9 +154,9 @@ void DockBase::transferEvent(QMimeData* data)
 //       const ::ContactMethod* result = m_pMenu->showNumberSelector(ok);
 // 
 //       if (ok && result) {
-//          Call* call = CallModel::instance()->fromMime(data->data(RingMimes::CALLID));
+//          Call* call = CallModel::instance().fromMime(data->data(RingMimes::CALLID));
 //          if (dynamic_cast<Call*>(call)) {
-//             CallModel::instance()->transfer(call, result);
+//             CallModel::instance().transfer(call, result);
 //          }
 //       }
 //    }

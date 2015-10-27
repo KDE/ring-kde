@@ -26,21 +26,21 @@
 VideoSettings::VideoSettings(QWidget* parent) : QWidget(parent)
 {
    setupUi(this);
-   m_pDevice     -> bindToModel(Video::ConfigurationProxy::deviceModel    () , Video::ConfigurationProxy::deviceSelectionModel    ());
-   m_pChannel    -> bindToModel(Video::ConfigurationProxy::channelModel   () , Video::ConfigurationProxy::channelSelectionModel   ());
-   m_pResolution -> bindToModel(Video::ConfigurationProxy::resolutionModel() , Video::ConfigurationProxy::resolutionSelectionModel());
-   m_pRate       -> bindToModel(Video::ConfigurationProxy::rateModel      () , Video::ConfigurationProxy::rateSelectionModel      ());
+   m_pDevice     -> bindToModel(&Video::ConfigurationProxy::deviceModel    () , &Video::ConfigurationProxy::deviceSelectionModel    ());
+   m_pChannel    -> bindToModel(&Video::ConfigurationProxy::channelModel   () , &Video::ConfigurationProxy::channelSelectionModel   ());
+   m_pResolution -> bindToModel(&Video::ConfigurationProxy::resolutionModel() , &Video::ConfigurationProxy::resolutionSelectionModel());
+   m_pRate       -> bindToModel(&Video::ConfigurationProxy::rateModel      () , &Video::ConfigurationProxy::rateSelectionModel      ());
 }
 
 void VideoSettings::setDevice(Video::Device* dev)
 {
-   Video::DeviceModel::instance()->setActive(dev);
-   m_pDevice->selectionModel()->setCurrentIndex(m_pDevice->model()->index(Video::DeviceModel::instance()->activeIndex(),0), QItemSelectionModel::ClearAndSelect);
+   Video::DeviceModel::instance().setActive(dev);
+   m_pDevice->selectionModel()->setCurrentIndex(m_pDevice->model()->index(Video::DeviceModel::instance().activeIndex(),0), QItemSelectionModel::ClearAndSelect);
 }
 
 Video::Device* VideoSettings::device() const
 {
-   const QList<Video::Device*> devices = Video::DeviceModel::instance()->devices();
+   const QList<Video::Device*> devices = Video::DeviceModel::instance().devices();
    return m_pDevice->currentIndex() < devices.size() && m_pDevice->currentIndex() >= 0 ? devices[m_pDevice->currentIndex()]:nullptr;
 }
 

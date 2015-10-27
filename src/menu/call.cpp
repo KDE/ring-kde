@@ -81,7 +81,7 @@ Menu::Call::Call(QWidget* parent) : QMenu(parent)
 
    //Allow to add new contacts
    QMenu* subMenu = nullptr;
-   for (CollectionInterface* col : PersonModel::instance()->collections(CollectionInterface::SupportedFeatures::ADD | CollectionInterface::SupportedFeatures::MANAGEABLE)) {
+   for (CollectionInterface* col : PersonModel::instance().collections(CollectionInterface::SupportedFeatures::ADD | CollectionInterface::SupportedFeatures::MANAGEABLE)) {
       if (!subMenu)
          subMenu = addMenu(QIcon::fromTheme("contact-new"), i18n("Add new contact"));
       QAction* a = new QAction(this);
@@ -124,7 +124,7 @@ void Menu::Call::slotSendEmail()
 void Menu::Call::slotRemove()
 {
    if (m_pCurrentCall && m_pCurrentCall->collection()->supportedFeatures() & CollectionInterface::SupportedFeatures::REMOVE) {
-      CategorizedHistoryModel::instance()->deleteItem(m_pCurrentCall); //TODO add add and remove to the manager
+      CategorizedHistoryModel::instance().deleteItem(m_pCurrentCall); //TODO add add and remove to the manager
    }
 }
 
@@ -132,7 +132,7 @@ void Menu::Call::slotCallAgain()
 {
    if (!m_pCurrentCall) return;
    qDebug() << "Calling "<< m_pCurrentCall->peerContactMethod();
-   ::Call* call = CallModel::instance()->dialingCall(m_pCurrentCall->peerContactMethod());
+   ::Call* call = CallModel::instance().dialingCall(m_pCurrentCall->peerContactMethod());
    if (call) {
       call->performAction  ( ::Call::Action::ACCEPT  );
    }
@@ -150,7 +150,7 @@ void Menu::Call::slotCopy()
 
    qDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(RingMimes::CALLID, CallModel::instance()->getMime(m_pCurrentCall));
+   mimeData->setData(RingMimes::CALLID, CallModel::instance().getMime(m_pCurrentCall));
 
    mimeData->setData(RingMimes::PHONENUMBER, m_pCurrentCall->peerContactMethod()->uri().toUtf8());
 
@@ -183,9 +183,9 @@ void Menu::Call::slotAddPerson(CollectionInterface* col)
    connect(p,&DlgProfiles::requestSave,[p,col,this,d]() {
       Person* aPerson = p->create(col);
 
-      aPerson->setContactMethods({PhoneDirectoryModel::instance()->getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home")});
+      aPerson->setContactMethods({PhoneDirectoryModel::instance().getNumber(m_pCurrentCall->peerContactMethod()->uri(),aPerson,nullptr, "Home")});
 
-      PersonModel::instance()->addNewPerson(aPerson,col);
+      PersonModel::instance().addNewPerson(aPerson,col);
       d->close();
    });
    connect(p,&DlgProfiles::requestCancel,[col,d]() {
@@ -198,5 +198,5 @@ void Menu::Call::slotAddPerson(CollectionInterface* col)
 
 void Menu::Call::slotBookmark()
 {
-   CategorizedBookmarkModel::instance()->addBookmark(m_pCurrentCall->peerContactMethod());
+   CategorizedBookmarkModel::instance().addBookmark(m_pCurrentCall->peerContactMethod());
 }

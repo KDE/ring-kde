@@ -180,7 +180,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    });
    m_pPresPage = addPage( dlgHolder[ConfigurationDialog::Page::Presence]      , i18nc("SIP Presence","Presence")     , QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/presence-icon.svg"));
    m_pPresPage->setProperty("id",ConfigurationDialog::Page::Presence);
-   m_pPresPage->setEnabled(AccountModel::instance()->isPresencePublishSupported() && AccountModel::instance()->isPresenceEnabled());
+   m_pPresPage->setEnabled(AccountModel::instance().isPresencePublishSupported() && AccountModel::instance().isPresenceEnabled());
    connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));*/
 
    //Connect everything
@@ -268,7 +268,7 @@ bool ConfigurationDialog::hasChanged()
 
 bool ConfigurationDialog::hasIncompleteRequiredFields()
 {
-   return AccountModel::instance()->editState() == AccountModel::EditState::INVALID;
+   return AccountModel::instance().editState() == AccountModel::EditState::INVALID;
 }
 
 ///Update the buttons
@@ -305,7 +305,7 @@ void ConfigurationDialog::reload()
 void ConfigurationDialog::slotPresenceEnabled(bool state)
 {
    Q_UNUSED(state)
-//    m_pPresPage->setEnabled(state && AccountModel::instance()->isPresencePublishSupported());
+//    m_pPresPage->setEnabled(state && AccountModel::instance().isPresencePublishSupported());
 }
 
 #undef GUARD

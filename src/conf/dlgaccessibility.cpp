@@ -61,12 +61,12 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
 
    connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
 
-   connect(MacroModel::instance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
-   connect(MacroModel::instance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
-   m_pMacroListTV->setModel(MacroModel::instance());
+   connect(&MacroModel::instance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
+   connect(&MacroModel::instance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
+   m_pMacroListTV->setModel(&MacroModel::instance());
 //    m_pCategoryCBB->setModel(MacroModel::instance()); //Works, but not perfect
    m_pMacroListTV->expandAll();
-   connect(m_pMacroListTV->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),MacroModel::instance(),SLOT(setCurrent(QModelIndex,QModelIndex)));
+   connect(m_pMacroListTV->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),&MacroModel::instance(),SLOT(setCurrent(QModelIndex,QModelIndex)));
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pMacroListTV);
    m_pItemDelegate     = new QStyledItemDelegate;
@@ -83,7 +83,7 @@ DlgAccessibility::~DlgAccessibility()
 ///Save
 void DlgAccessibility::updateSettings()
 {
-   MacroModel::instance()->save();
+   MacroModel::instance().save();
    m_Changed = false;
    emit updateButtons();
 }
@@ -107,7 +107,7 @@ bool DlgAccessibility::hasChanged()
 
 void DlgAccessibility::addMacro()
 {
-   Macro* ret = MacroModel::instance()->newMacro();
+   Macro* ret = MacroModel::instance().newMacro();
    if (ret) {
       m_pMacroFrm->setEnabled(true);
    }
@@ -115,7 +115,7 @@ void DlgAccessibility::addMacro()
 
 void DlgAccessibility::removeMacro()
 {
-   MacroModel::instance()->removeMacro(m_pMacroListTV->selectionModel()->currentIndex());
+   MacroModel::instance().removeMacro(m_pMacroListTV->selectionModel()->currentIndex());
 }
 
 void DlgAccessibility::selectMacro(Macro* macro)
@@ -141,7 +141,7 @@ void DlgAccessibility::selectMacro(Macro* macro)
 //Widget change
 void DlgAccessibility::slotNameLE(const QString& newText)
 {
-   Macro* current = MacroModel::instance()->getCurrentMacro();
+   Macro* current = MacroModel::instance().getCurrentMacro();
    if (current) {
       current->setName(newText);
    }
@@ -149,7 +149,7 @@ void DlgAccessibility::slotNameLE(const QString& newText)
 
 void DlgAccessibility::slotCategoryCBB(const QString& newText)
 {
-   Macro* current = MacroModel::instance()->getCurrentMacro();
+   Macro* current = MacroModel::instance().getCurrentMacro();
    if (current) {
       current->setCategory(newText);
    }
@@ -157,7 +157,7 @@ void DlgAccessibility::slotCategoryCBB(const QString& newText)
 
 void DlgAccessibility::slotDelaySB(int newValue)
 {
-   Macro* current = MacroModel::instance()->getCurrentMacro();
+   Macro* current = MacroModel::instance().getCurrentMacro();
    if (current) {
       current->setDelay(newValue);
    }
@@ -165,7 +165,7 @@ void DlgAccessibility::slotDelaySB(int newValue)
 
 void DlgAccessibility::slotSequenceLE(const QString& newText)
 {
-   Macro* current = MacroModel::instance()->getCurrentMacro();
+   Macro* current = MacroModel::instance().getCurrentMacro();
    if (current) {
       current->setSequence(newText);
    }
@@ -173,7 +173,7 @@ void DlgAccessibility::slotSequenceLE(const QString& newText)
 
 void DlgAccessibility::slotDescriptionLE(const QString& newText)
 {
-   Macro* current = MacroModel::instance()->getCurrentMacro();
+   Macro* current = MacroModel::instance().getCurrentMacro();
    if (current) {
       current->setDescription(newText);
    }
@@ -182,7 +182,7 @@ void DlgAccessibility::slotDescriptionLE(const QString& newText)
 void DlgAccessibility::slotShortcut(const QKeySequence& shortcut)
 {
    Q_UNUSED(shortcut)
-   Macro* current = MacroModel::instance()->getCurrentMacro();
+   Macro* current = MacroModel::instance().getCurrentMacro();
    if (current && qvariant_cast<QAction*>(current->action()))
       qvariant_cast<QAction*>(current->action())->setShortcut(shortcut);
 }

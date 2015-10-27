@@ -74,7 +74,7 @@ TypedStateMachine< const char* , Call::State > callStateIcons = {{
 
 HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr),m_AnimationWrapper(nullptr),m_pRingingTip(nullptr)
 {
-   connect(CallModel::instance(),SIGNAL(callStateChanged(Call*,Call::State)),this,SLOT(slotStopRingingAnimation()));
+   connect(&CallModel::instance(),SIGNAL(callStateChanged(Call*,Call::State)),this,SLOT(slotStopRingingAnimation()));
 }
 
 QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
@@ -325,7 +325,7 @@ void HistoryDelegate::slotStopRingingAnimation()
 {
    if (m_pRingingTip && m_pRingingTip->isVisible()) {
       bool found = false;
-      foreach(const Call* call,CallModel::instance()->getActiveCalls()) {
+      foreach(const Call* call,CallModel::instance().getActiveCalls()) {
          found = (call->lifeCycleState() == Call::LifeCycleState::INITIALIZATION);
          if (found)
             break;

@@ -40,13 +40,13 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 
    connect(m_pPreviewPB   ,SIGNAL(clicked())                   , this   , SLOT(startStopPreview())     );
    connect( this          ,SIGNAL(updateButtons())             , parent , SLOT(updateButtons())        );
-   connect(Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(startStopPreview(bool))  );
+   connect(&Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(startStopPreview(bool))  );
 
-   connect(Video::PreviewManager::instance(),SIGNAL(previewStarted(Video::Renderer*)),m_pPreviewGV,SLOT(addRenderer(Video::Renderer*))   );
-   connect(Video::PreviewManager::instance(),SIGNAL(previewStopped(Video::Renderer*)),m_pPreviewGV,SLOT(removeRenderer(Video::Renderer*)));
+   connect(&Video::PreviewManager::instance(),SIGNAL(previewStarted(Video::Renderer*)),m_pPreviewGV,SLOT(addRenderer(Video::Renderer*))   );
+   connect(&Video::PreviewManager::instance(),SIGNAL(previewStopped(Video::Renderer*)),m_pPreviewGV,SLOT(removeRenderer(Video::Renderer*)));
 
 
-   if (Video::PreviewManager::instance()->isPreviewing()) {
+   if (Video::PreviewManager::instance().isPreviewing()) {
       m_pPreviewPB->setText(i18n("Stop preview"));
    }
 //    m_pVideoSettings->slotReloadDevices();
@@ -57,7 +57,7 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 ///Destructor
 DlgVideo::~DlgVideo()
 {
-   Video::PreviewManager::instance()->stopPreview();
+   Video::PreviewManager::instance().stopPreview();
 }
 
 ///Has the dialog chnaged
@@ -70,11 +70,11 @@ bool DlgVideo::hasChanged()
 void DlgVideo::startStopPreview()
 {
    //TODO check if the preview is already running
-   if (Video::PreviewManager::instance()->isPreviewing()) {
-      Video::PreviewManager::instance()->stopPreview();
+   if (Video::PreviewManager::instance().isPreviewing()) {
+      Video::PreviewManager::instance().stopPreview();
    }
    else {
-      Video::PreviewManager::instance()->startPreview();
+      Video::PreviewManager::instance().startPreview();
    }
 }
 
@@ -95,15 +95,15 @@ void DlgVideo::updateWidgets ()
 
 void DlgVideo::updateSettings()
 {
-   Video::DeviceModel::instance()->setActive(m_pVideoSettings->device());
+   Video::DeviceModel::instance().setActive(m_pVideoSettings->device());
    m_IsChanged = false;
 }
 
 void DlgVideo::slotReloadPreview()
 {
-   /*if (Video::PreviewManager::instance()->isPreviewing()) {
-      Video::PreviewManager::instance()->stopPreview();
-      Video::PreviewManager::instance()->startPreview();
+   /*if (Video::PreviewManager::instance().isPreviewing()) {
+      Video::PreviewManager::instance().stopPreview();
+      Video::PreviewManager::instance().startPreview();
    }*/
 }
 

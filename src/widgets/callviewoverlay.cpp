@@ -64,7 +64,7 @@ m_step(0),m_pCurrentCall(nullptr)
       m_pMainWidget->resize(parent->width(),parent->height());
    setupUi(m_pMainWidget);
 
-   connect(CallModel::instance(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutChanged()));
+   connect(&CallModel::instance(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutChanged()));
    connect(m_pNumberLE,SIGNAL(returnPressed()),this,SLOT(slotTransferClicked()));
    connect(m_pTransferB,SIGNAL(clicked()),this,SLOT(slotTransferClicked()));
 }
@@ -170,8 +170,8 @@ void CallViewOverlay::slotLayoutChanged()
       }
    }
    //Fill the list
-   if (CallModel::instance()->getActiveCalls().size()-1 > 0) {
-      foreach(Call* call, CallModel::instance()->getActiveCalls()) {
+   if (CallModel::instance().getActiveCalls().size()-1 > 0) {
+      foreach(Call* call, CallModel::instance().getActiveCalls()) {
          if (call != m_pCurrentCall) {
             QPushButton* btn = new QPushButton(call->roleData(Qt::DisplayRole).toString(),this);
             btn->setStyleSheet(m_pTransferB->styleSheet());
@@ -191,7 +191,7 @@ void CallViewOverlay::slotAttendedTransfer()
 {
    const QByteArray callId = QObject::sender()->property("callId").toByteArray();
    if (!callId.isEmpty()) {
-      CallModel::instance()->attendedTransfer(m_pCurrentCall,CallModel::instance()->fromMime(callId));
+      CallModel::instance().attendedTransfer(m_pCurrentCall,CallModel::instance().fromMime(callId));
       setVisible(false);
    }
 }
@@ -211,6 +211,6 @@ Call* CallViewOverlay::currentCall()
 void CallViewOverlay::slotTransferClicked()
 {
    if (!m_pCurrentCall) return;
-   CallModel::instance()->transfer(m_pCurrentCall,PhoneDirectoryModel::instance()->getNumber(m_pNumberLE->text()));
+   CallModel::instance().transfer(m_pCurrentCall,PhoneDirectoryModel::instance().getNumber(m_pNumberLE->text()));
    setVisible(false);
 }

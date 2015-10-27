@@ -56,10 +56,10 @@ void AudioRecordingConfigurator::loadCollection(CollectionInterface* col, QObjec
          QHBoxLayout* l = new QHBoxLayout(w);
          l->addWidget(m_pDialog);
 
-         ui->m_pAlwaysRecordCK->setChecked(Media::RecordingModel::instance()->isAlwaysRecording());
+         ui->m_pAlwaysRecordCK->setChecked(Media::RecordingModel::instance().isAlwaysRecording());
 
          ui->KUrlRequester_destinationFolder->setMode(KFile::Directory|KFile::ExistingOnly|KFile::LocalOnly);
-         ui->KUrlRequester_destinationFolder->setUrl(QUrl(Media::RecordingModel::instance()->recordPath()));
+         ui->KUrlRequester_destinationFolder->setUrl(QUrl(Media::RecordingModel::instance().recordPath()));
          ui->KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
          connect( ui->KUrlRequester_destinationFolder , SIGNAL(textChanged(QString)) , this , SLOT(slotChanged()));
@@ -70,8 +70,8 @@ void AudioRecordingConfigurator::loadCollection(CollectionInterface* col, QObjec
 
 void AudioRecordingConfigurator::save()
 {
-   Media::RecordingModel::instance()->setRecordPath     ( ui->KUrlRequester_destinationFolder->lineEdit()->text() );
-   Media::RecordingModel::instance()->setAlwaysRecording( ui->m_pAlwaysRecordCK->isChecked()                      );
+   Media::RecordingModel::instance().setRecordPath     ( ui->KUrlRequester_destinationFolder->lineEdit()->text() );
+   Media::RecordingModel::instance().setAlwaysRecording( ui->m_pAlwaysRecordCK->isChecked()                      );
    m_HasChanged = false;
 }
 

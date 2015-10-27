@@ -53,7 +53,7 @@
 
 VideoWidget::VideoWidget(QWidget *parent, const bool previewOnly) : QGraphicsView(parent),m_pBackDevice(nullptr),m_IsPreviewOnly(previewOnly)
 {
-   connect(Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
+   connect(&Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
    QSizePolicy sp = sizePolicy();
    sp.setVerticalPolicy  ( QSizePolicy::Preferred );
    sp.setHorizontalPolicy( QSizePolicy::Preferred );
@@ -71,7 +71,7 @@ VideoWidget::VideoWidget(QWidget *parent, const bool previewOnly) : QGraphicsVie
    m_pScene = new VideoScene();
    setScene(m_pScene);
 
-   if (Video::PreviewManager::instance()->isPreviewing()) {
+   if (Video::PreviewManager::instance().isPreviewing()) {
       slotShowPreview(true);
    }
 
@@ -103,7 +103,7 @@ void VideoWidget::dragMoveEvent( QDragMoveEvent* e )
 void VideoWidget::dropEvent( QDropEvent* e )
 {
    if (e->mimeData()->hasFormat("text/uri-list")) {
-      Video::SourceModel::instance()->setFile(QUrl(e->mimeData()->data("text/uri-list")));
+      Video::SourceModel::instance().setFile(QUrl(e->mimeData()->data("text/uri-list")));
    }
    e->accept();
 }
@@ -151,9 +151,9 @@ void VideoWidget::slotRotateRight()
 void VideoWidget::slotShowPreview(bool show)
 {
    ConfigurationSkeleton::setDisplayVideoPreview(show);
-   if (Video::PreviewManager::instance()->isPreviewing() && show) {
-      addRenderer(Video::PreviewManager::instance()->previewRenderer());
-      VideoGLFrame* frm = m_hFrames[Video::PreviewManager::instance()->previewRenderer()];
+   if (Video::PreviewManager::instance().isPreviewing() && show) {
+      addRenderer(Video::PreviewManager::instance().previewRenderer());
+      VideoGLFrame* frm = m_hFrames[Video::PreviewManager::instance().previewRenderer()];
       if (frm) {
          frm->setScale(0.3);
          frm->setTranslationX(1.8);
@@ -162,18 +162,18 @@ void VideoWidget::slotShowPreview(bool show)
       }
    }
    else {
-      removeRenderer(Video::PreviewManager::instance()->previewRenderer());
+      removeRenderer(Video::PreviewManager::instance().previewRenderer());
    }
 }
 
 void VideoWidget::slotMuteOutgoindVideo(bool mute)
 {
    if (mute) {
-      m_pBackDevice = Video::DeviceModel::instance()->activeDevice();
-      Video::SourceModel::instance()->switchTo(Video::SourceModel::ExtendedDeviceList::NONE);
+      m_pBackDevice = Video::DeviceModel::instance().activeDevice();
+      Video::SourceModel::instance().switchTo(Video::SourceModel::ExtendedDeviceList::NONE);
    }
    else if (m_pBackDevice) {
-      Video::SourceModel::instance()->switchTo(m_pBackDevice);
+      Video::SourceModel::instance().switchTo(m_pBackDevice);
    }
 }
 

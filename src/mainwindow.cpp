@@ -97,23 +97,23 @@ static void loadNumberCategories()
 //    QList<int> list = ConfigurationSkeleton::phoneTypeList();
 //    const bool isEmpty = !list.size();
 // #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
-   NumberCategoryModel* model = NumberCategoryModel::instance();
+   auto& model = NumberCategoryModel::instance();
 #define ICN(name) QPixmap(QString(":/mini/icons/miniicons/%1.png").arg(name))
-   model->addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
-   model->addCategory(i18n("Work")     ,ICN("work")     , 2 /*KABC::PhoneNumber::Work */);
-   model->addCategory(i18n("Msg")      ,ICN("mail")     , 3 /*KABC::PhoneNumber::Msg  */);
-   model->addCategory(i18n("Pref")     ,ICN("call")     , 4 /*KABC::PhoneNumber::Pref */);
-   model->addCategory(i18n("Voice")    ,ICN("video")    , 5 /*KABC::PhoneNumber::Voice*/);
-   model->addCategory(i18n("Fax")      ,ICN("call")     , 6 /*KABC::PhoneNumber::Fax  */);
-   model->addCategory(i18n("Cell")     ,ICN("mobile")   , 7 /*KABC::PhoneNumber::Cell */);
-   model->addCategory(i18n("Video")    ,ICN("call")     , 8 /*KABC::PhoneNumber::Video*/);
-   model->addCategory(i18n("Bbs")      ,ICN("call")     , 9 /*KABC::PhoneNumber::Bbs  */);
-   model->addCategory(i18n("Modem")    ,ICN("call")     , 10/*KABC::PhoneNumber::Modem*/);
-   model->addCategory(i18n("Car")      ,ICN("car")      , 11/*KABC::PhoneNumber::Car  */);
-   model->addCategory(i18n("Isdn")     ,ICN("call")     , 12/*KABC::PhoneNumber::Isdn */);
-   model->addCategory(i18n("Pcs")      ,ICN("call")     , 13/*KABC::PhoneNumber::Pcs  */);
-   model->addCategory(i18n("Pager")    ,ICN("pager")    , 14/*KABC::PhoneNumber::Pager*/);
-   model->addCategory(i18n("Preferred"),ICN("preferred"), 10000                         );
+   model.addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
+   model.addCategory(i18n("Work")     ,ICN("work")     , 2 /*KABC::PhoneNumber::Work */);
+   model.addCategory(i18n("Msg")      ,ICN("mail")     , 3 /*KABC::PhoneNumber::Msg  */);
+   model.addCategory(i18n("Pref")     ,ICN("call")     , 4 /*KABC::PhoneNumber::Pref */);
+   model.addCategory(i18n("Voice")    ,ICN("video")    , 5 /*KABC::PhoneNumber::Voice*/);
+   model.addCategory(i18n("Fax")      ,ICN("call")     , 6 /*KABC::PhoneNumber::Fax  */);
+   model.addCategory(i18n("Cell")     ,ICN("mobile")   , 7 /*KABC::PhoneNumber::Cell */);
+   model.addCategory(i18n("Video")    ,ICN("call")     , 8 /*KABC::PhoneNumber::Video*/);
+   model.addCategory(i18n("Bbs")      ,ICN("call")     , 9 /*KABC::PhoneNumber::Bbs  */);
+   model.addCategory(i18n("Modem")    ,ICN("call")     , 10/*KABC::PhoneNumber::Modem*/);
+   model.addCategory(i18n("Car")      ,ICN("car")      , 11/*KABC::PhoneNumber::Car  */);
+   model.addCategory(i18n("Isdn")     ,ICN("call")     , 12/*KABC::PhoneNumber::Isdn */);
+   model.addCategory(i18n("Pcs")      ,ICN("call")     , 13/*KABC::PhoneNumber::Pcs  */);
+   model.addCategory(i18n("Pager")    ,ICN("pager")    , 14/*KABC::PhoneNumber::Pager*/);
+   model.addCategory(i18n("Preferred"),ICN("preferred"), 10000                         );
 #undef ICN
 #undef IS_ENABLED
 }
@@ -135,7 +135,7 @@ MainWindow::MainWindow(QWidget* parent)
    setUnifiedTitleAndToolBarOnMac(true);
 #endif
 
-   if ((!CallModel::instance()->isConnected()) || (!CallModel::instance()->isValid())) {
+   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
       QTimer::singleShot(5000,this,SLOT(timeout()));
    }
    static bool init = false;
@@ -150,18 +150,18 @@ MainWindow::MainWindow(QWidget* parent)
        *           Set the configurator          *
        ******************************************/
 
-      PersonModel::instance()            ->registerConfigarator<FallbackPersonCollection>(new FallbackPersonConfigurator(this));
-      Media::RecordingModel::instance()  ->registerConfigarator<LocalRecordingCollection>(new AudioRecordingConfigurator(this));
-      CategorizedHistoryModel::instance()->registerConfigarator<LocalHistoryCollection  >(new LocalHistoryConfigurator  (this));
+      PersonModel::instance()            .registerConfigarator<FallbackPersonCollection>(new FallbackPersonConfigurator(this));
+      Media::RecordingModel::instance()  .registerConfigarator<LocalRecordingCollection>(new AudioRecordingConfigurator(this));
+      CategorizedHistoryModel::instance().registerConfigarator<LocalHistoryCollection  >(new LocalHistoryConfigurator  (this));
 
       /*******************************************
        *           Load the collections          *
        ******************************************/
 
-      CategorizedHistoryModel::instance()->addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
+      CategorizedHistoryModel::instance().addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
 
 #ifdef Q_OS_LINUX
-      CertificateModel::instance()->addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
+      CertificateModel::instance().addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
          QString("/usr/share/ca-certificates/"),
          FolderCertificateCollection::Options::ROOT
           | FolderCertificateCollection::Options::RECURSIVE
@@ -171,19 +171,19 @@ MainWindow::MainWindow(QWidget* parent)
       );
 #endif
 
-      CategorizedBookmarkModel::instance()->addCollection<LocalBookmarkCollection>();
-      CategorizedBookmarkModel::instance()->reloadCategories();
+      CategorizedBookmarkModel::instance().addCollection<LocalBookmarkCollection>();
+      CategorizedBookmarkModel::instance().reloadCategories();
 
-      PersonModel::instance()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
+      PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
       GlobalInstances::setInterface<ItemModelStateSerialization>();
-//       PersonModel::instance()->backendModel()->load();
-//       AccountModel::instance()->setDefaultAccount(AccountModel::instance()->getAccountById(ConfigurationSkeleton::defaultAccountId()));
+//       PersonModel::instance().backendModel()->load();
+//       AccountModel::instance().setDefaultAccount(AccountModel::instance().getAccountById(ConfigurationSkeleton::defaultAccountId()));
 
       init = true;
 
 //       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
-//       PersonModel::instance()->backendModel()->addExtension(ext); //FIXME
+//       PersonModel::instance().backendModel()->addExtension(ext); //FIXME
 
       ProfileModel::instance();
    }
@@ -246,11 +246,11 @@ MainWindow::MainWindow(QWidget* parent)
    m_pTrayIcon->addSeparator();
    m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
 
-   connect(CallModel::instance()->selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
+   connect(CallModel::instance().selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
 
 #ifdef ENABLE_VIDEO
-   connect(CallModel::instance(),&CallModel::rendererAdded,this,&MainWindow::displayVideoDock);
-   connect(CallModel::instance(),&CallModel::rendererRemoved,this,&MainWindow::hideVideoDock);
+   connect(&CallModel::instance(),&CallModel::rendererAdded,this,&MainWindow::displayVideoDock);
+   connect(&CallModel::instance(),&CallModel::rendererRemoved,this,&MainWindow::hideVideoDock);
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
@@ -294,12 +294,12 @@ MainWindow::MainWindow(QWidget* parent)
    m_pPresent->setAutoRaise(true);
    m_pPresent->setText(i18nc("The presence state is \"Online\"","Online"));
    m_pPresent->setCheckable(true);
-   m_pPresent->setVisible(false/*AccountModel::instance()->isPresenceEnabled() && AccountModel::instance()->isPresencePublishSupported()*/);
+   m_pPresent->setVisible(false/*AccountModel::instance().isPresenceEnabled() && AccountModel::instance().isPresencePublishSupported()*/);
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);
-   connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
-   connect(PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
-   connect(AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
+   connect(&PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
+   connect(&PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
+   connect(&AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
 
    //Add the Ring hash
    bar->addWidget(new QLabel(i18n("Your Ring ID:"),bar));
@@ -308,7 +308,7 @@ MainWindow::MainWindow(QWidget* parent)
    f.setStyleHint(QFont::Monospace);
    ringId->setFont(f);
    ringId->setTextInteractionFlags(Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard);
-   Account* a = AvailableAccountModel::instance()->currentDefaultAccount(URI::SchemeType::RING);
+   Account* a = AvailableAccountModel::instance().currentDefaultAccount(URI::SchemeType::RING);
    ringId->setText(a ? a->username() : i18n("None"));
    bar->addWidget(ringId);
 
@@ -328,7 +328,7 @@ MainWindow::MainWindow(QWidget* parent)
    m_pAccountStatus = new AutoComboBox(bar);
    m_pAccountStatus->setVisible(ConfigurationSkeleton::displayAccountBox());
    m_pCurAccL->setVisible(ConfigurationSkeleton::displayAccountBox());
-   m_pAccountStatus->bindToModel(AvailableAccountModel::instance(),AvailableAccountModel::instance()->selectionModel());
+   m_pAccountStatus->bindToModel(&AvailableAccountModel::instance(),AvailableAccountModel::instance().selectionModel());
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
    connect(m_pPresent,SIGNAL(toggled(bool)),m_pPresenceDock,SLOT(setVisible(bool)));
@@ -336,9 +336,9 @@ MainWindow::MainWindow(QWidget* parent)
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(QIcon::fromTheme("view-refresh"));
    bar->addPermanentWidget(m_pReloadButton);
-   connect(m_pReloadButton,SIGNAL(clicked()),AccountModel::instance(),SLOT(registerAllAccounts()));
+   connect(m_pReloadButton,SIGNAL(clicked()),&AccountModel::instance(),SLOT(registerAllAccounts()));
 
-   if (!CallModel::instance()->isValid()) {
+   if (!CallModel::instance().isValid()) {
       KMessageBox::error(this,i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually"));
       QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
@@ -372,8 +372,8 @@ MainWindow::~MainWindow()
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
 
-   delete CallModel::instance();
-   delete PersonModel::instance();
+   delete &CallModel::instance();
+   delete &PersonModel::instance();
    //saveState();
 }
 
@@ -456,14 +456,14 @@ void MainWindow::displayAccountCbb( bool checked )
 ///Hide or show the statusbar presence widget
 void MainWindow::slotPresenceEnabled(bool state)
 {
-   m_pPresent->setVisible(state && AccountModel::instance()->isPresencePublishSupported());
+   m_pPresent->setVisible(state && AccountModel::instance().isPresencePublishSupported());
 }
 
 ///Update presence label
 void MainWindow::updatePresence(const QString& status)
 {
    m_pPresent->setText(status);
-   m_pPresent->setToolTip(PresenceStatusModel::instance()->currentMessage());
+   m_pPresent->setToolTip(PresenceStatusModel::instance().currentMessage());
 }
 
 ///Hide the presence dock when not required
@@ -499,7 +499,7 @@ void MainWindow::hideVideoDock(Call* c, Video::Renderer* r)
 ///The daemon is not found
 void MainWindow::timeout()
 {
-   if ((!CallModel::instance()->isConnected()) || (!CallModel::instance()->isValid())) {
+   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
       KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }

@@ -58,7 +58,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
       m_pContent->horizontalHeader()->setVisible(false);
 
    SimpleRotateProxy* pm = new SimpleRotateProxy(this);
-   pm->setSourceModel(CallModel::instance()->userActionModel()->activeActionModel());
+   pm->setSourceModel(CallModel::instance().userActionModel()->activeActionModel());
 
    m_pContent->setItemDelegate(new ToolbarDelegate(m_pContent));
    m_pContent->setModel(pm);
@@ -77,7 +77,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
    connect(pm,&SimpleRotateProxy::layoutChanged,lambda);
    connect(this,&CallViewToolbar::resized,lambda);
    connect(m_pContent,&QTableView::clicked,[](const QModelIndex & index ) {
-      CallModel::instance()->userActionModel()->execute(index);
+      CallModel::instance().userActionModel()->execute(index);
    });
 }
 

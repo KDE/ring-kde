@@ -38,8 +38,8 @@
 DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
-   m_pAccountList->setModel         ( ProfileModel::instance()->sortedProxyModel         () );
-   m_pAccountList->setSelectionModel( ProfileModel::instance()->sortedProxySelectionModel() );
+   m_pAccountList->setModel         ( ProfileModel::instance().sortedProxyModel         () );
+   m_pAccountList->setSelectionModel( ProfileModel::instance().sortedProxySelectionModel() );
 
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pAccountList);
    delegate->setChildDelegate(new RightIconDelegate(this, (int)Account::Role::SecurityLevelIcon, 0.2f));
@@ -53,19 +53,19 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 
 //    setCurrentAccount(nullptr);
 
-   connect(m_pMoveUp  , &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveUp  );
-   connect(m_pMoveDown, &QToolButton::clicked,AccountModel::instance(), &AccountModel::moveDown);
+   connect(m_pMoveUp  , &QToolButton::clicked,&AccountModel::instance(), &AccountModel::moveUp  );
+   connect(m_pMoveDown, &QToolButton::clicked,&AccountModel::instance(), &AccountModel::moveDown);
    connect(m_pRemove  , &QToolButton::clicked, this, &DlgAccount::slotRemoveAccount );
 
-   connect(AccountModel::instance(), &AccountModel::editStateChanged, this, &DlgAccount::slotUpdateButtons);
+   connect(&AccountModel::instance(), &AccountModel::editStateChanged, this, &DlgAccount::slotUpdateButtons);
 
-   const QModelIndex idx = AccountModel::instance()->index(0,0);
+   const QModelIndex idx = AccountModel::instance().index(0,0);
    m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
    m_pPanel->setAccount(idx);
 
    m_pAccountList->expandAll();
 
-   connect(ProfileModel::instance(), &ProfileModel::rowsInserted, this, &DlgAccount::slotExpand);
+   connect(&ProfileModel::instance(), &ProfileModel::rowsInserted, this, &DlgAccount::slotExpand);
 
    connect(m_pPanel, &Pages::Account::changed, [this]() {
       m_HasChanged = true;
@@ -86,13 +86,13 @@ void DlgAccount::slotRemoveAccount()
 {
    static const QString message = tr("Are you sure you want to remove %1?");
    // Check if the selectied element is a profile
-   QModelIndex idx = ProfileModel::instance()->sortedProxySelectionModel()->currentIndex();
+   QModelIndex idx = ProfileModel::instance().sortedProxySelectionModel()->currentIndex();
    if (idx.isValid() && !idx.parent().isValid()) {
       if (QMessageBox::warning(this, tr("Remove profile"),
         message.arg(idx.data(Qt::DisplayRole).toString()),
         QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
       )
-         if (ProfileModel::instance()->remove(idx)) {
+         if (ProfileModel::instance().remove(idx)) {
             m_pAccountList->selectionModel()->setCurrentIndex(
                m_pAccountList->model()->index(0,0), QItemSelectionModel::ClearAndSelect
             );
@@ -100,7 +100,7 @@ void DlgAccount::slotRemoveAccount()
    }
    else {
    // Remove an account
-      idx = AccountModel::instance()->selectionModel()->currentIndex();
+      idx = AccountModel::instance().selectionModel()->currentIndex();
 
       if (!idx.isValid())
          return;
@@ -109,7 +109,7 @@ void DlgAccount::slotRemoveAccount()
          message.arg(idx.data(Qt::DisplayRole).toString()),
          QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
       )
-         AccountModel::instance()->remove(idx);
+         AccountModel::instance().remove(idx);
    }
 }
 
@@ -126,7 +126,7 @@ void DlgAccount::slotNewAddAccount()
 
    //Add profile
    if (proto == Account::Protocol::COUNT__) {
-      const QModelIndex idx = ProfileModel::instance()->add();
+      const QModelIndex idx = ProfileModel::instance().add();
 
       if (idx.isValid()) {
          m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
@@ -136,14 +136,14 @@ void DlgAccount::slotNewAddAccount()
    }
 
    const QString newAlias = tr("New account%1").arg(AccountModel::getSimilarAliasIndex(tr("New account")));
-   Account* a = AccountModel::instance()->add(newAlias,proto);
+   Account* a = AccountModel::instance().add(newAlias,proto);
 
-   QModelIndex accIdx = ProfileModel::instance()->mapFromSource(a->index());
+   QModelIndex accIdx = ProfileModel::instance().mapFromSource(a->index());
    accIdx = static_cast<QAbstractProxyModel*>(
-      ProfileModel::instance()->sortedProxyModel()
+      ProfileModel::instance().sortedProxyModel()
    )->mapFromSource(accIdx);
 
-   ProfileModel::instance()->sortedProxySelectionModel()->setCurrentIndex(
+   ProfileModel::instance().sortedProxySelectionModel()->setCurrentIndex(
       accIdx, QItemSelectionModel::ClearAndSelect
    );
 
@@ -155,8 +155,8 @@ void DlgAccount::slotNewAddAccount()
 
 void DlgAccount::cancel()
 {
-   for (int i=0; i < AccountModel::instance()->size(); i++) {
-      Account* a = (*AccountModel::instance())[i];
+   for (int i=0; i < AccountModel::instance().size(); i++) {
+      Account* a = AccountModel::instance()[i];
 
       switch(a->editState()) {
          case Account::EditState::MODIFIED_INCOMPLETE:
@@ -178,13 +178,13 @@ void DlgAccount::cancel()
 
 bool DlgAccount::hasChanged()
 {
-   return m_HasChanged || AccountModel::instance()->editState() != AccountModel::EditState::SAVED;
+   return m_HasChanged || AccountModel::instance().editState() != AccountModel::EditState::SAVED;
 }
 
 void DlgAccount::updateSettings()
 {
    m_pPanel->updateSettings();
-   AccountModel::instance()->save();
+   AccountModel::instance().save();
    m_HasChanged = false;
 }
 

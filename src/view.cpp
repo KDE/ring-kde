@@ -70,22 +70,22 @@ View::View(QWidget *parent)
    m_pCanvasManager = new CanvasObjectManager();
 
    //Set global settings
-   Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
+   Audio::Settings::instance().setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
    GlobalInstances::setInterface<KDEPresenceSerializationDelegate>();
 
    m_pEventManager = new EventManager(this);
-   m_pView->setModel(CallModel::instance());
-   m_pView->setSelectionModel(CallModel::instance()->selectionModel());
+   m_pView->setModel(&CallModel::instance());
+   m_pView->setSelectionModel(CallModel::instance().selectionModel());
    TipCollection::manager()->changeSize();
 
    //Create a call already, the app is useless without one anyway
    m_pView->selectionModel()->setCurrentIndex(
-      CallModel::instance()->getIndex(CallModel::instance()->dialingCall()),
+      CallModel::instance().getIndex(CallModel::instance().dialingCall()),
       QItemSelectionModel::SelectCurrent
    );
 
    //There is currently way to force a tree to be expanded beyond this
-   connect(CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
+   connect(&CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
    m_pView->expandAll();
 
    m_pConfDelegate    = new ConferenceDelegate( m_pView,palette() );
@@ -98,7 +98,7 @@ View::View(QWidget *parent)
    m_pView->setViewType       ( CategorizedTreeView::ViewType::Call);
 
 
-   if (!CallModel::instance()->getActiveCalls().size())
+   if (!CallModel::instance().getActiveCalls().size())
       m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NO_CALLS);
 
    QPalette pal = QPalette(palette());
@@ -113,12 +113,12 @@ View::View(QWidget *parent)
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction ());
    toolButton_sndVol->setDefaultAction(ActionCollection::instance()->mutePlaybackAction());
 
-   connect(slider_recVol,SIGNAL(valueChanged(int)),Audio::Settings::instance(),SLOT(setCaptureVolume(int)));
-   connect(slider_sndVol,SIGNAL(valueChanged(int)),Audio::Settings::instance(),SLOT(setPlaybackVolume(int)));
+   connect(slider_recVol,SIGNAL(valueChanged(int)),&Audio::Settings::instance(),SLOT(setCaptureVolume(int)));
+   connect(slider_sndVol,SIGNAL(valueChanged(int)),&Audio::Settings::instance(),SLOT(setPlaybackVolume(int)));
 
    /*Setup signals                                                                                                                                    */
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                              */
-   /**/connect(CallModel::instance()        , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))          );
+   /**/connect(&CallModel::instance()       , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))          );
    /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this           , SLOT(sendMessage())                    );
    /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this           , SLOT(sendMessage())                    );
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex))        , m_pEventManager, SLOT(enter())                          );
@@ -130,7 +130,7 @@ View::View(QWidget *parent)
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
 
-   if (ConfigurationSkeleton::enableWizard() == true && !AccountModel::instance()->isRingSupported()) {
+   if (ConfigurationSkeleton::enableWizard() == true && !AccountModel::instance().isRingSupported()) {
       new Wizard(this);
    }
    ConfigurationSkeleton::setEnableWizard(false);
@@ -139,7 +139,7 @@ View::View(QWidget *parent)
 
    loadAutoCompletion    ();
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
-   Audio::Settings::instance()->setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
+   Audio::Settings::instance().setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
 }
 
 ///Destructor
@@ -184,7 +184,7 @@ void View::loadAutoCompletion()
    if (ConfigurationSkeleton::enableAutoCompletion()) {
       if (!m_pAutoCompletion) {
          m_pAutoCompletion = new AutoCompletion(m_pView);
-         PhoneDirectoryModel::instance()->setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
+         PhoneDirectoryModel::instance().setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
          m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
          connect(m_pAutoCompletion,SIGNAL(doubleClicked(ContactMethod*)),this,SLOT(slotAutoCompleteClicked(ContactMethod*)));
       }
@@ -207,8 +207,8 @@ void View::updateVolumeControls()
    slider_recVol->blockSignals(true);
    slider_sndVol->blockSignals(true);
 
-   slider_recVol->setValue(Audio::Settings::instance()->captureVolume());
-   slider_sndVol->setValue(Audio::Settings::instance()->playbackVolume());
+   slider_recVol->setValue(Audio::Settings::instance().captureVolume());
+   slider_sndVol->setValue(Audio::Settings::instance().playbackVolume());
 
    slider_recVol->blockSignals(false);
    slider_sndVol->blockSignals(false);
@@ -232,7 +232,7 @@ void View::displayDialpad(bool checked)
 void View::displayMessageBox(bool checked)
 {
    ConfigurationSkeleton::setDisplayMessageBox(checked);
-   Call* call = CallModel::instance()->selectedCall();
+   Call* call = CallModel::instance().selectedCall();
    m_pMessageBoxW->setVisible(checked
       && call
       && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
@@ -250,16 +250,16 @@ void View::incomingCall(Call* call)
       MainWindow::app()->setVisible    ( true );
    }
 
-   const QModelIndex& idx = CallModel::instance()->getIndex(call);
+   const QModelIndex& idx = CallModel::instance().getIndex(call);
    if (idx.isValid() && (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING)) {
-      CallModel::instance()->selectCall(call);
+      CallModel::instance().selectCall(call);
    }
 }
 
 ///Send a text message
 void View::sendMessage()
 {
-   Call* call = CallModel::instance()->selectedCall();
+   Call* call = CallModel::instance().selectedCall();
    if (dynamic_cast<Call*>(call) && !m_pSendMessageLE->text().isEmpty()) {
       call->addOutgoingMedia<Media::Text>()->send({{"text/plain",m_pSendMessageLE->text()}});
    }
@@ -268,7 +268,7 @@ void View::sendMessage()
 
 void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API for this
 {
-   Call* call = CallModel::instance()->selectedCall();
+   Call* call = CallModel::instance().selectedCall();
    if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
       call->setDialNumber(n);
       if (n->account())

@@ -45,7 +45,7 @@ ContactMethod* KPhoneNumberSelector::number(const Person* contact)
             list << number->category()->name()+" ("+number->uri()+')';
          }
          const QString result = QInputDialog::getItem (MainWindow::app(),i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
-         return PhoneDirectoryModel::instance()->getNumber(result);//new ContactMethod(result,"");
+         return PhoneDirectoryModel::instance().getNumber(result);//new ContactMethod(result,"");
       }
       else if (contact->phoneNumbers().size() == 1)
          return contact->phoneNumbers()[0];

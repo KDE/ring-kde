@@ -124,7 +124,7 @@ void Menu::Person::callAgain(const ContactMethod* n)
    bool ok = false;
    const ContactMethod* number = n?n:showNumberSelector(ok);
    if ( (n || ok) && number) {
-      if (auto call = CallModel::instance()->dialingCall(const_cast<ContactMethod*>(number)))
+      if (auto call = CallModel::instance().dialingCall(const_cast<ContactMethod*>(number)))
          call->performAction(Call::Action::ACCEPT);
       else
          HelperFunctions::displayNoAccountMessageBox(nullptr);
@@ -164,7 +164,7 @@ void Menu::Person::addPhone()
    bool ok = false;
    const QString text = QInputDialog::getText(this, i18n("Enter a new number"), i18n("New number:"), QLineEdit::Normal, QString(), &ok);
    if (ok && !text.isEmpty()) {
-//       ContactMethod* n = PhoneDirectoryModel::instance()->getNumber(text,"work");
+//       ContactMethod* n = PhoneDirectoryModel::instance().getNumber(text,"work");
 //       m_pCurrentPerson->addContactMethod(n); //TODO fixme
    }
 }
@@ -174,7 +174,7 @@ void Menu::Person::bookmark()
 {
    const ::Person::ContactMethods numbers = m_pCurrentPerson->phoneNumbers();
    if (numbers.count() == 1) {
-      CategorizedBookmarkModel::instance()->addBookmark(numbers[0]);
+      CategorizedBookmarkModel::instance().addBookmark(numbers[0]);
    }
 }
 

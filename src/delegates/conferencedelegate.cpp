@@ -530,7 +530,7 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
             if (event->type() == QEvent::MouseButtonDblClick)
                call->performAction(Call::Action::ACCEPT);
             else if (event->type() == QEvent::MouseButtonPress)
-               m_tree->selectionModel()->setCurrentIndex(CallModel::instance()->getIndex(call),QItemSelectionModel::SelectCurrent);
+               m_tree->selectionModel()->setCurrentIndex(CallModel::instance().getIndex(call),QItemSelectionModel::SelectCurrent);
          }
       }
    }

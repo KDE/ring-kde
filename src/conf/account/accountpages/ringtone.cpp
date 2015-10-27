@@ -24,7 +24,7 @@ Pages::RingTone::RingTone(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
    connect(this,&PageBase::accountSet,[this]() {
-      m_pRingtones->setModel(RingtoneModel::instance());
-      m_pRingtones->setSelectionModel(RingtoneModel::instance()->selectionModel(account()));
+      m_pRingtones->setModel(&RingtoneModel::instance());
+      m_pRingtones->setSelectionModel(RingtoneModel::instance().selectionModel(account()));
    });
 }

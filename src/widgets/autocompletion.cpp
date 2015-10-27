@@ -60,7 +60,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : ResizableTip(parent),m_Heigh
    connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(slotDoubleClicked(QModelIndex)));
 
    if (parent) {
-      connect(CallModel::instance()->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectionChanged(QModelIndex)));
+      connect(CallModel::instance().selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectionChanged(QModelIndex)));
       parent->installEventFilter(this);
       QResizeEvent r(size(),size());
       eventFilter(nullptr,&r);
@@ -69,7 +69,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : ResizableTip(parent),m_Heigh
    setMinimumSize(0,m_Height);
    m_pDelegate = new AutoCompletionDelegate2();
    m_pView->setItemDelegate(m_pDelegate);
-   selectionChanged(CallModel::instance()->selectionModel()->currentIndex());
+   selectionChanged(CallModel::instance().selectionModel()->currentIndex());
 
    connect(this, &ResizableTip::heightChanged, [](int h) {
       ConfigurationSkeleton::setAutoCompletionHeight(h);
@@ -139,7 +139,7 @@ void AutoCompletion::selectionChanged(const QModelIndex& idx)
       return;
    }
 
-   Call* call = CallModel::instance()->getCall(idx);
+   Call* call = CallModel::instance().getCall(idx);
    if (call && call->lifeCycleState() == Call::LifeCycleState::CREATION) {
       setCall(call);
    }

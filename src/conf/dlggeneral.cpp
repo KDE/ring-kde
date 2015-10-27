@@ -39,11 +39,11 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
    setupUi(this);
    connect(toolButton_historyClear, SIGNAL(clicked()), this, SLOT(slotClearCallHistoryAsked()));
    toolButton_historyClear->setIcon(QIcon::fromTheme("edit-clear-history"));
-   const bool isLimited = CategorizedHistoryModel::instance()->isHistoryLimited();
+   const bool isLimited = CategorizedHistoryModel::instance().isHistoryLimited();
    m_pKeepHistory->setChecked(!isLimited);
    m_pHistoryMax ->setEnabled(isLimited );
 
-   m_pHistoryMax->setValue(CategorizedHistoryModel::instance()->historyLimit());
+   m_pHistoryMax->setValue(CategorizedHistoryModel::instance().historyLimit());
    m_HasChanged = false;
    connect(this             , SIGNAL(updateButtons())                , parent, SLOT(updateButtons()));
 }
@@ -74,14 +74,14 @@ void DlgGeneral::updateWidgets()
 ///Save current settings
 void DlgGeneral::updateSettings()
 {
-   CategorizedHistoryModel::instance()->setHistoryLimited(m_pKeepHistory->isChecked());
+   CategorizedHistoryModel::instance().setHistoryLimited(m_pKeepHistory->isChecked());
    if (!m_pKeepHistory->isChecked())
-      CategorizedHistoryModel::instance()->setHistoryLimit(m_pHistoryMax->value());
+      CategorizedHistoryModel::instance().setHistoryLimit(m_pHistoryMax->value());
 
    m_HasChanged = false;
 }
 
 void DlgGeneral::slotClearCallHistoryAsked()
 {
-   CategorizedHistoryModel::instance()->clearAllCollections();
+   CategorizedHistoryModel::instance().clearAllCollections();
 }

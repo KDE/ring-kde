@@ -257,7 +257,7 @@ AccountSerializationAdapter::AccountSerializationAdapter(Account* a, QWidget* w)
 {
    static QHash<QByteArray, int> reverse;
    if (reverse.isEmpty()) {
-      const QHash<int, QByteArray> a = AccountModel::instance()->roleNames();
+      const QHash<int, QByteArray> a = AccountModel::instance().roleNames();
       for (QHash<int, QByteArray>::const_iterator i = a.begin(); i != a.end(); ++i) {
          reverse[i.value()] = i.key();
       }

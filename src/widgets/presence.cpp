@@ -24,28 +24,28 @@ Presence::Presence(QWidget* parent) : QWidget(parent)
    m_pMessage->setVisible(false);
    m_pPresentRB->setVisible(false);
    m_pAbsentRB->setVisible(false);
-   m_pView->setModel(PresenceStatusModel::instance());
+   m_pView->setModel(&PresenceStatusModel::instance());
 
    //Toggle between custom and pre-defined status
-   connect(m_pCustomMessageCK             ,SIGNAL(toggled(bool)),                          PresenceStatusModel::instance(),SLOT(setUseCustomStatus(bool)));
-   connect(PresenceStatusModel::instance(),SIGNAL(useCustomStatusChanged(bool)),           m_pCustomMessageCK,             SLOT(setChecked(bool)));
+   connect(m_pCustomMessageCK              ,SIGNAL(toggled(bool)),                          &PresenceStatusModel::instance(),SLOT(setUseCustomStatus(bool)));
+   connect(&PresenceStatusModel::instance(),SIGNAL(useCustomStatusChanged(bool)),           m_pCustomMessageCK,              SLOT(setChecked(bool)));
 
    //Toggle between present and absent
-   connect(m_pPresentRB                   ,SIGNAL(toggled(bool)),                          PresenceStatusModel::instance(),SLOT(setCustomStatus(bool)));
-   connect(PresenceStatusModel::instance(),SIGNAL(customStatusChanged(bool)),              m_pPresentRB,                   SLOT(setChecked(bool)));
+   connect(m_pPresentRB                    ,SIGNAL(toggled(bool)),                          &PresenceStatusModel::instance(),SLOT(setCustomStatus(bool)));
+   connect(&PresenceStatusModel::instance(),SIGNAL(customStatusChanged(bool)),              m_pPresentRB,                    SLOT(setChecked(bool)));
 
    //Select current pre-defined status
-   connect(m_pView->selectionModel()      ,SIGNAL(currentChanged(QModelIndex,QModelIndex)),PresenceStatusModel::instance(),SLOT(setCurrentIndex(QModelIndex)));
+   connect(m_pView->selectionModel()       ,SIGNAL(currentChanged(QModelIndex,QModelIndex)),&PresenceStatusModel::instance(),SLOT(setCurrentIndex(QModelIndex)));
 
    //Change custom text status
-   connect(m_pMessage                     ,SIGNAL(textChanged()),                          this,                           SLOT(slotTextChanged()));
-   connect(PresenceStatusModel::instance(),SIGNAL(customMessageChanged(QString)),          this,                           SLOT(slotReplaceText(QString)));
+   connect(m_pMessage                      ,SIGNAL(textChanged()),                           this,                           SLOT(slotTextChanged()));
+   connect(&PresenceStatusModel::instance(),SIGNAL(customMessageChanged(QString)),           this,                           SLOT(slotReplaceText(QString)));
 }
 
 void Presence::slotTextChanged()
 {
    const int pos = m_pMessage->textCursor().position();
-   PresenceStatusModel::instance()->setCustomMessage(m_pMessage->toPlainText());
+   PresenceStatusModel::instance().setCustomMessage(m_pMessage->toPlainText());
    m_pMessage->textCursor().setPosition(pos);
 }
 

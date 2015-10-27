@@ -116,7 +116,7 @@ void ScreenSharingWidget::slotScreenIndexChanged(int idx)
       m_pFrame->setVisible(true);
    }
    else {
-      Video::SourceModel::instance()->setDisplay(0,QApplication::desktop()->screenGeometry(idx));
+      Video::SourceModel::instance().setDisplay(0,QApplication::desktop()->screenGeometry(idx));
       m_pFrame->setVisible(false);
    }
 }
@@ -159,11 +159,11 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    m_pMoreOpts->addWidget(devL,1,0,1,1);
 
    QComboBox* device = new QComboBox(this);
-   device->setModel(Video::SourceModel::instance());
-   device->setCurrentIndex(Video::SourceModel::instance()->activeIndex());
+   device->setModel(&Video::SourceModel::instance());
+   device->setCurrentIndex(Video::SourceModel::instance().activeIndex());
    m_pMoreOpts->addWidget(device,1,1,2,1);
    connect(btn,SIGNAL(toggled(bool)),moreOptions,SLOT(setVisible(bool)));
-   connect(device,SIGNAL(currentIndexChanged(int)),Video::SourceModel::instance(),SLOT(switchTo(int)));
+   connect(device,SIGNAL(currentIndexChanged(int)),&Video::SourceModel::instance(),SLOT(switchTo(int)));
    connect(device,SIGNAL(currentIndexChanged(int)),this,SLOT(slotDeviceChanged(int)));
 
    connect(ActionCollection::instance()->videoRotateLeftAction() ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateLeft()));
@@ -233,8 +233,8 @@ void VideoDock::slotDeviceChanged(int index)
             m_pScreenSharing->setVisible(false);
          if ( m_pMediaPicker    )
             m_pMediaPicker->setVisible(false);
-         m_pVideoSettings->setDevice(Video::SourceModel::instance()->deviceAt(
-            Video::SourceModel::instance()->index(index,0))
+         m_pVideoSettings->setDevice(Video::SourceModel::instance().deviceAt(
+            Video::SourceModel::instance().index(index,0))
          );
          m_pVideoSettings->setVisible(true);
    };
@@ -242,7 +242,7 @@ void VideoDock::slotDeviceChanged(int index)
 
 void VideoDock::slotFileSelected(const QUrl& url)
 {
-   Video::SourceModel::instance()->setFile(url);
+   Video::SourceModel::instance().setFile(url);
 }
 
 ///Make the video widget temporarely fullscreen

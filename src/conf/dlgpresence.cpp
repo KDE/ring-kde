@@ -29,22 +29,22 @@
 DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
 {
    setupUi(this);
-   m_pView->setModel(PresenceStatusModel::instance());
+   m_pView->setModel(&PresenceStatusModel::instance());
    m_pUp->setIcon     ( QIcon::fromTheme( "go-up"       ) );
    m_pDown->setIcon   ( QIcon::fromTheme( "go-down"     ) );
    m_pAdd->setIcon    ( QIcon::fromTheme( "list-add"    ) );
    m_pRemove->setIcon ( QIcon::fromTheme( "list-remove" ) );
-   connect(m_pAdd   , SIGNAL(clicked()),PresenceStatusModel::instance() ,SLOT(addRow())       );
+   connect(m_pAdd   , SIGNAL(clicked()),&PresenceStatusModel::instance() ,SLOT(addRow())       );
    connect(m_pUp    , SIGNAL(clicked()),this                            ,SLOT(slotMoveUp())   );
    connect(m_pDown  , SIGNAL(clicked()),this                            ,SLOT(slotMoveDown()) );
    connect(m_pRemove, SIGNAL(clicked()),this                            ,SLOT(slotRemoveRow()));
    connect(this     , SIGNAL(updateButtons()) , parent                  ,SLOT(updateButtons()));
-   connect(PresenceStatusModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotChanged()));
+   connect(&PresenceStatusModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotChanged()));
 
    if (m_pView->horizontalHeader()) {
       /*m_pView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
       m_pView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
-      for (int i=2;i<PresenceStatusModel::instance()->columnCount();i++) {
+      for (int i=2;i<PresenceStatusModel::instance().columnCount();i++) {
          m_pView->horizontalHeader()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
       }*/
    }
@@ -72,7 +72,7 @@ void DlgPresence::updateWidgets()
 
 void DlgPresence::updateSettings()
 {
-   PresenceStatusModel::instance()->save();
+   PresenceStatusModel::instance().save();
    m_Changed = false;
    emit updateButtons();
 }
@@ -90,16 +90,16 @@ void DlgPresence::slotChanged()
 
 void DlgPresence::slotRemoveRow()
 {
-   PresenceStatusModel::instance()->removeRow(m_pView->currentIndex());
+   PresenceStatusModel::instance().removeRow(m_pView->currentIndex());
 }
 
 
 void DlgPresence::slotMoveUp()
 {
-   PresenceStatusModel::instance()->moveUp(m_pView->currentIndex());
+   PresenceStatusModel::instance().moveUp(m_pView->currentIndex());
 }
 
 void DlgPresence::slotMoveDown()
 {
-   PresenceStatusModel::instance()->moveDown(m_pView->currentIndex());
+   PresenceStatusModel::instance().moveDown(m_pView->currentIndex());
 }

@@ -75,14 +75,14 @@ Accessibility* Accessibility::instance()
 ///Use the speech daemon to read details about the current calls
 void Accessibility::listCall()
 {
-   if (CallModel::instance()->getActiveCalls().size()>0) {
-//       KSpeechInterfaceSingleton::instance()->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance()->getActiveCalls().size()), KSpeech::soPlainText);
-//       foreach (Call* call,CallModel::instance()->getActiveCalls()) {
-//          KSpeechInterfaceSingleton::instance()->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerContactMethod()->uri().isEmpty())?call->peerContactMethod()->uri():call->dialNumber())), KSpeech::soPlainText);
+   if (CallModel::instance().getActiveCalls().size()>0) {
+//       KSpeechInterfaceSingleton::instance().say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance().getActiveCalls().size()), KSpeech::soPlainText);
+//       foreach (Call* call,CallModel::instance().getActiveCalls()) {
+//          KSpeechInterfaceSingleton::instance().say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerContactMethod()->uri().isEmpty())?call->peerContactMethod()->uri():call->dialNumber())), KSpeech::soPlainText);
 //       }
    }
    else {
-//       KSpeechInterfaceSingleton::instance()->say(i18n("You currently have no call"), KSpeech::soPlainText);
+//       KSpeechInterfaceSingleton::instance().say(i18n("You currently have no call"), KSpeech::soPlainText);
    }
 }
 
@@ -102,8 +102,8 @@ QString Accessibility::numberToDigit(const QString &number)
 ///Use the speech daemon to read the current call details
 void Accessibility::currentCallDetails()
 {
-   foreach (Call* call,CallModel::instance()->getActiveCalls()) {
-      if (CallModel::instance()->selectedCall() == call) {
+   foreach (Call* call,CallModel::instance().getActiveCalls()) {
+      if (CallModel::instance().selectedCall() == call) {
          QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toLatin1() ));
          if (!call->peerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));
@@ -116,7 +116,7 @@ void Accessibility::currentCallDetails()
          if (nSec>0)
             toSay += i18n(" and you have been talking since %1 seconds",nSec );
 
-//          KSpeechInterfaceSingleton::instance()->say(toSay, KSpeech::soPlainText);
+//          KSpeechInterfaceSingleton::instance().say(toSay, KSpeech::soPlainText);
       }
    }
 }
@@ -125,5 +125,5 @@ void Accessibility::currentCallDetails()
 void Accessibility::say(const QString &message)
 {
    Q_UNUSED(message)
-//    KSpeechInterfaceSingleton::instance()->say(message, KSpeech::soPlainText);
+//    KSpeechInterfaceSingleton::instance().say(message, KSpeech::soPlainText);
 }
