@@ -70,6 +70,8 @@ private Q_SLOTS:
    void slotEditCollection();
    void slotAddCollection();
    void slotResourceCreationResult(KJob*);
+   void slotRowsInserted(const QModelIndex&, int, int);
+   void slotDisplayAll(bool);
 
 Q_SIGNALS:
    ///Emitted when the buttons need to be updated

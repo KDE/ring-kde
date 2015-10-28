@@ -86,14 +86,9 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
    connect(&CollectionModel::instance(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
 
-   connect(&CollectionModel::instance(),&CollectionModel::rowsInserted,[this](const QModelIndex&,int,int) {
-      m_pItemBackendW->expandAll();
-   });
+   connect(&CollectionModel::instance(),&CollectionModel::rowsInserted, this, &DlgAddressBook::slotRowsInserted);
 
-   connect(kcfg_displayAllCollections,&QCheckBox::toggled,[this](bool checked) {
-      m_pProxyModel->setSourceModel( checked ? &CollectionModel::instance() : CollectionModel::instance().manageableCollections());
-      m_pItemBackendW->expandAll();
-   });
+   connect(kcfg_displayAllCollections,&QCheckBox::toggled, this, &DlgAddressBook::slotDisplayAll);
 
    connect(m_pItemBackendW->selectionModel(), &QItemSelectionModel::currentChanged,this,&DlgAddressBook::slotEditCollection);
 
@@ -125,6 +120,17 @@ DlgAddressBook::~DlgAddressBook()
    m_pItemBackendW->setItemDelegate(nullptr);
    delete m_pManager;
    m_hWidgets.clear();
+}
+
+void DlgAddressBook::slotRowsInserted(const QModelIndex&, int, int)
+{
+   m_pItemBackendW->expandAll();
+}
+
+void DlgAddressBook::slotDisplayAll(bool checked)
+{
+   m_pProxyModel->setSourceModel( checked ? &CollectionModel::instance() : CollectionModel::instance().manageableCollections());
+   m_pItemBackendW->expandAll();
 }
 
 ///Reload the widget
