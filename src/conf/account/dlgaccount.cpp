@@ -34,6 +34,8 @@
 #include <QtGui/QPainter>
 #include <QtWidgets/QMessageBox>
 
+#include <QtCore/QAbstractProxyModel>
+
 
 DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 {
@@ -59,10 +61,7 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 
    connect(&AccountModel::instance(), &AccountModel::editStateChanged, this, &DlgAccount::slotUpdateButtons);
 
-   const QModelIndex idx = AccountModel::instance().index(0,0);
-   m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
-   m_pPanel->setAccount(idx);
-
+   const QModelIndex idx = m_pAccountList->model()->index(0,0,m_pAccountList->model()->index(0,0));
    m_pAccountList->expandAll();
 
    connect(&ProfileModel::instance(), &ProfileModel::rowsInserted, this, &DlgAccount::slotExpand);
@@ -71,6 +70,11 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
       m_HasChanged = true;
       updateButtons();
    });
+
+   connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, m_pPanel,
+      static_cast<void (Pages::Account::*)(const QModelIndex&)>(&Pages::Account::setAccount));
+
+   m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
 }
 
 DlgAccount::~DlgAccount()
