@@ -27,6 +27,7 @@
 #include "video/resolution.h"
 #include "video/channel.h"
 #include "video/rate.h"
+#include <video/configurationproxy.h>
 #include "video/devicemodel.h"
 
 ///Constructor
@@ -52,6 +53,11 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
 //    m_pVideoSettings->slotReloadDevices();
    m_IsChanged = false;
    m_IsLoading = false;
+
+   if (!Video::ConfigurationProxy::deviceModel().rowCount()) {
+      m_pPreviewPB->setDisabled(true);
+      connect(m_pPreviewGV, SIGNAL(videoEnabled(bool)), m_pPreviewPB, SLOT(setEnabled(bool)));
+   }
 }
 
 ///Destructor

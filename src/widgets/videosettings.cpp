@@ -30,6 +30,22 @@ VideoSettings::VideoSettings(QWidget* parent) : QWidget(parent)
    m_pChannel    -> bindToModel(&Video::ConfigurationProxy::channelModel   () , &Video::ConfigurationProxy::channelSelectionModel   ());
    m_pResolution -> bindToModel(&Video::ConfigurationProxy::resolutionModel() , &Video::ConfigurationProxy::resolutionSelectionModel());
    m_pRate       -> bindToModel(&Video::ConfigurationProxy::rateModel      () , &Video::ConfigurationProxy::rateSelectionModel      ());
+
+   if (!Video::ConfigurationProxy::deviceModel().rowCount()) {
+      m_pChannel    ->setDisabled(true);
+      m_pResolution ->setDisabled(true);
+      m_pRate       ->setDisabled(true);
+      connect(&Video::ConfigurationProxy::deviceModel(), &QAbstractItemModel::rowsInserted, this, &VideoSettings::slotInserted);
+   }
+}
+
+void VideoSettings::slotInserted()
+{
+   m_pChannel    ->setDisabled(false);
+   m_pResolution ->setDisabled(false);
+   m_pRate       ->setDisabled(false);
+
+   emit videoEnabled(true);
 }
 
 void VideoSettings::setDevice(Video::Device* dev)

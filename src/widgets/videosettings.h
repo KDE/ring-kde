@@ -42,8 +42,11 @@ private Q_SLOTS:
    void slotChannelChanged(int idx = -1);
    void slotResolutionChanged(int idx = -1);
    void slotRateChanged(int idx = -1);
+   void slotInserted();
+
 Q_SIGNALS:
    void settingsChanged();
+   void videoEnabled(bool enabled);
 };
 
 #endif
