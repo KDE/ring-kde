@@ -1,5 +1,6 @@
 [Global]
 Name=ring-kde
+Name[ast]=ring-kde
 Name[ca]=ring-kde
 Name[ca@valencia]=ring-kde
 Name[cs]=ring-kde
