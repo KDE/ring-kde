@@ -19,8 +19,6 @@
 
 #include <account.h>
 
-#include <klocale.h>
-
 ExtendedProtocolModel::ExtendedProtocolModel(QObject* parent) : QIdentityProxyModel(parent)
 {
    setSourceModel(m_pSource);
@@ -39,7 +37,7 @@ QItemSelectionModel* ExtendedProtocolModel::selectionModel() const
 QVariant ExtendedProtocolModel::data( const QModelIndex& index, int role ) const
 {
    if (index.isValid() && index.row() == static_cast<int>(Account::Protocol::COUNT__) && role == Qt::DisplayRole)
-      return i18n("Profile");
+      return tr("Profile");
    else
       return m_pSource->data(mapToSource(index), role);
 }
