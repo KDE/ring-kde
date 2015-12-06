@@ -27,6 +27,7 @@
 //Ring
 #include "mime.h"
 #include "menumodelview.h"
+#include "useractionmodel.h"
 #include "klib/kcfg_settings.h"
 
 ///KeyPressEaterC: keygrabber
@@ -55,7 +56,7 @@ private:
 };
 
 ///Constructor
-DockBase::DockBase(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
+DockBase::DockBase(QWidget* parent) : QDockWidget(parent)
 {
    QWidget* mainWidget = new QWidget(this);
    setupUi(mainWidget);
@@ -78,9 +79,6 @@ DockBase::DockBase(QWidget* parent) : QDockWidget(parent),m_pMenu(nullptr)
 ///Destructor
 DockBase::~DockBase()
 {
-   if (m_pMenu)
-      delete m_pMenu;
-
    delete m_pKeyPressEater;
 }
 
@@ -110,28 +108,27 @@ void DockBase::setSortingModel(QAbstractItemModel* m, QItemSelectionModel* s)
    m_pMenuBtn->setModel(m, s);
 }
 
-void DockBase::setMenuConstructor(std::function<QMenu*()> cst)
-{
-   m_fMenuConstructor = cst;
-}
-
-QMenu* DockBase::menu() const
-{
-   if (!m_pMenu)
-      m_pMenu = m_fMenuConstructor();
-
-   return m_pMenu;
-}
-
 ///Called when someone right click on the 'index'
-void DockBase::slotContextMenu(QModelIndex index)
+void DockBase::slotContextMenu(const QModelIndex& index)
 {
    if (!index.parent().isValid())
       return;
 
-   menu();
-   //TODO setIndex
-   menu()->exec(QCursor::pos());
+   if (!m_pUserActionModel) {
+
+      m_pUserActionModel = new UserActionModel(m_pView->model(), UserActionModel::Context::ALL );
+      m_pUserActionModel->setSelectionModel(m_pView->selectionModel());
+   }
+
+   auto m = new MenuModelView(m_pUserActionModel->activeActionModel(), new QItemSelectionModel(m_pUserActionModel->activeActionModel()), this);
+   connect(m, &MenuModelView::itemClicked, this, &DockBase::slotContextMenuClicked);
+
+   m->exec(QCursor::pos());
+}
+
+void DockBase::slotContextMenuClicked(const QModelIndex& index )
+{
+   m_pUserActionModel->execute(index);
 }
 
 void DockBase::slotDoubleClick(const QModelIndex& index)

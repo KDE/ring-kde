@@ -28,11 +28,6 @@
 #include "delegates/phonenumberdelegate.h"
 #include "delegates/historydelegate.h"
 
-//Menu
-#include "menu/person.h"
-#include "menu/call.h"
-#include "menu/contactmethod.h"
-
 //Widgets
 #include "widgets/dockbase.h"
 
@@ -107,10 +102,6 @@ Dock::Dock(QMainWindow* w) : QObject(w)
          ConfigurationSkeleton::setContactSortMode(idx.row());
    });
 
-   m_pContactCD->setMenuConstructor([]() {
-      return new Menu::Person();
-   });
-
    //History dock
    m_pHistoryDW       = new DockBase  ( w );
    m_pHistoryDW->setObjectName("historyDock");
@@ -118,9 +109,6 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pHistoryDW->view());
    delegate->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
    m_pHistoryDW->setDelegate(delegate);
-   m_pHistoryDW->setMenuConstructor([]() {
-      return new Menu::Call();
-   });
    proxy = CategorizedHistoryModel::SortedProxy::instance().model();
    m_pHistoryDW->setProxyModel(proxy);
    m_pHistoryDW->setSortingModel(

@@ -37,6 +37,7 @@ class QItemSelectionModel;
 ///Ring
 class KeyPressEaterC;
 class CategorizedTreeView;
+class UserActionModel;
 
 ///DockBase: Dock to access contacts
 class DockBase : public QDockWidget, public Ui_ContactDock
@@ -54,22 +55,18 @@ public:
 
    //Getter
    CategorizedTreeView* view() const;
-   QMenu* menu() const;
-
-   //Setter
-   void setMenuConstructor(std::function<QMenu*()> cst);
 
 private:
    //Attributes
-   mutable QMenu*           m_pMenu {nullptr};
-   std::function<QMenu*()>  m_fMenuConstructor {nullptr};
    KeyPressEaterC*          m_pKeyPressEater ;
+   UserActionModel*         m_pUserActionModel {nullptr};
 
 public Q_SLOTS:
    virtual void keyPressEvent(QKeyEvent* event) override;
 
 private Q_SLOTS:
-   void slotContextMenu    ( QModelIndex index     );
+   void slotContextMenu       (const QModelIndex& index );
+   void slotContextMenuClicked(const QModelIndex& index );
 
 private Q_SLOTS:
    void transferEvent( QMimeData* data   );
