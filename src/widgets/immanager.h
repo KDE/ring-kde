@@ -36,6 +36,9 @@ public:
    //Constructor
    explicit IMManager(QWidget* parent = nullptr);
 
+   //Mutator
+   bool showConversation(ContactMethod* cm);
+
 private:
    //Attrubutes
    QHash<ContactMethod*,IMTab*> m_lTabs;
