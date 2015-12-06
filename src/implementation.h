@@ -27,6 +27,7 @@
 #include <QtCore/QMutex>
 #include <interfaces/presenceserializeri.h>
 #include <interfaces/shortcutcreatori.h>
+#include <interfaces/actionextenderi.h>
 
 class Macro;
 
@@ -66,6 +67,19 @@ class KDEShortcutDelegate : public Interfaces::ShortcutCreatorI
 public:
    virtual ~KDEShortcutDelegate(){}
    virtual QVariant createAction(Macro* macro) override;
+};
+
+class LIB_EXPORT KDEActionExtender final : public Interfaces::ActionExtenderI
+{
+public:
+
+   virtual void editPerson(Person* p) override;
+   virtual void viewChatHistory(ContactMethod* cm) override;
+   virtual void copyInformation(QMimeData* data) override;
+   virtual bool warnDeletePerson(Person* p) override;
+   virtual bool warnDeleteCall(Call* c) override;
+   virtual Person* selectPerson(FlagPack<SelectPersonHint> hints) const override;
+   virtual ContactMethod* selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint>) const override;
 };
 
 #endif
