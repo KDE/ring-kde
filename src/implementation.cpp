@@ -224,8 +224,7 @@ void KDEActionExtender::editPerson(Person* p)
 
 void KDEActionExtender::viewChatHistory(ContactMethod* cm)
 {
-   Q_UNUSED(cm)
-//    MainWindow::view()->m_pMessageTabBox->showConversation(cm);
+   MainWindow::view()->m_pMessageTabBox->showConversation(cm);
 }
 
 void KDEActionExtender::copyInformation(QMimeData* data)

@@ -45,11 +45,35 @@ IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
 ///Destructor
 void IMManager::newConversation(ContactMethod* cm, QAbstractListModel* model)
 {
+   if (m_lTabs[cm]) {
+      setCurrentWidget(m_lTabs[cm]);
+      setVisible(true);
+      return;
+   }
+
    IMTab* newTab = new IMTab(model,this);
    m_lTabs[cm] = newTab;
    setVisible(true);
    const QString name = cm->primaryName();
    addTab(newTab,name);
+}
+
+///Display a conversation from history
+bool IMManager::showConversation(ContactMethod* cm)
+{
+   if (!cm)
+      return false;
+
+   auto textRec = cm->textRecording();
+
+   if (!textRec)
+      return false;
+
+   QAbstractListModel* model = textRec->instantMessagingModel();
+
+   newConversation(cm, model);
+
+   return true;
 }
 
 ///Close a tab

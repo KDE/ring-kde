@@ -27,7 +27,7 @@ Q_OBJECT
 
 public:
     explicit FilterLineEdit(QWidget *parent = nullptr);
-    ~FilterLineEdit();
+    virtual ~FilterLineEdit();
 
 private Q_SLOTS:
    void slotTextChanged(const QString& text);
