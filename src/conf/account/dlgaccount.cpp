@@ -71,14 +71,18 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
       updateButtons();
    });
 
-   connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, m_pPanel,
-      static_cast<void (Pages::Account::*)(const QModelIndex&)>(&Pages::Account::setAccount));
+   connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, this, &DlgAccount::slotSetAccount);
 
    m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
 }
 
 DlgAccount::~DlgAccount()
 {
+}
+
+void DlgAccount::slotSetAccount(const QModelIndex& idx)
+{
+   m_pPanel->setAccount(idx);
 }
 
 void DlgAccount::slotExpand()

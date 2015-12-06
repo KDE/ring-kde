@@ -65,9 +65,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-78</y>
-         <width>632</width>
-         <height>1136</height>
+         <y>0</y>
+         <width>623</width>
+         <height>1149</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -233,7 +233,9 @@
                    <string>Fix the permissions</string>
                   </property>
                   <property name="icon">
-                   <iconset theme="dialog-ok"/>
+                   <iconset theme="dialog-ok">
+                    <normaloff/>
+                   </iconset>
                   </property>
                  </widget>
                 </item>
@@ -243,7 +245,9 @@
                    <string>No thanks</string>
                   </property>
                   <property name="icon">
-                   <iconset theme="dialog-cancel"/>
+                   <iconset theme="dialog-cancel">
+                    <normaloff/>
+                   </iconset>
                   </property>
                  </widget>
                 </item>
@@ -317,7 +321,9 @@
                    <string>Move to ~/.cert</string>
                   </property>
                   <property name="icon">
-                   <iconset theme="dialog-ok"/>
+                   <iconset theme="dialog-ok">
+                    <normaloff/>
+                   </iconset>
                   </property>
                  </widget>
                 </item>
@@ -327,7 +333,9 @@
                    <string>No thanks</string>
                   </property>
                   <property name="icon">
-                   <iconset theme="dialog-cancel"/>
+                   <iconset theme="dialog-cancel">
+                    <normaloff/>
+                   </iconset>
                   </property>
                  </widget>
                 </item>
@@ -495,7 +503,7 @@
             </widget>
            </item>
            <item row="2" column="1" colspan="5">
-            <widget class="KUrlRequester" name="lrcfg_tlsPrivateKeyCertificate"/>
+            <widget class="KUrlRequester" name="lrcfg_tlsPrivateKey"/>
            </item>
            <item row="13" column="4">
             <widget class="IssuesIcon" name="m_pVerifyServer" native="true"/>
@@ -585,6 +593,7 @@
    <class>KUrlRequester</class>
    <extends>QFrame</extends>
    <header>kurlrequester.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>AutoComboBox</class>
