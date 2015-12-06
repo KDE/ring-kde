@@ -21,6 +21,7 @@
 //Qt
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QTimer>
 
 //Delegates
 #include <conf/account/delegates/categorizeddelegate.h>
@@ -71,7 +72,7 @@ protected:
 Dock::Dock(QMainWindow* w) : QObject(w)
 {
    //Contact dock
-   m_pContactCD       = new DockBase  ( w );
+   m_pContactCD       = new DockBase  ( nullptr );
    m_pContactCD->setObjectName("contactDock");
    m_pContactCD->setWindowTitle(i18nc("Contact tab","Contact"));
    auto m_pCategoryDelegate = new CategorizedDelegate(m_pContactCD->view());
@@ -83,52 +84,59 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
    m_pContactCD->setDelegate(m_pCategoryDelegate);
 
-   CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
-   QSortFilterProxyModel* proxy = CategorizedContactModel::SortedProxy::instance().model();
-   m_pContactCD->setProxyModel(proxy);
-   m_pContactCD->setSortingModel(
-      CategorizedContactModel::SortedProxy::instance().categoryModel(),
-      CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
-   );
+   // Load later to speed up the process (avoid showing while inserting items)
+   QTimer::singleShot(10, [this]() {
+      CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
+      auto proxy = CategorizedContactModel::SortedProxy::instance().model();
+      m_pContactCD->setProxyModel(proxy);
+      m_pContactCD->setSortingModel(
+         CategorizedContactModel::SortedProxy::instance().categoryModel(),
+         CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
+      );
 
-   CategorizedContactModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
-      CategorizedContactModel::SortedProxy::instance().categoryModel()->index(
-         ConfigurationSkeleton::contactSortMode() , 0
-      ), QItemSelectionModel::ClearAndSelect
-   );
+      CategorizedContactModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
+         CategorizedContactModel::SortedProxy::instance().categoryModel()->index(
+            ConfigurationSkeleton::contactSortMode() , 0
+         ), QItemSelectionModel::ClearAndSelect
+      );
 
-   connect(CategorizedContactModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
-      if (idx.isValid())
-         ConfigurationSkeleton::setContactSortMode(idx.row());
+      connect(CategorizedContactModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+         if (idx.isValid())
+            ConfigurationSkeleton::setContactSortMode(idx.row());
+      });
    });
 
    //History dock
-   m_pHistoryDW       = new DockBase  ( w );
+   m_pHistoryDW       = new DockBase  ( nullptr );
    m_pHistoryDW->setObjectName("historyDock");
    m_pHistoryDW->setWindowTitle(i18nc("History tab","History"));
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pHistoryDW->view());
    delegate->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
    m_pHistoryDW->setDelegate(delegate);
-   proxy = CategorizedHistoryModel::SortedProxy::instance().model();
-   m_pHistoryDW->setProxyModel(proxy);
-   m_pHistoryDW->setSortingModel(
-      CategorizedHistoryModel::SortedProxy::instance().categoryModel         (),
-      CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()
-   );
 
-   CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
-      CategorizedHistoryModel::SortedProxy::instance().categoryModel()->index(
-         ConfigurationSkeleton::historySortMode() , 0
-      ), QItemSelectionModel::ClearAndSelect
-   );
 
-   connect(CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
-      if (idx.isValid())
-         ConfigurationSkeleton::setHistorySortMode(idx.row());
+   QTimer::singleShot(1000, [this]() {
+      auto proxy = CategorizedHistoryModel::SortedProxy::instance().model();
+      m_pHistoryDW->setProxyModel(proxy);
+      m_pHistoryDW->setSortingModel(
+         CategorizedHistoryModel::SortedProxy::instance().categoryModel         (),
+         CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()
+      );
+
+      CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
+         CategorizedHistoryModel::SortedProxy::instance().categoryModel()->index(
+            ConfigurationSkeleton::historySortMode() , 0
+         ), QItemSelectionModel::ClearAndSelect
+      );
+
+      connect(CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+         if (idx.isValid())
+            ConfigurationSkeleton::setHistorySortMode(idx.row());
+      });
    });
 
    //Bookmark dock
-   m_pBookmarkDW      = new DockBase ( w );
+   m_pBookmarkDW      = new DockBase ( nullptr );
    m_pBookmarkDW->setObjectName("bookmarkDock");
    m_pBookmarkDW->setWindowTitle(i18nc("Bookmark tab","Bookmark"));
    CategorizedDelegate* delegate2 = new CategorizedDelegate(m_pBookmarkDW->view());
@@ -173,9 +181,14 @@ Dock::~Dock()
    m_pContactCD ->setDelegate  (nullptr);
    m_pHistoryDW ->setDelegate  (nullptr);
    m_pBookmarkDW->setDelegate  (nullptr);
+
    m_pContactCD ->setProxyModel(nullptr);
    m_pHistoryDW ->setProxyModel(nullptr);
    m_pBookmarkDW->setProxyModel(nullptr);
+
+   m_pContactCD ->deleteLater();
+   m_pHistoryDW ->deleteLater();
+   m_pBookmarkDW->deleteLater();
 
    if (!MainWindow::app()->isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );

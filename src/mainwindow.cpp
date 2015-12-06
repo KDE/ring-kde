@@ -77,6 +77,7 @@
 #include "icons/icons.h"
 #include "view.h"
 #include "dock.h"
+#include "notification.h"
 #include <globalinstances.h>
 #include "conf/account/widgets/autocombobox.h"
 #include "actioncollection.h"
@@ -189,6 +190,8 @@ MainWindow::MainWindow(QWidget* parent)
 //       PersonModel::instance().backendModel()->addExtension(ext); //FIXME
 
       ProfileModel::instance();
+
+      Notification::instance();
    }
 
    //Belong to setupActions(), but is needed now
@@ -371,7 +374,7 @@ MainWindow::MainWindow(QWidget* parent)
 ///Destructor
 MainWindow::~MainWindow()
 {
-   delete m_pDock;
+   m_pDock->deleteLater();
 
    delete m_pView            ;
    delete m_pStatusBarWidget ;
@@ -447,21 +450,6 @@ void MainWindow::displayAccountCbb( bool checked )
    m_pAccountStatus->setVisible(checked);
    m_pCurAccL->setVisible(checked);
 }
-
-///Called when a call is coming
-// void MainWindow::onIncomingCall(const Call* call) //FIXME
-// {
-   //FIXME create an infinite loop
-//    if (call) {
-      /*const Person* contact = call->peerContactMethod()->contact();
-      if (contact) {
-         const QPixmap px = (contact->photo()).type() == QVariant::Pixmap ? (contact->photo()).value<QPixmap>():QPixmap();
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()),px);
-      }
-      else
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()));
-   *///}
-// }
 
 ///Hide or show the statusbar presence widget
 void MainWindow::slotPresenceEnabled(bool state)

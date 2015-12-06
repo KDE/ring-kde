@@ -245,6 +245,8 @@ SET(
    mainwindow.cpp
    cmd.cpp
    dock.cpp
+   notification.cpp
+   notification.cpp
    ringapplication.cpp
    errormessage.cpp
    kspeechinterfacesingleton.cpp
