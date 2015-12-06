@@ -73,6 +73,7 @@
 
 //Ring
 #include "klib/kcfg_settings.h"
+#include "implementation.h"
 #include "icons/icons.h"
 #include "view.h"
 #include "dock.h"
@@ -141,6 +142,8 @@ MainWindow::MainWindow(QWidget* parent)
    static bool init = false;
    if (!init) {
       GlobalInstances::setInterface<KDEProfilePersister>();
+
+      GlobalInstances::setInterface<KDEActionExtender>();
 
       GlobalInstances::setInterface<KDEPixmapManipulation>();
 
@@ -229,7 +232,8 @@ MainWindow::MainWindow(QWidget* parent)
    m_pStatusBarWidget = new QLabel       ( this );
 
    //System tray
-   m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
+   //FIXME crash Qt 5.5.1
+   //    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
 
    m_pDock = new Dock(this);
    connect(m_pCentralDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
@@ -238,13 +242,15 @@ MainWindow::MainWindow(QWidget* parent)
    setAutoSaveSettings();
    createGUI();
 
-   m_pTrayIcon->addAction( ActionCollection::instance()->acceptAction  () );
-   m_pTrayIcon->addAction( ActionCollection::instance()->mailBoxAction () );
-   m_pTrayIcon->addAction( ActionCollection::instance()->holdAction    () );
-   m_pTrayIcon->addAction( ActionCollection::instance()->transferAction() );
-   m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
-   m_pTrayIcon->addSeparator();
-   m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
+   if (m_pTrayIcon) {
+      m_pTrayIcon->addAction( ActionCollection::instance()->acceptAction  () );
+      m_pTrayIcon->addAction( ActionCollection::instance()->mailBoxAction () );
+      m_pTrayIcon->addAction( ActionCollection::instance()->holdAction    () );
+      m_pTrayIcon->addAction( ActionCollection::instance()->transferAction() );
+      m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
+      m_pTrayIcon->addSeparator();
+      m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
+   }
 
    connect(CallModel::instance().selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
 
@@ -255,11 +261,13 @@ MainWindow::MainWindow(QWidget* parent)
 
    statusBar()->addWidget(m_pStatusBarWidget);
 
-   m_pTrayIcon->show();
+   if (m_pTrayIcon) {
+      m_pTrayIcon->show();
+      m_pTrayIcon->setObjectName( "m_pTrayIcon"   );
+   }
 
-   m_pView->setObjectName      ( "m_pView"       );
-   statusBar()->setObjectName  ( "statusBar"     );
-   m_pTrayIcon->setObjectName  ( "m_pTrayIcon"   );
+   m_pView->setObjectName       ( "m_pView"       );
+   statusBar()->setObjectName   ( "statusBar"     );
 
    m_pInitialized = true ;
 
@@ -366,11 +374,13 @@ MainWindow::~MainWindow()
    delete m_pDock;
 
    delete m_pView            ;
-   delete m_pTrayIcon        ;
    delete m_pStatusBarWidget ;
    delete m_pCentralDW       ;
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
+
+   if (m_pTrayIcon)
+      delete m_pTrayIcon     ;
 
    delete &CallModel::instance();
    delete &PersonModel::instance();

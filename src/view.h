@@ -37,6 +37,7 @@ class CanvasObjectManager;
 class EventManager;
 class ContactMethod;
 class ColorDelegate;
+class UserActionModel;
 
 /**
  * This is the main view class for ring-kde.  Most of the non-menu,
@@ -72,6 +73,7 @@ public:
 
    AutoCompletion* autoCompletion    () const;
    bool            messageBoxFocussed() const;
+   UserActionModel* m_pUserActionModel {nullptr};
 
 private Q_SLOTS:
    void sendMessage          ();
@@ -86,6 +88,8 @@ public Q_SLOTS:
    void displayMessageBox     ( bool checked = true );
 
    void incomingCall          ( Call* call          );
+
+   void slotContextMenu(const QModelIndex& index);
 
    void paste();
 };

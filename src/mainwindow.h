@@ -69,7 +69,7 @@ private:
    bool           m_pInitialized     ;
    View*          m_pView            ;
    bool           m_pIconChanged     ;
-   SysTray*       m_pTrayIcon        ;
+   SysTray*       m_pTrayIcon        {nullptr};
    QLabel*        m_pStatusBarWidget ;
    QDockWidget*   m_pCentralDW       ;
    AutoComboBox*  m_pAccountStatus   ;

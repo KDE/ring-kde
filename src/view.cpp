@@ -23,8 +23,10 @@
 #include <QtCore/QString>
 #include <QtGui/QPalette>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QMenu>
 #include <QtGui/QClipboard>
 #include <QtCore/QMimeData>
+#include <QtCore/QSortFilterProxyModel>
 
 //KDE
 #include <klocalizedstring.h>
@@ -32,6 +34,8 @@
 //Ring
 #include "icons/icons.h"
 #include "mainwindow.h"
+#include "widgets/menumodelview.h"
+#include "useractionmodel.h"
 #include "canvasobjectmanager.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewtoolbar.h"
@@ -118,11 +122,12 @@ View::View(QWidget *parent)
 
    /*Setup signals                                                                                                                                    */
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                              */
-   /**/connect(&CallModel::instance()       , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))          );
+   /**/connect(&CallModel::instance()       , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))              );
    /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this           , SLOT(sendMessage())                    );
    /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this           , SLOT(sendMessage())                    );
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex))        , m_pEventManager, SLOT(enter())                          );
    /**/connect(widget_dialpad               , &Dialpad::typed                               , m_pEventManager, &EventManager::typeString              );
+   /**/connect(m_pView                      , SIGNAL(contextMenuRequest(QModelIndex))       , this           , SLOT(slotContextMenu(QModelIndex))     );
    /*                                                                                                                                                 */
 
    //Auto completion
@@ -276,6 +281,20 @@ void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API 
       call->performAction(Call::Action::ACCEPT);
       m_pAutoCompletion->reset();
    }
+}
+
+void View::slotContextMenu(const QModelIndex& index)
+{
+   Q_UNUSED(index)
+
+   if (!m_pUserActionModel) {
+      m_pUserActionModel = new UserActionModel(m_pView->model(), UserActionModel::Context::ALL);
+      m_pUserActionModel->setSelectionModel(m_pView->selectionModel());
+   }
+
+   QMenu* m = new MenuModelView(m_pUserActionModel->activeActionModel(), new QItemSelectionModel(m_pUserActionModel->activeActionModel()), this);
+
+   m->exec(QCursor::pos());
 }
 
 #include "view.moc"
