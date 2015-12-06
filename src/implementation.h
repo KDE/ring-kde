@@ -78,8 +78,8 @@ public:
    virtual void copyInformation(QMimeData* data) override;
    virtual bool warnDeletePerson(Person* p) override;
    virtual bool warnDeleteCall(Call* c) override;
-   virtual Person* selectPerson(FlagPack<SelectPersonHint> hints) const override;
-   virtual ContactMethod* selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint>) const override;
+   virtual Person* selectPerson(FlagPack<SelectPersonHint> hints, const QVariant& hintVar) const override;
+   virtual ContactMethod* selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint>, const QVariant& hintVar) const override;
 };
 
 #endif

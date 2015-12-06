@@ -152,7 +152,7 @@ IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
 ELSE()
-    ADD_DEFINITIONS(-Werror)
+#     ADD_DEFINITIONS(-Werror)
 ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
 
 # SET ( KF5_KABC_LIBS  -lkabc )
@@ -220,6 +220,8 @@ SET(
    widgets/menumodelview.cpp
    widgets/toolbuttonmodelview.cpp
    widgets/wizard.cpp
+   widgets/personselector.cpp
+   widgets/contactmethodselector.cpp
 )
 
 # Asset contextual menus

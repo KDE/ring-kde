@@ -150,7 +150,7 @@ void Menu::Call::slotCopy()
 
    qDebug() << "Copying contact";
    QMimeData* mimeData = new QMimeData();
-   mimeData->setData(RingMimes::CALLID, CallModel::instance().getMime(m_pCurrentCall));
+//    mimeData->setData(RingMimes::CALLID, CallModel::instance().getMime(m_pCurrentCall));
 
    mimeData->setData(RingMimes::PHONENUMBER, m_pCurrentCall->peerContactMethod()->uri().toUtf8());
 

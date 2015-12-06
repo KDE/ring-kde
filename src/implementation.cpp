@@ -224,7 +224,8 @@ void KDEActionExtender::editPerson(Person* p)
 
 void KDEActionExtender::viewChatHistory(ContactMethod* cm)
 {
-   MainWindow::view()->m_pMessageTabBox->showConversation(cm);
+   Q_UNUSED(cm)
+//    MainWindow::view()->m_pMessageTabBox->showConversation(cm);
 }
 
 void KDEActionExtender::copyInformation(QMimeData* data)
@@ -253,11 +254,16 @@ bool KDEActionExtender::warnDeleteCall(Call* c)
    return ret == KMessageBox::Yes;
 }
 
-Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints) const
+Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints, const QVariant& hintVar) const
 {
    Q_UNUSED(hints)
 
-   auto selector = new PersonSelector(MainWindow::app());
+   ContactMethod* cm = nullptr;
+
+   if (hintVar.canConvert<ContactMethod*>())
+      cm = qvariant_cast<ContactMethod*>(hintVar);
+
+   auto selector = new PersonSelector(MainWindow::app(), cm);
 
    selector->exec();
 
@@ -266,9 +272,10 @@ Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints) const
    return nullptr;
 }
 
-ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint> hints) const
+ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint> hints, const QVariant& hintVar) const
 {
    Q_UNUSED(hints)
+   Q_UNUSED(hintVar)
 
    auto selector = new ContactMethodSelector(MainWindow::app());
 
