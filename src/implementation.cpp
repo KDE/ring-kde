@@ -27,11 +27,14 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <QtCore/QMimeData>
+#include <QtGui/QClipboard>
 
 //KDE
 #include <QIcon>
 #include <KColorScheme>
 #include <klocalizedstring.h>
+#include <KMessageBox>
 
 
 //Ring
@@ -43,6 +46,11 @@
 #include "klib/kcfg_settings.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
+#include <widgets/immanager.h>
+#include <widgets/personselector.h>
+#include <widgets/contactmethodselector.h>
+#include <mainwindow.h>
+#include <view.h>
 
 ColorDelegate::ColorDelegate(QPalette pal) : m_Pal(pal) {
    m_Green = QColor(m_Pal.color(QPalette::Base));
@@ -207,4 +215,73 @@ QVariant KDEShortcutDelegate::createAction(Macro* macro)
    });
 
    return QVariant::fromValue(newAction);
+}
+
+void KDEActionExtender::editPerson(Person* p)
+{
+   Q_UNUSED(p)
+}
+
+void KDEActionExtender::viewChatHistory(ContactMethod* cm)
+{
+   Q_UNUSED(cm)
+//    MainWindow::view()->m_pMessageTabBox->showConversation(cm);
+}
+
+void KDEActionExtender::copyInformation(QMimeData* data)
+{
+   QClipboard* clipboard = QApplication::clipboard();
+   clipboard->setMimeData(data);
+}
+
+bool KDEActionExtender::warnDeletePerson(Person* p)
+{
+   const int ret = KMessageBox::questionYesNo(nullptr,
+      i18n("Are you sure you want to permanently delete %1?",
+      p->formattedName()), i18n("Delete contact")
+   );
+
+   return ret == KMessageBox::Yes;
+}
+
+bool KDEActionExtender::warnDeleteCall(Call* c)
+{
+   Q_UNUSED(c)
+   const int ret = KMessageBox::questionYesNo(nullptr,
+      i18n("Are you sure you wish to remove this call?"), i18n("Delete call")
+   );
+
+   return ret == KMessageBox::Yes;
+}
+
+Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints, const QVariant& hintVar) const
+{
+   Q_UNUSED(hints)
+
+   ContactMethod* cm =  nullptr;
+
+   if (hintVar.canConvert<ContactMethod*>())
+      cm = qvariant_cast<ContactMethod*>(hintVar);
+
+   auto selector = new PersonSelector(MainWindow::app(), cm);
+
+   selector->exec();
+
+   selector->deleteLater();
+
+   return nullptr;
+}
+
+ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint> hints, const QVariant& hintVar) const
+{
+   Q_UNUSED(hints)
+   Q_UNUSED(hintVar)
+
+   auto selector = new ContactMethodSelector(MainWindow::app());
+
+   selector->exec();
+
+   selector->deleteLater();
+
+   return nullptr;
 }

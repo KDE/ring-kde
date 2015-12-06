@@ -194,6 +194,8 @@ SET(
 # Widgets
 SET(
    ring_kde_WIDGETS
+   widgets/personselector.cpp
+   widgets/contactmethodselector.cpp
    widgets/systray.cpp
    widgets/dialpad.cpp
    widgets/dockbase.cpp
@@ -286,6 +288,8 @@ SET(
    conf/dlgaudiorecording.ui
    conf/dlgpresence.ui
    conf/dlgfallbackperson.ui
+   widgets/ui/personselector.ui
+   widgets/ui/contactmethodselector.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/contactdock.ui

@@ -312,17 +312,27 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
          return QIcon(":/callstate_light/icons/light/accept.svg"   );
-      case UserActionModel::Action::TOGGLE_VIDEO:
       case UserActionModel::Action::ADD_CONTACT:
       case UserActionModel::Action::ADD_TO_CONTACT:
-      case UserActionModel::Action::DELETE_CONTACT:
-      case UserActionModel::Action::EMAIL_CONTACT:
-      case UserActionModel::Action::BOOKMARK:
-      case UserActionModel::Action::VIEW_CHAT_HISTORY:
       case UserActionModel::Action::ADD_CONTACT_METHOD:
+         return QIcon::fromTheme("contact-new");
+      case UserActionModel::Action::DELETE_CONTACT:
+         return QIcon::fromTheme("list-remove-user", QIcon::fromTheme("edit-delete"));
+      case UserActionModel::Action::EMAIL_CONTACT:
+         return QIcon::fromTheme("mail-message-new");
+      case UserActionModel::Action::BOOKMARK:
+         return QIcon::fromTheme("bookmarks");
+      case UserActionModel::Action::VIEW_CHAT_HISTORY:
+         return QIcon::fromTheme("view-history");
       case UserActionModel::Action::REMOVE_HISTORY :
+         return QIcon::fromTheme("list-remove");
       case UserActionModel::Action::CALL_CONTACT:
+         return QIcon::fromTheme("call-start");
+      case UserActionModel::Action::EDIT_CONTACT:
+         return QIcon::fromTheme("contact-new");
       case UserActionModel::Action::COPY_CONTACT:
+         return QIcon::fromTheme("edit-copy");
+      case UserActionModel::Action::TOGGLE_VIDEO:
       case UserActionModel::Action::COUNT__:
          break;
    };
@@ -417,4 +427,61 @@ QVariant KDEPixmapManipulation::contactSortingCategoryIcon(const CategorizedCont
          break;
    }
    return QVariant();
+}
+
+QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
+{
+   if (!index.isValid())
+      return QVariant();
+
+   const QVariant tv = index.data(static_cast<int>(Ring::Role::ObjectType));
+
+   if (!tv.canConvert<Ring::ObjectType>())
+      return QVariant();
+
+   const Ring::ObjectType type = qvariant_cast<Ring::ObjectType>(tv);
+
+   switch (type) {
+      case Ring::ObjectType::Person         : {
+
+         Person* p = qvariant_cast<Person*>(
+            index.data(static_cast<int>(Ring::Role::Object))
+         );
+
+         return contactPhoto(p, QSize(22,22), true);
+         }
+         break;
+      case Ring::ObjectType::ContactMethod  : {
+
+         const ContactMethod* cm = qvariant_cast<ContactMethod*>(
+            index.data(static_cast<int>(Ring::Role::Object))
+         );
+
+         return callPhoto(cm, QSize(22,22), true);
+         }
+         break;
+      case Ring::ObjectType::Call           :
+         break;
+      case Ring::ObjectType::Media          : //TODO
+      case Ring::ObjectType::COUNT__        :
+         break;
+   }
+
+   return QVariant();
+}
+
+QVariant KDEPixmapManipulation::decorationRole(const Call* c)
+{
+   return callPhoto((Call*)c, QSize(22,22), true);
+}
+
+QVariant KDEPixmapManipulation::decorationRole(const ContactMethod* cm)
+{
+   return callPhoto((ContactMethod*)cm, QSize(22,22), true);
+}
+
+QVariant KDEPixmapManipulation::decorationRole(const Person* p)
+{
+   Q_UNUSED(p)
+   return contactPhoto((Person*)p, QSize(22,22), true);
 }

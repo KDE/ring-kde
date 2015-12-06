@@ -53,6 +53,13 @@ public:
 
    virtual QVariant   contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
 
+   virtual QVariant   decorationRole(const QModelIndex& index) override;
+
+   virtual QVariant   decorationRole(const Call*              c    ) override;
+
+   virtual QVariant   decorationRole(const ContactMethod*     cm   ) override;
+
+   virtual QVariant   decorationRole(const Person*            p    ) override;
 
    static const char* icnPath[2][2];
 private:
