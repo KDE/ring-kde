@@ -68,6 +68,7 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
   Completion
   Crash
   NotifyConfig
+  GlobalAccel
 )
 
 # SET(AKONADI_MIN_VERSION 1.0)

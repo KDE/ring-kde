@@ -46,16 +46,16 @@ public:
    QAction* transferAction              ();
    QAction* acceptAction                ();
    QAction* newCallAction               ();
-   QAction *        displayVolumeControlsAction();
-   QAction *        displayDialpadAction       ();
-   QAction *        displayAccountCbbAction    ();
-   QAction *        displayMessageBoxAction    ();
-   QAction *        mailBoxAction              ();
-   QAction *        showContactDockAction      ();
-   QAction *        showHistoryDockAction      ();
-   QAction *        showBookmarkDockAction     ();
-   QAction *        quitAction                 ();
-   QAction *        addPerson                  ();
+   QAction* displayVolumeControlsAction ();
+   QAction* displayDialpadAction        ();
+   QAction* displayAccountCbbAction     ();
+   QAction* displayMessageBoxAction     ();
+   QAction* mailBoxAction               ();
+   QAction* showContactDockAction       ();
+   QAction* showHistoryDockAction       ();
+   QAction* showBookmarkDockAction      ();
+   QAction* quitAction                  ();
+   QAction* addPerson                   ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -72,48 +72,44 @@ public:
 private:
 
    //Toolbar actions
-   QAction* action_accept        ;
-   QAction* action_new_call      ;
-   QAction* action_hold          ;
-   QAction* action_transfer      ;
-   QAction* action_record        ;
-   QAction* action_mute_capture  ;
-   QAction* action_mute_playback ;
-   QAction* action_hangup        ;
+   QAction* action_accept        {nullptr};
+   QAction* action_new_call      {nullptr};
+   QAction* action_hold          {nullptr};
+   QAction* action_transfer      {nullptr};
+   QAction* action_record        {nullptr};
+   QAction* action_mute_capture  {nullptr};
+   QAction* action_mute_playback {nullptr};
+   QAction* action_hangup        {nullptr};
 
    //Video actions
    #ifdef ENABLE_VIDEO
-   QAction* action_video_rotate_left    ;
-   QAction* action_video_rotate_right   ;
-   QAction* action_video_flip_horizontal;
-   QAction* action_video_flip_vertical  ;
-   QAction* action_video_mute           ;
-   QAction* action_video_preview        ;
-   QAction* action_video_scale          ;
-   QAction* action_video_fullscreen     ;
+   QAction* action_video_rotate_left     {nullptr};
+   QAction* action_video_rotate_right    {nullptr};
+   QAction* action_video_flip_horizontal {nullptr};
+   QAction* action_video_flip_vertical   {nullptr};
+   QAction* action_video_mute            {nullptr};
+   QAction* action_video_preview         {nullptr};
+   QAction* action_video_scale           {nullptr};
+   QAction* action_video_fullscreen      {nullptr};
    #endif
 
    //Other actions
-   QAction * action_mailBox               ;
-   QAction * action_close                 ;
-   QAction * action_quit                  ;
-   QAction * action_displayVolumeControls ;
-   QAction * action_displayDialpad        ;
-   QAction * action_displayAccountCbb     ;
-   QAction * action_displayMessageBox     ;
-   QAction * action_configureRing         ;
-   QAction * action_configureShortcut     ;
-   QAction * action_configureNotifications;
-   QAction * action_pastenumber           ;
-   QAction * action_showContactDock       ;
-   QAction * action_showHistoryDock       ;
-   QAction * action_showBookmarkDock      ;
-   QAction * action_editToolBar           ;
-   QAction * action_addPerson             ;
-   QActionGroup* action_screen            ;
-
-   //Singleton
-   static ActionCollection* m_spInstance;
+   QAction * action_mailBox                {nullptr};
+   QAction * action_close                  {nullptr};
+   QAction * action_quit                   {nullptr};
+   QAction * action_displayVolumeControls  {nullptr};
+   QAction * action_displayDialpad         {nullptr};
+   QAction * action_displayAccountCbb      {nullptr};
+   QAction * action_displayMessageBox      {nullptr};
+   QAction * action_configureRing          {nullptr};
+   QAction * action_configureShortcut      {nullptr};
+   QAction * action_configureNotifications {nullptr};
+   QAction * action_pastenumber            {nullptr};
+   QAction * action_showContactDock        {nullptr};
+   QAction * action_showHistoryDock        {nullptr};
+   QAction * action_showBookmarkDock       {nullptr};
+   QAction * action_editToolBar            {nullptr};
+   QAction * action_addPerson              {nullptr};
 
 public Q_SLOTS:
    void configureRing         ();

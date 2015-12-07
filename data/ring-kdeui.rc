@@ -38,9 +38,5 @@
    <ToolBar name="mainToolBar" iconText="textbesideicon" position="Top" noMerge="1" fullWidth="false" newline="true" >
       <Action name="action_new_call" />
       <Action name="action_mailBox" />
-<!--       <Action name="action_refuse" /> -->
-<!--       <Action name="action_hold" /> -->
-<!--       <Action name="action_transfer" /> -->
-<!--       <Action name="action_record" /> -->
    </ToolBar>
 </gui>

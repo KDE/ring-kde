@@ -449,6 +449,7 @@ void MainWindow::displayAccountCbb( bool checked )
 {
    m_pAccountStatus->setVisible(checked);
    m_pCurAccL->setVisible(checked);
+   ConfigurationSkeleton::setDisplayAccountBox(checked);
 }
 
 ///Hide or show the statusbar presence widget
