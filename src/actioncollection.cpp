@@ -32,6 +32,7 @@
 #include <KActionCollection>
 #include <KEditToolBar>
 #include <KSharedConfig>
+#include <KNotifyConfigWidget>
 
 //Ring
 #include "globalinstances.h"
@@ -67,7 +68,7 @@ ActionCollection* ActionCollection::instance() {
 ActionCollection::ActionCollection(QObject* parent) : QObject(parent),
 action_mailBox(nullptr), action_close(nullptr), action_quit(nullptr), action_displayVolumeControls(nullptr),
 action_displayDialpad(nullptr), action_displayAccountCbb(nullptr),action_displayMessageBox(nullptr), action_configureRing(nullptr),
-action_configureShortcut(nullptr), action_pastenumber(nullptr),
+action_configureShortcut(nullptr),action_configureNotifications(nullptr), action_pastenumber(nullptr),
 action_showContactDock(nullptr), action_showHistoryDock(nullptr), action_showBookmarkDock(nullptr),
 action_editToolBar(nullptr), action_addPerson(nullptr), action_screen(nullptr), action_new_call(nullptr)
 {
@@ -146,6 +147,7 @@ ActionCollection::~ActionCollection()
    delete action_displayMessageBox     ;
    delete action_configureRing         ;
    delete action_configureShortcut     ;
+   delete action_configureNotifications;
    delete action_pastenumber           ;
    delete action_showContactDock       ;
    delete action_showHistoryDock       ;
@@ -182,6 +184,7 @@ void ActionCollection::setupAction()
    action_editToolBar           = new QAction(QIcon::fromTheme("configure-toolbars"), i18n("Configure Toolbars")                     , this);
    action_addPerson             = new QAction(QIcon::fromTheme("contact-new"),i18n("Add new contact")                                                     , this);
    action_configureShortcut     = new QAction(QIcon::fromTheme("configure-shortcuts"), i18n("Configure Shortcut"), this);
+   action_configureNotifications= new QAction(QIcon::fromTheme("preferences-desktop-notification"), i18n("Configure Notifications"), this);
 
 #define COL(a,b) MainWindow::app()->actionCollection()->setDefaultShortcut(a,b)
    COL(action_accept      , Qt::CTRL + Qt::Key_A );
@@ -267,6 +270,7 @@ void ActionCollection::setupAction()
    /**/connect(action_displayMessageBox         , SIGNAL(toggled(bool)),         MainWindow::view() , SLOT(displayMessageBox(bool))     );
    /**/connect(action_pastenumber               , SIGNAL(triggered()),           MainWindow::view() , SLOT(paste())                     );
    /**/connect(action_configureShortcut         , SIGNAL(triggered()),           this               , SLOT(showShortCutEditor())        );
+   /**/connect(action_configureNotifications    , SIGNAL(triggered()),           this               , SLOT(showNotificationEditor())    );
    /**/connect(action_editToolBar               , SIGNAL(triggered()),           this               , SLOT(editToolBar())               );
    /**/connect(action_addPerson                 , SIGNAL(triggered()),           this               , SLOT(slotAddPerson())             );
    /*                                                                                                                   */
@@ -290,6 +294,7 @@ void ActionCollection::setupAction()
    MainWindow::app()->actionCollection()->addAction("action_displayMessageBox"     , action_displayMessageBox     );
    MainWindow::app()->actionCollection()->addAction("action_configureRing"         , action_configureRing         );
    MainWindow::app()->actionCollection()->addAction("action_configureShortcut"     , action_configureShortcut     );
+   MainWindow::app()->actionCollection()->addAction("action_configureNotifications", action_configureNotifications);
    MainWindow::app()->actionCollection()->addAction("action_pastenumber"           , action_pastenumber           );
    MainWindow::app()->actionCollection()->addAction("action_showContactDock"       , action_showContactDock       );
    MainWindow::app()->actionCollection()->addAction("action_showHistoryDock"       , action_showHistoryDock       );
@@ -346,8 +351,42 @@ void ActionCollection::configureRing()
 }
 
 ///Display the shortcuts dialog
-void ActionCollection::showShortCutEditor() {
+void ActionCollection::showShortCutEditor()
+{
    KShortcutsDialog::configure( MainWindow::app()->actionCollection() );
+}
+
+///Display the notification manager
+void ActionCollection::showNotificationEditor()
+{
+   QPointer<QDialog> d = new QDialog(MainWindow::app());
+
+   auto l = new QGridLayout(d);
+   auto w = new KNotifyConfigWidget(d);
+
+   auto def    = new QPushButton(QIcon::fromTheme(""), i18n("Defaults"), d);
+   auto ok     = new QPushButton(QIcon::fromTheme("dialog-ok"), i18n("Ok"      ), d);
+   auto cancel = new QPushButton(QIcon::fromTheme("dialog-cancel"), i18n("Cancel"  ), d);
+
+   ok->setDefault(true);
+
+   w->setApplication(QStringLiteral("ring-kde"));
+
+   l->addWidget(w      , 0, 0, 1, 4);
+   l->addWidget(def    , 1, 0, 1, 1);
+   l->addWidget(ok     , 1, 2, 1, 1);
+   l->addWidget(cancel , 1, 3, 1, 1);
+
+   l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),1,1);
+
+   connect(def   , &QPushButton::clicked, w, &KNotifyConfigWidget::revertToDefaults);
+   connect(ok    , &QPushButton::clicked, w, &KNotifyConfigWidget::save            );
+   connect(ok    , &QPushButton::clicked, d, &QDialog::close                       );
+   connect(cancel, &QPushButton::clicked, d, &QDialog::close                       );
+
+   d->exec();
+
+   delete d;
 }
 
 ///Show the toolbar editor
@@ -355,8 +394,8 @@ void ActionCollection::editToolBar()
 {
    QPointer<KEditToolBar> toolbareditor = new KEditToolBar(MainWindow::app()->guiFactory());
    toolbareditor->setModal(true);
-   toolbareditor->exec();
    toolbareditor->setDefaultToolBar("mainToolBar");
+   toolbareditor->exec();
    delete toolbareditor;
 }
 

@@ -284,8 +284,8 @@ void CategorizedTreeView::initSignals()
 {
    if (model()) {
       connect(model(),SIGNAL(layoutChanged()),this,SLOT(cancelHoverState()));
-      m_InitSignals = true;
    }
+   m_InitSignals = true;
 }
 
 void CategorizedTreeView::setDirty(const QRect &rect)

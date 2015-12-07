@@ -103,6 +103,7 @@ private:
    QAction * action_displayMessageBox     ;
    QAction * action_configureRing         ;
    QAction * action_configureShortcut     ;
+   QAction * action_configureNotifications;
    QAction * action_pastenumber           ;
    QAction * action_showContactDock       ;
    QAction * action_showHistoryDock       ;
@@ -120,6 +121,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void mailBox  ();
    void showShortCutEditor    ();
+   void showNotificationEditor();
    void editToolBar           ();
    void slotAddPerson         ();
    void updateRecordButton    ();
