@@ -54,6 +54,7 @@
 #include <useractionmodel.h>
 #include <audio/settings.h>
 #include <personmodel.h>
+#include <delegates/kdepixmapmanipulation.h>
 
 #define CREATE_ACTION(name) name = new QAction(this);name->setObjectName(#name);
 #define INIT_ACTION(name, icon, text) name = new QAction(icon, text, this);name->setObjectName(#name);
@@ -62,6 +63,19 @@ ActionCollection* ActionCollection::instance()
 {
    static auto i = new ActionCollection();
    return i;
+}
+
+// Return the default icon
+static QIcon getIcon(const UserActionModel::Action a)
+{
+   return qvariant_cast<QIcon>(GlobalInstances::pixmapManipulator().userActionIcon({a, {}, Qt::Unchecked}));
+}
+
+// Return the translated default name
+static QString getName(const UserActionModel::Action a)
+{
+   Q_UNUSED(a)
+   return "FOO";
 }
 
 ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
@@ -74,6 +88,22 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
    INIT_ACTION(action_record        , QIcon(":/images/icons/rec_call.svg" ), i18n( "Record"   ));
    INIT_ACTION(action_hangup        , QIcon(":/images/icons/hang_up.svg"  ), i18n( "Hang up"  ));
    INIT_ACTION(action_mailBox       , QIcon(":/images/icons/mailbox.svg"  ), i18n( "Mailbox"  ));
+
+   INIT_ACTION(action_mute_video         , getIcon(UserActionModel::Action::MUTE_VIDEO         ) , getName(UserActionModel::Action::MUTE_VIDEO         ));
+   INIT_ACTION(action_join               , getIcon(UserActionModel::Action::JOIN               ) , getName(UserActionModel::Action::JOIN               ));
+   INIT_ACTION(action_toggle_video       , getIcon(UserActionModel::Action::TOGGLE_VIDEO       ) , getName(UserActionModel::Action::TOGGLE_VIDEO       ));
+   INIT_ACTION(action_add_contact        , getIcon(UserActionModel::Action::ADD_CONTACT        ) , getName(UserActionModel::Action::ADD_CONTACT        ));
+   INIT_ACTION(action_add_to_contact     , getIcon(UserActionModel::Action::ADD_TO_CONTACT     ) , getName(UserActionModel::Action::ADD_TO_CONTACT     ));
+   INIT_ACTION(action_delete_contact     , getIcon(UserActionModel::Action::DELETE_CONTACT     ) , getName(UserActionModel::Action::DELETE_CONTACT     ));
+   INIT_ACTION(action_email_contact      , getIcon(UserActionModel::Action::EMAIL_CONTACT      ) , getName(UserActionModel::Action::EMAIL_CONTACT      ));
+   INIT_ACTION(action_copy_contact       , getIcon(UserActionModel::Action::COPY_CONTACT       ) , getName(UserActionModel::Action::COPY_CONTACT       ));
+   INIT_ACTION(action_bookmark           , getIcon(UserActionModel::Action::BOOKMARK           ) , getName(UserActionModel::Action::BOOKMARK           ));
+   INIT_ACTION(action_view_chat_history  , getIcon(UserActionModel::Action::VIEW_CHAT_HISTORY  ) , getName(UserActionModel::Action::VIEW_CHAT_HISTORY  ));
+   INIT_ACTION(action_add_contact_method , getIcon(UserActionModel::Action::ADD_CONTACT_METHOD ) , getName(UserActionModel::Action::ADD_CONTACT_METHOD ));
+   INIT_ACTION(action_call_contact       , getIcon(UserActionModel::Action::CALL_CONTACT       ) , getName(UserActionModel::Action::CALL_CONTACT       ));
+   INIT_ACTION(action_edit_contact       , getIcon(UserActionModel::Action::EDIT_CONTACT       ) , getName(UserActionModel::Action::EDIT_CONTACT       ));
+   INIT_ACTION(action_add_new            , getIcon(UserActionModel::Action::ADD_NEW            ) , getName(UserActionModel::Action::ADD_NEW            ));
+   INIT_ACTION(action_remove_history     , getIcon(UserActionModel::Action::REMOVE_HISTORY     ) , getName(UserActionModel::Action::REMOVE_HISTORY     ));
 
    INIT_ACTION(action_mute_capture  , QIcon::fromTheme("player-volume-muted"), i18nc("Mute the current audio capture device" , "Mute"     ));
    INIT_ACTION(action_mute_playback , QIcon::fromTheme("player-volume-muted"), i18nc("Mute the current audio playback device", "Mute Playback"     ));
@@ -158,13 +188,28 @@ void ActionCollection::setupAction()
    //Bind actions to the useractionmodel
    UserActionModel* uam = CallModel::instance().userActionModel();
    QHash<int, QAction*> actionHash;
-   actionHash[ (int)UserActionModel::Action::ACCEPT          ] = action_accept      ;
-   actionHash[ (int)UserActionModel::Action::ADD_NEW         ] = action_new_call    ;
-   actionHash[ (int)UserActionModel::Action::HOLD            ] = action_hold        ;
-   actionHash[ (int)UserActionModel::Action::MUTE_AUDIO      ] = action_mute_capture;
-   actionHash[ (int)UserActionModel::Action::SERVER_TRANSFER ] = action_transfer    ;
-   actionHash[ (int)UserActionModel::Action::RECORD          ] = action_record      ;
-   actionHash[ (int)UserActionModel::Action::HANGUP          ] = action_hangup      ;
+   actionHash[ (int)UserActionModel::Action::ACCEPT              ] = action_accept             ;
+   actionHash[ (int)UserActionModel::Action::ADD_NEW             ] = action_new_call           ;
+   actionHash[ (int)UserActionModel::Action::HOLD                ] = action_hold               ;
+   actionHash[ (int)UserActionModel::Action::MUTE_AUDIO          ] = action_mute_capture       ;
+   actionHash[ (int)UserActionModel::Action::SERVER_TRANSFER     ] = action_transfer           ;
+   actionHash[ (int)UserActionModel::Action::RECORD              ] = action_record             ;
+   actionHash[ (int)UserActionModel::Action::HANGUP              ] = action_hangup             ;
+   actionHash[ (int)UserActionModel::Action::MUTE_VIDEO          ] = action_mute_video         ;
+   actionHash[ (int)UserActionModel::Action::JOIN                ] = action_join               ;
+   actionHash[ (int)UserActionModel::Action::TOGGLE_VIDEO        ] = action_toggle_video       ;
+   actionHash[ (int)UserActionModel::Action::ADD_CONTACT         ] = action_add_contact        ;
+   actionHash[ (int)UserActionModel::Action::ADD_TO_CONTACT      ] = action_add_to_contact     ;
+   actionHash[ (int)UserActionModel::Action::DELETE_CONTACT      ] = action_delete_contact     ;
+   actionHash[ (int)UserActionModel::Action::EMAIL_CONTACT       ] = action_email_contact      ;
+   actionHash[ (int)UserActionModel::Action::COPY_CONTACT        ] = action_copy_contact       ;
+   actionHash[ (int)UserActionModel::Action::BOOKMARK            ] = action_bookmark           ;
+   actionHash[ (int)UserActionModel::Action::VIEW_CHAT_HISTORY   ] = action_view_chat_history  ;
+   actionHash[ (int)UserActionModel::Action::ADD_CONTACT_METHOD  ] = action_add_contact_method ;
+   actionHash[ (int)UserActionModel::Action::CALL_CONTACT        ] = action_call_contact       ;
+   actionHash[ (int)UserActionModel::Action::EDIT_CONTACT        ] = action_edit_contact       ;
+   actionHash[ (int)UserActionModel::Action::ADD_NEW             ] = action_add_new            ;
+   actionHash[ (int)UserActionModel::Action::REMOVE_HISTORY      ] = action_remove_history     ;
 
    for (QHash<int,QAction*>::const_iterator i = actionHash.begin(); i != actionHash.end(); ++i) {
       QAction* ea = i.value();
@@ -172,7 +217,8 @@ void ActionCollection::setupAction()
       connect(ea, &QAction::triggered, [uam,a](bool) {uam << a;});
    }
 
-   connect(uam,&UserActionModel::dataChanged, [actionHash,uam](const QModelIndex& tl, const QModelIndex& br) {
+   // Refresh the action state and text
+   static auto l = [actionHash,uam](const QModelIndex& tl, const QModelIndex& br) {
       const int first(tl.row()),last(br.row());
       for(int i = first; i <= last;i++) {
          const QModelIndex& idx = uam->index(i,0);
@@ -187,7 +233,12 @@ void ActionCollection::setupAction()
             a->setChecked( idx.data(Qt::CheckStateRole) == Qt::Checked          );
          }
       }
-   });
+   };
+
+   connect(uam, &UserActionModel::dataChanged, l);
+
+   // Load the initial text
+   l(uam->index(0,0), uam->index(uam->rowCount() -1));
 
 
    const auto as = &Audio::Settings::instance();
@@ -214,13 +265,18 @@ void ActionCollection::setupAction()
 
    // Add the actions to the collection
    for (QAction* a : QList<QAction*>{
-      action_accept           , action_new_call         , action_hold             ,
-      action_transfer         , action_record           , action_mailBox          ,
-      action_close            , action_quit             , action_displayDialpad   ,
-      action_displayAccountCbb, action_displayMessageBox, action_configureRing    ,
-      action_configureShortcut, action_pastenumber      , action_showContactDock  ,
-      action_showHistoryDock  , action_showBookmarkDock , action_editToolBar      ,
-      action_addPerson        , action_mute_capture     , action_mute_playback    ,
+      action_accept            , action_new_call          , action_hold              ,
+      action_transfer          , action_record            , action_mailBox           ,
+      action_close             , action_quit              , action_displayDialpad    ,
+      action_displayAccountCbb , action_displayMessageBox , action_configureRing     ,
+      action_configureShortcut , action_pastenumber       , action_showContactDock   ,
+      action_showHistoryDock   , action_showBookmarkDock  , action_editToolBar       ,
+      action_addPerson         , action_mute_capture      , action_mute_playback     ,
+      action_mute_video        , action_join              , action_toggle_video      ,
+      action_add_contact       , action_add_to_contact    , action_delete_contact    ,
+      action_email_contact     , action_copy_contact      , action_bookmark          ,
+      action_view_chat_history , action_add_contact_method, action_call_contact      ,
+      action_edit_contact      , action_add_new           , action_remove_history    ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       MainWindow::app()->actionCollection()->addAction(a->objectName(), a);

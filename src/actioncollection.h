@@ -71,15 +71,30 @@ public:
 
 private:
 
-   //Toolbar actions
-   QAction* action_accept        {nullptr};
-   QAction* action_new_call      {nullptr};
-   QAction* action_hold          {nullptr};
-   QAction* action_transfer      {nullptr};
-   QAction* action_record        {nullptr};
-   QAction* action_mute_capture  {nullptr};
-   QAction* action_mute_playback {nullptr};
-   QAction* action_hangup        {nullptr};
+   //Selection dependant
+   QAction* action_accept             {nullptr};
+   QAction* action_new_call           {nullptr};
+   QAction* action_hold               {nullptr};
+   QAction* action_transfer           {nullptr};
+   QAction* action_record             {nullptr};
+   QAction* action_mute_capture       {nullptr};
+   QAction* action_mute_playback      {nullptr};
+   QAction* action_hangup             {nullptr};
+   QAction* action_mute_video         {nullptr};
+   QAction* action_join               {nullptr};
+   QAction* action_toggle_video       {nullptr};
+   QAction* action_add_contact        {nullptr};
+   QAction* action_add_to_contact     {nullptr};
+   QAction* action_delete_contact     {nullptr};
+   QAction* action_email_contact      {nullptr};
+   QAction* action_copy_contact       {nullptr};
+   QAction* action_bookmark           {nullptr};
+   QAction* action_view_chat_history  {nullptr};
+   QAction* action_add_contact_method {nullptr};
+   QAction* action_call_contact       {nullptr};
+   QAction* action_edit_contact       {nullptr};
+   QAction* action_add_new            {nullptr};
+   QAction* action_remove_history     {nullptr};
 
    //Video actions
    #ifdef ENABLE_VIDEO
