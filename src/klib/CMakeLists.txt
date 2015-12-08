@@ -4,6 +4,10 @@ ADD_DEFINITIONS("-std=c++0x")
 
 PROJECT(libkring)
 
+IF(POLICY CMP0063)
+   CMAKE_POLICY(SET CMP0063 NEW)
+ENDIF(POLICY CMP0063)
+
 FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
 SET (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
@@ -51,9 +55,11 @@ ADD_LIBRARY( libkring  STATIC ${libkring_LIB_SRCS} )
 
 target_link_libraries( libkring
   ${LIB_RING_CLIENT_LIBRARY}
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
+
+  Qt5::Widgets
+  Qt5::Core
+  Qt5::Gui
+
   KF5::I18n
   KF5::WidgetsAddons
   KF5::ConfigCore

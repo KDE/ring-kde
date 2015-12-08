@@ -6,6 +6,10 @@ IF(POLICY CMP0022)
    CMAKE_POLICY(SET CMP0022 NEW)
 ENDIF(POLICY CMP0022)
 
+IF(POLICY CMP0063)
+   CMAKE_POLICY(SET CMP0063 NEW)
+ENDIF(POLICY CMP0063)
+
 # set(CMAKE_AUTOMOC ON)
 
 SET(KF5_DEP_VERSION "5.6.0")
@@ -145,8 +149,6 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 #Build KDE specific files
 ADD_SUBDIRECTORY( klib )
-
-MESSAGE("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
@@ -298,7 +300,6 @@ SET(
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
 
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
-   MESSAGE("VIDEO enabled")
    SET(ENABLE_VIDEO 1 CACHE BOOLEAN "Enable video")
    ADD_DEFINITIONS( -DENABLE_VIDEO=true )
    SET (
@@ -351,12 +352,15 @@ TARGET_LINK_LIBRARIES(ring-kde
   ${LIB_RING_CLIENT_LIBRARY}
   ${OPENGL_link}
 
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5OpenGL_LIBRARIES}
-  ${Qt5PrintSupport_LIBRARIES}
+  # Qt5
+  Qt5::Widgets
+  Qt5::Core
+  Qt5::Gui
+  Qt5::Svg
+  Qt5::OpenGL
+  Qt5::PrintSupport
+
+  # KF5
   KF5::I18n
   KF5::WidgetsAddons
   KF5::ConfigCore
