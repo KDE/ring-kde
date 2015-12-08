@@ -299,3 +299,8 @@ void CategorizedTreeView::slotExpandInserted(const QModelIndex& parentIdx,int st
       setExpanded(model()->index(i,0,parentIdx),true);
    }
 }
+
+void CategorizedTreeView::forwardInput(QKeyEvent* e)
+{
+   keyPressEvent(e);
+}

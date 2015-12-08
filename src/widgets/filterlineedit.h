@@ -26,8 +26,10 @@ class FilterLineEdit : public QLineEdit
 Q_OBJECT
 
 public:
-    explicit FilterLineEdit(QWidget *parent = nullptr);
-    virtual ~FilterLineEdit();
+   explicit FilterLineEdit(QWidget *parent = nullptr);
+   virtual ~FilterLineEdit();
+
+   void forwardInput(QKeyEvent* e);
 
 private Q_SLOTS:
    void slotTextChanged(const QString& text);

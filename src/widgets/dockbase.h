@@ -43,6 +43,8 @@ class UserActionModel;
 class DockBase : public QDockWidget, public Ui_ContactDock
 {
    Q_OBJECT
+   friend class KeyPressEaterC;
+   friend class ArrowGrabber;
 public:
    //Constructor
    explicit DockBase(QWidget* parent = nullptr);
@@ -61,8 +63,8 @@ private:
    KeyPressEaterC*          m_pKeyPressEater ;
    UserActionModel*         m_pUserActionModel {nullptr};
 
-public Q_SLOTS:
-   virtual void keyPressEvent(QKeyEvent* event) override;
+   //Helper
+   void initUAM();
 
 private Q_SLOTS:
    void slotContextMenu       (const QModelIndex& index );

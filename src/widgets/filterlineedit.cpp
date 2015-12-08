@@ -34,3 +34,8 @@ void FilterLineEdit::slotTextChanged(const QString& text)
    }
    emit filterStringChanged(normStripppedC);
 }
+
+void FilterLineEdit::forwardInput(QKeyEvent* e)
+{
+   keyPressEvent(e);
+}
