@@ -125,6 +125,7 @@ private:
    QAction * action_showBookmarkDock       {nullptr};
    QAction * action_editToolBar            {nullptr};
    QAction * action_addPerson              {nullptr};
+   QAction * action_raise_client           {nullptr};
 
 public Q_SLOTS:
    void configureRing         ();
@@ -138,6 +139,7 @@ private Q_SLOTS:
    void updateRecordButton    ();
    void updateVolumeButton    ();
    void addMacro              ( const QVariant& newAction );
+   void raiseClient();
 
 Q_SIGNALS:
    void windowStateChanged();

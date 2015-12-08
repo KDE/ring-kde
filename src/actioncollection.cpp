@@ -148,6 +148,7 @@ void ActionCollection::setupAction()
    INIT_ACTION(action_addPerson             , QIcon::fromTheme("contact-new"                     ), i18n("Add new contact"         ));
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme("configure-shortcuts"             ), i18n("Configure Shortcut"      ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme("preferences-desktop-notification"), i18n("Configure Notifications" ));
+   INIT_ACTION(action_raise_client          , {}                                                  , i18n("Raise Ring-KDE window"   ));
 
    // Assign default shortcuts
 #define COL(a,b) MainWindow::app()->actionCollection()->setDefaultShortcut(a,b)
@@ -256,6 +257,7 @@ void ActionCollection::setupAction()
    connect(action_configureNotifications , &QAction::triggered , this               , &ActionCollection::showNotificationEditor );
    connect(action_editToolBar            , &QAction::triggered , this               , &ActionCollection::editToolBar            );
    connect(action_addPerson              , &QAction::triggered , this               , &ActionCollection::slotAddPerson          );
+   connect(action_raise_client           , &QAction::triggered , this               , &ActionCollection::raiseClient            );
 
    connect(&MacroModel::instance(), &MacroModel::addAction                  , this                , &ActionCollection::addMacro           );
    connect(as                     , &Audio::Settings::captureVolumeChanged  , this                , &ActionCollection::updateRecordButton );
@@ -277,6 +279,7 @@ void ActionCollection::setupAction()
       action_email_contact     , action_copy_contact      , action_bookmark          ,
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
       action_edit_contact      , action_add_new           , action_remove_history    ,
+      action_raise_client      ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       MainWindow::app()->actionCollection()->addAction(a->objectName(), a);
@@ -286,7 +289,7 @@ void ActionCollection::setupAction()
    for (QAction* a : QList<QAction*>{
       action_accept      , action_new_call    , action_hold        ,
       action_mute_capture, action_transfer    , action_record      ,
-      action_hangup      ,
+      action_hangup      , action_raise_client,
    }) {
       KGlobalAccel::self()->setGlobalShortcut(a, QList<QKeySequence>{});
    }
@@ -421,6 +424,19 @@ void ActionCollection::updateVolumeButton()
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
    MainWindow::view()->updateVolumeControls();
+}
+
+///Raise the main window to the foreground
+void ActionCollection::raiseClient()
+{
+   MainWindow::app()->show          ();
+   MainWindow::app()->activateWindow();
+   MainWindow::app()->raise         ();
+
+   // Add a new call if there is none
+   if (!CallModel::instance().rowCount())
+      CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
+   MainWindow::view()->setFocus(Qt::OtherFocusReason);
 }
 
 
