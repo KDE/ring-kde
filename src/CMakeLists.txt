@@ -175,6 +175,7 @@ SET(
    delegates/toolbardelegate.cpp
    delegates/kdepixmapmanipulation.cpp
    proxies/simplerotateproxy.cpp
+   proxies/deduplicateproxy.cpp
 )
 
 # Configuration pages

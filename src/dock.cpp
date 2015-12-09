@@ -41,6 +41,7 @@
 #include "mainwindow.h"
 #include "actioncollection.h"
 #include "klib/kcfg_settings.h"
+#include <proxies/deduplicateproxy.h>
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -117,7 +118,12 @@ Dock::Dock(QMainWindow* w) : QObject(w)
 
    QTimer::singleShot(1000, [this]() {
       auto proxy = CategorizedHistoryModel::SortedProxy::instance().model();
-      m_pHistoryDW->setProxyModel(proxy);
+      auto dedup =  new DeduplicateProxy(proxy);
+      // De-duplicate by name and date
+      dedup->addFilterRole(static_cast<int>(Call::Role::DateOnly));
+      dedup->setSourceModel(proxy);
+
+      m_pHistoryDW->setProxyModel(dedup);
       m_pHistoryDW->setSortingModel(
          CategorizedHistoryModel::SortedProxy::instance().categoryModel         (),
          CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()

@@ -36,6 +36,15 @@
  * displaying them horizontally create a better visual separation.
  *
  * 3) The source model is external and display data in inverted order
+ *
+ * Example:
+ *
+ * |-> Foo
+ * |-> Bar                    -----------------
+ * |-> Baz          ====>      |    |    |
+ *   |-> Foobar               Foo  Bar  Baz
+ *   |-> Foobaz                          |-> Foobar
+ *                                       |-> Foobaz
  */
 class SimpleRotateProxy : public QAbstractProxyModel
 {
