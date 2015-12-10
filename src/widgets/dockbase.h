@@ -51,7 +51,7 @@ public:
    virtual ~DockBase();
 
    //Mutator
-   void setProxyModel(QSortFilterProxyModel* proxy);
+   void setProxyModel(QAbstractItemModel* model, QSortFilterProxyModel* filterProxy);
    void setDelegate(QStyledItemDelegate* delegate);
    void setSortingModel(QAbstractItemModel* m, QItemSelectionModel* s);
 

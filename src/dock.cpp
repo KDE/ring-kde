@@ -93,7 +93,7 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    QTimer::singleShot(10, [this]() {
       CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
       auto proxy = CategorizedContactModel::SortedProxy::instance().model();
-      m_pContactCD->setProxyModel(proxy);
+      m_pContactCD->setProxyModel(proxy, proxy);
       m_pContactCD->setSortingModel(
          CategorizedContactModel::SortedProxy::instance().categoryModel(),
          CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
@@ -123,8 +123,11 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    QTimer::singleShot(1000, [this]() {
       // De-duplicate by name and date
       auto proxy = CategorizedHistoryModel::SortedProxy::instance().model();
-      auto dedup =  new DeduplicateProxy(proxy);
-      dedup->addFilterRole(static_cast<int>(Call::Role::DateOnly));
+      RoleTransformationProxy* highlight = nullptr;
+      auto dedup =  ConfigurationSkeleton::mergeSameDayPeer() ? new DeduplicateProxy(proxy) : nullptr;
+
+      if (dedup)
+         dedup->addFilterRole(static_cast<int>(Call::Role::DateOnly));
 
       // Highlight missed calls
       static const bool highlightMissedIn  = ConfigurationSkeleton::highlightMissedIncomingCalls();
@@ -135,7 +138,7 @@ Dock::Dock(QMainWindow* w) : QObject(w)
          awayBrush.setAlpha(30);
          static QVariant missedBg(awayBrush);
 
-         auto highlight = new RoleTransformationProxy(dedup);
+         highlight = new RoleTransformationProxy(dedup ? dedup : proxy);
 
          highlight->setRole(Qt::BackgroundRole, [](const QModelIndex& idx) {
             if (idx.data((int)Call::Role::Missed).toBool()) {
@@ -152,12 +155,20 @@ Dock::Dock(QMainWindow* w) : QObject(w)
          });
 
          highlight->setSourceModel(proxy);
-         dedup->setSourceModel(highlight);
+
+         if (dedup)
+            dedup->setSourceModel(highlight);
       }
-      else
+      else if (dedup)
          dedup->setSourceModel(proxy);
 
-      m_pHistoryDW->setProxyModel(dedup);
+      if (dedup)
+         m_pHistoryDW->setProxyModel(dedup    , proxy );
+      else if (highlight)
+         m_pHistoryDW->setProxyModel(highlight, proxy );
+      else
+         m_pHistoryDW->setProxyModel(proxy    , proxy );
+
       m_pHistoryDW->setSortingModel(
          CategorizedHistoryModel::SortedProxy::instance().categoryModel         (),
          CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()
@@ -182,7 +193,8 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    CategorizedDelegate* delegate2 = new CategorizedDelegate(m_pBookmarkDW->view());
    delegate2->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
    m_pBookmarkDW->setDelegate(delegate2);
-   m_pBookmarkDW->setProxyModel(new BookmarkSortFilterProxyModel(this));
+   auto m = new BookmarkSortFilterProxyModel(this);
+   m_pBookmarkDW->setProxyModel(m, m);
 
 
    //GUI
@@ -222,9 +234,9 @@ Dock::~Dock()
    m_pHistoryDW ->setDelegate  (nullptr);
    m_pBookmarkDW->setDelegate  (nullptr);
 
-   m_pContactCD ->setProxyModel(nullptr);
-   m_pHistoryDW ->setProxyModel(nullptr);
-   m_pBookmarkDW->setProxyModel(nullptr);
+   m_pContactCD ->setProxyModel(nullptr, nullptr);
+   m_pHistoryDW ->setProxyModel(nullptr, nullptr);
+   m_pBookmarkDW->setProxyModel(nullptr, nullptr);
 
    m_pContactCD ->deleteLater();
    m_pHistoryDW ->deleteLater();

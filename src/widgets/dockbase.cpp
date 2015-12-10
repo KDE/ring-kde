@@ -138,18 +138,20 @@ DockBase::~DockBase()
    delete m_pKeyPressEater;
 }
 
-void DockBase::setProxyModel(QSortFilterProxyModel* proxy)
+void DockBase::setProxyModel(QAbstractItemModel* model, QSortFilterProxyModel* filterProxy)
 {
-   if (!proxy)
+   if (!model)
       return;
 
-   auto removeEmpty = new FilterTopLevelProxy(proxy);
+   auto removeEmpty = new FilterTopLevelProxy(model);
 
    m_pView->setModel(removeEmpty);
-   if (proxy) {
-      connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString))     , proxy, SLOT(setFilterRegExp(QString))   );
-      connect(removeEmpty ,SIGNAL(layoutChanged())                  , this , SLOT(expandTree())               );
-      connect(removeEmpty ,SIGNAL(rowsInserted(QModelIndex,int,int)), this , SLOT(expandTreeRows(QModelIndex)));
+   if (model) {
+      if (filterProxy)
+         connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString))     , filterProxy, SLOT(setFilterRegExp(QString))   );
+
+      connect   (removeEmpty ,SIGNAL(layoutChanged())                  , this , SLOT(expandTree())               );
+      connect   (removeEmpty ,SIGNAL(rowsInserted(QModelIndex,int,int)), this , SLOT(expandTreeRows(QModelIndex)));
    }
 
    expandTreeRows({});
