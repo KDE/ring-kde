@@ -45,6 +45,9 @@ class DeduplicateProxyPrivate;
  *   |->  Foo                                            |->  Foo
  *   |->  Foo                                              |->  Foo
  *
+ * Additional roles can be added to filter prevent some items from being
+ * hidden.
+ *
  * @warning The default role comparaison only work for QVariant basic types \
  * for custom types, it is better to use the function comparaison
  *
@@ -62,6 +65,7 @@ public:
    };
 
    explicit DeduplicateProxy(QObject* parent = nullptr);
+   virtual ~DeduplicateProxy();
 
    void addFilterRole(int role);
 

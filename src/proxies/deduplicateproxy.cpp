@@ -40,6 +40,11 @@ d_ptr(new DeduplicateProxyPrivate())
 {
 }
 
+DeduplicateProxy::~DeduplicateProxy()
+{
+   delete d_ptr;
+}
+
 void DeduplicateProxy::setComparator(const Comparator& f)
 {
    d_ptr->m_Mode = DeduplicateProxy::Mode::FUNCTION;

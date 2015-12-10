@@ -23,6 +23,9 @@
 #include <QtCore/QSortFilterProxyModel>
 #include <QtCore/QTimer>
 
+//KDE
+#include <KColorScheme>
+
 //Delegates
 #include <conf/account/delegates/categorizeddelegate.h>
 #include "delegates/contactdelegate.h"
@@ -42,6 +45,7 @@
 #include "actioncollection.h"
 #include "klib/kcfg_settings.h"
 #include <proxies/deduplicateproxy.h>
+#include <proxies/roletransformationproxy.h>
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -117,11 +121,41 @@ Dock::Dock(QMainWindow* w) : QObject(w)
 
 
    QTimer::singleShot(1000, [this]() {
+      // De-duplicate by name and date
       auto proxy = CategorizedHistoryModel::SortedProxy::instance().model();
       auto dedup =  new DeduplicateProxy(proxy);
-      // De-duplicate by name and date
       dedup->addFilterRole(static_cast<int>(Call::Role::DateOnly));
-      dedup->setSourceModel(proxy);
+
+      // Highlight missed calls
+      static const bool highlightMissedIn  = ConfigurationSkeleton::highlightMissedIncomingCalls();
+      static const bool highlightMissedOut = ConfigurationSkeleton::highlightMissedOutgoingCalls();
+
+      if (highlightMissedOut || highlightMissedIn) {
+         static QColor awayBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+         awayBrush.setAlpha(30);
+         static QVariant missedBg(awayBrush);
+
+         auto highlight = new RoleTransformationProxy(dedup);
+
+         highlight->setRole(Qt::BackgroundRole, [](const QModelIndex& idx) {
+            if (idx.data((int)Call::Role::Missed).toBool()) {
+               const Call::Direction d = qvariant_cast<Call::Direction>(
+                  idx.data((int)Call::Role::Direction)
+               );
+
+               if ((highlightMissedIn && d == Call::Direction::INCOMING)
+                 || (highlightMissedOut && d == Call::Direction::OUTGOING))
+                  return missedBg;
+            }
+
+            return QVariant();
+         });
+
+         highlight->setSourceModel(proxy);
+         dedup->setSourceModel(highlight);
+      }
+      else
+         dedup->setSourceModel(proxy);
 
       m_pHistoryDW->setProxyModel(dedup);
       m_pHistoryDW->setSortingModel(

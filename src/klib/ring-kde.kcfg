@@ -228,6 +228,11 @@
       <default> false </default>
     </entry>
 
+    <entry name="mergeSameDayPeer" type="Bool">
+      <label></label>
+      <default> true </default>
+    </entry>
+
     <!-- Bookmark -->
     <entry name="bookmarkList" type="StringList">
         <label>List of bookmarked clients</label>

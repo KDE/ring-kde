@@ -28,6 +28,7 @@
 #include "mime.h"
 #include "menumodelview.h"
 #include "useractionmodel.h"
+#include "proxies/filtertoplevelproxy.h"
 #include "klib/kcfg_settings.h"
 
 class ArrowGrabber : public QObject
@@ -108,53 +109,6 @@ private:
    DockBase* m_pDock;
 };
 
-///Remove empty categories
-class RemoveEmptyTopLevel : public QSortFilterProxyModel
-{
-   Q_OBJECT
-public:
-   RemoveEmptyTopLevel(QAbstractItemModel* parent) : QSortFilterProxyModel(parent)
-   {
-      setSourceModel(parent);
-
-      connect(parent, &QAbstractItemModel::rowsRemoved , this, &RemoveEmptyTopLevel::changeParent);
-      connect(parent, &QAbstractItemModel::rowsInserted, this, &RemoveEmptyTopLevel::changeParent);
-   }
-
-   virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
-   {
-      if (m_RecursionLock && !source_parent.isValid())
-         return sourceModel()->rowCount(
-            sourceModel()->index(source_row, 0, source_parent)
-         );
-
-      return true;
-   }
-
-   ///This proxy doesn't sort anything
-   virtual void sort ( int column, Qt::SortOrder order) override
-   {
-      sourceModel()->sort(column, order);
-   }
-
-private:
-   bool m_RecursionLock {false}; //Avoid infinite loop (not thread safe)
-
-private Q_SLOTS:
-   ///Force filterAcceptsRow to be called when children cound change
-   void changeParent(const QModelIndex& parent, int start, int end ) {
-
-      Q_UNUSED(end)
-
-      /// (performance) Only bother when the first child is involved
-      if ((!start) && parent.isValid() && !parent.parent().isValid()) {
-         m_RecursionLock = true;
-         emit sourceModel()->dataChanged(parent,parent);
-         m_RecursionLock = false;
-      }
-   }
-};
-
 ///Constructor
 DockBase::DockBase(QWidget* parent) : QDockWidget(parent)
 {
@@ -189,7 +143,7 @@ void DockBase::setProxyModel(QSortFilterProxyModel* proxy)
    if (!proxy)
       return;
 
-   auto removeEmpty = new RemoveEmptyTopLevel(proxy);
+   auto removeEmpty = new FilterTopLevelProxy(proxy);
 
    m_pView->setModel(removeEmpty);
    if (proxy) {

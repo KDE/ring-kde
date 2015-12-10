@@ -176,6 +176,8 @@ SET(
    delegates/kdepixmapmanipulation.cpp
    proxies/simplerotateproxy.cpp
    proxies/deduplicateproxy.cpp
+   proxies/filtertoplevelproxy.cpp
+   proxies/roletransformationproxy.cpp
 )
 
 # Configuration pages
