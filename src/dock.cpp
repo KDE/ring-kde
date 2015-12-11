@@ -42,6 +42,7 @@
 
 //Ring
 #include "mainwindow.h"
+#include "view.h"
 #include "actioncollection.h"
 #include "klib/kcfg_settings.h"
 #include <proxies/deduplicateproxy.h>
@@ -226,6 +227,10 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    connect(ActionCollection::instance()->showHistoryDockAction(), SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
    connect(ActionCollection::instance()->showBookmarkDockAction(),SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
+   connect( ActionCollection::instance()->focusHistory (), &QAction::triggered, this, &Dock::focusHistory  );
+   connect( ActionCollection::instance()->focusContact (), &QAction::triggered, this, &Dock::focusContact  );
+   connect( ActionCollection::instance()->focusCall    (), &QAction::triggered, this, &Dock::focusCall     );
+   connect( ActionCollection::instance()->focusBookmark(), &QAction::triggered, this, &Dock::focusBookmark );
 }
 
 Dock::~Dock()
@@ -292,5 +297,32 @@ void Dock::updateTabIcons()
       }
    }
 } //updateTabIcons
+
+void Dock::focusHistory()
+{
+   m_pHistoryDW->raise();
+   ActionCollection::instance()->raiseClient(false);
+   m_pHistoryDW->m_pFilterLE->setFocus(Qt::OtherFocusReason);
+}
+
+void Dock::focusContact()
+{
+   m_pContactCD->raise();
+   ActionCollection::instance()->raiseClient(false);
+   m_pContactCD->m_pFilterLE->setFocus(Qt::OtherFocusReason);
+}
+
+void Dock::focusCall()
+{
+   MainWindow::view()->raise();
+   ActionCollection::instance()->raiseClient(true);
+}
+
+void Dock::focusBookmark()
+{
+   m_pBookmarkDW->raise();
+   ActionCollection::instance()->raiseClient(false);
+   m_pBookmarkDW->m_pFilterLE->setFocus(Qt::OtherFocusReason);
+}
 
 #include <dock.moc>

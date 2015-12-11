@@ -149,6 +149,10 @@ void ActionCollection::setupAction()
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme("configure-shortcuts"             ), i18n("Configure Shortcut"      ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme("preferences-desktop-notification"), i18n("Configure Notifications" ));
    INIT_ACTION(action_raise_client          , {}                                                  , i18n("Raise Ring-KDE window"   ));
+   INIT_ACTION(action_focus_history         , {}                                                  , i18n("Search hisotry"          ));
+   INIT_ACTION(action_focus_call            , {}                                                  , i18n("Search call"             ));
+   INIT_ACTION(action_focus_contact         , {}                                                  , i18n("Search contact"          ));
+   INIT_ACTION(action_focus_bookmark        , {}                                                  , i18n("Search bookmark"         ));
 
    // Assign default shortcuts
 #define COL(a,b) MainWindow::app()->actionCollection()->setDefaultShortcut(a,b)
@@ -279,7 +283,8 @@ void ActionCollection::setupAction()
       action_email_contact     , action_copy_contact      , action_bookmark          ,
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
       action_edit_contact      , action_add_new           , action_remove_history    ,
-      action_raise_client      ,
+      action_raise_client      , action_focus_history     , action_focus_contact     ,
+      action_focus_call        , action_focus_bookmark    ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       MainWindow::app()->actionCollection()->addAction(a->objectName(), a);
@@ -287,9 +292,10 @@ void ActionCollection::setupAction()
 
    // Enable global shortcuts for relevant "current call" actions
    for (QAction* a : QList<QAction*>{
-      action_accept      , action_new_call    , action_hold        ,
-      action_mute_capture, action_transfer    , action_record      ,
-      action_hangup      , action_raise_client,
+      action_accept       , action_new_call    , action_hold         ,
+      action_mute_capture , action_transfer    , action_record       ,
+      action_hangup       , action_raise_client, action_focus_history,
+      action_focus_contact, action_focus_call  , action_focus_bookmark
    }) {
       KGlobalAccel::self()->setGlobalShortcut(a, QList<QKeySequence>{});
    }
@@ -427,18 +433,19 @@ void ActionCollection::updateVolumeButton()
 }
 
 ///Raise the main window to the foreground
-void ActionCollection::raiseClient()
+void ActionCollection::raiseClient(bool focus)
 {
    MainWindow::app()->show          ();
    MainWindow::app()->activateWindow();
    MainWindow::app()->raise         ();
 
-   // Add a new call if there is none
-   if (!CallModel::instance().rowCount())
-      CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
-   MainWindow::view()->setFocus(Qt::OtherFocusReason);
+   if (focus) {
+      // Add a new call if there is none
+      if (!CallModel::instance().rowCount())
+         CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
+      MainWindow::view()->setFocus(Qt::OtherFocusReason);
+   }
 }
-
 
 #define GETTER(name, action) QAction* ActionCollection::name(){return action;}
 
@@ -460,6 +467,10 @@ GETTER(showHistoryDockAction        , action_showHistoryDock       )
 GETTER(showBookmarkDockAction       , action_showBookmarkDock      )
 GETTER(quitAction                   , action_quit                  )
 GETTER(addPerson                    , action_addPerson             )
+GETTER(focusHistory                 , action_focus_history         )
+GETTER(focusContact                 , action_focus_contact         )
+GETTER(focusCall                    , action_focus_call            )
+GETTER(focusBookmark                , action_focus_bookmark        )
 
 //Video actions
 #ifdef ENABLE_VIDEO

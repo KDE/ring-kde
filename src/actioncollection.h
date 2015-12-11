@@ -56,6 +56,10 @@ public:
    QAction* showBookmarkDockAction      ();
    QAction* quitAction                  ();
    QAction* addPerson                   ();
+   QAction* focusHistory                ();
+   QAction* focusContact                ();
+   QAction* focusCall                   ();
+   QAction* focusBookmark               ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -126,9 +130,14 @@ private:
    QAction * action_editToolBar            {nullptr};
    QAction * action_addPerson              {nullptr};
    QAction * action_raise_client           {nullptr};
+   QAction * action_focus_history          {nullptr};
+   QAction * action_focus_contact          {nullptr};
+   QAction * action_focus_call             {nullptr};
+   QAction * action_focus_bookmark         {nullptr};
 
 public Q_SLOTS:
    void configureRing         ();
+   void raiseClient           ( bool focus = false );
 
 private Q_SLOTS:
    void mailBox  ();
@@ -139,7 +148,6 @@ private Q_SLOTS:
    void updateRecordButton    ();
    void updateVolumeButton    ();
    void addMacro              ( const QVariant& newAction );
-   void raiseClient();
 
 Q_SIGNALS:
    void windowStateChanged();
