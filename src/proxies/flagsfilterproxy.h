@@ -15,47 +15,44 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef FILTERTOPLEVELPROXY_H
-#define FILTERTOPLEVELPROXY_H
+#ifndef FLAGSFILTERPROXY_H
+#define FLAGSFILTERPROXY_H
 
 #include <QtCore/QSortFilterProxyModel>
 
-class FilterTopLevelProxyPrivate;
+class FlagsFilterProxyPrivate;
 
 /**
- * Remove top level items without any children
+ * Filter a model based on the source model flags
  *
- * This model is useful for 2+ level trees where the top level represent a
- * category. In some case, empty categories may be present and do not add
- * value while poluting the output.
+ * This can be used to remove disabled and unselectable items
  *
- * For filtering use case, KRecursiveFilterProxyModel is usually recomanded,
- * but a FilterTopLevelProxy may in some specific case, such as when proxies
- * are provided by external libraries, be useful.
+ * The default retainedFlags are:
  *
- * Example:
- *
- * |->Foo               |->Bar
- * |->Bar                |-> Foo
- *  |-> Foo    =====>    |-> Baz
- *  |-> Baz
- * |->Baz
+ * * Qt::ItemIsEnabled
+ * * Qt::ItemIsSelectable
  *
  */
-class FilterTopLevelProxy : public QSortFilterProxyModel
+class FlagsFilterProxy : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:
-   explicit FilterTopLevelProxy(QAbstractItemModel* parent);
-   virtual ~FilterTopLevelProxy();
+   explicit FlagsFilterProxy(QObject* parent = nullptr);
+   virtual ~FlagsFilterProxy();
+
+   void setRetainedFlags(int flags);
+   void setRecursive(bool rec); //TODO
+
+   int retainedFlags() const;
+   bool isRecursive() const; //TODO
 
    virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 
    virtual void sort ( int column, Qt::SortOrder order) override;
 
 private:
-   FilterTopLevelProxyPrivate* d_ptr;
-   Q_DECLARE_PRIVATE(FilterTopLevelProxy)
+   FlagsFilterProxyPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(FlagsFilterProxy)
 };
 
 #endif

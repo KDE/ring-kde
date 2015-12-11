@@ -178,6 +178,7 @@ SET(
    proxies/deduplicateproxy.cpp
    proxies/filtertoplevelproxy.cpp
    proxies/roletransformationproxy.cpp
+   proxies/flagsfilterproxy.cpp
 )
 
 # Configuration pages

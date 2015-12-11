@@ -15,47 +15,55 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef FILTERTOPLEVELPROXY_H
-#define FILTERTOPLEVELPROXY_H
+#include "flagsfilterproxy.h"
 
-#include <QtCore/QSortFilterProxyModel>
-
-class FilterTopLevelProxyPrivate;
-
-/**
- * Remove top level items without any children
- *
- * This model is useful for 2+ level trees where the top level represent a
- * category. In some case, empty categories may be present and do not add
- * value while poluting the output.
- *
- * For filtering use case, KRecursiveFilterProxyModel is usually recomanded,
- * but a FilterTopLevelProxy may in some specific case, such as when proxies
- * are provided by external libraries, be useful.
- *
- * Example:
- *
- * |->Foo               |->Bar
- * |->Bar                |-> Foo
- *  |-> Foo    =====>    |-> Baz
- *  |-> Baz
- * |->Baz
- *
- */
-class FilterTopLevelProxy : public QSortFilterProxyModel
+class FlagsFilterProxyPrivate final
 {
-   Q_OBJECT
 public:
-   explicit FilterTopLevelProxy(QAbstractItemModel* parent);
-   virtual ~FilterTopLevelProxy();
-
-   virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
-
-   virtual void sort ( int column, Qt::SortOrder order) override;
-
-private:
-   FilterTopLevelProxyPrivate* d_ptr;
-   Q_DECLARE_PRIVATE(FilterTopLevelProxy)
+   bool m_IsRecursive   { false                                    };
+   int  m_RetainedFlags { Qt::ItemIsEnabled | Qt::ItemIsSelectable };
 };
 
-#endif
+FlagsFilterProxy::FlagsFilterProxy(QObject* parent) : QSortFilterProxyModel(parent),
+d_ptr(new FlagsFilterProxyPrivate())
+{}
+
+FlagsFilterProxy::~FlagsFilterProxy()
+{
+   delete d_ptr;
+}
+
+void FlagsFilterProxy::setRetainedFlags(int flags)
+{
+   d_ptr->m_RetainedFlags = flags;
+   invalidateFilter();
+}
+
+void FlagsFilterProxy::setRecursive(bool rec)
+{
+   //TODO
+   d_ptr->m_IsRecursive = rec;
+   invalidateFilter();
+}
+
+int FlagsFilterProxy::retainedFlags() const
+{
+   return d_ptr->m_RetainedFlags;
+}
+
+bool FlagsFilterProxy::isRecursive() const
+{
+   return d_ptr->m_IsRecursive;
+}
+
+bool FlagsFilterProxy::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
+{
+   const QModelIndex srcIdx = sourceModel()->index(source_row, filterKeyColumn(), source_parent);
+
+   return (srcIdx.flags() & d_ptr->m_RetainedFlags) == d_ptr->m_RetainedFlags;
+}
+
+void FlagsFilterProxy::sort( int column, Qt::SortOrder order)
+{
+   sourceModel()->sort(column, order);
+}

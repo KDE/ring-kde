@@ -220,7 +220,7 @@
 
     <entry name="highlightMissedIncomingCalls" type="Bool">
       <label></label>
-      <default> false </default>
+      <default> true </default>
     </entry>
 
     <entry name="highlightMissedOutgoingCalls" type="Bool">

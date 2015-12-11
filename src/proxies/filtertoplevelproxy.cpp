@@ -47,6 +47,11 @@ d_ptr(new FilterTopLevelProxyPrivate(this))
    connect(parent, &QAbstractItemModel::rowsInserted, d_ptr, &FilterTopLevelProxyPrivate::changeParent);
 }
 
+FilterTopLevelProxy::~FilterTopLevelProxy()
+{
+   delete d_ptr;
+}
+
 bool FilterTopLevelProxy::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
 {
    if (d_ptr->m_RecursionLock && !source_parent.isValid())
