@@ -33,10 +33,13 @@
 #include <contactmethod.h>
 #include <numbercategory.h>
 #include <useractionmodel.h>
+#include <media/textrecording.h>
+#include <media/recordingmodel.h>
 
 // Ring-KDE
 #include <mainwindow.h>
 #include <view.h>
+#include <eventmanager.h>
 
 #define REGISTER_ACTION(list, var, name)  list << name;var = list.size();
 
@@ -123,6 +126,38 @@ void IncomingCallNotification::actionPerformed(uint actionId)
 
 
 /*
+ * Text message notification
+ */
+class IncomingTextNotification : public KNotification
+{
+   Q_OBJECT
+public:
+   explicit IncomingTextNotification(ContactMethod* cm, Media::TextRecording* t);
+   void actionPerformed(uint actionId);
+};
+
+IncomingTextNotification::IncomingTextNotification(ContactMethod* cm, Media::TextRecording* t) : KNotification(
+   QStringLiteral("incomingText"), MainWindow::view())
+{
+   setTitle(i18n("Message from %1", cm->primaryName()));
+
+   if (auto contact = cm->contact()) {
+
+      const QPixmap px = (contact->photo()).type() == QVariant::Pixmap ? (contact->photo()).value<QPixmap>():QPixmap();
+      setPixmap(px);
+   }
+
+   setText(t->instantTextMessagingModel()->index(
+      t->instantTextMessagingModel()->rowCount()-1, 0
+   ).data().toString());
+}
+
+void IncomingTextNotification::actionPerformed(uint actionId)
+{
+   Q_UNUSED(actionId)
+}
+
+/*
  * CreateContactNotification
  */
 
@@ -182,6 +217,7 @@ Notification::Notification(QObject* parent) : QObject(parent)
 {
    connect(&CallModel::instance(), &CallModel::incomingCall, this, &Notification::incomingCall);
    connect(&AccountModel::instance(), &AccountModel::accountStateChanged, this, &Notification::accountStatus);
+   connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &Notification::incomingText);
 }
 
 Notification* Notification::instance()
@@ -207,12 +243,12 @@ void Notification::incomingCall(Call* call)
 {
    if (call)
       (new IncomingCallNotification(call))->sendEvent();
-
 }
 
-void Notification::incomingText()
+void Notification::incomingText(Media::TextRecording* t, ContactMethod* cm)
 {
-   //TODO
+   if (t && !EventManager::mayHaveFocus())
+      (new IncomingTextNotification(cm, t))->sendEvent();
 }
 
 void Notification::createContact()

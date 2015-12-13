@@ -56,14 +56,21 @@ public:
    //Implement macro key listener
    virtual void addDTMF(const QString& sequence) override;
 
+   /**
+    * An unreliable way to track the application focus
+    *
+    * It is better than nothing
+    */
+   static bool mayHaveFocus();
 
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
    //Attributes
-   View*        m_pParent       ;
-   MainWindowEvent*     m_pMainWindowEv ;
+   View*            m_pParent        ;
+   MainWindowEvent* m_pMainWindowEv  ;
+   static bool      m_HasFocus       ;
 
    //Methods
    bool viewKeyEvent      ( QKeyEvent*       e);

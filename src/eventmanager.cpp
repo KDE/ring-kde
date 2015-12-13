@@ -47,6 +47,8 @@
 #include "widgets/callviewoverlay.h"
 #include "widgets/autocompletion.h"
 
+bool EventManager::m_HasFocus = false;
+
 //This code detect if the window is active, innactive or minimzed
 class MainWindowEvent : public QObject {
    Q_OBJECT
@@ -57,13 +59,7 @@ public:
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event)  override {
       Q_UNUSED(obj)
-      if (event->type() == QEvent::FocusIn || event->type() == QEvent::FocusOut) {
-         QFocusEvent* e = static_cast<QFocusEvent*>(event);
-         if (e->reason() == Qt::ActiveWindowFocusReason) {
-            qDebug() << "ACTIVE WINDOW EVENT";
-         }
-      }
-      else if (event->type() == QEvent::WindowStateChange) {
+      if (event->type() == QEvent::WindowStateChange) {
          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
          switch (MainWindow::app()->windowState()) {
             case Qt::WindowMinimized:
@@ -80,6 +76,12 @@ protected:
       }
       else if (event->type() == QEvent::KeyPress) {
          m_pParent->viewKeyEvent(static_cast<QKeyEvent*>(event));
+      }
+      else if (event->type() == QEvent::WindowDeactivate) {
+         m_pParent->m_HasFocus = false;
+      }
+      else if (event->type() == QEvent::WindowActivate) {
+         m_pParent->m_HasFocus = true;
       }
       return false;
    }
@@ -495,7 +497,7 @@ void EventManager::enter()
 ///Macros needs to be executed at high level so the animations kicks in
 void EventManager::addDTMF(const QString& sequence)
 {
-   if (sequence == "\n")
+   if (sequence == QLatin1String("\n"))
       enter();
    else
       typeString(sequence);
@@ -611,6 +613,11 @@ void EventManager::slotregistrationChanged(Account* a,bool reg)
 void EventManager::slotNetworkDown()
 {
    m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::NETWORK_ERROR);
+}
+
+bool EventManager::mayHaveFocus()
+{
+   return m_HasFocus;
 }
 
 #include "eventmanager.moc"

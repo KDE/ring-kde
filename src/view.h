@@ -79,6 +79,8 @@ private Q_SLOTS:
    void sendMessage          ();
    void slotAutoCompleteClicked(ContactMethod* n);
    void loadAutoCompletion   ();
+   void updateTextBoxStatus  ();
+   void displayHistory       (bool);
 
 public Q_SLOTS:
    void updateVolumeControls ();

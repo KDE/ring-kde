@@ -22,6 +22,10 @@
 
 #include <account.h>
 class Call;
+class ContactMethod;
+namespace Media {
+   class TextRecording;
+}
 
 /**
  * This singleton class watch and reatch on events to provide system
@@ -39,7 +43,7 @@ public:
    void accountStatus(Account* a, const Account::RegistrationState state);
 
 
-   void incomingText();
+   void incomingText(Media::TextRecording* t, ContactMethod* cm);
 
    void createContact();
 

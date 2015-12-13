@@ -96,9 +96,6 @@ MainWindow* MainWindow::m_sApp = nullptr;
 
 static void loadNumberCategories()
 {
-//    QList<int> list = ConfigurationSkeleton::phoneTypeList();
-//    const bool isEmpty = !list.size();
-// #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
    auto& model = NumberCategoryModel::instance();
 #define ICN(name) QPixmap(QString(":/mini/icons/miniicons/%1.png").arg(name))
    model.addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
