@@ -32,6 +32,12 @@ FIND_PACKAGE(KF5 REQUIRED COMPONENTS
   XmlGui
 )
 
+FIND_PACKAGE(KF5 COMPONENTS
+  Akonadi
+  AkonadiContact
+  Contacts
+)
+
 INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${LIB_RING_CLIENT_INCLUDE_DIR})
 
 ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
@@ -49,6 +55,11 @@ SET( libkring_LIB_SRCS
    itemmodelserialization.cpp
 )
 
+SET(libkring_LIB_SRCS
+    ${libkring_LIB_SRCS}
+    akonadibackend.cpp
+)
+
 KCONFIG_ADD_KCFG_FILES (libkring_LIB_SRCS kcfg_settings.kcfgc)
 
 ADD_LIBRARY( libkring  STATIC ${libkring_LIB_SRCS} )
@@ -64,6 +75,9 @@ target_link_libraries( libkring
   KF5::WidgetsAddons
   KF5::ConfigCore
   KF5::ConfigGui
+  KF5::AkonadiCore
+  KF5::AkonadiContact
+  KF5::Contacts
 )
 
 SET( libkring_LIB_HDRS

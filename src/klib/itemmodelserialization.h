@@ -25,7 +25,6 @@
 class Account;
 class CollectionInterface;
 
-///Ringlib Qt does not link to QtGui, and does not need to, this allow to add runtime Gui support
 class LIB_EXPORT ItemModelStateSerialization : public Interfaces::ItemModelStateSerializerI
 {
 public:
@@ -35,6 +34,11 @@ public:
 
    //Getter
    virtual bool isChecked(const CollectionInterface* backend) const override;
+   virtual CollectionInterface* preferredCollection(
+      CollectionManagerInterfaceBase* manager,
+      FlagPack<CollectionInterface::SupportedFeatures> features,
+      FlagPack<Interfaces::ItemModelStateSerializerI::Hints> hints
+   ) override;
 
    //Setter
    virtual bool setChecked(const CollectionInterface* backend, bool enabled) override;

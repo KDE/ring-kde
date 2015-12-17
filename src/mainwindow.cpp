@@ -88,6 +88,7 @@
 #include <video/renderer.h>
 #include "ringapplication.h"
 #include "widgets/dockbase.h"
+#include "klib/akonadibackend.h"
 #ifdef ENABLE_VIDEO
 #include "widgets/videodock.h"
 #endif
@@ -178,6 +179,9 @@ MainWindow::MainWindow(QWidget* parent)
       PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
       GlobalInstances::setInterface<ItemModelStateSerialization>();
+      GlobalInstances::itemModelStateSerializer().load();
+
+      AkonadiBackend::initCollections();
 //       PersonModel::instance().backendModel()->load();
 //       AccountModel::instance().setDefaultAccount(AccountModel::instance().getAccountById(ConfigurationSkeleton::defaultAccountId()));
 
@@ -364,7 +368,6 @@ MainWindow::MainWindow(QWidget* parent)
    if (!ConfigurationSkeleton::autoStartOverride())
       setAutoStart(true);
 
-//    RecentModel::instance();
 
 } //Ring
 

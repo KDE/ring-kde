@@ -17,6 +17,10 @@
  ***************************************************************************/
 #include "itemmodelserialization.h"
 
+#include <personmodel.h>
+
+#include "akonadibackend.h"
+
 #include "collectioninterface.h"
 #include "kcfg_settings.h"
 
@@ -58,4 +62,17 @@ bool ItemModelStateSerialization::setChecked(const CollectionInterface* backend,
 {
    m_hChecked[backend->id()] = ! enabled;
    return true;
+}
+
+CollectionInterface* ItemModelStateSerialization::preferredCollection(CollectionManagerInterfaceBase* manager, FlagPack<CollectionInterface::SupportedFeatures> features, FlagPack<Interfaces::ItemModelStateSerializerI::Hints> hints )
+{
+   Q_UNUSED(hints)
+   if (manager == &PersonModel::instance()) {
+      foreach(CollectionInterface* i, PersonModel::instance().collections(features)) {
+         if (dynamic_cast<AkonadiBackend*>(i)) //TODO use something better
+            return i;
+      }
+   }
+
+   return nullptr;
 }

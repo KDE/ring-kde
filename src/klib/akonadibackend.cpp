@@ -20,29 +20,33 @@
 #include "akonadibackend.h"
 
 //Qt
-#include <QPointer>
+#include <QtCore/QPointer>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
 
 //KDE
-#include <QDebug>
 #include <KJob>
-#include <QDialog>
-#include <akonadi/control.h>
-#include <akonadi/collectionfilterproxymodel.h>
-#include <akonadi/kmime/messagemodel.h>
-#include <akonadi/recursiveitemfetchjob.h>
-#include <akonadi/itemfetchjob.h>
-#include <akonadi/itemfetchscope.h>
-#include <akonadi/collectionfetchjob.h>
-#include <akonadi/collectionfetchscope.h>
-#include <akonadi/contact/contacteditor.h>
-#include <akonadi/contact/contacteditordialog.h>
-#include <akonadi/session.h>
-#include <akonadi/monitor.h>
-#include <akonadi/itemdeletejob.h>
-#include <akonadi/entitydisplayattribute.h>
-#include <kabc/addressee.h>
-#include <kabc/addresseelist.h>
-#include <kabc/contactgroup.h>
+#include <AkonadiCore/Control>
+#include <AkonadiCore/CollectionFilterProxyModel>
+// #include <AkonadiCore/Kmime/MessageModel>
+#include <AkonadiCore/RecursiveItemFetchJob>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/CollectionFetchJob>
+#include <AkonadiCore/CollectionFetchScope>
+#include <Akonadi/Contact/ContactEditor>
+#include <Akonadi/Contact/ContactEditorDialog>
+#include <AkonadiCore/Session>
+#include <AkonadiCore/Monitor>
+#include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/ItemDeleteJob>
+#include <AkonadiCore/EntityDisplayAttribute>
+#include <AkonadiCore/EntityTreeModel>
+#include <kcontacts/addressee.h>
+#include <kcontacts/addresseelist.h>
+#include <kcontacts/contactgroup.h>
 
 //Ring library
 #include "person.h"
@@ -56,12 +60,97 @@
 #include "collectioninterface.h"
 #include "numbercategory.h"
 #include "personmodel.h"
+#include "interfaces/itemmodelstateserializeri.h"
+#include "globalinstances.h"
+
+// Ring-KDE
 #include "kcfg_settings.h"
 
-Akonadi::Session* AkonadiBackend::m_pSession = nullptr;
+Akonadi::Session*          AkonadiBackend::m_spSession = nullptr;
+Akonadi::EntityTreeModel*  AkonadiBackend::m_spModel   = nullptr;
 QHash<Akonadi::Collection::Id, AkonadiBackend*> AkonadiBackend::m_hParentLookup;
 
+class AkonadiEditor : public CollectionEditor<Person>
+{
+public:
+   AkonadiEditor(CollectionMediator<Person>* m) : CollectionEditor<Person>(m) {}
+   ~AkonadiEditor() {
+      m_lBackendPersons.clear();
+      m_ItemHash.clear();
+      m_AddrHash.clear();
+   }
+   virtual bool save       ( const Person* item ) override;
+   virtual bool addExisting( const Person* item ) override;
+   virtual bool remove     ( const Person* item ) override;
+   virtual bool edit       ( Person*       item ) override;
+   virtual bool addNew     ( Person*       item ) override;
 
+   QHash<QString,KContacts::Addressee> m_AddrHash       ;
+   QHash<QString,Akonadi::Item>        m_ItemHash       ;
+   QVector<Person*>                    m_lBackendPersons;
+private:
+   virtual QVector<Person*> items() const override;
+};
+
+void AkonadiBackend::digg(QAbstractItemModel* model, const QModelIndex& idx)
+{
+   if (!model)
+      return;
+
+   if (idx.isValid()) {
+      auto col = idx.data( Akonadi::EntityTreeModel::CollectionRole ).value<Akonadi::Collection>();
+
+      if (col.isValid()) {
+         auto col2 = PersonModel::instance().addCollection<AkonadiBackend,Akonadi::Collection*>(&col);
+         if (col2 && col2->isEnabled())
+            col2->load();
+      }
+   }
+
+   for (int i = 0;i < model->rowCount(idx);i++) {
+      QModelIndex current = model->index(i,0,idx);
+      digg(model, current);
+   }
+}
+
+void AkonadiBackend::slotRowsInserted(const QModelIndex& parent, int start, int end)
+{
+   for (int i = start; i <= end; i++) {
+      digg(m_spModel, m_spModel->index(i,0, parent));
+   }
+}
+
+// Watch and digg the EntityTreeModel to get the collection list
+void AkonadiBackend::initCollections()
+{
+   if (!m_spSession)
+      m_spSession = new Akonadi::Session("ring-kde");
+
+   auto changeRecorder = new Akonadi::ChangeRecorder();
+
+   changeRecorder->setCollectionMonitored( Akonadi::Collection::root() );
+   changeRecorder->setMimeTypeMonitored( "text/directory" );
+   changeRecorder->setSession( m_spSession );
+
+   m_spModel = new Akonadi::EntityTreeModel( changeRecorder, changeRecorder );
+   m_spModel->setItemPopulationStrategy( Akonadi::EntityTreeModel::NoItemPopulation );
+
+   QObject::connect(m_spModel, &QAbstractItemModel::rowsInserted, &slotRowsInserted);
+
+   digg(m_spModel, QModelIndex());
+}
+
+///Constructor
+AkonadiBackend::AkonadiBackend(CollectionMediator<Person>* mediator, Akonadi::Collection* parentCol) : QObject(mediator->model()),
+   CollectionInterface(new AkonadiEditor(mediator),m_hParentLookup[parentCol->parentCollection().id()]),m_pJob{},m_pMediator(mediator),
+  m_pMonitor(nullptr),m_isEnabled(false),m_wasEnabled(false)
+{
+   if (!m_spSession)
+      m_spSession = new Akonadi::Session( "Ring::instance" );
+   setObjectName(parentCol->name());
+   m_Coll = *parentCol;
+   m_hParentLookup[m_Coll.id()] = this;
+} //AkonadiBackend
 
 
 
@@ -80,38 +169,91 @@ bool AkonadiEditor::save(const Person* item)
    return false;
 }
 
-bool AkonadiEditor::append(const Person* item)
+bool AkonadiEditor::addExisting(const Person* item)
 {
    Q_UNUSED(item)
    return false;
 }
 
-bool AkonadiEditor::remove(Person* c)
+bool AkonadiEditor::remove(const Person* c)
 {
    if (!c)
       return false;
    Akonadi::Item item = m_ItemHash[c->uid()];
    Akonadi::ItemDeleteJob *job = new Akonadi::ItemDeleteJob( item );
    job->exec();
-   c->setActive(false);
    return true;
 }
 
-bool AkonadiEditor::edit( Person* item)
+void applyNativeEdit()
 {
-   Q_UNUSED(item)
+   
+}
+
+bool AkonadiEditor::edit( Person* contact)
+{
+   Akonadi::Item item = m_ItemHash[contact->uid()];
+   if (!(item.hasPayload<KContacts::Addressee>() && item.payload<KContacts::Addressee>().uid() == contact->uid())) {
+      qDebug() << "Person not found";
+      return false ;
+   }
+
+   if ( item.isValid() ) {
+      QPointer<Akonadi::ContactEditorDialog> editor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode );
+      editor->editor()->loadContact(item);
+
+      if ( editor->exec() == QDialog::Accepted ) {
+         if ( !contact->save() ) {
+            delete editor;
+            qDebug() << "Unable to save new contact to storage";
+            return false;
+         }
+      }
+      delete editor;
+      return true;
+   }
    return false;
 }
 
-bool AkonadiEditor::addNew( Person* item)
+bool AkonadiEditor::addNew( Person* contact)
 {
-   Q_UNUSED(item)
-   return false;
+   KContacts::Addressee newPerson;
+   newPerson.setNickName       ( contact->nickName     () );
+   newPerson.setFormattedName  ( contact->formattedName() );
+   newPerson.setGivenName      ( contact->firstName    () );
+   newPerson.setFamilyName     ( contact->secondName   () );
+   newPerson.setOrganization   ( contact->organization () );
+   newPerson.setDepartment     ( contact->department   () );
+//    newPerson.setPreferredEmail ( contact->preferredEmail()  );//TODO
+
+   foreach (ContactMethod* nb, contact->phoneNumbers()) {
+      KContacts::PhoneNumber pn;
+      pn.setType(AkonadiBackend::nameToType(nb->category()->name()));
+
+      pn.setNumber(nb->uri());
+      newPerson.insertPhoneNumber(pn);
+   }
+
+   //aPerson->setContactMethods   (newNumbers           );//TODO
+
+   QPointer<Akonadi::ContactEditorDialog> editor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode );
+
+   editor->editor()->setContactTemplate(newPerson);
+
+   if ( editor->exec() == QDialog::Accepted ) {
+      if ( !contact->save() ) {
+         delete editor;
+         qDebug() << "Unable to save new contact to storage";
+         return false;
+      }
+   }
+   delete editor;
+   return true;
 }
 
 QVector<Person*> AkonadiEditor::items() const
 {
-   return QVector<Person*>();
+   return m_lBackendPersons;
 }
 
 QString AkonadiBackend::name () const
@@ -138,7 +280,11 @@ QVariant AkonadiBackend::icon() const
 
 bool AkonadiBackend::isEnabled() const
 {
-   return m_isEnabled;
+   try {
+      return GlobalInstances::itemModelStateSerializer().isChecked(this);
+   } catch (...) {
+      return true;
+   }
 }
 
 bool AkonadiBackend::load()
@@ -160,9 +306,9 @@ bool AkonadiBackend::load()
    connect(m_pMonitor,SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)),this,SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
    connect(m_pMonitor,SIGNAL(itemRemoved(Akonadi::Item)),this,SLOT(slotItemRemoved(Akonadi::Item)));
 
-
    m_pMonitor->setCollectionMonitored(m_Coll,true);
    m_isEnabled = true; //FIXME does it make sense to merge loaded and enabled?
+   m_wasEnabled = false;
    return true;
 }
 
@@ -172,15 +318,17 @@ bool AkonadiBackend::enable (bool enable)
       return load();
    }
    else if (m_wasEnabled && enable) {
-      foreach(Person* contact, static_cast<AkonadiEditor*>(editor<Person>())->m_lBackendPersons) {
-         contact->setActive(true);
+      foreach(Person* contact, items<Person>()) {
+         activate(contact);
+         emit contact->changed();
       }
       m_wasEnabled = false;
       m_isEnabled = true;
    }
-   else if (isEnabled()) {
-      foreach(Person* contact, static_cast<AkonadiEditor*>(editor<Person>())->m_lBackendPersons) {
-         contact->setActive(false);
+   else if (m_isEnabled && !enable) {
+      foreach(Person* contact, items<Person>()) {
+         deactivate(contact);
+         emit contact->changed();
       }
       m_isEnabled = false;
       m_wasEnabled = true;
@@ -199,9 +347,9 @@ QByteArray AkonadiBackend::id() const
    return QString::number(m_Coll.id()).toLatin1();
 }
 
-CollectionInterface::SupportedFeatures AkonadiBackend::supportedFeatures() const
+FlagPack<CollectionInterface::SupportedFeatures> AkonadiBackend::supportedFeatures() const
 {
-   return (CollectionInterface::SupportedFeatures) (
+   return (
       CollectionInterface::SupportedFeatures::NONE        |
       CollectionInterface::SupportedFeatures::LOAD        |
       CollectionInterface::SupportedFeatures::SAVE        |
@@ -220,59 +368,63 @@ CollectionInterface::SupportedFeatures AkonadiBackend::supportedFeatures() const
  *                                                                           *
  ****************************************************************************/
 
-///Convert string to akonadi KABC::PhoneNumber
-KABC::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
+///Convert string to akonadi KContacts::PhoneNumber
+KContacts::PhoneNumber::Type AkonadiBackend::nameToType(const QString& name)
 {
-   if      (name == "Home"   ) return KABC::PhoneNumber::Home ;
-   else if (name == "Work"   ) return KABC::PhoneNumber::Work ;
-   else if (name == "Msg"    ) return KABC::PhoneNumber::Msg  ;
-   else if (name == "Pref"   ) return KABC::PhoneNumber::Pref ;
-   else if (name == "Voice"  ) return KABC::PhoneNumber::Voice;
-   else if (name == "Fax"    ) return KABC::PhoneNumber::Fax  ;
-   else if (name == "Cell"   ) return KABC::PhoneNumber::Cell ;
-   else if (name == "Video"  ) return KABC::PhoneNumber::Video;
-   else if (name == "Bbs"    ) return KABC::PhoneNumber::Bbs  ;
-   else if (name == "Modem"  ) return KABC::PhoneNumber::Modem;
-   else if (name == "Car"    ) return KABC::PhoneNumber::Car  ;
-   else if (name == "Isdn"   ) return KABC::PhoneNumber::Isdn ;
-   else if (name == "Pcs"    ) return KABC::PhoneNumber::Pcs  ;
-   else if (name == "Pager"  ) return KABC::PhoneNumber::Pager;
-   return KABC::PhoneNumber::Home;
+   if      (name == "Home"   ) return KContacts::PhoneNumber::Home ;
+   else if (name == "Work"   ) return KContacts::PhoneNumber::Work ;
+   else if (name == "Msg"    ) return KContacts::PhoneNumber::Msg  ;
+   else if (name == "Pref"   ) return KContacts::PhoneNumber::Pref ;
+   else if (name == "Voice"  ) return KContacts::PhoneNumber::Voice;
+   else if (name == "Fax"    ) return KContacts::PhoneNumber::Fax  ;
+   else if (name == "Cell"   ) return KContacts::PhoneNumber::Cell ;
+   else if (name == "Video"  ) return KContacts::PhoneNumber::Video;
+   else if (name == "Bbs"    ) return KContacts::PhoneNumber::Bbs  ;
+   else if (name == "Modem"  ) return KContacts::PhoneNumber::Modem;
+   else if (name == "Car"    ) return KContacts::PhoneNumber::Car  ;
+   else if (name == "Isdn"   ) return KContacts::PhoneNumber::Isdn ;
+   else if (name == "Pcs"    ) return KContacts::PhoneNumber::Pcs  ;
+   else if (name == "Pager"  ) return KContacts::PhoneNumber::Pager;
+   return KContacts::PhoneNumber::Home;
 }
 
-void AkonadiBackend::fillPerson(Person* c, const KABC::Addressee& addr) const
+void AkonadiBackend::fillPerson(Person* c, const KContacts::Addressee& addr)
 {
-   c->setNickName       (addr.nickName()       );
-   c->setFormattedName  (addr.formattedName()  );
-   c->setFirstName      (addr.givenName()      );
-   c->setFamilyName     (addr.familyName()     );
-   c->setOrganization   (addr.organization()   );
-   c->setPreferredEmail (addr.preferredEmail() );
-   c->setDepartment     (addr.department()     );
-   c->setUid            (addr.uid().toUtf8()   );
-
-   const KABC::PhoneNumber::List numbers = addr.phoneNumbers();
-   Person::ContactMethods newNumbers(c);
-   foreach (const KABC::PhoneNumber& number, numbers) {
-      newNumbers << PhoneDirectoryModel::instance()->getNumber(number.number(),c,nullptr,number.typeLabel());
-      QString number2 = number.number();
-      if (number2.left (5) == "<sip:")
-         number2 = number2.remove(0,5);
-      if (number2.right(1) == ">"    )
-         number2 = number2.remove(number2.size()-2,1);
+   if (!c) {
+      qDebug() << "Contact not found";
+      return;
    }
-   c->setContactMethods   (newNumbers           );
+
+   c->setNickName       ( addr.nickName      () );
+   c->setFormattedName  ( addr.formattedName () );
+   c->setFirstName      ( addr.givenName     () );
+   c->setFamilyName     ( addr.familyName    () );
+   c->setOrganization   ( addr.organization  () );
+   c->setPreferredEmail ( addr.preferredEmail() );
+   c->setDepartment     ( addr.department    () );
+   c->setUid            ( addr.uid().toUtf8  () );
+
+   const KContacts::PhoneNumber::List numbers = addr.phoneNumbers();
+   QVector<ContactMethod*> newNumbers;
+   foreach (const KContacts::PhoneNumber& number, numbers) {
+      ContactMethod* cm = PhoneDirectoryModel::instance().getNumber(number.number(),c,nullptr,number.typeLabel());
+
+      newNumbers << cm;
+   }
+
+   c->setContactMethods   ( newNumbers );
 }
 
 Person* AkonadiBackend::addItem(Akonadi::Item item, bool ignoreEmpty)
 {
+   Q_UNUSED(ignoreEmpty)
    Person* aPerson = nullptr;
-   if ( item.hasPayload<KABC::Addressee>() ) {
+   if ( item.hasPayload<KContacts::Addressee>() ) {
       m_pMonitor->setItemMonitored(item,true);
-      KABC::Addressee tmp = item.payload<KABC::Addressee>();
-      const KABC::PhoneNumber::List numbers = tmp.phoneNumbers();
+      KContacts::Addressee tmp = item.payload<KContacts::Addressee>();
+      const KContacts::PhoneNumber::List numbers = tmp.phoneNumbers();
       const QString uid = tmp.uid();
-      if (numbers.size() || !ignoreEmpty) {
+      if (numbers.size() ) {
          aPerson   = new Person(this);
 
          //This need to be done first because of the phone numbers indexes
@@ -308,7 +460,7 @@ void AkonadiBackend::slotJobCompleted(KJob* job)
       const Akonadi::Item::List items = akojob->items();
       foreach ( const Akonadi::Item &item, items ) {
          Person* c = addItem(item,onlyWithNumber);
-         PersonModel::instance()->addPerson(c);
+         PersonModel::instance().addPerson(c);
       }
    }
 }
@@ -321,66 +473,34 @@ void AkonadiBackend::update(const Akonadi::Collection& collection)
       return;
    }
 
-   Akonadi::RecursiveItemFetchJob *job = new Akonadi::RecursiveItemFetchJob( collection, QStringList() << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType());
+   Akonadi::RecursiveItemFetchJob *job = new Akonadi::RecursiveItemFetchJob( collection, QStringList() << KContacts::Addressee::mimeType() << KContacts::ContactGroup::mimeType());
    job->fetchScope().fetchFullPayload();
    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotJobCompleted(KJob*)));
    job->start();
-//    return m_PersonByUid.values();
+
 } //update
-
-// bool AkonadiBackend::remove(Person* c)
-// {
-//    
-// }
-
-///Edit backend value using an updated frontend contact
-bool AkonadiBackend::edit(Person* contact,QWidget* parent)
-{
-   Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Person>())->m_ItemHash[contact->uid()];
-   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
-      qDebug() << "Person not found";
-      return false ;
-   }
-
-   if ( item.isValid() ) {
-      QPointer<Akonadi::ContactEditor> editor = new Akonadi::ContactEditor( Akonadi::ContactEditor::EditMode, parent );
-      editor->loadContact(item);
-      QPointer<QDialog> dlg = new QDialog(parent);
-      QVBoxLayout *mainLayout = new QVBoxLayout;
-      dlg->setLayout(mainLayout);
-      mainLayout->addWidget(editor);
-      if ( dlg->exec() == QDialog::Accepted ) {
-         if ( !editor->saveContact() ) {
-            delete dlg;
-            qDebug() << "Unable to save new contact to storage";
-            return false;
-         }
-      }
-      delete editor;
-      delete dlg   ;
-      return true;
-   }
-   return false;
-} //editPerson
 
 ///Save a contact
 bool AkonadiBackend::save(const Person* contact)
 {
    Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Person>())->m_ItemHash[contact->uid()];
-   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
+
+   if (!(item.hasPayload<KContacts::Addressee>() && item.payload<KContacts::Addressee>().uid() == contact->uid())) {
       qDebug() << "Person not found";
       return false;
    }
-   KABC::Addressee payload = item.payload<KABC::Addressee>();
-   payload.setNickName       ( contact->nickName()        );
-   payload.setFormattedName  ( contact->formattedName()   );
-   payload.setGivenName      ( contact->firstName()       );
-   payload.setFamilyName     ( contact->secondName()      );
-   payload.setOrganization   ( contact->organization()    );
-   payload.setDepartment     ( contact->department()      );
+
+   auto payload = item.payload<KContacts::Addressee> ();
+
+   payload.setNickName       ( contact->nickName     () );
+   payload.setFormattedName  ( contact->formattedName() );
+   payload.setGivenName      ( contact->firstName    () );
+   payload.setFamilyName     ( contact->secondName   () );
+   payload.setOrganization   ( contact->organization () );
+   payload.setDepartment     ( contact->department   () );
 
    foreach (ContactMethod* nb, contact->phoneNumbers()) {
-      KABC::PhoneNumber pn;
+      KContacts::PhoneNumber pn;
       pn.setType(nameToType(nb->category()->name()));
 
       pn.setNumber(nb->uri());
@@ -390,93 +510,29 @@ bool AkonadiBackend::save(const Person* contact)
    return false;
 }
 
-
-// bool AkonadiBackend::append(const Person* item)
-// {
-//    Q_UNUSED(item)
-//    return false;
-// }
-
-///Add a new contact
-bool AkonadiBackend::addNewPerson(Person* contact,QWidget* parent)
-{
-   KABC::Addressee newPerson;
-   newPerson.setNickName       ( contact->nickName()        );
-   newPerson.setFormattedName  ( contact->formattedName()   );
-   newPerson.setGivenName      ( contact->firstName()       );
-   newPerson.setFamilyName     ( contact->secondName()      );
-   newPerson.setOrganization   ( contact->organization()    );
-   newPerson.setDepartment     ( contact->department()      );
-   //newPerson.setPreferredEmail ( contact->getPreferredEmail()  );//TODO
-
-   foreach (ContactMethod* nb, contact->phoneNumbers()) {
-      KABC::PhoneNumber pn;
-      pn.setType(nameToType(nb->category()->name()));
-
-      pn.setNumber(nb->uri());
-      newPerson.insertPhoneNumber(pn);
-   }
-
-   //aPerson->setContactMethods   (newNumbers           );//TODO
-
-   QPointer<Akonadi::ContactEditor> editor = new Akonadi::ContactEditor( Akonadi::ContactEditor::CreateMode, parent );
-
-   editor->setContactTemplate(newPerson);
-
-   QPointer<QDialog> dlg = new QDialog(parent);
-   QVBoxLayout *mainLayout = new QVBoxLayout;
-   dlg->setLayout(mainLayout);
-   mainLayout->addWidget(editor);
-   if ( dlg->exec() == QDialog::Accepted ) {
-      if ( !editor->saveContact() ) {
-         delete dlg;
-         qDebug() << "Unable to save new contact to storage";
-         return false;
-      }
-   }
-   delete dlg;
-   return true;
-} //addNewPerson
-
-///Implement virtual pure method
-// bool AkonadiBackend::edit(Person* contact)
-// {
-//    return edit(contact,nullptr);
-// }
-
-///Implement virtual pure method
-// bool AkonadiBackend::addNew(Person* contact)
-// {
-//    return addNewPerson(contact,nullptr);
-// }
-
 ///Add a new phone number to an existing contact
 bool AkonadiBackend::addContactMethod(Person* contact, ContactMethod* number)
 {
    Akonadi::Item item = static_cast<AkonadiEditor*>(editor<Person>())->m_ItemHash[contact->uid()];
-   if (!(item.hasPayload<KABC::Addressee>() && item.payload<KABC::Addressee>().uid() == contact->uid())) {
+   if (!(item.hasPayload<KContacts::Addressee>() && item.payload<KContacts::Addressee>().uid() == contact->uid())) {
       qDebug() << "Person not found";
       return false;
    }
    if ( item.isValid() ) {
-      KABC::Addressee payload = item.payload<KABC::Addressee>();
-      payload.insertPhoneNumber(KABC::PhoneNumber(number->uri(),nameToType(number->category()->name())));
-      item.setPayload<KABC::Addressee>(payload);
-      QPointer<Akonadi::ContactEditor> editor = new Akonadi::ContactEditor( Akonadi::ContactEditor::EditMode, (QWidget*)nullptr );
-      editor->loadContact(item);
+      KContacts::Addressee payload = item.payload<KContacts::Addressee>();
+      payload.insertPhoneNumber(KContacts::PhoneNumber(number->uri(),nameToType(number->category()->name())));
+      item.setPayload<KContacts::Addressee>(payload);
+      QPointer<Akonadi::ContactEditorDialog> editor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, (QWidget*)nullptr );
+      editor->editor()->loadContact(item);
 
-      QPointer<QDialog> dlg = new QDialog(nullptr);
-      QVBoxLayout *mainLayout = new QVBoxLayout;
-      dlg->setLayout(mainLayout);
-      mainLayout->addWidget(editor);
-      if ( dlg->exec() == QDialog::Accepted ) {
-         if ( !editor->saveContact() ) {
-            delete dlg;
+      if ( editor->exec() == QDialog::Accepted ) {
+         if ( !contact->save() ) {
+            delete editor;
             qDebug() << "Unable to save new contact to storage";
             return false;
          }
       }
-      delete dlg   ;
+
       delete editor;
       return true;
    }
@@ -496,12 +552,7 @@ bool AkonadiBackend::addContactMethod(Person* contact, ContactMethod* number)
 ///Called when a new collection is added
 void AkonadiBackend::itemsReceived( const Akonadi::Item::List& list)
 {
-//    QList<int> disabledColl = ConfigurationSkeleton::disabledCollectionList();
    foreach (const Akonadi::Item& item, list) {
-//       if (disabledColl.indexOf(coll.id()) == -1) {
-//          update(coll);
-//          emit reloaded();
-//       }
       slotItemAdded(item,m_Coll);
    }
 }
@@ -520,9 +571,9 @@ void AkonadiBackend::slotItemAdded(const Akonadi::Item& item,const Akonadi::Coll
 void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByteArray > &part)
 {
    Q_UNUSED(part)
-   if (item.hasPayload<KABC::Addressee>()) {
-      KABC::Addressee tmp = item.payload<KABC::Addressee>();
-      Person* c = PersonModel::instance()->getPersonByUid(tmp.uid().toUtf8());
+   if (item.hasPayload<KContacts::Addressee>()) {
+      KContacts::Addressee tmp = item.payload<KContacts::Addressee>();
+      Person* c = PersonModel::instance().getPersonByUid(tmp.uid().toUtf8());
       if (c)
          fillPerson(c,tmp);
    }
@@ -531,16 +582,11 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
 ///Callback when a contact is removed
 void AkonadiBackend::slotItemRemoved(const Akonadi::Item &item)
 {
-   Person* c = PersonModel::instance()->getPersonByUid(item.remoteId().toUtf8());
-   PersonModel::instance()->disablePerson(c);
-}
+   Person* c = PersonModel::instance().getPersonByUid(item.remoteId().toUtf8());
 
-Akonadi::Collection AkonadiBackend::collection() const
-{
-   return m_Coll;
+   if (c)
+      deactivate(c);
+   else
+      qDebug() << "A contact was deleted, but Ring-KDE can't find it";
+   //PersonModel::instance().disablePerson(c);
 }
-
-// QList<Person*> AkonadiBackend::items() const
-// {
-//    return m_lBackendPersons;
-// }

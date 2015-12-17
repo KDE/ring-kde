@@ -24,6 +24,9 @@
 #include <KConfigDialog>
 #include <klocalizedstring.h>
 
+//LRC
+#include <categorizedcontactmodel.h>
+
 //Ring
 #include "mainwindow.h"
 
@@ -96,6 +99,9 @@ void DlgDisplay::updateSettings()
    if (ConfigurationSkeleton::autoStart() != kcfg_autoStart->isChecked()) {
       ConfigurationSkeleton::setAutoStartOverride(true);
    }
+
+   if (ConfigurationSkeleton::hideUnreachable() != kcfg_hideUnreachable->isChecked())
+      CategorizedContactModel::instance().setUnreachableHidden(kcfg_hideUnreachable->isChecked());
 
    MainWindow::app()->setAutoStart(kcfg_autoStart->isChecked());
 

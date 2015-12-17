@@ -92,7 +92,7 @@ Dock::Dock(QMainWindow* w) : QObject(w)
 
    // Load later to speed up the process (avoid showing while inserting items)
    QTimer::singleShot(10, [this]() {
-      CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
+      CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hideUnreachable());
       auto proxy = CategorizedContactModel::SortedProxy::instance().model();
       m_pContactCD->setProxyModel(proxy, proxy);
       m_pContactCD->setSortingModel(
