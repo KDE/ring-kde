@@ -20,16 +20,30 @@
 #include <account.h>
 #include <credentialmodel.h>
 
+#include <delegates/categorizeddelegate.h>
+
 Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   auto delegate = new CategorizedDelegate(m_pCredentials);
+   delegate->setChildDelegate(new QStyledItemDelegate());
+   m_pCredentials->setItemDelegate(delegate);
 
    connect(this,&PageBase::accountSet,[this]() {
+      disconnect(m_CredConn);
+
       m_pCredentials->setModel(account()->credentialModel());
       loadInfo();
+      m_pType->bindToModel(account()->credentialModel()->availableTypeModel(),account()->credentialModel()->availableTypeSelectionModel());
+
+      m_CredConn = connect(account()->credentialModel(), &QAbstractItemModel::rowsInserted, [this]() {
+         m_pCredentials->expandAll();
+      });
+
+      m_pCredentials->expandAll();
    });
 
-   connect(m_pCredentials, &QListView::clicked, this, &Pages::Credentials::loadInfo);
+   connect(m_pCredentials, &QTreeView::clicked, this, &Pages::Credentials::loadInfo);
 
    connect(button_add_credential, &QToolButton::clicked,[this]() {
       m_pCredentials->setCurrentIndex(account()->credentialModel()->addCredentials());
@@ -56,6 +70,7 @@ Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
       const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
       account()->credentialModel()->setData(current,text, CredentialModel::Role::PASSWORD);
    });
+
 }
 
 
