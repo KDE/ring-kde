@@ -8,6 +8,18 @@ IF(POLICY CMP0063)
    CMAKE_POLICY(SET CMP0063 NEW)
 ENDIF(POLICY CMP0063)
 
+IF(POLICY CMP0048)
+   CMAKE_POLICY(SET CMP0048 NEW)
+ENDIF(POLICY CMP0048)
+
+IF(POLICY CMP0017)
+   CMAKE_POLICY(SET CMP0017 NEW)
+ENDIF(POLICY CMP0017)
+
+IF(POLICY CMP0028)
+   CMAKE_POLICY(SET CMP0028 NEW)
+ENDIF(POLICY CMP0028)
+
 FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
 SET (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
@@ -38,6 +50,11 @@ FIND_PACKAGE(KF5 COMPONENTS
   Contacts
 )
 
+IF ( KF5_AKONADI_FOUND AND  KF5_AKONADICONTACT_FOUND AND  KF5_CONTACTS_FOUND)
+   SET(AKONADI_FOUND 1)
+ENDIF()
+
+
 INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${LIB_RING_CLIENT_INCLUDE_DIR})
 
 ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
@@ -49,16 +66,17 @@ SET(GENERIC_LIB_VERSION "2.0.0")
 #File to compile
 SET( libkring_LIB_SRCS
    helperfunctions.cpp
-#    akonadibackend.cpp
-#    akonadicontactcollectionmodel.cpp
    kdeprofilepersistor.cpp
    itemmodelserialization.cpp
 )
 
-SET(libkring_LIB_SRCS
-    ${libkring_LIB_SRCS}
-    akonadibackend.cpp
-)
+
+IF ( ${AKONADI_FOUND} )
+   SET(libkring_LIB_SRCS
+      ${libkring_LIB_SRCS}
+      akonadibackend.cpp
+   )
+ENDIF()
 
 KCONFIG_ADD_KCFG_FILES (libkring_LIB_SRCS kcfg_settings.kcfgc)
 
@@ -75,13 +93,19 @@ target_link_libraries( libkring
   KF5::WidgetsAddons
   KF5::ConfigCore
   KF5::ConfigGui
-  KF5::AkonadiCore
-  KF5::AkonadiContact
-  KF5::Contacts
 )
 
+# Akonadi support is optional
+IF ( ${AKONADI_FOUND} )
+   target_link_libraries( libkring
+      KF5::AkonadiCore
+      KF5::AkonadiContact
+      KF5::Contacts
+   )
+ENDIF()
+
 SET( libkring_LIB_HDRS
-#   akonadibackend.h
+  akonadibackend.h
   helperfunctions.h
   itemmodelserialization.h
 )

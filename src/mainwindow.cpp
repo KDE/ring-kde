@@ -88,9 +88,13 @@
 #include <video/renderer.h>
 #include "ringapplication.h"
 #include "widgets/dockbase.h"
-#include "klib/akonadibackend.h"
+
+#ifdef ENABLE_AKONADI
+ #include "klib/akonadibackend.h"
+#endif
+
 #ifdef ENABLE_VIDEO
-#include "widgets/videodock.h"
+ #include "widgets/videodock.h"
 #endif
 
 MainWindow* MainWindow::m_sApp = nullptr;
@@ -181,9 +185,9 @@ MainWindow::MainWindow(QWidget* parent)
       GlobalInstances::setInterface<ItemModelStateSerialization>();
       GlobalInstances::itemModelStateSerializer().load();
 
+#ifdef ENABLE_AKONADI
       AkonadiBackend::initCollections();
-//       PersonModel::instance().backendModel()->load();
-//       AccountModel::instance().setDefaultAccount(AccountModel::instance().getAccountById(ConfigurationSkeleton::defaultAccountId()));
+#endif
 
       init = true;
 
@@ -229,7 +233,6 @@ MainWindow::MainWindow(QWidget* parent)
    m_pCentralDW->setTitleBarWidget(new QWidget());
    m_pCentralDW->setContentsMargins(0,0,0,0);
    m_pView->setContentsMargins     (0,0,0,0);
-   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
    m_pCentralDW->setObjectName( "callDock" );
    m_pCentralDW->show();
 
@@ -240,6 +243,9 @@ MainWindow::MainWindow(QWidget* parent)
    //    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
 
    m_pDock = new Dock(this);
+
+   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
+
    connect(m_pCentralDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
 
    selectCallTab();
