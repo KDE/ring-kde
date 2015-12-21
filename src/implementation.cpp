@@ -224,7 +224,18 @@ void KDEActionExtender::editPerson(Person* p)
 
 void KDEActionExtender::viewChatHistory(ContactMethod* cm)
 {
+   if (!cm)
+      return;
    MainWindow::view()->m_pMessageTabBox->showConversation(cm);
+}
+
+void KDEActionExtender::viewChatHistory(Person* p)
+{
+   if (!p)
+      return;
+
+   foreach(ContactMethod* cm, p->phoneNumbers())
+      viewChatHistory(cm);
 }
 
 void KDEActionExtender::copyInformation(QMimeData* data)
