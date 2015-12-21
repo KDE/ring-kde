@@ -31,6 +31,9 @@ public:
    //Constructor
    explicit RingTone(QWidget *parent = nullptr);
 
+private Q_SLOTS:
+   void urlSelected(const QUrl& url);
+   void play();
 };
 
 }
