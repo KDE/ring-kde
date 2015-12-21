@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QGroupBox" name="m_pEnableRingtoneGB">
+     <widget class="QGroupBox" name="lrcfg_ringtoneEnabled">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -99,7 +99,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>m_pEnableRingtoneGB</sender>
+   <sender>lrcfg_ringtoneEnabled</sender>
    <signal>toggled(bool)</signal>
    <receiver>RingtonePage</receiver>
    <slot>setChanged()</slot>
