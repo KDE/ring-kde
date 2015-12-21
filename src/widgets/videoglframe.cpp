@@ -63,8 +63,10 @@ public:
 private:
    QGLWidget* m_pW;
    VideoGLFrame* m_pFrm;
+   Video::Frame m_Frame;
    QMutex mutex;
    QSize m_ActiveSize;
+   int m_Skip {3};
 
    //Methods
    void saveGLState();
@@ -132,18 +134,30 @@ void ThreadedPainter2::draw(QPainter* p)
       //To give a bit of history about why this code is weird, it used to have another copy buffer
       //but this was removed and replaced with a flip buffer in libQt, there is some leftover
       //code that need to be cleaned
-      const Video::Frame& data = m_pRenderer->currentFrame();
+      Video::Frame frm = m_pRenderer->currentFrame();
+
+      // Repaint the old frame if there is no new ones
+      if (frm.size)
+         m_Frame = frm;
+
+      // See Tuleap #206, until fixed, the first few frame will be trashed
+      if (m_Skip)
+         m_Skip--;
+
+      if (!m_Frame.size || m_Skip)
+         return;
+
       QSize res = m_pRenderer->size();
 
       //Detect race conditions
       const uint expectedSize = res.width() * res.height();
-      if (expectedSize == data.size/3) {
-         qWarning() << "Invalid video size. Expected" << expectedSize << "got" << data.size/3;
+      if (expectedSize == m_Frame.size/3) {
+         qWarning() << "Invalid video size. Expected" << expectedSize << "got" << m_Frame.size/3;
          return;
       }
 
-      if (res.width() && res.height() && data.size) {
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res.width(), res.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, data.ptr);
+      if (res.width() && res.height() && m_Frame.size) {
+         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res.width(), res.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, m_Frame.ptr);
       }
 
       // draw into the GL widget
