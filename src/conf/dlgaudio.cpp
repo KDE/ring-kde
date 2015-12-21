@@ -53,14 +53,6 @@ DlgAudio::DlgAudio(KConfigDialog *parent)
 
    connect( this             , SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
 
-   connect( box_alsaPlugin                  , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( m_pSuppressNoise                , SIGNAL(toggled(bool))            , SLOT(changed()));
-   connect( m_pCPlayDTMFCk                  , SIGNAL(toggled(bool))            , SLOT(changed()));
-   connect( alsaInputDevice                 , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( alsaOutputDevice                , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( alsaRingtoneDevice              , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-   connect( m_pManager                      , SIGNAL(currentIndexChanged(int)) , SLOT(changed()));
-
 }
 
 ///Destructor

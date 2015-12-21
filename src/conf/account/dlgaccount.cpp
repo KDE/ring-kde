@@ -70,9 +70,11 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
       updateButtons();
    });
 
-   connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, this, &DlgAccount::slotSetAccount);
-
    m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
+
+   slotSetAccount(m_pAccountList->selectionModel()->currentIndex());
+
+   connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, this, &DlgAccount::slotSetAccount);
 }
 
 DlgAccount::~DlgAccount()
