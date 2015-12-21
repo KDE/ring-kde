@@ -280,7 +280,7 @@ void Dock::updateTabIcons()
    {
       foreach(QTabBar* bar, tabBars) {
          for (int i=0;i<bar->count();i++) {
-            QString text = bar->tabText(i);
+            QString text = bar->tabText(i).replace('&',QString());
             if (text == i18n("Call")) {
                bar->setTabIcon(i,QIcon::fromTheme("call-start"));
             }
@@ -292,6 +292,9 @@ void Dock::updateTabIcons()
             }
             else if (text == i18n("History")) {
                bar->setTabIcon(i,QIcon::fromTheme("view-history"));
+            }
+            else if (text == i18n("Video")) {
+               bar->setTabIcon(i,QIcon::fromTheme("camera-on"));
             }
          }
       }

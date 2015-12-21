@@ -486,6 +486,7 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
+      connect(m_pVideoDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
    }
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
