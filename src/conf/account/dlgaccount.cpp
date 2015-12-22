@@ -164,25 +164,7 @@ void DlgAccount::slotNewAddAccount()
 
 void DlgAccount::cancel()
 {
-   for (int i=0; i < AccountModel::instance().size(); i++) {
-      Account* a = AccountModel::instance()[i];
-
-      switch(a->editState()) {
-         case Account::EditState::MODIFIED_INCOMPLETE:
-         case Account::EditState::MODIFIED_COMPLETE  :
-         case Account::EditState::NEW                :
-            a << Account::EditAction::CANCEL;
-            break;
-         case Account::EditState::OUTDATED           :
-            a << Account::EditAction::RELOAD;
-            break;
-         case Account::EditState::READY              :
-         case Account::EditState::REMOVED            :
-         case Account::EditState::EDITING            :
-         case Account::EditState::COUNT__            :
-            break;
-      }
-   }
+   AccountModel::instance().cancel();
 }
 
 bool DlgAccount::hasChanged()

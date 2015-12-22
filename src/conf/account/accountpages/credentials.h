@@ -31,10 +31,14 @@ public:
    //Constructor
    explicit Credentials(QWidget *parent = nullptr);
 
-private:
-   QMetaObject::Connection m_CredConn;
 private Q_SLOTS:
    void loadInfo();
+   void slotSetAccount();
+   void slotAddCredential();
+   void slotRemoveCredential();
+   void slotRealmChanged(const QString& text);
+   void slotUserChanged(const QString& text);
+   void slotPasswdChanged(const QString& text);
 };
 
 }

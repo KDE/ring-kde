@@ -61,7 +61,7 @@ void Pages::Account::setAccount(::Account* a)
          break;
       case ::Account::Protocol::RING:
       case ::Account::Protocol::SIP:
-         m_pPages->setTabEnabled(4, a->id() != "IP2IP");
+         m_pPages->setTabEnabled(4, a->isNew() || a->id() != "IP2IP");
          break;
       case ::Account::Protocol::COUNT__:
          break;
