@@ -85,7 +85,6 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
 {
    // It is important to init the actions correctly for the menu and KDE global shortcuts
    INIT_ACTION(action_accept        , QIcon(":/images/icons/accept.svg"   ), i18n( "Accept"   ));
-   INIT_ACTION(action_new_call      , QIcon(":/images/icons/call.svg"     ), i18n( "New Call" ));
    INIT_ACTION(action_hold          , QIcon(":/images/icons/hold.svg"     ), i18n( "Hold"     ));
    INIT_ACTION(action_transfer      , QIcon(":/images/icons/transfert.svg"), i18n( "Transfer" ));
    INIT_ACTION(action_record        , QIcon(":/images/icons/rec_call.svg" ), i18n( "Record"   ));
@@ -105,7 +104,7 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
    INIT_ACTION(action_add_contact_method , getIcon(UserActionModel::Action::ADD_CONTACT_METHOD ) , getName(UserActionModel::Action::ADD_CONTACT_METHOD ));
    INIT_ACTION(action_call_contact       , getIcon(UserActionModel::Action::CALL_CONTACT       ) , getName(UserActionModel::Action::CALL_CONTACT       ));
    INIT_ACTION(action_edit_contact       , getIcon(UserActionModel::Action::EDIT_CONTACT       ) , getName(UserActionModel::Action::EDIT_CONTACT       ));
-   INIT_ACTION(action_add_new            , getIcon(UserActionModel::Action::ADD_NEW            ) , getName(UserActionModel::Action::ADD_NEW            ));
+   INIT_ACTION(action_new_call           , getIcon(UserActionModel::Action::ADD_NEW            ) , getName(UserActionModel::Action::ADD_NEW            ));
    INIT_ACTION(action_remove_history     , getIcon(UserActionModel::Action::REMOVE_HISTORY     ) , getName(UserActionModel::Action::REMOVE_HISTORY     ));
 
    INIT_ACTION(action_mute_capture  , QIcon::fromTheme("player-volume-muted"), i18nc("Mute the current audio capture device" , "Mute"     ));
@@ -165,7 +164,6 @@ void ActionCollection::setupAction()
    COL(action_transfer    , Qt::CTRL + Qt::Key_T );
    COL(action_record      , Qt::CTRL + Qt::Key_R );
    COL(action_mailBox     , Qt::CTRL + Qt::Key_M );
-   COL(action_addPerson   , Qt::CTRL + Qt::Key_N );
    COL(action_pastenumber , Qt::CTRL + Qt::Key_V );
 #undef COL
 
@@ -216,12 +214,14 @@ void ActionCollection::setupAction()
    actionHash[ (int)UserActionModel::Action::ADD_CONTACT_METHOD  ] = action_add_contact_method ;
    actionHash[ (int)UserActionModel::Action::CALL_CONTACT        ] = action_call_contact       ;
    actionHash[ (int)UserActionModel::Action::EDIT_CONTACT        ] = action_edit_contact       ;
-   actionHash[ (int)UserActionModel::Action::ADD_NEW             ] = action_add_new            ;
    actionHash[ (int)UserActionModel::Action::REMOVE_HISTORY      ] = action_remove_history     ;
 
    for (QHash<int,QAction*>::const_iterator i = actionHash.begin(); i != actionHash.end(); ++i) {
       QAction* ea = i.value();
+      qDebug() << "LA" << ea << action_new_call;
       UserActionModel::Action a = static_cast<UserActionModel::Action>(i.key());
+      if (action_new_call == ea)
+         qDebug() << "\n\n\nCONENCTED" << ((int)a);
       connect(ea, &QAction::triggered, [uam,a](bool) {uam << a;});
    }
 
@@ -285,9 +285,9 @@ void ActionCollection::setupAction()
       action_add_contact       , action_add_to_contact    , action_delete_contact    ,
       action_email_contact     , action_copy_contact      , action_bookmark          ,
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
-      action_edit_contact      , action_add_new           , action_remove_history    ,
-      action_raise_client      , action_focus_history     , action_focus_contact     ,
-      action_focus_call        , action_focus_bookmark    ,
+      action_edit_contact      , action_focus_history     , action_remove_history    ,
+      action_raise_client      , action_focus_contact     , action_focus_call        ,
+      action_focus_bookmark    ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       MainWindow::app()->actionCollection()->addAction(a->objectName(), a);

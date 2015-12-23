@@ -97,7 +97,6 @@ private:
    QAction* action_add_contact_method {nullptr};
    QAction* action_call_contact       {nullptr};
    QAction* action_edit_contact       {nullptr};
-   QAction* action_add_new            {nullptr};
    QAction* action_remove_history     {nullptr};
 
    //Video actions

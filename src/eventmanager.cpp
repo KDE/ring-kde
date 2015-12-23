@@ -332,7 +332,8 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
          break;
       default: {
          const QString& text = event->text();
-         if(! text.isEmpty()) {
+         //Drop control characters
+         if( (!text.isEmpty()) && text[0].toLatin1() > 5) {
             typeString(text);
          }
       }
@@ -355,7 +356,7 @@ void EventManager::typeString(const QString& str)
     * 
     * Any other comportment need to be documented here or treated as a bug
     */
-
+qDebug() << "BOB" << str << (int) str[0].toLatin1();
    Call* call = CallModel::instance().selectedCall();
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
