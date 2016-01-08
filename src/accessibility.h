@@ -20,6 +20,7 @@
 
 #include <QList>
 #include <QAction>
+class QTextToSpeech;
 
 ///Accessibility: Functions to improve accessibility for disabled peoples
 class Accessibility : public QObject, public QList<QAction *>
@@ -31,8 +32,11 @@ public:
    virtual ~Accessibility();
 private:
    //Constructor
-   Accessibility();
+   explicit Accessibility();
    QString numberToDigit(const QString &number);
+
+   //Attributes
+   QTextToSpeech* m_Speech;
 
    //Static attributes
    static Accessibility* m_pInstance;

@@ -19,6 +19,7 @@
 
 SimpleRotateProxy::SimpleRotateProxy(QObject * parent) : QAbstractProxyModel(parent)
 {
+   //TODO implement it correctly, this is the lazy way
    connect(this, &SimpleRotateProxy::sourceModelChanged, [this]() {
       connect(this->sourceModel(),&QAbstractItemModel::dataChanged,[this](const QModelIndex&, const QModelIndex&) {
          emit this->layoutChanged();
@@ -77,10 +78,14 @@ QModelIndex SimpleRotateProxy::parent(const QModelIndex& ) const
 
 int SimpleRotateProxy::rowCount(const QModelIndex& idx) const
 {
-   return sourceModel()->columnCount(idx);
+   return idx.parent().isValid() ?
+      sourceModel()->rowCount   (idx) :
+      sourceModel()->columnCount(idx);
 }
 
 int SimpleRotateProxy::columnCount(const QModelIndex& idx) const
 {
-   return sourceModel()->rowCount(idx);
+   return idx.parent().isValid() ?
+      sourceModel()->columnCount(idx) :
+      sourceModel()->rowCount   (idx);
 }

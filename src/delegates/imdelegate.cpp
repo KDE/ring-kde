@@ -20,8 +20,10 @@
 #include "call.h"
 #include <media/textrecording.h>
 #include <QtGui/QPainter>
-#include <QIcon>
+#include <QtGui/QIcon>
+#include <QtCore/QTimer>
 #include <QtGui/QFont>
+#include <QtWidgets/QScrollBar>
 
 ///Delegate contructor
 ImDelegates::ImDelegates(IMTab* parent) : QStyledItemDelegate(parent),m_pParent(parent)
@@ -70,7 +72,7 @@ void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, c
 }
 
 ///Constructor
-IMTab::IMTab(QAbstractListModel* model,QWidget* parent) : QListView(parent)
+IMTab::IMTab(QAbstractItemModel* model,QWidget* parent) : QListView(parent)
 {
    setModel(model);
    setAlternatingRowColors(true);
@@ -78,11 +80,28 @@ IMTab::IMTab(QAbstractListModel* model,QWidget* parent) : QListView(parent)
    setUniformItemSizes(false);
    setItemDelegate(new ImDelegates(this));
    setVerticalScrollMode(ScrollPerPixel);
+
+   scrollTo(model->index(model->rowCount()-1,0));
+
+   if (verticalScrollBar())
+      verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+
    connect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(scrollBottom()));
+   connect(model, &QAbstractItemModel::rowsInserted, this, &IMTab::updateScrollBar);
 }
 
 ///Scroll to last message
 void IMTab::scrollBottom()
 {
    scrollTo(model()->index(model()->rowCount()-1,0));
+}
+
+void IMTab::updateScrollBar()
+{
+   if (verticalScrollBar() && verticalScrollBar()->value()
+     == verticalScrollBar()->maximum()) {
+      QTimer::singleShot(0,[this]() {
+         verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+      });
+   }
 }

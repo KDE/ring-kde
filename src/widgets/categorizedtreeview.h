@@ -21,6 +21,7 @@
 #include "conf/account/widgets/categorizedtree.h"
 
 class QStyledItemDelegate;
+class QKeyEvent;
 
 //Ring
 #include <callmodel.h>
@@ -77,6 +78,7 @@ class CategorizedTreeView : public CategorizedTree
 public Q_SLOTS:
    void cancelHoverState();
    void setDirty(const QRect &rect);
+   void forwardInput(QKeyEvent* e);
 
 private Q_SLOTS:
    void slotExpandInserted(const QModelIndex& parentIdx,int start, int end);

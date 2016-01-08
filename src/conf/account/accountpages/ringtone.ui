@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QGroupBox" name="m_pEnableRingtoneGB">
+     <widget class="QGroupBox" name="lrcfg_ringtoneEnabled">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -50,14 +50,37 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QCheckBox" name="m_pUseCustomFileCK">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1">
+        <widget class="QToolButton" name="m_pPlay">
          <property name="text">
-          <string>Use custom file</string>
+          <string>Play</string>
+         </property>
+         <property name="icon">
+          <iconset theme="media-playback-start"/>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit"/>
+       <item row="3" column="0" colspan="2">
+        <widget class="KUrlRequester" name="m_pAddFile" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -65,6 +88,51 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QWidget</extends>
+   <header>KUrlRequester</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lrcfg_ringtoneEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>RingtonePage</receiver>
+   <slot>setChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>26</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pPlay</sender>
+   <signal>clicked()</signal>
+   <receiver>RingtonePage</receiver>
+   <slot>play()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>500</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>529</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>setChanged()</slot>
+  <slot>play()</slot>
+ </slots>
 </ui>

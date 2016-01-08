@@ -32,6 +32,7 @@ class QModelIndex;
 class NumberCompletionModel;
 class AutoCompletionDelegate2;
 class ContactMethod;
+class UserActionModel;
 
 class AutoCompletion : public ResizableTip {
    Q_OBJECT
@@ -52,12 +53,16 @@ public:
 
    int m_Height;
 
+protected:
+   virtual void contextMenuEvent ( QContextMenuEvent * e ) override;
+
 private:
    //Attributes
    QListView* m_pView;
    QLabel*    m_pLabel;
    NumberCompletionModel* m_pModel;
    AutoCompletionDelegate2* m_pDelegate;
+   UserActionModel* m_pUserActionModel {nullptr};
 
 public Q_SLOTS:
    void moveUp();

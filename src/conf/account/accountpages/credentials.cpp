@@ -20,44 +20,67 @@
 #include <account.h>
 #include <credentialmodel.h>
 
+#include <delegates/categorizeddelegate.h>
+
 Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   auto delegate = new CategorizedDelegate(m_pCredentials);
+   delegate->setChildDelegate(new QStyledItemDelegate());
+   m_pCredentials->setItemDelegate(delegate);
 
-   connect(this,&PageBase::accountSet,[this]() {
-      m_pCredentials->setModel(account()->credentialModel());
-      loadInfo();
-   });
+   connect(this,&PageBase::accountSet, this, &Pages::Credentials::slotSetAccount);
 
-   connect(m_pCredentials, &QListView::clicked, this, &Pages::Credentials::loadInfo);
+   connect(m_pCredentials             , &QTreeView::clicked    , this, &Pages::Credentials::loadInfo             );
+   connect(button_add_credential      , &QToolButton::clicked  , this, &Pages::Credentials::slotAddCredential    );
+   connect(button_remove_credential   , &QToolButton::clicked  , this, &Pages::Credentials::slotRemoveCredential );
+   connect(edit_credential_realm_2    , &QLineEdit::textChanged, this, &Pages::Credentials::slotRealmChanged     );
+   connect(edit_credential_auth_2     , &QLineEdit::textChanged, this, &Pages::Credentials::slotUserChanged      );
+   connect(edit_credential_password_2 , &QLineEdit::textChanged, this, &Pages::Credentials::slotPasswdChanged    );
 
-   connect(button_add_credential, &QToolButton::clicked,[this]() {
-      m_pCredentials->setCurrentIndex(account()->credentialModel()->addCredentials());
-      loadInfo();
-   });
-
-   connect(button_remove_credential, &QToolButton::clicked,[this]() {
-      account()->credentialModel()->removeCredentials(m_pCredentials->currentIndex());
-      m_pCredentials->setCurrentIndex(account()->credentialModel()->index(0,0));
-      loadInfo();
-   });
-
-   connect(edit_credential_realm_2, &QLineEdit::textChanged,[this](const QString& text) {
-      const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
-      account()->credentialModel()->setData(current,text, CredentialModel::Role::REALM);
-   });
-
-   connect(edit_credential_auth_2, &QLineEdit::textChanged,[this](const QString& text) {
-      const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
-      account()->credentialModel()->setData(current,text, CredentialModel::Role::NAME);
-   });
-
-   connect(edit_credential_password_2, &QLineEdit::textChanged,[this](const QString& text) {
-      const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
-      account()->credentialModel()->setData(current,text, CredentialModel::Role::PASSWORD);
-   });
 }
 
+void Pages::Credentials::slotSetAccount()
+{
+   m_pCredentials->setModel(account()->credentialModel());
+   loadInfo();
+   m_pType->bindToModel(account()->credentialModel()->availableTypeModel(),account()->credentialModel()->availableTypeSelectionModel());
+
+   connect(account()->credentialModel(), &QAbstractItemModel::rowsInserted, m_pCredentials, &QTreeView::expandAll);
+
+   m_pCredentials->expandAll();
+}
+
+void Pages::Credentials::slotAddCredential()
+{
+   m_pCredentials->setCurrentIndex(account()->credentialModel()->addCredentials());
+   loadInfo();
+}
+
+void Pages::Credentials::slotRemoveCredential()
+{
+   account()->credentialModel()->removeCredentials(m_pCredentials->currentIndex());
+   m_pCredentials->setCurrentIndex(account()->credentialModel()->index(0,0));
+   loadInfo();
+}
+
+void Pages::Credentials::slotRealmChanged(const QString& text)
+{
+   const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
+   account()->credentialModel()->setData(current,text, CredentialModel::Role::REALM);
+}
+
+void Pages::Credentials::slotUserChanged(const QString& text)
+{
+   const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
+   account()->credentialModel()->setData(current,text, CredentialModel::Role::NAME);
+}
+
+void Pages::Credentials::slotPasswdChanged(const QString& text)
+{
+   const QModelIndex current = m_pCredentials->selectionModel()->currentIndex();
+   account()->credentialModel()->setData(current,text, CredentialModel::Role::PASSWORD);
+}
 
 void Pages::Credentials::loadInfo()
 {

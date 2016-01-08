@@ -20,11 +20,36 @@
 #include <account.h>
 #include <ringtonemodel.h>
 
+// KDE
+#include <KLocalizedString>
+
 Pages::RingTone::RingTone(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   m_pAddFile->setPlaceholderText(i18n("Select a new ringtone"));
+
+   connect(m_pAddFile, &KUrlRequester::urlSelected, this, &Pages::RingTone::urlSelected);
    connect(this,&PageBase::accountSet,[this]() {
       m_pRingtones->setModel(&RingtoneModel::instance());
       m_pRingtones->setSelectionModel(RingtoneModel::instance().selectionModel(account()));
+
+      if (m_pRingtones->horizontalHeader()) {
+         m_pRingtones->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
+         for (int i =1;i<RingtoneModel::instance().columnCount();i++)
+            m_pRingtones->horizontalHeader()->setSectionResizeMode(i,QHeaderView::ResizeToContents);
+      }
    });
+}
+
+void Pages::RingTone::urlSelected(const QUrl& url)
+{
+   RingtoneModel::instance().add(url, account());
+   setChanged();
+}
+
+void Pages::RingTone::play()
+{
+   RingtoneModel::instance().play(
+      RingtoneModel::instance().selectionModel(account())->currentIndex()
+   );
 }

@@ -56,6 +56,7 @@ private Q_SLOTS:
    void slotUpdateButtons();
    void slotRemoveAccount();
    void slotExpand();
+   void slotSetAccount(const QModelIndex& idx);
 
 Q_SIGNALS:
    void updateButtons();

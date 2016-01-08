@@ -144,6 +144,13 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QCheckBox" name="kcfg_mergeSameDayPeer">
+        <property name="text">
+         <string>Merge calls with the same day and peer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="kcfg_displayHistoryStatus">
         <property name="text">
          <string>Display incoming, outgoing and missed for history items</string>
@@ -161,6 +168,13 @@
        <widget class="QCheckBox" name="kcfg_highlightMissedIncomingCalls">
         <property name="text">
          <string>Highlight missed incoming calls</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Those settings only take effect after restarting Ring-KDE</string>
         </property>
        </widget>
       </item>

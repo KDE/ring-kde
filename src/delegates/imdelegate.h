@@ -22,7 +22,7 @@
 #include <QtWidgets/QListView>
 #include <QtWidgets/QStyledItemDelegate>
 
-class QAbstractListModel;
+class QAbstractItemModel;
 class IMTab;
 
 class ImDelegates : public QStyledItemDelegate
@@ -41,9 +41,10 @@ class IMTab : public QListView
 {
    Q_OBJECT
 public:
-   explicit IMTab(QAbstractListModel* model,QWidget* parent = nullptr);
+   explicit IMTab(QAbstractItemModel* model,QWidget* parent = nullptr);
 private Q_SLOTS:
    void scrollBottom();
+   void updateScrollBar();
 };
 
 #endif // IM_MANAGER

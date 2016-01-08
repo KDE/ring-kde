@@ -21,17 +21,16 @@
 //Qt
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QTimer>
+
+//KDE
+#include <KColorScheme>
 
 //Delegates
 #include <conf/account/delegates/categorizeddelegate.h>
 #include "delegates/contactdelegate.h"
 #include "delegates/phonenumberdelegate.h"
 #include "delegates/historydelegate.h"
-
-//Menu
-#include "menu/person.h"
-#include "menu/call.h"
-#include "menu/contactmethod.h"
 
 //Widgets
 #include "widgets/dockbase.h"
@@ -43,8 +42,11 @@
 
 //Ring
 #include "mainwindow.h"
+#include "view.h"
 #include "actioncollection.h"
 #include "klib/kcfg_settings.h"
+#include <proxies/deduplicateproxy.h>
+#include <proxies/roletransformationproxy.h>
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -76,7 +78,7 @@ protected:
 Dock::Dock(QMainWindow* w) : QObject(w)
 {
    //Contact dock
-   m_pContactCD       = new DockBase  ( w );
+   m_pContactCD       = new DockBase  ( nullptr );
    m_pContactCD->setObjectName("contactDock");
    m_pContactCD->setWindowTitle(i18nc("Contact tab","Contact"));
    auto m_pCategoryDelegate = new CategorizedDelegate(m_pContactCD->view());
@@ -88,65 +90,112 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
    m_pContactCD->setDelegate(m_pCategoryDelegate);
 
-   CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hidePersonWithoutPhone());
-   QSortFilterProxyModel* proxy = CategorizedContactModel::SortedProxy::instance().model();
-   m_pContactCD->setProxyModel(proxy);
-   m_pContactCD->setSortingModel(
-      CategorizedContactModel::SortedProxy::instance().categoryModel(),
-      CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
-   );
+   // Load later to speed up the process (avoid showing while inserting items)
+   QTimer::singleShot(10, [this]() {
+      CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hideUnreachable());
+      auto proxy = CategorizedContactModel::SortedProxy::instance().model();
+      m_pContactCD->setProxyModel(proxy, proxy);
+      m_pContactCD->setSortingModel(
+         CategorizedContactModel::SortedProxy::instance().categoryModel(),
+         CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
+      );
 
-   CategorizedContactModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
-      CategorizedContactModel::SortedProxy::instance().categoryModel()->index(
-         ConfigurationSkeleton::contactSortMode() , 0
-      ), QItemSelectionModel::ClearAndSelect
-   );
+      CategorizedContactModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
+         CategorizedContactModel::SortedProxy::instance().categoryModel()->index(
+            ConfigurationSkeleton::contactSortMode() , 0
+         ), QItemSelectionModel::ClearAndSelect
+      );
 
-   connect(CategorizedContactModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
-      if (idx.isValid())
-         ConfigurationSkeleton::setContactSortMode(idx.row());
-   });
-
-   m_pContactCD->setMenuConstructor([]() {
-      return new Menu::Person();
+      connect(CategorizedContactModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+         if (idx.isValid())
+            ConfigurationSkeleton::setContactSortMode(idx.row());
+      });
    });
 
    //History dock
-   m_pHistoryDW       = new DockBase  ( w );
+   m_pHistoryDW       = new DockBase  ( nullptr );
    m_pHistoryDW->setObjectName("historyDock");
    m_pHistoryDW->setWindowTitle(i18nc("History tab","History"));
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pHistoryDW->view());
    delegate->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
    m_pHistoryDW->setDelegate(delegate);
-   m_pHistoryDW->setMenuConstructor([]() {
-      return new Menu::Call();
-   });
-   proxy = CategorizedHistoryModel::SortedProxy::instance().model();
-   m_pHistoryDW->setProxyModel(proxy);
-   m_pHistoryDW->setSortingModel(
-      CategorizedHistoryModel::SortedProxy::instance().categoryModel         (),
-      CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()
-   );
 
-   CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
-      CategorizedHistoryModel::SortedProxy::instance().categoryModel()->index(
-         ConfigurationSkeleton::historySortMode() , 0
-      ), QItemSelectionModel::ClearAndSelect
-   );
 
-   connect(CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
-      if (idx.isValid())
-         ConfigurationSkeleton::setHistorySortMode(idx.row());
+   QTimer::singleShot(1000, [this]() {
+      // De-duplicate by name and date
+      auto proxy = CategorizedHistoryModel::SortedProxy::instance().model();
+      RoleTransformationProxy* highlight = nullptr;
+      auto dedup =  ConfigurationSkeleton::mergeSameDayPeer() ? new DeduplicateProxy(proxy) : nullptr;
+
+      if (dedup)
+         dedup->addFilterRole(static_cast<int>(Call::Role::DateOnly));
+
+      // Highlight missed calls
+      static const bool highlightMissedIn  = ConfigurationSkeleton::highlightMissedIncomingCalls();
+      static const bool highlightMissedOut = ConfigurationSkeleton::highlightMissedOutgoingCalls();
+
+      if (highlightMissedOut || highlightMissedIn) {
+         static QColor awayBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+         awayBrush.setAlpha(30);
+         static QVariant missedBg(awayBrush);
+
+         highlight = new RoleTransformationProxy(dedup ? dedup : proxy);
+
+         highlight->setRole(Qt::BackgroundRole, [](const QModelIndex& idx) {
+            if (idx.data((int)Call::Role::Missed).toBool()) {
+               const Call::Direction d = qvariant_cast<Call::Direction>(
+                  idx.data((int)Call::Role::Direction)
+               );
+
+               if ((highlightMissedIn && d == Call::Direction::INCOMING)
+                 || (highlightMissedOut && d == Call::Direction::OUTGOING))
+                  return missedBg;
+            }
+
+            return QVariant();
+         });
+
+         highlight->setSourceModel(proxy);
+
+         if (dedup)
+            dedup->setSourceModel(highlight);
+      }
+      else if (dedup)
+         dedup->setSourceModel(proxy);
+
+      if (dedup)
+         m_pHistoryDW->setProxyModel(dedup    , proxy );
+      else if (highlight)
+         m_pHistoryDW->setProxyModel(highlight, proxy );
+      else
+         m_pHistoryDW->setProxyModel(proxy    , proxy );
+
+      m_pHistoryDW->setSortingModel(
+         CategorizedHistoryModel::SortedProxy::instance().categoryModel         (),
+         CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()
+      );
+
+      CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
+         CategorizedHistoryModel::SortedProxy::instance().categoryModel()->index(
+            ConfigurationSkeleton::historySortMode() , 0
+         ), QItemSelectionModel::ClearAndSelect
+      );
+
+      connect(CategorizedHistoryModel::SortedProxy::instance().categorySelectionModel(), & QItemSelectionModel::currentChanged,[](const QModelIndex& idx) {
+         if (idx.isValid())
+            ConfigurationSkeleton::setHistorySortMode(idx.row());
+      });
    });
 
    //Bookmark dock
-   m_pBookmarkDW      = new DockBase ( w );
+   m_pBookmarkDW      = new DockBase ( nullptr );
    m_pBookmarkDW->setObjectName("bookmarkDock");
    m_pBookmarkDW->setWindowTitle(i18nc("Bookmark tab","Bookmark"));
    CategorizedDelegate* delegate2 = new CategorizedDelegate(m_pBookmarkDW->view());
    delegate2->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
    m_pBookmarkDW->setDelegate(delegate2);
-   m_pBookmarkDW->setProxyModel(new BookmarkSortFilterProxyModel(this));
+   auto m = new BookmarkSortFilterProxyModel(this);
+   m_pBookmarkDW->setProxyModel(m, m);
 
 
    //GUI
@@ -178,6 +227,10 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    connect(ActionCollection::instance()->showHistoryDockAction(), SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
    connect(ActionCollection::instance()->showBookmarkDockAction(),SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
 
+   connect( ActionCollection::instance()->focusHistory (), &QAction::triggered, this, &Dock::focusHistory  );
+   connect( ActionCollection::instance()->focusContact (), &QAction::triggered, this, &Dock::focusContact  );
+   connect( ActionCollection::instance()->focusCall    (), &QAction::triggered, this, &Dock::focusCall     );
+   connect( ActionCollection::instance()->focusBookmark(), &QAction::triggered, this, &Dock::focusBookmark );
 }
 
 Dock::~Dock()
@@ -185,9 +238,14 @@ Dock::~Dock()
    m_pContactCD ->setDelegate  (nullptr);
    m_pHistoryDW ->setDelegate  (nullptr);
    m_pBookmarkDW->setDelegate  (nullptr);
-   m_pContactCD ->setProxyModel(nullptr);
-   m_pHistoryDW ->setProxyModel(nullptr);
-   m_pBookmarkDW->setProxyModel(nullptr);
+
+   m_pContactCD ->setProxyModel(nullptr, nullptr);
+   m_pHistoryDW ->setProxyModel(nullptr, nullptr);
+   m_pBookmarkDW->setProxyModel(nullptr, nullptr);
+
+   m_pContactCD ->deleteLater();
+   m_pHistoryDW ->deleteLater();
+   m_pBookmarkDW->deleteLater();
 
    if (!MainWindow::app()->isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
@@ -222,7 +280,7 @@ void Dock::updateTabIcons()
    {
       foreach(QTabBar* bar, tabBars) {
          for (int i=0;i<bar->count();i++) {
-            QString text = bar->tabText(i);
+            QString text = bar->tabText(i).replace('&',QString());
             if (text == i18n("Call")) {
                bar->setTabIcon(i,QIcon::fromTheme("call-start"));
             }
@@ -235,9 +293,39 @@ void Dock::updateTabIcons()
             else if (text == i18n("History")) {
                bar->setTabIcon(i,QIcon::fromTheme("view-history"));
             }
+            else if (text == i18n("Video")) {
+               bar->setTabIcon(i,QIcon::fromTheme("camera-on"));
+            }
          }
       }
    }
 } //updateTabIcons
+
+void Dock::focusHistory()
+{
+   m_pHistoryDW->raise();
+   ActionCollection::instance()->raiseClient(false);
+   m_pHistoryDW->m_pFilterLE->setFocus(Qt::OtherFocusReason);
+}
+
+void Dock::focusContact()
+{
+   m_pContactCD->raise();
+   ActionCollection::instance()->raiseClient(false);
+   m_pContactCD->m_pFilterLE->setFocus(Qt::OtherFocusReason);
+}
+
+void Dock::focusCall()
+{
+   MainWindow::view()->raise();
+   ActionCollection::instance()->raiseClient(true);
+}
+
+void Dock::focusBookmark()
+{
+   m_pBookmarkDW->raise();
+   ActionCollection::instance()->raiseClient(false);
+   m_pBookmarkDW->m_pFilterLE->setFocus(Qt::OtherFocusReason);
+}
 
 #include <dock.moc>

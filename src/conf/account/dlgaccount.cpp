@@ -49,7 +49,6 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
    m_pAccountList->setItemDelegate(delegate);
 
    m_pProtocolModel = new ExtendedProtocolModel(this);
-   //m_pProtocolModel->displayProfile(true);
 
    m_pGlobalProto->bindToModel(m_pProtocolModel, m_pProtocolModel->selectionModel());
 
@@ -71,14 +70,20 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
       updateButtons();
    });
 
-   connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, m_pPanel,
-      static_cast<void (Pages::Account::*)(const QModelIndex&)>(&Pages::Account::setAccount));
-
    m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
+
+   slotSetAccount(m_pAccountList->selectionModel()->currentIndex());
+
+   connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, this, &DlgAccount::slotSetAccount);
 }
 
 DlgAccount::~DlgAccount()
 {
+}
+
+void DlgAccount::slotSetAccount(const QModelIndex& idx)
+{
+   m_pPanel->setAccount(idx);
 }
 
 void DlgAccount::slotExpand()
@@ -159,25 +164,7 @@ void DlgAccount::slotNewAddAccount()
 
 void DlgAccount::cancel()
 {
-   for (int i=0; i < AccountModel::instance().size(); i++) {
-      Account* a = AccountModel::instance()[i];
-
-      switch(a->editState()) {
-         case Account::EditState::MODIFIED_INCOMPLETE:
-         case Account::EditState::MODIFIED_COMPLETE  :
-         case Account::EditState::NEW                :
-            a << Account::EditAction::CANCEL;
-            break;
-         case Account::EditState::OUTDATED           :
-            a << Account::EditAction::RELOAD;
-            break;
-         case Account::EditState::READY              :
-         case Account::EditState::REMOVED            :
-         case Account::EditState::EDITING            :
-         case Account::EditState::COUNT__            :
-            break;
-      }
-   }
+   AccountModel::instance().cancel();
 }
 
 bool DlgAccount::hasChanged()

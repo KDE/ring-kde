@@ -90,7 +90,8 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
  ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgHooks(nullptr),dlgAccessibility(nullptr),dlgAccount(nullptr),
  dlgPresence(nullptr)
 {
-   this->setWindowIcon(QIcon(RingIcons::RING));
+   setWindowIcon( QIcon(":/appicon/icons/sc-apps-ring-kde.svgz") );
+
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
       dlgHolder[i] = nullptr;
 

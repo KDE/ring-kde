@@ -17,6 +17,13 @@
  ***************************************************************************/
 #include "itemmodelserialization.h"
 
+#include <personmodel.h>
+
+
+#ifdef ENABLE_AKONADI
+ #include "akonadibackend.h"
+#endif
+
 #include "collectioninterface.h"
 #include "kcfg_settings.h"
 
@@ -58,4 +65,23 @@ bool ItemModelStateSerialization::setChecked(const CollectionInterface* backend,
 {
    m_hChecked[backend->id()] = ! enabled;
    return true;
+}
+
+CollectionInterface* ItemModelStateSerialization::preferredCollection(CollectionManagerInterfaceBase* manager, FlagPack<CollectionInterface::SupportedFeatures> features, FlagPack<Interfaces::ItemModelStateSerializerI::Hints> hints )
+{
+   Q_UNUSED(hints)
+
+#ifdef ENABLE_AKONADI
+   if (manager == &PersonModel::instance()) {
+      foreach(CollectionInterface* i, PersonModel::instance().collections(features)) {
+         if (dynamic_cast<AkonadiBackend*>(i)) //TODO use something better
+            return i;
+      }
+   }
+#else
+   Q_UNUSED(manager )
+   Q_UNUSED(features)
+#endif
+
+   return nullptr;
 }

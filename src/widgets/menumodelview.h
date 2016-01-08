@@ -47,6 +47,7 @@ private:
 
 Q_SIGNALS:
    void actionChanged(QAction* a);
+   void itemClicked(const QModelIndex& idx);
 };
 
 #endif

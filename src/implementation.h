@@ -75,6 +75,7 @@ public:
 
    virtual void editPerson(Person* p) override;
    virtual void viewChatHistory(ContactMethod* cm) override;
+   virtual void viewChatHistory(Person* p) override;
    virtual void copyInformation(QMimeData* data) override;
    virtual bool warnDeletePerson(Person* p) override;
    virtual bool warnDeleteCall(Call* c) override;

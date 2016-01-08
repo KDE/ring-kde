@@ -35,7 +35,17 @@
  * 2) The top level items represent a concept different from the lower levels and
  * displaying them horizontally create a better visual separation.
  *
- * 3) The source model is external and display data in inverted order
+ * 3) The source model is external and display data in inverted order, such as
+ * many real world CSV export tools or badly designed spreadsheets
+ *
+ * Example:
+ *
+ * |-> Foo
+ * |-> Bar                    -----------------
+ * |-> Baz          ====>      |    |    |
+ *   |-> Foobar               Foo  Bar  Baz
+ *   |-> Foobaz                          |-> Foobar
+ *                                       |-> Foobaz
  */
 class SimpleRotateProxy : public QAbstractProxyModel
 {

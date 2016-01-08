@@ -37,39 +37,38 @@ class QItemSelectionModel;
 ///Ring
 class KeyPressEaterC;
 class CategorizedTreeView;
+class UserActionModel;
 
 ///DockBase: Dock to access contacts
 class DockBase : public QDockWidget, public Ui_ContactDock
 {
    Q_OBJECT
+   friend class KeyPressEaterC;
+   friend class ArrowGrabber;
 public:
    //Constructor
    explicit DockBase(QWidget* parent = nullptr);
    virtual ~DockBase();
 
    //Mutator
-   void setProxyModel(QSortFilterProxyModel* proxy);
+   void setProxyModel(QAbstractItemModel* model, QSortFilterProxyModel* filterProxy);
    void setDelegate(QStyledItemDelegate* delegate);
    void setSortingModel(QAbstractItemModel* m, QItemSelectionModel* s);
 
    //Getter
    CategorizedTreeView* view() const;
-   QMenu* menu() const;
-
-   //Setter
-   void setMenuConstructor(std::function<QMenu*()> cst);
 
 private:
    //Attributes
-   mutable QMenu*           m_pMenu {nullptr};
-   std::function<QMenu*()>  m_fMenuConstructor {nullptr};
    KeyPressEaterC*          m_pKeyPressEater ;
+   UserActionModel*         m_pUserActionModel {nullptr};
 
-public Q_SLOTS:
-   virtual void keyPressEvent(QKeyEvent* event) override;
+   //Helper
+   void initUAM();
 
 private Q_SLOTS:
-   void slotContextMenu    ( QModelIndex index     );
+   void slotContextMenu       (const QModelIndex& index );
+   void slotContextMenuClicked(const QModelIndex& index );
 
 private Q_SLOTS:
    void transferEvent( QMimeData* data   );

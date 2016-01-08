@@ -6,6 +6,10 @@ IF(POLICY CMP0022)
    CMAKE_POLICY(SET CMP0022 NEW)
 ENDIF(POLICY CMP0022)
 
+IF(POLICY CMP0063)
+   CMAKE_POLICY(SET CMP0063 NEW)
+ENDIF(POLICY CMP0063)
+
 # set(CMAKE_AUTOMOC ON)
 
 SET(KF5_DEP_VERSION "5.6.0")
@@ -13,7 +17,7 @@ SET(QT_MIN_VERSION  "5.2.0")
 
 FIND_PACKAGE ( KF5 REQUIRED )
 
-find_package (ECM 1.1.0 REQUIRED NO_MODULE)
+FIND_PACKAGE (ECM 1.1.0 REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 FIND_PACKAGE ( LibRingClient REQUIRED ENABLE_STATIC=true )
@@ -32,7 +36,6 @@ ADD_DEFINITIONS(
    -Wno-reorder
    -Wno-error=deprecated-declarations
 )
-
 
 # Enable some useful warnings
 ADD_DEFINITIONS(
@@ -146,8 +149,6 @@ INCLUDE_DIRECTORIES(SYSTEM
 #Build KDE specific files
 ADD_SUBDIRECTORY( klib )
 
-MESSAGE("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
-
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
@@ -173,6 +174,11 @@ SET(
    delegates/toolbardelegate.cpp
    delegates/kdepixmapmanipulation.cpp
    proxies/simplerotateproxy.cpp
+   proxies/deduplicateproxy.cpp
+   proxies/filtertoplevelproxy.cpp
+   proxies/roletransformationproxy.cpp
+   proxies/flagsfilterproxy.cpp
+   #proxies/valuefilterproxy.cpp
 )
 
 # Configuration pages
@@ -194,6 +200,8 @@ SET(
 # Widgets
 SET(
    ring_kde_WIDGETS
+   widgets/personselector.cpp
+   widgets/contactmethodselector.cpp
    widgets/systray.cpp
    widgets/dialpad.cpp
    widgets/dockbase.cpp
@@ -224,14 +232,6 @@ SET(
    widgets/contactmethodselector.cpp
 )
 
-# Asset contextual menus
-SET(
-   ring_kde_MENUS
-   menu/person.cpp
-   menu/call.cpp
-   menu/contactmethod.cpp
-)
-
 # Video Widgets
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET(
@@ -253,10 +253,10 @@ SET(
    mainwindow.cpp
    cmd.cpp
    dock.cpp
+   notification.cpp
+   notification.cpp
    ringapplication.cpp
    errormessage.cpp
-   kspeechinterfacesingleton.cpp
-   accessibility.cpp
    canvasobjectmanager.cpp
    eventmanager.cpp
    actioncollection.cpp
@@ -265,8 +265,17 @@ SET(
    ${ring_kde_CONF}
    ${ring_kde_WIDGETS}
    ${ring_kde_VIDEO}
-   ${ring_kde_MENUS}
 )
+
+
+IF (Qt5TextToSpeech_FOUND)
+
+SET(
+   ring_kde_SRCS
+   ${ring_kde_SRCS}
+   accessibility.cpp
+)
+ENDIF()
 
 # generate rules for building source files from the resources
 SET(QtApp_RCCS
@@ -288,6 +297,8 @@ SET(
    conf/dlgaudiorecording.ui
    conf/dlgpresence.ui
    conf/dlgfallbackperson.ui
+   widgets/ui/personselector.ui
+   widgets/ui/contactmethodselector.ui
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/contactdock.ui
@@ -303,7 +314,6 @@ SET(
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
 
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
-   MESSAGE("VIDEO enabled")
    SET(ENABLE_VIDEO 1 CACHE BOOLEAN "Enable video")
    ADD_DEFINITIONS( -DENABLE_VIDEO=true )
    SET (
@@ -356,12 +366,15 @@ TARGET_LINK_LIBRARIES(ring-kde
   ${LIB_RING_CLIENT_LIBRARY}
   ${OPENGL_link}
 
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5OpenGL_LIBRARIES}
-  ${Qt5PrintSupport_LIBRARIES}
+  # Qt5
+  Qt5::Widgets
+  Qt5::Core
+  Qt5::Gui
+  Qt5::Svg
+  Qt5::OpenGL
+  Qt5::PrintSupport
+
+  # KF5
   KF5::I18n
   KF5::WidgetsAddons
   KF5::ConfigCore
@@ -373,11 +386,15 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::KIOWidgets
   KF5::Completion
   KF5::Crash
-#    ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-#    ${KDEPIMLIBS_AKONADI_LIBS}
-#    ${KDEPIMLIBS_AKONADI_CONTACT_LIBS}
-#    ${X11_LIBRARIES}
+  KF5::NotifyConfig
+  KF5::GlobalAccel
 )
+
+IF (Qt5TextToSpeech_FOUND)
+   TARGET_LINK_LIBRARIES(ring-kde
+      Qt5TextToSpeech
+   )
+ENDIF()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   TARGET_LINK_LIBRARIES(ring-kde ${OSX_FRAMEWORK_OPENGL})

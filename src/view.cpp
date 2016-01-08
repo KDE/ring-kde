@@ -23,8 +23,10 @@
 #include <QtCore/QString>
 #include <QtGui/QPalette>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QMenu>
 #include <QtGui/QClipboard>
 #include <QtCore/QMimeData>
+#include <QtCore/QSortFilterProxyModel>
 
 //KDE
 #include <klocalizedstring.h>
@@ -32,6 +34,8 @@
 //Ring
 #include "icons/icons.h"
 #include "mainwindow.h"
+#include "widgets/menumodelview.h"
+#include "useractionmodel.h"
 #include "canvasobjectmanager.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewtoolbar.h"
@@ -58,6 +62,30 @@
 #include <tip/tipmanager.h>
 #include "implementation.h"
 
+class FocusWatcher : public QObject
+{
+   Q_OBJECT
+public:
+   explicit FocusWatcher(QObject* parent = nullptr) : QObject(parent)
+   {
+      if (parent)
+         parent->installEventFilter(this);
+   }
+   virtual bool eventFilter(QObject *obj, QEvent *event) override
+   {
+      Q_UNUSED(obj)
+      if (event->type() == QEvent::FocusIn)
+         emit focusChanged(true);
+      else if (event->type() == QEvent::FocusOut)
+         emit focusChanged(false);
+
+      return false;
+   }
+
+Q_SIGNALS:
+   void focusChanged(bool in);
+};
+
 ///Constructor
 View::View(QWidget *parent)
    : QWidget(parent),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
@@ -80,7 +108,9 @@ View::View(QWidget *parent)
 
    //Create a call already, the app is useless without one anyway
    m_pView->selectionModel()->setCurrentIndex(
-      CallModel::instance().getIndex(CallModel::instance().dialingCall()),
+      CallModel::instance().rowCount() ?
+         CallModel::instance().index(0, 0)
+         : CallModel::instance().getIndex(CallModel::instance().dialingCall()),
       QItemSelectionModel::SelectCurrent
    );
 
@@ -107,7 +137,13 @@ View::View(QWidget *parent)
 
    GlobalInstances::setInterface<ColorDelegate>(pal);
 
-   m_pMessageBoxW->setVisible(false);
+   const QModelIndex currentIndex = CallModel::instance().selectionModel()->currentIndex();
+
+   m_pMessageBoxW->setVisible(
+      qvariant_cast<Call::LifeCycleState>(currentIndex.data((int)Call::Role::LifeCycleState))
+         == Call::LifeCycleState::PROGRESS
+   );
+   connect(new FocusWatcher(m_pSendMessageLE), &FocusWatcher::focusChanged, this, &View::displayHistory);
 
    //Setup volume
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction ());
@@ -118,12 +154,15 @@ View::View(QWidget *parent)
 
    /*Setup signals                                                                                                                                    */
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                              */
-   /**/connect(&CallModel::instance()       , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))          );
+   /**/connect(&CallModel::instance()       , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))              );
    /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this           , SLOT(sendMessage())                    );
    /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this           , SLOT(sendMessage())                    );
    /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex))        , m_pEventManager, SLOT(enter())                          );
    /**/connect(widget_dialpad               , &Dialpad::typed                               , m_pEventManager, &EventManager::typeString              );
+   /**/connect(m_pView                      , SIGNAL(contextMenuRequest(QModelIndex))       , this           , SLOT(slotContextMenu(QModelIndex))     );
    /*                                                                                                                                                 */
+
+   connect(m_pView->selectionModel(), &QItemSelectionModel::currentChanged, this, &View::updateTextBoxStatus);
 
    //Auto completion
    loadAutoCompletion();
@@ -137,7 +176,6 @@ View::View(QWidget *parent)
 
    setFocus(Qt::OtherFocusReason);
 
-   loadAutoCompletion    ();
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
    Audio::Settings::instance().setEnableRoomTone(ConfigurationSkeleton::enableRoomTone());
 }
@@ -276,6 +314,45 @@ void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API 
       call->performAction(Call::Action::ACCEPT);
       m_pAutoCompletion->reset();
    }
+}
+
+void View::slotContextMenu(const QModelIndex& index)
+{
+   Q_UNUSED(index)
+
+   if (!m_pUserActionModel) {
+      m_pUserActionModel = new UserActionModel(m_pView->model(), UserActionModel::Context::ALL);
+      m_pUserActionModel->setSelectionModel(m_pView->selectionModel());
+   }
+
+   QMenu* m = new MenuModelView(m_pUserActionModel->activeActionModel(), new QItemSelectionModel(m_pUserActionModel->activeActionModel()), this);
+
+   m->exec(QCursor::pos());
+}
+
+void View::updateTextBoxStatus()
+{
+   static bool display = ConfigurationSkeleton::displayMessageBox();
+   if (display) {
+      Call* call = CallModel::instance().selectedCall();
+      m_pMessageBoxW->setVisible(call
+         && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
+      );
+   }
+}
+
+void View::displayHistory(bool in)
+{
+   if (!in)
+      return;
+
+   Call* call = CallModel::instance().selectedCall();
+
+   if (call->lifeCycleState() == Call::LifeCycleState::PROGRESS) {
+      m_pMessageTabBox->showConversation(call->peerContactMethod());
+   }
+
+   m_pMessageTabBox->clearColor();
 }
 
 #include "view.moc"

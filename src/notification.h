@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
+ *   Copyright (C) 2015 by Emmanuel Lepage Vallee                          *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,17 +15,42 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "kspeechinterfacesingleton.h"
+#ifndef NOTIFICATION_H
+#define NOTIFICATION_H
 
-// #include <QtDBus/QDBusConnection>
-// #include <KSpeech>
+#include <QtCore/QObject>
 
-OrgKdeKSpeechInterface* KSpeechInterfaceSingleton::m_pInstance = 0;
-
-OrgKdeKSpeechInterface* KSpeechInterfaceSingleton::instance() {
-//    if (!m_pInstance) {
-//       m_pInstance = new OrgKdeKSpeechInterface( "org.kde.kttsd", "/KSpeech", QDBusConnection::sessionBus());
-//       m_pInstance->setApplicationName("Ring KDE");
-//    }
-   return nullptr;
+#include <account.h>
+class Call;
+class ContactMethod;
+namespace Media {
+   class TextRecording;
 }
+
+/**
+ * This singleton class watch and reatch on events to provide system
+ * notifications.
+ */
+class Notification : public QObject
+{
+   Q_OBJECT
+
+public:
+   explicit Notification(QObject* parent = nullptr);
+
+   void contactOnline();
+
+   void accountStatus(Account* a, const Account::RegistrationState state);
+
+
+   void incomingText(Media::TextRecording* t, ContactMethod* cm);
+
+   void createContact();
+
+   static Notification* instance();
+
+private Q_SLOTS:
+   void incomingCall(Call* c);
+};
+
+#endif

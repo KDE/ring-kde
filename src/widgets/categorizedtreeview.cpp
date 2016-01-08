@@ -284,8 +284,8 @@ void CategorizedTreeView::initSignals()
 {
    if (model()) {
       connect(model(),SIGNAL(layoutChanged()),this,SLOT(cancelHoverState()));
-      m_InitSignals = true;
    }
+   m_InitSignals = true;
 }
 
 void CategorizedTreeView::setDirty(const QRect &rect)
@@ -298,4 +298,9 @@ void CategorizedTreeView::slotExpandInserted(const QModelIndex& parentIdx,int st
    for (int i=start;i<=end;i++) {
       setExpanded(model()->index(i,0,parentIdx),true);
    }
+}
+
+void CategorizedTreeView::forwardInput(QKeyEvent* e)
+{
+   keyPressEvent(e);
 }

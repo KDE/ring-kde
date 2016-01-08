@@ -73,30 +73,37 @@
 
 //Ring
 #include "klib/kcfg_settings.h"
+#include "implementation.h"
 #include "icons/icons.h"
 #include "view.h"
 #include "dock.h"
+#include "notification.h"
 #include <globalinstances.h>
 #include "conf/account/widgets/autocombobox.h"
 #include "actioncollection.h"
 #include "widgets/systray.h"
 #include "widgets/presence.h"
-#include "accessibility.h"
 #include "errormessage.h"
 #include <video/renderer.h>
 #include "ringapplication.h"
 #include "widgets/dockbase.h"
+
+#ifdef HAVE_SPEECH
+ #include "accessibility.h"
+#endif
+
+#ifdef ENABLE_AKONADI
+ #include "klib/akonadibackend.h"
+#endif
+
 #ifdef ENABLE_VIDEO
-#include "widgets/videodock.h"
+ #include "widgets/videodock.h"
 #endif
 
 MainWindow* MainWindow::m_sApp = nullptr;
 
 static void loadNumberCategories()
 {
-//    QList<int> list = ConfigurationSkeleton::phoneTypeList();
-//    const bool isEmpty = !list.size();
-// #define IS_ENABLED(name) (list.indexOf(name) != -1) || isEmpty
    auto& model = NumberCategoryModel::instance();
 #define ICN(name) QPixmap(QString(":/mini/icons/miniicons/%1.png").arg(name))
    model.addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
@@ -142,6 +149,8 @@ MainWindow::MainWindow(QWidget* parent)
    if (!init) {
       GlobalInstances::setInterface<KDEProfilePersister>();
 
+      GlobalInstances::setInterface<KDEActionExtender>();
+
       GlobalInstances::setInterface<KDEPixmapManipulation>();
 
       loadNumberCategories();
@@ -177,8 +186,11 @@ MainWindow::MainWindow(QWidget* parent)
       PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
 
       GlobalInstances::setInterface<ItemModelStateSerialization>();
-//       PersonModel::instance().backendModel()->load();
-//       AccountModel::instance().setDefaultAccount(AccountModel::instance().getAccountById(ConfigurationSkeleton::defaultAccountId()));
+      GlobalInstances::itemModelStateSerializer().load();
+
+#ifdef ENABLE_AKONADI
+      AkonadiBackend::initCollections();
+#endif
 
       init = true;
 
@@ -186,6 +198,8 @@ MainWindow::MainWindow(QWidget* parent)
 //       PersonModel::instance().backendModel()->addExtension(ext); //FIXME
 
       ProfileModel::instance();
+
+      Notification::instance();
    }
 
    //Belong to setupActions(), but is needed now
@@ -222,29 +236,34 @@ MainWindow::MainWindow(QWidget* parent)
    m_pCentralDW->setTitleBarWidget(new QWidget());
    m_pCentralDW->setContentsMargins(0,0,0,0);
    m_pView->setContentsMargins     (0,0,0,0);
-   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
    m_pCentralDW->setObjectName( "callDock" );
    m_pCentralDW->show();
 
    m_pStatusBarWidget = new QLabel       ( this );
 
    //System tray
-   m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
+   //FIXME crash Qt 5.5.1
+   //    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
 
    m_pDock = new Dock(this);
+
+   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
+
    connect(m_pCentralDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
 
    selectCallTab();
    setAutoSaveSettings();
    createGUI();
 
-   m_pTrayIcon->addAction( ActionCollection::instance()->acceptAction  () );
-   m_pTrayIcon->addAction( ActionCollection::instance()->mailBoxAction () );
-   m_pTrayIcon->addAction( ActionCollection::instance()->holdAction    () );
-   m_pTrayIcon->addAction( ActionCollection::instance()->transferAction() );
-   m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
-   m_pTrayIcon->addSeparator();
-   m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
+   if (m_pTrayIcon) {
+      m_pTrayIcon->addAction( ActionCollection::instance()->acceptAction  () );
+      m_pTrayIcon->addAction( ActionCollection::instance()->mailBoxAction () );
+      m_pTrayIcon->addAction( ActionCollection::instance()->holdAction    () );
+      m_pTrayIcon->addAction( ActionCollection::instance()->transferAction() );
+      m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
+      m_pTrayIcon->addSeparator();
+      m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
+   }
 
    connect(CallModel::instance().selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
 
@@ -255,11 +274,13 @@ MainWindow::MainWindow(QWidget* parent)
 
    statusBar()->addWidget(m_pStatusBarWidget);
 
-   m_pTrayIcon->show();
+   if (m_pTrayIcon) {
+      m_pTrayIcon->show();
+      m_pTrayIcon->setObjectName( "m_pTrayIcon"   );
+   }
 
-   m_pView->setObjectName      ( "m_pView"       );
-   statusBar()->setObjectName  ( "statusBar"     );
-   m_pTrayIcon->setObjectName  ( "m_pTrayIcon"   );
+   m_pView->setObjectName       ( "m_pView"       );
+   statusBar()->setObjectName   ( "statusBar"     );
 
    m_pInitialized = true ;
 
@@ -356,21 +377,22 @@ MainWindow::MainWindow(QWidget* parent)
    if (!ConfigurationSkeleton::autoStartOverride())
       setAutoStart(true);
 
-//    RecentModel::instance();
 
 } //Ring
 
 ///Destructor
 MainWindow::~MainWindow()
 {
-   delete m_pDock;
+   m_pDock->deleteLater();
 
    delete m_pView            ;
-   delete m_pTrayIcon        ;
    delete m_pStatusBarWidget ;
    delete m_pCentralDW       ;
    delete m_pPresent         ;
    delete m_pPresenceDock    ;
+
+   if (m_pTrayIcon)
+      delete m_pTrayIcon     ;
 
    delete &CallModel::instance();
    delete &PersonModel::instance();
@@ -436,22 +458,8 @@ void MainWindow::displayAccountCbb( bool checked )
 {
    m_pAccountStatus->setVisible(checked);
    m_pCurAccL->setVisible(checked);
+   ConfigurationSkeleton::setDisplayAccountBox(checked);
 }
-
-///Called when a call is coming
-// void MainWindow::onIncomingCall(const Call* call) //FIXME
-// {
-   //FIXME create an infinite loop
-//    if (call) {
-      /*const Person* contact = call->peerContactMethod()->contact();
-      if (contact) {
-         const QPixmap px = (contact->photo()).type() == QVariant::Pixmap ? (contact->photo()).value<QPixmap>():QPixmap();
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()),px);
-      }
-      else
-         KNotification::event(KNotification::Notification, i18n("New incoming call"), i18n("New call from:\n%1",call->peerName().isEmpty() ? call->peerContactMethod()->uri() : call->peerName()));
-   *///}
-// }
 
 ///Hide or show the statusbar presence widget
 void MainWindow::slotPresenceEnabled(bool state)
@@ -481,6 +489,7 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
+      connect(m_pVideoDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
    }
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();

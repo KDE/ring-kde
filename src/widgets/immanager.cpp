@@ -19,10 +19,21 @@
 #include "call.h"
 #include "callmodel.h"
 #include "contactmethod.h"
+#include "person.h"
 #include <media/text.h>
 #include <media/textrecording.h>
+#include <media/recordingmodel.h>
 #include "../delegates/imdelegate.h"
+#include <eventmanager.h>
+
+//KDE
+#include <KColorScheme>
 #include <klocalizedstring.h>
+
+// Qt
+#include <QtWidgets/QScrollBar>
+#include <QtGui/QPixmap>
+#include <QtCore/QTimer>
 
 ///Constructor
 IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
@@ -30,32 +41,98 @@ IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
    setVisible(false);
    setTabsClosable(true);
 
-   connect(&CallModel::instance(), &CallModel::mediaAdded,[this](Call* c, Media::Media* m) {
-      if (m->type() == Media::Media::Type::TEXT) {
-
-         Media::Text* media = static_cast<Media::Text*>(m);
-
-         newConversation(c->peerContactMethod(),media->recording()->instantMessagingModel());
-      }
-   });
+   connect(&CallModel::instance(), &CallModel::mediaAdded, this, &IMManager::addMedia);
 
    connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeRequest(int)));
+
+   connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &IMManager::newMessageInserted);
+
+   foreach(Call* c, CallModel::instance().getActiveCalls()) {
+      if (c->hasMedia(Media::Media::Type::TEXT, Media::Media::Direction::IN))
+         addMedia(c, c->firstMedia<Media::Text>(Media::Media::Direction::IN));
+      else if (c->hasMedia(Media::Media::Type::TEXT, Media::Media::Direction::OUT))
+         addMedia(c, c->firstMedia<Media::Text>(Media::Media::Direction::OUT));
+   }
+
+   connect(this, &IMManager::currentChanged, this, &IMManager::clearColor);
+}
+
+void IMManager::newMessageInserted(Media::TextRecording* r, ContactMethod* cm)
+{
+   if (!r->instantMessagingModel()->index(
+         r->instantMessagingModel()->rowCount()-1, 0
+      ).data((int)Media::TextRecording::Role::HasText).toBool()
+   )
+      return;
+
+   IMTab* tab = nullptr;
+
+   if (!(tab  = m_lTabs[cm]))
+      tab = newConversation(cm, r->instantTextMessagingModel());
+
+   if (currentWidget() != tab
+     || (!EventManager::mayHaveFocus())
+     || tab->verticalScrollBar()->value() != tab->verticalScrollBar()->maximum()) {
+      static QColor awayBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+
+      tabBar()->setTabTextColor(indexOf(tab), awayBrush);
+   }
+
+}
+
+void IMManager::addMedia(Call* c, Media::Media* m)
+{
+   if (m->type() == Media::Media::Type::TEXT) {
+
+      Media::Text* media = static_cast<Media::Text*>(m);
+
+      bool isRelevant = media->hasMimeType(QStringLiteral("text/plain"))
+         || media->hasMimeType(QStringLiteral("text/html"));
+
+      auto cm = c->peerContactMethod();
+
+      if (!isRelevant) {
+         connect(media, &Media::Text::mimeTypesChanged, [this, media, cm]() {
+            bool isRelevant = media->hasMimeType(QStringLiteral("text/plain"))
+               || media->hasMimeType(QStringLiteral("text/html"));
+
+            if (isRelevant)
+               newConversation(cm, media->recording()->instantTextMessagingModel());
+
+         });
+      }
+   }
 }
 
 ///Destructor
-void IMManager::newConversation(ContactMethod* cm, QAbstractListModel* model)
+IMTab* IMManager::newConversation(ContactMethod* cm, QAbstractItemModel* model)
 {
-   if (m_lTabs[cm]) {
+   if (auto tab = m_lTabs[cm]) {
       setCurrentWidget(m_lTabs[cm]);
       setVisible(true);
-      return;
+      return tab;
    }
 
    IMTab* newTab = new IMTab(model,this);
    m_lTabs[cm] = newTab;
    setVisible(true);
    const QString name = cm->primaryName();
-   addTab(newTab,name);
+
+   if (cm->contact())
+      setCurrentIndex(addTab(newTab,qvariant_cast<QPixmap>(cm->contact()->photo()), name));
+   else
+      setCurrentIndex(addTab(newTab,name));
+
+
+   // If the IMManager widget is not in the view yet, the scrollbar will be wrong
+   QTimer::singleShot(0,[this, model, newTab] {
+      newTab->scrollTo(model->index(model->rowCount()-1,0));
+
+      if (newTab->verticalScrollBar())
+         newTab->verticalScrollBar()->setValue(newTab->verticalScrollBar()->maximum());
+   });
+
+   return newTab;
 }
 
 ///Display a conversation from history
@@ -69,9 +146,10 @@ bool IMManager::showConversation(ContactMethod* cm)
    if (!textRec)
       return false;
 
-   QAbstractListModel* model = textRec->instantMessagingModel();
+   QAbstractItemModel* model = textRec->instantTextMessagingModel();
 
-   newConversation(cm, model);
+   if (model->rowCount())
+      newConversation(cm, model);
 
    return true;
 }
@@ -87,4 +165,13 @@ void IMManager::closeRequest(int index)
       if (!count())
          setVisible(false);
    }
+}
+
+void IMManager::clearColor(int idx)
+{
+   if (idx == -1)
+      for(int i =0; i < count(); i++)
+         clearColor(i);
+   else
+      tabBar()->setTabTextColor(idx, QColor());
 }

@@ -23,9 +23,11 @@
 #include <QtWidgets/QTreeView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QScrollBar>
+#include <QtWidgets/QMenu>
 #include <QtGui/QPainter>
 #include <QtWidgets/QApplication>
 #include <QtCore/QEvent>
+#include <QtCore/QSortFilterProxyModel>
 #include <QtGui/QResizeEvent>
 
 //KDE
@@ -33,6 +35,8 @@
 
 //Ring
 #include <numbercompletionmodel.h>
+#include <useractionmodel.h>
+#include "menumodelview.h"
 #include <call.h>
 #include <callmodel.h>
 #include <delegates/autocompletiondelegate2.h>
@@ -196,6 +200,34 @@ void AutoCompletion::reset()
 {
    m_pView->selectionModel()->clear();
    setCall(nullptr);
+}
+
+void AutoCompletion::contextMenuEvent(QContextMenuEvent* e)
+{
+   Q_UNUSED(e)
+
+   if (!m_pUserActionModel) {
+
+      const QModelIndex index = m_pView->indexAt(e->pos());
+      qDebug() << "HERE" << (int) qvariant_cast<Ring::ObjectType>(index.data((int)Ring::Role::ObjectType));
+
+      m_pUserActionModel = new UserActionModel(m_pModel, UserActionModel::Context::ALL );
+
+      auto sm = m_pView->selectionModel();
+
+      connect(m_pView->selectionModel(), &QItemSelectionModel::currentRowChanged , [sm]() {
+         qDebug() << "\nMAH!!" << sm;
+      });
+      connect(m_pView->selectionModel(), &QItemSelectionModel::selectionChanged  , []() {
+         qDebug() << "\nMAH2!!";
+      });
+
+      m_pUserActionModel->setSelectionModel(m_pView->selectionModel());
+   }
+
+   QMenu* m = new MenuModelView(m_pUserActionModel->activeActionModel(), new QItemSelectionModel(m_pUserActionModel->activeActionModel()), this);
+
+   m->exec(QCursor::pos());
 }
 
 #include "autocompletion.moc"

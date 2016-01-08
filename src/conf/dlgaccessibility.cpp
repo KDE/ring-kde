@@ -38,6 +38,10 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
 {
    setupUi(this);
 
+#ifdef HAVE_SPEECH
+   m_pT2SBG->setEnabled(true);
+#endif
+
    m_pAddTB->setIcon    ( QIcon::fromTheme( "list-add"    ) );
    m_pRemoveTB->setIcon ( QIcon::fromTheme( "list-remove" ) );
    m_pInfoIconL->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(24,24)));

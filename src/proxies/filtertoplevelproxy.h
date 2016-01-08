@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (C) 2014-2015 by Savoir-Faire Linux                          *
+ *   Copyright (C) 2015 by Emmanuel Lepage Vallee                           *
  *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
@@ -15,39 +15,47 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef ITEMMODELSTATESERIALIZATION_H
-#define ITEMMODELSTATESERIALIZATION_H
+#ifndef FILTERTOPLEVELPROXY_H
+#define FILTERTOPLEVELPROXY_H
 
-#include <QtCore/QHash>
+#include <QtCore/QSortFilterProxyModel>
 
-#include "typedefs.h"
-#include <interfaces/itemmodelstateserializeri.h>
-class Account;
-class CollectionInterface;
+class FilterTopLevelProxyPrivate;
 
-class LIB_EXPORT ItemModelStateSerialization : public Interfaces::ItemModelStateSerializerI
+/**
+ * Remove top level items without any children
+ *
+ * This model is useful for 2+ level trees where the top level represent a
+ * category. In some case, empty categories may be present and do not add
+ * value while poluting the output.
+ *
+ * For filtering use case, KRecursiveFilterProxyModel is usually recomanded,
+ * but a FilterTopLevelProxy may in some specific case, such as when proxies
+ * are provided by external libraries, be useful.
+ *
+ * Example:
+ *
+ * |->Foo               |->Bar
+ * |->Bar                |-> Foo
+ *  |-> Foo    =====>    |-> Baz
+ *  |-> Baz
+ * |->Baz
+ *
+ */
+class FilterTopLevelProxy : public QSortFilterProxyModel
 {
+   Q_OBJECT
 public:
-   virtual bool save() override;
-   virtual bool load() override;
-   virtual ~ItemModelStateSerialization();
+   explicit FilterTopLevelProxy(QAbstractItemModel* parent);
+   virtual ~FilterTopLevelProxy();
 
-   //Getter
-   virtual bool isChecked(const CollectionInterface* backend) const override;
-   virtual CollectionInterface* preferredCollection(
-      CollectionManagerInterfaceBase* manager,
-      FlagPack<CollectionInterface::SupportedFeatures> features,
-      FlagPack<Interfaces::ItemModelStateSerializerI::Hints> hints
-   ) override;
+   virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 
-   //Setter
-   virtual bool setChecked(const CollectionInterface* backend, bool enabled) override;
+   virtual void sort ( int column, Qt::SortOrder order) override;
 
 private:
-   QHash<QByteArray,bool> m_hChecked;
-   QHash<QByteArray,bool> m_hLoaded ;
-   //Helper
-//    void digg(const CollectionInterface* idx);
+   FilterTopLevelProxyPrivate* d_ptr;
+   Q_DECLARE_PRIVATE(FilterTopLevelProxy)
 };
 
 #endif

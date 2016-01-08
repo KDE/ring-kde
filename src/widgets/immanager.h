@@ -20,7 +20,7 @@
 
 //Qt
 #include <QtCore/QHash>
-class QAbstractListModel;
+class QAbstractItemModel;
 
 //KDE
 #include <QtWidgets/QTabWidget>
@@ -28,6 +28,11 @@ class QAbstractListModel;
 //Ring
 class IMTab;
 class ContactMethod;
+class Call;
+namespace Media {
+   class Media;
+   class TextRecording;
+}
 
 class IMManager : public QTabWidget
 {
@@ -43,9 +48,14 @@ private:
    //Attrubutes
    QHash<ContactMethod*,IMTab*> m_lTabs;
 
+public Q_SLOTS:
+   void clearColor(int idx = -1);
+
 private Q_SLOTS:
-   void newConversation(ContactMethod* cm, QAbstractListModel* model);
+   IMTab* newConversation(ContactMethod* cm, QAbstractItemModel* model);
    void closeRequest(int index);
+   void addMedia(Call* c, Media::Media* m);
+   void newMessageInserted(Media::TextRecording* r, ContactMethod* cm);
 };
 
 #endif // IM_MANAGER

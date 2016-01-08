@@ -69,7 +69,7 @@ private:
    bool           m_pInitialized     ;
    View*          m_pView            ;
    bool           m_pIconChanged     ;
-   SysTray*       m_pTrayIcon        ;
+   SysTray*       m_pTrayIcon        {nullptr};
    QLabel*        m_pStatusBarWidget ;
    QDockWidget*   m_pCentralDW       ;
    AutoComboBox*  m_pAccountStatus   ;
@@ -104,7 +104,6 @@ public:
 
 private Q_SLOTS:
    void quitButton                               (                               );
-   void displayAccountCbb                        ( bool checked = true           );
    void updatePresence                           ( const QString& status         );
    void hidePresenceDock                         (                               );
    void slotPresenceEnabled                      ( bool state                    );
@@ -114,6 +113,7 @@ private Q_SLOTS:
    #endif
 
 public Q_SLOTS:
+   void displayAccountCbb                        ( bool checked = true           );
    void timeout                                  (                               );
    void selectCallTab                            (                               );
 };
