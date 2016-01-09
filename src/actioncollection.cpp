@@ -151,7 +151,7 @@ void ActionCollection::setupAction()
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme("configure-shortcuts"             ), i18n("Configure Shortcut"      ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme("preferences-desktop-notification"), i18n("Configure Notifications" ));
    INIT_ACTION(action_raise_client          , {}                                                  , i18n("Raise Ring-KDE window"   ));
-   INIT_ACTION(action_focus_history         , {}                                                  , i18n("Search hisotry"          ));
+   INIT_ACTION(action_focus_history         , {}                                                  , i18n("Search history"          ));
    INIT_ACTION(action_focus_call            , {}                                                  , i18n("Search call"             ));
    INIT_ACTION(action_focus_contact         , {}                                                  , i18n("Search contact"          ));
    INIT_ACTION(action_focus_bookmark        , {}                                                  , i18n("Search bookmark"         ));
