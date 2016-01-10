@@ -23,30 +23,30 @@
   <name xml:lang="uk">Клієнт інтернет-телефонії Ring для KDE</name>
   <name xml:lang="x-test">xxRing VoIP KDE clientxx</name>
   <summary>Call and receive calls with SIP, IAX or RING protocols</summary>
-  <sumary xml:lang="bs">Pozivajte i primajte pozive s protokolom SIP ili IAX</name>
-  <sumary xml:lang="ca">Truca i rep trucades amb els protocols SIP o IAX</name>
-  <sumary xml:lang="ca@valencia">Truca i rep trucades amb els protocols SIP o IAX</name>
-  <sumary xml:lang="cs">Volejte a přijímejte hovory s protokoly SIP a IAX</name>
-  <sumary xml:lang="da">Foretag og modtag opkald med protokollerne SIP eller IAX</name>
-  <sumary xml:lang="de">Anrufen und Anrufe annehmen mit SIP- oder IAX-Protokollen</name>
-  <sumary xml:lang="es">Llamar y recibir llamadas de protocolos IAX y SIP</name>
-  <sumary xml:lang="et">Kõnede tegemine ja vastuvõtmine SIP või IAX protokolli vahendusel</name>
-  <sumary xml:lang="fr">Appeler et recevoir des appels avec les protocoles « SIP » ou « IAX »</name>
-  <sumary xml:lang="gl">Chamar e recibir chamadas mediante os protocolos SIP e IAX.</name>
-  <sumary xml:lang="hu">Hívások kezdeményezése és fogadása SIP vagy IAX protokollokkal</name>
-  <sumary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o IAX</name>
-  <sumary xml:lang="nl">Maak of opvang oproepen met SIP of IAX-protocollen</name>
-  <sumary xml:lang="pl">Dzwoń i odbieraj przy użyciu protokołów SIP lub IAX</name>
-  <sumary xml:lang="pt">Fazer e receber chamadas com os protocolos SIP ou IAX</name>
-  <sumary xml:lang="pt_BR">Faz e recebe chamadas com os protocolos SIP ou IAX</name>
-  <sumary xml:lang="ru">Вызовы по протоколу SIP и IAX</name>
-  <sumary xml:lang="sk">Volanie a prijímanie hovorov cez protokoly SIP alebo IAX</name>
-  <sumary xml:lang="sv">Ring och ta emot samtal med SIP- eller IAX-protokoll</name>
-  <sumary xml:lang="tr">SIP veya IAX protokolleri ile arama yapın veya aranın</name>
-  <sumary xml:lang="ug">SIP ياكى IAX كېلىشىمى ئارقىلىق تېلېفون قىلىش ۋە تېلېفون قوبۇل قىلىش</name>
-  <sumary xml:lang="uk">Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP і IAX</name>
-  <sumary xml:lang="x-test">xxCall and receive calls with SIP or IAX protocolsxx</name>
-  <sumary xml:lang="zh_CN">通过 SIP 和 IAX 协议呼叫和接收呼叫</name>
+  <summary xml:lang="bs">Pozivajte i primajte pozive s protokolom SIP ili IAX</summary>
+  <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o IAX</summary>
+  <summary xml:lang="ca@valencia">Truca i rep trucades amb els protocols SIP o IAX</summary>
+  <summary xml:lang="cs">Volejte a přijímejte hovory s protokoly SIP a IAX</summary>
+  <summary xml:lang="da">Foretag og modtag opkald med protokollerne SIP eller IAX</summary>
+  <summary xml:lang="de">Anrufen und Anrufe annehmen mit SIP- oder IAX-Protokollen</summary>
+  <summary xml:lang="es">Llamar y recibir llamadas de protocolos IAX y SIP</summary>
+  <summary xml:lang="et">Kõnede tegemine ja vastuvõtmine SIP või IAX protokolli vahendusel</summary>
+  <summary xml:lang="fr">Appeler et recevoir des appels avec les protocoles « SIP » ou « IAX »</summary>
+  <summary xml:lang="gl">Chamar e recibir chamadas mediante os protocolos SIP e IAX.</summary>
+  <summary xml:lang="hu">Hívások kezdeményezése és fogadása SIP vagy IAX protokollokkal</summary>
+  <summary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o IAX</summary>
+  <summary xml:lang="nl">Maak of opvang oproepen met SIP of IAX-protocollen</summary>
+  <summary xml:lang="pl">Dzwoń i odbieraj przy użyciu protokołów SIP lub IAX</summary>
+  <summary xml:lang="pt">Fazer e receber chamadas com os protocolos SIP ou IAX</summary>
+  <summary xml:lang="pt_BR">Faz e recebe chamadas com os protocolos SIP ou IAX</summary>
+  <summary xml:lang="ru">Вызовы по протоколу SIP и IAX</summary>
+  <summary xml:lang="sk">Volanie a prijímanie hovorov cez protokoly SIP alebo IAX</summary>
+  <summary xml:lang="sv">Ring och ta emot samtal med SIP- eller IAX-protokoll</summary>
+  <summary xml:lang="tr">SIP veya IAX protokolleri ile arama yapın veya aranın</summary>
+  <summary xml:lang="ug">SIP ياكى IAX كېلىشىمى ئارقىلىق تېلېفون قىلىش ۋە تېلېفون قوبۇل قىلىش</summary>
+  <summary xml:lang="uk">Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP і IAX</summary>
+  <summary xml:lang="x-test">xxCall and receive calls with SIP or IAX protocolsxx</summary>
+  <summary xml:lang="zh_CN">通过 SIP 和 IAX 协议呼叫和接收呼叫</summary>
   <description>
     <p>
       Ring-KDE is a graphical client for the Ring (www.ring.cx) communication
