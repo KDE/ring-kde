@@ -74,6 +74,7 @@
             <li>SRTP (RFC3711)</li>
             <li>DTMF (RFC4733)</li>
          </ul>
+      </li>
       <li>Support multiple polular audio and video codecs
          <ul>
             <li>G711 (PCMA, aLaw)</li>
