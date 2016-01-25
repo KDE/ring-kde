@@ -75,7 +75,7 @@
             <li>DTMF (RFC4733)</li>
          </ul>
       </li>
-      <li>Support multiple polular audio and video codecs
+      <li>Support multiple popular audio and video codecs
          <ul>
             <li>G711 (PCMA, aLaw)</li>
             <li>G711 (PCMU, uLaw)</li>
