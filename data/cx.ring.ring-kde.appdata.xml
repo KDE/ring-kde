@@ -70,9 +70,19 @@
       <li>Compliant with various industry standards such as:
          
       </li>
+      <li xml:lang="ca">Compatible amb diversos estàndards de la indústria com ara:</li>
+      <li xml:lang="nl">Voldoet aan verschillende industriestandaarden zoals:</li>
+      <li xml:lang="pt">Compatível com diversas normas da indústria, como por exemplo:</li>
+      <li xml:lang="uk">Сумісність із різноманітними галузевими стандартами, зокрема:</li>
+      <li xml:lang="x-test">xxCompliant with various industry standards such as:xx</li>
       <li>Support multiple popular audio and video codecs
          
       </li>
+      <li xml:lang="ca">Implementa múltiples còdecs d'àudio i vídeo populars</li>
+      <li xml:lang="nl">Meerdere populaire audio- en video-codecs worden ondersteund</li>
+      <li xml:lang="pt">Suporte diversos codificadores de áudio e vídeo conhecidos</li>
+      <li xml:lang="uk">Підтримка декількох популярних звукових і відеокодеків</li>
+      <li xml:lang="x-test">xxSupport multiple popular audio and video codecsxx</li>
       <li>SIP call transfer (both direct and attended)</li>
       <li xml:lang="ca">Transferència de trucades SIP (tant directes com assistides)</li>
       <li xml:lang="ca-valencia">Transferència de trucades SIP (tant directes com assistides)</li>
