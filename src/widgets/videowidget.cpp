@@ -102,10 +102,15 @@ void VideoWidget::dragMoveEvent( QDragMoveEvent* e )
 
 void VideoWidget::dropEvent( QDropEvent* e )
 {
-   if (e->mimeData()->hasFormat("text/uri-list")) {
-      Video::SourceModel::instance().setFile(QUrl(e->mimeData()->data("text/uri-list")));
+   if (m_pSourceModel && e->mimeData()->hasFormat("text/uri-list")) {
+      m_pSourceModel->setFile(QUrl(e->mimeData()->data("text/uri-list")));
    }
    e->accept();
+}
+
+void VideoWidget::setSourceModel(Video::SourceModel* model)
+{
+   m_pSourceModel = model;
 }
 
 void VideoWidget::addRenderer(Video::Renderer* renderer)
@@ -168,12 +173,15 @@ void VideoWidget::slotShowPreview(bool show)
 
 void VideoWidget::slotMuteOutgoindVideo(bool mute)
 {
+   if (!m_pSourceModel)
+       return;
+
    if (mute) {
       m_pBackDevice = Video::DeviceModel::instance().activeDevice();
-      Video::SourceModel::instance().switchTo(Video::SourceModel::ExtendedDeviceList::NONE);
+      m_pSourceModel->switchTo(Video::SourceModel::ExtendedDeviceList::NONE);
    }
    else if (m_pBackDevice) {
-      Video::SourceModel::instance().switchTo(m_pBackDevice);
+      m_pSourceModel->switchTo(m_pBackDevice);
    }
 }
 

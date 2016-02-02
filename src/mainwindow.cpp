@@ -72,6 +72,7 @@
 #include "klib/kdeprofilepersistor.h"
 
 //Ring
+#include "media/video.h"
 #include "klib/kcfg_settings.h"
 #include "implementation.h"
 #include "icons/icons.h"
@@ -491,6 +492,10 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
       connect(m_pVideoDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
    }
+
+   if (auto vid = c->firstMedia<Media::Video>(Media::Media::Direction::OUT))
+      m_pVideoDW->setSourceModel(vid->sourceModel());
+
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
 }

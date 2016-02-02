@@ -32,6 +32,7 @@ class QDropEvent;
 //Ring
 namespace Video {
    class Renderer;
+   class SourceModel;
 }
 class VideoScene;
 class VideoGLFrame;
@@ -58,6 +59,7 @@ private:
    Video::Device*       m_pBackDevice;
    QHash<Video::Renderer*,VideoGLFrame*> m_hFrames;
    bool m_IsPreviewOnly;
+   Video::SourceModel* m_pSourceModel {nullptr};
 
 public Q_SLOTS:
    void addRenderer(Video::Renderer* renderer);
@@ -68,6 +70,7 @@ public Q_SLOTS:
    void slotMuteOutgoindVideo(bool mute);
    void slotKeepAspectRatio(bool mute);
    void slotPreviewEnabled(bool show);
+   void setSourceModel(Video::SourceModel* model);
 
 Q_SIGNALS:
    void changed();

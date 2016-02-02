@@ -22,6 +22,7 @@
 
 //Qt
 class QGridLayout;
+class QComboBox;
 
 //KDE
 class QUrl;
@@ -33,6 +34,7 @@ class MediaPicker;
 class ScreenSharingWidget;
 namespace Video {
    class Renderer;
+   class SourceModel;
 }
 
 ///VideoDock: A dock hosting a VideoWidget or AcceleratedVideoWidget
@@ -45,18 +47,21 @@ public:
 
 private:
    QGridLayout*         m_pMoreOpts     ;
-   VideoWidget*        m_pVideoWidet   ;
+   VideoWidget*         m_pVideoWidet   ;
    VideoSettings*       m_pVideoSettings;
    ScreenSharingWidget* m_pScreenSharing;
    MediaPicker*         m_pMediaPicker  ;
    QWidget*             m_pMainWidget   ;
    QWidget*             m_pWindow       ;
+   QComboBox*           m_pDevice       ;
+   Video::SourceModel*  m_pSourceModel {nullptr};
 
 private Q_SLOTS:
    void slotDeviceChanged(int index);
    void slotFileSelected(const QUrl& url);
 public Q_SLOTS:
    void slotFullscreen  (bool);
+   void setSourceModel  (Video::SourceModel* model);
 };
 
 #endif
