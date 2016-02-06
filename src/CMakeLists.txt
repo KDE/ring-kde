@@ -170,7 +170,6 @@ SET(
    delegates/imdelegate.cpp
    delegates/autocompletiondelegate.cpp
    delegates/autocompletiondelegate2.cpp
-   delegates/ringtonedelegate.cpp
    delegates/toolbardelegate.cpp
    delegates/kdepixmapmanipulation.cpp
    proxies/simplerotateproxy.cpp
