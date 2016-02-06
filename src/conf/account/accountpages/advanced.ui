@@ -283,12 +283,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>92</x>
-     <y>244</y>
+     <x>112</x>
+     <y>243</y>
     </hint>
     <hint type="destinationlabel">
-     <x>302</x>
-     <y>245</y>
+     <x>432</x>
+     <y>244</y>
     </hint>
    </hints>
   </connection>
@@ -335,8 +335,8 @@
      <y>398</y>
     </hint>
     <hint type="destinationlabel">
-     <x>369</x>
-     <y>411</y>
+     <x>389</x>
+     <y>407</y>
     </hint>
    </hints>
   </connection>
@@ -344,15 +344,15 @@
    <sender>lrcfg_allowIncomingFromUnknown</sender>
    <signal>toggled(bool)</signal>
    <receiver>lrcfg_allowIncomingFromContact</receiver>
-   <slot>setEnabled(bool)</slot>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>105</x>
-     <y>142</y>
+     <x>125</x>
+     <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>123</x>
-     <y>121</y>
+     <x>143</x>
+     <y>156</y>
     </hint>
    </hints>
   </connection>
@@ -360,15 +360,15 @@
    <sender>lrcfg_allowIncomingFromUnknown</sender>
    <signal>toggled(bool)</signal>
    <receiver>lrcfg_allowIncomingFromHistory</receiver>
-   <slot>setEnabled(bool)</slot>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>164</x>
-     <y>147</y>
+     <x>184</x>
+     <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>178</x>
-     <y>101</y>
+     <x>198</x>
+     <y>131</y>
     </hint>
    </hints>
   </connection>
