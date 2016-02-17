@@ -42,7 +42,6 @@ public:
 
    void accountStatus(Account* a, const Account::RegistrationState state);
 
-
    void incomingText(Media::TextRecording* t, ContactMethod* cm);
 
    void createContact();

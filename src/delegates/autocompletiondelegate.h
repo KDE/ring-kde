@@ -24,7 +24,7 @@ class AutoCompletionDelegate : public QStyledItemDelegate
 {
    Q_OBJECT
 public:
-   AutoCompletionDelegate(int role = Qt::UserRole);
+   explicit AutoCompletionDelegate(int role = Qt::UserRole);
 
    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 private:

@@ -26,7 +26,7 @@ class DlgDht : public QWidget, public Ui_DlgDht
 {
    Q_OBJECT
 public:
-   DlgDht(QWidget* parent = nullptr);
+   explicit DlgDht(QWidget* parent = nullptr);
    void setAccount(Account* a);
 
 private:

@@ -33,9 +33,9 @@ class LIB_EXPORT CertificateViewer : public QDialog
 {
    Q_OBJECT
 public:
-   CertificateViewer(const QModelIndex& idx, QWidget* parent = nullptr);
+   explicit CertificateViewer(const QModelIndex& idx, QWidget* parent = nullptr);
    CertificateViewer(Certificate* cert     , QWidget* parent = nullptr);
-   ~CertificateViewer();
+   virtual ~CertificateViewer();
 
 private Q_SLOTS:
    void selectCert(const QModelIndex& idx);

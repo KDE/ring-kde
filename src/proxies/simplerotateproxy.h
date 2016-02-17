@@ -51,7 +51,7 @@ class SimpleRotateProxy : public QAbstractProxyModel
 {
    Q_OBJECT
 public:
-   SimpleRotateProxy(QObject * parent = 0);
+   explicit SimpleRotateProxy(QObject * parent = 0);
    virtual QModelIndex  mapFromSource(const QModelIndex & sourceIndex) const override;
    virtual QModelIndex  mapToSource  (const QModelIndex & proxyIndex ) const override;
    virtual QModelIndex  index        (int, int, const QModelIndex&   ) const override;

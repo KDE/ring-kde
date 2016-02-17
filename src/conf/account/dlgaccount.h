@@ -32,7 +32,7 @@ class LIB_EXPORT DlgAccount : public QWidget, public Ui::AccountDlg
 {
    Q_OBJECT
 public:
-   DlgAccount(QWidget* parent);
+   explicit DlgAccount(QWidget* parent);
    virtual ~DlgAccount();
 
    //Getters

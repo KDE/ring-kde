@@ -55,7 +55,7 @@ bool KDEProfilePersister::load()
 bool KDEProfilePersister::save(const Person* c)
 {
      QDir profDir = profilesDir();
-     qDebug() << "Saving vcf in:" << profDir.absolutePath()+"/"+c->uid()+".vcf";
+     qDebug() << "Saving vcf in:" << profDir.absolutePath()+'/'+c->uid()+".vcf";
 //   const QByteArray result = c->toVCard();
 
 //   QFile file(profilesDir.absolutePath()+"/"+c->uid()+".vcf");

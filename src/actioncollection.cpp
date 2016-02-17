@@ -218,10 +218,7 @@ void ActionCollection::setupAction()
 
    for (QHash<int,QAction*>::const_iterator i = actionHash.begin(); i != actionHash.end(); ++i) {
       QAction* ea = i.value();
-      qDebug() << "LA" << ea << action_new_call;
       UserActionModel::Action a = static_cast<UserActionModel::Action>(i.key());
-      if (action_new_call == ea)
-         qDebug() << "\n\n\nCONENCTED" << ((int)a);
       connect(ea, &QAction::triggered, [uam,a](bool) {uam << a;});
    }
 

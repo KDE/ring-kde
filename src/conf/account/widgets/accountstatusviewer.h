@@ -32,8 +32,8 @@ class LIB_EXPORT AccountStatusViewer : public QDialog
 {
    Q_OBJECT
 public:
-   AccountStatusViewer(Account* a , QWidget* parent = nullptr);
-   ~AccountStatusViewer();
+   explicit AccountStatusViewer(Account* a , QWidget* parent = nullptr);
+   virtual ~AccountStatusViewer();
 
 private:
    QTableView* m_pView;

@@ -26,7 +26,7 @@ class AudioRecordingConfigurator : public CollectionConfigurationInterface
 {
    Q_OBJECT
 public:
-   AudioRecordingConfigurator(QObject* parent = nullptr);
+   explicit AudioRecordingConfigurator(QObject* parent = nullptr);
 
    //Getter
    virtual QByteArray id  () const override;

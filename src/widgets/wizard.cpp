@@ -25,8 +25,9 @@
 #include <QtGui/QPainter>
 #include <QtGui/QClipboard>
 #include <QPrinter>
-#include <QPrintDialog>
+#include <QtPrintSupport/QPrintDialog>
 #include <QProcess>
+#include <QtCore/QPointer>
 
 //Ring
 #include <accountmodel.h>
@@ -99,7 +100,7 @@ void Wizard::slotPrint()
 {
    QPrinter printer;
 
-   QPrintDialog *dialog = new QPrintDialog(&printer);
+   QPointer<QPrintDialog> dialog = new QPrintDialog(&printer);
    if (!dialog)
       return;
 

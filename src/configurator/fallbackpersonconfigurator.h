@@ -26,7 +26,7 @@ class FallbackPersonConfigurator : public CollectionConfigurationInterface
 {
    Q_OBJECT
 public:
-   FallbackPersonConfigurator(QObject* parent = nullptr);
+   explicit FallbackPersonConfigurator(QObject* parent = nullptr);
 
    //Getter
    virtual QByteArray id  () const override;

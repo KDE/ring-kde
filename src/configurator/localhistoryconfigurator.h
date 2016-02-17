@@ -26,7 +26,7 @@ class LocalHistoryConfigurator : public CollectionConfigurationInterface
 {
    Q_OBJECT
 public:
-   LocalHistoryConfigurator(QObject* parent = nullptr);
+   explicit LocalHistoryConfigurator(QObject* parent = nullptr);
 
    //Getter
    virtual QByteArray id  () const override;

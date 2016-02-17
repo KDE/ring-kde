@@ -30,7 +30,7 @@ class LIB_EXPORT AutoComboBox : public QComboBox
    Q_OBJECT
 
 public:
-   AutoComboBox(QWidget* parent = nullptr);
+   explicit AutoComboBox(QWidget* parent = nullptr);
    virtual ~AutoComboBox();
 
    void bindToModel(QAbstractItemModel* m, QItemSelectionModel* s);
