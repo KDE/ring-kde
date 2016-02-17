@@ -84,14 +84,18 @@ void updateProblemList(int role, Account::RoleStatus status, QWidget* buddy)
       case Account::RoleStatus::OK            :
          if (m_hProblems.contains(role))
             m_hProblems.remove(role);
+         break;
       case Account::RoleStatus::UNTESTED      :
-         m_hProblems[role] = "UNTESTED";
+         m_hProblems[role] = QStringLiteral("UNTESTED");
+         break;
       case Account::RoleStatus::INVALID       :
-         m_hProblems[role] = "INVALID";
+         m_hProblems[role] = QStringLiteral("INVALID");
+         break;
       case Account::RoleStatus::REQUIRED_EMPTY:
-         m_hProblems[role] = "REQUIRED_EMPTY";
+         m_hProblems[role] = QStringLiteral("REQUIRED_EMPTY");
+         break;
       case Account::RoleStatus::OUT_OF_RANGE  :
-         m_hProblems[role] = "OUT_OF_RANGE";
+         m_hProblems[role] = QStringLiteral("OUT_OF_RANGE");
          break;
    }
 }

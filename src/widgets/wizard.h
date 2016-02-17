@@ -38,7 +38,7 @@ private:
    QWidget*     m_pCurrentPage;
    QHBoxLayout* m_pLayout     ;
    QLineEdit*   m_pName       ;
-   Account*     m_pAccount    ;
+   Account*     m_pAccount    {nullptr};
 
    //Event filter
    bool eventFilter( QObject *obj, QEvent *event) override;

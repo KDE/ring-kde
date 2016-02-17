@@ -40,7 +40,7 @@ public:
    ::Account* account() const;
 
 protected:
-   bool m_Changed;
+   bool m_Changed {false};
 
 private:
    ::Account* m_pAccount;

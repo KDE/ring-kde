@@ -52,7 +52,7 @@ private Q_SLOTS:
 private:
    QWidget* m_pDialog;
    bool m_HasChanged;
-   Ui_DlgAudioRecording* ui;
+   Ui_DlgAudioRecording* ui {nullptr};
 
 };
 

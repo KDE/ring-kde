@@ -54,7 +54,7 @@ Q_SIGNALS:
 
 private:
    //Attributes
-   Account* m_pAccount;
+   Account* m_pAccount {nullptr};
    QList<Person*> m_lToSave;
 };
 

@@ -129,7 +129,7 @@ QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool 
       //Draw the glow around pixmaps
       if (isTracked) {
          QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-         pen.setWidth(isTracked?1:2);
+         pen.setWidth(1);
          if (isPresent)
             pen.setColor(presentBrush);
          else

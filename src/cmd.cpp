@@ -86,9 +86,6 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
 
    if (parser.isSet(text) && parser.isSet(message))
       sendText(parser.value(text),parser.value(message));
-
-   if (!isRunning)
-      delete app;
 }
 
 ///Place a call (from the command line)

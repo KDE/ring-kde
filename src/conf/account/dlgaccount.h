@@ -39,8 +39,8 @@ public:
    bool hasChanged();
 
 private:
-   Pages::Account* m_pCurrentAccount;
-   ExtendedProtocolModel* m_pProtocolModel;
+   Pages::Account* m_pCurrentAccount {nullptr};
+   ExtendedProtocolModel* m_pProtocolModel {nullptr};
    bool m_HasChanged;
 
 public Q_SLOTS:

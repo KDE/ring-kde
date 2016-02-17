@@ -233,10 +233,10 @@ void ConferenceDelegate::drawCategory(const QModelIndex& index, int sortRole, co
       QColor window(palette->window().color());
       const QColor base(palette->base().color());
 
-      window.setAlphaF(option.state & QStyle::State_Selected?0.9:0.9);
+      window.setAlphaF(0.9);
 
       QColor window2(window);
-      window2.setAlphaF(option.state & QStyle::State_Selected?0.4:0.4);
+      window2.setAlphaF(0.4);
 
       QLinearGradient decoGradient1;
       decoGradient1.setStart(optRect.topLeft());

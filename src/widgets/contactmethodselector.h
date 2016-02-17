@@ -34,8 +34,8 @@ public:
    virtual ~ContactMethodSelector() = default;
 
 private:
-   QSortFilterProxyModel* m_pSortedContacts;
-   QSortFilterProxyModel* m_pNearMatchContact;
+   QSortFilterProxyModel* m_pSortedContacts {nullptr};
+   QSortFilterProxyModel* m_pNearMatchContact {nullptr};
 
 };
 
