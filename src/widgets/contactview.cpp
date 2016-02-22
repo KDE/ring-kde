@@ -27,6 +27,11 @@ ContactView::ContactView(QWidget* parent) : CategorizedTreeView(parent)
    
 }
 
+ContactView::~ContactView()
+{
+   
+}
+
 QRect ContactView::phoneRect(const QModelIndex& index) const
 {
    QRect origin = CategorizedTreeView::visualRect(index);

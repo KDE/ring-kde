@@ -29,7 +29,7 @@ namespace {
 
 ///Construnctor
 CategorizedDelegate::CategorizedDelegate(QTreeView* widget)
-   : QStyledItemDelegate(widget)
+   : QStyledItemDelegate(nullptr)
    , m_LeftMargin(7),m_pChildDelegate(nullptr),m_pChildChildDelegate(nullptr)
 {
 }

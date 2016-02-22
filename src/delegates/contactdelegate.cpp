@@ -58,7 +58,7 @@ namespace { //TODO GCC46 uncomment when dropping support for Gcc 4.6
 }
 
 
-ContactDelegate::ContactDelegate(CategorizedTreeView* parent) : QStyledItemDelegate(parent),m_pDelegatedropoverlay(nullptr),
+ContactDelegate::ContactDelegate(CategorizedTreeView* parent) : QStyledItemDelegate(nullptr),m_pDelegatedropoverlay(nullptr),
 m_pChildDelegate(nullptr),m_pView(parent)
 {
 }

@@ -24,6 +24,7 @@ class ContactView : public CategorizedTreeView
    Q_OBJECT
 public:
    explicit ContactView(QWidget* parent = nullptr);
+   virtual ~ContactView();
    virtual QRect visualRect(const QModelIndex& index) const override;
 
 protected:

@@ -22,7 +22,7 @@
 #include <QtGui/QColor>
 #include <QtGui/QPainter>
 #include <QtGui/QBitmap>
-#include <QtWidgets/QApplication>
+#include <QtGui/QGuiApplication>
 #include <QtWidgets/QAction>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QFile>
@@ -240,7 +240,7 @@ void KDEActionExtender::viewChatHistory(Person* p)
 
 void KDEActionExtender::copyInformation(QMimeData* data)
 {
-   QClipboard* clipboard = QApplication::clipboard();
+   QClipboard* clipboard = QGuiApplication::clipboard();
    clipboard->setMimeData(data);
 }
 

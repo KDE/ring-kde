@@ -64,7 +64,7 @@ RoleTransformationProxy::~RoleTransformationProxy()
    for(int i = 0; i < Qt::UserRole; i++) {
       if (d_ptr->m_Map[i]) {
          if (d_ptr->m_Mode == RoleTransformationProxyPrivate::Mode::FUNCTION)
-            free(d_ptr->m_Map[i]->func);
+           delete d_ptr->m_Map[i]->func;
 
          free(d_ptr->m_Map[i]);
       }
