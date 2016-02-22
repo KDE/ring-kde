@@ -18,9 +18,13 @@
 #include "localhistoryconfigurator.h"
 #include "conf/dlggeneral.h"
 
+#include <categorizedhistorymodel.h>
+
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QCheckBox>
+
 LocalHistoryConfigurator::LocalHistoryConfigurator(QObject* parent) : CollectionConfigurationInterface(parent),m_pDialog(nullptr)
 {
-
 }
 
 QByteArray LocalHistoryConfigurator::id() const
@@ -47,6 +51,15 @@ void LocalHistoryConfigurator::loadCollection(CollectionInterface* col, QObject*
          m_pDialog = new DlgGeneral(nullptr);
          QHBoxLayout* l = new QHBoxLayout(w);
          l->addWidget(m_pDialog);
+
+         m_pDialog->m_pKeepHistory->setChecked(CategorizedHistoryModel::instance().isHistoryLimited());
+         m_pDialog->m_pHistoryMax->setValue(CategorizedHistoryModel::instance().historyLimit());
+
+         connect(m_pDialog->m_pKeepHistory, &QCheckBox::toggled, &CategorizedHistoryModel::instance(), &CategorizedHistoryModel::setHistoryLimited);
+         connect(m_pDialog->m_pHistoryMax , SIGNAL(valueChanged(int)), &CategorizedHistoryModel::instance(), SLOT(setHistoryLimit(int)));
+         connect(m_pDialog, &DlgGeneral::updateButtons, [this]() {
+            emit this->changed();
+         });
       }
    }
 }

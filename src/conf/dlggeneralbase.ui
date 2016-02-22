@@ -14,11 +14,20 @@
    <string notr="true">General settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="groupBox1_history_2">
+    <widget class="QGroupBox" name="m_pHistoryGB">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -26,18 +35,38 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Call History</string>
+      <string>Ca&amp;ll History</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="m_pKeepHistory">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Keep history forever</string>
-        </property>
-       </widget>
+      <item row="3" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="toolButton_historyClear">
+          <property name="text">
+           <string>Clear History</string>
+          </property>
+          <property name="icon">
+           <iconset theme="edit-clear-history"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item row="1" column="0">
        <spacer name="horizontalSpacer_2">
@@ -54,6 +83,16 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="m_pKeepHistory">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Keep history forever</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="1">
        <widget class="QLabel" name="label_2">
@@ -87,16 +126,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="label">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>days</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="4">
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -110,29 +139,15 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="toolButton_historyClear">
-          <property name="text">
-           <string>Clear History</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
+      <item row="1" column="3">
+       <widget class="QLabel" name="label">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>days</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -207,12 +222,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>141</x>
-     <y>45</y>
+     <x>152</x>
+     <y>43</y>
     </hint>
     <hint type="destinationlabel">
      <x>301</x>
-     <y>81</y>
+     <y>95</y>
     </hint>
    </hints>
   </connection>
@@ -220,11 +235,11 @@
    <sender>m_pHistoryMax</sender>
    <signal>valueChanged(int)</signal>
    <receiver>DlgGeneralBase</receiver>
-   <slot>changed()</slot>
+   <slot>slotChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>262</x>
-     <y>72</y>
+     <x>301</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>474</x>
@@ -236,11 +251,11 @@
    <sender>m_pKeepHistory</sender>
    <signal>toggled(bool)</signal>
    <receiver>DlgGeneralBase</receiver>
-   <slot>changed()</slot>
+   <slot>slotChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>84</x>
-     <y>45</y>
+     <x>95</x>
+     <y>43</y>
     </hint>
     <hint type="destinationlabel">
      <x>492</x>
@@ -250,6 +265,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>changed()</slot>
+  <slot>slotChanged()</slot>
  </slots>
 </ui>

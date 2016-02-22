@@ -38,7 +38,6 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
 {
    setupUi(this);
    connect(toolButton_historyClear, SIGNAL(clicked()), this, SLOT(slotClearCallHistoryAsked()));
-   toolButton_historyClear->setIcon(QIcon::fromTheme("edit-clear-history"));
    const bool isLimited = CategorizedHistoryModel::instance().isHistoryLimited();
    m_pKeepHistory->setChecked(!isLimited);
    m_pHistoryMax ->setEnabled(isLimited );
@@ -60,7 +59,7 @@ bool DlgGeneral::hasChanged()
 }
 
 ///Tag this dialog as changed
-void DlgGeneral::changed()
+void DlgGeneral::slotChanged()
 {
    m_HasChanged = true;
    emit updateButtons();
@@ -74,7 +73,8 @@ void DlgGeneral::updateWidgets()
 ///Save current settings
 void DlgGeneral::updateSettings()
 {
-   CategorizedHistoryModel::instance().setHistoryLimited(m_pKeepHistory->isChecked());
+   CategorizedHistoryModel::instance().setHistoryLimited(!m_pKeepHistory->isChecked());
+
    if (!m_pKeepHistory->isChecked())
       CategorizedHistoryModel::instance().setHistoryLimit(m_pHistoryMax->value());
 

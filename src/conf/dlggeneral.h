@@ -48,7 +48,7 @@ public Q_SLOTS:
    void slotClearCallHistoryAsked();
 
 public Q_SLOTS:
-   void changed();
+   void slotChanged();
 
 Q_SIGNALS:
    ///Emitted when the buttons need to be updated
