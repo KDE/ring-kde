@@ -92,6 +92,7 @@
       <li xml:lang="uk">Дзвінки на звичайні телефони за допомогою облікових записів із загальних систем надання послуг SIP</li>
       <li xml:lang="x-test">xxCalling real phone with accounts from common SIP service providersxx</li>
       <li>Support SIP, SIPS, IAX2 and the RING distributed communication protocol</li>
+      <li xml:lang="ast">Sofita SIP, SIPS, IAX2 y el protocolu de comunicación distribuyida RING</li>
       <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS, IAX2 i RING</li>
       <li xml:lang="ca-valencia">Implementació dels protocols de comunicació distribuïda SIP, SIPS, IAX2 i RING</li>
       <li xml:lang="es">Permite el uso de SIP, SIPS, IAX2 y del protocolo de comunicaciones distribuidas RING</li>
@@ -304,6 +305,7 @@
       <li xml:lang="uk">Можливість записування звукових даних дзвінків</li>
       <li xml:lang="x-test">xxCall audio recordingsxx</li>
       <li>Call history and bookmarks</li>
+      <li xml:lang="ast">Historia de llamaes y marcadores</li>
       <li xml:lang="ca">Historial i preferides de les trucades</li>
       <li xml:lang="ca-valencia">Historial i preferides de les trucades</li>
       <li xml:lang="es">Histórico de llamadas y marcadores</li>
