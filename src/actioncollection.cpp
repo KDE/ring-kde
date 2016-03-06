@@ -59,7 +59,6 @@
  #include "accessibility.h"
 #endif
 
-#define CREATE_ACTION(name) name = new QAction(this);name->setObjectName(#name);
 #define INIT_ACTION(name, icon, text) name = new QAction(icon, text, this);name->setObjectName(#name);
 
 ActionCollection* ActionCollection::instance()
@@ -488,6 +487,4 @@ GETTER(videoFullscreenAction        , action_video_fullscreen      )
 
 #undef GETTER
 
-
-#undef CREATE_ACTION
 #undef INIT_ACTION

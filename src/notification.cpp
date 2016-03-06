@@ -57,7 +57,7 @@ public:
 
 private:
    uint m_Answer      {99};
-   uint m_AnswerVideo {99};
+   //TODO uint m_AnswerVideo {99};
    uint m_HangUp      {99};
 
    Call* m_pCall;

@@ -67,6 +67,7 @@ protected:
                break;
             case Qt::WindowActive:
                qDebug() << "The window is now active";
+               [[clang::fallthrough]];
             case Qt::WindowNoState:
             default:
                if (e->oldState() == Qt::WindowMinimized)
@@ -448,7 +449,6 @@ void EventManager::escape()
          case Call::State::CONFERENCE:
          case Call::State::CONFERENCE_HOLD:
          case Call::State::COUNT__:
-         default:
             CallModel::instance().userActionModel() << UserActionModel::Action::HANGUP;
       }
    }
@@ -489,7 +489,6 @@ void EventManager::enter()
             break;
          case Call::State::COUNT__:
          case Call::State::NEW:
-         default:
             qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
       }
    }
@@ -549,7 +548,6 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
       case Call::State::CONFERENCE:
       case Call::State::CONFERENCE_HOLD:
       case Call::State::COUNT__:
-      default:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_STATE_CHANGED);
          qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
 
@@ -581,10 +579,10 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 
    if (TipCollection::dragAndDrop()) {
       int activeCallCounter=0;
-      foreach (Call* call2, CallModel::instance().getActiveCalls()) {
-         if (dynamic_cast<Call*>(call2)) {
-            activeCallCounter += (call2->lifeCycleState() == Call::LifeCycleState::PROGRESS)?1:0;
-            activeCallCounter -= (call2->lifeCycleState() == Call::LifeCycleState::INITIALIZATION)*1000;
+      foreach (Call* call3, CallModel::instance().getActiveCalls()) {
+         if (dynamic_cast<Call*>(call3)) {
+            activeCallCounter += (call3->lifeCycleState() == Call::LifeCycleState::PROGRESS)?1:0;
+            activeCallCounter -= (call3->lifeCycleState() == Call::LifeCycleState::INITIALIZATION)*1000;
          }
       }
       if (activeCallCounter >= 2 && !CallModel::instance().getActiveConferences().size()) {

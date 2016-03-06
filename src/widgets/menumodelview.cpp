@@ -53,8 +53,8 @@ void MenuModelView::drill(QAbstractItemModel* model, QItemSelectionModel* s, con
       if (idx == s->currentIndex()) {
          action->setChecked(true);
 
-         const QMetaObject::Connection conn = connect(s, &QItemSelectionModel::currentChanged, [this, action, pidx](const QModelIndex& idx) {
-            if (idx == pidx)
+         const QMetaObject::Connection conn = connect(s, &QItemSelectionModel::currentChanged, [this, action, pidx](const QModelIndex& idx2) {
+            if (idx2 == pidx)
                emit actionChanged(action);
          });
 

@@ -19,9 +19,9 @@
 #define ACCOUNTSERIALIZATIONADAPTER_H
 
 #include "typedefs.h"
+#include <account.h>
 
 class QWidget;
-class Account;
 
 /**
  * This class will automatically bridge QtDesigner .ui to the LRC Account::
@@ -41,8 +41,12 @@ public:
    AccountSerializationAdapter(Account* a, QWidget* w);
    virtual ~AccountSerializationAdapter();
 private:
+   void updateProblemList(int role, Account::RoleStatus status, QWidget* buddy);
    void drill(QWidget* w, Account* a, const QHash<QByteArray, int>& roles, bool clear = false);
    void setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& roles);
+
+   // Attributes
+   static QHash<int, QString> m_hProblems;
 };
 
 #endif

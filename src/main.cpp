@@ -42,7 +42,7 @@
 
 static const char version[] = "2.2.0";
 
-RingApplication* app;
+static RingApplication* app;
 void quitOnSignal(int signal);
 void quitOnSignal(int signal)
 {

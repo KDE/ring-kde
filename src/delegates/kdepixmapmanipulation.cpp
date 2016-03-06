@@ -450,7 +450,6 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
 
          return contactPhoto(p, QSize(22,22), true);
          }
-         break;
       case Ring::ObjectType::ContactMethod  : {
 
          const ContactMethod* cm = qvariant_cast<ContactMethod*>(
@@ -459,9 +458,7 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
 
          return callPhoto(cm, QSize(22,22), true);
          }
-         break;
       case Ring::ObjectType::Call           :
-         break;
       case Ring::ObjectType::Media          : //TODO
       case Ring::ObjectType::COUNT__        :
          break;

@@ -30,7 +30,7 @@ class ResizableTip : public QWidget
 
 public:
    explicit ResizableTip(QWidget* parent = nullptr);
-   virtual ~ResizableTip() {};
+   virtual ~ResizableTip() {}
 
    //Mutator
    void addWidget(QWidget* w);

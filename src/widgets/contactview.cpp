@@ -65,7 +65,7 @@ bool ContactView::viewportEvent( QEvent * event ) {
          //force it
          model()->dropMimeData(de->mimeData(), Qt::TargetMoveAction, newIdx.row(), newIdx.column(), newIdx.parent());
          return true;
-      } break;
+      }
       default:
          break;
    }

@@ -86,17 +86,17 @@ void IMManager::addMedia(Call* c, Media::Media* m)
 
       Media::Text* media = static_cast<Media::Text*>(m);
 
-      bool isRelevant = media->hasMimeType(QStringLiteral("text/plain"))
+      const bool isRelevant = media->hasMimeType(QStringLiteral("text/plain"))
          || media->hasMimeType(QStringLiteral("text/html"));
 
       auto cm = c->peerContactMethod();
 
       if (!isRelevant) {
          connect(media, &Media::Text::mimeTypesChanged, [this, media, cm]() {
-            bool isRelevant = media->hasMimeType(QStringLiteral("text/plain"))
+            const bool isRelevant2 = media->hasMimeType(QStringLiteral("text/plain"))
                || media->hasMimeType(QStringLiteral("text/html"));
 
-            if (isRelevant)
+            if (isRelevant2)
                newConversation(cm, media->recording()->instantTextMessagingModel());
 
          });

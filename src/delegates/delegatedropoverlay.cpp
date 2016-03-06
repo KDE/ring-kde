@@ -110,10 +110,10 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
 
          if (highlight) {
             QColor col = pen.color();
-            for(int i=1;i<=4;i++) {
+            for(int j=1;j<=4;j++) {
                painter->setBrush(Qt::NoBrush);
-               pen.setWidth(i);
-               col.setAlpha(205*(0.5/((float)i)));
+               pen.setWidth(j);
+               col.setAlpha(205*(0.5/((float)j)));
                pen.setColor(col);
                painter->setPen(pen);
                painter->drawRoundedRect(buttonRect, 10, 10);

@@ -52,7 +52,7 @@
 ///Constant
 #pragma GCC diagnostic ignored "-Wmissing-braces"
 
-TypedStateMachine< const char* , Call::State > callStateIcons = {{
+static TypedStateMachine< const char* , Call::State > callStateIcons = {{
    RingIcons::DIALING       , /* NEW            */
    RingIcons::INCOMING      , /* INCOMING       */
    RingIcons::RINGING       , /* RINGING        */
@@ -134,10 +134,10 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (obj)
          call = qobject_cast<Call*>(obj);
 
-      QPainter painter(&pxm);
+      QPainter painter2(&pxm);
       QPixmap status(":/images/icons/mailbox.svg");
       status=status.scaled(QSize(24,24));
-      painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+      painter2.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       if (m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
          auto button = new PlayerOverlay((Media::AVRecording*)call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0],nullptr); //TODO handle more than 1
          button->setRecording((Media::AVRecording*)call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN)[0]);
@@ -146,7 +146,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    //Handle history
    else if (!isBookmark && ((currentState == Call::State::OVER && ConfigurationSkeleton::displayHistoryStatus()) || (currentState != Call::State::OVER))) {
-      QPainter painter(&pxm);
+      QPainter painter2(&pxm);
       QPixmap status((currentState==Call::State::OVER)?
          KDEPixmapManipulation::icnPath   [index.data(static_cast<int>(Call::Role::Missed   )).toInt()]
                                           [(int)qvariant_cast<Call::Direction>(index.data(static_cast<int>(Call::Role::Direction)))]
@@ -158,7 +158,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 //          painter.setBrush(QColor(255,255,255,255));
 //          painter.drawEllipse(pxm.width()-status.width(),pxm.height()-status.height(),pxmHeight,pxmHeight);
 //          painter.restore();
-         painter.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
+         painter2.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       }
    }
 

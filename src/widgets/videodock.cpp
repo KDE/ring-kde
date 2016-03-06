@@ -97,7 +97,7 @@ protected:
          }
       }
       return false;
-   };
+   }
    VideoDock* m_pParent;
 };
 

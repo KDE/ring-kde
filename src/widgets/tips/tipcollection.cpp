@@ -72,7 +72,6 @@ Tip* TipCollection::canvasObjectToTip(CanvasObjectManager::Object obj)
          return searching();
       case CanvasObjectManager::Object::NoObject:
       case CanvasObjectManager::Object::AutoComplete:
-      default:
          return nullptr;
    }
 }
@@ -91,7 +90,6 @@ QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
       case CanvasObjectManager::Object::NoObject:
       case CanvasObjectManager::Object::AccountDown:
       case CanvasObjectManager::Object::Searching:
-      default:
          return nullptr;
    }
 }

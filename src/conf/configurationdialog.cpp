@@ -74,7 +74,6 @@ void PlaceHolderWidget::display(KPageWidgetItem *current)
 }
 
 #define GUARD(a,b) if (a) {a->b;}
-#define GUARD_TRUE(a,b) (a?(a->b):true)
 #define GUARD_FALSE(a,b) (a?(a->b):false)
 
 /*
@@ -310,7 +309,6 @@ void ConfigurationDialog::slotPresenceEnabled(bool state)
 }
 
 #undef GUARD
-#undef GUARD_TRUE
 #undef GUARD_FALSE
 #include "configurationdialog.moc"
 #include "moc_configurationdialog.cpp"

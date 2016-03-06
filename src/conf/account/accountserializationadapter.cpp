@@ -36,6 +36,8 @@
 #include <account.h>
 #include <accountmodel.h>
 
+QHash<int, QString> AccountSerializationAdapter::m_hProblems = {};
+
 constexpr static const char LRC_CFG[]   = "lrcfg_";
 constexpr static const int  LRC_CFG_LEN = 6       ;
 
@@ -77,8 +79,7 @@ QWidget* buddyWidget(QWidget* w)
    return nullptr;
 }
 
-static QHash<int, QString> m_hProblems;
-void updateProblemList(int role, Account::RoleStatus status, QWidget* buddy)
+void AccountSerializationAdapter::updateProblemList(int role, Account::RoleStatus status, QWidget* buddy)
 {
    Q_UNUSED(buddy)
    switch(status) {
@@ -126,10 +127,10 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
                   if (a->roleData(role) != text)
                      a->setRoleData(role, text);
 
-                  const Account::RoleStatus rs = a->roleStatus((Account::Role)role);
+                  const Account::RoleStatus rstatus = a->roleStatus((Account::Role)role);
                   QPalette pal = QApplication::palette();
                   static QPalette palOrig = QApplication::palette();
-                  pal.setBrush(QPalette::Base,rs != Account::RoleStatus::OK ?
+                  pal.setBrush(QPalette::Base,rstatus != Account::RoleStatus::OK ?
                      errorBrush.brush(QPalette::Normal) : palOrig.base()
                   );
 
@@ -156,9 +157,9 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             avoidDuplicate(b);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(b, &QAbstractButton::toggled,[a,role](bool c) {
-                  if (a->roleData(role).toBool() != c)
-                     a->setRoleData(role, c);
+               QObject::connect(b, &QAbstractButton::toggled,[a,role](bool ck) {
+                  if (a->roleData(role).toBool() != ck)
+                     a->setRoleData(role, ck);
                })
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
@@ -169,9 +170,9 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             b->setCheckable(rs == Account::RoleState::READ_WRITE);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(b, &QGroupBox::toggled,[a,role](bool c) {
-                  if (a->roleData(role).toBool() != c)
-                     a->setRoleData(role, c);
+               QObject::connect(b, &QGroupBox::toggled,[a,role](bool ck) {
+                  if (a->roleData(role).toBool() != ck)
+                     a->setRoleData(role, ck);
                })
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
@@ -262,8 +263,8 @@ AccountSerializationAdapter::AccountSerializationAdapter(Account* a, QWidget* w)
 {
    static QHash<QByteArray, int> reverse;
    if (reverse.isEmpty()) {
-      const QHash<int, QByteArray> a = AccountModel::instance().roleNames();
-      for (QHash<int, QByteArray>::const_iterator i = a.begin(); i != a.end(); ++i) {
+      const QHash<int, QByteArray> roles = AccountModel::instance().roleNames();
+      for (QHash<int, QByteArray>::const_iterator i = roles.begin(); i != roles.end(); ++i) {
          reverse[i.value()] = i.key();
       }
    }

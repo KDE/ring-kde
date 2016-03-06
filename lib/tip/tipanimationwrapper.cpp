@@ -113,9 +113,6 @@ void TipAnimationWrapper::step()
          case Tip::TipPosition::Bottom:
             wy = m_ParentRect.height() - tipSize().height() - 40 + m_ParentRect.y();
             break;
-         default:
-            wy = ((m_ParentRect.height()-tipSize().height())/2 + m_ParentRect.y());
-            break;
       }
 
       //Set opacity
