@@ -60,20 +60,20 @@ public:
 
 private:
    //Attributes
-   QTimer*           m_pTimer;
-   Tip*              m_pTip;
-   int               m_Step;
-   Tip::TipAnimation m_CurrentAnimation;
-   bool              m_FadeDirection;
+   QTimer*           m_pTimer           { nullptr                 };
+   Tip*              m_pTip             { nullptr                 };
+   int               m_Step             { 0                       };
+   Tip::TipAnimation m_CurrentAnimation { Tip::TipAnimation::None };
+   bool              m_FadeDirection    { true                    };
 
    QRect   m_ParentRect;
-   QSize   m_TipSize;
+   QSize   m_TipSize {QSize(0,0)};
    QImage  m_CurrentImage;
-   Tip*    m_pCurrentTip;
+   Tip*    m_pCurrentTip {nullptr};
    FrameDescription m_pCurrentDesc;
 
 protected:
-   int     m_MaxStep;
+   int     m_MaxStep {15};
 
 private Q_SLOTS:
    void step();

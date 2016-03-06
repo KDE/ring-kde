@@ -32,6 +32,7 @@ CategorizedDelegate::CategorizedDelegate(QTreeView* widget)
    : QStyledItemDelegate(nullptr)
    , m_LeftMargin(7),m_pChildDelegate(nullptr),m_pChildChildDelegate(nullptr)
 {
+   Q_UNUSED(widget)
 }
 
 ///Destructor

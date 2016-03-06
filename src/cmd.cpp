@@ -58,7 +58,6 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
    Q_UNUSED(argv)
 
    QCoreApplication* app = QCoreApplication::instance();
-   bool isRunning = true;
 
    QCommandLineOption call    (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QLatin1String("number" ), QLatin1String(""));
    QCommandLineOption text    (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number" ), QLatin1String(""));

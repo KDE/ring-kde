@@ -87,28 +87,28 @@ public:
    }
 
 private:
-   bool m_HasBg;
-   bool m_HasText;
+   bool m_HasBg {true};
+   bool m_HasText {true};
 
 protected:
    //Attributes
-   TipPosition   m_Position       ;
    QByteArray    m_OriginalFile   ;
    QString       m_OriginalText   ;
    QStringList   m_Lines          ;
    QSize         m_CurrentSize    ;
    QImage        m_CurrentImage   ;
    QRect         m_CurrentRect    ;
-   bool          m_IsMaxSize      ;
-   QSvgRenderer* m_pR             ;
    QPalette      m_OriginalPalette;
-   TipAnimation  m_AnimationIn    ;
-   TipAnimation  m_AnimationOut   ;
-   QFont*        m_pFont          ;
-   bool          m_IsVisible      ;
-   int           m_TimeOut        ;
-   int           m_Padding        ;
-   int           m_MaxWidth       ;
+   QSvgRenderer* m_pR          { nullptr                      };
+   bool          m_IsMaxSize   { false                        };
+   TipPosition   m_Position    { TipPosition::Bottom          };
+   TipAnimation  m_AnimationIn { TipAnimation::TranslationTop };
+   TipAnimation  m_AnimationOut{ TipAnimation::TranslationTop };
+   QFont*        m_pFont       { nullptr                      };
+   bool          m_IsVisible   { false                        };
+   int           m_TimeOut     { 0                            };
+   int           m_Padding     { 15                           };
+   int           m_MaxWidth    { 350                          };
 
    //Helper
    bool brightOrDarkBase();

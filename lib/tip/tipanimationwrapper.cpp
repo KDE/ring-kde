@@ -22,8 +22,7 @@
 #include "tip.h"
 #include "tipmanager.h"
 
-TipAnimationWrapper::TipAnimationWrapper(QObject* parent) : QObject(parent),m_MaxStep(15),m_Step(0),m_pTimer(nullptr),m_TipSize(QSize(0,0)),
-m_pTip(nullptr),m_pCurrentTip(nullptr),m_CurrentAnimation(Tip::TipAnimation::None),m_FadeDirection(true)
+TipAnimationWrapper::TipAnimationWrapper(QObject* parent) : QObject(parent)
 {
    connect(parent, SIGNAL(sizeChanged(QRect,bool)) , this , SLOT(sizeChanged(QRect,bool)) );
    connect(parent, SIGNAL(currentTipChanged(Tip*)) , this , SLOT(currentChanged(Tip*))    );

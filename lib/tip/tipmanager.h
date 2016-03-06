@@ -63,10 +63,10 @@ private:
 
    //Attributes
    QAbstractItemView*      m_pParent         ;
-   int                     m_TopMargin       ;
-   int                     m_BottomMargin    ;
+   int                     m_TopMargin      {0};
+   int                     m_BottomMargin   {0};
    QImage                  m_CurrentImage    ;
-   Tip*                    m_pCurrentTip     ;
+   Tip*                    m_pCurrentTip    {nullptr};
    TipAnimationWrapper     m_pAnim           ;
    FrameDescription        m_CurrentFrame    ;
 

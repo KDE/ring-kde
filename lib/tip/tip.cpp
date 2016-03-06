@@ -29,9 +29,8 @@
 #include "tipmanager.h"
 
 ///Constructor
-Tip::Tip(const QString& text, QWidget* parent) : QObject(parent),m_OriginalText(text),m_Position(TipPosition::Bottom),m_IsMaxSize(false),m_pR(nullptr),
-m_OriginalPalette(QApplication::palette()),m_AnimationIn(TipAnimation::TranslationTop),m_AnimationOut(TipAnimation::TranslationTop),m_pFont(nullptr),
-m_IsVisible(false),m_TimeOut(0),m_HasBg(true),m_HasText(true),m_Padding(15),m_MaxWidth(350)
+Tip::Tip(const QString& text, QWidget* parent) : QObject(parent),m_OriginalText(text),
+m_OriginalPalette(QApplication::palette())
 {
 }
 

@@ -36,7 +36,7 @@ bool TipManager::eventFilter(QObject *obj, QEvent *event)
 
 ///Constructor
 TipManager::TipManager(QAbstractItemView* parent):QObject(parent),m_pParent(parent),
-   m_BottomMargin(0),m_TopMargin(0),m_pAnim(this),m_pCurrentTip(nullptr)
+   m_pAnim(this)
 {
    m_CurrentFrame = {QPoint(0,0),QRect(),0};
    parent->installEventFilter(this);

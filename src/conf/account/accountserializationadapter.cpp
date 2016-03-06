@@ -80,6 +80,7 @@ QWidget* buddyWidget(QWidget* w)
 static QHash<int, QString> m_hProblems;
 void updateProblemList(int role, Account::RoleStatus status, QWidget* buddy)
 {
+   Q_UNUSED(buddy)
    switch(status) {
       case Account::RoleStatus::OK            :
          if (m_hProblems.contains(role))
