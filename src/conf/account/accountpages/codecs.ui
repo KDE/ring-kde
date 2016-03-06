@@ -10,9 +10,6 @@
     <height>346</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="5">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
