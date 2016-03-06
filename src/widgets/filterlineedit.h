@@ -18,7 +18,7 @@
 #ifndef FILTERLINEEDIT_H
 #define FILTERLINEEDIT_H
 
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 
 ///FilterLineEdit: An internalional filter string
 class FilterLineEdit : public QLineEdit

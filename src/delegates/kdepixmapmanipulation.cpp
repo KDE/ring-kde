@@ -18,17 +18,17 @@
 #include "kdepixmapmanipulation.h"
 
 //Qt
-#include <QSize>
-#include <QBuffer>
+#include <QtCore/QSize>
+#include <QtCore/QBuffer>
 #include <QtGui/QColor>
 #include <QtGui/QPainter>
 #include <QtGui/QBitmap>
 #include <QtWidgets/QApplication>
 #include <QtGui/QImage>
 #include <QtGui/QPalette>
+#include <QtGui/QIcon>
 
 //KDE
-#include <QIcon>
 #include <KColorScheme>
 #include <klocalizedstring.h>
 

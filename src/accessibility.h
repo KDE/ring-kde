@@ -18,7 +18,7 @@
 #ifndef ACCESSIBILITY_H
 #define ACCESSIBILITY_H
 
-#include <QList>
+#include <QtCore/QList>
 #include <QAction>
 class QTextToSpeech;
 

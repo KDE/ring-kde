@@ -20,12 +20,12 @@
 //KDE
 // #include <KSpeech>
 #include <klocalizedstring.h>
-#include <QIcon>
 
 //Qt
 #include <QtCore/QDateTime>
 #include <QtCore/QTime>
 #include <QTextToSpeech>
+#include <QtGui/QIcon>
 
 //Ring
 #include <call.h>

@@ -19,7 +19,7 @@
 #define DLG_VIDEO_H
 #ifdef ENABLE_VIDEO
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 #include "ui_dlgvideobase.h"
 namespace Video {

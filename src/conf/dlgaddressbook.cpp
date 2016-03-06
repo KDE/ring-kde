@@ -26,14 +26,6 @@
 //KDE
 #include <kmessagebox.h>
 #include <KConfigDialogManager>
-// #include "klib/akonadibackend.h"
-// #include <akonadi/collectionmodel.h>
-// #include "klib/akonadicontactcollectionmodel.h"
-// #include <akonadi/collectionpropertiesdialog.h>
-// #include <akonadi/agenttypedialog.h>
-// #include <akonadi/agentfilterproxymodel.h>
-// #include <akonadi/agentinstancecreatejob.h>
-// #include <akonadi/standardactionmanager.h>
 
 //Ring-KDE
 #include "klib/kcfg_settings.h"

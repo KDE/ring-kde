@@ -21,11 +21,11 @@
 //Qt
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QAction>
+#include <QtGui/QIcon>
 
 //KDE
 #include <kmessagebox.h>
 #include <klocalizedstring.h>
-#include <QIcon>
 
 //Ring
 #include "klib/kcfg_settings.h"

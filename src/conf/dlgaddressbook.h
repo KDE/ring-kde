@@ -20,8 +20,8 @@
 #define DLGADDRESSBOOK_H
 
 //Qt
-#include <QHash>
-#include <QString>
+#include <QtCore/QHash>
+#include <QtCore/QString>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QListWidgetItem>
 class QSortFilterProxyModel;

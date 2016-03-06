@@ -18,7 +18,7 @@
 #ifndef DLGACCESSIBILITY_H
 #define DLGACCESSIBILITY_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 #include "ui_dlgaccessibility.h"
 

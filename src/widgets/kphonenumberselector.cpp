@@ -18,7 +18,7 @@
 #include "kphonenumberselector.h"
 
 //KDE
-#include <QInputDialog>
+#include <QtWidgets/QInputDialog>
 #include <klocalizedstring.h>
 
 //Ring

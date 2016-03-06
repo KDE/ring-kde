@@ -17,10 +17,12 @@
  **************************************************************************/
 #include "delegatedropoverlay.h"
 
+// Qt
 #include <QtGui/QPainter>
-
-#include <QTimer>
+#include <QtCore/QTimer>
 #include <QtWidgets/QApplication>
+
+// Ring
 #include "call.h"
 #include <collectioninterface.h>
 #include <personmodel.h>

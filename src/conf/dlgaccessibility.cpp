@@ -21,11 +21,11 @@
 
 //Qt
 #include <QtWidgets/QStyledItemDelegate>
+#include <QtGui/QIcon>
 
 //KDE
 #include <KConfigDialog>
 #include <klocalizedstring.h>
-#include <QIcon>
 
 //Ring
 #include <macromodel.h>

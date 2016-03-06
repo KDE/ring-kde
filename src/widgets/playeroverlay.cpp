@@ -17,15 +17,18 @@
  **************************************************************************/
 #include "playeroverlay.h"
 
-#include <QFile>
+// Qt
+#include <QtCore/QFile>
+#include <QtCore/QDebug>
 #include <QtWidgets/QGraphicsOpacityEffect>
-
-#include <QIcon>
+#include <QtGui/QIcon>
 #include <QtCore/QUrl>
+
+// KDE
 #include <kmessagebox.h>
 #include <klocalizedstring.h>
-#include <QDebug>
 
+// Ring
 #include "media/recording.h"
 #include "media/avrecording.h"
 

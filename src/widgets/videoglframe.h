@@ -18,10 +18,10 @@
 #ifndef VIDEOGLFRAME_H
 #define VIDEOGLFRAME_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
-#include <QSize>
-#include <QPoint>
+#include <QtCore/QSize>
+#include <QtCore/QPoint>
 
 namespace Video {
    class Renderer;

@@ -19,7 +19,7 @@
 #ifndef DLGAUDIO_H
 #define DLGAUDIO_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include <kconfigdialog.h>
 
 #include "ui_dlgaudiobase.h"

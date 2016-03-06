@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "player.h"
 
-#include <QIcon>
+#include <QtGui/QIcon>
 #include "playeroverlay.h"
 #include "media/recording.h"
 #include "media/avrecording.h"

@@ -19,7 +19,7 @@
 #ifndef RINGAPPLICATION_H
 #define RINGAPPLICATION_H
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 //Qt
 class QEvent;

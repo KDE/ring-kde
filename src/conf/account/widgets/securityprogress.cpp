@@ -28,10 +28,10 @@
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QLineEdit>
+#include <QtGui/QIcon>
 
 //KDE
 #include <klocalizedstring.h>
-#include <QIcon>
 
 //Ring
 #include <securityflaw.h>

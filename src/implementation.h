@@ -18,13 +18,16 @@
 #ifndef IMPLEMENTATION_H
 #define IMPLEMENTATION_H
 
+// Qt
+#include <QtGui/QPalette>
+#include <QtGui/QColor>
+#include <QtCore/QMutex>
+
+// Ring
 #include <interfaces/accountlistcolorizeri.h>
 #include <call.h>
 #include <account.h>
 
-#include <QtGui/QPalette>
-#include <QtGui/QColor>
-#include <QtCore/QMutex>
 #include <interfaces/presenceserializeri.h>
 #include <interfaces/shortcutcreatori.h>
 #include <interfaces/actionextenderi.h>

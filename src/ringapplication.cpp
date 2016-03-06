@@ -23,12 +23,12 @@
 #include <QtCore/QDir>
 #include <QtCore/QTimer>
 #include <QtCore/QCommandLineParser>
+#include <QtCore/QDebug>
+#include <QtCore/QStandardPaths>
 
 //KDE
 #include <KIconLoader>
-#include <QStandardPaths>
 #include <KMainWindow>
-#include <QDebug>
 #include <kmessagebox.h>
 
 

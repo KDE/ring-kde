@@ -18,7 +18,7 @@
 #ifndef CMD_H
 #define CMD_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 //KDE
 class KAboutData;

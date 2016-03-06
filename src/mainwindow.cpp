@@ -29,6 +29,8 @@
 #include <QtCore/QTimer>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QComboBox>
+#include <QtGui/QIcon>
+#include <QtCore/QStandardPaths>
 
 //KDE
 #include <KNotification>
@@ -36,8 +38,6 @@
 #include <kmessagebox.h>
 
 #include <klocalizedstring.h>
-#include <QIcon>
-#include <QStandardPaths>
 
 //Models
 #include <accountmodel.h>

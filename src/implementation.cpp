@@ -29,9 +29,9 @@
 #include <QtCore/QDir>
 #include <QtCore/QMimeData>
 #include <QtGui/QClipboard>
+#include <QtGui/QIcon>
 
 //KDE
-#include <QIcon>
 #include <KColorScheme>
 #include <klocalizedstring.h>
 #include <KMessageBox>

@@ -24,9 +24,9 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QClipboard>
-#include <QPrinter>
+#include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
-#include <QProcess>
+#include <QtCore/QProcess>
 #include <QtCore/QPointer>
 
 //Ring

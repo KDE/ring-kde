@@ -19,7 +19,7 @@
 #ifndef DLGDISPLAY_H
 #define DLGDISPLAY_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 #include "ui_dlgdisplaybase.h"
 

@@ -22,14 +22,12 @@
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
 #include <QtWidgets/QApplication>
-#include <QTimer>
-
-//KDE
+#include <QtCore/QTimer>
+#include <QtCore/QStandardPaths>
 
 
 //STD
 #include <cmath>
-#include <QStandardPaths>
 
 ///Constructor
 RingingTip::RingingTip(QWidget* parent) : Tip(QString(),parent),m_pTimer(nullptr),m_Counter(0),

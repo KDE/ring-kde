@@ -20,10 +20,10 @@
 //Qt
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QPainter>
+#include <QtCore/QStandardPaths>
 
 //KDE
 #include <KLocalizedString>
-#include <QStandardPaths>
 
 
 ///Constructor

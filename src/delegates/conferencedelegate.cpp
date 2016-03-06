@@ -18,18 +18,15 @@
 #include "conferencedelegate.h"
 
 //Qt
-#include <QSize>
+#include <QtCore/QSize>
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QGraphicsEffect>
 #include <QtWidgets/QGraphicsOpacityEffect>
 #include <QtWidgets/QApplication>
-
-//KDE
-
-#include <QLineEdit>
-#include <QStandardPaths>
+#include <QtWidgets/QLineEdit>
+#include <QtCore/QStandardPaths>
 
 //Ring
 #include "../widgets/categorizedtreeview.h"

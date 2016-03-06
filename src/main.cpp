@@ -25,14 +25,13 @@
 #include <signal.h>
 
 //Qt
-#include <QString>
+#include <QtCore/QString>
+#include <QtGui/QImage>
 
 //KDE
 #include <KDBusService>
-#include <QtGui/QImage>
 #include <kaboutdata.h>
 #include <KLocalizedString>
-// #include <kde_file.h>
 
 //Ring
 #include "ringapplication.h"

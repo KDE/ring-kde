@@ -18,8 +18,8 @@
 #include "callviewoverlay.h"
 
 //Qt
-#include <QTimer>
-#include <QEvent>
+#include <QtCore/QTimer>
+#include <QtCore/QEvent>
 #include <QtGui/QPainter>
 #include <QtWidgets/QGraphicsBlurEffect>
 #include <QtWidgets/QGraphicsOpacityEffect>

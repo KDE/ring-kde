@@ -74,6 +74,7 @@ Tip* TipCollection::canvasObjectToTip(CanvasObjectManager::Object obj)
       case CanvasObjectManager::Object::AutoComplete:
          return nullptr;
    }
+   return nullptr;
 }
 
 QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
@@ -92,6 +93,7 @@ QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
       case CanvasObjectManager::Object::Searching:
          return nullptr;
    }
+   return nullptr;
 }
 
 //Tutorial mode

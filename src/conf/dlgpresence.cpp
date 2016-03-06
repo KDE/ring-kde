@@ -17,8 +17,10 @@
  ***************************************************************************/
 #include "dlgpresence.h"
 
+// Qt
+#include <QtGui/QIcon>
+
 //KDE
-#include <QIcon>
 #include <KLocalizedString>
 
 //Ring

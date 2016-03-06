@@ -21,11 +21,11 @@
 #include <QtSvg/QSvgRenderer>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#include <QTimer>
+#include <QtCore/QTimer>
+#include <QtCore/QStandardPaths>
 
 //KDE
 #include <KLocalizedString>
-#include <QStandardPaths>
 
 
 ///Constructor

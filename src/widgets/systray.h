@@ -19,7 +19,7 @@
 #ifndef SYSTRAY_H
 #define SYSTRAY_H
 
-#include <QSystemTrayIcon>
+#include <QtWidgets/QSystemTrayIcon>
 
 //KDE
 class QAction;

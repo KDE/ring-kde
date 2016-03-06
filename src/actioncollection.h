@@ -18,7 +18,7 @@
 #ifndef ACTIONCOLLECTION_H
 #define ACTIONCOLLECTION_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 //Qt
 class QActionGroup;

@@ -22,7 +22,7 @@
 
 //Qt
 #include <QtWidgets/QWidget>
-#include <QTimer>
+#include <QtCore/QTimer>
 
 
 //Qt

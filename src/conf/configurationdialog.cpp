@@ -19,7 +19,7 @@
 #include "configurationdialog.h"
 
 //KDE
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <klocalizedstring.h>
 
 #include <KConfigDialogManager>

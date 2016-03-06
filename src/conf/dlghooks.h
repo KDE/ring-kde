@@ -20,7 +20,7 @@
 #ifndef DLGHOOKS_H
 #define DLGHOOKS_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 #include "ui_dlghooksbase.h"
 

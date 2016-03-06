@@ -25,7 +25,7 @@
 #include <QtGui/QIcon>
 
 //KDE
-#include <QAction>
+#include <QtWidgets/QAction>
 
 //Ring
 #include "mainwindow.h"

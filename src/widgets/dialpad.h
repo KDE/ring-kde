@@ -19,8 +19,8 @@
 #ifndef DIALPAD_H
 #define DIALPAD_H
 
-#include <QWidget>
-#include <QPushButton>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QPushButton>
 
 //Qt
 class QGridLayout;

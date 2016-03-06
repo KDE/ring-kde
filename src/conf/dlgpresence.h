@@ -19,7 +19,7 @@
 #ifndef DLGPRESENCE_H
 #define DLGPRESENCE_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 #include "ui_dlgpresence.h"
 

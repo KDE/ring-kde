@@ -23,7 +23,7 @@
 #include <QtGui/QBrush>
 #include <QtGui/QDrag>
 #include <QtCore/QMimeData>
-#include <QEvent>
+#include <QtCore/QEvent>
 
 //KDE
 #include <KLocalizedString>

@@ -18,7 +18,7 @@
 #ifndef TIP_COLLECTION_H
 #define TIP_COLLECTION_H
 
-#include <QHash>
+#include <QtCore/QHash>
 
 #include <canvasobjectmanager.h>
 
