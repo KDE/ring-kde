@@ -25,6 +25,7 @@ class QTreeView;
 ///CategorizedDelegate: A categorized tree delegate
 class CategorizedDelegate : public QStyledItemDelegate
 {
+   Q_OBJECT
 public:
    //Constructor
    explicit CategorizedDelegate(QTreeView* widget);

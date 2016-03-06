@@ -109,7 +109,7 @@ bool DlgProfiles::saveToPerson(Person* p)
    }
 
    //Get values of custom fields
-   for (QString key : m_hCustomFields.keys()) {
+   foreach(const QString& key, m_hCustomFields.keys()) {
       profile->addCustomField(key, m_hCustomFields.value(key)->text());
    }
 

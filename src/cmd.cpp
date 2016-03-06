@@ -195,7 +195,7 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
    }
 
    if (sendMessage && sendTextTo.size() && messages.size()) {
-      for (const QString& msg : messages)
+      foreach (const QString& msg, messages)
          sendText(sendTextTo, msg);
    }
 

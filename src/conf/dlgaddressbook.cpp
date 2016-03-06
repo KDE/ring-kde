@@ -148,7 +148,7 @@ void DlgAddressBook::updateSettings()
    CollectionModel::instance().save();
    m_pManager->updateSettings();
 
-   for (CollectionConfigurationInterface* c : m_lConfigurators) {
+   foreach (CollectionConfigurationInterface* c, m_lConfigurators) {
       if (c->hasChanged())
          c->save();
    }
@@ -167,7 +167,7 @@ void DlgAddressBook::changed()
 bool DlgAddressBook::hasChanged()
 {
    bool configuratorChanged = false;
-   for (CollectionConfigurationInterface* c : m_lConfigurators) {
+   foreach (CollectionConfigurationInterface* c, m_lConfigurators) {
       configuratorChanged |= c->hasChanged();
    }
 

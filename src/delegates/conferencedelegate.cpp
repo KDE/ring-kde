@@ -231,7 +231,6 @@ void ConferenceDelegate::drawCategory(const QModelIndex& index, int sortRole, co
       path.lineTo(optRect.bottomLeft());
 
       QColor window(palette->window().color());
-      const QColor base(palette->base().color());
 
       window.setAlphaF(0.9);
 
@@ -513,7 +512,6 @@ void ConferenceDelegate::setModelData(QWidget * editor, QAbstractItemModel * mod
 ///Intercept QLineEdit show() call, to deselect the text (as it is selected automagically)
 bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
 {
-   Q_UNUSED(obj)
    if (event->type() == QEvent::Show) {
       QLineEdit* ed = qobject_cast<QLineEdit*>(obj);
       if (ed)
@@ -522,10 +520,10 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
    else if (event->type() == QEvent::MouseButtonDblClick || event->type() == QEvent::MouseButtonPress) {
       QLineEdit* ed = qobject_cast<QLineEdit*>(obj);
       if (ed) {
-         QObject* obj= qvariant_cast<Call*>(ed->property("call"));
+         QObject* obj2= qvariant_cast<Call*>(ed->property("call"));
          Call* call  = nullptr;
-         if (obj)
-            call = qobject_cast<Call*>(obj);
+         if (obj2)
+            call = qobject_cast<Call*>(obj2);
          if (call) {
             if (event->type() == QEvent::MouseButtonDblClick)
                call->performAction(Call::Action::ACCEPT);

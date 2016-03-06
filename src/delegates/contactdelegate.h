@@ -27,6 +27,7 @@ class CategorizedTreeView          ;
 
 class ContactDelegate : public QStyledItemDelegate
 {
+   Q_OBJECT
 public:
    explicit ContactDelegate(CategorizedTreeView* parent);
 

@@ -160,9 +160,9 @@ void VideoWidget::slotShowPreview(bool show)
       addRenderer(Video::PreviewManager::instance().previewRenderer());
       VideoGLFrame* frm = m_hFrames[Video::PreviewManager::instance().previewRenderer()];
       if (frm) {
-         frm->setScale(0.3);
-         frm->setTranslationX(1.8);
-         frm->setTranslationY(1.8);
+         frm->setScale(0.3f);
+         frm->setTranslationX(1.8f);
+         frm->setTranslationY(1.8f);
 //          frm->setRotY(60);
       }
    }

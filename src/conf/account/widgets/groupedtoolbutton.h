@@ -53,19 +53,22 @@ private:
     GroupPosition mGroupPosition;
 };
 
-class LeftToolButton : public GroupedToolButton {
+class LeftToolButton final : public GroupedToolButton {
+   Q_OBJECT
 public:
    explicit LeftToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
       setGroupPosition(GroupPosition::GroupLeft);
    }
 };
-class RightToolButton : public GroupedToolButton {
+class RightToolButton final : public GroupedToolButton {
+   Q_OBJECT
 public:
    explicit RightToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
       setGroupPosition(GroupPosition::GroupRight);
    }
 };
-class CenterToolButton : public GroupedToolButton {
+class CenterToolButton final : public GroupedToolButton {
+   Q_OBJECT
 public:
    explicit CenterToolButton(QWidget* parent = nullptr) : GroupedToolButton(parent) {
       setGroupPosition(GroupPosition::GroupCenter);

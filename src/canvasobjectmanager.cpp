@@ -296,9 +296,9 @@ bool CanvasObjectManager::newEvent(CanvasEvent events, const QString& message)
    else {
       QList<CanvasObjectManager::Object> nextObjs = CanvasObjectManager::eventsToObjects(events);
       CanvasObjectManager::Object highestPriorityNextObj = CanvasObjectManager::Object::NoObject;
-      foreach(const CanvasObjectManager::Object& nextObj, nextObjs) {
-         if (OBJ_DEF(nextObj).priority > OBJ_DEF(highestPriorityNextObj).priority)
-            highestPriorityNextObj = nextObj;
+      foreach(const CanvasObjectManager::Object& nextObj2, nextObjs) {
+         if (OBJ_DEF(nextObj2).priority > OBJ_DEF(highestPriorityNextObj).priority)
+            highestPriorityNextObj = nextObj2;
       }
       if (highestPriorityNextObj != CanvasObjectManager::Object::NoObject) {
          initiateInTransition(highestPriorityNextObj,message);
