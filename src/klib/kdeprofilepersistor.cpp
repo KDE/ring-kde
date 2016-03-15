@@ -31,7 +31,7 @@ bool KDEProfilePersister::load()
    qDebug() << "Loading vcf from:" << profDir;
 
    QStringList extensions = QStringList();
-   extensions << "*.vcf";
+   extensions << QStringLiteral("*.vcf");
 
    QStringList entries = profDir.entryList(extensions, QDir::Files);
 
@@ -68,6 +68,6 @@ bool KDEProfilePersister::save(const Person* c)
 
 QDir KDEProfilePersister::profilesDir() const
 {
-   QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')).mkdir("profiles/");
+   QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')).mkdir(QStringLiteral("profiles/"));
    return QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/')+"profiles/");
 }

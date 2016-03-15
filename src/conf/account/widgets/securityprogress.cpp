@@ -185,10 +185,10 @@ SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pM
    m_pIssueL   = new QLabel(this);
    m_pErrorL   = new QLabel(this);
 
-   infoIcon->   setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(16,16)));
-   warningIcon->setPixmap(QIcon::fromTheme("dialog-warning"    ).pixmap(QSize(16,16)));
-   issueIcon->  setPixmap(QIcon::fromTheme("task-attempt"      ).pixmap(QSize(16,16)));
-   errorIcon->  setPixmap(QIcon::fromTheme("dialog-error"      ).pixmap(QSize(16,16)));
+   infoIcon->   setPixmap(QIcon::fromTheme(QStringLiteral("dialog-information")).pixmap(QSize(16,16)));
+   warningIcon->setPixmap(QIcon::fromTheme(QStringLiteral("dialog-warning")    ).pixmap(QSize(16,16)));
+   issueIcon->  setPixmap(QIcon::fromTheme(QStringLiteral("task-attempt")      ).pixmap(QSize(16,16)));
+   errorIcon->  setPixmap(QIcon::fromTheme(QStringLiteral("dialog-error")      ).pixmap(QSize(16,16)));
 
    m_pInfoL   ->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed));
    m_pWarningL->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed));
@@ -354,17 +354,17 @@ void IssuesIcon::addFlaw(const SecurityFlaw* flaw)
    IssueButton* btn = new IssueButton(flaw,this);
    switch (flaw->severity()) {
       case SecurityEvaluationModel::Severity::INFORMATION:
-         btn->setIcon(QIcon::fromTheme("dialog-information"));
+         btn->setIcon(QIcon::fromTheme(QStringLiteral("dialog-information")));
          break;
       case SecurityEvaluationModel::Severity::WARNING:
       case SecurityEvaluationModel::Severity::FATAL_WARNING:
-         btn->setIcon(QIcon::fromTheme("dialog-warning"));
+         btn->setIcon(QIcon::fromTheme(QStringLiteral("dialog-warning")));
          break;
       case SecurityEvaluationModel::Severity::ISSUE:
-         btn->setIcon(QIcon::fromTheme("task-attempt"));
+         btn->setIcon(QIcon::fromTheme(QStringLiteral("task-attempt")));
          break;
       case SecurityEvaluationModel::Severity::ERROR:
-         btn->setIcon(QIcon::fromTheme("dialog-error"));
+         btn->setIcon(QIcon::fromTheme(QStringLiteral("dialog-error")));
          break;
       case SecurityEvaluationModel::Severity::UNSUPPORTED:
       case SecurityEvaluationModel::Severity::COUNT__:
@@ -372,7 +372,7 @@ void IssuesIcon::addFlaw(const SecurityFlaw* flaw)
    };
 
    btn->setToolButtonStyle(Qt::ToolButtonIconOnly);
-   btn->setStyleSheet("border:0px;background-color:transparent;margin:0px;padding:0px;");
+   btn->setStyleSheet(QStringLiteral("border:0px;background-color:transparent;margin:0px;padding:0px;"));
    m_pLayout->addWidget(btn);
    connect(flaw,SIGNAL(solved()),this,SLOT(slotSolved()));
    connect(btn,SIGNAL(clicked()),this,SLOT(slotFlawClicked()));

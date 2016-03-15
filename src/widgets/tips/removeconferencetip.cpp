@@ -34,7 +34,7 @@ RemoveConferenceTip::RemoveConferenceTip(QWidget* parent) : Tip(i18n("Remove the
    setHasBackground(false);
    setHasText(false);
    m_Padding = 0;
-   loadSvg(":/tip/icons/tips/removeconference.svg");
+   loadSvg(QStringLiteral(":/tip/icons/tips/removeconference.svg"));
 }
 
 ///Destructor

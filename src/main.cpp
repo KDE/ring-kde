@@ -64,16 +64,16 @@ int main(int argc, char **argv)
          QStringLiteral("http://www.ring.cx"),
          QStringLiteral("ring@lists.savoirfairelinux.net")
       );
-      about.setProgramLogo(QImage(":appicon/icons/64-apps-ring-kde.png"));
+      about.setProgramLogo(QImage(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
 
-      about.addAuthor( i18n( "Adrien Béraud"                   ), QString(), "adrien.beraud@savoirfairelinux.com"        );
-      about.addAuthor( i18n( "Alexandre Lision"                ), QString(), "alexandre.lision@savoirfairelinux.com"     );
-      about.addAuthor( i18n( "Édric Ladent-Milaret"            ), QString(), "edric.ladent-milaret@savoirfairelinux.com" );
-      about.addAuthor( i18n( "Éloi Bail"                       ), QString(), "eloi.bail@savoirfairelinux.com"            );
-      about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), "emmanuel.lepage@savoirfairelinux.com"      );
-      about.addAuthor( i18n( "Guillaume Roguez"                ), QString(), "guillaume.roguez@savoirfairelinux.com"     );
-      about.addAuthor( i18n( "Marianne Forget"                 ), QString(), "marianne.forget@savoirfairelinux.com"      );
-      about.addAuthor( i18n( "Stepan Salenikovich"             ), QString(), "stepan.salenikovich@savoirfairelinux.com"  );
+      about.addAuthor( i18n( "Adrien Béraud"                   ), QString(), QStringLiteral("adrien.beraud@savoirfairelinux.com")        );
+      about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com")     );
+      about.addAuthor( i18n( "Édric Ladent-Milaret"            ), QString(), QStringLiteral("edric.ladent-milaret@savoirfairelinux.com") );
+      about.addAuthor( i18n( "Éloi Bail"                       ), QString(), QStringLiteral("eloi.bail@savoirfairelinux.com")            );
+      about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), QStringLiteral("emmanuel.lepage@savoirfairelinux.com")      );
+      about.addAuthor( i18n( "Guillaume Roguez"                ), QString(), QStringLiteral("guillaume.roguez@savoirfairelinux.com")     );
+      about.addAuthor( i18n( "Marianne Forget"                 ), QString(), QStringLiteral("marianne.forget@savoirfairelinux.com")      );
+      about.addAuthor( i18n( "Stepan Salenikovich"             ), QString(), QStringLiteral("stepan.salenikovich@savoirfairelinux.com")  );
       about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                   );
 
       KAboutData::setApplicationData(about);
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 
       app->setApplicationName   ( about.productName() );
       app->setApplicationVersion( about.version    () );
-      app->setOrganizationDomain( "ring.cx"           );
+      app->setOrganizationDomain( QStringLiteral("ring.cx")           );
 
       //Only start the application once
 #ifdef Q_OS_LINUX

@@ -172,7 +172,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 #ifdef Q_OS_LINUX
       CertificateModel::instance().addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
-         QString("/usr/share/ca-certificates/"),
+         QStringLiteral("/usr/share/ca-certificates/"),
          FolderCertificateCollection::Options::ROOT
           | FolderCertificateCollection::Options::RECURSIVE
           | FolderCertificateCollection::Options::READ_ONLY,
@@ -224,7 +224,7 @@ MainWindow::MainWindow(QWidget* parent)
    m_pCentralDW->setWindowTitle ( i18nc("Call tab","Call")                      );
    m_pCentralDW->setFeatures    ( QDockWidget::NoDockWidgetFeatures             );
    m_pView->setSizePolicy       ( QSizePolicy::Expanding,QSizePolicy::Expanding );
-   m_pCentralDW->setStyleSheet  ( "\
+   m_pCentralDW->setStyleSheet  ( QStringLiteral("\
       QDockWidget::title {\
          margin:0px;\
          padding:0px;\
@@ -232,12 +232,12 @@ MainWindow::MainWindow(QWidget* parent)
          max-height:0px;\
       }\
       \
-   ");
+   "));
 
    m_pCentralDW->setTitleBarWidget(new QWidget());
    m_pCentralDW->setContentsMargins(0,0,0,0);
    m_pView->setContentsMargins     (0,0,0,0);
-   m_pCentralDW->setObjectName( "callDock" );
+   m_pCentralDW->setObjectName( QStringLiteral("callDock") );
    m_pCentralDW->show();
 
    m_pStatusBarWidget = new QLabel       ( this );
@@ -277,11 +277,11 @@ MainWindow::MainWindow(QWidget* parent)
 
    if (m_pTrayIcon) {
       m_pTrayIcon->show();
-      m_pTrayIcon->setObjectName( "m_pTrayIcon"   );
+      m_pTrayIcon->setObjectName( QStringLiteral("m_pTrayIcon")   );
    }
 
-   m_pView->setObjectName       ( "m_pView"       );
-   statusBar()->setObjectName   ( "statusBar"     );
+   m_pView->setObjectName       ( QStringLiteral("m_pView")       );
+   statusBar()->setObjectName   ( QStringLiteral("statusBar")     );
 
    m_pInitialized = true ;
 
@@ -294,7 +294,7 @@ MainWindow::MainWindow(QWidget* parent)
       tb->addWidget(spacer);
       QToolButton* btn = new QToolButton(tb);
       btn->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Expanding);
-      btn->setStyleSheet("padding:0px;spacing:0px;margin:0px;");
+      btn->setStyleSheet(QStringLiteral("padding:0px;spacing:0px;margin:0px;"));
       btn->setIcon(QIcon(":/appicon/icons/sc-apps-ring-kde.svgz"));
       tb->addWidget(btn);
    }
@@ -335,7 +335,7 @@ MainWindow::MainWindow(QWidget* parent)
    bar->addWidget(ringId);
 
    m_pPresenceDock = new QDockWidget(this);
-   m_pPresenceDock->setObjectName("presence-dock");
+   m_pPresenceDock->setObjectName(QStringLiteral("presence-dock"));
    m_pPresenceDock->setWidget(new Presence(m_pPresenceDock));
    m_pPresenceDock->setAllowedAreas(Qt::TopDockWidgetArea);
    m_pPresenceDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -356,7 +356,7 @@ MainWindow::MainWindow(QWidget* parent)
    connect(m_pPresent,SIGNAL(toggled(bool)),m_pPresenceDock,SLOT(setVisible(bool)));
 
    QToolButton* m_pReloadButton = new QToolButton(this);
-   m_pReloadButton->setIcon(QIcon::fromTheme("view-refresh"));
+   m_pReloadButton->setIcon(QIcon::fromTheme(QStringLiteral("view-refresh")));
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,SIGNAL(clicked()),&AccountModel::instance(),SLOT(registerAllAccounts()));
 
@@ -555,7 +555,7 @@ void MainWindow::setAutoStart(bool value)
    Q_UNUSED(value)
 
    if (value) {
-      const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/ring-kde.desktop");
+      const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ring-kde/ring-kde.desktop"));
       QFile f(path);
 
       if (f.exists()) {

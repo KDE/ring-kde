@@ -102,8 +102,8 @@ void VideoWidget::dragMoveEvent( QDragMoveEvent* e )
 
 void VideoWidget::dropEvent( QDropEvent* e )
 {
-   if (m_pSourceModel && e->mimeData()->hasFormat("text/uri-list")) {
-      m_pSourceModel->setFile(QUrl(e->mimeData()->data("text/uri-list")));
+   if (m_pSourceModel && e->mimeData()->hasFormat(QStringLiteral("text/uri-list"))) {
+      m_pSourceModel->setFile(QUrl(e->mimeData()->data(QStringLiteral("text/uri-list"))));
    }
    e->accept();
 }

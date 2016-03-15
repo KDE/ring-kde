@@ -37,7 +37,7 @@ public:
 
    virtual QByteArray toByteArray(const QVariant& pxm) override;
 
-   virtual QVariant personPhoto(const QByteArray& data, const QString& type = "PNG") override;
+   virtual QVariant personPhoto(const QByteArray& data, const QString& type = QStringLiteral("PNG")) override;
 
    QVariant numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence = false, bool isPresent = false) override;
 

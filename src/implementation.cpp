@@ -100,11 +100,11 @@ QVariant ColorDelegate::icon(const Account* a) {
    /*if (a->editState() == Account::EditState::MODIFIED)
       return QIcon::fromTheme("document-save");*/
    if (a->editState() == Account::EditState::MODIFIED_COMPLETE)
-      return QIcon::fromTheme("document-save");
+      return QIcon::fromTheme(QStringLiteral("document-save"));
    if (a->editState() == Account::EditState::MODIFIED_INCOMPLETE)
-      return QIcon::fromTheme("dialog-warning");
+      return QIcon::fromTheme(QStringLiteral("dialog-warning"));
    else if (a->editState() == Account::EditState::OUTDATED) {
-      return QIcon::fromTheme("view-refresh");
+      return QIcon::fromTheme(QStringLiteral("view-refresh"));
    }
    return QVariant();
 }
@@ -113,7 +113,7 @@ void KDEPresenceSerializationDelegate::save() {
    PresenceStatusModel& m = PresenceStatusModel::instance();
    QStringList list;
    for (int i=0;i<m.rowCount();i++) {
-      QString line = QString("%1///%2///%3///%4///%5")
+      QString line = QStringLiteral("%1///%2///%3///%4///%5")
          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Name),Qt::DisplayRole).toString())
          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::DisplayRole).toString())
          .arg(qvariant_cast<QColor>(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::BackgroundColorRole)).name())    //Color
@@ -154,13 +154,13 @@ void KDEPresenceSerializationDelegate::load() {
    }
    else {
       foreach(const QString& line, list) {
-         QStringList fields = line.split("///");
+         QStringList fields = line.split(QStringLiteral("///"));
          PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
          data->name          = fields[(int)PresenceStatusModel::Columns::Name   ];
          data->message       = fields[(int)PresenceStatusModel::Columns::Message];
          data->color         = QColor(fields[(int)PresenceStatusModel::Columns::Color]);
-         data->status        = fields[(int)PresenceStatusModel::Columns::Status] == "1";
-         data->defaultStatus = fields[(int)PresenceStatusModel::Columns::Default] == "1";
+         data->status        = fields[(int)PresenceStatusModel::Columns::Status] == QLatin1String("1");
+         data->defaultStatus = fields[(int)PresenceStatusModel::Columns::Default] == QLatin1String("1");
          m.addStatus(data);
       }
    }
@@ -205,7 +205,7 @@ QVariant KDEShortcutDelegate::createAction(Macro* macro)
 
    QAction * newAction = new QAction(macro);
    newAction->setText(macro->name());
-   newAction->setIcon(QIcon::fromTheme("view-form-action"));
+   newAction->setIcon(QIcon::fromTheme(QStringLiteral("view-form-action")));
    newAction->setObjectName("action_macro"+macro->id());
    QObject::connect(newAction, SIGNAL(triggered()), macro , SLOT(execute()) );
 

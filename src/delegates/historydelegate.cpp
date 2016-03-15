@@ -134,7 +134,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          call = qobject_cast<Call*>(obj);
 
       QPainter painter2(&pxm);
-      QPixmap status(":/images/icons/mailbox.svg");
+      QPixmap status(QStringLiteral(":/images/icons/mailbox.svg"));
       status=status.scaled(QSize(24,24));
       painter2.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       if (m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
@@ -164,7 +164,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (currentLifeCycleState == Call::LifeCycleState::PROGRESS) {
       //Record
       if (index.data(static_cast<int>(Call::Role::IsAVRecording)).toBool()) {
-         const static QPixmap record(":/images/icons/rec_call.svg");
+         const static QPixmap record(QStringLiteral(":/images/icons/rec_call.svg"));
          time_t curTime;
          ::time(&curTime);
          if (curTime%3)
@@ -298,9 +298,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (index.data(static_cast<int>(Call::Role::DropState)).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
          const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(":/gui/icons/confBlackWhite.svg"),Call::DropAction::Conference));
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(":/gui/icons/transferarrow.svg"),Call::DropAction::Transfer));
-         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(":/gui/icons/transferarrow.svg"),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/confBlackWhite.svg")),Call::DropAction::Conference));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),Call::DropAction::Transfer));
       }
 
       if (currentState == Call::State::OVER)

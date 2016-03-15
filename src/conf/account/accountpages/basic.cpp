@@ -71,7 +71,7 @@ void Pages::Basic::updateStatus()
    if (account()->registrationState() == Account::RegistrationState::ERROR && !account()->lastErrorMessage().isEmpty())
       message = account()->lastErrorMessage();
 
-   edit7_state->setText(QString("<span style='color:%3'> %1 </span>(%2)")
+   edit7_state->setText(QStringLiteral("<span style='color:%3'> %1 </span>(%2)")
       .arg(message                          )
       .arg( errorCode==-1 ? 200 : errorCode )
       .arg(account()->stateColorName()      )

@@ -129,7 +129,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       //Draw the conference icon and info
       static const QPixmap* pxm = nullptr;
       if (!pxm) //Static
-         pxm = new QPixmap(":/images/icons/conf-small.svg");
+         pxm = new QPixmap(QStringLiteral(":/images/icons/conf-small.svg"));
       painter->drawPixmap ( opt.rect.x()+5, opt.rect.y()+2, 24, 24, *pxm);
       QFont font = painter->font();
       font.setBold(true);
@@ -144,7 +144,7 @@ void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
       }
       painter->setPen(baseColor);
       painter->setFont(font);
-      painter->drawText(opt.rect.x()+33,opt.rect.y()+font.pointSize()+8,"Conference");
+      painter->drawText(opt.rect.x()+33,opt.rect.y()+font.pointSize()+8,QStringLiteral("Conference"));
       font.setBold(false);
       painter->setFont(font);
       baseColor.setAlpha(150);
@@ -468,7 +468,7 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
 {
    Q_UNUSED(option)
    QLineEdit* ed = new QLineEdit(parent);
-   ed->setStyleSheet(QString("QLineEdit { background-color:transparent;border:0px;color:white;font-weight:bold;padding-left:%1 }").arg(option.rect.height()));
+   ed->setStyleSheet(QStringLiteral("QLineEdit { background-color:transparent;border:0px;color:white;font-weight:bold;padding-left:%1 }").arg(option.rect.height()));
    ed->setAutoFillBackground(false);
    ed->setProperty("call",index.data(static_cast<int>(Call::Role::Object)));
    connect(ed,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));

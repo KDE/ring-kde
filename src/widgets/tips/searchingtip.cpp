@@ -35,7 +35,7 @@ m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
    setHasBackground(false);
    setHasText(false);
    setTimeOut(60);
-   loadSvg(":/tip/icons/tips/searching.svg");
+   loadSvg(QStringLiteral(":/tip/icons/tips/searching.svg"));
    connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
 }
 

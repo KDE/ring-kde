@@ -42,8 +42,8 @@ OverlayToolbar::OverlayToolbar(QWidget* parent) : QWidget(parent),m_pRightRender
    pal.setColor(QPalette::Button    ,Qt::transparent);
    setPalette(pal);
    setAutoFillBackground(false);
-   m_pRightRender = new QSvgRenderer( QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/overlay_right_corner.svg") );
-   m_pLeftRender  = new QSvgRenderer( QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ring-kde/overlay_left_corner.svg" ) );
+   m_pRightRender = new QSvgRenderer( QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ring-kde/overlay_right_corner.svg")) );
+   m_pLeftRender  = new QSvgRenderer( QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ring-kde/overlay_left_corner.svg") ) );
 
    setMinimumSize(100,56);
    if (parent)

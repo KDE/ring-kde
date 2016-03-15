@@ -42,9 +42,9 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    m_pT2SBG->setEnabled(true);
 #endif
 
-   m_pAddTB->setIcon    ( QIcon::fromTheme( "list-add"    ) );
-   m_pRemoveTB->setIcon ( QIcon::fromTheme( "list-remove" ) );
-   m_pInfoIconL->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(24,24)));
+   m_pAddTB->setIcon    ( QIcon::fromTheme( QStringLiteral("list-add")    ) );
+   m_pRemoveTB->setIcon ( QIcon::fromTheme( QStringLiteral("list-remove") ) );
+   m_pInfoIconL->setPixmap(QIcon::fromTheme(QStringLiteral("dialog-information")).pixmap(QSize(24,24)));
    m_pInfoL->setText(i18n("This page allows to create macros that can then be called using keyboard shortcuts or added to the toolbar. To create one, "
    "assign a name and a character sequence. The sequence can be numeric or any character than can be interpreted as one (ex: \"A\" would be interpreted as 2)"));
 

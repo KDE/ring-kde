@@ -48,10 +48,10 @@ QString HelperFunctions::normStrippped(QString str)
 QString HelperFunctions::escapeHtmlEntities(QString str)
 {
    while (str.indexOf('<') != -1) {
-      str = str.replace('<',"&lt;");
+      str = str.replace('<',QLatin1String("&lt;"));
    }
    while (str.indexOf('>') != -1) {
-      str = str.replace('>',"&gt;");
+      str = str.replace('>',QLatin1String("&gt;"));
    }
    return str;
 }

@@ -31,8 +31,8 @@ Pages::Security::Security(QWidget *parent) : PageBase(parent)
    frame->setVisible(false);
    frame_2->setVisible(false);
 
-   label_3->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(22,22)));
-   label_2->setPixmap(QIcon::fromTheme("dialog-information").pixmap(QSize(22,22)));
+   label_3->setPixmap(QIcon::fromTheme(QStringLiteral("dialog-information")).pixmap(QSize(22,22)));
+   label_2->setPixmap(QIcon::fromTheme(QStringLiteral("dialog-information")).pixmap(QSize(22,22)));
 
    connect(this,&PageBase::accountSet,[this]() {
       combo_security_STRP->bindToModel(account()->keyExchangeModel(),account()->keyExchangeModel()->selectionModel());

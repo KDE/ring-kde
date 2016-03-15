@@ -32,10 +32,10 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
 {
    setupUi(this);
    m_pView->setModel(&PresenceStatusModel::instance());
-   m_pUp->setIcon     ( QIcon::fromTheme( "go-up"       ) );
-   m_pDown->setIcon   ( QIcon::fromTheme( "go-down"     ) );
-   m_pAdd->setIcon    ( QIcon::fromTheme( "list-add"    ) );
-   m_pRemove->setIcon ( QIcon::fromTheme( "list-remove" ) );
+   m_pUp->setIcon     ( QIcon::fromTheme( QStringLiteral("go-up")       ) );
+   m_pDown->setIcon   ( QIcon::fromTheme( QStringLiteral("go-down")     ) );
+   m_pAdd->setIcon    ( QIcon::fromTheme( QStringLiteral("list-add")    ) );
+   m_pRemove->setIcon ( QIcon::fromTheme( QStringLiteral("list-remove") ) );
    connect(m_pAdd   , SIGNAL(clicked()),&PresenceStatusModel::instance() ,SLOT(addRow())       );
    connect(m_pUp    , SIGNAL(clicked()),this                            ,SLOT(slotMoveUp())   );
    connect(m_pDown  , SIGNAL(clicked()),this                            ,SLOT(slotMoveDown()) );

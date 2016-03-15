@@ -42,7 +42,7 @@ class Q_DECL_EXPORT Tip : public QObject
 public:
    friend class TipAnimationWrapper;
 
-   explicit Tip(const QString& text="",QWidget* parent = nullptr);
+   explicit Tip(const QString& text=QString(),QWidget* parent = nullptr);
    virtual ~Tip();
 
    //Enum

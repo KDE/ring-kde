@@ -58,7 +58,7 @@ Wizard::Wizard(QWidget* parent) : QWidget(parent)
    w->m_pName->selectAll();
    connect(w->m_pNext, &QPushButton::clicked,this,&Wizard::slotNext);
    connect(w->m_pName, &QLineEdit::returnPressed,this,&Wizard::slotNext);
-   setStyleSheet("QLabel{color:white;} QLineEdit{color:white;background:transparent;}");
+   setStyleSheet(QStringLiteral("QLabel{color:white;} QLineEdit{color:white;background:transparent;}"));
 }
 
 Wizard::~Wizard()
@@ -77,7 +77,7 @@ void Wizard::slotNext()
    m_pCurrentPage = new QWidget(this);
    w->setupUi(m_pCurrentPage);
    m_pLayout->addWidget(m_pCurrentPage);
-   w->label->setPixmap(QIcon::fromTheme("document-share").pixmap(QSize(128,128)));
+   w->label->setPixmap(QIcon::fromTheme(QStringLiteral("document-share")).pixmap(QSize(128,128)));
    w->m_pHash->setText(m_pAccount->username());
    w->m_pHash->selectAll();
 
@@ -93,7 +93,7 @@ void Wizard::slotEmail()
 {
    qDebug() << "Sending email";
    QProcess *myProcess = new QProcess(this);
-   myProcess->start("xdg-email", {"--body",m_pAccount->username(),"--subject",m_pAccount->alias()+" Ring hash"});
+   myProcess->start(QStringLiteral("xdg-email"), {"--body",m_pAccount->username(),"--subject",m_pAccount->alias()+" Ring hash"});
 }
 
 void Wizard::slotPrint()
@@ -104,7 +104,7 @@ void Wizard::slotPrint()
    if (!dialog)
       return;
 
-   dialog->setWindowTitle("Print Hash");
+   dialog->setWindowTitle(QStringLiteral("Print Hash"));
 
    //This cause a crash on my system, look like a bug in Qt
    if (dialog->exec() != QDialog::Accepted)

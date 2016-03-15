@@ -77,7 +77,7 @@ static QIcon getIcon(const UserActionModel::Action a)
 static QString getName(const UserActionModel::Action a)
 {
    Q_UNUSED(a)
-   return "FOO";
+   return QStringLiteral("FOO");
 }
 
 ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
@@ -133,9 +133,9 @@ void ActionCollection::setupAction()
 
    action_configureRing->setText(i18n("Configure Ring-KDE"));
 
-   action_close         ->setObjectName( "action_close"         );
-   action_quit          ->setObjectName( "action_quit"          );
-   action_configureRing ->setObjectName( "action_configureRing" );
+   action_close         ->setObjectName( QStringLiteral("action_close")         );
+   action_quit          ->setObjectName( QStringLiteral("action_quit")          );
+   action_configureRing ->setObjectName( QStringLiteral("action_configureRing") );
 
    INIT_ACTION(action_displayDialpad        , QIcon(RingIcons::DISPLAY_DIALPAD                   ), i18n("Display dialpad"         ));
    INIT_ACTION(action_displayAccountCbb     , {}                                                  , i18n("Display account selector"));
@@ -363,9 +363,9 @@ void ActionCollection::showNotificationEditor()
    auto l = new QGridLayout(d);
    auto w = new KNotifyConfigWidget(d);
 
-   auto def    = new QPushButton(QIcon::fromTheme(""             ), i18n("Defaults"), d);
-   auto ok     = new QPushButton(QIcon::fromTheme("dialog-ok"    ), i18n("Ok"      ), d);
-   auto cancel = new QPushButton(QIcon::fromTheme("dialog-cancel"), i18n("Cancel"  ), d);
+   auto def    = new QPushButton(QIcon::fromTheme(QString()                      ), i18n("Defaults"), d);
+   auto ok     = new QPushButton(QIcon::fromTheme(QStringLiteral("dialog-ok")    ), i18n("Ok"      ), d);
+   auto cancel = new QPushButton(QIcon::fromTheme(QStringLiteral("dialog-cancel")), i18n("Cancel"  ), d);
 
    ok->setDefault(true);
 
@@ -393,7 +393,7 @@ void ActionCollection::editToolBar()
 {
    QPointer<KEditToolBar> toolbareditor = new KEditToolBar(MainWindow::app()->guiFactory());
    toolbareditor->setModal(true);
-   toolbareditor->setDefaultToolBar("mainToolBar");
+   toolbareditor->setDefaultToolBar(QStringLiteral("mainToolBar"));
    toolbareditor->exec();
    delete toolbareditor;
 }

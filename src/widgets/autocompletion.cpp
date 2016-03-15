@@ -49,7 +49,7 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : ResizableTip(parent),m_Heigh
 
    m_pLabel = new QLabel(this);
    m_pLabel->setText(i18n("Use ⬆ up and ⬇ down arrows to select one of these numbers"));
-   m_pLabel->setStyleSheet(QString("color:%1;font-weight:bold;").arg(QApplication::palette().base().color().name()));
+   m_pLabel->setStyleSheet(QStringLiteral("color:%1;font-weight:bold;").arg(QApplication::palette().base().color().name()));
    m_pLabel->setWordWrap(true);
    m_pView = new QListView(this);
    addWidget(m_pLabel);

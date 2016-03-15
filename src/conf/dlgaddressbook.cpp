@@ -45,7 +45,7 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 {
    setupUi(this);
 
-   m_pAddCollection->setIcon(QIcon::fromTheme("list-add"));
+   m_pAddCollection->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
 
    m_pDelegate = new AutoCompletionDelegate();
 

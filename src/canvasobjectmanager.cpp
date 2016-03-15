@@ -224,7 +224,7 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
                   //If the window is minimized, use system notification
                   const QString m = message.isEmpty()?currentTip->text():message;
                   if (m_Minimized && !m.isEmpty())
-                     KNotification::event(KNotification::Notification, "Ring", m);
+                     KNotification::event(KNotification::Notification, QStringLiteral("Ring"), m);
                   //If the window is not focused and the object request notification, use system
                   //disabled as it is not implemented by many top tier window managers
 #ifdef Q_WS_X11

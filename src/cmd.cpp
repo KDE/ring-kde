@@ -183,13 +183,13 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
          }
       }
       else {
-         if (arg == "--place-call")
+         if (arg == QLatin1String("--place-call"))
             current = Current::PLACE_CALL;
-         else if (arg == "--send-text")
+         else if (arg == QLatin1String("--send-text"))
             sendMessage = true;
-         else if (arg == "--message")
+         else if (arg == QLatin1String("--message"))
             current = Current::MESSAGE;
-         else if (arg == "--iconify")
+         else if (arg == QLatin1String("--iconify"))
          {}//TODO
       }
    }

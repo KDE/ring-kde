@@ -83,7 +83,7 @@ void KDEPixmapManipulation::clearCache()
 }
 
 QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence) {
-   const QString hash = QString("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
+   const QString hash = QStringLiteral("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
    QVariant preRendered = c->property(hash.toLatin1());
    if (preRendered.isValid())
       return preRendered;
@@ -179,7 +179,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
       if(p.isValid())
          pxm = qvariant_cast<QPixmap>(p);
       else
-         pxm = QPixmap(":/mini/icons/miniicons/call.png");
+         pxm = QPixmap(QStringLiteral(":/mini/icons/miniicons/call.png"));
       QPainter painter(&pxm);
       painter.setOpacity(0.3);
       painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
@@ -188,7 +188,7 @@ QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSiz
    }
    if (p.isValid())
       return qvariant_cast<QPixmap>(p);
-   return QPixmap(":/mini/icons/miniicons/call.png");
+   return QPixmap(QStringLiteral(":/mini/icons/miniicons/call.png"));
 }
 
 QVariant KDEPixmapManipulation::securityIssueIcon(const QModelIndex& index)
@@ -196,14 +196,14 @@ QVariant KDEPixmapManipulation::securityIssueIcon(const QModelIndex& index)
    SecurityEvaluationModel::Severity sev = qvariant_cast<SecurityEvaluationModel::Severity>(index.data((int)SecurityEvaluationModel::Role::Severity));
    switch(sev) {
       case SecurityEvaluationModel::Severity::INFORMATION:
-         return QIcon::fromTheme("dialog-information");
+         return QIcon::fromTheme(QStringLiteral("dialog-information"));
       case SecurityEvaluationModel::Severity::WARNING:
-         return QIcon::fromTheme("dialog-warning");
+         return QIcon::fromTheme(QStringLiteral("dialog-warning"));
       case SecurityEvaluationModel::Severity::ISSUE:
       case SecurityEvaluationModel::Severity::FATAL_WARNING:
-         return QIcon::fromTheme("view-barcode");
+         return QIcon::fromTheme(QStringLiteral("view-barcode"));
       case SecurityEvaluationModel::Severity::ERROR:
-         return QIcon::fromTheme("dialog-error");
+         return QIcon::fromTheme(QStringLiteral("dialog-error"));
       case SecurityEvaluationModel::Severity::UNSUPPORTED:
       case SecurityEvaluationModel::Severity::COUNT__:
          break;
@@ -250,7 +250,7 @@ QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool dis
    pxm.fill(Qt::transparent);
    QPainter painter(&pxm);
 
-   painter.drawPixmap(3,3,QIcon::fromTheme("user-identity").pixmap(QSize(size.height()-6,size.width()-6)));
+   painter.drawPixmap(3,3,QIcon::fromTheme(QStringLiteral("user-identity")).pixmap(QSize(size.height()-6,size.width()-6)));
 
    //Create a region where the pixmap is not fully transparent
    if (displayPresence) {
@@ -315,23 +315,23 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
       case UserActionModel::Action::ADD_CONTACT:
       case UserActionModel::Action::ADD_TO_CONTACT:
       case UserActionModel::Action::ADD_CONTACT_METHOD:
-         return QIcon::fromTheme("contact-new");
+         return QIcon::fromTheme(QStringLiteral("contact-new"));
       case UserActionModel::Action::DELETE_CONTACT:
-         return QIcon::fromTheme("list-remove-user", QIcon::fromTheme("edit-delete"));
+         return QIcon::fromTheme(QStringLiteral("list-remove-user"), QIcon::fromTheme(QStringLiteral("edit-delete")));
       case UserActionModel::Action::EMAIL_CONTACT:
-         return QIcon::fromTheme("mail-message-new");
+         return QIcon::fromTheme(QStringLiteral("mail-message-new"));
       case UserActionModel::Action::BOOKMARK:
-         return QIcon::fromTheme("bookmarks");
+         return QIcon::fromTheme(QStringLiteral("bookmarks"));
       case UserActionModel::Action::VIEW_CHAT_HISTORY:
-         return QIcon::fromTheme("view-history");
+         return QIcon::fromTheme(QStringLiteral("view-history"));
       case UserActionModel::Action::REMOVE_HISTORY :
-         return QIcon::fromTheme("list-remove");
+         return QIcon::fromTheme(QStringLiteral("list-remove"));
       case UserActionModel::Action::CALL_CONTACT:
-         return QIcon::fromTheme("call-start");
+         return QIcon::fromTheme(QStringLiteral("call-start"));
       case UserActionModel::Action::EDIT_CONTACT:
-         return QIcon::fromTheme("contact-new");
+         return QIcon::fromTheme(QStringLiteral("contact-new"));
       case UserActionModel::Action::COPY_CONTACT:
-         return QIcon::fromTheme("edit-copy");
+         return QIcon::fromTheme(QStringLiteral("edit-copy"));
       case UserActionModel::Action::TOGGLE_VIDEO:
       case UserActionModel::Action::COUNT__:
          break;
@@ -346,13 +346,13 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
 
    switch(hint) {
       case Interfaces::PixmapManipulatorI::CollectionIconHint::CONTACT:
-         return QIcon::fromTheme("folder-publicshare");
+         return QIcon::fromTheme(QStringLiteral("folder-publicshare"));
       case Interfaces::PixmapManipulatorI::CollectionIconHint::HISTORY:
-         return QIcon::fromTheme("view-history");
+         return QIcon::fromTheme(QStringLiteral("view-history"));
       case Interfaces::PixmapManipulatorI::CollectionIconHint::BOOKMARK:
-         return QIcon::fromTheme("folder-bookmark");
+         return QIcon::fromTheme(QStringLiteral("folder-bookmark"));
       case Interfaces::PixmapManipulatorI::CollectionIconHint::CERTIFICATE:
-         return QIcon::fromTheme("certificate-server");
+         return QIcon::fromTheme(QStringLiteral("certificate-server"));
       case Interfaces::PixmapManipulatorI::CollectionIconHint::RECORDING:
          return QIcon(":/images/icons/mailbox.svg");
       case Interfaces::PixmapManipulatorI::CollectionIconHint::RINGTONE:
@@ -402,9 +402,9 @@ QVariant KDEPixmapManipulation::historySortingCategoryIcon(const CategorizedHist
       case CategorizedHistoryModel::SortedProxy::Categories::DATE      :
          break;
       case CategorizedHistoryModel::SortedProxy::Categories::NAME      :
-         return QIcon::fromTheme("folder-publicshare");
+         return QIcon::fromTheme(QStringLiteral("folder-publicshare"));
       case CategorizedHistoryModel::SortedProxy::Categories::POPULARITY:
-         return QIcon::fromTheme("folder-bookmark");
+         return QIcon::fromTheme(QStringLiteral("folder-bookmark"));
       case CategorizedHistoryModel::SortedProxy::Categories::LENGTH    :
       case CategorizedHistoryModel::SortedProxy::Categories::SPENT_TIME:
       case CategorizedHistoryModel::SortedProxy::Categories::COUNT__   :
@@ -417,9 +417,9 @@ QVariant KDEPixmapManipulation::contactSortingCategoryIcon(const CategorizedCont
 {
    switch(cat) {
       case CategorizedContactModel::SortedProxy::Categories::NAME        :
-         return QIcon::fromTheme("folder-publicshare");
+         return QIcon::fromTheme(QStringLiteral("folder-publicshare"));
       case CategorizedContactModel::SortedProxy::Categories::RECENTLYUSED:
-         return QIcon::fromTheme("view-history");
+         return QIcon::fromTheme(QStringLiteral("view-history"));
       case CategorizedContactModel::SortedProxy::Categories::ORGANIZATION:
       case CategorizedContactModel::SortedProxy::Categories::GROUP       :
       case CategorizedContactModel::SortedProxy::Categories::DEPARTMENT  :

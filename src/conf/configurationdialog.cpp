@@ -112,7 +112,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgAccount);
       return dialog->dlgAccount;
    });
-   auto accDlg = addPage( dlgHolder[ConfigurationDialog::Page::Accounts]      , i18n("Accounts")                     , "user-identity"                     );
+   auto accDlg = addPage( dlgHolder[ConfigurationDialog::Page::Accounts]      , i18n("Accounts")                     , QStringLiteral("user-identity")                     );
    accDlg->setProperty("id",ConfigurationDialog::Page::Accounts);
    dlgHolder[ConfigurationDialog::Page::Accounts]->display(accDlg);
 
@@ -122,7 +122,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgDisplay);
       return dialog->dlgDisplay;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::Display]       , i18nc("User interterface settings"   ,"Display"), "applications-graphics"  )
+   addPage( dlgHolder[ConfigurationDialog::Page::Display]       , i18nc("User interterface settings"   ,"Display"), QStringLiteral("applications-graphics")  )
       ->setProperty("id",ConfigurationDialog::Page::Display);
 
    //Audio
@@ -131,7 +131,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgAudio);
       return dialog->dlgAudio;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::Audio]         , i18n("Audio")                        , "audio-volume-high"                     )
+   addPage( dlgHolder[ConfigurationDialog::Page::Audio]         , i18n("Audio")                        , QStringLiteral("audio-volume-high")                     )
       ->setProperty("id",ConfigurationDialog::Page::Audio);
 
    //AddressBook
@@ -140,7 +140,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgAddressBook);
       return dialog->dlgAddressBook;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::AddressBook]   , i18n("Personal data")                 , "x-office-address-book"             )
+   addPage( dlgHolder[ConfigurationDialog::Page::AddressBook]   , i18n("Personal data")                 , QStringLiteral("x-office-address-book")             )
       ->setProperty("id",ConfigurationDialog::Page::AddressBook);
 
    //Hooks
@@ -149,7 +149,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgHooks);
       return dialog->dlgHooks;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::Hooks]         , i18n("Hooks")                        , "insert-link"                       )
+   addPage( dlgHolder[ConfigurationDialog::Page::Hooks]         , i18n("Hooks")                        , QStringLiteral("insert-link")                       )
       ->setProperty("id",ConfigurationDialog::Page::Hooks);
 
    //Accessibility
@@ -158,7 +158,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgAccessibility);
       return dialog->dlgAccessibility;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::Accessibility] , i18n("Accessibility")                , "preferences-desktop-accessibility" )
+   addPage( dlgHolder[ConfigurationDialog::Page::Accessibility] , i18n("Accessibility")                , QStringLiteral("preferences-desktop-accessibility") )
       ->setProperty("id",ConfigurationDialog::Page::Accessibility);
 
    //Video
@@ -168,7 +168,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
       dialog->m_pManager->addWidget(dialog->dlgVideo);
       return dialog->dlgVideo;
    });
-   addPage( dlgHolder[ConfigurationDialog::Page::Video]         , i18nc("Video conversation","Video")  , "camera-web"                        )
+   addPage( dlgHolder[ConfigurationDialog::Page::Video]         , i18nc("Video conversation","Video")  , QStringLiteral("camera-web")                        )
       ->setProperty("id",ConfigurationDialog::Page::Video);
 #endif
 

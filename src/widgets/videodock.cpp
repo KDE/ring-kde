@@ -128,7 +128,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    m_pScreenSharing(nullptr), m_pMediaPicker(nullptr), m_pWindow(nullptr)
 {
    setWindowTitle(i18nc("Video conversation","Video"));
-   setObjectName("Video Dock");
+   setObjectName(QStringLiteral("Video Dock"));
    m_pMainWidget = new QWidget(this);
 
    m_pVideoWidet = new VideoWidget(m_pMainWidget);
@@ -146,7 +146,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    l->addWidget(tb,2,0);
 
    QToolButton* btn = new QToolButton(this);
-   btn->setIcon(QIcon::fromTheme("arrow-down-double"));
+   btn->setIcon(QIcon::fromTheme(QStringLiteral("arrow-down-double")));
    btn->setCheckable(true);
    l->addWidget(btn,2,2);
 

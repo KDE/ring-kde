@@ -79,7 +79,7 @@ Dock::Dock(QMainWindow* w) : QObject(w)
 {
    //Contact dock
    m_pContactCD       = new DockBase  ( nullptr );
-   m_pContactCD->setObjectName("contactDock");
+   m_pContactCD->setObjectName(QStringLiteral("contactDock"));
    m_pContactCD->setWindowTitle(i18nc("Contact tab","Contact"));
    auto m_pCategoryDelegate = new CategorizedDelegate(m_pContactCD->view());
    auto m_pContactMethodDelegate = new ContactMethodDelegate();
@@ -114,7 +114,7 @@ Dock::Dock(QMainWindow* w) : QObject(w)
 
    //History dock
    m_pHistoryDW       = new DockBase  ( nullptr );
-   m_pHistoryDW->setObjectName("historyDock");
+   m_pHistoryDW->setObjectName(QStringLiteral("historyDock"));
    m_pHistoryDW->setWindowTitle(i18nc("History tab","History"));
    CategorizedDelegate* delegate = new CategorizedDelegate(m_pHistoryDW->view());
    delegate->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
@@ -189,7 +189,7 @@ Dock::Dock(QMainWindow* w) : QObject(w)
 
    //Bookmark dock
    m_pBookmarkDW      = new DockBase ( nullptr );
-   m_pBookmarkDW->setObjectName("bookmarkDock");
+   m_pBookmarkDW->setObjectName(QStringLiteral("bookmarkDock"));
    m_pBookmarkDW->setWindowTitle(i18nc("Bookmark tab","Bookmark"));
    CategorizedDelegate* delegate2 = new CategorizedDelegate(m_pBookmarkDW->view());
    delegate2->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
@@ -282,19 +282,19 @@ void Dock::updateTabIcons()
          for (int i=0;i<bar->count();i++) {
             QString text = bar->tabText(i).replace('&',QString());
             if (text == i18n("Call")) {
-               bar->setTabIcon(i,QIcon::fromTheme("call-start"));
+               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("call-start")));
             }
             else if (text == i18n("Bookmark")) {
-               bar->setTabIcon(i,QIcon::fromTheme("bookmarks"));
+               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("bookmarks")));
             }
             else if (text == i18n("Contact")) {
-               bar->setTabIcon(i,QIcon::fromTheme("folder-publicshare"));
+               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("folder-publicshare")));
             }
             else if (text == i18n("History")) {
-               bar->setTabIcon(i,QIcon::fromTheme("view-history"));
+               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("view-history")));
             }
             else if (text == i18n("Video")) {
-               bar->setTabIcon(i,QIcon::fromTheme("camera-on"));
+               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("camera-on")));
             }
          }
       }

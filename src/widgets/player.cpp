@@ -25,8 +25,8 @@
 Player::Player(QWidget* parent) : QWidget(parent),m_pParent(static_cast<PlayerOverlay*>(parent))
 {
    setupUi(this);
-   m_pPlayPause->setIcon( QIcon::fromTheme( "media-playback-start" ));
-   m_pStop->setIcon( QIcon::fromTheme( "media-playback-stop"  ));
+   m_pPlayPause->setIcon( QIcon::fromTheme( QStringLiteral("media-playback-start") ));
+   m_pStop->setIcon( QIcon::fromTheme( QStringLiteral("media-playback-stop")  ));
    slotConnectSlider();
       void formattedTimeElapsedChanged(const QString& formattedValue);
    ///Emitted when the formatted duration string change

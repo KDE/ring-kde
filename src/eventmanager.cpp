@@ -168,9 +168,9 @@ bool EventManager::viewDropEvent(QDropEvent* e)
             newCall->performAction(Call::Action::ACCEPT);
          }
       }
-      else if (e->mimeData()->hasFormat("text/plain")) {
+      else if (e->mimeData()->hasFormat(QStringLiteral("text/plain"))) {
          Call* newCall = CallModel::instance().dialingCall();
-         newCall->setDialNumber(e->mimeData()->data( "text/plain" ));
+         newCall->setDialNumber(e->mimeData()->data( QStringLiteral("text/plain") ));
          newCall->performAction(Call::Action::ACCEPT);
       }
       //Remove unneeded tip
@@ -222,8 +222,8 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
       }
-      else if (e->mimeData()->hasFormat("text/plain")) {
-         TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
+      else if (e->mimeData()->hasFormat(QStringLiteral("text/plain"))) {
+         TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data(QStringLiteral("text/plain")))));
       }
    }
    if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
@@ -242,8 +242,8 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
             TipCollection::removeConference()->setText(i18n("Call %1",c->formattedName()));
          }
       }
-      else if (e->mimeData()->hasFormat("text/plain")) {
-         TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data("text/plain"))));
+      else if (e->mimeData()->hasFormat(QStringLiteral("text/plain"))) {
+         TipCollection::removeConference()->setText(i18n("Call %1",QString(e->mimeData()->data(QStringLiteral("text/plain")))));
       }
    }
    if (!isCall || CallModel::instance().hasConference())

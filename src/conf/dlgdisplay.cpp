@@ -39,13 +39,13 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
 
 
    //Need to be ordered
-   m_lCallDetails[ i18n("Display Icon")         ] = "displayCallIcon"        ;
-   m_lCallDetails[ i18n("Display Security")     ] = "displayCallSecure"      ;
-   m_lCallDetails[ i18n("Display Call Number")  ] = "displayCallNumber"      ;
-   m_lCallDetails[ i18n("Display Peer Name")    ] = "displayCallPeer"        ;
-   m_lCallDetails[ i18n("Display organisation") ] = "displayCallOrganisation";
-   m_lCallDetails[ i18n("Display department")   ] = "displayCallDepartment"  ;
-   m_lCallDetails[ i18n("Display e-mail")       ] = "displayCallEmail"       ;
+   m_lCallDetails[ i18n("Display Icon")         ] = QLatin1String("displayCallIcon")        ;
+   m_lCallDetails[ i18n("Display Security")     ] = QLatin1String("displayCallSecure")      ;
+   m_lCallDetails[ i18n("Display Call Number")  ] = QLatin1String("displayCallNumber")      ;
+   m_lCallDetails[ i18n("Display Peer Name")    ] = QLatin1String("displayCallPeer")        ;
+   m_lCallDetails[ i18n("Display organisation") ] = QLatin1String("displayCallOrganisation");
+   m_lCallDetails[ i18n("Display department")   ] = QLatin1String("displayCallDepartment")  ;
+   m_lCallDetails[ i18n("Display e-mail")       ] = QLatin1String("displayCallEmail")       ;
 
    QMutableMapIterator<QString, QString> iter(m_lCallDetails);
    while (iter.hasNext()) {

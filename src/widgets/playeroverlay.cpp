@@ -36,8 +36,8 @@ PlayerOverlay::PlayerOverlay(Media::AVRecording* rec, QWidget* parent) : QWidget
 {
    setupUi(this);
    m_pPlayer->setVisible(false);
-   m_pDelete->setIcon( QIcon::fromTheme("edit-delete") );
-   m_pPlay->setIcon( QIcon::fromTheme( "media-playback-start" ));
+   m_pDelete->setIcon( QIcon::fromTheme(QStringLiteral("edit-delete")) );
+   m_pPlay->setIcon( QIcon::fromTheme( QStringLiteral("media-playback-start") ));
    QGraphicsOpacityEffect * effect = new QGraphicsOpacityEffect(m_pDelete);
    effect->setOpacity(0.3);
    m_pDelete->setGraphicsEffect(effect);
