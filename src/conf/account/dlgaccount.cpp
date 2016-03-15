@@ -183,5 +183,3 @@ void DlgAccount::updateWidgets()
 {
    m_HasChanged = false;
 }
-
-#include "dlgaccount.moc"

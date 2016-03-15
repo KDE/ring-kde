@@ -207,20 +207,7 @@ void AutoCompletion::contextMenuEvent(QContextMenuEvent* e)
    Q_UNUSED(e)
 
    if (!m_pUserActionModel) {
-
-      const QModelIndex index = m_pView->indexAt(e->pos());
-      qDebug() << "HERE" << (int) qvariant_cast<Ring::ObjectType>(index.data((int)Ring::Role::ObjectType));
-
       m_pUserActionModel = new UserActionModel(m_pModel, UserActionModel::Context::ALL );
-
-      auto sm = m_pView->selectionModel();
-
-      connect(m_pView->selectionModel(), &QItemSelectionModel::currentRowChanged , [sm]() {
-         qDebug() << "\nMAH!!" << sm;
-      });
-      connect(m_pView->selectionModel(), &QItemSelectionModel::selectionChanged  , []() {
-         qDebug() << "\nMAH2!!";
-      });
 
       m_pUserActionModel->setSelectionModel(m_pView->selectionModel());
    }
@@ -229,5 +216,3 @@ void AutoCompletion::contextMenuEvent(QContextMenuEvent* e)
 
    m->exec(QCursor::pos());
 }
-
-#include "autocompletion.moc"

@@ -120,4 +120,3 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
    }
    return false;
 }
-#include "ringapplication.moc"
