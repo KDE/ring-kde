@@ -27,19 +27,19 @@ Presence::Presence(QWidget* parent) : QWidget(parent)
    m_pView->setModel(&PresenceStatusModel::instance());
 
    //Toggle between custom and pre-defined status
-   connect(m_pCustomMessageCK              ,SIGNAL(toggled(bool)),                          &PresenceStatusModel::instance(),SLOT(setUseCustomStatus(bool)));
-   connect(&PresenceStatusModel::instance(),SIGNAL(useCustomStatusChanged(bool)),           m_pCustomMessageCK,              SLOT(setChecked(bool)));
+   connect(m_pCustomMessageCK              ,&QAbstractButton::toggled,                          &PresenceStatusModel::instance(),&PresenceStatusModel::setUseCustomStatus);
+   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::useCustomStatusChanged,           m_pCustomMessageCK,              &QAbstractButton::setChecked);
 
    //Toggle between present and absent
-   connect(m_pPresentRB                    ,SIGNAL(toggled(bool)),                          &PresenceStatusModel::instance(),SLOT(setCustomStatus(bool)));
-   connect(&PresenceStatusModel::instance(),SIGNAL(customStatusChanged(bool)),              m_pPresentRB,                    SLOT(setChecked(bool)));
+   connect(m_pPresentRB                    ,&QAbstractButton::toggled,                          &PresenceStatusModel::instance(),&PresenceStatusModel::setCustomStatus);
+   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::customStatusChanged,              m_pPresentRB,                    &QAbstractButton::setChecked);
 
    //Select current pre-defined status
-   connect(m_pView->selectionModel()       ,SIGNAL(currentChanged(QModelIndex,QModelIndex)),&PresenceStatusModel::instance(),SLOT(setCurrentIndex(QModelIndex)));
+   connect(m_pView->selectionModel()       ,&QItemSelectionModel::currentChanged,&PresenceStatusModel::instance(),&PresenceStatusModel::setCurrentIndex);
 
    //Change custom text status
-   connect(m_pMessage                      ,SIGNAL(textChanged()),                           this,                           SLOT(slotTextChanged()));
-   connect(&PresenceStatusModel::instance(),SIGNAL(customMessageChanged(QString)),           this,                           SLOT(slotReplaceText(QString)));
+   connect(m_pMessage                      ,&QTextEdit::textChanged,                           this,                           &Presence::slotTextChanged);
+   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::customMessageChanged,           this,                           &Presence::slotReplaceText);
 }
 
 void Presence::slotTextChanged()

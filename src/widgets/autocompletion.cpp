@@ -60,11 +60,11 @@ AutoCompletion::AutoCompletion(QTreeView* parent) : ResizableTip(parent),m_Heigh
    m_pView->setModel(m_pModel);
    m_pView->setSelectionModel(m_pModel->selectionModel());
 
-   connect(m_pModel,SIGNAL(layoutChanged()),this, SLOT(slotLayoutChanged()));
-   connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(slotDoubleClicked(QModelIndex)));
+   connect(m_pModel,&QAbstractItemModel::layoutChanged,this, &AutoCompletion::slotLayoutChanged);
+   connect(m_pView,&QAbstractItemView::doubleClicked,this,&AutoCompletion::slotDoubleClicked);
 
    if (parent) {
-      connect(CallModel::instance().selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(selectionChanged(QModelIndex)));
+      connect(CallModel::instance().selectionModel(),&QItemSelectionModel::currentChanged,this,&AutoCompletion::selectionChanged);
       parent->installEventFilter(this);
       QResizeEvent r(size(),size());
       eventFilter(nullptr,&r);

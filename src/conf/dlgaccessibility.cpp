@@ -48,29 +48,29 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    m_pInfoL->setText(i18n("This page allows to create macros that can then be called using keyboard shortcuts or added to the toolbar. To create one, "
    "assign a name and a character sequence. The sequence can be numeric or any character than can be interpreted as one (ex: \"A\" would be interpreted as 2)"));
 
-   connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
+   connect(m_pNameLE        , &QLineEdit::textChanged , this,&DlgAccessibility::changed     );
    connect(m_pCategoryCBB   , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
    connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(changed())     );
-   connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
-   connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
-   connect(m_pAddTB         , SIGNAL(clicked())            , this,SLOT(addMacro())    );
-   connect(m_pRemoveTB      , SIGNAL(clicked())            , this,SLOT(removeMacro()) );
+   connect(m_pSequenceLE    , &QLineEdit::textChanged , this,&DlgAccessibility::changed     );
+   connect(m_pDescriptionLE , &QLineEdit::textChanged , this,&DlgAccessibility::changed     );
+   connect(m_pAddTB         , &QAbstractButton::clicked            , this,&DlgAccessibility::addMacro    );
+   connect(m_pRemoveTB      , &QAbstractButton::clicked            , this,&DlgAccessibility::removeMacro );
 
    connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(slotDelaySB(int))      );
-   connect(m_pNameLE        , SIGNAL(textChanged(QString)) , this,SLOT(slotNameLE(QString))        );
-   connect(m_pCategoryCBB->lineEdit()   , SIGNAL(textChanged(QString)) , this,SLOT(slotCategoryCBB(QString))   );
-   connect(m_pSequenceLE    , SIGNAL(textChanged(QString)) , this,SLOT(slotSequenceLE(QString))    );
-   connect(m_pDescriptionLE , SIGNAL(textChanged(QString)) , this,SLOT(slotDescriptionLE(QString)) );
+   connect(m_pNameLE        , &QLineEdit::textChanged , this,&DlgAccessibility::slotNameLE        );
+   connect(m_pCategoryCBB->lineEdit()   , &QLineEdit::textChanged , this,&DlgAccessibility::slotCategoryCBB   );
+   connect(m_pSequenceLE    , &QLineEdit::textChanged , this,&DlgAccessibility::slotSequenceLE    );
+   connect(m_pDescriptionLE , &QLineEdit::textChanged , this,&DlgAccessibility::slotDescriptionLE );
    connect(m_pShortcuts     , SIGNAL(shortcutChanged(QKeySequence)) , this,SLOT(slotShortcut(QKeySequence)) );
 
    connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
 
-   connect(&MacroModel::instance(),SIGNAL(selectMacro(Macro*)),this,SLOT(selectMacro(Macro*)));
-   connect(&MacroModel::instance(),SIGNAL(layoutChanged()),m_pMacroListTV,SLOT(expandAll()));
+   connect(&MacroModel::instance(),&MacroModel::selectMacro,this,&DlgAccessibility::selectMacro);
+   connect(&MacroModel::instance(),&QAbstractItemModel::layoutChanged,m_pMacroListTV,&QTreeView::expandAll);
    m_pMacroListTV->setModel(&MacroModel::instance());
 //    m_pCategoryCBB->setModel(MacroModel::instance()); //Works, but not perfect
    m_pMacroListTV->expandAll();
-   connect(m_pMacroListTV->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),&MacroModel::instance(),SLOT(setCurrent(QModelIndex,QModelIndex)));
+   connect(m_pMacroListTV->selectionModel(),&QItemSelectionModel::currentChanged,&MacroModel::instance(),&MacroModel::setCurrent);
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pMacroListTV);
    m_pItemDelegate     = new QStyledItemDelegate;

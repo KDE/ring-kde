@@ -68,7 +68,7 @@ void TipAnimationWrapper::start(bool show)
    if (m_pTip) {
       if (!m_pTimer) {
          m_pTimer = new QTimer(this);
-         connect(m_pTimer,SIGNAL(timeout()),this,SLOT(step()));
+         connect(m_pTimer,&QTimer::timeout,this,&TipAnimationWrapper::step);
       }
 
       m_Step = 0;
@@ -178,10 +178,10 @@ bool TipAnimationWrapper::isRunning()
 void TipAnimationWrapper::currentChanged(Tip* newCurrent)
 {
    if (m_pCurrentTip)
-      disconnect(m_pCurrentTip,SIGNAL(changed()),this,SLOT(tipChanged()));
+      disconnect(m_pCurrentTip,&Tip::changed,this,&TipAnimationWrapper::tipChanged);
    m_pCurrentTip = newCurrent;
    if (newCurrent)
-      connect(m_pCurrentTip,SIGNAL(changed()),this,SLOT(tipChanged()));
+      connect(m_pCurrentTip,&Tip::changed,this,&TipAnimationWrapper::tipChanged);
 }
 
 void TipAnimationWrapper::tipChanged()

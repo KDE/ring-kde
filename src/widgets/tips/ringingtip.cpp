@@ -43,7 +43,7 @@ m_pRing2Pix(nullptr),m_pRing3Pix(nullptr)
    m_ring2OriginalSVG = loadSvg(QStringLiteral(":/tip/icons/tips/ring2.svg"));
    m_ring3OriginalSVG = loadSvg(QStringLiteral(":/tip/icons/tips/ring3.svg"));
    loadSvg(QStringLiteral(":/tip/icons/tips/ringing.svg"));
-   connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
+   connect(this,&Tip::visibilityChanged,this,&RingingTip::startAnimation);
 }
 
 ///Destructor

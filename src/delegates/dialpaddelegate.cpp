@@ -67,7 +67,7 @@ void DialpadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       m_spTimer = new QTimer();
       m_spTimer->setInterval(1000/60);
       m_spInstance = new DialpadDelegate();
-      connect(m_spTimer,SIGNAL(timeout()),m_spInstance,SLOT(slotFade()));
+      connect(m_spTimer,&QTimer::timeout,m_spInstance,&DialpadDelegate::slotFade);
    }
    if (!m_spTimer->isActive() && animStep > 0)
       m_spTimer->start();

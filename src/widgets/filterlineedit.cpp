@@ -20,7 +20,7 @@
 
 FilterLineEdit::FilterLineEdit(QWidget *parent) : QLineEdit(parent)
 {
-   connect(this,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
+   connect(this,&QLineEdit::textChanged,this,&FilterLineEdit::slotTextChanged);
 }
 
 FilterLineEdit::~FilterLineEdit() {}

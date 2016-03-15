@@ -213,7 +213,7 @@ SecurityLevelWidget::SecurityLevelWidget(QWidget* parent) : QWidget(parent),m_pM
 //    m_pView->setMaximumSize(99999999,125);
    m_pView->setVisible(false);
 
-   connect(m_pView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(dblClicked(QModelIndex)));
+   connect(m_pView,&QAbstractItemView::doubleClicked,this,&SecurityLevelWidget::dblClicked);
    l->addWidget(m_pView,2,0);
 //    QSize prog = m_pLevel->sizeHint();
 //    setMinimumSize(0,prog.height()+125);
@@ -246,7 +246,7 @@ void SecurityLevelWidget::setModel(SecurityEvaluationModel* model)
 
 
    if (m_pModel) {
-      connect(m_pModel,SIGNAL(layoutChanged()),this,SLOT(reloadCount()));
+      connect(m_pModel,&QAbstractItemModel::layoutChanged,this,&SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::informationCountChanged  , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::warningCountChanged      , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::issueCountChanged        , this, &SecurityLevelWidget::reloadCount);
@@ -304,7 +304,7 @@ public Q_SLOTS:
 IssueButton::IssueButton(const SecurityFlaw* flaw, QWidget* parent):
 QToolButton(parent),m_pFlaw(flaw)
 {
-   connect(flaw,SIGNAL(requestHighlight()),this,SLOT(slotHighlightFlaw()));
+   connect(flaw,&SecurityFlaw::requestHighlight,this,&IssueButton::slotHighlightFlaw);
 }
 
 IssuesIcon::IssuesIcon(QWidget* parent) : QWidget(parent),
@@ -374,8 +374,8 @@ void IssuesIcon::addFlaw(const SecurityFlaw* flaw)
    btn->setToolButtonStyle(Qt::ToolButtonIconOnly);
    btn->setStyleSheet(QStringLiteral("border:0px;background-color:transparent;margin:0px;padding:0px;"));
    m_pLayout->addWidget(btn);
-   connect(flaw,SIGNAL(solved()),this,SLOT(slotSolved()));
-   connect(btn,SIGNAL(clicked()),this,SLOT(slotFlawClicked()));
+   connect(flaw,&SecurityFlaw::solved,this,&IssuesIcon::slotSolved);
+   connect(btn,&QAbstractButton::clicked,this,&IssuesIcon::slotFlawClicked);
 
    QLineEdit* le = qobject_cast<QLineEdit*>(parentWidget());
    if (le) {

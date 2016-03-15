@@ -126,8 +126,8 @@ DockBase::DockBase(QWidget* parent) : QDockWidget(parent)
    m_pFilterLE->installEventFilter(new ArrowGrabber(this));
 
    connect(m_pView     ,SIGNAL(contextMenuRequest(QModelIndex)), this , SLOT(slotContextMenu(QModelIndex)));
-   connect(m_pFilterLE ,SIGNAL(textChanged(QString))           , this , SLOT(expandTree())                );
-   connect(m_pView     ,SIGNAL(doubleClicked(QModelIndex))     , this , SLOT(slotDoubleClick(QModelIndex)));
+   connect(m_pFilterLE ,&QLineEdit::textChanged           , this , &DockBase::expandTree                );
+   connect(m_pView     ,&QAbstractItemView::doubleClicked     , this , &DockBase::slotDoubleClick);
 
    expandTree();
 } //DockBase
@@ -150,8 +150,8 @@ void DockBase::setProxyModel(QAbstractItemModel* model, QSortFilterProxyModel* f
       if (filterProxy)
          connect(m_pFilterLE ,SIGNAL(filterStringChanged(QString))     , filterProxy, SLOT(setFilterRegExp(QString))   );
 
-      connect   (removeEmpty ,SIGNAL(layoutChanged())                  , this , SLOT(expandTree())               );
-      connect   (removeEmpty ,SIGNAL(rowsInserted(QModelIndex,int,int)), this , SLOT(expandTreeRows(QModelIndex)));
+      connect   (removeEmpty ,&QAbstractItemModel::layoutChanged                  , this , &DockBase::expandTree               );
+      connect   (removeEmpty ,&QAbstractItemModel::rowsInserted, this , &DockBase::expandTreeRows);
    }
 
    expandTreeRows({});

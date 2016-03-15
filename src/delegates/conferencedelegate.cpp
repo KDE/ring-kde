@@ -471,8 +471,8 @@ QWidget* ConferenceDelegate::createEditor(QWidget* parent, const QStyleOptionVie
    ed->setStyleSheet(QStringLiteral("QLineEdit { background-color:transparent;border:0px;color:white;font-weight:bold;padding-left:%1 }").arg(option.rect.height()));
    ed->setAutoFillBackground(false);
    ed->setProperty("call",index.data(static_cast<int>(Call::Role::Object)));
-   connect(ed,SIGNAL(textChanged(QString)),this,SLOT(slotTextChanged(QString)));
-   connect(ed,SIGNAL(returnPressed()),this,SLOT(slotReturnPressed()));
+   connect(ed,&QLineEdit::textChanged,this,&ConferenceDelegate::slotTextChanged);
+   connect(ed,&QLineEdit::returnPressed,this,&ConferenceDelegate::slotReturnPressed);
    ed->deselect();
 
    return ed;

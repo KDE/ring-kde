@@ -86,7 +86,7 @@ IMTab::IMTab(QAbstractItemModel* model,QWidget* parent) : QListView(parent)
    if (verticalScrollBar())
       verticalScrollBar()->setValue(verticalScrollBar()->maximum());
 
-   connect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(scrollBottom()));
+   connect(model,&QAbstractItemModel::dataChanged,this,&IMTab::scrollBottom);
    connect(model, &QAbstractItemModel::rowsInserted, this, &IMTab::updateScrollBar);
 }
 

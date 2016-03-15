@@ -161,15 +161,15 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
 
    m_pDevice = new QComboBox(this);
    m_pMoreOpts->addWidget(m_pDevice,1,1,2,1);
-   connect(btn,SIGNAL(toggled(bool)),moreOptions,SLOT(setVisible(bool)));
+   connect(btn,&QAbstractButton::toggled,moreOptions,&QWidget::setVisible);
    connect(m_pDevice,SIGNAL(currentIndexChanged(int)),this,SLOT(slotDeviceChanged(int)));
 
-   connect(ActionCollection::instance()->videoRotateLeftAction() ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateLeft()));
-   connect(ActionCollection::instance()->videoRotateRightAction(),SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotRotateRight()));
-   connect(ActionCollection::instance()->videoPreviewAction()    ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotShowPreview(bool)));
-   connect(ActionCollection::instance()->videoMuteAction()       ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotMuteOutgoindVideo(bool)));
-   connect(ActionCollection::instance()->videoScaleAction()      ,SIGNAL(triggered(bool)),m_pVideoWidet,SLOT(slotKeepAspectRatio(bool)));
-   connect(ActionCollection::instance()->videoFullscreenAction() ,SIGNAL(triggered(bool)),this         ,SLOT(slotFullscreen(bool)));
+   connect(ActionCollection::instance()->videoRotateLeftAction() ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotRotateLeft);
+   connect(ActionCollection::instance()->videoRotateRightAction(),&QAction::triggered,m_pVideoWidet,&VideoWidget::slotRotateRight);
+   connect(ActionCollection::instance()->videoPreviewAction()    ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotShowPreview);
+   connect(ActionCollection::instance()->videoMuteAction()       ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotMuteOutgoindVideo);
+   connect(ActionCollection::instance()->videoScaleAction()      ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotKeepAspectRatio);
+   connect(ActionCollection::instance()->videoFullscreenAction() ,&QAction::triggered,this         ,&VideoDock::slotFullscreen);
 }
 
 
@@ -232,8 +232,8 @@ void VideoDock::slotDeviceChanged(int index)
          if ( !m_pMediaPicker  ) {
             m_pMediaPicker = new MediaPicker(this);
             m_pMoreOpts->addWidget(m_pMediaPicker,11,0,1,4);
-            connect(m_pMediaPicker->m_pPicker,SIGNAL(urlSelected(QUrl)),
-               this,SLOT(slotFileSelected(QUrl)));
+            connect(m_pMediaPicker->m_pPicker,&KUrlRequester::urlSelected,
+               this,&VideoDock::slotFileSelected);
          }
          m_pMediaPicker->setVisible(true);
          break;

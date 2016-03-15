@@ -37,7 +37,7 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
  : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
-   connect(toolButton_historyClear, SIGNAL(clicked()), this, SLOT(slotClearCallHistoryAsked()));
+   connect(toolButton_historyClear, &QAbstractButton::clicked, this, &DlgGeneral::slotClearCallHistoryAsked);
    const bool isLimited = CategorizedHistoryModel::instance().isHistoryLimited();
    m_pKeepHistory->setChecked(!isLimited);
    m_pHistoryMax ->setEnabled(isLimited );

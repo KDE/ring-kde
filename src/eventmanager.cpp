@@ -97,13 +97,13 @@ Q_SIGNALS:
 ///Constructor
 EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent(this))
 {
-   connect(&CallModel::instance()    , SIGNAL(callStateChanged(Call*,Call::State)) , this, SLOT(slotCallStateChanged(Call*,Call::State)) );
-   connect(&CallModel::instance()    , SIGNAL(incomingCall(Call*))                 , this, SLOT(slotIncomingCall(Call*)) );
+   connect(&CallModel::instance()    , &CallModel::callStateChanged , this, &EventManager::slotCallStateChanged );
+   connect(&CallModel::instance()    , &CallModel::incomingCall                 , this, &EventManager::slotIncomingCall );
 
-   connect(m_pMainWindowEv , SIGNAL(minimized(bool)) , m_pParent->m_pCanvasManager, SLOT(slotMinimized(bool)));
+   connect(m_pMainWindowEv , &MainWindowEvent::minimized , m_pParent->m_pCanvasManager, &CanvasObjectManager::slotMinimized);
 
-   connect(&AccountModel::instance(),SIGNAL(registrationChanged(Account*,bool)),this,SLOT(slotregistrationChanged(Account*,bool)));
-   connect(&AccountModel::instance(),SIGNAL(badGateway()),this,SLOT(slotNetworkDown()));
+   connect(&AccountModel::instance(),&AccountModel::registrationChanged,this,&EventManager::slotregistrationChanged);
+   connect(&AccountModel::instance(),&AccountModel::badGateway,this,&EventManager::slotNetworkDown);
    //Listen for macro
    MacroModel::addListener(this);
 }

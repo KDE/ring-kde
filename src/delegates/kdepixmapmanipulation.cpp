@@ -88,7 +88,7 @@ QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool 
    if (preRendered.isValid())
       return preRendered;
    else
-      connect(c,SIGNAL(rebased(Person*)),this,SLOT(clearCache()));
+      connect(c,&Person::rebased,this,&KDEPixmapManipulation::clearCache);
    const int radius = (size.height() > 35) ? 7 : 5;
    //const QPixmap pxmPtr = qvariant_cast<QPixmap>(c->photo());
    bool isTracked = displayPresence && c->isTracked();

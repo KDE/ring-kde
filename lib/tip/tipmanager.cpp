@@ -44,9 +44,9 @@ TipManager::TipManager(QAbstractItemView* parent):QObject(parent),m_pParent(pare
    changeSize();
    reload();
 
-   connect(&m_pAnim,SIGNAL(animationStep(FrameDescription)),this,SLOT(animationStep(FrameDescription)));
-   connect(&m_pAnim,SIGNAL(transitionStarted(QAbstractAnimation::Direction,QAbstractAnimation::State)),this,
-         SLOT(slotTransitionStarted(QAbstractAnimation::Direction,QAbstractAnimation::State)));
+   connect(&m_pAnim,&TipAnimationWrapper::animationStep,this,&TipManager::animationStep);
+   connect(&m_pAnim,&TipAnimationWrapper::transitionStarted,this,
+         &TipManager::slotTransitionStarted);
 }
 
 TipManager::~TipManager()

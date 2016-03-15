@@ -34,8 +34,8 @@ Player::Player(QWidget* parent) : QWidget(parent),m_pParent(static_cast<PlayerOv
    ///Emitted when the formatted time left string change
    void formattedTimeLeftChanged   (const QString& formattedValue);
    m_pSlider->setMaximum(10000);
-   connect( m_pPlayPause       , SIGNAL(clicked())                        , m_pParent->m_pRecording , SLOT(play()));
-   connect( m_pStop            , SIGNAL(clicked())                        , m_pParent->m_pRecording , SLOT(stop()));
+   connect( m_pPlayPause       , &QAbstractButton::clicked                        , m_pParent->m_pRecording , &Media::AVRecording::play);
+   connect( m_pStop            , &QAbstractButton::clicked                        , m_pParent->m_pRecording , &Media::AVRecording::stop);
    connect( m_pSlider          , SIGNAL(sliderPressed())                  , this               , SLOT(slotDisconnectSlider()));
    connect( m_pSlider          , SIGNAL(sliderReleased())                 , this               , SLOT(slotConnectSlider()));
 }

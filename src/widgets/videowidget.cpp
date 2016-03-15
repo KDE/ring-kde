@@ -53,7 +53,7 @@
 
 VideoWidget::VideoWidget(QWidget *parent, const bool previewOnly) : QGraphicsView(parent),m_pBackDevice(nullptr),m_IsPreviewOnly(previewOnly)
 {
-   connect(&Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(slotPreviewEnabled(bool)));
+   connect(&Video::PreviewManager::instance(),&Video::PreviewManager::previewStateChanged,this,&VideoWidget::slotPreviewEnabled);
    QSizePolicy sp = sizePolicy();
    sp.setVerticalPolicy  ( QSizePolicy::Preferred );
    sp.setHorizontalPolicy( QSizePolicy::Preferred );
@@ -124,7 +124,7 @@ void VideoWidget::addRenderer(Video::Renderer* renderer)
       VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
       frm->setKeepAspectRatio(ConfigurationSkeleton::keepVideoAspectRatio());
       frm->setRenderer(renderer);
-      connect(frm,SIGNAL(changed()),m_pScene,SLOT(frameChanged()));
+      connect(frm,&VideoGLFrame::changed,m_pScene,&VideoScene::frameChanged);
       m_pScene->addFrame(frm);
       m_hFrames[renderer] = frm;
    }

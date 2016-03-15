@@ -73,7 +73,7 @@ static TypedStateMachine< const char* , Call::State > callStateIcons = {{
 
 HistoryDelegate::HistoryDelegate(QTreeView* parent) : QStyledItemDelegate(parent),m_pParent(parent),m_pDelegatedropoverlay(nullptr),m_AnimationWrapper(nullptr),m_pRingingTip(nullptr)
 {
-   connect(&CallModel::instance(),SIGNAL(callStateChanged(Call*,Call::State)),this,SLOT(slotStopRingingAnimation()));
+   connect(&CallModel::instance(),&CallModel::callStateChanged,this,&HistoryDelegate::slotStopRingingAnimation);
 }
 
 QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {

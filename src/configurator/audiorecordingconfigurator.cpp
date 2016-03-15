@@ -62,8 +62,8 @@ void AudioRecordingConfigurator::loadCollection(CollectionInterface* col, QObjec
          ui->KUrlRequester_destinationFolder->setUrl(QUrl(Media::RecordingModel::instance().recordPath()));
          ui->KUrlRequester_destinationFolder->lineEdit()->setReadOnly(true);
 
-         connect( ui->KUrlRequester_destinationFolder , SIGNAL(textChanged(QString)) , this , SLOT(slotChanged()));
-         connect( ui->m_pAlwaysRecordCK               , SIGNAL(clicked(bool))        , this , SLOT(slotChanged()));
+         connect( ui->KUrlRequester_destinationFolder , &KUrlRequester::textChanged , this , &AudioRecordingConfigurator::slotChanged);
+         connect( ui->m_pAlwaysRecordCK               , &QAbstractButton::clicked        , this , &AudioRecordingConfigurator::slotChanged);
       }
    }
 }

@@ -34,7 +34,7 @@ m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
 {
    setTimeOut(60);
    loadSvg(QStringLiteral(":/tip/icons/tips/reload.svg"));
-   connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
+   connect(this,&Tip::visibilityChanged,this,&ConnectionLostTip::startAnimation);
 }
 
 ///Destructor

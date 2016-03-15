@@ -36,12 +36,12 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
    m_pDown->setIcon   ( QIcon::fromTheme( QStringLiteral("go-down")     ) );
    m_pAdd->setIcon    ( QIcon::fromTheme( QStringLiteral("list-add")    ) );
    m_pRemove->setIcon ( QIcon::fromTheme( QStringLiteral("list-remove") ) );
-   connect(m_pAdd   , SIGNAL(clicked()),&PresenceStatusModel::instance() ,SLOT(addRow())       );
-   connect(m_pUp    , SIGNAL(clicked()),this                            ,SLOT(slotMoveUp())   );
-   connect(m_pDown  , SIGNAL(clicked()),this                            ,SLOT(slotMoveDown()) );
-   connect(m_pRemove, SIGNAL(clicked()),this                            ,SLOT(slotRemoveRow()));
+   connect(m_pAdd   , &QAbstractButton::clicked,&PresenceStatusModel::instance() ,&PresenceStatusModel::addRow       );
+   connect(m_pUp    , &QAbstractButton::clicked,this                            ,&DlgPresence::slotMoveUp   );
+   connect(m_pDown  , &QAbstractButton::clicked,this                            ,&DlgPresence::slotMoveDown );
+   connect(m_pRemove, &QAbstractButton::clicked,this                            ,&DlgPresence::slotRemoveRow);
    connect(this     , SIGNAL(updateButtons()) , parent                  ,SLOT(updateButtons()));
-   connect(&PresenceStatusModel::instance(),SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(slotChanged()));
+   connect(&PresenceStatusModel::instance(),&QAbstractItemModel::dataChanged,this,&DlgPresence::slotChanged);
 
    if (m_pView->horizontalHeader()) {
       /*m_pView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);

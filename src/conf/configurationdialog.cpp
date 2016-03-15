@@ -69,7 +69,7 @@ void PlaceHolderWidget::display(KPageWidgetItem *current)
       QHBoxLayout* l = new QHBoxLayout(this);
       l->setContentsMargins(0,0,0,0);
       l->addWidget(m_pReal);
-      disconnect(m_pParent,SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)),this,SLOT(display(KPageWidgetItem*)));
+      disconnect(m_pParent,&KPageDialog::currentPageChanged,this,&PlaceHolderWidget::display);
    }
 }
 
@@ -97,10 +97,10 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    //Usually, this is done automatically by KConfig, but for performance
    //there is too many widgets and too many dbus calls to do it all at once
    m_pManager = new KConfigDialogManager(this, ConfigurationSkeleton::self());
-   connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked()), m_pManager, SLOT(updateSettings()));
-   connect(buttonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), m_pManager, SLOT(updateSettings()));
-   connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), m_pManager, SLOT(updateWidgets()));
-   connect(buttonBox()->button(QDialogButtonBox::RestoreDefaults), SIGNAL(clicked()), m_pManager, SLOT(updateWidgetsDefault()));
+   connect(buttonBox()->button(QDialogButtonBox::Ok), &QAbstractButton::clicked, m_pManager, &KConfigDialogManager::updateSettings);
+   connect(buttonBox()->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, m_pManager, &KConfigDialogManager::updateSettings);
+   connect(buttonBox()->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, m_pManager, &KConfigDialogManager::updateWidgets);
+   connect(buttonBox()->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, m_pManager, &KConfigDialogManager::updateWidgetsDefault);
 
    connect(m_pManager, SIGNAL(settingsChanged()), this, SLOT(updateButtons()));
    connect(m_pManager, SIGNAL(widgetModified()), this, SLOT(updateButtons()));
@@ -186,11 +186,11 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    //Connect everything
    for(int i=0;i<=ConfigurationDialog::Page::Presence;i++)
       if (dlgHolder[i])
-         connect(this,SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)),dlgHolder[i],SLOT(display(KPageWidgetItem*)));
+         connect(this,&KPageDialog::currentPageChanged,dlgHolder[i],&PlaceHolderWidget::display);
 
-   connect(buttonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()) , this, SLOT(applyCustomSettings()));
-   connect(buttonBox()->button(QDialogButtonBox::Ok), SIGNAL(clicked())    , this, SLOT(applyCustomSettings()));
-   connect(buttonBox()->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(cancelSettings())     );
+   connect(buttonBox()->button(QDialogButtonBox::Apply), &QAbstractButton::clicked , this, &ConfigurationDialog::applyCustomSettings);
+   connect(buttonBox()->button(QDialogButtonBox::Ok), &QAbstractButton::clicked    , this, &ConfigurationDialog::applyCustomSettings);
+   connect(buttonBox()->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, this, &ConfigurationDialog::cancelSettings     );
 
    connect(dlgAccount, &DlgAccount::updateButtons,this,&ConfigurationDialog::updateButtons);
 

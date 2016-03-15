@@ -207,7 +207,7 @@ QVariant KDEShortcutDelegate::createAction(Macro* macro)
    newAction->setText(macro->name());
    newAction->setIcon(QIcon::fromTheme(QStringLiteral("view-form-action")));
    newAction->setObjectName("action_macro"+macro->id());
-   QObject::connect(newAction, SIGNAL(triggered()), macro , SLOT(execute()) );
+   QObject::connect(newAction, &QAction::triggered, macro , &Macro::execute );
 
    QObject::connect(macro, &Macro::changed, [newAction](Macro* m) {
       newAction->setText(m->name());

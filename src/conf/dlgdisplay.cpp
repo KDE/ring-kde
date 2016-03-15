@@ -57,7 +57,7 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
       m_pDetailsList->addItem(m_lItemList[iter.value()] = i);
    }
    kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());
-   connect(m_pDetailsList   , SIGNAL(itemChanged(QListWidgetItem*))  , this  , SLOT(changed())      );
+   connect(m_pDetailsList   , &QListWidget::itemChanged  , this  , &DlgDisplay::changed      );
    connect(this,SIGNAL(updateButtons()), parent , SLOT(updateButtons()));
 
    MainWindow::app()->isAutoStart();

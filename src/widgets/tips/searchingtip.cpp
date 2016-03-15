@@ -36,7 +36,7 @@ m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
    setHasText(false);
    setTimeOut(60);
    loadSvg(QStringLiteral(":/tip/icons/tips/searching.svg"));
-   connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(startAnimation(bool)));
+   connect(this,&Tip::visibilityChanged,this,&SearchingTip::startAnimation);
 }
 
 ///Destructor

@@ -115,7 +115,7 @@ View::View(QWidget *parent)
    );
 
    //There is currently way to force a tree to be expanded beyond this
-   connect(&CallModel::instance(),SIGNAL(layoutChanged()),m_pView,SLOT(expandAll()));
+   connect(&CallModel::instance(),&QAbstractItemModel::layoutChanged,m_pView,&QTreeView::expandAll);
    m_pView->expandAll();
 
    m_pConfDelegate    = new ConferenceDelegate( m_pView,palette() );
@@ -149,15 +149,15 @@ View::View(QWidget *parent)
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction ());
    toolButton_sndVol->setDefaultAction(ActionCollection::instance()->mutePlaybackAction());
 
-   connect(slider_recVol,SIGNAL(valueChanged(int)),&Audio::Settings::instance(),SLOT(setCaptureVolume(int)));
-   connect(slider_sndVol,SIGNAL(valueChanged(int)),&Audio::Settings::instance(),SLOT(setPlaybackVolume(int)));
+   connect(slider_recVol,&QAbstractSlider::valueChanged,&Audio::Settings::instance(),&Audio::Settings::setCaptureVolume);
+   connect(slider_sndVol,&QAbstractSlider::valueChanged,&Audio::Settings::instance(),&Audio::Settings::setPlaybackVolume);
 
    /*Setup signals                                                                                                                                    */
    //                SENDER                             SIGNAL                              RECEIVER                SLOT                              */
-   /**/connect(&CallModel::instance()       , SIGNAL(incomingCall(Call*))                   , this           , SLOT(incomingCall(Call*))              );
-   /**/connect(m_pSendMessageLE             , SIGNAL(returnPressed())                       , this           , SLOT(sendMessage())                    );
-   /**/connect(m_pSendMessagePB             , SIGNAL(clicked())                             , this           , SLOT(sendMessage())                    );
-   /**/connect(m_pView                      , SIGNAL(itemDoubleClicked(QModelIndex))        , m_pEventManager, SLOT(enter())                          );
+   /**/connect(&CallModel::instance()       , &CallModel::incomingCall                   , this           , &View::incomingCall              );
+   /**/connect(m_pSendMessageLE             , &QLineEdit::returnPressed                       , this           , &View::sendMessage                    );
+   /**/connect(m_pSendMessagePB             , &QAbstractButton::clicked                             , this           , &View::sendMessage                    );
+   /**/connect(m_pView                      , &CategorizedTreeView::itemDoubleClicked        , m_pEventManager, &EventManager::enter                          );
    /**/connect(widget_dialpad               , &Dialpad::typed                               , m_pEventManager, &EventManager::typeString              );
    /**/connect(m_pView                      , SIGNAL(contextMenuRequest(QModelIndex))       , this           , SLOT(slotContextMenu(QModelIndex))     );
    /*                                                                                                                                                 */
@@ -224,7 +224,7 @@ void View::loadAutoCompletion()
          m_pAutoCompletion = new AutoCompletion(m_pView);
          PhoneDirectoryModel::instance().setCallWithAccount(ConfigurationSkeleton::autoCompleteUseAccount());
          m_pAutoCompletion->setUseUnregisteredAccounts(ConfigurationSkeleton::autoCompleteMergeNumbers());
-         connect(m_pAutoCompletion,SIGNAL(doubleClicked(ContactMethod*)),this,SLOT(slotAutoCompleteClicked(ContactMethod*)));
+         connect(m_pAutoCompletion,&AutoCompletion::doubleClicked,this,&View::slotAutoCompleteClicked);
       }
    }
    else if (m_pAutoCompletion) {

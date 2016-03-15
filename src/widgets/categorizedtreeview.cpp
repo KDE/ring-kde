@@ -51,7 +51,7 @@ CategorizedTreeView::~CategorizedTreeView()
 
 void CategorizedTreeView::setModel ( QAbstractItemModel * model )
 {
-   connect(model,SIGNAL(rowsInserted(QModelIndex,int,int)),this,SLOT(slotExpandInserted(QModelIndex,int,int)));
+   connect(model,&QAbstractItemModel::rowsInserted,this,&CategorizedTreeView::slotExpandInserted);
    QTreeView::setModel(model);
 }
 
@@ -283,7 +283,7 @@ void CategorizedTreeView::setHoverState(const QModelIndex& idx)
 void CategorizedTreeView::initSignals()
 {
    if (model()) {
-      connect(model(),SIGNAL(layoutChanged()),this,SLOT(cancelHoverState()));
+      connect(model(),&QAbstractItemModel::layoutChanged,this,&CategorizedTreeView::cancelHoverState);
    }
    m_InitSignals = true;
 }

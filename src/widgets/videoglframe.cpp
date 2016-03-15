@@ -221,7 +221,7 @@ void ThreadedPainter2::draw(QPainter* p)
      m_pPainter(new ThreadedPainter2(this,parent)),
      m_pRenderer(nullptr),m_KeepAspect(true)
  {
-   connect(m_pPainter,SIGNAL(changed()),this,SLOT(slotEmitChanged()));
+   connect(m_pPainter,&ThreadedPainter2::changed,this,&VideoGLFrame::slotEmitChanged);
 
    m_pPainter->tile_list = glGenLists(1);
    glNewList(m_pPainter->tile_list, GL_COMPILE);

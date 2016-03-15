@@ -43,8 +43,8 @@ DlgVideo::DlgVideo(KConfigDialog* parent)
    connect( this          ,SIGNAL(updateButtons())             , parent , SLOT(updateButtons())        );
    connect(&Video::PreviewManager::instance(),SIGNAL(previewStateChanged(bool)),this,SLOT(startStopPreview(bool))  );
 
-   connect(&Video::PreviewManager::instance(),SIGNAL(previewStarted(Video::Renderer*)),m_pPreviewGV,SLOT(addRenderer(Video::Renderer*))   );
-   connect(&Video::PreviewManager::instance(),SIGNAL(previewStopped(Video::Renderer*)),m_pPreviewGV,SLOT(removeRenderer(Video::Renderer*)));
+   connect(&Video::PreviewManager::instance(),&Video::PreviewManager::previewStarted,m_pPreviewGV,&VideoWidget::addRenderer   );
+   connect(&Video::PreviewManager::instance(),&Video::PreviewManager::previewStopped,m_pPreviewGV,&VideoWidget::removeRenderer);
 
 
    if (Video::PreviewManager::instance().isPreviewing()) {

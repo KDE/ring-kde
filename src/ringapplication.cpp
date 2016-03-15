@@ -103,20 +103,20 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
    }
    catch (const Call::State& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
-      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
+      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
    }
    catch (const Call::Action& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
-      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
+      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
    }
    catch (const QString& errorMessage) {
       KMessageBox::error(MainWindow::app(),errorMessage);
-      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
+      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
    }
    catch (...) {
       qDebug() << ErrorMessage::GENERIC_ERROR;
       KMessageBox::error(MainWindow::app(),ErrorMessage::GENERIC_ERROR);
-      QTimer::singleShot(2500,MainWindow::app(),SLOT(timeout()));
+      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
    }
    return false;
 }

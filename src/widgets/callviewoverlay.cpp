@@ -67,9 +67,9 @@ m_step(0),m_pCurrentCall(nullptr)
       m_pMainWidget->resize(parent->width(),parent->height());
    setupUi(m_pMainWidget);
 
-   connect(&CallModel::instance(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutChanged()));
-   connect(m_pNumberLE,SIGNAL(returnPressed()),this,SLOT(slotTransferClicked()));
-   connect(m_pTransferB,SIGNAL(clicked()),this,SLOT(slotTransferClicked()));
+   connect(&CallModel::instance(),&QAbstractItemModel::layoutChanged,this,&CallViewOverlay::slotLayoutChanged);
+   connect(m_pNumberLE,&QLineEdit::returnPressed,this,&CallViewOverlay::slotTransferClicked);
+   connect(m_pTransferB,&QAbstractButton::clicked,this,&CallViewOverlay::slotTransferClicked);
 }
 
 ///Destructor
@@ -97,7 +97,7 @@ void CallViewOverlay::setVisible(bool enabled) {
          m_pTimer = nullptr;
       }
       m_pTimer = new QTimer(this);
-      connect(m_pTimer, SIGNAL(timeout()), this, SLOT(changeVisibility()));
+      connect(m_pTimer, &QTimer::timeout, this, &CallViewOverlay::changeVisibility);
       m_step = 0;
       m_black.setAlpha(0);
       repaint();
@@ -184,7 +184,7 @@ void CallViewOverlay::slotLayoutChanged()
             btn->setStyleSheet(m_pTransferB->styleSheet());
             m_pAttTransferGB->layout()->addWidget(btn);
             btn->setProperty("callId",call->historyId());
-            connect(btn,SIGNAL(clicked()),this,SLOT(slotAttendedTransfer()));
+            connect(btn,&QAbstractButton::clicked,this,&CallViewOverlay::slotAttendedTransfer);
          }
       }
       m_pAttTransferGB->setVisible(true);

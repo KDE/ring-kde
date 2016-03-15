@@ -52,7 +52,7 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
       return;
    static bool initSignals = false;
    if (!initSignals) {
-      connect(index.model(),SIGNAL(layoutChanged()),this,SLOT(slotLayoutChanged()));
+      connect(index.model(),&QAbstractItemModel::layoutChanged,this,&DelegateDropOverlay::slotLayoutChanged);
       initSignals = true;
    }
    int step = index.data((int)Person::Role::DropState).toInt();
@@ -61,7 +61,7 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
       //Create tge timer
       if (!m_pTimer) {
          m_pTimer = new QTimer(this);
-         connect(m_pTimer, SIGNAL(timeout()), this, SLOT(changeVisibility()));
+         connect(m_pTimer, &QTimer::timeout, this, &DelegateDropOverlay::changeVisibility);
       }
 
       //Start it if it's nor already

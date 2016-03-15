@@ -215,17 +215,17 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pContactCD ->setMaximumSize(350,999999);
    m_pBookmarkDW->setMaximumSize(350,999999);
 
-   connect(m_pContactCD ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
-   connect(m_pHistoryDW ,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
-   connect(m_pBookmarkDW,SIGNAL(visibilityChanged(bool)),this,SLOT(updateTabIcons()));
+   connect(m_pContactCD ,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
+   connect(m_pHistoryDW ,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
+   connect(m_pBookmarkDW,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
 
    m_pContactCD-> setVisible(ConfigurationSkeleton::displayContactDock() );
    m_pHistoryDW-> setVisible(ConfigurationSkeleton::displayHistoryDock() );
    m_pBookmarkDW->setVisible(ConfigurationSkeleton::displayBookmarkDock());
 
-   connect(ActionCollection::instance()->showContactDockAction(), SIGNAL(toggled(bool)),m_pContactCD, SLOT(setVisible(bool)));
-   connect(ActionCollection::instance()->showHistoryDockAction(), SIGNAL(toggled(bool)),m_pHistoryDW, SLOT(setVisible(bool)));
-   connect(ActionCollection::instance()->showBookmarkDockAction(),SIGNAL(toggled(bool)),m_pBookmarkDW,SLOT(setVisible(bool)));
+   connect(ActionCollection::instance()->showContactDockAction(), &QAction::toggled,m_pContactCD, &QWidget::setVisible);
+   connect(ActionCollection::instance()->showHistoryDockAction(), &QAction::toggled,m_pHistoryDW, &QWidget::setVisible);
+   connect(ActionCollection::instance()->showBookmarkDockAction(),&QAction::toggled,m_pBookmarkDW,&QWidget::setVisible);
 
    connect( ActionCollection::instance()->focusHistory (), &QAction::triggered, this, &Dock::focusHistory  );
    connect( ActionCollection::instance()->focusContact (), &QAction::triggered, this, &Dock::focusContact  );

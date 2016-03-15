@@ -43,7 +43,7 @@ IMManager::IMManager(QWidget* parent) : QTabWidget(parent)
 
    connect(&CallModel::instance(), &CallModel::mediaAdded, this, &IMManager::addMedia);
 
-   connect(this,SIGNAL(tabCloseRequested(int)),this,SLOT(closeRequest(int)));
+   connect(this,&QTabWidget::tabCloseRequested,this,&IMManager::closeRequest);
 
    connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &IMManager::newMessageInserted);
 

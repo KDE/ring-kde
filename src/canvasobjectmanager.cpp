@@ -89,8 +89,8 @@ m_CurrentState(ObjectState::NO_OBJECT),m_CurrentLifeCycle(ObjectLifeCycle::NONE)
    hInitEvents();
 
 //    m_DisableTransition = true;
-   connect(TipCollection::manager(),SIGNAL(transitionStarted(QAbstractAnimation::Direction,QAbstractAnimation::State)),
-      this,SLOT(slotTransitionEvents(QAbstractAnimation::Direction,QAbstractAnimation::State)));
+   connect(TipCollection::manager(),&TipManager::transitionStarted,
+      this,&CanvasObjectManager::slotTransitionEvents);
 
 
    //TODO remove
@@ -213,7 +213,7 @@ void CanvasObjectManager::initiateInTransition(Object nextObj,const QString& mes
                      if (!m_pTimer) {
                         m_pTimer = new QTimer(this);
                         m_pTimer->setSingleShot(true);
-                        connect(m_pTimer,SIGNAL(timeout()),this,SLOT(slotTimeout()));
+                        connect(m_pTimer,&QTimer::timeout,this,&CanvasObjectManager::slotTimeout);
                      }
                      if (!message.isEmpty()) {
                         currentTip->setText(message);

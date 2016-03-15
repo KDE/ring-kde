@@ -59,7 +59,7 @@ Dialpad::Dialpad(QWidget *parent)
       layout->addWidget         ( number    );
       layout->addWidget         ( text      );
       layout->setContentsMargins( 0,0,0,0   );
-      connect(m_pButtons[i],SIGNAL(typed(QString&)),this,SLOT(clicked(QString&)));
+      connect(m_pButtons[i],&DialpadButton::typed,this,&Dialpad::clicked);
    }
 } //Dialpad
 

@@ -66,7 +66,7 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    m_pManager = new KConfigDialogManager(this, ConfigurationSkeleton::self());
 
    connect(m_pManager, SIGNAL(settingsChanged()), this, SLOT(updateButtons()));
-   connect(m_pManager, SIGNAL(widgetModified()), this, SLOT(updateButtons()));
+   connect(m_pManager, &KConfigDialogManager::widgetModified, this, &DlgAddressBook::updateButtons);
 
    //Resize the columns
    if (m_pItemBackendW->header()) {
@@ -76,7 +76,7 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
    }
 
    connect(this            , SIGNAL(updateButtons())              , parent , SLOT(updateButtons()));
-   connect(&CollectionModel::instance(),SIGNAL(checkStateChanged()),this,SLOT(changed()));
+   connect(&CollectionModel::instance(),&CollectionModel::checkStateChanged,this,&DlgAddressBook::changed);
 
    connect(&CollectionModel::instance(),&CollectionModel::rowsInserted, this, &DlgAddressBook::slotRowsInserted);
 

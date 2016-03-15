@@ -144,7 +144,7 @@ MainWindow::MainWindow(QWidget* parent)
 #endif
 
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
-      QTimer::singleShot(5000,this,SLOT(timeout()));
+      QTimer::singleShot(5000,this,&MainWindow::timeout);
    }
    static bool init = false;
    if (!init) {
@@ -250,7 +250,7 @@ MainWindow::MainWindow(QWidget* parent)
 
    addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
 
-   connect(m_pCentralDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
+   connect(m_pCentralDW ,&QDockWidget::visibilityChanged,m_pDock,&Dock::updateTabIcons);
 
    selectCallTab();
    setAutoSaveSettings();
@@ -266,7 +266,7 @@ MainWindow::MainWindow(QWidget* parent)
       m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
    }
 
-   connect(CallModel::instance().selectionModel(),SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),this,SLOT(selectCallTab()));
+   connect(CallModel::instance().selectionModel(),&QItemSelectionModel::currentRowChanged,this,&MainWindow::selectCallTab);
 
 #ifdef ENABLE_VIDEO
    connect(&CallModel::instance(),&CallModel::rendererAdded,this,&MainWindow::displayVideoDock);
@@ -319,9 +319,9 @@ MainWindow::MainWindow(QWidget* parent)
    m_pPresent->setVisible(false/*AccountModel::instance().isPresenceEnabled() && AccountModel::instance().isPresencePublishSupported()*/);
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);
-   connect(&PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(updatePresence(QString)));
-   connect(&PresenceStatusModel::instance(),SIGNAL(currentNameChanged(QString)),this,SLOT(hidePresenceDock()));
-   connect(&AccountModel::instance(),SIGNAL(presenceEnabledChanged(bool)),this,SLOT(slotPresenceEnabled(bool)));
+   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::currentNameChanged,this,&MainWindow::updatePresence);
+   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::currentNameChanged,this,&MainWindow::hidePresenceDock);
+   connect(&AccountModel::instance(),&AccountModel::presenceEnabledChanged,this,&MainWindow::slotPresenceEnabled);
 
    //Add the Ring hash
    bar->addWidget(new QLabel(i18n("Your Ring ID:"),bar));
@@ -353,16 +353,16 @@ MainWindow::MainWindow(QWidget* parent)
    m_pAccountStatus->bindToModel(&AvailableAccountModel::instance(),AvailableAccountModel::instance().selectionModel());
    m_pAccountStatus->setMinimumSize(100,0);
    bar->addPermanentWidget(m_pAccountStatus);
-   connect(m_pPresent,SIGNAL(toggled(bool)),m_pPresenceDock,SLOT(setVisible(bool)));
+   connect(m_pPresent,&QAbstractButton::toggled,m_pPresenceDock,&QWidget::setVisible);
 
    QToolButton* m_pReloadButton = new QToolButton(this);
    m_pReloadButton->setIcon(QIcon::fromTheme(QStringLiteral("view-refresh")));
    bar->addPermanentWidget(m_pReloadButton);
-   connect(m_pReloadButton,SIGNAL(clicked()),&AccountModel::instance(),SLOT(registerAllAccounts()));
+   connect(m_pReloadButton,&QAbstractButton::clicked,&AccountModel::instance(),&AccountModel::registerAllAccounts);
 
    if (!CallModel::instance().isValid()) {
       KMessageBox::error(this,i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually"));
-      QTimer::singleShot(2500,this,SLOT(timeout())); //FIXME this may leave the client in an unreliable state
+      QTimer::singleShot(2500,this,&MainWindow::timeout); //FIXME this may leave the client in an unreliable state
       //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
    }
 
@@ -490,7 +490,7 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock(this);
       addDockWidget( Qt::TopDockWidgetArea, m_pVideoDW  );
-      connect(m_pVideoDW ,SIGNAL(visibilityChanged(bool)),m_pDock,SLOT(updateTabIcons()));
+      connect(m_pVideoDW ,&QDockWidget::visibilityChanged,m_pDock,&Dock::updateTabIcons);
    }
 
    if (auto vid = c->firstMedia<Media::Video>(Media::Media::Direction::OUT))
