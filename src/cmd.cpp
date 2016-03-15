@@ -59,9 +59,9 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
 
    QCoreApplication* app = QCoreApplication::instance();
 
-   QCommandLineOption call    (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QLatin1String("number" ), QLatin1String(""));
-   QCommandLineOption text    (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QLatin1String("number" ), QLatin1String(""));
-   QCommandLineOption message (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QLatin1String("content"), QLatin1String(""));
+   QCommandLineOption call    (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QStringLiteral("number" ), QLatin1String(""));
+   QCommandLineOption text    (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QStringLiteral("number" ), QLatin1String(""));
+   QCommandLineOption message (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QStringLiteral("content"), QLatin1String(""));
    QCommandLineOption icon    (QStringList { "iconify"    }, i18n("Start in the system tray"                                                    )                                             );
 
    QCommandLineParser parser;

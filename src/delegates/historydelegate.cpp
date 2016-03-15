@@ -23,7 +23,6 @@
 #include <QtGui/QBitmap>
 #include <QtCore/QSortFilterProxyModel>
 #include <QtWidgets/QTreeView>
-#include <QtCore/QFile>
 
 //KDE
 #include <KColorScheme>
