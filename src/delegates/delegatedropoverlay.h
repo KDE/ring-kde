@@ -35,10 +35,12 @@ public:
    struct OverlayButton {
       QImage* m_pImage;
       Call::DropAction role;
-      ~OverlayButton() {
+      virtual ~OverlayButton() {
          delete m_pImage;
       }
       OverlayButton(QImage* i,Call::DropAction r) : m_pImage(i),role(r) {}
+      OverlayButton(const OverlayButton&) = delete;
+      OverlayButton& operator=(const OverlayButton&) = delete;
    };
    //Constructor
    explicit DelegateDropOverlay(QObject* parent = nullptr);

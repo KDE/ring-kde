@@ -34,7 +34,7 @@
 #include "call.h"
 
 ///Constructor
-ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget,QPalette pal)
+ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget, const QPalette& pal)
       : QStyledItemDelegate(widget) , m_tree(widget) , m_LeftMargin(7),
       m_RightMargin(7),m_Pal(pal),m_pCallDelegate(nullptr)
 {

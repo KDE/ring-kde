@@ -28,7 +28,7 @@ class ConferenceDelegate : public QStyledItemDelegate
 {
    Q_OBJECT
 public:
-   explicit ConferenceDelegate(CategorizedTreeView* widget,QPalette pal);
+   explicit ConferenceDelegate(CategorizedTreeView* widget, const QPalette& pal);
 
    //Setters
    void setCallDelegate(QStyledItemDelegate* delegate) {

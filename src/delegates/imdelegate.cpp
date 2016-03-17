@@ -39,7 +39,7 @@ QSize ImDelegates::sizeHint(const QStyleOptionViewItem& option, const QModelInde
    const QRect requiredRect = metric.boundingRect(0,0,m_pParent->width()-30 - 48 - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,index.data(Qt::DisplayRole).toString());
    height+=requiredRect.height();
    height+=metric.height()+10;
-   if (icon && dynamic_cast<const QPixmap*>(icon) && height < icon->height()) {
+   if (icon && icon && height < icon->height()) {
       height = icon->height();
    }
    return QSize(m_pParent->width()-30,height);

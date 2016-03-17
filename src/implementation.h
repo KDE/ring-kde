@@ -39,7 +39,9 @@ class Macro;
 class ColorDelegate : public Interfaces::AccountListColorizerI
 {
 public:
-   explicit ColorDelegate(QPalette pal);
+   explicit ColorDelegate(const QPalette& pal);
+   ColorDelegate(const ColorDelegate&) = delete;
+   ColorDelegate& operator=(const ColorDelegate&) = delete;
 
    virtual QVariant color(const Account* a) override;
 
@@ -55,6 +57,9 @@ class KDEPresenceSerializationDelegate : public Interfaces::PresenceSerializerI
 {
 public:
    KDEPresenceSerializationDelegate():m_isLoaded(false){}
+   KDEPresenceSerializationDelegate(const KDEPresenceSerializationDelegate&) = delete;
+   KDEPresenceSerializationDelegate& operator=(const KDEPresenceSerializationDelegate&) = delete;
+
    virtual void save() override;
    virtual void load() override;
    virtual ~KDEPresenceSerializationDelegate();
@@ -75,6 +80,9 @@ public:
 class LIB_EXPORT KDEActionExtender final : public Interfaces::ActionExtenderI
 {
 public:
+   explicit KDEActionExtender() = default;
+   KDEActionExtender(const KDEActionExtender&) = delete;
+   KDEActionExtender& operator=(const KDEActionExtender&) = delete;
 
    virtual void editPerson(Person* p) override;
    virtual void viewChatHistory(ContactMethod* cm) override;

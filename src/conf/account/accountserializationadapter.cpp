@@ -41,8 +41,9 @@ QHash<int, QString> AccountSerializationAdapter::m_hProblems = {};
 constexpr static const char LRC_CFG[]   = "lrcfg_";
 constexpr static const int  LRC_CFG_LEN = 6       ;
 
-struct ConnHolder {
+struct ConnHolder final{
    QMetaObject::Connection c;
+   ConnHolder(const ConnHolder&) = delete;
    ~ConnHolder();
 };
 Q_DECLARE_METATYPE(ConnHolder*);
@@ -107,7 +108,7 @@ void AccountSerializationAdapter::updateProblemList(int role, Account::RoleStatu
  */
 void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& roles)
 {
-   if (w->objectName().left(LRC_CFG_LEN) == LRC_CFG) {
+   if (w->objectName().left(LRC_CFG_LEN) == QLatin1String(LRC_CFG)) {
 #ifdef HAS_KDE
       static KStatefulBrush errorBrush( KColorScheme::View, KColorScheme::NegativeText );
 #endif

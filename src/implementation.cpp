@@ -52,7 +52,7 @@
 #include <mainwindow.h>
 #include <view.h>
 
-ColorDelegate::ColorDelegate(QPalette pal) : m_Pal(pal) {
+ColorDelegate::ColorDelegate(const QPalette& pal) : m_Pal(pal) {
    m_Green = QColor(m_Pal.color(QPalette::Base));
    if (m_Green.green()+20 >= 255) {
       m_Green.setRed ( ((int)m_Green.red()  -20));
@@ -180,7 +180,7 @@ bool KDEPresenceSerializationDelegate::isTracked(CollectionInterface* backend) c
       }
       m_isLoaded = true;
    }
-   return m_hTracked[backend->name()];
+   return m_hTracked.value(backend->name());
 }
 
 void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, bool tracked)
@@ -193,7 +193,7 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
    }
    m_hTracked[backend->name()] = tracked;
    QStringList ret;
-   for (QHash<QString,bool>::iterator i = m_hTracked.begin(); i != m_hTracked.end(); ++i) {
+   for (QHash<QString,bool>::const_iterator i = m_hTracked.begin(); i != m_hTracked.end(); ++i) {
       if (i.value())
          ret << i.key();
    }

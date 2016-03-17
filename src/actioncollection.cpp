@@ -83,12 +83,12 @@ static QString getName(const UserActionModel::Action a)
 ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
 {
    // It is important to init the actions correctly for the menu and KDE global shortcuts
-   INIT_ACTION(action_accept        , QIcon(":/images/icons/accept.svg"   ), i18n( "Accept"   ));
-   INIT_ACTION(action_hold          , QIcon(":/images/icons/hold.svg"     ), i18n( "Hold"     ));
-   INIT_ACTION(action_transfer      , QIcon(":/images/icons/transfert.svg"), i18n( "Transfer" ));
-   INIT_ACTION(action_record        , QIcon(":/images/icons/rec_call.svg" ), i18n( "Record"   ));
-   INIT_ACTION(action_hangup        , QIcon(":/images/icons/hang_up.svg"  ), i18n( "Hang up"  ));
-   INIT_ACTION(action_mailBox       , QIcon(":/images/icons/mailbox.svg"  ), i18n( "Mailbox"  ));
+   INIT_ACTION(action_accept        , QIcon(QStringLiteral(":/images/icons/accept.svg"   )), i18n( "Accept"   ));
+   INIT_ACTION(action_hold          , QIcon(QStringLiteral(":/images/icons/hold.svg"     )), i18n( "Hold"     ));
+   INIT_ACTION(action_transfer      , QIcon(QStringLiteral(":/images/icons/transfert.svg")), i18n( "Transfer" ));
+   INIT_ACTION(action_record        , QIcon(QStringLiteral(":/images/icons/rec_call.svg" )), i18n( "Record"   ));
+   INIT_ACTION(action_hangup        , QIcon(QStringLiteral(":/images/icons/hang_up.svg"  )), i18n( "Hang up"  ));
+   INIT_ACTION(action_mailBox       , QIcon(QStringLiteral(":/images/icons/mailbox.svg"  )), i18n( "Mailbox"  ));
 
    INIT_ACTION(action_mute_video         , getIcon(UserActionModel::Action::MUTE_VIDEO         ) , getName(UserActionModel::Action::MUTE_VIDEO         ));
    INIT_ACTION(action_join               , getIcon(UserActionModel::Action::JOIN               ) , getName(UserActionModel::Action::JOIN               ));
@@ -106,18 +106,18 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
    INIT_ACTION(action_new_call           , getIcon(UserActionModel::Action::ADD_NEW            ) , getName(UserActionModel::Action::ADD_NEW            ));
    INIT_ACTION(action_remove_history     , getIcon(UserActionModel::Action::REMOVE_HISTORY     ) , getName(UserActionModel::Action::REMOVE_HISTORY     ));
 
-   INIT_ACTION(action_mute_capture  , QIcon::fromTheme("player-volume-muted"), i18nc("Mute the current audio capture device" , "Mute"     ));
-   INIT_ACTION(action_mute_playback , QIcon::fromTheme("player-volume-muted"), i18nc("Mute the current audio playback device", "Mute Playback"     ));
+   INIT_ACTION(action_mute_capture  , QIcon::fromTheme(QStringLiteral("player-volume-muted")), i18nc("Mute the current audio capture device" , "Mute"     ));
+   INIT_ACTION(action_mute_playback , QIcon::fromTheme(QStringLiteral("player-volume-muted")), i18nc("Mute the current audio playback device", "Mute Playback"     ));
 
 #ifdef ENABLE_VIDEO
-   INIT_ACTION(action_video_rotate_left     , QIcon::fromTheme("object-rotate-left"    ), i18n( "Rotate left"       ));
-   INIT_ACTION(action_video_rotate_right    , QIcon::fromTheme("object-rotate-right"   ), i18n( "Rotate right"      ));
-   INIT_ACTION(action_video_flip_horizontal , QIcon::fromTheme("object-flip-horizontal"), i18n( "Flip"              ));
-   INIT_ACTION(action_video_flip_vertical   , QIcon::fromTheme("object-flip-vertical"  ), i18n( "Flip"              ));
-   INIT_ACTION(action_video_mute            , QIcon::fromTheme("camera-web"            ), i18n( "Mute"              ));
-   INIT_ACTION(action_video_preview         , QIcon::fromTheme("view-preview"          ), i18n( "Preview"           ));
-   INIT_ACTION(action_video_scale           , QIcon::fromTheme("transform-scale"       ), i18n( "Keep aspect ratio" ));
-   INIT_ACTION(action_video_fullscreen      , QIcon::fromTheme("view-fullscreen"       ), i18n( "Fullscreen"        ));
+   INIT_ACTION(action_video_rotate_left     , QIcon::fromTheme(QStringLiteral("object-rotate-left"    )), i18n( "Rotate left"       ));
+   INIT_ACTION(action_video_rotate_right    , QIcon::fromTheme(QStringLiteral("object-rotate-right"   )), i18n( "Rotate right"      ));
+   INIT_ACTION(action_video_flip_horizontal , QIcon::fromTheme(QStringLiteral("object-flip-horizontal")), i18n( "Flip"              ));
+   INIT_ACTION(action_video_flip_vertical   , QIcon::fromTheme(QStringLiteral("object-flip-vertical"  )), i18n( "Flip"              ));
+   INIT_ACTION(action_video_mute            , QIcon::fromTheme(QStringLiteral("camera-web"            )), i18n( "Mute"              ));
+   INIT_ACTION(action_video_preview         , QIcon::fromTheme(QStringLiteral("view-preview"          )), i18n( "Preview"           ));
+   INIT_ACTION(action_video_scale           , QIcon::fromTheme(QStringLiteral("transform-scale"       )), i18n( "Keep aspect ratio" ));
+   INIT_ACTION(action_video_fullscreen      , QIcon::fromTheme(QStringLiteral("view-fullscreen"       )), i18n( "Fullscreen"        ));
 #endif
 }
 
@@ -138,22 +138,23 @@ void ActionCollection::setupAction()
    action_configureRing ->setObjectName( QStringLiteral("action_configureRing") );
 
    INIT_ACTION(action_displayDialpad        , QIcon(RingIcons::DISPLAY_DIALPAD                   ), i18n("Display dialpad"         ));
-   INIT_ACTION(action_displayAccountCbb     , {}                                                  , i18n("Display account selector"));
-   INIT_ACTION(action_displayMessageBox     , QIcon::fromTheme("mail-message-new"                ), i18n("Display text message box"));
    INIT_ACTION(action_displayVolumeControls , QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS          ), i18n("Display volume controls" ));
-   INIT_ACTION(action_pastenumber           , QIcon::fromTheme("edit-paste"                      ), i18n("Paste"                   ));
-   INIT_ACTION(action_showContactDock       , QIcon::fromTheme("edit-find-user"                  ), i18n("Display Person"          ));
-   INIT_ACTION(action_showHistoryDock       , QIcon::fromTheme("view-history"                    ), i18n("Display history"         ));
-   INIT_ACTION(action_showBookmarkDock      , QIcon::fromTheme("bookmark-new-list"               ), i18n("Display bookmark"        ));
-   INIT_ACTION(action_editToolBar           , QIcon::fromTheme("configure-toolbars"              ), i18n("Configure Toolbars"      ));
-   INIT_ACTION(action_addPerson             , QIcon::fromTheme("contact-new"                     ), i18n("Add new contact"         ));
-   INIT_ACTION(action_configureShortcut     , QIcon::fromTheme("configure-shortcuts"             ), i18n("Configure Shortcut"      ));
-   INIT_ACTION(action_configureNotifications, QIcon::fromTheme("preferences-desktop-notification"), i18n("Configure Notifications" ));
+   INIT_ACTION(action_displayAccountCbb     , {}                                                  , i18n("Display account selector"));
    INIT_ACTION(action_raise_client          , {}                                                  , i18n("Raise Ring-KDE window"   ));
    INIT_ACTION(action_focus_history         , {}                                                  , i18n("Search history"          ));
    INIT_ACTION(action_focus_call            , {}                                                  , i18n("Search call"             ));
    INIT_ACTION(action_focus_contact         , {}                                                  , i18n("Search contact"          ));
    INIT_ACTION(action_focus_bookmark        , {}                                                  , i18n("Search bookmark"         ));
+
+   INIT_ACTION(action_displayMessageBox     , QIcon::fromTheme(QStringLiteral("mail-message-new"                )), i18n("Display text message box"));
+   INIT_ACTION(action_pastenumber           , QIcon::fromTheme(QStringLiteral("edit-paste"                      )), i18n("Paste"                   ));
+   INIT_ACTION(action_showContactDock       , QIcon::fromTheme(QStringLiteral("edit-find-user"                  )), i18n("Display Person"          ));
+   INIT_ACTION(action_showHistoryDock       , QIcon::fromTheme(QStringLiteral("view-history"                    )), i18n("Display history"         ));
+   INIT_ACTION(action_showBookmarkDock      , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display bookmark"        ));
+   INIT_ACTION(action_editToolBar           , QIcon::fromTheme(QStringLiteral("configure-toolbars"              )), i18n("Configure Toolbars"      ));
+   INIT_ACTION(action_addPerson             , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("Add new contact"         ));
+   INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcut"      ));
+   INIT_ACTION(action_configureNotifications, QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Notifications" ));
 
    // Assign default shortcuts
 #define COL(a,b) MainWindow::app()->actionCollection()->setDefaultShortcut(a,b)
@@ -415,8 +416,13 @@ void ActionCollection::slotAddPerson()
 void ActionCollection::updateRecordButton()
 {
    double recVol = Audio::Settings::instance().captureVolume();
-   static const QIcon icons[4] = {QIcon(":/images/icons/mic.svg"),QIcon(":/images/icons/mic_25.svg"),
-      QIcon(":/images/icons/mic_50.svg"),QIcon(":/images/icons/mic_75.svg")};
+   static const QIcon icons[4] = {
+      QIcon(QStringLiteral(":/images/icons/mic.svg"   )),
+      QIcon(QStringLiteral(":/images/icons/mic_25.svg")),
+      QIcon(QStringLiteral(":/images/icons/mic_50.svg")),
+      QIcon(QStringLiteral(":/images/icons/mic_75.svg"))
+   };
+
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
    ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
    MainWindow::view()->updateVolumeControls();
@@ -426,8 +432,13 @@ void ActionCollection::updateRecordButton()
 void ActionCollection::updateVolumeButton()
 {
    double sndVol = Audio::Settings::instance().playbackVolume();
-   static const QIcon icons[4] = {QIcon(":/images/icons/speaker.svg"),QIcon(":/images/icons/speaker_25.svg"),
-      QIcon(":/images/icons/speaker_50.svg"),QIcon(":/images/icons/speaker_75.svg")};
+   static const QIcon icons[4] = {
+      QIcon(QStringLiteral(":/images/icons/speaker.svg"   )),
+      QIcon(QStringLiteral(":/images/icons/speaker_25.svg")),
+      QIcon(QStringLiteral(":/images/icons/speaker_50.svg")),
+      QIcon(QStringLiteral(":/images/icons/speaker_75.svg"))
+   };
+
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
    MainWindow::view()->updateVolumeControls();

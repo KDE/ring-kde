@@ -19,9 +19,9 @@
 #ifndef DLGPROFILES_H
 #define DLGPROFILES_H
 
-#include <QWidget>
-#include <QObject>
-#include <QObject>
+#include <QtWidgets/QWidget>
+#include <QtCore/QObject>
+#include <QtCore/QObject>
 #include "ui_dlgprofiles.h"
 
 class CollectionInterface;

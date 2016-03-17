@@ -27,7 +27,11 @@ class Person;
 class KPhoneNumberSelector : public Interfaces::ContactMethodSelectorI
 {
 public:
+   explicit KPhoneNumberSelector() = default;
+   KPhoneNumberSelector(const KPhoneNumberSelector&) = delete;
+   KPhoneNumberSelector& operator=(const KPhoneNumberSelector&) = delete;
    virtual ~KPhoneNumberSelector(){}
+
    virtual ContactMethod* number(const Person* contact) override;
    static void init();
 };
