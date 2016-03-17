@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
  *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *            Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -39,7 +39,7 @@
 #include "callmodel.h"
 #include "cmd.h"
 
-static const char version[] = "2.2.0";
+static const char version[] = "2.3.0";
 
 static RingApplication* app;
 void quitOnSignal(int signal);
@@ -59,22 +59,16 @@ int main(int argc, char **argv)
          /*QStringLiteral(*/version/*)*/,
          i18n("RING, a secured and distributed communication software"),
          KAboutLicense::GPL_V3,
-         i18n("(C) 2015 Savoir-faire Linux"),
+         i18n("(C) 2004-2015 Savoir-faire Linux"),
          QString(),
          QStringLiteral("http://www.ring.cx"),
          QStringLiteral("ring@lists.savoirfairelinux.net")
       );
       about.setProgramLogo(QImage(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
 
-      about.addAuthor( i18n( "Adrien Béraud"                   ), QString(), QStringLiteral("adrien.beraud@savoirfairelinux.com")        );
-      about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com")     );
-      about.addAuthor( i18n( "Édric Ladent-Milaret"            ), QString(), QStringLiteral("edric.ladent-milaret@savoirfairelinux.com") );
-      about.addAuthor( i18n( "Éloi Bail"                       ), QString(), QStringLiteral("eloi.bail@savoirfairelinux.com")            );
-      about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), QStringLiteral("emmanuel.lepage@savoirfairelinux.com")      );
-      about.addAuthor( i18n( "Guillaume Roguez"                ), QString(), QStringLiteral("guillaume.roguez@savoirfairelinux.com")     );
-      about.addAuthor( i18n( "Marianne Forget"                 ), QString(), QStringLiteral("marianne.forget@savoirfairelinux.com")      );
-      about.addAuthor( i18n( "Stepan Salenikovich"             ), QString(), QStringLiteral("stepan.salenikovich@savoirfairelinux.com")  );
-      about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                   );
+      about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), QStringLiteral("elv1313@gmail.com"                    ));
+      about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com"));
+      about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                              );
 
       KAboutData::setApplicationData(about);
 

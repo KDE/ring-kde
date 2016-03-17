@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2013 Savoir-Faire Linux                                 *
- *   @author: Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   @author: Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  * This library is free software; you can redistribute it and/or           *
  * modify it under the terms of the GNU Library General Public             *

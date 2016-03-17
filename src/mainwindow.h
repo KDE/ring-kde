@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
  *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *            Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -57,7 +57,7 @@ namespace Video {
  *
  * @short Main window
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
- * @author Emmanuel Lepage <emmanuel.lepage@savoirfairelinux.com>
+ * @author Emmanuel Lepage <elv1313@gmail.com>                   
  * @version 1.4.1
 **/
 class MainWindow : public KXmlGuiWindow

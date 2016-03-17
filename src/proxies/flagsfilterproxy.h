@@ -1,6 +1,6 @@
 /****************************************************************************
  *   Copyright (C) 2015 by Emmanuel Lepage Vallee                           *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com> *
+ *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                    *
  *                                                                          *
  *   This library is free software; you can redistribute it and/or          *
  *   modify it under the terms of the GNU Lesser General Public             *

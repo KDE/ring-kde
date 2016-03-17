@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
- *   Author : Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>*
+ *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -49,7 +49,7 @@ class UserActionModel;
  *
  * @short Main view
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
- * @author Emmanuel Lepage Vallee <emmanuel.lepage@savoirfairelinux.com>
+ * @author Emmanuel Lepage Vallee <elv1313@gmail.com>                   
  * @version 1.4.1
  */
 class View : public QWidget, public Ui::View
