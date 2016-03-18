@@ -17,37 +17,23 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 
-//System
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcpp"
-#include <unistd.h>
-#pragma GCC diagnostic pop
-#include <signal.h>
-
 //Qt
 #include <QtCore/QString>
 #include <QtGui/QImage>
 
 //KDE
 #include <KDBusService>
-#include <kaboutdata.h>
+#include <KAboutData>
 #include <KLocalizedString>
 
 //Ring
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
-#include "callmodel.h"
 #include "cmd.h"
 
-static const char version[] = "2.3.0";
+constexpr static const char version[] = "2.3.0";
 
 static RingApplication* app;
-void quitOnSignal(int signal);
-void quitOnSignal(int signal)
-{
-   Q_UNUSED(signal);
-   app->quit();
-}
 
 int main(int argc, char **argv)
 {
