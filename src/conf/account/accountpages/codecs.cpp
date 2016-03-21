@@ -21,7 +21,7 @@
 #include <QtCore/QMimeData>
 
 #include <account.h>
-#include <audio/codecmodel.h>
+#include <codecmodel.h>
 
 Pages::Codecs::Codecs(QWidget *parent) : PageBase(parent)
 {
