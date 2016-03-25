@@ -85,7 +85,7 @@ void PlaceHolderWidget::display(KPageWidgetItem *current)
 
 ///Constructor
 ConfigurationDialog::ConfigurationDialog(View *parent)
- :KConfigDialog(parent, SETTINGS_NAME, ConfigurationSkeleton::self()),dlgVideo(nullptr),dlgDisplay(nullptr)
+ :KConfigDialog(parent, QStringLiteral("settings"), ConfigurationSkeleton::self()),dlgVideo(nullptr),dlgDisplay(nullptr)
  ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgHooks(nullptr),dlgAccessibility(nullptr),dlgAccount(nullptr),
  dlgPresence(nullptr)
 {

@@ -111,4 +111,3 @@ SET( libkring_LIB_HDRS
 )
 
 INSTALL(FILES ring-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})
-

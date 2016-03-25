@@ -24,7 +24,6 @@
 
 #include "klib/kcfg_settings.h"
 #include "view.h"
-#define SETTINGS_NAME "settings"
 
 //KDE
 class KConfigDialogManager;

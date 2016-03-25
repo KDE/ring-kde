@@ -52,7 +52,7 @@ Wizard::Wizard(QWidget* parent) : QWidget(parent)
    w->setupUi(m_pCurrentPage);
    m_pLayout->addWidget(m_pCurrentPage);
 
-   const QString user = getenv("USER");
+   const QString user = qgetenv("USER");
    m_pName = w->m_pName;
    w->m_pName->setText(user);
    w->m_pName->selectAll();

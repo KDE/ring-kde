@@ -59,7 +59,7 @@
  #include "accessibility.h"
 #endif
 
-#define INIT_ACTION(name, icon, text) name = new QAction(icon, text, this);name->setObjectName(#name);
+#define INIT_ACTION(name, icon, text) name = new QAction(icon, text, this);name->setObjectName(QStringLiteral(#name));
 
 ActionCollection* ActionCollection::instance()
 {

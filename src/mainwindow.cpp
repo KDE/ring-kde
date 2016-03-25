@@ -106,7 +106,8 @@ MainWindow* MainWindow::m_sApp = nullptr;
 static void loadNumberCategories()
 {
    auto& model = NumberCategoryModel::instance();
-#define ICN(name) QPixmap(QString(QStringLiteral(":/mini/icons/miniicons/%1.png")).arg(name))
+   static const QString pathTemplate = QStringLiteral(":/mini/icons/miniicons/%1.png");
+#define ICN(name) QPixmap(QString(pathTemplate).arg(QStringLiteral(name)))
    model.addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
    model.addCategory(i18n("Work")     ,ICN("work")     , 2 /*KABC::PhoneNumber::Work */);
    model.addCategory(i18n("Msg")      ,ICN("mail")     , 3 /*KABC::PhoneNumber::Msg  */);
