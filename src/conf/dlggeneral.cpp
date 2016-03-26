@@ -44,7 +44,6 @@ DlgGeneral::DlgGeneral(KConfigDialog *parent)
 
    m_pHistoryMax->setValue(CategorizedHistoryModel::instance().historyLimit());
    m_HasChanged = false;
-   connect(this             , SIGNAL(updateButtons())                , parent, SLOT(updateButtons()));
 }
 
 ///Destructor

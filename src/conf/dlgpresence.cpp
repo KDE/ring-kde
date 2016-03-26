@@ -40,7 +40,6 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
    connect(m_pUp    , &QAbstractButton::clicked,this                            ,&DlgPresence::slotMoveUp   );
    connect(m_pDown  , &QAbstractButton::clicked,this                            ,&DlgPresence::slotMoveDown );
    connect(m_pRemove, &QAbstractButton::clicked,this                            ,&DlgPresence::slotRemoveRow);
-   connect(this     , SIGNAL(updateButtons()) , parent                  ,SLOT(updateButtons()));
    connect(&PresenceStatusModel::instance(),&QAbstractItemModel::dataChanged,this,&DlgPresence::slotChanged);
 
    if (m_pView->horizontalHeader()) {

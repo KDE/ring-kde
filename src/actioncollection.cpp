@@ -344,9 +344,7 @@ void ActionCollection::configureRing()
    QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(MainWindow::view());
    configDialog->setModal(true);
 
-   connect(configDialog, SIGNAL(changesApplied()), MainWindow::view(), SLOT(loadWindow()));
    configDialog->exec();
-   disconnect(configDialog, SIGNAL(changesApplied()), MainWindow::view(), SLOT(loadWindow()));
    delete configDialog;
 }
 

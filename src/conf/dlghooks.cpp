@@ -25,7 +25,6 @@ DlgHooks::DlgHooks(QWidget *parent)
  : QWidget(parent),m_Changed(false)
 {
    setupUi(this);
-   connect(this, SIGNAL(updateButtons()), parent, SLOT(updateButtons()));
    updateWidgets();
 }
 

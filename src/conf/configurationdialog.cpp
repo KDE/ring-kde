@@ -193,7 +193,10 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    connect(buttonBox()->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, this, &ConfigurationDialog::cancelSettings     );
 
    connect(dlgAccount, &DlgAccount::updateButtons,this,&ConfigurationDialog::updateButtons);
+   connect(dlgHooks  , &DlgHooks::updateButtons  ,this,&ConfigurationDialog::updateButtons);
 
+   if (dlgPresence)
+      connect(dlgPresence, &DlgPresence::updateButtons  ,this,&ConfigurationDialog::updateButtons);
    setMinimumSize(1024,700);
 
 } //ConfigurationDialog

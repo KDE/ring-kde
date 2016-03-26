@@ -152,15 +152,15 @@ View::View(QWidget *parent)
    connect(slider_recVol,&QAbstractSlider::valueChanged,&Audio::Settings::instance(),&Audio::Settings::setCaptureVolume);
    connect(slider_sndVol,&QAbstractSlider::valueChanged,&Audio::Settings::instance(),&Audio::Settings::setPlaybackVolume);
 
-   /*Setup signals                                                                                                                                    */
-   //                SENDER                             SIGNAL                              RECEIVER                SLOT                              */
-   /**/connect(&CallModel::instance()       , &CallModel::incomingCall                   , this           , &View::incomingCall              );
-   /**/connect(m_pSendMessageLE             , &QLineEdit::returnPressed                       , this           , &View::sendMessage                    );
-   /**/connect(m_pSendMessagePB             , &QAbstractButton::clicked                             , this           , &View::sendMessage                    );
-   /**/connect(m_pView                      , &CategorizedTreeView::itemDoubleClicked        , m_pEventManager, &EventManager::enter                          );
-   /**/connect(widget_dialpad               , &Dialpad::typed                               , m_pEventManager, &EventManager::typeString              );
-   /**/connect(m_pView                      , SIGNAL(contextMenuRequest(QModelIndex))       , this           , SLOT(slotContextMenu(QModelIndex))     );
-   /*                                                                                                                                                 */
+   /*Setup signals                                                                                                                  */
+   //                SENDER                             SIGNAL                              RECEIVER                SLOT            */
+   /**/connect(&CallModel::instance()       , &CallModel::incomingCall                 , this           , &View::incomingCall       );
+   /**/connect(m_pSendMessageLE             , &QLineEdit::returnPressed                , this           , &View::sendMessage        );
+   /**/connect(m_pSendMessagePB             , &QAbstractButton::clicked                , this           , &View::sendMessage        );
+   /**/connect(m_pView                      , &CategorizedTreeView::itemDoubleClicked  , m_pEventManager, &EventManager::enter      );
+   /**/connect(widget_dialpad               , &Dialpad::typed                          , m_pEventManager, &EventManager::typeString );
+   /**/connect(m_pView                      , &CategorizedTreeView::contextMenuRequest , this           , &View::slotContextMenu    );
+   /*                                                                                                                               */
 
    connect(m_pView->selectionModel(), &QItemSelectionModel::currentChanged, this, &View::updateTextBoxStatus);
 

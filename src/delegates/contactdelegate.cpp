@@ -182,7 +182,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //END Display first phone number
 
 
-   //BEGIN overlay path
+   //BEGIN overlay path //FIXME
    if (index.data((int)Person::Role::DropState).toInt() != 0) {
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
@@ -191,10 +191,9 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          QDialogButtonBox *buttonBox = new QDialogButtonBox();
          QWidget *mainWidget = new QWidget(m_pView);
          QVBoxLayout *mainLayout = new QVBoxLayout;
-//          m_pDelegatedropoverlay->setLayout(mainLayout);
          mainLayout->addWidget(mainWidget);
-         m_pDelegatedropoverlay->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-         m_pDelegatedropoverlay->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+         //m_pDelegatedropoverlay->connect(buttonBox, &QDialogButtonBox::accepted, this, &ContactDelegate::accept);//FIXME
+         //m_pDelegatedropoverlay->connect(buttonBox, &QDialogButtonBox::rejected, this, &ContactDelegate::reject);//FIXME
          //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
          mainLayout->addWidget(buttonBox);
       }
