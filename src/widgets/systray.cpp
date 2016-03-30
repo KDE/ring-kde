@@ -23,6 +23,7 @@
 //Qt
 #include <QtWidgets/QMenu>
 #include <QtGui/QIcon>
+#include <QtCore/QDebug>
 
 //KDE
 #include <QtWidgets/QAction>
@@ -32,12 +33,17 @@
 
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
-      : QSystemTrayIcon(icon, parent),
+      : KStatusNotifierItem(parent),
          m_pTrayIconMenu(0)
 {
+   setIconByPixmap(icon);
    m_pTrayIconMenu = new QMenu(/*parentWidget()*/);
    setContextMenu(m_pTrayIconMenu);
-   connect(this,&QSystemTrayIcon::activated,this,&SysTray::slotActivated);
+   connect(this,&KStatusNotifierItem::activateRequested,this,&SysTray::slotActivated);
+
+   // The app is always active in the sense there is a network connection and
+   // registration status
+   setStatus(KStatusNotifierItem::ItemStatus::Active);
 }
 
 ///Destructor
@@ -65,18 +71,12 @@ void SysTray::addSeparator()
    m_pTrayIconMenu->addSeparator();
 }
 
-void SysTray::slotActivated(QSystemTrayIcon::ActivationReason reason)
+void SysTray::slotActivated(bool active, const QPoint& pos)
 {
-   switch(reason) {
-      case QSystemTrayIcon::DoubleClick:
-      case QSystemTrayIcon::Trigger    :
-      case QSystemTrayIcon::Unknown    :
-         MainWindow::app()->show          ();
-         MainWindow::app()->activateWindow();
-         MainWindow::app()->raise         ();
-         break;
-      case QSystemTrayIcon::Context    :
-      case QSystemTrayIcon::MiddleClick:
-         break;
-   }
+   Q_UNUSED(active)
+   Q_UNUSED(pos)
+
+   MainWindow::app()->show          ();
+   MainWindow::app()->activateWindow();
+   MainWindow::app()->raise         ();
 }

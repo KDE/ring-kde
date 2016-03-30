@@ -19,7 +19,7 @@
 #ifndef SYSTRAY_H
 #define SYSTRAY_H
 
-#include <QtWidgets/QSystemTrayIcon>
+#include <KStatusNotifierItem>
 
 //KDE
 class QAction;
@@ -29,7 +29,7 @@ class QMenu;
 class QIcon;
 
 ///SysTray: The old system try, should be totally replaced by a plasmoid some day
-class SysTray : public QSystemTrayIcon
+class SysTray : public KStatusNotifierItem
 {
 Q_OBJECT
 
@@ -47,7 +47,7 @@ private:
    QMenu* m_pTrayIconMenu;
 
 private Q_SLOTS:
-   void slotActivated(QSystemTrayIcon::ActivationReason reason);
+   void slotActivated(bool active, const QPoint& pos);
 };
 
 #endif // SYSTRAY_H

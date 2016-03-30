@@ -241,13 +241,9 @@ MainWindow::MainWindow(QWidget* parent)
    m_pCentralDW->setObjectName( QStringLiteral("callDock") );
    m_pCentralDW->show();
 
-   m_pStatusBarWidget = new QLabel       ( this );
-
-   //System tray
-   //FIXME crash Qt 5.5.1
-   //    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
-
-   m_pDock = new Dock(this);
+   m_pStatusBarWidget = new QLabel  ( this                     );
+   m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
+   m_pDock            = new Dock    ( this                     );
 
    addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
 
@@ -277,7 +273,6 @@ MainWindow::MainWindow(QWidget* parent)
    statusBar()->addWidget(m_pStatusBarWidget);
 
    if (m_pTrayIcon) {
-      m_pTrayIcon->show();
       m_pTrayIcon->setObjectName( QStringLiteral("m_pTrayIcon")   );
    }
 
