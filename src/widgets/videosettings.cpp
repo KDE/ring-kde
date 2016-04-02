@@ -26,6 +26,13 @@
 VideoSettings::VideoSettings(QWidget* parent) : QWidget(parent)
 {
    setupUi(this);
+
+   // Work around a race condition in LRC
+   Video::ConfigurationProxy::rateModel();
+   Video::ConfigurationProxy::resolutionModel();
+   Video::ConfigurationProxy::channelModel();
+   Video::ConfigurationProxy::deviceModel();
+
    m_pDevice     -> bindToModel(&Video::ConfigurationProxy::deviceModel    () , &Video::ConfigurationProxy::deviceSelectionModel    ());
    m_pChannel    -> bindToModel(&Video::ConfigurationProxy::channelModel   () , &Video::ConfigurationProxy::channelSelectionModel   ());
    m_pResolution -> bindToModel(&Video::ConfigurationProxy::resolutionModel() , &Video::ConfigurationProxy::resolutionSelectionModel());
