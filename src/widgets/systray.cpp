@@ -49,7 +49,7 @@ SysTray::SysTray(const QIcon &icon, QWidget *parent)
 ///Destructor
 SysTray::~SysTray()
 {
-   delete m_pTrayIconMenu;
+   //KStatusNotifierItem take ownership of the menu
 }
 
 
