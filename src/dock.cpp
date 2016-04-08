@@ -116,9 +116,9 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pHistoryDW       = new DockBase  ( nullptr );
    m_pHistoryDW->setObjectName(QStringLiteral("historyDock"));
    m_pHistoryDW->setWindowTitle(i18nc("History tab","History"));
-   CategorizedDelegate* delegate = new CategorizedDelegate(m_pHistoryDW->view());
-   delegate->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
-   m_pHistoryDW->setDelegate(delegate);
+   m_pHCategoryDelegate = new CategorizedDelegate(m_pHistoryDW->view());
+   m_pHCategoryDelegate->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
+   m_pHistoryDW->setDelegate(m_pHCategoryDelegate);
 
 
    QTimer::singleShot(1000, [this]() {
@@ -191,9 +191,9 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    m_pBookmarkDW      = new DockBase ( nullptr );
    m_pBookmarkDW->setObjectName(QStringLiteral("bookmarkDock"));
    m_pBookmarkDW->setWindowTitle(i18nc("Bookmark tab","Bookmark"));
-   CategorizedDelegate* delegate2 = new CategorizedDelegate(m_pBookmarkDW->view());
-   delegate2->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
-   m_pBookmarkDW->setDelegate(delegate2);
+   m_pCategoryDelegate = new CategorizedDelegate(m_pBookmarkDW->view());
+   m_pCategoryDelegate->setChildDelegate(new HistoryDelegate(m_pHistoryDW->view()));
+   m_pBookmarkDW->setDelegate(m_pCategoryDelegate);
    auto m = new BookmarkSortFilterProxyModel(this);
    m_pBookmarkDW->setProxyModel(m, m);
 
@@ -252,6 +252,8 @@ Dock::~Dock()
       ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
       ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
    }
+
+   delete m_pCategoryDelegate;
 }
 
 ///Return the contact dock

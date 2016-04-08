@@ -24,6 +24,7 @@
 class QMainWindow;
 
 class DockBase;
+class CategorizedDelegate;
 
 /**
  * This single instance class manage the Docks
@@ -43,6 +44,9 @@ private:
    DockBase*   m_pContactCD  {nullptr};
    DockBase*   m_pHistoryDW  {nullptr};
    DockBase*   m_pBookmarkDW {nullptr};
+
+   CategorizedDelegate* m_pCategoryDelegate {nullptr};
+   CategorizedDelegate* m_pHCategoryDelegate {nullptr};
 
 public Q_SLOTS:
    void updateTabIcons();

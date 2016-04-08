@@ -109,6 +109,10 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 ///Destructor
 DlgAddressBook::~DlgAddressBook()
 {
+   m_pCategoryDelegate->setChildDelegate(nullptr);
+   m_pCategoryDelegate->setChildChildDelegate(nullptr);
+   delete m_pDelegate;
+   delete m_pCategoryDelegate;
    m_pItemBackendW->setItemDelegate(nullptr);
    delete m_pManager;
    m_hWidgets.clear();

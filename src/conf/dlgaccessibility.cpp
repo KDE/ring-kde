@@ -49,7 +49,7 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    "assign a name and a character sequence. The sequence can be numeric or any character than can be interpreted as one (ex: \"A\" would be interpreted as 2)"));
 
    connect(m_pNameLE        , &QLineEdit::textChanged , this,&DlgAccessibility::changed     );
-   connect(m_pCategoryCBB   , SIGNAL(textChanged(QString)) , this,SLOT(changed())     );
+   connect(m_pCategoryCBB->lineEdit()   , &QLineEdit::textChanged ,this,&DlgAccessibility::changed);
    connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(changed())     );
    connect(m_pSequenceLE    , &QLineEdit::textChanged , this,&DlgAccessibility::changed     );
    connect(m_pDescriptionLE , &QLineEdit::textChanged , this,&DlgAccessibility::changed     );
@@ -81,7 +81,9 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
 ///Destructor
 DlgAccessibility::~DlgAccessibility()
 {
-   
+   m_pCategoryDelegate->setChildDelegate(nullptr);
+   delete m_pItemDelegate;
+   delete m_pCategoryDelegate;
 }
 
 ///Save

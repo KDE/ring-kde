@@ -22,6 +22,9 @@
 #include "pagebase.h"
 #include "ui_credentials.h"
 
+class CategorizedDelegate;
+class QStyledItemDelegate;
+
 namespace Pages {
 
 class Credentials : public PageBase, public Ui_CredentialsPage
@@ -30,6 +33,11 @@ Q_OBJECT
 public:
    //Constructor
    explicit Credentials(QWidget *parent = nullptr);
+   virtual ~Credentials();
+
+private:
+   CategorizedDelegate* m_pDelegate;
+   QStyledItemDelegate* m_pChildDelegate;
 
 private Q_SLOTS:
    void loadInfo();

@@ -22,6 +22,7 @@
 #include <account.h>
 
 class QWidget;
+struct ConnHolder;
 
 /**
  * This class will automatically bridge QtDesigner .ui to the LRC Account::
@@ -47,6 +48,7 @@ private:
 
    // Attributes
    static QHash<int, QString> m_hProblems;
+   QList<ConnHolder*> m_lConns;
 };
 
 #endif

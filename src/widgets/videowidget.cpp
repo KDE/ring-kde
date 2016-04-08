@@ -82,7 +82,7 @@ VideoWidget::VideoWidget(QWidget *parent, const bool previewOnly) : QGraphicsVie
 
 VideoWidget::~VideoWidget()
 {
-   
+   delete m_pScene;
 }
 
 void VideoWidget::dragLeaveEvent( QDragLeaveEvent* e )

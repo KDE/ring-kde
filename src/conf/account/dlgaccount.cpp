@@ -43,10 +43,10 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
    m_pAccountList->setModel         ( ProfileModel::instance().sortedProxyModel         () );
    m_pAccountList->setSelectionModel( ProfileModel::instance().sortedProxySelectionModel() );
 
-   CategorizedDelegate* delegate = new CategorizedDelegate(m_pAccountList);
-   delegate->setChildDelegate(new RightIconDelegate(this, (int)Account::Role::SecurityLevelIcon, 0.2f));
+   m_pCategoryDelegate = new CategorizedDelegate(m_pAccountList);
+   m_pCategoryDelegate->setChildDelegate(new RightIconDelegate(this, (int)Account::Role::SecurityLevelIcon, 0.2f));
 
-   m_pAccountList->setItemDelegate(delegate);
+   m_pAccountList->setItemDelegate(m_pCategoryDelegate);
 
    m_pProtocolModel = new ExtendedProtocolModel(this);
 
@@ -79,6 +79,7 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 
 DlgAccount::~DlgAccount()
 {
+    delete m_pCategoryDelegate;
 }
 
 void DlgAccount::slotSetAccount(const QModelIndex& idx)

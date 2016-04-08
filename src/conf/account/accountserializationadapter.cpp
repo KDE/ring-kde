@@ -53,10 +53,15 @@ ConnHolder::~ConnHolder()
    QObject::disconnect(c);
 }
 
-static void avoidDuplicate(QWidget* w)
+static void avoidDuplicate(QWidget* w, QList<ConnHolder*>& holders )
 {
-   if (qvariant_cast<ConnHolder*>(w->property("lrcfgConn")))
-      delete qvariant_cast<ConnHolder*>(w->property("lrcfgConn"));
+    Q_UNUSED(w)
+    Q_UNUSED(holders)
+    //FIXME this will need a better design
+//    if (qvariant_cast<ConnHolder*>(w->property("lrcfgConn"))) {
+//       auto c = qvariant_cast<ConnHolder*>(w->property("lrcfgConn"));
+//       delete c;
+//    }
 }
 
 QWidget* buddyWidget(QWidget* w)
@@ -120,7 +125,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
 
          if (qobject_cast<QLineEdit*>(w)) {
             QLineEdit* le = qobject_cast<QLineEdit*>(w);
-            avoidDuplicate(le);
+            avoidDuplicate(le, m_lConns);
             le->setText(a->roleData(role).toString());
             le->setReadOnly(rs == Account::RoleState::READ_ONLY);
             ConnHolder* c = new ConnHolder {
@@ -139,10 +144,11 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
                })
             };
             le->setProperty("lrcfgConn",QVariant::fromValue(c));
+            m_lConns << c;
          }
          else if (qobject_cast<QSpinBox*>(w)) {
             QSpinBox* sb = qobject_cast<QSpinBox*>(w);
-            avoidDuplicate(sb);
+            avoidDuplicate(sb, m_lConns);
             sb->setValue(a->roleData(role).toInt());
             ConnHolder* c = new ConnHolder {
                QObject::connect(sb, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [a,role](int value) {
@@ -151,11 +157,12 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
                })
             };
             sb->setProperty("lrcfgConn",QVariant::fromValue(c));
+            m_lConns << c;
          }
          else if  (qobject_cast<QAbstractButton*>(w)) {
             //QCheckBox, QRadioButton, QToolButton, QPushButton
             QAbstractButton* b = qobject_cast<QAbstractButton*>(w);
-            avoidDuplicate(b);
+            avoidDuplicate(b, m_lConns);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
                QObject::connect(b, &QAbstractButton::toggled,[a,role](bool ck) {
@@ -164,10 +171,11 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
                })
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
+            m_lConns << c;
          }
          else if  (qobject_cast<QGroupBox*>(w)) {
             QGroupBox* b = qobject_cast<QGroupBox*>(w);
-            avoidDuplicate(b);
+            avoidDuplicate(b, m_lConns);
             b->setCheckable(rs == Account::RoleState::READ_WRITE);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
@@ -177,17 +185,18 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
                })
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
+            m_lConns << c;
          }
          else if  (qobject_cast<QAbstractItemView*>(w)) {
             QAbstractItemView* v = qobject_cast<QAbstractItemView*>(w);
-            avoidDuplicate(v);
+            avoidDuplicate(v, m_lConns);
             if (a->roleData(role).canConvert<QAbstractItemModel*>())
                v->setModel(qvariant_cast<QAbstractItemModel*>(a->roleData(role)));
          }
 #ifdef HAS_KDE
          else if  (qobject_cast<KUrlRequester*>(w)) { //KDE only
             KUrlRequester* b = qobject_cast<KUrlRequester*>(w);
-            avoidDuplicate(b);
+            avoidDuplicate(b, m_lConns);
             b->setText(a->roleData(role).toString());
             ConnHolder* c = new ConnHolder {
                QObject::connect(b, &KUrlRequester::urlSelected,[a,role](const QUrl& s) {
@@ -196,6 +205,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
                })
             };
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
+            m_lConns << c;
          }
 #endif
          else {
@@ -237,10 +247,10 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
    }
 }
 
-static void clearConnections(QWidget* w)
+static void clearConnections(QWidget* w, QList<ConnHolder*>& m_lConns)
 {
    if (w->objectName().left(LRC_CFG_LEN) == LRC_CFG) {
-      avoidDuplicate(w);
+      avoidDuplicate(w, m_lConns);
    }
 }
 
@@ -252,7 +262,7 @@ void AccountSerializationAdapter::drill(QWidget* w, Account* a, const QHash<QByt
 
       QWidget* w2 = static_cast<QWidget*>(object);
       if (clear)
-         clearConnections(w2);
+         clearConnections(w2, m_lConns);
       else
          setupWidget(w2, a, roles);
 
@@ -275,5 +285,6 @@ AccountSerializationAdapter::AccountSerializationAdapter(Account* a, QWidget* w)
 
 AccountSerializationAdapter::~AccountSerializationAdapter()
 {
-
+    foreach(ConnHolder* c, m_lConns)
+        delete c;
 }

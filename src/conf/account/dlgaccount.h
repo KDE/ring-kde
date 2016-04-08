@@ -23,6 +23,7 @@
 
 class Account;
 class ExtendedProtocolModel;
+class CategorizedDelegate;
 
 namespace Pages {
     class Account;
@@ -42,6 +43,7 @@ private:
    Pages::Account* m_pCurrentAccount {nullptr};
    ExtendedProtocolModel* m_pProtocolModel {nullptr};
    bool m_HasChanged;
+   CategorizedDelegate* m_pCategoryDelegate;
 
 public Q_SLOTS:
    //Housekeeping

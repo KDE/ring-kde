@@ -25,9 +25,10 @@
 Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
-   auto delegate = new CategorizedDelegate(m_pCredentials);
-   delegate->setChildDelegate(new QStyledItemDelegate());
-   m_pCredentials->setItemDelegate(delegate);
+   m_pDelegate = new CategorizedDelegate(m_pCredentials);
+   m_pChildDelegate = new QStyledItemDelegate();
+   m_pDelegate->setChildDelegate(m_pChildDelegate);
+   m_pCredentials->setItemDelegate(m_pDelegate);
 
    connect(this,&PageBase::accountSet, this, &Pages::Credentials::slotSetAccount);
 
@@ -38,6 +39,13 @@ Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
    connect(edit_credential_auth_2     , &QLineEdit::textChanged, this, &Pages::Credentials::slotUserChanged      );
    connect(edit_credential_password_2 , &QLineEdit::textChanged, this, &Pages::Credentials::slotPasswdChanged    );
 
+}
+
+Pages::Credentials::~Credentials()
+{
+    m_pDelegate->setChildDelegate(nullptr);
+    delete m_pChildDelegate;
+    delete m_pDelegate;
 }
 
 void Pages::Credentials::slotSetAccount()
