@@ -103,6 +103,11 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    Q_ASSERT(index.isValid());
 
    const bool isBookmark = index.data(static_cast<int>(Call::Role::IsBookmark)).toBool();
+   const bool isTracked  = index.data(static_cast<int>(Call::Role::IsTracked)).toBool();
+   const bool isPresent  = index.data(static_cast<int>(Call::Role::IsPresent)).toBool();
+
+   static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
+   static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
 
    painter->save();
    int iconHeight = option.rect.height() -4;
@@ -210,17 +215,24 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          }
       }
 
-// //       if (isTracked) {
-// //          if (isPresent)
-// //             painter->setPen(presentBrush);
-// //          else
-// //             painter->setPen(awayBrush);
-// //       }
+      if (isTracked) {
+         if (isPresent)
+            painter->setPen(presentBrush);
+         else
+            painter->setPen(awayBrush);
+      }
 
-      painter->drawText(option.rect.x()+15+iconHeight+((!isBookmark)?12:0),currentHeight,index.data(static_cast<int>(Call::Role::Number)).toString());
+      const URI uri = index.data(static_cast<int>(Call::Role::Number)).toString();
+      const URI::ProtocolHint hint = uri.protocolHint();
 
-//       if (isTracked)
-//          painter->setPen(textCol);
+      painter->drawText(
+         option.rect.x()+15+iconHeight+((!isBookmark)?12:0),
+         currentHeight,
+         hint == URI::ProtocolHint::RING ? QStringLiteral("RingId") : QString(uri)
+      );
+
+      if (isTracked)
+         painter->setPen(textCol);
 
       currentHeight +=fm.height();
       painter->restore();
