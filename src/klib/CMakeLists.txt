@@ -66,7 +66,6 @@ SET(GENERIC_LIB_VERSION "2.0.0")
 #File to compile
 SET( libkring_LIB_SRCS
    helperfunctions.cpp
-   kdeprofilepersistor.cpp
    itemmodelserialization.cpp
 )
 

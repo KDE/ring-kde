@@ -25,6 +25,7 @@
 
 //Qt
 #include <QtCore/QString>
+#include <QtCore/QFile>
 #include <QtWidgets/QLabel>
 #include <QtCore/QTimer>
 #include <QtWidgets/QStatusBar>
@@ -69,7 +70,6 @@
 #include <interfaces/itemmodelstateserializeri.h>
 #include "klib/itemmodelserialization.h"
 #include "extensions/presencecollectionextension.h"
-#include "klib/kdeprofilepersistor.h"
 
 //Ring
 #include "media/video.h"
@@ -149,7 +149,6 @@ MainWindow::MainWindow(QWidget* parent)
    }
    static bool init = false;
    if (!init) {
-      GlobalInstances::setInterface<KDEProfilePersister>();
 
       GlobalInstances::setInterface<KDEActionExtender>();
 
