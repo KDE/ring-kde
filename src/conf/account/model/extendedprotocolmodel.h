@@ -31,6 +31,12 @@ public:
    explicit ExtendedProtocolModel(QObject* parent = nullptr);
    virtual ~ExtendedProtocolModel();
 
+   enum class ExtendedRole {
+      PROFILE = 0,
+      IMPORT  = 1,
+      COUNT__,
+   };
+
    //Model
    virtual QVariant    data     ( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
    virtual int         rowCount ( const QModelIndex& parent = QModelIndex()            ) const override;

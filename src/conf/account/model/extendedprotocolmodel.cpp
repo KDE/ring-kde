@@ -17,7 +17,12 @@
  **************************************************************************/
 #include "extendedprotocolmodel.h"
 
+// LRC
 #include <account.h>
+
+// KDE
+#include <klocalizedstring.h>
+
 
 ExtendedProtocolModel::ExtendedProtocolModel(QObject* parent) : QIdentityProxyModel(parent)
 {
@@ -36,21 +41,36 @@ QItemSelectionModel* ExtendedProtocolModel::selectionModel() const
 
 QVariant ExtendedProtocolModel::data( const QModelIndex& index, int role ) const
 {
-   if (index.isValid() && index.row() == static_cast<int>(Account::Protocol::COUNT__) && role == Qt::DisplayRole)
-      return tr("Profile");
+   const int offset = index.row() - static_cast<int>(Account::Protocol::COUNT__);
+   if (index.isValid() && offset >= 0 && role == Qt::DisplayRole && offset < static_cast<int>(ExtendedRole::COUNT__)) {
+      switch(static_cast<ExtendedRole>(offset)) {
+         case ExtendedRole::PROFILE:
+            return i18n("Profile");
+         case ExtendedRole::IMPORT:
+            return i18n("Import");
+         case ExtendedRole::COUNT__:
+            break;
+      }
+   }
    else
       return m_pSource->data(mapToSource(index), role);
+
+   return QVariant();
 }
 
 int ExtendedProtocolModel::rowCount( const QModelIndex& parent ) const
 {
-   return parent.isValid() ? 0 : m_pSource->rowCount() + 1;
+   return parent.isValid() ? 0 : m_pSource->rowCount()
+      + static_cast<int>(ExtendedProtocolModel::ExtendedRole::COUNT__);
 }
 
 QModelIndex ExtendedProtocolModel::index( int row, int column, const QModelIndex& parent) const
 {
-   if ( row == static_cast<int>(Account::Protocol::COUNT__))
-      return createIndex(row, column, static_cast<int>(Account::Protocol::COUNT__));
+   constexpr static const int total = static_cast<int>(Account::Protocol::COUNT__)
+      + static_cast<int>(ExtendedRole::COUNT__);
+
+   if ( row >= static_cast<int>(Account::Protocol::COUNT__) && row < total)
+      return createIndex(row, column, row);
    else
       return mapFromSource(m_pSource->index(row, column, mapToSource(parent)));
 }

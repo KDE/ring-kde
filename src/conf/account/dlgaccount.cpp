@@ -18,6 +18,13 @@
 
 #include "dlgaccount.h"
 
+// Qt
+#include <QtWidgets/QFileDialog>
+
+// KDE
+#include <KPasswordDialog>
+#include <KLocalizedString>
+
 //Ring
 #include <accountmodel.h>
 #include <profilemodel.h>
@@ -134,12 +141,28 @@ void DlgAccount::slotNewAddAccount()
       m_pProtocolModel->data(m_pProtocolModel->selectionModel()->currentIndex(),Qt::UserRole)
    );
 
-   //Add profile
-   if (proto == Account::Protocol::COUNT__) {
+   // Add profile or import accounts
+   if ((int)proto == ((int)Account::Protocol::COUNT__) + (int)ExtendedProtocolModel::ExtendedRole::PROFILE) {
       const QModelIndex idx = ProfileModel::instance().add();
 
       if (idx.isValid()) {
          m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
+      }
+
+      return;
+   }
+   else if ((int)proto == ((int)Account::Protocol::COUNT__) + (int)ExtendedProtocolModel::ExtendedRole::IMPORT) {
+      const QString path = QFileDialog::getOpenFileName(this, tr("Import accounts"),  QDir::currentPath());
+
+      if (!path.isEmpty()) {
+         KPasswordDialog dlg(this);
+         dlg.setPrompt(i18n("Enter the password"));
+
+         if( !dlg.exec() )
+             return;
+
+         AccountModel::instance().importAccounts(path, dlg.password());
+
       }
 
       return;
