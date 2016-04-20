@@ -22,6 +22,7 @@
 #include <accountmodel.h>
 #include <profilemodel.h>
 #include <person.h>
+#include <profile.h>
 
 //Binder
 #include "accountserializationadapter.h"
@@ -109,11 +110,15 @@ void Pages::Account::setAccount(const QModelIndex& idx)
 
 
    if (!i.isValid()) {
-      Person* p = ProfileModel::instance().getPerson(prof);
+      Profile* pr = ProfileModel::instance().getProfile(prof);
 
-      if (p) {
-         setProfile(p);
-         displayProfile(true);
+      if (pr) {
+         Person* p = pr->person();
+
+         if (p) {
+            setProfile(p);
+            displayProfile(true);
+         }
       }
    }
    else if (::Account* a = AccountModel::instance().getAccountByModelIndex(i)) {

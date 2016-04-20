@@ -143,7 +143,12 @@ void DlgAccount::slotNewAddAccount()
 
    // Add profile or import accounts
    if ((int)proto == ((int)Account::Protocol::COUNT__) + (int)ExtendedProtocolModel::ExtendedRole::PROFILE) {
-      const QModelIndex idx = ProfileModel::instance().add();
+      const bool ret = ProfileModel::instance().add();
+
+      if (!ret)
+          return;
+
+      const QModelIndex idx = ProfileModel::instance().index(ProfileModel::instance().rowCount(),0);
 
       if (idx.isValid()) {
          m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
