@@ -59,6 +59,7 @@
 #include <localhistorycollection.h>
 #include <localbookmarkcollection.h>
 #include <localrecordingcollection.h>
+#include <localprofilecollection.h>
 
 //Configurators
 #include "configurator/localhistoryconfigurator.h"
@@ -169,6 +170,8 @@ MainWindow::MainWindow(QWidget* parent)
        ******************************************/
 
       CategorizedHistoryModel::instance().addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
+
+      ProfileModel::instance().addCollection<LocalProfileCollection>(LoadOptions::FORCE_ENABLED);
 
 #ifdef Q_OS_LINUX
       CertificateModel::instance().addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
