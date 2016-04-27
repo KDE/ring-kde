@@ -482,3 +482,9 @@ QVariant KDEPixmapManipulation::decorationRole(const Person* p)
    Q_UNUSED(p)
    return contactPhoto((Person*)p, QSize(22,22), true);
 }
+
+QVariant KDEPixmapManipulation::decorationRole(const Account* a)
+{
+    Q_UNUSED(a)
+    return {};
+}

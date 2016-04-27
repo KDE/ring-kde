@@ -61,6 +61,8 @@ public:
 
    virtual QVariant   decorationRole(const Person*            p    ) override;
 
+   virtual QVariant   decorationRole(const Account*           a    ) override;
+
    static const char* icnPath[2][2];
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
