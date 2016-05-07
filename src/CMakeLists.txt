@@ -103,6 +103,14 @@ IF (CMAKE_COMPILER_IS_GNUCC)
       )
    ENDIF()
 
+   IF (GCC_VERSION VERSION_GREATER 6.0 OR GCC_VERSION VERSION_EQUAL 6.0)
+      ADD_DEFINITIONS(
+         -Wtautological-compare
+         -Wduplicated-cond
+         -Wmisleading-indentation
+      )
+   ENDIF()
+
 ENDIF()
 
 IF (CMAKE_COMPILER_IS_GNUCC)
