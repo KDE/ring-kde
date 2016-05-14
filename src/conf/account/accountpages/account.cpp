@@ -54,7 +54,10 @@ void Pages::Account::setAccount(::Account* a)
    dlgRingtone    -> setAccount(a);
    dlgSecurity    -> setAccount(a);
 
-   new AccountSerializationAdapter(a, this);
+   if (m_pAdapter)
+       delete m_pAdapter;
+
+   m_pAdapter = new AccountSerializationAdapter(a, this);
 
    switch (a->protocol()) {
       case ::Account::Protocol::IAX:

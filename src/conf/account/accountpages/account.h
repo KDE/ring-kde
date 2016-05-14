@@ -24,6 +24,7 @@
 
 class Account;
 class Person;
+class AccountSerializationAdapter;
 
 namespace Pages {
 
@@ -56,6 +57,7 @@ private:
    //Attributes
    Account* m_pAccount {nullptr};
    QList<Person*> m_lToSave;
+   AccountSerializationAdapter* m_pAdapter = nullptr;
 };
 
 }
