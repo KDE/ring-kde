@@ -11,5 +11,5 @@ else
   git clone http://anongit.kde.org/kde-dev-scripts
 fi
 cp ../data/config.ini ./
-cp kde-dev-scripts/createtarball/create_tarball.rb ./
-ruby create_tarball.rb -n -a sflphone-kde && mv ring-kde-*.tar.* ../
+cp kde-dev-scripts/createtarball/create_tarball_kf5.rb ./
+ruby create_tarball_kf5.rb -n -a ring-kde && mv ring-kde-*.tar.* ../
