@@ -320,6 +320,10 @@ void ActionCollection::setupAction()
 void ActionCollection::mailBox()
 {
    Account* account = AvailableAccountModel::currentDefaultAccount();
+
+   if (!account)
+       return;
+
    const QString mailBoxNumber = account->mailbox();
    Call* call = CallModel::instance().dialingCall();
    if (call) {
