@@ -151,8 +151,8 @@ void ThreadedPainter2::draw(QPainter* p)
 
       //Detect race conditions
       const uint expectedSize = res.width() * res.height();
-      if (expectedSize == m_Frame.size/3) {
-         qWarning() << "Invalid video size. Expected" << expectedSize << "got" << m_Frame.size/3;
+      if (expectedSize != m_Frame.size/4) {
+         qWarning() << "Invalid video size. Expected" << expectedSize*4 << "got" << m_Frame.size;
          return;
       }
 
