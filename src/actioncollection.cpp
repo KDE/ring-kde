@@ -381,10 +381,10 @@ void ActionCollection::showNotificationEditor()
 
    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),1,1);
 
-   connect(def   , &QPushButton::clicked, w, &KNotifyConfigWidget::revertToDefaults);
-   connect(ok    , &QPushButton::clicked, w, &KNotifyConfigWidget::save            );
-   connect(ok    , &QPushButton::clicked, d, &QDialog::close                       );
-   connect(cancel, &QPushButton::clicked, d, &QDialog::close                       );
+   connect(def   , &QPushButton::clicked, w       , &KNotifyConfigWidget::revertToDefaults);
+   connect(ok    , &QPushButton::clicked, w       , &KNotifyConfigWidget::save            );
+   connect(ok    , &QPushButton::clicked, d.data(), &QDialog::close                       );
+   connect(cancel, &QPushButton::clicked, d.data(), &QDialog::close                       );
 
    d->exec();
 

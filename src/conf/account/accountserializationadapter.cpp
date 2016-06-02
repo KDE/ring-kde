@@ -42,6 +42,7 @@ constexpr static const char LRC_CFG[]   = "lrcfg_";
 constexpr static const int  LRC_CFG_LEN = 6       ;
 
 struct ConnHolder final{
+   ConnHolder(const QMetaObject::Connection& _c) : c(_c) {}
    QMetaObject::Connection c;
    ConnHolder(const ConnHolder&) = delete;
    ~ConnHolder();
@@ -128,7 +129,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             avoidDuplicate(le, m_lConns);
             le->setText(a->roleData(role).toString());
             le->setReadOnly(rs == Account::RoleState::READ_ONLY);
-            ConnHolder* c = new ConnHolder {
+            ConnHolder* c = new ConnHolder(
                QObject::connect(le, &QLineEdit::textChanged, [a,role,le](const QString& text) {
                   if (a->roleData(role) != text)
                      a->setRoleData(role, text);
@@ -142,7 +143,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
 
                   le->setPalette(pal);
                })
-            };
+            );
             le->setProperty("lrcfgConn",QVariant::fromValue(c));
             m_lConns << c;
          }
