@@ -124,7 +124,7 @@ void VideoWidget::addRenderer(Video::Renderer* renderer)
       VideoGLFrame* frm = new VideoGLFrame(m_pWdg);
       frm->setKeepAspectRatio(ConfigurationSkeleton::keepVideoAspectRatio());
       frm->setRenderer(renderer);
-      connect(frm,&VideoGLFrame::changed,m_pScene,&VideoScene::frameChanged);
+      connect(renderer,&Video::Renderer::frameUpdated,m_pScene,&VideoScene::frameChanged);
       m_pScene->addFrame(frm);
       m_hFrames[renderer] = frm;
    }
