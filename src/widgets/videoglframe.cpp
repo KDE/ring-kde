@@ -48,7 +48,7 @@ public:
    virtual ~ThreadedPainter2(){
 //       QThread::currentThread()->quit();
       if (m_pFrameCopy)
-         delete m_pFrameCopy;
+         delete[] m_pFrameCopy;
    }
 
    //GL
@@ -152,7 +152,7 @@ void ThreadedPainter2::draw(QPainter* p)
             m_FrameSize  = m_Frame.size;
          }
          else if (m_Frame.size != m_FrameSize) {
-            delete m_pFrameCopy;
+            delete[] m_pFrameCopy;
             m_pFrameCopy = new char[m_Frame.size];
             m_FrameSize  = m_Frame.size;
          }
