@@ -460,6 +460,7 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
          }
       case Ring::ObjectType::Call           :
       case Ring::ObjectType::Media          : //TODO
+      case Ring::ObjectType::Certificate    :
       case Ring::ObjectType::COUNT__        :
          break;
    }
