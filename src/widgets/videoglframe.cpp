@@ -47,6 +47,8 @@ public:
    ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg);
    virtual ~ThreadedPainter2(){
 //       QThread::currentThread()->quit();
+      if (m_pFrameCopy)
+         delete m_pFrameCopy;
    }
 
    //GL
@@ -67,6 +69,8 @@ private:
    QMutex mutex;
    QSize m_ActiveSize;
    int m_Skip {3};
+   char* m_pFrameCopy {nullptr};
+   uint m_FrameSize;
 
    //Methods
    void saveGLState();
@@ -137,27 +141,43 @@ void ThreadedPainter2::draw(QPainter* p)
       Video::Frame frm = m_pRenderer->currentFrame();
 
       // Repaint the old frame if there is no new ones
-      if (frm.size)
-         m_Frame = frm;
+      if (frm.size) {
+         m_Frame = std::move(frm);
+
+         // I give up, every month, the daemon manage to break their SHM
+         // memory model. From now on, ring-kde copy the frame. It's slow,
+         // but wont cause surprise SIGSEGV
+         if (!m_pFrameCopy) {
+            m_pFrameCopy = new char[m_Frame.size];
+            m_FrameSize  = m_Frame.size;
+         }
+         else if (m_Frame.size != m_FrameSize) {
+            delete m_pFrameCopy;
+            m_pFrameCopy = new char[m_Frame.size];
+            m_FrameSize  = m_Frame.size;
+         }
+
+        memcpy(m_pFrameCopy, m_Frame.ptr, m_FrameSize);
+      }
 
       // See Tuleap #206, until fixed, the first few frame will be trashed
       if (m_Skip)
          m_Skip--;
 
-      if (!m_Frame.size || m_Skip)
+      if (!m_FrameSize || m_Skip)
          return;
 
       QSize res = m_pRenderer->size();
 
       //Detect race conditions
       const uint expectedSize = res.width() * res.height();
-      if (expectedSize != m_Frame.size/4) {
-         qWarning() << "Invalid video size. Expected" << expectedSize*4 << "got" << m_Frame.size;
+      if (expectedSize != m_FrameSize/4) {
+         qWarning() << "Invalid video size. Expected" << expectedSize*4 << "got" << m_FrameSize;
          return;
       }
 
-      if (res.width() && res.height() && m_Frame.size) {
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res.width(), res.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, m_Frame.ptr);
+      if (res.width() && res.height() && m_FrameSize) {
+         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res.width(), res.height(), 0, GL_BGRA, GL_UNSIGNED_BYTE, m_pFrameCopy);
       }
 
       // draw into the GL widget
