@@ -62,9 +62,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-528</y>
          <width>623</width>
-         <height>1149</height>
+         <height>1229</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -549,7 +549,7 @@
               </attribute>
               <layout class="QGridLayout" name="gridLayout">
                <item row="0" column="0">
-                <widget class="QListView" name="lrcfg_allowedCertificatesModel"/>
+                <widget class="ContextListView" name="lrcfg_allowedCertificatesModel"/>
                </item>
               </layout>
              </widget>
@@ -559,7 +559,7 @@
               </attribute>
               <layout class="QGridLayout" name="gridLayout_2">
                <item row="0" column="0">
-                <widget class="QListView" name="lrcfg_bannedCertificatesModel"/>
+                <widget class="ContextListView" name="lrcfg_bannedCertificatesModel"/>
                </item>
               </layout>
              </widget>
@@ -569,7 +569,7 @@
               </attribute>
               <layout class="QGridLayout" name="gridLayout_3">
                <item row="0" column="0">
-                <widget class="QListView" name="lrcfg_knownCertificateModel"/>
+                <widget class="ContextListView" name="lrcfg_knownCertificateModel"/>
                </item>
               </layout>
              </widget>
@@ -608,6 +608,11 @@
    <extends>QWidget</extends>
    <header>widgets/securityprogress.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ContextListView</class>
+   <extends>QListView</extends>
+   <header>widgets/contextlistview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
