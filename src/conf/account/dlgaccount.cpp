@@ -67,9 +67,6 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
 
    connect(&AccountModel::instance(), &AccountModel::editStateChanged, this, &DlgAccount::slotUpdateButtons);
 
-   const QModelIndex idx = m_pAccountList->model()->index(0,0,m_pAccountList->model()->index(0,0));
-   m_pAccountList->expandAll();
-
    connect(&ProfileModel::instance(), &ProfileModel::rowsInserted, this, &DlgAccount::slotExpand);
 
    connect(m_pPanel, &Pages::Account::changed, [this]() {
@@ -77,11 +74,11 @@ DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
       updateButtons();
    });
 
-   m_pAccountList->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
-
    slotSetAccount(m_pAccountList->selectionModel()->currentIndex());
 
    connect(m_pAccountList->selectionModel(), &QItemSelectionModel::currentChanged, this, &DlgAccount::slotSetAccount);
+
+   slotExpand();
 }
 
 DlgAccount::~DlgAccount()
@@ -97,6 +94,16 @@ void DlgAccount::slotSetAccount(const QModelIndex& idx)
 void DlgAccount::slotExpand()
 {
    m_pAccountList->expandAll();
+
+   if (!m_pAccountList->selectionModel()->currentIndex().isValid()) {
+      for (int i = 0; i < m_pAccountList->model()->rowCount(); i++) {
+         const QModelIndex idx = m_pAccountList->model()->index(i, 0);
+         if (m_pAccountList->model()->rowCount(idx)) {
+            const QModelIndex defaultAcc = m_pAccountList->model()->index(0, 0, idx);
+            m_pAccountList->selectionModel()->setCurrentIndex(defaultAcc, QItemSelectionModel::ClearAndSelect);
+         }
+      }
+   }
 }
 
 void DlgAccount::slotRemoveAccount()
