@@ -180,6 +180,7 @@ SET(
    delegates/autocompletiondelegate.cpp
    delegates/autocompletiondelegate2.cpp
    delegates/toolbardelegate.cpp
+   delegates/accountinfodelegate.cpp
    delegates/kdepixmapmanipulation.cpp
    proxies/simplerotateproxy.cpp
    proxies/deduplicateproxy.cpp
