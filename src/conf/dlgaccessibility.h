@@ -64,7 +64,7 @@ private Q_SLOTS:
    void slotDelaySB(int newValue);
    void slotSequenceLE(const QString& newText);
    void slotDescriptionLE(const QString& newText);
-   void slotShortcut(const QKeySequence& shortcut);
+   void slotShortcut(const QList<QKeySequence>& cut);
 
 Q_SIGNALS:
    void updateButtons();

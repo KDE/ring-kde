@@ -61,7 +61,7 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    connect(m_pCategoryCBB->lineEdit()   , &QLineEdit::textChanged , this,&DlgAccessibility::slotCategoryCBB   );
    connect(m_pSequenceLE    , &QLineEdit::textChanged , this,&DlgAccessibility::slotSequenceLE    );
    connect(m_pDescriptionLE , &QLineEdit::textChanged , this,&DlgAccessibility::slotDescriptionLE );
-   connect(m_pShortcuts     , SIGNAL(shortcutChanged(QKeySequence)) , this,SLOT(slotShortcut(QKeySequence)) );
+   connect(m_pShortcuts     , &KShortcutWidget::shortcutChanged , this, &DlgAccessibility::slotShortcut);
 
    connect(this , SIGNAL(updateButtons()) , parent,SLOT(updateButtons()) );
 
@@ -185,10 +185,9 @@ void DlgAccessibility::slotDescriptionLE(const QString& newText)
    }
 }
 
-void DlgAccessibility::slotShortcut(const QKeySequence& shortcut)
+void DlgAccessibility::slotShortcut(const QList<QKeySequence>& cut)
 {
-   Q_UNUSED(shortcut)
    Macro* current = MacroModel::instance().getCurrentMacro();
-   if (current && qvariant_cast<QAction*>(current->action()))
-      qvariant_cast<QAction*>(current->action())->setShortcut(shortcut);
+   if (current && qvariant_cast<QAction*>(current->action()) && cut.size())
+      qvariant_cast<QAction*>(current->action())->setShortcut(cut[0]);
 }
