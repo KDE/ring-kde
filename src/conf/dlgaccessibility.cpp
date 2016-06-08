@@ -30,6 +30,7 @@
 //Ring
 #include <macromodel.h>
 #include <macro.h>
+#include "mainwindow.h"
 #include <conf/account/delegates/categorizeddelegate.h>
 
 ///Constructor
@@ -133,7 +134,16 @@ void DlgAccessibility::selectMacro(Macro* macro)
       m_pDelaySB->setValue(macro->delay());
       m_pSequenceLE->setText(macro->sequence());
       m_pDescriptionLE->setText(macro->description());
-      //m_pShortcuts->setShortcut(macro->action()->shortcut());
+
+      // Load the shortcut
+      QAction* a = qvariant_cast<QAction*>(macro->action());
+
+      if (a) {
+         static KActionCollection* c = MainWindow::app()->actionCollection();
+         m_pShortcuts->setCheckActionCollections({c});
+         m_pShortcuts->setShortcut({a->shortcut()});
+      }
+
       m_pMacroFrm->setEnabled(true);
       m_pNameLE->selectAll();
       m_pNameLE->setFocus();
