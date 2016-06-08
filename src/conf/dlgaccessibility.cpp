@@ -49,6 +49,9 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    m_pInfoL->setText(i18n("This page allows to create macros that can then be called using keyboard shortcuts or added to the toolbar. To create one, "
    "assign a name and a character sequence. The sequence can be numeric or any character than can be interpreted as one (ex: \"A\" would be interpreted as 2)"));
 
+   //Need to be done before the connection to avoid corruption
+   m_pCategoryCBB->setModel(&MacroModel::instance());
+
    connect(m_pNameLE        , &QLineEdit::textChanged , this,&DlgAccessibility::changed     );
    connect(m_pCategoryCBB->lineEdit()   , &QLineEdit::textChanged ,this,&DlgAccessibility::changed);
    connect(m_pDelaySB       , SIGNAL(valueChanged(int))    , this,SLOT(changed())     );
@@ -69,7 +72,6 @@ DlgAccessibility::DlgAccessibility(KConfigDialog* parent)
    connect(&MacroModel::instance(),&MacroModel::selectMacro,this,&DlgAccessibility::selectMacro);
    connect(&MacroModel::instance(),&QAbstractItemModel::layoutChanged,m_pMacroListTV,&QTreeView::expandAll);
    m_pMacroListTV->setModel(&MacroModel::instance());
-//    m_pCategoryCBB->setModel(MacroModel::instance()); //Works, but not perfect
    m_pMacroListTV->expandAll();
    connect(m_pMacroListTV->selectionModel(),&QItemSelectionModel::currentChanged,&MacroModel::instance(),&MacroModel::setCurrent);
 
@@ -130,7 +132,14 @@ void DlgAccessibility::selectMacro(Macro* macro)
    if (macro) {
       m_pMacroListTV->expandAll();
       m_pNameLE->setText(macro->name());
-      m_pCategoryCBB->lineEdit()->setText(macro->category());
+
+      const QModelIndex& idx = macro->index();
+
+      if (idx.parent().isValid())
+         m_pCategoryCBB->setCurrentIndex(idx.parent().row());
+      else
+         m_pCategoryCBB->lineEdit()->setText(macro->category());
+
       m_pDelaySB->setValue(macro->delay());
       m_pSequenceLE->setText(macro->sequence());
       m_pDescriptionLE->setText(macro->description());
