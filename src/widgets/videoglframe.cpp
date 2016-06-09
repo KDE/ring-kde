@@ -49,6 +49,7 @@ public:
 //       QThread::currentThread()->quit();
       if (m_pFrameCopy)
          delete[] m_pFrameCopy;
+      
    }
 
    //GL
@@ -90,6 +91,8 @@ ThreadedPainter2::ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg) : QObject()
    m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false),m_pFrm(frm),
    tile_list(0),tra_x(0.0f), tra_y(0.0f), tra_z(0.0f)
 {
+    // At least give relevant crash backtraces in case the GL layer quit
+    connect(wdg ,&QObject::destroyed, [this]() {m_pW = nullptr;});
 }
 
 void ThreadedPainter2::reset()
@@ -261,6 +264,7 @@ VideoGLFrame::~VideoGLFrame()
 {
    QMutexLocker locker(&m_pPainter->mutex);
    glDeleteLists(m_pPainter->tile_list, 1);
+   delete m_pPainter;
 }
 
 void VideoGLFrame::paintEvent(QPainter* p)
