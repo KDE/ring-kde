@@ -187,6 +187,7 @@ SET(
    proxies/filtertoplevelproxy.cpp
    proxies/roletransformationproxy.cpp
    proxies/flagsfilterproxy.cpp
+   proxies/pollingproxy.cpp
    #proxies/valuefilterproxy.cpp
 )
 
