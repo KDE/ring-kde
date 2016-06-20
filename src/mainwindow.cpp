@@ -68,6 +68,7 @@
 
 //Delegates
 #include <delegates/kdepixmapmanipulation.h>
+#include <delegates/accountinfodelegate.h>
 #include <interfaces/itemmodelstateserializeri.h>
 #include "klib/itemmodelserialization.h"
 #include "extensions/presencecollectionextension.h"
@@ -345,11 +346,16 @@ MainWindow::MainWindow(QWidget* parent)
    m_pCurAccL = new QLabel(i18n("Account:"));
    bar->addPermanentWidget(m_pCurAccL);
 
+   auto pollProxy = new AccountIndoProxy(&AvailableAccountModel::instance());
    m_pAccountStatus = new AutoComboBox(bar);
    m_pAccountStatus->setVisible(ConfigurationSkeleton::displayAccountBox());
    m_pCurAccL->setVisible(ConfigurationSkeleton::displayAccountBox());
-   m_pAccountStatus->bindToModel(&AvailableAccountModel::instance(),AvailableAccountModel::instance().selectionModel());
-   m_pAccountStatus->setMinimumSize(100,0);
+   m_pAccountStatus->bindToModel(pollProxy, AvailableAccountModel::instance().selectionModel());
+   m_pAccountStatus->setMinimumSize(100, 0);
+
+   auto delegate = new AccountInfoDelegate();
+   m_pAccountStatus->setItemDelegate(delegate);
+
    bar->addPermanentWidget(m_pAccountStatus);
    connect(m_pPresent,&QAbstractButton::toggled,m_pPresenceDock,&QWidget::setVisible);
 
