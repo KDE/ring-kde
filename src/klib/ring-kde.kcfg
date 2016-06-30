@@ -249,9 +249,6 @@
 <!--    <entry name="enableHooksSIP" type="Bool">
     	<label>Defines whether to enable hooks for SIP accounts.</label>
     </entry>
-    <entry name="enableHooksIAX" type="Bool">
-    	<label>Defines whether to enable hooks for IAX accounts.</label>
-    </entry>
     <entry name="hooksSIPHeader" type="String">
     	<label>Defines which header to catch for SIP accounts hooks.</label>
     </entry>

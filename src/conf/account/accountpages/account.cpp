@@ -60,9 +60,6 @@ void Pages::Account::setAccount(::Account* a)
    m_pAdapter = new AccountSerializationAdapter(a, this);
 
    switch (a->protocol()) {
-      case ::Account::Protocol::IAX:
-         m_pPages->setTabEnabled(4,false);
-         break;
       case ::Account::Protocol::RING:
       case ::Account::Protocol::SIP:
          m_pPages->setTabEnabled(4, a->isNew() || a->id() != "IP2IP");
