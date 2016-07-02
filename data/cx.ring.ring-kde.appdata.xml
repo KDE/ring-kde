@@ -24,6 +24,13 @@
   <name xml:lang="x-test">xxRing-KDExx</name>
   <name xml:lang="zh-CN">Ring-KDE</name>
   <summary>Call and receive calls with SIP or RING protocols</summary>
+  <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o RING.</summary>
+  <summary xml:lang="de">Anrufen und Anrufe annehmen mit SIP- oder RING-Protokollen</summary>
+  <summary xml:lang="nl">Maak of ontvang oproepen met SIP of RING-protocollen</summary>
+  <summary xml:lang="pl">Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING</summary>
+  <summary xml:lang="pt">Fazer e receber chamadas com os protocolos SIP ou RING</summary>
+  <summary xml:lang="sv">Ring och ta emot samtal med SIP- eller RING-protokoll</summary>
+  <summary xml:lang="x-test">xxCall and receive calls with SIP or RING protocolsxx</summary>
   <description>
     <p>
       Ring-KDE is a graphical client for the Ring (www.ring.cx) communication
@@ -78,6 +85,12 @@
       <li xml:lang="uk">Дзвінки на звичайні телефони за допомогою облікових записів із загальних систем надання послуг SIP</li>
       <li xml:lang="x-test">xxCalling real phone with accounts from common SIP service providersxx</li>
       <li>Support SIP, SIPS and the RING distributed communication protocol</li>
+      <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
+      <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
+      <li xml:lang="pl">Obsługa protokołów komunikacyjnych SIP, SIPS oraz RING</li>
+      <li xml:lang="pt">Suporta os protocolos de comunicação SIP, SIPS e o protocolo distribuído do RING</li>
+      <li xml:lang="sv">Stöder SIP, SIPS, och det distribuerade RING-kommunikationsprotokollet</li>
+      <li xml:lang="x-test">xxSupport SIP, SIPS and the RING distributed communication protocolxx</li>
       <li>Audio, Video and rich text messages</li>
       <li xml:lang="ca">Missatges d'àudio, vídeo i de text enriquit</li>
       <li xml:lang="ca-valencia">Missatges d'àudio, vídeo i de text enriquit</li>
@@ -282,6 +295,7 @@
       <li xml:lang="ast">Historia de llamaes y marcadores</li>
       <li xml:lang="ca">Historial i preferides de les trucades</li>
       <li xml:lang="ca-valencia">Historial i preferides de les trucades</li>
+      <li xml:lang="de">Anrufliste und Lesezeichen</li>
       <li xml:lang="es">Histórico de llamadas y marcadores</li>
       <li xml:lang="gl">Historial de chamadas e favoritos.</li>
       <li xml:lang="it">Cronologia delle chiamate e segnalibri</li>
@@ -296,6 +310,7 @@
       <li xml:lang="ast">Auto-rempuesta (per cuenta)</li>
       <li xml:lang="ca">Resposta automàtica (per compte)</li>
       <li xml:lang="ca-valencia">Resposta automàtica (per compte)</li>
+      <li xml:lang="de">Automatisch annehmen (pro Zugang)</li>
       <li xml:lang="es">Respuesta automática (por cuenta)</li>
       <li xml:lang="gl">Resposta automática (para cada conta)</li>
       <li xml:lang="it">Risposta automatica (per account)</li>
@@ -310,6 +325,7 @@
       <li xml:lang="ast">Integración con Pulseaudio, portaudio, core audio, ALSA y audiu de ventanes</li>
       <li xml:lang="ca">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
       <li xml:lang="ca-valencia">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
+      <li xml:lang="de">Integration von PulseAudio, PortAudio, Core Audio, ALSA und Windows Audio</li>
       <li xml:lang="es">Integración con Pulseaudio, portaudio, core audio, ALSA y el sonido de Windows</li>
       <li xml:lang="gl">Integración con PulseAudio, PortAudio, Core Audio, ALSA e Windows Audio.</li>
       <li xml:lang="it">Integrazione pulseaudio, portaudio, core audio, ALSA e windows audio</li>
