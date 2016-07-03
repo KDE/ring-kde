@@ -50,6 +50,7 @@ Comment[nl]=Maak of ontvang oproepen met SIP- of RING-protocollen
 Comment[pl]=Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING
 Comment[pt]=Fazer e receber chamadas com os protocolos SIP ou RING
 Comment[sv]=Ring och ta emot samtal med SIP- eller RING-protokoll
+Comment[uk]=Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP і RING
 Comment[x-test]=xxCall and receive calls with SIP or RING protocolsxx
 Exec=ring-kde
 Icon=ring-kde
