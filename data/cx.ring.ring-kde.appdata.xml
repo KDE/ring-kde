@@ -30,6 +30,7 @@
   <summary xml:lang="pl">Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING</summary>
   <summary xml:lang="pt">Fazer e receber chamadas com os protocolos SIP ou RING</summary>
   <summary xml:lang="sv">Ring och ta emot samtal med SIP- eller RING-protokoll</summary>
+  <summary xml:lang="uk">Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP або RING</summary>
   <summary xml:lang="x-test">xxCall and receive calls with SIP or RING protocolsxx</summary>
   <description>
     <p>
@@ -90,6 +91,7 @@
       <li xml:lang="pl">Obsługa protokołów komunikacyjnych SIP, SIPS oraz RING</li>
       <li xml:lang="pt">Suporta os protocolos de comunicação SIP, SIPS e o protocolo distribuído do RING</li>
       <li xml:lang="sv">Stöder SIP, SIPS, och det distribuerade RING-kommunikationsprotokollet</li>
+      <li xml:lang="uk">Підтримка SIP, SIPS і протоколу розподіленого обміну даними RING</li>
       <li xml:lang="x-test">xxSupport SIP, SIPS and the RING distributed communication protocolxx</li>
       <li>Audio, Video and rich text messages</li>
       <li xml:lang="ca">Missatges d'àudio, vídeo i de text enriquit</li>
