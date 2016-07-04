@@ -26,6 +26,7 @@
   <summary>Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o RING.</summary>
   <summary xml:lang="de">Anrufen und Anrufe annehmen mit SIP- oder RING-Protokollen</summary>
+  <summary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o RING</summary>
   <summary xml:lang="nl">Maak of ontvang oproepen met SIP of RING-protocollen</summary>
   <summary xml:lang="pl">Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING</summary>
   <summary xml:lang="pt">Fazer e receber chamadas com os protocolos SIP ou RING</summary>
@@ -87,6 +88,7 @@
       <li xml:lang="x-test">xxCalling real phone with accounts from common SIP service providersxx</li>
       <li>Support SIP, SIPS and the RING distributed communication protocol</li>
       <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
+      <li xml:lang="it">Supporta SIP, SIPS e il protocollo di comunicazione distribuita RING</li>
       <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
       <li xml:lang="pl">Obsługa protokołów komunikacyjnych SIP, SIPS oraz RING</li>
       <li xml:lang="pt">Suporta os protocolos de comunicação SIP, SIPS e o protocolo distribuído do RING</li>
