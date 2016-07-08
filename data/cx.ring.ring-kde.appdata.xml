@@ -25,6 +25,7 @@
   <name xml:lang="zh-CN">Ring-KDE</name>
   <summary>Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o RING.</summary>
+  <summary xml:lang="ca-valencia">Truca i rep trucades amb els protocols SIP o RING.</summary>
   <summary xml:lang="de">Anrufen und Anrufe annehmen mit SIP- oder RING-Protokollen</summary>
   <summary xml:lang="es">Llamar y recibir llamadas con los protocolos SIP o RING</summary>
   <summary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o RING</summary>
@@ -89,6 +90,7 @@
       <li xml:lang="x-test">xxCalling real phone with accounts from common SIP service providersxx</li>
       <li>Support SIP, SIPS and the RING distributed communication protocol</li>
       <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
+      <li xml:lang="ca-valencia">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="es">Permite el uso de SIP, SIPS del protocolo de comunicaciones distribuidas RING</li>
       <li xml:lang="it">Supporta SIP, SIPS e il protocollo di comunicazione distribuita RING</li>
       <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
