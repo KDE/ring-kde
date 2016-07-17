@@ -46,6 +46,7 @@ GenericName[x-test]=xxRingxx
 Comment=Call and receive calls with SIP or RING protocols
 Comment[ca]=Truca i rep trucades amb els protocols SIP o RING
 Comment[ca@valencia]=Truca i rep trucades amb els protocols SIP o RING
+Comment[cs]=Volejte a přijímejte hovory s protokoly SIP nebo RING
 Comment[de]=Anrufen und Anrufe annehmen mit SIP- oder RING-Protokollen
 Comment[es]=Llamar y recibir llamadas con los protocolos SIP o RING
 Comment[it]=Chiama e ricevi telefonate con i protocolli SIP o RING
