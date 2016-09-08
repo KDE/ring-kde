@@ -90,6 +90,7 @@
       <li xml:lang="uk">Дзвінки на звичайні телефони за допомогою облікових записів із загальних систем надання послуг SIP</li>
       <li xml:lang="x-test">xxCalling real phone with accounts from common SIP service providersxx</li>
       <li>Support SIP, SIPS and the RING distributed communication protocol</li>
+      <li xml:lang="ast">Sofita SIP, SIPS, y el protocolu de comunicación distribuyida RING</li>
       <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="ca-valencia">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="es">Permite el uso de SIP, SIPS del protocolo de comunicaciones distribuidas RING</li>
@@ -101,6 +102,7 @@
       <li xml:lang="uk">Підтримка SIP, SIPS і протоколу розподіленого обміну даними RING</li>
       <li xml:lang="x-test">xxSupport SIP, SIPS and the RING distributed communication protocolxx</li>
       <li>Audio, Video and rich text messages</li>
+      <li xml:lang="ast">Audiu, videu y mensaxes de testu arriquecíu</li>
       <li xml:lang="ca">Missatges d'àudio, vídeo i de text enriquit</li>
       <li xml:lang="ca-valencia">Missatges d'àudio, vídeo i de text enriquit</li>
       <li xml:lang="es">Audio, vídeo y mensajes de texto enriquecido</li>
