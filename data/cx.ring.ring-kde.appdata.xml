@@ -11,6 +11,7 @@
   <name xml:lang="cs">Ring-KDE</name>
   <name xml:lang="da">Ring-KDE</name>
   <name xml:lang="de">Ring-KDE</name>
+  <name xml:lang="en-GB">Ring-KDE</name>
   <name xml:lang="es">Ring-KDE</name>
   <name xml:lang="gl">Ring-KDE</name>
   <name xml:lang="it">Ring-KDE</name>
@@ -28,6 +29,7 @@
   <summary xml:lang="ca-valencia">Truca i rep trucades amb els protocols SIP o RING.</summary>
   <summary xml:lang="cs">Volejte a přijímejte hovory s protokoly SIP nebo RING</summary>
   <summary xml:lang="de">Anrufen und Anrufe annehmen mit SIP- oder RING-Protokollen</summary>
+  <summary xml:lang="en-GB">Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="es">Llamar y recibir llamadas con los protocolos SIP o RING</summary>
   <summary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o RING</summary>
   <summary xml:lang="nl">Maak of ontvang oproepen met SIP of RING-protocollen</summary>
@@ -45,6 +47,7 @@
     </p>
     <p xml:lang="ca">El Ring-KDE és un client gràfic per a la plataforma de comunicació Ring (www.ring.cx). Es pot emprar com una aplicació de comunicació de propòsit general amb altres usuaris del Ring o com un telèfon per programari de VoIP amb l'estàndard SIP de la indústria, emprat per la majoria dels telèfons d'oficina.</p>
     <p xml:lang="ca-valencia">El Ring-KDE és un client gràfic per a la plataforma de comunicació Ring (www.ring.cx). Es pot emprar com una aplicació de comunicació de propòsit general amb altres usuaris del Ring o com un telèfon per programari de VoIP amb l'estàndard SIP de la indústria, emprat per la majoria dels telèfons d'oficina.</p>
+    <p xml:lang="en-GB">Ring-KDE is a graphical client for the Ring (www.ring.cx) communication platform. It can either be used as a general purpose communication application with other Ring users or as a VoiP softphone compatible with the SIP industry standard used by most office phones.</p>
     <p xml:lang="es">Ring-KDE es un cliente gráfico para la plataforma de comunicaciones Ring (www.ring.cx). Se puede usar como una aplicación general de comunicaciones con otros usuarios de Ring o como un teléfono por software VoIP compatible con el estándar del sector SIP usado por la mayoría de los teléfonos de oficina.</p>
     <p xml:lang="gl">Ring-KDE é un cliente gráfico para a plataforma de comunicación Ring (www.ring.cx). Pode usarse ou ben como un programa xeral de comunicación con outros usuarios de Ring ou ben como un teléfono de software VoIP compatíbel co estándar da industria SIP que usan a meirande parte das oficinas.</p>
     <p xml:lang="it">Ring-KDE è un client grafico per la piattaforma di comunicazione Ring (www.ring.cx). Può essere utilizzato sia come un'applicazione di comunicazione generica con altri utenti di Ring o come softphone VoIP compatibile con lo standard SIP utilizzato dalla maggior parte dei telefoni da ufficio.</p>
@@ -62,6 +65,7 @@
     <p xml:lang="cs">Vlastnosti:</p>
     <p xml:lang="da">Funktioner:</p>
     <p xml:lang="de">Funktionen:</p>
+    <p xml:lang="en-GB">Features:</p>
     <p xml:lang="es">Funciones:</p>
     <p xml:lang="gl">Funcionalidades:</p>
     <p xml:lang="it">Funzionalità:</p>
@@ -79,6 +83,7 @@
       <li xml:lang="ast">Llamaes a teléfonos reales coles cuentes de fornidores de servicios SIP comunes</li>
       <li xml:lang="ca">Trucades reals de telèfon amb els comptes dels proveïdors de serveis SIP comuns</li>
       <li xml:lang="ca-valencia">Trucades reals de telèfon amb els comptes dels proveïdors de serveis SIP comuns</li>
+      <li xml:lang="en-GB">Calling real phone with accounts from common SIP service providers</li>
       <li xml:lang="es">Llamada a teléfonos reales con cuentas de los proveedores de servicio SIP comunes</li>
       <li xml:lang="gl">Chamar a teléfonos reais con contas de fornecedores de servizo SIP habituais.</li>
       <li xml:lang="it">Chiamare un vero telefono con account da fornitori di servizi SIP comuni</li>
@@ -93,6 +98,7 @@
       <li xml:lang="ast">Sofita SIP, SIPS, y el protocolu de comunicación distribuyida RING</li>
       <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="ca-valencia">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
+      <li xml:lang="en-GB">Support SIP, SIPS and the RING distributed communication protocol</li>
       <li xml:lang="es">Permite el uso de SIP, SIPS del protocolo de comunicaciones distribuidas RING</li>
       <li xml:lang="it">Supporta SIP, SIPS e il protocollo di comunicazione distribuita RING</li>
       <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
@@ -105,6 +111,7 @@
       <li xml:lang="ast">Audiu, videu y mensaxes de testu arriquecíu</li>
       <li xml:lang="ca">Missatges d'àudio, vídeo i de text enriquit</li>
       <li xml:lang="ca-valencia">Missatges d'àudio, vídeo i de text enriquit</li>
+      <li xml:lang="en-GB">Audio, Video and rich text messages</li>
       <li xml:lang="es">Audio, vídeo y mensajes de texto enriquecido</li>
       <li xml:lang="gl">Mensaxes de son, vídeo e texto enriquecido.</li>
       <li xml:lang="it">Audio, video e messaggi di testo formattato</li>
@@ -121,6 +128,7 @@
       <li xml:lang="ca">Compatible amb diversos estàndards de la indústria com ara:</li>
       <li xml:lang="ca-valencia">Compatible amb diversos estàndards de la indústria com ara:</li>
       <li xml:lang="de">Konform zu verschiedenen Industriestandards wie:</li>
+      <li xml:lang="en-GB">Compliant with various industry standards such as:</li>
       <li xml:lang="es">En conformidad con diversos estándares del sector, como:</li>
       <li xml:lang="gl">Compatibilidade con varios estándares da industria, como:</li>
       <li xml:lang="it">Compatibile con vari standard industriali come:</li>
@@ -137,6 +145,7 @@
       <li xml:lang="ast">Sofitu pa múltiples códecs d'audiu y videu populares</li>
       <li xml:lang="ca">Implementa múltiples còdecs d'àudio i vídeo populars</li>
       <li xml:lang="ca-valencia">Implementa múltiples còdecs d'àudio i vídeo populars</li>
+      <li xml:lang="en-GB">Support multiple popular audio and video codecs</li>
       <li xml:lang="es">Permite el uso de múltiples códecs populares de audio y de vídeo</li>
       <li xml:lang="gl">Compatibilidade con moitos códecs de son e vídeo populares.</li>
       <li xml:lang="it">Supporta diversi codificatori audio e video popolari</li>
@@ -150,6 +159,7 @@
       <li>SIP call transfer (both direct and attended)</li>
       <li xml:lang="ca">Transferència de trucades SIP (tant directes com assistides)</li>
       <li xml:lang="ca-valencia">Transferència de trucades SIP (tant directes com assistides)</li>
+      <li xml:lang="en-GB">SIP call transfer (both direct and attended)</li>
       <li xml:lang="es">Transferencia de llamadas SIP (directas y atendidas)</li>
       <li xml:lang="gl">Transferencia de chamadas SIP (directa ou asistida)</li>
       <li xml:lang="it">Trasferimento di chiamata SIP (sia diretto che assistito)</li>
@@ -165,6 +175,7 @@
       <li xml:lang="ca">Conferències d'àudio i vídeo</li>
       <li xml:lang="ca-valencia">Conferències d'àudio i vídeo</li>
       <li xml:lang="de">Audio- und Video-Konferenzen</li>
+      <li xml:lang="en-GB">Audio and video conferences</li>
       <li xml:lang="es">Conferencias de audio y de vídeo</li>
       <li xml:lang="gl">Conferencias de son e vídeo.</li>
       <li xml:lang="it">Conferenze audio e video</li>
@@ -178,6 +189,7 @@
       <li>Multiple concurrent calls with "on hold" feature</li>
       <li xml:lang="ca">Múltiples trucades simultànies amb la característica «en espera»</li>
       <li xml:lang="ca-valencia">Múltiples trucades simultànies amb la característica «en espera»</li>
+      <li xml:lang="en-GB">Multiple concurrent calls with "on hold" feature</li>
       <li xml:lang="es">Múltiples llamadas simultáneas con la función «en espera»</li>
       <li xml:lang="gl">Varias chamadas simultáneas, con función de espera.</li>
       <li xml:lang="it">Più chiamate simultanee con la funzionalità «in attesa»</li>
@@ -193,6 +205,7 @@
       <li xml:lang="ca">Múltiples comptes</li>
       <li xml:lang="ca-valencia">Múltiples comptes</li>
       <li xml:lang="de">Mehrere Zugänge</li>
+      <li xml:lang="en-GB">Multiple accounts</li>
       <li xml:lang="es">Múltiples cuentas</li>
       <li xml:lang="gl">Varias contas.</li>
       <li xml:lang="it">Account multipli</li>
@@ -208,6 +221,7 @@
       <li xml:lang="ca">Múltiples perfils d'usuari</li>
       <li xml:lang="ca-valencia">Múltiples perfils d'usuari</li>
       <li xml:lang="de">Mehrere Benutzerprofile</li>
+      <li xml:lang="en-GB">Multiple users profiles</li>
       <li xml:lang="es">Múltiples perfiles de usuario</li>
       <li xml:lang="gl">Varios perfís de usuario.</li>
       <li xml:lang="it">Profili utente multipli</li>
@@ -222,6 +236,7 @@
       <li xml:lang="ast">Integración colos contautos del sistema</li>
       <li xml:lang="ca">Integració amb els contactes del sistema</li>
       <li xml:lang="ca-valencia">Integració amb els contactes del sistema</li>
+      <li xml:lang="en-GB">System contact integration</li>
       <li xml:lang="es">Integración con los contactos del sistema</li>
       <li xml:lang="gl">Integración cos contactos do sistema.</li>
       <li xml:lang="it">Integrazione con i contatti di sistema</li>
@@ -236,6 +251,7 @@
       <li xml:lang="ast">Sistema d'avisos configurable ya interactivu</li>
       <li xml:lang="ca">Sistema de notificacions configurable de manera interactiva</li>
       <li xml:lang="ca-valencia">Sistema de notificacions configurable de manera interactiva</li>
+      <li xml:lang="en-GB">Configurable interactive system notification</li>
       <li xml:lang="es">Notificaciones del sistema interactivas y configurables</li>
       <li xml:lang="gl">Notificacións do sistema interactivas e configurábeis.</li>
       <li xml:lang="it">Notifica di sistema interattiva configurabile</li>
@@ -250,6 +266,7 @@
       <li xml:lang="ast">Atayos de tecláu globales y llocales configurables</li>
       <li xml:lang="ca">Dreceres de teclat locals i globals configurables</li>
       <li xml:lang="ca-valencia">Dreceres de teclat locals i globals configurables</li>
+      <li xml:lang="en-GB">Configurable local and global keyboard shortcuts</li>
       <li xml:lang="es">Accesos rápidos de teclado locales y globales que se pueden configurar</li>
       <li xml:lang="gl">Atallos de teclado locais e globais configurábeis.</li>
       <li xml:lang="it">Scorciatoie da tastiera locali e globali configurabili</li>
@@ -265,6 +282,7 @@
       <li xml:lang="ca">Tons de trucada diferents per compte</li>
       <li xml:lang="ca-valencia">Tons de trucada diferents per compte</li>
       <li xml:lang="de">Verschiedene Klingeltöne pro Zugang</li>
+      <li xml:lang="en-GB">Different ringtones per account</li>
       <li xml:lang="es">Diferentes tonos de llamada por cuenta</li>
       <li xml:lang="gl">Sons de chamada distintos para cada conta.</li>
       <li xml:lang="it">Suonerie differenziate per account</li>
@@ -278,6 +296,7 @@
       <li>Call menu support automation with macro</li>
       <li xml:lang="ca">Implementa un menú de trucades automàtic amb macros</li>
       <li xml:lang="ca-valencia">Implementa un menú de trucades automàtic amb macros</li>
+      <li xml:lang="en-GB">Call menu support automation with macro</li>
       <li xml:lang="es">El menú de llamada permite automatismos con macros</li>
       <li xml:lang="gl">Menú de chamadas que pode automatizarse mediante macros.</li>
       <li xml:lang="it">Il menu di chiamata supporta l'automazione con macro</li>
@@ -292,6 +311,7 @@
       <li xml:lang="ast">Grabaciones d'audiu de llamaes</li>
       <li xml:lang="ca">Enregistrament de l'àudio de les trucades</li>
       <li xml:lang="ca-valencia">Enregistrament de l'àudio de les trucades</li>
+      <li xml:lang="en-GB">Call audio recordings</li>
       <li xml:lang="es">Grabaciones del audio de las llamadas</li>
       <li xml:lang="gl">Gravación de chamadas de son.</li>
       <li xml:lang="it">Registrazione delle chiamate audio</li>
@@ -307,6 +327,7 @@
       <li xml:lang="ca">Historial i preferides de les trucades</li>
       <li xml:lang="ca-valencia">Historial i preferides de les trucades</li>
       <li xml:lang="de">Anrufliste und Lesezeichen</li>
+      <li xml:lang="en-GB">Call history and bookmarks</li>
       <li xml:lang="es">Histórico de llamadas y marcadores</li>
       <li xml:lang="gl">Historial de chamadas e favoritos.</li>
       <li xml:lang="it">Cronologia delle chiamate e segnalibri</li>
@@ -322,6 +343,7 @@
       <li xml:lang="ca">Resposta automàtica (per compte)</li>
       <li xml:lang="ca-valencia">Resposta automàtica (per compte)</li>
       <li xml:lang="de">Automatisch annehmen (pro Zugang)</li>
+      <li xml:lang="en-GB">Auto answer (per account)</li>
       <li xml:lang="es">Respuesta automática (por cuenta)</li>
       <li xml:lang="gl">Resposta automática (para cada conta)</li>
       <li xml:lang="it">Risposta automatica (per account)</li>
@@ -337,6 +359,7 @@
       <li xml:lang="ca">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
       <li xml:lang="ca-valencia">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
       <li xml:lang="de">Integration von PulseAudio, PortAudio, Core Audio, ALSA und Windows Audio</li>
+      <li xml:lang="en-GB">Pulseaudio, portaudio, core audio, ALSA and windows audio integration</li>
       <li xml:lang="es">Integración con Pulseaudio, portaudio, core audio, ALSA y el sonido de Windows</li>
       <li xml:lang="gl">Integración con PulseAudio, PortAudio, Core Audio, ALSA e Windows Audio.</li>
       <li xml:lang="it">Integrazione pulseaudio, portaudio, core audio, ALSA e windows audio</li>
@@ -350,6 +373,7 @@
       <li>Different audio device for ringing and talk</li>
       <li xml:lang="ca">Dispositiu d'àudio diferent per trucar i parlar</li>
       <li xml:lang="ca-valencia">Dispositiu d'àudio diferent per trucar i parlar</li>
+      <li xml:lang="en-GB">Different audio device for ringing and talk</li>
       <li xml:lang="es">Distintos dispositivos de audio para llamadas y para hablar</li>
       <li xml:lang="gl">Dispositivos de son distintos para chamar e falar.</li>
       <li xml:lang="it">Dispositivi audio diversi per squillo e conversazione</li>
@@ -364,6 +388,7 @@
       <li xml:lang="ast">Auto-completáu intelixente de númberos de teléfonu</li>
       <li xml:lang="ca">Compleció automàtica dels números de telèfon</li>
       <li xml:lang="ca-valencia">Compleció automàtica dels números de telèfon</li>
+      <li xml:lang="en-GB">Smart phone number auto completion</li>
       <li xml:lang="es">Terminación automática de números de teléfono inteligente</li>
       <li xml:lang="gl">Completamento automático intelixente de números de teléfono.</li>
       <li xml:lang="it">Completamento automatico intelligente dei numeri di telefono</li>
