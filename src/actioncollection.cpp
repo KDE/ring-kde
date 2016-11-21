@@ -361,34 +361,7 @@ void ActionCollection::showShortCutEditor()
 ///Display the notification manager
 void ActionCollection::showNotificationEditor()
 {
-   QPointer<QDialog> d = new QDialog(MainWindow::app());
-
-   auto l = new QGridLayout(d);
-   auto w = new KNotifyConfigWidget(d);
-
-   auto def    = new QPushButton(QIcon::fromTheme(QString()                      ), i18n("Defaults"), d);
-   auto ok     = new QPushButton(QIcon::fromTheme(QStringLiteral("dialog-ok")    ), i18n("Ok"      ), d);
-   auto cancel = new QPushButton(QIcon::fromTheme(QStringLiteral("dialog-cancel")), i18n("Cancel"  ), d);
-
-   ok->setDefault(true);
-
-   w->setApplication(QStringLiteral("ring-kde"));
-
-   l->addWidget(w      , 0, 0, 1, 4);
-   l->addWidget(def    , 1, 0, 1, 1);
-   l->addWidget(ok     , 1, 2, 1, 1);
-   l->addWidget(cancel , 1, 3, 1, 1);
-
-   l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),1,1);
-
-   connect(def   , &QPushButton::clicked, w       , &KNotifyConfigWidget::revertToDefaults);
-   connect(ok    , &QPushButton::clicked, w       , &KNotifyConfigWidget::save            );
-   connect(ok    , &QPushButton::clicked, d.data(), &QDialog::close                       );
-   connect(cancel, &QPushButton::clicked, d.data(), &QDialog::close                       );
-
-   d->exec();
-
-   delete d;
+   KNotifyConfigWidget::configure(MainWindow::app(), QStringLiteral("ring-kde"));
 }
 
 ///Show the toolbar editor
