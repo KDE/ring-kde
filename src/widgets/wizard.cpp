@@ -29,6 +29,9 @@
 #include <QtCore/QProcess>
 #include <QtCore/QPointer>
 
+//KDE
+#include <KUser>
+
 //Ring
 #include <accountmodel.h>
 #include <account.h>
@@ -52,9 +55,9 @@ Wizard::Wizard(QWidget* parent) : QWidget(parent)
    w->setupUi(m_pCurrentPage);
    m_pLayout->addWidget(m_pCurrentPage);
 
-   const QString user = qgetenv("USER");
    m_pName = w->m_pName;
-   w->m_pName->setText(user);
+   KUser user;
+   w->m_pName->setText(user.property(KUser::FullName).toString());
    w->m_pName->selectAll();
    connect(w->m_pNext, &QPushButton::clicked,this,&Wizard::slotNext);
    connect(w->m_pName, &QLineEdit::returnPressed,this,&Wizard::slotNext);
