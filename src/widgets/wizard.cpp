@@ -35,7 +35,9 @@
 //Ring
 #include <accountmodel.h>
 #include <account.h>
+
 #include "ui_welcome.h"
+#include "ui_accountcreator.h"
 #include "ui_share.h"
 #include "actioncollection.h"
 
@@ -59,8 +61,10 @@ Wizard::Wizard(QWidget* parent) : QWidget(parent)
    KUser user;
    w->m_pName->setText(user.property(KUser::FullName).toString());
    w->m_pName->selectAll();
-   connect(w->m_pNext, &QPushButton::clicked,this,&Wizard::slotNext);
-   connect(w->m_pName, &QLineEdit::returnPressed,this,&Wizard::slotNext);
+   connect(w->m_pNext, &QPushButton::clicked,
+           this, &Wizard::showAccountCreatorWidget);
+   connect(w->m_pName, &QLineEdit::returnPressed,
+           this, &Wizard::showAccountCreatorWidget);
    setStyleSheet(QStringLiteral("QLabel{color:white;} QLineEdit{color:white;background:transparent;}"));
 }
 
@@ -146,6 +150,28 @@ bool Wizard::eventFilter(QObject *obj, QEvent *event)
    }
    // standard event processing
    return QObject::eventFilter(obj, event);
+}
+
+void Wizard::showAccountCreatorWidget()
+{
+   m_pCurrentPage->setVisible(false);
+
+   auto accountCreatorWidget = new Ui::AccountCreatorWidget();
+   m_pCurrentPage = new QWidget(this);
+   accountCreatorWidget->setupUi(m_pCurrentPage);
+   m_pLayout->addWidget(m_pCurrentPage);
+
+   accountCreatorWidget->titleLabel
+      ->setPixmap(QIcon::fromTheme(QStringLiteral("list-add-user"))
+                  .pixmap(QSize(128,128)));
+   accountCreatorWidget->usernameEdit->setText(qgetenv("USER"));
+   accountCreatorWidget->usernameEdit->selectAll();
+   accountCreatorWidget->searchingStateLabel->clear();
+
+   connect(accountCreatorWidget->createAccountButton, &QPushButton::clicked,
+          this, &Wizard::slotComplete);
+
+   return;
 }
 
 ///How to paint the overlay

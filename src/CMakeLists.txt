@@ -319,6 +319,7 @@ SET(
    widgets/ui/mediafilepicker.ui
    widgets/ui/welcome.ui
    widgets/ui/share.ui
+   widgets/ui/accountcreator.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users

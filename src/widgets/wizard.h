@@ -44,6 +44,7 @@ private:
    bool eventFilter( QObject *obj, QEvent *event) override;
 
 private Q_SLOTS:
+   void showAccountCreatorWidget();
    void slotNext();
    void slotEmail();
    void slotPrint();
