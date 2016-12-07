@@ -170,6 +170,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>usernameEdit</tabstop>
+  <tabstop>signUpCheckbox</tabstop>
+  <tabstop>passwordEdit</tabstop>
+  <tabstop>confirmPasswordEdit</tabstop>
+  <tabstop>createAccountButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
