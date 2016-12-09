@@ -209,7 +209,7 @@ MainWindow::MainWindow(QWidget* parent)
 
    //Belong to setupActions(), but is needed now
    m_sApp = this;
-   setWindowIcon ( QIcon(":/appicon/icons/sc-apps-ring-kde.svgz") );
+   setWindowIcon (QIcon::fromTheme(QStringLiteral("ring-kde")));
    setWindowTitle( i18n("Ring"                                  ) );
 
    m_pView = new View(this);
