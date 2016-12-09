@@ -20,9 +20,10 @@
 
 #include <QtWidgets/QWidget>
 
+#include <account.h>
+
 class QHBoxLayout;
 class QLineEdit;
-class Account;
 
 class Wizard : public QWidget
 {
@@ -37,7 +38,7 @@ protected:
 private:
    QWidget*     m_pCurrentPage;
    QHBoxLayout* m_pLayout     ;
-   QLineEdit*   m_pName       ;
+   QLineEdit*   m_pDisplayNameEdit;
    Account*     m_pAccount    {nullptr};
 
    //Event filter
@@ -45,7 +46,9 @@ private:
 
 private Q_SLOTS:
    void showAccountCreatorWidget();
-   void slotNext();
+   void validateAccountForm(const QString & text);
+   void createAccount();
+   void showShareWidget(Account::RegistrationState state);
    void slotEmail();
    void slotPrint();
    void slotCopy();
