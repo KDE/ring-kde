@@ -109,7 +109,7 @@ void DlgAccount::slotExpand()
 void DlgAccount::slotRemoveAccount()
 {
    static const QString message = tr("Are you sure you want to remove %1?");
-   // Check if the selectied element is a profile
+   // Check if the selected element is a profile
    QModelIndex idx = ProfileModel::instance().sortedProxySelectionModel()->currentIndex();
    if (idx.isValid() && !idx.parent().isValid()) {
       if (QMessageBox::warning(this, tr("Remove profile"),
