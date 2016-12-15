@@ -31,6 +31,7 @@
 #include <QtCore/QProcess>
 #include <QtCore/QPointer>
 #include <QCheckBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QProgressBar>
@@ -39,8 +40,9 @@
 #include <QValidator>
 
 //KDE
-#include <KUser>
 #include <KColorScheme>
+#include <KLocalizedString>
+#include <KUser>
 
 //Ring
 #include <accountmodel.h>
@@ -50,7 +52,11 @@
 #include "ui_share.h"
 #include "actioncollection.h"
 
-Wizard::Wizard(QWidget* parent) : QWidget(parent)
+Wizard::Wizard(QWidget* parent)
+   : QWidget(parent),
+     validUsername(false),
+     validPassword(false),
+     validConfirmPassword(false)
 {
    if (parent)
       parent->installEventFilter(this);
@@ -91,30 +97,33 @@ void Wizard::showAccountCreatorWidget()
    m_pLayout->addWidget(m_pCurrentPage);
 
    accountCreatorWidget->titleLabel
-       ->setPixmap(QIcon::fromTheme(QStringLiteral("preferences-desktop-user"))
-                   .pixmap(QSize(128,128)));
+         ->setPixmap(QIcon::fromTheme
+                     (QStringLiteral("preferences-desktop-user"))
+                     .pixmap(QSize(128,128)));
 
    QRegularExpression usernameRegExp("[A-Za-z0-9]+(-?[A-Za-z0-9]+)*");
    QValidator * usernameValidator
-       = new QRegularExpressionValidator(usernameRegExp, this);
+         = new QRegularExpressionValidator(usernameRegExp, this);
    accountCreatorWidget->usernameEdit->setValidator(usernameValidator);
    accountCreatorWidget->usernameEdit->setText(qgetenv("USER"));
    accountCreatorWidget->usernameEdit->selectAll();
 
+   accountCreatorWidget->signUpCheckBox->setCheckState(Qt::Unchecked);
    accountCreatorWidget->searchingStateLabel->clear();
-
-   accountCreatorWidget->createAccountButton->setEnabled(false);
 
    accountCreatorWidget->progressBar->hide();
 
-   accountCreatorWidget->signUpCheckBox->hide();
+   validateUsername(QString());
 
    connect(accountCreatorWidget->usernameEdit, &QLineEdit::textEdited,
-           this, &Wizard::validateAccountForm);
+           this, &Wizard::validateUsername);
    connect(accountCreatorWidget->passwordEdit, &QLineEdit::textEdited,
-           this, &Wizard::validateAccountForm);
+           this, &Wizard::validatePassword);
    connect(accountCreatorWidget->confirmPasswordEdit, &QLineEdit::textEdited,
-           this, &Wizard::validateAccountForm);
+           this, &Wizard::validatePassword);
+
+   connect(accountCreatorWidget->signUpCheckBox, &QCheckBox::stateChanged,
+           this, &Wizard::handleSignUpCheckBoxStateChange);
 
    connect(accountCreatorWidget->createAccountButton, &QPushButton::clicked,
            this, &Wizard::createAccount);
@@ -122,94 +131,170 @@ void Wizard::showAccountCreatorWidget()
    return;
 }
 
-void Wizard::validateAccountForm(const QString & text)
+void Wizard::validateUsername(const QString & text)
 {
    Q_UNUSED(text);
 
-   m_pCurrentPage->setStyleSheet("");
-
    auto usernameEdit
-       = m_pCurrentPage->findChild<QLineEdit *>("usernameEdit",
-                                               Qt::FindDirectChildrenOnly);
-   bool validUsername = true;
+         = m_pCurrentPage->findChild<QLineEdit *>("usernameEdit",
+                                                  Qt::FindDirectChildrenOnly);
+   validUsername = true;
 
-   KColorScheme colorScheme(QPalette::Active, KColorScheme::View);
-   auto warningColor
-       = colorScheme.background(KColorScheme::NegativeBackground).color();
-   warningColor.setAlpha(191);
-   auto warningColorName = warningColor.name(QColor::HexArgb);
+   auto signUpCheckBox
+         = m_pCurrentPage->findChild<QCheckBox *>("signUpCheckBox",
+                                                  Qt::FindDirectChildrenOnly);
+   auto searchingStateLabel
+         = m_pCurrentPage->findChild<QLabel *>("searchingStateLabel",
+                                               Qt::FindDirectChildrenOnly);
 
    if (usernameEdit->text().isEmpty()) {
       validUsername = false;
-      m_pCurrentPage->setStyleSheet("QLineEdit#usernameEdit {"
-                                   "background:" + warningColorName
-                                   + "}");
+   }
+   if (signUpCheckBox->isChecked()) {
+      validUsername = false;
+      searchingStateLabel->setText(tr("Searching..."));
+
+      NameDirectory::instance().lookupName(nullptr,
+                                           QString(),
+                                           usernameEdit->text());
+   } else {
+      searchingStateLabel->clear();
    }
 
+   validateAccountForm();
+
+   return;
+}
+
+void Wizard::validatePassword(const QString & text)
+{
+   Q_UNUSED(text);
+
    auto passwordEdit
-      = m_pCurrentPage->findChild<QLineEdit *>("passwordEdit",
-                                               Qt::FindDirectChildrenOnly);
-   bool validPassword = true;
+         = m_pCurrentPage->findChild<QLineEdit *>("passwordEdit",
+                                                  Qt::FindDirectChildrenOnly);
+   validPassword = true;
+
    if (passwordEdit->text().isEmpty()) {
       validPassword = false;
-      m_pCurrentPage->setStyleSheet(m_pCurrentPage->styleSheet()
-                                    + "QLineEdit#passwordEdit {"
-                                    "background:" + warningColorName
-                                       + "}");
    }
 
    auto confirmPasswordEdit
          = m_pCurrentPage->findChild<QLineEdit *>("confirmPasswordEdit",
-                                               Qt::FindDirectChildrenOnly);
-   bool validConfirmPassword = true;
-   if (!validPassword
-         || passwordEdit->text() != confirmPasswordEdit->text()) {
+                                                  Qt::FindDirectChildrenOnly);
+   validConfirmPassword = true;
+
+   if (passwordEdit->text() != confirmPasswordEdit->text()) {
       validConfirmPassword = false;
-      m_pCurrentPage->setStyleSheet(m_pCurrentPage->styleSheet()
-                                    + "QLineEdit#confirmPasswordEdit {"
-                                       "background:" + warningColorName
-                                    + "}");
    }
 
-   auto createAccountButton
-         = m_pCurrentPage->findChild<QPushButton *>("createAccountButton",
-                                                 Qt::FindDirectChildrenOnly);
+   validateAccountForm();
 
-   if (!validUsername || !validPassword || !validConfirmPassword) {
-      createAccountButton->setEnabled(false);
-      return;
+   return;
+}
+
+void Wizard::handleSignUpCheckBoxStateChange(int state)
+{
+   auto checkState = static_cast<Qt::CheckState>(state);
+
+   switch (checkState) {
+   case Qt::Checked:
+   case Qt::PartiallyChecked:
+      connect(&NameDirectory::instance(), &NameDirectory::registeredNameFound,
+              this, &Wizard::validatePublicUsername);
+      break;
+   case Qt::Unchecked:
+      disconnect(&NameDirectory::instance(),
+                 &NameDirectory::registeredNameFound,
+                 this,
+                 &Wizard::validatePublicUsername);
+      break;
+   default:
+      break;
    }
 
-   createAccountButton->setEnabled(true);
+   validateUsername(QString());
+
+   return;
+}
+
+void Wizard::validatePublicUsername(const Account * account,
+                                    NameDirectory::LookupStatus status,
+                                    const QString & address,
+                                    const QString & name)
+{
+   Q_UNUSED(account)
+   Q_UNUSED(address)
+
+   auto usernameEdit
+         = m_pCurrentPage->findChild<QLineEdit *>("usernameEdit",
+                                                  Qt::FindDirectChildrenOnly);
+
+   auto searchingStateLabel
+         = m_pCurrentPage->findChild<QLabel *>("searchingStateLabel",
+                                               Qt::FindDirectChildrenOnly);
+
+   if (status == NameDirectory::LookupStatus::NOT_FOUND
+       && usernameEdit->text() == name) {
+      validUsername = true;
+      searchingStateLabel->setText(i18n("Username is available"));
+   } else {
+      validUsername = false;
+      if (status == NameDirectory::LookupStatus::SUCCESS) {
+         searchingStateLabel->setText(i18n("Username not available"));
+      } else if (status == NameDirectory::LookupStatus::INVALID_NAME) {
+         searchingStateLabel->setText(i18n("Username is invalid"));
+      } else if (status == NameDirectory::LookupStatus::ERROR) {
+         searchingStateLabel->setText(i18n("Network error"));
+      } else {
+         validateUsername(QString());
+         return;
+      }
+   }
+
+   validateAccountForm();
 
    return;
 }
 
 void Wizard::createAccount()
 {
-   auto progressBar
-       = m_pCurrentPage->findChild<QProgressBar *>("progressBar",
-                                               Qt::FindDirectChildrenOnly);
+   auto progressBar = m_pCurrentPage
+         ->findChild<QProgressBar *>("progressBar",
+                                     Qt::FindDirectChildrenOnly);
    progressBar->show(); // FIXME: Busy animation
 
    auto usernameEdit
-       = m_pCurrentPage->findChild<QLineEdit *>("usernameEdit",
-                                                Qt::FindDirectChildrenOnly);
+         = m_pCurrentPage->findChild<QLineEdit *>("usernameEdit",
+                                                  Qt::FindDirectChildrenOnly);
    usernameEdit->setEnabled(false);
 
+   auto signUpCheckBox = m_pCurrentPage
+         ->findChild<QCheckBox *>("signUpCheckBox",
+                                  Qt::FindDirectChildrenOnly);
+   signUpCheckBox->setEnabled(false);
+
+   if (signUpCheckBox->isChecked()) {
+      disconnect(&NameDirectory::instance(),
+                 &NameDirectory::registeredNameFound,
+                 this,
+                 &Wizard::validatePublicUsername);
+   }
+
    auto passwordEdit
-       = m_pCurrentPage->findChild<QLineEdit *>("passwordEdit",
-                                                Qt::FindDirectChildrenOnly);
+         = m_pCurrentPage->findChild<QLineEdit *>("passwordEdit",
+                                                  Qt::FindDirectChildrenOnly);
    passwordEdit->setEnabled(false);
 
    auto confirmPasswordEdit
-       = m_pCurrentPage->findChild<QLineEdit *>("confirmPasswordEdit",
-                                                Qt::FindDirectChildrenOnly);
+         = m_pCurrentPage->findChild<QLineEdit *>("confirmPasswordEdit",
+                                                  Qt::FindDirectChildrenOnly);
    confirmPasswordEdit->setEnabled(false);
 
    auto createAccountButton
-       = m_pCurrentPage->findChild<QPushButton *>("createAccountButton",
-                                                Qt::FindDirectChildrenOnly);
+         = m_pCurrentPage
+         ->findChild<QPushButton *>("createAccountButton",
+                                    Qt::FindDirectChildrenOnly);
    createAccountButton->setEnabled(false);
 
    m_pAccount = AccountModel::instance().add(usernameEdit->text(),
@@ -221,27 +306,78 @@ void Wizard::createAccount()
    m_pAccount->setUpnpEnabled(true);
 
    connect(m_pAccount, &Account::stateChanged,
-           this, &Wizard::showShareWidget);
+           this, &Wizard::registerAccount);
+
+   connect(this, &Wizard::accountRegistrationEnded, &Wizard::showShareWidget);
 
    m_pAccount->performAction(Account::EditAction::SAVE);
 
    return;
 }
 
-void Wizard::showShareWidget(Account::RegistrationState state)
+void Wizard::registerAccount(Account::RegistrationState state)
 {
    switch (state) {
    case Account::RegistrationState::READY:
-      m_pAccount->performAction(Account::EditAction::RELOAD);
+   {
+      auto signUpCheckBox = m_pCurrentPage
+            ->findChild<QCheckBox *>("signUpCheckBox",
+                                     Qt::FindDirectChildrenOnly);
+      if (signUpCheckBox->isChecked()) {
+         auto passwordEdit = m_pCurrentPage
+               ->findChild<QLineEdit *>("passwordEdit",
+                                        Qt::FindDirectChildrenOnly);
+         auto usernameEdit = m_pCurrentPage
+               ->findChild<QLineEdit *>("usernameEdit",
+                                        Qt::FindDirectChildrenOnly);
+         bool nameRegistrationStarted
+               = m_pAccount->registerName(passwordEdit->text(),
+                                          usernameEdit->text());
+         if (nameRegistrationStarted) {
+            connect(m_pAccount, &Account::nameRegistrationEnded,
+                    this, &Wizard::handleNameRegistrationEnd);
+         } else {
+            qDebug() << "Username not registered";
+         }
+      } else {
+         m_pAccount->performAction(Account::EditAction::RELOAD);
+
+         emit accountRegistrationEnded();
+      }
       break;
-      case Account::RegistrationState::UNREGISTERED:
+   }
+   case Account::RegistrationState::UNREGISTERED:
    case Account::RegistrationState::INITIALIZING:
    case Account::RegistrationState::TRYING:
    case Account::RegistrationState::ERROR:
    case Account::RegistrationState::COUNT__:
-      return;
+      break;
    }
 
+   return;
+}
+
+void Wizard::handleNameRegistrationEnd
+(NameDirectory::RegisterNameStatus status, const QString & name)
+{
+   Q_UNUSED(name)
+
+   disconnect(m_pAccount, &Account::nameRegistrationEnded,
+              this, &Wizard::handleNameRegistrationEnd);
+
+   if (status != NameDirectory::RegisterNameStatus::SUCCESS) {
+      qDebug() << "Username not registered";
+   }
+
+   m_pAccount->performAction(Account::EditAction::RELOAD);
+
+   emit accountRegistrationEnded();
+
+   return;
+}
+
+void Wizard::showShareWidget()
+{
    Ui::Share* w = new Ui::Share();
    m_pCurrentPage->setVisible(false);
    m_pCurrentPage = new QWidget(this);
@@ -304,7 +440,52 @@ void Wizard::slotConfigure()
 
 void Wizard::slotComplete()
 {
-  setVisible(false);
+   setVisible(false);
+}
+
+void Wizard::validateAccountForm()
+{
+   KColorScheme colorScheme(QPalette::Active, KColorScheme::View);
+   auto warningColor
+         = colorScheme.background(KColorScheme::NegativeBackground).color();
+   warningColor.setAlpha(191);
+   auto warningColorName = warningColor.name(QColor::HexArgb);
+
+   if (validUsername) {
+      m_pCurrentPage->setStyleSheet("");
+   } else {
+      m_pCurrentPage->setStyleSheet("QLineEdit#usernameEdit {"
+                                    "background:" + warningColorName
+                                    + "}");
+   }
+
+   if (!validPassword) {
+      m_pCurrentPage->setStyleSheet(m_pCurrentPage->styleSheet()
+                                    + "QLineEdit#passwordEdit {"
+                                      "background:" + warningColorName
+                                    + "}");
+   }
+
+   if (!validPassword || !validConfirmPassword) {
+      m_pCurrentPage->setStyleSheet(m_pCurrentPage->styleSheet()
+                                    + "QLineEdit#confirmPasswordEdit {"
+                                      "background:" + warningColorName
+                                    + "}");
+   }
+
+   auto createAccountButton
+         = m_pCurrentPage
+         ->findChild<QPushButton *>("createAccountButton",
+                                    Qt::FindDirectChildrenOnly);
+
+   if (!validUsername || !validPassword || !validConfirmPassword) {
+      createAccountButton->setEnabled(false);
+      return;
+   }
+
+   createAccountButton->setEnabled(true);
+
+   return;
 }
 
 bool Wizard::eventFilter(QObject *obj, QEvent *event)
@@ -325,7 +506,7 @@ void Wizard::paintEvent(QPaintEvent* event) {
    QPainter painter(this);
    KColorScheme colorScheme(QPalette::Active, KColorScheme::View);
    auto backgroundColor
-      = colorScheme.background(KColorScheme::ActiveBackground).color();
+         = colorScheme.background(KColorScheme::ActiveBackground).color();
    backgroundColor.setAlpha(191);
    painter.fillRect(rect(), backgroundColor);
 

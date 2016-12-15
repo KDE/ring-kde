@@ -166,6 +166,9 @@
      <property name="text">
       <string>Searching...</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
    </item>
    <item row="12" column="0" colspan="3">

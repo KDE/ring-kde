@@ -21,6 +21,7 @@
 #include <QtWidgets/QWidget>
 
 #include <account.h>
+#include <namedirectory.h>
 
 class QHBoxLayout;
 class QLineEdit;
@@ -32,6 +33,9 @@ public:
    explicit Wizard(QWidget* parent = nullptr);
    virtual ~Wizard();
 
+signals:
+   void accountRegistrationEnded();
+
 protected:
    virtual void paintEvent  (QPaintEvent*  event ) override;
 
@@ -41,14 +45,29 @@ private:
    QLineEdit*   m_pDisplayNameEdit;
    Account*     m_pAccount    {nullptr};
 
+   bool validUsername;
+   bool validPassword;
+   bool validConfirmPassword;
+
+   void validateAccountForm();
+
    //Event filter
    bool eventFilter( QObject *obj, QEvent *event) override;
 
-private Q_SLOTS:
+private slots:
    void showAccountCreatorWidget();
-   void validateAccountForm(const QString & text);
+   void validateUsername(const QString & text);
+   void validatePassword(const QString & text);
+   void handleSignUpCheckBoxStateChange(int state);
+   void validatePublicUsername(const Account * account,
+                               NameDirectory::LookupStatus status,
+                               const QString & address,
+                               const QString & name);
    void createAccount();
-   void showShareWidget(Account::RegistrationState state);
+   void registerAccount(Account::RegistrationState state);
+   void handleNameRegistrationEnd(NameDirectory::RegisterNameStatus status,
+                                  const QString & name);
+   void showShareWidget();
    void slotEmail();
    void slotPrint();
    void slotCopy();
