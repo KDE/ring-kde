@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QFileDialog>
+#include <KLocalizedString>
 
 //Ring
 #include "profilemodel.h"
@@ -155,7 +156,7 @@ void DlgProfiles::accept()
 void DlgProfiles::choosePhoto()
 {
    QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Image"),  QDir::currentPath(), tr("Image Files (*.png *.jpg *.gif)"));
+        i18n("Open Image"),  QDir::currentPath(), i18n("Image Files (*.png *.jpg *.gif)"));
    qDebug() << "choosePhoto result: " << fileName;
 
    QPixmap pic(fileName);

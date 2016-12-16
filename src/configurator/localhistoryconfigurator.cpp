@@ -20,6 +20,8 @@
 
 #include <categorizedhistorymodel.h>
 
+#include <KLocalizedString>
+
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QCheckBox>
 
@@ -34,7 +36,7 @@ QByteArray LocalHistoryConfigurator::id() const
 
 QString LocalHistoryConfigurator::name() const
 {
-   return tr("Local history configurator");
+   return i18n("Local history configurator");
 }
 
 QVariant LocalHistoryConfigurator::icon() const

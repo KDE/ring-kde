@@ -17,6 +17,9 @@
  **************************************************************************/
 #include "account.h"
 
+//KDE
+#include <KLocalizedString>
+
 //Ring
 #include <account.h>
 #include <accountmodel.h>
@@ -75,17 +78,17 @@ void Pages::Account::displayProfile(bool display)
       while (m_pPages->count())
          m_pPages->removeTab(0);
 
-      m_pPages->insertTab(0,dlgProfile,tr("Profile"));
+      m_pPages->insertTab(0,dlgProfile,i18n("Profile"));
    }
    else if (m_pPages->count() == 1) {
       m_pPages->removeTab(0);
-      m_pPages->insertTab(0, dlgRingtone   ,tr("Ringtone"   ));
-      m_pPages->insertTab(0, dlgSecurity   ,tr("Security"   ));
-      m_pPages->insertTab(0, dlgCredentials,tr("Credentials"));
-      m_pPages->insertTab(0, dlgCodec      ,tr("Codecs"     ));
-      m_pPages->insertTab(0, dlgNetwork    ,tr("Network"    ));
-      m_pPages->insertTab(0, dlgAdvanced   ,tr("Advanced"   ));
-      m_pPages->insertTab(0, dlgBasic      ,tr("Basic"      ));
+      m_pPages->insertTab(0, dlgRingtone   ,i18n("Ringtone"   ));
+      m_pPages->insertTab(0, dlgSecurity   ,i18n("Security"   ));
+      m_pPages->insertTab(0, dlgCredentials,i18n("Credentials"));
+      m_pPages->insertTab(0, dlgCodec      ,i18n("Codecs"     ));
+      m_pPages->insertTab(0, dlgNetwork    ,i18n("Network"    ));
+      m_pPages->insertTab(0, dlgAdvanced   ,i18n("Advanced"   ));
+      m_pPages->insertTab(0, dlgBasic      ,i18n("Basic"      ));
       m_pPages->setCurrentIndex(0);
    }
 }

@@ -18,6 +18,8 @@
 #include "fallbackpersonconfigurator.h"
 #include "ui_dlgfallbackperson.h"
 
+#include <KLocalizedString>
+
 FallbackPersonConfigurator::FallbackPersonConfigurator(QObject* parent) : CollectionConfigurationInterface(parent),m_pDialog(nullptr)
 {
 
@@ -30,7 +32,7 @@ QByteArray FallbackPersonConfigurator::id() const
 
 QString FallbackPersonConfigurator::name() const
 {
-   return tr("Fallback person configurator");
+   return i18n("Fallback person configurator");
 }
 
 QVariant FallbackPersonConfigurator::icon() const

@@ -28,6 +28,7 @@
 
 //KDE
 #include <KJob>
+#include <KLocalizedString>
 #include <AkonadiCore/Control>
 #include <AkonadiCore/CollectionFilterProxyModel>
 // #include <AkonadiCore/Kmime/MessageModel>
@@ -267,7 +268,7 @@ QString AkonadiBackend::name () const
 
 QString AkonadiBackend::category() const
 {
-   return tr("Contact");
+   return i18n("Contact");
 }
 
 QVariant AkonadiBackend::icon() const

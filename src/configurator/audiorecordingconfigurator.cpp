@@ -36,7 +36,7 @@ QByteArray AudioRecordingConfigurator::id() const
 
 QString AudioRecordingConfigurator::name() const
 {
-   return tr("Audio recording configurator");
+   return i18n("Audio recording configurator");
 }
 
 QVariant AudioRecordingConfigurator::icon() const

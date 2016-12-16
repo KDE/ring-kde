@@ -152,7 +152,7 @@ void Wizard::validateUsername(const QString & text)
    }
    if (signUpCheckBox->isChecked()) {
       validUsername = false;
-      searchingStateLabel->setText(tr("Searching..."));
+      searchingStateLabel->setText(i18n("Searching..."));
 
       NameDirectory::instance().lookupName(nullptr,
                                            QString(),

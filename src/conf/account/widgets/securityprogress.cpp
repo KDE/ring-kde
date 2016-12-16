@@ -62,7 +62,7 @@ m_Level(SecurityEvaluationModel::SecurityLevel::NONE)
    setMaximum(enum_class_size<SecurityEvaluationModel::SecurityLevel>());
    setValue((int)m_Level);
    setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed ));
-   m_Names << tr("None") << tr("Weak") << tr("Medium") << tr("Acceptable") << tr("Strong") << tr("Complete");
+   m_Names << i18n("None") << i18n("Weak") << i18n("Medium") << i18n("Acceptable") << i18n("Strong") << i18n("Complete");
    m_lColors = {
       "#A02111",
       "#E47D08",

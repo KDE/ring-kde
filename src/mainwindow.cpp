@@ -180,7 +180,7 @@ MainWindow::MainWindow(QWidget* parent)
          FolderCertificateCollection::Options::ROOT
           | FolderCertificateCollection::Options::RECURSIVE
           | FolderCertificateCollection::Options::READ_ONLY,
-         QObject::tr("System root certificates"),
+         i18n("System root certificates"),
          LoadOptions::FORCE_ENABLED
       );
 #endif

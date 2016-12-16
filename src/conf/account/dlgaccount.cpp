@@ -108,11 +108,11 @@ void DlgAccount::slotExpand()
 
 void DlgAccount::slotRemoveAccount()
 {
-   static const QString message = tr("Are you sure you want to remove %1?");
+   static const QString message = i18n("Are you sure you want to remove %1?");
    // Check if the selected element is a profile
    QModelIndex idx = ProfileModel::instance().sortedProxySelectionModel()->currentIndex();
    if (idx.isValid() && !idx.parent().isValid()) {
-      if (QMessageBox::warning(this, tr("Remove profile"),
+      if (QMessageBox::warning(this, i18n("Remove profile"),
         message.arg(idx.data(Qt::DisplayRole).toString()),
         QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
       )
@@ -129,7 +129,7 @@ void DlgAccount::slotRemoveAccount()
       if (!idx.isValid())
          return;
 
-      if (QMessageBox::warning(this, tr("Remove account"),
+      if (QMessageBox::warning(this, i18n("Remove account"),
          message.arg(idx.data(Qt::DisplayRole).toString()),
          QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
       )
@@ -164,7 +164,7 @@ void DlgAccount::slotNewAddAccount()
       return;
    }
    else if ((int)proto == ((int)Account::Protocol::COUNT__) + (int)ExtendedProtocolModel::ExtendedRole::IMPORT) {
-      const QString path = QFileDialog::getOpenFileName(this, tr("Import accounts"),  QDir::currentPath());
+      const QString path = QFileDialog::getOpenFileName(this, i18n("Import accounts"),  QDir::currentPath());
 
       if (!path.isEmpty()) {
          KPasswordDialog dlg(this);
@@ -180,7 +180,7 @@ void DlgAccount::slotNewAddAccount()
       return;
    }
 
-   const QString newAlias = tr("New account%1").arg(AccountModel::getSimilarAliasIndex(tr("New account")));
+   const QString newAlias = i18n("New account%1", (AccountModel::getSimilarAliasIndex(i18n("New account")));
    Account* a = AccountModel::instance().add(newAlias,proto);
 
    QModelIndex accIdx = ProfileModel::instance().mapFromSource(a->index());
