@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
+    <width>322</width>
     <height>460</height>
    </rect>
   </property>
@@ -62,7 +62,8 @@
       <string>Email</string>
      </property>
      <property name="icon">
-      <iconset theme="mail-send"/>
+      <iconset theme="mail-send">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -72,7 +73,8 @@
       <string>Copy</string>
      </property>
      <property name="icon">
-      <iconset theme="edit-copy"/>
+      <iconset theme="edit-copy">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -82,7 +84,8 @@
       <string>Print</string>
      </property>
      <property name="icon">
-      <iconset theme="document-print"/>
+      <iconset theme="document-print">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -108,7 +111,8 @@
       <string>Configure other accounts</string>
      </property>
      <property name="icon">
-      <iconset theme="configure"/>
+      <iconset theme="configure">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -134,7 +138,8 @@
       <string>Start using Ring-KDE</string>
      </property>
      <property name="icon">
-      <iconset theme="dialog-ok"/>
+      <iconset theme="dialog-ok">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
    </item>
@@ -149,13 +154,23 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>304</width>
-       <height>100</height>
+       <height>80</height>
       </size>
      </property>
     </spacer>
    </item>
+   <item row="9" column="0" colspan="3">
+    <widget class="KMessageWidget" name="messageWidget"/>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KMessageWidget</class>
+   <extends>QFrame</extends>
+   <header>kmessagewidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

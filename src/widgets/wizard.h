@@ -45,9 +45,12 @@ private:
    QLineEdit*   m_pDisplayNameEdit;
    Account*     m_pAccount    {nullptr};
 
-   bool validUsername;
-   bool validPassword;
-   bool validConfirmPassword;
+   bool usernameValid;
+   bool passwordValid;
+   bool confirmPasswordValid;
+
+   bool publicUsernameRegistrationEnabled;
+   bool publicUsernameRegistered;
 
    void validateAccountForm();
 
