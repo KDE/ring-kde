@@ -59,7 +59,6 @@
     <p xml:lang="uk">Ring-KDE — графічний клієнт платформи спілкування Ring (www.ring.cx). Програмою можна користуватися як стандартною програмою для спілкування із користувачами Ring або як програмним телефоном VoiP, сумісним із галузевим стандартом SIP, який використовується у більшості офісних телефонів.</p>
     <p xml:lang="x-test">xxRing-KDE is a graphical client for the Ring (www.ring.cx) communication platform. It can either be used as a general purpose communication application with other Ring users or as a VoiP softphone compatible with the SIP industry standard used by most office phones.xx</p>
     <p>Features:</p>
-    <p xml:lang="ast">Carauterístiques</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
     <p xml:lang="cs">Vlastnosti:</p>
@@ -80,7 +79,6 @@
     <p xml:lang="zh-CN">功能：</p>
     <ul>
       <li>Calling real phone with accounts from common SIP service providers</li>
-      <li xml:lang="ast">Llamaes a teléfonos reales coles cuentes de fornidores de servicios SIP comunes</li>
       <li xml:lang="ca">Trucades reals de telèfon amb els comptes dels proveïdors de serveis SIP comuns</li>
       <li xml:lang="ca-valencia">Trucades reals de telèfon amb els comptes dels proveïdors de serveis SIP comuns</li>
       <li xml:lang="en-GB">Calling real phone with accounts from common SIP service providers</li>
@@ -95,7 +93,6 @@
       <li xml:lang="uk">Дзвінки на звичайні телефони за допомогою облікових записів із загальних систем надання послуг SIP</li>
       <li xml:lang="x-test">xxCalling real phone with accounts from common SIP service providersxx</li>
       <li>Support SIP, SIPS and the RING distributed communication protocol</li>
-      <li xml:lang="ast">Sofita SIP, SIPS, y el protocolu de comunicación distribuyida RING</li>
       <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="ca-valencia">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="en-GB">Support SIP, SIPS and the RING distributed communication protocol</li>
@@ -108,7 +105,6 @@
       <li xml:lang="uk">Підтримка SIP, SIPS і протоколу розподіленого обміну даними RING</li>
       <li xml:lang="x-test">xxSupport SIP, SIPS and the RING distributed communication protocolxx</li>
       <li>Audio, Video and rich text messages</li>
-      <li xml:lang="ast">Audiu, videu y mensaxes de testu arriquecíu</li>
       <li xml:lang="ca">Missatges d'àudio, vídeo i de text enriquit</li>
       <li xml:lang="ca-valencia">Missatges d'àudio, vídeo i de text enriquit</li>
       <li xml:lang="en-GB">Audio, Video and rich text messages</li>
@@ -142,7 +138,6 @@
       <li>Support multiple popular audio and video codecs
          
       </li>
-      <li xml:lang="ast">Sofitu pa múltiples códecs d'audiu y videu populares</li>
       <li xml:lang="ca">Implementa múltiples còdecs d'àudio i vídeo populars</li>
       <li xml:lang="ca-valencia">Implementa múltiples còdecs d'àudio i vídeo populars</li>
       <li xml:lang="en-GB">Support multiple popular audio and video codecs</li>
@@ -171,7 +166,6 @@
       <li xml:lang="uk">Передавання SIP-дзвінків (безпосереднє і обслуговуване)</li>
       <li xml:lang="x-test">xxSIP call transfer (both direct and attended)xx</li>
       <li>Audio and video conferences</li>
-      <li xml:lang="ast">Conferencies d'audiu y videu</li>
       <li xml:lang="ca">Conferències d'àudio i vídeo</li>
       <li xml:lang="ca-valencia">Conferències d'àudio i vídeo</li>
       <li xml:lang="de">Audio- und Video-Konferenzen</li>
@@ -201,7 +195,6 @@
       <li xml:lang="uk">Одночасна обробка декількох паралельних дзвінків із можливістю утримування на зв’язку</li>
       <li xml:lang="x-test">xxMultiple concurrent calls with "on hold" featurexx</li>
       <li>Multiple accounts</li>
-      <li xml:lang="ast">Múltiples cuentes</li>
       <li xml:lang="ca">Múltiples comptes</li>
       <li xml:lang="ca-valencia">Múltiples comptes</li>
       <li xml:lang="de">Mehrere Zugänge</li>
@@ -217,7 +210,6 @@
       <li xml:lang="uk">Використання декількох облікових записів</li>
       <li xml:lang="x-test">xxMultiple accountsxx</li>
       <li>Multiple users profiles</li>
-      <li xml:lang="ast">Múltiples perfiles d'usuarios</li>
       <li xml:lang="ca">Múltiples perfils d'usuari</li>
       <li xml:lang="ca-valencia">Múltiples perfils d'usuari</li>
       <li xml:lang="de">Mehrere Benutzerprofile</li>
@@ -233,7 +225,6 @@
       <li xml:lang="uk">Використання декількох профілів користувачів</li>
       <li xml:lang="x-test">xxMultiple users profilesxx</li>
       <li>System contact integration</li>
-      <li xml:lang="ast">Integración colos contautos del sistema</li>
       <li xml:lang="ca">Integració amb els contactes del sistema</li>
       <li xml:lang="ca-valencia">Integració amb els contactes del sistema</li>
       <li xml:lang="en-GB">System contact integration</li>
@@ -248,7 +239,6 @@
       <li xml:lang="uk">Інтеграція із загальносистемним сховищем даних контактів</li>
       <li xml:lang="x-test">xxSystem contact integrationxx</li>
       <li>Configurable interactive system notification</li>
-      <li xml:lang="ast">Sistema d'avisos configurable ya interactivu</li>
       <li xml:lang="ca">Sistema de notificacions configurable de manera interactiva</li>
       <li xml:lang="ca-valencia">Sistema de notificacions configurable de manera interactiva</li>
       <li xml:lang="en-GB">Configurable interactive system notification</li>
@@ -263,7 +253,6 @@
       <li xml:lang="uk">Придатна до налаштовування система інтерактивних сповіщень</li>
       <li xml:lang="x-test">xxConfigurable interactive system notificationxx</li>
       <li>Configurable local and global keyboard shortcuts</li>
-      <li xml:lang="ast">Atayos de tecláu globales y llocales configurables</li>
       <li xml:lang="ca">Dreceres de teclat locals i globals configurables</li>
       <li xml:lang="ca-valencia">Dreceres de teclat locals i globals configurables</li>
       <li xml:lang="en-GB">Configurable local and global keyboard shortcuts</li>
@@ -278,7 +267,6 @@
       <li xml:lang="uk">Придатні до налаштовування локальні і загальні клавіатурні скорочення</li>
       <li xml:lang="x-test">xxConfigurable local and global keyboard shortcutsxx</li>
       <li>Different ringtones per account</li>
-      <li xml:lang="ast">Tonos de llamada estremaos per cuenta</li>
       <li xml:lang="ca">Tons de trucada diferents per compte</li>
       <li xml:lang="ca-valencia">Tons de trucada diferents per compte</li>
       <li xml:lang="de">Verschiedene Klingeltöne pro Zugang</li>
@@ -308,7 +296,6 @@
       <li xml:lang="uk">Підтримка автоматизації обробки дзвінка на основі макросів</li>
       <li xml:lang="x-test">xxCall menu support automation with macroxx</li>
       <li>Call audio recordings</li>
-      <li xml:lang="ast">Grabaciones d'audiu de llamaes</li>
       <li xml:lang="ca">Enregistrament de l'àudio de les trucades</li>
       <li xml:lang="ca-valencia">Enregistrament de l'àudio de les trucades</li>
       <li xml:lang="en-GB">Call audio recordings</li>
@@ -323,7 +310,6 @@
       <li xml:lang="uk">Можливість записування звукових даних дзвінків</li>
       <li xml:lang="x-test">xxCall audio recordingsxx</li>
       <li>Call history and bookmarks</li>
-      <li xml:lang="ast">Historia de llamaes y marcadores</li>
       <li xml:lang="ca">Historial i preferides de les trucades</li>
       <li xml:lang="ca-valencia">Historial i preferides de les trucades</li>
       <li xml:lang="de">Anrufliste und Lesezeichen</li>
@@ -339,7 +325,6 @@
       <li xml:lang="uk">Підтримка журналу дзвінків і закладок</li>
       <li xml:lang="x-test">xxCall history and bookmarksxx</li>
       <li>Auto answer (per account)</li>
-      <li xml:lang="ast">Auto-rempuesta (per cuenta)</li>
       <li xml:lang="ca">Resposta automàtica (per compte)</li>
       <li xml:lang="ca-valencia">Resposta automàtica (per compte)</li>
       <li xml:lang="de">Automatisch annehmen (pro Zugang)</li>
@@ -355,7 +340,6 @@
       <li xml:lang="uk">Автовідповідач (окремий для різних облікових записів)</li>
       <li xml:lang="x-test">xxAuto answer (per account)xx</li>
       <li>Pulseaudio, portaudio, core audio, ALSA and windows audio integration</li>
-      <li xml:lang="ast">Integración con Pulseaudio, portaudio, core audio, ALSA y audiu de ventanes</li>
       <li xml:lang="ca">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
       <li xml:lang="ca-valencia">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
       <li xml:lang="de">Integration von PulseAudio, PortAudio, Core Audio, ALSA und Windows Audio</li>
@@ -385,7 +369,6 @@
       <li xml:lang="uk">Можливість використання різних звукових пристроїв для відтворення мелодій дзвінків і самих розмов</li>
       <li xml:lang="x-test">xxDifferent audio device for ringing and talkxx</li>
       <li>Smart phone number auto completion</li>
-      <li xml:lang="ast">Auto-completáu intelixente de númberos de teléfonu</li>
       <li xml:lang="ca">Compleció automàtica dels números de telèfon</li>
       <li xml:lang="ca-valencia">Compleció automàtica dels números de telèfon</li>
       <li xml:lang="en-GB">Smart phone number auto completion</li>
