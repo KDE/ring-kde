@@ -23,7 +23,6 @@ Name[x-test]=xxring-kdexx
 Name[zh_CN]=ring-kde
 IconName=ring-kde
 Comment=KDE Ring VoIP client
-Comment[ast]=Veceru VoIP Ring de KDE
 Comment[ca]=Ring client de VoIP pel KDE
 Comment[ca@valencia]=Ring client de VoIP pel KDE
 Comment[cs]=Ring - VoIP klient pro KDE
@@ -97,7 +96,6 @@ Name[sv]=Samtal
 Name[uk]=Дзвінок
 Name[x-test]=xxCallxx
 Comment=Call related notifications
-Comment[ast]=Avisos rellacionaos coles llamaes
 Comment[ca]=Notificacions relacionades amb la trucada
 Comment[ca@valencia]=Notificacions relacionades amb la trucada
 Comment[da]=Opkaldsrelaterede bekendtgørelser
@@ -116,7 +114,6 @@ Comment[x-test]=xxCall related notificationsxx
 
 [Event/contactOnline]
 Name=Contact Online
-Name[ast]=Contautu en llinia
 Name[bs]=Kontakt online
 Name[ca]=Contacte en línia
 Name[ca@valencia]=Contacte en línia
@@ -142,7 +139,6 @@ Name[uk]=Контакт у мережі
 Name[x-test]=xxContact Onlinexx
 Name[zh_CN]=联系人在线
 Comment=A contact has come online
-Comment[ast]=Un contautu púnxose en llinia
 Comment[bs]=Kontakt je došao na vezu
 Comment[ca]=Un contacte es troba en línia
 Comment[ca@valencia]=Un contacte es troba en línia
@@ -174,7 +170,6 @@ Action=Sound|Popup
 
 [Event/accountStatus]
 Name=Account status changed
-Name[ast]=Camudóse l'estáu de la cuenta
 Name[ca]=L'estat d'un compte ha canviat
 Name[ca@valencia]=L'estat d'un compte ha canviat
 Name[da]=Kontostatus ændret
@@ -191,7 +186,6 @@ Name[sv]=Kontostatus ändrades
 Name[uk]=Змінено стан облікового запису
 Name[x-test]=xxAccount status changedxx
 Comment=An account status changed
-Comment[ast]=Camudóse l'estáu d'una cuenta
 Comment[ca]=Un compte ha canviat l'estat
 Comment[ca@valencia]=Un compte ha canviat l'estat
 Comment[da]=En kontos status er ændret
@@ -211,7 +205,6 @@ Action=Popup
 
 [Event/incomingCall]
 Name=Incoming call
-Name[ast]=Llamada entrante
 Name[ca]=Trucada entrant
 Name[ca@valencia]=Trucada entrant
 Name[cs]=Příchozí hovor
@@ -230,7 +223,6 @@ Name[sv]=Inkommande samtal
 Name[uk]=Вхідний дзвінок
 Name[x-test]=xxIncoming callxx
 Comment=An incoming call has arrived
-Comment[ast]=Aportó una llamada entrante
 Comment[ca]=Ha arribat una trucada entrant
 Comment[ca@valencia]=Ha arribat una trucada entrant
 Comment[da]=Et indkommende opkald er modtaget
@@ -250,7 +242,6 @@ Action=Popup
 
 [Event/incomingText]
 Name=Incoming text message
-Name[ast]=Mensaxe de testu entrante
 Name[ca]=Missatge de text entrant
 Name[ca@valencia]=Missatge de text entrant
 Name[cs]=Příchozí textová zpráva
@@ -268,7 +259,6 @@ Name[sv]=Inkommande textmeddelande
 Name[uk]=Вхідне текстове повідомлення
 Name[x-test]=xxIncoming text messagexx
 Comment=An incoming text message has arrived
-Comment[ast]=Aportó un mensaxe de testu entrante
 Comment[ca]=Ha arribat un missatge de text entrant
 Comment[ca@valencia]=Ha arribat un missatge de text entrant
 Comment[da]=En indkommende tekstbesked er modtaget
@@ -304,7 +294,6 @@ Name[sv]=Skapa en kontakt
 Name[uk]=Створити запис контакту
 Name[x-test]=xxCreate a contactxx
 Comment=Do you wish to add this number to your contacts?
-Comment[ast]=¿Deseyes amestar esti númberu a los tos contautos?
 Comment[ca]=Voleu afegir aquest número als vostre contactes?
 Comment[ca@valencia]=Voleu afegir este número als vostre contactes?
 Comment[da]=Vil du føje dette nummer til dine kontakter?
