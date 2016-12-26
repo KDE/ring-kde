@@ -180,7 +180,9 @@ void DlgAccount::slotNewAddAccount()
       return;
    }
 
-   const QString newAlias = i18n("New account%1", AccountModel::getSimilarAliasIndex(i18n("New account")));
+   const QString newAlias
+         = i18n("New account%1",
+                (AccountModel::getSimilarAliasIndex(i18n("New account"))));
    Account* a = AccountModel::instance().add(newAlias,proto);
 
    QModelIndex accIdx = ProfileModel::instance().mapFromSource(a->index());

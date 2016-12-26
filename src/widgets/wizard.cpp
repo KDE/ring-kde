@@ -42,6 +42,7 @@
 //KDE
 #include <KColorScheme>
 #include <KLocalizedString>
+#include <KMessageWidget>
 #include <KUser>
 
 //Ring
@@ -54,9 +55,11 @@
 
 Wizard::Wizard(QWidget* parent)
    : QWidget(parent),
-     validUsername(false),
-     validPassword(false),
-     validConfirmPassword(false)
+     usernameValid(false),
+     passwordValid(false),
+     confirmPasswordValid(false),
+     publicUsernameRegistrationEnabled(false),
+     publicUsernameRegistered(false)
 {
    if (parent)
       parent->installEventFilter(this);
@@ -138,7 +141,7 @@ void Wizard::validateUsername(const QString & text)
    auto usernameEdit
          = m_pCurrentPage->findChild<QLineEdit *>("usernameEdit",
                                                   Qt::FindDirectChildrenOnly);
-   validUsername = true;
+   usernameValid = true;
 
    auto signUpCheckBox
          = m_pCurrentPage->findChild<QCheckBox *>("signUpCheckBox",
@@ -148,10 +151,10 @@ void Wizard::validateUsername(const QString & text)
                                                Qt::FindDirectChildrenOnly);
 
    if (usernameEdit->text().isEmpty()) {
-      validUsername = false;
+      usernameValid = false;
    }
    if (signUpCheckBox->isChecked()) {
-      validUsername = false;
+      usernameValid = false;
       searchingStateLabel->setText(i18n("Searching..."));
 
       NameDirectory::instance().lookupName(nullptr,
@@ -173,19 +176,19 @@ void Wizard::validatePassword(const QString & text)
    auto passwordEdit
          = m_pCurrentPage->findChild<QLineEdit *>("passwordEdit",
                                                   Qt::FindDirectChildrenOnly);
-   validPassword = true;
+   passwordValid = true;
 
    if (passwordEdit->text().isEmpty()) {
-      validPassword = false;
+      passwordValid = false;
    }
 
    auto confirmPasswordEdit
          = m_pCurrentPage->findChild<QLineEdit *>("confirmPasswordEdit",
                                                   Qt::FindDirectChildrenOnly);
-   validConfirmPassword = true;
+   confirmPasswordValid = true;
 
    if (passwordEdit->text() != confirmPasswordEdit->text()) {
-      validConfirmPassword = false;
+      confirmPasswordValid = false;
    }
 
    validateAccountForm();
@@ -236,10 +239,10 @@ void Wizard::validatePublicUsername(const Account * account,
 
    if (status == NameDirectory::LookupStatus::NOT_FOUND
        && usernameEdit->text() == name) {
-      validUsername = true;
+      usernameValid = true;
       searchingStateLabel->setText(i18n("Username is available"));
    } else {
-      validUsername = false;
+      usernameValid = false;
       if (status == NameDirectory::LookupStatus::SUCCESS) {
          searchingStateLabel->setText(i18n("Username not available"));
       } else if (status == NameDirectory::LookupStatus::INVALID_NAME) {
@@ -274,7 +277,8 @@ void Wizard::createAccount()
                                   Qt::FindDirectChildrenOnly);
    signUpCheckBox->setEnabled(false);
 
-   if (signUpCheckBox->isChecked()) {
+   publicUsernameRegistrationEnabled = signUpCheckBox->isChecked();
+   if (publicUsernameRegistrationEnabled) {
       disconnect(&NameDirectory::instance(),
                  &NameDirectory::registeredNameFound,
                  this,
@@ -336,8 +340,6 @@ void Wizard::registerAccount(Account::RegistrationState state)
          if (nameRegistrationStarted) {
             connect(m_pAccount, &Account::nameRegistrationEnded,
                     this, &Wizard::handleNameRegistrationEnd);
-         } else {
-            qDebug() << "Username not registered";
          }
       } else {
          m_pAccount->performAction(Account::EditAction::RELOAD);
@@ -365,8 +367,8 @@ void Wizard::handleNameRegistrationEnd
    disconnect(m_pAccount, &Account::nameRegistrationEnded,
               this, &Wizard::handleNameRegistrationEnd);
 
-   if (status != NameDirectory::RegisterNameStatus::SUCCESS) {
-      qDebug() << "Username not registered";
+   if (status == NameDirectory::RegisterNameStatus::SUCCESS) {
+      publicUsernameRegistered = true;
    }
 
    m_pAccount->performAction(Account::EditAction::RELOAD);
@@ -388,6 +390,18 @@ void Wizard::showShareWidget()
                        .pixmap(QSize(128,128)));
    w->m_pHash->setText(m_pAccount->username());
    w->m_pHash->selectAll();
+
+   w->messageWidget->hide();
+   if (publicUsernameRegistrationEnabled && !publicUsernameRegistered) {
+      w->messageWidget->setMessageType(KMessageWidget::Warning);
+      w->messageWidget->setWordWrap(true);
+      w->messageWidget
+            ->setText(i18n("Your account has been created,"
+                           " but we could not register your username."));
+      w->messageWidget->setCloseButtonVisible(false);
+
+      w->messageWidget->show();
+   }
 
    connect(w->m_pCopy , &QPushButton::clicked,this,&Wizard::slotCopy     );
    connect(w->m_pEmail, &QPushButton::clicked,this,&Wizard::slotEmail    );
@@ -451,7 +465,7 @@ void Wizard::validateAccountForm()
    warningColor.setAlpha(191);
    auto warningColorName = warningColor.name(QColor::HexArgb);
 
-   if (validUsername) {
+   if (usernameValid) {
       m_pCurrentPage->setStyleSheet("");
    } else {
       m_pCurrentPage->setStyleSheet("QLineEdit#usernameEdit {"
@@ -459,14 +473,14 @@ void Wizard::validateAccountForm()
                                     + "}");
    }
 
-   if (!validPassword) {
+   if (!passwordValid) {
       m_pCurrentPage->setStyleSheet(m_pCurrentPage->styleSheet()
                                     + "QLineEdit#passwordEdit {"
                                       "background:" + warningColorName
                                     + "}");
    }
 
-   if (!validPassword || !validConfirmPassword) {
+   if (!passwordValid || !confirmPasswordValid) {
       m_pCurrentPage->setStyleSheet(m_pCurrentPage->styleSheet()
                                     + "QLineEdit#confirmPasswordEdit {"
                                       "background:" + warningColorName
@@ -478,7 +492,7 @@ void Wizard::validateAccountForm()
          ->findChild<QPushButton *>("createAccountButton",
                                     Qt::FindDirectChildrenOnly);
 
-   if (!validUsername || !validPassword || !validConfirmPassword) {
+   if (!usernameValid || !passwordValid || !confirmPasswordValid) {
       createAccountButton->setEnabled(false);
       return;
    }
