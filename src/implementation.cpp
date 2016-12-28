@@ -193,7 +193,7 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
    }
    m_hTracked[backend->name()] = tracked;
    QStringList ret;
-   for (QHash<QString,bool>::const_iterator i = m_hTracked.begin(); i != m_hTracked.end(); ++i) {
+   for (QHash<QString,bool>::const_iterator i = m_hTracked.constBegin(); i != m_hTracked.constEnd(); ++i) {
       if (i.value())
          ret << i.key();
    }

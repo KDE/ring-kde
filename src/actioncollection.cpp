@@ -216,7 +216,7 @@ void ActionCollection::setupAction()
    actionHash[ (int)UserActionModel::Action::EDIT_CONTACT        ] = action_edit_contact       ;
    actionHash[ (int)UserActionModel::Action::REMOVE_HISTORY      ] = action_remove_history     ;
 
-   for (QHash<int,QAction*>::const_iterator i = actionHash.begin(); i != actionHash.end(); ++i) {
+   for (QHash<int,QAction*>::const_iterator i = actionHash.constBegin(); i != actionHash.constEnd(); ++i) {
       QAction* ea = i.value();
       UserActionModel::Action a = static_cast<UserActionModel::Action>(i.key());
       connect(ea, &QAction::triggered, [uam,a](bool) {uam << a;});
