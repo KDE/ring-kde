@@ -52,7 +52,7 @@ Cmd* Cmd::instance() {
 }
 
 ///Setup command line options before passing them to the KUniqueApplication
-void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
+void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 {
    Q_UNUSED(argc)
    Q_UNUSED(argv)
@@ -67,13 +67,12 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData* about)
    QCommandLineParser parser;
    parser.addOptions({call,text,message,icon});
 
-   if (about) {
-      KAboutData::setApplicationData(*about);
-      about->setupCommandLine(&parser);
-      about->processCommandLine(&parser);
-   }
+   about.setupCommandLine(&parser);
 
    parser.process         (*app);
+
+   about.processCommandLine(&parser);
+
    parser.addVersionOption(    );
    parser.addHelpOption   (    );
 

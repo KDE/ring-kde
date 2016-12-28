@@ -39,6 +39,9 @@ int main(int argc, char **argv)
 {
    try
    {
+      app = new RingApplication ( argc, argv          );
+
+      KLocalizedString::setApplicationDomain("ring-kde");
 
       KAboutData about(QStringLiteral("ring-kde"),
          i18n("ring-kde"),
@@ -58,11 +61,8 @@ int main(int argc, char **argv)
 
       KAboutData::setApplicationData(about);
 
-      app = new RingApplication ( argc, argv          );
-      Cmd::parseCmd(argc, argv, &about);
+      Cmd::parseCmd(argc, argv, about);
 
-      app->setApplicationName   ( about.productName() );
-      app->setApplicationVersion( about.version    () );
       app->setOrganizationDomain( QStringLiteral("ring.cx")           );
 
       //Only start the application once
