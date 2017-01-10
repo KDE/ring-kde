@@ -31,6 +31,7 @@
   <summary xml:lang="de">Anrufen und Anrufe annehmen mit SIP- oder RING-Protokollen</summary>
   <summary xml:lang="en-GB">Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="es">Llamar y recibir llamadas con los protocolos SIP o RING</summary>
+  <summary xml:lang="gl">Chamar e recibir chamadas mediante os protocolos SIP e RING.</summary>
   <summary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o RING</summary>
   <summary xml:lang="nl">Maak of ontvang oproepen met SIP of RING-protocollen</summary>
   <summary xml:lang="pl">Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING</summary>
@@ -97,6 +98,7 @@
       <li xml:lang="ca-valencia">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="en-GB">Support SIP, SIPS and the RING distributed communication protocol</li>
       <li xml:lang="es">Permite el uso de SIP, SIPS del protocolo de comunicaciones distribuidas RING</li>
+      <li xml:lang="gl">Compatibilidade con SIP, SIPS e o protocolo de comunicación distribuída RING.</li>
       <li xml:lang="it">Supporta SIP, SIPS e il protocollo di comunicazione distribuita RING</li>
       <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
       <li xml:lang="pl">Obsługa protokołów komunikacyjnych SIP, SIPS oraz RING</li>
