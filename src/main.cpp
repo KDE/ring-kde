@@ -51,7 +51,7 @@ int main(int argc, char **argv)
          i18n("(C) 2004-2015 Savoir-faire Linux"),
          QString(),
          QStringLiteral("http://www.ring.cx"),
-         QStringLiteral("ring@lists.savoirfairelinux.net")
+         QStringLiteral("ring@gnu.org")
       );
       about.setProgramLogo(QImage(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
 
