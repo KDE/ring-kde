@@ -1,10 +1,10 @@
 
 ADD_SUBDIRECTORY(icons)
 
-INSTALL( FILES ring-kde.desktop     DESTINATION  ${XDG_APPS_INSTALL_DIR}           )
+INSTALL( FILES cx.ring.ring-kde.desktop     DESTINATION  ${XDG_APPS_INSTALL_DIR}           )
 INSTALL( FILES ring-kdeui.rc        DESTINATION  ${KXMLGUI_INSTALL_DIR}/ring-kde   )
 INSTALL( FILES ring-kde.notifyrc    DESTINATION  ${KNOTIFYRC_INSTALL_DIR}          )
-INSTALL( FILES ring-kde.desktop     DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
+INSTALL( FILES cx.ring.ring-kde.desktop     DESTINATION  ${DATA_INSTALL_DIR}/ring-kde      )
 INSTALL( FILES cx.ring.ring-kde.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR}     )
 install( FILES cx.ring.ring-kde.appdata.xml DESTINATION  ${CMAKE_INSTALL_METAINFODIR} )
 

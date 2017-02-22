@@ -65,7 +65,7 @@ StartupNotify=true
 Categories=Network;Telephony;
 DBusActivatable=true
 
-[Protocol]
+[X-Protocol]
 exec=ring-kde --place-call "%u"
 X-protocol=sip
 input=none
