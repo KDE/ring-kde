@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2015 Emmanuel Lepage-Vallee <elv1313@gmail.com> -->
 <component type="desktop">
-	<id>cx.ring.ring-kde.desktop</id>
+  <id>cx.ring.ring-kde.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Ring-KDE</name>
@@ -300,7 +300,7 @@
       <li xml:lang="x-test">xxCall menu support automation with macroxx</li>
       <li>Call audio recordings</li>
       <li xml:lang="ca">Enregistrament de l'àudio de les trucades</li>
-      <li xml:lang="ca-valencia">Enregistrament de l'àudio de les trucades</li>
+      <li xml:lang="ca-valencia">Gravació de l'àudio de les trucades</li>
       <li xml:lang="en-GB">Call audio recordings</li>
       <li xml:lang="es">Grabaciones del audio de las llamadas</li>
       <li xml:lang="gl">Gravación de chamadas de son.</li>
