@@ -31,7 +31,7 @@
 
 <refnamediv>
 <refname><command>ring-kde</command></refname>
-<refpurpose>SIP and IAX2 compatible voice over IP softphone client for KDE.</refpurpose>
+<refpurpose>SIP and IAX2 compatible voice over IP softphone client by KDE.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv>
@@ -44,7 +44,7 @@
 <title>Description</title>
 <para>Ring is meant to be a robust enterprise-class desktop phone. It provides functions like call transfer, call hold, multiple lines, multiple accounts support.
 Ring audio layer is built upon a native ALSA interface and a native PulseAudio interface.
-ring-kde is a KDE client for Ring; it communicates with the core side through D-Bus.
+ring-kde is a client for Ring built with KDE Frameworks; it communicates with the core side through D-Bus.
 </para>
 </refsect1>
 
