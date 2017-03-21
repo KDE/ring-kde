@@ -118,11 +118,11 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
 #ifdef HAS_KDE
       static KStatefulBrush errorBrush( KColorScheme::View, KColorScheme::NegativeText );
 #endif
-      const QByteArray prop = w->objectName().mid(LRC_CFG_LEN, 999).toLatin1();
+      QByteArray prop = w->objectName().mid(LRC_CFG_LEN, 999).toLatin1();
 
       if (roles.contains(prop)) {
          const int role = roles[prop];
-         Account::RoleState rs = a->roleState((Account::Role)role);
+         const Account::RoleState rs = a->roleState((Account::Role)role);
 
          if (qobject_cast<QLineEdit*>(w)) {
             QLineEdit* le = qobject_cast<QLineEdit*>(w);
@@ -242,6 +242,18 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
                qvariant_cast<QWidget*>(w->property("buddy"))->setVisible(true);
          }
       }
+      else if (prop.right(5) == "Buddy") {
+         prop = prop.left(prop.size()-5);
+         const int role = roles[prop];
+         const Account::RoleState rs = a->roleState((Account::Role)role);
+         w->setVisible(rs != Account::RoleState::UNAVAILABLE);
+      }
+      else if (prop.right(6) == "Buddy2") { //HACK
+         prop = prop.left(prop.size()-6);
+         const int role = roles[prop];
+         const Account::RoleState rs = a->roleState((Account::Role)role);
+         w->setVisible(rs != Account::RoleState::UNAVAILABLE);
+      }
       else {
          qWarning() << "Unknown config properties" << w->objectName();
       }
@@ -289,3 +301,5 @@ AccountSerializationAdapter::~AccountSerializationAdapter()
     foreach(ConnHolder* c, m_lConns)
         delete c;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;
