@@ -386,8 +386,8 @@ QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel:
          return QIcon(":/images/icons/lock_off.svg");
       case SecurityEvaluationModel::SecurityLevel::WEAK      :
       case SecurityEvaluationModel::SecurityLevel::MEDIUM    :
-      case SecurityEvaluationModel::SecurityLevel::ACCEPTABLE:
          return QIcon(":/images/icons/lock_unconfirmed.svg");
+      case SecurityEvaluationModel::SecurityLevel::ACCEPTABLE:
       case SecurityEvaluationModel::SecurityLevel::STRONG    :
       case SecurityEvaluationModel::SecurityLevel::COMPLETE  :
          return QIcon(":/images/icons/lock_confirmed.svg");

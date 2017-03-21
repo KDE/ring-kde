@@ -230,7 +230,6 @@ void SecurityLevelWidget::setModel(SecurityEvaluationModel* model)
 {
    m_pView->setModel(model);
    m_pModel = model;
-   reloadCount();
 
    //Resize the columns
    if (m_pView->horizontalHeader()) {
@@ -253,8 +252,9 @@ void SecurityLevelWidget::setModel(SecurityEvaluationModel* model)
       connect(m_pModel,&SecurityEvaluationModel::errorCountChanged        , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::fatalWarningCountChanged , this, &SecurityLevelWidget::reloadCount);
       connect(m_pModel,&SecurityEvaluationModel::securityLevelChanged     , this, &SecurityLevelWidget::reloadCount);
-
    }
+
+   reloadCount();
 }
 
 QTableView* SecurityLevelWidget::view() const
@@ -281,6 +281,8 @@ void SecurityLevelWidget::reloadCount()
 
    //Visually None == 1 == red
    m_pLevel->setValue((int)m_pLevel->m_Level+1);
+
+   m_pView->resizeRowsToContents();
 }
 
 void SecurityLevelWidget::dblClicked(const QModelIndex& idx)
@@ -432,3 +434,4 @@ void IssuesIcon::slotSolved()
 
 #include "moc_securityprogress.cpp"
 #include "securityprogress.moc"
+// kate: space-indent on; indent-width 3; replace-tabs on;
