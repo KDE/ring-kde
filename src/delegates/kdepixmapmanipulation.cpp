@@ -475,12 +475,17 @@ QVariant KDEPixmapManipulation::decorationRole(const Call* c)
 
 QVariant KDEPixmapManipulation::decorationRole(const ContactMethod* cm)
 {
+   if (!cm)
+      return {};
+
    return callPhoto((ContactMethod*)cm, QSize(22,22), true);
 }
 
 QVariant KDEPixmapManipulation::decorationRole(const Person* p)
 {
-   Q_UNUSED(p)
+   if (!p)
+      return {};
+
    return contactPhoto((Person*)p, QSize(22,22), true);
 }
 
@@ -489,3 +494,5 @@ QVariant KDEPixmapManipulation::decorationRole(const Account* a)
     Q_UNUSED(a)
     return {};
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

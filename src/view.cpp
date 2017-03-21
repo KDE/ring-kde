@@ -272,8 +272,13 @@ void View::displayMessageBox(bool checked)
    ConfigurationSkeleton::setDisplayMessageBox(checked);
    Call* call = CallModel::instance().selectedCall();
    m_pMessageBoxW->setVisible(checked
-      && call
-      && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
+      && ((
+        call
+        && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
+      ) ||
+      (
+        m_pMessageTabBox->count()
+      ))
    );
 }
 

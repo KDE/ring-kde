@@ -189,17 +189,17 @@ void VideoDock::addRenderer(Video::Renderer* r)
 
 void VideoDock::setSourceModel(Video::SourceModel* model)
 {
-    if (model) {
-       m_pVideoWidet->setSourceModel(model);
+   if (model) {
+      m_pVideoWidet->setSourceModel(model);
 
-       m_pDevice->setModel(model);
-       m_pDevice->setCurrentIndex(model->activeIndex());
-       connect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
-    }
-    else if (m_pSourceModel) {
-       disconnect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
-    }
-    m_pSourceModel = model;
+      m_pDevice->setModel(model);
+      m_pDevice->setCurrentIndex(model->activeIndex());
+      connect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
+   }
+   else if (m_pSourceModel) {
+      disconnect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
+   }
+   m_pSourceModel = model;
 }
 
 void VideoDock::slotDeviceChanged(int index)
@@ -300,3 +300,4 @@ void VideoDock::slotFullscreen(bool isFullScreen)
 
 #include "moc_videodock.cpp"
 #include "videodock.moc"
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -577,3 +577,5 @@ void MainWindow::setAutoStart(bool value)
       ConfigurationSkeleton::setAutoStart(false);
    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

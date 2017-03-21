@@ -21,6 +21,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QMutex>
 #include <QtCore/QThread>
+#include <QtWidgets/QOpenGLWidget>
 #include <QtOpenGL/qglfunctions.h>
 
 //System
@@ -44,7 +45,7 @@ class ThreadedPainter2: public QObject, protected QGLFunctions {
    Q_OBJECT
 public:
    friend class VideoGLFrame;
-   ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg);
+   ThreadedPainter2(VideoGLFrame* frm, QOpenGLWidget* wdg);
    virtual ~ThreadedPainter2(){
 //       QThread::currentThread()->quit();
       if (m_pFrameCopy)
@@ -64,7 +65,7 @@ public:
    Video::Renderer* m_pRenderer;
 
 private:
-   QGLWidget* m_pW;
+   QOpenGLWidget* m_pW;
    VideoGLFrame* m_pFrm;
    Video::Frame m_Frame;
    QMutex mutex;
@@ -87,7 +88,7 @@ Q_SIGNALS:
    void changed();
 };
 
-ThreadedPainter2::ThreadedPainter2(VideoGLFrame* frm,QGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
+ThreadedPainter2::ThreadedPainter2(VideoGLFrame* frm, QOpenGLWidget* wdg) : QObject(), m_pRenderer(nullptr),
    m_pW(wdg), rot_x(0.0f),rot_y(0.0f),rot_z(0.0f),scale(0.8f),isRendering(false),m_pFrm(frm),
    tile_list(0),tra_x(0.0f), tra_y(0.0f), tra_z(0.0f)
 {
@@ -239,7 +240,7 @@ void ThreadedPainter2::draw(QPainter* p)
 }
 
 
- VideoGLFrame::VideoGLFrame(QGLWidget *parent)
+ VideoGLFrame::VideoGLFrame(QOpenGLWidget *parent)
      : QObject(parent),
      m_pPainter(new ThreadedPainter2(this,parent)),
      m_pRenderer(nullptr),m_KeepAspect(true)

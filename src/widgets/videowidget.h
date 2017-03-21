@@ -23,7 +23,7 @@
 #include <video/renderer.h>
 
 //Qt
-class QGLWidget;
+class QOpenGLWidget;
 class QDragLeaveEvent;
 class QDragEnterEvent;
 class QDragMoveEvent;
@@ -55,7 +55,7 @@ protected:
 
 private:
    VideoScene*          m_pScene  ;
-   QGLWidget*           m_pWdg    ;
+   QOpenGLWidget*       m_pWdg    ;
    Video::Device*       m_pBackDevice;
    QHash<Video::Renderer*,VideoGLFrame*> m_hFrames;
    bool m_IsPreviewOnly;

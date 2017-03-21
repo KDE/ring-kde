@@ -28,7 +28,7 @@ namespace Video {
 }
 
 class ThreadedPainter2;
-class QGLWidget;
+class QOpenGLWidget;
 class QPainter;
 class QSize;
 class QPointF;
@@ -38,7 +38,7 @@ class VideoGLFrame : public QObject
    Q_OBJECT
 
 public:
-   explicit VideoGLFrame(QGLWidget *parent = nullptr);
+   explicit VideoGLFrame(QOpenGLWidget *parent = nullptr);
    virtual ~VideoGLFrame();
 
    void paintEvent     (QPainter* painter);

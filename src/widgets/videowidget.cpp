@@ -24,7 +24,7 @@
 #include <QtGui/QDragMoveEvent>
 #include <QtGui/QDropEvent>
 #include <QtCore/QMimeData>
-#include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QAction>
 
 //System
@@ -64,7 +64,7 @@ VideoWidget::VideoWidget(QWidget *parent, const bool previewOnly) : QGraphicsVie
    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
    setVerticalScrollBarPolicy  (Qt::ScrollBarAlwaysOff);
 
-   m_pWdg = new QGLWidget(QGLFormat(QGL::SampleBuffers/*|QGL::AlphaChannel*/),this);
+   m_pWdg = new QOpenGLWidget(this);
    setViewport(m_pWdg);
    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
@@ -76,8 +76,9 @@ VideoWidget::VideoWidget(QWidget *parent, const bool previewOnly) : QGraphicsVie
    }
 
 //    m_pScene->setToolbar(tb);
-   m_pScene->setSceneRect(0,0,width(),height());
    setAcceptDrops(true);
+
+   m_pScene->setSceneRect(0,0,width(),height());
 }
 
 VideoWidget::~VideoWidget()
@@ -202,3 +203,5 @@ void VideoWidget::setPreviewOnly(bool prev)
 {
    m_IsPreviewOnly = prev;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

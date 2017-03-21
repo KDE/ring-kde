@@ -87,6 +87,7 @@ QVariant ColorDelegate::color(const Account* a)
       case Account::RegistrationState::UNREGISTERED:
          return m_Pal.color(QPalette::Base);
       case Account::RegistrationState::TRYING:
+      case Account::RegistrationState::INITIALIZING:
          return m_Yellow;
       case Account::RegistrationState::ERROR:
          return m_Red;
