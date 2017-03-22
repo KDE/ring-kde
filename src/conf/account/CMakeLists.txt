@@ -36,7 +36,7 @@ INCLUDE_DIRECTORIES(SYSTEM
    ${Qt5Widgets_INCLUDES}
    ${Qt5Core_INCLUDES}
    ${CMAKE_BINARY_DIR}
-   ${LIB_RING_CLIENT_INCLUDE_DIR}
+   ${ringclient_INCLUDE_DIR}
    ${CMAKE_SOURCE_DIR}
 )
 
@@ -88,7 +88,7 @@ TARGET_LINK_LIBRARIES(accountdialog
    ${Qt5Widgets_LIBRARIES}
    ${Qt5Core_LIBRARIES}
    ${Qt5Gui_LIBRARIES}
-   ${LIB_RING_CLIENT_LIBRARY}
+   ringclient
 )
 
 IF ((${KF5_I18n_FOUND}) AND (${KF5_KIO_FOUND}) AND (${KF5_GuiAddons_FOUND}))

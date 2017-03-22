@@ -17,7 +17,6 @@ src/ring-kde.shell
 CMakeCache.txt
 CMakeLists.txt.user
 CTestTestfile.cmake
-*.cmake
 CMakeFiles/
 CMakeTmp/
 qtcreator-build/
