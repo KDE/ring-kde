@@ -1,0 +1,56 @@
+Source: ring-kde
+Section: kde
+Priority: optional
+Maintainer: Debian/Kubuntu Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+Build-Depends: cmake (>= 2.8.12),
+               debhelper (>= 9),
+               extra-cmake-modules (>= 1.6.0~),
+               kdoctools-dev (>= 5.6.0~),
+               kinit-dev (>= 5.6.0~),
+               kio-dev (>= 5.6.0~),
+               qttools5-dev-tools (>= 5.6.0~),
+               libqt5opengl5-dev (>= 5.6.0~),
+               libqt5svg5-dev (>= 5.6.0~),
+               qttools5-dev,
+               qttools5-dev-tools,
+               libkf5bookmarks-dev (>= 5.6.0~),
+               libkf5completion-dev (>= 5.6.0~),
+               libkf5config-dev (>= 5.6.0~),
+               libkf5configwidgets-dev (>= 5.6.0~),
+               libkf5coreaddons-dev (>= 5.6.0~),
+               libkf5crash-dev (>= 5.6.0~),
+               libkf5dbusaddons-dev (>= 5.6.0~),
+               libkf5guiaddons-dev (>= 5.6.0~),
+               libkf5i18n-dev (>= 5.6.0~),
+               libkf5iconthemes-dev (>= 5.6.0~),
+               libkf5kdelibs4support-dev (>= 5.6.0~),
+               libkf5kio-dev (>= 5.6.0~),
+               libkf5notifications-dev (>= 5.6.0~),
+               libkf5notifyconfig-dev (>= 5.6.0~),
+               libkf5parts-dev (>= 5.6.0~),
+               libkf5pty-dev (>= 5.6.0~),
+               libkf5service-dev (>= 5.6.0~),
+               libkf5textwidgets-dev (>= 5.6.0~),
+               libkf5widgetsaddons-dev (>= 5.6.0~),
+               libkf5windowsystem-dev (>= 5.6.0~),
+               libkf5xmlgui-dev (>= 5.6.0~),
+               libx11-dev,
+               pkg-kde-tools (>= 0.15.16~),
+               qtbase5-dev (>= 5.4),
+Standards-Version: 3.9.8
+Homepage: http://www.kde.org/
+Vcs-Browser: https://anonscm.debian.org/git/pkg-kde/applications/konsole.git
+Vcs-Git: https://anonscm.debian.org/git/pkg-kde/applications/konsole.git
+
+Package: ring-kde
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Provides: x-terminal-emulator
+Description: X terminal emulator
+ Konsole is a terminal emulator built on the KDE Platform. It can contain
+ multiple terminal sessions inside one window using detachable tabs.
+ .
+ Konsole supports powerful terminal features, such as customizable schemes,
+ saved sessions, and output monitoring.
+
