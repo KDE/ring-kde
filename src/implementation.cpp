@@ -42,6 +42,8 @@
 #include <macro.h>
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
+#include <phonedirectorymodel.h>
+#include <media/textrecording.h>
 #include <securityevaluationmodel.h>
 #include "klib/kcfg_settings.h"
 #include <collectioninterface.h>
@@ -227,6 +229,19 @@ void KDEActionExtender::viewChatHistory(ContactMethod* cm)
 {
    if (!cm)
       return;
+
+   // Get a real contact method when necessary
+   if (cm->type() == ContactMethod::Type::TEMPORARY) {
+      cm = PhoneDirectoryModel::instance().getExistingNumberIf(
+         cm->uri(),
+         [](const ContactMethod* cm) -> bool {
+            return cm->textRecording() && !cm->textRecording()->isEmpty();
+      });
+   }
+
+   if (!cm)
+      return;
+
    MainWindow::view()->m_pMessageTabBox->showConversation(cm);
 }
 
@@ -296,3 +311,5 @@ ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::
 
    return nullptr;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;
