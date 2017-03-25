@@ -141,7 +141,8 @@ View::View(QWidget *parent)
 
    m_pMessageBoxW->setVisible(
       qvariant_cast<Call::LifeCycleState>(currentIndex.data((int)Call::Role::LifeCycleState))
-         == Call::LifeCycleState::PROGRESS
+         == Call::LifeCycleState::PROGRESS ||
+      (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
    );
    connect(new FocusWatcher(m_pSendMessageLE), &FocusWatcher::focusChanged, this, &View::displayHistory);
 
@@ -277,7 +278,7 @@ void View::displayMessageBox(bool checked)
         && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
       ) ||
       (
-        m_pMessageTabBox->count()
+         (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
       ))
    );
 }
@@ -340,8 +341,9 @@ void View::updateTextBoxStatus()
    static bool display = ConfigurationSkeleton::displayMessageBox();
    if (display) {
       Call* call = CallModel::instance().selectedCall();
-      m_pMessageBoxW->setVisible(call
-         && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
+      m_pMessageBoxW->setVisible((call
+         && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)) ||
+         (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
       );
    }
 }
@@ -353,11 +355,13 @@ void View::displayHistory(bool in)
 
    Call* call = CallModel::instance().selectedCall();
 
-   if (call && call->lifeCycleState() == Call::LifeCycleState::PROGRESS) {
-      m_pMessageTabBox->showConversation(call->peerContactMethod());
-   }
+   m_pMessageBoxW->setVisible((call
+      && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)) ||
+      (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
+   );
 
    m_pMessageTabBox->clearColor();
 }
 
 #include "view.moc"
+// kate: space-indent on; indent-width 3; replace-tabs on;

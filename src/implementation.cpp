@@ -243,6 +243,7 @@ void KDEActionExtender::viewChatHistory(ContactMethod* cm)
       return;
 
    MainWindow::view()->m_pMessageTabBox->showConversation(cm);
+   MainWindow::view()->m_pMessageBoxW->setVisible(true);
 }
 
 void KDEActionExtender::viewChatHistory(Person* p)
