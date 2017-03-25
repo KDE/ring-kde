@@ -23,6 +23,8 @@
 #include <QtWidgets/QStylePainter>
 #include <QtCore/QDebug>
 
+#include <cmath>
+
 ToolbarDelegate::ToolbarDelegate(QWidget* parent) : QStyledItemDelegate(parent),m_pParent(parent)
 {
 
@@ -62,8 +64,8 @@ void ToolbarDelegate::paint(QPainter* painter, const QStyleOptionViewItem & opti
 
    //Text
    const QString text = index.data(Qt::DisplayRole).toString();
-   int w = option.fontMetrics.width(text);
-   int x = option.rect.x()+option.rect.width()/2-w/2;
+   const float w = option.fontMetrics.width(text)+1;
+   int x = std::ceil(option.rect.x()+option.rect.width()/2-w/2);
    int y = option.rect.y()+option.rect.height()-5-fmh;
    painter->setPen(textCol);
    painter->drawText(QRect(x,y,w,fmh),text);

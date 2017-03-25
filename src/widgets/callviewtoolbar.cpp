@@ -77,6 +77,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
    connect(pm,&SimpleRotateProxy::layoutChanged,lambda);
    connect(this,&CallViewToolbar::resized,lambda);
    connect(m_pContent,&QTableView::clicked,[](const QModelIndex & index ) {
+
       CallModel::instance().userActionModel()->execute(index);
    });
 }
