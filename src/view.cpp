@@ -312,7 +312,7 @@ void View::sendMessage()
 void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API for this
 {
    Call* call = CallModel::instance().selectedCall();
-   if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
+   if (call && call->lifeCycleState() == Call::LifeCycleState::CREATION) {
       call->setDialNumber(n);
       if (n->account())
          call->setAccount(n->account());
@@ -353,7 +353,7 @@ void View::displayHistory(bool in)
 
    Call* call = CallModel::instance().selectedCall();
 
-   if (call->lifeCycleState() == Call::LifeCycleState::PROGRESS) {
+   if (call && call->lifeCycleState() == Call::LifeCycleState::PROGRESS) {
       m_pMessageTabBox->showConversation(call->peerContactMethod());
    }
 
