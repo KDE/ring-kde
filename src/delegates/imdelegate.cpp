@@ -72,8 +72,10 @@ void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, c
 }
 
 ///Constructor
-IMTab::IMTab(QAbstractItemModel* model,QWidget* parent) : QListView(parent)
+IMTab::IMTab(Media::TextRecording* rec,QWidget* parent) : QListView(parent),
+ m_pTextRecording(rec)
 {
+   auto model = rec->instantTextMessagingModel();
    setModel(model);
    setAlternatingRowColors(true);
 //    setWrapping(true);
@@ -104,4 +106,9 @@ void IMTab::updateScrollBar()
          verticalScrollBar()->setValue(verticalScrollBar()->maximum());
       });
    }
+}
+
+Media::TextRecording* IMTab::textRecording() const
+{
+   return m_pTextRecording;
 }

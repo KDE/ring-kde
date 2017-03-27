@@ -22,6 +22,10 @@
 #include <QtWidgets/QListView>
 #include <QtWidgets/QStyledItemDelegate>
 
+namespace Media {
+    class TextRecording;
+}
+
 class QAbstractItemModel;
 class IMTab;
 
@@ -41,10 +45,16 @@ class IMTab : public QListView
 {
    Q_OBJECT
 public:
-   explicit IMTab(QAbstractItemModel* model,QWidget* parent = nullptr);
+   explicit IMTab(Media::TextRecording* model,QWidget* parent = nullptr);
+
+   Media::TextRecording* textRecording() const;
+
 private Q_SLOTS:
    void scrollBottom();
    void updateScrollBar();
+
+private:
+    Media::TextRecording* m_pTextRecording;
 };
 
 #endif // IM_MANAGER

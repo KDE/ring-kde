@@ -382,7 +382,6 @@ MainWindow::MainWindow(QWidget* parent)
    if (!ConfigurationSkeleton::autoStartOverride())
       setAutoStart(true);
 
-
 } //Ring
 
 ///Destructor

@@ -37,6 +37,8 @@
 #include "widgets/menumodelview.h"
 #include "useractionmodel.h"
 #include "canvasobjectmanager.h"
+#include "media/recordingmodel.h"
+#include "media/textrecording.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewtoolbar.h"
 #include "eventmanager.h"
@@ -144,7 +146,9 @@ View::View(QWidget *parent)
          == Call::LifeCycleState::PROGRESS ||
       (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
    );
-   connect(new FocusWatcher(m_pSendMessageLE), &FocusWatcher::focusChanged, this, &View::displayHistory);
+
+   connect(new FocusWatcher(m_pSendMessageLE), &FocusWatcher::focusChanged           , this, &View::displayHistory);
+   connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &View::displayHistory);
 
    //Setup volume
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction ());
@@ -303,10 +307,32 @@ void View::incomingCall(Call* call)
 ///Send a text message
 void View::sendMessage()
 {
+   if (m_pSendMessageLE->text().isEmpty())
+      return;
+
    Call* call = CallModel::instance().selectedCall();
-   if (call && !m_pSendMessageLE->text().isEmpty()) {
-      call->addOutgoingMedia<Media::Text>()->send({{"text/plain",m_pSendMessageLE->text()}});
+
+   switch(call->lifeCycleState()) {
+      case Call::LifeCycleState::CREATION:
+      case Call::LifeCycleState::INITIALIZATION:
+      case Call::LifeCycleState::FINISHED:
+      case Call::LifeCycleState::COUNT__:
+         if (auto cur = m_pMessageTabBox->currentConversation()) {
+            // Send the message to each participants
+            foreach(ContactMethod* cm, cur->peers()) {
+               cm->sendOfflineTextMessage(
+                  {{"text/plain",m_pSendMessageLE->text()}}
+               );
+            }
+         }
+         break;
+      case Call::LifeCycleState::PROGRESS:
+         call->addOutgoingMedia<Media::Text>()->send(
+            {{"text/plain",m_pSendMessageLE->text()}}
+         );
+         break;
    }
+
    m_pSendMessageLE->clear();
 }
 
