@@ -312,7 +312,9 @@ void View::sendMessage()
 
    Call* call = CallModel::instance().selectedCall();
 
-   switch(call->lifeCycleState()) {
+   const auto lcs = call ? call->lifeCycleState() : Call::LifeCycleState::FINISHED;
+
+   switch(lcs) {
       case Call::LifeCycleState::CREATION:
       case Call::LifeCycleState::INITIALIZATION:
       case Call::LifeCycleState::FINISHED:
