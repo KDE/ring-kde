@@ -60,6 +60,7 @@
 #include <localbookmarkcollection.h>
 #include <localrecordingcollection.h>
 #include <localprofilecollection.h>
+#include <localtextrecordingcollection.h>
 
 //Configurators
 #include "configurator/localhistoryconfigurator.h"
@@ -162,9 +163,10 @@ MainWindow::MainWindow(QWidget* parent)
        *           Set the configurator          *
        ******************************************/
 
-      PersonModel::instance()            .registerConfigarator<FallbackPersonCollection>(new FallbackPersonConfigurator(this));
-      Media::RecordingModel::instance()  .registerConfigarator<LocalRecordingCollection>(new AudioRecordingConfigurator(this));
-      CategorizedHistoryModel::instance().registerConfigarator<LocalHistoryCollection  >(new LocalHistoryConfigurator  (this));
+      PersonModel::instance()            .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
+      Media::RecordingModel::instance()  .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this));
+      Media::RecordingModel::instance()  .registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this));
+      CategorizedHistoryModel::instance().registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
 
       /*******************************************
        *           Load the collections          *
