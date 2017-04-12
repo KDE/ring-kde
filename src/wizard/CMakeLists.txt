@@ -85,5 +85,3 @@ target_link_libraries( libwizard
 SET( libwizard_LIB_HDRS
    welcome.h
 )
-
-INSTALL(FILES ring-kde.kcfg DESTINATION ${KCFG_INSTALL_DIR})
