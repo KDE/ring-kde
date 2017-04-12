@@ -49,7 +49,6 @@
 #include "widgets/kphonenumberselector.h"
 #include "widgets/callviewoverlay.h"
 #include "widgets/autocompletion.h"
-#include "widgets/wizard.h"
 
 //ring library
 #include "klib/kcfg_settings.h"
@@ -173,11 +172,6 @@ View::View(QWidget *parent)
    loadAutoCompletion();
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
-
-   if (ConfigurationSkeleton::enableWizard() == true && !AccountModel::instance().isRingSupported()) {
-      new Wizard(this);
-   }
-   ConfigurationSkeleton::setEnableWizard(false);
 
    setFocus(Qt::OtherFocusReason);
 

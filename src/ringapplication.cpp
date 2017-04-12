@@ -25,12 +25,24 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 //KDE
 #include <KIconLoader>
 #include <KMainWindow>
 #include <kmessagebox.h>
 
+//LRC
+#include <callmodel.h>
+#include <accountmodel.h>
+#include <account.h>
+#include <categorizedhistorymodel.h>
+#include <categorizedcontactmodel.h>
+#include <namedirectory.h>
+#include <categorizedbookmarkmodel.h>
+#include <useractionmodel.h>
+#include <contactmethod.h>
 
 //Ring
 #include "klib/kcfg_settings.h"
@@ -39,6 +51,7 @@
 #include "errormessage.h"
 #include "callmodel.h"
 #include "implementation.h"
+#include "wizard/welcome.h"
 
 //Other
 #include <unistd.h>
@@ -54,6 +67,7 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    //Necessary to draw OpenGL from a separated thread
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
+   setAttribute(Qt::AA_EnableHighDpiScaling);
 }
 
 /**
@@ -67,6 +81,13 @@ RingApplication::~RingApplication()
 ///Parse command line arguments
 int RingApplication::newInstance()
 {
+   // The first run wizard
+//    if (ConfigurationSkeleton::enableWizard() == true) {
+      auto wiz = new WelcomeDialog();
+      wiz->show();
+//    }
+//    ConfigurationSkeleton::setEnableWizard(false);
+
    static bool init = true;
    //Only call on the first instance
    if (init) {
@@ -95,6 +116,37 @@ void RingApplication::setIconify(bool iconify)
    m_StartIconified = iconify;
 }
 
+#define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
+#define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(#name, &name::instance());
+
+constexpr static const char AppName[]= "Ring";
+
+/// Create a QML engine for various canvas widgets
+QQmlApplicationEngine* RingApplication::engine()
+{
+   static QQmlApplicationEngine* e = nullptr;
+   if (!e) {
+      QML_TYPE( Account         )
+      QML_TYPE( const Account   )
+      QML_TYPE( Call            )
+      QML_TYPE( ContactMethod   )
+      QML_TYPE( UserActionModel )
+
+      e = new QQmlApplicationEngine(QGuiApplication::instance());
+
+      QML_SINGLETON( CallModel                );
+      QML_SINGLETON( CategorizedHistoryModel  );
+      QML_SINGLETON( AccountModel             );
+      QML_SINGLETON( CategorizedContactModel  );
+      QML_SINGLETON( CategorizedBookmarkModel );
+      QML_SINGLETON( NameDirectory            );
+   }
+   return e;
+}
+
+#undef QML_TYPE
+#undef QML_SINGLETON
+
 ///Exit gracefully
 bool RingApplication::notify (QObject* receiver, QEvent* e)
 {
@@ -120,3 +172,5 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
    }
    return false;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -1,7 +1,8 @@
 /***************************************************************************
- *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
- *   Author : Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>         *
- *            Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
+ *   Copyright (C) 2017 by bluesystems                                     *
+ *   Copyright (C) 2016 by Marat Moustafine                                *
+ *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
+ *   Author : Marat Moustafine <moustafine@tuta.io>                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,48 +17,33 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef RINGAPPLICATION_H
-#define RINGAPPLICATION_H
 
-#include <QtWidgets/QApplication>
+#include "welcome.h"
 
-//Qt
-class QEvent;
-class QQmlApplicationEngine;
+#include <QtQuick/QQuickView>
+#include <QQmlContext>
+#include <QQmlApplicationEngine>
+#include <QtGui/QGuiApplication>
 
-//Ring
-class MainWindow;
+#include <../ringapplication.h>
 
-///RingApplication: Main application
-class RingApplication : public QApplication
+#include <qrc_wizard.cpp>
+
+WelcomeDialog::WelcomeDialog(QObject* parent)
 {
-  Q_OBJECT
 
-public:
-   // Constructor
-   RingApplication(int & argc, char ** argv);
+}
 
-   // Destructor
-   virtual ~RingApplication();
+WelcomeDialog::~WelcomeDialog()
+{
 
-   // Manage new instances
-   virtual int newInstance();
+}
 
-   // Exit gracefully
-   virtual bool notify (QObject* receiver, QEvent* e) override;
+void WelcomeDialog::show()
+{
 
-   //Getter
-   bool startIconified() const;
+   RingApplication::engine()->load(QUrl(QLatin1String("qrc:/main.qml")));
 
-   static QQmlApplicationEngine* engine();
+}
 
-   //Setter
-   void setIconify(bool iconify);
-
-private:
-   //Attributes
-   static MainWindow* m_spApp         ;
-   bool               m_StartIconified;
-};
-
-#endif // RINGAPPLICATION_H
+// kate: space-indent on; indent-width 3; replace-tabs on;

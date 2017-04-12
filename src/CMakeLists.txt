@@ -155,6 +155,9 @@ INCLUDE_DIRECTORIES(SYSTEM
 #Build KDE specific files
 ADD_SUBDIRECTORY( klib )
 
+# Build the QML based first run Wizard
+ADD_SUBDIRECTORY( wizard )
+
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
@@ -234,7 +237,6 @@ SET(
    widgets/autocompletion.cpp
    widgets/menumodelview.cpp
    widgets/toolbuttonmodelview.cpp
-   widgets/wizard.cpp
    widgets/personselector.cpp
    widgets/contactmethodselector.cpp
 )
@@ -369,6 +371,7 @@ QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 
 TARGET_LINK_LIBRARIES(ring-kde
   libkring
+  libwizard
   tip
   accountdialog
   ringclient
