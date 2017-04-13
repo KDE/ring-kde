@@ -56,8 +56,6 @@
 //Other
 #include <unistd.h>
 
-MainWindow* RingApplication::m_spApp = nullptr;
-
 /**
  * The application constructor
  */
@@ -82,25 +80,31 @@ RingApplication::~RingApplication()
 int RingApplication::newInstance()
 {
    // The first run wizard
-//    if (ConfigurationSkeleton::enableWizard() == true) {
+   if (ConfigurationSkeleton::enableWizard() == true) {
+      // Also add this object
+      engine()->rootContext()->setContextProperty(
+         "RingApplication", this
+      );
+
       auto wiz = new WelcomeDialog();
       wiz->show();
-//    }
-//    ConfigurationSkeleton::setEnableWizard(false);
+      ConfigurationSkeleton::setEnableWizard(false);
+      return 0;
+   }
 
    static bool init = true;
    //Only call on the first instance
    if (init) {
       init = false;
-      m_spApp = new MainWindow();
-      if( ! m_spApp->initialize() ) {
+      m_pApp = new MainWindow();
+      if( ! m_pApp->initialize() ) {
          return 1;
       };
 
       if (ConfigurationSkeleton::displayOnStart())
-         m_spApp->show();
+         m_pApp->show();
       else
-         m_spApp->hide();
+         m_pApp->hide();
    }
 
    return 0;

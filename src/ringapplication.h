@@ -41,7 +41,7 @@ public:
    virtual ~RingApplication();
 
    // Manage new instances
-   virtual int newInstance();
+   Q_INVOKABLE virtual int newInstance();
 
    // Exit gracefully
    virtual bool notify (QObject* receiver, QEvent* e) override;
@@ -56,7 +56,7 @@ public:
 
 private:
    //Attributes
-   static MainWindow* m_spApp         ;
+   MainWindow*        m_pApp          ;
    bool               m_StartIconified;
 };
 

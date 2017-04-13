@@ -7,7 +7,7 @@ ApplicationWindow {
     visible: true
     title: qsTr("Ring-KDE wizard")
     color: "#004d61"
-//     flags: Qt.Dialog
+    flags: Qt.Dialog
     height: 720
     width: 1024
 
@@ -60,6 +60,7 @@ ApplicationWindow {
         target: footer.skipButton
         onClicked: {
             applicationWindow.close()
+            RingApplication.newInstance()
         }
     }
 
@@ -102,6 +103,7 @@ ApplicationWindow {
             case 'showProfile':
                 //TODO profile.save()
                 applicationWindow.close()
+                RingApplication.newInstance()
                 break;
             }
         }
