@@ -22,8 +22,11 @@ Item {
             return;
         }
 
-        var account = AccountModel.add(userName.text, Account.RING);
-        account.displayName     = userName.text
+        var name = userName.text == "" ?
+            WelcomeDialog.defaultUserName : userName.text
+
+        var account = AccountModel.add(name, Account.RING);
+        account.displayName     = name
         account.archivePassword = password.text
         account.upnpEnabled     = true;
 
@@ -73,6 +76,7 @@ Item {
             clip: true
             x: 8
             y: 74
+            text: WelcomeDialog.defaultUserName
             height: 40
             Layout.fillWidth: true
 

@@ -4,10 +4,18 @@
 
 class WelcomeDialog : public QObject
 {
-    Q_OBJECT
+   Q_OBJECT
 public:
-    explicit WelcomeDialog(QObject* parent = nullptr);
-    virtual ~WelcomeDialog();
+   Q_PROPERTY(QString defaultUserName READ defaultUserName)
 
-    void show();
+   explicit WelcomeDialog(QObject* parent = nullptr);
+   virtual ~WelcomeDialog();
+
+   QString defaultUserName() const;
+
+   void show();
 };
+
+Q_DECLARE_METATYPE(WelcomeDialog*)
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

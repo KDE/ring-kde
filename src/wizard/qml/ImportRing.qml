@@ -18,7 +18,7 @@ Item {
             return;
         }
 
-        var account = AccountModel.add("", Account.RING)
+        var account = AccountModel.add(WelcomeDialog.defaultUserName, Account.RING)
         account.archivePassword = password.text
         account.archivePin      = pinField.text
         account.upnpEnabled     = true;
