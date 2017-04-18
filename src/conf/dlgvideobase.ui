@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item>
-    <widget class="VideoWidget" name="m_pPreviewGV" native="true">
+    <widget class="VideoWidget3" name="m_pPreviewGV" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -63,9 +63,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>VideoWidget</class>
+   <class>VideoWidget3</class>
    <extends>QWidget</extends>
-   <header>widgets/videowidget.h</header>
+   <header>video/videowidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

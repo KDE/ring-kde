@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C)  2013 by Savoir-Faire Linux                             *
- *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
+ *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,30 +15,23 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "videotoolbar.h"
+#pragma once
 
-//Qt
-#include <QtWidgets/QHBoxLayout>
+#include <QQuickImageProvider>
 
-//Ring
-#include "mainwindow.h"
-#include "actioncollection.h"
+#include <video/renderer.h>
+// #include <video/model.h>
 
-///Constructor
-VideoToolbar::VideoToolbar(QWidget* parent) : QToolBar(parent)
+class ImageProviderPrivate;
+
+class ImageProvider : public QQuickImageProvider
 {
-   QToolBar::setIconSize(QSize(16,16));
-   addAction(ActionCollection::instance()->videoRotateLeftAction     ());
-   addAction(ActionCollection::instance()->videoRotateRightAction    ());
-   addAction(ActionCollection::instance()->videoFlipHorizontalAction ());
-   addAction(ActionCollection::instance()->videoFlipVerticalAction   ());
-   addAction(ActionCollection::instance()->videoScaleAction          ());
-   addAction(ActionCollection::instance()->videoFullscreenAction     ());
-   addAction(ActionCollection::instance()->videoMuteAction           ());
-   addAction(ActionCollection::instance()->videoPreviewAction        ());
-}
+public:
+    explicit ImageProvider();
 
-///Destructor
-VideoToolbar::~VideoToolbar()
-{
-}
+    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
+
+private:
+    ImageProviderPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(ImageProvider)
+};

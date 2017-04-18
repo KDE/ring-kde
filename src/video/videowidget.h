@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2008 Nokia Corporation                                  *
+ *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,47 +15,49 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef VIDEOSCENE_H
-#define VIDEOSCENE_H
+#pragma once
 
-#include <QtWidgets/QGraphicsScene>
+#include <QQuickWidget>
 
-//Ring
-class VideoGLFrame;
-class VideoToolbar;
+namespace Video {
+    class Renderer;
+    class SourceModel;
+}
 
-class VideoScene : public QGraphicsScene
+class VideoWidget3Private;
+
+class VideoWidget3 : public QQuickWidget
 {
-   Q_OBJECT
+    Q_OBJECT
 public:
-   //Constructor
-   VideoScene();
+    enum class Mode {
+        CONVERSATION,
+        PREVIEW,
+        SELFIE,
+    };
+    Q_ENUMS(Mode)
 
-   //Mutator
-   void drawBackground(QPainter *painter, const QRectF &rect) override;
+    explicit VideoWidget3(QWidget* parent = nullptr);
+    VideoWidget3(Mode mode, QWidget* parent = nullptr);
+    virtual ~VideoWidget3();
 
-   //Setters
-   void addFrame  ( VideoGLFrame* frame );
-   void removeFrame( VideoGLFrame* frame );
-
-protected:
-   //Events
-   virtual void wheelEvent       ( QGraphicsSceneWheelEvent* wheelEvent ) override;
-
-private:
-   //Atributes
-   QList<VideoGLFrame*> m_lFrames        ;
-   QColor               m_backgroundColor;
-//    VideoToolbar*        m_pToolbar       ;
-//    QGraphicsRectItem *m_lightItem;
-   VideoGLFrame* m_pPreviewFrame;
-
+    void setMode(Mode mode);
 
 public Q_SLOTS:
-   void frameChanged      ();
-   void slotRotateLeft();
-   void slotRotateRight();
-   void slotKeepAspectRatio(bool keep);
+    void addRenderer(Video::Renderer* renderer);
+    void removeRenderer(Video::Renderer* renderer);
+    void slotRotateLeft();
+    void slotRotateRight();
+    void slotShowPreview(bool show);
+    void slotMuteOutgoindVideo(bool mute);
+    void slotKeepAspectRatio(bool mute);
+    void slotPreviewEnabled(bool show);
+    void setSourceModel(Video::SourceModel* model);
+
+private:
+    VideoWidget3Private* d_ptr;
+    Q_DECLARE_PRIVATE(VideoWidget3)
 };
 
-#endif
+Q_DECLARE_METATYPE(VideoWidget3*)
+

@@ -158,6 +158,9 @@ ADD_SUBDIRECTORY( klib )
 # Build the QML based first run Wizard
 ADD_SUBDIRECTORY( wizard )
 
+# Build the QML based interactive video canvas
+ADD_SUBDIRECTORY( video )
+
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
@@ -247,10 +250,6 @@ IF(NOT (${ENABLE_VIDEO} MATCHES false))
       ring_kde_VIDEO
       widgets/videodock.cpp
       widgets/videosettings.cpp
-      widgets/videowidget.cpp
-      widgets/videoglframe.cpp
-      widgets/videoscene.cpp
-      widgets/videotoolbar.cpp
       conf/dlgvideo.cpp
    )
 ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
@@ -372,6 +371,7 @@ QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 TARGET_LINK_LIBRARIES(ring-kde
   libkring
   libwizard
+  libvideo
   tip
   accountdialog
   ringclient
@@ -399,6 +399,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::Crash
   KF5::NotifyConfig
   KF5::GlobalAccel
+  KF5::Declarative
 )
 
 IF (Qt5TextToSpeech_FOUND)

@@ -28,10 +28,9 @@
 
 #include <klocalizedstring.h>
 #include <QComboBox>
+#include <QtWidgets/QToolButton>
 
-#include "videowidget.h"
-#include "videoscene.h"
-#include "videotoolbar.h"
+#include "video/videowidget.h"
 #include "actioncollection.h"
 #include "video/devicemodel.h"
 #include "video/sourcemodel.h"
@@ -41,7 +40,7 @@
 
 class VideoWidgetItem : public QWidgetItem {
 public:
-   VideoWidgetItem(VideoWidget* m_pMainWidget) : QWidgetItem(m_pMainWidget),m_pWdg(m_pMainWidget){}
+   VideoWidgetItem(VideoWidget3* m_pMainWidget) : QWidgetItem(m_pMainWidget),m_pWdg(m_pMainWidget){}
    virtual ~VideoWidgetItem(){}
    virtual bool hasHeightForWidth () const override {
       return true;
@@ -50,7 +49,7 @@ public:
       return m_pWdg->heightForWidth(w);
    }
 private:
-   VideoWidget* m_pWdg;
+   VideoWidget3* m_pWdg;
 };
 
 class MediaPicker : public QWidget, public Ui_MediaPicker
@@ -131,7 +130,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    setObjectName(QStringLiteral("Video Dock"));
    m_pMainWidget = new QWidget(this);
 
-   m_pVideoWidet = new VideoWidget(m_pMainWidget);
+   m_pVideoWidet = new VideoWidget3(m_pMainWidget);
    m_pVideoWidet->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    auto l = new QGridLayout(m_pMainWidget);
    l->setContentsMargins(0,0,0,0);
@@ -141,9 +140,6 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
 //    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),2,0);
    setWidget(m_pMainWidget);
    setMinimumSize(320,240);
-
-   VideoToolbar* tb = new VideoToolbar(this);
-   l->addWidget(tb,2,0);
 
    QToolButton* btn = new QToolButton(this);
    btn->setIcon(QIcon::fromTheme(QStringLiteral("arrow-down-double")));
@@ -164,11 +160,11 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    connect(btn,&QAbstractButton::toggled,moreOptions,&QWidget::setVisible);
    connect(m_pDevice,SIGNAL(currentIndexChanged(int)),this,SLOT(slotDeviceChanged(int)));
 
-   connect(ActionCollection::instance()->videoRotateLeftAction() ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotRotateLeft);
-   connect(ActionCollection::instance()->videoRotateRightAction(),&QAction::triggered,m_pVideoWidet,&VideoWidget::slotRotateRight);
-   connect(ActionCollection::instance()->videoPreviewAction()    ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotShowPreview);
-   connect(ActionCollection::instance()->videoMuteAction()       ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotMuteOutgoindVideo);
-   connect(ActionCollection::instance()->videoScaleAction()      ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotKeepAspectRatio);
+   connect(ActionCollection::instance()->videoRotateLeftAction() ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotRotateLeft);
+   connect(ActionCollection::instance()->videoRotateRightAction(),&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotRotateRight);
+   connect(ActionCollection::instance()->videoPreviewAction()    ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotShowPreview);
+   connect(ActionCollection::instance()->videoMuteAction()       ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotMuteOutgoindVideo);
+   connect(ActionCollection::instance()->videoScaleAction()      ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotKeepAspectRatio);
    connect(ActionCollection::instance()->videoFullscreenAction() ,&QAction::triggered,this         ,&VideoDock::slotFullscreen);
 }
 

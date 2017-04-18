@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qtquickcontrols2.conf</file>
+
+        <file alias="mainvid.qml">qml/main.qml</file>
+        <file alias="VideoWidget.qml">qml/VideoWidget.qml</file>
+        <file alias="VideoStateToolbar.qml">qml/VideoStateToolbar.qml</file>
+        <file alias="VideoControlToolbar.qml">qml/VideoControlToolbar.qml</file>
+    </qresource>
+</RCC>

@@ -28,7 +28,7 @@ class QComboBox;
 class QUrl;
 
 //Ring
-class VideoWidget;
+class VideoWidget3;
 class VideoSettings;
 class MediaPicker;
 class ScreenSharingWidget;
@@ -47,7 +47,7 @@ public:
 
 private:
    QGridLayout*         m_pMoreOpts     ;
-   VideoWidget*         m_pVideoWidet   ;
+   VideoWidget3*         m_pVideoWidet   ;
    VideoSettings*       m_pVideoSettings;
    ScreenSharingWidget* m_pScreenSharing;
    MediaPicker*         m_pMediaPicker  ;

@@ -16,39 +16,52 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
 
-ApplicationWindow {
+Item {
+    id: videoDock
     visible: true
-    width: 640
+
     height: 480
-    title: qsTr("Hello World")
+    width: 640
 
-    SwipeView {
-        id: swipeView
+    VideoWidget {
         anchors.fill: parent
-        currentIndex: tabBar.currentIndex
-
-        Page1 {
-        }
-
-        Page {
-            Label {
-                text: qsTr("Second page")
-                anchors.centerIn: parent
-            }
-        }
+        z: -100
     }
 
-    footer: TabBar {
-        id: tabBar
-        currentIndex: swipeView.currentIndex
-        TabButton {
-            text: qsTr("First")
+    VideoControlToolbar {
+        id: controlToolbar
+        y: parent.y
+    }
+
+    VideoStateToolbar {
+        id: actionToolbar
+        y: parent.height - height
+    }
+
+    // Hide both toolbars when the mouse isn't moving
+    //TODO keep visible if the mouse if over the toolbars
+    MouseArea {
+        Timer {
+            id: activityTimer
+            interval: 3000
+            running: true
+            repeat: false
+            onTriggered: {
+                actionToolbar.visible = false
+                controlToolbar.visible = false
+            }
         }
-        TabButton {
-            text: qsTr("Second")
+
+        function trackActivity() {
+            actionToolbar.visible = true
+            controlToolbar.visible = true
+            activityTimer.restart()
         }
+
+        anchors.fill: parent
+        hoverEnabled: true
+        onMouseXChanged: trackActivity()
+        onMouseYChanged: trackActivity()
     }
 }

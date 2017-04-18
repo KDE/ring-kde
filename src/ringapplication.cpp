@@ -32,6 +32,7 @@
 #include <KIconLoader>
 #include <KMainWindow>
 #include <kmessagebox.h>
+#include <KDeclarative/KDeclarative>
 
 //LRC
 #include <callmodel.h>
@@ -137,6 +138,11 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( UserActionModel )
 
       e = new QQmlApplicationEngine(QGuiApplication::instance());
+
+      // Setup the icon theme provider and ki18n
+      auto decl = new KDeclarative::KDeclarative;
+      decl->setDeclarativeEngine(e);
+      decl->setupBindings();
 
       QML_SINGLETON( CallModel                );
       QML_SINGLETON( CategorizedHistoryModel  );

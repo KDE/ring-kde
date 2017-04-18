@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C)  2013 by Savoir-Faire Linux                             *
- *   Author : Emmanuel Lepage Valle <emmanuel.lepage@savoirfairelinux.com >*
+ *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,22 +15,37 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef VIDEOTOOLBAR_H
-#define VIDEOTOOLBAR_H
+import QtQuick 2.0
+import Ring 1.0
 
-#include <QtWidgets/QToolBar>
+Rectangle {
+    property bool stretch: false
+    property string rendererName: "preview"
 
-#include "overlaytoolbar.h"
+    color: "black"
 
-//Qt
-class QWidget;
+    Image {
+        id: videoBackground
+        fillMode: Image.PreserveAspectFit
+        source: "image://VideoFrame/Image.png"
+        anchors.fill: parent
+        cache: false
+    }
 
-class VideoToolbar : public QToolBar {
-   Q_OBJECT
-public:
-   //Contructor
-   explicit VideoToolbar(QWidget* parent = nullptr);
-   virtual ~VideoToolbar();
-};
+    // HACK This is a workaround until the OpenGL underlay based framebuffer
+    // starts working. It Eats CPU and is otherwise ugly, but it works.
+    property var counter: 1
+    Timer {
+        interval: 33
+        running: true
+        repeat: true
+        onTriggered: {
+            videoBackground.source = "image://VideoFrame/"+rendererName+"/"+counter+".png"
+            counter = counter + 1
+        }
+    }
 
-#endif
+    onStretchChanged: {
+        videoBackground.fillMode = stretch ? Image.Stretch : Image.PreserveAspectFit
+    }
+}
