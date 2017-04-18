@@ -82,7 +82,7 @@
     </entry>
     <entry name="autoStart" type="Bool">
         <label>Defines whether the main window should be displayed on start.</label>
-      <default>true</default>
+      <default>false</default>
     </entry>
     <entry name="autoStartOverride" type="Bool">
         <label>Defines whether the main window should be displayed on start.</label>
