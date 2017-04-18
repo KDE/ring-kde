@@ -147,6 +147,7 @@ void ActionCollection::setupAction()
    INIT_ACTION(action_focus_bookmark        , {}                                                  , i18n("Search bookmark"         ));
 
    INIT_ACTION(action_displayMessageBox     , QIcon::fromTheme(QStringLiteral("mail-message-new"                )), i18n("Display text message box"));
+   INIT_ACTION(action_show_wizard           , QIcon::fromTheme(QStringLiteral("tools-wizard"                    )), i18n("New account wizard"      ));
    INIT_ACTION(action_pastenumber           , QIcon::fromTheme(QStringLiteral("edit-paste"                      )), i18n("Paste"                   ));
    INIT_ACTION(action_showContactDock       , QIcon::fromTheme(QStringLiteral("edit-find-user"                  )), i18n("Display Person"          ));
    INIT_ACTION(action_showHistoryDock       , QIcon::fromTheme(QStringLiteral("view-history"                    )), i18n("Display history"         ));
@@ -255,6 +256,7 @@ void ActionCollection::setupAction()
    connect(action_displayVolumeControls  , &QAction::toggled   , MainWindow::view() , &View::displayVolumeControls              );
    connect(action_displayDialpad         , &QAction::toggled   , MainWindow::view() , &View::displayDialpad                     );
    connect(action_displayMessageBox      , &QAction::toggled   , MainWindow::view() , &View::displayMessageBox                  );
+   connect(action_show_wizard            , &QAction::triggered , MainWindow::app () , &MainWindow::showWizard                   );
    connect(action_pastenumber            , &QAction::triggered , MainWindow::view() , &View::paste                              );
    connect(action_mailBox                , &QAction::triggered , this               , &ActionCollection::mailBox                );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
@@ -284,7 +286,7 @@ void ActionCollection::setupAction()
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
-      action_focus_bookmark    ,
+      action_focus_bookmark    , action_show_wizard       ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       MainWindow::app()->actionCollection()->addAction(a->objectName(), a);
@@ -458,6 +460,7 @@ GETTER(focusHistory                 , action_focus_history         )
 GETTER(focusContact                 , action_focus_contact         )
 GETTER(focusCall                    , action_focus_call            )
 GETTER(focusBookmark                , action_focus_bookmark        )
+GETTER(showWizard                   , action_show_wizard           )
 
 //Video actions
 #ifdef ENABLE_VIDEO

@@ -91,6 +91,7 @@
 #include <video/renderer.h>
 #include "ringapplication.h"
 #include "widgets/dockbase.h"
+#include "wizard/welcome.h"
 
 #ifdef HAVE_SPEECH
  #include "accessibility.h"
@@ -458,6 +459,12 @@ QSize MainWindow::sizeHint() const
 void MainWindow::quitButton()
 {
    qApp->quit();
+}
+
+void MainWindow::showWizard()
+{
+   auto wiz = new WelcomeDialog();
+   wiz->show();
 }
 
 void MainWindow::displayAccountCbb( bool checked )

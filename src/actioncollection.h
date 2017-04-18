@@ -60,6 +60,7 @@ public:
    QAction* focusContact                ();
    QAction* focusCall                   ();
    QAction* focusBookmark               ();
+   QAction* showWizard                  ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -133,6 +134,7 @@ private:
    QAction * action_focus_contact          {nullptr};
    QAction * action_focus_call             {nullptr};
    QAction * action_focus_bookmark         {nullptr};
+   QAction * action_show_wizard            {nullptr};
 
 public Q_SLOTS:
    void configureRing         ();

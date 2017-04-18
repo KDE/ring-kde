@@ -29,6 +29,8 @@
       </Menu>
       <Menu name="Settings" >
          <text>Settings</text>
+         <Action name="action_show_wizard" />
+         <Separator />
          <Action name="action_configureShortcut" />
          <Action name="action_configureNotifications" />
          <Action name="action_editToolBar" />

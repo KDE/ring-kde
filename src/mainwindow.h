@@ -113,6 +113,7 @@ private Q_SLOTS:
    #endif
 
 public Q_SLOTS:
+   void showWizard                               (                               );
    void displayAccountCbb                        ( bool checked = true           );
    void timeout                                  (                               );
    void selectCallTab                            (                               );
