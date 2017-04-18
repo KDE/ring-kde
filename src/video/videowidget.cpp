@@ -90,14 +90,6 @@ VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
         qmlRegisterType<ModelIconBinder>("Ring", 1,0, "ModelIconBinder");
     }
 
-    if (Video::PreviewManager::instance().isPreviewing()) {
-        Video::PreviewManager::instance().stopPreview();
-        Video::PreviewManager::instance().startPreview();
-    }
-    else {
-        Video::PreviewManager::instance().startPreview();
-    }
-
     setResizeMode(QQuickWidget::SizeRootObjectToView);
     setSource(QUrl("qrc:/mainvid.qml"));
 }
