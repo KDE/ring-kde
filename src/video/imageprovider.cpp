@@ -33,7 +33,9 @@ struct FrameBuffer {
     Video::Frame     m_Frame;
 };
 
-class ImageProviderPrivate : public QObject {
+class ImageProviderPrivate : public QObject
+{
+    Q_OBJECT
 public:
     QHash<QByteArray, FrameBuffer*> m_hActiveRenderers;
     QMutex m_FrameReader {};
@@ -60,6 +62,16 @@ ImageProvider::ImageProvider()
 
     QObject::connect(&Video::PreviewManager::instance(), &Video::PreviewManager::previewStopped,
         d_ptr, &ImageProviderPrivate::previewStopped);
+
+    // Check if there is active renderers
+
+    foreach(Call* c, CallModel::instance().getActiveCalls()) {
+        if (c->videoRenderer())
+            d_ptr->addRenderer(c, c->videoRenderer());
+    }
+
+    if (Video::PreviewManager::instance().isPreviewing())
+        d_ptr->previewStarted(Video::PreviewManager::instance().previewRenderer());
 }
 
 QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
@@ -181,3 +193,5 @@ void ImageProviderPrivate::previewStopped(Video::Renderer* r)
     }
 
 }
+
+#include <imageprovider.moc>

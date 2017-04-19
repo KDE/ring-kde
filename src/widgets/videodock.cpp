@@ -131,6 +131,7 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    m_pMainWidget = new QWidget(this);
 
    m_pVideoWidet = new VideoWidget3(m_pMainWidget);
+   m_pVideoWidet->setMode(VideoWidget3::Mode::CONVERSATION);
    m_pVideoWidet->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    auto l = new QGridLayout(m_pMainWidget);
    l->setContentsMargins(0,0,0,0);

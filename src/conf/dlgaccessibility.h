@@ -37,7 +37,7 @@ public:
    explicit DlgAccessibility(KConfigDialog *parent = nullptr);
 
    //Destructor
-   ~DlgAccessibility();
+   virtual ~DlgAccessibility();
 
    //Getters
    bool hasChanged();

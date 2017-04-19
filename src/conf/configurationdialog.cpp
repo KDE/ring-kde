@@ -205,7 +205,7 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
 ConfigurationDialog::~ConfigurationDialog()
 {
    if (dlgDisplay      ) delete dlgDisplay      ;
-   if (dlgAccount     ) delete dlgAccount     ;
+   if (dlgAccount      ) delete dlgAccount      ;
    if (dlgAudio        ) delete dlgAudio        ;
    if (dlgAddressBook  ) delete dlgAddressBook  ;
    if (dlgHooks        ) delete dlgHooks        ;

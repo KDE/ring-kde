@@ -79,19 +79,30 @@ VideoWidget3::VideoWidget3(QWidget* parent) :
     VideoWidget3(VideoWidget3::Mode::CONVERSATION, parent)
 {}
 
+void VideoWidget3::initProvider()
+{
+    if (!VideoWidget3Private::m_spProvider) {
+        VideoWidget3Private::m_spProvider = new ImageProvider();
+        RingApplication::engine()->addImageProvider(
+            "VideoFrame", VideoWidget3Private::m_spProvider
+        );
+        qmlRegisterType<ModelIconBinder>("Ring", 1,0, "ModelIconBinder");
+    }
+}
+
 VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
     QQuickWidget(RingApplication::engine(), parent), d_ptr(new VideoWidget3Private)
 {
     d_ptr->m_Mode = mode;
 
-    if (!VideoWidget3Private::m_spProvider) {
-        VideoWidget3Private::m_spProvider = new ImageProvider();
-        RingApplication::engine()->addImageProvider("VideoFrame", d_ptr->m_spProvider);
-        qmlRegisterType<ModelIconBinder>("Ring", 1,0, "ModelIconBinder");
-    }
+    initProvider();
 
     setResizeMode(QQuickWidget::SizeRootObjectToView);
     setSource(QUrl("qrc:/mainvid.qml"));
+
+    QObject* object = rootObject();
+
+    setMode(mode);
 }
 
 VideoWidget3::~VideoWidget3()
@@ -101,12 +112,14 @@ VideoWidget3::~VideoWidget3()
 
 void VideoWidget3::addRenderer(Video::Renderer* renderer)
 {
-    //TODO
+    Q_UNUSED(renderer)
+    rootObject()->setProperty("peerRunning", true);
 }
 
 void VideoWidget3::removeRenderer(Video::Renderer* renderer)
 {
-    //TODO
+    Q_UNUSED(renderer)
+    rootObject()->setProperty("peerRunning", false);
 }
 
 void VideoWidget3::slotRotateLeft()
@@ -122,6 +135,7 @@ void VideoWidget3::slotRotateRight()
 void VideoWidget3::slotShowPreview(bool show)
 {
     Q_UNUSED(show)
+    rootObject()->setProperty("displayPreview", show);
     //TODO
 }
 
@@ -152,6 +166,21 @@ void VideoWidget3::setSourceModel(Video::SourceModel* model)
 void VideoWidget3::setMode(VideoWidget3::Mode mode)
 {
     d_ptr->m_Mode = mode;
+
+    switch(mode) {
+        case Mode::CONVERSATION:
+            rootObject()->setProperty("mode", "CONVERSATION");
+            rootObject()->setProperty("rendererName", "peer");
+            break;
+        case Mode::PREVIEW:
+            rootObject()->setProperty("mode", "PREVIEW");
+            rootObject()->setProperty("rendererName", "preview");
+            break;
+        case Mode::SELFIE:
+            rootObject()->setProperty("mode", "SELFIE");
+            rootObject()->setProperty("rendererName", "preview");
+            break;
+    }
 }
 
 #include <videowidget.moc>

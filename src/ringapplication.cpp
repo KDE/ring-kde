@@ -44,6 +44,7 @@
 #include <categorizedbookmarkmodel.h>
 #include <useractionmodel.h>
 #include <contactmethod.h>
+#include <video/previewmanager.h>
 
 //Ring
 #include "klib/kcfg_settings.h"
@@ -53,6 +54,7 @@
 #include "callmodel.h"
 #include "implementation.h"
 #include "wizard/welcome.h"
+#include "video/videowidget.h"
 
 //Other
 #include <unistd.h>
@@ -150,6 +152,11 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_SINGLETON( CategorizedContactModel  );
       QML_SINGLETON( CategorizedBookmarkModel );
       QML_SINGLETON( NameDirectory            );
+
+      RingApplication::engine()->rootContext()->
+         setContextProperty("PreviewManager", &Video::PreviewManager::instance());
+
+      VideoWidget3::initProvider();
    }
    return e;
 }

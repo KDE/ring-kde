@@ -36,7 +36,7 @@ public:
    explicit DlgGeneral(KConfigDialog *parent = nullptr);
 
    //Destructor
-   ~DlgGeneral();
+   virtual ~DlgGeneral();
 
    bool hasChanged();
    bool m_HasChanged;

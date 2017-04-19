@@ -43,6 +43,7 @@ public:
 
     void setMode(Mode mode);
 
+    static void initProvider();
 public Q_SLOTS:
     void addRenderer(Video::Renderer* renderer);
     void removeRenderer(Video::Renderer* renderer);

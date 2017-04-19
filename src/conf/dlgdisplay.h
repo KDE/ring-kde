@@ -36,7 +36,7 @@ public:
    explicit DlgDisplay(KConfigDialog *parent = nullptr);
 
    //Destructor
-   ~DlgDisplay();
+   virtual ~DlgDisplay();
 
    bool hasChanged();
 

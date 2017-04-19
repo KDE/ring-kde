@@ -35,7 +35,7 @@ public:
    explicit DlgHooks(QWidget *parent = nullptr);
 
    //Destructor
-   ~DlgHooks();
+   virtual ~DlgHooks();
 
    bool hasChanged();
 

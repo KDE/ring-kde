@@ -500,7 +500,7 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
    Q_UNUSED(c)
 
    if (!m_pVideoDW) {
-      m_pVideoDW = new VideoDock(this);
+      m_pVideoDW = new VideoDock();
       m_pVideoDW->show();
 
       connect(m_pVideoDW ,&QDockWidget::visibilityChanged,m_pDock,&Dock::updateTabIcons);

@@ -36,7 +36,7 @@ public:
    explicit DlgAudio(KConfigDialog* parent = nullptr);
 
    //Destructor
-   ~DlgAudio();
+   virtual ~DlgAudio();
 
 private:
    bool m_Changed;

@@ -24,19 +24,41 @@ Item {
     height: 480
     width: 640
 
+    // C++ bindings
+    property alias  rendererName   : videoWidget.rendererName
+    property bool   displayPreview : false
+    property string mode           : "PREVIEW"
+    property bool   previewRunning : false
+    property alias  peerRunning    : videoWidget.started
+
     VideoWidget {
+        id: videoWidget
         anchors.fill: parent
         z: -100
+        started: false
+    }
+
+    VideoWidget {
+        id: videoPreview
+        z: -95
+        started: false
+        visible: false
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        width: 192
+        height: 108
     }
 
     VideoControlToolbar {
         id: controlToolbar
         y: parent.y
+        visible: false
     }
 
     VideoStateToolbar {
         id: actionToolbar
         y: parent.height - height
+        visible: false
     }
 
     // Hide both toolbars when the mouse isn't moving
@@ -48,13 +70,16 @@ Item {
             running: true
             repeat: false
             onTriggered: {
-                actionToolbar.visible = false
+                actionToolbar.visible  = false
                 controlToolbar.visible = false
             }
         }
 
         function trackActivity() {
-            actionToolbar.visible = true
+            if (mode == "PREVIEW")
+                return;
+
+            actionToolbar.visible  = true
             controlToolbar.visible = true
             activityTimer.restart()
         }
@@ -63,5 +88,32 @@ Item {
         hoverEnabled: true
         onMouseXChanged: trackActivity()
         onMouseYChanged: trackActivity()
+    }
+
+    onModeChanged: {
+        if (mode == "PREVIEW") {
+            controlToolbar.visible = false
+            actionToolbar.visible  = false
+            videoPreview.visible   = false
+            videoWidget.rendererName = "preview"
+        }
+        else if (mode == "CONVERSATION") {
+            videoPreview.visible = true
+            videoPreview.started = PreviewManager.previewing
+            videoWidget.rendererName = "peer"
+        }
+    }
+
+    Connections {
+        target: PreviewManager
+        onPreviewingChanged: {
+            if (mode == "PREVIEW")
+                videoWidget.started = PreviewManager.previewing
+            else
+                videoPreview.visible = PreviewManager.previewing
+
+            if (videoPreview.visible)
+                videoPreview.started = PreviewManager.previewing
+        }
     }
 }

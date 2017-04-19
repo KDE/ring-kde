@@ -39,7 +39,7 @@ public:
    explicit DlgVideo(KConfigDialog* parent = nullptr);
 
    //Destructor
-   ~DlgVideo();
+   virtual ~DlgVideo();
 
    //Getter
    bool hasChanged();

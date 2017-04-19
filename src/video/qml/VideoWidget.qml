@@ -19,8 +19,9 @@ import QtQuick 2.0
 import Ring 1.0
 
 Rectangle {
-    property bool stretch: false
+    property bool   stretch: false
     property string rendererName: "preview"
+    property alias  started: frameTimer.running
 
     color: "black"
 
@@ -36,8 +37,9 @@ Rectangle {
     // starts working. It Eats CPU and is otherwise ugly, but it works.
     property var counter: 1
     Timer {
+        id: frameTimer
         interval: 33
-        running: true
+        running: false
         repeat: true
         onTriggered: {
             videoBackground.source = "image://VideoFrame/"+rendererName+"/"+counter+".png"
