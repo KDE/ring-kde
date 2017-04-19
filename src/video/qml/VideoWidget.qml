@@ -28,7 +28,6 @@ Rectangle {
     Image {
         id: videoBackground
         fillMode: Image.PreserveAspectFit
-        source: "image://VideoFrame/Image.png"
         anchors.fill: parent
         cache: false
     }

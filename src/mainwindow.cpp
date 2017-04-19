@@ -509,6 +509,7 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
    if (auto vid = c->firstMedia<Media::Video>(Media::Media::Direction::OUT))
       m_pVideoDW->setSourceModel(vid->sourceModel());
 
+   m_pVideoDW->setCall(c);
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
 }

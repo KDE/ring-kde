@@ -27,6 +27,7 @@
 #include <../ringapplication.h>
 
 #include <video/previewmanager.h>
+#include <call.h>
 
 #include "imageprovider.h"
 
@@ -100,14 +101,17 @@ VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
     setResizeMode(QQuickWidget::SizeRootObjectToView);
     setSource(QUrl("qrc:/mainvid.qml"));
 
-    QObject* object = rootObject();
-
     setMode(mode);
 }
 
 VideoWidget3::~VideoWidget3()
 {
     delete d_ptr;
+}
+
+void VideoWidget3::setCall(Call* c)
+{
+   rootObject()->setProperty("call", QVariant::fromValue(c));
 }
 
 void VideoWidget3::addRenderer(Video::Renderer* renderer)
@@ -166,6 +170,12 @@ void VideoWidget3::setSourceModel(Video::SourceModel* model)
 void VideoWidget3::setMode(VideoWidget3::Mode mode)
 {
     d_ptr->m_Mode = mode;
+
+    qDebug() << "!!!!" << rootObject();
+
+    Q_ASSERT(rootObject());
+
+    qDebug() << "!!!!" << rootObject();
 
     switch(mode) {
         case Mode::CONVERSATION:

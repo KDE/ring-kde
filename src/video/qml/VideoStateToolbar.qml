@@ -27,6 +27,8 @@ Rectangle {
     y:parent.height-toolbar.height -10
     z: 100
 
+    property var userActionModel: null
+
     // Use a separate label. This allows to use only icons in the buttons,
     // this reducing the footprint and avoiding a second row.
     Rectangle {
@@ -74,7 +76,7 @@ Rectangle {
                 hoverEnabled: true
                 z: 101
                 onClicked: {
-                    CallModel.userActionModel.execute(action)
+                    userActionModel.execute(action)
                 }
                 onContainsMouseChanged: {
                     if (containsMouse) {
@@ -108,5 +110,15 @@ Rectangle {
     onVisibleChanged: {
         if (!visible)
             currentText.visible = false
+    }
+
+    onUserActionModelChanged: {
+        if (!userActionModel) {
+            userActionModel = CallModel.userActionModel
+            return
+        }
+
+        actionGrid.model = (userActionModel && userActionModel.activeActionModel) ?
+            userActionModel.activeActionModel : CallModel.userActionModel.activeActionModel
     }
 }

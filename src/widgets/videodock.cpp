@@ -176,6 +176,11 @@ VideoDock::~VideoDock()
       delete m_pWindow;
 }
 
+void VideoDock::setCall(Call* c)
+{
+   m_pVideoWidet->setCall(c);
+}
+
 ///Set current renderer
 void VideoDock::addRenderer(Video::Renderer* r)
 {

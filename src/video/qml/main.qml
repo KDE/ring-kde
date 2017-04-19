@@ -30,6 +30,7 @@ Item {
     property string mode           : "PREVIEW"
     property bool   previewRunning : false
     property alias  peerRunning    : videoWidget.started
+    property var    call           : null
 
     VideoWidget {
         id: videoWidget
@@ -59,6 +60,7 @@ Item {
         id: actionToolbar
         y: parent.height - height
         visible: false
+
     }
 
     // Hide both toolbars when the mouse isn't moving
@@ -104,6 +106,12 @@ Item {
         }
     }
 
+    onCallChanged: {
+        if (call) {
+            actionToolbar.userActionModel = call.userActionModel
+        }
+    }
+
     Connections {
         target: PreviewManager
         onPreviewingChanged: {
@@ -114,6 +122,20 @@ Item {
 
             if (videoPreview.visible)
                 videoPreview.started = PreviewManager.previewing
+        }
+    }
+
+    Connections {
+        target: call
+        onVideoStopped: {
+            videoWidget.started = false
+        }
+    }
+
+    Connections {
+        target: call
+        onVideoStarted: {
+            videoWidget.started = true
         }
     }
 }

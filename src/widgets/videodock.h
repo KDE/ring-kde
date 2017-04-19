@@ -32,6 +32,7 @@ class VideoWidget3;
 class VideoSettings;
 class MediaPicker;
 class ScreenSharingWidget;
+class Call;
 namespace Video {
    class Renderer;
    class SourceModel;
@@ -44,6 +45,7 @@ public:
    explicit VideoDock(QWidget* parent = nullptr );
    ~VideoDock();
    void addRenderer(Video::Renderer* r);
+   void setCall(Call* c);
 
 private:
    QGridLayout*         m_pMoreOpts     ;

@@ -24,6 +24,8 @@ namespace Video {
     class SourceModel;
 }
 
+class Call;
+
 class VideoWidget3Private;
 
 class VideoWidget3 : public QQuickWidget
@@ -42,6 +44,7 @@ public:
     virtual ~VideoWidget3();
 
     void setMode(Mode mode);
+    void setCall(Call* c);
 
     static void initProvider();
 public Q_SLOTS:
