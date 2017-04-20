@@ -242,6 +242,7 @@ SET(
    widgets/toolbuttonmodelview.cpp
    widgets/personselector.cpp
    widgets/contactmethodselector.cpp
+   widgets/splashscreen.cpp
 )
 
 # Video Widgets
@@ -417,3 +418,4 @@ ENDIF()
 INSTALL( TARGETS ring-kde                     DESTINATION ${BIN_INSTALL_DIR}           )
 INSTALL( FILES icons/overlay_right_corner.svg DESTINATION ${DATA_INSTALL_DIR}/ring-kde )
 INSTALL( FILES icons/overlay_left_corner.svg  DESTINATION ${DATA_INSTALL_DIR}/ring-kde )
+INSTALL( FILES wizard/assets/beta_logo.svg    DESTINATION ${DATA_INSTALL_DIR}/ring-kde )

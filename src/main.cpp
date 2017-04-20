@@ -30,6 +30,7 @@
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
+#include "widgets/splashscreen.h"
 
 constexpr static const char version[] = "2.3.0";
 
@@ -48,12 +49,15 @@ int main(int argc, char **argv)
          /*QStringLiteral(*/version/*)*/,
          i18n("RING, a secured and distributed communication software"),
          KAboutLicense::GPL_V3,
-         i18n("(C) 2004-2015 Savoir-faire Linux"),
+         i18n("(C) 2004-2015 Savoir-faire Linux\n2016-2017 Emmanuel Lepage Vallee"),
          QString(),
          QStringLiteral("http://www.ring.cx"),
          QStringLiteral("ring@gnu.org")
       );
       about.setProgramLogo(QImage(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
+
+      auto s = new SplashScreen(&about);
+      s->show();
 
       about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), QStringLiteral("elv1313@gmail.com"                    ));
       about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com"));
