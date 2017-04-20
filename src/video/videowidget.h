@@ -47,6 +47,10 @@ public:
     void setCall(Call* c);
 
     static void initProvider();
+
+protected:
+    virtual bool eventFilter(QObject *obj, QEvent *event) override;
+
 public Q_SLOTS:
     void addRenderer(Video::Renderer* renderer);
     void removeRenderer(Video::Renderer* renderer);

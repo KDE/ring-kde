@@ -34,6 +34,9 @@
 #include "actioncollection.h"
 #include "video/devicemodel.h"
 #include "video/sourcemodel.h"
+#include "media/media.h"
+#include "call.h"
+#include "media/video.h"
 #include "ui_mediafilepicker.h"
 #include "ui_screensharingwidget.h"
 #include "videosettings.h"
@@ -179,6 +182,9 @@ VideoDock::~VideoDock()
 void VideoDock::setCall(Call* c)
 {
    m_pVideoWidet->setCall(c);
+   if (auto videoOut = c->firstMedia<Media::Video>(Media::Media::Direction::OUT)) {
+      setSourceModel(videoOut->sourceModel());
+   }
 }
 
 ///Set current renderer
