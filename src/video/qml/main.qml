@@ -120,8 +120,7 @@ Item {
             else
                 videoPreview.visible = PreviewManager.previewing
 
-            if (videoPreview.visible)
-                videoPreview.started = PreviewManager.previewing
+            videoPreview.started = PreviewManager.previewing
         }
     }
 
