@@ -68,6 +68,10 @@
 
     <!-- Display Settings -->
 
+    <entry name="showSplash" type="Bool">
+        <label>Display the splashscreen.</label>
+      <default>true</default>
+    </entry>
     <entry name="notifOnCalls" type="Bool">
     	<label>Defines whether user should be notified when receiving a call.</label>
       <default>true</default>

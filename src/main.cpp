@@ -56,8 +56,10 @@ int main(int argc, char **argv)
       );
       about.setProgramLogo(QImage(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
 
-      auto s = new SplashScreen(&about);
-      s->show();
+      if (ConfigurationSkeleton::showSplash()) {
+         auto s = new SplashScreen(&about);
+         s->show();
+      }
 
       about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), QStringLiteral("elv1313@gmail.com"                    ));
       about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com"));
