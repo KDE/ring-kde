@@ -182,6 +182,10 @@ VideoDock::~VideoDock()
 void VideoDock::setCall(Call* c)
 {
    m_pVideoWidet->setCall(c);
+
+   if (!c)
+      return;
+
    if (auto videoOut = c->firstMedia<Media::Video>(Media::Media::Direction::OUT)) {
       setSourceModel(videoOut->sourceModel());
    }
@@ -200,9 +204,13 @@ void VideoDock::setSourceModel(Video::SourceModel* model)
    if (model) {
       m_pVideoWidet->setSourceModel(model);
 
+      m_pDevice->blockSignals(true);
       m_pDevice->setModel(model);
       m_pDevice->setCurrentIndex(model->activeIndex());
-      connect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
+      m_pDevice->blockSignals(false);
+
+      if (!m_pSourceModel)
+         connect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
    }
    else if (m_pSourceModel) {
       disconnect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));

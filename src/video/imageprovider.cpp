@@ -151,8 +151,6 @@ void ImageProviderPrivate::addRenderer(Call* c, Video::Renderer* renderer)
     auto fb = new FrameBuffer;
     fb->m_pRenderer = renderer;
     m_hActiveRenderers["peer"] = fb;
-
-    // Lets assume
 }
 
 void ImageProviderPrivate::removeRenderer(Call* c, Video::Renderer* renderer)
@@ -163,17 +161,20 @@ void ImageProviderPrivate::removeRenderer(Call* c, Video::Renderer* renderer)
     if (m_hActiveRenderers.contains("peer")) {
         QMutexLocker locker(&m_FrameReader);
         delete m_hActiveRenderers["peer"];
-        m_hActiveRenderers["peer"] = nullptr;
+        m_hActiveRenderers.remove("peer");
     }
 }
 
 void ImageProviderPrivate::previewStarted(Video::Renderer* r)
 {
     QMutexLocker locker(&m_FrameReader);
-    //FIXME add mutextes
     if (m_hActiveRenderers.contains("preview")) {
+        if (m_hActiveRenderers["preview"]->m_pRenderer == r)
+            return;
+
         qWarning() << "The preview renderer already exists";
         delete m_hActiveRenderers["preview"];
+        m_hActiveRenderers.remove("preview");
     }
 
     auto fb = new FrameBuffer;
@@ -185,11 +186,10 @@ void ImageProviderPrivate::previewStopped(Video::Renderer* r)
 {
     Q_UNUSED(r)
 
-    //FIXME add mutextes
     if (m_hActiveRenderers.contains("preview")) {
         QMutexLocker locker(&m_FrameReader);
         delete m_hActiveRenderers["preview"];
-        m_hActiveRenderers["preview"] = nullptr;
+        m_hActiveRenderers.remove("preview");
     }
 
 }

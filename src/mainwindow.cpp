@@ -89,6 +89,7 @@
 #include "widgets/presence.h"
 #include "errormessage.h"
 #include <video/renderer.h>
+#include <video/previewmanager.h>
 #include "ringapplication.h"
 #include "widgets/dockbase.h"
 #include "wizard/welcome.h"
@@ -501,8 +502,6 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
 
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock();
-      m_pVideoDW->show();
-
       connect(m_pVideoDW ,&QDockWidget::visibilityChanged,m_pDock,&Dock::updateTabIcons);
    }
 
@@ -512,14 +511,25 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
    m_pVideoDW->setCall(c);
    m_pVideoDW->addRenderer(r);
    m_pVideoDW->show();
+
+   // Fix mute/hold/playfile
+   connect(r, &Video::Renderer::started, [this, c, r]() {
+      displayVideoDock(c, r);
+   });
 }
 
 void MainWindow::hideVideoDock(Call* c, Video::Renderer* r)
 {
    Q_UNUSED(c)
    Q_UNUSED(r)
+
+   // Don't hide because the preview stopped
+   if (r == Video::PreviewManager::instance().previewRenderer())
+      return;
+
    if (m_pVideoDW) {
       m_pVideoDW->hide();
+      m_pVideoDW->setCall(nullptr);
    }
 }
 #endif
