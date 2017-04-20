@@ -171,11 +171,7 @@ void VideoWidget3::setMode(VideoWidget3::Mode mode)
 {
     d_ptr->m_Mode = mode;
 
-    qDebug() << "!!!!" << rootObject();
-
     Q_ASSERT(rootObject());
-
-    qDebug() << "!!!!" << rootObject();
 
     switch(mode) {
         case Mode::CONVERSATION:

@@ -52,10 +52,23 @@ Rectangle {
         }
     }
 
+    // Show the accept and hangup buttons in green and red
+    function selectColor(action) {
+        if (action == UserActionModel.HANGUP)
+            return "#550000";
+        else if(action == UserActionModel.ACCEPT)
+            return "#005500"
+
+        // Default
+        return "black"
+    }
+
     Component {
         id: actionDelegate
+
+
         Rectangle {
-            color:  mouseArea.containsMouse ? "#111111" : "#000000"
+            color:  mouseArea.containsMouse ? "#111111" : selectColor(action)
             radius: 50 // circle
             width:  actionGrid.cellWidth
             height: actionGrid.cellHeight
