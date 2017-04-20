@@ -63,6 +63,19 @@ Item {
 
     }
 
+    Rectangle {
+        id: placeholderMessage
+        color: "black"
+        z: -99
+        anchors.fill: parent
+
+        Text {
+            color: "white"
+            text: qsTr("[No video]")
+            anchors.centerIn: parent
+        }
+    }
+
     // Hide both toolbars when the mouse isn't moving
     //TODO keep visible if the mouse if over the toolbars
     MouseArea {
@@ -135,6 +148,13 @@ Item {
         target: call
         onVideoStarted: {
             videoWidget.started = true
+        }
+    }
+
+    Connections {
+        target: videoWidget
+        onStartedChanged: {
+            placeholderMessage.visible = !videoWidget.started
         }
     }
 }
