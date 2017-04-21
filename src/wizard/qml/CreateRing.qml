@@ -42,6 +42,9 @@ Item {
         var name = userName.text == "" ?
             WelcomeDialog.defaultUserName : userName.text
 
+        // Make sure they are unique
+        name = name + AccountModel.getSimilarAliasIndex(name)
+
         var account = AccountModel.add(name, Account.RING);
         account.displayName     = name
         account.archivePassword = password.text
@@ -51,7 +54,7 @@ Item {
         account.performAction(Account.RELOAD)
 
         if (registerUserName.checked) {
-            var hasStarted = account.registerName(account.archivePassword, account.displayName)
+            var hasStarted = account.registerName(password.text, account.displayName)
             console.log("START",hasStarted)
         }
     }
