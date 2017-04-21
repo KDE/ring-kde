@@ -90,82 +90,107 @@ Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
+                RowLayout {
+                    Image {
+                        Layout.fillHeight: true
+                        source: "image://icon/channel-secure-symbolic"
+                        Layout.preferredWidth: 100
+                        fillMode: Image.PreserveAspectFit
+                    }
 
-                Label {
-                    wrapMode: Text.WordWrap
-                    clip: true
-                    text: qsTr("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,")
-                    width:parent.parent.width
-                }
-
-                Label {
-                    wrapMode: Text.WordWrap
-                    clip: true
-                    text: qsTr("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,")
-                    width:parent.parent.width
-                }
-
-                Label {
-                    wrapMode: Text.WordWrap
-                    clip: true
-                    text: qsTr("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,")
-                    width:parent.parent.width
-                }
-
-                Label {
-                    wrapMode: Text.WordWrap
-                    clip: true
-                    text: qsTr("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,")
-                    width:parent.parent.width
-                }
-            }
-
-            TabBar {
-                id: tabBar
-                clip: true
-                currentIndex: swipeView.currentIndex
-                anchors.horizontalCenter: parent.horizontalCenter
-                TabButton {
-                    contentItem: Item {}
-
-                    background: Rectangle {
-                        color: "blue"
-                        implicitWidth: 20
-                        implicitHeight: 20
-                        radius: 10
+                    Label {
+                        wrapMode: Text.WordWrap
+                        clip: true
+                        text: qsTr("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted. ")
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                     }
                 }
-                TabButton {
-                    contentItem: Item {}
 
-                    background: Rectangle {
-                        color: "blue"
-                        implicitWidth: 20
-                        implicitHeight: 20
-                        radius: 10
+                RowLayout {
+                    Image {
+                        Layout.fillHeight: true
+                        source: "image://icon/text-directory"
+                        Layout.preferredWidth: 100
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Label {
+                        wrapMode: Text.WordWrap
+                        clip: true
+                        text: qsTr("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI ans X-509. No data is ever uploaded to external servers.")
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                     }
                 }
-                TabButton {
-                    contentItem: Item {}
 
-                    background: Rectangle {
-                        color: "blue"
-                        implicitWidth: 20
-                        implicitHeight: 20
-                        radius: 10
+                RowLayout {
+                    Image {
+                        Layout.fillHeight: true
+                        source: "image://icon/call-start"
+                        Layout.preferredWidth: 100
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Label {
+                        wrapMode: Text.WordWrap
+                        clip: true
+                        text: qsTr("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE")
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                     }
                 }
-                TabButton {
-                    contentItem: Item {}
 
-                    background: Rectangle {
-                        color: "blue"
-                        implicitWidth: 20
-                        implicitHeight: 20
-                        radius: 10
+                RowLayout {
+                    Image {
+                        Layout.fillHeight: true
+                        source: "image://icon/standard-connector"
+                        Layout.preferredWidth: 100
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Label {
+                        wrapMode: Text.WordWrap
+                        clip: true
+                        text: qsTr("Ring is based on open standards and is can interoperate with other SIP compliant systems.")
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                     }
                 }
-                background: Item {}
+
+                RowLayout {
+                    Image {
+                        Layout.fillHeight: true
+                        source: "image://icon/text-x-python"
+                        Layout.preferredWidth: 100
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Label {
+                        wrapMode: Text.WordWrap
+                        clip: true
+                        text: qsTr("Ring offers an user friendly DBus API to automate all aspects of the application.")
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
+                }
+
+                RowLayout {
+                    Image {
+                        Layout.fillHeight: true
+                        source: "image://icon/call-start"
+                        Layout.preferredWidth: 100
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Label {
+                        wrapMode: Text.WordWrap
+                        clip: true
+                        text: qsTr("Ring-KDE can call real phone numbers. Cheap credits are available from thousand of providers worldwide. Use your favorite search engine to locate a local SIP phone provider.")
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
+                }
             }
 
             Label {

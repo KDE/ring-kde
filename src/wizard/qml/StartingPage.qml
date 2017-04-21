@@ -47,7 +47,7 @@ StartingPageForm {
 
     Timer {
         id: createAccountTimer
-        interval: 2000
+        interval: 5000
         repeat: true
         running: true
         onTriggered: {
