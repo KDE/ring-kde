@@ -24,6 +24,9 @@ Item {
     id: importRing
 
     property bool nextAvailable: false
+    property var account: null
+
+    signal registrationCompleted()
 
     function isNextAvailable() {
         nextAvailable = pinField.text.length > 0 && password.text.length > 0
@@ -35,7 +38,11 @@ Item {
             return;
         }
 
-        var account = AccountModel.add(WelcomeDialog.defaultUserName, Account.RING)
+        registrationPopup.visible   = true
+        registrationTimeout.running = true
+        registrationPopup.color     = "white"
+
+        account = AccountModel.add(WelcomeDialog.defaultUserName, Account.RING)
         account.archivePassword = password.text
         account.archivePin      = pinField.text
         account.upnpEnabled     = true;
@@ -102,6 +109,55 @@ Item {
         }
     }
 
+    Rectangle {
+        id: registrationPopup
+        width: 200
+        height: 75
+        color: "#eeeeee"
+        visible: false
+        z: 200
+        anchors.centerIn: item1
+        RowLayout {
+            anchors.verticalCenter: parent.verticalCenter
+
+            BusyIndicator {
+                id: registrationIndicator
+                Layout.fillHeight: false
+            }
+
+            Label {
+                id: registrationStatus
+                text: qsTr("Importing account")
+                Layout.fillHeight: false
+                Layout.fillWidth: true
+            }
+        }
+    }
+
+    // Hide the error message after a second
+    Timer {
+        id: hidePopup
+        repeat: false
+        running: false
+        interval: 1000
+        onTriggered: {
+            registrationPopup.visible = false
+        }
+    }
+
+    // Remove the popup after 30 seconds if it didn't finish by then
+    Timer {
+        id: registrationTimeout
+        repeat: false
+        interval: 30000
+        running: false
+        onTriggered: {
+            registrationPopup.color = "red"
+            registerFoundLabel.text = qsTr("Timeout")
+            hidePopup.running       = true
+        }
+    }
+
     /*transitions: Transition {
         NumberAnimation {
             properties: "opacity"
@@ -114,4 +170,24 @@ Item {
             }
         }
     }*/
+
+    Connections {
+        target: account
+        onStateChanged: {
+            switch(state) {
+                case Account.ERROR:
+                    registrationPopup.color = "red"
+                    registrationStatus.text = qsTr("Importing failed")
+                    hidePopup.running = true
+                    registrationTimeout.stop()
+                    break
+                case Account.READY:
+                    registrationPopup.visible = false
+                    registrationTimeout.stop()
+                    importRing.registrationCompleted()
+                    account = null
+                    break
+            }
+        }
+    }
 }

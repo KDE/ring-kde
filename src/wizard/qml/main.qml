@@ -136,6 +136,14 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: frontPage.importRing
+        onRegistrationCompleted: {
+            stateGroup.state = "showProfile"
+            footer.state = "finish"
+        }
+    }
+
     StateGroup {
         id: stateGroup
         states: [

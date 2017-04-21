@@ -402,8 +402,6 @@ Item {
     Connections {
         target: account
         onStateChanged: {
-            console.log(state)
-            console.log(Account.READY)
             if (state == Account.READY && registerUserName.checked) {
                 if (account.registerName(password.text, account.displayName)) {
                     registrationStatus.text = qsTr("Registration")
