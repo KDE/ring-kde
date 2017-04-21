@@ -56,7 +56,7 @@ int main(int argc, char **argv)
       );
       about.setProgramLogo(QImage(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
 
-      if (ConfigurationSkeleton::showSplash()) {
+      if ((!ConfigurationSkeleton::enableWizard()) && ConfigurationSkeleton::showSplash()) {
          auto s = new SplashScreen(&about);
          s->show();
       }
