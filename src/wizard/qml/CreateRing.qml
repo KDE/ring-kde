@@ -27,6 +27,10 @@ Item {
 
     property bool nextAvailable: false
 
+    property var account: null
+
+    signal registrationCompleted()
+
     function isNextAvailable() {
         nextAvailable = (userName.text.length > 0 || !registerUserName.checked)
             && (password.text.length > 0)
@@ -39,24 +43,23 @@ Item {
             return;
         }
 
+        // Display the progress popup
+        state = "registrationResult"
+        registrationTimeout.running = true
+
         var name = userName.text == "" ?
             WelcomeDialog.defaultUserName : userName.text
 
         // Make sure they are unique
         name = name + AccountModel.getSimilarAliasIndex(name)
 
-        var account = AccountModel.add(name, Account.RING);
+        account = AccountModel.add(name, Account.RING);
         account.displayName     = name
         account.archivePassword = password.text
         account.upnpEnabled     = true;
 
         account.performAction(Account.SAVE)
         account.performAction(Account.RELOAD)
-
-        if (registerUserName.checked) {
-            var hasStarted = account.registerName(password.text, account.displayName)
-            console.log("START",hasStarted)
-        }
     }
 
     ColumnLayout {
@@ -235,6 +238,55 @@ Item {
         }
     }
 
+    Rectangle {
+        id: registrationPopup
+        width: 200
+        height: 75
+        color: "#eeeeee"
+        visible: false
+        z: 200
+        anchors.centerIn: item1
+        RowLayout {
+            anchors.verticalCenter: parent.verticalCenter
+
+            BusyIndicator {
+                id: registrationIndicator
+                Layout.fillHeight: false
+            }
+
+            Label {
+                id: registrationStatus
+                text: qsTr("Creating account")
+                Layout.fillHeight: false
+                Layout.fillWidth: true
+            }
+        }
+    }
+
+    // Hide the error message after a second
+    Timer {
+        id: hidePopup
+        repeat: false
+        running: false
+        interval: 1000
+        onTriggered: {
+            registrationPopup.visible = false
+        }
+    }
+
+    // Remove the popup after 30 seconds if it didn't finish by then
+    Timer {
+        id: registrationTimeout
+        repeat: false
+        interval: 30000
+        running: false
+        onTriggered: {
+            registrationPopup.color = "red"
+            registerFoundLabel.text = qsTr("Timeout")
+            hidePopup.running       = true
+        }
+    }
+
     states: [
         State {
             name: "noRegister"
@@ -261,6 +313,14 @@ Item {
             PropertyChanges {
                 target: label
                 padding: 0
+            }
+        },
+        State {
+            name: "registrationResult"
+
+            PropertyChanges {
+                target: registrationPopup
+                visible: true
             }
         }
     ]
@@ -306,6 +366,56 @@ Item {
 
     Connections {
         target: NameDirectory
-        onNameRegistrationEnded: {}
+        onNameRegistrationEnded: {
+            registrationTimeout.stop()
+
+            if (status == 0)
+                registrationPopup.color = "green"
+            else {
+                registrationPopup.color = "red"
+                hidePopup.running = true
+            }
+
+            registrationIndicator.visible = false
+
+            switch(status) {
+                case 0: //SUCCESS
+                    registrationStatus.text = qsTr("Success")
+                    item1.registrationCompleted()
+                    break
+                case 1: //WRONG_PASSWORD
+                    registrationStatus.text = qsTr("Password mismatch")
+                    break
+                case 2: //INVALID_NAME
+                    registrationStatus.text = qsTr("Invalid name")
+                    break
+                case 3: //ALREADY_TAKEN
+                    registrationStatus.text = qsTr("Already taken")
+                    break
+                case 4: //NETWORK_ERROR
+                    registrationStatus.text = qsTr("Network error")
+                    break
+            }
+        }
+    }
+
+    Connections {
+        target: account
+        onStateChanged: {
+            console.log(state)
+            console.log(Account.READY)
+            if (state == Account.READY && registerUserName.checked) {
+                if (account.registerName(password.text, account.displayName)) {
+                    registrationStatus.text = qsTr("Registration")
+                    registrationTimeout.stop()
+                }
+                else {
+                    registrationPopup.color = "red"
+                    registrationStatus.text = qsTr("Can't register")
+                    registrationTimeout.stop()
+                }
+                account = null
+            }
+        }
     }
 }

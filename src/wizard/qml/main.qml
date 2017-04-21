@@ -110,8 +110,10 @@ ApplicationWindow {
             switch (stateGroup.state) {
             case 'createRegRing':
                 frontPage.createRing.createAccount()
+                break;
             case 'importRing':
                 frontPage.importRing.createAccount()
+                break;
             case '*':
                 stateGroup.state = "*"
                 stateGroup.state = "showProfile"
@@ -123,6 +125,14 @@ ApplicationWindow {
                 RingApplication.newInstance()
                 break;
             }
+        }
+    }
+
+    Connections {
+        target: frontPage.createRing
+        onRegistrationCompleted: {
+            stateGroup.state = "showProfile"
+            footer.state = "finish"
         }
     }
 
