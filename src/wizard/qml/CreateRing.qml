@@ -259,6 +259,7 @@ Item {
                 text: qsTr("Creating account")
                 Layout.fillHeight: false
                 Layout.fillWidth: true
+                color: "black"
             }
         }
     }

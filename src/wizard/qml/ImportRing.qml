@@ -130,6 +130,7 @@ Item {
                 text: qsTr("Importing account")
                 Layout.fillHeight: false
                 Layout.fillWidth: true
+                color: "black"
             }
         }
     }
