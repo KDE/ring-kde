@@ -30,7 +30,9 @@ ApplicationWindow {
 
     property string previousState: ""
 
-    StartingPage {
+    //TODO Still necessary for the QML client, but is skipped for the desktop
+    // version.
+    /*StartingPage {
         id: startingPage
         anchors.fill: parent
         anchors.bottomMargin: footer.height
@@ -41,11 +43,10 @@ ApplicationWindow {
                 footer.y = applicationWindow.height + footer.height
 
                 // Begin the first animation
-                /*ANIM footer.state = "shown"*/
-                footer.state = "locked"
+                footer.state = "shown"
             }
         }
-    }
+    }*/
 
     Page1 {
         id: frontPage
@@ -59,6 +60,7 @@ ApplicationWindow {
         height: 45
         width: applicationWindow.width
         visible: false
+        state: "locked"
     }
     onWidthChanged: { //HACK
         footer.width = width
