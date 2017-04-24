@@ -1,4 +1,4 @@
-FROM ubuntu:17.04
+FROM elv13/maui
 MAINTAINER Emmanuel Lepage-Vallee (elv1313@gmail.com)
 RUN apt update
 

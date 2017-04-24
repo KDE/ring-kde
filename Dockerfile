@@ -1,6 +1,7 @@
-FROM ubuntu:17.04
+FROM elv13/maui
 MAINTAINER Emmanuel Lepage-Vallee (elv1313@gmail.com)
-RUN apt update
+
+RUN apt-get update
 
 RUN apt install -yy build-essential cmake git dpkg-dev devscripts  equivs
 
@@ -8,7 +9,11 @@ RUN git clone http://anongit.kde.org/ring-kde
 
 WORKDIR ring-kde
 
+RUN git checkout next
+
 ADD debian /ring-kde/debian
+
+RUN apt update
 
 # Install all dependencies
 RUN mk-build-deps \
