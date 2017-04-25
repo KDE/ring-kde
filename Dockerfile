@@ -1,7 +1,8 @@
-FROM elv13/maui
+FROM debian:testing
 MAINTAINER Emmanuel Lepage-Vallee (elv1313@gmail.com)
 
 RUN apt-get update
+RUN apt upgrade -y
 
 RUN apt install -yy build-essential cmake git dpkg-dev devscripts  equivs
 
@@ -22,5 +23,5 @@ RUN mk-build-deps \
 
 CMD git pull --rebase && \
  tar -cj . -f ../../../ring-kde_16.12.0.orig.tar.bz2 && \
- dpkg-buildpackage && \
+ dpkg-buildpackage -j8 && \
  cp /*.deb /exportdebs/

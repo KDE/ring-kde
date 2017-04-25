@@ -1,4 +1,4 @@
-FROM elv13/maui
+FROM debian:testing
 MAINTAINER Emmanuel Lepage-Vallee (elv1313@gmail.com)
 RUN apt update
 
