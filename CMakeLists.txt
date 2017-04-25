@@ -29,6 +29,10 @@ FIND_PACKAGE ( LibRingClient QUIET CONFIG)
 
 # Download Ring-LRC
 IF(NOT ringclient_FOUND)
+    # Use the .a, not the .so;
+    SET(ENABLE_STATIC true)
+    SET(ENABLE_SHARED false)
+
    INCLUDE(cmake/FetchRing-LRC.cmake)
 ENDIF()
 

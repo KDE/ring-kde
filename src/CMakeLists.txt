@@ -375,7 +375,6 @@ TARGET_LINK_LIBRARIES(ring-kde
   libvideo
   tip
   accountdialog
-  ringclient
   ${OPENGL_link}
 
   # Qt5
