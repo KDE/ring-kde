@@ -74,7 +74,7 @@ Item {
         Switch {
             id: registerUserName
             height: 40
-            text: qsTr("Register public username (experimental)")
+            text: qsTr("Register public username (experimental)*")
             checked: true
             opacity: 1
             Layout.fillWidth: true
@@ -237,6 +237,19 @@ Item {
                     duration: 200
                 }
             }*/
+        }
+
+        Item {
+            height: 10
+            Layout.fillWidth: true
+        }
+
+        Label {
+            id: labelInfo
+            color: "white"
+            text: qsTr("(*) registered usernames can be reached by their username-string instead of their generated ring-id number only.")
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
         }
 
         Rectangle {
