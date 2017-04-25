@@ -47,7 +47,11 @@ Vcs-Git: https://anonscm.debian.org/git/pkg-kde/applications/konsole.git
 Package: ring-kde
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends}
+         ${shlibs:Depends},
+         qml-module-qtquick-controls,
+         qml-module-qtquick-controls2,
+         ring-daemon,
+         qml-module-qtquick-templates2
 Provides: x-terminal-emulator
 Description: X terminal emulator
  Konsole is a terminal emulator built on the KDE Platform. It can contain
