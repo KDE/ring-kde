@@ -21,6 +21,7 @@ Page1Form {
     anchors.fill: parent
 
     property bool nextAvailable: false
+    property bool busy: false
 
     // Let the pretty little animation run its course
     Timer {
@@ -57,6 +58,8 @@ Page1Form {
 
     createRing.onNextAvailableChanged: isNextAvailable()
     importRing.onNextAvailableChanged: isNextAvailable()
+
+    createRing.onBusyChanged: { busy = createRing.busy }
 
     function isNextAvailable() {
         switch(state) {

@@ -26,6 +26,7 @@ Item {
     property alias registerUserName: registerUserName
 
     property bool nextAvailable: false
+    property bool busy: false
 
     property var account: null
 
@@ -42,6 +43,11 @@ Item {
             console.log("Account creation failed: missing fields")
             return;
         }
+
+        // Prevent trigger happy people from DDOSing the daemon with entropy
+        // starvation
+        nextAvailable = false
+        busy = true
 
         // Display the progress popup
         state = "registrationResult"
@@ -285,6 +291,8 @@ Item {
             registrationPopup.color = "red"
             registerFoundLabel.text = qsTr("Timeout")
             hidePopup.running       = true
+            nextAvailable = true
+            busy = false
         }
     }
 
@@ -382,6 +390,7 @@ Item {
             switch(status) {
                 case 0: //SUCCESS
                     registrationStatus.text = qsTr("Success")
+                    busy = false
                     item1.registrationCompleted()
                     break
                 case 1: //WRONG_PASSWORD

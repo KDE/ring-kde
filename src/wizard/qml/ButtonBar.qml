@@ -25,6 +25,7 @@ Item {
     property alias backButton: backButton
     property alias nextButton: nextButton
     property alias skipButton: skipButton
+    property bool  displayBusy: false
 
     Rectangle {
         id: rectangle
@@ -48,6 +49,12 @@ Item {
             }
 
             // Align right
+
+            BusyIndicator {
+                id: busyIndicator
+                visible: false
+                Layout.fillHeight: true
+            }
 
             Label {
                 id: missingFields
@@ -102,6 +109,20 @@ Item {
             PropertyChanges {
                 target: backButton
                 visible: false
+            }
+        },
+        State {
+            name: "busy"
+            extend: "locked"
+
+            PropertyChanges {
+                target: missingFields
+                text: qsTr("Please wait")
+            }
+
+            PropertyChanges {
+                target: busyIndicator
+                visible: true
             }
         },
         State {

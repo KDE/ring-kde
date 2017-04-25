@@ -70,7 +70,19 @@ ApplicationWindow {
     Connections {
         target: frontPage
         onNextAvailableChanged: {
-            footer.state = frontPage.nextAvailable ? "nextAvailable" : "locked"
+            footer.state = frontPage.nextAvailable ? "nextAvailable" : (
+                frontPage.busy ? "busy" : "locked"
+            )
+        }
+    }
+
+    // Use a better label when next is unavailable because it's busy
+    Connections {
+        target: frontPage
+        onBusyChanged: {
+            footer.state = frontPage.nextAvailable ? "nextAvailable" : (
+                frontPage.busy ? "busy" : "locked"
+            )
         }
     }
 
