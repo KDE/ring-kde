@@ -25,15 +25,33 @@ LIST(APPEND CMAKE_MODULE_PATH "${LOCAL_CMAKE_MODULE_PATH}")
 FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
 LIST(APPEND CMAKE_MODULE_PATH "${ECM_MODULE_PATH}")
 
-FIND_PACKAGE ( LibRingClient QUIET CONFIG)
+# Ring-LRC isn't a "stable" library. Clients often only work with a very specific
+# commit and nothing else. To prevent using the wrong version, it is possible to
+# add a `ring-lrc` directory in the source. If present, that version will be used.
+IF(IS_DIRECTORY "${CMAKE_SOURCE_DIR}/ring-lrc/")
+   SET(LibRingClient_SRC "${CMAKE_SOURCE_DIR}/ring-lrc/")
+   SET(ringclient_FOUND true)
+ELSE()
+   FIND_PACKAGE ( LibRingClient QUIET CONFIG)
+ENDIF()
 
-# Download Ring-LRC
+# Download Ring-LRC if it wasn't found to simplify the build process
 IF(NOT ringclient_FOUND)
-    # Use the .a, not the .so;
-    SET(ENABLE_STATIC true)
-    SET(ENABLE_SHARED false)
-
    INCLUDE(cmake/FetchRing-LRC.cmake)
+
+   SET(LibRingClient_SRC ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc/)
+ENDIF()
+
+# Use the build-in copy if it has been found
+IF(LibRingClient_SRC)
+   # Use the .a, not the .so;
+   SET(ENABLE_STATIC true)
+
+   LIST(APPEND CMAKE_MODULE_PATH "${LibRingClient_SRC}/cmake/")
+
+   ADD_SUBDIRECTORY(${LibRingClient_SRC})
+
+   INCLUDE_DIRECTORIES(${LibRingClient_SRC}/src)
 ENDIF()
 
 INCLUDE(ECMInstallIcons)
