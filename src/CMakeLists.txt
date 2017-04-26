@@ -19,10 +19,6 @@ FIND_PACKAGE ( KF5 REQUIRED )
 
 FIND_PACKAGE (ECM 1.1.0 REQUIRED NO_MODULE)
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  FIND_LIBRARY(OSX_FRAMEWORK_OPENGL NAMES OpenGL)
-ENDIF()
-
 ADD_SUBDIRECTORY( conf/account/ )
 
 ADD_DEFINITIONS(
@@ -344,14 +340,6 @@ ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
 ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
 
-IF(NOT (${ENABLE_VIDEO} MATCHES false))
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-   SET( OPENGL_link   ${QT_QTOPENGL_LIBRARY} )# -lGLU
-ELSE()
-   SET( OPENGL_link   ${QT_QTOPENGL_LIBRARY} -lGL)# -lGLU
-ENDIF()
-ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
-
 IF(NOT ${ENABLE_STATIC} MATCHES false)
   FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED DBus)
   INCLUDE_DIRECTORIES(SYSTEM ${Qt5DBus_INCLUDE_DIRS} )
@@ -375,14 +363,12 @@ TARGET_LINK_LIBRARIES(ring-kde
   libvideo
   tip
   accountdialog
-  ${OPENGL_link}
 
   # Qt5
   Qt5::Widgets
   Qt5::Core
   Qt5::Gui
   Qt5::Svg
-  Qt5::OpenGL
   Qt5::PrintSupport
 
   # KF5
@@ -406,10 +392,6 @@ IF (Qt5TextToSpeech_FOUND)
    TARGET_LINK_LIBRARIES(ring-kde
       Qt5TextToSpeech
    )
-ENDIF()
-
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  TARGET_LINK_LIBRARIES(ring-kde ${OSX_FRAMEWORK_OPENGL})
 ENDIF()
 
 ########### install files ###############

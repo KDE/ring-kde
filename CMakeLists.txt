@@ -63,7 +63,6 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
   Widgets
   Gui
   Svg
-  OpenGL
   PrintSupport
 )
 
