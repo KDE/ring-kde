@@ -56,7 +56,7 @@ public:
 
 private:
    //Attributes
-   MainWindow*        m_pApp          ;
+   MainWindow*        m_pApp {nullptr};
    bool               m_StartIconified;
 };
 

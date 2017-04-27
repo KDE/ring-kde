@@ -142,7 +142,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       QPixmap status(QStringLiteral(":/images/icons/mailbox.svg"));
       status=status.scaled(QSize(24,24));
       painter2.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
-      if (m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
+      if (call && m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
          const auto inRecList = call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN);
          auto button = new PlayerOverlay((Media::AVRecording*)inRecList.first(),nullptr); //TODO handle more than 1
          button->setRecording((Media::AVRecording*)inRecList.first());

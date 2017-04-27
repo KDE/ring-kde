@@ -47,8 +47,8 @@ void FallbackPersonConfigurator::loadCollection(CollectionInterface* col, QObjec
       QWidget* w = qobject_cast<QWidget*>(parent);
       if (!m_pDialog) {
          m_pDialog = new QWidget();
-         Ui_DlgFallbackPerson* ui = new Ui_DlgFallbackPerson();
-         ui->setupUi(m_pDialog);
+         Ui_DlgFallbackPerson ui;
+         ui.setupUi(m_pDialog);
          QHBoxLayout* l = new QHBoxLayout(w);
          l->addWidget(m_pDialog);
       }
