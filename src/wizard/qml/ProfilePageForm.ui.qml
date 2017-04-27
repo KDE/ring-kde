@@ -25,10 +25,21 @@ Item {
     ColumnLayout {
         anchors.fill: parent
 
-
         Label {
             id: label2
             clip: true
+            color: "white"
+            text: qsTr("Your profile can be edited in the Account setting dialog.")
+            wrapMode: Text.WordWrap
+            anchors.leftMargin: 8
+            anchors.left: parent.left
+            Layout.fillWidth: true
+        }
+
+        /*Label {
+            id: label2
+            clip: true
+            color: "white"
             x: -7
             y: 170
             width: 284
@@ -53,6 +64,7 @@ They are trasnmissted everytime you and a peer talk.")
 
         Label {
             id: label3
+            color: "white"
             clip: true
             x: -7
             y: 170
@@ -78,6 +90,7 @@ They are trasnmissted everytime you and a peer talk.")
 
         Label {
             id: label1
+            color: "white"
             x: -1
             y: 233
             width: 284
@@ -101,6 +114,7 @@ They are trasnmissted everytime you and a peer talk.")
 
         Label {
             id: label
+            color: "white"
             x: -1
             y: 54
             width: 284
@@ -119,7 +133,7 @@ They are trasnmissted everytime you and a peer talk.")
             height: 40
             Layout.fillWidth: true
             anchors.horizontalCenter: parent.horizontalCenter
-        }
+        }*/
 
         Item {
             Layout.fillHeight: true
