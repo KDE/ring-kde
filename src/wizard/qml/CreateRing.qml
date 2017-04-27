@@ -425,15 +425,23 @@ Item {
     Connections {
         target: account
         onStateChanged: {
-            if (state == Account.READY && registerUserName.checked) {
-                if (account.registerName(password.text, account.displayName)) {
-                    registrationStatus.text = qsTr("Registration")
-                    registrationTimeout.stop()
+            if (state == Account.READY) {
+                if (registerUserName.checked) {
+                    if (account.registerName(password.text, account.displayName)) {
+                        registrationStatus.text = qsTr("Registration")
+                        registrationTimeout.stop()
+                    }
+                    else {
+                        registrationPopup.color = "red"
+                        registrationStatus.text = qsTr("Can't register")
+                        registrationTimeout.stop()
+                    }
                 }
                 else {
-                    registrationPopup.color = "red"
-                    registrationStatus.text = qsTr("Can't register")
                     registrationTimeout.stop()
+                    registrationIndicator.visible = false
+                    busy = false
+                    item1.registrationCompleted()
                 }
                 account = null
             }
