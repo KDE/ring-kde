@@ -74,3 +74,5 @@ QModelIndex ExtendedProtocolModel::index( int row, int column, const QModelIndex
    else
       return mapFromSource(m_pSource->index(row, column, mapToSource(parent)));
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

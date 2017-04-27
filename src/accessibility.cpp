@@ -129,3 +129,5 @@ void Accessibility::say(const QString &message)
 {
    m_speech->say(message);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

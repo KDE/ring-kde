@@ -127,3 +127,5 @@ QSize AutoCompletionDelegate2::sizeHint(const QStyleOptionViewItem& option, cons
    const QSize s = QStyledItemDelegate::sizeHint(option, index);
    return QSize(s.width(),s.height()*2);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

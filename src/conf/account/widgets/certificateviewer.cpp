@@ -92,3 +92,5 @@ void CertificateViewer::selectCert(const QModelIndex& idx)
    m_pView->setModel(c->model());
    m_pView->expandAll();
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

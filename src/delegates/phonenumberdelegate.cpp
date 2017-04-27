@@ -115,3 +115,5 @@ void ContactMethodDelegate::setView(CategorizedTreeView* model)
 {
    m_pView = model;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

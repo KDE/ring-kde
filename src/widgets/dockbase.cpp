@@ -246,3 +246,5 @@ void DockBase::expandTreeRows(const QModelIndex& idx)
 }
 
 #include <dockbase.moc>
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

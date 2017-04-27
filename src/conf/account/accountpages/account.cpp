@@ -161,3 +161,5 @@ void Pages::Account::selectAlias()
    le->setSelection(0,le->text().size());
    le->setFocus(Qt::OtherFocusReason);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

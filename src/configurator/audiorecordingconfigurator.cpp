@@ -85,3 +85,5 @@ void AudioRecordingConfigurator::slotChanged()
    m_HasChanged = true;
    emit changed();
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -113,10 +113,11 @@ void DlgVideo::slotReloadPreview()
    }*/
 }
 
-
 void DlgVideo::slotSettingsChanged()
 {
    m_IsChanged = true;
    emit updateButtons();
    slotReloadPreview();
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

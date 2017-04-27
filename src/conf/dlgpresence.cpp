@@ -104,3 +104,5 @@ void DlgPresence::slotMoveDown()
 {
    PresenceStatusModel::instance().moveDown(m_pView->currentIndex());
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

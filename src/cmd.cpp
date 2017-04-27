@@ -208,3 +208,5 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
 void Cmd::slotOpenRequested (const QList<QUrl>&)
 {
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

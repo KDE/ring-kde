@@ -73,3 +73,5 @@ bool DlgHooks::hasChanged()
 {
    return m_Changed;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

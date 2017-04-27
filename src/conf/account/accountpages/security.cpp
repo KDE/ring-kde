@@ -113,3 +113,5 @@ Pages::Security::Security(QWidget *parent) : PageBase(parent)
    }
 }
 #undef FAILED
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

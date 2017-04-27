@@ -72,3 +72,5 @@ bool ContactView::viewportEvent( QEvent * event ) {
    #pragma GCC diagnostic pop
    return CategorizedTreeView::viewportEvent(event);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

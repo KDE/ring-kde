@@ -148,3 +148,5 @@ void Matrix1D<Row,Value,Accessor>::setAt(Row row,Value value)
 {
    m_lData[(int)row] = value;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

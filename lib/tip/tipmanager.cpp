@@ -149,3 +149,5 @@ void TipManager::slotTransitionStarted(QAbstractAnimation::Direction direction, 
 {
    emit transitionStarted(direction,state);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -145,3 +145,5 @@ void RingingTip::timeout()
       m_Counter = 0;
    reload(m_CurrentRect,true);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

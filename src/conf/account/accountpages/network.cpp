@@ -28,3 +28,5 @@ Pages::Network::Network(QWidget *parent) : PageBase(parent)
    });
 }
 
+// kate: space-indent on; indent-width 3; replace-tabs on;
+

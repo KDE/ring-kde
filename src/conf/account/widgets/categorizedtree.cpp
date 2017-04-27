@@ -26,3 +26,5 @@ void CategorizedTree::drawBranches(QPainter* painter, const QRect& rect, const Q
   Q_UNUSED( rect    )
   Q_UNUSED( index   )
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

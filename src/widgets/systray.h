@@ -51,3 +51,5 @@ private Q_SLOTS:
 };
 
 #endif // SYSTRAY_H
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

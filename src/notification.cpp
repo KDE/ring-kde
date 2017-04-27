@@ -259,3 +259,5 @@ void Notification::createContact()
 #undef REGISTER_ACTION
 
 #include <notification.moc>
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -112,3 +112,5 @@ Media::TextRecording* IMTab::textRecording() const
 {
    return m_pTextRecording;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

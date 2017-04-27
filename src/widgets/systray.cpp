@@ -80,3 +80,5 @@ void SysTray::slotActivated(bool active, const QPoint& pos)
    MainWindow::app()->activateWindow();
    MainWindow::app()->raise         ();
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

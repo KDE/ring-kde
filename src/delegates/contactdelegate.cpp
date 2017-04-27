@@ -208,3 +208,5 @@ void ContactDelegate::setChildDelegate(ContactMethodDelegate* child)
 }
 
 #undef BG_STATE
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -52,3 +52,5 @@ ContactMethod* KPhoneNumberSelector::number(const Person* contact)
    }
    return const_cast<ContactMethod*>(ContactMethod::BLANK());
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

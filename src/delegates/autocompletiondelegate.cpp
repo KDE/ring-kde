@@ -87,3 +87,5 @@ void AutoCompletionDelegate::paint(QPainter* painter, const QStyleOptionViewItem
       painter->restore();
    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

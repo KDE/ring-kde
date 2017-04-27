@@ -315,3 +315,5 @@ void ConfigurationDialog::slotPresenceEnabled(bool state)
 #undef GUARD_FALSE
 #include "configurationdialog.moc"
 #include "moc_configurationdialog.cpp"
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

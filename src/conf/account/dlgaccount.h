@@ -65,3 +65,5 @@ Q_SIGNALS:
 };
 
 #endif // _DLGACCOUNT_H_
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

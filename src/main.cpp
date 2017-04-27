@@ -98,3 +98,5 @@ int main(int argc, char **argv)
       qDebug() << msg;
    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -61,3 +61,5 @@ void HelperFunctions::displayNoAccountMessageBox(QWidget* parent)
 {
    KMessageBox::error(parent,i18n("No registered accounts"));
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

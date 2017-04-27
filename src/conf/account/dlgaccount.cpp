@@ -221,3 +221,5 @@ void DlgAccount::updateWidgets()
 {
    m_HasChanged = false;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

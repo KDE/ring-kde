@@ -34,3 +34,5 @@ private:
     SplashScreenPrivate* d_ptr;
     Q_DECLARE_PRIVATE(SplashScreen)
 };
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

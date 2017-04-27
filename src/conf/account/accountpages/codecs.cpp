@@ -43,3 +43,5 @@ Pages::Codecs::Codecs(QWidget *parent) : PageBase(parent)
       m_pBitrate->setText(idx.data(CodecModel::Role::BITRATE).toString());
    });
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

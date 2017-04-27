@@ -47,3 +47,5 @@ void Pages::PageBase::setAccount(::Account* a)
    m_pAccount = a;
    emit accountSet(a);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

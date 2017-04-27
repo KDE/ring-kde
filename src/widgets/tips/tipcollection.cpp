@@ -207,3 +207,5 @@ void TipCollection::setManager(TipManager* manager)
 {
    m_spManager = manager;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -477,3 +477,5 @@ GETTER(videoFullscreenAction        , action_video_fullscreen      )
 #undef GETTER
 
 #undef INIT_ACTION
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

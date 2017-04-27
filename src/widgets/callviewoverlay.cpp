@@ -221,3 +221,5 @@ void CallViewOverlay::slotTransferClicked()
    CallModel::instance().transfer(m_pCurrentCall,PhoneDirectoryModel::instance().getNumber(m_pNumberLE->text()));
    setVisible(false);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

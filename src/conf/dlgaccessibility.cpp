@@ -210,3 +210,5 @@ void DlgAccessibility::slotShortcut(const QList<QKeySequence>& cut)
    if (current && qvariant_cast<QAction*>(current->action()) && cut.size())
       qvariant_cast<QAction*>(current->action())->setShortcut(cut[0]);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

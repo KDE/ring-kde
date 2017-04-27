@@ -553,3 +553,5 @@ bool CanvasObjectManager::testObjectDiscarding()
 }
 
 #undef OBJ_DEF
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -80,3 +80,5 @@ void Player::play()
 {
    m_pParent->m_pRecording->play();
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

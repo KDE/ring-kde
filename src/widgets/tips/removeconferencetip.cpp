@@ -79,3 +79,5 @@ QSize RemoveConferenceTip::reload(const QRect& availableSize,bool force)
    m_DecoRect = QRect(0,0,availableSize.width()-2*m_Padding,availableSize.height()-40);
    return Tip::reload(availableSize,force);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

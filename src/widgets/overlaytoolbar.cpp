@@ -162,3 +162,5 @@ void OverlayToolbar::addWidget(QWidget* w)
 {
    m_pLayout->addWidget(w);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;
