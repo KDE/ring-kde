@@ -30,7 +30,7 @@ class QTimer;
  * One use case would be to take a static/constant data source with dates or
  * time and update the elapsed time.
  *
- * Using this model is not recommanded.
+ * Using this model is not recommended.
  */
 class PollingProxy : public QIdentityProxyModel
 {
