@@ -29,7 +29,7 @@ INCLUDE(KDEInstallDirs)
 INCLUDE(KDECMakeSettings)
 INCLUDE(KDECompilerSettings)
 
-FIND_PACKAGE ( LibRingClient REQUIRED )
+FIND_PACKAGE ( LibRingClient QUIET )
 
 FIND_PACKAGE(Qt5 CONFIG REQUIRED Core Widgets Gui)
 
