@@ -50,6 +50,10 @@ if (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml)
 
     file(DOWNLOAD https://raw.githubusercontent.com/savoirfairelinux/ring-daemon/master/src/dring/call_const.h
         ${CMAKE_CURRENT_BINARY_DIR}/dring/call_const.h INACTIVITY_TIMEOUT 30)
+
+    #FIXME This should not be necessary
+    file(DOWNLOAD https://raw.githubusercontent.com/savoirfairelinux/ring-daemon/master/src/dring/presencemanager_interface.h
+        ${CMAKE_CURRENT_BINARY_DIR}/dring/presencemanager_interface.h INACTIVITY_TIMEOUT 30)
 endif()
 
 message(STATUS "Fetching Ring-LRC from GitHub")
