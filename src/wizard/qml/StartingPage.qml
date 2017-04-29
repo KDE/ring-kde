@@ -20,6 +20,8 @@ import QtQuick 2.4
 StartingPageForm {
     id: startingPage
 
+    signal quit()
+
     /*Behavior on y {
         NumberAnimation {
             easing.type: Easing.InQuad
@@ -35,6 +37,11 @@ StartingPageForm {
     MouseArea {
         anchors.fill: parent
         onClicked: {
+            if (wizardWelcomeOnly == true) {
+                quit()
+                return
+            }
+
             x = 0
             y = 0
             width = parent.width

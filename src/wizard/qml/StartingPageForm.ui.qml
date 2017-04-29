@@ -86,7 +86,6 @@ Item {
             SwipeView {
                 id: swipeView
                 clip: true
-                currentIndex: tabBar.currentIndex
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 

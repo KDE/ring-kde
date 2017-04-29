@@ -35,6 +35,7 @@ ApplicationWindow {
         anchors.fill: parent
         anchors.bottomMargin: footer.height
         z: 2
+
         onVisibleChanged: {
             if (!visible) {
                 // Force the geometry while the animation is running, anchor it after
@@ -44,6 +45,11 @@ ApplicationWindow {
                 /*ANIM footer.state = "shown"*/
                 footer.state = "locked"
             }
+        }
+
+        onQuit: {
+            applicationWindow.close()
+            RingApplication.newInstance()
         }
     }
 
@@ -153,6 +159,16 @@ ApplicationWindow {
         onRegistrationCompleted: {
             stateGroup.state = "showProfile"
             footer.state = "finish"
+        }
+    }
+
+    Timer {
+        interval: 3000
+        repeat: false
+        running: wizardWelcomeOnly
+        onTriggered: {
+            applicationWindow.close()
+            RingApplication.newInstance()
         }
     }
 

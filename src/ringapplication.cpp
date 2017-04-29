@@ -82,16 +82,23 @@ RingApplication::~RingApplication()
 ///Parse command line arguments
 int RingApplication::newInstance()
 {
+   static bool wizardshown = false;
+
    // The first run wizard
-   if (ConfigurationSkeleton::enableWizard() == true) {
+   if ((!wizardshown) && (ConfigurationSkeleton::enableWizard() || ConfigurationSkeleton::showSplash())) {
       // Also add this object
       engine()->rootContext()->setContextProperty(
          "RingApplication", this
       );
 
+      engine()->rootContext()->setContextProperty(
+         "wizardWelcomeOnly", QVariant(!ConfigurationSkeleton::enableWizard())
+      );
+
       auto wiz = new WelcomeDialog();
       wiz->show();
       ConfigurationSkeleton::setEnableWizard(false);
+      wizardshown = true;
       return 0;
    }
 

@@ -32,6 +32,8 @@
 #include <QtWidgets/QComboBox>
 #include <QtGui/QIcon>
 #include <QtCore/QStandardPaths>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 //KDE
 #include <KNotification>
@@ -462,6 +464,10 @@ void MainWindow::quitButton()
 
 void MainWindow::showWizard()
 {
+   RingApplication::engine()->rootContext()->setContextProperty(
+      "wizardWelcomeOnly", QVariant(false)
+   );
+
    auto wiz = new WelcomeDialog();
    wiz->show();
 }
