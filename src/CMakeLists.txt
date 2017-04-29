@@ -238,7 +238,6 @@ SET(
    widgets/toolbuttonmodelview.cpp
    widgets/personselector.cpp
    widgets/contactmethodselector.cpp
-   widgets/splashscreen.cpp
 )
 
 # Video Widgets
