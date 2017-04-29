@@ -32,7 +32,7 @@
 #include "cmd.h"
 #include "widgets/splashscreen.h"
 
-constexpr static const char version[] = "2.3.0";
+constexpr static const char version[] = "2.4.0";
 
 static RingApplication* app;
 
