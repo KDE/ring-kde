@@ -266,8 +266,6 @@ MainWindow::MainWindow(QWidget* parent)
       m_pTrayIcon->addAction( ActionCollection::instance()->holdAction    () );
       m_pTrayIcon->addAction( ActionCollection::instance()->transferAction() );
       m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
-      m_pTrayIcon->addSeparator();
-      m_pTrayIcon->addAction( ActionCollection::instance()->quitAction    () );
    }
 
    connect(CallModel::instance().selectionModel(),&QItemSelectionModel::currentRowChanged,this,&MainWindow::selectCallTab);
