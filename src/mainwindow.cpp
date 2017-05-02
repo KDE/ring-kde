@@ -141,6 +141,12 @@ MainWindow::MainWindow(QWidget* parent)
       ,m_pVideoDW(nullptr)
 #endif
 {
+   setDockOptions(
+      QMainWindow::AnimatedDocks    |
+      QMainWindow::VerticalTabs     |
+      QMainWindow::AllowNestedDocks |
+      QMainWindow::AllowTabbedDocks
+   );
 
    //On OSX, QStandardPaths doesn't work as expected, it is better to pack the .ui in the DMG
 #ifdef Q_OS_MAC
@@ -250,13 +256,13 @@ MainWindow::MainWindow(QWidget* parent)
    m_pCentralDW->setObjectName( QStringLiteral("callDock") );
    m_pCentralDW->show();
 
+   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
+
    m_pStatusBarWidget = new QLabel  ( this                     );
    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
    m_pDock            = new Dock    ( this                     );
 
-   addDockWidget( Qt::BottomDockWidgetArea, m_pCentralDW  );
-
-   connect(m_pCentralDW ,&QDockWidget::visibilityChanged,m_pDock,&Dock::updateTabIcons);
+   connect(m_pCentralDW, &QDockWidget::visibilityChanged,m_pDock, &Dock::updateTabIcons);
 
    selectCallTab();
    setAutoSaveSettings();
@@ -583,11 +589,11 @@ void MainWindow::setAutoStart(bool value)
    Q_UNUSED(value)
 
    if (value) {
-	   const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ring-kde/cx.ring.ring-kde.desktop"));
+      const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ring-kde/cx.ring.ring-kde.desktop"));
       QFile f(path);
 
       if (f.exists()) {
-		  if (f.copy(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/cx.ring.ring-kde.desktop"))
+         if (f.copy(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/cx.ring.ring-kde.desktop"))
             ConfigurationSkeleton::setAutoStart(true);
       }
       else {
@@ -596,10 +602,15 @@ void MainWindow::setAutoStart(bool value)
 
    }
    else {
-	   QFile f(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/cx.ring.ring-kde.desktop");
+      QFile f(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/cx.ring.ring-kde.desktop");
       f.remove();
       ConfigurationSkeleton::setAutoStart(false);
    }
+}
+
+QDockWidget* MainWindow::callDock() const
+{
+   return m_pCentralDW;
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

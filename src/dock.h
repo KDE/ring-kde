@@ -23,6 +23,7 @@
 
 class QMainWindow;
 
+class MainWindow;
 class DockBase;
 class CategorizedDelegate;
 
@@ -33,7 +34,7 @@ class Dock : public QObject
 {
    Q_OBJECT
 public:
-   explicit Dock(QMainWindow* w);
+   explicit Dock(MainWindow* w);
    virtual ~Dock();
 
    DockBase*  contactDock ();

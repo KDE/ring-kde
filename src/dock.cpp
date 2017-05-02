@@ -75,7 +75,7 @@ protected:
    }
 };
 
-Dock::Dock(QMainWindow* w) : QObject(w)
+Dock::Dock(MainWindow* w) : QObject(w)
 {
    //Contact dock
    m_pContactCD       = new DockBase  ( nullptr );
@@ -199,12 +199,13 @@ Dock::Dock(QMainWindow* w) : QObject(w)
 
 
    //GUI
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pContactCD  ,Qt::Horizontal);
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  ,Qt::Horizontal);
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW ,Qt::Horizontal);
+   w->addDockWidget( Qt::LeftDockWidgetArea  , m_pContactCD  ,Qt::Vertical);
+   w->addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  ,Qt::Vertical);
+   w->addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW ,Qt::Vertical);
 
-   w->tabifyDockWidget(m_pBookmarkDW,m_pHistoryDW );
-   w->tabifyDockWidget(m_pBookmarkDW,m_pContactCD );
+   w->splitDockWidget (m_pContactCD, w->callDock(), Qt::Horizontal);
+   w->tabifyDockWidget(m_pContactCD, m_pHistoryDW );
+   w->tabifyDockWidget(m_pContactCD, m_pBookmarkDW);
 
    //Force the dock widget aspect ratio, doing this is an HACK
    m_pHistoryDW ->setMinimumSize(350,0);

@@ -102,6 +102,8 @@ public:
    bool isAutoStart() const;
    void setAutoStart(bool value);
 
+   QDockWidget* callDock() const;
+
 private Q_SLOTS:
    void quitButton                               (                               );
    void updatePresence                           ( const QString& status         );
