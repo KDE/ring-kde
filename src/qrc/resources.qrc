@@ -93,5 +93,13 @@
   <qresource prefix="gui">
     <file>../icons/transferarrow.svg</file>
     <file>../icons/confBlackWhite.svg</file>
+    <file>../icons/assets/toolbar_bg.png</file>
+  </qresource>
+  <qresource prefix="toolbar">
+    <file alias="history.svg">../icons/toolbar/history.svg</file>
+    <file alias="contact.svg">../icons/toolbar/contact.svg</file>
+    <file alias="bookmark.svg">../icons/toolbar/bookmark.svg</file>
+    <file alias="call.svg">../icons/toolbar/call.svg</file>
+    <file alias="toolbar.css">../icons/toolbar/toolbar.css</file>
   </qresource>
 </RCC>

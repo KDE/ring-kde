@@ -22,6 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QSortFilterProxyModel>
 #include <QtCore/QTimer>
+#include <QtCore/QResource>
 
 //KDE
 #include <KColorScheme>
@@ -278,27 +279,57 @@ DockBase* Dock::bookmarkDock()
 ///Qt does not support dock icons by default, this is an hack around this
 void Dock::updateTabIcons()
 {
+   // Load the CSS
+   static const QResource tss(":/toolbar/toolbar.css");
+   static QByteArray css = QByteArray((char*)tss.data(), tss.size());
+
+   // Twist Qt arm to create those "electron" like tabbar on the left
    QList<QTabBar*> tabBars = parent()->findChildren<QTabBar*>();
-   if(tabBars.count())
-   {
+   if(tabBars.count()) {
       foreach(QTabBar* bar, tabBars) {
+         // Only do the funky hack if the tab are on the left //TODO support RTL
+         const auto pt = bar->mapTo(MainWindow::app(), {0,0});
+         const bool isMainToolbar = pt.x() < 20 && pt.y() <= 64;
+
+         if (isMainToolbar)
+            bar->setIconSize(QSize(64, 64));
+         else
+            bar->setIconSize({});
+
+         bar->setStyleSheet(isMainToolbar ? css : QString());
+
          for (int i=0;i<bar->count();i++) {
-            QString text = bar->tabText(i).replace('&',QString());
+            const QString text = bar->tabText(i).replace('&',QString());
+
             if (text == i18n("Call")) {
+               if (isMainToolbar)
+                  bar->setTabIcon(i,QIcon(":/toolbar/call.svg"));
+               else
                bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("call-start")));
             }
             else if (text == i18n("Bookmark")) {
+               if (isMainToolbar)
+                  bar->setTabIcon(i,QIcon(":/toolbar/bookmark.svg"));
+               else
                bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("bookmarks")));
             }
             else if (text == i18n("Contact")) {
+               if (isMainToolbar)
+                  bar->setTabIcon(i,QIcon(":/toolbar/contact.svg"));
+               else
                bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("folder-publicshare")));
             }
             else if (text == i18n("History")) {
+               if (isMainToolbar)
+                  bar->setTabIcon(i,QIcon(":/toolbar/history.svg"));
+               else
                bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("view-history")));
             }
             else if (text == i18n("Video")) {
                bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("camera-on")));
             }
+
+            bar->setTabToolTip(i, text);
          }
       }
    }
