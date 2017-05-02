@@ -82,6 +82,8 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
   Gui
   Svg
   PrintSupport
+  QuickControls2
+  Quick
 )
 
 #FIND_PACKAGE(Qt5TextToSpeech ${QT_MIN_VERSION} QUIET)
