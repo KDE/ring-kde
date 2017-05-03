@@ -28,6 +28,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QMimeData>
+#include <QtCore/QPointer>
 #include <QtGui/QClipboard>
 #include <QtGui/QIcon>
 
@@ -46,6 +47,7 @@
 #include <media/textrecording.h>
 #include <securityevaluationmodel.h>
 #include "klib/kcfg_settings.h"
+#include "conf/account/accountpages/dlgprofiles.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
 #include <widgets/immanager.h>
@@ -222,6 +224,33 @@ QVariant KDEShortcutDelegate::createAction(Macro* macro)
 
 void KDEActionExtender::editPerson(Person* p)
 {
+   QPointer<QDialog> d = new QDialog();
+
+   auto editor = new DlgProfiles(d, i18n("Edit Contact"),
+      p->phoneNumbers().isEmpty() ? URI() : p->phoneNumbers().first()->uri());
+   editor->loadPerson(p);
+
+   // Save the person
+   QObject::connect(d, &QDialog::finished, [editor, p](int accepted) {
+      if (accepted) {
+         editor->saveToPerson(p);
+         p->save();
+      }
+   });
+
+   QObject::connect(editor->buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked,
+         d, &QDialog::accept);
+   QObject::connect(editor->buttonBox->button(QDialogButtonBox::Cancel), &QPushButton::clicked,
+         d, &QDialog::reject);
+
+   auto l = new QHBoxLayout(d);
+   l->addWidget(editor);
+
+   d->exec();
+
+   editor->deleteLater();
+   d->deleteLater();
+
    Q_UNUSED(p)
 }
 
