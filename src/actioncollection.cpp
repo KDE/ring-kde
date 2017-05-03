@@ -148,6 +148,7 @@ void ActionCollection::setupAction()
 
    INIT_ACTION(action_displayMessageBox     , QIcon::fromTheme(QStringLiteral("mail-message-new"                )), i18n("Display text message box"));
    INIT_ACTION(action_show_wizard           , QIcon::fromTheme(QStringLiteral("tools-wizard"                    )), i18n("New account wizard"      ));
+   INIT_ACTION(action_new_contact           , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("New contact"             ));
    INIT_ACTION(action_pastenumber           , QIcon::fromTheme(QStringLiteral("edit-paste"                      )), i18n("Paste"                   ));
    INIT_ACTION(action_showContactDock       , QIcon::fromTheme(QStringLiteral("edit-find-user"                  )), i18n("Display Person"          ));
    INIT_ACTION(action_showHistoryDock       , QIcon::fromTheme(QStringLiteral("view-history"                    )), i18n("Display history"         ));
@@ -259,6 +260,7 @@ void ActionCollection::setupAction()
    connect(action_show_wizard            , &QAction::triggered , MainWindow::app () , &MainWindow::showWizard                   );
    connect(action_pastenumber            , &QAction::triggered , MainWindow::view() , &View::paste                              );
    connect(action_mailBox                , &QAction::triggered , this               , &ActionCollection::mailBox                );
+   connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
    connect(action_configureNotifications , &QAction::triggered , this               , &ActionCollection::showNotificationEditor );
    connect(action_editToolBar            , &QAction::triggered , this               , &ActionCollection::editToolBar            );
@@ -272,7 +274,7 @@ void ActionCollection::setupAction()
    connect(as                     , &Audio::Settings::playbackMuted         , action_mute_playback, &QAction::setChecked                  );
 
    // Add the actions to the collection
-   for (QAction* a : QList<QAction*>{
+   for (QAction* a : {
       action_accept            , action_new_call          , action_hold              ,
       action_transfer          , action_record            , action_mailBox           ,
       action_close             , action_quit              , action_displayDialpad    ,
@@ -286,7 +288,7 @@ void ActionCollection::setupAction()
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
-      action_focus_bookmark    , action_show_wizard       ,
+      action_focus_bookmark    , action_show_wizard       , action_new_contact       ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       MainWindow::app()->actionCollection()->addAction(a->objectName(), a);
@@ -421,6 +423,33 @@ void ActionCollection::updateVolumeButton()
    MainWindow::view()->updateVolumeControls();
 }
 
+void ActionCollection::slotNewContact()
+{
+   // Find a suitable collection
+   auto cols = PersonModel::instance().enabledCollections(
+      CollectionInterface::SupportedFeatures::ADD |
+      CollectionInterface::SupportedFeatures::EDIT
+   );
+
+   if (cols.isEmpty()) {
+      qWarning() << "Failed to add a contact: no suitable backend found";
+      return;
+   }
+
+   const auto col = cols.first();
+
+   auto p = new Person();
+   p->setCollection(col); //TODO have a selection widget again
+
+   GlobalInstances::actionExtender().editPerson(p);
+
+   // The editor wont save if the name isn't set, so it can be used to check
+   // if cancel was clicked.
+   if (!p->formattedName().isEmpty()) {
+      col->editor<Person>()->addExisting(p);
+   }
+}
+
 ///Raise the main window to the foreground
 void ActionCollection::raiseClient(bool focus)
 {
@@ -461,6 +490,7 @@ GETTER(focusContact                 , action_focus_contact         )
 GETTER(focusCall                    , action_focus_call            )
 GETTER(focusBookmark                , action_focus_bookmark        )
 GETTER(showWizard                   , action_show_wizard           )
+GETTER(newContact                   , action_new_contact           )
 
 //Video actions
 #ifdef ENABLE_VIDEO

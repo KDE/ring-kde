@@ -61,6 +61,7 @@ public:
    QAction* focusCall                   ();
    QAction* focusBookmark               ();
    QAction* showWizard                  ();
+   QAction* newContact                  ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -114,6 +115,7 @@ private:
 
    //Other actions
    QAction * action_mailBox                {nullptr};
+   QAction * action_new_contact            {nullptr};
    QAction * action_close                  {nullptr};
    QAction * action_quit                   {nullptr};
    QAction * action_displayVolumeControls  {nullptr};
@@ -148,6 +150,7 @@ private Q_SLOTS:
    void slotAddPerson         ();
    void updateRecordButton    ();
    void updateVolumeButton    ();
+   void slotNewContact        ();
    void addMacro              ( const QVariant& newAction );
 
 Q_SIGNALS:
