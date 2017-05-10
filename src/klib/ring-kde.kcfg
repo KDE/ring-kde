@@ -320,5 +320,9 @@
       <label>Enable audio feedback from common actions</label>
       <default> true </default>
     </entry>
+    <entry name="displayRecentDock" type="Bool">
+      <label>Display the recently used contacts</label>
+      <default> true </default>
+    </entry>
   </group>
 </kcfg>

@@ -138,7 +138,11 @@ using Matrix2D = Matrix1D<Row, Matrix1D<Column, Value>>;
  *       std::cout << "Name: " << MyEnumNames[value] << std::endl;
  *   }
  */
-template<class EnumClass>
+template<
+   class EnumClass,
+   EnumClass from = (EnumClass) 0,
+   EnumClass to = EnumClass::COUNT__
+>
 struct EnumIterator
 {
    /**

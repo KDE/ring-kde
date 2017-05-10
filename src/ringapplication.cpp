@@ -44,6 +44,8 @@
 #include <categorizedbookmarkmodel.h>
 #include <useractionmodel.h>
 #include <contactmethod.h>
+#include <recentmodel.h>
+#include <peerstimelinemodel.h>
 #include <video/previewmanager.h>
 
 //Ring
@@ -159,6 +161,8 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_SINGLETON( CategorizedContactModel  );
       QML_SINGLETON( CategorizedBookmarkModel );
       QML_SINGLETON( NameDirectory            );
+      QML_SINGLETON( RecentModel              );
+      QML_SINGLETON( PeersTimelineModel       );
 
       RingApplication::engine()->rootContext()->
          setContextProperty("PreviewManager", &Video::PreviewManager::instance());

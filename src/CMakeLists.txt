@@ -157,6 +157,9 @@ ADD_SUBDIRECTORY( wizard )
 # Build the QML based interactive video canvas
 ADD_SUBDIRECTORY( video )
 
+# Build the views and widgets related to the social timeline feature
+ADD_SUBDIRECTORY( timeline )
+
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
@@ -360,6 +363,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   libkring
   libwizard
   libvideo
+  libtimeline
   tip
   accountdialog
 

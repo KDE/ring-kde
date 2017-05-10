@@ -1,6 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2015 by Savoir-Faire Linux                         *
- *   Copyright (C) 2015 by Emmanuel Lepage Vallee                          *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,57 +15,29 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef DOCK_H
-#define DOCK_H
+#pragma once
 
-#include <QtCore/QObject>
+#include <QtWidgets/QDockWidget>
 
-class QMainWindow;
-
-class MainWindow;
-class DockBase;
-class CategorizedDelegate;
-class RecentDock;
-class ViewContactDock;
+class ViewContactDockPrivate;
 class ContactMethod;
 
-/**
- * This single instance class manage the Docks
- */
-class Dock : public QObject
+class ViewContactDock : public QDockWidget
 {
-   Q_OBJECT
+    Q_OBJECT
 public:
-   explicit Dock(MainWindow* w);
-   virtual ~Dock();
+    explicit ViewContactDock(QWidget* parent = nullptr);
+    virtual ~ViewContactDock();
 
-   DockBase*   contactDock ();
-   DockBase*   historyDock ();
-   DockBase*   bookmarkDock();
-   RecentDock* recentDock  ();
-
-private:
-   DockBase*   m_pContactCD  {nullptr};
-   DockBase*   m_pHistoryDW  {nullptr};
-   DockBase*   m_pBookmarkDW {nullptr};
-   RecentDock* m_pRecentDock {nullptr};
-
-   ViewContactDock* m_pViewContact {nullptr};
-
-   CategorizedDelegate* m_pCategoryDelegate {nullptr};
-   CategorizedDelegate* m_pHCategoryDelegate {nullptr};
+protected:
+    virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 public Q_SLOTS:
-   void updateTabIcons();
-   void focusHistory ();
-   void focusContact ();
-   void focusCall    ();
-   void focusBookmark();
-   void focusRecent  ();
+    void setContactMethod(ContactMethod* cm);
 
-   void viewContact(ContactMethod* cm);
+private:
+    ViewContactDockPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(ViewContactDock)
 };
 
-#endif
-
-// kate: space-indent on; indent-width 3; replace-tabs on;
+Q_DECLARE_METATYPE(ViewContactDock*)

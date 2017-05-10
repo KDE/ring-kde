@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 ADD_DEFINITIONS("-std=c++11")
 
-PROJECT(libvideo)
+PROJECT(libtimeline)
 
 IF(POLICY CMP0063)
    CMAKE_POLICY(SET CMP0063 NEW)
@@ -40,12 +40,10 @@ FIND_PACKAGE(Qt5 CONFIG REQUIRED
     Gui
     Quick
     QuickWidgets
-    QuickControls2
 )
 
 FIND_PACKAGE(KF5 REQUIRED COMPONENTS
   I18n
-  Declarative
   Init
 )
 
@@ -56,18 +54,18 @@ ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
 SET(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
-SET( libvideo_LIB_SRCS
-   imageprovider.cpp
-   videowidget.cpp
+SET( libtimeline_LIB_SRCS
+   recentdock.cpp
+   viewcontactdock.cpp
 )
 
-QT5_ADD_RESOURCES(libvideo_LIB_SRCS
-   video.qrc
+QT5_ADD_RESOURCES(libtimeline_LIB_SRCS
+   recentdock.qrc
 )
 
-ADD_LIBRARY( libvideo STATIC ${libvideo_LIB_SRCS} )
+ADD_LIBRARY( libtimeline  STATIC ${libtimeline_LIB_SRCS} )
 
-target_link_libraries( libvideo
+target_link_libraries( libtimeline
    ringclient
 
    Qt5::Widgets
@@ -78,9 +76,11 @@ target_link_libraries( libvideo
    Qt5::QuickControls2
 
    KF5::I18n
-   KF5::Declarative
+   KF5::WidgetsAddons
+   KF5::ConfigCore
+   KF5::ConfigGui
 )
 
-SET( libvideo_LIB_HDRS
-   videowidget.h
+SET( libtimeline_LIB_HDRS
+   recentdock.h
 )

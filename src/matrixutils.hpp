@@ -16,46 +16,67 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-template<class EnumClass >
-EnumIterator<EnumClass>::EnumIterator() {
+template<
+   class EnumClass,
+   EnumClass from,
+   EnumClass to
+>
+EnumIterator<EnumClass, from, to>::EnumIterator() {
    static_assert(std::is_enum<EnumClass>(),"The first template parameter has to be an enum class\n");
 }
 
-template<class EnumClass >
-EnumClass EnumIterator<EnumClass>::EnumClassIter::operator* () const
+template<
+   class EnumClass,
+   EnumClass from,
+   EnumClass to
+>
+EnumClass EnumIterator<EnumClass, from, to>::EnumClassIter::operator* () const
 {
-   Q_ASSERT(pos_ < enum_class_size<EnumClass>());
+   const int size = enum_class_size<EnumClass, from, to>();
+   Q_ASSERT(pos_ < size);
    return static_cast<EnumClass>(pos_);
 }
 
-template<class EnumClass >
-const typename EnumIterator<EnumClass>::EnumClassIter& EnumIterator<EnumClass>::EnumClassIter::operator++ ()
+template<
+   class EnumClass,
+   EnumClass from,
+   EnumClass to
+>
+const typename EnumIterator<EnumClass, from, to>::EnumClassIter& EnumIterator<EnumClass, from, to>::EnumClassIter::operator++ ()
 {
    ++pos_;
    return *this;
 }
 
-template<class EnumClass >
-bool EnumIterator<EnumClass>::EnumClassIter::operator!= (const EnumClassIter& other) const
+template<
+   class EnumClass,
+   EnumClass from,
+   EnumClass to
+>
+bool EnumIterator<EnumClass, from, to>::EnumClassIter::operator!= (const EnumClassIter& other) const
 {
    return pos_ != other.pos_;
 }
 
-template< class EnumClass >
-typename EnumIterator<EnumClass>::EnumClassIter EnumIterator<EnumClass>::begin()
+template<
+   class EnumClass,
+   EnumClass from,
+   EnumClass to
+>
+typename EnumIterator<EnumClass, from, to>::EnumClassIter EnumIterator<EnumClass, from, to>::begin()
 {
-   return EnumIterator<EnumClass>::EnumClassIter( this, 0 );
+   return EnumIterator<EnumClass, from, to>::EnumClassIter( this, static_cast<int>(from) );
 }
 
-template<class EnumClass >
-typename EnumIterator<EnumClass>::EnumClassIter EnumIterator<EnumClass>::end()
+template<
+   class EnumClass,
+   EnumClass from,
+   EnumClass to
+>
+typename EnumIterator<EnumClass, from, to>::EnumClassIter EnumIterator<EnumClass, from, to>::end()
 {
-   return EnumIterator<EnumClass>::EnumClassIter( this, enum_class_size<EnumClass>() );
+   return EnumIterator<EnumClass, from, to>::EnumClassIter( this, enum_class_size<EnumClass, from, to>() );
 }
-
-
-
-
 
 template<class Row, typename Value, typename Accessor>
 Matrix1D<Row,Value,Accessor>::Matrix1D()

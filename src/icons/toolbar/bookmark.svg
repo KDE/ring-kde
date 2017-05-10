@@ -26,16 +26,30 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.7967708"
-     inkscape:cx="113.38583"
-     inkscape:cy="113.38583"
+     inkscape:cx="92.698169"
+     inkscape:cy="121.48435"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1918"
-     inkscape:window-height="1032"
-     inkscape:window-x="0"
+     showgrid="true"
+     inkscape:window-width="1879"
+     inkscape:window-height="1021"
+     inkscape:window-x="37"
      inkscape:window-y="16"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid6721" />
+    <sodipodi:guide
+       position="40,190"
+       orientation="1,0"
+       id="guide6731" />
+    <sodipodi:guide
+       position="190.95174,80.594804"
+       orientation="1,0"
+       id="guide6733" />
+  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -55,8 +69,8 @@
      transform="translate(0,-825.59055)">
     <path
        inkscape:connector-curvature="0"
-       style="fill:#f2f2f2;fill-opacity:1;stroke:none;opacity:0.85"
-       d="m 204.02138,940.56981 -57.50468,-27.37275 -9.06587,-60.58512 -44.964314,43.53371 -63.300412,-10.68634 29.737774,54.29296 -30.088136,53.97183 63.358791,-9.98562 44.701537,44.08842 9.41623,-60.48289 z m -29.19761,-0.1168 -38.46785,17.82515 -6.30668,40.32188 -29.79615,-29.34358 -42.234346,6.64245 20.04415,-35.95685 -19.810547,-36.20503 42.205123,7.12422 30.00053,-29.02248 6.01471,40.38033 z"
+       style="opacity:0.85;fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="m 190.58891,940.51608 -48.68626,-23.17511 -7.67561,-51.29431 -38.068982,36.85776 -53.593215,-9.04758 25.177449,45.96707 -25.474083,45.69518 53.642642,-8.45431 37.846499,37.32742 7.97224,-51.20778 z m -24.72012,-0.0989 -32.56876,15.09164 -5.33954,34.13847 -25.22687,-24.84371 -35.757658,5.62383 16.970355,-30.44283 -16.772575,-30.65294 35.732918,6.03171 25.39991,-24.57184 5.09234,34.18795 z"
        class="ColorScheme-Text"
        id="path6" />
   </g>
