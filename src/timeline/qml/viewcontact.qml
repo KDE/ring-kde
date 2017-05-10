@@ -39,6 +39,8 @@ Item {
 
         ContactInfo {
             id: contactInfo
+            Layout.fillHeight: true
+            Layout.fillWidth: true
         }
     }
 }

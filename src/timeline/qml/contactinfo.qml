@@ -3,7 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
-ColumnLayout {
+Item {
     property var currentContactMethod: null
 
     function getLastContacted() {
@@ -51,82 +51,105 @@ ColumnLayout {
             currentContactMethod.person.organization : ""
     }
 
-    Rectangle {
-        color: "black"
-        height: 1
-        Layout.fillWidth: true
-    }
+    ColumnLayout {
+        anchors.fill: parent
 
-    Label {
-        id: lastContactedTime
-    }
-
-    Label {
-        id: totalCall
-    }
-
-    Label {
-        id: totalText
-    }
-
-    Label {
-        id: totalRecording
-    }
-
-    Label {
-        id: totalScreenshot
-    }
-
-    Rectangle {
-        color: "black"
-        height: 1
-        Layout.fillWidth: true
-    }
-
-    GridLayout {
-        columns: 2
-        rowSpacing: 10
-        columnSpacing: 10
-        Layout.fillWidth: true
-
-        Label {
-            id: label
-            text: qsTr("Formatted name:")
-        }
-        TextField {
-            id: formattedName
+        Rectangle {
+            color: "black"
+            height: 1
+            Layout.fillWidth: true
         }
 
         Label {
-            text: qsTr("Primary name:")
-        }
-        TextField {
-            id: firstName
+            id: lastContactedTime
         }
 
         Label {
-            text: qsTr("Last name:")
-        }
-        TextField {
-            id: lastName
+            id: totalCall
         }
 
         Label {
-            text: qsTr("Email:")
-        }
-        TextField {
-            id: email
+            id: totalText
         }
 
         Label {
-            text: qsTr("Organization:")
+            id: totalRecording
         }
-        TextField {
-            id: organization
+
+        Label {
+            id: totalScreenshot
+        }
+
+        Rectangle {
+            color: "black"
+            height: 1
+            Layout.fillWidth: true
+        }
+
+        GridLayout {
+            columns: 2
+            rowSpacing: 10
+            columnSpacing: 10
+            Layout.fillWidth: true
+
+            Label {
+                id: label
+                text: qsTr("Formatted name:")
+            }
+            TextField {
+                id: formattedName
+            }
+
+            Label {
+                text: qsTr("Primary name:")
+            }
+            TextField {
+                id: firstName
+            }
+
+            Label {
+                text: qsTr("Last name:")
+            }
+            TextField {
+                id: lastName
+            }
+
+            Label {
+                text: qsTr("Email:")
+            }
+            TextField {
+                id: email
+            }
+
+            Label {
+                text: qsTr("Organization:")
+            }
+            TextField {
+                id: organization
+            }
+        }
+
+        Item {
+            Layout.fillHeight: true
         }
     }
 
-    Item {
-        Layout.fillHeight: true
+    Button {
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: 5
+        text: qsTr("Save")
+        onClicked: {
+            if ((!currentContactMethod) || (!currentContactMethod.person))
+                return
+
+            currentContactMethod.person.formattedName  = formattedName.text
+            currentContactMethod.person.firstName      = firstName.text
+            currentContactMethod.person.secondName     = lastName.text
+            currentContactMethod.person.preferredEmail = email.text
+            currentContactMethod.person.organization   = organization.text
+
+            currentContactMethod.save()
+        }
     }
 }
