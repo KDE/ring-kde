@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file alias="peerstimeline.qml">qml/peerstimeline.qml</file>
+        <file alias="ContactHeader.qml">qml/contactheader.qml</file>
+        <file alias="ContactInfo.qml">qml/contactinfo.qml</file>
         <file alias="viewcontact.qml">qml/viewcontact.qml</file>
         <file>icons/bookmarked.svg</file>
         <file>icons/not_bookmarked.svg</file>
