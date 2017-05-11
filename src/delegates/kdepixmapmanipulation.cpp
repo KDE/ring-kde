@@ -42,6 +42,7 @@
 #include <useractionmodel.h>
 #include <QStandardPaths>
 #include "icons/icons.h"
+#include <qrc_assets.cpp>
 
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {{
@@ -295,23 +296,23 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
 
    switch(state.action) {
       case UserActionModel::Action::ACCEPT          :
-         return QIcon(":/callstate_light/icons/light/accept.svg"   );
+         return QIcon(":/sharedassets/phone_light/accept.svg"   );
       case UserActionModel::Action::HOLD            :
-         return QIcon(":/callstate_light/icons/light/hold.svg"     );
+         return QIcon(":/sharedassets/phone_light/hold.svg"     );
       case UserActionModel::Action::MUTE_AUDIO      :
-         return QIcon(":/callstate_light/icons/light/mic.svg"  );
+         return QIcon(":/sharedassets/phone_light/mic_off.svg"  );
       case UserActionModel::Action::MUTE_VIDEO      :
-         return QIcon(":/callstate_light/icons/light/mic.svg"  );
+         return QIcon(":/sharedassets/phone_light/mic_off.svg"  );
       case UserActionModel::Action::SERVER_TRANSFER :
-         return QIcon(":/callstate_light/icons/light/transfert.svg" );
+         return QIcon(":/sharedassets/phone_light/transfert.svg" );
       case UserActionModel::Action::RECORD          :
-         return QIcon(":/callstate_light/icons/light/rec_call.svg"   );
+         return QIcon(":/sharedassets/phone_light/record_call.svg"   );
       case UserActionModel::Action::HANGUP          :
-         return QIcon(":/callstate_light/icons/light/refuse.svg"   );
+         return QIcon(":/sharedassets/phone_light/refuse.svg"   );
       case UserActionModel::Action::JOIN            :
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
-         return QIcon(":/callstate_light/icons/light/accept.svg"   );
+         return QIcon(":/sharedassets/phone_light/accept.svg"   );
       case UserActionModel::Action::ADD_CONTACT:
       case UserActionModel::Action::ADD_TO_CONTACT:
       case UserActionModel::Action::ADD_CONTACT_METHOD:
@@ -354,7 +355,7 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
       case Interfaces::PixmapManipulatorI::CollectionIconHint::CERTIFICATE:
          return QIcon::fromTheme(QStringLiteral("certificate-server"));
       case Interfaces::PixmapManipulatorI::CollectionIconHint::RECORDING:
-         return QIcon(":/images/icons/mailbox.svg");
+         return QIcon(":/sharedassets/phone_dark/mailbox.svg");
       case Interfaces::PixmapManipulatorI::CollectionIconHint::RINGTONE:
       case Interfaces::PixmapManipulatorI::CollectionIconHint::NONE:
       case Interfaces::PixmapManipulatorI::CollectionIconHint::PROFILE:
@@ -383,14 +384,14 @@ QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel:
    switch (level) {
       case SecurityEvaluationModel::SecurityLevel::COUNT__:
       case SecurityEvaluationModel::SecurityLevel::NONE      :
-         return QIcon(":/images/icons/lock_off.svg");
+         return QIcon(":/sharedassets/security/lock_off.svg");
       case SecurityEvaluationModel::SecurityLevel::WEAK      :
       case SecurityEvaluationModel::SecurityLevel::MEDIUM    :
-         return QIcon(":/images/icons/lock_unconfirmed.svg");
+         return QIcon(":/sharedassets/security/lock_unconfirmed.svg");
       case SecurityEvaluationModel::SecurityLevel::ACCEPTABLE:
       case SecurityEvaluationModel::SecurityLevel::STRONG    :
       case SecurityEvaluationModel::SecurityLevel::COMPLETE  :
-         return QIcon(":/images/icons/lock_confirmed.svg");
+         return QIcon(":/sharedassets/security/lock_confirmed.svg");
    }
 
    return QVariant();

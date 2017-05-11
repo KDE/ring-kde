@@ -148,6 +148,9 @@ INCLUDE_DIRECTORIES(SYSTEM
    ${CMAKE_CURRENT_SOURCE_DIR}/../lib/
 )
 
+# Pack the icons shared by various components
+ADD_SUBDIRECTORY( sharedassets )
+
 #Build KDE specific files
 ADD_SUBDIRECTORY( klib )
 

@@ -83,12 +83,12 @@ static QString getName(const UserActionModel::Action a)
 ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
 {
    // It is important to init the actions correctly for the menu and KDE global shortcuts
-   INIT_ACTION(action_accept        , QIcon(QStringLiteral(":/images/icons/accept.svg"   )), i18n( "Accept"   ));
-   INIT_ACTION(action_hold          , QIcon(QStringLiteral(":/images/icons/hold.svg"     )), i18n( "Hold"     ));
-   INIT_ACTION(action_transfer      , QIcon(QStringLiteral(":/images/icons/transfert.svg")), i18n( "Transfer" ));
-   INIT_ACTION(action_record        , QIcon(QStringLiteral(":/images/icons/rec_call.svg" )), i18n( "Record"   ));
-   INIT_ACTION(action_hangup        , QIcon(QStringLiteral(":/images/icons/hang_up.svg"  )), i18n( "Hang up"  ));
-   INIT_ACTION(action_mailBox       , QIcon(QStringLiteral(":/images/icons/mailbox.svg"  )), i18n( "Mailbox"  ));
+   INIT_ACTION(action_accept        , QIcon(QStringLiteral(":/sharedassets/phone_light/accept.svg"   )), i18n( "Accept"   ));
+   INIT_ACTION(action_hold          , QIcon(QStringLiteral(":/sharedassets/phone_light/hold.svg"     )), i18n( "Hold"     ));
+   INIT_ACTION(action_transfer      , QIcon(QStringLiteral(":/sharedassets/phone_light/transfert.svg")), i18n( "Transfer" ));
+   INIT_ACTION(action_record        , QIcon(QStringLiteral(":/sharedassets/phone_light/record_call.svg" )), i18n( "Record"   ));
+   INIT_ACTION(action_hangup        , QIcon(QStringLiteral(":/sharedassets/phone_light/hang_up.svg"  )), i18n( "Hang up"  ));
+   INIT_ACTION(action_mailBox       , QIcon(QStringLiteral(":/sharedassets/phone_light/mailbox.svg"  )), i18n( "Mailbox"  ));
 
    INIT_ACTION(action_mute_video         , getIcon(UserActionModel::Action::MUTE_VIDEO         ) , getName(UserActionModel::Action::MUTE_VIDEO         ));
    INIT_ACTION(action_join               , getIcon(UserActionModel::Action::JOIN               ) , getName(UserActionModel::Action::JOIN               ));

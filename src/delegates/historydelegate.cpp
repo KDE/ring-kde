@@ -139,7 +139,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          call = qobject_cast<Call*>(obj);
 
       QPainter painter2(&pxm);
-      QPixmap status(QStringLiteral(":/images/icons/mailbox.svg"));
+      QPixmap status(QStringLiteral(":/sharedassets/phone_dark/mailbox.svg"));
       status=status.scaled(QSize(24,24));
       painter2.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
       if (call && m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
@@ -170,7 +170,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (currentLifeCycleState == Call::LifeCycleState::PROGRESS) {
       //Record
       if (index.data(static_cast<int>(Call::Role::IsAVRecording)).toBool()) {
-         const static QPixmap record(QStringLiteral(":/images/icons/rec_call.svg"));
+         const static QPixmap record(QStringLiteral(":/sharedassets/phone_dark/record_call.svg"));
          time_t curTime;
          ::time(&curTime);
          if (curTime%3)

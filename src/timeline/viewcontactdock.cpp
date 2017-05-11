@@ -34,6 +34,7 @@
 class ViewContactDockPrivate {
 public:
     QQuickWidget* m_pQuickWidget;
+    QSharedPointer<QAbstractItemModel> m_CallsModel;
 };
 
 ViewContactDock::ViewContactDock(QWidget* parent) :
@@ -64,6 +65,8 @@ bool ViewContactDock::eventFilter(QObject *obj, QEvent *event)
 
 void ViewContactDock::setContactMethod(ContactMethod* cm)
 {
+    // Keep a strong reference because QML wont
+    d_ptr->m_CallsModel = cm->callsModel();
     d_ptr->m_pQuickWidget->rootObject()->setProperty(
         "currentContactMethod", QVariant::fromValue(cm));
 }

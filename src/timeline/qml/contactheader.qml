@@ -8,7 +8,17 @@ Rectangle {
 
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName
+        bookmarkSwitch.source = currentContactMethod.bookmarked ?
+            "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
     }
+
+    /*Connections {
+        target: currentContactMethod
+        onBookmarked: {
+            bookmarkSwitch.source = currentContactMethod.bookmarked ?
+                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+        }
+    }*/
 
     color: "gray"
     height: 100
@@ -29,12 +39,34 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            Text {
-                id: primaryName
-                font.bold: true
-                font.pointSize: 16
-                text: "My name"
-                Layout.fillWidth: true
+            RowLayout {
+                Text {
+                    id: primaryName
+                    font.bold: true
+                    font.pointSize: 16
+                    text: "My name"
+                }
+                Image {
+                    id: bookmarkSwitch
+                    anchors.rightMargin: 1
+                    anchors.topMargin: 3
+                    height: 16
+                    width: 16
+                    source: currentContactMethod.bookmarked ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+                    z: 100
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            mouse.accepted = true
+                            currentContactMethod.bookmarked = !currentContactMethod.bookmarked
+                            bookmarkSwitch.source = currentContactMethod.bookmarked ?
+                                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+                        }
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                }
             }
 
             RowLayout {

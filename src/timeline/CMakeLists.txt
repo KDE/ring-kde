@@ -67,6 +67,7 @@ ADD_LIBRARY( libtimeline  STATIC ${libtimeline_LIB_SRCS} )
 
 target_link_libraries( libtimeline
    ringclient
+   sharedassets
 
    Qt5::Widgets
    Qt5::Core

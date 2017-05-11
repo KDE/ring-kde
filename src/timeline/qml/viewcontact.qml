@@ -10,6 +10,7 @@ Item {
     onCurrentContactMethodChanged: {
         contactHeader.currentContactMethod = currentContactMethod
         contactInfo.currentContactMethod = currentContactMethod
+        callHistory.currentContactMethod = currentContactMethod
     }
 
     RowLayout {
@@ -37,10 +38,55 @@ Item {
             id: contactHeader
         }
 
-        ContactInfo {
-            id: contactInfo
+        TabBar {
+            Layout.fillWidth: true
+            id: tabBar
+            currentIndex: swipeView.currentIndex
+            TabButton {
+                text: qsTr("Information")
+            }
+            TabButton {
+                text: qsTr("Timeline")
+            }
+            TabButton {
+                text: qsTr("Calls")
+            }
+            TabButton {
+                text: qsTr("Recordings")
+            }
+            TabButton {
+                text: qsTr("Search")
+            }
+        }
+
+        SwipeView {
+            id: swipeView
             Layout.fillHeight: true
             Layout.fillWidth: true
+
+            currentIndex: tabBar.currentIndex
+            Page {
+                ContactInfo {
+                    anchors.fill: parent
+                    id: contactInfo
+                }
+            }
+
+            Page {
+            }
+
+            Page {
+                CallHistory {
+                    anchors.fill: parent
+                    id: callHistory
+                }
+            }
+
+            Page {
+            }
+
+            Page {
+            }
         }
     }
 }

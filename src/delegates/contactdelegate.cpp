@@ -166,7 +166,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       const int fmh = fontH;
       const static QPixmap* mail = nullptr;
       if (!mail)
-         mail = new QPixmap(QStringLiteral(":/images/icons/mailbox.svg"));
+         mail = new QPixmap(QStringLiteral(":/sharedassets/phone_dark/mailbox.svg"));
       painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fmh-12),*mail);
       painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->preferredEmail());
       currentHeight +=fmh;
