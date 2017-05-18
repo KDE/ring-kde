@@ -7,10 +7,13 @@ Item {
 
     property var currentContactMethod: null
 
+    clip: true
+
     onCurrentContactMethodChanged: {
         contactHeader.currentContactMethod = currentContactMethod
-        contactInfo.currentContactMethod = currentContactMethod
-        callHistory.currentContactMethod = currentContactMethod
+        contactInfo.currentContactMethod   = currentContactMethod
+        callHistory.currentContactMethod   = currentContactMethod
+        timelinePage.currentContactMethod  = currentContactMethod
     }
 
     RowLayout {
@@ -73,6 +76,10 @@ Item {
             }
 
             Page {
+                TimelinePage {
+                    anchors.fill: parent
+                    id: timelinePage
+                }
             }
 
             Page {
@@ -83,6 +90,10 @@ Item {
             }
 
             Page {
+                RecordingHistory {
+                    anchors.fill: parent
+                    id: recordings
+                }
             }
 
             Page {

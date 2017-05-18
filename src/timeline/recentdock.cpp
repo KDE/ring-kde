@@ -50,7 +50,6 @@ public:
     }
 
     virtual void paint(QPainter *painter) override {
-        qDebug() << width() << height() << boundingRect().size().toSize()<< m_icon.isNull();
         if (!m_icon.isNull()) {
             const QPixmap pxm = m_icon.pixmap(boundingRect().size().toSize());
 

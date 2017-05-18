@@ -45,8 +45,12 @@
 #include <useractionmodel.h>
 #include <contactmethod.h>
 #include <recentmodel.h>
+#include <media/recordingmodel.h>
 #include <peerstimelinemodel.h>
 #include <video/previewmanager.h>
+#include <media/recording.h>
+#include <media/textrecording.h>
+#include <media/media.h>
 
 //Ring
 #include "klib/kcfg_settings.h"
@@ -57,6 +61,9 @@
 #include "implementation.h"
 #include "wizard/welcome.h"
 #include "video/videowidget.h"
+
+//QML
+#include "qmlwidgets/plugin.h"
 
 //Other
 #include <unistd.h>
@@ -137,11 +144,15 @@ void RingApplication::setIconify(bool iconify)
 
 constexpr static const char AppName[]= "Ring";
 
+
 /// Create a QML engine for various canvas widgets
 QQmlApplicationEngine* RingApplication::engine()
 {
    static QQmlApplicationEngine* e = nullptr;
    if (!e) {
+      auto p = new RingQmlWidgets;
+      p->registerTypes("RingQmlWidgets");
+
       QML_TYPE( Account         )
       QML_TYPE( const Account   )
       QML_TYPE( Call            )
@@ -164,8 +175,20 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_SINGLETON( RecentModel              );
       QML_SINGLETON( PeersTimelineModel       );
 
-      RingApplication::engine()->rootContext()->
-         setContextProperty("PreviewManager", &Video::PreviewManager::instance());
+      { using namespace Media;
+         QML_SINGLETON( RecordingModel        );
+         QML_TYPE     ( Recording             );
+         QML_TYPE     ( TextRecording         );
+
+      }
+
+      { using namespace Video;
+         QML_SINGLETON( PreviewManager        );
+      }
+
+      qmlRegisterUncreatableType<::Media::Media>(
+         AppName, 1,0, "Media", "cannot be instanciated"
+      );
 
       VideoWidget3::initProvider();
    }

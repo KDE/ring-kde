@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 
 Rectangle {
-    property var currentContactMethod: null
+    property QtObject currentContactMethod: null
 
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName

@@ -149,7 +149,7 @@ Item {
             currentContactMethod.person.preferredEmail = email.text
             currentContactMethod.person.organization   = organization.text
 
-            currentContactMethod.save()
+            currentContactMethod.person.save()
         }
     }
 }

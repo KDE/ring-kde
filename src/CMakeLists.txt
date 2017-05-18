@@ -148,6 +148,9 @@ INCLUDE_DIRECTORIES(SYSTEM
    ${CMAKE_CURRENT_SOURCE_DIR}/../lib/
 )
 
+# Shared C++ QML components
+ADD_SUBDIRECTORY( qmlwidgets )
+
 # Pack the icons shared by various components
 ADD_SUBDIRECTORY( sharedassets )
 
@@ -369,6 +372,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   libtimeline
   tip
   accountdialog
+  libqmlwidgets
 
   # Qt5
   Qt5::Widgets
