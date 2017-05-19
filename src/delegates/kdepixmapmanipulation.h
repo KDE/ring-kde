@@ -68,9 +68,6 @@ private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
 
 
-   //Helper
-   QPixmap drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent);
-
 private Q_SLOTS:
    void clearCache();
 };

@@ -127,11 +127,11 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    //END is selected
 
-
    painter->setPen(QApplication::palette().color(QPalette::Active,(option.state & QStyle::State_Selected)?QPalette::HighlightedText:QPalette::Text));
 
    //BEGIN draw photo
-   QPixmap pxm = GlobalInstances::pixmapManipulator().contactPhoto(ct,QSize(PX_HEIGHT,PX_HEIGHT)).value<QPixmap>();
+   QPixmap pxm = qvariant_cast<QIcon>(index.data(Qt::DecorationRole)).pixmap(QSize(PX_HEIGHT,PX_HEIGHT));
+
    painter->drawPixmap(option.rect.x()+4,option.rect.y()+(fullRect.height()-PX_HEIGHT)/2,pxm);
    //END draw photo
 

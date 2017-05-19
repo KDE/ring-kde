@@ -15,19 +15,27 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <QtGui/QIconEngine>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "pixmapwrapper.h"
+class ContactMethod;
+class CMIconEnginePrivate;
 
-void RingQmlWidgets::registerTypes(const char *uri)
+/**
+ * Generate pixmap with photo and presence data.
+ */
+class CMIconEngine : public QIconEngine
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+public:
+    explicit CMIconEngine(ContactMethod* cm);
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-}
+    virtual void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
+    virtual QIconEngine* clone() const override;
+    virtual QSize actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
+
+    static void staticPaint(QPainter* painter, const QRect& rect, bool isPresent, bool isTracked);
+
+private:
+    CMIconEnginePrivate* d_ptr;
+};

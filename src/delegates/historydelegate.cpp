@@ -128,8 +128,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 
-   const ContactMethod* n = qvariant_cast<ContactMethod*>(index.data(static_cast<int>(Call::Role::ContactMethod)));
-   QPixmap pxm = n?GlobalInstances::pixmapManipulator().callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
+   QPixmap pxm = qvariant_cast<QIcon>(index.data(Qt::DecorationRole)).pixmap(QSize(iconHeight+4,iconHeight+4));
 
    //Handle history with recording
    if (index.data(static_cast<int>(Call::Role::HasAVRecording)).toBool() && currentState == Call::State::OVER) {

@@ -15,19 +15,26 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <QQuickPaintedItem>
+#include <QtGui/QPixmap>
+#include <QtGui/QIcon>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "pixmapwrapper.h"
-
-void RingQmlWidgets::registerTypes(const char *uri)
+class PixmapWrapper : public QQuickPaintedItem
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+   Q_OBJECT
+   Q_PROPERTY(QVariant pixmap READ pixmap WRITE setPixmap)
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-}
+public:
+    explicit PixmapWrapper(QQuickItem* parent = nullptr);
+
+    QPixmap pixmap() const;
+    void setPixmap(const QVariant& var);
+
+    virtual void paint(QPainter *painter) override;
+
+private:
+    QPixmap m_pixmap;
+    QIcon   m_icon  ;
+};

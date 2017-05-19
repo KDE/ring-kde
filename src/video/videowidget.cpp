@@ -34,42 +34,6 @@
 
 #include "imageprovider.h"
 
-class ModelIconBinder : public QQuickPaintedItem
-{
-   Q_OBJECT
-   Q_PROPERTY(QVariant pixmap READ pixmap WRITE setPixmap)
-
-public:
-    explicit ModelIconBinder(QQuickItem* parent = nullptr) : QQuickPaintedItem(parent) {}
-
-    QPixmap pixmap() const {
-       return m_pixmap;
-    }
-    void setPixmap(const QVariant& var) {
-      m_pixmap = qvariant_cast<QPixmap>(var);
-      m_icon   = qvariant_cast<QIcon  >(var);
-    }
-
-    virtual void paint(QPainter *painter) override {
-      if (!m_pixmap.isNull()) {
-         painter->drawPixmap(
-            boundingRect(),
-            m_pixmap,
-            QRect( 0,0,m_pixmap.width(),m_pixmap.height())
-         );
-      }
-      else if (!m_icon.isNull()) {
-         const QPixmap pxm = m_icon.pixmap(boundingRect().size().toSize());
-
-         painter->drawPixmap(boundingRect().toRect(),pxm);
-      }
-    }
-
-private:
-    QPixmap m_pixmap;
-    QIcon   m_icon  ;
-};
-
 class VideoWidget3Private {
 public:
     VideoWidget3::Mode m_Mode {VideoWidget3::Mode::CONVERSATION};
@@ -91,7 +55,6 @@ void VideoWidget3::initProvider()
         RingApplication::engine()->addImageProvider(
             "VideoFrame", VideoWidget3Private::m_spProvider
         );
-        qmlRegisterType<ModelIconBinder>("Ring", 1,0, "ModelIconBinder");
     }
 }
 

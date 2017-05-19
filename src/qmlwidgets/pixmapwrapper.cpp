@@ -15,19 +15,36 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
-
-#include <QtCore/QDebug>
-
-#include "bubble.h"
-#include "messagebuilder.h"
 #include "pixmapwrapper.h"
 
-void RingQmlWidgets::registerTypes(const char *uri)
-{
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+#include <QtGui/QPainter>
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
+PixmapWrapper::PixmapWrapper(QQuickItem* parent) : QQuickPaintedItem(parent)
+{}
+
+QPixmap PixmapWrapper::pixmap() const {
+    return m_pixmap;
+}
+
+void PixmapWrapper::setPixmap(const QVariant& var)
+{
+    m_pixmap = qvariant_cast<QPixmap>(var);
+    m_icon   = qvariant_cast<QIcon  >(var);
+    update();
+}
+
+void PixmapWrapper::paint(QPainter *painter)
+{
+    if (!m_icon.isNull()) {
+        const QPixmap pxm = m_icon.pixmap(boundingRect().size().toSize());
+
+        painter->drawPixmap(boundingRect().toRect(),pxm);
+    }
+    else if (!m_pixmap.isNull()) {
+        painter->drawPixmap(
+            boundingRect(),
+            m_pixmap,
+            QRect( 0,0, width(), height())
+        );
+    }
 }

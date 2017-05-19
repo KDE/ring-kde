@@ -42,6 +42,8 @@
 #include <useractionmodel.h>
 #include <QStandardPaths>
 #include "icons/icons.h"
+#include "qmlwidgets/cmiconengine.h"
+#include "qmlwidgets/personiconengine.h"
 #include <qrc_assets.cpp>
 
 
@@ -83,84 +85,36 @@ void KDEPixmapManipulation::clearCache()
    }
 }
 
-QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence) {
-   const QString hash = QStringLiteral("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
-   QVariant preRendered = c->property(hash.toLatin1());
-   if (preRendered.isValid())
-      return preRendered;
-   else
-      connect(c,&Person::rebased,this,&KDEPixmapManipulation::clearCache);
-   const int radius = (size.height() > 35) ? 7 : 5;
-   //const QPixmap pxmPtr = qvariant_cast<QPixmap>(c->photo());
-   bool isTracked = displayPresence && c->isTracked();
-   bool isPresent = displayPresence && c->isPresent();
-   static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
-   static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence)
+{
+//    connect(c,&Person::rebased,this,&KDEPixmapManipulation::clearCache); //FIXME
 
-   QPixmap pxm;
-   if (c->photo().isValid()) {
-      QPixmap contactPhoto((qvariant_cast<QPixmap>(c->photo())).scaledToWidth(size.height()-6));
-      pxm = QPixmap(size);
-      pxm.fill(Qt::transparent);
-      QPainter painter(&pxm);
+   // Keep the engine cached
+   if (c->property("icon").canConvert<QIcon>())
+      return c->property("icon");
 
-      //Clear the pixmap
-      painter.setCompositionMode(QPainter::CompositionMode_Clear);
-      painter.fillRect(0,0,size.width(),size.height(),QBrush(Qt::white));
-      painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+   auto icn = QIcon(new PersonIconEngine(c));
+   c->setProperty("icon", icn);
 
-      //Add corner radius to the Pixmap
-      QRect pxRect = contactPhoto.rect();
-      QBitmap mask(pxRect.size());
-      QPainter customPainter(&mask);
-      customPainter.setRenderHint  (QPainter::Antialiasing, true      );
-      customPainter.fillRect       (pxRect                , Qt::white );
-      customPainter.setBackground  (Qt::black                         );
-      customPainter.setBrush       (Qt::black                         );
-      customPainter.drawRoundedRect(pxRect,radius,radius);
-      contactPhoto.setMask(mask);
-      painter.drawPixmap(3,3,contactPhoto);
-      painter.setBrush(Qt::NoBrush);
-      painter.setPen(Qt::white);
-      painter.setRenderHint  (QPainter::Antialiasing, true   );
-      painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-      painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
-      painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-
-      //Draw the glow around pixmaps
-      if (isTracked) {
-         QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-         pen.setWidth(1);
-         if (isPresent)
-            pen.setColor(presentBrush);
-         else
-            pen.setColor(awayBrush);
-         for (int i=2;i<=7;i+=2) {
-            pen.setWidth(i);
-            painter.setPen(pen);
-            painter.setOpacity(0.3f-(((i-2)*0.8f)/10.0f));
-            painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
-         }
-      }
-   }
-   else {
-      pxm = drawDefaultUserPixmap(size,isTracked,isPresent);
-   }
-
-   c->setProperty(hash.toLatin1(),pxm);
-   return pxm;
+   return icn;
 }
 
-QVariant KDEPixmapManipulation::callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence) {
-   if (n->contact()) {
-      return contactPhoto(n->contact(),size,displayPresence);
-   }
-   else {
-      bool isTracked = displayPresence && n->isTracked();
-      bool isPresent = displayPresence && n->isPresent();
+QVariant KDEPixmapManipulation::callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence)
+{
+   // Use the photo when available
+   if (n->contact())
+      return contactPhoto(n->contact(), size, displayPresence);
 
-      return drawDefaultUserPixmap(size,isTracked,isPresent);
-   }
+   // Keep the engine cached
+   if (n->property("icon2").canConvert<QIcon>())
+      return n->property("icon2");
+
+   auto cm = const_cast<ContactMethod*>(n);
+
+   QIcon icn(new CMIconEngine(cm));
+   cm->setProperty("icon2", icn);
+
+   return icn;
 }
 
 QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displayPresence)
@@ -243,52 +197,6 @@ QVariant KDEPixmapManipulation::personPhoto(const QByteArray& data, const QStrin
    } //TODO check is width || height == 0
 
    return QPixmap::fromImage(image);
-}
-
-QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent) {
-   //Load KDE default user pixmap
-   QPixmap pxm(size);
-   pxm.fill(Qt::transparent);
-   QPainter painter(&pxm);
-
-   painter.drawPixmap(3,3,QIcon::fromTheme(QStringLiteral("user-identity")).pixmap(QSize(size.height()-6,size.width()-6)));
-
-   //Create a region where the pixmap is not fully transparent
-   if (displayPresence) {
-      static QHash<int,QRegion> r,ri;
-      static QHash<int,bool> init;
-      const int width = size.width();
-      if (!init[width]) {
-         r[width] = QRegion(QPixmap::fromImage(pxm.toImage().createAlphaMask()));
-         ri[width] = r[width].xored(pxm.rect());
-         init[width] = true;
-      }
-
-      static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
-      static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
-
-
-      painter.setOpacity(0.05);
-      painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
-      painter.fillRect(pxm.rect(),isPresent?Qt::green:Qt::red);
-      painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-
-      //Paint only outside of the pixmap, it looks better
-      painter.setClipRegion(ri[width]);
-      QPainterPath p;
-      p.addRegion(r[width]);
-      QPen pen = painter.pen();
-      pen.setColor(isPresent?presentBrush:awayBrush);
-      painter.setBrush(Qt::NoBrush);
-      painter.setRenderHint  (QPainter::Antialiasing, true      );
-      for (int i=2;i<=9;i+=2) {
-         pen.setWidth(i);
-         painter.setPen(pen);
-         painter.setOpacity(0.30f-(((i-2)*0.45f)/10.0f));
-         painter.drawPath(p);
-      }
-   }
-   return pxm;
 }
 
 QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) const
@@ -459,9 +367,17 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
 
          return callPhoto(cm, QSize(22,22), true);
          }
-      case Ring::ObjectType::Call           :
+      case Ring::ObjectType::Call           : {
+
+         const Call* c = qvariant_cast<Call*>(
+            index.data(static_cast<int>(Ring::Role::Object))
+         );
+
+         return callPhoto(c->peerContactMethod(), QSize(22,22), true);
+         }
       case Ring::ObjectType::Media          : //TODO
       case Ring::ObjectType::Certificate    :
+      case Ring::ObjectType::ContactRequest :
       case Ring::ObjectType::COUNT__        :
          break;
    }
@@ -471,7 +387,7 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
 
 QVariant KDEPixmapManipulation::decorationRole(const Call* c)
 {
-   return callPhoto((Call*)c, QSize(22,22), true);
+   return callPhoto(c->peerContactMethod(), QSize(22,22), true);
 }
 
 QVariant KDEPixmapManipulation::decorationRole(const ContactMethod* cm)

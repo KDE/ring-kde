@@ -20,11 +20,17 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
+import RingQmlWidgets 1.0
+
 Rectangle {
     property QtObject currentContactMethod: null
 
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName
+
+        photo.pixmap = currentContactMethod.person ?
+             currentContactMethod.person.photo : undefined
+
         bookmarkSwitch.source = currentContactMethod.bookmarked ?
             "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
     }
@@ -46,10 +52,15 @@ Rectangle {
         anchors.margins: 8
 
         Rectangle {
+            clip: true
             radius: 5
             height: 90
             width: 90
             color: "white"
+            PixmapWrapper {
+                id: photo
+                anchors.fill: parent
+            }
         }
 
         ColumnLayout {

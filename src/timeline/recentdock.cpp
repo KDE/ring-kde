@@ -33,42 +33,6 @@
 #include "contactmethod.h"
 #include "itemdataroles.h"
 
-class ModelIconBinder2 : public QQuickPaintedItem
-{
-   Q_OBJECT
-   Q_PROPERTY(QVariant pixmap READ pixmap WRITE setPixmap)
-
-public:
-    explicit ModelIconBinder2(QQuickItem* parent = nullptr) : QQuickPaintedItem(parent) {}
-
-    QPixmap pixmap() const {
-        return m_pixmap;
-    }
-    void setPixmap(const QVariant& var) {
-        m_pixmap = qvariant_cast<QPixmap>(var);
-        m_icon   = qvariant_cast<QIcon  >(var);
-    }
-
-    virtual void paint(QPainter *painter) override {
-        if (!m_icon.isNull()) {
-            const QPixmap pxm = m_icon.pixmap(boundingRect().size().toSize());
-
-            painter->drawPixmap(boundingRect().toRect(),pxm);
-        }
-        else if (!m_pixmap.isNull()) {
-            painter->drawPixmap(
-                boundingRect(),
-                m_pixmap,
-                QRect( 0,0, width(), height())
-            );
-        }
-    }
-
-private:
-    QPixmap m_pixmap;
-    QIcon   m_icon  ;
-};
-
 class RecentDockPrivate {
 public:
     QQuickWidget* m_pQuickWidget;
@@ -77,7 +41,6 @@ public:
 RecentDock::RecentDock(QWidget* parent) :
     QDockWidget(parent), d_ptr(new RecentDockPrivate)
 {
-    qmlRegisterType<ModelIconBinder2>("Ring", 1,0, "ModelIconBinder2");
     d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
 
     d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);

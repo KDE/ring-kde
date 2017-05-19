@@ -45,6 +45,10 @@ ListView {
                 color: "gray"
                 radius: 5
                 visible: direction == 1
+                PixmapWrapper {
+                    anchors.fill: parent
+                    pixmap: decoration
+                }
             }
 
             Item {
@@ -103,6 +107,10 @@ ListView {
                 color: "gray"
                 radius: 5
                 visible: direction == 0
+                PixmapWrapper {
+                    anchors.fill: parent
+                    pixmap: decoration
+                }
             }
         }
     }

@@ -19,6 +19,8 @@
 import QtQuick 2.0
 import Ring 1.0
 
+import RingQmlWidgets 1.0
+
 Rectangle {
     id: toolbar
     color: "#55000000"
@@ -75,7 +77,7 @@ Rectangle {
             Column {
                 width: parent.width
                 anchors.verticalCenter: parent.verticalCenter
-                ModelIconBinder {
+                PixmapWrapper {
                     anchors.horizontalCenter: parent.horizontalCenter
                     pixmap: decoration
                     height: 30

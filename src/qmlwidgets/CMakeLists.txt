@@ -29,8 +29,10 @@ FIND_PACKAGE(Qt5 CONFIG REQUIRED
 )
 
 FIND_PACKAGE(KF5 REQUIRED COMPONENTS
-  I18n
-  Init
+    I18n
+    Init
+    Config
+    ConfigWidgets
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringclient_INCLUDE_DIR})
@@ -41,25 +43,33 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
 SET( libqmlwidgets_LIB_SRCS
-   bubble.cpp
-   plugin.cpp
-   messagebuilder.cpp
+    bubble.cpp
+    plugin.cpp
+    messagebuilder.cpp
+    cmiconengine.cpp
+    personiconengine.cpp
+    pixmapwrapper.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )
 
 target_link_libraries( libqmlwidgets
-   ringclient
+    ringclient
 
-   Qt5::Core
-   Qt5::Gui
-   Qt5::Quick
-   Qt5::QuickWidgets
-   Qt5::QuickControls2
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Quick
+    Qt5::QuickWidgets
+    Qt5::QuickControls2
+
+    KF5::ConfigCore
+    KF5::ConfigGui
+    KF5::ConfigWidgets
 )
 
 SET( libqmlwidgets_LIB_HDRS
-   bubble.h
-   plugin.h
-   messagebuilder.h
+    bubble.h
+    plugin.h
+    messagebuilder.h
+    pixmapwrapper.h
 )

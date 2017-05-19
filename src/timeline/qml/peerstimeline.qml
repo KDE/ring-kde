@@ -20,6 +20,8 @@ import QtQuick.Controls 1.4
 import Ring 1.0
 import QtQuick.Layouts 1.0
 
+import RingQmlWidgets 1.0
+
 Rectangle {
     SystemPalette {
         id: activePalette
@@ -59,7 +61,8 @@ Rectangle {
                         opacity: 0.05
                         anchors.fill: parent
                     }
-                    ModelIconBinder2 {
+
+                    PixmapWrapper {
                         anchors.fill: parent
                         pixmap: decoration
                     }
