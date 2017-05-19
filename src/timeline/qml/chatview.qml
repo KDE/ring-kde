@@ -24,6 +24,9 @@ import RingQmlWidgets 1.0
 
 ListView {
 
+    property var textColor: "blue"
+    property var bubbleBackground: "red"
+
     delegate: Item {
         width: parent.width
 
@@ -60,7 +63,7 @@ ListView {
                     anchors.margins: 5
 
                     alignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
-                    color: isRead ? "green" : "red"
+                    color: bubbleBackground //isRead ? "green" : "red"
 
                     Text {
                         anchors.fill: parent
@@ -71,6 +74,7 @@ ListView {
                         horizontalAlignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
                         font.family: "Noto Color Emoji"
                         text: display
+                        color: textColor
                     }
 
                     Text {

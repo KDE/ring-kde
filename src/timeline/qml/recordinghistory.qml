@@ -21,14 +21,10 @@ import QtQuick.Controls 1.4 as Controls1
 import QtQml.Models 2.2
 import Ring 1.0
 
-Item {
+Rectangle {
     id: recordingHistory
     property var currentContactMethod: null
     property var selectedElement : Undefined
-
-//     onCurrentContactMethodChanged: currentContactMethod ?
-//         recordingList.model = currentContactMethod.callsModel : null
-
 
     SystemPalette {
         id: activePalette
@@ -40,6 +36,12 @@ Item {
         colorGroup: SystemPalette.Disabled
     }
 
+    color: activePalette.base
+
+//     onCurrentContactMethodChanged: currentContactMethod ?
+//         recordingList.model = currentContactMethod.callsModel : null
+
+
     Component {
         id: recordingListDelegate
         Item {
@@ -48,6 +50,7 @@ Item {
             anchors.leftMargin: 5
             Text {
                 text: display
+                color: activePalette.text
             }
             MouseArea {
                 anchors.fill: parent
@@ -107,12 +110,13 @@ Item {
                                     color: "transparent"
                                     Text {
                                         text: display
+                                        color: activePalette.text
                                     }
                                     MouseArea {
                                         anchors.fill: parent
                                         onClicked: {
                                             // Update the visual selection
-                                            color = "red"
+                                            color = activePalette.highlight
                                             if (recordingHistory.selectedElement && recordingHistory.selectedElement != recordingItem) {
                                                 recordingHistory.selectedElement.color = "transparent"
                                             }

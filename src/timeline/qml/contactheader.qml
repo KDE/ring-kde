@@ -23,7 +23,11 @@ import Ring 1.0
 import RingQmlWidgets 1.0
 
 Rectangle {
+    id: contactHeader
     property QtObject currentContactMethod: null
+
+    property alias backgroundColor: contactHeader.color
+    property var textColor: undefined
 
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName
@@ -73,6 +77,7 @@ Rectangle {
                     font.bold: true
                     font.pointSize: 16
                     text: "My name"
+                    color: textColor
                 }
                 Image {
                     id: bookmarkSwitch

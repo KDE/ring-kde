@@ -20,7 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
-Item {
+Rectangle {
     property var currentContactMethod: null
 
     function getLastContacted() {
@@ -47,6 +47,13 @@ Item {
         return  qsTr("<b>Screenshots:</b> ") + "N/A [?]"
     }
 
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
+
+    color: activePalette.base
+
     onCurrentContactMethodChanged: {
         // Stats
         lastContactedTime.text = getLastContacted()
@@ -72,33 +79,38 @@ Item {
         anchors.fill: parent
 
         Rectangle {
-            color: "black"
+            color: activePalette.text
             height: 1
             Layout.fillWidth: true
         }
 
         Label {
             id: lastContactedTime
+            color: activePalette.text
         }
 
         Label {
             id: totalCall
+            color: activePalette.text
         }
 
         Label {
             id: totalText
+            color: activePalette.text
         }
 
         Label {
             id: totalRecording
+            color: activePalette.text
         }
 
         Label {
             id: totalScreenshot
+            color: activePalette.text
         }
 
         Rectangle {
-            color: "black"
+            color: activePalette.text
             height: 1
             Layout.fillWidth: true
         }
@@ -112,6 +124,7 @@ Item {
             Label {
                 id: label
                 text: qsTr("Formatted name:")
+                color: activePalette.text
             }
             TextField {
                 id: formattedName
@@ -119,6 +132,7 @@ Item {
 
             Label {
                 text: qsTr("Primary name:")
+                color: activePalette.text
             }
             TextField {
                 id: firstName
@@ -126,6 +140,7 @@ Item {
 
             Label {
                 text: qsTr("Last name:")
+                color: activePalette.text
             }
             TextField {
                 id: lastName
@@ -133,6 +148,7 @@ Item {
 
             Label {
                 text: qsTr("Email:")
+                color: activePalette.text
             }
             TextField {
                 id: email
@@ -140,6 +156,7 @@ Item {
 
             Label {
                 text: qsTr("Organization:")
+                color: activePalette.text
             }
             TextField {
                 id: organization

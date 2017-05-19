@@ -20,11 +20,18 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
-Item {
+Rectangle {
 
     property var currentContactMethod: null
 
     clip: true
+
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
+
+    color: activePalette.base
 
     onCurrentContactMethodChanged: {
         contactHeader.currentContactMethod = currentContactMethod
@@ -56,6 +63,8 @@ Item {
 
         ContactHeader {
             id: contactHeader
+            backgroundColor: activePalette.alternateBase
+            textColor: activePalette.text
         }
 
         TabBar {
@@ -84,7 +93,12 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
+            background: Rectangle {
+                color: activePalette.base
+            }
+
             currentIndex: tabBar.currentIndex
+
             Page {
                 ContactInfo {
                     anchors.fill: parent

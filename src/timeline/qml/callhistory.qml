@@ -20,8 +20,18 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
-Item {
+Rectangle {
     property var currentContactMethod: null
+
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
+
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Disabled
+    }
 
     onCurrentContactMethodChanged: currentContactMethod ?
         callsModels.model = currentContactMethod.callsModel : null
@@ -37,6 +47,8 @@ Item {
             return "sharedassets/phone_dark/outgoing.svg"
     }
 
+    color: activePalette.base
+
     Component {
         id: historyDelegate
         Item {
@@ -50,7 +62,10 @@ Item {
                     width: 30
                 }
                 Column {
-                    Text { text: formattedDate }
+                    Text {
+                        text: formattedDate
+                        color: activePalette.text
+                    }
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
@@ -60,6 +75,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: 5
                 text: length
+                color: inactivePalette.text
             }
         }
     }

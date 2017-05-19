@@ -41,6 +41,7 @@ Bubble::~Bubble()
 void Bubble::paint(QPainter *painter)
 {
     painter->setWorldMatrixEnabled(true);
+    painter->setOpacity(0.3);
 
     const qreal w(boundingRect().width()), h(boundingRect().height());
     const qreal aw(10), ah(20), r(10), p(10); //arrow size width, height, radius, bottom padding

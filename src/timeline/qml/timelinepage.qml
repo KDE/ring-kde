@@ -22,11 +22,19 @@ import Ring 1.0
 
 import RingQmlWidgets 1.0
 
-Item {
+Rectangle {
+
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
+
+    color: activePalette.base
+
     property var currentContactMethod: null
 
     onCurrentContactMethodChanged: currentContactMethod ?
-        chatView.model = currentContactMethod.textRecording.instantMessagingModel : null
+        chatView.model = currentContactMethod.textRecording.instantTextMessagingModel : null
 
     ColumnLayout {
         anchors.fill: parent
@@ -40,6 +48,9 @@ Item {
                 id: chatView
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+
+                textColor: activePalette.text
+                bubbleBackground: activePalette.highlight
             }
 
             TimelineScrollbar {
@@ -54,6 +65,10 @@ Item {
             Layout.fillWidth: true
             height: 120
             MessageBuilder {id: builder}
+
+            textColor: activePalette.text
+            backgroundColor: activePalette.window
+            emojiColor: activePalette.highlight
         }
     }
 

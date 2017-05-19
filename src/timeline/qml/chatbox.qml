@@ -22,6 +22,11 @@ import Ring 1.0
 
 Rectangle {
     property QtObject call: null
+
+    property alias textColor: messageTextArea.color
+    property alias backgroundColor: chatBox.color
+    property var emojiColor: undefined
+
     id: chatBox
 
     signal sendMessage(string message)
@@ -100,7 +105,7 @@ Rectangle {
                     Rectangle {
                         width:  30
                         height: 30
-                        color:  "green"
+                        color:  emojiColor
                         radius: 2
 
                         Text {
