@@ -47,6 +47,7 @@
 #include <recentmodel.h>
 #include <media/recordingmodel.h>
 #include <peerstimelinemodel.h>
+#include <peertimelinemodel.h>
 #include <video/previewmanager.h>
 #include <media/recording.h>
 #include <media/textrecording.h>
@@ -153,11 +154,12 @@ QQmlApplicationEngine* RingApplication::engine()
       auto p = new RingQmlWidgets;
       p->registerTypes("RingQmlWidgets");
 
-      QML_TYPE( Account         )
-      QML_TYPE( const Account   )
-      QML_TYPE( Call            )
-      QML_TYPE( ContactMethod   )
-      QML_TYPE( UserActionModel )
+      QML_TYPE( Account           )
+      QML_TYPE( const Account     )
+      QML_TYPE( Call              )
+      QML_TYPE( ContactMethod     )
+      QML_TYPE( UserActionModel   )
+      QML_TYPE( PeerTimelineModel )
 
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 

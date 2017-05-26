@@ -15,21 +15,33 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#include "treehelper.h"
 
 #include <QtCore/QDebug>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "pixmapwrapper.h"
-#include "treehelper.h"
-
-void RingQmlWidgets::registerTypes(const char *uri)
+class TreeHelperPrivate
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+public:
+    QMap<QString, QString> m_Payloads {};
+};
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
+TreeHelper::TreeHelper(QObject* parent) : QObject(parent),
+    d_ptr(new TreeHelperPrivate())
+{}
+
+TreeHelper::~TreeHelper()
+{
+    delete d_ptr;
+}
+
+QModelIndex TreeHelper::getIndex(int row, const QModelIndex& parent)
+{
+    if (!parent.isValid())
+        return {};
+
+    qDebug() << "BOB" << row << parent.data() << parent.parent().isValid() << parent.model()->index(row, 0, parent).data();
+
+//     Q_ASSERT(parent.parent().isValid() == true);
+//     Q_ASSERT(!parent.parent().parent().isValid() == true);
+    return parent.model()->index(row, 0, parent);
 }

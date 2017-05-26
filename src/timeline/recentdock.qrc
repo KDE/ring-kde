@@ -11,6 +11,10 @@
         <file alias="ChatView.qml">qml/chatview.qml</file>
         <file alias="TimelinePage.qml">qml/timelinepage.qml</file>
         <file alias="TimelineScrollbar.qml">qml/timelinescrollbar.qml</file>
+        <file alias="TextBubble.qml">qml/textbubble.qml</file>
+        <file alias="CategoryHeader.qml">qml/categoryheader.qml</file>
+        <file alias="TextMessageGroup.qml">qml/textmessagegroup.qml</file>
+        <file alias="CallGroup.qml">qml/callgroup.qml</file>
         <file>icons/bookmarked.svg</file>
         <file>icons/not_bookmarked.svg</file>
     </qresource>

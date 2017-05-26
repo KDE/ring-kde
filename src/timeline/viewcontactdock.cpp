@@ -35,6 +35,7 @@ class ViewContactDockPrivate {
 public:
     QQuickWidget* m_pQuickWidget;
     QSharedPointer<QAbstractItemModel> m_CallsModel;
+    QSharedPointer<QAbstractItemModel> m_TimelineModel;
 };
 
 ViewContactDock::ViewContactDock(QWidget* parent) :

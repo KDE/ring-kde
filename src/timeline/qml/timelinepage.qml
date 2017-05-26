@@ -23,6 +23,7 @@ import Ring 1.0
 import RingQmlWidgets 1.0
 
 Rectangle {
+    id: timelinePage
 
     SystemPalette {
         id: activePalette
@@ -34,7 +35,7 @@ Rectangle {
     property var currentContactMethod: null
 
     onCurrentContactMethodChanged: currentContactMethod ?
-        chatView.model = currentContactMethod.textRecording.instantTextMessagingModel : null
+        chatView.model = currentContactMethod.timelineModel : null
 
     ColumnLayout {
         anchors.fill: parent

@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 1.4
 import Ring 1.0
 import QtQuick.Layouts 1.0
+import QtGraphicalEffects 1.0
 
 import RingQmlWidgets 1.0
 
@@ -239,6 +240,7 @@ Rectangle {
     }
 
     ScrollView {
+        id: scrollView
         anchors.fill: parent
         flickableItem.interactive: true
         ListView {
@@ -251,6 +253,91 @@ Rectangle {
             }
             model: PeersTimelineModel
         }
+    }
+
+    TimelineScrollbar {
+        id: scrollBar
+        height: parent.height
+        anchors.top: parent.top
+        anchors.right: parent.right
+        width: 10
+        model: PeersTimelineModel.timelineSummaryModel
+        z: 100
+    }
+
+    // Add a blurry background
+    ShaderEffectSource {
+        id: effectSource
+        visible: false
+
+        sourceItem: scrollView
+        anchors.right: scrollView.right
+        anchors.top: scrollView.top
+        width: scrollView.width/2
+        height: scrollView.height
+
+        sourceRect: Qt.rect(scrollView.width/2, 0, scrollView.width/2, scrollView.height)
+    }
+
+    Item {
+        id: burryOverlay
+        visible: false
+        opacity: 0
+        anchors.right: scrollView.right
+        anchors.top: scrollView.top
+        width: scrollView.width/2
+        height: scrollView.height
+        clip: true
+
+        Repeater {
+            anchors.fill: parent
+            model: 5
+            FastBlur {
+                anchors.fill: parent
+                source: effectSource
+                radius: 30
+
+            }
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            color: "black"
+            opacity: 0.75
+        }
+    }
+
+    StateGroup {
+        states: [
+            State {
+                name: "overlay"
+                when: scrollBar.overlayVisible
+                PropertyChanges {
+                    target:  burryOverlay
+                    visible: true
+                }
+                PropertyChanges {
+                    target:  burryOverlay
+                    opacity: 1
+                }
+                PropertyChanges {
+                    target:  effectSource
+                    visible: true
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                to: "overlay"
+                NumberAnimation {
+                    properties: "opacity"
+                    easing.type: Easing.InQuad
+                    duration: 400
+                    loops: 1
+                }
+            }
+        ]
     }
 
 }

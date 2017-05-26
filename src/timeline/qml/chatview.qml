@@ -23,99 +23,51 @@ import Ring 1.0
 import RingQmlWidgets 1.0
 
 ListView {
+    id: chatView
+    clip: true
 
+//     property QtObject model : null
     property var textColor: "blue"
     property var bubbleBackground: "red"
 
-    delegate: Item {
-        width: parent.width
+    TreeHelper {
+        id: treeHelper
+    }
 
-        height: 80
+    function getIndex(model, index) {
+        var m = model.modelIndex(index)
+        return m// treeHelper.getIndex(0, m)
+    }
 
-        RowLayout {
-            anchors.fill: parent
+    Component {
+        id: messageDelegate
 
-            Item {
-                visible: direction == 0
-                Layout.preferredWidth: parent.width*0.3
-                Layout.minimumWidth: parent.width*0.3
-                Layout.maximumWidth: parent.width*0.3
+        ColumnLayout {
+            width: parent.width
+            CategoryHeader {
+                width: 99999999999
             }
-
-            Rectangle {
-                width: 50
-                height: 50
-                color: "gray"
-                radius: 5
-                visible: direction == 1
-                PixmapWrapper {
-                    anchors.fill: parent
-                    pixmap: decoration
-                }
-            }
-
-            Item {
-                Layout.fillHeight: true
+            Repeater {
+                id: childrenView
                 Layout.fillWidth: true
 
-                Bubble {
-                    anchors.fill: parent
-                    anchors.margins: 5
-
-                    alignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
-                    color: bubbleBackground //isRead ? "green" : "red"
-
-                    Text {
-                        anchors.fill: parent
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 30
-                        anchors.topMargin: 5
-                        anchors.bottomMargin: 5
-                        horizontalAlignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
-                        font.family: "Noto Color Emoji"
-                        text: display
-                        color: textColor
+                model: VisualDataModel {
+                    id: childrenVisualDataModel
+                    model: chatView.model
+                    Component.onCompleted: {
+                        childrenView.model.rootIndex = childrenView.model.modelIndex(index)
                     }
 
-                    Text {
-                        anchors.bottom: parent.bottom
-                        anchors.left: direction == 0 ? parent.left : undefined
-                        anchors.right: direction == 1 ? parent.right : undefined
-                        anchors.bottomMargin: 4
-                        anchors.leftMargin: direction == 0 ? 4 : undefined
-                        anchors.rightMargin: direction == 1 ? 4 : undefined
-                        text: formattedDate
-                        color: "gray"
+                    delegate: TextMessageGroup {
+                        width: chatView.width
+                        id: groupDelegate
+                        model: chatView.model
+                        rootIndex: getIndex(childrenView.model, index)
                     }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            console.log("SET isRead")
-                            isRead = true
-                        }
-                    }
-                }
-            }
-
-            Item {
-                visible: direction == 1
-                Layout.preferredWidth: parent.width*0.3
-                Layout.minimumWidth: parent.width*0.3
-                Layout.maximumWidth: parent.width*0.3
-            }
-
-            Rectangle {
-                width: 50
-                height: 50
-                color: "gray"
-                radius: 5
-                visible: direction == 0
-                PixmapWrapper {
-                    anchors.fill: parent
-                    pixmap: decoration
                 }
             }
         }
     }
+
+    delegate: messageDelegate
 }

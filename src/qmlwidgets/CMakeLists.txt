@@ -49,6 +49,7 @@ SET( libqmlwidgets_LIB_SRCS
     cmiconengine.cpp
     personiconengine.cpp
     pixmapwrapper.cpp
+    treehelper.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )

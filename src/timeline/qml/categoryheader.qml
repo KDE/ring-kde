@@ -15,21 +15,23 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+import QtQuick 2.7
+import QtQuick.Layouts 1.0
 
-#include <QtCore/QDebug>
+ColumnLayout {
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Disabled
+    }
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "pixmapwrapper.h"
-#include "treehelper.h"
-
-void RingQmlWidgets::registerTypes(const char *uri)
-{
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
-
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
+    Rectangle {
+        width: parent.width
+        anchors.topMargin: 1
+        height: 1;
+        color: inactivePalette.text
+    }
+    Text {
+        text: display
+        color: inactivePalette.text
+    }
 }

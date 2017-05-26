@@ -22,30 +22,134 @@ import Ring 1.0
 
 Item {
     id: scrollbar
+    property alias model: tmlList.model
+
+    property bool overlayVisible: false
+
+    // This isn't correct at all, but close enough for now
+    function getSectionHeight(height, total, section, index, activeCategoryCount) {
+        var h = (height-(activeCategoryCount*20)) * (section/total)
+        return 20 + h
+    }
+
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
 
     Rectangle {
+        id: handle
         radius: 99
         color: "black"
         width: parent.width
         height: 65
     }
 
+    Component {
+        id: category
+        Item {
+            height: getSectionHeight(parent.parent.height, totalEntries, categoryEntries, index, activeCategories)
+            ColumnLayout {
+                anchors.fill: parent
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Rectangle {
+                        height: 20
+                        width: 20
+                        radius: 999
+                        color: "#005500"
+                        border.width: 2
+                        border.color: "#d0d0d0"
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: display
+                        color: "white"
+                    }
+                }
+
+                Repeater { //FIXME very, very slow
+                    model: Math.floor(parent.height / 10) - 2
+                    clip: true
+                    Layout.fillHeight: true
+                    delegate: Item {
+                        height: 10
+                        width: 20
+                        Rectangle {
+                            anchors.centerIn: parent
+                            height: 7.5
+                            width: 7.5
+                            color: "#005500"
+                            radius: 8
+                            border.width: 1
+                            border.color: "#d0d0d0"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
-        onEntered: {
-            timelineOverlay.height = height
-            timelineOverlay.visible = true
-        }
-        onExited:  timelineOverlay.visible = false
+        onEntered: overlayVisible = true
+        onExited: overlayVisible = false
 
-        Rectangle {
+        Item {
             id: timelineOverlay
-            color: "orange"
-            width: 100
-            x: -100
+            width: 150
+            x: -130
             height: scrollbar.height
             visible: false
+            opacity: 0
+            ListView {
+                id: tmlList
+                anchors.fill: parent
+                delegate: category
+            }
         }
+    }
+
+    StateGroup {
+        states: [
+            State {
+                name: "overlay"
+                when: scrollbar.overlayVisible
+                PropertyChanges {
+                    target:  timelineOverlay
+                    height: scrollbar.height
+                    visible: true
+                    opacity: 1
+                    x: -150
+                }
+                PropertyChanges {
+                    target:  handle
+                    color: activePalette.highlight
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                to: "overlay"
+                NumberAnimation {
+                    properties: "opacity"
+                    target: timelineOverlay
+                    duration: 200
+                }
+                NumberAnimation {
+                    properties: "x"
+                    target: timelineOverlay
+                    easing.type: Easing.InQuad
+                    duration: 200
+                }
+                ColorAnimation {
+                    target: handle
+                    duration: 100
+                }
+            }
+        ]
     }
 }

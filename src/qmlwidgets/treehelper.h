@@ -15,21 +15,26 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <QtCore/QObject>
+#include <QtCore/QModelIndex>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "pixmapwrapper.h"
-#include "treehelper.h"
+class ContactMethod;
 
-void RingQmlWidgets::registerTypes(const char *uri)
+class TreeHelperPrivate;
+
+class TreeHelper : public QObject
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+    Q_OBJECT
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-}
+public:
+    explicit TreeHelper(QObject* parent = nullptr);
+    virtual ~TreeHelper();
+
+    Q_INVOKABLE QModelIndex getIndex(int row, const QModelIndex& parent);
+
+private:
+    TreeHelperPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(TreeHelper)
+};

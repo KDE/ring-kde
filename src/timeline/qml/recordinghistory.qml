@@ -44,21 +44,7 @@ Rectangle {
 
     Component {
         id: recordingListDelegate
-        Item {
-            height: 30
-            width: parent.width
-            anchors.leftMargin: 5
-            Text {
-                text: display
-                color: activePalette.text
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    selectItem(index)
-                }
-            }
-        }
+        CategoryHeader {}
     }
 
     ColumnLayout {
