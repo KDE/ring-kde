@@ -17,58 +17,22 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import Ring 1.0
 
-import RingQmlWidgets 1.0
+RowLayout {
+    anchors.horizontalCenter: parent.horizontalCenter
 
-ColumnLayout {
-    id: textGroupDelegate
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
+    Rectangle {
+        height: 1
+        Layout.preferredWidth: 50
+        color: inactivePalette.text
     }
-
-    property alias model: textmessagesmodel.model
-    property var rootIndex: undefined//textmessagesmodel.rootIndex
-
-    onRootIndexChanged: {
-        textmessagesmodel.rootIndex = rootIndex
+    Text {
+        text: endAt
+        color: inactivePalette.text
     }
-
-    GroupHeader {
-        type: "text"
-        anchors.margins: 4
-        Layout.fillWidth: true
-        Layout.preferredHeight: 38
-    }
-
-    Repeater {
-        id: childrenView
-        Layout.fillWidth: true
-        Layout.preferredHeight: 100
-
-        model: VisualDataModel {
-            id: textmessagesmodel
-
-            delegate: Item {
-                id: recordingItem
-                Layout.preferredHeight: 100
-                width: textGroupDelegate.width;
-                anchors.leftMargin: 5
-                TextBubble {
-                    visible: nodeType == PeerTimelineModel.TEXT_MESSAGE
-                    width: textGroupDelegate.width
-                }
-
-                CallGroup {
-                    visible: nodeType == PeerTimelineModel.CALL_GROUP
-                }
-            }
-        }
-    }
-
-    GroupFooter {
-        Layout.fillWidth: true
+    Rectangle {
+        height: 1
+        Layout.preferredWidth: 50
+        color: inactivePalette.text
     }
 }

@@ -17,58 +17,42 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import Ring 1.0
 
-import RingQmlWidgets 1.0
+RowLayout {
+    property string type: "text"
 
-ColumnLayout {
-    id: textGroupDelegate
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
+    Item {
+        Layout.preferredWidth: 5
     }
 
-    property alias model: textmessagesmodel.model
-    property var rootIndex: undefined//textmessagesmodel.rootIndex
-
-    onRootIndexChanged: {
-        textmessagesmodel.rootIndex = rootIndex
+    function getIcon() {
+        if (type == "text")
+            return "image://icon/dialog-messages"
+        else
+            return "image://icon/call-start"
     }
 
-    GroupHeader {
-        type: "text"
-        anchors.margins: 4
-        Layout.fillWidth: true
-        Layout.preferredHeight: 38
-    }
+    Rectangle {
+        height: 30
+        width: 30
+        radius: 99
+        border.width: 3
+        border.color: "white"
+        color: "transparent"
 
-    Repeater {
-        id: childrenView
-        Layout.fillWidth: true
-        Layout.preferredHeight: 100
-
-        model: VisualDataModel {
-            id: textmessagesmodel
-
-            delegate: Item {
-                id: recordingItem
-                Layout.preferredHeight: 100
-                width: textGroupDelegate.width;
-                anchors.leftMargin: 5
-                TextBubble {
-                    visible: nodeType == PeerTimelineModel.TEXT_MESSAGE
-                    width: textGroupDelegate.width
-                }
-
-                CallGroup {
-                    visible: nodeType == PeerTimelineModel.CALL_GROUP
-                }
-            }
+        Image {
+            anchors.margins: 6
+            anchors.fill: parent
+            source: getIcon()
         }
     }
 
-    GroupFooter {
-        Layout.fillWidth: true
+    Item {
+        Layout.preferredWidth: 10
+    }
+
+    Text {
+        text: display
+        color: activePalette.text
     }
 }

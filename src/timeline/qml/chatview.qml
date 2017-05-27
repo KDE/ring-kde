@@ -30,13 +30,28 @@ ListView {
     property var textColor: "blue"
     property var bubbleBackground: "red"
 
-    TreeHelper {
+    /*TreeHelper {
         id: treeHelper
-    }
+    }*/
 
     function getIndex(model, index) {
         var m = model.modelIndex(index)
         return m// treeHelper.getIndex(0, m)
+    }
+
+    function bestDelegate(parent, model2, type, index) {
+        var component = Qt.createComponent("TextMessageGroup.qml", parent);
+
+        if (component.status == Component.Ready) {
+            component.width     = chatView.width
+            component.model     = chatView.model
+            component.rootIndex = getIndex(model2, index)
+            console.log("ICI", model2, index, component.rootIndex, chatView.model)
+        }
+        else
+            console.log("NOT YET")
+
+        return component
     }
 
     Component {
@@ -58,12 +73,49 @@ ListView {
                         childrenView.model.rootIndex = childrenView.model.modelIndex(index)
                     }
 
-                    delegate: TextMessageGroup {
-                        width: chatView.width
-                        id: groupDelegate
-                        model: chatView.model
-                        rootIndex: getIndex(childrenView.model, index)
+//                     Loader {
+//                         // position the Loader in the center
+//                         // of the parent
+//                         anchors.centerIn: parent
+//                         sourceComponent: rect
+//                     }
+
+//                     delegate: bestDelegate(childrenVisualDataModel, childrenView.model, undefined, index)
+//                     delegate: TextMessageGroup {
+//                         width: chatView.width
+//                         id: groupDelegate
+//                         model: chatView.model
+//                         rootIndex: getIndex(childrenView.model, index)
+//                     }
+
+                    delegate: Component {
+                        Loader {
+
+                            Component {
+                                id: troll
+                                TextMessageGroup {
+                                    width: chatView.width
+                                    id: groupDelegate
+                                    model: chatView.model
+                                    rootIndex: getIndex(childrenView.model, modelIndex)
+                                }
+                            }
+
+                            Component {
+                                id: troll2
+                                CallGroup {
+                                    width: chatView.width
+                                    id: groupDelegate
+                                    model: chatView.model
+                                    rootIndex: getIndex(childrenView.model, modelIndex)
+                                }
+                            }
+
+                            property int modelIndex: index
+                            sourceComponent: nodeType == PeerTimelineModel.SECTION_DELIMITER ? troll : troll2
+                        }
                     }
+
                 }
             }
         }

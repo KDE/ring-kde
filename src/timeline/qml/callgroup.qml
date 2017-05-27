@@ -19,6 +19,65 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
-Item {
+import RingQmlWidgets 1.0
 
+ColumnLayout {
+    id: textGroupDelegate
+
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Disabled
+    }
+
+    property alias model: textmessagesmodel.model
+    property var rootIndex: undefined//textmessagesmodel.rootIndex
+
+    onRootIndexChanged: {
+        textmessagesmodel.rootIndex = rootIndex
+    }
+
+    function selectIcon(call) {
+        if (!call)
+            return null;
+
+        if (call.missed && call.direction == Call.INCOMING)
+            return "sharedassets/phone_dark/missed_incoming.svg"
+        else if (call.missed && call.direction == Call.OUTGOING)
+            return "sharedassets/phone_dark/missed_outgoing.svg"
+        else if (call.direction == Call.INCOMING)
+            return "sharedassets/phone_dark/incoming.svg"
+        else
+            return "sharedassets/phone_dark/outgoing.svg"
+    }
+
+    GroupHeader {
+        type: "call"
+        anchors.margins: 4
+        Layout.fillWidth: true
+        Layout.preferredHeight: 38
+    }
+
+    RowLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 32
+        Repeater {
+            id: childrenView
+            Layout.fillWidth: true
+            Layout.preferredHeight: 32
+
+            model: VisualDataModel {
+                id: textmessagesmodel
+
+                delegate: Image {
+                    width: 22
+                    height: 22
+                    source: selectIcon(object)
+                }
+            }
+        }
+    }
+
+    GroupFooter {
+        Layout.fillWidth: true
+    }
 }

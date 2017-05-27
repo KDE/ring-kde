@@ -66,7 +66,7 @@ Item {
                     anchors.bottomMargin: 5
                     horizontalAlignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
                     font.family: "Noto Color Emoji"
-                    text: display
+                    text: display != undefined ? display : "N/A"
                     color: textColor
                 }
 
