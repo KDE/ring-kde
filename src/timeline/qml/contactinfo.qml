@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import RingQmlWidgets 1.0
 
 Rectangle {
     property var currentContactMethod: null
@@ -168,14 +169,24 @@ Rectangle {
         }
     }
 
+    ContactBuilder {
+        id: contactBuilder
+    }
+
     Button {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.margins: 5
         text: qsTr("Save")
         onClicked: {
-            if ((!currentContactMethod) || (!currentContactMethod.person))
+            if ((!currentContactMethod))
                 return
+
+            if (!currentContactMethod.person) {
+                var ret = contactBuilder.from(currentContactMethod)
+                console.log("=====ADDING",ret)
+                console.log("=====ADDING", currentContactMethod.person)
+            }
 
             currentContactMethod.person.formattedName  = formattedName.text
             currentContactMethod.person.firstName      = firstName.text

@@ -15,23 +15,50 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
-
-#include <QtCore/QDebug>
-
-#include "bubble.h"
-#include "messagebuilder.h"
 #include "contactbuilder.h"
-#include "pixmapwrapper.h"
-#include "treehelper.h"
 
-void RingQmlWidgets::registerTypes(const char *uri)
+#include <contactmethod.h>
+#include <person.h>
+#include <personmodel.h>
+#include <collectioninterface.h>
+
+class ContactBuilderPrivate
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+public:
+    QMap<QString, QString> m_Payloads {};
+};
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
+ContactBuilder::ContactBuilder(QObject* parent) : QObject(parent),
+    d_ptr(new ContactBuilderPrivate())
+{}
+
+ContactBuilder::~ContactBuilder()
+{
+    delete d_ptr;
+}
+
+bool ContactBuilder::from(ContactMethod* cm)
+{
+    if (cm->contact())
+        return false;
+
+    auto cols = PersonModel::instance().enabledCollections(
+        CollectionInterface::SupportedFeatures::ADD |
+        CollectionInterface::SupportedFeatures::EDIT|
+        CollectionInterface::SupportedFeatures::SAVE
+    );
+
+    if (cols.isEmpty()) {
+        qWarning() << "Failed to add a contact: no suitable backend found";
+        return false;
+    }
+
+    const auto col = cols.first();
+
+    auto p = new Person();
+    p->setCollection(col); //TODO have a selection widget again
+    cm->setPerson(p);
+    p->setContactMethods({cm});
+
+    return true;
 }

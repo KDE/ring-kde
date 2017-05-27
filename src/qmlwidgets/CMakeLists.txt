@@ -46,6 +46,7 @@ SET( libqmlwidgets_LIB_SRCS
     bubble.cpp
     plugin.cpp
     messagebuilder.cpp
+    contactbuilder.cpp
     cmiconengine.cpp
     personiconengine.cpp
     pixmapwrapper.cpp

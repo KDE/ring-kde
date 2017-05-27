@@ -15,23 +15,25 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <QtCore/QObject>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "contactbuilder.h"
-#include "pixmapwrapper.h"
-#include "treehelper.h"
+class ContactMethod;
 
-void RingQmlWidgets::registerTypes(const char *uri)
+class ContactBuilderPrivate;
+
+class ContactBuilder : public QObject
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+    Q_OBJECT
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-}
+public:
+    explicit ContactBuilder(QObject* parent = nullptr);
+    virtual ~ContactBuilder();
+
+    Q_INVOKABLE bool from(ContactMethod* cm);
+
+private:
+    ContactBuilderPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(ContactBuilder)
+};
