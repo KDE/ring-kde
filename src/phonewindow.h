@@ -66,7 +66,6 @@ Q_OBJECT
 
 private:
    //Attributes
-   bool           m_pInitialized     ;
    View*          m_pView            ;
    bool           m_pIconChanged     ;
    SysTray*       m_pTrayIcon        {nullptr};
@@ -90,8 +89,6 @@ protected:
 public:
    explicit PhoneWindow(QWidget* parent = nullptr);
    virtual ~PhoneWindow();
-   bool initialize();
-
    friend class View;
 
    static PhoneWindow* app  ();

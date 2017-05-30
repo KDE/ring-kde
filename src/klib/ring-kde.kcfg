@@ -98,7 +98,7 @@
     </entry>
     <entry name="displayDialpad" type="Bool">
     	<label>Defines whether the dialpad is being shown by default</label>
-      <default>false</default>
+      <default>true</default>
     </entry>
     <entry name="displayAccountBox" type="Bool">
         <label>Defines whether the statusbar account combobox is being shown by default</label>
@@ -110,7 +110,7 @@
     </entry>
     <entry name="displayVolume" type="Bool">
     	<label>Defines whether the volume widgets are visible by default</label>
-      <default>false</default>
+      <default>true</default>
     </entry>
     <entry name="displayMenu" type="Bool">
     	<label>Defines whether the main menu is visible by default, it can be restored with "Ctrl+m"</label>

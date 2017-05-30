@@ -53,12 +53,14 @@ TimelineWindow::TimelineWindow()
    setUnifiedTitleAndToolBarOnMac(true);
 #endif
 
-   setDockOptions(
-      QMainWindow::AnimatedDocks    |
-      QMainWindow::VerticalTabs     |
-      QMainWindow::AllowNestedDocks |
-      QMainWindow::AllowTabbedDocks
-   );
+    setDockOptions(
+        QMainWindow::AnimatedDocks    |
+        QMainWindow::VerticalTabs     |
+        QMainWindow::AllowNestedDocks |
+        QMainWindow::AllowTabbedDocks
+    );
+
+    setAutoSaveSettings();
 
     ActionCollection::instance()->setupAction(this);
     // MainWindow
@@ -113,7 +115,6 @@ TimelineWindow::TimelineWindow()
     connect(m_pContactCD , &QDockWidget::visibilityChanged, this, &FancyMainWindow::updateTabIcons);
     tabifyDockWidget(m_pPeersTimeline, m_pContactCD );
 
-    setAutoSaveSettings();
     createGUI();
     updateTabIcons();
 }

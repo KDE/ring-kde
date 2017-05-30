@@ -198,24 +198,6 @@ Dock::Dock(PhoneWindow* w) : QObject(w)
    auto m = new BookmarkSortFilterProxyModel(this);
    m_pBookmarkDW->setProxyModel(m, m);
 
-   //GUI
-   w->addDockWidget( Qt::LeftDockWidgetArea  , m_pContactCD  ,Qt::Vertical);
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  ,Qt::Vertical);
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW ,Qt::Vertical);
-
-   w->splitDockWidget (m_pContactCD, w->callDock(), Qt::Horizontal);
-   w->tabifyDockWidget(m_pContactCD, m_pHistoryDW );
-   w->tabifyDockWidget(m_pContactCD, m_pBookmarkDW);
-
-   //Force the dock widget aspect ratio, doing this is an HACK
-   m_pHistoryDW ->setMinimumSize(350,0);
-   m_pContactCD ->setMinimumSize(350,0);
-   m_pBookmarkDW->setMinimumSize(350,0);
-
-   m_pHistoryDW ->setMaximumSize(350,999999);
-   m_pContactCD ->setMaximumSize(350,999999);
-   m_pBookmarkDW->setMaximumSize(350,999999);
-
    m_pContactCD-> setVisible(ConfigurationSkeleton::displayContactDock() );
    m_pHistoryDW-> setVisible(ConfigurationSkeleton::displayHistoryDock() );
    m_pBookmarkDW->setVisible(ConfigurationSkeleton::displayBookmarkDock());

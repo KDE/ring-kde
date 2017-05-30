@@ -81,7 +81,7 @@
 
 ///Constructor
 PhoneWindow::PhoneWindow(QWidget*)
-   : FancyMainWindow(), m_pInitialized(false)
+   : FancyMainWindow()
 #ifdef ENABLE_VIDEO
       ,m_pVideoDW(nullptr)
 #endif
@@ -140,11 +140,17 @@ PhoneWindow::PhoneWindow(QWidget*)
    m_pDock            = new Dock    ( this                     );
 
    connect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
-   updateTabIcons();
 
-   selectCallTab();
    setAutoSaveSettings();
+
+   tabifyDockWidget(m_pCentralDW, m_pDock->contactDock ());
+   tabifyDockWidget(m_pCentralDW, m_pDock->historyDock ());
+   tabifyDockWidget(m_pCentralDW, m_pDock->bookmarkDock());
+
+   updateTabIcons();
    createGUI();
+   selectCallTab();
+
 
    if (m_pTrayIcon) {
       m_pTrayIcon->addAction( ActionCollection::instance()->acceptAction  () );
@@ -169,8 +175,6 @@ PhoneWindow::PhoneWindow(QWidget*)
 
    m_pView->setObjectName       ( QStringLiteral("m_pView")       );
    statusBar()->setObjectName   ( QStringLiteral("statusBar")     );
-
-   m_pInitialized = true ;
 
    //Add the toolbar Ring icon
    QList<KToolBar*> toolBars = this->findChildren<KToolBar*>();
@@ -263,8 +267,6 @@ PhoneWindow::PhoneWindow(QWidget*)
 
    if (!ConfigurationSkeleton::autoStartOverride())
       setAutoStart(true);
-
-   initialize();
 } //Ring
 
 ///Destructor
@@ -291,13 +293,6 @@ PhoneWindow::~PhoneWindow()
 
    //saveState();
 }
-
-///Init everything
-bool PhoneWindow::initialize() //TODO deprecate
-{
-   return !m_pInitialized;
-}
-
 
 /*****************************************************************************
  *                                                                           *
