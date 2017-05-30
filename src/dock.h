@@ -30,8 +30,6 @@ class QToolButton;
 class PhoneWindow;
 class DockBase;
 class CategorizedDelegate;
-class RecentDock;
-class ViewContactDock;
 class ContactMethod;
 
 /**
@@ -47,15 +45,11 @@ public:
    DockBase*   contactDock ();
    DockBase*   historyDock ();
    DockBase*   bookmarkDock();
-   RecentDock* recentDock  ();
 
 private:
    DockBase*   m_pContactCD  {nullptr};
    DockBase*   m_pHistoryDW  {nullptr};
    DockBase*   m_pBookmarkDW {nullptr};
-   RecentDock* m_pRecentDock {nullptr};
-
-   ViewContactDock* m_pViewContact {nullptr};
 
    CategorizedDelegate* m_pCategoryDelegate {nullptr};
    CategorizedDelegate* m_pHCategoryDelegate {nullptr};
@@ -65,9 +59,6 @@ public Q_SLOTS:
    void focusContact ();
    void focusCall    ();
    void focusBookmark();
-   void focusRecent  ();
-
-   void viewContact(ContactMethod* cm);
 };
 
 #endif

@@ -67,14 +67,9 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
    QCommandLineOption showTimeL (QStringList { "timeline"   }, i18n("Start with the timeline interface"                                           )                                             );
 
    QCommandLineParser parser;
-   parser.addOptions({call,text,message,icon});
+   parser.addOptions({call,text,message,icon,showPhone,showTimeL});
 
    about.setupCommandLine(&parser);
-
-   qDebug() << "APP" << app;
-
-   qDebug() << app->arguments();
-
 
    parser.process(*app);
 
@@ -88,6 +83,10 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 
    if (parser.isSet(icon))
       iconify();
+   if (parser.isSet(showPhone))
+      phoneInterface();
+   if (parser.isSet(showTimeL))
+      timelineInterface();
 
    if (parser.isSet(text) && parser.isSet(message))
       sendText(parser.value(text),parser.value(message));

@@ -84,9 +84,8 @@ private:
    static PhoneWindow*            m_sApp;
 
 protected:
-   virtual bool  queryClose (                )       override;
-   virtual QSize sizeHint   (                ) const override;
-
+   virtual bool  queryClose ()       override;
+   virtual QSize sizeHint   () const override;
 
 public:
    explicit PhoneWindow(QWidget* parent = nullptr);
@@ -114,7 +113,6 @@ private Q_SLOTS:
    #endif
 
 public Q_SLOTS:
-   void showWizard                               (                               );
    void displayAccountCbb                        ( bool checked = true           );
    void selectCallTab                            (                               );
 };

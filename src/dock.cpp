@@ -48,8 +48,6 @@
 #include "klib/kcfg_settings.h"
 #include <proxies/deduplicateproxy.h>
 #include <proxies/roletransformationproxy.h>
-#include "timeline/recentdock.h"
-#include "timeline/viewcontactdock.h"
 
 class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -200,17 +198,10 @@ Dock::Dock(PhoneWindow* w) : QObject(w)
    auto m = new BookmarkSortFilterProxyModel(this);
    m_pBookmarkDW->setProxyModel(m, m);
 
-   //Timeline dock
-   m_pRecentDock      = new RecentDock ( nullptr );
-   m_pRecentDock->setObjectName(QStringLiteral("timelineDock"));
-   m_pRecentDock->setWindowTitle(i18nc("Bookmark tab","Timeline"));
-   connect(m_pRecentDock, &RecentDock::viewContactMethod, this, &Dock::viewContact);
-
    //GUI
    w->addDockWidget( Qt::LeftDockWidgetArea  , m_pContactCD  ,Qt::Vertical);
    w->addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  ,Qt::Vertical);
    w->addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW ,Qt::Vertical);
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pRecentDock ,Qt::Vertical);
 
    w->splitDockWidget (m_pContactCD, w->callDock(), Qt::Horizontal);
    w->tabifyDockWidget(m_pContactCD, m_pHistoryDW );
@@ -220,22 +211,18 @@ Dock::Dock(PhoneWindow* w) : QObject(w)
    m_pHistoryDW ->setMinimumSize(350,0);
    m_pContactCD ->setMinimumSize(350,0);
    m_pBookmarkDW->setMinimumSize(350,0);
-   m_pRecentDock->setMinimumSize(350,0);
 
    m_pHistoryDW ->setMaximumSize(350,999999);
    m_pContactCD ->setMaximumSize(350,999999);
    m_pBookmarkDW->setMaximumSize(350,999999);
-   m_pRecentDock->setMaximumSize(350,999999);
 
    m_pContactCD-> setVisible(ConfigurationSkeleton::displayContactDock() );
    m_pHistoryDW-> setVisible(ConfigurationSkeleton::displayHistoryDock() );
    m_pBookmarkDW->setVisible(ConfigurationSkeleton::displayBookmarkDock());
-   m_pRecentDock->setVisible(ConfigurationSkeleton::displayRecentDock  ());
 
    connect(ActionCollection::instance()->showContactDockAction(), &QAction::toggled,m_pContactCD, &QWidget::setVisible);
    connect(ActionCollection::instance()->showHistoryDockAction(), &QAction::toggled,m_pHistoryDW, &QWidget::setVisible);
    connect(ActionCollection::instance()->showBookmarkDockAction(),&QAction::toggled,m_pBookmarkDW,&QWidget::setVisible);
-   connect(ActionCollection::instance()->showBookmarkDockAction(),&QAction::toggled,m_pRecentDock,&QWidget::setVisible);
 
    connect( ActionCollection::instance()->focusHistory (), &QAction::triggered, this, &Dock::focusHistory  );
    connect( ActionCollection::instance()->focusContact (), &QAction::triggered, this, &Dock::focusContact  );
@@ -246,7 +233,6 @@ Dock::Dock(PhoneWindow* w) : QObject(w)
    connect(m_pContactCD , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
    connect(m_pHistoryDW , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
    connect(m_pBookmarkDW, &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
-   connect(m_pRecentDock, &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
    w->updateTabIcons();
 }
 
@@ -263,13 +249,11 @@ Dock::~Dock()
    m_pContactCD ->deleteLater();
    m_pHistoryDW ->deleteLater();
    m_pBookmarkDW->deleteLater();
-   m_pRecentDock->deleteLater();
 
    if (!PhoneWindow::app()->isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
       ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
       ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
-      ConfigurationSkeleton::setDisplayBookmarkDock( m_pRecentDock->isVisible() );
    }
 
    delete m_pCategoryDelegate;
@@ -291,29 +275,6 @@ DockBase* Dock::historyDock()
 DockBase* Dock::bookmarkDock()
 {
    return m_pBookmarkDW;
-}
-
-///Return the recent dock
-RecentDock* Dock::recentDock()
-{
-   return m_pRecentDock;
-}
-
-void Dock::viewContact(ContactMethod* cm)
-{
-   if (!m_pViewContact) {
-      m_pViewContact = new ViewContactDock(PhoneWindow::app());
-      m_pViewContact->setObjectName(QStringLiteral("viewContact"));
-      m_pViewContact->setWindowTitle(i18nc("View contact tab","View contact"));
-      PhoneWindow::app()->addDockWidget( Qt::BottomDockWidgetArea, m_pViewContact);
-
-      PhoneWindow::app()->tabifyDockWidget(
-         PhoneWindow::app()->callDock(), m_pViewContact
-      );
-   }
-
-   m_pViewContact->setContactMethod(cm);
-   m_pViewContact->raise();
 }
 
 void Dock::focusHistory()
@@ -342,14 +303,6 @@ void Dock::focusBookmark()
    ActionCollection::instance()->raiseClient(false);
    m_pBookmarkDW->m_pFilterLE->setFocus(Qt::OtherFocusReason);
 }
-
-void Dock::focusRecent()
-{
-   m_pRecentDock->raise();
-   ActionCollection::instance()->raiseClient(false);
-   //m_pRecentDock->m_pFilterLE->setFocus(Qt::OtherFocusReason);
-}
-
 
 #include <dock.moc>
 

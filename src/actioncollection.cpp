@@ -82,7 +82,7 @@ static QString getName(const UserActionModel::Action a)
    return QStringLiteral("FOO");
 }
 
-ActionCollection::ActionCollection(PhoneWindow* parent) : QObject(parent)
+ActionCollection::ActionCollection(FancyMainWindow* parent) : QObject(parent)
 {
    // It is important to init the actions correctly for the menu and KDE global shortcuts
    INIT_ACTION(action_accept        , QIcon(QStringLiteral(":/sharedassets/phone_light/accept.svg"   )), i18n( "Accept"   ));
@@ -126,7 +126,7 @@ ActionCollection::ActionCollection(PhoneWindow* parent) : QObject(parent)
 ActionCollection::~ActionCollection()
 {}
 
-void ActionCollection::setupAction(PhoneWindow* mw)
+void ActionCollection::setupAction(FancyMainWindow* mw)
 {
    // Import standard actions
    action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , PhoneWindow::app());
@@ -254,11 +254,7 @@ void ActionCollection::setupAction(PhoneWindow* mw)
    // Connect actions
    connect(action_mute_capture           , &QAction::toggled   , as                 , &Audio::Settings::muteCapture             );
    connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
-   connect(action_displayAccountCbb      , &QAction::toggled   , mw                 , &PhoneWindow::displayAccountCbb            );
-   connect(action_displayVolumeControls  , &QAction::toggled   , mw->view() , &View::displayVolumeControls              );
-   connect(action_displayDialpad         , &QAction::toggled   , mw->view() , &View::displayDialpad                     );
-   connect(action_show_wizard            , &QAction::triggered , mw                 , &PhoneWindow::showWizard                   );
-   connect(action_pastenumber            , &QAction::triggered , mw->view() , &View::paste                              );
+   connect(action_show_wizard            , &QAction::triggered , RingApplication::instance(), &RingApplication::showWizard                   );
    connect(action_mailBox                , &QAction::triggered , this               , &ActionCollection::mailBox                );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
@@ -322,6 +318,16 @@ void ActionCollection::setupAction(PhoneWindow* mw)
    });
 }
 
+
+void ActionCollection::setupPhoneAction(PhoneWindow* mw)
+{
+   connect(action_displayAccountCbb      , &QAction::toggled   , mw         , &PhoneWindow::displayAccountCbb            );
+   connect(action_displayVolumeControls  , &QAction::toggled   , mw->view() , &View::displayVolumeControls              );
+   connect(action_displayDialpad         , &QAction::toggled   , mw->view() , &View::displayDialpad                     );
+   connect(action_pastenumber            , &QAction::triggered , mw->view() , &View::paste                              );
+
+}
+
 ///Access the voice mail list
 void ActionCollection::mailBox()
 {
@@ -339,7 +345,7 @@ void ActionCollection::mailBox()
          call->performAction(Call::Action::ACCEPT);
       }
       catch(const char * msg) {
-         KMessageBox::error(PhoneWindow::app(),i18n(msg));
+         KMessageBox::error(RingApplication::instance()->mainWindow(),i18n(msg));
       }
       emit windowStateChanged();
    }
@@ -361,19 +367,19 @@ void ActionCollection::configureRing()
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor()
 {
-   KShortcutsDialog::configure( PhoneWindow::app()->actionCollection() );
+   KShortcutsDialog::configure( RingApplication::instance()->mainWindow()->actionCollection() );
 }
 
 ///Display the notification manager
 void ActionCollection::showNotificationEditor()
 {
-   KNotifyConfigWidget::configure(PhoneWindow::app(), QStringLiteral("ring-kde"));
+   KNotifyConfigWidget::configure(RingApplication::instance()->mainWindow(), QStringLiteral("ring-kde"));
 }
 
 ///Show the toolbar editor
 void ActionCollection::editToolBar()
 {
-   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(PhoneWindow::app()->guiFactory());
+   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(RingApplication::instance()->mainWindow()->guiFactory());
    toolbareditor->setModal(true);
    toolbareditor->setDefaultToolBar(QStringLiteral("mainToolBar"));
    toolbareditor->exec();
@@ -384,7 +390,7 @@ void ActionCollection::editToolBar()
 void ActionCollection::addMacro(const QVariant& newAction)
 {
    if (qvariant_cast<QAction*>(newAction))
-      PhoneWindow::app()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
+      RingApplication::instance()->mainWindow()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
 }
 
 void ActionCollection::slotAddPerson()

@@ -63,6 +63,38 @@
 #include "implementation.h"
 #include "wizard/welcome.h"
 #include "video/videowidget.h"
+#include "notification.h"
+
+//Models
+#include <profilemodel.h>
+#include <certificatemodel.h>
+#include <availableaccountmodel.h>
+#include <numbercategorymodel.h>
+// #include <presencestatusmodel.h>
+#include <personmodel.h>
+#include <macromodel.h>
+
+//Collections
+#include <foldercertificatecollection.h>
+#include <fallbackpersoncollection.h>
+#include <localhistorycollection.h>
+#include <localbookmarkcollection.h>
+#include <localrecordingcollection.h>
+#include <localprofilecollection.h>
+#include <localtextrecordingcollection.h>
+#include <globalinstances.h>
+
+//Configurators
+#include "configurator/localhistoryconfigurator.h"
+#include "configurator/audiorecordingconfigurator.h"
+#include "configurator/fallbackpersonconfigurator.h"
+
+//Delegates
+#include <delegates/kdepixmapmanipulation.h>
+// #include <delegates/accountinfodelegate.h>
+#include <interfaces/itemmodelstateserializeri.h>
+#include "klib/itemmodelserialization.h"
+#include "extensions/presencecollectionextension.h"
 
 //QML
 #include "qmlwidgets/plugin.h"
@@ -87,6 +119,8 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
       QTimer::singleShot(5000,this,&RingApplication::daemonTimeout);
    }
+
+   initCollections();
 }
 
 /**
@@ -94,11 +128,8 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
  */
 RingApplication::~RingApplication()
 {
-   if (m_pPhone)
-      delete m_pPhone;
-
-   if (m_pTimeline)
-      delete m_pTimeline;
+   delete &CallModel::instance();
+   delete &PersonModel::instance();
 }
 
 RingApplication* RingApplication::instance(int& argc, char** argv)
@@ -112,6 +143,86 @@ RingApplication* RingApplication::instance()
 {
    int i = 0;
    return RingApplication::instance(i, nullptr);
+}
+
+static void loadNumberCategories()
+{
+   auto& model = NumberCategoryModel::instance();
+   static const QString pathTemplate = QStringLiteral(":/mini/icons/miniicons/%1.png");
+#define ICN(name) QPixmap(QString(pathTemplate).arg(QStringLiteral(name)))
+   model.addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
+   model.addCategory(i18n("Work")     ,ICN("work")     , 2 /*KABC::PhoneNumber::Work */);
+   model.addCategory(i18n("Msg")      ,ICN("mail")     , 3 /*KABC::PhoneNumber::Msg  */);
+   model.addCategory(i18n("Pref")     ,ICN("call")     , 4 /*KABC::PhoneNumber::Pref */);
+   model.addCategory(i18n("Voice")    ,ICN("video")    , 5 /*KABC::PhoneNumber::Voice*/);
+   model.addCategory(i18n("Fax")      ,ICN("call")     , 6 /*KABC::PhoneNumber::Fax  */);
+   model.addCategory(i18n("Cell")     ,ICN("mobile")   , 7 /*KABC::PhoneNumber::Cell */);
+   model.addCategory(i18n("Video")    ,ICN("call")     , 8 /*KABC::PhoneNumber::Video*/);
+   model.addCategory(i18n("Bbs")      ,ICN("call")     , 9 /*KABC::PhoneNumber::Bbs  */);
+   model.addCategory(i18n("Modem")    ,ICN("call")     , 10/*KABC::PhoneNumber::Modem*/);
+   model.addCategory(i18n("Car")      ,ICN("car")      , 11/*KABC::PhoneNumber::Car  */);
+   model.addCategory(i18n("Isdn")     ,ICN("call")     , 12/*KABC::PhoneNumber::Isdn */);
+   model.addCategory(i18n("Pcs")      ,ICN("call")     , 13/*KABC::PhoneNumber::Pcs  */);
+   model.addCategory(i18n("Pager")    ,ICN("pager")    , 14/*KABC::PhoneNumber::Pager*/);
+   model.addCategory(i18n("Preferred"),ICN("preferred"), 10000                         );
+#undef ICN
+#undef IS_ENABLED
+}
+
+void RingApplication::initCollections()
+{
+   GlobalInstances::setInterface<KDEActionExtender>();
+
+   GlobalInstances::setInterface<KDEPixmapManipulation>();
+
+   loadNumberCategories();
+
+   /*******************************************
+      *           Set the configurator          *
+      ******************************************/
+
+   PersonModel::instance()            .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
+   Media::RecordingModel::instance()  .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this));
+   Media::RecordingModel::instance()  .registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this));
+   CategorizedHistoryModel::instance().registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
+
+   /*******************************************
+      *           Load the collections          *
+      ******************************************/
+
+   CategorizedHistoryModel::instance().addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
+
+   ProfileModel::instance().addCollection<LocalProfileCollection>(LoadOptions::FORCE_ENABLED);
+
+#ifdef Q_OS_LINUX
+   CertificateModel::instance().addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
+      QStringLiteral("/usr/share/ca-certificates/"),
+      FolderCertificateCollection::Options::ROOT
+         | FolderCertificateCollection::Options::RECURSIVE
+         | FolderCertificateCollection::Options::READ_ONLY,
+      i18n("System root certificates"),
+      LoadOptions::FORCE_ENABLED
+   );
+#endif
+
+   CategorizedBookmarkModel::instance().addCollection<LocalBookmarkCollection>();
+   CategorizedBookmarkModel::instance().reloadCategories();
+
+   PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
+
+   GlobalInstances::setInterface<ItemModelStateSerialization>();
+   GlobalInstances::itemModelStateSerializer().load();
+
+#ifdef ENABLE_AKONADI
+   AkonadiBackend::initCollections();
+#endif
+
+//       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
+//       PersonModel::instance().backendModel()->addExtension(ext); //FIXME
+
+   ProfileModel::instance();
+
+   Notification::instance();
 }
 
 ///Parse command line arguments
@@ -141,10 +252,13 @@ int RingApplication::newInstance()
    //Only call on the first instance
    if (init) {
       init = false;
-      auto mw = RingApplication::phoneWindow();
-      if( ! mw->initialize() ) {
-         return 1;
-      };
+
+      FancyMainWindow* mw = nullptr;
+
+      if (m_StartPhone)
+         mw = RingApplication::phoneWindow();
+      else
+         mw = RingApplication::timelineWindow();
 
       if (ConfigurationSkeleton::displayOnStart())
          mw->show();
@@ -267,6 +381,16 @@ void RingApplication::daemonTimeout()
       KMessageBox::error(mainWindow(), ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }
+}
+
+void RingApplication::showWizard()
+{
+   RingApplication::engine()->rootContext()->setContextProperty(
+      "wizardWelcomeOnly", QVariant(false)
+   );
+
+   auto wiz = new WelcomeDialog();
+   wiz->show();
 }
 
 ///Exit gracefully

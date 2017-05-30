@@ -38,4 +38,5 @@ private:
 
 public Q_SLOTS:
     void updateTabIcons();
+    void showPhone();
 };

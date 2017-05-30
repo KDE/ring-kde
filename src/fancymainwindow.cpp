@@ -17,15 +17,19 @@
  **************************************************************************/
 #include "fancymainwindow.h"
 
-//Qt
+// Qt
 #include <QtCore/QResource>
 #include <QtCore/QEvent>
 #include <QtCore/QDebug>
 #include <QtWidgets/QTabBar>
 #include <QtWidgets/QToolButton>
 
-//KDE
+// KDE
 #include <klocalizedstring.h>
+
+// Ring
+#include "ringapplication.h"
+#include "phonewindow.h"
 
 FancyMainWindow::FancyMainWindow() : KXmlGuiWindow()
 {
@@ -35,7 +39,8 @@ FancyMainWindow::FancyMainWindow() : KXmlGuiWindow()
 
 FancyMainWindow::~FancyMainWindow()
 {
-
+    removeEventFilter(this);
+    disconnect();
 }
 
 bool FancyMainWindow::eventFilter(QObject *obj, QEvent *event)
@@ -73,8 +78,14 @@ void FancyMainWindow::updateTabIcons()
     QList<QTabBar*> tabBars = findChildren<QTabBar*>();
     if(tabBars.count()) {
         foreach(QTabBar* bar, tabBars) {
+
+            // Only do the funky hack if the tab are on the left //TODO support RTL
+            const auto pt = bar->mapTo(this, {0,0});
+            const bool isMainToolbar = (dockOptions()&QMainWindow::VerticalTabs)
+                && pt.x() < 20 && pt.y() <= 64;
+
             // Attach an event filter
-            if (!m_hEventFilters.contains(bar)) {
+            if (isMainToolbar && !m_hEventFilters.contains(bar)) {
                 bar->installEventFilter(this);
 
                 auto tb = new QToolButton(bar);
@@ -86,12 +97,10 @@ void FancyMainWindow::updateTabIcons()
                 "background-color: transparent; background: none;"
                 ));
 
+                connect(tb, &QToolButton::clicked, this, &FancyMainWindow::showPhone);
+
                 m_hEventFilters[bar] = tb;
             }
-
-            // Only do the funky hack if the tab are on the left //TODO support RTL
-            const auto pt = bar->mapTo(this, {0,0});
-            const bool isMainToolbar = pt.x() < 20 && pt.y() <= 64;
 
             if (isMainToolbar)
                 bar->setIconSize(QSize(64, 64));
@@ -138,4 +147,10 @@ void FancyMainWindow::updateTabIcons()
             }
         }
     }
+}
+
+void FancyMainWindow::showPhone()
+{
+    RingApplication::instance()->phoneWindow()->show();
+    RingApplication::instance()->phoneWindow()->raise();
 }

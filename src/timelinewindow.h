@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2015-2017 by Emmanuel Lepage Vallee                     *
+ *   Copyright (C) 2017 by Emmanuel Lepage Vallee                          *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,6 +19,11 @@
 
 #include "fancymainwindow.h"
 
+class RecentDock;
+class ContactMethod;
+class ViewContactDock;
+class DockBase;
+
 class TimelineWindow : public FancyMainWindow
 {
     Q_OBJECT
@@ -26,4 +31,12 @@ class TimelineWindow : public FancyMainWindow
 public:
     explicit TimelineWindow();
     virtual ~TimelineWindow();
+
+private:
+    RecentDock* m_pPeersTimeline;
+    ViewContactDock* m_pViewContact {nullptr};
+    DockBase* m_pContactCD;
+
+public Q_SLOTS:
+    void viewContact(ContactMethod* cm);
 };

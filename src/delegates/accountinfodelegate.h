@@ -32,11 +32,11 @@ public:
    virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
 
-class AccountIndoProxy : public PollingProxy
+class AccountInfoProxy : public PollingProxy
 {
    Q_OBJECT
 public:
-   explicit AccountIndoProxy(QAbstractItemModel* m) : PollingProxy(m){}
+   explicit AccountInfoProxy(QAbstractItemModel* m) : PollingProxy(m){}
    virtual QVariant data( const QModelIndex& index, int role ) const override;
 };
 

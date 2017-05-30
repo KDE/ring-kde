@@ -44,6 +44,7 @@ public:
 
    // Manage new instances
    Q_INVOKABLE virtual int newInstance();
+   void initCollections();
 
    // Exit gracefully
    virtual bool notify (QObject* receiver, QEvent* e) override;
@@ -76,6 +77,9 @@ private:
 
 private Q_SLOTS:
    void daemonTimeout();
+
+public Q_SLOTS:
+   void showWizard();
 };
 
 #endif // RINGAPPLICATION_H

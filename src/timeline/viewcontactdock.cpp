@@ -24,6 +24,7 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
 #include <QtGui/QIcon>
+#include <QtWidgets/QHBoxLayout>
 #include <QtCore/QMimeData>
 
 #include <../ringapplication.h>
@@ -39,14 +40,15 @@ public:
 };
 
 ViewContactDock::ViewContactDock(QWidget* parent) :
-    QDockWidget(parent), d_ptr(new ViewContactDockPrivate)
+    QWidget(parent), d_ptr(new ViewContactDockPrivate)
 {
     d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
 
     d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     d_ptr->m_pQuickWidget->setSource(QUrl("qrc:/viewcontact.qml"));
 
-    setWidget(d_ptr->m_pQuickWidget);
+    auto l = new QHBoxLayout(this);
+    l->addWidget(d_ptr->m_pQuickWidget);
     setAcceptDrops(true);
     installEventFilter(this);
 }
