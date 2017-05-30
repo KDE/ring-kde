@@ -264,6 +264,7 @@ SET(
    main.cpp
    view.cpp
    mainwindow.cpp
+   fancymainwindow.cpp
    cmd.cpp
    dock.cpp
    notification.cpp

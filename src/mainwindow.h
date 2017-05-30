@@ -19,7 +19,7 @@
 #ifndef RING_H
 #define RING_H
 
-#include <KXmlGuiWindow>
+#include "fancymainwindow.h"
 
 //Qt
 class QString;
@@ -57,10 +57,10 @@ namespace Video {
  *
  * @short Main window
  * @author Jérémy Quentin <jeremy.quentin@savoirfairelinux.com>
- * @author Emmanuel Lepage <elv1313@gmail.com>                   
+ * @author Emmanuel Lepage <elv1313@gmail.com>
  * @version 1.4.1
 **/
-class MainWindow : public KXmlGuiWindow
+class MainWindow : public FancyMainWindow
 {
 Q_OBJECT
 

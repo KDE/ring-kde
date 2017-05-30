@@ -133,8 +133,8 @@ static void loadNumberCategories()
 }
 
 ///Constructor
-MainWindow::MainWindow(QWidget* parent)
-   : KXmlGuiWindow(parent), m_pInitialized(false)
+MainWindow::MainWindow(QWidget*)
+   : FancyMainWindow(), m_pInitialized(false)
 #ifdef ENABLE_VIDEO
       ,m_pVideoDW(nullptr)
 #endif
@@ -255,10 +255,8 @@ MainWindow::MainWindow(QWidget* parent)
    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
    m_pDock            = new Dock    ( this                     );
 
-   QTimer::singleShot(0, [this]() {
-      connect(m_pCentralDW, &QDockWidget::visibilityChanged,m_pDock, &Dock::updateTabIcons);
-      m_pDock->updateTabIcons();
-   });
+   connect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &MainWindow::updateTabIcons);
+   updateTabIcons();
 
    selectCallTab();
    setAutoSaveSettings();
@@ -502,7 +500,7 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
 
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock();
-      connect(m_pVideoDW ,&QDockWidget::visibilityChanged,m_pDock,&Dock::updateTabIcons);
+      connect(m_pVideoDW ,&QDockWidget::visibilityChanged, this, &MainWindow::updateTabIcons);
    }
 
    if (auto vid = c->firstMedia<Media::Video>(Media::Media::Direction::OUT))

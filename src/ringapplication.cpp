@@ -112,7 +112,6 @@ RingApplication* RingApplication::instance()
 ///Parse command line arguments
 int RingApplication::newInstance()
 {
-   qDebug() << "\n\nNEW INSTANCE!!";
    static bool wizardshown = false;
 
    // The first run wizard
@@ -142,7 +141,6 @@ int RingApplication::newInstance()
          return 1;
       };
 
-      qDebug() << "\n\nHERE" << ConfigurationSkeleton::displayOnStart();
       if (ConfigurationSkeleton::displayOnStart())
          mw->show();
       else
