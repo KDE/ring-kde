@@ -33,7 +33,7 @@
 
 //Ring
 #include "icons/icons.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "widgets/menumodelview.h"
 #include "useractionmodel.h"
 #include "canvasobjectmanager.h"
@@ -231,9 +231,9 @@ void View::incomingCall(Call* call)
    qDebug() << "Signal : Incoming Call ! ID = " << call;
 
    if (ConfigurationSkeleton::displayOnCalls()) {
-      MainWindow::app()->activateWindow(      );
-      MainWindow::app()->raise         (      );
-      MainWindow::app()->setVisible    ( true );
+      PhoneWindow::app()->activateWindow(      );
+      PhoneWindow::app()->raise         (      );
+      PhoneWindow::app()->setVisible    ( true );
    }
 
    const QModelIndex& idx = CallModel::instance().getIndex(call);

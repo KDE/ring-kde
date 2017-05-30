@@ -30,7 +30,7 @@
 //Ring
 #include <macromodel.h>
 #include <macro.h>
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include <conf/account/delegates/categorizeddelegate.h>
 
 ///Constructor
@@ -148,7 +148,7 @@ void DlgAccessibility::selectMacro(Macro* macro)
       QAction* a = qvariant_cast<QAction*>(macro->action());
 
       if (a) {
-         static KActionCollection* c = MainWindow::app()->actionCollection();
+         static KActionCollection* c = PhoneWindow::app()->actionCollection();
          m_pShortcuts->setCheckActionCollections({c});
          m_pShortcuts->setShortcut({a->shortcut()});
       }

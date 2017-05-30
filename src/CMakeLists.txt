@@ -263,7 +263,8 @@ SET(
    ring_kde_SRCS
    main.cpp
    view.cpp
-   mainwindow.cpp
+   phonewindow.cpp
+   timelinewindow.cpp
    fancymainwindow.cpp
    cmd.cpp
    dock.cpp

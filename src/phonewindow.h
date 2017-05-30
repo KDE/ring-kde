@@ -60,7 +60,7 @@ namespace Video {
  * @author Emmanuel Lepage <elv1313@gmail.com>
  * @version 1.4.1
 **/
-class MainWindow : public FancyMainWindow
+class PhoneWindow : public FancyMainWindow
 {
 Q_OBJECT
 
@@ -81,7 +81,7 @@ private:
    QLabel*        m_pCurAccL         ;
    Dock*          m_pDock            ;
 
-   static MainWindow*            m_sApp;
+   static PhoneWindow*            m_sApp;
 
 protected:
    virtual bool  queryClose (                )       override;
@@ -89,13 +89,13 @@ protected:
 
 
 public:
-   explicit MainWindow(QWidget* parent = nullptr);
-   virtual ~MainWindow();
+   explicit PhoneWindow(QWidget* parent = nullptr);
+   virtual ~PhoneWindow();
    bool initialize();
 
    friend class View;
 
-   static MainWindow* app  ();
+   static PhoneWindow* app  ();
    View* view ();
 
    bool isAutoStart() const;

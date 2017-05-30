@@ -27,7 +27,7 @@ class QMainWindow;
 class QToolButton;
 
 // Ring
-class MainWindow;
+class PhoneWindow;
 class DockBase;
 class CategorizedDelegate;
 class RecentDock;
@@ -41,7 +41,7 @@ class Dock : public QObject
 {
    Q_OBJECT
 public:
-   explicit Dock(MainWindow* w);
+   explicit Dock(PhoneWindow* w);
    virtual ~Dock();
 
    DockBase*   contactDock ();

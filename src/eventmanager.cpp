@@ -39,7 +39,7 @@
 #include <personmodel.h>
 #include <tip/tipmanager.h>
 #include "view.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "actioncollection.h"
 #include "useractionmodel.h"
 #include "canvasobjectmanager.h"
@@ -51,12 +51,12 @@
 bool EventManager::m_HasFocus = false;
 
 //This code detect if the window is active, innactive or minimzed
-class MainWindowEvent : public QObject {
+class PhoneWindowEvent : public QObject {
    Q_OBJECT
 public:
-   MainWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
+   PhoneWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
       QTimer::singleShot(0, [this]() {
-         MainWindow::app()->installEventFilter(this);
+         PhoneWindow::app()->installEventFilter(this);
       });
    }
 protected:
@@ -64,7 +64,7 @@ protected:
       Q_UNUSED(obj)
       if (event->type() == QEvent::WindowStateChange) {
          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
-         switch (MainWindow::app()->windowState()) {
+         switch (PhoneWindow::app()->windowState()) {
             case Qt::WindowMinimized:
                emit minimized(true);
                break;
@@ -98,12 +98,12 @@ Q_SIGNALS:
 };
 
 ///Constructor
-EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent(this))
+EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pPhoneWindowEv(new PhoneWindowEvent(this))
 {
    connect(&CallModel::instance()    , &CallModel::callStateChanged , this, &EventManager::slotCallStateChanged );
    connect(&CallModel::instance()    , &CallModel::incomingCall                 , this, &EventManager::slotIncomingCall );
 
-   connect(m_pMainWindowEv , &MainWindowEvent::minimized , m_pParent->m_pCanvasManager, &CanvasObjectManager::slotMinimized);
+   connect(m_pPhoneWindowEv , &PhoneWindowEvent::minimized , m_pParent->m_pCanvasManager, &CanvasObjectManager::slotMinimized);
 
    connect(&AccountModel::instance(),&AccountModel::registrationChanged,this,&EventManager::slotregistrationChanged);
    connect(&AccountModel::instance(),&AccountModel::badGateway,this,&EventManager::slotNetworkDown);
@@ -114,7 +114,7 @@ EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pM
 ///Destructor
 EventManager::~EventManager()
 {
-   delete m_pMainWindowEv;
+   delete m_pPhoneWindowEv;
 }
 
 /*****************************************************************************
@@ -519,7 +519,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
    switch (call->state()) {
       case Call::State::RINGING:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-         MainWindow::app()->selectCallTab();
+         PhoneWindow::app()->selectCallTab();
          break;
       case Call::State::DIALING:
       case Call::State::NEW:
@@ -595,7 +595,7 @@ void EventManager::slotIncomingCall(Call* call)
    Q_UNUSED(call)
    if (call->state() == Call::State::INCOMING || call->state() == Call::State::RINGING) {
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-      MainWindow::app()->selectCallTab();
+      PhoneWindow::app()->selectCallTab();
    }
 }
 

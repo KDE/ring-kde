@@ -26,7 +26,9 @@ class QEvent;
 class QQmlApplicationEngine;
 
 //Ring
-class MainWindow;
+class PhoneWindow;
+class TimelineWindow;
+class FancyMainWindow;
 
 ///RingApplication: Main application
 class RingApplication : public QApplication
@@ -49,9 +51,9 @@ public:
    //Getter
    bool startIconified() const;
 
-   MainWindow* phoneWindow() const;
-   MainWindow* timelineWindow() const;
-   MainWindow* mainWindow() const;
+   PhoneWindow* phoneWindow() const;
+   TimelineWindow* timelineWindow() const;
+   FancyMainWindow* mainWindow() const;
 
    static QQmlApplicationEngine* engine();
 
@@ -69,8 +71,8 @@ private:
    bool m_StartPhone     {false};
    bool m_StartTimeLine  {false};
 
-   mutable MainWindow* m_pPhone {nullptr};
-   mutable MainWindow* m_pTimeline {nullptr};
+   mutable PhoneWindow* m_pPhone {nullptr};
+   mutable TimelineWindow* m_pTimeline {nullptr};
 
 private Q_SLOTS:
    void daemonTimeout();

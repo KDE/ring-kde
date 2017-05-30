@@ -56,7 +56,8 @@
 //Ring
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
+#include "timelinewindow.h"
 #include "errormessage.h"
 #include "callmodel.h"
 #include "implementation.h"
@@ -93,7 +94,11 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
  */
 RingApplication::~RingApplication()
 {
-   delete MainWindow::app();
+   if (m_pPhone)
+      delete m_pPhone;
+
+   if (m_pTimeline)
+      delete m_pTimeline;
 }
 
 RingApplication* RingApplication::instance(int& argc, char** argv)
@@ -231,23 +236,23 @@ QQmlApplicationEngine* RingApplication::engine()
 #undef QML_TYPE
 #undef QML_SINGLETON
 
-MainWindow* RingApplication::phoneWindow() const
+PhoneWindow* RingApplication::phoneWindow() const
 {
    if (!m_pPhone)
-      m_pPhone = new MainWindow(nullptr);
+      m_pPhone = new PhoneWindow(nullptr);
 
    return m_pPhone;
 }
 
-MainWindow* RingApplication::timelineWindow() const
+TimelineWindow* RingApplication::timelineWindow() const
 {
    if (!m_pTimeline)
-      m_pTimeline = new MainWindow(nullptr);
+      m_pTimeline = new TimelineWindow();
 
    return m_pTimeline;
 }
 
-MainWindow* RingApplication::mainWindow() const
+FancyMainWindow* RingApplication::mainWindow() const
 {
    if (m_pPhone && !m_pTimeline)
       return m_pPhone;
@@ -259,7 +264,7 @@ MainWindow* RingApplication::mainWindow() const
 void RingApplication::daemonTimeout()
 {
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
-      KMessageBox::error(phoneWindow(), ErrorMessage::NO_DAEMON_ERROR);
+      KMessageBox::error(mainWindow(), ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }
 }
@@ -279,12 +284,12 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (const QString& errorMessage) {
-      KMessageBox::error(MainWindow::app(),errorMessage);
+      KMessageBox::error(mainWindow(),errorMessage);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (...) {
       qDebug() << ErrorMessage::GENERIC_ERROR;
-      KMessageBox::error(MainWindow::app(),ErrorMessage::GENERIC_ERROR);
+      KMessageBox::error(mainWindow(),ErrorMessage::GENERIC_ERROR);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    return false;

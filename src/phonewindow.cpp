@@ -18,7 +18,7 @@
  **************************************************************************/
 
 //Parent
-#include "mainwindow.h"
+#include "phonewindow.h"
 
 //System
 #include <unistd.h>
@@ -133,7 +133,7 @@ static void loadNumberCategories()
 }
 
 ///Constructor
-MainWindow::MainWindow(QWidget*)
+PhoneWindow::PhoneWindow(QWidget*)
    : FancyMainWindow(), m_pInitialized(false)
 #ifdef ENABLE_VIDEO
       ,m_pVideoDW(nullptr)
@@ -255,7 +255,7 @@ MainWindow::MainWindow(QWidget*)
    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
    m_pDock            = new Dock    ( this                     );
 
-   connect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &MainWindow::updateTabIcons);
+   connect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
    updateTabIcons();
 
    selectCallTab();
@@ -270,11 +270,11 @@ MainWindow::MainWindow(QWidget*)
       m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );
    }
 
-   connect(CallModel::instance().selectionModel(),&QItemSelectionModel::currentRowChanged,this,&MainWindow::selectCallTab);
+   connect(CallModel::instance().selectionModel(),&QItemSelectionModel::currentRowChanged,this,&PhoneWindow::selectCallTab);
 
 #ifdef ENABLE_VIDEO
-   connect(&CallModel::instance(),&CallModel::rendererAdded,this,&MainWindow::displayVideoDock);
-   connect(&CallModel::instance(),&CallModel::rendererRemoved,this,&MainWindow::hideVideoDock);
+   connect(&CallModel::instance(),&CallModel::rendererAdded,this,&PhoneWindow::displayVideoDock);
+   connect(&CallModel::instance(),&CallModel::rendererRemoved,this,&PhoneWindow::hideVideoDock);
 #endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
@@ -322,9 +322,9 @@ MainWindow::MainWindow(QWidget*)
    m_pPresent->setVisible(false/*AccountModel::instance().isPresenceEnabled() && AccountModel::instance().isPresencePublishSupported()*/);
 //    m_pPresent->setStyleSheet("background-color:red;");
    bar->addWidget(m_pPresent);
-   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::currentNameChanged,this,&MainWindow::updatePresence);
-   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::currentNameChanged,this,&MainWindow::hidePresenceDock);
-   connect(&AccountModel::instance(),&AccountModel::presenceEnabledChanged,this,&MainWindow::slotPresenceEnabled);
+   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::currentNameChanged,this,&PhoneWindow::updatePresence);
+   connect(&PresenceStatusModel::instance(),&PresenceStatusModel::currentNameChanged,this,&PhoneWindow::hidePresenceDock);
+   connect(&AccountModel::instance(),&AccountModel::presenceEnabledChanged,this,&PhoneWindow::slotPresenceEnabled);
 
    //Add the Ring hash
    bar->addWidget(new QLabel(i18n("Your Ring ID:"),bar));
@@ -383,7 +383,7 @@ MainWindow::MainWindow(QWidget*)
 } //Ring
 
 ///Destructor
-MainWindow::~MainWindow()
+PhoneWindow::~PhoneWindow()
 {
    m_pDock->deleteLater();
 
@@ -402,7 +402,7 @@ MainWindow::~MainWindow()
 }
 
 ///Init everything
-bool MainWindow::initialize() //TODO deprecate
+bool PhoneWindow::initialize() //TODO deprecate
 {
    return !m_pInitialized;
 }
@@ -415,13 +415,13 @@ bool MainWindow::initialize() //TODO deprecate
  ****************************************************************************/
 
 ///Singleton
-MainWindow* MainWindow::app()
+PhoneWindow* PhoneWindow::app()
 {
    return RingApplication::instance()->phoneWindow();
 }
 
 ///Get the view (to be used with the singleton)
-View* MainWindow::view()
+View* PhoneWindow::view()
 {
    return m_pView;
 }
@@ -433,7 +433,7 @@ View* MainWindow::view()
  ****************************************************************************/
 
 ///[Action]Hide Ring
-bool MainWindow::queryClose()
+bool PhoneWindow::queryClose()
 {
    if (!isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pDock->contactDock()->isVisible()  );
@@ -445,18 +445,18 @@ bool MainWindow::queryClose()
 }
 
 ///Be sure the default size is look like a phone
-QSize MainWindow::sizeHint() const
+QSize PhoneWindow::sizeHint() const
 {
    return QSize(340,700);
 }
 
 ///[Action] Quit action
-void MainWindow::quitButton()
+void PhoneWindow::quitButton()
 {
    qApp->quit();
 }
 
-void MainWindow::showWizard()
+void PhoneWindow::showWizard()
 {
    RingApplication::engine()->rootContext()->setContextProperty(
       "wizardWelcomeOnly", QVariant(false)
@@ -466,7 +466,7 @@ void MainWindow::showWizard()
    wiz->show();
 }
 
-void MainWindow::displayAccountCbb( bool checked )
+void PhoneWindow::displayAccountCbb( bool checked )
 {
    m_pAccountStatus->setVisible(checked);
    m_pCurAccL->setVisible(checked);
@@ -474,33 +474,33 @@ void MainWindow::displayAccountCbb( bool checked )
 }
 
 ///Hide or show the statusbar presence widget
-void MainWindow::slotPresenceEnabled(bool state)
+void PhoneWindow::slotPresenceEnabled(bool state)
 {
    m_pPresent->setVisible(state && AccountModel::instance().isPresencePublishSupported());
 }
 
 ///Update presence label
-void MainWindow::updatePresence(const QString& status)
+void PhoneWindow::updatePresence(const QString& status)
 {
    m_pPresent->setText(status);
    m_pPresent->setToolTip(PresenceStatusModel::instance().currentMessage());
 }
 
 ///Hide the presence dock when not required
-void MainWindow::hidePresenceDock()
+void PhoneWindow::hidePresenceDock()
 {
    m_pPresent->setChecked(false);
 }
 
 #ifdef ENABLE_VIDEO
 ///Display the video dock
-void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
+void PhoneWindow::displayVideoDock(Call* c, Video::Renderer* r)
 {
    Q_UNUSED(c)
 
    if (!m_pVideoDW) {
       m_pVideoDW = new VideoDock();
-      connect(m_pVideoDW ,&QDockWidget::visibilityChanged, this, &MainWindow::updateTabIcons);
+      connect(m_pVideoDW ,&QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
    }
 
    if (auto vid = c->firstMedia<Media::Video>(Media::Media::Direction::OUT))
@@ -516,7 +516,7 @@ void MainWindow::displayVideoDock(Call* c, Video::Renderer* r)
    });
 }
 
-void MainWindow::hideVideoDock(Call* c, Video::Renderer* r)
+void PhoneWindow::hideVideoDock(Call* c, Video::Renderer* r)
 {
    Q_UNUSED(c)
    Q_UNUSED(r)
@@ -533,7 +533,7 @@ void MainWindow::hideVideoDock(Call* c, Video::Renderer* r)
 #endif
 
 ///Select the call tab
-void MainWindow::selectCallTab()
+void PhoneWindow::selectCallTab()
 {
    QList<QTabBar*> tabBars = this->findChildren<QTabBar*>();
    if(tabBars.count()) {
@@ -548,7 +548,7 @@ void MainWindow::selectCallTab()
    }
 }
 
-bool MainWindow::isAutoStart() const
+bool PhoneWindow::isAutoStart() const
 {
    const bool enabled = ConfigurationSkeleton::autoStart();
 
@@ -563,7 +563,7 @@ bool MainWindow::isAutoStart() const
    return ConfigurationSkeleton::autoStart();
 }
 
-void MainWindow::setAutoStart(bool value)
+void PhoneWindow::setAutoStart(bool value)
 {
    Q_UNUSED(value)
 
@@ -587,7 +587,7 @@ void MainWindow::setAutoStart(bool value)
    }
 }
 
-QDockWidget* MainWindow::callDock() const
+QDockWidget* PhoneWindow::callDock() const
 {
    return m_pCentralDW;
 }

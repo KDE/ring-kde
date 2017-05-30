@@ -28,7 +28,7 @@
 #include <categorizedcontactmodel.h>
 
 //Ring
-#include "mainwindow.h"
+#include "phonewindow.h"
 
 ///Constructor
 DlgDisplay::DlgDisplay(KConfigDialog *parent)
@@ -60,7 +60,7 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
    connect(m_pDetailsList   , &QListWidget::itemChanged  , this  , &DlgDisplay::changed      );
    connect(this,SIGNAL(updateButtons()), parent , SLOT(updateButtons()));
 
-   MainWindow::app()->isAutoStart();
+   PhoneWindow::app()->isAutoStart();
 }
 
 ///Destructor
@@ -84,7 +84,7 @@ void DlgDisplay::changed()
 ///Update all widgets
 void DlgDisplay::updateWidgets()
 {
-   kcfg_autoStart->setChecked(MainWindow::app()->isAutoStart());
+   kcfg_autoStart->setChecked(PhoneWindow::app()->isAutoStart());
 }
 
 ///Save current settings
@@ -103,7 +103,7 @@ void DlgDisplay::updateSettings()
    if (ConfigurationSkeleton::hideUnreachable() != kcfg_hideUnreachable->isChecked())
       CategorizedContactModel::instance().setUnreachableHidden(kcfg_hideUnreachable->isChecked());
 
-   MainWindow::app()->setAutoStart(kcfg_autoStart->isChecked());
+   PhoneWindow::app()->setAutoStart(kcfg_autoStart->isChecked());
 
    m_HasChanged = false;
 }

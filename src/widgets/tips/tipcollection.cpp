@@ -25,7 +25,7 @@
 #include "searchingtip.h"
 #include "conftip.h"
 #include "removeconferencetip.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include <tip/tipmanager.h>
 #include "view.h"
 #include "widgets/autocompletion.h"
@@ -81,7 +81,7 @@ QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
 {
    switch(obj) {
       case CanvasObjectManager::Object::AutoComplete:
-         return MainWindow::app()->view()->autoCompletion();
+         return PhoneWindow::app()->view()->autoCompletion();
       case CanvasObjectManager::Object::DialInfo:
       case CanvasObjectManager::Object::EndCall :
       case CanvasObjectManager::Object::Ringing :

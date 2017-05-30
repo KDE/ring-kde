@@ -38,7 +38,7 @@
 
 //Ring
 #include "globalinstances.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "ringapplication.h"
 #include "view.h"
 #include "localmacrocollection.h"
@@ -82,7 +82,7 @@ static QString getName(const UserActionModel::Action a)
    return QStringLiteral("FOO");
 }
 
-ActionCollection::ActionCollection(MainWindow* parent) : QObject(parent)
+ActionCollection::ActionCollection(PhoneWindow* parent) : QObject(parent)
 {
    // It is important to init the actions correctly for the menu and KDE global shortcuts
    INIT_ACTION(action_accept        , QIcon(QStringLiteral(":/sharedassets/phone_light/accept.svg"   )), i18n( "Accept"   ));
@@ -126,11 +126,11 @@ ActionCollection::ActionCollection(MainWindow* parent) : QObject(parent)
 ActionCollection::~ActionCollection()
 {}
 
-void ActionCollection::setupAction(MainWindow* mw)
+void ActionCollection::setupAction(PhoneWindow* mw)
 {
    // Import standard actions
-   action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , MainWindow::app());
-   action_close_timeline= new QAction();//KStandardAction::close      ( RingApplication::instance()->timelineWindow(), SLOT(close())        , MainWindow::app());
+   action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , PhoneWindow::app());
+   action_close_timeline= new QAction();//KStandardAction::close      ( RingApplication::instance()->timelineWindow(), SLOT(close())        , PhoneWindow::app());
    action_quit          = KStandardAction::quit       ( RingApplication::instance(), SLOT(quit())   , this);
    action_configureRing = KStandardAction::preferences( this             , SLOT(configureRing()), this);
 
@@ -254,10 +254,10 @@ void ActionCollection::setupAction(MainWindow* mw)
    // Connect actions
    connect(action_mute_capture           , &QAction::toggled   , as                 , &Audio::Settings::muteCapture             );
    connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
-   connect(action_displayAccountCbb      , &QAction::toggled   , mw                 , &MainWindow::displayAccountCbb            );
+   connect(action_displayAccountCbb      , &QAction::toggled   , mw                 , &PhoneWindow::displayAccountCbb            );
    connect(action_displayVolumeControls  , &QAction::toggled   , mw->view() , &View::displayVolumeControls              );
    connect(action_displayDialpad         , &QAction::toggled   , mw->view() , &View::displayDialpad                     );
-   connect(action_show_wizard            , &QAction::triggered , mw                 , &MainWindow::showWizard                   );
+   connect(action_show_wizard            , &QAction::triggered , mw                 , &PhoneWindow::showWizard                   );
    connect(action_pastenumber            , &QAction::triggered , mw->view() , &View::paste                              );
    connect(action_mailBox                , &QAction::triggered , this               , &ActionCollection::mailBox                );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
@@ -339,19 +339,19 @@ void ActionCollection::mailBox()
          call->performAction(Call::Action::ACCEPT);
       }
       catch(const char * msg) {
-         KMessageBox::error(MainWindow::app(),i18n(msg));
+         KMessageBox::error(PhoneWindow::app(),i18n(msg));
       }
       emit windowStateChanged();
    }
    else {
-      HelperFunctions::displayNoAccountMessageBox(MainWindow::app()->view());
+      HelperFunctions::displayNoAccountMessageBox(PhoneWindow::app()->view());
    }
 }
 
 ///Show the configuration dialog
 void ActionCollection::configureRing()
 {
-   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(MainWindow::app()->view());
+   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(PhoneWindow::app()->view());
    configDialog->setModal(true);
 
    configDialog->exec();
@@ -361,19 +361,19 @@ void ActionCollection::configureRing()
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor()
 {
-   KShortcutsDialog::configure( MainWindow::app()->actionCollection() );
+   KShortcutsDialog::configure( PhoneWindow::app()->actionCollection() );
 }
 
 ///Display the notification manager
 void ActionCollection::showNotificationEditor()
 {
-   KNotifyConfigWidget::configure(MainWindow::app(), QStringLiteral("ring-kde"));
+   KNotifyConfigWidget::configure(PhoneWindow::app(), QStringLiteral("ring-kde"));
 }
 
 ///Show the toolbar editor
 void ActionCollection::editToolBar()
 {
-   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(MainWindow::app()->guiFactory());
+   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(PhoneWindow::app()->guiFactory());
    toolbareditor->setModal(true);
    toolbareditor->setDefaultToolBar(QStringLiteral("mainToolBar"));
    toolbareditor->exec();
@@ -384,7 +384,7 @@ void ActionCollection::editToolBar()
 void ActionCollection::addMacro(const QVariant& newAction)
 {
    if (qvariant_cast<QAction*>(newAction))
-      MainWindow::app()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
+      PhoneWindow::app()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
 }
 
 void ActionCollection::slotAddPerson()
@@ -406,7 +406,7 @@ void ActionCollection::updateRecordButton()
 
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
    ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
-   MainWindow::app()->view()->updateVolumeControls();
+   PhoneWindow::app()->view()->updateVolumeControls();
 }
 
 ///Update the colunm button icon
@@ -422,7 +422,7 @@ void ActionCollection::updateVolumeButton()
 
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
-   MainWindow::app()->view()->updateVolumeControls();
+   PhoneWindow::app()->view()->updateVolumeControls();
 }
 
 void ActionCollection::slotNewContact()
@@ -455,15 +455,15 @@ void ActionCollection::slotNewContact()
 ///Raise the main window to the foreground
 void ActionCollection::raiseClient(bool focus)
 {
-   MainWindow::app()->show          ();
-   MainWindow::app()->activateWindow();
-   MainWindow::app()->raise         ();
+   PhoneWindow::app()->show          ();
+   PhoneWindow::app()->activateWindow();
+   PhoneWindow::app()->raise         ();
 
    if (focus) {
       // Add a new call if there is none
       if (!CallModel::instance().rowCount())
          CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
-      MainWindow::app()->view()->setFocus(Qt::OtherFocusReason);
+      PhoneWindow::app()->view()->setFocus(Qt::OtherFocusReason);
    }
 }
 

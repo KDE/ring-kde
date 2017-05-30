@@ -37,7 +37,7 @@
 #include <media/recordingmodel.h>
 
 // Ring-KDE
-#include <mainwindow.h>
+#include <phonewindow.h>
 #include <view.h>
 #include <eventmanager.h>
 
@@ -68,7 +68,7 @@ private Q_SLOTS:
 };
 
 IncomingCallNotification::IncomingCallNotification(Call* call) : KNotification(
-   QStringLiteral("incomingCall"), MainWindow::app()->view(), NotificationFlag::Persistent  ),
+   QStringLiteral("incomingCall"), PhoneWindow::app()->view(), NotificationFlag::Persistent  ),
    m_pCall(call)
 {
 
@@ -137,7 +137,7 @@ public:
 };
 
 IncomingTextNotification::IncomingTextNotification(ContactMethod* cm, Media::TextRecording* t) : KNotification(
-   QStringLiteral("incomingText"), MainWindow::app()->view())
+   QStringLiteral("incomingText"), PhoneWindow::app()->view())
 {
    setTitle(i18n("Message from %1", cm->primaryName()));
 
@@ -178,7 +178,7 @@ private Q_SLOTS:
 };
 
 CreateContactNotification::CreateContactNotification(ContactMethod* cm) :KNotification(
-   QStringLiteral("incomingCall"), MainWindow::app()->view())
+   QStringLiteral("incomingCall"), PhoneWindow::app()->view())
 {
    setTitle(i18n("Add %1 to contacts?", cm->uri()));
 

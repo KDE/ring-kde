@@ -42,7 +42,7 @@
 #include <categorizedbookmarkmodel.h>
 
 //Ring
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "view.h"
 #include "actioncollection.h"
 #include "klib/kcfg_settings.h"
@@ -78,7 +78,7 @@ protected:
    }
 };
 
-Dock::Dock(MainWindow* w) : QObject(w)
+Dock::Dock(PhoneWindow* w) : QObject(w)
 {
    //Contact dock
    m_pContactCD       = new DockBase  ( nullptr );
@@ -265,7 +265,7 @@ Dock::~Dock()
    m_pBookmarkDW->deleteLater();
    m_pRecentDock->deleteLater();
 
-   if (!MainWindow::app()->isHidden()) {
+   if (!PhoneWindow::app()->isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
       ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
       ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
@@ -302,13 +302,13 @@ RecentDock* Dock::recentDock()
 void Dock::viewContact(ContactMethod* cm)
 {
    if (!m_pViewContact) {
-      m_pViewContact = new ViewContactDock(MainWindow::app());
+      m_pViewContact = new ViewContactDock(PhoneWindow::app());
       m_pViewContact->setObjectName(QStringLiteral("viewContact"));
       m_pViewContact->setWindowTitle(i18nc("View contact tab","View contact"));
-      MainWindow::app()->addDockWidget( Qt::BottomDockWidgetArea, m_pViewContact);
+      PhoneWindow::app()->addDockWidget( Qt::BottomDockWidgetArea, m_pViewContact);
 
-      MainWindow::app()->tabifyDockWidget(
-         MainWindow::app()->callDock(), m_pViewContact
+      PhoneWindow::app()->tabifyDockWidget(
+         PhoneWindow::app()->callDock(), m_pViewContact
       );
    }
 
@@ -332,7 +332,7 @@ void Dock::focusContact()
 
 void Dock::focusCall()
 {
-   MainWindow::app()->view()->raise();
+   PhoneWindow::app()->view()->raise();
    ActionCollection::instance()->raiseClient(true);
 }
 

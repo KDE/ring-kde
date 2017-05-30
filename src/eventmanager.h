@@ -31,14 +31,14 @@ class QDragMoveEvent ;
 #include <call.h>
 class View;
 class CanvasObjectManager;
-class MainWindowEvent;
+class PhoneWindowEvent;
 class Account;
 
 class EventManager : public QObject, public MacroModel::MacroListener {
    Q_OBJECT
 
 public:
-   friend class MainWindowEvent;
+   friend class PhoneWindowEvent;
    explicit EventManager(View* parent = nullptr);
    virtual ~EventManager();
    /**
@@ -69,7 +69,7 @@ protected:
 private:
    //Attributes
    View*            m_pParent        ;
-   MainWindowEvent* m_pMainWindowEv  ;
+   PhoneWindowEvent* m_pPhoneWindowEv  ;
    static bool      m_HasFocus       ;
 
    //Methods

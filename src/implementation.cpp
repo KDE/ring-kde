@@ -53,7 +53,7 @@
 #include <widgets/immanager.h>
 #include <widgets/personselector.h>
 #include <widgets/contactmethodselector.h>
-#include <mainwindow.h>
+#include <phonewindow.h>
 #include <view.h>
 
 ColorDelegate::ColorDelegate(const QPalette& pal) : m_Pal(pal) {
@@ -318,7 +318,7 @@ Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints, const 
    if (hintVar.canConvert<ContactMethod*>())
       cm = qvariant_cast<ContactMethod*>(hintVar);
 
-   auto selector = new PersonSelector(MainWindow::app(), cm);
+   auto selector = new PersonSelector(PhoneWindow::app(), cm);
 
    selector->exec();
 
@@ -332,7 +332,7 @@ ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::
    Q_UNUSED(hints)
    Q_UNUSED(hintVar)
 
-   auto selector = new ContactMethodSelector(MainWindow::app());
+   auto selector = new ContactMethodSelector(PhoneWindow::app());
 
    selector->exec();
 
