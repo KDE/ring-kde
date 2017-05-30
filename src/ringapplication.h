@@ -49,15 +49,31 @@ public:
    //Getter
    bool startIconified() const;
 
+   MainWindow* phoneWindow() const;
+   MainWindow* timelineWindow() const;
+   MainWindow* mainWindow() const;
+
    static QQmlApplicationEngine* engine();
+
+   static RingApplication* instance(int& argc, char** argv = nullptr);
+   static RingApplication* instance();
 
    //Setter
    void setIconify(bool iconify);
+   void setStartTimeline(bool value);
+   void setStartPhone(bool value);
 
 private:
    //Attributes
-   MainWindow*        m_pApp {nullptr};
-   bool               m_StartIconified;
+   bool m_StartIconified {false};
+   bool m_StartPhone     {false};
+   bool m_StartTimeLine  {false};
+
+   mutable MainWindow* m_pPhone {nullptr};
+   mutable MainWindow* m_pTimeline {nullptr};
+
+private Q_SLOTS:
+   void daemonTimeout();
 };
 
 #endif // RINGAPPLICATION_H

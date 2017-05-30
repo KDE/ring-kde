@@ -33,13 +33,12 @@
 
 constexpr static const char version[] = "2.4.0";
 
-static RingApplication* app;
-
 int main(int argc, char **argv)
 {
    try
    {
-      app = new RingApplication ( argc, argv          );
+      static volatile auto app = RingApplication::instance( argc, argv );
+      qDebug() << "MAIN" << RingApplication::instance()->arguments();
 
       KLocalizedString::setApplicationDomain("ring-kde");
 
@@ -63,7 +62,7 @@ int main(int argc, char **argv)
 
       Cmd::parseCmd(argc, argv, about);
 
-      app->setOrganizationDomain( QStringLiteral("ring.cx")           );
+      RingApplication::instance()->setOrganizationDomain( QStringLiteral("ring.cx")           );
 
       //Only start the application once
 #ifdef Q_OS_LINUX
@@ -74,13 +73,13 @@ int main(int argc, char **argv)
 #endif
 
       //The app will have quitted by now if an instance already exist
-      app->newInstance();
+      RingApplication::instance()->newInstance();
 
-      const int retVal = app->exec();
+      const int retVal = RingApplication::instance()->exec();
 
       ConfigurationSkeleton::self()->save();
 
-      delete app;
+      delete RingApplication::instance();
       return retVal;
    }
    catch(const char * msg)

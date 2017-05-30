@@ -26,16 +26,19 @@ class QActionGroup;
 //KDE
 class QAction;
 
+// Ring
+class MainWindow;
+
 ///Group action declaration under the same umbrella
 class ActionCollection : public QObject {
    Q_OBJECT
 public:
 
    //Constructor
-   explicit ActionCollection(QObject* parent = nullptr);
+   explicit ActionCollection(MainWindow* parent = nullptr);
    virtual ~ActionCollection();
    static ActionCollection* instance();
-   void setupAction();
+   void setupAction(MainWindow* mw);
 
    //Actions
    QAction* holdAction                  ();
@@ -49,7 +52,6 @@ public:
    QAction* displayVolumeControlsAction ();
    QAction* displayDialpadAction        ();
    QAction* displayAccountCbbAction     ();
-   QAction* displayMessageBoxAction     ();
    QAction* mailBoxAction               ();
    QAction* showContactDockAction       ();
    QAction* showHistoryDockAction       ();
@@ -116,12 +118,12 @@ private:
    //Other actions
    QAction * action_mailBox                {nullptr};
    QAction * action_new_contact            {nullptr};
-   QAction * action_close                  {nullptr};
+   QAction * action_close_phone            {nullptr};
+   QAction * action_close_timeline         {nullptr};
    QAction * action_quit                   {nullptr};
    QAction * action_displayVolumeControls  {nullptr};
    QAction * action_displayDialpad         {nullptr};
    QAction * action_displayAccountCbb      {nullptr};
-   QAction * action_displayMessageBox      {nullptr};
    QAction * action_configureRing          {nullptr};
    QAction * action_configureShortcut      {nullptr};
    QAction * action_configureNotifications {nullptr};

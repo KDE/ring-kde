@@ -74,11 +74,18 @@
  */
 RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv),m_StartIconified(false)
 {
+   Q_ASSERT(argc != -1);
+
+   qDebug() << argc << argv << this << argv[0];
 #ifdef ENABLE_VIDEO
    //Necessary to draw OpenGL from a separated thread
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
    setAttribute(Qt::AA_EnableHighDpiScaling);
+
+   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
+      QTimer::singleShot(5000,this,&RingApplication::daemonTimeout);
+   }
 }
 
 /**
@@ -89,9 +96,23 @@ RingApplication::~RingApplication()
    delete MainWindow::app();
 }
 
+RingApplication* RingApplication::instance(int& argc, char** argv)
+{
+   static RingApplication* i = new RingApplication(argc, argv);
+
+   return i;
+}
+
+RingApplication* RingApplication::instance()
+{
+   int i = 0;
+   return RingApplication::instance(i, nullptr);
+}
+
 ///Parse command line arguments
 int RingApplication::newInstance()
 {
+   qDebug() << "\n\nNEW INSTANCE!!";
    static bool wizardshown = false;
 
    // The first run wizard
@@ -116,15 +137,16 @@ int RingApplication::newInstance()
    //Only call on the first instance
    if (init) {
       init = false;
-      m_pApp = new MainWindow();
-      if( ! m_pApp->initialize() ) {
+      auto mw = RingApplication::phoneWindow();
+      if( ! mw->initialize() ) {
          return 1;
       };
 
+      qDebug() << "\n\nHERE" << ConfigurationSkeleton::displayOnStart();
       if (ConfigurationSkeleton::displayOnStart())
-         m_pApp->show();
+         mw->show();
       else
-         m_pApp->hide();
+         mw->hide();
    }
 
    return 0;
@@ -138,6 +160,16 @@ bool RingApplication::startIconified() const
 void RingApplication::setIconify(bool iconify)
 {
    m_StartIconified = iconify;
+}
+
+void RingApplication::setStartTimeline(bool value)
+{
+   m_StartTimeLine = value;
+}
+
+void RingApplication::setStartPhone(bool value)
+{
+   m_StartPhone = value;
 }
 
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
@@ -201,6 +233,39 @@ QQmlApplicationEngine* RingApplication::engine()
 #undef QML_TYPE
 #undef QML_SINGLETON
 
+MainWindow* RingApplication::phoneWindow() const
+{
+   if (!m_pPhone)
+      m_pPhone = new MainWindow(nullptr);
+
+   return m_pPhone;
+}
+
+MainWindow* RingApplication::timelineWindow() const
+{
+   if (!m_pTimeline)
+      m_pTimeline = new MainWindow(nullptr);
+
+   return m_pTimeline;
+}
+
+MainWindow* RingApplication::mainWindow() const
+{
+   if (m_pPhone && !m_pTimeline)
+      return m_pPhone;
+
+   return RingApplication::timelineWindow();
+}
+
+///The daemon is not found
+void RingApplication::daemonTimeout()
+{
+   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
+      KMessageBox::error(phoneWindow(), ErrorMessage::NO_DAEMON_ERROR);
+      exit(1);
+   }
+}
+
 ///Exit gracefully
 bool RingApplication::notify (QObject* receiver, QEvent* e)
 {
@@ -209,20 +274,20 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
    }
    catch (const Call::State& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
-      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
+      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (const Call::Action& state) {
       qDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
-      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
+      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (const QString& errorMessage) {
       KMessageBox::error(MainWindow::app(),errorMessage);
-      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
+      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (...) {
       qDebug() << ErrorMessage::GENERIC_ERROR;
       KMessageBox::error(MainWindow::app(),ErrorMessage::GENERIC_ERROR);
-      QTimer::singleShot(2500,MainWindow::app(),&MainWindow::timeout);
+      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    return false;
 }

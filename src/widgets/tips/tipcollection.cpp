@@ -81,7 +81,7 @@ QWidget* TipCollection::canvasWidgetsToTip(CanvasObjectManager::Object obj)
 {
    switch(obj) {
       case CanvasObjectManager::Object::AutoComplete:
-         return MainWindow::view()->autoCompletion();
+         return MainWindow::app()->view()->autoCompletion();
       case CanvasObjectManager::Object::DialInfo:
       case CanvasObjectManager::Object::EndCall :
       case CanvasObjectManager::Object::Ringing :

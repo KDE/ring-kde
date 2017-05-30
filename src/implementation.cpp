@@ -271,8 +271,7 @@ void KDEActionExtender::viewChatHistory(ContactMethod* cm)
    if (!cm)
       return;
 
-   MainWindow::view()->m_pMessageTabBox->showConversation(cm);
-   MainWindow::view()->m_pMessageBoxW->setVisible(true);
+   //FIXME open the timeline
 }
 
 void KDEActionExtender::viewChatHistory(Person* p)

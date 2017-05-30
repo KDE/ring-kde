@@ -83,7 +83,6 @@ private:
 
    static MainWindow*            m_sApp;
 
-
 protected:
    virtual bool  queryClose (                )       override;
    virtual QSize sizeHint   (                ) const override;
@@ -97,7 +96,7 @@ public:
    friend class View;
 
    static MainWindow* app  ();
-   static View* view ();
+   View* view ();
 
    bool isAutoStart() const;
    void setAutoStart(bool value);
@@ -117,7 +116,6 @@ private Q_SLOTS:
 public Q_SLOTS:
    void showWizard                               (                               );
    void displayAccountCbb                        ( bool checked = true           );
-   void timeout                                  (                               );
    void selectCallTab                            (                               );
 };
 

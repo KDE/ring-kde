@@ -108,8 +108,6 @@
  #include "widgets/videodock.h"
 #endif
 
-MainWindow* MainWindow::m_sApp = nullptr;
-
 static void loadNumberCategories()
 {
    auto& model = NumberCategoryModel::instance();
@@ -157,9 +155,6 @@ MainWindow::MainWindow(QWidget* parent)
    setUnifiedTitleAndToolBarOnMac(true);
 #endif
 
-   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
-      QTimer::singleShot(5000,this,&MainWindow::timeout);
-   }
    static bool init = false;
    if (!init) {
 
@@ -219,13 +214,11 @@ MainWindow::MainWindow(QWidget* parent)
       Notification::instance();
    }
 
-   //Belong to setupActions(), but is needed now
-   m_sApp = this;
    setWindowIcon (QIcon::fromTheme(QStringLiteral("ring-kde")));
    setWindowTitle( i18n("Ring"                                  ) );
 
    m_pView = new View(this);
-   ActionCollection::instance()->setupAction();
+   ActionCollection::instance()->setupAction(this);
    m_pView->updateVolumeControls();
 
    ConfigurationSkeleton::self();
@@ -262,7 +255,10 @@ MainWindow::MainWindow(QWidget* parent)
    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
    m_pDock            = new Dock    ( this                     );
 
-   connect(m_pCentralDW, &QDockWidget::visibilityChanged,m_pDock, &Dock::updateTabIcons);
+   QTimer::singleShot(0, [this]() {
+      connect(m_pCentralDW, &QDockWidget::visibilityChanged,m_pDock, &Dock::updateTabIcons);
+      m_pDock->updateTabIcons();
+   });
 
    selectCallTab();
    setAutoSaveSettings();
@@ -374,14 +370,8 @@ MainWindow::MainWindow(QWidget* parent)
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,&QAbstractButton::clicked,&AccountModel::instance(),&AccountModel::registerAllAccounts);
 
-   if (!CallModel::instance().isValid()) {
-      KMessageBox::error(this,i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually"));
-      QTimer::singleShot(2500,this,&MainWindow::timeout); //FIXME this may leave the client in an unreliable state
-      //exit(1); //Don't try to exit normally, it will segfault, the application is already in a broken state if this is reached //BUG break some slow netbooks
-   }
-
    if (ConfigurationSkeleton::displayOnStart()
-      && !qobject_cast<RingApplication*>(QApplication::instance())->startIconified())
+      && !RingApplication::instance()->startIconified())
       show();
    else
       close();
@@ -429,13 +419,13 @@ bool MainWindow::initialize() //TODO deprecate
 ///Singleton
 MainWindow* MainWindow::app()
 {
-   return m_sApp;
+   return RingApplication::instance()->phoneWindow();
 }
 
 ///Get the view (to be used with the singleton)
 View* MainWindow::view()
 {
-   return app()->m_pView;
+   return m_pView;
 }
 
 /*****************************************************************************
@@ -543,15 +533,6 @@ void MainWindow::hideVideoDock(Call* c, Video::Renderer* r)
    }
 }
 #endif
-
-///The daemon is not found
-void MainWindow::timeout()
-{
-   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
-      KMessageBox::error(this,ErrorMessage::NO_DAEMON_ERROR);
-      exit(1);
-   }
-}
 
 ///Select the call tab
 void MainWindow::selectCallTab()

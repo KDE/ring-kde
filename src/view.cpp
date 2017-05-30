@@ -63,30 +63,6 @@
 #include <tip/tipmanager.h>
 #include "implementation.h"
 
-class FocusWatcher : public QObject
-{
-   Q_OBJECT
-public:
-   explicit FocusWatcher(QObject* parent = nullptr) : QObject(parent)
-   {
-      if (parent)
-         parent->installEventFilter(this);
-   }
-   virtual bool eventFilter(QObject *obj, QEvent *event) override
-   {
-      Q_UNUSED(obj)
-      if (event->type() == QEvent::FocusIn)
-         emit focusChanged(true);
-      else if (event->type() == QEvent::FocusOut)
-         emit focusChanged(false);
-
-      return false;
-   }
-
-Q_SIGNALS:
-   void focusChanged(bool in);
-};
-
 ///Constructor
 View::View(QWidget *parent)
    : QWidget(parent),m_pTransferOverlay(nullptr),m_pAutoCompletion(nullptr)
@@ -140,14 +116,7 @@ View::View(QWidget *parent)
 
    const QModelIndex currentIndex = CallModel::instance().selectionModel()->currentIndex();
 
-   m_pMessageBoxW->setVisible(
-      qvariant_cast<Call::LifeCycleState>(currentIndex.data((int)Call::Role::LifeCycleState))
-         == Call::LifeCycleState::PROGRESS ||
-      (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
-   );
-
-   connect(new FocusWatcher(m_pSendMessageLE), &FocusWatcher::focusChanged           , this, &View::displayHistory);
-   connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &View::displayHistory);
+   //FIXME connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &View::displayHistory);
 
    //Setup volume
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction ());
@@ -159,14 +128,10 @@ View::View(QWidget *parent)
    /*Setup signals                                                                                                                  */
    //                SENDER                             SIGNAL                              RECEIVER                SLOT            */
    /**/connect(&CallModel::instance()       , &CallModel::incomingCall                 , this           , &View::incomingCall       );
-   /**/connect(m_pSendMessageLE             , &QLineEdit::returnPressed                , this           , &View::sendMessage        );
-   /**/connect(m_pSendMessagePB             , &QAbstractButton::clicked                , this           , &View::sendMessage        );
    /**/connect(m_pView                      , &CategorizedTreeView::itemDoubleClicked  , m_pEventManager, &EventManager::enter      );
    /**/connect(widget_dialpad               , &Dialpad::typed                          , m_pEventManager, &EventManager::typeString );
    /**/connect(m_pView                      , &CategorizedTreeView::contextMenuRequest , this           , &View::slotContextMenu    );
    /*                                                                                                                               */
-
-   connect(m_pView->selectionModel(), &QItemSelectionModel::currentChanged, this, &View::updateTextBoxStatus);
 
    //Auto completion
    loadAutoCompletion();
@@ -196,11 +161,6 @@ View::~View()
 AutoCompletion* View::autoCompletion() const
 {
    return m_pAutoCompletion;
-}
-
-bool View::messageBoxFocussed() const
-{
-   return m_pSendMessageLE && m_pSendMessageLE->hasFocus();
 }
 
 ///Create a call from the clipboard content
@@ -265,22 +225,6 @@ void View::displayDialpad(bool checked)
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
 }
 
-///Display a notification popup (freedesktop notification)
-void View::displayMessageBox(bool checked)
-{
-   ConfigurationSkeleton::setDisplayMessageBox(checked);
-   Call* call = CallModel::instance().selectedCall();
-   m_pMessageBoxW->setVisible(checked
-      && ((
-        call
-        && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
-      ) ||
-      (
-         (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
-      ))
-   );
-}
-
 ///When a call is coming (dbus)
 void View::incomingCall(Call* call)
 {
@@ -296,40 +240,6 @@ void View::incomingCall(Call* call)
    if (idx.isValid() && (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING)) {
       CallModel::instance().selectCall(call);
    }
-}
-
-///Send a text message
-void View::sendMessage()
-{
-   if (m_pSendMessageLE->text().isEmpty())
-      return;
-
-   Call* call = CallModel::instance().selectedCall();
-
-   const auto lcs = call ? call->lifeCycleState() : Call::LifeCycleState::FINISHED;
-
-   switch(lcs) {
-      case Call::LifeCycleState::CREATION:
-      case Call::LifeCycleState::INITIALIZATION:
-      case Call::LifeCycleState::FINISHED:
-      case Call::LifeCycleState::COUNT__:
-         if (auto cur = m_pMessageTabBox->currentConversation()) {
-            // Send the message to each participants
-            foreach(ContactMethod* cm, cur->peers()) {
-               cm->sendOfflineTextMessage(
-                  {{"text/plain",m_pSendMessageLE->text()}}
-               );
-            }
-         }
-         break;
-      case Call::LifeCycleState::PROGRESS:
-         call->addOutgoingMedia<Media::Text>()->send(
-            {{"text/plain",m_pSendMessageLE->text()}}
-         );
-         break;
-   }
-
-   m_pSendMessageLE->clear();
 }
 
 void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API for this
@@ -356,33 +266,6 @@ void View::slotContextMenu(const QModelIndex& index)
    QMenu* m = new MenuModelView(m_pUserActionModel->activeActionModel(), new QItemSelectionModel(m_pUserActionModel->activeActionModel()), this);
 
    m->exec(QCursor::pos());
-}
-
-void View::updateTextBoxStatus()
-{
-   static bool display = ConfigurationSkeleton::displayMessageBox();
-   if (display) {
-      Call* call = CallModel::instance().selectedCall();
-      m_pMessageBoxW->setVisible((call
-         && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)) ||
-         (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
-      );
-   }
-}
-
-void View::displayHistory(bool in)
-{
-   if (!in)
-      return;
-
-   Call* call = CallModel::instance().selectedCall();
-
-   m_pMessageBoxW->setVisible((call
-      && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)) ||
-      (m_pMessageTabBox->isVisible() && m_pMessageTabBox->count())
-   );
-
-   m_pMessageTabBox->clearColor();
 }
 
 #include "view.moc"

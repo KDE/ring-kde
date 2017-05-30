@@ -19,10 +19,14 @@
 #ifndef DOCK_H
 #define DOCK_H
 
+// Qt
 #include <QtCore/QObject>
-
+#include <QtCore/QHash>
+class QTabBar;
 class QMainWindow;
+class QToolButton;
 
+// Ring
 class MainWindow;
 class DockBase;
 class CategorizedDelegate;
@@ -55,6 +59,10 @@ private:
 
    CategorizedDelegate* m_pCategoryDelegate {nullptr};
    CategorizedDelegate* m_pHCategoryDelegate {nullptr};
+   QHash<QTabBar*, QToolButton*> m_hEventFilters;
+
+protected:
+   virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 public Q_SLOTS:
    void updateTabIcons();

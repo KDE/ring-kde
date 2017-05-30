@@ -72,22 +72,17 @@ public:
    virtual ~View();
 
    AutoCompletion* autoCompletion    () const;
-   bool            messageBoxFocussed() const;
    UserActionModel* m_pUserActionModel {nullptr};
 
 private Q_SLOTS:
-   void sendMessage          ();
    void slotAutoCompleteClicked(ContactMethod* n);
    void loadAutoCompletion   ();
-   void updateTextBoxStatus  ();
-   void displayHistory       (bool);
 
 public Q_SLOTS:
    void updateVolumeControls ();
 
    void displayVolumeControls ( bool checked = true );
    void displayDialpad        ( bool checked = true );
-   void displayMessageBox     ( bool checked = true );
 
    void incomingCall          ( Call* call          );
 

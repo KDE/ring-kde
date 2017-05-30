@@ -227,10 +227,6 @@ Dock::Dock(MainWindow* w) : QObject(w)
    m_pBookmarkDW->setMaximumSize(350,999999);
    m_pRecentDock->setMaximumSize(350,999999);
 
-   connect(m_pContactCD ,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
-   connect(m_pHistoryDW ,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
-   connect(m_pBookmarkDW,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
-
    m_pContactCD-> setVisible(ConfigurationSkeleton::displayContactDock() );
    m_pHistoryDW-> setVisible(ConfigurationSkeleton::displayHistoryDock() );
    m_pBookmarkDW->setVisible(ConfigurationSkeleton::displayBookmarkDock());
@@ -245,6 +241,38 @@ Dock::Dock(MainWindow* w) : QObject(w)
    connect( ActionCollection::instance()->focusContact (), &QAction::triggered, this, &Dock::focusContact  );
    connect( ActionCollection::instance()->focusCall    (), &QAction::triggered, this, &Dock::focusCall     );
    connect( ActionCollection::instance()->focusBookmark(), &QAction::triggered, this, &Dock::focusBookmark );
+
+   // Show the "pretty" sidebars
+   QTimer::singleShot(0, [this]() {
+      connect(m_pContactCD , &QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
+      connect(m_pHistoryDW , &QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
+      connect(m_pBookmarkDW, &QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
+      updateTabIcons();
+   });
+}
+
+bool Dock::eventFilter(QObject *obj, QEvent *event)
+{
+   auto tabbar = qobject_cast<QTabBar*>(obj);
+   auto button = m_hEventFilters[tabbar];
+
+   if (!button)
+      return false;
+
+   #pragma GCC diagnostic push
+   #pragma GCC diagnostic ignored "-Wswitch"
+   switch (event->type()) {
+      case QEvent::Resize:
+      case QEvent::Show:
+      case QEvent::Move:
+         return false;
+   }
+   #pragma GCC diagnostic pop
+
+   button->resize(tabbar->width(), tabbar->width());
+   button->move(tabbar->x(), tabbar->height() - tabbar->width());
+
+   return false;
 }
 
 Dock::~Dock()
@@ -307,6 +335,22 @@ void Dock::updateTabIcons()
    QList<QTabBar*> tabBars = parent()->findChildren<QTabBar*>();
    if(tabBars.count()) {
       foreach(QTabBar* bar, tabBars) {
+
+         // Attach an event filter
+         if (!m_hEventFilters.contains(bar)) {
+            bar->installEventFilter(this);
+
+            auto tb = new QToolButton(bar);
+            tb->setText(i18n("Phone"));
+            tb->setIconSize({48, 48});
+            tb->setIcon(QIcon::fromTheme(QStringLiteral("call-start")));
+            tb->setStyleSheet(QStringLiteral(
+               "background-color: transparent;"
+            ));
+
+            m_hEventFilters[bar] = tb;
+         }
+
          // Only do the funky hack if the tab are on the left //TODO support RTL
          const auto pt = bar->mapTo(MainWindow::app(), {0,0});
          const bool isMainToolbar = pt.x() < 20 && pt.y() <= 64;
@@ -392,7 +436,7 @@ void Dock::focusContact()
 
 void Dock::focusCall()
 {
-   MainWindow::view()->raise();
+   MainWindow::app()->view()->raise();
    ActionCollection::instance()->raiseClient(true);
 }
 

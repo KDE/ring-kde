@@ -41,6 +41,9 @@ private:
    static void placeCall(const QString& number);
    static void sendText(const QString& number, const QString& text);
    static void iconify();
+   void phoneInterface();
+   void timelineInterface();
+
    //Private constructor
    explicit Cmd(QObject* parent=nullptr);
 

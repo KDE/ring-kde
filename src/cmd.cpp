@@ -59,17 +59,24 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 
    QCoreApplication* app = QCoreApplication::instance();
 
-   QCommandLineOption call    (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QStringLiteral("number" ), QLatin1String(""));
-   QCommandLineOption text    (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QStringLiteral("number" ), QLatin1String(""));
-   QCommandLineOption message (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QStringLiteral("content"), QLatin1String(""));
-   QCommandLineOption icon    (QStringList { "iconify"    }, i18n("Start in the system tray"                                                    )                                             );
+   QCommandLineOption call      (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QStringLiteral("number" ), QLatin1String(""));
+   QCommandLineOption text      (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QStringLiteral("number" ), QLatin1String(""));
+   QCommandLineOption message   (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QStringLiteral("content"), QLatin1String(""));
+   QCommandLineOption icon      (QStringList { "iconify"    }, i18n("Start in the system tray"                                                    )                                             );
+   QCommandLineOption showPhone (QStringList { "phone"      }, i18n("Start with the phone interface"                                              )                                             );
+   QCommandLineOption showTimeL (QStringList { "timeline"   }, i18n("Start with the timeline interface"                                           )                                             );
 
    QCommandLineParser parser;
    parser.addOptions({call,text,message,icon});
 
    about.setupCommandLine(&parser);
 
-   parser.process         (*app);
+   qDebug() << "APP" << app;
+
+   qDebug() << app->arguments();
+
+
+   parser.process(*app);
 
    about.processCommandLine(&parser);
 
@@ -125,8 +132,22 @@ void Cmd::sendText(const QString& number, const QString& text)
 
 void Cmd::iconify()
 {
-   if (qobject_cast<RingApplication*>(QCoreApplication::instance())) {
-      qobject_cast<RingApplication*>(QCoreApplication::instance())->setIconify(true);
+   if (RingApplication::instance()) {
+      RingApplication::instance()->setIconify(true);
+   }
+}
+
+void Cmd::phoneInterface()
+{
+   if (RingApplication::instance()) {
+      RingApplication::instance()->setStartPhone(true);
+   }
+}
+
+void Cmd::timelineInterface()
+{
+   if (RingApplication::instance()) {
+      RingApplication::instance()->setStartTimeline(true);
    }
 }
 

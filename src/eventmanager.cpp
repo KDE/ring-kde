@@ -21,6 +21,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDropEvent>
 #include <QtCore/QMimeData>
+#include <QtCore/QTimer>
 #include <QtCore/QLocale>
 #include <QtCore/QMutex>
 
@@ -54,7 +55,9 @@ class MainWindowEvent : public QObject {
    Q_OBJECT
 public:
    MainWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
-      MainWindow::app()->installEventFilter(this);
+      QTimer::singleShot(0, [this]() {
+         MainWindow::app()->installEventFilter(this);
+      });
    }
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event)  override {
@@ -312,8 +315,8 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->selection()) {
             m_pParent->m_pAutoCompletion->callSelectedNumber();
          }
-         else if (!MainWindow::view()->messageBoxFocussed())
-            enter();
+
+         enter();
          break;
       case Qt::Key_Backspace:
          backspace();
@@ -562,13 +565,8 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
    Call* call2 = call = CallModel::instance().selectedCall();
 
    if ((!call2) || (call2->type() == Call::Type::CONFERENCE)) {
-      m_pParent->m_pMessageBoxW->setVisible(false);
       return;
    }
-
-   m_pParent->m_pMessageBoxW->setVisible(
-      ConfigurationSkeleton::displayMessageBox() && call2->lifeCycleState() == Call::LifeCycleState::PROGRESS
-   );
 
    if (call2->state() == Call::State::TRANSFERRED) {
       if (!m_pParent->m_pTransferOverlay) {
