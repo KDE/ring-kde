@@ -73,21 +73,6 @@ ListView {
                         childrenView.model.rootIndex = childrenView.model.modelIndex(index)
                     }
 
-//                     Loader {
-//                         // position the Loader in the center
-//                         // of the parent
-//                         anchors.centerIn: parent
-//                         sourceComponent: rect
-//                     }
-
-//                     delegate: bestDelegate(childrenVisualDataModel, childrenView.model, undefined, index)
-//                     delegate: TextMessageGroup {
-//                         width: chatView.width
-//                         id: groupDelegate
-//                         model: chatView.model
-//                         rootIndex: getIndex(childrenView.model, index)
-//                     }
-
                     delegate: Component {
                         Loader {
 
@@ -119,6 +104,15 @@ ListView {
                 }
             }
         }
+    }
+
+    ModelScrollAdapter {
+        id: scrollAdapter
+        target: chatView
+    }
+
+    onModelChanged: {
+        scrollAdapter.model = model
     }
 
     delegate: messageDelegate

@@ -15,25 +15,60 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
-
-#include <QtCore/QDebug>
-
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "contactbuilder.h"
-#include "pixmapwrapper.h"
 #include "modelscrolladapter.h"
-#include "treehelper.h"
 
-void RingQmlWidgets::registerTypes(const char *uri)
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QDebug>
+#include <QtQuick/QQuickItem>
+
+class ModelScrollAdapterPrivate
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+public:
+    QSharedPointer<QAbstractItemModel> m_pModel;
+    QQuickItem* m_pItem;
+};
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<ModelScrollAdapter>(uri, 1, 0, "ModelScrollAdapter");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
+ModelScrollAdapter::ModelScrollAdapter(QObject* parent) : QObject(parent),
+    d_ptr(new ModelScrollAdapterPrivate)
+{}
+
+ModelScrollAdapter::~ModelScrollAdapter()
+{
+    delete d_ptr;
+}
+
+QSharedPointer<QAbstractItemModel> ModelScrollAdapter::model() const
+{
+    return d_ptr->m_pModel;
+}
+
+void ModelScrollAdapter::setModel(QSharedPointer<QAbstractItemModel> m)
+{
+    if (d_ptr->m_pModel)
+        disconnect(d_ptr->m_pModel.data(), &QAbstractItemModel::rowsInserted,
+            this, &ModelScrollAdapter::rowsInserted);
+
+    d_ptr->m_pModel = m;
+
+    connect(d_ptr->m_pModel.data(), &QAbstractItemModel::rowsInserted,
+        this, &ModelScrollAdapter::rowsInserted);
+}
+
+QQuickItem* ModelScrollAdapter::target() const
+{
+    return d_ptr->m_pItem;
+}
+
+void ModelScrollAdapter::setTarget(QQuickItem* item)
+{
+    d_ptr->m_pItem = item;
+    rowsInserted();
+}
+
+void ModelScrollAdapter::rowsInserted()
+{
+    if (!d_ptr->m_pItem)
+        return;
+
+    QMetaObject::invokeMethod(d_ptr->m_pItem, "positionViewAtEnd");
 }

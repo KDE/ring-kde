@@ -15,25 +15,40 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <QtCore/QObject>
+#include <QtCore/QSharedPointer>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "contactbuilder.h"
-#include "pixmapwrapper.h"
-#include "modelscrolladapter.h"
-#include "treehelper.h"
+class QQuickItem;
+class QAbstractItemModel;
 
-void RingQmlWidgets::registerTypes(const char *uri)
+class ModelScrollAdapterPrivate;
+
+class ModelScrollAdapter : public QObject
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+    Q_OBJECT
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<ModelScrollAdapter>(uri, 1, 0, "ModelScrollAdapter");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-}
+public:
+    explicit ModelScrollAdapter(QObject* parent = nullptr);
+    virtual ~ModelScrollAdapter();
+
+    Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel)
+    Q_PROPERTY(QQuickItem* target READ target WRITE setTarget)
+
+    QSharedPointer<QAbstractItemModel> model() const;
+    void setModel(QSharedPointer<QAbstractItemModel> m);
+
+    QQuickItem* target() const;
+    void setTarget(QQuickItem* item);
+
+private Q_SLOTS:
+    void rowsInserted();
+
+private:
+    ModelScrollAdapterPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(ModelScrollAdapter)
+};
+
+Q_DECLARE_METATYPE(ModelScrollAdapter*)
+Q_DECLARE_METATYPE(QSharedPointer<QAbstractItemModel>)
