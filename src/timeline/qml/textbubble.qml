@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import QtGraphicalEffects 1.0
 
 Item {
     width: parent.width
@@ -52,8 +53,10 @@ Item {
             Layout.fillWidth: true
 
             Bubble {
+                id: bubble
                 anchors.fill: parent
                 anchors.margins: 5
+                z: 1
 
                 alignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
                 color: bubbleBackground //isRead ? "green" : "red"
@@ -88,6 +91,17 @@ Item {
                         isRead = true
                     }
                 }
+            }
+
+            Glow {
+                visible: !isRead
+                anchors.fill: bubble
+                radius: 8
+                samples: 17
+                color: "red"
+                source: bubble
+                opacity: 0.5
+                z: 0
             }
         }
 

@@ -38,7 +38,7 @@ ColumnLayout {
 
     function selectIcon(call) {
         if (!call)
-            return null;
+            return "";
 
         if (call.missed && call.direction == Call.INCOMING)
             return "sharedassets/phone_dark/missed_incoming.svg"
@@ -48,6 +48,9 @@ ColumnLayout {
             return "sharedassets/phone_dark/incoming.svg"
         else
             return "sharedassets/phone_dark/outgoing.svg"
+
+        if (!call)
+            return "";
     }
 
     GroupHeader {
