@@ -260,7 +260,7 @@ int RingApplication::newInstance()
       else
          mw = RingApplication::timelineWindow();
 
-      if (ConfigurationSkeleton::displayOnStart())
+      if (ConfigurationSkeleton::displayOnStart() && !startIconified())
          mw->show();
       else
          mw->hide();

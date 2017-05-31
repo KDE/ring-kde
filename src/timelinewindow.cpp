@@ -111,7 +111,7 @@ TimelineWindow::TimelineWindow()
                 ConfigurationSkeleton::setContactSortMode(idx.row());
         });
     });
-    addDockWidget( Qt::LeftDockWidgetArea, m_pContactCD, Qt::Vertical);
+
     connect(m_pContactCD , &QDockWidget::visibilityChanged, this, &FancyMainWindow::updateTabIcons);
     tabifyDockWidget(m_pPeersTimeline, m_pContactCD );
 

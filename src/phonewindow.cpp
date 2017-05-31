@@ -256,12 +256,6 @@ PhoneWindow::PhoneWindow(QWidget*)
    bar->addPermanentWidget(m_pReloadButton);
    connect(m_pReloadButton,&QAbstractButton::clicked,&AccountModel::instance(),&AccountModel::registerAllAccounts);
 
-   if (ConfigurationSkeleton::displayOnStart()
-      && !RingApplication::instance()->startIconified())
-      show();
-   else
-      close();
-
    //setupGui + default size doesn't really, use this for now
    resize(QSize(1024,768));
 
