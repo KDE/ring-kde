@@ -26,8 +26,10 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QHBoxLayout>
 #include <QtCore/QMimeData>
+#include <QtCore/QTimer>
 
 #include <../ringapplication.h>
+#include "peerstimelinemodel.h"
 #include <contactmethod.h>
 
 #include "recentmodel.h"
@@ -51,6 +53,12 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
     l->addWidget(d_ptr->m_pQuickWidget);
     setAcceptDrops(true);
     installEventFilter(this);
+
+    QTimer::singleShot(0, [this]() {
+        setContactMethod(qvariant_cast<ContactMethod*>(
+            PeersTimelineModel::instance().index(0, 0).data((int)Ring::Role::Object)
+        ));
+    });
 }
 
 ViewContactDock::~ViewContactDock()
@@ -68,6 +76,9 @@ bool ViewContactDock::eventFilter(QObject *obj, QEvent *event)
 
 void ViewContactDock::setContactMethod(ContactMethod* cm)
 {
+    if (!cm)
+        return;
+
     // Keep a strong reference because QML wont
     d_ptr->m_CallsModel = cm->callsModel();
     d_ptr->m_pQuickWidget->rootObject()->setProperty(
