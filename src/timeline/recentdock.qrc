@@ -17,6 +17,7 @@
         <file alias="CallGroup.qml">qml/callgroup.qml</file>
         <file alias="GroupHeader.qml">qml/groupheader.qml</file>
         <file alias="GroupFooter.qml">qml/groupfooter.qml</file>
+        <file alias="ContactMethodDelegate.qml">qml/contactmethoddelegate.qml</file>
         <file>icons/bookmarked.svg</file>
         <file>icons/not_bookmarked.svg</file>
     </qresource>
