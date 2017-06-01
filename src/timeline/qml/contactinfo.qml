@@ -66,6 +66,8 @@ Rectangle {
         // Sub-models
         phoneNumbersModel.model = currentContactMethod.person ?
             currentContactMethod.person.phoneNumbersModel : null
+        addresses.model = currentContactMethod.person ?
+            currentContactMethod.person.addressesModel : null
 
         // Contact info
         formattedName.text = currentContactMethod.person ?
@@ -216,6 +218,12 @@ Rectangle {
                     }
 
                     Page {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Addresses {
+                            id: addresses
+                            anchors.fill: parent
+                        }
                     }
 
                 }
