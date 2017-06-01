@@ -63,6 +63,10 @@ Rectangle {
         totalRecording.text    = getTotalRecording()
         totalScreenshot.text   = getTotalScreenshot()
 
+        // Sub-models
+        phoneNumbersModel.model = currentContactMethod.person ?
+            currentContactMethod.person.phoneNumbersModel : null
+
         // Contact info
         formattedName.text = currentContactMethod.person ?
             currentContactMethod.person.formattedName : ""
@@ -165,6 +169,60 @@ Rectangle {
         }
 
         Item {
+            Layout.preferredHeight: 10
+        }
+
+        GroupBox {
+            title: qsTr("Advanced")
+
+            clip: true
+            Layout.preferredHeight: 300
+            Layout.preferredWidth: 600
+
+            ColumnLayout {
+                clip: true
+                anchors.fill: parent
+
+                TabBar {
+                    Layout.fillWidth: true
+                    id: tabBar
+                    currentIndex: sv.currentIndex
+                    TabButton {
+                        text: qsTr("Phone numbers")
+                    }
+                    TabButton {
+                        text: qsTr("Addresses")
+                    }
+                }
+
+                SwipeView {
+                    id: sv
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    background: Rectangle {
+                        color: activePalette.base
+                    }
+
+                    currentIndex: tabBar.currentIndex
+
+                    Page {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        PhoneNumbers {
+                            id: phoneNumbersModel
+                            anchors.fill: parent
+                        }
+                    }
+
+                    Page {
+                    }
+
+                }
+            }
+        }
+
+        Item {
             Layout.fillHeight: true
         }
     }
@@ -184,8 +242,6 @@ Rectangle {
 
             if (!currentContactMethod.person) {
                 var ret = contactBuilder.from(currentContactMethod)
-                console.log("=====ADDING",ret)
-                console.log("=====ADDING", currentContactMethod.person)
             }
 
             currentContactMethod.person.formattedName  = formattedName.text

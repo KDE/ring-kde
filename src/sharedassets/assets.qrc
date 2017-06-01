@@ -31,5 +31,7 @@
         <file>./phone_dark/missed_incoming.svg</file>
         <file>./phone_dark/missed_outgoing.svg</file>
         <file>./phone_dark/current.svg</file>
+        <file>./phone_dark/mute_video.svg</file>
+        <file>./phone_dark/accept_video.svg</file>
     </qresource>
 </RCC>

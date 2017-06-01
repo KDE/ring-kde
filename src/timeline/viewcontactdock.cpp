@@ -31,6 +31,7 @@
 #include <../ringapplication.h>
 #include "peerstimelinemodel.h"
 #include <contactmethod.h>
+#include <person.h>
 
 #include "recentmodel.h"
 
@@ -38,6 +39,7 @@ class ViewContactDockPrivate {
 public:
     QQuickWidget* m_pQuickWidget;
     QSharedPointer<QAbstractItemModel> m_CallsModel;
+    QSharedPointer<QAbstractItemModel> m_PersomCMModel;
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
 };
 
@@ -80,9 +82,13 @@ void ViewContactDock::setContactMethod(ContactMethod* cm)
         return;
 
     // Keep a strong reference because QML wont
+    d_ptr->m_PersomCMModel = cm->contact() ? cm->contact()->phoneNumbersModel()
+        : QSharedPointer<QAbstractItemModel>();
     d_ptr->m_CallsModel = cm->callsModel();
+
     d_ptr->m_pQuickWidget->rootObject()->setProperty(
         "currentContactMethod", QVariant::fromValue(cm));
+
 }
 
 #include <viewcontactdock.moc>

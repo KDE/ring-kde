@@ -326,6 +326,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_SINGLETON( NameDirectory            );
       QML_SINGLETON( RecentModel              );
       QML_SINGLETON( PeersTimelineModel       );
+      QML_SINGLETON( NumberCategoryModel      );
 
       { using namespace Media;
          QML_SINGLETON( RecordingModel        );
