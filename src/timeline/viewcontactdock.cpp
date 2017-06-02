@@ -81,10 +81,17 @@ void ViewContactDock::setContactMethod(ContactMethod* cm)
     if (!cm)
         return;
 
+    // Keep a reference for 15 seconds to avoid double free from QML
+    for (auto ptr : {d_ptr->m_PersomCMModel, d_ptr->m_CallsModel, d_ptr->m_TimelineModel})
+        if (ptr)
+            QTimer::singleShot(15000, [ptr]() {});
+
     // Keep a strong reference because QML wont
     d_ptr->m_PersomCMModel = cm->contact() ? cm->contact()->phoneNumbersModel()
         : QSharedPointer<QAbstractItemModel>();
     d_ptr->m_CallsModel = cm->callsModel();
+
+    d_ptr->m_TimelineModel = cm->timelineModel();
 
     d_ptr->m_pQuickWidget->rootObject()->setProperty(
         "currentContactMethod", QVariant::fromValue(cm));

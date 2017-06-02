@@ -98,6 +98,7 @@
 
 //QML
 #include "qmlwidgets/plugin.h"
+#include "photoselector/photoplugin.h"
 
 //Other
 #include <unistd.h>
@@ -300,8 +301,11 @@ QQmlApplicationEngine* RingApplication::engine()
 {
    static QQmlApplicationEngine* e = nullptr;
    if (!e) {
-      auto p = new RingQmlWidgets;
-      p->registerTypes("RingQmlWidgets");
+      auto p1 = new RingQmlWidgets;
+      p1->registerTypes("RingQmlWidgets");
+
+      auto p2 = new PhotoSelectorPlugin;
+      p2->registerTypes("PhotoSelectorPlugin");
 
       QML_TYPE( Account           )
       QML_TYPE( const Account     )

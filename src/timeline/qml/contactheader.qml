@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 
 import RingQmlWidgets 1.0
+import PhotoSelectorPlugin 1.0
 
 Rectangle {
     id: contactHeader
@@ -39,13 +40,21 @@ Rectangle {
             "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
     }
 
-    /*Connections {
+    Connections {
         target: currentContactMethod
         onBookmarked: {
             bookmarkSwitch.source = currentContactMethod.bookmarked ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         }
-    }*/
+    }
+
+    Connections {
+        target: currentContactMethod
+        onChanged: {
+            photo.pixmap = currentContactMethod.person ?
+             currentContactMethod.person.photo : undefined
+        }
+    }
 
     color: "gray"
     height: 100
@@ -64,6 +73,21 @@ Rectangle {
             PixmapWrapper {
                 id: photo
                 anchors.fill: parent
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                z: 100
+                onClicked: {
+                    var component = Qt.createComponent("PhotoEditor.qml")
+                    if (component.status == Component.Ready) {
+                        var window    = component.createObject(contactHeader)
+                        window.person = currentContactMethod ? currentContactMethod.person :
+                            null
+                    }
+                    else
+                        console.log("\n\n\n\nERROR", component.status, component.errorString())
+                }
             }
         }
 

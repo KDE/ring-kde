@@ -15,40 +15,18 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "pixmapwrapper.h"
+#include "photoplugin.h"
 
-#include <QtGui/QPainter>
+#include <QtCore/QDebug>
+#include <QQmlEngine>
 
-PixmapWrapper::PixmapWrapper(QQuickItem* parent) : QQuickPaintedItem(parent)
-{}
+#include "photoselector.h"
 
-QPixmap PixmapWrapper::pixmap() const {
-    return m_pixmap;
-}
+#include <qrc_photoselector.cpp>
 
-void PixmapWrapper::setPixmap(const QVariant& var)
+void PhotoSelectorPlugin::registerTypes(const char *uri)
 {
-    m_pixmap = qvariant_cast<QPixmap>(var);
-    m_icon   = qvariant_cast<QIcon  >(var);
-    update();
-}
+    Q_ASSERT(uri == QLatin1String("PhotoSelectorPlugin"));
 
-void PixmapWrapper::paint(QPainter *painter)
-{
-    if (!m_icon.isNull()) {
-        const QPixmap pxm = m_icon.pixmap(boundingRect().size().toSize());
-
-        painter->drawPixmap(
-            boundingRect().toRect(),
-            pxm,
-            pxm.rect()
-        );
-    }
-    else if (!m_pixmap.isNull()) {
-        painter->drawPixmap(
-            boundingRect(),
-            m_pixmap,
-            m_pixmap.rect()
-        );
-    }
+    qmlRegisterType<PhotoSelector>(uri, 1, 0, "PhotoSelector");
 }

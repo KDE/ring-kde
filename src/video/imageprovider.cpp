@@ -168,7 +168,7 @@ void ImageProviderPrivate::removeRenderer(Call* c, Video::Renderer* renderer)
 void ImageProviderPrivate::previewStarted(Video::Renderer* r)
 {
     QMutexLocker locker(&m_FrameReader);
-    if (m_hActiveRenderers.contains("preview")) {
+    if (m_hActiveRenderers.contains("preview") && m_hActiveRenderers["preview"]) {
         if (m_hActiveRenderers["preview"]->m_pRenderer == r)
             return;
 

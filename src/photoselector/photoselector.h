@@ -15,40 +15,46 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "pixmapwrapper.h"
+#pragma once
 
-#include <QtGui/QPainter>
+#include <QtCore/QObject>
+#include <QtCore/QRect>
+#include <QtGui/QImage>
 
-PixmapWrapper::PixmapWrapper(QQuickItem* parent) : QQuickPaintedItem(parent)
-{}
+class Person;
 
-QPixmap PixmapWrapper::pixmap() const {
-    return m_pixmap;
-}
+class PhotoSelectorPrivate;
 
-void PixmapWrapper::setPixmap(const QVariant& var)
+class PhotoSelector : public QObject
 {
-    m_pixmap = qvariant_cast<QPixmap>(var);
-    m_icon   = qvariant_cast<QIcon  >(var);
-    update();
-}
+    Q_OBJECT
 
-void PixmapWrapper::paint(QPainter *painter)
-{
-    if (!m_icon.isNull()) {
-        const QPixmap pxm = m_icon.pixmap(boundingRect().size().toSize());
+public:
+    Q_PROPERTY(QRect sourceRect READ sourceRect CONSTANT)
+    Q_PROPERTY(QRect selectedSquare READ selectedSquare WRITE setSelectedSquare)
+    Q_PROPERTY(QString path READ path NOTIFY pathChanged)
+    Q_PROPERTY(QImage image READ image WRITE setImage)
 
-        painter->drawPixmap(
-            boundingRect().toRect(),
-            pxm,
-            pxm.rect()
-        );
-    }
-    else if (!m_pixmap.isNull()) {
-        painter->drawPixmap(
-            boundingRect(),
-            m_pixmap,
-            m_pixmap.rect()
-        );
-    }
-}
+    explicit PhotoSelector(QObject* parent = nullptr);
+    virtual ~PhotoSelector();
+
+    QRect sourceRect() const;
+    QRect selectedSquare() const;
+    void setSelectedSquare(QRect r);
+
+    QImage image() const;
+    void setImage(const QImage& image);
+
+    Q_INVOKABLE QString selectFile(const QString defaultPath = {});
+
+    Q_INVOKABLE void setToPerson(Person* p);
+
+    QString path() const;
+
+Q_SIGNALS:
+    void pathChanged(const QString& path);
+
+private:
+    PhotoSelectorPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(PhotoSelector)
+};
