@@ -22,9 +22,6 @@
 #include <QtGui/QPixmap>
 #include <QtWidgets/QFileDialog>
 
-// KDE
-#include <klocalizedstring.h>
-
 // Ring
 #include <person.h>
 
@@ -68,9 +65,9 @@ QString PhotoSelector::selectFile(const QString defaultPath)
 
     const auto fileName = QFileDialog::getOpenFileName(
         nullptr,
-        i18n("Open Image"),
+        "Open Image",
         QDir::currentPath(),
-        i18n("Image Files (*.png *.jpg *.gif)")
+        "Image Files (*.png *.jpg *.gif)"
     );
 
     d_ptr->m_Path = fileName;
