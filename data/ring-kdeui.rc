@@ -39,6 +39,7 @@
    </MenuBar>
    <ToolBar name="mainToolBar" iconText="textbesideicon" position="Top" noMerge="1" fullWidth="false" newline="true" >
       <Action name="action_new_call" />
+      <Action name="action_new_contact" />
       <Action name="action_mailBox" />
    </ToolBar>
 </gui>
