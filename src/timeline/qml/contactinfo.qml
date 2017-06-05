@@ -23,6 +23,7 @@ import RingQmlWidgets 1.0
 
 Rectangle {
     property var currentContactMethod: null
+    property var currentPerson: null
 
     function getLastContacted() {
         var d = currentContactMethod.lastUsed == 0 ? qsTr("Never") :
@@ -56,30 +57,38 @@ Rectangle {
     color: activePalette.base
 
     onCurrentContactMethodChanged: {
+        if (!currentContactMethod)
+            return
+
+        currentPerson = currentContactMethod.person
+
         // Stats
         lastContactedTime.text = getLastContacted()
         totalCall.text         = getTotalCall()
         totalText.text         = getTotalText()
         totalRecording.text    = getTotalRecording()
         totalScreenshot.text   = getTotalScreenshot()
+    }
 
+    onCurrentPersonChanged: {
         // Sub-models
-        phoneNumbersModel.model = currentContactMethod.person ?
-            currentContactMethod.person.phoneNumbersModel : null
-        addresses.model = currentContactMethod.person ?
-            currentContactMethod.person.addressesModel : null
+        phoneNumbersModel.model = currentPerson ?
+            currentPerson.phoneNumbersModel : null
+        addresses.model = currentPerson ?
+            currentPerson.addressesModel : null
 
         // Contact info
-        formattedName.text = currentContactMethod.person ?
-            currentContactMethod.person.formattedName : ""
-        firstName.text = currentContactMethod.person ?
-            currentContactMethod.person.firstName : ""
-        lastName.text = currentContactMethod.person ?
-            currentContactMethod.person.secondName : ""
-        email.text = currentContactMethod.person ?
-            currentContactMethod.person.preferredEmail : ""
-        organization.text = currentContactMethod.person ?
-            currentContactMethod.person.organization : ""
+        formattedName.text = currentPerson ?
+            currentPerson.formattedName : ""
+        firstName.text = currentPerson ?
+            currentPerson.firstName : ""
+        lastName.text = currentPerson ?
+            currentPerson.secondName : ""
+        email.text = currentPerson ?
+            currentPerson.preferredEmail : ""
+        organization.text = currentPerson ?
+            currentPerson.organization : ""
+        phoneNumbersModel.person = currentPerson
     }
 
     ColumnLayout {
@@ -245,20 +254,21 @@ Rectangle {
         anchors.margins: 5
         text: qsTr("Save")
         onClicked: {
-            if ((!currentContactMethod))
+            if ((!currentContactMethod) && (!currentPerson))
                 return
 
-            if (!currentContactMethod.person) {
+            if (!currentPerson) {
                 var ret = contactBuilder.from(currentContactMethod)
             }
 
-            currentContactMethod.person.formattedName  = formattedName.text
-            currentContactMethod.person.firstName      = firstName.text
-            currentContactMethod.person.secondName     = lastName.text
-            currentContactMethod.person.preferredEmail = email.text
-            currentContactMethod.person.organization   = organization.text
+            currentPerson.formattedName  = formattedName.text
+            currentPerson.firstName      = firstName.text
+            currentPerson.secondName     = lastName.text
+            currentPerson.preferredEmail = email.text
+            currentPerson.organization   = organization.text
 
-            currentContactMethod.person.save()
+            console.log("Saving", currentPerson.formattedName)
+            currentPerson.save()
         }
     }
 }

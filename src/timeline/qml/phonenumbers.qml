@@ -19,10 +19,12 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import RingQmlWidgets 1.0
 
 Rectangle {
     id: phoneNumbers
     property alias model : numbers.model
+    property QtObject person: null
 
     SystemPalette {
         id: activePalette
@@ -140,17 +142,18 @@ Rectangle {
             }
         }
 
+        ContactBuilder {
+            id: contactBuilder
+        }
+
         RowLayout {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
             ComboBox {
+                id: numbertype
                 model: NumberCategoryModel
                 textRole: "display"
                 onActivated: {
-                    console.log("ACTIVATED!!!", index, display, NumberCategoryModel)
-                    console.log("ACTIVATED!!!", index, display)
-                    console.log("ACTIVATED!!!", index, display)
-                    console.log("ACTIVATED!!!", index, display)
                 }
             }
 
@@ -163,6 +166,18 @@ Rectangle {
                 id: button
                 text: qsTr("Add")
                 onClicked: {
+                    if (!person)
+                        return;
+
+                    if (newPhoneNumber.text == "") {
+                        console.log("No number added, the field is empty")
+                        return
+                    }
+
+                    console.log("adding", newPhoneNumber.text)
+                    contactBuilder.addPhoneNumber(
+                        person, newPhoneNumber.text, numbertype.index
+                    )
                 }
             }
         }

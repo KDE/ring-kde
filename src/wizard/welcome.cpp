@@ -20,7 +20,6 @@
 
 #include "welcome.h"
 
-#include <QtQuick/QQuickView>
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QtGui/QGuiApplication>

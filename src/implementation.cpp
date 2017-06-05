@@ -31,6 +31,9 @@
 #include <QtCore/QPointer>
 #include <QtGui/QClipboard>
 #include <QtGui/QIcon>
+#include <QQuickView>
+#include <QQuickItem>
+#include <QQmlApplicationEngine>
 
 //KDE
 #include <KColorScheme>
@@ -55,6 +58,7 @@
 #include <widgets/contactmethodselector.h>
 #include <phonewindow.h>
 #include <view.h>
+#include <ringapplication.h>
 
 ColorDelegate::ColorDelegate(const QPalette& pal) : m_Pal(pal) {
    m_Green = QColor(m_Pal.color(QPalette::Base));
@@ -224,34 +228,40 @@ QVariant KDEShortcutDelegate::createAction(Macro* macro)
 
 void KDEActionExtender::editPerson(Person* p)
 {
-   QPointer<QDialog> d = new QDialog();
+   QPointer<QQuickView> d = new QQuickView( RingApplication::engine(), nullptr );
 
-   auto editor = new DlgProfiles(d, i18n("Edit Contact"),
-      p->phoneNumbers().isEmpty() ? URI() : p->phoneNumbers().first()->uri());
-   editor->loadPerson(p);
+   d->setSource(QUrl(QLatin1String("qrc:/ContactInfo.qml")));
+   d->setResizeMode(QQuickView::SizeRootObjectToView);
+   auto item = d->rootObject();
+   item->setProperty("currentPerson", QVariant::fromValue(p));
+
+//    auto editor = new DlgProfiles(d, i18n("Edit Contact"),
+//       p->phoneNumbers().isEmpty() ? URI() : p->phoneNumbers().first()->uri());
+// //    editor->loadPerson(p);
+
+
 
    // Save the person
-   QObject::connect(d, &QDialog::finished, [editor, p](int accepted) {
-      if (accepted) {
-         editor->saveToPerson(p);
-         p->save();
-      }
-   });
+//    QObject::connect(d, &QDialog::finished, [editor, p](int accepted) {
+//       if (accepted) {
+//          editor->saveToPerson(p);
+//          p->save();
+//       }
+//    });
 
-   QObject::connect(editor->buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked,
-         d, &QDialog::accept);
-   QObject::connect(editor->buttonBox->button(QDialogButtonBox::Cancel), &QPushButton::clicked,
-         d, &QDialog::reject);
+//    QObject::connect(editor->buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked,
+//          d, &QDialog::accept);
+//    QObject::connect(editor->buttonBox->button(QDialogButtonBox::Cancel), &QPushButton::clicked,
+//          d, &QDialog::reject);
 
-   auto l = new QHBoxLayout(d);
-   l->addWidget(editor);
+//    auto l = new QHBoxLayout(d);
+//    l->addWidget(editor);
 
-   d->exec();
+   qDebug() << "\n\nSHHOW!";
+   d->show();
 
-   editor->deleteLater();
-   d->deleteLater();
-
-   Q_UNUSED(p)
+//    editor->deleteLater();
+   //d->deleteLater();
 }
 
 void KDEActionExtender::viewChatHistory(ContactMethod* cm)

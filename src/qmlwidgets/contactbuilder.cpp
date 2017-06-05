@@ -21,6 +21,8 @@
 #include <person.h>
 #include <personmodel.h>
 #include <collectioninterface.h>
+#include <numbercategorymodel.h>
+#include <phonedirectorymodel.h>
 
 class ContactBuilderPrivate
 {
@@ -59,6 +61,35 @@ bool ContactBuilder::from(ContactMethod* cm)
     p->setCollection(col); //TODO have a selection widget again
     cm->setPerson(p);
     p->setContactMethods({cm});
+
+    return true;
+}
+
+bool ContactBuilder::addPhoneNumber(Person* p, const QString& number, int categoryIndex)
+{
+    auto catIndex = NumberCategoryModel::instance().index(categoryIndex, 0);
+
+    if (!catIndex.isValid())
+        return false;
+
+    // Force a copy
+    QVector<ContactMethod*> pn(p->phoneNumbers());
+
+    auto newCM = PhoneDirectoryModel::instance().getNumber(
+        number, p, nullptr, catIndex.data().toString()
+    );
+
+    const auto cpn = pn;
+    for (auto cm : qAsConst(cpn)) {
+        if (cm == newCM) {
+            qWarning() << "Trying to add an already added phone number";
+            return false;
+        }
+    }
+
+    pn << newCM;
+
+    p->setContactMethods(pn);
 
     return true;
 }

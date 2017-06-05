@@ -20,6 +20,7 @@
 #include <QtCore/QObject>
 
 class ContactMethod;
+class Person;
 
 class ContactBuilderPrivate;
 
@@ -32,6 +33,8 @@ public:
     virtual ~ContactBuilder();
 
     Q_INVOKABLE bool from(ContactMethod* cm);
+
+    Q_INVOKABLE bool addPhoneNumber(Person* p, const QString& number, int categoryIndex);
 
 private:
     ContactBuilderPrivate* d_ptr;
