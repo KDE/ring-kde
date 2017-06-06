@@ -235,6 +235,7 @@ void KDEActionExtender::editPerson(Person* p)
    auto item = d->rootObject();
    item->setProperty("currentPerson", QVariant::fromValue(p));
 
+   d->resize(800, 600);
    d->show();
 }
 
