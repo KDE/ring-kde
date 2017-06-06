@@ -29,6 +29,7 @@ class QQmlApplicationEngine;
 class PhoneWindow;
 class TimelineWindow;
 class FancyMainWindow;
+class Call;
 
 ///RingApplication: Main application
 class RingApplication : public QApplication
@@ -77,6 +78,7 @@ private:
 
 private Q_SLOTS:
    void daemonTimeout();
+   void callAdded(Call* c);
 
 public Q_SLOTS:
    void showWizard();

@@ -96,6 +96,10 @@
     	<label>Defines whether the main window should be displayed when receiving a message.</label>
       <default>true</default>
     </entry>
+    <entry name="displayOnNewCalls" type="Bool">
+    	<label>Defines whether the main window should be displayed when a call is created</label>
+      <default>true</default>
+    </entry>
     <entry name="displayDialpad" type="Bool">
     	<label>Defines whether the dialpad is being shown by default</label>
       <default>true</default>

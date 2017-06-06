@@ -122,6 +122,9 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    }
 
    initCollections();
+
+   connect(&CallModel::instance(), &CallModel::callAdded, this, &RingApplication::callAdded);
+   connect(&CallModel::instance(), &CallModel::callStateChanged, this, &RingApplication::callAdded);
 }
 
 /**
@@ -385,6 +388,17 @@ void RingApplication::daemonTimeout()
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
       KMessageBox::error(mainWindow(), ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
+   }
+}
+
+void RingApplication::callAdded(Call* c)
+{
+   if (c && ConfigurationSkeleton::displayOnNewCalls() && (
+    c->state() == Call::State::CURRENT   ||
+    c->state() == Call::State::CONNECTED ||
+    c->state() == Call::State::RINGING   ||
+    c->state() == Call::State::INITIALIZATION)) {
+      phoneWindow()->show();
    }
 }
 
