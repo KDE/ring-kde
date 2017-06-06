@@ -223,6 +223,12 @@ Rectangle {
                         PhoneNumbers {
                             id: phoneNumbersModel
                             anchors.fill: parent
+                            onPersonCreated: {
+                                if (!currentPerson) {
+                                    console.log("Setting the person from a phone number")
+                                    currentPerson = phoneNumbersModel.person
+                                }
+                            }
                         }
                     }
 

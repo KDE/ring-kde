@@ -39,10 +39,10 @@ ContactBuilder::~ContactBuilder()
     delete d_ptr;
 }
 
-bool ContactBuilder::from(ContactMethod* cm)
+Person* ContactBuilder::from(ContactMethod* cm)
 {
     if (cm->contact())
-        return false;
+        return nullptr;
 
     auto cols = PersonModel::instance().enabledCollections(
         CollectionInterface::SupportedFeatures::ADD |
@@ -52,7 +52,7 @@ bool ContactBuilder::from(ContactMethod* cm)
 
     if (cols.isEmpty()) {
         qWarning() << "Failed to add a contact: no suitable backend found";
-        return false;
+        return nullptr;
     }
 
     const auto col = cols.first();
@@ -61,29 +61,53 @@ bool ContactBuilder::from(ContactMethod* cm)
     p->setCollection(col); //TODO have a selection widget again
     cm->setPerson(p);
     p->setContactMethods({cm});
+    col->editor<Person>()->addExisting(p);
 
-    return true;
+    qDebug() << "New contact successfully added";
+
+    return p;
 }
 
-bool ContactBuilder::addPhoneNumber(Person* p, const QString& number, int categoryIndex)
+ContactMethod* ContactBuilder::addPhoneNumber(Person* p, const QString& number, int categoryIndex)
 {
+
     auto catIndex = NumberCategoryModel::instance().index(categoryIndex, 0);
 
     if (!catIndex.isValid())
-        return false;
+        return nullptr;
+
+    ContactMethod* newCM = nullptr;
+
+    // Create a person and add the CM to the phone numbers
+    if (!p) {
+        newCM = PhoneDirectoryModel::instance().getNumber(
+            number, catIndex.data().toString()
+        );
+        from(newCM);
+
+        return newCM;
+    }
+
+    p = p ? p : newCM->contact();
 
     // Force a copy
     QVector<ContactMethod*> pn(p->phoneNumbers());
 
-    auto newCM = PhoneDirectoryModel::instance().getNumber(
-        number, p, nullptr, catIndex.data().toString()
-    );
+    if (!p) {
+        qWarning() << "Failed to create a contact";
+        return nullptr;
+    }
+
+    if (!newCM)
+        newCM = PhoneDirectoryModel::instance().getNumber(
+            number, p, nullptr, catIndex.data().toString()
+        );
 
     const auto cpn = pn;
     for (auto cm : qAsConst(cpn)) {
         if (cm == newCM) {
             qWarning() << "Trying to add an already added phone number";
-            return false;
+            return nullptr;
         }
     }
 
@@ -91,5 +115,7 @@ bool ContactBuilder::addPhoneNumber(Person* p, const QString& number, int catego
 
     p->setContactMethods(pn);
 
-    return true;
+    qDebug() << "New phone number added to" << p;
+
+    return newCM;
 }

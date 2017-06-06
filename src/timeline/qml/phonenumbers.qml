@@ -26,6 +26,8 @@ Rectangle {
     property alias model : numbers.model
     property QtObject person: null
 
+    signal personCreated(QtObject newPerson)
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
@@ -166,18 +168,24 @@ Rectangle {
                 id: button
                 text: qsTr("Add")
                 onClicked: {
-                    if (!person)
-                        return;
 
                     if (newPhoneNumber.text == "") {
                         console.log("No number added, the field is empty")
                         return
                     }
 
-                    console.log("adding", newPhoneNumber.text)
-                    contactBuilder.addPhoneNumber(
+                    var cm = contactBuilder.addPhoneNumber(
                         person, newPhoneNumber.text, numbertype.index
                     )
+
+                    console.log("adding", newPhoneNumber.text, cm)
+
+                    if (cm && cm.person) {
+                        console.log("Setting the person")
+                        person = cm.person
+                        phoneNumbers.model = cm.person.phoneNumbersModel
+                        personCreated(cm.person)
+                    }
                 }
             }
         }

@@ -32,9 +32,9 @@ public:
     explicit ContactBuilder(QObject* parent = nullptr);
     virtual ~ContactBuilder();
 
-    Q_INVOKABLE bool from(ContactMethod* cm);
+    Q_INVOKABLE Person* from(ContactMethod* cm);
 
-    Q_INVOKABLE bool addPhoneNumber(Person* p, const QString& number, int categoryIndex);
+    Q_INVOKABLE ContactMethod* addPhoneNumber(Person* p, const QString& number, int categoryIndex);
 
 private:
     ContactBuilderPrivate* d_ptr;

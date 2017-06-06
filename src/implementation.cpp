@@ -235,33 +235,7 @@ void KDEActionExtender::editPerson(Person* p)
    auto item = d->rootObject();
    item->setProperty("currentPerson", QVariant::fromValue(p));
 
-//    auto editor = new DlgProfiles(d, i18n("Edit Contact"),
-//       p->phoneNumbers().isEmpty() ? URI() : p->phoneNumbers().first()->uri());
-// //    editor->loadPerson(p);
-
-
-
-   // Save the person
-//    QObject::connect(d, &QDialog::finished, [editor, p](int accepted) {
-//       if (accepted) {
-//          editor->saveToPerson(p);
-//          p->save();
-//       }
-//    });
-
-//    QObject::connect(editor->buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked,
-//          d, &QDialog::accept);
-//    QObject::connect(editor->buttonBox->button(QDialogButtonBox::Cancel), &QPushButton::clicked,
-//          d, &QDialog::reject);
-
-//    auto l = new QHBoxLayout(d);
-//    l->addWidget(editor);
-
-   qDebug() << "\n\nSHHOW!";
    d->show();
-
-//    editor->deleteLater();
-   //d->deleteLater();
 }
 
 void KDEActionExtender::viewChatHistory(ContactMethod* cm)

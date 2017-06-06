@@ -453,9 +453,7 @@ void ActionCollection::slotNewContact()
 
    // The editor wont save if the name isn't set, so it can be used to check
    // if cancel was clicked.
-   if (!p->formattedName().isEmpty()) {
-      col->editor<Person>()->addExisting(p);
-   }
+   col->editor<Person>()->addExisting(p);
 }
 
 ///Raise the main window to the foreground
