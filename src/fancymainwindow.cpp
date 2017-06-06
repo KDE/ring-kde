@@ -81,8 +81,9 @@ void FancyMainWindow::updateTabIcons()
 
             // Only do the funky hack if the tab are on the left //TODO support RTL
             const auto pt = bar->mapTo(this, {0,0});
+            const bool isVertical = bar->height() > bar->width();
             const bool isMainToolbar = (dockOptions()&QMainWindow::VerticalTabs)
-                && pt.x() < 20 && pt.y() <= 64;
+                && pt.x() < 20 && isVertical;
 
             // Attach an event filter
             if (isMainToolbar && !m_hEventFilters.contains(bar)) {
