@@ -41,6 +41,7 @@ public:
     QSharedPointer<QAbstractItemModel> m_CallsModel;
     QSharedPointer<QAbstractItemModel> m_PersomCMModel;
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
+    QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
 };
 
 ViewContactDock::ViewContactDock(QWidget* parent) :
@@ -61,6 +62,8 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
             PeersTimelineModel::instance().index(0, 0).data((int)Ring::Role::Object)
         ));
     });
+
+    d_ptr->m_DeduplicatedTimelineModel = PeersTimelineModel::instance().deduplicatedTimelineModel();
 }
 
 ViewContactDock::~ViewContactDock()

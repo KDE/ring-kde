@@ -57,7 +57,7 @@ Rectangle {
             highlight: Rectangle {
                 color: activePalette.highlight
             }
-            model: PeersTimelineModel
+            model: PeersTimelineModel.deduplicatedTimelineModel
         }
     }
 

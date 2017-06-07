@@ -220,7 +220,7 @@ Item {
         z: 99
         onClicked: {
             recentView.currentIndex = index
-            contactMethodSelected(recentView.currentIndex);
+            contactMethodSelected(object);
         }
     }
 

@@ -70,12 +70,13 @@ bool RecentDock::eventFilter(QObject *obj, QEvent *event)
 
 void RecentDock::slotViewContactMethod(const QVariant& cm)
 {
+    if (!cm.canConvert<ContactMethod*>())
+        return;
+
+    auto cm_ = qvariant_cast<ContactMethod*>(cm);
+
     const int idx = cm.toInt();
-    emit viewContactMethod(
-        qvariant_cast<ContactMethod*>(
-            PeersTimelineModel::instance().index(idx, 0).data((int)Ring::Role::Object)
-        )
-    );
+    emit viewContactMethod(cm_);
 }
 
 #include <recentdock.moc>
