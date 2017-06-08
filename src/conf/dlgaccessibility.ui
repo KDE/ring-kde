@@ -15,32 +15,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="kcfg_enableAutoCompletion">
-     <property name="title">
-      <string>Auto completion</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QCheckBox" name="kcfg_autoCompleteMergeNumbers">
-        <property name="text">
-         <string>Merge numbers from different accounts</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_autoCompleteUseAccount">
-        <property name="text">
-         <string>Call number using their original accounts</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="m_pT2SBG">
      <property name="enabled">
       <bool>false</bool>
