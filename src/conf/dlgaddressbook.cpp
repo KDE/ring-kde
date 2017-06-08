@@ -209,8 +209,6 @@ void DlgAddressBook::slotEditCollection()
          connect(configurator,&CollectionConfigurationInterface::changed,this,&DlgAddressBook::changed);
          m_lConfigurators << configurator;
       }
-
-      m_pExtensions->setModel(col->extensionsModel());
    }
 }
 

@@ -35,29 +35,7 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
  : QWidget(parent),m_HasChanged(false)
 {
    setupUi(this);
-   kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());
 
-
-   //Need to be ordered
-   m_lCallDetails[ i18n("Display Icon")         ] = QStringLiteral("displayCallIcon")        ;
-   m_lCallDetails[ i18n("Display Security")     ] = QStringLiteral("displayCallSecure")      ;
-   m_lCallDetails[ i18n("Display Call Number")  ] = QStringLiteral("displayCallNumber")      ;
-   m_lCallDetails[ i18n("Display Peer Name")    ] = QStringLiteral("displayCallPeer")        ;
-   m_lCallDetails[ i18n("Display organisation") ] = QStringLiteral("displayCallOrganisation");
-   m_lCallDetails[ i18n("Display department")   ] = QStringLiteral("displayCallDepartment")  ;
-   m_lCallDetails[ i18n("Display e-mail")       ] = QStringLiteral("displayCallEmail")       ;
-
-   QMutableMapIterator<QString, QString> iter(m_lCallDetails);
-   while (iter.hasNext()) {
-      iter.next();
-      const bool checked = ConfigurationSkeleton::self()->findItem(iter.value())->isEqual(true);
-      QListWidgetItem* i = new QListWidgetItem(i18n(iter.key().toLatin1()));
-      i->setFlags      (Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-      i->setCheckState ((checked)?Qt::Checked:Qt::Unchecked        );
-      m_pDetailsList->addItem(m_lItemList[iter.value()] = i);
-   }
-   kcfg_minimumRowHeight->setEnabled(ConfigurationSkeleton::limitMinimumRowHeight());
-   connect(m_pDetailsList   , &QListWidget::itemChanged  , this  , &DlgDisplay::changed      );
    connect(this,SIGNAL(updateButtons()), parent , SLOT(updateButtons()));
 
    PhoneWindow::app()->isAutoStart();
@@ -90,12 +68,6 @@ void DlgDisplay::updateWidgets()
 ///Save current settings
 void DlgDisplay::updateSettings()
 {
-   QMutableMapIterator<QString, QString> iter(m_lCallDetails);
-   while (iter.hasNext()) {
-      iter.next();
-      ConfigurationSkeleton::self()->findItem(iter.value())->setProperty(m_lItemList[iter.value()]->checkState() == Qt::Checked);
-   }
-
    if (ConfigurationSkeleton::autoStart() != kcfg_autoStart->isChecked()) {
       ConfigurationSkeleton::setAutoStartOverride(true);
    }

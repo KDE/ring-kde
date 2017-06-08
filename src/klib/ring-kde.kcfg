@@ -25,42 +25,6 @@
       <max> 99 </max>
       <default> 30 </default>
     </entry>
-   <entry name="displayCallIcon" type="Bool">
-      <label>Should CallIcon be visible by default for calls</label>
-      <default> true </default>
-   </entry>
-   <entry name="displayCallPeer" type="Bool">
-      <label>Should CallPeer be visible by default for calls</label>
-      <default> true </default>
-   </entry>
-   <entry name="displayCallNumber" type="Bool">
-      <label>Should CallNumber be visible by default for calls</label>
-      <default> true </default>
-   </entry>
-   <entry name="displayCallSecure" type="Bool">
-      <label>Should CallSecure be visible by default for calls</label>
-      <default> false </default>
-   </entry>
-   <entry name="displayCallOrganisation" type="Bool">
-      <label>If a contact is present, display the organisation</label>
-      <default> false </default>
-   </entry>
-   <entry name="displayCallDepartment" type="Bool">
-      <label>If a contact is present, display the department</label>
-      <default> false </default>
-   </entry>
-   <entry name="displayCallEmail" type="Bool">
-      <label>If a contact is present, display the email</label>
-      <default> false </default>
-   </entry>
-   <entry name="limitMinimumRowHeight" type="Bool">
-      <label>The minimum number of pixel for a call item</label>
-      <default> false </default>
-   </entry>
-   <entry name="minimumRowHeight" type="Int">
-      <label>The minimum number of pixel for a call item</label>
-      <default> 48 </default>
-   </entry>
    <entry name="displayHistoryStatus" type="Bool">
       <label>Display incoming, outgoing or missed</label>
       <default> true </default>
@@ -158,39 +122,12 @@
 
     <!-- Audio Settings -->
 
-<!--    <entry name="interface" type="Enum">
-    	<label>Defines the audio output to use.</label>
-    	<choices>
-    		<choice name="ALSA" />
-    		<choice name="PulseAudio" />
-    	</choices>
-    </entry>
-    <entry name="alsaPlugin" type="String">
-    	<label>Defines which ALSA plugin to use.</label>
-    </entry>
-    <entry name="alsaInputDevice" type="Int">
-    	<label>Defines which ALSA Input device to use.</label>
-    </entry>
-    <entry name="alsaOutputDevice" type="Int">
-    	<label>Defines which ALSA Output device to use.</label>
-    </entry>
-    <entry name="alsaRingtoneDevice" type="Int">
-      <label>Defines which ALSA Ringtone device to use.</label>
-    </entry>
-    <entry name="pulseAudioVolumeAlter" type="Bool">
-    	<label>Defines whether pulse audio can mute other applications during a call.</label>
-    </entry>-->
      <entry name="enableRoomTone" type="Bool">
       <label>Enable or disables the "buzzzzz" sound</label>
       <default>false</default>
     </entry>
-    
 
     <!-- Address Book Settings -->
-
-<!--    <entry name="enableAddressBook" type="Bool">
-    	<label>Defines whether the search in KDE Address Book is enabled</label>
-    </entry>-->
 
     <entry name="displayAllCollections" type="Bool">
         <label>Display non manageable collections</label>
@@ -204,16 +141,6 @@
     <entry name="phoneTypeList" type="IntList">
       <label>Defines whether the search in KDE Address Book is enabled</label>
       <default>0,1,2,3,4,5,6,7,8,9,10,11,12,10000</default>
-    </entry>
-
-    <entry name="displayOrganisation" type="Bool">
-      <label>Defines whether to display the organisation of the contact list item</label>
-      <default>true</default>
-    </entry>
-
-    <entry name="displayEmail" type="Bool">
-      <label>Defines whether to display the organisation of the contact list item</label>
-      <default>true</default>
     </entry>
 
     <entry name="hidePersonWithoutPhone" type="Bool">

@@ -41,8 +41,6 @@ public:
    bool hasChanged();
 
 private:
-   QMap<QString,QString>          m_lCallDetails;
-   QMap<QString,QListWidgetItem*> m_lItemList   ;
    bool m_HasChanged;
 
 public Q_SLOTS:

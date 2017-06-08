@@ -66,8 +66,6 @@ m_pChildDelegate(nullptr),m_pView(parent)
 QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
    QSize sh = QStyledItemDelegate::sizeHint(option, index);
    const int rowCount = index.model()->rowCount(index);
-   const bool displayEmail = ConfigurationSkeleton::displayEmail();
-   const bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
    Person* ct = qvariant_cast<Person*>((static_cast<const QSortFilterProxyModel*>(index.model()))->mapToSource(index).data((int)Person::Role::Object));
 
    //Compute only once, the value is unlikely to change
@@ -75,8 +73,8 @@ QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    static const int lineHeight = fm.height()+2;
 
    //Check the number of necessary rows
-   const int hasEmail = (displayEmail && !ct->preferredEmail().isEmpty()) ? lineHeight : 0;
-   const int hasOrg   = (displayOrg && !ct->organization().isEmpty()    ) ? lineHeight : 0;
+   const int hasEmail = (!ct->preferredEmail().isEmpty()) ? lineHeight : 0;
+   const int hasOrg   = (!ct->organization().isEmpty()    ) ? lineHeight : 0;
    const int hasPhone = (ct->phoneNumbers().size()>1                    ) ? lineHeight : 0;
 
    int lines = hasEmail + hasOrg + 2*lineHeight - hasPhone;
@@ -137,8 +135,6 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
 
    //Config options
-   bool displayEmail = ConfigurationSkeleton::displayEmail();
-   bool displayOrg   = ConfigurationSkeleton::displayOrganisation();
    QFont font = painter->font();
    static QFontMetrics fm(font);
    static int fontH = fm.height();
@@ -155,14 +151,14 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    //END display name
 
    //BEGIN Display organization
-   if (displayOrg && !ct->organization().isEmpty()) {
+   if (!ct->organization().isEmpty()) {
       painter->drawText(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight,ct->organization());
       currentHeight +=fontH;
    }
    //END Display organization
 
    //BEGIN Display email
-   if (displayEmail && !ct->preferredEmail().isEmpty()) {
+   if (!ct->preferredEmail().isEmpty()) {
       const int fmh = fontH;
       const static QPixmap* mail = nullptr;
       if (!mail)

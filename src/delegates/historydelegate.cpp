@@ -84,17 +84,10 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    int lineHeight = fm.height()+2;
    int rowCount = 0;
    const Call::State currentState = static_cast<Call::State>(index.data(static_cast<int>(Call::Role::State)).toInt());
-   int minimumRowHeight = (currentState == Call::State::OVER)?48:(ConfigurationSkeleton::limitMinimumRowHeight()?ConfigurationSkeleton::minimumRowHeight():0);
-   if (currentState == Call::State::OVER)
-      rowCount = 3;
-   else {
-      rowCount = ConfigurationSkeleton::displayCallPeer()
-      + ConfigurationSkeleton::displayCallNumber       ()
-      + ConfigurationSkeleton::displayCallSecure       ()
-      + ConfigurationSkeleton::displayCallOrganisation ()
-      + ConfigurationSkeleton::displayCallDepartment   ()
-      + ConfigurationSkeleton::displayCallEmail        ();
-   }
+   int minimumRowHeight = (currentState == Call::State::OVER)?48:0;
+
+   rowCount = currentState == Call::State::OVER ? 3 : 2;
+
    return QSize(sh.width(),((rowCount*lineHeight)<minimumRowHeight?minimumRowHeight:(rowCount*lineHeight)) + 4);
 }
 
@@ -238,7 +231,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    //END history fields
    else { //Active calls
-      if(ConfigurationSkeleton::displayCallPeer() && !(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
+      if(!(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
          font.setBold(true);
          painter->setFont(font);
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
@@ -247,35 +240,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          currentHeight +=fm.height();
       }
 
-      if (ConfigurationSkeleton::displayCallNumber() && !(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
-//          if (isTracked) {
-//             if (isPresent)
-//                painter->setPen(presentBrush);
-//             else
-//                painter->setPen(awayBrush);
-//          }
+      if (!(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Number)).toString());
          currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallSecure()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Security)).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallOrganisation()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Organisation)).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallDepartment()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Department)).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallEmail()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Email)).toString());
-         //currentHeight +=fm.height();
       }
    }
 
