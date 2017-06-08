@@ -210,7 +210,6 @@ SET(
    conf/dlgdisplay.cpp
    conf/dlgaudio.cpp
    conf/dlgaddressbook.cpp
-   conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
    configurator/localhistoryconfigurator.cpp
@@ -310,7 +309,6 @@ SET(
    conf/dlgdisplaybase.ui
    conf/dlgaudiobase.ui
    conf/dlgaddressbookbase.ui
-   conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
    conf/dlgaudiorecording.ui
    conf/dlgpresence.ui

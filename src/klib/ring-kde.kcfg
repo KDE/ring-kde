@@ -252,24 +252,6 @@
         <label>List of bookmarked clients</label>
     </entry>
 
-    <!-- Hooks Settings -->
-
-<!--    <entry name="enableHooksSIP" type="Bool">
-    	<label>Defines whether to enable hooks for SIP accounts.</label>
-    </entry>
-    <entry name="hooksSIPHeader" type="String">
-    	<label>Defines which header to catch for SIP accounts hooks.</label>
-    </entry>
-    <entry name="hooksCommand" type="String">
-    	<label>Defines which command to execute.</label>
-    </entry>
-    <entry name="addPrefix" type="Bool">
-    	<label>Defines whether to add a prefix for outgoing calls.</label>
-    </entry>
-    <entry name="prepend" type="String">
-    	<label>Defines the prefix to add.</label>
-    </entry>-->
-
     <!-- Accessibility Settings -->
     <entry name="enableVoiceFeedback" type="Bool">
       <label>Enable audio feedback from common actions</label>

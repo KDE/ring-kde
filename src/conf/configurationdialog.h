@@ -33,7 +33,6 @@ class DlgDisplay;
 class DlgAccount;
 class DlgAudio;
 class DlgAddressBook;
-class DlgHooks;
 class DlgAccessibility;
 class DlgVideo;
 class View;
@@ -63,7 +62,6 @@ private:
       Accounts,
       Audio,
       AddressBook,
-      Hooks,
       Accessibility,
       Video,
       Presence,
@@ -74,7 +72,6 @@ private:
    DlgAccount*       dlgAccount      ;
    DlgAudio*         dlgAudio        ;
    DlgAddressBook*   dlgAddressBook  ;
-   DlgHooks*         dlgHooks        ;
    DlgAccessibility* dlgAccessibility;
    DlgVideo*         dlgVideo        ;
    DlgPresence*      dlgPresence     ;

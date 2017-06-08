@@ -31,7 +31,6 @@
 #include "account/dlgaccount.h"
 #include "dlgaudio.h"
 #include "dlgaddressbook.h"
-#include "dlghooks.h"
 #include "dlgaccessibility.h"
 #include "dlgvideo.h"
 #include "dlgpresence.h"
@@ -86,7 +85,7 @@ void PlaceHolderWidget::display(KPageWidgetItem *current)
 ///Constructor
 ConfigurationDialog::ConfigurationDialog(View *parent)
  :KConfigDialog(parent, QStringLiteral("settings"), ConfigurationSkeleton::self()),dlgVideo(nullptr),dlgDisplay(nullptr)
- ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgHooks(nullptr),dlgAccessibility(nullptr),dlgAccount(nullptr),
+ ,dlgAudio(nullptr),dlgAddressBook(nullptr),dlgAccessibility(nullptr),dlgAccount(nullptr),
  dlgPresence(nullptr)
 {
    setWindowIcon( QIcon(":/appicon/icons/sc-apps-ring-kde.svgz") );
@@ -143,15 +142,6 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    addPage( dlgHolder[ConfigurationDialog::Page::AddressBook]   , i18n("Personal data")                 , QStringLiteral("x-office-address-book")             )
       ->setProperty("id",ConfigurationDialog::Page::AddressBook);
 
-   //Hooks
-   dlgHolder[ConfigurationDialog::Page::Hooks]      = new PlaceHolderWidget(Page::Hooks,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgHooks = new DlgHooks(dialog);
-      dialog->m_pManager->addWidget(dialog->dlgHooks);
-      return dialog->dlgHooks;
-   });
-   addPage( dlgHolder[ConfigurationDialog::Page::Hooks]         , i18n("Hooks")                        , QStringLiteral("insert-link")                       )
-      ->setProperty("id",ConfigurationDialog::Page::Hooks);
-
    //Accessibility
    dlgHolder[ConfigurationDialog::Page::Accessibility]= new PlaceHolderWidget(Page::Accessibility,this,[](ConfigurationDialog* dialog)->QWidget*{
       dialog->dlgAccessibility = new DlgAccessibility (dialog);
@@ -193,7 +183,6 @@ ConfigurationDialog::ConfigurationDialog(View *parent)
    connect(buttonBox()->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, this, &ConfigurationDialog::cancelSettings     );
 
    connect(dlgAccount, &DlgAccount::updateButtons,this,&ConfigurationDialog::updateButtons);
-   connect(dlgHooks  , &DlgHooks::updateButtons  ,this,&ConfigurationDialog::updateButtons);
 
    if (dlgPresence)
       connect(dlgPresence, &DlgPresence::updateButtons  ,this,&ConfigurationDialog::updateButtons);
@@ -208,7 +197,6 @@ ConfigurationDialog::~ConfigurationDialog()
    if (dlgAccount      ) delete dlgAccount      ;
    if (dlgAudio        ) delete dlgAudio        ;
    if (dlgAddressBook  ) delete dlgAddressBook  ;
-   if (dlgHooks        ) delete dlgHooks        ;
    if (dlgAccessibility) delete dlgAccessibility;
    if (dlgPresence     ) delete dlgPresence     ;
    #ifdef ENABLE_VIDEO
@@ -225,7 +213,6 @@ void ConfigurationDialog::updateWidgets()
    GUARD(dlgAddressBook,updateWidgets  ());
    GUARD(dlgAccessibility,updateWidgets());
    GUARD(dlgPresence,updateWidgets     ());
-   GUARD(dlgHooks,updateWidgets        ());
    #ifdef ENABLE_VIDEO
    GUARD(dlgVideo,updateWidgets        ());
    #endif
@@ -240,7 +227,6 @@ void ConfigurationDialog::updateSettings()
    GUARD(dlgAccessibility,updateSettings());
    GUARD(dlgDisplay,updateSettings      ());
    GUARD(dlgPresence,updateSettings     ());
-   GUARD(dlgHooks,updateSettings        ());
    #ifdef ENABLE_VIDEO
    GUARD(dlgVideo,updateSettings        ());
    #endif
@@ -260,7 +246,6 @@ bool ConfigurationDialog::hasChanged()
             || (GUARD_FALSE(dlgDisplay,hasChanged()       ))
             || (GUARD_FALSE(dlgAddressBook,hasChanged()   ))
             || (GUARD_FALSE(dlgAccessibility,hasChanged() ))
-            || (GUARD_FALSE(dlgHooks,hasChanged()         ))
 #ifdef ENABLE_VIDEO
             || (GUARD_FALSE(dlgVideo,hasChanged()         ))
 #endif
