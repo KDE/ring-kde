@@ -132,6 +132,15 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
  */
 RingApplication::~RingApplication()
 {
+   // Delete the GUI before the models to prevent their destructors from
+   // accessing the singletons
+   if (m_pPhone) {
+      delete m_pPhone;
+   }
+
+   if (m_pTimeline)
+      delete m_pTimeline;
+
    delete &CallModel::instance();
    delete &PersonModel::instance();
 }
