@@ -557,10 +557,6 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 
    }
 
-   //Hide the mailbox
-   ActionCollection::instance()->mailBoxAction()->setVisible(AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty());
-
-
    //Update the window for the selected call
    Call* call2 = call = CallModel::instance().selectedCall();
 

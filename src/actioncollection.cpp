@@ -90,7 +90,6 @@ ActionCollection::ActionCollection(FancyMainWindow* parent) : QObject(parent)
    INIT_ACTION(action_transfer      , QIcon(QStringLiteral(":/sharedassets/phone_light/transfert.svg")), i18n( "Transfer" ));
    INIT_ACTION(action_record        , QIcon(QStringLiteral(":/sharedassets/phone_light/record_call.svg" )), i18n( "Record"   ));
    INIT_ACTION(action_hangup        , QIcon(QStringLiteral(":/sharedassets/phone_light/hang_up.svg"  )), i18n( "Hang up"  ));
-   INIT_ACTION(action_mailBox       , QIcon(QStringLiteral(":/sharedassets/phone_light/mailbox.svg"  )), i18n( "Mailbox"  ));
 
    INIT_ACTION(action_mute_video         , getIcon(UserActionModel::Action::MUTE_VIDEO         ) , getName(UserActionModel::Action::MUTE_VIDEO         ));
    INIT_ACTION(action_join               , getIcon(UserActionModel::Action::JOIN               ) , getName(UserActionModel::Action::JOIN               ));
@@ -168,7 +167,6 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    COL(action_hold        , Qt::CTRL + Qt::Key_H );
    COL(action_transfer    , Qt::CTRL + Qt::Key_T );
    COL(action_record      , Qt::CTRL + Qt::Key_R );
-   COL(action_mailBox     , Qt::CTRL + Qt::Key_M );
    COL(action_pastenumber , Qt::CTRL + Qt::Key_V );
 #undef COL
 
@@ -255,7 +253,6 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    connect(action_mute_capture           , &QAction::toggled   , as                 , &Audio::Settings::muteCapture             );
    connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
    connect(action_show_wizard            , &QAction::triggered , RingApplication::instance(), &RingApplication::showWizard                   );
-   connect(action_mailBox                , &QAction::triggered , this               , &ActionCollection::mailBox                );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
    connect(action_configureNotifications , &QAction::triggered , this               , &ActionCollection::showNotificationEditor );
@@ -272,9 +269,9 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    // Add the actions to the collection
    for (QAction* a : {
       action_accept            , action_new_call          , action_hold              ,
-      action_transfer          , action_record            , action_mailBox           ,
+      action_transfer          , action_record            , action_new_contact       ,
       action_close_phone       , action_quit              , action_displayDialpad    ,
-      action_displayAccountCbb , action_close_timeline     , action_configureRing     ,
+      action_displayAccountCbb , action_close_timeline    , action_configureRing     ,
       action_configureShortcut , action_pastenumber       , action_showContactDock   ,
       action_showHistoryDock   , action_showBookmarkDock  , action_editToolBar       ,
       action_addPerson         , action_mute_capture      , action_mute_playback     ,
@@ -284,7 +281,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
-      action_focus_bookmark    , action_show_wizard       , action_new_contact       ,
+      action_focus_bookmark    , action_show_wizard       ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       mw->actionCollection()->addAction(a->objectName(), a);
@@ -326,32 +323,6 @@ void ActionCollection::setupPhoneAction(PhoneWindow* mw)
    connect(action_displayDialpad         , &QAction::toggled   , mw->view() , &View::displayDialpad                     );
    connect(action_pastenumber            , &QAction::triggered , mw->view() , &View::paste                              );
 
-}
-
-///Access the voice mail list
-void ActionCollection::mailBox()
-{
-   Account* account = AvailableAccountModel::currentDefaultAccount();
-
-   if (!account)
-       return;
-
-   const QString mailBoxNumber = account->mailbox();
-   Call* call = CallModel::instance().dialingCall();
-   if (call) {
-      call->reset();
-      call->appendText(mailBoxNumber);
-      try {
-         call->performAction(Call::Action::ACCEPT);
-      }
-      catch(const char * msg) {
-         KMessageBox::error(RingApplication::instance()->mainWindow(),i18n(msg));
-      }
-      emit windowStateChanged();
-   }
-   else {
-      HelperFunctions::displayNoAccountMessageBox(PhoneWindow::app()->view());
-   }
 }
 
 ///Show the configuration dialog
@@ -484,7 +455,6 @@ GETTER(newCallAction                , action_new_call              )
 GETTER(displayVolumeControlsAction  , action_displayVolumeControls )
 GETTER(displayDialpadAction         , action_displayDialpad        )
 GETTER(displayAccountCbbAction      , action_displayAccountCbb     )
-GETTER(mailBoxAction                , action_mailBox               )
 GETTER(showContactDockAction        , action_showContactDock       )
 GETTER(showHistoryDockAction        , action_showHistoryDock       )
 GETTER(showBookmarkDockAction       , action_showBookmarkDock      )

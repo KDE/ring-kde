@@ -37,7 +37,6 @@ namespace RingIcons {
    constexpr static const char* REFUSE                   = ":/sharedassets/phone_dark/failed.svg"          ;
    constexpr static const char* INITIALIZATION           = ":/sharedassets/phone_dark/initialization.svg"  ;
    constexpr static const char* CONNECTED                = ":/sharedassets/phone_dark/connected.svg"       ;
-   constexpr static const char* MAILBOX                  = ":/sharedassets/phone_dark/mailbox.svg"         ;
    constexpr static const char* DISPLAY_VOLUME_CONSTROLS = ":/images/icons/icon_volume_off.svg"            ;
    constexpr static const char* DISPLAY_DIALPAD          = ":/images/icons/icon_dialpad.svg"               ;
    constexpr static const char* HISTORY_INCOMING         = ":/sharedassets/phone_dark/incoming.svg"        ;

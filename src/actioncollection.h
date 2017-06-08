@@ -54,7 +54,6 @@ public:
    QAction* displayVolumeControlsAction ();
    QAction* displayDialpadAction        ();
    QAction* displayAccountCbbAction     ();
-   QAction* mailBoxAction               ();
    QAction* showContactDockAction       ();
    QAction* showHistoryDockAction       ();
    QAction* showBookmarkDockAction      ();
@@ -118,7 +117,6 @@ private:
    #endif
 
    //Other actions
-   QAction * action_mailBox                {nullptr};
    QAction * action_new_contact            {nullptr};
    QAction * action_close_phone            {nullptr};
    QAction * action_close_timeline         {nullptr};
@@ -147,7 +145,6 @@ public Q_SLOTS:
    void raiseClient           ( bool focus = false );
 
 private Q_SLOTS:
-   void mailBox  ();
    void showShortCutEditor    ();
    void showNotificationEditor();
    void editToolBar           ();

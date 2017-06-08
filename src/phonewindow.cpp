@@ -154,7 +154,6 @@ PhoneWindow::PhoneWindow(QWidget*)
 
    if (m_pTrayIcon) {
       m_pTrayIcon->addAction( ActionCollection::instance()->acceptAction  () );
-      m_pTrayIcon->addAction( ActionCollection::instance()->mailBoxAction () );
       m_pTrayIcon->addAction( ActionCollection::instance()->holdAction    () );
       m_pTrayIcon->addAction( ActionCollection::instance()->transferAction() );
       m_pTrayIcon->addAction( ActionCollection::instance()->recordAction  () );

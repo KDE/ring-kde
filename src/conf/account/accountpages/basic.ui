@@ -180,23 +180,6 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label6_mailbox">
-       <property name="text">
-        <string comment="Account voice mail address">Voicemail</string>
-       </property>
-       <property name="buddy">
-        <cstring>lrcfg_mailbox</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="lrcfg_mailbox">
-       <property name="placeholderText">
-        <string>Usually the same as the username</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item row="1" column="0" colspan="2">
