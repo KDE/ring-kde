@@ -17,9 +17,15 @@
  **************************************************************************/
 #include "advanced.h"
 
+#include <account.h>
+
 Pages::Advanced::Advanced(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+
+   connect(this,&PageBase::accountSet,[this]() {
+      m_pDTMF_GB->setVisible(account()->protocol() == Account::Protocol::SIP);
+   });
 
    connect(lrcfg_hasActiveCallLimit, &QCheckBox::toggled, [this](bool v) {
       if (!v)
