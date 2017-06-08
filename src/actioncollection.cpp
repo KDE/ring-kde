@@ -41,12 +41,10 @@
 #include "phonewindow.h"
 #include "ringapplication.h"
 #include "view.h"
-#include "localmacrocollection.h"
 #include "conf/configurationdialog.h"
 #include "icons/icons.h"
 #include "klib/kcfg_settings.h"
 #include "klib/helperfunctions.h"
-#include <macromodel.h>
 #include <call.h>
 #include <account.h>
 #include <availableaccountmodel.h>
@@ -260,7 +258,6 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    connect(action_addPerson              , &QAction::triggered , this               , &ActionCollection::slotAddPerson          );
    connect(action_raise_client           , &QAction::triggered , this               , &ActionCollection::raiseClient            );
 
-   connect(&MacroModel::instance(), &MacroModel::addAction                  , this                , &ActionCollection::addMacro           );
    connect(as                     , &Audio::Settings::captureVolumeChanged  , this                , &ActionCollection::updateRecordButton );
    connect(as                     , &Audio::Settings::playbackVolumeChanged , this                , &ActionCollection::updateVolumeButton );
    connect(as                     , &Audio::Settings::captureMuted          , action_mute_capture , &QAction::setChecked                  );
@@ -298,8 +295,6 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    }
 
    GlobalInstances::setInterface<KDEShortcutDelegate>();
-
-   MacroModel::instance().addCollection<LocalMacroCollection>();
 
 #ifdef HAVE_SPEECH
    QList<QAction *> acList = *Accessibility::instance();
@@ -355,13 +350,6 @@ void ActionCollection::editToolBar()
    toolbareditor->setDefaultToolBar(QStringLiteral("mainToolBar"));
    toolbareditor->exec();
    delete toolbareditor;
-}
-
-///Add a new dynamic action (macro)
-void ActionCollection::addMacro(const QVariant& newAction)
-{
-   if (qvariant_cast<QAction*>(newAction))
-      RingApplication::instance()->mainWindow()->actionCollection()->addAction(qvariant_cast<QAction*>(newAction)->objectName() , qvariant_cast<QAction*>(newAction) );
 }
 
 void ActionCollection::slotAddPerson()

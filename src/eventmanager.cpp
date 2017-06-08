@@ -107,8 +107,6 @@ EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pP
 
    connect(&AccountModel::instance(),&AccountModel::registrationChanged,this,&EventManager::slotregistrationChanged);
    connect(&AccountModel::instance(),&AccountModel::badGateway,this,&EventManager::slotNetworkDown);
-   //Listen for macro
-   MacroModel::addListener(this);
 }
 
 ///Destructor
@@ -496,15 +494,6 @@ void EventManager::enter()
             qDebug() << "Enter when call selected not in appropriate state. Doing nothing.";
       }
    }
-}
-
-///Macros needs to be executed at high level so the animations kicks in
-void EventManager::addDTMF(const QString& sequence)
-{
-   if (sequence == QLatin1String("\n"))
-      enter();
-   else
-      typeString(sequence);
 }
 
 /*****************************************************************************

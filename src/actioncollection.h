@@ -152,7 +152,6 @@ private Q_SLOTS:
    void updateRecordButton    ();
    void updateVolumeButton    ();
    void slotNewContact        ();
-   void addMacro              ( const QVariant& newAction );
 
 Q_SIGNALS:
    void windowStateChanged();

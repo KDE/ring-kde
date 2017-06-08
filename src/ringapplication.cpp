@@ -72,7 +72,6 @@
 #include <numbercategorymodel.h>
 // #include <presencestatusmodel.h>
 #include <personmodel.h>
-#include <macromodel.h>
 
 //Collections
 #include <foldercertificatecollection.h>

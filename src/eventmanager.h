@@ -18,8 +18,6 @@
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
 
-#include <macromodel.h>
-
 //Qt
 class QKeyEvent      ;
 class QDragEnterEvent;
@@ -34,7 +32,7 @@ class CanvasObjectManager;
 class PhoneWindowEvent;
 class Account;
 
-class EventManager : public QObject, public MacroModel::MacroListener {
+class EventManager : public QObject {
    Q_OBJECT
 
 public:
@@ -52,9 +50,6 @@ public:
     *   according to the current state (window, item selected...)
     */
    void escape();
-
-   //Implement macro key listener
-   virtual void addDTMF(const QString& sequence) override;
 
    /**
     * An unreliable way to track the application focus

@@ -43,7 +43,6 @@
 
 //Ring
 #include <person.h>
-#include <macro.h>
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
 #include <phonedirectorymodel.h>
@@ -211,19 +210,7 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
 
 QVariant KDEShortcutDelegate::createAction(Macro* macro)
 {
-
-   QAction * newAction = new QAction(macro);
-   newAction->setText(macro->name());
-   newAction->setIcon(QIcon::fromTheme(QStringLiteral("view-form-action")));
-   newAction->setObjectName("action_macro"+macro->id());
-   QObject::connect(newAction, &QAction::triggered, macro , &Macro::execute );
-
-   QObject::connect(macro, &Macro::changed, [newAction](Macro* m) {
-      newAction->setText(m->name());
-      newAction->setObjectName("action_macro"+m->id());
-   });
-
-   return QVariant::fromValue(newAction);
+   return {};
 }
 
 void KDEActionExtender::editPerson(Person* p)
