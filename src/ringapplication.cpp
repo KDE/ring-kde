@@ -44,7 +44,6 @@
 #include <categorizedbookmarkmodel.h>
 #include <useractionmodel.h>
 #include <contactmethod.h>
-#include <recentmodel.h>
 #include <media/recordingmodel.h>
 #include <peerstimelinemodel.h>
 #include <peertimelinemodel.h>
@@ -339,7 +338,6 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_SINGLETON( CategorizedContactModel  );
       QML_SINGLETON( CategorizedBookmarkModel );
       QML_SINGLETON( NameDirectory            );
-      QML_SINGLETON( RecentModel              );
       QML_SINGLETON( PeersTimelineModel       );
       QML_SINGLETON( NumberCategoryModel      );
 

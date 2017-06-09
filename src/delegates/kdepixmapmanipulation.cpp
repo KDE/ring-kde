@@ -183,7 +183,6 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
 QVariant KDEPixmapManipulation::personPhoto(const QByteArray& data, const QString& type)
 {
    if (data.isEmpty()) {
-      qDebug() << "vCard image loading failed, the image is empty";
       return {};
    }
 

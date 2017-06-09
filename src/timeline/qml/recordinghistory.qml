@@ -95,7 +95,7 @@ Rectangle {
                                     anchors.leftMargin: 5
                                     color: "transparent"
                                     Text {
-                                        text: display
+                                        text: display ? display : "N/A"
                                         color: activePalette.text
                                     }
                                     MouseArea {

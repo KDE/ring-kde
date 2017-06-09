@@ -87,7 +87,7 @@ ActionCollection::ActionCollection(FancyMainWindow* parent) : QObject(parent)
    INIT_ACTION(action_hold          , QIcon(QStringLiteral(":/sharedassets/phone_light/hold.svg"     )), i18n( "Hold"     ));
    INIT_ACTION(action_transfer      , QIcon(QStringLiteral(":/sharedassets/phone_light/transfert.svg")), i18n( "Transfer" ));
    INIT_ACTION(action_record        , QIcon(QStringLiteral(":/sharedassets/phone_light/record_call.svg" )), i18n( "Record"   ));
-   INIT_ACTION(action_hangup        , QIcon(QStringLiteral(":/sharedassets/phone_light/hang_up.svg"  )), i18n( "Hang up"  ));
+   INIT_ACTION(action_hangup        , QIcon(QStringLiteral(":/sharedassets/phone_light/refuse.svg"  )), i18n( "Hang up"  ));
 
    INIT_ACTION(action_mute_video         , getIcon(UserActionModel::Action::MUTE_VIDEO         ) , getName(UserActionModel::Action::MUTE_VIDEO         ));
    INIT_ACTION(action_join               , getIcon(UserActionModel::Action::JOIN               ) , getName(UserActionModel::Action::JOIN               ));
