@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0 as Controls2
 import Ring 1.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
@@ -45,74 +46,101 @@ Rectangle {
         ContactMethodDelegate {}
     }
 
-    ScrollView {
-        id: scrollView
+    ColumnLayout {
         anchors.fill: parent
-        flickableItem.interactive: true
-        ListView {
-            id: recentView
-            anchors.fill: parent
-            highlightMoveVelocity: Infinity //HACK
-            delegate: contactDelegate
-            highlight: Rectangle {
-                color: activePalette.highlight
+
+        Controls2.TextField {
+            id: search
+            Layout.fillWidth: true
+            placeholderText: "Find someone"
+            onTextChanged: {
+                var call = CallModel.dialingCall()
+                call.dialNumber = search.text
+                CompletionModel.call = call
             }
-            model: PeersTimelineModel.deduplicatedTimelineModel
         }
-    }
 
-    TimelineScrollbar {
-        id: scrollBar
-        height: parent.height
-        anchors.top: parent.top
-        anchors.right: parent.right
-        width: 10
-        model: PeersTimelineModel.timelineSummaryModel
-        z: 100
-    }
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-    // Add a blurry background
-    ShaderEffectSource {
-        id: effectSource
-        visible: false
-
-        sourceItem: scrollView
-        anchors.right: scrollView.right
-        anchors.top: scrollView.top
-        width: scrollView.width/2
-        height: scrollView.height
-
-        sourceRect: Qt.rect(scrollView.width/2, 0, scrollView.width/2, scrollView.height)
-    }
-
-    Item {
-        id: burryOverlay
-        visible: false
-        opacity: 0
-        anchors.right: scrollView.right
-        anchors.top: scrollView.top
-        width: scrollView.width/2
-        height: scrollView.height
-        clip: true
-
-        Repeater {
-            anchors.fill: parent
-            model: 5
-            FastBlur {
+            ScrollView {
+                id: scrollView
                 anchors.fill: parent
-                source: effectSource
-                radius: 30
-
+                flickableItem.interactive: true
+                ListView {
+                    id: recentView
+                    anchors.fill: parent
+                    highlightMoveVelocity: Infinity //HACK
+                    delegate: contactDelegate
+                    highlight: Rectangle {
+                        color: activePalette.highlight
+                    }
+                    model: PeersTimelineModel.deduplicatedTimelineModel
+                }
             }
-        }
 
-        Rectangle {
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.75
+            TimelineScrollbar {
+                id: scrollBar
+                height: parent.height
+                anchors.top: parent.top
+                anchors.right: parent.right
+                width: 10
+                model: PeersTimelineModel.timelineSummaryModel
+                z: 100
+            }
+
+            // Add a blurry background
+            ShaderEffectSource {
+                id: effectSource
+                visible: false
+
+                sourceItem: scrollView
+                anchors.right: scrollView.right
+                anchors.top: scrollView.top
+                width: scrollView.width/2
+                height: scrollView.height
+
+                sourceRect: Qt.rect(scrollView.width/2, 0, scrollView.width/2, scrollView.height)
+            }
+
+            Item {
+                id: burryOverlay
+                visible: false
+                opacity: 0
+                anchors.right: scrollView.right
+                anchors.top: scrollView.top
+                width: scrollView.width/2
+                height: scrollView.height
+                clip: true
+
+                Repeater {
+                    anchors.fill: parent
+                    model: 5
+                    FastBlur {
+                        anchors.fill: parent
+                        source: effectSource
+                        radius: 30
+
+                    }
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "black"
+                    opacity: 0.75
+                }
+            }
+
+            FindPeers {
+                id: searchView
+                visible: false
+                anchors.fill: parent
+            }
         }
     }
 
+    // Timeline scrollbar
     StateGroup {
         states: [
             State {
@@ -140,6 +168,49 @@ Rectangle {
                     properties: "opacity"
                     easing.type: Easing.InQuad
                     duration: 400
+                    loops: 1
+                }
+            }
+        ]
+    }
+
+    // Search
+    StateGroup {
+        states: [
+            State {
+                name: "searchActive"
+                when: search.text != ""
+                PropertyChanges {
+                    target:  scrollBar
+                    visible: false
+                }
+                PropertyChanges {
+                    target:  searchView
+                    visible: true
+                }
+                PropertyChanges {
+                    target:  burryOverlay
+                    visible: true
+                    opacity: 1
+                    width: scrollView.width
+                    height: scrollView.height
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                to: "searchActive"
+                NumberAnimation {
+                    properties: "opacity"
+                    easing.type: Easing.InQuad
+                    duration: 200
+                    loops: 1
+                }
+                NumberAnimation {
+                    properties: "width,height"
+                    easing.type: Easing.InQuad
+                    duration: 0
                     loops: 1
                 }
             }

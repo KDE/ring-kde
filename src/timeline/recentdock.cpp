@@ -20,6 +20,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickPaintedItem>
 #include <QQuickWidget>
+#include <QQmlContext>
 #include <QQmlEngine>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
@@ -30,6 +31,7 @@
 #include <../ringapplication.h>
 
 #include "peerstimelinemodel.h"
+#include <numbercompletionmodel.h>
 #include "contactmethod.h"
 #include "itemdataroles.h"
 
@@ -41,6 +43,13 @@ public:
 RecentDock::RecentDock(QWidget* parent) :
     QDockWidget(parent), d_ptr(new RecentDockPrivate)
 {
+
+    auto completionModel = new NumberCompletionModel();
+
+    RingApplication::engine()->rootContext()->setContextProperty(
+        "CompletionModel", completionModel
+    );
+
     d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
 
     d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
