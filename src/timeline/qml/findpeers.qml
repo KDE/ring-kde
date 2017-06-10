@@ -28,16 +28,16 @@ ListView {
 
     model: CompletionModel
     delegate: searchDelegate
-    add: Transition {
-        NumberAnimation {
-            properties: "y"
-            duration: 100
-        }
-    }
-    addDisplaced: Transition {
-        NumberAnimation {
-            properties: "y"
-            duration: 100
-        }
-    }
+//     add: Transition {
+//         NumberAnimation {
+//             properties: "y"
+//             duration: 100
+//         }
+//     }
+//     addDisplaced: Transition {
+//         NumberAnimation {
+//             properties: "y"
+//             duration: 100
+//         }
+//     }
 }

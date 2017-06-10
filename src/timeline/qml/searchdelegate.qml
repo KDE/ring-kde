@@ -17,13 +17,14 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 
 Item {
     id: componentItem
     width: parent.width
-    height: 70
+    height: 70 + (temporary ? 30 : 0)
 
     RowLayout {
         anchors.margins: 3
@@ -85,20 +86,56 @@ Item {
                     color: "white"
                 }
             }
-            Rectangle {
-                color: activePalette.highlight
-                anchors.right: parent.right
-                radius: 99
-                height: 16
-                visible: accountAlias != ""
-                width: 100 //TODO use font metric
+            RowLayout {
+                Layout.fillWidth: true
                 Text {
-                    id: accountAliasText
-                    anchors.fill:parent
-                    anchors.leftMargin: 16
-                    anchors.rightMargin: 16
-                    text: accountAlias
-                    color: activePalette.highlightedText
+                    color: "green"
+                    visible: temporary
+                    text: "lookup in progress[WIP]"
+                }
+                Item {
+                    Layout.fillWidth: true
+                }
+                Rectangle {
+                    color: activePalette.highlight
+                    radius: 99
+                    height: 16
+                    visible: accountAlias != ""
+                    width: 100 //TODO use font metric
+                    Text {
+                        id: accountAliasText
+                        anchors.fill:parent
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
+                        text: accountAlias
+                        color: activePalette.highlightedText
+                    }
+                }
+            }
+            RowLayout {
+                visible: temporary
+                height: 30
+                Layout.preferredHeight: 30
+                Layout.fillWidth: true
+                Rectangle {
+                    color: "red"
+                    anchors.margins: 3
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Send request"
+                    }
+                }
+                Rectangle {
+                    color: "red"
+                    anchors.margins: 3
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Call"
+                    }
                 }
             }
             Item {
