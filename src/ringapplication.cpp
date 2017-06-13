@@ -43,6 +43,7 @@
 #include <categorizedcontactmodel.h>
 #include <namedirectory.h>
 #include <categorizedbookmarkmodel.h>
+#include <numbercompletionmodel.h>
 #include <useractionmodel.h>
 #include <contactmethod.h>
 #include <media/recordingmodel.h>
@@ -328,6 +329,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( PeerTimelineModel )
 
       QML_CRTYPE( PeersTimelineSelectionModel )
+      QML_CRTYPE( NumberCompletionModel       )
 
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 

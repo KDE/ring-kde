@@ -91,9 +91,12 @@ Item {
             RowLayout {
                 Layout.fillWidth: true
                 Text {
-                    color: "green"
+                    color: nameStatus == NumberCompletionModel.SUCCESS ?
+                        "green"  : (nameStatus == NumberCompletionModel.IN_PROGRESS ?
+                        "yellow" :
+                        "red")
                     visible: temporary
-                    text: "lookup in progress[WIP]"
+                    text: nameStatusString
                 }
                 Item {
                     Layout.fillWidth: true
