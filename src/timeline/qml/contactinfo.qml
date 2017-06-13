@@ -263,18 +263,34 @@ Rectangle {
             if ((!currentContactMethod) && (!currentPerson))
                 return
 
-            if (!currentPerson) {
-                var ret = contactBuilder.from(currentContactMethod)
-            }
+            // Changing the CM will flush the content, preserve it
+            var old_formattedName  = formattedName.text
+            var old_firstName      = firstName.text
+            var old_secondName     = lastName.text
+            var old_preferredEmail = email.text
+            var old_organization   = organization.text
 
-            currentPerson.formattedName  = formattedName.text
-            currentPerson.firstName      = firstName.text
-            currentPerson.secondName     = lastName.text
-            currentPerson.preferredEmail = email.text
-            currentPerson.organization   = organization.text
+            // Create a real contact method in case this is a temporary one
+            if (currentContactMethod && currentContactMethod.type == ContactMethod.TEMPORARY)
+                currentContactMethod = PhoneDirectoryModel.getNumber(
+                    currentContactMethod.uri,
+                    null,
+                    currentContactMethod.account
+                )
 
-            console.log("Saving", currentPerson.formattedName)
-            currentPerson.save()
+            var person = currentPerson
+            if (!currentPerson)
+                person = contactBuilder.from(currentContactMethod)
+
+            person.formattedName  = old_formattedName
+            person.firstName      = old_firstName
+            person.secondName     = old_secondName
+            person.preferredEmail = old_preferredEmail
+            person.organization   = old_organization
+
+            person.save()
+
+            currentPerson = person
         }
     }
 }

@@ -38,6 +38,7 @@
 #include <callmodel.h>
 #include <accountmodel.h>
 #include <account.h>
+#include <phonedirectorymodel.h>
 #include <categorizedhistorymodel.h>
 #include <categorizedcontactmodel.h>
 #include <namedirectory.h>
@@ -340,6 +341,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_SINGLETON( NameDirectory            );
       QML_SINGLETON( PeersTimelineModel       );
       QML_SINGLETON( NumberCategoryModel      );
+      QML_SINGLETON( PhoneDirectoryModel      );
 
       { using namespace Media;
          QML_SINGLETON( RecordingModel        );
