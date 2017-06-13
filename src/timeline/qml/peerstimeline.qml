@@ -46,6 +46,20 @@ Rectangle {
         ContactMethodDelegate {}
     }
 
+    // To allow multiple places to set the contact method without knowing
+    // it's index, use a selectionModel
+    PeersTimelineSelectionModel {
+        id: selectionMapper
+        onCurrentIndexChanged: {
+            recentView.currentIndex = current.row
+        }
+    }
+
+    onContactMethodSelected: {
+        search.text = ""
+        selectionMapper.contactMethod = cm
+    }
+
     ColumnLayout {
         anchors.fill: parent
 
@@ -67,14 +81,12 @@ Rectangle {
                     searchView.count - 1 : searchView.currentIndex - 1
             }
             Keys.onReturnPressed: {
-                console.log("MODEL", searchView.model, searchView.currentItem.contactMethod)
                 var cm = searchView.currentItem.contactMethod
 
                 if (!cm)
                     return
 
                 contactMethodSelected(cm)
-                search.text = ""
             }
         }
 
@@ -86,6 +98,7 @@ Rectangle {
                 id: scrollView
                 anchors.fill: parent
                 flickableItem.interactive: true
+
                 ListView {
                     id: recentView
                     anchors.fill: parent
