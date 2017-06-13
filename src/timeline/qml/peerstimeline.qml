@@ -58,6 +58,24 @@ Rectangle {
                 call.dialNumber = search.text
                 CompletionModel.call = call
             }
+            Keys.onDownPressed: {
+                searchView.currentIndex = (searchView.currentIndex == searchView.count - 1) ?
+                    0 : searchView.currentIndex + 1
+            }
+            Keys.onUpPressed: {
+                searchView.currentIndex = (searchView.currentIndex == 0) ?
+                    searchView.count - 1 : searchView.currentIndex - 1
+            }
+            Keys.onReturnPressed: {
+                console.log("MODEL", searchView.model, searchView.currentItem.contactMethod)
+                var cm = searchView.currentItem.contactMethod
+
+                if (!cm)
+                    return
+
+                contactMethodSelected(cm)
+                search.text = ""
+            }
         }
 
         Item {

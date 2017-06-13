@@ -26,6 +26,10 @@ ListView {
         }
     }
 
+    highlight: Rectangle {
+        color: activePalette.highlight
+    }
+
     model: CompletionModel
     delegate: searchDelegate
 //     add: Transition {

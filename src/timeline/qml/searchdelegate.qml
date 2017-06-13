@@ -26,6 +26,8 @@ Item {
     width: parent.width
     height: 70 + (temporary ? 30 : 0)
 
+    property QtObject contactMethod: object
+
     RowLayout {
         anchors.margins: 3
         anchors.fill: parent
@@ -152,5 +154,13 @@ Item {
         height: 1
         color: "gray"
         opacity: 0.7
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            searchView.currentIndex = index
+            contactMethodSelected(object)
+        }
     }
 }
