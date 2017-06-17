@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2015-2017 by Emmanuel Lepage Vallee                     *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,31 +15,24 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+import QtQuick 2.7
+import QtQuick.Layouts 1.0
+import Ring 1.0
 
-#include <KXmlGuiWindow>
+import RingQmlWidgets 1.0
 
-//Qt
-class QToolButton;
+Image {
+    width: 128
+    height: 128
+    property alias running: frameTimer.running
 
-class FancyMainWindow : public KXmlGuiWindow
-{
-    Q_OBJECT
+    source: "image://RingingImageProvider/init/0"
 
-public:
-    explicit FancyMainWindow();
-    virtual ~FancyMainWindow();
-
-    void setActive(bool a);
-
-protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event) override;
-
-private:
-   QHash<QTabBar*, QToolButton*> m_hEventFilters;
-   bool m_IsActive {true};
-
-public Q_SLOTS:
-    void updateTabIcons();
-    void showPhone();
-};
+    RotationAnimation on rotation {
+        id: frameTimer
+        loops: Animation.Infinite
+        from: 0
+        to: 360
+        duration: 2000
+    }
+}

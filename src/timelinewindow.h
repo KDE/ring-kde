@@ -23,6 +23,10 @@ class RecentDock;
 class ContactMethod;
 class ViewContactDock;
 class DockBase;
+#include "timeline/viewcontactdock.h"
+
+class ContactMethod;
+class Person;
 
 class TimelineWindow : public FancyMainWindow
 {
@@ -32,6 +36,8 @@ public:
     explicit TimelineWindow();
     virtual ~TimelineWindow();
 
+    void setCurrentPage(ViewContactDock::Pages page);
+
 private:
     RecentDock* m_pPeersTimeline;
     ViewContactDock* m_pViewContact {nullptr};
@@ -39,4 +45,5 @@ private:
 
 public Q_SLOTS:
     void viewContact(ContactMethod* cm);
+    void viewPerson(Person* p);
 };

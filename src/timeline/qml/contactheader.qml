@@ -60,6 +60,11 @@ Rectangle {
     height: 100
     Layout.fillWidth: true
 
+    PersistentCallControls {
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+
     RowLayout {
         anchors.fill: parent
         anchors.margins: 8

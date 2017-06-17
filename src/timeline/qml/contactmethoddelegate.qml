@@ -19,7 +19,6 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
-import Ring 1.0
 
 Item {
     id: componentItem

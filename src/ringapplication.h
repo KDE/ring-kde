@@ -57,6 +57,8 @@ public:
    TimelineWindow* timelineWindow() const;
    FancyMainWindow* mainWindow() const;
 
+   bool isPhoneVisible() const;
+
    static QQmlApplicationEngine* engine();
 
    static RingApplication* instance(int& argc, char** argv = nullptr);

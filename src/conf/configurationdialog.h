@@ -79,7 +79,7 @@ private:
    KConfigDialogManager* m_pManager;
 
 public:
-   explicit ConfigurationDialog(View *parent = nullptr);
+   explicit ConfigurationDialog(QWidget* parent = nullptr);
    virtual ~ConfigurationDialog();
 
 

@@ -30,7 +30,7 @@
 #include <QComboBox>
 #include <QtWidgets/QToolButton>
 
-#include "video/videowidget.h"
+#include "callview/videowidget.h"
 #include "actioncollection.h"
 #include "video/devicemodel.h"
 #include "video/sourcemodel.h"

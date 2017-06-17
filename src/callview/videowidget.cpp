@@ -24,7 +24,7 @@
 #include <QtGui/QPainter>
 #include <QtCore/QMimeData>
 
-#include <qrc_video.cpp>
+#include <qrc_callview.cpp>
 #include <../ringapplication.h>
 
 #include <video/previewmanager.h>
@@ -66,7 +66,7 @@ VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
     initProvider();
 
     setResizeMode(QQuickWidget::SizeRootObjectToView);
-    setSource(QUrl("qrc:/mainvid.qml"));
+    setSource(QUrl("qrc:/CallView.qml"));
 
     setMode(mode);
 

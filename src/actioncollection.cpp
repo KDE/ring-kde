@@ -126,8 +126,8 @@ ActionCollection::~ActionCollection()
 void ActionCollection::setupAction(FancyMainWindow* mw)
 {
    // Import standard actions
-   action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , PhoneWindow::app());
-   action_close_timeline= new QAction();//KStandardAction::close      ( RingApplication::instance()->timelineWindow(), SLOT(close())        , PhoneWindow::app());
+   action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
+   action_close_timeline= new QAction();//KStandardAction::close      ( RingApplication::instance()->timelineWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
    action_quit          = KStandardAction::quit       ( RingApplication::instance(), SLOT(quit())   , this);
    action_configureRing = KStandardAction::preferences( this             , SLOT(configureRing()), this);
 
@@ -323,7 +323,7 @@ void ActionCollection::setupPhoneAction(PhoneWindow* mw)
 ///Show the configuration dialog
 void ActionCollection::configureRing()
 {
-   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(PhoneWindow::app()->view());
+   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(RingApplication::instance()->mainWindow());
    configDialog->setModal(true);
 
    configDialog->exec();
@@ -361,6 +361,9 @@ void ActionCollection::slotAddPerson()
 ///Change icon of the record button
 void ActionCollection::updateRecordButton()
 {
+   if (!RingApplication::instance()->isPhoneVisible())
+      return;
+
    double recVol = Audio::Settings::instance().captureVolume();
    static const QIcon icons[4] = {
       QIcon(QStringLiteral(":/images/icons/mic.svg"   )),
@@ -377,6 +380,9 @@ void ActionCollection::updateRecordButton()
 ///Update the colunm button icon
 void ActionCollection::updateVolumeButton()
 {
+   if (!RingApplication::instance()->isPhoneVisible())
+      return;
+
    double sndVol = Audio::Settings::instance().playbackVolume();
    static const QIcon icons[4] = {
       QIcon(QStringLiteral(":/images/icons/speaker.svg"   )),
@@ -418,15 +424,17 @@ void ActionCollection::slotNewContact()
 ///Raise the main window to the foreground
 void ActionCollection::raiseClient(bool focus)
 {
-   PhoneWindow::app()->show          ();
-   PhoneWindow::app()->activateWindow();
-   PhoneWindow::app()->raise         ();
+   RingApplication::instance()->mainWindow()->show          ();
+   RingApplication::instance()->mainWindow()->activateWindow();
+   RingApplication::instance()->mainWindow()->raise         ();
 
    if (focus) {
       // Add a new call if there is none
       if (!CallModel::instance().rowCount())
          CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
-      PhoneWindow::app()->view()->setFocus(Qt::OtherFocusReason);
+
+      if (RingApplication::instance()->isPhoneVisible())
+         RingApplication::instance()->phoneWindow()->view()->setFocus(Qt::OtherFocusReason);
    }
 }
 

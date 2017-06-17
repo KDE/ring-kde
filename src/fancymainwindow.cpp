@@ -70,6 +70,9 @@ bool FancyMainWindow::eventFilter(QObject *obj, QEvent *event)
 ///Qt does not support dock icons by default, this is an hack around this
 void FancyMainWindow::updateTabIcons()
 {
+    if (!m_IsActive)
+        return;
+
     // Load the CSS
     static const QResource tss(":/toolbar/toolbar.css");
     static QByteArray css = QByteArray((char*)tss.data(), tss.size());
@@ -150,8 +153,19 @@ void FancyMainWindow::updateTabIcons()
     }
 }
 
+void FancyMainWindow::setActive(bool a)
+{
+    m_IsActive = a;
+}
+
 void FancyMainWindow::showPhone()
 {
-    RingApplication::instance()->phoneWindow()->show();
-    RingApplication::instance()->phoneWindow()->raise();
+//     if (RingApplication::instance()->isPhoneVisible()) {
+        RingApplication::instance()->phoneWindow()->show ();
+        RingApplication::instance()->phoneWindow()->raise();
+//     }
+//     else {
+//
+//         timelineWindow()->setCurrentPage();
+//     }
 }

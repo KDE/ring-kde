@@ -23,6 +23,8 @@ import Ring 1.0
 Rectangle {
 
     property var currentContactMethod: null
+    property var currentPerson: null
+    property string currentPage: ""
 
     clip: true
 
@@ -38,6 +40,63 @@ Rectangle {
         contactInfo.currentContactMethod   = currentContactMethod
         callHistory.currentContactMethod   = currentContactMethod
         timelinePage.currentContactMethod  = currentContactMethod
+
+        if (currentContactMethod.person)
+            personConn.target = currentContactMethod.person
+    }
+
+    onCurrentPageChanged: {
+        if (currentPage == "")
+            return
+
+        switch(currentPage) {
+            case "INFORMATION":
+                tabBar.currentIndex = 0
+                break
+            case "MEDIA":
+                tabBar.currentIndex = 1
+                break
+            case "TIMELINE":
+                tabBar.currentIndex = 2
+                break
+            case "CALL_HISTORY":
+                tabBar.currentIndex = 3
+                break
+            case "RECORDINGS":
+                tabBar.currentIndex = 4
+                break
+            case "SEARCH":
+                tabBar.currentIndex = 5
+                break
+        }
+
+        currentPage = ""
+    }
+
+    Connections {
+        target: currentContactMethod
+        onContactChanged: {
+            if (currentContactMethod.person)
+                personConn.target = currentContactMethod.person
+        }
+    }
+
+    Connections {
+        target: currentContactMethod
+        onCallAdded: {
+            if (currentContactMethod.person)
+                return
+
+            avView.call = call && call.lifeCycleState != Call.FINISHED ? call : null
+        }
+    }
+
+    Connections {
+        id: personConn
+        target: currentContactMethod ? currentContactMethod.person : null
+        onCallAdded: {
+            avView.call = call
+        }
     }
 
     RowLayout {
@@ -75,6 +134,9 @@ Rectangle {
                 text: qsTr("Information")
             }
             TabButton {
+                text: qsTr("Audio/Video")
+            }
+            TabButton {
                 text: qsTr("Timeline")
             }
             TabButton {
@@ -103,6 +165,26 @@ Rectangle {
                 ContactInfo {
                     anchors.fill: parent
                     id: contactInfo
+                }
+            }
+
+            Page {
+                CallView {
+                    id: avView
+                    mode: "CONVERSATION"
+                    anchors.fill: parent
+                    onCallWithAudio: {
+                        CallModel.dialingCall(currentContactMethod)
+                            .performAction(Call.ACCEPT)
+                    }
+                    onCallWithVideo: {
+                        CallModel.dialingCall(currentContactMethod)
+                            .performAction(Call.ACCEPT)
+                    }
+                    onCallWithScreen: {
+                        CallModel.dialingCall(currentContactMethod)
+                            .performAction(Call.ACCEPT)
+                    }
                 }
             }
 

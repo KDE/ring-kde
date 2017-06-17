@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2015-2017 by Emmanuel Lepage Vallee                     *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,31 +15,13 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "canvasindicator.h"
 
-#include <KXmlGuiWindow>
+#include <QtCore/QDebug>
 
-//Qt
-class QToolButton;
+#include <qrc_canvasindicator.cpp>
 
-class FancyMainWindow : public KXmlGuiWindow
+void CanvasIndicator::registerTypes(const char *uri)
 {
-    Q_OBJECT
-
-public:
-    explicit FancyMainWindow();
-    virtual ~FancyMainWindow();
-
-    void setActive(bool a);
-
-protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event) override;
-
-private:
-   QHash<QTabBar*, QToolButton*> m_hEventFilters;
-   bool m_IsActive {true};
-
-public Q_SLOTS:
-    void updateTabIcons();
-    void showPhone();
-};
+    Q_ASSERT(uri == QLatin1String("CanvasIndicator"));
+}

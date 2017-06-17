@@ -359,7 +359,6 @@ void EventManager::typeString(const QString& str)
     * 
     * Any other comportment need to be documented here or treated as a bug
     */
-qDebug() << "BOB" << str << (int) str[0].toLatin1();
    Call* call = CallModel::instance().selectedCall();
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;

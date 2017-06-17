@@ -161,13 +161,16 @@ ADD_SUBDIRECTORY( klib )
 ADD_SUBDIRECTORY( wizard )
 
 # Build the QML based interactive video canvas
-ADD_SUBDIRECTORY( video )
+ADD_SUBDIRECTORY( callview )
 
 # Build the views and widgets related to the social timeline feature
 ADD_SUBDIRECTORY( timeline )
 
 # Build the contact and profile photo editor dialog
 ADD_SUBDIRECTORY( photoselector )
+
+# Build the elements used to notify the users of events
+ADD_SUBDIRECTORY( canvasindicators )
 
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
@@ -371,9 +374,10 @@ QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 TARGET_LINK_LIBRARIES(ring-kde
   libkring
   libwizard
-  libvideo
+  libcallview
   libtimeline
   libphotoselector
+  libcanvasindicator
   tip
   accountdialog
   libqmlwidgets

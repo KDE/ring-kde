@@ -16,10 +16,14 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import Ring 1.0
 
 Item {
     id: videoDock
-    visible: true
+
+    signal callWithVideo()
+    signal callWithAudio()
+    signal callWithScreen()
 
     height: 480
     width: 640
@@ -56,29 +60,23 @@ Item {
         visible: false
     }
 
-    VideoStateToolbar {
+    ActionToolbar {
         id: actionToolbar
         y: parent.height - height
         visible: false
-
     }
 
-    Rectangle {
+    // The background
+    CallBackground {
         id: placeholderMessage
-        color: "black"
         z: -99
         anchors.fill: parent
-
-        Text {
-            color: "white"
-            text: qsTr("[No video]")
-            anchors.centerIn: parent
-        }
     }
 
     // Hide both toolbars when the mouse isn't moving
     //TODO keep visible if the mouse if over the toolbars
     MouseArea {
+        id: mainMouseArea
         Timer {
             id: activityTimer
             interval: 3000
@@ -91,11 +89,15 @@ Item {
         }
 
         function trackActivity() {
-            if (mode == "PREVIEW")
-                return;
+            if (mode == "PREVIEW" || !call)
+                return
 
             actionToolbar.visible  = true
-            controlToolbar.visible = true
+
+            // This toolbar is only useful when there is video
+            if (videoWidget.started)
+                controlToolbar.visible = true
+
             activityTimer.restart()
         }
 
@@ -117,12 +119,15 @@ Item {
             videoPreview.started = PreviewManager.previewing
             videoWidget.rendererName = "peer"
         }
+        placeholderMessage.mode = mode
     }
 
     onCallChanged: {
         if (call) {
             actionToolbar.userActionModel = call.userActionModel
+            placeholderMessage.call = call
         }
+        mainMouseArea.visible = call != null
     }
 
     Connections {
@@ -155,6 +160,17 @@ Item {
         target: videoWidget
         onStartedChanged: {
             placeholderMessage.visible = !videoWidget.started
+        }
+    }
+
+    Connections {
+        target: call
+        onStateChanged: {
+            if (call == null || call.lifeCycleState == Call.FINISHED) {
+                call = null
+                mainMouseArea.visible = false
+                actionToolbar.visible = false
+            }
         }
     }
 }

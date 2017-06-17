@@ -65,7 +65,7 @@
   <customwidget>
    <class>VideoWidget3</class>
    <extends>QWidget</extends>
-   <header>video/videowidget.h</header>
+   <header>callview/videowidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

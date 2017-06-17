@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 ADD_DEFINITIONS("-std=c++11")
 
-PROJECT(libvideo)
+PROJECT(libcanvasindicator)
 
 IF(POLICY CMP0063)
    CMAKE_POLICY(SET CMP0063 NEW)
@@ -39,13 +39,12 @@ FIND_PACKAGE(Qt5 CONFIG REQUIRED
     Core
     Gui
     Quick
+    Svg
     QuickWidgets
-    QuickControls2
 )
 
 FIND_PACKAGE(KF5 REQUIRED COMPONENTS
   I18n
-  Declarative
   Init
 )
 
@@ -56,31 +55,24 @@ ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
 SET(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
-SET( libvideo_LIB_SRCS
-   imageprovider.cpp
-   videowidget.cpp
+SET( libcanvasindicator_LIB_SRCS
+    canvasindicator.cpp
+    ringingimageprovider.cpp
 )
 
-QT5_ADD_RESOURCES(libvideo_LIB_SRCS
-   video.qrc
+QT5_ADD_RESOURCES(libcanvasindicator_LIB_SRCS
+   canvasindicator.qrc
 )
 
-ADD_LIBRARY( libvideo STATIC ${libvideo_LIB_SRCS} )
+ADD_LIBRARY( libcanvasindicator  STATIC ${libcanvasindicator_LIB_SRCS} )
 
-target_link_libraries( libvideo
+target_link_libraries( libcanvasindicator
    ringclient
 
-   Qt5::Widgets
    Qt5::Core
    Qt5::Gui
    Qt5::Quick
-   Qt5::QuickWidgets
-   Qt5::QuickControls2
+   Qt5::Svg
 
    KF5::I18n
-   KF5::Declarative
-)
-
-SET( libvideo_LIB_HDRS
-   videowidget.h
 )

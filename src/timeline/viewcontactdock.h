@@ -21,19 +21,32 @@
 
 class ViewContactDockPrivate;
 class ContactMethod;
+class Person;
 
 class ViewContactDock : public QWidget
 {
     Q_OBJECT
 public:
+    enum class Pages {
+        INFORMATION,
+        TIMELINE,
+        CALL_HISTORY,
+        RECORDINGS,
+        SEARCH,
+        MEDIA,
+    };
+
     explicit ViewContactDock(QWidget* parent = nullptr);
     virtual ~ViewContactDock();
+
+    void setCurrentPage(Pages page);
 
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 public Q_SLOTS:
     void setContactMethod(ContactMethod* cm);
+    void setPerson(Person* p);
 
 private:
     ViewContactDockPrivate* d_ptr;

@@ -39,8 +39,6 @@ QModelIndex TreeHelper::getIndex(int row, const QModelIndex& parent)
     if (!parent.isValid())
         return {};
 
-    qDebug() << "BOB" << row << parent.data() << parent.parent().isValid() << parent.model()->index(row, 0, parent).data();
-
 //     Q_ASSERT(parent.parent().isValid() == true);
 //     Q_ASSERT(!parent.parent().parent().isValid() == true);
     return parent.model()->index(row, 0, parent);

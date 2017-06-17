@@ -27,7 +27,6 @@
 // Ring
 #include "contactmethod.h"
 #include "timeline/recentdock.h"
-#include "timeline/viewcontactdock.h"
 #include "actioncollection.h"
 #include "widgets/dockbase.h"
 #include "klib/kcfg_settings.h"
@@ -127,4 +126,15 @@ TimelineWindow::~TimelineWindow()
 void TimelineWindow::viewContact(ContactMethod* cm)
 {
     m_pViewContact->setContactMethod(cm);
+}
+
+
+void TimelineWindow::viewPerson(Person* p)
+{
+    m_pViewContact->setPerson(p);
+}
+
+void TimelineWindow::setCurrentPage(ViewContactDock::Pages page)
+{
+    m_pViewContact->setCurrentPage(page);
 }

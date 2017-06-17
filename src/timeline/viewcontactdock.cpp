@@ -101,5 +101,39 @@ void ViewContactDock::setContactMethod(ContactMethod* cm)
 
 }
 
+void ViewContactDock::setPerson(Person* p)
+{
+    d_ptr->m_pQuickWidget->rootObject()->setProperty(
+        "currentPerson", QVariant::fromValue(p));
+}
+
+void ViewContactDock::setCurrentPage(ViewContactDock::Pages page)
+{
+    QString name;
+    switch (page) {
+        case ViewContactDock::Pages::INFORMATION:
+            name = QStringLiteral("INFORMATION");
+            break;
+        case ViewContactDock::Pages::TIMELINE:
+            name = QStringLiteral("TIMELINE");
+            break;
+        case ViewContactDock::Pages::CALL_HISTORY:
+            name = QStringLiteral("CALL_HISTORY");
+            break;
+        case ViewContactDock::Pages::RECORDINGS:
+            name = QStringLiteral("RECORDINGS");
+            break;
+        case ViewContactDock::Pages::SEARCH:
+            name = QStringLiteral("SEARCH");
+            break;
+        case ViewContactDock::Pages::MEDIA:
+            name = QStringLiteral("MEDIA");
+            break;
+    }
+
+    d_ptr->m_pQuickWidget->rootObject()->setProperty(
+        "currentPage", name);
+}
+
 #include <viewcontactdock.moc>
 // kate: space-indent on; indent-width 4; replace-tabs on;

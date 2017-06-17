@@ -63,7 +63,7 @@
 #include "callmodel.h"
 #include "implementation.h"
 #include "wizard/welcome.h"
-#include "video/videowidget.h"
+#include "callview/videowidget.h"
 #include "notification.h"
 
 //Models
@@ -99,6 +99,8 @@
 //QML
 #include "qmlwidgets/plugin.h"
 #include "photoselector/photoplugin.h"
+#include "canvasindicators/canvasindicator.h"
+#include "canvasindicators/ringingimageprovider.h"
 
 //Other
 #include <unistd.h>
@@ -135,11 +137,14 @@ RingApplication::~RingApplication()
    // Delete the GUI before the models to prevent their destructors from
    // accessing the singletons
    if (m_pPhone) {
+      m_pPhone->setActive(false);
       delete m_pPhone;
    }
 
-   if (m_pTimeline)
+   if (m_pTimeline) {
+      m_pTimeline->setActive(false);
       delete m_pTimeline;
+   }
 
    delete &CallModel::instance();
    delete &PersonModel::instance();
@@ -320,6 +325,9 @@ QQmlApplicationEngine* RingApplication::engine()
       auto p2 = new PhotoSelectorPlugin;
       p2->registerTypes("PhotoSelectorPlugin");
 
+      auto p3 = new CanvasIndicator;
+      p3->registerTypes("CanvasIndicator");
+
       QML_TYPE( Account           )
       QML_TYPE( const Account     )
       QML_TYPE( Call              )
@@ -363,6 +371,9 @@ QQmlApplicationEngine* RingApplication::engine()
          AppName, 1,0, "Media", "cannot be instanciated"
       );
 
+      auto im = new RingingImageProvider();
+      e->addImageProvider( "RingingImageProvider", im );
+
       VideoWidget3::initProvider();
    }
    return e;
@@ -387,6 +398,11 @@ TimelineWindow* RingApplication::timelineWindow() const
    return m_pTimeline;
 }
 
+bool RingApplication::isPhoneVisible() const
+{
+   return m_pPhone && m_pPhone->isVisible();
+}
+
 FancyMainWindow* RingApplication::mainWindow() const
 {
    if (m_pPhone && !m_pTimeline)
@@ -408,10 +424,18 @@ void RingApplication::callAdded(Call* c)
 {
    if (c && ConfigurationSkeleton::displayOnNewCalls() && (
     c->state() == Call::State::CURRENT   ||
+    c->state() == Call::State::INCOMING  ||
     c->state() == Call::State::CONNECTED ||
     c->state() == Call::State::RINGING   ||
     c->state() == Call::State::INITIALIZATION)) {
-      phoneWindow()->show();
+      if (isPhoneVisible()) {
+         RingApplication::instance()->phoneWindow()->show ();
+         RingApplication::instance()->phoneWindow()->raise();
+      }
+      else {
+         timelineWindow()->viewContact(c->peerContactMethod());
+         timelineWindow()->setCurrentPage(ViewContactDock::Pages::MEDIA);
+      }
    }
 }
 

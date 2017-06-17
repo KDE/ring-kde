@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2015-2017 by Emmanuel Lepage Vallee                     *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,29 +17,22 @@
  **************************************************************************/
 #pragma once
 
-#include <KXmlGuiWindow>
+#include <QQuickImageProvider>
 
-//Qt
-class QToolButton;
+class RingingImageProviderPrivate;
 
-class FancyMainWindow : public KXmlGuiWindow
+/**
+ * This image provider mainly exist to edit SVG files to set some colors or
+ * effects from the palette.
+ */
+class RingingImageProvider : public QQuickImageProvider
 {
-    Q_OBJECT
-
 public:
-    explicit FancyMainWindow();
-    virtual ~FancyMainWindow();
+    explicit RingingImageProvider();
 
-    void setActive(bool a);
-
-protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event) override;
+    virtual QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
-   QHash<QTabBar*, QToolButton*> m_hEventFilters;
-   bool m_IsActive {true};
-
-public Q_SLOTS:
-    void updateTabIcons();
-    void showPhone();
+    RingingImageProviderPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(RingingImageProvider)
 };
