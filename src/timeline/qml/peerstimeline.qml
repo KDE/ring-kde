@@ -66,7 +66,7 @@ Rectangle {
         Controls2.TextField {
             id: search
             Layout.fillWidth: true
-            placeholderText: "Find someone"
+            placeholderText: qsTr("Find someone")
             onTextChanged: {
                 var call = CallModel.dialingCall()
                 call.dialNumber = search.text
@@ -99,6 +99,30 @@ Rectangle {
                 anchors.fill: parent
                 flickableItem.interactive: true
 
+                Item {
+                    id: newUserHelper
+                    width: parent.width - 20
+                    height: 200
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.topMargin: 10
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: activePalette.text
+                        opacity: 0.1
+                        radius: 10
+                    }
+
+                    Text {
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        font.bold: true
+                        wrapMode: Text.WordWrap
+                        color: activePalette.base
+                        text: qsTr("To begin using Ring-KDE, enter an username in the box above and press enter or add new contacts")
+                    }
+                }
+
                 ListView {
                     id: recentView
                     anchors.fill: parent
@@ -108,6 +132,11 @@ Rectangle {
                         color: activePalette.highlight
                     }
                     model: PeersTimelineModel.deduplicatedTimelineModel
+
+                    onCountChanged: {
+                        if (count > 0)
+                            newUserHelper.visible = false
+                    }
                 }
             }
 
