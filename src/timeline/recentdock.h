@@ -29,6 +29,8 @@ public:
     explicit RecentDock(QWidget* parent = nullptr);
     virtual ~RecentDock();
 
+    void setContactMethod(ContactMethod* cm);
+
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
 

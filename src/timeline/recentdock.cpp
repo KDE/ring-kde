@@ -84,8 +84,21 @@ void RecentDock::slotViewContactMethod(const QVariant& cm)
 
     auto cm_ = qvariant_cast<ContactMethod*>(cm);
 
-    const int idx = cm.toInt();
+    if (cm_->type() == ContactMethod::Type::TEMPORARY)
+        cm_ = PhoneDirectoryModel::instance().getNumber(cm_->uri(), cm_->account());
+
     emit viewContactMethod(cm_);
+
+    setContactMethod(cm_);
+}
+
+void RecentDock::setContactMethod(ContactMethod* cm)
+{
+    auto item = d_ptr->m_pQuickWidget->rootObject();
+
+    if (auto selectionModel = item->findChild<PeersTimelineSelectionModel*>("selectionMapper")) {
+        selectionModel->setContactMethod(cm);
+    }
 }
 
 #include <recentdock.moc>

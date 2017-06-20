@@ -50,14 +50,26 @@ Rectangle {
     // it's index, use a selectionModel
     PeersTimelineSelectionModel {
         id: selectionMapper
+        objectName: "selectionMapper"
         onCurrentIndexChanged: {
             recentView.currentIndex = current.row
         }
     }
 
+    // Give time to all the code to run before invalidating the temporary
+    // contact method. By then the code will have created a real one.
+    Timer {
+        id: clearTimer
+        running: false
+        repeat: false
+        interval: 0 // Run idle
+        onTriggered: {
+            search.text = ""
+            selectionMapper.contactMethod = cm
+        }
+    }
     onContactMethodSelected: {
-        search.text = ""
-        selectionMapper.contactMethod = cm
+        clearTimer.running = true
     }
 
     ColumnLayout {
@@ -81,6 +93,9 @@ Rectangle {
                     searchView.count - 1 : searchView.currentIndex - 1
             }
             Keys.onReturnPressed: {
+                if (searchStateGroup.state != "searchActive")
+                    return
+
                 var cm = searchView.currentItem.contactMethod
 
                 if (!cm)
@@ -236,6 +251,7 @@ Rectangle {
 
     // Search
     StateGroup {
+        id: searchStateGroup
         states: [
             State {
                 name: "searchActive"
