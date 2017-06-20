@@ -43,6 +43,15 @@ Rectangle {
 
         if (currentContactMethod.person)
             personConn.target = currentContactMethod.person
+
+        // Check if the CM already has an active call, switch to it
+        for (var i=0; i<CallModel.size; i++) {
+            var call = CallModel.getCall(CallModel.index(i, 0))
+            if (call && call.peerContactMethod == currentContactMethod && call.lifeCycleState != Call.FINISHED) {
+                avView.call = call
+                break
+            }
+        }
     }
 
     onCurrentPageChanged: {
