@@ -27,13 +27,29 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtCore/QMimeData>
 #include <QtCore/QTimer>
+#include <QtCore/QSortFilterProxyModel>
+#include <QQmlContext>
 
 #include <../ringapplication.h>
 #include "peerstimelinemodel.h"
 #include <contactmethod.h>
 #include <person.h>
+#include <call.h>
+#include <callmodel.h>
 
 #include "recentmodel.h"
+
+// Remove inactive calls from the CallModel
+class ActiveCallProxy : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+public:
+    explicit ActiveCallProxy(QObject* parent) : QSortFilterProxyModel(parent) {}
+
+protected:
+    virtual bool filterAcceptsRow(int row, const QModelIndex & srcParent ) const override;
+};
 
 class ViewContactDockPrivate {
 public:
@@ -48,6 +64,11 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
     QWidget(parent), d_ptr(new ViewContactDockPrivate)
 {
     d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
+
+    auto cp = new ActiveCallProxy(&CallModel::instance());
+    cp->setSourceModel(&CallModel::instance());
+
+    RingApplication::engine()->rootContext()->setContextProperty("ActiveCallProxyModel", cp);
 
     d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     d_ptr->m_pQuickWidget->setSource(QUrl("qrc:/viewcontact.qml"));
@@ -133,6 +154,17 @@ void ViewContactDock::setCurrentPage(ViewContactDock::Pages page)
 
     d_ptr->m_pQuickWidget->rootObject()->setProperty(
         "currentPage", name);
+}
+
+
+bool ActiveCallProxy::filterAcceptsRow(int row, const QModelIndex& srcParent ) const
+{
+    // Conferences are always active
+    if (srcParent.isValid())
+        return true;
+
+    return sourceModel()->index(row, 0)
+        .data((int)Call::Role::LifeCycleState) == QVariant::fromValue(Call::LifeCycleState::PROGRESS);
 }
 
 #include <viewcontactdock.moc>

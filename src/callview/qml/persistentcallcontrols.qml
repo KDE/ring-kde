@@ -100,7 +100,7 @@ Item {
         width: parent.width
         spacing: 3
         delegate: callDelegate
-        model: CallModel
+        model: ActiveCallProxyModel
     }
 
 }
