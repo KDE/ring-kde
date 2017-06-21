@@ -166,8 +166,8 @@ QPixmap RingingImageProvider::requestPixmap(const QString &id, QSize *size, cons
     else if (conf[0] == QLatin1String("init")) {
         if (!d_ptr->m_pInit)
             d_ptr->m_pInit = new InitTipData(d_ptr);
+
         pxm = d_ptr->m_pInit->toPixmap(count);
-        qDebug() << "\n\nPAINT" << conf[0];
     }
 
     (*size) = pxm.size();

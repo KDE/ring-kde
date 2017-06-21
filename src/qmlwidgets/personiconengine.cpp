@@ -65,7 +65,13 @@ void PersonIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode m
     static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
 
     if (d_ptr->m_pPerson->photo().isValid()) {
-        QPixmap contactPhoto((qvariant_cast<QPixmap>(d_ptr->m_pPerson->photo())).scaledToWidth(rect.height()-6));
+        QPixmap original(qvariant_cast<QPixmap>(d_ptr->m_pPerson->photo()));
+        QPixmap contactPhoto;
+
+        if (original.width() > original.height())
+            contactPhoto = original.scaledToWidth(rect.height()-6);
+        else
+            contactPhoto = original.scaledToHeight(rect.width()-6);
 
         //Add corner radius to the Pixmap
         QRect pxRect = contactPhoto.rect();
@@ -77,7 +83,10 @@ void PersonIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode m
         customPainter.setBrush       (Qt::black                         );
         customPainter.drawRoundedRect(pxRect,radius,radius);
         contactPhoto.setMask(mask);
-        painter->drawPixmap(3,3,contactPhoto);
+        painter->drawPixmap(
+            {3, 3, rect.width()-6, rect.height()-6},
+            contactPhoto
+        );
         painter->setBrush(Qt::NoBrush);
         painter->setPen(Qt::white);
         painter->setRenderHint  (QPainter::Antialiasing, true   );
