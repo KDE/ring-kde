@@ -123,23 +123,55 @@ Item {
                 Layout.preferredHeight: 30
                 Layout.fillWidth: true
                 Rectangle {
-                    color: "red"
+                    id: contactRequestButton
                     anchors.margins: 3
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    color: "transparent"
+                    radius: 5
+                    border.width: 1
+                    border.color: "white"
+                    opacity: 0.8
+                    Behavior on color {
+                        ColorAnimation {duration:100}
+                    }
                     Text {
                         anchors.centerIn: parent
                         text: "Send request"
+                        color: "white"
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onContainsMouseChanged: {
+                            contactRequestButton.color = containsMouse ? "#55ffffff" : "transparent"
+                        }
                     }
                 }
                 Rectangle {
-                    color: "red"
+                    id: callButton
                     anchors.margins: 3
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    color: "transparent"
+                    radius: 5
+                    border.width: 1
+                    border.color: "white"
+                    opacity: 0.8
+                    Behavior on color {
+                        ColorAnimation {duration:100}
+                    }
                     Text {
                         anchors.centerIn: parent
                         text: "Call"
+                        color: "white"
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onContainsMouseChanged: {
+                            callButton.color = containsMouse ? "#55ffffff" : "transparent"
+                        }
                     }
                 }
             }
