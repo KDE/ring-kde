@@ -77,6 +77,7 @@
 //Collections
 #include <foldercertificatecollection.h>
 #include <fallbackpersoncollection.h>
+#include <peerprofilecollection.h>
 #include <localhistorycollection.h>
 #include <localbookmarkcollection.h>
 #include <localrecordingcollection.h>
@@ -227,6 +228,7 @@ void RingApplication::initCollections()
    CategorizedBookmarkModel::instance().reloadCategories();
 
    PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
+   PersonModel::instance().addCollection<PeerProfileCollection>(LoadOptions::FORCE_ENABLED);
 
    GlobalInstances::setInterface<ItemModelStateSerialization>();
    GlobalInstances::itemModelStateSerializer().load();

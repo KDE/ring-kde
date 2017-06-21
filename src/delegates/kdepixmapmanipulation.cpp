@@ -166,7 +166,7 @@ QVariant KDEPixmapManipulation::securityIssueIcon(const QModelIndex& index)
    return QVariant();
 }
 
-QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
+QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm, const QString& type)
 {
    //Preparation of our QPixmap
    QByteArray bArray;
@@ -174,7 +174,7 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
    buffer.open(QIODevice::WriteOnly);
 
    //PNG ?
-   (qvariant_cast<QPixmap>(pxm)).save(&buffer, "JPEG");
+   (qvariant_cast<QPixmap>(pxm)).save(&buffer, type.toLatin1());
    buffer.close();
 
    return bArray;
