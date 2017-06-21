@@ -26,6 +26,7 @@ Item {
     property alias count: callList.count
 
     width: 300
+    z: 10001
 
     Component {
         id: callDelegate

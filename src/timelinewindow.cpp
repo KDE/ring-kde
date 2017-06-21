@@ -116,6 +116,8 @@ TimelineWindow::TimelineWindow()
 
     createGUI();
     updateTabIcons();
+
+    m_pPeersTimeline->raise();
 }
 
 TimelineWindow::~TimelineWindow()
