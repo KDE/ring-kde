@@ -22,7 +22,11 @@ import Ring 1.0
 
 Item {
     id: scrollbar
-    property alias model: tmlList.model
+    property alias  model: tmlList.model
+    property alias  tmlList: tmlList
+    property alias  fullWidth: tmlList.width
+    property alias  handleHeight: handle.height
+    property double position: 0
 
     property bool overlayVisible: false
 
@@ -43,6 +47,11 @@ Item {
         color: "black"
         width: parent.width
         height: 65
+
+        onYChanged: {
+            var relH = scrollbar.height - height
+            scrollbar.position = y/relH
+        }
     }
 
     Component {
@@ -95,7 +104,16 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         onEntered: overlayVisible = true
-        onExited: overlayVisible = false
+        onExited: overlayVisible = drag.active
+
+        drag.target: handle
+        drag.axis: Drag.YAxis
+        drag.minimumY: 0
+        drag.maximumY: scrollbar.height - handle.height
+
+        drag.onActiveChanged: {
+            overlayVisible = drag.active
+        }
 
         Item {
             id: timelineOverlay

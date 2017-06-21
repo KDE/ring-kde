@@ -65,7 +65,6 @@ Rectangle {
         interval: 0 // Run idle
         onTriggered: {
             search.text = ""
-            selectionMapper.contactMethod = cm
         }
     }
     onContactMethodSelected: {
@@ -151,6 +150,13 @@ Rectangle {
                     onCountChanged: {
                         if (count > 0)
                             newUserHelper.visible = false
+
+                        scrollBar.visible = count*50 > recentDock.height
+                        scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
+                    }
+
+                    onHeightChanged: {
+                        scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
                     }
                 }
             }
@@ -163,6 +169,14 @@ Rectangle {
                 width: 10
                 model: PeersTimelineModel.timelineSummaryModel
                 z: 100
+                onWidthChanged: {
+                    burryOverlay.width = scrollBar.fullWidth + 15
+                }
+                visible: PeersTimelineModel.deduplicatedTimelineModel.count*50 > recentDock.height
+
+                onPositionChanged: {
+                    scrollView.flickableItem.contentY = scrollView.flickableItem.contentHeight*scrollBar.position
+                }
             }
 
             // Add a blurry background
@@ -173,10 +187,10 @@ Rectangle {
                 sourceItem: scrollView
                 anchors.right: scrollView.right
                 anchors.top: scrollView.top
-                width: scrollView.width/2
+                width: scrollBar.fullWidth + 15
                 height: scrollView.height
 
-                sourceRect: Qt.rect(scrollView.width/2, 0, scrollView.width/2, scrollView.height)
+                sourceRect: Qt.rect(scrollBar.fullWidth + 15, 0, scrollBar.fullWidth + 15, scrollView.height)
             }
 
             Item {
@@ -185,7 +199,7 @@ Rectangle {
                 opacity: 0
                 anchors.right: scrollView.right
                 anchors.top: scrollView.top
-                width: scrollView.width/2
+                width: scrollBar.fullWidth + 15
                 height: scrollView.height
                 clip: true
 
@@ -213,6 +227,10 @@ Rectangle {
                 anchors.fill: parent
             }
         }
+    }
+
+    onHeightChanged: {
+        scrollBar.handleHeight = recentDock.height * (recentDock.height/(recentView.count*50))
     }
 
     // Timeline scrollbar
@@ -270,6 +288,10 @@ Rectangle {
                     opacity: 1
                     width: scrollView.width
                     height: scrollView.height
+                }
+                PropertyChanges {
+                    target:  effectSource
+                    sourceRect: Qt.rect(0, 0, parent.width, parent.height)
                 }
             }
         ]
