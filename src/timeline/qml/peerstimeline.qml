@@ -108,56 +108,50 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            ScrollView {
-                id: scrollView
-                anchors.fill: parent
-                flickableItem.interactive: true
+            Item {
+                id: newUserHelper
+                width: parent.width - 20
+                height: 200
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.topMargin: 10
 
-                Item {
-                    id: newUserHelper
-                    width: parent.width - 20
-                    height: 200
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.topMargin: 10
-
-                    Rectangle {
-                        anchors.fill: parent
-                        color: activePalette.text
-                        opacity: 0.1
-                        radius: 10
-                    }
-
-                    Text {
-                        anchors.fill: parent
-                        anchors.margins: 10
-                        font.bold: true
-                        wrapMode: Text.WordWrap
-                        color: activePalette.base
-                        text: qsTr("To begin using Ring-KDE, enter an username in the box above and press enter or add new contacts")
-                    }
+                Rectangle {
+                    anchors.fill: parent
+                    color: activePalette.text
+                    opacity: 0.1
+                    radius: 10
                 }
 
-                ListView {
-                    id: recentView
+                Text {
                     anchors.fill: parent
-                    highlightMoveVelocity: Infinity //HACK
-                    delegate: contactDelegate
-                    highlight: Rectangle {
-                        color: activePalette.highlight
-                    }
-                    model: PeersTimelineModel.deduplicatedTimelineModel
+                    anchors.margins: 10
+                    font.bold: true
+                    wrapMode: Text.WordWrap
+                    color: activePalette.base
+                    text: qsTr("To begin using Ring-KDE, enter an username in the box above and press enter or add new contacts")
+                }
+            }
 
-                    onCountChanged: {
-                        if (count > 0)
-                            newUserHelper.visible = false
+            ListView {
+                id: recentView
+                anchors.fill: parent
+                highlightMoveVelocity: Infinity //HACK
+                delegate: contactDelegate
+                highlight: Rectangle {
+                    color: activePalette.highlight
+                }
+                model: PeersTimelineModel.deduplicatedTimelineModel
 
-                        scrollBar.visible = count*50 > recentDock.height
-                        scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
-                    }
+                onCountChanged: {
+                    if (count > 0)
+                        newUserHelper.visible = false
 
-                    onHeightChanged: {
-                        scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
-                    }
+                    scrollBar.visible = count*50 > recentDock.height
+                    scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
+                }
+
+                onHeightChanged: {
+                    scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
                 }
             }
 
@@ -175,7 +169,7 @@ Rectangle {
                 visible: PeersTimelineModel.deduplicatedTimelineModel.count*50 > recentDock.height
 
                 onPositionChanged: {
-                    scrollView.flickableItem.contentY = scrollView.flickableItem.contentHeight*scrollBar.position
+                    recentView.contentY = (recentView.contentHeight-recentView.height)*scrollBar.position
                 }
             }
 
@@ -184,23 +178,23 @@ Rectangle {
                 id: effectSource
                 visible: false
 
-                sourceItem: scrollView
-                anchors.right: scrollView.right
-                anchors.top: scrollView.top
+                sourceItem: recentView
+                anchors.right: recentView.right
+                anchors.top: recentView.top
                 width: scrollBar.fullWidth + 15
-                height: scrollView.height
+                height: recentView.height
 
-                sourceRect: Qt.rect(scrollBar.fullWidth + 15, 0, scrollBar.fullWidth + 15, scrollView.height)
+                sourceRect: Qt.rect(scrollBar.fullWidth + 15, 0, scrollBar.fullWidth + 15, recentView.height)
             }
 
             Item {
                 id: burryOverlay
                 visible: false
                 opacity: 0
-                anchors.right: scrollView.right
-                anchors.top: scrollView.top
+                anchors.right: recentView.right
+                anchors.top: recentView.top
                 width: scrollBar.fullWidth + 15
-                height: scrollView.height
+                height: recentView.height
                 clip: true
 
                 Repeater {
@@ -286,8 +280,8 @@ Rectangle {
                     target:  burryOverlay
                     visible: true
                     opacity: 1
-                    width: scrollView.width
-                    height: scrollView.height
+                    width: recentView.width
+                    height: recentView.height
                 }
                 PropertyChanges {
                     target:  effectSource

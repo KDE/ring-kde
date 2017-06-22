@@ -51,12 +51,24 @@ Item {
         onYChanged: {
             var relH = scrollbar.height - height
             scrollbar.position = y/relH
+
+            // Highlight the current index
+            var oldItem          = tmlList.currentItem
+            tmlList.currentIndex = tmlList.indexAt(10, y)
+            var item             = tmlList.currentItem
+
+            if (oldItem != item) {
+                oldItem.selected = false
+                item.selected    = true
+            }
         }
     }
 
     Component {
         id: category
         Item {
+            width: parent.width
+            property bool selected: false
             height: getSectionHeight(parent.parent.height, totalEntries, categoryEntries, index, activeCategories)
             ColumnLayout {
                 anchors.fill: parent
@@ -64,17 +76,25 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     Rectangle {
+                        id: mainCircle
                         height: 20
                         width: 20
                         radius: 999
                         color: "#005500"
                         border.width: 2
                         border.color: "#d0d0d0"
+                        Behavior on color {
+                            ColorAnimation {duration: 300}
+                        }
                     }
                     Text {
+                        id: label
                         Layout.fillWidth: true
                         text: display
                         color: "white"
+                        Behavior on font.pointSize {
+                            NumberAnimation {duration: 150}
+                        }
                     }
                 }
 
@@ -97,6 +117,21 @@ Item {
                     }
                 }
             }
+
+            states: [
+                State {
+                    name: "selected"
+                    when: selected
+                    PropertyChanges {
+                        target: mainCircle
+                        color:  "#00AA00"
+                    }
+                    PropertyChanges {
+                        target:  label
+                        font.pointSize: 14
+                    }
+                }
+            ]
         }
     }
 
@@ -126,6 +161,11 @@ Item {
                 id: tmlList
                 anchors.fill: parent
                 delegate: category
+                Component.onCompleted: {
+                    currentIndex = 0
+                    if (currentItem)
+                        currentItem.selected = true
+                }
             }
         }
     }
