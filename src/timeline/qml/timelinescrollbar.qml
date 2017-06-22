@@ -154,9 +154,12 @@ Item {
             id: timelineOverlay
             width: 150
             x: -130
-            height: scrollbar.height
+            anchors.top: scrollbar.top
+            anchors.bottom: scrollbar.bottom
+
             visible: false
             opacity: 0
+
             ListView {
                 id: tmlList
                 anchors.fill: parent

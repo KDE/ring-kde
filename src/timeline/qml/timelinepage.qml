@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import QtGraphicalEffects 1.0
 import Ring 1.0
 
 import RingQmlWidgets 1.0
@@ -34,8 +35,61 @@ Rectangle {
 
     property var currentContactMethod: null
 
-    onCurrentContactMethodChanged: currentContactMethod ?
-        chatView.model = currentContactMethod.timelineModel : null
+    onCurrentContactMethodChanged: {
+        chatView.model = currentContactMethod ? currentContactMethod.timelineModel : null
+        scrollbar.model = currentContactMethod ? currentContactMethod.timelineModel : null
+    }
+
+    // Add a blurry background
+    ShaderEffectSource {
+        id: effectSource
+        visible: false
+
+        sourceItem: chatView
+        anchors.right: timelinePage.right
+        anchors.top: timelinePage.top
+        width: scrollbar.fullWidth + 15
+        height: chatView.height
+
+        sourceRect: Qt.rect(
+            burryOverlay.x,
+            burryOverlay.y,
+            burryOverlay.width,
+            burryOverlay.height
+        )
+    }
+
+    Item {
+        id: burryOverlay
+        visible: false
+        opacity: 0
+        anchors.right: timelinePage.right
+        anchors.top: timelinePage.top
+        width: scrollbar.fullWidth + 15
+        height: chatView.height
+        clip: true
+
+        Behavior on opacity {
+            NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+        }
+
+        Repeater {
+            anchors.fill: parent
+            model: 5
+            FastBlur {
+                anchors.fill: parent
+                source: effectSource
+                radius: 30
+
+            }
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            color: "black"
+            opacity: 0.75
+        }
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -57,7 +111,21 @@ Rectangle {
             TimelineScrollbar {
                 id: scrollbar
                 Layout.fillHeight: true
-                Layout.preferredWidth: 20
+                Layout.preferredWidth: 10
+
+                onWidthChanged: {
+                    burryOverlay.width = scrollbar.fullWidth + 15
+                }
+
+                onPositionChanged: {
+                    chatView.contentY = (chatView.contentHeight-chatView.height)*scrollbar.position
+                }
+
+                onOverlayVisibleChanged: {
+                    burryOverlay.visible = overlayVisible
+                    burryOverlay.opacity = overlayVisible ? 1 : 0
+                    effectSource.visible = overlayVisible
+                }
             }
         }
 

@@ -46,61 +46,66 @@ ListView {
             component.width     = chatView.width
             component.model     = chatView.model
             component.rootIndex = getIndex(model2, index)
-            console.log("ICI", model2, index, component.rootIndex, chatView.model)
         }
-        else
-            console.log("NOT YET")
 
         return component
     }
 
     Component {
         id: messageDelegate
+        Loader {
+            asynchronous: true
+            visible: status == Loader.Ready
 
-        ColumnLayout {
-            width: parent.width
-            CategoryHeader {
-                width: 99999999999
-            }
-            Repeater {
-                id: childrenView
-                Layout.fillWidth: true
+            sourceComponent: ColumnLayout {
+                width: parent.width
+                CategoryHeader {
+                    width: chatView.width
+                }
+                Repeater {
+                    id: childrenView
+                    Layout.fillWidth: true
 
-                model: VisualDataModel {
-                    id: childrenVisualDataModel
-                    model: chatView.model
-                    Component.onCompleted: {
-                        childrenView.model.rootIndex = childrenView.model.modelIndex(index)
-                    }
-
-                    delegate: Component {
-                        Loader {
-
-                            Component {
-                                id: troll
-                                TextMessageGroup {
-                                    width: chatView.width
-                                    id: groupDelegate
-                                    model: chatView.model
-                                    rootIndex: getIndex(childrenView.model, modelIndex)
-                                }
-                            }
-
-                            Component {
-                                id: troll2
-                                CallGroup {
-                                    width: chatView.width
-                                    id: groupDelegate
-                                    model: chatView.model
-                                    rootIndex: getIndex(childrenView.model, modelIndex)
-                                }
-                            }
-
-                            property int modelIndex: index
-                            sourceComponent: nodeType == PeerTimelineModel.SECTION_DELIMITER ? troll : troll2
+                    model: VisualDataModel {
+                        id: childrenVisualDataModel
+                        model: chatView.model
+                        Component.onCompleted: {
+                            childrenView.model.rootIndex = childrenView.model.modelIndex(index)
                         }
-                    }
 
+                        delegate: Component {
+                            Loader {
+                                asynchronous: true
+                                visible: status == Loader.Ready
+
+                                Component {
+                                    id: troll
+                                    TextMessageGroup {
+                                        width: chatView.width
+                                        id: groupDelegate
+                                        model: chatView.model
+                                        rootIndex: getIndex(childrenView.model, modelIndex)
+                                    }
+
+                                }
+
+                                Component {
+                                    id: troll2
+                                    CallGroup {
+                                        width: chatView.width
+                                        id: groupDelegate
+                                        model: chatView.model
+                                        rootIndex: getIndex(childrenView.model, modelIndex)
+                                    }
+
+                                }
+
+                                property int modelIndex: index
+                                sourceComponent: nodeType == PeerTimelineModel.SECTION_DELIMITER ? troll : troll2
+                            }
+                        }
+
+                    }
                 }
             }
         }
