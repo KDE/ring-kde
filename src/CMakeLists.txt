@@ -247,6 +247,7 @@ SET(
    widgets/kphonenumberselector.cpp
    widgets/contactview.cpp
    widgets/presence.cpp
+   widgets/directoryview.cpp
    widgets/autocompletion.cpp
    widgets/menumodelview.cpp
    widgets/toolbuttonmodelview.cpp
@@ -321,6 +322,7 @@ SET(
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/contactdock.ui
+   widgets/ui/directoryview.ui
    widgets/ui/transfer.ui
    widgets/ui/presence.ui
    widgets/ui/videodevicesetting.ui

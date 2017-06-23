@@ -139,6 +139,7 @@ private:
    QAction * action_focus_call             {nullptr};
    QAction * action_focus_bookmark         {nullptr};
    QAction * action_show_wizard            {nullptr};
+   QAction * action_show_directory         {nullptr};
 
 public Q_SLOTS:
    void configureRing         ();
@@ -147,6 +148,7 @@ public Q_SLOTS:
 private Q_SLOTS:
    void showShortCutEditor    ();
    void showNotificationEditor();
+   void showDirectory         ();
    void editToolBar           ();
    void slotAddPerson         ();
    void updateRecordButton    ();

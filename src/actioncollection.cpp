@@ -54,6 +54,7 @@
 #include <audio/settings.h>
 #include <personmodel.h>
 #include <delegates/kdepixmapmanipulation.h>
+#include "widgets/directoryview.h"
 
 #ifdef HAVE_SPEECH
  #include "accessibility.h"
@@ -146,6 +147,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    INIT_ACTION(action_focus_call            , {}                                                  , i18n("Search call"             ));
    INIT_ACTION(action_focus_contact         , {}                                                  , i18n("Search contact"          ));
    INIT_ACTION(action_focus_bookmark        , {}                                                  , i18n("Search bookmark"         ));
+   INIT_ACTION(action_show_directory        , {}                                                  , i18n("Show the phone directory"));
 
    INIT_ACTION(action_show_wizard           , QIcon::fromTheme(QStringLiteral("tools-wizard"                    )), i18n("New account wizard"      ));
    INIT_ACTION(action_new_contact           , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("New contact"             ));
@@ -250,9 +252,10 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    // Connect actions
    connect(action_mute_capture           , &QAction::toggled   , as                 , &Audio::Settings::muteCapture             );
    connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
-   connect(action_show_wizard            , &QAction::triggered , RingApplication::instance(), &RingApplication::showWizard                   );
+   connect(action_show_wizard            , &QAction::triggered , RingApplication::instance(), &RingApplication::showWizard      );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
+   connect(action_show_directory         , &QAction::triggered , this               , &ActionCollection::showDirectory          );
    connect(action_configureNotifications , &QAction::triggered , this               , &ActionCollection::showNotificationEditor );
    connect(action_editToolBar            , &QAction::triggered , this               , &ActionCollection::editToolBar            );
    connect(action_addPerson              , &QAction::triggered , this               , &ActionCollection::slotAddPerson          );
@@ -278,7 +281,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
-      action_focus_bookmark    , action_show_wizard       ,
+      action_focus_bookmark    , action_show_wizard       , action_show_directory    ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       mw->actionCollection()->addAction(a->objectName(), a);
@@ -334,6 +337,12 @@ void ActionCollection::configureRing()
 void ActionCollection::showShortCutEditor()
 {
    KShortcutsDialog::configure( RingApplication::instance()->mainWindow()->actionCollection() );
+}
+
+///Display the shortcuts dialog
+void ActionCollection::showDirectory()
+{
+   new DirectoryView(RingApplication::instance()->mainWindow());
 }
 
 ///Display the notification manager
