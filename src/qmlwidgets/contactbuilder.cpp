@@ -90,13 +90,13 @@ ContactMethod* ContactBuilder::addPhoneNumber(Person* p, const QString& number, 
 
     p = p ? p : newCM->contact();
 
-    // Force a copy
-    QVector<ContactMethod*> pn(p->phoneNumbers());
-
     if (!p) {
         qWarning() << "Failed to create a contact";
         return nullptr;
     }
+
+    // Force a copy
+    QVector<ContactMethod*> pn(p->phoneNumbers());
 
     if (!newCM)
         newCM = PhoneDirectoryModel::instance().getNumber(

@@ -44,6 +44,11 @@ PersonIconEngine::PersonIconEngine(Person* person) : QIconEngine(), d_ptr(new Pe
     d_ptr->m_pPerson = person;
 }
 
+PersonIconEngine::~PersonIconEngine()
+{
+    delete d_ptr;
+}
+
 void PersonIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
 {
     Q_UNUSED(mode)

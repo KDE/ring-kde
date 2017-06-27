@@ -39,6 +39,11 @@ CMIconEngine::CMIconEngine(ContactMethod* cm) : QIconEngine(),
     d_ptr->m_pCM = cm;
 }
 
+CMIconEngine::~CMIconEngine()
+{
+    delete d_ptr;
+}
+
 void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPresent, bool isTracked)
 {
     painter->save();

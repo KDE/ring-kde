@@ -29,6 +29,7 @@ class CMIconEngine : public QIconEngine
 {
 public:
     explicit CMIconEngine(ContactMethod* cm);
+    virtual ~CMIconEngine();
 
     virtual void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
     virtual QIconEngine* clone() const override;

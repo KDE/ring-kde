@@ -30,6 +30,7 @@ class PersonIconEngine : public QIconEngine
 {
 public:
     explicit PersonIconEngine(Person* person);
+    virtual ~PersonIconEngine();
 
     virtual void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
     virtual QIconEngine* clone() const override;

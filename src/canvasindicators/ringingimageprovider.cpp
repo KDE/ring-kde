@@ -147,6 +147,11 @@ RingingImageProvider::RingingImageProvider()
 {
 }
 
+RingingImageProvider::~RingingImageProvider()
+{
+    delete d_ptr;
+}
+
 QPixmap RingingImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
     Q_UNUSED(requestedSize)

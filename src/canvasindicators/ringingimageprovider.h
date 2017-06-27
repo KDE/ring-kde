@@ -29,6 +29,7 @@ class RingingImageProvider : public QQuickImageProvider
 {
 public:
     explicit RingingImageProvider();
+    virtual ~RingingImageProvider();
 
     virtual QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
 

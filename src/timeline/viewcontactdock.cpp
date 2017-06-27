@@ -37,8 +37,6 @@
 #include <call.h>
 #include <callmodel.h>
 
-#include "recentmodel.h"
-
 // Remove inactive calls from the CallModel
 class ActiveCallProxy : public QSortFilterProxyModel
 {
