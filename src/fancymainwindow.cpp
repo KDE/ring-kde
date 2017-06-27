@@ -89,22 +89,22 @@ void FancyMainWindow::updateTabIcons()
                 && pt.x() < 20 && isVertical;
 
             // Attach an event filter
-            if (isMainToolbar && !m_hEventFilters.contains(bar)) {
-                bar->installEventFilter(this);
-
-                auto tb = new QToolButton(bar);
-                tb->setAutoFillBackground(false);
-                tb->setText(i18n("Phone"));
-                tb->setIconSize({48, 48});
-                tb->setIcon(QIcon::fromTheme(QStringLiteral("call-start")));
-                tb->setStyleSheet(QStringLiteral(
-                "background-color: transparent; background: none;"
-                ));
-
-                connect(tb, &QToolButton::clicked, this, &FancyMainWindow::showPhone);
-
-                m_hEventFilters[bar] = tb;
-            }
+//             if (isMainToolbar && !m_hEventFilters.contains(bar)) {
+//                 bar->installEventFilter(this);
+//
+//                 auto tb = new QToolButton(bar);
+//                 tb->setAutoFillBackground(false);
+//                 tb->setText(i18n("Phone"));
+//                 tb->setIconSize({48, 48});
+//                 tb->setIcon(QIcon::fromTheme(QStringLiteral("call-start")));
+//                 tb->setStyleSheet(QStringLiteral(
+//                 "background-color: transparent; background: none;"
+//                 ));
+//
+//                 connect(tb, &QToolButton::clicked, this, &FancyMainWindow::showPhone);
+//
+//                 m_hEventFilters[bar] = tb;
+//             }
 
             if (isMainToolbar)
                 bar->setIconSize(QSize(64, 64));
