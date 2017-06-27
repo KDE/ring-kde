@@ -42,7 +42,7 @@ public:
     InitTipData*      m_pInit   {nullptr};
     SearchingTipData* m_pSearch {nullptr};
 
-    QByteArray loadSvg(const QString& path);
+    QByteArray loadSvg(const QString& path) const;
     bool brightOrDarkBase() const;
 };
 
@@ -79,6 +79,7 @@ struct RingingTipData
     };
 
     QPixmap toPixmap(int count) {
+        Q_UNUSED(count)
         QPixmap pxm(135, 120);
 
         QPainter p(&pxm);
@@ -90,11 +91,11 @@ struct RingingTipData
             {(135-19.319489*6)/2 , 0 },
         };
 
-        const float opacity[4] {
+        const double opacity[4] {
             1,
-            (sin((float)(count/35.0f)*2.0f*3.14159f + 5 + (2*1.0472f)) +  0.8),
-            (sin((float)(count/35.0f)*2.0f*3.14159f + 5 + (1.0472f  )) +  0.8),
-            (sin((float)(count/35.0f)*2.0f*3.14159f + 5              ) +  0.8),
+            (sin((((double)count)/35.0f)*2.0f*3.14159f + 5.0 + (2.0*1.0472f)) +  0.8),
+            (sin((((double)count)/35.0f)*2.0f*3.14159f + 5.0 + (1.0472f    )) +  0.8),
+            (sin((((double)count)/35.0f)*2.0f*3.14159f + 5.0                ) +  0.8),
         };
 
         // For now only black background is used
@@ -124,6 +125,7 @@ struct InitTipData final {
     ~InitTipData() {delete m_Render;}
 
     QPixmap toPixmap(int count) {
+        Q_UNUSED(count)
         QPixmap pxm(128, 128);
 
         QPainter p(&pxm);
@@ -138,6 +140,7 @@ struct InitTipData final {
 
 struct SearchingTipData {
     explicit SearchingTipData(RingingImageProviderPrivate* d) {
+        Q_UNUSED(d)
         //
     }
 };
@@ -180,7 +183,7 @@ QPixmap RingingImageProvider::requestPixmap(const QString &id, QSize *size, cons
     return pxm;
 }
 
-QByteArray RingingImageProviderPrivate::loadSvg(const QString& path)
+QByteArray RingingImageProviderPrivate::loadSvg(const QString& path) const
 {
     QFile file(path);
     file.open(QIODevice::ReadOnly | QIODevice::Text);

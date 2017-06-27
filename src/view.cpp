@@ -114,8 +114,6 @@ View::View(QWidget *parent)
 
    GlobalInstances::setInterface<ColorDelegate>(pal);
 
-   const QModelIndex currentIndex = CallModel::instance().selectionModel()->currentIndex();
-
    //FIXME connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &View::displayHistory);
 
    //Setup volume

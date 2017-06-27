@@ -423,7 +423,7 @@ int ConferenceDelegate::categoryHeight(const QModelIndex &index, const QStyleOpt
 ///Draw the delegate when it is being dragged
 QPixmap ConferenceDelegate::getDragPixmap(CategorizedTreeView* parent, const QModelIndex& index)
 {
-   QStyleOptionViewItemV4 option;
+   QStyleOptionViewItem option;
    option.locale = parent->locale();
    option.widget = parent;
    option.state = QStyle::State_Selected | QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;

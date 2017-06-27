@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 {
    try
    {
-      static volatile auto app = RingApplication::instance( argc, argv );
+      RingApplication::instance( argc, argv );
 
       KLocalizedString::setApplicationDomain("ring-kde");
 

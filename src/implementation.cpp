@@ -210,6 +210,7 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
 
 QVariant KDEShortcutDelegate::createAction(Macro* macro)
 {
+   Q_UNUSED(macro)
    return {};
 }
 

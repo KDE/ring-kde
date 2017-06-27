@@ -71,7 +71,6 @@ IF (CMAKE_COMPILER_IS_GNUCC)
       ADD_DEFINITIONS(
          -Wunused-but-set-parameter
          -Wconditionally-supported
-         -Wsuggest-attribute=const
          -Wno-cpp
 #          -Wdouble-promotion
          -Wdate-time

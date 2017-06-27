@@ -193,7 +193,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
             return;
 
          //Create the pixmap
-         QStyleOptionViewItemV4 option;
+         QStyleOptionViewItem option;
          option.locale = locale();
          option.widget = this;
          option.state = QStyle::State_Selected | QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;

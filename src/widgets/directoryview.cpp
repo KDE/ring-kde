@@ -25,7 +25,7 @@
 #include <phonedirectorymodel.h>
 #include <contactmethod.h>
 
-DirectoryView::DirectoryView(QWidget* parent)
+DirectoryView::DirectoryView(QWidget* parent) : QDialog(parent)
 {
     Ui_DirectoryView ui;
     ui.setupUi(this);
