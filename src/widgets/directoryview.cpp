@@ -33,6 +33,8 @@ DirectoryView::DirectoryView(QWidget* parent)
     auto p = new QSortFilterProxyModel(this);
     p->setSourceModel(&PhoneDirectoryModel::instance());
     p->setFilterRole((int)ContactMethod::Role::Filter);
+    p->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    p->setSortCaseSensitivity  ( Qt::CaseInsensitive );
     connect(ui.lineEdit ,SIGNAL(filterStringChanged(QString)), p, SLOT(setFilterRegExp(QString)));
     ui.tableView->setModel(p);
     exec();

@@ -72,22 +72,10 @@ KDEPixmapManipulation::KDEPixmapManipulation() : QObject(), Interfaces::PixmapMa
 
 }
 
-///When the Person is rebased (use a new data source), everything is now invalid
-void KDEPixmapManipulation::clearCache()
-{
-   Person* c = qobject_cast<Person*>(sender());
-   if (!c) return;
-
-   //Hopefully it wont happen often
-   foreach (const QByteArray& name, c->dynamicPropertyNames()) {
-      if (name.left(5) == "photo")
-         c->setProperty(name,QVariant());
-   }
-}
-
 QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence)
 {
-//    connect(c,&Person::rebased,this,&KDEPixmapManipulation::clearCache); //FIXME
+   Q_UNUSED(displayPresence)
+   Q_UNUSED(size)
 
    // Keep the engine cached
    if (c->property("icon").canConvert<QIcon>())
@@ -123,7 +111,7 @@ QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displ
       return contactPhoto(c->peerContactMethod()->contact(),size,displayPresence);
    }
    else
-      return QPixmap(callStateIcons[c->state()]);
+      return QIcon(callStateIcons[c->state()]);
 }
 
 QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence, bool isPresent)

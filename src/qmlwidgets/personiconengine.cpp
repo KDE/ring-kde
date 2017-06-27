@@ -49,6 +49,8 @@ void PersonIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode m
     Q_UNUSED(mode)
     Q_UNUSED(state)
 
+    painter->save();
+
     bool displayPresence = true;
 
     // Given this has a transparent area, clear the rectangle
@@ -68,10 +70,14 @@ void PersonIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode m
         QPixmap original(qvariant_cast<QPixmap>(d_ptr->m_pPerson->photo()));
         QPixmap contactPhoto;
 
+        const int padding = (rect.height() > 35) ? 3 : 1;
+
         if (original.width() > original.height())
-            contactPhoto = original.scaledToWidth(rect.height()-6);
+            contactPhoto = original.scaledToWidth(rect.height()-2*padding);
         else
-            contactPhoto = original.scaledToHeight(rect.width()-6);
+            contactPhoto = original.scaledToHeight(rect.width()-2*padding);
+
+        QRect realRect ={rect.x()+padding,rect.y()+padding, rect.width()-2*padding, rect.height()-2*padding};
 
         //Add corner radius to the Pixmap
         QRect pxRect = contactPhoto.rect();
@@ -84,14 +90,14 @@ void PersonIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode m
         customPainter.drawRoundedRect(pxRect,radius,radius);
         contactPhoto.setMask(mask);
         painter->drawPixmap(
-            {3, 3, rect.width()-6, rect.height()-6},
+            realRect,
             contactPhoto
         );
         painter->setBrush(Qt::NoBrush);
         painter->setPen(Qt::white);
         painter->setRenderHint  (QPainter::Antialiasing, true   );
         painter->setCompositionMode(QPainter::CompositionMode_SourceIn);
-        painter->drawRoundedRect(3,3,rect.height()-6,rect.height()-6,radius,radius);
+        painter->drawRoundedRect(realRect ,radius, radius);
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 
         //Draw the glow around pixmaps
@@ -108,12 +114,14 @@ void PersonIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode m
                 pen.setWidth(i);
                 painter->setPen(pen);
                 painter->setOpacity(0.3f-(((i-2)*0.8f)/10.0f));
-                painter->drawRoundedRect(3,3,rect.height()-6,rect.height()-6,radius,radius);
+                painter->drawRoundedRect(realRect ,radius,radius);
             }
         }
     }
     else
         CMIconEngine::staticPaint(painter, rect, isPresent, isTracked);
+
+    painter->restore();
 
 }
 

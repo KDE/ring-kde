@@ -148,6 +148,11 @@
       <default> false </default>
     </entry>
 
+    <entry name="defaultPeerProfileMode" type="Int">
+      <label>Defines how peer profiles are merged with existing contacts</label>
+      <default> 2 </default>
+    </entry>
+
     <entry name="hideUnreachable" type="Bool">
       <label>Hide unreachable contacts</label>
       <tooltip>Hide a contact if there is no enabled accounts that can reach him/her</tooltip>
@@ -236,6 +241,33 @@
     <entry name="displayRecentDock" type="Bool">
       <label>Display the recently used contacts</label>
       <default> true </default>
+    </entry>
+  </group>
+
+  <group name="mergeContactField">
+    <entry name="formattedName" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="nickname" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="primaryName" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="lastName" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="email" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="org" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="addresses" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="phoneNumbers" type="Bool">
+      <default> false </default>
     </entry>
   </group>
 </kcfg>

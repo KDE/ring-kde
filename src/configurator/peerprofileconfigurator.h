@@ -19,23 +19,30 @@
 
 #include <collectionconfigurationinterface.h>
 
-class AudioRecordingConfigurator : public CollectionConfigurationInterface
+class PeerProfileCollection2;
+class Ui_PeerProfile;
+
+class PeerProfileConfigurator : public CollectionConfigurationInterface
 {
     Q_OBJECT
 public:
-    explicit AudioRecordingConfigurator(QObject* parent = nullptr);
+    explicit PeerProfileConfigurator(QObject* parent = nullptr);
+    virtual ~PeerProfileConfigurator();
 
     //Getter
     virtual QByteArray id  () const override;
     virtual QString    name() const override;
     virtual QVariant   icon() const override;
 
-    //Mutator
-
     virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
 
 private:
     bool m_Init {false};
+    PeerProfileCollection2* m_pCol {nullptr};
+    Ui_PeerProfile* m_pUi;
+
+private Q_SLOTS:
+    void slotCheckboxChecked();
 
 };
 

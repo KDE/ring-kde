@@ -77,7 +77,7 @@
 //Collections
 #include <foldercertificatecollection.h>
 #include <fallbackpersoncollection.h>
-#include <peerprofilecollection.h>
+#include <peerprofilecollection2.h>
 #include <localhistorycollection.h>
 #include <localbookmarkcollection.h>
 #include <localrecordingcollection.h>
@@ -89,6 +89,8 @@
 #include "configurator/localhistoryconfigurator.h"
 #include "configurator/audiorecordingconfigurator.h"
 #include "configurator/fallbackpersonconfigurator.h"
+#include "configurator/peerprofileconfigurator.h"
+#include "configurator/bookmarkconfigurator.h"
 
 //Delegates
 #include <delegates/kdepixmapmanipulation.h>
@@ -200,10 +202,12 @@ void RingApplication::initCollections()
       *           Set the configurator          *
       ******************************************/
 
-   PersonModel::instance()            .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
-   Media::RecordingModel::instance()  .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this));
-   Media::RecordingModel::instance()  .registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this));
-   CategorizedHistoryModel::instance().registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
+   PersonModel::instance()             .registerConfigarator<PeerProfileCollection2  >    (new PeerProfileConfigurator   (this));
+   PersonModel::instance()             .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
+   Media::RecordingModel::instance()   .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this));
+   Media::RecordingModel::instance()   .registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this));
+   CategorizedHistoryModel::instance() .registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
+   CategorizedBookmarkModel::instance().registerConfigarator<LocalBookmarkCollection >    (new BookmarkConfigurator      (this));
 
    /*******************************************
       *           Load the collections          *
@@ -228,7 +232,10 @@ void RingApplication::initCollections()
    CategorizedBookmarkModel::instance().reloadCategories();
 
    PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
-   PersonModel::instance().addCollection<PeerProfileCollection>(LoadOptions::FORCE_ENABLED);
+   auto ppc = PersonModel::instance().addCollection<PeerProfileCollection2>(LoadOptions::FORCE_ENABLED);
+
+   const auto m = static_cast<PeerProfileCollection2::DefaultMode>(ConfigurationSkeleton::defaultPeerProfileMode());
+   ppc->setDefaultMode(m);
 
    GlobalInstances::setInterface<ItemModelStateSerialization>();
    GlobalInstances::itemModelStateSerializer().load();

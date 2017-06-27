@@ -216,6 +216,8 @@ SET(
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
    configurator/localhistoryconfigurator.cpp
+   configurator/peerprofileconfigurator.cpp
+   configurator/bookmarkconfigurator.cpp
    configurator/audiorecordingconfigurator.cpp
    configurator/fallbackpersonconfigurator.cpp
 )
@@ -331,6 +333,9 @@ SET(
    widgets/ui/welcome.ui
    widgets/ui/share.ui
    widgets/ui/accountcreator.ui
+   configurator/peerprofile.ui
+   configurator/bookmark.ui
+   configurator/recording.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users

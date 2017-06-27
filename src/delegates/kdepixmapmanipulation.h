@@ -66,10 +66,6 @@ public:
    static const char* icnPath[2][2];
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
-
-
-private Q_SLOTS:
-   void clearCache();
 };
 
 #endif // KDEPIXMAPMANIPULATION_H

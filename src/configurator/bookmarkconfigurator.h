@@ -19,18 +19,16 @@
 
 #include <collectionconfigurationinterface.h>
 
-class AudioRecordingConfigurator : public CollectionConfigurationInterface
+class BookmarkConfigurator : public CollectionConfigurationInterface
 {
     Q_OBJECT
 public:
-    explicit AudioRecordingConfigurator(QObject* parent = nullptr);
+    explicit BookmarkConfigurator(QObject* parent = nullptr);
 
     //Getter
     virtual QByteArray id  () const override;
     virtual QString    name() const override;
     virtual QVariant   icon() const override;
-
-    //Mutator
 
     virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
 

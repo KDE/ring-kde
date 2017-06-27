@@ -15,28 +15,47 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "bookmarkconfigurator.h"
 
-#include <collectionconfigurationinterface.h>
+#include <KLocalizedString>
 
-class AudioRecordingConfigurator : public CollectionConfigurationInterface
+#include <categorizedbookmarkmodel.h>
+
+#include "ui_bookmark.h"
+
+BookmarkConfigurator::BookmarkConfigurator(QObject* parent) : CollectionConfigurationInterface(parent)
 {
-    Q_OBJECT
-public:
-    explicit AudioRecordingConfigurator(QObject* parent = nullptr);
+}
 
-    //Getter
-    virtual QByteArray id  () const override;
-    virtual QString    name() const override;
-    virtual QVariant   icon() const override;
+QByteArray BookmarkConfigurator::id() const
+{
+    return "peerProfileConfigurator";
+}
 
-    //Mutator
+QString BookmarkConfigurator::name() const
+{
+    return i18n("Peer profile configurator");
+}
 
-    virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
+QVariant BookmarkConfigurator::icon() const
+{
+    return QVariant();
+}
 
-private:
-    bool m_Init {false};
+void BookmarkConfigurator::loadCollection(CollectionInterface* col, QObject* parent)
+{
+    Q_UNUSED(col)
 
-};
+    if (m_Init)
+        return;
+
+    if (auto w = qobject_cast<QWidget*>(parent)) {
+        Ui_Bookmark ui;
+        ui.setupUi(w);
+        connect(ui.pushButton, &QPushButton::clicked, &CategorizedBookmarkModel::instance(), &CategorizedBookmarkModel::clear);
+    }
+
+    m_Init = true;
+}
 
 // kate: space-indent on; indent-width 4; replace-tabs on;

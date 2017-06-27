@@ -41,14 +41,16 @@ CMIconEngine::CMIconEngine(ContactMethod* cm) : QIconEngine(),
 
 void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPresent, bool isTracked)
 {
+    painter->save();
+
     // Given this has a transparent area, clear the rectangle
     painter->setCompositionMode(QPainter::CompositionMode_Clear);
     painter->fillRect(rect, QBrush(Qt::white));
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 
-    int s = std::min(rect.height(), rect.width());
+    const int s = std::min(rect.height(), rect.width());
 
-    const int type = (!isTracked) ? 0 : (isPresent ? 100 : 10);
+    const int type = (!isTracked) ? 1 : (isPresent ? 100 : 10);
 
     static QHash<int, QPixmap> pxCache;
 
@@ -58,13 +60,13 @@ void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPres
 
         QPainter p(&px);
         p.setCompositionMode(QPainter::CompositionMode_Clear);
-        p.fillRect(rect, QBrush(Qt::white));
+        p.fillRect(QRect{0,0,s,s}, QBrush(Qt::white));
         p.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
         QIcon icn;
 
         switch(type) {
-            case 0: {
+            case 1: {
                 static QIcon i = QIcon::fromTheme(QStringLiteral("im-user"));
                 icn = i;
             }
@@ -86,7 +88,9 @@ void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPres
         pxCache[s*456*type] = px;
     }
 
-    painter->drawPixmap(0, 0, pxCache[s*456*type]);
+    Q_ASSERT(s == pxCache[s*456*type].width());
+
+    painter->drawPixmap(rect.x(), rect.y(), pxCache[s*456*type]);
 
     //Create a region where the pixmap is not fully transparent
     //FIXME add caching
@@ -95,8 +99,8 @@ void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPres
         static QHash<int,bool> init;
 
         if (!init[s]) {
-            r[s] = QRegion(QPixmap::fromImage(pxCache[s].toImage().createAlphaMask()));
-            ri[s] = r[s].xored(rect);
+            r   [s] = QRegion(QPixmap::fromImage(pxCache[s].toImage().createAlphaMask()));
+            ri  [s] = r[s].xored({0,0,s,s});
             init[s] = true;
         }
 
@@ -109,9 +113,13 @@ void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPres
         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 
         //Paint only outside of the pixmap, it looks better
-        painter->setClipRegion(ri[s]);
+        QRegion region(r[s]), regionInter(ri[s]);
+        region.translate(rect.x(), rect.y());
+        regionInter.translate(rect.x(), rect.y());
+        painter->setClipRegion(regionInter);
+
         QPainterPath p;
-        p.addRegion(r[s]);
+        p.addRegion(region);
         QPen pen = painter->pen();
         pen.setColor(isPresent?presentBrush:awayBrush);
         painter->setBrush(Qt::NoBrush);
@@ -123,7 +131,10 @@ void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPres
             painter->setOpacity(0.30f-(((i-2)*0.45f)/10.0f));
             painter->drawPath(p);
         }
+
     }
+
+    painter->restore();
 }
 
 void CMIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
