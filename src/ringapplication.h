@@ -63,6 +63,7 @@ public:
 
    static RingApplication* instance(int& argc, char** argv = nullptr);
    static RingApplication* instance();
+   void init();
 
    //Setter
    void setIconify(bool iconify);

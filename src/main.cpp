@@ -37,6 +37,7 @@ int main(int argc, char **argv)
 {
    try
    {
+
       RingApplication::instance( argc, argv );
 
       KLocalizedString::setApplicationDomain("ring-kde");
@@ -57,9 +58,11 @@ int main(int argc, char **argv)
       about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com"));
       about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                              );
 
+      if (!Cmd::parseCmd(argc, argv, about))
+         return 0;
+
       KAboutData::setApplicationData(about);
 
-      Cmd::parseCmd(argc, argv, about);
 
       RingApplication::instance()->setOrganizationDomain( QStringLiteral("ring.cx")           );
 

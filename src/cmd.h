@@ -33,7 +33,7 @@ class Cmd : public QObject
 public:
    virtual ~Cmd(){}
    static Cmd* instance();
-   static void parseCmd(int argc, char **argv, KAboutData& about);
+   static bool parseCmd(int argc, char **argv, KAboutData& about);
 
 private:
 

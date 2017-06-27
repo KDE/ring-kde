@@ -114,14 +114,16 @@
 RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv),m_StartIconified(false)
 {
    Q_ASSERT(argc != -1);
-
-   qDebug() << argc << argv << this << argv[0];
 #ifdef ENABLE_VIDEO
    //Necessary to draw OpenGL from a separated thread
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
    setAttribute(Qt::AA_EnableHighDpiScaling);
 
+}
+
+void RingApplication::init()
+{
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
       QTimer::singleShot(5000,this,&RingApplication::daemonTimeout);
    }
@@ -130,6 +132,7 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
 
    connect(&CallModel::instance(), &CallModel::callAdded, this, &RingApplication::callAdded);
    connect(&CallModel::instance(), &CallModel::callStateChanged, this, &RingApplication::callAdded);
+
 }
 
 /**

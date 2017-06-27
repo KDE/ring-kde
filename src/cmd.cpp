@@ -52,7 +52,7 @@ Cmd* Cmd::instance() {
 }
 
 ///Setup command line options before passing them to the KUniqueApplication
-void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
+bool Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 {
    Q_UNUSED(argc)
    Q_UNUSED(argv)
@@ -75,8 +75,13 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 
    about.processCommandLine(&parser);
 
-   parser.addVersionOption(    );
-   parser.addHelpOption   (    );
+   const auto versionOption = parser.addVersionOption();
+   const auto helpOption    = parser.addHelpOption   ();
+
+   if (parser.isSet(versionOption) || parser.isSet(helpOption))
+      return false;
+
+   RingApplication::instance()->init();
 
    if (parser.isSet(call))
       placeCall(parser.value(call));
@@ -90,6 +95,8 @@ void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 
    if (parser.isSet(text) && parser.isSet(message))
       sendText(parser.value(text),parser.value(message));
+
+   return true;
 }
 
 ///Place a call (from the command line)
