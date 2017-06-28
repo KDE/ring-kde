@@ -39,7 +39,7 @@ public:
 private:
     bool m_Init {false};
     PeerProfileCollection2* m_pCol {nullptr};
-    Ui_PeerProfile* m_pUi;
+    Ui_PeerProfile* m_pUi {nullptr};
 
 private Q_SLOTS:
     void slotCheckboxChecked();

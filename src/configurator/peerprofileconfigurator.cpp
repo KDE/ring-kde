@@ -39,7 +39,8 @@ PeerProfileConfigurator::PeerProfileConfigurator(QObject* parent) : CollectionCo
 
 PeerProfileConfigurator::~PeerProfileConfigurator()
 {
-    delete m_pUi;
+    if (m_pUi)
+        delete m_pUi;
 }
 
 QByteArray PeerProfileConfigurator::id() const

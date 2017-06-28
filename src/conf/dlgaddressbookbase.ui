@@ -85,13 +85,6 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QPushButton" name="m_pAddCollection">
-          <property name="text">
-           <string>Add collection</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
@@ -149,24 +142,7 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>m_pAddCollection</sender>
-   <signal>clicked()</signal>
-   <receiver>DlgAddressBookBase</receiver>
-   <slot>slotAddCollection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>567</x>
-     <y>241</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>661</x>
-     <y>201</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>slotEditCollection()</slot>
   <slot>slotAddCollection()</slot>

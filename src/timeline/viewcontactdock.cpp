@@ -56,6 +56,8 @@ public:
     QSharedPointer<QAbstractItemModel> m_PersomCMModel;
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
     QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
+
+    QList< QTimer* > m_lTimers;
 };
 
 ViewContactDock::ViewContactDock(QWidget* parent) :
@@ -87,6 +89,23 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
 
 ViewContactDock::~ViewContactDock()
 {
+    d_ptr->m_TimelineModel.clear();
+    d_ptr->m_PersomCMModel.clear();
+    d_ptr->m_CallsModel.clear();
+    d_ptr->m_DeduplicatedTimelineModel.clear();
+
+    // Release the shared pointer reference from the timer.
+    for (auto t : qAsConst(d_ptr->m_lTimers)) {
+        disconnect(t);
+        delete t;
+    }
+
+    //FIXME https://bugreports.qt.io/browse/QTBUG-40745
+    layout()->removeWidget(d_ptr->m_pQuickWidget);
+    d_ptr->m_pQuickWidget->setVisible(false);
+    d_ptr->m_pQuickWidget->hide();
+    d_ptr->m_pQuickWidget->setParent(nullptr);
+
     delete d_ptr;
 }
 
@@ -105,8 +124,17 @@ void ViewContactDock::setContactMethod(ContactMethod* cm)
 
     // Keep a reference for 5 minutes to avoid double free from QML
     for (auto ptr : {d_ptr->m_PersomCMModel, d_ptr->m_CallsModel, d_ptr->m_TimelineModel})
-        if (ptr)
-            QTimer::singleShot(5 * 60 * 1000, [ptr]() {});
+        if (ptr) {
+            auto t = new QTimer(this);
+            t->setInterval(5 * 60 * 1000);
+            t->setSingleShot(true);
+            connect(t, &QTimer::timeout, [t, this, ptr]() {
+                this->d_ptr->m_lTimers.removeAll(t);
+            });
+            t->start();
+            d_ptr->m_lTimers << t;
+        }
+
 
     // Keep a strong reference because QML wont
     d_ptr->m_PersomCMModel = cm->contact() ? cm->contact()->phoneNumbersModel()

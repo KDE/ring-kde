@@ -74,7 +74,7 @@
       <bool>false</bool>
      </property>
      <property name="title">
-      <string>GroupBox</string>
+      <string>Contact fields to overwrite</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>

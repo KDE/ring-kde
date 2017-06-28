@@ -66,6 +66,11 @@ RecentDock::RecentDock(QWidget* parent) :
 
 RecentDock::~RecentDock()
 {
+    //FIXME https://bugreports.qt.io/browse/QTBUG-40745
+    setWidget(nullptr);
+    d_ptr->m_pQuickWidget->setVisible(false);
+    d_ptr->m_pQuickWidget->hide();
+    d_ptr->m_pQuickWidget->setParent(nullptr);
     delete d_ptr;
 }
 
