@@ -103,17 +103,7 @@ ContactMethod* ContactBuilder::addPhoneNumber(Person* p, const QString& number, 
             number, p, nullptr, catIndex.data().toString()
         );
 
-    const auto cpn = pn;
-    for (auto cm : qAsConst(cpn)) {
-        if (cm == newCM) {
-            qWarning() << "Trying to add an already added phone number";
-            return nullptr;
-        }
-    }
-
-    pn << newCM;
-
-    p->setContactMethods(pn);
+    p->addPhoneNumber(newCM);
 
     qDebug() << "New phone number added to" << p;
 
