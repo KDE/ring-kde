@@ -20,12 +20,11 @@ import QtQuick.Controls 2.0 as Controls2
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
-Rectangle {
-    property QtObject call: null
+Item {
+    property QtObject recording: audioRecording
 
     id: audioPlayer
     height: 30
-    color: "blue"
     state: "disabled"
 
     RowLayout {
@@ -46,20 +45,21 @@ Rectangle {
             Layout.fillHeight: true
             Layout.preferredWidth: 30
             enabled: false
+
             onClicked: {
-                if (!RecordingModel.currentRecording) return
+                if (!recording.isCurrent) return
 
                 if (stateGroup.state == "enabled")
-                    RecordingModel.currentRecording.play()
+                    recording.play()
                 else if(stateGroup.state == "playing")
-                    RecordingModel.currentRecording.pause()
+                    recording.pause()
             }
         }
         Controls2.Slider {
             id: progress
             from: 0
-            value: 0
-            to: 5000
+            value: recording.position
+            to: recording.duration
             Layout.fillWidth: true
             Layout.fillHeight: true
             enabled: false
@@ -75,30 +75,23 @@ Rectangle {
         }
     }
 
-    Connections {
-        target: RecordingModel.selectionModel
-        onCurrentChanged: {
-            if (call) return
-            var cur = RecordingModel.currentRecording
-
-            stateGroup.state = (cur != null && cur.type == Recording.AUDIO_VIDEO) ?
-                "enabled" : "disabled"
+    Rectangle {
+        id: selectOverlay
+        color: "black"
+        opacity: 0.5
+        anchors.fill: parent
+        Text {
+            anchors.centerIn: parent
+            text: "Click to play"
+            color: "white"
         }
-    }
-
-    Connections {
-        target: RecordingModel.currentRecording
-        onPlaybackPositionChanged: progress.value = pos*5000
-    }
-
-    Connections {
-        target: RecordingModel.currentRecording
-        onStarted: stateGroup.state = "playing"
-    }
-
-    Connections {
-        target: RecordingModel.currentRecording
-        onStopped: stateGroup.state = "enabled"
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                RecordingModel.currentRecording = recording
+                console.log(recording, recording.isCurrent)
+            }
+        }
     }
 
     StateGroup {
@@ -107,13 +100,19 @@ Rectangle {
             // Hide all buttons
             State {
                 name: "disabled"
+                when: !recording == RecordingModel.currentRecording
             },
             State {
                 name: "enabled"
+                when: recording == RecordingModel.currentRecording
 
                 PropertyChanges {
                     target: reset
                     enabled: true
+                }
+                PropertyChanges {
+                    target: selectOverlay
+                    visible: false
                 }
                 PropertyChanges {
                     target: playPause
@@ -132,6 +131,7 @@ Rectangle {
             State {
                 name: "playing"
                 extend: "enabled"
+                when: recording.isPlaying
 
                 PropertyChanges {
                     target: playPause

@@ -71,12 +71,6 @@ Rectangle {
             case "CALL_HISTORY":
                 tabBar.currentIndex = 3
                 break
-            case "RECORDINGS":
-                tabBar.currentIndex = 4
-                break
-            case "SEARCH":
-                tabBar.currentIndex = 5
-                break
         }
 
         currentPage = ""
@@ -146,16 +140,10 @@ Rectangle {
                 text: qsTr("Audio/Video")
             }
             TabButton {
-                text: qsTr("Timeline")
+                text: qsTr("Chat/Timeline")
             }
             TabButton {
-                text: qsTr("Calls")
-            }
-            TabButton {
-                text: qsTr("Recordings")
-            }
-            TabButton {
-                text: qsTr("Search")
+                text: qsTr("Calls/Recordings")
             }
         }
 
@@ -209,16 +197,6 @@ Rectangle {
                     anchors.fill: parent
                     id: callHistory
                 }
-            }
-
-            Page {
-                RecordingHistory {
-                    anchors.fill: parent
-                    id: recordings
-                }
-            }
-
-            Page {
             }
         }
     }

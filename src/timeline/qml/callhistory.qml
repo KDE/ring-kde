@@ -52,10 +52,13 @@ Rectangle {
     Component {
         id: historyDelegate
         Item {
-            height: 30
+            height: hasAVRecording ? 60 : 30
             width: parent.width
 
             RowLayout {
+                height: 30
+                anchors.top: parent.top
+                anchors.left: parent.left
                 Image {
                     source: selectIcon(missed, direction)
                     Layout.fillHeight: true
@@ -68,14 +71,25 @@ Rectangle {
                     }
                     anchors.verticalCenter: parent.verticalCenter
                 }
+                Item {
+                    Layout.fillWidth: true
+                }
+                Text {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.margins: 5
+                    text: length
+                    color: inactivePalette.text
+                }
             }
 
-            Text {
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: 5
-                text: length
-                color: inactivePalette.text
+            Loader {
+                property QtObject call: object
+
+                width: parent.width
+                height: hasAVRecording ? 30 : 0
+                anchors.bottom: parent.bottom
+                source: (hasAVRecording) ? "AudioPlayer.qml" : ""
             }
         }
     }
