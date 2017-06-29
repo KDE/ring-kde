@@ -207,10 +207,14 @@ void RingApplication::initCollections()
 
    PersonModel::instance()             .registerConfigarator<PeerProfileCollection2  >    (new PeerProfileConfigurator   (this));
    PersonModel::instance()             .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
-   Media::RecordingModel::instance()   .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this));
-   Media::RecordingModel::instance()   .registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this));
    CategorizedHistoryModel::instance() .registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
    CategorizedBookmarkModel::instance().registerConfigarator<LocalBookmarkCollection >    (new BookmarkConfigurator      (this));
+   Media::RecordingModel::instance()   .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this,
+      AudioRecordingConfigurator::Mode::AUDIO
+   ));
+   Media::RecordingModel::instance()   .registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this,
+      AudioRecordingConfigurator::Mode::TEXT
+   ));
 
    /*******************************************
       *           Load the collections          *

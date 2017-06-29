@@ -19,11 +19,18 @@
 
 #include <collectionconfigurationinterface.h>
 
+class QLabel;
+
 class AudioRecordingConfigurator : public CollectionConfigurationInterface
 {
     Q_OBJECT
 public:
-    explicit AudioRecordingConfigurator(QObject* parent = nullptr);
+    enum class Mode {
+        AUDIO,
+        TEXT,
+    };
+
+    explicit AudioRecordingConfigurator(QObject* parent, Mode mode);
 
     //Getter
     virtual QByteArray id  () const override;
@@ -34,9 +41,14 @@ public:
 
     virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
 
+private Q_SLOTS:
+    void slotSelectionChanged(const QModelIndex& idx);
+
 private:
     bool m_Init {false};
-
+    Mode m_Mode;
+    QLabel* m_pLastUpdated;
+    QLabel* m_pLength;
 };
 
 // kate: space-indent on; indent-width 4; replace-tabs on;
