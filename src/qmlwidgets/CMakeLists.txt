@@ -51,7 +51,10 @@ SET( libqmlwidgets_LIB_SRCS
     personiconengine.cpp
     pixmapwrapper.cpp
     treehelper.cpp
+    treeview.cpp
+    simpleflickable.cpp
     modelscrolladapter.cpp
+    multicall.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )

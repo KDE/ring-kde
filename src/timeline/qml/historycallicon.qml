@@ -16,44 +16,29 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import Ring 1.0
 
-RowLayout {
-    property string type: "text"
-
-    Item {
-        Layout.preferredWidth: 5
-    }
-
-    function getIcon() {
-        if (type == "text")
-            return "image://icon/dialog-messages"
-        else
-            return "image://icon/call-start"
-    }
-
-    Rectangle {
-        height: 30
-        width: 30
-        radius: 99
-        border.width: 3
-        border.color: "white"
-        color: "transparent"
-
-        Image {
-            asynchronous: true
-            anchors.margins: 6
-            anchors.fill: parent
-            source: getIcon()
+Item {
+    width:  30
+    height: 30
+    Image {
+        function selectIcon(isMissed, direction) {
+            if (isMissed && direction == Call.INCOMING)
+                return "sharedassets/phone_dark/missed_incoming.svg"
+            else if (isMissed && direction == Call.OUTGOING)
+                return "sharedassets/phone_dark/missed_outgoing.svg"
+            else if (direction == Call.INCOMING)
+                return "sharedassets/phone_dark/incoming.svg"
+            else
+                return "sharedassets/phone_dark/outgoing.svg"
         }
-    }
 
-    Item {
-        Layout.preferredWidth: 10
-    }
-
-    Text {
-        text: display
-        color: activePalette.text
+        source: selectIcon(object.missed, object.direction)
+        asynchronous: true
+        Layout.fillHeight: true
+        width:  30
+        height: 30
     }
 }

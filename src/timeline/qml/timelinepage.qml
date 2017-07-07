@@ -96,16 +96,22 @@ Rectangle {
         clip: true
 
         RowLayout {
+            id: chatScrollView
             Layout.fillHeight: true
             Layout.fillWidth: true
+
+            property bool lock: false
 
             ChatView {
                 id: chatView
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                textColor: activePalette.text
-                bubbleBackground: activePalette.highlight
+                onPercentageChanged: {
+                    chatScrollView.lock = true
+                    scrollbar.position = percent
+                    chatScrollView.lock = false
+                }
             }
 
             TimelineScrollbar {
@@ -118,6 +124,9 @@ Rectangle {
                 }
 
                 onPositionChanged: {
+                    if (chatScrollView.lock)
+                        return;
+
                     chatView.contentY = (chatView.contentHeight-chatView.height)*scrollbar.position
                 }
 

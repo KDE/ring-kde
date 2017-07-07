@@ -24,35 +24,6 @@ import RingQmlWidgets 1.0
 ColumnLayout {
     id: textGroupDelegate
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    property alias model: textmessagesmodel.model
-    property var rootIndex: undefined//textmessagesmodel.rootIndex
-
-    onRootIndexChanged: {
-        textmessagesmodel.rootIndex = rootIndex
-    }
-
-    function selectIcon(call) {
-        if (!call)
-            return "";
-
-        if (call.missed && call.direction == Call.INCOMING)
-            return "sharedassets/phone_dark/missed_incoming.svg"
-        else if (call.missed && call.direction == Call.OUTGOING)
-            return "sharedassets/phone_dark/missed_outgoing.svg"
-        else if (call.direction == Call.INCOMING)
-            return "sharedassets/phone_dark/incoming.svg"
-        else
-            return "sharedassets/phone_dark/outgoing.svg"
-
-        if (!call)
-            return "";
-    }
-
     GroupHeader {
         type: "call"
         anchors.margins: 4
@@ -60,24 +31,10 @@ ColumnLayout {
         Layout.preferredHeight: 38
     }
 
-    RowLayout {
+    MultiCall {
         Layout.fillWidth: true
-        Layout.preferredHeight: 32
-        Repeater {
-            id: childrenView
-            Layout.fillWidth: true
-            Layout.preferredHeight: 32
-
-            model: VisualDataModel {
-                id: textmessagesmodel
-
-                delegate: Image {
-                    width: 22
-                    height: 22
-                    source: selectIcon(object)
-                }
-            }
-        }
+        width: textGroupDelegate.width
+        modelIndex: rootIndex
     }
 
     GroupFooter {

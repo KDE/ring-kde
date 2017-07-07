@@ -237,12 +237,10 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
          font.setBold(false);
          painter->setFont(font);
-         currentHeight +=fm.height();
       }
 
       if (!(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Number)).toString());
-         currentHeight +=fm.height();
       }
    }
 

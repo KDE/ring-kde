@@ -30,6 +30,7 @@
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
+#include <QQmlDebuggingEnabler>
 
 constexpr static const char version[] = "2.4.0";
 
@@ -37,7 +38,7 @@ int main(int argc, char **argv)
 {
    try
    {
-
+QQmlDebuggingEnabler enabler;
       RingApplication::instance( argc, argv );
 
       KLocalizedString::setApplicationDomain("ring-kde");

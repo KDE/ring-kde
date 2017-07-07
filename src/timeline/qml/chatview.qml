@@ -22,99 +22,95 @@ import Ring 1.0
 
 import RingQmlWidgets 1.0
 
-ListView {
+TreeView {
     id: chatView
     clip: true
 
-//     property QtObject model : null
-    property var textColor: "blue"
-    property var bubbleBackground: "red"
-
-    /*TreeHelper {
-        id: treeHelper
-    }*/
-
-    function getIndex(model, index) {
-        var m = model.modelIndex(index)
-        return m// treeHelper.getIndex(0, m)
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
     }
 
-    function bestDelegate(parent, model2, type, index) {
-        var component = Qt.createComponent("TextMessageGroup.qml", parent);
+    property var bubbleBackground: blendColor()
+    property var bubbleForeground: ""
+    property var unreadBackground: ""
+    property var unreadForeground: ""
 
-        if (component.status == Component.Ready) {
-            component.width     = chatView.width
-            component.model     = chatView.model
-            component.rootIndex = getIndex(model2, index)
-        }
+    function blendColor() {
+        var base2 = activePalette.highlight
+        base2 = Qt.rgba(base2.r, base2.g, base2.b, 0.3)
+        var base1 = Qt.tint(activePalette.base, base2)
 
-        return component
+        chatView.bubbleBackground = base1
+        chatView.unreadBackground = Qt.tint(activePalette.base, "#33BB0000")
+        chatView.bubbleForeground = activePalette.text
+        chatView.unreadForeground = activePalette.text
+
+        return base1
     }
 
     Component {
         id: messageDelegate
         Loader {
-            asynchronous: true
-            visible: status == Loader.Ready
+            id: chatLoader
 
-            sourceComponent: ColumnLayout {
-                width: parent.width
+            // Create a delegate for each type
+            Component {
+                id: sectionDelegate
+                TextMessageGroup {
+                    width: chatView.width
+                }
+            }
+
+            Component {
+                id: callDelegate
+                CallGroup {
+                    width: chatView.width
+                }
+            }
+
+            Component {
+                id: categoryDelegate
                 CategoryHeader {
                     width: chatView.width
                 }
-                Repeater {
-                    id: childrenView
-                    Layout.fillWidth: true
+            }
 
-                    model: VisualDataModel {
-                        id: childrenVisualDataModel
-                        model: chatView.model
-                        Component.onCompleted: {
-                            childrenView.model.rootIndex = childrenView.model.modelIndex(index)
-                        }
-
-                        delegate: Component {
-                            Loader {
-                                asynchronous: true
-                                visible: status == Loader.Ready
-
-                                Component {
-                                    id: troll
-                                    TextMessageGroup {
-                                        width: chatView.width
-                                        id: groupDelegate
-                                        model: chatView.model
-                                        rootIndex: getIndex(childrenView.model, modelIndex)
-                                    }
-
-                                }
-
-                                Component {
-                                    id: troll2
-                                    CallGroup {
-                                        width: chatView.width
-                                        id: groupDelegate
-                                        model: chatView.model
-                                        rootIndex: getIndex(childrenView.model, modelIndex)
-                                    }
-
-                                }
-
-                                property int modelIndex: index
-                                sourceComponent: nodeType == PeerTimelineModel.SECTION_DELIMITER ? troll : troll2
-                            }
-                        }
-
-                    }
+            Component {
+                id: textDelegate
+                TextBubble {
+                    background: isRead ?
+                        chatView.bubbleBackground : chatView.unreadBackground
+                    foreground: isRead ?
+                        chatView.bubbleForeground : chatView.unreadForeground
+                    width: chatView.width
                 }
             }
+
+            // Some elements don't have delegates because they are handled
+            // by their parent delegates
+            function selectDelegate() {
+                if (nodeType == PeerTimelineModel.TIME_CATEGORY)
+                    return categoryDelegate
+
+                if (nodeType == PeerTimelineModel.TEXT_MESSAGE)
+                    return textDelegate
+
+                if (nodeType == PeerTimelineModel.SECTION_DELIMITER)
+                    return sectionDelegate
+
+                if (nodeType == PeerTimelineModel.CALL_GROUP)
+                    return callDelegate
+            }
+
+            sourceComponent: selectDelegate()
         }
     }
 
-    ModelScrollAdapter {
+    /*ModelScrollAdapter {
         id: scrollAdapter
         target: chatView
-    }
+    }*/
 
     onModelChanged: {
         scrollAdapter.model = model

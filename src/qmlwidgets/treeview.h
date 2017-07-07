@@ -15,45 +15,36 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-import QtQuick 2.7
-import QtQuick.Layouts 1.0
+#pragma once
 
-RowLayout {
-    property string type: "text"
+#include <simpleflickable.h>
 
-    Item {
-        Layout.preferredWidth: 5
-    }
+// Qt
+#include <QtCore/QAbstractItemModel>
+class QQmlComponent;
 
-    function getIcon() {
-        if (type == "text")
-            return "image://icon/dialog-messages"
-        else
-            return "image://icon/call-start"
-    }
+class TreeViewPrivate;
 
-    Rectangle {
-        height: 30
-        width: 30
-        radius: 99
-        border.width: 3
-        border.color: "white"
-        color: "transparent"
+class TreeView : public SimpleFlickable
+{
+    Q_OBJECT
+public:
+    Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)
+    Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
 
-        Image {
-            asynchronous: true
-            anchors.margins: 6
-            anchors.fill: parent
-            source: getIcon()
-        }
-    }
+    explicit TreeView(QQuickItem* parent = nullptr);
+    virtual ~TreeView();
 
-    Item {
-        Layout.preferredWidth: 10
-    }
+    void setModel(QSharedPointer<QAbstractItemModel> model);
+    QSharedPointer<QAbstractItemModel> model() const;
 
-    Text {
-        text: display
-        color: activePalette.text
-    }
-}
+    void setDelegate(QQmlComponent* delegate);
+    QQmlComponent* delegate() const;
+
+Q_SIGNALS:
+    void modelChanged(QSharedPointer<QAbstractItemModel> model);
+
+private:
+    TreeViewPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(TreeView)
+};

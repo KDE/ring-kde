@@ -36,6 +36,17 @@ Item {
         return 20 + h
     }
 
+    onPositionChanged: {
+        var curPos = handle.y/(scrollbar.height - handle.height)
+        var newY   = (scrollbar.height - handle.height)*position
+
+        // Prevent infinite loops
+        if (Math.abs(curPos - position) < 0.01)
+            return
+
+        handle.y = newY
+    }
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active

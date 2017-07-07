@@ -22,6 +22,7 @@
         <file alias="PhoneNumbers.qml">qml/phonenumbers.qml</file>
         <file alias="SearchDelegate.qml">qml/searchdelegate.qml</file>
         <file alias="FindPeers.qml">qml/findpeers.qml</file>
+        <file alias="HistoryCallIcon.qml">qml/historycallicon.qml</file>
         <file>icons/bookmarked.svg</file>
         <file>icons/not_bookmarked.svg</file>
     </qresource>

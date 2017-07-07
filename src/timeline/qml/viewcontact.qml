@@ -21,7 +21,7 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 
 Rectangle {
-
+    id: viewContact
     property var currentContactMethod: null
     property var currentPerson: null
     property string currentPage: ""
@@ -145,6 +145,16 @@ Rectangle {
             TabButton {
                 text: qsTr("Calls/Recordings")
             }
+
+            onCurrentIndexChanged: {
+                //TODO deactivate it after a minute in other tabs
+                if (currentIndex == 2) {
+                    timelinePage.active = true
+                }
+                if (currentIndex == 3) {
+                    callHistory.active = true
+                }
+            }
         }
 
         SwipeView {
@@ -186,16 +196,60 @@ Rectangle {
             }
 
             Page {
-                TimelinePage {
+                Loader {
                     anchors.fill: parent
+                    asynchronous: true
+                    active: false
                     id: timelinePage
+                    property QtObject currentContactMethod: null
+                    property var currentInstance: undefined
+
+                    sourceComponent: TimelinePage {
+                        anchors.fill: parent
+                        Component.onDestruction: {
+                            timelinePage.currentInstance = undefined
+                        }
+                    }
+
+                    onLoaded: {
+                        currentInstance = item
+                        if (currentContactMethod)
+                            item.currentContactMethod = currentContactMethod
+                    }
+
+                    onCurrentContactMethodChanged: {
+                        if (currentInstance)
+                            currentInstance.currentContactMethod = currentContactMethod
+                    }
+
                 }
             }
 
             Page {
-                CallHistory {
+                Loader {
+                    property QtObject currentContactMethod: null
+                    property var currentInstance: undefined
                     anchors.fill: parent
                     id: callHistory
+                    asynchronous: true
+                    active: false
+                    sourceComponent: CallHistory {
+                        anchors.fill: parent
+                        Component.onDestruction: {
+                            timelinePage.currentInstance = undefined
+                        }
+                    }
+
+                    onLoaded: {
+                        currentInstance = item
+                        if (currentContactMethod)
+                            item.currentContactMethod = currentContactMethod
+                    }
+
+                    onCurrentContactMethodChanged: {
+                        if (currentInstance)
+                            currentInstance.currentContactMethod = currentContactMethod
+                    }
                 }
             }
         }

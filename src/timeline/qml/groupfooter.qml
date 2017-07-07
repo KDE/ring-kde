@@ -21,6 +21,11 @@ import QtQuick.Layouts 1.0
 RowLayout {
     anchors.horizontalCenter: parent.horizontalCenter
 
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Disabled
+    }
+
     Rectangle {
         height: 1
         Layout.preferredWidth: 50

@@ -25,12 +25,16 @@
 #include "pixmapwrapper.h"
 #include "modelscrolladapter.h"
 #include "treehelper.h"
+#include "treeview.h"
+#include "multicall.h"
 
 void RingQmlWidgets::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
 
     qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
+    qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
+    qmlRegisterType<TreeView>(uri, 1, 0, "TreeView");
     qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
     qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
     qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");

@@ -15,45 +15,38 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-import QtQuick 2.7
-import QtQuick.Layouts 1.0
+#pragma once
 
-RowLayout {
-    property string type: "text"
+#include <QQuickPaintedItem>
 
-    Item {
-        Layout.preferredWidth: 5
-    }
+// Qt
+#include <QtCore/QAbstractItemModel>
 
-    function getIcon() {
-        if (type == "text")
-            return "image://icon/dialog-messages"
-        else
-            return "image://icon/call-start"
-    }
+class MultiCallPrivate;
 
-    Rectangle {
-        height: 30
-        width: 30
-        radius: 99
-        border.width: 3
-        border.color: "white"
-        color: "transparent"
+/**
+ * The pure QML version of this widget created too many elements and was too
+ * slow.
+ */
+class MultiCall : public QQuickPaintedItem
+{
+    Q_OBJECT
+public:
+    Q_PROPERTY(QPersistentModelIndex modelIndex READ modelIndex WRITE setModelIndex)
 
-        Image {
-            asynchronous: true
-            anchors.margins: 6
-            anchors.fill: parent
-            source: getIcon()
-        }
-    }
+    Q_PROPERTY(bool skipChildren READ skipChildren CONSTANT)
 
-    Item {
-        Layout.preferredWidth: 10
-    }
+    explicit MultiCall(QQuickItem* parent = nullptr);
+    virtual ~MultiCall();
 
-    Text {
-        text: display
-        color: activePalette.text
-    }
-}
+    void setModelIndex(QPersistentModelIndex idx);
+    QPersistentModelIndex modelIndex() const;
+
+    bool skipChildren() const;
+
+    virtual void paint(QPainter *painter) override;
+
+private:
+    MultiCallPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(MultiCall)
+};

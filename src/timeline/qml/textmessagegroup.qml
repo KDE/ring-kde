@@ -29,12 +29,12 @@ ColumnLayout {
         colorGroup: SystemPalette.Disabled
     }
 
-    property alias model: textmessagesmodel.model
-    property var rootIndex: undefined//textmessagesmodel.rootIndex
+//     property alias model: textmessagesmodel.model
+//     property var rootIndex: undefined//textmessagesmodel.rootIndex
 
-    onRootIndexChanged: {
-        textmessagesmodel.rootIndex = rootIndex
-    }
+//     onRootIndexChanged: {
+//         textmessagesmodel.rootIndex = rootIndex
+//     }
 
     GroupHeader {
         type: "text"
@@ -43,30 +43,30 @@ ColumnLayout {
         Layout.preferredHeight: 38
     }
 
-    Repeater {
-        id: childrenView
-        Layout.fillWidth: true
-        Layout.preferredHeight: 100
-
-        model: VisualDataModel {
-            id: textmessagesmodel
-
-            delegate: Item {
-                id: recordingItem
-                Layout.preferredHeight: 100
-                width: textGroupDelegate.width;
-                anchors.leftMargin: 5
-                TextBubble {
-                    visible: nodeType == PeerTimelineModel.TEXT_MESSAGE
-                    width: textGroupDelegate.width
-                }
-
-                CallGroup {
-                    visible: nodeType == PeerTimelineModel.CALL_GROUP
-                }
-            }
-        }
-    }
+//     Repeater {
+//         id: childrenView
+//         Layout.fillWidth: true
+//         Layout.preferredHeight: 100
+//
+//         model: VisualDataModel {
+//             id: textmessagesmodel
+//
+//             delegate: Item {
+//                 id: recordingItem
+//                 Layout.preferredHeight: 100
+//                 width: textGroupDelegate.width;
+//                 anchors.leftMargin: 5
+//                 TextBubble {
+//                     visible: nodeType == PeerTimelineModel.TEXT_MESSAGE
+//                     width: textGroupDelegate.width
+//                 }
+//
+//                 CallGroup {
+//                     visible: nodeType == PeerTimelineModel.CALL_GROUP
+//                 }
+//             }
+//         }
+//     }
 
     GroupFooter {
         Layout.fillWidth: true

@@ -23,6 +23,8 @@ import QtGraphicalEffects 1.0
 
 Item {
     width: parent.width
+    property color background
+    property color foreground
 
     height: 80
 
@@ -59,7 +61,7 @@ Item {
                 z: 1
 
                 alignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
-                color: bubbleBackground //isRead ? "green" : "red"
+                color: background
 
                 Text {
                     anchors.fill: parent
@@ -70,7 +72,7 @@ Item {
                     horizontalAlignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
                     font.family: "Noto Color Emoji"
                     text: display != undefined ? display : "N/A"
-                    color: textColor
+                    color: foreground
                 }
 
                 Text {
@@ -93,16 +95,16 @@ Item {
                 }
             }
 
-            Glow {
-                visible: !isRead
-                anchors.fill: bubble
-                radius: 8
-                samples: 17
-                color: "red"
-                source: bubble
-                opacity: 0.5
-                z: 0
-            }
+//             Glow {
+//                 visible: !isRead
+//                 anchors.fill: bubble
+//                 radius: 8
+//                 samples: 17
+//                 color: "red"
+//                 source: bubble
+//                 opacity: 0.5
+//                 z: 0
+//             }
         }
 
         Item {

@@ -70,5 +70,5 @@ void ModelScrollAdapter::rowsInserted()
     if (!d_ptr->m_pItem)
         return;
 
-    QMetaObject::invokeMethod(d_ptr->m_pItem, "positionViewAtEnd");
+    //QMetaObject::invokeMethod(d_ptr->m_pItem, "positionViewAtEnd");
 }
