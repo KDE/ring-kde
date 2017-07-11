@@ -80,7 +80,6 @@ Rectangle {
                 anchors.fill: parent
                 source: effectSource
                 radius: 30
-
             }
         }
 

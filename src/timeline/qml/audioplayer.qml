@@ -89,7 +89,6 @@ Item {
             anchors.fill: parent
             onClicked: {
                 RecordingModel.currentRecording = recording
-                console.log(recording, recording.isCurrent)
             }
         }
     }

@@ -86,9 +86,9 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 
    //Select the first useful element
    for (int i=0; i<CollectionModel::instance().rowCount(); i++) {
-      const QModelIndex& cat = CollectionModel::instance().index(i,0);
+      const auto cat = CollectionModel::instance().index(i,0);
       for (int j=0;j<CollectionModel::instance().rowCount(cat);j++) {
-         const QModelIndex& orig = CollectionModel::instance().index(j,0,cat);
+         const auto orig = CollectionModel::instance().index(j,0,cat);
          CollectionInterface* col = CollectionModel::instance().collectionAt(orig);
          if (col) {
             CollectionConfigurationInterface* configurator = col->configurator();

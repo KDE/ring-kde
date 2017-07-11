@@ -20,23 +20,19 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 import QtGraphicalEffects 1.0
+import Style 1.0
 
 Item {
+    id: chatMessage
     width: parent.width
     property color background
     property color foreground
 
-    height: 80
+    height: bubble.height + 10
 
     RowLayout {
         anchors.fill: parent
 
-        Item {
-            visible: direction == 0
-            Layout.preferredWidth: parent.width*0.3
-            Layout.minimumWidth: parent.width*0.3
-            Layout.maximumWidth: parent.width*0.3
-        }
 
         Rectangle {
             width: 50
@@ -48,20 +44,28 @@ Item {
                 anchors.fill: parent
                 pixmap: decoration
             }
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
         }
 
         Item {
-            Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Bubble {
                 id: bubble
-                anchors.fill: parent
                 anchors.margins: 5
+                anchors.right: direction == 0 ? parent.right : undefined
+                anchors.left : direction == 0 ? undefined : parent.left
+                font.pointSize: 10
+                font.family: "Noto Color Emoji"
                 z: 1
 
                 alignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
                 color: background
+
+                text: display != undefined ? display : "N/A"
+                maximumWidth: parent.width*0.7
 
                 Text {
                     anchors.fill: parent
@@ -69,10 +73,12 @@ Item {
                     anchors.rightMargin: 30
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
+                    anchors.margins: 20
                     horizontalAlignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
-                    font.family: "Noto Color Emoji"
+                    font: bubble.font
                     text: display != undefined ? display : "N/A"
                     color: foreground
+                    wrapMode: Text.WordWrap
                 }
 
                 Text {
@@ -94,24 +100,6 @@ Item {
                     }
                 }
             }
-
-//             Glow {
-//                 visible: !isRead
-//                 anchors.fill: bubble
-//                 radius: 8
-//                 samples: 17
-//                 color: "red"
-//                 source: bubble
-//                 opacity: 0.5
-//                 z: 0
-//             }
-        }
-
-        Item {
-            visible: direction == 1
-            Layout.preferredWidth: parent.width*0.3
-            Layout.minimumWidth: parent.width*0.3
-            Layout.maximumWidth: parent.width*0.3
         }
 
         Rectangle {
@@ -124,6 +112,8 @@ Item {
                 anchors.fill: parent
                 pixmap: decoration
             }
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
         }
     }
 }

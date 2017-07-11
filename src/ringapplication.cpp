@@ -389,6 +389,7 @@ QQmlApplicationEngine* RingApplication::engine()
 
       auto im = new RingingImageProvider();
       e->addImageProvider( "RingingImageProvider", im );
+      e->addImportPath("qrc:/");
 
       VideoWidget3::initProvider();
    }

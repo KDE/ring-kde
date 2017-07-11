@@ -134,6 +134,7 @@ Rectangle {
 
             ListView {
                 id: recentView
+                clip: true
                 anchors.fill: parent
                 highlightMoveVelocity: Infinity //HACK
                 delegate: contactDelegate
@@ -184,7 +185,12 @@ Rectangle {
                 width: scrollBar.fullWidth + 15
                 height: recentView.height
 
-                sourceRect: Qt.rect(scrollBar.fullWidth + 15, 0, scrollBar.fullWidth + 15, recentView.height)
+                sourceRect: Qt.rect(
+                    parent.width - scrollBar.fullWidth - 15,
+                    0,
+                    scrollBar.fullWidth + 15,
+                    recentView.height
+                )
             }
 
             Item {

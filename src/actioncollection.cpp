@@ -227,7 +227,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    static auto l = [actionHash,uam](const QModelIndex& tl, const QModelIndex& br) {
       const int first(tl.row()),last(br.row());
       for(int i = first; i <= last;i++) {
-         const QModelIndex& idx = uam->index(i,0);
+         const auto idx = uam->index(i,0);
          const UserActionModel::Action action = qvariant_cast<UserActionModel::Action>(idx.data(UserActionModel::Role::ACTION));
          QAction* a = actionHash[(int)action];
          if (a) {

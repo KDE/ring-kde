@@ -22,11 +22,11 @@ import Ring 1.0
 
 Item {
     id: scrollbar
-    property alias  model: tmlList.model
-    property alias  tmlList: tmlList
-    property alias  fullWidth: tmlList.width
-    property alias  handleHeight: handle.height
+    property var    tmlList: null
+    property alias  fullWidth: timelineOverlay.width
+    property alias  handleHeight: timelineOverlay.height
     property double position: 0
+    property alias  model: timelineOverlay.tlModel
 
     property bool overlayVisible: false
 
@@ -48,6 +48,11 @@ Item {
     }
 
     SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Disabled
+    }
+
+    SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
     }
@@ -55,13 +60,16 @@ Item {
     Rectangle {
         id: handle
         radius: 99
-        color: "black"
+        color: inactivePalette.text
         width: parent.width
         height: 65
 
         onYChanged: {
             var relH = scrollbar.height - height
             scrollbar.position = y/relH
+
+            if (!tmlList)
+                return
 
             // Highlight the current index
             var oldItem          = tmlList.currentItem
@@ -80,7 +88,7 @@ Item {
         Item {
             width: parent.width
             property bool selected: false
-            height: getSectionHeight(parent.parent.height, totalEntries, categoryEntries, index, activeCategories)
+            height: getSectionHeight(scrollbar.height, totalEntries, categoryEntries, index, activeCategories)
             ColumnLayout {
                 anchors.fill: parent
 
@@ -146,6 +154,23 @@ Item {
         }
     }
 
+    Component {
+        id: panelComponent
+        ListView {
+            id: tmlList
+            anchors.fill: parent
+            delegate: category
+            model: tlModel
+            Component.onCompleted: {
+                scrollbar.tmlList = tmlList
+
+                currentIndex = 0
+                if (currentItem)
+                    currentItem.selected = true
+            }
+        }
+    }
+
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
@@ -161,26 +186,18 @@ Item {
             overlayVisible = drag.active
         }
 
-        Item {
+        Loader {
             id: timelineOverlay
-            width: 150
-            x: -130
-            anchors.top: scrollbar.top
-            anchors.bottom: scrollbar.bottom
 
+            property var tlModel: null
+
+            active: false
+            sourceComponent: panelComponent
+
+            width:   150
+            x:      -130
             visible: false
             opacity: 0
-
-            ListView {
-                id: tmlList
-                anchors.fill: parent
-                delegate: category
-                Component.onCompleted: {
-                    currentIndex = 0
-                    if (currentItem)
-                        currentItem.selected = true
-                }
-            }
         }
     }
 
@@ -223,5 +240,11 @@ Item {
                 }
             }
         ]
+
+        // Load the timeline only once
+        onStateChanged: {
+            if (state == "overlay")
+                timelineOverlay.active = true
+        }
     }
 }

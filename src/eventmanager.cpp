@@ -133,7 +133,7 @@ bool EventManager::viewDragEnterEvent(const QDragEnterEvent* e)
 ///Callback when something is dropped on the call canvas
 bool EventManager::viewDropEvent(QDropEvent* e)
 {
-   const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
+   const auto idxAt = m_pParent->m_pView->indexAt(e->pos());
    m_pParent->m_pView->cancelHoverState();
    CallModel::instance().setData(idxAt,-1,static_cast<int>(Call::Role::DropState));
    e->accept();
@@ -195,7 +195,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
 
    //Remove item overlays
    for (int i = 0;i < m_pParent->m_pView->model()->rowCount();i++) {
-      const QModelIndex& idx = m_pParent->m_pView->model()->index(i,0);
+      const auto idx = m_pParent->m_pView->model()->index(i,0);
       m_pParent->m_pView->model()->setData(idx,-1,static_cast<int>(Call::Role::DropState));
       for (int j = 0;j < m_pParent->m_pView->model()->rowCount(idx);j++) {
          m_pParent->m_pView->model()->setData(m_pParent->m_pView->model()->index(j,0,idx),-1,static_cast<int>(Call::Role::DropState));
@@ -251,7 +251,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    if (!isCall || CallModel::instance().hasConference())
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_MOVE);
    //Just as drop, compute the position
-   const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
+   const auto idxAt = m_pParent->m_pView->indexAt(e->pos());
    const QPoint position = e->pos();
    const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
    Call* source = nullptr;
@@ -386,7 +386,7 @@ void EventManager::typeString(const QString& str)
       candidate = CallModel::instance().dialingCall();
       CallModel::instance().selectDialingCall();
       candidate->playDTMF(str);
-      const QModelIndex& newCallIdx = CallModel::instance().getIndex(candidate);
+      const auto newCallIdx = CallModel::instance().getIndex(candidate);
       if (newCallIdx.isValid()) {
          m_pParent->m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
       }

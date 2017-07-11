@@ -41,7 +41,7 @@ Rectangle {
         callHistory.currentContactMethod   = currentContactMethod
         timelinePage.currentContactMethod  = currentContactMethod
 
-        if (currentContactMethod.person)
+        if (currentContactMethod && currentContactMethod.person)
             personConn.target = currentContactMethod.person
 
         // Check if the CM already has an active call, switch to it

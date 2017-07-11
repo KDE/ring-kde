@@ -28,6 +28,9 @@ class Bubble : public QQuickPaintedItem
 public:
     Q_PROPERTY(int alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(QString text READ text WRITE setText)
+    Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
+    Q_PROPERTY(qreal maximumWidth READ maximumWidth WRITE setMaximumWidth)
 
     explicit Bubble(QQuickItem* parent = nullptr);
     virtual ~Bubble();
@@ -38,9 +41,24 @@ public:
     void setAlignment(int a);
 
     QColor color() const;
-    void setColor(QColor c);
+    void setColor(const QColor& c);
+
+    QString text() const;
+    void setText(const QString& c);
+
+    qreal maximumWidth() const;
+    void setMaximumWidth(qreal value);
+
+    QFont font() const;
+    void setFont(const QFont& f);
 
 private:
     BubblePrivate* d_ptr;
     Q_DECLARE_PRIVATE(Bubble)
+
+private Q_SLOTS:
+    void slotWindowChanged(QQuickWindow *window);
+
+Q_SIGNALS:
+    void fontChanged(const QFont& font);
 };

@@ -234,7 +234,7 @@ void View::incomingCall(Call* call)
       PhoneWindow::app()->setVisible    ( true );
    }
 
-   const QModelIndex& idx = CallModel::instance().getIndex(call);
+   const auto idx = CallModel::instance().getIndex(call);
    if (idx.isValid() && (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING)) {
       CallModel::instance().selectCall(call);
    }

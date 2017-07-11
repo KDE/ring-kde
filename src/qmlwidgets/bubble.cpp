@@ -17,20 +17,29 @@
  **************************************************************************/
 #include "bubble.h"
 
+#include <QtCore/QDateTime>
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
+#include <QtGui/QFontMetricsF>
 #include <QtGui/QGuiApplication>
+
+#include <QQuickWindow>
 
 class BubblePrivate
 {
 public:
     int m_Align {Qt::AlignmentFlag::AlignLeft};
     QColor m_Color;
+    QString m_Text;
+    QFont m_Font {"Noto Color Emoji"};
+    QFontMetricsF m_FontMetrics{m_Font};
+    qreal m_MaximumWidth {-1};
 };
 
 Bubble::Bubble(QQuickItem* parent) : QQuickPaintedItem(parent), d_ptr(new BubblePrivate)
 {
     d_ptr->m_Color = QGuiApplication::palette().base().color();
+    connect(this, &Bubble::windowChanged, this, &Bubble::slotWindowChanged);
 }
 
 Bubble::~Bubble()
@@ -43,8 +52,12 @@ void Bubble::paint(QPainter *painter)
     painter->setWorldMatrixEnabled(true);
 //     painter->setOpacity(0.3);
 
+    const qreal ratio = window()->effectiveDevicePixelRatio();
+
     const qreal w(boundingRect().width()), h(boundingRect().height());
-    const qreal aw(10), ah(20), r(10), p(10); //arrow size width, height, radius, bottom padding
+
+    // arrow size width, height, radius, bottom padding
+    const qreal aw(10*ratio), ah((h >= 50 ? 10 : 0)*ratio), r(10*ratio), p(10*ratio);
 
     // Point left or right
     if (d_ptr->m_Align == Qt::AlignmentFlag::AlignRight) {
@@ -104,7 +117,77 @@ QColor Bubble::color() const
     return d_ptr->m_Color;
 }
 
-void Bubble::setColor(QColor c)
+void Bubble::setColor(const QColor& c)
 {
     d_ptr->m_Color = c;
+}
+
+qreal Bubble::maximumWidth() const
+{
+    return d_ptr->m_MaximumWidth;
+}
+
+void Bubble::setMaximumWidth(qreal value)
+{
+    d_ptr->m_MaximumWidth = value;
+    slotWindowChanged(window());
+}
+
+QString Bubble::text() const
+{
+    return d_ptr->m_Text;
+}
+
+void Bubble::setText(const QString& c)
+{
+    d_ptr->m_Text = c;
+    slotWindowChanged(window());
+}
+
+QFont Bubble::font() const
+{
+    return d_ptr->m_Font;
+}
+
+void Bubble::setFont(const QFont& f)
+{
+    d_ptr->m_Font = f;
+    d_ptr->m_FontMetrics = QFontMetricsF(f);
+    slotWindowChanged(nullptr);
+    emit fontChanged(d_ptr->m_Font);
+}
+
+void Bubble::slotWindowChanged(QQuickWindow *w)
+{
+    w = window();
+
+    static qreal ratio   = 0;
+    static qreal arrow   = 20;
+    static qreal margins = 20;
+    static qreal dateW   = 0;
+
+    // There is a race condition, the item are created before the window
+    if (!ratio) {
+        ratio   = w ? w->effectiveDevicePixelRatio():0;
+        arrow   = 20*(ratio?ratio:1);
+        margins = 20*(ratio?ratio:1);
+
+        //TODO make point size configurable
+        QFont f = d_ptr->m_Font;
+        f.setPointSize(8);
+        QFontMetricsF fm(f);
+        dateW = fm.width(QDateTime::currentDateTime().toString());
+    }
+
+    const qreal effRatio = (ratio?ratio:1);
+
+    // At first, don't limit the height
+    const auto r = d_ptr->m_FontMetrics.boundingRect(
+        QRectF {0, 0, d_ptr->m_MaximumWidth/effRatio, 9999.0},
+        Qt::AlignLeft|Qt::TextWordWrap,
+        d_ptr->m_Text
+    );
+
+    setWidth(std::max(dateW*ratio, r.width()*ratio)+arrow+2*margins);
+    setHeight(std::max(50.0, r.height()*ratio + 2*d_ptr->m_FontMetrics.height()));
 }

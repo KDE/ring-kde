@@ -65,6 +65,8 @@ void MultiCall::setModelIndex(QPersistentModelIndex idx)
 {
     d_ptr->m_Index = idx;
 
+    const int rc = idx.model()->rowCount(idx);
+
     //TODO support HiDPI
     setHeight(d_ptr->getHeight());
     update();
@@ -100,8 +102,6 @@ void MultiCall::paint(QPainter *painter)
     // In case there's a resize
     const int rc = d_ptr->m_Index.model()->rowCount(d_ptr->m_Index);
     const int h  = d_ptr->getHeight();
-
-    qDebug() << h;
 
     if (h > height() + 1 || h < height() - 1) {
         setHeight(h + 200);
