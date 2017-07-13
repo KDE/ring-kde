@@ -29,6 +29,7 @@ Rectangle {
 
     property alias backgroundColor: contactHeader.color
     property var textColor: undefined
+    property var cachedPhoto: undefined
 
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName
@@ -70,6 +71,7 @@ Rectangle {
         anchors.margins: 8
 
         Rectangle {
+            id: photoRect
             clip: true
             radius: 5
             height: 90
@@ -78,6 +80,11 @@ Rectangle {
             PixmapWrapper {
                 id: photo
                 anchors.fill: parent
+            }
+
+            function onNewPhoto(p) {
+                contactHeader.cachedPhoto = p
+                photo.pixmap = p
             }
 
             MouseArea {
@@ -89,9 +96,10 @@ Rectangle {
                         var window    = component.createObject(contactHeader)
                         window.person = currentContactMethod ? currentContactMethod.person :
                             null
+                        window.newPhoto.connect(photoRect.onNewPhoto)
                     }
                     else
-                        console.log("\n\n\n\nERROR", component.status, component.errorString())
+                        console.log("ERROR", component.status, component.errorString())
                 }
             }
         }

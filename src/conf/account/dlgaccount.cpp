@@ -44,9 +44,11 @@
 
 
 
-DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
+DlgAccount::DlgAccount(QWidget* parent, QQmlEngine* engine) :
+   QWidget(parent),m_HasChanged(false), m_pEngine(engine)
 {
    setupUi(this);
+   m_pPanel->setEngine(m_pEngine);
    m_pAccountList->setModel         ( ProfileModel::instance().sortedProxyModel         () );
    m_pAccountList->setSelectionModel( ProfileModel::instance().sortedProxySelectionModel() );
 

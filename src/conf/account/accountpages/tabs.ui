@@ -92,7 +92,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
-        <widget class="DlgProfiles" name="dlgProfile" native="true"/>
+        <widget class="QWidget" name="dlgProfileHolder" native="true"/>
        </item>
       </layout>
      </widget>
@@ -141,12 +141,6 @@
    <class>Pages::Security</class>
    <extends>QWidget</extends>
    <header>accountpages/security.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>DlgProfiles</class>
-   <extends>QWidget</extends>
-   <header>accountpages/dlgprofiles.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

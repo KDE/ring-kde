@@ -138,7 +138,7 @@ ApplicationWindow {
                 footer.state = "finish"
                 break;
             case 'showProfile':
-                //TODO profile.save()
+                frontPage.profilePage.save()
                 applicationWindow.close()
                 RingApplication.newInstance()
                 break;
@@ -152,6 +152,14 @@ ApplicationWindow {
             stateGroup.state = "showProfile"
             footer.state = "finish"
         }
+        onAccountChanged: {
+            var acc = frontPage.importRing.account
+
+            if (!acc)
+                return
+
+            frontPage.profilePage.currentPerson = acc.profile.person
+        }
     }
 
     Connections {
@@ -159,6 +167,14 @@ ApplicationWindow {
         onRegistrationCompleted: {
             stateGroup.state = "showProfile"
             footer.state = "finish"
+        }
+        onAccountChanged: {
+            var acc = frontPage.importRing.account
+
+            if (!acc)
+                return
+
+            frontPage.profilePage.currentPerson = acc.profile.person
         }
     }
 

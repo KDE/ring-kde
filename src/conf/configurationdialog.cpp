@@ -20,6 +20,7 @@
 
 //KDE
 #include <QtCore/QDebug>
+#include <QQmlApplicationEngine>
 #include <klocalizedstring.h>
 
 #include <KConfigDialogManager>
@@ -37,6 +38,7 @@
 #include "icons/icons.h"
 
 #include "accountmodel.h"
+#include "ringapplication.h"
 
 typedef  QWidget* QWidgetPtr;
 
@@ -107,7 +109,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent)
 
    //Account
    dlgHolder[ConfigurationDialog::Page::Accounts]   = new PlaceHolderWidget(Page::Accounts,this,[](ConfigurationDialog* dialog)->QWidget*{
-      dialog->dlgAccount = new DlgAccount(dialog);
+      dialog->dlgAccount = new DlgAccount(dialog, RingApplication::engine());
       dialog->m_pManager->addWidget(dialog->dlgAccount);
       return dialog->dlgAccount;
    });

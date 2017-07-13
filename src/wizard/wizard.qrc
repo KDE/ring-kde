@@ -13,7 +13,6 @@
         <file alias="CreateRing.qml">qml/CreateRing.qml</file>
         <file alias="ImportRing.qml">qml/ImportRing.qml</file>
         <file alias="ProfilePage.qml">qml/ProfilePage.qml</file>
-        <file alias="ProfilePageForm.ui.qml">qml/ProfilePageForm.ui.qml</file>
         <file alias="StartingPage.qml">qml/StartingPage.qml</file>
         <file alias="StartingPageForm.ui.qml">qml/StartingPageForm.ui.qml</file>
     </qresource>

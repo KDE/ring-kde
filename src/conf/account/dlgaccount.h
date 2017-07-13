@@ -21,6 +21,7 @@
 #include "ui_accountdlg.h"
 #include "typedefs.h"
 
+class QQmlEngine;
 class Account;
 class ExtendedProtocolModel;
 class CategorizedDelegate;
@@ -33,7 +34,7 @@ class LIB_EXPORT DlgAccount : public QWidget, public Ui::AccountDlg
 {
    Q_OBJECT
 public:
-   explicit DlgAccount(QWidget* parent);
+   explicit DlgAccount(QWidget* parent, QQmlEngine* engine);
    virtual ~DlgAccount();
 
    //Getters
@@ -44,6 +45,7 @@ private:
    ExtendedProtocolModel* m_pProtocolModel {nullptr};
    bool m_HasChanged;
    CategorizedDelegate* m_pCategoryDelegate;
+   QQmlEngine* m_pEngine {nullptr};
 
 public Q_SLOTS:
    //Housekeeping

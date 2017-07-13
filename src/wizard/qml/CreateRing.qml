@@ -119,7 +119,8 @@ Item {
             onTextChanged: {
                 isNextAvailable()
                 busyIndicator.visible = true
-                NameDirectory.lookupName(undefined, "", userName.text)
+                if (userName.text != "")
+                    NameDirectory.lookupName(undefined, "", userName.text)
             }
         }
 

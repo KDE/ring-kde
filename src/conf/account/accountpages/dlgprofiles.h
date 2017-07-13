@@ -15,24 +15,25 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-
 #ifndef DLGPROFILES_H
 #define DLGPROFILES_H
 
-#include <QtWidgets/QWidget>
+#include <QQuickWidget>
+
 #include <QtCore/QObject>
 #include <QtCore/QObject>
 #include "ui_dlgprofiles.h"
 
 class CollectionInterface;
 class Person;
+class QQmlEngine;
 
-class DlgProfiles : public QWidget, public Ui_DlgProfiles
+class DlgProfiles : public QQuickWidget
 {
 Q_OBJECT
 public:
    //Constructor
-   explicit DlgProfiles(QWidget *parent = nullptr, const QString& name = QString(), const QString& uri = QString());
+   explicit DlgProfiles(QWidget *parent = nullptr, QQmlEngine* e = nullptr, const QString& name = QString(), const QString& uri = QString());
 
    //Destructor
    virtual ~DlgProfiles();
@@ -42,6 +43,7 @@ public:
 private:
    QHash<QString, QLineEdit*> m_hCustomFields;
    Person* m_pCurrentPerson;
+   bool m_Lock {false};
 
 public Q_SLOTS:
    void loadPerson(Person* p);
@@ -49,8 +51,6 @@ public Q_SLOTS:
    Person* create(CollectionInterface* col);
    void cancel();
    void accept();
-   void choosePhoto();
-   void addCustomField();
 
 private Q_SLOTS:
    void slotChanged();

@@ -19,11 +19,58 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import PhotoSelectorPlugin 1.0
 import RingQmlWidgets 1.0
 
 Rectangle {
+    id: contactViewPage
     property var currentContactMethod: null
     property var currentPerson: null
+
+    signal changed()
+
+    property bool showStat: true
+    property bool showImage: false
+    property bool showSave: true
+
+    property var cachedPhoto: undefined
+
+    function save() {
+        if ((!currentContactMethod) && (!currentPerson))
+            return
+
+        // Changing the CM will flush the content, preserve it
+        var old_formattedName  = formattedName.text
+        var old_firstName      = firstName.text
+        var old_secondName     = lastName.text
+        var old_preferredEmail = email.text
+        var old_organization   = organization.text
+
+        // Create a real contact method in case this is a temporary one
+        if (currentContactMethod && currentContactMethod.type == ContactMethod.TEMPORARY)
+            currentContactMethod = PhoneDirectoryModel.getNumber(
+                currentContactMethod.uri,
+                null,
+                currentContactMethod.account
+            )
+
+        var person = currentPerson
+        if (!currentPerson)
+            person = contactBuilder.from(currentContactMethod)
+
+        person.formattedName  = old_formattedName
+        person.firstName      = old_firstName
+        person.secondName     = old_secondName
+        person.preferredEmail = old_preferredEmail
+        person.organization   = old_organization
+
+        if (contactViewPage.cachedPhoto != undefined)
+            person.photo = contactViewPage.cachedPhoto
+
+        person.save()
+
+        currentPerson = person
+    }
 
     function getLastContacted() {
         var d = currentContactMethod.lastUsed == 0 ? qsTr("Never") :
@@ -88,47 +135,94 @@ Rectangle {
             currentPerson.preferredEmail : ""
         organization.text = currentPerson ?
             currentPerson.organization : ""
+        photo.pixmap = currentPerson ?
+            currentPerson.photo : undefined
         phoneNumbersModel.person = currentPerson
     }
 
     ColumnLayout {
         anchors.fill: parent
 
-        Rectangle {
-            color: activePalette.text
-            height: 1
+        Item {
             Layout.fillWidth: true
+            height: 90
+
+            Rectangle {
+                id: photoRect
+                visible: showImage
+                anchors.centerIn: parent
+                clip: true
+                radius: 5
+                height: 90
+                width: 90
+                color: "white"
+                PixmapWrapper {
+                    id: photo
+                    anchors.fill: parent
+                }
+
+                function onNewPhoto(p) {
+                    contactViewPage.cachedPhoto = p
+                    photo.pixmap = p
+                    contactViewPage.changed()
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 100
+                    onClicked: {
+                        var component = Qt.createComponent("PhotoEditor.qml")
+                        if (component.status == Component.Ready) {
+                            var window    = component.createObject(contactViewPage)
+                            window.person = currentContactMethod ? currentContactMethod.person : null
+                            window.newPhoto.connect(photoRect.onNewPhoto)
+                        }
+                        else
+                            console.log("ERROR", component.status, component.errorString())
+                    }
+                }
+            }
         }
 
-        Label {
-            id: lastContactedTime
-            color: activePalette.text
-        }
-
-        Label {
-            id: totalCall
-            color: activePalette.text
-        }
-
-        Label {
-            id: totalText
-            color: activePalette.text
-        }
-
-        Label {
-            id: totalRecording
-            color: activePalette.text
-        }
-
-        Label {
-            id: totalScreenshot
-            color: activePalette.text
-        }
-
-        Rectangle {
-            color: activePalette.text
-            height: 1
+        ColumnLayout {
+            visible: showStat
             Layout.fillWidth: true
+            Rectangle {
+                color: activePalette.text
+                height: 1
+                Layout.fillWidth: true
+            }
+
+            Label {
+                id: lastContactedTime
+                color: activePalette.text
+            }
+
+            Label {
+                id: totalCall
+                color: activePalette.text
+            }
+
+            Label {
+                id: totalText
+                color: activePalette.text
+            }
+
+            Label {
+                id: totalRecording
+                color: activePalette.text
+            }
+
+            Label {
+                id: totalScreenshot
+                color: activePalette.text
+            }
+
+            Rectangle {
+                color: activePalette.text
+                height: 1
+                Layout.fillWidth: true
+            }
         }
 
         GridLayout {
@@ -144,6 +238,9 @@ Rectangle {
             }
             TextField {
                 id: formattedName
+                onTextChanged: {
+                    contactViewPage.changed()
+                }
             }
 
             Label {
@@ -152,6 +249,9 @@ Rectangle {
             }
             TextField {
                 id: firstName
+                onTextChanged: {
+                    contactViewPage.changed()
+                }
             }
 
             Label {
@@ -160,6 +260,9 @@ Rectangle {
             }
             TextField {
                 id: lastName
+                onTextChanged: {
+                    contactViewPage.changed()
+                }
             }
 
             Label {
@@ -168,6 +271,9 @@ Rectangle {
             }
             TextField {
                 id: email
+                onTextChanged: {
+                    contactViewPage.changed()
+                }
             }
 
             Label {
@@ -176,6 +282,9 @@ Rectangle {
             }
             TextField {
                 id: organization
+                onTextChanged: {
+                    contactViewPage.changed()
+                }
             }
         }
 
@@ -259,38 +368,9 @@ Rectangle {
         anchors.right: parent.right
         anchors.margins: 5
         text: qsTr("Save")
+        visible: showSave
         onClicked: {
-            if ((!currentContactMethod) && (!currentPerson))
-                return
-
-            // Changing the CM will flush the content, preserve it
-            var old_formattedName  = formattedName.text
-            var old_firstName      = firstName.text
-            var old_secondName     = lastName.text
-            var old_preferredEmail = email.text
-            var old_organization   = organization.text
-
-            // Create a real contact method in case this is a temporary one
-            if (currentContactMethod && currentContactMethod.type == ContactMethod.TEMPORARY)
-                currentContactMethod = PhoneDirectoryModel.getNumber(
-                    currentContactMethod.uri,
-                    null,
-                    currentContactMethod.account
-                )
-
-            var person = currentPerson
-            if (!currentPerson)
-                person = contactBuilder.from(currentContactMethod)
-
-            person.formattedName  = old_formattedName
-            person.firstName      = old_firstName
-            person.secondName     = old_secondName
-            person.preferredEmail = old_preferredEmail
-            person.organization   = old_organization
-
-            person.save()
-
-            currentPerson = person
+            contactViewPage.save()
         }
     }
 }

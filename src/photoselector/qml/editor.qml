@@ -26,6 +26,8 @@ import Ring 1.0
 
 Dialog {
     property QtObject person: null
+    signal newPhoto(var photo)
+    signal done()
 
     id: root
     visible: true
@@ -54,12 +56,12 @@ Dialog {
                 VideoWidget {
                     id: videoWidget
                     visible: false
-                    z: 0
+                    z: -1
                 }
 
                 Image {
                     id: fromFile
-                    z: 0
+                    z: -1
                     visible: true
                     fillMode: Image.PreserveAspectFit
                 }
@@ -133,8 +135,8 @@ Dialog {
                     track = false
                     overlay.border.color = "transparent"
                     overlay.grabToImage(function(result) {
-                        console.log("RESEULT",result.image);
                         selector.image = result.image;
+                        newPhoto(result.image)
                     });
                     overlay.border.color = "red"
                 }
@@ -184,15 +186,20 @@ Dialog {
     }
 
     onAccepted: {
+        console.log("\n\nACCEPT!", person)
         selector.setToPerson(person)
         videoWidget.started = false
         if (PreviewManager.previewing)
             PreviewManager.stopPreview()
+
+        done()
     }
 
     onRejected: {
         videoWidget.started = false
         if (PreviewManager.previewing)
             PreviewManager.stopPreview()
+
+        done()
     }
 }

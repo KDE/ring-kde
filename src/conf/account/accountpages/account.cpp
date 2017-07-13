@@ -32,17 +32,26 @@
 
 #include "basic.h"
 
+#include "dlgprofiles.h"
+
 Pages::Account::Account(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
 
-   connect(dlgProfile, &DlgProfiles::changed,[this]() {
-      emit changed();
-   });
-
    //Remove profile
    m_pPages->removeTab(m_pPages->count()-1);
 
+}
+
+void Pages::Account::setEngine(QQmlEngine* e)
+{
+   m_pEngine = e;
+   auto l = new QHBoxLayout(dlgProfileHolder);
+   m_pProfile = new DlgProfiles(dlgProfileHolder, e);
+   l->addWidget(m_pProfile);
+   connect(m_pProfile, &DlgProfiles::changed, [this]() {
+      emit changed();
+   });
 }
 
 void Pages::Account::setAccount(::Account* a)
@@ -78,7 +87,7 @@ void Pages::Account::displayProfile(bool display)
       while (m_pPages->count())
          m_pPages->removeTab(0);
 
-      m_pPages->insertTab(0,dlgProfile,i18n("Profile"));
+      m_pPages->insertTab(0, m_pProfile,i18n("Profile"));
    }
    else if (m_pPages->count() == 1) {
       m_pPages->removeTab(0);
@@ -95,7 +104,7 @@ void Pages::Account::displayProfile(bool display)
 
 void Pages::Account::setProfile(Person* p)
 {
-   dlgProfile->loadPerson(p);
+   m_pProfile->loadPerson(p);
    m_lToSave << p;
 }
 
@@ -140,7 +149,7 @@ void Pages::Account::updateWidgets()
 void Pages::Account::updateSettings()
 {
    qDebug() << "Update settings";
-   dlgProfile->saveToPerson();
+   m_pProfile->saveToPerson();
 
    foreach(Person* p, m_lToSave) {
       if (p->isActive())

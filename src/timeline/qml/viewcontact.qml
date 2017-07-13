@@ -127,6 +127,9 @@ Rectangle {
             id: contactHeader
             backgroundColor: activePalette.alternateBase
             textColor: activePalette.text
+            onCachedPhotoChanged: {
+                contactInfo.cachedPhoto = contactHeader.cachedPhoto
+            }
         }
 
         TabBar {
