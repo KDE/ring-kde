@@ -22,7 +22,6 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QObject>
-#include "ui_dlgprofiles.h"
 
 class CollectionInterface;
 class Person;
@@ -41,7 +40,6 @@ public:
    bool checkValues();
 
 private:
-   QHash<QString, QLineEdit*> m_hCustomFields;
    Person* m_pCurrentPerson;
    bool m_Lock {false};
 
