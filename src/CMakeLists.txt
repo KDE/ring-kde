@@ -369,7 +369,7 @@ IF(NOT ${ENABLE_STATIC} MATCHES false)
     ${Qt5DBus_LIBRARIES}
     ${ringclient_LIBRARY_STATIC}
     -lpthread
-    -lrt
+    #-lrt
   )
 ELSE()
    TARGET_LINK_LIBRARIES(ring-kde ${ringclient_LIBRARY_DYNAMIC})

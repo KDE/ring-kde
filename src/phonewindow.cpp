@@ -26,6 +26,7 @@
 //Qt
 #include <QtCore/QString>
 #include <QtCore/QFile>
+#include <QtCore/QDir>
 #include <QtWidgets/QLabel>
 #include <QtCore/QTimer>
 #include <QtWidgets/QStatusBar>

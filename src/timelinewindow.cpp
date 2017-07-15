@@ -19,6 +19,7 @@
 
 // Qt
 #include <QtCore/QTimer>
+#include <QtCore/QDir>
 #include <QtCore/QSortFilterProxyModel>
 
 // KDE
