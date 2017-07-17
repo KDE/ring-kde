@@ -46,10 +46,6 @@ TimelineWindow::TimelineWindow()
 
     //On OSX, QStandardPaths doesn't work as expected, it is better to pack the .ui in the DMG
 #ifdef Q_OS_MAC
-   QDir dir(QApplication::applicationDirPath());
-   dir.cdUp();
-   dir.cd("Resources/kxmlgui5/ring-kde/");
-   setXMLFile(dir.path()+"/ring-kdeui.rc");
    setUnifiedTitleAndToolBarOnMac(true);
 #endif
 
@@ -115,7 +111,15 @@ TimelineWindow::TimelineWindow()
     connect(m_pContactCD , &QDockWidget::visibilityChanged, this, &FancyMainWindow::updateTabIcons);
     tabifyDockWidget(m_pPeersTimeline, m_pContactCD );
 
-    createGUI();
+    #ifdef Q_OS_MAC
+       QDir dir(QApplication::applicationDirPath());
+       dir.cdUp();
+       dir.cd("Resources/");
+       createGUI(dir.path()+"/ring-kdeui.rc");
+    #else
+       createGUI();
+    #endif
+
     updateTabIcons();
 
     m_pPeersTimeline->raise();

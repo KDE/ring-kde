@@ -43,7 +43,9 @@ SysTray::SysTray(const QIcon &icon, QWidget *parent)
 
    // The app is always active in the sense there is a network connection and
    // registration status
+ #ifndef Q_OS_MAC //FIXME segfault as of mid 2017
    setStatus(KStatusNotifierItem::ItemStatus::Active);
+ #endif
 }
 
 ///Destructor

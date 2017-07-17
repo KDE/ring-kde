@@ -8,7 +8,6 @@ INSTALL( FILES cx.ring.ring-kde.desktop     DESTINATION  ${DATA_INSTALL_DIR}/rin
 INSTALL( FILES cx.ring.ring-kde.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR}     )
 install( FILES cx.ring.ring-kde.appdata.xml DESTINATION  ${CMAKE_INSTALL_METAINFODIR} )
 
-
 INSTALL(
    FILES
       ring

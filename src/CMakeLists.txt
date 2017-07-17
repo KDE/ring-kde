@@ -360,6 +360,9 @@ ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   ADD_EXECUTABLE(ring-kde MACOSX_BUNDLE ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
+
+  set_source_files_properties( ../data/ring-kdeui.rc PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+  file( COPY ../data/ring-kdeui.rc DESTINATION "ring-kde.app/Contents/Resources/" )
 ELSE()
   ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
 ENDIF()
