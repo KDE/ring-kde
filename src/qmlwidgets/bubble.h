@@ -49,7 +49,7 @@ public:
     qreal maximumWidth() const;
     void setMaximumWidth(qreal value);
 
-    QFont font() const;
+    QFont& font() const;
     void setFont(const QFont& f);
 
 private:
