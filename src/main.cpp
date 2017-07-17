@@ -38,7 +38,10 @@ int main(int argc, char **argv)
 {
    try
    {
-QQmlDebuggingEnabler enabler;
+      //QQmlDebuggingEnabler enabler;
+
+      QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
       RingApplication::instance( argc, argv );
 
       KLocalizedString::setApplicationDomain("ring-kde");

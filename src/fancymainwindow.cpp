@@ -23,6 +23,7 @@
 #include <QtCore/QDebug>
 #include <QtWidgets/QTabBar>
 #include <QtWidgets/QToolButton>
+#include <QtWidgets/QStyleFactory>
 
 // KDE
 #include <klocalizedstring.h>
@@ -110,6 +111,13 @@ void FancyMainWindow::updateTabIcons()
                 bar->setIconSize(QSize(64, 64));
             else
                 bar->setIconSize({});
+
+            static auto s = QStyleFactory::create("windows");
+
+            // The idea is that some native styles (like macOS) will draw
+            // things differently. In order to keep a consistent look, force
+            // the windows theme.
+            bar->setStyle((s && isMainToolbar) ? s : nullptr);
 
             bar->setStyleSheet(isMainToolbar ? css : QString());
 

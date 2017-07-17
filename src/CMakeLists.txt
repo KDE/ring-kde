@@ -358,7 +358,11 @@ ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 ki18n_wrap_ui(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
 ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
-ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  ADD_EXECUTABLE(ring-kde MACOSX_BUNDLE ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
+ELSE()
+  ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
+ENDIF()
 
 IF(NOT ${ENABLE_STATIC} MATCHES false)
   FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED DBus)
