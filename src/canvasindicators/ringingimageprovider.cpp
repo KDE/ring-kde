@@ -129,7 +129,11 @@ struct InitTipData final {
         QPixmap pxm(128, 128);
 
         QPainter p(&pxm);
-        p.fillRect(QRect{0,0,128,128},QColor("#0000ff"));
+        p.setCompositionMode(QPainter::CompositionMode_Clear);
+        p.fillRect(QRect{0, 0, 128, 128}, QBrush(Qt::white));
+        p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+        p.fillRect(QRect{0,0,128,128},Qt::transparent);
         m_Render->render(&p, {0,0,128,128});
 
         return pxm;

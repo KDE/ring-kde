@@ -69,16 +69,16 @@
        cy="371.8194"
        cx="79.88549"
        id="circle4386"
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+       style="fill:BACKGROUD_COLOR_ROLE;fill-opacity:1;stroke:none;stroke-opacity:1"
        r="15" />
     <circle
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+       style="fill:BACKGROUD_COLOR_ROLE;fill-opacity:1;stroke:none;stroke-opacity:1"
        id="path4383"
        cx="112.65961"
        cy="348.06927"
        r="15" />
     <circle
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+       style="fill:BACKGROUD_COLOR_ROLE;fill-opacity:1;stroke:none;stroke-opacity:1"
        id="circle4388"
        cx="92.176552"
        cy="410.75598"
@@ -87,10 +87,10 @@
        cy="410.75598"
        cx="133.76575"
        id="circle4390"
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+       style="fill:BACKGROUD_COLOR_ROLE;fill-opacity:1;stroke:none;stroke-opacity:1"
        r="15" />
     <circle
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1"
+       style="fill:BACKGROUD_COLOR_ROLE;fill-opacity:1;stroke:none;stroke-opacity:1"
        id="circle4392"
        cx="145.83749"
        cy="371.8194"
