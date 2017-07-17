@@ -79,6 +79,14 @@ bool RecentDock::eventFilter(QObject *obj, QEvent *event)
     Q_UNUSED(obj)
     Q_UNUSED(event)
     //TODO the context menu
+
+    if (event->type() == QEvent::HoverLeave
+        || event->type() == QEvent::Leave
+        || event->type() == QEvent::TouchCancel) {
+        d_ptr->m_pQuickWidget->rootObject()
+            ->setProperty("overlayVisible", false);
+    }
+
     return false;
 }
 

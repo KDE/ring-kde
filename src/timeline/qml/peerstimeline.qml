@@ -39,6 +39,7 @@ Rectangle {
     id: recentDock
     visible: true
 
+    property alias overlayVisible: scrollBar.overlayVisible
     signal contactMethodSelected(var cm)
 
     Component {
