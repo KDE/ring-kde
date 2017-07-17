@@ -37,7 +37,7 @@ RowLayout {
         width: 30
         radius: 99
         border.width: 3
-        border.color: "white"
+        border.color: activePalette.text
         color: "transparent"
 
         Image {
