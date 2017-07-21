@@ -35,6 +35,7 @@ Rectangle {
     // this reducing the footprint and avoiding a second row.
     Rectangle {
         id: currentText
+        clip: true
         color: "#333333"
         height: 20
         width: 200
@@ -52,6 +53,10 @@ Rectangle {
             onContentWidthChanged: parent.width = contentWidth + 20
             onContentHeightChanged: parent.height = contentHeight + 10
         }
+
+        Behavior on width {
+            NumberAnimation {duration: 50}
+        }
     }
 
     // Show the accept and hangup buttons in green and red
@@ -62,42 +67,58 @@ Rectangle {
             return "#005500"
 
         // Default
-        return "black"
+        return "#CC222222"
     }
 
     Component {
         id: actionDelegate
 
 
-        Rectangle {
-            color:  mouseArea.containsMouse ? "#111111" : selectColor(action)
-            radius: 50 // circle
+        Item {
             width:  actionGrid.cellWidth
             height: actionGrid.cellHeight
-            Column {
-                width: parent.width
-                anchors.verticalCenter: parent.verticalCenter
-                PixmapWrapper {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    pixmap: decoration
-                    height: 30
-                    width:  30
-                }
-            }
-
-            MouseArea {
-                id: mouseArea
+            Rectangle {
+                color:  mouseArea.containsMouse ? "#CC333333" : selectColor(action)
+                radius: 99 // circle
+                anchors.leftMargin: 5
+                anchors.rightMargin: 5
                 anchors.fill: parent
-                hoverEnabled: true
-                z: 101
-                onClicked: {
-                    userActionModel.execute(action)
-                }
-                onContainsMouseChanged: {
-                    if (containsMouse) {
-                        currentText.visible = true
-                        currentTextText.text = display
+                border.width:  mouseArea.containsMouse ? 3 : 0
+                border.color: "#dd5555"
+
+                Column {
+                    width: parent.width
+                    anchors.verticalCenter: parent.verticalCenter
+                    PixmapWrapper {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        pixmap: decoration
+                        height: 30
+                        width:  30
                     }
+                }
+
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    z: 101
+                    onClicked: {
+                        userActionModel.execute(action)
+                    }
+                    onContainsMouseChanged: {
+                        if (containsMouse) {
+                            currentText.visible = true
+                            currentTextText.text = display
+                        }
+                    }
+                }
+
+                Behavior on color {
+                    ColorAnimation {duration: 300}
+                }
+
+                Behavior on border.width {
+                    NumberAnimation {duration: 200}
                 }
             }
         }
@@ -108,7 +129,7 @@ Rectangle {
         anchors.fill: parent
         model: CallModel.userActionModel.activeActionModel
         delegate: actionDelegate
-        cellWidth: 60; cellHeight: 60
+        cellWidth: 70; cellHeight: 60
     }
 
     // Hide the label when the mouse is out

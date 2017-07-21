@@ -45,6 +45,8 @@
 #include <categorizedbookmarkmodel.h>
 #include <numbercompletionmodel.h>
 #include <useractionmodel.h>
+#include <video/configurationproxy.h>
+#include <video/sourcemodel.h>
 #include <contactmethod.h>
 #include <media/recordingmodel.h>
 #include <peerstimelinemodel.h>
@@ -101,6 +103,7 @@
 
 //QML
 #include "qmlwidgets/plugin.h"
+#include "qmlwidgets/recentfilemodel.h"
 #include "photoselector/photoplugin.h"
 #include "canvasindicators/canvasindicator.h"
 #include "canvasindicators/ringingimageprovider.h"
@@ -326,6 +329,7 @@ void RingApplication::setStartPhone(bool value)
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
 #define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(#name, &name::instance());
+#define QML_ADD_OBJECT(name, obj) RingApplication::engine()->rootContext()->setContextProperty(#name, obj);
 
 constexpr static const char AppName[]= "Ring";
 
@@ -371,6 +375,12 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_SINGLETON( PeersTimelineModel       );
       QML_SINGLETON( NumberCategoryModel      );
       QML_SINGLETON( PhoneDirectoryModel      );
+      QML_SINGLETON( RecentFileModel          );
+
+      QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
+      QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());
+      QML_ADD_OBJECT(VideoChannelSelectionModel   , &Video::ConfigurationProxy::channelSelectionModel   ());
+      QML_ADD_OBJECT(VideoDeviceSelectionModel    , &Video::ConfigurationProxy::deviceSelectionModel    ());
 
       { using namespace Media;
          QML_SINGLETON( RecordingModel        );
@@ -381,6 +391,7 @@ QQmlApplicationEngine* RingApplication::engine()
 
       { using namespace Video;
          QML_SINGLETON( PreviewManager        );
+         QML_TYPE     ( SourceModel           );
       }
 
       qmlRegisterUncreatableType<::Media::Media>(
@@ -398,6 +409,8 @@ QQmlApplicationEngine* RingApplication::engine()
 
 #undef QML_TYPE
 #undef QML_SINGLETON
+#undef QML_ADD_OBJECT
+#undef QML_CRTYPE
 
 PhoneWindow* RingApplication::phoneWindow() const
 {

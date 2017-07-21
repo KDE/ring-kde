@@ -21,8 +21,8 @@ import Ring 1.0
 Item {
     id: videoDock
 
-    signal callWithVideo()
-    signal callWithAudio()
+    signal callWithVideo ()
+    signal callWithAudio ()
     signal callWithScreen()
 
     height: 480
@@ -35,6 +35,50 @@ Item {
     property bool   previewRunning : false
     property alias  peerRunning    : videoWidget.started
     property var    call           : null
+
+    // Let the animations finish before
+    Timer {
+        id: toolbarTimer
+        running: false
+        interval: 150
+        repeat: false
+
+        onTriggered: {
+            actionToolbar.visible  = false
+            videoSource.visible    = false
+            controlToolbar.visible = false
+            videoPreview.visible   = false
+        }
+    }
+
+    function showToolbars() {
+        actionToolbar.visible  = true
+        videoSource.visible    = true
+
+        // This toolbar is only useful when there is video
+        if (videoWidget.started)
+            controlToolbar.visible = true
+            videoPreview.visible   = true
+
+        actionToolbar.opacity  = 1
+        videoSource.opacity    = 1
+        controlToolbar.opacity = 1
+        videoPreview.opacity   = 1
+        actionToolbar.anchors.bottomMargin = 0
+        videoSource.anchors.rightMargin    = 0
+        controlToolbar.anchors.topMargin   = 0
+    }
+
+    function hideToolbars() {
+        actionToolbar.opacity  = 0
+        videoSource.opacity    = 0
+        controlToolbar.opacity = 0
+        videoPreview.opacity   = 0
+        videoSource.anchors.rightMargin    = -20
+        actionToolbar.anchors.bottomMargin = -20
+        controlToolbar.anchors.topMargin   = -20
+        toolbarTimer.running = true
+    }
 
     VideoWidget {
         id: videoWidget
@@ -56,14 +100,53 @@ Item {
 
     VideoControlToolbar {
         id: controlToolbar
-        y: parent.y
+        anchors.top: parent.top
         visible: false
+        Behavior on opacity {
+            NumberAnimation {duration: 100}
+        }
+        Behavior on anchors.topMargin {
+            NumberAnimation {duration: 150}
+        }
     }
 
     ActionToolbar {
         id: actionToolbar
-        y: parent.height - height
+        anchors.bottom: parent.bottom
         visible: false
+        Behavior on opacity {
+            NumberAnimation {duration: 100}
+        }
+        Behavior on anchors.bottomMargin {
+            NumberAnimation {duration: 150}
+        }
+    }
+
+    DeviceSetting {
+        id: deviceSettings
+        visible: mode == "PREVIEW"
+        width: parent.width
+        z: 100
+        Rectangle {
+            anchors.fill: parent
+            color: "black"
+            opacity: 0.5
+            z: -1
+        }
+    }
+
+    VideoSource {
+        id: videoSource
+        z: 101
+        visible: false
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        Behavior on opacity {
+            NumberAnimation {duration: 100}
+        }
+        Behavior on anchors.rightMargin {
+            NumberAnimation {duration: 150}
+        }
     }
 
     // The background
@@ -83,20 +166,17 @@ Item {
             running: true
             repeat: false
             onTriggered: {
-                actionToolbar.visible  = false
-                controlToolbar.visible = false
+                hideToolbars()
             }
         }
 
         function trackActivity() {
-            if (mode == "PREVIEW" || !call)
-                return
-
-            actionToolbar.visible  = true
-
-            // This toolbar is only useful when there is video
-            if (videoWidget.started)
-                controlToolbar.visible = true
+            if (mode == "PREVIEW") {
+                deviceSettings.visible = true
+            }
+            else if (call) {
+                showToolbars()
+            }
 
             activityTimer.restart()
         }
@@ -109,9 +189,7 @@ Item {
 
     onModeChanged: {
         if (mode == "PREVIEW") {
-            controlToolbar.visible = false
-            actionToolbar.visible  = false
-            videoPreview.visible   = false
+            hideToolbars()
             videoWidget.rendererName = "preview"
         }
         else if (mode == "CONVERSATION") {
@@ -126,8 +204,10 @@ Item {
         if (call) {
             actionToolbar.userActionModel = call.userActionModel
             placeholderMessage.call = call
+            videoSource.call        = call
+            controlToolbar.call     = call
         }
-        mainMouseArea.visible = call != null
+        mainMouseArea.visible = call != null || mode == "PREVIEW"
     }
 
     Connections {
@@ -168,8 +248,7 @@ Item {
         onStateChanged: {
             if (call == null || call.lifeCycleState == Call.FINISHED) {
                 call = null
-                mainMouseArea.visible = false
-                actionToolbar.visible = false
+                hideToolbars()
             }
         }
     }

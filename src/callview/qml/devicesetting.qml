@@ -16,63 +16,60 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import RingQmlWidgets 1.0
+import Ring 1.0
 
-ColumnLayout {
-    width: 300
-    spacing: 10
-//     signal callWithVideo()
-//     signal callWithAudio()
-//     signal callWithScreen()
+GridLayout {
+    property alias deviceSelectionModel    : device.selectionModel
+    property alias channelSelectionModel   : channel.selectionModel
+    property alias resolutionSelectionModel: resolution.selectionModel
+    property alias rateSelectionModel      : rate.selectionModel
 
-    Component {
-        id: button
-        Rectangle {
-            id: bg
-            height: 30
-            color: "#222222"
-            border.color: "#333333"
-            border.width: 1
-            radius: 5
-            Text {
-                text: label
-                anchors.centerIn: parent
-                color: "white"
-            }
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                onContainsMouseChanged: {
-                    console.log("mouse event", containsMouse)
-                    bg.color = containsMouse ? "#444444" : "#222222"
-                }
-                onClicked: {
-                    callWithAudio()
-                }
-            }
+    columns: 2
 
-            Behavior on color {
-                ColorAnimation {duration: 100}
-            }
-        }
+    Text {
+        color: "white"
+        text: qsTr("Device")
+    }
+    BindedComboBox {
+        id: device
+        Layout.fillWidth: true
+        selectionModel: VideoDeviceSelectionModel
     }
 
-    Loader {
-        width: 300
-        Layout.fillWidth: true
-        property string label: "Start a video call"
-        sourceComponent: button
+    Text {
+        color: "white"
+        text: qsTr("Channel")
     }
-    Loader {
-        width: 300
+    BindedComboBox {
+        id: channel
+        selectionModel: VideoChannelSelectionModel
         Layout.fillWidth: true
-        property string label: "Start an audio call"
-        sourceComponent: button
     }
-    Loader {
-        width: 300
+
+    Text {
+        color: "white"
+        text: qsTr("Resolution")
+    }
+    BindedComboBox {
+        id: resolution
+        selectionModel: VideoResolutionSelectionModel
         Layout.fillWidth: true
-        property string label: "Start screen sharing"
-        sourceComponent: button
+    }
+
+    Text {
+        color: "white"
+        text: qsTr("Frame rate")
+    }
+    BindedComboBox {
+        id: rate
+        selectionModel: VideoRateSelectionModel
+        Layout.fillWidth: true
+    }
+    //I got no idea why. If there is no extra row, the column width is wrong
+    Item {
+        Layout.fillHeight: true
     }
 }

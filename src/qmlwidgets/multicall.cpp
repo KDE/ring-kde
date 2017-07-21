@@ -65,8 +65,6 @@ void MultiCall::setModelIndex(QPersistentModelIndex idx)
 {
     d_ptr->m_Index = idx;
 
-    const int rc = idx.model()->rowCount(idx);
-
     //TODO support HiDPI
     setHeight(d_ptr->getHeight());
     update();

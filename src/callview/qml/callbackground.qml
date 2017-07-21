@@ -78,9 +78,9 @@ Rectangle {
     }
 
     onCallChanged: {
-        if (call && call.state == Call.RINGING || call.state == 1 /*Call.INCOMING*/)
+        if (call && (call.state == Call.RINGING || call.state == 1 /*Call.INCOMING*/))
             callStateGroup.state = "RINGING"
-        else if (call && call.state == Call.CONNECTED || call.state == 14 /*Call.INITIALIZATION*/)
+        else if (call && (call.state == Call.CONNECTED || call.state == 14 /*Call.INITIALIZATION*/))
             callStateGroup.state = "CONNECTED"
         else
             callStateGroup.state = "DEFAULT"

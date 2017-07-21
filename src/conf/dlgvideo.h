@@ -46,11 +46,8 @@ public:
 
 private:
    //Attribute
-   Video::Device* m_pDevice;
-   bool m_IsChanged;
-   bool m_IsLoading;
-   Video::Channel* m_pChannel;
-   Video::Resolution* m_pResolution;
+   bool m_IsChanged {false};
+   bool m_IsLoading {true};
 
 public Q_SLOTS:
    void updateWidgets ();

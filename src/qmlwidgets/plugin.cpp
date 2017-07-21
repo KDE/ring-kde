@@ -27,6 +27,8 @@
 #include "treehelper.h"
 #include "treeview.h"
 #include "multicall.h"
+#include "bindedcombobox.h"
+#include "snapshotadapter.h"
 
 void RingQmlWidgets::registerTypes(const char *uri)
 {
@@ -40,4 +42,6 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
     qmlRegisterType<ModelScrollAdapter>(uri, 1, 0, "ModelScrollAdapter");
     qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
+    qmlRegisterType<BindedComboBox>(uri, 1, 0, "BindedComboBox");
+    qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
 }

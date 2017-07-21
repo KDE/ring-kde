@@ -17,8 +17,11 @@
  **************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import RingQmlWidgets 1.0
 
 Rectangle {
+    property QtObject call: null
+
     id:     toolbar
     color:  "#55000000"
     height: 26
@@ -99,6 +102,10 @@ Rectangle {
             onContentWidthChanged:  parent.width = contentWidth + 20
             onContentHeightChanged: parent.height = contentHeight + 10
         }
+
+        Behavior on width {
+            NumberAnimation {duration: 50}
+        }
     }
 
     Component {
@@ -157,5 +164,57 @@ Rectangle {
     onVisibleChanged: {
         if (!visible)
             currentText.visible = false
+    }
+
+    Rectangle {
+        id: snapshotButton
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        height: parent.height
+        border.width: 1
+        border.color: "#44ffffff"
+        width: snapShotLabel.implicitWidth + 20
+        color: "transparent"
+        radius: 5
+        Text {
+            id: snapShotLabel
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            height: parent.height
+            verticalAlignment: Text.AlignVCenter
+            color: "white"
+            text: qsTr("Take a snapshot")
+        }
+
+        Image {
+            id: board
+            source: "image://gameoflife/board"
+            height: 400
+            width: 400
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            onContainsMouseChanged: {
+                snapshotButton.color = containsMouse ? "#466eff" : "transparent"
+            }
+
+            SnapshotAdapter {
+                id: snapshotAdapter
+            }
+
+            onClicked: {
+                if (!toolbar.call)
+                    return
+
+                snapshotAdapter.takeSnapshot(toolbar.call)
+            }
+        }
+
+        Behavior on color {
+            ColorAnimation {duration: 150}
+        }
     }
 }

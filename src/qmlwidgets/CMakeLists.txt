@@ -55,6 +55,9 @@ SET( libqmlwidgets_LIB_SRCS
     simpleflickable.cpp
     modelscrolladapter.cpp
     multicall.cpp
+    bindedcombobox.cpp
+    recentfilemodel.cpp
+    snapshotadapter.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )

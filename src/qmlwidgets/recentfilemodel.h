@@ -17,23 +17,22 @@
  **************************************************************************/
 #pragma once
 
-#include <QQuickImageProvider>
+#include <QtCore/QStringListModel>
 
-#include <video/renderer.h>
-// #include <video/model.h>
+class RecentFileModelPrivate;
 
-class ImageProviderPrivate;
-class Call;
-
-class ImageProvider : public QQuickImageProvider
+class RecentFileModel : public QStringListModel
 {
+    Q_OBJECT
 public:
-    explicit ImageProvider();
+    static RecentFileModel& instance();
 
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
+    Q_INVOKABLE QString addFile();
 
-    Q_INVOKABLE static void takeSnapshot(Call* c);
 private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
+    explicit RecentFileModel();
+    virtual ~RecentFileModel();
+
+    RecentFileModelPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(RecentFileModel)
 };

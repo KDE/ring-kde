@@ -118,6 +118,9 @@
         <label>Save main window space by hiding the dialpad when the video is docked</label>
         <default>false</default>
    </entry>
+   <entry name="recentStreamedFiles" type="StringList">
+        <label>Files recently streamed</label>
+   </entry>
 
 
     <!-- Audio Settings -->

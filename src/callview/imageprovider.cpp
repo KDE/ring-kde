@@ -40,6 +40,8 @@ public:
     QHash<QByteArray, FrameBuffer*> m_hActiveRenderers;
     QMutex m_FrameReader {};
 
+    static ImageProvider* m_spInstance;
+
 public Q_SLOTS:
     void addRenderer(Call* c, Video::Renderer* renderer);
     void removeRenderer(Call* c, Video::Renderer* renderer);
@@ -48,9 +50,27 @@ public Q_SLOTS:
     void previewStopped(Video::Renderer* r);
 };
 
+ImageProvider* ImageProviderPrivate::m_spInstance = nullptr;
+
+
+void ImageProvider::takeSnapshot(Call* c)
+{
+    if (!ImageProviderPrivate::m_spInstance)
+        return ;
+
+    QSize s;
+
+    const auto img = ImageProviderPrivate::m_spInstance->requestImage("peer/9999", &s, {});
+
+    img.save("/tmp/snapshot.png");
+    //TODO add to the call
+}
+
 ImageProvider::ImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Image), d_ptr(new ImageProviderPrivate)
 {
+    ImageProviderPrivate::m_spInstance = this;
+
     QObject::connect(&CallModel::instance(), &CallModel::rendererAdded,
         d_ptr, &ImageProviderPrivate::addRenderer);
 

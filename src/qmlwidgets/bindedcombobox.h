@@ -17,23 +17,28 @@
  **************************************************************************/
 #pragma once
 
-#include <QQuickImageProvider>
+#include <QQuickItem>
+#include <QtCore/QItemSelectionModel>
 
-#include <video/renderer.h>
-// #include <video/model.h>
+class BindedComboBoxPrivate;
 
-class ImageProviderPrivate;
-class Call;
-
-class ImageProvider : public QQuickImageProvider
+/**
+ * Extended QtQuickControls2 ComboBox with proper selection model support.
+ */
+class BindedComboBox : public QQuickItem
 {
+    Q_OBJECT
 public:
-    explicit ImageProvider();
+    Q_PROPERTY(QItemSelectionModel* selectionModel READ selectionModel WRITE setSelectionModel)
 
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
+    explicit BindedComboBox(QQuickItem* parent = nullptr);
+    virtual ~BindedComboBox();
 
-    Q_INVOKABLE static void takeSnapshot(Call* c);
+    QItemSelectionModel* selectionModel() const;
+    void setSelectionModel(QItemSelectionModel* s);
+
 private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
+    BindedComboBoxPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(BindedComboBox)
 };
+// Q_DECLARE_METATYPE(BindedComboBox*)

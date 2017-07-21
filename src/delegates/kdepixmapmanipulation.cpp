@@ -40,6 +40,7 @@
 #include <securityevaluationmodel.h>
 #include <collectioninterface.h>
 #include <useractionmodel.h>
+#include <video/sourcemodel.h>
 #include <QStandardPaths>
 #include "icons/icons.h"
 #include "qmlwidgets/cmiconengine.h"
@@ -323,6 +324,22 @@ QVariant KDEPixmapManipulation::contactSortingCategoryIcon(const CategorizedCont
          break;
    }
    return QVariant();
+}
+
+QVariant KDEPixmapManipulation::videoDeviceIcon(const QModelIndex& idx) const
+{
+   switch (idx.row()) {
+      case Video::SourceModel::ExtendedDeviceList::NONE:
+         return QIcon::fromTheme("camera-off");
+      case Video::SourceModel::ExtendedDeviceList::SCREEN:
+         return QIcon::fromTheme("video-display");
+      case Video::SourceModel::ExtendedDeviceList::FILE:
+         return QIcon::fromTheme("video-mp4");
+      default:
+         return QIcon::fromTheme("camera-on");
+   }
+
+   return {};
 }
 
 QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)

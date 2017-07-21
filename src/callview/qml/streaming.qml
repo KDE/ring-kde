@@ -15,25 +15,58 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+import QtQuick 2.7
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.0
+import Ring 1.0
 
-#include <QQuickImageProvider>
+ColumnLayout {
+    id: streaming
+    property QtObject call: null
+    property string currentFile: ""
 
-#include <video/renderer.h>
-// #include <video/model.h>
+    Component {
+        id: fileDelegate
+        Item {
+            height: 30
+            Text {
+                text: display
+                color: "white"
+                anchors.fill: parent
+                anchors.margins: 5
+            }
+        }
+    }
 
-class ImageProviderPrivate;
-class Call;
+    ListView {
+        model: RecentFileModel
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        delegate: fileDelegate
+    }
+    Button {
+        Layout.fillWidth: true
+        text: "Select file"
+        onClicked: {
+            streaming.currentFile = RecentFileModel.addFile()
+        }
+    }
+    Item {
+        Layout.fillWidth: true
+        height:streamButton.height
+        Button {
+            id: streamButton
+            text: "Stream"
+            anchors.right: parent.right
+            onClicked: {
+                if (!streaming.call)
+                    return
 
-class ImageProvider : public QQuickImageProvider
-{
-public:
-    explicit ImageProvider();
+                if (!streaming.call.sourceModel)
+                    return
 
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
-
-    Q_INVOKABLE static void takeSnapshot(Call* c);
-private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
-};
+                streaming.call.sourceModel.setFile(streaming.currentFile)
+            }
+        }
+    }
+}

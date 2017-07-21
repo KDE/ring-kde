@@ -15,25 +15,19 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "snapshotadapter.h"
 
-#include <QQuickImageProvider>
+#include "../callview/imageprovider.h"
 
-#include <video/renderer.h>
-// #include <video/model.h>
-
-class ImageProviderPrivate;
-class Call;
-
-class ImageProvider : public QQuickImageProvider
+SnapshotAdapter::SnapshotAdapter(QObject* parent) : QObject(parent)
 {
-public:
-    explicit ImageProvider();
+}
 
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
+SnapshotAdapter::~SnapshotAdapter()
+{
+}
 
-    Q_INVOKABLE static void takeSnapshot(Call* c);
-private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
-};
+void SnapshotAdapter::takeSnapshot(Call* c) const
+{
+    ImageProvider::takeSnapshot(c);
+}

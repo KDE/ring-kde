@@ -53,6 +53,8 @@ public:
 
    virtual QVariant   contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
 
+   virtual QVariant   videoDeviceIcon(const QModelIndex& idx) const override;
+
    virtual QVariant   decorationRole(const QModelIndex& index) override;
 
    virtual QVariant   decorationRole(const Call*              c    ) override;

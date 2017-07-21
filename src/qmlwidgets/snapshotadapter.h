@@ -17,23 +17,17 @@
  **************************************************************************/
 #pragma once
 
-#include <QQuickImageProvider>
+#include <QtCore/QObject>
 
-#include <video/renderer.h>
-// #include <video/model.h>
-
-class ImageProviderPrivate;
 class Call;
 
-class ImageProvider : public QQuickImageProvider
+class SnapshotAdapter : public QObject
 {
+    Q_OBJECT
+
 public:
-    explicit ImageProvider();
+    explicit SnapshotAdapter(QObject* parent = nullptr);
+    virtual ~SnapshotAdapter();
 
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
-
-    Q_INVOKABLE static void takeSnapshot(Call* c);
-private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
+    Q_INVOKABLE void takeSnapshot(Call* c) const;
 };

@@ -15,25 +15,49 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "recentfilemodel.h"
 
-#include <QQuickImageProvider>
+#include <QtCore/QCoreApplication>
+#include <QtWidgets/QFileDialog>
+#include "../klib/kcfg_settings.h"
 
-#include <video/renderer.h>
-// #include <video/model.h>
-
-class ImageProviderPrivate;
-class Call;
-
-class ImageProvider : public QQuickImageProvider
+class RecentFileModelPrivate
 {
 public:
-    explicit ImageProvider();
-
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
-
-    Q_INVOKABLE static void takeSnapshot(Call* c);
-private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
+    QStringList m_lFiles;
 };
+
+RecentFileModel::RecentFileModel() :
+    QStringListModel(QCoreApplication::instance()), d_ptr(new RecentFileModelPrivate)
+{
+    d_ptr->m_lFiles = ConfigurationSkeleton::recentStreamedFiles();
+    setStringList(d_ptr->m_lFiles);
+}
+
+RecentFileModel::~RecentFileModel()
+{
+    delete d_ptr;
+}
+
+RecentFileModel& RecentFileModel::instance()
+{
+    static auto i = new RecentFileModel();
+    return *i;
+}
+
+QString RecentFileModel::addFile()
+{
+    const auto fileName = QFileDialog::getOpenFileName(
+        nullptr,
+        "Open File",
+        QDir::currentPath(),
+        "Media Files (*.png *.jpg *.gif *.mp4 *.mkv *.webm *.txt *.avi *.mpg)"
+    );
+
+    d_ptr->m_lFiles << fileName;
+    ConfigurationSkeleton::setRecentStreamedFiles(d_ptr->m_lFiles);
+
+    setStringList(d_ptr->m_lFiles);
+
+    return QStringLiteral("file://")+fileName;
+}

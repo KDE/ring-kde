@@ -8,5 +8,10 @@
         <file alias="ActionToolbar.qml">qml/actiontoolbar.qml</file>
         <file alias="VideoControlToolbar.qml">qml/videocontroltoolbar.qml</file>
         <file alias="CallBackground.qml">qml/callbackground.qml</file>
+        <file alias="DeviceSetting.qml">qml/devicesetting.qml</file>
+        <file alias="VideoSource.qml">qml/videosource.qml</file>
+        <file alias="CanvasPopup.qml">qml/canvaspopup.qml</file>
+        <file alias="ScreenSharing.qml">qml/screensharing.qml</file>
+        <file alias="Streaming.qml">qml/streaming.qml</file>
     </qresource>
 </RCC>
