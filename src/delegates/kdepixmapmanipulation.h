@@ -49,21 +49,23 @@ public:
 
    virtual QVariant securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const override;
 
-   virtual QVariant   historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const override;
+   virtual QVariant historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const override;
 
-   virtual QVariant   contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
+   virtual QVariant contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
 
-   virtual QVariant   videoDeviceIcon(const QModelIndex& idx) const override;
+   virtual QVariant videoDeviceIcon(const QModelIndex& idx) const override;
 
-   virtual QVariant   decorationRole(const QModelIndex& index) override;
+   virtual QString  takeSnapshot(Call* call) override;
 
-   virtual QVariant   decorationRole(const Call*              c    ) override;
+   virtual QVariant decorationRole(const QModelIndex& index) override;
 
-   virtual QVariant   decorationRole(const ContactMethod*     cm   ) override;
+   virtual QVariant decorationRole(const Call*              c    ) override;
 
-   virtual QVariant   decorationRole(const Person*            p    ) override;
+   virtual QVariant decorationRole(const ContactMethod*     cm   ) override;
 
-   virtual QVariant   decorationRole(const Account*           a    ) override;
+   virtual QVariant decorationRole(const Person*            p    ) override;
+
+   virtual QVariant decorationRole(const Account*           a    ) override;
 
    static const char* icnPath[2][2];
 private:

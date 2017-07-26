@@ -19,6 +19,9 @@
 
 #include "../callview/imageprovider.h"
 
+#include <call.h>
+#include <media/video.h>
+
 SnapshotAdapter::SnapshotAdapter(QObject* parent) : QObject(parent)
 {
 }
@@ -29,5 +32,15 @@ SnapshotAdapter::~SnapshotAdapter()
 
 void SnapshotAdapter::takeSnapshot(Call* c) const
 {
-    ImageProvider::takeSnapshot(c);
+    if (!c->hasVideo())
+        return;
+
+    auto vid = c->firstMedia<Media::Video>(Media::Media::Direction::IN);
+
+    if (!vid)
+        return;
+
+    vid->takeSnapshot();
+
+    //ImageProvider::takeSnapshot(c);
 }

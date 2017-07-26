@@ -15,25 +15,40 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+import QtQuick 2.7
+import QtQml.Models 2.2
 
-#include <QQuickImageProvider>
+Item {
+    id: snapshots
 
-#include <video/renderer.h>
-// #include <video/model.h>
+    property QtObject model_: rootIndex.model
+    property var rootIndex_: rootIndex
+    signal viewImage(QtObject model, int index)
 
-class ImageProviderPrivate;
-class Call;
+    height: Math.ceil(rowCount/4)*96 + 40 // 1 inch + margins
 
-class ImageProvider : public QQuickImageProvider
-{
-public:
-    explicit ImageProvider();
+    Thumbnail {
+        id: delegateModel
+        rootIndex_: snapshots.rootIndex_
+        model_: snapshots.model_
+        onViewImage: {
+            snapshots.viewImage(model, index, path)
+        }
+    }
 
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
+    Rectangle {
+        height: parent.height - 20
+        width: Math.min(4, rowCount)*96 + 40
+        anchors.centerIn: parent
+        color: "transparent"
+        radius: 10
+        border.color: activePalette.text
+        border.width: 1
 
-    Q_INVOKABLE static QString takeSnapshot(Call* c);
-private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
-};
+        GridView {
+            anchors.fill: parent
+            anchors.margins: 10
+            model: delegateModel
+        }
+    }
+}

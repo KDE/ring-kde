@@ -19,6 +19,8 @@
 
 // Qt
 #include <QtCore/QMutexLocker>
+#include <QtCore/QDir>
+#include <QtCore/QStandardPaths>
 
 #include <call.h>
 
@@ -53,17 +55,37 @@ public Q_SLOTS:
 ImageProvider* ImageProviderPrivate::m_spInstance = nullptr;
 
 
-void ImageProvider::takeSnapshot(Call* c)
+QString ImageProvider::takeSnapshot(Call* c)
 {
     if (!ImageProviderPrivate::m_spInstance)
-        return ;
+        return {};
 
     QSize s;
 
     const auto img = ImageProviderPrivate::m_spInstance->requestImage("peer/9999", &s, {});
 
-    img.save("/tmp/snapshot.png");
-    //TODO add to the call
+    const auto path = QString("%1/snapshots/%2/")
+        .arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation))
+        .arg(c->historyId());
+
+    QDir d(path);
+
+    if (!d.exists())
+        d.mkpath(QStringLiteral("."));
+
+    QString fileName;
+
+    do {
+        fileName = QString("%1/%2.png")
+            .arg(d.absolutePath())
+            .arg(qrand()^qrand());
+    } while (QFile::exists(fileName));
+
+    qDebug() << "Saving snapshot to" << fileName;
+
+    img.save(fileName);
+
+    return fileName;
 }
 
 ImageProvider::ImageProvider()

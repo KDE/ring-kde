@@ -46,6 +46,7 @@
 #include "qmlwidgets/cmiconengine.h"
 #include "qmlwidgets/personiconengine.h"
 #include <qrc_assets.cpp>
+#include "../callview/imageprovider.h"
 
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {{
@@ -340,6 +341,11 @@ QVariant KDEPixmapManipulation::videoDeviceIcon(const QModelIndex& idx) const
    }
 
    return {};
+}
+
+QString KDEPixmapManipulation::takeSnapshot(Call* call)
+{
+   return ImageProvider::takeSnapshot(call);
 }
 
 QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)

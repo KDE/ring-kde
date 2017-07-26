@@ -15,25 +15,35 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+import QtQuick 2.7
+import QtQml.Models 2.2
 
-#include <QQuickImageProvider>
+/**
+ * A model containing the thumbnail (visual) delegate
+ */
+DelegateModel {
+    property QtObject model_: rootIndex.model
+    property var rootIndex_: rootIndex
+    signal viewImage(QtObject model, int index, string path)
 
-#include <video/renderer.h>
-// #include <video/model.h>
+    Component {
+        id: snapshotDelegate
+        Image {
+            height: 96
+            width: 96
+            source: "file:"+display
+            fillMode: Image.PreserveAspectFit
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    viewImage(delegateModel, index, "file:"+display)
+                }
+            }
+        }
+    }
 
-class ImageProviderPrivate;
-class Call;
-
-class ImageProvider : public QQuickImageProvider
-{
-public:
-    explicit ImageProvider();
-
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
-
-    Q_INVOKABLE static QString takeSnapshot(Call* c);
-private:
-    ImageProviderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ImageProvider)
-};
+    id: delegateModel
+    delegate: snapshotDelegate
+    rootIndex: snapshots.rootIndex_
+    model: snapshots.model_
+}

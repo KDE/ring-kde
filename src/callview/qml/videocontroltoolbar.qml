@@ -189,7 +189,6 @@ Rectangle {
 
         Image {
             id: board
-            source: "image://gameoflife/board"
             height: 400
             width: 400
         }

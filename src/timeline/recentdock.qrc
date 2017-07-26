@@ -22,6 +22,9 @@
         <file alias="PhoneNumbers.qml">qml/phonenumbers.qml</file>
         <file alias="SearchDelegate.qml">qml/searchdelegate.qml</file>
         <file alias="FindPeers.qml">qml/findpeers.qml</file>
+        <file alias="Snapshots.qml">qml/snapshots.qml</file>
+        <file alias="Slideshow.qml">qml/slideshow.qml</file>
+        <file alias="Thumbnail.qml">qml/thumbnail.qml</file>
         <file alias="HistoryCallIcon.qml">qml/historycallicon.qml</file>
         <file alias="Style/Style.qml">qml/Style/Style.qml</file>
         <file alias="Style/qmldir">qml/Style/qmldir</file>

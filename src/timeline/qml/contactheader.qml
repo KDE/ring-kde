@@ -37,14 +37,14 @@ Rectangle {
         photo.pixmap = currentContactMethod.person ?
              currentContactMethod.person.photo : undefined
 
-        bookmarkSwitch.source = currentContactMethod.bookmarked ?
+        bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
             "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
     }
 
     Connections {
         target: currentContactMethod
         onBookmarked: {
-            bookmarkSwitch.source = currentContactMethod.bookmarked ?
+            bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         }
     }

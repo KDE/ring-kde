@@ -35,6 +35,7 @@ TreeView {
     property var bubbleForeground: ""
     property var unreadBackground: ""
     property var unreadForeground: ""
+    property alias slideshow: slideshow
 
     function blendColor() {
         var base2 = activePalette.highlight
@@ -49,6 +50,10 @@ TreeView {
         return base1
     }
 
+    Slideshow {
+        id: slideshow
+    }
+
     Component {
         id: messageDelegate
         Loader {
@@ -59,6 +64,18 @@ TreeView {
                 id: sectionDelegate
                 TextMessageGroup {
                     width: chatView.width
+                }
+            }
+
+            Component {
+                id: snapshotGroupDelegate
+                Snapshots {
+                    width: chatView.width
+                    onViewImage: {
+                        chatView.slideshow.active = true
+                        chatView.slideshow.model = model
+                        chatView.slideshow.source = path
+                    }
                 }
             }
 
@@ -96,6 +113,9 @@ TreeView {
                 if (nodeType == PeerTimelineModel.TEXT_MESSAGE)
                     return textDelegate
 
+                if (nodeType == PeerTimelineModel.SNAPSHOT_GROUP)
+                    return snapshotGroupDelegate
+
                 if (nodeType == PeerTimelineModel.SECTION_DELIMITER)
                     return sectionDelegate
 
@@ -105,15 +125,6 @@ TreeView {
 
             sourceComponent: selectDelegate()
         }
-    }
-
-    /*ModelScrollAdapter {
-        id: scrollAdapter
-        target: chatView
-    }*/
-
-    onModelChanged: {
-        scrollAdapter.model = model
     }
 
     delegate: messageDelegate
