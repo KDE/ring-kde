@@ -59,37 +59,6 @@ Rectangle {
         )
     }
 
-    Item {
-        id: burryOverlay
-        visible: false
-        opacity: 0
-        anchors.right: timelinePage.right
-        anchors.top: timelinePage.top
-        width: scrollbar.fullWidth + 15
-        height: chatView.height
-        clip: true
-
-        Behavior on opacity {
-            NumberAnimation {duration: 300; easing.type: Easing.InQuad}
-        }
-
-        Repeater {
-            anchors.fill: parent
-            model: 5
-            FastBlur {
-                anchors.fill: parent
-                source: effectSource
-                radius: 30
-            }
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.75
-        }
-    }
-
     ColumnLayout {
         anchors.fill: parent
         clip: true
@@ -101,20 +70,60 @@ Rectangle {
 
             property bool lock: false
 
-            ChatView {
-                id: chatView
+            Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                onPercentageChanged: {
-                    chatScrollView.lock = true
-                    scrollbar.position = percent
-                    chatScrollView.lock = false
+                ChatView {
+                    id: chatView
+                    anchors.fill: parent
+
+                    onPercentageChanged: {
+                        chatScrollView.lock = true
+                        scrollbar.position = percent
+                        chatScrollView.lock = false
+                    }
+                }
+
+                // It needs to be here due to z-index conflicts between
+                // chatScrollView and timelinePage
+                Item {
+                    id: burryOverlay
+                    z: 2
+                    visible: false
+                    opacity: 0
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.rightMargin: - 15
+                    width: scrollbar.fullWidth + 15
+                    height: chatView.height
+                    clip: true
+
+                    Behavior on opacity {
+                        NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+                    }
+
+                    Repeater {
+                        anchors.fill: parent
+                        model: 5
+                        FastBlur {
+                            anchors.fill: parent
+                            source: effectSource
+                            radius: 30
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "black"
+                        opacity: 0.75
+                    }
                 }
             }
 
             TimelineScrollbar {
                 id: scrollbar
+                z: 1000
                 Layout.fillHeight: true
                 Layout.preferredWidth: 10
 
