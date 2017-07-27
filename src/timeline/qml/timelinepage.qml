@@ -124,6 +124,7 @@ Rectangle {
             TimelineScrollbar {
                 id: scrollbar
                 z: 1000
+                bottomUp: true
                 Layout.fillHeight: true
                 Layout.preferredWidth: 10
 

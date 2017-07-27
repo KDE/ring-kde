@@ -58,6 +58,7 @@ SET( libqmlwidgets_LIB_SRCS
     bindedcombobox.cpp
     recentfilemodel.cpp
     snapshotadapter.cpp
+    timelinedots.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )

@@ -15,35 +15,21 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <QQuickPaintedItem>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "contactbuilder.h"
-#include "pixmapwrapper.h"
-#include "modelscrolladapter.h"
-#include "treehelper.h"
-#include "treeview.h"
-#include "multicall.h"
-#include "bindedcombobox.h"
-#include "snapshotadapter.h"
-#include "timelinedots.h"
-
-void RingQmlWidgets::registerTypes(const char *uri)
+/**
+ * The pure QML version of this widget created too many elements and was too
+ * slow.
+ */
+class TimelineDots : public QQuickPaintedItem
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+    Q_OBJECT
+public:
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
-    qmlRegisterType<TreeView>(uri, 1, 0, "TreeView");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<ModelScrollAdapter>(uri, 1, 0, "ModelScrollAdapter");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-    qmlRegisterType<BindedComboBox>(uri, 1, 0, "BindedComboBox");
-    qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
-    qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
-}
+    explicit TimelineDots(QQuickItem* parent = nullptr);
+    virtual ~TimelineDots();
+
+    virtual void paint(QPainter *painter) override;
+};

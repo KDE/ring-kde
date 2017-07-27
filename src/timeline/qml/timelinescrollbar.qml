@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import RingQmlWidgets 1.0
 
 Item {
     id: scrollbar
@@ -27,13 +28,21 @@ Item {
     property alias  handleHeight: timelineOverlay.height
     property double position: 0
     property alias  model: timelineOverlay.tlModel
+    property bool   bottomUp: false
 
     property bool overlayVisible: false
 
     // This isn't correct at all, but close enough for now
     function getSectionHeight(height, total, section, index, activeCategoryCount) {
-        var h = (height-(activeCategoryCount*20)) * (section/total)
-        return 20 + h
+        var h = (height-(activeCategoryCount*22)) * (section/total)
+
+        // Align to the closest "hole" in the dotted bar
+        var align = h%22
+        h += align > 22/2 ? (22 - align) : -align
+
+        // The minimum height (22points) prevents the text from overlapping and
+        // allow the list to look unified.
+        return 22 + h
     }
 
     onPositionChanged: {
@@ -57,6 +66,7 @@ Item {
         colorGroup: SystemPalette.Active
     }
 
+
     Rectangle {
         id: handle
         radius: 99
@@ -65,21 +75,28 @@ Item {
         height: 65
 
         onYChanged: {
-            var relH = scrollbar.height - height
-            scrollbar.position = y/relH
-
             if (!tmlList)
                 return
 
-            // Highlight the current index
-            var oldItem          = tmlList.currentItem
-            tmlList.currentIndex = tmlList.indexAt(10, y)
-            var item             = tmlList.currentItem
+            // Keep a reference as this function is racy
+            var oldItem = tmlList.currentItem
+            var relH    = scrollbar.height - height
 
-            if (oldItem != item) {
+            // Move the list
+            scrollbar.position = y/relH
+
+            // Highlight the current index
+            var point = bottomUp ? y + height : y
+            var item  = tmlList.itemAt(10, point)
+
+            if ((!item) || item == oldItem)
+                return
+
+            tmlList.currentIndex = tmlList.indexAt(10, point)
+            item.selected        = true
+
+            if (oldItem != undefined)
                 oldItem.selected = false
-                item.selected    = true
-            }
         }
     }
 
@@ -89,50 +106,32 @@ Item {
             width: parent.width
             property bool selected: false
             height: getSectionHeight(scrollbar.height, totalEntries, categoryEntries, index, activeCategories)
-            ColumnLayout {
-                anchors.fill: parent
 
-                RowLayout {
-                    Layout.fillWidth: true
-                    Rectangle {
-                        id: mainCircle
-                        height: 20
-                        width: 20
-                        radius: 999
-                        color: "#005500"
-                        border.width: 2
-                        border.color: "#d0d0d0"
-                        Behavior on color {
-                            ColorAnimation {duration: 300}
-                        }
-                    }
-                    Text {
-                        id: label
-                        Layout.fillWidth: true
-                        text: display
-                        color: "white"
-                        Behavior on font.pointSize {
-                            NumberAnimation {duration: 150}
-                        }
+            RowLayout {
+                width: parent.width
+                anchors.top   : bottomUp ? undefined     : parent.top
+                anchors.bottom: bottomUp ? parent.bottom : undefined
+                height: 22
+                Rectangle {
+                    id: mainCircle
+                    y: 0
+                    height: 18
+                    width: 18
+                    radius: 999
+                    color: "#005500"
+                    border.width: 2
+                    border.color: "#d0d0d0"
+                    Behavior on color {
+                        ColorAnimation {duration: 300}
                     }
                 }
-
-                Repeater { //FIXME very, very slow
-                    model: Math.floor(parent.height / 10) - 2
-                    clip: true
-                    Layout.fillHeight: true
-                    delegate: Item {
-                        height: 10
-                        width: 20
-                        Rectangle {
-                            anchors.centerIn: parent
-                            height: 7.5
-                            width: 7.5
-                            color: "#005500"
-                            radius: 8
-                            border.width: 1
-                            border.color: "#d0d0d0"
-                        }
+                Text {
+                    id: label
+                    Layout.fillWidth: true
+                    text: display
+                    color: "white"
+                    Behavior on font.pointSize {
+                        NumberAnimation {duration: 150}
                     }
                 }
             }
@@ -164,9 +163,15 @@ Item {
             Component.onCompleted: {
                 scrollbar.tmlList = tmlList
 
-                currentIndex = 0
+                currentIndex = bottomUp ? count - 1 : 0
                 if (currentItem)
                     currentItem.selected = true
+            }
+
+            TimelineDots {
+                height: parent.height
+                width: 18
+                z: -1
             }
         }
     }
