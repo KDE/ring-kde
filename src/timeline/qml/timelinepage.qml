@@ -151,6 +151,7 @@ Rectangle {
             id: chatBox
             Layout.fillWidth: true
             height: 90
+            visible: currentContactMethod ? currentContactMethod.canSendTexts : false
             MessageBuilder {id: builder}
 
             textColor: activePalette.text
