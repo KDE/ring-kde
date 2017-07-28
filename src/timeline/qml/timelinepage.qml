@@ -150,7 +150,7 @@ Rectangle {
         ChatBox {
             id: chatBox
             Layout.fillWidth: true
-            height: 120
+            height: 90
             MessageBuilder {id: builder}
 
             textColor: activePalette.text

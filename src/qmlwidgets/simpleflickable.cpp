@@ -332,6 +332,8 @@ bool SimpleFlickablePrivate::start(QMouseEvent* e)
     m_StartPoint = m_DragPoint = e->pos();
     m_StartTime  = QDateTime::currentMSecsSinceEpoch();
 
+    q_ptr->setFocus(true, Qt::MouseFocusReason);
+
     // The event itself may be a normal click, let the children handle it too
     return false;
 }
