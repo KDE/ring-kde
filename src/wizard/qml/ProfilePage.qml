@@ -19,7 +19,6 @@ import QtQuick 2.4
 
 ContactInfo {
     id: contactInfo
-    color: "transparent"
     showStat: false
     showImage: true
     showSave: false
