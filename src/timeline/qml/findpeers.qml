@@ -18,11 +18,16 @@
 import QtQuick 2.7
 
 ListView {
+    FontMetrics {
+        id: fontMetrics
+    }
 
     Component {
         id: searchDelegate
         SearchDelegate {
             width: parent.width
+            buttonHeight: fontMetrics.height + 12
+            labelHeight: fontMetrics.height
         }
     }
 

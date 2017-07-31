@@ -24,9 +24,20 @@ import RingQmlWidgets 1.0
 Item {
     id: componentItem
     width: parent.width
-    height: 70 + (temporary ? 30 : 0)
+    height: getHeight()
+
+    function getHeight() {
+        return 4*labelHeight + 16 + (temporary ? buttonHeight : 0)
+    }
 
     property QtObject contactMethod: object
+    property double buttonHeight: 30
+    property double labelHeight: 30
+
+    TextMetrics {
+        id: accTextMetrics
+        text: accountAlias
+    }
 
     RowLayout {
         anchors.margins: 3
@@ -36,8 +47,8 @@ Item {
             anchors.left: parent.left
             anchors.topMargin: 2
             anchors.leftMargin: 2
-            height: 46
-            width:  46
+            height: Math.min(46, 4*componentItem.labelHeight + 12)
+            width:  Math.min(46, 4*componentItem.labelHeight + 12)
 
             Rectangle {
                 radius: 5
@@ -104,12 +115,12 @@ Item {
                 Rectangle {
                     color: activePalette.highlight
                     radius: 99
-                    height: 16
+                    height: componentItem.labelHeight + 4
                     visible: accountAlias != ""
-                    width: 100 //TODO use font metric
+                    width: accTextMetrics.width + 32
                     Text {
                         id: accountAliasText
-                        anchors.fill:parent
+                        anchors.centerIn: parent
                         anchors.leftMargin: 16
                         anchors.rightMargin: 16
                         text: accountAlias
@@ -119,8 +130,8 @@ Item {
             }
             RowLayout {
                 visible: temporary
-                height: 30
-                Layout.preferredHeight: 30
+                height: componentItem.buttonHeight
+                Layout.preferredHeight: componentItem.buttonHeight
                 Layout.fillWidth: true
                 Rectangle {
                     id: contactRequestButton
