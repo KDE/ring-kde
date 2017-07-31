@@ -43,7 +43,7 @@ Rectangle {
 
     Connections {
         target: currentContactMethod
-        onBookmarked: {
+        onBookmarkedChanged: {
             bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         }
@@ -52,8 +52,11 @@ Rectangle {
     Connections {
         target: currentContactMethod
         onChanged: {
-            photo.pixmap = currentContactMethod.person ?
-             currentContactMethod.person.photo : undefined
+            primaryName.text = currentContactMethod.primaryName
+            photo.pixmap     = currentContactMethod.person ?
+                currentContactMethod.person.photo : undefined
+            bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
+                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         }
     }
 
@@ -122,7 +125,8 @@ Rectangle {
                     anchors.topMargin: 3
                     height: 16
                     width: 16
-                    source: currentContactMethod.bookmarked ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+                    source: (currentContactMethod && currentContactMethod.bookmarked) ?
+                        "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
                     z: 100
                     MouseArea {
                         anchors.fill: parent
@@ -140,6 +144,8 @@ Rectangle {
             }
 
             RowLayout {
+                id: buttonBox
+
                 Button {
                     id: button
                     text: qsTr("Call")
@@ -171,4 +177,26 @@ Rectangle {
             }
         }
     }
+
+    states: [
+        State {
+            name: "compact"
+            PropertyChanges {
+                target: contactHeader
+                height: 40
+                Layout.maximumHeight: 40
+            }
+            PropertyChanges {
+                target: buttonBox
+                visible: false
+            }
+            PropertyChanges {
+                target: photoRect
+                height: 30
+                width: 30
+                Layout.maximumHeight: 30
+                Layout.maximumWidth: 30
+            }
+        }
+    ]
 }

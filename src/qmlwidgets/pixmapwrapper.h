@@ -25,6 +25,7 @@ class PixmapWrapper : public QQuickPaintedItem
 {
    Q_OBJECT
    Q_PROPERTY(QVariant pixmap READ pixmap WRITE setPixmap)
+   Q_PROPERTY(QString themeFallback READ themeFallback WRITE setThemeFallback)
 
 public:
     explicit PixmapWrapper(QQuickItem* parent = nullptr);
@@ -32,9 +33,14 @@ public:
     QPixmap pixmap() const;
     void setPixmap(const QVariant& var);
 
+    QString themeFallback() const;
+    void setThemeFallback(const QString& s);
+
     virtual void paint(QPainter *painter) override;
 
 private:
     QPixmap m_pixmap;
     QIcon   m_icon  ;
+    QString m_themeFallback;
+    QIcon   m_fallbackIcon;
 };

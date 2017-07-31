@@ -33,17 +33,12 @@ Item {
     RowLayout {
         anchors.fill: parent
 
-
-        Rectangle {
+        PixmapWrapper {
             width: 50
             height: 50
-            color: "gray"
-            radius: 5
             visible: direction == 1
-            PixmapWrapper {
-                anchors.fill: parent
-                pixmap: decoration
-            }
+            pixmap: decoration
+            themeFallback: "im-user"
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
         }

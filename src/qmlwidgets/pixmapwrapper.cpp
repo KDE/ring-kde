@@ -51,4 +51,28 @@ void PixmapWrapper::paint(QPainter *painter)
             m_pixmap.rect()
         );
     }
+    else if (!m_themeFallback.isEmpty()) {
+        if (m_fallbackIcon.isNull())
+            m_fallbackIcon = QIcon::fromTheme(m_themeFallback);
+
+        const QPixmap pxm = m_fallbackIcon.pixmap(boundingRect().size().toSize());
+
+        painter->drawPixmap(
+            boundingRect().toRect(),
+            pxm,
+            pxm.rect()
+        );
+    }
+}
+
+QString PixmapWrapper::themeFallback() const
+{
+    return m_themeFallback;
+}
+
+void PixmapWrapper::setThemeFallback(const QString& s)
+{
+    m_themeFallback = s;
+    m_fallbackIcon = {};
+    update();
 }

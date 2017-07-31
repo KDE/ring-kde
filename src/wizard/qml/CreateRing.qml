@@ -88,6 +88,7 @@ Item {
             y: 170
             height: 14
             text: qsTr("Enter an username")
+            color: "white"
             anchors.leftMargin: 8
             anchors.left: parent.left
             Layout.fillWidth: true
@@ -119,6 +120,7 @@ Item {
             onTextChanged: {
                 isNextAvailable()
                 busyIndicator.visible = true
+
                 if (userName.text != "")
                     NameDirectory.lookupName(undefined, "", userName.text)
             }
@@ -157,6 +159,7 @@ Item {
                 id: registerFoundLabel
                 text: qsTr("Please enter an username")
                 verticalAlignment: Text.AlignVCenter
+                color: "white"
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
@@ -175,6 +178,7 @@ Item {
             y: 233
             height: 14
             text: qsTr("Enter an archive password")
+            color: "white"
             Layout.fillWidth: true
             anchors.leftMargin: 8
             anchors.left: parent.left
@@ -195,6 +199,7 @@ Item {
             x: -1
             y: 54
             height: 14
+            color: "white"
             text: qsTr("Repeat the new password")
             Layout.fillWidth: true
             anchors.leftMargin: 8

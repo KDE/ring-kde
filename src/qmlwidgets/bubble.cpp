@@ -185,6 +185,9 @@ void Bubble::slotWindowChanged(QQuickWindow *w)
         d_ptr->m_Text
     );
 
-    setWidth(std::max(dateW*1.66, r.width())+arrow+2*margins);
+    // Prevent bubble larger than the screen
+    const qreal mw = std::max(dateW*1.66, r.width())+arrow+2*margins;
+
+    setWidth(std::min(d_ptr->m_MaximumWidth, mw));
     setHeight(std::max(50.0, r.height() + 2*d_ptr->m_FontMetrics.height()));
 }

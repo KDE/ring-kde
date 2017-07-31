@@ -102,23 +102,23 @@ Rectangle {
         }
     }
 
-    RowLayout {
-        anchors.topMargin: 5
-        anchors.rightMargin: 5
-        anchors.top: parent.top
-        anchors.right: parent.right
-        z: 100
-
-        TextField {
-            id: textField1
-            placeholderText: qsTr("search box")
-        }
-
-        Button {
-            id: button1
-            text: qsTr("Search")
-        }
-    }
+//     RowLayout {
+//         anchors.topMargin: 5
+//         anchors.rightMargin: 5
+//         anchors.top: parent.top
+//         anchors.right: parent.right
+//         z: 100
+//
+//         TextField {
+//             id: textField1
+//             placeholderText: qsTr("search box")
+//         }
+//
+//         Button {
+//             id: button1
+//             text: qsTr("Search")
+//         }
+//     }
 
     ColumnLayout {
         anchors.fill: parent
@@ -172,6 +172,7 @@ Rectangle {
             currentIndex: tabBar.currentIndex
 
             Page {
+                background: Rectangle { color: activePalette.base }
                 ContactInfo {
                     anchors.fill: parent
                     id: contactInfo
@@ -179,6 +180,7 @@ Rectangle {
             }
 
             Page {
+                background: Rectangle { color: activePalette.base }
                 CallView {
                     id: avView
                     mode: "CONVERSATION"
@@ -199,6 +201,7 @@ Rectangle {
             }
 
             Page {
+                background: Rectangle { color: activePalette.base }
                 Loader {
                     anchors.fill: parent
                     asynchronous: true
@@ -224,11 +227,11 @@ Rectangle {
                         if (currentInstance)
                             currentInstance.currentContactMethod = currentContactMethod
                     }
-
                 }
             }
 
             Page {
+                background: Rectangle { color: activePalette.base }
                 Loader {
                     property QtObject currentContactMethod: null
                     property var currentInstance: undefined
@@ -257,4 +260,16 @@ Rectangle {
             }
         }
     }
+
+    states: [
+        State {
+            name: "compact"
+            when: height < 700
+            PropertyChanges {
+                target: contactHeader
+                state: "compact"
+                height: 40
+            }
+        }
+    ]
 }

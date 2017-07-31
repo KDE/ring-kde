@@ -22,7 +22,7 @@ import Ring 1.0
 import PhotoSelectorPlugin 1.0
 import RingQmlWidgets 1.0
 
-Rectangle {
+Item {
     id: contactViewPage
     property var currentContactMethod: null
     property var currentPerson: null
@@ -85,15 +85,7 @@ Rectangle {
     }
 
     function getTotalText() {
-        return  qsTr("<b>Texted:</b> ") + "N/A time [?]"
-    }
-
-    function getTotalRecording() {
-        return  qsTr("<b>Recordings:</b> ") + "N/A [?]"
-    }
-
-    function getTotalScreenshot() {
-        return  qsTr("<b>Screenshots:</b> ") + "N/A [?]"
+        return  qsTr("<b>Texted:</b> ") + currentContactMethod.textRecording.instantTextMessagingModel.rowCount()
     }
 
     SystemPalette {
@@ -101,7 +93,7 @@ Rectangle {
         colorGroup: SystemPalette.Active
     }
 
-    color: activePalette.base
+    state: "desktop"
 
     onCurrentContactMethodChanged: {
         if (!currentContactMethod)
@@ -113,8 +105,6 @@ Rectangle {
         lastContactedTime.text = getLastContacted()
         totalCall.text         = getTotalCall()
         totalText.text         = getTotalText()
-        totalRecording.text    = getTotalRecording()
-        totalScreenshot.text   = getTotalScreenshot()
     }
 
     onCurrentPersonChanged: {
@@ -140,222 +130,250 @@ Rectangle {
         phoneNumbersModel.person = currentPerson
     }
 
-    ColumnLayout {
-        anchors.fill: parent
+    /**
+     * When showing the profile or adding a contact, display the image at the top.
+     *
+     * When showing the main GUI, this image is part of the header and should
+     * not be shown.
+     */
+    Item {
+        id: contactPicture
 
-        Item {
-            Layout.fillWidth: true
+        visible: showImage
+        height: showImage ? 90 : 0
+        width: parent.width
+        anchors.top: parent.top
+
+        Rectangle {
+            id: photoRect
+            visible: showImage
+            anchors.centerIn: parent
+            clip: true
+            radius: 5
             height: 90
+            width: 90
+            color: "white"
+            PixmapWrapper {
+                id: photo
+                anchors.fill: parent
+            }
 
-            Rectangle {
-                id: photoRect
-                visible: showImage
-                anchors.centerIn: parent
-                clip: true
-                radius: 5
-                height: 90
-                width: 90
-                color: "white"
-                PixmapWrapper {
-                    id: photo
-                    anchors.fill: parent
-                }
+            function onNewPhoto(p) {
+                contactViewPage.cachedPhoto = p
+                photo.pixmap = p
+                contactViewPage.changed()
+            }
 
-                function onNewPhoto(p) {
-                    contactViewPage.cachedPhoto = p
-                    photo.pixmap = p
-                    contactViewPage.changed()
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    z: 100
-                    onClicked: {
-                        var component = Qt.createComponent("PhotoEditor.qml")
-                        if (component.status == Component.Ready) {
-                            var window    = component.createObject(contactViewPage)
-                            window.person = currentContactMethod ? currentContactMethod.person : null
-                            window.newPhoto.connect(photoRect.onNewPhoto)
-                        }
-                        else
-                            console.log("ERROR", component.status, component.errorString())
+            MouseArea {
+                anchors.fill: parent
+                z: 100
+                onClicked: {
+                    var component = Qt.createComponent("PhotoEditor.qml")
+                    if (component.status == Component.Ready) {
+                        var window    = component.createObject(contactViewPage)
+                        window.person = currentContactMethod ? currentContactMethod.person : null
+                        window.newPhoto.connect(photoRect.onNewPhoto)
                     }
+                    else
+                        console.log("ERROR", component.status, component.errorString())
                 }
             }
         }
+    }
+
+    GroupBox {
+        id: advanced
+        title: qsTr("Advanced")
+        clip: true
+        anchors.top: mainInfo.bottom
+        visible: false
 
         ColumnLayout {
-            visible: showStat
-            Layout.fillWidth: true
-            Rectangle {
-                color: activePalette.text
-                height: 1
-                Layout.fillWidth: true
-            }
-
-            Label {
-                id: lastContactedTime
-                color: activePalette.text
-            }
-
-            Label {
-                id: totalCall
-                color: activePalette.text
-            }
-
-            Label {
-                id: totalText
-                color: activePalette.text
-            }
-
-            Label {
-                id: totalRecording
-                color: activePalette.text
-            }
-
-            Label {
-                id: totalScreenshot
-                color: activePalette.text
-            }
-
-            Rectangle {
-                color: activePalette.text
-                height: 1
-                Layout.fillWidth: true
-            }
-        }
-
-        GridLayout {
-            columns: 2
-            rowSpacing: 10
-            columnSpacing: 10
-            Layout.fillWidth: true
-
-            Label {
-                id: label
-                text: qsTr("Formatted name:")
-                color: activePalette.text
-            }
-            TextField {
-                id: formattedName
-                onTextChanged: {
-                    contactViewPage.changed()
-                }
-            }
-
-            Label {
-                text: qsTr("Primary name:")
-                color: activePalette.text
-            }
-            TextField {
-                id: firstName
-                onTextChanged: {
-                    contactViewPage.changed()
-                }
-            }
-
-            Label {
-                text: qsTr("Last name:")
-                color: activePalette.text
-            }
-            TextField {
-                id: lastName
-                onTextChanged: {
-                    contactViewPage.changed()
-                }
-            }
-
-            Label {
-                text: qsTr("Email:")
-                color: activePalette.text
-            }
-            TextField {
-                id: email
-                onTextChanged: {
-                    contactViewPage.changed()
-                }
-            }
-
-            Label {
-                text: qsTr("Organization:")
-                color: activePalette.text
-            }
-            TextField {
-                id: organization
-                onTextChanged: {
-                    contactViewPage.changed()
-                }
-            }
-        }
-
-        Item {
-            Layout.preferredHeight: 10
-        }
-
-        GroupBox {
-            title: qsTr("Advanced")
+            id: tabbedContactInfo
 
             clip: true
-            Layout.preferredHeight: 300
-            Layout.preferredWidth: 600
+            anchors.fill: parent
 
-            ColumnLayout {
-                clip: true
-                anchors.fill: parent
+            TabBar {
+                Layout.fillWidth: true
+                id: tabBar
 
-                TabBar {
-                    Layout.fillWidth: true
-                    id: tabBar
-                    currentIndex: sv.currentIndex
-                    TabButton {
-                        text: qsTr("Phone numbers")
-                    }
-                    TabButton {
-                        text: qsTr("Addresses")
-                    }
+
+                // Avoid showing invisible pages by default
+                currentIndex: contactViewPage.state != "phone" && sv.currentIndex == 0 ?
+                    1 : sv.currentIndex
+
+                TabButton {
+                    id: detailsButton
+                    text: qsTr("Details")
+                    visible: false
+                    width: 0
+                }
+                TabButton {
+                    text: qsTr("Phone numbers")
+                }
+                TabButton {
+                    text: qsTr("Addresses")
+                }
+                TabButton {
+                    id: statButton
+                    text: qsTr("Statistics")
+                    visible: false
+                    width: 0
+                }
+            }
+
+            SwipeView {
+                id: sv
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                // Avoid showing invisible pages by default
+                currentIndex: contactViewPage.state != "phone" && tabBar.currentIndex == 0 ?
+                    1 : tabBar.currentIndex
+
+                background: Rectangle {
+                    color: activePalette.base
                 }
 
-                SwipeView {
-                    id: sv
+                Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    GridLayout {
+                        id: mainInfo
+                        height: implicitHeight
 
-                    background: Rectangle {
-                        color: activePalette.base
-                    }
+                        columns: 2
+                        rowSpacing: 10
+                        columnSpacing: 10
 
-                    currentIndex: tabBar.currentIndex
+                        Label {
+                            id: label
+                            text: qsTr("Formatted name:")
+                            color: activePalette.text
+                        }
+                        TextField {
+                            id: formattedName
+                            onTextChanged: {
+                                contactViewPage.changed()
+                            }
+                        }
 
-                    Page {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        PhoneNumbers {
-                            id: phoneNumbersModel
-                            anchors.fill: parent
-                            onPersonCreated: {
-                                if (!currentPerson) {
-                                    console.log("Setting the person from a phone number")
-                                    currentPerson = phoneNumbersModel.person
-                                }
+                        Label {
+                            text: qsTr("Primary name:")
+                            color: activePalette.text
+                        }
+                        TextField {
+                            id: firstName
+                            onTextChanged: {
+                                contactViewPage.changed()
+                            }
+                        }
+
+                        Label {
+                            text: qsTr("Last name:")
+                            color: activePalette.text
+                        }
+                        TextField {
+                            id: lastName
+                            onTextChanged: {
+                                contactViewPage.changed()
+                            }
+                        }
+
+                        Label {
+                            text: qsTr("Email:")
+                            color: activePalette.text
+                        }
+                        TextField {
+                            id: email
+                            onTextChanged: {
+                                contactViewPage.changed()
+                            }
+                        }
+
+                        Label {
+                            text: qsTr("Organization:")
+                            color: activePalette.text
+                        }
+                        TextField {
+                            id: organization
+                            onTextChanged: {
+                                contactViewPage.changed()
                             }
                         }
                     }
 
-                    Page {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Addresses {
-                            id: addresses
-                            anchors.fill: parent
+                    background: Rectangle { color: activePalette.base }
+                }
+
+                Page {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    PhoneNumbers {
+                        id: phoneNumbersModel
+                        anchors.fill: parent
+                        onPersonCreated: {
+                            if (!currentPerson) {
+                                console.log("Setting the person from a phone number")
+                                currentPerson = phoneNumbersModel.person
+                            }
                         }
                     }
 
+                    background: Rectangle { color: activePalette.base }
                 }
-            }
-        }
 
-        Item {
-            Layout.fillHeight: true
+                Page {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Addresses {
+                        id: addresses
+                        anchors.fill: parent
+                    }
+
+                    background: Rectangle { color: activePalette.base }
+                }
+
+                Page {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    background: Rectangle { color: activePalette.base }
+                    ColumnLayout {
+                        id: statistics
+
+                        visible: showStat
+                        Layout.fillWidth: true
+                        Rectangle {
+                            color: activePalette.text
+                            height: 1
+                            Layout.fillWidth: true
+                        }
+
+                        Label {
+                            id: lastContactedTime
+                            color: activePalette.text
+                        }
+
+                        Label {
+                            id: totalCall
+                            color: activePalette.text
+                        }
+
+                        Label {
+                            id: totalText
+                            color: activePalette.text
+                        }
+
+                        Rectangle {
+                            color: activePalette.text
+                            height: 1
+                            Layout.fillWidth: true
+                        }
+                    }
+                }
+
+            }
         }
     }
 
@@ -372,5 +390,146 @@ Rectangle {
         onClicked: {
             contactViewPage.save()
         }
+    }
+
+    /**
+     * To make this page scale down, reparent everything depending on the
+     * resolution.
+     */
+    states: [
+
+        // In tablet mode, use 3 columns for the details
+        State {
+            name: "tablet"
+            ParentChange {
+                target: advanced
+                parent: contactViewPage
+            }
+            ParentChange {
+                target: mainInfo
+                parent: contactViewPage
+            }
+            ParentChange {
+                target: statistics
+                parent: contactViewPage
+            }
+            AnchorChanges {
+                target: advanced
+                anchors.right: contactViewPage.right
+                anchors.bottom: contactViewPage.bottom
+                anchors.top: contactViewPage.top
+                anchors.left: undefined
+            }
+            AnchorChanges {
+                target: statistics
+                anchors.top: contactPicture.bottom
+                anchors.left: contactViewPage.left
+            }
+            AnchorChanges {
+                target: mainInfo
+                anchors.left: contactViewPage.left
+                anchors.top: statistics.bottom
+            }
+            PropertyChanges {
+                target: advanced
+                visible: true
+                width: contactViewPage.width / 2
+            }
+            PropertyChanges {
+                target: statistics
+                width: contactViewPage.width / 2
+                height: statistics.implicitHeight
+            }
+            PropertyChanges {
+                target: mainInfo
+                width: contactViewPage.width / 2
+            }
+        },
+
+        // In desktop mode, put everything on top of each other and get rid
+        // of the second tabbar
+        State {
+            name: "desktop"
+            extend: "tablet"
+
+            AnchorChanges {
+                target: advanced
+                anchors.right: undefined
+                anchors.bottom: undefined
+                anchors.left: contactViewPage.left
+                anchors.top: mainInfo.bottom
+            }
+            PropertyChanges {
+                target: statistics
+                width: contactViewPage.width
+            }
+            PropertyChanges {
+                target: mainInfo
+                width: mainInfo.implicitWidth
+                height: mainInfo.implicitHeight
+                anchors.topMargin: 10
+            }
+            PropertyChanges {
+                target: advanced
+                width: contactViewPage.width * 0.66
+                height: 300
+                anchors.topMargin: 10
+            }
+        },
+
+        // On the phone, use 2 tab bars at the top and bottom to fit all pages
+        // in the tiny space
+        State {
+            name: "phone"
+            ParentChange {
+                target: tabbedContactInfo
+                parent: contactViewPage
+            }
+            PropertyChanges {
+                target: mainInfo
+                anchors.fill: mainInfo.parent
+            }
+            PropertyChanges {
+                target: statistics
+                anchors.fill: statistics.parent
+            }
+            PropertyChanges {
+                target: detailsButton
+                visible: true
+                width: undefined
+            }
+            PropertyChanges {
+                target: statButton
+                visible: true
+                width: undefined
+            }
+            PropertyChanges {
+                target: tabbedContactInfo
+                anchors.fill: contactViewPage
+            }
+        }
+    ]
+
+    // For some reason, the `when` clause of the state never fire
+    onHeightChanged: {
+
+        var isPhone = contactViewPage.height <= 400 || (
+            contactViewPage.height > contactViewPage.width &&
+            contactViewPage.height < 600
+        )
+
+        var isTablet = (
+            contactViewPage.height <  300 /*advanced default*/
+                + statistics.implicitHeight + mainInfo.implicitHeight
+        ) && (
+            contactViewPage.height > 400
+        ) && advanced.implicitWidth + mainInfo.implicitWidth < contactViewPage.width
+
+        if (isPhone)
+            state = "phone"
+        else if (isTablet)
+            state = "tablet"
+        else
+            state = "desktop"
     }
 }

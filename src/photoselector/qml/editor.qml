@@ -186,7 +186,6 @@ Dialog {
     }
 
     onAccepted: {
-        console.log("\n\nACCEPT!", person)
         selector.setToPerson(person)
         videoWidget.started = false
         if (PreviewManager.previewing)

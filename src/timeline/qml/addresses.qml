@@ -20,7 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 
-Rectangle {
+Item {
     id: phoneNumbers
     property alias model : numbers.model
 
@@ -34,7 +34,6 @@ Rectangle {
         colorGroup: SystemPalette.Disabled
     }
 
-    color: activePalette.base
 
     ColumnLayout {
         anchors.fill: parent

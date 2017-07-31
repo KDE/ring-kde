@@ -21,7 +21,7 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 
-Rectangle {
+Item {
     id: phoneNumbers
     property alias model : numbers.model
     property QtObject person: null
@@ -37,8 +37,6 @@ Rectangle {
         id: inactivePalette
         colorGroup: SystemPalette.Disabled
     }
-
-    color: activePalette.base
 
     ColumnLayout {
         anchors.fill: parent

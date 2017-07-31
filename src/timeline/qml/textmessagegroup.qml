@@ -21,17 +21,20 @@ import Ring 1.0
 
 import RingQmlWidgets 1.0
 
-ColumnLayout {
+Item {
     id: textGroupDelegate
+    width: parent.width
+    height: 50
 
     GroupHeader {
         type: "text"
         anchors.margins: 4
-        Layout.fillWidth: true
-        Layout.preferredHeight: 38
+        height: 38
     }
 
     GroupFooter {
-        Layout.fillWidth: true
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: (parent.parent && parent.parent.parent && parent.parent.parent.height) ?
+            parent.parent.parent.height - height : 0
     }
 }
