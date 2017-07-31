@@ -42,9 +42,16 @@ Rectangle {
     property alias overlayVisible: scrollBar.overlayVisible
     signal contactMethodSelected(var cm)
 
+    FontMetrics {
+        id: fontMetrics
+    }
+
     Component {
         id: contactDelegate
-        ContactMethodDelegate {}
+        ContactMethodDelegate {
+            height: 4*fontMetrics.height
+            pixmapHeight: 4*fontMetrics.height - 4
+        }
     }
 
     // To allow multiple places to set the contact method without knowing

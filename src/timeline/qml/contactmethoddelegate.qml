@@ -25,6 +25,8 @@ Item {
     width: parent.width
     height: 50
 
+    property double pixmapHeight: 46
+
     Rectangle {
         id: highlight
         anchors.fill: parent
@@ -40,8 +42,8 @@ Item {
             anchors.left: parent.left
             anchors.topMargin: 2
             anchors.leftMargin: 2
-            height: 46
-            width:  46
+            height: componentItem.pixmapHeight
+            width:  componentItem.pixmapHeight
             Rectangle {
                 radius: 5
                 color: "white"
