@@ -21,6 +21,7 @@ Name[tr]=ring-kde
 Name[uk]=ring-kde
 Name[x-test]=xxring-kdexx
 Name[zh_CN]=ring-kde
+Name[zh_TW]=ring-kde
 IconName=ring-kde
 Comment=KDE Ring VoIP client
 Comment[ca]=Ring client de VoIP pel KDE
@@ -40,6 +41,7 @@ Comment[sv]=Ring KDE-klient för IP-telefoni
 Comment[tr]=KDE Ring VoIP istemcisi
 Comment[uk]=Клієнт інтернет-телефонії Ring для KDE
 Comment[x-test]=xxKDE Ring VoIP clientxx
+Comment[zh_TW]=KDE Ring VoIP 客戶端
 
 [Context/contact]
 Name=Contact
@@ -62,6 +64,7 @@ Name[tr]=Bağlantı
 Name[uk]=Контакт
 Name[x-test]=xxContactxx
 Name[zh_CN]=联系人
+Name[zh_TW]=聯絡人
 Comment=Contact related notifications
 Comment[ca]=Notificacions relacionades amb el contacte
 Comment[ca@valencia]=Notificacions relacionades amb el contacte
@@ -79,6 +82,7 @@ Comment[sv]=Kontaktrelaterade underrättelser
 Comment[tr]=Bağlantıyla alakalı bildirimler
 Comment[uk]=Сповіщення, пов’язані із контактом
 Comment[x-test]=xxContact related notificationsxx
+Comment[zh_TW]=與聯絡人相關的通知
 Values=1:Home,2:Work,3:Msg,4:Pref,5:Voice,6:Fax,7:Cell,8:Video,9:Bbs,10:Modem,11:Car,12:Isdn,13:Pcs,14:Pager,15:Preferred
 
 [Context/call]
@@ -101,6 +105,7 @@ Name[tr]=Çağrı
 Name[uk]=Дзвінок
 Name[x-test]=xxCallxx
 Name[zh_CN]=调用
+Name[zh_TW]=通話
 Comment=Call related notifications
 Comment[ca]=Notificacions relacionades amb la trucada
 Comment[ca@valencia]=Notificacions relacionades amb la trucada
@@ -118,6 +123,7 @@ Comment[sv]=Samtalsrelaterade underrättelser
 Comment[tr]=Çağrıyla alakalı bildirimler
 Comment[uk]=Сповіщення, пов’язані із дзвінком
 Comment[x-test]=xxCall related notificationsxx
+Comment[zh_TW]=與通話相關的通知
 
 [Event/contactOnline]
 Name=Contact Online
@@ -145,6 +151,7 @@ Name[tr]=Kişi Çevrimiçi
 Name[uk]=Контакт у мережі
 Name[x-test]=xxContact Onlinexx
 Name[zh_CN]=联系人在线
+Name[zh_TW]=線上聯絡人
 Comment=A contact has come online
 Comment[bs]=Kontakt je došao na vezu
 Comment[ca]=Un contacte es troba en línia
@@ -172,6 +179,7 @@ Comment[ug]=بىر ئالاقەداش تورغا چىقتى
 Comment[uk]=Контакт увійшов до мережі
 Comment[x-test]=xxA contact has come onlinexx
 Comment[zh_CN]=联系人上线
+Comment[zh_TW]=聯絡人已上線
 Sound=
 Action=Sound|Popup
 
@@ -193,6 +201,7 @@ Name[sv]=Kontostatus ändrades
 Name[tr]=Hesap durumu değişti
 Name[uk]=Змінено стан облікового запису
 Name[x-test]=xxAccount status changedxx
+Name[zh_TW]=帳號狀態已變更
 Comment=An account status changed
 Comment[ca]=Un compte ha canviat l'estat
 Comment[ca@valencia]=Un compte ha canviat l'estat
@@ -210,6 +219,7 @@ Comment[sv]=En kontostatus ändrades
 Comment[tr]=Bir hesap durumu değişti
 Comment[uk]=Змінено стан облікового запису
 Comment[x-test]=xxAn account status changedxx
+Comment[zh_TW]=帳號狀態已變更
 Action=Popup
 
 [Event/incomingCall]
@@ -233,6 +243,7 @@ Name[tr]=Gelen çağrı
 Name[uk]=Вхідний дзвінок
 Name[x-test]=xxIncoming callxx
 Name[zh_CN]=收到呼叫
+Name[zh_TW]=來電呼叫
 Comment=An incoming call has arrived
 Comment[ca]=Ha arribat una trucada entrant
 Comment[ca@valencia]=Ha arribat una trucada entrant
@@ -250,6 +261,7 @@ Comment[sv]=Det finns ett inkommande samtal
 Comment[tr]=Bir gelen çağrı ulaştı
 Comment[uk]=Надійшов запит на вхідний дзвінок
 Comment[x-test]=xxAn incoming call has arrivedxx
+Comment[zh_TW]=有來電
 Action=Popup
 
 [Event/incomingText]
@@ -271,6 +283,7 @@ Name[sv]=Inkommande textmeddelande
 Name[tr]=Gelen metin ileti
 Name[uk]=Вхідне текстове повідомлення
 Name[x-test]=xxIncoming text messagexx
+Name[zh_TW]=有文字訊息
 Comment=An incoming text message has arrived
 Comment[ca]=Ha arribat un missatge de text entrant
 Comment[ca@valencia]=Ha arribat un missatge de text entrant
@@ -288,6 +301,7 @@ Comment[sv]=Det finns ett inkommande textmeddelande
 Comment[tr]=Bir metin iletisi ulaştı
 Comment[uk]=Надійшло вхідне текстове повідомлення
 Comment[x-test]=xxAn incoming text message has arrivedxx
+Comment[zh_TW]=有文字訊息
 Action=Popup
 
 [Event/createContact]
@@ -308,6 +322,7 @@ Name[sv]=Skapa en kontakt
 Name[tr]=Bağlantı oluştur
 Name[uk]=Створити запис контакту
 Name[x-test]=xxCreate a contactxx
+Name[zh_TW]=建立聯絡人
 Comment=Do you wish to add this number to your contacts?
 Comment[ca]=Voleu afegir aquest número als vostre contactes?
 Comment[ca@valencia]=Voleu afegir este número als vostre contactes?
@@ -325,5 +340,6 @@ Comment[sv]=Vill du lägga till numret i dina kontakter?
 Comment[tr]=Bu numarayı bağlantılarınıza eklemek istiyor musunuz?
 Comment[uk]=Хочете додати цей номер до вашого списку контактів?
 Comment[x-test]=xxDo you wish to add this number to your contacts?xx
+Comment[zh_TW]=您希望新增這個帳號為您的聯絡人嗎？
 Action=Popup
 
