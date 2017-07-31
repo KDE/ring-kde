@@ -148,15 +148,19 @@ RingApplication::~RingApplication()
    if (m_pPhone) {
       m_pPhone->setActive(false);
       delete m_pPhone;
+      m_pTimeline = nullptr;
    }
 
    if (m_pTimeline) {
       m_pTimeline->setActive(false);
       delete m_pTimeline;
+      m_pTimeline = nullptr;
    }
 
-   delete &CallModel::instance();
+   delete engine();
+
    delete &PersonModel::instance();
+   delete &CallModel::instance();
 }
 
 RingApplication* RingApplication::instance(int& argc, char** argv)
@@ -338,7 +342,10 @@ constexpr static const char AppName[]= "Ring";
 QQmlApplicationEngine* RingApplication::engine()
 {
    static QQmlApplicationEngine* e = nullptr;
+   static bool safetyCheck = false;
    if (!e) {
+      Q_ASSERT(safetyCheck == false);
+      safetyCheck = true;
       auto p1 = new RingQmlWidgets;
       p1->registerTypes("RingQmlWidgets");
 
