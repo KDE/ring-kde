@@ -123,6 +123,22 @@ TimelineWindow::TimelineWindow()
     updateTabIcons();
 
     m_pPeersTimeline->raise();
+
+    //HACK
+
+    // As of Qt 5.9, there is a race condition when killing the client that may
+    // cause the dock to be moved to the bottom. Detect it and fix it.
+    if (dockWidgetArea(m_pContactCD) == Qt::BottomDockWidgetArea) {
+        removeDockWidget(m_pContactCD);
+        addDockWidget(Qt::LeftDockWidgetArea, m_pContactCD);
+    }
+
+    // There is an HiDPI issue where the size of the dock remains the same
+    // (in pixels) even when the ratio is different than 1. Detect and fix
+    if (dockWidgetArea(m_pPeersTimeline) == Qt::LeftDockWidgetArea && m_pPeersTimeline->width() < 4.5*logicalDpiX()) {
+        resizeDocks({m_pPeersTimeline}, {4.5*logicalDpiX()}, Qt::Horizontal);
+        qDebug() << "\n\n\nDSFDSFDSF" << logicalDpiX();
+    }
 }
 
 TimelineWindow::~TimelineWindow()
