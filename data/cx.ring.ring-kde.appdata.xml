@@ -25,6 +25,7 @@
   <name xml:lang="uk">Ring-KDE</name>
   <name xml:lang="x-test">xxRing-KDExx</name>
   <name xml:lang="zh-CN">Ring-KDE</name>
+  <name xml:lang="zh-TW">Ring-KDE</name>
   <summary>Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o RING.</summary>
   <summary xml:lang="ca-valencia">Truca i rep trucades amb els protocols SIP o RING.</summary>
@@ -41,6 +42,7 @@
   <summary xml:lang="tr">SIP veya RING protokolleri ile arama yapın veya aranın</summary>
   <summary xml:lang="uk">Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP або RING</summary>
   <summary xml:lang="x-test">xxCall and receive calls with SIP or RING protocolsxx</summary>
+  <summary xml:lang="zh-TW">使用 SIP 或是 RING 協定打電話或是接電話</summary>
   <description>
     <p>
       Ring-KDE is a graphical client for the Ring (www.ring.cx) communication
@@ -62,6 +64,7 @@
     <p xml:lang="tr">Ring-KDE, Ring (www.ring.cx) iletişim platformu için grafiksel bir istemcidir. Diğer Ring kullanıcılarıyla genel amaçlı bir iletişim uygulaması olarak veya çoğu ofis telefonunda kullanılan SIP endüstri standardıyla uyumlu bir VoiP telfonu olarak kullanılabilir.</p>
     <p xml:lang="uk">Ring-KDE — графічний клієнт платформи спілкування Ring (www.ring.cx). Програмою можна користуватися як стандартною програмою для спілкування із користувачами Ring або як програмним телефоном VoiP, сумісним із галузевим стандартом SIP, який використовується у більшості офісних телефонів.</p>
     <p xml:lang="x-test">xxRing-KDE is a graphical client for the Ring (www.ring.cx) communication platform. It can either be used as a general purpose communication application with other Ring users or as a VoiP softphone compatible with the SIP industry standard used by most office phones.xx</p>
+    <p xml:lang="zh-TW">Ring-KDE 是一個 Ring (www.ring.cx) 通訊平臺的圖形化介面。它可以與其他 Ring 的使用者一起當作一般用途的通訊應用程式使用，也可以用作 VoIP 應用程式來與其他相容於 SIP 工業標準的電話通話。</p>
     <p>Features:</p>
     <p xml:lang="ast">Carauterístiques:</p>
     <p xml:lang="ca">Característiques:</p>
@@ -83,6 +86,7 @@
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="x-test">xxFeatures:xx</p>
     <p xml:lang="zh-CN">功能：</p>
+    <p xml:lang="zh-TW">功能：</p>
     <ul>
       <li>Calling real phone with accounts from common SIP service providers</li>
       <li xml:lang="ca">Trucades reals de telèfon amb els comptes dels proveïdors de serveis SIP comuns</li>
@@ -99,6 +103,7 @@
       <li xml:lang="tr">Ortak SIP servis sağlayıcılarının hesaplarıyla gerçek telefon görüşmesi</li>
       <li xml:lang="uk">Дзвінки на звичайні телефони за допомогою облікових записів із загальних систем надання послуг SIP</li>
       <li xml:lang="x-test">xxCalling real phone with accounts from common SIP service providersxx</li>
+      <li xml:lang="zh-TW">用從一般的 SIP 服務提供者得來的帳號來打給真實電話</li>
       <li>Support SIP, SIPS and the RING distributed communication protocol</li>
       <li xml:lang="ca">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
       <li xml:lang="ca-valencia">Implementació dels protocols de comunicació distribuïda SIP, SIPS i RING</li>
@@ -113,6 +118,7 @@
       <li xml:lang="tr">SIP, SIPS ve RING dağıtık iletişim protokolü desteği</li>
       <li xml:lang="uk">Підтримка SIP, SIPS і протоколу розподіленого обміну даними RING</li>
       <li xml:lang="x-test">xxSupport SIP, SIPS and the RING distributed communication protocolxx</li>
+      <li xml:lang="zh-TW">支援 SIP、SIPS 與 RING 分散式通訊協定</li>
       <li>Audio, Video and rich text messages</li>
       <li xml:lang="ca">Missatges d'àudio, vídeo i de text enriquit</li>
       <li xml:lang="ca-valencia">Missatges d'àudio, vídeo i de text enriquit</li>
@@ -128,6 +134,7 @@
       <li xml:lang="tr">Ses, Vidyo ve zengin metin iletileri</li>
       <li xml:lang="uk">Обмін звуковими даними, відеоданими та текстовими повідомленнями із форматуванням</li>
       <li xml:lang="x-test">xxAudio, Video and rich text messagesxx</li>
+      <li xml:lang="zh-TW">音訊、視訊與豐富文字訊息</li>
       <li>Compliant with various industry standards such as:
          
       </li>
@@ -146,6 +153,7 @@
       <li xml:lang="tr">Çeşitli endüstri standartlarına uygunluk:</li>
       <li xml:lang="uk">Сумісність із різноманітними галузевими стандартами, зокрема:</li>
       <li xml:lang="x-test">xxCompliant with various industry standards such as:xx</li>
+      <li xml:lang="zh-TW">與許多工業標準相容：</li>
       <li>Support multiple popular audio and video codecs
          
       </li>
@@ -163,6 +171,7 @@
       <li xml:lang="tr">Birden çok popüler ses ve video kodekini destekleme</li>
       <li xml:lang="uk">Підтримка декількох популярних звукових і відеокодеків</li>
       <li xml:lang="x-test">xxSupport multiple popular audio and video codecsxx</li>
+      <li xml:lang="zh-TW">支援許多流行的音訊與視訊編解碼器</li>
       <li>SIP call transfer (both direct and attended)</li>
       <li xml:lang="ca">Transferència de trucades SIP (tant directes com assistides)</li>
       <li xml:lang="ca-valencia">Transferència de trucades SIP (tant directes com assistides)</li>
@@ -178,6 +187,7 @@
       <li xml:lang="tr">SIP çağrı aktarımı (doğrudan ve katılımlı)</li>
       <li xml:lang="uk">Передавання SIP-дзвінків (безпосереднє і обслуговуване)</li>
       <li xml:lang="x-test">xxSIP call transfer (both direct and attended)xx</li>
+      <li xml:lang="zh-TW">SIP 通話轉換（直接與參與皆可）</li>
       <li>Audio and video conferences</li>
       <li xml:lang="ca">Conferències d'àudio i vídeo</li>
       <li xml:lang="ca-valencia">Conferències d'àudio i vídeo</li>
@@ -194,6 +204,7 @@
       <li xml:lang="tr">Ses ve video konferansları</li>
       <li xml:lang="uk">Звукові і відеоконференції</li>
       <li xml:lang="x-test">xxAudio and video conferencesxx</li>
+      <li xml:lang="zh-TW">音效和視訊會議</li>
       <li>Multiple concurrent calls with "on hold" feature</li>
       <li xml:lang="ca">Múltiples trucades simultànies amb la característica «en espera»</li>
       <li xml:lang="ca-valencia">Múltiples trucades simultànies amb la característica «en espera»</li>
@@ -209,6 +220,7 @@
       <li xml:lang="tr">"Beklemede" özelliği bulunan birden çok eşzamanlı çağrı</li>
       <li xml:lang="uk">Одночасна обробка декількох паралельних дзвінків із можливістю утримування на зв’язку</li>
       <li xml:lang="x-test">xxMultiple concurrent calls with "on hold" featurexx</li>
+      <li xml:lang="zh-TW">利用「保留」功能來同時保持多個通話</li>
       <li>Multiple accounts</li>
       <li xml:lang="ca">Múltiples comptes</li>
       <li xml:lang="ca-valencia">Múltiples comptes</li>
@@ -225,6 +237,7 @@
       <li xml:lang="tr">Çoklu hesaplar</li>
       <li xml:lang="uk">Використання декількох облікових записів</li>
       <li xml:lang="x-test">xxMultiple accountsxx</li>
+      <li xml:lang="zh-TW">多帳號</li>
       <li>Multiple users profiles</li>
       <li xml:lang="ca">Múltiples perfils d'usuari</li>
       <li xml:lang="ca-valencia">Múltiples perfils d'usuari</li>
@@ -241,6 +254,7 @@
       <li xml:lang="tr">Çoklu kullanıcı profilleri</li>
       <li xml:lang="uk">Використання декількох профілів користувачів</li>
       <li xml:lang="x-test">xxMultiple users profilesxx</li>
+      <li xml:lang="zh-TW">多使用者設定檔</li>
       <li>System contact integration</li>
       <li xml:lang="ca">Integració amb els contactes del sistema</li>
       <li xml:lang="ca-valencia">Integració amb els contactes del sistema</li>
@@ -256,6 +270,7 @@
       <li xml:lang="tr">Sistem kişileri bütünleştirme</li>
       <li xml:lang="uk">Інтеграція із загальносистемним сховищем даних контактів</li>
       <li xml:lang="x-test">xxSystem contact integrationxx</li>
+      <li xml:lang="zh-TW">系統聯絡人整合</li>
       <li>Configurable interactive system notification</li>
       <li xml:lang="ca">Sistema de notificacions configurable de manera interactiva</li>
       <li xml:lang="ca-valencia">Sistema de notificacions configurable de manera interactiva</li>
@@ -271,6 +286,7 @@
       <li xml:lang="tr">Yapılandırılabilir etkileşimli sistem bildirimleri</li>
       <li xml:lang="uk">Придатна до налаштовування система інтерактивних сповіщень</li>
       <li xml:lang="x-test">xxConfigurable interactive system notificationxx</li>
+      <li xml:lang="zh-TW">可設定的互動式系統通知</li>
       <li>Configurable local and global keyboard shortcuts</li>
       <li xml:lang="ca">Dreceres de teclat locals i globals configurables</li>
       <li xml:lang="ca-valencia">Dreceres de teclat locals i globals configurables</li>
@@ -286,6 +302,7 @@
       <li xml:lang="tr">Yapılandırılabilir yerel ve global klavya kısayolları</li>
       <li xml:lang="uk">Придатні до налаштовування локальні і загальні клавіатурні скорочення</li>
       <li xml:lang="x-test">xxConfigurable local and global keyboard shortcutsxx</li>
+      <li xml:lang="zh-TW">可設定的本機與全域鍵盤快捷鍵</li>
       <li>Different ringtones per account</li>
       <li xml:lang="ca">Tons de trucada diferents per compte</li>
       <li xml:lang="ca-valencia">Tons de trucada diferents per compte</li>
@@ -302,6 +319,7 @@
       <li xml:lang="tr">Her hesap için farklı zil sesleri</li>
       <li xml:lang="uk">Можливість призначення різних мелодій дзвінків для окремих облікових записів</li>
       <li xml:lang="x-test">xxDifferent ringtones per accountxx</li>
+      <li xml:lang="zh-TW">每個帳號不同的鈴聲</li>
       <li>Call menu support automation with macro</li>
       <li xml:lang="ca">Implementa un menú de trucades automàtic amb macros</li>
       <li xml:lang="ca-valencia">Implementa un menú de trucades automàtic amb macros</li>
@@ -317,6 +335,7 @@
       <li xml:lang="tr">Makro ile cağrı menüsü destek otomasyonu</li>
       <li xml:lang="uk">Підтримка автоматизації обробки дзвінка на основі макросів</li>
       <li xml:lang="x-test">xxCall menu support automation with macroxx</li>
+      <li xml:lang="zh-TW">使用巨集達成自動化的通話選單支援</li>
       <li>Call audio recordings</li>
       <li xml:lang="ca">Enregistrament de l'àudio de les trucades</li>
       <li xml:lang="ca-valencia">Gravació de l'àudio de les trucades</li>
@@ -332,6 +351,7 @@
       <li xml:lang="tr">Çağrı sesi kaydı</li>
       <li xml:lang="uk">Можливість записування звукових даних дзвінків</li>
       <li xml:lang="x-test">xxCall audio recordingsxx</li>
+      <li xml:lang="zh-TW">通話錄音</li>
       <li>Call history and bookmarks</li>
       <li xml:lang="ca">Historial i preferides de les trucades</li>
       <li xml:lang="ca-valencia">Historial i preferides de les trucades</li>
@@ -348,6 +368,7 @@
       <li xml:lang="tr">Çağrı geçmişi ve yer imleri</li>
       <li xml:lang="uk">Підтримка журналу дзвінків і закладок</li>
       <li xml:lang="x-test">xxCall history and bookmarksxx</li>
+      <li xml:lang="zh-TW">通話歷史與書籤</li>
       <li>Auto answer (per account)</li>
       <li xml:lang="ca">Resposta automàtica (per compte)</li>
       <li xml:lang="ca-valencia">Resposta automàtica (per compte)</li>
@@ -364,6 +385,7 @@
       <li xml:lang="tr">Otomatil cevap (herbir hesap için)</li>
       <li xml:lang="uk">Автовідповідач (окремий для різних облікових записів)</li>
       <li xml:lang="x-test">xxAuto answer (per account)xx</li>
+      <li xml:lang="zh-TW">自動答覆（每個帳號）</li>
       <li>Pulseaudio, portaudio, core audio, ALSA and windows audio integration</li>
       <li xml:lang="ca">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
       <li xml:lang="ca-valencia">Pulseaudio, portaudio, core audio, ALSA i integració amb l'àudio del Windows</li>
@@ -380,6 +402,7 @@
       <li xml:lang="tr">Pulseaudio, portaudio, core audio, ALSA ve windows audio bütünleştirme</li>
       <li xml:lang="uk">Інтеграція із pulseaudio, portaudio, core audio, ALSA та звуковою підсистемою windows</li>
       <li xml:lang="x-test">xxPulseaudio, portaudio, core audio, ALSA and windows audio integrationxx</li>
+      <li xml:lang="zh-TW">PulseAudio、portaudio、core audio、ALSA 與 Windows 音訊整合</li>
       <li>Different audio device for ringing and talk</li>
       <li xml:lang="ca">Dispositiu d'àudio diferent per trucar i parlar</li>
       <li xml:lang="ca-valencia">Dispositiu d'àudio diferent per trucar i parlar</li>
@@ -395,6 +418,7 @@
       <li xml:lang="tr">Zil ve konuşmak için farklı ses aygıtı</li>
       <li xml:lang="uk">Можливість використання різних звукових пристроїв для відтворення мелодій дзвінків і самих розмов</li>
       <li xml:lang="x-test">xxDifferent audio device for ringing and talkxx</li>
+      <li xml:lang="zh-TW">用於響鈴與講話的不同音訊裝置</li>
       <li>Smart phone number auto completion</li>
       <li xml:lang="ca">Compleció automàtica dels números de telèfon</li>
       <li xml:lang="ca-valencia">Compleció automàtica dels números de telèfon</li>
@@ -410,6 +434,7 @@
       <li xml:lang="tr">Akıllı telefon numarası otomatik tamamlama</li>
       <li xml:lang="uk">Інтелектуальна система автоматичного доповнення номерів</li>
       <li xml:lang="x-test">xxSmart phone number auto completionxx</li>
+      <li xml:lang="zh-TW">智慧型手機號碼自動完成</li>
     </ul>
   </description>
   <screenshots>
