@@ -22,4 +22,5 @@ ContactInfo {
     showStat: false
     showImage: true
     showSave: false
+    labelColor: "white"
 }

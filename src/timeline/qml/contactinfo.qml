@@ -33,6 +33,8 @@ Item {
     property bool showImage: false
     property bool showSave: true
 
+    property var labelColor: undefined
+
     property var cachedPhoto: undefined
 
     function save() {
@@ -185,8 +187,6 @@ Item {
         id: advanced
         title: qsTr("Advanced")
         clip: true
-        anchors.top: mainInfo.bottom
-        visible: false
 
         ColumnLayout {
             id: tabbedContactInfo
@@ -250,7 +250,7 @@ Item {
                         Label {
                             id: label
                             text: qsTr("Formatted name:")
-                            color: activePalette.text
+                            color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
                             id: formattedName
@@ -261,7 +261,7 @@ Item {
 
                         Label {
                             text: qsTr("Primary name:")
-                            color: activePalette.text
+                            color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
                             id: firstName
@@ -272,7 +272,7 @@ Item {
 
                         Label {
                             text: qsTr("Last name:")
-                            color: activePalette.text
+                            color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
                             id: lastName
@@ -283,7 +283,7 @@ Item {
 
                         Label {
                             text: qsTr("Email:")
-                            color: activePalette.text
+                            color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
                             id: email
@@ -294,7 +294,7 @@ Item {
 
                         Label {
                             text: qsTr("Organization:")
-                            color: activePalette.text
+                            color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
                             id: organization
@@ -417,7 +417,7 @@ Item {
                 target: advanced
                 anchors.right: contactViewPage.right
                 anchors.bottom: contactViewPage.bottom
-                anchors.top: contactViewPage.top
+                anchors.top:  contactPicture.bottom
                 anchors.left: undefined
             }
             AnchorChanges {
@@ -506,6 +506,10 @@ Item {
             PropertyChanges {
                 target: tabbedContactInfo
                 anchors.fill: contactViewPage
+            }
+            PropertyChanges {
+                target: advanced
+                visible: false
             }
         }
     ]
