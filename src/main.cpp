@@ -32,7 +32,7 @@
 #include "cmd.h"
 #include <QQmlDebuggingEnabler>
 
-constexpr static const char version[] = "2.4.0";
+constexpr static const char version[] = "3.0.0-alpha1";
 
 int main(int argc, char **argv)
 {
