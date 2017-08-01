@@ -26,9 +26,11 @@
         <file alias="Slideshow.qml">qml/slideshow.qml</file>
         <file alias="Thumbnail.qml">qml/thumbnail.qml</file>
         <file alias="HistoryCallIcon.qml">qml/historycallicon.qml</file>
+        <file alias="FirstRun.qml">qml/firstrun.qml</file>
         <file alias="Style/Style.qml">qml/Style/Style.qml</file>
         <file alias="Style/qmldir">qml/Style/qmldir</file>
         <file>icons/bookmarked.svg</file>
         <file>icons/not_bookmarked.svg</file>
+        <file>assets/welcome.html</file>
     </qresource>
 </RCC>

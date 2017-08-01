@@ -120,6 +120,13 @@ Rectangle {
 //         }
 //     }
 
+    FirstRun {
+        anchors.fill: parent
+        z: 99999
+        color: activePalette.base
+        visible: currentContactMethod == null || currentContactMethod.isSelf
+    }
+
     ColumnLayout {
         anchors.fill: parent
 

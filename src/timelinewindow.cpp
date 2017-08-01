@@ -21,6 +21,8 @@
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
 #include <QtCore/QSortFilterProxyModel>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 // KDE
 #include <klocalizedstring.h>
@@ -31,6 +33,7 @@
 #include "actioncollection.h"
 #include "widgets/dockbase.h"
 #include "klib/kcfg_settings.h"
+#include "ringapplication.h"
 
 // Models
 #include <categorizedcontactmodel.h>
@@ -57,6 +60,12 @@ TimelineWindow::TimelineWindow()
     );
 
     setAutoSaveSettings();
+
+    // Load the welcome message
+
+    QFile file(":/assets/welcome.html");
+    if (file.open(QIODevice::ReadOnly))
+        RingApplication::engine()->rootContext()->setContextProperty("welcomeMessage", file.readAll());
 
     ActionCollection::instance()->setupAction(this);
     // MainWindow
@@ -136,8 +145,7 @@ TimelineWindow::TimelineWindow()
     // There is an HiDPI issue where the size of the dock remains the same
     // (in pixels) even when the ratio is different than 1. Detect and fix
     if (dockWidgetArea(m_pPeersTimeline) == Qt::LeftDockWidgetArea && m_pPeersTimeline->width() < 4.5*logicalDpiX()) {
-        resizeDocks({m_pPeersTimeline}, {4.5*logicalDpiX()}, Qt::Horizontal);
-        qDebug() << "\n\n\nDSFDSFDSF" << logicalDpiX();
+        resizeDocks({m_pPeersTimeline}, {(int)4.5*logicalDpiX()}, Qt::Horizontal);
     }
 }
 
