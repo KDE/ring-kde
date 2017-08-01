@@ -591,3 +591,5 @@ void AkonadiBackend::slotItemRemoved(const Akonadi::Item &item)
       qDebug() << "A contact was deleted, but Ring-KDE can't find it";
    //PersonModel::instance().disablePerson(c);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

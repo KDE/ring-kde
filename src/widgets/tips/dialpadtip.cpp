@@ -50,3 +50,5 @@ void DialPadTip::paintDecorations(QPainter& p, const QRect& textRect)
       m_pR = new QSvgRenderer(m_OriginalFile);
    m_pR->render(&p,QRect(m_CurrentRect.width() - m_Padding - 50*2.59143327842 - 10 ,textRect.y()+textRect.height() + 10,50*2.59143327842,50));
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -50,8 +50,11 @@ void ContextListView::contextMenuEvent(QContextMenuEvent* e)
          case Ring::ObjectType::Call           :
          case Ring::ObjectType::Media          :
          case Ring::ObjectType::Certificate    :
+         case Ring::ObjectType::ContactRequest :
          case Ring::ObjectType::COUNT__        :
             break;
       }
    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

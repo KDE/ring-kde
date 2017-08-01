@@ -25,42 +25,6 @@
       <max> 99 </max>
       <default> 30 </default>
     </entry>
-   <entry name="displayCallIcon" type="Bool">
-      <label>Should CallIcon be visible by default for calls</label>
-      <default> true </default>
-   </entry>
-   <entry name="displayCallPeer" type="Bool">
-      <label>Should CallPeer be visible by default for calls</label>
-      <default> true </default>
-   </entry>
-   <entry name="displayCallNumber" type="Bool">
-      <label>Should CallNumber be visible by default for calls</label>
-      <default> true </default>
-   </entry>
-   <entry name="displayCallSecure" type="Bool">
-      <label>Should CallSecure be visible by default for calls</label>
-      <default> false </default>
-   </entry>
-   <entry name="displayCallOrganisation" type="Bool">
-      <label>If a contact is present, display the organisation</label>
-      <default> false </default>
-   </entry>
-   <entry name="displayCallDepartment" type="Bool">
-      <label>If a contact is present, display the department</label>
-      <default> false </default>
-   </entry>
-   <entry name="displayCallEmail" type="Bool">
-      <label>If a contact is present, display the email</label>
-      <default> false </default>
-   </entry>
-   <entry name="limitMinimumRowHeight" type="Bool">
-      <label>The minimum number of pixel for a call item</label>
-      <default> false </default>
-   </entry>
-   <entry name="minimumRowHeight" type="Int">
-      <label>The minimum number of pixel for a call item</label>
-      <default> 48 </default>
-   </entry>
    <entry name="displayHistoryStatus" type="Bool">
       <label>Display incoming, outgoing or missed</label>
       <default> true </default>
@@ -68,6 +32,10 @@
 
     <!-- Display Settings -->
 
+    <entry name="showSplash" type="Bool">
+        <label>Display the splashscreen.</label>
+      <default>true</default>
+    </entry>
     <entry name="notifOnCalls" type="Bool">
     	<label>Defines whether user should be notified when receiving a call.</label>
       <default>true</default>
@@ -82,7 +50,7 @@
     </entry>
     <entry name="autoStart" type="Bool">
         <label>Defines whether the main window should be displayed on start.</label>
-      <default>true</default>
+      <default>false</default>
     </entry>
     <entry name="autoStartOverride" type="Bool">
         <label>Defines whether the main window should be displayed on start.</label>
@@ -92,13 +60,17 @@
     	<label>Defines whether the main window should be displayed when receiving a message.</label>
       <default>true</default>
     </entry>
+    <entry name="displayOnNewCalls" type="Bool">
+    	<label>Defines whether the main window should be displayed when a call is created</label>
+      <default>true</default>
+    </entry>
     <entry name="displayDialpad" type="Bool">
     	<label>Defines whether the dialpad is being shown by default</label>
-      <default>false</default>
+      <default>true</default>
     </entry>
     <entry name="displayAccountBox" type="Bool">
         <label>Defines whether the statusbar account combobox is being shown by default</label>
-      <default>false</default>
+      <default>true</default>
     </entry>
     <entry name="displayMessageBox" type="Bool">
       <label>Defines whether the text message box is visible</label>
@@ -106,7 +78,7 @@
     </entry>
     <entry name="displayVolume" type="Bool">
     	<label>Defines whether the volume widgets are visible by default</label>
-      <default>false</default>
+      <default>true</default>
     </entry>
     <entry name="displayMenu" type="Bool">
     	<label>Defines whether the main menu is visible by default, it can be restored with "Ctrl+m"</label>
@@ -146,43 +118,19 @@
         <label>Save main window space by hiding the dialpad when the video is docked</label>
         <default>false</default>
    </entry>
+   <entry name="recentStreamedFiles" type="StringList">
+        <label>Files recently streamed</label>
+   </entry>
 
 
     <!-- Audio Settings -->
 
-<!--    <entry name="interface" type="Enum">
-    	<label>Defines the audio output to use.</label>
-    	<choices>
-    		<choice name="ALSA" />
-    		<choice name="PulseAudio" />
-    	</choices>
-    </entry>
-    <entry name="alsaPlugin" type="String">
-    	<label>Defines which ALSA plugin to use.</label>
-    </entry>
-    <entry name="alsaInputDevice" type="Int">
-    	<label>Defines which ALSA Input device to use.</label>
-    </entry>
-    <entry name="alsaOutputDevice" type="Int">
-    	<label>Defines which ALSA Output device to use.</label>
-    </entry>
-    <entry name="alsaRingtoneDevice" type="Int">
-      <label>Defines which ALSA Ringtone device to use.</label>
-    </entry>
-    <entry name="pulseAudioVolumeAlter" type="Bool">
-    	<label>Defines whether pulse audio can mute other applications during a call.</label>
-    </entry>-->
      <entry name="enableRoomTone" type="Bool">
       <label>Enable or disables the "buzzzzz" sound</label>
       <default>false</default>
     </entry>
-    
 
     <!-- Address Book Settings -->
-
-<!--    <entry name="enableAddressBook" type="Bool">
-    	<label>Defines whether the search in KDE Address Book is enabled</label>
-    </entry>-->
 
     <entry name="displayAllCollections" type="Bool">
         <label>Display non manageable collections</label>
@@ -198,19 +146,14 @@
       <default>0,1,2,3,4,5,6,7,8,9,10,11,12,10000</default>
     </entry>
 
-    <entry name="displayOrganisation" type="Bool">
-      <label>Defines whether to display the organisation of the contact list item</label>
-      <default>true</default>
-    </entry>
-
-    <entry name="displayEmail" type="Bool">
-      <label>Defines whether to display the organisation of the contact list item</label>
-      <default>true</default>
-    </entry>
-
     <entry name="hidePersonWithoutPhone" type="Bool">
       <label>Defines whether to display the organisation of the contact list item</label>
       <default> false </default>
+    </entry>
+
+    <entry name="defaultPeerProfileMode" type="Int">
+      <label>Defines how peer profiles are merged with existing contacts</label>
+      <default> 2 </default>
     </entry>
 
     <entry name="hideUnreachable" type="Bool">
@@ -243,24 +186,6 @@
     <entry name="bookmarkList" type="StringList">
         <label>List of bookmarked clients</label>
     </entry>
-
-    <!-- Hooks Settings -->
-
-<!--    <entry name="enableHooksSIP" type="Bool">
-    	<label>Defines whether to enable hooks for SIP accounts.</label>
-    </entry>
-    <entry name="hooksSIPHeader" type="String">
-    	<label>Defines which header to catch for SIP accounts hooks.</label>
-    </entry>
-    <entry name="hooksCommand" type="String">
-    	<label>Defines which command to execute.</label>
-    </entry>
-    <entry name="addPrefix" type="Bool">
-    	<label>Defines whether to add a prefix for outgoing calls.</label>
-    </entry>
-    <entry name="prepend" type="String">
-    	<label>Defines the prefix to add.</label>
-    </entry>-->
 
     <!-- Accessibility Settings -->
     <entry name="enableVoiceFeedback" type="Bool">
@@ -315,6 +240,37 @@
     <entry name="displayBookmarkDock" type="Bool">
       <label>Enable audio feedback from common actions</label>
       <default> true </default>
+    </entry>
+    <entry name="displayRecentDock" type="Bool">
+      <label>Display the recently used contacts</label>
+      <default> true </default>
+    </entry>
+  </group>
+
+  <group name="mergeContactField">
+    <entry name="formattedName" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="nickname" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="primaryName" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="lastName" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="email" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="org" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="addresses" type="Bool">
+      <default> false </default>
+    </entry>
+    <entry name="phoneNumbers" type="Bool">
+      <default> false </default>
     </entry>
   </group>
 </kcfg>

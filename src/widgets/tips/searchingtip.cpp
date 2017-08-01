@@ -35,7 +35,7 @@ m_RenderCache(QSize(100,100),QImage::Format_ARGB32)
    setHasBackground(false);
    setHasText(false);
    setTimeOut(60);
-   loadSvg(QStringLiteral(":/tip/icons/tips/searching.svg"));
+   loadSvg(QStringLiteral(":/canvasassets/Searching.svg"));
    connect(this,&Tip::visibilityChanged,this,&SearchingTip::startAnimation);
 }
 
@@ -103,3 +103,5 @@ QRect SearchingTip::getTextRect(const QString& text)
    r.setHeight(50);
    return r;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

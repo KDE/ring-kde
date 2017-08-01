@@ -40,10 +40,10 @@ public:
    bool hasChanged();
 
 private:
-
-   TipManager* m_pTipManager         ;
-   Tip*        m_pTip                ;
-   bool        m_Changed             ;
+   // Attributes
+   TipManager* m_pTipManager;
+   Tip*        m_pTip       ;
+   bool        m_Changed    ;
 
 public Q_SLOTS:
    //Mutator
@@ -64,3 +64,5 @@ Q_SIGNALS:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

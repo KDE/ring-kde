@@ -27,3 +27,5 @@ const QString ErrorMessage::GENERIC_ERROR = i18n("An unknown error occurred. Rin
 const QString ErrorMessage::NO_DAEMON_ERROR = i18n("The Ring daemon (dring) is not available. Please be sure it is installed correctly or launch it manually. \n\n\
 Check in your distribution repository if the Ring daemon (sometime called \"ring-daemon\") is available.\n\
 Help for building Ring daemon from source are present at https://projects.savoirfairelinux.com/projects/sflphone/wiki/How_to_build");
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

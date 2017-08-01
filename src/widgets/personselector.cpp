@@ -45,3 +45,5 @@ PersonSelector::PersonSelector(QWidget* parent, const ContactMethod* cm) : QDial
 
    listView->setModel(m_pSortedContacts);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

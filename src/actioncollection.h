@@ -26,16 +26,21 @@ class QActionGroup;
 //KDE
 class QAction;
 
+// Ring
+class FancyMainWindow;
+class PhoneWindow;
+
 ///Group action declaration under the same umbrella
 class ActionCollection : public QObject {
    Q_OBJECT
 public:
 
    //Constructor
-   explicit ActionCollection(QObject* parent = nullptr);
+   explicit ActionCollection(FancyMainWindow* parent = nullptr);
    virtual ~ActionCollection();
    static ActionCollection* instance();
-   void setupAction();
+   void setupAction(FancyMainWindow* mw);
+   void setupPhoneAction(PhoneWindow* mw);
 
    //Actions
    QAction* holdAction                  ();
@@ -49,8 +54,6 @@ public:
    QAction* displayVolumeControlsAction ();
    QAction* displayDialpadAction        ();
    QAction* displayAccountCbbAction     ();
-   QAction* displayMessageBoxAction     ();
-   QAction* mailBoxAction               ();
    QAction* showContactDockAction       ();
    QAction* showHistoryDockAction       ();
    QAction* showBookmarkDockAction      ();
@@ -60,6 +63,8 @@ public:
    QAction* focusContact                ();
    QAction* focusCall                   ();
    QAction* focusBookmark               ();
+   QAction* showWizard                  ();
+   QAction* newContact                  ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -112,13 +117,13 @@ private:
    #endif
 
    //Other actions
-   QAction * action_mailBox                {nullptr};
-   QAction * action_close                  {nullptr};
+   QAction * action_new_contact            {nullptr};
+   QAction * action_close_phone            {nullptr};
+   QAction * action_close_timeline         {nullptr};
    QAction * action_quit                   {nullptr};
    QAction * action_displayVolumeControls  {nullptr};
    QAction * action_displayDialpad         {nullptr};
    QAction * action_displayAccountCbb      {nullptr};
-   QAction * action_displayMessageBox      {nullptr};
    QAction * action_configureRing          {nullptr};
    QAction * action_configureShortcut      {nullptr};
    QAction * action_configureNotifications {nullptr};
@@ -133,23 +138,27 @@ private:
    QAction * action_focus_contact          {nullptr};
    QAction * action_focus_call             {nullptr};
    QAction * action_focus_bookmark         {nullptr};
+   QAction * action_show_wizard            {nullptr};
+   QAction * action_show_directory         {nullptr};
 
 public Q_SLOTS:
    void configureRing         ();
    void raiseClient           ( bool focus = false );
 
 private Q_SLOTS:
-   void mailBox  ();
    void showShortCutEditor    ();
    void showNotificationEditor();
+   void showDirectory         ();
    void editToolBar           ();
    void slotAddPerson         ();
    void updateRecordButton    ();
    void updateVolumeButton    ();
-   void addMacro              ( const QVariant& newAction );
+   void slotNewContact        ();
 
 Q_SIGNALS:
    void windowStateChanged();
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

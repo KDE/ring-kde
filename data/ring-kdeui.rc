@@ -3,6 +3,8 @@
    <MenuBar>
       <Menu name="Actions" >
          <text>Actions</text>
+         <Action name="action_new_contact" />
+         <Separator />
          <Action name="action_accept" />
          <Action name="action_refuse" />
          <Action name="action_hold" />
@@ -10,9 +12,8 @@
          <Action name="action_record" />
          <Action name="action_mailBox" />
          <Separator />
-         <Action name="action_addContact" />
-         <Separator />
-         <Action name="action_close" />
+         <Action name="action_close_phone" />
+         <Action name="action_close_timeline" />
          <Separator />
          <Action name="action_quit" />
       </Menu>
@@ -24,11 +25,12 @@
          <Separator />
          <Action name="action_displayVolumeControls" />
          <Action name="action_displayDialpad" />
-         <Action name="action_displayMessageBox" />
          <Action name="action_displayAccountCbb" />
       </Menu>
       <Menu name="Settings" >
          <text>Settings</text>
+         <Action name="action_show_wizard" />
+         <Separator />
          <Action name="action_configureShortcut" />
          <Action name="action_configureNotifications" />
          <Action name="action_editToolBar" />
@@ -36,7 +38,6 @@
       </Menu>
    </MenuBar>
    <ToolBar name="mainToolBar" iconText="textbesideicon" position="Top" noMerge="1" fullWidth="false" newline="true" >
-      <Action name="action_new_call" />
-      <Action name="action_mailBox" />
+      <Action name="action_new_contact" />
    </ToolBar>
 </gui>

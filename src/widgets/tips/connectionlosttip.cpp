@@ -101,3 +101,5 @@ QRect ConnectionLostTip::getTextRect(const QString& text)
    r.setHeight(50);
    return r;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

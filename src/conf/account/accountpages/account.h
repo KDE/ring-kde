@@ -25,6 +25,8 @@
 class Account;
 class Person;
 class AccountSerializationAdapter;
+class DlgProfiles;
+class QQmlEngine;
 
 namespace Pages {
 
@@ -34,6 +36,8 @@ Q_OBJECT
 public:
    //Constructor
    explicit Account(QWidget *parent = nullptr);
+
+   void setEngine(QQmlEngine* e);
 
 public Q_SLOTS:
    virtual void updateWidgets() override;
@@ -58,8 +62,12 @@ private:
    Account* m_pAccount {nullptr};
    QList<Person*> m_lToSave;
    AccountSerializationAdapter* m_pAdapter = nullptr;
+   DlgProfiles* m_pProfile {nullptr};
+   QQmlEngine* m_pEngine{nullptr};
 };
 
 }
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

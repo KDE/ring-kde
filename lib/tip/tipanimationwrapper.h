@@ -87,3 +87,5 @@ Q_SIGNALS:
    void transitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
 };
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

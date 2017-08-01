@@ -96,3 +96,5 @@ void VideoSettings::hideDevices()
    m_pDevice->setVisible(false);
    label_4->setVisible(false);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

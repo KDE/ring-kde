@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="peerstimeline.qml">qml/peerstimeline.qml</file>
+        <file alias="ContactHeader.qml">qml/contactheader.qml</file>
+        <file alias="ContactInfo.qml">qml/contactinfo.qml</file>
+        <file alias="CallHistory.qml">qml/callhistory.qml</file>
+        <file alias="RecordingHistory.qml">qml/recordinghistory.qml</file>
+        <file alias="AudioPlayer.qml">qml/audioplayer.qml</file>
+        <file alias="viewcontact.qml">qml/viewcontact.qml</file>
+        <file alias="ChatBox.qml">qml/chatbox.qml</file>
+        <file alias="ChatView.qml">qml/chatview.qml</file>
+        <file alias="TimelinePage.qml">qml/timelinepage.qml</file>
+        <file alias="TimelineScrollbar.qml">qml/timelinescrollbar.qml</file>
+        <file alias="TextBubble.qml">qml/textbubble.qml</file>
+        <file alias="CategoryHeader.qml">qml/categoryheader.qml</file>
+        <file alias="TextMessageGroup.qml">qml/textmessagegroup.qml</file>
+        <file alias="CallGroup.qml">qml/callgroup.qml</file>
+        <file alias="GroupHeader.qml">qml/groupheader.qml</file>
+        <file alias="GroupFooter.qml">qml/groupfooter.qml</file>
+        <file alias="ContactMethodDelegate.qml">qml/contactmethoddelegate.qml</file>
+        <file alias="Addresses.qml">qml/addresses.qml</file>
+        <file alias="PhoneNumbers.qml">qml/phonenumbers.qml</file>
+        <file alias="SearchDelegate.qml">qml/searchdelegate.qml</file>
+        <file alias="FindPeers.qml">qml/findpeers.qml</file>
+        <file alias="Snapshots.qml">qml/snapshots.qml</file>
+        <file alias="Slideshow.qml">qml/slideshow.qml</file>
+        <file alias="Thumbnail.qml">qml/thumbnail.qml</file>
+        <file alias="HistoryCallIcon.qml">qml/historycallicon.qml</file>
+        <file alias="Style/Style.qml">qml/Style/Style.qml</file>
+        <file alias="Style/qmldir">qml/Style/qmldir</file>
+        <file>icons/bookmarked.svg</file>
+        <file>icons/not_bookmarked.svg</file>
+    </qresource>
+</RCC>

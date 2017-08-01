@@ -40,8 +40,13 @@
 #include <securityevaluationmodel.h>
 #include <collectioninterface.h>
 #include <useractionmodel.h>
+#include <video/sourcemodel.h>
 #include <QStandardPaths>
 #include "icons/icons.h"
+#include "qmlwidgets/cmiconengine.h"
+#include "qmlwidgets/personiconengine.h"
+#include <qrc_assets.cpp>
+#include "../callview/imageprovider.h"
 
 
 const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {{
@@ -69,97 +74,37 @@ KDEPixmapManipulation::KDEPixmapManipulation() : QObject(), Interfaces::PixmapMa
 
 }
 
-///When the Person is rebased (use a new data source), everything is now invalid
-void KDEPixmapManipulation::clearCache()
+QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence)
 {
-   Person* c = qobject_cast<Person*>(sender());
-   if (!c) return;
+   Q_UNUSED(displayPresence)
+   Q_UNUSED(size)
 
-   //Hopefully it wont happen often
-   foreach (const QByteArray& name, c->dynamicPropertyNames()) {
-      if (name.left(5) == "photo")
-         c->setProperty(name,QVariant());
-   }
+   // Keep the engine cached
+   if (c->property("icon").canConvert<QIcon>())
+      return c->property("icon");
+
+   auto icn = QIcon(new PersonIconEngine(c));
+   c->setProperty("icon", icn);
+
+   return icn;
 }
 
-QVariant KDEPixmapManipulation::contactPhoto(Person* c, const QSize& size, bool displayPresence) {
-   const QString hash = QStringLiteral("photo2%1%2%3").arg(size.width()).arg(size.height()).arg(c->isPresent());
-   QVariant preRendered = c->property(hash.toLatin1());
-   if (preRendered.isValid())
-      return preRendered;
-   else
-      connect(c,&Person::rebased,this,&KDEPixmapManipulation::clearCache);
-   const int radius = (size.height() > 35) ? 7 : 5;
-   //const QPixmap pxmPtr = qvariant_cast<QPixmap>(c->photo());
-   bool isTracked = displayPresence && c->isTracked();
-   bool isPresent = displayPresence && c->isPresent();
-   static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
-   static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
+QVariant KDEPixmapManipulation::callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence)
+{
+   // Use the photo when available
+   if (n->contact())
+      return contactPhoto(n->contact(), size, displayPresence);
 
-   QPixmap pxm;
-   if (c->photo().isValid()) {
-      QPixmap contactPhoto((qvariant_cast<QPixmap>(c->photo())).scaledToWidth(size.height()-6));
-      pxm = QPixmap(size);
-      pxm.fill(Qt::transparent);
-      QPainter painter(&pxm);
+   // Keep the engine cached
+   if (n->property("icon2").canConvert<QIcon>())
+      return n->property("icon2");
 
-      //Clear the pixmap
-      painter.setCompositionMode(QPainter::CompositionMode_Clear);
-      painter.fillRect(0,0,size.width(),size.height(),QBrush(Qt::white));
-      painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+   auto cm = const_cast<ContactMethod*>(n);
 
-      //Add corner radius to the Pixmap
-      QRect pxRect = contactPhoto.rect();
-      QBitmap mask(pxRect.size());
-      QPainter customPainter(&mask);
-      customPainter.setRenderHint  (QPainter::Antialiasing, true      );
-      customPainter.fillRect       (pxRect                , Qt::white );
-      customPainter.setBackground  (Qt::black                         );
-      customPainter.setBrush       (Qt::black                         );
-      customPainter.drawRoundedRect(pxRect,radius,radius);
-      contactPhoto.setMask(mask);
-      painter.drawPixmap(3,3,contactPhoto);
-      painter.setBrush(Qt::NoBrush);
-      painter.setPen(Qt::white);
-      painter.setRenderHint  (QPainter::Antialiasing, true   );
-      painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-      painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
-      painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+   QIcon icn(new CMIconEngine(cm));
+   cm->setProperty("icon2", icn);
 
-      //Draw the glow around pixmaps
-      if (isTracked) {
-         QPen pen(QApplication::palette().color(QPalette::Disabled,QPalette::Text));
-         pen.setWidth(1);
-         if (isPresent)
-            pen.setColor(presentBrush);
-         else
-            pen.setColor(awayBrush);
-         for (int i=2;i<=7;i+=2) {
-            pen.setWidth(i);
-            painter.setPen(pen);
-            painter.setOpacity(0.3f-(((i-2)*0.8f)/10.0f));
-            painter.drawRoundedRect(3,3,pxm.height()-6,pxm.height()-6,radius,radius);
-         }
-      }
-   }
-   else {
-      pxm = drawDefaultUserPixmap(size,isTracked,isPresent);
-   }
-
-   c->setProperty(hash.toLatin1(),pxm);
-   return pxm;
-}
-
-QVariant KDEPixmapManipulation::callPhoto(const ContactMethod* n, const QSize& size, bool displayPresence) {
-   if (n->contact()) {
-      return contactPhoto(n->contact(),size,displayPresence);
-   }
-   else {
-      bool isTracked = displayPresence && n->isTracked();
-      bool isPresent = displayPresence && n->isPresent();
-
-      return drawDefaultUserPixmap(size,isTracked,isPresent);
-   }
+   return icn;
 }
 
 QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displayPresence)
@@ -168,7 +113,7 @@ QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displ
       return contactPhoto(c->peerContactMethod()->contact(),size,displayPresence);
    }
    else
-      return QPixmap(callStateIcons[c->state()]);
+      return QIcon(callStateIcons[c->state()]);
 }
 
 QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence, bool isPresent)
@@ -211,7 +156,7 @@ QVariant KDEPixmapManipulation::securityIssueIcon(const QModelIndex& index)
    return QVariant();
 }
 
-QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
+QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm, const QString& type)
 {
    //Preparation of our QPixmap
    QByteArray bArray;
@@ -219,7 +164,7 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
    buffer.open(QIODevice::WriteOnly);
 
    //PNG ?
-   (qvariant_cast<QPixmap>(pxm)).save(&buffer, "JPEG");
+   (qvariant_cast<QPixmap>(pxm)).save(&buffer, type.toLatin1());
    buffer.close();
 
    return bArray;
@@ -228,7 +173,6 @@ QByteArray KDEPixmapManipulation::toByteArray(const QVariant& pxm)
 QVariant KDEPixmapManipulation::personPhoto(const QByteArray& data, const QString& type)
 {
    if (data.isEmpty()) {
-      qDebug() << "vCard image loading failed, the image is empty";
       return {};
    }
 
@@ -244,74 +188,28 @@ QVariant KDEPixmapManipulation::personPhoto(const QByteArray& data, const QStrin
    return QPixmap::fromImage(image);
 }
 
-QPixmap KDEPixmapManipulation::drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent) {
-   //Load KDE default user pixmap
-   QPixmap pxm(size);
-   pxm.fill(Qt::transparent);
-   QPainter painter(&pxm);
-
-   painter.drawPixmap(3,3,QIcon::fromTheme(QStringLiteral("user-identity")).pixmap(QSize(size.height()-6,size.width()-6)));
-
-   //Create a region where the pixmap is not fully transparent
-   if (displayPresence) {
-      static QHash<int,QRegion> r,ri;
-      static QHash<int,bool> init;
-      const int width = size.width();
-      if (!init[width]) {
-         r[width] = QRegion(QPixmap::fromImage(pxm.toImage().createAlphaMask()));
-         ri[width] = r[width].xored(pxm.rect());
-         init[width] = true;
-      }
-
-      static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText ).brush(QPalette::Normal).color();
-      static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText ).brush(QPalette::Normal).color();
-
-
-      painter.setOpacity(0.05);
-      painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
-      painter.fillRect(pxm.rect(),isPresent?Qt::green:Qt::red);
-      painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-
-      //Paint only outside of the pixmap, it looks better
-      painter.setClipRegion(ri[width]);
-      QPainterPath p;
-      p.addRegion(r[width]);
-      QPen pen = painter.pen();
-      pen.setColor(isPresent?presentBrush:awayBrush);
-      painter.setBrush(Qt::NoBrush);
-      painter.setRenderHint  (QPainter::Antialiasing, true      );
-      for (int i=2;i<=9;i+=2) {
-         pen.setWidth(i);
-         painter.setPen(pen);
-         painter.setOpacity(0.30f-(((i-2)*0.45f)/10.0f));
-         painter.drawPath(p);
-      }
-   }
-   return pxm;
-}
-
 QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) const
 {
 
    switch(state.action) {
       case UserActionModel::Action::ACCEPT          :
-         return QIcon(":/callstate_light/icons/light/accept.svg"   );
+         return QIcon(":/sharedassets/phone_light/accept.svg"   );
       case UserActionModel::Action::HOLD            :
-         return QIcon(":/callstate_light/icons/light/hold.svg"     );
+         return QIcon(":/sharedassets/phone_light/hold.svg"     );
       case UserActionModel::Action::MUTE_AUDIO      :
-         return QIcon(":/callstate_light/icons/light/mic.svg"  );
+         return QIcon(":/sharedassets/phone_light/mic_off.svg"  );
       case UserActionModel::Action::MUTE_VIDEO      :
-         return QIcon(":/callstate_light/icons/light/mic.svg"  );
+         return QIcon(":/sharedassets/phone_light/mic_off.svg"  );
       case UserActionModel::Action::SERVER_TRANSFER :
-         return QIcon(":/callstate_light/icons/light/transfert.svg" );
+         return QIcon(":/sharedassets/phone_light/transfert.svg" );
       case UserActionModel::Action::RECORD          :
-         return QIcon(":/callstate_light/icons/light/rec_call.svg"   );
+         return QIcon(":/sharedassets/phone_light/record_call.svg"   );
       case UserActionModel::Action::HANGUP          :
-         return QIcon(":/callstate_light/icons/light/refuse.svg"   );
+         return QIcon(":/sharedassets/phone_light/refuse.svg"   );
       case UserActionModel::Action::JOIN            :
          return QIcon();
       case UserActionModel::Action::ADD_NEW         :
-         return QIcon(":/callstate_light/icons/light/accept.svg"   );
+         return QIcon(":/sharedassets/phone_light/accept.svg"   );
       case UserActionModel::Action::ADD_CONTACT:
       case UserActionModel::Action::ADD_TO_CONTACT:
       case UserActionModel::Action::ADD_CONTACT_METHOD:
@@ -354,7 +252,7 @@ QVariant KDEPixmapManipulation::collectionIcon(const CollectionInterface* interf
       case Interfaces::PixmapManipulatorI::CollectionIconHint::CERTIFICATE:
          return QIcon::fromTheme(QStringLiteral("certificate-server"));
       case Interfaces::PixmapManipulatorI::CollectionIconHint::RECORDING:
-         return QIcon(":/images/icons/mailbox.svg");
+         return QIcon(":/sharedassets/phone_dark/mailbox.svg");
       case Interfaces::PixmapManipulatorI::CollectionIconHint::RINGTONE:
       case Interfaces::PixmapManipulatorI::CollectionIconHint::NONE:
       case Interfaces::PixmapManipulatorI::CollectionIconHint::PROFILE:
@@ -383,14 +281,14 @@ QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel:
    switch (level) {
       case SecurityEvaluationModel::SecurityLevel::COUNT__:
       case SecurityEvaluationModel::SecurityLevel::NONE      :
-         return QIcon(":/images/icons/lock_off.svg");
+         return QIcon(":/sharedassets/security/lock_off.svg");
       case SecurityEvaluationModel::SecurityLevel::WEAK      :
       case SecurityEvaluationModel::SecurityLevel::MEDIUM    :
-         return QIcon(":/images/icons/lock_unconfirmed.svg");
+         return QIcon(":/sharedassets/security/lock_unconfirmed.svg");
       case SecurityEvaluationModel::SecurityLevel::ACCEPTABLE:
       case SecurityEvaluationModel::SecurityLevel::STRONG    :
       case SecurityEvaluationModel::SecurityLevel::COMPLETE  :
-         return QIcon(":/images/icons/lock_confirmed.svg");
+         return QIcon(":/sharedassets/security/lock_confirmed.svg");
    }
 
    return QVariant();
@@ -429,6 +327,27 @@ QVariant KDEPixmapManipulation::contactSortingCategoryIcon(const CategorizedCont
    return QVariant();
 }
 
+QVariant KDEPixmapManipulation::videoDeviceIcon(const QModelIndex& idx) const
+{
+   switch (idx.row()) {
+      case Video::SourceModel::ExtendedDeviceList::NONE:
+         return QIcon::fromTheme("camera-off");
+      case Video::SourceModel::ExtendedDeviceList::SCREEN:
+         return QIcon::fromTheme("video-display");
+      case Video::SourceModel::ExtendedDeviceList::FILE:
+         return QIcon::fromTheme("video-mp4");
+      default:
+         return QIcon::fromTheme("camera-on");
+   }
+
+   return {};
+}
+
+QString KDEPixmapManipulation::takeSnapshot(Call* call)
+{
+   return ImageProvider::takeSnapshot(call);
+}
+
 QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
 {
    if (!index.isValid())
@@ -458,9 +377,17 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
 
          return callPhoto(cm, QSize(22,22), true);
          }
-      case Ring::ObjectType::Call           :
+      case Ring::ObjectType::Call           : {
+
+         const Call* c = qvariant_cast<Call*>(
+            index.data(static_cast<int>(Ring::Role::Object))
+         );
+
+         return callPhoto(c->peerContactMethod(), QSize(22,22), true);
+         }
       case Ring::ObjectType::Media          : //TODO
       case Ring::ObjectType::Certificate    :
+      case Ring::ObjectType::ContactRequest :
       case Ring::ObjectType::COUNT__        :
          break;
    }
@@ -470,7 +397,7 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
 
 QVariant KDEPixmapManipulation::decorationRole(const Call* c)
 {
-   return callPhoto((Call*)c, QSize(22,22), true);
+   return callPhoto(c->peerContactMethod(), QSize(22,22), true);
 }
 
 QVariant KDEPixmapManipulation::decorationRole(const ContactMethod* cm)

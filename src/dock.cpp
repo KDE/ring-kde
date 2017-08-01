@@ -22,6 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QSortFilterProxyModel>
 #include <QtCore/QTimer>
+#include <QtCore/QResource>
 
 //KDE
 #include <KColorScheme>
@@ -41,7 +42,7 @@
 #include <categorizedbookmarkmodel.h>
 
 //Ring
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "view.h"
 #include "actioncollection.h"
 #include "klib/kcfg_settings.h"
@@ -75,7 +76,7 @@ protected:
    }
 };
 
-Dock::Dock(QMainWindow* w) : QObject(w)
+Dock::Dock(PhoneWindow* w) : QObject(w)
 {
    //Contact dock
    m_pContactCD       = new DockBase  ( nullptr );
@@ -197,28 +198,6 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    auto m = new BookmarkSortFilterProxyModel(this);
    m_pBookmarkDW->setProxyModel(m, m);
 
-
-   //GUI
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pContactCD  ,Qt::Horizontal);
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pHistoryDW  ,Qt::Horizontal);
-   w->addDockWidget( Qt::BottomDockWidgetArea, m_pBookmarkDW ,Qt::Horizontal);
-
-   w->tabifyDockWidget(m_pBookmarkDW,m_pHistoryDW );
-   w->tabifyDockWidget(m_pBookmarkDW,m_pContactCD );
-
-   //Force the dock widget aspect ratio, doing this is an HACK
-   m_pHistoryDW ->setMinimumSize(350,0);
-   m_pContactCD ->setMinimumSize(350,0);
-   m_pBookmarkDW->setMinimumSize(350,0);
-
-   m_pHistoryDW ->setMaximumSize(350,999999);
-   m_pContactCD ->setMaximumSize(350,999999);
-   m_pBookmarkDW->setMaximumSize(350,999999);
-
-   connect(m_pContactCD ,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
-   connect(m_pHistoryDW ,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
-   connect(m_pBookmarkDW,&QDockWidget::visibilityChanged,this,&Dock::updateTabIcons);
-
    m_pContactCD-> setVisible(ConfigurationSkeleton::displayContactDock() );
    m_pHistoryDW-> setVisible(ConfigurationSkeleton::displayHistoryDock() );
    m_pBookmarkDW->setVisible(ConfigurationSkeleton::displayBookmarkDock());
@@ -231,6 +210,12 @@ Dock::Dock(QMainWindow* w) : QObject(w)
    connect( ActionCollection::instance()->focusContact (), &QAction::triggered, this, &Dock::focusContact  );
    connect( ActionCollection::instance()->focusCall    (), &QAction::triggered, this, &Dock::focusCall     );
    connect( ActionCollection::instance()->focusBookmark(), &QAction::triggered, this, &Dock::focusBookmark );
+
+   // Show the "pretty" sidebars
+   connect(m_pContactCD , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
+   connect(m_pHistoryDW , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
+   connect(m_pBookmarkDW, &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
+   w->updateTabIcons();
 }
 
 Dock::~Dock()
@@ -247,7 +232,7 @@ Dock::~Dock()
    m_pHistoryDW ->deleteLater();
    m_pBookmarkDW->deleteLater();
 
-   if (!MainWindow::app()->isHidden()) {
+   if (!PhoneWindow::app()->isHidden()) {
       ConfigurationSkeleton::setDisplayContactDock ( m_pContactCD->isVisible()  );
       ConfigurationSkeleton::setDisplayHistoryDock ( m_pHistoryDW->isVisible()  );
       ConfigurationSkeleton::setDisplayBookmarkDock( m_pBookmarkDW->isVisible() );
@@ -274,35 +259,6 @@ DockBase* Dock::bookmarkDock()
    return m_pBookmarkDW;
 }
 
-///Qt does not support dock icons by default, this is an hack around this
-void Dock::updateTabIcons()
-{
-   QList<QTabBar*> tabBars = parent()->findChildren<QTabBar*>();
-   if(tabBars.count())
-   {
-      foreach(QTabBar* bar, tabBars) {
-         for (int i=0;i<bar->count();i++) {
-            QString text = bar->tabText(i).replace('&',QString());
-            if (text == i18n("Call")) {
-               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("call-start")));
-            }
-            else if (text == i18n("Bookmark")) {
-               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("bookmarks")));
-            }
-            else if (text == i18n("Contact")) {
-               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("folder-publicshare")));
-            }
-            else if (text == i18n("History")) {
-               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("view-history")));
-            }
-            else if (text == i18n("Video")) {
-               bar->setTabIcon(i,QIcon::fromTheme(QStringLiteral("camera-on")));
-            }
-         }
-      }
-   }
-} //updateTabIcons
-
 void Dock::focusHistory()
 {
    m_pHistoryDW->raise();
@@ -319,7 +275,7 @@ void Dock::focusContact()
 
 void Dock::focusCall()
 {
-   MainWindow::view()->raise();
+   PhoneWindow::app()->view()->raise();
    ActionCollection::instance()->raiseClient(true);
 }
 
@@ -331,3 +287,5 @@ void Dock::focusBookmark()
 }
 
 #include <dock.moc>
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

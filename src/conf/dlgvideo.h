@@ -39,18 +39,15 @@ public:
    explicit DlgVideo(KConfigDialog* parent = nullptr);
 
    //Destructor
-   ~DlgVideo();
+   virtual ~DlgVideo();
 
    //Getter
    bool hasChanged();
 
 private:
    //Attribute
-   Video::Device* m_pDevice;
-   bool m_IsChanged;
-   bool m_IsLoading;
-   Video::Channel* m_pChannel;
-   Video::Resolution* m_pResolution;
+   bool m_IsChanged {false};
+   bool m_IsLoading {true};
 
 public Q_SLOTS:
    void updateWidgets ();
@@ -69,3 +66,5 @@ Q_SIGNALS:
 
 #endif
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -44,18 +44,23 @@ public:
    //Mutator
    bool showConversation(ContactMethod* cm);
 
+   Media::TextRecording* currentConversation() const;
+
 private:
    //Attrubutes
    QHash<ContactMethod*,IMTab*> m_lTabs;
+   QHash<Media::TextRecording*,IMTab*> m_lTabsByTR;
 
 public Q_SLOTS:
    void clearColor(int idx = -1);
 
 private Q_SLOTS:
-   IMTab* newConversation(ContactMethod* cm, QAbstractItemModel* model);
+   IMTab* newConversation(ContactMethod* cm, Media::TextRecording* rec);
    void closeRequest(int index);
    void addMedia(Call* c, Media::Media* m);
    void newMessageInserted(Media::TextRecording* r, ContactMethod* cm);
 };
 
 #endif // IM_MANAGER
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

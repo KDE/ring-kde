@@ -21,6 +21,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDropEvent>
 #include <QtCore/QMimeData>
+#include <QtCore/QTimer>
 #include <QtCore/QLocale>
 #include <QtCore/QMutex>
 
@@ -38,7 +39,7 @@
 #include <personmodel.h>
 #include <tip/tipmanager.h>
 #include "view.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "actioncollection.h"
 #include "useractionmodel.h"
 #include "canvasobjectmanager.h"
@@ -50,18 +51,20 @@
 bool EventManager::m_HasFocus = false;
 
 //This code detect if the window is active, innactive or minimzed
-class MainWindowEvent : public QObject {
+class PhoneWindowEvent : public QObject {
    Q_OBJECT
 public:
-   MainWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
-      MainWindow::app()->installEventFilter(this);
+   PhoneWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
+      QTimer::singleShot(0, [this]() {
+         PhoneWindow::app()->installEventFilter(this);
+      });
    }
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event)  override {
       Q_UNUSED(obj)
       if (event->type() == QEvent::WindowStateChange) {
          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
-         switch (MainWindow::app()->windowState()) {
+         switch (PhoneWindow::app()->windowState()) {
             case Qt::WindowMinimized:
                emit minimized(true);
                break;
@@ -95,23 +98,21 @@ Q_SIGNALS:
 };
 
 ///Constructor
-EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pMainWindowEv(new MainWindowEvent(this))
+EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pPhoneWindowEv(new PhoneWindowEvent(this))
 {
    connect(&CallModel::instance()    , &CallModel::callStateChanged , this, &EventManager::slotCallStateChanged );
    connect(&CallModel::instance()    , &CallModel::incomingCall                 , this, &EventManager::slotIncomingCall );
 
-   connect(m_pMainWindowEv , &MainWindowEvent::minimized , m_pParent->m_pCanvasManager, &CanvasObjectManager::slotMinimized);
+   connect(m_pPhoneWindowEv , &PhoneWindowEvent::minimized , m_pParent->m_pCanvasManager, &CanvasObjectManager::slotMinimized);
 
    connect(&AccountModel::instance(),&AccountModel::registrationChanged,this,&EventManager::slotregistrationChanged);
    connect(&AccountModel::instance(),&AccountModel::badGateway,this,&EventManager::slotNetworkDown);
-   //Listen for macro
-   MacroModel::addListener(this);
 }
 
 ///Destructor
 EventManager::~EventManager()
 {
-   delete m_pMainWindowEv;
+   delete m_pPhoneWindowEv;
 }
 
 /*****************************************************************************
@@ -132,7 +133,7 @@ bool EventManager::viewDragEnterEvent(const QDragEnterEvent* e)
 ///Callback when something is dropped on the call canvas
 bool EventManager::viewDropEvent(QDropEvent* e)
 {
-   const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
+   const auto idxAt = m_pParent->m_pView->indexAt(e->pos());
    m_pParent->m_pView->cancelHoverState();
    CallModel::instance().setData(idxAt,-1,static_cast<int>(Call::Role::DropState));
    e->accept();
@@ -194,7 +195,7 @@ bool EventManager::viewDropEvent(QDropEvent* e)
 
    //Remove item overlays
    for (int i = 0;i < m_pParent->m_pView->model()->rowCount();i++) {
-      const QModelIndex& idx = m_pParent->m_pView->model()->index(i,0);
+      const auto idx = m_pParent->m_pView->model()->index(i,0);
       m_pParent->m_pView->model()->setData(idx,-1,static_cast<int>(Call::Role::DropState));
       for (int j = 0;j < m_pParent->m_pView->model()->rowCount(idx);j++) {
          m_pParent->m_pView->model()->setData(m_pParent->m_pView->model()->index(j,0,idx),-1,static_cast<int>(Call::Role::DropState));
@@ -250,7 +251,7 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    if (!isCall || CallModel::instance().hasConference())
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::DRAG_MOVE);
    //Just as drop, compute the position
-   const QModelIndex& idxAt = m_pParent->m_pView->indexAt(e->pos());
+   const auto idxAt = m_pParent->m_pView->indexAt(e->pos());
    const QPoint position = e->pos();
    const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
    Call* source = nullptr;
@@ -312,8 +313,8 @@ bool EventManager::viewKeyEvent(QKeyEvent* event)
          if (m_pParent->m_pAutoCompletion && m_pParent->m_pAutoCompletion->selection()) {
             m_pParent->m_pAutoCompletion->callSelectedNumber();
          }
-         else if (!MainWindow::view()->messageBoxFocussed())
-            enter();
+
+         enter();
          break;
       case Qt::Key_Backspace:
          backspace();
@@ -358,7 +359,6 @@ void EventManager::typeString(const QString& str)
     * 
     * Any other comportment need to be documented here or treated as a bug
     */
-qDebug() << "BOB" << str << (int) str[0].toLatin1();
    Call* call = CallModel::instance().selectedCall();
    Call* currentCall = nullptr;
    Call* candidate   = nullptr;
@@ -386,7 +386,7 @@ qDebug() << "BOB" << str << (int) str[0].toLatin1();
       candidate = CallModel::instance().dialingCall();
       CallModel::instance().selectDialingCall();
       candidate->playDTMF(str);
-      const QModelIndex& newCallIdx = CallModel::instance().getIndex(candidate);
+      const auto newCallIdx = CallModel::instance().getIndex(candidate);
       if (newCallIdx.isValid()) {
          m_pParent->m_pView->selectionModel()->setCurrentIndex(newCallIdx,QItemSelectionModel::SelectCurrent);
       }
@@ -495,15 +495,6 @@ void EventManager::enter()
    }
 }
 
-///Macros needs to be executed at high level so the animations kicks in
-void EventManager::addDTMF(const QString& sequence)
-{
-   if (sequence == QLatin1String("\n"))
-      enter();
-   else
-      typeString(sequence);
-}
-
 /*****************************************************************************
  *                                                                           *
  *                                  Slots                                    *
@@ -516,7 +507,7 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
    switch (call->state()) {
       case Call::State::RINGING:
          m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-         MainWindow::app()->selectCallTab();
+         PhoneWindow::app()->selectCallTab();
          break;
       case Call::State::DIALING:
       case Call::State::NEW:
@@ -554,21 +545,12 @@ void EventManager::slotCallStateChanged(Call* call, Call::State previousState)
 
    }
 
-   //Hide the mailbox
-   ActionCollection::instance()->mailBoxAction()->setVisible(AvailableAccountModel::currentDefaultAccount() && ! AvailableAccountModel::currentDefaultAccount()->mailbox().isEmpty());
-
-
    //Update the window for the selected call
    Call* call2 = call = CallModel::instance().selectedCall();
 
    if ((!call2) || (call2->type() == Call::Type::CONFERENCE)) {
-      m_pParent->m_pMessageBoxW->setVisible(false);
       return;
    }
-
-   m_pParent->m_pMessageBoxW->setVisible(
-      ConfigurationSkeleton::displayMessageBox() && call2->lifeCycleState() == Call::LifeCycleState::PROGRESS
-   );
 
    if (call2->state() == Call::State::TRANSFERRED) {
       if (!m_pParent->m_pTransferOverlay) {
@@ -597,7 +579,7 @@ void EventManager::slotIncomingCall(Call* call)
    Q_UNUSED(call)
    if (call->state() == Call::State::INCOMING || call->state() == Call::State::RINGING) {
       m_pParent->m_pCanvasManager->newEvent(CanvasObjectManager::CanvasEvent::CALL_RINGING);
-      MainWindow::app()->selectCallTab();
+      PhoneWindow::app()->selectCallTab();
    }
 }
 
@@ -621,3 +603,5 @@ bool EventManager::mayHaveFocus()
 }
 
 #include "eventmanager.moc"
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

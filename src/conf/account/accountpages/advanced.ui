@@ -22,7 +22,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_regExpire">
           <property name="text">
-           <string>Registration expire</string>
+           <string>Re&amp;gistration expire</string>
           </property>
           <property name="buddy">
            <cstring>lrcfg_registrationExpire</cstring>
@@ -215,7 +215,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_6">
+    <widget class="QGroupBox" name="m_pDTMF_GB">
      <property name="title">
       <string>DTMF</string>
      </property>
@@ -223,7 +223,7 @@
       <item>
        <widget class="QRadioButton" name="auto_2">
         <property name="text">
-         <string>Over RTP</string>
+         <string>Over R&amp;TP</string>
         </property>
        </widget>
       </item>

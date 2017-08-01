@@ -65,3 +65,5 @@ QRect ConfTip::getTextRect(const QString& text)
    QRect rect = metric.boundingRect(QRect(m_Padding+75,m_Padding,m_CurrentRect.width()-2*m_Padding-75,999999),Qt::AlignJustify|Qt::TextWordWrap,text);
    return rect;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

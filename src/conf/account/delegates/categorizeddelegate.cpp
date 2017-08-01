@@ -116,3 +116,5 @@ void CategorizedDelegate::drawSimpleCategory(const QModelIndex &index, int sortR
    painter->setOpacity(1);
    painter->drawText(QRect(metric?1.5*metric:4,option.rect.y()+1+(topMargin2),option.rect.width(),option.rect.height()-1),Qt::AlignLeft | Qt::AlignTop,category);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

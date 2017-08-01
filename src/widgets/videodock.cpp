@@ -28,20 +28,22 @@
 
 #include <klocalizedstring.h>
 #include <QComboBox>
+#include <QtWidgets/QToolButton>
 
-#include "videowidget.h"
-#include "videoscene.h"
-#include "videotoolbar.h"
+#include "callview/videowidget.h"
 #include "actioncollection.h"
 #include "video/devicemodel.h"
 #include "video/sourcemodel.h"
+#include "media/media.h"
+#include "call.h"
+#include "media/video.h"
 #include "ui_mediafilepicker.h"
 #include "ui_screensharingwidget.h"
 #include "videosettings.h"
 
 class VideoWidgetItem : public QWidgetItem {
 public:
-   VideoWidgetItem(VideoWidget* m_pMainWidget) : QWidgetItem(m_pMainWidget),m_pWdg(m_pMainWidget){}
+   VideoWidgetItem(VideoWidget3* m_pMainWidget) : QWidgetItem(m_pMainWidget),m_pWdg(m_pMainWidget){}
    virtual ~VideoWidgetItem(){}
    virtual bool hasHeightForWidth () const override {
       return true;
@@ -50,7 +52,7 @@ public:
       return m_pWdg->heightForWidth(w);
    }
 private:
-   VideoWidget* m_pWdg;
+   VideoWidget3* m_pWdg;
 };
 
 class MediaPicker : public QWidget, public Ui_MediaPicker
@@ -131,7 +133,8 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    setObjectName(QStringLiteral("Video Dock"));
    m_pMainWidget = new QWidget(this);
 
-   m_pVideoWidet = new VideoWidget(m_pMainWidget);
+   m_pVideoWidet = new VideoWidget3(m_pMainWidget);
+   m_pVideoWidet->setMode(VideoWidget3::Mode::CONVERSATION);
    m_pVideoWidet->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
    auto l = new QGridLayout(m_pMainWidget);
    l->setContentsMargins(0,0,0,0);
@@ -141,9 +144,6 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
 //    l->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding),2,0);
    setWidget(m_pMainWidget);
    setMinimumSize(320,240);
-
-   VideoToolbar* tb = new VideoToolbar(this);
-   l->addWidget(tb,2,0);
 
    QToolButton* btn = new QToolButton(this);
    btn->setIcon(QIcon::fromTheme(QStringLiteral("arrow-down-double")));
@@ -164,11 +164,11 @@ VideoDock::VideoDock(QWidget* parent) : QDockWidget(parent),m_pVideoSettings(nul
    connect(btn,&QAbstractButton::toggled,moreOptions,&QWidget::setVisible);
    connect(m_pDevice,SIGNAL(currentIndexChanged(int)),this,SLOT(slotDeviceChanged(int)));
 
-   connect(ActionCollection::instance()->videoRotateLeftAction() ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotRotateLeft);
-   connect(ActionCollection::instance()->videoRotateRightAction(),&QAction::triggered,m_pVideoWidet,&VideoWidget::slotRotateRight);
-   connect(ActionCollection::instance()->videoPreviewAction()    ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotShowPreview);
-   connect(ActionCollection::instance()->videoMuteAction()       ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotMuteOutgoindVideo);
-   connect(ActionCollection::instance()->videoScaleAction()      ,&QAction::triggered,m_pVideoWidet,&VideoWidget::slotKeepAspectRatio);
+   connect(ActionCollection::instance()->videoRotateLeftAction() ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotRotateLeft);
+   connect(ActionCollection::instance()->videoRotateRightAction(),&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotRotateRight);
+   connect(ActionCollection::instance()->videoPreviewAction()    ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotShowPreview);
+   connect(ActionCollection::instance()->videoMuteAction()       ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotMuteOutgoindVideo);
+   connect(ActionCollection::instance()->videoScaleAction()      ,&QAction::triggered,m_pVideoWidet,&VideoWidget3::slotKeepAspectRatio);
    connect(ActionCollection::instance()->videoFullscreenAction() ,&QAction::triggered,this         ,&VideoDock::slotFullscreen);
 }
 
@@ -177,6 +177,18 @@ VideoDock::~VideoDock()
 {
    if (m_pWindow)
       delete m_pWindow;
+}
+
+void VideoDock::setCall(Call* c)
+{
+   m_pVideoWidet->setCall(c);
+
+   if (!c)
+      return;
+
+   if (auto videoOut = c->firstMedia<Media::Video>(Media::Media::Direction::OUT)) {
+      setSourceModel(videoOut->sourceModel());
+   }
 }
 
 ///Set current renderer
@@ -192,9 +204,13 @@ void VideoDock::setSourceModel(Video::SourceModel* model)
    if (model) {
       m_pVideoWidet->setSourceModel(model);
 
+      m_pDevice->blockSignals(true);
       m_pDevice->setModel(model);
       m_pDevice->setCurrentIndex(model->activeIndex());
-      connect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
+      m_pDevice->blockSignals(false);
+
+      if (!m_pSourceModel)
+         connect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));
    }
    else if (m_pSourceModel) {
       disconnect(m_pDevice,SIGNAL(currentIndexChanged(int)),m_pSourceModel,SLOT(switchTo(int)));

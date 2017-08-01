@@ -49,3 +49,5 @@ private:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

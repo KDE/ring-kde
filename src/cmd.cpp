@@ -31,7 +31,7 @@
 #include <call.h>
 #include <callmodel.h>
 #include <media/text.h>
-#include <mainwindow.h>
+#include <phonewindow.h>
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 
@@ -52,38 +52,51 @@ Cmd* Cmd::instance() {
 }
 
 ///Setup command line options before passing them to the KUniqueApplication
-void Cmd::parseCmd(int argc, char **argv, KAboutData& about)
+bool Cmd::parseCmd(int argc, char **argv, KAboutData& about)
 {
    Q_UNUSED(argc)
    Q_UNUSED(argv)
 
    QCoreApplication* app = QCoreApplication::instance();
 
-   QCommandLineOption call    (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QStringLiteral("number" ), QLatin1String(""));
-   QCommandLineOption text    (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QStringLiteral("number" ), QLatin1String(""));
-   QCommandLineOption message (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QStringLiteral("content"), QLatin1String(""));
-   QCommandLineOption icon    (QStringList { "iconify"    }, i18n("Start in the system tray"                                                    )                                             );
+   QCommandLineOption call      (QStringList { "place-call" }, i18n("Place a call to a given number"                                              ), QStringLiteral("number" ), QLatin1String(""));
+   QCommandLineOption text      (QStringList { "send-text"  }, i18n("Send a text to &lt;number&gt;, use --message to set the content, then hangup"), QStringLiteral("number" ), QLatin1String(""));
+   QCommandLineOption message   (QStringList { "message"    }, i18n("Used in combination with --send-text"                                        ), QStringLiteral("content"), QLatin1String(""));
+   QCommandLineOption icon      (QStringList { "iconify"    }, i18n("Start in the system tray"                                                    )                                             );
+   QCommandLineOption showPhone (QStringList { "phone"      }, i18n("Start with the phone interface"                                              )                                             );
+   QCommandLineOption showTimeL (QStringList { "timeline"   }, i18n("Start with the timeline interface"                                           )                                             );
 
    QCommandLineParser parser;
-   parser.addOptions({call,text,message,icon});
+   parser.addOptions({call,text,message,icon,showPhone,showTimeL});
 
    about.setupCommandLine(&parser);
 
-   parser.process         (*app);
+   parser.process(*app);
 
    about.processCommandLine(&parser);
 
-   parser.addVersionOption(    );
-   parser.addHelpOption   (    );
+   const auto versionOption = parser.addVersionOption();
+   const auto helpOption    = parser.addHelpOption   ();
+
+   if (parser.isSet(versionOption) || parser.isSet(helpOption))
+      return false;
+
+   RingApplication::instance()->init();
 
    if (parser.isSet(call))
       placeCall(parser.value(call));
 
    if (parser.isSet(icon))
       iconify();
+   if (parser.isSet(showPhone))
+      phoneInterface();
+   if (parser.isSet(showTimeL))
+      timelineInterface();
 
    if (parser.isSet(text) && parser.isSet(message))
       sendText(parser.value(text),parser.value(message));
+
+   return true;
 }
 
 ///Place a call (from the command line)
@@ -125,8 +138,22 @@ void Cmd::sendText(const QString& number, const QString& text)
 
 void Cmd::iconify()
 {
-   if (qobject_cast<RingApplication*>(QCoreApplication::instance())) {
-      qobject_cast<RingApplication*>(QCoreApplication::instance())->setIconify(true);
+   if (RingApplication::instance()) {
+      RingApplication::instance()->setIconify(true);
+   }
+}
+
+void Cmd::phoneInterface()
+{
+   if (RingApplication::instance()) {
+      RingApplication::instance()->setStartPhone(true);
+   }
+}
+
+void Cmd::timelineInterface()
+{
+   if (RingApplication::instance()) {
+      RingApplication::instance()->setStartTimeline(true);
    }
 }
 
@@ -199,12 +226,14 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
    }
 
    if (ConfigurationSkeleton::displayOnStart()) {
-      MainWindow::app()->show();
-      MainWindow::app()->activateWindow();
-      MainWindow::app()->raise();
+      PhoneWindow::app()->show();
+      PhoneWindow::app()->activateWindow();
+      PhoneWindow::app()->raise();
    }
 }
 
 void Cmd::slotOpenRequested (const QList<QUrl>&)
 {
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -70,3 +70,5 @@ void ToolButtonModelView::setModel(QAbstractItemModel* model, QItemSelectionMode
    update();
    connect(s, &QItemSelectionModel::currentChanged, update);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

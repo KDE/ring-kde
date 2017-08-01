@@ -23,9 +23,13 @@
 
 //Qt
 class QEvent;
+class QQmlApplicationEngine;
 
 //Ring
-class MainWindow;
+class PhoneWindow;
+class TimelineWindow;
+class FancyMainWindow;
+class Call;
 
 ///RingApplication: Main application
 class RingApplication : public QApplication
@@ -40,7 +44,8 @@ public:
    virtual ~RingApplication();
 
    // Manage new instances
-   virtual int newInstance();
+   Q_INVOKABLE virtual int newInstance();
+   void initCollections();
 
    // Exit gracefully
    virtual bool notify (QObject* receiver, QEvent* e) override;
@@ -48,13 +53,40 @@ public:
    //Getter
    bool startIconified() const;
 
+   PhoneWindow* phoneWindow() const;
+   TimelineWindow* timelineWindow() const;
+   FancyMainWindow* mainWindow() const;
+
+   bool isPhoneVisible() const;
+
+   static QQmlApplicationEngine* engine();
+
+   static RingApplication* instance(int& argc, char** argv = nullptr);
+   static RingApplication* instance();
+   void init();
+
    //Setter
    void setIconify(bool iconify);
+   void setStartTimeline(bool value);
+   void setStartPhone(bool value);
 
 private:
    //Attributes
-   static MainWindow* m_spApp         ;
-   bool               m_StartIconified;
+   bool m_StartIconified {false};
+   bool m_StartPhone     {false};
+   bool m_StartTimeLine  {false};
+
+   mutable PhoneWindow* m_pPhone {nullptr};
+   mutable TimelineWindow* m_pTimeline {nullptr};
+
+private Q_SLOTS:
+   void daemonTimeout();
+   void callAdded(Call* c);
+
+public Q_SLOTS:
+   void showWizard();
 };
 
 #endif // RINGAPPLICATION_H
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

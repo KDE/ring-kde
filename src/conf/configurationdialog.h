@@ -33,7 +33,6 @@ class DlgDisplay;
 class DlgAccount;
 class DlgAudio;
 class DlgAddressBook;
-class DlgHooks;
 class DlgAccessibility;
 class DlgVideo;
 class View;
@@ -63,7 +62,6 @@ private:
       Accounts,
       Audio,
       AddressBook,
-      Hooks,
       Accessibility,
       Video,
       Presence,
@@ -74,7 +72,6 @@ private:
    DlgAccount*       dlgAccount      ;
    DlgAudio*         dlgAudio        ;
    DlgAddressBook*   dlgAddressBook  ;
-   DlgHooks*         dlgHooks        ;
    DlgAccessibility* dlgAccessibility;
    DlgVideo*         dlgVideo        ;
    DlgPresence*      dlgPresence     ;
@@ -82,7 +79,7 @@ private:
    KConfigDialogManager* m_pManager;
 
 public:
-   explicit ConfigurationDialog(View *parent = nullptr);
+   explicit ConfigurationDialog(QWidget* parent = nullptr);
    virtual ~ConfigurationDialog();
 
 
@@ -144,3 +141,5 @@ Q_SIGNALS:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -74,7 +74,7 @@ QSize AccountInfoDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
    return QSize(s.width(),s.height()*2);
 }
 
-QVariant AccountIndoProxy::data( const QModelIndex& index, int role ) const
+QVariant AccountInfoProxy::data( const QModelIndex& index, int role ) const
 {
    if (index.isValid() && role == 9999) {
       const time_t t = qvariant_cast<time_t>(index.data((int)Account::Role::LastStatusChangeTimeStamp));
@@ -93,3 +93,5 @@ QVariant AccountIndoProxy::data( const QModelIndex& index, int role ) const
 }
 
 //kate: space-indent on; indent-width 3; replace-tabs on;
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -1,0 +1,37 @@
+<RCC>
+    <qresource prefix="sharedassets">
+        <file>./phone_light/unhold.svg</file>
+        <file>./phone_light/refuse.svg</file>
+        <file>./phone_light/hold.svg</file>
+        <file>./phone_light/record_call.svg</file>
+        <file>./phone_light/accept.svg</file>
+        <file>./phone_light/transfert.svg</file>
+        <file>./phone_light/call.svg</file>
+        <file>./phone_light/mic_off.svg</file>
+        <file>./phone_light/mic_on.svg</file>
+        <file>./security/lock_unconfirmed.svg</file>
+        <file>./security/lock_certified.svg</file>
+        <file>./security/lock_error.svg</file>
+        <file>./security/lock_off.svg</file>
+        <file>./security/lock_confirmed.svg</file>
+        <file>./phone_dark/unhold.svg</file>
+        <file>./phone_dark/hold.svg</file>
+        <file>./phone_dark/outgoing.svg</file>
+        <file>./phone_dark/incoming.svg</file>
+        <file>./phone_dark/initialization.svg</file>
+        <file>./phone_dark/ringing.svg</file>
+        <file>./phone_dark/mailbox.svg</file>
+        <file>./phone_dark/accept.svg</file>
+        <file>./phone_dark/busy.svg</file>
+        <file>./phone_dark/connected.svg</file>
+        <file>./phone_dark/transfert.svg</file>
+        <file>./phone_dark/failed.svg</file>
+        <file>./phone_dark/hang_up.svg</file>
+        <file>./phone_dark/dial.svg</file>
+        <file>./phone_dark/missed_incoming.svg</file>
+        <file>./phone_dark/missed_outgoing.svg</file>
+        <file>./phone_dark/current.svg</file>
+        <file>./phone_dark/mute_video.svg</file>
+        <file>./phone_dark/accept_video.svg</file>
+    </qresource>
+</RCC>

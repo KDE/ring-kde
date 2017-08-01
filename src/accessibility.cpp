@@ -32,7 +32,7 @@
 #include <callmodel.h>
 #include <contactmethod.h>
 #include "kspeechinterfacesingleton.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "view.h"
 
 Accessibility* Accessibility::m_pInstance = nullptr;
@@ -129,3 +129,5 @@ void Accessibility::say(const QString &message)
 {
    m_speech->say(message);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

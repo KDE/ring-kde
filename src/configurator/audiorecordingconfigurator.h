@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2015 by Savoir-Faire Linux                              *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,45 +15,40 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef AUDIORECORDINGCONFIGURATOR_H
-#define AUDIORECORDINGCONFIGURATOR_H
+#pragma once
 
 #include <collectionconfigurationinterface.h>
 
-class Ui_DlgAudioRecording;
+class QLabel;
 
 class AudioRecordingConfigurator : public CollectionConfigurationInterface
 {
-   Q_OBJECT
+    Q_OBJECT
 public:
-   explicit AudioRecordingConfigurator(QObject* parent = nullptr);
+    enum class Mode {
+        AUDIO,
+        TEXT,
+    };
 
-   //Getter
-   virtual QByteArray id  () const override;
-   virtual QString    name() const override;
-   virtual QVariant   icon() const override;
+    explicit AudioRecordingConfigurator(QObject* parent, Mode mode);
 
-   //Mutator
+    //Getter
+    virtual QByteArray id  () const override;
+    virtual QString    name() const override;
+    virtual QVariant   icon() const override;
 
-   /**
-    * This function will be called when a collection request to be configured
-    * 
-    * @param col The collection to be edited. It can casted
-    * @param parent can be used for layout information.
-    */
-   virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
+    //Mutator
 
-   virtual void save() override;
-   virtual bool hasChanged() override;
+    virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
 
 private Q_SLOTS:
-   void slotChanged();
+    void slotSelectionChanged(const QModelIndex& idx);
 
 private:
-   QWidget* m_pDialog;
-   bool m_HasChanged;
-   Ui_DlgAudioRecording* ui {nullptr};
-
+    bool m_Init {false};
+    Mode m_Mode;
+    QLabel* m_pLastUpdated;
+    QLabel* m_pLength;
 };
 
-#endif
+// kate: space-indent on; indent-width 4; replace-tabs on;

@@ -78,3 +78,5 @@ private Q_SLOTS:
 };
 
 #endif //CONTACT_DOCK_H
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

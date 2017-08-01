@@ -84,17 +84,10 @@ QSize HistoryDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
    int lineHeight = fm.height()+2;
    int rowCount = 0;
    const Call::State currentState = static_cast<Call::State>(index.data(static_cast<int>(Call::Role::State)).toInt());
-   int minimumRowHeight = (currentState == Call::State::OVER)?48:(ConfigurationSkeleton::limitMinimumRowHeight()?ConfigurationSkeleton::minimumRowHeight():0);
-   if (currentState == Call::State::OVER)
-      rowCount = 3;
-   else {
-      rowCount = ConfigurationSkeleton::displayCallPeer()
-      + ConfigurationSkeleton::displayCallNumber       ()
-      + ConfigurationSkeleton::displayCallSecure       ()
-      + ConfigurationSkeleton::displayCallOrganisation ()
-      + ConfigurationSkeleton::displayCallDepartment   ()
-      + ConfigurationSkeleton::displayCallEmail        ();
-   }
+   int minimumRowHeight = (currentState == Call::State::OVER)?48:0;
+
+   rowCount = currentState == Call::State::OVER ? 3 : 2;
+
    return QSize(sh.width(),((rowCount*lineHeight)<minimumRowHeight?minimumRowHeight:(rowCount*lineHeight)) + 4);
 }
 
@@ -128,8 +121,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (currentState == Call::State::HOLD)
       painter->setOpacity(0.70);
 
-   const ContactMethod* n = qvariant_cast<ContactMethod*>(index.data(static_cast<int>(Call::Role::ContactMethod)));
-   QPixmap pxm = n?GlobalInstances::pixmapManipulator().callPhoto(n,QSize(iconHeight+4,iconHeight+4),isBookmark).value<QPixmap>():QPixmap(QSize(iconHeight+4,iconHeight+4));
+   QPixmap pxm = qvariant_cast<QIcon>(index.data(Qt::DecorationRole)).pixmap(QSize(iconHeight+4,iconHeight+4));
 
    //Handle history with recording
    if (index.data(static_cast<int>(Call::Role::HasAVRecording)).toBool() && currentState == Call::State::OVER) {
@@ -139,10 +131,10 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
          call = qobject_cast<Call*>(obj);
 
       QPainter painter2(&pxm);
-      QPixmap status(QStringLiteral(":/images/icons/mailbox.svg"));
+      QPixmap status(QStringLiteral(":/sharedassets/phone_dark/mailbox.svg"));
       status=status.scaled(QSize(24,24));
       painter2.drawPixmap(pxm.width()-status.width(),pxm.height()-status.height(),status);
-      if (m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
+      if (call && m_pParent && m_pParent->indexWidget(index) == nullptr && call->hasRecording(Media::Media::Type::AUDIO,Media::Media::Direction::IN)) {
          const auto inRecList = call->recordings(Media::Media::Type::AUDIO,Media::Media::Direction::IN);
          auto button = new PlayerOverlay((Media::AVRecording*)inRecList.first(),nullptr); //TODO handle more than 1
          button->setRecording((Media::AVRecording*)inRecList.first());
@@ -170,7 +162,7 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (currentLifeCycleState == Call::LifeCycleState::PROGRESS) {
       //Record
       if (index.data(static_cast<int>(Call::Role::IsAVRecording)).toBool()) {
-         const static QPixmap record(QStringLiteral(":/images/icons/rec_call.svg"));
+         const static QPixmap record(QStringLiteral(":/sharedassets/phone_dark/record_call.svg"));
          time_t curTime;
          ::time(&curTime);
          if (curTime%3)
@@ -239,44 +231,16 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    }
    //END history fields
    else { //Active calls
-      if(ConfigurationSkeleton::displayCallPeer() && !(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
+      if(!(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
          font.setBold(true);
          painter->setFont(font);
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(Qt::DisplayRole).toString());
          font.setBold(false);
          painter->setFont(font);
-         currentHeight +=fm.height();
       }
 
-      if (ConfigurationSkeleton::displayCallNumber() && !(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
-//          if (isTracked) {
-//             if (isPresent)
-//                painter->setPen(presentBrush);
-//             else
-//                painter->setPen(awayBrush);
-//          }
+      if (!(currentLifeCycleState == Call::LifeCycleState::CREATION || (option.state & QStyle::State_Editing))) {
          painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Number)).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallSecure()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Security)).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallOrganisation()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Organisation)).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallDepartment()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Department)).toString());
-         currentHeight +=fm.height();
-      }
-
-      if (ConfigurationSkeleton::displayCallEmail()) {
-         painter->drawText(option.rect.x()+15+iconHeight,currentHeight,index.data(static_cast<int>(Call::Role::Email)).toString());
-         //currentHeight +=fm.height();
       }
    }
 
@@ -361,3 +325,5 @@ HistoryDelegate::~HistoryDelegate()
          delete b;
    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

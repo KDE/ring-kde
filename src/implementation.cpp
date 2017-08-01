@@ -28,8 +28,12 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QMimeData>
+#include <QtCore/QPointer>
 #include <QtGui/QClipboard>
 #include <QtGui/QIcon>
+#include <QQuickView>
+#include <QQuickItem>
+#include <QQmlApplicationEngine>
 
 //KDE
 #include <KColorScheme>
@@ -39,18 +43,21 @@
 
 //Ring
 #include <person.h>
-#include <macro.h>
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
+#include <phonedirectorymodel.h>
+#include <media/textrecording.h>
 #include <securityevaluationmodel.h>
 #include "klib/kcfg_settings.h"
+#include "conf/account/accountpages/dlgprofiles.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
 #include <widgets/immanager.h>
 #include <widgets/personselector.h>
 #include <widgets/contactmethodselector.h>
-#include <mainwindow.h>
+#include <phonewindow.h>
 #include <view.h>
+#include <ringapplication.h>
 
 ColorDelegate::ColorDelegate(const QPalette& pal) : m_Pal(pal) {
    m_Green = QColor(m_Pal.color(QPalette::Base));
@@ -203,31 +210,43 @@ void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, 
 
 QVariant KDEShortcutDelegate::createAction(Macro* macro)
 {
-
-   QAction * newAction = new QAction(macro);
-   newAction->setText(macro->name());
-   newAction->setIcon(QIcon::fromTheme(QStringLiteral("view-form-action")));
-   newAction->setObjectName("action_macro"+macro->id());
-   QObject::connect(newAction, &QAction::triggered, macro , &Macro::execute );
-
-   QObject::connect(macro, &Macro::changed, [newAction](Macro* m) {
-      newAction->setText(m->name());
-      newAction->setObjectName("action_macro"+m->id());
-   });
-
-   return QVariant::fromValue(newAction);
+   Q_UNUSED(macro)
+   return {};
 }
 
 void KDEActionExtender::editPerson(Person* p)
 {
-   Q_UNUSED(p)
+   QPointer<QQuickView> d = new QQuickView( RingApplication::engine(), nullptr );
+
+   d->setSource(QUrl(QLatin1String("qrc:/ContactInfo.qml")));
+   d->setResizeMode(QQuickView::SizeRootObjectToView);
+   auto item = d->rootObject();
+   item->setProperty("currentPerson", QVariant::fromValue(p));
+   item->setProperty("showStat" , false);
+   item->setProperty("showImage", true );
+
+   d->resize(800, 600);
+   d->show();
 }
 
 void KDEActionExtender::viewChatHistory(ContactMethod* cm)
 {
    if (!cm)
       return;
-   MainWindow::view()->m_pMessageTabBox->showConversation(cm);
+
+   // Get a real contact method when necessary
+   if (cm->type() == ContactMethod::Type::TEMPORARY) {
+      cm = PhoneDirectoryModel::instance().getExistingNumberIf(
+         cm->uri(),
+         [](const ContactMethod* cm) -> bool {
+            return cm->textRecording() && !cm->textRecording()->isEmpty();
+      });
+   }
+
+   if (!cm)
+      return;
+
+   //FIXME open the timeline
 }
 
 void KDEActionExtender::viewChatHistory(Person* p)
@@ -274,7 +293,7 @@ Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints, const 
    if (hintVar.canConvert<ContactMethod*>())
       cm = qvariant_cast<ContactMethod*>(hintVar);
 
-   auto selector = new PersonSelector(MainWindow::app(), cm);
+   auto selector = new PersonSelector(PhoneWindow::app(), cm);
 
    selector->exec();
 
@@ -288,7 +307,7 @@ ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::
    Q_UNUSED(hints)
    Q_UNUSED(hintVar)
 
-   auto selector = new ContactMethodSelector(MainWindow::app());
+   auto selector = new ContactMethodSelector(PhoneWindow::app());
 
    selector->exec();
 
@@ -296,3 +315,5 @@ ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::
 
    return nullptr;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -38,3 +38,5 @@ ContactMethodSelector::ContactMethodSelector(QWidget* parent) : QDialog(parent)
 
    listView->setModel(m_pSortedContacts);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

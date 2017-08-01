@@ -26,7 +26,7 @@
 #include <QtCore/QSortFilterProxyModel>
 
 //Ring
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "actioncollection.h"
 #include <tip/tipmanager.h>
 #include <proxies/simplerotateproxy.h>
@@ -77,6 +77,7 @@ CallViewToolbar::CallViewToolbar(QTreeView* parent) : OverlayToolbar(parent),m_p
    connect(pm,&SimpleRotateProxy::layoutChanged,lambda);
    connect(this,&CallViewToolbar::resized,lambda);
    connect(m_pContent,&QTableView::clicked,[](const QModelIndex & index ) {
+
       CallModel::instance().userActionModel()->execute(index);
    });
 }
@@ -89,3 +90,5 @@ void CallViewToolbar::updateState()
 {
    setVisible(true);
 } //updateState
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

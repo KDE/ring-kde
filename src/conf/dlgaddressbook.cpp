@@ -45,8 +45,6 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 {
    setupUi(this);
 
-   m_pAddCollection->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
-
    m_pDelegate = new AutoCompletionDelegate();
 
    m_pCategoryDelegate = new CategorizedDelegate(m_pItemBackendW);
@@ -88,9 +86,9 @@ DlgAddressBook::DlgAddressBook(KConfigDialog* parent)
 
    //Select the first useful element
    for (int i=0; i<CollectionModel::instance().rowCount(); i++) {
-      const QModelIndex& cat = CollectionModel::instance().index(i,0);
+      const auto cat = CollectionModel::instance().index(i,0);
       for (int j=0;j<CollectionModel::instance().rowCount(cat);j++) {
-         const QModelIndex& orig = CollectionModel::instance().index(j,0,cat);
+         const auto orig = CollectionModel::instance().index(j,0,cat);
          CollectionInterface* col = CollectionModel::instance().collectionAt(orig);
          if (col) {
             CollectionConfigurationInterface* configurator = col->configurator();
@@ -209,8 +207,6 @@ void DlgAddressBook::slotEditCollection()
          connect(configurator,&CollectionConfigurationInterface::changed,this,&DlgAddressBook::changed);
          m_lConfigurators << configurator;
       }
-
-      m_pExtensions->setModel(col->extensionsModel());
    }
 }
 
@@ -243,4 +239,6 @@ void DlgAddressBook::slotResourceCreationResult(KJob* job)
 //          contextText( Akonadi::StandardActionManager::CreateResource, Akonadi::StandardActionManager::ErrorMessageTitle ) );
 //    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;
 

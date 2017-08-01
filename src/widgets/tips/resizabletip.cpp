@@ -148,3 +148,5 @@ bool ResizableTip::eventFilter(QObject *obj, QEvent *event)
 }
 
 #include <resizabletip.moc>
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

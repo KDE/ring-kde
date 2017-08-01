@@ -19,10 +19,6 @@ FIND_PACKAGE ( KF5 REQUIRED )
 
 FIND_PACKAGE (ECM 1.1.0 REQUIRED NO_MODULE)
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  FIND_LIBRARY(OSX_FRAMEWORK_OPENGL NAMES OpenGL)
-ENDIF()
-
 ADD_SUBDIRECTORY( conf/account/ )
 
 ADD_DEFINITIONS(
@@ -75,7 +71,6 @@ IF (CMAKE_COMPILER_IS_GNUCC)
       ADD_DEFINITIONS(
          -Wunused-but-set-parameter
          -Wconditionally-supported
-         -Wsuggest-attribute=const
          -Wno-cpp
 #          -Wdouble-promotion
          -Wdate-time
@@ -152,8 +147,29 @@ INCLUDE_DIRECTORIES(SYSTEM
    ${CMAKE_CURRENT_SOURCE_DIR}/../lib/
 )
 
+# Shared C++ QML components
+ADD_SUBDIRECTORY( qmlwidgets )
+
+# Pack the icons shared by various components
+ADD_SUBDIRECTORY( sharedassets )
+
 #Build KDE specific files
 ADD_SUBDIRECTORY( klib )
+
+# Build the QML based first run Wizard
+ADD_SUBDIRECTORY( wizard )
+
+# Build the QML based interactive video canvas
+ADD_SUBDIRECTORY( callview )
+
+# Build the views and widgets related to the social timeline feature
+ADD_SUBDIRECTORY( timeline )
+
+# Build the contact and profile photo editor dialog
+ADD_SUBDIRECTORY( photoselector )
+
+# Build the elements used to notify the users of events
+ADD_SUBDIRECTORY( canvasindicators )
 
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
@@ -196,10 +212,11 @@ SET(
    conf/dlgdisplay.cpp
    conf/dlgaudio.cpp
    conf/dlgaddressbook.cpp
-   conf/dlghooks.cpp
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
    configurator/localhistoryconfigurator.cpp
+   configurator/peerprofileconfigurator.cpp
+   configurator/bookmarkconfigurator.cpp
    configurator/audiorecordingconfigurator.cpp
    configurator/fallbackpersonconfigurator.cpp
 )
@@ -231,10 +248,10 @@ SET(
    widgets/kphonenumberselector.cpp
    widgets/contactview.cpp
    widgets/presence.cpp
+   widgets/directoryview.cpp
    widgets/autocompletion.cpp
    widgets/menumodelview.cpp
    widgets/toolbuttonmodelview.cpp
-   widgets/wizard.cpp
    widgets/personselector.cpp
    widgets/contactmethodselector.cpp
 )
@@ -245,10 +262,6 @@ IF(NOT (${ENABLE_VIDEO} MATCHES false))
       ring_kde_VIDEO
       widgets/videodock.cpp
       widgets/videosettings.cpp
-      widgets/videowidget.cpp
-      widgets/videoglframe.cpp
-      widgets/videoscene.cpp
-      widgets/videotoolbar.cpp
       conf/dlgvideo.cpp
    )
 ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
@@ -257,7 +270,9 @@ SET(
    ring_kde_SRCS
    main.cpp
    view.cpp
-   mainwindow.cpp
+   phonewindow.cpp
+   timelinewindow.cpp
+   fancymainwindow.cpp
    cmd.cpp
    dock.cpp
    notification.cpp
@@ -299,7 +314,6 @@ SET(
    conf/dlgdisplaybase.ui
    conf/dlgaudiobase.ui
    conf/dlgaddressbookbase.ui
-   conf/dlghooksbase.ui
    conf/dlgaccessibility.ui
    conf/dlgaudiorecording.ui
    conf/dlgpresence.ui
@@ -309,6 +323,7 @@ SET(
    widgets/ui/player.ui
    widgets/ui/playeroverlay.ui
    widgets/ui/contactdock.ui
+   widgets/ui/directoryview.ui
    widgets/ui/transfer.ui
    widgets/ui/presence.ui
    widgets/ui/videodevicesetting.ui
@@ -317,6 +332,9 @@ SET(
    widgets/ui/welcome.ui
    widgets/ui/share.ui
    widgets/ui/accountcreator.ui
+   configurator/peerprofile.ui
+   configurator/bookmark.ui
+   configurator/recording.ui
 )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
@@ -340,15 +358,14 @@ ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 ki18n_wrap_ui(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
 ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
-ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
-
-IF(NOT (${ENABLE_VIDEO} MATCHES false))
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-   SET( OPENGL_link   ${QT_QTOPENGL_LIBRARY} )# -lGLU
+  ADD_EXECUTABLE(ring-kde MACOSX_BUNDLE ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
+
+  set_source_files_properties( ../data/ring-kdeui.rc PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+  file( COPY ../data/ring-kdeui.rc DESTINATION "ring-kde.app/Contents/Resources/" )
 ELSE()
-   SET( OPENGL_link   ${QT_QTOPENGL_LIBRARY} -lGL)# -lGLU
+  ADD_EXECUTABLE(ring-kde ${ring_kde_SRCS} ${QtApp_RCC_SRCS})
 ENDIF()
-ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
 IF(NOT ${ENABLE_STATIC} MATCHES false)
   FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED DBus)
@@ -359,7 +376,7 @@ IF(NOT ${ENABLE_STATIC} MATCHES false)
     ${Qt5DBus_LIBRARIES}
     ${ringclient_LIBRARY_STATIC}
     -lpthread
-    -lrt
+    #-lrt
   )
 ELSE()
    TARGET_LINK_LIBRARIES(ring-kde ${ringclient_LIBRARY_DYNAMIC})
@@ -369,17 +386,20 @@ QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 
 TARGET_LINK_LIBRARIES(ring-kde
   libkring
+  libwizard
+  libcallview
+  libtimeline
+  libphotoselector
+  libcanvasindicator
   tip
   accountdialog
-  ringclient
-  ${OPENGL_link}
+  libqmlwidgets
 
   # Qt5
   Qt5::Widgets
   Qt5::Core
   Qt5::Gui
   Qt5::Svg
-  Qt5::OpenGL
   Qt5::PrintSupport
 
   # KF5
@@ -396,6 +416,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::Crash
   KF5::NotifyConfig
   KF5::GlobalAccel
+  KF5::Declarative
 )
 
 IF (Qt5TextToSpeech_FOUND)
@@ -404,12 +425,9 @@ IF (Qt5TextToSpeech_FOUND)
    )
 ENDIF()
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  TARGET_LINK_LIBRARIES(ring-kde ${OSX_FRAMEWORK_OPENGL})
-ENDIF()
-
 ########### install files ###############
 
 INSTALL( TARGETS ring-kde                     DESTINATION ${BIN_INSTALL_DIR}           )
 INSTALL( FILES icons/overlay_right_corner.svg DESTINATION ${DATA_INSTALL_DIR}/ring-kde )
 INSTALL( FILES icons/overlay_left_corner.svg  DESTINATION ${DATA_INSTALL_DIR}/ring-kde )
+INSTALL( FILES wizard/assets/beta_logo.svg    DESTINATION ${DATA_INSTALL_DIR}/ring-kde )

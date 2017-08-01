@@ -68,7 +68,7 @@ void IMManager::newMessageInserted(Media::TextRecording* r, ContactMethod* cm)
    IMTab* tab = nullptr;
 
    if (!(tab  = m_lTabs[cm]))
-      tab = newConversation(cm, r->instantTextMessagingModel());
+      tab = newConversation(cm, r);
 
    if (currentWidget() != tab
      || (!EventManager::mayHaveFocus())
@@ -97,7 +97,7 @@ void IMManager::addMedia(Call* c, Media::Media* m)
                || media->hasMimeType(QStringLiteral("text/html"));
 
             if (isRelevant2)
-               newConversation(cm, media->recording()->instantTextMessagingModel());
+               newConversation(cm, media->recording());
 
          });
       }
@@ -105,7 +105,7 @@ void IMManager::addMedia(Call* c, Media::Media* m)
 }
 
 ///Destructor
-IMTab* IMManager::newConversation(ContactMethod* cm, QAbstractItemModel* model)
+IMTab* IMManager::newConversation(ContactMethod* cm, Media::TextRecording* rec)
 {
    if (auto tab = m_lTabs[cm]) {
       setCurrentWidget(m_lTabs[cm]);
@@ -113,9 +113,11 @@ IMTab* IMManager::newConversation(ContactMethod* cm, QAbstractItemModel* model)
       return tab;
    }
 
-   IMTab* newTab = new IMTab(model,this);
+   IMTab* newTab = new IMTab(cm->textRecording(),this);
    m_lTabs[cm] = newTab;
+   m_lTabsByTR[cm->textRecording()] = newTab;
    setVisible(true);
+
    const QString name = cm->primaryName();
 
    if (cm->contact())
@@ -123,9 +125,10 @@ IMTab* IMManager::newConversation(ContactMethod* cm, QAbstractItemModel* model)
    else
       setCurrentIndex(addTab(newTab,name));
 
-
    // If the IMManager widget is not in the view yet, the scrollbar will be wrong
-   QTimer::singleShot(0,[this, model, newTab] {
+   QTimer::singleShot(0,[this, rec, newTab] {
+      auto model = rec->instantTextMessagingModel();
+
       newTab->scrollTo(model->index(model->rowCount()-1,0));
 
       if (newTab->verticalScrollBar())
@@ -149,7 +152,7 @@ bool IMManager::showConversation(ContactMethod* cm)
    QAbstractItemModel* model = textRec->instantTextMessagingModel();
 
    if (model->rowCount())
-      newConversation(cm, model);
+      newConversation(cm, textRec);
 
    return true;
 }
@@ -175,3 +178,13 @@ void IMManager::clearColor(int idx)
    else
       tabBar()->setTabTextColor(idx, QColor());
 }
+
+Media::TextRecording* IMManager::currentConversation() const
+{
+   if (const auto tab = qobject_cast<IMTab*>(widget(currentIndex())))
+      return tab->textRecording();
+
+   return nullptr;
+}
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

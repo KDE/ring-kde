@@ -32,10 +32,6 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
 {
    setupUi(this);
    m_pView->setModel(&PresenceStatusModel::instance());
-   m_pUp->setIcon     ( QIcon::fromTheme( QStringLiteral("go-up")       ) );
-   m_pDown->setIcon   ( QIcon::fromTheme( QStringLiteral("go-down")     ) );
-   m_pAdd->setIcon    ( QIcon::fromTheme( QStringLiteral("list-add")    ) );
-   m_pRemove->setIcon ( QIcon::fromTheme( QStringLiteral("list-remove") ) );
    connect(m_pAdd   , &QAbstractButton::clicked,&PresenceStatusModel::instance() ,&PresenceStatusModel::addRow       );
    connect(m_pUp    , &QAbstractButton::clicked,this                            ,&DlgPresence::slotMoveUp   );
    connect(m_pDown  , &QAbstractButton::clicked,this                            ,&DlgPresence::slotMoveDown );
@@ -104,3 +100,5 @@ void DlgPresence::slotMoveDown()
 {
    PresenceStatusModel::instance().moveDown(m_pView->currentIndex());
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

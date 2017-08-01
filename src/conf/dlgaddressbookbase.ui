@@ -85,77 +85,51 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QPushButton" name="m_pAddCollection">
-          <property name="text">
-           <string>Add collection</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="m_pTabConfig">
-      <attribute name="title">
-       <string>Configuration</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QFrame" name="frame_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>3</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QFrame" name="frame_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>3</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>550</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>0</number>
          </property>
-         <property name="minimumSize">
-          <size>
-           <width>550</width>
-           <height>0</height>
-          </size>
+         <property name="topMargin">
+          <number>0</number>
          </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
+         <property name="rightMargin">
+          <number>0</number>
          </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
+         <property name="bottomMargin">
+          <number>0</number>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <property name="margin">
-           <number>0</number>
-          </property>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="m_pTabExtent">
-      <attribute name="title">
-       <string>Extensions</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QListView" name="m_pExtensions"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="m_pTabContent">
-      <attribute name="title">
-       <string>Content</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QTableView" name="tableView"/>
-       </item>
-      </layout>
-     </widget>
+        </layout>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -168,24 +142,7 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>m_pAddCollection</sender>
-   <signal>clicked()</signal>
-   <receiver>DlgAddressBookBase</receiver>
-   <slot>slotAddCollection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>567</x>
-     <y>241</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>661</x>
-     <y>201</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>slotEditCollection()</slot>
   <slot>slotAddCollection()</slot>

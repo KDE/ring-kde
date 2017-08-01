@@ -98,3 +98,5 @@ MenuModelView::~MenuModelView()
       delete a;
    m_lActions.clear();
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

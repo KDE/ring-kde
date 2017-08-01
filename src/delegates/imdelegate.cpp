@@ -39,7 +39,7 @@ QSize ImDelegates::sizeHint(const QStyleOptionViewItem& option, const QModelInde
    const QRect requiredRect = metric.boundingRect(0,0,m_pParent->width()-30 - 48 - 10 /*margin*/,500,Qt::TextWordWrap|Qt::AlignLeft,index.data(Qt::DisplayRole).toString());
    height+=requiredRect.height();
    height+=metric.height()+10;
-   if (icon && icon && height < icon->height()) {
+   if (icon && height < icon->height()) {
       height = icon->height();
    }
    return QSize(m_pParent->width()-30,height);
@@ -72,8 +72,10 @@ void ImDelegates::paint(QPainter* painter, const QStyleOptionViewItem& option, c
 }
 
 ///Constructor
-IMTab::IMTab(QAbstractItemModel* model,QWidget* parent) : QListView(parent)
+IMTab::IMTab(Media::TextRecording* rec,QWidget* parent) : QListView(parent),
+ m_pTextRecording(rec)
 {
+   auto model = rec->instantTextMessagingModel();
    setModel(model);
    setAlternatingRowColors(true);
 //    setWrapping(true);
@@ -105,3 +107,10 @@ void IMTab::updateScrollBar()
       });
    }
 }
+
+Media::TextRecording* IMTab::textRecording() const
+{
+   return m_pTextRecording;
+}
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

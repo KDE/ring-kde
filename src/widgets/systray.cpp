@@ -29,7 +29,7 @@
 #include <QtWidgets/QAction>
 
 //Ring
-#include "mainwindow.h"
+#include "phonewindow.h"
 
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
@@ -43,7 +43,9 @@ SysTray::SysTray(const QIcon &icon, QWidget *parent)
 
    // The app is always active in the sense there is a network connection and
    // registration status
+ #ifndef Q_OS_MAC //FIXME segfault as of mid 2017
    setStatus(KStatusNotifierItem::ItemStatus::Active);
+ #endif
 }
 
 ///Destructor
@@ -76,7 +78,9 @@ void SysTray::slotActivated(bool active, const QPoint& pos)
    Q_UNUSED(active)
    Q_UNUSED(pos)
 
-   MainWindow::app()->show          ();
-   MainWindow::app()->activateWindow();
-   MainWindow::app()->raise         ();
+   PhoneWindow::app()->show          ();
+   PhoneWindow::app()->activateWindow();
+   PhoneWindow::app()->raise         ();
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

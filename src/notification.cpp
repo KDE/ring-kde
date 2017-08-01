@@ -37,7 +37,8 @@
 #include <media/recordingmodel.h>
 
 // Ring-KDE
-#include <mainwindow.h>
+#include <ringapplication.h>
+#include <fancymainwindow.h>
 #include <view.h>
 #include <eventmanager.h>
 
@@ -68,8 +69,8 @@ private Q_SLOTS:
 };
 
 IncomingCallNotification::IncomingCallNotification(Call* call) : KNotification(
-   QStringLiteral("incomingCall"), MainWindow::view(), NotificationFlag::Persistent  ),
-   m_pCall(call)
+   QStringLiteral("incomingCall"), RingApplication::instance()->mainWindow(),
+   NotificationFlag::Persistent), m_pCall(call)
 {
 
    const Person* contact = call->peerContactMethod()->contact();
@@ -137,7 +138,7 @@ public:
 };
 
 IncomingTextNotification::IncomingTextNotification(ContactMethod* cm, Media::TextRecording* t) : KNotification(
-   QStringLiteral("incomingText"), MainWindow::view())
+   QStringLiteral("incomingText"), RingApplication::instance()->mainWindow())
 {
    setTitle(i18n("Message from %1", cm->primaryName()));
 
@@ -178,7 +179,7 @@ private Q_SLOTS:
 };
 
 CreateContactNotification::CreateContactNotification(ContactMethod* cm) :KNotification(
-   QStringLiteral("incomingCall"), MainWindow::view())
+   QStringLiteral("incomingCall"), RingApplication::instance()->mainWindow())
 {
    setTitle(i18n("Add %1 to contacts?", cm->uri()));
 
@@ -259,3 +260,5 @@ void Notification::createContact()
 #undef REGISTER_ACTION
 
 #include <notification.moc>
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

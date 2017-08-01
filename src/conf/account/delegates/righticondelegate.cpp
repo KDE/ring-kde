@@ -52,3 +52,5 @@ void RightIconDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
       ), px);
    painter->setOpacity(op);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

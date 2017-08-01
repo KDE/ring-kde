@@ -88,3 +88,5 @@ void GroupedToolButton::paintEvent(QPaintEvent* event)
     // Text
     painter.drawControl(QStyle::CE_ToolButtonLabel, opt);
 }
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

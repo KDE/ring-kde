@@ -156,3 +156,5 @@ void Tip::setVisible(bool visible)
    m_IsVisible = visible;
    emit visibilityChanged(m_IsVisible);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

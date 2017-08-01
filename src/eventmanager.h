@@ -18,8 +18,6 @@
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
 
-#include <macromodel.h>
-
 //Qt
 class QKeyEvent      ;
 class QDragEnterEvent;
@@ -31,14 +29,14 @@ class QDragMoveEvent ;
 #include <call.h>
 class View;
 class CanvasObjectManager;
-class MainWindowEvent;
+class PhoneWindowEvent;
 class Account;
 
-class EventManager : public QObject, public MacroModel::MacroListener {
+class EventManager : public QObject {
    Q_OBJECT
 
 public:
-   friend class MainWindowEvent;
+   friend class PhoneWindowEvent;
    explicit EventManager(View* parent = nullptr);
    virtual ~EventManager();
    /**
@@ -53,9 +51,6 @@ public:
     */
    void escape();
 
-   //Implement macro key listener
-   virtual void addDTMF(const QString& sequence) override;
-
    /**
     * An unreliable way to track the application focus
     *
@@ -69,7 +64,7 @@ protected:
 private:
    //Attributes
    View*            m_pParent        ;
-   MainWindowEvent* m_pMainWindowEv  ;
+   PhoneWindowEvent* m_pPhoneWindowEv  ;
    static bool      m_HasFocus       ;
 
    //Methods
@@ -106,3 +101,5 @@ private Q_SLOTS:
 };
 
 #endif //EVENTMANAGER_H
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

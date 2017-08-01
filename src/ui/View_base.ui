@@ -51,38 +51,6 @@
        <bool>false</bool>
       </attribute>
      </widget>
-     <widget class="IMManager" name="m_pMessageTabBox">
-      <property name="currentIndex">
-       <number>-1</number>
-      </property>
-     </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="m_pMessageBoxW" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLineEdit" name="m_pSendMessageLE">
-          <property name="placeholderText">
-           <string>Send text message</string>
-          </property>
-          <property name="showClearButton" stdset="0">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="m_pSendMessagePB">
-          <property name="text">
-           <string>Send</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
     </widget>
    </item>
    <item>

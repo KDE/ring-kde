@@ -35,7 +35,7 @@ public:
 
    virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true) override;
 
-   virtual QByteArray toByteArray(const QVariant& pxm) override;
+   virtual QByteArray toByteArray(const QVariant& pxm, const QString& type = "PNG") override;
 
    virtual QVariant personPhoto(const QByteArray& data, const QString& type = QStringLiteral("PNG")) override;
 
@@ -49,30 +49,29 @@ public:
 
    virtual QVariant securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const override;
 
-   virtual QVariant   historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const override;
+   virtual QVariant historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const override;
 
-   virtual QVariant   contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
+   virtual QVariant contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
 
-   virtual QVariant   decorationRole(const QModelIndex& index) override;
+   virtual QVariant videoDeviceIcon(const QModelIndex& idx) const override;
 
-   virtual QVariant   decorationRole(const Call*              c    ) override;
+   virtual QString  takeSnapshot(Call* call) override;
 
-   virtual QVariant   decorationRole(const ContactMethod*     cm   ) override;
+   virtual QVariant decorationRole(const QModelIndex& index) override;
 
-   virtual QVariant   decorationRole(const Person*            p    ) override;
+   virtual QVariant decorationRole(const Call*              c    ) override;
 
-   virtual QVariant   decorationRole(const Account*           a    ) override;
+   virtual QVariant decorationRole(const ContactMethod*     cm   ) override;
+
+   virtual QVariant decorationRole(const Person*            p    ) override;
+
+   virtual QVariant decorationRole(const Account*           a    ) override;
 
    static const char* icnPath[2][2];
 private:
    static const TypedStateMachine< const char* , Call::State > callStateIcons;
-
-
-   //Helper
-   QPixmap drawDefaultUserPixmap(const QSize& size, bool displayPresence, bool isPresent);
-
-private Q_SLOTS:
-   void clearCache();
 };
 
 #endif // KDEPIXMAPMANIPULATION_H
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

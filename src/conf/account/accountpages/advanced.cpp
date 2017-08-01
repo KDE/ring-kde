@@ -17,9 +17,15 @@
  **************************************************************************/
 #include "advanced.h"
 
+#include <account.h>
+
 Pages::Advanced::Advanced(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+
+   connect(this,&PageBase::accountSet,[this]() {
+      m_pDTMF_GB->setVisible(account()->protocol() == Account::Protocol::SIP);
+   });
 
    connect(lrcfg_hasActiveCallLimit, &QCheckBox::toggled, [this](bool v) {
       if (!v)
@@ -28,4 +34,6 @@ Pages::Advanced::Advanced(QWidget *parent) : PageBase(parent)
          lrcfg_activeCallLimit->setValue(1);
    });
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;
 

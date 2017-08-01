@@ -36,7 +36,7 @@ public:
    explicit DlgGeneral(KConfigDialog *parent = nullptr);
 
    //Destructor
-   ~DlgGeneral();
+   virtual ~DlgGeneral();
 
    bool hasChanged();
    bool m_HasChanged;
@@ -58,3 +58,5 @@ Q_SIGNALS:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

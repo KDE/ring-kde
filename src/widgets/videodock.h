@@ -28,10 +28,11 @@ class QComboBox;
 class QUrl;
 
 //Ring
-class VideoWidget;
+class VideoWidget3;
 class VideoSettings;
 class MediaPicker;
 class ScreenSharingWidget;
+class Call;
 namespace Video {
    class Renderer;
    class SourceModel;
@@ -44,10 +45,11 @@ public:
    explicit VideoDock(QWidget* parent = nullptr );
    ~VideoDock();
    void addRenderer(Video::Renderer* r);
+   void setCall(Call* c);
 
 private:
    QGridLayout*         m_pMoreOpts     ;
-   VideoWidget*         m_pVideoWidet   ;
+   VideoWidget3*         m_pVideoWidet   ;
    VideoSettings*       m_pVideoSettings;
    ScreenSharingWidget* m_pScreenSharing;
    MediaPicker*         m_pMediaPicker  ;
@@ -65,3 +67,5 @@ public Q_SLOTS:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

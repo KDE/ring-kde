@@ -60,3 +60,5 @@ void PlayerOverlay::setRecording(Media::AVRecording* rec)
 {
    m_pRecording = rec;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

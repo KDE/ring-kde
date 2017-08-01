@@ -19,12 +19,18 @@
 #ifndef DOCK_H
 #define DOCK_H
 
+// Qt
 #include <QtCore/QObject>
-
+#include <QtCore/QHash>
+class QTabBar;
 class QMainWindow;
+class QToolButton;
 
+// Ring
+class PhoneWindow;
 class DockBase;
 class CategorizedDelegate;
+class ContactMethod;
 
 /**
  * This single instance class manage the Docks
@@ -33,12 +39,12 @@ class Dock : public QObject
 {
    Q_OBJECT
 public:
-   explicit Dock(QMainWindow* w);
+   explicit Dock(PhoneWindow* w);
    virtual ~Dock();
 
-   DockBase*  contactDock ();
-   DockBase*  historyDock ();
-   DockBase*  bookmarkDock();
+   DockBase*   contactDock ();
+   DockBase*   historyDock ();
+   DockBase*   bookmarkDock();
 
 private:
    DockBase*   m_pContactCD  {nullptr};
@@ -49,7 +55,6 @@ private:
    CategorizedDelegate* m_pHCategoryDelegate {nullptr};
 
 public Q_SLOTS:
-   void updateTabIcons();
    void focusHistory ();
    void focusContact ();
    void focusCall    ();
@@ -57,3 +62,5 @@ public Q_SLOTS:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

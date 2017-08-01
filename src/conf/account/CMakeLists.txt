@@ -17,8 +17,10 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
   Core
   Widgets
   Gui
+  Quick
+  QuickWidgets
+  QuickControls2
 )
-
 
 FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" COMPONENTS
   KIO
@@ -30,7 +32,7 @@ IF ((${KF5_I18n_FOUND}) AND (${KF5_KIO_FOUND}) AND (${KF5_GuiAddons_FOUND}))
    ADD_DEFINITIONS( -DHAS_KDE=true )
 ENDIF()
 
-FIND_PACKAGE ( LibRingClient REQUIRED ENABLE_STATIC=true )
+FIND_PACKAGE ( LibRingClient QUIET )
 
 INCLUDE_DIRECTORIES(SYSTEM
    ${Qt5Widgets_INCLUDES}
@@ -51,7 +53,6 @@ QT5_WRAP_UI(accountdialog_SRCS accountpages/ringtone.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/dlgdht.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/security.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountpages/tabs.ui)
-QT5_WRAP_UI(accountdialog_SRCS accountpages/dlgprofiles.ui)
 QT5_WRAP_UI(accountdialog_SRCS accountdlg.ui)
 
 # Add pages
@@ -88,6 +89,8 @@ TARGET_LINK_LIBRARIES(accountdialog
    ${Qt5Widgets_LIBRARIES}
    ${Qt5Core_LIBRARIES}
    ${Qt5Gui_LIBRARIES}
+   Qt5::Quick
+   Qt5::QuickWidgets
    ringclient
 )
 

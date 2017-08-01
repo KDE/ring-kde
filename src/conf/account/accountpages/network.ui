@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>445</width>
-    <height>359</height>
+    <height>398</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -52,7 +52,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QGroupBox" name="m_pPublishedGB">
      <property name="title">
       <string>Published address</string>
      </property>
@@ -60,7 +60,7 @@
       <item row="0" column="0" colspan="3">
        <widget class="QRadioButton" name="lrcfg_publishedSameAsLocal">
         <property name="text">
-         <string>Same as local parameters</string>
+         <string>Same as &amp;local parameters</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -70,7 +70,7 @@
       <item row="1" column="0" rowspan="2" colspan="3">
        <widget class="QRadioButton" name="auto_2">
         <property name="text">
-         <string>Set published address and port</string>
+         <string>Set p&amp;ublished address and port</string>
         </property>
        </widget>
       </item>
@@ -125,7 +125,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_7">
+    <widget class="QGroupBox" name="m_pPortGroup">
      <property name="title">
       <string>RTP configuration</string>
      </property>

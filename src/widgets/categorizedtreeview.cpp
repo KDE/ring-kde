@@ -84,7 +84,7 @@ void CategorizedTreeView::dragEnterEvent( QDragEnterEvent *e)
 {
    if (!m_InitSignals)
       initSignals();
-   const QModelIndex& idxAt = indexAt(e->pos());
+   const auto idxAt = indexAt(e->pos());
    const CallModel::DropPayloadType type = payloadType(e->mimeData());
    bool accept = false;
    switch (m_Type) {
@@ -129,7 +129,7 @@ void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
 {
    if (!m_InitSignals)
       initSignals();
-   const QModelIndex& idxAt = indexAt(e->pos());
+   const auto idxAt = indexAt(e->pos());
    e->acceptProposedAction();
 //    e->accept();
    if (idxAt.isValid()) {
@@ -155,7 +155,7 @@ void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)
 
 void CategorizedTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-   const QModelIndex& idxAt = indexAt(event->pos());
+   const auto idxAt = indexAt(event->pos());
    emit itemDoubleClicked(idxAt);
 //    if (m_Type != ViewType::Person)
       QTreeView::mouseDoubleClickEvent(event);
@@ -166,7 +166,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
 {
    if (m_Type == CategorizedTreeView::ViewType::Call) {
 //     Q_D(QAbstractItemView);
-      const QModelIndex& index = selectionModel()->currentIndex();
+      const auto index = selectionModel()->currentIndex();
       if (index.isValid()) {
          QModelIndexList list;
          list << index;
@@ -184,7 +184,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
       }
    }
    else {
-      const QModelIndex& index = selectionModel()->currentIndex();
+      const auto index = selectionModel()->currentIndex();
       if (index.isValid()) {
          QModelIndexList list;
          list << index;
@@ -193,7 +193,7 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
             return;
 
          //Create the pixmap
-         QStyleOptionViewItemV4 option;
+         QStyleOptionViewItem option;
          option.locale = locale();
          option.widget = this;
          option.state = QStyle::State_Selected | QStyle::State_Enabled | QStyle::State_Active | QStyle::State_Small;
@@ -304,3 +304,5 @@ void CategorizedTreeView::forwardInput(QKeyEvent* e)
 {
    keyPressEvent(e);
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

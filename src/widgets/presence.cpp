@@ -57,3 +57,5 @@ void Presence::slotReplaceText(const QString& newText)
       m_pMessage->textCursor().setPosition(pos);
    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

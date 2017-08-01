@@ -33,7 +33,7 @@ class Cmd : public QObject
 public:
    virtual ~Cmd(){}
    static Cmd* instance();
-   static void parseCmd(int argc, char **argv, KAboutData& about);
+   static bool parseCmd(int argc, char **argv, KAboutData& about);
 
 private:
 
@@ -41,6 +41,9 @@ private:
    static void placeCall(const QString& number);
    static void sendText(const QString& number, const QString& text);
    static void iconify();
+   static void phoneInterface();
+   static void timelineInterface();
+
    //Private constructor
    explicit Cmd(QObject* parent=nullptr);
 
@@ -55,3 +58,5 @@ public Q_SLOTS:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

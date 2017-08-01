@@ -33,10 +33,12 @@
 
 //Ring
 #include "icons/icons.h"
-#include "mainwindow.h"
+#include "phonewindow.h"
 #include "widgets/menumodelview.h"
 #include "useractionmodel.h"
 #include "canvasobjectmanager.h"
+#include "media/recordingmodel.h"
+#include "media/textrecording.h"
 #include "widgets/tips/tipcollection.h"
 #include "widgets/callviewtoolbar.h"
 #include "eventmanager.h"
@@ -47,7 +49,6 @@
 #include "widgets/kphonenumberselector.h"
 #include "widgets/callviewoverlay.h"
 #include "widgets/autocompletion.h"
-#include "widgets/wizard.h"
 
 //ring library
 #include "klib/kcfg_settings.h"
@@ -61,30 +62,6 @@
 #include "audio/settings.h"
 #include <tip/tipmanager.h>
 #include "implementation.h"
-
-class FocusWatcher : public QObject
-{
-   Q_OBJECT
-public:
-   explicit FocusWatcher(QObject* parent = nullptr) : QObject(parent)
-   {
-      if (parent)
-         parent->installEventFilter(this);
-   }
-   virtual bool eventFilter(QObject *obj, QEvent *event) override
-   {
-      Q_UNUSED(obj)
-      if (event->type() == QEvent::FocusIn)
-         emit focusChanged(true);
-      else if (event->type() == QEvent::FocusOut)
-         emit focusChanged(false);
-
-      return false;
-   }
-
-Q_SIGNALS:
-   void focusChanged(bool in);
-};
 
 ///Constructor
 View::View(QWidget *parent)
@@ -137,13 +114,7 @@ View::View(QWidget *parent)
 
    GlobalInstances::setInterface<ColorDelegate>(pal);
 
-   const QModelIndex currentIndex = CallModel::instance().selectionModel()->currentIndex();
-
-   m_pMessageBoxW->setVisible(
-      qvariant_cast<Call::LifeCycleState>(currentIndex.data((int)Call::Role::LifeCycleState))
-         == Call::LifeCycleState::PROGRESS
-   );
-   connect(new FocusWatcher(m_pSendMessageLE), &FocusWatcher::focusChanged, this, &View::displayHistory);
+   //FIXME connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &View::displayHistory);
 
    //Setup volume
    toolButton_recVol->setDefaultAction(ActionCollection::instance()->muteCaptureAction ());
@@ -155,24 +126,15 @@ View::View(QWidget *parent)
    /*Setup signals                                                                                                                  */
    //                SENDER                             SIGNAL                              RECEIVER                SLOT            */
    /**/connect(&CallModel::instance()       , &CallModel::incomingCall                 , this           , &View::incomingCall       );
-   /**/connect(m_pSendMessageLE             , &QLineEdit::returnPressed                , this           , &View::sendMessage        );
-   /**/connect(m_pSendMessagePB             , &QAbstractButton::clicked                , this           , &View::sendMessage        );
    /**/connect(m_pView                      , &CategorizedTreeView::itemDoubleClicked  , m_pEventManager, &EventManager::enter      );
    /**/connect(widget_dialpad               , &Dialpad::typed                          , m_pEventManager, &EventManager::typeString );
    /**/connect(m_pView                      , &CategorizedTreeView::contextMenuRequest , this           , &View::slotContextMenu    );
    /*                                                                                                                               */
 
-   connect(m_pView->selectionModel(), &QItemSelectionModel::currentChanged, this, &View::updateTextBoxStatus);
-
    //Auto completion
    loadAutoCompletion();
 
    m_pCanvasToolbar = new CallViewToolbar(m_pView);
-
-   if (ConfigurationSkeleton::enableWizard() == true && !AccountModel::instance().isRingSupported()) {
-      new Wizard(this);
-   }
-   ConfigurationSkeleton::setEnableWizard(false);
 
    setFocus(Qt::OtherFocusReason);
 
@@ -197,11 +159,6 @@ View::~View()
 AutoCompletion* View::autoCompletion() const
 {
    return m_pAutoCompletion;
-}
-
-bool View::messageBoxFocussed() const
-{
-   return m_pSendMessageLE && m_pSendMessageLE->hasFocus();
 }
 
 ///Create a call from the clipboard content
@@ -266,53 +223,27 @@ void View::displayDialpad(bool checked)
    widget_dialpad->setVisible(ConfigurationSkeleton::displayDialpad());
 }
 
-///Display a notification popup (freedesktop notification)
-void View::displayMessageBox(bool checked)
-{
-   ConfigurationSkeleton::setDisplayMessageBox(checked);
-   Call* call = CallModel::instance().selectedCall();
-   m_pMessageBoxW->setVisible(checked
-      && ((
-        call
-        && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
-      ) ||
-      (
-        m_pMessageTabBox->count()
-      ))
-   );
-}
-
 ///When a call is coming (dbus)
 void View::incomingCall(Call* call)
 {
    qDebug() << "Signal : Incoming Call ! ID = " << call;
 
    if (ConfigurationSkeleton::displayOnCalls()) {
-      MainWindow::app()->activateWindow(      );
-      MainWindow::app()->raise         (      );
-      MainWindow::app()->setVisible    ( true );
+      PhoneWindow::app()->activateWindow(      );
+      PhoneWindow::app()->raise         (      );
+      PhoneWindow::app()->setVisible    ( true );
    }
 
-   const QModelIndex& idx = CallModel::instance().getIndex(call);
+   const auto idx = CallModel::instance().getIndex(call);
    if (idx.isValid() && (call->state() == Call::State::RINGING || call->state() == Call::State::INCOMING)) {
       CallModel::instance().selectCall(call);
    }
 }
 
-///Send a text message
-void View::sendMessage()
-{
-   Call* call = CallModel::instance().selectedCall();
-   if (call && !m_pSendMessageLE->text().isEmpty()) {
-      call->addOutgoingMedia<Media::Text>()->send({{"text/plain",m_pSendMessageLE->text()}});
-   }
-   m_pSendMessageLE->clear();
-}
-
 void View::slotAutoCompleteClicked(ContactMethod* n) //TODO use the new LRC API for this
 {
    Call* call = CallModel::instance().selectedCall();
-   if (call->lifeCycleState() == Call::LifeCycleState::CREATION) {
+   if (call && call->lifeCycleState() == Call::LifeCycleState::CREATION) {
       call->setDialNumber(n);
       if (n->account())
          call->setAccount(n->account());
@@ -335,29 +266,5 @@ void View::slotContextMenu(const QModelIndex& index)
    m->exec(QCursor::pos());
 }
 
-void View::updateTextBoxStatus()
-{
-   static bool display = ConfigurationSkeleton::displayMessageBox();
-   if (display) {
-      Call* call = CallModel::instance().selectedCall();
-      m_pMessageBoxW->setVisible(call
-         && (call->lifeCycleState() == Call::LifeCycleState::PROGRESS)
-      );
-   }
-}
-
-void View::displayHistory(bool in)
-{
-   if (!in)
-      return;
-
-   Call* call = CallModel::instance().selectedCall();
-
-   if (call->lifeCycleState() == Call::LifeCycleState::PROGRESS) {
-      m_pMessageTabBox->showConversation(call->peerContactMethod());
-   }
-
-   m_pMessageTabBox->clearColor();
-}
-
 #include "view.moc"
+// kate: space-indent on; indent-width 3; replace-tabs on;

@@ -42,3 +42,5 @@ public:
    static void        displayNoAccountMessageBox(QWidget* parent = nullptr);
 };
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

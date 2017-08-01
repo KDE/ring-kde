@@ -20,34 +20,29 @@
 #define ICONS_H
 
 namespace RingIcons {
-   constexpr static const char* INCOMING                 = ":/images/icons/ringing.svg"              ;
-   constexpr static const char* RINGING                  = ":/images/icons/ringing.svg"              ;
-   constexpr static const char* CURRENT                  = ":/images/icons/current.svg"              ;
-   constexpr static const char* DIALING                  = ":/images/icons/dial.svg"                 ;
-   constexpr static const char* HOLD                     = ":/images/icons/hold.svg"                 ;
-   constexpr static const char* FAILURE                  = ":/images/icons/fail.svg"                 ;
-   constexpr static const char* BUSY                     = ":/images/icons/busy.svg"                 ;
-   constexpr static const char* TRANSFER                 = ":/images/icons/transfert.svg"            ;
-   constexpr static const char* TRANSF_HOLD              = ":/images/icons/transfert.svg"            ;
-   constexpr static const char* CONFERENCE               = ":/images/icons/user-group-properties.svg";
-   constexpr static const char* CALL                     = ":/images/icons/call.svg"                 ;
-   constexpr static const char* HANGUP                   = ":/images/icons/hang_up.svg"              ;
-   constexpr static const char* UNHOLD                   = ":/images/icons/unhold.svg"               ;
-   constexpr static const char* ACCEPT                   = ":/images/icons/accept.svg"               ;
-   constexpr static const char* REFUSE                   = ":/images/icons/refuse.svg"               ;
-   constexpr static const char* INITIALIZATION           = ":/images/icons/initialization.svg"       ;
-   constexpr static const char* CONNECTED                = ":/images/icons/connected.svg"            ;
-   constexpr static const char* EXEC_TRANSF              = ":/images/icons/call.svg"                 ;
-   constexpr static const char* REC_DEL_OFF              = ":/images/icons/record_disabled.svg"      ;
-   constexpr static const char* REC_DEL_ON               = ":/images/icons/record.svg"               ;
-   constexpr static const char* MAILBOX                  = ":/images/icons/mailbox.svg"              ;
-   constexpr static const char* DISPLAY_VOLUME_CONSTROLS = ":/images/icons/icon_volume_off.svg"      ;
-   constexpr static const char* DISPLAY_DIALPAD          = ":/images/icons/icon_dialpad.svg"         ;
-   constexpr static const char* HISTORY_INCOMING         = ":/images/icons/incoming.svg"             ;
-   constexpr static const char* HISTORY_OUTGOING         = ":/images/icons/outgoing.svg"             ;
-   constexpr static const char* HISTORY_MISSED           = ":/images/icons/missed.svg"               ;
-   constexpr static const char* HISTORY_MISSED_OUT       = ":/images/icons/missed_out.svg"           ;
-   constexpr static const char* RING                     = ":/images/icons/ring.svg"                 ;
+   constexpr static const char* INCOMING                 = ":/sharedassets/phone_dark/ringing.svg"         ;
+   constexpr static const char* RINGING                  = ":/sharedassets/phone_dark/ringing.svg"         ;
+   constexpr static const char* CURRENT                  = ":/sharedassets/phone_dark/current.svg"         ;
+   constexpr static const char* DIALING                  = ":/sharedassets/phone_dark/dial.svg"            ;
+   constexpr static const char* HOLD                     = ":/sharedassets/phone_dark/hold.svg"            ;
+   constexpr static const char* FAILURE                  = ":/sharedassets/phone_dark/failed.svg"          ;
+   constexpr static const char* BUSY                     = ":/sharedassets/phone_dark/busy.svg"            ;
+   constexpr static const char* TRANSFER                 = ":/sharedassets/phone_dark/transfert.svg"       ;
+   constexpr static const char* TRANSF_HOLD              = ":/sharedassets/phone_dark/transfert.svg"       ;
+   constexpr static const char* CONFERENCE               = ":/images/icons/user-group-properties.svg"      ;
+   constexpr static const char* CALL                     = ":/sharedassets/phone_dark/current.svg"         ;
+   constexpr static const char* HANGUP                   = ":/sharedassets/phone_dark/hang_up.svg"         ;
+   constexpr static const char* UNHOLD                   = ":/sharedassets/phone_dark/unhold.svg"          ;
+   constexpr static const char* ACCEPT                   = ":/sharedassets/phone_dark/accept.svg"          ;
+   constexpr static const char* REFUSE                   = ":/sharedassets/phone_dark/failed.svg"          ;
+   constexpr static const char* INITIALIZATION           = ":/sharedassets/phone_dark/initialization.svg"  ;
+   constexpr static const char* CONNECTED                = ":/sharedassets/phone_dark/connected.svg"       ;
+   constexpr static const char* DISPLAY_VOLUME_CONSTROLS = ":/images/icons/icon_volume_off.svg"            ;
+   constexpr static const char* DISPLAY_DIALPAD          = ":/images/icons/icon_dialpad.svg"               ;
+   constexpr static const char* HISTORY_INCOMING         = ":/sharedassets/phone_dark/incoming.svg"        ;
+   constexpr static const char* HISTORY_OUTGOING         = ":/sharedassets/phone_dark/outgoing.svg"        ;
+   constexpr static const char* HISTORY_MISSED           = ":/sharedassets/phone_dark/missed_incoming.svg" ;
+   constexpr static const char* HISTORY_MISSED_OUT       = ":/sharedassets/security/missed_outgoing.svg"            ;
 }
 
 #endif

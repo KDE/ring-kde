@@ -30,16 +30,19 @@
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
+#include <QQmlDebuggingEnabler>
 
-constexpr static const char version[] = "2.3.0";
-
-static RingApplication* app;
+constexpr static const char version[] = "2.4.0";
 
 int main(int argc, char **argv)
 {
    try
    {
-      app = new RingApplication ( argc, argv          );
+      //QQmlDebuggingEnabler enabler;
+
+      QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+      RingApplication::instance( argc, argv );
 
       KLocalizedString::setApplicationDomain("ring-kde");
 
@@ -48,7 +51,7 @@ int main(int argc, char **argv)
          /*QStringLiteral(*/version/*)*/,
          i18n("RING, a secured and distributed communication software"),
          KAboutLicense::GPL_V3,
-         i18n("(C) 2004-2015 Savoir-faire Linux"),
+         i18n("(C) 2004-2015 Savoir-faire Linux\n2016-2017 Emmanuel Lepage Vallee"),
          QString(),
          QStringLiteral("http://www.ring.cx"),
          QStringLiteral("ring@gnu.org")
@@ -59,11 +62,13 @@ int main(int argc, char **argv)
       about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com"));
       about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                              );
 
+      if (!Cmd::parseCmd(argc, argv, about))
+         return 0;
+
       KAboutData::setApplicationData(about);
 
-      Cmd::parseCmd(argc, argv, about);
 
-      app->setOrganizationDomain( QStringLiteral("ring.cx")           );
+      RingApplication::instance()->setOrganizationDomain( QStringLiteral("ring.cx")           );
 
       //Only start the application once
 #ifdef Q_OS_LINUX
@@ -74,13 +79,13 @@ int main(int argc, char **argv)
 #endif
 
       //The app will have quitted by now if an instance already exist
-      app->newInstance();
+      RingApplication::instance()->newInstance();
 
-      const int retVal = app->exec();
+      const int retVal = RingApplication::instance()->exec();
 
       ConfigurationSkeleton::self()->save();
 
-      delete app;
+      delete RingApplication::instance();
       return retVal;
    }
    catch(const char * msg)
@@ -92,3 +97,5 @@ int main(int argc, char **argv)
       qDebug() << msg;
    }
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

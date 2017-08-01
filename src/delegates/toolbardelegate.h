@@ -37,3 +37,5 @@ private:
 };
 
 #endif //TOOLBARDELEGATE_H
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

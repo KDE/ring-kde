@@ -24,7 +24,11 @@ Pages::Network::Network(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
    connect(this,&PageBase::accountSet,[this]() {
+      m_pPortGroup->setVisible(account()->protocol() == Account::Protocol::SIP);
+      m_pPublishedGB->setVisible(account()->protocol() == Account::Protocol::SIP);
       m_pNetworkInterfaces->bindToModel(account()->networkInterfaceModel(),account()->networkInterfaceModel()->selectionModel());
    });
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;
 

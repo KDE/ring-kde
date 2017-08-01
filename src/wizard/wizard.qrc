@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qtquickcontrols2.conf</file>
+
+        <file alias="ring-kde.svg">assets/ring-kde.svg</file>
+        <file alias="people.svg">assets/people.svg</file>
+        <file alias="beta_logo.svg">assets/beta_logo.svg</file>
+
+        <file alias="main.qml">qml/main.qml</file>
+        <file alias="Page1.qml">qml/Page1.qml</file>
+        <file alias="Page1Form.ui.qml">qml/Page1Form.ui.qml</file>
+        <file alias="ButtonBar.qml">qml/ButtonBar.qml</file>
+        <file alias="CreateRing.qml">qml/CreateRing.qml</file>
+        <file alias="ImportRing.qml">qml/ImportRing.qml</file>
+        <file alias="ProfilePage.qml">qml/ProfilePage.qml</file>
+        <file alias="StartingPage.qml">qml/StartingPage.qml</file>
+        <file alias="StartingPageForm.ui.qml">qml/StartingPageForm.ui.qml</file>
+    </qresource>
+</RCC>

@@ -36,13 +36,11 @@ public:
    explicit DlgDisplay(KConfigDialog *parent = nullptr);
 
    //Destructor
-   ~DlgDisplay();
+   virtual ~DlgDisplay();
 
    bool hasChanged();
 
 private:
-   QMap<QString,QString>          m_lCallDetails;
-   QMap<QString,QListWidgetItem*> m_lItemList   ;
    bool m_HasChanged;
 
 public Q_SLOTS:
@@ -62,3 +60,5 @@ Q_SIGNALS:
 };
 
 #endif
+
+// kate: space-indent on; indent-width 3; replace-tabs on;

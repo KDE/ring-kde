@@ -20,6 +20,10 @@
 
 // Qt
 #include <QtWidgets/QFileDialog>
+#include <QtCore/QPointer>
+#include <QtGui/QPainter>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QAbstractProxyModel>
 
 // KDE
 #include <KPasswordDialog>
@@ -38,15 +42,13 @@
 
 #include <model/extendedprotocolmodel.h>
 
-#include <QtGui/QPainter>
-#include <QtWidgets/QMessageBox>
-
-#include <QtCore/QAbstractProxyModel>
 
 
-DlgAccount::DlgAccount(QWidget* parent) : QWidget(parent),m_HasChanged(false)
+DlgAccount::DlgAccount(QWidget* parent, QQmlEngine* engine) :
+   QWidget(parent),m_HasChanged(false), m_pEngine(engine)
 {
    setupUi(this);
+   m_pPanel->setEngine(m_pEngine);
    m_pAccountList->setModel         ( ProfileModel::instance().sortedProxyModel         () );
    m_pAccountList->setSelectionModel( ProfileModel::instance().sortedProxySelectionModel() );
 
@@ -108,12 +110,15 @@ void DlgAccount::slotExpand()
 
 void DlgAccount::slotRemoveAccount()
 {
-   static const QString message = i18n("Are you sure you want to remove %1?");
-   // Check if the selected element is a profile
    QModelIndex idx = ProfileModel::instance().sortedProxySelectionModel()->currentIndex();
+
+   // Check if the selected element is a profile
    if (idx.isValid() && !idx.parent().isValid()) {
+      const QString message = i18n("Are you sure you want to remove %1?",
+                                    idx.data(Qt::DisplayRole).toString());
+
       if (QMessageBox::warning(this, i18n("Remove profile"),
-        message.arg(idx.data(Qt::DisplayRole).toString()),
+        message,
         QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
       )
          if (ProfileModel::instance().remove(idx)) {
@@ -129,8 +134,11 @@ void DlgAccount::slotRemoveAccount()
       if (!idx.isValid())
          return;
 
+      const QString message = i18n("Are you sure you want to remove %1?",
+                                    idx.data(Qt::DisplayRole).toString());
+
       if (QMessageBox::warning(this, i18n("Remove account"),
-         message.arg(idx.data(Qt::DisplayRole).toString()),
+         message,
          QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes
       )
          AccountModel::instance().remove(idx);
@@ -167,14 +175,15 @@ void DlgAccount::slotNewAddAccount()
       const QString path = QFileDialog::getOpenFileName(this, i18n("Import accounts"),  QDir::currentPath());
 
       if (!path.isEmpty()) {
-         KPasswordDialog dlg(this);
-         dlg.setPrompt(i18n("Enter the password"));
+         QPointer<KPasswordDialog> dlg = new KPasswordDialog(this);
+         dlg->setPrompt(i18n("Enter the password"));
 
-         if( !dlg.exec() )
+         if( !dlg->exec() )
              return;
 
-         AccountModel::instance().importAccounts(path, dlg.password());
+         AccountModel::instance().importAccounts(path, dlg->password());
 
+         delete dlg;
       }
 
       return;
@@ -221,3 +230,5 @@ void DlgAccount::updateWidgets()
 {
    m_HasChanged = false;
 }
+
+// kate: space-indent on; indent-width 3; replace-tabs on;
