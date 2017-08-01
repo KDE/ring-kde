@@ -59,11 +59,11 @@ message(STATUS "Fetching Ring-LRC from GitHub")
 
 if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc)
     execute_process(COMMAND
-        git clone https://github.com/Elv13/ring-lrc.git --branch work5 ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc
+        git clone https://github.com/Elv13/ring-lrc.git --branch master ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc
     )
 else()
     execute_process(COMMAND
-        /bin/sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc && git fetch origin && git reset --hard origin/work5"
+        /bin/sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc && git fetch origin && git reset --hard origin/master"
     )
 endif()
 
