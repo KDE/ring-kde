@@ -50,7 +50,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>This dialog is an overview of Ring-KDE phonebook. Some elements may exist multiple time if they are associated with multiple account or contacts. The elements present in this table come from the history, contacts and other sources.</string>
+      <string>This dialog is an overview of Ring-KDE phonebook. Some elements may exist multiple times if they are associated with multiple accounts or contacts. The elements present in this table come from the history, contacts and other sources.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
