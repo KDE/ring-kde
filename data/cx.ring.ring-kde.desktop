@@ -66,7 +66,7 @@ Comment[zh_TW]=使用 SIP 或是 RING 協定打電話或是接電話
 Exec=ring-kde
 Icon=ring-kde
 StartupNotify=true
-Categories=Network;Telephony;
+Categories=Qt;KDE;Network;Telephony;
 DBusActivatable=true
 
 [X-Protocol]
