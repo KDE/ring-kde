@@ -29,7 +29,7 @@
 // STD
 #include <time.h>
 
-AccountInfoDelegate::AccountInfoDelegate() : QStyledItemDelegate()
+AccountInfoDelegate::AccountInfoDelegate(QObject* parent) : QStyledItemDelegate(parent)
 {}
 
 void AccountInfoDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const

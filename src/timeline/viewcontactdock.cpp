@@ -68,10 +68,10 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
     auto cp = new ActiveCallProxy(&CallModel::instance());
     cp->setSourceModel(&CallModel::instance());
 
-    RingApplication::engine()->rootContext()->setContextProperty("ActiveCallProxyModel", cp);
+    RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxyModel"), cp);
 
     d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    d_ptr->m_pQuickWidget->setSource(QUrl("qrc:/viewcontact.qml"));
+    d_ptr->m_pQuickWidget->setSource(QUrl(QStringLiteral("qrc:/viewcontact.qml")));
 
     auto l = new QHBoxLayout(this);
     l->addWidget(d_ptr->m_pQuickWidget);
@@ -128,7 +128,7 @@ void ViewContactDock::setContactMethod(ContactMethod* cm)
             auto t = new QTimer(this);
             t->setInterval(5 * 60 * 1000);
             t->setSingleShot(true);
-            connect(t, &QTimer::timeout, [t, this, ptr]() {
+            connect(t, &QTimer::timeout, this, [t, this, ptr]() {
                 this->d_ptr->m_lTimers.removeAll(t);
             });
             t->start();

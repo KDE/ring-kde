@@ -41,10 +41,10 @@ WelcomeDialog::~WelcomeDialog()
 void WelcomeDialog::show()
 {
    RingApplication::engine()->rootContext()->setContextProperty(
-      "WelcomeDialog", this
+      QStringLiteral("WelcomeDialog"), this
    );
 
-   RingApplication::engine()->load(QUrl(QLatin1String("qrc:/main.qml")));
+   RingApplication::engine()->load(QUrl(QStringLiteral("qrc:/main.qml")));
 
 }
 

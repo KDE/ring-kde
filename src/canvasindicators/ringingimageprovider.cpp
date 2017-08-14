@@ -31,7 +31,7 @@
 #include <QtSvg/QSvgRenderer>
 
 struct RingingTipData;
-struct InitTipData;
+struct InitTipDataPrivate;
 struct SearchingTipData;
 
 class RingingImageProviderPrivate
@@ -39,7 +39,7 @@ class RingingImageProviderPrivate
 public:
     // Attributes
     RingingTipData*   m_pRing   {nullptr};
-    InitTipData*      m_pInit   {nullptr};
+    InitTipDataPrivate*      m_pInit   {nullptr};
     SearchingTipData* m_pSearch {nullptr};
 
     QByteArray loadSvg(const QString& path) const;
@@ -117,12 +117,12 @@ struct RingingTipData
     };
 };
 
-struct InitTipData final {
-    explicit InitTipData(RingingImageProviderPrivate* d) {
+struct InitTipDataPrivate final {
+    explicit InitTipDataPrivate(RingingImageProviderPrivate* d) {
         auto content = d->loadSvg(QStringLiteral(":/canvasassets/Searching.svg"));
         m_Render = new QSvgRenderer(content);
     }
-    ~InitTipData() {delete m_Render;}
+    ~InitTipDataPrivate() {delete m_Render;}
 
     QPixmap toPixmap(int count) {
         Q_UNUSED(count)
@@ -177,7 +177,7 @@ QPixmap RingingImageProvider::requestPixmap(const QString &id, QSize *size, cons
     }
     else if (conf[0] == QLatin1String("init")) {
         if (!d_ptr->m_pInit)
-            d_ptr->m_pInit = new InitTipData(d_ptr);
+            d_ptr->m_pInit = new InitTipDataPrivate(d_ptr);
 
         pxm = d_ptr->m_pInit->toPixmap(count);
     }

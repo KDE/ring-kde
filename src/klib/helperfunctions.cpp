@@ -34,7 +34,7 @@
 #include "numbercategory.h"
 
 ///Remove accent and upper caps, try to stay ascii as much as possible
-QString HelperFunctions::normStrippped(QString str)
+QString HelperFunctions::normStrippped(const QString& str)
 {
    QString normStripppedC;
    foreach(QChar char2,str.toLower().normalized(QString::NormalizationForm_KD) ) {
@@ -45,15 +45,16 @@ QString HelperFunctions::normStrippped(QString str)
 }
 
 ///Escape lesser and greater
-QString HelperFunctions::escapeHtmlEntities(QString str)
+QString HelperFunctions::escapeHtmlEntities(const QString& str)
 {
-   while (str.indexOf('<') != -1) {
-      str = str.replace('<',QLatin1String("&lt;"));
+   auto ret = str;
+   while (ret.indexOf('<') != -1) {
+      ret = ret.replace('<',QLatin1String("&lt;"));
    }
-   while (str.indexOf('>') != -1) {
-      str = str.replace('>',QLatin1String("&gt;"));
+   while (ret.indexOf('>') != -1) {
+      ret = ret.replace('>',QLatin1String("&gt;"));
    }
-   return str;
+   return ret;
 }
 
 ///Display a message box

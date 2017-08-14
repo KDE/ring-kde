@@ -112,7 +112,7 @@ void TipManager::setCurrentTip(Tip* tip)
 }
 
 ///Callback for new animation frame
-void TipManager::animationStep(FrameDescription desc)
+void TipManager::animationStep(const FrameDescription& desc)
 {
    m_CurrentFrame = desc;
    reload();

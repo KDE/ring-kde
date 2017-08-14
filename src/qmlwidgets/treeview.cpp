@@ -153,9 +153,9 @@ void TreeViewPrivate::applyRoles(QQmlContext* ctx, const QModelIndex& self) cons
         ctx->setContextProperty(i.value() , self.data(i.key()));
 
     // Set extra index to improve ListView compatibility
-    ctx->setContextProperty("index"     , self.row()              );
-    ctx->setContextProperty("rootIndex" , self                    );
-    ctx->setContextProperty("rowCount"  , m_pModel->rowCount(self));
+    ctx->setContextProperty(QStringLiteral("index"    ) , self.row()              );
+    ctx->setContextProperty(QStringLiteral("rootIndex") , self                    );
+    ctx->setContextProperty(QStringLiteral("rowCount" ) , m_pModel->rowCount(self));
 }
 
 QPair<QQuickItem*, QQmlContext*> TreeViewPrivate::loadDelegate(TreeViewHierarchyEntry* parent, const QModelIndex& self) const

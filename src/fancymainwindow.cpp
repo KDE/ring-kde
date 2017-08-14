@@ -32,7 +32,7 @@
 #include "ringapplication.h"
 #include "phonewindow.h"
 
-FancyMainWindow::FancyMainWindow() : KXmlGuiWindow()
+FancyMainWindow::FancyMainWindow(QWidget* parent) : KXmlGuiWindow(parent)
 {
     installEventFilter(this);
     updateTabIcons();
@@ -75,7 +75,7 @@ void FancyMainWindow::updateTabIcons()
         return;
 
     // Load the CSS
-    static const QResource tss(":/toolbar/toolbar.css");
+    static const QResource tss(QStringLiteral(":/toolbar/toolbar.css"));
     static QByteArray css = QByteArray((char*)tss.data(), tss.size());
 
     // Twist Qt arm to create those "electron" like tabbar on the left
@@ -112,7 +112,7 @@ void FancyMainWindow::updateTabIcons()
             else
                 bar->setIconSize({});
 
-            static auto s = QStyleFactory::create("windows");
+            static auto s = QStyleFactory::create(QStringLiteral("windows"));
 
             // The idea is that some native styles (like macOS) will draw
             // things differently. In order to keep a consistent look, force

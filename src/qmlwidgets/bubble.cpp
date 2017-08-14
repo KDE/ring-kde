@@ -31,7 +31,7 @@ public:
     int m_Align {Qt::AlignmentFlag::AlignLeft};
     QColor m_Color;
     QString m_Text;
-    QFont m_Font {"Noto Color Emoji"};
+    QFont m_Font {QStringLiteral("Noto Color Emoji")};
     QFontMetricsF m_FontMetrics{m_Font};
     qreal m_MaximumWidth {-1};
 };

@@ -61,7 +61,7 @@ MultiCall::~MultiCall()
     delete d_ptr;
 }
 
-void MultiCall::setModelIndex(QPersistentModelIndex idx)
+void MultiCall::setModelIndex(const QPersistentModelIndex& idx)
 {
     d_ptr->m_Index = idx;
 

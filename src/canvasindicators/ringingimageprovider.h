@@ -34,6 +34,7 @@ public:
     virtual QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
+    Q_DISABLE_COPY(RingingImageProvider)
     RingingImageProviderPrivate* d_ptr;
     Q_DECLARE_PRIVATE(RingingImageProvider)
 };

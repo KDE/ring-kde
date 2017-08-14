@@ -39,7 +39,7 @@ public:
     explicit MultiCall(QQuickItem* parent = nullptr);
     virtual ~MultiCall();
 
-    void setModelIndex(QPersistentModelIndex idx);
+    void setModelIndex(const QPersistentModelIndex& idx);
     QPersistentModelIndex modelIndex() const;
 
     bool skipChildren() const;

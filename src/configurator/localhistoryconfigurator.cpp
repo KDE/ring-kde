@@ -59,7 +59,7 @@ void LocalHistoryConfigurator::loadCollection(CollectionInterface* col, QObject*
 
          connect(m_pDialog->m_pKeepHistory, &QCheckBox::toggled, &CategorizedHistoryModel::instance(), &CategorizedHistoryModel::setHistoryLimited);
          connect(m_pDialog->m_pHistoryMax , SIGNAL(valueChanged(int)), &CategorizedHistoryModel::instance(), SLOT(setHistoryLimit(int)));
-         connect(m_pDialog, &DlgGeneral::updateButtons, [this]() {
+         connect(m_pDialog, &DlgGeneral::updateButtons, this, [this]() {
             emit this->changed();
          });
       }

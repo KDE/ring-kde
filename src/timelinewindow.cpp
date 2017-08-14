@@ -45,7 +45,7 @@
 
 TimelineWindow::TimelineWindow()
 {
-    setObjectName("TimelineWindow");
+    setObjectName(QStringLiteral("TimelineWindow"));
 
     //On OSX, QStandardPaths doesn't work as expected, it is better to pack the .ui in the DMG
 #ifdef Q_OS_MAC
@@ -63,9 +63,9 @@ TimelineWindow::TimelineWindow()
 
     // Load the welcome message
 
-    QFile file(":/assets/welcome.html");
+    QFile file(QStringLiteral(":/assets/welcome.html"));
     if (file.open(QIODevice::ReadOnly))
-        RingApplication::engine()->rootContext()->setContextProperty("welcomeMessage", file.readAll());
+        RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("welcomeMessage"), file.readAll());
 
     ActionCollection::instance()->setupAction(this);
     // MainWindow

@@ -47,13 +47,13 @@ RecentDock::RecentDock(QWidget* parent) :
     auto completionModel = new NumberCompletionModel();
 
     RingApplication::engine()->rootContext()->setContextProperty(
-        "CompletionModel", completionModel
+        QStringLiteral("CompletionModel"), completionModel
     );
 
     d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
 
     d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    d_ptr->m_pQuickWidget->setSource(QUrl("qrc:/peerstimeline.qml"));
+    d_ptr->m_pQuickWidget->setSource(QUrl(QStringLiteral("qrc:/peerstimeline.qml")));
 
     setWidget(d_ptr->m_pQuickWidget);
     setAcceptDrops(true);
@@ -87,7 +87,7 @@ bool RecentDock::eventFilter(QObject *obj, QEvent *event)
             ->setProperty("overlayVisible", false);
     }
 
-    return false;
+    return QDockWidget::eventFilter(obj, event);
 }
 
 void RecentDock::slotViewContactMethod(const QVariant& cm)
@@ -109,7 +109,7 @@ void RecentDock::setContactMethod(ContactMethod* cm)
 {
     auto item = d_ptr->m_pQuickWidget->rootObject();
 
-    if (auto selectionModel = item->findChild<PeersTimelineSelectionModel*>("selectionMapper")) {
+    if (auto selectionModel = item->findChild<PeersTimelineSelectionModel*>(QStringLiteral("selectionMapper"))) {
         selectionModel->setContactMethod(cm);
     }
 }

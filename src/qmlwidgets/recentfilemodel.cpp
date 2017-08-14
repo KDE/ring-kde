@@ -49,9 +49,9 @@ QString RecentFileModel::addFile()
 {
     const auto fileName = QFileDialog::getOpenFileName(
         nullptr,
-        "Open File",
+        QStringLiteral("Open File"),
         QDir::currentPath(),
-        "Media Files (*.png *.jpg *.gif *.mp4 *.mkv *.webm *.txt *.avi *.mpg)"
+        QStringLiteral("Media Files (*.png *.jpg *.gif *.mp4 *.mkv *.webm *.txt *.avi *.mpg)")
     );
 
     d_ptr->m_lFiles << fileName;

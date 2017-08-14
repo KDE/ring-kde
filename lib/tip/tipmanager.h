@@ -71,7 +71,7 @@ private:
    FrameDescription        m_CurrentFrame    ;
 
 private Q_SLOTS:
-   void animationStep(FrameDescription desc);
+   void animationStep(const FrameDescription& desc);
    void slotTransitionStarted(QAbstractAnimation::Direction direction, QAbstractAnimation::State state);
 
 public Q_SLOTS:

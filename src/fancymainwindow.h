@@ -27,7 +27,7 @@ class FancyMainWindow : public KXmlGuiWindow
     Q_OBJECT
 
 public:
-    explicit FancyMainWindow();
+    explicit FancyMainWindow(QWidget* parent = nullptr);
     virtual ~FancyMainWindow();
 
     void setActive(bool a);

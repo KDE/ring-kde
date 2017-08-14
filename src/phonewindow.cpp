@@ -87,7 +87,7 @@ PhoneWindow::PhoneWindow(QWidget*)
       ,m_pVideoDW(nullptr)
 #endif
 {
-   setObjectName("PhoneWindow");
+   setObjectName(QStringLiteral("PhoneWindow"));
 
    //On OSX, QStandardPaths doesn't work as expected, it is better to pack the .ui in the DMG
 #ifdef Q_OS_MAC

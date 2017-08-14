@@ -195,7 +195,7 @@ void TipAnimationWrapper::setTip(Tip* tip)
 {
    m_CurrentImage= QImage();
    m_pTip = tip;
-   emit tipChanged();
+   tipChanged();
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

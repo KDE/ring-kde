@@ -37,5 +37,6 @@ public:
     virtual QSize actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
 
 private:
+    Q_DISABLE_COPY(PersonIconEngine)
     PersonIconEnginePrivate* d_ptr;
 };

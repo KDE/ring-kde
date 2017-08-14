@@ -22,6 +22,9 @@
 #include <QtGui/QPixmap>
 #include <QtWidgets/QFileDialog>
 
+//KDE
+#include <klocalizedstring.h>
+
 // Ring
 #include <person.h>
 
@@ -59,15 +62,15 @@ void PhotoSelector::setSelectedSquare(QRect r)
     d_ptr->m_SelectedRect = r;
 }
 
-QString PhotoSelector::selectFile(const QString defaultPath)
+QString PhotoSelector::selectFile(const QString& defaultPath)
 {
     Q_UNUSED(defaultPath)
 
     const auto fileName = QFileDialog::getOpenFileName(
         nullptr,
-        "Open Image",
+        i18n("Open Image"),
         QDir::currentPath(),
-        "Image Files (*.png *.jpg *.gif)"
+        i18n("Image Files (*.png *.jpg *.gif)")
     );
 
     d_ptr->m_Path = fileName;

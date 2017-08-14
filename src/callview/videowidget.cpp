@@ -53,7 +53,7 @@ void VideoWidget3::initProvider()
     if (!VideoWidget3Private::m_spProvider) {
         VideoWidget3Private::m_spProvider = new ImageProvider();
         RingApplication::engine()->addImageProvider(
-            "VideoFrame", VideoWidget3Private::m_spProvider
+            QStringLiteral("VideoFrame"), VideoWidget3Private::m_spProvider
         );
     }
 }
@@ -66,7 +66,7 @@ VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
     initProvider();
 
     setResizeMode(QQuickWidget::SizeRootObjectToView);
-    setSource(QUrl("qrc:/CallView.qml"));
+    setSource(QUrl(QStringLiteral("qrc:/CallView.qml")));
 
     setMode(mode);
 
@@ -113,7 +113,7 @@ bool VideoWidget3::eventFilter(QObject *obj, QEvent *event)
         }
     }
 
-    return false;
+    return QQuickWidget::eventFilter(obj, event);
 }
 
 void VideoWidget3::setCall(Call* c)

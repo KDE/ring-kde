@@ -38,5 +38,6 @@ public:
     static void staticPaint(QPainter* painter, const QRect& rect, bool isPresent, bool isTracked);
 
 private:
+    Q_DISABLE_COPY(CMIconEngine)
     CMIconEnginePrivate* d_ptr;
 };

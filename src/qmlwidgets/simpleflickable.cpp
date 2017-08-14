@@ -251,7 +251,7 @@ bool SimpleFlickable::event(QEvent *event)
             break;
     }
     #pragma GCC diagnostic pop
-    return false;
+    return QQuickItem::event(event);
 }
 
 void SimpleFlickable::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)

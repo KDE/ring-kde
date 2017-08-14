@@ -45,7 +45,7 @@ public:
     QImage image() const;
     void setImage(const QImage& image);
 
-    Q_INVOKABLE QString selectFile(const QString defaultPath = {});
+    Q_INVOKABLE QString selectFile(const QString& defaultPath = {});
 
     Q_INVOKABLE void setToPerson(Person* p);
 

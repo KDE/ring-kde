@@ -62,7 +62,7 @@ QString ImageProvider::takeSnapshot(Call* c)
 
     QSize s;
 
-    const auto img = ImageProviderPrivate::m_spInstance->requestImage("peer/9999", &s, {});
+    const auto img = ImageProviderPrivate::m_spInstance->requestImage(QStringLiteral("peer/9999"), &s, {});
 
     const auto path = QString("%1/snapshots/%2/")
         .arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation))
@@ -114,6 +114,11 @@ ImageProvider::ImageProvider()
 
     if (Video::PreviewManager::instance().isPreviewing())
         d_ptr->previewStarted(Video::PreviewManager::instance().previewRenderer());
+}
+
+ImageProvider::~ImageProvider()
+{
+    delete d_ptr;
 }
 
 QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)

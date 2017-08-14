@@ -37,8 +37,8 @@ typedef QHash<QString,QHash<QString,QVariant> > PersonHash;
 ///Ramdom mix of dynamic property and transtypping
 class LIB_EXPORT HelperFunctions {
 public:
-   static QString     normStrippped             (QString str              );
-   static QString     escapeHtmlEntities        (QString str              );
+   static QString     normStrippped             (const QString& str       );
+   static QString     escapeHtmlEntities        (const QString& str       );
    static void        displayNoAccountMessageBox(QWidget* parent = nullptr);
 };
 #endif

@@ -29,11 +29,13 @@ class ImageProvider : public QQuickImageProvider
 {
 public:
     explicit ImageProvider();
+    virtual ~ImageProvider();
 
     virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
     Q_INVOKABLE static QString takeSnapshot(Call* c);
 private:
+    Q_DISABLE_COPY(ImageProvider)
     ImageProviderPrivate* d_ptr;
     Q_DECLARE_PRIVATE(ImageProvider)
 };
