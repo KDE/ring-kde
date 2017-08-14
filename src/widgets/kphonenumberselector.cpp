@@ -39,8 +39,9 @@ ContactMethod* KPhoneNumberSelector::number(const Person* contact)
       if (contact->phoneNumbers().size()>1) {
          bool                   ok = false;
          QHash<QString,QString> map       ;
-         QStringList            list      ;
-         foreach (ContactMethod* number, contact->phoneNumbers()) {
+         QStringList            list;
+         const auto pn = contact->phoneNumbers();
+         for (auto number : qAsConst(pn)) {
             map[number->category()->name()+" ("+number->uri()+')'] = number->uri();
             list << number->category()->name()+" ("+number->uri()+')';
          }

@@ -529,7 +529,7 @@ bool ConferenceDelegate::eventFilter(QObject *obj, QEvent *event)
          }
       }
    }
-   return false;
+   return QStyledItemDelegate::eventFilter(obj, event);
 }
 
 ///Update the model text as soon as

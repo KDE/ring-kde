@@ -332,8 +332,8 @@ void RingApplication::setStartPhone(bool value)
 
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
-#define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(#name, &name::instance());
-#define QML_ADD_OBJECT(name, obj) RingApplication::engine()->rootContext()->setContextProperty(#name, obj);
+#define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), &name::instance());
+#define QML_ADD_OBJECT(name, obj) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), obj);
 
 constexpr static const char AppName[]= "Ring";
 
