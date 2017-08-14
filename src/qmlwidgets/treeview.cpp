@@ -147,7 +147,9 @@ TreeViewHierarchyEntry::TreeViewHierarchyEntry(const QModelIndex& idx, QQuickIte
 void TreeViewPrivate::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
 {
     // Add all roles to the
-    for (auto i = m_pModel->roleNames().constBegin(); i != m_pModel->roleNames().constEnd(); ++i)
+    const auto roleNames = m_pModel->roleNames();
+
+    for (auto i = roleNames.constBegin(); i != roleNames.constEnd(); ++i)
         ctx->setContextProperty(i.value() , self.data(i.key()));
 
     // Set extra index to improve ListView compatibility

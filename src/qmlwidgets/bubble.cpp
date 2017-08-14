@@ -50,9 +50,6 @@ Bubble::~Bubble()
 void Bubble::paint(QPainter *painter)
 {
     painter->setWorldMatrixEnabled(true);
-//     painter->setOpacity(0.3);
-
-    const qreal ratio = window()->effectiveDevicePixelRatio();
 
     const qreal w(boundingRect().width()), h(boundingRect().height());
 

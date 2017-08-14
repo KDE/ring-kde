@@ -95,9 +95,6 @@ ContactMethod* ContactBuilder::addPhoneNumber(Person* p, const QString& number, 
         return nullptr;
     }
 
-    // Force a copy
-    QVector<ContactMethod*> pn(p->phoneNumbers());
-
     if (!newCM)
         newCM = PhoneDirectoryModel::instance().getNumber(
             number, p, nullptr, catIndex.data().toString()
