@@ -67,7 +67,6 @@ SET( libkring_LIB_SRCS
    itemmodelserialization.cpp
 )
 
-
 IF ( ${AKONADI_FOUND} )
    SET(libkring_LIB_SRCS
       ${libkring_LIB_SRCS}

@@ -65,6 +65,7 @@ ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )
 
 target_link_libraries( libqmlwidgets
     ringclient
+    libkring
 
     Qt5::Core
     Qt5::Gui
