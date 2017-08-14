@@ -384,7 +384,7 @@ void PhoneWindow::displayVideoDock(Call* c, Video::Renderer* r)
    m_pVideoDW->show();
 
    // Fix mute/hold/playfile
-   connect(r, &Video::Renderer::started, [this, c, r]() {
+   connect(r, &Video::Renderer::started, this, [this, c, r]() {
       displayVideoDock(c, r);
    });
 }

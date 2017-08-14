@@ -64,12 +64,12 @@ m_Level(SecurityEvaluationModel::SecurityLevel::NONE)
    setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed ));
    m_Names << i18n("None") << i18n("Weak") << i18n("Medium") << i18n("Acceptable") << i18n("Strong") << i18n("Complete");
    m_lColors = {
-      "#A02111",
-      "#E47D08",
-      "#CBC910",
-      "#6DA00F",
-      "#0EA02B",
-      "#12860E"
+      QColor(0xA0, 0x21, 0x11),
+      QColor(0xE4, 0x7D, 0x08),
+      QColor(0xCB, 0xC9, 0x10),
+      QColor(0x6D, 0xA0, 0x0F),
+      QColor(0x0E, 0xA0, 0x2B),
+      QColor(0x12, 0x86, 0x0E)
    };
 //    m_lColors.resize(enum_class_size<SecurityLevel>());
 //    m_Names.resize(enum_class_size<SecurityLevel>());
@@ -306,18 +306,18 @@ public Q_SLOTS:
 IssueButton::IssueButton(const SecurityFlaw* flaw, QWidget* parent):
 QToolButton(parent),m_pFlaw(flaw)
 {
-   connect(flaw,&SecurityFlaw::requestHighlight,this,&IssueButton::slotHighlightFlaw);
+   connect(flaw,&SecurityFlaw::highlight,this,&IssueButton::slotHighlightFlaw);
 }
 
 IssuesIcon::IssuesIcon(QWidget* parent) : QWidget(parent),
 m_pLayout(new QHBoxLayout(this)),m_pBuddy(nullptr),m_pModel(nullptr)
 {
-   
+
 }
 
 IssuesIcon::~IssuesIcon()
 {
-   
+
 }
 
 QWidget* IssuesIcon::buddy() const
@@ -392,7 +392,7 @@ void IssuesIcon::slotFlawClicked()
 {
    IssueButton* btn = qobject_cast<IssueButton*>(sender());
    if (btn) {
-      selectFlaw(m_pModel->getIndex(btn->m_pFlaw));
+      emit selectFlaw(m_pModel->getIndex(btn->m_pFlaw));
    }
 }
 

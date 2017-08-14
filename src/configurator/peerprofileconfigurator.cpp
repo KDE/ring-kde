@@ -93,11 +93,11 @@ void PeerProfileConfigurator::loadCollection(CollectionInterface* col, QObject* 
             emit this->changed();
         };
 
-        connect(m_pUi->m_pNewContact , &QRadioButton::toggled, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::NEW_CONTACT      ); l(); });
-        connect(m_pUi->m_pIgnore     , &QRadioButton::toggled, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::IGNORE_DUPLICATE ); l(); });
-        connect(m_pUi->m_pAddMissing , &QRadioButton::toggled, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::QUICK_MERGE      ); l(); });
-        connect(m_pUi->m_pAlwaysAsk  , &QRadioButton::toggled, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::ALWAYS_ASK       ); l(); });
-        connect(m_pUi->m_pCustom     , &QRadioButton::toggled, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::CUSTOM           ); l(); });
+        connect(m_pUi->m_pNewContact , &QRadioButton::toggled, this, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::NEW_CONTACT      ); l(); });
+        connect(m_pUi->m_pIgnore     , &QRadioButton::toggled, this, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::IGNORE_DUPLICATE ); l(); });
+        connect(m_pUi->m_pAddMissing , &QRadioButton::toggled, this, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::QUICK_MERGE      ); l(); });
+        connect(m_pUi->m_pAlwaysAsk  , &QRadioButton::toggled, this, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::ALWAYS_ASK       ); l(); });
+        connect(m_pUi->m_pCustom     , &QRadioButton::toggled, this, [this, l](bool c) { if (c) m_pCol->setDefaultMode(PeerProfileCollection2::DefaultMode::CUSTOM           ); l(); });
 
         for (auto w : {m_pUi->kcfg_formattedName, m_pUi->kcfg_nickname, m_pUi->kcfg_primaryName, m_pUi->kcfg_lastName,
                        m_pUi->kcfg_email, m_pUi->kcfg_org, m_pUi->kcfg_addresses, m_pUi->kcfg_phoneNumbers}) {

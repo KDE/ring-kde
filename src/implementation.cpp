@@ -127,7 +127,8 @@ void KDEPresenceSerializationDelegate::save() {
          .arg(qvariant_cast<QColor>(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::BackgroundColorRole)).name())    //Color
          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Status),Qt::CheckStateRole) == Qt::Checked)    //Status
          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Default),Qt::CheckStateRole) == Qt::Checked);   //Default
-         list << line;
+
+      list << line;
    }
    ConfigurationSkeleton::setPresenceStatusList(list);
 }

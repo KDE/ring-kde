@@ -37,7 +37,7 @@ void ToolbarDelegate::paint(QPainter* painter, const QStyleOptionViewItem & opti
 
    //Init
    static const QColor hoverBg = QApplication::palette().highlight().color();
-   static const QColor textCol = QColor("#F2F2F2"); //Same as the icons
+   static const QColor textCol = QColor(0xF2, 0xF2, 0xF2); //Same as the icons
    static const int    fmh     = option.fontMetrics.height();
    static       QPen   checked ( hoverBg );
    static bool init = false;

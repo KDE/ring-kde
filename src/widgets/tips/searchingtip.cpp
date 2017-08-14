@@ -56,7 +56,6 @@ void SearchingTip::paintDecorations(QPainter& p, const QRect& textRect)
 {
    Q_UNUSED(textRect);
    QSize size(100,100);
-   QRect rect(m_CurrentRect.width()/2-50 ,m_Padding,size.width(),size.height());
 
    //Init the rederer, then render, then use the cache as long as possible
    if (!m_pR) {

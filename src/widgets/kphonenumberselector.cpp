@@ -48,7 +48,7 @@ ContactMethod* KPhoneNumberSelector::number(const Person* contact)
          return PhoneDirectoryModel::instance().getNumber(result);//new ContactMethod(result,"");
       }
       else if (contact->phoneNumbers().size() == 1)
-         return contact->phoneNumbers()[0];
+         return contact->phoneNumbers().constFirst();
    }
    return const_cast<ContactMethod*>(ContactMethod::BLANK());
 }

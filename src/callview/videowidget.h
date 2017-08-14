@@ -37,7 +37,7 @@ public:
         PREVIEW,
         SELFIE,
     };
-    Q_ENUMS(Mode)
+    Q_ENUM(Mode)
 
     explicit VideoWidget3(QWidget* parent = nullptr);
     VideoWidget3(Mode mode, QWidget* parent = nullptr);

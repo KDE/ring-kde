@@ -33,6 +33,9 @@
 DlgProfiles::DlgProfiles(QWidget *parent, QQmlEngine* e, const QString& name, const QString& uri) :
    QQuickWidget(e, parent), m_pCurrentPerson(nullptr)
 {
+   Q_UNUSED(name)
+   Q_UNUSED(uri)
+
    setResizeMode(QQuickWidget::SizeRootObjectToView);
    setSource(QUrl("qrc:/ContactInfo.qml"));
    connect(rootObject(), SIGNAL(changed()), this, SLOT(slotChanged()));

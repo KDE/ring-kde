@@ -35,11 +35,11 @@ Pages::Codecs::Codecs(QWidget *parent) : PageBase(parent)
       connect(button_audiocodecDown, &QToolButton::clicked,account()->codecModel(), &CodecModel::moveDown);
    });
 
-   connect(m_pCodecs, &QListView::clicked, [this](const QModelIndex& idx) {
+   connect(m_pCodecs, &QListView::clicked, this, [this](const QModelIndex& idx) {
       m_pSampleRate->setText(idx.data(CodecModel::Role::SAMPLERATE).toString());
    });
 
-   connect(m_pCodecs, &QListView::clicked, [this](const QModelIndex& idx) {
+   connect(m_pCodecs, &QListView::clicked, this, [this](const QModelIndex& idx) {
       m_pBitrate->setText(idx.data(CodecModel::Role::BITRATE).toString());
    });
 }

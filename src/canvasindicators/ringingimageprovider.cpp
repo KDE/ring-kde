@@ -58,7 +58,7 @@ struct RingingTipData
         };
 
         int i=0;
-        for (auto s : {
+        for (const auto& s : {
             QStringLiteral(":/canvasassets/Ring3.svg"),
             QStringLiteral(":/canvasassets/Ring2.svg"),
             QStringLiteral(":/canvasassets/Ring1.svg"),

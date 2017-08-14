@@ -21,19 +21,19 @@ SimpleRotateProxy::SimpleRotateProxy(QObject * parent) : QAbstractProxyModel(par
 {
    //TODO implement it correctly, this is the lazy way
    connect(this, &SimpleRotateProxy::sourceModelChanged, [this]() {
-      connect(this->sourceModel(),&QAbstractItemModel::dataChanged,[this](const QModelIndex&, const QModelIndex&) {
+      connect(this->sourceModel(),&QAbstractItemModel::dataChanged, this, [this](const QModelIndex&, const QModelIndex&) {
          emit this->layoutChanged();
       });
-      connect(this->sourceModel(),&QAbstractItemModel::layoutChanged,[this]() {
+      connect(this->sourceModel(),&QAbstractItemModel::layoutChanged, this, [this]() {
          emit this->layoutChanged();
       });
-      connect(this->sourceModel(),&QAbstractItemModel::rowsInserted, [this](const QModelIndex & , int , int ) {
+      connect(this->sourceModel(),&QAbstractItemModel::rowsInserted, this, [this](const QModelIndex & , int , int ) {
          emit this->layoutChanged();
       });
-      connect(this->sourceModel(),&QAbstractItemModel::rowsMoved,    [this](const QModelIndex&, int, int, const QModelIndex&, int) {
+      connect(this->sourceModel(),&QAbstractItemModel::rowsMoved, this, [this](const QModelIndex&, int, int, const QModelIndex&, int) {
          emit this->layoutChanged();
       });
-      connect(this->sourceModel(),&QAbstractItemModel::rowsRemoved,  [this](const QModelIndex & , int , int ) {
+      connect(this->sourceModel(),&QAbstractItemModel::rowsRemoved, this, [this](const QModelIndex & , int , int ) {
          emit this->layoutChanged();
       });
    });

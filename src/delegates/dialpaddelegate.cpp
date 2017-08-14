@@ -49,7 +49,7 @@ void DialpadDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    for (int i=0; i < 12;i++) {
       if (i == dialIdx) {
          painter->save();
-         static QColor c("#dd0000");
+         static QColor c(0xdd, 0x00, 0x00);
          c.setAlpha(animStep*2);
          painter->setBrush(QBrush(c));
       }

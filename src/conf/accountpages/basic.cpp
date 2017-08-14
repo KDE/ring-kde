@@ -55,7 +55,7 @@ Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
       updateStatus();
    });
 
-   connect(m_pDisplayLog, &QToolButton::clicked, [this]() {
+   connect(m_pDisplayLog, &QToolButton::clicked, this, [this]() {
       if (account()) {
          QPointer<AccountStatusViewer> d = new AccountStatusViewer(account(),this);
          d->show();

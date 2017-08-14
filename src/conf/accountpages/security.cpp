@@ -79,17 +79,17 @@ Pages::Security::Security(QWidget *parent) : PageBase(parent)
       m_pDefaultCiphers->setVisible(cipherVisible);
    });
 
-   connect(m_pViewCa, &QToolButton::clicked, [this]() {
+   connect(m_pViewCa, &QToolButton::clicked, this, [this]() {
       CertificateViewer* c = new CertificateViewer(account()->tlsCaListCertificate());
       c->show();
    });
 
-   connect(m_pViewCert, &QToolButton::clicked, [this]() {
+   connect(m_pViewCert, &QToolButton::clicked, this, [this]() {
       CertificateViewer* c = new CertificateViewer(account()->tlsCertificate());
       c->show();
    });
 
-   connect(m_pFixCertPB  , &QPushButton::clicked, [this]() {
+   connect(m_pFixCertPB  , &QPushButton::clicked, this, [this]() {
       if (account()->tlsCertificate()) {
          if (!account()->tlsCertificate()->fixPermissions())
             qWarning() << "Changing" << account()->tlsCertificate()->path() << "permissions failed";
@@ -97,7 +97,7 @@ Pages::Security::Security(QWidget *parent) : PageBase(parent)
       }
    });
 
-   connect(m_pMoveCertPB , &QPushButton::clicked, [this]() {
+   connect(m_pMoveCertPB , &QPushButton::clicked, this, [this]() {
       if (account()->tlsCertificate()) {
          if (!account()->tlsCertificate()->moveToDotCert())
             qWarning() << "Moving" << account()->tlsCertificate()->path() << "failed";
@@ -106,7 +106,7 @@ Pages::Security::Security(QWidget *parent) : PageBase(parent)
    });
 
    for (const QAbstractItemView* v : {lrcfg_knownCertificateModel, lrcfg_bannedCertificatesModel, lrcfg_allowedCertificatesModel}) {
-      connect(v, &QAbstractItemView::doubleClicked,[this](const QModelIndex& idx) {
+      connect(v, &QAbstractItemView::doubleClicked, this, [this](const QModelIndex& idx) {
          CertificateViewer* c = new CertificateViewer(idx);
          c->show();
       });

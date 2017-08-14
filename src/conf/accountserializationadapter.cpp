@@ -129,7 +129,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             le->setText(a->roleData(role).toString());
             le->setReadOnly(rs == Account::RoleState::READ_ONLY);
             ConnHolder* c = new ConnHolder(
-               QObject::connect(le, &QLineEdit::textChanged, [a,role,le](const QString& text) {
+               QObject::connect(le, &QLineEdit::textChanged, this, [a,role,le](const QString& text) {
                   if (a->roleData(role) != text)
                      a->setRoleData(role, text);
 
@@ -151,7 +151,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             avoidDuplicate(sb, m_lConns);
             sb->setValue(a->roleData(role).toInt());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(sb, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [a,role](int value) {
+               QObject::connect(sb, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [a,role](int value) {
                   if (a->roleData(role).toInt() != value)
                      a->setRoleData(role, value);
                })
@@ -165,7 +165,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             avoidDuplicate(b, m_lConns);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(b, &QAbstractButton::toggled,[a,role](bool ck) {
+               QObject::connect(b, &QAbstractButton::toggled, this, [a,role](bool ck) {
                   if (a->roleData(role).toBool() != ck)
                      a->setRoleData(role, ck);
                })
@@ -179,7 +179,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             b->setCheckable(rs == Account::RoleState::READ_WRITE);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(b, &QGroupBox::toggled,[a,role](bool ck) {
+               QObject::connect(b, &QGroupBox::toggled, this, [a,role](bool ck) {
                   if (a->roleData(role).toBool() != ck)
                      a->setRoleData(role, ck);
                })
@@ -198,7 +198,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             avoidDuplicate(b, m_lConns);
             b->setText(a->roleData(role).toString());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(b, &KUrlRequester::urlSelected,[a,role](const QUrl& s) {
+               QObject::connect(b, &KUrlRequester::urlSelected, this, [a,role](const QUrl& s) {
                   if (a->roleData(role).toString() != s.path())
                      a->setRoleData(role, s.path());
                })

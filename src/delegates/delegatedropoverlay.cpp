@@ -34,7 +34,7 @@ m_pTimer(0),m_Init(false),m_Reverse(1),m_lpButtons(nullptr)
    const QColor color = QApplication::palette().base().color();
    const bool dark = (color.red() > 128 && color.green() > 128 && color.blue() > 128);
    if (dark)
-      m_Pen.setColor("#f3f3f3");
+      m_Pen.setColor({0xf3, 0xf3, 0xf3});
    else
       m_Pen.setColor(Qt::white);
 }

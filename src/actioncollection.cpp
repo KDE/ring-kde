@@ -172,7 +172,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
 
 
    // Declare checkable actions
-   for (QAction* a : QList<QAction*> {
+   for (QAction* a : {
       action_video_preview        , action_video_scale          , action_video_fullscreen  ,
       action_video_mute           , action_displayDialpad       , action_displayAccountCbb ,
       action_mute_playback        , action_displayVolumeControls, action_showContactDock   ,
@@ -220,7 +220,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    for (QHash<int,QAction*>::const_iterator i = actionHash.constBegin(); i != actionHash.constEnd(); ++i) {
       QAction* ea = i.value();
       UserActionModel::Action a = static_cast<UserActionModel::Action>(i.key());
-      connect(ea, &QAction::triggered, [uam,a](bool) {uam << a;});
+      connect(ea, &QAction::triggered, this, [uam,a](bool) {uam << a;});
    }
 
    // Refresh the action state and text
@@ -288,7 +288,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    }
 
    // Enable global shortcuts for relevant "current call" actions
-   for (QAction* a : QList<QAction*>{
+   for (QAction* a : {
       action_accept       , action_new_call    , action_hold         ,
       action_mute_capture , action_transfer    , action_record       ,
       action_hangup       , action_raise_client, action_focus_history,

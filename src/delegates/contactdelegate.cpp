@@ -171,9 +171,9 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 
    //BEGIN Display first phone number (if only one)
    if (ct->phoneNumbers().size() == 1) {
-      painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fontH-12),ct->phoneNumbers()[0]->category()->icon(
+      painter->drawPixmap(option.rect.x()+LEFT_PADDING+PX_HEIGHT,currentHeight-12+(fontH-12),ct->phoneNumbers().constFirst()->category()->icon(
          ct->isTracked(),ct->isPresent()).value<QPixmap>());
-      painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->phoneNumbers()[0]->uri());
+      painter->drawText(option.rect.x()+2*LEFT_PADDING+PX_HEIGHT+1,currentHeight,ct->phoneNumbers().constFirst()->uri());
    }
    //END Display first phone number
 

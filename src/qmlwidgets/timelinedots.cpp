@@ -32,9 +32,8 @@ TimelineDots::~TimelineDots()
 
 void TimelineDots::paint(QPainter *painter)
 {
-    static QPen     pen     ( QColor(QStringLiteral("#d0d0d0")), 1.5);
-    static QBrush   brush   ( QColor(QStringLiteral("#005500")), Qt::SolidPattern);
-    static QPalette palette = QGuiApplication::palette();
+    static QPen   pen  ( QColor(QStringLiteral("#d0d0d0")), 1.5);
+    static QBrush brush( QColor(QStringLiteral("#005500")), Qt::SolidPattern);
 
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setPen  (pen);

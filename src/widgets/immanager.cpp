@@ -92,7 +92,7 @@ void IMManager::addMedia(Call* c, Media::Media* m)
       auto cm = c->peerContactMethod();
 
       if (!isRelevant) {
-         connect(media, &Media::Text::mimeTypesChanged, [this, media, cm]() {
+         connect(media, &Media::Text::mimeTypesChanged, this, [this, media, cm]() {
             const bool isRelevant2 = media->hasMimeType(QStringLiteral("text/plain"))
                || media->hasMimeType(QStringLiteral("text/html"));
 

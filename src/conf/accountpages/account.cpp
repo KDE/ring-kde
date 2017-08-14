@@ -49,7 +49,7 @@ void Pages::Account::setEngine(QQmlEngine* e)
    auto l = new QHBoxLayout(dlgProfileHolder);
    m_pProfile = new DlgProfiles(dlgProfileHolder, e);
    l->addWidget(m_pProfile);
-   connect(m_pProfile, &DlgProfiles::changed, [this]() {
+   connect(m_pProfile, &DlgProfiles::changed, this, [this]() {
       emit changed();
    });
 }

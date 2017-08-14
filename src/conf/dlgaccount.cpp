@@ -71,9 +71,9 @@ DlgAccount::DlgAccount(QWidget* parent, QQmlEngine* engine) :
 
    connect(&ProfileModel::instance(), &ProfileModel::rowsInserted, this, &DlgAccount::slotExpand);
 
-   connect(m_pPanel, &Pages::Account::changed, [this]() {
+   connect(m_pPanel, &Pages::Account::changed, this, [this]() {
       m_HasChanged = true;
-      updateButtons();
+      emit updateButtons();
    });
 
    slotSetAccount(m_pAccountList->selectionModel()->currentIndex());

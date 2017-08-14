@@ -27,7 +27,7 @@ Pages::Advanced::Advanced(QWidget *parent) : PageBase(parent)
       m_pDTMF_GB->setVisible(account()->protocol() == Account::Protocol::SIP);
    });
 
-   connect(lrcfg_hasActiveCallLimit, &QCheckBox::toggled, [this](bool v) {
+   connect(lrcfg_hasActiveCallLimit, &QCheckBox::toggled, this, [this](bool v) {
       if (!v)
          lrcfg_activeCallLimit->setValue(-1);
       else if (lrcfg_activeCallLimit->value() == -1)
