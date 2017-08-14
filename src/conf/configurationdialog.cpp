@@ -29,7 +29,7 @@
 #include "klib/kcfg_settings.h"
 
 #include "dlgdisplay.h"
-#include "account/dlgaccount.h"
+#include "dlgaccount.h"
 #include "dlgaudio.h"
 #include "dlgaddressbook.h"
 #include "dlgaccessibility.h"

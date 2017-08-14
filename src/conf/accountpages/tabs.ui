@@ -104,43 +104,43 @@
   <customwidget>
    <class>Pages::Basic</class>
    <extends>QWidget</extends>
-   <header>accountpages/basic.h</header>
+   <header>conf/accountpages/basic.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Pages::Advanced</class>
    <extends>QWidget</extends>
-   <header>accountpages/advanced.h</header>
+   <header>conf/accountpages/advanced.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Pages::Network</class>
    <extends>QWidget</extends>
-   <header>accountpages/network.h</header>
+   <header>conf/accountpages/network.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Pages::Codecs</class>
    <extends>QWidget</extends>
-   <header>accountpages/codecs.h</header>
+   <header>conf/accountpages/codecs.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Pages::RingTone</class>
    <extends>QWidget</extends>
-   <header>accountpages/ringtone.h</header>
+   <header>conf/accountpages/ringtone.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Pages::Credentials</class>
    <extends>QWidget</extends>
-   <header>accountpages/credentials.h</header>
+   <header>conf/accountpages/credentials.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Pages::Security</class>
    <extends>QWidget</extends>
-   <header>accountpages/security.h</header>
+   <header>conf/accountpages/security.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

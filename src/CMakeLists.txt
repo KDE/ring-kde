@@ -19,8 +19,6 @@ FIND_PACKAGE ( KF5 REQUIRED )
 
 FIND_PACKAGE (ECM 1.1.0 REQUIRED NO_MODULE)
 
-ADD_SUBDIRECTORY( conf/account/ )
-
 ADD_DEFINITIONS(
    ${KF5_DEFINITIONS}
    ${QT_DEFINITIONS}
@@ -195,6 +193,8 @@ SET(
    delegates/toolbardelegate.cpp
    delegates/accountinfodelegate.cpp
    delegates/kdepixmapmanipulation.cpp
+   delegates/categorizeddelegate.cpp
+   delegates/righticondelegate.cpp
    proxies/simplerotateproxy.cpp
    proxies/deduplicateproxy.cpp
    proxies/filtertoplevelproxy.cpp
@@ -207,6 +207,7 @@ SET(
 # Configuration pages
 SET(
    ring_kde_CONF
+   conf/accountserializationadapter.cpp
    conf/configurationdialog.cpp
    conf/dlggeneral.cpp
    conf/dlgdisplay.cpp
@@ -214,11 +215,28 @@ SET(
    conf/dlgaddressbook.cpp
    conf/dlgaccessibility.cpp
    conf/dlgpresence.cpp
+   conf/dlgaccount.cpp
    configurator/localhistoryconfigurator.cpp
    configurator/peerprofileconfigurator.cpp
    configurator/bookmarkconfigurator.cpp
    configurator/audiorecordingconfigurator.cpp
    configurator/fallbackpersonconfigurator.cpp
+)
+
+# Account pages
+SET(
+   ring_kde_ACCOUNT
+   conf/accountpages/advanced.cpp
+   conf/accountpages/credentials.cpp
+   conf/accountpages/basic.cpp
+   conf/accountpages/network.cpp
+   conf/accountpages/codecs.cpp
+   conf/accountpages/ringtone.cpp
+   conf/accountpages/security.cpp
+   conf/accountpages/pagebase.cpp
+   conf/accountpages/account.cpp
+   conf/accountpages/dlgdht.cpp
+   conf/accountpages/dlgprofiles.cpp
 )
 
 # Widgets
@@ -254,6 +272,13 @@ SET(
    widgets/toolbuttonmodelview.cpp
    widgets/personselector.cpp
    widgets/contactmethodselector.cpp
+   widgets/accountstatusviewer.cpp
+   widgets/autocombobox.cpp
+   widgets/categorizedtree.cpp
+   widgets/certificateviewer.cpp
+   widgets/contextlistview.cpp
+   widgets/groupedtoolbutton.cpp
+   widgets/securityprogress.cpp
 )
 
 # Video Widgets
@@ -283,9 +308,11 @@ SET(
    eventmanager.cpp
    actioncollection.cpp
    implementation.cpp
+   model/extendedprotocolmodel.cpp
    ${ring_kde_DELEGATES}
    ${ring_kde_CONF}
    ${ring_kde_WIDGETS}
+   ${ring_kde_ACCOUNT}
    ${ring_kde_VIDEO}
 )
 
@@ -318,6 +345,16 @@ SET(
    conf/dlgaudiorecording.ui
    conf/dlgpresence.ui
    conf/dlgfallbackperson.ui
+   conf/accountdlg.ui
+   conf/accountpages/advanced.ui
+   conf/accountpages/credentials.ui
+   conf/accountpages/basic.ui
+   conf/accountpages/network.ui
+   conf/accountpages/codecs.ui
+   conf/accountpages/ringtone.ui
+   conf/accountpages/dlgdht.ui
+   conf/accountpages/security.ui
+   conf/accountpages/tabs.ui
    widgets/ui/personselector.ui
    widgets/ui/contactmethodselector.ui
    widgets/ui/player.ui
@@ -392,7 +429,6 @@ TARGET_LINK_LIBRARIES(ring-kde
   libphotoselector
   libcanvasindicator
   tip
-  accountdialog
   libqmlwidgets
 
   # Qt5

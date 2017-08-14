@@ -277,7 +277,7 @@
   <customwidget>
    <class>Pages::Account</class>
    <extends>QWidget</extends>
-   <header>accountpages/account.h</header>
+   <header>conf/accountpages/account.h</header>
    <container>1</container>
    <slots>
     <slot>setAccount(QModelIndex)</slot>

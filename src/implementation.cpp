@@ -49,7 +49,7 @@
 #include <media/textrecording.h>
 #include <securityevaluationmodel.h>
 #include "klib/kcfg_settings.h"
-#include "conf/account/accountpages/dlgprofiles.h"
+#include "conf/accountpages/dlgprofiles.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
 #include <widgets/immanager.h>

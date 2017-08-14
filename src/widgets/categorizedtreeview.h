@@ -18,7 +18,7 @@
 #ifndef CATEGORIZEDTREEVIEW_H
 #define CATEGORIZEDTREEVIEW_H
 
-#include "conf/account/widgets/categorizedtree.h"
+#include "categorizedtree.h"
 
 class QStyledItemDelegate;
 class QKeyEvent;

@@ -28,7 +28,7 @@
 #include <profile.h>
 
 //Binder
-#include "accountserializationadapter.h"
+#include "conf/accountserializationadapter.h"
 
 #include "basic.h"
 

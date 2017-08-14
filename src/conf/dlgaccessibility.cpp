@@ -29,7 +29,7 @@
 
 //Ring
 #include "phonewindow.h"
-#include <conf/account/delegates/categorizeddelegate.h>
+#include "delegates/categorizeddelegate.h"
 
 ///Constructor
 DlgAccessibility::DlgAccessibility(KConfigDialog* parent)

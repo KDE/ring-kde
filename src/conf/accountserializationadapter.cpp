@@ -17,6 +17,7 @@
  **************************************************************************/
 #include "accountserializationadapter.h"
 
+//Qt
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
@@ -27,11 +28,9 @@
 #include <QtWidgets/QAbstractButton>
 #include <QtWidgets/QAbstractItemView>
 
-#ifdef HAS_KDE
- //KDE
- #include <KUrlRequester>
- #include <kcolorscheme.h>
-#endif
+//KDE
+#include <KUrlRequester>
+#include <kcolorscheme.h>
 
 #include <account.h>
 #include <accountmodel.h>
@@ -115,9 +114,9 @@ void AccountSerializationAdapter::updateProblemList(int role, Account::RoleStatu
 void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHash<QByteArray, int>& roles)
 {
    if (w->objectName().left(LRC_CFG_LEN) == QLatin1String(LRC_CFG)) {
-#ifdef HAS_KDE
+
       static KStatefulBrush errorBrush( KColorScheme::View, KColorScheme::NegativeText );
-#endif
+
       QByteArray prop = w->objectName().mid(LRC_CFG_LEN, 999).toLatin1();
 
       if (roles.contains(prop)) {
@@ -194,7 +193,6 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             if (a->roleData(role).canConvert<QAbstractItemModel*>())
                v->setModel(qvariant_cast<QAbstractItemModel*>(a->roleData(role)));
          }
-#ifdef HAS_KDE
          else if  (qobject_cast<KUrlRequester*>(w)) { //KDE only
             KUrlRequester* b = qobject_cast<KUrlRequester*>(w);
             avoidDuplicate(b, m_lConns);
@@ -208,7 +206,6 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
             m_lConns << c;
          }
-#endif
          else {
             qDebug() << "Unsupported widget type" << w;
          }

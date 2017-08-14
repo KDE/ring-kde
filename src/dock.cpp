@@ -28,7 +28,7 @@
 #include <KColorScheme>
 
 //Delegates
-#include <conf/account/delegates/categorizeddelegate.h>
+#include "delegates/categorizeddelegate.h"
 #include "delegates/contactdelegate.h"
 #include "delegates/phonenumberdelegate.h"
 #include "delegates/historydelegate.h"

@@ -39,7 +39,7 @@
 #include <categorizedcontactmodel.h>
 
 // Delegates
-#include <conf/account/delegates/categorizeddelegate.h>
+#include "delegates/categorizeddelegate.h"
 #include "delegates/contactdelegate.h"
 #include "delegates/phonenumberdelegate.h"
 
