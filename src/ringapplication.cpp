@@ -275,11 +275,11 @@ int RingApplication::newInstance()
    if ((!wizardshown) && (ConfigurationSkeleton::enableWizard() || ConfigurationSkeleton::showSplash())) {
       // Also add this object
       engine()->rootContext()->setContextProperty(
-         "RingApplication", this
+         QStringLiteral("RingApplication"), this
       );
 
       engine()->rootContext()->setContextProperty(
-         "wizardWelcomeOnly", QVariant(!ConfigurationSkeleton::enableWizard())
+         QStringLiteral("wizardWelcomeOnly"), QVariant(!ConfigurationSkeleton::enableWizard())
       );
 
       auto wiz = new WelcomeDialog();
@@ -402,12 +402,12 @@ QQmlApplicationEngine* RingApplication::engine()
       }
 
       qmlRegisterUncreatableType<::Media::Media>(
-         AppName, 1,0, "Media", "cannot be instanciated"
+         AppName, 1,0, "Media", QStringLiteral("cannot be instanciated")
       );
 
       auto im = new RingingImageProvider();
-      e->addImageProvider( "RingingImageProvider", im );
-      e->addImportPath("qrc:/");
+      e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
+      e->addImportPath(QStringLiteral("qrc:/"));
 
       VideoWidget3::initProvider();
    }
@@ -479,7 +479,7 @@ void RingApplication::callAdded(Call* c)
 void RingApplication::showWizard()
 {
    RingApplication::engine()->rootContext()->setContextProperty(
-      "wizardWelcomeOnly", QVariant(false)
+      QStringLiteral("wizardWelcomeOnly"), QVariant(false)
    );
 
    auto wiz = new WelcomeDialog();

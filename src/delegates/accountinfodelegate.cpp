@@ -84,9 +84,9 @@ QVariant AccountInfoProxy::data( const QModelIndex& index, int role ) const
       const time_t nsec = curTime - t;
 
       if (nsec/3600)
-         return QString("%1:%2:%3 ").arg((nsec%(3600*24))/3600).arg(((nsec%(3600*24))%3600)/60,2,10,QChar('0')).arg(((nsec%(3600*24))%3600)%60,2,10,QChar('0'));
+         return QStringLiteral("%1:%2:%3 ").arg((nsec%(3600*24))/3600).arg(((nsec%(3600*24))%3600)/60,2,10,QChar('0')).arg(((nsec%(3600*24))%3600)%60,2,10,QChar('0'));
       else
-         return QString("%1:%2 ").arg(nsec/60,2,10,QChar('0')).arg(nsec%60,2,10,QChar('0'));
+         return QStringLiteral("%1:%2 ").arg(nsec/60,2,10,QChar('0')).arg(nsec%60,2,10,QChar('0'));
    }
 
    return PollingProxy::data(index, role);

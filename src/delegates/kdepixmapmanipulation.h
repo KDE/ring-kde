@@ -35,7 +35,7 @@ public:
 
    virtual QVariant callPhoto(Call* c, const QSize& size, bool displayPresence = true) override;
 
-   virtual QByteArray toByteArray(const QVariant& pxm, const QString& type = "PNG") override;
+   virtual QByteArray toByteArray(const QVariant& pxm, const QString& type = QStringLiteral("PNG")) override;
 
    virtual QVariant personPhoto(const QByteArray& data, const QString& type = QStringLiteral("PNG")) override;
 

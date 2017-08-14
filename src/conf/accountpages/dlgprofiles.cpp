@@ -37,7 +37,7 @@ DlgProfiles::DlgProfiles(QWidget *parent, QQmlEngine* e, const QString& name, co
    Q_UNUSED(uri)
 
    setResizeMode(QQuickWidget::SizeRootObjectToView);
-   setSource(QUrl("qrc:/ContactInfo.qml"));
+   setSource(QUrl(QStringLiteral("qrc:/ContactInfo.qml")));
    connect(rootObject(), SIGNAL(changed()), this, SLOT(slotChanged()));
 }
 

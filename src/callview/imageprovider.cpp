@@ -64,7 +64,7 @@ QString ImageProvider::takeSnapshot(Call* c)
 
     const auto img = ImageProviderPrivate::m_spInstance->requestImage(QStringLiteral("peer/9999"), &s, {});
 
-    const auto path = QString("%1/snapshots/%2/")
+    const auto path = QStringLiteral("%1/snapshots/%2/")
         .arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation))
         .arg(c->historyId());
 
@@ -76,7 +76,7 @@ QString ImageProvider::takeSnapshot(Call* c)
     QString fileName;
 
     do {
-        fileName = QString("%1/%2.png")
+        fileName = QStringLiteral("%1/%2.png")
             .arg(d.absolutePath())
             .arg(qrand()^qrand());
     } while (QFile::exists(fileName));

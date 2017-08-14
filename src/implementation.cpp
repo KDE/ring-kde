@@ -219,7 +219,7 @@ void KDEActionExtender::editPerson(Person* p)
 {
    QPointer<QQuickView> d = new QQuickView( RingApplication::engine(), nullptr );
 
-   d->setSource(QUrl(QLatin1String("qrc:/ContactInfo.qml")));
+   d->setSource(QUrl(QStringLiteral("qrc:/ContactInfo.qml")));
    d->setResizeMode(QQuickView::SizeRootObjectToView);
    auto item = d->rootObject();
    item->setProperty("currentPerson", QVariant::fromValue(p));

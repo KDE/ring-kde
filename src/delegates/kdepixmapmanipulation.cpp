@@ -331,13 +331,13 @@ QVariant KDEPixmapManipulation::videoDeviceIcon(const QModelIndex& idx) const
 {
    switch (idx.row()) {
       case Video::SourceModel::ExtendedDeviceList::NONE:
-         return QIcon::fromTheme("camera-off");
+         return QIcon::fromTheme(QStringLiteral("camera-off"));
       case Video::SourceModel::ExtendedDeviceList::SCREEN:
-         return QIcon::fromTheme("video-display");
+         return QIcon::fromTheme(QStringLiteral("video-display"));
       case Video::SourceModel::ExtendedDeviceList::FILE:
-         return QIcon::fromTheme("video-mp4");
+         return QIcon::fromTheme(QStringLiteral("video-mp4"));
       default:
-         return QIcon::fromTheme("camera-on");
+         return QIcon::fromTheme(QStringLiteral("camera-on"));
    }
 
    return {};
