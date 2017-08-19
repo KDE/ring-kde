@@ -19,7 +19,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtWidgets/QFileDialog>
-#include "../klib/kcfg_settings.h"
+#include <kcfg_settings.h>
 
 class RecentFileModelPrivate
 {
