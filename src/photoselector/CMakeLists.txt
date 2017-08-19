@@ -56,6 +56,10 @@ ADD_LIBRARY( libphotoselector  STATIC ${libphotoselector_LIB_SRCS} )
 target_link_libraries( libphotoselector
     ringclient
 
+    # KF5
+    KF5::I18n
+
+    # Qt5
     Qt5::Core
     Qt5::Gui
     Qt5::Quick
