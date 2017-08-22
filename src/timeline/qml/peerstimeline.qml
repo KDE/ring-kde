@@ -237,6 +237,33 @@ Rectangle {
         }
     }
 
+    /*Rectangle {
+        color: "red"
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 200
+
+        Component {
+            id: contactRequestDelegate
+            Text {
+                height: 40
+                text: display
+            }
+        }
+
+        ListView {
+            anchors.fill: parent
+            model: AccountModel.incomingContactRequestModel
+            delegate: contactRequestDelegate
+            Component.onCompleted: {
+                console.log("\n\n\nCOMPLETED!!!!", AccountModel.incomingContactRequestModel
+                    , AccountModel.incomingContactRequestModel.rowCount()
+                )
+            }
+        }
+    }*/
+
     onHeightChanged: {
         scrollBar.handleHeight = recentDock.height * (recentDock.height/(recentView.count*50))
     }

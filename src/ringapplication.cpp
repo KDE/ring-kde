@@ -45,6 +45,7 @@
 #include <categorizedbookmarkmodel.h>
 #include <numbercompletionmodel.h>
 #include <useractionmodel.h>
+#include <pendingcontactrequestmodel.h>
 #include <video/configurationproxy.h>
 #include <video/sourcemodel.h>
 #include <contactmethod.h>
@@ -111,6 +112,11 @@
 //Other
 #include <unistd.h>
 
+KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
+RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
+PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
+CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
+
 /**
  * The application constructor
  */
@@ -157,10 +163,20 @@ RingApplication::~RingApplication()
       m_pTimeline = nullptr;
    }
 
+   delete m_pDeclarative;
    delete engine();
+   delete m_pCanvasIndicator;
+   delete m_pPhotoSelector;
+   delete m_pQmlWidget;
 
+   delete &PeersTimelineModel::instance();
+   delete &Media::RecordingModel::instance();
    delete &PersonModel::instance();
    delete &CallModel::instance();
+   delete &ProfileModel::instance();
+   delete &AccountModel::instance();
+   delete &PhoneDirectoryModel::instance();
+   delete &NumberCategoryModel::instance();
 }
 
 RingApplication* RingApplication::instance(int& argc, char** argv)
@@ -342,18 +358,17 @@ constexpr static const char AppName[]= "Ring";
 QQmlApplicationEngine* RingApplication::engine()
 {
    static QQmlApplicationEngine* e = nullptr;
-   static bool safetyCheck = false;
-   if (!e) {
-      Q_ASSERT(safetyCheck == false);
-      safetyCheck = true;
-      auto p1 = new RingQmlWidgets;
-      p1->registerTypes("RingQmlWidgets");
+   static std::atomic_flag engineInit {ATOMIC_FLAG_INIT};
 
-      auto p2 = new PhotoSelectorPlugin;
-      p2->registerTypes("PhotoSelectorPlugin");
+   if (!engineInit.test_and_set()) {
+      m_pQmlWidget = new RingQmlWidgets;
+      m_pQmlWidget->registerTypes("RingQmlWidgets");
 
-      auto p3 = new CanvasIndicator;
-      p3->registerTypes("CanvasIndicator");
+      m_pPhotoSelector = new PhotoSelectorPlugin;
+      m_pPhotoSelector->registerTypes("PhotoSelectorPlugin");
+
+      m_pCanvasIndicator = new CanvasIndicator;
+      m_pCanvasIndicator->registerTypes("CanvasIndicator");
 
       QML_TYPE( Account           )
       QML_TYPE( const Account     )
@@ -369,9 +384,9 @@ QQmlApplicationEngine* RingApplication::engine()
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 
       // Setup the icon theme provider and ki18n
-      auto decl = new KDeclarative::KDeclarative;
-      decl->setDeclarativeEngine(e);
-      decl->setupBindings();
+      m_pDeclarative = new KDeclarative::KDeclarative;
+      m_pDeclarative->setDeclarativeEngine(e);
+      m_pDeclarative->setupBindings();
 
       QML_SINGLETON( CallModel                );
       QML_SINGLETON( CategorizedHistoryModel  );

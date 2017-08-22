@@ -89,6 +89,9 @@ TimelineWindow::TimelineWindow()
     auto m_pCategoryDelegate = new CategorizedDelegate(m_pContactCD->view());
     auto m_pContactMethodDelegate = new ContactMethodDelegate();
     auto m_pContactDelegate = new ContactDelegate(m_pContactCD->view());
+    m_pCategoryDelegate->setParent(this);
+    m_pContactMethodDelegate->setParent(this);
+    m_pContactDelegate->setParent(this);
     m_pContactMethodDelegate->setView(m_pContactCD->view());
     m_pContactDelegate->setChildDelegate(m_pContactMethodDelegate);
     m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);

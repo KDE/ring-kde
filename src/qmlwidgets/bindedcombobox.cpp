@@ -49,6 +49,9 @@ BindedComboBox::BindedComboBox(QQuickItem* parent) : QQuickItem(parent),
 
 BindedComboBox::~BindedComboBox()
 {
+    if (d_ptr->m_pItem)
+        delete d_ptr->m_pItem;
+
     delete d_ptr;
 }
 

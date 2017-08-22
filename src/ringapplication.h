@@ -25,10 +25,19 @@
 class QEvent;
 class QQmlApplicationEngine;
 
+//KF5
+
+namespace KDeclarative {
+   class KDeclarative;
+}
+
 //Ring
 class PhoneWindow;
 class TimelineWindow;
 class FancyMainWindow;
+class RingQmlWidgets;
+class PhotoSelectorPlugin;
+class CanvasIndicator;
 class Call;
 
 ///RingApplication: Main application
@@ -78,7 +87,10 @@ private:
 
    mutable PhoneWindow* m_pPhone {nullptr};
    mutable TimelineWindow* m_pTimeline {nullptr};
-
+   static KDeclarative::KDeclarative* m_pDeclarative;
+   static RingQmlWidgets* m_pQmlWidget;
+   static PhotoSelectorPlugin* m_pPhotoSelector;
+   static CanvasIndicator* m_pCanvasIndicator;
 private Q_SLOTS:
    void daemonTimeout();
    void callAdded(Call* c);

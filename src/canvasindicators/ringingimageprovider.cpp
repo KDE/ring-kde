@@ -46,7 +46,7 @@ public:
     bool brightOrDarkBase() const;
 };
 
-struct RingingTipData
+struct RingingTipData final
 {
     explicit RingingTipData(RingingImageProviderPrivate* d) {
 
@@ -122,7 +122,9 @@ struct InitTipDataPrivate final {
         auto content = d->loadSvg(QStringLiteral(":/canvasassets/Searching.svg"));
         m_Render = new QSvgRenderer(content);
     }
-    ~InitTipDataPrivate() {delete m_Render;}
+    ~InitTipDataPrivate() {
+        delete m_Render;
+    }
 
     QPixmap toPixmap(int count) {
         Q_UNUSED(count)
@@ -156,6 +158,12 @@ RingingImageProvider::RingingImageProvider()
 
 RingingImageProvider::~RingingImageProvider()
 {
+    if (d_ptr->m_pRing)
+        delete d_ptr->m_pRing;
+    if (d_ptr->m_pInit)
+        delete d_ptr->m_pInit;
+    if (d_ptr->m_pSearch)
+        delete d_ptr->m_pSearch;
     delete d_ptr;
 }
 
