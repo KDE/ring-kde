@@ -436,16 +436,24 @@ QQmlApplicationEngine* RingApplication::engine()
 
 PhoneWindow* RingApplication::phoneWindow() const
 {
-   if (!m_pPhone)
+   if (!m_pPhone) {
       m_pPhone = new PhoneWindow(nullptr);
+      connect(m_pPhone, &QObject::destroyed, this, [this]() {
+         m_pPhone = nullptr;
+      });
+   }
 
    return m_pPhone;
 }
 
 TimelineWindow* RingApplication::timelineWindow() const
 {
-   if (!m_pTimeline)
+   if (!m_pTimeline) {
       m_pTimeline = new TimelineWindow();
+      connect(m_pTimeline, &QObject::destroyed, this, [this]() {
+         m_pTimeline = nullptr;
+      });
+   }
 
    return m_pTimeline;
 }
