@@ -154,7 +154,7 @@ TimelineWindow::TimelineWindow()
 
 TimelineWindow::~TimelineWindow()
 {
-
+    delete m_pViewContact;
 }
 
 void TimelineWindow::viewContact(ContactMethod* cm)

@@ -89,6 +89,14 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
 
 ViewContactDock::~ViewContactDock()
 {
+    //FIXME https://bugreports.qt.io/browse/QTBUG-40745
+    layout()->removeWidget(d_ptr->m_pQuickWidget);
+    d_ptr->m_pQuickWidget->setVisible(false);
+    d_ptr->m_pQuickWidget->hide();
+    d_ptr->m_pQuickWidget->setParent(nullptr);
+    delete d_ptr->m_pQuickWidget;
+    d_ptr->m_pQuickWidget = nullptr;
+
     d_ptr->m_TimelineModel.clear();
     d_ptr->m_PersomCMModel.clear();
     d_ptr->m_CallsModel.clear();
@@ -99,12 +107,6 @@ ViewContactDock::~ViewContactDock()
         disconnect(t);
         delete t;
     }
-
-    //FIXME https://bugreports.qt.io/browse/QTBUG-40745
-    layout()->removeWidget(d_ptr->m_pQuickWidget);
-    d_ptr->m_pQuickWidget->setVisible(false);
-    d_ptr->m_pQuickWidget->hide();
-    d_ptr->m_pQuickWidget->setParent(nullptr);
 
     delete d_ptr;
 }
