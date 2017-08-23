@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
       QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-      RingApplication::instance( argc, argv );
+      RingApplication app( argc, argv );
 
       KLocalizedString::setApplicationDomain("ring-kde");
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
       KAboutData::setApplicationData(about);
 
 
-      RingApplication::instance()->setOrganizationDomain( QStringLiteral("ring.cx")           );
+      app.setOrganizationDomain(QStringLiteral("ring.cx"));
 
       //Only start the application once
 #ifdef Q_OS_LINUX
@@ -79,13 +79,12 @@ int main(int argc, char **argv)
 #endif
 
       //The app will have quitted by now if an instance already exist
-      RingApplication::instance()->newInstance();
+      app.newInstance();
 
-      const int retVal = RingApplication::instance()->exec();
+      const int retVal = app.exec();
 
       ConfigurationSkeleton::self()->save();
 
-      delete RingApplication::instance();
       return retVal;
    }
    catch(const char * msg)

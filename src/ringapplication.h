@@ -70,7 +70,6 @@ public:
 
    static QQmlApplicationEngine* engine();
 
-   static RingApplication* instance(int& argc, char** argv = nullptr);
    static RingApplication* instance();
    void init();
 
@@ -91,6 +90,7 @@ private:
    static RingQmlWidgets* m_pQmlWidget;
    static PhotoSelectorPlugin* m_pPhotoSelector;
    static CanvasIndicator* m_pCanvasIndicator;
+   static RingApplication* m_spInstance;
 private Q_SLOTS:
    void daemonTimeout();
    void callAdded(Call* c);

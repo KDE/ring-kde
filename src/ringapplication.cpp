@@ -116,6 +116,7 @@ KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
+RingApplication* RingApplication::m_spInstance {nullptr};
 
 /**
  * The application constructor
@@ -129,6 +130,7 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
 #endif
    setAttribute(Qt::AA_EnableHighDpiScaling);
 
+   m_spInstance = this;
 }
 
 void RingApplication::init()
@@ -177,19 +179,13 @@ RingApplication::~RingApplication()
    delete &AccountModel::instance();
    delete &PhoneDirectoryModel::instance();
    delete &NumberCategoryModel::instance();
-}
-
-RingApplication* RingApplication::instance(int& argc, char** argv)
-{
-   static RingApplication* i = new RingApplication(argc, argv);
-
-   return i;
+   m_spInstance = nullptr;
 }
 
 RingApplication* RingApplication::instance()
 {
-   int i = 0;
-   return RingApplication::instance(i, nullptr);
+   Q_ASSERT(m_spInstance);
+   return m_spInstance;
 }
 
 static void loadNumberCategories()
