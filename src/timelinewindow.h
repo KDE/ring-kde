@@ -38,6 +38,9 @@ public:
 
     void setCurrentPage(ViewContactDock::Pages page);
 
+protected:
+    virtual void closeEvent(QCloseEvent *event) override;
+
 private:
     RecentDock* m_pPeersTimeline;
     ViewContactDock* m_pViewContact {nullptr};

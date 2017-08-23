@@ -434,7 +434,7 @@ PhoneWindow* RingApplication::phoneWindow() const
 {
    if (!m_pPhone) {
       m_pPhone = new PhoneWindow(nullptr);
-      connect(m_pPhone, &QObject::destroyed, this, [this]() {
+      connect(m_pPhone, &FancyMainWindow::unregisterWindow, this, [this]() {
          m_pPhone = nullptr;
       });
    }
@@ -446,7 +446,7 @@ TimelineWindow* RingApplication::timelineWindow() const
 {
    if (!m_pTimeline) {
       m_pTimeline = new TimelineWindow();
-      connect(m_pTimeline, &QObject::destroyed, this, [this]() {
+      connect(m_pTimeline, &FancyMainWindow::unregisterWindow, this, [this]() {
          m_pTimeline = nullptr;
       });
    }

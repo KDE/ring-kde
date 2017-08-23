@@ -42,4 +42,7 @@ private:
 public Q_SLOTS:
     void updateTabIcons();
     void showPhone();
+
+Q_SIGNALS:
+    void unregisterWindow();
 };

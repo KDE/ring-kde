@@ -40,6 +40,7 @@ FancyMainWindow::FancyMainWindow(QWidget* parent) : KXmlGuiWindow(parent)
 
 FancyMainWindow::~FancyMainWindow()
 {
+    emit unregisterWindow();
     removeEventFilter(this);
     disconnect();
 }

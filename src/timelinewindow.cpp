@@ -157,6 +157,11 @@ TimelineWindow::~TimelineWindow()
     delete m_pViewContact;
 }
 
+void TimelineWindow::closeEvent(QCloseEvent *event)
+{
+    emit unregisterWindow();
+}
+
 void TimelineWindow::viewContact(ContactMethod* cm)
 {
     m_pViewContact->setContactMethod(cm);
