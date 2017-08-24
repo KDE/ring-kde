@@ -56,6 +56,7 @@ public:
     QQmlComponent*                     m_pDelegate {nullptr};
     QQmlEngine*                        m_pEngine   {nullptr};
     QQmlComponent*                     m_pComponent{nullptr};
+    mutable QHash<int, QString>        m_hRoleNames{       };
 
     QHash<QPersistentModelIndex, TreeViewHierarchyEntry*> m_hMapping;
 
@@ -65,6 +66,7 @@ public:
 
     void clear();
     void loadVisible();
+    void reloadRoleNames() const;
     void applyRoles(QQmlContext* ctx, const QModelIndex& self) const;
     void loadRecursize( const QModelIndex& parent, const QModelIndex& self );
     QPair<QQuickItem*, QQmlContext*> loadDelegate(TreeViewHierarchyEntry* parent, const QModelIndex& self) const;
@@ -95,6 +97,7 @@ void TreeView::setModel(QSharedPointer<QAbstractItemModel> model)
         disconnect(d_ptr->m_pModel.data(), &QAbstractItemModel::dataChanged  , d_ptr, &TreeViewPrivate::slotDataChanged  );
     }
 
+    d_ptr->m_hRoleNames.clear();
     d_ptr->m_pModel = model;
     emit modelChanged(model);
 
@@ -144,12 +147,31 @@ TreeViewHierarchyEntry::TreeViewHierarchyEntry(const QModelIndex& idx, QQuickIte
     p->m_lChildren.insert(m_Index, this);
 }
 
-void TreeViewPrivate::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
+/**
+ * This helper method convert the model role names (QByteArray) to QML context
+ * properties (QString) only once.
+ *
+ * If this wasn't done, it would cause millions of QByteArray->QString temporary
+ * allocations.
+ */
+void TreeViewPrivate::reloadRoleNames() const
 {
-    // Add all roles to the
+    m_hRoleNames.clear();
+
     const auto roleNames = m_pModel->roleNames();
 
     for (auto i = roleNames.constBegin(); i != roleNames.constEnd(); ++i)
+        m_hRoleNames[i.key()] = i.value();
+}
+
+void TreeViewPrivate::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
+{
+    // Refresh the cache
+    if (m_pModel->roleNames().size() != m_hRoleNames.size())
+        reloadRoleNames();
+
+    // Add all roles to the
+    for (auto i = m_hRoleNames.constBegin(); i != m_hRoleNames.constEnd(); ++i)
         ctx->setContextProperty(i.value() , self.data(i.key()));
 
     // Set extra index to improve ListView compatibility
