@@ -29,7 +29,7 @@ Rectangle {
     Text {
         id: defaultText
         color: "white"
-        text: qsTr("[No video]")
+        text: i18n("[No video]")
         anchors.centerIn: parent
         visible: false
     }

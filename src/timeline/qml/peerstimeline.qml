@@ -85,7 +85,7 @@ Rectangle {
         Controls2.TextField {
             id: search
             Layout.fillWidth: true
-            placeholderText: qsTr("Find someone")
+            placeholderText: i18n("Find someone")
             onTextChanged: {
                 var call = CallModel.dialingCall()
                 call.dialNumber = search.text
@@ -136,7 +136,7 @@ Rectangle {
                     font.bold: true
                     wrapMode: Text.WordWrap
                     color: activePalette.base
-                    text: qsTr("To begin using Ring-KDE, enter an username in the box above and press enter or add new contacts")
+                    text: i18n("To begin using Ring-KDE, enter an username in the box above and press enter or add new contacts")
                 }
             }
 

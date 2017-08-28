@@ -44,11 +44,7 @@ Page {
         y: 149
         width: 423
         height: 86
-        text: qsTr("Welcome to Ring-KDE. Before you can contact your friend,
-you have to have an account. Don't worry, creating one is easy and
-doesn't require sharing any personal information. If you are in an
-office or your phone service provider offers a SIP account, you
-can also configure Ring-KDE to take your \"real\" phone calls")
+        text: i18n("Welcome to Ring-KDE. Before you can contact your friend, you have to have an account. Don't worry, creating one is easy and doesn't require sharing any personal information. If you are in an office or your phone service provider offers a SIP account, you can also configure Ring-KDE to take your \"real\" phone calls")
         wrapMode: Text.WordWrap
         font.pixelSize: 12
         color: "white"
@@ -58,21 +54,21 @@ can also configure Ring-KDE to take your \"real\" phone calls")
         id: createRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 246
-        text: qsTr("Create a new GNU Ring account")
+        text: i18n("Create a new GNU Ring account")
     }
 
     Button {
         id: importRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 300
-        text: qsTr("Import an existing account")
+        text: i18n("Import an existing account")
     }
 
     Button {
         id: createAnonRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 354
-        text: qsTr("Use an anonymous account")
+        text: i18n("Use an anonymous account")
         visible: false
     }
 
@@ -80,7 +76,7 @@ can also configure Ring-KDE to take your \"real\" phone calls")
         id: importSIPAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 408
-        text: qsTr("Import a SIP account")
+        text: i18n("Import a SIP account")
         visible: false
     }
 
@@ -88,7 +84,7 @@ can also configure Ring-KDE to take your \"real\" phone calls")
         id: createIp2IPAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 462
-        text: qsTr("Use on local network")
+        text: i18n("Use on local network")
         visible: false
     }
 

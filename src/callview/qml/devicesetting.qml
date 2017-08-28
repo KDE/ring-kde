@@ -31,7 +31,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Device")
+        text: i18n("Device")
     }
     BindedComboBox {
         id: device
@@ -41,7 +41,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Channel")
+        text: i18n("Channel")
     }
     BindedComboBox {
         id: channel
@@ -51,7 +51,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Resolution")
+        text: i18n("Resolution")
     }
     BindedComboBox {
         id: resolution
@@ -61,7 +61,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Frame rate")
+        text: i18n("Frame rate")
     }
     BindedComboBox {
         id: rate

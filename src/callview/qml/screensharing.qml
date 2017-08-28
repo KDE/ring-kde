@@ -28,7 +28,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Screen")
+        text: i18n("Screen")
     }
     ComboBox {
         id: screens
@@ -38,7 +38,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("X offset")
+        text: i18n("X offset")
     }
     SpinBox {
         id: xOffset
@@ -49,7 +49,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Y offset")
+        text: i18n("Y offset")
     }
     SpinBox {
         id: yOffset
@@ -60,7 +60,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Width")
+        text: i18n("Width")
     }
     SpinBox {
         id: width
@@ -71,7 +71,7 @@ GridLayout {
 
     Text {
         color: "white"
-        text: qsTr("Height")
+        text: i18n("Height")
     }
     SpinBox {
         id: height

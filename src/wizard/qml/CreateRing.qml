@@ -74,7 +74,7 @@ Item {
         Switch {
             id: registerUserName
             height: 40
-            text: qsTr("Register public username (experimental)*")
+            text: i18n("Register public username (experimental)*")
             checked: true
             opacity: 1
             Layout.fillWidth: true
@@ -87,7 +87,7 @@ Item {
             x: -7
             y: 170
             height: 14
-            text: qsTr("Enter an username")
+            text: i18n("Enter an username")
             color: "white"
             anchors.leftMargin: 8
             anchors.left: parent.left
@@ -157,7 +157,7 @@ Item {
 
             Label {
                 id: registerFoundLabel
-                text: qsTr("Please enter an username")
+                text: i18n("Please enter an username")
                 verticalAlignment: Text.AlignVCenter
                 color: "white"
                 Layout.fillHeight: true
@@ -177,7 +177,7 @@ Item {
             x: -1
             y: 233
             height: 14
-            text: qsTr("Enter an archive password")
+            text: i18n("Enter an archive password")
             color: "white"
             Layout.fillWidth: true
             anchors.leftMargin: 8
@@ -200,7 +200,7 @@ Item {
             y: 54
             height: 14
             color: "white"
-            text: qsTr("Repeat the new password")
+            text: i18n("Repeat the new password")
             Layout.fillWidth: true
             anchors.leftMargin: 8
         }
@@ -218,7 +218,7 @@ Item {
         Label {
             id: label4
             color: "red"
-            text: qsTr("Passwords don't match")
+            text: i18n("Passwords don't match")
             verticalAlignment: Text.AlignVCenter
             Layout.fillHeight: true
             Layout.fillWidth: true
@@ -253,7 +253,7 @@ Item {
         Label {
             id: labelInfo
             color: "white"
-            text: qsTr("(*) registered usernames can be reached by their username-string instead of their generated ring-id number only.")
+            text: i18n("(*) registered usernames can be reached by their username-string instead of their generated ring-id number only.")
             Layout.fillWidth: true
             wrapMode: Text.WordWrap
         }
@@ -281,7 +281,7 @@ Item {
 
             Label {
                 id: registrationStatus
-                text: qsTr("Creating account")
+                text: i18n("Creating account")
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 color: "black"
@@ -308,7 +308,7 @@ Item {
         running: false
         onTriggered: {
             registrationPopup.color = "red"
-            registerFoundLabel.text = qsTr("Timeout")
+            registerFoundLabel.text = i18n("Timeout")
             hidePopup.running       = true
             nextAvailable = true
             busy = false
@@ -376,16 +376,16 @@ Item {
 
             busyIndicator.visible = false
             if (status == 2) { //NameDirectory.NOT_FOUND
-                registerFoundLabel.text = qsTr("The username is available")
+                registerFoundLabel.text = i18n("The username is available")
                 registerFoundLabel.color = "green"
             }
             else if (name == "") {
-                registerFoundLabel.text = qsTr("Please enter an username")
+                registerFoundLabel.text = i18n("Please enter an username")
                 registerFoundLabel.color = ""
                 nextAvailable = false
             }
             else {
-                registerFoundLabel.text = qsTr("The username is not available")
+                registerFoundLabel.text = i18n("The username is not available")
                 registerFoundLabel.color = "red"
                 nextAvailable = false
             }
@@ -408,21 +408,21 @@ Item {
 
             switch(status) {
                 case 0: //SUCCESS
-                    registrationStatus.text = qsTr("Success")
+                    registrationStatus.text = i18n("Success")
                     busy = false
                     item1.registrationCompleted()
                     break
                 case 1: //WRONG_PASSWORD
-                    registrationStatus.text = qsTr("Password mismatch")
+                    registrationStatus.text = i18n("Password mismatch")
                     break
                 case 2: //INVALID_NAME
-                    registrationStatus.text = qsTr("Invalid name")
+                    registrationStatus.text = i18n("Invalid name")
                     break
                 case 3: //ALREADY_TAKEN
-                    registrationStatus.text = qsTr("Already taken")
+                    registrationStatus.text = i18n("Already taken")
                     break
                 case 4: //NETWORK_ERROR
-                    registrationStatus.text = qsTr("Network error")
+                    registrationStatus.text = i18n("Network error")
                     break
             }
         }
@@ -434,12 +434,12 @@ Item {
             if (state == Account.READY) {
                 if (registerUserName.checked) {
                     if (account.registerName(password.text, account.displayName)) {
-                        registrationStatus.text = qsTr("Registration")
+                        registrationStatus.text = i18n("Registration")
                         registrationTimeout.stop()
                     }
                     else {
                         registrationPopup.color = "red"
-                        registrationStatus.text = qsTr("Can't register")
+                        registrationStatus.text = i18n("Can't register")
                         registrationTimeout.stop()
                     }
                 }

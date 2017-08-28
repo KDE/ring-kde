@@ -164,7 +164,7 @@ Item {
 
             Button {
                 id: button
-                text: qsTr("Add")
+                text: i18n("Add")
                 onClicked: {
 
                     if (newPhoneNumber.text == "") {

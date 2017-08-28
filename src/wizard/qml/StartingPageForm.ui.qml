@@ -100,7 +100,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: qsTr("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted. ")
+                        text: i18n("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted. ")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -117,7 +117,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: qsTr("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI ans X-509. No data is ever uploaded to external servers.")
+                        text: i18n("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI ans X-509. No data is ever uploaded to external servers.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -134,7 +134,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: qsTr("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE")
+                        text: i18n("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -151,7 +151,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: qsTr("Ring is based on open standards and is can interoperate with other SIP compliant systems.")
+                        text: i18n("Ring is based on open standards and is can interoperate with other SIP compliant systems.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -168,7 +168,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: qsTr("Ring offers an user friendly DBus API to automate all aspects of the application.")
+                        text: i18n("Ring offers an user friendly DBus API to automate all aspects of the application.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -185,7 +185,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: qsTr("Ring-KDE can call real phone numbers. Cheap credits are available from thousand of providers worldwide. Use your favorite search engine to locate a local SIP phone provider.")
+                        text: i18n("Ring-KDE can call real phone numbers. Cheap credits are available from thousand of providers worldwide. Use your favorite search engine to locate a local SIP phone provider.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -195,7 +195,7 @@ Item {
             Label {
                 id: label
                 color: "white"
-                text: qsTr("Press anywhere to begin")
+                text: i18n("Press anywhere to begin")
                 font.pointSize: 12
                 horizontalAlignment: Text.AlignHCenter
                 Layout.fillWidth: true

@@ -75,19 +75,19 @@ Item {
     }
 
     function getLastContacted() {
-        var d = currentContactMethod.lastUsed == 0 ? qsTr("Never") :
+        var d = currentContactMethod.lastUsed == 0 ? i18n("Never") :
             new Date(currentContactMethod.lastUsed * 1000).toLocaleString()
 
-        return qsTr("<b>Last contacted on:</b> ") + d + "[?]"
+        return i18n("<b>Last contacted on:</b> ") + d + "[?]"
     }
 
     function getTotalCall() {
-        return qsTr("<b>Called:</b> ") + currentContactMethod.callCount +
+        return i18n("<b>Called:</b> ") + currentContactMethod.callCount +
             " (" + (currentContactMethod.totalSpentTime/60) + " minutes) [?]"
     }
 
     function getTotalText() {
-        return  qsTr("<b>Texted:</b> ") + currentContactMethod.textRecording.instantTextMessagingModel.rowCount()
+        return  i18n("<b>Texted:</b> ") + currentContactMethod.textRecording.instantTextMessagingModel.rowCount()
     }
 
     SystemPalette {
@@ -185,7 +185,7 @@ Item {
 
     GroupBox {
         id: advanced
-        title: qsTr("Advanced")
+        title: i18n("Advanced")
         clip: true
 
         ColumnLayout {
@@ -205,19 +205,19 @@ Item {
 
                 TabButton {
                     id: detailsButton
-                    text: qsTr("Details")
+                    text: i18n("Details")
                     visible: false
                     width: 0
                 }
                 TabButton {
-                    text: qsTr("Phone numbers")
+                    text: i18n("Phone numbers")
                 }
                 TabButton {
-                    text: qsTr("Addresses")
+                    text: i18n("Addresses")
                 }
                 TabButton {
                     id: statButton
-                    text: qsTr("Statistics")
+                    text: i18n("Statistics")
                     visible: false
                     width: 0
                 }
@@ -249,7 +249,7 @@ Item {
 
                         Label {
                             id: label
-                            text: qsTr("Formatted name:")
+                            text: i18n("Formatted name:")
                             color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
@@ -260,7 +260,7 @@ Item {
                         }
 
                         Label {
-                            text: qsTr("Primary name:")
+                            text: i18n("Primary name:")
                             color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
@@ -271,7 +271,7 @@ Item {
                         }
 
                         Label {
-                            text: qsTr("Last name:")
+                            text: i18n("Last name:")
                             color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
@@ -282,7 +282,7 @@ Item {
                         }
 
                         Label {
-                            text: qsTr("Email:")
+                            text: i18n("Email:")
                             color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
@@ -293,7 +293,7 @@ Item {
                         }
 
                         Label {
-                            text: qsTr("Organization:")
+                            text: i18n("Organization:")
                             color: labelColor ? labelColor : activePalette.text
                         }
                         TextField {
@@ -385,7 +385,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.margins: 5
-        text: qsTr("Save")
+        text: i18n("Save")
         visible: showSave
         onClicked: {
             contactViewPage.save()

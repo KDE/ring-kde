@@ -111,12 +111,12 @@ Rectangle {
 //
 //         TextField {
 //             id: textField1
-//             placeholderText: qsTr("search box")
+//             placeholderText: i18n("search box")
 //         }
 //
 //         Button {
 //             id: button1
-//             text: qsTr("Search")
+//             text: i18n("Search")
 //         }
 //     }
 
@@ -144,16 +144,16 @@ Rectangle {
             id: tabBar
             currentIndex: swipeView.currentIndex
             TabButton {
-                text: qsTr("Information")
+                text: i18n("Information")
             }
             TabButton {
-                text: qsTr("Audio/Video")
+                text: i18n("Audio/Video")
             }
             TabButton {
-                text: qsTr("Chat/Timeline")
+                text: i18n("Chat/Timeline")
             }
             TabButton {
-                text: qsTr("Calls/Recordings")
+                text: i18n("Calls/Recordings")
             }
 
             onCurrentIndexChanged: {

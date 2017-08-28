@@ -22,7 +22,7 @@ import QtQuick.Layouts 1.0
 ApplicationWindow {
     id: applicationWindow
     visible: true
-    title: qsTr("Ring-KDE wizard")
+    title: i18n("Ring-KDE wizard")
     color: "#004d61"
     flags: Qt.Dialog
     height: 720
@@ -223,7 +223,7 @@ ApplicationWindow {
                     x: 771
                     y: 439
                     opacity: 0
-                    text: qsTr("Import a SIP account")
+                    text: i18n("Import a SIP account")
                 }
 
                 PropertyChanges {

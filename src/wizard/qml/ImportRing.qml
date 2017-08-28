@@ -57,7 +57,7 @@ Item {
         Label {
             id: label2
             clip: false
-            text: qsTr("Link this device")
+            text: i18n("Link this device")
             verticalAlignment: Text.AlignVCenter
             padding: 0
             font.bold: true
@@ -76,7 +76,7 @@ Item {
 
         Label {
             id: label1
-            text: qsTr("Enter your main Ring account password")
+            text: i18n("Enter your main Ring account password")
             Layout.fillWidth: true
             anchors.leftMargin: 8
             anchors.left: parent.left
@@ -92,7 +92,7 @@ Item {
         Label {
             id: label
             wrapMode: "WordWrap"
-            text: qsTr("Enter the PIN number form another configured Ring account. Use the \"Export account on Ring\" feature to obtain a PIN.")
+            text: i18n("Enter the PIN number form another configured Ring account. Use the \"Export account on Ring\" feature to obtain a PIN.")
             Layout.fillWidth: true
             anchors.leftMargin: 8
         }
@@ -127,7 +127,7 @@ Item {
 
             Label {
                 id: registrationStatus
-                text: qsTr("Importing account")
+                text: i18n("Importing account")
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 color: "black"
@@ -154,7 +154,7 @@ Item {
         running: false
         onTriggered: {
             registrationPopup.color = "red"
-            registerFoundLabel.text = qsTr("Timeout")
+            registerFoundLabel.text = i18n("Timeout")
             hidePopup.running       = true
         }
     }
@@ -178,7 +178,7 @@ Item {
             switch(state) {
                 case Account.ERROR:
                     registrationPopup.color = "red"
-                    registrationStatus.text = qsTr("Importing failed")
+                    registrationStatus.text = i18n("Importing failed")
                     hidePopup.running = true
                     registrationTimeout.stop()
                     break

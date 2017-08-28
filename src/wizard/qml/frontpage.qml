@@ -23,7 +23,7 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
-    title: qsTr("Hello World")
+    title: i18n("Hello World")
 
     SwipeView {
         id: swipeView
@@ -35,7 +35,7 @@ ApplicationWindow {
 
         Page {
             Label {
-                text: qsTr("Second page")
+                text: i18n("Second page")
                 anchors.centerIn: parent
             }
         }
@@ -45,10 +45,10 @@ ApplicationWindow {
         id: tabBar
         currentIndex: swipeView.currentIndex
         TabButton {
-            text: qsTr("First")
+            text: i18n("First")
         }
         TabButton {
-            text: qsTr("Second")
+            text: i18n("Second")
         }
     }
 }

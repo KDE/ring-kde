@@ -40,7 +40,7 @@ Item {
             Button {
                 id: backButton
                 Layout.fillHeight: true
-                text: qsTr("Back")
+                text: i18n("Back")
                 //visible: false //FIXME
             }
 
@@ -58,7 +58,7 @@ Item {
 
             Label {
                 id: missingFields
-                text: qsTr("Please fill the required fields")
+                text: i18n("Please fill the required fields")
                 verticalAlignment: Text.AlignVCenter
                 color: "red"
                 visible: true
@@ -68,14 +68,14 @@ Item {
             Button {
                 id: nextButton
                 Layout.fillHeight: true
-                text: qsTr("Next")
+                text: i18n("Next")
                 visible: false
             }
 
             Button {
                 id: skipButton
                 Layout.fillHeight: true
-                text: qsTr("Skip")
+                text: i18n("Skip")
             }
         }
     }
@@ -117,7 +117,7 @@ Item {
 
             PropertyChanges {
                 target: missingFields
-                text: qsTr("Please wait")
+                text: i18n("Please wait")
             }
 
             PropertyChanges {

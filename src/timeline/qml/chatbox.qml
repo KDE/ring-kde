@@ -168,7 +168,7 @@ Rectangle {
             font.family: "Noto Color Emoji"
             font.pixelSize : 18
 
-            placeholderText: qsTr("Write a message and press enter...")
+            placeholderText: i18n("Write a message and press enter...")
 
             Keys.onReturnPressed: {
                 var rawText  = getText(0, length)

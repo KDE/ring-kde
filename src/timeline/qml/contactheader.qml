@@ -148,7 +148,7 @@ Rectangle {
 
                 Button {
                     id: button
-                    text: qsTr("Call")
+                    text: i18n("Call")
                     onClicked: {
                         if (currentContactMethod == null) return
                         CallModel.dialingCall(currentContactMethod)
@@ -158,7 +158,7 @@ Rectangle {
 
                 Button {
                     id: button2
-                    text: qsTr("Video")
+                    text: i18n("Video")
                     onClicked: {
                         if (currentContactMethod == null) return
                         CallModel.dialingCall(currentContactMethod)
@@ -167,7 +167,7 @@ Rectangle {
                 }
 
                 Button {
-                    text: qsTr("Screen sharing")
+                    text: i18n("Screen sharing")
                     onClicked: {
                         if (currentContactMethod == null) return
                         CallModel.dialingCall(currentContactMethod)
