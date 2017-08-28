@@ -146,10 +146,8 @@ IF(${ENABLE_TEST} MATCHES true)
    ADD_SUBDIRECTORY( src/test)
 ENDIF()
 
-IF(EXISTS "po" AND IS_DIRECTORY "po")
-   FIND_PACKAGE ( Gettext REQUIRED )
-   ADD_SUBDIRECTORY( po      )
-ENDIF()
+# Handling of translation files
+KI18N_INSTALL( po )
 
 # macOS
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
