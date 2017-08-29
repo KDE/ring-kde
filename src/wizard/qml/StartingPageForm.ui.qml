@@ -100,7 +100,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted. ")
+                        text: i18n("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -117,7 +117,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI ans X-509. No data is ever uploaded to external servers.")
+                        text: i18n("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI and X-509. No data is ever uploaded to external servers.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -134,7 +134,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE")
+                        text: i18n("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -151,7 +151,7 @@ Item {
                     Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring is based on open standards and is can interoperate with other SIP compliant systems.")
+                        text: i18n("Ring is based on open standards and it can interoperate with other SIP compliant systems.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }

@@ -92,7 +92,7 @@ Item {
         Label {
             id: label
             wrapMode: "WordWrap"
-            text: i18n("Enter the PIN number form another configured Ring account. Use the \"Export account on Ring\" feature to obtain a PIN.")
+            text: i18n("Enter the PIN number from another configured Ring account. Use the \"Export account on Ring\" feature to obtain a PIN.")
             Layout.fillWidth: true
             anchors.leftMargin: 8
         }
