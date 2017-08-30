@@ -110,6 +110,7 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
   Config
   GuiAddons
   DBusAddons
+  DocTools
   I18n
   Init
   WindowSystem
