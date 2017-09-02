@@ -218,10 +218,16 @@ Item {
 
     MouseArea {
         anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         z: 99
         onClicked: {
-            recentView.currentIndex = index
-            contactMethodSelected(object);
+
+            if (mouse.button == Qt.LeftButton) {
+                recentView.currentIndex = index
+                contactMethodSelected(object)
+            }
+            else if (mouse.button == Qt.RightButton)
+                contextMenuRequested(object, index)
         }
     }
 

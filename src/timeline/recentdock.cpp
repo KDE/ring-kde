@@ -32,12 +32,20 @@
 
 #include "peerstimelinemodel.h"
 #include <numbercompletionmodel.h>
+#include <useractionmodel.h>
 #include "contactmethod.h"
 #include "itemdataroles.h"
+
+#include "../widgets/menumodelview.h"
 
 class RecentDockPrivate {
 public:
     QQuickWidget* m_pQuickWidget;
+    UserActionModel* m_pUserActionModel {nullptr};
+    QItemSelectionModel* m_pMenuSelectionModel {nullptr};
+    QSharedPointer<QAbstractItemModel> m_PeersModel;
+
+    void initUAM();
 };
 
 RecentDock::RecentDock(QWidget* parent) :
@@ -62,12 +70,23 @@ RecentDock::RecentDock(QWidget* parent) :
     QObject *item = d_ptr->m_pQuickWidget->rootObject();
     connect(item, SIGNAL(contactMethodSelected(QVariant)),
         this, SLOT(slotViewContactMethod(QVariant)));
+    connect(item, SIGNAL(contextMenuRequested(QVariant, int)),
+        this, SLOT(slotContextMenu(QVariant, int)));
 }
 
 RecentDock::~RecentDock()
 {
     //FIXME https://bugreports.qt.io/browse/QTBUG-40745
     setWidget(nullptr);
+
+    if (d_ptr->m_pUserActionModel)
+        delete d_ptr->m_pUserActionModel;
+
+    if (d_ptr->m_pMenuSelectionModel)
+        delete d_ptr->m_pMenuSelectionModel;
+
+    d_ptr->m_PeersModel.clear();
+
     d_ptr->m_pQuickWidget->setVisible(false);
     d_ptr->m_pQuickWidget->hide();
     d_ptr->m_pQuickWidget->setParent(nullptr);
@@ -105,6 +124,29 @@ void RecentDock::slotViewContactMethod(const QVariant& cm)
     setContactMethod(cm_);
 }
 
+void RecentDock::slotContextMenu(const QVariant& cm, int index)
+{
+    if (!cm.canConvert<ContactMethod*>())
+        return;
+
+    const auto idx = PeersTimelineModel::instance()
+        .deduplicatedTimelineModel()->index(index, 0);
+
+    d_ptr->initUAM();
+
+    auto m = new MenuModelView(
+        d_ptr->m_pUserActionModel->activeActionModel(),
+        new QItemSelectionModel(d_ptr->m_pUserActionModel->activeActionModel()),
+        this
+    );
+
+    d_ptr->m_pMenuSelectionModel->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
+
+    connect(m, &MenuModelView::itemClicked, this, &RecentDock::slotContextMenuClicked);
+
+    m->exec(QCursor::pos());
+}
+
 void RecentDock::setContactMethod(ContactMethod* cm)
 {
     auto item = d_ptr->m_pQuickWidget->rootObject();
@@ -112,6 +154,32 @@ void RecentDock::setContactMethod(ContactMethod* cm)
     if (auto selectionModel = item->findChild<PeersTimelineSelectionModel*>(QStringLiteral("selectionMapper"))) {
         selectionModel->setContactMethod(cm);
     }
+}
+
+void RecentDockPrivate::initUAM()
+{
+    if (!m_pUserActionModel) {
+
+        if (!m_PeersModel)
+            m_PeersModel = PeersTimelineModel::instance().deduplicatedTimelineModel();
+
+        m_pMenuSelectionModel = new QItemSelectionModel(m_PeersModel.data());
+        m_pMenuSelectionModel->setModel(m_PeersModel.data());
+
+        m_pUserActionModel = new UserActionModel(
+            m_PeersModel.data(),
+            UserActionModel::Context::ALL
+        );
+
+        auto item = m_pQuickWidget->rootObject();
+
+        m_pUserActionModel->setSelectionModel(m_pMenuSelectionModel);
+    }
+}
+
+void RecentDock::slotContextMenuClicked(const QModelIndex& index)
+{
+   d_ptr->m_pUserActionModel->execute(index);
 }
 
 #include <recentdock.moc>

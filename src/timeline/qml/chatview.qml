@@ -26,9 +26,15 @@ TreeView {
     id: chatView
     clip: true
 
+    property var treeHelper: _treeHelper
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
+    }
+
+    TreeHelper {
+        id: _treeHelper
     }
 
     property var bubbleBackground: blendColor()
@@ -96,11 +102,15 @@ TreeView {
             Component {
                 id: textDelegate
                 TextBubble {
+
                     background: isRead ?
                         chatView.bubbleBackground : chatView.unreadBackground
                     foreground: isRead ?
                         chatView.bubbleForeground : chatView.unreadForeground
                     width: chatView.width
+                    onClicked: {
+                        chatView.treeHelper.setData(rootIndex, true, "isRead")
+                    }
                 }
             }
 

@@ -27,6 +27,7 @@ Item {
     width: parent.width
     property color background
     property color foreground
+    signal clicked()
 
     height: bubble.height + 10
 
@@ -90,8 +91,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        console.log("SET isRead")
-                        isRead = true
+                        chatMessage.clicked()
                     }
                 }
             }

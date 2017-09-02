@@ -29,12 +29,15 @@ class TreeHelper : public QObject
     Q_OBJECT
 
 public:
-    explicit TreeHelper(QObject* parent = nullptr);
+    Q_INVOKABLE explicit TreeHelper(QObject* parent = nullptr);
     virtual ~TreeHelper();
 
     Q_INVOKABLE QModelIndex getIndex(int row, const QModelIndex& parent);
+    Q_INVOKABLE bool setData(const QModelIndex& index, const QVariant& data, const QString& roleName);
 
 private:
     TreeHelperPrivate* d_ptr;
     Q_DECLARE_PRIVATE(TreeHelper)
 };
+
+Q_DECLARE_METATYPE(TreeHelper*)

@@ -36,6 +36,8 @@ protected:
 
 private Q_SLOTS:
     void slotViewContactMethod(const QVariant& cm);
+    void slotContextMenu(const QVariant& cm, int index);
+    void slotContextMenuClicked(const QModelIndex& index);
 
 Q_SIGNALS:
     void viewContactMethod(ContactMethod* cm);

@@ -23,11 +23,40 @@ class TreeHelperPrivate
 {
 public:
     QMap<QString, QString> m_Payloads {};
+
+    //FIXME it leaks
+    static QHash<const QAbstractItemModel*, QHash<QString, int>> m_shRoleNameMapper;
 };
+
+QHash<const QAbstractItemModel*, QHash<QString, int>> TreeHelperPrivate::m_shRoleNameMapper;
 
 TreeHelper::TreeHelper(QObject* parent) : QObject(parent),
     d_ptr(new TreeHelperPrivate())
 {}
+
+bool TreeHelper::setData(const QModelIndex& index, const QVariant& data, const QString& roleName)
+{
+    if (!index.isValid())
+        return false;
+
+    auto model = const_cast<QAbstractItemModel*>(index.model());
+
+    auto ret = d_ptr->m_shRoleNameMapper.value(model);
+
+    // Map the role names
+    if (!d_ptr->m_shRoleNameMapper.contains(model)) {
+        const auto rn = model->roleNames();
+        for (auto i = rn.constBegin(); i != rn.constEnd(); i++)
+            ret[i.value()] = i.key();
+
+        d_ptr->m_shRoleNameMapper[model] = ret;
+    }
+
+    if (!ret.contains(roleName))
+        return false;
+
+    return model->setData(index, data, ret[roleName]);
+}
 
 TreeHelper::~TreeHelper()
 {
