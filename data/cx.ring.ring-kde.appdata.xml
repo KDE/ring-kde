@@ -24,7 +24,6 @@
   <name xml:lang="tr">Ring-KDE</name>
   <name xml:lang="uk">Ring-KDE</name>
   <name xml:lang="x-test">xxRing-KDExx</name>
-  <name xml:lang="zh-CN">Ring-KDE</name>
   <name xml:lang="zh-TW">Ring-KDE</name>
   <summary>Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o RING.</summary>
@@ -326,7 +325,7 @@
       <li xml:lang="ca-valencia">Implementa un menú de trucades automàtic amb macros</li>
       <li xml:lang="en-GB">Call menu support automation with macro</li>
       <li xml:lang="es">El menú de llamada permite automatismos con macros</li>
-      <li xml:lang="gl">Menú de chamadas que pode automatizarse mediante macros.</li>
+      <li xml:lang="gl">O menú de chamadas permite automatización mediante macros.</li>
       <li xml:lang="it">Il menu di chiamata supporta l'automazione con macro</li>
       <li xml:lang="nl">Ondersteuning menu voor automatisering van oproepen met macro</li>
       <li xml:lang="pl">Automatyzacja menu rozmów przy użyciu makr</li>
