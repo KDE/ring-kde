@@ -44,6 +44,7 @@ GenericName[sv]=Ring
 GenericName[tr]=Ring
 GenericName[uk]=Ring
 GenericName[x-test]=xxRingxx
+GenericName[zh_CN]=环状图
 GenericName[zh_TW]=Ring
 Comment=Call and receive calls with SIP or RING protocols
 Comment[ca]=Truca i rep trucades amb els protocols SIP o RING
