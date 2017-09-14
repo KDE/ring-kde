@@ -41,6 +41,9 @@ Pages::Account::Account(QWidget *parent) : PageBase(parent)
    //Remove profile
    m_pPages->removeTab(m_pPages->count()-1);
 
+   //Remove Wizard
+   m_pPages->removeTab(m_pPages->count()-1);
+
 }
 
 void Pages::Account::setEngine(QQmlEngine* e)
@@ -62,6 +65,7 @@ void Pages::Account::setAccount(::Account* a)
    dlgAdvanced    -> setAccount(a);
    dlgNetwork     -> setAccount(a);
    dlgCodec       -> setAccount(a);
+   dlgDevices     -> setAccount(a);
    dlgCredentials -> setAccount(a);
    dlgRingtone    -> setAccount(a);
    dlgSecurity    -> setAccount(a);
@@ -95,6 +99,7 @@ void Pages::Account::displayProfile(bool display)
       m_pPages->insertTab(0, dlgSecurity   ,i18n("Security"   ));
       m_pPages->insertTab(0, dlgCredentials,i18n("Credentials"));
       m_pPages->insertTab(0, dlgCodec      ,i18n("Codecs"     ));
+      m_pPages->insertTab(0, dlgDevices    ,i18n("Devices"    ));
       m_pPages->insertTab(0, dlgNetwork    ,i18n("Network"    ));
       m_pPages->insertTab(0, dlgAdvanced   ,i18n("Advanced"   ));
       m_pPages->insertTab(0, dlgBasic      ,i18n("Basic"      ));

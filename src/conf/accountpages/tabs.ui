@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>538</width>
-    <height>278</height>
+    <width>723</width>
+    <height>487</height>
    </rect>
   </property>
   <layout class="QGridLayout">
@@ -43,6 +43,16 @@
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="Pages::Network" name="dlgNetwork" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_9">
+      <attribute name="title">
+       <string>Devices</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="Pages::Devices" name="dlgDevices" native="true"/>
        </item>
       </layout>
      </widget>
@@ -96,6 +106,11 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_10">
+      <attribute name="title">
+       <string>Wizard</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -141,6 +156,12 @@
    <class>Pages::Security</class>
    <extends>QWidget</extends>
    <header>conf/accountpages/security.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Pages::Devices</class>
+   <extends>QWidget</extends>
+   <header>conf/accountpages/devices.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

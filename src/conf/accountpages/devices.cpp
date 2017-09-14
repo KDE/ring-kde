@@ -15,24 +15,35 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#ifndef DLG_DHT_H
-#define DLG_DHT_H
+#include "devices.h"
 
-#include "ui_dlgdht.h"
+// Qt
+#include <QQmlEngine>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQuickItem>
 
-class Account;
+// Ring
+#include <account.h>
+#include <ringapplication.h>
 
-class DlgDht : public QWidget, public Ui_DlgDht
+Pages::Devices::Devices(QWidget* parent) : QWidget(parent),m_pAccount(nullptr)
 {
-   Q_OBJECT
-public:
-   explicit DlgDht(QWidget* parent = nullptr);
-   void setAccount(Account* a);
+    m_pWidget = new QQuickWidget(RingApplication::engine(), this);
 
-private:
-   Account* m_pAccount;
-};
+    for (auto w : {static_cast<QWidget*>(this), static_cast<QWidget*>(m_pWidget)})
+        w->setStyleSheet(QStringLiteral("margin:0px; spacing:0px; padding:0px;"));
 
-#endif
+    auto l = new QHBoxLayout(this);
+    l->setContentsMargins(0,0,0,0);
+    l->addWidget(m_pWidget);
 
-// kate: space-indent on; indent-width 3; replace-tabs on;
+    m_pWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    m_pWidget->setSource(QUrl(QStringLiteral("qrc:/Devices.qml")));
+}
+
+void Pages::Devices::setAccount(Account* a)
+{
+    m_pWidget->rootObject()->setProperty("account", QVariant::fromValue(a));
+    m_pAccount = a;
+}

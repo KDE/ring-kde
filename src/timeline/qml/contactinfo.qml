@@ -26,6 +26,7 @@ Item {
     id: contactViewPage
     property var currentContactMethod: null
     property var currentPerson: null
+    property string forcedState: ""
 
     signal changed()
 
@@ -95,7 +96,7 @@ Item {
         colorGroup: SystemPalette.Active
     }
 
-    state: "desktop"
+    state: forcedState == "" ? "tablet" : forcedState
 
     onCurrentContactMethodChanged: {
         if (!currentContactMethod)
@@ -190,6 +191,7 @@ Item {
 
         ColumnLayout {
             id: tabbedContactInfo
+            anchors.topMargin: contactViewPage.showImage ? 95 : 0
 
             clip: true
             anchors.fill: parent
@@ -433,6 +435,7 @@ Item {
             PropertyChanges {
                 target: advanced
                 visible: true
+                height: undefined
                 width: contactViewPage.width / 2
             }
             PropertyChanges {
@@ -472,7 +475,7 @@ Item {
             PropertyChanges {
                 target: advanced
                 width: contactViewPage.width * 0.66
-                height: 300
+                height: 301
                 anchors.topMargin: 10
             }
         },
@@ -511,11 +514,21 @@ Item {
                 target: advanced
                 visible: false
             }
+            PropertyChanges {
+                target: sv
+                currentIndex: 0
+            }
+            PropertyChanges {
+                target: tabBar
+                currentIndex: 0
+            }
         }
     ]
 
     // For some reason, the `when` clause of the state never fire
     onHeightChanged: {
+        if (forcedState != "")
+            return forcedState
 
         var isPhone = contactViewPage.height <= 400 || (
             contactViewPage.height > contactViewPage.width &&
@@ -535,5 +548,17 @@ Item {
             state = "tablet"
         else
             state = "desktop"
+
+        //HACK QML fails to resolve the property change graph
+        if (state == "desktop")
+            advanced.height = 300
+
+    }
+
+    //HACK Trick to force "tablet" -> "desktop". Otherwise it hits a bug in QML
+    // and the reparenting is done after the anchors changes and the elements
+    // are misplaced
+    Component.onCompleted: {
+        onHeightChanged()
     }
 }

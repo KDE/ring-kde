@@ -15,38 +15,27 @@
  *   You should have received a copy of the GNU General Public License      *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
-#include "dlgdht.h"
+#ifndef DLG_DHT_H
+#define DLG_DHT_H
 
-//Ring
-#include <account.h>
-#include <certificatemodel.h>
-#include <bootstrapmodel.h>
-#include <widgets/certificateviewer.h>
+class QQuickWidget;
 
-DlgDht::DlgDht(QWidget* parent) : QWidget(parent),m_pAccount(nullptr)
+class Account;
+
+namespace Pages {
+
+class Devices : public QWidget
 {
-   setupUi(this);
+    Q_OBJECT
+public:
+    explicit Devices(QWidget* parent = nullptr);
+    void setAccount(Account* a);
 
-//    connect(m_pKnownPeers, &QListView::doubleClicked, [this](const QModelIndex& index) {
-//       CertificateViewer* v = new CertificateViewer(index,this);
-//       v->show();
-//       connect(v,&QDialog::finished,[v](int) { delete v; });
-//    });
-//    groupBox->setVisible(false);
+private:
+    Account* m_pAccount;
+    QQuickWidget* m_pWidget;
+};
+
 }
 
-void DlgDht::setAccount(Account* a)
-{
-   m_pAccount = a;
-
-   if (a && a->protocol() == Account::Protocol::RING) {
-//       lrcfg_username->setText(a->username());
-//       m_pKnownPeers->setModel();
-//       m_pKnownPeers->setModel(a->knownCertificateModel());
-      m_pBootstrap->setModel(a->bootstrapModel());
-      if (m_pBootstrap->horizontalHeader())
-         m_pBootstrap->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
-   }
-}
-
-// kate: space-indent on; indent-width 3; replace-tabs on;
+#endif

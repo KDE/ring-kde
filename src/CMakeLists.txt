@@ -235,7 +235,7 @@ SET(
    conf/accountpages/security.cpp
    conf/accountpages/pagebase.cpp
    conf/accountpages/account.cpp
-   conf/accountpages/dlgdht.cpp
+   conf/accountpages/devices.cpp
    conf/accountpages/dlgprofiles.cpp
 )
 
@@ -329,6 +329,7 @@ ENDIF()
 # generate rules for building source files from the resources
 SET(QtApp_RCCS
    qrc/resources.qrc
+   conf/confresources.qrc
    ../data/appicon.qrc
 )
 QT5_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
@@ -352,7 +353,6 @@ SET(
    conf/accountpages/network.ui
    conf/accountpages/codecs.ui
    conf/accountpages/ringtone.ui
-   conf/accountpages/dlgdht.ui
    conf/accountpages/security.ui
    conf/accountpages/tabs.ui
    widgets/ui/personselector.ui

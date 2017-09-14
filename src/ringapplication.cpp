@@ -41,6 +41,7 @@
 #include <phonedirectorymodel.h>
 #include <categorizedhistorymodel.h>
 #include <categorizedcontactmodel.h>
+#include <ringdevicemodel.h>
 #include <namedirectory.h>
 #include <categorizedbookmarkmodel.h>
 #include <numbercompletionmodel.h>
@@ -373,6 +374,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( ContactMethod     )
       QML_TYPE( UserActionModel   )
       QML_TYPE( PeerTimelineModel )
+      QML_TYPE( RingDeviceModel   )
 
       QML_CRTYPE( PeersTimelineSelectionModel )
       QML_CRTYPE( NumberCompletionModel       )

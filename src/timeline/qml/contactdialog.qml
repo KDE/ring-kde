@@ -21,6 +21,7 @@ Rectangle {
     property alias currentPerson: contactInfo.currentPerson
     property alias showStat     : contactInfo.showStat
     property alias showImage    : contactInfo.showImage
+    property alias forcedState  : contactInfo.forcedState
 
     SystemPalette {
         id: activePalette
