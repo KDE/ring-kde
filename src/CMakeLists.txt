@@ -410,11 +410,16 @@ IF(NOT ${ENABLE_STATIC} MATCHES false)
   LINK_DIRECTORIES(${Qt5DBus_LIBRARY_DIRS} )
   ADD_DEFINITIONS(${Qt5DBus_CFLAGS})
   TARGET_LINK_LIBRARIES(ring-kde
-    ${Qt5DBus_LIBRARIES}
     ${ringclient_LIBRARY_STATIC}
     -lpthread
-    #-lrt
   )
+
+  IF(NOT ${ENABLE_LIBWRAP})
+    TARGET_LINK_LIBRARIES(ring-kde
+        ${Qt5DBus_LIBRARIES}
+    )
+  ENDIF()
+
 ELSE()
    TARGET_LINK_LIBRARIES(ring-kde ${ringclient_LIBRARY_DYNAMIC})
 ENDIF()

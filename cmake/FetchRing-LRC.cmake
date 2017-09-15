@@ -16,7 +16,7 @@ include(ExternalProject)
 # Fetch the XMLs
 set(XML_PATH ${CMAKE_CURRENT_BINARY_DIR}/xml/)
 
-if (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml)
+if ((NOT ${ENABLE_LIBWRAP}) AND (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml))
 
     message(STATUS "Downloading the GNU Ring API definition")
 
