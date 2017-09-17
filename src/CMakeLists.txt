@@ -453,7 +453,6 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::Notifications
   KF5::IconThemes
   KF5::KIOWidgets
-  KF5::Completion
   KF5::Crash
   KF5::NotifyConfig
   KF5::GlobalAccel
