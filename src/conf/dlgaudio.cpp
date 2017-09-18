@@ -21,9 +21,6 @@
 //Qt
 #include <QtWidgets/QHeaderView>
 
-//KDE
-#include <KLineEdit>
-
 //Ring
 #include "klib/kcfg_settings.h"
 #include "conf/configurationdialog.h"

@@ -64,7 +64,7 @@
          <x>0</x>
          <y>0</y>
          <width>625</width>
-         <height>1167</height>
+         <height>1126</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -115,9 +115,6 @@
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="1" column="1" colspan="4">
-            <widget class="KUrlRequester" name="lrcfg_tlsCertificate"/>
-           </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label_tls_authority">
              <property name="text">
@@ -315,9 +312,6 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="1" colspan="4">
-            <widget class="KUrlRequester" name="lrcfg_tlsCaListCertificate"/>
-           </item>
            <item row="9" column="0">
             <widget class="QLabel" name="label_tls_timeout">
              <property name="text">
@@ -473,9 +467,6 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="1" colspan="5">
-            <widget class="KUrlRequester" name="lrcfg_tlsPrivateKey"/>
-           </item>
            <item row="13" column="4">
             <widget class="IssuesIcon" name="m_pVerifyServer" native="true"/>
            </item>
@@ -549,6 +540,15 @@
              </widget>
             </widget>
            </item>
+           <item row="0" column="1" colspan="4">
+            <widget class="FileSelector" name="lrcfg_tlsCaListCertificate" native="true"/>
+           </item>
+           <item row="1" column="1" colspan="4">
+            <widget class="FileSelector" name="lrcfg_tlsCertificate" native="true"/>
+           </item>
+           <item row="2" column="1" colspan="5">
+            <widget class="FileSelector" name="lrcfg_tlsPrivateKey" native="true"/>
+           </item>
           </layout>
          </widget>
         </item>
@@ -560,12 +560,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QFrame</extends>
-   <header>kurlrequester.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>AutoComboBox</class>
    <extends>QComboBox</extends>
@@ -588,6 +582,12 @@
    <extends>QListView</extends>
    <header>widgets/contextlistview.h</header>
   </customwidget>
+  <customwidget>
+   <class>FileSelector</class>
+   <extends>QWidget</extends>
+   <header>widgets/fileselector.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
@@ -598,12 +598,12 @@
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>43</x>
-     <y>441</y>
+     <x>55</x>
+     <y>604</y>
     </hint>
     <hint type="destinationlabel">
-     <x>136</x>
-     <y>522</y>
+     <x>148</x>
+     <y>802</y>
     </hint>
    </hints>
   </connection>
@@ -614,12 +614,12 @@
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>585</x>
-     <y>239</y>
+     <x>613</x>
+     <y>367</y>
     </hint>
     <hint type="destinationlabel">
-     <x>621</x>
-     <y>215</y>
+     <x>616</x>
+     <y>370</y>
     </hint>
    </hints>
   </connection>
@@ -630,12 +630,12 @@
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>619</x>
-     <y>303</y>
+     <x>613</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
-     <x>621</x>
-     <y>284</y>
+     <x>616</x>
+     <y>442</y>
     </hint>
    </hints>
   </connection>

@@ -15,52 +15,35 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#ifndef IM_MANAGER_H
-#define IM_MANAGER_H
+#ifndef FILESELECTOR_H
+#define FILESELECTOR_H
 
-//Qt
-#include <QtCore/QHash>
-class QAbstractItemModel;
+#include <QtWidgets/QWidget>
 
-//KDE
-#include <QtWidgets/QTabWidget>
+#include "ui_fileselect.h"
 
-//Ring
-class IMTab;
-class ContactMethod;
-class Call;
-namespace Media {
-   class Media;
-   class TextRecording;
-}
-
-class IMManager : public QTabWidget
+/**
+ * This was provided by KF5::KIOWidgets, but as this app is being moved to mobile
+ * and QML, that dependency was increasingly unmaintainable. This code is
+ * temporary and will be removed once the port is complete.
+ */
+class FileSelector : public QWidget, public Ui_FileSelect
 {
    Q_OBJECT
 public:
-   //Constructor
-   explicit IMManager(QWidget* parent = nullptr);
+    explicit FileSelector(QWidget* parent = nullptr);
 
-   //Mutator
-   bool showConversation(ContactMethod* cm);
-
-   Media::TextRecording* currentConversation() const;
-
-private:
-   //Attrubutes
-   QHash<ContactMethod*,IMTab*> m_lTabs;
-   QHash<Media::TextRecording*,IMTab*> m_lTabsByTR;
-
-public Q_SLOTS:
-   void clearColor(int idx = -1);
+    void setText(const QString& text);
+    QString text() const;
 
 private Q_SLOTS:
-   IMTab* newConversation(ContactMethod* cm, Media::TextRecording* rec);
-   void closeRequest(int index);
-   void addMedia(Call* c, Media::Media* m);
-   void newMessageInserted(Media::TextRecording* r, ContactMethod* cm);
+    void slotFileSelector();
+    void slotOpenFile();
+
+Q_SIGNALS:
+    void urlSelected(const QUrl& url);
 };
 
-#endif // IM_MANAGER
+#endif
 
-// kate: space-indent on; indent-width 3; replace-tabs on;
+// kate: space-indent on; indent-width 4; replace-tabs on;

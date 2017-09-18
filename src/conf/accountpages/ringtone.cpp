@@ -26,9 +26,9 @@
 Pages::RingTone::RingTone(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
-   m_pAddFile->setPlaceholderText(i18n("Select a new ringtone"));
+   m_pAddFile->m_pFilePath->setPlaceholderText(i18n("Select a new ringtone"));
 
-   connect(m_pAddFile, &KUrlRequester::urlSelected, this, &Pages::RingTone::urlSelected);
+   connect(m_pAddFile, &FileSelector::urlSelected, this, &Pages::RingTone::urlSelected);
    connect(this,&PageBase::accountSet,[this]() {
       m_pRingtones->setModel(&RingtoneModel::instance());
       m_pRingtones->setSelectionModel(RingtoneModel::instance().selectionModel(account()));

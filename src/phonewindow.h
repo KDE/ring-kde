@@ -33,7 +33,6 @@ class QComboBox;
 class Call;
 class ContactDock;
 class BookmarkDock;
-class VideoDock;
 class HistoryDock;
 class AvailableAccountModel;
 class Account;
@@ -41,9 +40,6 @@ class View;
 class Dock;
 class AutoComboBox;
 class SysTray;
-namespace Video {
-   class Renderer;
-}
 
 /**
  * This class represents the Ring main window
@@ -72,9 +68,6 @@ private:
    QLabel*        m_pStatusBarWidget ;
    QDockWidget*   m_pCentralDW       ;
    AutoComboBox*  m_pAccountStatus   ;
-   #ifdef ENABLE_VIDEO
-   VideoDock*     m_pVideoDW         ;
-   #endif
    QToolButton*   m_pPresent         ;
    QDockWidget*   m_pPresenceDock    ;
    QLabel*        m_pCurAccL         ;
@@ -104,11 +97,6 @@ private Q_SLOTS:
    void updatePresence                           ( const QString& status         );
    void hidePresenceDock                         (                               );
    void slotPresenceEnabled                      ( bool state                    );
-   #ifdef ENABLE_VIDEO
-   void displayVideoDock                         ( Call* c, Video::Renderer* r   );
-   void hideVideoDock                            ( Call* c, Video::Renderer* r   );
-   #endif
-
 public Q_SLOTS:
    void displayAccountCbb                        ( bool checked = true           );
    void selectCallTab                            (                               );

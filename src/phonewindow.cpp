@@ -50,7 +50,6 @@
 #include <availableaccountmodel.h>
 
 //Ring
-#include "media/video.h"
 #include "klib/kcfg_settings.h"
 #include "implementation.h"
 #include "icons/icons.h"
@@ -61,8 +60,6 @@
 #include "widgets/systray.h"
 #include "widgets/presence.h"
 #include "errormessage.h"
-#include <video/renderer.h>
-#include <video/previewmanager.h>
 #include "ringapplication.h"
 #include "widgets/dockbase.h"
 #include "wizard/welcome.h"
@@ -76,16 +73,9 @@
  #include "klib/akonadibackend.h"
 #endif
 
-#ifdef ENABLE_VIDEO
- #include "widgets/videodock.h"
-#endif
-
 ///Constructor
 PhoneWindow::PhoneWindow(QWidget*)
    : FancyMainWindow()
-#ifdef ENABLE_VIDEO
-      ,m_pVideoDW(nullptr)
-#endif
 {
    setObjectName(QStringLiteral("PhoneWindow"));
 
@@ -164,11 +154,6 @@ PhoneWindow::PhoneWindow(QWidget*)
    }
 
    connect(CallModel::instance().selectionModel(),&QItemSelectionModel::currentRowChanged,this,&PhoneWindow::selectCallTab);
-
-#ifdef ENABLE_VIDEO
-   connect(&CallModel::instance(),&CallModel::rendererAdded,this,&PhoneWindow::displayVideoDock);
-   connect(&CallModel::instance(),&CallModel::rendererRemoved,this,&PhoneWindow::hideVideoDock);
-#endif
 
    statusBar()->addWidget(m_pStatusBarWidget);
 
@@ -274,9 +259,6 @@ PhoneWindow::~PhoneWindow()
 
    disconnect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
 
-   if(m_pVideoDW)
-      disconnect(m_pVideoDW ,&QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
-
    m_pDock->deleteLater();
 
    delete m_pView            ;
@@ -364,46 +346,6 @@ void PhoneWindow::hidePresenceDock()
 {
    m_pPresent->setChecked(false);
 }
-
-#ifdef ENABLE_VIDEO
-///Display the video dock
-void PhoneWindow::displayVideoDock(Call* c, Video::Renderer* r)
-{
-   Q_UNUSED(c)
-
-   if (!m_pVideoDW) {
-      m_pVideoDW = new VideoDock();
-      connect(m_pVideoDW ,&QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
-   }
-
-   if (auto vid = c->firstMedia<Media::Video>(Media::Media::Direction::OUT))
-      m_pVideoDW->setSourceModel(vid->sourceModel());
-
-   m_pVideoDW->setCall(c);
-   m_pVideoDW->addRenderer(r);
-   m_pVideoDW->show();
-
-   // Fix mute/hold/playfile
-   connect(r, &Video::Renderer::started, this, [this, c, r]() {
-      displayVideoDock(c, r);
-   });
-}
-
-void PhoneWindow::hideVideoDock(Call* c, Video::Renderer* r)
-{
-   Q_UNUSED(c)
-   Q_UNUSED(r)
-
-   // Don't hide because the preview stopped
-   if (r == Video::PreviewManager::instance().previewRenderer())
-      return;
-
-   if (m_pVideoDW) {
-      m_pVideoDW->hide();
-      m_pVideoDW->setCall(nullptr);
-   }
-}
-#endif
 
 ///Select the call tab
 void PhoneWindow::selectCallTab()

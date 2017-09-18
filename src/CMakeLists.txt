@@ -248,7 +248,7 @@ SET(
    widgets/dialpad.cpp
    widgets/dockbase.cpp
    widgets/categorizedtreeview.cpp
-   widgets/immanager.cpp
+   widgets/fileselector.cpp
    widgets/callviewoverlay.cpp
    widgets/overlaytoolbar.cpp
    widgets/callviewtoolbar.cpp
@@ -285,7 +285,6 @@ SET(
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET(
       ring_kde_VIDEO
-      widgets/videodock.cpp
       widgets/videosettings.cpp
       conf/dlgvideo.cpp
    )
@@ -365,10 +364,10 @@ SET(
    widgets/ui/presence.ui
    widgets/ui/videodevicesetting.ui
    widgets/ui/screensharingwidget.ui
-   widgets/ui/mediafilepicker.ui
    widgets/ui/welcome.ui
    widgets/ui/share.ui
    widgets/ui/accountcreator.ui
+   widgets/ui/fileselect.ui
    configurator/peerprofile.ui
    configurator/bookmark.ui
    configurator/recording.ui
@@ -452,7 +451,6 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::XmlGui
   KF5::Notifications
   KF5::IconThemes
-  KF5::KIOWidgets
   KF5::Crash
   KF5::NotifyConfig
   KF5::GlobalAccel

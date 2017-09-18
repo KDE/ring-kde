@@ -22,6 +22,8 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickItem>
+#include <QQuickWidget>
+#include <QtWidgets/QHBoxLayout>
 
 // Ring
 #include <account.h>

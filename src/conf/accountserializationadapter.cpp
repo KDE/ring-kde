@@ -27,13 +27,17 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QAbstractButton>
 #include <QtWidgets/QAbstractItemView>
+#include <QtCore/QUrl>
 
 //KDE
-#include <KUrlRequester>
+// #include <KUrlRequester>
 #include <kcolorscheme.h>
 
 #include <account.h>
 #include <accountmodel.h>
+
+// Ring
+#include "widgets/fileselector.h"
 
 QHash<int, QString> AccountSerializationAdapter::m_hProblems = {};
 
@@ -46,7 +50,7 @@ struct ConnHolder final{
    ConnHolder(const ConnHolder&) = delete;
    ~ConnHolder();
 };
-Q_DECLARE_METATYPE(ConnHolder*);
+Q_DECLARE_METATYPE(ConnHolder*)
 
 ConnHolder::~ConnHolder()
 {
@@ -64,7 +68,7 @@ static void avoidDuplicate(QWidget* w, QList<ConnHolder*>& holders )
 //    }
 }
 
-QWidget* buddyWidget(QWidget* w)
+static QWidget* buddyWidget(QWidget* w)
 {
    if (w->property("lrcfgBuddy").canConvert<QWidget*>())
       return qvariant_cast<QWidget*>(w->property("lrcfgBuddy"));
@@ -123,8 +127,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
          const int role = roles[prop];
          const Account::RoleState rs = a->roleState((Account::Role)role);
 
-         if (qobject_cast<QLineEdit*>(w)) {
-            QLineEdit* le = qobject_cast<QLineEdit*>(w);
+         if (auto le = qobject_cast<QLineEdit*>(w)) {
             avoidDuplicate(le, m_lConns);
             le->setText(a->roleData(role).toString());
             le->setReadOnly(rs == Account::RoleState::READ_ONLY);
@@ -146,8 +149,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             le->setProperty("lrcfgConn",QVariant::fromValue(c));
             m_lConns << c;
          }
-         else if (qobject_cast<QSpinBox*>(w)) {
-            QSpinBox* sb = qobject_cast<QSpinBox*>(w);
+         else if (auto sb = qobject_cast<QSpinBox*>(w)) {
             avoidDuplicate(sb, m_lConns);
             sb->setValue(a->roleData(role).toInt());
             ConnHolder* c = new ConnHolder {
@@ -159,9 +161,8 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             sb->setProperty("lrcfgConn",QVariant::fromValue(c));
             m_lConns << c;
          }
-         else if  (qobject_cast<QAbstractButton*>(w)) {
+         else if  (auto b = qobject_cast<QAbstractButton*>(w)) {
             //QCheckBox, QRadioButton, QToolButton, QPushButton
-            QAbstractButton* b = qobject_cast<QAbstractButton*>(w);
             avoidDuplicate(b, m_lConns);
             b->setChecked(a->roleData(role).toBool());
             ConnHolder* c = new ConnHolder {
@@ -173,8 +174,7 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
             m_lConns << c;
          }
-         else if  (qobject_cast<QGroupBox*>(w)) {
-            QGroupBox* b = qobject_cast<QGroupBox*>(w);
+         else if  (auto b = qobject_cast<QGroupBox*>(w)) {
             avoidDuplicate(b, m_lConns);
             b->setCheckable(rs == Account::RoleState::READ_WRITE);
             b->setChecked(a->roleData(role).toBool());
@@ -187,18 +187,16 @@ void AccountSerializationAdapter::setupWidget(QWidget* w, Account* a, const QHas
             b->setProperty("lrcfgConn",QVariant::fromValue(c));
             m_lConns << c;
          }
-         else if  (qobject_cast<QAbstractItemView*>(w)) {
-            QAbstractItemView* v = qobject_cast<QAbstractItemView*>(w);
+         else if  (auto v = qobject_cast<QAbstractItemView*>(w)) {
             avoidDuplicate(v, m_lConns);
             if (a->roleData(role).canConvert<QAbstractItemModel*>())
                v->setModel(qvariant_cast<QAbstractItemModel*>(a->roleData(role)));
          }
-         else if  (qobject_cast<KUrlRequester*>(w)) { //KDE only
-            KUrlRequester* b = qobject_cast<KUrlRequester*>(w);
+         else if  (auto b = qobject_cast<FileSelector*>(w)) {
             avoidDuplicate(b, m_lConns);
             b->setText(a->roleData(role).toString());
             ConnHolder* c = new ConnHolder {
-               QObject::connect(b, &KUrlRequester::urlSelected, this, [a,role](const QUrl& s) {
+               QObject::connect(b, &FileSelector::urlSelected, this, [a,role](const QUrl& s) {
                   if (a->roleData(role).toString() != s.path())
                      a->setRoleData(role, s.path());
                })

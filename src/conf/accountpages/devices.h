@@ -18,6 +18,8 @@
 #ifndef DLG_DHT_H
 #define DLG_DHT_H
 
+#include <QtWidgets/QWidget>
+
 class QQuickWidget;
 
 class Account;

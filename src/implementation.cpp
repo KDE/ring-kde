@@ -52,7 +52,6 @@
 #include "conf/accountpages/dlgprofiles.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
-#include <widgets/immanager.h>
 #include <widgets/personselector.h>
 #include <widgets/contactmethodselector.h>
 #include <phonewindow.h>

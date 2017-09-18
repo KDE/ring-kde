@@ -117,7 +117,6 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
   XmlGui
   Notifications
   IconThemes
-  KIO
   Crash
   NotifyConfig
   GlobalAccel

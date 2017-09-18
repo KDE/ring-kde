@@ -29,8 +29,8 @@
       <property name="checkable">
        <bool>true</bool>
       </property>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0" colspan="2">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
         <widget class="QTableView" name="m_pRingtones">
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
@@ -65,19 +65,13 @@
           <string>Play</string>
          </property>
          <property name="icon">
-          <iconset theme="media-playback-start"/>
+          <iconset theme="media-playback-start">
+           <normaloff>.</normaloff>.</iconset>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="KUrlRequester" name="m_pAddFile" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
+       <item row="2" column="0" colspan="2">
+        <widget class="FileSelector" name="m_pAddFile" native="true"/>
        </item>
       </layout>
      </widget>
@@ -87,9 +81,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KUrlRequester</class>
+   <class>FileSelector</class>
    <extends>QWidget</extends>
-   <header>KUrlRequester</header>
+   <header>widgets/fileselector.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -118,8 +112,8 @@
    <slot>play()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>500</x>
-     <y>339</y>
+     <x>515</x>
+     <y>325</y>
     </hint>
     <hint type="destinationlabel">
      <x>529</x>
