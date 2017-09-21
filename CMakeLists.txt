@@ -23,7 +23,7 @@ SET(QT_MIN_VERSION  "5.7.0" )
 SET(KF5_DEP_VERSION "5.6.0" )
 SET(AKO_DEP_VERSION "4.89.0")
 
-SET(LOCAL_CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/" )
+SET(LOCAL_CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )
 LIST(APPEND CMAKE_MODULE_PATH "${LOCAL_CMAKE_MODULE_PATH}")
 
 FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
@@ -32,8 +32,8 @@ LIST(APPEND CMAKE_MODULE_PATH "${ECM_MODULE_PATH}")
 # Ring-LRC isn't a "stable" library. Clients often only work with a very specific
 # commit and nothing else. To prevent using the wrong version, it is possible to
 # add a `ring-lrc` directory in the source. If present, that version will be used.
-IF(IS_DIRECTORY "${CMAKE_SOURCE_DIR}/ring-lrc/")
-   SET(LibRingClient_SRC "${CMAKE_SOURCE_DIR}/ring-lrc/")
+IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/ring-lrc/")
+   SET(LibRingClient_SRC "${CMAKE_CURRENT_SOURCE_DIR}/ring-lrc/")
    SET(ringclient_FOUND true)
 ELSE()
    FIND_PACKAGE ( LibRingClient QUIET CONFIG)
@@ -168,6 +168,6 @@ SET(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 ADD_CUSTOM_TARGET(dist
       COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
       | gzip > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.gz
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 FEATURE_SUMMARY(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
