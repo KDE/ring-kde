@@ -72,10 +72,12 @@ int main(int argc, char **argv)
 
       //Only start the application once
 #ifdef Q_OS_LINUX
+#ifndef DISABLE_KDBUS_SERVICE
       KDBusService service(KDBusService::Unique);
       QObject::connect(&service, &KDBusService::activateActionRequested, Cmd::instance(), &Cmd::slotActivateActionRequested);
       QObject::connect(&service, &KDBusService::activateRequested      , Cmd::instance(), &Cmd::slotActivateRequested      );
       QObject::connect(&service, &KDBusService::openRequested          , Cmd::instance(), &Cmd::slotOpenRequested          );
+#endif
 #endif
 
       //The app will have quitted by now if an instance already exist
