@@ -31,7 +31,6 @@
 #include <call.h>
 #include <callmodel.h>
 #include <contactmethod.h>
-#include "kspeechinterfacesingleton.h"
 #include "phonewindow.h"
 #include "view.h"
 
@@ -79,8 +78,8 @@ Accessibility* Accessibility::instance()
 void Accessibility::listCall()
 {
    if (CallModel::instance().getActiveCalls().size()>0) {
-      m_Speech->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance()->getActiveCalls().size()));
-      foreach (Call* call,CallModel::instance()->getActiveCalls()) {
+      m_Speech->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance().getActiveCalls().size()));
+      foreach (Call* call,CallModel::instance().getActiveCalls()) {
          m_Speech->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerContactMethod()->uri().isEmpty())?call->peerContactMethod()->uri():call->dialNumber())));
       }
    }
@@ -127,7 +126,7 @@ void Accessibility::currentCallDetails()
 ///Helper function is make code shorter
 void Accessibility::say(const QString &message)
 {
-   m_speech->say(message);
+   m_Speech->say(message);
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

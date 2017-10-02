@@ -459,7 +459,7 @@ TARGET_LINK_LIBRARIES(ring-kde
 
 IF (Qt5TextToSpeech_FOUND)
    TARGET_LINK_LIBRARIES(ring-kde
-      Qt5TextToSpeech
+      Qt5::TextToSpeech
    )
 ENDIF()
 
