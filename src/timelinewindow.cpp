@@ -127,9 +127,9 @@ TimelineWindow::TimelineWindow()
        QDir dir(QApplication::applicationDirPath());
        dir.cdUp();
        dir.cd("Resources/");
-       createGUI(dir.path()+"/ring-kdeui.rc");
+      QTimer::singleShot(0, [this, dir]() {createGUI(dir.path()+"/ring-kdeui.rc");});
     #else
-       createGUI();
+      QTimer::singleShot(0, [this]() {createGUI();});
     #endif
 
     updateTabIcons();

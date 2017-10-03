@@ -135,13 +135,16 @@ PhoneWindow::PhoneWindow(QWidget*)
    tabifyDockWidget(m_pCentralDW, m_pDock->bookmarkDock());
 
    updateTabIcons();
+
+   // Use a QTimer since it can enter in a recursion if there is a shortcut
+   // collision creating a warning popup parented on the main window.
    #ifdef Q_OS_MAC
       QDir dir(QApplication::applicationDirPath());
       dir.cdUp();
       dir.cd("Resources/");
-      createGUI(dir.path()+"/ring-kdeui.rc");
+      QTimer::singleShot(0, [this]() {createGUI(dir.path()+"/ring-kdeui.rc");});
    #else
-      createGUI();
+      QTimer::singleShot(0, [this]() {createGUI();});
    #endif
    selectCallTab();
 
