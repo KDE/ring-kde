@@ -56,6 +56,7 @@ int main(int argc, char **argv)
          QStringLiteral("http://www.ring.cx"),
          QStringLiteral("ring@gnu.org")
       );
+      about.setOrganizationDomain(QByteArray("kde.org"));
       about.setProgramLogo(QImage(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
 
       about.addAuthor( i18n( "Emmanuel Lepage-Vallée"          ), QString(), QStringLiteral("elv1313@gmail.com"                    ));

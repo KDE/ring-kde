@@ -386,11 +386,11 @@ void PhoneWindow::setAutoStart(bool value)
    Q_UNUSED(value)
 
    if (value) {
-      const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ring-kde/cx.ring.ring-kde.desktop"));
+      const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ring-kde/org.kde.ring-kde.desktop"));
       QFile f(path);
 
       if (f.exists()) {
-         if (f.copy(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/cx.ring.ring-kde.desktop"))
+         if (f.copy(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/org.kde.ring-kde.desktop"))
             ConfigurationSkeleton::setAutoStart(true);
       }
       else {
@@ -399,7 +399,7 @@ void PhoneWindow::setAutoStart(bool value)
 
    }
    else {
-      QFile f(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/cx.ring.ring-kde.desktop");
+      QFile f(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/autostart/org.kde.ring-kde.desktop");
       f.remove();
       ConfigurationSkeleton::setAutoStart(false);
    }

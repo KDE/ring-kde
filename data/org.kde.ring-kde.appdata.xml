@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2015 Emmanuel Lepage-Vallee <elv1313@gmail.com> -->
 <component type="desktop">
-  <id>cx.ring.ring-kde.desktop</id>
+  <id>org.kde.ring-kde.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Ring-KDE</name>
