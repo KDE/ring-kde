@@ -282,10 +282,11 @@ void RingApplication::initCollections()
 ///Parse command line arguments
 int RingApplication::newInstance()
 {
-   static bool wizardshown = false;
+   static bool displayWizard  = ConfigurationSkeleton::enableWizard() || ConfigurationSkeleton::showSplash();
+   const  bool displayOnStart = ConfigurationSkeleton::displayOnStart() && !startIconified();
 
    // The first run wizard
-   if ((!wizardshown) && (ConfigurationSkeleton::enableWizard() || ConfigurationSkeleton::showSplash())) {
+   if (displayOnStart && displayWizard) {
       // Also add this object
       engine()->rootContext()->setContextProperty(
          QStringLiteral("RingApplication"), this
@@ -298,7 +299,7 @@ int RingApplication::newInstance()
       auto wiz = new WelcomeDialog();
       wiz->show();
       ConfigurationSkeleton::setEnableWizard(false);
-      wizardshown = true;
+      displayWizard = false;
       return 0;
    }
 
@@ -314,7 +315,7 @@ int RingApplication::newInstance()
       else
          mw = RingApplication::timelineWindow();
 
-      if (ConfigurationSkeleton::displayOnStart() && !startIconified())
+      if (displayOnStart)
          mw->show();
       else
          mw->hide();
