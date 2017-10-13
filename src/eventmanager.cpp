@@ -51,7 +51,7 @@
 bool EventManager::m_HasFocus = false;
 
 //This code detect if the window is active, innactive or minimzed
-class PhoneWindowEvent : public QObject {
+class PhoneWindowEvent final : public QObject {
    Q_OBJECT
 public:
    PhoneWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {

@@ -187,7 +187,6 @@ SET(
    delegates/phonenumberdelegate.cpp
    delegates/delegatedropoverlay.cpp
    delegates/dialpaddelegate.cpp
-   delegates/imdelegate.cpp
    delegates/autocompletiondelegate.cpp
    delegates/autocompletiondelegate2.cpp
    delegates/toolbardelegate.cpp

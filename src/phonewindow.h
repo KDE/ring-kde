@@ -56,7 +56,7 @@ class SysTray;
  * @author Emmanuel Lepage <elv1313@gmail.com>
  * @version 1.4.1
 **/
-class PhoneWindow : public FancyMainWindow
+class PhoneWindow final : public FancyMainWindow
 {
 Q_OBJECT
 

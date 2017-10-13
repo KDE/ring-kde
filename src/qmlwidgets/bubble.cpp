@@ -25,7 +25,7 @@
 
 #include <QQuickWindow>
 
-class BubblePrivate
+class BubblePrivate final
 {
 public:
     int m_Align {Qt::AlignmentFlag::AlignLeft};

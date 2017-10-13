@@ -30,7 +30,7 @@ namespace Pages {
     class Account;
 }
 
-class LIB_EXPORT DlgAccount : public QWidget, public Ui::AccountDlg
+class LIB_EXPORT DlgAccount final : public QWidget, public Ui::AccountDlg
 {
    Q_OBJECT
 public:

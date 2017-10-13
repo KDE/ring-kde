@@ -52,7 +52,7 @@ class UserActionModel;
  * @author Emmanuel Lepage Vallee <elv1313@gmail.com>                   
  * @version 1.4.1
  */
-class View : public QWidget, public Ui::View
+class View final : public QWidget, public Ui::View
 {
    Q_OBJECT
    friend class EventManager;

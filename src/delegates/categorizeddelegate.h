@@ -23,7 +23,7 @@
 class QTreeView;
 
 ///CategorizedDelegate: A categorized tree delegate
-class CategorizedDelegate : public QStyledItemDelegate
+class CategorizedDelegate final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

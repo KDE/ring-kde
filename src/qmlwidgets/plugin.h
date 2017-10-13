@@ -20,7 +20,7 @@
 #include <QQmlExtensionPlugin>
 
 //![plugin]
-class RingQmlWidgets : public QQmlExtensionPlugin
+class RingQmlWidgets final : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "RingQmlWidgets")

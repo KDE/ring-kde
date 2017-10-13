@@ -26,7 +26,7 @@
 class TipManager;
 class Tip;
 
-class DlgPresence : public QWidget, public Ui_DlgPresence
+class DlgPresence final : public QWidget, public Ui_DlgPresence
 {
 Q_OBJECT
 public:

@@ -28,7 +28,7 @@
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class DialPadTip : public Tip
+class DialPadTip final : public Tip
 {
    Q_OBJECT
 public:

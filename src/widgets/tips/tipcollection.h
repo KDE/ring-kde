@@ -32,7 +32,7 @@ class ConnectionLostTip;
 class ConfTip;
 class SearchingTip;
 
-class TipCollection {
+class TipCollection final {
 public:
    //CanvasManager
    static Tip*       canvasObjectToTip(CanvasObjectManager::Object obj);

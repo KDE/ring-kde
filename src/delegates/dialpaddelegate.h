@@ -23,7 +23,7 @@
 class QPainter;
 class QTimer;
 
-class DialpadDelegate : public QObject
+class DialpadDelegate final : public QObject
 {
    Q_OBJECT
 

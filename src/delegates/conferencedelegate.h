@@ -24,7 +24,7 @@
 class CategorizedTreeView;
 
 ///ConferenceDelegate: Delegates for CallTreeItem
-class ConferenceDelegate : public QStyledItemDelegate
+class ConferenceDelegate final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

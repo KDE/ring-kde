@@ -24,7 +24,7 @@
 
 namespace Pages {
 
-class Security : public PageBase, public Ui_SecurityPage
+class Security final : public PageBase, public Ui_SecurityPage
 {
 Q_OBJECT
 public:

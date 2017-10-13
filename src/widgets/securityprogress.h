@@ -31,7 +31,7 @@ class QLineEdit;
 class SecurityProgress;
 class SecurityFlaw;
 
-class IssuesIcon : public QWidget {
+class IssuesIcon final : public QWidget {
    Q_OBJECT
 public:
    explicit IssuesIcon(QWidget* parent = nullptr);
@@ -62,7 +62,7 @@ Q_SIGNALS:
    void selectFlaw(const QModelIndex idx);
 };
 
-class SecurityLevelWidget : public QWidget
+class SecurityLevelWidget final : public QWidget
 {
    Q_OBJECT
 public:

@@ -25,7 +25,7 @@
 class KConfigDialog;
 
 ///DlgAccessibility: Display option for the visually impaired
-class DlgAccessibility : public QWidget, public Ui_DlgAccessibility
+class DlgAccessibility final : public QWidget, public Ui_DlgAccessibility
 {
 Q_OBJECT
 public:

@@ -34,7 +34,7 @@ class AutoCompletionDelegate2;
 class ContactMethod;
 class UserActionModel;
 
-class AutoCompletion : public ResizableTip {
+class AutoCompletion final : public ResizableTip {
    Q_OBJECT
 
 public:

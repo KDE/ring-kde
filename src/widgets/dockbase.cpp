@@ -31,7 +31,7 @@
 #include "proxies/filtertoplevelproxy.h"
 #include "klib/kcfg_settings.h"
 
-class ArrowGrabber : public QObject
+class ArrowGrabber final : public QObject
 {
    Q_OBJECT
 public:
@@ -69,7 +69,7 @@ private:
 };
 
 ///KeyPressEaterC: keygrabber
-class KeyPressEaterC : public QObject
+class KeyPressEaterC final : public QObject
 {
    Q_OBJECT
 public:

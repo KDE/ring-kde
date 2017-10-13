@@ -28,14 +28,14 @@ class QTimer;
 class QImage;
 
 ///DelegateDropOverlay: Fancy buttons for the call widget
-class DelegateDropOverlay : public QObject
+class DelegateDropOverlay final : public QObject
 {
    Q_OBJECT
 public:
    struct OverlayButton {
       QImage* m_pImage;
       Call::DropAction role;
-      virtual ~OverlayButton() {
+      ~OverlayButton() {
          delete m_pImage;
       }
       OverlayButton(QImage* i,Call::DropAction r) : m_pImage(i),role(r) {}

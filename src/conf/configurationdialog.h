@@ -52,7 +52,7 @@ class PlaceHolderWidget;
    A few things might be done a cleaner way by passing the handling
    to the skeleton like it has been done with codecs.
 */
-class ConfigurationDialog : public KConfigDialog
+class ConfigurationDialog final : public KConfigDialog
 {
 Q_OBJECT
 friend class PlaceHolderWidget;

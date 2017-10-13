@@ -23,7 +23,7 @@ class ViewContactDockPrivate;
 class ContactMethod;
 class Person;
 
-class ViewContactDock : public QWidget
+class ViewContactDock final : public QWidget
 {
     Q_OBJECT
 public:

@@ -171,8 +171,6 @@ void RecentDockPrivate::initUAM()
             UserActionModel::Context::ALL
         );
 
-        auto item = m_pQuickWidget->rootObject();
-
         m_pUserActionModel->setSelectionModel(m_pMenuSelectionModel);
     }
 }

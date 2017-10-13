@@ -27,7 +27,7 @@ class QStyledItemDelegate;
 
 namespace Pages {
 
-class Credentials : public PageBase, public Ui_CredentialsPage
+class Credentials final : public PageBase, public Ui_CredentialsPage
 {
 Q_OBJECT
 public:

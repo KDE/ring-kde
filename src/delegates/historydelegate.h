@@ -26,7 +26,7 @@ class DelegateDropOverlay;
 class TipAnimationWrapper;
 class Tip;
 
-class HistoryDelegate : public QStyledItemDelegate
+class HistoryDelegate final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

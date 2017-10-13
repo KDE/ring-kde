@@ -28,7 +28,7 @@
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class RemoveConferenceTip : public Tip
+class RemoveConferenceTip final : public Tip
 {
    Q_OBJECT
 public:

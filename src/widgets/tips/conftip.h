@@ -29,7 +29,7 @@ class QSvgRenderer;
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class ConfTip : public Tip
+class ConfTip final : public Tip
 {
    Q_OBJECT
 public:

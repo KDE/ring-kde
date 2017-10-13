@@ -25,7 +25,7 @@ class DelegateDropOverlay;
 class ContactMethodDelegate;
 class CategorizedTreeView          ;
 
-class ContactDelegate : public QStyledItemDelegate
+class ContactDelegate final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

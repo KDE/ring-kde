@@ -22,7 +22,7 @@
 
 class QWidget;
 
-class ToolbarDelegate : public QStyledItemDelegate
+class ToolbarDelegate final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

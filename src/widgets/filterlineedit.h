@@ -21,7 +21,7 @@
 #include <QtWidgets/QLineEdit>
 
 ///FilterLineEdit: An internalional filter string
-class FilterLineEdit : public QLineEdit
+class FilterLineEdit final : public QLineEdit
 {
 Q_OBJECT
 

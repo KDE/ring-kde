@@ -22,7 +22,7 @@
 
 #include <proxies/pollingproxy.h>
 
-class AccountInfoDelegate : public QStyledItemDelegate
+class AccountInfoDelegate final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

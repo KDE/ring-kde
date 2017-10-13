@@ -36,7 +36,7 @@ class Macro;
 
 //Implement all client dependant libringclient abstract interfaces
 
-class ColorDelegate : public Interfaces::AccountListColorizerI
+class ColorDelegate final : public Interfaces::AccountListColorizerI
 {
 public:
    explicit ColorDelegate(const QPalette& pal);
@@ -53,7 +53,7 @@ private:
    QColor   m_Red;
 };
 
-class KDEPresenceSerializationDelegate : public Interfaces::PresenceSerializerI
+class KDEPresenceSerializationDelegate final : public Interfaces::PresenceSerializerI
 {
 public:
    KDEPresenceSerializationDelegate():m_isLoaded(false){}
@@ -70,7 +70,7 @@ private:
    mutable bool m_isLoaded;
 };
 
-class KDEShortcutDelegate : public Interfaces::ShortcutCreatorI
+class KDEShortcutDelegate final : public Interfaces::ShortcutCreatorI
 {
 public:
    virtual ~KDEShortcutDelegate(){}

@@ -31,7 +31,7 @@ class QSvgRenderer;
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class RingingTip : public Tip
+class RingingTip final : public Tip
 {
    Q_OBJECT
 public:

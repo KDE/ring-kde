@@ -31,7 +31,7 @@ class KConfigDialog;
 
 
 ///DlgVideo: video preferences for Ring
-class DlgVideo : public QWidget, public Ui_DlgVideoBase
+class DlgVideo final : public QWidget, public Ui_DlgVideoBase
 {
 Q_OBJECT
 public:

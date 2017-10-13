@@ -24,7 +24,7 @@
 
 namespace Pages {
 
-class Advanced : public PageBase, public Ui_AdvancedPage
+class Advanced final : public PageBase, public Ui_AdvancedPage
 {
 Q_OBJECT
 public:

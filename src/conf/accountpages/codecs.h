@@ -24,7 +24,7 @@
 
 namespace Pages {
 
-class Codecs : public PageBase, public Ui_CodecPage
+class Codecs final : public PageBase, public Ui_CodecPage
 {
 Q_OBJECT
 public:

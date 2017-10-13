@@ -30,7 +30,7 @@ class QQmlEngine;
 
 namespace Pages {
 
-class Account : public PageBase, public Ui::Tabs
+class Account final : public PageBase, public Ui::Tabs
 {
 Q_OBJECT
 public:

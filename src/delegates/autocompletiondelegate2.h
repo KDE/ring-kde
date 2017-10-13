@@ -20,7 +20,7 @@
 
 #include <QtWidgets/QStyledItemDelegate>
 
-class AutoCompletionDelegate2 : public QStyledItemDelegate
+class AutoCompletionDelegate2 final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

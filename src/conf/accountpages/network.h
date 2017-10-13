@@ -24,7 +24,7 @@
 
 namespace Pages {
 
-class Network : public PageBase, public Ui_NetworkPage
+class Network final : public PageBase, public Ui_NetworkPage
 {
 Q_OBJECT
 public:

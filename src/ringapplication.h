@@ -41,7 +41,7 @@ class CanvasIndicator;
 class Call;
 
 ///RingApplication: Main application
-class RingApplication : public QApplication
+class RingApplication final : public QApplication
 {
   Q_OBJECT
 

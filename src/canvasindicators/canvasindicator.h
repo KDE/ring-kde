@@ -20,7 +20,7 @@
 #include <QQmlExtensionPlugin>
 
 //![plugin]
-class CanvasIndicator : public QObject//QQmlExtensionPlugin
+class CanvasIndicator final : public QObject//QQmlExtensionPlugin
 {
     Q_OBJECT
 //     Q_PLUGIN_METADATA(IID "PhotoSelectorPlugin")

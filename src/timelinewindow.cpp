@@ -159,6 +159,7 @@ TimelineWindow::~TimelineWindow()
 
 void TimelineWindow::closeEvent(QCloseEvent *event)
 {
+    Q_UNUSED(event)
     emit unregisterWindow();
 }
 

@@ -29,7 +29,7 @@ class QMenu;
 class QIcon;
 
 ///SysTray: The old system try, should be totally replaced by a plasmoid some day
-class SysTray : public KStatusNotifierItem
+class SysTray final : public KStatusNotifierItem
 {
 Q_OBJECT
 

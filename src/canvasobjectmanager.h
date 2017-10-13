@@ -24,7 +24,7 @@
 //Qt
 class QTimer;
 
-class CanvasObjectManager : public QObject {
+class CanvasObjectManager final : public QObject {
    Q_OBJECT
 
 public:

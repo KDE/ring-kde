@@ -28,7 +28,7 @@ class KConfigDialog;
 /**
 	@author Jérémy Quentin <jeremy.quentin@gmail.com>
 */
-class DlgDisplay : public QWidget, public Ui_DlgDisplayBase
+class DlgDisplay final : public QWidget, public Ui_DlgDisplayBase
 {
 Q_OBJECT
 public:

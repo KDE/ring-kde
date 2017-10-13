@@ -29,7 +29,7 @@
 class QPainter;
 
 ///A tip to be passed to the TipLoader
-class ConnectionLostTip : public Tip
+class ConnectionLostTip final : public Tip
 {
    Q_OBJECT
 public:

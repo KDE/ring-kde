@@ -25,7 +25,7 @@
 class ImageProviderPrivate;
 class Call;
 
-class ImageProvider : public QQuickImageProvider
+class ImageProvider final : public QQuickImageProvider
 {
 public:
     explicit ImageProvider();

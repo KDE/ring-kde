@@ -27,7 +27,7 @@
 #include <callmodel.h>
 #include <video/previewmanager.h>
 
-struct FrameBuffer {
+struct FrameBuffer final {
     Video::Renderer* m_pRenderer {nullptr};
     int              m_Skip {3};
     char*            m_pFrameCopy {nullptr};
@@ -35,7 +35,7 @@ struct FrameBuffer {
     Video::Frame     m_Frame;
 };
 
-class ImageProviderPrivate : public QObject
+class ImageProviderPrivate final : public QObject
 {
     Q_OBJECT
 public:

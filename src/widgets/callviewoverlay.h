@@ -24,7 +24,7 @@
 class Call;
 
 ///CallViewOverlay: Display overlay on top of the call tree
-class CallViewOverlay : public QWidget, public Ui_Transfer {
+class CallViewOverlay final : public QWidget, public Ui_Transfer {
    Q_OBJECT
 
 public:

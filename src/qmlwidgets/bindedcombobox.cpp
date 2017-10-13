@@ -21,7 +21,7 @@
 #include <QQmlContext>
 #include <QQuickWindow>
 
-class BindedComboBoxPrivate : public QObject
+class BindedComboBoxPrivate final : public QObject
 {
     Q_OBJECT
 public:

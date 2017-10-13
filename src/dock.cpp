@@ -49,7 +49,7 @@
 #include <proxies/deduplicateproxy.h>
 #include <proxies/roletransformationproxy.h>
 
-class BookmarkSortFilterProxyModel : public QSortFilterProxyModel
+class BookmarkSortFilterProxyModel final : public QSortFilterProxyModel
 {
    Q_OBJECT
 public:

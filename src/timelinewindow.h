@@ -28,7 +28,7 @@ class DockBase;
 class ContactMethod;
 class Person;
 
-class TimelineWindow : public FancyMainWindow
+class TimelineWindow final : public FancyMainWindow
 {
     Q_OBJECT
 

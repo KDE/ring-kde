@@ -22,7 +22,7 @@
 
 class CategorizedTreeView;
 
-class ContactMethodDelegate : public QStyledItemDelegate
+class ContactMethodDelegate final : public QStyledItemDelegate
 {
    Q_OBJECT
 public:

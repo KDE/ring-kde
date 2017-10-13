@@ -24,7 +24,7 @@
 
 namespace Pages {
 
-class Basic : public PageBase, public Ui_BasicPage
+class Basic final : public PageBase, public Ui_BasicPage
 {
 Q_OBJECT
 public:

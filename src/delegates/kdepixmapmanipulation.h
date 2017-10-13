@@ -25,7 +25,7 @@
 class Person;
 
 
-class KDEPixmapManipulation : public QObject ,public Interfaces::PixmapManipulatorI {
+class KDEPixmapManipulation final : public QObject ,public Interfaces::PixmapManipulatorI {
    Q_OBJECT
 public:
    KDEPixmapManipulation();

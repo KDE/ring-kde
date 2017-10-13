@@ -28,7 +28,7 @@
 /**
    @author Jérémy Quentin <jeremy.quentin@gmail.com>
 */
-class DlgAudio : public QWidget, public Ui_DlgAudioBase
+class DlgAudio final : public QWidget, public Ui_DlgAudioBase
 {
 Q_OBJECT
 public:

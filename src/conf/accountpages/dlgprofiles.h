@@ -27,7 +27,7 @@ class CollectionInterface;
 class Person;
 class QQmlEngine;
 
-class DlgProfiles : public QQuickWidget
+class DlgProfiles final : public QQuickWidget
 {
 Q_OBJECT
 public:

@@ -39,7 +39,7 @@ class AutoCompletionDelegate;
 class CategorizedDelegate;
 class CollectionInterface;
 
-class DlgAddressBook : public QWidget, public Ui_DlgAddressBookBase
+class DlgAddressBook final : public QWidget, public Ui_DlgAddressBookBase
 {
 Q_OBJECT
 public:

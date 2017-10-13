@@ -28,7 +28,7 @@
 /**
 	@author Jérémy Quentin <jeremy.quentin@gmail.com>
 */
-class DlgGeneral : public QWidget, public Ui_DlgGeneralBase
+class DlgGeneral final : public QWidget, public Ui_DlgGeneralBase
 {
 Q_OBJECT
 public:
