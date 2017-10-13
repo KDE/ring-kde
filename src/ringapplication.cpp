@@ -387,43 +387,53 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative->setDeclarativeEngine(e);
       m_pDeclarative->setupBindings();
 
-      QML_SINGLETON( CallModel                );
-      QML_SINGLETON( CategorizedHistoryModel  );
-      QML_SINGLETON( AccountModel             );
-      QML_SINGLETON( CategorizedContactModel  );
-      QML_SINGLETON( CategorizedBookmarkModel );
-      QML_SINGLETON( NameDirectory            );
-      QML_SINGLETON( PeersTimelineModel       );
-      QML_SINGLETON( NumberCategoryModel      );
-      QML_SINGLETON( PhoneDirectoryModel      );
-      QML_SINGLETON( RecentFileModel          );
+      try {
+         QML_SINGLETON( CallModel                );
+         QML_SINGLETON( CategorizedHistoryModel  );
+         QML_SINGLETON( AccountModel             );
+         QML_SINGLETON( CategorizedContactModel  );
+         QML_SINGLETON( CategorizedBookmarkModel );
+         QML_SINGLETON( NameDirectory            );
+         QML_SINGLETON( PeersTimelineModel       );
+         QML_SINGLETON( NumberCategoryModel      );
+         QML_SINGLETON( PhoneDirectoryModel      );
+         QML_SINGLETON( RecentFileModel          );
 
-      QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
-      QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());
-      QML_ADD_OBJECT(VideoChannelSelectionModel   , &Video::ConfigurationProxy::channelSelectionModel   ());
-      QML_ADD_OBJECT(VideoDeviceSelectionModel    , &Video::ConfigurationProxy::deviceSelectionModel    ());
+         QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
+         QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());
+         QML_ADD_OBJECT(VideoChannelSelectionModel   , &Video::ConfigurationProxy::channelSelectionModel   ());
+         QML_ADD_OBJECT(VideoDeviceSelectionModel    , &Video::ConfigurationProxy::deviceSelectionModel    ());
+         { using namespace Media;
+            QML_SINGLETON( RecordingModel        );
+            QML_TYPE     ( Recording             );
+            QML_TYPE     ( TextRecording         );
 
-      { using namespace Media;
-         QML_SINGLETON( RecordingModel        );
-         QML_TYPE     ( Recording             );
-         QML_TYPE     ( TextRecording         );
+         }
 
+         { using namespace Video;
+            QML_SINGLETON( PreviewManager        );
+            QML_TYPE     ( SourceModel           );
+         }
+
+         qmlRegisterUncreatableType<::Media::Media>(
+            AppName, 1,0, "Media", QStringLiteral("cannot be instanciated")
+         );
+
+         auto im = new RingingImageProvider();
+         e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
+         e->addImportPath(QStringLiteral("qrc:/"));
+
+         VideoWidget3::initProvider();
       }
-
-      { using namespace Video;
-         QML_SINGLETON( PreviewManager        );
-         QML_TYPE     ( SourceModel           );
+      catch(char const* e) {
+         qDebug() << "Failed to connect to the daemon";
+         sync();
+         ::exit(1);
       }
-
-      qmlRegisterUncreatableType<::Media::Media>(
-         AppName, 1,0, "Media", QStringLiteral("cannot be instanciated")
-      );
-
-      auto im = new RingingImageProvider();
-      e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
-      e->addImportPath(QStringLiteral("qrc:/"));
-
-      VideoWidget3::initProvider();
+      catch(...) {
+         qDebug() << "Failed to connect to the daemon with an unknown problem";
+         ::exit(2);
+      }
    }
    return e;
 }
