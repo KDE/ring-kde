@@ -437,10 +437,7 @@
       <li xml:lang="zh-TW">智慧型手機號碼自動完成</li>
     </ul>
   </description>
-  <screenshots>
-    <!--TODO-->
-  </screenshots>
-  <url type="homepage">www.ring.cx</url>
+  <url type="homepage">https://www.ring.cx</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=ring-kde</url>
   <project_group>KDE</project_group>
   <provides>
