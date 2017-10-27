@@ -28,6 +28,11 @@ ADD_DEFINITIONS(
    -Wno-error=deprecated-declarations
 )
 
+# It doesn't work in sandboxes
+IF (NOT ENABLE_SINGLE_INSTANCE)
+   ADD_DEFINITIONS(-DDISABLE_KDBUS_SERVICE=1)
+ENDIF()
+
 # Enable some useful warnings
 ADD_DEFINITIONS(
    -Wall
