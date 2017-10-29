@@ -80,6 +80,7 @@ target_link_libraries( libtimeline
    KF5::WidgetsAddons
    KF5::ConfigCore
    KF5::ConfigGui
+   KF5::Kirigami2
 )
 
 SET( libtimeline_LIB_HDRS

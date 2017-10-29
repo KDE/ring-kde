@@ -459,6 +459,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::NotifyConfig
   KF5::GlobalAccel
   KF5::Declarative
+  KF5::Kirigami2
 )
 
 IF (Qt5TextToSpeech_FOUND)

@@ -368,6 +368,10 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pCanvasIndicator = new CanvasIndicator;
       m_pCanvasIndicator->registerTypes("CanvasIndicator");
 
+#ifdef Q_OS_ANDROID
+      KirigamiPlugin::getInstance().registerTypes();
+#endif
+
       QML_TYPE( Account           )
       QML_TYPE( const Account     )
       QML_TYPE( Call              )

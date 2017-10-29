@@ -19,241 +19,257 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+// import org.kde.kirigami 2.0 as Kirigami
 
 Item {
     id: componentItem
     width: parent.width
-    height: 50
+    height: computeHeight()
 
-    property double pixmapHeight: 46
+    property bool hasMessage: hasActiveCall || unreadTextMessageCount > 0 || isRecording || hasActiveVideo
 
-    Rectangle {
-        id: highlight
-        anchors.fill: parent
-        color: "red"
-        visible: false
-        opacity: 0
+    function computeHeight() {
+        if (hasMessage)
+            return 7*fontMetrics.height + 14
+
+        return 5*fontMetrics.height + 13
     }
 
-    RowLayout {
-        anchors.fill: parent
-        Item {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.topMargin: 2
-            anchors.leftMargin: 2
-            height: componentItem.pixmapHeight
-            width:  componentItem.pixmapHeight
-            Rectangle {
-                radius: 5
-                color: "white"
-                opacity: 0.05
-                anchors.fill: parent
-            }
+    function thirdRowMessage() {
+        if (hasActiveVideo)
+            return "Video in progress"
+        else if (hasActiveCall)
+            return "Call in progress"
+        else if (unreadTextMessageCount > 0)
+            return unreadTextMessageCount + " new messages"
 
-            PixmapWrapper {
-                anchors.fill: parent
-                pixmap: decoration
-            }
+        return ""
+    }
+
+    Rectangle {
+        width: 1
+        color: inactivePalette.text
+        height: parent.height
+        x: 10
+    }
+
+    Rectangle {
+        radius: 99
+        color: activePalette.base
+        border.width: 1
+        border.color: inactivePalette.text
+        width: 16
+        height: 16
+        y: 10
+        x: 3 // (16 - 10) / 2
+
+        Rectangle {
+            id: demandsAttention
+            radius: 99
+            color: inactivePalette.text
+            anchors.centerIn: parent
+            height: 8
+            width: 8
+        }
+    }
+
+    Rectangle {
+        border.color: inactivePalette.text
+        border.width: 1
+        anchors.fill: parent
+
+        anchors.topMargin: 5
+        anchors.bottomMargin: 5
+        anchors.leftMargin: 30
+        anchors.rightMargin: 40
+
+
+        color: "transparent"
+        radius: 10
+
+        Rectangle {
+            id: highlight
+            anchors.fill: parent
+            color: "red"
+            visible: false
+            opacity: 0
         }
 
         ColumnLayout {
-            anchors.verticalCenter: parent.verticalCenter
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Item {
-                height: 1
-                Layout.preferredHeight: 1
-                Layout.minimumHeight: 1
-                Layout.maximumHeight: 1
+            anchors.fill: parent
+            RowLayout {
+                Layout.fillWidth: true
+                height: 3*fontMetrics.height
+
+                Item {
+                    anchors.margins: 4
+
+                    height: parent.height
+                    width:  parent.height
+
+                    PixmapWrapper {
+                        anchors.fill: parent
+                        pixmap: decoration
+                    }
+                }
+
+                Text {
+                    text: number.length == 40 ? "Unknown" : name
+                    clip: true
+                    font.bold : true
+                    Layout.fillWidth: true
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: componentItem.ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
+                }
             }
+
+            Rectangle {
+                color: inactivePalette.text
+                height:1
+                Layout.fillWidth: true
+            }
+
             Text {
-                text: name
-                font.bold : true
-                color: componentItem.ListView.isCurrentItem ?
-                    activePalette.highlightedText : activePalette.text
-            }
-            Item {
-                height: 1
-                Layout.preferredHeight: 1
-                Layout.minimumHeight: 1
-                Layout.maximumHeight: 1
-            }
-            Text {
+                Layout.fillWidth: true
                 text: number.length == 40 ? "RingId" : number
+
+                height: 2*fontMetrics.height
+                leftPadding: 10
+
+                verticalAlignment: Text.AlignVCenter
                 color: componentItem.ListView.isCurrentItem ?
                     activePalette.highlightedText : inactivePalette.text
             }
-            Item {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-            }
-            Item {
-                height: 1
-                Layout.preferredHeight: 1
-                Layout.minimumHeight: 1
-                Layout.maximumHeight: 1
-            }
-        }
-    }
-
-    // Allow to set/remove bookmarks
-    Image {
-        id: bookmarkSwitch
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.rightMargin: 1
-        anchors.topMargin: 3
-        height: 16
-        width: 16
-        source: isBookmarked ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-        z: 100
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                mouse.accepted = true
-                isBookmarked = !isBookmarked
-                bookmarkSwitch.source = isBookmarked ?
-                    "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-            }
-        }
-    }
-
-    // Add the other indicators in the bottom right
-    RowLayout {
-        height: 16
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: 3
-        anchors.bottomMargin: 3
-
-        Rectangle {
-            id: hasActiveVideoBox
-            height: 16
-            radius: 3
-            color: "#b93030"
-            opacity: 0.33
-            width: 20
-            visible: hasActiveVideo
-
-            Image {
-                anchors.horizontalCenter: parent.horizontalCenter
-                height: 16
-                width:  16
-                source: "image://icon/camera-on"
-            }
-        }
-
-        Rectangle {
-            id: isRecordingBox
-            height: 16
-            radius: 3
-            color: "#b93030"
-            opacity: 0.33
-            width: 20
-            visible: isRecording
-
-            Image {
-                height: 16
-                width:  16
-                anchors.horizontalCenter: parent.horizontalCenter
-                source: "image://icon/media-record"
-            }
-        }
-
-        Rectangle {
-            id: hasActiveCallBox
-            height: 16
-            radius: 3
-            color: "#0b4714"
-            width: 20
-            opacity: 0.33
-            visible: hasActiveCall
-
-            Image {
-                height: 16
-                width:  16
-                anchors.horizontalCenter: parent.horizontalCenter
-                source: "image://icon/call-start"
-            }
-        }
-
-        Item {
-            height: 16
-            width: 40
-            visible: unreadTextMessageCount > 0
 
             Rectangle {
-                anchors.fill: parent
-                radius: 3
-                color: "#a6a6b9"
-                opacity: 0.33
-            }
-
-            Image {
-                height: 16
-                width:  16
-                source: "image://icon/folder-mail"
+                color: inactivePalette.text
+                height:1
+                Layout.fillWidth: true
+                visible: componentItem.hasMessage
             }
 
             Text {
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                text: ""+unreadTextMessageCount
-                color: "white"
+                Layout.fillWidth: true
+                visible: componentItem.hasMessage
+                text: thirdRowMessage()
+
+                height: 2*fontMetrics.height
+                leftPadding: 10
+
+                verticalAlignment: Text.AlignVCenter
+                color: componentItem.ListView.isCurrentItem ?
+                    activePalette.highlightedText : inactivePalette.text
+            }
+
+            Item {
+                Layout.fillHeight: true
             }
         }
-    }
 
-    //FIXME temporary polling until all the objects are correctly in sync
-    Timer {
-        interval: 5000
-        running: true
-        repeat: true
-        onTriggered: {
-            isRecordingBox.visible    = isRecording
-            hasActiveVideoBox.visible = hasActiveVideo
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        z: 99
-        onClicked: {
-
-            if (mouse.button == Qt.LeftButton) {
-                recentView.currentIndex = index
-                contactMethodSelected(object)
-            }
-            else if (mouse.button == Qt.RightButton)
-                contextMenuRequested(object, index)
-        }
-    }
-
-    StateGroup {
-        states: [
-            State {
-                name: "demandsAttention"
-                when: unreadTextMessageCount > 0
-                PropertyChanges {
-                    target: highlight
-                    opacity: 0.1
-                    visible: true
+        // Allow to set/remove bookmarks
+        Image {
+            id: bookmarkSwitch
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.rightMargin: 1
+            anchors.topMargin: 3
+            height: 16
+            width: 16
+            source: isBookmarked ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+            z: 100
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    mouse.accepted = true
+                    isBookmarked = !isBookmarked
+                    bookmarkSwitch.source = isBookmarked ?
+                        "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
                 }
             }
-        ]
+        }
 
-        transitions: [
-            Transition {
-                to: "demandsAttention"
-                NumberAnimation {
-                    properties: "opacity"
-                    easing.type: Easing.InQuad
-                    duration: 1500
-                    loops: Animation.Infinite
+        // Add the other indicators in the bottom right
+        RowLayout {
+            height: 16
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: 3
+            anchors.bottomMargin: 3
+
+            Rectangle {
+                id: isRecordingBox
+                height: 16
+                radius: 3
+                color: "#b93030"
+                opacity: 0.33
+                width: 20
+                visible: isRecording
+
+                Image {
+                    height: 16
+                    width:  16
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    source: "image://icon/media-record"
                 }
             }
-        ]
+        }
+
+        //FIXME temporary polling until all the objects are correctly in sync
+        Timer {
+            interval: 5000
+            running: true
+            repeat: true
+            onTriggered: {
+                isRecordingBox.visible = isRecording
+            }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            z: 99
+            onClicked: {
+
+                if (mouse.button == Qt.LeftButton) {
+                    recentView.currentIndex = index
+                    contactMethodSelected(object)
+                }
+                else if (mouse.button == Qt.RightButton)
+                    contextMenuRequested(object, index)
+            }
+        }
+
+        StateGroup {
+            states: [
+                State {
+                    name: "demandsAttention"
+                    when: unreadTextMessageCount > 0
+                    PropertyChanges {
+                        target: highlight
+                        opacity: 0.1
+                        visible: true
+                    }
+
+                    PropertyChanges {
+                        target: demandsAttention
+                        color: "red"
+                        opacity: 0.1
+                    }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    to: "demandsAttention"
+                    NumberAnimation {
+                        properties: "opacity"
+                        easing.type: Easing.InQuad
+                        duration: 1500
+                        loops: Animation.Infinite
+                    }
+                }
+            ]
+        }
     }
 }

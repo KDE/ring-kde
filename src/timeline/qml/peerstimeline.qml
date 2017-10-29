@@ -49,10 +49,12 @@ Rectangle {
 
     Component {
         id: contactDelegate
-        ContactMethodDelegate {
-            height: 4*fontMetrics.height
-            pixmapHeight: 4*fontMetrics.height - 4
-        }
+        ContactMethodDelegate {}
+    }
+
+    Component {
+        id: sectionDelegate
+        PeersTimelineCategories {}
     }
 
     // To allow multiple places to set the contact method without knowing
@@ -147,8 +149,23 @@ Rectangle {
                 anchors.fill: parent
                 highlightMoveVelocity: Infinity //HACK
                 delegate: contactDelegate
-                highlight: Rectangle {
-                    color: activePalette.highlight
+                section.delegate: sectionDelegate
+                section.property: "formattedLastUsed" // indexedLastUsed
+                highlight: Item {
+
+                    anchors.topMargin: 5
+                    anchors.bottomMargin: 5
+                    anchors.leftMargin: 30
+                    anchors.rightMargin: 40
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 5
+                        anchors.leftMargin: 30
+                        anchors.rightMargin: 40
+                        radius: 10
+                        color: activePalette.highlight
+                    }
                 }
                 model: PeersTimelineModel.deduplicatedTimelineModel
 

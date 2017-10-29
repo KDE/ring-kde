@@ -19,6 +19,7 @@
         <file alias="GroupHeader.qml">qml/groupheader.qml</file>
         <file alias="GroupFooter.qml">qml/groupfooter.qml</file>
         <file alias="ContactMethodDelegate.qml">qml/contactmethoddelegate.qml</file>
+        <file alias="PeersTimelineCategories.qml">qml/peerstimelinecategories.qml</file>
         <file alias="Addresses.qml">qml/addresses.qml</file>
         <file alias="PhoneNumbers.qml">qml/phonenumbers.qml</file>
         <file alias="SearchDelegate.qml">qml/searchdelegate.qml</file>
