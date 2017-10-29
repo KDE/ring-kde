@@ -25,7 +25,7 @@ class Person;
 
 class PhotoSelectorPrivate;
 
-class PhotoSelector : public QObject
+class Q_DECL_EXPORT PhotoSelector : public QObject
 {
     Q_OBJECT
 

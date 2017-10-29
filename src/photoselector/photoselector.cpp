@@ -28,7 +28,7 @@
 // Ring
 #include <person.h>
 
-class PhotoSelectorPrivate
+class PhotoSelectorPrivate final
 {
 public:
     QRect m_SourceRect;
