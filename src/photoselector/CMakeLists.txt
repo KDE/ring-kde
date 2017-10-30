@@ -30,7 +30,6 @@ FIND_PACKAGE(Qt5 CONFIG REQUIRED
 
 FIND_PACKAGE(KF5 REQUIRED COMPONENTS
     I18n
-    Init
     Config
     ConfigWidgets
 )

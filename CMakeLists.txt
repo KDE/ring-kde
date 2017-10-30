@@ -113,7 +113,6 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
   GuiAddons
   DBusAddons
   I18n
-  Init
   WindowSystem
   XmlGui
   Notifications
