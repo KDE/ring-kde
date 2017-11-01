@@ -116,7 +116,7 @@ void FancyMainWindow::updateTabIcons()
 //             }
 
             if (isMainToolbar)
-                bar->setIconSize(QSize(64, 64));
+                bar->setIconSize(QSize(48, 48));
             else
                 bar->setIconSize({});
 

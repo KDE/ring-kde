@@ -1,8 +1,8 @@
 QTabBar::tab {
     font: 0.1px;
     color: transparent;
-    height: 74px;
-    max-height: 76px;
+    height: 58px;
+    max-height: 58px;
     padding-bottom:8px;
     background-color: transparent;
 }
