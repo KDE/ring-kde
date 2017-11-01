@@ -79,7 +79,6 @@ bool FancyMainWindow::eventFilter(QObject *obj, QEvent *event)
 ///Qt does not support dock icons by default, this is an hack around this
 void FancyMainWindow::updateTabIcons()
 {
-    qDebug() << "\n\n\nUPDATE" << m_IsActive;
     if (!m_IsActive)
         return;
 
@@ -97,7 +96,6 @@ void FancyMainWindow::updateTabIcons()
             const bool isVertical = bar->height() > bar->width();
             const bool isMainToolbar = (dockOptions()&QMainWindow::VerticalTabs)
                 && pt.x() < 20 && isVertical;
-            qDebug() << "BAR" << bar << isMainToolbar;
 
             // Attach an event filter
 //             if (isMainToolbar && !m_hEventFilters.contains(bar)) {
