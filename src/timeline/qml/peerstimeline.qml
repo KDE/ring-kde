@@ -21,6 +21,7 @@ import QtQuick.Controls 2.0 as Controls2
 import Ring 1.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 import RingQmlWidgets 1.0
 
