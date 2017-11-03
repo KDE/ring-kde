@@ -89,7 +89,6 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
 
 ViewContactDock::~ViewContactDock()
 {
-    Q_ASSERT(false);
     //FIXME https://bugreports.qt.io/browse/QTBUG-40745
     layout()->removeWidget(d_ptr->m_pQuickWidget);
     d_ptr->m_pQuickWidget->setVisible(false);
