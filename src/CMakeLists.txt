@@ -165,6 +165,9 @@ ADD_SUBDIRECTORY( wizard )
 # Build the QML based interactive video canvas
 ADD_SUBDIRECTORY( callview )
 
+# Build the advanced phone dialer
+ADD_SUBDIRECTORY( dialview )
+
 # Build the views and widgets related to the social timeline feature
 ADD_SUBDIRECTORY( timeline )
 
@@ -433,6 +436,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   libkring
   libwizard
   libcallview
+  dialview
   libtimeline
   libphotoselector
   libcanvasindicator

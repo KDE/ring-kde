@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Emmanuel Lepage Vallee                          *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,38 +17,20 @@
  **************************************************************************/
 #pragma once
 
-#include "fancymainwindow.h"
+#include <QtWidgets/QDockWidget>
 
-class RecentDock;
-class ContactMethod;
-class ViewContactDock;
-class DockBase;
-class DialDock;
-#include "timeline/viewcontactdock.h"
+class DialDockPrivate;
 
-class ContactMethod;
-class Person;
-
-class TimelineWindow final : public FancyMainWindow
+class DialDock final : public QDockWidget
 {
     Q_OBJECT
-
 public:
-    explicit TimelineWindow();
-    virtual ~TimelineWindow();
-
-    void setCurrentPage(ViewContactDock::Pages page);
-
-protected:
-    virtual void closeEvent(QCloseEvent *event) override;
+    explicit DialDock(QWidget* parent = nullptr);
+    virtual ~DialDock();
 
 private:
-    RecentDock* m_pPeersTimeline;
-    ViewContactDock* m_pViewContact {nullptr};
-    DialDock* m_pDialDock {nullptr};
-    DockBase* m_pContactCD;
-
-public Q_SLOTS:
-    void viewContact(ContactMethod* cm);
-    void viewPerson(Person* p);
+    DialDockPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(DialDock)
 };
+
+Q_DECLARE_METATYPE(DialDock*)

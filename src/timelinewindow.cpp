@@ -29,6 +29,7 @@
 
 // Ring
 #include "contactmethod.h"
+#include "dialview/dialdock.h"
 #include "timeline/recentdock.h"
 #include "actioncollection.h"
 #include "widgets/dockbase.h"
@@ -73,6 +74,12 @@ TimelineWindow::TimelineWindow()
     m_pViewContact->setObjectName(QStringLiteral("viewContact"));
     m_pViewContact->setWindowTitle(i18nc("View contact tab","View contact"));
     setCentralWidget(m_pViewContact);
+
+    m_pDialDock = new DialDock(this);
+    m_pDialDock->setObjectName(QStringLiteral("dialDock"));
+    m_pDialDock->setWindowTitle(i18n("Call manager"));
+    addDockWidget( Qt::LeftDockWidgetArea, m_pDialDock, Qt::Vertical);
+    connect(m_pDialDock, &QDockWidget::visibilityChanged, this, &FancyMainWindow::updateTabIcons);
 
     //Timeline dock
     m_pPeersTimeline = new RecentDock(this);
@@ -121,6 +128,7 @@ TimelineWindow::TimelineWindow()
     });
 
     connect(m_pContactCD , &QDockWidget::visibilityChanged, this, &FancyMainWindow::updateTabIcons);
+    tabifyDockWidget(m_pPeersTimeline, m_pDialDock  );
     tabifyDockWidget(m_pPeersTimeline, m_pContactCD );
 
     #ifdef Q_OS_MAC

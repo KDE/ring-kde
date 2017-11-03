@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Emmanuel Lepage Vallee                          *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,40 +15,46 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "dialdock.h"
 
-#include "fancymainwindow.h"
+#include <QQmlApplicationEngine>
+#include <QQuickPaintedItem>
+#include <QQuickWidget>
+#include <QQmlEngine>
+#include <QtGui/QPixmap>
+#include <QtGui/QPainter>
+#include <QtGui/QIcon>
+#include <QtWidgets/QHBoxLayout>
+#include <QtCore/QMimeData>
+#include <QtCore/QTimer>
+#include <QtCore/QSortFilterProxyModel>
+#include <QQmlContext>
 
-class RecentDock;
-class ContactMethod;
-class ViewContactDock;
-class DockBase;
-class DialDock;
-#include "timeline/viewcontactdock.h"
+#include <../ringapplication.h>
+#include "peerstimelinemodel.h"
+#include <contactmethod.h>
+#include <person.h>
+#include <call.h>
+#include <callmodel.h>
 
-class ContactMethod;
-class Person;
-
-class TimelineWindow final : public FancyMainWindow
-{
-    Q_OBJECT
-
+class DialDockPrivate {
 public:
-    explicit TimelineWindow();
-    virtual ~TimelineWindow();
-
-    void setCurrentPage(ViewContactDock::Pages page);
-
-protected:
-    virtual void closeEvent(QCloseEvent *event) override;
-
-private:
-    RecentDock* m_pPeersTimeline;
-    ViewContactDock* m_pViewContact {nullptr};
-    DialDock* m_pDialDock {nullptr};
-    DockBase* m_pContactCD;
-
-public Q_SLOTS:
-    void viewContact(ContactMethod* cm);
-    void viewPerson(Person* p);
+    QQuickWidget* m_pQuickWidget;
 };
+
+DialDock::DialDock(QWidget* parent) :
+    QDockWidget(parent), d_ptr(new DialDockPrivate)
+{
+    d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
+    setWidget(d_ptr->m_pQuickWidget);
+
+    d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    d_ptr->m_pQuickWidget->setSource(QUrl(QStringLiteral("qrc:/DialView.qml")));
+}
+
+DialDock::~DialDock()
+{
+    delete d_ptr;
+}
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

@@ -66,12 +66,13 @@ bool FancyMainWindow::eventFilter(QObject *obj, QEvent *event)
       case QEvent::Resize:
       case QEvent::Show:
       case QEvent::Move:
-         return KXmlGuiWindow::eventFilter(obj, event);
+        button->resize(tabbar->width(), tabbar->width());
+        button->move(tabbar->x(), tabbar->height() - tabbar->width());
+        button->raise();
+        return KXmlGuiWindow::eventFilter(obj, event);
    }
    #pragma GCC diagnostic pop
 
-   button->resize(tabbar->width(), tabbar->width());
-   button->move(tabbar->x(), tabbar->height() - tabbar->width());
 
    return KXmlGuiWindow::eventFilter(obj, event);
 }
@@ -97,26 +98,33 @@ void FancyMainWindow::updateTabIcons()
             const bool isMainToolbar = (dockOptions()&QMainWindow::VerticalTabs)
                 && pt.x() < 20 && isVertical;
 
-            // Attach an event filter
-//             if (isMainToolbar && !m_hEventFilters.contains(bar)) {
-//                 bar->installEventFilter(this);
-//
-//                 auto tb = new QToolButton(bar);
-//                 tb->setAutoFillBackground(false);
-//                 tb->setText(i18n("Phone"));
-//                 tb->setIconSize({48, 48});
-//                 tb->setIcon(QIcon::fromTheme(QStringLiteral("call-start")));
-//                 tb->setStyleSheet(QStringLiteral(
-//                 "background-color: transparent; background: none;"
-//                 ));
-//
-//                 connect(tb, &QToolButton::clicked, this, &FancyMainWindow::showPhone);
-//
-//                 m_hEventFilters[bar] = tb;
-//             }
+            QToolButton* tb = m_hEventFilters.value(bar);
 
-            if (isMainToolbar)
+            // Attach an event filter
+            if (isMainToolbar && !tb) {
+                bar->installEventFilter(this);
+
+                tb = new QToolButton(bar);
+                tb->setAutoFillBackground(false);
+                tb->setText(i18n("Menu"));
+                tb->setIconSize({48, 48});
+                tb->setIcon(QIcon::fromTheme(QStringLiteral("application-menu")));
+                tb->setStyleSheet(QStringLiteral(
+                    "background-color: transparent; background: none;"
+                ));
+
+                connect(tb, &QToolButton::clicked, this, &FancyMainWindow::showPhone);
+
+                m_hEventFilters[bar] = tb;
+            }
+
+            if (isMainToolbar) {
                 bar->setIconSize(QSize(48, 48));
+                tb->resize(bar->width(), bar->width());
+                tb->raise();
+                tb->show();
+                tb->move(bar->x(), bar->height() - bar->width());
+            }
             else
                 bar->setIconSize({});
 
@@ -132,7 +140,7 @@ void FancyMainWindow::updateTabIcons()
             for (int i=0;i<bar->count();i++) {
                 const QString text = bar->tabText(i).replace('&',QString());
 
-                if (text == i18n("Call")) {
+                if (text == i18n("Call manager")) {
                     if (isMainToolbar)
                         bar->setTabIcon(i,QIcon(":/toolbar/call.svg"));
                     else

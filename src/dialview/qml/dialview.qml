@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Emmanuel Lepage Vallee                          *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,40 +15,9 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+import QtQuick 2.7
+import Ring 1.0
 
-#include "fancymainwindow.h"
+Item {
 
-class RecentDock;
-class ContactMethod;
-class ViewContactDock;
-class DockBase;
-class DialDock;
-#include "timeline/viewcontactdock.h"
-
-class ContactMethod;
-class Person;
-
-class TimelineWindow final : public FancyMainWindow
-{
-    Q_OBJECT
-
-public:
-    explicit TimelineWindow();
-    virtual ~TimelineWindow();
-
-    void setCurrentPage(ViewContactDock::Pages page);
-
-protected:
-    virtual void closeEvent(QCloseEvent *event) override;
-
-private:
-    RecentDock* m_pPeersTimeline;
-    ViewContactDock* m_pViewContact {nullptr};
-    DialDock* m_pDialDock {nullptr};
-    DockBase* m_pContactCD;
-
-public Q_SLOTS:
-    void viewContact(ContactMethod* cm);
-    void viewPerson(Person* p);
-};
+}
