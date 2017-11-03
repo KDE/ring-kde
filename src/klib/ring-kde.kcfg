@@ -34,7 +34,7 @@
 
     <entry name="showSplash" type="Bool">
         <label>Display the splashscreen.</label>
-      <default>true</default>
+      <default>false</default>
     </entry>
     <entry name="notifOnCalls" type="Bool">
     	<label>Defines whether user should be notified when receiving a call.</label>
@@ -81,11 +81,8 @@
       <default>true</default>
     </entry>
     <entry name="displayMenu" type="Bool">
-    	<label>Defines whether the main menu is visible by default, it can be restored with "Ctrl+m"</label>
-    </entry>
-    <entry name="displayDataRange" type="Bool">
-    	<label>Defines whether call history is restricted to a specific date range</label>
-      <default>false</default>
+        <label>Defines whether the main menu is visible by default, it can be restored with "Ctrl+m"</label>
+        <default>false</default>
     </entry>
     <entry name="displayPopularAsBookmark" type="Bool">
       <label>Defines whether or not to display the 10 most popular phone number as bookmark automagically</label>

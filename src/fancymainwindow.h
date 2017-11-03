@@ -32,6 +32,8 @@ public:
 
     void setActive(bool a);
 
+    QList<QToolButton*> cornerButtons() const;
+
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
@@ -41,8 +43,8 @@ private:
 
 public Q_SLOTS:
     void updateTabIcons();
-    void showPhone();
 
 Q_SIGNALS:
     void unregisterWindow();
+    void newCornerButton(QToolButton* b);
 };

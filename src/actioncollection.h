@@ -64,6 +64,7 @@ public:
    QAction* focusCall                   ();
    QAction* focusBookmark               ();
    QAction* showWizard                  ();
+   QAction* showMenu                    ();
    QAction* newContact                  ();
 
    //Video actions
@@ -140,6 +141,7 @@ private:
    QAction * action_focus_bookmark         {nullptr};
    QAction * action_show_wizard            {nullptr};
    QAction * action_show_directory         {nullptr};
+   QAction * action_show_menu              {nullptr};
 
 public Q_SLOTS:
    void configureRing         ();
@@ -154,6 +156,7 @@ private Q_SLOTS:
    void updateRecordButton    ();
    void updateVolumeButton    ();
    void slotNewContact        ();
+   void slotShowMenubar       (bool s);
 
 Q_SIGNALS:
    void windowStateChanged();

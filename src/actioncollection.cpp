@@ -39,6 +39,7 @@
 //Ring
 #include "globalinstances.h"
 #include "phonewindow.h"
+#include "timelinewindow.h"
 #include "ringapplication.h"
 #include "view.h"
 #include "conf/configurationdialog.h"
@@ -150,6 +151,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    INIT_ACTION(action_show_directory        , {}                                                  , i18n("Show the phone directory"));
 
    INIT_ACTION(action_show_wizard           , QIcon::fromTheme(QStringLiteral("tools-wizard"                    )), i18n("New account wizard"      ));
+   INIT_ACTION(action_show_menu             , QIcon::fromTheme(QStringLiteral("application-menu"                )), i18n("Show the menu"           ));
    INIT_ACTION(action_new_contact           , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("New contact"             ));
    INIT_ACTION(action_pastenumber           , QIcon::fromTheme(QStringLiteral("edit-paste"                      )), i18n("Paste"                   ));
    INIT_ACTION(action_showContactDock       , QIcon::fromTheme(QStringLiteral("edit-find-user"                  )), i18n("Display Person"          ));
@@ -168,6 +170,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    COL(action_transfer    , Qt::CTRL + Qt::Key_T );
    COL(action_record      , Qt::CTRL + Qt::Key_R );
    COL(action_pastenumber , Qt::CTRL + Qt::Key_V );
+   COL(action_show_menu   , Qt::CTRL + Qt::Key_M );
 #undef COL
 
 
@@ -177,6 +180,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
       action_video_mute           , action_displayDialpad       , action_displayAccountCbb ,
       action_mute_playback        , action_displayVolumeControls, action_showContactDock   ,
       action_showHistoryDock      , action_showBookmarkDock     , action_mute_capture      ,
+      action_show_menu
    }) {
       a->setCheckable( true );
    }
@@ -190,6 +194,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    action_showContactDock       ->setChecked( ConfigurationSkeleton::displayContactDock  () );
    action_showHistoryDock       ->setChecked( ConfigurationSkeleton::displayHistoryDock  () );
    action_showBookmarkDock      ->setChecked( ConfigurationSkeleton::displayBookmarkDock () );
+   action_show_menu             ->setChecked( ConfigurationSkeleton::displayMenu         () );
 
 
    //Bind actions to the useractionmodel
@@ -253,6 +258,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    connect(action_mute_capture           , &QAction::toggled   , as                 , &Audio::Settings::muteCapture             );
    connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
    connect(action_show_wizard            , &QAction::triggered , RingApplication::instance(), &RingApplication::showWizard      );
+   connect(action_show_menu              , &QAction::toggled   , this               , &ActionCollection::slotShowMenubar        );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
    connect(action_show_directory         , &QAction::triggered , this               , &ActionCollection::showDirectory          );
@@ -282,6 +288,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
       action_focus_bookmark    , action_show_wizard       , action_show_directory    ,
+      action_show_menu,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       mw->actionCollection()->addAction(a->objectName(), a);
@@ -430,6 +437,11 @@ void ActionCollection::slotNewContact()
    col->editor<Person>()->addExisting(p);
 }
 
+void ActionCollection::slotShowMenubar(bool s)
+{
+   RingApplication::instance()->timelineWindow()->showMenu(s);
+}
+
 ///Raise the main window to the foreground
 void ActionCollection::raiseClient(bool focus)
 {
@@ -470,6 +482,7 @@ GETTER(focusContact                 , action_focus_contact         )
 GETTER(focusCall                    , action_focus_call            )
 GETTER(focusBookmark                , action_focus_bookmark        )
 GETTER(showWizard                   , action_show_wizard           )
+GETTER(showMenu                     , action_show_menu             )
 GETTER(newContact                   , action_new_contact           )
 
 //Video actions

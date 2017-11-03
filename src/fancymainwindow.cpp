@@ -105,6 +105,7 @@ void FancyMainWindow::updateTabIcons()
                 bar->installEventFilter(this);
 
                 tb = new QToolButton(bar);
+                tb->setPopupMode(QToolButton::InstantPopup);
                 tb->setAutoFillBackground(false);
                 tb->setText(i18n("Menu"));
                 tb->setIconSize({48, 48});
@@ -113,9 +114,12 @@ void FancyMainWindow::updateTabIcons()
                     "background-color: transparent; background: none;"
                 ));
 
-                connect(tb, &QToolButton::clicked, this, &FancyMainWindow::showPhone);
+                connect(bar, &QObject::destroyed, this, [this, bar]() {
+                    m_hEventFilters.remove(bar);
+                });
 
                 m_hEventFilters[bar] = tb;
+                emit newCornerButton(tb);
             }
 
             if (isMainToolbar) {
@@ -182,14 +186,7 @@ void FancyMainWindow::setActive(bool a)
     m_IsActive = a;
 }
 
-void FancyMainWindow::showPhone()
+QList<QToolButton*> FancyMainWindow::cornerButtons() const
 {
-//     if (RingApplication::instance()->isPhoneVisible()) {
-        RingApplication::instance()->phoneWindow()->show ();
-        RingApplication::instance()->phoneWindow()->raise();
-//     }
-//     else {
-//
-//         timelineWindow()->setCurrentPage();
-//     }
+    return m_hEventFilters.values();
 }

@@ -21,11 +21,14 @@
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
 #include <QtCore/QSortFilterProxyModel>
+#include <QtWidgets/QMenuBar>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
 // KDE
 #include <klocalizedstring.h>
+#include <kxmlguifactory.h>
+#include <khelpmenu.h>
 
 // Ring
 #include "contactmethod.h"
@@ -127,6 +130,8 @@ TimelineWindow::TimelineWindow()
         });
     });
 
+    menuBar()->setVisible(ConfigurationSkeleton::displayMenu());
+
     connect(m_pContactCD , &QDockWidget::visibilityChanged, this, &FancyMainWindow::updateTabIcons);
     tabifyDockWidget(m_pPeersTimeline, m_pDialDock  );
     tabifyDockWidget(m_pPeersTimeline, m_pContactCD );
@@ -137,7 +142,10 @@ TimelineWindow::TimelineWindow()
        dir.cd("Resources/");
       QTimer::singleShot(0, [this, dir]() {createGUI(dir.path()+"/ring-kdeui.rc");});
     #else
-      QTimer::singleShot(0, [this]() {createGUI();});
+      QTimer::singleShot(0, [this]() {
+          createGUI();
+          buildMenu();
+      });
     #endif
 
     updateTabIcons();
@@ -182,7 +190,35 @@ void TimelineWindow::viewPerson(Person* p)
     m_pViewContact->setPerson(p);
 }
 
+void TimelineWindow::showMenu(bool show)
+{
+    menuBar()->setVisible(show);
+    ConfigurationSkeleton::setDisplayMenu(show);
+}
+
 void TimelineWindow::setCurrentPage(ViewContactDock::Pages page)
 {
     m_pViewContact->setCurrentPage(page);
+}
+
+void TimelineWindow::buildMenu()
+{
+    m_pHamburgerMenu = new QMenu(this);
+    for (const auto s : {"Actions", "View", "Settings"}) {
+        if (auto m = static_cast<QMenu*>(guiFactory()->container(s, this)))
+            m_pHamburgerMenu->addMenu(m);
+    }
+
+    auto hm = new KHelpMenu(this);
+    m_pHamburgerMenu->addMenu(hm->menu());
+
+    for (QToolButton* b : cornerButtons()) {
+        if (b) {
+            b->setMenu(m_pHamburgerMenu);
+        }
+    }
+
+    connect(this, &FancyMainWindow::newCornerButton, this, [this](QToolButton* b) {
+        b->setMenu(m_pHamburgerMenu);
+    });
 }

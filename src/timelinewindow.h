@@ -47,8 +47,12 @@ private:
     ViewContactDock* m_pViewContact {nullptr};
     DialDock* m_pDialDock {nullptr};
     DockBase* m_pContactCD;
+    QMenu* m_pHamburgerMenu {nullptr};
+
+    void buildMenu();
 
 public Q_SLOTS:
     void viewContact(ContactMethod* cm);
     void viewPerson(Person* p);
+    void showMenu(bool show);
 };
