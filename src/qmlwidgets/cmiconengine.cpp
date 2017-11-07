@@ -55,6 +55,9 @@ void CMIconEngine::staticPaint(QPainter* painter, const QRect& rect, bool isPres
 
     const int s = std::min(rect.height(), rect.width());
 
+    if (s == -1)
+        return;
+
     const int type = (!isTracked) ? 1 : (isPresent ? 100 : 10);
 
     static QHash<int, QPixmap> pxCache;

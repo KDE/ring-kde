@@ -37,6 +37,8 @@
 #include <call.h>
 #include <callmodel.h>
 
+#include "qrc_dialview.cpp"
+
 class DialDockPrivate {
 public:
     QQuickWidget* m_pQuickWidget;

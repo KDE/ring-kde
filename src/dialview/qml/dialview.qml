@@ -17,7 +17,47 @@
  **************************************************************************/
 import QtQuick 2.7
 import Ring 1.0
+import QtQuick.Controls 2.0 as Controls
+import org.kde.kirigami 2.2 as Kirigami
 
-Item {
+Kirigami.ApplicationItem {
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Disabled
+    }
 
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
+
+    Kirigami.ScrollablePage {
+        id: page
+        anchors.fill: parent
+        title: "Long List view"
+
+        CallList {
+            anchors.fill: parent
+        }
+
+        actions {
+            main: Kirigami.Action {
+                iconName: CallModel.hasDialingCall ? "dialog-cancel" : "document-edit"
+                text: "Main Action Text"
+                checkable: true
+                onCheckedChanged: sheet.sheetOpen = checked;
+            }
+        }
+    }
+
+    DialPad {
+        width: parent.width
+        visible: CallModel.supportsDTMF
+//             anchors.bottom: page.actions.main.top
+        height: 200
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+//             anchors.bottomMargin: page.actions.main.height + 20
+        anchors.bottomMargin: 50
+    }
 }

@@ -95,6 +95,8 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
 {
    Q_ASSERT(index.isValid());
 
+   qDebug() << "IDX" << index;
+
    const bool isBookmark = index.data(static_cast<int>(Call::Role::IsBookmark)).toBool();
    const bool isTracked  = index.data(static_cast<int>(Call::Role::IsTracked)).toBool();
    const bool isPresent  = index.data(static_cast<int>(Call::Role::IsPresent)).toBool();

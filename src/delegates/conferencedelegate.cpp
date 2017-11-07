@@ -32,6 +32,7 @@
 #include "../widgets/categorizedtreeview.h"
 #include "phonewindow.h"
 #include "call.h"
+#include "callmodel.h"
 
 ///Constructor
 ConferenceDelegate::ConferenceDelegate(CategorizedTreeView* widget, const QPalette& pal)
@@ -117,6 +118,12 @@ QRect ConferenceDelegate::fullCategoryRect(const QStyleOptionViewItem& option, c
 void ConferenceDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    Q_ASSERT(index.isValid());
+   qDebug() << "\n\nCONF" << index;
+
+   qDebug() << "RC" << CallModel::instance().rowCount(index);
+   qDebug() << CallModel::instance().index(1,0,index);
+   qDebug() << CallModel::instance().index(1,0,index).parent();
+
 
    QStyleOptionViewItem opt(option);
    //BEGIN: draw toplevel items
