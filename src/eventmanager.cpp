@@ -184,9 +184,9 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       //1) Get the right action
       const QPoint position = e->pos();
       const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
-      Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
+      RingMimes::Actions act = (position.x() < targetRect.x()+targetRect.width()/2)? RingMimes::Actions::JOIN: RingMimes::Actions::TRANSFER;
       QMimeData* data = (QMimeData*)e->mimeData(); //Drop the const
-      data->setProperty("dropAction",act);
+      data->setProperty("dropAction", RingMimes::toActionName(act));
 
       //2) Send to the model for processing
       m_pParent->m_pView->model()->dropMimeData(data,Qt::MoveAction,idxAt.row(),idxAt.column(),idxAt.parent());
@@ -257,8 +257,8 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    Call* source = nullptr;
    if (isCall)
       source = CallModel::instance().fromMime(e->mimeData()->data(RingMimes::CALLID));
-   Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
-   CallModel::instance().setData(idxAt,act,static_cast<int>(Call::Role::DropPosition));
+   RingMimes::Actions act = (position.x() < targetRect.x()+targetRect.width()/2)? RingMimes::Actions::JOIN : RingMimes::Actions::TRANSFER;
+   CallModel::instance().setData(idxAt, RingMimes::toActionName(act),static_cast<int>(Call::Role::DropPosition));
    if ((!isCall) || CallModel::instance().getIndex(source) != idxAt)
       m_pParent->m_pView->setHoverState(idxAt);
    else

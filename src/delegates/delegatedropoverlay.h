@@ -23,6 +23,7 @@
 #include <QtCore/QModelIndex>
 
 #include <call.h>
+#include <mime.h>
 
 class QTimer;
 class QImage;
@@ -34,11 +35,11 @@ class DelegateDropOverlay final : public QObject
 public:
    struct OverlayButton {
       QImage* m_pImage;
-      Call::DropAction role;
+      RingMimes::Actions role;
       ~OverlayButton() {
          delete m_pImage;
       }
-      OverlayButton(QImage* i,Call::DropAction r) : m_pImage(i),role(r) {}
+      OverlayButton(QImage* i,RingMimes::Actions r) : m_pImage(i),role(r) {}
       OverlayButton(const OverlayButton&) = delete;
       OverlayButton& operator=(const OverlayButton&) = delete;
    };

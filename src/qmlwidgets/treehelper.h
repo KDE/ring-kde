@@ -29,12 +29,20 @@ class TreeHelper : public QObject
     Q_OBJECT
 
 public:
+    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
+
     Q_INVOKABLE explicit TreeHelper(QObject* parent = nullptr);
     virtual ~TreeHelper();
 
     Q_INVOKABLE QModelIndex getIndex(int row, const QModelIndex& parent);
     Q_INVOKABLE bool setData(const QModelIndex& index, const QVariant& data, const QString& roleName);
 
+    Q_INVOKABLE QVariant mimeData(const QModelIndex& parent, int row) const;
+    Q_INVOKABLE bool dropMimeData(const QVariant& dragEvent, const QModelIndex& parent, int row);
+    Q_INVOKABLE bool dropMimeData2(const QVariant& dragEvent, const QModelIndex& parent, int row);
+
+    QAbstractItemModel* model() const;
+    void setModel(QAbstractItemModel* model);
 private:
     TreeHelperPrivate* d_ptr;
     Q_DECLARE_PRIVATE(TreeHelper)

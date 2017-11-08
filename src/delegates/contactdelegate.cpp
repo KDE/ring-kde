@@ -32,6 +32,7 @@
 //Ring
 #include <globalinstances.h>
 #include <person.h>
+#include <mime.h>
 #include <numbercategory.h>
 #include <contactmethod.h>
 #include <collectioninterface.h>
@@ -183,7 +184,7 @@ void ContactDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
       if (!m_pDelegatedropoverlay) {
          const_cast<ContactDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
          static QMap<QString,DelegateDropOverlay::OverlayButton*> contactMap;
-         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),Call::DropAction::Conference));
+         contactMap.insert(i18n("Transfer")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),RingMimes::Actions::JOIN));
          QDialogButtonBox *buttonBox = new QDialogButtonBox();
          QWidget *mainWidget = new QWidget(m_pView);
          QVBoxLayout *mainLayout = new QVBoxLayout;

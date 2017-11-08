@@ -18,6 +18,7 @@
 #include "treehelper.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QMimeData>
 
 class TreeHelperPrivate
 {
@@ -26,6 +27,8 @@ public:
 
     //FIXME it leaks
     static QHash<const QAbstractItemModel*, QHash<QString, int>> m_shRoleNameMapper;
+    QAbstractItemModel* m_pModel {nullptr};
+
 };
 
 QHash<const QAbstractItemModel*, QHash<QString, int>> TreeHelperPrivate::m_shRoleNameMapper;
@@ -71,4 +74,83 @@ QModelIndex TreeHelper::getIndex(int row, const QModelIndex& parent)
 //     Q_ASSERT(parent.parent().isValid() == true);
 //     Q_ASSERT(!parent.parent().parent().isValid() == true);
     return parent.model()->index(row, 0, parent);
+}
+
+
+QAbstractItemModel* TreeHelper::model() const
+{
+    return d_ptr->m_pModel;
+}
+
+void TreeHelper::setModel(QAbstractItemModel* model)
+{
+    d_ptr->m_pModel = model;
+}
+
+QVariant TreeHelper::mimeData(const QModelIndex& parent, int row) const
+{
+    qDebug() << "\n\nIN WRAP MIME DATA";
+
+    if (!d_ptr->m_pModel)
+        return {};
+
+    const auto idx = d_ptr->m_pModel->index(row, 0, parent);
+
+    if (!idx.isValid())
+        return {};
+
+    const auto md = d_ptr->m_pModel->mimeData({idx});
+
+    qDebug() << "GOT DATA" << md;
+
+    QVariantMap ret;
+
+    const auto formats = md->formats();
+
+    for (const auto& mime : qAsConst(formats)) {
+        ret[mime] = QString(md->data(mime));
+    }
+
+    return QVariant::fromValue(ret);
+}
+
+bool TreeHelper::dropMimeData(const QVariant& dragEvent, const QModelIndex& parent, int row)
+{
+    auto obj = qvariant_cast<QObject*>(dragEvent);
+
+    if (!obj)
+        return false;
+
+    if (obj->metaObject()->className() != QLatin1String("QQuickDropEvent"))
+        return false;
+
+    const QStringList formats = obj->property("formats").toStringList();
+
+    QMimeData* md = new QMimeData();
+
+    for (const auto& mime : qAsConst(formats)) {
+        //stupid unexported qmimedata
+    }
+
+    return false;
+}
+
+bool TreeHelper::dropMimeData2(const QVariant& dragEvent, const QModelIndex& parent, int row)
+{
+    qDebug() << dragEvent << dragEvent.canConvert<QVariantMap>();
+
+    QMap<QString, QVariant> map = qvariant_cast<QVariantMap>(dragEvent);
+
+    const auto idx = d_ptr->m_pModel->index(row, 0, parent);
+
+    if (!idx.isValid())
+        return false;
+
+    QMimeData* md = new QMimeData();
+
+    for(auto i = map.constBegin(); i != map.constEnd(); i++) {
+        md->setData(i.key(), i.value().toByteArray());
+    }
+
+    return d_ptr->m_pModel->dropMimeData(md, {}, row, 0, parent);
 }

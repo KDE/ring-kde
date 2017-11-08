@@ -33,6 +33,7 @@
 #include <globalinstances.h>
 #include <categorizedhistorymodel.h>
 #include <person.h>
+#include <mime.h>
 #include <media/media.h>
 #include <media/avrecording.h>
 #include <callmodel.h>
@@ -277,9 +278,9 @@ void HistoryDelegate::paint(QPainter* painter, const QStyleOptionViewItem& optio
    if (index.data(static_cast<int>(Call::Role::DropState)).toInt() != 0) {
       /*static*/ if (!m_pDelegatedropoverlay) {
          const_cast<HistoryDelegate*>(this)->m_pDelegatedropoverlay = new DelegateDropOverlay((QObject*)this);
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/confBlackWhite.svg")),Call::DropAction::Conference));
-         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),Call::DropAction::Transfer));
-         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),Call::DropAction::Transfer));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Conference")   ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/confBlackWhite.svg")),RingMimes::Actions::JOIN));
+         const_cast<HistoryDelegate*>(this)->callMap.insert(i18n("Transfer")     ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),RingMimes::Actions::TRANSFER));
+         const_cast<HistoryDelegate*>(this)->historyMap.insert(i18n("Transfer")  ,new DelegateDropOverlay::OverlayButton(new QImage(QStringLiteral(":/gui/icons/transferarrow.svg")),RingMimes::Actions::TRANSFER));
       }
 
       if (currentState == Call::State::OVER)

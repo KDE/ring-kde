@@ -45,7 +45,14 @@ Kirigami.ApplicationItem {
                 iconName: CallModel.hasDialingCall ? "dialog-cancel" : "document-edit"
                 text: "Main Action Text"
                 checkable: true
-                onCheckedChanged: sheet.sheetOpen = checked;
+                onCheckedChanged: {
+                    //sheet.sheetOpen = checked;
+                    if (checked)
+                        CallModel.selectDialingCall()
+                    else if (CallModel.hasDialingCall)
+                        CallModel.dialingCall().performAction(Call.REFUSE)
+
+                }
             }
         }
     }

@@ -75,7 +75,7 @@ void DelegateDropOverlay::paintEvent(QPainter* painter, const QStyleOptionViewIt
    while (it.hasNext()) {
       it.next();
       if (step) {
-         const bool highlight = dropPosition == it.value()->role;
+         const bool highlight = dropPosition == (int)it.value()->role;
          const int tmpStep = (step>0)?step:15+step;
          painter->save();
          painter->setOpacity(1);

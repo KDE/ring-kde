@@ -18,6 +18,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import RingQmlWidgets 1.0
 
 Rectangle {
     id: callDelegateItem
@@ -26,6 +27,24 @@ Rectangle {
     color: selected ? activePalette.highlight: "transparent"
     height: content.implicitHeight + 20
     property bool selected: object == CallModel.selectedCall
+
+    Drag.active: mouseArea.drag.active
+    Drag.dragType: Drag.Automatic
+    Drag.onDragStarted: {
+        var ret = treeHelper.mimeData(model.rootIndex, index)
+        Drag.mimeData = ret
+    }
+
+    TreeHelper {
+        id: treeHelper
+        model: CallModel
+    }
+
+    Drag.onDragFinished: {
+        if (dropAction == Qt.MoveAction) {
+            item.display = "hello"
+        }
+    }
 
     RowLayout {
         id: content
@@ -67,11 +86,37 @@ Rectangle {
         anchors.right: parent.right
     }
 
+    DropArea {
+        anchors.fill: parent
+        keys: ["text/ring.call.id", "text/plain"]
+        onEntered: {
+            callDelegateItem.color = "red"
+        }
+        onExited: {
+            callDelegateItem.color = "blue"
+        }
+        onDropped: {
+            var formats = drop.formats
+            var ret = {}
+
+            ret["x-ring/dropaction"] = "join"
+
+            // stupid lack of official APIs...
+            for(var i=0; i<  formats.length; i++) {
+                ret[formats[i]] = drop.getDataAsArrayBuffer(formats[i])
+            }
+
+            treeHelper.dropMimeData2(ret, model.rootIndex, index)
+        }
+    }
+
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         onClicked: {
             CallModel.selectedCall = object
         }
+        drag.target: callDelegateItem
     }
 } //Call delegate
 

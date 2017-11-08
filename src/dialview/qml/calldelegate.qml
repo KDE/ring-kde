@@ -22,6 +22,7 @@ Item {
     id: item
     height: confDelegateLayout.height + 40 + 12
     width: parent.width - 20
+    property bool selected: object == CallModel.selectedCall
 
     //If it is not a conference, use this delegate
     CallDelegateItem {
@@ -46,7 +47,7 @@ Item {
         y: 10
 
         //Display
-        color: "transparent"
+        color: item.selected ? activePalette.highlight: "transparent"
         radius: 5
         border.color: inactivePalette.text
         border.width: 2
@@ -62,6 +63,9 @@ Item {
             y:parent.y
             x:parent.x
             spacing: 4
+            height: 20
+            width: parent.width
+
             PixmapWrapper {
                 pixmap: decoration
                 height: 20
@@ -73,6 +77,13 @@ Item {
                 font.bold: true
                 font.underline: true
                 color: activePalette.text
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    CallModel.selectedCall = object
+                }
             }
         }
 
@@ -102,13 +113,4 @@ Item {
             confDelegateRepeater.model.rootIndex = confDelegateRepeater.model.modelIndex(index)
         }
     }
-
-    MouseArea {
-        anchors.fill: parent
-        visible: !isConference
-        onClicked: {
-            CallModel.selectedCall = object
-        } //onClicked
-    } //MouseArea
-
 }
