@@ -17,34 +17,37 @@
  **************************************************************************/
 #pragma once
 
-#include <simpleflickable.h>
+#include <flickableview.h>
 
 // Qt
 #include <QtCore/QAbstractItemModel>
 class QQmlComponent;
 
-class TreeViewPrivate;
+class HierarchyViewPrivate;
 
-class TreeView : public SimpleFlickable
+/**
+ * Model view intended for the tree topology.
+ *
+ * Each index has a big container QQuickItem that encompass the item and all
+ * its children.
+ *
+ * This view currently doesn't support lazy loading. It differs fromm the
+ * TreeView2 for the lazy loading part, but allows more flexibility without
+ * having to care about keeping everything in sync.
+ */
+class HierarchyView : public FlickableView
 {
     Q_OBJECT
 public:
-    Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)
-    Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
+    explicit HierarchyView(QQuickItem* parent = nullptr);
+    virtual ~HierarchyView();
 
-    explicit TreeView(QQuickItem* parent = nullptr);
-    virtual ~TreeView();
+    virtual void setModel(QSharedPointer<QAbstractItemModel> model) override;
 
-    void setModel(QSharedPointer<QAbstractItemModel> model);
-    QSharedPointer<QAbstractItemModel> model() const;
-
-    void setDelegate(QQmlComponent* delegate);
-    QQmlComponent* delegate() const;
-
-Q_SIGNALS:
-    void modelChanged(QSharedPointer<QAbstractItemModel> model);
+protected:
+    virtual void refresh() override;
 
 private:
-    TreeViewPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(TreeView)
+    HierarchyViewPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(HierarchyView)
 };

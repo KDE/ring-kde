@@ -54,8 +54,10 @@ SET( libqmlwidgets_LIB_SRCS
     personiconengine.cpp
     pixmapwrapper.cpp
     treehelper.cpp
-    treeview.cpp
     simpleflickable.cpp
+    hierarchyview.cpp
+    treeview2.cpp
+    flickableview.cpp
     modelscrolladapter.cpp
     multicall.cpp
     bindedcombobox.cpp

@@ -22,7 +22,7 @@ import Ring 1.0
 
 import RingQmlWidgets 1.0
 
-TreeView {
+HierarchyView {
     id: chatView
     clip: true
 

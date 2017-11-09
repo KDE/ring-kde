@@ -15,36 +15,42 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <flickableview.h>
 
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "contactbuilder.h"
-#include "pixmapwrapper.h"
-#include "modelscrolladapter.h"
-#include "treehelper.h"
-#include "hierarchyview.h"
-#include "treeview2.h"
-#include "multicall.h"
-#include "bindedcombobox.h"
-#include "snapshotadapter.h"
-#include "timelinedots.h"
+// Qt
+#include <QtCore/QAbstractItemModel>
+class QQmlComponent;
 
-void RingQmlWidgets::registerTypes(const char *uri)
+class TreeView2Private;
+
+/**
+ * Second generation of QtQuick treeview.
+ *
+ * The first one was designed for the chat view. It had a limited number of
+ * requirement when it came to QtModel. However it required total control of
+ * the layout.
+ *
+ * This is the opposite use case. The layout is classic, but the model support
+ * has to be complete. Performance and lazy loading is also more important.
+ *
+ * It require less work to write a new treeview than refector the first one to
+ * support the additional requirements. In the long run, the first generation
+ * could be folded into this widget (if it ever makes sense, otherwise they will
+ * keep diverging).
+ */
+class TreeView2 : public FlickableView
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+    Q_OBJECT
+public:
+    explicit TreeView2(QQuickItem* parent = nullptr);
+    virtual ~TreeView2();
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
-    qmlRegisterType<HierarchyView>(uri, 1, 0, "HierarchyView");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<ModelScrollAdapter>(uri, 1, 0, "ModelScrollAdapter");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-    qmlRegisterType<BindedComboBox>(uri, 1, 0, "BindedComboBox");
-    qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
-    qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
-}
+Q_SIGNALS:
+    void modelChanged(QSharedPointer<QAbstractItemModel> model);
+
+private:
+    TreeView2Private* d_ptr;
+    Q_DECLARE_PRIVATE(TreeView2)
+};

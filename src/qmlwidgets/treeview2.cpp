@@ -15,36 +15,21 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
-
-#include <QtCore/QDebug>
-
-#include "bubble.h"
-#include "messagebuilder.h"
-#include "contactbuilder.h"
-#include "pixmapwrapper.h"
-#include "modelscrolladapter.h"
-#include "treehelper.h"
-#include "hierarchyview.h"
 #include "treeview2.h"
-#include "multicall.h"
-#include "bindedcombobox.h"
-#include "snapshotadapter.h"
-#include "timelinedots.h"
 
-void RingQmlWidgets::registerTypes(const char *uri)
+class TreeView2Private
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+public:
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
-    qmlRegisterType<HierarchyView>(uri, 1, 0, "HierarchyView");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<ModelScrollAdapter>(uri, 1, 0, "ModelScrollAdapter");
-    qmlRegisterType<PixmapWrapper>("Ring", 1,0, "PixmapWrapper");
-    qmlRegisterType<BindedComboBox>(uri, 1, 0, "BindedComboBox");
-    qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
-    qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
+};
+
+TreeView2::TreeView2(QQuickItem* parent) : FlickableView(parent),
+    d_ptr(new TreeView2Private())
+{
+
+}
+
+TreeView2::~TreeView2()
+{
+    delete d_ptr;
 }
