@@ -41,6 +41,7 @@
   <summary xml:lang="tr">SIP veya RING protokolleri ile arama yapın veya aranın</summary>
   <summary xml:lang="uk">Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP або RING</summary>
   <summary xml:lang="x-test">xxCall and receive calls with SIP or RING protocolsxx</summary>
+  <summary xml:lang="zh-CN">使用 SIP 或 RING 协议拨出或接受呼叫</summary>
   <summary xml:lang="zh-TW">使用 SIP 或是 RING 協定打電話或是接電話</summary>
   <description>
     <p>
