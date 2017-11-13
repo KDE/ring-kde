@@ -24,6 +24,72 @@
 class QQmlComponent;
 
 class TreeView2Private;
+class TreeView2;
+
+struct TreeTraversalItems; //FIXME remove
+
+/**
+ * Polymorphic tree item for the TreeView2.
+ *
+ * Classes implementing TreeView2 need to provide an implementation of the pure
+ * virtual functions. It is useful, for example, to manage both a raster and
+ * QQuickItem based version of a view.
+ *
+ * The state is managed by the TreeView2 and it's own protected virtual methods.
+ */
+class VolatileTreeItem
+{
+    friend class TreeView2;
+    friend class TreeTraversalItems;
+public:
+
+    explicit VolatileTreeItem() {}
+    virtual ~VolatileTreeItem() {}
+
+    enum class State {
+        POOLED  , /*!< Not currently in use, either new or waiting for re-use */
+        BUFFER  , /*!< Not currently on screen, pre-loaded for performance    */
+        ACTIVE  , /*!< Visible                                                */
+        DANGLING, /*!< Pending deletion, invalid pointers                     */
+        ERROR   , /*!< Something went wrong                                   */
+    };
+
+    // Helpers
+    int depth() const;
+    TreeView2* view() const;
+    QModelIndex index() const;
+
+    // Actions
+    virtual bool attach () = 0;
+    virtual bool refresh() = 0;
+    virtual bool move   () = 0;
+    virtual bool flush  () = 0;
+    virtual bool detach () = 0;
+
+private:
+    enum class Action {
+        ATTACH       = 0, /*!< Activate the element (do not sync it) */
+        ENTER_BUFFER = 1, /*!< Sync all roles                        */
+        ENTER_VIEW   = 2, /*!< NOP (todo)                            */
+        UPDATE       = 3, /*!< Reload the roles                      */
+        MOVE         = 4, /*!< Move to a new position                */
+        LEAVE_BUFFER = 4, /*!< Stop keeping track of data changes    */
+        DETACH       = 5, /*!< Delete                                */
+    };
+
+    typedef bool(VolatileTreeItem::*StateF)();
+    State m_State {State::POOLED};
+    TreeTraversalItems* m_pParent {nullptr};
+
+    static const State  m_fStateMap    [5][7];
+    static const StateF m_fStateMachine[5][7];
+
+    bool performAction(Action);
+
+    bool nothing();
+    bool error  () __attribute__ ((noreturn));
+    bool destroy() __attribute__ ((noreturn));
+};
 
 /**
  * Second generation of QtQuick treeview.
@@ -43,6 +109,7 @@ class TreeView2Private;
 class TreeView2 : public FlickableView
 {
     Q_OBJECT
+    friend class TreeTraversalItems;
     friend class VolatileTreeItem;
 public:
     /// Assume each hierarchy level have the same height (for performance)
@@ -70,6 +137,7 @@ public:
     Q_ENUM(RecyclingMode)
 
     explicit TreeView2(QQuickItem* parent = nullptr);
+
     virtual ~TreeView2();
 
     virtual void setModel(QSharedPointer<QAbstractItemModel> model) override;
@@ -100,6 +168,9 @@ public:
 
 protected:
     virtual void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
+
+private:
+    virtual VolatileTreeItem* createItem() const = 0;
 
 Q_SIGNALS:
     void modelChanged(QSharedPointer<QAbstractItemModel> model);

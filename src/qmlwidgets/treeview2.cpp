@@ -17,58 +17,10 @@
  **************************************************************************/
 #include "treeview2.h"
 
-struct TreeTraversalItems;
-
-/**
- * This struct hold the QQuickWidget itself.
- *
- * It has its own lifecycle and is independant from the tree traversal items.
- * this allows better caching and re-using previous widgets for new
- * QModelIndex.
- */
-struct VolatileTreeItem
+class VolatileTreeItemPrivate
 {
-    explicit VolatileTreeItem(TreeTraversalItems* p) : m_pParent(p) {}
+public:
 
-    enum class State {
-        POOLED  , /*!< Not currently in use, either new or waiting for re-use */
-        BUFFER  , /*!< Not currently on screen, pre-loaded for performance    */
-        ACTIVE  , /*!< Visible                                                */
-        DANGLING, /*!< Pending deletion, invalid pointers                     */
-        ERROR   , /*!< Something went wrong                                   */
-    };
-
-    enum class Action {
-        ATTACH       = 0, /*!< Activate the element (do not sync it) */
-        ENTER_BUFFER = 1, /*!< Sync all roles                        */
-        ENTER_VIEW   = 2, /*!< NOP (todo)                            */
-        UPDATE       = 3, /*!< Reload the roles                      */
-        MOVE         = 4, /*!< Move to a new position                */
-        LEAVE_BUFFER = 4, /*!< Stop keeping track of data changes    */
-        DETACH       = 5, /*!< Delete                                */
-    };
-
-    typedef bool(VolatileTreeItem::*StateF)();
-
-    static const State  m_fStateMap    [5][7];
-    static const StateF m_fStateMachine[5][7];
-
-    State m_State {State::POOLED};
-    QQuickItem* m_pItem {nullptr};
-    QQmlContext* m_pContent {nullptr};
-    TreeTraversalItems* m_pParent;
-
-    bool performAction(Action);
-
-    // Actions
-    bool nothing();
-    bool error  () __attribute__ ((noreturn));
-    bool attach ();
-    bool refresh();
-    bool move   ();
-    bool flush  ();
-    bool detach ();
-    bool destroy() __attribute__ ((noreturn));
 };
 
 #define S VolatileTreeItem::State::
@@ -211,9 +163,6 @@ public:
         TreeView2::RecyclingMode::NoRecycling
     };
     State m_State {State::UNFILLED};
-
-    // When all elements are assumed to have the same height, life is easy
-    QVector<qreal> m_DepthChart;
 
     TreeTraversalItems* m_pRoot {new TreeTraversalItems(nullptr, this)};
     QHash<QPersistentModelIndex, TreeTraversalItems*> m_hMapper;
@@ -506,63 +455,29 @@ bool VolatileTreeItem::performAction(Action a)
     return ret;
 }
 
+int VolatileTreeItem::depth() const
+{
+    return m_pParent->m_Depth;
+}
+
+TreeView2* VolatileTreeItem::view() const
+{
+    return m_pParent->d_ptr->q_ptr;
+}
+
+QModelIndex VolatileTreeItem::index() const
+{
+    return m_pParent->m_Index;
+}
+
 bool VolatileTreeItem::nothing()
-{ return true; }
+{
+    return true;
+}
 
 bool VolatileTreeItem::error()
 {
     Q_ASSERT(false);
-}
-
-bool VolatileTreeItem::attach()
-{
-    auto pair = m_pParent->d_ptr->q_ptr->loadDelegate(
-        m_pParent->d_ptr->q_ptr->contentItem(),
-        m_pParent->d_ptr->q_ptr->rootContext(),
-        m_pParent->m_Index
-    );
-
-    m_pParent->d_ptr->m_DepthChart[m_pParent->m_Depth] = std::max(
-        m_pParent->d_ptr->m_DepthChart[m_pParent->m_Depth],
-        pair.first->height()
-    );
-
-    m_pContent = pair.second;
-    m_pItem    = pair.first;
-
-    //FIXME don't
-    performAction(Action::ENTER_VIEW);
-
-    return performAction(Action::MOVE);
-}
-
-bool VolatileTreeItem::refresh()
-{
-    return true;
-}
-
-bool VolatileTreeItem::move()
-{
-    qDebug() << "MOVE" <<  m_pParent->d_ptr->q_ptr->width();
-
-    const qreal y = m_pParent->d_ptr->m_DepthChart.first()*m_pParent->m_Index.row();
-    m_pItem->setY(y);
-    m_pItem->setWidth(m_pParent->d_ptr->q_ptr->contentItem()->width());
-
-    if (m_pParent->d_ptr->q_ptr->contentItem()->height() < y+m_pItem->height())
-        m_pParent->d_ptr->q_ptr->contentItem()->setHeight(y+m_pItem->height());
-
-    return true;
-}
-
-bool VolatileTreeItem::flush()
-{
-    return true;
-}
-
-bool VolatileTreeItem::detach()
-{
-    return true;
 }
 
 bool VolatileTreeItem::destroy()
@@ -591,10 +506,13 @@ bool TreeTraversalItems::show()
 {
     qDebug() << "SHOW";
 
-    if (!m_pTreeItem)
-        m_pTreeItem = new VolatileTreeItem(this);
+    if (!m_pTreeItem) {
+        m_pTreeItem = d_ptr->q_ptr->createItem();
+        m_pTreeItem->m_pParent = this;
+    }
 
     m_pTreeItem->performAction(VolatileTreeItem::Action::ENTER_BUFFER);
+    m_pTreeItem->performAction(VolatileTreeItem::Action::ENTER_VIEW  );
 
     return true;
 }
@@ -632,8 +550,8 @@ bool TreeTraversalItems::index()
 {
     m_Depth = m_pParent ? m_pParent->m_Depth : 0;
 
-    if (m_Depth >= d_ptr->m_DepthChart.size())
-        d_ptr->m_DepthChart.resize(m_Depth+1);
+//     if (m_Depth >= d_ptr->m_DepthChart.size())
+//         d_ptr->m_DepthChart.resize(m_Depth+1);
 
     // Propagate
     for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++)
@@ -641,8 +559,6 @@ bool TreeTraversalItems::index()
 
     if (m_pTreeItem)
         m_pTreeItem->performAction(VolatileTreeItem::Action::MOVE); //FIXME don't
-
-    qDebug() << "INDEX" << m_Depth << d_ptr->m_DepthChart.size();
 
     return true;
 }
