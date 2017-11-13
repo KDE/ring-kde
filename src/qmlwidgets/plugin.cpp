@@ -39,6 +39,7 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
     qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
     qmlRegisterType<HierarchyView>(uri, 1, 0, "HierarchyView");
+    qmlRegisterType<TreeView2>(uri, 1, 0, "TreeView2");
     qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
     qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
     qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
