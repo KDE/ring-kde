@@ -56,6 +56,12 @@ DialDock::DialDock(QWidget* parent) :
 
 DialDock::~DialDock()
 {
+    setWidget(nullptr);
+
+    d_ptr->m_pQuickWidget->setVisible(false);
+    d_ptr->m_pQuickWidget->hide();
+    d_ptr->m_pQuickWidget->setParent(nullptr);
+
     delete d_ptr;
 }
 
