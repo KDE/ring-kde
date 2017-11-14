@@ -96,8 +96,13 @@ struct TreeTraversalItems
     State m_State {State::BUFFER};
     TreeTraversalItems* m_pFirstChild {nullptr};
     TreeTraversalItems* m_pLastChild {nullptr};
+    TreeTraversalItems* m_pPrevious {nullptr};
+    TreeTraversalItems* m_pNext {nullptr};
     QPersistentModelIndex m_Index;
     VolatileTreeItem* m_pTreeItem {nullptr};
+
+    // Helpers
+    QPair<TreeTraversalItems* , TreeTraversalItems*> siblingsFor(TreeTraversalItems* child) const;
 
     TreeView2Private* d_ptr;
 };
@@ -165,6 +170,8 @@ public:
     State m_State {State::UNFILLED};
 
     TreeTraversalItems* m_pRoot {new TreeTraversalItems(nullptr, this)};
+
+    /// All elements with loaded children
     QHash<QPersistentModelIndex, TreeTraversalItems*> m_hMapper;
 
     // Helpers
@@ -356,6 +363,7 @@ bool TreeView2Private::isActive(const QModelIndex& parent, int first, int last)
     if (m_State == State::UNFILLED)
         return true;
 
+    //FIXME only insert elements with loaded children into m_hMapper
     auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
 
     if (parent.isValid() && pitem == m_pRoot)
@@ -391,6 +399,30 @@ TreeTraversalItems* TreeView2Private::addChildren(TreeTraversalItems* parent, co
     return e;
 }
 
+/// Get the closest loaded TreeTraversalItems from the parent
+QPair<TreeTraversalItems* , TreeTraversalItems*>
+TreeTraversalItems::siblingsFor(TreeTraversalItems* child) const
+{
+    TreeTraversalItems *prev(nullptr), *next(nullptr);
+
+    // Previous
+    if (m_pLastChild && m_pLastChild->m_Index.row() < child->m_Index.row())
+        prev = m_pLastChild;
+    else if (child->m_Index.row() > 1 && (
+        prev = m_hLookup[d_ptr->q_ptr->model()->index(child->m_Index.row() -1, 0, m_Index)]
+    ))
+        prev = prev;
+    else if (child->m_Index.row() > 0) {
+        Q_ASSERT(false); //TODO
+        //
+    }
+    // else: prev is nullptr, it's the first
+
+    //TODO next
+
+    return {prev, next};
+}
+
 /// Make sure all elements exists all the way to the root
 void TreeView2Private::initTree(const QModelIndex& parent)
 {
@@ -406,23 +438,72 @@ void TreeView2Private::cleanup()
     m_pRoot->m_hLookup.clear();
 }
 
+VolatileTreeItem* TreeView2::itemForIndex(const QModelIndex& idx) const
+{
+    if (!idx.isValid())
+        return nullptr;
+
+    if (!idx.parent().isValid()) {
+        const auto tti = d_ptr->m_pRoot->m_hLookup[idx];
+        return tti ? tti->m_pTreeItem : nullptr;
+    }
+
+    if (auto parent = d_ptr->m_hMapper[idx.parent()]) {
+        const auto tti = parent->m_hLookup[idx];
+        return tti ? tti->m_pTreeItem : nullptr;
+    }
+
+    return nullptr;
+}
+
 void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, int last)
 {
-    qDebug() << "\n\nADD" << first << last;
+//     qDebug() << "\n\nADD" << first << last;
+
     if (!isActive(parent, first, last))
         return;
-    qDebug() << "\n\nADD2" << q_ptr->width() << q_ptr->height();
+
+//     qDebug() << "\n\nADD2" << q_ptr->width() << q_ptr->height();
 
     auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
 
+    TreeTraversalItems *prev(nullptr), *next(nullptr);
+
     //FIXME support smaller ranges
-    for (int i = first; i <= last; i++)
-        addChildren(pitem, q_ptr->model()->index(i, 0, parent))
-            ->performAction(TreeTraversalItems::Action::ATTACH);
+    for (int i = first; i <= last; i++) {
+        auto e = addChildren(pitem, q_ptr->model()->index(i, 0, parent));
+        e->performAction(TreeTraversalItems::Action::ATTACH);
+
+        // Get the closest currently loaded element. Note that this is a sparse
+        // table, not all elements exist at any given time to allow very large
+        // models to have a static overhead instead of a linear one.
+        if (!prev) {
+            prev = pitem->siblingsFor(e).first;
+            next = prev ? prev->m_pNext : nullptr;
+        }
+
+        // Keep a dual chained linked list between the visual elements
+        e->m_pPrevious = prev ? prev : pitem; //FIXME incorrect
+
+        if (prev)
+            prev->m_pNext = e;
+
+        prev = e;
+    }
+
+    // Fix the linked list
+    if (next) {
+        next->m_pPrevious = prev;
+        next->performAction(TreeTraversalItems::Action::MOVE);
+    }
+
+    Q_EMIT q_ptr->contentChanged();
 }
 
 void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int last)
 {
+    Q_EMIT q_ptr->contentChanged();
+
     if (!isActive(parent, first, last))
         return;
 }
@@ -430,6 +511,7 @@ void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int
 void TreeView2Private::slotLayoutChanged()
 {
     cleanup();
+    Q_EMIT q_ptr->contentChanged();
 }
 
 void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int end,
@@ -438,7 +520,6 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     if ((!isActive(parent, start, end)) && !isActive(destination, row, row+(end-start)))
         return;
 }
-
 
 void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)
 {
@@ -453,6 +534,16 @@ bool VolatileTreeItem::performAction(Action a)
     bool ret    = (this->*m_fStateMachine[s][(int)a])();
 
     return ret;
+}
+
+QWeakPointer<VolatileTreeItem> VolatileTreeItem::reference() const
+{
+    if (!m_pSelf)
+        m_pSelf = QSharedPointer<VolatileTreeItem>(
+            const_cast<VolatileTreeItem*>(this)
+        );
+
+    return m_pSelf;
 }
 
 int VolatileTreeItem::depth() const
@@ -470,6 +561,18 @@ QModelIndex VolatileTreeItem::index() const
     return m_pParent->m_Index;
 }
 
+VolatileTreeItem* VolatileTreeItem::previous() const
+{
+    return m_pParent->m_pPrevious ?
+        m_pParent->m_pPrevious->m_pTreeItem : nullptr;
+}
+
+VolatileTreeItem* VolatileTreeItem::next() const
+{
+    return m_pParent->m_pNext ?
+        m_pParent->m_pNext->m_pTreeItem : nullptr;
+}
+
 bool VolatileTreeItem::nothing()
 {
     return true;
@@ -482,6 +585,10 @@ bool VolatileTreeItem::error()
 
 bool VolatileTreeItem::destroy()
 {
+    //TODO check if the item has references,  if it does, just release the shared
+    // pointer and move on.
+    m_pSelf = nullptr;
+
     //noreturn
 }
 
@@ -504,7 +611,7 @@ bool TreeTraversalItems::error()
 
 bool TreeTraversalItems::show()
 {
-    qDebug() << "SHOW";
+//     qDebug() << "SHOW";
 
     if (!m_pTreeItem) {
         m_pTreeItem = d_ptr->q_ptr->createItem();
@@ -519,13 +626,13 @@ bool TreeTraversalItems::show()
 
 bool TreeTraversalItems::hide()
 {
-    qDebug() << "HIDE";
+//     qDebug() << "HIDE";
     return true;
 }
 
 bool TreeTraversalItems::attach()
 {
-    qDebug() << "ATTACH" << (int)m_State;
+//     qDebug() << "ATTACH" << (int)m_State;
     performAction(Action::MOVE); //FIXME don't
     return performAction(Action::SHOW); //FIXME don't
 }
@@ -538,7 +645,7 @@ bool TreeTraversalItems::detach()
 bool TreeTraversalItems::refresh()
 {
     //
-    qDebug() << "REFRESH";
+//     qDebug() << "REFRESH";
 
     for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++)
         i.value()->performAction(TreeTraversalItems::Action::UPDATE);

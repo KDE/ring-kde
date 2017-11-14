@@ -24,6 +24,7 @@
 #include <QtCore/QAbstractItemModel>
 class QQmlComponent;
 class QQmlContext;
+class QItemSelectionModel;
 
 class FlickableViewPrivate;
 
@@ -45,6 +46,8 @@ public:
     Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
     Q_PROPERTY(Qt::Corner gravity READ gravity WRITE setGravity)
+    Q_PROPERTY(QQmlComponent* highlight READ highlight WRITE setHighlight)
+    Q_PROPERTY(QSharedPointer<QItemSelectionModel> selectionModel READ selectionModel WRITE setSelectionModel NOTIFY selectionModelChanged)
 
     explicit FlickableView(QQuickItem* parent = nullptr);
     virtual ~FlickableView();
@@ -60,6 +63,12 @@ public:
     Qt::Corner gravity() const;
     void setGravity(Qt::Corner g);
 
+    QQmlComponent* highlight() const;
+    void setHighlight(QQmlComponent* h);
+
+    QSharedPointer<QItemSelectionModel> selectionModel() const;
+    void setSelectionModel(QSharedPointer<QItemSelectionModel> m);
+
 protected:
     virtual void refresh();
     void applyRoles(QQmlContext* ctx, const QModelIndex& self) const;
@@ -67,6 +76,7 @@ protected:
 
 Q_SIGNALS:
     void modelChanged(QSharedPointer<QAbstractItemModel> model);
+    void selectionModelChanged() const;
 
 private:
     FlickableViewPrivate* d_ptr;

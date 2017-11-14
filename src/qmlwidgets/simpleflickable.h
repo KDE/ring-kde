@@ -46,7 +46,7 @@ public:
     virtual ~SimpleFlickable();
 
     qreal currentY() const;
-    void setCurrentY(qreal y);
+    virtual void setCurrentY(qreal y);
 
     qreal contentHeight() const;
 

@@ -55,9 +55,14 @@ public:
     };
 
     // Helpers
-    int depth() const;
-    TreeView2* view() const;
-    QModelIndex index() const;
+    int               depth   () const;
+    TreeView2*        view    () const;
+    QModelIndex       index   () const;
+    VolatileTreeItem* previous() const;
+    VolatileTreeItem* next    () const;
+
+    /// Allows to keep a reference while still being tracked by the state machine
+    QWeakPointer<VolatileTreeItem> reference() const;
 
     // Actions
     virtual bool attach () = 0;
@@ -80,6 +85,7 @@ private:
     typedef bool(VolatileTreeItem::*StateF)();
     State m_State {State::POOLED};
     TreeTraversalItems* m_pParent {nullptr};
+    mutable QSharedPointer<VolatileTreeItem> m_pSelf;
 
     static const State  m_fStateMap    [5][7];
     static const StateF m_fStateMachine[5][7];
@@ -169,11 +175,20 @@ public:
 protected:
     virtual void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 
+    /**
+     * Get the VolatileTreeItem associated with a model index.
+     *
+     * Note that if the index is not currently visible or buferred, it will
+     * return nullptr.
+     */
+    VolatileTreeItem* itemForIndex(const QModelIndex& idx) const;
+
 private:
     virtual VolatileTreeItem* createItem() const = 0;
 
 Q_SIGNALS:
     void modelChanged(QSharedPointer<QAbstractItemModel> model);
+    virtual void contentChanged() = 0;
 
 private:
     TreeView2Private* d_ptr;

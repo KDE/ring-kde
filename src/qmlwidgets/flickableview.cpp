@@ -19,15 +19,18 @@
 
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QtCore/QItemSelectionModel>
 
 class FlickableViewPrivate
 {
 public:
-    QSharedPointer<QAbstractItemModel> m_pModel      {nullptr};
-    QQmlComponent*                     m_pDelegate   {nullptr};
-    QQmlEngine*                        m_pEngine     {nullptr};
-    QQmlComponent*                     m_pComponent  {nullptr};
-    mutable QQmlContext*               m_pRootContext{nullptr};
+    QSharedPointer<QAbstractItemModel>  m_pModel          {nullptr};
+    QSharedPointer<QItemSelectionModel> m_pSelectionModel {nullptr};
+    QQmlComponent*                      m_pDelegate       {nullptr};
+    QQmlEngine*                         m_pEngine         {nullptr};
+    QQmlComponent*                      m_pComponent      {nullptr};
+    QQmlComponent*                      m_pHighlight      {nullptr};
+    mutable QQmlContext*                m_pRootContext    {nullptr};
 
     Qt::Corner m_Corner {Qt::TopLeftCorner};
 
@@ -51,6 +54,9 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
 {
     if (d_ptr->m_pModel == model)
         return;
+
+    if (d_ptr->m_pSelectionModel && d_ptr->m_pSelectionModel->model() != model)
+        d_ptr->m_pSelectionModel = nullptr;
 
     d_ptr->m_pModel = model;
     d_ptr->m_hRoleNames.clear();
@@ -95,6 +101,34 @@ QQmlContext* FlickableView::rootContext() const
         d_ptr->m_pRootContext = QQmlEngine::contextForObject(this);
 
     return d_ptr->m_pRootContext;
+}
+
+
+QQmlComponent* FlickableView::highlight() const
+{
+    return d_ptr->m_pHighlight;
+}
+
+void FlickableView::setHighlight(QQmlComponent* h)
+{
+    d_ptr->m_pHighlight = h;
+}
+
+QSharedPointer<QItemSelectionModel> FlickableView::selectionModel() const
+{
+    if (model() && !d_ptr->m_pSelectionModel) {
+        auto sm = new QItemSelectionModel(model().data());
+        d_ptr->m_pSelectionModel = QSharedPointer<QItemSelectionModel>(sm);
+        Q_EMIT selectionModelChanged();
+    }
+
+    return d_ptr->m_pSelectionModel;
+}
+
+void FlickableView::setSelectionModel(QSharedPointer<QItemSelectionModel> m)
+{
+    d_ptr->m_pSelectionModel = m;
+    Q_EMIT selectionModelChanged();
 }
 
 void FlickableView::refresh()
@@ -144,6 +178,9 @@ void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
 
 QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI, QQmlContext* parentCtx, const QModelIndex& self) const
 {
+    if (!delegate())
+        return {};
+
     // Create a context for the container, it's the only way to force anchors
     // to work
     auto pctx = new QQmlContext(parentCtx);

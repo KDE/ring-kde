@@ -24,6 +24,7 @@ class QQuickItem;
 class QQmlContext;
 
 class QuickTreeViewPrivate;
+class TreeViewPage;
 
 /**
  * Polymorphic tree item for the TreeView2.
@@ -48,8 +49,10 @@ public:
     virtual bool detach () override;
 
 private:
-    QQuickItem* m_pItem {nullptr};
+    QQuickItem* m_pItem     {nullptr};
     QQmlContext* m_pContent {nullptr};
+    TreeViewPage* m_pPage   {nullptr};
+
     QuickTreeViewPrivate* d() const;
 };
 
@@ -77,6 +80,9 @@ public:
 
     explicit QuickTreeView(QQuickItem* parent = nullptr);
     virtual ~QuickTreeView();
+
+Q_SIGNALS:
+    void contentChanged() final override;
 
 private:
     virtual VolatileTreeItem* createItem() const override;
