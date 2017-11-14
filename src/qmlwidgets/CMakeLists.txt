@@ -58,6 +58,7 @@ SET( libqmlwidgets_LIB_SRCS
     hierarchyview.cpp
     treeview2.cpp
     quicktreeview.cpp
+    quicklistview.cpp
     flickableview.cpp
     modelscrolladapter.cpp
     multicall.cpp

@@ -26,6 +26,7 @@
 #include "modelscrolladapter.h"
 #include "treehelper.h"
 #include "hierarchyview.h"
+#include "quicklistview.h"
 #include "quicktreeview.h"
 #include "multicall.h"
 #include "bindedcombobox.h"
@@ -40,6 +41,7 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
     qmlRegisterType<HierarchyView>(uri, 1, 0, "HierarchyView");
     qmlRegisterType<QuickTreeView>(uri, 1, 0, "QuickTreeView");
+    qmlRegisterType<QuickListView>(uri, 1, 0, "QuickListView");
     qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
     qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
     qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
@@ -48,4 +50,9 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<BindedComboBox>(uri, 1, 0, "BindedComboBox");
     qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
     qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
+
+    qmlRegisterUncreatableType<QuickListViewSections>("Ring", 1,0,
+        "QuickListViewSections", "QuickListViewSections cannot be instanciated"
+    );
+//     qmlRegisterType<QuickListViewSections>(uri, 1, 0, "QuickListViewSections");
 }
