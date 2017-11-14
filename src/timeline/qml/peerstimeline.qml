@@ -144,11 +144,11 @@ Rectangle {
                 }
             }
 
-            ListView {
+            QuickListView {
                 id: recentView
                 clip: true
                 anchors.fill: parent
-                highlightMoveVelocity: Infinity //HACK
+//                 highlightMoveVelocity: Infinity //HACK
                 delegate: contactDelegate
                 section.delegate: sectionDelegate
                 section.property: "formattedLastUsed" // indexedLastUsed

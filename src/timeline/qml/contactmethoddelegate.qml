@@ -119,7 +119,7 @@ Item {
                     font.bold : true
                     Layout.fillWidth: true
                     anchors.verticalCenter: parent.verticalCenter
-                    color: componentItem.ListView.isCurrentItem ?
+                    color: isCurrentItem ?
                         activePalette.highlightedText : activePalette.text
                 }
             }
@@ -138,7 +138,7 @@ Item {
                 leftPadding: 10
 
                 verticalAlignment: Text.AlignVCenter
-                color: componentItem.ListView.isCurrentItem ?
+                color: isCurrentItem ?
                     activePalette.highlightedText : inactivePalette.text
             }
 
@@ -158,7 +158,7 @@ Item {
                 leftPadding: 10
 
                 verticalAlignment: Text.AlignVCenter
-                color: componentItem.ListView.isCurrentItem ?
+                color: isCurrentItem ?
                     activePalette.highlightedText : inactivePalette.text
             }
 
