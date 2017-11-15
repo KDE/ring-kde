@@ -456,6 +456,16 @@ VolatileTreeItem* TreeView2::itemForIndex(const QModelIndex& idx) const
     return nullptr;
 }
 
+void TreeView2::reload()
+{
+    qDebug() << "\n\n\nRELOAD!" << d_ptr->m_hMapper.size();
+
+    if (d_ptr->m_hMapper.isEmpty())
+        return;
+
+
+}
+
 void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, int last)
 {
 //     qDebug() << "\n\nADD" << first << last;
@@ -472,7 +482,6 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
     //FIXME support smaller ranges
     for (int i = first; i <= last; i++) {
         auto e = addChildren(pitem, q_ptr->model()->index(i, 0, parent));
-        e->performAction(TreeTraversalItems::Action::ATTACH);
 
         // Get the closest currently loaded element. Note that this is a sparse
         // table, not all elements exist at any given time to allow very large
@@ -483,10 +492,14 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         }
 
         // Keep a dual chained linked list between the visual elements
-        e->m_pPrevious = prev ? prev : pitem; //FIXME incorrect
+        e->m_pPrevious = prev ? prev : nullptr; //FIXME incorrect
+
+        Q_ASSERT( e->m_pPrevious || e->m_Index.row() == 0);
 
         if (prev)
             prev->m_pNext = e;
+
+        e->performAction(TreeTraversalItems::Action::ATTACH);
 
         prev = e;
     }

@@ -23,6 +23,31 @@
 #include <QtCore/QItemSelectionModel>
 
 class QuickListViewPrivate;
+class QuickListViewItem;
+
+/**
+ * Holds the metadata associated with a section.
+ *
+ * A section is created when a QuickListViewItem has a property that differs
+ * from the previous QuickListViewItem in the list. It can also cross reference
+ * into an external model to provide more flexibility.
+ */
+struct QuickListViewSection
+{
+    QuickListViewSection(
+        QQmlComponent* component,
+        QuickListViewItem* owner,
+        const QVariant& value
+    );
+
+    QuickListViewItem*    m_pOwner   {nullptr};
+    QQuickItem*           m_pItem    {nullptr};
+    QQmlContext*          m_pContent {nullptr};
+    int                   m_Index    {   0   };
+    int                   m_RefCount {   1   };
+    QVariant              m_Value    {       };
+    QPersistentModelIndex m_ExtIndex {       };
+};
 
 /**
  */
@@ -39,19 +64,12 @@ public:
     virtual bool flush  () override;
     virtual bool detach () override;
 
-    QQuickItem*  m_pItem    {nullptr};
-    QQmlContext* m_pContent {nullptr};
+    QQuickItem*           m_pItem    {nullptr};
+    QQmlContext*          m_pContent {nullptr};
+    QuickListViewSection* m_pSection {nullptr};
 
 private:
     QuickListViewPrivate* d() const;
-};
-
-class QuickListViewSectionsPrivate
-{
-public:
-    QQmlComponent* m_pDelegate {nullptr};
-    QString        m_Property;
-    QStringList    m_Roles;
 };
 
 class QuickListViewPrivate : public QObject
@@ -61,10 +79,19 @@ public:
 
     // When all elements are assumed to have the same height, life is easy
     QVector<qreal> m_DepthChart {0};
-    QuickListViewSections* m_pSection {nullptr};
+    QuickListViewSections* m_pSections {nullptr};
     QSharedPointer<QItemSelectionModel> m_pSelectionModel {nullptr};
     QQuickItem* m_pSelectedItem {nullptr};
     QWeakPointer<VolatileTreeItem> m_pSelectedViewItem;
+
+    // Sections
+    QQmlComponent* m_pDelegate {nullptr};
+    QString        m_Property;
+    QStringList    m_Roles;
+    int            m_CachedRole {0};
+
+    // Helpers
+    QuickListViewSection* getSection(QuickListViewItem* i);
 
     QuickListView* q_ptr;
 
@@ -110,12 +137,15 @@ void QuickListView::setCurrentIndex(int index)
 
 QuickListViewSections* QuickListView::section() const
 {
-    if (!d_ptr->m_pSection)
-        d_ptr->m_pSection = new QuickListViewSections(
+    if (!d_ptr->m_pSections) {
+        d_ptr->m_pSections = new QuickListViewSections(
             const_cast<QuickListView*>(this)
         );
 
-    return d_ptr->m_pSection;
+        const_cast<QuickListView*>(this)->reload();
+    }
+
+    return d_ptr->m_pSections;
 }
 
 VolatileTreeItem* QuickListView::createItem() const
@@ -125,7 +155,6 @@ VolatileTreeItem* QuickListView::createItem() const
 
 void QuickListViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
 {
-    qDebug() << "\n\nSET SELECTION" << idx;
 
     if ((!idx.isValid()) && !m_pSelectedItem)
         return;
@@ -198,6 +227,58 @@ void QuickListViewPrivate::slotSelectionModelChanged()
     );
 }
 
+QuickListViewSection::QuickListViewSection(
+    QQmlComponent* component,
+    QuickListViewItem* owner,
+    const QVariant& value
+)
+{
+    m_pOwner = owner;
+    m_Value  = value;
+
+    m_pContent = new QQmlContext(owner->view()->rootContext());
+    m_pContent->setContextProperty("section", value);
+
+    m_pItem = qobject_cast<QQuickItem*>(component->create(
+        m_pContent
+    ));
+
+    m_pItem->setParentItem(owner->view()->contentItem());
+}
+
+/**
+ * No lookup is performed, it is based on the previous entry and nothing else.
+ *
+ * This view only supports list. If it's with a tree, it will break and "don't
+ * do this".
+ */
+QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
+{
+    if (m_pSections->property().isEmpty() || !m_pDelegate)
+        return nullptr;
+
+    const auto prev = static_cast<QuickListViewItem*>(i->previous());
+
+    if ((!prev) && i->index().row() > 0) {
+        Q_ASSERT(false); //TODO when GC is enabled, the assert is to make sure I don't forget
+    }
+
+    const auto val = q_ptr->model()->data(i->index(), m_pSections->role());
+
+    if (prev && prev->m_pSection && prev->m_pSection->m_Value == val) {
+        i->m_pSection = prev->m_pSection;
+        i->m_pSection->m_RefCount++;
+        return prev->m_pSection;
+    }
+
+    i->m_pSection = new QuickListViewSection(m_pDelegate, i, val);
+    q_ptr->rootContext()->engine()->setObjectOwnership(
+        i->m_pSection->m_pItem, QQmlEngine::CppOwnership
+    );
+
+    return i->m_pSection;
+}
+
 QuickListViewItem::QuickListViewItem() : VolatileTreeItem()
 {
 }
@@ -236,27 +317,51 @@ bool QuickListViewItem::attach()
 
 bool QuickListViewItem::refresh()
 {
+    if (m_pContent)
+        d()->q_ptr->applyRoles(m_pContent, index());
+
     return true;
 }
 
 bool QuickListViewItem::move()
 {
+    const auto prev = static_cast<QuickListViewItem*>(previous());
+
+    const QQuickItem* prevItem = nullptr;
+
+    if (auto sec = d()->getSection(this)) {
+        if (sec->m_pOwner == this && sec->m_pItem) {
+            if (prev && prev->m_pItem) {
+                auto anchors = qvariant_cast<QObject*>(sec->m_pItem->property("anchors"));
+                anchors->setProperty("top", prev->m_pItem->property("bottom"));
+            }
+            else {
+                sec->m_pItem->setY(0);
+            }
+
+            if (!sec->m_pItem->width())
+                sec->m_pItem->setWidth(view()->contentItem()->width());
+
+            prevItem = sec->m_pItem;
+        }
+    }
 
     const qreal y = d()->m_DepthChart.first()*index().row();
 
-    m_pItem->setWidth(view()->contentItem()->width());
+    if (!m_pItem->width())
+        m_pItem->setWidth(view()->contentItem()->width());
 
 //     qDebug() << "MOVE" <<  view()->width() << previous();
 
     // So other items can be GCed without always resetting to 0x0, note that it
     // might be a good idea to extend SimpleFlickable to support a virtual
     // origin point.
-    if (!previous())
+    if (!prev)
         m_pItem->setY(y);
-    else if (auto otheri = static_cast<QuickListViewItem*>(previous())->m_pItem) {
+    else if (auto otheri = prev->m_pItem) {
 //         qDebug() << "SET ANCHORS";
         auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
-        anchors->setProperty("top", otheri->property("bottom"));
+        anchors->setProperty("top", (prevItem ? prevItem : otheri)->property("bottom"));
     }
     else
         Q_ASSERT(false); // The chain must be corrupted
@@ -274,16 +379,18 @@ bool QuickListViewItem::flush()
 
 bool QuickListViewItem::detach()
 {
+    if (m_pSection && --m_pSection->m_RefCount >= 0)
+        delete m_pSection;
+
     //TODO move back into treeview2
     //TODO check if the item has references, if it does, just release the shared
     // pointer and move on.
     return true;
 }
 
-QuickListViewSections::QuickListViewSections(QObject* parent) : QObject(parent),
-    d_ptr(new QuickListViewSectionsPrivate)
+QuickListViewSections::QuickListViewSections(QuickListView* parent) :
+    QObject(parent), d_ptr(parent->d_ptr)
 {
-
 }
 
 QuickListViewSections::~QuickListViewSections()
@@ -304,6 +411,24 @@ void QuickListViewSections::setDelegate(QQmlComponent* component)
 QString QuickListViewSections::property() const
 {
     return d_ptr->m_Property;
+}
+
+int QuickListViewSections::role() const
+{
+    if (d_ptr->m_Property.isEmpty() || !d_ptr->q_ptr->model())
+        return Qt::DisplayRole;
+
+    if (d_ptr->m_CachedRole)
+        return d_ptr->m_CachedRole;
+
+    const auto roles = d_ptr->q_ptr->model()->roleNames();
+
+    if (!(d_ptr->m_CachedRole = roles.key(d_ptr->m_Property.toLatin1()))) {
+        qWarning() << d_ptr->m_Property << "is not a model property";
+        return Qt::DisplayRole;
+    }
+
+    return d_ptr->m_CachedRole;
 }
 
 void QuickListViewSections::setProperty(const QString& property)

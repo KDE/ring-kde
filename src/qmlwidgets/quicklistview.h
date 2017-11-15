@@ -24,8 +24,7 @@ class QQuickItem;
 class QQmlContext;
 
 class QuickListViewPrivate;
-class QuickListViewSectionsPrivate;
-class TreeViewPage;
+class QuickListView;
 
 /**
  * Equivalent of the QtQuick.ListView.Section class to keep the API mostly
@@ -34,12 +33,15 @@ class TreeViewPage;
 class QuickListViewSections : public QObject
 {
     Q_OBJECT
+
+    friend class QuickListView;
 public:
     Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
     Q_PROPERTY(QString        property READ property WRITE setProperty)
     Q_PROPERTY(QStringList    roles    READ roles    WRITE setRoles   )
+    Q_PROPERTY(int            role     READ role                      )
 
-    explicit QuickListViewSections(QObject* parent);
+    explicit QuickListViewSections(QuickListView* parent);
     virtual ~QuickListViewSections();
 
     QQmlComponent* delegate() const;
@@ -51,9 +53,10 @@ public:
     QStringList roles() const;
     void setRoles(const QStringList& list);
 
+    int role() const;
+
 private:
-    QuickListViewSectionsPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(QuickListViewSections)
+    QuickListViewPrivate* d_ptr;
 };
 
 Q_DECLARE_METATYPE(QuickListViewSections*)
@@ -80,6 +83,7 @@ class QuickListView : public TreeView2
     Q_OBJECT
 
     friend class QuickListViewItem;
+    friend class QuickListViewSections;
 public:
     Q_PROPERTY(QuickListViewSections* section READ section CONSTANT)
     Q_PROPERTY(int count READ count NOTIFY contentChanged)

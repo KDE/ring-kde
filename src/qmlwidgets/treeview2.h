@@ -183,6 +183,9 @@ protected:
      */
     VolatileTreeItem* itemForIndex(const QModelIndex& idx) const;
 
+    /// To be used with moderation. Necessary when the delegate is replaced.
+    void reload();
+
 private:
     virtual VolatileTreeItem* createItem() const = 0;
 
