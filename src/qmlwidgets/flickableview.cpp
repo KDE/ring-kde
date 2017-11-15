@@ -34,9 +34,10 @@ public:
 
     Qt::Corner m_Corner {Qt::TopLeftCorner};
 
-    mutable QHash<int, QString>        m_hRoleNames{       };
+    mutable QHash<int, QString> m_hRoleNames;
+    mutable QHash<const QAbstractItemModel*, QHash<int, QString>*> m_hhOtherRoleNames;
 
-    void reloadRoleNames() const;
+    QHash<int, QString>* reloadRoleNames(const QModelIndex& index) const;
 };
 
 FlickableView::FlickableView(QQuickItem* parent) : SimpleFlickable(parent),
@@ -147,27 +148,39 @@ void FlickableView::refresh()
  * If this wasn't done, it would cause millions of QByteArray->QString temporary
  * allocations.
  */
-void FlickableViewPrivate::reloadRoleNames() const
+QHash<int, QString>* FlickableViewPrivate::reloadRoleNames(const QModelIndex& index) const
 {
     if (!m_pModel)
-        return;
+        return nullptr;
 
-    m_hRoleNames.clear();
+    const auto m = index.model() ? index.model() : m_pModel.data();
 
-    const auto roleNames = m_pModel->roleNames();
+    auto* hash = m == m_pModel ? &m_hRoleNames : m_hhOtherRoleNames.value(m);
+
+    if (!hash)
+        m_hhOtherRoleNames[m] = hash = new QHash<int, QString>;
+
+    hash->clear();
+
+    const auto roleNames = m->roleNames();
 
     for (auto i = roleNames.constBegin(); i != roleNames.constEnd(); ++i)
-        m_hRoleNames[i.key()] = i.value();
+        (*hash)[i.key()] = i.value();
+
+    return hash;
 }
 
 void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
 {
+    auto* hash = self.model() == d_ptr->m_pModel ?
+        &d_ptr->m_hRoleNames : d_ptr->m_hhOtherRoleNames.value(self.model());
+
     // Refresh the cache
-    if (model()->roleNames().size() != d_ptr->m_hRoleNames.size())
-        d_ptr->reloadRoleNames();
+    if ((!hash) || model()->roleNames().size() != hash->size())
+        hash = d_ptr->reloadRoleNames(self);
 
     // Add all roles to the
-    for (auto i = d_ptr->m_hRoleNames.constBegin(); i != d_ptr->m_hRoleNames.constEnd(); ++i)
+    for (auto i = hash->constBegin(); i != hash->constEnd(); ++i)
         ctx->setContextProperty(i.value() , self.data(i.key()));
 
     // Set extra index to improve ListView compatibility

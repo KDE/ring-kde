@@ -29,6 +29,10 @@ class QuickListView;
 /**
  * Equivalent of the QtQuick.ListView.Section class to keep the API mostly
  * compatible.
+ *
+ * A section model can be set. If it does, this class doesn't do *any* check if
+ * the section model matches the sections. It is entirely the responsibility of
+ * the programmer to provide a valid/compatible model.
  */
 class QuickListViewSections : public QObject
 {
@@ -41,6 +45,8 @@ public:
     Q_PROPERTY(QStringList    roles    READ roles    WRITE setRoles   )
     Q_PROPERTY(int            role     READ role                      )
 
+    Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel)
+
     explicit QuickListViewSections(QuickListView* parent);
     virtual ~QuickListViewSections();
 
@@ -52,6 +58,9 @@ public:
 
     QStringList roles() const;
     void setRoles(const QStringList& list);
+
+    QSharedPointer<QAbstractItemModel> model() const;
+    void setModel(const QSharedPointer<QAbstractItemModel>& m);
 
     int role() const;
 

@@ -22,7 +22,7 @@ import RingQmlWidgets 1.0
 
 Text {
     anchors.margins:10
-    text: section + ", <b>Sep 8</b>"
+    text: section + ", <b>" + recentDate.toLocaleString(Qt.locale(), "d MMM") + "</b>"
     leftPadding: 10
     rightPadding: 10
     height: 3*fontMetrics.height

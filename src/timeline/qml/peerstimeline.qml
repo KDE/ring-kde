@@ -152,6 +152,7 @@ Rectangle {
                 delegate: contactDelegate
                 section.delegate: sectionDelegate
                 section.property: "formattedLastUsed" // indexedLastUsed
+                section.model: PeersTimelineModel.timelineSummaryModel
                 highlight: Item {
 
                     anchors.topMargin: 5
