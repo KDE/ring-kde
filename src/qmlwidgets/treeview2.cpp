@@ -92,17 +92,23 @@ struct TreeTraversalItems
     QHash<QPersistentModelIndex, TreeTraversalItems*> m_hLookup;
 
     uint m_Depth {0};
-    TreeTraversalItems* m_pParent;
     State m_State {State::BUFFER};
+
+    // Keep the parent to be able to get back to the root
+    TreeTraversalItems* m_pParent;
+
+    // There is no need to keep an ordered vector, random access is not
+    // necessary. However to keep the double chained list in sync, the edges
+    // are.
     TreeTraversalItems* m_pFirstChild {nullptr};
     TreeTraversalItems* m_pLastChild {nullptr};
+
+    // Those are only for the elements in the same depth level
     TreeTraversalItems* m_pPrevious {nullptr};
     TreeTraversalItems* m_pNext {nullptr};
+
     QPersistentModelIndex m_Index;
     VolatileTreeItem* m_pTreeItem {nullptr};
-
-    // Helpers
-    QPair<TreeTraversalItems* , TreeTraversalItems*> siblingsFor(TreeTraversalItems* child) const;
 
     TreeView2Private* d_ptr;
 };
@@ -179,6 +185,9 @@ public:
     void initTree(const QModelIndex& parent);
     TreeTraversalItems* addChildren(TreeTraversalItems* parent, const QModelIndex& index);
     void cleanup();
+
+    // Tests
+    void _test_validateTree(TreeTraversalItems* p);
 
     TreeView2* q_ptr;
 
@@ -267,7 +276,7 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
         &TreeView2Private::slotDataChanged  );
 
     if (auto rc = m->rowCount())
-        d_ptr->slotRowsInserted({}, 0, rc);
+        d_ptr->slotRowsInserted({}, 0, rc - 1);
 }
 
 bool TreeView2::hasUniformRowHeight() const
@@ -360,6 +369,8 @@ void TreeView2::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeom
 /// Return true if the indices affect the current view
 bool TreeView2Private::isActive(const QModelIndex& parent, int first, int last)
 {
+    return true; //FIXME
+
     if (m_State == State::UNFILLED)
         return true;
 
@@ -384,43 +395,16 @@ bool TreeView2Private::isActive(const QModelIndex& parent, int first, int last)
 /// Add new entries to the mapping
 TreeTraversalItems* TreeView2Private::addChildren(TreeTraversalItems* parent, const QModelIndex& index)
 {
+    Q_ASSERT(index.isValid());
+    Q_ASSERT(index.parent() != index);
+
     auto e = new TreeTraversalItems(parent, this);
     e->m_Index = index;
 
     m_hMapper        [index] = e;
     parent->m_hLookup[index] = e;
 
-    if ((!parent->m_pFirstChild) || index.row() <= parent->m_pFirstChild->m_Index.row())
-        parent->m_pFirstChild = e;
-
-    if ((!parent->m_pLastChild) || index.row() > parent->m_pLastChild->m_Index.row())
-        parent->m_pLastChild = e;
-
     return e;
-}
-
-/// Get the closest loaded TreeTraversalItems from the parent
-QPair<TreeTraversalItems* , TreeTraversalItems*>
-TreeTraversalItems::siblingsFor(TreeTraversalItems* child) const
-{
-    TreeTraversalItems *prev(nullptr), *next(nullptr);
-
-    // Previous
-    if (m_pLastChild && m_pLastChild->m_Index.row() < child->m_Index.row())
-        prev = m_pLastChild;
-    else if (child->m_Index.row() > 1 && (
-        prev = m_hLookup[d_ptr->q_ptr->model()->index(child->m_Index.row() -1, 0, m_Index)]
-    ))
-        prev = prev;
-    else if (child->m_Index.row() > 0) {
-        Q_ASSERT(false); //TODO
-        //
-    }
-    // else: prev is nullptr, it's the first
-
-    //TODO next
-
-    return {prev, next};
 }
 
 /// Make sure all elements exists all the way to the root
@@ -458,12 +442,89 @@ VolatileTreeItem* TreeView2::itemForIndex(const QModelIndex& idx) const
 
 void TreeView2::reload()
 {
-    qDebug() << "\n\n\nRELOAD!" << d_ptr->m_hMapper.size();
-
     if (d_ptr->m_hMapper.isEmpty())
         return;
 
 
+}
+
+void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
+{
+    // First, let's check the linked list to avoid running more test on really
+    // corrupted data
+    if (auto i = p->m_pFirstChild) {
+        auto idx = i->m_Index;
+
+        while ((i = i->m_pNext)) {
+            Q_ASSERT(i->m_pPrevious->m_Index == idx);
+            Q_ASSERT(i->m_Index.row() == idx.row()+1);
+            Q_ASSERT(i->m_pPrevious->m_pNext == i);
+            idx = i->m_Index;
+        }
+    }
+
+    // Do that again in the other direction
+    if (auto i = p->m_pLastChild) {
+        auto idx = i->m_Index;
+
+        while ((i = i->m_pPrevious)) {
+            Q_ASSERT(i->m_pNext->m_Index == idx);
+            Q_ASSERT(i->m_Index.row() == idx.row()-1);
+            Q_ASSERT(i->m_pNext->m_pPrevious == i);
+            idx = i->m_Index;
+        }
+    }
+
+    //TODO remove once stable
+    // Brute force recursive validations
+    TreeTraversalItems *old(nullptr), *newest(nullptr);
+    for (auto i = p->m_hLookup.constBegin(); i != p->m_hLookup.constEnd(); i++) {
+        if ((!newest) || i.key().row() < newest->m_Index.row())
+            newest = i.value();
+
+        if ((!old) || i.key().row() > old->m_Index.row())
+            old = i.value();
+
+        // Test the indices
+        Q_ASSERT(i.key().internalPointer() == i.value()->m_Index.internalPointer());
+        Q_ASSERT((p->m_Index.isValid()) || p->m_Index.internalPointer() != i.key().internalPointer());
+        Q_ASSERT(old == i.value() || old->m_Index.row() > i.key().row());
+        Q_ASSERT(newest == i.value() || newest->m_Index.row() < i.key().row());
+
+        // Test that there is no trivial duplicate TreeTraversalItems for the same index
+        if(i.value()->m_pPrevious && i.value()->m_pPrevious->m_hLookup.isEmpty()) {
+            Q_ASSERT(i.value()->m_pTreeItem->previous()->m_pParent == i.value()->m_pPrevious);
+            Q_ASSERT(i.value()->m_pTreeItem->previous()->next()->m_pParent == i.value());
+        }
+
+        // Test the virtual linked list between the leafs and branches
+        if(auto next = i.value()->m_pTreeItem->next()) {
+            Q_ASSERT(next->previous() == i.value()->m_pTreeItem);
+            Q_ASSERT(next->m_pParent != i.value());
+        }
+        else {
+            // There is always a next is those conditions are not met
+            Q_ASSERT(i.value()->m_hLookup.isEmpty());
+            Q_ASSERT(!i.value()->m_pNext);
+        }
+
+        if(auto prev = i.value()->m_pTreeItem->previous()) {
+            Q_ASSERT(prev->next() == i.value()->m_pTreeItem);
+            Q_ASSERT(prev->m_pParent != i.value());
+        }
+        else {
+            // There is always a previous if those conditions are not met
+            Q_ASSERT(!i.value()->m_pPrevious);
+            Q_ASSERT(!i.value()->m_pParent->m_pTreeItem);
+        }
+
+        _test_validateTree(i.value());
+    }
+
+    // Test that the list edges are valid
+    Q_ASSERT(!(!!p->m_pLastChild ^ !!p->m_pFirstChild));
+    Q_ASSERT(p->m_pLastChild  == old);
+    Q_ASSERT(p->m_pFirstChild == newest);
 }
 
 void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, int last)
@@ -477,19 +538,18 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
 
     auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
 
-    TreeTraversalItems *prev(nullptr), *next(nullptr);
+    TreeTraversalItems *prev(nullptr);
+
+    //FIXME use previous()
+    if (first && pitem)
+        prev = pitem->m_hLookup.value(q_ptr->model()->index(first-1, 0, parent));
 
     //FIXME support smaller ranges
     for (int i = first; i <= last; i++) {
-        auto e = addChildren(pitem, q_ptr->model()->index(i, 0, parent));
+        auto idx = q_ptr->model()->index(i, 0, parent);
+        Q_ASSERT(idx.parent() != idx);
 
-        // Get the closest currently loaded element. Note that this is a sparse
-        // table, not all elements exist at any given time to allow very large
-        // models to have a static overhead instead of a linear one.
-        if (!prev) {
-            prev = pitem->siblingsFor(e).first;
-            next = prev ? prev->m_pNext : nullptr;
-        }
+        auto e = addChildren(pitem, idx);
 
         // Keep a dual chained linked list between the visual elements
         e->m_pPrevious = prev ? prev : nullptr; //FIXME incorrect
@@ -501,14 +561,42 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
 
         e->performAction(TreeTraversalItems::Action::ATTACH);
 
+        if ((!pitem->m_pFirstChild) || e->m_Index.row() <= pitem->m_pFirstChild->m_Index.row()) {
+            Q_ASSERT(pitem != e);
+            pitem->m_pFirstChild = e;
+            if (auto pe = e->m_pTreeItem->previous())
+                pe->performAction(VolatileTreeItem::Action::MOVE);
+        }
+
+        if ((!pitem->m_pLastChild) || e->m_Index.row() > pitem->m_pLastChild->m_Index.row()) {
+            Q_ASSERT(pitem != e);
+            pitem->m_pLastChild = e;
+            if (auto ne = e->m_pTreeItem->next())
+                ne->performAction(VolatileTreeItem::Action::MOVE);
+        }
+
+        if (auto rc = q_ptr->model()->rowCount(idx))
+            slotRowsInserted(idx, 0, rc-1);
+
         prev = e;
     }
 
-    // Fix the linked list
-    if (next) {
-        next->m_pPrevious = prev;
-        next->performAction(TreeTraversalItems::Action::MOVE);
+    if ((!pitem->m_pLastChild) || last > pitem->m_pLastChild->m_Index.row())
+        pitem->m_pLastChild = prev;
+
+    Q_ASSERT(pitem->m_pLastChild);
+
+    //FIXME use next()
+    if (q_ptr->model()->rowCount(parent) > last) {
+        if (auto i = pitem->m_hLookup.value(q_ptr->model()->index(last+1, 0, parent))) {
+            i->m_pPrevious = prev;
+            prev->m_pNext = i;
+        }
+//         else //FIXME it happens
+//             Q_ASSERT(false);
     }
+
+    _test_validateTree(m_pRoot);
 
     Q_EMIT q_ptr->contentChanged();
 }
@@ -574,16 +662,69 @@ QModelIndex VolatileTreeItem::index() const
     return m_pParent->m_Index;
 }
 
+/**
+ * Flatten the tree as a linked list
+ */
 VolatileTreeItem* VolatileTreeItem::previous() const
 {
-    return m_pParent->m_pPrevious ?
-        m_pParent->m_pPrevious->m_pTreeItem : nullptr;
+    // Another simple case, there is no parent
+    if (!m_pParent->m_pParent) {
+        Q_ASSERT(!index().parent().isValid()); //TODO remove, no longer true when partial loading is implemented
+
+        return nullptr;
+    }
+
+    // The parent has no previous siblings, therefor it is directly above the item
+    if (!m_pParent->m_pPrevious) {
+        Q_ASSERT(index().row() == 0);
+
+        // This is the root, there is no previous element
+        if (!m_pParent->m_pParent->m_pTreeItem) {
+            Q_ASSERT(!index().parent().isValid());
+            return nullptr;
+        }
+
+        return m_pParent->m_pParent->m_pTreeItem;
+    }
+
+    auto i = m_pParent->m_pPrevious;
+
+    while (i->m_pLastChild)
+        i = i->m_pLastChild;
+
+    return i->m_pTreeItem;
+
+    return nullptr;
 }
 
 VolatileTreeItem* VolatileTreeItem::next() const
 {
-    return m_pParent->m_pNext ?
-        m_pParent->m_pNext->m_pTreeItem : nullptr;
+
+    if (m_pParent->m_pFirstChild) {
+        Q_ASSERT(m_pParent->m_pFirstChild->m_Index.row() == 0);
+        return m_pParent->m_pFirstChild->m_pTreeItem;
+    }
+
+    auto i = m_pParent;
+
+    // Recursively unwrap the tree until an element is found
+    while(i) {
+        if (i->m_pNext) {
+//             Q_ASSERT(i->m_pNext->m_pTreeItem->previous() == this);
+            return i->m_pNext->m_pTreeItem;
+        }
+
+        i = i->m_pParent;
+    }
+
+    // Can't happen, exists to detect corrupted code
+    if (m_pParent->m_Index.parent().isValid()) {
+        Q_ASSERT(m_pParent->m_pParent);
+        Q_ASSERT(m_pParent->m_pParent->m_pParent->m_hLookup.size()
+            == m_pParent->m_Index.parent().row()+1);
+    }
+
+    return nullptr;
 }
 
 bool VolatileTreeItem::nothing()

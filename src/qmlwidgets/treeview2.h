@@ -41,6 +41,7 @@ class VolatileTreeItem
 {
     friend class TreeView2;
     friend class TreeTraversalItems;
+    friend class TreeView2Private;
 public:
 
     explicit VolatileTreeItem() {}
@@ -72,7 +73,7 @@ public:
     virtual bool detach () = 0;
 
 private:
-    enum class Action {
+    enum class Action { //TODO make this private to TreeView2Private
         ATTACH       = 0, /*!< Activate the element (do not sync it) */
         ENTER_BUFFER = 1, /*!< Sync all roles                        */
         ENTER_VIEW   = 2, /*!< NOP (todo)                            */
