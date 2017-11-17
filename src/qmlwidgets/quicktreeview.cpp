@@ -75,11 +75,16 @@ QuickTreeViewPrivate* QuickTreeViewItem::d() const
 
 bool QuickTreeViewItem::attach()
 {
+    if (!view()->delegate())
+        return true;
+
     auto pair = static_cast<QuickTreeView*>(view())->loadDelegate(
         view()->contentItem(),
         view()->rootContext(),
         index()
     );
+
+    qDebug() << view()->model();
 
     d()->m_DepthChart[depth()] = std::max(
         d()->m_DepthChart[depth()],
@@ -100,27 +105,29 @@ bool QuickTreeViewItem::refresh()
 bool QuickTreeViewItem::move()
 {
 
-    const qreal y = d()->m_DepthChart.first()*index().row();
-
     m_pItem->setWidth(view()->contentItem()->width());
 
-    qDebug() << "MOVE" <<  view()->width() << previous();
+    if (index().parent().isValid())
+        Q_ASSERT(previous());
 
     // So other items can be GCed without always resetting to 0x0, note that it
     // might be a good idea to extend SimpleFlickable to support a virtual
     // origin point.
-    if (!previous())
-        m_pItem->setY(y);
+    if (!previous()) {
+        m_pItem->setY(0);
+    }
     else if (auto otheri = static_cast<QuickTreeViewItem*>(previous())->m_pItem) {
-        qDebug() << "SET ANCHORS";
         auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
         anchors->setProperty("top", otheri->property("bottom"));
     }
-    else
-        Q_ASSERT(false); // The chain must be corrupted
 
-    if (view()->contentItem()->height() < y+m_pItem->height())
-        view()->contentItem()->setHeight(y+m_pItem->height());
+    // Now, update the next anchors
+    if (auto n = static_cast<QuickTreeViewItem*>(next())) {
+        auto anchors = qvariant_cast<QObject*>(n->m_pItem->property("anchors"));
+        anchors->setProperty("top", m_pItem->property("bottom"));
+    }
+
+    view()->contentItem()->setHeight(10000); //FIXME
 
     return true;
 }

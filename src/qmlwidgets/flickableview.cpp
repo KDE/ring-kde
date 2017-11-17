@@ -68,6 +68,14 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
     setCurrentY(contentHeight());
 }
 
+void FlickableView::setRawModel(QAbstractItemModel* m)
+{
+    //FIXME blatant leak
+    auto p = new QSharedPointer<QAbstractItemModel>(m);
+
+    setModel(*p);
+}
+
 QSharedPointer<QAbstractItemModel> FlickableView::model() const
 {
     return d_ptr->m_pModel;

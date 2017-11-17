@@ -44,6 +44,7 @@ class FlickableView : public SimpleFlickable
 
 public:
     Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)
+    Q_PROPERTY(QAbstractItemModel* rawModel WRITE setRawModel)
     Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
     Q_PROPERTY(Qt::Corner gravity READ gravity WRITE setGravity)
     Q_PROPERTY(QQmlComponent* highlight READ highlight WRITE setHighlight)
@@ -54,6 +55,7 @@ public:
 
     virtual void setModel(QSharedPointer<QAbstractItemModel> model);
     QSharedPointer<QAbstractItemModel> model() const;
+    void setRawModel(QAbstractItemModel* m);
 
     virtual void setDelegate(QQmlComponent* delegate);
     QQmlComponent* delegate() const;

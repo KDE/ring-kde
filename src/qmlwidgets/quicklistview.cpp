@@ -293,13 +293,14 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
     // Create a section
     i->m_pSection = new QuickListViewSection(i, val);
 
-    static int count =0;
-
     // Update the double linked list
     if (prev && prev->m_pSection) {
         prev->m_pSection->m_pNext  = i->m_pSection;
         i->m_pSection->m_pPrevious = prev->m_pSection;
         i->m_pSection->m_Index     = prev->m_pSection->m_Index + 1;
+
+        Q_ASSERT(prev->m_pSection != prev->m_pSection->m_pNext);
+        Q_ASSERT(i->m_pSection->m_pPrevious !=  i->m_pSection);
     }
 
     m_pFirstSection = m_pFirstSection || (!prev) ?
@@ -329,8 +330,10 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
 void QuickListViewPrivate::reloadSectionIndices() const
 {
     int idx = 0;
-    for (auto i = m_pFirstSection; i; i = i->m_pNext)
+    for (auto i = m_pFirstSection; i; i = i->m_pNext) {
+        Q_ASSERT(i != i->m_pNext);
         i->m_Index = idx++;
+    }
 
     //FIXME this assumes all sections are always loaded, this isn't correct
 
@@ -435,8 +438,10 @@ bool QuickListViewItem::flush()
 bool QuickListViewItem::detach()
 {
     if (m_pSection && --m_pSection->m_RefCount >= 0) {
-        if (m_pSection->m_pPrevious)
+        if (m_pSection->m_pPrevious) {
+            Q_ASSERT(m_pSection->m_pPrevious != m_pSection->m_pNext);
             m_pSection->m_pPrevious->m_pNext = m_pSection->m_pNext;
+        }
 
         if (m_pSection == d()->m_pFirstSection)
             d()->m_pFirstSection = m_pSection->m_pNext;
