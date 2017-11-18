@@ -357,8 +357,10 @@ bool QuickListViewItem::attach()
         index()
     );
 
-    if (!pair.first)
+    if (!pair.first) {
+        qDebug() << "Item failed to load" << index().data();
         return false;
+    }
 
     if (!pair.first->z())
         pair.first->setZ(1);

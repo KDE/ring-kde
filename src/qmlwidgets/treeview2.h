@@ -51,6 +51,7 @@ public:
         POOLED  , /*!< Not currently in use, either new or waiting for re-use */
         BUFFER  , /*!< Not currently on screen, pre-loaded for performance    */
         ACTIVE  , /*!< Visible                                                */
+        FAILED  , /*!< Loading the item was attempted, but failed             */
         DANGLING, /*!< Pending deletion, invalid pointers                     */
         ERROR   , /*!< Something went wrong                                   */
     };
@@ -88,8 +89,8 @@ private:
     TreeTraversalItems* m_pParent {nullptr};
     mutable QSharedPointer<VolatileTreeItem> m_pSelf;
 
-    static const State  m_fStateMap    [5][7];
-    static const StateF m_fStateMachine[5][7];
+    static const State  m_fStateMap    [6][7];
+    static const StateF m_fStateMachine[6][7];
 
     bool performAction(Action);
 

@@ -17,6 +17,9 @@
  **************************************************************************/
 #include "quicktreeview.h"
 
+// Qt
+#include <QQmlContext>
+
 /**
  * To avoid O(n) lookup to determine where an element should go, bundle some
  * results into pages. This allows coarser granularity when performing the
@@ -25,20 +28,20 @@
  *
  * This ends up being some kind of reverse HashMap for position.
  */
-class TreeViewPage
-{
-    enum class State {
-        INVALID,
-        FILLED,
-        COMPUTED,
-    };
-
-    State m_State {State::INVALID};
-
-    QRectF m_Area     { };
-    int    m_Size     {0};
-    int    m_Position {0};
-};
+// class TreeViewPage
+// {
+//     enum class State {
+//         INVALID,
+//         FILLED,
+//         COMPUTED,
+//     };
+//
+//     State m_State {State::INVALID};
+//
+//     QRectF m_Area     { };
+//     int    m_Size     {0};
+//     int    m_Position {0};
+// };
 
 class QuickTreeViewPrivate
 {
@@ -75,16 +78,16 @@ QuickTreeViewPrivate* QuickTreeViewItem::d() const
 
 bool QuickTreeViewItem::attach()
 {
-    if (!view()->delegate())
-        return true;
+    if (!view()->delegate()) {
+        qDebug() << "Cannot attach, there is no delegate";
+        return false;
+    }
 
     auto pair = static_cast<QuickTreeView*>(view())->loadDelegate(
         view()->contentItem(),
         view()->rootContext(),
         index()
     );
-
-    qDebug() << view()->model();
 
     d()->m_DepthChart[depth()] = std::max(
         d()->m_DepthChart[depth()],
@@ -93,6 +96,13 @@ bool QuickTreeViewItem::attach()
 
     m_pContent = pair.second;
     m_pItem    = pair.first;
+
+    // Add some useful metadata
+    m_pContent->setContextProperty("rowCount", index().model()->rowCount(index()));
+    m_pContent->setContextProperty("index", index().row());
+    m_pContent->setContextProperty("modelIndex", index());
+
+    Q_ASSERT(m_pItem && m_pContent);
 
     return move();
 }
@@ -104,11 +114,13 @@ bool QuickTreeViewItem::refresh()
 
 bool QuickTreeViewItem::move()
 {
+    // Will happen when trying to move a FAILED, but buffered item
+    if (!m_pItem) {
+        qDebug() << "NO ITEM" << index().data();
+        return false;
+    }
 
     m_pItem->setWidth(view()->contentItem()->width());
-
-    if (index().parent().isValid())
-        Q_ASSERT(previous());
 
     // So other items can be GCed without always resetting to 0x0, note that it
     // might be a good idea to extend SimpleFlickable to support a virtual

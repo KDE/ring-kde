@@ -17,31 +17,65 @@
  **************************************************************************/
 #include "treeview2.h"
 
+/*
+ * Design:
+ *
+ * This class implement 3 embedded state machines.
+ *
+ * The first machine has a single instance and manage the whole view. It allows
+ * different behavior (corner case) to be handled in a stateful way without "if".
+ * It tracks a moving window of elements coarsely equivalent to the number of
+ * elements on screen.
+ *
+ * The second layer reflects the model and corresponds to a QModelIndex currently
+ * being tracked by the system. They are lazy-loaded and mostly unaware of the
+ * model topology. While they are hierarchical, they are so compared to themselves,
+ * not the actual model hierarchy. This allows the model to have unlimited depth
+ * without any performance impact.
+ *
+ * The last layer of state machine represents the visual elements. Being separated
+ * from the model view allows the QQuickItem elements to fail to load without
+ * spreading havoc. This layer also implements an abstraction that allows the
+ * tree to be browsed as a list. This greatly simplifies the widget code. The
+ * abstract class has to be implemented by the view implementations. All the
+ * heavy lifting is done in this class and the implementation can assume all is
+ * valid and perform minimal validation.
+ *
+ */
+
 class VolatileTreeItemPrivate
 {
 public:
 
 };
 
+/*
+ * The visual elements state changes.
+ *
+ * Note that the ::FAILED elements will always try to self-heal themselves and
+ * go back into FAILED once the self-healing itself failed.
+ */
 #define S VolatileTreeItem::State::
-const VolatileTreeItem::State VolatileTreeItem::m_fStateMap[5][7] = {
+const VolatileTreeItem::State VolatileTreeItem::m_fStateMap[6][7] = {
 /*              ATTACH ENTER_BUFFER ENTER_VIEW UPDATE    MOVE   LEAVE_BUFFER  DETACH  */
 /*POOLED  */ { S POOLED, S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR , S DANGLING },
 /*BUFFER  */ { S ERROR , S ERROR , S ACTIVE, S BUFFER, S ERROR , S POOLED, S DANGLING },
 /*ACTIVE  */ { S ERROR , S BUFFER, S ERROR , S ACTIVE, S ACTIVE, S POOLED, S DANGLING },
+/*FAILED  */ { S ERROR , S BUFFER, S ACTIVE, S ACTIVE, S ACTIVE, S POOLED, S DANGLING },
 /*DANGLING*/ { S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S DANGLING },
 /*ERROR   */ { S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S DANGLING },
 };
 #undef S
 
 #define A &VolatileTreeItem::
-const VolatileTreeItem::StateF VolatileTreeItem::m_fStateMachine[5][7] = {
+const VolatileTreeItem::StateF VolatileTreeItem::m_fStateMachine[6][7] = {
 /*             ATTACH  ENTER_BUFFER  ENTER_VIEW   UPDATE     MOVE   LEAVE_BUFFER  DETACH  */
-/*POOLED  */ { A nothing, A attach , A error  , A error  , A error  , A error , A destroy },
-/*BUFFER  */ { A error  , A error  , A move   , A refresh, A error  , A detach, A destroy },
-/*ACTIVE  */ { A error  , A nothing, A error  , A refresh, A move   , A detach, A destroy },
-/*DANGLING*/ { A error  , A error  , A error  , A error  , A error  , A error , A destroy },
-/*error   */ { A error  , A error  , A error  , A error  , A error  , A error , A destroy },
+/*POOLED  */ { A nothing, A attach , A error  , A error  , A error  , A error  , A destroy },
+/*BUFFER  */ { A error  , A error  , A move   , A refresh, A error  , A detach , A destroy },
+/*ACTIVE  */ { A error  , A nothing, A error  , A refresh, A move   , A detach , A destroy },
+/*FAILED  */ { A error  , A attach , A attach , A attach , A attach , A detach , A destroy },
+/*DANGLING*/ { A error  , A error  , A error  , A error  , A error  , A error  , A destroy },
+/*error   */ { A error  , A error  , A error  , A error  , A error  , A error  , A destroy },
 };
 #undef A
 
@@ -170,6 +204,7 @@ public:
     int  m_MaxDepth           { -1  };
     int  m_CacheBuffer        { 10  };
     int  m_PoolSize           { 10  };
+    int  m_FailedCount        {  0  };
     TreeView2::RecyclingMode m_RecyclingMode {
         TreeView2::RecyclingMode::NoRecycling
     };
@@ -450,6 +485,15 @@ void TreeView2::reload()
 
 void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
 {
+    // The asserts below only work on valid models with valid delegates.
+    // If those conditions are not met, it *could* work anyway, but cannot be
+    // validated.
+    Q_ASSERT(m_FailedCount >= 0);
+    if (m_FailedCount) {
+        qWarning() << "The tree is fragmented and failed to self heal: disable validation";
+        return;
+    }
+
     // First, let's check the linked list to avoid running more test on really
     // corrupted data
     if (auto i = p->m_pFirstChild) {
@@ -485,6 +529,9 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         if ((!old) || i.key().row() > old->m_Index.row())
             old = i.value();
 
+        // Check that m_FailedCount is valid
+        Q_ASSERT(i.value()->m_pTreeItem->m_State != VolatileTreeItem::State::FAILED);
+
         // Test the indices
         Q_ASSERT(i.key().internalPointer() == i.value()->m_Index.internalPointer());
         Q_ASSERT((p->m_Index.isValid()) || p->m_Index.internalPointer() != i.key().internalPointer());
@@ -503,9 +550,10 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
             Q_ASSERT(next->m_pParent != i.value());
         }
         else {
-            // There is always a next is those conditions are not met
-            Q_ASSERT(i.value()->m_hLookup.isEmpty());
+            // There is always a next is those conditions are not met unless there
+            // is failed elements creating (auto-corrected) holes in the chains.
             Q_ASSERT(!i.value()->m_pNext);
+            Q_ASSERT(i.value()->m_hLookup.isEmpty());
         }
 
         if(auto prev = i.value()->m_pTreeItem->previous()) {
@@ -513,7 +561,8 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
             Q_ASSERT(prev->m_pParent != i.value());
         }
         else {
-            // There is always a previous if those conditions are not met
+            // There is always a previous if those conditions are not met unless there
+            // is failed elements creating (auto-corrected) holes in the chains.
             Q_ASSERT(!i.value()->m_pPrevious);
             Q_ASSERT(!i.value()->m_pParent->m_pTreeItem);
         }
@@ -630,9 +679,19 @@ void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex&
 
 bool VolatileTreeItem::performAction(Action a)
 {
+    if (m_State == VolatileTreeItem::State::FAILED)
+        m_pParent->d_ptr->m_FailedCount--;
+
     const int s = (int)m_State;
-    m_State     = m_fStateMap            [s][(int)a];
-    bool ret    = (this->*m_fStateMachine[s][(int)a])();
+    m_State     = m_fStateMap [s][(int)a];
+    Q_ASSERT(m_State != VolatileTreeItem::State::ERROR);
+
+    const bool ret = (this->*m_fStateMachine[s][(int)a])();
+
+    if (m_State == VolatileTreeItem::State::FAILED || !ret) {
+        m_State = VolatileTreeItem::State::FAILED;
+        m_pParent->d_ptr->m_FailedCount++;
+    }
 
     return ret;
 }
@@ -663,10 +722,14 @@ QModelIndex VolatileTreeItem::index() const
 }
 
 /**
- * Flatten the tree as a linked list
+ * Flatten the tree as a linked list.
+ *
+ * Returns the previous non-failed item.
  */
 VolatileTreeItem* VolatileTreeItem::previous() const
 {
+    TreeTraversalItems* ret = nullptr;
+
     // Another simple case, there is no parent
     if (!m_pParent->m_pParent) {
         Q_ASSERT(!index().parent().isValid()); //TODO remove, no longer true when partial loading is implemented
@@ -684,34 +747,51 @@ VolatileTreeItem* VolatileTreeItem::previous() const
             return nullptr;
         }
 
-        return m_pParent->m_pParent->m_pTreeItem;
+        ret = m_pParent->m_pParent;
+
+        // Avoids useless unreadable indentation
+        goto sanitize;
     }
 
-    auto i = m_pParent->m_pPrevious;
+    ret = m_pParent->m_pPrevious;
 
-    while (i->m_pLastChild)
-        i = i->m_pLastChild;
+    while (ret->m_pLastChild)
+        ret = ret->m_pLastChild;
 
-    return i->m_pTreeItem;
+sanitize:
 
-    return nullptr;
+    // Recursively look for a valid element. Doing this here allows the views
+    // that implement this (abstract) class to work without having to always
+    // check if some of their item failed to load. This is non-fatal in the
+    // other Qt views, so it isn't fatal here either.
+    if (ret->m_pTreeItem->m_State == VolatileTreeItem::State::FAILED)
+        return ret->m_pTreeItem->previous();
+
+    return ret->m_pTreeItem;
 }
 
+/**
+ * Flatten the tree as a linked list.
+ *
+ * Returns the next non-failed item.
+ */
 VolatileTreeItem* VolatileTreeItem::next() const
 {
+    VolatileTreeItem* ret = nullptr;
+    auto i = m_pParent;
 
     if (m_pParent->m_pFirstChild) {
         Q_ASSERT(m_pParent->m_pFirstChild->m_Index.row() == 0);
-        return m_pParent->m_pFirstChild->m_pTreeItem;
+        ret = m_pParent->m_pFirstChild->m_pTreeItem;
+        goto sanitizeNext;
     }
 
-    auto i = m_pParent;
 
     // Recursively unwrap the tree until an element is found
     while(i) {
         if (i->m_pNext) {
-//             Q_ASSERT(i->m_pNext->m_pTreeItem->previous() == this);
-            return i->m_pNext->m_pTreeItem;
+            ret = i->m_pNext->m_pTreeItem;
+            goto sanitizeNext;
         }
 
         i = i->m_pParent;
@@ -724,7 +804,16 @@ VolatileTreeItem* VolatileTreeItem::next() const
             == m_pParent->m_Index.parent().row()+1);
     }
 
-    return nullptr;
+sanitizeNext:
+
+    // Recursively look for a valid element. Doing this here allows the views
+    // that implement this (abstract) class to work without having to always
+    // check if some of their item failed to load. This is non-fatal in the
+    // other Qt views, so it isn't fatal here either.
+    if (ret && ret->m_State == VolatileTreeItem::State::FAILED)
+        return ret->next();
+
+    return ret;
 }
 
 bool VolatileTreeItem::nothing()
@@ -786,6 +875,9 @@ bool TreeTraversalItems::hide()
 
 bool TreeTraversalItems::attach()
 {
+    if (m_pTreeItem)
+        m_pTreeItem->performAction(VolatileTreeItem::Action::ATTACH);
+
 //     qDebug() << "ATTACH" << (int)m_State;
     performAction(Action::MOVE); //FIXME don't
     return performAction(Action::SHOW); //FIXME don't
