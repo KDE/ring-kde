@@ -71,6 +71,12 @@ public:
     QQmlContext*          m_pContent {nullptr};
     QuickListViewSection* m_pSection {nullptr};
 
+    virtual void setSelected(bool s) final override;
+
+    /// Geometry relative to the FlickableView::view()
+    virtual QRectF geometry() const final override;
+
+
 private:
     QuickListViewPrivate* d() const;
 };
@@ -81,11 +87,8 @@ class QuickListViewPrivate : public QObject
 public:
 
     // When all elements are assumed to have the same height, life is easy
-    QVector<qreal>                      m_DepthChart      {   0   };
-    QuickListViewSections*              m_pSections       {nullptr};
-    QSharedPointer<QItemSelectionModel> m_pSelectionModel {nullptr};
-    QQuickItem*                         m_pSelectedItem   {nullptr};
-    QWeakPointer<VolatileTreeItem>      m_pSelectedViewItem;
+    QVector<qreal>         m_DepthChart {   0   };
+    QuickListViewSections* m_pSections  {nullptr};
 
     // Sections
     QQmlComponent*        m_pDelegate     {nullptr};
@@ -103,17 +106,15 @@ public:
     QuickListView* q_ptr;
 
 public Q_SLOTS:
-    void slotCurrentIndexChanged(const QModelIndex& idx);
-    void slotSelectionModelChanged();
+    void slotCurrentIndexChanged(const QModelIndex& index);
 };
 
 QuickListView::QuickListView(QQuickItem* parent) : TreeView2(parent),
     d_ptr(new QuickListViewPrivate)
 {
     d_ptr->q_ptr = this;
-
-    connect(this, &FlickableView::selectionModelChanged,
-        d_ptr, &QuickListViewPrivate::slotSelectionModelChanged);
+    connect(this, &FlickableView::currentIndexChanged,
+        d_ptr, &QuickListViewPrivate::slotCurrentIndexChanged);
 }
 
 QuickListView::~QuickListView()
@@ -155,83 +156,9 @@ QuickListViewSections* QuickListView::section() const
     return d_ptr->m_pSections;
 }
 
-VolatileTreeItem* QuickListView::createItem() const
+FlickableView::ModelIndexItem* QuickListView::createItem() const
 {
     return new QuickListViewItem();
-}
-
-void QuickListViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
-{
-
-    if ((!idx.isValid()) && !m_pSelectedItem)
-        return;
-
-    Q_EMIT q_ptr->indexChanged(idx.row());
-
-    if (m_pSelectedItem && !idx.isValid()) {
-        delete m_pSelectedItem;
-        m_pSelectedItem = nullptr;
-        return;
-    }
-
-    if (!q_ptr->highlight())
-        return;
-
-    auto elem = static_cast<QuickListViewItem*>(q_ptr->itemForIndex(idx));
-
-    // There is no need to waste effort if the element is not visible
-    if ((!elem) || (!elem->m_pItem)) {
-        if (m_pSelectedItem)
-            m_pSelectedItem->setVisible(false);
-        return;
-    }
-
-    // Create the highlighter
-    if (!m_pSelectedItem) {
-        m_pSelectedItem = qobject_cast<QQuickItem*>(q_ptr->highlight()->create(
-            elem->view()->rootContext()
-        ));
-        m_pSelectedItem->setParentItem(elem->view()->contentItem());
-        q_ptr->rootContext()->engine()->setObjectOwnership(
-            m_pSelectedItem,QQmlEngine::CppOwnership
-        );
-        m_pSelectedItem->setX(0);
-    }
-
-    m_pSelectedItem->setVisible(true);
-    m_pSelectedItem->setWidth(elem->m_pItem->width());
-    m_pSelectedItem->setHeight(elem->m_pItem->height());
-
-    elem->m_pContent->setContextProperty("isCurrentItem", true);
-
-    if (m_pSelectedViewItem) {
-        auto prev = static_cast<QuickListViewItem*>(m_pSelectedViewItem.data());
-        prev->m_pContent->setContextProperty("isCurrentItem", false);
-    }
-
-    // Use X/Y to allow behavior to perform the silly animation
-    m_pSelectedItem->setY(
-        -elem->m_pItem->mapFromItem(q_ptr->contentItem(), {0,0}).y()
-    );
-
-    m_pSelectedViewItem = elem->reference();
-}
-
-void QuickListViewPrivate::slotSelectionModelChanged()
-{
-    if (m_pSelectionModel)
-        disconnect(m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
-            this, &QuickListViewPrivate::slotCurrentIndexChanged);
-
-    m_pSelectionModel = q_ptr->selectionModel();
-
-    if (m_pSelectionModel)
-        connect(m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
-            this, &QuickListViewPrivate::slotCurrentIndexChanged);
-
-    slotCurrentIndexChanged(
-        m_pSelectionModel ? m_pSelectionModel->currentIndex() : QModelIndex()
-    );
 }
 
 QuickListViewSection::QuickListViewSection(
@@ -529,5 +456,26 @@ void QuickListViewSections::setModel(const QSharedPointer<QAbstractItemModel>& m
     d_ptr->m_pSectionModel = m;
 }
 
+void QuickListViewPrivate::slotCurrentIndexChanged(const QModelIndex& index)
+{
+    emit q_ptr->indexChanged(index.row());
+}
+
+void QuickListViewItem::setSelected(bool s)
+{
+    m_pContent->setContextProperty("isCurrentItem", s);
+}
+
+
+QRectF QuickListViewItem::geometry() const
+{
+    const QPointF p = m_pItem->mapFromItem(view()->contentItem(), {0,0});
+    return {
+        -p.x(),
+        -p.y(),
+        m_pItem->width(),
+        m_pItem->height()
+    };
+}
 
 #include <quicklistview.moc>

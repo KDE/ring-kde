@@ -288,6 +288,8 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
             &TreeView2Private::slotRowsRemoved);
         disconnect(model().data(), &QAbstractItemModel::layoutChanged, d_ptr,
             &TreeView2Private::slotLayoutChanged);
+        disconnect(model().data(), &QAbstractItemModel::modelReset, d_ptr,
+            &TreeView2Private::slotLayoutChanged);
         disconnect(model().data(), &QAbstractItemModel::rowsMoved, d_ptr,
             &TreeView2Private::slotRowsMoved);
         disconnect(model().data(), &QAbstractItemModel::dataChanged, d_ptr,
@@ -304,6 +306,8 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
     connect(model().data(), &QAbstractItemModel::rowsRemoved, d_ptr,
         &TreeView2Private::slotRowsRemoved  );
     connect(model().data(), &QAbstractItemModel::layoutChanged, d_ptr,
+        &TreeView2Private::slotLayoutChanged  );
+    connect(model().data(), &QAbstractItemModel::modelReset, d_ptr,
         &TreeView2Private::slotLayoutChanged  );
     connect(model().data(), &QAbstractItemModel::rowsMoved, d_ptr,
         &TreeView2Private::slotRowsMoved);
@@ -396,9 +400,9 @@ void TreeView2::setRecyclingMode(TreeView2::RecyclingMode mode)
 
 void TreeView2::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
+    FlickableView::geometryChanged(newGeometry, oldGeometry);
     d_ptr->m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
     contentItem()->setWidth(newGeometry.width());
-    FlickableView::geometryChanged(newGeometry, oldGeometry);
 }
 
 /// Return true if the indices affect the current view
@@ -451,13 +455,27 @@ void TreeView2Private::initTree(const QModelIndex& parent)
 void TreeView2Private::cleanup()
 {
     //TODO remove the leaks, use the state machine
+
+    std::function<void(TreeTraversalItems*)>* deleter;
+    std::function<void(TreeTraversalItems*)> del = [this, &deleter](TreeTraversalItems* item) {
+        for (auto i = item->m_hLookup.begin(); i != item->m_hLookup.end(); i++) {
+            TreeTraversalItems* child = i.value();
+            (*deleter)(child);
+            child->m_pTreeItem->performAction(VolatileTreeItem::Action::LEAVE_BUFFER);
+            child->performAction(TreeTraversalItems::Action::DETACH);
+        }
+    };
+    deleter = &del;
+
+    (*deleter)(m_pRoot);
+
+    m_pRoot->m_hLookup.clear();
     m_hMapper.clear();
     m_pRoot->m_pFirstChild = nullptr;
     m_pRoot->m_pLastChild  = nullptr;
-    m_pRoot->m_hLookup.clear();
 }
 
-VolatileTreeItem* TreeView2::itemForIndex(const QModelIndex& idx) const
+FlickableView::ModelIndexItem* TreeView2::itemForIndex(const QModelIndex& idx) const
 {
     if (!idx.isValid())
         return nullptr;
@@ -578,6 +596,7 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
 
 void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, int last)
 {
+    Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
 //     qDebug() << "\n\nADD" << first << last;
 
     if (!isActive(parent, first, last))
@@ -652,6 +671,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
 
 void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int last)
 {
+    Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
     Q_EMIT q_ptr->contentChanged();
 
     if (!isActive(parent, first, last))
@@ -667,6 +687,9 @@ void TreeView2Private::slotLayoutChanged()
 void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
+    Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
+    Q_ASSERT((!destination.isValid()) || destination.model() == q_ptr->model());
+
     if ((!isActive(parent, start, end)) && !isActive(destination, row, row+(end-start)))
         return;
 }
@@ -696,7 +719,7 @@ bool VolatileTreeItem::performAction(Action a)
     return ret;
 }
 
-QWeakPointer<VolatileTreeItem> VolatileTreeItem::reference() const
+QWeakPointer<FlickableView::ModelIndexItem> VolatileTreeItem::reference() const
 {
     if (!m_pSelf)
         m_pSelf = QSharedPointer<VolatileTreeItem>(
@@ -832,6 +855,7 @@ bool VolatileTreeItem::destroy()
     // pointer and move on.
     m_pSelf = nullptr;
 
+    delete this;
     //noreturn
 }
 
@@ -857,7 +881,7 @@ bool TreeTraversalItems::show()
 //     qDebug() << "SHOW";
 
     if (!m_pTreeItem) {
-        m_pTreeItem = d_ptr->q_ptr->createItem();
+        m_pTreeItem = static_cast<VolatileTreeItem*>(d_ptr->q_ptr->createItem());
         m_pTreeItem->m_pParent = this;
     }
 
@@ -918,6 +942,9 @@ bool TreeTraversalItems::index()
 
 bool TreeTraversalItems::destroy()
 {
+    m_pTreeItem->performAction(VolatileTreeItem::Action::DETACH); //FIXME keep in buffer
+
+    delete this;
     //noreturn
 }
 

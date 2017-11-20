@@ -21,27 +21,37 @@
 #include <QQmlContext>
 
 /**
- * To avoid O(n) lookup to determine where an element should go, bundle some
- * results into pages. This allows coarser granularity when performing the
- * lookup. It also allows to batch discard pages and lazy-rebuild them when
- * necessary.
+ * Polymorphic tree item for the TreeView2.
  *
- * This ends up being some kind of reverse HashMap for position.
+ * Classes implementing TreeView2 need to provide an implementation of the pure
+ * virtual functions. It is useful, for example, to manage both a raster and
+ * QQuickItem based version of a view.
+ *
+ * The state is managed by the TreeView2 and it's own protected virtual methods.
  */
-// class TreeViewPage
-// {
-//     enum class State {
-//         INVALID,
-//         FILLED,
-//         COMPUTED,
-//     };
-//
-//     State m_State {State::INVALID};
-//
-//     QRectF m_Area     { };
-//     int    m_Size     {0};
-//     int    m_Position {0};
-// };
+class QuickTreeViewItem : public VolatileTreeItem
+{
+public:
+    explicit QuickTreeViewItem();
+    virtual ~QuickTreeViewItem();
+
+    // Actions
+    virtual bool attach () override;
+    virtual bool refresh() override;
+    virtual bool move   () override;
+    virtual bool flush  () override;
+    virtual bool detach () override;
+
+    virtual void setSelected(bool s) final override;
+    virtual QRectF geometry() const final override;
+
+private:
+    QQuickItem* m_pItem     {nullptr};
+    QQmlContext* m_pContent {nullptr};
+    TreeViewPage* m_pPage   {nullptr};
+
+    QuickTreeViewPrivate* d() const;
+};
 
 class QuickTreeViewPrivate
 {
@@ -62,13 +72,18 @@ QuickTreeView::~QuickTreeView()
     delete d_ptr;
 }
 
-VolatileTreeItem* QuickTreeView::createItem() const
+FlickableView::ModelIndexItem* QuickTreeView::createItem() const
 {
     return new QuickTreeViewItem();
 }
 
 QuickTreeViewItem::QuickTreeViewItem() : VolatileTreeItem()
 {
+}
+
+QuickTreeViewItem::~QuickTreeViewItem()
+{
+    delete m_pItem;
 }
 
 QuickTreeViewPrivate* QuickTreeViewItem::d() const
@@ -88,6 +103,9 @@ bool QuickTreeViewItem::attach()
         view()->rootContext(),
         index()
     );
+
+    if (!pair.first->z())
+        pair.first->setZ(1);
 
     d()->m_DepthChart[depth()] = std::max(
         d()->m_DepthChart[depth()],
@@ -151,5 +169,24 @@ bool QuickTreeViewItem::flush()
 
 bool QuickTreeViewItem::detach()
 {
+    m_pItem->setParent(nullptr);
+    m_pItem->setParentItem(nullptr);
+    m_pItem->setVisible(false);
     return true;
+}
+
+void QuickTreeViewItem::setSelected(bool s)
+{
+    m_pContent->setContextProperty("isCurrentItem", s);
+}
+
+QRectF QuickTreeViewItem::geometry() const
+{
+    const QPointF p = m_pItem->mapFromItem(view()->contentItem(), {0,0});
+    return {
+        -p.x(),
+        -p.y(),
+        m_pItem->width(),
+        m_pItem->height()
+    };
 }

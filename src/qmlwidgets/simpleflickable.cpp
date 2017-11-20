@@ -256,6 +256,11 @@ bool SimpleFlickable::event(QEvent *event)
 
 void SimpleFlickable::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
+    if (d_ptr->m_pContainer) {
+        d_ptr->m_pContainer->setWidth(std::max(newGeometry.width(), d_ptr->m_pContainer->width()));
+        d_ptr->m_pContainer->setHeight(std::max(newGeometry.height(), d_ptr->m_pContainer->height()));
+    }
+
     //TODO prevent out of scope
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
 }

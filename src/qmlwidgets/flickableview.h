@@ -22,6 +22,7 @@
 
 // Qt
 #include <QtCore/QAbstractItemModel>
+#include <QtCore/QItemSelectionModel>
 class QQmlComponent;
 class QQmlContext;
 class QItemSelectionModel;
@@ -37,18 +38,46 @@ class FlickableViewPrivate;
  * extended.
  *
  * This is a base class and is not intended to be used directly.
+ *
+ * This is an abstract class and expect the implementations to properly
+ * manage the `ModelIndexItem` elements. In return, this class provides an
+ * unified way to handle the selection and drag&drop boiler plate code.
  */
 class FlickableView : public SimpleFlickable
 {
     Q_OBJECT
 
 public:
+    /**
+     * Abstract base class of the visual representation of a QModelIndex.
+     */
+    class ModelIndexItem
+    {
+    public:
+        virtual ~ModelIndexItem() {}
+
+        /// Geometry relative to the FlickableView::view()
+        virtual QRectF geometry() const = 0;
+
+        /// Visibility relative to the displayed window of the FlickableView::view()
+        virtual bool isVisible() const = 0;
+
+        /// Get a weak pointer into itself so the implementation can notify of deletion
+        virtual QWeakPointer<ModelIndexItem> reference() const = 0;
+
+        /// Allow implementations to be notified when it becomes selected
+        virtual void setSelected(bool) {}
+    };
+
     Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(QAbstractItemModel* rawModel WRITE setRawModel)
     Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
     Q_PROPERTY(Qt::Corner gravity READ gravity WRITE setGravity)
     Q_PROPERTY(QQmlComponent* highlight READ highlight WRITE setHighlight)
     Q_PROPERTY(QSharedPointer<QItemSelectionModel> selectionModel READ selectionModel WRITE setSelectionModel NOTIFY selectionModelChanged)
+
+    // QML support for selectionModels is rather bad since many Q_INVOKABLE are missing
+    Q_PROPERTY(QModelIndex currentIndex READ currentIndex WRITE setCurrentIndex)
 
     explicit FlickableView(QQuickItem* parent = nullptr);
     virtual ~FlickableView();
@@ -71,17 +100,38 @@ public:
     QSharedPointer<QItemSelectionModel> selectionModel() const;
     void setSelectionModel(QSharedPointer<QItemSelectionModel> m);
 
+    QModelIndex currentIndex() const;
+    Q_INVOKABLE void setCurrentIndex(const QModelIndex& index,
+        QItemSelectionModel::SelectionFlags f = QItemSelectionModel::ClearAndSelect
+    );
+
 protected:
     virtual void refresh();
     void applyRoles(QQmlContext* ctx, const QModelIndex& self) const;
     QPair<QQuickItem*, QQmlContext*> loadDelegate(QQuickItem* parentI, QQmlContext* parentCtx, const QModelIndex& self) const;
 
+    /**
+     * To be implemented by the final class.
+     */
+    virtual ModelIndexItem* createItem() const = 0;
+
+    /**
+     * Get the VolatileTreeItem associated with a model index.
+     *
+     * Note that if the index is not currently visible or buferred, it will
+     * return nullptr.
+     */
+    virtual ModelIndexItem* itemForIndex(const QModelIndex& idx) const = 0;
+
 Q_SIGNALS:
+    void currentIndexChanged(const QModelIndex& index);
     void modelChanged(QSharedPointer<QAbstractItemModel> model);
     void selectionModelChanged() const;
 
 private:
+
     FlickableViewPrivate* d_ptr;
     Q_DECLARE_PRIVATE(FlickableView)
 };
 Q_DECLARE_METATYPE(FlickableView*)
+Q_DECLARE_METATYPE(QSharedPointer<QItemSelectionModel>)

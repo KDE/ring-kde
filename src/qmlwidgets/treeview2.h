@@ -37,7 +37,7 @@ struct TreeTraversalItems; //FIXME remove
  *
  * The state is managed by the TreeView2 and it's own protected virtual methods.
  */
-class VolatileTreeItem
+class VolatileTreeItem : public FlickableView::ModelIndexItem
 {
     friend class TreeView2;
     friend class TreeTraversalItems;
@@ -64,7 +64,10 @@ public:
     VolatileTreeItem* next    () const;
 
     /// Allows to keep a reference while still being tracked by the state machine
-    QWeakPointer<VolatileTreeItem> reference() const;
+    virtual QWeakPointer<ModelIndexItem> reference() const final override;
+
+    /// Visibility relative to the displayed window of the FlickableView::view()
+    virtual bool isVisible() const override {return true;} //FIXME implement
 
     // Actions
     virtual bool attach () = 0;
@@ -80,8 +83,8 @@ private:
         ENTER_VIEW   = 2, /*!< NOP (todo)                            */
         UPDATE       = 3, /*!< Reload the roles                      */
         MOVE         = 4, /*!< Move to a new position                */
-        LEAVE_BUFFER = 4, /*!< Stop keeping track of data changes    */
-        DETACH       = 5, /*!< Delete                                */
+        LEAVE_BUFFER = 5, /*!< Stop keeping track of data changes    */
+        DETACH       = 6, /*!< Delete                                */
     };
 
     typedef bool(VolatileTreeItem::*StateF)();
@@ -183,13 +186,10 @@ protected:
      * Note that if the index is not currently visible or buferred, it will
      * return nullptr.
      */
-    VolatileTreeItem* itemForIndex(const QModelIndex& idx) const;
+    ModelIndexItem* itemForIndex(const QModelIndex& idx) const final override;
 
     /// To be used with moderation. Necessary when the delegate is replaced.
     void reload();
-
-private:
-    virtual VolatileTreeItem* createItem() const = 0;
 
 Q_SIGNALS:
     void modelChanged(QSharedPointer<QAbstractItemModel> model);

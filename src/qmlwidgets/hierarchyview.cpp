@@ -260,4 +260,14 @@ void HierarchyViewPrivate::slotDataChanged(const QModelIndex& tl, const QModelIn
     });
 }
 
+FlickableView::ModelIndexItem* HierarchyView::createItem() const
+{
+    return nullptr;
+}
+
+FlickableView::ModelIndexItem* HierarchyView::itemForIndex(const QModelIndex& idx) const
+{
+    return nullptr;
+}
+
 #include <hierarchyview.moc>

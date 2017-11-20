@@ -21,8 +21,9 @@
 #include <QQmlEngine>
 #include <QtCore/QItemSelectionModel>
 
-class FlickableViewPrivate
+class FlickableViewPrivate : public QObject
 {
+    Q_OBJECT
 public:
     QSharedPointer<QAbstractItemModel>  m_pModel          {nullptr};
     QSharedPointer<QItemSelectionModel> m_pSelectionModel {nullptr};
@@ -32,18 +33,28 @@ public:
     QQmlComponent*                      m_pHighlight      {nullptr};
     mutable QQmlContext*                m_pRootContext    {nullptr};
 
+    // Selection
+    QQuickItem* m_pSelectedItem   {nullptr};
+    QWeakPointer<FlickableView::ModelIndexItem> m_pSelectedViewItem;
+
     Qt::Corner m_Corner {Qt::TopLeftCorner};
 
     mutable QHash<int, QString> m_hRoleNames;
     mutable QHash<const QAbstractItemModel*, QHash<int, QString>*> m_hhOtherRoleNames;
 
     QHash<int, QString>* reloadRoleNames(const QModelIndex& index) const;
+
+    FlickableView* q_ptr;
+
+public Q_SLOTS:
+    void slotCurrentIndexChanged(const QModelIndex& idx);
+    void slotSelectionModelChanged();
 };
 
 FlickableView::FlickableView(QQuickItem* parent) : SimpleFlickable(parent),
     d_ptr(new FlickableViewPrivate())
 {
-    //
+    d_ptr->q_ptr = this;
 }
 
 FlickableView::~FlickableView()
@@ -128,7 +139,10 @@ QSharedPointer<QItemSelectionModel> FlickableView::selectionModel() const
     if (model() && !d_ptr->m_pSelectionModel) {
         auto sm = new QItemSelectionModel(model().data());
         d_ptr->m_pSelectionModel = QSharedPointer<QItemSelectionModel>(sm);
+        d_ptr->slotSelectionModelChanged();
         Q_EMIT selectionModelChanged();
+        connect(d_ptr->m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
+            d_ptr, &FlickableViewPrivate::slotCurrentIndexChanged);
     }
 
     return d_ptr->m_pSelectionModel;
@@ -137,7 +151,18 @@ QSharedPointer<QItemSelectionModel> FlickableView::selectionModel() const
 void FlickableView::setSelectionModel(QSharedPointer<QItemSelectionModel> m)
 {
     d_ptr->m_pSelectionModel = m;
+    d_ptr->slotSelectionModelChanged();
     Q_EMIT selectionModelChanged();
+}
+
+QModelIndex FlickableView::currentIndex() const
+{
+    return selectionModel()->currentIndex();
+}
+
+void FlickableView::setCurrentIndex(const QModelIndex& index, QItemSelectionModel::SelectionFlags f)
+{
+    selectionModel()->setCurrentIndex(index, f);
 }
 
 void FlickableView::refresh()
@@ -232,3 +257,82 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
 
     return {container, pctx};
 }
+
+
+void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
+{
+    if ((!idx.isValid()) && !m_pSelectedItem)
+        return;
+
+    Q_EMIT q_ptr->currentIndexChanged(idx);
+
+    if (m_pSelectedItem && !idx.isValid()) {
+        delete m_pSelectedItem;
+        m_pSelectedItem = nullptr;
+        return;
+    }
+
+    if (!q_ptr->highlight())
+        return;
+
+    auto elem = static_cast<FlickableView::ModelIndexItem*>(q_ptr->itemForIndex(idx));
+
+    // There is no need to waste effort if the element is not visible
+    if ((!elem) || (!elem->isVisible())) {
+        if (m_pSelectedItem)
+            m_pSelectedItem->setVisible(false);
+        return;
+    }
+
+    // Create the highlighter
+    if (!m_pSelectedItem) {
+        m_pSelectedItem = qobject_cast<QQuickItem*>(q_ptr->highlight()->create(
+            q_ptr->rootContext()
+        ));
+        m_pSelectedItem->setParentItem(q_ptr->contentItem());
+        q_ptr->rootContext()->engine()->setObjectOwnership(
+            m_pSelectedItem,QQmlEngine::CppOwnership
+        );
+        m_pSelectedItem->setX(0);
+    }
+
+    const auto geo = elem->geometry();
+    m_pSelectedItem->setVisible(true);
+    m_pSelectedItem->setWidth(geo.width());
+    m_pSelectedItem->setHeight(geo.height());
+
+    qDebug() << geo << q_ptr->width() << m_pSelectedItem->x() << m_pSelectedItem->width();
+
+    elem->setSelected(true);
+
+    if (m_pSelectedViewItem) {
+        auto prev = static_cast<FlickableView::ModelIndexItem*>(m_pSelectedViewItem.data());
+        prev->setSelected(false);
+    }
+
+    // Use X/Y to allow behavior to perform the silly animation
+    m_pSelectedItem->setY(
+        geo.y()
+    );
+
+    m_pSelectedViewItem = elem->reference();
+}
+
+void FlickableViewPrivate::slotSelectionModelChanged()
+{
+    if (m_pSelectionModel)
+        disconnect(m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
+            this, &FlickableViewPrivate::slotCurrentIndexChanged);
+
+    m_pSelectionModel = q_ptr->selectionModel();
+
+    if (m_pSelectionModel)
+        connect(m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
+            this, &FlickableViewPrivate::slotCurrentIndexChanged);
+
+    slotCurrentIndexChanged(
+        m_pSelectionModel ? m_pSelectionModel->currentIndex() : QModelIndex()
+    );
+}
+
+#include <flickableview.moc>

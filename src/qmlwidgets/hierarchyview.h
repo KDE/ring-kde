@@ -46,6 +46,8 @@ public:
 
 protected:
     virtual void refresh() override;
+    virtual ModelIndexItem* createItem() const override;
+    virtual ModelIndexItem* itemForIndex(const QModelIndex& idx) const override;
 
 private:
     HierarchyViewPrivate* d_ptr;

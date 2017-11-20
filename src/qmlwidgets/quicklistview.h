@@ -112,8 +112,10 @@ Q_SIGNALS:
     void contentChanged() final override;
     void indexChanged(int index);
 
+protected:
+    virtual ModelIndexItem* createItem() const override;
+
 private:
-    virtual VolatileTreeItem* createItem() const override;
 
     QuickListViewPrivate* d_ptr;
     Q_DECLARE_PRIVATE(QuickListView)

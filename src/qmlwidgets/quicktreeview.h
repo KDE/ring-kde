@@ -27,40 +27,10 @@ class QuickTreeViewPrivate;
 class TreeViewPage;
 
 /**
- * Polymorphic tree item for the TreeView2.
- *
- * Classes implementing TreeView2 need to provide an implementation of the pure
- * virtual functions. It is useful, for example, to manage both a raster and
- * QQuickItem based version of a view.
- *
- * The state is managed by the TreeView2 and it's own protected virtual methods.
- */
-class QuickTreeViewItem : public VolatileTreeItem
-{
-public:
-    explicit QuickTreeViewItem();
-    virtual ~QuickTreeViewItem() {}
-
-    // Actions
-    virtual bool attach () override;
-    virtual bool refresh() override;
-    virtual bool move   () override;
-    virtual bool flush  () override;
-    virtual bool detach () override;
-
-private:
-    QQuickItem* m_pItem     {nullptr};
-    QQmlContext* m_pContent {nullptr};
-    TreeViewPage* m_pPage   {nullptr};
-
-    QuickTreeViewPrivate* d() const;
-};
-
-/**
  * Second generation of QtQuick treeview.
  *
  * The first one was designed for the chat view. It had a limited number of
- * requirement when it came to QtModel. However it required total control of
+ * requirements when it came to QtModel. However it required total control of
  * the layout.
  *
  * This is the opposite use case. The layout is classic, but the model support
@@ -84,8 +54,10 @@ public:
 Q_SIGNALS:
     void contentChanged() final override;
 
+protected:
+    virtual ModelIndexItem* createItem() const override;
+
 private:
-    virtual VolatileTreeItem* createItem() const override;
 
     QuickTreeViewPrivate* d_ptr;
     Q_DECLARE_PRIVATE(QuickTreeView)
