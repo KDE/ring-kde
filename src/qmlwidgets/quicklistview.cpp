@@ -85,6 +85,7 @@ class QuickListViewPrivate : public QObject
 {
     Q_OBJECT
 public:
+    explicit QuickListViewPrivate(QuickListView* p) : QObject(p), q_ptr(p){}
 
     // When all elements are assumed to have the same height, life is easy
     QVector<qreal>         m_DepthChart {   0   };
@@ -110,16 +111,34 @@ public Q_SLOTS:
 };
 
 QuickListView::QuickListView(QQuickItem* parent) : TreeView2(parent),
-    d_ptr(new QuickListViewPrivate)
+    d_ptr(new QuickListViewPrivate(this))
 {
-    d_ptr->q_ptr = this;
     connect(this, &FlickableView::currentIndexChanged,
         d_ptr, &QuickListViewPrivate::slotCurrentIndexChanged);
 }
 
 QuickListView::~QuickListView()
 {
-    delete d_ptr;
+    // Delete the sections
+    auto sec = d_ptr->m_pFirstSection;
+    while(sec) {
+        auto sec2 = sec;
+
+        if (sec2->m_pItem)
+            delete sec2->m_pItem;
+
+        if (sec2->m_pContent)
+            delete sec2->m_pContent;
+
+        sec = sec->m_pNext;
+
+        delete sec2;
+    }
+
+    if (d_ptr->m_pSections)
+        delete d_ptr->m_pSections;
+
+    d_ptr->m_pSectionModel.reset();
 }
 
 int QuickListView::count() const
@@ -319,22 +338,23 @@ bool QuickListViewItem::move()
 
     const QQuickItem* prevItem = nullptr;
 
-    if (auto sec = d()->getSection(this)) {
-        if (sec->m_pOwner == this && sec->m_pItem) {
-            if (prev && prev->m_pItem) {
-                auto anchors = qvariant_cast<QObject*>(sec->m_pItem->property("anchors"));
-                anchors->setProperty("top", prev->m_pItem->property("bottom"));
-            }
-            else {
-                sec->m_pItem->setY(0);
-            }
+    if (d()->m_pSections)
+        if (auto sec = d()->getSection(this)) {
+            if (sec->m_pOwner == this && sec->m_pItem) {
+                if (prev && prev->m_pItem) {
+                    auto anchors = qvariant_cast<QObject*>(sec->m_pItem->property("anchors"));
+                    anchors->setProperty("top", prev->m_pItem->property("bottom"));
+                }
+                else {
+                    sec->m_pItem->setY(0);
+                }
 
-            if (!sec->m_pItem->width())
-                sec->m_pItem->setWidth(view()->contentItem()->width());
+                if (!sec->m_pItem->width())
+                    sec->m_pItem->setWidth(view()->contentItem()->width());
 
-            prevItem = sec->m_pItem;
+                prevItem = sec->m_pItem;
+            }
         }
-    }
 
     const qreal y = d()->m_DepthChart.first()*index().row();
 
@@ -366,7 +386,7 @@ bool QuickListViewItem::flush()
 
 bool QuickListViewItem::detach()
 {
-    if (m_pSection && --m_pSection->m_RefCount >= 0) {
+    if (m_pSection && --m_pSection->m_RefCount <= 0) {
         if (m_pSection->m_pPrevious) {
             Q_ASSERT(m_pSection->m_pPrevious != m_pSection->m_pNext);
             m_pSection->m_pPrevious->m_pNext = m_pSection->m_pNext;
@@ -377,6 +397,8 @@ bool QuickListViewItem::detach()
 
         d()->m_IndexLoaded = false;
 
+        delete m_pSection->m_pItem;
+        delete m_pSection->m_pContent;
         delete m_pSection;
     }
 
@@ -395,6 +417,7 @@ QuickListViewSections::QuickListViewSections(QuickListView* parent) :
 
 QuickListViewSections::~QuickListViewSections()
 {
+
     delete d_ptr;
 }
 
