@@ -15,16 +15,15 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "viewcontactdock.h"
+#include "mainpage.h"
 
 #include <QQmlApplicationEngine>
 #include <QQuickPaintedItem>
-#include <QQuickWidget>
+#include <QQuickWindow>
 #include <QQmlEngine>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
 #include <QtGui/QIcon>
-#include <QtWidgets/QHBoxLayout>
 #include <QtCore/QMimeData>
 #include <QtCore/QTimer>
 #include <QtCore/QSortFilterProxyModel>
@@ -38,44 +37,45 @@
 #include <callmodel.h>
 
 // Remove inactive calls from the CallModel
-class ActiveCallProxy : public QSortFilterProxyModel
+class ActiveCallProxy2 : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
-    explicit ActiveCallProxy(QObject* parent) : QSortFilterProxyModel(parent) {}
+    explicit ActiveCallProxy2(QObject* parent) : QSortFilterProxyModel(parent) {}
 
 protected:
     virtual bool filterAcceptsRow(int row, const QModelIndex & srcParent ) const override;
 };
 
-class ViewContactDockPrivate {
+class MainPagePrivate : public QObject {
+    Q_OBJECT
 public:
-    QQuickWidget* m_pQuickWidget;
     QSharedPointer<QAbstractItemModel> m_CallsModel;
     QSharedPointer<QAbstractItemModel> m_PersomCMModel;
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
     QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
+    QQuickItem* m_pItem {nullptr};
 
     QList< QTimer* > m_lTimers;
+
+    MainPage* q_ptr;
+
+public Q_SLOTS:
+    void slotWindowChanged();
 };
 
-ViewContactDock::ViewContactDock(QWidget* parent) :
-    QWidget(parent), d_ptr(new ViewContactDockPrivate)
+MainPage::MainPage(QQuickItem* parent) :
+    QQuickItem(parent), d_ptr(new MainPagePrivate)
 {
-    d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
-
-    auto cp = new ActiveCallProxy(&CallModel::instance());
+    d_ptr->q_ptr = this;
+    auto cp = new ActiveCallProxy2(&CallModel::instance());
     cp->setSourceModel(&CallModel::instance());
 
-    RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxyModel"), cp);
+    RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxy2Model"), cp);
 
-    d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    d_ptr->m_pQuickWidget->setSource(QUrl(QStringLiteral("qrc:/ViewContact.qml")));
+    connect(this, &QQuickItem::windowChanged, d_ptr, &MainPagePrivate::slotWindowChanged);
 
-    auto l = new QHBoxLayout(this);
-    l->addWidget(d_ptr->m_pQuickWidget);
-    setAcceptDrops(true);
     installEventFilter(this);
 
     QTimer::singleShot(0, [this]() {
@@ -87,16 +87,8 @@ ViewContactDock::ViewContactDock(QWidget* parent) :
     d_ptr->m_DeduplicatedTimelineModel = PeersTimelineModel::instance().deduplicatedTimelineModel();
 }
 
-ViewContactDock::~ViewContactDock()
+MainPage::~MainPage()
 {
-    //FIXME https://bugreports.qt.io/browse/QTBUG-40745
-    layout()->removeWidget(d_ptr->m_pQuickWidget);
-    d_ptr->m_pQuickWidget->setVisible(false);
-    d_ptr->m_pQuickWidget->hide();
-    d_ptr->m_pQuickWidget->setParent(nullptr);
-    delete d_ptr->m_pQuickWidget;
-    d_ptr->m_pQuickWidget = nullptr;
-
     d_ptr->m_TimelineModel.clear();
     d_ptr->m_PersomCMModel.clear();
     d_ptr->m_CallsModel.clear();
@@ -111,7 +103,7 @@ ViewContactDock::~ViewContactDock()
     delete d_ptr;
 }
 
-bool ViewContactDock::eventFilter(QObject *obj, QEvent *event)
+bool MainPage::eventFilter(QObject *obj, QEvent *event)
 {
     Q_UNUSED(obj)
     Q_UNUSED(event)
@@ -119,9 +111,9 @@ bool ViewContactDock::eventFilter(QObject *obj, QEvent *event)
     return false;
 }
 
-void ViewContactDock::setContactMethod(ContactMethod* cm)
+void MainPage::setContactMethod(ContactMethod* cm)
 {
-    if (!cm)
+    if ((!cm) || (!d_ptr->m_pItem))
         return;
 
     // Keep a reference for 5 minutes to avoid double free from QML
@@ -145,47 +137,43 @@ void ViewContactDock::setContactMethod(ContactMethod* cm)
 
     d_ptr->m_TimelineModel = cm->timelineModel();
 
-    d_ptr->m_pQuickWidget->rootObject()->setProperty(
-        "currentContactMethod", QVariant::fromValue(cm));
+    d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
 
 }
 
-void ViewContactDock::setPerson(Person* p)
+void MainPage::setPerson(Person* p)
 {
-    d_ptr->m_pQuickWidget->rootObject()->setProperty(
-        "currentPerson", QVariant::fromValue(p));
+    d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
 }
 
-void ViewContactDock::setCurrentPage(ViewContactDock::Pages page)
+void MainPage::setCurrentPage(MainPage::Pages page)
 {
     QString name;
     switch (page) {
-        case ViewContactDock::Pages::INFORMATION:
+        case MainPage::Pages::INFORMATION:
             name = QStringLiteral("INFORMATION");
             break;
-        case ViewContactDock::Pages::TIMELINE:
+        case MainPage::Pages::TIMELINE:
             name = QStringLiteral("TIMELINE");
             break;
-        case ViewContactDock::Pages::CALL_HISTORY:
+        case MainPage::Pages::CALL_HISTORY:
             name = QStringLiteral("CALL_HISTORY");
             break;
-        case ViewContactDock::Pages::RECORDINGS:
+        case MainPage::Pages::RECORDINGS:
             name = QStringLiteral("RECORDINGS");
             break;
-        case ViewContactDock::Pages::SEARCH:
+        case MainPage::Pages::SEARCH:
             name = QStringLiteral("SEARCH");
             break;
-        case ViewContactDock::Pages::MEDIA:
+        case MainPage::Pages::MEDIA:
             name = QStringLiteral("MEDIA");
             break;
     }
 
-    d_ptr->m_pQuickWidget->rootObject()->setProperty(
-        "currentPage", name);
+    d_ptr->m_pItem->setProperty( "currentPage", name);
 }
 
-
-bool ActiveCallProxy::filterAcceptsRow(int row, const QModelIndex& srcParent ) const
+bool ActiveCallProxy2::filterAcceptsRow(int row, const QModelIndex& srcParent ) const
 {
     // Conferences are always active
     if (srcParent.isValid())
@@ -195,5 +183,20 @@ bool ActiveCallProxy::filterAcceptsRow(int row, const QModelIndex& srcParent ) c
         .data((int)Call::Role::LifeCycleState) == QVariant::fromValue(Call::LifeCycleState::PROGRESS);
 }
 
-#include <viewcontactdock.moc>
+void MainPagePrivate::slotWindowChanged()
+{
+    auto ctx = QQmlEngine::contextForObject(q_ptr);
+    Q_ASSERT(ctx);
+
+    QQmlComponent comp(ctx->engine(), QStringLiteral("qrc:/ViewContact.qml"), q_ptr);
+
+    m_pItem = qobject_cast<QQuickItem*>(comp.create(ctx));
+    Q_ASSERT(m_pItem);
+    m_pItem->setParentItem(q_ptr);
+
+    auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
+    anchors->setProperty("fill", QVariant::fromValue(q_ptr));
+}
+
+#include <mainpage.moc>
 // kate: space-indent on; indent-width 4; replace-tabs on;

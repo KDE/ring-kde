@@ -66,6 +66,7 @@ SET( libqmlwidgets_LIB_SRCS
     recentfilemodel.cpp
     snapshotadapter.cpp
     timelinedots.cpp
+    qmlaction.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )

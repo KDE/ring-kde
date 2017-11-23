@@ -15,55 +15,12 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "dialdock.h"
+#include "desktopviewplugin.h"
 
-#include <QQmlApplicationEngine>
-#include <QQuickPaintedItem>
-#include <QQuickWidget>
-#include <QQmlEngine>
-#include <QtGui/QPixmap>
-#include <QtGui/QPainter>
-#include <QtGui/QIcon>
-#include <QtWidgets/QHBoxLayout>
-#include <QtCore/QMimeData>
-#include <QtCore/QTimer>
-#include <QtCore/QSortFilterProxyModel>
-#include <QQmlContext>
+#include <QtCore/QDebug>
 
-#include <../ringapplication.h>
-#include "peerstimelinemodel.h"
-#include <contactmethod.h>
-#include <person.h>
-#include <call.h>
-#include <callmodel.h>
+#include <qrc_desktopview.cpp>
 
-// #include "qrc_dialview.cpp"
-// #include "src/contactview/qrc_contactview.cpp" //FIXME
-
-class DialDockPrivate {
-public:
-    QQuickWidget* m_pQuickWidget;
-};
-
-DialDock::DialDock(QWidget* parent) :
-    QDockWidget(parent), d_ptr(new DialDockPrivate)
+void DesktopView::registerTypes(const char *)
 {
-    d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
-    setWidget(d_ptr->m_pQuickWidget);
-
-    d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    d_ptr->m_pQuickWidget->setSource(QUrl(QStringLiteral("qrc:/ContactList.qml")));
 }
-
-DialDock::~DialDock()
-{
-    setWidget(nullptr);
-
-    d_ptr->m_pQuickWidget->setVisible(false);
-    d_ptr->m_pQuickWidget->hide();
-    d_ptr->m_pQuickWidget->setParent(nullptr);
-
-    delete d_ptr;
-}
-
-// kate: space-indent on; indent-width 4; replace-tabs on;

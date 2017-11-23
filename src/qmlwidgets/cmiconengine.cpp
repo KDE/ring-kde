@@ -30,13 +30,16 @@
 class CMIconEnginePrivate
 {
 public:
-    ContactMethod* m_pCM;
+    ContactMethod* m_pCM {nullptr};
 };
 
 CMIconEngine::CMIconEngine(ContactMethod* cm) : QIconEngine(),
     d_ptr(new CMIconEnginePrivate)
 {
-    d_ptr->m_pCM = cm;
+    // This would be racy as they are deleted while potential animations are
+    // running. It's not needed anyway, temporary are never present or tracked
+    if (cm->type() != ContactMethod::Type::TEMPORARY)
+        d_ptr->m_pCM = cm;
 }
 
 CMIconEngine::~CMIconEngine()
@@ -150,8 +153,8 @@ void CMIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode,
     Q_UNUSED(mode)
     Q_UNUSED(state)
 
-    const bool isTracked = d_ptr->m_pCM->isTracked();
-    const bool isPresent = d_ptr->m_pCM->isPresent();
+    const bool isTracked = d_ptr->m_pCM ? d_ptr->m_pCM->isTracked() : false;
+    const bool isPresent = d_ptr->m_pCM ? d_ptr->m_pCM->isPresent() : false;
 
     staticPaint(painter, rect, isPresent, isTracked);
 }

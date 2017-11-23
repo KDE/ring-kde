@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="DesktopWindow.qml">qml/desktopwindow.qml</file>
+        <file alias="DockBar.qml">qml/dockbar.qml</file>
+    </qresource>
+</RCC>

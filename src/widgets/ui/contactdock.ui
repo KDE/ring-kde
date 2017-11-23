@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="ContactView" name="m_pView">
+     <widget class="QTreeView" name="m_pView">
       <property name="acceptDrops">
        <bool>true</bool>
       </property>
@@ -74,11 +74,6 @@
    <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>widgets/filterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ContactView</class>
-   <extends>QTreeView</extends>
-   <header>widgets/contactview.h</header>
   </customwidget>
   <customwidget>
    <class>ToolButtonModelView</class>

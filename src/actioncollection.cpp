@@ -131,8 +131,8 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
    action_close_timeline= new QAction();//KStandardAction::close      ( RingApplication::instance()->timelineWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
    action_quit          = KStandardAction::quit       ( RingApplication::instance(), SLOT(quit())   , this);
-   action_configureRing = KStandardAction::preferences( this             , SLOT(configureRing()), this);
-
+   action_configureRing = KStandardAction::preferences( this             , SLOT(slotConfigureRing()), this);
+Q_ASSERT(action_configureRing );
    action_configureRing->setText(i18n("Configure Ring-KDE"));
 
    action_close_phone   ->setObjectName( QStringLiteral("action_close_phone")         );
@@ -157,6 +157,8 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    INIT_ACTION(action_showContactDock       , QIcon::fromTheme(QStringLiteral("edit-find-user"                  )), i18n("Display Person"          ));
    INIT_ACTION(action_showHistoryDock       , QIcon::fromTheme(QStringLiteral("view-history"                    )), i18n("Display history"         ));
    INIT_ACTION(action_showBookmarkDock      , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display bookmark"        ));
+   INIT_ACTION(action_showTimelineDock      , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display timeline"        ));
+   INIT_ACTION(action_showDialDock          , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display call manager"    ));
    INIT_ACTION(action_editToolBar           , QIcon::fromTheme(QStringLiteral("configure-toolbars"              )), i18n("Configure Toolbars"      ));
    INIT_ACTION(action_addPerson             , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("Add new contact"         ));
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcut"      ));
@@ -180,7 +182,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
       action_video_mute           , action_displayDialpad       , action_displayAccountCbb ,
       action_mute_playback        , action_displayVolumeControls, action_showContactDock   ,
       action_showHistoryDock      , action_showBookmarkDock     , action_mute_capture      ,
-      action_show_menu
+      action_show_menu            , action_showTimelineDock     , action_showDialDock      ,
    }) {
       a->setCheckable( true );
    }
@@ -194,6 +196,8 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    action_showContactDock       ->setChecked( ConfigurationSkeleton::displayContactDock  () );
    action_showHistoryDock       ->setChecked( ConfigurationSkeleton::displayHistoryDock  () );
    action_showBookmarkDock      ->setChecked( ConfigurationSkeleton::displayBookmarkDock () );
+   action_showTimelineDock      ->setChecked( ConfigurationSkeleton::displayRecentDock   () );
+   action_showDialDock          ->setChecked( ConfigurationSkeleton::displayDialDock     () );
    action_show_menu             ->setChecked( ConfigurationSkeleton::displayMenu         () );
 
 
@@ -265,7 +269,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
    connect(action_configureNotifications , &QAction::triggered , this               , &ActionCollection::showNotificationEditor );
    connect(action_editToolBar            , &QAction::triggered , this               , &ActionCollection::editToolBar            );
    connect(action_addPerson              , &QAction::triggered , this               , &ActionCollection::slotAddPerson          );
-   connect(action_raise_client           , &QAction::triggered , this               , &ActionCollection::raiseClient            );
+   connect(action_raise_client           , &QAction::triggered , this               , &ActionCollection::slotRaiseClient        );
 
    connect(as                     , &Audio::Settings::captureVolumeChanged  , this                , &ActionCollection::updateRecordButton );
    connect(as                     , &Audio::Settings::playbackVolumeChanged , this                , &ActionCollection::updateVolumeButton );
@@ -288,7 +292,7 @@ void ActionCollection::setupAction(FancyMainWindow* mw)
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
       action_focus_bookmark    , action_show_wizard       , action_show_directory    ,
-      action_show_menu,
+      action_show_menu         , action_showTimelineDock  , action_showDialDock      ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       mw->actionCollection()->addAction(a->objectName(), a);
@@ -331,7 +335,7 @@ void ActionCollection::setupPhoneAction(PhoneWindow* mw)
 }
 
 ///Show the configuration dialog
-void ActionCollection::configureRing()
+void ActionCollection::slotConfigureRing()
 {
    QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(RingApplication::instance()->mainWindow());
    configDialog->setModal(true);
@@ -443,7 +447,7 @@ void ActionCollection::slotShowMenubar(bool s)
 }
 
 ///Raise the main window to the foreground
-void ActionCollection::raiseClient(bool focus)
+void ActionCollection::slotRaiseClient(bool focus)
 {
    RingApplication::instance()->mainWindow()->show          ();
    RingApplication::instance()->mainWindow()->activateWindow();
@@ -475,6 +479,8 @@ GETTER(displayAccountCbbAction      , action_displayAccountCbb     )
 GETTER(showContactDockAction        , action_showContactDock       )
 GETTER(showHistoryDockAction        , action_showHistoryDock       )
 GETTER(showBookmarkDockAction       , action_showBookmarkDock      )
+GETTER(showTimelineDockAction       , action_showTimelineDock      )
+GETTER(showDialDockAction           , action_showDialDock          )
 GETTER(quitAction                   , action_quit                  )
 GETTER(addPerson                    , action_addPerson             )
 GETTER(focusHistory                 , action_focus_history         )
@@ -484,6 +490,9 @@ GETTER(focusBookmark                , action_focus_bookmark        )
 GETTER(showWizard                   , action_show_wizard           )
 GETTER(showMenu                     , action_show_menu             )
 GETTER(newContact                   , action_new_contact           )
+GETTER(configureRing                , action_configureRing         )
+GETTER(configureShortcut            , action_configureShortcut     )
+GETTER(configureNotification        , action_configureNotifications)
 
 //Video actions
 #ifdef ENABLE_VIDEO

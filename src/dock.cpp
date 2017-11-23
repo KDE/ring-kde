@@ -83,19 +83,19 @@ Dock::Dock(PhoneWindow* w) : QObject(w)
    m_pContactCD->setObjectName(QStringLiteral("contactDock"));
    m_pContactCD->setWindowTitle(i18nc("Contact tab","Contact"));
    auto m_pCategoryDelegate = new CategorizedDelegate(m_pContactCD->view());
-   auto m_pContactMethodDelegate = new ContactMethodDelegate();
-   auto m_pContactDelegate = new ContactDelegate(m_pContactCD->view());
-   m_pContactMethodDelegate->setView(m_pContactCD->view());
-   m_pContactDelegate->setChildDelegate(m_pContactMethodDelegate);
-   m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);
-   m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
+//    auto m_pContactMethodDelegate = new ContactMethodDelegate();
+//    auto m_pContactDelegate = new ContactDelegate(m_pContactCD->view());
+//    m_pContactMethodDelegate->setView(m_pContactCD->view());
+//    m_pContactDelegate->setChildDelegate(m_pContactMethodDelegate);
+//    m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);
+//    m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
    m_pContactCD->setDelegate(m_pCategoryDelegate);
 
    // Load later to speed up the process (avoid showing while inserting items)
    QTimer::singleShot(10, [this]() {
       CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hideUnreachable());
-      auto proxy = CategorizedContactModel::SortedProxy::instance().model();
-      m_pContactCD->setProxyModel(proxy, proxy);
+//       auto proxy = CategorizedContactModel::SortedProxy::instance().model();
+//       m_pContactCD->setProxyModel(proxy, proxy);
       m_pContactCD->setSortingModel(
          CategorizedContactModel::SortedProxy::instance().categoryModel(),
          CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
@@ -262,27 +262,27 @@ DockBase* Dock::bookmarkDock()
 void Dock::focusHistory()
 {
    m_pHistoryDW->raise();
-   ActionCollection::instance()->raiseClient(false);
+   ActionCollection::instance()->slotRaiseClient(false);
    m_pHistoryDW->m_pFilterLE->setFocus(Qt::OtherFocusReason);
 }
 
 void Dock::focusContact()
 {
    m_pContactCD->raise();
-   ActionCollection::instance()->raiseClient(false);
+   ActionCollection::instance()->slotRaiseClient(false);
    m_pContactCD->m_pFilterLE->setFocus(Qt::OtherFocusReason);
 }
 
 void Dock::focusCall()
 {
    PhoneWindow::app()->view()->raise();
-   ActionCollection::instance()->raiseClient(true);
+   ActionCollection::instance()->slotRaiseClient(true);
 }
 
 void Dock::focusBookmark()
 {
    m_pBookmarkDW->raise();
-   ActionCollection::instance()->raiseClient(false);
+   ActionCollection::instance()->slotRaiseClient(false);
    m_pBookmarkDW->m_pFilterLE->setFocus(Qt::OtherFocusReason);
 }
 

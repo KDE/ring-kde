@@ -132,13 +132,13 @@ QuickListView::~QuickListView()
 
         sec = sec->m_pNext;
 
+        Q_ASSERT(sec != sec2);
+
         delete sec2;
     }
 
     if (d_ptr->m_pSections)
         delete d_ptr->m_pSections;
-
-    d_ptr->m_pSectionModel.reset();
 }
 
 int QuickListView::count() const
@@ -391,6 +391,9 @@ bool QuickListViewItem::detach()
             Q_ASSERT(m_pSection->m_pPrevious != m_pSection->m_pNext);
             m_pSection->m_pPrevious->m_pNext = m_pSection->m_pNext;
         }
+
+        if (m_pSection->m_pNext)
+            m_pSection->m_pNext->m_pPrevious = m_pSection->m_pPrevious;
 
         if (m_pSection == d()->m_pFirstSection)
             d()->m_pFirstSection = m_pSection->m_pNext;

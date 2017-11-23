@@ -622,6 +622,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         // Keep a dual chained linked list between the visual elements
         e->m_pPrevious = prev ? prev : nullptr; //FIXME incorrect
 
+        //FIXME It can happen if the previous is out of the visible range
         Q_ASSERT( e->m_pPrevious || e->m_Index.row() == 0);
 
         if (prev)
@@ -692,6 +693,9 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
 
     if ((!isActive(parent, start, end)) && !isActive(destination, row, row+(end-start)))
         return;
+
+    //FIXME implement, it will crash if ignored
+    Q_ASSERT(false);
 }
 
 void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)

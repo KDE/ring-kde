@@ -24,6 +24,7 @@
 //Qt
 class QEvent;
 class QQmlApplicationEngine;
+class QQuickWindow;
 
 //KF5
 
@@ -38,6 +39,9 @@ class FancyMainWindow;
 class RingQmlWidgets;
 class PhotoSelectorPlugin;
 class CanvasIndicator;
+class DesktopView;
+class ContactView;
+class DialView;
 class Call;
 
 ///RingApplication: Main application
@@ -66,6 +70,8 @@ public:
    TimelineWindow* timelineWindow() const;
    FancyMainWindow* mainWindow() const;
 
+   QQuickWindow* desktopWindow() const;
+
    bool isPhoneVisible() const;
 
    static QQmlApplicationEngine* engine();
@@ -91,6 +97,10 @@ private:
    static PhotoSelectorPlugin* m_pPhotoSelector;
    static CanvasIndicator* m_pCanvasIndicator;
    static RingApplication* m_spInstance;
+   static DesktopView* m_pDesktopView;
+   static ContactView* m_pContactView;
+   static DialView* m_pDialView;
+
 private Q_SLOTS:
    void daemonTimeout();
    void callAdded(Call* c);

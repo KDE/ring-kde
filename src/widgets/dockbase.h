@@ -56,7 +56,7 @@ public:
    void setSortingModel(QAbstractItemModel* m, QItemSelectionModel* s);
 
    //Getter
-   CategorizedTreeView* view() const;
+   QTreeView* view() const;
 
 private:
    //Attributes

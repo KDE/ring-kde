@@ -221,7 +221,7 @@ Item {
             running: true
             repeat: true
             onTriggered: {
-                isRecordingBox.visible = isRecording
+                isRecordingBox.visible = isRecording != undefined ? isRecording : false //FIXME
             }
         }
 

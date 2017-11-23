@@ -48,7 +48,7 @@ protected:
             // Those need to go into the dock
             case Qt::Key_Up:
             case Qt::Key_Down:
-               m_pDock->m_pView->forwardInput(e);
+//                m_pDock->m_pView->forwardInput(e);
                return true;
             case Qt::Key_Return:
             case Qt::Key_Enter:
@@ -159,10 +159,10 @@ void DockBase::setProxyModel(QAbstractItemModel* model, QSortFilterProxyModel* f
 
 void DockBase::setDelegate(QStyledItemDelegate* delegate)
 {
-   m_pView->setDelegate(delegate);
+//    m_pView->setDelegate(delegate);
 }
 
-CategorizedTreeView* DockBase::view() const
+QTreeView* DockBase::view() const
 {
    return m_pView;
 }

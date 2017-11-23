@@ -97,26 +97,26 @@ TimelineWindow::TimelineWindow()
     m_pContactCD->setObjectName(QStringLiteral("contactDock"));
     m_pContactCD->setWindowTitle(i18nc("Contact tab","Contact"));
     auto m_pCategoryDelegate = new CategorizedDelegate(m_pContactCD->view());
-    auto m_pContactMethodDelegate = new ContactMethodDelegate();
-    auto m_pContactDelegate = new ContactDelegate(m_pContactCD->view());
+//     auto m_pContactMethodDelegate = new ContactMethodDelegate();
+//     auto m_pContactDelegate = new ContactDelegate(m_pContactCD->view());
     m_pCategoryDelegate->setParent(this);
-    m_pContactMethodDelegate->setParent(this);
-    m_pContactDelegate->setParent(this);
-    m_pContactMethodDelegate->setView(m_pContactCD->view());
-    m_pContactDelegate->setChildDelegate(m_pContactMethodDelegate);
-    m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);
-    m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
+//     m_pContactMethodDelegate->setParent(this);
+//     m_pContactDelegate->setParent(this);
+//     m_pContactMethodDelegate->setView(m_pContactCD->view());
+//     m_pContactDelegate->setChildDelegate(m_pContactMethodDelegate);
+//     m_pCategoryDelegate->setChildDelegate(m_pContactDelegate);
+//     m_pCategoryDelegate->setChildChildDelegate(m_pContactMethodDelegate);
     m_pContactCD->setDelegate(m_pCategoryDelegate);
 
     // Load later to speed up the process (avoid showing while inserting items)
     QTimer::singleShot(10, [this]() {
-        CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hideUnreachable());
-        auto proxy = CategorizedContactModel::SortedProxy::instance().model();
-        m_pContactCD->setProxyModel(proxy, proxy);
-        m_pContactCD->setSortingModel(
-            CategorizedContactModel::SortedProxy::instance().categoryModel(),
-            CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
-        );
+//         CategorizedContactModel::instance().setUnreachableHidden(ConfigurationSkeleton::hideUnreachable());
+//         auto proxy = CategorizedContactModel::SortedProxy::instance().model();
+//         m_pContactCD->setProxyModel(proxy, proxy);
+//         m_pContactCD->setSortingModel(
+//             CategorizedContactModel::SortedProxy::instance().categoryModel(),
+//             CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
+//         );
 
         CategorizedContactModel::SortedProxy::instance().categorySelectionModel()->setCurrentIndex(
             CategorizedContactModel::SortedProxy::instance().categoryModel()->index(
@@ -183,7 +183,6 @@ void TimelineWindow::viewContact(ContactMethod* cm)
 {
     m_pViewContact->setContactMethod(cm);
 }
-
 
 void TimelineWindow::viewPerson(Person* p)
 {

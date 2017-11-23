@@ -61,7 +61,7 @@ RecentDock::RecentDock(QWidget* parent) :
     d_ptr->m_pQuickWidget = new QQuickWidget(RingApplication::engine(), this);
 
     d_ptr->m_pQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    d_ptr->m_pQuickWidget->setSource(QUrl(QStringLiteral("qrc:/peerstimeline.qml")));
+    d_ptr->m_pQuickWidget->setSource(QUrl(QStringLiteral("qrc:/PeersTimeline.qml")));
 
     setWidget(d_ptr->m_pQuickWidget);
     setAcceptDrops(true);

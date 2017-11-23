@@ -114,6 +114,7 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         onClicked: {
+            mouse.accepted = true
             CallModel.selectedCall = object
         }
         drag.target: callDelegateItem

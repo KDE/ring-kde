@@ -25,8 +25,12 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
+#include <QtWidgets/QAction>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickItem>
+#include <QQuickWindow>
+#include <QQmlComponent>
 
 //KDE
 #include <KIconLoader>
@@ -69,6 +73,7 @@
 #include "wizard/welcome.h"
 #include "callview/videowidget.h"
 #include "notification.h"
+#include "actioncollection.h"
 
 //Models
 #include <profilemodel.h>
@@ -109,6 +114,9 @@
 #include "photoselector/photoplugin.h"
 #include "canvasindicators/canvasindicator.h"
 #include "canvasindicators/ringingimageprovider.h"
+#include "desktopview/desktopviewplugin.h"
+#include "contactview/contactviewplugin.h"
+#include "dialview/dialviewplugin.h"
 
 //Other
 #include <unistd.h>
@@ -116,6 +124,9 @@
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
+DesktopView* RingApplication::m_pDesktopView {nullptr};
+ContactView* RingApplication::m_pContactView {nullptr};
+DialView* RingApplication::m_pDialView {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
 
@@ -315,6 +326,8 @@ int RingApplication::newInstance()
       else
          mw = RingApplication::timelineWindow();
 
+      desktopWindow();
+
       if (displayOnStart)
          mw->show();
       else
@@ -347,6 +360,7 @@ void RingApplication::setStartPhone(bool value)
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
 #define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), &name::instance());
+#define QML_SINGLETON2(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), name::instance());
 #define QML_ADD_OBJECT(name, obj) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), obj);
 
 constexpr static const char AppName[]= "Ring";
@@ -365,6 +379,15 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pPhotoSelector = new PhotoSelectorPlugin;
       m_pPhotoSelector->registerTypes("PhotoSelectorPlugin");
 
+      m_pDesktopView = new DesktopView;
+      m_pDesktopView->registerTypes("DesktopView");
+
+      m_pContactView = new ContactView;
+      m_pContactView->registerTypes("ContactView");
+
+      m_pDialView = new DialView;
+      m_pDialView->registerTypes("DialView");
+
       m_pCanvasIndicator = new CanvasIndicator;
       m_pCanvasIndicator->registerTypes("CanvasIndicator");
 
@@ -380,6 +403,8 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( UserActionModel   )
       QML_TYPE( PeerTimelineModel )
       QML_TYPE( RingDeviceModel   )
+
+      QML_TYPE( QAction)
 
       QML_CRTYPE( PeersTimelineSelectionModel )
       QML_CRTYPE( NumberCompletionModel       )
@@ -403,6 +428,8 @@ QQmlApplicationEngine* RingApplication::engine()
          QML_SINGLETON( PhoneDirectoryModel      );
          QML_SINGLETON( RecentFileModel          );
 
+         QML_SINGLETON2( ActionCollection         );
+
          QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
          QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());
          QML_ADD_OBJECT(VideoChannelSelectionModel   , &Video::ConfigurationProxy::channelSelectionModel   ());
@@ -422,6 +449,12 @@ QQmlApplicationEngine* RingApplication::engine()
          qmlRegisterUncreatableType<::Media::Media>(
             AppName, 1,0, "Media", QStringLiteral("cannot be instanciated")
          );
+
+         RingApplication::engine()->rootContext()->setContextProperty(
+            QStringLiteral("SortedContactModel"),
+            CategorizedContactModel::SortedProxy::instance().model()
+         );
+
 
          auto im = new RingingImageProvider();
          e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
@@ -469,6 +502,29 @@ TimelineWindow* RingApplication::timelineWindow() const
    }
 
    return m_pTimeline;
+}
+
+QQuickWindow* RingApplication::desktopWindow() const
+{
+   static QQuickWindow* dw = nullptr;
+   if (!dw) {
+      QQmlComponent component(engine());
+      component.loadUrl(QUrl(QStringLiteral("qrc:/DesktopWindow.qml")));
+      if ( component.isReady() ) {
+         if (auto obj = qobject_cast<QQuickItem*>(component.create())) {
+            dw =  qobject_cast<QQuickWindow*>(obj);
+            qDebug() << "\n\nHERE" << obj <<dw << obj->metaObject()->className() << obj->property("id");
+         }
+         else
+            qWarning() << "FAILED TO LOAD:" << component.errorString();
+      }
+      else
+         qWarning() << component.errorString();
+
+      qDebug() << "\n\nDW!" << dw;
+   }
+
+   return dw;
 }
 
 bool RingApplication::isPhoneVisible() const
@@ -540,7 +596,14 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
       KMessageBox::error(mainWindow(),errorMessage);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
+   catch (const std::exception& e) {
+      qDebug() << ErrorMessage::GENERIC_ERROR << e.what();
+      KMessageBox::error(mainWindow(),ErrorMessage::GENERIC_ERROR);
+      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
+
+   }
    catch (...) {
+      Q_ASSERT(false);
       qDebug() << ErrorMessage::GENERIC_ERROR;
       KMessageBox::error(mainWindow(),ErrorMessage::GENERIC_ERROR);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);

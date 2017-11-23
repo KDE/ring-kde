@@ -20,7 +20,7 @@ import Ring 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 
-Kirigami.ApplicationItem {
+Item {
     SystemPalette {
         id: inactivePalette
         colorGroup: SystemPalette.Disabled
@@ -34,7 +34,7 @@ Kirigami.ApplicationItem {
     Kirigami.ScrollablePage {
         id: page
         anchors.fill: parent
-        title: "Long List view"
+        title: "Calls"
 
         CallList {
             anchors.fill: parent

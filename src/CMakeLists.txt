@@ -177,6 +177,12 @@ ADD_SUBDIRECTORY( photoselector )
 # Build the elements used to notify the users of events
 ADD_SUBDIRECTORY( canvasindicators )
 
+# Build the contact manager subsystem
+ADD_SUBDIRECTORY( contactview )
+
+# Build the main desktop component
+ADD_SUBDIRECTORY( desktopview )
+
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
@@ -271,7 +277,6 @@ SET(
    widgets/playeroverlay.cpp
    widgets/filterlineedit.cpp
    widgets/kphonenumberselector.cpp
-   widgets/contactview.cpp
    widgets/presence.cpp
    widgets/directoryview.cpp
    widgets/autocompletion.cpp
@@ -440,6 +445,8 @@ TARGET_LINK_LIBRARIES(ring-kde
   libtimeline
   libphotoselector
   libcanvasindicator
+  desktopview
+  contactview
   tip
   libqmlwidgets
 

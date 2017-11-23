@@ -57,6 +57,7 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 #File to compile
 SET( dialview_LIB_SRCS
    dialdock.cpp
+   dialviewplugin.cpp
 )
 
 QT5_ADD_RESOURCES(dialview_LIB_SRCS

@@ -1,13 +1,13 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="peerstimeline.qml">qml/peerstimeline.qml</file>
+        <file alias="PeersTimeline.qml">qml/peerstimeline.qml</file>
         <file alias="ContactHeader.qml">qml/contactheader.qml</file>
         <file alias="ContactInfo.qml">qml/contactinfo.qml</file>
         <file alias="ContactDialog.qml">qml/contactdialog.qml</file>
         <file alias="CallHistory.qml">qml/callhistory.qml</file>
         <file alias="RecordingHistory.qml">qml/recordinghistory.qml</file>
         <file alias="AudioPlayer.qml">qml/audioplayer.qml</file>
-        <file alias="viewcontact.qml">qml/viewcontact.qml</file>
+        <file alias="ViewContact.qml">qml/viewcontact.qml</file>
         <file alias="ChatBox.qml">qml/chatbox.qml</file>
         <file alias="ChatView.qml">qml/chatview.qml</file>
         <file alias="TimelinePage.qml">qml/timelinepage.qml</file>

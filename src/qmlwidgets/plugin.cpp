@@ -32,6 +32,7 @@
 #include "bindedcombobox.h"
 #include "snapshotadapter.h"
 #include "timelinedots.h"
+#include "qmlaction.h"
 
 void RingQmlWidgets::registerTypes(const char *uri)
 {
@@ -50,6 +51,7 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<BindedComboBox>(uri, 1, 0, "BindedComboBox");
     qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
     qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
+    qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
 
     qmlRegisterUncreatableType<QuickListViewSections>("Ring", 1,0,
         "QuickListViewSections", "QuickListViewSections cannot be instanciated"
