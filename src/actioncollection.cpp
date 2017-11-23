@@ -39,7 +39,6 @@
 //Ring
 #include "globalinstances.h"
 #include "phonewindow.h"
-#include "timelinewindow.h"
 #include "ringapplication.h"
 #include "view.h"
 #include "conf/configurationdialog.h"
@@ -82,7 +81,7 @@ static QString getName(const UserActionModel::Action a)
    return QStringLiteral("FOO");
 }
 
-ActionCollection::ActionCollection(FancyMainWindow* parent) : QObject(parent)
+ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
 {
    // It is important to init the actions correctly for the menu and KDE global shortcuts
    INIT_ACTION(action_accept        , QIcon(QStringLiteral(":/sharedassets/phone_light/accept.svg"   )), i18n( "Accept"   ));
@@ -125,7 +124,7 @@ ActionCollection::ActionCollection(FancyMainWindow* parent) : QObject(parent)
 ActionCollection::~ActionCollection()
 {}
 
-void ActionCollection::setupAction(FancyMainWindow* mw)
+void ActionCollection::setupAction(KXmlGuiWindow* mw, KActionCollection* col)
 {
    // Import standard actions
    action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
@@ -164,8 +163,8 @@ Q_ASSERT(action_configureRing );
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcut"      ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Notifications" ));
 
+#define COL(a,b) col->setDefaultShortcut(a,b)
    // Assign default shortcuts
-#define COL(a,b) mw->actionCollection()->setDefaultShortcut(a,b)
    COL(action_accept      , Qt::CTRL + Qt::Key_A );
    COL(action_new_call    , Qt::CTRL + Qt::Key_N );
    COL(action_hold        , Qt::CTRL + Qt::Key_H );
@@ -295,7 +294,7 @@ Q_ASSERT(action_configureRing );
       action_show_menu         , action_showTimelineDock  , action_showDialDock      ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
-      mw->actionCollection()->addAction(a->objectName(), a);
+      col->addAction(a->objectName(), a);
    }
 
    // Enable global shortcuts for relevant "current call" actions
@@ -314,7 +313,7 @@ Q_ASSERT(action_configureRing );
    QList<QAction *> acList = *Accessibility::instance();
 
    foreach(QAction * ac,acList) {
-      mw->actionCollection()->addAction(ac->objectName() , ac);
+      col->addAction(ac->objectName() , ac);
    }
 #endif
 
@@ -337,7 +336,7 @@ void ActionCollection::setupPhoneAction(PhoneWindow* mw)
 ///Show the configuration dialog
 void ActionCollection::slotConfigureRing()
 {
-   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(RingApplication::instance()->mainWindow());
+   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(nullptr);
    configDialog->setModal(true);
 
    configDialog->exec();
@@ -347,29 +346,29 @@ void ActionCollection::slotConfigureRing()
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor()
 {
-   KShortcutsDialog::configure( RingApplication::instance()->mainWindow()->actionCollection() );
+   KShortcutsDialog::configure( nullptr );
 }
 
 ///Display the shortcuts dialog
 void ActionCollection::showDirectory()
 {
-   new DirectoryView(RingApplication::instance()->mainWindow());
+   new DirectoryView(nullptr);
 }
 
 ///Display the notification manager
 void ActionCollection::showNotificationEditor()
 {
-   KNotifyConfigWidget::configure(RingApplication::instance()->mainWindow(), QStringLiteral("ring-kde"));
+   KNotifyConfigWidget::configure(nullptr, QStringLiteral("ring-kde"));
 }
 
 ///Show the toolbar editor
 void ActionCollection::editToolBar()
 {
-   QPointer<KEditToolBar> toolbareditor = new KEditToolBar(RingApplication::instance()->mainWindow()->guiFactory());
-   toolbareditor->setModal(true);
-   toolbareditor->setDefaultToolBar(QStringLiteral("mainToolBar"));
-   toolbareditor->exec();
-   delete toolbareditor;
+//    QPointer<KEditToolBar> toolbareditor = new KEditToolBar(RingApplication::instance()->mainWindow()->guiFactory());
+//    toolbareditor->setModal(true);
+//    toolbareditor->setDefaultToolBar(QStringLiteral("mainToolBar"));
+//    toolbareditor->exec();
+//    delete toolbareditor;
 }
 
 void ActionCollection::slotAddPerson()
@@ -443,15 +442,16 @@ void ActionCollection::slotNewContact()
 
 void ActionCollection::slotShowMenubar(bool s)
 {
-   RingApplication::instance()->timelineWindow()->showMenu(s);
+//    RingApplication::instance()->timelineWindow()->showMenu(s);
 }
 
 ///Raise the main window to the foreground
 void ActionCollection::slotRaiseClient(bool focus)
 {
-   RingApplication::instance()->mainWindow()->show          ();
-   RingApplication::instance()->mainWindow()->activateWindow();
-   RingApplication::instance()->mainWindow()->raise         ();
+//FIXME
+//    RingApplication::instance()->mainWindow()->show          ();
+//    RingApplication::instance()->mainWindow()->activateWindow();
+//    RingApplication::instance()->mainWindow()->raise         ();
 
    if (focus) {
       // Add a new call if there is none

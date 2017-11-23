@@ -19,7 +19,7 @@
 #ifndef RING_H
 #define RING_H
 
-#include "fancymainwindow.h"
+#include <KXmlGuiWindow>
 
 //Qt
 class QString;
@@ -56,7 +56,7 @@ class SysTray;
  * @author Emmanuel Lepage <elv1313@gmail.com>
  * @version 1.4.1
 **/
-class PhoneWindow final : public FancyMainWindow
+class PhoneWindow final : public KXmlGuiWindow
 {
 Q_OBJECT
 

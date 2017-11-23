@@ -36,6 +36,8 @@
 #include <call.h>
 #include <callmodel.h>
 
+#include <../timeline/qrc_recentdock.cpp>
+
 // Remove inactive calls from the CallModel
 class ActiveCallProxy2 : public QSortFilterProxyModel
 {
@@ -71,6 +73,10 @@ MainPage::MainPage(QQuickItem* parent) :
     d_ptr->q_ptr = this;
     auto cp = new ActiveCallProxy2(&CallModel::instance());
     cp->setSourceModel(&CallModel::instance());
+
+    QFile file(QStringLiteral(":/assets/welcome.html"));
+    if (file.open(QIODevice::ReadOnly))
+        RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("welcomeMessage"), file.readAll());
 
     RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxy2Model"), cp);
 

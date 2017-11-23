@@ -34,7 +34,7 @@
 
 //KDE
 #include <KIconLoader>
-#include <KMainWindow>
+#include <KActionCollection>
 #include <kmessagebox.h>
 #include <KDeclarative/KDeclarative>
 
@@ -66,7 +66,6 @@
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
 #include "phonewindow.h"
-#include "timelinewindow.h"
 #include "errormessage.h"
 #include "callmodel.h"
 #include "implementation.h"
@@ -166,15 +165,9 @@ RingApplication::~RingApplication()
    // Delete the GUI before the models to prevent their destructors from
    // accessing the singletons
    if (m_pPhone) {
-      m_pPhone->setActive(false);
+//       m_pPhone->setActive(false);
       delete m_pPhone;
-      m_pTimeline = nullptr;
-   }
-
-   if (m_pTimeline) {
-      m_pTimeline->setActive(false);
-      delete m_pTimeline;
-      m_pTimeline = nullptr;
+      m_pPhone = nullptr;
    }
 
    delete m_pDeclarative;
@@ -319,19 +312,36 @@ int RingApplication::newInstance()
    if (init) {
       init = false;
 
-      FancyMainWindow* mw = nullptr;
+      PhoneWindow* mw = nullptr;
 
-      if (m_StartPhone)
+      // Create the old qtwidgets main window so all classes expecting one still
+      // behave as they should //FIXME fix KF5::KXMLGui
+      auto mw2 = new KXmlGuiWindow();
+      auto col = new KActionCollection(this);
+
+      // Use a QTimer since it can enter in a recursion if there is a shortcut
+      // collision creating a warning popup parented on the main window.
+      #ifdef Q_OS_MAC
+         QDir dir(QApplication::applicationDirPath());
+         dir.cdUp();
+         dir.cd("Resources/");
+         QTimer::singleShot(0, [mw2,dir]() {mw2->createGUI(dir.path()+"/ring-kdeui.rc");});
+      #else
+         QTimer::singleShot(0, [mw2]() {mw2->createGUI();});
+      #endif
+
+      ActionCollection::instance()->setupAction(mw2, col);
+
+      if (m_StartPhone) {
          mw = RingApplication::phoneWindow();
-      else
-         mw = RingApplication::timelineWindow();
 
-      desktopWindow();
-
-      if (displayOnStart)
-         mw->show();
+         if (displayOnStart)
+            mw->show();
+         else
+            mw->hide();
+      }
       else
-         mw->hide();
+         desktopWindow();
    }
 
    return 0;
@@ -484,24 +494,12 @@ PhoneWindow* RingApplication::phoneWindow() const
 {
    if (!m_pPhone) {
       m_pPhone = new PhoneWindow(nullptr);
-      connect(m_pPhone, &FancyMainWindow::unregisterWindow, this, [this]() {
-         m_pPhone = nullptr;
-      });
+//       connect(m_pPhone, &FancyMainWindow::unregisterWindow, this, [this]() {
+//          m_pPhone = nullptr;
+//       });
    }
 
    return m_pPhone;
-}
-
-TimelineWindow* RingApplication::timelineWindow() const
-{
-   if (!m_pTimeline) {
-      m_pTimeline = new TimelineWindow();
-      connect(m_pTimeline, &FancyMainWindow::unregisterWindow, this, [this]() {
-         m_pTimeline = nullptr;
-      });
-   }
-
-   return m_pTimeline;
 }
 
 QQuickWindow* RingApplication::desktopWindow() const
@@ -532,19 +530,11 @@ bool RingApplication::isPhoneVisible() const
    return m_pPhone && m_pPhone->isVisible();
 }
 
-FancyMainWindow* RingApplication::mainWindow() const
-{
-   if (m_pPhone && !m_pTimeline)
-      return m_pPhone;
-
-   return RingApplication::timelineWindow();
-}
-
 ///The daemon is not found
 void RingApplication::daemonTimeout()
 {
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
-      KMessageBox::error(mainWindow(), ErrorMessage::NO_DAEMON_ERROR);
+      KMessageBox::error(nullptr, ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }
 }
@@ -562,8 +552,8 @@ void RingApplication::callAdded(Call* c)
          RingApplication::instance()->phoneWindow()->raise();
       }
       else {
-         timelineWindow()->viewContact(c->peerContactMethod());
-         timelineWindow()->setCurrentPage(ViewContactDock::Pages::MEDIA);
+         //timelineWindow()->viewContact(c->peerContactMethod());
+         //timelineWindow()->setCurrentPage(ViewContactDock::Pages::MEDIA);
       }
    }
 }
@@ -593,19 +583,19 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (const QString& errorMessage) {
-      KMessageBox::error(mainWindow(),errorMessage);
+      KMessageBox::error(nullptr,errorMessage);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (const std::exception& e) {
       qDebug() << ErrorMessage::GENERIC_ERROR << e.what();
-      KMessageBox::error(mainWindow(),ErrorMessage::GENERIC_ERROR);
+      KMessageBox::error(nullptr,ErrorMessage::GENERIC_ERROR);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
 
    }
    catch (...) {
       Q_ASSERT(false);
       qDebug() << ErrorMessage::GENERIC_ERROR;
-      KMessageBox::error(mainWindow(),ErrorMessage::GENERIC_ERROR);
+      KMessageBox::error(nullptr, ErrorMessage::GENERIC_ERROR);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    return false;

@@ -27,8 +27,9 @@ class QActionGroup;
 class QAction;
 
 // Ring
-class FancyMainWindow;
+class KXmlGuiWindow;
 class PhoneWindow;
+class KActionCollection;
 
 ///Group action declaration under the same umbrella
 class ActionCollection : public QObject {
@@ -36,10 +37,10 @@ class ActionCollection : public QObject {
 public:
 
    //Constructor
-   explicit ActionCollection(FancyMainWindow* parent = nullptr);
+   explicit ActionCollection(QObject* parent = nullptr);
    virtual ~ActionCollection();
    static ActionCollection* instance();
-   void setupAction(FancyMainWindow* mw);
+   void setupAction(KXmlGuiWindow* mw, KActionCollection* col);
    void setupPhoneAction(PhoneWindow* mw);
 
    Q_PROPERTY(QAction* holdAction                  READ holdAction                  CONSTANT)

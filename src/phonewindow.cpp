@@ -75,7 +75,7 @@
 
 ///Constructor
 PhoneWindow::PhoneWindow(QWidget*)
-   : FancyMainWindow()
+   : KXmlGuiWindow()
 {
    setObjectName(QStringLiteral("PhoneWindow"));
 
@@ -88,7 +88,7 @@ PhoneWindow::PhoneWindow(QWidget*)
    setWindowTitle( i18n("Ring"                                  ) );
 
    m_pView = new View(this);
-   ActionCollection::instance()->setupAction(this);
+   ActionCollection::instance()->setupAction(this, actionCollection());
    ActionCollection::instance()->setupPhoneAction(this);
    m_pView->updateVolumeControls();
 
@@ -126,7 +126,7 @@ PhoneWindow::PhoneWindow(QWidget*)
    m_pTrayIcon        = new SysTray ( this->windowIcon(), this );
    m_pDock            = new Dock    ( this                     );
 
-   connect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
+//    connect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
 
    setAutoSaveSettings();
 
@@ -134,7 +134,7 @@ PhoneWindow::PhoneWindow(QWidget*)
    tabifyDockWidget(m_pCentralDW, m_pDock->historyDock ());
    tabifyDockWidget(m_pCentralDW, m_pDock->bookmarkDock());
 
-   updateTabIcons();
+//    updateTabIcons();
 
    // Use a QTimer since it can enter in a recursion if there is a shortcut
    // collision creating a warning popup parented on the main window.
@@ -260,7 +260,7 @@ PhoneWindow::~PhoneWindow()
    removeEventFilter(this);
    disconnect();
 
-   disconnect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
+//    disconnect(m_pCentralDW, &QDockWidget::visibilityChanged, this, &PhoneWindow::updateTabIcons);
 
    m_pDock->deleteLater();
 

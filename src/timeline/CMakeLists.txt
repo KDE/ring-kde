@@ -54,8 +54,6 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
 SET( libtimeline_LIB_SRCS
-   recentdock.cpp
-   viewcontactdock.cpp
 )
 
 QT5_ADD_RESOURCES(libtimeline_LIB_SRCS

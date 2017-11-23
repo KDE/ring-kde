@@ -38,7 +38,6 @@
 
 // Ring-KDE
 #include <ringapplication.h>
-#include <fancymainwindow.h>
 #include <view.h>
 #include <eventmanager.h>
 
@@ -69,7 +68,7 @@ private Q_SLOTS:
 };
 
 IncomingCallNotification::IncomingCallNotification(Call* call) : KNotification(
-   QStringLiteral("incomingCall"), RingApplication::instance()->mainWindow(),
+   QStringLiteral("incomingCall"), nullptr,
    NotificationFlag::Persistent), m_pCall(call)
 {
 
@@ -138,7 +137,7 @@ public:
 };
 
 IncomingTextNotification::IncomingTextNotification(ContactMethod* cm, Media::TextRecording* t) : KNotification(
-   QStringLiteral("incomingText"), RingApplication::instance()->mainWindow())
+   QStringLiteral("incomingText"), nullptr)
 {
    setTitle(i18n("Message from %1", cm->primaryName()));
 
@@ -179,7 +178,7 @@ private Q_SLOTS:
 };
 
 CreateContactNotification::CreateContactNotification(ContactMethod* cm) :KNotification(
-   QStringLiteral("incomingCall"), RingApplication::instance()->mainWindow())
+   QStringLiteral("incomingCall"), nullptr)
 {
    setTitle(i18n("Add %1 to contacts?", cm->uri()));
 

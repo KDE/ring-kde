@@ -307,8 +307,6 @@ SET(
    main.cpp
    view.cpp
    phonewindow.cpp
-   timelinewindow.cpp
-   fancymainwindow.cpp
    cmd.cpp
    dock.cpp
    notification.cpp

@@ -212,10 +212,10 @@ Dock::Dock(PhoneWindow* w) : QObject(w)
    connect( ActionCollection::instance()->focusBookmark(), &QAction::triggered, this, &Dock::focusBookmark );
 
    // Show the "pretty" sidebars
-   connect(m_pContactCD , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
-   connect(m_pHistoryDW , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
-   connect(m_pBookmarkDW, &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
-   w->updateTabIcons();
+//    connect(m_pContactCD , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
+//    connect(m_pHistoryDW , &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
+//    connect(m_pBookmarkDW, &QDockWidget::visibilityChanged, w, &FancyMainWindow::updateTabIcons);
+//    w->updateTabIcons();
 }
 
 Dock::~Dock()

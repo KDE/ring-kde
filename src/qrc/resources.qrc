@@ -47,6 +47,5 @@
     <file alias="bookmark.svg">../icons/toolbar/bookmark.svg</file>
     <file alias="call.svg">../icons/toolbar/call.svg</file>
     <file alias="timeline.svg">../icons/toolbar/timeline.svg</file>
-    <file alias="toolbar.css">../icons/toolbar/toolbar.css</file>
   </qresource>
 </RCC>

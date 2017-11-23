@@ -34,8 +34,6 @@ namespace KDeclarative {
 
 //Ring
 class PhoneWindow;
-class TimelineWindow;
-class FancyMainWindow;
 class RingQmlWidgets;
 class PhotoSelectorPlugin;
 class CanvasIndicator;
@@ -67,8 +65,6 @@ public:
    bool startIconified() const;
 
    PhoneWindow* phoneWindow() const;
-   TimelineWindow* timelineWindow() const;
-   FancyMainWindow* mainWindow() const;
 
    QQuickWindow* desktopWindow() const;
 
@@ -91,7 +87,6 @@ private:
    bool m_StartTimeLine  {false};
 
    mutable PhoneWindow* m_pPhone {nullptr};
-   mutable TimelineWindow* m_pTimeline {nullptr};
    static KDeclarative::KDeclarative* m_pDeclarative;
    static RingQmlWidgets* m_pQmlWidget;
    static PhotoSelectorPlugin* m_pPhotoSelector;
