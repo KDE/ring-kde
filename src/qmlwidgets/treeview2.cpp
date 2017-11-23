@@ -700,8 +700,25 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
 
 void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)
 {
+    if ((!tl.isValid()) || (!br.isValid()))
+        return;
+
     if (!isActive(tl.parent(), tl.row(), br.row()))
         return;
+
+    //FIXME tolerate other cases
+    Q_ASSERT(q_ptr->model());
+    Q_ASSERT(tl.model() == q_ptr->model() && br.model() == q_ptr->model());
+    Q_ASSERT(tl.parent() == br.parent());
+
+    //TODO Use a smaller range when possible
+
+    //itemForIndex(const QModelIndex& idx) const final override;
+    for (int i = tl.row(); i <= br.row(); i++) {
+        const auto idx = q_ptr->model()->index(i, tl.column(), tl.parent());
+        if (auto item = static_cast<VolatileTreeItem*>(q_ptr->itemForIndex(idx)))
+            item->performAction(VolatileTreeItem::Action::UPDATE);
+    }
 }
 
 bool VolatileTreeItem::performAction(Action a)

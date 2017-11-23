@@ -59,12 +59,14 @@ public:
 
     // When all elements are assumed to have the same height, life is easy
     QVector<qreal> m_DepthChart {0};
+
+    QuickTreeView* q_ptr;
 };
 
 QuickTreeView::QuickTreeView(QQuickItem* parent) : TreeView2(parent),
     d_ptr(new QuickTreeViewPrivate)
 {
-
+    d_ptr->q_ptr = this;
 }
 
 QuickTreeView::~QuickTreeView()
@@ -127,6 +129,9 @@ bool QuickTreeViewItem::attach()
 
 bool QuickTreeViewItem::refresh()
 {
+    if (m_pContent)
+        d()->q_ptr->applyRoles(m_pContent, index());
+
     return true;
 }
 
