@@ -36,8 +36,9 @@ Item {
         Grid {
             columns: 3
             spacing: 3
-            width:   parent.width
-            height:  height/4*4
+            width:   height/4*4
+            height: parent.height
+            anchors.horizontalCenter: parent.horizontalCenter
             Repeater {
                 model: 12
                 Rectangle {

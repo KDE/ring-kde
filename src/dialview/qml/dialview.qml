@@ -20,7 +20,11 @@ import Ring 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 
-Item {
+FocusScope {
+    id: dialView
+    focus: true
+    anchors.fill: parent
+
     SystemPalette {
         id: inactivePalette
         colorGroup: SystemPalette.Disabled
@@ -62,9 +66,31 @@ Item {
         visible: CallModel.supportsDTMF
 //             anchors.bottom: page.actions.main.top
         height: 200
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenter: dialView.horizontalCenter
         anchors.bottom: parent.bottom
 //             anchors.bottomMargin: page.actions.main.height + 20
         anchors.bottomMargin: 50
+
+    }
+
+    Keys.onPressed: {
+        console.log("KEY", event.key, event.text)
+        CallModel.dialingCall().appendText(event.text)
+    }
+
+    Component.onCompleted: {
+        dialView.forceActiveFocus()
+    }
+
+    MouseArea {
+        z: 9999
+        anchors.fill: parent
+        propagateComposedEvents: true
+        onClicked: {
+            mouse.accepted = false
+            mouse.refused = true
+            dialView.focus = true
+            dialView.forceActiveFocus()
+        }
     }
 }

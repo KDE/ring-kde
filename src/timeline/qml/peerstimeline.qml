@@ -16,8 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 1.4
-import QtQuick.Controls 2.0 as Controls2
+import QtQuick.Controls 2.0
 import Ring 1.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
@@ -86,10 +85,13 @@ Rectangle {
     ColumnLayout {
         anchors.fill: parent
 
-        Controls2.TextField {
+        TextField {
             id: search
             Layout.fillWidth: true
             placeholderText: i18n("Find someone")
+            text: CallModel.hasDialingCall ?
+                CallModel.dialingCall().dialNumber : ""
+
             onTextChanged: {
                 var call = CallModel.dialingCall()
                 call.dialNumber = search.text
@@ -244,7 +246,7 @@ Rectangle {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: "black"
+                    color: inactivePalette.highlight
                     opacity: 0.75
                 }
             }
@@ -253,6 +255,7 @@ Rectangle {
                 id: searchView
                 visible: false
                 anchors.fill: parent
+                z: 99999999
             }
         }
     }
@@ -286,6 +289,14 @@ Rectangle {
 
     onHeightChanged: {
         scrollBar.handleHeight = recentDock.height * (recentDock.height/(recentView.count*50))
+    }
+
+    Connections {
+        target: CallModel
+        onDialNumberChanged: {
+                search.text = CallModel.hasDialingCall ?
+                    CallModel.dialingCall().dialNumber : ""
+        }
     }
 
     // Timeline scrollbar

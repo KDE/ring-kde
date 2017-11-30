@@ -50,13 +50,6 @@ Item {
             height: Math.min(46, 4*componentItem.labelHeight + 12)
             width:  Math.min(46, 4*componentItem.labelHeight + 12)
 
-            Rectangle {
-                radius: 5
-                color: "white"
-                opacity: 0.05
-                anchors.fill: parent
-            }
-
             PixmapWrapper {
                 anchors.fill: parent
                 pixmap: decoration
@@ -71,12 +64,14 @@ Item {
                     Layout.fillWidth: true
                     text: display
                     font.bold: true
-                    color: "white"
+                    color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
                 }
                 Text {
                     anchors.rightMargin: 5
                     text: formattedLastUsed
-                    color: "gray"
+                    color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : inactivePalette.text
                 }
                 Item {
                     width: 2
@@ -91,12 +86,14 @@ Item {
                 }
                 Text {
                     text: categoryName+"  "
-                    color: "gray"
+                    color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : inactivePalette.text
                 }
                 Text {
                     Layout.fillWidth: true
                     text: uri
-                    color: "white"
+                    color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
                 }
             }
             RowLayout {
@@ -141,7 +138,8 @@ Item {
                     color: "transparent"
                     radius: 5
                     border.width: 1
-                    border.color: "white"
+                    border.color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
                     opacity: 0.8
                     Behavior on color {
                         ColorAnimation {duration:100}
@@ -149,7 +147,8 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: "Send request"
-                        color: "white"
+                        color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
                     }
                     MouseArea {
                         anchors.fill: parent
@@ -167,7 +166,8 @@ Item {
                     color: "transparent"
                     radius: 5
                     border.width: 1
-                    border.color: "white"
+                    border.color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
                     opacity: 0.8
                     Behavior on color {
                         ColorAnimation {duration:100}
@@ -175,7 +175,8 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: "Call"
-                        color: "white"
+                        color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
                     }
                     MouseArea {
                         anchors.fill: parent
@@ -198,7 +199,8 @@ Item {
         anchors.bottomMargin: 3
         width: parent.width
         height: 1
-        color: "gray"
+        color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : inactivePalette.text
         opacity: 0.7
     }
 

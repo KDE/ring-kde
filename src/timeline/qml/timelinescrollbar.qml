@@ -115,13 +115,27 @@ Item {
                 Rectangle {
                     id: mainCircle
                     y: 0
-                    height: 18
-                    width: 18
+                    width: 16
+                    height: 16
                     radius: 999
-                    color: "#005500"
-                    border.width: 2
-                    border.color: "#d0d0d0"
-                    Behavior on color {
+                    color: inactivePalette.highlight
+                    border.width: 1
+                    border.color: activePalette.text
+
+                    Rectangle {
+                        id: smallCircle
+                        height: 8
+                        width: 8
+                        radius: 99
+                        anchors.centerIn: parent
+                        color: activePalette.text
+
+                        Behavior on color {
+                            ColorAnimation {duration: 300}
+                        }
+                    }
+
+                    Behavior on border.color {
                         ColorAnimation {duration: 300}
                     }
                 }
@@ -129,7 +143,7 @@ Item {
                     id: label
                     Layout.fillWidth: true
                     text: display
-                    color: "white"
+                    color: activePalette.text
                     Behavior on font.pointSize {
                         NumberAnimation {duration: 150}
                     }
@@ -142,7 +156,11 @@ Item {
                     when: selected
                     PropertyChanges {
                         target: mainCircle
-                        color:  "#00AA00"
+                        border.color:  "#298223"
+                    }
+                    PropertyChanges {
+                        target: smallCircle
+                        color:  "#298223"
                     }
                     PropertyChanges {
                         target:  label
@@ -170,7 +188,7 @@ Item {
 
             TimelineDots {
                 height: parent.height
-                width: 18
+                width: 16
                 z: -1
             }
         }

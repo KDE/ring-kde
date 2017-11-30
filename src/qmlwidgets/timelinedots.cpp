@@ -32,8 +32,21 @@ TimelineDots::~TimelineDots()
 
 void TimelineDots::paint(QPainter *painter)
 {
-    static QPen   pen  ( QColor(QStringLiteral("#d0d0d0")), 1.5);
-    static QBrush brush( QColor(QStringLiteral("#005500")), Qt::SolidPattern);
+    static bool init = false;
+    static QPen   pen;
+    static QBrush brush;
+
+    if (!init) {
+        auto pal = QGuiApplication::palette();
+
+        pen = QPen(pal.brush(QPalette::ColorGroup::Active, QPalette::ColorRole::Text).color(), 1.5);
+
+        auto bg = pen.color();
+        bg.setAlpha(0.1);
+        brush = QBrush( bg, Qt::SolidPattern);
+
+        init = true;
+    }
 
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setPen  (pen);
@@ -58,11 +71,17 @@ void TimelineDots::paint(QPainter *painter)
     const qreal distance = spacing + 2*radius;
 
     // Draw each dots
-    for (int i = 0; i < std::floor((height()+(distance/2.0))/distance); i++)
-        painter->drawEllipse(QRectF {
+    for (int i = 0; i < std::floor((height()+(distance/2.0))/distance); i++) {
+        const QRectF rect {
             hCenter - radius,
             (distance/2.0) + i*distance - radius,
             radius*2.0,
             radius*2.0,
-        });
+        };
+
+        painter->setCompositionMode(QPainter::CompositionMode_Clear);
+        painter->drawEllipse(rect);
+        painter->setCompositionMode(QPainter::CompositionMode_Source);
+        painter->drawEllipse(rect);
+    }
 }

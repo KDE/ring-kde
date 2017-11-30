@@ -81,6 +81,7 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
+                propagateComposedEvents: true
                 onClicked: {
                     CallModel.selectedCall = object
                 }

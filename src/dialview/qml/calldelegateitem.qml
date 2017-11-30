@@ -113,6 +113,7 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
+        propagateComposedEvents: true
         onClicked: {
             mouse.accepted = true
             CallModel.selectedCall = object

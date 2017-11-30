@@ -42,8 +42,6 @@ Item {
 
             function selectItem(index) {
                 treeView.currentIndex = index
-
-                console.log("SELECT!", index, treeView.currentIndex)
             }
 
             anchors.fill: parent
@@ -104,7 +102,7 @@ Item {
                                         Layout.fillWidth: true
                                         id: displayNameLabel
                                         text: display
-                                        color: "white"
+                                        color: activePalette.text
                                         font.bold: true
                                     }
                                     Text {
@@ -122,7 +120,6 @@ Item {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    console.log("PA0")
                                     treeView.selectItem(modelIndex)
                                 }
                             }

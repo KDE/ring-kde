@@ -465,6 +465,13 @@ QQmlApplicationEngine* RingApplication::engine()
             CategorizedContactModel::SortedProxy::instance().model()
          );
 
+         auto completionModel = new NumberCompletionModel();
+
+         RingApplication::engine()->rootContext()->setContextProperty(
+            QStringLiteral("CompletionModel"), completionModel
+         );
+
+
 
          auto im = new RingingImageProvider();
          e->addImageProvider( QStringLiteral("RingingImageProvider"), im );

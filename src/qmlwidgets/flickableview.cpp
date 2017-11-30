@@ -217,9 +217,10 @@ void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
         ctx->setContextProperty(i.value() , self.data(i.key()));
 
     // Set extra index to improve ListView compatibility
-    ctx->setContextProperty(QStringLiteral("index"    ) , self.row()              );
-    ctx->setContextProperty(QStringLiteral("rootIndex") , self                    );
-    ctx->setContextProperty(QStringLiteral("rowCount" ) , model()->rowCount(self));
+    ctx->setContextProperty(QStringLiteral("index"        ) , self.row()              );
+    ctx->setContextProperty(QStringLiteral("rootIndex"    ) , self                    );
+    ctx->setContextProperty(QStringLiteral("rowCount"     ) , model()->rowCount(self) );
+    ctx->setContextProperty(QStringLiteral("isCurrentItem") , false                   );
 }
 
 QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI, QQmlContext* parentCtx, const QModelIndex& self) const
@@ -300,8 +301,6 @@ void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
     m_pSelectedItem->setVisible(true);
     m_pSelectedItem->setWidth(geo.width());
     m_pSelectedItem->setHeight(geo.height());
-
-    qDebug() << geo << q_ptr->width() << m_pSelectedItem->x() << m_pSelectedItem->width();
 
     elem->setSelected(true);
 
