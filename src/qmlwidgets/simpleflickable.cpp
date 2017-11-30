@@ -50,6 +50,7 @@ public:
         RELEASE , /*!< When a mouse button is released */
         MOVE    , /*!< When the mouse moves            */
         TIMER   , /*!< 30 times per seconds            */
+        OTHER   , /*!< Doesn't affect the state        */
     };
 
     // Actions
@@ -77,10 +78,11 @@ public:
     void loadVisibleElements();
     bool applyEvent(DragEvent event, QMouseEvent* e);
     bool updateVelocity();
+    DragEvent eventMapper(QEvent* e) const;
 
     // State machine
-    static const StateF m_fStateMachine[4][5];
-    static const DragState m_fStateMap [4][5];
+    static const StateF m_fStateMachine[4][6];
+    static const DragState m_fStateMap [4][6];
 
     SimpleFlickable* q_ptr;
 
@@ -93,18 +95,18 @@ public Q_SLOTS:
 /**
  * This is a Mealy machine, states callbacks are allowed to throw more events
  */
-const SimpleFlickablePrivate::DragState SimpleFlickablePrivate::m_fStateMap[4][5] {
-/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER  */
-/* IDLE    */ {S IDLE   , S PRESSED, S IDLE    , S IDLE   , S IDLE   },
-/* PRESSED */ {S PRESSED, S PRESSED, S IDLE    , S DRAGGED, S PRESSED},
-/* DRAGGED */ {S DRAGGED, S DRAGGED, S INERTIA , S DRAGGED, S DRAGGED},
-/* INERTIA */ {S IDLE   , S IDLE   , S IDLE    , S DRAGGED, S INERTIA}};
-const SimpleFlickablePrivate::StateF SimpleFlickablePrivate::m_fStateMachine[4][5] {
-/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER  */
-/* IDLE    */ {A error  , A start  , A nothing , A nothing, A error  },
-/* PRESSED */ {A error  , A nothing, A cancel  , A drag   , A error  },
-/* DRAGGED */ {A error  , A drag   , A release , A drag   , A error  },
-/* INERTIA */ {A stop   , A stop   , A stop    , A error  , A inertia}};
+const SimpleFlickablePrivate::DragState SimpleFlickablePrivate::m_fStateMap[4][6] {
+/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER      OTHER  */
+/* IDLE    */ {S IDLE   , S PRESSED, S IDLE    , S IDLE   , S IDLE   , S IDLE   },
+/* PRESSED */ {S PRESSED, S PRESSED, S IDLE    , S DRAGGED, S PRESSED, S PRESSED},
+/* DRAGGED */ {S DRAGGED, S DRAGGED, S INERTIA , S DRAGGED, S DRAGGED, S DRAGGED},
+/* INERTIA */ {S IDLE   , S IDLE   , S IDLE    , S DRAGGED, S INERTIA, S INERTIA}};
+const SimpleFlickablePrivate::StateF SimpleFlickablePrivate::m_fStateMachine[4][6] {
+/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER      OTHER   */
+/* IDLE    */ {A error  , A start  , A nothing , A nothing, A error  , A nothing },
+/* PRESSED */ {A error  , A nothing, A cancel  , A drag   , A error  , A nothing },
+/* DRAGGED */ {A error  , A drag   , A release , A drag   , A error  , A nothing },
+/* INERTIA */ {A stop   , A stop   , A stop    , A error  , A inertia, A nothing}};
 #undef S
 #undef A
 
@@ -206,52 +208,58 @@ bool SimpleFlickablePrivate::updateVelocity()
 }
 
 /**
+ * Map qevent to DragEvent
+ */
+SimpleFlickablePrivate::DragEvent SimpleFlickablePrivate::eventMapper(QEvent* event) const
+{
+    auto e = SimpleFlickablePrivate::DragEvent::OTHER;
+
+    #pragma GCC diagnostic ignored "-Wswitch-enum"
+    switch(event->type()) {
+        case QEvent::MouseMove:
+            e = SimpleFlickablePrivate::DragEvent::MOVE;
+            break;
+        case QEvent::MouseButtonPress:
+            e = SimpleFlickablePrivate::DragEvent::PRESS;
+            break;
+        case QEvent::MouseButtonRelease:
+            e = SimpleFlickablePrivate::DragEvent::RELEASE;
+            break;
+        default:
+            break;
+    }
+    #pragma GCC diagnostic pop
+
+    return e;
+}
+
+/**
  * The tabs eat some mousePress events at random.
  *
  * Mitigate the issue by allowing the event series to begin later.
  */
 bool SimpleFlickable::childMouseEventFilter(QQuickItem* item, QEvent* event)
 {
-    if (event->type() == QEvent::MouseMove || event->type() == QEvent::MouseButtonPress) {
-        SimpleFlickablePrivate::DragEvent e = SimpleFlickablePrivate::DragEvent::PRESS;
-        switch (d_ptr->m_State) {
-            case SimpleFlickablePrivate::DragState::IDLE:
-            case SimpleFlickablePrivate::DragState::INERTIA:
-                e = SimpleFlickablePrivate::DragEvent::PRESS;
-                break;
-            case SimpleFlickablePrivate::DragState::PRESSED:
-            case SimpleFlickablePrivate::DragState::DRAGGED:
-                e = SimpleFlickablePrivate::DragEvent::MOVE;
-                break;
-        }
-        return d_ptr->applyEvent(e, static_cast<QMouseEvent*>(event) );
-    }
+    const auto e = d_ptr->eventMapper(event);
 
-    return QQuickItem::childMouseEventFilter(item, event);
+    return e == SimpleFlickablePrivate::DragEvent::OTHER ?
+        QQuickItem::childMouseEventFilter(item, event) :
+        d_ptr->applyEvent(e, static_cast<QMouseEvent*>(event) );
 }
 
 bool SimpleFlickable::event(QEvent *event)
 {
-    #pragma GCC diagnostic ignored "-Wswitch-enum"
-    switch(event->type()) {
-        case QEvent::MouseButtonPress:
-            return d_ptr->applyEvent(SimpleFlickablePrivate::DragEvent::PRESS,
-                                     static_cast<QMouseEvent*>(event));
-        case QEvent::MouseButtonRelease:
-            return d_ptr->applyEvent(SimpleFlickablePrivate::DragEvent::RELEASE,
-                                     static_cast<QMouseEvent*>(event));
-        case QEvent::MouseMove:
-            return d_ptr->applyEvent(SimpleFlickablePrivate::DragEvent::MOVE,
-                                     static_cast<QMouseEvent*>(event));
-        case QEvent::Wheel:
-            setCurrentY(currentY() - static_cast<QWheelEvent*>(event)->angleDelta().y());
-            event->accept();
-            return true;
-        default:
-            break;
+    const auto e = d_ptr->eventMapper(event);
+
+    if (event->type() == QEvent::Wheel) {
+        setCurrentY(currentY() - static_cast<QWheelEvent*>(event)->angleDelta().y());
+        event->accept();
+        return true;
     }
-    #pragma GCC diagnostic pop
-    return QQuickItem::event(event);
+
+    return e == SimpleFlickablePrivate::DragEvent::OTHER ?
+        QQuickItem::event(event) :
+        d_ptr->applyEvent(e, static_cast<QMouseEvent*>(event) );
 }
 
 void SimpleFlickable::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
@@ -301,6 +309,7 @@ bool SimpleFlickablePrivate::stop(QMouseEvent* event)
 {
     m_pTimer->stop();
     m_Velocity = 0;
+    m_StartPoint = m_DragPoint  = {};
 
     // Resend for further processing
     if (event)
@@ -347,7 +356,9 @@ bool SimpleFlickablePrivate::cancel(QMouseEvent*)
 {
     m_StartPoint = m_DragPoint  = {};
     q_ptr->setKeepMouseGrab(false);
-    return true;
+
+    // Reject the event, let the click pass though
+    return false;
 }
 
 bool SimpleFlickablePrivate::release(QMouseEvent*)
@@ -362,7 +373,7 @@ bool SimpleFlickablePrivate::release(QMouseEvent*)
 
     m_DragPoint = {};
 
-    return true;
+    return false;
 }
 
 bool SimpleFlickablePrivate::inertia(QMouseEvent*)
