@@ -54,7 +54,7 @@ struct QuickListViewSection
 
 /**
  */
-class QuickListViewItem : public VolatileTreeItem
+class QuickListViewItem : public VisualTreeItem
 {
 public:
     explicit QuickListViewItem();
@@ -286,7 +286,7 @@ void QuickListViewPrivate::reloadSectionIndices() const
     m_IndexLoaded = m_pFirstSection != nullptr;
 }
 
-QuickListViewItem::QuickListViewItem() : VolatileTreeItem()
+QuickListViewItem::QuickListViewItem() : VisualTreeItem()
 {
 }
 

@@ -37,15 +37,15 @@ struct TreeTraversalItems; //FIXME remove
  *
  * The state is managed by the TreeView2 and it's own protected virtual methods.
  */
-class VolatileTreeItem : public FlickableView::ModelIndexItem
+class VisualTreeItem : public FlickableView::ModelIndexItem
 {
     friend class TreeView2;
     friend class TreeTraversalItems;
     friend class TreeView2Private;
 public:
 
-    explicit VolatileTreeItem() {}
-    virtual ~VolatileTreeItem() {}
+    explicit VisualTreeItem() {}
+    virtual ~VisualTreeItem() {}
 
     enum class State {
         POOLED  , /*!< Not currently in use, either new or waiting for re-use */
@@ -60,8 +60,8 @@ public:
     int               depth   () const;
     TreeView2*        view    () const;
     QModelIndex       index   () const;
-    VolatileTreeItem* previous() const;
-    VolatileTreeItem* next    () const;
+    VisualTreeItem* previous() const;
+    VisualTreeItem* next    () const;
 
     /// Allows to keep a reference while still being tracked by the state machine
     virtual QWeakPointer<ModelIndexItem> reference() const final override;
@@ -87,10 +87,10 @@ private:
         DETACH       = 6, /*!< Delete                                */
     };
 
-    typedef bool(VolatileTreeItem::*StateF)();
+    typedef bool(VisualTreeItem::*StateF)();
     State m_State {State::POOLED};
     TreeTraversalItems* m_pParent {nullptr};
-    mutable QSharedPointer<VolatileTreeItem> m_pSelf;
+    mutable QSharedPointer<VisualTreeItem> m_pSelf;
 
     static const State  m_fStateMap    [6][7];
     static const StateF m_fStateMachine[6][7];
@@ -121,7 +121,7 @@ class TreeView2 : public FlickableView
 {
     Q_OBJECT
     friend class TreeTraversalItems;
-    friend class VolatileTreeItem;
+    friend class VisualTreeItem;
 public:
     /// Assume each hierarchy level have the same height (for performance)
     Q_PROPERTY(bool uniformRowHeight READ hasUniformRowHeight   WRITE setUniformRowHeight)
@@ -181,7 +181,7 @@ protected:
     virtual void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 
     /**
-     * Get the VolatileTreeItem associated with a model index.
+     * Get the VisualTreeItem associated with a model index.
      *
      * Note that if the index is not currently visible or buferred, it will
      * return nullptr.

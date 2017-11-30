@@ -29,7 +29,7 @@
  *
  * The state is managed by the TreeView2 and it's own protected virtual methods.
  */
-class QuickTreeViewItem : public VolatileTreeItem
+class QuickTreeViewItem : public VisualTreeItem
 {
 public:
     explicit QuickTreeViewItem();
@@ -49,6 +49,7 @@ private:
     QQuickItem* m_pItem     {nullptr};
     QQmlContext* m_pContent {nullptr};
     TreeViewPage* m_pPage   {nullptr};
+    bool m_IsHead           { false };
 
     QuickTreeViewPrivate* d() const;
 };
@@ -79,7 +80,7 @@ FlickableView::ModelIndexItem* QuickTreeView::createItem() const
     return new QuickTreeViewItem();
 }
 
-QuickTreeViewItem::QuickTreeViewItem() : VolatileTreeItem()
+QuickTreeViewItem::QuickTreeViewItem() : VisualTreeItem()
 {
 }
 
@@ -145,20 +146,44 @@ bool QuickTreeViewItem::move()
 
     m_pItem->setWidth(view()->contentItem()->width());
 
+    auto nextElem = static_cast<QuickTreeViewItem*>(next());
+    auto prevElem = static_cast<QuickTreeViewItem*>(previous());
+
+    // The root has been moved in the middle of the tree, find the new root
+    //TODO maybe add a deterministic API instead of O(N) lookup
+    if (prevElem && m_IsHead) {
+        m_IsHead = false;
+
+        auto root = prevElem;
+        while (auto prev = root->previous())
+            root = static_cast<QuickTreeViewItem*>(prev);
+
+        root->move();
+        Q_ASSERT(root->m_IsHead);
+    }
+
     // So other items can be GCed without always resetting to 0x0, note that it
     // might be a good idea to extend SimpleFlickable to support a virtual
     // origin point.
-    if (!previous()) {
-        m_pItem->setY(0);
-    }
-    else if (auto otheri = static_cast<QuickTreeViewItem*>(previous())->m_pItem) {
+    if ((!prevElem) || (nextElem && nextElem->m_IsHead)) {
         auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
-        anchors->setProperty("top", otheri->property("bottom"));
+        anchors->setProperty("top", {});
+        m_pItem->setY(0);
+        m_IsHead = true;
+    }
+    else if (prevElem) {
+        Q_ASSERT(!m_IsHead);
+        m_pItem->setProperty("y", {});
+        auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
+        anchors->setProperty("top", prevElem->m_pItem->property("bottom"));
     }
 
     // Now, update the next anchors
-    if (auto n = static_cast<QuickTreeViewItem*>(next())) {
-        auto anchors = qvariant_cast<QObject*>(n->m_pItem->property("anchors"));
+    if (nextElem) {
+        nextElem->m_IsHead = false;
+        nextElem->m_pItem->setProperty("y", {});
+
+        auto anchors = qvariant_cast<QObject*>(nextElem->m_pItem->property("anchors"));
         anchors->setProperty("top", m_pItem->property("bottom"));
     }
 
@@ -177,6 +202,16 @@ bool QuickTreeViewItem::detach()
     m_pItem->setParent(nullptr);
     m_pItem->setParentItem(nullptr);
     m_pItem->setVisible(false);
+
+    auto nextElem = static_cast<QuickTreeViewItem*>(next());
+    auto prevElem = static_cast<QuickTreeViewItem*>(previous());
+
+    if (nextElem) {
+        Q_ASSERT(prevElem && !m_IsHead); //TODO
+        auto anchors = qvariant_cast<QObject*>(nextElem->m_pItem->property("anchors"));
+        anchors->setProperty("top", prevElem->m_pItem->property("bottom"));
+    }
+
     return true;
 }
 
