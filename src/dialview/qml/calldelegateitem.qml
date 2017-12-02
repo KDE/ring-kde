@@ -19,6 +19,7 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Rectangle {
     id: callDelegateItem
@@ -33,6 +34,10 @@ Rectangle {
     Drag.onDragStarted: {
         var ret = treeHelper.mimeData(model.rootIndex, index)
         Drag.mimeData = ret
+    }
+
+    Behavior on height {
+        NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
     }
 
     TreeHelper {
@@ -120,5 +125,88 @@ Rectangle {
         }
         drag.target: callDelegateItem
     }
+
+    Loader {
+        id: completionLoader
+        active: false
+        opacity: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        width: callDelegateItem.width
+        height: 0
+
+        Behavior on height {
+            NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
+        }
+
+        Behavior on opacity {
+            NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
+        }
+
+        sourceComponent: Component {
+            ListView {
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 10
+                model: CompletionModel
+                currentIndex: completionSelection.currentIndex
+                delegate: Rectangle {
+                    property bool selected: ListView.isCurrentItem
+                    height: searchDelegate.height
+                    width: callDelegateItem.width - 20
+                    color: selected ? activePalette.text : "transparent"
+                    border.width: 1
+                    border.color: activePalette.text
+                    radius: 5
+                    clip: true
+                    SearchDelegate {
+                        id: searchDelegate
+                        textColor: parent.selected ?
+                            activePalette.highlight : activePalette.highlightedText
+                        altTextColor: parent.selected ?
+                            activePalette.highlight : activePalette.highlightedText
+                        showPhoto: false
+                        showControls: false
+                        showSeparator: false
+                        height: 3*fontMetrics.height
+                        labelHeight: fontMetrics.height
+                    }
+                }
+
+                onCountChanged: {
+                    height = Math.min(4, count)*(3*fontMetrics.height+10)
+                    callDelegateItem.height = content.implicitHeight +
+                        Math.min(4, count)*(3*fontMetrics.height+10) + 10
+                }
+
+                Component.onCompleted: {
+                    height = Math.min(4, count)*(3*fontMetrics.height+10)
+                    callDelegateItem.height = content.implicitHeight +
+                        Math.min(4, count)*(3*fontMetrics.height+10) + 10
+                }
+            }
+        }
+    }
+
+    StateGroup {
+        id: stateGroup
+        states: [
+            State {
+                name: "dialing"
+                when: selected && object.state == Call.DIALING
+                PropertyChanges {
+                    target: callDelegateItem
+                    height: content.implicitHeight + 240
+                }
+                PropertyChanges {
+                    target: completionLoader
+                    active: true
+                    opacity: 1
+                    height: 200
+                }
+            }
+        ]
+    }
+
 } //Call delegate
 

@@ -40,6 +40,7 @@ class CanvasIndicator;
 class DesktopView;
 class ContactView;
 class DialView;
+class TimelinePlugin;
 class Call;
 
 ///RingApplication: Main application
@@ -95,6 +96,7 @@ private:
    static DesktopView* m_pDesktopView;
    static ContactView* m_pContactView;
    static DialView* m_pDialView;
+   static TimelinePlugin* m_pTimeline;
 
 private Q_SLOTS:
    void daemonTimeout();

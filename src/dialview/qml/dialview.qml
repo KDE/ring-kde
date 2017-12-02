@@ -20,6 +20,8 @@ import Ring 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 
+import RingQmlWidgets 1.0
+
 FocusScope {
     id: dialView
     focus: true
@@ -33,6 +35,15 @@ FocusScope {
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
+    }
+
+    FontMetrics {
+        id: fontMetrics
+    }
+
+    TreeHelper {
+        id: completionSelection
+        selectionModel: CompletionModel.selectionModel
     }
 
     Kirigami.ScrollablePage {
@@ -73,9 +84,67 @@ FocusScope {
 
     }
 
+    function selectPrevious(call) {
+        if (call.state == Call.DIALING && completionSelection.selectPrevious())
+            return
+
+        var idx = CallModel.getIndex(call)
+
+        if (!idx.valid)
+            return
+
+        var directPrev = CallModel.index(idx.row-1, 0, idx.parent)
+
+        var nextCall = CallModel.getCall(directPrev)
+
+        CallModel.selectedCall = nextCall
+    }
+
+    function selectNext(call) {
+        if (call.state == Call.DIALING && completionSelection.selectNext())
+            return
+
+        var idx = CallModel.getIndex(call)
+
+        if (!idx.valid)
+            return
+
+        var directPrev = CallModel.index(idx.row+1, 0, idx.parent)
+
+        var nextCall = CallModel.getCall(directPrev)
+        CallModel.selectedCall = nextCall
+    }
+
+
     Keys.onPressed: {
-        console.log("KEY", event.key, event.text)
-        CallModel.dialingCall().appendText(event.text)
+        var call = CallModel.selectedCall
+
+        if (!call) {
+            call = CallModel.dialingCall()
+            CallModel.selectedCall = call
+        }
+
+        switch (event.key) {
+            case Qt.Key_Up:
+                selectPrevious(call)
+                break
+            case Qt.Key_Down:
+                selectNext(call)
+                break
+            case Qt.Key_Escape:
+                call.performAction(Call.REFUSE)
+                break
+            case Qt.Key_Backspace:
+                call.backspaceItemText()
+                break;
+            case Qt.Key_Return:
+            case Qt.Key_Enter:
+                call.performAction(Call.ACCEPT)
+                break
+            default:
+                call.appendText(event.text)
+                call.playDTMF(event.text)
+        }
     }
 
     Component.onCompleted: {

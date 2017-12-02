@@ -23,6 +23,8 @@ Item {
     property var buttonsText: Array("1","2","3","4","5","6","7","8","9","*","0","#")
     property var buttonsMap: Array("","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz","","+","","")
 
+    property var mapper: {}
+
     Item {
         anchors.margins: 5
 
@@ -36,17 +38,39 @@ Item {
         Grid {
             columns: 3
             spacing: 3
-            width:   height/4*4
+            width:   (height/4)*3
             height: parent.height
             anchors.horizontalCenter: parent.horizontalCenter
             Repeater {
                 model: 12
                 Rectangle {
+                    id: key
+
+                    property alias state: stateGroup.state
+
                     //Attributes
                     width:  Math.min((parent.width-3.333)/3 -1, dialPad.height/4 - 2)
                     height: dialPad.height/4 - 2
                     color:  activePalette.highlight
                     radius: 999
+                    border.width: 0
+                    border.color: activePalette.text
+
+                    Behavior on border.width {
+                        NumberAnimation { duration: 200 }
+                    }
+
+                    Rectangle {
+                        id: overlay
+                        color: activePalette.text
+                        opacity: 0
+                        anchors.fill: parent
+                        radius: 999
+
+                        Behavior on opacity {
+                            NumberAnimation { duration: 200 }
+                        }
+                    }
 
                     //Content
                     Item {
@@ -75,6 +99,7 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
                         onClicked: {
                             var call = CallModel.selectedCall
 
@@ -82,10 +107,79 @@ Item {
                                 return
 
                             call.appendText(dialPad.buttonsText[index])
+                            call.playDTMF(dialPad.buttonsText[index])
+                        }
+                        onContainsMouseChanged: {
+                            if (stateGroup.state != "played")
+                                stateGroup.state = containsMouse ? "hover" : "normal"
                         }
                     } //MouseArea
+
+                    Component.onCompleted: {
+                        if (dialPad.mapper == undefined)
+                            dialPad.mapper = {}
+                        dialPad.mapper[dialPad.buttonsText[index]] = key
+                    }
+
+                    Timer {
+                        id: animTimer
+                        running: false
+                        interval: 200
+                        repeat: false
+                        onTriggered: {
+                            key.state = "normal"
+                        }
+                    }
+
+                    StateGroup {
+                        id: stateGroup
+                        states: [
+                            State {
+                                name: "normal"
+                                PropertyChanges {
+                                    target: overlay
+                                    opacity: 0
+                                }
+                                PropertyChanges {
+                                    target: key
+                                    border.width: 0
+                                }
+                            },
+                            State {
+                                name: "played"
+                                PropertyChanges {
+                                    target: animTimer
+                                    running: true
+                                }
+                                PropertyChanges {
+                                    target: overlay
+                                    opacity: 0.5
+                                }
+                                PropertyChanges {
+                                    target: key
+                                    border.color: activePalette.text
+                                    border.width: 2
+                                }
+                            },
+                            State {
+                                name: "hover"
+                                PropertyChanges {
+                                    target: overlay
+                                    opacity: 0.5
+                                }
+                            }
+                        ]
+                    }
+
                 } //Rectangle
             } //Repeater
         } //Grid
+    }
+
+    Connections {
+        target: CallModel
+        onDtmfPlayed: {
+            dialPad.mapper[code].state = "played"
+        }
     }
 }

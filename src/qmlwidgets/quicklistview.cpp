@@ -58,7 +58,7 @@ class QuickListViewItem : public VisualTreeItem
 {
 public:
     explicit QuickListViewItem();
-    virtual ~QuickListViewItem() {}
+    virtual ~QuickListViewItem();
 
     // Actions
     virtual bool attach () override;
@@ -115,6 +115,10 @@ QuickListView::QuickListView(QQuickItem* parent) : TreeView2(parent),
 {
     connect(this, &FlickableView::currentIndexChanged,
         d_ptr, &QuickListViewPrivate::slotCurrentIndexChanged);
+}
+
+QuickListViewItem::~QuickListViewItem()
+{
 }
 
 QuickListView::~QuickListView()

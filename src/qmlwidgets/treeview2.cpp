@@ -17,6 +17,8 @@
  **************************************************************************/
 #include "treeview2.h"
 
+#include <QtCore/QTimer>
+
 /*
  * Design:
  *
@@ -476,16 +478,17 @@ void TreeView2Private::cleanup()
     std::function<void(TreeTraversalItems*)> del = [this, &deleter](TreeTraversalItems* item) {
         for (auto i = item->m_hLookup.begin(); i != item->m_hLookup.end(); i++) {
             TreeTraversalItems* child = i.value();
+            Q_ASSERT(child); // Check is null were inserted in the cache
             (*deleter)(child);
             child->m_pTreeItem->performAction(VisualTreeItem::Action::LEAVE_BUFFER);
             child->performAction(TreeTraversalItems::Action::DETACH);
         }
+        item->m_hLookup.clear();
     };
     deleter = &del;
 
     (*deleter)(m_pRoot);
 
-    m_pRoot->m_hLookup.clear();
     m_hMapper.clear();
     m_pRoot->m_pFirstChild = nullptr;
     m_pRoot->m_pLastChild  = nullptr;
@@ -497,12 +500,12 @@ FlickableView::ModelIndexItem* TreeView2::itemForIndex(const QModelIndex& idx) c
         return nullptr;
 
     if (!idx.parent().isValid()) {
-        const auto tti = d_ptr->m_pRoot->m_hLookup[idx];
+        const auto tti = d_ptr->m_pRoot->m_hLookup.value(idx);
         return tti ? tti->m_pTreeItem : nullptr;
     }
 
-    if (auto parent = d_ptr->m_hMapper[idx.parent()]) {
-        const auto tti = parent->m_hLookup[idx];
+    if (auto parent = d_ptr->m_hMapper.value(idx.parent())) {
+        const auto tti = parent->m_hLookup.value(idx);
         return tti ? tti->m_pTreeItem : nullptr;
     }
 
@@ -1258,7 +1261,9 @@ bool VisualTreeItem::destroy()
     // pointer and move on.
     m_pSelf = nullptr;
 
-    delete this;
+    QTimer::singleShot(0,[this]() {
+        delete this;
+    });
     //noreturn
 }
 
@@ -1314,8 +1319,14 @@ bool TreeTraversalItems::detach()
 {
 
     if (m_pTreeItem) {
+
+        // If the item was active (due, for example, of a full reset), then
+        // it has to be removed from view then deleted.
+        if (m_pTreeItem->m_State == VisualTreeItem::State::ACTIVE)
+            m_pTreeItem->performAction(VisualTreeItem::Action::DETACH);
+
         m_pTreeItem->performAction(VisualTreeItem::Action::DETACH);
-        m_pTreeItem->performAction(VisualTreeItem::Action::DETACH);
+        m_pTreeItem = nullptr;
     }
 
     return true;
@@ -1362,6 +1373,7 @@ bool TreeTraversalItems::index()
 bool TreeTraversalItems::destroy()
 {
     m_pTreeItem->performAction(VisualTreeItem::Action::DETACH); //FIXME keep in buffer
+    m_pTreeItem = nullptr;
 
     delete this;
     //noreturn

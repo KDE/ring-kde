@@ -131,7 +131,7 @@ void AutoCompletion::slotLayoutChanged()
 void AutoCompletion::slotCallStateChanged(Call::State s)
 {
    Q_UNUSED(s)
-   Call* call = m_pModel->call();
+   Call* call = CallModel::instance().dialingCall();
 
    setVisible(call && call->lifeCycleState() == Call::LifeCycleState::CREATION);
 }
@@ -154,7 +154,7 @@ void AutoCompletion::selectionChanged(const QModelIndex& idx)
 
 void AutoCompletion::setCall(Call* call)
 {
-   Call* old = m_pModel->call();
+   Call* old = CallModel::instance().dialingCall();
 
    if (call == old)
       return;
@@ -164,7 +164,7 @@ void AutoCompletion::setCall(Call* call)
    }
 
 
-   m_pModel->setCall(call);
+//    m_pModel->setCall(call);
 
    if (call) {
       connect(call, &Call::stateChanged, this, &AutoCompletion::slotCallStateChanged);
@@ -176,7 +176,7 @@ void AutoCompletion::setCall(Call* call)
 
 Call* AutoCompletion::call() const
 {
-   return m_pModel->call();
+   return CallModel::instance().dialingCall();
 }
 
 ContactMethod* AutoCompletion::selection() const

@@ -19,15 +19,23 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QMimeData>
+#include <QtCore/QItemSelectionModel>
 
-class TreeHelperPrivate
+class TreeHelperPrivate : public QObject
 {
+    Q_OBJECT
 public:
     QMap<QString, QString> m_Payloads {};
 
     //FIXME it leaks
     static QHash<const QAbstractItemModel*, QHash<QString, int>> m_shRoleNameMapper;
     QAbstractItemModel* m_pModel {nullptr};
+    QItemSelectionModel* m_pSelectionModel {nullptr};
+
+    TreeHelper* q_ptr;
+
+public Q_SLOTS:
+    void slotCurrentSelectionChanged();
 
 };
 
@@ -35,7 +43,9 @@ QHash<const QAbstractItemModel*, QHash<QString, int>> TreeHelperPrivate::m_shRol
 
 TreeHelper::TreeHelper(QObject* parent) : QObject(parent),
     d_ptr(new TreeHelperPrivate())
-{}
+{
+    d_ptr->q_ptr = this;
+}
 
 bool TreeHelper::setData(const QModelIndex& index, const QVariant& data, const QString& roleName)
 {
@@ -154,3 +164,65 @@ bool TreeHelper::dropMimeData2(const QVariant& dragEvent, const QModelIndex& par
 
     return d_ptr->m_pModel->dropMimeData(md, {}, row, 0, parent);
 }
+
+QItemSelectionModel* TreeHelper::selectionModel() const
+{
+    return d_ptr->m_pSelectionModel;
+}
+
+void TreeHelper::setSelectionModel(QItemSelectionModel* sm)
+{
+    if (d_ptr->m_pSelectionModel)
+        disconnect(d_ptr->m_pSelectionModel, &QItemSelectionModel::currentChanged,
+            d_ptr, &TreeHelperPrivate::slotCurrentSelectionChanged);
+
+    d_ptr->m_pSelectionModel = sm;
+
+    //
+    if (d_ptr->m_pSelectionModel)
+        connect(d_ptr->m_pSelectionModel, &QItemSelectionModel::currentChanged,
+            d_ptr, &TreeHelperPrivate::slotCurrentSelectionChanged);
+}
+
+bool TreeHelper::selectNext()
+{
+    if (!d_ptr->m_pSelectionModel)
+        return false;
+
+    auto cur = d_ptr->m_pSelectionModel->currentIndex();
+
+    d_ptr->m_pSelectionModel->setCurrentIndex(
+        d_ptr->m_pSelectionModel->model()->index(cur.row()+1, 0),
+        QItemSelectionModel::ClearAndSelect
+    );
+
+    return currentListIndex() != -1;
+}
+
+bool TreeHelper::selectPrevious()
+{
+    if (!d_ptr->m_pSelectionModel)
+        return false;
+
+    auto cur = d_ptr->m_pSelectionModel->currentIndex();
+
+    d_ptr->m_pSelectionModel->setCurrentIndex(
+        d_ptr->m_pSelectionModel->model()->index(cur.row()-1, 0),
+        QItemSelectionModel::ClearAndSelect
+    );
+
+    return currentListIndex() != -1;
+}
+
+int TreeHelper::currentListIndex() const
+{
+    return d_ptr->m_pSelectionModel ?
+        d_ptr->m_pSelectionModel->currentIndex().row() : -1;
+}
+
+void TreeHelperPrivate::slotCurrentSelectionChanged()
+{
+    Q_EMIT q_ptr->selectListIndex(m_pSelectionModel->currentIndex().row());
+}
+
+#include <treehelper.moc>

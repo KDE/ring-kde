@@ -95,7 +95,6 @@ Rectangle {
             onTextChanged: {
                 var call = CallModel.dialingCall()
                 call.dialNumber = search.text
-                CompletionModel.call = call
             }
             Keys.onDownPressed: {
                 searchView.currentIndex = (searchView.currentIndex == searchView.count - 1) ?

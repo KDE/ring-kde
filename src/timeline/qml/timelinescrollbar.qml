@@ -144,6 +144,7 @@ Item {
                     Layout.fillWidth: true
                     text: display
                     color: activePalette.text
+                    font.pointSize: 10
                     Behavior on font.pointSize {
                         NumberAnimation {duration: 150}
                     }
@@ -151,6 +152,14 @@ Item {
             }
 
             states: [
+                State {
+                    name: ""
+                    when: !selected
+                    PropertyChanges {
+                        target:  label
+                        font.pointSize: 10
+                    }
+                },
                 State {
                     name: "selected"
                     when: selected

@@ -36,8 +36,6 @@
 #include <call.h>
 #include <callmodel.h>
 
-#include <../timeline/qrc_recentdock.cpp>
-
 // Remove inactive calls from the CallModel
 class ActiveCallProxy2 : public QSortFilterProxyModel
 {
