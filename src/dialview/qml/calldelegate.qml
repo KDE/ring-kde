@@ -20,8 +20,10 @@ import Ring 1.0
 
 Item {
     id: item
-    height: confDelegateLayout.height + 40 + 12
-    width: parent.width - 20
+    height: callDelegateItem.visible ? callDelegateItem.height :
+        confDelegateLayout.height + 40 + 12
+    width: parent.width - 10
+    x: 5
     property bool selected: object == CallModel.selectedCall
 
     //If it is not a conference, use this delegate
@@ -29,9 +31,7 @@ Item {
         id: callDelegateItem
 
         //Geometry
-        width: parent.width - 20
-        y: 5
-        x: 10
+        width: parent.width
         anchors.margins: 2
     }
 
@@ -43,7 +43,6 @@ Item {
         anchors.margins: 2
         anchors.fill: parent
         visible: false
-        x: 10
         y: 10
 
         //Display

@@ -24,6 +24,9 @@ ListView {
         CallDelegate {}
     }
 
+    header: MergeCall {}
+    footer: AddCall {}
+
     id: callList
     spacing: 10
 

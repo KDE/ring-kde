@@ -17,7 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import Ring 1.0
-import QtQuick.Controls 2.0 as Controls
+import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
 import RingQmlWidgets 1.0
@@ -51,37 +51,37 @@ FocusScope {
         anchors.fill: parent
         title: "Calls"
 
-        CallList {
+//         ColumnLayout {
+//             anchors.fill: parent
+//
+//             Rectangle {
+//                 Layout.fillWidth: true
+//                 height: 10
+//                 color: "blue"
+//             }
+
+            CallList {
             anchors.fill: parent
-        }
-
-        actions {
-            main: Kirigami.Action {
-                iconName: CallModel.hasDialingCall ? "dialog-cancel" : "document-edit"
-                text: "Main Action Text"
-                checkable: true
-                onCheckedChanged: {
-                    //sheet.sheetOpen = checked;
-                    if (checked)
-                        CallModel.selectDialingCall()
-                    else if (CallModel.hasDialingCall)
-                        CallModel.dialingCall().performAction(Call.REFUSE)
-
-                }
+//                 Layout.fillWidth: true
+//                 Layout.fillHeight: true
             }
-        }
+
+//         }
     }
 
     DialPad {
         width: parent.width
         visible: CallModel.supportsDTMF
-//             anchors.bottom: page.actions.main.top
         height: 200
         anchors.horizontalCenter: dialView.horizontalCenter
-        anchors.bottom: parent.bottom
-//             anchors.bottomMargin: page.actions.main.height + 20
+        anchors.bottom: actionToolbar.top
         anchors.bottomMargin: 50
+    }
 
+    ActionToolbar {
+        id: actionToolbar
+        width: parent.width
+        anchors.bottom: parent.bottom
     }
 
     function selectPrevious(call) {
@@ -114,7 +114,6 @@ FocusScope {
         var nextCall = CallModel.getCall(directPrev)
         CallModel.selectedCall = nextCall
     }
-
 
     Keys.onPressed: {
         var call = CallModel.selectedCall

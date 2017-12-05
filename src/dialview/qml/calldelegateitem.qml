@@ -60,7 +60,7 @@ Rectangle {
             pixmap: decoration
             height:40
             width:40
-            anchors.verticalCenter: callDelegateItem.verticalCenter
+            anchors.verticalCenter: parent.verticalCenter
         }
 
         Column {

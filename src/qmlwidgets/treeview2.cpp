@@ -476,7 +476,7 @@ void TreeView2Private::cleanup()
 
     std::function<void(TreeTraversalItems*)>* deleter;
     std::function<void(TreeTraversalItems*)> del = [this, &deleter](TreeTraversalItems* item) {
-        for (auto i = item->m_hLookup.begin(); i != item->m_hLookup.end(); i++) {
+        for (auto i = item->m_hLookup.constBegin(); i != item->m_hLookup.constEnd(); i++) {
             TreeTraversalItems* child = i.value();
             Q_ASSERT(child); // Check is null were inserted in the cache
             (*deleter)(child);
