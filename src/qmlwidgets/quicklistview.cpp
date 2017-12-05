@@ -119,6 +119,11 @@ QuickListView::QuickListView(QQuickItem* parent) : TreeView2(parent),
 
 QuickListViewItem::~QuickListViewItem()
 {
+    if (m_pItem)
+        delete m_pItem;
+
+    if (m_pContent)
+        delete m_pContent;
 }
 
 QuickListView::~QuickListView()
@@ -242,9 +247,16 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
 
     // Create a section
     i->m_pSection = new QuickListViewSection(i, val);
+    Q_ASSERT(i->m_pSection->m_RefCount == 1);
 
     // Update the double linked list
     if (prev && prev->m_pSection) {
+
+        if (prev->m_pSection->m_pNext) {
+            prev->m_pSection->m_pNext->m_pPrevious = i->m_pSection;
+            i->m_pSection->m_pNext = prev->m_pSection->m_pNext;
+        }
+
         prev->m_pSection->m_pNext  = i->m_pSection;
         i->m_pSection->m_pPrevious = prev->m_pSection;
         i->m_pSection->m_Index     = prev->m_pSection->m_Index + 1;

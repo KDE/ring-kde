@@ -785,6 +785,10 @@ void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int
 void TreeView2Private::slotLayoutChanged()
 {
     cleanup();
+
+    if (auto rc = q_ptr->model()->rowCount())
+        slotRowsInserted({}, 0, rc - 1);
+
     Q_EMIT q_ptr->contentChanged();
 }
 
@@ -1257,13 +1261,15 @@ bool VisualTreeItem::error()
 
 bool VisualTreeItem::destroy()
 {
-    //TODO check if the item has references,  if it does, just release the shared
-    // pointer and move on.
-    m_pSelf = nullptr;
+    auto ptrCopy = m_pSelf;
 
-    QTimer::singleShot(0,[this]() {
-        delete this;
+    QTimer::singleShot(0,[this, ptrCopy]() {
+        if (!ptrCopy)
+            delete this;
+        // else the reference will be dropped and the destructor called
     });
+
+    m_pSelf.clear();
     //noreturn
 }
 
