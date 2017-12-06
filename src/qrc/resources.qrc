@@ -1,20 +1,9 @@
 <RCC>
   <qresource prefix="images">
     <file>../icons/conf-small.svg</file>
-    <file>../icons/x-office-address-book.png</file>
     <file>../icons/history.svg</file>
-    <file>../icons/icon_dialpad_off.svg</file>
     <file>../icons/icon_dialpad.svg</file>
-    <file>../icons/icon_volume_off.svg</file>
-    <file>../icons/icon_volume.svg</file>
-    <file>../icons/mic_25.svg</file>
-    <file>../icons/mic_50.svg</file>
-    <file>../icons/mic_75.svg</file>
     <file>../icons/mic.svg</file>
-    <file>../icons/speaker_25.svg</file>
-    <file>../icons/speaker_50.svg</file>
-    <file>../icons/speaker_75.svg</file>
-    <file>../icons/speaker.svg</file>
   </qresource>
   <qresource prefix="tip">
     <file>../icons/tips/removeconference.svg</file>
@@ -38,7 +27,6 @@
   </qresource>
   <qresource prefix="gui">
     <file>../icons/transferarrow.svg</file>
-    <file>../icons/confBlackWhite.svg</file>
     <file>../icons/assets/toolbar_bg.png</file>
   </qresource>
   <qresource prefix="toolbar">

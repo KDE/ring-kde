@@ -29,9 +29,7 @@
 #include <KLocalizedString>
 
 //Ring
-#include <tip/tipmanager.h>
 #include <call.h>
-#include <widgets/tips/tipcollection.h>
 #include <categorizedcontactmodel.h>
 #include <categorizedhistorymodel.h>
 #include <mime.h>
@@ -45,7 +43,7 @@ CategorizedTreeView::CategorizedTreeView(QWidget *parent)
 
 CategorizedTreeView::~CategorizedTreeView()
 {
-   
+
 }
 
 void CategorizedTreeView::setModel ( QAbstractItemModel * model )
@@ -73,9 +71,6 @@ void CategorizedTreeView::dragLeaveEvent( QDragLeaveEvent *e)
       ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
       m_HoverIdx = QModelIndex();
    }
-//    if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-//       TipCollection::manager()->setCurrentTip(nullptr);
-//    }
    QTreeView::dragLeaveEvent(e);
 }
 
@@ -128,20 +123,7 @@ void CategorizedTreeView::dragMoveEvent( QDragMoveEvent *e)
 {
    if (!m_InitSignals)
       initSignals();
-   const auto idxAt = indexAt(e->pos());
    e->acceptProposedAction();
-//    e->accept();
-   if (idxAt.isValid()) {
-//       if (m_HoverIdx != idxAt) {
-//          if (m_HoverIdx.isValid()) {
-//             ((QAbstractItemModel*)m_HoverIdx.model())->setData(m_HoverIdx,-1,300);
-//          }
-//       }
-//          setHoverState(idxAt);
-//       if (TipCollection::removeConference() == TipCollection::manager()->currentTip()) {
-//          TipCollection::manager()->setCurrentTip(nullptr);
-//       }
-   }
 }
 
 void CategorizedTreeView::setDelegate(QStyledItemDelegate* delegate)

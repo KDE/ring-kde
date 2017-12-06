@@ -27,9 +27,6 @@
 //LRC
 #include <categorizedcontactmodel.h>
 
-//Ring
-#include "phonewindow.h"
-
 ///Constructor
 DlgDisplay::DlgDisplay(KConfigDialog *parent)
  : QWidget(parent),m_HasChanged(false)

@@ -25,7 +25,6 @@
 #include "contactmethod.h"
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
-#include <phonewindow.h>
 #include <person.h>
 
 

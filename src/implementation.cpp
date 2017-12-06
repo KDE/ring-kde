@@ -52,10 +52,6 @@
 #include "conf/accountpages/dlgprofiles.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
-#include <widgets/personselector.h>
-#include <widgets/contactmethodselector.h>
-#include <phonewindow.h>
-#include <view.h>
 #include <ringapplication.h>
 
 ColorDelegate::ColorDelegate(const QPalette& pal) : m_Pal(pal) {

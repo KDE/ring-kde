@@ -137,7 +137,6 @@ ENDIF()
 
 INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
 # INCLUDE( ${QT_USE_FILE}   )
-ADD_SUBDIRECTORY( lib  )
 ADD_SUBDIRECTORY( data )
 ADD_SUBDIRECTORY( src  )
 ADD_SUBDIRECTORY( man  )

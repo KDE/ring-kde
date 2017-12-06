@@ -35,12 +35,11 @@
 #include <KSharedConfig>
 #include <KNotifyConfigWidget>
 #include <KGlobalAccel>
+#include <KXmlGuiWindow>
 
 //Ring
 #include "globalinstances.h"
-#include "phonewindow.h"
 #include "ringapplication.h"
-#include "view.h"
 #include "conf/configurationdialog.h"
 #include "icons/icons.h"
 #include "klib/kcfg_settings.h"

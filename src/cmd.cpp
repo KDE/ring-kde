@@ -31,7 +31,6 @@
 #include <call.h>
 #include <callmodel.h>
 #include <media/text.h>
-#include <phonewindow.h>
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 

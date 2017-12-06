@@ -23,9 +23,6 @@
 
 #include "ui_dlgpresence.h"
 
-class TipManager;
-class Tip;
-
 class DlgPresence final : public QWidget, public Ui_DlgPresence
 {
 Q_OBJECT
@@ -41,8 +38,6 @@ public:
 
 private:
    // Attributes
-   TipManager* m_pTipManager;
-   Tip*        m_pTip       ;
    bool        m_Changed    ;
 
 public Q_SLOTS:

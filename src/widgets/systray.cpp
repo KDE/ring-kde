@@ -28,9 +28,6 @@
 //KDE
 #include <QtWidgets/QAction>
 
-//Ring
-#include "phonewindow.h"
-
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
       : KStatusNotifierItem(parent),

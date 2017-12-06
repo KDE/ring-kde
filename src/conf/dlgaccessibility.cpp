@@ -28,7 +28,6 @@
 #include <klocalizedstring.h>
 
 //Ring
-#include "phonewindow.h"
 #include "delegates/categorizeddelegate.h"
 
 ///Constructor
