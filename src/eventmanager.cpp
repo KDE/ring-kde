@@ -48,54 +48,6 @@
 #include "widgets/callviewoverlay.h"
 #include "widgets/autocompletion.h"
 
-bool EventManager::m_HasFocus = false;
-
-//This code detect if the window is active, innactive or minimzed
-class PhoneWindowEvent final : public QObject {
-   Q_OBJECT
-public:
-   PhoneWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
-      QTimer::singleShot(0, [this]() {
-         PhoneWindow::app()->installEventFilter(this);
-      });
-   }
-protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event)  override {
-      Q_UNUSED(obj)
-      if (event->type() == QEvent::WindowStateChange) {
-         QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
-         switch (PhoneWindow::app()->windowState()) {
-            case Qt::WindowMinimized:
-               emit minimized(true);
-               break;
-            case Qt::WindowActive:
-               qDebug() << "The window is now active";
-               [[clang::fallthrough]];
-            case Qt::WindowNoState:
-            default:
-               if (e->oldState() == Qt::WindowMinimized)
-                  emit minimized(false);
-               break;
-         };
-      }
-      else if (event->type() == QEvent::KeyPress) {
-         m_pParent->viewKeyEvent(static_cast<QKeyEvent*>(event));
-      }
-      else if (event->type() == QEvent::WindowDeactivate) {
-         m_pParent->m_HasFocus = false;
-      }
-      else if (event->type() == QEvent::WindowActivate) {
-         m_pParent->m_HasFocus = true;
-      }
-      return false;
-   }
-
-private:
-   EventManager* m_pParent;
-
-Q_SIGNALS:
-   void minimized(bool);
-};
 
 ///Constructor
 EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pPhoneWindowEv(new PhoneWindowEvent(this))

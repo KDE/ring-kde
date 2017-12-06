@@ -29,7 +29,6 @@
 #include <KLocalizedString>
 
 //Ring
-#include <delegates/conferencedelegate.h>
 #include <tip/tipmanager.h>
 #include <call.h>
 #include <widgets/tips/tipcollection.h>
@@ -175,12 +174,12 @@ void CategorizedTreeView::startDrag(Qt::DropActions supportedActions)
             return;
 
          //Execute the drag
-         QDrag *drag = new QDrag(this);
-         drag->setPixmap(ConferenceDelegate::getDragPixmap(this,index));
-         drag->setMimeData(data);
-         drag->setHotSpot(QCursor::pos() - QCursor::pos());
-         const Qt::DropAction defaultDropAction = Qt::IgnoreAction;
-         drag->exec(supportedActions, defaultDropAction);
+//          QDrag *drag = new QDrag(this);
+//          drag->setPixmap(ConferenceDelegate::getDragPixmap(this,index));
+//          drag->setMimeData(data);
+//          drag->setHotSpot(QCursor::pos() - QCursor::pos());
+//          const Qt::DropAction defaultDropAction = Qt::IgnoreAction;
+//          drag->exec(supportedActions, defaultDropAction);
       }
    }
    else {

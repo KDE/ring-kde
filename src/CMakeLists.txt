@@ -195,12 +195,12 @@ ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
 # Delegates
 SET(
    ring_kde_DELEGATES
-   delegates/conferencedelegate.cpp
-   delegates/contactdelegate.cpp
-   delegates/historydelegate.cpp
-   delegates/phonenumberdelegate.cpp
-   delegates/delegatedropoverlay.cpp
-   delegates/dialpaddelegate.cpp
+#    delegates/conferencedelegate.cpp
+#    delegates/contactdelegate.cpp
+#    delegates/historydelegate.cpp
+#    delegates/phonenumberdelegate.cpp
+#    delegates/delegatedropoverlay.cpp
+#    delegates/dialpaddelegate.cpp
    delegates/autocompletiondelegate.cpp
    delegates/autocompletiondelegate2.cpp
    delegates/toolbardelegate.cpp
@@ -258,28 +258,28 @@ SET(
    widgets/personselector.cpp
    widgets/contactmethodselector.cpp
    widgets/systray.cpp
-   widgets/dialpad.cpp
-   widgets/dockbase.cpp
+#    widgets/dialpad.cpp
+#    widgets/dockbase.cpp
    widgets/categorizedtreeview.cpp
    widgets/fileselector.cpp
-   widgets/callviewoverlay.cpp
-   widgets/overlaytoolbar.cpp
-   widgets/callviewtoolbar.cpp
-   widgets/tips/conftip.cpp
-   widgets/tips/dialpadtip.cpp
-   widgets/tips/ringingtip.cpp
-   widgets/tips/connectionlosttip.cpp
-   widgets/tips/searchingtip.cpp
-   widgets/tips/tipcollection.cpp
-   widgets/tips/resizabletip.cpp
-   widgets/tips/removeconferencetip.cpp
-   widgets/player.cpp
-   widgets/playeroverlay.cpp
+#    widgets/callviewoverlay.cpp
+#    widgets/overlaytoolbar.cpp
+#    widgets/callviewtoolbar.cpp
+#    widgets/tips/conftip.cpp
+#    widgets/tips/dialpadtip.cpp
+#    widgets/tips/ringingtip.cpp
+#    widgets/tips/connectionlosttip.cpp
+#    widgets/tips/searchingtip.cpp
+#    widgets/tips/tipcollection.cpp
+#    widgets/tips/resizabletip.cpp
+#    widgets/tips/removeconferencetip.cpp
+#    widgets/player.cpp
+#    widgets/playeroverlay.cpp
    widgets/filterlineedit.cpp
    widgets/kphonenumberselector.cpp
-   widgets/presence.cpp
+#    widgets/presence.cpp
    widgets/directoryview.cpp
-   widgets/autocompletion.cpp
+#    widgets/autocompletion.cpp
    widgets/menumodelview.cpp
    widgets/toolbuttonmodelview.cpp
    widgets/personselector.cpp
@@ -305,16 +305,15 @@ ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 SET(
    ring_kde_SRCS
    main.cpp
-   view.cpp
-   phonewindow.cpp
+#    view.cpp
+#    phonewindow.cpp
    cmd.cpp
-   dock.cpp
-   notification.cpp
+#    dock.cpp
    notification.cpp
    ringapplication.cpp
    errormessage.cpp
-   canvasobjectmanager.cpp
-   eventmanager.cpp
+#    canvasobjectmanager.cpp
+#    eventmanager.cpp
    actioncollection.cpp
    implementation.cpp
    model/extendedprotocolmodel.cpp
@@ -366,16 +365,16 @@ SET(
    conf/accountpages/tabs.ui
    widgets/ui/personselector.ui
    widgets/ui/contactmethodselector.ui
-   widgets/ui/player.ui
-   widgets/ui/playeroverlay.ui
-   widgets/ui/contactdock.ui
+#    widgets/ui/player.ui
+#    widgets/ui/playeroverlay.ui
+#    widgets/ui/contactdock.ui
    widgets/ui/directoryview.ui
-   widgets/ui/transfer.ui
+#    widgets/ui/transfer.ui
    widgets/ui/presence.ui
-   widgets/ui/videodevicesetting.ui
-   widgets/ui/screensharingwidget.ui
-   widgets/ui/welcome.ui
-   widgets/ui/share.ui
+#    widgets/ui/videodevicesetting.ui
+#    widgets/ui/screensharingwidget.ui
+#    widgets/ui/welcome.ui
+#    widgets/ui/share.ui
    widgets/ui/accountcreator.ui
    widgets/ui/fileselect.ui
    configurator/peerprofile.ui

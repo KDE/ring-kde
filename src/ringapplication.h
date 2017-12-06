@@ -33,7 +33,6 @@ namespace KDeclarative {
 }
 
 //Ring
-class PhoneWindow;
 class RingQmlWidgets;
 class PhotoSelectorPlugin;
 class CanvasIndicator;
@@ -42,6 +41,7 @@ class ContactView;
 class DialView;
 class TimelinePlugin;
 class Call;
+class PhoneWindowEvent;
 
 ///RingApplication: Main application
 class RingApplication final : public QApplication
@@ -65,29 +65,32 @@ public:
    //Getter
    bool startIconified() const;
 
-   PhoneWindow* phoneWindow() const;
-
    QQuickWindow* desktopWindow() const;
-
-   bool isPhoneVisible() const;
 
    static QQmlApplicationEngine* engine();
 
    static RingApplication* instance();
    void init();
 
+   /**
+    * An unreliable way to track the application focus
+    *
+    * It is better than nothing
+    */
+   bool mayHaveFocus();
+
    //Setter
    void setIconify(bool iconify);
    void setStartTimeline(bool value);
    void setStartPhone(bool value);
 
+   bool m_HasFocus       {false};
 private:
    //Attributes
    bool m_StartIconified {false};
    bool m_StartPhone     {false};
    bool m_StartTimeLine  {false};
 
-   mutable PhoneWindow* m_pPhone {nullptr};
    static KDeclarative::KDeclarative* m_pDeclarative;
    static RingQmlWidgets* m_pQmlWidget;
    static PhotoSelectorPlugin* m_pPhotoSelector;
@@ -97,6 +100,7 @@ private:
    static ContactView* m_pContactView;
    static DialView* m_pDialView;
    static TimelinePlugin* m_pTimeline;
+   PhoneWindowEvent* m_pEventFilter {nullptr};
 
 private Q_SLOTS:
    void daemonTimeout();

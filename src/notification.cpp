@@ -247,7 +247,7 @@ void Notification::incomingCall(Call* call)
 
 void Notification::incomingText(Media::TextRecording* t, ContactMethod* cm)
 {
-   if (t && !EventManager::mayHaveFocus())
+   if (t && !RingApplication::instance()->mayHaveFocus())
       (new IncomingTextNotification(cm, t))->sendEvent();
 }
 

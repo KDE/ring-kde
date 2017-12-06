@@ -76,7 +76,7 @@ MainPage::MainPage(QQuickItem* parent) :
     if (file.open(QIODevice::ReadOnly))
         RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("welcomeMessage"), file.readAll());
 
-    RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxy2Model"), cp);
+    RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxyModel"), cp);
 
     connect(this, &QQuickItem::windowChanged, d_ptr, &MainPagePrivate::slotWindowChanged);
 

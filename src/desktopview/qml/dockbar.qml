@@ -43,7 +43,7 @@ Image {
             name: "call"
             icon: "/toolbar/call.svg"
             enabled2: true
-            actionName: "showCallDockAction"
+            actionName: "showDialDockAction"
         }
         ListElement {
             name: "contact"

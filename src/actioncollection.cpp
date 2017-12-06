@@ -356,10 +356,11 @@ Q_ASSERT(action_configureRing );
 
 void ActionCollection::setupPhoneAction(PhoneWindow* mw)
 {
-   connect(action_displayAccountCbb      , &QAction::toggled   , mw         , &PhoneWindow::displayAccountCbb            );
-   connect(action_displayVolumeControls  , &QAction::toggled   , mw->view() , &View::displayVolumeControls              );
-   connect(action_displayDialpad         , &QAction::toggled   , mw->view() , &View::displayDialpad                     );
-   connect(action_pastenumber            , &QAction::triggered , mw->view() , &View::paste                              );
+   //FIXME DROP QTWIDGET
+//    connect(action_displayAccountCbb      , &QAction::toggled   , mw         , &PhoneWindow::displayAccountCbb            );
+//    connect(action_displayVolumeControls  , &QAction::toggled   , mw->view() , &View::displayVolumeControls              );
+//    connect(action_displayDialpad         , &QAction::toggled   , mw->view() , &View::displayDialpad                     );
+//    connect(action_pastenumber            , &QAction::triggered , mw->view() , &View::paste                              );
 
 }
 
@@ -414,8 +415,9 @@ void ActionCollection::slotAddPerson()
 ///Change icon of the record button
 void ActionCollection::updateRecordButton()
 {
-   if (!RingApplication::instance()->isPhoneVisible())
-      return;
+//FIXME DROP QTWIDGET
+//    if (!RingApplication::instance()->isPhoneVisible())
+//       return;
 
    double recVol = Audio::Settings::instance().captureVolume();
    static const QIcon icons[4] = {
@@ -427,14 +429,16 @@ void ActionCollection::updateRecordButton()
 
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
    ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
-   PhoneWindow::app()->view()->updateVolumeControls();
+//FIXME DROP QTWIDGET
+//    PhoneWindow::app()->view()->updateVolumeControls();
 }
 
 ///Update the colunm button icon
 void ActionCollection::updateVolumeButton()
 {
-   if (!RingApplication::instance()->isPhoneVisible())
-      return;
+//FIXME DROP QTWIDGET
+//    if (!RingApplication::instance()->isPhoneVisible())
+//       return;
 
    double sndVol = Audio::Settings::instance().playbackVolume();
    static const QIcon icons[4] = {
@@ -446,7 +450,9 @@ void ActionCollection::updateVolumeButton()
 
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
-   PhoneWindow::app()->view()->updateVolumeControls();
+
+//FIXME DROP QTWIDGET
+//   PhoneWindow::app()->view()->updateVolumeControls();
 }
 
 void ActionCollection::slotNewContact()
@@ -492,8 +498,10 @@ void ActionCollection::slotRaiseClient(bool focus)
       if (!CallModel::instance().rowCount())
          CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
 
-      if (RingApplication::instance()->isPhoneVisible())
-         RingApplication::instance()->phoneWindow()->view()->setFocus(Qt::OtherFocusReason);
+
+//FIXME DROP QTWIDGET
+//       if (RingApplication::instance()->isPhoneVisible())
+//          RingApplication::instance()->phoneWindow()->view()->setFocus(Qt::OtherFocusReason);
    }
 }
 

@@ -65,7 +65,6 @@
 //Ring
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
-#include "phonewindow.h"
 #include "errormessage.h"
 #include "callmodel.h"
 #include "implementation.h"
@@ -131,6 +130,55 @@ TimelinePlugin* RingApplication::m_pTimeline {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
 
+//This code detect if the window is active, innactive or minimzed
+class PhoneWindowEvent final : public QObject {
+   Q_OBJECT
+public:
+   PhoneWindowEvent(RingApplication* ev) : QObject(ev),m_pParent(ev) {
+      QTimer::singleShot(0, [this]() {
+         m_pParent->desktopWindow()->installEventFilter(this);
+      });
+   }
+protected:
+   virtual bool eventFilter(QObject *obj, QEvent *event)  override {
+      Q_UNUSED(obj)
+      if (event->type() == QEvent::WindowStateChange) {
+//FIXME DROP QTWIDGET
+//          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
+//          switch (PhoneWindow::app()->windowState()) {
+//             case Qt::WindowMinimized:
+//                emit minimized(true);
+//                break;
+//             case Qt::WindowActive:
+//                qDebug() << "The window is now active";
+//                [[clang::fallthrough]];
+//             case Qt::WindowNoState:
+//             default:
+//                if (e->oldState() == Qt::WindowMinimized)
+//                   emit minimized(false);
+//                break;
+//          };
+      }
+      else if (event->type() == QEvent::KeyPress) {
+//FIXME DROP QTWIDGET
+//          m_pParent->viewKeyEvent(static_cast<QKeyEvent*>(event));
+      }
+      else if (event->type() == QEvent::WindowDeactivate) {
+         m_pParent->m_HasFocus = false;
+      }
+      else if (event->type() == QEvent::WindowActivate) {
+         m_pParent->m_HasFocus = true;
+      }
+      return false;
+   }
+
+private:
+   RingApplication* m_pParent;
+
+Q_SIGNALS:
+   void minimized(bool);
+};
+
 /**
  * The application constructor
  */
@@ -142,6 +190,8 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
    setAttribute(Qt::AA_EnableHighDpiScaling);
+
+   m_pEventFilter = new PhoneWindowEvent(this);
 
    m_spInstance = this;
 }
@@ -164,14 +214,6 @@ void RingApplication::init()
  */
 RingApplication::~RingApplication()
 {
-   // Delete the GUI before the models to prevent their destructors from
-   // accessing the singletons
-   if (m_pPhone) {
-//       m_pPhone->setActive(false);
-      delete m_pPhone;
-      m_pPhone = nullptr;
-   }
-
    delete m_pDeclarative;
    delete engine();
    delete m_pCanvasIndicator;
@@ -314,23 +356,18 @@ int RingApplication::newInstance()
    if (init) {
       init = false;
 
-      PhoneWindow* mw = nullptr;
-
-      // Create the old qtwidgets main window so all classes expecting one still
-      // behave as they should //FIXME fix KF5::KXMLGui
-      auto mw2 = new KXmlGuiWindow();
-
       ActionCollection::instance()->setupAction();
 
-      if (m_StartPhone) {
-         mw = RingApplication::phoneWindow();
-
-         if (displayOnStart)
-            mw->show();
-         else
-            mw->hide();
-      }
-      else
+//FIXME DROP QTWIDGET
+//       if (m_StartPhone) {
+//          mw = RingApplication::phoneWindow();
+//
+//          if (displayOnStart)
+//             mw->show();
+//          else
+//             mw->hide();
+//       }
+//       else
          desktopWindow();
    }
 
@@ -490,18 +527,6 @@ QQmlApplicationEngine* RingApplication::engine()
 #undef QML_ADD_OBJECT
 #undef QML_CRTYPE
 
-PhoneWindow* RingApplication::phoneWindow() const
-{
-   if (!m_pPhone) {
-      m_pPhone = new PhoneWindow(nullptr);
-//       connect(m_pPhone, &FancyMainWindow::unregisterWindow, this, [this]() {
-//          m_pPhone = nullptr;
-//       });
-   }
-
-   return m_pPhone;
-}
-
 QQuickWindow* RingApplication::desktopWindow() const
 {
    static QQuickWindow* dw = nullptr;
@@ -509,22 +534,24 @@ QQuickWindow* RingApplication::desktopWindow() const
       QQmlComponent component(engine());
       component.loadUrl(QUrl(QStringLiteral("qrc:/DesktopWindow.qml")));
       if ( component.isReady() ) {
-         if (auto obj = qobject_cast<QQuickItem*>(component.create())) {
-            dw =  qobject_cast<QQuickWindow*>(obj);
-         }
-         else
-            qWarning() << "FAILED TO LOAD:" << component.errorString();
+         qDebug() << "Previous error" << component.errorString();
+
+         auto obj2 = component.create();
+
+         // I have *no* clue why this is needed... A race somewhere
+         while (component.errorString().isEmpty() && !obj2)
+            obj2 = component.create();
+
+         if (!(dw = qobject_cast<QQuickWindow*>(obj2)))
+            qWarning() << "Failed to load:" << component.errorString();
       }
       else
          qWarning() << component.errorString();
    }
 
-   return dw;
-}
+   Q_ASSERT(dw);
 
-bool RingApplication::isPhoneVisible() const
-{
-   return m_pPhone && m_pPhone->isVisible();
+   return dw;
 }
 
 ///The daemon is not found
@@ -544,14 +571,15 @@ void RingApplication::callAdded(Call* c)
     c->state() == Call::State::CONNECTED ||
     c->state() == Call::State::RINGING   ||
     c->state() == Call::State::INITIALIZATION)) {
-      if (isPhoneVisible()) {
-         RingApplication::instance()->phoneWindow()->show ();
-         RingApplication::instance()->phoneWindow()->raise();
-      }
-      else {
+//       if (isPhoneVisible()) {
+//FIXME DROP QTWIDGET
+//          RingApplication::instance()->phoneWindow()->show ();
+//          RingApplication::instance()->phoneWindow()->raise();
+//       }
+//       else {
          //timelineWindow()->viewContact(c->peerContactMethod());
          //timelineWindow()->setCurrentPage(ViewContactDock::Pages::MEDIA);
-      }
+//       }
    }
 }
 
@@ -597,5 +625,12 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
    }
    return false;
 }
+
+bool RingApplication::mayHaveFocus()
+{
+   return m_HasFocus;
+}
+
+#include <ringapplication.moc>
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

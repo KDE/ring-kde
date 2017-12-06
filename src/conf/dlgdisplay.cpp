@@ -38,7 +38,8 @@ DlgDisplay::DlgDisplay(KConfigDialog *parent)
 
    connect(this,SIGNAL(updateButtons()), parent , SLOT(updateButtons()));
 
-   PhoneWindow::app()->isAutoStart();
+//FIXME DROP QTWIDGET
+//    PhoneWindow::app()->isAutoStart();
 }
 
 ///Destructor
@@ -62,7 +63,8 @@ void DlgDisplay::changed()
 ///Update all widgets
 void DlgDisplay::updateWidgets()
 {
-   kcfg_autoStart->setChecked(PhoneWindow::app()->isAutoStart());
+//FIXME DROP QTWIDGET
+//    kcfg_autoStart->setChecked(PhoneWindow::app()->isAutoStart());
 }
 
 ///Save current settings
@@ -75,7 +77,8 @@ void DlgDisplay::updateSettings()
    if (ConfigurationSkeleton::hideUnreachable() != kcfg_hideUnreachable->isChecked())
       CategorizedContactModel::instance().setUnreachableHidden(kcfg_hideUnreachable->isChecked());
 
-   PhoneWindow::app()->setAutoStart(kcfg_autoStart->isChecked());
+//FIXME DROP QTWIDGET
+//    PhoneWindow::app()->setAutoStart(kcfg_autoStart->isChecked());
 
    m_HasChanged = false;
 }

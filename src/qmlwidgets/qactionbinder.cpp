@@ -37,6 +37,7 @@ struct ActionBinder {
 class QActionBinderPrivate : public QObject
 {
     Q_OBJECT
+
 public:
     QHash<QAction*, ActionBinder*> m_hMapper;
     KActionCollection*             m_pActionCollection {nullptr};
